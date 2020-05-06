@@ -1,10 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Minnesota’s combined benefits application</title>
+    <link th:href="@{/honeycrisp.css}" rel="stylesheet"/>
 </head>
-<body>
-    <h1>Minnesota’s combined benefits application</h1>
+<body class="template--homepage locale-en">
+    <div class="page-wrapper">
+        <section class="slab slab--hero">
+            <div class="grid">
+                <div class="grid__item">
+                    <h1>Minnesota’s combined benefits application</h1>
+                    <a class="button button--primary">Apply now <i class="button__icon icon-arrow_forward"></i></a>
+                </div>
+            </div>
+        </section>
+        <section class="slab slab--white">
+            <div class="grid">
+                <div class="grid__item">
+                    <h2>Apply to these programs</h2>
+                    <h3>Food assistance (SNAP)</h3>
+                    <p class="form-card__body-text">SNAP helps low income Minnesotans get the food they need. You’ll get an
+                        EBT card that you can use like a debit card to buy groceries at most stores and farmer’s
+                        markets.</p>
+                </div>
+                <div class="grid__item">
+                    <h3>Cash programs</h3>
+                    <p class="form-card__body-text">Cash assistance helps people meet their basic needs until they are able
+                        to support themselves. You will get an EBT card that you can use like a debit card. Here are the
+                        most common cash programs:</p>
+                    <ul class="list--bulleted">
+                        <li>Diversionary Work Program (DWP)</li>
+                        <li>General Assistance</li>
+                        <li>Group Residential Housing (GRH)</li>
+                        <li>Mn Family Investment Program (MFIP)</li>
+                        <li>Mn Supplemental Aid (MSA)</li>
+                        <li>Refugee Cash Assitance (RCA)</li>
+                    </ul>
+                </div>
+                <div class="grid__item">
+                    <h3>Emergency Assistance</h3>
+                    <p class="form-card__body-text">Emergency Assistance provides something to people. This is a description
+                        of what emergency assistance provides.</p>
+                </div>
+                <div class="grid__item">
+                    <h3>Child Care Assistance</h3>
+                    <p class="form-card__body-text">Child Care Assistance provides financial assistance to help families pay
+                        for child care so that parents can pursue employment or education.Child Care Assistance provides
+                        financial assistance to help families pay for child care so that parents can pursue employment or
+                        education.</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+    <footer class="main-footer">
+    <div class="grid">
+        <div class="grid__item">
+            The Combined Benefits Application is a service designed by Code for America and administered by state
+            counties on behalf of the people of Minnesota.
+        </div>
+    </div>
+</footer>
 </body>
 </html>
