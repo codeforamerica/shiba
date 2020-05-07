@@ -5,7 +5,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-public class BasePageObject {
+public class BasePage {
 
     @FindBy(css = ".button--primary")
     protected WebElement primaryButton;
@@ -16,7 +16,7 @@ public class BasePageObject {
         return driver.getTitle();
     }
 
-    public BasePageObject(RemoteWebDriver driver) {
+    public BasePage(RemoteWebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(driver, this);
     }

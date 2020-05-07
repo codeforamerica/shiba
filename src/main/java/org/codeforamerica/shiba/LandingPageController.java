@@ -11,7 +11,12 @@ public class LandingPageController {
     }
 
     @GetMapping("/prepare-to-apply")
-    String prepareToApplyOPage() {
+    String prepareToApplyPage() {
         return "prepare-to-apply";
+    }
+
+    @GetMapping("/language-preference")
+    String languagePreferencePage() {
+        return "language-preferences";
     }
 }

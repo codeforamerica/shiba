@@ -4,7 +4,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 
-public class PrepareToApplyPage extends BasePageObject {
+public class PrepareToApplyPage extends BasePage {
     private RemoteWebDriver driver;
 
     @FindBy(partialLinkText = "Go Back")
@@ -20,4 +20,11 @@ public class PrepareToApplyPage extends BasePageObject {
 
         return new LandingPage(driver);
     }
+
+    public LanguagePreferencesPage clickPrimaryButton() {
+        primaryButton.click();
+
+        return new LanguagePreferencesPage(driver);
+    }
+
 }
