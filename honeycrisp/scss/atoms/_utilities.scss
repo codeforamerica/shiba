@@ -1,0 +1,145 @@
+@mixin retina-bg($name, $size, $extension: png) {
+  background-image: image-url("#{$name}.#{$extension}");
+
+  @media only screen and (min-resolution: 1.3dppx), only screen and (min-resolution: 125dpi) {
+    background-image: image-url("#{$name}@2x.#{$extension}");
+    background-size: $size;
+  }
+}
+
+// Use this if an element should take up the full width of the screen.
+@mixin full-bleed() {
+  margin: {
+    left: -$s15;
+    right: -$s15;
+  }
+  padding: {
+    left: $s15;
+    right: $s15;
+  }
+
+  @include media($tablet-up) {
+    margin: {
+      left: -$s35;
+      right: -$s35;
+    }
+    padding: {
+      left: $s35;
+      right: $s35;
+    }
+  }
+}
+
+@function opposite-position($directions) {
+  $opposite-directions: ();
+  $direction-map: (
+  'top':    'bottom',
+  'right':  'left',
+  'bottom': 'top',
+  'left':   'right',
+  'center': 'center',
+  'ltr':    'rtl',
+  'rtl':    'ltr'
+  );
+
+  @each $direction in $directions {
+    $direction: to-lower-case($direction);
+
+    @if map-has-key($direction-map, $direction) {
+      $opposite-directions: append($opposite-directions, unquote(map-get($direction-map, $direction)));
+    } @else {
+      @warn "No opposite direction can be found for `#{$direction}`. Direction omitted.";
+    }
+  }
+
+  @return $opposite-directions;
+}
+
+/// Triangle helper mixin
+/// @param {Direction} $direction - Triangle direction, either `top`, `right`, `bottom` or `left`
+/// @param {Color} $color [currentcolor] - Triangle color
+/// @param {Length} $size [1em] - Triangle size
+@mixin triangle($direction, $color: currentcolor, $size: 1em) {
+  @if not index(top right bottom left, $direction) {
+    @error "Direction must be either `top`, `right`, `bottom` or `left`.";
+  }
+
+  width: 0;
+  height: 0;
+  content: '';
+  z-index: 10;
+  border-#{opposite-position($direction)}: ($size * 1.5) solid $color;
+
+  $perpendicular-borders: $size solid transparent;
+
+  @if $direction == top or $direction == bottom {
+    border-left:   $perpendicular-borders;
+    border-right:  $perpendicular-borders;
+  } @else if $direction == right or $direction == left {
+    border-bottom: $perpendicular-borders;
+    border-top:    $perpendicular-borders;
+  }
+}
+
+@mixin outline-unconditional() {
+  outline: none;
+  box-shadow: 0 0 0 5px $color-yellow;
+}
+
+@mixin outline() {
+  &:focus {
+    @include outline-unconditional;
+  }
+}
+
+@mixin outline-within() {
+  &:focus-within {
+    @include outline-unconditional;
+  }
+}
+
+.is-mobile-hidden {
+  display: none !important;
+  @include media($mobile-up) {
+    display: block !important;
+  }
+}
+
+.is-mobile-hidden--inline {
+  display: none !important;
+  @include media($mobile-up) {
+    display: inline-block !important;
+  }
+}
+
+.is-tablet-hidden {
+  display: none !important;
+  @include media($tablet-up) {
+    display: block !important;
+  }
+}
+
+.is-tablet-hidden--inline {
+  display: none !important;
+  @include media($tablet-up) {
+    display: inline-block !important;
+  }
+}
+
+.is-desktop-hidden {
+  display: block;
+  @include media($tablet-up) {
+    display: none !important;
+  }
+}
+
+.is-desktop-hidden--inline {
+  display: inline-block;
+  @include media($tablet-up) {
+    display: none !important;
+  }
+}
+
+.light { opacity: 0.7; }
+.lighter { opacity: 0.5; }
+.lightest { opacity: 0.3; }

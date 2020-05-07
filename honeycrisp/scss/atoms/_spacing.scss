@@ -1,0 +1,129 @@
+.spacing-below-0 {
+  margin-bottom: 0 !important;
+}
+
+.spacing-below-5 {
+  margin-bottom: $s5 !important;
+}
+
+.spacing-below-10 {
+  margin-bottom: $s10 !important;
+}
+
+.spacing-below-15 {
+  margin-bottom: $s15 !important;
+}
+
+.spacing-below-25 {
+  margin-bottom: $s25 !important;
+}
+
+.spacing-below-35 {
+  margin-bottom: $s35 !important;
+}
+
+.spacing-below-60 {
+  margin-bottom: $s60 !important;
+}
+
+.spacing-below-95 {
+  margin-bottom: $s95 !important;
+}
+
+.spacing-below-155 {
+  margin-bottom: $s155 !important;
+}
+
+.spacing-below-250 {
+  margin-bottom: $s250 !important;
+}
+
+.spacing-above-0 {
+  margin-top: 0 !important;
+}
+
+.spacing-above-5 {
+  margin-top: $s5 !important;
+}
+
+.spacing-above-10 {
+  margin-top: $s10 !important;
+}
+
+.spacing-above-15 {
+  margin-top: $s15 !important;
+}
+
+.spacing-above-25 {
+  margin-top: $s25 !important;
+}
+
+.spacing-above-35 {
+  margin-top: $s35 !important;
+}
+
+.spacing-above-60 {
+  margin-top: $s60 !important;
+}
+
+.spacing-above-95 {
+  margin-top: $s95 !important;
+}
+
+.spacing-above-155 {
+  margin-top: $s155 !important;
+}
+
+.spacing-above-250 {
+  margin-top: $s250 !important;
+}
+
+
+
+// Deprecated Padding and Nudging Classes
+
+.with-no-padding {
+  margin-bottom: 0 !important;
+}
+
+.with-padding-small {
+  margin-bottom: $s10 !important;
+}
+
+.with-padding-med {
+  margin-bottom: $s35 !important;
+}
+
+.with-padding-large {
+  margin-bottom: $s60 !important;
+}
+
+.with-padding-huge {
+  margin-bottom: $s155 !important;
+}
+
+.with-neg-padding-large {
+  @include media($tablet-up) {
+    margin-bottom: -$s155 !important;
+  }
+}
+
+.nudge--tiny {
+  margin-top: .2rem !important;
+}
+
+.nudge--small {
+  margin-top: $s5 !important;
+}
+
+.nudge--med {
+  margin-top: $s10 !important;
+}
+
+.nudge--large {
+  margin-top: $s60 !important;
+}
+
+.nudge--huge {
+  margin-top: $s155 !important;
+}

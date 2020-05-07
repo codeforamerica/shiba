@@ -1,0 +1,233 @@
+fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+legend {
+  float: left;
+  display: block;
+  width: 100%;
+}
+
+legend + p {
+  clear: both;
+}
+
+
+radiogroup {
+  clear: both;
+}
+
+label {
+	line-height: $s25;
+  clear: both;
+}
+
+.form-question {
+	display: block;
+	margin-bottom: $s25;
+  font-weight: $font-weight-bold;
+}
+
+.text-input {
+  @include outline;
+	display: block;
+	width: 100%;
+	font-size: $font-size-25;
+	font-weight: $font-weight-bold;
+  height: $s60;
+	padding: 0 $s25;
+  margin-bottom: $s15;
+  box-shadow: inset 0px 2px 0px rgba(#000, .15);
+	border: 2px solid $color-grey-darkest;
+  border-radius: 0;
+	background-color: $color-grey-light;
+    &::placeholder {
+		color: $color-grey-dark;
+	}
+  &:focus {
+    box-shadow: 0 0 0 5px $color-yellow, inset 0px 2px 0px rgba(#000, .15);
+  }
+}
+
+.radio-button {
+  @include outline-within();
+	transition: $animation-fast all;
+  user-select: none;
+  position: relative;
+	display: block;
+	cursor: pointer;
+	font-size: $font-size-25;
+	font-weight: $font-weight-bold;
+	margin-bottom: $s10;
+  min-height: $s60;
+	padding: $s35/2 $s25;
+  padding-left: $s60;
+	background-color: #FFFFFF;
+	border: 2px solid $color-grey-darkest;
+	input[type='radio'] {
+    @include outline;
+		position: absolute;
+    top: $s35/2 + .3rem;
+    left: $s25;
+    appearance: none;
+    display: inline-block;
+    background-color: #fff;
+    border: 2px solid $color-grey-darkest;
+    height: 20px;
+    width: 20px;
+    margin-right: $s15;
+    border-radius: 50%;
+    &:checked {
+      &:before {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-top: -6px;
+        margin-left: -6px;
+        height: 12px;
+        width: 12px;
+        border-radius: 50%;
+        background-color: $color-teal;
+      }
+    }
+	}
+	&:hover {
+		background-color: $color-grey-light;
+	}
+
+	&.is-selected {
+		background-color: $color-teal-light;
+		border-color: $color-grey-darkest;
+		color: $color-grey-darkest;
+	}
+}
+
+.checkbox {
+  @include outline-within();
+	transition: $animation-fast all;
+  user-select: none;
+  position: relative;
+	cursor: pointer;
+	display: block;
+	font-size: $font-size-25;
+	font-weight: $font-weight-bold;
+	background-color: #FFFFFF;
+  min-height: $s60;
+	margin-bottom: $s10;
+	padding: $s35/2 $s25;
+  padding-left: $s60;
+	border: 2px solid $color-grey-darkest;
+	input[type='checkbox'] {
+    @include outline;
+    position: absolute;
+    top: $s35/2 + .3rem;
+    left: $s25;
+    appearance: none;
+    display: inline-block;
+    background-color: #fff;
+    border: 2px solid $color-grey-darkest;
+    height: 20px;
+    width: 20px;
+    &:checked {
+      &:before {
+        font-family: $font-icon;
+        font-size: $font-size-25-small;
+        content: '\e5ca';
+        display: inline-block;
+        position: absolute;
+        top: -5px;
+        color: $color-teal;
+      }
+    }
+  }
+	&:hover {
+		background-color: $color-grey-light;
+	}
+	&.is-selected {
+    background-color: $color-teal-light;
+    border-color: $color-grey-darkest;
+    color: $color-grey-darkest;
+	}
+}
+
+.textarea {
+  @include outline;
+	border: 2px solid $color-grey-darkest;
+  box-shadow: inset 0px 2px 0px rgba(#000, .15);
+	width: 100%;
+	padding: $s15;
+	line-height: $s25;
+	margin-bottom: $s15;
+  font-weight: $font-weight-bold;
+  background-color: $color-grey-light;
+  &::placeholder {
+    color: $color-grey-dark;
+  }
+}
+
+.select {
+  position: relative;
+  display: inline-block;
+  margin-bottom: $s15;
+  font-size: $font-size-25;
+  height: $s60;
+  line-height: $s60;
+  background-color: #FFFFFF;
+
+  &:after {
+    transition: $animation-fast all;
+    position: absolute;
+    right: 0em;
+    top: 0em;
+    bottom: 0;
+    display: block;
+    font-family: $font-icon;
+    font-size: $font-size-35;
+    content: '\e5c5';
+    color: $color-grey-darkest;
+    border-left: 0;
+    width: $s60;
+    text-align: center;
+    z-index: 0;
+  }
+}
+
+.select__element {
+  @include outline;
+  appearance: none;
+  position: relative;
+  z-index: 1;
+  border: 2px solid $color-grey-darkest;
+  padding: 0 $s60 0 $s25;
+  font-family: $font-system;
+  font-size: $font-size-25;
+  font-weight: $font-weight-bold;
+  background-color: transparent;
+  width: 100%;
+  overflow-wrap: break-word;
+  border-radius: 0;
+}
+
+.file-upload {
+  display: inline-block;
+
+  //  The ~ denotes a "subsequent sibling" per https://www.w3.org/TR/selectors-4/#general-sibling-combinators
+  //  This rule expects that an element with class .button will occur after a focused input element as children
+  //  of the .file-upload element, as is the case in the example HTML in the styleguide.
+  input:focus ~ .button {
+    @include outline-unconditional;
+  }
+}
+
+.file-upload__input {
+	width: .1px;
+	height: .1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}

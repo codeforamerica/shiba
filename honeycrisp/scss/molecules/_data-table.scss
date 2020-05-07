@@ -1,0 +1,147 @@
+.data-table-container {
+  margin: {
+    left: -$s15;
+    right: -$s15;
+  }
+  @include media($tablet-up) {
+    margin: {
+      left: -$s35;
+      right: -$s35;
+    }
+  }
+
+  .tableFloatingHeaderOriginal {
+    background-color: $color-background;
+  }
+}
+
+.data-table {
+  width: 100%;
+  text-align: left;
+  font-size: $font-size-25-small;
+  border-collapse: collapse;
+  border-bottom: 2px solid $color-grey;
+  margin-bottom: 1em;
+
+  &.data-table--small {
+    td, th {
+      font-size: $font-size-15;
+    }
+  }
+
+  th, td {
+    padding: {
+      top: $s25/2;
+      bottom: $s25/2;
+    }
+    &:first-child {
+      padding-left: $s15;
+    }
+    &:last-child {
+      padding-right: $s15;
+    }
+    &.no-break {
+      white-space: nowrap;
+    }
+    &.center {
+      text-align: center;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .is-selected {
+      color: $color-teal;
+      font-weight: $font-weight-bold;
+    }
+
+    @include media($tablet-up) {
+      &:first-child {
+        padding-left: $s35;
+      }
+      &:last-child {
+        padding-right: $s35;
+      }
+    }
+  }
+
+  th {
+    font-weight: $font-weight-normal;
+    @extend .text--help;
+    border-bottom: 2px solid $color-grey;
+  }
+
+  tr {
+    &:nth-child(2n) {
+      td {
+        background-color: $color-background;
+      }
+    }
+    &:nth-child(2n-1) {
+      td {
+        background-color: #FFFFFF;
+      }
+    }
+
+    &.row--error td {
+      background-color: $color-red-light;
+    }
+
+    &.row--warning td {
+      background-color: $color-yellow-light;
+    }
+  }
+
+  td {
+    &:first-child {
+      font-weight: $font-weight-bold;
+    }
+  }
+
+  .status {
+    white-space: nowrap;
+
+    &.successful {
+      color: $color-green;
+    }
+
+    &.failure {
+      color: $color-red;
+    }
+
+    &.not-applicable {
+      opacity: .3;
+    }
+  }
+}
+
+.data-table--selectable {
+  tr:hover {
+    td {
+      background-color: $color-teal-light;
+      cursor: pointer;
+    }
+  }
+}
+
+.data-table--divided {
+  td {
+    border-right: 1px solid $color-grey;
+
+    &:first-child {
+      border-right: none;
+    }
+  }
+}
+
+.data-table--border-left {
+  border-left: solid 1px $color-grey;
+  padding-left: $s35 / 2;
+}
+
+.ellipsized-cell {
+  max-width: 120px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}

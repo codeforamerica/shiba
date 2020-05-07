@@ -1,0 +1,35 @@
+.incrementer {
+  display: table;
+  border-collapse: separate;
+  border-spacing: 1em;
+  margin-bottom: .5em;
+
+  .text-input {
+    appearance: none;
+    display: table-cell;
+    text-align: center;
+    margin-bottom: 0;
+    border: 2px solid $color-grey-darkest;
+    padding: {
+      left: 1em;
+      right: 1em;
+    }
+    &::-webkit-inner-spin-button {
+      display: none;
+    }
+  }
+
+  input[type=number] {
+    -moz-appearance: textfield; // Remove stepper arrows in Firefox
+  }
+}
+
+.incrementer__subtract, .incrementer__add {
+  @extend .button;
+  display: table-cell;
+  line-height: 5.6rem; // hack around table cell sizing to make this 60px
+  text-align: center;
+  padding: 0;
+  font-weight: bold;
+  width: 3em;
+}

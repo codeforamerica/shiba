@@ -1,0 +1,108 @@
+.card {
+    box-shadow: $box-shadow;
+    border-radius: $border-radius-large;
+    padding: $s25 $s25;
+    background-color: #FFFFFF;
+    margin-bottom: $s15;
+    > *:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.form-card {
+  @extend .card;
+  padding: $s60 $s25;
+  margin-left: -$s5;
+  margin-right: -$s5;
+  @include media($tablet-up) {
+    margin-left: 0;
+    margin-right: 0;
+    padding: $s60 $s35;
+  }
+
+  p {
+    max-width: 30em;
+  }
+}
+
+.form-card__header {
+  margin-bottom: $s60;
+}
+
+.form-card__header--with-icon {
+  position: relative;
+  @include media($tablet-up) {
+    padding-right: 6em;
+  }
+}
+
+.form-card__icon {
+  float: right;
+  margin-left: .5em;
+
+  @include media($tablet-up) {
+    position: absolute;
+    right: $s35;
+    margin-left: 0;
+    float: none;
+  }
+
+}
+
+.form-card__title {
+    font-size: $font-size-35;
+    margin-top: 0;
+    margin-bottom: 0;
+    + .text--help, + .text--small {
+      margin-top: $s25;
+      margin-bottom: 0;
+    }
+}
+
+
+.form-card__footer {
+    @include full-bleed();
+    margin-top: $s60;
+
+    *:last-child {
+      margin-bottom: 0;
+    }
+}
+
+.form-card--transition {
+  text-align: center;
+  p {
+    margin: {
+      left: auto;
+      right: auto;
+    }
+  }
+
+  // center buttons in centered cards
+  .button:first-of-type {
+    margin-left: $s25/2;
+  }
+
+  .text-input-group-container {
+    display: inline-block;
+  }
+
+  .text-input {
+    margin: 0 auto;
+  }
+
+  .form-card__content {
+    .list--bulleted, .media-box {
+      max-width: 25em;
+      text-align: left;
+      margin: 0 auto;
+    }
+  }
+}
+
+.feedback-survey {
+  .question-with-follow-up {
+    margin-bottom: 1em;
+  }
+}
+

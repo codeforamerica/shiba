@@ -1,0 +1,121 @@
+.admin-application-card {
+  @extend .card;
+
+  padding: $s10;
+  padding-left: $s10 * 2;
+  position: relative;
+
+  hr {
+    margin-top: $s10;
+    margin-bottom: $s10;
+  }
+
+  .status {
+    white-space: nowrap;
+
+    &.successful {
+      color: $color-green;
+    }
+
+    &.failure {
+      color: $color-red;
+    }
+
+    &.not-applicable {
+      opacity: .3;
+    }
+  }
+
+  .drive_action {
+    float: right;
+  }
+
+  &:before {
+    content: ' ';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 8px;
+  }
+
+  &.drive-in-progress {
+    &:before {
+      background-color: $color-teal;
+    }
+  }
+
+  &.drive-warning {
+    background-color: #FFF7E3;
+    &:before {
+      background-color: #FEDC7F;
+    }
+  }
+
+  &.drive-error {
+    background-color: rgba(255, 194, 195, 0.1);
+    &:before {
+      background-color: #E36769;
+    }
+
+    &.probably-failed-manual-drive {
+      &:before {
+        background-color: $color-magenta;
+      }
+    }
+  }
+}
+
+.admin-application-card__top {
+  display: flex;
+  flex-direction: row;
+}
+
+.admin-application-card__additional-information {
+  padding-top: $s10;
+}
+
+.admin-application-card__header {
+  padding-bottom: $s10;
+}
+
+.admin-application-card__title {
+  font-size: $font-size-25-small;
+  font-weight: 600;
+}
+
+.admin-application-card__data-group {
+  display: flex;
+  flex-direction: row;
+}
+
+.admin-application-card__data {
+  min-width: 300px;
+}
+
+.admin-application-card__left {
+  flex: 1 1 0;
+}
+
+.admin-application-card__right {
+  text-align: right;
+  flex: 1 1 0;
+}
+
+.admin-application-card__error {
+  color: $color-red;
+}
+
+.admin-application-card__error:not(:last-child) {
+  display: none;
+}
+
+.admin-application-card--showing-all-errors {
+  .admin-application-card__error {
+    display: block;
+  }
+
+  .admin-application-card-show-all-errors {
+    display: none;
+  }
+}

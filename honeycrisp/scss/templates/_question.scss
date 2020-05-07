@@ -1,0 +1,22 @@
+.template--question {
+  .slab {
+    padding-top: 0;
+    padding-bottom: $s25;
+    @include media($tablet-up) {
+      padding-top: $s25;
+      padding-bottom: $s35;
+    }
+  }
+
+  .form-card {
+    max-width: 55rem;
+    margin-bottom: 0;
+
+    @include media($tablet-up) {
+      margin: {
+        left: auto;
+        right: auto;
+      }
+    }
+  }
+}

@@ -1,0 +1,39 @@
+.notice {
+  background-color: $color-grey-light;
+  padding: $s15;
+  margin-bottom: $s25;
+  border: 2px solid $color-grey;
+  *:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.notice--success {
+  padding: $s15;
+  margin-bottom: $s25;
+  background-color: $color-green-light;
+  border: 2px solid $color-green;
+  *:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.notice--warning {
+  padding: $s15;
+  margin-bottom: $s25;
+  background-color: $color-yellow-light;
+  border: 2px solid $color-yellow;
+  *:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.notice--error {
+  padding: $s15;
+  margin-bottom: $s25;
+  background-color: $color-red-light;
+  border: 2px solid $color-red;
+  *:last-child {
+    margin-bottom: 0;
+  }
+}

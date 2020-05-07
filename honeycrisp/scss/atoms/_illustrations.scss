@@ -1,0 +1,38 @@
+.illustration {
+  text-indent: -9999px;
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+  background-position: center center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1em;
+  display: block;
+}
+
+.illustration--cfa-logo {
+  @include retina-bg(cfa_logo, 100px 41px);
+  margin-left: 0;
+  width: 100px;
+  height: 41px;
+}
+
+.illustration--cfa-logo__dark {
+  @include retina-bg(cfa_logo_dark, 100px 41px);
+  margin-left: 0;
+  width: 100px;
+  height: 41px;
+}
+
+.illustration--cfa-logo-color {
+  @include retina-bg(cfa_logo_color, 100% auto);
+  width: 100%;
+  height: 200px;
+  opacity: .5;
+}
+
+.illustration--cfa-logo-color-2 {
+  @include retina-bg(cfa_logo_color, auto 100%);
+  background-size: auto 100%;
+  width: 100%;
+  height: 80px;
+}

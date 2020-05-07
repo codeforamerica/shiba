@@ -1,0 +1,20 @@
+.progress-dots {
+  display: block;
+  text-align: center;
+}
+
+.progress-dots__dot {
+  display: inline-block;
+  background-color: $color-grey;
+  border-radius: 50%;
+  width: .5em;
+  height: .5em;
+  margin-right: .5em;
+  &:last-child {
+    margin-right: 0;
+  }
+  &.is-completed {
+    background-color: $color-teal;
+  }
+}
+

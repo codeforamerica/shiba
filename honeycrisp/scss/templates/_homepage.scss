@@ -1,0 +1,121 @@
+.template--homepage {
+
+  margin-bottom: $footer-height-home*1.5;
+  @include media($tablet-up) {
+    margin-bottom: $footer-height-home;
+  }
+
+  .main-header {
+    position: absolute;
+    left: $s15;
+    right: $s15;
+
+    @include media($tablet-up) {
+      left: $s35;
+      right: $s35;
+    }
+    background: linear-gradient(0, rgba($color-grey-darkest, 0) 0%, rgba($color-grey-darkest, .5) 99%);
+    border: 0;
+    z-index: 2;
+    overflow: visible;
+    .toolbar__item {
+      color: #fff;
+    }
+  }
+
+  .main-header__title a {
+    color: #FFFFFF;
+
+    &:before {
+      @include retina-bg(gcf_logomark_white, 100% auto);
+    }
+  }
+
+  .slab--hero {
+    position: relative;
+    background: rgba(shade($color-grey-dark, 80%), .6);
+
+    color: #FFFFFF;
+
+      padding: {
+        top: $s95+$s35;
+        bottom: $s95;
+      }
+
+    @include media($tablet-up) {
+      background: linear-gradient(242deg, rgba(#FFFFFF, 0) 0%, rgba($color-grey-darkest, .5) 99%);
+    }
+
+    // Note: The h2 is actually first and more prominent, for seo-y reasons.
+    h2 {
+      max-width: 10em;
+      font-size: $font-size-60;
+      line-height: $s60;
+      font-weight: $font-weight-bold;
+      margin-top: 0em;
+      margin-bottom: $s25;
+    }
+
+    h1 {
+      margin-bottom: $s60;
+      font-weight: $font-weight-normal;
+      font-size: $font-size-25;
+      line-height: $s25;
+      margin-top: 0;
+    }
+
+    &:before {
+      content: '';
+      display: block;
+      z-index: -1;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: image-url('GCF104-lennie-jane-family_mobile.jpg');
+      background-size: cover;
+      background-position: top center;
+      @include media($tablet-up) {
+        background-image: image-url('GCF104-lennie-jane-family.jpg');
+      }
+    }
+  }
+
+  .trust-badge {
+    border-top: 2px solid $color-grey;
+    padding-top: 2em;
+    margin-top: 2em;
+    position: relative;
+    @include media($tablet-up) {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: 0;
+      &:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: -3em;
+        width: 2px;
+        background-color: $color-grey;
+      }
+    }
+  }
+
+  .slab--steps {
+    .grid__item {
+      margin-bottom: 4em;
+      @include media($tablet-up) {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .main-footer {
+    height: $footer-height-home*1.5;
+    @include media($tablet-up) {
+      height: $footer-height-home;
+    }
+  }
+}

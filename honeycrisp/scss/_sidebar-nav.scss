@@ -1,0 +1,159 @@
+/* -------------
+Color Class Updates
+----------------*/
+
+/* -------------
+Sidebar
+----------------*/
+.sidebar {
+  position: absolute;
+  //width: 33.3333%;
+  width: 17em;
+  height: 100%;
+  visibility: visible;
+  -webkit-backface-visibility: hidden;
+  float:left;
+  display:inline-block;
+  vertical-align:top;
+  header{
+    width: 100%;
+    display:block;
+    padding: 0.75em	1em;
+  }
+}
+
+/* .sidebar > a{
+  @include transition(all 0.6s ease);
+
+  &:hover{
+    @include transition(all 0.6s ease);
+  }
+} */
+
+/* -------------
+Sidebar Nav
+----------------*/
+.sidebar-nav {
+  position: fixed;
+  border-right: 2px black solid;
+  width: 12em;
+  height: 100%;
+  padding-bottom: 6em;
+  z-index: 9;
+  overflow: hidden;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+  background-color: #ffffff;
+  left: 0;
+
+  ul{
+    list-style:none;
+    display: block;
+    padding: 0;
+    margin: 0;
+    line-height: 16px;
+
+    li{
+      margin-left: 0;
+      //min-width: 13em;
+      display:inline-block;
+      width: 100%;
+      line-height: 16px;
+
+      .section-header{
+        display:block;
+        background-color: $color-green-light;
+        padding: .75em 1em;
+        color: $color-grey-dark;
+        width: 100% !important;
+        line-height: 16px;
+      }
+
+      $sidebar-a-tags: 'a, a:active, a:hover, a:visited';
+      $sidebar-a-tags-hover: 'a:hover';
+      $sidebar-a-tags-active: 'a:active';
+
+      #{$sidebar-a-tags} {
+        line-height: 16px;
+        text-decoration: none;
+      }
+
+      #{$sidebar-a-tags-active} {
+        border-right: $color-teal 2px;
+        font-weight: 900;
+      }
+
+      #{$sidebar-a-tags-hover} {
+        text-decoration: underline;
+      }
+
+      .sidebar__sub-items{
+        padding: .05em 1em;
+        li{
+          #{$sidebar-a-tags} {
+            color: $color-grey-darkest;
+            line-height: 1.2em;
+          }
+
+          #{$sidebar-a-tags-active} {
+            /*border-left: 2px solid $color-teal;*/
+            font-weight: 700;
+          }
+
+          #{$sidebar-a-tags-hover} {
+            /*border-left: 2px solid $color-teal;*/
+            text-decoration: underline;
+          }
+        }
+      }
+
+    }
+  }
+}
+
+.sidebar-collapse-toggle{
+  display: none;
+}
+
+/* -------------
+Sidebar Nav
+----------------*/
+.left-sidebar-slab-container{
+  margin-left: 11em;
+  padding-left: 1em;
+}
+
+@media screen and (max-width: 1400px) {
+  .sidebar{
+    display: none;
+  }
+
+  .sidebar-collapse-toggle{
+    display: block;
+  }
+
+  .left-sidebar-slab-container{
+    margin-left: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+@media screen and (min-width: 1401px) {
+  .sidebar{
+    display: inline-block;
+  }
+
+  .sidebar-collapse-toggle{
+    display: none;
+  }
+
+  .left-sidebar-slab-container{
+    margin-left: 11em;
+    padding-left: 1em;
+  }
+
+  .sidebar-nav {
+    width: 12em !important;
+  }
+}

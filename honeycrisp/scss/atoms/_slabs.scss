@@ -1,0 +1,67 @@
+.slab {
+  @include full-bleed();
+  position: relative;
+  padding: {
+    top: $s60;
+    bottom: $s60;
+  }
+
+  &:last-child {
+    border-bottom: 0;
+  }
+}
+
+.slab--white {
+  background-color: #FFFFFF;
+}
+
+.slab--teal {
+  background-color: $color-teal-light;
+}
+
+.slab--yellow {
+  background-color: $color-yellow-light;
+}
+
+.slab--green {
+  background-color: $color-green-light;
+}
+
+.slab--red {
+  background-color: $color-red-light;
+}
+
+.slab--magenta {
+  background-color: $color-magenta-light;
+}
+
+
+.slab--gradient {
+  background-color: rgba($color-teal, .05);
+  background: linear-gradient(to right, rgba($color-magenta, .015) 0%, rgba($color-teal, .04) 65%);
+}
+
+.slab--padded {
+    padding: {
+        top: $s95;
+        bottom: $s95;
+    }
+}
+
+.slab--half-padded {
+  padding: {
+    top: $s25;
+    bottom: $s25;
+  }
+}
+
+.slab--not-padded {
+  padding: {
+    top: 0;
+    bottom: 0;
+  }
+}
+
+.slab--bleed {
+  overflow: hidden;
+}

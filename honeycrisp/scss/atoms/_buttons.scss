@@ -1,0 +1,114 @@
+.button {
+    @include outline;
+    box-sizing: border-box;
+    line-height: $s25;
+    margin-bottom: $s25;
+    transition: $animation-fast all;
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+    font-weight: $font-weight-bold;
+    border: 2px solid $color-grey-darkest;
+    box-shadow: 0 2px 0px rgba(#000, .5);
+    background-color: #FFFFFF;
+    padding: $s35/2 $s25;
+    border-radius: $border-radius-large;
+    margin: {
+      right: $s25/2;
+      left: $s25/2;
+    }
+    text-decoration: none;
+    color: $color-grey-darkest;
+
+    &:first-of-type {
+      margin-left: 0;
+    }
+
+    &:hover {
+        background-color: $color-grey-light;
+        color: $color-grey-darkest;
+    }
+    &:active {
+        background-color: $color-grey-light;
+        box-shadow: none;
+        top: 1px;
+    }
+
+  .emoji--checkmark, .emoji--crossmark {
+    background-size: auto 100%;
+    height: $s25;
+    width: $s35;
+  }
+}
+
+.button--primary {
+    color: #FFFFFF;
+    background-color: $color-teal;
+    border-color: $color-teal;
+    box-shadow: 0 2px 0px $color-teal-dark;
+    &:hover {
+        background-color: $color-teal-dark;
+        border-color: $color-teal-dark;
+        color: #FFFFFF;
+    }
+    &:active {
+        background-color: $color-teal-dark;
+        border-color: $color-teal-dark;
+    }
+}
+
+.button--disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.button--danger {
+  color: $color-red;
+  &:hover {
+      background-color: $color-red;
+      color: #fff;
+  }
+}
+
+.button--small {
+  font-size: $font-size-25-small;
+  border-radius: $border-radius;
+  line-height: $s25;
+  padding: $s5 $s15;
+}
+
+.button--inline { // used in the admin pages
+  @extend .button--small;
+}
+
+.button--link {
+  // This is in place to remove default HTML button styling
+  align-items: normal;
+  background-color: rgba(0,0,0,0);
+  border-style: none;
+  box-sizing: content-box;
+  cursor: pointer;
+  display: inline;
+  font: inherit;
+  height: auto;
+  padding: 0;
+  perspective-origin: 0 0;
+  text-align: start;
+  text-decoration: underline;
+  transform-origin: 0 0;
+  width: auto;
+
+  @extend a
+}
+
+.button__icon {
+  margin-left: $s5;
+}
+
+.button__icon--left {
+  margin-right: $s5;
+}
+
+p .button {
+  margin-bottom: 0;
+}
