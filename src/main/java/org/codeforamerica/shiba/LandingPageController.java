@@ -7,6 +7,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class LandingPageController {
     @GetMapping("/")
     String landingPage() {
-        return "Landing";
+        return "landing";
+    }
+
+    @GetMapping("/prepare-to-apply")
+    String prepareToApplyOPage() {
+        return "prepare-to-apply";
     }
 }
