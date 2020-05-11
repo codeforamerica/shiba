@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -11,46 +11,41 @@
     <section class="slab">
         <div class="grid">
             <div class="grid__item">
-                <h1>Minnesota’s combined benefits application</h1>
-                <p class="text-25">Apply for benefits in 20 minutes</p>
-                <a class="button button--primary" href="/prepare-to-apply">Apply now <i class="button__icon icon-arrow_forward"></i></a>
+                <h1 th:text="#{landing.header}"></h1>
+                <p class="text-25" th:text="#{landing.subheader}"></p>
+                <a class="button button--primary" href="/prepare-to-apply">
+                    <span th:text="#{landing.apply-now}"></span>
+                    <i class="button__icon icon-arrow_forward"></i>
+                </a>
             </div>
         </div>
     </section>
     <section class="slab slab--white">
-        <h2>Apply to these programs</h2>
+        <h2 th:text="#{landing.apply-to-these-programs}"></h2>
         <div class="grid">
             <div class="grid__item spacing-below-35">
-                <h3 class="spacing-below-10">Food assistance (SNAP)</h3>
-                <p class="form-card__body-text">SNAP helps low income Minnesotans get the food they need. You’ll get an
-                    EBT card that you can use like a debit card to buy groceries at most stores and farmer’s
-                    markets.</p>
+                <h3 class="spacing-below-10" th:text="#{landing.food-assistance-SNAP}"></h3>
+                <p class="form-card__body-text" th:text="#{landing.SNAP-helps-low-income-Minnesotans-get-the-food-they-need}"></p>
             </div>
             <div class="grid__item spacing-below-35">
-                <h3 class="spacing-below-10">Cash programs</h3>
-                <p class="form-card__body-text">Cash assistance helps people meet their basic needs until they are able
-                    to support themselves. You will get an EBT card that you can use like a debit card. Here are the
-                    most common cash programs:</p>
+                <h3 class="spacing-below-10" th:text="#{landing.cash-programs}"></h3>
+                <p class="form-card__body-text" th:text="#{landing.cash-assistance-helps-people-meet-their-basic-needs-until-they-are-able}"></p>
                 <ul class="list--bulleted text--small">
-                    <li>Diversionary Work Program (DWP)</li>
-                    <li>General Assistance</li>
-                    <li>Group Residential Housing (GRH)</li>
-                    <li>Mn Family Investment Program (MFIP)</li>
-                    <li>Mn Supplemental Aid (MSA)</li>
-                    <li>Refugee Cash Assitance (RCA)</li>
+                    <li th:text="#{landing.diversionary-work-program-DWP}"></li>
+                    <li th:text="#{landing.general-assistance}"></li>
+                    <li th:text="#{landing.group-residential-housing-grh}"></li>
+                    <li th:text="#{landing.mn-family-investment-program-mfip}"></li>
+                    <li th:text="#{landing.mn-supplemental-aid-msa}"></li>
+                    <li th:text="#{landing.refugee-cash-assistance-rca}"></li>
                 </ul>
             </div>
             <div class="grid__item spacing-below-35">
-                <h3 class="spacing-below-10">Emergency Assistance</h3>
-                <p class="form-card__body-text">Emergency Assistance provides something to people. This is a description
-                    of what emergency assistance provides.</p>
+                <h3 class="spacing-below-10" th:text="#{landing.emergency-assistance}"></h3>
+                <p class="form-card__body-text" th:text="#{landing.emergency-assistance-provides-something-to-people-this-is-a-description}"></p>
             </div>
             <div class="grid__item spacing-below-35">
-                <h3 class="spacing-below-10">Child Care Assistance</h3>
-                <p class="form-card__body-text">Child Care Assistance provides financial assistance to help families pay
-                    for child care so that parents can pursue employment or education.Child Care Assistance provides
-                    financial assistance to help families pay for child care so that parents can pursue employment or
-                    education.</p>
+                <h3 class="spacing-below-10" th:text="#{landing.child-care-assistance}"></h3>
+                <p class="form-card__body-text" th:text="#{landing.child-care-assistance-provides-financial-assistance-to-help-families}"></p>
             </div>
         </div>
     </section>
@@ -59,12 +54,9 @@
 <footer class="main-footer">
     <div class="grid">
         <div class="grid__item">
-            <p class="text--small spacing-below-0">
-                The Combined Benefits Application is a service designed by Code for America and administered by state
-            counties on behalf of the people of Minnesota.
-            </p>
+            <p class="text--small spacing-below-0" th:text="#{landing.the-combined-benefits-application-is-a-service-designed-by-code-for}"></p>
             <div class="main-footer__cfa-logo spacing-above-15">
-                <a href="https://www.codeforamerica.org" class="illustration illustration--cfa-logo__dark spacing-below-0">Code for America</a>
+                <a href="https://www.codeforamerica.org" class="illustration illustration--cfa-logo__dark spacing-below-0" th:text="#{general.code-for-america}"></a>
             </div>
         </div>
     </div>
