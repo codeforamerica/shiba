@@ -6,11 +6,11 @@
     <title>Language Preferences</title>
     <link th:href="@{/honeycrisp.css}" rel="stylesheet"/>
 </head>
-<body class=" locale-en">
+<body>
 <div class="page-wrapper">
     <section class="slab slab--white">
         <div class="grid">
-            <a href="/prepare-to-apply">&lt; Go Back</a>
+            <a href="/prepare-to-apply" th:text="|&lt; #{go.back}|"></a>
             <div class="grid__item spacing-above-35">
                 <h2>Language Preferences</h2>
                 <form method="post" th:action="@{/language-preference}" th:object="${languagePreferences}">
