@@ -16,3 +16,9 @@ Setup IntelliJ for the project:
 
 - Install the Lombok plugin
 - Enable annotation processing
+- Run the application using ShibaApplication run configuration
+
+Test:
+
+From the project directory invoke
+```./gradlew clean test```

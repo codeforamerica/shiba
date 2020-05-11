@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ShibaApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="shiba.main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="org.codeforamerica.shiba.ShibaApplication" />
+    <option name="ALTERNATIVE_JRE_PATH" />
+    <option name="UPDATE_ACTION_UPDATE_POLICY" value="UpdateTriggerFile" />
+    <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateResources" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
