@@ -12,11 +12,10 @@
         <div class="grid">
             <a href="/prepare-to-apply" th:text="|&lt; #{go.back}|"></a>
             <div class="grid__item spacing-above-35">
-                <h2>Language Preferences</h2>
+                <h2 th:text="#{language-preferences.language-preferences}"></h2>
                 <form method="post" th:action="@{/language-preference}" th:object="${languagePreferences}">
-                    <div class="form-question spacing-below-15"><label for="spoken-language">What language do you prefer to speak?</label></div>
-                    <p class="text--help">The county will do their best to connect you with someone who speaks your
-                        language.</p>
+                    <div class="form-question spacing-below-15"><label for="spoken-language" th:text="#{language-preferences.what-language-do-you-prefer-to-speak}"></label></div>
+                    <p class="text--help" th:text="#{language-preferences.the-county-will-do-their-best-to-connect-you-with-someone-who-speaks-your}"></p>
                     <div class="select spacing-below-35">
                         <select th:field="*{spokenLanguage}" id="spoken-language" class="select__element">
                             <option th:value="ENGLISH">English</option>
@@ -27,10 +26,8 @@
                             <option th:value="HMOOB">Hmoob</option>
                         </select>
                     </div>
-                    <div class="form-question spacing-below-15"><label for="written-language">What language do you prefer to read or
-                        write?</label></div>
-                    <p class="text--help">The county will do their best to provide documents in your preferred
-                        language.</p>
+                    <div class="form-question spacing-below-15"><label for="written-language" th:text="#{language-preferences.what-language-do-you-prefer-to-read-or-write}"></label></div>
+                    <p class="text--help" th:text="#{language-preferences.the-county-will-do-their-best-to-provide-documents-in-your-preferred-language}"></p>
                     <div class="select spacing-below-35">
                         <select th:field="*{writtenLanguage}" id="written-language" class="select__element">
                             <option th:value="ENGLISH">English</option>
@@ -41,18 +38,18 @@
                             <option th:value="HMOOB">Hmoob</option>
                         </select>
                     </div>
-                    <div class="form-question">Do you need an interpreter?</div>
+                    <div class="form-question" th:text="#{language-preferences.do-you-need-an-interpreter}"></div>
                     <div class="input-group spacing-below-60">
                         <label for="need-interpreter-yes" class="radio-button">
                             <input type="radio" th:field="*{needInterpreter}" id="need-interpreter-yes" th:value="true">
-                            Yes
+                            <span th:text="#{language-preferences.yes}"></span>
                         </label>
                         <label for="need-interpreter-no" class="radio-button">
                             <input type="radio" th:field="*{needInterpreter}" id="need-interpreter-no" th:value="false">
-                            No
+                            <span th:text="#{language-preferences.no}"></span>
                         </label>
                     </div>
-                    <button class="button button--primary" type="submit">Continue</button>
+                    <button class="button button--primary" type="submit" th:text="#{general.continue}"></button>
                 </form>
             </div>
         </div>
