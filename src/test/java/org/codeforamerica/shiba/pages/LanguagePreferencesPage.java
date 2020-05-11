@@ -14,7 +14,7 @@ public class LanguagePreferencesPage extends BasePage {
     @FindBy(partialLinkText = "Go Back")
     private WebElement backButton;
 
-    @FindBy(css = "input[type='radio']")
+    @FindBy(css = ".radio-button")
     private List<WebElement> needInterpreterRadios;
 
     public LanguagePreferencesPage(RemoteWebDriver driver) {
@@ -55,7 +55,7 @@ public class LanguagePreferencesPage extends BasePage {
 
     public void selectNeedInterpereter(String needInterpreter) {
         WebElement radioToSelect = needInterpreterRadios.stream()
-                .filter(input -> input.findElement(By.xpath("./..")).getText().equals(needInterpreter))
+                .filter(label -> label.getText().equals(needInterpreter))
                 .findFirst()
                 .orElseThrow();
         radioToSelect.click();
@@ -63,9 +63,8 @@ public class LanguagePreferencesPage extends BasePage {
 
     public String getNeedInterpreterSelection() {
         return needInterpreterRadios.stream()
-                .filter(WebElement::isSelected)
+                .filter(webElement -> webElement.findElement(By.cssSelector("input")).isSelected())
                 .findFirst()
-                .map(webElement -> webElement.findElement(By.xpath("./..")))
                 .map(WebElement::getText)
                 .orElseThrow();
     }
