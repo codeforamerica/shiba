@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Choose Programs</title>
+    <title th:text="#{choose-programs.choose-programs}"></title>
     <link th:href="@{/honeycrisp.css}" rel="stylesheet"/>
 </head>
 <body class=" locale-en">
 <div class="page-wrapper">
     <section class="slab slab--white">
         <div class="grid">
-            <a href="/language-preference">&lt; Go Back</a>
+            <a href="/language-preference" th:text="#{general.go-back}"></a>
         </div>
     </section>
 </div>
