@@ -5,7 +5,9 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-public class BasePage {
+public abstract class BasePage {
+    @FindBy(partialLinkText = "Go Back")
+    protected WebElement backButton;
 
     @FindBy(css = ".button--primary")
     protected WebElement primaryButton;
@@ -20,4 +22,6 @@ public class BasePage {
         this.driver = driver;
         PageFactory.initElements(driver, this);
     }
+
+    abstract BasePage goBack();
 }

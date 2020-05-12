@@ -9,9 +9,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ChooseProgramsPage extends BasePage {
-    @FindBy(partialLinkText = "Go Back")
-    private WebElement backButton;
-
     @FindBy(css = ".checkbox")
     private List<WebElement> programOptions;
 
@@ -19,7 +16,8 @@ public class ChooseProgramsPage extends BasePage {
         super(driver);
     }
 
-    public LanguagePreferencesPage goBack() {
+    @Override
+    public BasePage goBack() {
         backButton.click();
 
         return new LanguagePreferencesPage(driver);

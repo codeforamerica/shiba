@@ -7,6 +7,11 @@ public class LandingPage extends BasePage {
         super(driver);
     }
 
+    @Override
+    BasePage goBack() {
+        throw new RuntimeException("Landing page do not have go back button");
+    }
+
     public PrepareToApplyPage clickPrimaryButton() {
         primaryButton.click();
 

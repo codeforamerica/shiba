@@ -62,7 +62,7 @@ public class PageInteractionTest extends BasePageTest {
         languagePreferencesPage.selectNeedInterpereter(needInterpreter);
         ChooseProgramsPage chooseProgramsPage = languagePreferencesPage.submitUsingPrimaryButton();
         assertThat(chooseProgramsPage.getTitle()).isEqualTo("Choose Programs");
-        languagePreferencesPage = chooseProgramsPage.goBack();
+        languagePreferencesPage = (LanguagePreferencesPage) chooseProgramsPage.goBack();
 
         assertThat(languagePreferencesPage.getSelectedSpokenLanguage()).isEqualTo(spokenLanguage);
         assertThat(languagePreferencesPage.getSelectedWrittenLanguage()).isEqualTo(writtenLanguage);

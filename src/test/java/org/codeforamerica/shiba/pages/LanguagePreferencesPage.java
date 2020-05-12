@@ -11,14 +11,17 @@ public class LanguagePreferencesPage extends BasePage {
     @FindBy(css = "select")
     private List<WebElement> selects;
 
-    @FindBy(partialLinkText = "Go Back")
-    private WebElement backButton;
-
     @FindBy(css = ".radio-button")
     private List<WebElement> needInterpreterRadios;
 
     public LanguagePreferencesPage(RemoteWebDriver driver) {
         super(driver);
+    }
+
+    @Override
+    BasePage goBack() {
+        backButton.click();
+        return new LandingPage(driver);
     }
 
     public void selectSpokenLanguage(String language) {
