@@ -1,31 +1,39 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Prepare To Apply</title>
+    <title th:text="#{prepare-to-apply.prepare-to-apply}"></title>
     <link th:href="@{/honeycrisp.css}" rel="stylesheet"/>
 </head>
 <body class=" locale-en">
 <div class="page-wrapper">
     <section class="slab slab--white">
         <div class="grid">
-            <a href="/">&lt; Go Back</a>
+            <a href="/" th:text="|&lt; #{general.go-back}|"></a>
             <div class="grid__item spacing-above-35">
-                <h2>How this works</h2>
-                <p class="text-25">This application form should take about <strong>20 minutes</strong> to complete.</p>
-                <p class="text-25"><strong>We will ask you about:</strong></p>
+                <h2 th:text="#{prepare-to-apply.how-this-works}"></h2>
+                <p class="text-25">
+                    <span th:text="#{prepare-to-apply.this-application-form-should-take-about}"></span>
+                    <strong>20</strong>
+                    <strong th:text="#{prepare-to-apply.minutes}"></strong>
+                    <span th:text="|#{prepare-to-apply.to-complete}.|"></span>
+                </p>
+                <p class="text-25"><strong th:text="|#{prepare-to-apply.we-will-ask-you-about}:|"></strong></p>
                 <ul class="list--bulleted spacing-below-60">
-                    <li>Personal information</li>
-                    <li>People who live with you</li>
-                    <li>Income</li>
-                    <li>Expenses</li>
-                    <li>Assets</li>
+                    <li th:text="#{prepare-to-apply.personal-information}"></li>
+                    <li th:text="#{prepare-to-apply.people-who-live-with-you}"></li>
+                    <li th:text="#{prepare-to-apply.income}"></li>
+                    <li th:text="#{prepare-to-apply.expenses}"></li>
+                    <li th:text="#{prepare-to-apply.assets}"></li>
                 </ul>
-                <a class="button button--primary" href="/language-preference">Continue</a>
-                <p class="text--small"><i class="icon-lock_outline"></i>
-                    Your information is secure and will be handled in accordance with our <a
-                            href="#">privacy policy</a>.</p>
+                <a class="button button--primary" href="/language-preference" th:text="#{general.continue}"></a>
+                <p class="text--small">
+                    <i class="icon-lock_outline"></i>
+                    <span th:text="#{prepare-to-apply.your-information-is-secure-and-will-be-handled-in-accordance-with-our}"></span>
+                    <a href="#" th:text="#{prepare-to-apply.privacy-policy}"></a>
+                    <span>.</span>
+                </p>
             </div>
         </div>
     </section>
