@@ -10,7 +10,7 @@
 <div class="page-wrapper">
     <section class="slab slab--white">
         <div class="grid">
-            <a href="/" th:text="|&lt; #{general.go-back}|"></a>
+            <a th:replace="fragments/go-back :: goBackLink('/')"></a>
             <div class="grid__item spacing-above-35">
                 <h2 th:text="#{prepare-to-apply.how-this-works}"></h2>
                 <p class="text-25">

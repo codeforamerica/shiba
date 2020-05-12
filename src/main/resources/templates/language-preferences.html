@@ -10,7 +10,7 @@
 <div class="page-wrapper">
     <section class="slab slab--white">
         <div class="grid">
-            <a href="/prepare-to-apply" th:text="|&lt; #{general.go-back}|"></a>
+            <a th:replace="fragments/go-back :: goBackLink('/prepare-to-apply')"></a>
             <div class="grid__item spacing-above-35">
                 <h2 th:text="#{language-preferences.language-preferences}"></h2>
                 <form method="post" th:action="@{/language-preference}" th:object="${languagePreferences}">

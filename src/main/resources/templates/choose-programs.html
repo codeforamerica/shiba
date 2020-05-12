@@ -10,7 +10,7 @@
 <div class="page-wrapper">
     <section class="slab slab--white">
         <div class="grid">
-            <a href="/language-preference" th:text="|&lt; #{general.go-back}|"></a>
+            <a th:replace="fragments/go-back :: goBackLink('/language-preference')"></a>
             <form method="post" th:action="@{/choose-programs}" th:object="${programSelection}">
                 <div class="spacing-above-35 form-group" th:classappend="${#fields.hasErrors('programs')} ? 'form-group--error' : ''">
                     <h2 th:text="#{choose-programs.what-do-you-need-help-with-today}"></h2>
