@@ -1,11 +1,10 @@
 package org.codeforamerica.shiba;
 
-import org.codeforamerica.shiba.pages.ChooseProgramsPage;
-import org.codeforamerica.shiba.pages.LandingPage;
-import org.codeforamerica.shiba.pages.LanguagePreferencesPage;
-import org.codeforamerica.shiba.pages.PrepareToApplyPage;
+import org.codeforamerica.shiba.pages.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -68,5 +67,49 @@ public class PageInteractionTest extends BasePageTest {
         assertThat(languagePreferencesPage.getSelectedSpokenLanguage()).isEqualTo(spokenLanguage);
         assertThat(languagePreferencesPage.getSelectedWrittenLanguage()).isEqualTo(writtenLanguage);
         assertThat(languagePreferencesPage.getNeedInterpreterSelection()).isEqualTo(needInterpreter);
+    }
+
+    @Test
+    void shouldKeepProgramSelectionAfterContinuing() {
+        PrepareToApplyPage prepareToApplyPage = landingPage.clickPrimaryButton();
+        LanguagePreferencesPage languagePreferencesPage = prepareToApplyPage.clickPrimaryButton();
+        ChooseProgramsPage page = languagePreferencesPage.submitUsingPrimaryButton();
+
+        String cashPrograms = "Cash programs";
+        page.chooseProgram(cashPrograms);
+        String emergencyAssistance = "Emergency assistance";
+        page.chooseProgram(emergencyAssistance);
+
+        TestFinalPage testFinalPage = page.clickContinue();
+        ChooseProgramsPage chooseProgramsPage = testFinalPage.goBack();
+
+        List<String> selectedPrograms = chooseProgramsPage.selectedPrograms();
+        assertThat(selectedPrograms).containsOnly(cashPrograms, emergencyAssistance);
+    }
+
+    @Test
+    void shouldFailValidationIfNoProgramIsSelected() {
+        PrepareToApplyPage prepareToApplyPage = landingPage.clickPrimaryButton();
+        LanguagePreferencesPage languagePreferencesPage = prepareToApplyPage.clickPrimaryButton();
+        ChooseProgramsPage page = languagePreferencesPage.submitUsingPrimaryButton();
+
+        page.clickContinue();
+
+        assertThat(page.hasError()).isTrue();
+    }
+
+    @Test
+    void shouldClearValidationErrorWhenUserSelectsAtLeastOneProgram() {
+        PrepareToApplyPage prepareToApplyPage = landingPage.clickPrimaryButton();
+        LanguagePreferencesPage languagePreferencesPage = prepareToApplyPage.clickPrimaryButton();
+        ChooseProgramsPage page = languagePreferencesPage.submitUsingPrimaryButton();
+
+        page.clickContinue();
+        page.chooseProgram("Emergency assistance");
+        TestFinalPage testFinalPage = page.clickContinue();
+        ChooseProgramsPage chooseProgramsPage = testFinalPage.goBack();
+
+        assertThat(chooseProgramsPage.getTitle()).isEqualTo("Choose Programs");
+        assertThat(chooseProgramsPage.hasError()).isFalse();
     }
 }

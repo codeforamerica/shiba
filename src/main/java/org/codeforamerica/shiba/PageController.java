@@ -1,10 +1,15 @@
 package org.codeforamerica.shiba;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
+
+import javax.validation.Valid;
 
 @Controller
 public class PageController {
@@ -33,13 +38,29 @@ public class PageController {
     }
 
     @PostMapping("/language-preference")
-    String postLanguagePreferencePage(@ModelAttribute LanguagePreferences languagePreferences) {
+    RedirectView postLanguagePreferencePage(@ModelAttribute LanguagePreferences languagePreferences) {
         benefitsApplication.setLanguagePreferences(languagePreferences);
-        return "redirect:/choose-programs";
+        return new RedirectView("/choose-programs");
     }
 
     @GetMapping("/choose-programs")
-    String chooseProgramPage() {
-        return "choose-programs";
+    ModelAndView chooseProgramPage() {
+        ProgramSelection programSelection = benefitsApplication.getProgramSelection()
+                .orElse(new ProgramSelection());
+        return new ModelAndView("choose-programs", "programSelection", programSelection);
+    }
+
+    @PostMapping("/choose-programs")
+    ModelAndView postChooseProgramsPage(@Valid @ModelAttribute ProgramSelection programSelection, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return new ModelAndView("choose-programs", "programSelection", programSelection);
+        }
+        benefitsApplication.setProgramSelection(programSelection);
+        return new ModelAndView("redirect:/test-final-page");
+    }
+
+    @GetMapping("/test-final-page")
+    String testFinalPage() {
+        return "test-final-page";
     }
 }

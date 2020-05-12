@@ -11,6 +11,37 @@
     <section class="slab slab--white">
         <div class="grid">
             <a href="/language-preference" th:text="|&lt; #{general.go-back}|"></a>
+            <form method="post" th:action="@{/choose-programs}" th:object="${programSelection}">
+                <div class="spacing-above-35 form-group" th:classappend="${#fields.hasErrors('programs')} ? 'form-group--error' : ''">
+                    <h2 th:text="#{choose-programs.what-do-you-need-help-with-today}"></h2>
+                    <p class="text-25" th:text="#{choose-programs.check-all-that-apply}"></p>
+                    <label for="food-snap" class="checkbox">
+                        <input type="checkbox" th:field="*{programs}" id="food-snap" th:value="FOOD"
+                               th:checked="${programSelection.includesProgram('FOOD')}">
+                        <span th:text="#{choose-programs.food-snap}"></span>
+                    </label>
+                    <label for="cash-programs" class="checkbox">
+                        <input type="checkbox" th:field="*{programs}" id="cash-programs" th:value="CASH"
+                               th:checked="${programSelection.includesProgram('CASH')}">
+                        <span th:text="#{choose-programs.cash-programs}"></span>
+                    </label>
+                    <label for="emergency-assistance" class="checkbox">
+                        <input type="checkbox" th:field="*{programs}" id="emergency-assistance" th:value="EMERGENCY"
+                               th:checked="${programSelection.includesProgram('EMERGENCY')}">
+                        <span th:text="#{choose-programs.emergency-assistance}"></span>
+                    </label>
+                    <label for="Child care assistance" class="checkbox">
+                        <input type="checkbox" th:field="*{programs}" id="Child care assistance" th:value="CHILD_CARE"
+                               th:checked="${programSelection.includesProgram('CHILD_CARE')}">
+                        <span th:text="#{choose-programs.child-care-assistance}"></span>
+                    </label>
+                </div>
+                <p class="text--error" th:if="${#fields.hasErrors('programs')}">
+                    <i class="icon-warning"></i>
+                    <span th:text="#{general.validation.make-sure-you-answer-this-question}"></span>
+                </p>
+                <button class="button button--primary" type="submit" th:text="#{general.continue}"></button>
+            </form>
         </div>
     </section>
 </div>

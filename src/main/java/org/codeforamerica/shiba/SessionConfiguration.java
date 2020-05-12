@@ -14,7 +14,7 @@ public class SessionConfiguration {
             value = SCOPE_SESSION,
             proxyMode = TARGET_CLASS
     )
-    public BenefitsApplication benefitsApplications() {
+    public BenefitsApplication benefitsApplication() {
         return new BenefitsApplication();
     }
 }
