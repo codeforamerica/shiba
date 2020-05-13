@@ -31,9 +31,9 @@ public class ChooseProgramsPage extends BasePage {
         optionToChoose.click();
     }
 
-    public TestFinalPage clickContinue() {
+    public HowItWorksPage clickContinue() {
         primaryButton.click();
-        return new TestFinalPage(driver);
+        return new HowItWorksPage(driver);
     }
 
     public List<String> selectedPrograms() {

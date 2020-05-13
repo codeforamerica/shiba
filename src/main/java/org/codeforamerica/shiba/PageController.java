@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba;
 
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -10,13 +10,16 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.validation.Valid;
+import java.util.Locale;
 
 @Controller
 public class PageController {
     private final BenefitsApplication benefitsApplication;
+    private MessageSource messageSource;
 
-    public PageController(BenefitsApplication benefitsApplication) {
+    public PageController(BenefitsApplication benefitsApplication, MessageSource messageSource) {
         this.benefitsApplication = benefitsApplication;
+        this.messageSource = messageSource;
     }
 
     @GetMapping("/")
@@ -56,7 +59,17 @@ public class PageController {
             return new ModelAndView("choose-programs", "programSelection", programSelection);
         }
         benefitsApplication.setProgramSelection(programSelection);
-        return new ModelAndView("redirect:/test-final-page");
+        return new ModelAndView("redirect:/how-it-works");
+    }
+
+    @GetMapping("/how-it-works")
+    ModelAndView howItWorksPage(Locale locale) {
+        return benefitsApplication.getProgramSelection()
+                .map(programSelection -> new ModelAndView(
+                        "how-it-works",
+                        "programSelection",
+                        new ProgramSelectionPresenter(programSelection, messageSource, locale)))
+                .orElse(new ModelAndView("redirect:/choose-programs"));
     }
 
     @GetMapping("/test-final-page")

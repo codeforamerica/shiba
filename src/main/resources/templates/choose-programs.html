@@ -1,11 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title th:text="#{choose-programs.choose-programs}"></title>
-    <link th:href="@{/honeycrisp.css}" rel="stylesheet"/>
-</head>
+<head th:replace="fragments/head :: head(#{choose-programs.choose-programs})">
 <body class=" locale-en">
 <div class="page-wrapper">
     <section class="slab slab--white">

@@ -11,9 +11,9 @@ import java.util.List;
 @Setter
 public class ProgramSelection {
     @NotEmpty
-    private List<String> programs = new ArrayList<>();
+    private List<BenefitProgram> programs = new ArrayList<>();
 
-    public boolean includesProgram(String program) {
+    public boolean includesProgram(BenefitProgram program) {
         return programs.contains(program);
     }
 }

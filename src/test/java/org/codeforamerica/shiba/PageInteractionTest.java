@@ -2,8 +2,9 @@ package org.codeforamerica.shiba;
 
 import org.codeforamerica.shiba.pages.*;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -82,8 +83,8 @@ public class PageInteractionTest extends BasePageTest {
             String emergencyAssistance = "Emergency assistance";
             page.chooseProgram(emergencyAssistance);
 
-            TestFinalPage testFinalPage = page.clickContinue();
-            ChooseProgramsPage chooseProgramsPage = testFinalPage.goBack();
+            HowItWorksPage howItWorks = page.clickContinue();
+            ChooseProgramsPage chooseProgramsPage = (ChooseProgramsPage) howItWorks.goBack();
 
             List<String> selectedPrograms = chooseProgramsPage.selectedPrograms();
             assertThat(selectedPrograms).containsOnly(cashPrograms, emergencyAssistance);
@@ -108,12 +109,23 @@ public class PageInteractionTest extends BasePageTest {
 
             page.clickContinue();
             page.chooseProgram("Emergency assistance");
-            TestFinalPage testFinalPage = page.clickContinue();
-            ChooseProgramsPage chooseProgramsPage = testFinalPage.goBack();
+            HowItWorksPage howItWorksPage = page.clickContinue();
+            ChooseProgramsPage chooseProgramsPage = (ChooseProgramsPage) howItWorksPage.goBack();
 
             assertThat(chooseProgramsPage.getTitle()).isEqualTo("Choose Programs");
             assertThat(chooseProgramsPage.hasError()).isFalse();
         }
     }
 
+    @Test
+    void shouldDisplayUserSelectedOneProgram() {
+        PrepareToApplyPage prepareToApplyPage = landingPage.clickPrimaryButton();
+        LanguagePreferencesPage languagePreferencesPage = prepareToApplyPage.clickPrimaryButton();
+        ChooseProgramsPage chooseProgramPage = languagePreferencesPage.submitUsingPrimaryButton();
+        chooseProgramPage.chooseProgram("Emergency assistance");
+        HowItWorksPage howItWorksPage = chooseProgramPage.clickContinue();
+
+        assertThat(howItWorksPage.getTitle()).isEqualTo("How It Works");
+        assertThat(howItWorksPage.headerIncludesProgram("emergency")).isTrue();
+    }
 }
