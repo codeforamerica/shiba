@@ -137,8 +137,60 @@ public class PageInteractionTest extends AbstractBasePageTest {
                 .clickPrimaryButton()
                 .clickPrimaryButton();
         chooseProgramPage.chooseProgram("Emergency assistance");
-        IntermediaryPage<HowItWorksPage, TestFinalPage> page = chooseProgramPage.clickPrimaryButton().clickPrimaryButton();
+        IntermediaryPage<HowItWorksPage, PersonalInfoPage> page = chooseProgramPage.clickPrimaryButton().clickPrimaryButton();
 
         assertThat(page.getTitle()).isEqualTo("Intro: Basic Info");
+    }
+
+    @Nested
+    class PersonInfo {
+        PersonalInfoPage page;
+
+        @BeforeEach
+        void setup() {
+            ChooseProgramsPage chooseProgramPage = landingPage
+                    .clickPrimaryButton()
+                    .clickPrimaryButton()
+                    .clickPrimaryButton();
+            chooseProgramPage.chooseProgram("Emergency assistance");
+            HowItWorksPage howItWorksPage = chooseProgramPage.clickPrimaryButton();
+            page = howItWorksPage.clickPrimaryButton().clickPrimaryButton();
+        }
+
+        @Test
+        void shouldNavigateToThePersonalInfoScreen() {
+            assertThat(page.getTitle()).isEqualTo("Personal Info");
+        }
+
+        @Test
+        void shouldPreserveNameInformation() {
+            String firstName = "John";
+            page.enterFirstName(firstName);
+            String lastName = "Doe";
+            page.enterLastName(lastName);
+
+            TestFinalPage testFinalPage = page.clickPrimaryButton();
+
+            PersonalInfoPage personalInfoPage = testFinalPage.goBack();
+            assertThat(personalInfoPage.getFirstNameValue()).isEqualTo(firstName);
+            assertThat(personalInfoPage.getLastNameValue()).isEqualTo(lastName);
+        }
+
+        @Test
+        void shouldStayOnThePageAndIncludeAnErrorWhenFirstNameIsBlank() {
+            page.enterFirstName(" ");
+            page.clickPrimaryButton();
+            assertThat(page.getTitle()).isEqualTo("Personal Info");
+            assertThat(page.hasFirstNameError()).isTrue();
+        }
+
+        @Test
+        void shouldStayOnThePageAndIncludeAnErrorWhenLastNameIsBlank() {
+            page.enterFirstName("a");
+            page.enterLastName("  ");
+            page.clickPrimaryButton();
+            assertThat(page.getTitle()).isEqualTo("Personal Info");
+            assertThat(page.hasLastNameError()).isTrue();
+        }
     }
 }

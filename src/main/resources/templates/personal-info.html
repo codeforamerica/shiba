@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="fragments/head :: head(#{personal-info.title})"></div>
+<body>
+<div class="page-wrapper">
+    <section class="slab slab--white">
+        <div class="grid">
+            <a th:replace="fragments/go-back :: goBackLink('/intro-basic-info')"></a>
+            <div class="grid__item spacing-above-35">
+                <h2 class="text--centered spacing-above-0" th:text="#{intro-basic-info.getting-to-know-you}"></h2>
+            </div>
+            <div class="grid__item">
+                <form th:object="${personalInfo}" method="post" th:action="@{/personal-info}">
+                    <div class="form-group spacing-below-25">
+                        <label for="first-name" class="form-question" th:text="#{personal-info.whats-your-first-name}"></label>
+                        <p class="text--help spacing-below-15"
+                           th:text="#{personal-info.legally-as-it-appears-on-your-id}"></p>
+                        <input type="text" class="text-input form-width--name" id="first-name" th:field="*{firstName}">
+                        <p class="text--error" th:if="${#fields.hasErrors('firstName')}">
+                            <i class="icon-warning"></i>
+                            <span th:text="#{general.validation.make-sure-you-answer-this-question}"></span>
+                        </p>
+                    </div>
+                    <div class="form-group spacing-below-25">
+                        <label for="last-name" class="form-question" th:text="#{personal-info.whats-your-last-name}"></label>
+                        <p class="text--help spacing-below-15"
+                           th:text="#{personal-info.legally-as-it-appears-on-your-id}"></p>
+                        <input type="text" class="text-input form-width--name" id="last-name" th:field="*{lastName}">
+                        <p class="text--error" th:if="${#fields.hasErrors('lastName')}">
+                            <i class="icon-warning"></i>
+                            <span th:text="#{general.validation.make-sure-you-answer-this-question}"></span>
+                        </p>
+                    </div>
+                    <button class="button button--primary" type="submit" th:text="#{general.continue}"></button>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>

@@ -78,6 +78,21 @@ public class PageController {
         return "intro-basic-info";
     }
 
+    @GetMapping("/personal-info")
+    ModelAndView personalInfo() {
+        PersonalInfo personalInfo = benefitsApplication.getPersonalInfo().orElse(new PersonalInfo());
+        return new ModelAndView("personal-info", "personalInfo", personalInfo);
+    }
+
+    @PostMapping("/personal-info")
+    ModelAndView postPersonalInfo(@Valid @ModelAttribute PersonalInfo personalInfo, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return new ModelAndView("personal-info", "personalInfo", personalInfo);
+        }
+        benefitsApplication.setPersonalInfo(personalInfo);
+        return new ModelAndView("redirect:/test-final-page");
+    }
+
     @GetMapping("/test-final-page")
     String testFinalPage() {
         return "test-final-page";
