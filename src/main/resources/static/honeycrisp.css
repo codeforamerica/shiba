@@ -5214,3 +5214,10 @@ Sidebar Nav
 .lt-ie10 .select__element {
     padding-right: .7em;
 }
+
+/* SHIBA */
+.intro-box {
+    padding: 1rem;
+    margin: 2.5rem 2rem 2.5rem 2rem;
+    border: 2px solid #AAAAAA;
+}

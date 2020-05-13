@@ -128,4 +128,16 @@ public class PageInteractionTest extends AbstractBasePageTest {
         assertThat(howItWorksPage.getTitle()).isEqualTo("How It Works");
         assertThat(howItWorksPage.headerIncludesProgram("emergency")).isTrue();
     }
+
+    @Test
+    void shouldNavigateToTheBasicInfoScreen() {
+        ChooseProgramsPage chooseProgramPage = landingPage
+                .clickPrimaryButton()
+                .clickPrimaryButton()
+                .clickPrimaryButton();
+        chooseProgramPage.chooseProgram("Emergency assistance");
+        IntermediaryPage<HowItWorksPage, TestFinalPage> page = chooseProgramPage.clickPrimaryButton().clickPrimaryButton();
+
+        assertThat(page.getTitle()).isEqualTo("Intro: Basic Info");
+    }
 }

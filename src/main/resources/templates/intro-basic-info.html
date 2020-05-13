@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head(#{intro-basic-info.title})">
+<body>
+<div class="page-wrapper">
+    <section class="slab slab--white">
+        <div class="grid">
+            <a th:replace="fragments/go-back :: goBackLink('/how-it-works')"></a>
+            <div class="grid__item spacing-above-35">
+                <p class="text--help text--centered spacing-below-10" th:text="#{intro-basic-info.step-one-of-five}"></p>
+                <h2 class="text--centered spacing-above-0" th:text="#{intro-basic-info.getting-to-know-you}"></h2>
+            </div>
+            <div class="grid__item intro-box">
+                <h3 class="text--centered" th:text="#{intro-basic-info.well-ask-about}"></h3>
+                <ol class="list--numbered">
+                    <li th:text="#{intro-basic-info.basic-info}"></li>
+                    <li th:text="#{intro-basic-info.contact-info}"></li>
+                    <li th:text="#{intro-basic-info.living-situation}"></li>
+                </ol>
+            </div>
+            <a class="button button--primary" href="/test-final-page" th:text="#{general.continue}"></a>
+        </div>
+    </section>
+</div>
+</body>
+</html>

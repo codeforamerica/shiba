@@ -72,6 +72,11 @@ public class PageController {
                 .orElse(new ModelAndView("redirect:/choose-programs"));
     }
 
+    @GetMapping("/intro-basic-info")
+    String introBasicInfo() {
+        return "intro-basic-info";
+    }
+
     @GetMapping("/test-final-page")
     String testFinalPage() {
         return "test-final-page";
