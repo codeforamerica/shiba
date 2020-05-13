@@ -12,9 +12,14 @@ public class LandingPage extends BasePage {
         super(driver);
     }
 
-    public PrepareToApplyPage clickPrimaryButton() {
+    public IntermediaryPage<LandingPage, LanguagePreferencesPage> clickPrimaryButton() {
         primaryButton.click();
 
-        return new PrepareToApplyPage(driver, this);
+        return new IntermediaryPage<>(this, driver) {
+            @Override
+            public LanguagePreferencesPage getNextPage() {
+                return new LanguagePreferencesPage(driver, this);
+            }
+        };
     }
 }

@@ -7,14 +7,14 @@ import org.openqa.selenium.support.FindBy;
 
 import java.util.List;
 
-public class LanguagePreferencesPage extends IntermediaryPage<PrepareToApplyPage, ChooseProgramsPage> {
+public class LanguagePreferencesPage extends IntermediaryPage<IntermediaryPage<LandingPage, LanguagePreferencesPage>, ChooseProgramsPage> {
     @FindBy(css = "select")
     private List<WebElement> selects;
 
     @FindBy(css = ".radio-button")
     private List<WebElement> needInterpreterRadios;
 
-    public LanguagePreferencesPage(RemoteWebDriver driver, PrepareToApplyPage previousPage) {
+    public LanguagePreferencesPage(RemoteWebDriver driver, IntermediaryPage<LandingPage, LanguagePreferencesPage> previousPage) {
         super(previousPage, driver);
     }
 

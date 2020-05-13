@@ -29,14 +29,14 @@ public class PageInteractionTest extends AbstractBasePageTest {
 
     @Test
     void shouldNavigateToPrepareToApplyPage() {
-        PrepareToApplyPage prepareToApplyPage = landingPage.clickPrimaryButton();
+        IntermediaryPage<LandingPage, LanguagePreferencesPage> prepareToApplyPage = landingPage.clickPrimaryButton();
 
         assertThat(prepareToApplyPage.getTitle()).isEqualTo("Prepare To Apply");
     }
 
     @Test
     void shouldNavigateBackToTheLandingPage() {
-        PrepareToApplyPage prepareToApplyPage = landingPage.clickPrimaryButton();
+        IntermediaryPage<LandingPage, LanguagePreferencesPage> prepareToApplyPage = landingPage.clickPrimaryButton();
         LandingPage landingPage = prepareToApplyPage.goBack();
 
         assertThat(landingPage.getTitle()).isEqualTo("Landing Page");
@@ -44,16 +44,14 @@ public class PageInteractionTest extends AbstractBasePageTest {
 
     @Test
     void shouldNavigateToLanguageSelectionPage() {
-        PrepareToApplyPage prepareToApplyPage = landingPage.clickPrimaryButton();
-        LanguagePreferencesPage languagePreferencesPage = prepareToApplyPage.clickPrimaryButton();
+        LanguagePreferencesPage languagePreferencesPage = landingPage.clickPrimaryButton().clickPrimaryButton();
 
         assertThat(languagePreferencesPage.getTitle()).isEqualTo("Language Preferences");
     }
 
     @Test
     void shouldKeepSelectionsOnLanguageSelectionPage_afterContinuing() {
-        PrepareToApplyPage prepareToApplyPage = landingPage.clickPrimaryButton();
-        LanguagePreferencesPage languagePreferencesPage = prepareToApplyPage.clickPrimaryButton();
+        LanguagePreferencesPage languagePreferencesPage = landingPage.clickPrimaryButton().clickPrimaryButton();
 
         String spokenLanguage = "Soomaali";
         languagePreferencesPage.selectSpokenLanguage(spokenLanguage);
@@ -74,17 +72,18 @@ public class PageInteractionTest extends AbstractBasePageTest {
     class ProgramSelectionPage {
         @Test
         void shouldKeepProgramSelectionAfterContinuing() {
-            PrepareToApplyPage prepareToApplyPage = landingPage.clickPrimaryButton();
-            LanguagePreferencesPage languagePreferencesPage = prepareToApplyPage.clickPrimaryButton();
-            ChooseProgramsPage page = languagePreferencesPage.clickPrimaryButton();
+            ChooseProgramsPage chooseProgramsPage = landingPage
+                    .clickPrimaryButton()
+                    .clickPrimaryButton()
+                    .clickPrimaryButton();
 
             String cashPrograms = "Cash programs";
-            page.chooseProgram(cashPrograms);
+            chooseProgramsPage.chooseProgram(cashPrograms);
             String emergencyAssistance = "Emergency assistance";
-            page.chooseProgram(emergencyAssistance);
+            chooseProgramsPage.chooseProgram(emergencyAssistance);
 
-            HowItWorksPage howItWorks = page.clickPrimaryButton();
-            ChooseProgramsPage chooseProgramsPage = howItWorks.goBack();
+            HowItWorksPage howItWorks = chooseProgramsPage.clickPrimaryButton();
+            chooseProgramsPage = howItWorks.goBack();
 
             List<String> selectedPrograms = chooseProgramsPage.selectedPrograms();
             assertThat(selectedPrograms).containsOnly(cashPrograms, emergencyAssistance);
@@ -92,25 +91,26 @@ public class PageInteractionTest extends AbstractBasePageTest {
 
         @Test
         void shouldFailValidationIfNoProgramIsSelected() {
-            PrepareToApplyPage prepareToApplyPage = landingPage.clickPrimaryButton();
-            LanguagePreferencesPage languagePreferencesPage = prepareToApplyPage.clickPrimaryButton();
-            ChooseProgramsPage page = languagePreferencesPage.clickPrimaryButton();
+            ChooseProgramsPage chooseProgramsPage = landingPage.clickPrimaryButton()
+                    .clickPrimaryButton()
+                    .clickPrimaryButton();
 
-            page.clickPrimaryButton();
+            chooseProgramsPage.clickPrimaryButton();
 
-            assertThat(page.hasError()).isTrue();
+            assertThat(chooseProgramsPage.hasError()).isTrue();
         }
 
         @Test
         void shouldClearValidationErrorWhenUserSelectsAtLeastOneProgram() {
-            PrepareToApplyPage prepareToApplyPage = landingPage.clickPrimaryButton();
-            LanguagePreferencesPage languagePreferencesPage = prepareToApplyPage.clickPrimaryButton();
-            ChooseProgramsPage page = languagePreferencesPage.clickPrimaryButton();
+            ChooseProgramsPage chooseProgramsPage = landingPage
+                    .clickPrimaryButton()
+                    .clickPrimaryButton()
+                    .clickPrimaryButton();
 
-            page.clickPrimaryButton();
-            page.chooseProgram("Emergency assistance");
-            HowItWorksPage howItWorksPage = page.clickPrimaryButton();
-            ChooseProgramsPage chooseProgramsPage = howItWorksPage.goBack();
+            chooseProgramsPage.clickPrimaryButton();
+            chooseProgramsPage.chooseProgram("Emergency assistance");
+            HowItWorksPage howItWorksPage = chooseProgramsPage.clickPrimaryButton();
+            chooseProgramsPage = howItWorksPage.goBack();
 
             assertThat(chooseProgramsPage.getTitle()).isEqualTo("Choose Programs");
             assertThat(chooseProgramsPage.hasError()).isFalse();
@@ -119,11 +119,12 @@ public class PageInteractionTest extends AbstractBasePageTest {
 
     @Test
     void shouldDisplayUserSelectedOneProgram() {
-        PrepareToApplyPage prepareToApplyPage = landingPage.clickPrimaryButton();
-        LanguagePreferencesPage languagePreferencesPage = prepareToApplyPage.clickPrimaryButton();
-        ChooseProgramsPage chooseProgramPage = languagePreferencesPage.clickPrimaryButton();
-        chooseProgramPage.chooseProgram("Emergency assistance");
-        HowItWorksPage howItWorksPage = chooseProgramPage.clickPrimaryButton();
+        ChooseProgramsPage chooseProgramsPage = landingPage
+                .clickPrimaryButton()
+                .clickPrimaryButton()
+                .clickPrimaryButton();
+        chooseProgramsPage.chooseProgram("Emergency assistance");
+        HowItWorksPage howItWorksPage = chooseProgramsPage.clickPrimaryButton();
 
         assertThat(howItWorksPage.getTitle()).isEqualTo("How It Works");
         assertThat(howItWorksPage.headerIncludesProgram("emergency")).isTrue();
