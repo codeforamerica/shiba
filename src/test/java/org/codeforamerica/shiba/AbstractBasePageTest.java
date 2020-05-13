@@ -27,7 +27,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ExtendWith(SpringExtension.class)
-public class BasePageTest {
+abstract class AbstractBasePageTest {
     protected RemoteWebDriver driver;
 
     @LocalServerPort

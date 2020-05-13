@@ -7,21 +7,20 @@ import org.openqa.selenium.support.FindBy;
 
 import java.util.List;
 
-public class LanguagePreferencesPage extends BasePage {
+public class LanguagePreferencesPage extends IntermediaryPage<PrepareToApplyPage, ChooseProgramsPage> {
     @FindBy(css = "select")
     private List<WebElement> selects;
 
     @FindBy(css = ".radio-button")
     private List<WebElement> needInterpreterRadios;
 
-    public LanguagePreferencesPage(RemoteWebDriver driver) {
-        super(driver);
+    public LanguagePreferencesPage(RemoteWebDriver driver, PrepareToApplyPage previousPage) {
+        super(previousPage, driver);
     }
 
     @Override
-    BasePage goBack() {
-        backButton.click();
-        return new LandingPage(driver);
+    public ChooseProgramsPage getNextPage() {
+        return new ChooseProgramsPage(driver, this);
     }
 
     public void selectSpokenLanguage(String language) {
@@ -70,11 +69,5 @@ public class LanguagePreferencesPage extends BasePage {
                 .findFirst()
                 .map(WebElement::getText)
                 .orElseThrow();
-    }
-
-    public ChooseProgramsPage submitUsingPrimaryButton() {
-        primaryButton.submit();
-
-        return new ChooseProgramsPage(driver);
     }
 }

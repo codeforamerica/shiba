@@ -8,19 +8,17 @@ import org.openqa.selenium.support.FindBy;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ChooseProgramsPage extends BasePage {
+public class ChooseProgramsPage extends IntermediaryPage<LanguagePreferencesPage, HowItWorksPage> {
     @FindBy(css = ".checkbox")
     private List<WebElement> programOptions;
 
-    public ChooseProgramsPage(RemoteWebDriver driver) {
-        super(driver);
+    public ChooseProgramsPage(RemoteWebDriver driver, LanguagePreferencesPage previousPage) {
+        super(previousPage, driver);
     }
 
     @Override
-    public BasePage goBack() {
-        backButton.click();
-
-        return new LanguagePreferencesPage(driver);
+    public HowItWorksPage getNextPage() {
+        return new HowItWorksPage(driver, this);
     }
 
     public void chooseProgram(String program) {
@@ -29,11 +27,6 @@ public class ChooseProgramsPage extends BasePage {
                 .findFirst().orElseThrow();
 
         optionToChoose.click();
-    }
-
-    public HowItWorksPage clickContinue() {
-        primaryButton.click();
-        return new HowItWorksPage(driver);
     }
 
     public List<String> selectedPrograms() {

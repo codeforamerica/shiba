@@ -5,13 +5,18 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 
 public class TestFinalPage extends BasePage {
-    public TestFinalPage(RemoteWebDriver driver) {
+    private final HowItWorksPage howItWorksPage;
+    @FindBy(partialLinkText = "Go Back")
+    protected WebElement backButton;
+
+    public TestFinalPage(RemoteWebDriver driver, HowItWorksPage howItWorksPage) {
         super(driver);
+        this.howItWorksPage = howItWorksPage;
     }
 
-    public ChooseProgramsPage goBack() {
+    public HowItWorksPage goBack() {
         backButton.click();
 
-        return new ChooseProgramsPage(driver);
+        return howItWorksPage;
     }
 }
