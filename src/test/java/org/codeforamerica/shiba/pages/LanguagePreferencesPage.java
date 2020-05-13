@@ -55,7 +55,7 @@ public class LanguagePreferencesPage extends IntermediaryPage<IntermediaryPage<L
                 .orElseThrow();
     }
 
-    public void selectNeedInterpereter(String needInterpreter) {
+    public void selectNeedInterpreter(String needInterpreter) {
         WebElement radioToSelect = needInterpreterRadios.stream()
                 .filter(label -> label.getText().equals(needInterpreter))
                 .findFirst()

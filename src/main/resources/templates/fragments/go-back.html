@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
-    <a th:fragment="goBackLink (destination)" th:href="${destination}" th:text="|&lt; #{general.go-back}|"></a>
+<a th:fragment="goBackLink (destination)" th:href="${destination}" th:text="'&lt; '+#{general.go-back}"></a>
 </body>
 </html>

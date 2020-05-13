@@ -56,6 +56,7 @@ abstract class AbstractBasePageTest {
         driver.quit();
     }
 
+    @SuppressWarnings("unused")
     public static void takeSnapShot(WebDriver webdriver, String fileWithPath) throws Exception {
         TakesScreenshot screenshot = ((TakesScreenshot) webdriver);
         Path sourceFile = screenshot.getScreenshotAs(OutputType.FILE).toPath();

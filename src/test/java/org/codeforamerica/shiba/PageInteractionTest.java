@@ -58,7 +58,7 @@ public class PageInteractionTest extends AbstractBasePageTest {
         String writtenLanguage = "Hmoob";
         languagePreferencesPage.selectWrittenLanguage(writtenLanguage);
         String needInterpreter = "No";
-        languagePreferencesPage.selectNeedInterpereter(needInterpreter);
+        languagePreferencesPage.selectNeedInterpreter(needInterpreter);
         ChooseProgramsPage chooseProgramsPage = languagePreferencesPage.clickPrimaryButton();
         assertThat(chooseProgramsPage.getTitle()).isEqualTo("Choose Programs");
         languagePreferencesPage = chooseProgramsPage.goBack();

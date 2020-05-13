@@ -14,6 +14,7 @@ public class TestFinalPage extends BasePage {
         this.howItWorksPage = howItWorksPage;
     }
 
+    @SuppressWarnings("unused")
     public HowItWorksPage goBack() {
         backButton.click();
 

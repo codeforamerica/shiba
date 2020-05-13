@@ -15,7 +15,7 @@ import java.util.Locale;
 @Controller
 public class PageController {
     private final BenefitsApplication benefitsApplication;
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
 
     public PageController(BenefitsApplication benefitsApplication, MessageSource messageSource) {
         this.benefitsApplication = benefitsApplication;
@@ -64,6 +64,7 @@ public class PageController {
 
     @GetMapping("/how-it-works")
     ModelAndView howItWorksPage(Locale locale) {
+        //noinspection SpringMVCViewInspection
         return benefitsApplication.getProgramSelection()
                 .map(programSelection -> new ModelAndView(
                         "how-it-works",

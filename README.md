@@ -14,6 +14,7 @@ Setup live reload:
 
 Setup IntelliJ for the project:
 
+- Configure an additional dictionary in `preferences > editor > proofreading > spelling` using `.idea/dictionaries/shiba.xml`
 - Install the Lombok plugin
 - Enable annotation processing
 - Run the application using ShibaApplication run configuration
