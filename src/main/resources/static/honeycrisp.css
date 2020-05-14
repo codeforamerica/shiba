@@ -5221,3 +5221,8 @@ Sidebar Nav
     margin: 2.5rem 2rem 2.5rem 2rem;
     border: 2px solid #AAAAAA;
 }
+
+.dob-input {
+    display: inline-block;
+    width: 30%;
+}

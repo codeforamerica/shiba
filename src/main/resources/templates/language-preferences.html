@@ -37,11 +37,11 @@
                     <div class="input-group spacing-below-60">
                         <label for="need-interpreter-yes" class="radio-button">
                             <input type="radio" th:field="*{needInterpreter}" id="need-interpreter-yes" th:value="true">
-                            <span th:text="#{language-preferences.yes}"></span>
+                            <span th:text="#{general.inputs.yes}"></span>
                         </label>
                         <label for="need-interpreter-no" class="radio-button">
                             <input type="radio" th:field="*{needInterpreter}" id="need-interpreter-no" th:value="false">
-                            <span th:text="#{language-preferences.no}"></span>
+                            <span th:text="#{general.inputs.no}"></span>
                         </label>
                     </div>
                     <button class="button button--primary" type="submit" th:text="#{general.continue}"></button>

@@ -11763,6 +11763,7 @@ var followUpQuestion = (function() {
         $(self).find('.question-with-follow-up__question input').click(function(e) {
           // reset follow ups
           $(self).find('.question-with-follow-up__follow-up input').attr('checked', false);
+          $(self).find('.question-with-follow-up__follow-up').find('input[type="text"], input[type="number"]').val('');
           $(self).find('.question-with-follow-up__follow-up').find('.radio-button, .checkbox').removeClass('is-selected');
           $(self).find('.question-with-follow-up__follow-up').hide();
 
