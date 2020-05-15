@@ -310,6 +310,6 @@ public class PageInteractionTest extends AbstractBasePageTest {
         personalInfoPage.enterSSN("000000000");
         SuccessPage successPage = personalInfoPage.clickPrimaryButton();
 
-        assertThat(successPage.getTitle()).isEqualTo("Success!");
+        assertThat(successPage.getTitle()).isEqualTo("Success");
     }
 }
