@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="fragments/head :: head(#{success.success})"></div>
+<body>
+<div class="page-wrapper">
+    <section class="slab slab--white">
+        <div class="grid">
+            <div class="grid__item bottom-horizontal-line">
+                <i class="icon-check_circle large"></i>
+                <h2 th:text="|#{success.success}!|"></h2>
+                <p class="text--help spacing-below-25"
+                   th:text="#{success.application-submitted-to-olmsted-county-on}"></p>
+            </div>
+            <div class="grid__item spacing-above-35 bottom-horizontal-line">
+                <h3 th:text="#{success.new-weve-generated-a-receipt-of-your-application-for-your-records}"></h3>
+                <img src="images/receipt.svg" alt="receipt icon"/>
+                <div class="spacing-above-25 spacing-below-25">
+                    <a class="button button--primary" th:text="#{success.text-me-my-receipt}"></a>
+                    <button class="button" th:text="#{success.download-my-receipt}"></button>
+                </div>
+            </div>
+            <div class="grid__item spacing-above-35 bottom-horizontal-line spacing-below-25">
+                <h3 th:text="#{success.what-to-expect-next}"></h3>
+                <p>
+                    <strong th:text="#{success.your-county-will-call-you}"></strong>
+                    <span th:text="#{success.in-the-next-week-for-your-phone-interview-the-call-may-come-from-a-blocked-number}"></span>
+                </p>
+                <p>
+                    <strong th:text="#{success.the-interview-will-take-about-30-minutes}"></strong>
+                    <span th:text="#{success.a-worker-will-ask-you-about-your-household-income-expenses-and-other-eligibility-requirements}"></span>
+                </p>
+                <p>
+                    <span th:text="#{success.in-some-cases}"></span>
+                    <strong th:text="#{success.a-county-worker-may-ask-you-to-send-them-additional-proof}"></strong>
+                    <span th:text="#{success.of-your-situation-within-30-days}"></span>
+                </p>
+            </div>
+            <h3>
+                <label th:text="#{success.how-was-your-experience-filling-out-the-combined-benefits-application}"
+                       for="feedback-textarea"></label>
+            </h3>
+            <div class="form-group">
+                <span class="emoji emoji--small emoji--grinning-face"></span>
+                <span class="emoji emoji--small emoji--neutral-face"></span>
+                <span class="emoji emoji--small emoji--frowning-face"></span>
+                <textarea autocomplete="off" autocapitalize="off" spellcheck="false"
+                          class="textarea spacing-above-25" rows="2" aria-describedby="form_example_method_name__errors"
+                          name="form[example_method_name]" id="feedback-textarea"
+                          th:placeholder="#{success.do-you-have-any-feedback-for-us}"></textarea>
+                <a class="button button--primary" th:text="#{success.submit-feedback}"></a>
+                <button class="button" th:text="#{success.finish}"></button>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>

@@ -1596,15 +1596,15 @@ hr {
 }
 
 .emoji--grinning-face {
-    background-image: url(/assets/emojis/1f600-3a2138c299ea089e9e3f055a9b088f0a5989133e14d78a6e0d68cec30d9c25b5.png);
+    background-image: url(images/1f600.png);
 }
 
 .emoji--neutral-face {
-    background-image: url(/assets/emojis/1f610-b21e70b26a37709d06f6c6a8ea4c89b1a07fe2d729594e3a08127c75ec5a1f45.png);
+    background-image: url(images/1f610.png);
 }
 
 .emoji--frowning-face {
-    background-image: url(/assets/emojis/1f641-ccfde83b4da1247ddbab5eb064ac0c7b728142c83fbc5da15155c50380b45fba.png);
+    background-image: url(images/1f641.png);
 }
 
 .emoji--thumbs-up {
@@ -5225,4 +5225,13 @@ Sidebar Nav
 .dob-input {
     display: inline-block;
     width: 30%;
+}
+
+.bottom-horizontal-line {
+    border-bottom: 1px solid black;
+}
+
+.icon-check_circle.large {
+    color: #CFC5BF;
+    font-size: 100px;
 }

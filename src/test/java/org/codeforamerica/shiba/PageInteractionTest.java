@@ -182,16 +182,16 @@ public class PageInteractionTest extends AbstractBasePageTest {
             String ssn = "123456789";
             page.enterSSN(ssn);
 
-            TestFinalPage testFinalPage = page.clickPrimaryButton();
+            page.clickPrimaryButton();
+            driver.navigate().back();
 
-            PersonalInfoPage personalInfoPage = testFinalPage.goBack();
-            assertThat(personalInfoPage.getFirstNameValue()).isEqualTo(firstName);
-            assertThat(personalInfoPage.getLastNameValue()).isEqualTo(lastName);
-            assertThat(personalInfoPage.getOtherNameValue()).isEqualTo(otherName);
-            assertThat(personalInfoPage.getBirthMonthValue()).isEqualTo(birthMonth);
-            assertThat(personalInfoPage.getBirthDayValue()).isEqualTo(birthDay);
-            assertThat(personalInfoPage.getBirthYearValue()).isEqualTo(birthYear);
-            assertThat(personalInfoPage.getSsnValue()).isEqualTo(ssn);
+            assertThat(page.getFirstNameValue()).isEqualTo(firstName);
+            assertThat(page.getLastNameValue()).isEqualTo(lastName);
+            assertThat(page.getOtherNameValue()).isEqualTo(otherName);
+            assertThat(page.getBirthMonthValue()).isEqualTo(birthMonth);
+            assertThat(page.getBirthDayValue()).isEqualTo(birthDay);
+            assertThat(page.getBirthYearValue()).isEqualTo(birthYear);
+            assertThat(page.getSsnValue()).isEqualTo(ssn);
         }
 
         @Test
@@ -238,31 +238,31 @@ public class PageInteractionTest extends AbstractBasePageTest {
         void shouldPreserveMaritalStatus() {
             String maritalStatus = "Never married";
             page.selectMaritalStatus(maritalStatus);
-            TestFinalPage testFinalPage = page.clickPrimaryButton();
-            PersonalInfoPage personalInfoPage = testFinalPage.goBack();
+            page.clickPrimaryButton();
+            driver.navigate().back();
 
-            assertThat(personalInfoPage.getMaritalStatus()).isEqualTo(maritalStatus);
+            assertThat(page.getMaritalStatus()).isEqualTo(maritalStatus);
         }
 
         @Test
         void shouldPreserveSex() {
             String sex = "Male";
             page.selectSex(sex);
-            TestFinalPage testFinalPage = page.clickPrimaryButton();
-            PersonalInfoPage personalInfoPage = testFinalPage.goBack();
+            page.clickPrimaryButton();
+            driver.navigate().back();
 
-            assertThat(personalInfoPage.getSex()).isEqualTo(sex);
+            assertThat(page.getSex()).isEqualTo(sex);
         }
-        
+
         @Nested
         class LivedInMNWholeLife {
             @Test
             void shouldPreserveSelection() {
                 page.selectLivedInMNWholeLife("Yes");
+                page.clickPrimaryButton();
+                driver.navigate().back();
 
-                TestFinalPage testFinalPage = page.clickPrimaryButton();
-                PersonalInfoPage personalInfoPage = testFinalPage.goBack();
-                assertThat(personalInfoPage.getLivedInMNWholeLife()).isEqualTo("Yes");
+                assertThat(page.getLivedInMNWholeLife()).isEqualTo("Yes");
             }
 
             @Test
@@ -278,12 +278,13 @@ public class PageInteractionTest extends AbstractBasePageTest {
                 page.enterMoveToMNYear(year);
                 String city = "Chicago";
                 page.enterPreviousCity(city);
-                TestFinalPage testFinalPage = page.clickPrimaryButton();
-                PersonalInfoPage personalInfoPage = testFinalPage.goBack();
-                assertThat(personalInfoPage.getMoveToMNMonth()).isEqualTo(month);
-                assertThat(personalInfoPage.getMoveToMNDay()).isEqualTo(day);
-                assertThat(personalInfoPage.getMoveToMNYear()).isEqualTo(year);
-                assertThat(personalInfoPage.getPreviousCity()).isEqualTo(city);
+                page.clickPrimaryButton();
+                driver.navigate().back();
+
+                assertThat(page.getMoveToMNMonth()).isEqualTo(month);
+                assertThat(page.getMoveToMNDay()).isEqualTo(day);
+                assertThat(page.getMoveToMNYear()).isEqualTo(year);
+                assertThat(page.getPreviousCity()).isEqualTo(city);
             }
 
             @Test
@@ -293,5 +294,22 @@ public class PageInteractionTest extends AbstractBasePageTest {
                 assertThat(page.displaysNoMoveToMNInputs()).isTrue();
             }
         }
+    }
+
+    @Test
+    void shouldNavigateToSuccessScreen() {
+        ChooseProgramsPage chooseProgramPage = landingPage
+                .clickPrimaryButton()
+                .clickPrimaryButton()
+                .clickPrimaryButton();
+        chooseProgramPage.chooseProgram("Emergency assistance");
+        HowItWorksPage howItWorksPage = chooseProgramPage.clickPrimaryButton();
+        PersonalInfoPage personalInfoPage = howItWorksPage.clickPrimaryButton().clickPrimaryButton();
+        personalInfoPage.enterFirstName("defaultFirstName");
+        personalInfoPage.enterLastName("defaultLastName");
+        personalInfoPage.enterSSN("000000000");
+        SuccessPage successPage = personalInfoPage.clickPrimaryButton();
+
+        assertThat(successPage.getTitle()).isEqualTo("Success!");
     }
 }

@@ -90,11 +90,11 @@ public class PageController {
             return new ModelAndView("personal-info", "personalInfo", personalInfo);
         }
         benefitsApplication.setPersonalInfo(personalInfo);
-        return new ModelAndView("redirect:/test-final-page");
+        return new ModelAndView("redirect:/success");
     }
 
-    @GetMapping("/test-final-page")
-    String testFinalPage() {
-        return "test-final-page";
+    @GetMapping("/success")
+    String success() {
+        return "success";
     }
 }
