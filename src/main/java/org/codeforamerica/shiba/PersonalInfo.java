@@ -19,7 +19,7 @@ public class PersonalInfo {
     private @Pattern(regexp = "\\d{9}") String ssn;
     private MaritalStatus maritalStatus;
     private Sex sex;
-    private Boolean livedInMNWholeLife;
+    private Boolean livedInMNWholeLife = false;
     private String moveToMNMonth;
     private String moveToMNDay;
     private String moveToMNYear;

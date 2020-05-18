@@ -10,15 +10,15 @@ public class BenefitsApplication {
     private ProgramSelection programSelection;
     private PersonalInfo personalInfo;
 
-    public Optional<LanguagePreferences> getLanguagePreferences() {
-        return Optional.ofNullable(languagePreferences);
+    public LanguagePreferences getLanguagePreferences() {
+        return Optional.ofNullable(languagePreferences).orElse(new LanguagePreferences());
     }
 
-    public Optional<ProgramSelection> getProgramSelection() {
-        return Optional.ofNullable(programSelection);
+    public ProgramSelection getProgramSelection() {
+        return Optional.ofNullable(programSelection).orElse(new ProgramSelection());
     }
 
-    public Optional<PersonalInfo> getPersonalInfo() {
-        return Optional.ofNullable(personalInfo);
+    public PersonalInfo getPersonalInfo() {
+        return Optional.ofNullable(personalInfo).orElse(new PersonalInfo());
     }
 }

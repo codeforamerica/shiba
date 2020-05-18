@@ -19,9 +19,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
@@ -29,6 +31,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @ExtendWith(SpringExtension.class)
 abstract class AbstractBasePageTest {
     protected RemoteWebDriver driver;
+    protected Path path;
 
     @LocalServerPort
     protected String localServerPort;
@@ -46,9 +49,18 @@ abstract class AbstractBasePageTest {
 
     @BeforeEach
     void setUp() {
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless");
-        driver = new ChromeDriver(options);
+        try {
+            ChromeOptions options = new ChromeOptions();
+            path = Files.createTempDirectory("");
+            HashMap<String, Object> chromePrefs = new HashMap<>();
+//        chromePrefs.put("profile.default_content_settings.popups", 0);
+            chromePrefs.put("download.default_directory", path.toString());
+            options.setExperimentalOption("prefs", chromePrefs);
+            options.addArguments("--headless");
+            driver = new ChromeDriver(options);
+        } catch (Exception e) {
+
+        }
     }
 
     @AfterEach

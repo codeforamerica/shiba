@@ -1,7 +1,7 @@
 plugins {
-	id 'org.springframework.boot' version '2.2.6.RELEASE'
-	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-	id 'java'
+    id 'org.springframework.boot' version '2.2.6.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'java'
 }
 
 group = 'org.codeforamerica'
@@ -9,32 +9,37 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '14'
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-	developmentOnly
-	runtimeClasspath {
-		extendsFrom developmentOnly
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'org.postgresql:postgresql'
-	annotationProcessor 'org.projectlombok:lombok'
-	developmentOnly("org.springframework.boot:spring-boot-devtools")
-	testImplementation 'org.seleniumhq.selenium:selenium-java:3.141.59'
-	testImplementation('org.springframework.boot:spring-boot-starter-test') {
-		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-	}
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'org.postgresql:postgresql'
+    annotationProcessor 'org.projectlombok:lombok'
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
+    testImplementation 'org.seleniumhq.selenium:selenium-java:3.141.59'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    implementation 'org.apache.pdfbox:pdfbox:2.0.19'
+    testImplementation 'org.awaitility:awaitility:4.0.2'
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
 
+compileJava.inputs.files(processResources)
+
 test {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }

@@ -1,6 +1,9 @@
 package org.codeforamerica.shiba;
 
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,10 +19,18 @@ import java.util.Locale;
 public class PageController {
     private final BenefitsApplication benefitsApplication;
     private final MessageSource messageSource;
+    private final PDFFieldFiller PDFFieldFiller;
+    private final PdfFieldMapper pdfFieldMapper;
 
-    public PageController(BenefitsApplication benefitsApplication, MessageSource messageSource) {
+    public PageController(BenefitsApplication benefitsApplication,
+                          MessageSource messageSource,
+                          PDFFieldFiller PDFFieldFiller,
+                          PdfFieldMapper pdfFieldMapper
+    ) {
         this.benefitsApplication = benefitsApplication;
         this.messageSource = messageSource;
+        this.PDFFieldFiller = PDFFieldFiller;
+        this.pdfFieldMapper = pdfFieldMapper;
     }
 
     @GetMapping("/")
@@ -35,8 +46,7 @@ public class PageController {
     @GetMapping("/language-preference")
     ModelAndView languagePreferencePage() {
         LanguagePreferences languagePreferences =
-                benefitsApplication.getLanguagePreferences()
-                        .orElse(new LanguagePreferences());
+                benefitsApplication.getLanguagePreferences();
         return new ModelAndView("language-preferences", "languagePreferences", languagePreferences);
     }
 
@@ -48,8 +58,7 @@ public class PageController {
 
     @GetMapping("/choose-programs")
     ModelAndView chooseProgramPage() {
-        ProgramSelection programSelection = benefitsApplication.getProgramSelection()
-                .orElse(new ProgramSelection());
+        ProgramSelection programSelection = benefitsApplication.getProgramSelection();
         return new ModelAndView("choose-programs", "programSelection", programSelection);
     }
 
@@ -64,13 +73,15 @@ public class PageController {
 
     @GetMapping("/how-it-works")
     ModelAndView howItWorksPage(Locale locale) {
-        //noinspection SpringMVCViewInspection
-        return benefitsApplication.getProgramSelection()
-                .map(programSelection -> new ModelAndView(
-                        "how-it-works",
-                        "programSelection",
-                        new ProgramSelectionPresenter(programSelection, messageSource, locale)))
-                .orElse(new ModelAndView("redirect:/choose-programs"));
+        if (benefitsApplication.getProgramSelection().getPrograms().isEmpty()) {
+            //noinspection SpringMVCViewInspection
+            return new ModelAndView("redirect:/choose-programs");
+        } else {
+            return new ModelAndView(
+                    "how-it-works",
+                    "programSelection",
+                    new ProgramSelectionPresenter(benefitsApplication.getProgramSelection(), messageSource, locale));
+        }
     }
 
     @GetMapping("/intro-basic-info")
@@ -80,7 +91,7 @@ public class PageController {
 
     @GetMapping("/personal-info")
     ModelAndView personalInfo() {
-        PersonalInfo personalInfo = benefitsApplication.getPersonalInfo().orElse(new PersonalInfo());
+        PersonalInfo personalInfo = benefitsApplication.getPersonalInfo();
         return new ModelAndView("personal-info", "personalInfo", personalInfo);
     }
 
@@ -91,6 +102,15 @@ public class PageController {
         }
         benefitsApplication.setPersonalInfo(personalInfo);
         return new ModelAndView("redirect:/success");
+    }
+
+    @GetMapping("/download")
+    ResponseEntity<byte[]> downloadPdf() {
+        PdfFile pdfFile = PDFFieldFiller.fill(pdfFieldMapper.map(benefitsApplication));
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", pdfFile.getFileName()))
+                .body(pdfFile.getFileBytes());
     }
 
     @GetMapping("/success")

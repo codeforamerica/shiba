@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 
 public class PageInteractionTest extends AbstractBasePageTest {
 
@@ -311,5 +312,23 @@ public class PageInteractionTest extends AbstractBasePageTest {
         SuccessPage successPage = personalInfoPage.clickPrimaryButton();
 
         assertThat(successPage.getTitle()).isEqualTo("Success");
+    }
+
+    @Test
+    void shouldDownloadPDFWhenClickDownloadMyReceipt() {
+        ChooseProgramsPage chooseProgramPage = landingPage
+                .clickPrimaryButton()
+                .clickPrimaryButton()
+                .clickPrimaryButton();
+        chooseProgramPage.chooseProgram("Emergency assistance");
+        HowItWorksPage howItWorksPage = chooseProgramPage.clickPrimaryButton();
+        PersonalInfoPage personalInfoPage = howItWorksPage.clickPrimaryButton().clickPrimaryButton();
+        personalInfoPage.enterFirstName("defaultFirstName");
+        personalInfoPage.enterLastName("defaultLastName");
+        personalInfoPage.enterSSN("000000000");
+        SuccessPage successPage = personalInfoPage.clickPrimaryButton();
+
+        successPage.downloadReceipt();
+        await().until(() -> path.resolve("DHS-5223.pdf").toFile().exists());
     }
 }
