@@ -16,7 +16,7 @@ public class PersonalInfo {
     private String birthMonth;
     private String birthDay;
     private String birthYear;
-    private @Pattern(regexp = "\\d{9}") String ssn;
+    private @Pattern(regexp = "\\d{9}|\\d{0}") String ssn;
     private MaritalStatus maritalStatus;
     private Sex sex;
     private Boolean livedInMNWholeLife = false;

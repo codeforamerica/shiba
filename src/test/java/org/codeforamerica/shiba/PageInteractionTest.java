@@ -158,7 +158,6 @@ public class PageInteractionTest extends AbstractBasePageTest {
             page = howItWorksPage.clickPrimaryButton().clickPrimaryButton();
             page.enterFirstName("defaultFirstName");
             page.enterLastName("defaultLastName");
-            page.enterSSN("000000000");
         }
 
         @Test
@@ -196,7 +195,7 @@ public class PageInteractionTest extends AbstractBasePageTest {
         }
 
         @Test
-        void shouldRequireExactly9DigitsForSSN() {
+        void shouldRequireExactly9DigitsOrEmptyStringForSSN() {
             String firstName = "John";
             page.enterFirstName(firstName);
             String lastName = "Doe";
@@ -215,6 +214,13 @@ public class PageInteractionTest extends AbstractBasePageTest {
 
             assertThat(page.getTitle()).isEqualTo("Personal Info");
             assertThat(page.hasSSNError()).isTrue();
+
+
+            ssn = "";
+            page.enterSSN(ssn);
+            page.clickPrimaryButton();
+
+            assertThat(page.getTitle()).isEqualTo("Success");
         }
 
         @Test
