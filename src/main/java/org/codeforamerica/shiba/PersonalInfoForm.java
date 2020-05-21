@@ -25,7 +25,7 @@ public class PersonalInfoForm {
     private @Pattern(regexp = "\\d{9}|\\d{0}") String ssn;
     private MaritalStatus maritalStatus;
     private Sex sex;
-    private Boolean livedInMNWholeLife = false;
+    private Boolean livedInMNWholeLife;
     private String moveToMNMonth;
     private String moveToMNDay;
     private String moveToMNYear;
