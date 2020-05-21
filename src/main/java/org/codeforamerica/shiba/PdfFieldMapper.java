@@ -40,7 +40,11 @@ public class PdfFieldMapper {
                     } else if (value instanceof Enum) {
                         return new SimplePDFField(entry.getValue(), value.toString());
                     } else {
-                        throw new RuntimeException("yikes!");
+                        //noinspection ConstantConditions
+                        throw new IllegalArgumentException(String.format(
+                                "The SpEL expression given by '%s' on %s yielded an object of type %s " +
+                                        "that does not have a field mapping.",
+                                entry.getKey(), object, value.getClass()));
                     }
                 }).collect(Collectors.toList());
     }

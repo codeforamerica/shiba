@@ -1,0 +1,20 @@
+caf:
+  mappings:
+    languagePreferences:
+      spokenLanguage: APPLICANT_SPOKEN_LANGUAGE_PREFERENCE
+      writtenLanguage: APPLICANT_WRITTEN_LANGUAGE_PREFERENCE
+      needInterpreter: NEED_INTERPRETER
+    personalInfo:
+      firstName: APPLICANT_FIRST_NAME
+      lastName: APPLICANT_LAST_NAME
+      maritalStatus: MARITAL_STATUS
+      otherName: APPLICANT_OTHER_NAME
+      "[birthMonth+'/'+personalInfo.birthDay+'/'+personalInfo.birthYear]": DATE_OF_BIRTH
+      ssn: APPLICANT_SSN
+      sex: APPLICANT_SEX
+      "[livedInMNWholeLife ? '' : personalInfo.moveToMNMonth+'/'+personalInfo.moveToMNDay+'/'+personalInfo.moveToMNYear]": DATE_OF_MOVING_TO_MN
+      moveToMNPreviousCity: APPLICANT_PREVIOUS_CITY
+    programSelection:
+      "[programs.?[#this.name() == 'FOOD']]": FOOD
+      "[programs.?[#this.name() == 'CASH']]": CASH
+      "[programs.?[#this.name() == 'EMERGENCY']]": EMERGENCY
