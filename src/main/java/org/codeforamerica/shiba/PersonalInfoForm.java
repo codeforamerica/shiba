@@ -2,11 +2,13 @@ package org.codeforamerica.shiba;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static java.lang.Integer.parseInt;
@@ -37,18 +39,22 @@ public class PersonalInfoForm {
         personalInfoForm.lastName = personalInfo.getLastName();
         personalInfoForm.middleName = personalInfo.getMiddleName();
         personalInfoForm.otherName = personalInfo.getOtherName();
-        personalInfoForm.birthMonth = Optional.ofNullable(personalInfo.getDateOfBirth()).map(dob -> String.valueOf(dob.getMonth().getValue())).orElse("");
-        personalInfoForm.birthDay = Optional.ofNullable(personalInfo.getDateOfBirth()).map(dob -> String.valueOf(dob.getDayOfMonth())).orElse("");
-        personalInfoForm.birthYear = Optional.ofNullable(personalInfo.getDateOfBirth()).map(dob -> String.valueOf(dob.getYear())).orElse("");
+        personalInfoForm.birthMonth = formatDatePart(personalInfo.getDateOfBirth(), LocalDate::getMonthValue, 2);
+        personalInfoForm.birthDay = formatDatePart(personalInfo.getDateOfBirth(), LocalDate::getDayOfMonth, 2);
+        personalInfoForm.birthYear = formatDatePart(personalInfo.getDateOfBirth(), LocalDate::getYear, 4);
         personalInfoForm.ssn = personalInfo.getSsn();
         personalInfoForm.maritalStatus = personalInfo.getMaritalStatus();
         personalInfoForm.sex = personalInfo.getSex();
         personalInfoForm.livedInMNWholeLife = personalInfo.getLivedInMNWholeLife();
-        personalInfoForm.moveToMNMonth = Optional.ofNullable(personalInfo.getMoveToMNDate()).map(moveToMNDate -> String.valueOf(moveToMNDate.getMonthValue())).orElse("");
-        personalInfoForm.moveToMNDay = Optional.ofNullable(personalInfo.getMoveToMNDate()).map(moveToMNDate -> String.valueOf(moveToMNDate.getDayOfMonth())).orElse("");
-        personalInfoForm.moveToMNYear = Optional.ofNullable(personalInfo.getMoveToMNDate()).map(moveToMNDate -> String.valueOf(moveToMNDate.getYear())).orElse("");
+        personalInfoForm.moveToMNMonth = formatDatePart(personalInfo.getMoveToMNDate(), LocalDate::getMonthValue, 2);
+        personalInfoForm.moveToMNDay = formatDatePart(personalInfo.getMoveToMNDate(), LocalDate::getDayOfMonth, 2);
+        personalInfoForm.moveToMNYear = formatDatePart(personalInfo.getMoveToMNDate(), LocalDate::getYear, 4);
         personalInfoForm.moveToMNPreviousCity = personalInfo.getMoveToMNPreviousCity();
         return personalInfoForm;
+    }
+
+    static String formatDatePart(LocalDate date, Function<LocalDate, Integer> datePartExtractor, int digits) {
+        return Optional.ofNullable(date).map(dob -> String.valueOf(datePartExtractor.apply(date))).map(datePart -> StringUtils.leftPad(datePart, digits, "0")).orElse("");
     }
 
     public PersonalInfo mapToPersonalInfo() {

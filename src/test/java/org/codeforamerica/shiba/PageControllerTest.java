@@ -51,14 +51,14 @@ class PageControllerTest {
                 .param("birthMonth", "12")
                 .param("birthDay", "22")
                 .param("birthYear", "1983")
-                .param("moveToMNMonth", "2")
-                .param("moveToMNDay", "17")
+                .param("moveToMNMonth", "02")
+                .param("moveToMNDay", "07")
                 .param("moveToMNYear", "1988"));
 
         assertThat(benefitsApplication.getPersonalInfo().getDateOfBirth())
                 .isEqualTo(LocalDate.of(1983, 12, 22));
         assertThat(benefitsApplication.getPersonalInfo().getMoveToMNDate())
-                .isEqualTo(LocalDate.of(1988, 2, 17));
+                .isEqualTo(LocalDate.of(1988, 2, 7));
 
         mockMvc.perform(post("/personal-info")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
@@ -78,14 +78,14 @@ class PageControllerTest {
     @Test
     void shouldTranslateToSeparateFieldsForDates() throws Exception {
         benefitsApplication.setPersonalInfo(PersonalInfo.builder()
-                .dateOfBirth(LocalDate.of(2000, 4, 20))
+                .dateOfBirth(LocalDate.of(2000, 4, 2))
                 .moveToMNDate(LocalDate.of(2010, 3, 12))
                 .build());
         mockMvc.perform(get("/personal-info"))
-                .andExpect(model().attribute("personalInfoForm", Matchers.hasProperty("birthMonth", Matchers.equalTo("4"))))
-                .andExpect(model().attribute("personalInfoForm", Matchers.hasProperty("birthDay", Matchers.equalTo("20"))))
+                .andExpect(model().attribute("personalInfoForm", Matchers.hasProperty("birthMonth", Matchers.equalTo("04"))))
+                .andExpect(model().attribute("personalInfoForm", Matchers.hasProperty("birthDay", Matchers.equalTo("02"))))
                 .andExpect(model().attribute("personalInfoForm", Matchers.hasProperty("birthYear", Matchers.equalTo("2000"))))
-                .andExpect(model().attribute("personalInfoForm", Matchers.hasProperty("moveToMNMonth", Matchers.equalTo("3"))))
+                .andExpect(model().attribute("personalInfoForm", Matchers.hasProperty("moveToMNMonth", Matchers.equalTo("03"))))
                 .andExpect(model().attribute("personalInfoForm", Matchers.hasProperty("moveToMNDay", Matchers.equalTo("12"))))
                 .andExpect(model().attribute("personalInfoForm", Matchers.hasProperty("moveToMNYear", Matchers.equalTo("2010"))));
 

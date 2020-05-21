@@ -45,9 +45,9 @@
                         <p class="text--help spacing-below-15">
                             <label for="date-of-birth-month">mm</label>/<label for="date-of-birth-day">dd</label>/<label for="date-of-birth-year">yyyy</label>
                         </p>
-                        <input type="number" class="text-input form-width--name dob-input" id="date-of-birth-month" th:field="*{birthMonth}">
-                        / <input type="number" class="text-input form-width--name dob-input" id="date-of-birth-day" th:field="*{birthDay}">
-                        / <input type="number" class="text-input form-width--name dob-input" id="date-of-birth-year" th:field="*{birthYear}">
+                        <input type="text" maxlength="2" pattern="\d{2}" class="text-input form-width--2-character dob-input" id="date-of-birth-month" th:field="*{birthMonth}">
+                        / <input type="text" maxlength="2" pattern="\d{2}" class="text-input form-width--2-character dob-input" id="date-of-birth-day" th:field="*{birthDay}">
+                        / <input type="text" maxlength="4" pattern="\d{4}" class="text-input form-width--4-character dob-input" id="date-of-birth-year" th:field="*{birthYear}">
                     </div>
                     <div class="form-group spacing-below-25">
                         <label for="ssn" class="form-question"
@@ -120,9 +120,9 @@
                                 <p class="text--help spacing-below-15">
                                     <label for="move-to-MN-month">mm</label>/<label for="move-to-MN-day">dd</label>/<label for="move-to-MN-year">yyyy</label>
                                 </p>
-                                <input type="number" class="text-input form-width--name dob-input" id="move-to-MN-month" th:field="*{moveToMNMonth}">
-                                / <input type="number" class="text-input form-width--name dob-input" id="move-to-MN-day" th:field="*{moveToMNDay}">
-                                / <input type="number" class="text-input form-width--name dob-input" id="move-to-MN-year" th:field="*{moveToMNYear}">
+                                <input type="text" maxlength="2" pattern="\d{2}" class="text-input form-width--2-character dob-input" id="move-to-MN-month" th:field="*{moveToMNMonth}">
+                                / <input type="text" maxlength="2" pattern="\d{2}" class="text-input form-width--2-character dob-input" id="move-to-MN-day" th:field="*{moveToMNDay}">
+                                / <input type="text" maxlength="4" pattern="\d{4}" class="text-input form-width--4-character dob-input" id="move-to-MN-year" th:field="*{moveToMNYear}">
                             </fieldset>
                             <div class="form-group spacing-below-25">
                                 <label for="previous-city" class="form-question"

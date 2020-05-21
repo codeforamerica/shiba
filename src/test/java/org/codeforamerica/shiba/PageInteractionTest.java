@@ -175,7 +175,7 @@ public class PageInteractionTest extends AbstractBasePageTest {
             page.enterOtherName(otherName);
             String birthMonth = "12";
             page.enterBirthMonth(birthMonth);
-            String birthDay = "7";
+            String birthDay = "07";
             page.enterBirthDay(birthDay);
             String birthYear = "1999";
             page.enterBirthYear(birthYear);
