@@ -277,7 +277,7 @@ public class PageInteractionTest extends AbstractBasePageTest {
                 page.selectLivedInMNWholeLife("No");
 
                 assertThat(page.displaysAllMoveToMNInputs()).isTrue();
-                String month = "3";
+                String month = "03";
                 page.enterMoveToMNMonth(month);
                 String day = "16";
                 page.enterMoveToMNDay(day);
