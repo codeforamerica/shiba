@@ -19,6 +19,6 @@ public class BenefitsApplication {
     }
 
     public PersonalInfo getPersonalInfo() {
-        return Optional.ofNullable(personalInfo).orElse(new PersonalInfo());
+        return Optional.ofNullable(personalInfo).orElse(PersonalInfo.builder().build());
     }
 }

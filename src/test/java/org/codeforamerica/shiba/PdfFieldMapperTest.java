@@ -2,6 +2,7 @@ package org.codeforamerica.shiba;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,17 +20,16 @@ class PdfFieldMapperTest {
         PdfFieldMapper subject = new PdfFieldMapper(configMap);
 
         BenefitsApplication benefitApplication = new BenefitsApplication();
-        PersonalInfo personalInfo = new PersonalInfo();
         String firstName = "Roger";
-        personalInfo.setFirstName(firstName);
+        PersonalInfo personalInfo = PersonalInfo.builder().firstName(firstName).build();
         benefitApplication.setPersonalInfo(personalInfo);
 
-        List<PDFField> form = subject.map(benefitApplication);
-        assertThat(form).contains(new SimplePDFField(fieldName, firstName));
+        List<PDFField> fields = subject.map(benefitApplication);
+        assertThat(fields).contains(new SimplePDFField(fieldName, firstName));
     }
 
     @Test
-    void shouldMapBinaryField() {
+    void shouldMapBooleansToToggleFields() {
         Map<String, String> configMap = new HashMap<>();
         String fieldName = "someName";
         configMap.put("languagePreferences.needInterpreter", fieldName);
@@ -39,25 +39,42 @@ class PdfFieldMapperTest {
         LanguagePreferences languagePreferences = new LanguagePreferences();
         languagePreferences.setNeedInterpreter(true);
         benefitsApplication.setLanguagePreferences(languagePreferences);
-        List<PDFField> form = subject.map(benefitsApplication);
+        List<PDFField> fields = subject.map(benefitsApplication);
 
-        assertThat(form).contains(new TogglePDFField(fieldName, true));
+        assertThat(fields).contains(new TogglePDFField(fieldName, true));
     }
 
     @Test
-    void shouldMapEnum() {
+    void shouldMapEnumsToSimpleFields() {
         Map<String, String> configMap = new HashMap<>();
         String fieldName = "someName";
         configMap.put("personalInfo.maritalStatus", fieldName);
         BenefitsApplication benefitsApplication = new BenefitsApplication();
-        PersonalInfo personalInfo = new PersonalInfo();
-        personalInfo.setMaritalStatus(MaritalStatus.MARRIED_LIVING_WITH_SPOUSE);
+        PersonalInfo personalInfo = PersonalInfo.builder().maritalStatus(MaritalStatus.MARRIED_LIVING_WITH_SPOUSE).build();
         benefitsApplication.setPersonalInfo(personalInfo);
         PdfFieldMapper subject = new PdfFieldMapper(configMap);
 
-        List<PDFField> form = subject.map(benefitsApplication);
+        List<PDFField> fields = subject.map(benefitsApplication);
 
-        assertThat(form).contains(new SimplePDFField(fieldName, MaritalStatus.MARRIED_LIVING_WITH_SPOUSE.toString()));
+        assertThat(fields).contains(new SimplePDFField(fieldName, MaritalStatus.MARRIED_LIVING_WITH_SPOUSE.toString()));
+    }
+
+    @Test
+    void shouldMapDatesToDateFields() {
+        Map<String, String> configMap = new HashMap<>();
+        String fieldName = "someName";
+        configMap.put("personalInfo.dateOfBirth", fieldName);
+        BenefitsApplication benefitsApplication = new BenefitsApplication();
+        LocalDate localDate = LocalDate.of(2020, 1, 31);
+        PersonalInfo personalInfo = PersonalInfo.builder()
+                .dateOfBirth(localDate)
+                .build();
+        benefitsApplication.setPersonalInfo(personalInfo);
+        PdfFieldMapper subject = new PdfFieldMapper(configMap);
+
+        List<PDFField> fields = subject.map(benefitsApplication);
+
+        assertThat(fields).contains(new DatePDFField(fieldName, localDate));
     }
 
     @Test
@@ -69,12 +86,12 @@ class PdfFieldMapperTest {
         BenefitsApplication benefitsApplication = new BenefitsApplication();
 
         PdfFieldMapper subject = new PdfFieldMapper(configMap);
-        List<PDFField> form = subject.map(benefitsApplication);
-        assertThat(form).isEmpty();
+        List<PDFField> fields = subject.map(benefitsApplication);
+        assertThat(fields).isEmpty();
     }
 
     @Test
-    void shouldMapMultipleChoiceField() {
+    void shouldMapListElementsToBinaryFields() {
         HashMap<String, String> configMap = new HashMap<>();
         configMap.put("programSelection.programs.?[#this.name() == 'FOOD']", "FOOD_PDF_FIELD");
         PdfFieldMapper subject = new PdfFieldMapper(configMap);
@@ -83,8 +100,8 @@ class PdfFieldMapperTest {
         ProgramSelection programSelection = new ProgramSelection();
         programSelection.setPrograms(List.of(FOOD));
         benefitsApplication.setProgramSelection(programSelection);
-        List<PDFField> form = subject.map(benefitsApplication);
+        List<PDFField> fields = subject.map(benefitsApplication);
 
-        assertThat(form).contains(new BinaryPDFField("FOOD_PDF_FIELD"));
+        assertThat(fields).contains(new BinaryPDFField("FOOD_PDF_FIELD"));
     }
 }

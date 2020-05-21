@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
@@ -16,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.MaritalStatus.LEGALLY_SEPARATED;
 import static org.codeforamerica.shiba.PdfFieldMapper.*;
 
-class ApplicationToCAFMapperTest {
+class CAFFieldFillerTest {
 
     private final CAFFieldFiller subject = new CAFFieldFiller();
 
@@ -35,6 +36,19 @@ class ApplicationToCAFMapperTest {
 
         assertThat(acroForm.getField(APPLICANT_FIRST_NAME).getValueAsString()).isEqualTo(expectedField1);
         assertThat(acroForm.getField(APPLICANT_LAST_NAME).getValueAsString()).isEqualTo(expectedField2);
+    }
+
+    @Test
+    void shouldMapDateFields() throws IOException {
+        Collection<PDFField> fields = List.of(
+                new DatePDFField(DATE_OF_BIRTH, LocalDate.of(2020, 1, 31))
+        );
+
+        PdfFile pdfFile = subject.fill(fields);
+
+        PDAcroForm acroForm = getPdAcroForm(pdfFile);
+
+        assertThat(acroForm.getField(DATE_OF_BIRTH).getValueAsString()).isEqualTo("01/31/2020");
     }
 
     @Test

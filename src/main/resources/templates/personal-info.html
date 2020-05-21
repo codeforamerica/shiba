@@ -10,7 +10,7 @@
                 <h2 class="text--centered spacing-above-0" th:text="#{intro-basic-info.getting-to-know-you}"></h2>
             </div>
             <div class="grid__item">
-                <form th:object="${personalInfo}" method="post" th:action="@{/personal-info}">
+                <form th:object="${personalInfoForm}" method="post" th:action="@{/personal-info}">
                     <div class="form-group spacing-below-25">
                         <label for="first-name" class="form-question"
                                th:text="#{personal-info.whats-your-first-name}"></label>

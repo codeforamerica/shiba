@@ -1,27 +1,22 @@
 package org.codeforamerica.shiba;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.Value;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
+import java.time.LocalDate;
 
-@Getter
-@Setter
+@Value
+@Builder
 public class PersonalInfo {
-    private @NotBlank String firstName;
-    private @NotBlank String lastName;
-    private String middleName;
-    private String otherName;
-    private String birthMonth;
-    private String birthDay;
-    private String birthYear;
-    private @Pattern(regexp = "\\d{9}|\\d{0}") String ssn;
-    private MaritalStatus maritalStatus;
-    private Sex sex;
-    private Boolean livedInMNWholeLife = false;
-    private String moveToMNMonth;
-    private String moveToMNDay;
-    private String moveToMNYear;
-    private String moveToMNPreviousCity;
+    String firstName;
+    String lastName;
+    String middleName;
+    String otherName;
+    String ssn;
+    MaritalStatus maritalStatus;
+    Sex sex;
+    LocalDate dateOfBirth;
+    Boolean livedInMNWholeLife;
+    String moveToMNPreviousCity;
+    LocalDate moveToMNDate;
 }

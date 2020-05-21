@@ -15,6 +15,8 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.validation.Valid;
 import java.util.Locale;
 
+import static org.codeforamerica.shiba.PersonalInfoForm.fromPersonalInfo;
+
 @Controller
 public class PageController {
     private final BenefitsApplication benefitsApplication;
@@ -91,16 +93,16 @@ public class PageController {
 
     @GetMapping("/personal-info")
     ModelAndView personalInfo() {
-        PersonalInfo personalInfo = benefitsApplication.getPersonalInfo();
-        return new ModelAndView("personal-info", "personalInfo", personalInfo);
+        PersonalInfoForm personalInfoForm = fromPersonalInfo(benefitsApplication.getPersonalInfo());
+        return new ModelAndView("personal-info", "personalInfoForm", personalInfoForm);
     }
 
     @PostMapping("/personal-info")
-    ModelAndView postPersonalInfo(@Valid @ModelAttribute PersonalInfo personalInfo, BindingResult bindingResult) {
+    ModelAndView postPersonalInfo(@Valid @ModelAttribute PersonalInfoForm personalInfoForm, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return new ModelAndView("personal-info", "personalInfo", personalInfo);
+            return new ModelAndView("personal-info", "personalInfoForm", personalInfoForm);
         }
-        benefitsApplication.setPersonalInfo(personalInfo);
+        benefitsApplication.setPersonalInfo(personalInfoForm.mapToPersonalInfo());
         return new ModelAndView("redirect:/success");
     }
 

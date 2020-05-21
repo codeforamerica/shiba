@@ -5,6 +5,7 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -18,6 +19,7 @@ public class PdfFieldMapper {
     public static final String CASH = "CASH";
     public static final String EMERGENCY = "EMERGENCY";
     public static final String MARITAL_STATUS = "MARITAL_STATUS";
+    public static final String DATE_OF_BIRTH = "DATE_OF_BIRTH";
     private final Map<String, String> pdfFieldMap;
 
     public PdfFieldMapper(Map<String, String> pdfFieldMap) {
@@ -39,6 +41,8 @@ public class PdfFieldMapper {
                         return new BinaryPDFField(entry.getValue());
                     } else if (value instanceof Enum) {
                         return new SimplePDFField(entry.getValue(), value.toString());
+                    } else if (value instanceof LocalDate) {
+                        return new DatePDFField(entry.getValue(), (LocalDate) value);
                     } else {
                         //noinspection ConstantConditions
                         throw new IllegalArgumentException(String.format(
