@@ -2,7 +2,7 @@ package org.codeforamerica.shiba;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
@@ -14,8 +14,8 @@ import java.util.Collection;
 public class CAFFieldFiller implements PDFFieldFiller {
     private final Resource applicationPDF;
 
-    public CAFFieldFiller() {
-        this.applicationPDF = new ClassPathResource("DHS-5223.pdf");
+    public CAFFieldFiller(@Value("classpath:DHS-5223.pdf") Resource applicationPDF) {
+        this.applicationPDF = applicationPDF;
     }
 
     @Override

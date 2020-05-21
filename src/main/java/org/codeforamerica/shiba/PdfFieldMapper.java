@@ -12,14 +12,6 @@ import java.util.stream.Collectors;
 
 @Component
 public class PdfFieldMapper {
-    public static final String APPLICANT_LAST_NAME = "APPLICANT_LAST_NAME";
-    public static final String APPLICANT_FIRST_NAME = "APPLICANT_FIRST_NAME";
-    public static final String NEED_INTERPRETER = "NEED_INTERPRETER";
-    public static final String FOOD = "FOOD";
-    public static final String CASH = "CASH";
-    public static final String EMERGENCY = "EMERGENCY";
-    public static final String MARITAL_STATUS = "MARITAL_STATUS";
-    public static final String DATE_OF_BIRTH = "DATE_OF_BIRTH";
     private final Map<String, String> pdfFieldMap;
 
     public PdfFieldMapper(Map<String, String> pdfFieldMap) {

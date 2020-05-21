@@ -3,6 +3,7 @@ package org.codeforamerica.shiba;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,98 +15,93 @@ import java.util.List;
 
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.MaritalStatus.LEGALLY_SEPARATED;
-import static org.codeforamerica.shiba.PdfFieldMapper.*;
 
 class CAFFieldFillerTest {
 
-    private final CAFFieldFiller subject = new CAFFieldFiller();
+    private final CAFFieldFiller subject = new CAFFieldFiller(new ClassPathResource("test.pdf"));
 
     @Test
     void shouldMapTextFields() throws IOException {
-        String expectedField1 = "Michael";
-        String expectedField2 = "Scott";
+        String expectedFieldValue = "Michael";
         Collection<PDFField> fields = List.of(
-                new SimplePDFField(APPLICANT_FIRST_NAME, expectedField1),
-                new SimplePDFField(APPLICANT_LAST_NAME, expectedField2)
+                new SimplePDFField("TEXT_FIELD", expectedFieldValue)
         );
 
         PdfFile pdfFile = subject.fill(fields);
 
         PDAcroForm acroForm = getPdAcroForm(pdfFile);
 
-        assertThat(acroForm.getField(APPLICANT_FIRST_NAME).getValueAsString()).isEqualTo(expectedField1);
-        assertThat(acroForm.getField(APPLICANT_LAST_NAME).getValueAsString()).isEqualTo(expectedField2);
+        assertThat(acroForm.getField("TEXT_FIELD").getValueAsString()).isEqualTo(expectedFieldValue);
     }
 
     @Test
     void shouldMapDateFields() throws IOException {
         Collection<PDFField> fields = List.of(
-                new DatePDFField(DATE_OF_BIRTH, LocalDate.of(2020, 1, 31))
+                new DatePDFField("DATE_FIELD", LocalDate.of(2020, 1, 31))
         );
 
         PdfFile pdfFile = subject.fill(fields);
 
         PDAcroForm acroForm = getPdAcroForm(pdfFile);
 
-        assertThat(acroForm.getField(DATE_OF_BIRTH).getValueAsString()).isEqualTo("01/31/2020");
+        assertThat(acroForm.getField("DATE_FIELD").getValueAsString()).isEqualTo("01/31/2020");
     }
 
     @Test
     void shouldMapToggleFields() throws IOException {
-        Collection<PDFField> fields = List.of(new TogglePDFField(NEED_INTERPRETER, true));
+        Collection<PDFField> fields = List.of(new TogglePDFField("TOGGLE_FIELD", true));
         PdfFile pdfFile = subject.fill(fields);
 
         PDAcroForm acroForm = getPdAcroForm(pdfFile);
 
-        assertThat(acroForm.getField(NEED_INTERPRETER).getValueAsString()).isEqualTo("LEFT");
+        assertThat(acroForm.getField("TOGGLE_FIELD").getValueAsString()).isEqualTo("LEFT");
     }
 
     @Test
     void shouldMapRadioFields() throws IOException {
-        Collection<PDFField> fields = List.of(new SimplePDFField(MARITAL_STATUS, LEGALLY_SEPARATED.toString()));
+        Collection<PDFField> fields = List.of(new SimplePDFField("RADIO_FIELD", "RADIO_OPTION_1"));
 
         PdfFile pdfFile = subject.fill(fields);
 
         PDAcroForm acroForm = getPdAcroForm(pdfFile);
 
-        assertThat(acroForm.getField(MARITAL_STATUS).getValueAsString()).isEqualTo(LEGALLY_SEPARATED.toString());
+        assertThat(acroForm.getField("RADIO_FIELD").getValueAsString()).isEqualTo("RADIO_OPTION_1");
     }
 
     @Test
     void shouldSetTheAppropriateNonValueForTheFieldType() throws IOException {
         Collection<PDFField> fields = List.of(
-                new SimplePDFField(APPLICANT_FIRST_NAME, null),
-                new TogglePDFField(NEED_INTERPRETER, null)
+                new SimplePDFField("TEXT_FIELD", null),
+                new TogglePDFField("TOGGLE_FIELD", null)
         );
 
         PdfFile pdfFile = subject.fill(fields);
 
         PDAcroForm acroForm = getPdAcroForm(pdfFile);
-        assertThat(acroForm.getField(APPLICANT_FIRST_NAME).getValueAsString()).isEqualTo("");
-        assertThat(acroForm.getField(NEED_INTERPRETER).getValueAsString()).isEqualTo("Off");
+        assertThat(acroForm.getField("TEXT_FIELD").getValueAsString()).isEqualTo("");
+        assertThat(acroForm.getField("TOGGLE_FIELD").getValueAsString()).isEqualTo("Off");
     }
 
     @Test
     void shouldMapMultipleChoiceFields() throws IOException {
         Collection<PDFField> fields = List.of(
-                new BinaryPDFField(FOOD),
-                new BinaryPDFField(EMERGENCY)
+                new BinaryPDFField("BINARY_FIELD_1"),
+                new BinaryPDFField("BINARY_FIELD_3")
         );
 
         PdfFile pdfFile = subject.fill(fields);
 
         PDAcroForm acroForm = getPdAcroForm(pdfFile);
-        assertThat(acroForm.getField(FOOD).getValueAsString()).isEqualTo("Yes");
-        assertThat(acroForm.getField(CASH).getValueAsString()).isEqualTo("Off");
-        assertThat(acroForm.getField(EMERGENCY).getValueAsString()).isEqualTo("Yes");
+        assertThat(acroForm.getField("BINARY_FIELD_1").getValueAsString()).isEqualTo("Yes");
+        assertThat(acroForm.getField("BINARY_FIELD_2").getValueAsString()).isEqualTo("Off");
+        assertThat(acroForm.getField("BINARY_FIELD_3").getValueAsString()).isEqualTo("Yes");
     }
 
     @Test
     void shouldReturnTheAppropriateFilename() {
         PdfFile pdfFile = subject.fill(emptyList());
 
-        assertThat(pdfFile.getFileName()).isEqualTo("DHS-5223.pdf");
+        assertThat(pdfFile.getFileName()).isEqualTo("test.pdf");
     }
 
     private PDAcroForm getPdAcroForm(PdfFile pdfFile) throws IOException {
