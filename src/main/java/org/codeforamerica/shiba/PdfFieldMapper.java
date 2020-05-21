@@ -30,7 +30,8 @@ public class PdfFieldMapper {
                     } else if (value instanceof Boolean) {
                         return new TogglePDFField(entry.getValue(), (Boolean) value);
                     } else if (value instanceof List) {
-                        return new BinaryPDFField(entry.getValue());
+                        //noinspection rawtypes
+                        return new BinaryPDFField(entry.getValue(), !((List) value).isEmpty());
                     } else if (value instanceof Enum) {
                         return new SimplePDFField(entry.getValue(), value.toString());
                     } else if (value instanceof LocalDate) {

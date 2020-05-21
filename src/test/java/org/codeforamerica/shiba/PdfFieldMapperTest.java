@@ -94,6 +94,7 @@ class PdfFieldMapperTest {
     void shouldMapListElementsToBinaryFields() {
         HashMap<String, String> configMap = new HashMap<>();
         configMap.put("programSelection.programs.?[#this.name() == 'FOOD']", "FOOD_PDF_FIELD");
+        configMap.put("programSelection.programs.?[#this.name() == 'NOT_PRESENT']", "NOT_PRESENT_PDF_FIELD");
         PdfFieldMapper subject = new PdfFieldMapper(configMap);
 
         BenefitsApplication benefitsApplication = new BenefitsApplication();
@@ -102,6 +103,9 @@ class PdfFieldMapperTest {
         benefitsApplication.setProgramSelection(programSelection);
         List<PDFField> fields = subject.map(benefitsApplication);
 
-        assertThat(fields).contains(new BinaryPDFField("FOOD_PDF_FIELD"));
+        assertThat(fields).containsOnly(
+                new BinaryPDFField("FOOD_PDF_FIELD", true),
+                new BinaryPDFField("NOT_PRESENT_PDF_FIELD", false)
+                );
     }
 }

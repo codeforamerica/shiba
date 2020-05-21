@@ -85,8 +85,9 @@ class CAFFieldFillerTest {
     @Test
     void shouldMapMultipleChoiceFields() throws IOException {
         Collection<PDFField> fields = List.of(
-                new BinaryPDFField("BINARY_FIELD_1"),
-                new BinaryPDFField("BINARY_FIELD_3")
+                new BinaryPDFField("BINARY_FIELD_1", true),
+                new BinaryPDFField("BINARY_FIELD_2", false),
+                new BinaryPDFField("BINARY_FIELD_3", true)
         );
 
         PdfFile pdfFile = subject.fill(fields);
