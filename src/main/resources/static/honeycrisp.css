@@ -5237,9 +5237,9 @@ Sidebar Nav
 }
 
 .form-width--2-character {
-    width: calc(5rem + 3ch);
+    width: calc(5.4rem + 2ch);
 }
 
 .form-width--4-character {
-    width: calc(5rem + 5ch);
+    width: calc(5.4rem + 4ch);
 }
