@@ -4,11 +4,10 @@ import org.springframework.context.MessageSource;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.stream.Collectors;
 
 public class ProgramSelectionPresenter {
     private final ProgramSelection programSelection;
@@ -32,15 +31,23 @@ public class ProgramSelectionPresenter {
     }
 
     public String getTitleString() {
-        SortedSet<BenefitProgram> programs = programSelection.getPrograms();
+        Set<BenefitProgram> programs = programSelection.getPrograms();
         if (programs.size() == 1) {
-            return this.benefitProgramNameMap.get(programs.first());
+            BenefitProgram benefitProgram = programs.iterator().next();
+            return this.benefitProgramNameMap.get(benefitProgram);
         } else {
-            BenefitProgram lastBenefitProgram = programs.last();
-            String commaSeparatedList = programs.headSet(lastBenefitProgram).stream()
-                    .map(this.benefitProgramNameMap::get)
-                    .collect(Collectors.joining(", "));
-            return commaSeparatedList.concat(String.format(" and %s", this.benefitProgramNameMap.get(lastBenefitProgram)));
+            Iterator<BenefitProgram> iterator = programs.iterator();
+            StringBuilder stringBuilder = new StringBuilder(benefitProgramNameMap.get(iterator.next()));
+            while (iterator.hasNext()) {
+                BenefitProgram benefitProgram = iterator.next();
+                if (iterator.hasNext()) {
+                    stringBuilder.append(", ");
+                } else {
+                    stringBuilder.append(" and ");
+                }
+                stringBuilder.append(benefitProgramNameMap.get(benefitProgram));
+            }
+            return stringBuilder.toString();
         }
     }
 }

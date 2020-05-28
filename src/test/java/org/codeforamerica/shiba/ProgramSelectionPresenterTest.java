@@ -4,10 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.support.StaticMessageSource;
 
-import java.util.List;
 import java.util.Locale;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,7 +27,7 @@ class ProgramSelectionPresenterTest {
     @Test
     void shouldNotAllowEmptyProgramSelection() {
         ProgramSelection programSelection = new ProgramSelection();
-        programSelection.setPrograms(new TreeSet<>());
+        programSelection.setPrograms(Set.of());
 
         assertThatThrownBy(() -> new ProgramSelectionPresenter(programSelection, messageSource, defaultLocale))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -38,8 +36,7 @@ class ProgramSelectionPresenterTest {
     @Test
     void shouldConstructPageTitle_withASingleProgram() {
         ProgramSelection programSelection = new ProgramSelection();
-        SortedSet<BenefitProgram> programs = new TreeSet<>(List.of(EMERGENCY));
-        programSelection.setPrograms(programs);
+        programSelection.setPrograms(Set.of(EMERGENCY));
         ProgramSelectionPresenter subject = new ProgramSelectionPresenter(programSelection, messageSource, defaultLocale);
 
         assertThat(subject.getTitleString()).isEqualTo("emergency");
@@ -48,8 +45,7 @@ class ProgramSelectionPresenterTest {
     @Test
     void shouldConstructPageTitle_withMultiplePrograms_inTheGivenLocale() {
         ProgramSelection programSelection = new ProgramSelection();
-        SortedSet<BenefitProgram> programs = new TreeSet<>(List.of(EMERGENCY, CHILD_CARE, FOOD, CASH));
-        programSelection.setPrograms(programs);
+        programSelection.setPrograms(Set.of(EMERGENCY, CHILD_CARE, FOOD, CASH));
         messageSource.addMessage("how-it-works.emergency", Locale.FRENCH, "emergency in french");
         messageSource.addMessage("how-it-works.child-care", Locale.FRENCH, "child care in french");
         messageSource.addMessage("how-it-works.food", Locale.FRENCH, "food in french");
@@ -65,21 +61,21 @@ class ProgramSelectionPresenterTest {
     @Test
     void shouldConstructPageTitle_withTwoPrograms() {
         ProgramSelection programSelection = new ProgramSelection();
-        SortedSet<BenefitProgram> programs = new TreeSet<>(List.of(EMERGENCY, CHILD_CARE));
-        programSelection.setPrograms(programs);
+        programSelection.setPrograms(Set.of(EMERGENCY, CHILD_CARE));
         ProgramSelectionPresenter subject = new ProgramSelectionPresenter(programSelection, messageSource, defaultLocale);
 
-        assertThat(subject.getTitleString()).isEqualTo("emergency and child care");
+        assertThat(subject.getTitleString()).matches(Pattern.compile("[a-z ]+ and [a-z ]+"));
+        assertThat(subject.getTitleString()).containsOnlyOnce("emergency");
+        assertThat(subject.getTitleString()).containsOnlyOnce("child care");
     }
 
     @Test
     void shouldConstructPageTitle_withMoreThanTwoPrograms() {
         ProgramSelection programSelection = new ProgramSelection();
-        SortedSet<BenefitProgram> programs = new TreeSet<>(List.of(EMERGENCY, CHILD_CARE, CASH, FOOD));
-        programSelection.setPrograms(programs);
+        programSelection.setPrograms(Set.of(EMERGENCY, CHILD_CARE, CASH, FOOD));
         ProgramSelectionPresenter subject = new ProgramSelectionPresenter(programSelection, messageSource, defaultLocale);
 
-        assertThat(subject.getTitleString()).containsPattern(Pattern.compile("[a-z ]+, [a-z ]+, [a-z ]+ and [a-z ]+"));
+        assertThat(subject.getTitleString()).matches(Pattern.compile("[a-z ]+, [a-z ]+, [a-z ]+ and [a-z ]+"));
         assertThat(subject.getTitleString()).containsOnlyOnce("emergency");
         assertThat(subject.getTitleString()).containsOnlyOnce("child care");
         assertThat(subject.getTitleString()).containsOnlyOnce("cash");

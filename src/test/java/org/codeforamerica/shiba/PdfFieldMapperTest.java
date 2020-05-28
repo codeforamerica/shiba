@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.BenefitProgram.FOOD;
@@ -101,7 +101,7 @@ class PdfFieldMapperTest {
 
         BenefitsApplication benefitsApplication = new BenefitsApplication();
         ProgramSelection programSelection = new ProgramSelection();
-        programSelection.setPrograms(new TreeSet<>(List.of(FOOD)));
+        programSelection.setPrograms(Set.of(FOOD));
         benefitsApplication.setProgramSelection(programSelection);
         List<PdfField> fields = subject.map(benefitsApplication);
 
