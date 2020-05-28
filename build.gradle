@@ -23,21 +23,24 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.postgresql:postgresql'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.apache.pdfbox:pdfbox:2.0.19'
+    implementation 'org.apache.commons:commons-lang3'
+
     testImplementation 'org.seleniumhq.selenium:selenium-java:3.141.59'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
-    implementation 'org.apache.pdfbox:pdfbox:2.0.19'
     testImplementation 'org.awaitility:awaitility:4.0.2'
     testImplementation 'io.github.bonigarcia:webdrivermanager:4.0.0'
-    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
-    implementation 'org.apache.commons:commons-lang3'
+    testImplementation 'uk.co.jemos.podam:podam:7.2.3.RELEASE'
 }
 
 compileJava.inputs.files(processResources)

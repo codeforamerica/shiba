@@ -9,6 +9,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+import uk.co.jemos.podam.api.PodamFactory;
+import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -18,7 +20,6 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 
@@ -33,13 +34,9 @@ public class XmlConfigXmlGeneratorIntegrationTest {
 
     @Test
     void shouldProduceAValidDocument() throws IOException, SAXException, ParserConfigurationException {
-        BenefitsApplication benefitsApplication = new BenefitsApplication();
-        benefitsApplication.setPersonalInfo(PersonalInfo.builder()
-                .firstName("someFirstName")
-                .maritalStatus(MaritalStatus.DIVORCED)
-                .dateOfBirth(LocalDate.of(2019, 2, 1))
-                .livedInMNWholeLife(false)
-                .build());
+        PodamFactory factory = new PodamFactoryImpl();
+        BenefitsApplication benefitsApplication = factory.manufacturePojoWithFullData(BenefitsApplication.class);
+
         ApplicationFile applicationFile = xmlGenerator.generate(benefitsApplication);
 
         Document document = byteArrayToDocument(applicationFile.getFileBytes());

@@ -15,7 +15,7 @@ xml:
       dateOfBirth: PERSONALINFO_DATE_OF_BIRTH
       moveToMNDate: PERSONALINFO_MOVETOMNDATE
     programSelection:
-      "[programs.?[#this.name() == 'FOOD'].isEmpty()?'':'FOOD']": PROGRAM1
-      "[programs.?[#this.name() == 'CASH'].isEmpty()?'':'CASH']": PROGRAM2
-      "[programs.?[#this.name() == 'CHILD_CARE'].isEmpty()?'':'CHILD_CARE']": PROGRAM3
-      "[programs.?[#this.name() == 'EMERGENCY'].isEmpty()?'':'EMERGENCY']": PROGRAM4
+      "[programs.^[#this.name() == 'FOOD']]": PROGRAM1
+      "[programs.^[#this.name() == 'CASH']]": PROGRAM2
+      "[programs.^[#this.name() == 'CHILD_CARE']]": PROGRAM3
+      "[programs.^[#this.name() == 'EMERGENCY']]": PROGRAM4

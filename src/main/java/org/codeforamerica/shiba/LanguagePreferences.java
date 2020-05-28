@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class LanguagePreferences {
-    private String spokenLanguage;
-    private String writtenLanguage;
+    private Language spokenLanguage;
+    private Language writtenLanguage;
     private Boolean needInterpreter;
 }

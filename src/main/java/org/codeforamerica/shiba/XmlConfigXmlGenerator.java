@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 public class XmlConfigXmlGenerator implements XmlGenerator {
@@ -45,7 +46,9 @@ public class XmlConfigXmlGenerator implements XmlGenerator {
                 } else if (value instanceof LocalDate) {
                     xmlValue = ((LocalDate) value).format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
                 } else if (value instanceof Enum) {
-                    xmlValue = enumMappings.get(((Enum<?>) value).name());
+                    xmlValue = Optional.ofNullable(enumMappings.get(((Enum<?>) value).name())).orElseThrow(() -> {
+                        throw new RuntimeException(String.format("XML Enum mapping missing for %s", value));
+                    });
                 } else if (value instanceof Boolean) {
                     xmlValue = value.toString();
                 } else {

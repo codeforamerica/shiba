@@ -8,6 +8,8 @@ import org.springframework.context.annotation.PropertySource;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.codeforamerica.shiba.BenefitProgram.*;
+import static org.codeforamerica.shiba.Language.*;
 import static org.codeforamerica.shiba.MaritalStatus.*;
 import static org.codeforamerica.shiba.Sex.FEMALE;
 import static org.codeforamerica.shiba.Sex.MALE;
@@ -32,6 +34,16 @@ public class XmlMappingConfiguration {
         xmlEnumConfigMap.put(WIDOWED.name(), "Widowed");
         xmlEnumConfigMap.put(MALE.name(), "Male");
         xmlEnumConfigMap.put(FEMALE.name(), "Female");
+        xmlEnumConfigMap.put(ENGLISH.name(), "English");
+        xmlEnumConfigMap.put(SPANISH.name(), "Spanish");
+        xmlEnumConfigMap.put(SOOMAALI.name(), "Somali");
+        xmlEnumConfigMap.put(VIETNAMESE.name(), "Vietnamese");
+        xmlEnumConfigMap.put(RUSSIAN.name(), "Russian");
+        xmlEnumConfigMap.put(HMOOB.name(), "Hmong");
+        xmlEnumConfigMap.put(FOOD.name(), "Supplemental Nutrition Assistance Program");
+        xmlEnumConfigMap.put(CASH.name(), "Cash");
+        xmlEnumConfigMap.put(EMERGENCY.name(), "Emergency Help");
+        xmlEnumConfigMap.put(CHILD_CARE.name(), "Child Care");
 
         return xmlEnumConfigMap;
     }

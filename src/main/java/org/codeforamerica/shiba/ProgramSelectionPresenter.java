@@ -4,7 +4,10 @@ import org.springframework.context.MessageSource;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
-import java.util.*;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
 import java.util.stream.Collectors;
 
 public class ProgramSelectionPresenter {
@@ -29,13 +32,12 @@ public class ProgramSelectionPresenter {
     }
 
     public String getTitleString() {
-        List<BenefitProgram> programs = programSelection.getPrograms();
+        SortedSet<BenefitProgram> programs = programSelection.getPrograms();
         if (programs.size() == 1) {
-            return this.benefitProgramNameMap.get(programs.get(0));
+            return this.benefitProgramNameMap.get(programs.first());
         } else {
-            int lastElementIndex = programs.size() - 1;
-            BenefitProgram lastBenefitProgram = programs.get(lastElementIndex);
-            String commaSeparatedList = programs.subList(0, lastElementIndex).stream()
+            BenefitProgram lastBenefitProgram = programs.last();
+            String commaSeparatedList = programs.headSet(lastBenefitProgram).stream()
                     .map(this.benefitProgramNameMap::get)
                     .collect(Collectors.joining(", "));
             return commaSeparatedList.concat(String.format(" and %s", this.benefitProgramNameMap.get(lastBenefitProgram)));

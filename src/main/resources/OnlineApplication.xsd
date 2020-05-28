@@ -555,7 +555,7 @@
 		</xsd:annotation>
 		<xsd:sequence>
 			<xsd:element name="HouseholdMember" type="model:HouseholdMemberType" minOccurs="0" maxOccurs="unbounded"/>
-			<xsd:element name="Program" type="xsd:string" minOccurs="0" maxOccurs="unbounded">
+			<xsd:element name="Program" type="model:ProgramType" minOccurs="0" maxOccurs="unbounded">
 				<xsd:annotation>
 					<xsd:documentation>F# 1; see model:ProgramType</xsd:documentation>
 				</xsd:annotation>
@@ -1120,12 +1120,12 @@
 				</xsd:annotation>
 				<xsd:complexType>
 					<xsd:sequence>
-						<xsd:element name="PrimarySpokenLanguage" type="xsd:string" minOccurs="0">
+						<xsd:element name="PrimarySpokenLanguage" type="model:LanguageType" minOccurs="0">
 							<xsd:annotation>
 								<xsd:documentation>F# 371; see model:LanguageType</xsd:documentation>
 							</xsd:annotation>
 						</xsd:element>
-						<xsd:element name="PreferredWrittenLanguage" type="xsd:string" minOccurs="0">
+						<xsd:element name="PreferredWrittenLanguage" type="model:LanguageType" minOccurs="0">
 							<xsd:annotation>
 								<xsd:documentation>F# 372; see model:LanguageType</xsd:documentation>
 							</xsd:annotation>
