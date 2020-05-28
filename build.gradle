@@ -35,6 +35,7 @@ dependencies {
     }
     implementation 'org.apache.pdfbox:pdfbox:2.0.19'
     testImplementation 'org.awaitility:awaitility:4.0.2'
+    testImplementation 'io.github.bonigarcia:webdrivermanager:4.0.0'
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     implementation 'org.apache.commons:commons-lang3'
 }

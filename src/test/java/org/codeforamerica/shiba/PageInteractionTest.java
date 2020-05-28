@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,7 +17,7 @@ public class PageInteractionTest extends AbstractBasePageTest {
 
     @Override
     @BeforeEach
-    void setUp() {
+    void setUp() throws IOException {
         super.setUp();
         String baseUrl = String.format("http://localhost:%s", localServerPort);
         driver.navigate().to(baseUrl + "/");
@@ -336,5 +337,23 @@ public class PageInteractionTest extends AbstractBasePageTest {
 
         successPage.downloadReceipt();
         await().until(() -> path.resolve("DHS-5223.pdf").toFile().exists());
+    }
+
+    @Test
+    void shouldDownloadXMLWhenClickDownloadXML() {
+        ChooseProgramsPage chooseProgramPage = landingPage
+                .clickPrimaryButton()
+                .clickPrimaryButton()
+                .clickPrimaryButton();
+        chooseProgramPage.chooseProgram("Emergency assistance");
+        HowItWorksPage howItWorksPage = chooseProgramPage.clickPrimaryButton();
+        PersonalInfoPage personalInfoPage = howItWorksPage.clickPrimaryButton().clickPrimaryButton();
+        personalInfoPage.enterFirstName("defaultFirstName");
+        personalInfoPage.enterLastName("defaultLastName");
+        personalInfoPage.enterSSN("000000000");
+        SuccessPage successPage = personalInfoPage.clickPrimaryButton();
+
+        successPage.downloadXML();
+        await().until(() -> path.resolve("ApplyMN.xml").toFile().exists());
     }
 }

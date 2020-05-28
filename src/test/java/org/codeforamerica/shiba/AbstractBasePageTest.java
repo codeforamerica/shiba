@@ -1,6 +1,8 @@
 package org.codeforamerica.shiba;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.OutputType;
@@ -47,20 +49,20 @@ abstract class AbstractBasePageTest {
         }
     }
 
-    @BeforeEach
-    void setUp() {
-        try {
-            ChromeOptions options = new ChromeOptions();
-            path = Files.createTempDirectory("");
-            HashMap<String, Object> chromePrefs = new HashMap<>();
-//        chromePrefs.put("profile.default_content_settings.popups", 0);
-            chromePrefs.put("download.default_directory", path.toString());
-            options.setExperimentalOption("prefs", chromePrefs);
-            options.addArguments("--headless");
-            driver = new ChromeDriver(options);
-        } catch (Exception e) {
+    @BeforeAll
+    static void beforeAll() {
+        WebDriverManager.chromedriver().setup();
+    }
 
-        }
+    @BeforeEach
+    void setUp() throws IOException {
+        ChromeOptions options = new ChromeOptions();
+        path = Files.createTempDirectory("");
+        HashMap<String, Object> chromePrefs = new HashMap<>();
+        chromePrefs.put("download.default_directory", path.toString());
+        options.setExperimentalOption("prefs", chromePrefs);
+        options.addArguments("--headless");
+        driver = new ChromeDriver(options);
     }
 
     @AfterEach

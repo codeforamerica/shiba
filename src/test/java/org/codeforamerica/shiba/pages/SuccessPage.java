@@ -4,9 +4,12 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 
-public class SuccessPage extends BasePage{
-    @FindBy(linkText="Download My Receipt")
+public class SuccessPage extends BasePage {
+    @FindBy(linkText = "Download My Receipt")
     WebElement downloadReceiptButton;
+
+    @FindBy(linkText = "Download XML")
+    WebElement downloadXMLButton;
 
     public SuccessPage(RemoteWebDriver driver) {
         super(driver);
@@ -14,5 +17,9 @@ public class SuccessPage extends BasePage{
 
     public void downloadReceipt() {
         downloadReceiptButton.click();
+    }
+
+    public void downloadXML() {
+        downloadXMLButton.click();
     }
 }
