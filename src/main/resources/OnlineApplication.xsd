@@ -1,0 +1,3966 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2011 rel. 3 (http://www.altova.com) by Minnesota Dept of Human Services (Minnesota Dept of Human 
+	Services) -->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:base="http://dhs.state.mn.us/2011/03/01/BaseApplication"
+	xmlns:model="http://dhs.state.mn.us/2011/03/01/OnlineApplication" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" targetNamespace="http://dhs.state.mn.us/2011/03/01/OnlineApplication"
+	elementFormDefault="qualified" attributeFormDefault="unqualified" jaxb:version="2.1" jaxb:extensionBindingPrefixes="xjc">
+	<xsd:annotation>
+		<xsd:appinfo>
+			<jaxb:schemaBindings>
+				<!-- the default package for jaxb to use for this schema. override in jaxb compiler if needed. -->
+				<jaxb:package name="us.mn.state.dhs.online.application.schema"/>
+			</jaxb:schemaBindings>
+		</xsd:appinfo>
+	</xsd:annotation>
+	<xsd:import namespace="http://dhs.state.mn.us/2011/03/01/BaseApplication" schemaLocation="BaseApplication.xsd"/>
+	<xsd:element name="OnlineApplication" type="model:OnlineApplicationType"/>
+	<xsd:complexType name="AbsentParentType">
+		<xsd:annotation>
+			<xsd:documentation>Absent parent info</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Name" type="model:NameType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 151</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="SharedCustodyInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 152 - Parent shares custody or visits
+						this child
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ParentNameOnBCInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 152 - Parents name is on the child's
+						Birth Certificate.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ROPSignedInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 152 - Parent signed Recoganition of
+						Paternity
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="COForPaternityInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 152 - There is court order for
+						paterity
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="COToProvideHIInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 152 - Parent is order by court to
+						provide Health Insurance
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ParentProvidesHIInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 152 - Parent provides Health Insurance
+						for this child
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DaysAndTimesWithParent" type="model:DayAndTimeType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>F# 153 - Days and times the child spend with this parent</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="AddressType">
+		<xsd:annotation>
+			<xsd:documentation>Address</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Line" type="xsd:string" minOccurs="0" maxOccurs="3">
+				<xsd:annotation>
+					<xsd:documentation>Street name/address line1/address line 2
+						etc.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="City" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="State" type="model:StateType" minOccurs="0"/>
+			<xsd:element name="Zip4" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:minLength value="4"/>
+						<xsd:maxLength value="4"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="Zip5" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:minLength value="5"/>
+						<xsd:maxLength value="5"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="County" type="model:CountyType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="AssetInfoType">
+		<xsd:annotation>
+			<xsd:documentation>Asset Info for household</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="LiquidAssetsInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="LiquidAsset" type="model:LiquidAssetType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>F# 220-224, 227,229 Cash, Checking, Saving,
+						Insurance, Stocks etc..
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="VehicleAssetsInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="VehicleAsset" type="model:VehicleAssetType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>F# 237 - 243 - Vehicles owned
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PropertyAssetsInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="PropertyAsset" type="model:PropertyAssetType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>F# 246 - 251 - Houses or realestate owned        </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="OtherAssetsInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="OtherAsset" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>F# 257 - 258 - Other assets      </xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="Type" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 257</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="Value" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 258</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="TrustInfo" type="model:TrustType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 264-265</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AnnuityInfo" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 261-262</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="OwnAnnuityInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 260</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="AnnuityRole" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 261, 262; see model:AnnuityRoleType</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="AssetsBoughtInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 266</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AssetsBought" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>F# 266 -267</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="Type" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 266; see model:AssetsBoughtType</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="DateBought" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 267</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="RejectedItemsInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="RejectedItemsInfo" type="model:RejectedItemsInfoType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>F# 278 - 281</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="TransferInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="TransferInfo" type="model:TransferInfoType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>F# 270 - 281 - Income/Items sold, trade or giveaway. Income/Items rejected.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AssetsReviewedInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AssetsReviewedBy" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 269</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="BusinessType">
+		<xsd:annotation>
+			<xsd:documentation>Business info</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="BusinessName" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 174</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="TypeOfBusiness" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 175</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DateStarted" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 176</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="WeeklyWorkingHours" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 177</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="YearlyIncome" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 178</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="OwnershipType" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 179; see model:OwnershipType</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ContinueBusinessInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 180</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DateBusinessEnd" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 181</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<xsd:element name="PersonalBankAccountInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 181a</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="BankAccountType" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 181b</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="BankName" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 181c</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="BankAccountBalance" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 181d</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DaysAndTimes" type="model:DayAndTimeType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>F# 194a</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="CodeDescriptionType">
+		<xsd:annotation>
+			<xsd:documentation>code and description</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Code" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="Description" type="xsd:string" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ContactInfoType">
+		<xsd:annotation>
+			<xsd:documentation>ContactInfo fields</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="HomelessInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 49</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="LivingSituation" type="model:LivingSituationType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 78; see model:LivingSituationType</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Person" type="model:NameType" minOccurs="0"/>
+			<xsd:element name="Address" type="model:AddressType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 50 -56</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MailingAddress" type="model:AddressType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 59 - 63</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Phone" type="model:PhoneType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 57, 58</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AlternatePhone" type="model:PhoneType" minOccurs="0"/>
+			<xsd:element name="Email" type="model:EmailType" minOccurs="0"/>
+			<xsd:element name="DifferentMailingAddressInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="LivingOnReservationInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 75</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ReservationName" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 76; see model:ReservationNameType</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="CostType">
+		<xsd:annotation>
+			<xsd:documentation> Employer/employee paid premium</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="EmployeePaid" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="EmployeePaidUnknownInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="EmployerPaid" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="EmployerPaidUnknownInd" type="xsd:boolean" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="CountyType">
+		<xsd:annotation>
+			<xsd:documentation>County name/code</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="CountyCode" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>see model:CountyCodeType</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="CountyName" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>see model:CountyNameType</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="DayAndTimeType">
+		<xsd:annotation>
+			<xsd:documentation> Day and time</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Day" type="model:DayType" minOccurs="0"/>
+			<xsd:element name="Time" type="xsd:string" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="EmploymentType">
+		<xsd:annotation>
+			<xsd:documentation>Employment</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="EmployerName" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 186</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="EmployerAddress" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 187</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="EmployerFEIN" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 187a</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DateStarted" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 188</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="JobEndedInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 189</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DateEnded" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 190</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="SeasonalJobInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 191</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PaycheckFrequency" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 192; see model:PaycheckFrequencyType</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PayRateUnit" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 193; see model:PayRateUnitType</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PayRateAmount" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 193</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="WeeklyHours" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 194</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DaysAndTimes" type="model:DayAndTimeType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>F# 194a</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DateOfFirstPaycheck" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 195</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DateOfLastPaycheck" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 196</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MonthlyGrossIncome" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 197</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ExpectedNextMonthAmount" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 198</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="EmploymentInfoType">
+		<xsd:annotation>
+			<xsd:documentation>Employment Info</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="SelfEmployedInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 172</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="SelfEmployment" type="model:BusinessType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>F# 174 - 181</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="EmployedInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 184</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Employment" type="model:EmploymentType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>F# 186 - 198</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ExpectedIncomeChangeInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 200</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ExpectedIncomeChangeDesc" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 201</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="EndedEmploymentInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 202</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AnyEmploymentLast12MonthsInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 202a</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AnyEmploymentLast36MonthsInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 202b</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>	
+			<xsd:element name="PreviousEmployment" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>F# 205-207</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="EmployerName" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 205</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="DateStarted" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 206</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="DateEnded" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 207</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="HouseholdInfoType">
+		<xsd:annotation>
+			<xsd:documentation>Household info</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="HouseholdMember" type="model:HouseholdMemberType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Program" type="xsd:string" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>F# 1; see model:ProgramType</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="HealthCareProgram" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 18; see model:HealthCareProgramType</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="OthersLivingWith" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation># 35-38</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="OthersLivingWithInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 35</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="LiveWithChildrenUnder19Ind" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 36</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="WifePregnantInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 36</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="Who" type="xsd:string" minOccurs="0" maxOccurs="unbounded">
+							<xsd:annotation>
+								<xsd:documentation>F# 37; see model:OthersLivingWithType</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="NumberOfChildren" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 38</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="LTCInfo" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 28 - 34, 64 - 74</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="HelpForLiveInHomeInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 28</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="HelpForLTCFacilityInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 29</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="LTCConsultationInd" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 30; see model:YesNoDontKnowType</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="LivingInLTCFacilityInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 31</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="VeteranInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 16a</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="PlanToReturnHomeInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 32</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="HaveASpouseInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 33</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="SpouseInLTCFacilityInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 34</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="LTCFacility" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 64 - 74</xsd:documentation>
+							</xsd:annotation>
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="Name" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 64</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="DateMoved" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 65</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="AddressBeforeMove" type="model:AddressType" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 66 - 71</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="InHospitalBeforeMoveInd" type="xsd:boolean" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 72</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="DateAdmittedHospital" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 73</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="DateLeftHospital" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 74</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="ShareIncomeWith" type="model:ShareIncomeWithType" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F#164</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="ExpeditedFSInfo" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 4 - 9</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="MonthlyIncome" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 5</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="CashInHand" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 6</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="MortgagePayment" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 7</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="UtilityPayment" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 8</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="SeasonalWorkerInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 9</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="UtilityPaymentsFor" minOccurs="0" maxOccurs="unbounded">
+							<xsd:annotation>
+								<xsd:documentation>F# 8a</xsd:documentation>
+							</xsd:annotation>
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="Name" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation> see UtilityType</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="Value" type="xsd:string" minOccurs="0"/>
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="AuthorizedRepresentative" minOccurs="0">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="LegalGuardianInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 82</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="SomeoneActAsRepresentativeInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 82</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="Representative" type="model:RepresentativeType" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 82 - 96</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="AnyDaycareProviderInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 305</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DaycareProviderInfo" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>F# 306-312</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="Name" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 306</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="Address" type="model:AddressType" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 307</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="Phone" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 308</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="DateStarted" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 309</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="GivingCareTo" minOccurs="0" maxOccurs="unbounded">
+							<xsd:annotation>
+								<xsd:documentation>F# 310, 311, 312</xsd:documentation>
+							</xsd:annotation>
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="CareProvidedInd" type="xsd:boolean" minOccurs="0"/>
+									<xsd:element name="Name" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 310</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="Relationship" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 311; see model:ProviderRelationshipType</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="RelationshipOther" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 311</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="DaycareLocation" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 312; see model:DaycareLocationType</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="MovedInOutInfo" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>F# 156 - 160</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="MovedInOrOutInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 156</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="Name" type="model:NameType" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 157</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="Relationship" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 158; see model:RelationshipType</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="MovedInOrOut" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 159; see model:MovedInOrOutType</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="DateOfMove" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 160</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="EarnedIncomeInfo" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 162 - 170, 183, 200,201</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="GrossMonthlyIncome" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 162</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="BusinessNetWorthOver200KInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 183</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="LivingExpensePaymentDesc" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 219</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AssetsReviewed" type="xsd:string" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>F# 268; see model:YesNoDontKnowType</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="HouseholdExpenseInfo" minOccurs="0">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="SpousePayHouseCostInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 282</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="GarageRentBilledInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 285</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="SubsidizedRentInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 286</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="ExpectedExpenseChange" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 287</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="ExpectedExpenseChangeNoneInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 287</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="HasACInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 290</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="PayACCostInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 291 - Responsible to pay air conditioning
+									costs
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="LIHEAPInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 292 - Getting Low Income Home Energy
+									Assistance Program
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="HouseholdHealthInsuranceInfo" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 328 - 358 </xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="HadLTCInsuranceInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 328</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="LTCInsurance" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 329-333</xsd:documentation>
+							</xsd:annotation>
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="PayingBenefitsNowInd" type="xsd:boolean" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 329</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="PayingBenefitsEverInd" type="xsd:boolean" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 330</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="DateBenefitStopped" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 331</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="PolicyHolderName" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 332</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="InsuranceCompanyName" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 333</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="HaveHealthInsuranceInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 334</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="AgreedToContactInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 335</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="HealthInsurance" minOccurs="0" maxOccurs="unbounded">
+							<xsd:annotation>
+								<xsd:documentation>F# 335-352</xsd:documentation>
+							</xsd:annotation>
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="CompanyName" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 336</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="Address" type="model:AddressType" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 337</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="PolicyHolderName" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 338</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="DateStart" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 339</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="DateEnd" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 340</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="PolicyNumber" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 341</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="CoverageType" type="xsd:string" minOccurs="0" maxOccurs="unbounded">
+										<xsd:annotation>
+											<xsd:documentation>F# 342; see model:CoverageType</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="WhoCovered" type="xsd:string" minOccurs="0" maxOccurs="unbounded">
+										<xsd:annotation>
+											<xsd:documentation>F# 343</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="CoverCancerTreatmentInd" type="xsd:boolean" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 342a</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="EmployerPaidInd" type="xsd:boolean" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 344</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="PremiumAmount" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 345</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="PremiumFrequency" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 346; see model:PremiumFrequencyType</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="CostOfInsurance" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 347-352</xsd:documentation>
+										</xsd:annotation>
+										<xsd:complexType>
+											<xsd:sequence>
+												<xsd:element name="ForEmployee" type="model:CostType" minOccurs="0">
+													<xsd:annotation>
+														<xsd:documentation>F# 348,349</xsd:documentation>
+													</xsd:annotation>
+												</xsd:element>
+												<xsd:element name="ForSpouse" type="model:CostType" minOccurs="0">
+													<xsd:annotation>
+														<xsd:documentation>F# 351,352</xsd:documentation>
+													</xsd:annotation>
+												</xsd:element>
+											</xsd:sequence>
+										</xsd:complexType>
+									</xsd:element>
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="NonReimbursedPaymentInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 334/335</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="OtherInsurance" minOccurs="0" maxOccurs="unbounded">
+							<xsd:annotation>
+								<xsd:documentation>F# 356-358</xsd:documentation>
+							</xsd:annotation>
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="CoverageType" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F3# 356; see model:BaseCoverageType</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="PremiumAmount" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 357</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="PremiumFrequency" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 358; see model:PremiumFrequencyType</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="MiscellaneousInfo" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 371-374</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="PrimarySpokenLanguage" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 371; see model:LanguageType</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="PreferredWrittenLanguage" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 372; see model:LanguageType</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="NeedInterpreterInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 373</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="MailVoterRegistrationCardInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 374</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="PrincipalWageEarner" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 360</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AnyHelpForLiveInHomeInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyoneHavePrescribedDietInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyoneNeedHelpPayingMedicalBillInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyoneGettingCVTServicesInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyoneHaveAccidentMedicalCareInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyoneHaveDisabilityInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyoneUnableToWorkInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyoneUnableToBuyFoodInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyoneReturnedFromMilitaryInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyoneBuyOrFixFoodInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyJobStatusChangeInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyExpectedIncomeChangeInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyoneSelfEmployedInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyoneEmployedInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyEndedEmploymentInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyEmploymentLast12MonthsInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyEmploymentLast36MonthsInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyoneReceivedBenefitsInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyoneMovedInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyoneLivedInMNRecentlyInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyonePregnantInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyoneReceivedCashFSInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyUnearnedIncomeInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyOtherAssetsInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyLiquidAssetInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyVehicleAssetInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyNetworthAssetInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyPropertyAssetInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyoneOwnAnnuityInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 260</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AnyoneCreatedTrustInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 263</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AnyAssetsBoughtInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 266</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AnyRejectedItemsInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyTransfersInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyHousingExpensesInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyUtilityExpensesInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyoneHaveWorkExpensesInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyonePayChildcareInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyChildGetCareInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyonePaySupportInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyHealthInsuranceEndedInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyEmployerHealthInsuranceStoppedInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyEmployerHealthInsuranceOptoutInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyEmployerHealthInsuranceInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyonePayMedicalExpensesInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyOtherStateMedicalBenefitsInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyoneRunningFromLawInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyoneHaveParoleViolationInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyoneFoundGuiltyInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyoneConvictedForFraudInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyoneConvictedDrugFelonInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AllMakeMNHomeInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyChildrenInArmedForcesInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="AnyChildrenNotUnderLegalControlInd" type="xsd:boolean" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="HouseholdMemberType">
+		<xsd:annotation>
+			<xsd:documentation>Household member info</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="PersonalInfo" type="model:PersonType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 10 - 16a, 115, 116</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Relationship" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 39; see model:RelationshipType</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Spouse" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 33, 37a-37c</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="PersonalInfo" type="model:PersonType" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 10 - 16a, 115, 116</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="EmploymentInfo" type="model:EmploymentInfoType" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 172, 174-181, 186-198, 202, 205-207
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="UnearnedIncomeInfo" type="model:UnearnedIncomeInfoType" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 209 - 219</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="AssetInfo" type="model:AssetInfoType" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 220 - 258</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="HouseholdSpouseIndex" type="xsd:int" minOccurs="0"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="Dependent" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>F# 33, 37a-37c, 165 - 167, 168</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="PersonalInfo" type="model:PersonType" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 10 - 16a, 115, 116</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="Relationship" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 169; see model:ShareIncomeRelationshipType</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="LiveWithSpouseInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 170</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="EmploymentInfo" type="model:EmploymentInfoType" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 172, 174-181, 186-198, 202, 205-207
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="UnearnedIncomeInfo" type="model:UnearnedIncomeInfoType" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 209 - 219</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="Program" type="xsd:string" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>F# 17; see model:ProgramType</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="HealthCareProgram" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 18; see model:HealthCareProgramType</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="LivingAway" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 44 - 48</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="AwayFromHomeInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 44</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="DateLeft" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 46</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="Reason" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 47; see model:AwayReasonType</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="ReasonOther" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 47</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="DateOfReturn" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 48</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="ResidencyInfo" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 98 - 100</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="LivedInMNRecentlyInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 98a</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="DateRecentMoveToMN" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 98</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="NoPlanToMakeMNHomeInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 99</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="ReasonNotToMove" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 100</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="SchoolInfo" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 105 - 112</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="GradeCompleted" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 105; see model:GradeCompletedType</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="CurrentSchoolStatus" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 106; see model:CurrentSchoolStatusType</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="CurrentSchoolDetails" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 107 - 110</xsd:documentation>
+							</xsd:annotation>
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="Grade" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 107; see model:GradeType</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="NameOfSchool" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 108</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="CourseOfStudy" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 109</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="TimeAtSchool" type="model:DayAndTimeType" minOccurs="0" maxOccurs="unbounded">
+										<xsd:annotation>
+											<xsd:documentation>F# 110</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="PlanToAttendInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 111</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="GraduateBy19Ind" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 112</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="CitizenshipInfo" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 114, 117 - 122</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="CitizenshipInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 117</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="SSNInfo" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 114</xsd:documentation>
+							</xsd:annotation>
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="AppliedInd" type="xsd:boolean" minOccurs="0"/>
+									<xsd:element name="SSN" type="xsd:string" minOccurs="0"/>
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="PlaceBorn" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 118</xsd:documentation>
+							</xsd:annotation>
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="City" type="xsd:string" minOccurs="0"/>
+									<xsd:element name="State" type="model:StateType" minOccurs="0"/>
+									<xsd:element name="Country" type="xsd:string" minOccurs="0"/>
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="ImmigrationStatus" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 119 - 122</xsd:documentation>
+							</xsd:annotation>
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="Status" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 119; see model:ImmigrationStatusType</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="StatusOther" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 119</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="DateEntered" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 120</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="HasSponsorInd" type="xsd:boolean" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 121</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="SponsorInfo" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 122</xsd:documentation>
+										</xsd:annotation>
+										<xsd:complexType>
+											<xsd:sequence>
+												<xsd:element name="Name" type="model:NameType" minOccurs="0"/>
+												<xsd:element name="Address" type="model:AddressType" minOccurs="0"/>
+											</xsd:sequence>
+										</xsd:complexType>
+									</xsd:element>
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="ChildSupportInfo" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 150 - 155 </xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="ChildLivesWith" type="model:ChildLivesWithType" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 150</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="NeedChildSupportHelpInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 154 - Need medical or cash child
+									support
+									help
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="ParentInfo" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 151 - 155 </xsd:documentation>
+							</xsd:annotation>
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="FatherUnknownInd" type="xsd:boolean" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 151</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="MotherUnknownInd" type="xsd:boolean" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 151</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="Father" type="model:AbsentParentType" minOccurs="0"/>
+									<xsd:element name="Mother" type="model:AbsentParentType" minOccurs="0"/>
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="AdditionalInfo" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 28 - 34, 64 - 74, 77-81, 123-148
+					</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="Pregnant" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 40, 41</xsd:documentation>
+							</xsd:annotation>
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="PregnantInd" type="xsd:boolean" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 40</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="DueDate" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>41</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="InArmedForceInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 42</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="NotInLegalControlInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 43</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="CashFoodSupport" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 77 - 81</xsd:documentation>
+							</xsd:annotation>
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="ReceivedCashFSInd" type="xsd:boolean" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 77</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="TypeOfBenefit" type="xsd:string" minOccurs="0" maxOccurs="unbounded">
+										<xsd:annotation>
+											<xsd:documentation>F# 79;model:BenefitType</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="Where" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 80</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="When" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 81</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="UnableToWork" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 123 - 126</xsd:documentation>
+							</xsd:annotation>
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="DisabilityInd" type="xsd:boolean" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 123</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="NonDisabilityInd" type="xsd:boolean" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 124</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="NonDisabilityReason" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 126</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="WorkChange" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 127 - 130</xsd:documentation>
+							</xsd:annotation>
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="WorkChangeInd" type="xsd:boolean" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 127</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="Reason" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 129; see model:WorkChangeReasonType</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="DateHappened" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 130</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="AccidentMedicalCareInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 131</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="AccidentMedicalCare" minOccurs="0" maxOccurs="unbounded">
+							<xsd:annotation>
+								<xsd:documentation>F# 131 - 135</xsd:documentation>
+							</xsd:annotation>
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="AccidentMedicalCareInd" type="xsd:boolean" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 131 - Deprecated: use the field in parent</xsd:documentation>
+											<xsd:appinfo>
+												<jaxb:property>
+													<jaxb:javadoc>@deprecated use the same-named field in parent
+													</jaxb:javadoc>
+												</jaxb:property>
+											</xsd:appinfo>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="Description" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 132</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="DateOfAccident" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 133</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="TypeOfAccident" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 134; see model:AccidentType</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="LawsuitInd" type="xsd:boolean" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 135</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="PrescribedDiet" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 137 - 139</xsd:documentation>
+							</xsd:annotation>
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="PrescribedDietInd" type="xsd:boolean" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 137</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="PrescribedDietType" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 139</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="CVTServiceInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 140 Services from Center for Victims of
+									Torture
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="ActiveMilitaryDuty" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 142 - 143</xsd:documentation>
+							</xsd:annotation>
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="ReturnedInd" type="xsd:boolean" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 142</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="DateDutyEnd" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 143</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="PayMedicalBillHelp" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 145 - 146</xsd:documentation>
+							</xsd:annotation>
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="NeedHelpInd" type="xsd:boolean" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 145</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="Month" type="xsd:string" minOccurs="0" maxOccurs="unbounded">
+										<xsd:annotation>
+											<xsd:documentation>F# 146</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="NotBuyOrFixFoodInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 147</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="UnableToBuyOrFixFoodInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 148</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="LegalGuardian" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 82 - 96</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="HasLegalGuardianInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 82</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="Name" type="model:NameType" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 83 - 84, 90 - 92</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="PayFeeInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 86</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="FeeAmount" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 87</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="FeeFrequency" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 88; see model:PayFrequencyType</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="WaiverServiceInfo" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 28, 30, 33</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="HelpForLiveInHomeInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 28</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="LTCConsultationInd" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 30; see model:YesNoDontKnowType</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="HasSpouseInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 33</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="SpouseInLTCFacilityInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 34</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="ShareIncomeWith" type="model:ShareIncomeWithType" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F#164</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="EmploymentInfo" type="model:EmploymentInfoType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 172, 174-181, 186-198, 202, 205-207
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="UnearnedIncomeInfo" type="model:UnearnedIncomeInfoType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 209 - 219</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AssetInfo" type="model:AssetInfoType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 220 - 258</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ExpenseInfo" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 283-321</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="HousingExpense" type="model:ExpenseType" minOccurs="0" maxOccurs="unbounded">
+							<xsd:annotation>
+								<xsd:documentation>F# 283 -287</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="UtilityExpense" type="model:ExpenseType" minOccurs="0" maxOccurs="unbounded">
+							<xsd:annotation>
+								<xsd:documentation>F# 288 - 292</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="WorkExpense" type="model:ExpenseType" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 293-296</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="DaycareExpense" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 297-312</xsd:documentation>
+							</xsd:annotation>
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="HasExpenseInd" type="xsd:boolean" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 297</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="Amount" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 299</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="Reason" type="xsd:string" minOccurs="0" maxOccurs="unbounded">
+										<xsd:annotation>
+											<xsd:documentation>F# 300; see model:DaycareHelpReasonType</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="JobCounselorName" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 301</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="JobCounselorPhone" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 302</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="GetsDaycareInd" type="xsd:boolean" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 303</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="DayAndTime" type="model:DayAndTimeType" minOccurs="0" maxOccurs="unbounded">
+										<xsd:annotation>
+											<xsd:documentation>F# 304</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="SupportPaymentExpense" minOccurs="0" maxOccurs="unbounded">
+							<xsd:annotation>
+								<xsd:documentation>F# 314-319</xsd:documentation>
+							</xsd:annotation>
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="PaymentType" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 317; see model:SupportPaymentType</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="Amount" type="xsd:string" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 318</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="PayingNowInd" type="xsd:boolean" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>F# 319</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="MedicalExpense" type="model:ExpenseType" minOccurs="0" maxOccurs="unbounded">
+							<xsd:annotation>
+								<xsd:documentation>F# 320-321</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="PaysHousingExpenseInd" type="xsd:boolean" minOccurs="0"/>
+						<xsd:element name="PaysUtilityExpenseInd" type="xsd:boolean" minOccurs="0"/>
+						<xsd:element name="PaysWorkRelatedExpenseInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 293, 320</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="SupportPaymentInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 314</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="PaysMedicalExpensesInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 320</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="HealthInsuranceInfo" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 322 - 327</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="OtherStateMedicalBenefitsInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 322 </xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="State" type="model:StateType" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 323</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="EmpHealthInsuranceInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 324</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="EmpHealthInsuranceOptoutInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 325</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="DateHappened" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 325a - Date happened
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="EmpHealthInsuranceStoppedInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 326</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="DateStopped" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 326a - Date employer stopped healthinsurance
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="HealthInsuranceEndedInd" type="xsd:boolean" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 327</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="DateEnded" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>F# 327a - Health insurace end date
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="FoundGuiltyInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 362</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ConvictedForFraudInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 363</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="RunningFromLawInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 364</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ConvictedDrugFelonInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 365</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ParoleViolationInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 366</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="BusinessRules" minOccurs="0">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="PageGroup" type="model:RuleType" minOccurs="0" maxOccurs="unbounded"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ExpenseType">
+		<xsd:annotation>
+			<xsd:documentation>Housing expenses</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Type" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 283b, 288b, 295, 321; see model:HousingExpenseNameType,model:UtilityExpenseNameType
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Amount" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 284, 289</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Frequency" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 284b, 289b; see model:IncomeFrequencyType</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="IncomeType">
+		<xsd:annotation>
+			<xsd:documentation>Income info</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Type" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 209; see model:IncomeSourceType</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="GrossAmountUnit" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 212; see model:IncomeUnitType</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="GrossAmount" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 212</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DateStart" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 213</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="IncomedEndedInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 214</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DateEnded" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 215</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="HowOftenReceived" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 216; see model:IncomeFrequencyType</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="OtherType" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="HasRepresentativePayeeFee" type="xsd:string" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="LiquidAssetType">
+		<xsd:annotation>
+			<xsd:documentation>Asset info</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Type" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 220; see model:LiquidAssetNameType</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Value" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 225</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="HolderName" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 224</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AssetOtherType" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 257</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="CashSurrenderValue" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 225b</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="NameType">
+		<xsd:annotation>
+			<xsd:documentation>Name</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="FirstName" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="MiddleName" type="xsd:string" minOccurs="0" maxOccurs="3"/>
+			<xsd:element name="LastName" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="Prefix" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>see NamePrefixType</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Suffix" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>see NameSuffixType</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="OnlineApplicationType">
+		<xsd:annotation>
+			<xsd:documentation>Online Application</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="base:BaseApplicationType">
+				<xsd:sequence>
+					<xsd:element name="FilledBy" type="xsd:string" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>F# 2;see model:FilledByType</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="MNCCANumber" type="xsd:string" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>F# 3</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="AgentID" type="xsd:string" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>F# 3</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="Organization" type="xsd:string" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>F# 3</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="ContactInfo" type="model:ContactInfoType" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>F# 49 - 58, 75, 76</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="HouseholdInfo" type="model:HouseholdInfoType" minOccurs="0"/>
+					<xsd:element name="MFPPProviderInfo" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>F# 19-2, 20 - 27</xsd:documentation>
+						</xsd:annotation>
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="HelpingApplicationInd" type="xsd:boolean" minOccurs="0">
+									<xsd:annotation>
+										<xsd:documentation>F# 19-2</xsd:documentation>
+									</xsd:annotation>
+								</xsd:element>
+								<xsd:element name="Provider" type="model:ProviderType" minOccurs="0">
+									<xsd:annotation>
+										<xsd:documentation>F# 20 - 26</xsd:documentation>
+									</xsd:annotation>
+								</xsd:element>
+								<xsd:element name="PEStatus" type="xsd:string" minOccurs="0">
+									<xsd:annotation>
+										<xsd:documentation>F# 27 Presumptive Eligibility Status; see model:PEStatusType
+										</xsd:documentation>
+									</xsd:annotation>
+								</xsd:element>
+							</xsd:sequence>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="BCCCProviderInfo" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>F# 19-1, 20 - 26, 27a</xsd:documentation>
+						</xsd:annotation>
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="HelpingApplicationInd" type="xsd:boolean" minOccurs="0">
+									<xsd:annotation>
+										<xsd:documentation>F# 19-1</xsd:documentation>
+									</xsd:annotation>
+								</xsd:element>
+								<xsd:element name="Provider" type="model:ProviderType" minOccurs="0">
+									<xsd:annotation>
+										<xsd:documentation>F# 20 - 26</xsd:documentation>
+									</xsd:annotation>
+								</xsd:element>
+								<xsd:element name="DateOfDiagnosis" type="xsd:string" minOccurs="0">
+									<xsd:annotation>
+										<xsd:documentation>F# 27a</xsd:documentation>
+									</xsd:annotation>
+								</xsd:element>
+							</xsd:sequence>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="SendTo" minOccurs="0" maxOccurs="unbounded">
+						<xsd:annotation>
+							<xsd:documentation>F# 370a</xsd:documentation>
+						</xsd:annotation>
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="Name" type="xsd:string"/>
+								<xsd:element name="ValueInd" type="xsd:boolean" minOccurs="0"/>
+							</xsd:sequence>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="Comments" type="xsd:string" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>F# 375</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="Disclosure" minOccurs="0">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="DeclaredBy" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+								<xsd:element name="DateDeclared" type="xsd:string" minOccurs="0"/>
+								<xsd:element name="ReadPrivacyNoticeInd" type="xsd:boolean" minOccurs="0"/>
+								<xsd:element name="ReadClientRightsInd" type="xsd:boolean" minOccurs="0"/>
+								<xsd:element name="ReadShareInfoAuthorizationInd" type="xsd:boolean" minOccurs="0"/>
+								<xsd:element name="ReadEligibilityVerificationInd" type="xsd:boolean" minOccurs="0"/>
+								<xsd:element name="ReadImportInformationInd" type="xsd:boolean" minOccurs="0"/>
+								<xsd:element name="ReadImportInformationIndOne" type="xsd:boolean" minOccurs="0"/>
+								<xsd:element name="ReadPenaltyWarningsInd" type="xsd:boolean" minOccurs="0"/>
+								<xsd:element name="ReadEmploymentServiceRegistrationInd" type="xsd:boolean" minOccurs="0"/>
+								<xsd:element name="ReadDomesticViolenceInfoInd" type="xsd:boolean" minOccurs="0"/>
+								<xsd:element name="ReadDisabilityInd" type="xsd:boolean" minOccurs="0"/>
+								<xsd:element name="ReadMinnesotaEBTInd" type="xsd:boolean" minOccurs="0"/>
+								<xsd:element name="ReadCivilRightsInd" type="xsd:boolean" minOccurs="0"/>
+								<xsd:element name="ReadCcapFraudInd" type="xsd:boolean" minOccurs="0"/>
+								<xsd:element name="ReadReportingRespInd" type="xsd:boolean" minOccurs="0"/>
+								<xsd:element name="ReadWorkRegNoticeInd" type="xsd:boolean" minOccurs="0"/>
+								<xsd:element name="ReadVoluntaryLeaveJobInd" type="xsd:boolean" minOccurs="0"/>
+								<xsd:element name="DisclosureAgreementsInd" type="xsd:boolean" minOccurs="0"/>
+								<xsd:element name="VerificationStatus" minOccurs="0" maxOccurs="unbounded">
+									<xsd:complexType>
+										<xsd:sequence>
+											<xsd:element name="Name" type="xsd:string" minOccurs="0"/>
+											<xsd:element name="Status" type="xsd:string" minOccurs="0">
+												<xsd:annotation>
+													<xsd:documentation>see VerificationStatusType</xsd:documentation>
+												</xsd:annotation>
+											</xsd:element>
+										</xsd:sequence>
+									</xsd:complexType>
+								</xsd:element>
+							</xsd:sequence>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="WaterMark" type="xsd:string" minOccurs="0"/>
+					<xsd:element name="BusinessRules" minOccurs="0">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="VisitedPage" type="model:RuleType" minOccurs="0" maxOccurs="unbounded"/>
+								<xsd:element name="PageGroup" type="model:RuleType" minOccurs="0" maxOccurs="unbounded"/>
+								<xsd:element name="MiscData" type="model:RuleType" minOccurs="0" maxOccurs="unbounded"/>
+								<xsd:element name="ApplicationState" type="model:RuleType" minOccurs="0" maxOccurs="unbounded"/>
+							</xsd:sequence>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="Reference" minOccurs="0">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="Data" minOccurs="0" maxOccurs="unbounded">
+									<xsd:complexType>
+										<xsd:sequence>
+											<xsd:element name="Name" type="xsd:string" minOccurs="0"/>
+											<xsd:element name="Value" minOccurs="0" maxOccurs="unbounded"/>
+										</xsd:sequence>
+									</xsd:complexType>
+								</xsd:element>
+							</xsd:sequence>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="PersonType">
+		<xsd:annotation>
+			<xsd:documentation>Person Info</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Name" type="model:NameType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 10 -12</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="OtherNameInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 13</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="OtherName" type="model:NameType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>F# 13</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Gender" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 14; see model:GenderType</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MaritalStatus" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 15; see model:MaritalStatusType</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DOB" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 16</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Age" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 16</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Race" type="xsd:string" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>F# 115; see model:RaceType</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="HispanicLatinInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 116</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="PhoneType">
+		<xsd:annotation>
+			<xsd:documentation>Phone type</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="PhoneNumber" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="ReceiveMessageInd" type="xsd:boolean" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ProviderType">
+		<xsd:annotation>
+			<xsd:documentation>Provider info</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Name" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 20</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Address" type="model:AddressType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 21 - 24</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="NPINumber" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 25</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Phone" type="model:PhoneType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 26</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="PropertyAssetType">
+		<xsd:annotation>
+			<xsd:documentation>PropertyAsset info</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Type" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 246; see model:PropertyAssetNameType</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AssetOtherType" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 257</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PropertyAddress" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 249</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="WhoLivesHere" type="xsd:string" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>F# 250; see model:LivesHereType</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Value" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 251</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="RejectedItemsInfoType">
+		<xsd:sequence>
+			<xsd:element name="Item" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 279                       </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Value" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 280 - Value of the item
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DateHappened" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 281 - Date happened
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="RepresentativeType">
+		<xsd:annotation>
+			<xsd:documentation>Representative</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Name" type="model:NameType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 83 - 84, 90 - 92</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Relationship" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 93</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MailingAddress" type="model:AddressType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 94</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Phone" type="model:PhoneType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 95</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Role" type="xsd:string" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>F# 96; see model:RepresentativeRoleType</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="RuleType">
+		<xsd:annotation>
+			<xsd:documentation>BusinessRules</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Name" type="xsd:string"/>
+			<xsd:element name="Value" type="xsd:string" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ShareIncomeWithType">
+		<xsd:sequence>
+			<xsd:element name="HouseholdIndex" type="xsd:int" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="OtherFamilyMembersInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="ShareIncomeWithSpouseInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 163</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ShareIncomeWithFamilyInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 164</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="StateType">
+		<xsd:annotation>
+			<xsd:documentation>State name/code</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="StateCode" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>see model:StateCodeType</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="StateName" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>see model:StateNameType</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="TransferInfoType">
+		<xsd:sequence>
+			<xsd:element name="Item" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 271,279 - Item/Income sold or rejected
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="TransferType" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 272 - What was done with the accepteditem,
+						eg: Sold or Trade; see model:TransferType
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DateHappened" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 273, 281 - Date happened
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ReceivedBy" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 274 - who bought this item
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Value" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 275,280 - Value of the item
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="SoldPrice" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 276 - How much got paid for this item
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="TrustType">
+		<xsd:sequence>
+			<xsd:element name="CreatedTrustInd" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 264</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DateCreated" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 265</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="UnearnedIncomeInfoType">
+		<xsd:annotation>
+			<xsd:documentation>Unearned Income</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="UnearnedIncomeInd" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="UnearnedIncome" type="model:IncomeType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>F# 209 - 216, 218</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="EducationExpensePayment" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 217</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="VehicleAssetType">
+		<xsd:annotation>
+			<xsd:documentation>vehicle info</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Type" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 237; see model:VehicleAssetNameType</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Year" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 240</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Make" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 241</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Model" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 242</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AmountOwed" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 243</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AssetOtherType" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 257</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AssetOtherValue" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>F# 243b</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:simpleType name="AccidentType">
+		<xsd:annotation>
+			<xsd:documentation>AccidentType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Auto accident"/>
+			<xsd:enumeration value="Work related injury"/>
+			<xsd:enumeration value="Home injury or accident"/>
+			<xsd:enumeration value="Product Liability"/>
+			<xsd:enumeration value="Medical Malpractice"/>
+			<xsd:enumeration value="Legal Malpractice"/>
+			<xsd:enumeration value="Motorcycle accident"/>
+			<xsd:enumeration value="Bus accident"/>
+			<xsd:enumeration value="Pedestrian injury"/>
+			<xsd:enumeration value="Other"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="AnnuityRoleType">
+		<xsd:annotation>
+			<xsd:documentation>AnnuityRoleType enumeration          </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Owner"/>
+			<xsd:enumeration value="Annuitant"/>
+			<xsd:enumeration value="Beneficiary"/>
+			<xsd:enumeration value="Don't know"/>
+			<xsd:enumeration value="None"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="AssetsBoughtType">
+		<xsd:annotation>
+			<xsd:documentation>AssetsBought enumeration         </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Annuity"/>
+			<xsd:enumeration value="Life estate in another person's home"/>
+			<xsd:enumeration value="Promissory note"/>
+			<xsd:enumeration value="Loan or mortgage"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="AwayReasonType">
+		<xsd:annotation>
+			<xsd:documentation>AwayReasonType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Vacation"/>
+			<xsd:enumeration value="School or training"/>
+			<xsd:enumeration value="Foster care"/>
+			<xsd:enumeration value="Treatment"/>
+			<xsd:enumeration value="Hospital"/>
+			<xsd:enumeration value="Job search"/>
+			<xsd:enumeration value="Working"/>
+			<xsd:enumeration value="Jail"/>
+			<xsd:enumeration value="Other"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="BaseCoverageType">
+		<xsd:annotation>
+			<xsd:documentation>BaseCoverageType enumeration         </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Medical"/>
+			<xsd:enumeration value="Dental"/>
+			<xsd:enumeration value="Vision"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="BenefitType">
+		<xsd:annotation>
+			<xsd:documentation>BenefitType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Cash"/>
+			<xsd:enumeration value="Commodities"/>
+			<xsd:enumeration value="Supplemental Nutrition Assistance Program"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="ChildLivesWithType">
+		<xsd:annotation>
+			<xsd:documentation>ChildLivesWithType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Mother"/>
+			<xsd:enumeration value="Father"/>
+			<xsd:enumeration value="Mother and Father"/>
+			<xsd:enumeration value="Neither"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="CountyCodeType">
+		<xsd:annotation>
+			<xsd:documentation> MN County FIPS code enumeration</xsd:documentation>
+			<xsd:appinfo>
+				<jaxb:typesafeEnumClass>
+					<jaxb:typesafeEnumMember value="001" name="AITKIN"/>
+					<jaxb:typesafeEnumMember value="003" name="ANOKA"/>
+					<jaxb:typesafeEnumMember value="005" name="BECKER"/>
+					<jaxb:typesafeEnumMember value="007" name="BELTRAMI"/>
+					<jaxb:typesafeEnumMember value="009" name="BENTON"/>
+					<jaxb:typesafeEnumMember value="011" name="BIG_STONE"/>
+					<jaxb:typesafeEnumMember value="013" name="BLUE_EARTH"/>
+					<jaxb:typesafeEnumMember value="015" name="BROWN"/>
+					<jaxb:typesafeEnumMember value="017" name="CARLTON"/>
+					<jaxb:typesafeEnumMember value="019" name="CARVER"/>
+					<jaxb:typesafeEnumMember value="021" name="CASS"/>
+					<jaxb:typesafeEnumMember value="023" name="CHIPPEWA"/>
+					<jaxb:typesafeEnumMember value="025" name="CHISAGO"/>
+					<jaxb:typesafeEnumMember value="027" name="CLAY"/>
+					<jaxb:typesafeEnumMember value="029" name="CLEARWATER"/>
+					<jaxb:typesafeEnumMember value="031" name="COOK"/>
+					<jaxb:typesafeEnumMember value="033" name="COTTONWOOD"/>
+					<jaxb:typesafeEnumMember value="035" name="CROW_WING"/>
+					<jaxb:typesafeEnumMember value="037" name="DAKOTA"/>
+					<jaxb:typesafeEnumMember value="039" name="DODGE"/>
+					<jaxb:typesafeEnumMember value="041" name="DOUGLAS"/>
+					<jaxb:typesafeEnumMember value="043" name="FARIBAULT"/>
+					<jaxb:typesafeEnumMember value="045" name="FILLMORE"/>
+					<jaxb:typesafeEnumMember value="047" name="FREEBORN"/>
+					<jaxb:typesafeEnumMember value="049" name="GOODHUE"/>
+					<jaxb:typesafeEnumMember value="051" name="GRANT"/>
+					<jaxb:typesafeEnumMember value="053" name="HENNEPIN"/>
+					<jaxb:typesafeEnumMember value="055" name="HOUSTON"/>
+					<jaxb:typesafeEnumMember value="057" name="HUBBARD"/>
+					<jaxb:typesafeEnumMember value="059" name="ISANTI"/>
+					<jaxb:typesafeEnumMember value="061" name="ITASCA"/>
+					<jaxb:typesafeEnumMember value="063" name="JACKSON"/>
+					<jaxb:typesafeEnumMember value="065" name="KANABEC"/>
+					<jaxb:typesafeEnumMember value="067" name="KANDIYOHI"/>
+					<jaxb:typesafeEnumMember value="069" name="KITTSON"/>
+					<jaxb:typesafeEnumMember value="071" name="KOOCHICHING"/>
+					<jaxb:typesafeEnumMember value="073" name="LAC_QUI_PARLE"/>
+					<jaxb:typesafeEnumMember value="075" name="LAKE"/>
+					<jaxb:typesafeEnumMember value="077" name="LAKE_OF_THE_WOODS"/>
+					<jaxb:typesafeEnumMember value="079" name="LE_SUEUR"/>
+					<jaxb:typesafeEnumMember value="081" name="LINCOLN"/>
+					<jaxb:typesafeEnumMember value="083" name="LYON"/>
+					<jaxb:typesafeEnumMember value="085" name="MC_LEOD"/>
+					<jaxb:typesafeEnumMember value="087" name="MAHNOMEN"/>
+					<jaxb:typesafeEnumMember value="089" name="MARSHALL"/>
+					<jaxb:typesafeEnumMember value="091" name="MARTIN"/>
+					<jaxb:typesafeEnumMember value="093" name="MEEKER"/>
+					<jaxb:typesafeEnumMember value="095" name="MILLE_LACS"/>
+					<jaxb:typesafeEnumMember value="097" name="MORRISON"/>
+					<jaxb:typesafeEnumMember value="099" name="MOWER"/>
+					<jaxb:typesafeEnumMember value="101" name="MURRAY"/>
+					<jaxb:typesafeEnumMember value="103" name="NICOLLET"/>
+					<jaxb:typesafeEnumMember value="105" name="NOBLES"/>
+					<jaxb:typesafeEnumMember value="107" name="NORMAN"/>
+					<jaxb:typesafeEnumMember value="109" name="OLMSTED"/>
+					<jaxb:typesafeEnumMember value="111" name="OTTER_TAIL"/>
+					<jaxb:typesafeEnumMember value="113" name="PENNINGTON"/>
+					<jaxb:typesafeEnumMember value="115" name="PINE"/>
+					<jaxb:typesafeEnumMember value="117" name="PIPESTONE"/>
+					<jaxb:typesafeEnumMember value="119" name="POLK"/>
+					<jaxb:typesafeEnumMember value="121" name="POPE"/>
+					<jaxb:typesafeEnumMember value="123" name="RAMSEY"/>
+					<jaxb:typesafeEnumMember value="125" name="RED_LAKE"/>
+					<jaxb:typesafeEnumMember value="127" name="REDWOOD"/>
+					<jaxb:typesafeEnumMember value="129" name="RENVILLE"/>
+					<jaxb:typesafeEnumMember value="131" name="RICE"/>
+					<jaxb:typesafeEnumMember value="133" name="ROCK"/>
+					<jaxb:typesafeEnumMember value="135" name="ROSEAU"/>
+					<jaxb:typesafeEnumMember value="137" name="ST_LOUIS"/>
+					<jaxb:typesafeEnumMember value="139" name="SCOTT"/>
+					<jaxb:typesafeEnumMember value="141" name="SHERBURNE"/>
+					<jaxb:typesafeEnumMember value="143" name="SIBLEY"/>
+					<jaxb:typesafeEnumMember value="145" name="STEARNS"/>
+					<jaxb:typesafeEnumMember value="147" name="STEELE"/>
+					<jaxb:typesafeEnumMember value="149" name="STEVENS"/>
+					<jaxb:typesafeEnumMember value="151" name="SWIFT"/>
+					<jaxb:typesafeEnumMember value="153" name="TODD"/>
+					<jaxb:typesafeEnumMember value="155" name="TRAVERSE"/>
+					<jaxb:typesafeEnumMember value="157" name="WABASHA"/>
+					<jaxb:typesafeEnumMember value="159" name="WADENA"/>
+					<jaxb:typesafeEnumMember value="161" name="WASECA"/>
+					<jaxb:typesafeEnumMember value="163" name="WASHINGTON"/>
+					<jaxb:typesafeEnumMember value="165" name="WATONWAN"/>
+					<jaxb:typesafeEnumMember value="167" name="WILKIN"/>
+					<jaxb:typesafeEnumMember value="169" name="WINONA"/>
+					<jaxb:typesafeEnumMember value="171" name="WRIGHT"/>
+					<jaxb:typesafeEnumMember value="173" name="YELLOW_MEDICINE"/>
+				</jaxb:typesafeEnumClass>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="001"/>
+			<xsd:enumeration value="003"/>
+			<xsd:enumeration value="005"/>
+			<xsd:enumeration value="007"/>
+			<xsd:enumeration value="009"/>
+			<xsd:enumeration value="011"/>
+			<xsd:enumeration value="013"/>
+			<xsd:enumeration value="015"/>
+			<xsd:enumeration value="017"/>
+			<xsd:enumeration value="019"/>
+			<xsd:enumeration value="021"/>
+			<xsd:enumeration value="023"/>
+			<xsd:enumeration value="025"/>
+			<xsd:enumeration value="027"/>
+			<xsd:enumeration value="029"/>
+			<xsd:enumeration value="031"/>
+			<xsd:enumeration value="033"/>
+			<xsd:enumeration value="035"/>
+			<xsd:enumeration value="037"/>
+			<xsd:enumeration value="039"/>
+			<xsd:enumeration value="041"/>
+			<xsd:enumeration value="043"/>
+			<xsd:enumeration value="045"/>
+			<xsd:enumeration value="047"/>
+			<xsd:enumeration value="049"/>
+			<xsd:enumeration value="051"/>
+			<xsd:enumeration value="053"/>
+			<xsd:enumeration value="055"/>
+			<xsd:enumeration value="057"/>
+			<xsd:enumeration value="059"/>
+			<xsd:enumeration value="061"/>
+			<xsd:enumeration value="063"/>
+			<xsd:enumeration value="065"/>
+			<xsd:enumeration value="067"/>
+			<xsd:enumeration value="069"/>
+			<xsd:enumeration value="071"/>
+			<xsd:enumeration value="073"/>
+			<xsd:enumeration value="075"/>
+			<xsd:enumeration value="077"/>
+			<xsd:enumeration value="079"/>
+			<xsd:enumeration value="081"/>
+			<xsd:enumeration value="083"/>
+			<xsd:enumeration value="085"/>
+			<xsd:enumeration value="087"/>
+			<xsd:enumeration value="089"/>
+			<xsd:enumeration value="091"/>
+			<xsd:enumeration value="093"/>
+			<xsd:enumeration value="095"/>
+			<xsd:enumeration value="097"/>
+			<xsd:enumeration value="099"/>
+			<xsd:enumeration value="101"/>
+			<xsd:enumeration value="103"/>
+			<xsd:enumeration value="105"/>
+			<xsd:enumeration value="107"/>
+			<xsd:enumeration value="109"/>
+			<xsd:enumeration value="111"/>
+			<xsd:enumeration value="113"/>
+			<xsd:enumeration value="115"/>
+			<xsd:enumeration value="117"/>
+			<xsd:enumeration value="119"/>
+			<xsd:enumeration value="121"/>
+			<xsd:enumeration value="123"/>
+			<xsd:enumeration value="125"/>
+			<xsd:enumeration value="127"/>
+			<xsd:enumeration value="129"/>
+			<xsd:enumeration value="131"/>
+			<xsd:enumeration value="133"/>
+			<xsd:enumeration value="135"/>
+			<xsd:enumeration value="137"/>
+			<xsd:enumeration value="139"/>
+			<xsd:enumeration value="141"/>
+			<xsd:enumeration value="143"/>
+			<xsd:enumeration value="145"/>
+			<xsd:enumeration value="147"/>
+			<xsd:enumeration value="149"/>
+			<xsd:enumeration value="151"/>
+			<xsd:enumeration value="153"/>
+			<xsd:enumeration value="155"/>
+			<xsd:enumeration value="157"/>
+			<xsd:enumeration value="159"/>
+			<xsd:enumeration value="161"/>
+			<xsd:enumeration value="163"/>
+			<xsd:enumeration value="165"/>
+			<xsd:enumeration value="167"/>
+			<xsd:enumeration value="169"/>
+			<xsd:enumeration value="171"/>
+			<xsd:enumeration value="173"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="CountyNameType">
+		<xsd:annotation>
+			<xsd:documentation> MN County name enumeration</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Aitkin"/>
+			<xsd:enumeration value="Anoka"/>
+			<xsd:enumeration value="Becker"/>
+			<xsd:enumeration value="Beltrami"/>
+			<xsd:enumeration value="Benton"/>
+			<xsd:enumeration value="Big Stone"/>
+			<xsd:enumeration value="Blue Earth"/>
+			<xsd:enumeration value="Brown"/>
+			<xsd:enumeration value="Carlton"/>
+			<xsd:enumeration value="Carver"/>
+			<xsd:enumeration value="Cass"/>
+			<xsd:enumeration value="Chippewa"/>
+			<xsd:enumeration value="Chisago"/>
+			<xsd:enumeration value="Clay"/>
+			<xsd:enumeration value="Clearwater"/>
+			<xsd:enumeration value="Cook"/>
+			<xsd:enumeration value="Cottonwood"/>
+			<xsd:enumeration value="Crow Wing"/>
+			<xsd:enumeration value="Dakota"/>
+			<xsd:enumeration value="Dodge"/>
+			<xsd:enumeration value="Douglas"/>
+			<xsd:enumeration value="Faribault"/>
+			<xsd:enumeration value="Fillmore"/>
+			<xsd:enumeration value="Freeborn"/>
+			<xsd:enumeration value="Goodhue"/>
+			<xsd:enumeration value="Grant"/>
+			<xsd:enumeration value="Hennepin"/>
+			<xsd:enumeration value="Houston"/>
+			<xsd:enumeration value="Hubbard"/>
+			<xsd:enumeration value="Isanti"/>
+			<xsd:enumeration value="Itasca"/>
+			<xsd:enumeration value="Jackson"/>
+			<xsd:enumeration value="Kanabec"/>
+			<xsd:enumeration value="Kandiyohi"/>
+			<xsd:enumeration value="Kittson"/>
+			<xsd:enumeration value="Koochiching"/>
+			<xsd:enumeration value="Lac Qui Parle"/>
+			<xsd:enumeration value="Lake"/>
+			<xsd:enumeration value="Lake of the Woods"/>
+			<xsd:enumeration value="Le Sueur"/>
+			<xsd:enumeration value="Lincoln"/>
+			<xsd:enumeration value="Lyon"/>
+			<xsd:enumeration value="McLeod"/>
+			<xsd:enumeration value="Mahnomen"/>
+			<xsd:enumeration value="Marshall"/>
+			<xsd:enumeration value="Martin"/>
+			<xsd:enumeration value="Meeker"/>
+			<xsd:enumeration value="Mille Lacs"/>
+			<xsd:enumeration value="Morrison"/>
+			<xsd:enumeration value="Mower"/>
+			<xsd:enumeration value="Murray"/>
+			<xsd:enumeration value="Nicollet"/>
+			<xsd:enumeration value="Nobles"/>
+			<xsd:enumeration value="Norman"/>
+			<xsd:enumeration value="Olmsted"/>
+			<xsd:enumeration value="Otter Tail"/>
+			<xsd:enumeration value="Pennington"/>
+			<xsd:enumeration value="Pine"/>
+			<xsd:enumeration value="Pipestone"/>
+			<xsd:enumeration value="Polk"/>
+			<xsd:enumeration value="Pope"/>
+			<xsd:enumeration value="Ramsey"/>
+			<xsd:enumeration value="Red Lake"/>
+			<xsd:enumeration value="Redwood"/>
+			<xsd:enumeration value="Renville"/>
+			<xsd:enumeration value="Rice"/>
+			<xsd:enumeration value="Rock"/>
+			<xsd:enumeration value="Roseau"/>
+			<xsd:enumeration value="St Louis"/>
+			<xsd:enumeration value="Scott"/>
+			<xsd:enumeration value="Sherburne"/>
+			<xsd:enumeration value="Sibley"/>
+			<xsd:enumeration value="Stearns"/>
+			<xsd:enumeration value="Steele"/>
+			<xsd:enumeration value="Stevens"/>
+			<xsd:enumeration value="Swift"/>
+			<xsd:enumeration value="Todd"/>
+			<xsd:enumeration value="Traverse"/>
+			<xsd:enumeration value="Wabasha"/>
+			<xsd:enumeration value="Wadena"/>
+			<xsd:enumeration value="Waseca"/>
+			<xsd:enumeration value="Washington"/>
+			<xsd:enumeration value="Watonwan"/>
+			<xsd:enumeration value="Wilkin"/>
+			<xsd:enumeration value="Winona"/>
+			<xsd:enumeration value="Wright"/>
+			<xsd:enumeration value="Yellow Medicine"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="CoverageType">
+		<xsd:annotation>
+			<xsd:documentation>CoverageType enumeration         </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Medicare"/>
+			<xsd:enumeration value="Medicare Supplement"/>
+			<xsd:enumeration value="Medical"/>
+			<xsd:enumeration value="Hospital only"/>
+			<xsd:enumeration value="HMO"/>
+			<xsd:enumeration value="Prescription Drugs"/>
+			<xsd:enumeration value="Dental"/>
+			<xsd:enumeration value="Vision"/>
+			<xsd:enumeration value="Long-term care"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="CurrentSchoolStatusType">
+		<xsd:annotation>
+			<xsd:documentation>CurrentSchoolStatusType          </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="No"/>
+			<xsd:enumeration value="Part-time"/>
+			<xsd:enumeration value="Full-time"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="DaycareHelpReasonType">
+		<xsd:annotation>
+			<xsd:documentation>DaycareHelpReasonType            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="To work"/>
+			<xsd:enumeration value="To look for work"/>
+			<xsd:enumeration value="To attend school or training"/>
+			<xsd:enumeration value="To attend an MFIP orientation"/>
+			<xsd:enumeration value="To attend MFIP/DWP activities in an approved employment plan"/>
+			<xsd:enumeration value="Other"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="DaycareLocationType">
+		<xsd:annotation>
+			<xsd:documentation>DaycareLocationType          </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Provider's home - Licensed"/>
+			<xsd:enumeration value="Provider's home- Non-licensed"/>
+			<xsd:enumeration value="Child care center"/>
+			<xsd:enumeration value="Child's home"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="DayType">
+		<xsd:annotation>
+			<xsd:documentation>DayType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Monday"/>
+			<xsd:enumeration value="Tuesday"/>
+			<xsd:enumeration value="Wednesday"/>
+			<xsd:enumeration value="Thursday"/>
+			<xsd:enumeration value="Friday"/>
+			<xsd:enumeration value="Saturday"/>
+			<xsd:enumeration value="Sunday"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="FilledByType">
+		<xsd:annotation>
+			<xsd:documentation>FilledByType enumeration</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Self"/>
+			<xsd:enumeration value="Family Member"/>
+			<xsd:enumeration value="Community Partner"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="GenderType">
+		<xsd:annotation>
+			<xsd:documentation>GenderType enumeration Male/Female/Unknown
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Male"/>
+			<xsd:enumeration value="Female"/>
+			<xsd:enumeration value="Unknown"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="GradeCompletedType">
+		<xsd:annotation>
+			<xsd:documentation>GradeCompletedType           </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Pre 1st Grade or Never Attended"/>
+			<xsd:enumeration value="Grade 1"/>
+			<xsd:enumeration value="Grade 2"/>
+			<xsd:enumeration value="Grade 3"/>
+			<xsd:enumeration value="Grade 4"/>
+			<xsd:enumeration value="Grade 5"/>
+			<xsd:enumeration value="Grade 6"/>
+			<xsd:enumeration value="Grade 7"/>
+			<xsd:enumeration value="Grade 8"/>
+			<xsd:enumeration value="Grade 9"/>
+			<xsd:enumeration value="Grade 10"/>
+			<xsd:enumeration value="Grade 11"/>
+			<xsd:enumeration value="HS Diploma Or GED"/>
+			<xsd:enumeration value="Some Post Secondary Education"/>
+			<xsd:enumeration value="High School Plus Certificate"/>
+			<xsd:enumeration value="Four Year Degree"/>
+			<xsd:enumeration value="Graduate Degree"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="GradeType">
+		<xsd:annotation>
+			<xsd:documentation>GradeType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Preschool"/>
+			<xsd:enumeration value="Head start"/>
+			<xsd:enumeration value="Kindergarten"/>
+			<xsd:enumeration value="Grade 1"/>
+			<xsd:enumeration value="Grade 2"/>
+			<xsd:enumeration value="Grade 3"/>
+			<xsd:enumeration value="Grade 4"/>
+			<xsd:enumeration value="Grade 5"/>
+			<xsd:enumeration value="Grade 6"/>
+			<xsd:enumeration value="Grade 7"/>
+			<xsd:enumeration value="Grade 8"/>
+			<xsd:enumeration value="Grade 9"/>
+			<xsd:enumeration value="Grade 10"/>
+			<xsd:enumeration value="Grade 11"/>
+			<xsd:enumeration value="Grade 12"/>
+			<xsd:enumeration value="Technical or Vocational School"/>
+			<xsd:enumeration value="College - Undergraduate"/>
+			<xsd:enumeration value="College - Graduate School"/>
+			<xsd:enumeration value="Other"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="HealthCareProgramType">
+		<xsd:annotation>
+			<xsd:documentation>HealthCareProgramType enumeration
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="All Health Care Programs"/>
+			<xsd:enumeration value="MinnesotaCare Only"/>
+			<xsd:enumeration value="Breast and Cervical Cancer Coverage"/>
+			<xsd:enumeration value="Minnesota Family Planning Program"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="HousingExpenseNameType">
+		<xsd:annotation>
+			<xsd:documentation>HousingExpenseNameType enumeration
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Rent (includes mobile home lot rental)"/>
+			<xsd:enumeration value="Mortgage/Contract For Deed Payment"/>
+			<xsd:enumeration value="Association Fees"/>
+			<xsd:enumeration value="Homeowner's Insurance (if not included in mortgage)"/>
+			<xsd:enumeration value="Real Estate Taxes (if not included in mortgage)"/>
+			<xsd:enumeration value="Room and/or Board"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="ImmigrationStatusType">
+		<xsd:annotation>
+			<xsd:documentation>ImmigrationStatusType            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Legal Permanent Resident (LPR)"/>
+			<xsd:enumeration value="Refugee"/>
+			<xsd:enumeration value="Asylee"/>
+			<xsd:enumeration value="Other"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="IncomeUnitType">
+		<xsd:annotation>
+			<xsd:documentation>IncomeUnitType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Daily"/>
+			<xsd:enumeration value="Weekly"/>
+			<xsd:enumeration value="Every two weeks"/>
+			<xsd:enumeration value="Twice a month"/>
+			<xsd:enumeration value="Monthly"/>
+			<xsd:enumeration value="Quarterly"/>
+			<xsd:enumeration value="Twice a year"/>
+			<xsd:enumeration value="Yearly"/>
+			<xsd:enumeration value="One time only"/>
+			<xsd:enumeration value="Per Semester"/>
+			<xsd:enumeration value="Other"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="IncomeFrequencyType">
+		<xsd:annotation>
+			<xsd:documentation>IncomeFrequencyType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Daily"/>
+			<xsd:enumeration value="Weekly"/>
+			<xsd:enumeration value="Every two weeks"/>
+			<xsd:enumeration value="Twice a month"/>
+			<xsd:enumeration value="Monthly"/>
+			<xsd:enumeration value="Quarterly"/>
+			<xsd:enumeration value="Per Semester"/>
+			<xsd:enumeration value="Twice a year"/>
+			<xsd:enumeration value="Yearly"/>
+			<xsd:enumeration value="One time only"/>
+			<xsd:enumeration value="Other"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="IncomeSourceType">
+		<xsd:annotation>
+			<xsd:documentation>UnearnedIncomeType enumeration
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Child Support"/>
+			<xsd:enumeration value="Contract for Deed Payments"/>
+			<xsd:enumeration value="Insurance Benefits"/>
+			<xsd:enumeration value="Interest/Dividends"/>
+			<xsd:enumeration value="Northstar Care for Children Kinship Assistance"/>
+			<xsd:enumeration value="Plasma Donation"/>
+			<xsd:enumeration value="Public Assistance"/>
+			<xsd:enumeration value="Relative Custody Assistance"/>
+			<xsd:enumeration value="Rental Income"/>
+			<xsd:enumeration value="Retirement or Pension Benefits"/>
+			<xsd:enumeration value="Social Security (RSDI)"/>
+			<xsd:enumeration value="Spousal Support"/>
+			<xsd:enumeration value="Stipends"/>
+			<xsd:enumeration value="Student Grants, Loans or Scholarships"/>
+			<xsd:enumeration value="Supplemental Security Income (SSI)"/>
+			<xsd:enumeration value="Tribal Payments"/>
+			<xsd:enumeration value="Trust or annuity payments"/>
+			<xsd:enumeration value="Unemployment Insurance"/>
+			<xsd:enumeration value="Veteran's Benefits (VA)"/>
+			<xsd:enumeration value="Workers' Compensation"/>
+			<xsd:enumeration value="Other"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="LanguageType">
+		<xsd:annotation>
+			<xsd:documentation>LanguageType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Amharic"/>
+			<xsd:enumeration value="Arabic"/>
+			<xsd:enumeration value="ASL"/>
+			<xsd:enumeration value="Burmese"/>
+			<xsd:enumeration value="Cantonese"/>
+			<xsd:enumeration value="English"/>
+			<xsd:enumeration value="French"/>
+			<xsd:enumeration value="Hmong"/>
+			<xsd:enumeration value="Khmer"/>
+			<xsd:enumeration value="Korean"/>
+			<xsd:enumeration value="Karen"/>
+			<xsd:enumeration value="Laotian"/>
+			<xsd:enumeration value="Mandarin"/>
+			<xsd:enumeration value="Oromo"/>
+			<xsd:enumeration value="Russian"/>
+			<xsd:enumeration value="Serbo-Croatian"/>
+			<xsd:enumeration value="Somali"/>
+			<xsd:enumeration value="Spanish"/>
+			<xsd:enumeration value="Swahili"/>
+			<xsd:enumeration value="Tigrinya"/>
+			<xsd:enumeration value="Vietnamese"/>
+			<xsd:enumeration value="Yoruba"/>
+			<xsd:enumeration value="Other"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="LivesHereType">
+		<xsd:annotation>
+			<xsd:documentation>LivesHereType enumeration            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Self"/>
+			<xsd:enumeration value="Spouse"/>
+			<xsd:enumeration value="Child under 21"/>
+			<xsd:enumeration value="Blind or disabled child"/>
+			<xsd:enumeration value="Adult child(ren)"/>
+			<xsd:enumeration value="Sibling"/>
+			<xsd:enumeration value="Spouse's sibling"/>
+			<xsd:enumeration value="Other person(s)"/>
+			<xsd:enumeration value="No one"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="LiquidAssetNameType">
+		<xsd:annotation>
+			<xsd:documentation>LiquidAssetNameType enumeration          </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Cash"/>
+			<xsd:enumeration value="Savings Account"/>
+			<xsd:enumeration value="Checking Account"/>
+			<xsd:enumeration value="Debit Card"/>
+			<xsd:enumeration value="Direct Express"/>
+			<xsd:enumeration value="Reliacard"/>
+			<xsd:enumeration value="Money Market Account"/>
+			<xsd:enumeration value="Matured Certificate of Deposit (CD)"/>
+			<xsd:enumeration value="Stocks"/>
+			<xsd:enumeration value="Bonds"/>
+			<xsd:enumeration value="Retirement Account"/>
+			<xsd:enumeration value="Annuities"/>
+			<xsd:enumeration value="Other"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="MaritalStatusType">
+		<xsd:annotation>
+			<xsd:documentation>MaritalStatusType enumeration            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Never Married"/>
+			<xsd:enumeration value="Married Living w/Spouse"/>
+			<xsd:enumeration value="Separated (Married but living apart)"/>
+			<xsd:enumeration value="Legally Separated"/>
+			<xsd:enumeration value="Divorced"/>
+			<xsd:enumeration value="Widowed"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="MovedInOrOutType">
+		<xsd:annotation>
+			<xsd:documentation>MovedInOrOutType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Moved in"/>
+			<xsd:enumeration value="Moved out"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="NameSuffixType">
+		<xsd:annotation>
+			<xsd:documentation>Name Suffix Type</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Jr."/>
+			<xsd:enumeration value="Sr."/>
+			<xsd:enumeration value="II"/>
+			<xsd:enumeration value="III"/>
+			<xsd:enumeration value="IV"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="NamePrefixType">
+		<xsd:annotation>
+			<xsd:documentation>Name Prefix Type</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Mr."/>
+			<xsd:enumeration value="Mrs."/>
+			<xsd:enumeration value="Ms."/>
+			<xsd:enumeration value="Miss"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="OthersLivingWithType">
+		<xsd:annotation>
+			<xsd:documentation>LiveswithType enumeration</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Parent/Guardian"/>
+			<xsd:enumeration value="Husband/Wife"/>
+			<xsd:enumeration value="Children/Step-children"/>
+			<xsd:enumeration value="Other"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="OwnershipType">
+		<xsd:annotation>
+			<xsd:documentation>OwnershipType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Individual"/>
+			<xsd:enumeration value="Partnership"/>
+			<xsd:enumeration value="Corporation"/>
+			<xsd:enumeration value="Unknown"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="PaycheckFrequencyType">
+		<xsd:annotation>
+			<xsd:documentation>PaycheckFrequencyType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Daily"/>
+			<xsd:enumeration value="Weekly"/>
+			<xsd:enumeration value="Every two weeks"/>
+			<xsd:enumeration value="Twice a month"/>
+			<xsd:enumeration value="Monthly"/>
+			<xsd:enumeration value="Other"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="PayFrequencyType">
+		<xsd:annotation>
+			<xsd:documentation>PayFrequencyType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Monthly"/>
+			<xsd:enumeration value="Quarterly"/>
+			<xsd:enumeration value="Twice a year"/>
+			<xsd:enumeration value="Yearly"/>
+			<xsd:enumeration value="Other"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="PayRateUnitType">
+		<xsd:annotation>
+			<xsd:documentation>PayRateUnitType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Per hour"/>
+			<xsd:enumeration value="Per day"/>
+			<xsd:enumeration value="Per Month"/>
+			<xsd:enumeration value="Other"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="PEStatusType">
+		<xsd:annotation>
+			<xsd:documentation>PEStatysType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Approved"/>
+			<xsd:enumeration value="Denied"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="PremiumFrequencyType">
+		<xsd:annotation>
+			<xsd:documentation>PremiumFrequencyType         </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Weekly"/>
+			<xsd:enumeration value="Every two weeks"/>
+			<xsd:enumeration value="Twice a month"/>
+			<xsd:enumeration value="Monthly"/>
+			<xsd:enumeration value="Quarterly"/>
+			<xsd:enumeration value="Twice a year"/>
+			<xsd:enumeration value="Yearly"/>
+			<xsd:enumeration value="Other"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="ProgramType">
+		<xsd:annotation>
+			<xsd:documentation>ProgramType enumeration          </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Cash"/>
+			<xsd:enumeration value="Supplemental Nutrition Assistance Program"/>
+			<xsd:enumeration value="Emergency Help"/>
+			<xsd:enumeration value="Child Care"/>
+			<xsd:enumeration value="Health Care"/>
+			<xsd:enumeration value="None"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="PropertyAssetNameType">
+		<xsd:annotation>
+			<xsd:documentation>PropertyAssetNameType enumeration            </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="House"/>
+			<xsd:enumeration value="Mobile Home"/>
+			<xsd:enumeration value="Cabin"/>
+			<xsd:enumeration value="Land"/>
+			<xsd:enumeration value="Rental Property"/>
+			<xsd:enumeration value="Life Estate"/>
+			<xsd:enumeration value="Time Share"/>
+			<xsd:enumeration value="Other Real Estate"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="ProviderRelationshipType">
+		<xsd:annotation>
+			<xsd:documentation>ProviderRelationshipType         </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Sibling/Step-sibling"/>
+			<xsd:enumeration value="Grandparent/Great-Grandparent"/>
+			<xsd:enumeration value="Aunt/Uncle"/>
+			<xsd:enumeration value="Other relative"/>
+			<xsd:enumeration value="None"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="RaceType">
+		<xsd:annotation>
+			<xsd:documentation>RaceType enumeration</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="American Indian/Alaskan Native"/>
+			<xsd:enumeration value="Asian"/>
+			<xsd:enumeration value="Black or African American"/>
+			<xsd:enumeration value="Pacific Islander/Native Hawaiian"/>
+			<xsd:enumeration value="White"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="RelationshipType">
+		<xsd:annotation>
+			<xsd:documentation>RelationshipType enumeration         </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Self"/>
+			<xsd:enumeration value="Spouse"/>
+			<xsd:enumeration value="Child"/>
+			<xsd:enumeration value="Parent"/>
+			<xsd:enumeration value="Sibling"/>
+			<xsd:enumeration value="Step-sibling"/>
+			<xsd:enumeration value="Step-child"/>
+			<xsd:enumeration value="Step-parent"/>
+			<xsd:enumeration value="Aunt"/>
+			<xsd:enumeration value="Uncle"/>
+			<xsd:enumeration value="Niece"/>
+			<xsd:enumeration value="Nephew"/>
+			<xsd:enumeration value="Cousin"/>
+			<xsd:enumeration value="Grandparent"/>
+			<xsd:enumeration value="Grandchild"/>
+			<xsd:enumeration value="Other relative"/>
+			<xsd:enumeration value="Legal Guardian"/>
+			<xsd:enumeration value="Not related"/>
+			<xsd:enumeration value="Live in attendant"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="RepresentativeRoleType">
+		<xsd:annotation>
+			<xsd:documentation>RepresentativeRoleType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Fill out forms and apply for help on my behalf"/>
+			<xsd:enumeration value="Get notices and information about my benefits"/>
+			<xsd:enumeration
+				value="Get my SNAP benefits and buy food for me through my Electronic Benefits Transfer (EBT) account"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="ReservationCodeType">
+		<xsd:annotation>
+			<xsd:documentation>MN reservation code enumeration. Made up values for this domain.</xsd:documentation>
+			<xsd:appinfo>
+				<jaxb:typesafeEnumClass>
+					<jaxb:typesafeEnumMember value="MLB" name="MILLE_LACS_BAND"/>
+					<jaxb:typesafeEnumMember value="WEN" name="WHITE_EARTH_NATION"/>
+				</jaxb:typesafeEnumClass>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="MLB"/>
+			<xsd:enumeration value="WEN"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="ReservationType">
+		<xsd:annotation>
+			<xsd:documentation>MN reservation name enumeration. Made up values for this domain.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Mille Lacs Band"/>
+			<xsd:enumeration value="White Earth Nation"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="ReservationNameType">
+		<xsd:annotation>
+			<xsd:documentation>ReservationNameType          </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Bois Forte - Deer Creek"/>
+			<xsd:enumeration value="Bois Forte -  Nett Lake"/>
+			<xsd:enumeration value="Bois Forte -  Vermillion Lake"/>
+			<xsd:enumeration value="Fond du Lac"/>
+			<xsd:enumeration value="Grand Portage"/>
+			<xsd:enumeration value="Leech Lake"/>
+			<xsd:enumeration value="Lower Sioux"/>
+			<xsd:enumeration value="Mille Lacs"/>
+			<xsd:enumeration value="Prairie Island Community"/>
+			<xsd:enumeration value="Red Lake"/>
+			<xsd:enumeration value="Shakopee Mdewakanton"/>
+			<xsd:enumeration value="Upper Sioux"/>
+			<xsd:enumeration value="White Earth"/>
+			<xsd:enumeration value="Other"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="LivingSituationType">
+		<xsd:annotation>
+			<xsd:documentation>LivingSituationType          </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Own housing; lease, mortgage or roommate"/>
+			<xsd:enumeration value="Service provider - foster care, group home"/>
+			<xsd:enumeration value="Family/friends due to economic hardship"/>
+			<xsd:enumeration value="Hospital, treatment facility, detox center or nursing home"/>
+			<xsd:enumeration value="Jail, prison or juvenile detention facility"/>
+			<xsd:enumeration value="Hotel or motel"/>
+			<xsd:enumeration value="Place not meant for housing (anywhere outside, a vehicle, an abandoned building or bus/train/airport)"/>
+			<xsd:enumeration value="Emergency shelter"/>
+			<xsd:enumeration value="Unknown"/>
+			<xsd:enumeration value="Declined"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="EmailType">
+		<xsd:annotation>
+			<xsd:documentation>Email address type</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="ShareIncomeRelationshipType">
+		<xsd:annotation>
+			<xsd:documentation>ShareIncomeRelationshipType          </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Child"/>
+			<xsd:enumeration value="Parent"/>
+			<xsd:enumeration value="Sibling"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="StateCodeType">
+		<xsd:annotation>
+			<xsd:documentation>State codes</xsd:documentation>
+			<xsd:appinfo>
+				<jaxb:typesafeEnumClass>
+					<jaxb:typesafeEnumMember value="AL" name="ALABAMA"/>
+					<jaxb:typesafeEnumMember value="AK" name="ALASKA"/>
+					<jaxb:typesafeEnumMember value="AZ" name="ARIZONA"/>
+					<jaxb:typesafeEnumMember value="AR" name="ARKANSAS"/>
+					<jaxb:typesafeEnumMember value="CA" name="CALIFORNIA"/>
+					<jaxb:typesafeEnumMember value="CO" name="COLORADO"/>
+					<jaxb:typesafeEnumMember value="CT" name="CONNECTICUT"/>
+					<jaxb:typesafeEnumMember value="DE" name="DELAWARE"/>
+					<jaxb:typesafeEnumMember value="FL" name="FLORIDA"/>
+					<jaxb:typesafeEnumMember value="GA" name="GEORGIA"/>
+					<jaxb:typesafeEnumMember value="HI" name="HAWAII"/>
+					<jaxb:typesafeEnumMember value="ID" name="IDAHO"/>
+					<jaxb:typesafeEnumMember value="IL" name="ILLINOIS"/>
+					<jaxb:typesafeEnumMember value="IN" name="INDIANA"/>
+					<jaxb:typesafeEnumMember value="IA" name="IOWA"/>
+					<jaxb:typesafeEnumMember value="KS" name="KANSAS"/>
+					<jaxb:typesafeEnumMember value="KY" name="KENTUCKY"/>
+					<jaxb:typesafeEnumMember value="LA" name="LOUISIANA"/>
+					<jaxb:typesafeEnumMember value="ME" name="MAINE"/>
+					<jaxb:typesafeEnumMember value="MD" name="MARYLAND"/>
+					<jaxb:typesafeEnumMember value="MA" name="MASSACHUSETTS"/>
+					<jaxb:typesafeEnumMember value="MI" name="MICHIGAN"/>
+					<jaxb:typesafeEnumMember value="MN" name="MINNESOTA"/>
+					<jaxb:typesafeEnumMember value="MS" name="MISSISSIPPI"/>
+					<jaxb:typesafeEnumMember value="MO" name="MISSOURI"/>
+					<jaxb:typesafeEnumMember value="MT" name="MONTANA"/>
+					<jaxb:typesafeEnumMember value="NE" name="NEBRASKA"/>
+					<jaxb:typesafeEnumMember value="NV" name="NEVADA"/>
+					<jaxb:typesafeEnumMember value="NH" name="NEW_HAMPSHIRE"/>
+					<jaxb:typesafeEnumMember value="NJ" name="NEW_JERSEY"/>
+					<jaxb:typesafeEnumMember value="NM" name="NEW_MEXICO"/>
+					<jaxb:typesafeEnumMember value="NY" name="NEW_YORK"/>
+					<jaxb:typesafeEnumMember value="NC" name="NORTH_CAROLINA"/>
+					<jaxb:typesafeEnumMember value="ND" name="NORTH_DAKOTA"/>
+					<jaxb:typesafeEnumMember value="OH" name="OHIO"/>
+					<jaxb:typesafeEnumMember value="OK" name="OKLAHOMA"/>
+					<jaxb:typesafeEnumMember value="OR" name="OREGON"/>
+					<jaxb:typesafeEnumMember value="PA" name="PENNSYLVANIA"/>
+					<jaxb:typesafeEnumMember value="RI" name="RHODE_ISLAND"/>
+					<jaxb:typesafeEnumMember value="SC" name="SOUTH_CAROLINA"/>
+					<jaxb:typesafeEnumMember value="SD" name="SOUTH_DAKOTA"/>
+					<jaxb:typesafeEnumMember value="TN" name="TENNESSEE"/>
+					<jaxb:typesafeEnumMember value="TX" name="TEXAS"/>
+					<jaxb:typesafeEnumMember value="UT" name="UTAH"/>
+					<jaxb:typesafeEnumMember value="VT" name="VERMONT"/>
+					<jaxb:typesafeEnumMember value="VA" name="VIRGINIA"/>
+					<jaxb:typesafeEnumMember value="WA" name="WASHINGTON"/>
+					<jaxb:typesafeEnumMember value="WV" name="WEST_VIRGINIA"/>
+					<jaxb:typesafeEnumMember value="WI" name="WISCONSIN"/>
+					<jaxb:typesafeEnumMember value="WY" name="WYOMING"/>
+					<jaxb:typesafeEnumMember value="AS" name="AMERICAN_SAMOA"/>
+					<jaxb:typesafeEnumMember value="DC" name="DISTRICT_OF_COLUMBIA"/>
+					<jaxb:typesafeEnumMember value="FM" name="FEDERATED_STATES_OF_MICRONESIA"/>
+					<jaxb:typesafeEnumMember value="GU" name="GUAM"/>
+					<jaxb:typesafeEnumMember value="MH" name="MARSHALL_ISLANDS"/>
+					<jaxb:typesafeEnumMember value="MP" name="NORTHERN_MARIANA_ISLANDS"/>
+					<jaxb:typesafeEnumMember value="PR" name="PUERTO_RICO"/>
+					<jaxb:typesafeEnumMember value="VI" name="VIRGIN_ISLANDS"/>
+					<jaxb:typesafeEnumMember value="AB" name="ALBERTA"/>
+					<jaxb:typesafeEnumMember value="BC" name="BRITISH_COLUMBIA"/>
+					<jaxb:typesafeEnumMember value="MB" name="MANITOBA"/>
+					<jaxb:typesafeEnumMember value="NB" name="NEW_BRUNSWICK"/>
+					<jaxb:typesafeEnumMember value="NF" name="NEWFOUNDLAND"/>
+					<jaxb:typesafeEnumMember value="NS" name="NOVA_SCOTIA"/>
+					<jaxb:typesafeEnumMember value="ON" name="ONTARIO"/>
+					<jaxb:typesafeEnumMember value="PE" name="PRINCE_EDWARD_ISLAND"/>
+					<jaxb:typesafeEnumMember value="PQ" name="QUEBEC"/>
+					<jaxb:typesafeEnumMember value="SK" name="SASKATCHEWAN"/>
+				</jaxb:typesafeEnumClass>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="AL"/>
+			<xsd:enumeration value="AK"/>
+			<xsd:enumeration value="AZ"/>
+			<xsd:enumeration value="AR"/>
+			<xsd:enumeration value="CA"/>
+			<xsd:enumeration value="CO"/>
+			<xsd:enumeration value="CT"/>
+			<xsd:enumeration value="DE"/>
+			<xsd:enumeration value="FL"/>
+			<xsd:enumeration value="GA"/>
+			<xsd:enumeration value="HI"/>
+			<xsd:enumeration value="ID"/>
+			<xsd:enumeration value="IL"/>
+			<xsd:enumeration value="IN"/>
+			<xsd:enumeration value="IA"/>
+			<xsd:enumeration value="KS"/>
+			<xsd:enumeration value="KY"/>
+			<xsd:enumeration value="LA"/>
+			<xsd:enumeration value="ME"/>
+			<xsd:enumeration value="MD"/>
+			<xsd:enumeration value="MA"/>
+			<xsd:enumeration value="MI"/>
+			<xsd:enumeration value="MN"/>
+			<xsd:enumeration value="MS"/>
+			<xsd:enumeration value="MO"/>
+			<xsd:enumeration value="MT"/>
+			<xsd:enumeration value="NE"/>
+			<xsd:enumeration value="NV"/>
+			<xsd:enumeration value="NH"/>
+			<xsd:enumeration value="NJ"/>
+			<xsd:enumeration value="NM"/>
+			<xsd:enumeration value="NY"/>
+			<xsd:enumeration value="NC"/>
+			<xsd:enumeration value="ND"/>
+			<xsd:enumeration value="OH"/>
+			<xsd:enumeration value="OK"/>
+			<xsd:enumeration value="OR"/>
+			<xsd:enumeration value="PA"/>
+			<xsd:enumeration value="RI"/>
+			<xsd:enumeration value="SC"/>
+			<xsd:enumeration value="SD"/>
+			<xsd:enumeration value="TN"/>
+			<xsd:enumeration value="TX"/>
+			<xsd:enumeration value="UT"/>
+			<xsd:enumeration value="VT"/>
+			<xsd:enumeration value="VA"/>
+			<xsd:enumeration value="WA"/>
+			<xsd:enumeration value="WV"/>
+			<xsd:enumeration value="WI"/>
+			<xsd:enumeration value="WY"/>
+			<xsd:enumeration value="AS"/>
+			<xsd:enumeration value="DC"/>
+			<xsd:enumeration value="FM"/>
+			<xsd:enumeration value="GU"/>
+			<xsd:enumeration value="MH"/>
+			<xsd:enumeration value="MP"/>
+			<xsd:enumeration value="PR"/>
+			<xsd:enumeration value="VI"/>
+			<xsd:enumeration value="AB"/>
+			<xsd:enumeration value="BC"/>
+			<xsd:enumeration value="MB"/>
+			<xsd:enumeration value="NB"/>
+			<xsd:enumeration value="NF"/>
+			<xsd:enumeration value="NS"/>
+			<xsd:enumeration value="ON"/>
+			<xsd:enumeration value="PE"/>
+			<xsd:enumeration value="PQ"/>
+			<xsd:enumeration value="SK"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="StateNameType">
+		<xsd:annotation>
+			<xsd:documentation>State names</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Alabama"/>
+			<xsd:enumeration value="Alaska"/>
+			<xsd:enumeration value="Arizona"/>
+			<xsd:enumeration value="Arkansas"/>
+			<xsd:enumeration value="California"/>
+			<xsd:enumeration value="Colorado"/>
+			<xsd:enumeration value="Connecticut"/>
+			<xsd:enumeration value="Delaware"/>
+			<xsd:enumeration value="Florida"/>
+			<xsd:enumeration value="Georgia"/>
+			<xsd:enumeration value="Hawaii"/>
+			<xsd:enumeration value="Idaho"/>
+			<xsd:enumeration value="Illinois"/>
+			<xsd:enumeration value="Indiana"/>
+			<xsd:enumeration value="Iowa"/>
+			<xsd:enumeration value="Kansas"/>
+			<xsd:enumeration value="Kentucky"/>
+			<xsd:enumeration value="Louisiana"/>
+			<xsd:enumeration value="Maine"/>
+			<xsd:enumeration value="Maryland"/>
+			<xsd:enumeration value="Massachusetts"/>
+			<xsd:enumeration value="Michigan"/>
+			<xsd:enumeration value="Minnesota"/>
+			<xsd:enumeration value="Mississippi"/>
+			<xsd:enumeration value="Missouri"/>
+			<xsd:enumeration value="Montana"/>
+			<xsd:enumeration value="Nebraska"/>
+			<xsd:enumeration value="Nevada"/>
+			<xsd:enumeration value="New Hampshire"/>
+			<xsd:enumeration value="New Jersey"/>
+			<xsd:enumeration value="New Mexico"/>
+			<xsd:enumeration value="New York"/>
+			<xsd:enumeration value="North Carolina"/>
+			<xsd:enumeration value="North Dakota"/>
+			<xsd:enumeration value="Ohio"/>
+			<xsd:enumeration value="Oklahoma"/>
+			<xsd:enumeration value="Oregon"/>
+			<xsd:enumeration value="Pennsylvania"/>
+			<xsd:enumeration value="Rhode Island"/>
+			<xsd:enumeration value="South Carolina"/>
+			<xsd:enumeration value="South Dakota"/>
+			<xsd:enumeration value="Tennessee"/>
+			<xsd:enumeration value="Texas"/>
+			<xsd:enumeration value="Utah"/>
+			<xsd:enumeration value="Vermont"/>
+			<xsd:enumeration value="Virginia"/>
+			<xsd:enumeration value="Washington"/>
+			<xsd:enumeration value="West Virginia"/>
+			<xsd:enumeration value="Wisconsin"/>
+			<xsd:enumeration value="Wyoming"/>
+			<xsd:enumeration value="American Samoa"/>
+			<xsd:enumeration value="District of Columbia"/>
+			<xsd:enumeration value="Federated States of Micronesia"/>
+			<xsd:enumeration value="Guam"/>
+			<xsd:enumeration value="Marshall Islands"/>
+			<xsd:enumeration value="Northern Mariana Islands"/>
+			<xsd:enumeration value="Puerto Rico"/>
+			<xsd:enumeration value="Virgin Islands"/>
+			<xsd:enumeration value="Alberta"/>
+			<xsd:enumeration value="British Columbia"/>
+			<xsd:enumeration value="Manitoba"/>
+			<xsd:enumeration value="New Brunswick"/>
+			<xsd:enumeration value="Newfoundland"/>
+			<xsd:enumeration value="Nova Scotia"/>
+			<xsd:enumeration value="Ontario"/>
+			<xsd:enumeration value="Prince Edward Island"/>
+			<xsd:enumeration value="Quebec"/>
+			<xsd:enumeration value="Saskatchewan"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="SupportPaymentType">
+		<xsd:annotation>
+			<xsd:documentation>SupportPaymentType           </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Child/Medical Support - Court Ordered"/>
+			<xsd:enumeration value="Child/Medical Support - Non-Court Ordered"/>
+			<xsd:enumeration value="Spousal Support - Court Ordered"/>
+			<xsd:enumeration value="Spousal Support - Non-Court Ordered"/>
+			<xsd:enumeration value="Contribution to a tax dependent who does not live at home"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="TransferType">
+		<xsd:annotation>
+			<xsd:documentation>TransferType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Sold"/>
+			<xsd:enumeration value="Traded"/>
+			<xsd:enumeration value="Gave away"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="UtilityExpenseNameType">
+		<xsd:annotation>
+			<xsd:documentation>UtilityExpenseNameType enumeration
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Heating or Air conditioning"/>
+			<xsd:enumeration value="Electricity"/>
+			<xsd:enumeration value="Cooking Fuel"/>
+			<xsd:enumeration value="Water and Sewer"/>
+			<xsd:enumeration value="Garbage Removal"/>
+			<xsd:enumeration value="Phone/Cell Phone"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="UtilityType">
+		<xsd:annotation>
+			<xsd:documentation>ResponsibleUtilityType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Heat"/>
+			<xsd:enumeration value="Electricity"/>
+			<xsd:enumeration value="Air conditioning"/>
+			<xsd:enumeration value="Phone"/>
+			<xsd:enumeration value="None"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="VehicleAssetNameType">
+		<xsd:annotation>
+			<xsd:documentation>VehicelAssetNameType enumeration</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Cars/Trucks"/>
+			<xsd:enumeration value="Van"/>
+			<xsd:enumeration value="Motorcycles"/>
+			<xsd:enumeration value="Trailers"/>
+			<xsd:enumeration value="Campers"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="VerificationStatusType">
+		<xsd:annotation>
+			<xsd:documentation>VerificationStatusType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Submitted"/>
+			<xsd:enumeration value="Pending"/>
+			<xsd:enumeration value="Not Signed"/>
+			<xsd:enumeration value="N/A"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="WorkChangeReasonType">
+		<xsd:annotation>
+			<xsd:documentation>WorkChangeReasonType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Stopped working or quit a job"/>
+			<xsd:enumeration value="Refused a job offer"/>
+			<xsd:enumeration value="Asked to work fewer hours"/>
+			<xsd:enumeration value="Went on strike"/>
+			<xsd:enumeration value="Other"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="YesNoDontKnowType">
+		<xsd:annotation>
+			<xsd:documentation>YesNoDontKnowType</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Yes"/>
+			<xsd:enumeration value="No"/>
+			<xsd:enumeration value="Do not know"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:schema>

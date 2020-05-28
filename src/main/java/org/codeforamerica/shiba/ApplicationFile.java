@@ -3,8 +3,7 @@ package org.codeforamerica.shiba;
 import lombok.Value;
 
 @Value
-public class PdfFile{
+public class ApplicationFile {
     byte[] fileBytes;
     String fileName;
 }
-

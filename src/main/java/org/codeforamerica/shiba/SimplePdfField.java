@@ -6,11 +6,11 @@ import java.util.Map;
 import java.util.Optional;
 
 @Value
-public class SimplePDFField implements PDFField {
+public class SimplePdfField implements PdfField {
     String name;
     String value;
 
-    public SimplePDFField(String name, String value) {
+    public SimplePdfField(String name, String value) {
         this.name = name;
         this.value = Optional.ofNullable(value).orElse("");
     }

@@ -24,8 +24,8 @@ class PdfFieldMapperTest {
         PersonalInfo personalInfo = PersonalInfo.builder().firstName(firstName).build();
         benefitApplication.setPersonalInfo(personalInfo);
 
-        List<PDFField> fields = subject.map(benefitApplication);
-        assertThat(fields).contains(new SimplePDFField(fieldName, firstName));
+        List<PdfField> fields = subject.map(benefitApplication);
+        assertThat(fields).contains(new SimplePdfField(fieldName, firstName));
     }
 
     @Test
@@ -39,9 +39,9 @@ class PdfFieldMapperTest {
         LanguagePreferences languagePreferences = new LanguagePreferences();
         languagePreferences.setNeedInterpreter(true);
         benefitsApplication.setLanguagePreferences(languagePreferences);
-        List<PDFField> fields = subject.map(benefitsApplication);
+        List<PdfField> fields = subject.map(benefitsApplication);
 
-        assertThat(fields).contains(new TogglePDFField(fieldName, true));
+        assertThat(fields).contains(new TogglePdfField(fieldName, true));
     }
 
     @Test
@@ -54,9 +54,9 @@ class PdfFieldMapperTest {
         benefitsApplication.setPersonalInfo(personalInfo);
         PdfFieldMapper subject = new PdfFieldMapper(configMap);
 
-        List<PDFField> fields = subject.map(benefitsApplication);
+        List<PdfField> fields = subject.map(benefitsApplication);
 
-        assertThat(fields).contains(new SimplePDFField(fieldName, MaritalStatus.MARRIED_LIVING_WITH_SPOUSE.toString()));
+        assertThat(fields).contains(new SimplePdfField(fieldName, MaritalStatus.MARRIED_LIVING_WITH_SPOUSE.toString()));
     }
 
     @Test
@@ -72,9 +72,9 @@ class PdfFieldMapperTest {
         benefitsApplication.setPersonalInfo(personalInfo);
         PdfFieldMapper subject = new PdfFieldMapper(configMap);
 
-        List<PDFField> fields = subject.map(benefitsApplication);
+        List<PdfField> fields = subject.map(benefitsApplication);
 
-        assertThat(fields).contains(new DatePDFField(fieldName, localDate));
+        assertThat(fields).contains(new DatePdfField(fieldName, localDate));
     }
 
     @Test
@@ -86,7 +86,7 @@ class PdfFieldMapperTest {
         BenefitsApplication benefitsApplication = new BenefitsApplication();
 
         PdfFieldMapper subject = new PdfFieldMapper(configMap);
-        List<PDFField> fields = subject.map(benefitsApplication);
+        List<PdfField> fields = subject.map(benefitsApplication);
         assertThat(fields).isEmpty();
     }
 
@@ -101,11 +101,11 @@ class PdfFieldMapperTest {
         ProgramSelection programSelection = new ProgramSelection();
         programSelection.setPrograms(List.of(FOOD));
         benefitsApplication.setProgramSelection(programSelection);
-        List<PDFField> fields = subject.map(benefitsApplication);
+        List<PdfField> fields = subject.map(benefitsApplication);
 
         assertThat(fields).containsOnly(
-                new BinaryPDFField("FOOD_PDF_FIELD", true),
-                new BinaryPDFField("NOT_PRESENT_PDF_FIELD", false)
+                new BinaryPdfField("FOOD_PDF_FIELD", true),
+                new BinaryPdfField("NOT_PRESENT_PDF_FIELD", false)
                 );
     }
 }

@@ -8,11 +8,11 @@ import static org.apache.pdfbox.cos.COSName.Off;
 import static org.apache.pdfbox.cos.COSName.YES;
 
 @Value
-public class BinaryPDFField implements PDFField {
+public class BinaryPdfField implements PdfField {
     String name;
     Boolean value;
 
-    public BinaryPDFField(String name, Boolean value) {
+    public BinaryPdfField(String name, Boolean value) {
         this.name = name;
         this.value = value;
     }

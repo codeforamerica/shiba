@@ -8,11 +8,11 @@ import java.util.Optional;
 import static org.apache.pdfbox.cos.COSName.Off;
 
 @Value
-public class TogglePDFField implements PDFField {
+public class TogglePdfField implements PdfField {
     String name;
     Boolean value;
 
-    public TogglePDFField(String name, Boolean value) {
+    public TogglePdfField(String name, Boolean value) {
         this.name = name;
         this.value = value;
     }

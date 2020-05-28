@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.Collection;
 
 @Component
-public class CAFFieldFiller implements PDFFieldFiller {
+public class CAFFieldFiller implements PdfFieldFiller {
     private final Resource applicationPDF;
 
     public CAFFieldFiller(@Value("classpath:DHS-5223.pdf") Resource applicationPDF) {
@@ -19,7 +19,7 @@ public class CAFFieldFiller implements PDFFieldFiller {
     }
 
     @Override
-    public PdfFile fill(Collection<PDFField> fields) {
+    public ApplicationFile fill(Collection<PdfField> fields) {
         try {
             PDDocument document = PDDocument.load(applicationPDF.getInputStream());
             PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
@@ -37,7 +37,7 @@ public class CAFFieldFiller implements PDFFieldFiller {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             document.save(outputStream);
             document.close();
-            return new PdfFile(outputStream.toByteArray(), applicationPDF.getFilename());
+            return new ApplicationFile(outputStream.toByteArray(), applicationPDF.getFilename());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

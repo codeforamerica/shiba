@@ -25,8 +25,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class PageControllerTest {
     MockMvc mockMvc;
 
-    PDFFieldFiller PDFFieldFiller = mock(PDFFieldFiller.class);
+    PdfFieldFiller pdfFieldFiller = mock(PdfFieldFiller.class);
     PdfFieldMapper pdfFieldMapper = mock(PdfFieldMapper.class);
+    XmlGenerator xmlGenerator = mock(XmlGenerator.class);
     BenefitsApplication benefitsApplication = new BenefitsApplication();
 
     @BeforeEach
@@ -35,8 +36,9 @@ class PageControllerTest {
                 new PageController(
                         benefitsApplication,
                         new StaticMessageSource(),
-                        PDFFieldFiller,
-                        pdfFieldMapper
+                        pdfFieldFiller,
+                        pdfFieldMapper,
+                        xmlGenerator
                 ))
                 .setViewResolvers(new InternalResourceViewResolver("", "suffix"))
                 .build();
@@ -110,9 +112,9 @@ class PageControllerTest {
         byte[] pdfBytes = "here is the pdf".getBytes();
         String fileName = "filename.pdf";
 
-        PdfFile pdfFile = new PdfFile(pdfBytes, fileName);
-        when(PDFFieldFiller.fill(any())).thenReturn(pdfFile);
-        List<PDFField> fields = List.of(mock(PDFField.class));
+        ApplicationFile applicationFile = new ApplicationFile(pdfBytes, fileName);
+        when(pdfFieldFiller.fill(any())).thenReturn(applicationFile);
+        List<PdfField> fields = List.of(mock(PdfField.class));
         when(pdfFieldMapper.map(any())).thenReturn(fields);
 
         MvcResult result = mockMvc.perform(
@@ -123,7 +125,23 @@ class PageControllerTest {
                 .andReturn();
 
         verify(pdfFieldMapper).map(benefitsApplication);
-        verify(PDFFieldFiller).fill(fields);
+        verify(pdfFieldFiller).fill(fields);
         assertThat(result.getResponse().getContentAsByteArray()).isEqualTo(pdfBytes);
+    }
+
+    @Test
+    void shouldGenerateXMLForTheApplication() throws Exception {
+        byte[] fileBytes = "some file content".getBytes();
+        String fileName = "some.xml";
+        when(xmlGenerator.generate(any())).thenReturn(new ApplicationFile(fileBytes, fileName));
+        MvcResult result = mockMvc.perform(
+                MockMvcRequestBuilders.get("/download-xml"))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(APPLICATION_OCTET_STREAM_VALUE))
+                .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", fileName)))
+                .andReturn();
+
+        verify(xmlGenerator).generate(benefitsApplication);
+        assertThat(result.getResponse().getContentAsByteArray()).isEqualTo(fileBytes);
     }
 }

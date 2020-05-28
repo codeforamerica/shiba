@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+            xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+            targetNamespace="http://dhs.state.mn.us/2011/03/01/BaseApplication" elementFormDefault="qualified"
+            attributeFormDefault="unqualified" jaxb:version="2.1" jaxb:extensionBindingPrefixes="xjc">
+    <xsd:annotation>
+        <xsd:appinfo>
+            <jaxb:schemaBindings>
+                <!-- the default package for jaxb to use for this schema.  override in jaxb compiler if needed. -->
+                <jaxb:package name="us.mn.state.dhs.base.application.schema"/>
+            </jaxb:schemaBindings>
+        </xsd:appinfo>
+    </xsd:annotation>
+    <xsd:complexType name="BaseApplicationType">
+        <xsd:annotation>
+            <xsd:documentation>Base Application</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="ApplicationID" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="SubmitDate" type="xsd:dateTime" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

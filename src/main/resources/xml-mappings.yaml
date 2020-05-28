@@ -1,0 +1,21 @@
+xml:
+  mappings:
+    languagePreferences:
+      spokenLanguage: LANGUAGEPREFERENCES_SPOKENLANGUAGE
+      writtenLanguage: LANGUAGEPREFERENCES_WRITTENLANGUAGE
+      needInterpreter: LANGUAGEPREFERENCES_NEEDINTERPRETER
+    personalInfo:
+      firstName: PERSONALINFO_FIRSTNAME
+      middleName: PERSONALINFO_MIDDLENAME
+      lastName: PERSONALINFO_LASTNAME
+      otherName: PERSONALINFO_OTHERNAME
+      ssn: PERSONALINFO_SSN
+      maritalStatus: PERSONALINFO_MARITALSTATUS
+      sex: PERSONALINFO_SEX
+      dateOfBirth: PERSONALINFO_DATE_OF_BIRTH
+      moveToMNDate: PERSONALINFO_MOVETOMNDATE
+    programSelection:
+      "[programs.?[#this.name() == 'FOOD'].isEmpty()?'':'FOOD']": PROGRAM1
+      "[programs.?[#this.name() == 'CASH'].isEmpty()?'':'CASH']": PROGRAM2
+      "[programs.?[#this.name() == 'CHILD_CARE'].isEmpty()?'':'CHILD_CARE']": PROGRAM3
+      "[programs.?[#this.name() == 'EMERGENCY'].isEmpty()?'':'EMERGENCY']": PROGRAM4

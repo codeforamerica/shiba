@@ -14,7 +14,7 @@ public class PdfMappingConfiguration {
 
     @Bean
     @ConfigurationProperties(prefix = "caf.mappings")
-    public Map<String, String> configMap() {
+    public Map<String, String> pdfFieldMap() {
         return new HashMap<>();
     }
 }

@@ -21,18 +21,20 @@ import static org.codeforamerica.shiba.PersonalInfoForm.fromPersonalInfo;
 public class PageController {
     private final BenefitsApplication benefitsApplication;
     private final MessageSource messageSource;
-    private final PDFFieldFiller PDFFieldFiller;
+    private final PdfFieldFiller pdfFieldFiller;
     private final PdfFieldMapper pdfFieldMapper;
+    private final XmlGenerator xmlGenerator;
 
     public PageController(BenefitsApplication benefitsApplication,
                           MessageSource messageSource,
-                          PDFFieldFiller PDFFieldFiller,
-                          PdfFieldMapper pdfFieldMapper
-    ) {
+                          PdfFieldFiller pdfFieldFiller,
+                          PdfFieldMapper pdfFieldMapper,
+                          XmlGenerator xmlGenerator) {
         this.benefitsApplication = benefitsApplication;
         this.messageSource = messageSource;
-        this.PDFFieldFiller = PDFFieldFiller;
+        this.pdfFieldFiller = pdfFieldFiller;
         this.pdfFieldMapper = pdfFieldMapper;
+        this.xmlGenerator = xmlGenerator;
     }
 
     @GetMapping("/")
@@ -108,11 +110,20 @@ public class PageController {
 
     @GetMapping("/download")
     ResponseEntity<byte[]> downloadPdf() {
-        PdfFile pdfFile = PDFFieldFiller.fill(pdfFieldMapper.map(benefitsApplication));
+        ApplicationFile applicationFile = pdfFieldFiller.fill(pdfFieldMapper.map(benefitsApplication));
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", pdfFile.getFileName()))
-                .body(pdfFile.getFileBytes());
+                .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", applicationFile.getFileName()))
+                .body(applicationFile.getFileBytes());
+    }
+
+    @GetMapping("/download-xml")
+    ResponseEntity<byte[]> downloadXml() {
+        ApplicationFile applicationFile = xmlGenerator.generate(benefitsApplication);
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", applicationFile.getFileName()))
+                .body(applicationFile.getFileBytes());
     }
 
     @GetMapping("/success")

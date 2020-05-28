@@ -18,7 +18,7 @@ public class PdfFieldMapper {
         this.pdfFieldMap = pdfFieldMap;
     }
 
-    public List<PDFField> map(Object object) {
+    public List<PdfField> map(Object object) {
         ExpressionParser parser = new SpelExpressionParser();
         StandardEvaluationContext context = new StandardEvaluationContext(object);
         return pdfFieldMap.entrySet().stream()
@@ -26,16 +26,16 @@ public class PdfFieldMapper {
                 .map(entry -> {
                     Object value = parser.parseExpression(entry.getKey()).getValue(context);
                     if (value instanceof String) {
-                        return new SimplePDFField(entry.getValue(), (String) value);
+                        return new SimplePdfField(entry.getValue(), (String) value);
                     } else if (value instanceof Boolean) {
-                        return new TogglePDFField(entry.getValue(), (Boolean) value);
+                        return new TogglePdfField(entry.getValue(), (Boolean) value);
                     } else if (value instanceof List) {
                         //noinspection rawtypes
-                        return new BinaryPDFField(entry.getValue(), !((List) value).isEmpty());
+                        return new BinaryPdfField(entry.getValue(), !((List) value).isEmpty());
                     } else if (value instanceof Enum) {
-                        return new SimplePDFField(entry.getValue(), value.toString());
+                        return new SimplePdfField(entry.getValue(), value.toString());
                     } else if (value instanceof LocalDate) {
-                        return new DatePDFField(entry.getValue(), (LocalDate) value);
+                        return new DatePdfField(entry.getValue(), (LocalDate) value);
                     } else {
                         //noinspection ConstantConditions
                         throw new IllegalArgumentException(String.format(
