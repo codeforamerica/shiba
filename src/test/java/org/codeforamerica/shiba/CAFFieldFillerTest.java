@@ -73,7 +73,7 @@ class CAFFieldFillerTest {
     void shouldSetTheAppropriateNonValueForTheFieldType() throws IOException {
         Collection<PdfField> fields = List.of(
                 new SimplePdfField("TEXT_FIELD", null),
-                new TogglePdfField("TOGGLE_FIELD", null)
+                new TogglePdfField("TOGGLE_FIELD", (Boolean) null)
         );
 
         ApplicationFile applicationFile = subject.fill(fields);

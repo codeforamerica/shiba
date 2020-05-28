@@ -4,22 +4,17 @@ import lombok.Value;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Map;
 
 @Value
 public class DatePdfField implements PdfField {
-    String fieldName;
-    LocalDate localDate;
+    String name;
+    String value;
 
     private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
-    public DatePdfField(String fieldName, LocalDate localDate) {
-        this.fieldName = fieldName;
-        this.localDate = localDate;
+    public DatePdfField(String name, LocalDate value) {
+        this.name = name;
+        this.value = value.format(formatter);
     }
 
-    @Override
-    public Map<String, String> getInputBindings() {
-        return Map.of(fieldName, localDate.format(formatter));
-    }
 }

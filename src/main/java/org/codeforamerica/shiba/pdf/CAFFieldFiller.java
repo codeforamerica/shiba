@@ -25,15 +25,13 @@ public class CAFFieldFiller implements PdfFieldFiller {
             PDDocument document = PDDocument.load(applicationPDF.getInputStream());
             PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
 
-            fields.stream()
-                    .flatMap(field -> field.getInputBindings().entrySet().stream())
-                    .forEach(entry -> {
-                        try {
-                            acroForm.getField(entry.getKey()).setValue(entry.getValue());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    });
+            fields.forEach(field -> {
+                try {
+                    acroForm.getField(field.getName()).setValue(field.getValue());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             document.save(outputStream);
