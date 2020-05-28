@@ -1,5 +1,6 @@
-package org.codeforamerica.shiba;
+package org.codeforamerica.shiba.pdf;
 
+import org.codeforamerica.shiba.YamlPropertySourceFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

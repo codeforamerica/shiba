@@ -1,4 +1,6 @@
-package org.codeforamerica.shiba;
+package org.codeforamerica.shiba.pdf;
+
+import org.codeforamerica.shiba.ApplicationFile;
 
 import java.util.Collection;
 

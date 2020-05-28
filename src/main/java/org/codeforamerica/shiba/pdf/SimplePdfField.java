@@ -1,6 +1,7 @@
-package org.codeforamerica.shiba;
+package org.codeforamerica.shiba.pdf;
 
 import lombok.Value;
+import org.codeforamerica.shiba.pdf.PdfField;
 
 import java.util.Map;
 import java.util.Optional;

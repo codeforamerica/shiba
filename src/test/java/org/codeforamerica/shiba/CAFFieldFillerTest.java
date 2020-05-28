@@ -2,6 +2,7 @@ package org.codeforamerica.shiba;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
+import org.codeforamerica.shiba.pdf.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 

@@ -1,5 +1,6 @@
-package org.codeforamerica.shiba;
+package org.codeforamerica.shiba.xml;
 
+import org.codeforamerica.shiba.ApplicationFile;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.expression.ExpressionParser;

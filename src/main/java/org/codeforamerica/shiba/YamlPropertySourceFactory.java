@@ -8,7 +8,7 @@ import org.springframework.core.io.support.PropertySourceFactory;
 
 import java.util.Properties;
 
-class YamlPropertySourceFactory implements PropertySourceFactory {
+public class YamlPropertySourceFactory implements PropertySourceFactory {
     @SuppressWarnings({"NullableProblems", "ConstantConditions"})
     @Override
     public PropertySource<?> createPropertySource(String name, EncodedResource encodedResource) {

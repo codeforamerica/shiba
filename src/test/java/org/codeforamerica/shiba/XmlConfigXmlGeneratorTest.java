@@ -1,5 +1,7 @@
 package org.codeforamerica.shiba;
 
+import org.codeforamerica.shiba.xml.XmlConfigXmlGenerator;
+import org.codeforamerica.shiba.xml.XmlGenerator;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;

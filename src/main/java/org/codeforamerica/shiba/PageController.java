@@ -1,5 +1,8 @@
 package org.codeforamerica.shiba;
 
+import org.codeforamerica.shiba.pdf.PdfFieldFiller;
+import org.codeforamerica.shiba.pdf.PdfFieldMapper;
+import org.codeforamerica.shiba.xml.XmlGenerator;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;

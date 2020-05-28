@@ -1,5 +1,9 @@
 package org.codeforamerica.shiba;
 
+import org.codeforamerica.shiba.pdf.PdfField;
+import org.codeforamerica.shiba.pdf.PdfFieldFiller;
+import org.codeforamerica.shiba.pdf.PdfFieldMapper;
+import org.codeforamerica.shiba.xml.XmlGenerator;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
