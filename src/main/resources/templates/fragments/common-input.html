@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="common-input (input)" class="form-group" >
+    <label th:for="${input.name}" class="form-question"
+           th:text="#{${input.promptMessageKey}}"></label>
+    <p class="text--help"
+       th:if="${input.helpMessageKey != null}"
+       th:text="#{${input.helpMessageKey}}"></p>
+    <div th:switch="${input.type}">
+        <input th:case="${T(org.codeforamerica.shiba.FormInputType).TEXT}" type="text" class="text-input form-width--name" th:id="${input.name}" th:value="${(input.value != null) ? input.value[0] : ''}" th:name="${input.formInputName}">
+    </div>
+    <p class="text--error" th:if="${!input.valid}">
+        <i class="icon-warning"></i>
+        <span th:text="#{${input.validationErrorMessageKey}}"></span>
+    </p>
+</div>
+</html>

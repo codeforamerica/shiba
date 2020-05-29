@@ -8,17 +8,17 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.validation.Valid;
 import java.util.Locale;
-
-import static org.codeforamerica.shiba.PersonalInfoForm.fromPersonalInfo;
 
 @Controller
 public class PageController {
@@ -27,17 +27,20 @@ public class PageController {
     private final PdfFieldFiller pdfFieldFiller;
     private final PdfFieldMapper pdfFieldMapper;
     private final XmlGenerator xmlGenerator;
+    private Screens screens;
 
     public PageController(BenefitsApplication benefitsApplication,
                           MessageSource messageSource,
                           PdfFieldFiller pdfFieldFiller,
                           PdfFieldMapper pdfFieldMapper,
-                          XmlGenerator xmlGenerator) {
+                          XmlGenerator xmlGenerator,
+                          Screens screens) {
         this.benefitsApplication = benefitsApplication;
         this.messageSource = messageSource;
         this.pdfFieldFiller = pdfFieldFiller;
         this.pdfFieldMapper = pdfFieldMapper;
         this.xmlGenerator = xmlGenerator;
+        this.screens = screens;
     }
 
     @GetMapping("/")
@@ -98,17 +101,20 @@ public class PageController {
 
     @GetMapping("/personal-info")
     ModelAndView personalInfo() {
-        PersonalInfoForm personalInfoForm = fromPersonalInfo(benefitsApplication.getPersonalInfo());
-        return new ModelAndView("personal-info", "personalInfoForm", personalInfoForm);
+        return new ModelAndView("personal-info", "form", screens.get("personal-info"));
     }
 
     @PostMapping("/personal-info")
-    ModelAndView postPersonalInfo(@Valid @ModelAttribute PersonalInfoForm personalInfoForm, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return new ModelAndView("personal-info", "personalInfoForm", personalInfoForm);
+    ModelAndView postPersonalInfo(@RequestBody MultiValueMap<String, String> model) {
+        Form personalInfoForm = screens.get("personal-info");
+        personalInfoForm.getInputs()
+                .forEach(formInput -> formInput.setAndValidate(model.get(formInput.getFormInputName())));
+
+        if (personalInfoForm.isValid()) {
+            return new ModelAndView("redirect:/success");
+        } else {
+            return new ModelAndView("personal-info", "form", personalInfoForm);
         }
-        benefitsApplication.setPersonalInfo(personalInfoForm.mapToPersonalInfo());
-        return new ModelAndView("redirect:/success");
     }
 
     @GetMapping("/download")

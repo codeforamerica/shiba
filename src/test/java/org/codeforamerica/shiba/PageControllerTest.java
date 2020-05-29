@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -42,8 +43,8 @@ class PageControllerTest {
                         new StaticMessageSource(),
                         pdfFieldFiller,
                         pdfFieldMapper,
-                        xmlGenerator
-                ))
+                        xmlGenerator,
+                        null))
                 .setViewResolvers(new InternalResourceViewResolver("", "suffix"))
                 .build();
     }
@@ -88,24 +89,24 @@ class PageControllerTest {
                 .moveToMNDate(LocalDate.of(2010, 3, 12))
                 .build());
         mockMvc.perform(get("/personal-info"))
-                .andExpect(model().attribute("personalInfoForm", Matchers.hasProperty("birthMonth", Matchers.equalTo("04"))))
-                .andExpect(model().attribute("personalInfoForm", Matchers.hasProperty("birthDay", Matchers.equalTo("02"))))
-                .andExpect(model().attribute("personalInfoForm", Matchers.hasProperty("birthYear", Matchers.equalTo("2000"))))
-                .andExpect(model().attribute("personalInfoForm", Matchers.hasProperty("moveToMNMonth", Matchers.equalTo("03"))))
-                .andExpect(model().attribute("personalInfoForm", Matchers.hasProperty("moveToMNDay", Matchers.equalTo("12"))))
-                .andExpect(model().attribute("personalInfoForm", Matchers.hasProperty("moveToMNYear", Matchers.equalTo("2010"))));
+                .andExpect(model().attribute("personalInfoForm", hasProperty("birthMonth", Matchers.equalTo("04"))))
+                .andExpect(model().attribute("personalInfoForm", hasProperty("birthDay", Matchers.equalTo("02"))))
+                .andExpect(model().attribute("personalInfoForm", hasProperty("birthYear", Matchers.equalTo("2000"))))
+                .andExpect(model().attribute("personalInfoForm", hasProperty("moveToMNMonth", Matchers.equalTo("03"))))
+                .andExpect(model().attribute("personalInfoForm", hasProperty("moveToMNDay", Matchers.equalTo("12"))))
+                .andExpect(model().attribute("personalInfoForm", hasProperty("moveToMNYear", Matchers.equalTo("2010"))));
 
         benefitsApplication.setPersonalInfo(PersonalInfo.builder()
                 .dateOfBirth(null)
                 .moveToMNDate(null)
                 .build());
         mockMvc.perform(get("/personal-info"))
-                .andExpect(model().attribute("personalInfoForm", Matchers.hasProperty("birthMonth", Matchers.equalTo(""))))
-                .andExpect(model().attribute("personalInfoForm", Matchers.hasProperty("birthDay", Matchers.equalTo(""))))
-                .andExpect(model().attribute("personalInfoForm", Matchers.hasProperty("birthYear", Matchers.equalTo(""))))
-                .andExpect(model().attribute("personalInfoForm", Matchers.hasProperty("moveToMNMonth", Matchers.equalTo(""))))
-                .andExpect(model().attribute("personalInfoForm", Matchers.hasProperty("moveToMNDay", Matchers.equalTo(""))))
-                .andExpect(model().attribute("personalInfoForm", Matchers.hasProperty("moveToMNYear", Matchers.equalTo(""))));
+                .andExpect(model().attribute("personalInfoForm", hasProperty("birthMonth", Matchers.equalTo(""))))
+                .andExpect(model().attribute("personalInfoForm", hasProperty("birthDay", Matchers.equalTo(""))))
+                .andExpect(model().attribute("personalInfoForm", hasProperty("birthYear", Matchers.equalTo(""))))
+                .andExpect(model().attribute("personalInfoForm", hasProperty("moveToMNMonth", Matchers.equalTo(""))))
+                .andExpect(model().attribute("personalInfoForm", hasProperty("moveToMNDay", Matchers.equalTo(""))))
+                .andExpect(model().attribute("personalInfoForm", hasProperty("moveToMNYear", Matchers.equalTo(""))));
     }
 
     @Test

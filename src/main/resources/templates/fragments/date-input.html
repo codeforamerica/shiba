@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="date-input (input)" class="form-group">
+    <label class="form-question" th:text="#{${input.promptMessageKey}}"></label>
+    <p class="text--help">
+        <label th:for="${input.name}+'-month'">mm</label>/<label th:for="${input.name}+'-day'">dd</label>/<label
+            th:for="${input.name}+'-year'">yyyy</label>
+    </p>
+    <input type="text" maxlength="2" pattern="\d{2}" class="text-input form-width--2-character dob-input"
+           th:id="${input.name}+'-month'" th:name="${input.formInputName}" th:value="${input.value != null and !input.value.isEmpty() ? input.value[0]: ''}">
+    &nbsp;/&nbsp; <input type="text" maxlength="2" pattern="\d{2}" class="text-input form-width--2-character dob-input"
+                         th:id="${input.name}+'-day'" th:name="${input.formInputName}" th:value="${input.value != null and !input.value.isEmpty() ? input.value[1]: ''}">
+    &nbsp;/&nbsp; <input type="text" maxlength="4" pattern="\d{4}" class="text-input form-width--4-character dob-input"
+                         th:id="${input.name}+'-year'" th:name="${input.formInputName}" th:value="${input.value != null and !input.value.isEmpty() ? input.value[2]: ''}">
+</div>
+</html>
