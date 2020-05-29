@@ -98,6 +98,10 @@
                             <input type="radio" th:field="*{sex}" th:id="${#ids.seq('sex')}" th:value="MALE">
                             <span th:text="#{personal-info.male}"></span>
                         </label>
+                        <label th:for="${#ids.next('sex')}" class="radio-button">
+                            <input type="radio" th:field="*{sex}" th:id="${#ids.seq('sex')}" th:value="RATHER_NOT_SAY">
+                            <span th:text="#{personal-info.rather-not-say}"></span>
+                        </label>
                     </div>
                     <div class="question-with-follow-up">
                         <div class="question-with-follow-up__question">

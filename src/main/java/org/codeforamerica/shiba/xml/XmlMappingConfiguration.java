@@ -12,8 +12,7 @@ import java.util.Map;
 import static org.codeforamerica.shiba.BenefitProgram.*;
 import static org.codeforamerica.shiba.Language.*;
 import static org.codeforamerica.shiba.MaritalStatus.*;
-import static org.codeforamerica.shiba.Sex.FEMALE;
-import static org.codeforamerica.shiba.Sex.MALE;
+import static org.codeforamerica.shiba.Sex.*;
 
 @Configuration
 @PropertySource(value = "classpath:xml-mappings.yaml", factory = YamlPropertySourceFactory.class)
@@ -35,6 +34,7 @@ public class XmlMappingConfiguration {
         xmlEnumConfigMap.put(WIDOWED.name(), "Widowed");
         xmlEnumConfigMap.put(MALE.name(), "Male");
         xmlEnumConfigMap.put(FEMALE.name(), "Female");
+        xmlEnumConfigMap.put(RATHER_NOT_SAY.name(), "Unknown");
         xmlEnumConfigMap.put(ENGLISH.name(), "English");
         xmlEnumConfigMap.put(SPANISH.name(), "Spanish");
         xmlEnumConfigMap.put(SOOMAALI.name(), "Somali");

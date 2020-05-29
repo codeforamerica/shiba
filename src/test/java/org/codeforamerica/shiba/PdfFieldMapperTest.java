@@ -4,110 +4,122 @@ import org.codeforamerica.shiba.pdf.*;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static java.util.Collections.emptySet;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.BenefitProgram.FOOD;
+import static org.codeforamerica.shiba.PdfFieldMapperTest.TestEnum.TEST_ENUM;
 
 class PdfFieldMapperTest {
+    static class TestObject {
+        public TestEnum enumValue;
+        public String stringValue;
+        public Boolean booleanValue;
+        public LocalDate dateValue;
+        public List<Object> list1;
+        public List<Object> list2;
+    }
+
+    enum TestEnum {
+        TEST_ENUM
+    }
 
     @Test
     void shouldMapStringsToSimpleFields() {
-        Map<String, String> configMap = new HashMap<>();
         String fieldName = "someName";
-        configMap.put("personalInfo.firstName", fieldName);
-        PdfFieldMapper subject = new PdfFieldMapper(configMap);
+        Map<String, String> configMap = Map.of("stringValue", fieldName);
+        PdfFieldMapper subject = new PdfFieldMapper(configMap, emptySet());
 
-        BenefitsApplication benefitApplication = new BenefitsApplication();
-        String firstName = "Roger";
-        PersonalInfo personalInfo = PersonalInfo.builder().firstName(firstName).build();
-        benefitApplication.setPersonalInfo(personalInfo);
+        TestObject benefitApplication = new TestObject();
+        String stringValue = "some-string-value";
+        benefitApplication.stringValue = stringValue;
 
         List<PdfField> fields = subject.map(benefitApplication);
-        assertThat(fields).contains(new SimplePdfField(fieldName, firstName));
+        assertThat(fields).contains(new SimplePdfField(fieldName, stringValue));
     }
 
     @Test
     void shouldMapBooleansToToggleFields() {
-        Map<String, String> configMap = new HashMap<>();
         String fieldName = "someName";
-        configMap.put("languagePreferences.needInterpreter", fieldName);
-        PdfFieldMapper subject = new PdfFieldMapper(configMap);
+        PdfFieldMapper subject = new PdfFieldMapper(Map.of("booleanValue", fieldName), emptySet());
 
-        BenefitsApplication benefitsApplication = new BenefitsApplication();
-        LanguagePreferences languagePreferences = new LanguagePreferences();
-        languagePreferences.setNeedInterpreter(true);
-        benefitsApplication.setLanguagePreferences(languagePreferences);
-        List<PdfField> fields = subject.map(benefitsApplication);
+        TestObject testObject = new TestObject();
+        testObject.booleanValue = true;
+        List<PdfField> fields = subject.map(testObject);
 
         assertThat(fields).contains(new TogglePdfField(fieldName, true));
     }
 
     @Test
-    void shouldMapEnumsToSimpleFields() {
-        Map<String, String> configMap = new HashMap<>();
-        String fieldName = "someName";
-        configMap.put("personalInfo.maritalStatus", fieldName);
-        BenefitsApplication benefitsApplication = new BenefitsApplication();
-        PersonalInfo personalInfo = PersonalInfo.builder().maritalStatus(MaritalStatus.MARRIED_LIVING_WITH_SPOUSE).build();
-        benefitsApplication.setPersonalInfo(personalInfo);
-        PdfFieldMapper subject = new PdfFieldMapper(configMap);
-
-        List<PdfField> fields = subject.map(benefitsApplication);
-
-        assertThat(fields).contains(new SimplePdfField(fieldName, MaritalStatus.MARRIED_LIVING_WITH_SPOUSE.toString()));
-    }
-
-    @Test
     void shouldMapDatesToDateFields() {
-        Map<String, String> configMap = new HashMap<>();
         String fieldName = "someName";
-        configMap.put("personalInfo.dateOfBirth", fieldName);
-        BenefitsApplication benefitsApplication = new BenefitsApplication();
+        TestObject testObject = new TestObject();
         LocalDate localDate = LocalDate.of(2020, 1, 31);
-        PersonalInfo personalInfo = PersonalInfo.builder()
-                .dateOfBirth(localDate)
-                .build();
-        benefitsApplication.setPersonalInfo(personalInfo);
-        PdfFieldMapper subject = new PdfFieldMapper(configMap);
+        PdfFieldMapper subject = new PdfFieldMapper(Map.of("dateValue", fieldName), emptySet());
 
-        List<PdfField> fields = subject.map(benefitsApplication);
+        testObject.dateValue = localDate;
+
+        List<PdfField> fields = subject.map(testObject);
 
         assertThat(fields).contains(new DatePdfField(fieldName, localDate));
     }
 
     @Test
     void shouldHandleNullExpressionResult() {
-        Map<String, String> configMap = new HashMap<>();
         String fieldName = "someName";
-        configMap.put("null", fieldName);
 
-        BenefitsApplication benefitsApplication = new BenefitsApplication();
+        TestObject benefitsApplication = new TestObject();
 
-        PdfFieldMapper subject = new PdfFieldMapper(configMap);
+        PdfFieldMapper subject = new PdfFieldMapper(Map.of("null", fieldName), emptySet());
         List<PdfField> fields = subject.map(benefitsApplication);
         assertThat(fields).isEmpty();
     }
 
     @Test
     void shouldMapListElementsToBinaryFields() {
-        HashMap<String, String> configMap = new HashMap<>();
-        configMap.put("programSelection.programs.?[#this.name() == 'FOOD']", "FOOD_PDF_FIELD");
-        configMap.put("programSelection.programs.?[#this.name() == 'NOT_PRESENT']", "NOT_PRESENT_PDF_FIELD");
-        PdfFieldMapper subject = new PdfFieldMapper(configMap);
+        String pdfField = "PDF_FIELD";
+        String notPresentPdfField = "NOT_PRESENT_PDF_FIELD";
+        PdfFieldMapper subject = new PdfFieldMapper(Map.of(
+                "list1", pdfField,
+                "list2", notPresentPdfField
+        ), emptySet());
 
-        BenefitsApplication benefitsApplication = new BenefitsApplication();
-        ProgramSelection programSelection = new ProgramSelection();
-        programSelection.setPrograms(Set.of(FOOD));
-        benefitsApplication.setProgramSelection(programSelection);
-        List<PdfField> fields = subject.map(benefitsApplication);
+        TestObject testObject = new TestObject();
+        testObject.list1 = List.of("a");
+        testObject.list2 = Collections.emptyList();
+        List<PdfField> fields = subject.map(testObject);
 
         assertThat(fields).containsOnly(
-                new BinaryPdfField("FOOD_PDF_FIELD", true),
-                new BinaryPdfField("NOT_PRESENT_PDF_FIELD", false)
+                new BinaryPdfField(pdfField, true),
+                new BinaryPdfField(notPresentPdfField, false)
         );
+    }
+
+    @Test
+    void shouldMapEnumsToSimpleFields() {
+        String fieldName = "someName";
+        Map<String, String> configMap = Map.of("enumValue", fieldName);
+        TestObject testObject = new TestObject();
+        testObject.enumValue = TEST_ENUM;
+        PdfFieldMapper subject = new PdfFieldMapper(configMap, Set.of());
+
+        List<PdfField> fields = subject.map(testObject);
+
+        assertThat(fields).contains(new SimplePdfField(fieldName, TEST_ENUM.toString()));
+    }
+
+    @Test
+    void shouldNotMapExcludedEnums() {
+        TestObject testObject = new TestObject();
+        testObject.enumValue = TEST_ENUM;
+        Map<String, String> configMap = Map.of("enumValue", "PDF_FIELD");
+        PdfFieldMapper subject = new PdfFieldMapper(configMap, Set.of(TEST_ENUM));
+
+        List<PdfField> fields = subject.map(testObject);
+
+        assertThat(fields).isEmpty();
     }
 }
