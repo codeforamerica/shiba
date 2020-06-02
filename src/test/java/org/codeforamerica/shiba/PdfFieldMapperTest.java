@@ -1,125 +1,129 @@
 package org.codeforamerica.shiba;
 
-import org.codeforamerica.shiba.pdf.*;
+import org.codeforamerica.shiba.pdf.PdfField;
+import org.codeforamerica.shiba.pdf.PdfFieldMapper;
+import org.codeforamerica.shiba.pdf.SimplePdfField;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
-import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import static java.util.Collections.emptySet;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.PdfFieldMapperTest.TestEnum.TEST_ENUM;
 
 class PdfFieldMapperTest {
-    static class TestObject {
-        public TestEnum enumValue;
-        public String stringValue;
-        public Boolean booleanValue;
-        public LocalDate dateValue;
-        public List<Object> list1;
-        public List<Object> list2;
-    }
-
-    enum TestEnum {
-        TEST_ENUM
-    }
-
-    @Test
-    void shouldMapStringsToSimpleFields() {
+    @ParameterizedTest
+    @EnumSource(names = {"TEXT", "NUMBER", "RADIO"}, value = FormInputType.class)
+    void shouldMapTextInputToSimpleField(FormInputType formInputType) {
         String fieldName = "someName";
-        Map<String, String> configMap = Map.of("stringValue", fieldName);
-        PdfFieldMapper subject = new PdfFieldMapper(configMap, emptySet());
+        String formInputName = "some-input";
+        String screenName = "some-screen";
+        Map<String, String> configMap = Map.of(screenName + "." + formInputName, fieldName);
 
-        TestObject benefitApplication = new TestObject();
         String stringValue = "some-string-value";
-        benefitApplication.stringValue = stringValue;
+        FormInput formInput = new FormInput();
+        formInput.type = formInputType;
+        formInput.value = List.of(stringValue);
+        formInput.name = formInputName;
 
-        List<PdfField> fields = subject.map(benefitApplication);
+        PdfFieldMapper subject = new PdfFieldMapper(configMap, emptySet());
+        List<PdfField> fields = subject.map(Map.of(screenName, List.of(formInput)));
+
         assertThat(fields).contains(new SimplePdfField(fieldName, stringValue));
     }
 
     @Test
-    void shouldMapBooleansToToggleFields() {
+    void shouldNotMapInputWhenValueIsExcludedFromPdf() {
         String fieldName = "someName";
-        PdfFieldMapper subject = new PdfFieldMapper(Map.of("booleanValue", fieldName), emptySet());
+        String formInputName = "some-input";
+        String screenName = "some-screen";
+        Map<String, String> configMap = Map.of(screenName + "." + formInputName, fieldName);
+        String excludedValue = "excluded radio selection";
 
-        TestObject testObject = new TestObject();
-        testObject.booleanValue = true;
-        List<PdfField> fields = subject.map(testObject);
+        FormInput formInput = new FormInput();
+        formInput.type = FormInputType.RADIO;
+        formInput.value = List.of(excludedValue);
+        formInput.name = formInputName;
 
-        assertThat(fields).contains(new TogglePdfField(fieldName, true));
-    }
+        PdfFieldMapper subject = new PdfFieldMapper(configMap, Set.of(excludedValue));
+        List<PdfField> fields = subject.map(Map.of(screenName, List.of(formInput)));
 
-    @Test
-    void shouldMapDatesToDateFields() {
-        String fieldName = "someName";
-        TestObject testObject = new TestObject();
-        LocalDate localDate = LocalDate.of(2020, 1, 31);
-        PdfFieldMapper subject = new PdfFieldMapper(Map.of("dateValue", fieldName), emptySet());
-
-        testObject.dateValue = localDate;
-
-        List<PdfField> fields = subject.map(testObject);
-
-        assertThat(fields).contains(new DatePdfField(fieldName, localDate));
-    }
-
-    @Test
-    void shouldHandleNullExpressionResult() {
-        String fieldName = "someName";
-
-        TestObject benefitsApplication = new TestObject();
-
-        PdfFieldMapper subject = new PdfFieldMapper(Map.of("null", fieldName), emptySet());
-        List<PdfField> fields = subject.map(benefitsApplication);
         assertThat(fields).isEmpty();
     }
 
     @Test
-    void shouldMapListElementsToBinaryFields() {
-        String pdfField = "PDF_FIELD";
-        String notPresentPdfField = "NOT_PRESENT_PDF_FIELD";
-        PdfFieldMapper subject = new PdfFieldMapper(Map.of(
-                "list1", pdfField,
-                "list2", notPresentPdfField
-        ), emptySet());
-
-        TestObject testObject = new TestObject();
-        testObject.list1 = List.of("a");
-        testObject.list2 = Collections.emptyList();
-        List<PdfField> fields = subject.map(testObject);
-
-        assertThat(fields).containsOnly(
-                new BinaryPdfField(pdfField, true),
-                new BinaryPdfField(notPresentPdfField, false)
-        );
-    }
-
-    @Test
-    void shouldMapEnumsToSimpleFields() {
+    void shouldMapDatesToSimpleFields() {
         String fieldName = "someName";
-        Map<String, String> configMap = Map.of("enumValue", fieldName);
-        TestObject testObject = new TestObject();
-        testObject.enumValue = TEST_ENUM;
-        PdfFieldMapper subject = new PdfFieldMapper(configMap, Set.of());
+        String formInputName = "some-input";
+        String screenName = "some-screen";
+        Map<String, String> configMap = Map.of(screenName + "." + formInputName, fieldName);
 
-        List<PdfField> fields = subject.map(testObject);
+        FormInput formInput = new FormInput();
+        formInput.type = FormInputType.DATE;
+        formInput.value = List.of("01", "20", "3312");
+        formInput.name = formInputName;
 
-        assertThat(fields).contains(new SimplePdfField(fieldName, TEST_ENUM.toString()));
+        PdfFieldMapper subject = new PdfFieldMapper(configMap, emptySet());
+        List<PdfField> fields = subject.map(Map.of(screenName, List.of(formInput)));
+
+        assertThat(fields).contains(new SimplePdfField(fieldName, "01/20/3312"));
     }
 
     @Test
-    void shouldNotMapExcludedEnums() {
-        TestObject testObject = new TestObject();
-        testObject.enumValue = TEST_ENUM;
-        Map<String, String> configMap = Map.of("enumValue", "PDF_FIELD");
-        PdfFieldMapper subject = new PdfFieldMapper(configMap, Set.of(TEST_ENUM));
+    void shouldNotMapInputsWithoutPdfFieldMappings() {
+        String formInputName = "some-input";
+        String screenName = "some-screen";
 
-        List<PdfField> fields = subject.map(testObject);
+        FormInput formInput = new FormInput();
+        formInput.type = FormInputType.TEXT;
+        formInput.value = List.of("someValue");
+        formInput.name = formInputName;
+
+        PdfFieldMapper subject = new PdfFieldMapper(Map.of(), emptySet());
+        List<PdfField> fields = subject.map(Map.of(screenName, List.of(formInput)));
 
         assertThat(fields).isEmpty();
     }
+
+    @ParameterizedTest
+    @EnumSource(value = FormInputType.class)
+    void shouldNotMapInputsWithoutValues(FormInputType formInputType) {
+        String fieldName = "someName";
+        String formInputName = "some-input";
+        String screenName = "some-screen";
+        Map<String, String> configMap = Map.of(screenName + "." + formInputName, fieldName);
+
+        FormInput formInput = new FormInput();
+        formInput.type = formInputType;
+        formInput.value = null;
+        formInput.name = formInputName;
+
+        PdfFieldMapper subject = new PdfFieldMapper(configMap, emptySet());
+        List<PdfField> fields = subject.map(Map.of(screenName, List.of(formInput)));
+
+        assertThat(fields).isEmpty();
+    }
+//
+//    @Test
+//    void shouldMapListElementsToBinaryFields() {
+//        String pdfField = "PDF_FIELD";
+//        String notPresentPdfField = "NOT_PRESENT_PDF_FIELD";
+//        PdfFieldMapper subject = new PdfFieldMapper(Map.of(
+//                "list1", pdfField,
+//                "list2", notPresentPdfField
+//        ), emptySet());
+//
+//        TestObject testObject = new TestObject();
+//        testObject.list1 = List.of("a");
+//        testObject.list2 = Collections.emptyList();
+//        List<PdfField> fields = subject.map(testObject);
+//
+//        assertThat(fields).containsOnly(
+//                new BinaryPdfField(pdfField, true),
+//                new BinaryPdfField(notPresentPdfField, false)
+//        );
+//    }
 }

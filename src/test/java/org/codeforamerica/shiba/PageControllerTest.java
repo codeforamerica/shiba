@@ -18,9 +18,10 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasProperty;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -34,6 +35,7 @@ class PageControllerTest {
     PdfFieldMapper pdfFieldMapper = mock(PdfFieldMapper.class);
     XmlGenerator xmlGenerator = mock(XmlGenerator.class);
     BenefitsApplication benefitsApplication = new BenefitsApplication();
+    Screens screens = new Screens();
 
     @BeforeEach
     void setUp() {
@@ -44,7 +46,7 @@ class PageControllerTest {
                         pdfFieldFiller,
                         pdfFieldMapper,
                         xmlGenerator,
-                        null))
+                        screens))
                 .setViewResolvers(new InternalResourceViewResolver("", "suffix"))
                 .build();
     }
@@ -114,6 +116,29 @@ class PageControllerTest {
         PersonalInfo personalInfo = PersonalInfo.builder().firstName("Roger").build();
         benefitsApplication.setPersonalInfo(personalInfo);
 
+        Form form1 = new Form();
+
+        FormInput input1 = new FormInput();
+        input1.name = "input 1";
+        input1.type = FormInputType.TEXT;
+
+        FormInput input2 = new FormInput();
+        input2.name = "input 2";
+        input2.type = FormInputType.TEXT;
+        input2.setType(FormInputType.INPUT_WITH_FOLLOW_UP);
+
+        FormInputWithFollowUps inputWithFollowUps = new FormInputWithFollowUps();
+        inputWithFollowUps.name = "inputWithFollowUps";
+        inputWithFollowUps.type = FormInputType.TEXT;
+
+        FormInput input3 = new FormInput();
+        input3.name = "input 3";
+        input3.type = FormInputType.TEXT;
+
+        inputWithFollowUps.setFollowUps(List.of(input3));
+        input2.setInputWithFollowUps(inputWithFollowUps);
+        form1.setInputs(List.of(input1, input2));
+        screens.put("screen1", form1);
         byte[] pdfBytes = "here is the pdf".getBytes();
         String fileName = "filename.pdf";
 
@@ -129,7 +154,9 @@ class PageControllerTest {
                 .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", fileName)))
                 .andReturn();
 
-        verify(pdfFieldMapper).map(benefitsApplication);
+        verify(pdfFieldMapper).map(Map.of(
+                "screen1", List.of(input1, inputWithFollowUps, input3)
+        ));
         verify(pdfFieldFiller).fill(fields);
         assertThat(result.getResponse().getContentAsByteArray()).isEqualTo(pdfBytes);
     }

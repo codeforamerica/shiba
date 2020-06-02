@@ -65,6 +65,6 @@ screens:
             - name: move-to-mn-date
               type: DATE
               promptMessageKey: personal-info.when-did-you-move-to-minnesota
-            - name: previous-city
+            - name: move-to-mn-previous-city
               type: TEXT
               promptMessageKey: personal-info.what-city-did-you-move-from

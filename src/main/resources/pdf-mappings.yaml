@@ -4,16 +4,16 @@ caf:
       spokenLanguage: APPLICANT_SPOKEN_LANGUAGE_PREFERENCE
       writtenLanguage: APPLICANT_WRITTEN_LANGUAGE_PREFERENCE
       needInterpreter: NEED_INTERPRETER
-    personalInfo:
-      firstName: APPLICANT_FIRST_NAME
-      lastName: APPLICANT_LAST_NAME
-      maritalStatus: MARITAL_STATUS
-      otherName: APPLICANT_OTHER_NAME
-      dateOfBirth: DATE_OF_BIRTH
+    personal-info:
+      first-name: APPLICANT_FIRST_NAME
+      last-name: APPLICANT_LAST_NAME
+      marital-status: MARITAL_STATUS
+      other-name: APPLICANT_OTHER_NAME
+      date-of-birth: DATE_OF_BIRTH
       ssn: APPLICANT_SSN
       sex: APPLICANT_SEX
-      moveToMNDate: DATE_OF_MOVING_TO_MN
-      moveToMNPreviousCity: APPLICANT_PREVIOUS_CITY
+      move-to-mn-date: DATE_OF_MOVING_TO_MN
+      move-to-mn-previous-city: APPLICANT_PREVIOUS_CITY
     programSelection:
       "[programs.?[#this.name() == 'FOOD']]": FOOD
       "[programs.?[#this.name() == 'CASH']]": CASH

@@ -1,6 +1,5 @@
 package org.codeforamerica.shiba.pdf;
 
-import org.codeforamerica.shiba.Sex;
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +21,7 @@ public class PdfMappingConfiguration {
     }
 
     @Bean
-    public Set<Enum<?>> enumExclusion() {
-        return Set.of(Sex.RATHER_NOT_SAY);
+    public Set<String> valueExclusions() {
+        return Set.of("RATHER_NOT_SAY");
     }
 }

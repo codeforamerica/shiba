@@ -18,7 +18,10 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 public class PageController {
@@ -119,7 +122,9 @@ public class PageController {
 
     @GetMapping("/download")
     ResponseEntity<byte[]> downloadPdf() {
-        ApplicationFile applicationFile = pdfFieldFiller.fill(pdfFieldMapper.map(benefitsApplication));
+        Map<String, List<FormInput>> screensMap = screens.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getFlattenedInputs()));
+        ApplicationFile applicationFile = pdfFieldFiller.fill(pdfFieldMapper.map(screensMap));
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", applicationFile.getFileName()))
