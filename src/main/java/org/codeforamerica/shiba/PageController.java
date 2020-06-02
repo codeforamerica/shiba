@@ -106,14 +106,14 @@ public class PageController {
 
     @PostMapping("/personal-info")
     ModelAndView postPersonalInfo(@RequestBody MultiValueMap<String, String> model) {
-        Form personalInfoForm = screens.get("personal-info");
-        personalInfoForm.getInputs()
+        Form form = screens.get("personal-info");
+        form.getFlattenedInputs()
                 .forEach(formInput -> formInput.setAndValidate(model.get(formInput.getFormInputName())));
 
-        if (personalInfoForm.isValid()) {
+        if (form.isValid()) {
             return new ModelAndView("redirect:/success");
         } else {
-            return new ModelAndView("personal-info", "form", personalInfoForm);
+            return new ModelAndView("personal-info", "form", form);
         }
     }
 

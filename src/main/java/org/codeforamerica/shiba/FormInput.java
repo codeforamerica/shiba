@@ -5,6 +5,7 @@ import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 import java.util.List;
+import java.util.Objects;
 
 @Data
 public class FormInput {
@@ -17,12 +18,17 @@ public class FormInput {
     String helpMessageKey;
     Boolean valid = true;
     List<String> value;
+    Validation validation = Validation.NONE;
     String validationErrorMessageKey;
-    String validationExpression = "true";
-    String customFragment;
+    List<Option> options;
+    FormInputWithFollowUps inputWithFollowUps;
 
     public String getFormInputName() {
         return this.name + WEB_INPUT_ARRAY_TOKEN;
+    }
+
+    public List<String> getNonNullValue() {
+        return Objects.requireNonNullElseGet(value, List::of);
     }
 
     public void setAndValidate(List<String> value) {
@@ -31,14 +37,16 @@ public class FormInput {
     }
 
     private void validate() {
-        this.setValid(EXPRESSION_PARSER.parseExpression(validationExpression).getValue(this.value, Boolean.class));
+        this.setValid(this.validation.apply(this.value));
+        this.validationErrorMessageKey = this.validation.getErrorMessageKey();
     }
 
     public String fragment() {
         return switch (type) {
-            case TEXT -> "common-input";
+            case INPUT_WITH_FOLLOW_UP -> "input-with-follow-up";
+            case TEXT, NUMBER -> "common-input";
             case DATE -> "date-input";
-            default -> customFragment;
+            case RADIO -> "radio-input";
         };
     }
 }

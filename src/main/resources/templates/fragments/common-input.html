@@ -7,7 +7,8 @@
        th:if="${input.helpMessageKey != null}"
        th:text="#{${input.helpMessageKey}}"></p>
     <div th:switch="${input.type}">
-        <input th:case="${T(org.codeforamerica.shiba.FormInputType).TEXT}" type="text" class="text-input form-width--name" th:id="${input.name}" th:value="${(input.value != null) ? input.value[0] : ''}" th:name="${input.formInputName}">
+        <input th:case="${T(org.codeforamerica.shiba.FormInputType).TEXT}" type="text" class="text-input form-width--name" th:id="${input.name}" th:value="${(!input.nonNullValue.isEmpty()) ? input.nonNullValue[0] : ''}" th:name="${input.formInputName}">
+        <input th:case="${T(org.codeforamerica.shiba.FormInputType).NUMBER}" type="number" class="text-input form-width--name" th:id="${input.name}" th:value="${(!input.nonNullValue.isEmpty()) ? input.nonNullValue[0] : ''}" th:name="${input.formInputName}">
     </div>
     <p class="text--error" th:if="${!input.valid}">
         <i class="icon-warning"></i>

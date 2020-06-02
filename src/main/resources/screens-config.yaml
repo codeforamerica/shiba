@@ -1,22 +1,70 @@
 screens:
   personal-info:
     inputs:
-    - name: first-name
-      type: TEXT
-      promptMessageKey: personal-info.whats-your-first-name
-      helpMessageKey: personal-info.legally-as-it-appears-on-your-id
-      validationExpression: "!#this[0].isBlank()"
-      validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
-    - name: last-name
-      type: TEXT
-      promptMessageKey: personal-info.whats-your-last-name
-      helpMessageKey: personal-info.legally-as-it-appears-on-your-id
-      validationExpression: "!#this[0].isBlank()"
-      validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
-    - name: other-name
-      type: TEXT
-      promptMessageKey: personal-info.list-any-names-that-you-have-gone-by-in-the-past
-      helpMessageKey: personal-info.include-maiden-names-or-legal-changes
-    - name: date-of-birth
-      type: DATE
-      promptMessageKey: personal-info.when-were-you-born
+      - name: first-name
+        type: TEXT
+        promptMessageKey: personal-info.whats-your-first-name
+        helpMessageKey: personal-info.legally-as-it-appears-on-your-id
+        validation: NOT_BLANK
+      - name: last-name
+        type: TEXT
+        promptMessageKey: personal-info.whats-your-last-name
+        helpMessageKey: personal-info.legally-as-it-appears-on-your-id
+        validation: NOT_BLANK
+      - name: other-name
+        type: TEXT
+        promptMessageKey: personal-info.list-any-names-that-you-have-gone-by-in-the-past
+        helpMessageKey: personal-info.include-maiden-names-or-legal-changes
+      - name: date-of-birth
+        type: DATE
+        promptMessageKey: personal-info.when-were-you-born
+      - name: ssn
+        type: NUMBER
+        validation: SSN
+        promptMessageKey: personal-info.whats-your-social-security-number
+        helpMessageKey: personal-info.if-you-have-one-we-strongly-recommend-including-it-here-your-caseworker-will
+      - name: marital-status
+        type: RADIO
+        promptMessageKey: personal-info.whats-your-marital-status
+        options:
+          - value: NEVER_MARRIED
+            messageKey: personal-info.never-married
+          - value: MARRIED_LIVING_WITH_SPOUSE
+            messageKey: personal-info.married-living-with-spouse
+          - value: MARRIED_NOT_LIVING_WITH_SPOUSE
+            messageKey: personal-info.married-not-living-with-spouse
+          - value: LEGALLY_SEPARATED
+            messageKey: personal-info.legally-separated
+          - value: DIVORCED
+            messageKey: personal-info.divorced
+          - value: WIDOWED
+            messageKey: personal-info.widowed
+      - name: sex
+        type: RADIO
+        promptMessageKey: personal-info.whats-your-sex
+        helpMessageKey: personal-info.legally-as-it-appears-on-your-id-we-regret-that-this-question-is-limited
+        options:
+          - value: FEMALE
+            messageKey: personal-info.female
+          - value: MALE
+            messageKey: personal-info.male
+          - value: RATHER_NOT_SAY
+            messageKey: personal-info.rather-not-say
+      - type: INPUT_WITH_FOLLOW_UP
+        inputWithFollowUps:
+          name: lived-in-mn-whole-life
+          type: RADIO
+          promptMessageKey: personal-info.have-you-lived-in-minnesota-your-whole-life
+          options:
+            - value: true
+              messageKey: general.inputs.yes
+            - value: false
+              messageKey: general.inputs.no
+          followUpsValue: false
+          followUps:
+            - name: move-to-mn-date
+              type: DATE
+              promptMessageKey: personal-info.when-did-you-move-to-minnesota
+            - name: previous-city
+              type: TEXT
+              promptMessageKey: personal-info.what-city-did-you-move-from
