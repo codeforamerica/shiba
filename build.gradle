@@ -40,7 +40,6 @@ dependencies {
     }
     testImplementation 'org.awaitility:awaitility:4.0.2'
     testImplementation 'io.github.bonigarcia:webdrivermanager:4.0.0'
-    testImplementation 'uk.co.jemos.podam:podam:7.2.3.RELEASE'
 }
 
 compileJava.inputs.files(processResources)

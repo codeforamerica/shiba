@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba;
 
-import org.codeforamerica.shiba.pdf.PdfService;
-import org.codeforamerica.shiba.xml.XmlGenerator;
+import org.codeforamerica.shiba.pdf.PdfGenerator;
+import org.codeforamerica.shiba.xml.FileGenerator;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -23,20 +23,19 @@ import java.util.Locale;
 public class PageController {
     private final BenefitsApplication benefitsApplication;
     private final MessageSource messageSource;
-    private final XmlGenerator xmlGenerator;
+    private final FileGenerator xmlGenerator;
     private final Screens screens;
-    private final PdfService pdfService;
+    private final PdfGenerator pdfGenerator;
 
     public PageController(BenefitsApplication benefitsApplication,
-                          MessageSource messageSource,
-                          XmlGenerator xmlGenerator,
-                          Screens screens,
-                          PdfService pdfService) {
+                          Screens screens, MessageSource messageSource,
+                          FileGenerator xmlGenerator,
+                          PdfGenerator pdfGenerator) {
         this.benefitsApplication = benefitsApplication;
         this.messageSource = messageSource;
         this.xmlGenerator = xmlGenerator;
         this.screens = screens;
-        this.pdfService = pdfService;
+        this.pdfGenerator = pdfGenerator;
     }
 
     @GetMapping("/")
@@ -115,7 +114,7 @@ public class PageController {
 
     @GetMapping("/download")
     ResponseEntity<byte[]> downloadPdf() {
-        ApplicationFile applicationFile = pdfService.generatePdf(screens);
+        ApplicationFile applicationFile = pdfGenerator.generate(screens.unwrapFormWithFlattenedInputs());
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", applicationFile.getFileName()))
@@ -124,7 +123,7 @@ public class PageController {
 
     @GetMapping("/download-xml")
     ResponseEntity<byte[]> downloadXml() {
-        ApplicationFile applicationFile = xmlGenerator.generate(benefitsApplication);
+        ApplicationFile applicationFile = xmlGenerator.generate(screens.unwrapFormWithFlattenedInputs());
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", applicationFile.getFileName()))
