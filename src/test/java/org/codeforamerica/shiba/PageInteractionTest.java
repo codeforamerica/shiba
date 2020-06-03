@@ -10,6 +10,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
+import static org.codeforamerica.shiba.pages.DatePart.*;
 
 public class PageInteractionTest extends AbstractBasePageTest {
 
@@ -175,11 +176,11 @@ public class PageInteractionTest extends AbstractBasePageTest {
             String otherName = "Jane Doe";
             page.enterOtherName(otherName);
             String birthMonth = "12";
-            page.enterBirthMonth(birthMonth);
+            page.enterBirthDate(MONTH, birthMonth);
             String birthDay = "07";
-            page.enterBirthDay(birthDay);
+            page.enterBirthDate(DAY, birthDay);
             String birthYear = "1999";
-            page.enterBirthYear(birthYear);
+            page.enterBirthDate(YEAR, birthYear);
             String ssn = "123456789";
             page.enterSSN(ssn);
 
@@ -189,9 +190,9 @@ public class PageInteractionTest extends AbstractBasePageTest {
             assertThat(page.getFirstNameValue()).isEqualTo(firstName);
             assertThat(page.getLastNameValue()).isEqualTo(lastName);
             assertThat(page.getOtherNameValue()).isEqualTo(otherName);
-            assertThat(page.getBirthMonthValue()).isEqualTo(birthMonth);
-            assertThat(page.getBirthDayValue()).isEqualTo(birthDay);
-            assertThat(page.getBirthYearValue()).isEqualTo(birthYear);
+            assertThat(page.getBirthDateValue(MONTH)).isEqualTo(birthMonth);
+            assertThat(page.getBirthDateValue(DAY)).isEqualTo(birthDay);
+            assertThat(page.getBirthDateValue(YEAR)).isEqualTo(birthYear);
             assertThat(page.getSsnValue()).isEqualTo(ssn);
         }
 
@@ -279,19 +280,19 @@ public class PageInteractionTest extends AbstractBasePageTest {
 
                 assertThat(page.displaysAllMoveToMNInputs()).isTrue();
                 String month = "03";
-                page.enterMoveToMNMonth(month);
+                page.enterMoveToMNDatePart(MONTH, month);
                 String day = "16";
-                page.enterMoveToMNDay(day);
+                page.enterMoveToMNDatePart(DAY, day);
                 String year = "2020";
-                page.enterMoveToMNYear(year);
+                page.enterMoveToMNDatePart(YEAR, year);
                 String city = "Chicago";
                 page.enterPreviousCity(city);
                 page.clickPrimaryButton();
                 driver.navigate().back();
 
-                assertThat(page.getMoveToMNMonth()).isEqualTo(month);
-                assertThat(page.getMoveToMNDay()).isEqualTo(day);
-                assertThat(page.getMoveToMNYear()).isEqualTo(year);
+                assertThat(page.getMoveToMNDate(MONTH)).isEqualTo(month);
+                assertThat(page.getMoveToMNDate(DAY)).isEqualTo(day);
+                assertThat(page.getMoveToMNDate(YEAR)).isEqualTo(year);
                 assertThat(page.getPreviousCity()).isEqualTo(city);
             }
 

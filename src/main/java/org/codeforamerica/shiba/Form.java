@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 public class Form {
     public List<FormInput> inputs;
 
-    List<FormInput> getFlattenedInputs() {
+    public List<FormInput> getFlattenedInputs() {
         //noinspection SwitchStatementWithTooFewBranches
         return this.inputs.stream()
                 .flatMap(formInput -> switch (formInput.type) {

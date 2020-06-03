@@ -1,7 +1,6 @@
 package org.codeforamerica.shiba;
 
-import org.codeforamerica.shiba.pdf.PdfFieldFiller;
-import org.codeforamerica.shiba.pdf.PdfFieldMapper;
+import org.codeforamerica.shiba.pdf.PdfService;
 import org.codeforamerica.shiba.xml.XmlGenerator;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
@@ -18,32 +17,26 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Controller
 public class PageController {
     private final BenefitsApplication benefitsApplication;
     private final MessageSource messageSource;
-    private final PdfFieldFiller pdfFieldFiller;
-    private final PdfFieldMapper pdfFieldMapper;
     private final XmlGenerator xmlGenerator;
-    private Screens screens;
+    private final Screens screens;
+    private final PdfService pdfService;
 
     public PageController(BenefitsApplication benefitsApplication,
                           MessageSource messageSource,
-                          PdfFieldFiller pdfFieldFiller,
-                          PdfFieldMapper pdfFieldMapper,
                           XmlGenerator xmlGenerator,
-                          Screens screens) {
+                          Screens screens,
+                          PdfService pdfService) {
         this.benefitsApplication = benefitsApplication;
         this.messageSource = messageSource;
-        this.pdfFieldFiller = pdfFieldFiller;
-        this.pdfFieldMapper = pdfFieldMapper;
         this.xmlGenerator = xmlGenerator;
         this.screens = screens;
+        this.pdfService = pdfService;
     }
 
     @GetMapping("/")
@@ -122,9 +115,7 @@ public class PageController {
 
     @GetMapping("/download")
     ResponseEntity<byte[]> downloadPdf() {
-        Map<String, List<FormInput>> screensMap = screens.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getFlattenedInputs()));
-        ApplicationFile applicationFile = pdfFieldFiller.fill(pdfFieldMapper.map(screensMap));
+        ApplicationFile applicationFile = pdfService.generatePdf(screens);
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", applicationFile.getFileName()))
