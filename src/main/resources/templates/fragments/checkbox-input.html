@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="checkbox-input (input, data)" th:with="inputData=${data.get(input.name)}" class="form-group" >
+    <div class="spacing-above-35 form-group" th:classappend="${!inputData.valid} ? 'form-group--error' : ''">
+        <h2 th:text="#{${input.promptMessageKey}}"></h2>
+        <p class="text-25" th:text="#{${input.helpMessageKey}}"></p>
+        <th:block th:each="option: ${input.options}">
+            <label th:for="${option.value}" class="checkbox">
+                <input type="checkbox"
+                       th:id="${option.value}"
+                       th:value="${option.value}"
+                       th:name="${input.formInputName}"
+                       th:checked="${inputData.nonNullValue.contains(option.value)}">
+                <span th:text="#{${option.messageKey}}"></span>
+            </label>
+        </th:block>
+    </div>
+    <p class="text--error" th:if="${!inputData.valid}">
+        <i class="icon-warning"></i>
+        <span th:text="#{${input.validationErrorMessageKey}}"></span>
+    </p>
+</div>
+</html>

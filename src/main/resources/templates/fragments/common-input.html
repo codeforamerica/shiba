@@ -1,16 +1,28 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<div th:fragment="common-input (input)" class="form-group" >
+<div th:fragment="common-input (input, data)" class="form-group" th:with="inputData=${data.get(input.name)}">
     <label th:for="${input.name}" class="form-question"
            th:text="#{${input.promptMessageKey}}"></label>
     <p class="text--help"
        th:if="${input.helpMessageKey != null}"
        th:text="#{${input.helpMessageKey}}"></p>
     <th:block th:switch="${input.type}">
-        <input th:case="${T(org.codeforamerica.shiba.FormInputType).TEXT}" type="text" class="text-input form-width--name" th:id="${input.name}" th:value="${(!input.nonNullValue.isEmpty()) ? input.nonNullValue[0] : ''}" th:name="${input.formInputName}">
-        <input th:case="${T(org.codeforamerica.shiba.FormInputType).NUMBER}" type="number" class="text-input form-width--name" th:id="${input.name}" th:value="${(!input.nonNullValue.isEmpty()) ? input.nonNullValue[0] : ''}" th:name="${input.formInputName}">
+        <input th:case="${T(org.codeforamerica.shiba.FormInputType).TEXT}"
+               type="text"
+               class="text-input form-width--name"
+               th:id="${input.name}"
+               th:value="${(!inputData.nonNullValue.isEmpty()) ? inputData.nonNullValue[0] : ''}"
+               th:name="${input.formInputName}"
+        >
+        <input th:case="${T(org.codeforamerica.shiba.FormInputType).NUMBER}"
+               type="number"
+               class="text-input form-width--name"
+               th:id="${input.name}"
+               th:value="${(!inputData.nonNullValue.isEmpty()) ? inputData.nonNullValue[0] : ''}"
+               th:name="${input.formInputName}"
+        >
     </th:block>
-    <p class="text--error" th:if="${!input.valid}">
+    <p class="text--error" th:if="${!inputData.valid}">
         <i class="icon-warning"></i>
         <span th:text="#{${input.validationErrorMessageKey}}"></span>
     </p>

@@ -5,5 +5,5 @@ public enum FormInputType {
     DATE,
     NUMBER,
     RADIO,
-    INPUT_WITH_FOLLOW_UP
+    CHECKBOX
 }

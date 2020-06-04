@@ -22,8 +22,11 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 @SpringBootTest
@@ -40,15 +43,25 @@ public class XmlGeneratorIntegrationTest {
 
     @Test
     void shouldProduceAValidDocument() throws IOException, SAXException, ParserConfigurationException {
-        screens.values().forEach(value -> value.getInputs().forEach(input -> {
-            switch (input.type) {
-                case RADIO -> input.setValue(List.of(input.options.get(new Random().nextInt(input.options.size())).value));
-                case DATE -> input.setValue(List.of(LocalDate.ofEpochDay(0).plusDays(new Random().nextInt()).format(DateTimeFormatter.ofPattern("MM/dd/yyyy")).split("/")));
-                default -> input.setValue(List.of("some-value"));
-            }
-        }));
+        Map<String, FormData> data = screens.entrySet().stream()
+                .collect(toMap(
+                        Map.Entry::getKey,
+                        entry -> new FormData(entry.getValue().getFlattenedInputs().stream()
+                                .collect(toMap(
+                                        FormInput::getName,
+                                        input -> {
+                                            List<String> value = switch (input.type) {
+                                                case RADIO -> List.of(input.options.get(new Random().nextInt(input.options.size())).value);
+                                                case CHECKBOX -> input.options.subList(0, new Random().nextInt(input.options.size()) + 1).stream()
+                                                        .map(Option::getValue)
+                                                        .collect(Collectors.toList());
+                                                case DATE -> List.of(LocalDate.ofEpochDay(0).plusDays(new Random().nextInt()).format(DateTimeFormatter.ofPattern("MM/dd/yyyy")).split("/"));
+                                                default -> List.of("some-value");
+                                            };
+                                            return new InputData(input.getValidation(), value);
+                                        })))));
 
-        ApplicationFile applicationFile = xmlGenerator.generate(screens.unwrapFormWithFlattenedInputs());
+        ApplicationFile applicationFile = xmlGenerator.generate(ApplicationInput.create(screens, data));
 
         Document document = byteArrayToDocument(applicationFile.getFileBytes());
 

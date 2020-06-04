@@ -52,16 +52,14 @@ class CAFFieldFillerTest {
     @Test
     void shouldMapMultipleChoiceFields() throws IOException {
         Collection<PdfField> fields = List.of(
-                new BinaryPdfField("BINARY_FIELD_1", true),
-                new BinaryPdfField("BINARY_FIELD_2", false),
-                new BinaryPdfField("BINARY_FIELD_3", true)
+                new BinaryPdfField("BINARY_FIELD_1"),
+                new BinaryPdfField("BINARY_FIELD_3")
         );
 
         ApplicationFile applicationFile = subject.fill(fields);
 
         PDAcroForm acroForm = getPdAcroForm(applicationFile);
         assertThat(acroForm.getField("BINARY_FIELD_1").getValueAsString()).isEqualTo("Yes");
-        assertThat(acroForm.getField("BINARY_FIELD_2").getValueAsString()).isEqualTo("Off");
         assertThat(acroForm.getField("BINARY_FIELD_3").getValueAsString()).isEqualTo("Yes");
     }
 

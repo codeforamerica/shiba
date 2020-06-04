@@ -8,16 +8,17 @@ import org.springframework.context.support.StaticMessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class PageControllerTest {
@@ -26,6 +27,7 @@ class PageControllerTest {
     FileGenerator xmlGenerator = mock(FileGenerator.class);
     BenefitsApplication benefitsApplication = new BenefitsApplication();
     Screens screens = new Screens();
+    Map<String, FormData> data = new HashMap<>();
     PdfGenerator pdfGenerator = mock(PdfGenerator.class);
 
     @BeforeEach
@@ -34,6 +36,7 @@ class PageControllerTest {
                 new PageController(
                         benefitsApplication,
                         screens,
+                        data,
                         new StaticMessageSource(),
                         xmlGenerator,
                         pdfGenerator))
@@ -43,38 +46,49 @@ class PageControllerTest {
 
     @Test
     void shouldPassScreensToServiceToGeneratePdfFile() throws Exception {
-        Form form1 = new Form();
+        String screenName = "screen1";
 
+        Form form = new Form();
         FormInput input1 = new FormInput();
-        input1.name = "input 1";
+        String input1Name = "input 1";
+        input1.name = input1Name;
+        List<String> input1Value = List.of("input1Value");
         input1.type = FormInputType.TEXT;
 
         FormInput input2 = new FormInput();
-        input2.name = "input 2";
+        String input2Name = "input 2";
+        input2.name = input2Name;
+        List<String> input2Value = List.of("input2Value");
         input2.type = FormInputType.TEXT;
-        input2.setType(FormInputType.INPUT_WITH_FOLLOW_UP);
-
-        FormInputWithFollowUps inputWithFollowUps = new FormInputWithFollowUps();
-        inputWithFollowUps.name = "inputWithFollowUps";
-        inputWithFollowUps.type = FormInputType.TEXT;
 
         FormInput input3 = new FormInput();
-        input3.name = "input 3";
+        String input3Name = "input 3";
+        input3.name = input3Name;
+        List<String> input3Value = List.of("input3Value");
         input3.type = FormInputType.TEXT;
 
-        inputWithFollowUps.setFollowUps(List.of(input3));
-        input2.setInputWithFollowUps(inputWithFollowUps);
-        form1.setInputs(List.of(input1, input2));
-        screens.put("screen1", form1);
+        input2.followUps = List.of(input3);
+        form.setInputs(List.of(input1, input2));
+        screens.put(screenName, form);
+
+        data.put(screenName, new FormData(Map.of(
+                input1Name, new InputData(Validation.NONE, input1Value),
+                input2Name, new InputData(Validation.NONE, input2Value),
+                input3Name, new InputData(Validation.NONE, input3Value)
+        )));
 
         when(pdfGenerator.generate(any())).thenReturn(new ApplicationFile("".getBytes(), ""));
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/download"))
+                get("/download"))
                 .andExpect(status().is2xxSuccessful());
 
         verify(pdfGenerator).generate(Map.of(
-                "screen1", List.of(input1, inputWithFollowUps, input3)
+                screenName, List.of(
+                        new ApplicationInput(input1Value, input1Name, ApplicationInputType.SINGLE_VALUE),
+                        new ApplicationInput(input2Value, input2Name, ApplicationInputType.SINGLE_VALUE),
+                        new ApplicationInput(input3Value, input3Name, ApplicationInputType.SINGLE_VALUE)
+                )
         ));
     }
 
@@ -86,7 +100,7 @@ class PageControllerTest {
         when(pdfGenerator.generate(any())).thenReturn(applicationFile);
 
         MvcResult result = mockMvc.perform(
-                MockMvcRequestBuilders.get("/download"))
+                get("/download"))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(content().contentType(APPLICATION_OCTET_STREAM_VALUE))
                 .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", fileName)))
@@ -101,39 +115,50 @@ class PageControllerTest {
         String fileName = "some.xml";
         when(xmlGenerator.generate(any())).thenReturn(new ApplicationFile(fileBytes, fileName));
 
-        Form form1 = new Form();
+        String screenName = "screen1";
 
+        Form form = new Form();
         FormInput input1 = new FormInput();
-        input1.name = "input 1";
+        String input1Name = "input 1";
+        input1.name = input1Name;
+        List<String> input1Value = List.of("input1Value");
         input1.type = FormInputType.TEXT;
 
         FormInput input2 = new FormInput();
-        input2.name = "input 2";
+        String input2Name = "input 2";
+        input2.name = input2Name;
+        List<String> input2Value = List.of("input2Value");
         input2.type = FormInputType.TEXT;
-        input2.setType(FormInputType.INPUT_WITH_FOLLOW_UP);
-
-        FormInputWithFollowUps inputWithFollowUps = new FormInputWithFollowUps();
-        inputWithFollowUps.name = "inputWithFollowUps";
-        inputWithFollowUps.type = FormInputType.TEXT;
 
         FormInput input3 = new FormInput();
-        input3.name = "input 3";
+        String input3Name = "input 3";
+        input3.name = input3Name;
+        List<String> input3Value = List.of("input3Value");
         input3.type = FormInputType.TEXT;
 
-        inputWithFollowUps.setFollowUps(List.of(input3));
-        input2.setInputWithFollowUps(inputWithFollowUps);
-        form1.setInputs(List.of(input1, input2));
-        screens.put("screen1", form1);
+        input2.followUps = List.of(input3);
+        form.setInputs(List.of(input1, input2));
+        screens.put(screenName, form);
+
+        data.put(screenName, new FormData(Map.of(
+                input1Name, new InputData(Validation.NONE, input1Value),
+                input2Name, new InputData(Validation.NONE, input2Value),
+                input3Name, new InputData(Validation.NONE, input3Value)
+        )));
 
         MvcResult result = mockMvc.perform(
-                MockMvcRequestBuilders.get("/download-xml"))
+                get("/download-xml"))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(content().contentType(APPLICATION_OCTET_STREAM_VALUE))
                 .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", fileName)))
                 .andReturn();
 
         verify(xmlGenerator).generate(Map.of(
-                "screen1", List.of(input1, inputWithFollowUps, input3)
+                "screen1", List.of(
+                        new ApplicationInput(input1Value, input1Name, ApplicationInputType.SINGLE_VALUE),
+                        new ApplicationInput(input2Value, input2Name, ApplicationInputType.SINGLE_VALUE),
+                        new ApplicationInput(input3Value, input3Name, ApplicationInputType.SINGLE_VALUE)
+                )
         ));
         assertThat(result.getResponse().getContentAsByteArray()).isEqualTo(fileBytes);
     }

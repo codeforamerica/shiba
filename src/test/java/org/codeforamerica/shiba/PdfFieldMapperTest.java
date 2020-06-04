@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba;
 
+import org.codeforamerica.shiba.pdf.BinaryPdfField;
 import org.codeforamerica.shiba.pdf.PdfField;
 import org.codeforamerica.shiba.pdf.PdfFieldMapper;
 import org.codeforamerica.shiba.pdf.SimplePdfField;
@@ -16,21 +17,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class PdfFieldMapperTest {
     @ParameterizedTest
-    @EnumSource(names = {"TEXT", "NUMBER", "RADIO"}, value = FormInputType.class)
-    void shouldMapTextInputToSimpleField(FormInputType formInputType) {
+    @EnumSource(names = {"SINGLE_VALUE", "ENUMERATED_SINGLE_VALUE"}, value = ApplicationInputType.class)
+    void shouldMapSingleValueInputsToSimpleFields(ApplicationInputType applicationInputType) {
         String fieldName = "someName";
         String formInputName = "some-input";
         String screenName = "some-screen";
         Map<String, String> configMap = Map.of(screenName + "." + formInputName, fieldName);
 
         String stringValue = "some-string-value";
-        FormInput formInput = new FormInput();
-        formInput.type = formInputType;
-        formInput.value = List.of(stringValue);
-        formInput.name = formInputName;
+        ApplicationInput applicationInput = new ApplicationInput(List.of(stringValue), formInputName, applicationInputType);
 
         PdfFieldMapper subject = new PdfFieldMapper(configMap, emptySet());
-        List<PdfField> fields = subject.map(Map.of(screenName, List.of(formInput)));
+        List<PdfField> fields = subject.map(Map.of(screenName, List.of(applicationInput)));
 
         assertThat(fields).contains(new SimplePdfField(fieldName, stringValue));
     }
@@ -43,31 +41,25 @@ class PdfFieldMapperTest {
         Map<String, String> configMap = Map.of(screenName + "." + formInputName, fieldName);
         String excludedValue = "excluded radio selection";
 
-        FormInput formInput = new FormInput();
-        formInput.type = FormInputType.RADIO;
-        formInput.value = List.of(excludedValue);
-        formInput.name = formInputName;
+        ApplicationInput applicationInput = new ApplicationInput(List.of(excludedValue), formInputName, ApplicationInputType.ENUMERATED_SINGLE_VALUE);
 
         PdfFieldMapper subject = new PdfFieldMapper(configMap, Set.of(excludedValue));
-        List<PdfField> fields = subject.map(Map.of(screenName, List.of(formInput)));
+        List<PdfField> fields = subject.map(Map.of(screenName, List.of(applicationInput)));
 
         assertThat(fields).isEmpty();
     }
 
     @Test
-    void shouldMapDatesToSimpleFields() {
+    void shouldMapDateValuesToSimpleFields() {
         String fieldName = "someName";
         String formInputName = "some-input";
         String screenName = "some-screen";
         Map<String, String> configMap = Map.of(screenName + "." + formInputName, fieldName);
 
-        FormInput formInput = new FormInput();
-        formInput.type = FormInputType.DATE;
-        formInput.value = List.of("01", "20", "3312");
-        formInput.name = formInputName;
+        ApplicationInput applicationInput = new ApplicationInput(List.of("01", "20", "3312"), formInputName, ApplicationInputType.DATE_VALUE);
 
         PdfFieldMapper subject = new PdfFieldMapper(configMap, emptySet());
-        List<PdfField> fields = subject.map(Map.of(screenName, List.of(formInput)));
+        List<PdfField> fields = subject.map(Map.of(screenName, List.of(applicationInput)));
 
         assertThat(fields).contains(new SimplePdfField(fieldName, "01/20/3312"));
     }
@@ -77,53 +69,65 @@ class PdfFieldMapperTest {
         String formInputName = "some-input";
         String screenName = "some-screen";
 
-        FormInput formInput = new FormInput();
-        formInput.type = FormInputType.TEXT;
-        formInput.value = List.of("someValue");
-        formInput.name = formInputName;
+        ApplicationInput applicationInput = new ApplicationInput(List.of("someValue"), formInputName, ApplicationInputType.SINGLE_VALUE);
 
         PdfFieldMapper subject = new PdfFieldMapper(Map.of(), emptySet());
-        List<PdfField> fields = subject.map(Map.of(screenName, List.of(formInput)));
+        List<PdfField> fields = subject.map(Map.of(screenName, List.of(applicationInput)));
 
         assertThat(fields).isEmpty();
     }
 
     @ParameterizedTest
-    @EnumSource(value = FormInputType.class)
-    void shouldNotMapInputsWithoutValues(FormInputType formInputType) {
+    @EnumSource(value = ApplicationInputType.class)
+    void shouldNotMapInputsWithoutValues(ApplicationInputType applicationInputType) {
         String fieldName = "someName";
         String formInputName = "some-input";
         String screenName = "some-screen";
         Map<String, String> configMap = Map.of(screenName + "." + formInputName, fieldName);
 
-        FormInput formInput = new FormInput();
-        formInput.type = formInputType;
-        formInput.value = null;
-        formInput.name = formInputName;
+        ApplicationInput applicationInput = new ApplicationInput(null, formInputName, applicationInputType);
 
         PdfFieldMapper subject = new PdfFieldMapper(configMap, emptySet());
-        List<PdfField> fields = subject.map(Map.of(screenName, List.of(formInput)));
+        List<PdfField> fields = subject.map(Map.of(screenName, List.of(applicationInput)));
 
         assertThat(fields).isEmpty();
     }
-//
-//    @Test
-//    void shouldMapListElementsToBinaryFields() {
-//        String pdfField = "PDF_FIELD";
-//        String notPresentPdfField = "NOT_PRESENT_PDF_FIELD";
-//        PdfFieldMapper subject = new PdfFieldMapper(Map.of(
-//                "list1", pdfField,
-//                "list2", notPresentPdfField
-//        ), emptySet());
-//
-//        TestObject testObject = new TestObject();
-//        testObject.list1 = List.of("a");
-//        testObject.list2 = Collections.emptyList();
-//        List<PdfField> fields = subject.map(testObject);
-//
-//        assertThat(fields).containsOnly(
-//                new BinaryPdfField(pdfField, true),
-//                new BinaryPdfField(notPresentPdfField, false)
-//        );
-//    }
+
+    @ParameterizedTest
+    @EnumSource(value = ApplicationInputType.class)
+    void shouldNotMapInputsWithEmptyValues(ApplicationInputType applicationInputType) {
+        String fieldName = "someName";
+        String formInputName = "some-input";
+        String screenName = "some-screen";
+        Map<String, String> configMap = Map.of(screenName + "." + formInputName, fieldName);
+
+        ApplicationInput applicationInput = new ApplicationInput(List.of(), formInputName, applicationInputType);
+
+        PdfFieldMapper subject = new PdfFieldMapper(configMap, emptySet());
+        List<PdfField> fields = subject.map(Map.of(screenName, List.of(applicationInput)));
+
+        assertThat(fields).isEmpty();
+    }
+
+    @Test
+    void shouldMapMultiValueInputsToBinaryFields() {
+        String fieldName1 = "someName1";
+        String fieldName2 = "someName2";
+        String formInputName = "some-input";
+        String screenName = "some-screen";
+        String value1 = "some-value";
+        String value2 = "some-other-value";
+        ApplicationInput applicationInput = new ApplicationInput(List.of(value1, value2), formInputName, ApplicationInputType.ENUMERATED_MULTI_VALUE);
+        Map<String, String> configMap = Map.of(
+                screenName + "." + formInputName + "." + value1, fieldName1,
+                screenName + "." + formInputName + "." + value2, fieldName2
+        );
+
+        PdfFieldMapper subject = new PdfFieldMapper(configMap, emptySet());
+        List<PdfField> fields = subject.map(Map.of(screenName, List.of(applicationInput)));
+
+        assertThat(fields).contains(
+                new BinaryPdfField(fieldName1),
+                new BinaryPdfField(fieldName2));
+    }
 }

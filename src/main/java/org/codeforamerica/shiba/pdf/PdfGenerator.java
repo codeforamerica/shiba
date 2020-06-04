@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.pdf;
 
 import org.codeforamerica.shiba.ApplicationFile;
-import org.codeforamerica.shiba.FormInput;
+import org.codeforamerica.shiba.ApplicationInput;
 import org.codeforamerica.shiba.xml.FileGenerator;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +21,7 @@ public class PdfGenerator implements FileGenerator {
     }
 
     @Override
-    public ApplicationFile generate(Map<String, List<FormInput>> formInputsMap) {
+    public ApplicationFile generate(Map<String, List<ApplicationInput>> formInputsMap) {
         List<PdfField> pdfFields = pdfFieldMapper.map(formInputsMap);
         return pdfFiller.fill(pdfFields);
     }

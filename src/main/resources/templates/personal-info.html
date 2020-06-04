@@ -10,9 +10,9 @@
                 <h2 th:text="#{intro-basic-info.getting-to-know-you}"></h2>
             </div>
             <div class="grid__item">
-                <form th:object="${form}" method="post" th:action="@{/personal-info}">
+                <form method="post" th:action="@{/personal-info}">
                     <div th:each="input: ${form.inputs}">
-                        <div th:replace="'fragments/'+__${input.fragment()}__ :: __${input.fragment()}__(${input})"></div>
+                        <div th:replace="'fragments/'+__${input.fragment()}__ :: __${input.fragment()}__(${input}, ${data})"></div>
                     </div>
                     <button class="button button--primary spacing-below-95" type="submit" th:text="#{general.continue}"></button>
                 </form>

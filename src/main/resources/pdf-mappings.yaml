@@ -14,7 +14,8 @@ caf:
       sex: APPLICANT_SEX
       move-to-mn-date: DATE_OF_MOVING_TO_MN
       move-to-mn-previous-city: APPLICANT_PREVIOUS_CITY
-    programSelection:
-      "[programs.?[#this.name() == 'FOOD']]": FOOD
-      "[programs.?[#this.name() == 'CASH']]": CASH
-      "[programs.?[#this.name() == 'EMERGENCY']]": EMERGENCY
+    choose-programs:
+      programs:
+        FOOD: FOOD
+        CASH: CASH
+        EMERGENCY: EMERGENCY

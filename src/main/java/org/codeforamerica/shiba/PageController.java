@@ -8,7 +8,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,22 +15,26 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import javax.validation.Valid;
 import java.util.Locale;
+import java.util.Map;
 
 @Controller
 public class PageController {
     private final BenefitsApplication benefitsApplication;
+    private final Map<String, FormData> data;
     private final MessageSource messageSource;
     private final FileGenerator xmlGenerator;
     private final Screens screens;
     private final PdfGenerator pdfGenerator;
 
     public PageController(BenefitsApplication benefitsApplication,
-                          Screens screens, MessageSource messageSource,
+                          Screens screens,
+                          Map<String, FormData> data,
+                          MessageSource messageSource,
                           FileGenerator xmlGenerator,
                           PdfGenerator pdfGenerator) {
         this.benefitsApplication = benefitsApplication;
+        this.data = data;
         this.messageSource = messageSource;
         this.xmlGenerator = xmlGenerator;
         this.screens = screens;
@@ -63,29 +66,39 @@ public class PageController {
 
     @GetMapping("/choose-programs")
     ModelAndView chooseProgramPage() {
-        ProgramSelection programSelection = benefitsApplication.getProgramSelection();
-        return new ModelAndView("choose-programs", "programSelection", programSelection);
+        Form form = screens.get("choose-programs");
+        return new ModelAndView("choose-programs",
+                Map.of("form", form,
+                        "data", data.getOrDefault("choose-programs", FormData.create(form))));
     }
 
     @PostMapping("/choose-programs")
-    ModelAndView postChooseProgramsPage(@Valid @ModelAttribute ProgramSelection programSelection, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return new ModelAndView("choose-programs", "programSelection", programSelection);
+    ModelAndView postChooseProgramsPage(@RequestBody(required = false) MultiValueMap<String, String> model) {
+        String screenName = "choose-programs";
+        Form form = screens.get(screenName);
+        FormData formData = FormData.create(form, model);
+        data.put(screenName, formData);
+        if (formData.isValid()) {
+            return new ModelAndView("redirect:/how-it-works");
+        } else {
+            return new ModelAndView("choose-programs",
+                    Map.of("form", form,
+                            "data", formData));
         }
-        benefitsApplication.setProgramSelection(programSelection);
-        return new ModelAndView("redirect:/how-it-works");
     }
 
     @GetMapping("/how-it-works")
     ModelAndView howItWorksPage(Locale locale) {
-        if (benefitsApplication.getProgramSelection().getPrograms().isEmpty()) {
+        FormData formData = data.get("choose-programs");
+
+        if (!formData.isValid()) {
             //noinspection SpringMVCViewInspection
             return new ModelAndView("redirect:/choose-programs");
         } else {
             return new ModelAndView(
                     "how-it-works",
                     "programSelection",
-                    new ProgramSelectionPresenter(benefitsApplication.getProgramSelection(), messageSource, locale));
+                    new ProgramSelectionPresenter(messageSource, locale, formData.get("programs").getNonNullValue()));
         }
     }
 
@@ -96,25 +109,33 @@ public class PageController {
 
     @GetMapping("/personal-info")
     ModelAndView personalInfo() {
-        return new ModelAndView("personal-info", "form", screens.get("personal-info"));
+        Form form = screens.get("personal-info");
+        return new ModelAndView("personal-info",
+                Map.of(
+                        "form", form,
+                        "data", data.getOrDefault("personal-info", FormData.create(form))));
     }
 
     @PostMapping("/personal-info")
     ModelAndView postPersonalInfo(@RequestBody MultiValueMap<String, String> model) {
-        Form form = screens.get("personal-info");
-        form.getFlattenedInputs()
-                .forEach(formInput -> formInput.setAndValidate(model.get(formInput.getFormInputName())));
+        String screenName = "personal-info";
+        Form form = screens.get(screenName);
+        FormData formData = FormData.create(form, model);
+        data.put(screenName, formData);
 
-        if (form.isValid()) {
+        if (formData.isValid()) {
             return new ModelAndView("redirect:/success");
         } else {
-            return new ModelAndView("personal-info", "form", form);
+            return new ModelAndView("personal-info",
+                    Map.of(
+                            "form", form,
+                            "data", formData));
         }
     }
 
     @GetMapping("/download")
     ResponseEntity<byte[]> downloadPdf() {
-        ApplicationFile applicationFile = pdfGenerator.generate(screens.unwrapFormWithFlattenedInputs());
+        ApplicationFile applicationFile = pdfGenerator.generate(ApplicationInput.create(screens, data));
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", applicationFile.getFileName()))
@@ -123,7 +144,7 @@ public class PageController {
 
     @GetMapping("/download-xml")
     ResponseEntity<byte[]> downloadXml() {
-        ApplicationFile applicationFile = xmlGenerator.generate(screens.unwrapFormWithFlattenedInputs());
+        ApplicationFile applicationFile = xmlGenerator.generate(ApplicationInput.create(screens, data));
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", applicationFile.getFileName()))

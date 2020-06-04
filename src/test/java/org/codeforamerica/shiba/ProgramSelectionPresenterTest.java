@@ -4,13 +4,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.support.StaticMessageSource;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.codeforamerica.shiba.BenefitProgram.*;
 
 class ProgramSelectionPresenterTest {
     private final StaticMessageSource messageSource = new StaticMessageSource();
@@ -29,28 +29,24 @@ class ProgramSelectionPresenterTest {
         ProgramSelection programSelection = new ProgramSelection();
         programSelection.setPrograms(Set.of());
 
-        assertThatThrownBy(() -> new ProgramSelectionPresenter(programSelection, messageSource, defaultLocale))
+        assertThatThrownBy(() -> new ProgramSelectionPresenter(messageSource, defaultLocale, List.of()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void shouldConstructPageTitle_withASingleProgram() {
-        ProgramSelection programSelection = new ProgramSelection();
-        programSelection.setPrograms(Set.of(EMERGENCY));
-        ProgramSelectionPresenter subject = new ProgramSelectionPresenter(programSelection, messageSource, defaultLocale);
+        ProgramSelectionPresenter subject = new ProgramSelectionPresenter(messageSource, defaultLocale, List.of("EMERGENCY"));
 
         assertThat(subject.getTitleString()).isEqualTo("emergency");
     }
 
     @Test
     void shouldConstructPageTitle_withMultiplePrograms_inTheGivenLocale() {
-        ProgramSelection programSelection = new ProgramSelection();
-        programSelection.setPrograms(Set.of(EMERGENCY, CHILD_CARE, FOOD, CASH));
         messageSource.addMessage("how-it-works.emergency", Locale.FRENCH, "emergency in french");
         messageSource.addMessage("how-it-works.child-care", Locale.FRENCH, "child care in french");
         messageSource.addMessage("how-it-works.food", Locale.FRENCH, "food in french");
         messageSource.addMessage("how-it-works.cash", Locale.FRENCH, "cash in french");
-        ProgramSelectionPresenter subject = new ProgramSelectionPresenter(programSelection, messageSource, Locale.FRENCH);
+        ProgramSelectionPresenter subject = new ProgramSelectionPresenter(messageSource, Locale.FRENCH, List.of("EMERGENCY", "CHILD_CARE", "FOOD", "CASH"));
 
         assertThat(subject.getTitleString()).containsOnlyOnce("emergency in french");
         assertThat(subject.getTitleString()).containsOnlyOnce("child care in french");
@@ -60,9 +56,7 @@ class ProgramSelectionPresenterTest {
 
     @Test
     void shouldConstructPageTitle_withTwoPrograms() {
-        ProgramSelection programSelection = new ProgramSelection();
-        programSelection.setPrograms(Set.of(EMERGENCY, CHILD_CARE));
-        ProgramSelectionPresenter subject = new ProgramSelectionPresenter(programSelection, messageSource, defaultLocale);
+        ProgramSelectionPresenter subject = new ProgramSelectionPresenter(messageSource, defaultLocale, List.of("EMERGENCY", "CHILD_CARE"));
 
         assertThat(subject.getTitleString()).matches(Pattern.compile("[a-z ]+ and [a-z ]+"));
         assertThat(subject.getTitleString()).containsOnlyOnce("emergency");
@@ -71,9 +65,7 @@ class ProgramSelectionPresenterTest {
 
     @Test
     void shouldConstructPageTitle_withMoreThanTwoPrograms() {
-        ProgramSelection programSelection = new ProgramSelection();
-        programSelection.setPrograms(Set.of(EMERGENCY, CHILD_CARE, CASH, FOOD));
-        ProgramSelectionPresenter subject = new ProgramSelectionPresenter(programSelection, messageSource, defaultLocale);
+        ProgramSelectionPresenter subject = new ProgramSelectionPresenter(messageSource, defaultLocale, List.of("EMERGENCY", "CHILD_CARE", "CASH", "FOOD"));
 
         assertThat(subject.getTitleString()).matches(Pattern.compile("[a-z ]+, [a-z ]+, [a-z ]+ and [a-z ]+"));
         assertThat(subject.getTitleString()).containsOnlyOnce("emergency");
