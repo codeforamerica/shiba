@@ -25,10 +25,10 @@ class PdfFieldMapperTest {
         Map<String, String> configMap = Map.of(screenName + "." + formInputName, fieldName);
 
         String stringValue = "some-string-value";
-        ApplicationInput applicationInput = new ApplicationInput(List.of(stringValue), formInputName, applicationInputType);
+        ApplicationInput applicationInput = new ApplicationInput(screenName, List.of(stringValue), formInputName, applicationInputType);
 
         PdfFieldMapper subject = new PdfFieldMapper(configMap, emptySet());
-        List<PdfField> fields = subject.map(Map.of(screenName, List.of(applicationInput)));
+        List<PdfField> fields = subject.map(List.of(applicationInput));
 
         assertThat(fields).contains(new SimplePdfField(fieldName, stringValue));
     }
@@ -41,10 +41,10 @@ class PdfFieldMapperTest {
         Map<String, String> configMap = Map.of(screenName + "." + formInputName, fieldName);
         String excludedValue = "excluded radio selection";
 
-        ApplicationInput applicationInput = new ApplicationInput(List.of(excludedValue), formInputName, ApplicationInputType.ENUMERATED_SINGLE_VALUE);
+        ApplicationInput applicationInput = new ApplicationInput(screenName, List.of(excludedValue), formInputName, ApplicationInputType.ENUMERATED_SINGLE_VALUE);
 
         PdfFieldMapper subject = new PdfFieldMapper(configMap, Set.of(excludedValue));
-        List<PdfField> fields = subject.map(Map.of(screenName, List.of(applicationInput)));
+        List<PdfField> fields = subject.map(List.of(applicationInput));
 
         assertThat(fields).isEmpty();
     }
@@ -56,10 +56,10 @@ class PdfFieldMapperTest {
         String screenName = "some-screen";
         Map<String, String> configMap = Map.of(screenName + "." + formInputName, fieldName);
 
-        ApplicationInput applicationInput = new ApplicationInput(List.of("01", "20", "3312"), formInputName, ApplicationInputType.DATE_VALUE);
+        ApplicationInput applicationInput = new ApplicationInput(screenName, List.of("01", "20", "3312"), formInputName, ApplicationInputType.DATE_VALUE);
 
         PdfFieldMapper subject = new PdfFieldMapper(configMap, emptySet());
-        List<PdfField> fields = subject.map(Map.of(screenName, List.of(applicationInput)));
+        List<PdfField> fields = subject.map(List.of(applicationInput));
 
         assertThat(fields).contains(new SimplePdfField(fieldName, "01/20/3312"));
     }
@@ -69,26 +69,10 @@ class PdfFieldMapperTest {
         String formInputName = "some-input";
         String screenName = "some-screen";
 
-        ApplicationInput applicationInput = new ApplicationInput(List.of("someValue"), formInputName, ApplicationInputType.SINGLE_VALUE);
+        ApplicationInput applicationInput = new ApplicationInput(screenName, List.of("someValue"), formInputName, ApplicationInputType.SINGLE_VALUE);
 
         PdfFieldMapper subject = new PdfFieldMapper(Map.of(), emptySet());
-        List<PdfField> fields = subject.map(Map.of(screenName, List.of(applicationInput)));
-
-        assertThat(fields).isEmpty();
-    }
-
-    @ParameterizedTest
-    @EnumSource(value = ApplicationInputType.class)
-    void shouldNotMapInputsWithoutValues(ApplicationInputType applicationInputType) {
-        String fieldName = "someName";
-        String formInputName = "some-input";
-        String screenName = "some-screen";
-        Map<String, String> configMap = Map.of(screenName + "." + formInputName, fieldName);
-
-        ApplicationInput applicationInput = new ApplicationInput(null, formInputName, applicationInputType);
-
-        PdfFieldMapper subject = new PdfFieldMapper(configMap, emptySet());
-        List<PdfField> fields = subject.map(Map.of(screenName, List.of(applicationInput)));
+        List<PdfField> fields = subject.map(List.of(applicationInput));
 
         assertThat(fields).isEmpty();
     }
@@ -101,10 +85,10 @@ class PdfFieldMapperTest {
         String screenName = "some-screen";
         Map<String, String> configMap = Map.of(screenName + "." + formInputName, fieldName);
 
-        ApplicationInput applicationInput = new ApplicationInput(List.of(), formInputName, applicationInputType);
+        ApplicationInput applicationInput = new ApplicationInput(screenName, List.of(), formInputName, applicationInputType);
 
         PdfFieldMapper subject = new PdfFieldMapper(configMap, emptySet());
-        List<PdfField> fields = subject.map(Map.of(screenName, List.of(applicationInput)));
+        List<PdfField> fields = subject.map(List.of(applicationInput));
 
         assertThat(fields).isEmpty();
     }
@@ -117,14 +101,14 @@ class PdfFieldMapperTest {
         String screenName = "some-screen";
         String value1 = "some-value";
         String value2 = "some-other-value";
-        ApplicationInput applicationInput = new ApplicationInput(List.of(value1, value2), formInputName, ApplicationInputType.ENUMERATED_MULTI_VALUE);
+        ApplicationInput applicationInput = new ApplicationInput(screenName, List.of(value1, value2), formInputName, ApplicationInputType.ENUMERATED_MULTI_VALUE);
         Map<String, String> configMap = Map.of(
                 screenName + "." + formInputName + "." + value1, fieldName1,
                 screenName + "." + formInputName + "." + value2, fieldName2
         );
 
         PdfFieldMapper subject = new PdfFieldMapper(configMap, emptySet());
-        List<PdfField> fields = subject.map(Map.of(screenName, List.of(applicationInput)));
+        List<PdfField> fields = subject.map(List.of(applicationInput));
 
         assertThat(fields).contains(
                 new BinaryPdfField(fieldName1),

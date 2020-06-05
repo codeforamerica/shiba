@@ -3,7 +3,6 @@ package org.codeforamerica.shiba.pdf;
 import org.codeforamerica.shiba.ApplicationInput;
 import org.springframework.stereotype.Component;
 
-import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,24 +22,20 @@ public class PdfFieldMapper {
         this.valueExclusions = valueExclusions;
     }
 
-    public List<PdfField> map(Map<String, List<ApplicationInput>> screens) {
-        return screens.entrySet().stream()
-                .flatMap(entry -> entry.getValue().stream()
-                        .map(input -> new AbstractMap.SimpleEntry<>(entry.getKey(), input)))
-                .filter(entry -> entry.getValue().getValue() != null)
-                .filter(entry -> !entry.getValue().getValue().isEmpty())
-                .filter(entry -> entry.getValue().getValue().stream().noneMatch(valueExclusions::contains))
-                .flatMap(entry -> {
-                    String screenName = entry.getKey();
-                    ApplicationInput input = entry.getValue();
+    public List<PdfField> map(List<ApplicationInput> applicationInputs) {
+        return applicationInputs.stream()
+                .filter(input -> !input.getValue().isEmpty())
+                .filter(input -> input.getValue().stream().noneMatch(valueExclusions::contains))
+                .flatMap(input -> {
+                    String groupName = input.getGroupName();
                     return switch (input.getType()) {
                         case DATE_VALUE -> Stream.of(new SimplePdfField(
-                                pdfFieldMap.get(String.join(".", screenName, input.getName())),
+                                pdfFieldMap.get(String.join(".", groupName, input.getName())),
                                 String.join("/", input.getValue())));
                         case ENUMERATED_MULTI_VALUE -> input.getValue().stream()
-                                .map(value -> new BinaryPdfField(pdfFieldMap.get(String.join(".", screenName, input.getName(), value))));
+                                .map(value -> new BinaryPdfField(pdfFieldMap.get(String.join(".", groupName, input.getName(), value))));
                         default -> Stream.of(new SimplePdfField(
-                                pdfFieldMap.get(String.join(".", screenName, input.getName())),
+                                pdfFieldMap.get(String.join(".", groupName, input.getName())),
                                 input.getValue().get(0)));
                     };
                 })

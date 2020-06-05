@@ -83,12 +83,10 @@ class PageControllerTest {
                 get("/download"))
                 .andExpect(status().is2xxSuccessful());
 
-        verify(pdfGenerator).generate(Map.of(
-                screenName, List.of(
-                        new ApplicationInput(input1Value, input1Name, ApplicationInputType.SINGLE_VALUE),
-                        new ApplicationInput(input2Value, input2Name, ApplicationInputType.SINGLE_VALUE),
-                        new ApplicationInput(input3Value, input3Name, ApplicationInputType.SINGLE_VALUE)
-                )
+        verify(pdfGenerator).generate(List.of(
+                new ApplicationInput(screenName, input1Value, input1Name, ApplicationInputType.SINGLE_VALUE),
+                new ApplicationInput(screenName, input2Value, input2Name, ApplicationInputType.SINGLE_VALUE),
+                new ApplicationInput(screenName, input3Value, input3Name, ApplicationInputType.SINGLE_VALUE)
         ));
     }
 
@@ -153,12 +151,10 @@ class PageControllerTest {
                 .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", fileName)))
                 .andReturn();
 
-        verify(xmlGenerator).generate(Map.of(
-                "screen1", List.of(
-                        new ApplicationInput(input1Value, input1Name, ApplicationInputType.SINGLE_VALUE),
-                        new ApplicationInput(input2Value, input2Name, ApplicationInputType.SINGLE_VALUE),
-                        new ApplicationInput(input3Value, input3Name, ApplicationInputType.SINGLE_VALUE)
-                )
+        verify(xmlGenerator).generate(List.of(
+                new ApplicationInput(screenName, input1Value, input1Name, ApplicationInputType.SINGLE_VALUE),
+                new ApplicationInput(screenName, input2Value, input2Name, ApplicationInputType.SINGLE_VALUE),
+                new ApplicationInput(screenName, input3Value, input3Name, ApplicationInputType.SINGLE_VALUE)
         ));
         assertThat(result.getResponse().getContentAsByteArray()).isEqualTo(fileBytes);
     }

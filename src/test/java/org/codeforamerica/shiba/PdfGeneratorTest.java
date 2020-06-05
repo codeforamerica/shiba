@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -23,10 +22,10 @@ class PdfGeneratorTest {
 
     @Test
     void shouldMapPdfFieldsFromFlattenedScreenInputs() {
-        ApplicationInput input = new ApplicationInput(List.of("someValue"), "someName", ApplicationInputType.SINGLE_VALUE);
-        pdfGenerator.generate(Map.of("screen1", List.of(input)));
+        ApplicationInput input = new ApplicationInput("screen1", List.of("someValue"), "someName", ApplicationInputType.SINGLE_VALUE);
+        pdfGenerator.generate(List.of(input));
 
-        verify(pdfFieldMapper).map(Map.of("screen1", List.of(input)));
+        verify(pdfFieldMapper).map(List.of(input));
     }
 
     @Test
@@ -34,7 +33,7 @@ class PdfGeneratorTest {
         List<PdfField> pdfFields = List.of(new SimplePdfField("some name", "some value"));
         when(pdfFieldMapper.map(any())).thenReturn(pdfFields);
 
-        pdfGenerator.generate(Map.of());
+        pdfGenerator.generate(List.of());
 
         verify(pdfFiller).fill(pdfFields);
     }
@@ -44,7 +43,7 @@ class PdfGeneratorTest {
         ApplicationFile expectedApplicationFile = new ApplicationFile("here is the pdf".getBytes(), "filename.pdf");
         when(pdfFiller.fill(any())).thenReturn(expectedApplicationFile);
 
-        ApplicationFile actualApplicationFile = pdfGenerator.generate(Map.of());
+        ApplicationFile actualApplicationFile = pdfGenerator.generate(List.of());
 
         assertThat(actualApplicationFile).isEqualTo(expectedApplicationFile);
     }

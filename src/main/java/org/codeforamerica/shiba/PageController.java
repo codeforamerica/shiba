@@ -98,7 +98,7 @@ public class PageController {
             return new ModelAndView(
                     "how-it-works",
                     "programSelection",
-                    new ProgramSelectionPresenter(messageSource, locale, formData.get("programs").getNonNullValue()));
+                    new ProgramSelectionPresenter(messageSource, locale, formData.get("programs").getValue()));
         }
     }
 
@@ -135,7 +135,7 @@ public class PageController {
 
     @GetMapping("/download")
     ResponseEntity<byte[]> downloadPdf() {
-        ApplicationFile applicationFile = pdfGenerator.generate(ApplicationInput.create(screens, data));
+        ApplicationFile applicationFile = pdfGenerator.generate(ApplicationInputs.from(screens, data));
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", applicationFile.getFileName()))
@@ -144,7 +144,7 @@ public class PageController {
 
     @GetMapping("/download-xml")
     ResponseEntity<byte[]> downloadXml() {
-        ApplicationFile applicationFile = xmlGenerator.generate(ApplicationInput.create(screens, data));
+        ApplicationFile applicationFile = xmlGenerator.generate(ApplicationInputs.from(screens, data));
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", applicationFile.getFileName()))

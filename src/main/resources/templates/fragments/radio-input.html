@@ -10,7 +10,7 @@
             <label th:for="${#ids.next(input.name)}" class="radio-button">
                 <input type="radio" th:name="${input.formInputName}" th:id="${#ids.seq(input.name)}"
                        th:value="${option.value}"
-                       th:checked="${inputData.nonNullValue.contains(option.value)}">
+                       th:checked="${inputData.value.contains(option.value)}">
                 <span th:text="#{${option.messageKey}}"></span>
             </label>
         </div>
@@ -26,7 +26,7 @@
                     <label th:for="${#ids.next(input.name)}" class="radio-button">
                         <input type="radio" th:name="${input.formInputName}" th:id="${#ids.seq(input.name)}"
                                th:value="${option.value}"
-                               th:checked="${inputData.nonNullValue.contains(option.value)}"
+                               th:checked="${inputData.value.contains(option.value)}"
                                th:attrappend="data-follow-up=${option.value == input.followUpsValue ? '#follow-up' : ''}">
                         <span th:text="#{${option.messageKey}}"></span>
                     </label>

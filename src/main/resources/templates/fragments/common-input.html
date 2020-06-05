@@ -11,14 +11,14 @@
                type="text"
                class="text-input form-width--name"
                th:id="${input.name}"
-               th:value="${(!inputData.nonNullValue.isEmpty()) ? inputData.nonNullValue[0] : ''}"
+               th:value="${(!inputData.value.isEmpty()) ? inputData.value[0] : ''}"
                th:name="${input.formInputName}"
         >
         <input th:case="${T(org.codeforamerica.shiba.FormInputType).NUMBER}"
                type="number"
                class="text-input form-width--name"
                th:id="${input.name}"
-               th:value="${(!inputData.nonNullValue.isEmpty()) ? inputData.nonNullValue[0] : ''}"
+               th:value="${(!inputData.value.isEmpty()) ? inputData.value[0] : ''}"
                th:name="${input.formInputName}"
         >
     </th:block>

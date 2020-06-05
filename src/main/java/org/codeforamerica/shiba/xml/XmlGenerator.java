@@ -2,7 +2,6 @@ package org.codeforamerica.shiba.xml;
 
 import org.codeforamerica.shiba.ApplicationFile;
 import org.codeforamerica.shiba.ApplicationInput;
-import org.codeforamerica.shiba.ApplicationInputType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -35,41 +34,19 @@ public class XmlGenerator implements FileGenerator {
     }
 
     @Override
-    public ApplicationFile generate(Map<String, List<ApplicationInput>> formInputsMap) {
+    public ApplicationFile generate(List<ApplicationInput> applicationInputs) {
         try {
-            String contentsAfterReplacement = formInputsMap.entrySet().stream()
-                    .flatMap(screenToFormInputsEntry ->
-                            screenToFormInputsEntry.getValue().stream()
-                                    .map(input -> new AbstractMap.SimpleEntry<>(screenToFormInputsEntry.getKey(), input))
-                    )
-                    .flatMap(screenToInputEntry -> {
-                        ApplicationInput input = screenToInputEntry.getValue();
-                        //noinspection SwitchStatementWithTooFewBranches
+            String contentsAfterReplacement = applicationInputs.stream()
+                    .filter(input -> !input.getValue().isEmpty())
+                    .flatMap(input -> {
+                        String xmlToken = config.get(String.join(".", input.getGroupName(), input.getName()));
                         return switch (input.getType()) {
-                            case ENUMERATED_MULTI_VALUE -> Stream.ofNullable(input.getValue())
-                                    .flatMap(list -> list.stream()
-                                            .map(value -> new AbstractMap.SimpleEntry<>(
-                                                    String.join(".", screenToInputEntry.getKey(), input.getName()),
-                                                    new ApplicationInput(List.of(value), input.getName(), ApplicationInputType.ENUMERATED_SINGLE_VALUE)
-                                            ))
-                                    );
-                            default -> Stream.of(new AbstractMap.SimpleEntry<>(
-                                    String.join(".", screenToInputEntry.getKey(), input.getName()),
-                                    input
-                            ));
+                            case DATE_VALUE -> Stream.of(new AbstractMap.SimpleEntry<>(xmlToken, String.join("/", input.getValue())));
+                            case ENUMERATED_SINGLE_VALUE -> Stream.of(new AbstractMap.SimpleEntry<>(xmlToken, enumMappings.getOrDefault(input.getValue().get(0), input.getValue().get(0))));
+                            case ENUMERATED_MULTI_VALUE -> input.getValue().stream()
+                                    .map(value -> new AbstractMap.SimpleEntry<>(xmlToken, enumMappings.getOrDefault(value, value)));
+                            default -> Stream.of(new AbstractMap.SimpleEntry<>(xmlToken, input.getValue().get(0)));
                         };
-                    })
-                    .filter(xmlConfigKeyToInputEntry -> xmlConfigKeyToInputEntry.getValue().getValue() != null)
-                    .filter(xmlConfigKeyToInputEntry -> !xmlConfigKeyToInputEntry.getValue().getValue().isEmpty())
-                    .map(xmlConfigKeyToInputEntry -> {
-                        String xmlToken = config.get(xmlConfigKeyToInputEntry.getKey());
-                        ApplicationInput input = xmlConfigKeyToInputEntry.getValue();
-                        String value = switch (input.getType()) {
-                            case DATE_VALUE -> String.join("/", input.getValue());
-                            case ENUMERATED_SINGLE_VALUE -> enumMappings.getOrDefault(input.getValue().get(0), input.getValue().get(0));
-                            default -> input.getValue().get(0);
-                        };
-                        return new AbstractMap.SimpleEntry<>(xmlToken, value);
                     })
                     .filter(xmlTokenToInputValueEntry -> xmlTokenToInputValueEntry.getKey() != null)
                     .reduce(

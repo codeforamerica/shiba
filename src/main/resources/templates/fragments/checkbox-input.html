@@ -10,7 +10,7 @@
                        th:id="${option.value}"
                        th:value="${option.value}"
                        th:name="${input.formInputName}"
-                       th:checked="${inputData.nonNullValue.contains(option.value)}">
+                       th:checked="${inputData.value.contains(option.value)}">
                 <span th:text="#{${option.messageKey}}"></span>
             </label>
         </th:block>

@@ -6,7 +6,6 @@ import org.codeforamerica.shiba.xml.FileGenerator;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class PdfGenerator implements FileGenerator {
@@ -21,8 +20,8 @@ public class PdfGenerator implements FileGenerator {
     }
 
     @Override
-    public ApplicationFile generate(Map<String, List<ApplicationInput>> formInputsMap) {
-        List<PdfField> pdfFields = pdfFieldMapper.map(formInputsMap);
+    public ApplicationFile generate(List<ApplicationInput> applicationInputs) {
+        List<PdfField> pdfFields = pdfFieldMapper.map(applicationInputs);
         return pdfFiller.fill(pdfFields);
     }
 }

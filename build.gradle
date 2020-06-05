@@ -33,6 +33,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.apache.pdfbox:pdfbox:2.0.19'
     implementation 'org.apache.commons:commons-lang3'
+    implementation 'org.jetbrains:annotations:19.0.0'
 
     testImplementation 'org.seleniumhq.selenium:selenium-java:3.141.59'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {

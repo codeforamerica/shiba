@@ -23,35 +23,6 @@ import java.util.Map;
 import static org.hamcrest.Matchers.hasXPath;
 
 class XmlGeneratorTest {
-    @ParameterizedTest
-    @EnumSource(value = ApplicationInputType.class)
-    void shouldExcludeElementsWhenInputValueIsNull(ApplicationInputType applicationInputType) throws IOException, SAXException, ParserConfigurationException {
-        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
-                "<ns:Root xmlns:ns='some-url'>\n" +
-                "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
-                "</ns:Root>";
-
-        String formInputName = "some-form-input";
-        ApplicationInput applicationInput = new ApplicationInput(null, formInputName, applicationInputType);
-        String screenName = "some-screen";
-        Map<String, List<ApplicationInput>> formInputsMap = Map.of(screenName, List.of(applicationInput));
-
-        Map<String, String> xmlConfigMap = Map.of(
-                screenName + "." + formInputName,
-                "SOME_TOKEN"
-        );
-        XmlGenerator subject = new XmlGenerator(new ByteArrayResource(xml.getBytes()), xmlConfigMap, Map.of());
-
-        ApplicationFile applicationFile = subject.generate(formInputsMap);
-
-        SimpleNamespaceContext namespaceContext = new SimpleNamespaceContext();
-        namespaceContext.setBindings(Map.of("ns", "some-url"));
-        Document document = byteArrayToDocument(applicationFile.getFileBytes());
-        MatcherAssert.assertThat(document,
-                hasXPath("count(/ns:Root/ns:Child)",
-                        namespaceContext,
-                        Matchers.equalTo("0")));
-    }
 
     @ParameterizedTest
     @EnumSource(value = ApplicationInputType.class)
@@ -61,10 +32,10 @@ class XmlGeneratorTest {
                 "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
                 "</ns:Root>";
 
-        String formInputName = "some-form-input";
-        ApplicationInput applicationInput = new ApplicationInput(List.of(), formInputName, applicationInputType);
         String screenName = "some-screen";
-        Map<String, List<ApplicationInput>> formInputsMap = Map.of(screenName, List.of(applicationInput));
+        String formInputName = "some-form-input";
+        ApplicationInput applicationInput = new ApplicationInput(screenName, List.of(), formInputName, applicationInputType);
+        List<ApplicationInput> applicationInputs = List.of(applicationInput);
 
         Map<String, String> xmlConfigMap = Map.of(
                 screenName + "." + formInputName,
@@ -72,7 +43,7 @@ class XmlGeneratorTest {
         );
         XmlGenerator subject = new XmlGenerator(new ByteArrayResource(xml.getBytes()), xmlConfigMap, Map.of());
 
-        ApplicationFile applicationFile = subject.generate(formInputsMap);
+        ApplicationFile applicationFile = subject.generate(applicationInputs);
 
         SimpleNamespaceContext namespaceContext = new SimpleNamespaceContext();
         namespaceContext.setBindings(Map.of("ns", "some-url"));
@@ -90,12 +61,11 @@ class XmlGeneratorTest {
                 "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
                 "</ns:Root>";
 
-        String screenName = "some-screen";
-        Map<String, List<ApplicationInput>> formInputsMap = Map.of(screenName, List.of());
+        List<ApplicationInput> applicationInputs = List.of();
 
         XmlGenerator subject = new XmlGenerator(new ByteArrayResource(xml.getBytes()), Map.of(), Map.of());
 
-        ApplicationFile applicationFile = subject.generate(formInputsMap);
+        ApplicationFile applicationFile = subject.generate(applicationInputs);
         Document document = byteArrayToDocument(applicationFile.getFileBytes());
         SimpleNamespaceContext namespaceContext = new SimpleNamespaceContext();
         namespaceContext.setBindings(Map.of("ns", "some-url"));
@@ -113,16 +83,16 @@ class XmlGeneratorTest {
                 "    <ns:Child>{{SOME_TOKEN2}}</ns:Child>\n" +
                 "</ns:Root>";
 
+        String screenName = "some-screen";
         String value1 = "some-string-value";
         String formInputName1 = "some-form-input";
-        ApplicationInput applicationInput1 = new ApplicationInput(List.of(value1), formInputName1, ApplicationInputType.SINGLE_VALUE);
+        ApplicationInput applicationInput1 = new ApplicationInput(screenName, List.of(value1), formInputName1, ApplicationInputType.SINGLE_VALUE);
 
         String value2 = "some-other-string-value";
         String formInputName2 = "some-other-form-input";
-        ApplicationInput applicationInput2 = new ApplicationInput(List.of(value2), formInputName2, ApplicationInputType.SINGLE_VALUE);
+        ApplicationInput applicationInput2 = new ApplicationInput(screenName, List.of(value2), formInputName2, ApplicationInputType.SINGLE_VALUE);
 
-        String screenName = "some-screen";
-        Map<String, List<ApplicationInput>> formInputsMap = Map.of(screenName, List.of(applicationInput1, applicationInput2));
+        List<ApplicationInput> applicationInputs = List.of(applicationInput1, applicationInput2);
 
         Map<String, String> xmlConfigMap = Map.of(
                 screenName + "." + formInputName1, "SOME_TOKEN1",
@@ -130,7 +100,7 @@ class XmlGeneratorTest {
         );
         XmlGenerator subject = new XmlGenerator(new ByteArrayResource(xml.getBytes()), xmlConfigMap, Map.of());
 
-        ApplicationFile applicationFile = subject.generate(formInputsMap);
+        ApplicationFile applicationFile = subject.generate(applicationInputs);
 
         SimpleNamespaceContext namespaceContext = new SimpleNamespaceContext();
         namespaceContext.setBindings(Map.of("ns", "some-url"));
@@ -153,11 +123,11 @@ class XmlGeneratorTest {
                 "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
                 "</ns:Root>";
 
+        String screenName = "some-screen";
         String formInputValue = "some-value";
         String formInputName = "some-form-input";
-        ApplicationInput applicationInput = new ApplicationInput(List.of(formInputValue), formInputName, ApplicationInputType.ENUMERATED_MULTI_VALUE);
-        String screenName = "some-screen";
-        Map<String, List<ApplicationInput>> formInputsMap = Map.of(screenName, List.of(applicationInput));
+        ApplicationInput applicationInput = new ApplicationInput(screenName, List.of(formInputValue), formInputName, ApplicationInputType.ENUMERATED_MULTI_VALUE);
+        List<ApplicationInput> applicationInputs = List.of(applicationInput);
 
         Map<String, String> xmlConfigMap = Map.of(
                 screenName + "." + formInputName,
@@ -168,7 +138,7 @@ class XmlGeneratorTest {
         Map<String, String> xmlEnum = Map.of(formInputValue, xmlEnumName);
 
         XmlGenerator subject = new XmlGenerator(new ByteArrayResource(xml.getBytes()), xmlConfigMap, xmlEnum);
-        ApplicationFile applicationFile = subject.generate(formInputsMap);
+        ApplicationFile applicationFile = subject.generate(applicationInputs);
 
         Document document = byteArrayToDocument(applicationFile.getFileBytes());
 
@@ -185,11 +155,11 @@ class XmlGeneratorTest {
                 "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
                 "</ns:Root>";
 
+        String screenName = "some-screen";
         String formInputValue = "some-value";
         String formInputName = "some-form-input";
-        ApplicationInput applicationInput = new ApplicationInput(List.of(formInputValue), formInputName, ApplicationInputType.ENUMERATED_MULTI_VALUE);
-        String screenName = "some-screen";
-        Map<String, List<ApplicationInput>> formInputsMap = Map.of(screenName, List.of(applicationInput));
+        ApplicationInput applicationInput = new ApplicationInput(screenName, List.of(formInputValue), formInputName, ApplicationInputType.ENUMERATED_MULTI_VALUE);
+        List<ApplicationInput> applicationInputs = List.of(applicationInput);
 
         Map<String, String> xmlConfigMap = Map.of(
                 screenName + "." + formInputName,
@@ -200,7 +170,7 @@ class XmlGeneratorTest {
         Map<String, String> xmlEnum = Map.of(formInputValue, xmlEnumName);
 
         XmlGenerator subject = new XmlGenerator(new ByteArrayResource(xml.getBytes()), xmlConfigMap, xmlEnum);
-        ApplicationFile applicationFile = subject.generate(formInputsMap);
+        ApplicationFile applicationFile = subject.generate(applicationInputs);
 
         Document document = byteArrayToDocument(applicationFile.getFileBytes());
 
@@ -216,11 +186,11 @@ class XmlGeneratorTest {
                 "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
                 "</ns:Root>";
 
+        String screenName = "some-screen";
         String formInputValue = "some-value";
         String formInputName = "some-form-input";
-        ApplicationInput applicationInput = new ApplicationInput(List.of(formInputValue), formInputName, ApplicationInputType.ENUMERATED_MULTI_VALUE);
-        String screenName = "some-screen";
-        Map<String, List<ApplicationInput>> formInputsMap = Map.of(screenName, List.of(applicationInput));
+        ApplicationInput applicationInput = new ApplicationInput(screenName, List.of(formInputValue), formInputName, ApplicationInputType.ENUMERATED_MULTI_VALUE);
+        List<ApplicationInput> applicationInputs = List.of(applicationInput);
 
         Map<String, String> xmlConfigMap = Map.of(
                 screenName + "." + formInputName,
@@ -230,7 +200,7 @@ class XmlGeneratorTest {
         Map<String, String> xmlEnum = Map.of();
 
         XmlGenerator subject = new XmlGenerator(new ByteArrayResource(xml.getBytes()), xmlConfigMap, xmlEnum);
-        ApplicationFile applicationFile = subject.generate(formInputsMap);
+        ApplicationFile applicationFile = subject.generate(applicationInputs);
 
         Document document = byteArrayToDocument(applicationFile.getFileBytes());
 
@@ -247,11 +217,11 @@ class XmlGeneratorTest {
                 "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
                 "</ns:Root>";
 
+        String screenName = "some-screen";
         String formInputValue = "some-value";
         String formInputName = "some-form-input";
-        ApplicationInput applicationInput = new ApplicationInput(List.of(formInputValue), formInputName, ApplicationInputType.ENUMERATED_SINGLE_VALUE);
-        String screenName = "some-screen";
-        Map<String, List<ApplicationInput>> formInputsMap = Map.of(screenName, List.of(applicationInput));
+        ApplicationInput applicationInput = new ApplicationInput(screenName, List.of(formInputValue), formInputName, ApplicationInputType.ENUMERATED_SINGLE_VALUE);
+        List<ApplicationInput> applicationInputs = List.of(applicationInput);
 
         Map<String, String> xmlConfigMap = Map.of(
                 screenName + "." + formInputName,
@@ -262,7 +232,7 @@ class XmlGeneratorTest {
         Map<String, String> xmlEnum = Map.of(formInputValue, xmlEnumName);
 
         XmlGenerator subject = new XmlGenerator(new ByteArrayResource(xml.getBytes()), xmlConfigMap, xmlEnum);
-        ApplicationFile applicationFile = subject.generate(formInputsMap);
+        ApplicationFile applicationFile = subject.generate(applicationInputs);
 
         Document document = byteArrayToDocument(applicationFile.getFileBytes());
 
@@ -278,11 +248,11 @@ class XmlGeneratorTest {
                 "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
                 "</ns:Root>";
 
+        String screenName = "some-screen";
         String formInputValue = "some-value";
         String formInputName = "some-form-input";
-        ApplicationInput applicationInput = new ApplicationInput(List.of(formInputValue), formInputName, ApplicationInputType.ENUMERATED_SINGLE_VALUE);
-        String screenName = "some-screen";
-        Map<String, List<ApplicationInput>> formInputsMap = Map.of(screenName, List.of(applicationInput));
+        ApplicationInput applicationInput = new ApplicationInput(screenName, List.of(formInputValue), formInputName, ApplicationInputType.ENUMERATED_SINGLE_VALUE);
+        List<ApplicationInput> applicationInputs = List.of(applicationInput);
 
         Map<String, String> xmlConfigMap = Map.of(
                 screenName + "." + formInputName,
@@ -292,7 +262,7 @@ class XmlGeneratorTest {
         Map<String, String> xmlEnum = Map.of();
 
         XmlGenerator subject = new XmlGenerator(new ByteArrayResource(xml.getBytes()), xmlConfigMap, xmlEnum);
-        ApplicationFile applicationFile = subject.generate(formInputsMap);
+        ApplicationFile applicationFile = subject.generate(applicationInputs);
 
         Document document = byteArrayToDocument(applicationFile.getFileBytes());
 
@@ -309,17 +279,17 @@ class XmlGeneratorTest {
                 "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
                 "</ns:Root>";
 
-        String formInputName = "some-form-input";
-        ApplicationInput applicationInput = new ApplicationInput(List.of("02", "20", "1999"), formInputName, ApplicationInputType.DATE_VALUE);
         String screenName = "some-screen";
-        Map<String, List<ApplicationInput>> formInputsMap = Map.of(screenName, List.of(applicationInput));
+        String formInputName = "some-form-input";
+        ApplicationInput applicationInput = new ApplicationInput(screenName, List.of("02", "20", "1999"), formInputName, ApplicationInputType.DATE_VALUE);
+        List<ApplicationInput> applicationInputs = List.of(applicationInput);
 
         Map<String, String> xmlConfigMap = Map.of(
                 screenName + "." + formInputName,
                 "SOME_TOKEN"
         );
         FileGenerator subject = new XmlGenerator(new ByteArrayResource(xml.getBytes()), xmlConfigMap, Map.of());
-        ApplicationFile applicationFile = subject.generate(formInputsMap);
+        ApplicationFile applicationFile = subject.generate(applicationInputs);
         Document document = byteArrayToDocument(applicationFile.getFileBytes());
 
         SimpleNamespaceContext namespaceContext = new SimpleNamespaceContext();

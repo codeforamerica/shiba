@@ -61,7 +61,7 @@ public class XmlGeneratorIntegrationTest {
                                             return new InputData(input.getValidation(), value);
                                         })))));
 
-        ApplicationFile applicationFile = xmlGenerator.generate(ApplicationInput.create(screens, data));
+        ApplicationFile applicationFile = xmlGenerator.generate(ApplicationInputs.from(screens, data));
 
         Document document = byteArrayToDocument(applicationFile.getFileBytes());
 
