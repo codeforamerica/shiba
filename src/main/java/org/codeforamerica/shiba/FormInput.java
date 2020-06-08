@@ -25,7 +25,7 @@ public class FormInput {
 
     public String fragment() {
         return switch (type) {
-            case TEXT, NUMBER -> "common-input";
+            case TEXT, NUMBER, SELECT -> "single-input";
             case DATE -> "date-input";
             case RADIO -> "radio-input";
             case CHECKBOX -> "checkbox-input";

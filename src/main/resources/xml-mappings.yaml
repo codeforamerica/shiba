@@ -1,9 +1,9 @@
 xml:
   mappings:
-    languagePreferences:
-      spokenLanguage: LANGUAGEPREFERENCES_SPOKENLANGUAGE
-      writtenLanguage: LANGUAGEPREFERENCES_WRITTENLANGUAGE
-      needInterpreter: LANGUAGEPREFERENCES_NEEDINTERPRETER
+    language-preferences:
+      spoken-language: LANGUAGEPREFERENCES_SPOKENLANGUAGE
+      written-language: LANGUAGEPREFERENCES_WRITTENLANGUAGE
+      need-interpreter: LANGUAGEPREFERENCES_NEEDINTERPRETER
     personal-info:
       first-name: PERSONALINFO_FIRSTNAME
       middle-name: PERSONALINFO_MIDDLENAME

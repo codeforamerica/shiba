@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -53,14 +52,20 @@ public class PageController {
 
     @GetMapping("/language-preference")
     ModelAndView languagePreferencePage() {
-        LanguagePreferences languagePreferences =
-                benefitsApplication.getLanguagePreferences();
-        return new ModelAndView("language-preferences", "languagePreferences", languagePreferences);
+        Form form = screens.get("language-preferences");
+        return new ModelAndView("language-preferences",
+                Map.of(
+                        "form", form,
+                        "data", data.getOrDefault("language-preferences", FormData.create(form))));
     }
 
     @PostMapping("/language-preference")
-    RedirectView postLanguagePreferencePage(@ModelAttribute LanguagePreferences languagePreferences) {
-        benefitsApplication.setLanguagePreferences(languagePreferences);
+    RedirectView postLanguagePreferencePage(@RequestBody MultiValueMap<String, String> model) {
+        String screenName = "language-preferences";
+        Form form = screens.get(screenName);
+        FormData formData = FormData.create(form, model);
+        data.put(screenName, formData);
+
         return new RedirectView("/choose-programs");
     }
 

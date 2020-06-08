@@ -1,9 +1,9 @@
 caf:
   mappings:
-    languagePreferences:
-      spokenLanguage: APPLICANT_SPOKEN_LANGUAGE_PREFERENCE
-      writtenLanguage: APPLICANT_WRITTEN_LANGUAGE_PREFERENCE
-      needInterpreter: NEED_INTERPRETER
+    language-preferences:
+      spoken-language: APPLICANT_SPOKEN_LANGUAGE_PREFERENCE
+      written-language: APPLICANT_WRITTEN_LANGUAGE_PREFERENCE
+      need-interpreter: NEED_INTERPRETER
     personal-info:
       first-name: APPLICANT_FIRST_NAME
       last-name: APPLICANT_LAST_NAME

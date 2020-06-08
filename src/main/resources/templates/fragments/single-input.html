@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<div th:fragment="common-input (input, data)" class="form-group" th:with="inputData=${data.get(input.name)}">
+<div th:fragment="single-input (input, data)" class="form-group" th:with="inputData=${data.get(input.name)}">
     <label th:for="${input.name}" class="form-question"
            th:text="#{${input.promptMessageKey}}"></label>
     <p class="text--help"
@@ -21,6 +21,17 @@
                th:value="${(!inputData.value.isEmpty()) ? inputData.value[0] : ''}"
                th:name="${input.formInputName}"
         >
+        <div th:case="${T(org.codeforamerica.shiba.FormInputType).SELECT}" class="select">
+            <select th:id="${input.name}"
+                    class="select__element"
+                    th:name="${input.formInputName}"
+            >
+                <th:block th:each="option: ${input.options}">
+                    <option th:value="${option.value}" th:text="#{${option.messageKey}}" th:selected="${inputData.value.contains(option.value)}"></option>
+                </th:block>
+            </select>
+        </div>
+
     </th:block>
     <p class="text--error" th:if="${!inputData.valid}">
         <i class="icon-warning"></i>

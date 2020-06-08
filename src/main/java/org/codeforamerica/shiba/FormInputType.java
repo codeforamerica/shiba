@@ -5,5 +5,6 @@ public enum FormInputType {
     DATE,
     NUMBER,
     RADIO,
-    CHECKBOX
+    CHECKBOX,
+    SELECT
 }

@@ -86,3 +86,47 @@ screens:
             messageKey: choose-programs.emergency-assistance
           - value: CHILD_CARE
             messageKey: choose-programs.child-care-assistance
+  language-preferences:
+    inputs:
+      - name: spoken-language
+        type: SELECT
+        promptMessageKey: language-preferences.what-language-do-you-prefer-to-speak
+        helpMessageKey: language-preferences.the-county-will-do-their-best-to-connect-you-with-someone-who-speaks-your
+        options:
+          - value: ENGLISH
+            messageKey: language-preferences.english
+          - value: SPANISH
+            messageKey: language-preferences.spanish
+          - value: SOOMAALI
+            messageKey: language-preferences.soomaali
+          - value: VIETNAMESE
+            messageKey: language-preferences.vietnamese
+          - value: RUSSIAN
+            messageKey: language-preferences.russian
+          - value: HMOOB
+            messageKey: language-preferences.hmoob
+      - name: written-language
+        type: SELECT
+        promptMessageKey: language-preferences.what-language-do-you-prefer-to-read-or-write
+        helpMessageKey: language-preferences.the-county-will-do-their-best-to-provide-documents-in-your-preferred-language
+        options:
+          - value: ENGLISH
+            messageKey: language-preferences.english
+          - value: SPANISH
+            messageKey: language-preferences.spanish
+          - value: SOOMAALI
+            messageKey: language-preferences.soomaali
+          - value: VIETNAMESE
+            messageKey: language-preferences.vietnamese
+          - value: RUSSIAN
+            messageKey: language-preferences.russian
+          - value: HMOOB
+            messageKey: language-preferences.hmoob
+      - name: need-interpreter
+        type: RADIO
+        promptMessageKey: language-preferences.do-you-need-an-interpreter
+        options:
+          - value: true
+            messageKey: general.inputs.yes
+          - value: false
+            messageKey: general.inputs.no

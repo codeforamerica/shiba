@@ -8,41 +8,9 @@
             <a th:replace="fragments/go-back :: goBackLink('/prepare-to-apply')"></a>
             <div class="grid__item spacing-above-35">
                 <h2 th:text="#{language-preferences.language-preferences}"></h2>
-                <form method="post" th:action="@{/language-preference}" th:object="${languagePreferences}">
-                    <div class="form-question spacing-below-15"><label for="spoken-language" th:text="#{language-preferences.what-language-do-you-prefer-to-speak}"></label></div>
-                    <p class="text--help" th:text="#{language-preferences.the-county-will-do-their-best-to-connect-you-with-someone-who-speaks-your}"></p>
-                    <div class="select spacing-below-35">
-                        <select th:field="*{spokenLanguage}" id="spoken-language" class="select__element">
-                            <option th:value="ENGLISH">English</option>
-                            <option th:value="SPANISH">Español</option>
-                            <option th:value="SOOMAALI">Soomaali</option>
-                            <option th:value="VIETNAMESE">Tiếng Việt</option>
-                            <option th:value="RUSSIAN">Pусский</option>
-                            <option th:value="HMOOB">Hmoob</option>
-                        </select>
-                    </div>
-                    <div class="form-question spacing-below-15"><label for="written-language" th:text="#{language-preferences.what-language-do-you-prefer-to-read-or-write}"></label></div>
-                    <p class="text--help" th:text="#{language-preferences.the-county-will-do-their-best-to-provide-documents-in-your-preferred-language}"></p>
-                    <div class="select spacing-below-35">
-                        <select th:field="*{writtenLanguage}" id="written-language" class="select__element">
-                            <option th:value="ENGLISH">English</option>
-                            <option th:value="SPANISH">Español</option>
-                            <option th:value="SOOMAALI">Soomaali</option>
-                            <option th:value="VIETNAMESE">Tiếng Việt</option>
-                            <option th:value="RUSSIAN">Pусский</option>
-                            <option th:value="HMOOB">Hmoob</option>
-                        </select>
-                    </div>
-                    <div class="form-question" th:text="#{language-preferences.do-you-need-an-interpreter}"></div>
-                    <div class="input-group spacing-below-60">
-                        <label for="need-interpreter-yes" class="radio-button">
-                            <input type="radio" th:field="*{needInterpreter}" id="need-interpreter-yes" th:value="true">
-                            <span th:text="#{general.inputs.yes}"></span>
-                        </label>
-                        <label for="need-interpreter-no" class="radio-button">
-                            <input type="radio" th:field="*{needInterpreter}" id="need-interpreter-no" th:value="false">
-                            <span th:text="#{general.inputs.no}"></span>
-                        </label>
+                <form method="post" th:action="@{/language-preference}">
+                    <div th:each="input: ${form.inputs}">
+                        <div th:replace="'fragments/'+__${input.fragment()}__ :: __${input.fragment()}__(${input}, ${data})"></div>
                     </div>
                     <button class="button button--primary" type="submit" th:text="#{general.continue}"></button>
                 </form>

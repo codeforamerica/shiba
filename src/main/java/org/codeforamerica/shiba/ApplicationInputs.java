@@ -25,7 +25,7 @@ public class ApplicationInputs {
     private static ApplicationInputType formInputTypeToApplicationInputType(FormInputType type) {
         return switch (type) {
             case CHECKBOX -> ApplicationInputType.ENUMERATED_MULTI_VALUE;
-            case RADIO -> ApplicationInputType.ENUMERATED_SINGLE_VALUE;
+            case RADIO, SELECT -> ApplicationInputType.ENUMERATED_SINGLE_VALUE;
             case DATE -> ApplicationInputType.DATE_VALUE;
             case TEXT, NUMBER -> ApplicationInputType.SINGLE_VALUE;
         };
