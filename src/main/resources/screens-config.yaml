@@ -74,6 +74,10 @@ screens:
             type: TEXT
             promptMessageKey: personal-info.what-city-did-you-move-from
   choose-programs:
+    pageTitle: choose-programs.choose-programs
+    backLink: '/language-preference'
+    postEndpoint: '/choose-programs'
+    nextPage: 'redirect:/how-it-works'
     inputs:
       - name: programs
         type: CHECKBOX
@@ -91,6 +95,11 @@ screens:
           - value: CHILD_CARE
             messageKey: choose-programs.child-care-assistance
   language-preferences:
+    pageTitle: language-preferences.language-preferences
+    backLink: '/prepare-to-apply'
+    headerKey: language-preferences.language-preferences
+    postEndpoint: '/language-preference'
+    nextPage: '/choose-programs'
     inputs:
       - name: spoken-language
         type: SELECT

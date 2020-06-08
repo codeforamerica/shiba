@@ -50,7 +50,7 @@ public class PageController {
     @GetMapping("/language-preference")
     ModelAndView languagePreferencePage() {
         Form form = screens.get("language-preferences");
-        return new ModelAndView("language-preferences",
+        return new ModelAndView("form-page",
                 Map.of(
                         "form", form,
                         "data", data.getOrDefault("language-preferences", FormData.create(form))));
@@ -63,13 +63,13 @@ public class PageController {
         FormData formData = FormData.create(form, model);
         data.put(screenName, formData);
 
-        return new RedirectView("/choose-programs");
+        return new RedirectView(form.getNextPage());
     }
 
     @GetMapping("/choose-programs")
     ModelAndView chooseProgramPage() {
         Form form = screens.get("choose-programs");
-        return new ModelAndView("choose-programs",
+        return new ModelAndView("form-page",
                 Map.of("form", form,
                         "data", data.getOrDefault("choose-programs", FormData.create(form))));
     }
@@ -81,9 +81,9 @@ public class PageController {
         FormData formData = FormData.create(form, model);
         data.put(screenName, formData);
         if (formData.isValid()) {
-            return new ModelAndView("redirect:/how-it-works");
+            return new ModelAndView(form.getNextPage());
         } else {
-            return new ModelAndView("choose-programs",
+            return new ModelAndView("form-page",
                     Map.of("form", form,
                             "data", formData));
         }

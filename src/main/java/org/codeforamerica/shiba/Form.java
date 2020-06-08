@@ -10,6 +10,16 @@ import java.util.stream.Stream;
 public class Form {
     public List<FormInput> inputs;
     public String dataSource;
+    private String pageTitle;
+    private String backLink;
+    private String headerKey;
+    private String postEndpoint;
+    private String nextPage;
+
+    @SuppressWarnings("unused")
+    public boolean hasHeader() {
+        return this.headerKey != null;
+    }
 
     public List<FormInput> getFlattenedInputs() {
         return this.inputs.stream()

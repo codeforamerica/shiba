@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<div th:replace="fragments/head :: head(#{language-preferences.language-preferences})"></div>
+<div th:replace="fragments/head :: head(#{form.pageTitle})"></div>
 <body>
 <div class="page-wrapper">
     <section class="slab slab--white">
         <div class="grid">
-            <a th:replace="fragments/go-back :: goBackLink('/prepare-to-apply')"></a>
+            <a th:replace="fragments/go-back :: goBackLink(${form.backLink})"></a>
             <div class="grid__item spacing-above-35">
-                <h2 th:text="#{language-preferences.language-preferences}"></h2>
-                <form method="post" th:action="@{/language-preference}">
+                <h2 th:if="${form.hasHeader()}" th:text="#{${form.headerKey}}"></h2>
+                <form method="post" th:action="@{${form.postEndpoint}}">
                     <div th:each="input: ${form.inputs}">
                         <div th:replace="'fragments/'+__${input.fragment()}__ :: __${input.fragment()}__(${input}, ${data})"></div>
                     </div>
