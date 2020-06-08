@@ -6,7 +6,9 @@ import lombok.Value;
 import org.springframework.util.MultiValueMap;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -23,7 +25,12 @@ public class FormData extends HashMap<String, InputData> {
                 form.getFlattenedInputs().stream()
                         .collect(toMap(
                                 FormInput::getName,
-                                input -> new InputData(input.getValidation(), model.get(input.getFormInputName()))
+                                input -> {
+                                    List<String> value = Optional.ofNullable(model)
+                                            .map(modelMap -> modelMap.get(input.getFormInputName()))
+                                            .orElse(null);
+                                    return new InputData(input.getValidation(), value);
+                                }
                         )));
     }
 

@@ -6,7 +6,6 @@ import org.springframework.context.support.StaticMessageSource;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,9 +25,6 @@ class ProgramSelectionPresenterTest {
 
     @Test
     void shouldNotAllowEmptyProgramSelection() {
-        ProgramSelection programSelection = new ProgramSelection();
-        programSelection.setPrograms(Set.of());
-
         assertThatThrownBy(() -> new ProgramSelectionPresenter(messageSource, defaultLocale, List.of()))
                 .isInstanceOf(IllegalArgumentException.class);
     }

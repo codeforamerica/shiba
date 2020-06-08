@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<div th:fragment="date-input (input, data)" class="form-group" th:with="inputData=${data.get(input.name)}">
+<div th:fragment="date-input (input, data)" class="form-group" th:classappend="${!inputData.valid} ? 'form-group--error' : ''" th:with="inputData=${data.get(input.name)}">
     <label class="form-question" th:text="#{${input.promptMessageKey}}"></label>
     <p class="text--help">
         <label th:for="${input.name}+'-month'">mm</label>/<label th:for="${input.name}+'-day'">dd</label>/<label
@@ -12,5 +12,9 @@
                          th:id="${input.name}+'-day'" th:name="${input.formInputName}" th:value="${!inputData.value.isEmpty() ? inputData.value[1]: ''}">
     &nbsp;/&nbsp; <input type="text" maxlength="4" pattern="\d{4}" class="text-input form-width--4-character dob-input"
                          th:id="${input.name}+'-year'" th:name="${input.formInputName}" th:value="${!inputData.value.isEmpty() ? inputData.value[2]: ''}">
+    <p class="text--error" th:if="${!inputData.valid}">
+        <i class="icon-warning"></i>
+        <span th:text="#{${input.validationErrorMessageKey}}"></span>
+    </p>
 </div>
 </html>

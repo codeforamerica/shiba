@@ -19,6 +19,8 @@ screens:
         helpMessageKey: personal-info.include-maiden-names-or-legal-changes
       - name: date-of-birth
         type: DATE
+        validation: DATE
+        validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
         promptMessageKey: personal-info.when-were-you-born
       - name: ssn
         type: NUMBER
@@ -65,6 +67,8 @@ screens:
         followUps:
           - name: move-to-mn-date
             type: DATE
+            validation: DATE
+            validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
             promptMessageKey: personal-info.when-did-you-move-to-minnesota
           - name: move-to-mn-previous-city
             type: TEXT

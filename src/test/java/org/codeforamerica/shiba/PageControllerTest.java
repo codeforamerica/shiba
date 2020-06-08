@@ -25,7 +25,6 @@ class PageControllerTest {
     MockMvc mockMvc;
 
     FileGenerator xmlGenerator = mock(FileGenerator.class);
-    BenefitsApplication benefitsApplication = new BenefitsApplication();
     Screens screens = new Screens();
     Map<String, FormData> data = new HashMap<>();
     PdfGenerator pdfGenerator = mock(PdfGenerator.class);
@@ -34,7 +33,6 @@ class PageControllerTest {
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(
                 new PageController(
-                        benefitsApplication,
                         screens,
                         data,
                         new StaticMessageSource(),

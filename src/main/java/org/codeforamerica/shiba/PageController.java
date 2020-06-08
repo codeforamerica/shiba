@@ -19,20 +19,17 @@ import java.util.Map;
 
 @Controller
 public class PageController {
-    private final BenefitsApplication benefitsApplication;
     private final Map<String, FormData> data;
     private final MessageSource messageSource;
     private final FileGenerator xmlGenerator;
     private final Screens screens;
     private final PdfGenerator pdfGenerator;
 
-    public PageController(BenefitsApplication benefitsApplication,
-                          Screens screens,
+    public PageController(Screens screens,
                           Map<String, FormData> data,
                           MessageSource messageSource,
                           FileGenerator xmlGenerator,
                           PdfGenerator pdfGenerator) {
-        this.benefitsApplication = benefitsApplication;
         this.data = data;
         this.messageSource = messageSource;
         this.xmlGenerator = xmlGenerator;

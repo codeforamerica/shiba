@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba;
 
 import org.codeforamerica.shiba.xml.FileGenerator;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,24 +45,26 @@ public class XmlGeneratorIntegrationTest {
     @Test
     void shouldProduceAValidDocument() throws IOException, SAXException, ParserConfigurationException {
         Map<String, FormData> data = screens.entrySet().stream()
-                .collect(toMap(
-                        Map.Entry::getKey,
-                        entry -> new FormData(entry.getValue().getFlattenedInputs().stream()
-                                .collect(toMap(
-                                        FormInput::getName,
-                                        input -> {
-                                            List<String> value = switch (input.type) {
-                                                case RADIO -> List.of(input.options.get(new Random().nextInt(input.options.size())).value);
-                                                case CHECKBOX -> input.options.subList(0, new Random().nextInt(input.options.size()) + 1).stream()
-                                                        .map(Option::getValue)
-                                                        .collect(Collectors.toList());
-                                                case DATE -> List.of(LocalDate.ofEpochDay(0).plusDays(new Random().nextInt()).format(DateTimeFormatter.ofPattern("MM/dd/yyyy")).split("/"));
-                                                default -> List.of("some-value");
-                                            };
-                                            return new InputData(input.getValidation(), value);
-                                        })))));
-
-        ApplicationFile applicationFile = xmlGenerator.generate(ApplicationInputs.from(screens, data));
+                .collect(toMap(Map.Entry::getKey, entry -> FormData.create(entry.getValue())));
+        List<ApplicationInput> applicationInputsWithoutData = ApplicationInputs.from(screens, data);
+        List<ApplicationInput> applicationInputs = applicationInputsWithoutData.stream()
+                .map(input -> {
+                    FormInput formInput = screens.get(input.getGroupName()).getFlattenedInputs().stream()
+                            .filter(screensInput -> screensInput.getName().equals(input.getName()))
+                            .findFirst()
+                            .orElseThrow();
+                    @NotNull List<String> value = switch (input.getType()) {
+                        case ENUMERATED_SINGLE_VALUE -> List.of(formInput.getOptions().get(new Random().nextInt(formInput.getOptions().size())).value);
+                        case ENUMERATED_MULTI_VALUE -> formInput.getOptions().subList(0, new Random().nextInt(formInput.getOptions().size()) + 1).stream()
+                                .map(Option::getValue)
+                                .collect(Collectors.toList());
+                        case DATE_VALUE -> List.of(LocalDate.ofEpochDay(0).plusDays(new Random().nextInt()).format(DateTimeFormatter.ofPattern("MM/dd/yyyy")).split("/"));
+                        default -> List.of("some-value");
+                    };
+                    return new ApplicationInput(input.getGroupName(), value, input.getName(), input.getType());
+                })
+                .collect(Collectors.toList());
+        ApplicationFile applicationFile = xmlGenerator.generate(applicationInputs);
 
         Document document = byteArrayToDocument(applicationFile.getFileBytes());
 
