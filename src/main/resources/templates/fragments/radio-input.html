@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="radio-input (input, data)" th:with="inputData=${data.get(input.name)}">
     <div class="form-group" th:if="${!input.hasFollowUps()}">
-        <div class="form-question" th:text="#{${input.promptMessageKey}}"></div>
+        <div class="form-question" th:if="${input.promptMessageKey != null}" th:text="#{${input.promptMessageKey}}"></div>
         <p class="text--help"
            th:if="${input.helpMessageKey != null}"
            th:text="#{${input.helpMessageKey}}"></p>
@@ -18,7 +18,7 @@
     <div class="question-with-follow-up" th:if="${input.hasFollowUps()}">
         <div class="question-with-follow-up__question">
             <div class="form-group">
-                <div class="form-question" th:text="#{${input.promptMessageKey}}"></div>
+                <div class="form-question" th:if="${input.promptMessageKey != null}" th:text="#{${input.promptMessageKey}}"></div>
                 <p class="text--help"
                    th:if="${input.helpMessageKey != null}"
                    th:text="#{${input.helpMessageKey}}"></p>

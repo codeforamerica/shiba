@@ -26,10 +26,17 @@ public class FormData extends HashMap<String, InputData> {
                         .collect(toMap(
                                 FormInput::getName,
                                 input -> {
+                                    Validator validator = input.getValidator();
+                                    Boolean applyValidation = Optional.ofNullable(validator.getCondition())
+                                            .map(condition -> Optional.ofNullable(model)
+                                                    .map(modelMap -> modelMap.get(condition.getFormInputName()))
+                                                    .orElse(List.of())
+                                                    .contains(condition.value))
+                                            .orElse(true);
                                     List<String> value = Optional.ofNullable(model)
                                             .map(modelMap -> modelMap.get(input.getFormInputName()))
                                             .orElse(null);
-                                    return new InputData(input.getValidation(), value);
+                                    return new InputData(validator.getValidation(), value, applyValidation);
                                 }
                         )));
     }

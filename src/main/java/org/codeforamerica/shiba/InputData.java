@@ -13,9 +13,11 @@ public class InputData {
     Boolean valid;
     @NotNull List<String> value;
 
-    InputData(Validation validation, List<String> value) {
+    InputData(Validation validation,
+              List<String> value,
+              boolean applyValidation) {
         this.value = Objects.requireNonNullElseGet(value, List::of);
-        this.valid = validation.apply(this.value);
+        this.valid = applyValidation ? validation.apply(this.value) : true;
     }
 
     public InputData() {

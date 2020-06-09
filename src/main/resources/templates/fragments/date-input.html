@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="date-input (input, data)" class="form-group" th:classappend="${!inputData.valid} ? 'form-group--error' : ''" th:with="inputData=${data.get(input.name)}">
-    <label class="form-question" th:text="#{${input.promptMessageKey}}"></label>
+    <label class="form-question" th:if="${input.promptMessageKey != null}" th:text="#{${input.promptMessageKey}}"></label>
     <p class="text--help">
         <label th:for="${input.name}+'-month'">mm</label>/<label th:for="${input.name}+'-day'">dd</label>/<label
             th:for="${input.name}+'-year'">yyyy</label>

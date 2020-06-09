@@ -8,6 +8,9 @@
             <a th:replace="fragments/go-back :: goBackLink(${form.previousPage})"></a>
             <div th:if="${form.hasHeader()}" class="grid__item spacing-above-35 spacing-below-35">
                 <h2 th:text="#{${form.headerKey}}"></h2>
+                <p class="text--help"
+                   th:if="${form.headerHelpMessageKey != null}"
+                   th:text="#{${form.headerHelpMessageKey}}"></p>
             </div>
             <div class="grid__item">
                 <form method="post" th:action="@{'/pages/'+${postTo}}">

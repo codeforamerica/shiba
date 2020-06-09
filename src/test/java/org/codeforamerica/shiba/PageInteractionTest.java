@@ -222,7 +222,7 @@ public class PageInteractionTest extends AbstractBasePageTest {
             page.enterSSN(ssn);
             page.clickPrimaryButton();
 
-            assertThat(page.getTitle()).isEqualTo("Success");
+            assertThat(page.getTitle()).isEqualTo("Contact Info");
         }
 
         @Test
@@ -306,7 +306,7 @@ public class PageInteractionTest extends AbstractBasePageTest {
     }
 
     @Test
-    void shouldNavigateToSuccessScreen() {
+    void shouldNavigateToContactInfoScreen() {
         ChooseProgramsPage chooseProgramPage = landingPage
                 .clickPrimaryButton()
                 .clickPrimaryButton()
@@ -317,8 +317,74 @@ public class PageInteractionTest extends AbstractBasePageTest {
         personalInfoPage.enterFirstName("defaultFirstName");
         personalInfoPage.enterLastName("defaultLastName");
         personalInfoPage.enterSSN("000000000");
-        SuccessPage successPage = personalInfoPage.clickPrimaryButton();
+        ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
 
+        assertThat(contactInfoPage.getTitle()).isEqualTo("Contact Info");
+    }
+
+    @Test
+    void shouldFailValidationForContactInfo_whenEmailMeIsChecked_andEmailIsBlank() {
+        ChooseProgramsPage chooseProgramPage = landingPage
+                .clickPrimaryButton()
+                .clickPrimaryButton()
+                .clickPrimaryButton();
+        chooseProgramPage.chooseProgram("Emergency assistance");
+        HowItWorksPage howItWorksPage = chooseProgramPage.clickPrimaryButton();
+        PersonalInfoPage personalInfoPage = howItWorksPage.clickPrimaryButton().clickPrimaryButton();
+        personalInfoPage.enterFirstName("defaultFirstName");
+        personalInfoPage.enterLastName("defaultLastName");
+        personalInfoPage.enterSSN("000000000");
+
+        ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
+
+        contactInfoPage.enterPhoneNumber("123");
+        contactInfoPage.selectEmailMe("Email me");
+
+        contactInfoPage.clickPrimaryButton();
+        assertThat(contactInfoPage.getTitle()).isEqualTo("Contact Info");
+        assertThat(contactInfoPage.hasEmailError()).isTrue();
+    }
+
+    @Test
+    void shouldPassValidationForContactInfo_whenEmailMeIsNotChecked_andEmailIsBlank() {
+        ChooseProgramsPage chooseProgramPage = landingPage
+                .clickPrimaryButton()
+                .clickPrimaryButton()
+                .clickPrimaryButton();
+        chooseProgramPage.chooseProgram("Emergency assistance");
+        HowItWorksPage howItWorksPage = chooseProgramPage.clickPrimaryButton();
+        PersonalInfoPage personalInfoPage = howItWorksPage.clickPrimaryButton().clickPrimaryButton();
+        personalInfoPage.enterFirstName("defaultFirstName");
+        personalInfoPage.enterLastName("defaultLastName");
+        personalInfoPage.enterSSN("000000000");
+
+        ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
+
+        contactInfoPage.enterPhoneNumber("123");
+
+        SuccessPage successPage = contactInfoPage.clickPrimaryButton();
+        assertThat(successPage.getTitle()).isEqualTo("Success");
+    }
+
+    @Test
+    void shouldPassValidationForContactInfo_whenEmailMeIsChecked_andEmailIsNotBlank() {
+        ChooseProgramsPage chooseProgramPage = landingPage
+                .clickPrimaryButton()
+                .clickPrimaryButton()
+                .clickPrimaryButton();
+        chooseProgramPage.chooseProgram("Emergency assistance");
+        HowItWorksPage howItWorksPage = chooseProgramPage.clickPrimaryButton();
+        PersonalInfoPage personalInfoPage = howItWorksPage.clickPrimaryButton().clickPrimaryButton();
+        personalInfoPage.enterFirstName("defaultFirstName");
+        personalInfoPage.enterLastName("defaultLastName");
+        personalInfoPage.enterSSN("000000000");
+
+        ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
+        contactInfoPage.enterPhoneNumber("123");
+        contactInfoPage.enterEmail("something");
+        contactInfoPage.selectEmailMe("Email me");
+
+        SuccessPage successPage = contactInfoPage.clickPrimaryButton();
         assertThat(successPage.getTitle()).isEqualTo("Success");
     }
 
@@ -334,7 +400,9 @@ public class PageInteractionTest extends AbstractBasePageTest {
         personalInfoPage.enterFirstName("defaultFirstName");
         personalInfoPage.enterLastName("defaultLastName");
         personalInfoPage.enterSSN("000000000");
-        SuccessPage successPage = personalInfoPage.clickPrimaryButton();
+        ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
+        contactInfoPage.enterPhoneNumber("123");
+        SuccessPage successPage = contactInfoPage.clickPrimaryButton();
 
         successPage.downloadReceipt();
         await().until(() -> path.resolve("DHS-5223.pdf").toFile().exists());
@@ -352,7 +420,9 @@ public class PageInteractionTest extends AbstractBasePageTest {
         personalInfoPage.enterFirstName("defaultFirstName");
         personalInfoPage.enterLastName("defaultLastName");
         personalInfoPage.enterSSN("000000000");
-        SuccessPage successPage = personalInfoPage.clickPrimaryButton();
+        ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
+        contactInfoPage.enterPhoneNumber("123");
+        SuccessPage successPage = contactInfoPage.clickPrimaryButton();
 
         successPage.downloadXML();
         await().until(() -> path.resolve("ApplyMN.xml").toFile().exists());

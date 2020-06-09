@@ -1,11 +1,9 @@
 package org.codeforamerica.shiba;
 
 import org.codeforamerica.shiba.pdf.PdfGenerator;
-import org.codeforamerica.shiba.xml.FileGenerator;
 import org.codeforamerica.shiba.xml.XmlGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.context.support.StaticMessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -70,9 +68,9 @@ class FileDownLoadControllerTest {
         screens.put(screenName, form);
 
         data.put(screenName, new FormData(Map.of(
-                input1Name, new InputData(Validation.NONE, input1Value),
-                input2Name, new InputData(Validation.NONE, input2Value),
-                input3Name, new InputData(Validation.NONE, input3Value)
+                input1Name, new InputData(Validation.NONE, input1Value, true),
+                input2Name, new InputData(Validation.NONE, input2Value, true),
+                input3Name, new InputData(Validation.NONE, input3Value, true)
         )));
 
         when(pdfGenerator.generate(any())).thenReturn(new ApplicationFile("".getBytes(), ""));
@@ -137,9 +135,9 @@ class FileDownLoadControllerTest {
         screens.put(screenName, form);
 
         data.put(screenName, new FormData(Map.of(
-                input1Name, new InputData(Validation.NONE, input1Value),
-                input2Name, new InputData(Validation.NONE, input2Value),
-                input3Name, new InputData(Validation.NONE, input3Value)
+                input1Name, new InputData(Validation.NONE, input1Value, true),
+                input2Name, new InputData(Validation.NONE, input2Value, true),
+                input3Name, new InputData(Validation.NONE, input3Value, true)
         )));
 
         MvcResult result = mockMvc.perform(

@@ -2,6 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="single-input (input, data)" class="form-group" th:classappend="${!inputData.valid} ? 'form-group--error' : ''" th:with="inputData=${data.get(input.name)}">
     <label th:for="${input.name}" class="form-question"
+           th:if="${input.promptMessageKey != null}"
            th:text="#{${input.promptMessageKey}}"></label>
     <p class="text--help"
        th:if="${input.helpMessageKey != null}"

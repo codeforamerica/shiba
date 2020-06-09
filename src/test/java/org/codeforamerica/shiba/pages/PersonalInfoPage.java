@@ -7,7 +7,7 @@ import org.openqa.selenium.support.FindBy;
 
 import java.util.List;
 
-public class PersonalInfoPage extends IntermediaryPage<IntermediaryPage<HowItWorksPage, PersonalInfoPage>, SuccessPage> {
+public class PersonalInfoPage extends IntermediaryPage<IntermediaryPage<HowItWorksPage, PersonalInfoPage>, ContactInfoPage> {
 
     @FindBy(css = "input[name^='first-name']")
     WebElement firstNameInput;
@@ -38,8 +38,8 @@ public class PersonalInfoPage extends IntermediaryPage<IntermediaryPage<HowItWor
     }
 
     @Override
-    public SuccessPage getNextPage() {
-        return new SuccessPage(driver);
+    public ContactInfoPage getNextPage() {
+        return new ContactInfoPage(this, driver);
     }
 
     public void enterFirstName(String firstName) {

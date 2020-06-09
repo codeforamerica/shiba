@@ -12,7 +12,8 @@ public enum Validation {
     NOT_BLANK(strings -> !String.join("", strings).isBlank()),
     SELECT_AT_LEAST_ONE(strings -> strings.size() > 0),
     SSN(strings -> List.of(0, 9).contains(String.join("", strings).length())),
-    DATE(strings -> String.join("", strings).isBlank() ||
+    DATE(strings ->
+            String.join("", strings).isBlank() ||
             GenericValidator.isDate(String.join("/", strings), "MM/dd/yyyy", true));
 
     private final Predicate<List<String>> rule;

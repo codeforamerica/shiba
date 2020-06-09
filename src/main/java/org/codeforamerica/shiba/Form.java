@@ -12,6 +12,7 @@ public class Form {
     private String path;
     private String pageTitle;
     private String headerKey;
+    private String headerHelpMessageKey;
     private String nextPage;
     private String previousPage;
 

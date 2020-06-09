@@ -55,15 +55,15 @@ screens:
             messageKey: general.inputs.no
   choose-programs:
     pageTitle: choose-programs.choose-programs
-    backLink: '/language-preference'
     nextPage: how-it-works
     previousPage: language-preferences
+    headerKey: choose-programs.what-do-you-need-help-with-today
+    headerHelpMessageKey: choose-programs.check-all-that-apply
     inputs:
       - name: programs
         type: CHECKBOX
-        promptMessageKey: choose-programs.what-do-you-need-help-with-today
-        helpMessageKey: choose-programs.check-all-that-apply
-        validation: SELECT_AT_LEAST_ONE
+        validator:
+          validation: SELECT_AT_LEAST_ONE
         validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
         options:
           - value: FOOD
@@ -83,22 +83,23 @@ screens:
     nextPage: personal-info
   personal-info:
     pageTitle: personal-info.title
-    backLink: '/intro-basic-info'
     headerKey: intro-basic-info.getting-to-know-you
     previousPage: intro-basic-info
-    nextPage: success
+    nextPage: contact-info
     inputs:
       - name: first-name
         type: TEXT
         promptMessageKey: personal-info.whats-your-first-name
         helpMessageKey: personal-info.legally-as-it-appears-on-your-id
-        validation: NOT_BLANK
+        validator:
+          validation: NOT_BLANK
         validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
       - name: last-name
         type: TEXT
         promptMessageKey: personal-info.whats-your-last-name
         helpMessageKey: personal-info.legally-as-it-appears-on-your-id
-        validation: NOT_BLANK
+        validator:
+          validation: NOT_BLANK
         validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
       - name: other-name
         type: TEXT
@@ -106,12 +107,14 @@ screens:
         helpMessageKey: personal-info.include-maiden-names-or-legal-changes
       - name: date-of-birth
         type: DATE
-        validation: DATE
+        validator:
+          validation: DATE
         validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
         promptMessageKey: personal-info.when-were-you-born
       - name: ssn
         type: NUMBER
-        validation: SSN
+        validator:
+          validation: SSN
         validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
         promptMessageKey: personal-info.whats-your-social-security-number
         helpMessageKey: personal-info.if-you-have-one-we-strongly-recommend-including-it-here-your-caseworker-will
@@ -154,11 +157,47 @@ screens:
         followUps:
           - name: move-to-mn-date
             type: DATE
-            validation: DATE
+            validator:
+              validation: DATE
             validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
             promptMessageKey: personal-info.when-did-you-move-to-minnesota
           - name: move-to-mn-previous-city
             type: TEXT
             promptMessageKey: personal-info.what-city-did-you-move-from
+  contact-info:
+    pageTitle: contact-info.title
+    headerKey: contact-info.how-can-we-stay-in-touch-with-you
+    headerHelpMessageKey: contact-info.most-of-our-communication-will-be-through-mail
+    previousPage: personal-info
+    nextPage: success
+    inputs:
+      - name: phone-number
+        type: TEXT
+        promptMessageKey: contact-info.whats-your-phone-number
+        validator:
+          validation: NOT_BLANK
+        validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+      - name: phone-number-again
+        type: TEXT
+        promptMessageKey: contact-info.type-your-phone-number-again
+        helpMessageKey: contact-info.lets-make-sure-that-we-have-it-right
+      - name: email
+        type: TEXT
+        promptMessageKey: contact-info.whats-your-email-address
+        validator:
+          validation: NOT_BLANK
+          condition:
+            input: phone-or-email
+            value: EMAIL
+        validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+      - name: phone-or-email
+        type: CHECKBOX
+        promptMessageKey: contact-info.where-can-we-send-you-a-receipt-of-your-completed-application
+        helpMessageKey: contact-info.this-is-for-your-own-records
+        options:
+          - value: TEXT
+            messageKey: contact-info.text-me
+          - value: EMAIL
+            messageKey: contact-info.email-me
   success:
     previousPage: personal-info

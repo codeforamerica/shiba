@@ -13,11 +13,11 @@ public class FormInput {
     String name;
     String promptMessageKey;
     String helpMessageKey;
-    Validation validation = Validation.NONE;
     String validationErrorMessageKey;
     List<Option> options;
     List<FormInput> followUps = Collections.emptyList();
     String followUpsValue;
+    Validator validator = new Validator();
 
     public String getFormInputName() {
         return this.name + WEB_INPUT_ARRAY_TOKEN;
