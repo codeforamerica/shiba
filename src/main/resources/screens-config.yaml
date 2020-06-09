@@ -1,5 +1,92 @@
 screens:
+  landing:
+    nextPage: prepare-to-apply
+    previousPage: landing
+  prepare-to-apply:
+    previousPage: landing
+    nextPage: language-preferences
+  language-preferences:
+    pageTitle: language-preferences.language-preferences
+    headerKey: language-preferences.language-preferences
+    nextPage: choose-programs
+    previousPage: prepare-to-apply
+    inputs:
+      - name: spoken-language
+        type: SELECT
+        promptMessageKey: language-preferences.what-language-do-you-prefer-to-speak
+        helpMessageKey: language-preferences.the-county-will-do-their-best-to-connect-you-with-someone-who-speaks-your
+        options:
+          - value: ENGLISH
+            messageKey: language-preferences.english
+          - value: SPANISH
+            messageKey: language-preferences.spanish
+          - value: SOOMAALI
+            messageKey: language-preferences.soomaali
+          - value: VIETNAMESE
+            messageKey: language-preferences.vietnamese
+          - value: RUSSIAN
+            messageKey: language-preferences.russian
+          - value: HMOOB
+            messageKey: language-preferences.hmoob
+      - name: written-language
+        type: SELECT
+        promptMessageKey: language-preferences.what-language-do-you-prefer-to-read-or-write
+        helpMessageKey: language-preferences.the-county-will-do-their-best-to-provide-documents-in-your-preferred-language
+        options:
+          - value: ENGLISH
+            messageKey: language-preferences.english
+          - value: SPANISH
+            messageKey: language-preferences.spanish
+          - value: SOOMAALI
+            messageKey: language-preferences.soomaali
+          - value: VIETNAMESE
+            messageKey: language-preferences.vietnamese
+          - value: RUSSIAN
+            messageKey: language-preferences.russian
+          - value: HMOOB
+            messageKey: language-preferences.hmoob
+      - name: need-interpreter
+        type: RADIO
+        promptMessageKey: language-preferences.do-you-need-an-interpreter
+        options:
+          - value: true
+            messageKey: general.inputs.yes
+          - value: false
+            messageKey: general.inputs.no
+  choose-programs:
+    pageTitle: choose-programs.choose-programs
+    backLink: '/language-preference'
+    nextPage: how-it-works
+    previousPage: language-preferences
+    inputs:
+      - name: programs
+        type: CHECKBOX
+        promptMessageKey: choose-programs.what-do-you-need-help-with-today
+        helpMessageKey: choose-programs.check-all-that-apply
+        validation: SELECT_AT_LEAST_ONE
+        validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+        options:
+          - value: FOOD
+            messageKey: choose-programs.food-snap
+          - value: CASH
+            messageKey: choose-programs.cash-programs
+          - value: EMERGENCY
+            messageKey: choose-programs.emergency-assistance
+          - value: CHILD_CARE
+            messageKey: choose-programs.child-care-assistance
+  how-it-works:
+    path: /how-it-works
+    previousPage: choose-programs
+    nextPage: intro-basic-info
+  intro-basic-info:
+    previousPage: how-it-works
+    nextPage: personal-info
   personal-info:
+    pageTitle: personal-info.title
+    backLink: '/intro-basic-info'
+    headerKey: intro-basic-info.getting-to-know-you
+    previousPage: intro-basic-info
+    nextPage: success
     inputs:
       - name: first-name
         type: TEXT
@@ -73,73 +160,5 @@ screens:
           - name: move-to-mn-previous-city
             type: TEXT
             promptMessageKey: personal-info.what-city-did-you-move-from
-  choose-programs:
-    pageTitle: choose-programs.choose-programs
-    backLink: '/language-preference'
-    postEndpoint: '/choose-programs'
-    nextPage: 'redirect:/how-it-works'
-    inputs:
-      - name: programs
-        type: CHECKBOX
-        promptMessageKey: choose-programs.what-do-you-need-help-with-today
-        helpMessageKey: choose-programs.check-all-that-apply
-        validation: SELECT_AT_LEAST_ONE
-        validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
-        options:
-          - value: FOOD
-            messageKey: choose-programs.food-snap
-          - value: CASH
-            messageKey: choose-programs.cash-programs
-          - value: EMERGENCY
-            messageKey: choose-programs.emergency-assistance
-          - value: CHILD_CARE
-            messageKey: choose-programs.child-care-assistance
-  language-preferences:
-    pageTitle: language-preferences.language-preferences
-    backLink: '/prepare-to-apply'
-    headerKey: language-preferences.language-preferences
-    postEndpoint: '/language-preference'
-    nextPage: '/choose-programs'
-    inputs:
-      - name: spoken-language
-        type: SELECT
-        promptMessageKey: language-preferences.what-language-do-you-prefer-to-speak
-        helpMessageKey: language-preferences.the-county-will-do-their-best-to-connect-you-with-someone-who-speaks-your
-        options:
-          - value: ENGLISH
-            messageKey: language-preferences.english
-          - value: SPANISH
-            messageKey: language-preferences.spanish
-          - value: SOOMAALI
-            messageKey: language-preferences.soomaali
-          - value: VIETNAMESE
-            messageKey: language-preferences.vietnamese
-          - value: RUSSIAN
-            messageKey: language-preferences.russian
-          - value: HMOOB
-            messageKey: language-preferences.hmoob
-      - name: written-language
-        type: SELECT
-        promptMessageKey: language-preferences.what-language-do-you-prefer-to-read-or-write
-        helpMessageKey: language-preferences.the-county-will-do-their-best-to-provide-documents-in-your-preferred-language
-        options:
-          - value: ENGLISH
-            messageKey: language-preferences.english
-          - value: SPANISH
-            messageKey: language-preferences.spanish
-          - value: SOOMAALI
-            messageKey: language-preferences.soomaali
-          - value: VIETNAMESE
-            messageKey: language-preferences.vietnamese
-          - value: RUSSIAN
-            messageKey: language-preferences.russian
-          - value: HMOOB
-            messageKey: language-preferences.hmoob
-      - name: need-interpreter
-        type: RADIO
-        promptMessageKey: language-preferences.do-you-need-an-interpreter
-        options:
-          - value: true
-            messageKey: general.inputs.yes
-          - value: false
-            messageKey: general.inputs.no
+  success:
+    previousPage: personal-info

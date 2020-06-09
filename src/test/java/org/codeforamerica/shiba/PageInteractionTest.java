@@ -21,7 +21,7 @@ public class PageInteractionTest extends AbstractBasePageTest {
     void setUp() throws IOException {
         super.setUp();
         String baseUrl = String.format("http://localhost:%s", localServerPort);
-        driver.navigate().to(baseUrl + "/");
+        driver.navigate().to(baseUrl + "/pages/landing");
         landingPage = new LandingPage(super.driver);
     }
 

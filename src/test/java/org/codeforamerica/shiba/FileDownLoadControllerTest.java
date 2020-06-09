@@ -2,6 +2,7 @@ package org.codeforamerica.shiba;
 
 import org.codeforamerica.shiba.pdf.PdfGenerator;
 import org.codeforamerica.shiba.xml.FileGenerator;
+import org.codeforamerica.shiba.xml.XmlGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.support.StaticMessageSource;
@@ -21,10 +22,10 @@ import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-class PageControllerTest {
+class FileDownLoadControllerTest {
     MockMvc mockMvc;
 
-    FileGenerator xmlGenerator = mock(FileGenerator.class);
+    XmlGenerator xmlGenerator = mock(XmlGenerator.class);
     Screens screens = new Screens();
     Map<String, FormData> data = new HashMap<>();
     PdfGenerator pdfGenerator = mock(PdfGenerator.class);
@@ -32,12 +33,11 @@ class PageControllerTest {
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(
-                new PageController(
+                new FileDownLoadController(
                         screens,
                         data,
-                        new StaticMessageSource(),
-                        xmlGenerator,
-                        pdfGenerator))
+                        pdfGenerator,
+                        xmlGenerator))
                 .setViewResolvers(new InternalResourceViewResolver("", "suffix"))
                 .build();
     }

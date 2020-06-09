@@ -8,13 +8,12 @@ import java.util.stream.Stream;
 
 @Data
 public class Form {
-    public List<FormInput> inputs;
-    public String dataSource;
+    public List<FormInput> inputs = List.of();
+    private String path;
     private String pageTitle;
-    private String backLink;
     private String headerKey;
-    private String postEndpoint;
     private String nextPage;
+    private String previousPage;
 
     @SuppressWarnings("unused")
     public boolean hasHeader() {
@@ -26,5 +25,4 @@ public class Form {
                 .flatMap(formInput -> Stream.concat(Stream.of(formInput), formInput.followUps.stream()))
                 .collect(Collectors.toList());
     }
-
 }
