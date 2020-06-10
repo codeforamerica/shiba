@@ -15,6 +15,7 @@ public class Form {
     private String headerHelpMessageKey;
     private String nextPage;
     private String previousPage;
+    private String dataSource;
 
     @SuppressWarnings("unused")
     public boolean hasHeader() {

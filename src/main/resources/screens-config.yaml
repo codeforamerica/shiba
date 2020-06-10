@@ -1,17 +1,17 @@
 screens:
   landing:
-    nextPage: prepare-to-apply
+    nextPage: prepareToApply
     previousPage: landing
-  prepare-to-apply:
+  prepareToApply:
     previousPage: landing
-    nextPage: language-preferences
-  language-preferences:
+    nextPage: languagePreferences
+  languagePreferences:
     pageTitle: language-preferences.language-preferences
     headerKey: language-preferences.language-preferences
-    nextPage: choose-programs
-    previousPage: prepare-to-apply
+    nextPage: choosePrograms
+    previousPage: prepareToApply
     inputs:
-      - name: spoken-language
+      - name: spokenLanguage
         type: SELECT
         promptMessageKey: language-preferences.what-language-do-you-prefer-to-speak
         helpMessageKey: language-preferences.the-county-will-do-their-best-to-connect-you-with-someone-who-speaks-your
@@ -28,7 +28,7 @@ screens:
             messageKey: language-preferences.russian
           - value: HMOOB
             messageKey: language-preferences.hmoob
-      - name: written-language
+      - name: writtenLanguage
         type: SELECT
         promptMessageKey: language-preferences.what-language-do-you-prefer-to-read-or-write
         helpMessageKey: language-preferences.the-county-will-do-their-best-to-provide-documents-in-your-preferred-language
@@ -45,7 +45,7 @@ screens:
             messageKey: language-preferences.russian
           - value: HMOOB
             messageKey: language-preferences.hmoob
-      - name: need-interpreter
+      - name: needInterpreter
         type: RADIO
         promptMessageKey: language-preferences.do-you-need-an-interpreter
         options:
@@ -53,10 +53,10 @@ screens:
             messageKey: general.inputs.yes
           - value: false
             messageKey: general.inputs.no
-  choose-programs:
+  choosePrograms:
     pageTitle: choose-programs.choose-programs
-    nextPage: how-it-works
-    previousPage: language-preferences
+    nextPage: howItWorks
+    previousPage: languagePreferences
     headerKey: choose-programs.what-do-you-need-help-with-today
     headerHelpMessageKey: choose-programs.check-all-that-apply
     inputs:
@@ -74,38 +74,38 @@ screens:
             messageKey: choose-programs.emergency-assistance
           - value: CHILD_CARE
             messageKey: choose-programs.child-care-assistance
-  how-it-works:
+  howItWorks:
     path: /how-it-works
-    previousPage: choose-programs
-    nextPage: intro-basic-info
-  intro-basic-info:
-    previousPage: how-it-works
-    nextPage: personal-info
-  personal-info:
+    previousPage: choosePrograms
+    nextPage: introBasicInfo
+  introBasicInfo:
+    previousPage: howItWorks
+    nextPage: personalInfo
+  personalInfo:
     pageTitle: personal-info.title
     headerKey: intro-basic-info.getting-to-know-you
-    previousPage: intro-basic-info
-    nextPage: contact-info
+    previousPage: introBasicInfo
+    nextPage: contactInfo
     inputs:
-      - name: first-name
+      - name: firstName
         type: TEXT
         promptMessageKey: personal-info.whats-your-first-name
         helpMessageKey: personal-info.legally-as-it-appears-on-your-id
         validator:
           validation: NOT_BLANK
         validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
-      - name: last-name
+      - name: lastName
         type: TEXT
         promptMessageKey: personal-info.whats-your-last-name
         helpMessageKey: personal-info.legally-as-it-appears-on-your-id
         validator:
           validation: NOT_BLANK
         validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
-      - name: other-name
+      - name: otherName
         type: TEXT
         promptMessageKey: personal-info.list-any-names-that-you-have-gone-by-in-the-past
         helpMessageKey: personal-info.include-maiden-names-or-legal-changes
-      - name: date-of-birth
+      - name: dateOfBirth
         type: DATE
         validator:
           validation: DATE
@@ -118,7 +118,7 @@ screens:
         validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
         promptMessageKey: personal-info.whats-your-social-security-number
         helpMessageKey: personal-info.if-you-have-one-we-strongly-recommend-including-it-here-your-caseworker-will
-      - name: marital-status
+      - name: maritalStatus
         type: RADIO
         promptMessageKey: personal-info.whats-your-marital-status
         options:
@@ -146,7 +146,7 @@ screens:
           - value: RATHER_NOT_SAY
             messageKey: personal-info.rather-not-say
       - type: RADIO
-        name: lived-in-mn-whole-life
+        name: livedInMnWholeLife
         promptMessageKey: personal-info.have-you-lived-in-minnesota-your-whole-life
         options:
           - value: false
@@ -155,29 +155,29 @@ screens:
             messageKey: general.inputs.yes
         followUpsValue: true
         followUps:
-          - name: move-to-mn-date
+          - name: moveToMnDate
             type: DATE
             validator:
               validation: DATE
             validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
             promptMessageKey: personal-info.when-did-you-move-to-minnesota
-          - name: move-to-mn-previous-city
+          - name: moveToMnPreviousCity
             type: TEXT
             promptMessageKey: personal-info.what-city-did-you-move-from
-  contact-info:
+  contactInfo:
     pageTitle: contact-info.title
     headerKey: contact-info.how-can-we-stay-in-touch-with-you
     headerHelpMessageKey: contact-info.most-of-our-communication-will-be-through-mail
-    previousPage: personal-info
-    nextPage: success
+    previousPage: personalInfo
+    nextPage: branchToMinimalFlow
     inputs:
-      - name: phone-number
+      - name: phoneNumber
         type: TEXT
         promptMessageKey: contact-info.whats-your-phone-number
         validator:
           validation: NOT_BLANK
         validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
-      - name: phone-number-again
+      - name: phoneNumberAgain
         type: TEXT
         promptMessageKey: contact-info.type-your-phone-number-again
         helpMessageKey: contact-info.lets-make-sure-that-we-have-it-right
@@ -187,10 +187,10 @@ screens:
         validator:
           validation: NOT_BLANK
           condition:
-            input: phone-or-email
+            input: phoneOrEmail
             value: EMAIL
         validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
-      - name: phone-or-email
+      - name: phoneOrEmail
         type: CHECKBOX
         promptMessageKey: contact-info.where-can-we-send-you-a-receipt-of-your-completed-application
         helpMessageKey: contact-info.this-is-for-your-own-records
@@ -199,5 +199,9 @@ screens:
             messageKey: contact-info.text-me
           - value: EMAIL
             messageKey: contact-info.email-me
+  branchToMinimalFlow:
+    previousPage: contactInfo
+    nextPage: success
+    dataSource: personalInfo
   success:
-    previousPage: personal-info
+    previousPage: branchToMinimalFlow

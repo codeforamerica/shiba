@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 public class PageController {
@@ -35,9 +37,15 @@ public class PageController {
             return new ModelAndView("redirect:" + page.getPath());
         }
         if (page.getInputs().isEmpty()) {
-            return new ModelAndView(pageName, "form", page);
+            String dataSource = page.getDataSource();
+
+            HashMap<String, Object> baseModel = new HashMap<>(Map.of("form", page));
+            Optional.ofNullable(dataSource).ifPresent(dataPage ->
+                    baseModel.putAll(data.get(dataPage)));
+
+            return new ModelAndView(pageName, baseModel);
         }
-        return new ModelAndView("form-page",
+        return new ModelAndView("formPage",
                 Map.of(
                         "form", page,
                         "data", data.getOrDefault(pageName, FormData.create(page)),
@@ -59,7 +67,7 @@ public class PageController {
             }
             return new ModelAndView(String.format("redirect:/pages/%s", form.getNextPage()));
         } else {
-            return new ModelAndView("form-page",
+            return new ModelAndView("formPage",
                     Map.of(
                             "form", form,
                             "data", formData,
@@ -69,15 +77,15 @@ public class PageController {
 
     @GetMapping("/how-it-works")
     ModelAndView howItWorksPage(Locale locale) {
-        FormData formData = data.get("choose-programs");
-        Form form = screens.get("how-it-works");
+        FormData formData = data.get("choosePrograms");
+        Form form = screens.get("howItWorks");
         // TODO: NPE if we navigate directly here
         if (!formData.isValid()) {
             //noinspection SpringMVCViewInspection
-            return new ModelAndView("redirect:/choose-programs");
+            return new ModelAndView("redirect:/choosePrograms");
         } else {
             return new ModelAndView(
-                    "how-it-works",
+                    "howItWorks",
                     Map.of(
                             "programSelection", new ProgramSelectionPresenter(messageSource, locale, formData.get("programs").getValue()),
                             "form", form));

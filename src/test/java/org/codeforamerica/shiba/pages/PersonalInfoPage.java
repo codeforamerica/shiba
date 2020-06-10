@@ -9,28 +9,28 @@ import java.util.List;
 
 public class PersonalInfoPage extends IntermediaryPage<IntermediaryPage<HowItWorksPage, PersonalInfoPage>, ContactInfoPage> {
 
-    @FindBy(css = "input[name^='first-name']")
+    @FindBy(css = "input[name^='firstName']")
     WebElement firstNameInput;
 
-    @FindBy(css = "input[name^='last-name']")
+    @FindBy(css = "input[name^='lastName']")
     WebElement lastNameInput;
 
-    @FindBy(css = "input[name^='other-name'")
+    @FindBy(css = "input[name^='otherName'")
     WebElement otherNameInput;
 
-    @FindBy(css = "input[name^='date-of-birth']")
+    @FindBy(css = "input[name^='dateOfBirth']")
     List<WebElement> dateOfBirthInputs;
 
     @FindBy(css = "input[name^='ssn']")
     WebElement ssnInput;
 
-    @FindBy(css = "input[name^='marital-status']")
+    @FindBy(css = "input[name^='maritalStatus']")
     List<WebElement> maritalStatusInputs;
 
     @FindBy(css = "input[name^='sex']")
     List<WebElement> sexInputs;
 
-    @FindBy(css = "input[name^='lived-in-mn-whole-life']")
+    @FindBy(css = "input[name^='livedInMnWholeLife']")
     List<WebElement> livedInMNWholeLife;
 
     public PersonalInfoPage(IntermediaryPage<HowItWorksPage, PersonalInfoPage> previousPage, RemoteWebDriver driver) {
@@ -61,11 +61,11 @@ public class PersonalInfoPage extends IntermediaryPage<IntermediaryPage<HowItWor
     }
 
     public boolean hasFirstNameError() {
-        return !driver.findElements(By.cssSelector("input[name^='first-name'] ~ p.text--error")).isEmpty();
+        return !driver.findElements(By.cssSelector("input[name^='firstName'] ~ p.text--error")).isEmpty();
     }
 
     public boolean hasLastNameError() {
-        return !driver.findElements(By.cssSelector("input[name^='last-name'] ~ p.text--error")).isEmpty();
+        return !driver.findElements(By.cssSelector("input[name^='lastName'] ~ p.text--error")).isEmpty();
     }
 
     public void enterOtherName(String otherName) {
@@ -146,33 +146,33 @@ public class PersonalInfoPage extends IntermediaryPage<IntermediaryPage<HowItWor
     }
 
     public void enterMoveToMNDatePart(DatePart datePart, String month) {
-        WebElement input = driver.findElement(By.cssSelector(String.format("input[name^='move-to-mn-date']:nth-of-type(%s)", datePart.getPosition())));
+        WebElement input = driver.findElement(By.cssSelector(String.format("input[name^='moveToMnDate']:nth-of-type(%s)", datePart.getPosition())));
         input.clear();
         input.sendKeys(month);
     }
 
     public boolean displaysAllMoveToMNInputs() {
-        return driver.findElements(By.cssSelector("input[name^='move-to-mn']")).stream().allMatch(WebElement::isDisplayed);
+        return driver.findElements(By.cssSelector("input[name^='moveToMn']")).stream().allMatch(WebElement::isDisplayed);
     }
 
     public boolean displaysNoMoveToMNInputs() {
-        return driver.findElements(By.cssSelector("input[name^='move-to-mn']")).stream().noneMatch(WebElement::isDisplayed);
+        return driver.findElements(By.cssSelector("input[name^='moveToMn']")).stream().noneMatch(WebElement::isDisplayed);
     }
 
     public String getMoveToMNDate(DatePart datePart) {
-        return driver.findElements(By.cssSelector(String.format("input[name^='move-to-mn-date']:nth-of-type(%s)", datePart.getPosition()))).stream().findFirst()
+        return driver.findElements(By.cssSelector(String.format("input[name^='moveToMnDate']:nth-of-type(%s)", datePart.getPosition()))).stream().findFirst()
         .map(input -> input.getAttribute("value"))
         .orElse(null);
     }
 
     public void enterPreviousCity(String city) {
-        WebElement input = driver.findElement(By.cssSelector("input[name^='move-to-mn-previous-city']"));
+        WebElement input = driver.findElement(By.cssSelector("input[name^='moveToMnPreviousCity']"));
         input.clear();
         input.sendKeys(city);
     }
 
     public String getPreviousCity() {
-        return driver.findElements(By.cssSelector("input[name^='move-to-mn-previous-city']")).stream().findFirst()
+        return driver.findElements(By.cssSelector("input[name^='moveToMnPreviousCity']")).stream().findFirst()
                 .map(input -> input.getAttribute("value"))
                 .orElse(null);
     }

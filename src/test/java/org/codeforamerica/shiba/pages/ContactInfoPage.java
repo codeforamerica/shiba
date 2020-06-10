@@ -7,8 +7,8 @@ import org.openqa.selenium.support.FindBy;
 
 import java.util.List;
 
-public class ContactInfoPage extends IntermediaryPage<PersonalInfoPage, SuccessPage>  {
-    @FindBy(css = "input[name^='phone-number']")
+public class ContactInfoPage extends IntermediaryPage<PersonalInfoPage, ThanksPage>  {
+    @FindBy(css = "input[name^='phoneNumber']")
     WebElement phoneNumberInput;
 
     @FindBy(css = "input[name^='email']")
@@ -22,8 +22,8 @@ public class ContactInfoPage extends IntermediaryPage<PersonalInfoPage, SuccessP
     }
 
     @Override
-    public SuccessPage getNextPage() {
-        return new SuccessPage(driver);
+    public ThanksPage getNextPage() {
+        return new ThanksPage(this, driver);
     }
 
     public void enterPhoneNumber(String phone) {
@@ -31,7 +31,7 @@ public class ContactInfoPage extends IntermediaryPage<PersonalInfoPage, SuccessP
         phoneNumberInput.sendKeys(phone);
     }
 
-    public void selectEmailMe(String choice) {
+    public void selectContactChoice(String choice) {
         WebElement optionToChoose = phoneOrEmail.stream()
                 .filter(option -> option.findElement(By.tagName("span")).getText().equals(choice))
                 .findFirst().orElseThrow();

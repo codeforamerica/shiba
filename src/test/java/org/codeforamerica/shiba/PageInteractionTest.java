@@ -338,7 +338,7 @@ public class PageInteractionTest extends AbstractBasePageTest {
         ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
 
         contactInfoPage.enterPhoneNumber("123");
-        contactInfoPage.selectEmailMe("Email me");
+        contactInfoPage.selectContactChoice("Email me");
 
         contactInfoPage.clickPrimaryButton();
         assertThat(contactInfoPage.getTitle()).isEqualTo("Contact Info");
@@ -362,8 +362,8 @@ public class PageInteractionTest extends AbstractBasePageTest {
 
         contactInfoPage.enterPhoneNumber("123");
 
-        SuccessPage successPage = contactInfoPage.clickPrimaryButton();
-        assertThat(successPage.getTitle()).isEqualTo("Success");
+        SuccessPage successPage = contactInfoPage.clickPrimaryButton().clickPrimaryButton();
+        assertThat(successPage.getTitle()).isEqualTo("Thanks");
     }
 
     @Test
@@ -382,10 +382,10 @@ public class PageInteractionTest extends AbstractBasePageTest {
         ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
         contactInfoPage.enterPhoneNumber("123");
         contactInfoPage.enterEmail("something");
-        contactInfoPage.selectEmailMe("Email me");
+        contactInfoPage.selectContactChoice("Email me");
 
-        SuccessPage successPage = contactInfoPage.clickPrimaryButton();
-        assertThat(successPage.getTitle()).isEqualTo("Success");
+        ThanksPage thanksPage = contactInfoPage.clickPrimaryButton();
+        assertThat(thanksPage.getTitle()).isEqualTo("Thanks");
     }
 
     @Test
@@ -402,7 +402,7 @@ public class PageInteractionTest extends AbstractBasePageTest {
         personalInfoPage.enterSSN("000000000");
         ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
         contactInfoPage.enterPhoneNumber("123");
-        SuccessPage successPage = contactInfoPage.clickPrimaryButton();
+        SuccessPage successPage = contactInfoPage.clickPrimaryButton().clickSubtleLink();
 
         successPage.downloadReceipt();
         await().until(() -> path.resolve("DHS-5223.pdf").toFile().exists());
@@ -422,7 +422,7 @@ public class PageInteractionTest extends AbstractBasePageTest {
         personalInfoPage.enterSSN("000000000");
         ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
         contactInfoPage.enterPhoneNumber("123");
-        SuccessPage successPage = contactInfoPage.clickPrimaryButton();
+        SuccessPage successPage = contactInfoPage.clickPrimaryButton().clickSubtleLink();
 
         successPage.downloadXML();
         await().until(() -> path.resolve("ApplyMN.xml").toFile().exists());

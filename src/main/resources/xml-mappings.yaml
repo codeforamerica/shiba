@@ -1,23 +1,23 @@
 xml:
   mappings:
-    language-preferences:
-      spoken-language: LANGUAGEPREFERENCES_SPOKENLANGUAGE
-      written-language: LANGUAGEPREFERENCES_WRITTENLANGUAGE
-      need-interpreter: LANGUAGEPREFERENCES_NEEDINTERPRETER
-    personal-info:
-      first-name: PERSONALINFO_FIRSTNAME
-      middle-name: PERSONALINFO_MIDDLENAME
-      last-name: PERSONALINFO_LASTNAME
-      other-name: PERSONALINFO_OTHERNAME
+    languagePreferences:
+      spokenLanguage: LANGUAGEPREFERENCES_SPOKENLANGUAGE
+      writtenLanguage: LANGUAGEPREFERENCES_WRITTENLANGUAGE
+      needInterpreter: LANGUAGEPREFERENCES_NEEDINTERPRETER
+    personalInfo:
+      firstName: PERSONALINFO_FIRSTNAME
+      middleName: PERSONALINFO_MIDDLENAME
+      lastName: PERSONALINFO_LASTNAME
+      otherName: PERSONALINFO_OTHERNAME
       ssn: PERSONALINFO_SSN
-      marital-status: PERSONALINFO_MARITALSTATUS
+      maritalStatus: PERSONALINFO_MARITALSTATUS
       sex: PERSONALINFO_SEX
-      date-of-birth: PERSONALINFO_DATE_OF_BIRTH
-      move-to-mn-date: PERSONALINFO_MOVETOMNDATE
-    choose-programs:
+      dateOfBirth: PERSONALINFO_DATE_OF_BIRTH
+      moveToMnDate: PERSONALINFO_MOVETOMNDATE
+    choosePrograms:
       programs: PROGRAM
-    contact-info:
-      phone-number: CONTACTINFO_PHONE
+    contactInfo:
+      phoneNumber: CONTACTINFO_PHONE
   enums:
     NEVER_MARRIED: Never Married
     MARRIED_LIVING_WITH_SPOUSE: Married Living w/Spouse
