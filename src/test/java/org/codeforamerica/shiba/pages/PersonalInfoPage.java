@@ -130,7 +130,7 @@ public class PersonalInfoPage extends IntermediaryPage<IntermediaryPage<HowItWor
                 .findFirst().orElse(null);
     }
 
-    public void selectLivedInMNWholeLife(String hasLivedInMNWholeLife) {
+    public void movedToMNWithinLastYear(String hasLivedInMNWholeLife) {
         WebElement selectedMaritalStatus = livedInMNWholeLife.stream()
                 .map(input -> input.findElement(By.xpath("./..")))
                 .filter(label -> label.getText().equals(hasLivedInMNWholeLife))

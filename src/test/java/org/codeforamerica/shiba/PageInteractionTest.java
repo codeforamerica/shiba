@@ -267,7 +267,7 @@ public class PageInteractionTest extends AbstractBasePageTest {
         class LivedInMNWholeLife {
             @Test
             void shouldPreserveSelection() {
-                page.selectLivedInMNWholeLife("Yes");
+                page.movedToMNWithinLastYear("Yes");
                 page.clickPrimaryButton();
                 driver.navigate().back();
 
@@ -275,8 +275,8 @@ public class PageInteractionTest extends AbstractBasePageTest {
             }
 
             @Test
-            void shouldAskForMoveDateAndPreviousCityIfDidNotLiveInMNWholeLife() {
-                page.selectLivedInMNWholeLife("No");
+            void shouldAskForMoveDateAndPreviousCityIfMovedToMNWithinLastYear() {
+                page.movedToMNWithinLastYear("Yes");
 
                 assertThat(page.displaysAllMoveToMNInputs()).isTrue();
                 String month = "03";
@@ -297,8 +297,8 @@ public class PageInteractionTest extends AbstractBasePageTest {
             }
 
             @Test
-            void shouldNotAskForMoveDateIfDidLiveInMNWholeLife() {
-                page.selectLivedInMNWholeLife("Yes");
+            void shouldNotAskForMoveDateIfDidNotMoveToMNWithinLastYear() {
+                page.movedToMNWithinLastYear("No");
 
                 assertThat(page.displaysNoMoveToMNInputs()).isTrue();
             }

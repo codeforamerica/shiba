@@ -8,14 +8,14 @@
         <p class="text--help"
            th:if="${input.helpMessageKey != null}"
            th:text="#{${input.helpMessageKey}}"></p>
-        <div th:each="option: ${input.options}">
+        <th:block th:each="option: ${input.options}">
             <label th:for="${#ids.next(input.name)}" class="radio-button">
                 <input type="radio" th:name="${formInputName}" th:id="${#ids.seq(input.name)}"
                        th:value="${option.value}"
                        th:checked="${inputData.value.contains(option.value)}">
                 <span th:text="#{${option.messageKey}}"></span>
             </label>
-        </div>
+        </th:block>
     </div>
     <div class="question-with-follow-up" th:if="${input.hasFollowUps()}">
         <div class="question-with-follow-up__question">
@@ -24,7 +24,7 @@
                 <p class="text--help"
                    th:if="${input.helpMessageKey != null}"
                    th:text="#{${input.helpMessageKey}}"></p>
-                <div th:each="option: ${input.options}">
+                <th:block th:each="option: ${input.options}">
                     <label th:for="${#ids.next(input.name)}" class="radio-button">
                         <input type="radio" th:name="${formInputName}" th:id="${#ids.seq(input.name)}"
                                th:value="${option.value}"
@@ -32,7 +32,7 @@
                                th:attrappend="data-follow-up=${option.value == input.followUpsValue ? '#follow-up' : ''}">
                         <span th:text="#{${option.messageKey}}"></span>
                     </label>
-                </div>
+                </th:block>
             </div>
         </div>
         <div class="question-with-follow-up__follow-up" id="follow-up">
