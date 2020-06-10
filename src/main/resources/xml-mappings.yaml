@@ -16,6 +16,8 @@ xml:
       move-to-mn-date: PERSONALINFO_MOVETOMNDATE
     choose-programs:
       programs: PROGRAM
+    contact-info:
+      phone-number: CONTACTINFO_PHONE
   enums:
     NEVER_MARRIED: Never Married
     MARRIED_LIVING_WITH_SPOUSE: Married Living w/Spouse

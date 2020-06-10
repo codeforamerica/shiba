@@ -1,10 +1,12 @@
-<onl:OnlineApplication xmlns:onl="http://dhs.state.mn.us/2011/03/01/OnlineApplication"
->
+<onl:OnlineApplication xmlns:onl="http://dhs.state.mn.us/2011/03/01/OnlineApplication">
     <onl:ContactInfo>
         <onl:Person>
             <onl:FirstName>{{PERSONALINFO_FIRSTNAME}}</onl:FirstName>
             <onl:LastName>{{PERSONALINFO_LASTNAME}}</onl:LastName>
         </onl:Person>
+        <onl:Phone>
+            <onl:PhoneNumber>{{CONTACTINFO_PHONE}}</onl:PhoneNumber>
+        </onl:Phone>
     </onl:ContactInfo>
     <onl:HouseholdInfo>
         <onl:HouseholdMember>

@@ -19,3 +19,5 @@ caf:
         FOOD: FOOD
         CASH: CASH
         EMERGENCY: EMERGENCY
+    contact-info:
+      phone-number: APPLICANT_PHONE_NUMBER
