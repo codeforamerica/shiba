@@ -68,9 +68,9 @@ class FileDownLoadControllerTest {
         screens.put(screenName, form);
 
         data.put(screenName, new FormData(Map.of(
-                input1Name, new InputData(Validation.NONE, input1Value, true),
-                input2Name, new InputData(Validation.NONE, input2Value, true),
-                input3Name, new InputData(Validation.NONE, input3Value, true)
+                input1Name, new InputData(Validation.NONE, input1Value),
+                input2Name, new InputData(Validation.NONE, input2Value),
+                input3Name, new InputData(Validation.NONE, input3Value)
         )));
 
         when(pdfGenerator.generate(any())).thenReturn(new ApplicationFile("".getBytes(), ""));
@@ -135,9 +135,9 @@ class FileDownLoadControllerTest {
         screens.put(screenName, form);
 
         data.put(screenName, new FormData(Map.of(
-                input1Name, new InputData(Validation.NONE, input1Value, true),
-                input2Name, new InputData(Validation.NONE, input2Value, true),
-                input3Name, new InputData(Validation.NONE, input3Value, true)
+                input1Name, new InputData(Validation.NONE, input1Value),
+                input2Name, new InputData(Validation.NONE, input2Value),
+                input3Name, new InputData(Validation.NONE, input3Value)
         )));
 
         MvcResult result = mockMvc.perform(

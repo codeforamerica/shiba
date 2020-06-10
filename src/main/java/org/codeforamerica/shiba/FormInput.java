@@ -1,14 +1,13 @@
 package org.codeforamerica.shiba;
 
 import lombok.Data;
+import org.springframework.util.MultiValueMap;
 
 import java.util.Collections;
 import java.util.List;
 
 @Data
 public class FormInput {
-    private static final String WEB_INPUT_ARRAY_TOKEN = "[]";
-
     FormInputType type;
     String name;
     String promptMessageKey;
@@ -19,8 +18,8 @@ public class FormInput {
     String followUpsValue;
     Validator validator = new Validator();
 
-    public String getFormInputName() {
-        return this.name + WEB_INPUT_ARRAY_TOKEN;
+    public Validation getValidationFor(MultiValueMap<String, String> model) {
+        return this.validator.validationFor(model);
     }
 
     public String fragment() {

@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.toMap;
+import static org.codeforamerica.shiba.InputUtils.getFormInputName;
 
 @EqualsAndHashCode(callSuper = true)
 @Value
@@ -26,17 +27,10 @@ public class FormData extends HashMap<String, InputData> {
                         .collect(toMap(
                                 FormInput::getName,
                                 input -> {
-                                    Validator validator = input.getValidator();
-                                    Boolean applyValidation = Optional.ofNullable(validator.getCondition())
-                                            .map(condition -> Optional.ofNullable(model)
-                                                    .map(modelMap -> modelMap.get(condition.getFormInputName()))
-                                                    .orElse(List.of())
-                                                    .contains(condition.value))
-                                            .orElse(true);
                                     List<String> value = Optional.ofNullable(model)
-                                            .map(modelMap -> modelMap.get(input.getFormInputName()))
+                                            .map(modelMap -> modelMap.get(getFormInputName(input.getName())))
                                             .orElse(null);
-                                    return new InputData(validator.getValidation(), value, applyValidation);
+                                    return new InputData(input.getValidationFor(model), value);
                                 }
                         )));
     }

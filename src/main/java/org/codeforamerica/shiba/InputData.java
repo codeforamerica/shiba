@@ -14,10 +14,9 @@ public class InputData {
     @NotNull List<String> value;
 
     InputData(Validation validation,
-              List<String> value,
-              boolean applyValidation) {
+              List<String> value) {
         this.value = Objects.requireNonNullElseGet(value, List::of);
-        this.valid = applyValidation ? validation.apply(this.value) : true;
+        this.valid = validation.apply(this.value);
     }
 
     public InputData() {

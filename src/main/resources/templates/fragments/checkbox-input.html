@@ -6,12 +6,13 @@
         <p class="text--help"
            th:if="${input.helpMessageKey != null}"
            th:text="#{${input.helpMessageKey}}"></p>
-        <th:block th:each="option: ${input.options}">
+        <th:block th:each="option: ${input.options}"
+                  th:with="formInputName=${T(org.codeforamerica.shiba.InputUtils).getFormInputName(input.name)}">
             <label th:for="${option.value}" class="checkbox">
                 <input type="checkbox"
                        th:id="${option.value}"
                        th:value="${option.value}"
-                       th:name="${input.formInputName}"
+                       th:name="${formInputName}"
                        th:checked="${inputData.value.contains(option.value)}">
                 <span th:text="#{${option.messageKey}}"></span>
             </label>
