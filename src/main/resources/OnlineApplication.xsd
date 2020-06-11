@@ -2379,7 +2379,7 @@
 					<xsd:documentation>F# 14; see model:GenderType</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="MaritalStatus" type="xsd:string" minOccurs="0">
+			<xsd:element name="MaritalStatus" type="model:MaritalStatusType" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>F# 15; see model:MaritalStatusType</xsd:documentation>
 				</xsd:annotation>
