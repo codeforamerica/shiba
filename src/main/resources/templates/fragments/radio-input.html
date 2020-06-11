@@ -36,9 +36,9 @@
             </div>
         </div>
         <div class="question-with-follow-up__follow-up" id="follow-up">
-            <div th:each="followUp: ${input.followUps}">
+            <th:block th:each="followUp: ${input.followUps}">
                 <div th:replace="'fragments/'+__${followUp.fragment()}__ :: __${followUp.fragment()}__(${followUp}, ${data})"></div>
-            </div>
+            </th:block>
         </div>
     </div>
 </th:block>
