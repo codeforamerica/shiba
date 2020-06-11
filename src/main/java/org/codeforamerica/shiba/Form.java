@@ -9,13 +9,12 @@ import java.util.stream.Stream;
 @Data
 public class Form {
     public List<FormInput> inputs = List.of();
-    private String path;
     private String pageTitle;
     private String headerKey;
     private String headerHelpMessageKey;
     private String nextPage;
     private String previousPage;
-    private String dataSource;
+    private PageDatasource dataSource;
 
     @SuppressWarnings("unused")
     public boolean hasHeader() {

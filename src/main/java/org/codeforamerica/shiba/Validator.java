@@ -6,7 +6,7 @@ import org.springframework.util.MultiValueMap;
 import java.util.List;
 import java.util.Optional;
 
-import static org.codeforamerica.shiba.InputUtils.getFormInputName;
+import static org.codeforamerica.shiba.Utils.getFormInputName;
 
 @Data
 public class Validator {

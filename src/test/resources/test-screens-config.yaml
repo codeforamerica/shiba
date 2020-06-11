@@ -1,0 +1,51 @@
+test-text-inputs:
+  firstPage:
+    pageTitle: first-page-title
+    nextPage: nextPage
+    inputs:
+      - name: someInputName
+        type: TEXT
+        promptMessageKey: prompt-message-key
+        helpMessageKey: help-message-key
+  nextPage:
+    pageTitle: next-page-title
+    previousPage: firstPage
+    inputs:
+      - name: someInputName
+        type: TEXT
+        promptMessageKey: prompt-message-key
+        helpMessageKey: help-message-key
+test-page-datasource:
+  firstPage:
+    pageTitle: first-page-title
+    nextPage: staticPageWithDatasource
+    inputs:
+      - name: someInputName
+        type: TEXT
+        promptMessageKey: prompt-message-key
+        helpMessageKey: help-message-key
+      - name: someRadioInputName
+        type: RADIO
+        promptMessageKey: prompt-message-key
+        helpMessageKey: help-message-key
+        options:
+          - value: VALUE_1
+            messageKey: radio-value-key-1
+          - value: VALUE_2
+            messageKey: radio-value-key-2
+  staticPageWithDatasource:
+    pageTitle: static-page-with-datasource-title
+    previousPage: firstPage
+    nextPage: staticPageWithDatasourceInputs
+    datasource:
+      screenName: firstPage
+  staticPageWithDatasourceInputs:
+    pageTitle: static-page-with-datasource-inputs-title
+    previousPage: staticPageWithDatasource
+    datasource:
+      screenName: firstPage
+      inputs:
+        - name: someRadioInputName
+          valueMessageKeys:
+            VALUE_1: display-value-key-1
+            VALUE_2: display-value-key-2

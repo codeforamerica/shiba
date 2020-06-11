@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.toMap;
-import static org.codeforamerica.shiba.InputUtils.getFormInputName;
+import static org.codeforamerica.shiba.Utils.getFormInputName;
 
 @EqualsAndHashCode(callSuper = true)
 @Value
@@ -42,6 +42,20 @@ public class FormData extends HashMap<String, InputData> {
                                 FormInput::getName,
                                 input -> new InputData()
                         )));
+    }
+
+    public static FormData create(PageDatasource datasource, Map<String, FormData> data) {
+        FormData formData = data.get(datasource.getScreenName());
+        if (datasource.getInputs().isEmpty()) {
+            return formData;
+        }
+        Map<String, InputData> inputDataMap = datasource.getInputs().stream()
+                .map(inputDatasource -> Map.entry(
+                        inputDatasource.getName(),
+                        formData.get(inputDatasource.getName())
+                                .withValueMessageKeys(inputDatasource.getValueMessageKeys())))
+                .collect(toMap(Entry::getKey, Entry::getValue));
+        return new FormData(inputDataMap);
     }
 
     Boolean isValid() {

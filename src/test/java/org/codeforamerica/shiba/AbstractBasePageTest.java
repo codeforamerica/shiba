@@ -29,7 +29,7 @@ import java.util.HashMap;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-@SpringBootTest(webEnvironment = RANDOM_PORT)
+@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"spring.main.allow-bean-definition-overriding=true"})
 @ExtendWith(SpringExtension.class)
 abstract class AbstractBasePageTest {
     protected RemoteWebDriver driver;
@@ -71,10 +71,14 @@ abstract class AbstractBasePageTest {
     }
 
     @SuppressWarnings("unused")
-    public static void takeSnapShot(WebDriver webdriver, String fileWithPath) throws Exception {
+    public static void takeSnapShot(WebDriver webdriver, String fileWithPath) {
         TakesScreenshot screenshot = ((TakesScreenshot) webdriver);
         Path sourceFile = screenshot.getScreenshotAs(OutputType.FILE).toPath();
         Path destinationFile = new File(fileWithPath).toPath();
-        Files.copy(sourceFile, destinationFile, StandardCopyOption.REPLACE_EXISTING);
+        try {
+            Files.copy(sourceFile, destinationFile, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

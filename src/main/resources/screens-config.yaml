@@ -75,9 +75,17 @@ screens:
           - value: CHILD_CARE
             messageKey: choose-programs.child-care-assistance
   howItWorks:
-    path: /how-it-works
     previousPage: choosePrograms
     nextPage: introBasicInfo
+    dataSource:
+      screenName: choosePrograms
+      inputs:
+        - name: programs
+          valueMessageKeys:
+            FOOD: how-it-works.food
+            CASH: how-it-works.cash
+            CHILD_CARE: how-it-works.child-care
+            EMERGENCY: how-it-works.emergency
   introBasicInfo:
     previousPage: howItWorks
     nextPage: personalInfo
@@ -202,6 +210,7 @@ screens:
   branchToMinimalFlow:
     previousPage: contactInfo
     nextPage: success
-    dataSource: personalInfo
+    dataSource:
+      screenName: personalInfo
   success:
     previousPage: branchToMinimalFlow

@@ -7,7 +7,7 @@
            th:if="${input.helpMessageKey != null}"
            th:text="#{${input.helpMessageKey}}"></p>
         <th:block th:each="option: ${input.options}"
-                  th:with="formInputName=${T(org.codeforamerica.shiba.InputUtils).getFormInputName(input.name)}">
+                  th:with="formInputName=${T(org.codeforamerica.shiba.Utils).getFormInputName(input.name)}">
             <label th:for="${option.value}" class="checkbox">
                 <input type="checkbox"
                        th:id="${option.value}"

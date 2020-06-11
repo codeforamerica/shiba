@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="radio-input (input, data)"
-          th:with="inputData=${data.get(input.name)},formInputName=${T(org.codeforamerica.shiba.InputUtils).getFormInputName(input.name)}"
+          th:with="inputData=${data.get(input.name)},formInputName=${T(org.codeforamerica.shiba.Utils).getFormInputName(input.name)}"
 >
     <div class="form-group" th:if="${!input.hasFollowUps()}">
         <div class="form-question" th:if="${input.promptMessageKey != null}" th:text="#{${input.promptMessageKey}}"></div>
