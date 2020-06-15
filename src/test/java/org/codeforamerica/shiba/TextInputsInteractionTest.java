@@ -21,7 +21,7 @@ public class TextInputsInteractionTest extends AbstractBasePageTest {
     private MessageSource messageSource;
 
     @TestConfiguration
-    @PropertySource(value = "classpath:test-screens-config.yaml", factory = YamlPropertySourceFactory.class)
+    @PropertySource(value = "classpath:test-pages-config.yaml", factory = YamlPropertySourceFactory.class)
     static class TestMessageSourceConfiguration {
         @Bean
         public MessageSource messageSource() {
@@ -30,8 +30,8 @@ public class TextInputsInteractionTest extends AbstractBasePageTest {
 
         @Bean
         @ConfigurationProperties(prefix = "test-text-inputs")
-        public Screens screens() {
-            return new Screens();
+        public PageConfiguration pageConfiguration() {
+            return new PageConfiguration();
         }
     }
 

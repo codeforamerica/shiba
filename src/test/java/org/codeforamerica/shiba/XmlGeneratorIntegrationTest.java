@@ -40,16 +40,16 @@ public class XmlGeneratorIntegrationTest {
     private Resource onlineApplicationSchema;
 
     @Autowired
-    private Screens screens;
+    private PageConfiguration pageConfiguration;
 
     @Test
     void shouldProduceAValidDocument() throws IOException, SAXException, ParserConfigurationException {
-        Map<String, FormData> data = screens.entrySet().stream()
+        Map<String, FormData> data = pageConfiguration.entrySet().stream()
                 .collect(toMap(Map.Entry::getKey, entry -> FormData.create(entry.getValue())));
-        List<ApplicationInput> applicationInputsWithoutData = ApplicationInputs.from(screens, data);
+        List<ApplicationInput> applicationInputsWithoutData = ApplicationInputs.from(pageConfiguration, data);
         List<ApplicationInput> applicationInputs = applicationInputsWithoutData.stream()
                 .map(input -> {
-                    FormInput formInput = screens.get(input.getGroupName()).getFlattenedInputs().stream()
+                    FormInput formInput = pageConfiguration.get(input.getGroupName()).getFlattenedInputs().stream()
                             .filter(screensInput -> screensInput.getName().equals(input.getName()))
                             .findFirst()
                             .orElseThrow();

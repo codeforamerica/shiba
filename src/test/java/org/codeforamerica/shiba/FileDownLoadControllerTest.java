@@ -24,7 +24,7 @@ class FileDownLoadControllerTest {
     MockMvc mockMvc;
 
     XmlGenerator xmlGenerator = mock(XmlGenerator.class);
-    Screens screens = new Screens();
+    PageConfiguration pageConfiguration = new PageConfiguration();
     Map<String, FormData> data = new HashMap<>();
     PdfGenerator pdfGenerator = mock(PdfGenerator.class);
 
@@ -32,7 +32,7 @@ class FileDownLoadControllerTest {
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(
                 new FileDownLoadController(
-                        screens,
+                        pageConfiguration,
                         data,
                         pdfGenerator,
                         xmlGenerator))
@@ -65,7 +65,7 @@ class FileDownLoadControllerTest {
 
         input2.followUps = List.of(input3);
         page.setInputs(List.of(input1, input2));
-        screens.put(screenName, page);
+        pageConfiguration.put(screenName, page);
 
         data.put(screenName, new FormData(Map.of(
                 input1Name, new InputData(Validation.NONE, input1Value),
@@ -132,7 +132,7 @@ class FileDownLoadControllerTest {
 
         input2.followUps = List.of(input3);
         page.setInputs(List.of(input1, input2));
-        screens.put(screenName, page);
+        pageConfiguration.put(screenName, page);
 
         data.put(screenName, new FormData(Map.of(
                 input1Name, new InputData(Validation.NONE, input1Value),

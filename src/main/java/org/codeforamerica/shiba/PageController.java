@@ -15,19 +15,19 @@ import java.util.Optional;
 @Controller
 public class PageController {
     private final Map<String, FormData> data;
-    private final Screens screens;
+    private final PageConfiguration pageConfiguration;
 
     public PageController(
-            Screens screens,
+            PageConfiguration pageConfiguration,
             Map<String, FormData> data
     ) {
         this.data = data;
-        this.screens = screens;
+        this.pageConfiguration = pageConfiguration;
     }
 
     @GetMapping("/pages/{pageName}")
     ModelAndView getFormPage(@PathVariable String pageName) {
-        Page page = screens.get(pageName);
+        Page page = pageConfiguration.get(pageName);
         if (page.getInputs().isEmpty()) {
             HashMap<String, Object> baseModel = new HashMap<>(Map.of("page", page));
             Optional.ofNullable(page.getDataSource())
@@ -47,7 +47,7 @@ public class PageController {
     ModelAndView postFormPage(
             @RequestBody(required = false) MultiValueMap<String, String> model,
             @PathVariable String pageName) {
-        Page page = screens.get(pageName);
+        Page page = pageConfiguration.get(pageName);
         FormData formData = FormData.create(page, model);
         data.put(pageName, formData);
 

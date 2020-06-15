@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ApplicationInputs {
-    static List<ApplicationInput> from(Screens screens, Map<String, FormData> data) {
-        return screens.entrySet().stream()
+    static List<ApplicationInput> from(PageConfiguration pageConfiguration, Map<String, FormData> data) {
+        return pageConfiguration.entrySet().stream()
                 .flatMap(entry -> entry.getValue().getFlattenedInputs().stream()
                         .map(input -> new AbstractMap.SimpleEntry<>(entry.getKey(), input)))
                 .map(entry -> {

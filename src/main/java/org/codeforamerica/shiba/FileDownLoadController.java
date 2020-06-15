@@ -12,18 +12,18 @@ import java.util.Map;
 
 @Controller
 public class FileDownLoadController {
-    private final Screens screens;
+    private final PageConfiguration pageConfiguration;
     private final Map<String, FormData> data;
     private final PdfGenerator pdfGenerator;
     private final XmlGenerator xmlGenerator;
 
     public FileDownLoadController(
-            Screens screens,
+            PageConfiguration pageConfiguration,
             Map<String, FormData> data,
             PdfGenerator pdfGenerator,
             XmlGenerator xmlGenerator
     ) {
-        this.screens = screens;
+        this.pageConfiguration = pageConfiguration;
         this.data = data;
         this.pdfGenerator = pdfGenerator;
         this.xmlGenerator = xmlGenerator;
@@ -31,7 +31,7 @@ public class FileDownLoadController {
 
     @GetMapping("/download")
     ResponseEntity<byte[]> downloadPdf() {
-        ApplicationFile applicationFile = pdfGenerator.generate(ApplicationInputs.from(screens, data));
+        ApplicationFile applicationFile = pdfGenerator.generate(ApplicationInputs.from(pageConfiguration, data));
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", applicationFile.getFileName()))
@@ -40,7 +40,7 @@ public class FileDownLoadController {
 
     @GetMapping("/download-xml")
     ResponseEntity<byte[]> downloadXml() {
-        ApplicationFile applicationFile = xmlGenerator.generate(ApplicationInputs.from(screens, data));
+        ApplicationFile applicationFile = xmlGenerator.generate(ApplicationInputs.from(pageConfiguration, data));
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", applicationFile.getFileName()))
