@@ -44,7 +44,7 @@ class FileDownLoadControllerTest {
     void shouldPassScreensToServiceToGeneratePdfFile() throws Exception {
         String screenName = "screen1";
 
-        Form form = new Form();
+        Page page = new Page();
         FormInput input1 = new FormInput();
         String input1Name = "input 1";
         input1.name = input1Name;
@@ -64,8 +64,8 @@ class FileDownLoadControllerTest {
         input3.type = FormInputType.TEXT;
 
         input2.followUps = List.of(input3);
-        form.setInputs(List.of(input1, input2));
-        screens.put(screenName, form);
+        page.setInputs(List.of(input1, input2));
+        screens.put(screenName, page);
 
         data.put(screenName, new FormData(Map.of(
                 input1Name, new InputData(Validation.NONE, input1Value),
@@ -111,7 +111,7 @@ class FileDownLoadControllerTest {
 
         String screenName = "screen1";
 
-        Form form = new Form();
+        Page page = new Page();
         FormInput input1 = new FormInput();
         String input1Name = "input 1";
         input1.name = input1Name;
@@ -131,8 +131,8 @@ class FileDownLoadControllerTest {
         input3.type = FormInputType.TEXT;
 
         input2.followUps = List.of(input3);
-        form.setInputs(List.of(input1, input2));
-        screens.put(screenName, form);
+        page.setInputs(List.of(input1, input2));
+        screens.put(screenName, page);
 
         data.put(screenName, new FormData(Map.of(
                 input1Name, new InputData(Validation.NONE, input1Value),

@@ -27,9 +27,9 @@ public class PageController {
 
     @GetMapping("/pages/{pageName}")
     ModelAndView getFormPage(@PathVariable String pageName) {
-        Form page = screens.get(pageName);
+        Page page = screens.get(pageName);
         if (page.getInputs().isEmpty()) {
-            HashMap<String, Object> baseModel = new HashMap<>(Map.of("form", page));
+            HashMap<String, Object> baseModel = new HashMap<>(Map.of("page", page));
             Optional.ofNullable(page.getDataSource())
                     .map(datasource -> FormData.create(datasource, data))
                     .ifPresent(baseModel::putAll);
@@ -38,7 +38,7 @@ public class PageController {
         }
         return new ModelAndView("formPage",
                 Map.of(
-                        "form", page,
+                        "page", page,
                         "data", data.getOrDefault(pageName, FormData.create(page)),
                         "postTo", pageName));
     }
@@ -47,16 +47,16 @@ public class PageController {
     ModelAndView postFormPage(
             @RequestBody(required = false) MultiValueMap<String, String> model,
             @PathVariable String pageName) {
-        Form form = screens.get(pageName);
-        FormData formData = FormData.create(form, model);
+        Page page = screens.get(pageName);
+        FormData formData = FormData.create(page, model);
         data.put(pageName, formData);
 
         if (formData.isValid()) {
-            return new ModelAndView(String.format("redirect:/pages/%s", form.getNextPage()));
+            return new ModelAndView(String.format("redirect:/pages/%s", page.getNextPage()));
         } else {
             return new ModelAndView("formPage",
                     Map.of(
-                            "form", form,
+                            "page", page,
                             "data", formData,
                             "postTo", pageName));
         }

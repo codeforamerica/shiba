@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Data
-public class Form {
+public class Page {
     public List<FormInput> inputs = List.of();
     private String pageTitle;
     private String headerKey;

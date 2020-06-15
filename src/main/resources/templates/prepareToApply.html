@@ -5,7 +5,7 @@
 <div class="page-wrapper">
     <section class="slab slab--white">
         <div class="grid">
-            <a th:replace="fragments/go-back :: goBackLink(${form.previousPage})"></a>
+            <a th:replace="fragments/go-back :: goBackLink(${page.previousPage})"></a>
             <div class="grid__item spacing-above-35">
                 <h2 th:text="#{prepare-to-apply.how-this-works}"></h2>
                 <p class="text-25">
@@ -22,7 +22,7 @@
                     <li th:text="#{prepare-to-apply.expenses}"></li>
                     <li th:text="#{prepare-to-apply.assets}"></li>
                 </ul>
-                <div th:replace="fragments/continue :: continue (${form.nextPage})"></div>
+                <div th:replace="fragments/continue :: continue (${page.nextPage})"></div>
                 <p class="text--small">
                     <i class="icon-lock_outline"></i>
                     <span th:text="#{prepare-to-apply.your-information-is-secure-and-will-be-handled-in-accordance-with-our}"></span>

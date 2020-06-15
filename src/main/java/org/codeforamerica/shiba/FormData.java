@@ -21,9 +21,9 @@ public class FormData extends HashMap<String, InputData> {
         super(inputDataMap);
     }
 
-    static FormData create(Form form, MultiValueMap<String, String> model) {
+    static FormData create(Page page, MultiValueMap<String, String> model) {
         return new FormData(
-                form.getFlattenedInputs().stream()
+                page.getFlattenedInputs().stream()
                         .collect(toMap(
                                 FormInput::getName,
                                 input -> {
@@ -35,9 +35,9 @@ public class FormData extends HashMap<String, InputData> {
                         )));
     }
 
-    static FormData create(Form form) {
+    static FormData create(Page page) {
         return new FormData(
-                form.getFlattenedInputs().stream()
+                page.getFlattenedInputs().stream()
                         .collect(toMap(
                                 FormInput::getName,
                                 input -> new InputData()

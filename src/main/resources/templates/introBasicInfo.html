@@ -5,7 +5,7 @@
 <div class="page-wrapper">
     <section class="slab slab--white">
         <div class="grid">
-            <a th:replace="fragments/go-back :: goBackLink(${form.previousPage})"></a>
+            <a th:replace="fragments/go-back :: goBackLink(${page.previousPage})"></a>
             <div class="grid__item spacing-above-35">
                 <p class="text--help text--centered spacing-below-10" th:text="#{intro-basic-info.step-one-of-five}"></p>
                 <h2 class="text--centered spacing-above-0" th:text="#{intro-basic-info.getting-to-know-you}"></h2>
@@ -18,7 +18,7 @@
                     <li th:text="#{intro-basic-info.living-situation}"></li>
                 </ol>
             </div>
-            <div th:replace="fragments/continue :: continue (${form.nextPage})"></div>
+            <div th:replace="fragments/continue :: continue (${page.nextPage})"></div>
         </div>
     </section>
 </div>
