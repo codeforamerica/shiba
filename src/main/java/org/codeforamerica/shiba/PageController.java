@@ -30,7 +30,7 @@ public class PageController {
         Page page = pageConfiguration.get(pageName);
         if (page.getInputs().isEmpty()) {
             HashMap<String, Object> baseModel = new HashMap<>(Map.of("page", page));
-            Optional.ofNullable(page.getDataSource())
+            Optional.ofNullable(page.getDatasource())
                     .map(datasource -> FormData.create(datasource, data))
                     .ifPresent(baseModel::putAll);
 

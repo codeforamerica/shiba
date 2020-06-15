@@ -33,7 +33,10 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @ExtendWith(SpringExtension.class)
 abstract class AbstractBasePageTest {
     protected RemoteWebDriver driver;
+
     protected Path path;
+
+    protected String baseUrl;
 
     @LocalServerPort
     protected String localServerPort;
@@ -56,6 +59,7 @@ abstract class AbstractBasePageTest {
 
     @BeforeEach
     void setUp() throws IOException {
+        baseUrl = String.format("http://localhost:%s", localServerPort);
         ChromeOptions options = new ChromeOptions();
         path = Files.createTempDirectory("");
         HashMap<String, Object> chromePrefs = new HashMap<>();

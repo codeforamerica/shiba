@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.pages.DatePart.*;
 
-public class PageInteractionTest extends AbstractBasePageTest {
+public class UserJourneyPageTest extends AbstractBasePageTest {
 
     private LandingPage landingPage;
 
@@ -20,7 +20,6 @@ public class PageInteractionTest extends AbstractBasePageTest {
     @BeforeEach
     void setUp() throws IOException {
         super.setUp();
-        String baseUrl = String.format("http://localhost:%s", localServerPort);
         driver.navigate().to(baseUrl + "/pages/landing");
         landingPage = new LandingPage(super.driver);
     }

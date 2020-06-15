@@ -4,35 +4,24 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.support.StaticMessageSource;
 
 import java.io.IOException;
 import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PageDatasourceInteractionTest extends AbstractBasePageTest {
+public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest {
     private final String staticPageWithDatasourceTitle = "staticPageWithDatasourceTitle";
 
     private final String staticPageWithDatasourceInputsTitle = "staticPageWithDatasourceInputsTitle";
 
-    @Autowired
-    private MessageSource messageSource;
-
     @TestConfiguration
     @PropertySource(value = "classpath:test-pages-config.yaml", factory = YamlPropertySourceFactory.class)
-    static class TestMessageSourceConfiguration {
-        @Bean
-        public MessageSource messageSource() {
-            return new StaticMessageSource();
-        }
-
+    static class TestPageConfiguration {
         @Bean
         @ConfigurationProperties(prefix = "test-page-datasource")
         public PageConfiguration pageConfiguration() {
@@ -40,16 +29,10 @@ public class PageDatasourceInteractionTest extends AbstractBasePageTest {
         }
     }
 
-    private StaticMessageSource staticMessageSource;
-
-    private String baseUrl;
-
     @Override
     @BeforeEach
     void setUp() throws IOException {
         super.setUp();
-        baseUrl = String.format("http://localhost:%s", localServerPort);
-        staticMessageSource = (StaticMessageSource) messageSource;
         staticMessageSource.addMessage("general.go-back", Locale.US, "Go Back");
         staticMessageSource.addMessage("general.continue", Locale.US, "Continue");
         staticMessageSource.addMessage("first-page-title", Locale.US, "firstPageTitle");

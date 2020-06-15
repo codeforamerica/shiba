@@ -14,7 +14,7 @@ public class Page {
     private String headerHelpMessageKey;
     private String nextPage;
     private String previousPage;
-    private PageDatasource dataSource;
+    private PageDatasource datasource;
 
     @SuppressWarnings("unused")
     public boolean hasHeader() {
