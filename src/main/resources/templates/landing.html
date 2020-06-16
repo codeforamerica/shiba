@@ -3,12 +3,12 @@
 <div th:replace="fragments/head :: head(#{landing.landing-page})"></div>
 <body class="locale-en spacing-below-250">
 <div class="page-wrapper">
-    <section class="slab">
+    <section class="slab spacing-above-35">
         <div class="grid">
             <div class="grid__item">
-                <h1 th:text="#{landing.header}"></h1>
-                <p class="text-25" th:text="#{landing.subheader}"></p>
-                <a class="button button--primary" th:href="'/pages/'+${page.nextPage}">
+                <h1 class="spacing-below-35" th:text="#{landing.header}"></h1>
+                <p class="text-25 spacing-below-35" th:text="#{landing.subheader}"></p>
+                <a class="button button--primary spacing-below-0" th:href="'/pages/'+${page.nextPage}">
                     <span th:text="#{landing.apply-now}"></span>
                     <i class="button__icon icon-arrow_forward"></i>
                 </a>
@@ -17,7 +17,7 @@
     </section>
     <section class="slab slab--white">
         <div class="grid">
-            <h2 th:text="#{landing.apply-to-these-programs}"></h2>
+            <h2 class="spacing-below-35" th:text="#{landing.apply-to-these-programs}"></h2>
             <div class="grid__item spacing-below-35">
                 <h3 class="spacing-below-10" th:text="#{landing.food-assistance-SNAP}"></h3>
                 <p class="form-card__body-text" th:text="#{landing.SNAP-helps-low-income-Minnesotans-get-the-food-they-need}"></p>
