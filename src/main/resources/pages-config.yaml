@@ -261,5 +261,14 @@ pages:
         options:
           - value: true
             messageKey: home-address.im-homeless-right-now
+      - name: smaeMailingAddress
+        type: RADIO
+        promptMessageKey: home-address.is-this-the-best-place-for-you-to-receive-mail
+        helpMessageKey: home-address.the-county-will-need-a-place-to-send-you-mail-for-the-next-3-months
+        options:
+          - value: true
+            messageKey: home-address.yes-send-mail-here
+          - value: false
+            messageKey: home-address.no-use-a-different-address-for-mail
   success:
     pageTitle: success.title
