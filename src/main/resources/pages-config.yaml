@@ -1,12 +1,13 @@
 pages:
   landing:
+    pageTitle: landing.title
     nextPage: prepareToApply
-    previousPage: landing
   prepareToApply:
+    pageTitle: prepare-to-apply.title
     previousPage: landing
     nextPage: languagePreferences
   languagePreferences:
-    pageTitle: language-preferences.language-preferences
+    pageTitle: language-preferences.title
     headerKey: language-preferences.language-preferences
     nextPage: choosePrograms
     previousPage: prepareToApply
@@ -54,7 +55,7 @@ pages:
           - value: false
             messageKey: general.inputs.no
   choosePrograms:
-    pageTitle: choose-programs.choose-programs
+    pageTitle: choose-programs.title
     nextPage: howItWorks
     previousPage: languagePreferences
     headerKey: choose-programs.what-do-you-need-help-with-today
@@ -75,6 +76,7 @@ pages:
           - value: CHILD_CARE
             messageKey: choose-programs.child-care-assistance
   howItWorks:
+    pageTitle: how-it-works.title
     previousPage: choosePrograms
     nextPage: introBasicInfo
     dataSource:
@@ -87,6 +89,7 @@ pages:
             CHILD_CARE: how-it-works.child-care
             EMERGENCY: how-it-works.emergency
   introBasicInfo:
+    pageTitle: intro-basic-info.title
     previousPage: howItWorks
     nextPage: personalInfo
   personalInfo:
@@ -208,9 +211,14 @@ pages:
           - value: EMAIL
             messageKey: contact-info.email-me
   branchToMinimalFlow:
+    pageTitle: branch-to-minimal-flow.title
     previousPage: contactInfo
-    nextPage: success
+    nextPage: weDoNotRecommendMinimalFlow
     dataSource:
       screenName: personalInfo
-  success:
+  weDoNotRecommendMinimalFlow:
+    pageTitle: we-do-not-recommend-minimal-flow.title
     previousPage: branchToMinimalFlow
+    nextPage: success
+  success:
+    pageTitle: success.title

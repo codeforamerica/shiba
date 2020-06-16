@@ -388,6 +388,26 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     @Test
+    void shouldNavigateToWeDoNotRecommendMinimalFlowPage() {
+        ChooseProgramsPage chooseProgramPage = landingPage
+                .clickPrimaryButton()
+                .clickPrimaryButton()
+                .clickPrimaryButton();
+        chooseProgramPage.chooseProgram("Emergency assistance");
+        HowItWorksPage howItWorksPage = chooseProgramPage.clickPrimaryButton();
+        PersonalInfoPage personalInfoPage = howItWorksPage.clickPrimaryButton().clickPrimaryButton();
+        personalInfoPage.enterFirstName("defaultFirstName");
+        personalInfoPage.enterLastName("defaultLastName");
+
+        ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
+        contactInfoPage.enterPhoneNumber("123");
+
+        ThanksPage thanksPage = contactInfoPage.clickPrimaryButton();
+        WeDoNotRecommendMinimalFlowPage weDoNotRecommendMinimalFlowPage = thanksPage.clickSubtleLink();
+        assertThat(weDoNotRecommendMinimalFlowPage.getTitle()).isEqualTo("We do not recommend minimal flow");
+    }
+
+    @Test
     void shouldDownloadPDFWhenClickDownloadMyReceipt() {
         ChooseProgramsPage chooseProgramPage = landingPage
                 .clickPrimaryButton()
@@ -401,7 +421,10 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         personalInfoPage.enterSSN("000000000");
         ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
         contactInfoPage.enterPhoneNumber("123");
-        SuccessPage successPage = contactInfoPage.clickPrimaryButton().clickSubtleLink();
+        SuccessPage successPage = contactInfoPage
+                .clickPrimaryButton()
+                .clickSubtleLink()
+                .clickSubtleLink();
 
         successPage.downloadReceipt();
         await().until(() -> path.resolve("DHS-5223.pdf").toFile().exists());
@@ -421,7 +444,10 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         personalInfoPage.enterSSN("000000000");
         ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
         contactInfoPage.enterPhoneNumber("123");
-        SuccessPage successPage = contactInfoPage.clickPrimaryButton().clickSubtleLink();
+        SuccessPage successPage = contactInfoPage
+                .clickPrimaryButton()
+                .clickSubtleLink()
+                .clickSubtleLink();
 
         successPage.downloadXML();
         await().until(() -> path.resolve("ApplyMN.xml").toFile().exists());

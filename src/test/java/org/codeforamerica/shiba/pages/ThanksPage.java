@@ -13,9 +13,9 @@ public class ThanksPage extends IntermediaryPage<ContactInfoPage, SuccessPage> {
         return new SuccessPage(driver);
     }
 
-    public SuccessPage clickSubtleLink() {
+    public WeDoNotRecommendMinimalFlowPage clickSubtleLink() {
         driver.findElement(By.className("link--subtle")).click();
-        return new SuccessPage(driver);
+        return new WeDoNotRecommendMinimalFlowPage(this, driver);
     }
 
 }
