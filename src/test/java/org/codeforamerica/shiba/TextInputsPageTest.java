@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TextInputsPageTest extends AbstractStaticMessageSourcePageTest {
     @TestConfiguration
     @PropertySource(value = "classpath:test-pages-config.yaml", factory = YamlPropertySourceFactory.class)
-    static class TestMessageSourceConfiguration {
+    static class TestPageConfiguration {
         @Bean
         @ConfigurationProperties(prefix = "test-text-inputs")
         public PageConfiguration pageConfiguration() {

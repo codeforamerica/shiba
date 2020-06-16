@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba;
 
 import lombok.Value;
+import lombok.With;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 import static java.util.Collections.emptyList;
 
 @Value
+@With
 public class InputData {
     @NotNull Boolean valid;
     @NotNull List<String> value;
@@ -37,13 +39,9 @@ public class InputData {
     }
 
     @SuppressWarnings("unused")
-    public List<String> getValueMessageKey() {
+    public List<String> getMessageKeysForValue() {
         return value.stream()
                 .map(value -> valueMessageKeys.getOrDefault(value, value))
                 .collect(Collectors.toList());
-    }
-
-    InputData withValueMessageKeys(@NotNull Map<String, String> valueMessageKeys) {
-        return new InputData(this.valid, this.value, valueMessageKeys);
     }
 }

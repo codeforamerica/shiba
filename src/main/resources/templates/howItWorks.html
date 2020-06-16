@@ -7,7 +7,7 @@
         <div class="grid">
             <a th:replace="fragments/go-back :: goBackLink(${page.previousPage})"></a>
             <div class="grid__item spacing-above-35">
-                <h2 th:text="|#{how-it-works.okay-lets-apply-for-help-with} ${T(org.codeforamerica.shiba.Utils).getTitleString(#messages.listMsg(programs.valueMessageKey))}.|"></h2>
+                <h2 th:text="|#{how-it-works.okay-lets-apply-for-help-with} ${T(org.codeforamerica.shiba.Utils).getTitleString(#messages.listMsg(programs.messageKeysForValue))}.|"></h2>
             </div>
             <p class="text-25" th:text="#{how-it-works.how-it-works}"></p>
             <h3 th:text="#{how-it-works.submit-an-application}"></h3>
