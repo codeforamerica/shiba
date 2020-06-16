@@ -49,3 +49,44 @@ test-page-datasource:
           valueMessageKeys:
             VALUE_1: display-value-key-1
             VALUE_2: display-value-key-2
+test-validation:
+  firstPage:
+    pageTitle: first-page-title
+    nextPage: nextPage
+    inputs:
+      - name: someInputName
+        type: TEXT
+        validator:
+          validation: NOT_BLANK
+        validationErrorMessageKey: error-message-key
+      - name: conditionalValidationWhenValueEquals
+        type: TEXT
+        validator:
+          validation: NOT_BLANK
+          condition:
+            input: someInputName
+            value: valueToTriggerCondition
+        validationErrorMessageKey: error-message-key
+  nextPage:
+    pageTitle: next-page-title
+    previousPage: firstPage
+    nextPage: lastPage
+    inputs:
+      - name: someCheckbox
+        type: CHECKBOX
+        options:
+          - value: VALUE_1
+            messageKey: checkbox-value-key-1
+      - name: conditionalValidationWhenValueIsNotPresent
+        type: TEXT
+        validator:
+          validation: NOT_BLANK
+          condition:
+            input: someCheckbox
+            matcher: NOT_PRESENT
+        validationErrorMessageKey: error-message-key
+  lastPage:
+    pageTitle: last-page-title
+    inputs:
+      - name: foo
+        type: TEXT

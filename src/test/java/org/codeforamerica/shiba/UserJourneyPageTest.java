@@ -225,24 +225,6 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         }
 
         @Test
-        void shouldStayOnThePageAndIncludeAnErrorWhenFirstNameIsBlank() {
-            page.enterFirstName(" ");
-            page.enterLastName("a");
-            page.clickPrimaryButton();
-            assertThat(page.getTitle()).isEqualTo("Personal Info");
-            assertThat(page.hasFirstNameError()).isTrue();
-        }
-
-        @Test
-        void shouldStayOnThePageAndIncludeAnErrorWhenLastNameIsBlank() {
-            page.enterFirstName("a");
-            page.enterLastName("  ");
-            page.clickPrimaryButton();
-            assertThat(page.getTitle()).isEqualTo("Personal Info");
-            assertThat(page.hasLastNameError()).isTrue();
-        }
-
-        @Test
         void shouldPreserveMaritalStatus() {
             String maritalStatus = "Never married";
             page.selectMaritalStatus(maritalStatus);
@@ -322,72 +304,6 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     @Test
-    void shouldFailValidationForContactInfo_whenEmailMeIsChecked_andEmailIsBlank() {
-        ChooseProgramsPage chooseProgramPage = landingPage
-                .clickPrimaryButton()
-                .clickPrimaryButton()
-                .clickPrimaryButton();
-        chooseProgramPage.chooseProgram("Emergency assistance");
-        HowItWorksPage howItWorksPage = chooseProgramPage.clickPrimaryButton();
-        PersonalInfoPage personalInfoPage = howItWorksPage.clickPrimaryButton().clickPrimaryButton();
-        personalInfoPage.enterFirstName("defaultFirstName");
-        personalInfoPage.enterLastName("defaultLastName");
-        personalInfoPage.enterSSN("000000000");
-
-        ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
-
-        contactInfoPage.enterPhoneNumber("123");
-        contactInfoPage.selectContactChoice("Email me");
-
-        contactInfoPage.clickPrimaryButton();
-        assertThat(contactInfoPage.getTitle()).isEqualTo("Contact Info");
-        assertThat(contactInfoPage.hasEmailError()).isTrue();
-    }
-
-    @Test
-    void shouldPassValidationForContactInfo_whenEmailMeIsNotChecked_andEmailIsBlank() {
-        ChooseProgramsPage chooseProgramPage = landingPage
-                .clickPrimaryButton()
-                .clickPrimaryButton()
-                .clickPrimaryButton();
-        chooseProgramPage.chooseProgram("Emergency assistance");
-        HowItWorksPage howItWorksPage = chooseProgramPage.clickPrimaryButton();
-        PersonalInfoPage personalInfoPage = howItWorksPage.clickPrimaryButton().clickPrimaryButton();
-        personalInfoPage.enterFirstName("defaultFirstName");
-        personalInfoPage.enterLastName("defaultLastName");
-        personalInfoPage.enterSSN("000000000");
-
-        ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
-
-        contactInfoPage.enterPhoneNumber("123");
-
-        SuccessPage successPage = contactInfoPage.clickPrimaryButton().clickPrimaryButton();
-        assertThat(successPage.getTitle()).isEqualTo("Thanks");
-    }
-
-    @Test
-    void shouldPassValidationForContactInfo_whenEmailMeIsChecked_andEmailIsNotBlank() {
-        ChooseProgramsPage chooseProgramPage = landingPage
-                .clickPrimaryButton()
-                .clickPrimaryButton()
-                .clickPrimaryButton();
-        chooseProgramPage.chooseProgram("Emergency assistance");
-        HowItWorksPage howItWorksPage = chooseProgramPage.clickPrimaryButton();
-        PersonalInfoPage personalInfoPage = howItWorksPage.clickPrimaryButton().clickPrimaryButton();
-        personalInfoPage.enterFirstName("defaultFirstName");
-        personalInfoPage.enterLastName("defaultLastName");
-        personalInfoPage.enterSSN("000000000");
-
-        ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
-        contactInfoPage.enterPhoneNumber("123");
-        contactInfoPage.enterEmail("something");
-        contactInfoPage.selectContactChoice("Email me");
-
-        ThanksPage thanksPage = contactInfoPage.clickPrimaryButton();
-        assertThat(thanksPage.getTitle()).isEqualTo("Thanks");
-    }
-
-    @Test
     void shouldNavigateToWeDoNotRecommendMinimalFlowPage() {
         ChooseProgramsPage chooseProgramPage = landingPage
                 .clickPrimaryButton()
@@ -408,6 +324,54 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     @Test
+    void shouldNavigateToHomeAddressPage() {
+        ChooseProgramsPage chooseProgramPage = landingPage
+                .clickPrimaryButton()
+                .clickPrimaryButton()
+                .clickPrimaryButton();
+        chooseProgramPage.chooseProgram("Emergency assistance");
+        HowItWorksPage howItWorksPage = chooseProgramPage.clickPrimaryButton();
+        PersonalInfoPage personalInfoPage = howItWorksPage.clickPrimaryButton().clickPrimaryButton();
+        personalInfoPage.enterFirstName("defaultFirstName");
+        personalInfoPage.enterLastName("defaultLastName");
+
+        ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
+        contactInfoPage.enterPhoneNumber("123");
+
+        HomeAddressPage homeAddressPage = contactInfoPage.clickPrimaryButton().clickSubtleLink().clickSubtleLink();
+
+        assertThat(homeAddressPage.getTitle()).isEqualTo("Home address");
+    }
+
+    @Test
+    void shouldNavigateToSuccessPageAfterCompletingHomeAddress() {
+        ChooseProgramsPage chooseProgramPage = landingPage
+                .clickPrimaryButton()
+                .clickPrimaryButton()
+                .clickPrimaryButton();
+        chooseProgramPage.chooseProgram("Emergency assistance");
+        HowItWorksPage howItWorksPage = chooseProgramPage.clickPrimaryButton();
+        PersonalInfoPage personalInfoPage = howItWorksPage.clickPrimaryButton().clickPrimaryButton();
+        personalInfoPage.enterFirstName("defaultFirstName");
+        personalInfoPage.enterLastName("defaultLastName");
+
+        ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
+        contactInfoPage.enterPhoneNumber("123");
+
+        HomeAddressPage homeAddressPage = contactInfoPage
+                .clickPrimaryButton()
+                .clickSubtleLink()
+                .clickSubtleLink();
+
+        homeAddressPage.enterInput("zipCode", "someZipCode");
+        homeAddressPage.enterInput("city", "someCity");
+        homeAddressPage.enterInput("streetAddress", "someStreetAddress");
+
+        SuccessPage successPage = homeAddressPage.clickPrimaryButton();
+        assertThat(successPage.getTitle()).isEqualTo("Success");
+    }
+
+    @Test
     void shouldDownloadPDFWhenClickDownloadMyReceipt() {
         ChooseProgramsPage chooseProgramPage = landingPage
                 .clickPrimaryButton()
@@ -421,10 +385,12 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         personalInfoPage.enterSSN("000000000");
         ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
         contactInfoPage.enterPhoneNumber("123");
-        SuccessPage successPage = contactInfoPage
+        HomeAddressPage homeAddressPage = contactInfoPage
                 .clickPrimaryButton()
                 .clickSubtleLink()
                 .clickSubtleLink();
+        homeAddressPage.checkImHomeless();
+        SuccessPage successPage = homeAddressPage.clickPrimaryButton();
 
         successPage.downloadReceipt();
         await().until(() -> path.resolve("DHS-5223.pdf").toFile().exists());
@@ -444,10 +410,12 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         personalInfoPage.enterSSN("000000000");
         ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
         contactInfoPage.enterPhoneNumber("123");
-        SuccessPage successPage = contactInfoPage
+        HomeAddressPage homeAddressPage = contactInfoPage
                 .clickPrimaryButton()
                 .clickSubtleLink()
                 .clickSubtleLink();
+        homeAddressPage.checkImHomeless();
+        SuccessPage successPage = homeAddressPage.clickPrimaryButton();
 
         successPage.downloadXML();
         await().until(() -> path.resolve("ApplyMN.xml").toFile().exists());

@@ -60,14 +60,6 @@ public class PersonalInfoPage extends IntermediaryPage<IntermediaryPage<HowItWor
         return lastNameInput.getAttribute("value");
     }
 
-    public boolean hasFirstNameError() {
-        return !driver.findElements(By.cssSelector("input[name^='firstName'] ~ p.text--error")).isEmpty();
-    }
-
-    public boolean hasLastNameError() {
-        return !driver.findElements(By.cssSelector("input[name^='lastName'] ~ p.text--error")).isEmpty();
-    }
-
     public void enterOtherName(String otherName) {
         otherNameInput.clear();
         otherNameInput.sendKeys(otherName);

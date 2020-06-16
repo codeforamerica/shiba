@@ -94,7 +94,7 @@ pages:
     nextPage: personalInfo
   personalInfo:
     pageTitle: personal-info.title
-    headerKey: intro-basic-info.getting-to-know-you
+    headerKey: personal-info.tell-us-about-yourself
     previousPage: introBasicInfo
     nextPage: contactInfo
     inputs:
@@ -219,6 +219,47 @@ pages:
   weDoNotRecommendMinimalFlow:
     pageTitle: we-do-not-recommend-minimal-flow.title
     previousPage: branchToMinimalFlow
+    nextPage: homeAddress
+  homeAddress:
+    headerKey: home-address.where-are-you-currently-living
+    pageTitle: home-address.title
+    previousPage: weDoNotRecommendMinimalFlow
     nextPage: success
+    inputs:
+      - name: zipCode
+        type: TEXT
+        promptMessageKey: home-address.what-is-the-zip-code
+        validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+        validator:
+          validation: NOT_BLANK
+          condition:
+            input: isHomeless
+            matcher: NOT_PRESENT
+      - name: city
+        type: TEXT
+        promptMessageKey: home-address.what-is-the-city
+        validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+        validator:
+          validation: NOT_BLANK
+          condition:
+            input: isHomeless
+            matcher: NOT_PRESENT
+      - name: streetAddress
+        type: TEXT
+        promptMessageKey: home-address.what-is-the-street-address
+        validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+        validator:
+          validation: NOT_BLANK
+          condition:
+            input: isHomeless
+            matcher: NOT_PRESENT
+      - name: apartmentNumber
+        type: TEXT
+        promptMessageKey: home-address.apartment-number
+      - name: isHomeless
+        type: CHECKBOX
+        options:
+          - value: true
+            messageKey: home-address.im-homeless-right-now
   success:
     pageTitle: success.title
