@@ -1,10 +1,12 @@
 package org.codeforamerica.shiba.pdf;
 
+import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import static org.apache.pdfbox.cos.COSName.YES;
 
 @Value
+@AllArgsConstructor
 public class BinaryPdfField implements PdfField {
     String name;
     String value;

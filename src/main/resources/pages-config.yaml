@@ -264,9 +264,9 @@ pages:
       - name: isHomeless
         type: CHECKBOX
         options:
-          - value: true
+          - value: homeless
             messageKey: home-address.im-homeless-right-now
-      - name: smaeMailingAddress
+      - name: sameMailingAddress
         type: RADIO
         promptMessageKey: home-address.is-this-the-best-place-for-you-to-receive-mail
         helpMessageKey: home-address.the-county-will-need-a-place-to-send-you-mail-for-the-next-3-months

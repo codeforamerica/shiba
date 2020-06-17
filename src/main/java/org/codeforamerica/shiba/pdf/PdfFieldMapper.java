@@ -1,7 +1,6 @@
 package org.codeforamerica.shiba.pdf;
 
 import org.codeforamerica.shiba.ApplicationInput;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
@@ -9,17 +8,18 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Component
 public class PdfFieldMapper {
     private final Map<String, String> pdfFieldMap;
     private final Set<String> valueExclusions;
+    private final Set<String> multiValueInputsToUseTheirValue;
 
     public PdfFieldMapper(
             Map<String, String> pdfFieldMap,
-            Set<String> valueExclusions
-    ) {
+            Set<String> valueExclusions,
+            Set<String> multiValueInputsToUseTheirValue) {
         this.pdfFieldMap = pdfFieldMap;
         this.valueExclusions = valueExclusions;
+        this.multiValueInputsToUseTheirValue = multiValueInputsToUseTheirValue;
     }
 
     public List<PdfField> map(List<ApplicationInput> applicationInputs) {
@@ -33,7 +33,11 @@ public class PdfFieldMapper {
                                 pdfFieldMap.get(String.join(".", groupName, input.getName())),
                                 String.join("/", input.getValue())));
                         case ENUMERATED_MULTI_VALUE -> input.getValue().stream()
-                                .map(value -> new BinaryPdfField(pdfFieldMap.get(String.join(".", groupName, input.getName(), value))));
+                                .map(value -> {
+                                    String pdfFieldName = pdfFieldMap.get(String.join(".", groupName, input.getName(), value));
+                                    return this.multiValueInputsToUseTheirValue.contains(input.getName()) ?
+                                            new BinaryPdfField(pdfFieldName, value) : new BinaryPdfField(pdfFieldName);
+                                });
                         default -> Stream.of(new SimplePdfField(
                                 pdfFieldMap.get(String.join(".", groupName, input.getName())),
                                 input.getValue().get(0)));

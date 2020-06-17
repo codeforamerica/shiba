@@ -21,3 +21,11 @@ caf:
         EMERGENCY: EMERGENCY
     contactInfo:
       phoneNumber: APPLICANT_PHONE_NUMBER
+    homeAddress:
+      zipCode: APPLICANT_HOME_ZIPCODE
+      city: APPLICANT_HOME_CITY
+      state: APPLICANT_HOME_STATE
+      streetAddress: APPLICANT_HOME_STREET_ADDRESS
+      apartmentNumber: APPLICANT_HOME_APT_NUMBER
+      isHomeless:
+        homeless: APPLICANT_HOMELESS

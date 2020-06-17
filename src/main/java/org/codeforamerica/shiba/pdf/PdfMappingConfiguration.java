@@ -21,7 +21,10 @@ public class PdfMappingConfiguration {
     }
 
     @Bean
-    public Set<String> valueExclusions() {
-        return Set.of("RATHER_NOT_SAY");
+    public PdfFieldMapper pdfFieldMapper(Map<String, String> pdfFieldMap) {
+        return new PdfFieldMapper(
+                pdfFieldMap,
+                Set.of("RATHER_NOT_SAY"),
+                Set.of("isHomeless"));
     }
 }
