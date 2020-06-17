@@ -11,6 +11,7 @@
         <input th:case="${T(org.codeforamerica.shiba.FormInputType).TEXT}"
                type="text"
                class="text-input form-width--name"
+               th:readonly="${input.readOnly}"
                th:id="${input.name}"
                th:value="${(!inputData.value.isEmpty()) ? inputData.value[0] : ''}"
                th:name="${formInputName}"

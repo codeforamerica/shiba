@@ -30,6 +30,10 @@ public class InputData {
         this(true, emptyList(), Map.of());
     }
 
+    InputData(@NotNull List<String> value) {
+        this(true, value, Map.of());
+    }
+
     private InputData(@NotNull Boolean valid,
                       @NotNull List<String> value,
                       @NotNull Map<String, String> valueMessageKeys) {

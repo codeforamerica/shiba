@@ -40,7 +40,9 @@ public class FormData extends HashMap<String, InputData> {
                 page.getFlattenedInputs().stream()
                         .collect(toMap(
                                 FormInput::getName,
-                                input -> new InputData()
+                                input -> Optional.ofNullable(input.getDefaultValue())
+                                        .map(value -> new InputData(List.of(value)))
+                                        .orElse(new InputData())
                         )));
     }
 

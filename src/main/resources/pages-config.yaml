@@ -244,6 +244,11 @@ pages:
           condition:
             input: isHomeless
             matcher: NOT_PRESENT
+      - name: state
+        type: TEXT
+        promptMessageKey: home-address.what-is-the-state
+        readOnly: true
+        defaultValue: MN
       - name: streetAddress
         type: TEXT
         promptMessageKey: home-address.what-is-the-street-address

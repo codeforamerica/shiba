@@ -7,6 +7,10 @@ test-text-inputs:
         type: TEXT
         promptMessageKey: prompt-message-key
         helpMessageKey: help-message-key
+      - name: uneditableInput
+        type: TEXT
+        readOnly: true
+        defaultValue: "default value"
   nextPage:
     pageTitle: next-page-title
     previousPage: firstPage
