@@ -10,7 +10,8 @@ test-text-inputs:
       - name: uneditableInput
         type: TEXT
         readOnly: true
-        defaultValue: "default value"
+        defaultValue:
+          value: "default value"
   nextPage:
     pageTitle: next-page-title
     previousPage: firstPage
@@ -46,6 +47,7 @@ test-page-datasource:
   staticPageWithDatasourceInputs:
     pageTitle: static-page-with-datasource-inputs-title
     previousPage: staticPageWithDatasource
+    nextPage: lastPage
     datasource:
       screenName: firstPage
       inputs:
@@ -53,6 +55,17 @@ test-page-datasource:
           valueMessageKeys:
             VALUE_1: display-value-key-1
             VALUE_2: display-value-key-2
+  lastPage:
+    pageTitle: last-page-title
+    previousPage: staticPageWithDatasourceInputs
+    inputs:
+      - name: someOtherInputName
+        type: TEXT
+        defaultValue:
+          type: DATASOURCE_REFERENCE
+          value: someInputName
+    datasource:
+      screenName: firstPage
 test-validation:
   firstPage:
     pageTitle: first-page-title

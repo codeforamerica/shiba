@@ -367,7 +367,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         homeAddressPage.enterInput("city", "someCity");
         homeAddressPage.enterInput("streetAddress", "someStreetAddress");
 
-        SuccessPage successPage = homeAddressPage.clickPrimaryButton();
+        SuccessPage successPage = homeAddressPage.clickPrimaryButton().clickPrimaryButton();
         assertThat(successPage.getTitle()).isEqualTo("Success");
     }
 
@@ -389,8 +389,10 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
                 .clickPrimaryButton()
                 .clickSubtleLink()
                 .clickSubtleLink();
-        homeAddressPage.checkImHomeless();
-        SuccessPage successPage = homeAddressPage.clickPrimaryButton();
+        homeAddressPage.enterInput("zipCode", "someZipCode");
+        homeAddressPage.enterInput("city", "someCity");
+        homeAddressPage.enterInput("streetAddress", "someStreetAddress");
+        SuccessPage successPage = homeAddressPage.clickPrimaryButton().clickPrimaryButton();
 
         successPage.downloadReceipt();
         await().until(() -> path.resolve("DHS-5223.pdf").toFile().exists());
@@ -414,8 +416,10 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
                 .clickPrimaryButton()
                 .clickSubtleLink()
                 .clickSubtleLink();
-        homeAddressPage.checkImHomeless();
-        SuccessPage successPage = homeAddressPage.clickPrimaryButton();
+        homeAddressPage.enterInput("zipCode", "someZipCode");
+        homeAddressPage.enterInput("city", "someCity");
+        homeAddressPage.enterInput("streetAddress", "someStreetAddress");
+        SuccessPage successPage = homeAddressPage.clickPrimaryButton().clickPrimaryButton();
 
         successPage.downloadXML();
         await().until(() -> path.resolve("ApplyMN.xml").toFile().exists());

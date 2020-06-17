@@ -36,10 +36,13 @@ public class PageController {
 
             return new ModelAndView(pageName, baseModel);
         }
+        FormData defaultFormData = Optional.ofNullable(page.getDatasource())
+                .map(datasource -> FormData.create(page, datasource, data))
+                .orElse(FormData.create(page));
         return new ModelAndView("formPage",
                 Map.of(
                         "page", page,
-                        "data", data.getOrDefault(pageName, FormData.create(page)),
+                        "data", data.getOrDefault(pageName, defaultFormData),
                         "postTo", pageName));
     }
 

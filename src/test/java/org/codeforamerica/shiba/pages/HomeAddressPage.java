@@ -4,14 +4,14 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-public class HomeAddressPage extends IntermediaryPage<WeDoNotRecommendMinimalFlowPage,SuccessPage> {
+public class HomeAddressPage extends IntermediaryPage<WeDoNotRecommendMinimalFlowPage,MailingAddressPage> {
     public HomeAddressPage(WeDoNotRecommendMinimalFlowPage weDoNotRecommendMinimalFlowPage, RemoteWebDriver driver) {
         super(weDoNotRecommendMinimalFlowPage, driver);
     }
 
     @Override
-    public SuccessPage getNextPage() {
-        return new SuccessPage(driver);
+    public MailingAddressPage getNextPage() {
+        return new MailingAddressPage(this, driver);
     }
 
     public void checkImHomeless() {

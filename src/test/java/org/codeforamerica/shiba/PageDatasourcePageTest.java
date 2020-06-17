@@ -19,6 +19,8 @@ public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest 
 
     private final String staticPageWithDatasourceInputsTitle = "staticPageWithDatasourceInputsTitle";
 
+    private final String finalPageTitle = "final page";
+
     @TestConfiguration
     @PropertySource(value = "classpath:test-pages-config.yaml", factory = YamlPropertySourceFactory.class)
     static class TestPageConfiguration {
@@ -38,6 +40,7 @@ public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest 
         staticMessageSource.addMessage("first-page-title", Locale.US, "firstPageTitle");
         staticMessageSource.addMessage("static-page-with-datasource-title", Locale.US, staticPageWithDatasourceTitle);
         staticMessageSource.addMessage("static-page-with-datasource-inputs-title", Locale.US, staticPageWithDatasourceInputsTitle);
+        staticMessageSource.addMessage("last-page-title", Locale.US, finalPageTitle);
     }
 
     @Test
@@ -75,5 +78,18 @@ public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest 
         assertThat(driver.getTitle()).isEqualTo(staticPageWithDatasourceInputsTitle);
 
         assertThat(driver.findElement(By.xpath(String.format("//*[text() = '%s']", radioValueDisplayMessage)))).isNotNull();
+    }
+
+    @Test
+    void shouldPrepopulateFieldWithDefaultValue() {
+        driver.navigate().to(baseUrl + "/pages/firstPage");
+        String sourceValue = "some value";
+        driver.findElement(By.cssSelector("input[name^='someInputName']")).sendKeys(sourceValue);
+        driver.findElement(By.cssSelector("button")).click();
+        driver.findElement(By.partialLinkText("Continue")).click();
+        driver.findElement(By.partialLinkText("Continue")).click();
+
+        assertThat(driver.getTitle()).isEqualTo(finalPageTitle);
+        assertThat(driver.findElement(By.cssSelector("input[name^='someOtherInputName'")).getAttribute("value")).isEqualTo(sourceValue);
     }
 }

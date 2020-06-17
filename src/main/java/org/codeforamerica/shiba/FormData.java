@@ -41,9 +41,26 @@ public class FormData extends HashMap<String, InputData> {
                         .collect(toMap(
                                 FormInput::getName,
                                 input -> Optional.ofNullable(input.getDefaultValue())
-                                        .map(value -> new InputData(List.of(value)))
+                                        .map(defaultValue -> new InputData(List.of(defaultValue.getValue())))
                                         .orElse(new InputData())
                         )));
+    }
+
+    public static FormData create(Page page, PageDatasource datasource, Map<String, FormData> data) {
+        Map<String, InputData> inputDataMap = page.getFlattenedInputs().stream()
+                .collect(toMap(
+                        FormInput::getName,
+                        input -> Optional.ofNullable(input.getDefaultValue())
+                                .map(defaultValue -> switch (defaultValue.getType()) {
+                                    case LITERAL -> new InputData(List.of(defaultValue.getValue()));
+                                    case DATASOURCE_REFERENCE -> {
+                                        FormData formData = data.get(datasource.getScreenName());
+                                        yield new InputData(formData.get(defaultValue.getValue()).getValue());
+                                    }
+                                })
+                                .orElse(new InputData())
+                ));
+        return new FormData(inputDataMap);
     }
 
     public static FormData create(PageDatasource datasource, Map<String, FormData> data) {
