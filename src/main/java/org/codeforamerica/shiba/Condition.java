@@ -9,7 +9,7 @@ import java.util.Optional;
 import static org.codeforamerica.shiba.Utils.getFormInputName;
 
 @Data
-public class ValidationCondition {
+public class Condition {
     String input;
     String value;
     ValidationMatcher matcher = ValidationMatcher.CONTAINS;
@@ -20,4 +20,12 @@ public class ValidationCondition {
                 .orElse(List.of());
         return this.matcher.matches(inputValue, value);
     }
+
+    public Boolean appliesTo(FormData formData) {
+        List<String> inputValue = Optional.ofNullable(formData)
+                .map(modelMap -> modelMap.get(input).getValue())
+                .orElse(List.of());
+        return this.matcher.matches(inputValue, value);
+    }
+
 }

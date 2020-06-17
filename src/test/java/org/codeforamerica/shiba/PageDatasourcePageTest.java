@@ -16,9 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest {
     private final String staticPageWithDatasourceTitle = "staticPageWithDatasourceTitle";
-
     private final String staticPageWithDatasourceInputsTitle = "staticPageWithDatasourceInputsTitle";
-
     private final String finalPageTitle = "final page";
 
     @TestConfiguration
@@ -91,5 +89,48 @@ public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest 
 
         assertThat(driver.getTitle()).isEqualTo(finalPageTitle);
         assertThat(driver.findElement(By.cssSelector("input[name^='someOtherInputName'")).getAttribute("value")).isEqualTo(sourceValue);
+    }
+
+    @Test
+    void shouldNotPrepopulateFieldWithDefaultValue_whenConditionIsFalse() {
+        staticMessageSource.addMessage("radio-value-key-2", Locale.US, "RADIO 2");
+
+        driver.navigate().to(baseUrl + "/pages/firstPage");
+        driver.findElement(By.cssSelector("input[name^='someInputName']")).sendKeys("ignored");
+
+        WebElement radioToClick = driver.findElements(By.cssSelector("span")).stream()
+                .filter(webElement -> webElement.getText().equals("RADIO 2"))
+                .findFirst()
+                .orElseThrow();
+        radioToClick.click();
+
+        driver.findElement(By.cssSelector("button")).click();
+        driver.findElement(By.partialLinkText("Continue")).click();
+        driver.findElement(By.partialLinkText("Continue")).click();
+
+        assertThat(driver.getTitle()).isEqualTo(finalPageTitle);
+        assertThat(driver.findElement(By.cssSelector("input[name^='conditionalPrepopulate'")).getAttribute("value")).isBlank();
+    }
+
+    @Test
+    void shouldNotPrepopulateFieldWithDefaultValue_whenConditionIsTrue() {
+        staticMessageSource.addMessage("radio-value-key-1", Locale.US, "RADIO 1");
+
+        driver.navigate().to(baseUrl + "/pages/firstPage");
+        String expectedValue = "some value";
+        driver.findElement(By.cssSelector("input[name^='someInputName']")).sendKeys(expectedValue);
+
+        WebElement radioToClick = driver.findElements(By.cssSelector("span")).stream()
+                .filter(webElement -> webElement.getText().equals("RADIO 1"))
+                .findFirst()
+                .orElseThrow();
+        radioToClick.click();
+
+        driver.findElement(By.cssSelector("button")).click();
+        driver.findElement(By.partialLinkText("Continue")).click();
+        driver.findElement(By.partialLinkText("Continue")).click();
+
+        assertThat(driver.getTitle()).isEqualTo(finalPageTitle);
+        assertThat(driver.findElement(By.cssSelector("input[name^='conditionalPrepopulate'")).getAttribute("value")).isEqualTo(expectedValue);
     }
 }

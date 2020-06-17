@@ -366,6 +366,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         homeAddressPage.enterInput("zipCode", "someZipCode");
         homeAddressPage.enterInput("city", "someCity");
         homeAddressPage.enterInput("streetAddress", "someStreetAddress");
+        homeAddressPage.selectMailingAddressIsTheSame();
 
         SuccessPage successPage = homeAddressPage.clickPrimaryButton().clickPrimaryButton();
         assertThat(successPage.getTitle()).isEqualTo("Success");
@@ -392,6 +393,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         homeAddressPage.enterInput("zipCode", "someZipCode");
         homeAddressPage.enterInput("city", "someCity");
         homeAddressPage.enterInput("streetAddress", "someStreetAddress");
+        homeAddressPage.selectMailingAddressIsTheSame();
+
         SuccessPage successPage = homeAddressPage.clickPrimaryButton().clickPrimaryButton();
 
         successPage.downloadReceipt();
@@ -419,6 +422,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         homeAddressPage.enterInput("zipCode", "someZipCode");
         homeAddressPage.enterInput("city", "someCity");
         homeAddressPage.enterInput("streetAddress", "someStreetAddress");
+        homeAddressPage.selectMailingAddressIsTheSame();
+
         SuccessPage successPage = homeAddressPage.clickPrimaryButton().clickPrimaryButton();
 
         successPage.downloadXML();

@@ -8,11 +8,11 @@ import java.util.Optional;
 @Data
 public class Validator {
     Validation validation = Validation.NONE;
-    ValidationCondition condition;
+    Condition condition;
 
     Validation validationFor(MultiValueMap<String, String> model) {
         boolean applyValidation = Optional.ofNullable(this.condition)
-                .map(nonNullCondition -> nonNullCondition.appliesTo(model))
+                .map(condition -> condition.appliesTo(model))
                 .orElse(true);
         return applyValidation ? validation : Validation.NONE;
     }

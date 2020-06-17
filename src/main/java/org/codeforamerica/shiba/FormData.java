@@ -55,7 +55,9 @@ public class FormData extends HashMap<String, InputData> {
                                     case LITERAL -> new InputData(List.of(defaultValue.getValue()));
                                     case DATASOURCE_REFERENCE -> {
                                         FormData formData = data.get(datasource.getScreenName());
-                                        yield new InputData(formData.get(defaultValue.getValue()).getValue());
+                                        yield defaultValue.conditionAppliesTo(formData) ?
+                                                new InputData(formData.get(defaultValue.getValue()).getValue()) :
+                                                new InputData();
                                     }
                                 })
                                 .orElse(new InputData())

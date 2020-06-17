@@ -64,6 +64,15 @@ test-page-datasource:
         defaultValue:
           type: DATASOURCE_REFERENCE
           value: someInputName
+      - name: conditionalPrepopulate
+        type: TEXT
+        defaultValue:
+          type: DATASOURCE_REFERENCE
+          value: someInputName
+          condition:
+            input: someRadioInputName
+            value: VALUE_1
+            matcher: CONTAINS
     datasource:
       screenName: firstPage
 test-validation:
