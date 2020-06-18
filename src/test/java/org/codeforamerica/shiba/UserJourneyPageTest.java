@@ -363,7 +363,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
                 .clickSubtleLink()
                 .clickSubtleLink();
 
-        homeAddressPage.enterInput("zipCode", "someZipCode");
+        homeAddressPage.enterInput("zipCode", "12345");
         homeAddressPage.enterInput("city", "someCity");
         homeAddressPage.enterInput("streetAddress", "someStreetAddress");
         homeAddressPage.selectMailingAddressIsTheSame();
@@ -390,7 +390,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
                 .clickPrimaryButton()
                 .clickSubtleLink()
                 .clickSubtleLink();
-        homeAddressPage.enterInput("zipCode", "someZipCode");
+        homeAddressPage.enterInput("zipCode", "12345");
         homeAddressPage.enterInput("city", "someCity");
         homeAddressPage.enterInput("streetAddress", "someStreetAddress");
         homeAddressPage.selectMailingAddressIsTheSame();
@@ -419,7 +419,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
                 .clickPrimaryButton()
                 .clickSubtleLink()
                 .clickSubtleLink();
-        homeAddressPage.enterInput("zipCode", "someZipCode");
+        homeAddressPage.enterInput("zipCode", "12345");
         homeAddressPage.enterInput("city", "someCity");
         homeAddressPage.enterInput("streetAddress", "someStreetAddress");
         homeAddressPage.selectMailingAddressIsTheSame();

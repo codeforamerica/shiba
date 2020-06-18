@@ -231,7 +231,7 @@ pages:
         promptMessageKey: home-address.what-is-the-zip-code
         validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
         validator:
-          validation: NOT_BLANK
+          validation: ZIPCODE
           condition:
             input: isHomeless
             matcher: NOT_PRESENT
@@ -294,7 +294,7 @@ pages:
             matcher: CONTAINS
         validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
         validator:
-          validation: NOT_BLANK
+          validation: ZIPCODE
       - name: city
         type: TEXT
         promptMessageKey: mailing-address.what-is-the-city

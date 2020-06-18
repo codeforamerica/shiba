@@ -111,6 +111,15 @@ test-validation:
             input: someCheckbox
             matcher: NOT_PRESENT
         validationErrorMessageKey: error-message-key
+  zipcodePage:
+    nextPage: lastPage
+    pageTitle: zip-code-page-title
+    inputs:
+      - name: zipCodeInput
+        type: TEXT
+        validator:
+          validation: ZIPCODE
+        validationErrorMessageKey: error-message-key
   lastPage:
     pageTitle: last-page-title
     inputs:

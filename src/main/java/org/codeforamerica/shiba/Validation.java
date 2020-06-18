@@ -14,7 +14,8 @@ public enum Validation {
     SSN(strings -> List.of(0, 9).contains(String.join("", strings).length())),
     DATE(strings ->
             String.join("", strings).isBlank() ||
-            GenericValidator.isDate(String.join("/", strings), "MM/dd/yyyy", true));
+            GenericValidator.isDate(String.join("/", strings), "MM/dd/yyyy", true)),
+    ZIPCODE(strings -> String.join("", strings).length() == 5);
 
     private final Predicate<List<String>> rule;
 

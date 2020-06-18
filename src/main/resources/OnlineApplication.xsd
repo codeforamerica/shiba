@@ -2557,12 +2557,12 @@
 			<xsd:documentation>State name/code</xsd:documentation>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="StateCode" type="xsd:string" minOccurs="0">
+			<xsd:element name="StateCode" type="model:StateCodeType" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>see model:StateCodeType</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="StateName" type="xsd:string" minOccurs="0">
+			<xsd:element name="StateName" type="model:StateNameType" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>see model:StateNameType</xsd:documentation>
 				</xsd:annotation>

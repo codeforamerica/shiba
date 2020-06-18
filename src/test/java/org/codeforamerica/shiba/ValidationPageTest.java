@@ -19,6 +19,8 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest{
     private final String errorMessage = "error message";
     private final String nextPageTitle = "next Page Title";
     private final String lastPageTitle = "last page title";
+    private final String firstPageTitle = "first Page Title";
+    private final String zipcodePageTitle = "zip code Page Title";
 
     @TestConfiguration
     @PropertySource(value = "classpath:test-pages-config.yaml", factory = YamlPropertySourceFactory.class)
@@ -34,10 +36,11 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest{
     @BeforeEach
     void setUp() throws IOException {
         super.setUp();
-        staticMessageSource.addMessage("first-page-title", Locale.US, "firstPageTitle");
+        staticMessageSource.addMessage("first-page-title", Locale.US, firstPageTitle);
         staticMessageSource.addMessage("next-page-title", Locale.US, nextPageTitle);
         staticMessageSource.addMessage("last-page-title", Locale.US, lastPageTitle);
         staticMessageSource.addMessage("error-message-key", Locale.US, errorMessage);
+        staticMessageSource.addMessage("zip-code-page-title", Locale.US, zipcodePageTitle);
     }
 
     @Test
@@ -45,7 +48,7 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest{
         driver.navigate().to(baseUrl + "/pages/firstPage");
         driver.findElement(By.cssSelector("button")).click();
 
-        assertThat(driver.getTitle()).isEqualTo("firstPageTitle");
+        assertThat(driver.getTitle()).isEqualTo(firstPageTitle);
     }
 
     @Test
@@ -80,7 +83,7 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest{
         driver.findElement(By.cssSelector("input[name^='someInputName']")).sendKeys("valueToTriggerCondition");
         driver.findElement(By.cssSelector("button")).click();
 
-        assertThat(driver.getTitle()).isEqualTo("firstPageTitle");
+        assertThat(driver.getTitle()).isEqualTo(firstPageTitle);
         assertThat(getInputError("conditionalValidationWhenValueEquals")).isNotNull();
     }
 
@@ -105,6 +108,29 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest{
 
         assertThat(driver.getTitle()).isEqualTo(nextPageTitle);
         driver.findElement(By.cssSelector("input[name^='someCheckbox']")).click();
+        driver.findElement(By.cssSelector("button")).click();
+
+        assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
+    }
+
+    @Test
+    void shouldPassValidationForZipCodeWhenValueIsExactlyFiveCharacters() {
+        driver.navigate().to(baseUrl + "/pages/zipcodePage");
+        driver.findElement(By.cssSelector("input[name^='zipCodeInput']")).sendKeys("123456");
+        driver.findElement(By.cssSelector("button")).click();
+
+        assertThat(driver.getTitle()).isEqualTo(zipcodePageTitle);
+        assertThat(getInputError("zipCodeInput")).isNotNull();
+
+        driver.findElement(By.cssSelector("input[name^='zipCodeInput']")).clear();
+        driver.findElement(By.cssSelector("input[name^='zipCodeInput']")).sendKeys("1234");
+        driver.findElement(By.cssSelector("button")).click();
+
+        assertThat(driver.getTitle()).isEqualTo(zipcodePageTitle);
+        assertThat(getInputError("zipCodeInput")).isNotNull();
+
+        driver.findElement(By.cssSelector("input[name^='zipCodeInput']")).clear();
+        driver.findElement(By.cssSelector("input[name^='zipCodeInput']")).sendKeys("12345");
         driver.findElement(By.cssSelector("button")).click();
 
         assertThat(driver.getTitle()).isEqualTo(lastPageTitle);

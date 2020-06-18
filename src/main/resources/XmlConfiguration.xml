@@ -1,9 +1,28 @@
 <onl:OnlineApplication xmlns:onl="http://dhs.state.mn.us/2011/03/01/OnlineApplication">
     <onl:ContactInfo>
+        <onl:HomelessInd>{{CONTACTINFO_HOMELESS}}</onl:HomelessInd>
         <onl:Person>
             <onl:FirstName>{{PERSONALINFO_FIRSTNAME}}</onl:FirstName>
             <onl:LastName>{{PERSONALINFO_LASTNAME}}</onl:LastName>
         </onl:Person>
+        <onl:Address>
+            <onl:Line>{{CONTACTINFO_HOME_STREET_ADDRESS}} {{CONTACTINFO_HOME_APARTMENT_NUMBER}}</onl:Line>
+            <onl:City>{{CONTACTINFO_HOME_CITY}}</onl:City>
+            <onl:State>
+                <onl:StateCode>MN</onl:StateCode>
+                <onl:StateName>Minnesota</onl:StateName>
+            </onl:State>
+            <onl:Zip5>{{CONTACTINFO_HOME_ZIPCODE}}</onl:Zip5>
+        </onl:Address>
+        <onl:MailingAddress>
+            <onl:Line>{{CONTACTINFO_MAILING_STREET_ADDRESS}} {{CONTACTINFO_MAILING_APARTMENT_NUMBER}}</onl:Line>
+            <onl:City>{{CONTACTINFO_MAILING_CITY}}</onl:City>
+            <onl:State>
+                <onl:StateCode>MN</onl:StateCode>
+                <onl:StateName>Minnesota</onl:StateName>
+            </onl:State>
+            <onl:Zip5>{{CONTACTINFO_MAILING_ZIPCODE}}</onl:Zip5>
+        </onl:MailingAddress>
         <onl:Phone>
             <onl:PhoneNumber>{{CONTACTINFO_PHONE}}</onl:PhoneNumber>
         </onl:Phone>
