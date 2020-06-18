@@ -25,8 +25,8 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest{
     static class TestPageConfiguration {
         @Bean
         @ConfigurationProperties(prefix = "test-validation")
-        public PageConfiguration pageConfiguration() {
-            return new PageConfiguration();
+        public PagesConfiguration pagesConfiguration() {
+            return new PagesConfiguration();
         }
     }
 

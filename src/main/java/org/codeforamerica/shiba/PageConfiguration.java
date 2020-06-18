@@ -1,13 +1,33 @@
 package org.codeforamerica.shiba;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import lombok.Data;
 
-import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-@Configuration
-@PropertySource(value = "classpath:pages-config.yaml", factory = YamlPropertySourceFactory.class)
-@ConfigurationProperties(prefix = "pages")
-public class PageConfiguration extends HashMap<String, Page> {
+@Data
+public class PageConfiguration {
+    public List<FormInput> inputs = List.of();
+    private String pageTitle;
+    private String headerKey;
+    private String headerHelpMessageKey;
+    private String nextPage;
+    private String previousPage;
+    private PageDatasource datasource;
+
+    @SuppressWarnings("unused")
+    public boolean hasHeader() {
+        return this.headerKey != null;
+    }
+
+    public List<FormInput> getFlattenedInputs() {
+        return this.inputs.stream()
+                .flatMap(formInput -> Stream.concat(Stream.of(formInput), formInput.followUps.stream()))
+                .collect(Collectors.toList());
+    }
+
+    boolean isStaticPage() {
+        return this.inputs.isEmpty();
+    }
 }

@@ -20,8 +20,8 @@ public class TextInputsPageTest extends AbstractStaticMessageSourcePageTest {
     static class TestPageConfiguration {
         @Bean
         @ConfigurationProperties(prefix = "test-text-inputs")
-        public PageConfiguration pageConfiguration() {
-            return new PageConfiguration();
+        public PagesConfiguration pagesConfiguration() {
+            return new PagesConfiguration();
         }
     }
 

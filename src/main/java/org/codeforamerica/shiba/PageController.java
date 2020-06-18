@@ -14,54 +14,52 @@ import java.util.Optional;
 
 @Controller
 public class PageController {
-    private final Map<String, FormData> data;
-    private final PageConfiguration pageConfiguration;
+    private final PagesData pagesData;
+    private final PagesConfiguration pagesConfiguration;
 
     public PageController(
-            PageConfiguration pageConfiguration,
-            Map<String, FormData> data
+            PagesConfiguration pagesConfiguration,
+            PagesData pagesData
     ) {
-        this.data = data;
-        this.pageConfiguration = pageConfiguration;
+        this.pagesData = pagesData;
+        this.pagesConfiguration = pagesConfiguration;
     }
 
     @GetMapping("/pages/{pageName}")
     ModelAndView getFormPage(@PathVariable String pageName) {
-        Page page = pageConfiguration.get(pageName);
-        if (page.getInputs().isEmpty()) {
-            HashMap<String, Object> baseModel = new HashMap<>(Map.of("page", page));
-            Optional.ofNullable(page.getDatasource())
-                    .map(datasource -> FormData.create(datasource, data))
-                    .ifPresent(baseModel::putAll);
+        PageConfiguration pageConfiguration = this.pagesConfiguration.get(pageName);
 
-            return new ModelAndView(pageName, baseModel);
+        if (pageConfiguration.isStaticPage()) {
+            HashMap<String, Object> model = new HashMap<>(Map.of("page", pageConfiguration));
+            Optional.ofNullable(pageConfiguration.getDatasource())
+                    .map(datasource -> FormData.getFormDataFrom(datasource, this.pagesData))
+                    .ifPresent(model::putAll);
+
+            return new ModelAndView(pageName, model);
+        } else {
+            return new ModelAndView("formPage",
+                    Map.of(
+                            "page", pageConfiguration,
+                            "data", pagesData.getPageOrDefault(pageName, pageConfiguration),
+                            "postTo", pageName));
         }
-        FormData defaultFormData = Optional.ofNullable(page.getDatasource())
-                .map(datasource -> FormData.create(page, datasource, data))
-                .orElse(FormData.create(page));
-        return new ModelAndView("formPage",
-                Map.of(
-                        "page", page,
-                        "data", data.getOrDefault(pageName, defaultFormData),
-                        "postTo", pageName));
     }
 
     @PostMapping("/pages/{pageName}")
     ModelAndView postFormPage(
             @RequestBody(required = false) MultiValueMap<String, String> model,
             @PathVariable String pageName) {
-        Page page = pageConfiguration.get(pageName);
-        FormData formData = FormData.create(page, model);
-        data.put(pageName, formData);
+        PageConfiguration page = pagesConfiguration.get(pageName);
+        FormData formData = FormData.fillOut(page, model);
 
-        if (formData.isValid()) {
-            return new ModelAndView(String.format("redirect:/pages/%s", page.getNextPage()));
-        } else {
-            return new ModelAndView("formPage",
-                    Map.of(
-                            "page", page,
-                            "data", formData,
-                            "postTo", pageName));
-        }
+        pagesData.putPage(pageName, formData);
+
+        return formData.isValid() ?
+                new ModelAndView(String.format("redirect:/pages/%s", page.getNextPage())) :
+                new ModelAndView("formPage", Map.of(
+                        "page", page,
+                        "data", formData,
+                        "postTo", pageName)
+                );
     }
 }

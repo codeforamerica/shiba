@@ -6,6 +6,6 @@ import java.util.List;
 
 @Data
 public class PageDatasource {
-    String screenName;
+    String pageName;
     List<InputDatasource> inputs = List.of();
 }

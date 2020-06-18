@@ -24,8 +24,8 @@ public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest 
     static class TestPageConfiguration {
         @Bean
         @ConfigurationProperties(prefix = "test-page-datasource")
-        public PageConfiguration pageConfiguration() {
-            return new PageConfiguration();
+        public PagesConfiguration pagesConfiguration() {
+            return new PagesConfiguration();
         }
     }
 

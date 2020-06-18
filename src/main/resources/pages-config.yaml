@@ -80,7 +80,7 @@ pages:
     previousPage: choosePrograms
     nextPage: introBasicInfo
     dataSource:
-      screenName: choosePrograms
+      pageName: choosePrograms
       inputs:
         - name: programs
           valueMessageKeys:
@@ -215,7 +215,7 @@ pages:
     previousPage: contactInfo
     nextPage: weDoNotRecommendMinimalFlow
     dataSource:
-      screenName: personalInfo
+      pageName: personalInfo
   weDoNotRecommendMinimalFlow:
     pageTitle: we-do-not-recommend-minimal-flow.title
     previousPage: branchToMinimalFlow
@@ -338,6 +338,6 @@ pages:
             value: true
             matcher: CONTAINS
     datasource:
-      screenName: homeAddress
+      pageName: homeAddress
   success:
     pageTitle: success.title

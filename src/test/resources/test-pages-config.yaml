@@ -43,13 +43,13 @@ test-page-datasource:
     previousPage: firstPage
     nextPage: staticPageWithDatasourceInputs
     datasource:
-      screenName: firstPage
+      pageName: firstPage
   staticPageWithDatasourceInputs:
     pageTitle: static-page-with-datasource-inputs-title
     previousPage: staticPageWithDatasource
     nextPage: lastPage
     datasource:
-      screenName: firstPage
+      pageName: firstPage
       inputs:
         - name: someRadioInputName
           valueMessageKeys:
@@ -74,7 +74,7 @@ test-page-datasource:
             value: VALUE_1
             matcher: CONTAINS
     datasource:
-      screenName: firstPage
+      pageName: firstPage
 test-validation:
   firstPage:
     pageTitle: first-page-title

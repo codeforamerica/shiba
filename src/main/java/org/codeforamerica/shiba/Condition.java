@@ -23,7 +23,7 @@ public class Condition {
 
     public Boolean appliesTo(FormData formData) {
         List<String> inputValue = Optional.ofNullable(formData)
-                .map(modelMap -> modelMap.get(input).getValue())
+                .map(nonNullFormData -> nonNullFormData.get(input).getValue())
                 .orElse(List.of());
         return this.matcher.matches(inputValue, value);
     }

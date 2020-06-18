@@ -2,17 +2,16 @@ package org.codeforamerica.shiba;
 
 import java.util.AbstractMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ApplicationInputs {
-    static List<ApplicationInput> from(PageConfiguration pageConfiguration, Map<String, FormData> data) {
-        return pageConfiguration.entrySet().stream()
+    static List<ApplicationInput> from(PagesConfiguration pagesConfiguration, PagesData data) {
+        return pagesConfiguration.entrySet().stream()
                 .flatMap(entry -> entry.getValue().getFlattenedInputs().stream()
                         .map(input -> new AbstractMap.SimpleEntry<>(entry.getKey(), input)))
                 .map(entry -> {
                     FormInput formInput = entry.getValue();
-                    InputData inputData = data.get(entry.getKey()).get(formInput.getName());
+                    InputData inputData = data.getPage(entry.getKey()).get(formInput.getName());
                     return new ApplicationInput(
                             entry.getKey(),
                             inputData.getValue(),

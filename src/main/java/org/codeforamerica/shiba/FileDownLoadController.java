@@ -8,22 +8,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.Map;
-
 @Controller
 public class FileDownLoadController {
-    private final PageConfiguration pageConfiguration;
-    private final Map<String, FormData> data;
+    private final PagesConfiguration pagesConfiguration;
+    private final PagesData data;
     private final PdfGenerator pdfGenerator;
     private final XmlGenerator xmlGenerator;
 
     public FileDownLoadController(
-            PageConfiguration pageConfiguration,
-            Map<String, FormData> data,
+            PagesConfiguration pagesConfiguration,
+            PagesData data,
             PdfGenerator pdfGenerator,
             XmlGenerator xmlGenerator
     ) {
-        this.pageConfiguration = pageConfiguration;
+        this.pagesConfiguration = pagesConfiguration;
         this.data = data;
         this.pdfGenerator = pdfGenerator;
         this.xmlGenerator = xmlGenerator;
@@ -31,7 +29,7 @@ public class FileDownLoadController {
 
     @GetMapping("/download")
     ResponseEntity<byte[]> downloadPdf() {
-        ApplicationFile applicationFile = pdfGenerator.generate(ApplicationInputs.from(pageConfiguration, data));
+        ApplicationFile applicationFile = pdfGenerator.generate(ApplicationInputs.from(pagesConfiguration, data));
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", applicationFile.getFileName()))
@@ -40,7 +38,7 @@ public class FileDownLoadController {
 
     @GetMapping("/download-xml")
     ResponseEntity<byte[]> downloadXml() {
-        ApplicationFile applicationFile = xmlGenerator.generate(ApplicationInputs.from(pageConfiguration, data));
+        ApplicationFile applicationFile = xmlGenerator.generate(ApplicationInputs.from(pagesConfiguration, data));
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", applicationFile.getFileName()))

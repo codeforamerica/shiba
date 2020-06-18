@@ -10,7 +10,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,15 +23,15 @@ class FileDownLoadControllerTest {
     MockMvc mockMvc;
 
     XmlGenerator xmlGenerator = mock(XmlGenerator.class);
-    PageConfiguration pageConfiguration = new PageConfiguration();
-    Map<String, FormData> data = new HashMap<>();
+    PagesConfiguration pagesConfiguration = new PagesConfiguration();
+    PagesData data = new PagesData();
     PdfGenerator pdfGenerator = mock(PdfGenerator.class);
 
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(
                 new FileDownLoadController(
-                        pageConfiguration,
+                        pagesConfiguration,
                         data,
                         pdfGenerator,
                         xmlGenerator))
@@ -42,9 +41,9 @@ class FileDownLoadControllerTest {
 
     @Test
     void shouldPassScreensToServiceToGeneratePdfFile() throws Exception {
-        String screenName = "screen1";
+        String pageName = "screen1";
 
-        Page page = new Page();
+        PageConfiguration page = new PageConfiguration();
         FormInput input1 = new FormInput();
         String input1Name = "input 1";
         input1.name = input1Name;
@@ -65,9 +64,9 @@ class FileDownLoadControllerTest {
 
         input2.followUps = List.of(input3);
         page.setInputs(List.of(input1, input2));
-        pageConfiguration.put(screenName, page);
+        pagesConfiguration.put(pageName, page);
 
-        data.put(screenName, new FormData(Map.of(
+        data.putPage(pageName, new FormData(Map.of(
                 input1Name, new InputData(Validation.NONE, input1Value),
                 input2Name, new InputData(Validation.NONE, input2Value),
                 input3Name, new InputData(Validation.NONE, input3Value)
@@ -80,9 +79,9 @@ class FileDownLoadControllerTest {
                 .andExpect(status().is2xxSuccessful());
 
         verify(pdfGenerator).generate(List.of(
-                new ApplicationInput(screenName, input1Value, input1Name, ApplicationInputType.SINGLE_VALUE),
-                new ApplicationInput(screenName, input2Value, input2Name, ApplicationInputType.SINGLE_VALUE),
-                new ApplicationInput(screenName, input3Value, input3Name, ApplicationInputType.SINGLE_VALUE)
+                new ApplicationInput(pageName, input1Value, input1Name, ApplicationInputType.SINGLE_VALUE),
+                new ApplicationInput(pageName, input2Value, input2Name, ApplicationInputType.SINGLE_VALUE),
+                new ApplicationInput(pageName, input3Value, input3Name, ApplicationInputType.SINGLE_VALUE)
         ));
     }
 
@@ -109,9 +108,9 @@ class FileDownLoadControllerTest {
         String fileName = "some.xml";
         when(xmlGenerator.generate(any())).thenReturn(new ApplicationFile(fileBytes, fileName));
 
-        String screenName = "screen1";
+        String pageName = "screen1";
 
-        Page page = new Page();
+        PageConfiguration page = new PageConfiguration();
         FormInput input1 = new FormInput();
         String input1Name = "input 1";
         input1.name = input1Name;
@@ -132,9 +131,9 @@ class FileDownLoadControllerTest {
 
         input2.followUps = List.of(input3);
         page.setInputs(List.of(input1, input2));
-        pageConfiguration.put(screenName, page);
+        pagesConfiguration.put(pageName, page);
 
-        data.put(screenName, new FormData(Map.of(
+        data.putPage(pageName, new FormData(Map.of(
                 input1Name, new InputData(Validation.NONE, input1Value),
                 input2Name, new InputData(Validation.NONE, input2Value),
                 input3Name, new InputData(Validation.NONE, input3Value)
@@ -148,9 +147,9 @@ class FileDownLoadControllerTest {
                 .andReturn();
 
         verify(xmlGenerator).generate(List.of(
-                new ApplicationInput(screenName, input1Value, input1Name, ApplicationInputType.SINGLE_VALUE),
-                new ApplicationInput(screenName, input2Value, input2Name, ApplicationInputType.SINGLE_VALUE),
-                new ApplicationInput(screenName, input3Value, input3Name, ApplicationInputType.SINGLE_VALUE)
+                new ApplicationInput(pageName, input1Value, input1Name, ApplicationInputType.SINGLE_VALUE),
+                new ApplicationInput(pageName, input2Value, input2Name, ApplicationInputType.SINGLE_VALUE),
+                new ApplicationInput(pageName, input3Value, input3Name, ApplicationInputType.SINGLE_VALUE)
         ));
         assertThat(result.getResponse().getContentAsByteArray()).isEqualTo(fileBytes);
     }

@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 import static java.util.stream.Collectors.toMap;
 import static org.codeforamerica.shiba.Utils.getFormInputName;
@@ -21,7 +22,7 @@ public class FormData extends HashMap<String, InputData> {
         super(inputDataMap);
     }
 
-    static FormData create(Page page, MultiValueMap<String, String> model) {
+    static FormData fillOut(PageConfiguration page, MultiValueMap<String, String> model) {
         return new FormData(
                 page.getFlattenedInputs().stream()
                         .collect(toMap(
@@ -35,38 +36,42 @@ public class FormData extends HashMap<String, InputData> {
                         )));
     }
 
-    static FormData create(Page page) {
+    static FormData initialize(PageConfiguration pageConfiguration, Function<DefaultValue, InputData> inputDataCreator) {
         return new FormData(
-                page.getFlattenedInputs().stream()
+                pageConfiguration.getFlattenedInputs().stream()
                         .collect(toMap(
                                 FormInput::getName,
                                 input -> Optional.ofNullable(input.getDefaultValue())
-                                        .map(defaultValue -> new InputData(List.of(defaultValue.getValue())))
+                                        .map(inputDataCreator)
                                         .orElse(new InputData())
                         )));
     }
 
-    public static FormData create(Page page, PageDatasource datasource, Map<String, FormData> data) {
-        Map<String, InputData> inputDataMap = page.getFlattenedInputs().stream()
-                .collect(toMap(
-                        FormInput::getName,
-                        input -> Optional.ofNullable(input.getDefaultValue())
-                                .map(defaultValue -> switch (defaultValue.getType()) {
-                                    case LITERAL -> new InputData(List.of(defaultValue.getValue()));
-                                    case DATASOURCE_REFERENCE -> {
-                                        FormData formData = data.get(datasource.getScreenName());
-                                        yield defaultValue.conditionAppliesTo(formData) ?
-                                                new InputData(formData.get(defaultValue.getValue()).getValue()) :
-                                                new InputData();
-                                    }
-                                })
-                                .orElse(new InputData())
-                ));
-        return new FormData(inputDataMap);
+    static Function<DefaultValue, InputData> literalInputDataCreator() {
+        return defaultValue -> new InputData(List.of(defaultValue.getValue()));
     }
 
-    public static FormData create(PageDatasource datasource, Map<String, FormData> data) {
-        FormData formData = data.get(datasource.getScreenName());
+    static Function<DefaultValue, InputData> datasourceInputDataCreator(PageDatasource datasource, PagesData pagesData) {
+        return defaultValue -> {
+            FormData formData = getFormDataFrom(datasource, pagesData);
+
+            List<String> inputValue = switch (defaultValue.getType()) {
+                case LITERAL -> List.of(defaultValue.getValue());
+                case DATASOURCE_REFERENCE -> Optional.ofNullable(formData.get(defaultValue.getValue()))
+                        .map(InputData::getValue)
+                        .orElseThrow(() -> new RuntimeException(
+                                String.format("Configuration mismatch! The desired datasource reference '%s' " +
+                                        "is not accessible.", defaultValue.getValue())));
+            };
+
+            return defaultValue.conditionAppliesTo(formData) ?
+                    new InputData(inputValue) :
+                    new InputData();
+        };
+    }
+
+    static FormData getFormDataFrom(PageDatasource datasource, PagesData pagesData) {
+        FormData formData = pagesData.getPage(datasource.getPageName());
         if (datasource.getInputs().isEmpty()) {
             return formData;
         }

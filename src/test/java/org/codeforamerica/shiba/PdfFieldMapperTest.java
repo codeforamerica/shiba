@@ -21,11 +21,11 @@ class PdfFieldMapperTest {
     void shouldMapSingleValueInputsToSimpleFields(ApplicationInputType applicationInputType) {
         String fieldName = "someName";
         String formInputName = "some-input";
-        String screenName = "some-screen";
-        Map<String, String> configMap = Map.of(screenName + "." + formInputName, fieldName);
+        String pageName = "some-screen";
+        Map<String, String> configMap = Map.of(pageName + "." + formInputName, fieldName);
 
         String stringValue = "some-string-value";
-        ApplicationInput applicationInput = new ApplicationInput(screenName, List.of(stringValue), formInputName, applicationInputType);
+        ApplicationInput applicationInput = new ApplicationInput(pageName, List.of(stringValue), formInputName, applicationInputType);
 
         PdfFieldMapper subject = new PdfFieldMapper(configMap, emptySet(), emptySet());
         List<PdfField> fields = subject.map(List.of(applicationInput));
@@ -37,11 +37,11 @@ class PdfFieldMapperTest {
     void shouldNotMapInputWhenValueIsExcludedFromPdf() {
         String fieldName = "someName";
         String formInputName = "some-input";
-        String screenName = "some-screen";
-        Map<String, String> configMap = Map.of(screenName + "." + formInputName, fieldName);
+        String pageName = "some-screen";
+        Map<String, String> configMap = Map.of(pageName + "." + formInputName, fieldName);
         String excludedValue = "excluded radio selection";
 
-        ApplicationInput applicationInput = new ApplicationInput(screenName, List.of(excludedValue), formInputName, ApplicationInputType.ENUMERATED_SINGLE_VALUE);
+        ApplicationInput applicationInput = new ApplicationInput(pageName, List.of(excludedValue), formInputName, ApplicationInputType.ENUMERATED_SINGLE_VALUE);
 
         PdfFieldMapper subject = new PdfFieldMapper(configMap, Set.of(excludedValue), emptySet());
         List<PdfField> fields = subject.map(List.of(applicationInput));
@@ -53,10 +53,10 @@ class PdfFieldMapperTest {
     void shouldMapDateValuesToSimpleFields() {
         String fieldName = "someName";
         String formInputName = "some-input";
-        String screenName = "some-screen";
-        Map<String, String> configMap = Map.of(screenName + "." + formInputName, fieldName);
+        String pageName = "some-screen";
+        Map<String, String> configMap = Map.of(pageName + "." + formInputName, fieldName);
 
-        ApplicationInput applicationInput = new ApplicationInput(screenName, List.of("01", "20", "3312"), formInputName, ApplicationInputType.DATE_VALUE);
+        ApplicationInput applicationInput = new ApplicationInput(pageName, List.of("01", "20", "3312"), formInputName, ApplicationInputType.DATE_VALUE);
 
         PdfFieldMapper subject = new PdfFieldMapper(configMap, emptySet(), emptySet());
         List<PdfField> fields = subject.map(List.of(applicationInput));
@@ -67,9 +67,9 @@ class PdfFieldMapperTest {
     @Test
     void shouldNotMapInputsWithoutPdfFieldMappings() {
         String formInputName = "some-input";
-        String screenName = "some-screen";
+        String pageName = "some-screen";
 
-        ApplicationInput applicationInput = new ApplicationInput(screenName, List.of("someValue"), formInputName, ApplicationInputType.SINGLE_VALUE);
+        ApplicationInput applicationInput = new ApplicationInput(pageName, List.of("someValue"), formInputName, ApplicationInputType.SINGLE_VALUE);
 
         PdfFieldMapper subject = new PdfFieldMapper(Map.of(), emptySet(), emptySet());
         List<PdfField> fields = subject.map(List.of(applicationInput));
@@ -82,10 +82,10 @@ class PdfFieldMapperTest {
     void shouldNotMapInputsWithEmptyValues(ApplicationInputType applicationInputType) {
         String fieldName = "someName";
         String formInputName = "some-input";
-        String screenName = "some-screen";
-        Map<String, String> configMap = Map.of(screenName + "." + formInputName, fieldName);
+        String pageName = "some-screen";
+        Map<String, String> configMap = Map.of(pageName + "." + formInputName, fieldName);
 
-        ApplicationInput applicationInput = new ApplicationInput(screenName, List.of(), formInputName, applicationInputType);
+        ApplicationInput applicationInput = new ApplicationInput(pageName, List.of(), formInputName, applicationInputType);
 
         PdfFieldMapper subject = new PdfFieldMapper(configMap, emptySet(), emptySet());
         List<PdfField> fields = subject.map(List.of(applicationInput));
@@ -98,13 +98,13 @@ class PdfFieldMapperTest {
         String fieldName1 = "someName1";
         String fieldName2 = "someName2";
         String formInputName = "some-input";
-        String screenName = "some-screen";
+        String pageName = "some-screen";
         String value1 = "some-value";
         String value2 = "some-other-value";
-        ApplicationInput applicationInput = new ApplicationInput(screenName, List.of(value1, value2), formInputName, ApplicationInputType.ENUMERATED_MULTI_VALUE);
+        ApplicationInput applicationInput = new ApplicationInput(pageName, List.of(value1, value2), formInputName, ApplicationInputType.ENUMERATED_MULTI_VALUE);
         Map<String, String> configMap = Map.of(
-                screenName + "." + formInputName + "." + value1, fieldName1,
-                screenName + "." + formInputName + "." + value2, fieldName2
+                pageName + "." + formInputName + "." + value1, fieldName1,
+                pageName + "." + formInputName + "." + value2, fieldName2
         );
 
         PdfFieldMapper subject = new PdfFieldMapper(configMap, emptySet(), emptySet());
@@ -119,14 +119,14 @@ class PdfFieldMapperTest {
     void shouldMapMultiValueInputs_withSpecificValue_whenMultiValueInputIsConfiguredToUseItsValue() {
         String fieldName1 = "someName1";
         String formInputName = "some-input";
-        String screenName = "some-screen";
+        String pageName = "some-screen";
         String value1 = "some-value";
         ApplicationInput applicationInput = new ApplicationInput(
-                screenName,
+                pageName,
                 List.of(value1),
                 formInputName,
                 ApplicationInputType.ENUMERATED_MULTI_VALUE);
-        Map<String, String> configMap = Map.of(screenName + "." + formInputName + "." + value1, fieldName1);
+        Map<String, String> configMap = Map.of(pageName + "." + formInputName + "." + value1, fieldName1);
 
         PdfFieldMapper subject = new PdfFieldMapper(configMap, emptySet(), Set.of(formInputName));
         List<PdfField> fields = subject.map(List.of(applicationInput));
