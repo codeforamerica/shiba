@@ -229,7 +229,7 @@ pages:
       - name: zipCode
         type: TEXT
         promptMessageKey: home-address.what-is-the-zip-code
-        validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+        validationErrorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
         validator:
           validation: ZIPCODE
           condition:
@@ -292,7 +292,7 @@ pages:
             input: sameMailingAddress
             value: true
             matcher: CONTAINS
-        validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+        validationErrorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
         validator:
           validation: ZIPCODE
       - name: city
