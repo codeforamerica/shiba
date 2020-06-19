@@ -36,6 +36,9 @@ public class XmlGeneratorIntegrationTest {
     @Autowired
     private FileGenerator xmlGenerator;
 
+    @Autowired
+    private OneToOneApplicationInputsMapper oneToOneApplicationInputsMapper;
+
     @Value("classpath:OnlineApplication.xsd")
     private Resource onlineApplicationSchema;
 
@@ -48,7 +51,7 @@ public class XmlGeneratorIntegrationTest {
                 .collect(toMap(Map.Entry::getKey, entry -> FormData.initialize(entry.getValue(), FormData.literalInputDataCreator())));
         PagesData pagesData = new PagesData();
         pagesData.setData(data);
-        List<ApplicationInput> applicationInputsWithoutData = ApplicationInputs.from(pagesConfiguration, pagesData);
+        List<ApplicationInput> applicationInputsWithoutData = oneToOneApplicationInputsMapper.map(pagesData);
         List<ApplicationInput> applicationInputs = applicationInputsWithoutData.stream()
                 .map(input -> {
                     FormInput formInput = pagesConfiguration.get(input.getGroupName()).getFlattenedInputs().stream()

@@ -7,7 +7,7 @@ import org.openqa.selenium.support.FindBy;
 
 import java.util.List;
 
-public class HomeAddressPage extends IntermediaryPage<WeDoNotRecommendMinimalFlowPage,MailingAddressPage> {
+public class HomeAddressPage extends IntermediaryPage<WeDoNotRecommendMinimalFlowPage,SuccessPage> {
     public HomeAddressPage(WeDoNotRecommendMinimalFlowPage weDoNotRecommendMinimalFlowPage, RemoteWebDriver driver) {
         super(weDoNotRecommendMinimalFlowPage, driver);
     }
@@ -16,8 +16,8 @@ public class HomeAddressPage extends IntermediaryPage<WeDoNotRecommendMinimalFlo
     List<WebElement> mailingAddressIsSameRadioButtons;
 
     @Override
-    public MailingAddressPage getNextPage() {
-        return new MailingAddressPage(this, driver);
+    public SuccessPage getNextPage() {
+        return new SuccessPage(driver);
     }
 
     public void selectMailingAddressIsTheSame() {

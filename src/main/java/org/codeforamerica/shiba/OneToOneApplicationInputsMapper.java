@@ -1,11 +1,23 @@
 package org.codeforamerica.shiba;
 
+import org.springframework.stereotype.Component;
+
 import java.util.AbstractMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class ApplicationInputs {
-    static List<ApplicationInput> from(PagesConfiguration pagesConfiguration, PagesData data) {
+import static java.util.stream.Collectors.toList;
+import static org.codeforamerica.shiba.ApplicationInputsMapper.formInputTypeToApplicationInputType;
+
+@Component
+public class OneToOneApplicationInputsMapper implements ApplicationInputsMapper {
+    private final PagesConfiguration pagesConfiguration;
+
+    public OneToOneApplicationInputsMapper(PagesConfiguration pagesConfiguration) {
+        this.pagesConfiguration = pagesConfiguration;
+    }
+
+    @Override
+    public List<ApplicationInput> map(PagesData data) {
         return pagesConfiguration.entrySet().stream()
                 .flatMap(entry -> entry.getValue().getFlattenedInputs().stream()
                         .map(input -> new AbstractMap.SimpleEntry<>(entry.getKey(), input)))
@@ -18,15 +30,6 @@ public class ApplicationInputs {
                             formInput.getName(),
                             formInputTypeToApplicationInputType(formInput.getType()));
                 })
-                .collect(Collectors.toList());
-    }
-
-    private static ApplicationInputType formInputTypeToApplicationInputType(FormInputType type) {
-        return switch (type) {
-            case CHECKBOX -> ApplicationInputType.ENUMERATED_MULTI_VALUE;
-            case RADIO, SELECT -> ApplicationInputType.ENUMERATED_SINGLE_VALUE;
-            case DATE -> ApplicationInputType.DATE_VALUE;
-            case TEXT, NUMBER -> ApplicationInputType.SINGLE_VALUE;
-        };
+                .collect(toList());
     }
 }

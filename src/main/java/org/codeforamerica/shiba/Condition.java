@@ -12,7 +12,7 @@ import static org.codeforamerica.shiba.Utils.getFormInputName;
 public class Condition {
     String input;
     String value;
-    ValidationMatcher matcher = ValidationMatcher.CONTAINS;
+    ValueMatcher matcher = ValueMatcher.CONTAINS;
 
     public Boolean appliesTo(MultiValueMap<String, String> model) {
         List<String> inputValue = Optional.ofNullable(model)

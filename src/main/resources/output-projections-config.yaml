@@ -1,0 +1,12 @@
+projections:
+  homeAddress:
+    groupName: mailingAddress
+    inputs:
+      - zipCode
+      - city
+      - state
+      - streetAddress
+      - apartmentNumber
+    condition:
+      input: sameMailingAddress
+      value: true

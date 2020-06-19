@@ -11,7 +11,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -23,66 +22,38 @@ class FileDownLoadControllerTest {
     MockMvc mockMvc;
 
     XmlGenerator xmlGenerator = mock(XmlGenerator.class);
-    PagesConfiguration pagesConfiguration = new PagesConfiguration();
     PagesData data = new PagesData();
     PdfGenerator pdfGenerator = mock(PdfGenerator.class);
+    ApplicationInputsMapper mapper1 = mock(ApplicationInputsMapper.class);
+    ApplicationInputsMapper mapper2 = mock(ApplicationInputsMapper.class);
+    List<ApplicationInputsMapper> applicationInputsMappers = List.of(mapper1, mapper2);
 
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(
                 new FileDownLoadController(
-                        pagesConfiguration,
                         data,
                         pdfGenerator,
-                        xmlGenerator))
+                        xmlGenerator,
+                        applicationInputsMappers
+                ))
                 .setViewResolvers(new InternalResourceViewResolver("", "suffix"))
                 .build();
     }
 
     @Test
     void shouldPassScreensToServiceToGeneratePdfFile() throws Exception {
-        String pageName = "screen1";
-
-        PageConfiguration page = new PageConfiguration();
-        FormInput input1 = new FormInput();
-        String input1Name = "input 1";
-        input1.name = input1Name;
-        List<String> input1Value = List.of("input1Value");
-        input1.type = FormInputType.TEXT;
-
-        FormInput input2 = new FormInput();
-        String input2Name = "input 2";
-        input2.name = input2Name;
-        List<String> input2Value = List.of("input2Value");
-        input2.type = FormInputType.TEXT;
-
-        FormInput input3 = new FormInput();
-        String input3Name = "input 3";
-        input3.name = input3Name;
-        List<String> input3Value = List.of("input3Value");
-        input3.type = FormInputType.TEXT;
-
-        input2.followUps = List.of(input3);
-        page.setInputs(List.of(input1, input2));
-        pagesConfiguration.put(pageName, page);
-
-        data.putPage(pageName, new FormData(Map.of(
-                input1Name, new InputData(Validation.NONE, input1Value),
-                input2Name, new InputData(Validation.NONE, input2Value),
-                input3Name, new InputData(Validation.NONE, input3Value)
-        )));
-
         when(pdfGenerator.generate(any())).thenReturn(new ApplicationFile("".getBytes(), ""));
+        ApplicationInput applicationInput1 = new ApplicationInput("screen1", List.of("input1Value"), "input 1", ApplicationInputType.SINGLE_VALUE);
+        ApplicationInput applicationInput2 = new ApplicationInput("screen1", List.of("something"), "input 1", ApplicationInputType.SINGLE_VALUE);
+        when(mapper1.map(data)).thenReturn(List.of(applicationInput1));
+        when(mapper2.map(data)).thenReturn(List.of(applicationInput2));
 
         mockMvc.perform(
                 get("/download"))
                 .andExpect(status().is2xxSuccessful());
 
-        verify(pdfGenerator).generate(List.of(
-                new ApplicationInput(pageName, input1Value, input1Name, ApplicationInputType.SINGLE_VALUE),
-                new ApplicationInput(pageName, input2Value, input2Name, ApplicationInputType.SINGLE_VALUE),
-                new ApplicationInput(pageName, input3Value, input3Name, ApplicationInputType.SINGLE_VALUE)
-        ));
+        verify(pdfGenerator).generate(List.of(applicationInput1, applicationInput2));
     }
 
     @Test
@@ -108,36 +79,10 @@ class FileDownLoadControllerTest {
         String fileName = "some.xml";
         when(xmlGenerator.generate(any())).thenReturn(new ApplicationFile(fileBytes, fileName));
 
-        String pageName = "screen1";
-
-        PageConfiguration page = new PageConfiguration();
-        FormInput input1 = new FormInput();
-        String input1Name = "input 1";
-        input1.name = input1Name;
-        List<String> input1Value = List.of("input1Value");
-        input1.type = FormInputType.TEXT;
-
-        FormInput input2 = new FormInput();
-        String input2Name = "input 2";
-        input2.name = input2Name;
-        List<String> input2Value = List.of("input2Value");
-        input2.type = FormInputType.TEXT;
-
-        FormInput input3 = new FormInput();
-        String input3Name = "input 3";
-        input3.name = input3Name;
-        List<String> input3Value = List.of("input3Value");
-        input3.type = FormInputType.TEXT;
-
-        input2.followUps = List.of(input3);
-        page.setInputs(List.of(input1, input2));
-        pagesConfiguration.put(pageName, page);
-
-        data.putPage(pageName, new FormData(Map.of(
-                input1Name, new InputData(Validation.NONE, input1Value),
-                input2Name, new InputData(Validation.NONE, input2Value),
-                input3Name, new InputData(Validation.NONE, input3Value)
-        )));
+        ApplicationInput applicationInput1 = new ApplicationInput("screen1", List.of("input1Value"), "input 1", ApplicationInputType.SINGLE_VALUE);
+        ApplicationInput applicationInput2 = new ApplicationInput("screen1", List.of("something"), "input 1", ApplicationInputType.SINGLE_VALUE);
+        when(mapper1.map(data)).thenReturn(List.of(applicationInput1));
+        when(mapper2.map(data)).thenReturn(List.of(applicationInput2));
 
         MvcResult result = mockMvc.perform(
                 get("/download-xml"))
@@ -146,11 +91,7 @@ class FileDownLoadControllerTest {
                 .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", fileName)))
                 .andReturn();
 
-        verify(xmlGenerator).generate(List.of(
-                new ApplicationInput(pageName, input1Value, input1Name, ApplicationInputType.SINGLE_VALUE),
-                new ApplicationInput(pageName, input2Value, input2Name, ApplicationInputType.SINGLE_VALUE),
-                new ApplicationInput(pageName, input3Value, input3Name, ApplicationInputType.SINGLE_VALUE)
-        ));
+        verify(xmlGenerator).generate(List.of(applicationInput1, applicationInput2));
         assertThat(result.getResponse().getContentAsByteArray()).isEqualTo(fileBytes);
     }
 }
