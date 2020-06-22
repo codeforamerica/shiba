@@ -28,20 +28,15 @@ public class PageController {
     @GetMapping("/pages/{pageName}/navigation")
     RedirectView goBackToPage(@PathVariable String pageName,
                               @RequestParam(defaultValue = "false") Boolean isBackwards) {
-        PageConfiguration pageConfiguration = this.pagesConfiguration.get(pageName);
+        PageConfiguration currentPageConfiguration = this.pagesConfiguration.get(pageName);
 
-        Boolean shouldSkip = Optional.ofNullable(pageConfiguration.getDatasource())
-                .map(datasource -> pageConfiguration.shouldSkip(getFormDataFrom(datasource, this.pagesData)))
-                .orElse(false);
+        String adjacentPageName = currentPageConfiguration.getAdjacentPageName(isBackwards);
+        PageConfiguration adjacentPage = this.pagesConfiguration.get(adjacentPageName);
 
-        if (shouldSkip) {
-            if (isBackwards) {
-                return new RedirectView(String.format("/pages/%s", pageConfiguration.getPreviousPage()));
-            } else {
-                return new RedirectView(String.format("/pages/%s", pageConfiguration.getNextPage()));
-            }
+        if (adjacentPage.shouldSkip(pagesData)) {
+            return new RedirectView(String.format("/pages/%s", adjacentPage.getAdjacentPageName(isBackwards)));
         } else {
-            return new RedirectView(String.format("/pages/%s", pageName));
+            return new RedirectView(String.format("/pages/%s", adjacentPageName));
         }
     }
 
@@ -49,20 +44,21 @@ public class PageController {
     ModelAndView getFormPage(@PathVariable String pageName) {
         PageConfiguration pageConfiguration = this.pagesConfiguration.get(pageName);
 
+        HashMap<String, Object> model = new HashMap<>(Map.of(
+                "page", pageConfiguration,
+                "pageName", pageName
+        ));
+        String pageToRender;
         if (pageConfiguration.isStaticPage()) {
-            HashMap<String, Object> model = new HashMap<>(Map.of("page", pageConfiguration));
+            pageToRender = pageName;
             Optional.ofNullable(pageConfiguration.getDatasource())
                     .map(datasource -> getFormDataFrom(datasource, this.pagesData))
                     .ifPresent(model::putAll);
-
-            return new ModelAndView(pageName, model);
         } else {
-            return new ModelAndView("formPage",
-                    Map.of(
-                            "page", pageConfiguration,
-                            "data", pagesData.getPageOrDefault(pageName, pageConfiguration),
-                            "postTo", pageName));
+            pageToRender = "formPage";
+            model.put("data", pagesData.getPageOrDefault(pageName, pageConfiguration));
         }
+        return new ModelAndView(pageToRender, model);
     }
 
     @PostMapping("/pages/{pageName}")
@@ -75,11 +71,11 @@ public class PageController {
         pagesData.putPage(pageName, formData);
 
         return formData.isValid() ?
-                new ModelAndView(String.format("redirect:/pages/%s/navigation", page.getNextPage())) :
+                new ModelAndView(String.format("redirect:/pages/%s/navigation", pageName)) :
                 new ModelAndView("formPage", Map.of(
                         "page", page,
                         "data", formData,
-                        "postTo", pageName)
+                        "pageName", pageName)
                 );
     }
 }

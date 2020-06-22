@@ -3,9 +3,10 @@ package org.codeforamerica.shiba;
 import lombok.Data;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static org.codeforamerica.shiba.FormData.getFormDataFrom;
 
 @Data
 public class PageConfiguration {
@@ -33,9 +34,14 @@ public class PageConfiguration {
         return this.inputs.isEmpty();
     }
 
-    boolean shouldSkip(FormData formData) {
-        return Optional.ofNullable(this.skipCondition)
-                .map(condition -> condition.appliesTo(formData))
-                .orElse(false);
+    boolean shouldSkip(PagesData pagesData) {
+        if (this.datasource == null || this.skipCondition == null) {
+            return false;
+        }
+        return this.skipCondition.appliesTo(getFormDataFrom(datasource, pagesData));
+    }
+
+    String getAdjacentPageName(boolean isBackwards) {
+        return isBackwards ? previousPage : nextPage;
     }
 }

@@ -5,7 +5,7 @@
 <div class="page-wrapper">
     <section class="slab slab--white">
         <div class="grid">
-            <a th:replace="fragments/go-back :: goBackLink(${page.previousPage})"></a>
+            <a th:replace="fragments/go-back"></a>
             <div th:if="${page.hasHeader()}" class="grid__item spacing-above-35 spacing-below-35">
                 <h2 th:text="#{${page.headerKey}}"></h2>
                 <p class="text--help"
@@ -13,7 +13,7 @@
                    th:text="#{${page.headerHelpMessageKey}}"></p>
             </div>
             <div class="grid__item">
-                <form method="post" th:action="@{'/pages/'+${postTo}}">
+                <form method="post" th:action="@{'/pages/'+${pageName}}">
                     <div th:each="input: ${page.inputs}">
                         <div th:replace="'fragments/'+__${input.fragment()}__ :: __${input.fragment()}__(${input}, ${data})"></div>
                     </div>

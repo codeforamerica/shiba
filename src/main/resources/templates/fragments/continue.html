@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
-<a th:fragment="continue (nextPage)" class="button button--primary" th:href="'/pages/'+${nextPage}+'/navigation'" th:text="#{general.continue}"></a>
+<a th:fragment="continue" class="button button--primary" th:href="'/pages/'+${pageName}+'/navigation'" th:text="#{general.continue}"></a>
 </body>
 </html>

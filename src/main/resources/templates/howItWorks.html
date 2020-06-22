@@ -5,7 +5,7 @@
 <div class="page-wrapper">
     <section class="slab slab--white">
         <div class="grid">
-            <a th:replace="fragments/go-back :: goBackLink(${page.previousPage})"></a>
+            <a th:replace="fragments/go-back"></a>
             <div class="grid__item spacing-above-35">
                 <h2 th:text="|#{how-it-works.okay-lets-apply-for-help-with} ${T(org.codeforamerica.shiba.Utils).getTitleString(#messages.listMsg(programs.messageKeysForValue))}.|"></h2>
             </div>
@@ -18,7 +18,7 @@
             <p th:text="#{how-it-works.they-will-ask-about-the-information-you-put-in-your}"></p>
             <h3 class="spacing-below-10 spacing-above-35" th:text="#{how-it-works.get-money-on-an-ebt-card}"></h3>
             <p class="spacing-below-60" th:text="#{how-it-works.once-you-are-approved-youll-get-an-ebt-card-that}"></p>
-            <div th:replace="fragments/continue :: continue (${page.nextPage})"></div>
+            <div th:replace="fragments/continue"></div>
         </div>
     </section>
 </div>
