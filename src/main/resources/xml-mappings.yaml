@@ -29,6 +29,8 @@ xml:
       city: CONTACTINFO_MAILING_CITY
       streetAddress: CONTACTINFO_MAILING_STREET_ADDRESS
       apartmentNumber: CONTACTINFO_MAILING_APARTMENT_NUMBER
+    signThisApplication:
+      applicantSignature: APPLICANT_SIGNATURE
   enums:
     homeless: true
     NEVER_MARRIED: Never Married

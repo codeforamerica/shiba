@@ -35,3 +35,5 @@ caf:
       state: APPLICANT_MAILING_STATE
       streetAddress: APPLICANT_MAILING_STREET_ADDRESS
       apartmentNumber: APPLICANT_MAILING_APT_NUMBER
+    signThisApplication:
+      applicantSignature: APPLICANT_SIGNATURE

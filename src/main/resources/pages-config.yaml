@@ -280,7 +280,7 @@ pages:
     pageTitle: mailing-address.title
     headerKey: mailing-address.where-can-the-county-send-your-mail
     previousPage: homeAddress
-    nextPage: success
+    nextPage: signThisApplication
     inputs:
       - name: zipCode
         type: TEXT
@@ -342,5 +342,17 @@ pages:
     skipCondition:
       input: sameMailingAddress
       value: true
+  signThisApplication:
+    pageTitle: sign-this-application.title
+    headerKey: sign-this-application.type-your-full-legal-name-here-to-sign-this-application
+    headerHelpMessageKey: sign-this-application.by-signing-this-application-you-agree-that-you-want-to
+    previousPage: mailingAddress
+    nextPage: success
+    inputs:
+      - name: applicantSignature
+        type: TEXT
+        validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+        validator:
+          validation: NOT_BLANK
   success:
     pageTitle: success.title

@@ -56,4 +56,7 @@
             <onl:NeedInterpreterInd>{{LANGUAGEPREFERENCES_NEEDINTERPRETER}}</onl:NeedInterpreterInd>
         </onl:MiscellaneousInfo>
     </onl:HouseholdInfo>
+    <onl:Disclosure>
+        <onl:DeclaredBy>{{APPLICANT_SIGNATURE}}</onl:DeclaredBy>
+    </onl:Disclosure>
 </onl:OnlineApplication>
