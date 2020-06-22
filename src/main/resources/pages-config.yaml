@@ -104,14 +104,14 @@ pages:
         helpMessageKey: personal-info.legally-as-it-appears-on-your-id
         validator:
           validation: NOT_BLANK
-        validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+        validationErrorMessageKey: general.validation.make-sure-to-provide-a-first-name
       - name: lastName
         type: TEXT
         promptMessageKey: personal-info.whats-your-last-name
         helpMessageKey: personal-info.legally-as-it-appears-on-your-id
         validator:
           validation: NOT_BLANK
-        validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+        validationErrorMessageKey: general.validation.make-sure-to-provide-a-last-name
       - name: otherName
         type: TEXT
         promptMessageKey: personal-info.list-any-names-that-you-have-gone-by-in-the-past
@@ -126,7 +126,7 @@ pages:
         type: NUMBER
         validator:
           validation: SSN
-        validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+        validationErrorMessageKey: general.validation.make-sure-your-SSN-has-9-digits
         promptMessageKey: personal-info.whats-your-social-security-number
         helpMessageKey: personal-info.if-you-have-one-we-strongly-recommend-including-it-here-your-caseworker-will
       - name: maritalStatus
