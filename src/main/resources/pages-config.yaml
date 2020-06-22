@@ -224,7 +224,7 @@ pages:
     headerKey: home-address.where-are-you-currently-living
     pageTitle: home-address.title
     previousPage: weDoNotRecommendMinimalFlow
-    nextPage: success
+    nextPage: mailingAddress
     inputs:
       - name: zipCode
         type: TEXT
@@ -276,5 +276,71 @@ pages:
             messageKey: home-address.yes-send-mail-here
           - value: false
             messageKey: home-address.no-use-a-different-address-for-mail
+  mailingAddress:
+    pageTitle: mailing-address.title
+    headerKey: mailing-address.where-can-the-county-send-your-mail
+    previousPage: homeAddress
+    nextPage: success
+    inputs:
+      - name: zipCode
+        type: TEXT
+        promptMessageKey: mailing-address.what-is-the-zip-code
+        defaultValue:
+          type: DATASOURCE_REFERENCE
+          value: zipCode
+          condition:
+            input: sameMailingAddress
+            value: true
+            matcher: CONTAINS
+        validationErrorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
+        validator:
+          validation: ZIPCODE
+      - name: city
+        type: TEXT
+        promptMessageKey: mailing-address.what-is-the-city
+        defaultValue:
+          type: DATASOURCE_REFERENCE
+          value: city
+          condition:
+            input: sameMailingAddress
+            value: true
+            matcher: CONTAINS
+        validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+        validator:
+          validation: NOT_BLANK
+      - name: state
+        type: TEXT
+        promptMessageKey: mailing-address.what-is-the-state
+        readOnly: true
+        defaultValue:
+          value: MN
+      - name: streetAddress
+        type: TEXT
+        promptMessageKey: mailing-address.what-is-the-street-address
+        defaultValue:
+          type: DATASOURCE_REFERENCE
+          value: streetAddress
+          condition:
+            input: sameMailingAddress
+            value: true
+            matcher: CONTAINS
+        validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+        validator:
+          validation: NOT_BLANK
+      - name: apartmentNumber
+        type: TEXT
+        promptMessageKey: mailing-address.apartment-number
+        defaultValue:
+          type: DATASOURCE_REFERENCE
+          value: apartmentNumber
+          condition:
+            input: sameMailingAddress
+            value: true
+            matcher: CONTAINS
+    datasource:
+      pageName: homeAddress
+    skipCondition:
+      input: sameMailingAddress
+      value: true
   success:
     pageTitle: success.title

@@ -21,6 +21,7 @@ public class OneToOneApplicationInputsMapper implements ApplicationInputsMapper 
         return pagesConfiguration.entrySet().stream()
                 .flatMap(entry -> entry.getValue().getFlattenedInputs().stream()
                         .map(input -> new AbstractMap.SimpleEntry<>(entry.getKey(), input)))
+                .filter(entry -> data.getPage(entry.getKey()) != null)
                 .map(entry -> {
                     FormInput formInput = entry.getValue();
                     InputData inputData = data.getPage(entry.getKey()).get(formInput.getName());

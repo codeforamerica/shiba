@@ -125,3 +125,34 @@ test-validation:
     inputs:
       - name: foo
         type: TEXT
+test-conditional-rendering:
+  firstPage:
+    pageTitle: first-page-title
+    nextPage: secondPage
+    inputs:
+      - name: someRadioInputName
+        type: RADIO
+        options:
+          - value: SKIP
+            messageKey: skip-message-key
+          - value: NOT_SKIP
+            messageKey: not-skip-message-key
+  secondPage:
+    previousPage: firstPage
+    nextPage: thirdPage
+    pageTitle: second-page-title
+    inputs:
+      - name: foo
+        type: TEXT
+    skipCondition:
+      input: someRadioInputName
+      value: SKIP
+      matcher: CONTAINS
+    datasource:
+      pageName: firstPage
+  thirdPage:
+    previousPage: secondPage
+    pageTitle: third-page-title
+    inputs:
+      - name: foo
+        type: TEXT

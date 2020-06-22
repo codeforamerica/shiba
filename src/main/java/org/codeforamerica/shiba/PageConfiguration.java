@@ -3,6 +3,7 @@ package org.codeforamerica.shiba;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -15,6 +16,7 @@ public class PageConfiguration {
     private String nextPage;
     private String previousPage;
     private PageDatasource datasource;
+    private Condition skipCondition;
 
     @SuppressWarnings("unused")
     public boolean hasHeader() {
@@ -29,5 +31,11 @@ public class PageConfiguration {
 
     boolean isStaticPage() {
         return this.inputs.isEmpty();
+    }
+
+    boolean shouldSkip(FormData formData) {
+        return Optional.ofNullable(this.skipCondition)
+                .map(condition -> condition.appliesTo(formData))
+                .orElse(false);
     }
 }
