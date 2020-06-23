@@ -84,7 +84,7 @@ public class FormData extends HashMap<String, InputData> {
         return new FormData(inputDataMap);
     }
 
-    Boolean isValid() {
+    public Boolean isValid() {
         return values().stream().allMatch(InputData::getValid);
     }
 }

@@ -37,3 +37,4 @@ caf:
       apartmentNumber: APPLICANT_MAILING_APT_NUMBER
     signThisApplication:
       applicantSignature: APPLICANT_SIGNATURE
+      submissionTime: SUBMISSION_TIME

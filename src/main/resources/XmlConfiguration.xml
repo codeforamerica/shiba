@@ -58,5 +58,6 @@
     </onl:HouseholdInfo>
     <onl:Disclosure>
         <onl:DeclaredBy>{{APPLICANT_SIGNATURE}}</onl:DeclaredBy>
+        <onl:DateDeclared>{{SUBMISSION_TIME}}</onl:DateDeclared>
     </onl:Disclosure>
 </onl:OnlineApplication>

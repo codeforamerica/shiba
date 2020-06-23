@@ -31,6 +31,7 @@ xml:
       apartmentNumber: CONTACTINFO_MAILING_APARTMENT_NUMBER
     signThisApplication:
       applicantSignature: APPLICANT_SIGNATURE
+      submissionTime: SUBMISSION_TIME
   enums:
     homeless: true
     NEVER_MARRIED: Never Married

@@ -6,9 +6,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.time.Clock;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 import static org.codeforamerica.shiba.FormData.getFormDataFrom;
 
@@ -16,18 +18,23 @@ import static org.codeforamerica.shiba.FormData.getFormDataFrom;
 public class PageController {
     private final PagesData pagesData;
     private final PagesConfiguration pagesConfiguration;
+    private final Clock clock;
+    public static final String SIGN_THIS_APPLICATION_PAGE_NAME = "signThisApplication";
 
     public PageController(
             PagesConfiguration pagesConfiguration,
-            PagesData pagesData
+            PagesData pagesData,
+            Clock clock
     ) {
         this.pagesData = pagesData;
         this.pagesConfiguration = pagesConfiguration;
+        this.clock = clock;
     }
 
     @GetMapping("/pages/{pageName}/navigation")
     RedirectView goBackToPage(@PathVariable String pageName,
-                              @RequestParam(defaultValue = "false") Boolean isBackwards) {
+                              @RequestParam(defaultValue = "false") Boolean isBackwards
+    ) {
         PageConfiguration currentPageConfiguration = this.pagesConfiguration.get(pageName);
 
         String adjacentPageName = currentPageConfiguration.getAdjacentPageName(isBackwards);
@@ -64,7 +71,8 @@ public class PageController {
     @PostMapping("/pages/{pageName}")
     ModelAndView postFormPage(
             @RequestBody(required = false) MultiValueMap<String, String> model,
-            @PathVariable String pageName) {
+            @PathVariable String pageName
+    ) {
         PageConfiguration page = pagesConfiguration.get(pageName);
         FormData formData = FormData.fillOut(page, model);
 
@@ -76,6 +84,25 @@ public class PageController {
                         "page", page,
                         "data", formData,
                         "pageName", pageName)
+                );
+    }
+
+    @PostMapping("/submit")
+    ModelAndView submitApplication(@RequestBody(required = false) MultiValueMap<String, String> model, Locale locale) {
+        PageConfiguration page = pagesConfiguration.get(SIGN_THIS_APPLICATION_PAGE_NAME);
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy", locale);
+        FormData formData = new FormData(Map.of(
+                "applicantSignature", new InputData(Validation.NOT_BLANK, model.get("applicantSignature")),
+                "submissionTime", new InputData(List.of(dateTimeFormatter.format(ZonedDateTime.ofInstant(clock.instant(), ZoneId.of("UTC")))))
+        ));
+        pagesData.putPage(SIGN_THIS_APPLICATION_PAGE_NAME, formData);
+        return formData.isValid() ?
+                new ModelAndView(String.format("redirect:/pages/%s/navigation", SIGN_THIS_APPLICATION_PAGE_NAME)) :
+                new ModelAndView(SIGN_THIS_APPLICATION_PAGE_NAME, Map.of(
+                        "page", page,
+                        "data", formData,
+                        "pageName", SIGN_THIS_APPLICATION_PAGE_NAME)
                 );
     }
 }

@@ -348,11 +348,7 @@ pages:
     headerHelpMessageKey: sign-this-application.by-signing-this-application-you-agree-that-you-want-to
     previousPage: mailingAddress
     nextPage: success
-    inputs:
-      - name: applicantSignature
-        type: TEXT
-        validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
-        validator:
-          validation: NOT_BLANK
   success:
     pageTitle: success.title
+    datasource:
+      pageName: signThisApplication

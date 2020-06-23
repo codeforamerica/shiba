@@ -4,8 +4,14 @@ import org.codeforamerica.shiba.pages.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
 
 import java.io.IOException;
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,6 +21,14 @@ import static org.codeforamerica.shiba.pages.DatePart.*;
 public class UserJourneyPageTest extends AbstractBasePageTest {
 
     private LandingPage landingPage;
+
+    @TestConfiguration
+    static class TestConfig {
+        @Bean
+        Clock clock() {
+            return Clock.fixed(LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant(), ZoneId.of("UTC"));
+        }
+    }
 
     @Override
     @BeforeEach
@@ -344,7 +358,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     @Test
-    void shouldNavigateToSuccessPageAfterCompletingHomeAddress() {
+    void shouldNavigateToMailingPageAfterCompletingHomeAddress() {
         ChooseProgramsPage chooseProgramPage = landingPage
                 .clickPrimaryButton()
                 .clickPrimaryButton()
@@ -366,10 +380,80 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         homeAddressPage.enterInput("zipCode", "12345");
         homeAddressPage.enterInput("city", "someCity");
         homeAddressPage.enterInput("streetAddress", "someStreetAddress");
-        homeAddressPage.selectMailingAddressIsTheSame();
+        MailingAddressPage mailingAddressPage = homeAddressPage.clickPrimaryButton();
 
-        SuccessPage successPage = homeAddressPage.clickPrimaryButton();
+        assertThat(mailingAddressPage.getTitle()).isEqualTo("Mailing address");
+    }
+
+    @Test
+    void shouldNavigateToSignThisApplicationPageAfterMailingAddress() {
+        ChooseProgramsPage chooseProgramPage = landingPage
+                .clickPrimaryButton()
+                .clickPrimaryButton()
+                .clickPrimaryButton();
+        chooseProgramPage.chooseProgram("Emergency assistance");
+        HowItWorksPage howItWorksPage = chooseProgramPage.clickPrimaryButton();
+        PersonalInfoPage personalInfoPage = howItWorksPage.clickPrimaryButton().clickPrimaryButton();
+        personalInfoPage.enterFirstName("defaultFirstName");
+        personalInfoPage.enterLastName("defaultLastName");
+
+        ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
+        contactInfoPage.enterPhoneNumber("123");
+
+        HomeAddressPage homeAddressPage = contactInfoPage
+                .clickPrimaryButton()
+                .clickSubtleLink()
+                .clickSubtleLink();
+
+        homeAddressPage.enterInput("zipCode", "12345");
+        homeAddressPage.enterInput("city", "someCity");
+        homeAddressPage.enterInput("streetAddress", "someStreetAddress");
+        MailingAddressPage mailingAddressPage = homeAddressPage.clickPrimaryButton();
+
+        mailingAddressPage.enterInput("zipCode", "12345");
+        mailingAddressPage.enterInput("city", "someCity");
+        mailingAddressPage.enterInput("streetAddress", "someStreetAddress");
+
+        SignThisApplicationPage signThisApplicationPage = mailingAddressPage.clickPrimaryButton();
+        assertThat(signThisApplicationPage.getTitle()).isEqualTo("Sign this application");
+    }
+
+    @Test
+    void shouldGoToSuccessPageAfterSignThisApplicationPage() {
+        ChooseProgramsPage chooseProgramPage = landingPage
+                .clickPrimaryButton()
+                .clickPrimaryButton()
+                .clickPrimaryButton();
+        chooseProgramPage.chooseProgram("Emergency assistance");
+        HowItWorksPage howItWorksPage = chooseProgramPage.clickPrimaryButton();
+        PersonalInfoPage personalInfoPage = howItWorksPage.clickPrimaryButton().clickPrimaryButton();
+        personalInfoPage.enterFirstName("defaultFirstName");
+        personalInfoPage.enterLastName("defaultLastName");
+
+        ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
+        contactInfoPage.enterPhoneNumber("123");
+
+        HomeAddressPage homeAddressPage = contactInfoPage
+                .clickPrimaryButton()
+                .clickSubtleLink()
+                .clickSubtleLink();
+
+        homeAddressPage.enterInput("zipCode", "12345");
+        homeAddressPage.enterInput("city", "someCity");
+        homeAddressPage.enterInput("streetAddress", "someStreetAddress");
+        MailingAddressPage mailingAddressPage = homeAddressPage.clickPrimaryButton();
+
+        mailingAddressPage.enterInput("zipCode", "12345");
+        mailingAddressPage.enterInput("city", "someCity");
+        mailingAddressPage.enterInput("streetAddress", "someStreetAddress");
+
+        SignThisApplicationPage signThisApplicationPage = mailingAddressPage.clickPrimaryButton();
+
+        signThisApplicationPage.enterInput("applicantSignature", "some name");
+        SuccessPage successPage = signThisApplicationPage.clickPrimaryButton();
+
         assertThat(successPage.getTitle()).isEqualTo("Success");
+        assertThat(successPage.getSubmissionTime()).contains("January 1, 2020");
     }
 
     @Test
@@ -393,9 +477,17 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         homeAddressPage.enterInput("zipCode", "12345");
         homeAddressPage.enterInput("city", "someCity");
         homeAddressPage.enterInput("streetAddress", "someStreetAddress");
-        homeAddressPage.selectMailingAddressIsTheSame();
 
-        SuccessPage successPage = homeAddressPage.clickPrimaryButton();
+        MailingAddressPage mailingAddressPage = homeAddressPage.clickPrimaryButton();
+
+        mailingAddressPage.enterInput("zipCode", "12345");
+        mailingAddressPage.enterInput("city", "someCity");
+        mailingAddressPage.enterInput("streetAddress", "someStreetAddress");
+
+        SignThisApplicationPage signThisApplicationPage = mailingAddressPage.clickPrimaryButton();
+
+        signThisApplicationPage.enterInput("applicantSignature", "some name");
+        SuccessPage successPage = signThisApplicationPage.clickPrimaryButton();
 
         successPage.downloadReceipt();
         await().until(() -> path.resolve("DHS-5223.pdf").toFile().exists());
@@ -422,9 +514,17 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         homeAddressPage.enterInput("zipCode", "12345");
         homeAddressPage.enterInput("city", "someCity");
         homeAddressPage.enterInput("streetAddress", "someStreetAddress");
-        homeAddressPage.selectMailingAddressIsTheSame();
 
-        SuccessPage successPage = homeAddressPage.clickPrimaryButton();
+        MailingAddressPage mailingAddressPage = homeAddressPage.clickPrimaryButton();
+
+        mailingAddressPage.enterInput("zipCode", "12345");
+        mailingAddressPage.enterInput("city", "someCity");
+        mailingAddressPage.enterInput("streetAddress", "someStreetAddress");
+
+        SignThisApplicationPage signThisApplicationPage = mailingAddressPage.clickPrimaryButton();
+
+        signThisApplicationPage.enterInput("applicantSignature", "some name");
+        SuccessPage successPage = signThisApplicationPage.clickPrimaryButton();
 
         successPage.downloadXML();
         await().until(() -> path.resolve("ApplyMN.xml").toFile().exists());
