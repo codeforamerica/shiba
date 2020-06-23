@@ -67,6 +67,7 @@ public class XmlGeneratorIntegrationTest {
                         default -> switch (formInput.getValidator().getValidation()) {
                             case SSN -> List.of("123456789");
                             case ZIPCODE -> List.of("12345");
+                            case STATE -> List.of("MN");
                             default -> List.of("some-value");
                         };
                     };

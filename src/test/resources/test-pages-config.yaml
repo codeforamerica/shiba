@@ -120,6 +120,15 @@ test-validation:
         validator:
           validation: ZIPCODE
         validationErrorMessageKey: error-message-key
+  statePage:
+    nextPage: lastPage
+    pageTitle: state-page-title
+    inputs:
+      - name: stateInput
+        type: TEXT
+        validator:
+          validation: STATE
+        validationErrorMessageKey: error-message-key
   lastPage:
     pageTitle: last-page-title
     inputs:

@@ -28,6 +28,7 @@ xml:
       zipCode: CONTACTINFO_MAILING_ZIPCODE
       city: CONTACTINFO_MAILING_CITY
       streetAddress: CONTACTINFO_MAILING_STREET_ADDRESS
+      state: CONTACTINFO_MAILING_STATE
       apartmentNumber: CONTACTINFO_MAILING_APARTMENT_NUMBER
     signThisApplication:
       applicantSignature: APPLICANT_SIGNATURE

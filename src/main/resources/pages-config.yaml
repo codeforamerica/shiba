@@ -311,7 +311,9 @@ pages:
       - name: state
         type: TEXT
         promptMessageKey: mailing-address.what-is-the-state
-        readOnly: true
+        validator:
+          validation: STATE
+        validationErrorMessageKey: general.validation.make-sure-to-provide-a-valid-2-letter-state-code
         defaultValue:
           value: MN
       - name: streetAddress

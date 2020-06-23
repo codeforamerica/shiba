@@ -21,6 +21,7 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest{
     private final String lastPageTitle = "last page title";
     private final String firstPageTitle = "first Page Title";
     private final String zipcodePageTitle = "zip code Page Title";
+    private final String statePageTitle = "state page title";
 
     @TestConfiguration
     @PropertySource(value = "classpath:test-pages-config.yaml", factory = YamlPropertySourceFactory.class)
@@ -41,6 +42,7 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest{
         staticMessageSource.addMessage("last-page-title", Locale.US, lastPageTitle);
         staticMessageSource.addMessage("error-message-key", Locale.US, errorMessage);
         staticMessageSource.addMessage("zip-code-page-title", Locale.US, zipcodePageTitle);
+        staticMessageSource.addMessage("state-page-title", Locale.US, statePageTitle);
     }
 
     @Test
@@ -131,6 +133,22 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest{
 
         driver.findElement(By.cssSelector("input[name^='zipCodeInput']")).clear();
         driver.findElement(By.cssSelector("input[name^='zipCodeInput']")).sendKeys("12345");
+        driver.findElement(By.cssSelector("button")).click();
+
+        assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
+    }
+
+    @Test
+    void shouldPassValidationForStateWhenValueIsAKnownStateCode() {
+        driver.navigate().to(baseUrl + "/pages/statePage");
+        driver.findElement(By.cssSelector("input[name^='stateInput']")).sendKeys("XY");
+        driver.findElement(By.cssSelector("button")).click();
+
+        assertThat(driver.getTitle()).isEqualTo(statePageTitle);
+        assertThat(getInputError("stateInput")).isNotNull();
+
+        driver.findElement(By.cssSelector("input[name^='stateInput']")).clear();
+        driver.findElement(By.cssSelector("input[name^='stateInput']")).sendKeys("MN");
         driver.findElement(By.cssSelector("button")).click();
 
         assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
