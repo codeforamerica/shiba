@@ -2,6 +2,8 @@ package org.codeforamerica.shiba;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -22,6 +24,7 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest{
     private final String firstPageTitle = "first Page Title";
     private final String zipcodePageTitle = "zip code Page Title";
     private final String statePageTitle = "state page title";
+    private final String phonePageTitle = "phone page title";
 
     @TestConfiguration
     @PropertySource(value = "classpath:test-pages-config.yaml", factory = YamlPropertySourceFactory.class)
@@ -43,6 +46,7 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest{
         staticMessageSource.addMessage("error-message-key", Locale.US, errorMessage);
         staticMessageSource.addMessage("zip-code-page-title", Locale.US, zipcodePageTitle);
         staticMessageSource.addMessage("state-page-title", Locale.US, statePageTitle);
+        staticMessageSource.addMessage("phone-page-title", Locale.US, phonePageTitle);
     }
 
     @Test
@@ -115,21 +119,24 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest{
         assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
     }
 
-    @Test
-    void shouldPassValidationForZipCodeWhenValueIsExactlyFiveCharacters() {
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "123456",
+            "1234",
+            "1234e"
+    })
+    void shouldFailValidationForZipCodeWhenValueIsNotExactlyFiveDigits(String input) {
         driver.navigate().to(baseUrl + "/pages/zipcodePage");
-        driver.findElement(By.cssSelector("input[name^='zipCodeInput']")).sendKeys("123456");
+        driver.findElement(By.cssSelector("input[name^='zipCodeInput']")).sendKeys(input);
         driver.findElement(By.cssSelector("button")).click();
 
         assertThat(driver.getTitle()).isEqualTo(zipcodePageTitle);
         assertThat(getInputError("zipCodeInput")).isNotNull();
+    }
 
-        driver.findElement(By.cssSelector("input[name^='zipCodeInput']")).clear();
-        driver.findElement(By.cssSelector("input[name^='zipCodeInput']")).sendKeys("1234");
-        driver.findElement(By.cssSelector("button")).click();
-
-        assertThat(driver.getTitle()).isEqualTo(zipcodePageTitle);
-        assertThat(getInputError("zipCodeInput")).isNotNull();
+    @Test
+    void shouldPassValidationForZipCodeWhenValueIsExactlyFiveDigits() {
+        driver.navigate().to(baseUrl + "/pages/zipcodePage");
 
         driver.findElement(By.cssSelector("input[name^='zipCodeInput']")).clear();
         driver.findElement(By.cssSelector("input[name^='zipCodeInput']")).sendKeys("12345");
@@ -149,6 +156,32 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest{
 
         driver.findElement(By.cssSelector("input[name^='stateInput']")).clear();
         driver.findElement(By.cssSelector("input[name^='stateInput']")).sendKeys("MN");
+        driver.findElement(By.cssSelector("button")).click();
+
+        assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "123456789",
+            "12345678901",
+            "123456789e",
+            "123-456789"
+    })
+    void shouldFailValidationForPhoneIfValueIsNotExactly10Digits(String input) {
+        driver.navigate().to(baseUrl + "/pages/phonePage");
+        driver.findElement(By.cssSelector("input[name^='phoneInput']")).sendKeys(input);
+        driver.findElement(By.cssSelector("button")).click();
+
+        assertThat(driver.getTitle()).isEqualTo(phonePageTitle);
+        assertThat(getInputError("phoneInput")).isNotNull();
+    }
+
+    @Test
+    void shouldPassValidationForPhoneIfAndOnlyIfValueIsExactly10Digits() {
+        driver.navigate().to(baseUrl + "/pages/phonePage");
+        driver.findElement(By.cssSelector("input[name^='phoneInput']")).sendKeys("1234567890");
+
         driver.findElement(By.cssSelector("button")).click();
 
         assertThat(driver.getTitle()).isEqualTo(lastPageTitle);

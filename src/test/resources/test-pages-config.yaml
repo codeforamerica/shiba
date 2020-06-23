@@ -129,6 +129,15 @@ test-validation:
         validator:
           validation: STATE
         validationErrorMessageKey: error-message-key
+  phonePage:
+    nextPage: lastPage
+    pageTitle: phone-page-title
+    inputs:
+      - name: phoneInput
+        type: TEXT
+        validator:
+          validation: PHONE
+        validationErrorMessageKey: error-message-key
   lastPage:
     pageTitle: last-page-title
     inputs:

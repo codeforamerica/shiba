@@ -186,7 +186,7 @@ pages:
         type: TEXT
         promptMessageKey: contact-info.whats-your-phone-number
         validator:
-          validation: NOT_BLANK
+          validation: PHONE
         validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
       - name: phoneNumberAgain
         type: TEXT
