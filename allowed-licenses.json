@@ -1,0 +1,58 @@
+{
+  "allowedLicenses": [
+    {
+      "moduleLicense": "Academic Free License"
+    },
+    {
+      "moduleLicense": "Apache License, Version 2.0"
+    },
+    {
+      "moduleLicense": "Apache License 2.0"
+    },
+    {
+      "moduleLicense": "The Apache Software License, Version 2.0"
+    },
+    {
+      "moduleLicense": "Bouncy Castle License"
+    },
+    {
+      "moduleLicense": "BSD License"
+    },
+    {
+      "moduleLicense": "BSD-2-Clause"
+    },
+    {
+      "moduleLicense": "Common Development and Distribution License"
+    },
+    {
+      "moduleLicense": "Creative Commons Attribution 4.0 International"
+    },
+    {
+      "moduleLicense": "Eclipse Public License - v 1.0"
+    },
+    {
+      "moduleLicense": "EPL 2.0"
+    },
+    {
+      "moduleLicense": "Eclipse Public License v. 2.0"
+    },
+    {
+      "moduleLicense": "GNU Lesser General Public License"
+    },
+    {
+      "moduleLicense": "GNU General Public License, version 2 with the GNU Classpath Exception"
+    },
+    {
+      "moduleLicense": "GPL2 w"
+    },
+    {
+      "moduleLicense": "ISC License"
+    },
+    {
+      "moduleLicense": "The PostgreSQL License"
+    },
+    {
+      "moduleLicense": "MIT License"
+    }
+  ]
+}

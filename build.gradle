@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.2.6.RELEASE'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'java'
+    id 'com.github.jk1.dependency-license-report' version '1.13'
 }
 
 group = 'org.codeforamerica'
@@ -48,4 +49,12 @@ compileJava.inputs.files(processResources)
 
 test {
     useJUnitPlatform()
+}
+
+licenseReport {
+    allowedLicensesFile = new File("$projectDir/allowed-licenses.json")
+}
+
+build {
+    dependsOn(checkLicense)
 }
