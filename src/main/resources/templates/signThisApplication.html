@@ -3,30 +3,34 @@
 <div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
 <body>
 <div class="page-wrapper">
-    <section class="slab slab--white">
+    <section class="slab slab--shiba">
         <div class="grid">
             <a th:replace="fragments/go-back"></a>
-            <div th:if="${page.hasHeader()}" class="grid__item spacing-above-35 spacing-below-35">
-                <h2 th:text="#{${page.headerKey}}"></h2>
-                <p class="text--help"
-                   th:if="${page.headerHelpMessageKey != null}"
-                   th:text="#{${page.headerHelpMessageKey}}"></p>
-            </div>
-            <div class="grid__item">
-                <form method="post" th:action="@{'/submit'}">
-                    <div class="form-group" th:classappend="${data != null && !data.valid} ? 'form-group--error' : ''">
-                        <input type="text" class="text-input form-width--name" name="applicantSignature">
-                        <p class="text--error" th:if="${data != null && !data.valid}">
-                            <i class="icon-warning"></i>
-                            <span th:text="#{general.validation.make-sure-you-answer-this-question}"></span>
-                        </p>
-                    </div>
-                    <button class="button button--primary" type="submit"
-                            th:text="#{sign-this-application.submit}"></button>
-                </form>
+            <div class="card spacing-above-35">
+                <div th:if="${page.hasHeader()}" class="grid__item spacing-above-35 spacing-below-35">
+                    <h2 th:text="#{${page.headerKey}}"></h2>
+                    <p class="text--help"
+                       th:if="${page.headerHelpMessageKey != null}"
+                       th:text="#{${page.headerHelpMessageKey}}"></p>
+                </div>
+                <div class="grid__item">
+                    <form method="post" th:action="@{'/submit'}">
+                        <div class="form-group"
+                             th:classappend="${data != null && !data.valid} ? 'form-group--error' : ''">
+                            <input type="text" class="text-input form-width--name" name="applicantSignature">
+                            <p class="text--error" th:if="${data != null && !data.valid}">
+                                <i class="icon-warning"></i>
+                                <span th:text="#{general.validation.make-sure-you-answer-this-question}"></span>
+                            </p>
+                        </div>
+                        <button class="button button--primary" type="submit"
+                                th:text="#{sign-this-application.submit}"></button>
+                    </form>
+                </div>
             </div>
         </div>
     </section>
 </div>
+<div th:replace="fragments/footer"></div>
 </body>
 </html>

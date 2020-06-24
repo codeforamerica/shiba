@@ -5217,14 +5217,15 @@ Sidebar Nav
 
 /* SHIBA */
 .intro-box {
+    max-width: 35rem;
     padding: 2.5rem 1rem 2.5rem 1rem;
-    margin: 2.5rem 2rem 2.5rem 2rem;
+    margin: 2.5rem auto;
     border: 2px solid #AAAAAA;
 }
 
 .dob-input {
     display: inline-block;
-    width: 30%;
+    width: calc(30% - 3rem);
 }
 
 .bottom-horizontal-line {
@@ -5237,9 +5238,36 @@ Sidebar Nav
 }
 
 .form-width--2-character {
-    width: calc(5.4rem + 2ch);
+    width: calc(4.4rem + 2ch);
+    padding: 0 2rem;
 }
 
 .form-width--4-character {
-    width: calc(5.4rem + 4ch);
+    width: calc(4.4rem + 4ch);
+    padding: 0 2rem;
+}
+
+.slab--shiba {
+    background-color: #E5E5E5;
+}
+
+.main-footer {
+    background-color: #C4C4C4;
+}
+
+@media screen and (min-width: 601px) {
+    .main-footer {
+        height: 15rem;
+    }
+
+    .card {
+        margin-bottom: 6rem;
+        padding: 6rem 16rem;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    body {
+        padding-bottom: 25rem;
+    }
 }

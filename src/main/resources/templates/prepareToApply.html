@@ -3,9 +3,10 @@
 <div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
 <body class=" locale-en">
 <div class="page-wrapper">
-    <section class="slab slab--white">
+    <section class="slab slab--shiba">
         <div class="grid">
             <a th:replace="fragments/go-back"></a>
+            <div class="card spacing-above-35">
             <div class="grid__item spacing-above-35">
                 <h2 th:text="#{prepare-to-apply.how-this-works}"></h2>
                 <p class="text-25">
@@ -30,8 +31,10 @@
                     <span>.</span>
                 </p>
             </div>
+            </div>
         </div>
     </section>
 </div>
+<div th:replace="fragments/footer"></div>
 </body>
 </html>

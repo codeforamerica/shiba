@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
-<body class="locale-en spacing-below-250">
+<body class="locale-en">
 <div class="page-wrapper">
     <section class="slab spacing-above-35">
         <div class="grid">
@@ -17,44 +17,42 @@
     </section>
     <section class="slab slab--white">
         <div class="grid">
-            <h2 class="spacing-below-35" th:text="#{landing.apply-to-these-programs}"></h2>
-            <div class="grid__item spacing-below-35">
-                <h3 class="spacing-below-10" th:text="#{landing.food-assistance-SNAP}"></h3>
-                <p class="form-card__body-text" th:text="#{landing.SNAP-helps-low-income-Minnesotans-get-the-food-they-need}"></p>
+            <h2 class="spacing-below-95 text--centered" th:text="#{landing.apply-to-these-programs}"></h2>
+            <div class="grid__item width-one-half">
+                <div class="grid__item spacing-below-35">
+                    <h3 class="spacing-below-10" th:text="#{landing.food-assistance-SNAP}"></h3>
+                    <p class="form-card__body-text"
+                       th:text="#{landing.SNAP-helps-low-income-Minnesotans-get-the-food-they-need}"></p>
+                </div>
+                <div class="grid__item spacing-below-35">
+                    <h3 class="spacing-below-10" th:text="#{landing.cash-programs}"></h3>
+                    <p class="form-card__body-text"
+                       th:text="#{landing.cash-assistance-helps-people-meet-their-basic-needs-until-they-are-able}"></p>
+                    <ul class="list--bulleted text--small">
+                        <li th:text="#{landing.diversionary-work-program-DWP}"></li>
+                        <li th:text="#{landing.general-assistance}"></li>
+                        <li th:text="#{landing.group-residential-housing-grh}"></li>
+                        <li th:text="#{landing.mn-family-investment-program-mfip}"></li>
+                        <li th:text="#{landing.mn-supplemental-aid-msa}"></li>
+                        <li th:text="#{landing.refugee-cash-assistance-rca}"></li>
+                    </ul>
+                </div>
             </div>
-            <div class="grid__item spacing-below-35">
-                <h3 class="spacing-below-10" th:text="#{landing.cash-programs}"></h3>
-                <p class="form-card__body-text" th:text="#{landing.cash-assistance-helps-people-meet-their-basic-needs-until-they-are-able}"></p>
-                <ul class="list--bulleted text--small">
-                    <li th:text="#{landing.diversionary-work-program-DWP}"></li>
-                    <li th:text="#{landing.general-assistance}"></li>
-                    <li th:text="#{landing.group-residential-housing-grh}"></li>
-                    <li th:text="#{landing.mn-family-investment-program-mfip}"></li>
-                    <li th:text="#{landing.mn-supplemental-aid-msa}"></li>
-                    <li th:text="#{landing.refugee-cash-assistance-rca}"></li>
-                </ul>
-            </div>
-            <div class="grid__item spacing-below-35">
-                <h3 class="spacing-below-10" th:text="#{landing.emergency-assistance}"></h3>
-                <p class="form-card__body-text" th:text="#{landing.emergency-assistance-provides-something-to-people-this-is-a-description}"></p>
-            </div>
-            <div class="grid__item spacing-below-35">
-                <h3 class="spacing-below-10" th:text="#{landing.child-care-assistance}"></h3>
-                <p class="form-card__body-text" th:text="#{landing.child-care-assistance-provides-financial-assistance-to-help-families}"></p>
+            <div class="grid__item width-one-half">
+                <div class="grid__item spacing-below-35">
+                    <h3 class="spacing-below-10" th:text="#{landing.emergency-assistance}"></h3>
+                    <p class="form-card__body-text"
+                       th:text="#{landing.emergency-assistance-provides-something-to-people-this-is-a-description}"></p>
+                </div>
+                <div class="grid__item spacing-below-35">
+                    <h3 class="spacing-below-10" th:text="#{landing.child-care-assistance}"></h3>
+                    <p class="form-card__body-text"
+                       th:text="#{landing.child-care-assistance-provides-financial-assistance-to-help-families}"></p>
+                </div>
             </div>
         </div>
     </section>
-
 </div>
-<footer class="main-footer">
-    <div class="grid">
-        <div class="grid__item">
-            <p class="text--small spacing-below-0" th:text="#{landing.the-combined-benefits-application-is-a-service-designed-by-code-for}"></p>
-            <div class="main-footer__cfa-logo spacing-above-15">
-                <a href="https://www.codeforamerica.org" class="illustration illustration--cfa-logo__dark spacing-below-0" th:text="#{general.code-for-america}"></a>
-            </div>
-        </div>
-    </div>
-</footer>
+<div th:replace="fragments/footer"></div>
 </body>
 </html>

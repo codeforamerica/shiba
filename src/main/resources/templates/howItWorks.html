@@ -3,24 +3,29 @@
 <div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
 <body>
 <div class="page-wrapper">
-    <section class="slab slab--white">
+    <section class="slab slab--shiba">
         <div class="grid">
             <a th:replace="fragments/go-back"></a>
-            <div class="grid__item spacing-above-35">
-                <h2 th:text="|#{how-it-works.okay-lets-apply-for-help-with} ${T(org.codeforamerica.shiba.Utils).getTitleString(#messages.listMsg(programs.messageKeysForValue))}.|"></h2>
+            <div class="card spacing-above-35">
+                <div class="grid__item spacing-above-35">
+                    <h2 th:text="|#{how-it-works.okay-lets-apply-for-help-with} ${T(org.codeforamerica.shiba.Utils).getTitleString(#messages.listMsg(programs.messageKeysForValue))}.|"></h2>
+                </div>
+                <p class="text-25" th:text="#{how-it-works.how-it-works}"></p>
+                <h3 class="spacing-below-10" th:text="#{how-it-works.submit-an-application}"></h3>
+                <p th:text="#{how-it-works.this-online-application-will-guide-you-step-by-step}"></p>
+                <h3 class="spacing-below-10 spacing-above-35"
+                    th:text="#{how-it-works.submit-proof-of-your-situation}"></h3>
+                <p th:text="#{how-it-works.you-will-be-asked-to-provide-documents-like-copies}"></p>
+                <h3 class="spacing-below-10 spacing-above-35" th:text="#{how-it-works.a-caseworker-will-call-you}"></h3>
+                <p th:text="#{how-it-works.they-will-ask-about-the-information-you-put-in-your}"></p>
+                <h3 class="spacing-below-10 spacing-above-35" th:text="#{how-it-works.get-money-on-an-ebt-card}"></h3>
+                <p class="spacing-below-60"
+                   th:text="#{how-it-works.once-you-are-approved-youll-get-an-ebt-card-that}"></p>
+                <div th:replace="fragments/continue"></div>
             </div>
-            <p class="text-25" th:text="#{how-it-works.how-it-works}"></p>
-            <h3 class="spacing-below-10" th:text="#{how-it-works.submit-an-application}"></h3>
-            <p th:text="#{how-it-works.this-online-application-will-guide-you-step-by-step}"></p>
-            <h3 class="spacing-below-10 spacing-above-35" th:text="#{how-it-works.submit-proof-of-your-situation}"></h3>
-            <p th:text="#{how-it-works.you-will-be-asked-to-provide-documents-like-copies}"></p>
-            <h3 class="spacing-below-10 spacing-above-35" th:text="#{how-it-works.a-caseworker-will-call-you}"></h3>
-            <p th:text="#{how-it-works.they-will-ask-about-the-information-you-put-in-your}"></p>
-            <h3 class="spacing-below-10 spacing-above-35" th:text="#{how-it-works.get-money-on-an-ebt-card}"></h3>
-            <p class="spacing-below-60" th:text="#{how-it-works.once-you-are-approved-youll-get-an-ebt-card-that}"></p>
-            <div th:replace="fragments/continue"></div>
         </div>
     </section>
 </div>
+<div th:replace="fragments/footer"></div>
 </body>
 </html>
