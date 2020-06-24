@@ -188,10 +188,6 @@ pages:
         validator:
           validation: PHONE
         validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
-      - name: phoneNumberAgain
-        type: TEXT
-        promptMessageKey: contact-info.type-your-phone-number-again
-        helpMessageKey: contact-info.lets-make-sure-that-we-have-it-right
       - name: email
         type: TEXT
         promptMessageKey: contact-info.whats-your-email-address

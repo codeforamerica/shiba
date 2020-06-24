@@ -163,12 +163,14 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest{
 
     @ParameterizedTest
     @ValueSource(strings = {
-            "123456789",
-            "12345678901",
-            "123456789e",
-            "123-456789"
+            "723456789",
+            "72345678901",
+            "723456789e",
+            "723-456789",
+            "1234567890",
+            "0234567890",
     })
-    void shouldFailValidationForPhoneIfValueIsNotExactly10Digits(String input) {
+    void shouldFailValidationForPhoneIfValueIsNotExactly10DigitsOrStartsWithAZeroOrOne(String input) {
         driver.navigate().to(baseUrl + "/pages/phonePage");
         driver.findElement(By.cssSelector("input[name^='phoneInput']")).sendKeys(input);
         driver.findElement(By.cssSelector("button")).click();
@@ -180,7 +182,7 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest{
     @Test
     void shouldPassValidationForPhoneIfAndOnlyIfValueIsExactly10Digits() {
         driver.navigate().to(baseUrl + "/pages/phonePage");
-        driver.findElement(By.cssSelector("input[name^='phoneInput']")).sendKeys("1234567890");
+        driver.findElement(By.cssSelector("input[name^='phoneInput']")).sendKeys("7234567890");
 
         driver.findElement(By.cssSelector("button")).click();
 

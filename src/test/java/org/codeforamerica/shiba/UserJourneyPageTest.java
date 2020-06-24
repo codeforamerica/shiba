@@ -223,7 +223,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
             assertThat(page.hasSSNError()).isTrue();
 
 
-            ssn = "1234567890";
+            ssn = "7234567890";
             page.enterSSN(ssn);
             page.clickPrimaryButton();
 
@@ -330,7 +330,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         personalInfoPage.enterLastName("defaultLastName");
 
         ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
-        contactInfoPage.enterPhoneNumber("1234567890");
+        contactInfoPage.enterPhoneNumber("7234567890");
 
         ThanksPage thanksPage = contactInfoPage.clickPrimaryButton();
         WeDoNotRecommendMinimalFlowPage weDoNotRecommendMinimalFlowPage = thanksPage.clickSubtleLink();
@@ -350,7 +350,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         personalInfoPage.enterLastName("defaultLastName");
 
         ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
-        contactInfoPage.enterPhoneNumber("1234567890");
+        contactInfoPage.enterPhoneNumber("7234567890");
 
         HomeAddressPage homeAddressPage = contactInfoPage.clickPrimaryButton().clickSubtleLink().clickSubtleLink();
 
@@ -370,7 +370,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         personalInfoPage.enterLastName("defaultLastName");
 
         ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
-        contactInfoPage.enterPhoneNumber("1234567890");
+        contactInfoPage.enterPhoneNumber("7234567890");
 
         HomeAddressPage homeAddressPage = contactInfoPage
                 .clickPrimaryButton()
@@ -398,7 +398,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         personalInfoPage.enterLastName("defaultLastName");
 
         ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
-        contactInfoPage.enterPhoneNumber("1234567890");
+        contactInfoPage.enterPhoneNumber("7234567890");
 
         HomeAddressPage homeAddressPage = contactInfoPage
                 .clickPrimaryButton()
@@ -431,7 +431,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         personalInfoPage.enterLastName("defaultLastName");
 
         ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
-        contactInfoPage.enterPhoneNumber("1234567890");
+        contactInfoPage.enterPhoneNumber("7234567890");
 
         HomeAddressPage homeAddressPage = contactInfoPage
                 .clickPrimaryButton()
@@ -469,7 +469,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         personalInfoPage.enterLastName("defaultLastName");
         personalInfoPage.enterSSN("000000000");
         ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
-        contactInfoPage.enterPhoneNumber("1234567890");
+        contactInfoPage.enterPhoneNumber("7234567890");
         HomeAddressPage homeAddressPage = contactInfoPage
                 .clickPrimaryButton()
                 .clickSubtleLink()
@@ -506,7 +506,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         personalInfoPage.enterLastName("defaultLastName");
         personalInfoPage.enterSSN("000000000");
         ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
-        contactInfoPage.enterPhoneNumber("1234567890");
+        contactInfoPage.enterPhoneNumber("7234567890");
         HomeAddressPage homeAddressPage = contactInfoPage
                 .clickPrimaryButton()
                 .clickSubtleLink()
