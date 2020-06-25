@@ -38,5 +38,3 @@ jobs:
         environment: ${{ secrets.APTIBLE_ENVIRONMENT }}
         # App handle
         app: ${{ secrets.APTIBLE_APP }}
-        # Docker image
-        docker_img: openjdk:14.0
