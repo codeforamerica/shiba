@@ -174,3 +174,15 @@ test-conditional-rendering:
     inputs:
       - name: foo
         type: TEXT
+test-start-timer:
+  pageThatDoesNotStartTimer:
+    pageTitle: not-start-timer-title
+    inputs:
+      - name: foo
+        type: TEXT
+  pageThatDoesStartTimer:
+    pageTitle: start-timer-title
+    inputs:
+      - name: foo
+        type: TEXT
+    startTimer: true

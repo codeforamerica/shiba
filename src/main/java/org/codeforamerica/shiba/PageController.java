@@ -55,10 +55,11 @@ public class PageController {
 
     @GetMapping("/pages/{pageName}")
     ModelAndView getFormPage(@PathVariable String pageName) {
-        if(pageName.equals("languagePreferences")) {
+        PageConfiguration pageConfiguration = this.pagesConfiguration.get(pageName);
+
+        if (pageConfiguration.isStartTimer()) {
             sessionMetadata.setStartTimeOnce(clock.instant());
         }
-        PageConfiguration pageConfiguration = this.pagesConfiguration.get(pageName);
 
         HashMap<String, Object> model = new HashMap<>(Map.of(
                 "page", pageConfiguration,

@@ -33,8 +33,6 @@ public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest 
     @BeforeEach
     void setUp() throws IOException {
         super.setUp();
-        staticMessageSource.addMessage("general.go-back", Locale.US, "Go Back");
-        staticMessageSource.addMessage("general.continue", Locale.US, "Continue");
         staticMessageSource.addMessage("first-page-title", Locale.US, "firstPageTitle");
         staticMessageSource.addMessage("static-page-with-datasource-title", Locale.US, staticPageWithDatasourceTitle);
         staticMessageSource.addMessage("static-page-with-datasource-inputs-title", Locale.US, staticPageWithDatasourceInputsTitle);

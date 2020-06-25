@@ -8,6 +8,7 @@ pages:
     nextPage: languagePreferences
   languagePreferences:
     pageTitle: language-preferences.title
+    startTimer: true
     headerKey: language-preferences.language-preferences
     nextPage: choosePrograms
     previousPage: prepareToApply
