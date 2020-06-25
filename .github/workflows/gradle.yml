@@ -23,6 +23,19 @@ jobs:
       run: chmod +x gradlew
     - name: Test with Gradle
       run: ./gradlew clean test
+  publish_docker_image:
+    name: Publish Docker image to GitHub Packages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - name: Push to GitHub Packages
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          repository: codeforamerica/shiba/shiba-image
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -30,11 +43,8 @@ jobs:
     - name: Deploy to Aptible
       uses: aptible/aptible-deploy-action@v1.1
       with:
-        # Aptible username
         username: ${{ secrets.APTIBLE_USERNAME }}
-        # Aptible password
         password: ${{ secrets.APTIBLE_PASSWORD }}
-        # Aptible environment
         environment: ${{ secrets.APTIBLE_ENVIRONMENT }}
-        # App handle
         app: ${{ secrets.APTIBLE_APP }}
+        docker_img: codeforamerica/shiba/shiba-image
