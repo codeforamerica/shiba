@@ -10,9 +10,7 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up ChromeDriver
@@ -25,3 +23,18 @@ jobs:
       run: chmod +x gradlew
     - name: Test with Gradle
       run: ./gradlew clean test
+  deploy:
+    runs-on: ubuntu-latest  
+    - name: Deploy to Aptible
+      uses: aptible/aptible-deploy-action@v1.1
+      with:
+        # Aptible username
+        username: ${{ secrets.APTIBLE_USERNAME }}
+        # Aptible password
+        password: ${{ secrets.APTIBLE_PASSWORD }}
+        # Aptible environment
+        environment: ${{ secrets.APTIBLE_ENVIRONMENT }}
+        # App handle
+        app: ${{ secrets.APTIBLE_APP }}
+        # Docker image
+        docker_img: openjdk:14.0
