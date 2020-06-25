@@ -277,7 +277,7 @@ pages:
     pageTitle: mailing-address.title
     headerKey: mailing-address.where-can-the-county-send-your-mail
     previousPage: homeAddress
-    nextPage: signThisApplication
+    nextPage: doYouNeedHelpImmediately
     inputs:
       - name: zipCode
         type: TEXT
@@ -341,11 +341,15 @@ pages:
     skipCondition:
       input: sameMailingAddress
       value: true
+  doYouNeedHelpImmediately:
+    pageTitle: do-you-need-help-immediately.title
+    previousPage: mailingAddress
+    nextPage: signThisApplication
   signThisApplication:
     pageTitle: sign-this-application.title
     headerKey: sign-this-application.type-your-full-legal-name-here-to-sign-this-application
     headerHelpMessageKey: sign-this-application.by-signing-this-application-you-agree-that-you-want-to
-    previousPage: mailingAddress
+    previousPage: doYouNeedHelpImmediately
     nextPage: success
   success:
     pageTitle: success.title

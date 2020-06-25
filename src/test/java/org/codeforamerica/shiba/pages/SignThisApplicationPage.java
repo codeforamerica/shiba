@@ -2,9 +2,9 @@ package org.codeforamerica.shiba.pages;
 
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-public class SignThisApplicationPage extends IntermediaryPage<MailingAddressPage, SuccessPage> {
-    public SignThisApplicationPage(MailingAddressPage mailingAddressPage, RemoteWebDriver driver) {
-        super(mailingAddressPage, driver);
+public class SignThisApplicationPage extends IntermediaryPage<DoYouNeedHelpImmediatelyPage, SuccessPage> {
+    public SignThisApplicationPage(DoYouNeedHelpImmediatelyPage doYouNeedHelpImmediatelyPage, RemoteWebDriver driver) {
+        super(doYouNeedHelpImmediatelyPage, driver);
     }
 
     @Override

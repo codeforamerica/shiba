@@ -38,8 +38,9 @@ public class PageController {
     }
 
     @GetMapping("/pages/{pageName}/navigation")
-    RedirectView goBackToPage(@PathVariable String pageName,
-                              @RequestParam(defaultValue = "false") Boolean isBackwards
+    RedirectView goBackToPage(
+            @PathVariable String pageName,
+            @RequestParam(defaultValue = "false") Boolean isBackwards
     ) {
         PageConfiguration currentPageConfiguration = this.pagesConfiguration.get(pageName);
 
@@ -98,7 +99,10 @@ public class PageController {
     }
 
     @PostMapping("/submit")
-    ModelAndView submitApplication(@RequestBody(required = false) MultiValueMap<String, String> model, Locale locale) {
+    ModelAndView submitApplication(
+            @RequestBody(required = false) MultiValueMap<String, String> model,
+            Locale locale
+    ) {
         PageConfiguration page = pagesConfiguration.get(SIGN_THIS_APPLICATION_PAGE_NAME);
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy", locale);

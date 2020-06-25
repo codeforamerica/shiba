@@ -383,7 +383,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     @Test
-    void shouldNavigateToSignThisApplicationPageAfterMailingAddress() {
+    void shouldNavigateToDoYouNeedHelpImmediatelyAfterMailingAddress() {
         ChooseProgramsPage chooseProgramPage = landingPage
                 .clickPrimaryButton()
                 .clickPrimaryButton()
@@ -411,8 +411,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         mailingAddressPage.enterInput("city", "someCity");
         mailingAddressPage.enterInput("streetAddress", "someStreetAddress");
 
-        SignThisApplicationPage signThisApplicationPage = mailingAddressPage.clickPrimaryButton();
-        assertThat(signThisApplicationPage.getTitle()).isEqualTo("Sign this application");
+        DoYouNeedHelpImmediatelyPage doYouNeedHelpImmediatelyPage = mailingAddressPage.clickPrimaryButton();
+        assertThat(doYouNeedHelpImmediatelyPage.getTitle()).isEqualTo("Do you need help immediately?");
     }
 
     @Test
@@ -444,7 +444,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         mailingAddressPage.enterInput("city", "someCity");
         mailingAddressPage.enterInput("streetAddress", "someStreetAddress");
 
-        SignThisApplicationPage signThisApplicationPage = mailingAddressPage.clickPrimaryButton();
+        DoYouNeedHelpImmediatelyPage doYouNeedHelpImmediatelyPage = mailingAddressPage.clickPrimaryButton();
+        SignThisApplicationPage signThisApplicationPage = doYouNeedHelpImmediatelyPage.clickFinishApplicationNow();
 
         signThisApplicationPage.enterInput("applicantSignature", "some name");
         when(clock.instant()).thenReturn(LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant());
@@ -482,7 +483,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         mailingAddressPage.enterInput("city", "someCity");
         mailingAddressPage.enterInput("streetAddress", "someStreetAddress");
 
-        SignThisApplicationPage signThisApplicationPage = mailingAddressPage.clickPrimaryButton();
+        DoYouNeedHelpImmediatelyPage doYouNeedHelpImmediatelyPage = mailingAddressPage.clickPrimaryButton();
+        SignThisApplicationPage signThisApplicationPage = doYouNeedHelpImmediatelyPage.clickFinishApplicationNow();
 
         signThisApplicationPage.enterInput("applicantSignature", "some name");
         SuccessPage successPage = signThisApplicationPage.clickPrimaryButton();
@@ -519,7 +521,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         mailingAddressPage.enterInput("city", "someCity");
         mailingAddressPage.enterInput("streetAddress", "someStreetAddress");
 
-        SignThisApplicationPage signThisApplicationPage = mailingAddressPage.clickPrimaryButton();
+        DoYouNeedHelpImmediatelyPage doYouNeedHelpImmediatelyPage = mailingAddressPage.clickPrimaryButton();
+        SignThisApplicationPage signThisApplicationPage = doYouNeedHelpImmediatelyPage.clickFinishApplicationNow();
 
         signThisApplicationPage.enterInput("applicantSignature", "some name");
         SuccessPage successPage = signThisApplicationPage.clickPrimaryButton();
@@ -560,7 +563,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         mailingAddressPage.enterInput("city", "someCity");
         mailingAddressPage.enterInput("streetAddress", "someStreetAddress");
 
-        SignThisApplicationPage signThisApplicationPage = mailingAddressPage.clickPrimaryButton();
+        DoYouNeedHelpImmediatelyPage doYouNeedHelpImmediatelyPage = mailingAddressPage.clickPrimaryButton();
+        SignThisApplicationPage signThisApplicationPage = doYouNeedHelpImmediatelyPage.clickFinishApplicationNow();
 
         when(clock.instant()).thenReturn(LocalDateTime.of(2020, 1, 1, 10, 15, 30).atOffset(ZoneOffset.UTC).toInstant());
         signThisApplicationPage.enterInput("applicantSignature", "some name");

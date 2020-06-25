@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
+<body>
+<div class="page-wrapper">
+    <section class="slab slab--shiba">
+        <div class="grid">
+            <a th:replace="fragments/go-back"></a>
+            <div class="card spacing-above-35">
+                <div class="grid__item spacing-above-35 spacing-below-10">
+                    <strong th:text="#{do-you-need-help-immediately.header}"></strong>
+                </div>
+                <p class="text--help spacing-below-35"
+                   th:text="#{do-you-need-help-immediately.we-encourage-you-to-answer-a-few-more-questions-that-will-help-us-figure-out-if-you-qualify-for-faster-service}"></p>
+                <div class="spacing-below-15">
+                    <a class="button button--primary"
+                       th:text="#{do-you-need-help-immediately.yes-I-want-to-see-if-I-qualify}"></a>
+                </div>
+                <div>
+                    <form method="get" th:action="'/pages/'+${pageName}+'/navigation'">
+                    <button class="button" type="submit"
+                            th:text="#{do-you-need-help-immediately.finish-application-now}"></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<div th:replace="fragments/footer"></div>
+</body>
+</html>
