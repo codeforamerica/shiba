@@ -7,6 +7,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.time.Clock;
+import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -19,16 +20,21 @@ public class PageController {
     private final PagesData pagesData;
     private final PagesConfiguration pagesConfiguration;
     private final Clock clock;
+    private final ApplicationMetricsRepository repository;
+    private final SessionMetadata sessionMetadata;
     public static final String SIGN_THIS_APPLICATION_PAGE_NAME = "signThisApplication";
 
     public PageController(
             PagesConfiguration pagesConfiguration,
             PagesData pagesData,
-            Clock clock
-    ) {
+            Clock clock,
+            ApplicationMetricsRepository repository,
+            SessionMetadata sessionMetadata) {
         this.pagesData = pagesData;
         this.pagesConfiguration = pagesConfiguration;
         this.clock = clock;
+        this.repository = repository;
+        this.sessionMetadata = sessionMetadata;
     }
 
     @GetMapping("/pages/{pageName}/navigation")
@@ -49,6 +55,9 @@ public class PageController {
 
     @GetMapping("/pages/{pageName}")
     ModelAndView getFormPage(@PathVariable String pageName) {
+        if(pageName.equals("languagePreferences")) {
+            sessionMetadata.setStartTimeOnce(clock.instant());
+        }
         PageConfiguration pageConfiguration = this.pagesConfiguration.get(pageName);
 
         HashMap<String, Object> model = new HashMap<>(Map.of(
@@ -97,6 +106,9 @@ public class PageController {
                 "submissionTime", new InputData(List.of(dateTimeFormatter.format(ZonedDateTime.ofInstant(clock.instant(), ZoneId.of("UTC")))))
         ));
         pagesData.putPage(SIGN_THIS_APPLICATION_PAGE_NAME, formData);
+
+        ApplicationMetric applicationMetric = new ApplicationMetric(Duration.between(sessionMetadata.getStartTime(), clock.instant()));
+        repository.save(applicationMetric);
         return formData.isValid() ?
                 new ModelAndView(String.format("redirect:/pages/%s/navigation", SIGN_THIS_APPLICATION_PAGE_NAME)) :
                 new ModelAndView(SIGN_THIS_APPLICATION_PAGE_NAME, Map.of(

@@ -4,31 +4,27 @@ import org.codeforamerica.shiba.pages.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.io.IOException;
 import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.pages.DatePart.*;
+import static org.mockito.Mockito.when;
 
 public class UserJourneyPageTest extends AbstractBasePageTest {
 
     private LandingPage landingPage;
 
-    @TestConfiguration
-    static class TestConfig {
-        @Bean
-        Clock clock() {
-            return Clock.fixed(LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant(), ZoneId.of("UTC"));
-        }
-    }
+    @MockBean
+    Clock clock;
 
     @Override
     @BeforeEach
@@ -36,6 +32,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         super.setUp();
         driver.navigate().to(baseUrl + "/pages/landing");
         landingPage = new LandingPage(super.driver);
+        when(clock.instant()).thenReturn(Instant.now());
     }
 
     @Test
@@ -450,6 +447,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         SignThisApplicationPage signThisApplicationPage = mailingAddressPage.clickPrimaryButton();
 
         signThisApplicationPage.enterInput("applicantSignature", "some name");
+        when(clock.instant()).thenReturn(LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant());
         SuccessPage successPage = signThisApplicationPage.clickPrimaryButton();
 
         assertThat(successPage.getTitle()).isEqualTo("Success");
@@ -528,5 +526,49 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
         successPage.downloadXML();
         await().until(() -> path.resolve("ApplyMN.xml").toFile().exists());
+    }
+
+    @Test
+    @Sql(statements = "TRUNCATE TABLE application_metrics;")
+    void shouldCaptureMetricsAfterAnApplicationIsCompleted() {
+        IntermediaryPage<LandingPage, LanguagePreferencesPage> prepareToApplyPage =
+                landingPage.clickPrimaryButton();
+
+        when(clock.instant()).thenReturn(LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant());
+        ChooseProgramsPage chooseProgramPage = prepareToApplyPage.clickPrimaryButton().clickPrimaryButton();
+
+        chooseProgramPage.chooseProgram("Emergency assistance");
+        HowItWorksPage howItWorksPage = chooseProgramPage.clickPrimaryButton();
+        PersonalInfoPage personalInfoPage = howItWorksPage.clickPrimaryButton().clickPrimaryButton();
+        personalInfoPage.enterFirstName("defaultFirstName");
+        personalInfoPage.enterLastName("defaultLastName");
+
+        ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
+        contactInfoPage.enterPhoneNumber("7234567890");
+
+        HomeAddressPage homeAddressPage = contactInfoPage
+                .clickPrimaryButton()
+                .clickSubtleLink()
+                .clickSubtleLink();
+
+        homeAddressPage.enterInput("zipCode", "12345");
+        homeAddressPage.enterInput("city", "someCity");
+        homeAddressPage.enterInput("streetAddress", "someStreetAddress");
+        MailingAddressPage mailingAddressPage = homeAddressPage.clickPrimaryButton();
+
+        mailingAddressPage.enterInput("zipCode", "12345");
+        mailingAddressPage.enterInput("city", "someCity");
+        mailingAddressPage.enterInput("streetAddress", "someStreetAddress");
+
+        SignThisApplicationPage signThisApplicationPage = mailingAddressPage.clickPrimaryButton();
+
+        when(clock.instant()).thenReturn(LocalDateTime.of(2020, 1, 1, 10, 15, 30).atOffset(ZoneOffset.UTC).toInstant());
+        signThisApplicationPage.enterInput("applicantSignature", "some name");
+        signThisApplicationPage.clickPrimaryButton();
+
+        driver.navigate().to(baseUrl + "/metrics");
+        MetricsPage metricsPage = new MetricsPage(super.driver);
+        assertThat(metricsPage.getCardValue("Applications Submitted")).isEqualTo("1");
+        assertThat(metricsPage.getCardValue("Completion Time")).contains("05m 30s");
     }
 }

@@ -36,6 +36,9 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3'
     implementation 'org.jetbrains:annotations:19.0.0'
     implementation 'commons-validator:commons-validator:1.6'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    runtime 'org.flywaydb:flyway-core:6.4.4'
+    runtime 'com.h2database:h2'
 
     testImplementation 'org.seleniumhq.selenium:selenium-java:3.141.59'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {

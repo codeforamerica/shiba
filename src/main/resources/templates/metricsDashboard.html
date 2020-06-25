@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="fragments/head :: head('Metrics')"></div>
+<body class="template--metrics">
+<div class="page-wrapper">
+    <div id="totals" class="grid">
+        <h1>Totals</h1>
+        <div class="grid__item width-one-half">
+            <div class="statistic-card">
+                <p class="statistic-card__label">Applications Submitted</p>
+                <p class="statistic-card__number" th:text="${applicationsSubmitted}"></p>
+            </div>
+        </div>
+    </div>
+    <div id="median" class="grid">
+        <h1>Median Time To Complete</h1>
+        <div class="grid__item">
+            <div class="statistic-card">
+                <p class="statistic-card__label">Completion Time</p>
+                <p class="statistic-card__number" th:text="${medianTimeToComplete}"></p>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="fragments/footer"></div>
+</body>
+</html>

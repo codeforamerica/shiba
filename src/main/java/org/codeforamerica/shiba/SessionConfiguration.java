@@ -17,4 +17,13 @@ public class SessionConfiguration {
     public PagesData data() {
         return new PagesData();
     }
+
+    @Bean
+    @Scope(
+            value = SCOPE_SESSION,
+            proxyMode = TARGET_CLASS
+    )
+    public SessionMetadata sessionMetadata() {
+        return new SessionMetadata();
+    }
 }
