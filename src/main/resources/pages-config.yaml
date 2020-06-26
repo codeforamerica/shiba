@@ -344,7 +344,12 @@ pages:
   doYouNeedHelpImmediately:
     pageTitle: do-you-need-help-immediately.title
     previousPage: mailingAddress
-    nextPage: signThisApplication
+    options:
+      - doYouLiveAlone
+      - signThisApplication
+  doYouLiveAlone:
+    pageTitle: do-you-live-alone.title
+    previousPage: doYouNeedHelpImmediately
   signThisApplication:
     pageTitle: sign-this-application.title
     headerKey: sign-this-application.type-your-full-legal-name-here-to-sign-this-application

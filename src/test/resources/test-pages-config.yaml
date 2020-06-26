@@ -186,3 +186,19 @@ test-start-timer:
       - name: foo
         type: TEXT
     startTimer: true
+test-user-decision-navigation:
+  userDecisionNavigationPage:
+    pageTitle: origin-page-title
+    options:
+      - opitonZeroPage
+      - opitonOnePage
+  opitonZeroPage:
+    pageTitle: option-zero-page-title
+    inputs:
+      - name: foo
+        type: TEXT
+  opitonOnePage:
+    pageTitle: option-one-page-title
+    inputs:
+      - name: foo
+        type: TEXT

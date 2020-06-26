@@ -19,6 +19,7 @@ public class PageConfiguration {
     private PageDatasource datasource;
     private Condition skipCondition;
     private boolean startTimer = false;
+    private List<String> options;
 
     @SuppressWarnings("unused")
     public boolean hasHeader() {

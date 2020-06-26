@@ -416,6 +416,40 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     @Test
+    void shouldNavigateToDoYouLiveAlonePage() {
+        ChooseProgramsPage chooseProgramPage = landingPage
+                .clickPrimaryButton()
+                .clickPrimaryButton()
+                .clickPrimaryButton();
+        chooseProgramPage.chooseProgram("Emergency assistance");
+        HowItWorksPage howItWorksPage = chooseProgramPage.clickPrimaryButton();
+        PersonalInfoPage personalInfoPage = howItWorksPage.clickPrimaryButton().clickPrimaryButton();
+        personalInfoPage.enterFirstName("defaultFirstName");
+        personalInfoPage.enterLastName("defaultLastName");
+
+        ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
+        contactInfoPage.enterPhoneNumber("7234567890");
+
+        HomeAddressPage homeAddressPage = contactInfoPage
+                .clickPrimaryButton()
+                .clickSubtleLink()
+                .clickSubtleLink();
+
+        homeAddressPage.enterInput("zipCode", "12345");
+        homeAddressPage.enterInput("city", "someCity");
+        homeAddressPage.enterInput("streetAddress", "someStreetAddress");
+        MailingAddressPage mailingAddressPage = homeAddressPage.clickPrimaryButton();
+
+        mailingAddressPage.enterInput("zipCode", "12345");
+        mailingAddressPage.enterInput("city", "someCity");
+        mailingAddressPage.enterInput("streetAddress", "someStreetAddress");
+
+        DoYouNeedHelpImmediatelyPage doYouNeedHelpImmediatelyPage = mailingAddressPage.clickPrimaryButton();
+        DoYouLiveAlonePage doYouLiveAlonePage = doYouNeedHelpImmediatelyPage.clickFirstOption();
+        assertThat(doYouLiveAlonePage.getTitle()).isEqualTo("Do you live alone?");
+    }
+
+    @Test
     void shouldGoToSuccessPageAfterSignThisApplicationPage() {
         ChooseProgramsPage chooseProgramPage = landingPage
                 .clickPrimaryButton()

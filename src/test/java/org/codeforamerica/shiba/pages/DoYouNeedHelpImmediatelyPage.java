@@ -9,7 +9,12 @@ public class DoYouNeedHelpImmediatelyPage extends BasePage {
     }
 
     public SignThisApplicationPage clickFinishApplicationNow() {
-        driver.findElement(By.cssSelector("button:last-of-type")).click();
+        driver.findElement(By.cssSelector("button")).click();
         return new SignThisApplicationPage(this, driver);
+    }
+
+    public DoYouLiveAlonePage clickFirstOption() {
+        driver.findElement(By.cssSelector(".button:first-of-type")).click();
+        return new DoYouLiveAlonePage(driver);
     }
 }
