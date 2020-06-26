@@ -10,7 +10,7 @@ public interface ApplicationInputsMapper {
             case CHECKBOX -> ApplicationInputType.ENUMERATED_MULTI_VALUE;
             case RADIO, SELECT -> ApplicationInputType.ENUMERATED_SINGLE_VALUE;
             case DATE -> ApplicationInputType.DATE_VALUE;
-            case TEXT, NUMBER -> ApplicationInputType.SINGLE_VALUE;
+            case TEXT, NUMBER, LEGAL_TERMS -> ApplicationInputType.SINGLE_VALUE;
         };
     }
 }

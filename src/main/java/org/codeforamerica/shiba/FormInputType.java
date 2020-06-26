@@ -6,5 +6,6 @@ public enum FormInputType {
     NUMBER,
     RADIO,
     CHECKBOX,
-    SELECT
+    SELECT,
+    LEGAL_TERMS
 }

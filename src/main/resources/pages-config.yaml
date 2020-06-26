@@ -346,15 +346,30 @@ pages:
     previousPage: mailingAddress
     options:
       - doYouLiveAlone
-      - signThisApplication
+      - legalStuff
   doYouLiveAlone:
     pageTitle: do-you-live-alone.title
     previousPage: doYouNeedHelpImmediately
+  legalStuff:
+    pageTitle: legal-stuff.title
+    previousPage: doYouNeedHelpImmediately
+    nextPage: signThisApplication
+    headerKey: legal-stuff.the-legal-stuff
+    headerHelpMessageKey: legal-stuff.scroll-down-to-agree-to-the-terms
+    inputs:
+      - name: agreeToTerms
+        type: LEGAL_TERMS
+        validator:
+          validation: SELECT_AT_LEAST_ONE
+        validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+        options:
+          - value: true
+            messageKey: legal-stuff.i-agree
   signThisApplication:
     pageTitle: sign-this-application.title
     headerKey: sign-this-application.type-your-full-legal-name-here-to-sign-this-application
     headerHelpMessageKey: sign-this-application.by-signing-this-application-you-agree-that-you-want-to
-    previousPage: doYouNeedHelpImmediately
+    previousPage: legalStuff
     nextPage: success
   success:
     pageTitle: success.title

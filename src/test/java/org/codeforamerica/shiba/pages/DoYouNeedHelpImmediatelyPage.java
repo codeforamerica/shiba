@@ -8,9 +8,9 @@ public class DoYouNeedHelpImmediatelyPage extends BasePage {
         super(driver);
     }
 
-    public SignThisApplicationPage clickFinishApplicationNow() {
+    public LegalStuffPage clickZerothOption() {
         driver.findElement(By.cssSelector("button")).click();
-        return new SignThisApplicationPage(this, driver);
+        return new LegalStuffPage(this, driver);
     }
 
     public DoYouLiveAlonePage clickFirstOption() {
