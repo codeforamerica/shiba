@@ -9,25 +9,25 @@ on:
       - master
 
 jobs:
-  test:
-    name: Run test suite
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up ChromeDriver
-      uses: nanasess/setup-chromedriver@v1.0.1
-    - name: Set up JDK
-      uses: actions/setup-java@v1
-      with:
-        java-version: '14'
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: Test with Gradle
-      run: ./gradlew clean test
+#   test:
+#     name: Run test suite
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v2
+#     - name: Set up ChromeDriver
+#       uses: nanasess/setup-chromedriver@v1.0.1
+#     - name: Set up JDK
+#       uses: actions/setup-java@v1
+#       with:
+#         java-version: '14'
+#     - name: Grant execute permission for gradlew
+#       run: chmod +x gradlew
+#     - name: Test with Gradle
+#       run: ./gradlew clean test
   deploy:
     name: Deploy to Aptible staging
     runs-on: ubuntu-latest
-    needs: test
+#     needs: test
     steps:
       - uses: actions/checkout@v2
       - run: git fetch --prune --unshallow
