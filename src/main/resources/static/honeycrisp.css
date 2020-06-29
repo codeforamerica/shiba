@@ -1607,6 +1607,14 @@ hr {
     background-image: url(images/1f641.png);
 }
 
+.emoji--checkmark {
+    background-image: url(images/checkmark.png);
+}
+
+.emoji--crossmark {
+    background-image: url(images/crossmark.png);
+}
+
 .emoji--thumbs-up {
     background-image: url(/assets/emojis/1f44d-8c9093e9b70f51ba93f56df182b24a713853f8e1378c1fc9c2ff30869ea034bb.png);
 }
@@ -1767,14 +1775,6 @@ hr {
 
 .emoji--baby {
     background-image: url(/assets/emojis/1f476-8465fed7569a12cc2fdc0b7e7a0085659f19ce3e09ee847d4ea6e4d652136cab.png);
-}
-
-.emoji--checkmark {
-    background-image: url(/assets/emojis/checkmark-5b981632cefe31ece2a4f47f362ae6377e815c1415945092d0ff97814df5a4c7.png);
-}
-
-.emoji--crossmark {
-    background-image: url(/assets/emojis/crossmark-b2c7a8f0e1afbb9171f36f13e87336d4e70399d95a726111b9a9337a1e5c11c0.png);
 }
 
 .emoji--student-woman {

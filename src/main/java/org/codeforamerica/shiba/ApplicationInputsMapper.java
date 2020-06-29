@@ -11,6 +11,7 @@ public interface ApplicationInputsMapper {
             case RADIO, SELECT -> ApplicationInputType.ENUMERATED_SINGLE_VALUE;
             case DATE -> ApplicationInputType.DATE_VALUE;
             case TEXT, NUMBER, LEGAL_TERMS -> ApplicationInputType.SINGLE_VALUE;
+            case YES_NO -> null;//TODO
         };
     }
 }

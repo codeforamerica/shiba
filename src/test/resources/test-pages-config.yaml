@@ -213,3 +213,21 @@ test-user-decision-navigation:
     inputs:
       - name: foo
         type: TEXT
+yes-no-answer:
+  yesNoQuestionPage:
+    pageTitle: yes-no-question-page
+    nextPage:
+      - answerPage
+    inputs:
+      - name: yesOrNo
+        type: YES_NO
+  answerPage:
+    pageTitle: answer-page
+    inputs:
+      - name: foo
+        type: TEXT
+        defaultValue:
+          type: DATASOURCE_REFERENCE
+          value: yesOrNo
+    datasource:
+      pageName: yesNoQuestionPage
