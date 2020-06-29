@@ -445,7 +445,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         mailingAddressPage.enterInput("streetAddress", "someStreetAddress");
 
         DoYouNeedHelpImmediatelyPage doYouNeedHelpImmediatelyPage = mailingAddressPage.clickPrimaryButton();
-        DoYouLiveAlonePage doYouLiveAlonePage = doYouNeedHelpImmediatelyPage.clickFirstOption();
+        DoYouLiveAlonePage doYouLiveAlonePage = doYouNeedHelpImmediatelyPage.chooseYesIWantToSeeIfIQualify();
         assertThat(doYouLiveAlonePage.getTitle()).isEqualTo("Do you live alone?");
     }
 
@@ -479,7 +479,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         mailingAddressPage.enterInput("streetAddress", "someStreetAddress");
 
         DoYouNeedHelpImmediatelyPage doYouNeedHelpImmediatelyPage = mailingAddressPage.clickPrimaryButton();
-        LegalStuffPage legalStuffPage = doYouNeedHelpImmediatelyPage.clickZerothOption();
+        LegalStuffPage legalStuffPage = doYouNeedHelpImmediatelyPage.chooseFinishApplicationNow();
 
         assertThat(legalStuffPage.getTitle()).isEqualTo("Legal Stuff");
     }
@@ -514,7 +514,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         mailingAddressPage.enterInput("streetAddress", "someStreetAddress");
 
         DoYouNeedHelpImmediatelyPage doYouNeedHelpImmediatelyPage = mailingAddressPage.clickPrimaryButton();
-        LegalStuffPage legalStuffPage = doYouNeedHelpImmediatelyPage.clickZerothOption();
+        LegalStuffPage legalStuffPage = doYouNeedHelpImmediatelyPage.chooseFinishApplicationNow();
         legalStuffPage.clickPrimaryButton();
 
         assertThat(legalStuffPage.getTitle()).isEqualTo("Legal Stuff");
@@ -550,7 +550,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         mailingAddressPage.enterInput("streetAddress", "someStreetAddress");
 
         DoYouNeedHelpImmediatelyPage doYouNeedHelpImmediatelyPage = mailingAddressPage.clickPrimaryButton();
-        LegalStuffPage legalStuffPage = doYouNeedHelpImmediatelyPage.clickZerothOption();
+        LegalStuffPage legalStuffPage = doYouNeedHelpImmediatelyPage.chooseFinishApplicationNow();
         legalStuffPage.clickIAgree();
         SignThisApplicationPage signThisApplicationPage = legalStuffPage.clickPrimaryButton();
 
@@ -591,7 +591,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         mailingAddressPage.enterInput("streetAddress", "someStreetAddress");
 
         DoYouNeedHelpImmediatelyPage doYouNeedHelpImmediatelyPage = mailingAddressPage.clickPrimaryButton();
-        LegalStuffPage legalStuffPage = doYouNeedHelpImmediatelyPage.clickZerothOption();
+        LegalStuffPage legalStuffPage = doYouNeedHelpImmediatelyPage.chooseFinishApplicationNow();
         legalStuffPage.clickIAgree();
         SignThisApplicationPage signThisApplicationPage = legalStuffPage.clickPrimaryButton();
 
@@ -631,7 +631,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         mailingAddressPage.enterInput("streetAddress", "someStreetAddress");
 
         DoYouNeedHelpImmediatelyPage doYouNeedHelpImmediatelyPage = mailingAddressPage.clickPrimaryButton();
-        LegalStuffPage legalStuffPage = doYouNeedHelpImmediatelyPage.clickZerothOption();
+        LegalStuffPage legalStuffPage = doYouNeedHelpImmediatelyPage.chooseFinishApplicationNow();
         legalStuffPage.clickIAgree();
         SignThisApplicationPage signThisApplicationPage = legalStuffPage.clickPrimaryButton();
 
@@ -675,7 +675,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         mailingAddressPage.enterInput("streetAddress", "someStreetAddress");
 
         DoYouNeedHelpImmediatelyPage doYouNeedHelpImmediatelyPage = mailingAddressPage.clickPrimaryButton();
-        LegalStuffPage legalStuffPage = doYouNeedHelpImmediatelyPage.clickZerothOption();
+        LegalStuffPage legalStuffPage = doYouNeedHelpImmediatelyPage.chooseFinishApplicationNow();
         legalStuffPage.clickIAgree();
         SignThisApplicationPage signThisApplicationPage = legalStuffPage.clickPrimaryButton();
 

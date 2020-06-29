@@ -1,16 +1,19 @@
 pages:
   landing:
     pageTitle: landing.title
-    nextPage: prepareToApply
+    nextPage:
+      - prepareToApply
   prepareToApply:
     pageTitle: prepare-to-apply.title
     previousPage: landing
-    nextPage: languagePreferences
+    nextPage:
+      - languagePreferences
   languagePreferences:
     pageTitle: language-preferences.title
     startTimer: true
     headerKey: language-preferences.language-preferences
-    nextPage: choosePrograms
+    nextPage:
+      - choosePrograms
     previousPage: prepareToApply
     inputs:
       - name: spokenLanguage
@@ -57,7 +60,8 @@ pages:
             messageKey: general.inputs.no
   choosePrograms:
     pageTitle: choose-programs.title
-    nextPage: howItWorks
+    nextPage:
+      - howItWorks
     previousPage: languagePreferences
     headerKey: choose-programs.what-do-you-need-help-with-today
     headerHelpMessageKey: choose-programs.check-all-that-apply
@@ -79,7 +83,8 @@ pages:
   howItWorks:
     pageTitle: how-it-works.title
     previousPage: choosePrograms
-    nextPage: introBasicInfo
+    nextPage:
+      - introBasicInfo
     dataSource:
       pageName: choosePrograms
       inputs:
@@ -92,12 +97,14 @@ pages:
   introBasicInfo:
     pageTitle: intro-basic-info.title
     previousPage: howItWorks
-    nextPage: personalInfo
+    nextPage:
+      - personalInfo
   personalInfo:
     pageTitle: personal-info.title
     headerKey: personal-info.tell-us-about-yourself
     previousPage: introBasicInfo
-    nextPage: contactInfo
+    nextPage:
+      - contactInfo
     inputs:
       - name: firstName
         type: TEXT
@@ -181,7 +188,8 @@ pages:
     headerKey: contact-info.how-can-we-stay-in-touch-with-you
     headerHelpMessageKey: contact-info.most-of-our-communication-will-be-through-mail
     previousPage: personalInfo
-    nextPage: branchToMinimalFlow
+    nextPage:
+      - branchToMinimalFlow
     inputs:
       - name: phoneNumber
         type: TEXT
@@ -210,18 +218,21 @@ pages:
   branchToMinimalFlow:
     pageTitle: branch-to-minimal-flow.title
     previousPage: contactInfo
-    nextPage: weDoNotRecommendMinimalFlow
+    nextPage:
+      - weDoNotRecommendMinimalFlow
     dataSource:
       pageName: personalInfo
   weDoNotRecommendMinimalFlow:
     pageTitle: we-do-not-recommend-minimal-flow.title
     previousPage: branchToMinimalFlow
-    nextPage: homeAddress
+    nextPage:
+      - homeAddress
   homeAddress:
     headerKey: home-address.where-are-you-currently-living
     pageTitle: home-address.title
     previousPage: weDoNotRecommendMinimalFlow
-    nextPage: mailingAddress
+    nextPage:
+      - mailingAddress
     inputs:
       - name: zipCode
         type: TEXT
@@ -277,7 +288,8 @@ pages:
     pageTitle: mailing-address.title
     headerKey: mailing-address.where-can-the-county-send-your-mail
     previousPage: homeAddress
-    nextPage: doYouNeedHelpImmediately
+    nextPage:
+      - doYouNeedHelpImmediately
     inputs:
       - name: zipCode
         type: TEXT
@@ -344,7 +356,7 @@ pages:
   doYouNeedHelpImmediately:
     pageTitle: do-you-need-help-immediately.title
     previousPage: mailingAddress
-    options:
+    nextPage:
       - doYouLiveAlone
       - legalStuff
   doYouLiveAlone:
@@ -353,7 +365,8 @@ pages:
   legalStuff:
     pageTitle: legal-stuff.title
     previousPage: doYouNeedHelpImmediately
-    nextPage: signThisApplication
+    nextPage:
+      - signThisApplication
     headerKey: legal-stuff.the-legal-stuff
     headerHelpMessageKey: legal-stuff.scroll-down-to-agree-to-the-terms
     inputs:
@@ -370,7 +383,8 @@ pages:
     headerKey: sign-this-application.type-your-full-legal-name-here-to-sign-this-application
     headerHelpMessageKey: sign-this-application.by-signing-this-application-you-agree-that-you-want-to
     previousPage: legalStuff
-    nextPage: success
+    nextPage:
+      - success
   success:
     pageTitle: success.title
     datasource:

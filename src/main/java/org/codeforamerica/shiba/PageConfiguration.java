@@ -14,12 +14,11 @@ public class PageConfiguration {
     private String pageTitle;
     private String headerKey;
     private String headerHelpMessageKey;
-    private String nextPage;
+    private List<String> nextPage;
     private String previousPage;
     private PageDatasource datasource;
     private Condition skipCondition;
     private boolean startTimer = false;
-    private List<String> options;
 
     @SuppressWarnings("unused")
     public boolean hasHeader() {
@@ -44,6 +43,13 @@ public class PageConfiguration {
     }
 
     String getAdjacentPageName(boolean isBackwards) {
-        return isBackwards ? previousPage : nextPage;
+        return getAdjacentPageName(isBackwards, 0);
+    }
+
+    public String getAdjacentPageName(boolean isBackwards, Integer option) {
+        if (isBackwards) {
+            return previousPage;
+        }
+        return nextPage.get(option);
     }
 }

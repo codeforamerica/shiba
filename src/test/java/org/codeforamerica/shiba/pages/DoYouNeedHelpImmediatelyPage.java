@@ -8,13 +8,13 @@ public class DoYouNeedHelpImmediatelyPage extends BasePage {
         super(driver);
     }
 
-    public LegalStuffPage clickZerothOption() {
-        driver.findElement(By.cssSelector("button")).click();
-        return new LegalStuffPage(this, driver);
+    public DoYouLiveAlonePage chooseYesIWantToSeeIfIQualify() {
+        driver.findElement(By.linkText("Yes, I want to see if I qualify")).click();
+        return new DoYouLiveAlonePage(driver);
     }
 
-    public DoYouLiveAlonePage clickFirstOption() {
-        driver.findElement(By.cssSelector(".button:first-of-type")).click();
-        return new DoYouLiveAlonePage(driver);
+    public LegalStuffPage chooseFinishApplicationNow() {
+        driver.findElement(By.linkText("Finish application now")).click();
+        return new LegalStuffPage(this, driver);
     }
 }

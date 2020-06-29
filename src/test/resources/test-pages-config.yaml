@@ -1,7 +1,8 @@
 test-text-inputs:
   firstPage:
     pageTitle: first-page-title
-    nextPage: nextPage
+    nextPage:
+      - nextPage
     inputs:
       - name: someInputName
         type: TEXT
@@ -23,7 +24,8 @@ test-text-inputs:
 test-page-datasource:
   firstPage:
     pageTitle: first-page-title
-    nextPage: staticPageWithDatasource
+    nextPage:
+      - staticPageWithDatasource
     inputs:
       - name: someInputName
         type: TEXT
@@ -41,13 +43,15 @@ test-page-datasource:
   staticPageWithDatasource:
     pageTitle: static-page-with-datasource-title
     previousPage: firstPage
-    nextPage: staticPageWithDatasourceInputs
+    nextPage:
+      - staticPageWithDatasourceInputs
     datasource:
       pageName: firstPage
   staticPageWithDatasourceInputs:
     pageTitle: static-page-with-datasource-inputs-title
     previousPage: staticPageWithDatasource
-    nextPage: lastPage
+    nextPage:
+      - lastPage
     datasource:
       pageName: firstPage
       inputs:
@@ -78,7 +82,8 @@ test-page-datasource:
 test-validation:
   firstPage:
     pageTitle: first-page-title
-    nextPage: nextPage
+    nextPage:
+      - nextPage
     inputs:
       - name: someInputName
         type: TEXT
@@ -96,7 +101,8 @@ test-validation:
   nextPage:
     pageTitle: next-page-title
     previousPage: firstPage
-    nextPage: lastPage
+    nextPage:
+      - lastPage
     inputs:
       - name: someCheckbox
         type: CHECKBOX
@@ -112,7 +118,8 @@ test-validation:
             matcher: NOT_PRESENT
         validationErrorMessageKey: error-message-key
   zipcodePage:
-    nextPage: lastPage
+    nextPage:
+      - lastPage
     pageTitle: zip-code-page-title
     inputs:
       - name: zipCodeInput
@@ -121,7 +128,8 @@ test-validation:
           validation: ZIPCODE
         validationErrorMessageKey: error-message-key
   statePage:
-    nextPage: lastPage
+    nextPage:
+      - lastPage
     pageTitle: state-page-title
     inputs:
       - name: stateInput
@@ -130,7 +138,8 @@ test-validation:
           validation: STATE
         validationErrorMessageKey: error-message-key
   phonePage:
-    nextPage: lastPage
+    nextPage:
+      - lastPage
     pageTitle: phone-page-title
     inputs:
       - name: phoneInput
@@ -146,7 +155,8 @@ test-validation:
 test-conditional-rendering:
   firstPage:
     pageTitle: first-page-title
-    nextPage: secondPage
+    nextPage:
+      - secondPage
     inputs:
       - name: someRadioInputName
         type: RADIO
@@ -157,7 +167,8 @@ test-conditional-rendering:
             messageKey: not-skip-message-key
   secondPage:
     previousPage: firstPage
-    nextPage: thirdPage
+    nextPage:
+      - thirdPage
     pageTitle: second-page-title
     inputs:
       - name: foo
@@ -189,15 +200,15 @@ test-start-timer:
 test-user-decision-navigation:
   userDecisionNavigationPage:
     pageTitle: origin-page-title
-    options:
-      - opitonZeroPage
-      - opitonOnePage
-  opitonZeroPage:
+    nextPage:
+      - optionZeroPage
+      - optionOnePage
+  optionZeroPage:
     pageTitle: option-zero-page-title
     inputs:
       - name: foo
         type: TEXT
-  opitonOnePage:
+  optionOnePage:
     pageTitle: option-one-page-title
     inputs:
       - name: foo

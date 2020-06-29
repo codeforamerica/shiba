@@ -3,8 +3,6 @@
 <div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
 <body>
 <a th:href="'/pages/'+${pageName}+'/navigation?option=0'">option 0</a>
-<form method="get" th:action="'/pages/'+${pageName}+'/navigation'">
-    <button class="button" type="submit" name="option" value="1">option 1</button>
-</form>
+<a th:href="'/pages/'+${pageName}+'/navigation?option=1'">option 1</a>
 </body>
 </html>

@@ -41,15 +41,11 @@ public class PageController {
     RedirectView goBackToPage(
             @PathVariable String pageName,
             @RequestParam(defaultValue = "false") Boolean isBackwards,
-            @RequestParam(required = false) Integer option
+            @RequestParam(required = false, defaultValue = "0") Integer option
     ) {
         PageConfiguration currentPageConfiguration = this.pagesConfiguration.get(pageName);
 
-        if(option != null) {
-            return new RedirectView(String.format("/pages/%s", currentPageConfiguration.getOptions().get(option)));
-        }
-
-        String adjacentPageName = currentPageConfiguration.getAdjacentPageName(isBackwards);
+        String adjacentPageName = currentPageConfiguration.getAdjacentPageName(isBackwards, option);
         PageConfiguration adjacentPage = this.pagesConfiguration.get(adjacentPageName);
 
         if (adjacentPage.shouldSkip(pagesData)) {
