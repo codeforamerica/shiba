@@ -30,7 +30,7 @@
 }
 
 .slab--shiba {
-    background-color: #E5E5E5;
+    background-color: #F7F5F4;
 }
 
 .main-footer {
@@ -67,18 +67,26 @@
 .textarea::-webkit-scrollbar {
     -webkit-appearance: none;
 }
+
 .textarea::-webkit-scrollbar:vertical {
     width: 12px;
 }
+
 .textarea::-webkit-scrollbar:horizontal {
     height: 12px;
 }
+
 .textarea::-webkit-scrollbar-thumb {
     background-color: rgba(0, 0, 0, .2);
     border-radius: 10px;
     border: 2px solid #ffffff;
 }
+
 .textarea::-webkit-scrollbar-track {
     border-radius: 10px;
     background-color: #ffffff;
+}
+
+.main-footer {
+    font-weight: normal;
 }
