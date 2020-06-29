@@ -188,7 +188,7 @@ pages:
         promptMessageKey: contact-info.whats-your-phone-number
         validator:
           validation: PHONE
-        validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+        validationErrorMessageKey: general.validation.make-sure-to-enter-a-phone-number-with-10-digits
       - name: email
         type: TEXT
         promptMessageKey: contact-info.whats-your-email-address
