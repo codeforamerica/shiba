@@ -360,8 +360,19 @@ pages:
       - doYouLiveAlone
       - legalStuff
   doYouLiveAlone:
+    headerKey: do-you-live-alone.do-you-live-alone
     pageTitle: do-you-live-alone.title
     previousPage: doYouNeedHelpImmediately
+    nextPage: expeditedIncome
+    inputs:
+      - name: liveAlone
+        type: YES_NO
+  expeditedIncome:
+    pageTitle: expedited-income.title
+    previousPage: doYouLiveAlone
+    inputs:
+      - name: foo
+        type: TEXT
   legalStuff:
     pageTitle: legal-stuff.title
     previousPage: doYouNeedHelpImmediately

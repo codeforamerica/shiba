@@ -25,6 +25,11 @@ public class PageConfiguration {
         return this.headerKey != null;
     }
 
+    @SuppressWarnings("unused")
+    public boolean displayContinueButton() {
+        return this.inputs.stream().noneMatch(input -> input.getType().equals(FormInputType.YES_NO));
+    }
+
     public List<FormInput> getFlattenedInputs() {
         return this.inputs.stream()
                 .flatMap(formInput -> Stream.concat(Stream.of(formInput), formInput.followUps.stream()))

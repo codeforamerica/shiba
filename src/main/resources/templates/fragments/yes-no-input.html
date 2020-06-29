@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="yes-no-input (input, data)"
+          th:with="inputData=${data.get(input.name)},formInputName=${T(org.codeforamerica.shiba.Utils).getFormInputName(input.name)}"
+>
+    <div class="form-group">
+        <div class="form-question" th:if="${input.promptMessageKey != null}"
+             th:text="#{${input.promptMessageKey}}"></div>
+        <p class="text--help"
+           th:if="${input.helpMessageKey != null}"
+           th:text="#{${input.helpMessageKey}}"></p>
+        <label th:for="${#ids.next(input.name)}" class="button">
+            <input type="radio" th:name="${formInputName}" style="-webkit-appearance: none" th:id="${#ids.seq(input.name)}"
+                   value="true" onclick="this.form.submit()">
+            <span class="button__icon--left emoji emoji--inline emoji--checkmark"></span>
+            <span th:text="#{general.inputs.yes}"></span>
+        </label>
+        <label th:for="${#ids.next(input.name)}" class="button">
+            <input type="radio" th:name="${formInputName}" style="-webkit-appearance: none"
+                   th:id="${#ids.seq(input.name)}"
+                   value="false" onclick="this.form.submit()">
+            <span class="button__icon--left emoji emoji--inline emoji--crossmark"></span>
+            <span th:text="#{general.inputs.no}"></span>
+        </label>
+    </div>
+</th:block>
+</html>
