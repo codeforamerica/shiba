@@ -3,6 +3,7 @@ package org.codeforamerica.shiba;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -11,7 +12,7 @@ import static org.codeforamerica.shiba.FormData.getFormDataFrom;
 @Data
 public class PageConfiguration {
     public List<FormInput> inputs = List.of();
-    private String pageTitle;
+    private Value pageTitle;
     private String headerKey;
     private String headerHelpMessageKey;
     private List<String> nextPage;
@@ -19,6 +20,21 @@ public class PageConfiguration {
     private PageDatasource datasource;
     private Condition skipCondition;
     private boolean startTimer = false;
+
+    String resolvePageTitle(PagesData pagesData) {
+        return this.pageTitle.getConditionalValues()
+                .stream()
+                .filter(conditionalValue -> {
+                    Condition condition = conditionalValue.getCondition();
+                    Objects.requireNonNull(this.getDatasource(),
+                            "Configuration mismatch! Conditional value cannot be evaluated without a datasource.");
+                    FormData formData = getFormDataFrom(this.getDatasource(), pagesData);
+                    return condition.appliesTo(formData);
+                })
+                .findFirst()
+                .map(ConditionalValue::getValue)
+                .orElse(this.pageTitle.getValue());
+    }
 
     @SuppressWarnings("unused")
     public boolean hasHeader() {

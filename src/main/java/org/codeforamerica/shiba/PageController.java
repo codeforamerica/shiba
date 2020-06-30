@@ -65,7 +65,8 @@ public class PageController {
 
         HashMap<String, Object> model = new HashMap<>(Map.of(
                 "page", pageConfiguration,
-                "pageName", pageName
+                "pageName", pageName,
+                "pageTitle", pageConfiguration.resolvePageTitle(pagesData)
         ));
         String pageToRender;
         if (pageConfiguration.isStaticPage()) {
@@ -95,8 +96,8 @@ public class PageController {
                 new ModelAndView("formPage", Map.of(
                         "page", page,
                         "data", formData,
-                        "pageName", pageName)
-                );
+                        "pageName", pageName,
+                        "pageTitle", page.resolvePageTitle(pagesData)));
     }
 
     @PostMapping("/submit")
@@ -120,7 +121,7 @@ public class PageController {
                 new ModelAndView(SIGN_THIS_APPLICATION_PAGE_NAME, Map.of(
                         "page", page,
                         "data", formData,
-                        "pageName", SIGN_THIS_APPLICATION_PAGE_NAME)
-                );
+                        "pageName", SIGN_THIS_APPLICATION_PAGE_NAME,
+                        "pageTitle", page.resolvePageTitle(pagesData)));
     }
 }

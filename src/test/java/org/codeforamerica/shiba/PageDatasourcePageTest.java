@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba;
 
+import org.codeforamerica.shiba.pages.YesNoAnswer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -10,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -130,5 +132,25 @@ public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest 
 
         assertThat(driver.getTitle()).isEqualTo(finalPageTitle);
         assertThat(driver.findElement(By.cssSelector("input[name^='conditionalPrepopulate'")).getAttribute("value")).isEqualTo(expectedValue);
+    }
+
+    @Test
+    void shouldDisplayPageTitleBasedOnCondition() {
+        String noAnswerTitle = "no answer title";
+        staticMessageSource.addMessage("foo", Locale.US, "wrong title");
+        staticMessageSource.addMessage("no-answer-title", Locale.US, noAnswerTitle);
+        staticMessageSource.addMessage("general.inputs.yes", Locale.US, YesNoAnswer.YES.getDisplayValue());
+        staticMessageSource.addMessage("general.inputs.no", Locale.US, YesNoAnswer.NO.getDisplayValue());
+
+        driver.navigate().to(baseUrl + "/pages/yesNoQuestionPage");
+
+        List<WebElement> yesNoRadios = driver.findElements(By.cssSelector(".button"));
+        WebElement radioToSelect = yesNoRadios.stream()
+                .filter(label -> label.getText().equals(YesNoAnswer.NO.getDisplayValue()))
+                .findFirst()
+                .orElseThrow();
+        radioToSelect.click();
+
+        assertThat(driver.getTitle()).isEqualTo(noAnswerTitle);
     }
 }

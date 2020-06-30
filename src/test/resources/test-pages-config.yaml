@@ -1,6 +1,7 @@
 test-text-inputs:
   firstPage:
-    pageTitle: first-page-title
+    pageTitle:
+      value: first-page-title
     nextPage:
       - nextPage
     inputs:
@@ -14,7 +15,8 @@ test-text-inputs:
         defaultValue:
           value: "default value"
   nextPage:
-    pageTitle: next-page-title
+    pageTitle:
+      value: next-page-title
     previousPage: firstPage
     inputs:
       - name: someInputName
@@ -23,7 +25,8 @@ test-text-inputs:
         helpMessageKey: help-message-key
 test-page-datasource:
   firstPage:
-    pageTitle: first-page-title
+    pageTitle:
+      value: first-page-title
     nextPage:
       - staticPageWithDatasource
     inputs:
@@ -41,14 +44,16 @@ test-page-datasource:
           - value: VALUE_2
             messageKey: radio-value-key-2
   staticPageWithDatasource:
-    pageTitle: static-page-with-datasource-title
+    pageTitle:
+      value: static-page-with-datasource-title
     previousPage: firstPage
     nextPage:
       - staticPageWithDatasourceInputs
     datasource:
       pageName: firstPage
   staticPageWithDatasourceInputs:
-    pageTitle: static-page-with-datasource-inputs-title
+    pageTitle:
+      value: static-page-with-datasource-inputs-title
     previousPage: staticPageWithDatasource
     nextPage:
       - lastPage
@@ -59,8 +64,33 @@ test-page-datasource:
           valueMessageKeys:
             VALUE_1: display-value-key-1
             VALUE_2: display-value-key-2
+  yesNoQuestionPage:
+    pageTitle:
+      value: foo
+    nextPage: yesNoAnswerPage
+    inputs:
+      - name: yesNoQuestion
+        type: YES_NO
+  yesNoAnswerPage:
+    pageTitle:
+      value: foo
+      conditionalValues:
+        - value: yes-answer-title
+          condition:
+            input: yesNoQuestion
+            value: true
+        - value: no-answer-title
+          condition:
+            input: yesNoQuestion
+            value: false
+    inputs:
+      - name: foo
+        type: TEXT
+    datasource:
+      pageName: yesNoQuestionPage
   lastPage:
-    pageTitle: last-page-title
+    pageTitle:
+      value: last-page-title
     previousPage: staticPageWithDatasourceInputs
     inputs:
       - name: someOtherInputName
@@ -81,7 +111,8 @@ test-page-datasource:
       pageName: firstPage
 test-validation:
   firstPage:
-    pageTitle: first-page-title
+    pageTitle:
+      value: first-page-title
     nextPage:
       - nextPage
     inputs:
@@ -99,7 +130,8 @@ test-validation:
             value: valueToTriggerCondition
         validationErrorMessageKey: error-message-key
   nextPage:
-    pageTitle: next-page-title
+    pageTitle:
+      value: next-page-title
     previousPage: firstPage
     nextPage:
       - lastPage
@@ -120,7 +152,8 @@ test-validation:
   zipcodePage:
     nextPage:
       - lastPage
-    pageTitle: zip-code-page-title
+    pageTitle:
+      value: zip-code-page-title
     inputs:
       - name: zipCodeInput
         type: TEXT
@@ -130,7 +163,8 @@ test-validation:
   statePage:
     nextPage:
       - lastPage
-    pageTitle: state-page-title
+    pageTitle:
+      value: state-page-title
     inputs:
       - name: stateInput
         type: TEXT
@@ -140,7 +174,8 @@ test-validation:
   phonePage:
     nextPage:
       - lastPage
-    pageTitle: phone-page-title
+    pageTitle:
+      value: phone-page-title
     inputs:
       - name: phoneInput
         type: TEXT
@@ -148,13 +183,15 @@ test-validation:
           validation: PHONE
         validationErrorMessageKey: error-message-key
   lastPage:
-    pageTitle: last-page-title
+    pageTitle:
+      value: last-page-title
     inputs:
       - name: foo
         type: TEXT
 test-conditional-rendering:
   firstPage:
-    pageTitle: first-page-title
+    pageTitle:
+      value: first-page-title
     nextPage:
       - secondPage
     inputs:
@@ -169,7 +206,8 @@ test-conditional-rendering:
     previousPage: firstPage
     nextPage:
       - thirdPage
-    pageTitle: second-page-title
+    pageTitle:
+      value: second-page-title
     inputs:
       - name: foo
         type: TEXT
@@ -181,48 +219,56 @@ test-conditional-rendering:
       pageName: firstPage
   thirdPage:
     previousPage: secondPage
-    pageTitle: third-page-title
+    pageTitle:
+      value: third-page-title
     inputs:
       - name: foo
         type: TEXT
 test-start-timer:
   pageThatDoesNotStartTimer:
-    pageTitle: not-start-timer-title
+    pageTitle:
+      value: not-start-timer-title
     inputs:
       - name: foo
         type: TEXT
   pageThatDoesStartTimer:
-    pageTitle: start-timer-title
+    pageTitle:
+      value: start-timer-title
     inputs:
       - name: foo
         type: TEXT
     startTimer: true
 test-user-decision-navigation:
   userDecisionNavigationPage:
-    pageTitle: origin-page-title
+    pageTitle:
+      value: origin-page-title
     nextPage:
       - optionZeroPage
       - optionOnePage
   optionZeroPage:
-    pageTitle: option-zero-page-title
+    pageTitle:
+      value: option-zero-page-title
     inputs:
       - name: foo
         type: TEXT
   optionOnePage:
-    pageTitle: option-one-page-title
+    pageTitle:
+      value: option-one-page-title
     inputs:
       - name: foo
         type: TEXT
 yes-no-answer:
   yesNoQuestionPage:
-    pageTitle: yes-no-question-page
+    pageTitle:
+      value: yes-no-question-page
     nextPage:
       - answerPage
     inputs:
       - name: yesOrNo
         type: YES_NO
   answerPage:
-    pageTitle: answer-page
+    pageTitle:
+      value: answer-page
     inputs:
       - name: foo
         type: TEXT

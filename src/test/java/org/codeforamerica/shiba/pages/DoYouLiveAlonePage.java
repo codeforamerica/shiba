@@ -7,16 +7,16 @@ import org.openqa.selenium.support.FindBy;
 import java.util.List;
 
 public class DoYouLiveAlonePage extends BasePage {
-    @FindBy(css = ".radio-button")
-    private List<WebElement> yesNoRadios;
+    @FindBy(css = ".button")
+    private List<WebElement> yesNoButtons;
 
     public DoYouLiveAlonePage(RemoteWebDriver driver) {
         super(driver);
     }
 
     public ExpeditedIncomePage choose(YesNoAnswer yesNoAnswer) {
-        WebElement radioToSelect = yesNoRadios.stream()
-                .filter(label -> label.getText().equals(yesNoAnswer.getDisplayValue()))
+        WebElement radioToSelect = yesNoButtons.stream()
+                .filter(label -> label.getText().contains(yesNoAnswer.getDisplayValue()))
                 .findFirst()
                 .orElseThrow();
         radioToSelect.click();

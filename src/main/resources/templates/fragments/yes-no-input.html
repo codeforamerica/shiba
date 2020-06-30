@@ -10,13 +10,13 @@
            th:if="${input.helpMessageKey != null}"
            th:text="#{${input.helpMessageKey}}"></p>
         <label th:for="${#ids.next(input.name)}" class="button">
-            <input type="radio" th:name="${formInputName}" style="-webkit-appearance: none" th:id="${#ids.seq(input.name)}"
+            <input type="radio" th:name="${formInputName}" class="hide-radio-circle" th:id="${#ids.seq(input.name)}"
                    value="true" onclick="this.form.submit()">
             <span class="button__icon--left emoji emoji--inline emoji--checkmark"></span>
             <span th:text="#{general.inputs.yes}"></span>
         </label>
         <label th:for="${#ids.next(input.name)}" class="button">
-            <input type="radio" th:name="${formInputName}" style="-webkit-appearance: none"
+            <input type="radio" th:name="${formInputName}" class="hide-radio-circle"
                    th:id="${#ids.seq(input.name)}"
                    value="false" onclick="this.form.submit()">
             <span class="button__icon--left emoji emoji--inline emoji--crossmark"></span>

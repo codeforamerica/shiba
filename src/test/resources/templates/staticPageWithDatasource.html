@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
+<div th:replace="fragments/head :: head(#{${pageTitle}})"></div>
 <body>
 <h3>Static Page</h3>
 <div th:text="${someInputName.value[0]}"></div>

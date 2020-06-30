@@ -1,15 +1,18 @@
 pages:
   landing:
-    pageTitle: landing.title
+    pageTitle:
+      value: landing.title
     nextPage:
       - prepareToApply
   prepareToApply:
-    pageTitle: prepare-to-apply.title
+    pageTitle:
+      value: prepare-to-apply.title
     previousPage: landing
     nextPage:
       - languagePreferences
   languagePreferences:
-    pageTitle: language-preferences.title
+    pageTitle:
+      value: language-preferences.title
     startTimer: true
     headerKey: language-preferences.language-preferences
     nextPage:
@@ -59,7 +62,8 @@ pages:
           - value: false
             messageKey: general.inputs.no
   choosePrograms:
-    pageTitle: choose-programs.title
+    pageTitle:
+      value: choose-programs.title
     nextPage:
       - howItWorks
     previousPage: languagePreferences
@@ -81,7 +85,8 @@ pages:
           - value: CHILD_CARE
             messageKey: choose-programs.child-care-assistance
   howItWorks:
-    pageTitle: how-it-works.title
+    pageTitle:
+      value: how-it-works.title
     previousPage: choosePrograms
     nextPage:
       - introBasicInfo
@@ -95,12 +100,14 @@ pages:
             CHILD_CARE: how-it-works.child-care
             EMERGENCY: how-it-works.emergency
   introBasicInfo:
-    pageTitle: intro-basic-info.title
+    pageTitle:
+      value: intro-basic-info.title
     previousPage: howItWorks
     nextPage:
       - personalInfo
   personalInfo:
-    pageTitle: personal-info.title
+    pageTitle:
+      value: personal-info.title
     headerKey: personal-info.tell-us-about-yourself
     previousPage: introBasicInfo
     nextPage:
@@ -184,7 +191,8 @@ pages:
             type: TEXT
             promptMessageKey: personal-info.what-city-did-you-move-from
   contactInfo:
-    pageTitle: contact-info.title
+    pageTitle:
+      value: contact-info.title
     headerKey: contact-info.how-can-we-stay-in-touch-with-you
     headerHelpMessageKey: contact-info.most-of-our-communication-will-be-through-mail
     previousPage: personalInfo
@@ -216,20 +224,23 @@ pages:
           - value: EMAIL
             messageKey: contact-info.email-me
   branchToMinimalFlow:
-    pageTitle: branch-to-minimal-flow.title
+    pageTitle:
+      value: branch-to-minimal-flow.title
     previousPage: contactInfo
     nextPage:
       - weDoNotRecommendMinimalFlow
     dataSource:
       pageName: personalInfo
   weDoNotRecommendMinimalFlow:
-    pageTitle: we-do-not-recommend-minimal-flow.title
+    pageTitle:
+      value: we-do-not-recommend-minimal-flow.title
     previousPage: branchToMinimalFlow
     nextPage:
       - homeAddress
   homeAddress:
     headerKey: home-address.where-are-you-currently-living
-    pageTitle: home-address.title
+    pageTitle:
+      value: home-address.title
     previousPage: weDoNotRecommendMinimalFlow
     nextPage:
       - mailingAddress
@@ -285,7 +296,8 @@ pages:
           - value: false
             messageKey: home-address.no-use-a-different-address-for-mail
   mailingAddress:
-    pageTitle: mailing-address.title
+    pageTitle:
+      value: mailing-address.title
     headerKey: mailing-address.where-can-the-county-send-your-mail
     previousPage: homeAddress
     nextPage:
@@ -354,27 +366,41 @@ pages:
       input: sameMailingAddress
       value: true
   doYouNeedHelpImmediately:
-    pageTitle: do-you-need-help-immediately.title
+    pageTitle:
+      value: do-you-need-help-immediately.title
     previousPage: mailingAddress
     nextPage:
       - doYouLiveAlone
       - legalStuff
   doYouLiveAlone:
     headerKey: do-you-live-alone.do-you-live-alone
-    pageTitle: do-you-live-alone.title
+    pageTitle:
+      value: do-you-live-alone.title
     previousPage: doYouNeedHelpImmediately
     nextPage: expeditedIncome
     inputs:
       - name: liveAlone
         type: YES_NO
   expeditedIncome:
-    pageTitle: expedited-income.title
+    pageTitle:
+      conditionalValues:
+        - value: expedited-income.title-one-person
+          condition:
+            input: liveAlone
+            value: true
+        - value: expedited-income.title-household
+          condition:
+            input: liveAlone
+            value: false
     previousPage: doYouLiveAlone
     inputs:
       - name: foo
         type: TEXT
+    datasource:
+      pageName: doYouLiveAlone
   legalStuff:
-    pageTitle: legal-stuff.title
+    pageTitle:
+      value: legal-stuff.title
     previousPage: doYouNeedHelpImmediately
     nextPage:
       - signThisApplication
@@ -390,13 +416,15 @@ pages:
           - value: true
             messageKey: legal-stuff.i-agree
   signThisApplication:
-    pageTitle: sign-this-application.title
+    pageTitle:
+      value: sign-this-application.title
     headerKey: sign-this-application.type-your-full-legal-name-here-to-sign-this-application
     headerHelpMessageKey: sign-this-application.by-signing-this-application-you-agree-that-you-want-to
     previousPage: legalStuff
     nextPage:
       - success
   success:
-    pageTitle: success.title
+    pageTitle:
+      value: success.title
     datasource:
       pageName: signThisApplication
