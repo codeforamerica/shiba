@@ -38,3 +38,8 @@ jobs:
           known_hosts: ${{ secrets.APTIBLE_KNOWN_HOSTS }}
       - name: Deploy to aptible
         run: git push -f ${{ secrets.APTIBLE_REPO }} master
+      - name: Announce on Slack
+        uses: rtCamp/action-slack-notify@v2.0.2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_MESSAGE: 'Staging deployed'
