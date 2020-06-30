@@ -371,7 +371,7 @@ pages:
     previousPage: mailingAddress
     nextPage:
       - doYouLiveAlone
-      - legalStuff
+      - importantToKnow
   doYouLiveAlone:
     headerKey: do-you-live-alone.do-you-live-alone
     pageTitle:
@@ -398,10 +398,18 @@ pages:
         type: TEXT
     datasource:
       pageName: doYouLiveAlone
+  importantToKnow:
+    pageTitle:
+      value: important-to-know.title
+    headerKey: important-to-know.important-stuff-to-know-about
+    headerHelpMessageKey: important-to-know.read-the-important-points-below-click-here-to-learn-more-details
+    previousPage: doYouNeedHelpImmediately
+    nextPage:
+      - legalStuff
   legalStuff:
     pageTitle:
       value: legal-stuff.title
-    previousPage: doYouNeedHelpImmediately
+    previousPage: importantToKnow
     nextPage:
       - signThisApplication
     headerKey: legal-stuff.the-legal-stuff

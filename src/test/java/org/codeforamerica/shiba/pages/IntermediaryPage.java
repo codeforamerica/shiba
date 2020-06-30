@@ -29,5 +29,5 @@ public abstract class IntermediaryPage<PREVIOUS_PAGE, NEXT_PAGE> extends BasePag
         return getNextPage();
     }
 
-    public abstract NEXT_PAGE getNextPage();
+    protected abstract NEXT_PAGE getNextPage();
 }

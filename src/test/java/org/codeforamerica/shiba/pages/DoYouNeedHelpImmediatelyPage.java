@@ -13,8 +13,13 @@ public class DoYouNeedHelpImmediatelyPage extends BasePage {
         return new DoYouLiveAlonePage(driver);
     }
 
-    public LegalStuffPage chooseFinishApplicationNow() {
+    public IntermediaryPage<DoYouNeedHelpImmediatelyPage, LegalStuffPage> chooseFinishApplicationNow() {
         driver.findElement(By.linkText("Finish application now")).click();
-        return new LegalStuffPage(this, driver);
+        return new IntermediaryPage<>(this, driver) {
+            @Override
+            protected LegalStuffPage getNextPage() {
+                return new LegalStuffPage(this, driver);
+            }
+        };
     }
 }

@@ -4,9 +4,9 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 
-public class LegalStuffPage extends IntermediaryPage<DoYouNeedHelpImmediatelyPage, SignThisApplicationPage> {
-    public LegalStuffPage(DoYouNeedHelpImmediatelyPage doYouNeedHelpImmediatelyPage, RemoteWebDriver driver) {
-        super(doYouNeedHelpImmediatelyPage, driver);
+public class LegalStuffPage extends IntermediaryPage<IntermediaryPage<DoYouNeedHelpImmediatelyPage, LegalStuffPage>, SignThisApplicationPage> {
+    public LegalStuffPage(IntermediaryPage<DoYouNeedHelpImmediatelyPage, LegalStuffPage> previousPage, RemoteWebDriver driver) {
+        super(previousPage, driver);
     }
 
     @FindBy(css = "input[name^='agreeToTerms']")

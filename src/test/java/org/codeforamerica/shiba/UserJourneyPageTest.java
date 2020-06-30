@@ -522,7 +522,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     @Test
-    void shouldNavigateToLegalStuffPage_whenUserSelectFinishApplicationNow_FromDoYouNeedHelpImmediatelyPage() {
+    void shouldNavigateToImportantToKnow_whenUserSelectFinishApplicationNow_FromDoYouNeedHelpImmediatelyPage() {
         ChooseProgramsPage chooseProgramPage = landingPage
                 .clickPrimaryButton()
                 .clickPrimaryButton()
@@ -551,45 +551,9 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         mailingAddressPage.enterInput("streetAddress", "someStreetAddress");
 
         DoYouNeedHelpImmediatelyPage doYouNeedHelpImmediatelyPage = mailingAddressPage.clickPrimaryButton();
-        LegalStuffPage legalStuffPage = doYouNeedHelpImmediatelyPage.chooseFinishApplicationNow();
+        var importantToKnowPage = doYouNeedHelpImmediatelyPage.chooseFinishApplicationNow();
 
-        assertThat(legalStuffPage.getTitle()).isEqualTo("Legal Stuff");
-    }
-
-    @Test
-    void shouldNotProceedFromLegalStuffPageUnlessUserClick_IAgree() {
-        ChooseProgramsPage chooseProgramPage = landingPage
-                .clickPrimaryButton()
-                .clickPrimaryButton()
-                .clickPrimaryButton();
-        chooseProgramPage.chooseProgram("Emergency assistance");
-        HowItWorksPage howItWorksPage = chooseProgramPage.clickPrimaryButton();
-        PersonalInfoPage personalInfoPage = howItWorksPage.clickPrimaryButton().clickPrimaryButton();
-        personalInfoPage.enterFirstName("defaultFirstName");
-        personalInfoPage.enterLastName("defaultLastName");
-
-        ContactInfoPage contactInfoPage = personalInfoPage.clickPrimaryButton();
-        contactInfoPage.enterPhoneNumber("7234567890");
-
-        HomeAddressPage homeAddressPage = contactInfoPage
-                .clickPrimaryButton()
-                .clickSubtleLink()
-                .clickSubtleLink();
-
-        homeAddressPage.enterInput("zipCode", "12345");
-        homeAddressPage.enterInput("city", "someCity");
-        homeAddressPage.enterInput("streetAddress", "someStreetAddress");
-        MailingAddressPage mailingAddressPage = homeAddressPage.clickPrimaryButton();
-
-        mailingAddressPage.enterInput("zipCode", "12345");
-        mailingAddressPage.enterInput("city", "someCity");
-        mailingAddressPage.enterInput("streetAddress", "someStreetAddress");
-
-        DoYouNeedHelpImmediatelyPage doYouNeedHelpImmediatelyPage = mailingAddressPage.clickPrimaryButton();
-        LegalStuffPage legalStuffPage = doYouNeedHelpImmediatelyPage.chooseFinishApplicationNow();
-        legalStuffPage.clickPrimaryButton();
-
-        assertThat(legalStuffPage.getTitle()).isEqualTo("Legal Stuff");
+        assertThat(importantToKnowPage.getTitle()).isEqualTo("Important to Know");
     }
 
     @Test
@@ -622,7 +586,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         mailingAddressPage.enterInput("streetAddress", "someStreetAddress");
 
         DoYouNeedHelpImmediatelyPage doYouNeedHelpImmediatelyPage = mailingAddressPage.clickPrimaryButton();
-        LegalStuffPage legalStuffPage = doYouNeedHelpImmediatelyPage.chooseFinishApplicationNow();
+        LegalStuffPage legalStuffPage = doYouNeedHelpImmediatelyPage.chooseFinishApplicationNow().clickPrimaryButton();
         legalStuffPage.clickIAgree();
         SignThisApplicationPage signThisApplicationPage = legalStuffPage.clickPrimaryButton();
 
@@ -663,7 +627,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         mailingAddressPage.enterInput("streetAddress", "someStreetAddress");
 
         DoYouNeedHelpImmediatelyPage doYouNeedHelpImmediatelyPage = mailingAddressPage.clickPrimaryButton();
-        LegalStuffPage legalStuffPage = doYouNeedHelpImmediatelyPage.chooseFinishApplicationNow();
+        LegalStuffPage legalStuffPage = doYouNeedHelpImmediatelyPage.chooseFinishApplicationNow().clickPrimaryButton();
         legalStuffPage.clickIAgree();
         SignThisApplicationPage signThisApplicationPage = legalStuffPage.clickPrimaryButton();
 
@@ -703,7 +667,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         mailingAddressPage.enterInput("streetAddress", "someStreetAddress");
 
         DoYouNeedHelpImmediatelyPage doYouNeedHelpImmediatelyPage = mailingAddressPage.clickPrimaryButton();
-        LegalStuffPage legalStuffPage = doYouNeedHelpImmediatelyPage.chooseFinishApplicationNow();
+        LegalStuffPage legalStuffPage = doYouNeedHelpImmediatelyPage.chooseFinishApplicationNow().clickPrimaryButton();
         legalStuffPage.clickIAgree();
         SignThisApplicationPage signThisApplicationPage = legalStuffPage.clickPrimaryButton();
 
@@ -747,7 +711,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         mailingAddressPage.enterInput("streetAddress", "someStreetAddress");
 
         DoYouNeedHelpImmediatelyPage doYouNeedHelpImmediatelyPage = mailingAddressPage.clickPrimaryButton();
-        LegalStuffPage legalStuffPage = doYouNeedHelpImmediatelyPage.chooseFinishApplicationNow();
+        LegalStuffPage legalStuffPage = doYouNeedHelpImmediatelyPage.chooseFinishApplicationNow().clickPrimaryButton();
         legalStuffPage.clickIAgree();
         SignThisApplicationPage signThisApplicationPage = legalStuffPage.clickPrimaryButton();
 

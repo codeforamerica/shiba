@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="legal-terms-input (input, data)" th:with="inputData=${data.get(input.name)}" class="form-group" >
-    <div class="textarea">
+    <div class="textarea legal-stuff-window">
         <strong th:text="#{legal-stuff.summary}"></strong>
         <ul class="list--bulleted">
             <li th:text="#{legal-stuff.you-have-been-honest-on-this-application}"></li>

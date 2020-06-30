@@ -55,13 +55,16 @@
 }
 
 .textarea {
-    overflow-y: scroll;
     font-weight: normal;
     font-size: 14px;
-    height: 35rem;
     border: none;
     box-shadow: none;
     overflow-wrap: break-word;
+}
+
+.legal-stuff-window {
+    height: 35rem;
+    overflow-y: scroll;
 }
 
 .textarea::-webkit-scrollbar {
