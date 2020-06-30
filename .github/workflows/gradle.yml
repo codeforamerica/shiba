@@ -39,7 +39,11 @@ jobs:
       - name: Deploy to aptible
         run: git push -f ${{ secrets.APTIBLE_REPO }} master
       - name: Announce on Slack
-        uses: rtCamp/action-slack-notify@v2.0.2
+        uses: innocarpe/actions-slack@v1
+        with:
+          status: ${{ job.status }}
+          success_text: 'Deploy to Aptible staging succeeded :smile:'
+          failure_text: 'Deploy to Aptible staging failed :frowning:'
         env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_MESSAGE: 'Staging deployed'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
