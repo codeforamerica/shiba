@@ -8,6 +8,14 @@
        th:if="${input.helpMessageKey != null}"
        th:text="#{${input.helpMessageKey}}"></p>
     <th:block th:switch="${input.type}" th:with="formInputName=${T(org.codeforamerica.shiba.Utils).getFormInputName(input.name)}">
+        <div class="text-input-group" th:case="${T(org.codeforamerica.shiba.FormInputType).MONEY}">
+            <div class="text-input-group__prefix ">$</div>
+            <input type="text"
+                   class="text-input"
+                   th:name="${formInputName}"
+                   th:value="${(!inputData.value.isEmpty()) ? inputData.value[0] : ''}"
+            >
+        </div>
         <input th:case="${T(org.codeforamerica.shiba.FormInputType).TEXT}"
                type="text"
                class="text-input form-width--name"

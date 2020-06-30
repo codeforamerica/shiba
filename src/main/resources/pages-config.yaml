@@ -382,6 +382,8 @@ pages:
       - name: liveAlone
         type: YES_NO
   expeditedIncome:
+    headerKey: expedited-income.how-much-money-have-you-made-in-the-last-30-days
+    headerHelpMessageKey: expedited-income.if-you-dont-know-the-exact-amount
     pageTitle:
       conditionalValues:
         - value: expedited-income.title-one-person
@@ -393,9 +395,16 @@ pages:
             input: liveAlone
             value: false
     previousPage: doYouLiveAlone
+    nextPage: importantToKnow
     inputs:
-      - name: foo
-        type: TEXT
+      - name: moneyMadeLast30Days
+        type: MONEY
+        validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
+        validator:
+          validation: MONEY
+          condition:
+            input: moneyMadeLast30Days
+            matcher: NOT_EMPTY
     datasource:
       pageName: doYouLiveAlone
   importantToKnow:

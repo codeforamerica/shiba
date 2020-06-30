@@ -35,6 +35,8 @@ caf:
       state: APPLICANT_MAILING_STATE
       streetAddress: APPLICANT_MAILING_STREET_ADDRESS
       apartmentNumber: APPLICANT_MAILING_APT_NUMBER
+    expeditedIncome:
+      moneyMadeLast30Days: MONEY_MADE_LAST_MONTH
     signThisApplication:
       applicantSignature: APPLICANT_SIGNATURE
       submissionTime: SUBMISSION_TIME

@@ -25,6 +25,7 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest{
     private final String zipcodePageTitle = "zip code Page Title";
     private final String statePageTitle = "state page title";
     private final String phonePageTitle = "phone page title";
+    private final String moneyPageTitle = "money page title";
 
     @TestConfiguration
     @PropertySource(value = "classpath:test-pages-config.yaml", factory = YamlPropertySourceFactory.class)
@@ -47,6 +48,7 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest{
         staticMessageSource.addMessage("zip-code-page-title", Locale.US, zipcodePageTitle);
         staticMessageSource.addMessage("state-page-title", Locale.US, statePageTitle);
         staticMessageSource.addMessage("phone-page-title", Locale.US, phonePageTitle);
+        staticMessageSource.addMessage("money-page-title", Locale.US, moneyPageTitle);
     }
 
     @Test
@@ -191,5 +193,24 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest{
 
     WebElement getInputError(String inputName) {
         return driver.findElement(By.cssSelector(String.format("input[name^='%s'] ~ p.text--error", inputName)));
+    }
+
+    @Test
+    void shouldFailValidationForMoneyWhenValueIsNotNumber() {
+        driver.navigate().to(baseUrl + "/pages/moneyPage");
+        driver.findElement(By.cssSelector("input[name^='moneyInput']")).sendKeys("a123");
+        driver.findElement(By.cssSelector("button")).click();
+
+        assertThat(driver.getTitle()).isEqualTo(moneyPageTitle);
+        assertThat(getInputError("moneyInput")).isNotNull();
+    }
+
+    @Test
+    void shouldPassValidationForMoneyWhenValueIsNumber() {
+        driver.navigate().to(baseUrl + "/pages/moneyPage");
+        driver.findElement(By.cssSelector("input[name^='moneyInput']")).sendKeys("-726");
+        driver.findElement(By.cssSelector("button")).click();
+
+        assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
     }
 }

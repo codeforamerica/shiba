@@ -182,6 +182,17 @@ test-validation:
         validator:
           validation: PHONE
         validationErrorMessageKey: error-message-key
+  moneyPage:
+    nextPage:
+      - lastPage
+    pageTitle:
+      value: money-page-title
+    inputs:
+      - name: moneyInput
+        type: TEXT
+        validator:
+          validation: MONEY
+        validationErrorMessageKey: error-message-key
   lastPage:
     pageTitle:
       value: last-page-title
