@@ -437,7 +437,6 @@ pages:
       value: important-to-know.title
     headerKey:
       value: important-to-know.important-stuff-to-know-about
-    headerHelpMessageKey: important-to-know.read-the-important-points-below-click-here-to-learn-more-details
     previousPage: doYouNeedHelpImmediately
     nextPage:
       - legalStuff
