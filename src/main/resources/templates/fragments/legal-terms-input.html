@@ -1,27 +1,24 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<div th:fragment="legal-terms-input (input, data)" th:with="inputData=${data.get(input.name)}" class="form-group" >
+<div th:fragment="legal-terms-input (input, data)" th:with="inputData=${data.get(input.name)}" class="form-group">
     <div class="textarea legal-stuff-window">
-        <strong th:text="#{legal-stuff.summary}"></strong>
-        <ul class="list--bulleted">
-            <li th:text="#{legal-stuff.you-have-been-honest-on-this-application}"></li>
-            <li th:text="#{legal-stuff.you-agree-to-the-snap-cash-benefit-rules}"></li>
-            <li th:utext="#{legal-stuff.you-can-register-to-vote-online-at-or-ask-your-case-worker-to-help}"></li>
-        </ul>
-        <strong th:text="#{legal-stuff.details}"></strong>
-        <ul class="list--bulleted">
-            <li th:text="#{legal-stuff.i-understand-cash-assistance-is-provided-to-help-eligible-families-meet-their-basic-needs}"></li>
-            <li th:text="#{legal-stuff.i-understand-if-i-give-incorrect-information-or-misuse-an-electronic-benefit}"></li>
-            <li th:text="#{legal-stuff.i-acknowledge-that-since-my-last-application-or-recertification}"></li>
-            <li th:text="#{legal-stuff.i-acknowledge-that-i-have-read-and-understand-the-important-stuff}"></li>
-            <li th:text="#{legal-stuff.i-acknowledge-that-my-worker-reviewed-and-explained-the-attached}"></li>
-            <li th:text="#{legal-stuff.i-agree-to-assign-my-child-support-as-stated-on-the-previous-page}"></li>
-            <li th:text="#{legal-stuff.i-agree-to-the-sharing-of-information-as-stated-on-in-the-Auditing-section}"></li>
-            <li th:text="#{legal-stuff.i-agree-to-the-sharing-of-information-as-stated-in-the-social-security-numbers-section}"></li>
-        </ul>
+        <h3 th:text="#{legal-stuff.summary}"></h3>
+        <div th:text="|• #{legal-stuff.you-have-been-honest-on-this-application}|"></div>
+        <div th:text="|• #{legal-stuff.you-agree-to-the-snap-cash-benefit-rules}|"></div>
+        <div th:utext="|• #{legal-stuff.you-can-register-to-vote-online-at-or-ask-your-case-worker-to-help}|"></div>
+        <h3 th:text="#{legal-stuff.details}"></h3>
+        <div th:text="|• #{legal-stuff.i-understand-cash-assistance-is-provided-to-help-eligible-families-meet-their-basic-needs}|"></div>
+        <div th:text="|• #{legal-stuff.i-understand-if-i-give-incorrect-information-or-misuse-an-electronic-benefit}|"></div>
+        <div th:text="|• #{legal-stuff.i-acknowledge-that-since-my-last-application-or-recertification}|"></div>
+        <div th:text="|• #{legal-stuff.i-acknowledge-that-i-have-read-and-understand-the-important-stuff}|"></div>
+        <div th:text="|• #{legal-stuff.i-acknowledge-that-my-worker-reviewed-and-explained-the-attached}|"></div>
+        <div th:text="|• #{legal-stuff.i-agree-to-assign-my-child-support-as-stated-on-the-previous-page}|"></div>
+        <div th:text="|• #{legal-stuff.i-agree-to-the-sharing-of-information-as-stated-on-in-the-Auditing-section}|"></div>
+        <div th:text="|• #{legal-stuff.i-agree-to-the-sharing-of-information-as-stated-in-the-social-security-numbers-section}|"></div>
     </div>
     <div class="spacing-above-35 form-group" th:classappend="${!inputData.valid} ? 'form-group--error' : ''">
-        <label th:if="${input.promptMessageKey != null}" th:text="#{${input.promptMessageKey}}" class="form-question"></label>
+        <label th:if="${input.promptMessageKey != null}" th:text="#{${input.promptMessageKey}}"
+               class="form-question"></label>
         <p class="text--help"
            th:if="${input.helpMessageKey != null}"
            th:text="#{${input.helpMessageKey}}"></p>

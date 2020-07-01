@@ -8,7 +8,7 @@
             <a th:replace="fragments/go-back"></a>
             <div class="card spacing-above-35">
                 <div th:if="${page.hasHeader()}" class="grid__item spacing-above-35 spacing-below-35">
-                    <h2 th:text="#{${page.headerKey}}"></h2>
+                    <h2 th:text="#{${headerKey}}"></h2>
                     <p class="text--help"
                        th:if="${page.headerHelpMessageKey != null}"
                        th:text="#{${page.headerHelpMessageKey}}"></p>
