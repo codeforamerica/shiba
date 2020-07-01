@@ -50,6 +50,7 @@
         <onl:Program>{{PROGRAM}}</onl:Program>
         <onl:ExpeditedFSInfo>
             <onl:MonthlyIncome>{{MONEY_MADE_LAST_MONTH}}</onl:MonthlyIncome>
+            <onl:CashInHand>{{LIQUID_ASSETS}}</onl:CashInHand>
         </onl:ExpeditedFSInfo>
         <onl:MiscellaneousInfo>
             <onl:PrimarySpokenLanguage>{{LANGUAGEPREFERENCES_SPOKENLANGUAGE}}</onl:PrimarySpokenLanguage>

@@ -37,6 +37,8 @@ caf:
       apartmentNumber: APPLICANT_MAILING_APT_NUMBER
     expeditedIncome:
       moneyMadeLast30Days: MONEY_MADE_LAST_MONTH
+    liquidAssets:
+      liquidAssets: LIQUID_ASSETS
     signThisApplication:
       applicantSignature: APPLICANT_SIGNATURE
       submissionTime: SUBMISSION_TIME
