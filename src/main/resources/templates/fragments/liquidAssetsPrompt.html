@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="liquidAssetsPrompt" class="bullet-points spacing-below-35">
+    <div th:text="#{liquid-assets-prompt.this-includes}"></div>
+    <div th:text="|• #{liquid-assets-prompt.cash}|"></div>
+    <div th:text="|• #{liquid-assets-prompt.checking-accounts}|"></div>
+    <div th:text="|• #{liquid-assets-prompt.savings}|"></div>
+</div>
+</body>
+</html>

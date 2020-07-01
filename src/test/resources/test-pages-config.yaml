@@ -7,7 +7,8 @@ test-text-inputs:
     inputs:
       - name: someInputName
         type: TEXT
-        promptMessageKey: prompt-message-key
+        promptMessage:
+          promptMessageKey: prompt-message-key
         helpMessageKey: help-message-key
       - name: uneditableInput
         type: TEXT
@@ -21,8 +22,15 @@ test-text-inputs:
     inputs:
       - name: someInputName
         type: TEXT
-        promptMessageKey: prompt-message-key
         helpMessageKey: help-message-key
+  inputWithPromptFragmentPage:
+    pageTitle:
+      value: prompt-fragment-page-title
+    inputs:
+      - name: promptFragmentInput
+        type: MONEY
+        promptMessage:
+          promptMessageFragmentName: promptFragment
 test-page-datasource:
   firstPage:
     pageTitle:
@@ -32,12 +40,8 @@ test-page-datasource:
     inputs:
       - name: someInputName
         type: TEXT
-        promptMessageKey: prompt-message-key
-        helpMessageKey: help-message-key
       - name: someRadioInputName
         type: RADIO
-        promptMessageKey: prompt-message-key
-        helpMessageKey: help-message-key
         options:
           - value: VALUE_1
             messageKey: radio-value-key-1

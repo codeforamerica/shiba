@@ -22,7 +22,8 @@ pages:
     inputs:
       - name: spokenLanguage
         type: SELECT
-        promptMessageKey: language-preferences.what-language-do-you-prefer-to-speak
+        promptMessage:
+          promptMessageKey: language-preferences.what-language-do-you-prefer-to-speak
         helpMessageKey: language-preferences.the-county-will-do-their-best-to-connect-you-with-someone-who-speaks-your
         options:
           - value: ENGLISH
@@ -39,7 +40,8 @@ pages:
             messageKey: language-preferences.hmoob
       - name: writtenLanguage
         type: SELECT
-        promptMessageKey: language-preferences.what-language-do-you-prefer-to-read-or-write
+        promptMessage:
+          promptMessageKey: language-preferences.what-language-do-you-prefer-to-read-or-write
         helpMessageKey: language-preferences.the-county-will-do-their-best-to-provide-documents-in-your-preferred-language
         options:
           - value: ENGLISH
@@ -56,7 +58,8 @@ pages:
             messageKey: language-preferences.hmoob
       - name: needInterpreter
         type: RADIO
-        promptMessageKey: language-preferences.do-you-need-an-interpreter
+        promptMessage:
+          promptMessageKey: language-preferences.do-you-need-an-interpreter
         options:
           - value: true
             messageKey: general.inputs.yes
@@ -118,21 +121,24 @@ pages:
     inputs:
       - name: firstName
         type: TEXT
-        promptMessageKey: personal-info.whats-your-first-name
+        promptMessage:
+          promptMessageKey: personal-info.whats-your-first-name
         helpMessageKey: personal-info.legally-as-it-appears-on-your-id
         validator:
           validation: NOT_BLANK
         validationErrorMessageKey: general.validation.make-sure-to-provide-a-first-name
       - name: lastName
         type: TEXT
-        promptMessageKey: personal-info.whats-your-last-name
+        promptMessage:
+          promptMessageKey: personal-info.whats-your-last-name
         helpMessageKey: personal-info.legally-as-it-appears-on-your-id
         validator:
           validation: NOT_BLANK
         validationErrorMessageKey: general.validation.make-sure-to-provide-a-last-name
       - name: otherName
         type: TEXT
-        promptMessageKey: personal-info.list-any-names-that-you-have-gone-by-in-the-past
+        promptMessage:
+          promptMessageKey: personal-info.list-any-names-that-you-have-gone-by-in-the-past
         helpMessageKey: personal-info.include-maiden-names-or-legal-changes
       - name: dateOfBirth
         type: DATE
@@ -142,7 +148,8 @@ pages:
             input: dateOfBirth
             matcher: NOT_EMPTY
         validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
-        promptMessageKey: personal-info.when-were-you-born
+        promptMessage:
+          promptMessageKey: personal-info.when-were-you-born
       - name: ssn
         type: NUMBER
         validator:
@@ -151,11 +158,13 @@ pages:
             input: ssn
             matcher: NOT_EMPTY
         validationErrorMessageKey: general.validation.make-sure-your-SSN-has-9-digits
-        promptMessageKey: personal-info.whats-your-social-security-number
+        promptMessage:
+          promptMessageKey: personal-info.whats-your-social-security-number
         helpMessageKey: personal-info.if-you-have-one-we-strongly-recommend-including-it-here-your-caseworker-will
       - name: maritalStatus
         type: RADIO
-        promptMessageKey: personal-info.whats-your-marital-status
+        promptMessage:
+          promptMessageKey: personal-info.whats-your-marital-status
         options:
           - value: NEVER_MARRIED
             messageKey: personal-info.never-married
@@ -171,7 +180,8 @@ pages:
             messageKey: personal-info.widowed
       - name: sex
         type: RADIO
-        promptMessageKey: personal-info.whats-your-sex
+        promptMessage:
+          promptMessageKey: personal-info.whats-your-sex
         helpMessageKey: personal-info.legally-as-it-appears-on-your-id-we-regret-that-this-question-is-limited
         options:
           - value: FEMALE
@@ -182,7 +192,8 @@ pages:
             messageKey: personal-info.rather-not-say
       - type: RADIO
         name: livedInMnWholeLife
-        promptMessageKey: personal-info.have-you-lived-in-minnesota-your-whole-life
+        promptMessage:
+          promptMessageKey: personal-info.have-you-lived-in-minnesota-your-whole-life
         options:
           - value: false
             messageKey: general.inputs.no
@@ -198,10 +209,12 @@ pages:
                 input: moveToMnDate
                 matcher: NOT_EMPTY
             validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
-            promptMessageKey: personal-info.when-did-you-move-to-minnesota
+            promptMessage:
+              promptMessageKey: personal-info.when-did-you-move-to-minnesota
           - name: moveToMnPreviousCity
             type: TEXT
-            promptMessageKey: personal-info.what-city-did-you-move-from
+            promptMessage:
+              promptMessageKey: personal-info.what-city-did-you-move-from
   contactInfo:
     pageTitle:
       value: contact-info.title
@@ -214,13 +227,15 @@ pages:
     inputs:
       - name: phoneNumber
         type: TEXT
-        promptMessageKey: contact-info.whats-your-phone-number
+        promptMessage:
+          promptMessageKey: contact-info.whats-your-phone-number
         validator:
           validation: PHONE
         validationErrorMessageKey: general.validation.make-sure-to-enter-a-phone-number-with-10-digits
       - name: email
         type: TEXT
-        promptMessageKey: contact-info.whats-your-email-address
+        promptMessage:
+          promptMessageKey: contact-info.whats-your-email-address
         validator:
           validation: NOT_BLANK
           condition:
@@ -229,7 +244,8 @@ pages:
         validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
       - name: phoneOrEmail
         type: CHECKBOX
-        promptMessageKey: contact-info.where-can-we-send-you-a-receipt-of-your-completed-application
+        promptMessage:
+          promptMessageKey: contact-info.where-can-we-send-you-a-receipt-of-your-completed-application
         helpMessageKey: contact-info.this-is-for-your-own-records
         options:
           - value: TEXT
@@ -261,7 +277,8 @@ pages:
     inputs:
       - name: zipCode
         type: TEXT
-        promptMessageKey: home-address.what-is-the-zip-code
+        promptMessage:
+          promptMessageKey: home-address.what-is-the-zip-code
         validationErrorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
         validator:
           validation: ZIPCODE
@@ -270,7 +287,8 @@ pages:
             matcher: NOT_PRESENT
       - name: city
         type: TEXT
-        promptMessageKey: home-address.what-is-the-city
+        promptMessage:
+          promptMessageKey: home-address.what-is-the-city
         validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
         validator:
           validation: NOT_BLANK
@@ -279,13 +297,15 @@ pages:
             matcher: NOT_PRESENT
       - name: state
         type: TEXT
-        promptMessageKey: home-address.what-is-the-state
+        promptMessage:
+          promptMessageKey: home-address.what-is-the-state
         readOnly: true
         defaultValue:
           value: MN
       - name: streetAddress
         type: TEXT
-        promptMessageKey: home-address.what-is-the-street-address
+        promptMessage:
+          promptMessageKey: home-address.what-is-the-street-address
         validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
         validator:
           validation: NOT_BLANK
@@ -294,7 +314,8 @@ pages:
             matcher: NOT_PRESENT
       - name: apartmentNumber
         type: TEXT
-        promptMessageKey: home-address.apartment-number
+        promptMessage:
+          promptMessageKey: home-address.apartment-number
       - name: isHomeless
         type: CHECKBOX
         options:
@@ -302,7 +323,8 @@ pages:
             messageKey: home-address.im-homeless-right-now
       - name: sameMailingAddress
         type: RADIO
-        promptMessageKey: home-address.is-this-the-best-place-for-you-to-receive-mail
+        promptMessage:
+          promptMessageKey: home-address.is-this-the-best-place-for-you-to-receive-mail
         helpMessageKey: home-address.the-county-will-need-a-place-to-send-you-mail-for-the-next-3-months
         options:
           - value: true
@@ -320,7 +342,8 @@ pages:
     inputs:
       - name: zipCode
         type: TEXT
-        promptMessageKey: mailing-address.what-is-the-zip-code
+        promptMessage:
+          promptMessageKey: mailing-address.what-is-the-zip-code
         defaultValue:
           type: DATASOURCE_REFERENCE
           value: zipCode
@@ -333,7 +356,8 @@ pages:
           validation: ZIPCODE
       - name: city
         type: TEXT
-        promptMessageKey: mailing-address.what-is-the-city
+        promptMessage:
+          promptMessageKey: mailing-address.what-is-the-city
         defaultValue:
           type: DATASOURCE_REFERENCE
           value: city
@@ -346,7 +370,8 @@ pages:
           validation: NOT_BLANK
       - name: state
         type: TEXT
-        promptMessageKey: mailing-address.what-is-the-state
+        promptMessage:
+          promptMessageKey: mailing-address.what-is-the-state
         validator:
           validation: STATE
         validationErrorMessageKey: general.validation.make-sure-to-provide-a-valid-2-letter-state-code
@@ -354,7 +379,8 @@ pages:
           value: MN
       - name: streetAddress
         type: TEXT
-        promptMessageKey: mailing-address.what-is-the-street-address
+        promptMessage:
+          promptMessageKey: mailing-address.what-is-the-street-address
         defaultValue:
           type: DATASOURCE_REFERENCE
           value: streetAddress
@@ -367,7 +393,8 @@ pages:
           validation: NOT_BLANK
       - name: apartmentNumber
         type: TEXT
-        promptMessageKey: mailing-address.apartment-number
+        promptMessage:
+          promptMessageKey: mailing-address.apartment-number
         defaultValue:
           type: DATASOURCE_REFERENCE
           value: apartmentNumber
@@ -458,6 +485,8 @@ pages:
     inputs:
       - name: liquidAssets
         type: MONEY
+        promptMessage:
+          promptMessageFragmentName: liquidAssetsPrompt
         validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
         validator:
           validation: MONEY

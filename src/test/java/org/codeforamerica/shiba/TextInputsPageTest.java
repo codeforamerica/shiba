@@ -83,4 +83,11 @@ public class TextInputsPageTest extends AbstractStaticMessageSourcePageTest {
         assertThat(driver.getTitle()).isEqualTo("firstPageTitle");
         assertThat(driver.findElement(By.cssSelector(String.format("input[name^='%s']", "uneditableInput"))).getAttribute("value")).contains("default value");
     }
+
+    @Test
+    void shouldDisplayPromptMessageFragment() {
+        driver.navigate().to(baseUrl + "/pages/inputWithPromptFragmentPage");
+
+        assertThat(driver.findElementByPartialLinkText("test message"));
+    }
 }

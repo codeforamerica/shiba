@@ -4,7 +4,7 @@
      class="form-group"
      th:classappend="${!inputData.valid} ? 'form-group--error' : ''"
      th:with="inputData=${data.get(input.name)}, formInputName=${T(org.codeforamerica.shiba.Utils).getFormInputName(input.name)}">
-    <label class="form-question" th:if="${input.promptMessageKey != null}" th:text="#{${input.promptMessageKey}}"></label>
+    <div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${input})"></div>
     <p class="text--help">
         <label th:for="${input.name}+'-month'">mm</label>/<label th:for="${input.name}+'-day'">dd</label>/<label
             th:for="${input.name}+'-year'">yyyy</label>
