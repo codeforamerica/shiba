@@ -461,7 +461,7 @@ pages:
       pageName: doYouLiveAlone
   liquidAssets:
     previousPage: expeditedIncome
-    nextPage: importantToKnow
+    nextPage: expeditedExpenses
     pageTitle:
       conditionalValues:
         - value: expedited-income.title-one-person
@@ -493,6 +493,34 @@ pages:
           condition:
             input: liquidAssets
             matcher: NOT_EMPTY
+    datasource:
+      pageName: doYouLiveAlone
+  expeditedExpenses:
+    previousPage: liquidAssets
+    nextPage: importantToKnow
+    pageTitle:
+      conditionalValues:
+        - value: expedited-expenses.title-one-person
+          condition:
+            input: liveAlone
+            value: true
+        - value: expedited-expenses.title-household
+          condition:
+            input: liveAlone
+            value: false
+    headerKey:
+      conditionalValues:
+        - value: expedited-expenses.title-one-person
+          condition:
+            input: liveAlone
+            value: true
+        - value: expedited-expenses.title-household
+          condition:
+            input: liveAlone
+            value: false
+    inputs:
+      - name: payRentOrMortgage
+        type: YES_NO
     datasource:
       pageName: doYouLiveAlone
   importantToKnow:
