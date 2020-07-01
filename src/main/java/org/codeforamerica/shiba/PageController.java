@@ -66,8 +66,10 @@ public class PageController {
         HashMap<String, Object> model = new HashMap<>(Map.of(
                 "page", pageConfiguration,
                 "pageName", pageName,
-                "pageTitle", pageConfiguration.resolvePageTitle(pagesData)
+                "pageTitle", pageConfiguration.resolve(pagesData, PageConfiguration::getPageTitle),
+                "headerKey", pageConfiguration.resolveNullable(pagesData, PageConfiguration::getHeaderKey)
         ));
+
         String pageToRender;
         if (pageConfiguration.isStaticPage()) {
             pageToRender = pageName;
@@ -97,7 +99,9 @@ public class PageController {
                         "page", page,
                         "data", formData,
                         "pageName", pageName,
-                        "pageTitle", page.resolvePageTitle(pagesData)));
+                        "pageTitle", page.resolve(pagesData, PageConfiguration::getPageTitle),
+                        "headerKey", page.resolveNullable(pagesData, PageConfiguration::getHeaderKey)
+                ));
     }
 
     @PostMapping("/submit")
@@ -122,6 +126,8 @@ public class PageController {
                         "page", page,
                         "data", formData,
                         "pageName", SIGN_THIS_APPLICATION_PAGE_NAME,
-                        "pageTitle", page.resolvePageTitle(pagesData)));
+                        "pageTitle", page.resolve(pagesData, PageConfiguration::getPageTitle),
+                        "headerKey", page.resolveNullable(pagesData, PageConfiguration::getHeaderKey)
+                ));
     }
 }

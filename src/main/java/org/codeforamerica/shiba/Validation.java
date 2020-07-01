@@ -12,10 +12,8 @@ public enum Validation {
     NONE(strings -> true),
     NOT_BLANK(strings -> !String.join("", strings).isBlank()),
     SELECT_AT_LEAST_ONE(strings -> strings.size() > 0),
-    SSN(strings -> List.of(0, 9).contains(String.join("", strings).length())),
-    DATE(strings ->
-            String.join("", strings).isBlank() ||
-                    GenericValidator.isDate(String.join("/", strings), "MM/dd/yyyy", true)),
+    SSN(strings -> String.join("", strings).matches("\\d{9}")),
+    DATE(strings -> GenericValidator.isDate(String.join("/", strings), "MM/dd/yyyy", true)),
     ZIPCODE(strings -> String.join("", strings).matches("\\d{5}")),
     STATE(strings -> Set.of("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY", "AS", "DC", "FM", "GU", "MH", "MP", "PR", "VI", "AB", "BC", "MB", "NB", "NF", "NS", "ON", "PE", "PQ", "SK")
             .contains(strings.get(0))),

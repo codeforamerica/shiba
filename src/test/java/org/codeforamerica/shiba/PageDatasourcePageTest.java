@@ -20,6 +20,7 @@ public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest 
     private final String staticPageWithDatasourceTitle = "staticPageWithDatasourceTitle";
     private final String staticPageWithDatasourceInputsTitle = "staticPageWithDatasourceInputsTitle";
     private final String finalPageTitle = "final page";
+    private final String yesHeaderText = "yes header text";
 
     @TestConfiguration
     @PropertySource(value = "classpath:test-pages-config.yaml", factory = YamlPropertySourceFactory.class)
@@ -39,6 +40,9 @@ public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest 
         staticMessageSource.addMessage("static-page-with-datasource-title", Locale.US, staticPageWithDatasourceTitle);
         staticMessageSource.addMessage("static-page-with-datasource-inputs-title", Locale.US, staticPageWithDatasourceInputsTitle);
         staticMessageSource.addMessage("last-page-title", Locale.US, finalPageTitle);
+        staticMessageSource.addMessage("yes-header-text", Locale.US, yesHeaderText);
+        staticMessageSource.addMessage("general.inputs.yes", Locale.US, YesNoAnswer.YES.getDisplayValue());
+        staticMessageSource.addMessage("general.inputs.no", Locale.US, YesNoAnswer.NO.getDisplayValue());
     }
 
     @Test
@@ -139,8 +143,6 @@ public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest 
         String noAnswerTitle = "no answer title";
         staticMessageSource.addMessage("foo", Locale.US, "wrong title");
         staticMessageSource.addMessage("no-answer-title", Locale.US, noAnswerTitle);
-        staticMessageSource.addMessage("general.inputs.yes", Locale.US, YesNoAnswer.YES.getDisplayValue());
-        staticMessageSource.addMessage("general.inputs.no", Locale.US, YesNoAnswer.NO.getDisplayValue());
 
         driver.navigate().to(baseUrl + "/pages/yesNoQuestionPage");
 
@@ -152,5 +154,19 @@ public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest 
         radioToSelect.click();
 
         assertThat(driver.getTitle()).isEqualTo(noAnswerTitle);
+    }
+
+    @Test
+    void shouldDisplayPageHeaderBasedOnCondition() {
+        driver.navigate().to(baseUrl + "/pages/yesNoQuestionPage");
+
+        List<WebElement> yesNoRadios = driver.findElements(By.cssSelector(".button"));
+        WebElement radioToSelect = yesNoRadios.stream()
+                .filter(label -> label.getText().equals(YesNoAnswer.YES.getDisplayValue()))
+                .findFirst()
+                .orElseThrow();
+        radioToSelect.click();
+
+        assertThat(driver.findElement(By.cssSelector("h2")).getText()).isEqualTo(yesHeaderText);
     }
 }

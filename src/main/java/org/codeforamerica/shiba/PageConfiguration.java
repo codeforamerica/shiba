@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -13,7 +14,7 @@ import static org.codeforamerica.shiba.FormData.getFormDataFrom;
 public class PageConfiguration {
     public List<FormInput> inputs = List.of();
     private Value pageTitle;
-    private String headerKey;
+    private Value headerKey;
     private String headerHelpMessageKey;
     private List<String> nextPage;
     private String previousPage;
@@ -21,9 +22,9 @@ public class PageConfiguration {
     private Condition skipCondition;
     private boolean startTimer = false;
 
-    String resolvePageTitle(PagesData pagesData) {
-        return this.pageTitle.getConditionalValues()
-                .stream()
+    public String resolve(PagesData pagesData, Function<PageConfiguration, Value> valueExtractor) {
+        Value value = valueExtractor.apply(this);
+        return value.getConditionalValues().stream()
                 .filter(conditionalValue -> {
                     Condition condition = conditionalValue.getCondition();
                     Objects.requireNonNull(this.getDatasource(),
@@ -33,7 +34,15 @@ public class PageConfiguration {
                 })
                 .findFirst()
                 .map(ConditionalValue::getValue)
-                .orElse(this.pageTitle.getValue());
+                .orElse(value.getValue());
+    }
+
+    public String resolveNullable(PagesData pagesData, Function<PageConfiguration, Value> valueExtractor) {
+        Value value = valueExtractor.apply(this);
+        if (value == null) {
+            return "";
+        }
+        return resolve(pagesData, valueExtractor);
     }
 
     @SuppressWarnings("unused")

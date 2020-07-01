@@ -83,6 +83,17 @@ test-page-datasource:
           condition:
             input: yesNoQuestion
             value: false
+    headerKey:
+      value: bar
+      conditionalValues:
+        - value: yes-header-text
+          condition:
+            input: yesNoQuestion
+            value: true
+        - value: no-header-text
+          condition:
+            input: yesNoQuestion
+            value: false
     inputs:
       - name: foo
         type: TEXT
@@ -192,6 +203,28 @@ test-validation:
         type: TEXT
         validator:
           validation: MONEY
+        validationErrorMessageKey: error-message-key
+  ssnPage:
+    nextPage:
+      - lastPage
+    pageTitle:
+      value: ssn-page-title
+    inputs:
+      - name: ssnInput
+        type: TEXT
+        validator:
+          validation: SSN
+        validationErrorMessageKey: error-message-key
+  datePage:
+    nextPage:
+      - lastPage
+    pageTitle:
+      value: date-page-title
+    inputs:
+      - name: dateInput
+        type: DATE
+        validator:
+          validation: DATE
         validationErrorMessageKey: error-message-key
   lastPage:
     pageTitle:

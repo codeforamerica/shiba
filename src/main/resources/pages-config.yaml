@@ -14,7 +14,8 @@ pages:
     pageTitle:
       value: language-preferences.title
     startTimer: true
-    headerKey: language-preferences.language-preferences
+    headerKey:
+      value: language-preferences.language-preferences
     nextPage:
       - choosePrograms
     previousPage: prepareToApply
@@ -67,7 +68,8 @@ pages:
     nextPage:
       - howItWorks
     previousPage: languagePreferences
-    headerKey: choose-programs.what-do-you-need-help-with-today
+    headerKey:
+      value: choose-programs.what-do-you-need-help-with-today
     headerHelpMessageKey: choose-programs.check-all-that-apply
     inputs:
       - name: programs
@@ -108,7 +110,8 @@ pages:
   personalInfo:
     pageTitle:
       value: personal-info.title
-    headerKey: personal-info.tell-us-about-yourself
+    headerKey:
+      value: personal-info.tell-us-about-yourself
     previousPage: introBasicInfo
     nextPage:
       - contactInfo
@@ -135,12 +138,18 @@ pages:
         type: DATE
         validator:
           validation: DATE
+          condition:
+            input: dateOfBirth
+            matcher: NOT_EMPTY
         validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
         promptMessageKey: personal-info.when-were-you-born
       - name: ssn
         type: NUMBER
         validator:
           validation: SSN
+          condition:
+            input: ssn
+            matcher: NOT_EMPTY
         validationErrorMessageKey: general.validation.make-sure-your-SSN-has-9-digits
         promptMessageKey: personal-info.whats-your-social-security-number
         helpMessageKey: personal-info.if-you-have-one-we-strongly-recommend-including-it-here-your-caseworker-will
@@ -185,6 +194,9 @@ pages:
             type: DATE
             validator:
               validation: DATE
+              condition:
+                input: moveToMnDate
+                matcher: NOT_EMPTY
             validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
             promptMessageKey: personal-info.when-did-you-move-to-minnesota
           - name: moveToMnPreviousCity
@@ -193,7 +205,8 @@ pages:
   contactInfo:
     pageTitle:
       value: contact-info.title
-    headerKey: contact-info.how-can-we-stay-in-touch-with-you
+    headerKey:
+      value: contact-info.how-can-we-stay-in-touch-with-you
     headerHelpMessageKey: contact-info.most-of-our-communication-will-be-through-mail
     previousPage: personalInfo
     nextPage:
@@ -238,7 +251,8 @@ pages:
     nextPage:
       - homeAddress
   homeAddress:
-    headerKey: home-address.where-are-you-currently-living
+    headerKey:
+      value: home-address.where-are-you-currently-living
     pageTitle:
       value: home-address.title
     previousPage: weDoNotRecommendMinimalFlow
@@ -298,7 +312,8 @@ pages:
   mailingAddress:
     pageTitle:
       value: mailing-address.title
-    headerKey: mailing-address.where-can-the-county-send-your-mail
+    headerKey:
+      value: mailing-address.where-can-the-county-send-your-mail
     previousPage: homeAddress
     nextPage:
       - doYouNeedHelpImmediately
@@ -373,7 +388,8 @@ pages:
       - doYouLiveAlone
       - importantToKnow
   doYouLiveAlone:
-    headerKey: do-you-live-alone.do-you-live-alone
+    headerKey:
+      value: do-you-live-alone.do-you-live-alone
     pageTitle:
       value: do-you-live-alone.title
     previousPage: doYouNeedHelpImmediately
@@ -382,7 +398,16 @@ pages:
       - name: liveAlone
         type: YES_NO
   expeditedIncome:
-    headerKey: expedited-income.how-much-money-have-you-made-in-the-last-30-days
+    headerKey:
+      conditionalValues:
+        - value: expedited-income.how-much-money-have-you-made-in-the-last-30-days
+          condition:
+            input: liveAlone
+            value: true
+        - value: expedited-income.how-much-money-has-your-household-made-in-the-last-30-days
+          condition:
+            input: liveAlone
+            value: false
     headerHelpMessageKey: expedited-income.if-you-dont-know-the-exact-amount
     pageTitle:
       conditionalValues:
@@ -410,7 +435,8 @@ pages:
   importantToKnow:
     pageTitle:
       value: important-to-know.title
-    headerKey: important-to-know.important-stuff-to-know-about
+    headerKey:
+      value: important-to-know.important-stuff-to-know-about
     headerHelpMessageKey: important-to-know.read-the-important-points-below-click-here-to-learn-more-details
     previousPage: doYouNeedHelpImmediately
     nextPage:
@@ -421,7 +447,8 @@ pages:
     previousPage: importantToKnow
     nextPage:
       - signThisApplication
-    headerKey: legal-stuff.the-legal-stuff
+    headerKey:
+      value: legal-stuff.the-legal-stuff
     headerHelpMessageKey: legal-stuff.scroll-down-to-agree-to-the-terms
     inputs:
       - name: agreeToTerms
@@ -435,7 +462,8 @@ pages:
   signThisApplication:
     pageTitle:
       value: sign-this-application.title
-    headerKey: sign-this-application.type-your-full-legal-name-here-to-sign-this-application
+    headerKey:
+      value: sign-this-application.type-your-full-legal-name-here-to-sign-this-application
     headerHelpMessageKey: sign-this-application.by-signing-this-application-you-agree-that-you-want-to
     previousPage: legalStuff
     nextPage:

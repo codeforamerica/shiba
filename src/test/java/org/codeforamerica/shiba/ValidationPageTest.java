@@ -26,6 +26,8 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest{
     private final String statePageTitle = "state page title";
     private final String phonePageTitle = "phone page title";
     private final String moneyPageTitle = "money page title";
+    private final String ssnPageTitle = "ssn page title";
+    private final String datePageTitle = "date page title";
 
     @TestConfiguration
     @PropertySource(value = "classpath:test-pages-config.yaml", factory = YamlPropertySourceFactory.class)
@@ -49,6 +51,8 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest{
         staticMessageSource.addMessage("state-page-title", Locale.US, statePageTitle);
         staticMessageSource.addMessage("phone-page-title", Locale.US, phonePageTitle);
         staticMessageSource.addMessage("money-page-title", Locale.US, moneyPageTitle);
+        staticMessageSource.addMessage("ssn-page-title", Locale.US, ssnPageTitle);
+        staticMessageSource.addMessage("date-page-title", Locale.US, datePageTitle);
     }
 
     @Test
@@ -209,6 +213,61 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest{
     void shouldPassValidationForMoneyWhenValueIsNumber() {
         driver.navigate().to(baseUrl + "/pages/moneyPage");
         driver.findElement(By.cssSelector("input[name^='moneyInput']")).sendKeys("-726");
+        driver.findElement(By.cssSelector("button")).click();
+
+        assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
+    }
+
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "1234567890",
+            "12345678",
+            "12345678e"
+    })
+    void shouldFailValidationForSSNWhenValueIsNotExactlyNineDigits(String input) {
+        driver.navigate().to(baseUrl + "/pages/ssnPage");
+        driver.findElement(By.cssSelector("input[name^='ssnInput']")).sendKeys(input);
+        driver.findElement(By.cssSelector("button")).click();
+
+        assertThat(driver.getTitle()).isEqualTo(ssnPageTitle);
+        assertThat(getInputError("ssnInput")).isNotNull();
+    }
+
+    @Test
+    void shouldPassValidationForSSNWhenValueIsExactlyNineDigits() {
+        driver.navigate().to(baseUrl + "/pages/ssnPage");
+
+        driver.findElement(By.cssSelector("input[name^='ssnInput']")).clear();
+        driver.findElement(By.cssSelector("input[name^='ssnInput']")).sendKeys("123456789");
+        driver.findElement(By.cssSelector("button")).click();
+
+        assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
+    }
+    
+    @Test
+    void shouldFailValidationForDateWhenValueIsNotAValidDate() {
+        driver.navigate().to(baseUrl + "/pages/datePage");
+        driver.findElements(By.cssSelector("input[name^='dateInput']")).forEach(WebElement::clear);
+
+        driver.findElement(By.id("dateInput-month")).sendKeys("13");
+        driver.findElement(By.id("dateInput-day")).sendKeys("42");
+        driver.findElement(By.id("dateInput-year")).sendKeys("1492");
+        driver.findElement(By.cssSelector("button")).click();
+
+        assertThat(driver.getTitle()).isEqualTo(datePageTitle);
+        assertThat(getInputError("dateInput")).isNotNull();
+    }
+
+    @Test
+    void shouldPassValidationForDateWhenValueIsAValidDate() {
+        driver.navigate().to(baseUrl + "/pages/datePage");
+
+        driver.findElements(By.cssSelector("input[name^='dateInput']")).forEach(WebElement::clear);
+
+        driver.findElement(By.id("dateInput-month")).sendKeys("02");
+        driver.findElement(By.id("dateInput-day")).sendKeys("20");
+        driver.findElement(By.id("dateInput-year")).sendKeys("1492");
         driver.findElement(By.cssSelector("button")).click();
 
         assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
