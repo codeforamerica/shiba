@@ -5,7 +5,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 
-public class SuccessPage extends BasePage {
+public class SuccessPage extends Page {
     @FindBy(linkText = "Download My Receipt")
     WebElement downloadReceiptButton;
 

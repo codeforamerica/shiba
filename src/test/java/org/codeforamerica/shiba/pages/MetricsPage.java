@@ -8,7 +8,7 @@ import org.openqa.selenium.support.FindBy;
 import java.util.List;
 
 
-public class MetricsPage extends BasePage {
+public class MetricsPage extends Page {
     @FindBy(css = ".statistic-card")
     List<WebElement> statisticCards;
 
