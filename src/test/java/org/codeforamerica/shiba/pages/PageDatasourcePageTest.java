@@ -26,7 +26,7 @@ public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest 
     @PropertySource(value = "classpath:test-pages-config.yaml", factory = YamlPropertySourceFactory.class)
     static class TestPageConfiguration {
         @Bean
-        @ConfigurationProperties(prefix = "test-page-datasource")
+        @ConfigurationProperties(prefix = "test-page-datasources")
         public PagesConfiguration pagesConfiguration() {
             return new PagesConfiguration();
         }

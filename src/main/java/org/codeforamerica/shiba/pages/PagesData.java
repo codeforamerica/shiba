@@ -18,7 +18,7 @@ public class PagesData {
     }
 
     public FormData getPageOrDefault(String pageName, PageConfiguration pageConfiguration) {
-        FormData defaultFormData = Optional.ofNullable(pageConfiguration.getDatasource())
+        FormData defaultFormData = Optional.ofNullable(pageConfiguration.getDatasources())
                 .map(datasource -> FormData.initialize(pageConfiguration, datasourceInputDataCreator(datasource, this)))
                 .orElse(FormData.initialize(pageConfiguration, literalInputDataCreator()));
 

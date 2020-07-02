@@ -1,0 +1,231 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "pages": {
+      "type": "object",
+      "patternProperties": {
+        "^.*$": {
+          "$ref": "#/definitions/page"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "page": {
+      "type": "object",
+      "properties": {
+        "pageTitle": {
+          "$ref": "#/definitions/value"
+        },
+        "headerKey": {
+          "$ref": "#/definitions/value"
+        },
+        "headerHelpMessageKey": {
+          "type": "string"
+        },
+        "nextPage": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "previousPage": {
+          "type": "string"
+        },
+        "datasource": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "pageName": {
+                "type": "string"
+              },
+              "inputs": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "valueMessageKeys": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "skipCondition": {
+          "$ref": "#/definitions/condition"
+        },
+        "startTimer": {
+          "type": "boolean"
+        },
+        "inputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/input"
+          }
+        }
+      },
+      "required": [
+        "pageTitle"
+      ]
+    },
+    "value": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string"
+        },
+        "conditionalValues": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "string"
+              },
+              "condition": {
+                "$ref": "#/definitions/condition"
+              }
+            }
+          }
+        }
+      }
+    },
+    "input": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "TEXT",
+            "DATE",
+            "NUMBER",
+            "RADIO",
+            "CHECKBOX",
+            "SELECT",
+            "YES_NO",
+            "MONEY"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "promptMessage": {
+          "type": "object",
+          "properties": {
+            "promptMessageFragmentName": {
+              "type": "string"
+            },
+            "promptMessageKey": {
+              "type": "string"
+            }
+          }
+        },
+        "helpMessageKey": {
+          "type": "string"
+        },
+        "validationErrorMessageKey": {
+          "type": "string"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "string"
+              },
+              "messageKey": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "followUps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/input"
+          }
+        },
+        "followUpsValue": {
+          "type": "string"
+        },
+        "validator": {
+          "type": "object",
+          "properties": {
+            "validation": {
+              "type": "string",
+              "enum": [
+                "NONE",
+                "NOT_BLANK",
+                "SELECT_AT_LEAST_ONE",
+                "SSN",
+                "DATE",
+                "ZIPCODE",
+                "STATE",
+                "PHONE",
+                "MONEY"
+              ]
+            },
+            "condition": {
+              "$ref": "#/definitions/condition"
+            }
+          }
+        },
+        "readOnly": {
+          "type": "boolean"
+        },
+        "defaultValue": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "LITERAL",
+                "DATASOURCE_REFERENCE"
+              ]
+            },
+            "value": {
+              "type": "string"
+            },
+            "condition": {
+              "$ref": "#/definitions/condition"
+            }
+          }
+        }
+      },
+      "required": [
+        "name",
+        "type"
+      ]
+    },
+    "condition": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        },
+        "matcher": {
+          "type": "string",
+          "enum": [
+            "NOT_PRESENT",
+            "CONTAINS",
+            "NOT_EMPTY"
+          ]
+        }
+      }
+    }
+  },
+  "required": [
+    "pages"
+  ]
+}

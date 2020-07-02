@@ -18,7 +18,7 @@ public class PageConfiguration {
     private String headerHelpMessageKey;
     private List<String> nextPage;
     private String previousPage;
-    private PageDatasource datasource;
+    private List<PageDatasource> datasources;
     private Condition skipCondition;
     private boolean startTimer = false;
 
@@ -27,9 +27,9 @@ public class PageConfiguration {
         return value.getConditionalValues().stream()
                 .filter(conditionalValue -> {
                     Condition condition = conditionalValue.getCondition();
-                    Objects.requireNonNull(this.getDatasource(),
+                    Objects.requireNonNull(this.getDatasources(),
                             "Configuration mismatch! Conditional value cannot be evaluated without a datasource.");
-                    FormData formData = getFormDataFrom(this.getDatasource(), pagesData);
+                    FormData formData = getFormDataFrom(this.getDatasources(), pagesData);
                     return condition.appliesTo(formData);
                 })
                 .findFirst()
@@ -66,10 +66,10 @@ public class PageConfiguration {
     }
 
     boolean shouldSkip(PagesData pagesData) {
-        if (this.datasource == null || this.skipCondition == null) {
+        if (this.datasources == null || this.skipCondition == null) {
             return false;
         }
-        return this.skipCondition.appliesTo(getFormDataFrom(datasource, pagesData));
+        return this.skipCondition.appliesTo(getFormDataFrom(datasources, pagesData));
     }
 
     String getAdjacentPageName(boolean isBackwards) {

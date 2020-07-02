@@ -51,9 +51,9 @@ public class FormData extends HashMap<String, InputData> {
         return defaultValue -> new InputData(List.of(defaultValue.getValue()));
     }
 
-    static Function<DefaultValue, InputData> datasourceInputDataCreator(PageDatasource datasource, PagesData pagesData) {
+    static Function<DefaultValue, InputData> datasourceInputDataCreator(List<PageDatasource> datasources, PagesData pagesData) {
         return defaultValue -> {
-            FormData formData = getFormDataFrom(datasource, pagesData);
+            FormData formData = getFormDataFrom(datasources, pagesData);
 
             List<String> inputValue = switch (defaultValue.getType()) {
                 case LITERAL -> List.of(defaultValue.getValue());
@@ -68,6 +68,14 @@ public class FormData extends HashMap<String, InputData> {
                     new InputData(inputValue) :
                     new InputData();
         };
+    }
+
+    static FormData getFormDataFrom(List<PageDatasource> datasources, PagesData pagesData) {
+        Map<String, InputData> formDatas = datasources.stream()
+                .map(datasource -> getFormDataFrom(datasource, pagesData))
+                .flatMap(formData -> formData.entrySet().stream())
+                .collect(toMap(Entry::getKey, Entry::getValue));
+        return new FormData(formDatas);
     }
 
     static FormData getFormDataFrom(PageDatasource datasource, PagesData pagesData) {

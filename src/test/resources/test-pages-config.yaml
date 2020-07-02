@@ -69,7 +69,7 @@ test-inputs:
         type: MONEY
         promptMessage:
           promptMessageFragmentName: promptFragment
-test-page-datasource:
+test-page-datasources:
   firstPage:
     pageTitle:
       value: first-page-title
@@ -91,21 +91,21 @@ test-page-datasource:
     previousPage: firstPage
     nextPage:
       - staticPageWithDatasourceInputs
-    datasource:
-      pageName: firstPage
+    datasources:
+      - pageName: firstPage
   staticPageWithDatasourceInputs:
     pageTitle:
       value: static-page-with-datasource-inputs-title
     previousPage: staticPageWithDatasource
     nextPage:
       - lastPage
-    datasource:
-      pageName: firstPage
-      inputs:
-        - name: someRadioInputName
-          valueMessageKeys:
-            VALUE_1: display-value-key-1
-            VALUE_2: display-value-key-2
+    datasources:
+      - pageName: firstPage
+        inputs:
+          - name: someRadioInputName
+            valueMessageKeys:
+              VALUE_1: display-value-key-1
+              VALUE_2: display-value-key-2
   yesNoQuestionPage:
     pageTitle:
       value: foo
@@ -139,8 +139,8 @@ test-page-datasource:
     inputs:
       - name: foo
         type: TEXT
-    datasource:
-      pageName: yesNoQuestionPage
+    datasources:
+      - pageName: yesNoQuestionPage
   lastPage:
     pageTitle:
       value: last-page-title
@@ -160,8 +160,8 @@ test-page-datasource:
             input: someRadioInputName
             value: VALUE_1
             matcher: CONTAINS
-    datasource:
-      pageName: firstPage
+    datasources:
+      - pageName: firstPage
 test-validation:
   firstPage:
     pageTitle:
@@ -328,8 +328,8 @@ test-conditional-rendering:
       input: someRadioInputName
       value: SKIP
       matcher: CONTAINS
-    datasource:
-      pageName: firstPage
+    datasources:
+      - pageName: firstPage
   thirdPage:
     previousPage: secondPage
     pageTitle:
@@ -388,5 +388,5 @@ yes-no-answer:
         defaultValue:
           type: DATASOURCE_REFERENCE
           value: yesOrNo
-    datasource:
-      pageName: yesNoQuestionPage
+    datasources:
+      - pageName: yesNoQuestionPage

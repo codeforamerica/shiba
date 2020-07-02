@@ -53,7 +53,10 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         liquidAssetsPage.enterInput("liquidAssets", "1233");
 
         Page expeditedExpenses = liquidAssetsPage.clickPrimaryButton();
-        expeditedExpenses.choose(YES);
+        Page expeditedExpensesAmount = expeditedExpenses.choose(YES);
+
+        expeditedExpensesAmount.enterInput("expeditedExpensesAmount", "333");
+        expeditedExpensesAmount.clickPrimaryButton();
     }
 
     @Test

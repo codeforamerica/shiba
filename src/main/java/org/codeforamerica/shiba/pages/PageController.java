@@ -76,7 +76,7 @@ public class PageController {
         String pageToRender;
         if (pageConfiguration.isStaticPage()) {
             pageToRender = pageName;
-            Optional.ofNullable(pageConfiguration.getDatasource())
+            Optional.ofNullable(pageConfiguration.getDatasources())
                     .map(datasource -> getFormDataFrom(datasource, this.pagesData))
                     .ifPresent(model::putAll);
         } else {
