@@ -30,7 +30,6 @@ public class FormInput {
             case DATE -> "date-input";
             case RADIO -> "radio-input";
             case CHECKBOX -> "checkbox-input";
-            case LEGAL_TERMS -> "legal-terms-input";
             case YES_NO -> "yes-no-input";
         };
     }

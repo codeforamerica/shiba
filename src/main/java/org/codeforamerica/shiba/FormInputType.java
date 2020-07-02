@@ -8,6 +8,5 @@ public enum FormInputType {
     CHECKBOX,
     SELECT,
     YES_NO,
-    MONEY,
-    LEGAL_TERMS
+    MONEY
 }

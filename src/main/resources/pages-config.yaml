@@ -542,7 +542,9 @@ pages:
     headerHelpMessageKey: legal-stuff.scroll-down-to-agree-to-the-terms
     inputs:
       - name: agreeToTerms
-        type: LEGAL_TERMS
+        type: CHECKBOX
+        promptMessage:
+          promptMessageFragmentName: legal-terms-prompt
         validator:
           validation: SELECT_AT_LEAST_ONE
         validationErrorMessageKey: general.validation.make-sure-you-answer-this-question

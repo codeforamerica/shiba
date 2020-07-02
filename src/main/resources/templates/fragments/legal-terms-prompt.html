@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<div th:fragment="legal-terms-input (input, data)" th:with="inputData=${data.get(input.name)}" class="form-group">
-    <div class="textarea legal-stuff-window">
+<div th:fragment="legal-terms-prompt">
+    <div class="textarea legal-stuff-window spacing-below-35">
         <h3 th:text="#{legal-stuff.summary}"></h3>
         <div th:text="|• #{legal-stuff.you-have-been-honest-on-this-application}|"></div>
         <div th:text="|• #{legal-stuff.you-agree-to-the-snap-cash-benefit-rules}|"></div>
@@ -16,26 +16,5 @@
         <div th:text="|• #{legal-stuff.i-agree-to-the-sharing-of-information-as-stated-on-in-the-Auditing-section}|"></div>
         <div th:text="|• #{legal-stuff.i-agree-to-the-sharing-of-information-as-stated-in-the-social-security-numbers-section}|"></div>
     </div>
-    <div class="spacing-above-35 form-group" th:classappend="${!inputData.valid} ? 'form-group--error' : ''">
-        <div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${input})"></div>
-        <p class="text--help"
-           th:if="${input.helpMessageKey != null}"
-           th:text="#{${input.helpMessageKey}}"></p>
-        <th:block th:each="option: ${input.options}"
-                  th:with="formInputName=${T(org.codeforamerica.shiba.Utils).getFormInputName(input.name)}">
-            <label th:for="${option.value}" class="checkbox">
-                <input type="checkbox"
-                       th:id="${option.value}"
-                       th:value="${option.value}"
-                       th:name="${formInputName}"
-                       th:checked="${inputData.value.contains(option.value)}">
-                <span th:text="#{${option.messageKey}}"></span>
-            </label>
-        </th:block>
-    </div>
-    <p class="text--error" th:if="${!inputData.valid}">
-        <i class="icon-warning"></i>
-        <span th:text="#{${input.validationErrorMessageKey}}"></span>
-    </p>
 </div>
 </html>

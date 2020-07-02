@@ -17,10 +17,10 @@
                 <span th:text="#{${option.messageKey}}"></span>
             </label>
         </th:block>
+        <p class="text--error" th:if="${!inputData.valid}">
+            <i class="icon-warning"></i>
+            <span th:text="#{${input.validationErrorMessageKey}}"></span>
+        </p>
     </div>
-    <p class="text--error" th:if="${!inputData.valid}">
-        <i class="icon-warning"></i>
-        <span th:text="#{${input.validationErrorMessageKey}}"></span>
-    </p>
 </div>
 </html>
