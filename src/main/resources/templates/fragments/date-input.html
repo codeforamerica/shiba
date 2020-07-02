@@ -3,7 +3,7 @@
 <div th:fragment="date-input (input, data)"
      class="form-group"
      th:classappend="${!inputData.valid} ? 'form-group--error' : ''"
-     th:with="inputData=${data.get(input.name)}, formInputName=${T(org.codeforamerica.shiba.Utils).getFormInputName(input.name)}">
+     th:with="inputData=${data.get(input.name)}, formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)}">
     <div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${input})"></div>
     <p class="text--help">
         <label th:for="${input.name}+'-month'">mm</label>/<label th:for="${input.name}+'-day'">dd</label>/<label

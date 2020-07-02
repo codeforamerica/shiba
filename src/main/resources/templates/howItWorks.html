@@ -8,7 +8,7 @@
             <a th:replace="fragments/go-back"></a>
             <div class="card spacing-above-35">
                 <div class="grid__item spacing-above-35">
-                    <h2 th:text="|#{how-it-works.okay-lets-apply-for-help-with} ${T(org.codeforamerica.shiba.Utils).getTitleString(#messages.listMsg(programs.messageKeysForValue))}.|"></h2>
+                    <h2 th:text="|#{how-it-works.okay-lets-apply-for-help-with} ${T(org.codeforamerica.shiba.pages.PageUtils).getTitleString(#messages.listMsg(programs.messageKeysForValue))}.|"></h2>
                 </div>
                 <p class="text-25" th:text="#{how-it-works.how-it-works}"></p>
                 <h3 class="spacing-below-10" th:text="#{how-it-works.submit-an-application}"></h3>
