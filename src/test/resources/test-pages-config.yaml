@@ -33,6 +33,9 @@ test-inputs:
             messageKey: checkbox-option-1
           - value: 2
             messageKey: checkbox-option-2
+          - value: 3
+            messageKey: none-checkbox-option
+            isNone: true
       - name: selectInput
         type: SELECT
         options:

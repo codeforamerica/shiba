@@ -552,7 +552,7 @@ pages:
             input: liveAlone
             value: "false"
     nextPage:
-      - importantToKnow
+      - expeditedUtilityPayments
     previousPage: expeditedExpenses
     inputs:
       - name: expeditedExpensesAmount
@@ -566,6 +566,59 @@ pages:
     datasources:
       - pageName: doYouLiveAlone
       - pageName: expeditedExpenses
+  expeditedUtilityPayments:
+    pageTitle:
+      conditionalValues:
+        - value: expedited-utility-payments.title-one-person
+          condition:
+            input: liveAlone
+            value: "true"
+        - value: expedited-utility-payments.title-household
+          condition:
+            input: liveAlone
+            value: "false"
+    headerKey:
+      conditionalValues:
+        - value: expedited-utility-payments.do-you-pay-for-any-utilities
+          condition:
+            input: liveAlone
+            value: "true"
+        - value: expedited-utility-payments.does-anyone-in-your-houshold-pay-for-these-utilities
+          condition:
+            input: liveAlone
+            value: "false"
+    headerHelpMessageKey: expedited-utility-payments.select-all-that-you-are-billed-for-even-if-you-havent-paid-it-this-month
+    nextPage:
+      - importantToKnow
+    previousPage: expeditedExpensesAmount
+    inputs:
+      - name: payForUtilities
+        type: CHECKBOX
+        validator:
+          validation: SELECT_AT_LEAST_ONE
+        validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+        options:
+          - value: HEATING
+            messageKey: expedited-utility-payments.heating
+          - value: COOLING
+            messageKey: expedited-utility-payments.cooling
+          - value: ELECTRICITY
+            messageKey: expedited-utility-payments.electricity
+          - value: PHONE
+            messageKey: expedited-utility-payments.phone
+          - value: WATER
+            messageKey: expedited-utility-payments.water
+          - value: SEWER
+            messageKey: expedited-utility-payments.sewer
+          - value: GARBAGE_REMOVAL
+            messageKey: expedited-utility-payments.garbage-removal
+          - value: COOKING_FUEL
+            messageKey: expedited-utility-payments.cooking-fuel
+          - value: NONE_OF_THE_ABOVE
+            messageKey: expedited-utility-payments.none-of-the-above
+            isNone: true
+    datasources:
+      - pageName: doYouLiveAlone
   importantToKnow:
     pageTitle:
       value: important-to-know.title

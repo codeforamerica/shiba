@@ -41,6 +41,13 @@ caf:
       liquidAssets: LIQUID_ASSETS
     expeditedExpensesAmount:
       expeditedExpensesAmount: HOUSING_EXPENSES
+    expeditedUtilityPayments:
+      payForUtilities:
+        HEATING: HEAT
+        COOLING: AIR_CONDITIONING
+        ELECTRICITY: ELECTRICITY
+        PHONE: PHONE
+        NONE_OF_THE_ABOVE: NONE
     signThisApplication:
       applicantSignature: APPLICANT_SIGNATURE
       submissionTime: SUBMISSION_TIME

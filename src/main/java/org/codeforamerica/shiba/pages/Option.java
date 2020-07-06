@@ -6,4 +6,5 @@ import lombok.Data;
 public class Option {
     String value;
     String messageKey;
+    Boolean isNone;
 }

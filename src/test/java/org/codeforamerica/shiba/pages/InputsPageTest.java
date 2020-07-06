@@ -29,6 +29,7 @@ public class InputsPageTest extends AbstractStaticMessageSourcePageTest {
     String radioOption1 = "radio option 1";
     String checkboxOption1 = "checkbox option 1";
     String checkboxOption2 = "checkbox option 2";
+    String noneCheckboxOption = "none checkbox option";
     String selectOption1 = "select option 1";
     String radioTrue = "YEP";
     String radioFalse = "NOPE";
@@ -45,6 +46,7 @@ public class InputsPageTest extends AbstractStaticMessageSourcePageTest {
         staticMessageSource.addMessage("radio-option-1", Locale.US, radioOption1);
         staticMessageSource.addMessage("checkbox-option-1", Locale.US, checkboxOption1);
         staticMessageSource.addMessage("checkbox-option-2", Locale.US, checkboxOption2);
+        staticMessageSource.addMessage("none-checkbox-option", Locale.US, noneCheckboxOption);
         staticMessageSource.addMessage("select-option-1", Locale.US, selectOption1);
         staticMessageSource.addMessage("radio-true", Locale.US, radioTrue);
         staticMessageSource.addMessage("radio-false", Locale.US, radioFalse);
@@ -161,5 +163,26 @@ public class InputsPageTest extends AbstractStaticMessageSourcePageTest {
         driver.navigate().to(baseUrl + "/pages/inputWithPromptFragmentPage");
 
         assertThat(driver.findElementByPartialLinkText("test message"));
+    }
+
+    @Test
+    void shouldUncheckAnyOtherCheckedBoxesWhenNoneCheckboxIsSelected() {
+        driver.navigate().to(baseUrl + "/pages/firstPage");
+
+        testPage.selectEnumeratedInput("checkboxInput", checkboxOption1);
+        testPage.selectEnumeratedInput("checkboxInput", checkboxOption2);
+        testPage.selectEnumeratedInput("checkboxInput", noneCheckboxOption);
+
+        assertThat(testPage.getCheckboxValues("checkboxInput")).containsOnly(noneCheckboxOption);
+    }
+
+    @Test
+    void shouldUncheckNoneCheckboxWhenAnyOtherCheckboxIsSelected() {
+        driver.navigate().to(baseUrl + "/pages/firstPage");
+
+        testPage.selectEnumeratedInput("checkboxInput", noneCheckboxOption);
+        testPage.selectEnumeratedInput("checkboxInput", checkboxOption1);
+
+        assertThat(testPage.getCheckboxValues("checkboxInput")).containsOnly(checkboxOption1);
     }
 }

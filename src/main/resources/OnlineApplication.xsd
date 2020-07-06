@@ -729,7 +729,7 @@
 							</xsd:annotation>
 							<xsd:complexType>
 								<xsd:sequence>
-									<xsd:element name="Name" type="xsd:string" minOccurs="0">
+									<xsd:element name="Name" type="model:UtilityType" minOccurs="0">
 										<xsd:annotation>
 											<xsd:documentation> see UtilityType</xsd:documentation>
 										</xsd:annotation>

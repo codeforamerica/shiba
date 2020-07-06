@@ -8,9 +8,9 @@
            th:text="#{${input.helpMessageKey}}"></p>
         <th:block th:each="option: ${input.options}"
                   th:with="formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)}">
-            <label th:for="${option.value}" class="checkbox">
+            <label th:for="${option.isNone} ? 'none__checkbox' : ${option.value}" class="checkbox">
                 <input type="checkbox"
-                       th:id="${option.value}"
+                       th:id="${option.isNone} ? 'none__checkbox' : ${option.value}"
                        th:value="${option.value}"
                        th:name="${formInputName}"
                        th:checked="${inputData.value.contains(option.value)}">
