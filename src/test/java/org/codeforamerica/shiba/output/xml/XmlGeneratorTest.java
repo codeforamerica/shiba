@@ -181,7 +181,7 @@ class XmlGeneratorTest {
     }
 
     @Test
-    void shouldPopulateNodeValueFromEnumeratedMultiValueInput_whenEnumMappingDoesNotExist() throws IOException, SAXException, ParserConfigurationException {
+    void shouldExcludeNodesForEnumeratedMultiValueInputWhereEnumMappingDoesNotExist() throws IOException, SAXException, ParserConfigurationException {
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
                 "<ns:Root xmlns:ns='some-url'>\n" +
                 "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
@@ -208,7 +208,9 @@ class XmlGeneratorTest {
         SimpleNamespaceContext namespaceContext = new SimpleNamespaceContext();
         namespaceContext.setBindings(Map.of("ns", "some-url"));
         MatcherAssert.assertThat(document,
-                hasXPath("/ns:Root/ns:Child/text()", namespaceContext, Matchers.equalTo(formInputValue)));
+                hasXPath("count(/ns:Root/ns:Child)",
+                        namespaceContext,
+                        Matchers.equalTo("0")));
     }
 
     @Test
@@ -243,7 +245,7 @@ class XmlGeneratorTest {
     }
 
     @Test
-    void shouldPopulateNodeValueFromEnumeratedSingleValueInput_whenEnumMappingDoesNotExist() throws IOException, SAXException, ParserConfigurationException {
+    void shouldExcludeNodeForEnumeratedSingleValueInputWhereEnumMappingDoesNotExist() throws IOException, SAXException, ParserConfigurationException {
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
                 "<ns:Root xmlns:ns='some-url'>\n" +
                 "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
@@ -270,7 +272,9 @@ class XmlGeneratorTest {
         SimpleNamespaceContext namespaceContext = new SimpleNamespaceContext();
         namespaceContext.setBindings(Map.of("ns", "some-url"));
         MatcherAssert.assertThat(document,
-                hasXPath("/ns:Root/ns:Child/text()", namespaceContext, Matchers.equalTo(formInputValue)));
+                hasXPath("count(/ns:Root/ns:Child)",
+                        namespaceContext,
+                        Matchers.equalTo("0")));
     }
 
     @Test

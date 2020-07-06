@@ -36,10 +36,14 @@ xml:
       liquidAssets: LIQUID_ASSETS
     expeditedExpensesAmount:
       expeditedExpensesAmount: HOUSING_EXPENSES
+    expeditedUtilityPayments:
+      payForUtilities: PAY_FOR_UTILITIES
     signThisApplication:
       applicantSignature: APPLICANT_SIGNATURE
       submissionTime: SUBMISSION_TIME
   enums:
+    true: true
+    false: false
     homeless: true
     NEVER_MARRIED: Never Married
     MARRIED_LIVING_WITH_SPOUSE: Married Living w/Spouse
@@ -60,3 +64,8 @@ xml:
     CASH: Cash
     EMERGENCY: Emergency Help
     CHILD_CARE: Child Care
+    COOLING: Air conditioning
+    ELECTRICITY: Electricity
+    HEATING: Heat
+    PHONE: Phone
+    NONE_OF_THE_ABOVE: None

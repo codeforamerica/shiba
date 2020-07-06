@@ -52,6 +52,21 @@
             <onl:MonthlyIncome>{{MONEY_MADE_LAST_MONTH}}</onl:MonthlyIncome>
             <onl:CashInHand>{{LIQUID_ASSETS}}</onl:CashInHand>
             <onl:MortgagePayment>{{HOUSING_EXPENSES}}</onl:MortgagePayment>
+            <onl:UtilityPaymentsFor>
+                <onl:Name>{{PAY_FOR_UTILITIES}}</onl:Name>
+            </onl:UtilityPaymentsFor>
+            <onl:UtilityPaymentsFor>
+                <onl:Name>{{PAY_FOR_UTILITIES}}</onl:Name>
+            </onl:UtilityPaymentsFor>
+            <onl:UtilityPaymentsFor>
+                <onl:Name>{{PAY_FOR_UTILITIES}}</onl:Name>
+            </onl:UtilityPaymentsFor>
+            <onl:UtilityPaymentsFor>
+                <onl:Name>{{PAY_FOR_UTILITIES}}</onl:Name>
+            </onl:UtilityPaymentsFor>
+            <onl:UtilityPaymentsFor>
+                <onl:Name>{{PAY_FOR_UTILITIES}}</onl:Name>
+            </onl:UtilityPaymentsFor>
         </onl:ExpeditedFSInfo>
         <onl:MiscellaneousInfo>
             <onl:PrimarySpokenLanguage>{{LANGUAGEPREFERENCES_SPOKENLANGUAGE}}</onl:PrimarySpokenLanguage>

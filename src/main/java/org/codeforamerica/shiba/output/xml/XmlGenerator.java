@@ -7,9 +7,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.AbstractMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.regex.Pattern;
@@ -42,9 +40,13 @@ public class XmlGenerator implements FileGenerator {
                         String xmlToken = config.get(String.join(".", input.getGroupName(), input.getName()));
                         return switch (input.getType()) {
                             case DATE_VALUE -> Stream.of(new AbstractMap.SimpleEntry<>(xmlToken, String.join("/", input.getValue())));
-                            case ENUMERATED_SINGLE_VALUE -> Stream.of(new AbstractMap.SimpleEntry<>(xmlToken, enumMappings.getOrDefault(input.getValue().get(0), input.getValue().get(0))));
+                            case ENUMERATED_SINGLE_VALUE -> Optional.ofNullable(enumMappings.get(input.getValue().get(0)))
+                                    .map(mappedValue -> new AbstractMap.SimpleEntry<>(xmlToken, mappedValue))
+                                    .stream();
                             case ENUMERATED_MULTI_VALUE -> input.getValue().stream()
-                                    .map(value -> new AbstractMap.SimpleEntry<>(xmlToken, enumMappings.getOrDefault(value, value)));
+                                    .map(enumMappings::get)
+                                    .filter(Objects::nonNull)
+                                    .map(mappedValue -> new AbstractMap.SimpleEntry<>(xmlToken, mappedValue));
                             default -> Stream.of(new AbstractMap.SimpleEntry<>(xmlToken, input.getValue().get(0)));
                         };
                     })
