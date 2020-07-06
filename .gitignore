@@ -16,6 +16,7 @@ build/
 
 ### IntelliJ IDEA ###
 .idea/*.xml
+!.idea/jsonSchemas.xml
 .idea/inspectionProfiles/
 *.iws
 *.iml
