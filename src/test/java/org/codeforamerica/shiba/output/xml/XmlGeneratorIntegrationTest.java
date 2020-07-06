@@ -67,11 +67,15 @@ public class XmlGeneratorIntegrationTest {
                                 .map(Option::getValue)
                                 .collect(Collectors.toList());
                         case DATE_VALUE -> List.of(LocalDate.ofEpochDay(0).plusDays(new Random().nextInt()).format(DateTimeFormatter.ofPattern("MM/dd/yyyy")).split("/"));
-                        default -> switch (formInput.getValidator().getValidation()) {
-                            case SSN -> List.of("123456789");
-                            case ZIPCODE -> List.of("12345");
-                            case STATE -> List.of("MN");
-                            default -> List.of("some-value");
+                        default -> //noinspection SwitchStatementWithTooFewBranches
+                                switch (formInput.getType()) {
+                            case YES_NO -> List.of(String.valueOf(new Random().nextBoolean()));
+                            default -> switch (formInput.getValidator().getValidation()) {
+                                case SSN -> List.of("123456789");
+                                case ZIPCODE -> List.of("12345");
+                                case STATE -> List.of("MN");
+                                default -> List.of("some-value");
+                            };
                         };
                     };
                     return new ApplicationInput(input.getGroupName(), value, input.getName(), input.getType());

@@ -589,7 +589,7 @@ pages:
             value: "false"
     headerHelpMessageKey: expedited-utility-payments.select-all-that-you-are-billed-for-even-if-you-havent-paid-it-this-month
     nextPage:
-      - importantToKnow
+      - expeditedMigrantFarmWorker
     previousPage: expeditedExpensesAmount
     inputs:
       - name: payForUtilities
@@ -617,6 +617,35 @@ pages:
           - value: NONE_OF_THE_ABOVE
             messageKey: expedited-utility-payments.none-of-the-above
             isNone: true
+    datasources:
+      - pageName: doYouLiveAlone
+  expeditedMigrantFarmWorker:
+    previousPage: expeditedUtilityPayments
+    nextPage:
+      - importantToKnow
+    pageTitle:
+      conditionalValues:
+        - value: expedited-migrant-farm-worker.title-one-person
+          condition:
+            input: liveAlone
+            value: "true"
+        - value: expedited-migrant-farm-worker.title-household
+          condition:
+            input: liveAlone
+            value: "false"
+    headerKey:
+      conditionalValues:
+        - value: expedited-migrant-farm-worker.header-one-person
+          condition:
+            input: liveAlone
+            value: "true"
+        - value: expedited-migrant-farm-worker.header-household
+          condition:
+            input: liveAlone
+            value: "false"
+    inputs:
+      - name: migrantOrSeasonalFarmWorker
+        type: YES_NO
     datasources:
       - pageName: doYouLiveAlone
   importantToKnow:

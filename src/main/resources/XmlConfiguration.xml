@@ -52,6 +52,7 @@
             <onl:MonthlyIncome>{{MONEY_MADE_LAST_MONTH}}</onl:MonthlyIncome>
             <onl:CashInHand>{{LIQUID_ASSETS}}</onl:CashInHand>
             <onl:MortgagePayment>{{HOUSING_EXPENSES}}</onl:MortgagePayment>
+            <onl:SeasonalWorkerInd>{{MIGRANT_SEASONAL_FARM_WORKER}}</onl:SeasonalWorkerInd>
             <onl:UtilityPaymentsFor>
                 <onl:Name>{{PAY_FOR_UTILITIES}}</onl:Name>
             </onl:UtilityPaymentsFor>

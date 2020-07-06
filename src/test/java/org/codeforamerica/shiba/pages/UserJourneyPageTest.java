@@ -15,6 +15,7 @@ import java.time.ZoneOffset;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.pages.DatePart.*;
+import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 import static org.mockito.Mockito.when;
 
@@ -59,7 +60,9 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         Page expeditedUtilityPaymentsPage = expeditedExpensesAmountPage.clickPrimaryButton();
 
         expeditedUtilityPaymentsPage.selectEnumeratedInput("payForUtilities", "Cooling");
-        expeditedUtilityPaymentsPage.clickPrimaryButton();
+        Page expeditedMigrantFarmWorkerPage = expeditedUtilityPaymentsPage.clickPrimaryButton();
+
+        expeditedMigrantFarmWorkerPage.choose(NO);
     }
 
     @Test

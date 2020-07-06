@@ -48,6 +48,8 @@ caf:
         ELECTRICITY: ELECTRICITY
         PHONE: PHONE
         NONE_OF_THE_ABOVE: NONE
+    expeditedMigrantFarmWorker:
+      migrantOrSeasonalFarmWorker: MIGRANT_SEASONAL_FARM_WORKER
     signThisApplication:
       applicantSignature: APPLICANT_SIGNATURE
       submissionTime: SUBMISSION_TIME
