@@ -16,6 +16,7 @@ Setup IntelliJ for the project:
 - Configure an additional dictionary in `preferences > editor > proofreading > spelling` using `.idea/dictionaries/shiba.xml`
 - Install the Lombok plugin
 - Enable annotation processing
+- Set the Project SDK to Java 14 in `File > Project Structure`
 - Run the application using ShibaApplication run configuration
 
 Test:
