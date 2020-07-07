@@ -34,13 +34,10 @@ public class InputsPageTest extends AbstractStaticMessageSourcePageTest {
     String radioTrue = "YEP";
     String radioFalse = "NOPE";
 
-    Page testPage;
-
     @Override
     @BeforeEach
     void setUp() throws IOException {
         super.setUp();
-        testPage = new Page(driver);
         staticMessageSource.addMessage("first-page-title", Locale.US, "firstPageTitle");
         staticMessageSource.addMessage("next-page-title", Locale.US, "nextPageTitle");
         staticMessageSource.addMessage("radio-option-1", Locale.US, radioOption1);

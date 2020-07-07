@@ -6,6 +6,6 @@ import java.util.List;
 
 @Data
 public class Value {
-    String value;
-    List<ConditionalValue> conditionalValues = List.of();
+    private String value;
+    private List<ConditionalValue> conditionalValues = List.of();
 }

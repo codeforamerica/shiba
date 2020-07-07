@@ -41,6 +41,8 @@ abstract class AbstractBasePageTest {
     @LocalServerPort
     protected String localServerPort;
 
+    protected Page testPage;
+
     @SuppressWarnings("InnerClassMayBeStatic")
     @TestConfiguration
     class PageInteractionTestConfiguration {
@@ -67,6 +69,7 @@ abstract class AbstractBasePageTest {
         options.setExperimentalOption("prefs", chromePrefs);
         options.addArguments("--headless");
         driver = new ChromeDriver(options);
+        testPage = new Page(driver);
     }
 
     @AfterEach

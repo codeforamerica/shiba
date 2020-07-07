@@ -23,5 +23,7 @@ public class AbstractStaticMessageSourcePageTest extends AbstractBasePageTest {
         staticMessageSource = (StaticMessageSource) messageSource;
         staticMessageSource.addMessage("general.go-back", Locale.US, "Go Back");
         staticMessageSource.addMessage("general.continue", Locale.US, "Continue");
+        staticMessageSource.addMessage("general.inputs.yes", Locale.US, "Yes");
+        staticMessageSource.addMessage("general.inputs.no", Locale.US, "No");
     }
 }
