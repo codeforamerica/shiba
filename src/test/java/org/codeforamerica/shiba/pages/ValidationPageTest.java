@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -289,14 +290,20 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest{
             assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
         }
 
-        @Test
-        void shouldFailValidationForDateWhenValueIsNotAValidDate() {
+        @ParameterizedTest
+        @CsvSource(value = {
+                "13,42,1492",
+                "1,2,1929",
+        })
+        void shouldFailValidationForDateWhenValueIsNotAValidDate(String month,
+                                                                 String day,
+                                                                 String year) {
             driver.navigate().to(baseUrl + "/pages/datePage");
             driver.findElements(By.cssSelector("input[name^='dateInput']")).forEach(WebElement::clear);
 
-            driver.findElement(By.id("dateInput-month")).sendKeys("13");
-            driver.findElement(By.id("dateInput-day")).sendKeys("42");
-            driver.findElement(By.id("dateInput-year")).sendKeys("1492");
+            driver.findElement(By.id("dateInput-month")).sendKeys(month);
+            driver.findElement(By.id("dateInput-day")).sendKeys(day);
+            driver.findElement(By.id("dateInput-year")).sendKeys(year);
             driver.findElement(By.cssSelector("button")).click();
 
             assertThat(driver.getTitle()).isEqualTo(datePageTitle);

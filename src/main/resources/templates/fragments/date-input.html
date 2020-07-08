@@ -9,11 +9,11 @@
         <label th:for="${input.name}+'-month'">mm</label>/<label th:for="${input.name}+'-day'">dd</label>/<label
             th:for="${input.name}+'-year'">yyyy</label>
     </p>
-    <input type="text" maxlength="2" pattern="\d{2}" class="text-input form-width--2-character dob-input"
+    <input type="text" maxlength="2" class="text-input form-width--2-character dob-input"
            th:id="${input.name}+'-month'" th:name="${formInputName}" th:value="${!inputData.value.isEmpty() ? inputData.value[0]: ''}">
-    &nbsp;/&nbsp; <input type="text" maxlength="2" pattern="\d{2}" class="text-input form-width--2-character dob-input"
+    &nbsp;/&nbsp; <input type="text" maxlength="2" class="text-input form-width--2-character dob-input"
                          th:id="${input.name}+'-day'" th:name="${formInputName}" th:value="${!inputData.value.isEmpty() ? inputData.value[1]: ''}">
-    &nbsp;/&nbsp; <input type="text" maxlength="4" pattern="\d{4}" class="text-input form-width--4-character dob-input"
+    &nbsp;/&nbsp; <input type="text" maxlength="4" class="text-input form-width--4-character dob-input"
                          th:id="${input.name}+'-year'" th:name="${formInputName}" th:value="${!inputData.value.isEmpty() ? inputData.value[2]: ''}">
     <p class="text--error" th:if="${!inputData.valid}">
         <i class="icon-warning"></i>
