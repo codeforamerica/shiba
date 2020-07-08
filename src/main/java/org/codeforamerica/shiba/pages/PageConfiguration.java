@@ -21,6 +21,7 @@ public class PageConfiguration {
     private List<PageDatasource> datasources;
     private Condition skipCondition;
     private boolean startTimer = false;
+    private boolean resetData = false;
 
     public String resolve(PagesData pagesData, Function<PageConfiguration, Value> valueExtractor) {
         Value value = valueExtractor.apply(this);

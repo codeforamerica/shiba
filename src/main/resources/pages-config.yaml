@@ -4,12 +4,14 @@ pages:
       value: landing.title
     nextPage:
       - prepareToApply
+    resetData: true
   prepareToApply:
     pageTitle:
       value: prepare-to-apply.title
     previousPage: landing
     nextPage:
       - languagePreferences
+    resetData: true
   languagePreferences:
     pageTitle:
       value: language-preferences.title

@@ -13,4 +13,8 @@ public class Metrics {
             startTime = instant;
         }
     }
+
+    public void clear() {
+        startTime = null;
+    }
 }

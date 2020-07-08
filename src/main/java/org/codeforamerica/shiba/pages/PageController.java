@@ -62,6 +62,11 @@ public class PageController {
     ModelAndView getFormPage(@PathVariable String pageName) {
         PageConfiguration pageConfiguration = this.pagesConfiguration.get(pageName);
 
+        if (pageConfiguration.isResetData()) {
+            this.pagesData.getData().clear();
+            metrics.clear();
+        }
+
         if (pageConfiguration.isStartTimer()) {
             metrics.setStartTimeOnce(clock.instant());
         }

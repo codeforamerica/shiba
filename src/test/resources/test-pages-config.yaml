@@ -398,3 +398,21 @@ yes-no-answer:
           value: yesOrNo
     datasources:
       - pageName: yesNoQuestionPage
+test-reset-data:
+  firstPage:
+    pageTitle:
+      value: first-page-title
+    inputs:
+      - name: someTextInput
+        type: TEXT
+    resetData: true
+    nextPage:
+      - secondPage
+  secondPage:
+    startTimer: true
+    pageTitle:
+      value: second-page-title
+    inputs:
+      - name: foo
+        type: TEXT
+    previousPage: firstPage
