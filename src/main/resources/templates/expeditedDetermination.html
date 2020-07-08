@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block
+        th:with="income=${moneyMadeLast30Days.value[0].isEmpty() ? 0 : T(java.lang.Integer).parseInt(moneyMadeLast30Days.value[0])},
+                 assets=${liquidAssets.value[0].isEmpty() ? 0 : T(java.lang.Integer).parseInt(liquidAssets.value[0])},
+                 expenses=${expeditedExpensesAmount.value[0].isEmpty() ? 0 : T(java.lang.Integer).parseInt(expeditedExpensesAmount.value[0])},
+                 qualifyOnIncomeAndAssets=${income < 150 && assets <= 100},
+                 qualifyOnMigrantWorkerAssets=${migrantOrSeasonalFarmWorker.value[0] == 'true' && assets <= 100},
+                 standardDeductionAmountHeatingCooling=${payForUtilities.value.contains('HEATING') || payForUtilities.value.contains('COOLING') ? 490 : 0},
+                 standardDeductionAmountElectricity=${payForUtilities.value.contains('HEATING') || payForUtilities.value.contains('COOLING') ? 0 : payForUtilities.value.contains('ELECTRICITY') ? 143 : 0},
+                 standardDeductionAmountPhone=${payForUtilities.value.contains('HEATING') || payForUtilities.value.contains('COOLING') ? 0 : payForUtilities.value.contains('PHONE') ? 49 : 0},
+                 qualifyOnStandardDeduction=${income + assets < expenses + standardDeductionAmountHeatingCooling+ standardDeductionAmountElectricity+ standardDeductionAmountPhone}">
+    <div th:replace="fragments/head :: head(#{${qualifyOnIncomeAndAssets || qualifyOnMigrantWorkerAssets || qualifyOnStandardDeduction} ? 'expedited-determination.qualified-title' : 'expedited-determination.denied-title'})"></div>
+    <body>
+    <div class="page-wrapper">
+        <section class="slab slab--shiba">
+            <div class="grid">
+                <a th:replace="fragments/go-back"></a>
+                <div class="card spacing-above-35">
+                    <h2 th:text="#{${qualifyOnIncomeAndAssets || qualifyOnMigrantWorkerAssets || qualifyOnStandardDeduction} ? 'expedited-determination.qualified-header':'expedited-determination.denied-header'}"></h2>
+                    <p class="spacing-below-60" th:text="#{${qualifyOnIncomeAndAssets || qualifyOnMigrantWorkerAssets || qualifyOnStandardDeduction} ? 'expedited-determination.qualified-detail':'expedited-determination.denied-detail'}"></p>
+                    <a class="button button--primary" th:href="'/pages/'+${pageName}+'/navigation'" th:text="#{expedited-determination.finish-application}"></a>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div th:replace="fragments/footer"></div>
+    </body>
+</th:block>
+</html>

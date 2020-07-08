@@ -24,6 +24,10 @@ public class PageConfiguration {
 
     public String resolve(PagesData pagesData, Function<PageConfiguration, Value> valueExtractor) {
         Value value = valueExtractor.apply(this);
+        if (value == null) {
+            return "";
+        }
+
         return value.getConditionalValues().stream()
                 .filter(conditionalValue -> {
                     Condition condition = conditionalValue.getCondition();
@@ -35,14 +39,6 @@ public class PageConfiguration {
                 .findFirst()
                 .map(ConditionalValue::getValue)
                 .orElse(value.getValue());
-    }
-
-    public String resolveNullable(PagesData pagesData, Function<PageConfiguration, Value> valueExtractor) {
-        Value value = valueExtractor.apply(this);
-        if (value == null) {
-            return "";
-        }
-        return resolve(pagesData, valueExtractor);
     }
 
     @SuppressWarnings("unused")

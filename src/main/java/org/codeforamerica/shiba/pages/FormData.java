@@ -81,13 +81,19 @@ public class FormData extends HashMap<String, InputData> {
     static FormData getFormDataFrom(PageDatasource datasource, PagesData pagesData) {
         FormData formData = pagesData.getPage(datasource.getPageName());
         if (datasource.getInputs().isEmpty()) {
-            return formData;
+            return Optional.ofNullable(formData)
+                    .orElseThrow(() -> new RuntimeException(String.format("Datasource %s is skipped and no default is provided.", datasource.getPageName())));
         }
         Map<String, InputData> inputDataMap = datasource.getInputs().stream()
-                .map(inputDatasource -> Map.entry(
-                        inputDatasource.getName(),
-                        formData.get(inputDatasource.getName())
-                                .withValueMessageKeys(inputDatasource.getValueMessageKeys())))
+                .map(inputDatasource -> {
+                    InputData inputData = Optional.ofNullable(formData)
+                            .map(data -> data.get(inputDatasource.getName())
+                                    .withValueMessageKeys(inputDatasource.getValueMessageKeys()))
+                            .orElseGet(() -> new InputData(List.of(inputDatasource.getDefaultValue())));
+                    return Map.entry(
+                            inputDatasource.getName(),
+                            inputData);
+                })
                 .collect(toMap(Entry::getKey, Entry::getValue));
         return new FormData(inputDataMap);
     }

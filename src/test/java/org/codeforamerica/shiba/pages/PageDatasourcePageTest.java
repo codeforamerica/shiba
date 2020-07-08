@@ -117,7 +117,7 @@ public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest 
     }
 
     @Test
-    void shouldNotPrepopulateFieldWithDefaultValue_whenConditionIsTrue() {
+    void shouldPrepopulateFieldWithDefaultValue_whenConditionIsTrue() {
         staticMessageSource.addMessage("radio-value-key-1", Locale.US, "RADIO 1");
 
         driver.navigate().to(baseUrl + "/pages/firstPage");
@@ -168,5 +168,12 @@ public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest 
         radioToSelect.click();
 
         assertThat(driver.findElement(By.cssSelector("h2")).getText()).isEqualTo(yesHeaderText);
+    }
+
+    @Test
+    void shouldUseDefaultValueWhenDataForDatasourcePageIsNotPresent() {
+        driver.navigate().to(baseUrl + "/pages/lastPage");
+
+        assertThat(testPage.getInputValue("someOtherInputName")).isEqualTo("default value");
     }
 }

@@ -70,10 +70,7 @@
             "$ref": "#/definitions/input"
           }
         }
-      },
-      "required": [
-        "pageTitle"
-      ]
+      }
     },
     "value": {
       "type": "object",

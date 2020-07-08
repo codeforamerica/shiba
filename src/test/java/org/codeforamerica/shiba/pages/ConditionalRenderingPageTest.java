@@ -37,11 +37,12 @@ public class ConditionalRenderingPageTest extends AbstractStaticMessageSourcePag
         staticMessageSource.addMessage("first-page-title", Locale.US, firstPageTitle);
         staticMessageSource.addMessage("second-page-title", Locale.US, secondPageTitle);
         staticMessageSource.addMessage("third-page-title", Locale.US, thirdPageTitle);
+        staticMessageSource.addMessage("skip-message-key", Locale.US, "SKIP PAGE");
+        staticMessageSource.addMessage("not-skip-message-key", Locale.US, "NOT SKIP PAGE");
     }
 
     @Test
     void shouldNotRenderPageAndNavigateToTheNextPageIfTheSkipConditionIsTrue() {
-        staticMessageSource.addMessage("skip-message-key", Locale.US, "SKIP PAGE");
         driver.navigate().to(baseUrl + "/pages/firstPage");
         WebElement radioToClick = driver.findElements(By.cssSelector("span")).stream()
                 .filter(webElement -> webElement.getText().equals("SKIP PAGE"))
@@ -56,7 +57,6 @@ public class ConditionalRenderingPageTest extends AbstractStaticMessageSourcePag
 
     @Test
     void shouldRenderPageIfTheSkipConditionIsFalse() {
-        staticMessageSource.addMessage("not-skip-message-key", Locale.US, "NOT SKIP PAGE");
         driver.navigate().to(baseUrl + "/pages/firstPage");
         WebElement radioToClick = driver.findElements(By.cssSelector("span")).stream()
                 .filter(webElement -> webElement.getText().equals("NOT SKIP PAGE"))
@@ -71,7 +71,6 @@ public class ConditionalRenderingPageTest extends AbstractStaticMessageSourcePag
 
     @Test
     void shouldSkipGoingBackwardsAsWell() {
-        staticMessageSource.addMessage("skip-message-key", Locale.US, "SKIP PAGE");
         driver.navigate().to(baseUrl + "/pages/firstPage");
         WebElement radioToClick = driver.findElements(By.cssSelector("span")).stream()
                 .filter(webElement -> webElement.getText().equals("SKIP PAGE"))

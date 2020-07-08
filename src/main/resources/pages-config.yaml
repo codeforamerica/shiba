@@ -622,7 +622,7 @@ pages:
   expeditedMigrantFarmWorker:
     previousPage: expeditedUtilityPayments
     nextPage:
-      - importantToKnow
+      - expeditedDetermination
     pageTitle:
       conditionalValues:
         - value: expedited-migrant-farm-worker.title-one-person
@@ -648,6 +648,19 @@ pages:
         type: YES_NO
     datasources:
       - pageName: doYouLiveAlone
+  expeditedDetermination:
+    previousPage: expeditedMigrantFarmWorker
+    nextPage:
+      - importantToKnow
+    datasources:
+      - pageName: expeditedIncome
+      - pageName: liquidAssets
+      - pageName: expeditedMigrantFarmWorker
+      - pageName: expeditedExpensesAmount
+        inputs:
+          - name: expeditedExpensesAmount
+            defaultValue: 0
+      - pageName: expeditedUtilityPayments
   importantToKnow:
     pageTitle:
       value: important-to-know.title

@@ -6,6 +6,7 @@ import java.util.Map;
 
 @Data
 class InputDatasource {
-    String name;
-    Map<String, String> valueMessageKeys = Map.of();
+    private String name;
+    private Map<String, String> valueMessageKeys = Map.of();
+    private String defaultValue;
 }

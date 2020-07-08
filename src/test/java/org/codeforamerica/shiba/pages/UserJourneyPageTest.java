@@ -24,14 +24,11 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     @MockBean
     Clock clock;
 
-    Page page;
-
     @Override
     @BeforeEach
     void setUp() throws IOException {
         super.setUp();
         driver.navigate().to(baseUrl + "/pages/landing");
-        page = new Page(driver);
         when(clock.instant()).thenReturn(Instant.now());
     }
 
@@ -39,7 +36,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     void userCanCompleteTheNonExpeditedFlow() {
         completeFlowFromLandingPageToDoYouNeedHelpImmediately();
 
-        assertThat(page.getTitle()).isEqualTo("Do you need help immediately?");
+        assertThat(testPage.getTitle()).isEqualTo("Do you need help immediately?");
     }
 
     @Test
@@ -47,7 +44,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         completeFlowFromLandingPageToDoYouNeedHelpImmediately();
         driver.findElement(By.linkText("Yes, I want to see if I qualify")).click();
 
-        Page expeditedIncomePage = page.choose(YES);
+        Page expeditedIncomePage = testPage.choose(YES);
         expeditedIncomePage.enterInput("moneyMadeLast30Days", "123");
 
         Page liquidAssetsPage = expeditedIncomePage.clickPrimaryButton();
@@ -62,7 +59,10 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         expeditedUtilityPaymentsPage.selectEnumeratedInput("payForUtilities", "Cooling");
         Page expeditedMigrantFarmWorkerPage = expeditedUtilityPaymentsPage.clickPrimaryButton();
 
-        expeditedMigrantFarmWorkerPage.choose(NO);
+        Page expeditedDeterminationPage = expeditedMigrantFarmWorkerPage.choose(NO);
+
+        Page importantToKnow = expeditedDeterminationPage.clickPrimaryButton();
+        assertThat(importantToKnow.getTitle()).isEqualTo("Important to Know");
     }
 
     @Test
@@ -106,8 +106,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         assertThat(metricsPage.getCardValue("Completion Time")).contains("05m 30s");
     }
 
-    private Page completeFlowFromLandingPageToDoYouNeedHelpImmediately() {
-        Page languagePreferencesPage = page
+    private void completeFlowFromLandingPageToDoYouNeedHelpImmediately() {
+        Page languagePreferencesPage = testPage
                 .clickPrimaryButton()
                 .clickPrimaryButton();
         languagePreferencesPage.selectFromDropdown("writtenLanguage", "English");
@@ -156,14 +156,13 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         mailingAddressPage.enterInput("streetAddress", "someStreetAddress");
         mailingAddressPage.enterInput("state", "IL");
         mailingAddressPage.enterInput("apartmentNumber", "someApartmentNumber");
-
-        return mailingAddressPage.clickPrimaryButton();
+        mailingAddressPage.clickPrimaryButton();
     }
 
     private SuccessPage minimumFlowToSuccessPage() {
         completeFlowFromLandingPageToDoYouNeedHelpImmediately();
         driver.findElement(By.linkText("Finish application now")).click();
-        Page legalStuffPage = page.clickPrimaryButton();
+        Page legalStuffPage = testPage.clickPrimaryButton();
         legalStuffPage.selectEnumeratedInput("agreeToTerms", "I agree");
         Page signThisApplicationPage = legalStuffPage.clickPrimaryButton();
 

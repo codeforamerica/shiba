@@ -70,7 +70,7 @@ public class PageController {
                 "page", pageConfiguration,
                 "pageName", pageName,
                 "pageTitle", pageConfiguration.resolve(pagesData, PageConfiguration::getPageTitle),
-                "headerKey", pageConfiguration.resolveNullable(pagesData, PageConfiguration::getHeaderKey)
+                "headerKey", pageConfiguration.resolve(pagesData, PageConfiguration::getHeaderKey)
         ));
 
         String pageToRender;
@@ -103,7 +103,7 @@ public class PageController {
                         "data", formData,
                         "pageName", pageName,
                         "pageTitle", page.resolve(pagesData, PageConfiguration::getPageTitle),
-                        "headerKey", page.resolveNullable(pagesData, PageConfiguration::getHeaderKey)
+                        "headerKey", page.resolve(pagesData, PageConfiguration::getHeaderKey)
                 ));
     }
 
@@ -130,7 +130,7 @@ public class PageController {
                         "data", formData,
                         "pageName", SIGN_THIS_APPLICATION_PAGE_NAME,
                         "pageTitle", page.resolve(pagesData, PageConfiguration::getPageTitle),
-                        "headerKey", page.resolveNullable(pagesData, PageConfiguration::getHeaderKey)
+                        "headerKey", page.resolve(pagesData, PageConfiguration::getHeaderKey)
                 ));
     }
 }
