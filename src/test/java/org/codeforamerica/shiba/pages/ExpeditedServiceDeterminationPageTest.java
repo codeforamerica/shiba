@@ -67,8 +67,6 @@ public class ExpeditedServiceDeterminationPageTest extends AbstractStaticMessage
 
         testPage.choose(YesNoAnswer.NO);
 
-        takeSnapShot(driver, "snapshot");
-
         assertThat(driver.getTitle()).isEqualTo(isQualified ? qualifiedTitle : deniedTitle);
         assertThat(driver.findElement(By.cssSelector("h2")).getText()).isEqualTo(isQualified ? qualifiedHeader : deniedHeader);
         assertThat(driver.findElement(By.cssSelector("h2 ~ p")).getText()).isEqualTo(isQualified ? qualifiedDetail : deniedDetail);
@@ -100,8 +98,6 @@ public class ExpeditedServiceDeterminationPageTest extends AbstractStaticMessage
         testPage.clickPrimaryButton();
 
         testPage.choose(isMigrantWorker);
-
-        takeSnapShot(driver, "snapshot");
 
         assertThat(driver.getTitle()).isEqualTo(isQualified ? qualifiedTitle : deniedTitle);
         assertThat(driver.findElement(By.cssSelector("h2")).getText()).isEqualTo(isQualified ? qualifiedHeader : deniedHeader);
