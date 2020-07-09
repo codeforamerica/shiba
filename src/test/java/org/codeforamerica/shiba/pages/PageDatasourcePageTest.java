@@ -24,7 +24,7 @@ public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest 
 
     @TestConfiguration
     @PropertySource(value = "classpath:test-pages-config.yaml", factory = YamlPropertySourceFactory.class)
-    static class TestPageConfiguration {
+    static class TestPageConfiguration extends MetricsTestConfigurationWithExistingStartTime {
         @Bean
         @ConfigurationProperties(prefix = "test-page-datasources")
         public PagesConfiguration pagesConfiguration() {

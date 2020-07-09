@@ -63,6 +63,10 @@ public class PageController {
         PageConfiguration pageConfiguration = this.pagesConfiguration.getPages().get(pageName);
 
         FlowConfiguration flowConfiguration = pagesConfiguration.getFlow();
+        if (flowConfiguration.shouldRedirectToLandingPage(pageName, metrics)) {
+            return new ModelAndView(String.format("redirect:/pages/%s", flowConfiguration.getLandingPages().get(0)));
+        }
+
         if (flowConfiguration.shouldResetData(pageName)) {
             this.pagesData.getData().clear();
             metrics.clear();

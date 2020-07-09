@@ -39,6 +39,8 @@ public class ExpeditedServiceDeterminationPageTest extends AbstractStaticMessage
         staticMessageSource.addMessage("expedited-utility-payments.cooling", Locale.US, cooling);
         staticMessageSource.addMessage("expedited-utility-payments.electricity", Locale.US, electricity);
         staticMessageSource.addMessage("expedited-utility-payments.phone", Locale.US, phone);
+
+        driver.navigate().to(baseUrl + "/pages/languagePreferences");
     }
 
     @ParameterizedTest

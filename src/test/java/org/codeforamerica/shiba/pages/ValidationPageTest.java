@@ -37,7 +37,7 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest{
 
     @TestConfiguration
     @PropertySource(value = "classpath:test-pages-config.yaml", factory = YamlPropertySourceFactory.class)
-    static class TestPageConfiguration {
+    static class TestPageConfiguration extends MetricsTestConfigurationWithExistingStartTime {
         @Bean
         @ConfigurationProperties(prefix = "test-validation")
         public PagesConfiguration pagesConfiguration() {

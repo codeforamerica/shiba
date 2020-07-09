@@ -20,7 +20,7 @@ public class UserDecisionNavigationPageTest extends AbstractStaticMessageSourceP
 
     @TestConfiguration
     @PropertySource(value = "classpath:test-pages-config.yaml", factory = YamlPropertySourceFactory.class)
-    static class TestPageConfiguration {
+    static class TestPageConfiguration extends MetricsTestConfigurationWithExistingStartTime {
         @Bean
         @ConfigurationProperties(prefix = "test-user-decision-navigation")
         public PagesConfiguration pagesConfiguration() {

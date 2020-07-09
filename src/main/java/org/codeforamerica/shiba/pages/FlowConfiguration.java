@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.pages;
 
 import lombok.Data;
+import org.codeforamerica.shiba.metrics.Metrics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,5 +17,9 @@ public class FlowConfiguration {
 
     boolean shouldStartTimer(String pageName) {
         return pageName.equals(this.startTimerPage);
+    }
+
+    boolean shouldRedirectToLandingPage(String pageName, Metrics metrics) {
+        return !shouldResetData(pageName) && !shouldStartTimer(pageName) && metrics.getStartTime() == null;
     }
 }

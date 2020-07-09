@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.pages;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.codeforamerica.shiba.metrics.Metrics;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.time.Instant;
 import java.util.HashMap;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -42,6 +44,15 @@ abstract class AbstractBasePageTest {
     protected String localServerPort;
 
     protected Page testPage;
+
+    static class MetricsTestConfigurationWithExistingStartTime {
+        @Bean
+        public Metrics metrics() {
+            Metrics metrics = new Metrics();
+            metrics.setStartTimeOnce(Instant.now());
+            return metrics;
+        }
+    }
 
     @SuppressWarnings("InnerClassMayBeStatic")
     @TestConfiguration

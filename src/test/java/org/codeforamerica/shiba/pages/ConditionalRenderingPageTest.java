@@ -23,7 +23,7 @@ public class ConditionalRenderingPageTest extends AbstractStaticMessageSourcePag
 
     @TestConfiguration
     @PropertySource(value = "classpath:test-pages-config.yaml", factory = YamlPropertySourceFactory.class)
-    static class TestPageConfiguration {
+    static class TestPageConfiguration extends MetricsTestConfigurationWithExistingStartTime {
         @Bean
         @ConfigurationProperties(prefix = "test-conditional-rendering")
         public PagesConfiguration pagesConfiguration() {
