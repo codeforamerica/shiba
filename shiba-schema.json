@@ -2,13 +2,35 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "properties": {
-    "pages": {
+    "shiba-configuration": {
       "type": "object",
-      "patternProperties": {
-        "^.*$": {
-          "$ref": "#/definitions/page"
+      "properties": {
+        "pages": {
+          "type": "object",
+          "patternProperties": {
+            "^.*$": {
+              "$ref": "#/definitions/page"
+            }
+          }
+        },
+        "flow": {
+          "type": "object",
+          "properties": {
+            "startTimerPage": {
+              "type": "string"
+            },
+            "landingPages": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
         }
-      }
+      },
+      "required": [
+        "pages", "flow"
+      ]
     }
   },
   "definitions": {
@@ -221,8 +243,5 @@
         }
       }
     }
-  },
-  "required": [
-    "pages"
-  ]
+  }
 }

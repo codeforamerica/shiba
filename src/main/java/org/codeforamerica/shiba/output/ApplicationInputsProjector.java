@@ -27,7 +27,7 @@ public class ApplicationInputsProjector implements ApplicationInputsMapper {
 
     @Override
     public List<ApplicationInput> map(PagesData data) {
-        return pagesConfiguration.entrySet().stream()
+        return pagesConfiguration.getPages().entrySet().stream()
                 .flatMap(entry -> {
                     FormData formData = data.getPage(entry.getKey());
                     PageConfiguration pageConfiguration = entry.getValue();

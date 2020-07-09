@@ -1,707 +1,710 @@
-pages:
-  landing:
-    pageTitle:
-      value: landing.title
-    nextPage:
+shiba-configuration:
+  pages:
+    landing:
+      pageTitle:
+        value: landing.title
+      nextPage:
+        - prepareToApply
+    prepareToApply:
+      pageTitle:
+        value: prepare-to-apply.title
+      previousPage: landing
+      nextPage:
+        - languagePreferences
+    languagePreferences:
+      pageTitle:
+        value: language-preferences.title
+      headerKey:
+        value: language-preferences.language-preferences
+      nextPage:
+        - choosePrograms
+      previousPage: prepareToApply
+      inputs:
+        - name: spokenLanguage
+          type: SELECT
+          promptMessage:
+            promptMessageKey: language-preferences.what-language-do-you-prefer-to-speak
+          helpMessageKey: language-preferences.the-county-will-do-their-best-to-connect-you-with-someone-who-speaks-your
+          options:
+            - value: ENGLISH
+              messageKey: language-preferences.english
+            - value: SPANISH
+              messageKey: language-preferences.spanish
+            - value: SOOMAALI
+              messageKey: language-preferences.soomaali
+            - value: VIETNAMESE
+              messageKey: language-preferences.vietnamese
+            - value: RUSSIAN
+              messageKey: language-preferences.russian
+            - value: HMOOB
+              messageKey: language-preferences.hmoob
+        - name: writtenLanguage
+          type: SELECT
+          promptMessage:
+            promptMessageKey: language-preferences.what-language-do-you-prefer-to-read-or-write
+          helpMessageKey: language-preferences.the-county-will-do-their-best-to-provide-documents-in-your-preferred-language
+          options:
+            - value: ENGLISH
+              messageKey: language-preferences.english
+            - value: SPANISH
+              messageKey: language-preferences.spanish
+            - value: SOOMAALI
+              messageKey: language-preferences.soomaali
+            - value: VIETNAMESE
+              messageKey: language-preferences.vietnamese
+            - value: RUSSIAN
+              messageKey: language-preferences.russian
+            - value: HMOOB
+              messageKey: language-preferences.hmoob
+        - name: needInterpreter
+          type: RADIO
+          promptMessage:
+            promptMessageKey: language-preferences.do-you-need-an-interpreter
+          options:
+            - value: "true"
+              messageKey: general.inputs.yes
+            - value: "false"
+              messageKey: general.inputs.no
+    choosePrograms:
+      pageTitle:
+        value: choose-programs.title
+      nextPage:
+        - howItWorks
+      previousPage: languagePreferences
+      headerKey:
+        value: choose-programs.what-do-you-need-help-with-today
+      headerHelpMessageKey: choose-programs.check-all-that-apply
+      inputs:
+        - name: programs
+          type: CHECKBOX
+          validator:
+            validation: SELECT_AT_LEAST_ONE
+          validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+          options:
+            - value: FOOD
+              messageKey: choose-programs.food-snap
+            - value: CASH
+              messageKey: choose-programs.cash-programs
+            - value: EMERGENCY
+              messageKey: choose-programs.emergency-assistance
+            - value: CHILD_CARE
+              messageKey: choose-programs.child-care-assistance
+    howItWorks:
+      pageTitle:
+        value: how-it-works.title
+      previousPage: choosePrograms
+      nextPage:
+        - introBasicInfo
+      datasources:
+        - pageName: choosePrograms
+          inputs:
+            - name: programs
+              valueMessageKeys:
+                FOOD: how-it-works.food
+                CASH: how-it-works.cash
+                CHILD_CARE: how-it-works.child-care
+                EMERGENCY: how-it-works.emergency
+    introBasicInfo:
+      pageTitle:
+        value: intro-basic-info.title
+      previousPage: howItWorks
+      nextPage:
+        - personalInfo
+    personalInfo:
+      pageTitle:
+        value: personal-info.title
+      headerKey:
+        value: personal-info.tell-us-about-yourself
+      previousPage: introBasicInfo
+      nextPage:
+        - contactInfo
+      inputs:
+        - name: firstName
+          type: TEXT
+          promptMessage:
+            promptMessageKey: personal-info.whats-your-first-name
+          helpMessageKey: personal-info.legally-as-it-appears-on-your-id
+          validator:
+            validation: NOT_BLANK
+          validationErrorMessageKey: general.validation.make-sure-to-provide-a-first-name
+        - name: lastName
+          type: TEXT
+          promptMessage:
+            promptMessageKey: personal-info.whats-your-last-name
+          helpMessageKey: personal-info.legally-as-it-appears-on-your-id
+          validator:
+            validation: NOT_BLANK
+          validationErrorMessageKey: general.validation.make-sure-to-provide-a-last-name
+        - name: otherName
+          type: TEXT
+          promptMessage:
+            promptMessageKey: personal-info.list-any-names-that-you-have-gone-by-in-the-past
+          helpMessageKey: personal-info.include-maiden-names-or-legal-changes
+        - name: dateOfBirth
+          type: DATE
+          validator:
+            validation: DATE
+            condition:
+              input: dateOfBirth
+              matcher: NOT_EMPTY
+          validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+          promptMessage:
+            promptMessageKey: personal-info.when-were-you-born
+        - name: ssn
+          type: NUMBER
+          validator:
+            validation: SSN
+            condition:
+              input: ssn
+              matcher: NOT_EMPTY
+          validationErrorMessageKey: general.validation.make-sure-your-SSN-has-9-digits
+          promptMessage:
+            promptMessageKey: personal-info.whats-your-social-security-number
+          helpMessageKey: personal-info.if-you-have-one-we-strongly-recommend-including-it-here-your-caseworker-will
+        - name: maritalStatus
+          type: RADIO
+          promptMessage:
+            promptMessageKey: personal-info.whats-your-marital-status
+          options:
+            - value: NEVER_MARRIED
+              messageKey: personal-info.never-married
+            - value: MARRIED_LIVING_WITH_SPOUSE
+              messageKey: personal-info.married-living-with-spouse
+            - value: MARRIED_NOT_LIVING_WITH_SPOUSE
+              messageKey: personal-info.married-not-living-with-spouse
+            - value: LEGALLY_SEPARATED
+              messageKey: personal-info.legally-separated
+            - value: DIVORCED
+              messageKey: personal-info.divorced
+            - value: WIDOWED
+              messageKey: personal-info.widowed
+        - name: sex
+          type: RADIO
+          promptMessage:
+            promptMessageKey: personal-info.whats-your-sex
+          helpMessageKey: personal-info.legally-as-it-appears-on-your-id-we-regret-that-this-question-is-limited
+          options:
+            - value: FEMALE
+              messageKey: personal-info.female
+            - value: MALE
+              messageKey: personal-info.male
+            - value: RATHER_NOT_SAY
+              messageKey: personal-info.rather-not-say
+        - name: livedInMnWholeLife
+          type: RADIO
+          promptMessage:
+            promptMessageKey: personal-info.have-you-lived-in-minnesota-your-whole-life
+          options:
+            - value: "false"
+              messageKey: general.inputs.no
+            - value: "true"
+              messageKey: general.inputs.yes
+          followUpsValue: "true"
+          followUps:
+            - name: moveToMnDate
+              type: DATE
+              validator:
+                validation: DATE
+                condition:
+                  input: moveToMnDate
+                  matcher: NOT_EMPTY
+              validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+              promptMessage:
+                promptMessageKey: personal-info.when-did-you-move-to-minnesota
+            - name: moveToMnPreviousCity
+              type: TEXT
+              promptMessage:
+                promptMessageKey: personal-info.what-city-did-you-move-from
+    contactInfo:
+      pageTitle:
+        value: contact-info.title
+      headerKey:
+        value: contact-info.how-can-we-stay-in-touch-with-you
+      headerHelpMessageKey: contact-info.most-of-our-communication-will-be-through-mail
+      previousPage: personalInfo
+      nextPage:
+        - branchToMinimalFlow
+      inputs:
+        - name: phoneNumber
+          type: TEXT
+          promptMessage:
+            promptMessageKey: contact-info.whats-your-phone-number
+          validator:
+            validation: PHONE
+          validationErrorMessageKey: general.validation.make-sure-to-enter-a-phone-number-with-10-digits
+        - name: email
+          type: TEXT
+          promptMessage:
+            promptMessageKey: contact-info.whats-your-email-address
+          validator:
+            validation: NOT_BLANK
+            condition:
+              input: phoneOrEmail
+              value: EMAIL
+          validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+        - name: phoneOrEmail
+          type: CHECKBOX
+          promptMessage:
+            promptMessageKey: contact-info.where-can-we-send-you-a-receipt-of-your-completed-application
+          helpMessageKey: contact-info.this-is-for-your-own-records
+          options:
+            - value: TEXT
+              messageKey: contact-info.text-me
+            - value: EMAIL
+              messageKey: contact-info.email-me
+    branchToMinimalFlow:
+      pageTitle:
+        value: branch-to-minimal-flow.title
+      previousPage: contactInfo
+      nextPage:
+        - weDoNotRecommendMinimalFlow
+      datasources:
+        - pageName: personalInfo
+    weDoNotRecommendMinimalFlow:
+      pageTitle:
+        value: we-do-not-recommend-minimal-flow.title
+      previousPage: branchToMinimalFlow
+      nextPage:
+        - homeAddress
+    homeAddress:
+      headerKey:
+        value: home-address.where-are-you-currently-living
+      pageTitle:
+        value: home-address.title
+      previousPage: weDoNotRecommendMinimalFlow
+      nextPage:
+        - mailingAddress
+      inputs:
+        - name: zipCode
+          type: TEXT
+          promptMessage:
+            promptMessageKey: home-address.what-is-the-zip-code
+          validationErrorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
+          validator:
+            validation: ZIPCODE
+            condition:
+              input: isHomeless
+              matcher: NOT_PRESENT
+        - name: city
+          type: TEXT
+          promptMessage:
+            promptMessageKey: home-address.what-is-the-city
+          validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+          validator:
+            validation: NOT_BLANK
+            condition:
+              input: isHomeless
+              matcher: NOT_PRESENT
+        - name: state
+          type: TEXT
+          promptMessage:
+            promptMessageKey: home-address.what-is-the-state
+          readOnly: true
+          defaultValue:
+            value: MN
+        - name: streetAddress
+          type: TEXT
+          promptMessage:
+            promptMessageKey: home-address.what-is-the-street-address
+          validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+          validator:
+            validation: NOT_BLANK
+            condition:
+              input: isHomeless
+              matcher: NOT_PRESENT
+        - name: apartmentNumber
+          type: TEXT
+          promptMessage:
+            promptMessageKey: home-address.apartment-number
+        - name: isHomeless
+          type: CHECKBOX
+          options:
+            - value: homeless
+              messageKey: home-address.im-homeless-right-now
+        - name: sameMailingAddress
+          type: RADIO
+          promptMessage:
+            promptMessageKey: home-address.is-this-the-best-place-for-you-to-receive-mail
+          helpMessageKey: home-address.the-county-will-need-a-place-to-send-you-mail-for-the-next-3-months
+          options:
+            - value: "true"
+              messageKey: home-address.yes-send-mail-here
+            - value: "false"
+              messageKey: home-address.no-use-a-different-address-for-mail
+    mailingAddress:
+      pageTitle:
+        value: mailing-address.title
+      headerKey:
+        value: mailing-address.where-can-the-county-send-your-mail
+      previousPage: homeAddress
+      nextPage:
+        - doYouNeedHelpImmediately
+      inputs:
+        - name: zipCode
+          type: TEXT
+          promptMessage:
+            promptMessageKey: mailing-address.what-is-the-zip-code
+          defaultValue:
+            type: DATASOURCE_REFERENCE
+            value: zipCode
+            condition:
+              input: sameMailingAddress
+              value: "true"
+              matcher: CONTAINS
+          validationErrorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
+          validator:
+            validation: ZIPCODE
+        - name: city
+          type: TEXT
+          promptMessage:
+            promptMessageKey: mailing-address.what-is-the-city
+          defaultValue:
+            type: DATASOURCE_REFERENCE
+            value: city
+            condition:
+              input: sameMailingAddress
+              value: "true"
+              matcher: CONTAINS
+          validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+          validator:
+            validation: NOT_BLANK
+        - name: state
+          type: TEXT
+          promptMessage:
+            promptMessageKey: mailing-address.what-is-the-state
+          validator:
+            validation: STATE
+          validationErrorMessageKey: general.validation.make-sure-to-provide-a-valid-2-letter-state-code
+          defaultValue:
+            value: MN
+        - name: streetAddress
+          type: TEXT
+          promptMessage:
+            promptMessageKey: mailing-address.what-is-the-street-address
+          defaultValue:
+            type: DATASOURCE_REFERENCE
+            value: streetAddress
+            condition:
+              input: sameMailingAddress
+              value: "true"
+              matcher: CONTAINS
+          validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+          validator:
+            validation: NOT_BLANK
+        - name: apartmentNumber
+          type: TEXT
+          promptMessage:
+            promptMessageKey: mailing-address.apartment-number
+          defaultValue:
+            type: DATASOURCE_REFERENCE
+            value: apartmentNumber
+            condition:
+              input: sameMailingAddress
+              value: "true"
+              matcher: CONTAINS
+      datasources:
+        - pageName: homeAddress
+      skipCondition:
+        input: sameMailingAddress
+        value: "true"
+    doYouNeedHelpImmediately:
+      pageTitle:
+        value: do-you-need-help-immediately.title
+      previousPage: mailingAddress
+      nextPage:
+        - doYouLiveAlone
+        - importantToKnow
+    doYouLiveAlone:
+      headerKey:
+        value: do-you-live-alone.do-you-live-alone
+      pageTitle:
+        value: do-you-live-alone.title
+      previousPage: doYouNeedHelpImmediately
+      nextPage:
+        - expeditedIncome
+      inputs:
+        - name: liveAlone
+          type: YES_NO
+    expeditedIncome:
+      headerKey:
+        conditionalValues:
+          - value: expedited-income.how-much-money-have-you-made-in-the-last-30-days
+            condition:
+              input: liveAlone
+              value: "true"
+          - value: expedited-income.how-much-money-has-your-household-made-in-the-last-30-days
+            condition:
+              input: liveAlone
+              value: "false"
+      headerHelpMessageKey: expedited-income.if-you-dont-know-the-exact-amount
+      pageTitle:
+        conditionalValues:
+          - value: expedited-income.title-one-person
+            condition:
+              input: liveAlone
+              value: "true"
+          - value: expedited-income.title-household
+            condition:
+              input: liveAlone
+              value: "false"
+      previousPage: doYouLiveAlone
+      nextPage:
+        - liquidAssets
+      inputs:
+        - name: moneyMadeLast30Days
+          type: MONEY
+          validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
+          validator:
+            validation: MONEY
+            condition:
+              input: moneyMadeLast30Days
+              matcher: NOT_EMPTY
+      datasources:
+        - pageName: doYouLiveAlone
+    liquidAssets:
+      previousPage: expeditedIncome
+      nextPage:
+        - expeditedExpenses
+      pageTitle:
+        conditionalValues:
+          - value: liquid-assets-prompt.title-one-person
+            condition:
+              input: liveAlone
+              value: "true"
+          - value: liquid-assets-prompt.title-household
+            condition:
+              input: liveAlone
+              value: "false"
+      headerKey:
+        conditionalValues:
+          - value: expedited-income.how-much-money-do-you-have-available
+            condition:
+              input: liveAlone
+              value: "true"
+          - value: expedited-income.how-much-money-does-your-household-have-available
+            condition:
+              input: liveAlone
+              value: "false"
+      inputs:
+        - name: liquidAssets
+          type: MONEY
+          promptMessage:
+            promptMessageFragmentName: liquidAssetsPrompt
+          validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
+          validator:
+            validation: MONEY
+            condition:
+              input: liquidAssets
+              matcher: NOT_EMPTY
+      datasources:
+        - pageName: doYouLiveAlone
+    expeditedExpenses:
+      previousPage: liquidAssets
+      nextPage:
+        - expeditedExpensesAmount
+      pageTitle:
+        conditionalValues:
+          - value: expedited-expenses.title-one-person
+            condition:
+              input: liveAlone
+              value: "true"
+          - value: expedited-expenses.title-household
+            condition:
+              input: liveAlone
+              value: "false"
+      headerKey:
+        conditionalValues:
+          - value: expedited-expenses.header-one-person
+            condition:
+              input: liveAlone
+              value: "true"
+          - value: expedited-expenses.header-household
+            condition:
+              input: liveAlone
+              value: "false"
+      inputs:
+        - name: payRentOrMortgage
+          type: YES_NO
+      datasources:
+        - pageName: doYouLiveAlone
+    expeditedExpensesAmount:
+      pageTitle:
+        conditionalValues:
+          - value: expedited-expenses-amount.title-one-person
+            condition:
+              input: liveAlone
+              value: "true"
+          - value: expedited-expenses-amount.title-household
+            condition:
+              input: liveAlone
+              value: "false"
+      skipCondition:
+        input: payRentOrMortgage
+        value: "false"
+      headerKey:
+        conditionalValues:
+          - value: expedited-expenses-amount.how-much-do-you-pay-for-rent-or-mortgage-every-month
+            condition:
+              input: liveAlone
+              value: "true"
+          - value: expedited-expenses-amount.how-much-is-paid-for-rent-or-mortgage-every-month
+            condition:
+              input: liveAlone
+              value: "false"
+      nextPage:
+        - expeditedUtilityPayments
+      previousPage: expeditedExpenses
+      inputs:
+        - name: expeditedExpensesAmount
+          type: MONEY
+          validator:
+            validation: MONEY
+            condition:
+              input: expeditedExpensesAmount
+              matcher: NOT_EMPTY
+          validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
+      datasources:
+        - pageName: doYouLiveAlone
+        - pageName: expeditedExpenses
+    expeditedUtilityPayments:
+      pageTitle:
+        conditionalValues:
+          - value: expedited-utility-payments.title-one-person
+            condition:
+              input: liveAlone
+              value: "true"
+          - value: expedited-utility-payments.title-household
+            condition:
+              input: liveAlone
+              value: "false"
+      headerKey:
+        conditionalValues:
+          - value: expedited-utility-payments.do-you-pay-for-any-utilities
+            condition:
+              input: liveAlone
+              value: "true"
+          - value: expedited-utility-payments.does-anyone-in-your-houshold-pay-for-these-utilities
+            condition:
+              input: liveAlone
+              value: "false"
+      headerHelpMessageKey: expedited-utility-payments.select-all-that-you-are-billed-for-even-if-you-havent-paid-it-this-month
+      nextPage:
+        - expeditedMigrantFarmWorker
+      previousPage: expeditedExpensesAmount
+      inputs:
+        - name: payForUtilities
+          type: CHECKBOX
+          validator:
+            validation: SELECT_AT_LEAST_ONE
+          validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+          options:
+            - value: HEATING
+              messageKey: expedited-utility-payments.heating
+            - value: COOLING
+              messageKey: expedited-utility-payments.cooling
+            - value: ELECTRICITY
+              messageKey: expedited-utility-payments.electricity
+            - value: PHONE
+              messageKey: expedited-utility-payments.phone
+            - value: WATER
+              messageKey: expedited-utility-payments.water
+            - value: SEWER
+              messageKey: expedited-utility-payments.sewer
+            - value: GARBAGE_REMOVAL
+              messageKey: expedited-utility-payments.garbage-removal
+            - value: COOKING_FUEL
+              messageKey: expedited-utility-payments.cooking-fuel
+            - value: NONE_OF_THE_ABOVE
+              messageKey: expedited-utility-payments.none-of-the-above
+              isNone: true
+      datasources:
+        - pageName: doYouLiveAlone
+    expeditedMigrantFarmWorker:
+      previousPage: expeditedUtilityPayments
+      nextPage:
+        - expeditedDetermination
+      pageTitle:
+        conditionalValues:
+          - value: expedited-migrant-farm-worker.title-one-person
+            condition:
+              input: liveAlone
+              value: "true"
+          - value: expedited-migrant-farm-worker.title-household
+            condition:
+              input: liveAlone
+              value: "false"
+      headerKey:
+        conditionalValues:
+          - value: expedited-migrant-farm-worker.header-one-person
+            condition:
+              input: liveAlone
+              value: "true"
+          - value: expedited-migrant-farm-worker.header-household
+            condition:
+              input: liveAlone
+              value: "false"
+      inputs:
+        - name: migrantOrSeasonalFarmWorker
+          type: YES_NO
+      datasources:
+        - pageName: doYouLiveAlone
+    expeditedDetermination:
+      previousPage: expeditedMigrantFarmWorker
+      nextPage:
+        - importantToKnow
+      datasources:
+        - pageName: expeditedIncome
+        - pageName: liquidAssets
+        - pageName: expeditedMigrantFarmWorker
+        - pageName: expeditedExpensesAmount
+          inputs:
+            - name: expeditedExpensesAmount
+              defaultValue: 0
+        - pageName: expeditedUtilityPayments
+    importantToKnow:
+      pageTitle:
+        value: important-to-know.title
+      headerKey:
+        value: important-to-know.important-stuff-to-know-about
+      previousPage: doYouNeedHelpImmediately
+      nextPage:
+        - legalStuff
+    legalStuff:
+      pageTitle:
+        value: legal-stuff.title
+      previousPage: importantToKnow
+      nextPage:
+        - signThisApplication
+      headerKey:
+        value: legal-stuff.the-legal-stuff
+      headerHelpMessageKey: legal-stuff.scroll-down-to-agree-to-the-terms
+      inputs:
+        - name: agreeToTerms
+          type: CHECKBOX
+          promptMessage:
+            promptMessageFragmentName: legal-terms-prompt
+          validator:
+            validation: SELECT_AT_LEAST_ONE
+          validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+          options:
+            - value: "true"
+              messageKey: legal-stuff.i-agree
+    signThisApplication:
+      pageTitle:
+        value: sign-this-application.title
+      headerKey:
+        value: sign-this-application.type-your-full-legal-name-here-to-sign-this-application
+      headerHelpMessageKey: sign-this-application.by-signing-this-application-you-agree-that-you-want-to
+      previousPage: legalStuff
+      nextPage:
+        - success
+    success:
+      pageTitle:
+        value: success.title
+      datasources:
+        - pageName: signThisApplication
+  flow:
+    startTimerPage: languagePreferences
+    landingPages:
+      - landing
       - prepareToApply
-    resetData: true
-  prepareToApply:
-    pageTitle:
-      value: prepare-to-apply.title
-    previousPage: landing
-    nextPage:
-      - languagePreferences
-    resetData: true
-  languagePreferences:
-    pageTitle:
-      value: language-preferences.title
-    startTimer: true
-    headerKey:
-      value: language-preferences.language-preferences
-    nextPage:
-      - choosePrograms
-    previousPage: prepareToApply
-    inputs:
-      - name: spokenLanguage
-        type: SELECT
-        promptMessage:
-          promptMessageKey: language-preferences.what-language-do-you-prefer-to-speak
-        helpMessageKey: language-preferences.the-county-will-do-their-best-to-connect-you-with-someone-who-speaks-your
-        options:
-          - value: ENGLISH
-            messageKey: language-preferences.english
-          - value: SPANISH
-            messageKey: language-preferences.spanish
-          - value: SOOMAALI
-            messageKey: language-preferences.soomaali
-          - value: VIETNAMESE
-            messageKey: language-preferences.vietnamese
-          - value: RUSSIAN
-            messageKey: language-preferences.russian
-          - value: HMOOB
-            messageKey: language-preferences.hmoob
-      - name: writtenLanguage
-        type: SELECT
-        promptMessage:
-          promptMessageKey: language-preferences.what-language-do-you-prefer-to-read-or-write
-        helpMessageKey: language-preferences.the-county-will-do-their-best-to-provide-documents-in-your-preferred-language
-        options:
-          - value: ENGLISH
-            messageKey: language-preferences.english
-          - value: SPANISH
-            messageKey: language-preferences.spanish
-          - value: SOOMAALI
-            messageKey: language-preferences.soomaali
-          - value: VIETNAMESE
-            messageKey: language-preferences.vietnamese
-          - value: RUSSIAN
-            messageKey: language-preferences.russian
-          - value: HMOOB
-            messageKey: language-preferences.hmoob
-      - name: needInterpreter
-        type: RADIO
-        promptMessage:
-          promptMessageKey: language-preferences.do-you-need-an-interpreter
-        options:
-          - value: "true"
-            messageKey: general.inputs.yes
-          - value: "false"
-            messageKey: general.inputs.no
-  choosePrograms:
-    pageTitle:
-      value: choose-programs.title
-    nextPage:
-      - howItWorks
-    previousPage: languagePreferences
-    headerKey:
-      value: choose-programs.what-do-you-need-help-with-today
-    headerHelpMessageKey: choose-programs.check-all-that-apply
-    inputs:
-      - name: programs
-        type: CHECKBOX
-        validator:
-          validation: SELECT_AT_LEAST_ONE
-        validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
-        options:
-          - value: FOOD
-            messageKey: choose-programs.food-snap
-          - value: CASH
-            messageKey: choose-programs.cash-programs
-          - value: EMERGENCY
-            messageKey: choose-programs.emergency-assistance
-          - value: CHILD_CARE
-            messageKey: choose-programs.child-care-assistance
-  howItWorks:
-    pageTitle:
-      value: how-it-works.title
-    previousPage: choosePrograms
-    nextPage:
-      - introBasicInfo
-    datasources:
-      - pageName: choosePrograms
-        inputs:
-          - name: programs
-            valueMessageKeys:
-              FOOD: how-it-works.food
-              CASH: how-it-works.cash
-              CHILD_CARE: how-it-works.child-care
-              EMERGENCY: how-it-works.emergency
-  introBasicInfo:
-    pageTitle:
-      value: intro-basic-info.title
-    previousPage: howItWorks
-    nextPage:
-      - personalInfo
-  personalInfo:
-    pageTitle:
-      value: personal-info.title
-    headerKey:
-      value: personal-info.tell-us-about-yourself
-    previousPage: introBasicInfo
-    nextPage:
-      - contactInfo
-    inputs:
-      - name: firstName
-        type: TEXT
-        promptMessage:
-          promptMessageKey: personal-info.whats-your-first-name
-        helpMessageKey: personal-info.legally-as-it-appears-on-your-id
-        validator:
-          validation: NOT_BLANK
-        validationErrorMessageKey: general.validation.make-sure-to-provide-a-first-name
-      - name: lastName
-        type: TEXT
-        promptMessage:
-          promptMessageKey: personal-info.whats-your-last-name
-        helpMessageKey: personal-info.legally-as-it-appears-on-your-id
-        validator:
-          validation: NOT_BLANK
-        validationErrorMessageKey: general.validation.make-sure-to-provide-a-last-name
-      - name: otherName
-        type: TEXT
-        promptMessage:
-          promptMessageKey: personal-info.list-any-names-that-you-have-gone-by-in-the-past
-        helpMessageKey: personal-info.include-maiden-names-or-legal-changes
-      - name: dateOfBirth
-        type: DATE
-        validator:
-          validation: DATE
-          condition:
-            input: dateOfBirth
-            matcher: NOT_EMPTY
-        validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
-        promptMessage:
-          promptMessageKey: personal-info.when-were-you-born
-      - name: ssn
-        type: NUMBER
-        validator:
-          validation: SSN
-          condition:
-            input: ssn
-            matcher: NOT_EMPTY
-        validationErrorMessageKey: general.validation.make-sure-your-SSN-has-9-digits
-        promptMessage:
-          promptMessageKey: personal-info.whats-your-social-security-number
-        helpMessageKey: personal-info.if-you-have-one-we-strongly-recommend-including-it-here-your-caseworker-will
-      - name: maritalStatus
-        type: RADIO
-        promptMessage:
-          promptMessageKey: personal-info.whats-your-marital-status
-        options:
-          - value: NEVER_MARRIED
-            messageKey: personal-info.never-married
-          - value: MARRIED_LIVING_WITH_SPOUSE
-            messageKey: personal-info.married-living-with-spouse
-          - value: MARRIED_NOT_LIVING_WITH_SPOUSE
-            messageKey: personal-info.married-not-living-with-spouse
-          - value: LEGALLY_SEPARATED
-            messageKey: personal-info.legally-separated
-          - value: DIVORCED
-            messageKey: personal-info.divorced
-          - value: WIDOWED
-            messageKey: personal-info.widowed
-      - name: sex
-        type: RADIO
-        promptMessage:
-          promptMessageKey: personal-info.whats-your-sex
-        helpMessageKey: personal-info.legally-as-it-appears-on-your-id-we-regret-that-this-question-is-limited
-        options:
-          - value: FEMALE
-            messageKey: personal-info.female
-          - value: MALE
-            messageKey: personal-info.male
-          - value: RATHER_NOT_SAY
-            messageKey: personal-info.rather-not-say
-      - name: livedInMnWholeLife
-        type: RADIO
-        promptMessage:
-          promptMessageKey: personal-info.have-you-lived-in-minnesota-your-whole-life
-        options:
-          - value: "false"
-            messageKey: general.inputs.no
-          - value: "true"
-            messageKey: general.inputs.yes
-        followUpsValue: "true"
-        followUps:
-          - name: moveToMnDate
-            type: DATE
-            validator:
-              validation: DATE
-              condition:
-                input: moveToMnDate
-                matcher: NOT_EMPTY
-            validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
-            promptMessage:
-              promptMessageKey: personal-info.when-did-you-move-to-minnesota
-          - name: moveToMnPreviousCity
-            type: TEXT
-            promptMessage:
-              promptMessageKey: personal-info.what-city-did-you-move-from
-  contactInfo:
-    pageTitle:
-      value: contact-info.title
-    headerKey:
-      value: contact-info.how-can-we-stay-in-touch-with-you
-    headerHelpMessageKey: contact-info.most-of-our-communication-will-be-through-mail
-    previousPage: personalInfo
-    nextPage:
-      - branchToMinimalFlow
-    inputs:
-      - name: phoneNumber
-        type: TEXT
-        promptMessage:
-          promptMessageKey: contact-info.whats-your-phone-number
-        validator:
-          validation: PHONE
-        validationErrorMessageKey: general.validation.make-sure-to-enter-a-phone-number-with-10-digits
-      - name: email
-        type: TEXT
-        promptMessage:
-          promptMessageKey: contact-info.whats-your-email-address
-        validator:
-          validation: NOT_BLANK
-          condition:
-            input: phoneOrEmail
-            value: EMAIL
-        validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
-      - name: phoneOrEmail
-        type: CHECKBOX
-        promptMessage:
-          promptMessageKey: contact-info.where-can-we-send-you-a-receipt-of-your-completed-application
-        helpMessageKey: contact-info.this-is-for-your-own-records
-        options:
-          - value: TEXT
-            messageKey: contact-info.text-me
-          - value: EMAIL
-            messageKey: contact-info.email-me
-  branchToMinimalFlow:
-    pageTitle:
-      value: branch-to-minimal-flow.title
-    previousPage: contactInfo
-    nextPage:
-      - weDoNotRecommendMinimalFlow
-    datasources:
-      - pageName: personalInfo
-  weDoNotRecommendMinimalFlow:
-    pageTitle:
-      value: we-do-not-recommend-minimal-flow.title
-    previousPage: branchToMinimalFlow
-    nextPage:
-      - homeAddress
-  homeAddress:
-    headerKey:
-      value: home-address.where-are-you-currently-living
-    pageTitle:
-      value: home-address.title
-    previousPage: weDoNotRecommendMinimalFlow
-    nextPage:
-      - mailingAddress
-    inputs:
-      - name: zipCode
-        type: TEXT
-        promptMessage:
-          promptMessageKey: home-address.what-is-the-zip-code
-        validationErrorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
-        validator:
-          validation: ZIPCODE
-          condition:
-            input: isHomeless
-            matcher: NOT_PRESENT
-      - name: city
-        type: TEXT
-        promptMessage:
-          promptMessageKey: home-address.what-is-the-city
-        validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
-        validator:
-          validation: NOT_BLANK
-          condition:
-            input: isHomeless
-            matcher: NOT_PRESENT
-      - name: state
-        type: TEXT
-        promptMessage:
-          promptMessageKey: home-address.what-is-the-state
-        readOnly: true
-        defaultValue:
-          value: MN
-      - name: streetAddress
-        type: TEXT
-        promptMessage:
-          promptMessageKey: home-address.what-is-the-street-address
-        validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
-        validator:
-          validation: NOT_BLANK
-          condition:
-            input: isHomeless
-            matcher: NOT_PRESENT
-      - name: apartmentNumber
-        type: TEXT
-        promptMessage:
-          promptMessageKey: home-address.apartment-number
-      - name: isHomeless
-        type: CHECKBOX
-        options:
-          - value: homeless
-            messageKey: home-address.im-homeless-right-now
-      - name: sameMailingAddress
-        type: RADIO
-        promptMessage:
-          promptMessageKey: home-address.is-this-the-best-place-for-you-to-receive-mail
-        helpMessageKey: home-address.the-county-will-need-a-place-to-send-you-mail-for-the-next-3-months
-        options:
-          - value: "true"
-            messageKey: home-address.yes-send-mail-here
-          - value: "false"
-            messageKey: home-address.no-use-a-different-address-for-mail
-  mailingAddress:
-    pageTitle:
-      value: mailing-address.title
-    headerKey:
-      value: mailing-address.where-can-the-county-send-your-mail
-    previousPage: homeAddress
-    nextPage:
-      - doYouNeedHelpImmediately
-    inputs:
-      - name: zipCode
-        type: TEXT
-        promptMessage:
-          promptMessageKey: mailing-address.what-is-the-zip-code
-        defaultValue:
-          type: DATASOURCE_REFERENCE
-          value: zipCode
-          condition:
-            input: sameMailingAddress
-            value: "true"
-            matcher: CONTAINS
-        validationErrorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
-        validator:
-          validation: ZIPCODE
-      - name: city
-        type: TEXT
-        promptMessage:
-          promptMessageKey: mailing-address.what-is-the-city
-        defaultValue:
-          type: DATASOURCE_REFERENCE
-          value: city
-          condition:
-            input: sameMailingAddress
-            value: "true"
-            matcher: CONTAINS
-        validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
-        validator:
-          validation: NOT_BLANK
-      - name: state
-        type: TEXT
-        promptMessage:
-          promptMessageKey: mailing-address.what-is-the-state
-        validator:
-          validation: STATE
-        validationErrorMessageKey: general.validation.make-sure-to-provide-a-valid-2-letter-state-code
-        defaultValue:
-          value: MN
-      - name: streetAddress
-        type: TEXT
-        promptMessage:
-          promptMessageKey: mailing-address.what-is-the-street-address
-        defaultValue:
-          type: DATASOURCE_REFERENCE
-          value: streetAddress
-          condition:
-            input: sameMailingAddress
-            value: "true"
-            matcher: CONTAINS
-        validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
-        validator:
-          validation: NOT_BLANK
-      - name: apartmentNumber
-        type: TEXT
-        promptMessage:
-          promptMessageKey: mailing-address.apartment-number
-        defaultValue:
-          type: DATASOURCE_REFERENCE
-          value: apartmentNumber
-          condition:
-            input: sameMailingAddress
-            value: "true"
-            matcher: CONTAINS
-    datasources:
-      - pageName: homeAddress
-    skipCondition:
-      input: sameMailingAddress
-      value: "true"
-  doYouNeedHelpImmediately:
-    pageTitle:
-      value: do-you-need-help-immediately.title
-    previousPage: mailingAddress
-    nextPage:
-      - doYouLiveAlone
-      - importantToKnow
-  doYouLiveAlone:
-    headerKey:
-      value: do-you-live-alone.do-you-live-alone
-    pageTitle:
-      value: do-you-live-alone.title
-    previousPage: doYouNeedHelpImmediately
-    nextPage:
-      - expeditedIncome
-    inputs:
-      - name: liveAlone
-        type: YES_NO
-  expeditedIncome:
-    headerKey:
-      conditionalValues:
-        - value: expedited-income.how-much-money-have-you-made-in-the-last-30-days
-          condition:
-            input: liveAlone
-            value: "true"
-        - value: expedited-income.how-much-money-has-your-household-made-in-the-last-30-days
-          condition:
-            input: liveAlone
-            value: "false"
-    headerHelpMessageKey: expedited-income.if-you-dont-know-the-exact-amount
-    pageTitle:
-      conditionalValues:
-        - value: expedited-income.title-one-person
-          condition:
-            input: liveAlone
-            value: "true"
-        - value: expedited-income.title-household
-          condition:
-            input: liveAlone
-            value: "false"
-    previousPage: doYouLiveAlone
-    nextPage:
-      - liquidAssets
-    inputs:
-      - name: moneyMadeLast30Days
-        type: MONEY
-        validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
-        validator:
-          validation: MONEY
-          condition:
-            input: moneyMadeLast30Days
-            matcher: NOT_EMPTY
-    datasources:
-      - pageName: doYouLiveAlone
-  liquidAssets:
-    previousPage: expeditedIncome
-    nextPage:
-      - expeditedExpenses
-    pageTitle:
-      conditionalValues:
-        - value: liquid-assets-prompt.title-one-person
-          condition:
-            input: liveAlone
-            value: "true"
-        - value: liquid-assets-prompt.title-household
-          condition:
-            input: liveAlone
-            value: "false"
-    headerKey:
-      conditionalValues:
-        - value: expedited-income.how-much-money-do-you-have-available
-          condition:
-            input: liveAlone
-            value: "true"
-        - value: expedited-income.how-much-money-does-your-household-have-available
-          condition:
-            input: liveAlone
-            value: "false"
-    inputs:
-      - name: liquidAssets
-        type: MONEY
-        promptMessage:
-          promptMessageFragmentName: liquidAssetsPrompt
-        validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
-        validator:
-          validation: MONEY
-          condition:
-            input: liquidAssets
-            matcher: NOT_EMPTY
-    datasources:
-      - pageName: doYouLiveAlone
-  expeditedExpenses:
-    previousPage: liquidAssets
-    nextPage:
-      - expeditedExpensesAmount
-    pageTitle:
-      conditionalValues:
-        - value: expedited-expenses.title-one-person
-          condition:
-            input: liveAlone
-            value: "true"
-        - value: expedited-expenses.title-household
-          condition:
-            input: liveAlone
-            value: "false"
-    headerKey:
-      conditionalValues:
-        - value: expedited-expenses.header-one-person
-          condition:
-            input: liveAlone
-            value: "true"
-        - value: expedited-expenses.header-household
-          condition:
-            input: liveAlone
-            value: "false"
-    inputs:
-      - name: payRentOrMortgage
-        type: YES_NO
-    datasources:
-      - pageName: doYouLiveAlone
-  expeditedExpensesAmount:
-    pageTitle:
-      conditionalValues:
-        - value: expedited-expenses-amount.title-one-person
-          condition:
-            input: liveAlone
-            value: "true"
-        - value: expedited-expenses-amount.title-household
-          condition:
-            input: liveAlone
-            value: "false"
-    skipCondition:
-      input: payRentOrMortgage
-      value: "false"
-    headerKey:
-      conditionalValues:
-        - value: expedited-expenses-amount.how-much-do-you-pay-for-rent-or-mortgage-every-month
-          condition:
-            input: liveAlone
-            value: "true"
-        - value: expedited-expenses-amount.how-much-is-paid-for-rent-or-mortgage-every-month
-          condition:
-            input: liveAlone
-            value: "false"
-    nextPage:
-      - expeditedUtilityPayments
-    previousPage: expeditedExpenses
-    inputs:
-      - name: expeditedExpensesAmount
-        type: MONEY
-        validator:
-          validation: MONEY
-          condition:
-            input: expeditedExpensesAmount
-            matcher: NOT_EMPTY
-        validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
-    datasources:
-      - pageName: doYouLiveAlone
-      - pageName: expeditedExpenses
-  expeditedUtilityPayments:
-    pageTitle:
-      conditionalValues:
-        - value: expedited-utility-payments.title-one-person
-          condition:
-            input: liveAlone
-            value: "true"
-        - value: expedited-utility-payments.title-household
-          condition:
-            input: liveAlone
-            value: "false"
-    headerKey:
-      conditionalValues:
-        - value: expedited-utility-payments.do-you-pay-for-any-utilities
-          condition:
-            input: liveAlone
-            value: "true"
-        - value: expedited-utility-payments.does-anyone-in-your-houshold-pay-for-these-utilities
-          condition:
-            input: liveAlone
-            value: "false"
-    headerHelpMessageKey: expedited-utility-payments.select-all-that-you-are-billed-for-even-if-you-havent-paid-it-this-month
-    nextPage:
-      - expeditedMigrantFarmWorker
-    previousPage: expeditedExpensesAmount
-    inputs:
-      - name: payForUtilities
-        type: CHECKBOX
-        validator:
-          validation: SELECT_AT_LEAST_ONE
-        validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
-        options:
-          - value: HEATING
-            messageKey: expedited-utility-payments.heating
-          - value: COOLING
-            messageKey: expedited-utility-payments.cooling
-          - value: ELECTRICITY
-            messageKey: expedited-utility-payments.electricity
-          - value: PHONE
-            messageKey: expedited-utility-payments.phone
-          - value: WATER
-            messageKey: expedited-utility-payments.water
-          - value: SEWER
-            messageKey: expedited-utility-payments.sewer
-          - value: GARBAGE_REMOVAL
-            messageKey: expedited-utility-payments.garbage-removal
-          - value: COOKING_FUEL
-            messageKey: expedited-utility-payments.cooking-fuel
-          - value: NONE_OF_THE_ABOVE
-            messageKey: expedited-utility-payments.none-of-the-above
-            isNone: true
-    datasources:
-      - pageName: doYouLiveAlone
-  expeditedMigrantFarmWorker:
-    previousPage: expeditedUtilityPayments
-    nextPage:
-      - expeditedDetermination
-    pageTitle:
-      conditionalValues:
-        - value: expedited-migrant-farm-worker.title-one-person
-          condition:
-            input: liveAlone
-            value: "true"
-        - value: expedited-migrant-farm-worker.title-household
-          condition:
-            input: liveAlone
-            value: "false"
-    headerKey:
-      conditionalValues:
-        - value: expedited-migrant-farm-worker.header-one-person
-          condition:
-            input: liveAlone
-            value: "true"
-        - value: expedited-migrant-farm-worker.header-household
-          condition:
-            input: liveAlone
-            value: "false"
-    inputs:
-      - name: migrantOrSeasonalFarmWorker
-        type: YES_NO
-    datasources:
-      - pageName: doYouLiveAlone
-  expeditedDetermination:
-    previousPage: expeditedMigrantFarmWorker
-    nextPage:
-      - importantToKnow
-    datasources:
-      - pageName: expeditedIncome
-      - pageName: liquidAssets
-      - pageName: expeditedMigrantFarmWorker
-      - pageName: expeditedExpensesAmount
-        inputs:
-          - name: expeditedExpensesAmount
-            defaultValue: 0
-      - pageName: expeditedUtilityPayments
-  importantToKnow:
-    pageTitle:
-      value: important-to-know.title
-    headerKey:
-      value: important-to-know.important-stuff-to-know-about
-    previousPage: doYouNeedHelpImmediately
-    nextPage:
-      - legalStuff
-  legalStuff:
-    pageTitle:
-      value: legal-stuff.title
-    previousPage: importantToKnow
-    nextPage:
-      - signThisApplication
-    headerKey:
-      value: legal-stuff.the-legal-stuff
-    headerHelpMessageKey: legal-stuff.scroll-down-to-agree-to-the-terms
-    inputs:
-      - name: agreeToTerms
-        type: CHECKBOX
-        promptMessage:
-          promptMessageFragmentName: legal-terms-prompt
-        validator:
-          validation: SELECT_AT_LEAST_ONE
-        validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
-        options:
-          - value: "true"
-            messageKey: legal-stuff.i-agree
-  signThisApplication:
-    pageTitle:
-      value: sign-this-application.title
-    headerKey:
-      value: sign-this-application.type-your-full-legal-name-here-to-sign-this-application
-    headerHelpMessageKey: sign-this-application.by-signing-this-application-you-agree-that-you-want-to
-    previousPage: legalStuff
-    nextPage:
-      - success
-  success:
-    pageTitle:
-      value: success.title
-    datasources:
-      - pageName: signThisApplication

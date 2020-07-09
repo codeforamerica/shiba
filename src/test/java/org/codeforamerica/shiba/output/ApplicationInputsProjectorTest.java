@@ -24,7 +24,7 @@ class ApplicationInputsProjectorTest {
         PageConfiguration page = new PageConfiguration();
         page.setInputs(List.of(input1));
         String pageName1 = "screen1";
-        pagesConfiguration.put(pageName1, page);
+        pagesConfiguration.getPages().put(pageName1, page);
 
         List<String> input1Value = List.of("input1Value");
         data.putPage(pageName1, new FormData(Map.of(
@@ -59,7 +59,7 @@ class ApplicationInputsProjectorTest {
         PageConfiguration page1 = new PageConfiguration();
         page1.setInputs(List.of(input1, input2));
         String pageName1 = "screen1";
-        pagesConfiguration.put(pageName1, page1);
+        pagesConfiguration.getPages().put(pageName1, page1);
 
 
         List<String> input1Value = List.of("input1Value");
@@ -99,7 +99,7 @@ class ApplicationInputsProjectorTest {
         PageConfiguration page1 = new PageConfiguration();
         page1.setInputs(List.of(input1, input2));
         String pageName1 = "screen1";
-        pagesConfiguration.put(pageName1, page1);
+        pagesConfiguration.getPages().put(pageName1, page1);
 
 
         List<String> input1Value = List.of("input1Value");

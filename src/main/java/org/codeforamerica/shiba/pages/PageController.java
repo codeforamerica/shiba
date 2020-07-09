@@ -46,10 +46,10 @@ public class PageController {
             @RequestParam(defaultValue = "false") Boolean isBackwards,
             @RequestParam(required = false, defaultValue = "0") Integer option
     ) {
-        PageConfiguration currentPageConfiguration = this.pagesConfiguration.get(pageName);
+        PageConfiguration currentPageConfiguration = this.pagesConfiguration.getPages().get(pageName);
 
         String adjacentPageName = currentPageConfiguration.getAdjacentPageName(isBackwards, option);
-        PageConfiguration adjacentPage = this.pagesConfiguration.get(adjacentPageName);
+        PageConfiguration adjacentPage = this.pagesConfiguration.getPages().get(adjacentPageName);
 
         if (adjacentPage.shouldSkip(pagesData)) {
             return new RedirectView(String.format("/pages/%s", adjacentPage.getAdjacentPageName(isBackwards)));
@@ -60,14 +60,15 @@ public class PageController {
 
     @GetMapping("/pages/{pageName}")
     ModelAndView getFormPage(@PathVariable String pageName) {
-        PageConfiguration pageConfiguration = this.pagesConfiguration.get(pageName);
+        PageConfiguration pageConfiguration = this.pagesConfiguration.getPages().get(pageName);
 
-        if (pageConfiguration.isResetData()) {
+        FlowConfiguration flowConfiguration = pagesConfiguration.getFlow();
+        if (flowConfiguration.shouldResetData(pageName)) {
             this.pagesData.getData().clear();
             metrics.clear();
         }
 
-        if (pageConfiguration.isStartTimer()) {
+        if (flowConfiguration.shouldStartTimer(pageName)) {
             metrics.setStartTimeOnce(clock.instant());
         }
 
@@ -96,7 +97,7 @@ public class PageController {
             @RequestBody(required = false) MultiValueMap<String, String> model,
             @PathVariable String pageName
     ) {
-        PageConfiguration page = pagesConfiguration.get(pageName);
+        PageConfiguration page = pagesConfiguration.getPages().get(pageName);
         FormData formData = FormData.fillOut(page, model);
 
         pagesData.putPage(pageName, formData);
@@ -117,7 +118,7 @@ public class PageController {
             @RequestBody(required = false) MultiValueMap<String, String> model,
             Locale locale
     ) {
-        PageConfiguration page = pagesConfiguration.get(SIGN_THIS_APPLICATION_PAGE_NAME);
+        PageConfiguration page = pagesConfiguration.getPages().get(SIGN_THIS_APPLICATION_PAGE_NAME);
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy", locale);
         FormData formData = new FormData(Map.of(

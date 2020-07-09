@@ -23,7 +23,7 @@ class OneToOneApplicationInputsMapperTest {
         PageConfiguration page = new PageConfiguration();
         page.setInputs(List.of(input1));
         String pageName = "screen1";
-        pagesConfiguration.put(pageName, page);
+        pagesConfiguration.getPages().put(pageName, page);
 
         List<String> input1Value = List.of("input1Value");
         data.putPage(pageName, new FormData(Map.of(input1Name, new InputData(Validation.NONE, input1Value))));
@@ -52,7 +52,7 @@ class OneToOneApplicationInputsMapperTest {
         PageConfiguration page = new PageConfiguration();
         page.setInputs(List.of(input2));
         String pageName = "screen1";
-        pagesConfiguration.put(pageName, page);
+        pagesConfiguration.getPages().put(pageName, page);
 
         List<String> input2Value = List.of("input2Value");
         List<String> input3Value = List.of("input3Value");
