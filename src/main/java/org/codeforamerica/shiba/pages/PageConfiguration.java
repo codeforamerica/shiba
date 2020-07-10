@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.pages;
 
 import lombok.Data;
+import org.springframework.util.MultiValueMap;
 
 import java.util.List;
 import java.util.Objects;
@@ -21,6 +22,7 @@ public class PageConfiguration {
     private List<PageDatasource> datasources;
     private Condition skipCondition;
     private String primaryButtonTextKey = "general.continue";
+    private List<AdditionalDatum> additionalData = List.of();
 
     public String resolve(PagesData pagesData, Function<PageConfiguration, Value> valueExtractor) {
         Value value = valueExtractor.apply(this);
@@ -35,6 +37,21 @@ public class PageConfiguration {
                             "Configuration mismatch! Conditional value cannot be evaluated without a datasource.");
                     FormData formData = getFormDataFrom(this.getDatasources(), pagesData);
                     return condition.appliesTo(formData);
+                })
+                .findFirst()
+                .map(ConditionalValue::getValue)
+                .orElse(value.getValue());
+    }
+
+    public String resolve(MultiValueMap<String, String> model, Value value) {
+        if (value == null) {
+            return "";
+        }
+
+        return value.getConditionalValues().stream()
+                .filter(conditionalValue -> {
+                    Condition condition = conditionalValue.getCondition();
+                    return condition.appliesTo(model);
                 })
                 .findFirst()
                 .map(ConditionalValue::getValue)

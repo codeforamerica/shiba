@@ -617,6 +617,31 @@ shiba-configuration:
             - value: NONE_OF_THE_ABOVE
               messageKey: expedited-utility-payments.none-of-the-above
               isNone: true
+      additionalData:
+        - name: expeditedUtilitiesSummary
+          value:
+            value: NO_EXPEDITED_UTILITIES_SELECTED
+            conditionalValues:
+              - value: SOME_EXPEDITED_UTILITIES_SELECTED
+                condition:
+                  input: payForUtilities
+                  value: HEATING
+                  matcher: CONTAINS
+              - value: SOME_EXPEDITED_UTILITIES_SELECTED
+                condition:
+                  input: payForUtilities
+                  value: COOLING
+                  matcher: CONTAINS
+              - value: SOME_EXPEDITED_UTILITIES_SELECTED
+                condition:
+                  input: payForUtilities
+                  value: ELECTRICITY
+                  matcher: CONTAINS
+              - value: SOME_EXPEDITED_UTILITIES_SELECTED
+                condition:
+                  input: payForUtilities
+                  value: PHONE
+                  matcher: CONTAINS
       datasources:
         - pageName: doYouLiveAlone
     expeditedMigrantFarmWorker:

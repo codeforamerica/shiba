@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toMap;
 import static org.codeforamerica.shiba.pages.PageUtils.getFormInputName;
@@ -23,17 +24,22 @@ public class FormData extends HashMap<String, InputData> {
     }
 
     static FormData fillOut(PageConfiguration page, MultiValueMap<String, String> model) {
-        return new FormData(
-                page.getFlattenedInputs().stream()
-                        .collect(toMap(
-                                FormInput::getName,
-                                input -> {
-                                    List<String> value = Optional.ofNullable(model)
-                                            .map(modelMap -> modelMap.get(getFormInputName(input.getName())))
-                                            .orElse(null);
-                                    return new InputData(input.getValidationFor(model), value);
-                                }
-                        )));
+        Stream<Entry<String, InputData>> formInputEntries = page.getFlattenedInputs().stream()
+                .map(formInput -> {
+                    List<String> value = Optional.ofNullable(model)
+                            .map(modelMap -> modelMap.get(getFormInputName(formInput.getName())))
+                            .orElse(null);
+                    InputData inputData = new InputData(formInput.getValidationFor(model), value);
+                    return Map.entry(formInput.getName(), inputData);
+                });
+        Stream<Entry<String, InputData>> additionalDataEntries = page.getAdditionalData().stream()
+                .map(additionalDatum -> {
+                    InputData inputData = new InputData(List.of(page.resolve(model, additionalDatum.getValue())));
+                    return Map.entry(additionalDatum.getName(), inputData);
+                });
+        Map<String, InputData> allData = Stream.concat(formInputEntries, additionalDataEntries)
+                .collect(toMap(Entry::getKey, Entry::getValue));
+        return new FormData(allData);
     }
 
     public static FormData initialize(PageConfiguration pageConfiguration, Function<DefaultValue, InputData> inputDataCreator) {

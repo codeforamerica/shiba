@@ -47,7 +47,7 @@ caf:
         COOLING: AIR_CONDITIONING
         ELECTRICITY: ELECTRICITY
         PHONE: PHONE
-        NONE_OF_THE_ABOVE: NONE
+      expeditedUtilitiesSummary: EXPEDITED_UTILITIES_SUMMARY
     expeditedMigrantFarmWorker:
       migrantOrSeasonalFarmWorker: MIGRANT_SEASONAL_FARM_WORKER
     signThisApplication:

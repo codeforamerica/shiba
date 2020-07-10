@@ -474,3 +474,48 @@ test-flow-redirect:
       - secondPage
     terminalPage: fourthPage
     submitPage: thirdPage
+test-additional-data:
+  pages:
+    firstPage:
+      pageTitle:
+        value: first-page-title
+      nextPage:
+        - secondPage
+      inputs:
+        - name: yesOrNoQuestion
+          type: YES_NO
+      additionalData:
+        - name: staticAdditionalData
+          value:
+            value: someValue
+        - name: conditionalAdditionalData
+          value:
+            conditionalValues:
+              - value: yesValue
+                condition:
+                  input: yesOrNoQuestion
+                  value: "true"
+              - value: noValue
+                condition:
+                  input: yesOrNoQuestion
+                  value: "false"
+    secondPage:
+      pageTitle:
+        value: second-page-title
+      inputs:
+        - name: inputUsingStaticAdditionalData
+          type: TEXT
+          defaultValue:
+            type: DATASOURCE_REFERENCE
+            value: staticAdditionalData
+        - name: inputUsingConditionalAdditionalData
+          type: TEXT
+          defaultValue:
+            type: DATASOURCE_REFERENCE
+            value: conditionalAdditionalData
+      datasources:
+        - pageName: firstPage
+  flow:
+    startTimerPage:
+    terminalPage:
+    submitPage:

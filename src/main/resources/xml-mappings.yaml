@@ -38,6 +38,7 @@ xml:
       expeditedExpensesAmount: HOUSING_EXPENSES
     expeditedUtilityPayments:
       payForUtilities: PAY_FOR_UTILITIES
+      expeditedUtilitiesSummary: PAY_FOR_UTILITIES
     expeditedMigrantFarmWorker:
       migrantOrSeasonalFarmWorker: MIGRANT_SEASONAL_FARM_WORKER
     signThisApplication:
@@ -71,4 +72,4 @@ xml:
     ELECTRICITY: Electricity
     HEATING: Heat
     PHONE: Phone
-    NONE_OF_THE_ABOVE: None
+    NO_EXPEDITED_UTILITIES_SELECTED: None
