@@ -47,6 +47,8 @@ caf:
         COOLING: AIR_CONDITIONING
         ELECTRICITY: ELECTRICITY
         PHONE: PHONE
+        GARBAGE_REMOVAL: GARBAGE_REMOVAL
+        COOKING_FUEL: COOKING_FUEL
       expeditedUtilitiesSummary: EXPEDITED_UTILITIES_SUMMARY
     expeditedMigrantFarmWorker:
       migrantOrSeasonalFarmWorker: MIGRANT_SEASONAL_FARM_WORKER
