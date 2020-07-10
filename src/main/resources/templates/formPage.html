@@ -14,11 +14,11 @@
                        th:text="#{${page.headerHelpMessageKey}}"></p>
                 </div>
                 <div class="grid__item">
-                    <form method="post" th:action="@{'/pages/'+${pageName}}">
+                    <form method="post" th:action="@{${postTo}}">
                         <div th:each="input: ${page.inputs}">
                             <div th:replace="'fragments/'+__${input.fragment()}__ :: __${input.fragment()}__(${input}, ${data})"></div>
                         </div>
-                        <button th:if="${page.displayContinueButton()}" class="button button--primary" type="submit" th:text="#{general.continue}"></button>
+                        <button th:if="${page.displayContinueButton()}" class="button button--primary" type="submit" th:text="#{${page.primaryButtonTextKey}}"></button>
                     </form>
                 </div>
             </div>

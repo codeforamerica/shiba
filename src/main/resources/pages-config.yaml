@@ -698,6 +698,13 @@ shiba-configuration:
       previousPage: legalStuff
       nextPage:
         - success
+      primaryButtonTextKey: sign-this-application.submit
+      inputs:
+        - name: applicantSignature
+          type: TEXT
+          validator:
+            validation: NOT_BLANK
+          validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
     success:
       pageTitle:
         value: success.title
@@ -709,3 +716,4 @@ shiba-configuration:
       - landing
       - prepareToApply
     terminalPage: success
+    submitPage: signThisApplication

@@ -20,6 +20,7 @@ public class PageConfiguration {
     private String previousPage;
     private List<PageDatasource> datasources;
     private Condition skipCondition;
+    private String primaryButtonTextKey = "general.continue";
 
     public String resolve(PagesData pagesData, Function<PageConfiguration, Value> valueExtractor) {
         Value value = valueExtractor.apply(this);

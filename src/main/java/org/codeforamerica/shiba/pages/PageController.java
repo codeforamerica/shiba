@@ -26,7 +26,6 @@ public class PageController {
     private final Clock clock;
     private final ApplicationMetricsRepository repository;
     private final Metrics metrics;
-    public static final String SIGN_THIS_APPLICATION_PAGE_NAME = "signThisApplication";
 
     public PageController(
             PagesConfiguration pagesConfiguration,
@@ -86,6 +85,7 @@ public class PageController {
         HashMap<String, Object> model = new HashMap<>(Map.of(
                 "page", pageConfiguration,
                 "pageName", pageName,
+                "postTo", flowConfiguration.isSubmitPage(pageName) ? "/submit" : "/pages/" + pageName,
                 "pageTitle", pageConfiguration.resolve(pagesData, PageConfiguration::getPageTitle),
                 "headerKey", pageConfiguration.resolve(pagesData, PageConfiguration::getHeaderKey)
         ));
@@ -119,6 +119,7 @@ public class PageController {
                         "page", page,
                         "data", formData,
                         "pageName", pageName,
+                        "postTo", this.pagesConfiguration.getFlow().isSubmitPage(pageName) ? "/submit" : "/pages/" + pageName,
                         "pageTitle", page.resolve(pagesData, PageConfiguration::getPageTitle),
                         "headerKey", page.resolve(pagesData, PageConfiguration::getHeaderKey)
                 ));
@@ -129,23 +130,24 @@ public class PageController {
             @RequestBody(required = false) MultiValueMap<String, String> model,
             Locale locale
     ) {
-        PageConfiguration page = pagesConfiguration.getPages().get(SIGN_THIS_APPLICATION_PAGE_NAME);
+        FlowConfiguration flowConfiguration = this.pagesConfiguration.getFlow();
+        String submitPage = flowConfiguration.getSubmitPage();
+        PageConfiguration page = pagesConfiguration.getPages().get(submitPage);
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy", locale);
-        FormData formData = new FormData(Map.of(
-                "applicantSignature", new InputData(Validation.NOT_BLANK, model.get("applicantSignature")),
-                "submissionTime", new InputData(List.of(dateTimeFormatter.format(ZonedDateTime.ofInstant(clock.instant(), ZoneId.of("UTC")))))
-        ));
-        pagesData.putPage(SIGN_THIS_APPLICATION_PAGE_NAME, formData);
+        FormData formData = FormData.fillOut(page, model);
+        formData.put("submissionTime", new InputData(List.of(dateTimeFormatter.format(ZonedDateTime.ofInstant(clock.instant(), ZoneId.of("UTC"))))));
+        pagesData.putPage(submitPage, formData);
 
         ApplicationMetric applicationMetric = new ApplicationMetric(Duration.between(metrics.getStartTime(), clock.instant()));
         repository.save(applicationMetric);
         return formData.isValid() ?
-                new ModelAndView(String.format("redirect:/pages/%s/navigation", SIGN_THIS_APPLICATION_PAGE_NAME)) :
-                new ModelAndView(SIGN_THIS_APPLICATION_PAGE_NAME, Map.of(
+                new ModelAndView(String.format("redirect:/pages/%s/navigation", submitPage)) :
+                new ModelAndView("formPage", Map.of(
                         "page", page,
                         "data", formData,
-                        "pageName", SIGN_THIS_APPLICATION_PAGE_NAME,
+                        "pageName", submitPage,
+                        "postTo", "/submit",
                         "pageTitle", page.resolve(pagesData, PageConfiguration::getPageTitle),
                         "headerKey", page.resolve(pagesData, PageConfiguration::getHeaderKey)
                 ));

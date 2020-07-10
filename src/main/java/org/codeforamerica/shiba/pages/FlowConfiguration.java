@@ -10,6 +10,7 @@ public class FlowConfiguration {
     private String startTimerPage;
     private List<String> landingPages = new ArrayList<>();
     private String terminalPage;
+    private String submitPage;
 
     boolean isLandingPage(String pageName) {
         return this.getLandingPages().contains(pageName);
@@ -21,5 +22,9 @@ public class FlowConfiguration {
 
     boolean isStartTimerPage(String pageName) {
         return pageName.equals(this.getStartTimerPage());
+    }
+
+    public boolean isSubmitPage(String pageName) {
+        return pageName.equals(this.getSubmitPage());
     }
 }

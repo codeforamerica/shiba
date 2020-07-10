@@ -73,7 +73,7 @@ class PageControllerTest {
 
         mockMvc.perform(post("/submit")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                .param("applicantSignature", "some signature"))
+                .param("applicantSignature[]", "some signature"))
                 .andExpect(redirectedUrl("/pages/signThisApplication/navigation"));
 
         FormData signThisApplication = pagesData.getPage("signThisApplication");
@@ -89,7 +89,7 @@ class PageControllerTest {
 
         mockMvc.perform(post("/submit")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                .param("applicantSignature", "some signature"));
+                .param("applicantSignature[]", "some signature"));
 
         ArgumentCaptor<ApplicationMetric> argumentCaptor = ArgumentCaptor.forClass(ApplicationMetric.class);
         verify(applicationMetricsRepository).save(argumentCaptor.capture());
