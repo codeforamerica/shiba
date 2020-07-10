@@ -439,7 +439,7 @@ test-reset-data:
     startTimerPage: secondPage
     landingPages:
       - firstPage
-test-mid-flow-redirect:
+test-flow-redirect:
   pages:
     firstPage:
       pageTitle:
@@ -470,3 +470,4 @@ test-mid-flow-redirect:
     landingPages:
       - firstPage
       - secondPage
+    terminalPage: fourthPage

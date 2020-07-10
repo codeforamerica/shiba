@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletResponse;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.ZoneId;
@@ -59,22 +60,28 @@ public class PageController {
     }
 
     @GetMapping("/pages/{pageName}")
-    ModelAndView getFormPage(@PathVariable String pageName) {
-        PageConfiguration pageConfiguration = this.pagesConfiguration.getPages().get(pageName);
-
+    ModelAndView getFormPage(@PathVariable String pageName,
+                             HttpServletResponse response) {
         FlowConfiguration flowConfiguration = pagesConfiguration.getFlow();
-        if (flowConfiguration.shouldRedirectToLandingPage(pageName, metrics)) {
+
+        if (flowConfiguration.isLandingPage(pageName)) {
+            this.pagesData.clear();
+            this.metrics.clear();
+        } else if (flowConfiguration.isTerminalPage(pageName)) {
+            this.pagesData.setSubmitted(true);
+        } else if (flowConfiguration.isStartTimerPage(pageName)) {
+            this.metrics.setStartTimeOnce(clock.instant());
+        }
+
+        if (!flowConfiguration.isTerminalPage(pageName) && this.pagesData.isSubmitted()) {
+            return new ModelAndView(String.format("redirect:/pages/%s", flowConfiguration.getTerminalPage()));
+        } else if (!flowConfiguration.isLandingPage(pageName) && metrics.getStartTime() == null) {
             return new ModelAndView(String.format("redirect:/pages/%s", flowConfiguration.getLandingPages().get(0)));
         }
 
-        if (flowConfiguration.shouldResetData(pageName)) {
-            this.pagesData.getData().clear();
-            metrics.clear();
-        }
+        response.addHeader("Cache-Control", "no-store");
 
-        if (flowConfiguration.shouldStartTimer(pageName)) {
-            metrics.setStartTimeOnce(clock.instant());
-        }
+        PageConfiguration pageConfiguration = this.pagesConfiguration.getPages().get(pageName);
 
         HashMap<String, Object> model = new HashMap<>(Map.of(
                 "page", pageConfiguration,

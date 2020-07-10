@@ -708,3 +708,4 @@ shiba-configuration:
     landingPages:
       - landing
       - prepareToApply
+    terminalPage: success

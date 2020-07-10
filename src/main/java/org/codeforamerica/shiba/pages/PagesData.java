@@ -11,7 +11,8 @@ import static org.codeforamerica.shiba.pages.FormData.literalInputDataCreator;
 
 @Data
 public class PagesData {
-    Map<String, FormData> data = new HashMap<>();
+    private Map<String, FormData> data = new HashMap<>();
+    private boolean submitted = false;
 
     public FormData getPage(String pageName) {
         return this.data.get(pageName);
@@ -27,5 +28,10 @@ public class PagesData {
 
     public void putPage(String pageName, FormData formData) {
         this.data.put(pageName, formData);
+    }
+
+    public void clear() {
+        this.data.clear();
+        this.submitted = false;
     }
 }
