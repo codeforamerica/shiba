@@ -1,0 +1,24 @@
+shiba-configuration-reset-data:
+  pages:
+    firstPage:
+      pageTitle:
+        value: first-page-title
+      inputs:
+        - name: someTextInput
+          type: TEXT
+    secondPage:
+      pageTitle:
+        value: second-page-title
+      inputs:
+        - name: foo
+          type: TEXT
+  flow:
+    startTimerPage: secondPage
+    landingPages:
+      - firstPage
+    navigation:
+      firstPage:
+        nextPage:
+          - secondPage
+      secondPage:
+        previousPage: firstPage

@@ -1,0 +1,39 @@
+shiba-configuration-flow-redirect:
+  pages:
+    firstPage:
+      pageTitle:
+        value: first-page-title
+      inputs:
+        - name: foo
+          type: TEXT
+    secondPage:
+      pageTitle:
+        value: second-page-title
+      inputs:
+        - name: foo
+          type: TEXT
+    thirdPage:
+      pageTitle:
+        value: third-page-title
+      inputs:
+        - name: foo
+          type: TEXT
+    fourthPage:
+      pageTitle:
+        value: fourth-page-title
+      inputs:
+        - name: foo
+          type: TEXT
+  flow:
+    startTimerPage: thirdPage
+    landingPages:
+      - firstPage
+      - secondPage
+    terminalPage: fourthPage
+    submitPage: thirdPage
+    navigation:
+      thirdPage:
+        nextPage:
+          - fourthPage
+      fourthPage:
+        previousPage:

@@ -16,4 +16,12 @@ import java.util.Map;
 public class PagesConfiguration {
     private Map<String, PageConfiguration> pages = new HashMap<>();
     private FlowConfiguration flow;
+
+    public PageConfiguration getPage(String pageName) {
+        return this.pages.get(pageName);
+    }
+
+    public NavigationConfiguration getNavigationPage(String pageName) {
+        return this.getFlow().getNavigation().get(pageName);
+    }
 }

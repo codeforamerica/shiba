@@ -3,22 +3,14 @@ shiba-configuration:
     landing:
       pageTitle:
         value: landing.title
-      nextPage:
-        - prepareToApply
     prepareToApply:
       pageTitle:
         value: prepare-to-apply.title
-      previousPage: landing
-      nextPage:
-        - languagePreferences
     languagePreferences:
       pageTitle:
         value: language-preferences.title
       headerKey:
         value: language-preferences.language-preferences
-      nextPage:
-        - choosePrograms
-      previousPage: prepareToApply
       inputs:
         - name: spokenLanguage
           type: SELECT
@@ -68,9 +60,6 @@ shiba-configuration:
     choosePrograms:
       pageTitle:
         value: choose-programs.title
-      nextPage:
-        - howItWorks
-      previousPage: languagePreferences
       headerKey:
         value: choose-programs.what-do-you-need-help-with-today
       headerHelpMessageKey: choose-programs.check-all-that-apply
@@ -92,9 +81,6 @@ shiba-configuration:
     howItWorks:
       pageTitle:
         value: how-it-works.title
-      previousPage: choosePrograms
-      nextPage:
-        - introBasicInfo
       datasources:
         - pageName: choosePrograms
           inputs:
@@ -107,17 +93,11 @@ shiba-configuration:
     introBasicInfo:
       pageTitle:
         value: intro-basic-info.title
-      previousPage: howItWorks
-      nextPage:
-        - personalInfo
     personalInfo:
       pageTitle:
         value: personal-info.title
       headerKey:
         value: personal-info.tell-us-about-yourself
-      previousPage: introBasicInfo
-      nextPage:
-        - contactInfo
       inputs:
         - name: firstName
           type: TEXT
@@ -221,9 +201,6 @@ shiba-configuration:
       headerKey:
         value: contact-info.how-can-we-stay-in-touch-with-you
       headerHelpMessageKey: contact-info.most-of-our-communication-will-be-through-mail
-      previousPage: personalInfo
-      nextPage:
-        - branchToMinimalFlow
       inputs:
         - name: phoneNumber
           type: TEXT
@@ -255,25 +232,16 @@ shiba-configuration:
     branchToMinimalFlow:
       pageTitle:
         value: branch-to-minimal-flow.title
-      previousPage: contactInfo
-      nextPage:
-        - weDoNotRecommendMinimalFlow
       datasources:
         - pageName: personalInfo
     weDoNotRecommendMinimalFlow:
       pageTitle:
         value: we-do-not-recommend-minimal-flow.title
-      previousPage: branchToMinimalFlow
-      nextPage:
-        - homeAddress
     homeAddress:
       headerKey:
         value: home-address.where-are-you-currently-living
       pageTitle:
         value: home-address.title
-      previousPage: weDoNotRecommendMinimalFlow
-      nextPage:
-        - mailingAddress
       inputs:
         - name: zipCode
           type: TEXT
@@ -336,9 +304,6 @@ shiba-configuration:
         value: mailing-address.title
       headerKey:
         value: mailing-address.where-can-the-county-send-your-mail
-      previousPage: homeAddress
-      nextPage:
-        - doYouNeedHelpImmediately
       inputs:
         - name: zipCode
           type: TEXT
@@ -404,24 +369,14 @@ shiba-configuration:
               matcher: CONTAINS
       datasources:
         - pageName: homeAddress
-      skipCondition:
-        input: sameMailingAddress
-        value: "true"
     doYouNeedHelpImmediately:
       pageTitle:
         value: do-you-need-help-immediately.title
-      previousPage: mailingAddress
-      nextPage:
-        - doYouLiveAlone
-        - importantToKnow
     doYouLiveAlone:
       headerKey:
         value: do-you-live-alone.do-you-live-alone
       pageTitle:
         value: do-you-live-alone.title
-      previousPage: doYouNeedHelpImmediately
-      nextPage:
-        - expeditedIncome
       inputs:
         - name: liveAlone
           type: YES_NO
@@ -447,9 +402,6 @@ shiba-configuration:
             condition:
               input: liveAlone
               value: "false"
-      previousPage: doYouLiveAlone
-      nextPage:
-        - liquidAssets
       inputs:
         - name: moneyMadeLast30Days
           type: MONEY
@@ -462,9 +414,6 @@ shiba-configuration:
       datasources:
         - pageName: doYouLiveAlone
     liquidAssets:
-      previousPage: expeditedIncome
-      nextPage:
-        - expeditedExpenses
       pageTitle:
         conditionalValues:
           - value: liquid-assets-prompt.title-one-person
@@ -499,9 +448,6 @@ shiba-configuration:
       datasources:
         - pageName: doYouLiveAlone
     expeditedExpenses:
-      previousPage: liquidAssets
-      nextPage:
-        - expeditedExpensesAmount
       pageTitle:
         conditionalValues:
           - value: expedited-expenses.title-one-person
@@ -538,9 +484,6 @@ shiba-configuration:
             condition:
               input: liveAlone
               value: "false"
-      skipCondition:
-        input: payRentOrMortgage
-        value: "false"
       headerKey:
         conditionalValues:
           - value: expedited-expenses-amount.how-much-do-you-pay-for-rent-or-mortgage-every-month
@@ -551,9 +494,6 @@ shiba-configuration:
             condition:
               input: liveAlone
               value: "false"
-      nextPage:
-        - expeditedUtilityPayments
-      previousPage: expeditedExpenses
       inputs:
         - name: expeditedExpensesAmount
           type: MONEY
@@ -588,9 +528,6 @@ shiba-configuration:
               input: liveAlone
               value: "false"
       headerHelpMessageKey: expedited-utility-payments.select-all-that-you-are-billed-for-even-if-you-havent-paid-it-this-month
-      nextPage:
-        - expeditedMigrantFarmWorker
-      previousPage: expeditedExpensesAmount
       inputs:
         - name: payForUtilities
           type: CHECKBOX
@@ -659,9 +596,6 @@ shiba-configuration:
       datasources:
         - pageName: doYouLiveAlone
     expeditedMigrantFarmWorker:
-      previousPage: expeditedUtilityPayments
-      nextPage:
-        - expeditedDetermination
       pageTitle:
         conditionalValues:
           - value: expedited-migrant-farm-worker.title-one-person
@@ -688,9 +622,6 @@ shiba-configuration:
       datasources:
         - pageName: doYouLiveAlone
     expeditedDetermination:
-      previousPage: expeditedMigrantFarmWorker
-      nextPage:
-        - importantToKnow
       datasources:
         - pageName: expeditedIncome
         - pageName: liquidAssets
@@ -705,15 +636,9 @@ shiba-configuration:
         value: important-to-know.title
       headerKey:
         value: important-to-know.important-stuff-to-know-about
-      previousPage: doYouNeedHelpImmediately
-      nextPage:
-        - legalStuff
     legalStuff:
       pageTitle:
         value: legal-stuff.title
-      previousPage: importantToKnow
-      nextPage:
-        - signThisApplication
       headerKey:
         value: legal-stuff.the-legal-stuff
       headerHelpMessageKey: legal-stuff.scroll-down-to-agree-to-the-terms
@@ -734,9 +659,6 @@ shiba-configuration:
       headerKey:
         value: sign-this-application.type-your-full-legal-name-here-to-sign-this-application
       headerHelpMessageKey: sign-this-application.by-signing-this-application-you-agree-that-you-want-to
-      previousPage: legalStuff
-      nextPage:
-        - success
       primaryButtonTextKey: sign-this-application.submit
       inputs:
         - name: applicantSignature
@@ -756,3 +678,108 @@ shiba-configuration:
       - prepareToApply
     terminalPage: success
     submitPage: signThisApplication
+    navigation:
+      landing:
+        nextPage:
+          - prepareToApply
+      prepareToApply:
+        previousPage: landing
+        nextPage:
+          - languagePreferences
+      languagePreferences:
+        previousPage: prepareToApply
+        nextPage:
+          - choosePrograms
+      choosePrograms:
+        nextPage:
+          - howItWorks
+        previousPage: languagePreferences
+      howItWorks:
+        previousPage: choosePrograms
+        nextPage:
+          - introBasicInfo
+      introBasicInfo:
+        previousPage: howItWorks
+        nextPage:
+          - personalInfo
+      personalInfo:
+        previousPage: introBasicInfo
+        nextPage:
+          - contactInfo
+      contactInfo:
+        previousPage: personalInfo
+        nextPage:
+          - branchToMinimalFlow
+      branchToMinimalFlow:
+        previousPage: contactInfo
+        nextPage:
+          - weDoNotRecommendMinimalFlow
+      weDoNotRecommendMinimalFlow:
+        previousPage: branchToMinimalFlow
+        nextPage:
+          - homeAddress
+      homeAddress:
+        previousPage: weDoNotRecommendMinimalFlow
+        nextPage:
+          - mailingAddress
+      mailingAddress:
+        skipCondition:
+          input: sameMailingAddress
+          value: "true"
+        previousPage: homeAddress
+        nextPage:
+          - doYouNeedHelpImmediately
+      doYouNeedHelpImmediately:
+        previousPage: mailingAddress
+        nextPage:
+          - doYouLiveAlone
+          - importantToKnow
+      doYouLiveAlone:
+        previousPage: doYouNeedHelpImmediately
+        nextPage:
+          - expeditedIncome
+      expeditedIncome:
+        previousPage: doYouLiveAlone
+        nextPage:
+          - liquidAssets
+      liquidAssets:
+        previousPage: expeditedIncome
+        nextPage:
+          - expeditedExpenses
+      expeditedExpenses:
+        previousPage: liquidAssets
+        nextPage:
+          - expeditedExpensesAmount
+      expeditedExpensesAmount:
+        skipCondition:
+          input: payRentOrMortgage
+          value: "false"
+        previousPage: expeditedExpenses
+        nextPage:
+          - expeditedUtilityPayments
+      expeditedUtilityPayments:
+        previousPage: expeditedExpensesAmount
+        nextPage:
+          - expeditedMigrantFarmWorker
+      expeditedMigrantFarmWorker:
+        previousPage: expeditedUtilityPayments
+        nextPage:
+          - expeditedDetermination
+      expeditedDetermination:
+        previousPage: expeditedMigrantFarmWorker
+        nextPage:
+          - importantToKnow
+      importantToKnow:
+        previousPage: doYouNeedHelpImmediately
+        nextPage:
+          - legalStuff
+      legalStuff:
+        previousPage: importantToKnow
+        nextPage:
+          - signThisApplication
+      signThisApplication:
+        previousPage: legalStuff
+        nextPage:
+          - success
+      success:
+        previousPage:

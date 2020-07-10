@@ -1,0 +1,42 @@
+shiba-configuration-conditional-rendering:
+  pages:
+    firstPage:
+      pageTitle:
+        value: first-page-title
+      inputs:
+        - name: someRadioInputName
+          type: RADIO
+          options:
+            - value: SKIP
+              messageKey: skip-message-key
+            - value: NOT_SKIP
+              messageKey: not-skip-message-key
+    secondPage:
+      pageTitle:
+        value: second-page-title
+      inputs:
+        - name: foo
+          type: TEXT
+      datasources:
+        - pageName: firstPage
+    thirdPage:
+      pageTitle:
+        value: third-page-title
+      inputs:
+        - name: foo
+          type: TEXT
+  flow:
+    navigation:
+      firstPage:
+        nextPage:
+          - secondPage
+      secondPage:
+        previousPage: firstPage
+        nextPage:
+          - thirdPage
+        skipCondition:
+          input: someRadioInputName
+          value: SKIP
+          matcher: CONTAINS
+      thirdPage:
+        previousPage: secondPage

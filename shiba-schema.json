@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
-  "properties": {
-    "shiba-configuration": {
+  "patternProperties": {
+    "^[shiba\\-configuration\\-].*$": {
       "type": "object",
       "properties": {
         "pages": {
@@ -24,6 +24,20 @@
               "items": {
                 "type": "string"
               }
+            },
+            "terminalPage": {
+              "type": "string"
+            },
+            "submitPage": {
+              "type": "string"
+            },
+            "navigation": {
+              "type": "object",
+              "patternProperties": {
+                "^.*$": {
+                  "$ref": "#/definitions/navigationPage"
+                }
+              }
             }
           }
         }
@@ -44,15 +58,6 @@
           "$ref": "#/definitions/value"
         },
         "headerHelpMessageKey": {
-          "type": "string"
-        },
-        "nextPage": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "previousPage": {
           "type": "string"
         },
         "datasource": {
@@ -80,9 +85,6 @@
             }
           }
         },
-        "skipCondition": {
-          "$ref": "#/definitions/condition"
-        },
         "startTimer": {
           "type": "boolean"
         },
@@ -90,6 +92,23 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/input"
+          }
+        }
+      }
+    },
+    "navigationPage": {
+      "type": "object",
+      "properties": {
+        "skipCondition": {
+          "$ref": "#/definitions/condition"
+        },
+        "previousPage": {
+          "type": "string"
+        },
+        "nextPage": {
+          "type": "array",
+          "items": {
+            "type": "string"
           }
         }
       }

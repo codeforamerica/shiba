@@ -22,10 +22,10 @@ public class ConditionalRenderingPageTest extends AbstractStaticMessageSourcePag
     private final String firstPageTitle = "firstPageTitle";
 
     @TestConfiguration
-    @PropertySource(value = "classpath:test-pages-config.yaml", factory = YamlPropertySourceFactory.class)
+    @PropertySource(value = "classpath:test-conditional-rendering.yaml", factory = YamlPropertySourceFactory.class)
     static class TestPageConfiguration extends MetricsTestConfigurationWithExistingStartTime {
         @Bean
-        @ConfigurationProperties(prefix = "test-conditional-rendering")
+        @ConfigurationProperties(prefix = "shiba-configuration-conditional-rendering")
         public PagesConfiguration pagesConfiguration() {
             return new PagesConfiguration();
         }

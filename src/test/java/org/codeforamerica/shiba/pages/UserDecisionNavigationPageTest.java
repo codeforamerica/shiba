@@ -19,10 +19,10 @@ public class UserDecisionNavigationPageTest extends AbstractStaticMessageSourceP
     private final String optionZeroPageTitle = "option-zero-page-title";
 
     @TestConfiguration
-    @PropertySource(value = "classpath:test-pages-config.yaml", factory = YamlPropertySourceFactory.class)
+    @PropertySource(value = "classpath:test-user-decision-navigation.yaml", factory = YamlPropertySourceFactory.class)
     static class TestPageConfiguration extends MetricsTestConfigurationWithExistingStartTime {
         @Bean
-        @ConfigurationProperties(prefix = "test-user-decision-navigation")
+        @ConfigurationProperties(prefix = "shiba-configuration-user-decision-navigation")
         public PagesConfiguration pagesConfiguration() {
             return new PagesConfiguration();
         }

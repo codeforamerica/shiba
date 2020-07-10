@@ -1,0 +1,27 @@
+shiba-configuration-user-decision-navigation:
+  pages:
+    userDecisionNavigationPage:
+      pageTitle:
+        value: origin-page-title
+    optionZeroPage:
+      pageTitle:
+        value: option-zero-page-title
+      inputs:
+        - name: foo
+          type: TEXT
+    optionOnePage:
+      pageTitle:
+        value: option-one-page-title
+      inputs:
+        - name: foo
+          type: TEXT
+  flow:
+    navigation:
+      userDecisionNavigationPage:
+        nextPage:
+          - optionZeroPage
+          - optionOnePage
+      optionZeroPage:
+        previousPage:
+      optionOnePage:
+        previousPage:

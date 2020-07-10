@@ -1,0 +1,79 @@
+shiba-configuration-input:
+  pages:
+    firstPage:
+      pageTitle:
+        value: first-page-title
+      inputs:
+        - name: editableTextInput
+          type: TEXT
+          promptMessage:
+            promptMessageKey: prompt-message-key
+          helpMessageKey: help-message-key
+        - name: uneditableInput
+          type: TEXT
+          readOnly: true
+          defaultValue:
+            value: "default value"
+        - name: dateInput
+          type: DATE
+        - name: numberInput
+          type: NUMBER
+        - name: radioInput
+          type: RADIO
+          options:
+            - value: "1"
+              messageKey: radio-option-1
+            - value: "2"
+              messageKey: option-2
+        - name: checkboxInput
+          type: CHECKBOX
+          options:
+            - value: "1"
+              messageKey: checkbox-option-1
+            - value: "2"
+              messageKey: checkbox-option-2
+            - value: "3"
+              messageKey: none-checkbox-option
+              isNone: true
+        - name: selectInput
+          type: SELECT
+          options:
+            - value: "1"
+              messageKey: select-option-1
+            - value: "2"
+              messageKey: option-2
+        - name: moneyInput
+          type: MONEY
+        - name: inputWithFollowUps
+          type: RADIO
+          options:
+            - value: "true"
+              messageKey: radio-true
+            - value: "false"
+              messageKey: radio-false
+          followUpsValue: "false"
+          followUps:
+            - name: followUpTextInput
+              type: TEXT
+    nextPage:
+      pageTitle:
+        value: next-page-title
+      inputs:
+        - name: someInputName
+          type: TEXT
+          helpMessageKey: help-message-key
+    inputWithPromptFragmentPage:
+      pageTitle:
+        value: prompt-fragment-page-title
+      inputs:
+        - name: promptFragmentInput
+          type: MONEY
+          promptMessage:
+            promptMessageFragmentName: promptFragment
+  flow:
+    navigation:
+      firstPage:
+        nextPage:
+          - nextPage
+      nextPage:
+        previousPage: firstPage

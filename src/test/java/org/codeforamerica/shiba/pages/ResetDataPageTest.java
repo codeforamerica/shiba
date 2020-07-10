@@ -23,10 +23,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(StartTimerPageTest.TestController.class)
 public class ResetDataPageTest extends AbstractStaticMessageSourcePageTest {
     @TestConfiguration
-    @PropertySource(value = "classpath:test-pages-config.yaml", factory = YamlPropertySourceFactory.class)
+    @PropertySource(value = "classpath:test-reset-data.yaml", factory = YamlPropertySourceFactory.class)
     static class TestPageConfiguration {
         @Bean
-        @ConfigurationProperties(prefix = "test-reset-data")
+        @ConfigurationProperties(prefix = "shiba-configuration-reset-data")
         public PagesConfiguration pagesConfiguration() {
             return new PagesConfiguration();
         }

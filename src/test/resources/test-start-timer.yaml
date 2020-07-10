@@ -1,0 +1,16 @@
+shiba-configuration-start-timer:
+  pages:
+    pageThatDoesNotStartTimer:
+      pageTitle:
+        value: not-start-timer-title
+      inputs:
+        - name: foo
+          type: TEXT
+    pageThatDoesStartTimer:
+      pageTitle:
+        value: start-timer-title
+      inputs:
+        - name: foo
+          type: TEXT
+  flow:
+    startTimerPage: pageThatDoesStartTimer
