@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba;
 
 import org.codeforamerica.shiba.metrics.Metrics;
-import org.codeforamerica.shiba.pages.PagesData;
+import org.codeforamerica.shiba.pages.ApplicationData;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -16,8 +16,8 @@ public class SessionConfiguration {
             value = SCOPE_SESSION,
             proxyMode = TARGET_CLASS
     )
-    public PagesData data() {
-        return new PagesData();
+    public ApplicationData data() {
+        return new ApplicationData();
     }
 
     @Bean

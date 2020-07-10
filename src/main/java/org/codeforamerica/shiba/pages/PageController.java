@@ -15,13 +15,16 @@ import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.codeforamerica.shiba.pages.FormData.getFormDataFrom;
 
 @Controller
 public class PageController {
-    private final PagesData pagesData;
+    private final ApplicationData applicationData;
     private final PagesConfiguration pagesConfiguration;
     private final Clock clock;
     private final ApplicationMetricsRepository repository;
@@ -29,11 +32,11 @@ public class PageController {
 
     public PageController(
             PagesConfiguration pagesConfiguration,
-            PagesData pagesData,
+            ApplicationData applicationData,
             Clock clock,
             ApplicationMetricsRepository repository,
             Metrics metrics) {
-        this.pagesData = pagesData;
+        this.applicationData = applicationData;
         this.pagesConfiguration = pagesConfiguration;
         this.clock = clock;
         this.repository = repository;
@@ -46,12 +49,13 @@ public class PageController {
             @RequestParam(defaultValue = "false") Boolean isBackwards,
             @RequestParam(required = false, defaultValue = "0") Integer option
     ) {
-        PageConfiguration currentPageConfiguration = this.pagesConfiguration.getPages().get(pageName);
+        Map<String, PageConfiguration> pages = this.pagesConfiguration.getPages();
+        PageConfiguration currentPageConfiguration = pages.get(pageName);
 
         String adjacentPageName = currentPageConfiguration.getAdjacentPageName(isBackwards, option);
-        PageConfiguration adjacentPage = this.pagesConfiguration.getPages().get(adjacentPageName);
+        PageConfiguration adjacentPage = pages.get(adjacentPageName);
 
-        if (adjacentPage.shouldSkip(pagesData)) {
+        if (adjacentPage.shouldSkip(applicationData.getPagesData())) {
             return new RedirectView(String.format("/pages/%s", adjacentPage.getAdjacentPageName(isBackwards)));
         } else {
             return new RedirectView(String.format("/pages/%s", adjacentPageName));
@@ -64,15 +68,13 @@ public class PageController {
         FlowConfiguration flowConfiguration = pagesConfiguration.getFlow();
 
         if (flowConfiguration.isLandingPage(pageName)) {
-            this.pagesData.clear();
+            this.applicationData.clear();
             this.metrics.clear();
-        } else if (flowConfiguration.isTerminalPage(pageName)) {
-            this.pagesData.setSubmitted(true);
         } else if (flowConfiguration.isStartTimerPage(pageName)) {
             this.metrics.setStartTimeOnce(clock.instant());
         }
 
-        if (!flowConfiguration.isTerminalPage(pageName) && this.pagesData.isSubmitted()) {
+        if (!flowConfiguration.isTerminalPage(pageName) && this.applicationData.isSubmitted()) {
             return new ModelAndView(String.format("redirect:/pages/%s", flowConfiguration.getTerminalPage()));
         } else if (!flowConfiguration.isLandingPage(pageName) && metrics.getStartTime() == null) {
             return new ModelAndView(String.format("redirect:/pages/%s", flowConfiguration.getLandingPages().get(0)));
@@ -82,6 +84,7 @@ public class PageController {
 
         PageConfiguration pageConfiguration = this.pagesConfiguration.getPages().get(pageName);
 
+        PagesData pagesData = applicationData.getPagesData();
         HashMap<String, Object> model = new HashMap<>(Map.of(
                 "page", pageConfiguration,
                 "pageName", pageName,
@@ -90,11 +93,15 @@ public class PageController {
                 "headerKey", pageConfiguration.resolve(pagesData, PageConfiguration::getHeaderKey)
         ));
 
+        if (flowConfiguration.isTerminalPage(pageName)) {
+            model.put("submissionTime", this.applicationData.getSubmissionTime());
+        }
+
         String pageToRender;
         if (pageConfiguration.isStaticPage()) {
             pageToRender = pageName;
             Optional.ofNullable(pageConfiguration.getDatasources())
-                    .map(datasource -> getFormDataFrom(datasource, this.pagesData))
+                    .map(datasource -> getFormDataFrom(datasource, this.applicationData.getPagesData()))
                     .ifPresent(model::putAll);
         } else {
             pageToRender = "formPage";
@@ -111,6 +118,7 @@ public class PageController {
         PageConfiguration page = pagesConfiguration.getPages().get(pageName);
         FormData formData = FormData.fillOut(page, model);
 
+        PagesData pagesData = applicationData.getPagesData();
         pagesData.putPage(pageName, formData);
 
         return formData.isValid() ?
@@ -134,22 +142,26 @@ public class PageController {
         String submitPage = flowConfiguration.getSubmitPage();
         PageConfiguration page = pagesConfiguration.getPages().get(submitPage);
 
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy", locale);
         FormData formData = FormData.fillOut(page, model);
-        formData.put("submissionTime", new InputData(List.of(dateTimeFormatter.format(ZonedDateTime.ofInstant(clock.instant(), ZoneId.of("UTC"))))));
+        PagesData pagesData = applicationData.getPagesData();
         pagesData.putPage(submitPage, formData);
 
-        ApplicationMetric applicationMetric = new ApplicationMetric(Duration.between(metrics.getStartTime(), clock.instant()));
-        repository.save(applicationMetric);
-        return formData.isValid() ?
-                new ModelAndView(String.format("redirect:/pages/%s/navigation", submitPage)) :
-                new ModelAndView("formPage", Map.of(
-                        "page", page,
-                        "data", formData,
-                        "pageName", submitPage,
-                        "postTo", "/submit",
-                        "pageTitle", page.resolve(pagesData, PageConfiguration::getPageTitle),
-                        "headerKey", page.resolve(pagesData, PageConfiguration::getHeaderKey)
-                ));
+        if (formData.isValid()) {
+            ApplicationMetric applicationMetric = new ApplicationMetric(Duration.between(metrics.getStartTime(), clock.instant()));
+            repository.save(applicationMetric);
+
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy", locale);
+            this.applicationData.setSubmissionTime(dateTimeFormatter.format(ZonedDateTime.ofInstant(clock.instant(), ZoneId.of("UTC"))));
+            return new ModelAndView(String.format("redirect:/pages/%s/navigation", submitPage));
+        } else {
+            return new ModelAndView("formPage", Map.of(
+                    "page", page,
+                    "data", formData,
+                    "pageName", submitPage,
+                    "postTo", "/submit",
+                    "pageTitle", page.resolve(pagesData, PageConfiguration::getPageTitle),
+                    "headerKey", page.resolve(pagesData, PageConfiguration::getHeaderKey)
+            ));
+        }
     }
 }

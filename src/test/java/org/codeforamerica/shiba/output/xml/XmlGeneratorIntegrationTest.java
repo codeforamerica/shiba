@@ -53,8 +53,10 @@ public class XmlGeneratorIntegrationTest {
         Map<String, FormData> data = pagesConfiguration.getPages().entrySet().stream()
                 .collect(toMap(Map.Entry::getKey, entry -> FormData.initialize(entry.getValue(), FormData.literalInputDataCreator())));
         PagesData pagesData = new PagesData();
-        pagesData.setData(data);
-        List<ApplicationInput> applicationInputsWithoutData = oneToOneApplicationInputsMapper.map(pagesData);
+        pagesData.putAll(data);
+        ApplicationData applicationData = new ApplicationData();
+        applicationData.setPagesData(pagesData);
+        List<ApplicationInput> applicationInputsWithoutData = oneToOneApplicationInputsMapper.map(applicationData);
         List<ApplicationInput> applicationInputs = applicationInputsWithoutData.stream()
                 .map(input -> {
                     FormInput formInput = pagesConfiguration.getPages().get(input.getGroupName()).getFlattenedInputs().stream()

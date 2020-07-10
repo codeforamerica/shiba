@@ -52,4 +52,5 @@ caf:
       migrantOrSeasonalFarmWorker: MIGRANT_SEASONAL_FARM_WORKER
     signThisApplication:
       applicantSignature: APPLICANT_SIGNATURE
+    nonPagesData:
       submissionTime: SUBMISSION_TIME

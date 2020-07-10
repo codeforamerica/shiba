@@ -1,9 +1,9 @@
 package org.codeforamerica.shiba.output;
 
+import org.codeforamerica.shiba.pages.ApplicationData;
 import org.codeforamerica.shiba.pages.FormData;
 import org.codeforamerica.shiba.pages.PageConfiguration;
 import org.codeforamerica.shiba.pages.PagesConfiguration;
-import org.codeforamerica.shiba.pages.PagesData;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -26,10 +26,10 @@ public class ApplicationInputsProjector implements ApplicationInputsMapper {
     }
 
     @Override
-    public List<ApplicationInput> map(PagesData data) {
+    public List<ApplicationInput> map(ApplicationData data) {
         return pagesConfiguration.getPages().entrySet().stream()
                 .flatMap(entry -> {
-                    FormData formData = data.getPage(entry.getKey());
+                    FormData formData = data.getPagesData().getPage(entry.getKey());
                     PageConfiguration pageConfiguration = entry.getValue();
                     return Optional.ofNullable(inputToOutputProjectionConfiguration.get(entry.getKey()))
                             .filter(projectionTarget -> Optional.ofNullable(projectionTarget.getCondition())

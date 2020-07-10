@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output;
 
+import org.codeforamerica.shiba.pages.ApplicationData;
 import org.codeforamerica.shiba.pages.FormData;
 import org.codeforamerica.shiba.pages.InputData;
 import org.codeforamerica.shiba.pages.PagesData;
@@ -20,7 +21,9 @@ class CustomInputsMapperTest {
         data.putPage(pageName, new FormData(Map.of(inputName, new InputData(inputValue))));
 
         CustomInputsMapper customInputsMapper = new CustomInputsMapper(List.of(pageName));
-        List<ApplicationInput> applicationInputs = customInputsMapper.map(data);
+        ApplicationData applicationData = new ApplicationData();
+        applicationData.setPagesData(data);
+        List<ApplicationInput> applicationInputs = customInputsMapper.map(applicationData);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput(
@@ -39,7 +42,9 @@ class CustomInputsMapperTest {
         data.putPage(pageName, new FormData(Map.of(inputName, new InputData(inputValue))));
 
         CustomInputsMapper customInputsMapper = new CustomInputsMapper(List.of());
-        List<ApplicationInput> applicationInputs = customInputsMapper.map(data);
+        ApplicationData applicationData = new ApplicationData();
+        applicationData.setPagesData(data);
+        List<ApplicationInput> applicationInputs = customInputsMapper.map(applicationData);
 
         assertThat(applicationInputs).isEmpty();
     }

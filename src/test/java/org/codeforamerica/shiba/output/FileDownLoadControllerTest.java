@@ -2,7 +2,7 @@ package org.codeforamerica.shiba.output;
 
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
-import org.codeforamerica.shiba.pages.PagesData;
+import org.codeforamerica.shiba.pages.ApplicationData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
@@ -23,7 +23,7 @@ class FileDownLoadControllerTest {
     MockMvc mockMvc;
 
     XmlGenerator xmlGenerator = mock(XmlGenerator.class);
-    PagesData data = new PagesData();
+    ApplicationData data = new ApplicationData();
     PdfGenerator pdfGenerator = mock(PdfGenerator.class);
     ApplicationInputsMapper mapper1 = mock(ApplicationInputsMapper.class);
     ApplicationInputsMapper mapper2 = mock(ApplicationInputsMapper.class);

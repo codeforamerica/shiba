@@ -1,9 +1,9 @@
 package org.codeforamerica.shiba.output;
 
+import org.codeforamerica.shiba.pages.ApplicationData;
 import org.codeforamerica.shiba.pages.FormInput;
 import org.codeforamerica.shiba.pages.InputData;
 import org.codeforamerica.shiba.pages.PagesConfiguration;
-import org.codeforamerica.shiba.pages.PagesData;
 import org.springframework.stereotype.Component;
 
 import java.util.AbstractMap;
@@ -21,14 +21,14 @@ public class OneToOneApplicationInputsMapper implements ApplicationInputsMapper 
     }
 
     @Override
-    public List<ApplicationInput> map(PagesData data) {
+    public List<ApplicationInput> map(ApplicationData data) {
         return pagesConfiguration.getPages().entrySet().stream()
                 .flatMap(entry -> entry.getValue().getFlattenedInputs().stream()
                         .map(input -> new AbstractMap.SimpleEntry<>(entry.getKey(), input)))
-                .filter(entry -> data.getPage(entry.getKey()) != null)
+                .filter(entry -> data.getPagesData().getPage(entry.getKey()) != null)
                 .map(entry -> {
                     FormInput formInput = entry.getValue();
-                    InputData inputData = data.getPage(entry.getKey()).get(formInput.getName());
+                    InputData inputData = data.getPagesData().getPage(entry.getKey()).get(formInput.getName());
                     return new ApplicationInput(
                             entry.getKey(),
                             inputData.getValue(),

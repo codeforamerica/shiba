@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.output;
 
-import org.codeforamerica.shiba.pages.PagesData;
+import org.codeforamerica.shiba.pages.ApplicationData;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,9 +15,9 @@ public class CustomInputsMapper implements ApplicationInputsMapper {
     }
 
     @Override
-    public List<ApplicationInput> map(PagesData data) {
+    public List<ApplicationInput> map(ApplicationData data) {
         return pagesWithCustomInputs.stream()
-                .flatMap(pageName -> data.getPage(pageName).entrySet().stream()
+                .flatMap(pageName -> data.getPagesData().getPage(pageName).entrySet().stream()
                         .map(entry -> new ApplicationInput(
                                 pageName,
                                 entry.getValue().getValue(),

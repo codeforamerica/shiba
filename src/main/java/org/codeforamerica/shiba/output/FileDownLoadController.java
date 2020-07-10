@@ -2,7 +2,7 @@ package org.codeforamerica.shiba.output;
 
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
-import org.codeforamerica.shiba.pages.PagesData;
+import org.codeforamerica.shiba.pages.ApplicationData;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,13 +14,13 @@ import java.util.stream.Collectors;
 
 @Controller
 public class FileDownLoadController {
-    private final PagesData data;
+    private final ApplicationData data;
     private final PdfGenerator pdfGenerator;
     private final XmlGenerator xmlGenerator;
     private final List<ApplicationInputsMapper> applicationInputsMappers;
 
     public FileDownLoadController(
-            PagesData data,
+            ApplicationData data,
             PdfGenerator pdfGenerator,
             XmlGenerator xmlGenerator,
             List<ApplicationInputsMapper> applicationInputsMappers) {

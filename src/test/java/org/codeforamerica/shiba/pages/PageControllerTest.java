@@ -25,8 +25,7 @@ import java.time.*;
 import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -50,7 +49,7 @@ class PageControllerTest {
     MockMvc mockMvc;
 
     @Autowired
-    PagesData pagesData;
+    ApplicationData applicationData;
 
     @Autowired
     Metrics metrics;
@@ -76,9 +75,9 @@ class PageControllerTest {
                 .param("applicantSignature[]", "some signature"))
                 .andExpect(redirectedUrl("/pages/signThisApplication/navigation"));
 
-        FormData signThisApplication = pagesData.getPage("signThisApplication");
+        FormData signThisApplication = applicationData.getPagesData().getPage("signThisApplication");
         assertThat(signThisApplication.get("applicantSignature").getValue()).contains("some signature");
-        assertThat(signThisApplication.get("submissionTime").getValue()).contains("January 1, 2020");
+        assertThat(applicationData.getSubmissionTime()).contains("January 1, 2020");
     }
 
     @Test
@@ -95,6 +94,18 @@ class PageControllerTest {
         verify(applicationMetricsRepository).save(argumentCaptor.capture());
         ApplicationMetric applicationMetric = argumentCaptor.getValue();
         assertThat(applicationMetric.getTimeToComplete()).isEqualTo(Duration.ofMinutes(5).plusSeconds(30));
+    }
+
+    @Test
+    void shouldNotStoreCompletedApplicationInRepositoryWhenNoSignatureIsSent() throws Exception {
+        Instant submissionTime = LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant();
+        metrics.setStartTimeOnce(submissionTime.minus(5, ChronoUnit.MINUTES).minus(30, ChronoUnit.SECONDS));
+        when(clock.instant()).thenReturn(submissionTime);
+
+        mockMvc.perform(post("/submit")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+
+        verifyNoInteractions(applicationMetricsRepository);
     }
 
     @Test

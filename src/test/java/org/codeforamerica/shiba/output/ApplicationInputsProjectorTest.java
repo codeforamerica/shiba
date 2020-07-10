@@ -11,6 +11,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ApplicationInputsProjectorTest {
     PagesConfiguration pagesConfiguration = new PagesConfiguration();
     PagesData data = new PagesData();
+    ApplicationData applicationData = new ApplicationData();
+
     InputToOutputProjectionConfiguration inputToOutputProjectionConfiguration = new InputToOutputProjectionConfiguration();
     ApplicationInputsProjector applicationInputsMapper = new ApplicationInputsProjector(pagesConfiguration, inputToOutputProjectionConfiguration);
 
@@ -37,7 +39,8 @@ class ApplicationInputsProjectorTest {
         projectionTarget.setInputs(List.of(input1Name));
         this.inputToOutputProjectionConfiguration.put(pageName1, projectionTarget);
 
-        List<ApplicationInput> applicationInputs = applicationInputsMapper.map(data);
+        applicationData.setPagesData(data);
+        List<ApplicationInput> applicationInputs = applicationInputsMapper.map(applicationData);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput(groupName, input1Value, input1Name, ApplicationInputType.SINGLE_VALUE)
@@ -79,7 +82,8 @@ class ApplicationInputsProjectorTest {
         projectionTarget.setCondition(carryOverCondition);
         this.inputToOutputProjectionConfiguration.put(pageName1, projectionTarget);
 
-        List<ApplicationInput> applicationInputs = applicationInputsMapper.map(data);
+        applicationData.setPagesData(data);
+        List<ApplicationInput> applicationInputs = applicationInputsMapper.map(applicationData);
 
         assertThat(applicationInputs).isEmpty();
     }
@@ -120,7 +124,8 @@ class ApplicationInputsProjectorTest {
         projectionTarget.setCondition(carryOverCondition);
         this.inputToOutputProjectionConfiguration.put(pageName1, projectionTarget);
 
-        List<ApplicationInput> applicationInputs = applicationInputsMapper.map(data);
+        applicationData.setPagesData(data);
+        List<ApplicationInput> applicationInputs = applicationInputsMapper.map(applicationData);
 
         assertThat(applicationInputs).containsOnly(
                 new ApplicationInput(groupName, input1Value, input1Name, ApplicationInputType.SINGLE_VALUE)

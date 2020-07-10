@@ -28,7 +28,9 @@ class OneToOneApplicationInputsMapperTest {
         List<String> input1Value = List.of("input1Value");
         data.putPage(pageName, new FormData(Map.of(input1Name, new InputData(Validation.NONE, input1Value))));
 
-        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(data);
+        ApplicationData applicationData = new ApplicationData();
+        applicationData.setPagesData(data);
+        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(applicationData);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput(pageName, input1Value, input1Name, ApplicationInputType.SINGLE_VALUE)
@@ -61,7 +63,9 @@ class OneToOneApplicationInputsMapperTest {
                 input3Name, new InputData(Validation.NONE, input3Value)
         )));
 
-        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(data);
+        ApplicationData applicationData = new ApplicationData();
+        applicationData.setPagesData(data);
+        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(applicationData);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput(pageName, input2Value, input2Name, ApplicationInputType.SINGLE_VALUE),

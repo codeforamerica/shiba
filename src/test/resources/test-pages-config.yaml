@@ -456,6 +456,8 @@ test-flow-redirect:
     thirdPage:
       pageTitle:
         value: third-page-title
+      nextPage:
+        - fourthPage
       inputs:
         - name: foo
           type: TEXT
@@ -471,3 +473,4 @@ test-flow-redirect:
       - firstPage
       - secondPage
     terminalPage: fourthPage
+    submitPage: thirdPage
