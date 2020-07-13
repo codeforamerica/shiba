@@ -40,7 +40,7 @@ public class YesNoAnswerPageTest extends AbstractStaticMessageSourcePageTest {
         driver.findElement(By.cssSelector("label:first-of-type")).click();
 
         assertThat(driver.getTitle()).isEqualTo(answerPage);
-        assertThat(driver.findElement(By.cssSelector("input")).getAttribute("value")).isEqualTo("true");
+        assertThat(testPage.findElementTextByName("yesOrNo")).isEqualTo("true");
     }
 
     @Test

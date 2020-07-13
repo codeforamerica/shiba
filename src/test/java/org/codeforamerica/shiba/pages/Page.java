@@ -115,4 +115,8 @@ public class Page {
     public boolean hasInputError(String inputName) {
         return !driver.findElements(By.cssSelector(String.format("input[name^='%s'] ~ p.text--error", inputName))).isEmpty();
     }
+
+    public String findElementTextByName(String name) {
+        return driver.findElement(By.id(name)).getText();
+    }
 }

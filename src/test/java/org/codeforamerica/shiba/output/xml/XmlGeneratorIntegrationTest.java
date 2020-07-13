@@ -51,7 +51,7 @@ public class XmlGeneratorIntegrationTest {
     @Test
     void shouldProduceAValidDocument() throws IOException, SAXException, ParserConfigurationException {
         Map<String, FormData> data = pagesConfiguration.getPages().entrySet().stream()
-                .collect(toMap(Map.Entry::getKey, entry -> FormData.initialize(entry.getValue(), FormData.literalInputDataCreator())));
+                .collect(toMap(Map.Entry::getKey, entry -> FormData.initialize(entry.getValue())));
         PagesData pagesData = new PagesData();
         pagesData.putAll(data);
         ApplicationData applicationData = new ApplicationData();

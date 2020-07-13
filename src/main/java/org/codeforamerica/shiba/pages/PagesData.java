@@ -4,10 +4,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.HashMap;
-import java.util.Optional;
-
-import static org.codeforamerica.shiba.pages.FormData.datasourceInputDataCreator;
-import static org.codeforamerica.shiba.pages.FormData.literalInputDataCreator;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -17,9 +13,7 @@ public class PagesData extends HashMap<String, FormData> {
     }
 
     public FormData getPageOrDefault(String pageName, PageConfiguration pageConfiguration) {
-        FormData defaultFormData = Optional.ofNullable(pageConfiguration.getDatasources())
-                .map(datasource -> FormData.initialize(pageConfiguration, datasourceInputDataCreator(datasource, this)))
-                .orElse(FormData.initialize(pageConfiguration, literalInputDataCreator()));
+        FormData defaultFormData = FormData.initialize(pageConfiguration);
 
         return this.getOrDefault(pageName, defaultFormData);
     }

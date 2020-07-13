@@ -25,5 +25,6 @@ public class AbstractStaticMessageSourcePageTest extends AbstractBasePageTest {
         staticMessageSource.addMessage("general.continue", Locale.US, "Continue");
         staticMessageSource.addMessage("general.inputs.yes", Locale.US, "Yes");
         staticMessageSource.addMessage("general.inputs.no", Locale.US, "No");
+        staticMessageSource.addMessage("dummy-page-title", Locale.US, "Dummy page title");
     }
 }

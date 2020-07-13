@@ -18,7 +18,7 @@ public class FormInput {
     String followUpsValue;
     Validator validator = new Validator();
     Boolean readOnly = false;
-    DefaultValue defaultValue;
+    String defaultValue;
 
     public Validation getValidationFor(MultiValueMap<String, String> model) {
         return this.validator.validationFor(model);

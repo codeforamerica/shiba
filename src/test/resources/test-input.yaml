@@ -12,8 +12,7 @@ shiba-configuration-input:
         - name: uneditableInput
           type: TEXT
           readOnly: true
-          defaultValue:
-            value: "default value"
+          defaultValue: "default value"
         - name: dateInput
           type: DATE
         - name: numberInput

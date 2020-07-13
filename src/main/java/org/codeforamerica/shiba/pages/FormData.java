@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toMap;
@@ -42,38 +41,15 @@ public class FormData extends HashMap<String, InputData> {
         return new FormData(allData);
     }
 
-    public static FormData initialize(PageConfiguration pageConfiguration, Function<DefaultValue, InputData> inputDataCreator) {
+    public static FormData initialize(PageConfiguration pageConfiguration) {
         return new FormData(
                 pageConfiguration.getFlattenedInputs().stream()
                         .collect(toMap(
                                 FormInput::getName,
                                 input -> Optional.ofNullable(input.getDefaultValue())
-                                        .map(inputDataCreator)
+                                        .map(defaultValue -> new InputData(List.of(defaultValue)))
                                         .orElse(new InputData())
                         )));
-    }
-
-    public static Function<DefaultValue, InputData> literalInputDataCreator() {
-        return defaultValue -> new InputData(List.of(defaultValue.getValue()));
-    }
-
-    static Function<DefaultValue, InputData> datasourceInputDataCreator(List<PageDatasource> datasources, PagesData pagesData) {
-        return defaultValue -> {
-            FormData formData = getFormDataFrom(datasources, pagesData);
-
-            List<String> inputValue = switch (defaultValue.getType()) {
-                case LITERAL -> List.of(defaultValue.getValue());
-                case DATASOURCE_REFERENCE -> Optional.ofNullable(formData.get(defaultValue.getValue()))
-                        .map(InputData::getValue)
-                        .orElseThrow(() -> new RuntimeException(
-                                String.format("Configuration mismatch! The desired datasource reference '%s' " +
-                                        "is not accessible.", defaultValue.getValue())));
-            };
-
-            return defaultValue.conditionAppliesTo(formData) ?
-                    new InputData(inputValue) :
-                    new InputData();
-        };
     }
 
     static FormData getFormDataFrom(List<PageDatasource> datasources, PagesData pagesData) {

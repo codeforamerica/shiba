@@ -2,7 +2,7 @@ test-additional-data:
   pages:
     firstPage:
       pageTitle:
-        value: first-page-title
+        value: dummy-page-title
       inputs:
         - name: yesOrNoQuestion
           type: YES_NO
@@ -21,20 +21,9 @@ test-additional-data:
                 condition:
                   input: yesOrNoQuestion
                   value: "false"
-    secondPage:
+    testStaticPage:
       pageTitle:
-        value: second-page-title
-      inputs:
-        - name: inputUsingStaticAdditionalData
-          type: TEXT
-          defaultValue:
-            type: DATASOURCE_REFERENCE
-            value: staticAdditionalData
-        - name: inputUsingConditionalAdditionalData
-          type: TEXT
-          defaultValue:
-            type: DATASOURCE_REFERENCE
-            value: conditionalAdditionalData
+        value: dummy-page-title
       datasources:
         - pageName: firstPage
   flow:
@@ -44,6 +33,6 @@ test-additional-data:
     navigation:
       firstPage:
         nextPage:
-          - secondPage
-      secondPage:
-        previousPage: 
+          - testStaticPage
+      testStaticPage:
+        previousPage:

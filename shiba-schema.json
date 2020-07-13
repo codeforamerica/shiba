@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "patternProperties": {
-    "^[shiba\\-configuration\\-].*$": {
+    "^.*$": {
       "type": "object",
       "properties": {
         "pages": {
@@ -219,24 +219,7 @@
         "readOnly": {
           "type": "boolean"
         },
-        "defaultValue": {
-          "type": "object",
-          "properties": {
-            "type": {
-              "type": "string",
-              "enum": [
-                "LITERAL",
-                "DATASOURCE_REFERENCE"
-              ]
-            },
-            "value": {
-              "type": "string"
-            },
-            "condition": {
-              "$ref": "#/definitions/condition"
-            }
-          }
-        }
+        "defaultValue": {"type": "string"}
       },
       "required": [
         "name",

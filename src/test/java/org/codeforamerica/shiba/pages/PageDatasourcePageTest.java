@@ -19,8 +19,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest {
     private final String staticPageWithDatasourceTitle = "staticPageWithDatasourceTitle";
     private final String staticPageWithDatasourceInputsTitle = "staticPageWithDatasourceInputsTitle";
-    private final String finalPageTitle = "final page";
     private final String yesHeaderText = "yes header text";
+    private final String headerText = "some other header";
+    private final String wrongHeaderText = "some other header";
 
     @TestConfiguration
     @PropertySource(value = "classpath:test-page-datasources.yaml", factory = YamlPropertySourceFactory.class)
@@ -39,10 +40,11 @@ public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest 
         staticMessageSource.addMessage("first-page-title", Locale.US, "firstPageTitle");
         staticMessageSource.addMessage("static-page-with-datasource-title", Locale.US, staticPageWithDatasourceTitle);
         staticMessageSource.addMessage("static-page-with-datasource-inputs-title", Locale.US, staticPageWithDatasourceInputsTitle);
-        staticMessageSource.addMessage("last-page-title", Locale.US, finalPageTitle);
         staticMessageSource.addMessage("yes-header-text", Locale.US, yesHeaderText);
         staticMessageSource.addMessage("general.inputs.yes", Locale.US, YesNoAnswer.YES.getDisplayValue());
         staticMessageSource.addMessage("general.inputs.no", Locale.US, YesNoAnswer.NO.getDisplayValue());
+        staticMessageSource.addMessage("some-other-header", Locale.US, headerText);
+        staticMessageSource.addMessage("some-header", Locale.US, wrongHeaderText);
     }
 
     @Test
@@ -83,62 +85,6 @@ public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest 
     }
 
     @Test
-    void shouldPrepopulateFieldWithDefaultValue() {
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-        String sourceValue = "some value";
-        driver.findElement(By.cssSelector("input[name^='someInputName']")).sendKeys(sourceValue);
-        driver.findElement(By.cssSelector("button")).click();
-        driver.findElement(By.partialLinkText("Continue")).click();
-        driver.findElement(By.partialLinkText("Continue")).click();
-
-        assertThat(driver.getTitle()).isEqualTo(finalPageTitle);
-        assertThat(driver.findElement(By.cssSelector("input[name^='someOtherInputName'")).getAttribute("value")).isEqualTo(sourceValue);
-    }
-
-    @Test
-    void shouldNotPrepopulateFieldWithDefaultValue_whenConditionIsFalse() {
-        staticMessageSource.addMessage("radio-value-key-2", Locale.US, "RADIO 2");
-
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-        driver.findElement(By.cssSelector("input[name^='someInputName']")).sendKeys("ignored");
-
-        WebElement radioToClick = driver.findElements(By.cssSelector("span")).stream()
-                .filter(webElement -> webElement.getText().equals("RADIO 2"))
-                .findFirst()
-                .orElseThrow();
-        radioToClick.click();
-
-        driver.findElement(By.cssSelector("button")).click();
-        driver.findElement(By.partialLinkText("Continue")).click();
-        driver.findElement(By.partialLinkText("Continue")).click();
-
-        assertThat(driver.getTitle()).isEqualTo(finalPageTitle);
-        assertThat(driver.findElement(By.cssSelector("input[name^='conditionalPrepopulate'")).getAttribute("value")).isBlank();
-    }
-
-    @Test
-    void shouldPrepopulateFieldWithDefaultValue_whenConditionIsTrue() {
-        staticMessageSource.addMessage("radio-value-key-1", Locale.US, "RADIO 1");
-
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-        String expectedValue = "some value";
-        driver.findElement(By.cssSelector("input[name^='someInputName']")).sendKeys(expectedValue);
-
-        WebElement radioToClick = driver.findElements(By.cssSelector("span")).stream()
-                .filter(webElement -> webElement.getText().equals("RADIO 1"))
-                .findFirst()
-                .orElseThrow();
-        radioToClick.click();
-
-        driver.findElement(By.cssSelector("button")).click();
-        driver.findElement(By.partialLinkText("Continue")).click();
-        driver.findElement(By.partialLinkText("Continue")).click();
-
-        assertThat(driver.getTitle()).isEqualTo(finalPageTitle);
-        assertThat(driver.findElement(By.cssSelector("input[name^='conditionalPrepopulate'")).getAttribute("value")).isEqualTo(expectedValue);
-    }
-
-    @Test
     void shouldDisplayPageTitleBasedOnCondition() {
         String noAnswerTitle = "no answer title";
         staticMessageSource.addMessage("foo", Locale.US, "wrong title");
@@ -172,8 +118,8 @@ public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest 
 
     @Test
     void shouldUseDefaultValueWhenDataForDatasourcePageIsNotPresent() {
-        driver.navigate().to(baseUrl + "/pages/lastPage");
+        driver.navigate().to(baseUrl + "/pages/testStaticPage");
 
-        assertThat(testPage.getInputValue("someOtherInputName")).isEqualTo("default value");
+        assertThat(testPage.findElementTextByName("someRadioInputName")).isEqualTo("default value");
     }
 }
