@@ -15,13 +15,10 @@ import java.util.Map;
 @Data
 public class PagesConfiguration {
     private Map<String, PageConfiguration> pages = new HashMap<>();
-    private FlowConfiguration flow;
+    private LandmarkPagesConfiguration landmarkPages;
+    private Map<String, PageWorkflowConfiguration> workflow;
 
-    public PageConfiguration getPage(String pageName) {
-        return this.pages.get(pageName);
-    }
-
-    public NavigationConfiguration getNavigationPage(String pageName) {
-        return this.getFlow().getNavigation().get(pageName);
+    public PageWorkflowConfiguration getPageWorkflow(String pageName) {
+        return this.workflow.get(pageName);
     }
 }

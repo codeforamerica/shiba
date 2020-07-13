@@ -9,12 +9,12 @@ shiba-configuration-yes-no-answer:
     testStaticPage:
       pageTitle:
         value: answer-page
+  workflow:
+    yesNoQuestionPage:
+      nextPage:
+        - testStaticPage
+    testStaticPage:
       datasources:
         - pageName: yesNoQuestionPage
-  flow:
-    navigation:
-      yesNoQuestionPage:
-        nextPage:
-          - testStaticPage
-      testStaticPage:
-        previousPage:
+  landmarkPages:
+    startTimerPage:

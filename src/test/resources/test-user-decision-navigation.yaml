@@ -15,13 +15,14 @@ shiba-configuration-user-decision-navigation:
       inputs:
         - name: foo
           type: TEXT
-  flow:
-    navigation:
-      userDecisionNavigationPage:
-        nextPage:
-          - optionZeroPage
-          - optionOnePage
-      optionZeroPage:
-        previousPage:
-      optionOnePage:
-        previousPage:
+  workflow:
+    userDecisionNavigationPage:
+      nextPage:
+        - optionZeroPage
+        - optionOnePage
+    optionZeroPage:
+      previousPage:
+    optionOnePage:
+      previousPage:
+  landmarkPages:
+    startTimerPage:

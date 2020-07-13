@@ -12,13 +12,13 @@ shiba-configuration-reset-data:
       inputs:
         - name: foo
           type: TEXT
-  flow:
+  workflow:
+    firstPage:
+      nextPage:
+        - secondPage
+    secondPage:
+      previousPage: firstPage
+  landmarkPages:
     startTimerPage: secondPage
     landingPages:
       - firstPage
-    navigation:
-      firstPage:
-        nextPage:
-          - secondPage
-      secondPage:
-        previousPage: firstPage

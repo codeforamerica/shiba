@@ -4,15 +4,13 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Data
-public class FlowConfiguration {
+public class LandmarkPagesConfiguration {
     private String startTimerPage;
     private List<String> landingPages = new ArrayList<>();
     private String terminalPage;
     private String submitPage;
-    private Map<String, NavigationConfiguration> navigation;
 
     boolean isLandingPage(String pageName) {
         return this.getLandingPages().contains(pageName);

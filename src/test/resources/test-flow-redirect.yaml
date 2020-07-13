@@ -24,16 +24,18 @@ shiba-configuration-flow-redirect:
       inputs:
         - name: foo
           type: TEXT
-  flow:
+  workflow:
+    firstPage:
+      previousPage:
+    thirdPage:
+      nextPage:
+        - fourthPage
+    fourthPage:
+      previousPage:
+  landmarkPages:
     startTimerPage: thirdPage
     landingPages:
       - firstPage
       - secondPage
     terminalPage: fourthPage
     submitPage: thirdPage
-    navigation:
-      thirdPage:
-        nextPage:
-          - fourthPage
-      fourthPage:
-        previousPage:

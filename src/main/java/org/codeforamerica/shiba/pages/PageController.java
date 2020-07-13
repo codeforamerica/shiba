@@ -49,11 +49,11 @@ public class PageController {
             @RequestParam(defaultValue = "false") Boolean isBackwards,
             @RequestParam(required = false, defaultValue = "0") Integer option
     ) {
-        NavigationConfiguration navigationConfiguration = this.pagesConfiguration.getNavigationPage(pageName);
-        String adjacentPageName = navigationConfiguration.getAdjacentPageName(isBackwards, option);
-        NavigationConfiguration adjacentPage = this.pagesConfiguration.getNavigationPage(adjacentPageName);
+        PageWorkflowConfiguration pageWorkflowConfiguration = this.pagesConfiguration.getPageWorkflow(pageName);
+        String adjacentPageName = pageWorkflowConfiguration.getAdjacentPageName(isBackwards, option);
+        PageWorkflowConfiguration adjacentPage = this.pagesConfiguration.getPageWorkflow(adjacentPageName);
 
-        if (adjacentPage.shouldSkip(applicationData.getPagesData(), this.pagesConfiguration.getPage(adjacentPageName).getDatasources())) {
+        if (adjacentPage.shouldSkip(applicationData.getPagesData())) {
             return new RedirectView(String.format("/pages/%s", adjacentPage.getAdjacentPageName(isBackwards)));
         } else {
             return new RedirectView(String.format("/pages/%s", adjacentPageName));
@@ -63,42 +63,43 @@ public class PageController {
     @GetMapping("/pages/{pageName}")
     ModelAndView getFormPage(@PathVariable String pageName,
                              HttpServletResponse response) {
-        FlowConfiguration flowConfiguration = pagesConfiguration.getFlow();
+        LandmarkPagesConfiguration landmarkPagesConfiguration = pagesConfiguration.getLandmarkPages();
 
-        if (flowConfiguration.isLandingPage(pageName)) {
+        if (landmarkPagesConfiguration.isLandingPage(pageName)) {
             this.applicationData.clear();
             this.metrics.clear();
-        } else if (flowConfiguration.isStartTimerPage(pageName)) {
+        } else if (landmarkPagesConfiguration.isStartTimerPage(pageName)) {
             this.metrics.setStartTimeOnce(clock.instant());
         }
 
-        if (!flowConfiguration.isTerminalPage(pageName) && this.applicationData.isSubmitted()) {
-            return new ModelAndView(String.format("redirect:/pages/%s", flowConfiguration.getTerminalPage()));
-        } else if (!flowConfiguration.isLandingPage(pageName) && metrics.getStartTime() == null) {
-            return new ModelAndView(String.format("redirect:/pages/%s", flowConfiguration.getLandingPages().get(0)));
+        if (!landmarkPagesConfiguration.isTerminalPage(pageName) && this.applicationData.isSubmitted()) {
+            return new ModelAndView(String.format("redirect:/pages/%s", landmarkPagesConfiguration.getTerminalPage()));
+        } else if (!landmarkPagesConfiguration.isLandingPage(pageName) && metrics.getStartTime() == null) {
+            return new ModelAndView(String.format("redirect:/pages/%s", landmarkPagesConfiguration.getLandingPages().get(0)));
         }
 
         response.addHeader("Cache-Control", "no-store");
 
         PageConfiguration pageConfiguration = this.pagesConfiguration.getPages().get(pageName);
+        PageWorkflowConfiguration pageWorkflow = this.pagesConfiguration.getPageWorkflow(pageName);
 
         PagesData pagesData = applicationData.getPagesData();
         HashMap<String, Object> model = new HashMap<>(Map.of(
                 "page", pageConfiguration,
                 "pageName", pageName,
-                "postTo", flowConfiguration.isSubmitPage(pageName) ? "/submit" : "/pages/" + pageName,
-                "pageTitle", pageConfiguration.resolve(pagesData, pageConfiguration.getPageTitle()),
-                "headerKey", pageConfiguration.resolve(pagesData, pageConfiguration.getHeaderKey())
+                "postTo", landmarkPagesConfiguration.isSubmitPage(pageName) ? "/submit" : "/pages/" + pageName,
+                "pageTitle", pageWorkflow.resolve(pagesData, pageConfiguration.getPageTitle()),
+                "headerKey", pageWorkflow.resolve(pagesData, pageConfiguration.getHeaderKey())
         ));
 
-        if (flowConfiguration.isTerminalPage(pageName)) {
+        if (landmarkPagesConfiguration.isTerminalPage(pageName)) {
             model.put("submissionTime", this.applicationData.getSubmissionTime());
         }
 
         String pageToRender;
         if (pageConfiguration.isStaticPage()) {
             pageToRender = pageName;
-            Optional.ofNullable(pageConfiguration.getDatasources())
+            Optional.ofNullable(pageWorkflow.getDatasources())
                     .map(datasource -> getFormDataFrom(datasource, this.applicationData.getPagesData()))
                     .ifPresent(model::putAll);
         } else {
@@ -119,15 +120,17 @@ public class PageController {
         PagesData pagesData = applicationData.getPagesData();
         pagesData.putPage(pageName, formData);
 
+        PageWorkflowConfiguration pageWorkflow = pagesConfiguration.getPageWorkflow(pageName);
+
         return formData.isValid() ?
                 new ModelAndView(String.format("redirect:/pages/%s/navigation", pageName)) :
                 new ModelAndView("formPage", Map.of(
                         "page", page,
                         "data", formData,
                         "pageName", pageName,
-                        "postTo", this.pagesConfiguration.getFlow().isSubmitPage(pageName) ? "/submit" : "/pages/" + pageName,
-                        "pageTitle", page.resolve(pagesData, page.getPageTitle()),
-                        "headerKey", page.resolve(pagesData, page.getHeaderKey())
+                        "postTo", this.pagesConfiguration.getLandmarkPages().isSubmitPage(pageName) ? "/submit" : "/pages/" + pageName,
+                        "pageTitle", pageWorkflow.resolve(pagesData, page.getPageTitle()),
+                        "headerKey", pageWorkflow.resolve(pagesData, page.getHeaderKey())
                 ));
     }
 
@@ -136,8 +139,8 @@ public class PageController {
             @RequestBody(required = false) MultiValueMap<String, String> model,
             Locale locale
     ) {
-        FlowConfiguration flowConfiguration = this.pagesConfiguration.getFlow();
-        String submitPage = flowConfiguration.getSubmitPage();
+        LandmarkPagesConfiguration landmarkPagesConfiguration = this.pagesConfiguration.getLandmarkPages();
+        String submitPage = landmarkPagesConfiguration.getSubmitPage();
         PageConfiguration page = pagesConfiguration.getPages().get(submitPage);
 
         FormData formData = FormData.fillOut(page, model);
@@ -152,13 +155,14 @@ public class PageController {
             this.applicationData.setSubmissionTime(dateTimeFormatter.format(ZonedDateTime.ofInstant(clock.instant(), ZoneId.of("UTC"))));
             return new ModelAndView(String.format("redirect:/pages/%s/navigation", submitPage));
         } else {
+            PageWorkflowConfiguration pageWorkflow = pagesConfiguration.getPageWorkflow(submitPage);
             return new ModelAndView("formPage", Map.of(
                     "page", page,
                     "data", formData,
                     "pageName", submitPage,
                     "postTo", "/submit",
-                    "pageTitle", page.resolve(pagesData, page.getPageTitle()),
-                    "headerKey", page.resolve(pagesData, page.getHeaderKey())
+                    "pageTitle", pageWorkflow.resolve(pagesData, page.getPageTitle()),
+                    "headerKey", pageWorkflow.resolve(pagesData, page.getHeaderKey())
             ));
         }
     }

@@ -13,11 +13,14 @@
             }
           }
         },
-        "flow": {
+        "landmarkPages": {
           "type": "object",
           "properties": {
             "startTimerPage": {
               "type": "string"
+            },
+            "startTimer": {
+              "type": "boolean"
             },
             "landingPages": {
               "type": "array",
@@ -30,20 +33,22 @@
             },
             "submitPage": {
               "type": "string"
-            },
-            "navigation": {
-              "type": "object",
-              "patternProperties": {
-                "^.*$": {
-                  "$ref": "#/definitions/navigationPage"
-                }
-              }
+            }
+          }
+        },
+        "workflow": {
+          "type": "object",
+          "patternProperties": {
+            "^.*$": {
+              "$ref": "#/definitions/navigationPage"
             }
           }
         }
       },
       "required": [
-        "pages", "flow"
+        "pages",
+        "landmarkPages",
+        "workflow"
       ]
     }
   },
@@ -60,6 +65,31 @@
         "headerHelpMessageKey": {
           "type": "string"
         },
+        "inputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/input"
+          }
+        },
+        "additionalData": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "$ref": "#/definitions/value"
+              }
+            }
+          }
+        }
+      }
+    },
+    "navigationPage": {
+      "type": "object",
+      "properties": {
         "datasource": {
           "type": "array",
           "items": {
@@ -85,20 +115,6 @@
             }
           }
         },
-        "startTimer": {
-          "type": "boolean"
-        },
-        "inputs": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/input"
-          }
-        }
-      }
-    },
-    "navigationPage": {
-      "type": "object",
-      "properties": {
         "skipCondition": {
           "$ref": "#/definitions/condition"
         },

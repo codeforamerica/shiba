@@ -16,18 +16,9 @@ shiba-configuration-page-datasource:
     staticPageWithDatasource:
       pageTitle:
         value: static-page-with-datasource-title
-      datasources:
-        - pageName: firstPage
     staticPageWithDatasourceInputs:
       pageTitle:
         value: static-page-with-datasource-inputs-title
-      datasources:
-        - pageName: firstPage
-          inputs:
-            - name: someRadioInputName
-              valueMessageKeys:
-                VALUE_1: display-value-key-1
-                VALUE_2: display-value-key-2
     yesNoQuestionPage:
       pageTitle:
         value: foo
@@ -60,35 +51,43 @@ shiba-configuration-page-datasource:
       inputs:
         - name: foo
           type: TEXT
-      datasources:
-        - pageName: yesNoQuestionPage
     testStaticPage:
       pageTitle:
         value: dummy-page-title
+  workflow:
+    firstPage:
+      nextPage:
+        - staticPageWithDatasource
+    staticPageWithDatasource:
+      previousPage: firstPage
+      nextPage:
+        - staticPageWithDatasourceInputs
+      datasources:
+        - pageName: firstPage
+    staticPageWithDatasourceInputs:
+      previousPage: staticPageWithDatasource
+      nextPage:
+        - lastPage
+      datasources:
+        - pageName: firstPage
+          inputs:
+            - name: someRadioInputName
+              valueMessageKeys:
+                VALUE_1: display-value-key-1
+                VALUE_2: display-value-key-2
+    yesNoQuestionPage:
+      nextPage:
+        - yesNoAnswerPage
+    yesNoAnswerPage:
+      datasources:
+        - pageName: yesNoQuestionPage
+    lastPage:
+      previousPage: staticPageWithDatasourceInputs
+    testStaticPage:
       datasources:
         - pageName: firstPage
           inputs:
             - name: someRadioInputName
               defaultValue: "default value"
-  flow:
-    navigation:
-      firstPage:
-        nextPage:
-          - staticPageWithDatasource
-      staticPageWithDatasource:
-        previousPage: firstPage
-        nextPage:
-          - staticPageWithDatasourceInputs
-      staticPageWithDatasourceInputs:
-        previousPage: staticPageWithDatasource
-        nextPage:
-          - lastPage
-      yesNoQuestionPage:
-        nextPage:
-          - yesNoAnswerPage
-      yesNoAnswerPage:
-        previousPage:
-      lastPage:
-        previousPage: staticPageWithDatasourceInputs
-      testStaticPage:
-        previousPage:
+  landmarkPages:
+    startTimerPage:

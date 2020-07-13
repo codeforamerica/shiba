@@ -104,9 +104,9 @@ test-validation:
         - name: checkboxInput
           type: CHECKBOX
           options:
-            - value: 1
+            - value: "1"
               messageKey: option-1
-            - value: 2
+            - value: "2"
               messageKey: option-2
           validator:
             validation: SELECT_AT_LEAST_ONE
@@ -117,39 +117,39 @@ test-validation:
       inputs:
         - name: foo
           type: TEXT
-  flow:
-    startTimerPage:
-    navigation:
-      firstPage:
-        nextPage:
-          - nextPage
+  workflow:
+    firstPage:
       nextPage:
-        previousPage: firstPage
-        nextPage:
-          - lastPage
-      notBlankPage:
-        nextPage:
-          - lastPage
-      zipcodePage:
-        nextPage:
-          - lastPage
-      statePage:
-        nextPage:
-          - lastPage
-      phonePage:
-        nextPage:
-          - lastPage
-      moneyPage:
-        nextPage:
-          - lastPage
-      ssnPage:
-        nextPage:
-          - lastPage
-      datePage:
-        nextPage:
-          - lastPage
-      checkboxPage:
-        nextPage:
-          - lastPage
-      lastPage:
-        previousPage:
+        - nextPage
+    nextPage:
+      previousPage: firstPage
+      nextPage:
+        - lastPage
+    notBlankPage:
+      nextPage:
+        - lastPage
+    zipcodePage:
+      nextPage:
+        - lastPage
+    statePage:
+      nextPage:
+        - lastPage
+    phonePage:
+      nextPage:
+        - lastPage
+    moneyPage:
+      nextPage:
+        - lastPage
+    ssnPage:
+      nextPage:
+        - lastPage
+    datePage:
+      nextPage:
+        - lastPage
+    checkboxPage:
+      nextPage:
+        - lastPage
+    lastPage:
+      previousPage:
+  landmarkPages:
+    startTimerPage:

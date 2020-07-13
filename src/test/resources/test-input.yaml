@@ -69,10 +69,13 @@ shiba-configuration-input:
           type: MONEY
           promptMessage:
             promptMessageFragmentName: promptFragment
-  flow:
-    navigation:
-      firstPage:
-        nextPage:
-          - nextPage
+  workflow:
+    firstPage:
       nextPage:
-        previousPage: firstPage
+        - nextPage
+    nextPage:
+      previousPage: firstPage
+    inputWithPromptFragmentPage:
+      previousPage:
+  landmarkPages:
+    startTimerPage:

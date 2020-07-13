@@ -24,15 +24,15 @@ test-additional-data:
     testStaticPage:
       pageTitle:
         value: dummy-page-title
+  workflow:
+    firstPage:
+      nextPage:
+        - testStaticPage
+    testStaticPage:
+      previousPage:
       datasources:
         - pageName: firstPage
-  flow:
+  landmarkPages:
     startTimerPage:
     terminalPage:
     submitPage:
-    navigation:
-      firstPage:
-        nextPage:
-          - testStaticPage
-      testStaticPage:
-        previousPage:

@@ -81,15 +81,6 @@ shiba-configuration:
     howItWorks:
       pageTitle:
         value: how-it-works.title
-      datasources:
-        - pageName: choosePrograms
-          inputs:
-            - name: programs
-              valueMessageKeys:
-                FOOD: how-it-works.food
-                CASH: how-it-works.cash
-                CHILD_CARE: how-it-works.child-care
-                EMERGENCY: how-it-works.emergency
     introBasicInfo:
       pageTitle:
         value: intro-basic-info.title
@@ -232,8 +223,6 @@ shiba-configuration:
     branchToMinimalFlow:
       pageTitle:
         value: branch-to-minimal-flow.title
-      datasources:
-        - pageName: personalInfo
     weDoNotRecommendMinimalFlow:
       pageTitle:
         value: we-do-not-recommend-minimal-flow.title
@@ -337,8 +326,6 @@ shiba-configuration:
           type: TEXT
           promptMessage:
             promptMessageKey: mailing-address.apartment-number
-      datasources:
-        - pageName: homeAddress
     doYouNeedHelpImmediately:
       pageTitle:
         value: do-you-need-help-immediately.title
@@ -381,8 +368,6 @@ shiba-configuration:
             condition:
               input: moneyMadeLast30Days
               matcher: NOT_EMPTY
-      datasources:
-        - pageName: doYouLiveAlone
     liquidAssets:
       pageTitle:
         conditionalValues:
@@ -415,8 +400,6 @@ shiba-configuration:
             condition:
               input: liquidAssets
               matcher: NOT_EMPTY
-      datasources:
-        - pageName: doYouLiveAlone
     expeditedExpenses:
       pageTitle:
         conditionalValues:
@@ -441,8 +424,6 @@ shiba-configuration:
       inputs:
         - name: payRentOrMortgage
           type: YES_NO
-      datasources:
-        - pageName: doYouLiveAlone
     expeditedExpensesAmount:
       pageTitle:
         conditionalValues:
@@ -473,9 +454,6 @@ shiba-configuration:
               input: expeditedExpensesAmount
               matcher: NOT_EMPTY
           validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
-      datasources:
-        - pageName: doYouLiveAlone
-        - pageName: expeditedExpenses
     expeditedUtilityPayments:
       pageTitle:
         conditionalValues:
@@ -577,8 +555,6 @@ shiba-configuration:
                   input: payForUtilities
                   value: PHONE
                   matcher: CONTAINS
-      datasources:
-        - pageName: doYouLiveAlone
     expeditedMigrantFarmWorker:
       pageTitle:
         conditionalValues:
@@ -603,18 +579,8 @@ shiba-configuration:
       inputs:
         - name: migrantOrSeasonalFarmWorker
           type: YES_NO
-      datasources:
-        - pageName: doYouLiveAlone
     expeditedDetermination:
-      datasources:
-        - pageName: expeditedIncome
-        - pageName: liquidAssets
-        - pageName: expeditedMigrantFarmWorker
-        - pageName: expeditedExpensesAmount
-          inputs:
-            - name: expeditedExpensesAmount
-              defaultValue: 0
-        - pageName: expeditedUtilityPayments
+      additionalData:
     importantToKnow:
       pageTitle:
         value: important-to-know.title
@@ -653,117 +619,151 @@ shiba-configuration:
     success:
       pageTitle:
         value: success.title
+  workflow:
+    landing:
+      nextPage:
+        - prepareToApply
+    prepareToApply:
+      previousPage: landing
+      nextPage:
+        - languagePreferences
+    languagePreferences:
+      previousPage: prepareToApply
+      nextPage:
+        - choosePrograms
+    choosePrograms:
+      nextPage:
+        - howItWorks
+      previousPage: languagePreferences
+    howItWorks:
+      previousPage: choosePrograms
+      nextPage:
+        - introBasicInfo
+      datasources:
+        - pageName: choosePrograms
+          inputs:
+            - name: programs
+              valueMessageKeys:
+                FOOD: how-it-works.food
+                CASH: how-it-works.cash
+                CHILD_CARE: how-it-works.child-care
+                EMERGENCY: how-it-works.emergency
+    introBasicInfo:
+      previousPage: howItWorks
+      nextPage:
+        - personalInfo
+    personalInfo:
+      previousPage: introBasicInfo
+      nextPage:
+        - contactInfo
+    contactInfo:
+      previousPage: personalInfo
+      nextPage:
+        - branchToMinimalFlow
+    branchToMinimalFlow:
+      previousPage: contactInfo
+      nextPage:
+        - weDoNotRecommendMinimalFlow
+      datasources:
+        - pageName: personalInfo
+    weDoNotRecommendMinimalFlow:
+      previousPage: branchToMinimalFlow
+      nextPage:
+        - homeAddress
+    homeAddress:
+      previousPage: weDoNotRecommendMinimalFlow
+      nextPage:
+        - mailingAddress
+    mailingAddress:
+      skipCondition:
+        input: sameMailingAddress
+        value: "true"
+      previousPage: homeAddress
+      nextPage:
+        - doYouNeedHelpImmediately
+      datasources:
+        - pageName: homeAddress
+    doYouNeedHelpImmediately:
+      previousPage: mailingAddress
+      nextPage:
+        - doYouLiveAlone
+        - importantToKnow
+    doYouLiveAlone:
+      previousPage: doYouNeedHelpImmediately
+      nextPage:
+        - expeditedIncome
+    expeditedIncome:
+      previousPage: doYouLiveAlone
+      nextPage:
+        - liquidAssets
+      datasources:
+        - pageName: doYouLiveAlone
+    liquidAssets:
+      previousPage: expeditedIncome
+      nextPage:
+        - expeditedExpenses
+      datasources:
+        - pageName: doYouLiveAlone
+    expeditedExpenses:
+      previousPage: liquidAssets
+      nextPage:
+        - expeditedExpensesAmount
+      datasources:
+        - pageName: doYouLiveAlone
+    expeditedExpensesAmount:
+      skipCondition:
+        input: payRentOrMortgage
+        value: "false"
+      previousPage: expeditedExpenses
+      nextPage:
+        - expeditedUtilityPayments
+      datasources:
+        - pageName: doYouLiveAlone
+        - pageName: expeditedExpenses
+    expeditedUtilityPayments:
+      previousPage: expeditedExpensesAmount
+      nextPage:
+        - expeditedMigrantFarmWorker
+      datasources:
+        - pageName: doYouLiveAlone
+    expeditedMigrantFarmWorker:
+      previousPage: expeditedUtilityPayments
+      nextPage:
+        - expeditedDetermination
+      datasources:
+        - pageName: doYouLiveAlone
+    expeditedDetermination:
+      previousPage: expeditedMigrantFarmWorker
+      nextPage:
+        - importantToKnow
+      datasources:
+        - pageName: expeditedIncome
+        - pageName: liquidAssets
+        - pageName: expeditedMigrantFarmWorker
+        - pageName: expeditedExpensesAmount
+          inputs:
+            - name: expeditedExpensesAmount
+              defaultValue: 0
+        - pageName: expeditedUtilityPayments
+    importantToKnow:
+      previousPage: doYouNeedHelpImmediately
+      nextPage:
+        - legalStuff
+    legalStuff:
+      previousPage: importantToKnow
+      nextPage:
+        - signThisApplication
+    signThisApplication:
+      previousPage: legalStuff
+      nextPage:
+        - success
+    success:
       datasources:
         - pageName: signThisApplication
-  flow:
+  landmarkPages:
     startTimerPage: languagePreferences
     landingPages:
       - landing
       - prepareToApply
     terminalPage: success
     submitPage: signThisApplication
-    navigation:
-      landing:
-        nextPage:
-          - prepareToApply
-      prepareToApply:
-        previousPage: landing
-        nextPage:
-          - languagePreferences
-      languagePreferences:
-        previousPage: prepareToApply
-        nextPage:
-          - choosePrograms
-      choosePrograms:
-        nextPage:
-          - howItWorks
-        previousPage: languagePreferences
-      howItWorks:
-        previousPage: choosePrograms
-        nextPage:
-          - introBasicInfo
-      introBasicInfo:
-        previousPage: howItWorks
-        nextPage:
-          - personalInfo
-      personalInfo:
-        previousPage: introBasicInfo
-        nextPage:
-          - contactInfo
-      contactInfo:
-        previousPage: personalInfo
-        nextPage:
-          - branchToMinimalFlow
-      branchToMinimalFlow:
-        previousPage: contactInfo
-        nextPage:
-          - weDoNotRecommendMinimalFlow
-      weDoNotRecommendMinimalFlow:
-        previousPage: branchToMinimalFlow
-        nextPage:
-          - homeAddress
-      homeAddress:
-        previousPage: weDoNotRecommendMinimalFlow
-        nextPage:
-          - mailingAddress
-      mailingAddress:
-        skipCondition:
-          input: sameMailingAddress
-          value: "true"
-        previousPage: homeAddress
-        nextPage:
-          - doYouNeedHelpImmediately
-      doYouNeedHelpImmediately:
-        previousPage: mailingAddress
-        nextPage:
-          - doYouLiveAlone
-          - importantToKnow
-      doYouLiveAlone:
-        previousPage: doYouNeedHelpImmediately
-        nextPage:
-          - expeditedIncome
-      expeditedIncome:
-        previousPage: doYouLiveAlone
-        nextPage:
-          - liquidAssets
-      liquidAssets:
-        previousPage: expeditedIncome
-        nextPage:
-          - expeditedExpenses
-      expeditedExpenses:
-        previousPage: liquidAssets
-        nextPage:
-          - expeditedExpensesAmount
-      expeditedExpensesAmount:
-        skipCondition:
-          input: payRentOrMortgage
-          value: "false"
-        previousPage: expeditedExpenses
-        nextPage:
-          - expeditedUtilityPayments
-      expeditedUtilityPayments:
-        previousPage: expeditedExpensesAmount
-        nextPage:
-          - expeditedMigrantFarmWorker
-      expeditedMigrantFarmWorker:
-        previousPage: expeditedUtilityPayments
-        nextPage:
-          - expeditedDetermination
-      expeditedDetermination:
-        previousPage: expeditedMigrantFarmWorker
-        nextPage:
-          - importantToKnow
-      importantToKnow:
-        previousPage: doYouNeedHelpImmediately
-        nextPage:
-          - legalStuff
-      legalStuff:
-        previousPage: importantToKnow
-        nextPage:
-          - signThisApplication
-      signThisApplication:
-        previousPage: legalStuff
-        nextPage:
-          - success
-      success:
-        previousPage:

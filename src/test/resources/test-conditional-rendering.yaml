@@ -17,26 +17,27 @@ shiba-configuration-conditional-rendering:
       inputs:
         - name: foo
           type: TEXT
-      datasources:
-        - pageName: firstPage
     thirdPage:
       pageTitle:
         value: third-page-title
       inputs:
         - name: foo
           type: TEXT
-  flow:
-    navigation:
-      firstPage:
-        nextPage:
-          - secondPage
-      secondPage:
-        previousPage: firstPage
-        nextPage:
-          - thirdPage
-        skipCondition:
-          input: someRadioInputName
-          value: SKIP
-          matcher: CONTAINS
-      thirdPage:
-        previousPage: secondPage
+  workflow:
+    firstPage:
+      nextPage:
+        - secondPage
+    secondPage:
+      previousPage: firstPage
+      nextPage:
+        - thirdPage
+      skipCondition:
+        input: someRadioInputName
+        value: SKIP
+        matcher: CONTAINS
+      datasources:
+        - pageName: firstPage
+    thirdPage:
+      previousPage: secondPage
+  landmarkPages:
+    startTimerPage:

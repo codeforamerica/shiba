@@ -12,5 +12,10 @@ shiba-configuration-start-timer:
       inputs:
         - name: foo
           type: TEXT
-  flow:
+  workflow:
+    pageThatDoesNotStartTimer:
+      previousPage:
+    pageThatDoesStartTimer:
+      previousPage:
+  landmarkPages:
     startTimerPage: pageThatDoesStartTimer
