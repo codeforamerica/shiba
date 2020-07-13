@@ -10,6 +10,3 @@ projections:
     condition:
       input: sameMailingAddress
       value: true
-
-custom-input:
-  - signThisApplication
