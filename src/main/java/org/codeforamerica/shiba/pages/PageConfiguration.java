@@ -24,38 +24,12 @@ public class PageConfiguration {
     private String primaryButtonTextKey = "general.continue";
     private List<AdditionalDatum> additionalData = List.of();
 
-    public String resolve(PagesData pagesData, Function<PageConfiguration, Value> valueExtractor) {
-        Value value = valueExtractor.apply(this);
-        if (value == null) {
-            return "";
-        }
-
-        return value.getConditionalValues().stream()
-                .filter(conditionalValue -> {
-                    Condition condition = conditionalValue.getCondition();
-                    Objects.requireNonNull(this.getDatasources(),
-                            "Configuration mismatch! Conditional value cannot be evaluated without a datasource.");
-                    FormData formData = getFormDataFrom(this.getDatasources(), pagesData);
-                    return condition.appliesTo(formData);
-                })
-                .findFirst()
-                .map(ConditionalValue::getValue)
-                .orElse(value.getValue());
+    public String resolve(PagesData pagesData, Value value) {
+        return resolve(value, datasourceCondition(pagesData));
     }
 
     public String resolve(MultiValueMap<String, String> model, Value value) {
-        if (value == null) {
-            return "";
-        }
-
-        return value.getConditionalValues().stream()
-                .filter(conditionalValue -> {
-                    Condition condition = conditionalValue.getCondition();
-                    return condition.appliesTo(model);
-                })
-                .findFirst()
-                .map(ConditionalValue::getValue)
-                .orElse(value.getValue());
+        return resolve(value, modelCondition(model));
     }
 
     @SuppressWarnings("unused")
@@ -94,5 +68,33 @@ public class PageConfiguration {
             return previousPage;
         }
         return nextPage.get(option);
+    }
+
+    private Function<Condition, Boolean> datasourceCondition(PagesData pagesData) {
+        return condition -> {
+            Objects.requireNonNull(this.getDatasources(),
+                    "Configuration mismatch! Conditional value cannot be evaluated without a datasource.");
+            FormData formData = getFormDataFrom(this.getDatasources(), pagesData);
+            return condition.appliesTo(formData);
+        };
+    }
+
+    private Function<Condition, Boolean> modelCondition(MultiValueMap<String, String> model) {
+        return condition -> condition.appliesTo(model);
+    }
+
+    private String resolve(Value value, Function<Condition, Boolean> conditionFunction) {
+        if (value == null) {
+            return "";
+        }
+
+        return value.getConditionalValues().stream()
+                .filter(conditionalValue -> {
+                    Condition condition = conditionalValue.getCondition();
+                    return conditionFunction.apply(condition);
+                })
+                .findFirst()
+                .map(ConditionalValue::getValue)
+                .orElse(value.getValue());
     }
 }

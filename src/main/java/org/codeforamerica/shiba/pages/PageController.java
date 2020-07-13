@@ -89,8 +89,8 @@ public class PageController {
                 "page", pageConfiguration,
                 "pageName", pageName,
                 "postTo", flowConfiguration.isSubmitPage(pageName) ? "/submit" : "/pages/" + pageName,
-                "pageTitle", pageConfiguration.resolve(pagesData, PageConfiguration::getPageTitle),
-                "headerKey", pageConfiguration.resolve(pagesData, PageConfiguration::getHeaderKey)
+                "pageTitle", pageConfiguration.resolve(pagesData, pageConfiguration.getPageTitle()),
+                "headerKey", pageConfiguration.resolve(pagesData, pageConfiguration.getHeaderKey())
         ));
 
         if (flowConfiguration.isTerminalPage(pageName)) {
@@ -128,8 +128,8 @@ public class PageController {
                         "data", formData,
                         "pageName", pageName,
                         "postTo", this.pagesConfiguration.getFlow().isSubmitPage(pageName) ? "/submit" : "/pages/" + pageName,
-                        "pageTitle", page.resolve(pagesData, PageConfiguration::getPageTitle),
-                        "headerKey", page.resolve(pagesData, PageConfiguration::getHeaderKey)
+                        "pageTitle", page.resolve(pagesData, page.getPageTitle()),
+                        "headerKey", page.resolve(pagesData, page.getHeaderKey())
                 ));
     }
 
@@ -159,8 +159,8 @@ public class PageController {
                     "data", formData,
                     "pageName", submitPage,
                     "postTo", "/submit",
-                    "pageTitle", page.resolve(pagesData, PageConfiguration::getPageTitle),
-                    "headerKey", page.resolve(pagesData, PageConfiguration::getHeaderKey)
+                    "pageTitle", page.resolve(pagesData, page.getPageTitle()),
+                    "headerKey", page.resolve(pagesData, page.getHeaderKey())
             ));
         }
     }

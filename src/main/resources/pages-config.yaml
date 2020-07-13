@@ -618,6 +618,20 @@ shiba-configuration:
               messageKey: expedited-utility-payments.none-of-the-above
               isNone: true
       additionalData:
+        - name: heatingOrCoolingSelection
+          value:
+            value: NEITHER_SELECTED
+            conditionalValues:
+              - value: ONE_SELECTED
+                condition:
+                  input: payForUtilities
+                  value: HEATING
+                  matcher: CONTAINS
+              - value: ONE_SELECTED
+                condition:
+                  input: payForUtilities
+                  value: COOLING
+                  matcher: CONTAINS
         - name: expeditedUtilitiesSummary
           value:
             value: NO_EXPEDITED_UTILITIES_SELECTED
