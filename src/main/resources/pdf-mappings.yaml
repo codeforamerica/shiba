@@ -51,6 +51,7 @@ caf:
         COOKING_FUEL: COOKING_FUEL
       expeditedUtilitiesSummary: EXPEDITED_UTILITIES_SUMMARY
       heatingOrCoolingSelection: HEATING_COOLING_SELECTION
+      waterOrSewerSelection: WATER_SEWER_SELECTION
     expeditedMigrantFarmWorker:
       migrantOrSeasonalFarmWorker: MIGRANT_SEASONAL_FARM_WORKER
     signThisApplication:

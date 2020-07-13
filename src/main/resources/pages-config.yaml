@@ -539,6 +539,20 @@ shiba-configuration:
                   input: payForUtilities
                   value: COOLING
                   matcher: CONTAINS
+        - name: waterOrSewerSelection
+          value:
+            value: NEITHER_SELECTED
+            conditionalValues:
+              - value: ONE_SELECTED
+                condition:
+                  input: payForUtilities
+                  value: WATER
+                  matcher: CONTAINS
+              - value: ONE_SELECTED
+                condition:
+                  input: payForUtilities
+                  value: SEWER
+                  matcher: CONTAINS
         - name: expeditedUtilitiesSummary
           value:
             value: NO_EXPEDITED_UTILITIES_SELECTED
