@@ -19,8 +19,13 @@ caf:
         FOOD: FOOD
         CASH: CASH
         EMERGENCY: EMERGENCY
+        CHILD_CARE: CHILD_CARE
     contactInfo:
       phoneNumber: APPLICANT_PHONE_NUMBER
+      email: APPLICANT_EMAIL
+      phoneOrEmail:
+        TEXT: CONTACT_BY_TEXT
+        EMAIL: CONTACT_BY_EMAIL
     homeAddress:
       zipCode: APPLICANT_HOME_ZIPCODE
       city: APPLICANT_HOME_CITY
