@@ -26,7 +26,7 @@ public class AdditionalDataPageTest extends AbstractStaticMessageSourcePageTest 
 
         testPage.choose(YesNoAnswer.YES);
 
-        assertThat(testPage.findElementTextByName("staticAdditionalData")).isEqualTo("someValue");
+        assertThat(testPage.findElementTextByName("firstPage_staticAdditionalData")).isEqualTo("someValue");
     }
 
     @Test
@@ -35,6 +35,6 @@ public class AdditionalDataPageTest extends AbstractStaticMessageSourcePageTest 
 
         testPage.choose(YesNoAnswer.NO);
 
-        assertThat(testPage.findElementTextByName("conditionalAdditionalData")).isEqualTo("noValue");
+        assertThat(testPage.findElementTextByName("firstPage_conditionalAdditionalData")).isEqualTo("noValue");
     }
 }

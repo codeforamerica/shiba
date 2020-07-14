@@ -220,12 +220,6 @@ shiba-configuration:
               messageKey: contact-info.text-me
             - value: EMAIL
               messageKey: contact-info.email-me
-    branchToMinimalFlow:
-      pageTitle:
-        value: branch-to-minimal-flow.title
-    weDoNotRecommendMinimalFlow:
-      pageTitle:
-        value: we-do-not-recommend-minimal-flow.title
     homeAddress:
       headerKey:
         value: home-address.where-are-you-currently-living
@@ -326,6 +320,14 @@ shiba-configuration:
           type: TEXT
           promptMessage:
             promptMessageKey: mailing-address.apartment-number
+    reviewInfo:
+      pageTitle:
+        value: review-info.title
+      headerKey:
+        value: review-info.lets-review-your-info
+    weDoNotRecommendMinimalFlow:
+      pageTitle:
+        value: we-do-not-recommend-minimal-flow.title
     doYouNeedHelpImmediately:
       pageTitle:
         value: do-you-need-help-immediately.title
@@ -659,19 +661,9 @@ shiba-configuration:
     contactInfo:
       previousPage: personalInfo
       nextPages:
-        - pageName: branchToMinimalFlow
-    branchToMinimalFlow:
-      previousPage: contactInfo
-      nextPages:
-        - pageName: weDoNotRecommendMinimalFlow
-      datasources:
-        - pageName: personalInfo
-    weDoNotRecommendMinimalFlow:
-      previousPage: branchToMinimalFlow
-      nextPages:
         - pageName: homeAddress
     homeAddress:
-      previousPage: weDoNotRecommendMinimalFlow
+      previousPage: contactInfo
       nextPages:
         - pageName: mailingAddress
     mailingAddress:
@@ -680,11 +672,33 @@ shiba-configuration:
         value: "true"
       previousPage: homeAddress
       nextPages:
-        - pageName: doYouNeedHelpImmediately
+        - pageName: reviewInfo
       datasources:
         - pageName: homeAddress
-    doYouNeedHelpImmediately:
+    reviewInfo:
       previousPage: mailingAddress
+      nextPages:
+        - pageName: weDoNotRecommendMinimalFlow
+      datasources:
+        - pageName: personalInfo
+        - pageName: homeAddress
+        - pageName: mailingAddress
+          inputs:
+            - name: streetAddress
+              defaultValue:
+            - name: apartmentNumber
+              defaultValue:
+            - name: city
+              defaultValue:
+            - name: state
+              defaultValue:
+        - pageName: contactInfo
+    weDoNotRecommendMinimalFlow:
+      previousPage: reviewInfo
+      nextPages:
+        - pageName: doYouNeedHelpImmediately
+    doYouNeedHelpImmediately:
+      previousPage: weDoNotRecommendMinimalFlow
       nextPages:
         - pageName: doYouLiveAlone
         - pageName: importantToKnow
@@ -743,7 +757,7 @@ shiba-configuration:
         - pageName: expeditedExpensesAmount
           inputs:
             - name: expeditedExpensesAmount
-              defaultValue: 0
+              defaultValue: "0"
         - pageName: expeditedUtilityPayments
     importantToKnow:
       previousPage: doYouNeedHelpImmediately

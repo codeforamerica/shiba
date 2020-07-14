@@ -20,8 +20,6 @@ public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest 
     private final String staticPageWithDatasourceTitle = "staticPageWithDatasourceTitle";
     private final String staticPageWithDatasourceInputsTitle = "staticPageWithDatasourceInputsTitle";
     private final String yesHeaderText = "yes header text";
-    private final String headerText = "some other header";
-    private final String wrongHeaderText = "some other header";
 
     @TestConfiguration
     @PropertySource(value = "classpath:test-page-datasources.yaml", factory = YamlPropertySourceFactory.class)
@@ -43,26 +41,26 @@ public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest 
         staticMessageSource.addMessage("yes-header-text", Locale.US, yesHeaderText);
         staticMessageSource.addMessage("general.inputs.yes", Locale.US, YesNoAnswer.YES.getDisplayValue());
         staticMessageSource.addMessage("general.inputs.no", Locale.US, YesNoAnswer.NO.getDisplayValue());
-        staticMessageSource.addMessage("some-other-header", Locale.US, headerText);
-        staticMessageSource.addMessage("some-header", Locale.US, wrongHeaderText);
+        staticMessageSource.addMessage("some-other-header", Locale.US, "some other header");
+        staticMessageSource.addMessage("some-header", Locale.US, "some other header");
     }
 
     @Test
     void shouldDisplayDataEnteredFromAPreviousPage() {
         driver.navigate().to(baseUrl + "/pages/firstPage");
         String inputText = "some input";
-        driver.findElement(By.cssSelector("input")).sendKeys(inputText);
+        testPage.enterInput("someInputName", inputText);
+        testPage.clickPrimaryButton();
 
-        driver.findElement(By.cssSelector("button")).click();
-        assertThat(driver.getTitle()).isEqualTo(staticPageWithDatasourceTitle);
-
-        assertThat(driver.findElement(By.xpath(String.format("//*[text() = '%s']", inputText)))).isNotNull();
+        assertThat(testPage.findElementTextByName("firstPage_someInputName")).isEqualTo(inputText);
     }
 
     @Test
     void shouldDisplayDataEnteredFromAPreviousPage_usingMessageKeysWhenAvailable() {
         staticMessageSource.addMessage("radio-value-key-1", Locale.US, "RADIO 1");
         staticMessageSource.addMessage("radio-value-key-2", Locale.US, "RADIO 2");
+        String radioValueDisplayMessage = "RADIO 2 MESSAGE";
+        staticMessageSource.addMessage("display-value-key-2", Locale.US, radioValueDisplayMessage);
 
         driver.navigate().to(baseUrl + "/pages/firstPage");
 
@@ -71,14 +69,9 @@ public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest 
                 .findFirst()
                 .orElseThrow();
         radioToClick.click();
-
         driver.findElement(By.cssSelector("button")).click();
-        assertThat(driver.getTitle()).isEqualTo(staticPageWithDatasourceTitle);
 
-        String radioValueDisplayMessage = "RADIO 2 MESSAGE";
-        staticMessageSource.addMessage("display-value-key-2", Locale.US, radioValueDisplayMessage);
-
-        driver.findElement(By.partialLinkText("Continue")).click();
+        driver.navigate().to(baseUrl + "/pages/staticPageWithDatasourceInputs");
         assertThat(driver.getTitle()).isEqualTo(staticPageWithDatasourceInputsTitle);
 
         assertThat(driver.findElement(By.xpath(String.format("//*[text() = '%s']", radioValueDisplayMessage)))).isNotNull();
@@ -120,6 +113,6 @@ public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest 
     void shouldUseDefaultValueWhenDataForDatasourcePageIsNotPresent() {
         driver.navigate().to(baseUrl + "/pages/testStaticPage");
 
-        assertThat(testPage.findElementTextByName("someRadioInputName")).isEqualTo("default value");
+        assertThat(testPage.findElementTextByName("firstPage_someRadioInputName")).isEqualTo("default value");
     }
 }

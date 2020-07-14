@@ -101,7 +101,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         minimumFlowToSuccessPage();
 
         driver.navigate().to(baseUrl + "/metrics");
-        MetricsPage metricsPage = new MetricsPage(super.driver);
+        MetricsPage metricsPage = new MetricsPage(driver);
         assertThat(metricsPage.getCardValue("Applications Submitted")).isEqualTo("1");
         assertThat(metricsPage.getCardValue("Completion Time")).contains("05m 30s");
     }
@@ -138,10 +138,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         contactInfoPage.enterInput("email", "some@email.com");
         contactInfoPage.selectEnumeratedInput("phoneOrEmail", "Text me");
 
-        Page homeAddressPage = contactInfoPage
-                .clickPrimaryButton()
-                .clickSubtleLink()
-                .clickSubtleLink();
+        Page homeAddressPage = contactInfoPage.clickPrimaryButton();
 
         homeAddressPage.enterInput("zipCode", "12345");
         homeAddressPage.enterInput("city", "someCity");
@@ -156,7 +153,10 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         mailingAddressPage.enterInput("streetAddress", "someStreetAddress");
         mailingAddressPage.enterInput("state", "IL");
         mailingAddressPage.enterInput("apartmentNumber", "someApartmentNumber");
-        mailingAddressPage.clickPrimaryButton();
+        Page reviewScreen = mailingAddressPage.clickPrimaryButton();
+
+        Page weDoNotRecommendMinimalFlowPage = reviewScreen.clickSubtleLink();
+        weDoNotRecommendMinimalFlowPage.clickSubtleLink();
     }
 
     private SuccessPage minimumFlowToSuccessPage() {

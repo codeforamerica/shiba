@@ -13,9 +13,6 @@ shiba-configuration-page-datasource:
               messageKey: radio-value-key-1
             - value: VALUE_2
               messageKey: radio-value-key-2
-    staticPageWithDatasource:
-      pageTitle:
-        value: static-page-with-datasource-title
     staticPageWithDatasourceInputs:
       pageTitle:
         value: static-page-with-datasource-inputs-title
@@ -57,13 +54,7 @@ shiba-configuration-page-datasource:
   workflow:
     firstPage:
       nextPages:
-        - pageName: staticPageWithDatasource
-    staticPageWithDatasource:
-      previousPage: firstPage
-      nextPages:
-        - pageName: staticPageWithDatasourceInputs
-      datasources:
-        - pageName: firstPage
+        - pageName: testStaticPage
     staticPageWithDatasourceInputs:
       previousPage: staticPageWithDatasource
       nextPages:
@@ -87,7 +78,9 @@ shiba-configuration-page-datasource:
       datasources:
         - pageName: firstPage
           inputs:
+            - name: someInputName
+              defaultValue: whatever default value
             - name: someRadioInputName
-              defaultValue: "default value"
+              defaultValue: default value
   landmarkPages:
     startTimerPage:

@@ -5,10 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Value;
 import org.springframework.util.MultiValueMap;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toMap;
@@ -71,7 +68,11 @@ public class FormData extends HashMap<String, InputData> {
                     InputData inputData = Optional.ofNullable(formData)
                             .map(data -> data.get(inputDatasource.getName())
                                     .withValueMessageKeys(inputDatasource.getValueMessageKeys()))
-                            .orElseGet(() -> new InputData(List.of(inputDatasource.getDefaultValue())));
+                            .orElseGet(() -> {
+                                Objects.requireNonNull(inputDatasource.getDefaultValue(),
+                                        String.format("No data available for '%s' and no default value provided!", datasource.getPageName()));
+                                return new InputData(List.of(inputDatasource.getDefaultValue()));
+                            });
                     return Map.entry(
                             inputDatasource.getName(),
                             inputData);

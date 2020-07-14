@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <th:block
-        th:with="income=${moneyMadeLast30Days.value[0].isEmpty() ? 0 : T(java.lang.Integer).parseInt(moneyMadeLast30Days.value[0])},
-                 assets=${liquidAssets.value[0].isEmpty() ? 0 : T(java.lang.Integer).parseInt(liquidAssets.value[0])},
-                 expenses=${expeditedExpensesAmount.value[0].isEmpty() ? 0 : T(java.lang.Integer).parseInt(expeditedExpensesAmount.value[0])},
+        th:with="income=${expeditedIncome_moneyMadeLast30Days.value[0].isEmpty() ? 0 : T(java.lang.Integer).parseInt(expeditedIncome_moneyMadeLast30Days.value[0])},
+                 assets=${liquidAssets_liquidAssets.value[0].isEmpty() ? 0 : T(java.lang.Integer).parseInt(liquidAssets_liquidAssets.value[0])},
+                 expenses=${expeditedExpensesAmount_expeditedExpensesAmount.value[0].isEmpty() ? 0 : T(java.lang.Integer).parseInt(expeditedExpensesAmount_expeditedExpensesAmount.value[0])},
                  qualifyOnIncomeAndAssets=${income < 150 && assets <= 100},
-                 qualifyOnMigrantWorkerAssets=${migrantOrSeasonalFarmWorker.value[0] == 'true' && assets <= 100},
-                 standardDeductionAmountHeatingCooling=${payForUtilities.value.contains('HEATING') || payForUtilities.value.contains('COOLING') ? 490 : 0},
-                 standardDeductionAmountElectricity=${payForUtilities.value.contains('HEATING') || payForUtilities.value.contains('COOLING') ? 0 : payForUtilities.value.contains('ELECTRICITY') ? 143 : 0},
-                 standardDeductionAmountPhone=${payForUtilities.value.contains('HEATING') || payForUtilities.value.contains('COOLING') ? 0 : payForUtilities.value.contains('PHONE') ? 49 : 0},
+                 qualifyOnMigrantWorkerAssets=${expeditedMigrantFarmWorker_migrantOrSeasonalFarmWorker.value[0] == 'true' && assets <= 100},
+                 standardDeductionAmountHeatingCooling=${expeditedUtilityPayments_payForUtilities.value.contains('HEATING') || expeditedUtilityPayments_payForUtilities.value.contains('COOLING') ? 490 : 0},
+                 standardDeductionAmountElectricity=${expeditedUtilityPayments_payForUtilities.value.contains('HEATING') || expeditedUtilityPayments_payForUtilities.value.contains('COOLING') ? 0 : expeditedUtilityPayments_payForUtilities.value.contains('ELECTRICITY') ? 143 : 0},
+                 standardDeductionAmountPhone=${expeditedUtilityPayments_payForUtilities.value.contains('HEATING') || expeditedUtilityPayments_payForUtilities.value.contains('COOLING') ? 0 : expeditedUtilityPayments_payForUtilities.value.contains('PHONE') ? 49 : 0},
                  qualifyOnStandardDeduction=${income + assets < expenses + standardDeductionAmountHeatingCooling+ standardDeductionAmountElectricity+ standardDeductionAmountPhone}">
     <div th:replace="fragments/head :: head(#{${qualifyOnIncomeAndAssets || qualifyOnMigrantWorkerAssets || qualifyOnStandardDeduction} ? 'expedited-determination.qualified-title' : 'expedited-determination.denied-title'})"></div>
     <body>

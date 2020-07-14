@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.codeforamerica.shiba.pages.FormData.getFormDataFrom;
 
@@ -102,7 +103,14 @@ public class PageController {
         if (pageConfiguration.isStaticPage()) {
             pageToRender = pageName;
             Optional.ofNullable(pageWorkflow.getDatasources())
-                    .map(datasource -> getFormDataFrom(datasource, this.applicationData.getPagesData()))
+                    .map(datasources -> datasources.stream()
+                            .flatMap(datasource -> {
+                                FormData formData = getFormDataFrom(datasource, this.applicationData.getPagesData());
+                                return formData.entrySet().stream()
+                                        .map(entry -> Map.entry(
+                                                datasource.getPageName() + "_" + entry.getKey(),
+                                                entry.getValue()));
+                            }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
                     .ifPresent(model::putAll);
         } else {
             pageToRender = "formPage";
