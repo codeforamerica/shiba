@@ -119,36 +119,36 @@ test-validation:
           type: TEXT
   workflow:
     firstPage:
-      nextPage:
-        - nextPage
+      nextPages:
+        - pageName: nextPage
     nextPage:
       previousPage: firstPage
-      nextPage:
-        - lastPage
+      nextPages:
+        - pageName: lastPage
     notBlankPage:
-      nextPage:
-        - lastPage
+      nextPages:
+        - pageName: lastPage
     zipcodePage:
-      nextPage:
-        - lastPage
+      nextPages:
+        - pageName: lastPage
     statePage:
-      nextPage:
-        - lastPage
+      nextPages:
+        - pageName: lastPage
     phonePage:
-      nextPage:
-        - lastPage
+      nextPages:
+        - pageName: lastPage
     moneyPage:
-      nextPage:
-        - lastPage
+      nextPages:
+        - pageName: lastPage
     ssnPage:
-      nextPage:
-        - lastPage
+      nextPages:
+        - pageName: lastPage
     datePage:
-      nextPage:
-        - lastPage
+      nextPages:
+        - pageName: lastPage
     checkboxPage:
-      nextPage:
-        - lastPage
+      nextPages:
+        - pageName: lastPage
     lastPage:
       previousPage:
   landmarkPages:

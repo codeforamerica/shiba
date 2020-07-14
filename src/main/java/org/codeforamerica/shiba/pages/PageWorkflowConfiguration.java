@@ -5,25 +5,34 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static org.codeforamerica.shiba.pages.FormData.getFormDataFrom;
 
 @Data
 public class PageWorkflowConfiguration {
-    List<String> nextPage;
+    List<NextPage> nextPages;
     String previousPage;
     private Condition skipCondition;
     private List<PageDatasource> datasources = new ArrayList<>();
+    boolean conditionalNavigation = false;
 
-    String getAdjacentPageName(boolean isBackwards) {
-        return getAdjacentPageName(isBackwards, 0);
-    }
-
-    public String getAdjacentPageName(boolean isBackwards, Integer option) {
+    public String getAdjacentPageName(boolean isBackwards, FormData formData, Integer option) {
         if (isBackwards) {
             return previousPage;
         }
-        return nextPage.get(option);
+
+        if (!conditionalNavigation) {
+            return nextPages.get(option).getPageName();
+        }
+
+        return nextPages.stream()
+                .filter(nextPage -> Optional.ofNullable(nextPage.condition)
+                        .map(condition -> condition.appliesTo(formData))
+                        .orElse(true))
+                .findFirst()
+                .map(NextPage::getPageName)
+                .orElseThrow(() -> new RuntimeException("Cannot find suitable next page."));
     }
 
     boolean shouldSkip(PagesData pagesData) {

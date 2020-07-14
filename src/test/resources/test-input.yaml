@@ -71,8 +71,8 @@ shiba-configuration-input:
             promptMessageFragmentName: promptFragment
   workflow:
     firstPage:
-      nextPage:
-        - nextPage
+      nextPages:
+        - pageName: nextPage
     nextPage:
       previousPage: firstPage
     inputWithPromptFragmentPage:

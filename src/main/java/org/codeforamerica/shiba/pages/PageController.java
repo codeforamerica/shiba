@@ -50,11 +50,13 @@ public class PageController {
             @RequestParam(required = false, defaultValue = "0") Integer option
     ) {
         PageWorkflowConfiguration pageWorkflowConfiguration = this.pagesConfiguration.getPageWorkflow(pageName);
-        String adjacentPageName = pageWorkflowConfiguration.getAdjacentPageName(isBackwards, option);
+        FormData formData = this.applicationData.getFormData(pageName);
+        String adjacentPageName = pageWorkflowConfiguration.getAdjacentPageName(isBackwards, formData, option);
         PageWorkflowConfiguration adjacentPage = this.pagesConfiguration.getPageWorkflow(adjacentPageName);
 
         if (adjacentPage.shouldSkip(applicationData.getPagesData())) {
-            return new RedirectView(String.format("/pages/%s", adjacentPage.getAdjacentPageName(isBackwards)));
+            FormData adjacentPageFormData = this.applicationData.getFormData(adjacentPageName);
+            return new RedirectView(String.format("/pages/%s", adjacentPage.getAdjacentPageName(isBackwards, adjacentPageFormData, option)));
         } else {
             return new RedirectView(String.format("/pages/%s", adjacentPageName));
         }

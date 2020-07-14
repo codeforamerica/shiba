@@ -17,7 +17,7 @@
           "type": "object",
           "properties": {
             "startTimerPage": {
-              "type": "string"
+              "type": ["string", "null"]
             },
             "startTimer": {
               "type": "boolean"
@@ -90,7 +90,7 @@
     "navigationPage": {
       "type": "object",
       "properties": {
-        "datasource": {
+        "datasources": {
           "type": "array",
           "items": {
             "type": "object",
@@ -119,15 +119,28 @@
           "$ref": "#/definitions/condition"
         },
         "previousPage": {
-          "type": "string"
+          "type": ["string", "null"]
         },
-        "nextPage": {
+        "nextPages": {
           "type": "array",
           "items": {
-            "type": "string"
+            "type": "object",
+            "properties": {
+              "pageName": {
+                "type": "string"
+              },
+              "condition": {
+                "$ref": "#/definitions/condition"
+              }
+            },
+            "required": ["pageName"]
           }
+        },
+        "conditionalNavigation": {
+          "type": "boolean"
         }
-      }
+      },
+      "additionalProperties": false
     },
     "value": {
       "type": "object",

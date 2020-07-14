@@ -16,4 +16,7 @@ public class ApplicationData {
         return this.submissionTime != null;
     }
 
+    public FormData getFormData(String pageName) {
+        return this.pagesData.getPage(pageName);
+    }
 }

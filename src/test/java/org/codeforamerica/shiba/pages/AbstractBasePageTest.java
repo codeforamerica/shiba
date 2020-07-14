@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -34,7 +33,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"spring.main.allow-bean-definition-overriding=true"})
 @ExtendWith(SpringExtension.class)
 abstract class AbstractBasePageTest {
-    protected RemoteWebDriver driver;
+    static protected RemoteWebDriver driver;
 
     protected Path path;
 
@@ -88,9 +87,13 @@ abstract class AbstractBasePageTest {
         driver.quit();
     }
 
+    void navigateTo(String pageName) {
+        driver.navigate().to(baseUrl + "/pages/" + pageName);
+    }
+
     @SuppressWarnings("unused")
-    public static void takeSnapShot(WebDriver webdriver, String fileWithPath) {
-        TakesScreenshot screenshot = ((TakesScreenshot) webdriver);
+    public static void takeSnapShot(String fileWithPath) {
+        TakesScreenshot screenshot = driver;
         Path sourceFile = screenshot.getScreenshotAs(OutputType.FILE).toPath();
         Path destinationFile = new File(fileWithPath).toPath();
         try {

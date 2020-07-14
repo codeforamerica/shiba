@@ -56,18 +56,18 @@ shiba-configuration-page-datasource:
         value: dummy-page-title
   workflow:
     firstPage:
-      nextPage:
-        - staticPageWithDatasource
+      nextPages:
+        - pageName: staticPageWithDatasource
     staticPageWithDatasource:
       previousPage: firstPage
-      nextPage:
-        - staticPageWithDatasourceInputs
+      nextPages:
+        - pageName: staticPageWithDatasourceInputs
       datasources:
         - pageName: firstPage
     staticPageWithDatasourceInputs:
       previousPage: staticPageWithDatasource
-      nextPage:
-        - lastPage
+      nextPages:
+        - pageName: lastPage
       datasources:
         - pageName: firstPage
           inputs:
@@ -76,8 +76,8 @@ shiba-configuration-page-datasource:
                 VALUE_1: display-value-key-1
                 VALUE_2: display-value-key-2
     yesNoQuestionPage:
-      nextPage:
-        - yesNoAnswerPage
+      nextPages:
+        - pageName: yesNoAnswerPage
     yesNoAnswerPage:
       datasources:
         - pageName: yesNoQuestionPage

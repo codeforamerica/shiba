@@ -26,8 +26,8 @@ test-additional-data:
         value: dummy-page-title
   workflow:
     firstPage:
-      nextPage:
-        - testStaticPage
+      nextPages:
+        - pageName: testStaticPage
     testStaticPage:
       previousPage:
       datasources:

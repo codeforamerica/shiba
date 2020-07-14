@@ -16,7 +16,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserDecisionNavigationPageTest extends AbstractStaticMessageSourcePageTest {
 
-    private final String optionZeroPageTitle = "option-zero-page-title";
+    private final String optionZeroPageTitle = "page zero title";
+    private final String optionOnePageTitle = "page one title";
+    private final String yesAnswerTitle = "yes answer title";
 
     @TestConfiguration
     @PropertySource(value = "classpath:test-user-decision-navigation.yaml", factory = YamlPropertySourceFactory.class)
@@ -32,13 +34,23 @@ public class UserDecisionNavigationPageTest extends AbstractStaticMessageSourceP
     void setUp() throws IOException {
         super.setUp();
         staticMessageSource.addMessage("option-zero-page-title", Locale.US, optionZeroPageTitle);
+        staticMessageSource.addMessage("option-one-page-title", Locale.US, optionOnePageTitle);
+        staticMessageSource.addMessage("yes-answer-title", Locale.US, yesAnswerTitle);
     }
 
     @Test
-    void shouldNavigateToOptionZeroPageWhenUserSelectOptionZero() {
+    void shouldNavigateToOptionZeroPageWhenUserSelectOptionOne() {
         driver.navigate().to(baseUrl + "/pages/userDecisionNavigationPage");
-        driver.findElement(By.partialLinkText("option 0")).click();
+        driver.findElement(By.partialLinkText("option 1")).click();
 
-        assertThat(driver.getTitle()).isEqualTo(optionZeroPageTitle);
+        assertThat(driver.getTitle()).isEqualTo(optionOnePageTitle);
+    }
+
+    @Test
+    void shouldNavigateToNextPageBasedOnCondition() {
+        navigateTo("formPageBranchingNavigationPage");
+        driver.findElement(By.cssSelector("label:first-of-type")).click();
+
+        assertThat(driver.getTitle()).isEqualTo(yesAnswerTitle);
     }
 }

@@ -25,12 +25,12 @@ shiba-configuration-conditional-rendering:
           type: TEXT
   workflow:
     firstPage:
-      nextPage:
-        - secondPage
+      nextPages:
+        - pageName: secondPage
     secondPage:
       previousPage: firstPage
-      nextPage:
-        - thirdPage
+      nextPages:
+        - pageName: thirdPage
       skipCondition:
         input: someRadioInputName
         value: SKIP

@@ -14,8 +14,8 @@ shiba-configuration-reset-data:
           type: TEXT
   workflow:
     firstPage:
-      nextPage:
-        - secondPage
+      nextPages:
+        - pageName: secondPage
     secondPage:
       previousPage: firstPage
   landmarkPages:

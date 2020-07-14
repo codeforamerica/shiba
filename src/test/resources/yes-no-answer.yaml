@@ -11,8 +11,8 @@ shiba-configuration-yes-no-answer:
         value: answer-page
   workflow:
     yesNoQuestionPage:
-      nextPage:
-        - testStaticPage
+      nextPages:
+        - pageName: testStaticPage
     testStaticPage:
       datasources:
         - pageName: yesNoQuestionPage

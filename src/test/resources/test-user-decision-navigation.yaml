@@ -15,14 +15,47 @@ shiba-configuration-user-decision-navigation:
       inputs:
         - name: foo
           type: TEXT
+    formPageBranchingNavigationPage:
+      pageTitle:
+        value: dummy-page-title
+      inputs:
+        - type: YES_NO
+          name: yesNoQuestion
+    yesAnswerPage:
+      pageTitle:
+        value: yes-answer-title
+      inputs:
+        - name: foo
+          type: TEXT
+    noAnswerPage:
+      pageTitle:
+        value: no-answer-title
+      inputs:
+        - name: foo
+          type: TEXT
   workflow:
     userDecisionNavigationPage:
-      nextPage:
-        - optionZeroPage
-        - optionOnePage
+      nextPages:
+        - pageName: optionZeroPage
+        - pageName: optionOnePage
     optionZeroPage:
       previousPage:
     optionOnePage:
+      previousPage:
+    formPageBranchingNavigationPage:
+      conditionalNavigation: true
+      nextPages:
+        - pageName: yesAnswerPage
+          condition:
+            input: yesNoQuestion
+            value: "true"
+        - pageName: noAnswerPage
+          condition:
+            input: yesNoQuestion
+            value: "false"
+    yesAnswerPage:
+      previousPage:
+    noAnswerPage:
       previousPage:
   landmarkPages:
     startTimerPage:

@@ -28,8 +28,8 @@ shiba-configuration-flow-redirect:
     firstPage:
       previousPage:
     thirdPage:
-      nextPage:
-        - fourthPage
+      nextPages:
+        - pageName: fourthPage
     fourthPage:
       previousPage:
   landmarkPages:
