@@ -3,7 +3,7 @@
 <div th:replace="fragments/head :: head(#{${pageTitle}})"></div>
 <body>
 <h3>Static Page</h3>
-<div th:text="#{${!firstPage_someRadioInputName.messageKeysForValue.isEmpty() ? firstPage_someRadioInputName.messageKeysForValue[0] : 'ignored'}}"></div>
+<div th:text="#{${!data.get('firstPage_someRadioInputName').messageKeysForValue.isEmpty() ? data.get('firstPage_someRadioInputName').messageKeysForValue[0] : 'ignored'}}"></div>
 <div th:replace="fragments/continue"></div>
 </body>
 </html>

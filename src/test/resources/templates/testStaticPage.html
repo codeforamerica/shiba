@@ -2,8 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <div th:replace="fragments/head :: head(#{${pageTitle}})"></div>
 <body>
-<th:block th:each="name: ${#ctx.getVariableNames()}">
-    <div th:if="${#ctx.getVariable(name) instanceof T(org.codeforamerica.shiba.pages.InputData) && !#ctx.getVariable(name).value.isEmpty()}" th:text="${#ctx.getVariable(name).value.get(0)}" th:id="${name}"></div>
+<th:block th:each="inputData: ${#ctx.getVariable('data')}">
+    <div th:if="${!inputData.value.value.isEmpty()}" th:text="${inputData.value.value.get(0)}" th:id="${inputData.key}"></div>
 </th:block>
 </body>
 </html>

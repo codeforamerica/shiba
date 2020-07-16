@@ -36,7 +36,8 @@ public class PageController {
             ApplicationData applicationData,
             Clock clock,
             ApplicationMetricsRepository repository,
-            Metrics metrics) {
+            Metrics metrics
+    ) {
         this.applicationData = applicationData;
         this.pagesConfiguration = pagesConfiguration;
         this.clock = clock;
@@ -63,8 +64,10 @@ public class PageController {
     }
 
     @GetMapping("/pages/{pageName}")
-    ModelAndView getFormPage(@PathVariable String pageName,
-                             HttpServletResponse response) {
+    ModelAndView getFormPage(
+            @PathVariable String pageName,
+            HttpServletResponse response
+    ) {
         LandmarkPagesConfiguration landmarkPagesConfiguration = pagesConfiguration.getLandmarkPages();
 
         if (landmarkPagesConfiguration.isLandingPage(pageName)) {
@@ -110,7 +113,7 @@ public class PageController {
                                                 datasource.getPageName() + "_" + entry.getKey(),
                                                 entry.getValue()));
                             }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
-                    .ifPresent(model::putAll);
+                    .ifPresent(inputMap -> model.put("data", inputMap));
         } else {
             pageToRender = "formPage";
             model.put("data", pagesData.getPageOrDefault(pageName, pageConfiguration));

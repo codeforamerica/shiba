@@ -19,7 +19,7 @@
                             <a href="#" style="display: none" th:text="#{review-info.edit}"></a>
                         </div>
                     </div>
-                    <p class="spacing-below-0" th:text="|${personalInfo_firstName.value[0]} ${personalInfo_lastName.value[0]}|"></p>
+                    <p class="spacing-below-0" th:text="|${data.personalInfo_firstName.value[0]} ${data.personalInfo_lastName.value[0]}|"></p>
                 </div>
                 <div class="bottom-horizontal-line spacing-below-35 review-info-section">
                     <div class="spacing-below-10">
@@ -30,13 +30,13 @@
                             <a href="#" style="display: none" th:text="#{review-info.edit}"></a>
                         </div>
                     </div>
-                    <p class="spacing-below-0" th:if="${!homeAddress_isHomeless.value.isEmpty()}">homeless</p>
-                    <p class="spacing-below-0" th:text="${homeAddress_streetAddress.value[0]}"></p>
-                    <p class="spacing-below-0" th:if="${!homeAddress_apartmentNumber.value[0].isEmpty()}"
-                            th:text="|# ${homeAddress_apartmentNumber.value[0]}|"></p>
-                    <p th:if="${!homeAddress_city.value[0].isEmpty()}" class="spacing-below-0" th:text="|${homeAddress_city.value[0]}, ${homeAddress_state.value[0]}|"></p>
+                    <p class="spacing-below-0" th:if="${!data.homeAddress_isHomeless.value.isEmpty()}">homeless</p>
+                    <p class="spacing-below-0" th:text="${data.homeAddress_streetAddress.value[0]}"></p>
+                    <p class="spacing-below-0" th:if="${!data.homeAddress_apartmentNumber.value[0].isEmpty()}"
+                            th:text="|# ${data.homeAddress_apartmentNumber.value[0]}|"></p>
+                    <p th:if="${!data.homeAddress_city.value[0].isEmpty()}" class="spacing-below-0" th:text="|${data.homeAddress_city.value[0]}, ${data.homeAddress_state.value[0]}|"></p>
                 </div>
-                <div th:if="${homeAddress_sameMailingAddress.value[0] == 'false'}" class="bottom-horizontal-line spacing-below-35 review-info-section">
+                <div th:if="${data.homeAddress_sameMailingAddress.value[0] == 'false'}" class="bottom-horizontal-line spacing-below-35 review-info-section">
                     <div class="spacing-below-10">
                         <div class="inline">
                             <strong th:text="#{review-info.mailing-address}"></strong>
@@ -45,10 +45,10 @@
                             <a href="#" style="display: none" th:text="#{review-info.edit}"></a>
                         </div>
                     </div>
-                    <p class="spacing-below-0" th:text="${mailingAddress_streetAddress.value[0]}"></p>
-                    <p class="spacing-below-0" th:if="${!mailingAddress_apartmentNumber.value[0].isEmpty()}"
-                       th:text="|# ${mailingAddress_apartmentNumber.value[0]}|"></p>
-                    <p class="spacing-below-0" th:text="|${mailingAddress_city.value[0]}, ${mailingAddress_state.value[0]}|"></p>
+                    <p class="spacing-below-0" th:text="${data.mailingAddress_streetAddress.value[0]}"></p>
+                    <p class="spacing-below-0" th:if="${!data.mailingAddress_apartmentNumber.value[0].isEmpty()}"
+                       th:text="|# ${data.mailingAddress_apartmentNumber.value[0]}|"></p>
+                    <p class="spacing-below-0" th:text="|${data.mailingAddress_city.value[0]}, ${data.mailingAddress_state.value[0]}|"></p>
                 </div>
                 <div class="bottom-horizontal-line spacing-below-35 review-info-section">
                     <div class="spacing-below-10">
@@ -59,8 +59,8 @@
                             <a href="#" style="display: none" th:text="#{review-info.edit}"></a>
                         </div>
                     </div>
-                    <p class="spacing-below-0" th:text="${T(org.codeforamerica.shiba.pages.PageUtils).formatPhone(contactInfo_phoneNumber.value[0])}"></p>
-                    <p class="spacing-below-0" th:if="${!contactInfo_email.value[0].isEmpty()}" th:text="${contactInfo_email.value[0]}"></p>
+                    <p class="spacing-below-0" th:text="${T(org.codeforamerica.shiba.pages.PageUtils).formatPhone(data.contactInfo_phoneNumber.value[0])}"></p>
+                    <p class="spacing-below-0" th:if="${!data.contactInfo_email.value[0].isEmpty()}" th:text="${data.contactInfo_email.value[0]}"></p>
                 </div>
                 <div class="spacing-below-15">
                     <a class="button button--primary" th:href="'/pages/'+${pageName}+'/navigation?option=0'"

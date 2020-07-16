@@ -23,7 +23,8 @@ public class FileDownLoadController {
             ApplicationData data,
             PdfGenerator pdfGenerator,
             XmlGenerator xmlGenerator,
-            List<ApplicationInputsMapper> applicationInputsMappers) {
+            List<ApplicationInputsMapper> applicationInputsMappers
+    ) {
         this.data = data;
         this.pdfGenerator = pdfGenerator;
         this.xmlGenerator = xmlGenerator;

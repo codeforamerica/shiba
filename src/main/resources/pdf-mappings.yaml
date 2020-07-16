@@ -63,3 +63,5 @@ caf:
       applicantSignature: APPLICANT_SIGNATURE
     nonPagesData:
       submissionTime: SUBMISSION_TIME
+    expeditedEligibility:
+      expeditedEligibility: EXPEDITED_ELIGIBILITY
