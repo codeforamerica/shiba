@@ -30,11 +30,11 @@
                             <a href="#" style="display: none" th:text="#{review-info.edit}"></a>
                         </div>
                     </div>
-                    <p class="spacing-below-0" th:if="${!data.homeAddress_isHomeless.value.isEmpty()}">homeless</p>
                     <p class="spacing-below-0" th:text="${data.homeAddress_streetAddress.value[0]}"></p>
                     <p class="spacing-below-0" th:if="${!data.homeAddress_apartmentNumber.value[0].isEmpty()}"
                             th:text="|# ${data.homeAddress_apartmentNumber.value[0]}|"></p>
                     <p th:if="${!data.homeAddress_city.value[0].isEmpty()}" class="spacing-below-0" th:text="|${data.homeAddress_city.value[0]}, ${data.homeAddress_state.value[0]}|"></p>
+                    <p class="spacing-below-0 spacing-above-10 italic" th:if="${!data.homeAddress_isHomeless.value.isEmpty()}" th:text="#{review-info.currently-homeless}"></p>
                 </div>
                 <div th:if="${data.homeAddress_sameMailingAddress.value[0] == 'false'}" class="bottom-horizontal-line spacing-below-35 review-info-section">
                     <div class="spacing-below-10">

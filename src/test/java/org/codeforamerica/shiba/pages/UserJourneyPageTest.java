@@ -41,7 +41,6 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     void userCanCompleteTheExpeditedFlow() {
         completeFlowFromLandingPageToReviewInfo();
         testPage.clickSubtleLink();
-        testPage.clickSubtleLink();
         driver.findElement(By.linkText("Yes, I want to see if I qualify")).click();
 
         Page expeditedIncomePage = testPage.choose(YES);

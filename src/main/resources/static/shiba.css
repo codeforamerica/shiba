@@ -133,3 +133,7 @@
     border-color: #CFC5BF;
     padding-bottom: 3rem;
 }
+
+.italic {
+    font-style: italic;
+}

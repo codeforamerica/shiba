@@ -333,9 +333,6 @@ shiba-configuration:
       inputs:
         - name: liveAlone
           type: YES_NO
-    weDoNotRecommendMinimalFlow:
-      pageTitle:
-        value: we-do-not-recommend-minimal-flow.title
     doYouNeedHelpImmediately:
       pageTitle:
         value: do-you-need-help-immediately.title
@@ -677,7 +674,7 @@ shiba-configuration:
     reviewInfo:
       nextPages:
         - pageName: doYouLiveAlone
-        - pageName: weDoNotRecommendMinimalFlow
+        - pageName: doYouNeedHelpImmediately
       datasources:
         - pageName: personalInfo
         - pageName: homeAddress
@@ -695,9 +692,6 @@ shiba-configuration:
     doYouLiveAlone:
       nextPages:
         - pageName: importantToKnow
-    weDoNotRecommendMinimalFlow:
-      nextPages:
-        - pageName: doYouNeedHelpImmediately
     doYouNeedHelpImmediately:
       nextPages:
         - pageName: doYouLiveAloneExpedited
