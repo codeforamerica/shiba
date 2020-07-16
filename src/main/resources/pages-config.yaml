@@ -333,6 +333,9 @@ shiba-configuration:
       inputs:
         - name: liveAlone
           type: YES_NO
+    introPersonalDetails:
+      pageTitle:
+        value: intro-personal-details.title
     doYouNeedHelpImmediately:
       pageTitle:
         value: do-you-need-help-immediately.title
@@ -690,6 +693,9 @@ shiba-configuration:
               defaultValue:
         - pageName: contactInfo
     doYouLiveAlone:
+      nextPages:
+        - pageName: introPersonalDetails
+    introPersonalDetails:
       nextPages:
         - pageName: importantToKnow
     doYouNeedHelpImmediately:

@@ -158,8 +158,10 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     private SuccessPage nonExpeditedFlowToSuccessPage() {
         completeFlowFromLandingPageToReviewInfo();
         driver.findElement(By.linkText("This looks correct")).click();
-        testPage.choose(YES);
-        Page legalStuffPage = testPage.clickPrimaryButton();
+        Page introPersonDetailsPage = testPage.choose(YES);
+        Page importantToKnowPage = introPersonDetailsPage.clickPrimaryButton();
+
+        Page legalStuffPage = importantToKnowPage.clickPrimaryButton();
         legalStuffPage.selectEnumeratedInput("agreeToTerms", "I agree");
         Page signThisApplicationPage = legalStuffPage.clickPrimaryButton();
 
