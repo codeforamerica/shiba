@@ -26,12 +26,12 @@ shiba-configuration-flow-redirect:
           type: TEXT
   workflow:
     firstPage:
-      previousPage:
+      nextPages: []
     thirdPage:
       nextPages:
         - pageName: fourthPage
     fourthPage:
-      previousPage:
+      nextPages: []
   landmarkPages:
     startTimerPage: thirdPage
     landingPages:

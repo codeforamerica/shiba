@@ -56,7 +56,6 @@ shiba-configuration-page-datasource:
       nextPages:
         - pageName: testStaticPage
     staticPageWithDatasourceInputs:
-      previousPage: staticPageWithDatasource
       nextPages:
         - pageName: lastPage
       datasources:
@@ -73,7 +72,7 @@ shiba-configuration-page-datasource:
       datasources:
         - pageName: yesNoQuestionPage
     lastPage:
-      previousPage: staticPageWithDatasourceInputs
+      nextPages: []
     testStaticPage:
       datasources:
         - pageName: firstPage

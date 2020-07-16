@@ -122,7 +122,6 @@ test-validation:
       nextPages:
         - pageName: nextPage
     nextPage:
-      previousPage: firstPage
       nextPages:
         - pageName: lastPage
     notBlankPage:
@@ -150,6 +149,6 @@ test-validation:
       nextPages:
         - pageName: lastPage
     lastPage:
-      previousPage:
+      nextPages: []
   landmarkPages:
     startTimerPage:

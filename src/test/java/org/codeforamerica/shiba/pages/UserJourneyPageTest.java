@@ -34,14 +34,14 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void userCanCompleteTheNonExpeditedFlow() {
-        completeFlowFromLandingPageToDoYouNeedHelpImmediately();
-
-        assertThat(testPage.getTitle()).isEqualTo("Do you need help immediately?");
+        nonExpeditedFlowToSuccessPage();
     }
 
     @Test
     void userCanCompleteTheExpeditedFlow() {
-        completeFlowFromLandingPageToDoYouNeedHelpImmediately();
+        completeFlowFromLandingPageToReviewInfo();
+        testPage.clickSubtleLink();
+        testPage.clickSubtleLink();
         driver.findElement(By.linkText("Yes, I want to see if I qualify")).click();
 
         Page expeditedIncomePage = testPage.choose(YES);
@@ -69,7 +69,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     void shouldCaptureSubmissionTimeInSuccessPage() {
         when(clock.instant()).thenReturn(LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant());
 
-        SuccessPage successPage = minimumFlowToSuccessPage();
+        SuccessPage successPage = nonExpeditedFlowToSuccessPage();
 
         assertThat(successPage.getTitle()).isEqualTo("Success");
         assertThat(successPage.getSubmissionTime()).contains("January 1, 2020");
@@ -77,7 +77,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldDownloadPDFWhenClickDownloadMyReceipt() {
-        SuccessPage successPage = minimumFlowToSuccessPage();
+        SuccessPage successPage = nonExpeditedFlowToSuccessPage();
 
         successPage.downloadReceipt();
         await().until(() -> path.resolve("DHS-5223.pdf").toFile().exists());
@@ -85,7 +85,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldDownloadXMLWhenClickDownloadXML() {
-        SuccessPage successPage = minimumFlowToSuccessPage();
+        SuccessPage successPage = nonExpeditedFlowToSuccessPage();
 
         successPage.downloadXML();
         await().until(() -> path.resolve("ApplyMN.xml").toFile().exists());
@@ -98,7 +98,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
                 LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant(),
                 LocalDateTime.of(2020, 1, 1, 10, 15, 30).atOffset(ZoneOffset.UTC).toInstant()
         );
-        minimumFlowToSuccessPage();
+        nonExpeditedFlowToSuccessPage();
 
         driver.navigate().to(baseUrl + "/metrics");
         MetricsPage metricsPage = new MetricsPage(driver);
@@ -106,7 +106,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         assertThat(metricsPage.getCardValue("Completion Time")).contains("05m 30s");
     }
 
-    private void completeFlowFromLandingPageToDoYouNeedHelpImmediately() {
+    private void completeFlowFromLandingPageToReviewInfo() {
         Page languagePreferencesPage = testPage
                 .clickPrimaryButton()
                 .clickPrimaryButton();
@@ -153,15 +153,13 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         mailingAddressPage.enterInput("streetAddress", "someStreetAddress");
         mailingAddressPage.enterInput("state", "IL");
         mailingAddressPage.enterInput("apartmentNumber", "someApartmentNumber");
-        Page reviewScreen = mailingAddressPage.clickPrimaryButton();
-
-        Page weDoNotRecommendMinimalFlowPage = reviewScreen.clickSubtleLink();
-        weDoNotRecommendMinimalFlowPage.clickSubtleLink();
+        mailingAddressPage.clickPrimaryButton();
     }
 
-    private SuccessPage minimumFlowToSuccessPage() {
-        completeFlowFromLandingPageToDoYouNeedHelpImmediately();
-        driver.findElement(By.linkText("Finish application now")).click();
+    private SuccessPage nonExpeditedFlowToSuccessPage() {
+        completeFlowFromLandingPageToReviewInfo();
+        driver.findElement(By.linkText("This looks correct")).click();
+        testPage.choose(YES);
         Page legalStuffPage = testPage.clickPrimaryButton();
         legalStuffPage.selectEnumeratedInput("agreeToTerms", "I agree");
         Page signThisApplicationPage = legalStuffPage.clickPrimaryButton();

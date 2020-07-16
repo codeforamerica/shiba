@@ -14,8 +14,8 @@ shiba-configuration-start-timer:
           type: TEXT
   workflow:
     pageThatDoesNotStartTimer:
-      previousPage:
+      nextPages: []
     pageThatDoesStartTimer:
-      previousPage:
+      nextPages: []
   landmarkPages:
     startTimerPage: pageThatDoesStartTimer

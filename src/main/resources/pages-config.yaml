@@ -325,13 +325,21 @@ shiba-configuration:
         value: review-info.title
       headerKey:
         value: review-info.lets-review-your-info
+    doYouLiveAlone:
+      headerKey:
+        value: do-you-live-alone.do-you-live-alone
+      pageTitle:
+        value: do-you-live-alone.title
+      inputs:
+        - name: liveAlone
+          type: YES_NO
     weDoNotRecommendMinimalFlow:
       pageTitle:
         value: we-do-not-recommend-minimal-flow.title
     doYouNeedHelpImmediately:
       pageTitle:
         value: do-you-need-help-immediately.title
-    doYouLiveAlone:
+    doYouLiveAloneExpedited:
       headerKey:
         value: do-you-live-alone.do-you-live-alone
       pageTitle:
@@ -582,7 +590,7 @@ shiba-configuration:
         - name: migrantOrSeasonalFarmWorker
           type: YES_NO
     expeditedDetermination:
-      additionalData:
+      additionalData: []
     importantToKnow:
       pageTitle:
         value: important-to-know.title
@@ -626,19 +634,15 @@ shiba-configuration:
       nextPages:
         - pageName: prepareToApply
     prepareToApply:
-      previousPage: landing
       nextPages:
         - pageName: languagePreferences
     languagePreferences:
-      previousPage: prepareToApply
       nextPages:
         - pageName: choosePrograms
     choosePrograms:
       nextPages:
         - pageName: howItWorks
-      previousPage: languagePreferences
     howItWorks:
-      previousPage: choosePrograms
       nextPages:
         - pageName: introBasicInfo
       datasources:
@@ -651,33 +655,28 @@ shiba-configuration:
                 CHILD_CARE: how-it-works.child-care
                 EMERGENCY: how-it-works.emergency
     introBasicInfo:
-      previousPage: howItWorks
       nextPages:
         - pageName: personalInfo
     personalInfo:
-      previousPage: introBasicInfo
       nextPages:
         - pageName: contactInfo
     contactInfo:
-      previousPage: personalInfo
       nextPages:
         - pageName: homeAddress
     homeAddress:
-      previousPage: contactInfo
       nextPages:
         - pageName: mailingAddress
     mailingAddress:
       skipCondition:
         input: sameMailingAddress
         value: "true"
-      previousPage: homeAddress
       nextPages:
         - pageName: reviewInfo
       datasources:
         - pageName: homeAddress
     reviewInfo:
-      previousPage: mailingAddress
       nextPages:
+        - pageName: doYouLiveAlone
         - pageName: weDoNotRecommendMinimalFlow
       datasources:
         - pageName: personalInfo
@@ -693,61 +692,54 @@ shiba-configuration:
             - name: state
               defaultValue:
         - pageName: contactInfo
+    doYouLiveAlone:
+      nextPages:
+        - pageName: importantToKnow
     weDoNotRecommendMinimalFlow:
-      previousPage: reviewInfo
       nextPages:
         - pageName: doYouNeedHelpImmediately
     doYouNeedHelpImmediately:
-      previousPage: weDoNotRecommendMinimalFlow
       nextPages:
-        - pageName: doYouLiveAlone
+        - pageName: doYouLiveAloneExpedited
         - pageName: importantToKnow
-    doYouLiveAlone:
-      previousPage: doYouNeedHelpImmediately
+    doYouLiveAloneExpedited:
       nextPages:
         - pageName: expeditedIncome
     expeditedIncome:
-      previousPage: doYouLiveAlone
       nextPages:
         - pageName: liquidAssets
       datasources:
-        - pageName: doYouLiveAlone
+        - pageName: doYouLiveAloneExpedited
     liquidAssets:
-      previousPage: expeditedIncome
       nextPages:
         - pageName: expeditedExpenses
       datasources:
-        - pageName: doYouLiveAlone
+        - pageName: doYouLiveAloneExpedited
     expeditedExpenses:
-      previousPage: liquidAssets
       nextPages:
         - pageName: expeditedExpensesAmount
       datasources:
-        - pageName: doYouLiveAlone
+        - pageName: doYouLiveAloneExpedited
     expeditedExpensesAmount:
       skipCondition:
         input: payRentOrMortgage
         value: "false"
-      previousPage: expeditedExpenses
       nextPages:
         - pageName: expeditedUtilityPayments
       datasources:
-        - pageName: doYouLiveAlone
+        - pageName: doYouLiveAloneExpedited
         - pageName: expeditedExpenses
     expeditedUtilityPayments:
-      previousPage: expeditedExpensesAmount
       nextPages:
         - pageName: expeditedMigrantFarmWorker
       datasources:
-        - pageName: doYouLiveAlone
+        - pageName: doYouLiveAloneExpedited
     expeditedMigrantFarmWorker:
-      previousPage: expeditedUtilityPayments
       nextPages:
         - pageName: expeditedDetermination
       datasources:
-        - pageName: doYouLiveAlone
+        - pageName: doYouLiveAloneExpedited
     expeditedDetermination:
-      previousPage: expeditedMigrantFarmWorker
       nextPages:
         - pageName: importantToKnow
       datasources:
@@ -760,15 +752,12 @@ shiba-configuration:
               defaultValue: "0"
         - pageName: expeditedUtilityPayments
     importantToKnow:
-      previousPage: doYouNeedHelpImmediately
       nextPages:
         - pageName: legalStuff
     legalStuff:
-      previousPage: importantToKnow
       nextPages:
         - pageName: signThisApplication
     signThisApplication:
-      previousPage: legalStuff
       nextPages:
         - pageName: success
     success:

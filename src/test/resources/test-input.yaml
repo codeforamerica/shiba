@@ -74,8 +74,8 @@ shiba-configuration-input:
       nextPages:
         - pageName: nextPage
     nextPage:
-      previousPage: firstPage
+      nextPages: []
     inputWithPromptFragmentPage:
-      previousPage:
+      nextPages: []
   landmarkPages:
     startTimerPage:

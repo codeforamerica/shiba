@@ -39,9 +39,9 @@ shiba-configuration-user-decision-navigation:
         - pageName: optionZeroPage
         - pageName: optionOnePage
     optionZeroPage:
-      previousPage:
+      nextPages: []
     optionOnePage:
-      previousPage:
+      nextPages: []
     formPageBranchingNavigationPage:
       conditionalNavigation: true
       nextPages:
@@ -54,8 +54,8 @@ shiba-configuration-user-decision-navigation:
             input: yesNoQuestion
             value: "false"
     yesAnswerPage:
-      previousPage:
+      nextPages: []
     noAnswerPage:
-      previousPage:
+      nextPages: []
   landmarkPages:
     startTimerPage:

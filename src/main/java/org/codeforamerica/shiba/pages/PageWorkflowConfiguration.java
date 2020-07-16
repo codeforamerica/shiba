@@ -11,17 +11,12 @@ import static org.codeforamerica.shiba.pages.FormData.getFormDataFrom;
 
 @Data
 public class PageWorkflowConfiguration {
-    List<NextPage> nextPages;
-    String previousPage;
+    private List<NextPage> nextPages;
     private Condition skipCondition;
     private List<PageDatasource> datasources = new ArrayList<>();
     boolean conditionalNavigation = false;
 
-    public String getAdjacentPageName(boolean isBackwards, FormData formData, Integer option) {
-        if (isBackwards) {
-            return previousPage;
-        }
-
+    public String getNextPageName(FormData formData, Integer option) {
         if (!conditionalNavigation) {
             return nextPages.get(option).getPageName();
         }

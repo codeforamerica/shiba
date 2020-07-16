@@ -28,7 +28,6 @@ shiba-configuration-conditional-rendering:
       nextPages:
         - pageName: secondPage
     secondPage:
-      previousPage: firstPage
       nextPages:
         - pageName: thirdPage
       skipCondition:
@@ -38,6 +37,6 @@ shiba-configuration-conditional-rendering:
       datasources:
         - pageName: firstPage
     thirdPage:
-      previousPage: secondPage
+      nextPages: []
   landmarkPages:
     startTimerPage:

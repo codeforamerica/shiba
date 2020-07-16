@@ -17,7 +17,7 @@ shiba-configuration-reset-data:
       nextPages:
         - pageName: secondPage
     secondPage:
-      previousPage: firstPage
+      nextPages: []
   landmarkPages:
     startTimerPage: secondPage
     landingPages:

@@ -47,19 +47,18 @@ public class PageController {
     @GetMapping("/pages/{pageName}/navigation")
     RedirectView navigation(
             @PathVariable String pageName,
-            @RequestParam(defaultValue = "false") Boolean isBackwards,
             @RequestParam(required = false, defaultValue = "0") Integer option
     ) {
         PageWorkflowConfiguration pageWorkflowConfiguration = this.pagesConfiguration.getPageWorkflow(pageName);
         FormData formData = this.applicationData.getFormData(pageName);
-        String adjacentPageName = pageWorkflowConfiguration.getAdjacentPageName(isBackwards, formData, option);
-        PageWorkflowConfiguration adjacentPage = this.pagesConfiguration.getPageWorkflow(adjacentPageName);
+        String nextPageName = pageWorkflowConfiguration.getNextPageName(formData, option);
+        PageWorkflowConfiguration nextPage = this.pagesConfiguration.getPageWorkflow(nextPageName);
 
-        if (adjacentPage.shouldSkip(applicationData.getPagesData())) {
-            FormData adjacentPageFormData = this.applicationData.getFormData(adjacentPageName);
-            return new RedirectView(String.format("/pages/%s", adjacentPage.getAdjacentPageName(isBackwards, adjacentPageFormData, option)));
+        if (nextPage.shouldSkip(applicationData.getPagesData())) {
+            FormData nextPageFormData = this.applicationData.getFormData(nextPageName);
+            return new RedirectView(String.format("/pages/%s", nextPage.getNextPageName(nextPageFormData, option)));
         } else {
-            return new RedirectView(String.format("/pages/%s", adjacentPageName));
+            return new RedirectView(String.format("/pages/%s", nextPageName));
         }
     }
 
@@ -130,18 +129,9 @@ public class PageController {
         PagesData pagesData = applicationData.getPagesData();
         pagesData.putPage(pageName, formData);
 
-        PageWorkflowConfiguration pageWorkflow = pagesConfiguration.getPageWorkflow(pageName);
-
         return formData.isValid() ?
                 new ModelAndView(String.format("redirect:/pages/%s/navigation", pageName)) :
-                new ModelAndView("formPage", Map.of(
-                        "page", page,
-                        "data", formData,
-                        "pageName", pageName,
-                        "postTo", this.pagesConfiguration.getLandmarkPages().isSubmitPage(pageName) ? "/submit" : "/pages/" + pageName,
-                        "pageTitle", pageWorkflow.resolve(pagesData, page.getPageTitle()),
-                        "headerKey", pageWorkflow.resolve(pagesData, page.getHeaderKey())
-                ));
+                new ModelAndView("redirect:/pages/" + pageName);
     }
 
     @PostMapping("/submit")

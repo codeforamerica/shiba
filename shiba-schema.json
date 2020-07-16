@@ -127,12 +127,6 @@
         "skipCondition": {
           "$ref": "#/definitions/condition"
         },
-        "previousPage": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
         "nextPages": {
           "type": "array",
           "items": {

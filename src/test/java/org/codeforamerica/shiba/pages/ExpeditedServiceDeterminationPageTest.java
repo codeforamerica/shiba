@@ -52,7 +52,7 @@ public class ExpeditedServiceDeterminationPageTest extends AbstractStaticMessage
     void shouldQualifyWhenMeetingIncomeAndAssetsThresholds(String income,
                                                            String assets,
                                                            boolean isQualified) {
-        driver.navigate().to(baseUrl + "/pages/doYouLiveAlone");
+        driver.navigate().to(baseUrl + "/pages/doYouLiveAloneExpedited");
 
         testPage.choose(YesNoAnswer.YES);
 
@@ -84,7 +84,7 @@ public class ExpeditedServiceDeterminationPageTest extends AbstractStaticMessage
             String assets,
             YesNoAnswer isMigrantWorker,
             boolean isQualified) {
-        driver.navigate().to(baseUrl + "/pages/doYouLiveAlone");
+        driver.navigate().to(baseUrl + "/pages/doYouLiveAloneExpedited");
 
         testPage.choose(YesNoAnswer.YES);
 
@@ -113,7 +113,7 @@ public class ExpeditedServiceDeterminationPageTest extends AbstractStaticMessage
                                                                     String rentMortgageAmount,
                                                                     List<String> utilityOptions,
                                                                     boolean isQualified) {
-        driver.navigate().to(baseUrl + "/pages/doYouLiveAlone");
+        driver.navigate().to(baseUrl + "/pages/doYouLiveAloneExpedited");
 
         testPage.choose(YesNoAnswer.YES);
 
@@ -166,7 +166,7 @@ public class ExpeditedServiceDeterminationPageTest extends AbstractStaticMessage
 
     @Test
     void shouldCalculateCorrectlyWhenSelectNoForPayingForHousing() {
-        driver.navigate().to(baseUrl + "/pages/doYouLiveAlone");
+        driver.navigate().to(baseUrl + "/pages/doYouLiveAloneExpedited");
 
         testPage.choose(YesNoAnswer.YES);
 

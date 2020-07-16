@@ -29,10 +29,7 @@ test-additional-data:
       nextPages:
         - pageName: testStaticPage
     testStaticPage:
-      previousPage:
       datasources:
         - pageName: firstPage
   landmarkPages:
     startTimerPage:
-    terminalPage:
-    submitPage:
