@@ -1,0 +1,44 @@
+test-derived-values:
+  groupName1:
+    value1:
+      value: foo
+      type: SINGLE_VALUE
+  groupName2:
+    value2:
+      value: bar
+      type: SINGLE_VALUE
+      condition:
+        conditions:
+          - pageName: somePage
+            input: someInput
+            matcher: CONTAINS
+            value: someValue
+  groupName3:
+    value3:
+      value: baz
+      type: SINGLE_VALUE
+      condition:
+        conditions:
+          - pageName: someOtherPage
+            input: someOtherInput
+            matcher: CONTAINS
+            value: someOtherValue
+          - pageName: somePage
+            input: someInput
+            matcher: CONTAINS
+            value: someValue
+  groupName4:
+    value4:
+      value: fooBar
+      type: SINGLE_VALUE
+      condition:
+        logicalOperator: AND
+        conditions:
+          - pageName: someOtherPage
+            input: someOtherInput
+            matcher: CONTAINS
+            value: someOtherValue
+          - pageName: somePage
+            input: someInput
+            matcher: CONTAINS
+            value: someValue

@@ -7,7 +7,8 @@ import java.util.function.BiFunction;
 public enum ValueMatcher {
     NOT_PRESENT((testValue, ignoredTargetValue) -> testValue.isEmpty()),
     CONTAINS(List::contains),
-    NOT_EMPTY((testValue, ignoredTargetValue) -> !String.join("", testValue).isBlank());
+    NOT_EMPTY((testValue, ignoredTargetValue) -> !String.join("", testValue).isBlank()),
+    DOES_NOT_CONTAIN((testValue, targetValue) -> !testValue.contains(targetValue));
 
     private final BiFunction<List<String>, String, Boolean> matcher;
 

@@ -1,0 +1,65 @@
+derived-values:
+  expeditedUtilityPayments:
+    noExpeditedUtilitiesSelected:
+      value: NO_EXPEDITED_UTILITIES_SELECTED
+      type: ENUMERATED_MULTI_VALUE
+      condition:
+        logicalOperator: AND
+        conditions:
+          - pageName: expeditedUtilityPayments
+            input: payForUtilities
+            matcher: DOES_NOT_CONTAIN
+            value: HEATING
+          - pageName: expeditedUtilityPayments
+            input: payForUtilities
+            matcher: DOES_NOT_CONTAIN
+            value: COOLING
+          - pageName: expeditedUtilityPayments
+            input: payForUtilities
+            matcher: DOES_NOT_CONTAIN
+            value: ELECTRICITY
+          - pageName: expeditedUtilityPayments
+            input: payForUtilities
+            matcher: DOES_NOT_CONTAIN
+            value: PHONE
+    heatingOrCoolingSelection:
+      value: ONE_SELECTED
+      type: ENUMERATED_SINGLE_VALUE
+      condition:
+        logicalOperator: OR
+        conditions:
+          - pageName: expeditedUtilityPayments
+            input: payForUtilities
+            matcher: CONTAINS
+            value: HEATING
+          - pageName: expeditedUtilityPayments
+            input: payForUtilities
+            matcher: CONTAINS
+            value: COOLING
+    waterOrSewerSelection:
+      value: ONE_SELECTED
+      type: ENUMERATED_SINGLE_VALUE
+      condition:
+        logicalOperator: OR
+        conditions:
+          - pageName: expeditedUtilityPayments
+            input: payForUtilities
+            matcher: CONTAINS
+            value: WATER
+          - pageName: expeditedUtilityPayments
+            input: payForUtilities
+            matcher: CONTAINS
+            value: SEWER
+  goingToSchool:
+    ccapHasCostsForChildCare:
+      value: CCAP_HAS_COSTS_FOR_CHILD_CARE
+      type: ENUMERATED_MULTI_VALUE
+      condition:
+        logicalOperator: AND
+        conditions:
+          - pageName: goingToSchool
+            input: goingToSchool
+            value: "true"
+          - pageName: choosePrograms
+            input: programs
+            value: CHILD_CARE

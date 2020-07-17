@@ -159,7 +159,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         completeFlowFromLandingPageToReviewInfo();
         driver.findElement(By.linkText("This looks correct")).click();
         Page introPersonDetailsPage = testPage.choose(YES);
-        Page importantToKnowPage = introPersonDetailsPage.clickPrimaryButton();
+        Page goingToSchool = introPersonDetailsPage.clickPrimaryButton();
+        Page importantToKnowPage = goingToSchool.choose(NO);
 
         Page legalStuffPage = importantToKnowPage.clickPrimaryButton();
         legalStuffPage.selectEnumeratedInput("agreeToTerms", "I agree");

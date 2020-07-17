@@ -6,7 +6,6 @@ import lombok.Value;
 import org.springframework.util.MultiValueMap;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toMap;
 import static org.codeforamerica.shiba.pages.PageUtils.getFormInputName;
@@ -20,22 +19,16 @@ public class FormData extends HashMap<String, InputData> {
     }
 
     static FormData fillOut(PageConfiguration page, MultiValueMap<String, String> model) {
-        Stream<Entry<String, InputData>> formInputEntries = page.getFlattenedInputs().stream()
+        Map<String, InputData> inputDataMap = page.getFlattenedInputs().stream()
                 .map(formInput -> {
                     List<String> value = Optional.ofNullable(model)
                             .map(modelMap -> modelMap.get(getFormInputName(formInput.getName())))
                             .orElse(null);
                     InputData inputData = new InputData(formInput.getValidationFor(model), value);
                     return Map.entry(formInput.getName(), inputData);
-                });
-        Stream<Entry<String, InputData>> additionalDataEntries = page.getAdditionalData().stream()
-                .map(additionalDatum -> {
-                    InputData inputData = new InputData(List.of(page.resolve(model, additionalDatum.getValue())));
-                    return Map.entry(additionalDatum.getName(), inputData);
-                });
-        Map<String, InputData> allData = Stream.concat(formInputEntries, additionalDataEntries)
+                })
                 .collect(toMap(Entry::getKey, Entry::getValue));
-        return new FormData(allData);
+        return new FormData(inputDataMap);
     }
 
     public static FormData initialize(PageConfiguration pageConfiguration) {

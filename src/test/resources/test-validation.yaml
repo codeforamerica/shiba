@@ -1,4 +1,4 @@
-test-validation:
+shiba-configuration-test-validation:
   pages:
     firstPage:
       pageTitle:
@@ -111,6 +111,21 @@ test-validation:
           validator:
             validation: SELECT_AT_LEAST_ONE
           validationErrorMessageKey: error-message-key
+    doesNotContainConditionPage:
+      pageTitle:
+        value: dummy-page-title
+      inputs:
+        - name: triggerInput
+          type: TEXT
+        - name: conditionTest
+          validationErrorMessageKey: error-message-key
+          type: TEXT
+          validator:
+            validation: NOT_BLANK
+            condition:
+              value: triggerValue
+              matcher: DOES_NOT_CONTAIN
+              input: triggerInput
     lastPage:
       pageTitle:
         value: last-page-title
@@ -146,6 +161,9 @@ test-validation:
       nextPages:
         - pageName: lastPage
     checkboxPage:
+      nextPages:
+        - pageName: lastPage
+    doesNotContainConditionPage:
       nextPages:
         - pageName: lastPage
     lastPage:

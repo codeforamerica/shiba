@@ -39,7 +39,7 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest {
     @PropertySource(value = "classpath:test-validation.yaml", factory = YamlPropertySourceFactory.class)
     static class TestPageConfiguration extends MetricsTestConfigurationWithExistingStartTime {
         @Bean
-        @ConfigurationProperties(prefix = "test-validation")
+        @ConfigurationProperties(prefix = "shiba-configuration-test-validation")
         public PagesConfiguration pagesConfiguration() {
             return new PagesConfiguration();
         }
@@ -125,31 +125,55 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest {
         assertThat(testPage.getInputError("conditionalValidationWhenValueEquals")).isNotNull();
     }
 
-    @Test
-    void shouldTriggerValidation_whenConditionInputValueIsNotPresent() {
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-        driver.findElement(By.cssSelector("input[name^='someInputName']")).sendKeys("do not trigger validation");
-        driver.findElement(By.cssSelector("button")).click();
+    @Nested
+    class Condition {
+        @Test
+        void shouldTriggerValidation_whenConditionInputValueIsNotPresent() {
+            driver.navigate().to(baseUrl + "/pages/firstPage");
+            driver.findElement(By.cssSelector("input[name^='someInputName']")).sendKeys("do not trigger validation");
+            driver.findElement(By.cssSelector("button")).click();
 
-        assertThat(driver.getTitle()).isEqualTo(nextPageTitle);
+            assertThat(driver.getTitle()).isEqualTo(nextPageTitle);
 
-        driver.findElement(By.cssSelector("button")).click();
+            driver.findElement(By.cssSelector("button")).click();
 
-        assertThat(testPage.getInputError("conditionalValidationWhenValueIsNotPresent")).isNotNull();
+            assertThat(testPage.getInputError("conditionalValidationWhenValueIsNotPresent")).isNotNull();
+        }
+
+        @Test
+        void shouldNotTriggerValidation_whenConditionInputValueIsPresent() {
+            driver.navigate().to(baseUrl + "/pages/firstPage");
+            driver.findElement(By.cssSelector("input[name^='someInputName']")).sendKeys("do not trigger validation");
+            driver.findElement(By.cssSelector("button")).click();
+
+            assertThat(driver.getTitle()).isEqualTo(nextPageTitle);
+            driver.findElement(By.cssSelector("input[name^='someCheckbox']")).click();
+            driver.findElement(By.cssSelector("button")).click();
+
+            assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
+        }
+
+        @Test
+        void shouldNotTriggerValidation_whenConditionInputContainsValue() {
+            navigateTo("doesNotContainConditionPage");
+
+            testPage.enterInput("triggerInput", "triggerValue");
+            testPage.clickPrimaryButton();
+
+            assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
+        }
+
+        @Test
+        void shouldTriggerValidation_whenConditionInputDoesNotContainValue() {
+            navigateTo("doesNotContainConditionPage");
+
+            testPage.enterInput("triggerInput", "not trigger");
+            testPage.clickPrimaryButton();
+
+            assertThat(testPage.hasInputError("conditionTest")).isTrue();
+        }
     }
 
-    @Test
-    void shouldNotTriggerValidation_whenConditionInputValueIsPresent() {
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-        driver.findElement(By.cssSelector("input[name^='someInputName']")).sendKeys("do not trigger validation");
-        driver.findElement(By.cssSelector("button")).click();
-
-        assertThat(driver.getTitle()).isEqualTo(nextPageTitle);
-        driver.findElement(By.cssSelector("input[name^='someCheckbox']")).click();
-        driver.findElement(By.cssSelector("button")).click();
-
-        assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
-    }
 
     @Nested
     class SpecificValidations {

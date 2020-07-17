@@ -41,12 +41,16 @@ public class PageWorkflowConfiguration {
         if (value == null) {
             return "";
         }
-        return value.resolve(condition -> {
-            Objects.requireNonNull(this.getDatasources(),
-                    "Configuration mismatch! Conditional value cannot be evaluated without a datasource.");
-            FormData formData = getFormDataFrom(this.getDatasources(), pagesData);
-            return condition.appliesTo(formData);
-        });
+        return value.getConditionalValues().stream()
+                .filter(conditionalValue -> {
+                    Objects.requireNonNull(this.getDatasources(),
+                            "Configuration mismatch! Conditional value cannot be evaluated without a datasource.");
+                    FormData formData = getFormDataFrom(this.getDatasources(), pagesData);
+                    return conditionalValue.getCondition().appliesTo(formData);
+                })
+                .findFirst()
+                .map(ConditionalValue::getValue)
+                .orElse(value.getValue());
     }
 
 }

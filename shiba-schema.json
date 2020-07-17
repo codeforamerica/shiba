@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "patternProperties": {
-    "^.*$": {
+    "^(shiba-configuration).*$": {
       "type": "object",
       "properties": {
         "pages": {
@@ -72,20 +72,6 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/input"
-          }
-        },
-        "additionalData": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string"
-              },
-              "value": {
-                "$ref": "#/definitions/value"
-              }
-            }
           }
         }
       }

@@ -54,7 +54,8 @@ caf:
         PHONE: PHONE
         GARBAGE_REMOVAL: GARBAGE_REMOVAL
         COOKING_FUEL: COOKING_FUEL
-      expeditedUtilitiesSummary: EXPEDITED_UTILITIES_SUMMARY
+      noExpeditedUtilitiesSelected:
+        NO_EXPEDITED_UTILITIES_SELECTED: NO_EXPEDITED_UTILITIES_SELECTED
       heatingOrCoolingSelection: HEATING_COOLING_SELECTION
       waterOrSewerSelection: WATER_SEWER_SELECTION
     expeditedMigrantFarmWorker:
@@ -63,5 +64,9 @@ caf:
       applicantSignature: APPLICANT_SIGNATURE
     nonPagesData:
       submissionTime: SUBMISSION_TIME
+    goingToSchool:
+      goingToSchool: GOING_TO_SCHOOL
+      ccapHasCostsForChildCare:
+        CCAP_HAS_COSTS_FOR_CHILD_CARE: CCAP_HAS_COSTS_FOR_CHILD_CARE
     expeditedEligibility:
       expeditedEligibility: EXPEDITED_ELIGIBILITY

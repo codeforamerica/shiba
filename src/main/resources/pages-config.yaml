@@ -336,6 +336,14 @@ shiba-configuration:
     introPersonalDetails:
       pageTitle:
         value: intro-personal-details.title
+    goingToSchool:
+      pageTitle:
+        value: going-to-school.title
+      headerKey:
+        value: going-to-school.header
+      inputs:
+        - name: goingToSchool
+          type: YES_NO
     doYouNeedHelpImmediately:
       pageTitle:
         value: do-you-need-help-immediately.title
@@ -512,59 +520,6 @@ shiba-configuration:
             - value: NONE_OF_THE_ABOVE
               messageKey: expedited-utility-payments.none-of-the-above
               isNone: true
-      additionalData:
-        - name: heatingOrCoolingSelection
-          value:
-            value: NEITHER_SELECTED
-            conditionalValues:
-              - value: ONE_SELECTED
-                condition:
-                  input: payForUtilities
-                  value: HEATING
-                  matcher: CONTAINS
-              - value: ONE_SELECTED
-                condition:
-                  input: payForUtilities
-                  value: COOLING
-                  matcher: CONTAINS
-        - name: waterOrSewerSelection
-          value:
-            value: NEITHER_SELECTED
-            conditionalValues:
-              - value: ONE_SELECTED
-                condition:
-                  input: payForUtilities
-                  value: WATER
-                  matcher: CONTAINS
-              - value: ONE_SELECTED
-                condition:
-                  input: payForUtilities
-                  value: SEWER
-                  matcher: CONTAINS
-        - name: expeditedUtilitiesSummary
-          value:
-            value: NO_EXPEDITED_UTILITIES_SELECTED
-            conditionalValues:
-              - value: SOME_EXPEDITED_UTILITIES_SELECTED
-                condition:
-                  input: payForUtilities
-                  value: HEATING
-                  matcher: CONTAINS
-              - value: SOME_EXPEDITED_UTILITIES_SELECTED
-                condition:
-                  input: payForUtilities
-                  value: COOLING
-                  matcher: CONTAINS
-              - value: SOME_EXPEDITED_UTILITIES_SELECTED
-                condition:
-                  input: payForUtilities
-                  value: ELECTRICITY
-                  matcher: CONTAINS
-              - value: SOME_EXPEDITED_UTILITIES_SELECTED
-                condition:
-                  input: payForUtilities
-                  value: PHONE
-                  matcher: CONTAINS
     expeditedMigrantFarmWorker:
       pageTitle:
         conditionalValues:
@@ -590,7 +545,7 @@ shiba-configuration:
         - name: migrantOrSeasonalFarmWorker
           type: YES_NO
     expeditedDetermination:
-      additionalData: []
+      inputs: []
     importantToKnow:
       pageTitle:
         value: important-to-know.title
@@ -696,6 +651,9 @@ shiba-configuration:
       nextPages:
         - pageName: introPersonalDetails
     introPersonalDetails:
+      nextPages:
+        - pageName: goingToSchool
+    goingToSchool:
       nextPages:
         - pageName: importantToKnow
     doYouNeedHelpImmediately:

@@ -20,7 +20,8 @@ public class ApplicationInputsProjector implements ApplicationInputsMapper {
 
     public ApplicationInputsProjector(
             PagesConfiguration pagesConfiguration,
-            InputToOutputProjectionConfiguration inputToOutputProjectionConfiguration) {
+            InputToOutputProjectionConfiguration inputToOutputProjectionConfiguration
+    ) {
         this.pagesConfiguration = pagesConfiguration;
         this.inputToOutputProjectionConfiguration = inputToOutputProjectionConfiguration;
     }
