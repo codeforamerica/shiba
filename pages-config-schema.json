@@ -22,9 +22,6 @@
                 "null"
               ]
             },
-            "startTimer": {
-              "type": "boolean"
-            },
             "landingPages": {
               "type": "array",
               "items": {
@@ -132,6 +129,9 @@
         },
         "conditionalNavigation": {
           "type": "boolean"
+        },
+        "pageModel": {
+          "type": "string"
         }
       },
       "additionalProperties": false

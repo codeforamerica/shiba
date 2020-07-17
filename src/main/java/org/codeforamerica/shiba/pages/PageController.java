@@ -50,13 +50,15 @@ public class PageController {
             @PathVariable String pageName,
             @RequestParam(required = false, defaultValue = "0") Integer option
     ) {
-        PageWorkflowConfiguration pageWorkflowConfiguration = this.pagesConfiguration.getPageWorkflow(pageName);
-        FormData formData = this.applicationData.getFormData(pageName);
-        String nextPageName = pageWorkflowConfiguration.getNextPageName(formData, option);
+        PageWorkflowConfiguration pageWorkflow = this.pagesConfiguration.getPageWorkflow(pageName);
+        String pageModel = Optional.ofNullable(pageWorkflow.getPageModel()).orElse(pageName);
+        FormData formData = this.applicationData.getFormData(pageModel);
+        String nextPageName = pageWorkflow.getNextPageName(formData, option);
         PageWorkflowConfiguration nextPage = this.pagesConfiguration.getPageWorkflow(nextPageName);
 
         if (nextPage.shouldSkip(applicationData.getPagesData())) {
-            FormData nextPageFormData = this.applicationData.getFormData(nextPageName);
+            String nextPageModel = Optional.ofNullable(nextPage.getPageModel()).orElse(pageName);
+            FormData nextPageFormData = this.applicationData.getFormData(nextPageModel);
             return new RedirectView(String.format("/pages/%s", nextPage.getNextPageName(nextPageFormData, option)));
         } else {
             return new RedirectView(String.format("/pages/%s", nextPageName));
@@ -85,8 +87,9 @@ public class PageController {
 
         response.addHeader("Cache-Control", "no-store");
 
-        PageConfiguration pageConfiguration = this.pagesConfiguration.getPages().get(pageName);
         PageWorkflowConfiguration pageWorkflow = this.pagesConfiguration.getPageWorkflow(pageName);
+        String pageModel = Optional.ofNullable(pageWorkflow.getPageModel()).orElse(pageName);
+        PageConfiguration pageConfiguration = this.pagesConfiguration.getPages().get(pageModel);
 
         PagesData pagesData = applicationData.getPagesData();
         HashMap<String, Object> model = new HashMap<>(Map.of(
@@ -126,11 +129,14 @@ public class PageController {
             @RequestBody(required = false) MultiValueMap<String, String> model,
             @PathVariable String pageName
     ) {
-        PageConfiguration page = pagesConfiguration.getPages().get(pageName);
+        PageWorkflowConfiguration pageWorkflow = pagesConfiguration.getPageWorkflow(pageName);
+        String pageModel = Optional.ofNullable(pageWorkflow.getPageModel()).orElse(pageName);
+
+        PageConfiguration page = pagesConfiguration.getPages().get(pageModel);
         FormData formData = FormData.fillOut(page, model);
 
         PagesData pagesData = applicationData.getPagesData();
-        pagesData.putPage(pageName, formData);
+        pagesData.putPage(pageModel, formData);
 
         return formData.isValid() ?
                 new ModelAndView(String.format("redirect:/pages/%s/navigation", pageName)) :

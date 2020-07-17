@@ -355,14 +355,6 @@ shiba-configuration:
     doYouNeedHelpImmediately:
       pageTitle:
         value: do-you-need-help-immediately.title
-    doYouLiveAloneExpedited:
-      headerKey:
-        value: do-you-live-alone.do-you-live-alone
-      pageTitle:
-        value: do-you-live-alone.title
-      inputs:
-        - name: liveAlone
-          type: YES_NO
     expeditedIncome:
       headerKey:
         conditionalValues:
@@ -677,23 +669,24 @@ shiba-configuration:
         - pageName: doYouLiveAloneExpedited
         - pageName: importantToKnow
     doYouLiveAloneExpedited:
+      pageModel: doYouLiveAlone
       nextPages:
         - pageName: expeditedIncome
     expeditedIncome:
       nextPages:
         - pageName: liquidAssets
       datasources:
-        - pageName: doYouLiveAloneExpedited
+        - pageName: doYouLiveAlone
     liquidAssets:
       nextPages:
         - pageName: expeditedExpenses
       datasources:
-        - pageName: doYouLiveAloneExpedited
+        - pageName: doYouLiveAlone
     expeditedExpenses:
       nextPages:
         - pageName: expeditedExpensesAmount
       datasources:
-        - pageName: doYouLiveAloneExpedited
+        - pageName: doYouLiveAlone
     expeditedExpensesAmount:
       skipCondition:
         input: payRentOrMortgage
@@ -701,18 +694,18 @@ shiba-configuration:
       nextPages:
         - pageName: expeditedUtilityPayments
       datasources:
-        - pageName: doYouLiveAloneExpedited
+        - pageName: doYouLiveAlone
         - pageName: expeditedExpenses
     expeditedUtilityPayments:
       nextPages:
         - pageName: expeditedMigrantFarmWorker
       datasources:
-        - pageName: doYouLiveAloneExpedited
+        - pageName: doYouLiveAlone
     expeditedMigrantFarmWorker:
       nextPages:
         - pageName: expeditedDetermination
       datasources:
-        - pageName: doYouLiveAloneExpedited
+        - pageName: doYouLiveAlone
     expeditedDetermination:
       nextPages:
         - pageName: importantToKnow

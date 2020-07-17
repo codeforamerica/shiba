@@ -1,0 +1,17 @@
+shiba-configuration-page-model:
+  pages:
+    firstPage:
+      pageTitle:
+        value: first-page-title
+      inputs:
+        - name: someInput
+          type: TEXT
+  landmarkPages:
+    startTimerPage: null
+  workflow:
+    firstPage:
+      nextPages: []
+    lastPage:
+      pageModel: firstPage
+      nextPages:
+        - pageName: firstPage
