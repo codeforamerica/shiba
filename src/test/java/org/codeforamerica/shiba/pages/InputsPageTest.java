@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class InputsPageTest extends AbstractStaticMessageSourcePageTest {
     @TestConfiguration
-    @PropertySource(value = "classpath:test-input.yaml", factory = YamlPropertySourceFactory.class)
+    @PropertySource(value = "classpath:pages-config/test-input.yaml", factory = YamlPropertySourceFactory.class)
     static class TestPageConfiguration extends MetricsTestConfigurationWithExistingStartTime {
         @Bean
         @ConfigurationProperties(prefix = "shiba-configuration-input")

@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class FlowRedirectPageTest extends AbstractStaticMessageSourcePageTest {
     @TestConfiguration
-    @PropertySource(value = "classpath:test-flow-redirect.yaml", factory = YamlPropertySourceFactory.class)
+    @PropertySource(value = "classpath:pages-config/test-flow-redirect.yaml", factory = YamlPropertySourceFactory.class)
     static class TestPageConfiguration {
         @Bean
         @ConfigurationProperties(prefix = "shiba-configuration-flow-redirect")

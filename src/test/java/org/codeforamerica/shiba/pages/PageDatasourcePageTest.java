@@ -22,7 +22,7 @@ public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest 
     private final String yesHeaderText = "yes header text";
 
     @TestConfiguration
-    @PropertySource(value = "classpath:test-page-datasources.yaml", factory = YamlPropertySourceFactory.class)
+    @PropertySource(value = "classpath:pages-config/test-page-datasources.yaml", factory = YamlPropertySourceFactory.class)
     static class TestPageConfiguration extends MetricsTestConfigurationWithExistingStartTime {
         @Bean
         @ConfigurationProperties(prefix = "shiba-configuration-page-datasource")

@@ -19,7 +19,7 @@ public class YesNoAnswerPageTest extends AbstractStaticMessageSourcePageTest {
     private final String answerPage = "option-zero-page-title";
 
     @TestConfiguration
-    @PropertySource(value = "classpath:yes-no-answer.yaml", factory = YamlPropertySourceFactory.class)
+    @PropertySource(value = "classpath:pages-config/yes-no-answer.yaml", factory = YamlPropertySourceFactory.class)
     static class TestPageConfiguration extends MetricsTestConfigurationWithExistingStartTime {
         @Bean
         @ConfigurationProperties(prefix = "shiba-configuration-yes-no-answer")

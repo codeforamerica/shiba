@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class StartTimerPageTest extends AbstractStaticMessageSourcePageTest {
 
     @TestConfiguration
-    @PropertySource(value = "classpath:test-start-timer.yaml", factory = YamlPropertySourceFactory.class)
+    @PropertySource(value = "classpath:pages-config/test-start-timer.yaml", factory = YamlPropertySourceFactory.class)
     static class TestPageConfiguration {
         @Bean
         @ConfigurationProperties(prefix = "shiba-configuration-start-timer")

@@ -21,7 +21,7 @@ public class UserDecisionNavigationPageTest extends AbstractStaticMessageSourceP
     private final String yesAnswerTitle = "yes answer title";
 
     @TestConfiguration
-    @PropertySource(value = "classpath:test-user-decision-navigation.yaml", factory = YamlPropertySourceFactory.class)
+    @PropertySource(value = "classpath:pages-config/test-user-decision-navigation.yaml", factory = YamlPropertySourceFactory.class)
     static class TestPageConfiguration extends MetricsTestConfigurationWithExistingStartTime {
         @Bean
         @ConfigurationProperties(prefix = "shiba-configuration-user-decision-navigation")

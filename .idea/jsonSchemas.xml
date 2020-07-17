@@ -13,6 +13,9 @@
                   <Item>
                     <option name="path" value="src/main/resources/derived-value-config.yaml" />
                   </Item>
+                  <Item>
+                    <option name="path" value="src/test/resources/derived-values-config/test-derived-values-config.yaml" />
+                  </Item>
                 </list>
               </option>
             </SchemaInfo>
@@ -27,7 +30,7 @@
                 <list>
                   <Item>
                     <option name="pattern" value="true" />
-                    <option name="path" value="src/test/resources/*.yaml" />
+                    <option name="path" value="src/test/resources/pages-config/*.yaml" />
                     <option name="mappingKind" value="Pattern" />
                   </Item>
                   <Item>

@@ -36,7 +36,7 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest {
     private final String option1 = "option 1";
 
     @TestConfiguration
-    @PropertySource(value = "classpath:test-validation.yaml", factory = YamlPropertySourceFactory.class)
+    @PropertySource(value = "classpath:pages-config/test-validation.yaml", factory = YamlPropertySourceFactory.class)
     static class TestPageConfiguration extends MetricsTestConfigurationWithExistingStartTime {
         @Bean
         @ConfigurationProperties(prefix = "shiba-configuration-test-validation")

@@ -26,7 +26,7 @@ class DerivedValueApplicationInputsMapperTest {
     private final PagesData pagesData = new PagesData();
 
     @TestConfiguration
-    @PropertySource(value = "classpath:test-derived-values-config.yaml", factory = YamlPropertySourceFactory.class)
+    @PropertySource(value = "classpath:derived-values-config/test-derived-values-config.yaml", factory = YamlPropertySourceFactory.class)
     static class TestPageConfiguration {
         @Bean
         @ConfigurationProperties(prefix = "test-derived-values")
