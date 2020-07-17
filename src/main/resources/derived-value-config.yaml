@@ -1,7 +1,8 @@
 derived-values:
   expeditedUtilityPayments:
     noExpeditedUtilitiesSelected:
-      value: NO_EXPEDITED_UTILITIES_SELECTED
+      value:
+        literal: NO_EXPEDITED_UTILITIES_SELECTED
       type: ENUMERATED_MULTI_VALUE
       condition:
         logicalOperator: AND
@@ -23,7 +24,8 @@ derived-values:
             matcher: DOES_NOT_CONTAIN
             value: PHONE
     heatingOrCoolingSelection:
-      value: ONE_SELECTED
+      value:
+        literal: ONE_SELECTED
       type: ENUMERATED_SINGLE_VALUE
       condition:
         logicalOperator: OR
@@ -37,7 +39,8 @@ derived-values:
             matcher: CONTAINS
             value: COOLING
     waterOrSewerSelection:
-      value: ONE_SELECTED
+      value:
+        literal: ONE_SELECTED
       type: ENUMERATED_SINGLE_VALUE
       condition:
         logicalOperator: OR
@@ -52,7 +55,8 @@ derived-values:
             value: SEWER
   goingToSchool:
     ccapHasCostsForChildCare:
-      value: CCAP_HAS_COSTS_FOR_CHILD_CARE
+      value:
+        literal: CCAP_HAS_COSTS_FOR_CHILD_CARE
       type: ENUMERATED_MULTI_VALUE
       condition:
         logicalOperator: AND
@@ -63,3 +67,64 @@ derived-values:
           - pageName: choosePrograms
             input: programs
             value: CHILD_CARE
+  mailingAddress:
+    zipCode:
+      type: SINGLE_VALUE
+      value:
+        type: REFERENCE
+        reference:
+          pageName: homeAddress
+          inputName: zipCode
+      condition:
+        conditions:
+          - pageName: homeAddress
+            input: sameMailingAddress
+            value: "true"
+    city:
+      type: SINGLE_VALUE
+      value:
+        type: REFERENCE
+        reference:
+          pageName: homeAddress
+          inputName: city
+      condition:
+        conditions:
+          - pageName: homeAddress
+            input: sameMailingAddress
+            value: "true"
+    state:
+      type: SINGLE_VALUE
+      value:
+        type: REFERENCE
+        reference:
+          pageName: homeAddress
+          inputName: state
+      condition:
+        conditions:
+          - pageName: homeAddress
+            input: sameMailingAddress
+            value: "true"
+    streetAddress:
+      type: SINGLE_VALUE
+      value:
+        type: REFERENCE
+        reference:
+          pageName: homeAddress
+          inputName: streetAddress
+      condition:
+        conditions:
+          - pageName: homeAddress
+            input: sameMailingAddress
+            value: "true"
+    apartmentNumber:
+      type: SINGLE_VALUE
+      value:
+        type: REFERENCE
+        reference:
+          pageName: homeAddress
+          inputName: apartmentNumber
+      condition:
+        conditions:
+          - pageName: homeAddress
+            input: sameMailingAddress
+            value: "true"

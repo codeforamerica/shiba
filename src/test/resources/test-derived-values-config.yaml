@@ -1,12 +1,14 @@
 test-derived-values:
   groupName1:
     value1:
-      value: foo
+      value:
+        literal: foo
       type: SINGLE_VALUE
   groupName2:
     value2:
-      value: bar
       type: SINGLE_VALUE
+      value:
+        literal: bar
       condition:
         conditions:
           - pageName: somePage
@@ -15,7 +17,8 @@ test-derived-values:
             value: someValue
   groupName3:
     value3:
-      value: baz
+      value:
+        literal: baz
       type: SINGLE_VALUE
       condition:
         conditions:
@@ -29,7 +32,8 @@ test-derived-values:
             value: someValue
   groupName4:
     value4:
-      value: fooBar
+      value:
+        literal: fooBar
       type: SINGLE_VALUE
       condition:
         logicalOperator: AND
@@ -42,3 +46,11 @@ test-derived-values:
             input: someInput
             matcher: CONTAINS
             value: someValue
+  groupName5:
+    value5:
+      type: SINGLE_VALUE
+      value:
+        type: REFERENCE
+        reference:
+          pageName: defaultPage
+          inputName: defaultInput

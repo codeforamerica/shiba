@@ -5,6 +5,7 @@ import org.codeforamerica.shiba.pages.ApplicationData;
 import org.codeforamerica.shiba.pages.FormData;
 import org.codeforamerica.shiba.pages.InputData;
 import org.codeforamerica.shiba.pages.PagesData;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -20,32 +21,39 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(properties = {"spring.main.allow-bean-definition-overriding=true"})
 class DerivedValueApplicationInputsMapperTest {
+
+    private final ApplicationData applicationData = new ApplicationData();
+    private final PagesData pagesData = new PagesData();
+
     @TestConfiguration
     @PropertySource(value = "classpath:test-derived-values-config.yaml", factory = YamlPropertySourceFactory.class)
     static class TestPageConfiguration {
         @Bean
         @ConfigurationProperties(prefix = "test-derived-values")
-        public DerivedValueConfiguration derivedValueConfiguration() {
-            return new DerivedValueConfiguration();
+        public DerivedValuesConfiguration derivedValuesConfiguration() {
+            return new DerivedValuesConfiguration();
         }
     }
 
     @Autowired
     DerivedValueApplicationInputsMapper derivedValueApplicationInputsMapper;
 
+    @BeforeEach
+    void setUp() {
+        pagesData.put("defaultPage", new FormData(Map.of("defaultInput", new InputData(List.of("defaultValue")))));
+        applicationData.setPagesData(pagesData);
+    }
+
     @Test
     void shouldProjectValue() {
-        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(new ApplicationData());
+        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
 
-        assertThat(actual).containsExactly(new ApplicationInput("groupName1", List.of("foo"), "value1", ApplicationInputType.SINGLE_VALUE));
+        assertThat(actual).contains(new ApplicationInput("groupName1", List.of("foo"), "value1", ApplicationInputType.SINGLE_VALUE));
     }
 
     @Test
     void shouldProjectValueIfConditionIsTrue() {
-        ApplicationData applicationData = new ApplicationData();
-        PagesData pagesData = new PagesData();
         pagesData.put("somePage", new FormData(Map.of("someInput", new InputData(List.of("someValue")))));
-        applicationData.setPagesData(pagesData);
 
         List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
 
@@ -54,10 +62,7 @@ class DerivedValueApplicationInputsMapperTest {
 
     @Test
     void shouldProjectValueIfAnyOfTheConditionsIsTrue() {
-        ApplicationData applicationData = new ApplicationData();
-        PagesData pagesData = new PagesData();
         pagesData.put("somePage", new FormData(Map.of("someInput", new InputData(List.of("someValue")))));
-        applicationData.setPagesData(pagesData);
 
         List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
 
@@ -66,10 +71,7 @@ class DerivedValueApplicationInputsMapperTest {
 
     @Test
     void shouldProjectValueIfAllOfTheConditionsAreTrue() {
-        ApplicationData applicationData = new ApplicationData();
-        PagesData pagesData = new PagesData();
         pagesData.put("somePage", new FormData(Map.of("someInput", new InputData(List.of("someValue")))));
-        applicationData.setPagesData(pagesData);
 
         List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
 
@@ -80,5 +82,12 @@ class DerivedValueApplicationInputsMapperTest {
         actual = derivedValueApplicationInputsMapper.map(applicationData);
 
         assertThat(actual).contains(new ApplicationInput("groupName4", List.of("fooBar"), "value4", ApplicationInputType.SINGLE_VALUE));
+    }
+
+    @Test
+    void shouldGetReferencedValueFromPagesData() {
+        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
+
+        assertThat(actual).contains(new ApplicationInput("groupName5", List.of("defaultValue"), "value5", ApplicationInputType.SINGLE_VALUE));
     }
 }

@@ -3,11 +3,26 @@
   <component name="JsonSchemaMappingsProjectConfiguration">
     <state>
       <map>
+        <entry key="derived values schema">
+          <value>
+            <SchemaInfo>
+              <option name="name" value="derived values schema" />
+              <option name="relativePathToSchema" value="derived-values-config-schema.json" />
+              <option name="patterns">
+                <list>
+                  <Item>
+                    <option name="path" value="src/main/resources/derived-value-config.yaml" />
+                  </Item>
+                </list>
+              </option>
+            </SchemaInfo>
+          </value>
+        </entry>
         <entry key="shiba-schema">
           <value>
             <SchemaInfo>
               <option name="name" value="shiba-schema" />
-              <option name="relativePathToSchema" value="shiba-schema.json" />
+              <option name="relativePathToSchema" value="pages-config-schema.json" />
               <option name="patterns">
                 <list>
                   <Item>

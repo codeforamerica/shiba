@@ -6,9 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
-@PropertySource(value = "classpath:input-output-config.yaml", factory = YamlPropertySourceFactory.class)
-@ConfigurationProperties(prefix = "projections")
-public class InputToOutputProjectionConfiguration extends HashMap<String, ProjectionTarget> {
+@ConfigurationProperties(prefix = "derived-values")
+@PropertySource(value = "classpath:derived-value-config.yaml", factory = YamlPropertySourceFactory.class)
+public class DerivedValuesConfiguration extends HashMap<String, Map<String, DerivedValue>> {
 }

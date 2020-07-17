@@ -1,0 +1,89 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "patternProperties": {
+    "^.*$": {
+      "type": "object",
+      "patternProperties": {
+        "^.*$": {
+          "type": "object",
+          "patternProperties": {
+            "^.*$": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "object",
+                  "properties": {
+                    "literal": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "LITERAL",
+                        "REFERENCE"
+                      ]
+                    },
+                    "reference": {
+                      "type": "object",
+                      "properties": {
+                        "pageName": {
+                          "type": "string"
+                        },
+                        "inputName": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "SINGLE_VALUE",
+                    "DATE_VALUE",
+                    "ENUMERATED_SINGLE_VALUE",
+                    "ENUMERATED_MULTI_VALUE"
+                  ]
+                },
+                "condition": {
+                  "type": "object",
+                  "properties": {
+                    "logicalOperator": {
+                      "type": "string",
+                      "enum": [
+                        "OR",
+                        "AND"
+                      ]
+                    },
+                    "conditions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "pageName": {
+                            "type": "string"
+                          },
+                          "input": {
+                            "type": "string"
+                          },
+                          "matcher": {
+                            "type": "string"
+                          },
+                          "value": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "required": ["type"]
+            }
+          }
+        }
+      }
+    }
+  }
+}

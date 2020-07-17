@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class DerivedValue {
-    private String value;
+    private DerivedValueConfiguration value;
     private ApplicationInputType type;
     private CompositeCondition condition;
 }

@@ -1,15 +1,23 @@
 package org.codeforamerica.shiba.output;
 
-import org.codeforamerica.shiba.YamlPropertySourceFactory;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import lombok.Data;
+import org.codeforamerica.shiba.pages.ApplicationData;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
-@Configuration
-@ConfigurationProperties(prefix = "derived-values")
-@PropertySource(value = "classpath:derived-value-config.yaml", factory = YamlPropertySourceFactory.class)
-public class DerivedValueConfiguration extends HashMap<String, Map<String, DerivedValue>> {
+@Data
+public class DerivedValueConfiguration {
+    private String literal;
+    private DerivedValueType type = DerivedValueType.LITERAL;
+    private ValueReference reference;
+
+    List<String> resolve(ApplicationData data) {
+        return switch (type) {
+            case LITERAL -> List.of(literal);
+            case REFERENCE -> {
+                ValueReference reference = this.reference;
+                yield data.getFormData(reference.getPageName()).get(reference.getInputName()).getValue();
+            }
+        };
+    }
 }
