@@ -58,7 +58,7 @@ caf:
         NO_EXPEDITED_UTILITIES_SELECTED: NO_EXPEDITED_UTILITIES_SELECTED
       heatingOrCoolingSelection: HEATING_COOLING_SELECTION
       waterOrSewerSelection: WATER_SEWER_SELECTION
-    expeditedMigrantFarmWorker:
+    migrantFarmWorker:
       migrantOrSeasonalFarmWorker: MIGRANT_SEASONAL_FARM_WORKER
     signThisApplication:
       applicantSignature: APPLICANT_SIGNATURE

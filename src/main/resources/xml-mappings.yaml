@@ -39,7 +39,7 @@ xml:
     expeditedUtilityPayments:
       payForUtilities: PAY_FOR_UTILITIES
       expeditedUtilitiesSummary: PAY_FOR_UTILITIES
-    expeditedMigrantFarmWorker:
+    migrantFarmWorker:
       migrantOrSeasonalFarmWorker: MIGRANT_SEASONAL_FARM_WORKER
     pregnant:
       isPregnant: IS_PREGNANT

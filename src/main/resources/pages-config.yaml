@@ -520,7 +520,7 @@ shiba-configuration:
             - value: NONE_OF_THE_ABOVE
               messageKey: expedited-utility-payments.none-of-the-above
               isNone: true
-    expeditedMigrantFarmWorker:
+    migrantFarmWorker:
       pageTitle:
         conditionalValues:
           - value: expedited-migrant-farm-worker.title-one-person
@@ -658,12 +658,17 @@ shiba-configuration:
         - pageName: pregnant
     pregnant:
       nextPages:
-        - pageName: importantToKnow
+        - pageName: migrantFarmWorker
       datasources:
         - pageName: personalInfo
       skipCondition:
         input: sex
         value: MALE
+    migrantFarmWorker:
+      nextPages:
+        - pageName: importantToKnow
+      datasources:
+        - pageName: doYouLiveAlone
     doYouNeedHelpImmediately:
       nextPages:
         - pageName: doYouLiveAloneExpedited
@@ -702,6 +707,7 @@ shiba-configuration:
       datasources:
         - pageName: doYouLiveAlone
     expeditedMigrantFarmWorker:
+      pageModel: migrantFarmWorker
       nextPages:
         - pageName: expeditedDetermination
       datasources:
@@ -712,7 +718,7 @@ shiba-configuration:
       datasources:
         - pageName: expeditedIncome
         - pageName: liquidAssets
-        - pageName: expeditedMigrantFarmWorker
+        - pageName: migrantFarmWorker
         - pageName: expeditedExpensesAmount
           inputs:
             - name: expeditedExpensesAmount

@@ -21,7 +21,7 @@ public class ExpeditedEligibilityDecider {
         if (!inputMap.keySet().containsAll(List.of(
                 "liquidAssets_liquidAssets",
                 "expeditedIncome_moneyMadeLast30Days",
-                "expeditedMigrantFarmWorker_migrantOrSeasonalFarmWorker",
+                "migrantFarmWorker_migrantOrSeasonalFarmWorker",
                 "expeditedExpensesAmount_expeditedExpensesAmount",
                 "expeditedUtilityPayments_payForUtilities"
         ))) {
@@ -30,7 +30,7 @@ public class ExpeditedEligibilityDecider {
 
         double assets = getDouble(inputMap, "liquidAssets_liquidAssets");
         double income = getDouble(inputMap, "expeditedIncome_moneyMadeLast30Days");
-        String isMigrantWorker = inputMap.get("expeditedMigrantFarmWorker_migrantOrSeasonalFarmWorker").getValue().get(0);
+        String isMigrantWorker = inputMap.get("migrantFarmWorker_migrantOrSeasonalFarmWorker").getValue().get(0);
         boolean assetsAndIncomeBelowThreshold = assets <= assetThreshold && income < incomeThreshold;
         boolean migrantWorkerAndAssetsUnderThreshold = isMigrantWorker.equals("true") && assets <= assetThreshold;
 

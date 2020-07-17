@@ -24,7 +24,7 @@ class ExpeditedEligibilityDeciderTest {
     void setup() {
         inputs.put("expeditedIncome_moneyMadeLast30Days", new InputData(List.of("99999")));
         inputs.put("liquidAssets_liquidAssets", new InputData(List.of("99999")));
-        inputs.put("expeditedMigrantFarmWorker_migrantOrSeasonalFarmWorker", new InputData(List.of("false")));
+        inputs.put("migrantFarmWorker_migrantOrSeasonalFarmWorker", new InputData(List.of("false")));
         inputs.put("expeditedExpensesAmount_expeditedExpensesAmount", new InputData(List.of("99")));
         inputs.put("expeditedUtilityPayments_payForUtilities", new InputData(List.of()));
         when(mockUtilityDeductionCalculator.calculate(any())).thenReturn(0);
@@ -61,7 +61,7 @@ class ExpeditedEligibilityDeciderTest {
             boolean expectedDecision
     ) {
         inputs.put("liquidAssets_liquidAssets", new InputData(List.of(assets)));
-        inputs.put("expeditedMigrantFarmWorker_migrantOrSeasonalFarmWorker", new InputData(List.of(isMigrantWorker)));
+        inputs.put("migrantFarmWorker_migrantOrSeasonalFarmWorker", new InputData(List.of(isMigrantWorker)));
 
         assertThat(decider.decide(inputs)).isEqualTo(expectedDecision);
     }
