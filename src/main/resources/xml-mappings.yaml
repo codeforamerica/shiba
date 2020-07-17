@@ -41,6 +41,8 @@ xml:
       expeditedUtilitiesSummary: PAY_FOR_UTILITIES
     expeditedMigrantFarmWorker:
       migrantOrSeasonalFarmWorker: MIGRANT_SEASONAL_FARM_WORKER
+    pregnant:
+      isPregnant: IS_PREGNANT
     signThisApplication:
       applicantSignature: APPLICANT_SIGNATURE
     nonPagesData:

@@ -68,5 +68,7 @@ caf:
       goingToSchool: GOING_TO_SCHOOL
       ccapHasCostsForChildCare:
         CCAP_HAS_COSTS_FOR_CHILD_CARE: CCAP_HAS_COSTS_FOR_CHILD_CARE
+    pregnant:
+      isPregnant: IS_PREGNANT
     expeditedEligibility:
       expeditedEligibility: EXPEDITED_ELIGIBILITY

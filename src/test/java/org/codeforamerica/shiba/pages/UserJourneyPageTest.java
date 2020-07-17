@@ -125,7 +125,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         personalInfoPage.enterDateInput("dateOfBirth", YEAR, "1928");
         personalInfoPage.enterInput("ssn", "123456789");
         personalInfoPage.selectEnumeratedInput("maritalStatus", "Never married");
-        personalInfoPage.selectEnumeratedInput("sex", "Male");
+        personalInfoPage.selectEnumeratedInput("sex", "Female");
         personalInfoPage.selectEnumeratedInput("livedInMnWholeLife", "Yes");
         personalInfoPage.enterDateInput("moveToMnDate", MONTH, "02");
         personalInfoPage.enterDateInput("moveToMnDate", DAY, "18");
@@ -160,7 +160,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         driver.findElement(By.linkText("This looks correct")).click();
         Page introPersonDetailsPage = testPage.choose(YES);
         Page goingToSchool = introPersonDetailsPage.clickPrimaryButton();
-        Page importantToKnowPage = goingToSchool.choose(NO);
+        Page pregnant = goingToSchool.choose(NO);
+        Page importantToKnowPage = pregnant.choose(NO);
 
         Page legalStuffPage = importantToKnowPage.clickPrimaryButton();
         legalStuffPage.selectEnumeratedInput("agreeToTerms", "I agree");

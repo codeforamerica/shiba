@@ -344,6 +344,14 @@ shiba-configuration:
       inputs:
         - name: goingToSchool
           type: YES_NO
+    pregnant:
+      pageTitle:
+        value: pregnant.title
+      headerKey:
+        value: pregnant.are-you-pregnant
+      inputs:
+        - name: isPregnant
+          type: YES_NO
     doYouNeedHelpImmediately:
       pageTitle:
         value: do-you-need-help-immediately.title
@@ -655,7 +663,15 @@ shiba-configuration:
         - pageName: goingToSchool
     goingToSchool:
       nextPages:
+        - pageName: pregnant
+    pregnant:
+      nextPages:
         - pageName: importantToKnow
+      datasources:
+        - pageName: personalInfo
+      skipCondition:
+        input: sex
+        value: MALE
     doYouNeedHelpImmediately:
       nextPages:
         - pageName: doYouLiveAloneExpedited

@@ -74,6 +74,7 @@
             <onl:PreferredWrittenLanguage>{{LANGUAGEPREFERENCES_WRITTENLANGUAGE}}</onl:PreferredWrittenLanguage>
             <onl:NeedInterpreterInd>{{LANGUAGEPREFERENCES_NEEDINTERPRETER}}</onl:NeedInterpreterInd>
         </onl:MiscellaneousInfo>
+        <onl:AnyonePregnantInd>{{IS_PREGNANT}}</onl:AnyonePregnantInd>
     </onl:HouseholdInfo>
     <onl:Disclosure>
         <onl:DeclaredBy>{{APPLICANT_SIGNATURE}}</onl:DeclaredBy>
