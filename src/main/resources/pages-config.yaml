@@ -630,6 +630,17 @@ shiba-configuration:
       inputs:
         - name: hasDisability
           type: YES_NO
+    - &workSituation
+      name: workSituation
+      pageTitle:
+        value: work-situation.title
+      headerKey:
+        value: work-situation.in-the-last-2-months-did-you-do-any-of-these-things
+      inputs:
+        - name: hasWorkSituation
+          type: YES_NO
+          promptMessage:
+            promptMessageFragmentName: workSituationPrompt
   workflow:
     landing:
       pageConfiguration: *landing
@@ -737,6 +748,10 @@ shiba-configuration:
         - pageName: disability
     disability:
       pageConfiguration: *disability
+      nextPages:
+        - pageName: workSituation
+    workSituation:
+      pageConfiguration: *workSituation
       nextPages:
         - pageName: importantToKnow
     doYouNeedHelpImmediately:

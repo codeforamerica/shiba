@@ -74,5 +74,7 @@ caf:
       isUsCitizen: IS_US_CITIZEN
     disability:
       hasDisability: HAS_DISABILITY
+    workSituation:
+      hasWorkSituation: HAS_WORK_SITUATION
     expeditedEligibility:
       expeditedEligibility: EXPEDITED_ELIGIBILITY

@@ -47,6 +47,8 @@ xml:
       isUsCitizen: IS_US_CITIZEN
     disability:
       hasDisability: HAS_DISABILITY
+    workSituation:
+      hasWorkSituation: HAS_WORK_SITUATION
     signThisApplication:
       applicantSignature: APPLICANT_SIGNATURE
     nonPagesData:

@@ -45,6 +45,9 @@
                 </onl:SSNInfo>
             </onl:CitizenshipInfo>
             <onl:AdditionalInfo>
+                <onl:WorkChange>
+                    <onl:WorkChangeInd>{{HAS_WORK_SITUATION}}</onl:WorkChangeInd>
+                </onl:WorkChange>
                 <onl:UnableToWork>
                     <onl:DisabilityInd>{{HAS_DISABILITY}}</onl:DisabilityInd>
                 </onl:UnableToWork>
