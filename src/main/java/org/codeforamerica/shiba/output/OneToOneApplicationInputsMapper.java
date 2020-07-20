@@ -22,9 +22,9 @@ public class OneToOneApplicationInputsMapper implements ApplicationInputsMapper 
 
     @Override
     public List<ApplicationInput> map(ApplicationData data) {
-        return pagesConfiguration.getPages().entrySet().stream()
-                .flatMap(entry -> entry.getValue().getFlattenedInputs().stream()
-                        .map(input -> new AbstractMap.SimpleEntry<>(entry.getKey(), input)))
+        return pagesConfiguration.getPageDefinitions().stream()
+                .flatMap(pageConfiguration -> pageConfiguration.getFlattenedInputs().stream()
+                        .map(input -> new AbstractMap.SimpleEntry<>(pageConfiguration.getName(), input)))
                 .filter(entry -> data.getPagesData().getPage(entry.getKey()) != null)
                 .map(entry -> {
                     FormInput formInput = entry.getValue();

@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 @Data
 public class PageConfiguration {
     public List<FormInput> inputs = List.of();
+    private String name;
     private Value pageTitle;
     private Value headerKey;
     private String headerHelpMessageKey;

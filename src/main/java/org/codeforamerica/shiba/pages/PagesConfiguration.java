@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Configuration
@@ -14,7 +14,7 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "shiba-configuration")
 @Data
 public class PagesConfiguration {
-    private Map<String, PageConfiguration> pages = new HashMap<>();
+    private List<PageConfiguration> pageDefinitions;
     private LandmarkPagesConfiguration landmarkPages;
     private Map<String, PageWorkflowConfiguration> workflow;
 

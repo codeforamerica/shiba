@@ -5,12 +5,10 @@
     "^(shiba-configuration).*$": {
       "type": "object",
       "properties": {
-        "pages": {
-          "type": "object",
-          "patternProperties": {
-            "^.*$": {
-              "$ref": "#/definitions/page"
-            }
+        "pageDefinitions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/page"
           }
         },
         "landmarkPages": {
@@ -46,7 +44,7 @@
         }
       },
       "required": [
-        "pages",
+        "pageDefinitions",
         "landmarkPages",
         "workflow"
       ]
@@ -56,6 +54,9 @@
     "page": {
       "type": "object",
       "properties": {
+        "name": {
+          "type": "string"
+        },
         "pageTitle": {
           "$ref": "#/definitions/value"
         },
@@ -76,6 +77,9 @@
     "navigationPage": {
       "type": "object",
       "properties": {
+        "pageConfiguration": {
+          "$ref": "#/definitions/page"
+        },
         "datasources": {
           "type": "array",
           "items": {
@@ -123,12 +127,12 @@
         },
         "conditionalNavigation": {
           "type": "boolean"
-        },
-        "pageModel": {
-          "type": "string"
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "required": [
+        "pageConfiguration"
+      ]
     },
     "value": {
       "type": "object",
@@ -259,7 +263,8 @@
           "enum": [
             "NOT_PRESENT",
             "CONTAINS",
-            "NOT_EMPTY"
+            "NOT_EMPTY",
+            "DOES_NOT_CONTAIN"
           ]
         }
       }

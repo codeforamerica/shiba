@@ -1,48 +1,56 @@
 shiba-configuration-user-decision-navigation:
-  pages:
-    userDecisionNavigationPage:
-      pageTitle:
-        value: origin-page-title
-    optionZeroPage:
-      pageTitle:
-        value: option-zero-page-title
-      inputs:
-        - name: foo
-          type: TEXT
-    optionOnePage:
-      pageTitle:
-        value: option-one-page-title
-      inputs:
-        - name: foo
-          type: TEXT
-    formPageBranchingNavigationPage:
-      pageTitle:
-        value: dummy-page-title
-      inputs:
-        - type: YES_NO
-          name: yesNoQuestion
-    yesAnswerPage:
-      pageTitle:
-        value: yes-answer-title
-      inputs:
-        - name: foo
-          type: TEXT
-    noAnswerPage:
-      pageTitle:
-        value: no-answer-title
-      inputs:
-        - name: foo
-          type: TEXT
+  pageDefinitions:
+    - &userDecisionNavigationPage
+        name: userDecisionNavigationPage
+        pageTitle:
+          value: origin-page-title
+    - &optionZeroPage
+        name: optionZeroPage
+        pageTitle:
+          value: option-zero-page-title
+        inputs:
+          - name: foo
+            type: TEXT
+    - &optionOnePage
+        name: optionOnePage
+        pageTitle:
+          value: option-one-page-title
+        inputs:
+          - name: foo
+            type: TEXT
+    - &formPageBranchingNavigationPage
+        name: formPageBranchingNavigationPage
+        pageTitle:
+          value: dummy-page-title
+        inputs:
+          - type: YES_NO
+            name: yesNoQuestion
+    - &yesAnswerPage
+        name: yesAnswerPage
+        pageTitle:
+          value: yes-answer-title
+        inputs:
+          - name: foo
+            type: TEXT
+    - &noAnswerPage
+        name: noAnswerPage
+        pageTitle:
+          value: no-answer-title
+        inputs:
+          - name: foo
+            type: TEXT
   workflow:
     userDecisionNavigationPage:
+      pageConfiguration: *userDecisionNavigationPage
       nextPages:
         - pageName: optionZeroPage
         - pageName: optionOnePage
     optionZeroPage:
-      nextPages: []
+      pageConfiguration: *optionZeroPage
     optionOnePage:
-      nextPages: []
+      pageConfiguration: *optionOnePage
     formPageBranchingNavigationPage:
+      pageConfiguration: *formPageBranchingNavigationPage
       conditionalNavigation: true
       nextPages:
         - pageName: yesAnswerPage
@@ -54,8 +62,8 @@ shiba-configuration-user-decision-navigation:
             input: yesNoQuestion
             value: "false"
     yesAnswerPage:
-      nextPages: []
+      pageConfiguration: *yesAnswerPage
     noAnswerPage:
-      nextPages: []
+      pageConfiguration: *noAnswerPage
   landmarkPages:
     startTimerPage:

@@ -51,14 +51,12 @@ public class PageController {
             @RequestParam(required = false, defaultValue = "0") Integer option
     ) {
         PageWorkflowConfiguration pageWorkflow = this.pagesConfiguration.getPageWorkflow(pageName);
-        String pageModel = Optional.ofNullable(pageWorkflow.getPageModel()).orElse(pageName);
-        FormData formData = this.applicationData.getFormData(pageModel);
+        FormData formData = this.applicationData.getFormData(pageWorkflow.getPageConfiguration().getName());
         String nextPageName = pageWorkflow.getNextPageName(formData, option);
         PageWorkflowConfiguration nextPage = this.pagesConfiguration.getPageWorkflow(nextPageName);
 
         if (nextPage.shouldSkip(applicationData.getPagesData())) {
-            String nextPageModel = Optional.ofNullable(nextPage.getPageModel()).orElse(pageName);
-            FormData nextPageFormData = this.applicationData.getFormData(nextPageModel);
+            FormData nextPageFormData = this.applicationData.getFormData(nextPage.getPageConfiguration().getName());
             return new RedirectView(String.format("/pages/%s", nextPage.getNextPageName(nextPageFormData, option)));
         } else {
             return new RedirectView(String.format("/pages/%s", nextPageName));
@@ -88,8 +86,7 @@ public class PageController {
         response.addHeader("Cache-Control", "no-store");
 
         PageWorkflowConfiguration pageWorkflow = this.pagesConfiguration.getPageWorkflow(pageName);
-        String pageModel = Optional.ofNullable(pageWorkflow.getPageModel()).orElse(pageName);
-        PageConfiguration pageConfiguration = this.pagesConfiguration.getPages().get(pageModel);
+        PageConfiguration pageConfiguration = pageWorkflow.getPageConfiguration();
 
         PagesData pagesData = applicationData.getPagesData();
         HashMap<String, Object> model = new HashMap<>(Map.of(
@@ -130,13 +127,12 @@ public class PageController {
             @PathVariable String pageName
     ) {
         PageWorkflowConfiguration pageWorkflow = pagesConfiguration.getPageWorkflow(pageName);
-        String pageModel = Optional.ofNullable(pageWorkflow.getPageModel()).orElse(pageName);
 
-        PageConfiguration page = pagesConfiguration.getPages().get(pageModel);
+        PageConfiguration page = pageWorkflow.getPageConfiguration();
         FormData formData = FormData.fillOut(page, model);
 
         PagesData pagesData = applicationData.getPagesData();
-        pagesData.putPage(pageModel, formData);
+        pagesData.putPage(pageWorkflow.getPageConfiguration().getName(), formData);
 
         return formData.isValid() ?
                 new ModelAndView(String.format("redirect:/pages/%s/navigation", pageName)) :
@@ -150,7 +146,7 @@ public class PageController {
     ) {
         LandmarkPagesConfiguration landmarkPagesConfiguration = this.pagesConfiguration.getLandmarkPages();
         String submitPage = landmarkPagesConfiguration.getSubmitPage();
-        PageConfiguration page = pagesConfiguration.getPages().get(submitPage);
+        PageConfiguration page = pagesConfiguration.getPageWorkflow(submitPage).getPageConfiguration();
 
         FormData formData = FormData.fillOut(page, model);
         PagesData pagesData = applicationData.getPagesData();

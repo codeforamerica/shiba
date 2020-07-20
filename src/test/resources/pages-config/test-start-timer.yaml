@@ -1,21 +1,23 @@
 shiba-configuration-start-timer:
-  pages:
-    pageThatDoesNotStartTimer:
-      pageTitle:
-        value: not-start-timer-title
-      inputs:
-        - name: foo
-          type: TEXT
-    pageThatDoesStartTimer:
-      pageTitle:
-        value: start-timer-title
-      inputs:
-        - name: foo
-          type: TEXT
+  pageDefinitions:
+    - &pageThatDoesNotStartTimer
+        name: pageThatDoesNotStartTimer
+        pageTitle:
+          value: not-start-timer-title
+        inputs:
+          - name: foo
+            type: TEXT
+    - &pageThatDoesStartTimer
+        name: pageThatDoesStartTimer
+        pageTitle:
+          value: start-timer-title
+        inputs:
+          - name: foo
+            type: TEXT
   workflow:
     pageThatDoesNotStartTimer:
-      nextPages: []
+      pageConfiguration: *pageThatDoesNotStartTimer
     pageThatDoesStartTimer:
-      nextPages: []
+      pageConfiguration: *pageThatDoesStartTimer
   landmarkPages:
     startTimerPage: pageThatDoesStartTimer

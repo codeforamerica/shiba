@@ -50,39 +50,37 @@ public class XmlGeneratorIntegrationTest {
 
     @Test
     void shouldProduceAValidDocument() throws IOException, SAXException, ParserConfigurationException {
-        Map<String, FormData> data = pagesConfiguration.getPages().entrySet().stream()
-                .collect(toMap(Map.Entry::getKey, entry -> FormData.initialize(entry.getValue())));
+        Map<String, FormData> data = pagesConfiguration.getPageDefinitions().stream()
+                .map(pageConfiguration -> {
+                    Map<String, InputData> inputDataMap = pageConfiguration.getFlattenedInputs().stream()
+                            .collect(toMap(
+                                    FormInput::getName,
+                                    input -> {
+                                        @NotNull List<String> value = switch (input.getType()) {
+                                            case RADIO, SELECT -> List.of(input.getOptions().get(new Random().nextInt(input.getOptions().size())).getValue());
+                                            case CHECKBOX -> input.getOptions().subList(0, new Random().nextInt(input.getOptions().size()) + 1).stream()
+                                                    .map(Option::getValue)
+                                                    .collect(Collectors.toList());
+                                            case DATE -> List.of(LocalDate.ofEpochDay(0).plusDays(new Random().nextInt()).format(DateTimeFormatter.ofPattern("MM/dd/yyyy")).split("/"));
+                                            case YES_NO -> List.of(String.valueOf(new Random().nextBoolean()));
+                                            default -> switch (input.getValidator().getValidation()) {
+                                                case SSN -> List.of("123456789");
+                                                case ZIPCODE -> List.of("12345");
+                                                case STATE -> List.of("MN");
+                                                default -> List.of("some-value");
+                                            };
+                                        };
+                                        return new InputData(value);
+                                    }
+                            ));
+                    return Map.entry(pageConfiguration.getName(), new FormData(inputDataMap));
+                })
+                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
         PagesData pagesData = new PagesData();
         pagesData.putAll(data);
         ApplicationData applicationData = new ApplicationData();
         applicationData.setPagesData(pagesData);
-        List<ApplicationInput> applicationInputsWithoutData = oneToOneApplicationInputsMapper.map(applicationData);
-        List<ApplicationInput> applicationInputs = applicationInputsWithoutData.stream()
-                .map(input -> {
-                    FormInput formInput = pagesConfiguration.getPages().get(input.getGroupName()).getFlattenedInputs().stream()
-                            .filter(screensInput -> screensInput.getName().equals(input.getName()))
-                            .findFirst()
-                            .orElseThrow();
-                    @NotNull List<String> value = switch (input.getType()) {
-                        case ENUMERATED_SINGLE_VALUE -> List.of(formInput.getOptions().get(new Random().nextInt(formInput.getOptions().size())).getValue());
-                        case ENUMERATED_MULTI_VALUE -> formInput.getOptions().subList(0, new Random().nextInt(formInput.getOptions().size()) + 1).stream()
-                                .map(Option::getValue)
-                                .collect(Collectors.toList());
-                        case DATE_VALUE -> List.of(LocalDate.ofEpochDay(0).plusDays(new Random().nextInt()).format(DateTimeFormatter.ofPattern("MM/dd/yyyy")).split("/"));
-                        default -> //noinspection SwitchStatementWithTooFewBranches
-                                switch (formInput.getType()) {
-                            case YES_NO -> List.of(String.valueOf(new Random().nextBoolean()));
-                            default -> switch (formInput.getValidator().getValidation()) {
-                                case SSN -> List.of("123456789");
-                                case ZIPCODE -> List.of("12345");
-                                case STATE -> List.of("MN");
-                                default -> List.of("some-value");
-                            };
-                        };
-                    };
-                    return new ApplicationInput(input.getGroupName(), value, input.getName(), input.getType());
-                })
-                .collect(Collectors.toList());
+        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(applicationData);
         ApplicationFile applicationFile = xmlGenerator.generate(applicationInputs);
 
         Document document = byteArrayToDocument(applicationFile.getFileBytes());

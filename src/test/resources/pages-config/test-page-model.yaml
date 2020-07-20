@@ -1,6 +1,7 @@
 shiba-configuration-page-model:
-  pages:
-    firstPage:
+  pageDefinitions:
+    - &firstPage
+      name: firstPage
       pageTitle:
         value: first-page-title
       inputs:
@@ -10,8 +11,8 @@ shiba-configuration-page-model:
     startTimerPage: null
   workflow:
     firstPage:
-      nextPages: []
+      pageConfiguration: *firstPage
     lastPage:
-      pageModel: firstPage
+      pageConfiguration: *firstPage
       nextPages:
         - pageName: firstPage

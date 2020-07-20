@@ -1,9 +1,10 @@
 shiba-configuration-page-datasource:
-  pages:
-    firstPage:
-      pageTitle:
-        value: first-page-title
-      inputs:
+  pageDefinitions:
+    - &firstPage
+        name: firstPage
+        pageTitle:
+          value: first-page-title
+        inputs:
         - name: someInputName
           type: TEXT
         - name: someRadioInputName
@@ -13,51 +14,55 @@ shiba-configuration-page-datasource:
               messageKey: radio-value-key-1
             - value: VALUE_2
               messageKey: radio-value-key-2
-    staticPageWithDatasourceInputs:
-      pageTitle:
-        value: static-page-with-datasource-inputs-title
-    yesNoQuestionPage:
-      pageTitle:
-        value: foo
-      inputs:
+    - &staticPageWithDatasourceInputs
+        name: staticPageWithDatasourceInputs
+        pageTitle:
+          value: static-page-with-datasource-inputs-title
+    - &yesNoQuestionPage
+        name: yesNoQuestionPage
+        pageTitle:
+          value: foo
+        inputs:
         - name: yesNoQuestion
           type: YES_NO
-    yesNoAnswerPage:
-      pageTitle:
-        value: foo
-        conditionalValues:
-          - value: yes-answer-title
-            condition:
-              input: yesNoQuestion
-              value: "true"
-          - value: no-answer-title
-            condition:
-              input: yesNoQuestion
-              value: "false"
-      headerKey:
-        value: bar
-        conditionalValues:
-          - value: yes-header-text
-            condition:
-              input: yesNoQuestion
-              value: "true"
-          - value: no-header-text
-            condition:
-              input: yesNoQuestion
-              value: "false"
-      inputs:
+    - &yesNoAnswerPage
+        name: yesNoAnswerPage
+        pageTitle:
+          value: foo
+          conditionalValues:
+            - value: yes-answer-title
+              condition:
+                input: yesNoQuestion
+                value: "true"
+            - value: no-answer-title
+              condition:
+                input: yesNoQuestion
+                value: "false"
+        headerKey:
+          value: bar
+          conditionalValues:
+            - value: yes-header-text
+              condition:
+                input: yesNoQuestion
+                value: "true"
+            - value: no-header-text
+              condition:
+                input: yesNoQuestion
+                value: "false"
+        inputs:
         - name: foo
           type: TEXT
-    testStaticPage:
-      pageTitle:
-        value: dummy-page-title
+    - &testStaticPage
+        name: testStaticPage
+        pageTitle:
+          value: dummy-page-title
   workflow:
     firstPage:
+      pageConfiguration: *firstPage
       nextPages:
         - pageName: testStaticPage
     staticPageWithDatasourceInputs:
-      nextPages:
-        - pageName: lastPage
+      pageConfiguration: *staticPageWithDatasourceInputs
       datasources:
         - pageName: firstPage
           inputs:
@@ -66,14 +71,15 @@ shiba-configuration-page-datasource:
                 VALUE_1: display-value-key-1
                 VALUE_2: display-value-key-2
     yesNoQuestionPage:
+      pageConfiguration: *yesNoQuestionPage
       nextPages:
         - pageName: yesNoAnswerPage
     yesNoAnswerPage:
+      pageConfiguration: *yesNoAnswerPage
       datasources:
         - pageName: yesNoQuestionPage
-    lastPage:
-      nextPages: []
     testStaticPage:
+      pageConfiguration: *testStaticPage
       datasources:
         - pageName: firstPage
   landmarkPages:

@@ -15,7 +15,7 @@ public class PageWorkflowConfiguration {
     private Condition skipCondition;
     private List<PageDatasource> datasources = new ArrayList<>();
     private boolean conditionalNavigation = false;
-    private String pageModel;
+    private PageConfiguration pageConfiguration;
 
     public String getNextPageName(FormData formData, Integer option) {
         if (!conditionalNavigation) {

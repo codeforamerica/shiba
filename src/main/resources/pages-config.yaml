@@ -1,17 +1,20 @@
 shiba-configuration:
-  pages:
-    landing:
-      pageTitle:
-        value: landing.title
-    prepareToApply:
-      pageTitle:
-        value: prepare-to-apply.title
-    languagePreferences:
-      pageTitle:
-        value: language-preferences.title
-      headerKey:
-        value: language-preferences.language-preferences
-      inputs:
+  pageDefinitions:
+    - &landing
+        name: landing
+        pageTitle:
+          value: landing.title
+    - &prepareToApply
+        name: prepareToApply
+        pageTitle:
+          value: prepare-to-apply.title
+    - &languagePreferences
+        name: languagePreferences
+        pageTitle:
+          value: language-preferences.title
+        headerKey:
+          value: language-preferences.language-preferences
+        inputs:
         - name: spokenLanguage
           type: SELECT
           promptMessage:
@@ -57,13 +60,14 @@ shiba-configuration:
               messageKey: general.inputs.yes
             - value: "false"
               messageKey: general.inputs.no
-    choosePrograms:
-      pageTitle:
-        value: choose-programs.title
-      headerKey:
-        value: choose-programs.what-do-you-need-help-with-today
-      headerHelpMessageKey: choose-programs.check-all-that-apply
-      inputs:
+    - &choosePrograms
+        name: choosePrograms
+        pageTitle:
+          value: choose-programs.title
+        headerKey:
+          value: choose-programs.what-do-you-need-help-with-today
+        headerHelpMessageKey: choose-programs.check-all-that-apply
+        inputs:
         - name: programs
           type: CHECKBOX
           validator:
@@ -78,18 +82,21 @@ shiba-configuration:
               messageKey: choose-programs.emergency-assistance
             - value: CHILD_CARE
               messageKey: choose-programs.child-care-assistance
-    howItWorks:
-      pageTitle:
-        value: how-it-works.title
-    introBasicInfo:
-      pageTitle:
-        value: intro-basic-info.title
-    personalInfo:
-      pageTitle:
-        value: personal-info.title
-      headerKey:
-        value: personal-info.tell-us-about-yourself
-      inputs:
+    - &howItWorks
+        name: howItWorks
+        pageTitle:
+          value: how-it-works.title
+    - &introBasicInfo
+        name: introBasicInfo
+        pageTitle:
+          value: intro-basic-info.title
+    - &personalInfo
+        name: personalInfo
+        pageTitle:
+          value: personal-info.title
+        headerKey:
+          value: personal-info.tell-us-about-yourself
+        inputs:
         - name: firstName
           type: TEXT
           promptMessage:
@@ -186,13 +193,14 @@ shiba-configuration:
               type: TEXT
               promptMessage:
                 promptMessageKey: personal-info.what-city-did-you-move-from
-    contactInfo:
-      pageTitle:
-        value: contact-info.title
-      headerKey:
-        value: contact-info.how-can-we-stay-in-touch-with-you
-      headerHelpMessageKey: contact-info.most-of-our-communication-will-be-through-mail
-      inputs:
+    - &contactInfo
+        name: contactInfo
+        pageTitle:
+          value: contact-info.title
+        headerKey:
+          value: contact-info.how-can-we-stay-in-touch-with-you
+        headerHelpMessageKey: contact-info.most-of-our-communication-will-be-through-mail
+        inputs:
         - name: phoneNumber
           type: TEXT
           promptMessage:
@@ -220,12 +228,13 @@ shiba-configuration:
               messageKey: contact-info.text-me
             - value: EMAIL
               messageKey: contact-info.email-me
-    homeAddress:
-      headerKey:
-        value: home-address.where-are-you-currently-living
-      pageTitle:
-        value: home-address.title
-      inputs:
+    - &homeAddress
+        name: homeAddress
+        headerKey:
+          value: home-address.where-are-you-currently-living
+        pageTitle:
+          value: home-address.title
+        inputs:
         - name: zipCode
           type: TEXT
           promptMessage:
@@ -281,103 +290,111 @@ shiba-configuration:
               messageKey: home-address.yes-send-mail-here
             - value: "false"
               messageKey: home-address.no-use-a-different-address-for-mail
-    mailingAddress:
-      pageTitle:
-        value: mailing-address.title
-      headerKey:
-        value: mailing-address.where-can-the-county-send-your-mail
-      inputs:
-        - name: zipCode
-          type: TEXT
-          promptMessage:
-            promptMessageKey: mailing-address.what-is-the-zip-code
-          validationErrorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
-          validator:
-            validation: ZIPCODE
-        - name: city
-          type: TEXT
-          promptMessage:
-            promptMessageKey: mailing-address.what-is-the-city
-          validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
-          validator:
-            validation: NOT_BLANK
-        - name: state
-          type: TEXT
-          promptMessage:
-            promptMessageKey: mailing-address.what-is-the-state
-          validator:
-            validation: STATE
-          validationErrorMessageKey: general.validation.make-sure-to-provide-a-valid-2-letter-state-code
-          defaultValue: MN
-        - name: streetAddress
-          type: TEXT
-          promptMessage:
-            promptMessageKey: mailing-address.what-is-the-street-address
-          validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
-          validator:
-            validation: NOT_BLANK
-        - name: apartmentNumber
-          type: TEXT
-          promptMessage:
-            promptMessageKey: mailing-address.apartment-number
-    reviewInfo:
-      pageTitle:
-        value: review-info.title
-      headerKey:
-        value: review-info.lets-review-your-info
-    doYouLiveAlone:
-      headerKey:
-        value: do-you-live-alone.do-you-live-alone
-      pageTitle:
-        value: do-you-live-alone.title
-      inputs:
+    - &mailingAddress
+        name: mailingAddress
+        pageTitle:
+          value: mailing-address.title
+        headerKey:
+          value: mailing-address.where-can-the-county-send-your-mail
+        inputs:
+          - name: zipCode
+            type: TEXT
+            promptMessage:
+              promptMessageKey: mailing-address.what-is-the-zip-code
+            validationErrorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
+            validator:
+              validation: ZIPCODE
+          - name: city
+            type: TEXT
+            promptMessage:
+              promptMessageKey: mailing-address.what-is-the-city
+            validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+            validator:
+              validation: NOT_BLANK
+          - name: state
+            type: TEXT
+            promptMessage:
+              promptMessageKey: mailing-address.what-is-the-state
+            validator:
+              validation: STATE
+            validationErrorMessageKey: general.validation.make-sure-to-provide-a-valid-2-letter-state-code
+            defaultValue: MN
+          - name: streetAddress
+            type: TEXT
+            promptMessage:
+              promptMessageKey: mailing-address.what-is-the-street-address
+            validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+            validator:
+              validation: NOT_BLANK
+          - name: apartmentNumber
+            type: TEXT
+            promptMessage:
+              promptMessageKey: mailing-address.apartment-number
+    - &reviewInfo
+        name: reviewInfo
+        pageTitle:
+          value: review-info.title
+        headerKey:
+          value: review-info.lets-review-your-info
+    - &doYouLiveAlone
+        name: doYouLiveAlone
+        headerKey:
+          value: do-you-live-alone.do-you-live-alone
+        pageTitle:
+          value: do-you-live-alone.title
+        inputs:
         - name: liveAlone
           type: YES_NO
-    introPersonalDetails:
-      pageTitle:
-        value: intro-personal-details.title
-    goingToSchool:
-      pageTitle:
-        value: going-to-school.title
-      headerKey:
-        value: going-to-school.header
-      inputs:
+    - &introPersonalDetails
+        name: introPersonalDetails
+        pageTitle:
+          value: intro-personal-details.title
+    - &goingToSchool
+        name: goingToSchool
+        pageTitle:
+          value: going-to-school.title
+        headerKey:
+          value: going-to-school.header
+        inputs:
         - name: goingToSchool
           type: YES_NO
-    pregnant:
-      pageTitle:
-        value: pregnant.title
-      headerKey:
-        value: pregnant.are-you-pregnant
-      inputs:
+    - &pregnant
+        name: pregnant
+        pageTitle:
+          value: pregnant.title
+        headerKey:
+          value: pregnant.are-you-pregnant
+        inputs:
         - name: isPregnant
           type: YES_NO
-    doYouNeedHelpImmediately:
-      pageTitle:
-        value: do-you-need-help-immediately.title
-    expeditedIncome:
-      headerKey:
-        conditionalValues:
-          - value: expedited-income.how-much-money-have-you-made-in-the-last-30-days
-            condition:
-              input: liveAlone
-              value: "true"
-          - value: expedited-income.how-much-money-has-your-household-made-in-the-last-30-days
-            condition:
-              input: liveAlone
-              value: "false"
-      headerHelpMessageKey: expedited-income.if-you-dont-know-the-exact-amount
-      pageTitle:
-        conditionalValues:
-          - value: expedited-income.title-one-person
-            condition:
-              input: liveAlone
-              value: "true"
-          - value: expedited-income.title-household
-            condition:
-              input: liveAlone
-              value: "false"
-      inputs:
+    - &doYouNeedHelpImmediately
+        name: doYouNeedHelpImmediately
+        pageTitle:
+          value: do-you-need-help-immediately.title
+    - &expeditedIncome
+        headerKey:
+          conditionalValues:
+            - value: expedited-income.how-much-money-have-you-made-in-the-last-30-days
+              condition:
+                input: liveAlone
+                value: "true"
+            - value: expedited-income.how-much-money-has-your-household-made-in-the-last-30-days
+              condition:
+                input: liveAlone
+                value: "false"
+        headerHelpMessageKey: expedited-income.if-you-dont-know-the-exact-amount
+        name: headerHelpMessageKey
+        pageTitle:
+          conditionalValues:
+            - value: expedited-income.title-one-person
+              condition:
+                input: liveAlone
+                value: "true"
+            - value: expedited-income.title-household
+              condition:
+                input: liveAlone
+                value: "false"
+        inputs:
         - name: moneyMadeLast30Days
           type: MONEY
           validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
@@ -386,28 +403,29 @@ shiba-configuration:
             condition:
               input: moneyMadeLast30Days
               matcher: NOT_EMPTY
-    liquidAssets:
-      pageTitle:
-        conditionalValues:
-          - value: liquid-assets-prompt.title-one-person
-            condition:
-              input: liveAlone
-              value: "true"
-          - value: liquid-assets-prompt.title-household
-            condition:
-              input: liveAlone
-              value: "false"
-      headerKey:
-        conditionalValues:
-          - value: expedited-income.how-much-money-do-you-have-available
-            condition:
-              input: liveAlone
-              value: "true"
-          - value: expedited-income.how-much-money-does-your-household-have-available
-            condition:
-              input: liveAlone
-              value: "false"
-      inputs:
+    - &liquidAssets
+        name: liquidAssets
+        pageTitle:
+          conditionalValues:
+            - value: liquid-assets-prompt.title-one-person
+              condition:
+                input: liveAlone
+                value: "true"
+            - value: liquid-assets-prompt.title-household
+              condition:
+                input: liveAlone
+                value: "false"
+        headerKey:
+          conditionalValues:
+            - value: expedited-income.how-much-money-do-you-have-available
+              condition:
+                input: liveAlone
+                value: "true"
+            - value: expedited-income.how-much-money-does-your-household-have-available
+              condition:
+                input: liveAlone
+                value: "false"
+        inputs:
         - name: liquidAssets
           type: MONEY
           promptMessage:
@@ -418,52 +436,54 @@ shiba-configuration:
             condition:
               input: liquidAssets
               matcher: NOT_EMPTY
-    expeditedExpenses:
-      pageTitle:
-        conditionalValues:
-          - value: expedited-expenses.title-one-person
-            condition:
-              input: liveAlone
-              value: "true"
-          - value: expedited-expenses.title-household
-            condition:
-              input: liveAlone
-              value: "false"
-      headerKey:
-        conditionalValues:
-          - value: expedited-expenses.header-one-person
-            condition:
-              input: liveAlone
-              value: "true"
-          - value: expedited-expenses.header-household
-            condition:
-              input: liveAlone
-              value: "false"
-      inputs:
+    - &expeditedExpenses
+        name: expeditedExpenses
+        pageTitle:
+          conditionalValues:
+            - value: expedited-expenses.title-one-person
+              condition:
+                input: liveAlone
+                value: "true"
+            - value: expedited-expenses.title-household
+              condition:
+                input: liveAlone
+                value: "false"
+        headerKey:
+          conditionalValues:
+            - value: expedited-expenses.header-one-person
+              condition:
+                input: liveAlone
+                value: "true"
+            - value: expedited-expenses.header-household
+              condition:
+                input: liveAlone
+                value: "false"
+        inputs:
         - name: payRentOrMortgage
           type: YES_NO
-    expeditedExpensesAmount:
-      pageTitle:
-        conditionalValues:
-          - value: expedited-expenses-amount.title-one-person
-            condition:
-              input: liveAlone
-              value: "true"
-          - value: expedited-expenses-amount.title-household
-            condition:
-              input: liveAlone
-              value: "false"
-      headerKey:
-        conditionalValues:
-          - value: expedited-expenses-amount.how-much-do-you-pay-for-rent-or-mortgage-every-month
-            condition:
-              input: liveAlone
-              value: "true"
-          - value: expedited-expenses-amount.how-much-is-paid-for-rent-or-mortgage-every-month
-            condition:
-              input: liveAlone
-              value: "false"
-      inputs:
+    - &expeditedExpensesAmount
+        name: expeditedExpensesAmount
+        pageTitle:
+          conditionalValues:
+            - value: expedited-expenses-amount.title-one-person
+              condition:
+                input: liveAlone
+                value: "true"
+            - value: expedited-expenses-amount.title-household
+              condition:
+                input: liveAlone
+                value: "false"
+        headerKey:
+          conditionalValues:
+            - value: expedited-expenses-amount.how-much-do-you-pay-for-rent-or-mortgage-every-month
+              condition:
+                input: liveAlone
+                value: "true"
+            - value: expedited-expenses-amount.how-much-is-paid-for-rent-or-mortgage-every-month
+              condition:
+                input: liveAlone
+                value: "false"
+        inputs:
         - name: expeditedExpensesAmount
           type: MONEY
           validator:
@@ -472,29 +492,30 @@ shiba-configuration:
               input: expeditedExpensesAmount
               matcher: NOT_EMPTY
           validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
-    expeditedUtilityPayments:
-      pageTitle:
-        conditionalValues:
-          - value: expedited-utility-payments.title-one-person
-            condition:
-              input: liveAlone
-              value: "true"
-          - value: expedited-utility-payments.title-household
-            condition:
-              input: liveAlone
-              value: "false"
-      headerKey:
-        conditionalValues:
-          - value: expedited-utility-payments.do-you-pay-for-any-utilities
-            condition:
-              input: liveAlone
-              value: "true"
-          - value: expedited-utility-payments.does-anyone-in-your-houshold-pay-for-these-utilities
-            condition:
-              input: liveAlone
-              value: "false"
-      headerHelpMessageKey: expedited-utility-payments.select-all-that-you-are-billed-for-even-if-you-havent-paid-it-this-month
-      inputs:
+    - &expeditedUtilityPayments
+        name: expeditedUtilityPayments
+        pageTitle:
+          conditionalValues:
+            - value: expedited-utility-payments.title-one-person
+              condition:
+                input: liveAlone
+                value: "true"
+            - value: expedited-utility-payments.title-household
+              condition:
+                input: liveAlone
+                value: "false"
+        headerKey:
+          conditionalValues:
+            - value: expedited-utility-payments.do-you-pay-for-any-utilities
+              condition:
+                input: liveAlone
+                value: "true"
+            - value: expedited-utility-payments.does-anyone-in-your-houshold-pay-for-these-utilities
+              condition:
+                input: liveAlone
+                value: "false"
+        headerHelpMessageKey: expedited-utility-payments.select-all-that-you-are-billed-for-even-if-you-havent-paid-it-this-month
+        inputs:
         - name: payForUtilities
           type: CHECKBOX
           validator:
@@ -520,44 +541,48 @@ shiba-configuration:
             - value: NONE_OF_THE_ABOVE
               messageKey: expedited-utility-payments.none-of-the-above
               isNone: true
-    migrantFarmWorker:
-      pageTitle:
-        conditionalValues:
-          - value: expedited-migrant-farm-worker.title-one-person
-            condition:
-              input: liveAlone
-              value: "true"
-          - value: expedited-migrant-farm-worker.title-household
-            condition:
-              input: liveAlone
-              value: "false"
-      headerKey:
-        conditionalValues:
-          - value: expedited-migrant-farm-worker.header-one-person
-            condition:
-              input: liveAlone
-              value: "true"
-          - value: expedited-migrant-farm-worker.header-household
-            condition:
-              input: liveAlone
-              value: "false"
-      inputs:
+    - &migrantFarmWorker
+        name: migrantFarmWorker
+        pageTitle:
+          conditionalValues:
+            - value: expedited-migrant-farm-worker.title-one-person
+              condition:
+                input: liveAlone
+                value: "true"
+            - value: expedited-migrant-farm-worker.title-household
+              condition:
+                input: liveAlone
+                value: "false"
+        headerKey:
+          conditionalValues:
+            - value: expedited-migrant-farm-worker.header-one-person
+              condition:
+                input: liveAlone
+                value: "true"
+            - value: expedited-migrant-farm-worker.header-household
+              condition:
+                input: liveAlone
+                value: "false"
+        inputs:
         - name: migrantOrSeasonalFarmWorker
           type: YES_NO
-    expeditedDetermination:
-      inputs: []
-    importantToKnow:
-      pageTitle:
-        value: important-to-know.title
-      headerKey:
-        value: important-to-know.important-stuff-to-know-about
-    legalStuff:
-      pageTitle:
-        value: legal-stuff.title
-      headerKey:
-        value: legal-stuff.the-legal-stuff
-      headerHelpMessageKey: legal-stuff.scroll-down-to-agree-to-the-terms
-      inputs:
+    - &expeditedDetermination
+        name: expeditedDetermination
+        inputs: []
+    - &importantToKnow
+        name: importantToKnow
+        pageTitle:
+          value: important-to-know.title
+        headerKey:
+          value: important-to-know.important-stuff-to-know-about
+    - &legalStuff
+        name: legalStuff
+        pageTitle:
+          value: legal-stuff.title
+        headerKey:
+          value: legal-stuff.the-legal-stuff
+        headerHelpMessageKey: legal-stuff.scroll-down-to-agree-to-the-terms
+        inputs:
         - name: agreeToTerms
           type: CHECKBOX
           promptMessage:
@@ -568,36 +593,43 @@ shiba-configuration:
           options:
             - value: "true"
               messageKey: legal-stuff.i-agree
-    signThisApplication:
-      pageTitle:
-        value: sign-this-application.title
-      headerKey:
-        value: sign-this-application.type-your-full-legal-name-here-to-sign-this-application
-      headerHelpMessageKey: sign-this-application.by-signing-this-application-you-agree-that-you-want-to
-      primaryButtonTextKey: sign-this-application.submit
-      inputs:
+    - &signThisApplication
+        name: signThisApplication
+        pageTitle:
+          value: sign-this-application.title
+        headerKey:
+          value: sign-this-application.type-your-full-legal-name-here-to-sign-this-application
+        headerHelpMessageKey: sign-this-application.by-signing-this-application-you-agree-that-you-want-to
+        primaryButtonTextKey: sign-this-application.submit
+        inputs:
         - name: applicantSignature
           type: TEXT
           validator:
             validation: NOT_BLANK
           validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
-    success:
-      pageTitle:
-        value: success.title
+    - &success
+        name: success
+        pageTitle:
+          value: success.title
   workflow:
     landing:
+      pageConfiguration: *landing
       nextPages:
         - pageName: prepareToApply
     prepareToApply:
+      pageConfiguration: *prepareToApply
       nextPages:
         - pageName: languagePreferences
     languagePreferences:
+      pageConfiguration: *languagePreferences
       nextPages:
         - pageName: choosePrograms
     choosePrograms:
+      pageConfiguration: *choosePrograms
       nextPages:
         - pageName: howItWorks
     howItWorks:
+      pageConfiguration: *howItWorks
       nextPages:
         - pageName: introBasicInfo
       datasources:
@@ -610,18 +642,23 @@ shiba-configuration:
                 CHILD_CARE: how-it-works.child-care
                 EMERGENCY: how-it-works.emergency
     introBasicInfo:
+      pageConfiguration: *introBasicInfo
       nextPages:
         - pageName: personalInfo
     personalInfo:
+      pageConfiguration: *personalInfo
       nextPages:
         - pageName: contactInfo
     contactInfo:
+      pageConfiguration: *contactInfo
       nextPages:
         - pageName: homeAddress
     homeAddress:
+      pageConfiguration: *homeAddress
       nextPages:
         - pageName: mailingAddress
     mailingAddress:
+      pageConfiguration: *mailingAddress
       skipCondition:
         input: sameMailingAddress
         value: "true"
@@ -630,6 +667,7 @@ shiba-configuration:
       datasources:
         - pageName: homeAddress
     reviewInfo:
+      pageConfiguration: *reviewInfo
       nextPages:
         - pageName: doYouLiveAlone
         - pageName: doYouNeedHelpImmediately
@@ -648,15 +686,19 @@ shiba-configuration:
               defaultValue:
         - pageName: contactInfo
     doYouLiveAlone:
+      pageConfiguration: *doYouLiveAlone
       nextPages:
         - pageName: introPersonalDetails
     introPersonalDetails:
+      pageConfiguration: *introPersonalDetails
       nextPages:
         - pageName: goingToSchool
     goingToSchool:
+      pageConfiguration: *goingToSchool
       nextPages:
         - pageName: pregnant
     pregnant:
+      pageConfiguration: *pregnant
       nextPages:
         - pageName: migrantFarmWorker
       datasources:
@@ -665,34 +707,40 @@ shiba-configuration:
         input: sex
         value: MALE
     migrantFarmWorker:
+      pageConfiguration: *migrantFarmWorker
       nextPages:
         - pageName: importantToKnow
       datasources:
         - pageName: doYouLiveAlone
     doYouNeedHelpImmediately:
+      pageConfiguration: *doYouNeedHelpImmediately
       nextPages:
         - pageName: doYouLiveAloneExpedited
         - pageName: importantToKnow
     doYouLiveAloneExpedited:
-      pageModel: doYouLiveAlone
+      pageConfiguration: *doYouLiveAlone
       nextPages:
         - pageName: expeditedIncome
     expeditedIncome:
+      pageConfiguration: *expeditedIncome
       nextPages:
         - pageName: liquidAssets
       datasources:
         - pageName: doYouLiveAlone
     liquidAssets:
+      pageConfiguration: *liquidAssets
       nextPages:
         - pageName: expeditedExpenses
       datasources:
         - pageName: doYouLiveAlone
     expeditedExpenses:
+      pageConfiguration: *expeditedExpenses
       nextPages:
         - pageName: expeditedExpensesAmount
       datasources:
         - pageName: doYouLiveAlone
     expeditedExpensesAmount:
+      pageConfiguration: *expeditedExpensesAmount
       skipCondition:
         input: payRentOrMortgage
         value: "false"
@@ -702,29 +750,35 @@ shiba-configuration:
         - pageName: doYouLiveAlone
         - pageName: expeditedExpenses
     expeditedUtilityPayments:
+      pageConfiguration: *expeditedUtilityPayments
       nextPages:
         - pageName: expeditedMigrantFarmWorker
       datasources:
         - pageName: doYouLiveAlone
     expeditedMigrantFarmWorker:
-      pageModel: migrantFarmWorker
+      pageConfiguration: *migrantFarmWorker
       nextPages:
         - pageName: expeditedDetermination
       datasources:
         - pageName: doYouLiveAlone
     expeditedDetermination:
+      pageConfiguration: *expeditedDetermination
       nextPages:
         - pageName: importantToKnow
     importantToKnow:
+      pageConfiguration: *importantToKnow
       nextPages:
         - pageName: legalStuff
     legalStuff:
+      pageConfiguration: *legalStuff
       nextPages:
         - pageName: signThisApplication
     signThisApplication:
+      pageConfiguration: *signThisApplication
       nextPages:
         - pageName: success
     success:
+      pageConfiguration: *success
       datasources:
         - pageName: signThisApplication
   landmarkPages:
