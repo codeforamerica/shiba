@@ -72,5 +72,7 @@ caf:
       isPregnant: IS_PREGNANT
     usCitizen:
       isUsCitizen: IS_US_CITIZEN
+    disability:
+      hasDisability: HAS_DISABILITY
     expeditedEligibility:
       expeditedEligibility: EXPEDITED_ELIGIBILITY

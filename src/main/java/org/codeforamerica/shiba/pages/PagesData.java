@@ -30,7 +30,7 @@ public class PagesData extends HashMap<String, InputDataMap> {
     InputDataMap getInputDataMapBy(PageDatasource datasource) {
         InputDataMap inputDataMap = get(datasource.getPageName());
         if (inputDataMap == null) {
-            throw new RuntimeException(String.format("No data available for '%s'", datasource.getPageName()));
+            return new InputDataMap();
         }
         if (datasource.getInputs().isEmpty()) {
             return inputDataMap;

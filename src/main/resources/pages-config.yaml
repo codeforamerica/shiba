@@ -621,6 +621,15 @@ shiba-configuration:
       inputs:
         - name: isUsCitizen
           type: YES_NO
+    - &disability
+      name: disability
+      pageTitle:
+        value: disability.title
+      headerKey:
+        value: disability.do-you-have-a-physical-or-mental-disability-that-prevents-you-from-working
+      inputs:
+        - name: hasDisability
+          type: YES_NO
   workflow:
     landing:
       pageConfiguration: *landing
@@ -724,6 +733,10 @@ shiba-configuration:
         - pageName: doYouLiveAlone
     usCitizen:
       pageConfiguration: *usCitizen
+      nextPages:
+        - pageName: disability
+    disability:
+      pageConfiguration: *disability
       nextPages:
         - pageName: importantToKnow
     doYouNeedHelpImmediately:

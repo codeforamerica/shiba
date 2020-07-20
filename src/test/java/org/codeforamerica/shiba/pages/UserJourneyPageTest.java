@@ -163,7 +163,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         Page pregnant = goingToSchool.choose(NO);
         Page migrantWorker = pregnant.choose(NO);
         Page usCitizen = migrantWorker.choose(NO);
-        Page importantToKnowPage = usCitizen.choose(NO);
+        Page disability = usCitizen.choose(NO);
+        Page importantToKnowPage = disability.choose(NO);
 
         Page legalStuffPage = importantToKnowPage.clickPrimaryButton();
         legalStuffPage.selectEnumeratedInput("agreeToTerms", "I agree");

@@ -44,6 +44,11 @@
                     <onl:SSN>{{PERSONALINFO_SSN}}</onl:SSN>
                 </onl:SSNInfo>
             </onl:CitizenshipInfo>
+            <onl:AdditionalInfo>
+                <onl:UnableToWork>
+                    <onl:DisabilityInd>{{HAS_DISABILITY}}</onl:DisabilityInd>
+                </onl:UnableToWork>
+            </onl:AdditionalInfo>
         </onl:HouseholdMember>
         <onl:Program>{{PROGRAM}}</onl:Program>
         <onl:Program>{{PROGRAM}}</onl:Program>

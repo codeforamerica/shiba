@@ -45,6 +45,8 @@ xml:
       isPregnant: IS_PREGNANT
     usCitizen:
       isUsCitizen: IS_US_CITIZEN
+    disability:
+      hasDisability: HAS_DISABILITY
     signThisApplication:
       applicantSignature: APPLICANT_SIGNATURE
     nonPagesData:
