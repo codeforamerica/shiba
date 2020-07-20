@@ -17,7 +17,6 @@ import java.util.Locale;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest {
-    private final String staticPageWithDatasourceTitle = "staticPageWithDatasourceTitle";
     private final String staticPageWithDatasourceInputsTitle = "staticPageWithDatasourceInputsTitle";
     private final String yesHeaderText = "yes header text";
 
@@ -36,7 +35,6 @@ public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest 
     void setUp() throws IOException {
         super.setUp();
         staticMessageSource.addMessage("first-page-title", Locale.US, "firstPageTitle");
-        staticMessageSource.addMessage("static-page-with-datasource-title", Locale.US, staticPageWithDatasourceTitle);
         staticMessageSource.addMessage("static-page-with-datasource-inputs-title", Locale.US, staticPageWithDatasourceInputsTitle);
         staticMessageSource.addMessage("yes-header-text", Locale.US, yesHeaderText);
         staticMessageSource.addMessage("general.inputs.yes", Locale.US, YesNoAnswer.YES.getDisplayValue());
@@ -107,12 +105,5 @@ public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest 
         radioToSelect.click();
 
         assertThat(driver.findElement(By.cssSelector("h2")).getText()).isEqualTo(yesHeaderText);
-    }
-
-    @Test
-    void shouldUseDefaultValueWhenDataForDatasourcePageIsNotPresent() {
-        driver.navigate().to(baseUrl + "/pages/testStaticPage");
-
-        assertThat(testPage.findElementTextByName("firstPage_someRadioInputName")).isEqualTo("default value");
     }
 }

@@ -11,6 +11,7 @@ expedited-eligibility:
   housingCosts:
     pageName: expeditedExpensesAmount
     inputName: expeditedExpensesAmount
+    defaultValue: 0
   utilityExpensesSelections:
     pageName: expeditedUtilityPayments
     inputName: payForUtilities

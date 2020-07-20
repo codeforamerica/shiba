@@ -715,15 +715,6 @@ shiba-configuration:
     expeditedDetermination:
       nextPages:
         - pageName: importantToKnow
-      datasources:
-        - pageName: expeditedIncome
-        - pageName: liquidAssets
-        - pageName: migrantFarmWorker
-        - pageName: expeditedExpensesAmount
-          inputs:
-            - name: expeditedExpensesAmount
-              defaultValue: "0"
-        - pageName: expeditedUtilityPayments
     importantToKnow:
       nextPages:
         - pageName: legalStuff

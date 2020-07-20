@@ -8,5 +8,4 @@ import java.util.Map;
 class InputDatasource {
     private String name;
     private Map<String, String> valueMessageKeys = Map.of();
-    private String defaultValue;
 }

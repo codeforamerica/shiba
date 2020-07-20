@@ -5,7 +5,10 @@ import lombok.NoArgsConstructor;
 import lombok.Value;
 import org.springframework.util.MultiValueMap;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toMap;
 import static org.codeforamerica.shiba.pages.PageUtils.getFormInputName;
@@ -54,18 +57,14 @@ public class FormData extends HashMap<String, InputData> {
         FormData formData = pagesData.getPage(datasource.getPageName());
         if (datasource.getInputs().isEmpty()) {
             return Optional.ofNullable(formData)
-                    .orElseThrow(() -> new RuntimeException(String.format("Datasource %s is skipped and no default is provided.", datasource.getPageName())));
+                    .orElseThrow(() -> new RuntimeException(String.format("No data available for '%s'", datasource.getPageName())));
         }
         Map<String, InputData> inputDataMap = datasource.getInputs().stream()
                 .map(inputDatasource -> {
                     InputData inputData = Optional.ofNullable(formData)
                             .map(data -> data.get(inputDatasource.getName())
                                     .withValueMessageKeys(inputDatasource.getValueMessageKeys()))
-                            .orElseGet(() -> {
-                                Objects.requireNonNull(inputDatasource.getDefaultValue(),
-                                        String.format("No data available for '%s' and no default value provided!", datasource.getPageName()));
-                                return new InputData(List.of(inputDatasource.getDefaultValue()));
-                            });
+                            .orElseThrow(() -> new RuntimeException(String.format("No data available for '%s'", datasource.getPageName())));
                     return Map.entry(
                             inputDatasource.getName(),
                             inputData);

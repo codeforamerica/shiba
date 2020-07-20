@@ -76,10 +76,5 @@ shiba-configuration-page-datasource:
     testStaticPage:
       datasources:
         - pageName: firstPage
-          inputs:
-            - name: someInputName
-              defaultValue: whatever default value
-            - name: someRadioInputName
-              defaultValue: default value
   landmarkPages:
     startTimerPage:
