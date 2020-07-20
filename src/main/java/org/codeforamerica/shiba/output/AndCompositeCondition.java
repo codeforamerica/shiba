@@ -5,18 +5,16 @@ import lombok.EqualsAndHashCode;
 import org.codeforamerica.shiba.pages.PagesData;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class AndCompositeCondition extends CompositeCondition {
     @Override
     public boolean appliesTo(PagesData pagesData) {
-        List<Boolean> evaluatedConditions = conditions.stream()
-                .map(condition -> condition.appliesTo(pagesData.getPage(condition.getPageName())))
-                .collect(Collectors.toList());
-
-        return !evaluatedConditions.contains(false);
+        return conditions.stream()
+                .allMatch(condition ->
+                        condition.appliesTo(pagesData.getPage(condition.getPageName()))
+                );
     }
 
     public void setConditions(List<DerivedValueCondition> conditions) {
