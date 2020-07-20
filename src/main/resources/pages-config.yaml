@@ -641,6 +641,10 @@ shiba-configuration:
           type: YES_NO
           promptMessage:
             promptMessageFragmentName: workSituationPrompt
+    - &introIncome
+      name: introIncome
+      pageTitle:
+        value: intro-income.title
   workflow:
     landing:
       pageConfiguration: *landing
@@ -752,6 +756,10 @@ shiba-configuration:
         - pageName: workSituation
     workSituation:
       pageConfiguration: *workSituation
+      nextPages:
+        - pageName: introIncome
+    introIncome:
+      pageConfiguration: *introIncome
       nextPages:
         - pageName: importantToKnow
     doYouNeedHelpImmediately:
