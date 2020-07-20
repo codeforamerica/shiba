@@ -1,0 +1,16 @@
+expedited-eligibility:
+  assets:
+    pageName: liquidAssets
+    inputName: liquidAssets
+  income:
+    pageName: expeditedIncome
+    inputName: moneyMadeLast30Days
+  migrantWorker:
+    pageName: migrantFarmWorker
+    inputName: migrantOrSeasonalFarmWorker
+  housingCosts:
+    pageName: expeditedExpensesAmount
+    inputName: expeditedExpensesAmount
+  utilityExpensesSelections:
+    pageName: expeditedUtilityPayments
+    inputName: payForUtilities

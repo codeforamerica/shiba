@@ -1,32 +1,59 @@
 package org.codeforamerica.shiba.output.caf;
 
+import org.codeforamerica.shiba.YamlPropertySourceFactory;
+import org.codeforamerica.shiba.pages.FormData;
 import org.codeforamerica.shiba.pages.InputData;
+import org.codeforamerica.shiba.pages.PagesData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@SpringBootTest(properties = {"spring.main.allow-bean-definition-overriding=true"})
+@ExtendWith(SpringExtension.class)
 class ExpeditedEligibilityDeciderTest {
-    HashMap<String, InputData> inputs = new HashMap<>();
+    private final PagesData pagesData = new PagesData();
 
-    UtilityDeductionCalculator mockUtilityDeductionCalculator = mock(UtilityDeductionCalculator.class);
-    ExpeditedEligibilityDecider decider = new ExpeditedEligibilityDecider(mockUtilityDeductionCalculator);
+    @MockBean
+    UtilityDeductionCalculator mockUtilityDeductionCalculator;
+
+    @Autowired
+    ExpeditedEligibilityDecider decider;
+
+    @TestConfiguration
+    @PropertySource(value = "classpath:test-expedited-eligibility-config.yaml", factory = YamlPropertySourceFactory.class)
+    static class TestPageConfiguration {
+        @Bean
+        @ConfigurationProperties(prefix = "test-expedited-eligibility")
+        public Map<String, PageInputCoordinates> expeditedEligibilityConfiguration() {
+            return new HashMap<>();
+        }
+    }
 
     @BeforeEach
     void setup() {
-        inputs.put("expeditedIncome_moneyMadeLast30Days", new InputData(List.of("99999")));
-        inputs.put("liquidAssets_liquidAssets", new InputData(List.of("99999")));
-        inputs.put("migrantFarmWorker_migrantOrSeasonalFarmWorker", new InputData(List.of("false")));
-        inputs.put("expeditedExpensesAmount_expeditedExpensesAmount", new InputData(List.of("99")));
-        inputs.put("expeditedUtilityPayments_payForUtilities", new InputData(List.of()));
+        pagesData.putPage("incomePage", new FormData(Map.of("incomeInput", new InputData(List.of("99999")))));
+        pagesData.putPage("assetsPage", new FormData(Map.of("assetsInput", new InputData(List.of("99999")))));
+        pagesData.putPage("migrantWorkerPage", new FormData(Map.of("migrantWorkerInput", new InputData(List.of("false")))));
+        pagesData.putPage("housingCostsPage", new FormData(Map.of("housingCostsInput", new InputData(List.of("99")))));
+        pagesData.putPage("utilityExpensesSelectionsPage", new FormData(Map.of("utilityExpensesSelectionsInput", new InputData(List.of()))));
         when(mockUtilityDeductionCalculator.calculate(any())).thenReturn(0);
     }
 
@@ -42,10 +69,18 @@ class ExpeditedEligibilityDeciderTest {
             String assets,
             boolean expectedDecision
     ) {
-        inputs.put("expeditedIncome_moneyMadeLast30Days", new InputData(List.of(income)));
-        inputs.put("liquidAssets_liquidAssets", new InputData(List.of(assets)));
+        pagesData.putPage("incomePage", new FormData(Map.of("incomeInput", new InputData(List.of(income)))));
+        pagesData.putPage("assetsPage", new FormData(Map.of("assetsInput", new InputData(List.of(assets)))));
 
-        assertThat(decider.decide(inputs)).isEqualTo(expectedDecision);
+        assertThat(decider.decide(pagesData)).isEqualTo(expectedDecision);
+    }
+
+    @Test
+    void shouldUseTheConfiguredDefaultValueWhenPageInputDataNotAvailable() {
+        pagesData.remove("assetsPage");
+        pagesData.putPage("incomePage", new FormData(Map.of("incomeInput", new InputData(List.of("149")))));
+
+        assertThat(decider.decide(pagesData)).isEqualTo(true);
     }
 
     @ParameterizedTest
@@ -60,10 +95,10 @@ class ExpeditedEligibilityDeciderTest {
             String isMigrantWorker,
             boolean expectedDecision
     ) {
-        inputs.put("liquidAssets_liquidAssets", new InputData(List.of(assets)));
-        inputs.put("migrantFarmWorker_migrantOrSeasonalFarmWorker", new InputData(List.of(isMigrantWorker)));
+        pagesData.putPage("assetsPage", new FormData(Map.of("assetsInput", new InputData(List.of(assets)))));
+        pagesData.putPage("migrantWorkerPage", new FormData(Map.of("migrantWorkerInput", new InputData(List.of(isMigrantWorker)))));
 
-        assertThat(decider.decide(inputs)).isEqualTo(expectedDecision);
+        assertThat(decider.decide(pagesData)).isEqualTo(expectedDecision);
     }
 
     @Test
@@ -73,11 +108,11 @@ class ExpeditedEligibilityDeciderTest {
         String rentMortgageAmount = "500";
         when(mockUtilityDeductionCalculator.calculate(any())).thenReturn(1001);
 
-        inputs.put("expeditedIncome_moneyMadeLast30Days", new InputData(List.of(income)));
-        inputs.put("liquidAssets_liquidAssets", new InputData(List.of(assets)));
-        inputs.put("expeditedExpensesAmount_expeditedExpensesAmount", new InputData(List.of(rentMortgageAmount)));
+        pagesData.putPage("incomePage", new FormData(Map.of("incomeInput", new InputData(List.of(income)))));
+        pagesData.putPage("assetsPage", new FormData(Map.of("assetsInput", new InputData(List.of(assets)))));
+        pagesData.putPage("housingCostsPage", new FormData(Map.of("housingCostsInput", new InputData(List.of(rentMortgageAmount)))));
 
-        assertThat(decider.decide(inputs)).isEqualTo(true);
+        assertThat(decider.decide(pagesData)).isEqualTo(true);
     }
 
     @Test
@@ -87,15 +122,15 @@ class ExpeditedEligibilityDeciderTest {
         String rentMortgageAmount = "500";
         when(mockUtilityDeductionCalculator.calculate(any())).thenReturn(1000);
 
-        inputs.put("expeditedIncome_moneyMadeLast30Days", new InputData(List.of(income)));
-        inputs.put("liquidAssets_liquidAssets", new InputData(List.of(assets)));
-        inputs.put("expeditedExpensesAmount_expeditedExpensesAmount", new InputData(List.of(rentMortgageAmount)));
+        pagesData.putPage("incomePage", new FormData(Map.of("incomeInput", new InputData(List.of(income)))));
+        pagesData.putPage("assetsPage", new FormData(Map.of("assetsInput", new InputData(List.of(assets)))));
+        pagesData.putPage("housingCostsPage", new FormData(Map.of("housingCostsInput", new InputData(List.of(rentMortgageAmount)))));
 
-        assertThat(decider.decide(inputs)).isEqualTo(false);
+        assertThat(decider.decide(pagesData)).isEqualTo(false);
     }
 
     @Test
     void shouldNotQualify_whenNeededDataIsNotPresent() {
-        assertThat(decider.decide(new HashMap<>())).isEqualTo(false);
+        assertThat(decider.decide(new PagesData())).isEqualTo(false);
     }
 }

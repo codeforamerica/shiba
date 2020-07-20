@@ -1,0 +1,17 @@
+test-expedited-eligibility:
+  assets:
+    pageName: assetsPage
+    inputName: assetsInput
+    defaultValue: 100
+  income:
+    pageName: incomePage
+    inputName: incomeInput
+  migrantWorker:
+    pageName: migrantWorkerPage
+    inputName: migrantWorkerInput
+  housingCosts:
+    pageName: housingCostsPage
+    inputName: housingCostsInput
+  utilityExpensesSelections:
+    pageName: utilityExpensesSelectionsPage
+    inputName: utilityExpensesSelectionsInput
