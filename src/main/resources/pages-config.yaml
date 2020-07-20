@@ -611,6 +611,16 @@ shiba-configuration:
         name: success
         pageTitle:
           value: success.title
+    - &usCitizen
+      name: usCitizen
+      pageTitle:
+        value: us-citizen.title
+      headerKey:
+        value: us-citizen.are-you-a-us-citizen
+      headerHelpMessageKey: us-citizen.most-immigrants-are-still-eligible-for-food-and-cash-benefits
+      inputs:
+        - name: isUsCitizen
+          type: YES_NO
   workflow:
     landing:
       pageConfiguration: *landing
@@ -709,9 +719,13 @@ shiba-configuration:
     migrantFarmWorker:
       pageConfiguration: *migrantFarmWorker
       nextPages:
-        - pageName: importantToKnow
+        - pageName: usCitizen
       datasources:
         - pageName: doYouLiveAlone
+    usCitizen:
+      pageConfiguration: *usCitizen
+      nextPages:
+        - pageName: importantToKnow
     doYouNeedHelpImmediately:
       pageConfiguration: *doYouNeedHelpImmediately
       nextPages:

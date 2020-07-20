@@ -43,6 +43,8 @@ xml:
       migrantOrSeasonalFarmWorker: MIGRANT_SEASONAL_FARM_WORKER
     pregnant:
       isPregnant: IS_PREGNANT
+    usCitizen:
+      isUsCitizen: IS_US_CITIZEN
     signThisApplication:
       applicantSignature: APPLICANT_SIGNATURE
     nonPagesData:

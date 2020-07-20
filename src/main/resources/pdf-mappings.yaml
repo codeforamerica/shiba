@@ -70,5 +70,7 @@ caf:
         CCAP_HAS_COSTS_FOR_CHILD_CARE: CCAP_HAS_COSTS_FOR_CHILD_CARE
     pregnant:
       isPregnant: IS_PREGNANT
+    usCitizen:
+      isUsCitizen: IS_US_CITIZEN
     expeditedEligibility:
       expeditedEligibility: EXPEDITED_ELIGIBILITY

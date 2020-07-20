@@ -39,6 +39,7 @@
                 <onl:DateRecentMoveToMN>{{PERSONALINFO_MOVETOMNDATE}}</onl:DateRecentMoveToMN>
             </onl:ResidencyInfo>
             <onl:CitizenshipInfo>
+                <onl:CitizenshipInd>{{IS_US_CITIZEN}}</onl:CitizenshipInd>
                 <onl:SSNInfo>
                     <onl:SSN>{{PERSONALINFO_SSN}}</onl:SSN>
                 </onl:SSNInfo>
