@@ -1,7 +1,7 @@
 derived-values:
   expeditedUtilityPayments:
     noExpeditedUtilitiesSelected:
-      value:
+      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
         literal: NO_EXPEDITED_UTILITIES_SELECTED
       type: ENUMERATED_MULTI_VALUE
       condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
@@ -23,7 +23,7 @@ derived-values:
             matcher: DOES_NOT_CONTAIN
             value: PHONE
     heatingOrCoolingSelection:
-      value:
+      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
         literal: ONE_SELECTED
       type: ENUMERATED_SINGLE_VALUE
       condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
@@ -37,7 +37,7 @@ derived-values:
             matcher: CONTAINS
             value: COOLING
     waterOrSewerSelection:
-      value:
+      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
         literal: ONE_SELECTED
       type: ENUMERATED_SINGLE_VALUE
       condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
@@ -52,7 +52,7 @@ derived-values:
             value: SEWER
   goingToSchool:
     ccapHasCostsForChildCare:
-      value:
+      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
         literal: CCAP_HAS_COSTS_FOR_CHILD_CARE
       type: ENUMERATED_MULTI_VALUE
       condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
@@ -66,11 +66,9 @@ derived-values:
   mailingAddress:
     zipCode:
       type: SINGLE_VALUE
-      value:
-        type: REFERENCE
-        reference:
-          pageName: homeAddress
-          inputName: zipCode
+      value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+        pageName: homeAddress
+        inputName: zipCode
       condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
         conditions:
           - pageName: homeAddress
@@ -78,11 +76,9 @@ derived-values:
             value: "true"
     city:
       type: SINGLE_VALUE
-      value:
-        type: REFERENCE
-        reference:
-          pageName: homeAddress
-          inputName: city
+      value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+        pageName: homeAddress
+        inputName: city
       condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
         conditions:
           - pageName: homeAddress
@@ -90,11 +86,9 @@ derived-values:
             value: "true"
     state:
       type: SINGLE_VALUE
-      value:
-        type: REFERENCE
-        reference:
-          pageName: homeAddress
-          inputName: state
+      value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+        pageName: homeAddress
+        inputName: state
       condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
         conditions:
           - pageName: homeAddress
@@ -102,11 +96,9 @@ derived-values:
             value: "true"
     streetAddress:
       type: SINGLE_VALUE
-      value:
-        type: REFERENCE
-        reference:
-          pageName: homeAddress
-          inputName: streetAddress
+      value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+        pageName: homeAddress
+        inputName: streetAddress
       condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
         conditions:
           - pageName: homeAddress
@@ -114,11 +106,9 @@ derived-values:
             value: "true"
     apartmentNumber:
       type: SINGLE_VALUE
-      value:
-        type: REFERENCE
-        reference:
-          pageName: homeAddress
-          inputName: apartmentNumber
+      value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+        pageName: homeAddress
+        inputName: apartmentNumber
       condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
         conditions:
           - pageName: homeAddress
