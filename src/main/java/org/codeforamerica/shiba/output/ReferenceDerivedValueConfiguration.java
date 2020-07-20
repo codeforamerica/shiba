@@ -12,7 +12,7 @@ public class ReferenceDerivedValueConfiguration implements DerivedValueConfigura
 
     @Override
     public List<String> resolve(ApplicationData data) {
-        return data.getFormData(pageName)
+        return data.getInputDataMap(pageName)
                 .get(inputName)
                 .getValue();
     }

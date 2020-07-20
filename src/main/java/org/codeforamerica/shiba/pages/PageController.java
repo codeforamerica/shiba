@@ -19,9 +19,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static org.codeforamerica.shiba.pages.FormData.getFormDataFrom;
 
 @Controller
 public class PageController {
@@ -51,13 +48,13 @@ public class PageController {
             @RequestParam(required = false, defaultValue = "0") Integer option
     ) {
         PageWorkflowConfiguration pageWorkflow = this.pagesConfiguration.getPageWorkflow(pageName);
-        FormData formData = this.applicationData.getFormData(pageWorkflow.getPageConfiguration().getName());
-        String nextPageName = pageWorkflow.getNextPageName(formData, option);
+        InputDataMap inputDataMap = this.applicationData.getInputDataMap(pageWorkflow.getPageConfiguration().getName());
+        String nextPageName = pageWorkflow.getNextPageName(inputDataMap, option);
         PageWorkflowConfiguration nextPage = this.pagesConfiguration.getPageWorkflow(nextPageName);
 
         if (nextPage.shouldSkip(applicationData.getPagesData())) {
-            FormData nextPageFormData = this.applicationData.getFormData(nextPage.getPageConfiguration().getName());
-            return new RedirectView(String.format("/pages/%s", nextPage.getNextPageName(nextPageFormData, option)));
+            InputDataMap nextPageInputDataMap = this.applicationData.getInputDataMap(nextPage.getPageConfiguration().getName());
+            return new RedirectView(String.format("/pages/%s", nextPage.getNextPageName(nextPageInputDataMap, option)));
         } else {
             return new RedirectView(String.format("/pages/%s", nextPageName));
         }
@@ -93,8 +90,8 @@ public class PageController {
                 "page", pageConfiguration,
                 "pageName", pageName,
                 "postTo", landmarkPagesConfiguration.isSubmitPage(pageName) ? "/submit" : "/pages/" + pageName,
-                "pageTitle", pageWorkflow.resolve(pagesData, pageConfiguration.getPageTitle()),
-                "headerKey", pageWorkflow.resolve(pagesData, pageConfiguration.getHeaderKey())
+                "pageTitle", pageWorkflow.resolveTitle(pagesData),
+                "headerKey", pageWorkflow.resolveHeader(pagesData)
         ));
 
         if (landmarkPagesConfiguration.isTerminalPage(pageName)) {
@@ -105,18 +102,11 @@ public class PageController {
         if (pageConfiguration.isStaticPage()) {
             pageToRender = pageName;
             Optional.ofNullable(pageWorkflow.getDatasources())
-                    .map(datasources -> datasources.stream()
-                            .flatMap(datasource -> {
-                                FormData formData = getFormDataFrom(datasource, this.applicationData.getPagesData());
-                                return formData.entrySet().stream()
-                                        .map(entry -> Map.entry(
-                                                datasource.getPageName() + "_" + entry.getKey(),
-                                                entry.getValue()));
-                            }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
+                    .map(datasources -> this.applicationData.getPagesData().getInputDataMapBy(datasources, pageDatasource -> pageDatasource.getPageName() + "_"))
                     .ifPresent(inputMap -> model.put("data", inputMap));
         } else {
             pageToRender = "formPage";
-            model.put("data", pagesData.getPageOrDefault(pageName, pageConfiguration));
+            model.put("data", pagesData.getPageDataOrDefault(pageName, pageConfiguration));
         }
         return new ModelAndView(pageToRender, model);
     }
@@ -129,12 +119,12 @@ public class PageController {
         PageWorkflowConfiguration pageWorkflow = pagesConfiguration.getPageWorkflow(pageName);
 
         PageConfiguration page = pageWorkflow.getPageConfiguration();
-        FormData formData = FormData.fillOut(page, model);
+        InputDataMap inputDataMap = InputDataMap.fillOut(page, model);
 
         PagesData pagesData = applicationData.getPagesData();
-        pagesData.putPage(pageWorkflow.getPageConfiguration().getName(), formData);
+        pagesData.putPage(pageWorkflow.getPageConfiguration().getName(), inputDataMap);
 
-        return formData.isValid() ?
+        return inputDataMap.isValid() ?
                 new ModelAndView(String.format("redirect:/pages/%s/navigation", pageName)) :
                 new ModelAndView("redirect:/pages/" + pageName);
     }
@@ -148,11 +138,11 @@ public class PageController {
         String submitPage = landmarkPagesConfiguration.getSubmitPage();
         PageConfiguration page = pagesConfiguration.getPageWorkflow(submitPage).getPageConfiguration();
 
-        FormData formData = FormData.fillOut(page, model);
+        InputDataMap inputDataMap = InputDataMap.fillOut(page, model);
         PagesData pagesData = applicationData.getPagesData();
-        pagesData.putPage(submitPage, formData);
+        pagesData.putPage(submitPage, inputDataMap);
 
-        if (formData.isValid()) {
+        if (inputDataMap.isValid()) {
             ApplicationMetric applicationMetric = new ApplicationMetric(Duration.between(metrics.getStartTime(), clock.instant()));
             repository.save(applicationMetric);
 
@@ -163,11 +153,11 @@ public class PageController {
             PageWorkflowConfiguration pageWorkflow = pagesConfiguration.getPageWorkflow(submitPage);
             return new ModelAndView("formPage", Map.of(
                     "page", page,
-                    "data", formData,
+                    "data", inputDataMap,
                     "pageName", submitPage,
                     "postTo", "/submit",
-                    "pageTitle", pageWorkflow.resolve(pagesData, page.getPageTitle()),
-                    "headerKey", pageWorkflow.resolve(pagesData, page.getHeaderKey())
+                    "pageTitle", pageWorkflow.resolveTitle(pagesData),
+                    "headerKey", pageWorkflow.resolveHeader(pagesData)
             ));
         }
     }

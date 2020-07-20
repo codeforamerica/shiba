@@ -1,8 +1,8 @@
 package org.codeforamerica.shiba.output.caf;
 
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
-import org.codeforamerica.shiba.pages.FormData;
 import org.codeforamerica.shiba.pages.InputData;
+import org.codeforamerica.shiba.pages.InputDataMap;
 import org.codeforamerica.shiba.pages.PagesData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,11 +49,11 @@ class ExpeditedEligibilityDeciderTest {
 
     @BeforeEach
     void setup() {
-        pagesData.putPage("incomePage", new FormData(Map.of("incomeInput", new InputData(List.of("99999")))));
-        pagesData.putPage("assetsPage", new FormData(Map.of("assetsInput", new InputData(List.of("99999")))));
-        pagesData.putPage("migrantWorkerPage", new FormData(Map.of("migrantWorkerInput", new InputData(List.of("false")))));
-        pagesData.putPage("housingCostsPage", new FormData(Map.of("housingCostsInput", new InputData(List.of("99")))));
-        pagesData.putPage("utilityExpensesSelectionsPage", new FormData(Map.of("utilityExpensesSelectionsInput", new InputData(List.of()))));
+        pagesData.putPage("incomePage", new InputDataMap(Map.of("incomeInput", new InputData(List.of("99999")))));
+        pagesData.putPage("assetsPage", new InputDataMap(Map.of("assetsInput", new InputData(List.of("99999")))));
+        pagesData.putPage("migrantWorkerPage", new InputDataMap(Map.of("migrantWorkerInput", new InputData(List.of("false")))));
+        pagesData.putPage("housingCostsPage", new InputDataMap(Map.of("housingCostsInput", new InputData(List.of("99")))));
+        pagesData.putPage("utilityExpensesSelectionsPage", new InputDataMap(Map.of("utilityExpensesSelectionsInput", new InputData(List.of()))));
         when(mockUtilityDeductionCalculator.calculate(any())).thenReturn(0);
     }
 
@@ -69,8 +69,8 @@ class ExpeditedEligibilityDeciderTest {
             String assets,
             boolean expectedDecision
     ) {
-        pagesData.putPage("incomePage", new FormData(Map.of("incomeInput", new InputData(List.of(income)))));
-        pagesData.putPage("assetsPage", new FormData(Map.of("assetsInput", new InputData(List.of(assets)))));
+        pagesData.putPage("incomePage", new InputDataMap(Map.of("incomeInput", new InputData(List.of(income)))));
+        pagesData.putPage("assetsPage", new InputDataMap(Map.of("assetsInput", new InputData(List.of(assets)))));
 
         assertThat(decider.decide(pagesData)).isEqualTo(expectedDecision);
     }
@@ -78,7 +78,7 @@ class ExpeditedEligibilityDeciderTest {
     @Test
     void shouldUseTheConfiguredDefaultValueWhenPageInputDataNotAvailable() {
         pagesData.remove("assetsPage");
-        pagesData.putPage("incomePage", new FormData(Map.of("incomeInput", new InputData(List.of("149")))));
+        pagesData.putPage("incomePage", new InputDataMap(Map.of("incomeInput", new InputData(List.of("149")))));
 
         assertThat(decider.decide(pagesData)).isEqualTo(true);
     }
@@ -95,8 +95,8 @@ class ExpeditedEligibilityDeciderTest {
             String isMigrantWorker,
             boolean expectedDecision
     ) {
-        pagesData.putPage("assetsPage", new FormData(Map.of("assetsInput", new InputData(List.of(assets)))));
-        pagesData.putPage("migrantWorkerPage", new FormData(Map.of("migrantWorkerInput", new InputData(List.of(isMigrantWorker)))));
+        pagesData.putPage("assetsPage", new InputDataMap(Map.of("assetsInput", new InputData(List.of(assets)))));
+        pagesData.putPage("migrantWorkerPage", new InputDataMap(Map.of("migrantWorkerInput", new InputData(List.of(isMigrantWorker)))));
 
         assertThat(decider.decide(pagesData)).isEqualTo(expectedDecision);
     }
@@ -108,9 +108,9 @@ class ExpeditedEligibilityDeciderTest {
         String rentMortgageAmount = "500";
         when(mockUtilityDeductionCalculator.calculate(any())).thenReturn(1001);
 
-        pagesData.putPage("incomePage", new FormData(Map.of("incomeInput", new InputData(List.of(income)))));
-        pagesData.putPage("assetsPage", new FormData(Map.of("assetsInput", new InputData(List.of(assets)))));
-        pagesData.putPage("housingCostsPage", new FormData(Map.of("housingCostsInput", new InputData(List.of(rentMortgageAmount)))));
+        pagesData.putPage("incomePage", new InputDataMap(Map.of("incomeInput", new InputData(List.of(income)))));
+        pagesData.putPage("assetsPage", new InputDataMap(Map.of("assetsInput", new InputData(List.of(assets)))));
+        pagesData.putPage("housingCostsPage", new InputDataMap(Map.of("housingCostsInput", new InputData(List.of(rentMortgageAmount)))));
 
         assertThat(decider.decide(pagesData)).isEqualTo(true);
     }
@@ -122,9 +122,9 @@ class ExpeditedEligibilityDeciderTest {
         String rentMortgageAmount = "500";
         when(mockUtilityDeductionCalculator.calculate(any())).thenReturn(1000);
 
-        pagesData.putPage("incomePage", new FormData(Map.of("incomeInput", new InputData(List.of(income)))));
-        pagesData.putPage("assetsPage", new FormData(Map.of("assetsInput", new InputData(List.of(assets)))));
-        pagesData.putPage("housingCostsPage", new FormData(Map.of("housingCostsInput", new InputData(List.of(rentMortgageAmount)))));
+        pagesData.putPage("incomePage", new InputDataMap(Map.of("incomeInput", new InputData(List.of(income)))));
+        pagesData.putPage("assetsPage", new InputDataMap(Map.of("assetsInput", new InputData(List.of(assets)))));
+        pagesData.putPage("housingCostsPage", new InputDataMap(Map.of("housingCostsInput", new InputData(List.of(rentMortgageAmount)))));
 
         assertThat(decider.decide(pagesData)).isEqualTo(false);
     }

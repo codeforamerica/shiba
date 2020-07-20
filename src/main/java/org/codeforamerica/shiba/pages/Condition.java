@@ -21,9 +21,9 @@ public class Condition {
         return this.matcher.matches(inputValue, value);
     }
 
-    public Boolean appliesTo(FormData formData) {
-        List<String> inputValue = Optional.ofNullable(formData)
-                .map(nonNullFormData -> nonNullFormData.get(input).getValue())
+    public Boolean appliesTo(InputDataMap inputDataMap) {
+        List<String> inputValue = Optional.ofNullable(inputDataMap)
+                .map(nonNullInputDataMap -> nonNullInputDataMap.get(input).getValue())
                 .orElse(List.of());
         return this.matcher.matches(inputValue, value);
     }

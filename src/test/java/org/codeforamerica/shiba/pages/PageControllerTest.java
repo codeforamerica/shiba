@@ -66,7 +66,7 @@ class PageControllerTest {
     }
 
     @Test
-    void shouldWriteTheFormDataForSignThisApplicationPageAndCaptureSubmissionTime() throws Exception {
+    void shouldWriteTheInputDataMapForSignThisApplicationPageAndCaptureSubmissionTime() throws Exception {
         metrics.setStartTimeOnce(Instant.now());
         when(clock.instant()).thenReturn(LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant());
 
@@ -75,7 +75,7 @@ class PageControllerTest {
                 .param("applicantSignature[]", "some signature"))
                 .andExpect(redirectedUrl("/pages/signThisApplication/navigation"));
 
-        FormData signThisApplication = applicationData.getPagesData().getPage("signThisApplication");
+        InputDataMap signThisApplication = applicationData.getPagesData().getPage("signThisApplication");
         assertThat(signThisApplication.get("applicantSignature").getValue()).contains("some signature");
         assertThat(applicationData.getSubmissionTime()).contains("January 1, 2020");
     }

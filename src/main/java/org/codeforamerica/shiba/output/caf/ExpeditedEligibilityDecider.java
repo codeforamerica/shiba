@@ -52,7 +52,7 @@ public class ExpeditedEligibilityDecider {
         try {
             return Double.parseDouble(
                     Optional.ofNullable(pagesData.get(pageInputCoordinates.getPageName()))
-                            .map(formData -> formData.get(pageInputCoordinates.getInputName()).getValue().get(0))
+                            .map(inputDataMap -> inputDataMap.get(pageInputCoordinates.getInputName()).getValue().get(0))
                             .orElse(pageInputCoordinates.getDefaultValue())
             );
         } catch (NumberFormatException e) {

@@ -27,7 +27,7 @@ class OneToOneApplicationInputsMapperTest {
         pagesConfiguration.setPageDefinitions(List.of(page));
 
         List<String> input1Value = List.of("input1Value");
-        data.putPage(pageName, new FormData(Map.of(input1Name, new InputData(Validation.NONE, input1Value))));
+        data.putPage(pageName, new InputDataMap(Map.of(input1Name, new InputData(Validation.NONE, input1Value))));
 
         ApplicationData applicationData = new ApplicationData();
         applicationData.setPagesData(data);
@@ -60,7 +60,7 @@ class OneToOneApplicationInputsMapperTest {
 
         List<String> input2Value = List.of("input2Value");
         List<String> input3Value = List.of("input3Value");
-        data.putPage(pageName, new FormData(Map.of(
+        data.putPage(pageName, new InputDataMap(Map.of(
                 input2Name, new InputData(Validation.NONE, input2Value),
                 input3Name, new InputData(Validation.NONE, input3Value)
         )));
