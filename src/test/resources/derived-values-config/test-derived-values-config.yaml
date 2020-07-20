@@ -9,7 +9,7 @@ test-derived-values:
       type: SINGLE_VALUE
       value:
         literal: bar
-      condition:
+      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
         conditions:
           - pageName: somePage
             input: someInput
@@ -20,7 +20,7 @@ test-derived-values:
       value:
         literal: baz
       type: SINGLE_VALUE
-      condition:
+      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
         conditions:
           - pageName: someOtherPage
             input: someOtherInput
@@ -35,8 +35,7 @@ test-derived-values:
       value:
         literal: fooBar
       type: SINGLE_VALUE
-      condition:
-        logicalOperator: AND
+      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
         conditions:
           - pageName: someOtherPage
             input: someOtherInput

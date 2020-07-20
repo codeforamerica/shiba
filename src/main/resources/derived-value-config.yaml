@@ -4,8 +4,7 @@ derived-values:
       value:
         literal: NO_EXPEDITED_UTILITIES_SELECTED
       type: ENUMERATED_MULTI_VALUE
-      condition:
-        logicalOperator: AND
+      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
         conditions:
           - pageName: expeditedUtilityPayments
             input: payForUtilities
@@ -27,8 +26,7 @@ derived-values:
       value:
         literal: ONE_SELECTED
       type: ENUMERATED_SINGLE_VALUE
-      condition:
-        logicalOperator: OR
+      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
         conditions:
           - pageName: expeditedUtilityPayments
             input: payForUtilities
@@ -42,8 +40,7 @@ derived-values:
       value:
         literal: ONE_SELECTED
       type: ENUMERATED_SINGLE_VALUE
-      condition:
-        logicalOperator: OR
+      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
         conditions:
           - pageName: expeditedUtilityPayments
             input: payForUtilities
@@ -58,8 +55,7 @@ derived-values:
       value:
         literal: CCAP_HAS_COSTS_FOR_CHILD_CARE
       type: ENUMERATED_MULTI_VALUE
-      condition:
-        logicalOperator: AND
+      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
         conditions:
           - pageName: goingToSchool
             input: goingToSchool
@@ -75,7 +71,7 @@ derived-values:
         reference:
           pageName: homeAddress
           inputName: zipCode
-      condition:
+      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
         conditions:
           - pageName: homeAddress
             input: sameMailingAddress
@@ -87,7 +83,7 @@ derived-values:
         reference:
           pageName: homeAddress
           inputName: city
-      condition:
+      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
         conditions:
           - pageName: homeAddress
             input: sameMailingAddress
@@ -99,7 +95,7 @@ derived-values:
         reference:
           pageName: homeAddress
           inputName: state
-      condition:
+      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
         conditions:
           - pageName: homeAddress
             input: sameMailingAddress
@@ -111,7 +107,7 @@ derived-values:
         reference:
           pageName: homeAddress
           inputName: streetAddress
-      condition:
+      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
         conditions:
           - pageName: homeAddress
             input: sameMailingAddress
@@ -123,7 +119,7 @@ derived-values:
         reference:
           pageName: homeAddress
           inputName: apartmentNumber
-      condition:
+      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
         conditions:
           - pageName: homeAddress
             input: sameMailingAddress
