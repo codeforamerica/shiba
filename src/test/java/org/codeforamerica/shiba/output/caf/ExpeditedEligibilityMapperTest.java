@@ -21,7 +21,7 @@ class ExpeditedEligibilityMapperTest {
         ExpeditedEligibilityMapper mapper = new ExpeditedEligibilityMapper(mockDecider);
         ApplicationData appData = new ApplicationData();
 
-        when(mockDecider.decide(any())).thenReturn(true);
+        when(mockDecider.decide(any())).thenReturn(ExpeditedEligibility.ELIGIBLE);
 
         assertThat(mapper.map(appData)).containsExactly(
                 new ApplicationInput(
@@ -41,7 +41,7 @@ class ExpeditedEligibilityMapperTest {
         pagesData.put("page1", new InputDataMap());
         appData.setPagesData(pagesData);
 
-        when(mockDecider.decide(any())).thenReturn(false);
+        when(mockDecider.decide(any())).thenReturn(ExpeditedEligibility.NOT_ELIGIBLE);
 
         List<ApplicationInput> result = mapper.map(appData);
 

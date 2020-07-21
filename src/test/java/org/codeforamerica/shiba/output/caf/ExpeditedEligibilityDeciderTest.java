@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.output.caf.ExpeditedEligibility.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -59,15 +60,15 @@ class ExpeditedEligibilityDeciderTest {
 
     @ParameterizedTest
     @CsvSource(value = {
-            "149,100,true",
-            "151,100,false",
-            "149,101,false",
-            "150,101,false",
+            "149,100,ELIGIBLE",
+            "151,100,NOT_ELIGIBLE",
+            "149,101,NOT_ELIGIBLE",
+            "150,101,NOT_ELIGIBLE",
     })
     void shouldQualify_whenMeetingIncomeAndAssetsThresholds(
             String income,
             String assets,
-            boolean expectedDecision
+            ExpeditedEligibility expectedDecision
     ) {
         pagesData.putPage("incomePage", new InputDataMap(Map.of("incomeInput", new InputData(List.of(income)))));
         pagesData.putPage("assetsPage", new InputDataMap(Map.of("assetsInput", new InputData(List.of(assets)))));
@@ -80,20 +81,20 @@ class ExpeditedEligibilityDeciderTest {
         pagesData.remove("assetsPage");
         pagesData.putPage("incomePage", new InputDataMap(Map.of("incomeInput", new InputData(List.of("149")))));
 
-        assertThat(decider.decide(pagesData)).isEqualTo(true);
+        assertThat(decider.decide(pagesData)).isEqualTo(ELIGIBLE);
     }
 
     @ParameterizedTest
     @CsvSource(value = {
-            "100,true,true",
-            "101,true,false",
-            "100,false,false",
-            "101,false,false"
+            "100,true,ELIGIBLE",
+            "101,true,NOT_ELIGIBLE",
+            "100,false,NOT_ELIGIBLE",
+            "101,false,NOT_ELIGIBLE"
     })
     void shouldQualify_whenApplicantIsMigrantWorkerAndMeetAssetThreshold(
             String assets,
             String isMigrantWorker,
-            boolean expectedDecision
+            ExpeditedEligibility expectedDecision
     ) {
         pagesData.putPage("assetsPage", new InputDataMap(Map.of("assetsInput", new InputData(List.of(assets)))));
         pagesData.putPage("migrantWorkerPage", new InputDataMap(Map.of("migrantWorkerInput", new InputData(List.of(isMigrantWorker)))));
@@ -112,7 +113,7 @@ class ExpeditedEligibilityDeciderTest {
         pagesData.putPage("assetsPage", new InputDataMap(Map.of("assetsInput", new InputData(List.of(assets)))));
         pagesData.putPage("housingCostsPage", new InputDataMap(Map.of("housingCostsInput", new InputData(List.of(rentMortgageAmount)))));
 
-        assertThat(decider.decide(pagesData)).isEqualTo(true);
+        assertThat(decider.decide(pagesData)).isEqualTo(ELIGIBLE);
     }
 
     @Test
@@ -126,11 +127,11 @@ class ExpeditedEligibilityDeciderTest {
         pagesData.putPage("assetsPage", new InputDataMap(Map.of("assetsInput", new InputData(List.of(assets)))));
         pagesData.putPage("housingCostsPage", new InputDataMap(Map.of("housingCostsInput", new InputData(List.of(rentMortgageAmount)))));
 
-        assertThat(decider.decide(pagesData)).isEqualTo(false);
+        assertThat(decider.decide(pagesData)).isEqualTo(NOT_ELIGIBLE);
     }
 
     @Test
     void shouldNotQualify_whenNeededDataIsNotPresent() {
-        assertThat(decider.decide(new PagesData())).isEqualTo(false);
+        assertThat(decider.decide(new PagesData())).isEqualTo(UNDETERMINED);
     }
 }

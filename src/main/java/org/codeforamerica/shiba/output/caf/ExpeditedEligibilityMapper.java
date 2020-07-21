@@ -21,7 +21,7 @@ public class ExpeditedEligibilityMapper implements ApplicationInputsMapper {
         return List.of(
                 new ApplicationInput(
                         "expeditedEligibility",
-                        eligibilityDecider.decide(data.getPagesData()) ? List.of("ELIGIBLE") : List.of("NOT_ELIGIBLE"),
+                        List.of(eligibilityDecider.decide(data.getPagesData()).name()),
                         "expeditedEligibility",
                         ApplicationInputType.ENUMERATED_SINGLE_VALUE
                 ));

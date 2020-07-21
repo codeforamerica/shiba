@@ -22,13 +22,13 @@ public class ExpeditedEligibilityDecider {
         this.pageInputCoordinatesMap = pageInputCoordinatesMap;
     }
 
-    public boolean decide(PagesData pagesData) {
+    public ExpeditedEligibility decide(PagesData pagesData) {
         List<String> requiredPages = pageInputCoordinatesMap.values().stream()
                 .filter(coordinates -> coordinates.getDefaultValue() == null)
                 .map(PageInputCoordinates::getPageName)
                 .collect(Collectors.toList());
         if (!pagesData.keySet().containsAll(requiredPages)) {
-            return false;
+            return ExpeditedEligibility.UNDETERMINED;
         }
 
         double assets = getDouble(pagesData, pageInputCoordinatesMap.get("assets"));
@@ -45,7 +45,7 @@ public class ExpeditedEligibilityDecider {
 
         return assetsAndIncomeBelowThreshold
                 || migrantWorkerAndAssetsBelowThreshold
-                || (assets + income) < (housingCosts + standardDeduction);
+                || (assets + income) < (housingCosts + standardDeduction) ? ExpeditedEligibility.ELIGIBLE : ExpeditedEligibility.NOT_ELIGIBLE;
     }
 
     private static double getDouble(PagesData pagesData, PageInputCoordinates pageInputCoordinates) {
