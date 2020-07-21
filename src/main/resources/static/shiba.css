@@ -137,3 +137,22 @@
 .italic {
     font-style: italic;
 }
+
+.incrementer {
+    display: inline-block;
+    margin-bottom: 0;
+}
+
+.incrementer > * {
+    display: inline-block;
+}
+
+.incrementer__add, .incrementer__subtract:first-of-type {
+    margin-left: 1.25rem;
+    margin-right: 0;
+    margin-bottom: 0;
+}
+
+.incrementer .text-input {
+    display: inline-block;
+}
