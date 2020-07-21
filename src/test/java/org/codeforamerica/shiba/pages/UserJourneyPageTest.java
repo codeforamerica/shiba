@@ -168,7 +168,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         Page introIncome = workSituation.choose(NO);
         Page householdJobs = introIncome.clickPrimaryButton();
         testPage.enterInput("numberOfJobs", "4");
-        Page importantToKnowPage = householdJobs.clickPrimaryButton();
+        Page incomeUpNext = householdJobs.clickPrimaryButton();
+        Page importantToKnowPage = incomeUpNext.clickPrimaryButton();
 
         Page legalStuffPage = importantToKnowPage.clickPrimaryButton();
         legalStuffPage.selectEnumeratedInput("agreeToTerms", "I agree");

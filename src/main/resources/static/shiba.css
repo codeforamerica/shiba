@@ -15,6 +15,7 @@
     padding: 2.5rem 1rem 2.5rem 1rem;
     margin: 2.5rem auto;
     border: 2px solid #AAAAAA;
+    border-radius: 3px;
 }
 
 .dob-input {
@@ -155,4 +156,9 @@
 
 .incrementer .text-input {
     display: inline-block;
+}
+
+.padding-horizontal-30 {
+    padding-left: 3rem;
+    padding-right: 3rem;
 }

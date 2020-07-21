@@ -663,6 +663,11 @@ shiba-configuration:
           validator:
             validation: NUMBER_OF_JOBS
           validationErrorMessageKey: general.validation.make-sure-to-enter-a-number-between-zero-and-twenty
+    - &incomeUpNext
+      name: incomeUpNext
+      pageTitle:
+        value: income-up-next.title
+
   workflow:
     landing:
       pageConfiguration: *landing
@@ -782,6 +787,10 @@ shiba-configuration:
         - pageName: householdJobs
     householdJobs:
       pageConfiguration: *householdJobs
+      nextPages:
+        - pageName: incomeUpNext
+    incomeUpNext:
+      pageConfiguration: *incomeUpNext
       nextPages:
         - pageName: importantToKnow
     doYouNeedHelpImmediately:

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="fragments/head :: head(#{${pageTitle}})"></div>
+<body>
+<div class="page-wrapper">
+    <section class="slab slab--shiba">
+        <div class="grid">
+            <a th:replace="fragments/go-back"></a>
+            <div class="card spacing-above-35">
+                <div class="grid__item spacing-above-35">
+                    <h2 class="spacing-below-35 spacing-above-0"
+                        th:text="#{income-up-next.got-it-youre-almost-done-with-the-income-section}"></h2>
+                </div>
+                <div class="grid__item text--centered spacing-below-35">
+                    <i class="icon-check_circle large"></i>
+                </div>
+                <div class="grid__item intro-box spacing-below-60 padding-horizontal-30">
+                    <strong><span th:text="#{income-up-next.up-next}"></span></strong>
+                    <span th:text="#{income-up-next.unearned-income-and-recent-changes}"></span>
+                </div>
+                <div th:replace="fragments/continue"></div>
+            </div>
+        </div>
+    </section>
+</div>
+<div th:replace="fragments/footer"></div>
+</body>
+</html>
