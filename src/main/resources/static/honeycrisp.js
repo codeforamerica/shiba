@@ -11657,7 +11657,7 @@ function toggleNav() {
 var incrementer = (function() {
   var i = {
     increment: function(input) {
-      var max = parseInt($(input).attr('max'));
+      var max = parseInt($(input).attr('max-value'));
       var value = parseInt($(input).val());
       if(max != undefined) {
         if(value < max) {
@@ -11669,7 +11669,7 @@ var incrementer = (function() {
       }
     },
     decrement: function(input) {
-      var min = parseInt($(input).attr('min'));
+      var min = parseInt($(input).attr('min-value'));
       var value = parseInt($(input).val());
       if(min != undefined) {
         if(value > min) {
@@ -11913,4 +11913,5 @@ $(document).ready(function() {
   noneOfTheAbove.init();
   showMore.init();
   accordion.init();
+  incrementer.init();
 });

@@ -645,6 +645,24 @@ shiba-configuration:
       name: introIncome
       pageTitle:
         value: intro-income.title
+    - &householdJobs
+      name: householdJobs
+      pageTitle:
+        value: household-jobs.title
+      headerKey:
+        value: household-jobs.tell-us-how-many-jobs-you-have
+      headerHelpMessageKey: household-jobs.this-includes-full-time-part-time-contract-and-temporary-jobs-and-self-employment
+      inputs:
+        - name: numberOfJobs
+          type: INCREMENTER
+          defaultValue: "0"
+          promptMessage:
+            promptMessageKey: household-jobs.how-many-jobs-do-you-have
+          min: 0
+          max: 20
+          validator:
+            validation: NUMBER_OF_JOBS
+          validationErrorMessageKey: general.validation.make-sure-to-enter-a-number-between-zero-and-twenty
   workflow:
     landing:
       pageConfiguration: *landing
@@ -760,6 +778,10 @@ shiba-configuration:
         - pageName: introIncome
     introIncome:
       pageConfiguration: *introIncome
+      nextPages:
+        - pageName: householdJobs
+    householdJobs:
+      pageConfiguration: *householdJobs
       nextPages:
         - pageName: importantToKnow
     doYouNeedHelpImmediately:

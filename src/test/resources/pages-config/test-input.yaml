@@ -55,6 +55,11 @@ shiba-configuration-input:
             followUps:
               - name: followUpTextInput
                 type: TEXT
+          - name: incrementerInput
+            type: INCREMENTER
+            defaultValue: "4"
+            min: 3
+            max: 5
     - &nextPage
         name: nextPage
         pageTitle:

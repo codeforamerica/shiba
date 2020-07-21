@@ -19,6 +19,8 @@ public class FormInput {
     Validator validator = new Validator();
     Boolean readOnly = false;
     String defaultValue;
+    Integer max;
+    Integer min;
 
     public Validation getValidationFor(MultiValueMap<String, String> model) {
         return this.validator.validationFor(model);
@@ -31,6 +33,7 @@ public class FormInput {
             case RADIO -> "radio-input";
             case CHECKBOX -> "checkbox-input";
             case YES_NO -> "yes-no-input";
+            case INCREMENTER -> "incrementer-input";
         };
     }
 

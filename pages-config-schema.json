@@ -169,7 +169,8 @@
             "CHECKBOX",
             "SELECT",
             "YES_NO",
-            "MONEY"
+            "MONEY",
+            "INCREMENTER"
           ]
         },
         "name": {
@@ -229,7 +230,8 @@
                 "ZIPCODE",
                 "STATE",
                 "PHONE",
-                "MONEY"
+                "MONEY",
+                "NUMBER_OF_JOBS"
               ]
             },
             "condition": {

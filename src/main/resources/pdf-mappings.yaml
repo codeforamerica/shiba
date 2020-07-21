@@ -76,5 +76,7 @@ caf:
       hasDisability: HAS_DISABILITY
     workSituation:
       hasWorkSituation: HAS_WORK_SITUATION
+    householdJobs:
+      numberOfJobs: NUMBER_OF_JOBS
     expeditedEligibility:
       expeditedEligibility: EXPEDITED_ELIGIBILITY

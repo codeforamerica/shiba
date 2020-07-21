@@ -33,6 +33,7 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest {
     private final String datePageTitle = "date page title";
     private final String notBlankPageTitle = "not blank page title";
     private final String checkboxPageTitle = "checkbox page title";
+    private final String incrementerPageTitle = "incrementer page title";
     private final String option1 = "option 1";
 
     @TestConfiguration
@@ -64,6 +65,7 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest {
         staticMessageSource.addMessage("date-page-title", Locale.US, datePageTitle);
         staticMessageSource.addMessage("not-blank-page-title", Locale.US, notBlankPageTitle);
         staticMessageSource.addMessage("checkbox-page-title", Locale.US, checkboxPageTitle);
+        staticMessageSource.addMessage("incrementer-page-title", Locale.US, incrementerPageTitle);
         staticMessageSource.addMessage("option-1", Locale.US, option1);
     }
 
@@ -173,7 +175,6 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest {
             assertThat(testPage.hasInputError("conditionTest")).isTrue();
         }
     }
-
 
     @Nested
     class SpecificValidations {
@@ -361,6 +362,51 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest {
             driver.navigate().to(baseUrl + "/pages/checkboxPage");
 
             testPage.selectEnumeratedInput("checkboxInput", option1);
+            testPage.clickPrimaryButton();
+            assertThat(testPage.getTitle()).isEqualTo(lastPageTitle);
+        }
+
+        @Test
+        void shouldFailValidationForNUMBER_OF_JOBSWhenValueIsLessThan0() {
+            navigateTo("incrementerPage");
+            testPage.enterInput("incrementerInput", "-1");
+
+            testPage.clickPrimaryButton();
+            assertThat(testPage.getTitle()).isEqualTo(incrementerPageTitle);
+        }
+
+        @Test
+        void shouldFailValidationForNUMBER_OF_JOBSWhenValueIsGreaterThan20() {
+            navigateTo("incrementerPage");
+            testPage.enterInput("incrementerInput", "21");
+
+            testPage.clickPrimaryButton();
+            assertThat(testPage.getTitle()).isEqualTo(incrementerPageTitle);
+        }
+
+        @Test
+        void shouldFailValidationForNUMBER_OF_JOBSWhenValueIsEmpty() {
+            navigateTo("incrementerPage");
+            testPage.enterInput("incrementerInput", "  ");
+
+            testPage.clickPrimaryButton();
+            assertThat(testPage.getTitle()).isEqualTo(incrementerPageTitle);
+        }
+
+        @Test
+        void shouldFailValidationForNUMBER_OF_JOBSWhenValueContainsAlphaCharacters() {
+            navigateTo("incrementerPage");
+            testPage.enterInput("incrementerInput", "1e1");
+
+            testPage.clickPrimaryButton();
+            assertThat(testPage.getTitle()).isEqualTo(incrementerPageTitle);
+        }
+
+        @Test
+        void shouldPassValidationForNUMBER_OF_JOBSWhenValueIsBetween0and20() {
+            navigateTo("incrementerPage");
+            testPage.enterInput("incrementerInput", "19");
+
             testPage.clickPrimaryButton();
             assertThat(testPage.getTitle()).isEqualTo(lastPageTitle);
         }

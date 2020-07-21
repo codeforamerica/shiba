@@ -121,6 +121,16 @@ shiba-configuration-test-validation:
             validator:
               validation: SELECT_AT_LEAST_ONE
             validationErrorMessageKey: error-message-key
+    - &incrementerPage
+      name: incrementerPage
+      pageTitle:
+        value: incrementer-page-title
+      inputs:
+        - name: incrementerInput
+          type: INCREMENTER
+          validator:
+            validation: NUMBER_OF_JOBS
+          validationErrorMessageKey: error-message-key
     - &doesNotContainConditionPage
         name: doesNotContainConditionPage
         pageTitle:
@@ -183,6 +193,10 @@ shiba-configuration-test-validation:
         - pageName: lastPage
     checkboxPage:
       pageConfiguration: *checkboxPage
+      nextPages:
+        - pageName: lastPage
+    incrementerPage:
+      pageConfiguration: *incrementerPage
       nextPages:
         - pageName: lastPage
     doesNotContainConditionPage:
