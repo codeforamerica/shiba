@@ -10,7 +10,7 @@
                 <div class="grid__item spacing-above-35 spacing-below-35">
                     <h2 th:text="#{${headerKey}}"></h2>
                 </div>
-                <div class="bottom-horizontal-line spacing-below-35 review-info-section">
+                <div class="bottom-horizontal-line spacing-below-25 review-info-section">
                     <div class="spacing-below-10">
                         <div class="inline">
                             <strong th:text="#{review-info.name}"></strong>
@@ -21,7 +21,7 @@
                     </div>
                     <p class="spacing-below-0" th:text="|${data.personalInfo_firstName.value[0]} ${data.personalInfo_lastName.value[0]}|"></p>
                 </div>
-                <div class="bottom-horizontal-line spacing-below-35 review-info-section">
+                <div class="bottom-horizontal-line spacing-below-25 review-info-section">
                     <div class="spacing-below-10">
                         <div class="inline">
                             <strong th:text="#{review-info.home-address}"></strong>
@@ -36,7 +36,7 @@
                     <p th:if="${!data.homeAddress_city.value[0].isEmpty()}" class="spacing-below-0" th:text="|${data.homeAddress_city.value[0]}, ${data.homeAddress_state.value[0]}|"></p>
                     <p class="spacing-below-0 spacing-above-10 italic" th:if="${!data.homeAddress_isHomeless.value.isEmpty()}" th:text="#{review-info.currently-homeless}"></p>
                 </div>
-                <div th:if="${data.homeAddress_sameMailingAddress.value[0] == 'false'}" class="bottom-horizontal-line spacing-below-35 review-info-section">
+                <div th:if="${data.homeAddress_sameMailingAddress.value[0] == 'false'}" class="bottom-horizontal-line spacing-below-25 review-info-section">
                     <div class="spacing-below-10">
                         <div class="inline">
                             <strong th:text="#{review-info.mailing-address}"></strong>
@@ -50,7 +50,7 @@
                        th:text="|# ${data.mailingAddress_apartmentNumber.value[0]}|"></p>
                     <p class="spacing-below-0" th:text="|${data.mailingAddress_city.value[0]}, ${data.mailingAddress_state.value[0]}|"></p>
                 </div>
-                <div class="bottom-horizontal-line spacing-below-35 review-info-section">
+                <div class="bottom-horizontal-line spacing-below-25 review-info-section">
                     <div class="spacing-below-10">
                         <div class="inline">
                             <strong th:text="#{review-info.contact-info}"></strong>
@@ -62,7 +62,7 @@
                     <p class="spacing-below-0" th:text="${T(org.codeforamerica.shiba.pages.PageUtils).formatPhone(data.contactInfo_phoneNumber.value[0])}"></p>
                     <p class="spacing-below-0" th:if="${!data.contactInfo_email.value[0].isEmpty()}" th:text="${data.contactInfo_email.value[0]}"></p>
                 </div>
-                <div class="spacing-below-15">
+                <div class="spacing-below-15 spacing-above-60">
                     <a class="button button--primary" th:href="'/pages/'+${pageName}+'/navigation?option=0'"
                        th:text="#{review-info.this-looks-correct}"></a>
                 </div>
