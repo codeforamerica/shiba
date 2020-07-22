@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 
 public class UserDecisionNavigationPageTest extends AbstractStaticMessageSourcePageTest {
 
@@ -49,7 +50,7 @@ public class UserDecisionNavigationPageTest extends AbstractStaticMessageSourceP
     @Test
     void shouldNavigateToNextPageBasedOnCondition() {
         navigateTo("formPageBranchingNavigationPage");
-        driver.findElement(By.cssSelector("label:first-of-type")).click();
+        testPage.choose(YES);
 
         assertThat(driver.getTitle()).isEqualTo(yesAnswerTitle);
     }

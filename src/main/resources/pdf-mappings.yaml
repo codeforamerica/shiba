@@ -78,5 +78,7 @@ caf:
       hasWorkSituation: HAS_WORK_SITUATION
     householdJobs:
       numberOfJobs: NUMBER_OF_JOBS
+    ccapJob:
+      currentlyLookingForJob: LOOKING_FOR_JOB
     expeditedEligibility:
       expeditedEligibility: EXPEDITED_ELIGIBILITY

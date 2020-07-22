@@ -4,21 +4,25 @@ derived-values:
       value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
         literal: NO_EXPEDITED_UTILITIES_SELECTED
       type: ENUMERATED_MULTI_VALUE
-      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+      condition: !!org.codeforamerica.shiba.output.conditions.AndComposableCondition
         conditions:
-          - pageName: expeditedUtilityPayments
+          - !!org.codeforamerica.shiba.output.conditions.DerivedCondition
+            pageName: expeditedUtilityPayments
             input: payForUtilities
             matcher: DOES_NOT_CONTAIN
             value: HEATING
-          - pageName: expeditedUtilityPayments
+          - !!org.codeforamerica.shiba.output.conditions.DerivedCondition
+            pageName: expeditedUtilityPayments
             input: payForUtilities
             matcher: DOES_NOT_CONTAIN
             value: COOLING
-          - pageName: expeditedUtilityPayments
+          - !!org.codeforamerica.shiba.output.conditions.DerivedCondition
+            pageName: expeditedUtilityPayments
             input: payForUtilities
             matcher: DOES_NOT_CONTAIN
             value: ELECTRICITY
-          - pageName: expeditedUtilityPayments
+          - !!org.codeforamerica.shiba.output.conditions.DerivedCondition
+            pageName: expeditedUtilityPayments
             input: payForUtilities
             matcher: DOES_NOT_CONTAIN
             value: PHONE
@@ -26,13 +30,15 @@ derived-values:
       value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
         literal: ONE_SELECTED
       type: ENUMERATED_SINGLE_VALUE
-      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+      condition: !!org.codeforamerica.shiba.output.conditions.OrComposableCondition
         conditions:
-          - pageName: expeditedUtilityPayments
+          - !!org.codeforamerica.shiba.output.conditions.DerivedCondition
+            pageName: expeditedUtilityPayments
             input: payForUtilities
             matcher: CONTAINS
             value: HEATING
-          - pageName: expeditedUtilityPayments
+          - !!org.codeforamerica.shiba.output.conditions.DerivedCondition
+            pageName: expeditedUtilityPayments
             input: payForUtilities
             matcher: CONTAINS
             value: COOLING
@@ -40,13 +46,15 @@ derived-values:
       value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
         literal: ONE_SELECTED
       type: ENUMERATED_SINGLE_VALUE
-      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+      condition: !!org.codeforamerica.shiba.output.conditions.OrComposableCondition
         conditions:
-          - pageName: expeditedUtilityPayments
+          - !!org.codeforamerica.shiba.output.conditions.DerivedCondition
+            pageName: expeditedUtilityPayments
             input: payForUtilities
             matcher: CONTAINS
             value: WATER
-          - pageName: expeditedUtilityPayments
+          - !!org.codeforamerica.shiba.output.conditions.DerivedCondition
+            pageName: expeditedUtilityPayments
             input: payForUtilities
             matcher: CONTAINS
             value: SEWER
@@ -55,62 +63,68 @@ derived-values:
       value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
         literal: CCAP_HAS_COSTS_FOR_CHILD_CARE
       type: ENUMERATED_MULTI_VALUE
-      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+      condition: !!org.codeforamerica.shiba.output.conditions.OrComposableCondition
         conditions:
-          - pageName: goingToSchool
-            input: goingToSchool
+          - !!org.codeforamerica.shiba.output.conditions.AndComposableCondition
+            conditions:
+              - !!org.codeforamerica.shiba.output.conditions.DerivedCondition
+                pageName: goingToSchool
+                input: goingToSchool
+                value: "true"
+              - !!org.codeforamerica.shiba.output.conditions.DerivedCondition
+                pageName: choosePrograms
+                input: programs
+                value: CHILD_CARE
+          - !!org.codeforamerica.shiba.output.conditions.DerivedCondition
+            pageName: ccapJob
+            input: currentlyLookingForJob
             value: "true"
-          - pageName: choosePrograms
-            input: programs
-            value: CHILD_CARE
   mailingAddress:
     zipCode:
       type: SINGLE_VALUE
       value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
         pageName: homeAddress
         inputName: zipCode
-      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
-        conditions:
-          - pageName: homeAddress
-            input: sameMailingAddress
-            value: "true"
+      condition: !!org.codeforamerica.shiba.output.conditions.DerivedCondition
+        pageName: homeAddress
+        input: sameMailingAddress
+        value: "true"
     city:
       type: SINGLE_VALUE
       value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
         pageName: homeAddress
         inputName: city
-      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
-        conditions:
-          - pageName: homeAddress
-            input: sameMailingAddress
-            value: "true"
+      condition: !!org.codeforamerica.shiba.output.conditions.DerivedCondition
+        pageName: homeAddress
+        input: sameMailingAddress
+        value: "true"
     state:
       type: SINGLE_VALUE
       value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
         pageName: homeAddress
         inputName: state
-      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
-        conditions:
-          - pageName: homeAddress
-            input: sameMailingAddress
-            value: "true"
+      condition:
+        conditions: !!org.codeforamerica.shiba.output.conditions.DerivedCondition
+          pageName: homeAddress
+          input: sameMailingAddress
+          value: "true"
     streetAddress:
       type: SINGLE_VALUE
       value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
         pageName: homeAddress
         inputName: streetAddress
-      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
-        conditions:
-          - pageName: homeAddress
-            input: sameMailingAddress
-            value: "true"
+      condition:
+        conditions: !!org.codeforamerica.shiba.output.conditions.DerivedCondition
+          pageName: homeAddress
+          input: sameMailingAddress
+          value: "true"
     apartmentNumber:
       type: SINGLE_VALUE
       value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
         pageName: homeAddress
         inputName: apartmentNumber
-      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
-        conditions:
-          - pageName: homeAddress
-            input: sameMailingAddress
-            value: "true"
+      condition:
+        conditions: !!org.codeforamerica.shiba.output.conditions.DerivedCondition
+          pageName: homeAddress
+          input: sameMailingAddress
+          value: "true"
