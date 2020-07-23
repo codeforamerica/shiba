@@ -568,7 +568,6 @@ shiba-configuration:
           type: YES_NO
     - &expeditedDetermination
       name: expeditedDetermination
-      inputs: []
     - &importantToKnow
       name: importantToKnow
       pageTitle:
@@ -828,7 +827,6 @@ shiba-configuration:
         - pageName: householdJobs
     householdJobs:
       pageConfiguration: *householdJobs
-      conditionalNavigation: true
       nextPages:
         - pageName: ccapJob
           condition:

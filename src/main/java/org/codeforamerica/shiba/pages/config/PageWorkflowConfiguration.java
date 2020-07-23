@@ -11,6 +11,9 @@ public class PageWorkflowConfiguration {
     private List<NextPage> nextPages;
     private Condition skipCondition;
     private List<PageDatasource> datasources = new ArrayList<>();
-    private Boolean conditionalNavigation = false;
     private PageConfiguration pageConfiguration;
+
+    public Boolean getConditionalNavigation() {
+        return nextPages.stream().anyMatch(page -> page.getCondition() != null);
+    }
 }

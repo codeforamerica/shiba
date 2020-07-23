@@ -51,7 +51,6 @@ shiba-configuration-user-decision-navigation:
       pageConfiguration: *optionOnePage
     formPageBranchingNavigationPage:
       pageConfiguration: *formPageBranchingNavigationPage
-      conditionalNavigation: true
       nextPages:
         - pageName: yesAnswerPage
           condition:
