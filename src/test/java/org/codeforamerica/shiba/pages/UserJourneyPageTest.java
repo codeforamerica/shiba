@@ -169,11 +169,12 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         Page householdJobs = introIncome.clickPrimaryButton();
         testPage.enterInput("numberOfJobs", "4");
         Page incomeUpNext = householdJobs.clickPrimaryButton();
-        Page importantToKnowPage = incomeUpNext.clickPrimaryButton();
-
-        Page legalStuffPage = importantToKnowPage.clickPrimaryButton();
-        legalStuffPage.selectEnumeratedInput("agreeToTerms", "I agree");
-        Page signThisApplicationPage = legalStuffPage.clickPrimaryButton();
+        Page unearnedIncome = incomeUpNext.clickPrimaryButton();
+        unearnedIncome.selectEnumeratedInput("unearnedIncome", "None of the above");
+        Page importantToKnow = unearnedIncome.clickPrimaryButton();
+        Page legalStuff = importantToKnow.clickPrimaryButton();
+        legalStuff.selectEnumeratedInput("agreeToTerms", "I agree");
+        Page signThisApplicationPage = legalStuff.clickPrimaryButton();
 
         signThisApplicationPage.enterInput("applicantSignature", "some name");
         signThisApplicationPage.clickPrimaryButton();

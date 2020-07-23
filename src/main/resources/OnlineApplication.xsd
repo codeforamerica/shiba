@@ -2099,7 +2099,7 @@
 			<xsd:documentation>Income info</xsd:documentation>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="Type" type="xsd:string" minOccurs="0">
+			<xsd:element name="Type" type="model:IncomeSourceType" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>F# 209; see model:IncomeSourceType</xsd:documentation>
 				</xsd:annotation>

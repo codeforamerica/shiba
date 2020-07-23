@@ -52,6 +52,32 @@
                     <onl:WorkChangeInd>{{HAS_WORK_SITUATION}}</onl:WorkChangeInd>
                 </onl:WorkChange>
             </onl:AdditionalInfo>
+            <onl:UnearnedIncomeInfo>
+                <onl:UnearnedIncome>
+                    <onl:Type>{{UNEARNED_INCOME}}</onl:Type>
+                </onl:UnearnedIncome>
+                <onl:UnearnedIncome>
+                    <onl:Type>{{UNEARNED_INCOME}}</onl:Type>
+                </onl:UnearnedIncome>
+                <onl:UnearnedIncome>
+                    <onl:Type>{{UNEARNED_INCOME}}</onl:Type>
+                </onl:UnearnedIncome>
+                <onl:UnearnedIncome>
+                    <onl:Type>{{UNEARNED_INCOME}}</onl:Type>
+                </onl:UnearnedIncome>
+                <onl:UnearnedIncome>
+                    <onl:Type>{{UNEARNED_INCOME}}</onl:Type>
+                </onl:UnearnedIncome>
+                <onl:UnearnedIncome>
+                    <onl:Type>{{UNEARNED_INCOME}}</onl:Type>
+                </onl:UnearnedIncome>
+                <onl:UnearnedIncome>
+                    <onl:Type>{{UNEARNED_INCOME}}</onl:Type>
+                </onl:UnearnedIncome>
+                <onl:UnearnedIncome>
+                    <onl:Type>{{UNEARNED_INCOME}}</onl:Type>
+                </onl:UnearnedIncome>
+            </onl:UnearnedIncomeInfo>
         </onl:HouseholdMember>
         <onl:Program>{{PROGRAM}}</onl:Program>
         <onl:Program>{{PROGRAM}}</onl:Program>

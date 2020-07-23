@@ -53,6 +53,8 @@ xml:
       applicantSignature: APPLICANT_SIGNATURE
     nonPagesData:
       submissionTime: SUBMISSION_TIME
+    unearnedIncome:
+      unearnedIncome: UNEARNED_INCOME
   enums:
     true: true
     false: false
@@ -81,3 +83,11 @@ xml:
     HEATING: Heat
     PHONE: Phone
     NO_EXPEDITED_UTILITIES_SELECTED: None
+    SOCIAL_SECURITY: Social Security (RSDI)
+    SSI: Supplemental Security Income (SSI)
+    VETERANS_BENEFITS: Veteran's Benefits (VA)
+    UNEMPLOYMENT: Unemployment Insurance
+    WORKERS_COMPENSATION: Workers' Compensation
+    RETIREMENT: Retirement or Pension Benefits
+    CHILD_OR_SPOUSAL_SUPPORT: Child Support
+    TRIBAL_PAYMENTS: Tribal Payments

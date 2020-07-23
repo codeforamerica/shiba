@@ -520,7 +520,7 @@ shiba-configuration:
           type: CHECKBOX
           validator:
             validation: SELECT_AT_LEAST_ONE
-          validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+          validationErrorMessageKey: general.validation.make-sure-you-choose-none-of-the-above-or-another-option
           options:
             - value: HEATING
               messageKey: expedited-utility-payments.heating
@@ -676,6 +676,39 @@ shiba-configuration:
       inputs:
         - name: currentlyLookingForJob
           type: YES_NO
+    - &unearnedIncome
+      name: unearnedIncome
+      pageTitle:
+        value: unearned-income.title
+      headerKey:
+        value: unearned-income.do-you-get-income-from-any-of-these-sources
+      headerHelpMessageKey: unearned-income.check-all-that-apply-you-do-not-need-to-report-income-you-havent-received-yet
+      inputs:
+        - name: unearnedIncome
+          type: CHECKBOX
+          validator:
+            validation: SELECT_AT_LEAST_ONE
+          validationErrorMessageKey: general.validation.make-sure-you-choose-none-of-the-above-or-another-option
+          options:
+            - value: SOCIAL_SECURITY
+              messageKey: unearned-income.social-security
+            - value: SSI
+              messageKey: unearned-income.ssi
+            - value: VETERANS_BENEFITS
+              messageKey: unearned-income.veterans-benefits
+            - value: UNEMPLOYMENT
+              messageKey: unearned-income.unemployment
+            - value: WORKERS_COMPENSATION
+              messageKey: unearned-income.workers-compensation
+            - value: RETIREMENT
+              messageKey: unearned-income.retirement
+            - value: CHILD_OR_SPOUSAL_SUPPORT
+              messageKey: unearned-income.child-or-spousal-support
+            - value: TRIBAL_PAYMENTS
+              messageKey: unearned-income.tribal-payments
+            - value: NO_UNEARNED_INCOME_SELECTED
+              messageKey: general.inputs.none-of-the-above
+              isNone: true
   workflow:
     landing:
       pageConfiguration: *landing
@@ -804,6 +837,10 @@ shiba-configuration:
         - pageName: incomeUpNext
     incomeUpNext:
       pageConfiguration: *incomeUpNext
+      nextPages:
+        - pageName: unearnedIncome
+    unearnedIncome:
+      pageConfiguration: *unearnedIncome
       nextPages:
         - pageName: importantToKnow
     ccapJob:
