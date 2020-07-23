@@ -9,25 +9,24 @@ test-derived-values:
       type: SINGLE_VALUE
       value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
         literal: bar
-      condition: !!org.codeforamerica.shiba.output.conditions.DerivedCondition
-        pageName: somePage
-        input: someInput
-        matcher: CONTAINS
-        value: someValue
+      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        conditions:
+          - pageName: somePage
+            input: someInput
+            matcher: CONTAINS
+            value: someValue
   groupName3:
     value3:
       value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
         literal: baz
       type: SINGLE_VALUE
-      condition: !!org.codeforamerica.shiba.output.conditions.OrComposableCondition
+      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
         conditions:
-          - !!org.codeforamerica.shiba.output.conditions.DerivedCondition
-            pageName: someOtherPage
+          - pageName: someOtherPage
             input: someOtherInput
             matcher: CONTAINS
             value: someOtherValue
-          - !!org.codeforamerica.shiba.output.conditions.DerivedCondition
-            pageName: somePage
+          - pageName: somePage
             input: someInput
             matcher: CONTAINS
             value: someValue
@@ -36,15 +35,13 @@ test-derived-values:
       value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
         literal: fooBar
       type: SINGLE_VALUE
-      condition: !!org.codeforamerica.shiba.output.conditions.AndComposableCondition
+      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
         conditions:
-          - !!org.codeforamerica.shiba.output.conditions.DerivedCondition
-            pageName: someOtherPage
+          - pageName: someOtherPage
             input: someOtherInput
             matcher: CONTAINS
             value: someOtherValue
-          - !!org.codeforamerica.shiba.output.conditions.DerivedCondition
-            pageName: somePage
+          - pageName: somePage
             input: someInput
             matcher: CONTAINS
             value: someValue
@@ -54,27 +51,3 @@ test-derived-values:
       value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
         pageName: defaultPage
         inputName: defaultInput
-  groupName6:
-    value6:
-      type: SINGLE_VALUE
-      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-        literal: foo
-      condition: !!org.codeforamerica.shiba.output.conditions.OrComposableCondition
-        conditions:
-          - !!org.codeforamerica.shiba.output.conditions.AndComposableCondition
-            conditions:
-              - !!org.codeforamerica.shiba.output.conditions.DerivedCondition
-                pageName: page1
-                input: input1
-                matcher: CONTAINS
-                value: value1
-              - !!org.codeforamerica.shiba.output.conditions.DerivedCondition
-                pageName: page2
-                input: input2
-                matcher: CONTAINS
-                value: value2
-          - !!org.codeforamerica.shiba.output.conditions.DerivedCondition
-            pageName: page3
-            input: input3
-            matcher: CONTAINS
-            value: value3

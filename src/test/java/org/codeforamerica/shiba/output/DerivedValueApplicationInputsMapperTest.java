@@ -90,26 +90,4 @@ class DerivedValueApplicationInputsMapperTest {
 
         assertThat(actual).contains(new ApplicationInput("groupName5", List.of("defaultValue"), "value5", ApplicationInputType.SINGLE_VALUE));
     }
-
-    @Test
-    void shouldProcessNestedCompositeConditions() {
-        pagesData.put("page1", new InputDataMap(Map.of("input1", new InputData(List.of("value1")))));
-        pagesData.put("page2", new InputDataMap(Map.of("input2", new InputData(List.of("value2")))));
-        pagesData.put("page3", new InputDataMap(Map.of("input3", new InputData(List.of("nothing")))));
-
-        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
-
-        assertThat(actual).contains(new ApplicationInput("groupName6", List.of("foo"), "value6", ApplicationInputType.SINGLE_VALUE));
-    }
-
-    @Test
-    void shouldNotDerivedValueWhenNestedCompositeConditionsIsFalse() {
-        pagesData.put("page1", new InputDataMap(Map.of("input1", new InputData(List.of("value1")))));
-        pagesData.put("page2", new InputDataMap(Map.of("input2", new InputData(List.of("nothing")))));
-        pagesData.put("page3", new InputDataMap(Map.of("input3", new InputData(List.of("nothing")))));
-
-        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
-
-        assertThat(actual).doesNotContain(new ApplicationInput("groupName6", List.of("foo"), "value6", ApplicationInputType.SINGLE_VALUE));
-    }
 }
