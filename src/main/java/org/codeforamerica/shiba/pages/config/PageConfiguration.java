@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba.pages;
+package org.codeforamerica.shiba.pages.config;
 
 import lombok.Data;
 
@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 
 @Data
 public class PageConfiguration {
-    public List<FormInput> inputs = List.of();
+    private List<FormInput> inputs = List.of();
     private String name;
     private Value pageTitle;
     private Value headerKey;
@@ -27,11 +27,11 @@ public class PageConfiguration {
 
     public List<FormInput> getFlattenedInputs() {
         return this.inputs.stream()
-                .flatMap(formInput -> Stream.concat(Stream.of(formInput), formInput.followUps.stream()))
+                .flatMap(formInput -> Stream.concat(Stream.of(formInput), formInput.getFollowUps().stream()))
                 .collect(Collectors.toList());
     }
 
-    boolean isStaticPage() {
+    public boolean isStaticPage() {
         return this.inputs.isEmpty();
     }
 

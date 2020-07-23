@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba.pages;
+package org.codeforamerica.shiba.pages.config;
 
 import lombok.Data;
 import org.codeforamerica.shiba.YamlPropertySourceFactory;

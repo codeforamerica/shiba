@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.output;
 
-import org.codeforamerica.shiba.pages.ApplicationData;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

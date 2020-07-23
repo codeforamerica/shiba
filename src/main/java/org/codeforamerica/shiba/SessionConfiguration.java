@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba;
 
 import org.codeforamerica.shiba.metrics.Metrics;
-import org.codeforamerica.shiba.pages.ApplicationData;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;

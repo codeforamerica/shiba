@@ -1,9 +1,9 @@
 package org.codeforamerica.shiba.output;
 
-import org.codeforamerica.shiba.pages.ApplicationData;
-import org.codeforamerica.shiba.pages.FormInput;
-import org.codeforamerica.shiba.pages.InputData;
-import org.codeforamerica.shiba.pages.PagesConfiguration;
+import org.codeforamerica.shiba.pages.config.FormInput;
+import org.codeforamerica.shiba.pages.config.PagesConfiguration;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.InputData;
 import org.springframework.stereotype.Component;
 
 import java.util.AbstractMap;

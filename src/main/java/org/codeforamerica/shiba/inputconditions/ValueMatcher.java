@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba.pages;
+package org.codeforamerica.shiba.inputconditions;
 
 import java.util.List;
 import java.util.function.BiFunction;

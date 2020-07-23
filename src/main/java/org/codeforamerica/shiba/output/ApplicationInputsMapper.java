@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.output;
 
-import org.codeforamerica.shiba.pages.ApplicationData;
-import org.codeforamerica.shiba.pages.FormInputType;
+import org.codeforamerica.shiba.pages.config.FormInputType;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
 
 import java.util.List;
 

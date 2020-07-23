@@ -1,7 +1,8 @@
-package org.codeforamerica.shiba.pages;
+package org.codeforamerica.shiba.pages.data;
 
 import lombok.Value;
 import lombok.With;
+import org.codeforamerica.shiba.pages.config.Validation;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

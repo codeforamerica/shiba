@@ -3,7 +3,13 @@ package org.codeforamerica.shiba.output.xml;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.OneToOneApplicationInputsMapper;
-import org.codeforamerica.shiba.pages.*;
+import org.codeforamerica.shiba.pages.config.FormInput;
+import org.codeforamerica.shiba.pages.config.Option;
+import org.codeforamerica.shiba.pages.config.PagesConfiguration;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.InputData;
+import org.codeforamerica.shiba.pages.data.InputDataMap;
+import org.codeforamerica.shiba.pages.data.PagesData;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,6 +33,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -63,12 +70,14 @@ public class XmlGeneratorIntegrationTest {
                                                     .collect(Collectors.toList());
                                             case DATE -> List.of(LocalDate.ofEpochDay(0).plusDays(new Random().nextInt()).format(DateTimeFormatter.ofPattern("MM/dd/yyyy")).split("/"));
                                             case YES_NO -> List.of(String.valueOf(new Random().nextBoolean()));
-                                            default -> switch (input.getValidator().getValidation()) {
-                                                case SSN -> List.of("123456789");
-                                                case ZIPCODE -> List.of("12345");
-                                                case STATE -> List.of("MN");
-                                                default -> List.of("some-value");
-                                            };
+                                            default -> Optional.ofNullable(input.getValidator())
+                                                    .map(validator -> switch (validator.getValidation()) {
+                                                        case SSN -> List.of("123456789");
+                                                        case ZIPCODE -> List.of("12345");
+                                                        case STATE -> List.of("MN");
+                                                        default -> List.of("some-value");
+                                                    })
+                                                    .orElse(List.of("some-value"));
                                         };
                                         return new InputData(value);
                                     }

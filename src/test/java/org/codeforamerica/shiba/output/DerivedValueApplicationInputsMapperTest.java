@@ -1,10 +1,10 @@
 package org.codeforamerica.shiba.output;
 
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
-import org.codeforamerica.shiba.pages.ApplicationData;
-import org.codeforamerica.shiba.pages.InputData;
-import org.codeforamerica.shiba.pages.InputDataMap;
-import org.codeforamerica.shiba.pages.PagesData;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.InputData;
+import org.codeforamerica.shiba.pages.data.InputDataMap;
+import org.codeforamerica.shiba.pages.data.PagesData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

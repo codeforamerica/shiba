@@ -8,7 +8,7 @@
        th:text="#{${input.helpMessageKey}}"></p>
     <th:block th:switch="${input.type}"
               th:with="formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)}">
-        <div class="text-input-group" th:case="${T(org.codeforamerica.shiba.pages.FormInputType).MONEY}">
+        <div class="text-input-group" th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).MONEY}">
             <div class="text-input-group__prefix ">$</div>
             <input type="text"
                    class="text-input"
@@ -16,7 +16,7 @@
                    th:value="${(!inputData.value.isEmpty()) ? inputData.value[0] : ''}"
             >
         </div>
-        <input th:case="${T(org.codeforamerica.shiba.pages.FormInputType).TEXT}"
+        <input th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).TEXT}"
                type="text"
                class="text-input form-width--name"
                th:readonly="${input.readOnly}"
@@ -24,14 +24,14 @@
                th:value="${(!inputData.value.isEmpty()) ? inputData.value[0] : ''}"
                th:name="${formInputName}"
         >
-        <input th:case="${T(org.codeforamerica.shiba.pages.FormInputType).NUMBER}"
+        <input th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).NUMBER}"
                type="number"
                class="text-input form-width--name"
                th:id="${input.name}"
                th:value="${(!inputData.value.isEmpty()) ? inputData.value[0] : ''}"
                th:name="${formInputName}"
         >
-        <div th:case="${T(org.codeforamerica.shiba.pages.FormInputType).SELECT}" class="select">
+        <div th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).SELECT}" class="select">
             <select th:id="${input.name}"
                     class="select__element"
                     th:name="${formInputName}"

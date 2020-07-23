@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.output.caf;
 
-import org.codeforamerica.shiba.pages.InputData;
-import org.codeforamerica.shiba.pages.PagesData;
+import org.codeforamerica.shiba.pages.data.InputData;
+import org.codeforamerica.shiba.pages.data.PagesData;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

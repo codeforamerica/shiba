@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.output;
 
-import org.codeforamerica.shiba.pages.PagesData;
+import org.codeforamerica.shiba.pages.data.PagesData;
 
 import java.util.List;
 

@@ -1,6 +1,10 @@
 package org.codeforamerica.shiba.output;
 
-import org.codeforamerica.shiba.pages.*;
+import org.codeforamerica.shiba.pages.config.*;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.InputData;
+import org.codeforamerica.shiba.pages.data.InputDataMap;
+import org.codeforamerica.shiba.pages.data.PagesData;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
 import org.codeforamerica.shiba.metrics.Metrics;
+import org.codeforamerica.shiba.pages.config.PagesConfiguration;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.springframework.boot.context.properties.ConfigurationProperties;

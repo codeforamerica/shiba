@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba.pages;
+package org.codeforamerica.shiba.pages.config;
 
 import lombok.Data;
 
@@ -12,15 +12,15 @@ public class LandmarkPagesConfiguration {
     private String terminalPage;
     private String submitPage;
 
-    boolean isLandingPage(String pageName) {
+    public boolean isLandingPage(String pageName) {
         return this.getLandingPages().contains(pageName);
     }
 
-    boolean isTerminalPage(String pageName) {
+    public boolean isTerminalPage(String pageName) {
         return pageName.equals(this.getTerminalPage());
     }
 
-    boolean isStartTimerPage(String pageName) {
+    public boolean isStartTimerPage(String pageName) {
         return pageName.equals(this.getStartTimerPage());
     }
 

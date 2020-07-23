@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba.pages;
+package org.codeforamerica.shiba.pages.config;
 
 
 import org.apache.commons.lang3.Range;

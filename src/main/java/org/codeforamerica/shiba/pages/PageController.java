@@ -3,6 +3,13 @@ package org.codeforamerica.shiba.pages;
 import org.codeforamerica.shiba.metrics.ApplicationMetric;
 import org.codeforamerica.shiba.metrics.ApplicationMetricsRepository;
 import org.codeforamerica.shiba.metrics.Metrics;
+import org.codeforamerica.shiba.pages.config.LandmarkPagesConfiguration;
+import org.codeforamerica.shiba.pages.config.PageConfiguration;
+import org.codeforamerica.shiba.pages.config.PageWorkflowConfiguration;
+import org.codeforamerica.shiba.pages.config.PagesConfiguration;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.InputDataMap;
+import org.codeforamerica.shiba.pages.data.PagesData;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
@@ -48,13 +55,12 @@ public class PageController {
             @RequestParam(required = false, defaultValue = "0") Integer option
     ) {
         PageWorkflowConfiguration pageWorkflow = this.pagesConfiguration.getPageWorkflow(pageName);
-        InputDataMap inputDataMap = this.applicationData.getInputDataMap(pageWorkflow.getPageConfiguration().getName());
-        String nextPageName = pageWorkflow.getNextPageName(inputDataMap, option);
+        PagesData pagesData = this.applicationData.getPagesData();
+        String nextPageName = pagesData.getNextPageName(pageWorkflow, option);
         PageWorkflowConfiguration nextPage = this.pagesConfiguration.getPageWorkflow(nextPageName);
 
-        if (nextPage.shouldSkip(applicationData.getPagesData())) {
-            InputDataMap nextPageInputDataMap = this.applicationData.getInputDataMap(nextPage.getPageConfiguration().getName());
-            return new RedirectView(String.format("/pages/%s", nextPage.getNextPageName(nextPageInputDataMap, option)));
+        if (pagesData.shouldSkip(nextPage)) {
+            return new RedirectView(String.format("/pages/%s", pagesData.getNextPageName(nextPage, option)));
         } else {
             return new RedirectView(String.format("/pages/%s", nextPageName));
         }
@@ -90,8 +96,8 @@ public class PageController {
                 "page", pageConfiguration,
                 "pageName", pageName,
                 "postTo", landmarkPagesConfiguration.isSubmitPage(pageName) ? "/submit" : "/pages/" + pageName,
-                "pageTitle", pageWorkflow.resolveTitle(pagesData),
-                "headerKey", pageWorkflow.resolveHeader(pagesData)
+                "pageTitle", pagesData.resolveTitle(pageWorkflow),
+                "headerKey", pagesData.resolveHeader(pageWorkflow)
         ));
 
         if (landmarkPagesConfiguration.isTerminalPage(pageName)) {
@@ -156,8 +162,8 @@ public class PageController {
                     "data", inputDataMap,
                     "pageName", submitPage,
                     "postTo", "/submit",
-                    "pageTitle", pageWorkflow.resolveTitle(pagesData),
-                    "headerKey", pageWorkflow.resolveHeader(pagesData)
+                    "pageTitle", pagesData.resolveTitle(pageWorkflow),
+                    "headerKey", pagesData.resolveHeader(pageWorkflow)
             ));
         }
     }
