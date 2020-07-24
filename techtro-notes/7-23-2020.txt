@@ -1,0 +1,46 @@
+all about "pages"
+
+- YAML and spring/java beans (HJ)
+    - Yaml syntax basics and anchor usage
+        - schema, show short cut
+    - Start with connecting the yaml to the backing classes
+        - PagesConfiguration: annotations, YamlPropertySourceFactory
+        - lombok annotations: Java beans
+- PageController
+    - Round trip form submission
+        - GET page endpoint (CT)
+            - return static page
+            - returns form page
+                - model pageConfiguration to render page
+                - model data to present submitted inputs
+        - POST page endpoint (HJ)
+            - applicationData
+                - session scoped bean
+                - follows pages structure for storing pages data
+                - "non pages" session data - submissionTime
+            - validation
+                - extract value from post body
+                - apply the appropriate validation (from pageConfiguration for that input)
+            - redirects to navigation endpoint on success
+        - GET navigation endpoint (CT)
+            - uses workflowConfiguration nextPage to determine next page
+            - the determination of nextPage may be conditional, depending on input on current page
+            - nextPage may also be skipped, depending on input from any previous pages
+    - Session & flow management (HJ)
+        - Configure "landmark" pages to apply special behaviors to particular pages in the overall flow
+        - Landmarks
+            - Landing - clears session data
+            - Terminal - page after submit (end of the flow)
+            - Start timer - indicates that the user has started filling out an application
+            - Submit - page that performs submit
+        - Session is not refreshed, rather the data in the session is cleared
+    - Application submission (CT)
+        - POST submit endpoint
+            - Directed to from the page marked as the "Submit" landmark
+            - Captures application metrics - currently just duration to complete application
+
+- Page Tests (HJ, CT)
+    - Basics of round trip form submission tested with InputsPageTest
+    - Uses @SpringBootTest to test against a real, running application
+    - Does not mock any components
+    - Use Selenium webdriver to interact with the pages via a browser
