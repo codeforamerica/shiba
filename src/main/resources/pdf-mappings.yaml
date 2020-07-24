@@ -104,3 +104,6 @@ caf:
       retirementAmount: RETIREMENT_BENEFITS_AMOUNT
       childOrSpousalSupportAmount: CHILD_SUPPORT_OR_SPOUSAL_SUPPORT_AMOUNT
       tribalPaymentsAmount: TRIBAL_PAYMENTS_AMOUNT
+    futureIncome:
+      earnLessMoneyThisMonth: EARN_LESS_MONEY_THIS_MONTH
+      additionalIncomeInfo: ADDITIONAL_INCOME_INFO

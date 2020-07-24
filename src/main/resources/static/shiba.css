@@ -67,13 +67,18 @@
     }
 }
 
-.textarea {
+.textarea-readonly {
     font-weight: normal;
     font-size: 14px;
     border: none;
     box-shadow: none;
     overflow-wrap: break-word;
     border-radius: 6px;
+    width: 100%;
+    padding: 1.5rem;
+    line-height: 2.5rem;
+    margin-bottom: 1.5rem;
+    background-color: #F7F5F4;
 }
 
 .legal-stuff-window {
@@ -91,21 +96,21 @@
     margin-bottom: 10px;
 }
 
-.textarea::-webkit-scrollbar {
+.textarea-readonly::-webkit-scrollbar {
     -webkit-appearance: none;
 }
 
-.textarea::-webkit-scrollbar:vertical {
+.textarea-readonly::-webkit-scrollbar:vertical {
     width: 12px;
 }
 
-.textarea::-webkit-scrollbar-thumb {
+.textarea-readonly::-webkit-scrollbar-thumb {
     background-color: rgba(0, 0, 0, .2);
     border-radius: 10px;
     border: 2px solid #ffffff;
 }
 
-.textarea::-webkit-scrollbar-track {
+.textarea-readonly::-webkit-scrollbar-track {
     border-radius: 10px;
     background-color: #ffffff;
 }

@@ -170,7 +170,8 @@
             "SELECT",
             "YES_NO",
             "MONEY",
-            "INCREMENTER"
+            "INCREMENTER",
+            "TEXTAREA"
           ]
         },
         "name": {

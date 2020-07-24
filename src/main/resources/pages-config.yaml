@@ -828,6 +828,26 @@ shiba-configuration:
           condition:
             input: unearnedIncome
             value: TRIBAL_PAYMENTS
+    - &futureIncome
+      name: futureIncome
+      pageTitle:
+        value: future-income.title
+      headerKey:
+        value: future-income.do-you-think-youll-earn-less-money-this-month-than-last-month
+      headerHelpMessageKey: future-income.if-youre-not-sure-you-can-guess
+      inputs:
+        - name: earnLessMoneyThisMonth
+          type: RADIO
+          options:
+            - value: "true"
+              messageKey: general.inputs.yes
+            - value: "false"
+              messageKey: general.inputs.no
+        - name: additionalIncomeInfo
+          type: TEXTAREA
+          promptMessage:
+            promptMessageKey: future-income.is-there-anything-else-youd-like-to-share-about-your-income
+          helpMessageKey: general.inputs.optional
   workflow:
     landing:
       pageConfiguration: *landing
@@ -955,12 +975,16 @@ shiba-configuration:
     unearnedIncomeSources:
       pageConfiguration: *unearnedIncomeSources
       nextPages:
-        - pageName: importantToKnow
+        - pageName: futureIncome
       skipCondition:
         input: unearnedIncome
         value: NO_UNEARNED_INCOME_SELECTED
       datasources:
         - pageName: unearnedIncome
+    futureIncome:
+      pageConfiguration: *futureIncome
+      nextPages:
+        - pageName: importantToKnow
     ccapJob:
       pageConfiguration: *ccapJob
       skipCondition:
