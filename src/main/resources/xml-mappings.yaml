@@ -25,11 +25,11 @@ xml:
       apartmentNumber: CONTACTINFO_HOME_APARTMENT_NUMBER
       isHomeless: CONTACTINFO_HOMELESS
     mailingAddress:
-      zipCode: CONTACTINFO_MAILING_ZIPCODE
-      city: CONTACTINFO_MAILING_CITY
-      streetAddress: CONTACTINFO_MAILING_STREET_ADDRESS
-      state: CONTACTINFO_MAILING_STATE
-      apartmentNumber: CONTACTINFO_MAILING_APARTMENT_NUMBER
+      mailingZipCode: CONTACTINFO_MAILING_ZIPCODE
+      mailingCity: CONTACTINFO_MAILING_CITY
+      mailingStreetAddress: CONTACTINFO_MAILING_STREET_ADDRESS
+      mailingState: CONTACTINFO_MAILING_STATE
+      mailingApartmentNumber: CONTACTINFO_MAILING_APARTMENT_NUMBER
     expeditedIncome:
       moneyMadeLast30Days: MONEY_MADE_LAST_MONTH
     liquidAssets:
@@ -55,6 +55,15 @@ xml:
       submissionTime: SUBMISSION_TIME
     unearnedIncome:
       unearnedIncome: UNEARNED_INCOME
+    unearnedIncomeSources:
+      socialSecurityAmount: SOCIAL_SECURITY_AMOUNT
+      supplementalSecurityIncomeAmount: SUPPLEMENTAL_SECURITY_INCOME_AMOUNT
+      veteransBenefitsAmount: VETERANS_BENEFITS_AMOUNT
+      unemploymentAmount: UNEMPLOYMENT_AMOUNT
+      workersCompensationAmount: WORKERS_COMPENSATION_AMOUNT
+      retirementAmount: RETIREMENT_AMOUNT
+      childOrSpousalSupportAmount: CHILD_OR_SPOUSAL_SUPPORT_AMOUNT
+      tribalPaymentsAmount: TRIBAL_PAYMENTS_AMOUNT
   enums:
     true: true
     false: false

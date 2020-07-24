@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<div th:replace="fragments/head :: head(#{${pageTitle}})"></div>
+<div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
 <body>
 <th:block th:each="inputData: ${#ctx.getVariable('data')}">
     <div th:if="${!inputData.value.value.isEmpty()}" th:text="${inputData.value.value.get(0)}" th:id="${inputData.key}"></div>

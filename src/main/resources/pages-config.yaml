@@ -297,21 +297,21 @@ shiba-configuration:
       headerKey:
         value: mailing-address.where-can-the-county-send-your-mail
       inputs:
-        - name: zipCode
+        - name: mailingZipCode
           type: TEXT
           promptMessage:
             promptMessageKey: mailing-address.what-is-the-zip-code
           validationErrorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
           validator:
             validation: ZIPCODE
-        - name: city
+        - name: mailingCity
           type: TEXT
           promptMessage:
             promptMessageKey: mailing-address.what-is-the-city
           validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
           validator:
             validation: NOT_BLANK
-        - name: state
+        - name: mailingState
           type: TEXT
           promptMessage:
             promptMessageKey: mailing-address.what-is-the-state
@@ -319,14 +319,14 @@ shiba-configuration:
             validation: STATE
           validationErrorMessageKey: general.validation.make-sure-to-provide-a-valid-2-letter-state-code
           defaultValue: MN
-        - name: streetAddress
+        - name: mailingStreetAddress
           type: TEXT
           promptMessage:
             promptMessageKey: mailing-address.what-is-the-street-address
           validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
           validator:
             validation: NOT_BLANK
-        - name: apartmentNumber
+        - name: mailingApartmentNumber
           type: TEXT
           promptMessage:
             promptMessageKey: mailing-address.apartment-number
@@ -708,6 +708,126 @@ shiba-configuration:
             - value: NO_UNEARNED_INCOME_SELECTED
               messageKey: general.inputs.none-of-the-above
               isNone: true
+    - &unearnedIncomeSources
+      name: unearnedIncomeSources
+      pageTitle:
+        value: unearned-income-sources.title
+      headerKey:
+        value: unearned-income-sources.tell-us-how-much-money-you-receive
+      headerHelpMessageKey: unearned-income-sources.if-you-dont-have-all-this-information-on-hand-skip
+      inputs:
+        - name: socialSecurityAmount
+          type: MONEY
+          promptMessage:
+            promptMessageKey: unearned-income.social-security
+          helpMessageKey: unearned-income-sources.monthly-amount
+          validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
+          validator:
+            validation: MONEY
+            condition:
+              input: socialSecurityAmount
+              matcher: NOT_EMPTY
+          condition:
+            input: unearnedIncome
+            value: SOCIAL_SECURITY
+        - name: supplementalSecurityIncomeAmount
+          type: MONEY
+          promptMessage:
+            promptMessageKey: unearned-income.ssi
+          helpMessageKey: unearned-income-sources.monthly-amount
+          validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
+          validator:
+            validation: MONEY
+            condition:
+              input: supplementalSecurityIncomeAmount
+              matcher: NOT_EMPTY
+          condition:
+            input: unearnedIncome
+            value: SSI
+        - name: veteransBenefitsAmount
+          type: MONEY
+          promptMessage:
+            promptMessageKey: unearned-income.veterans-benefits
+          helpMessageKey: unearned-income-sources.monthly-amount
+          validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
+          validator:
+            validation: MONEY
+            condition:
+              input: veteransBenefitsAmount
+              matcher: NOT_EMPTY
+          condition:
+            input: unearnedIncome
+            value: VETERANS_BENEFITS
+        - name: unemploymentAmount
+          type: MONEY
+          promptMessage:
+            promptMessageKey: unearned-income.unemployment
+          helpMessageKey: unearned-income-sources.monthly-amount
+          validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
+          validator:
+            validation: MONEY
+            condition:
+              input: unemploymentAmount
+              matcher: NOT_EMPTY
+          condition:
+            input: unearnedIncome
+            value: UNEMPLOYMENT
+        - name: workersCompensationAmount
+          type: MONEY
+          promptMessage:
+            promptMessageKey: unearned-income.workers-compensation
+          helpMessageKey: unearned-income-sources.monthly-amount
+          validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
+          validator:
+            validation: MONEY
+            condition:
+              input: workersCompensationAmount
+              matcher: NOT_EMPTY
+          condition:
+            input: unearnedIncome
+            value: WORKERS_COMPENSATION
+        - name: retirementAmount
+          type: MONEY
+          promptMessage:
+            promptMessageKey: unearned-income.retirement
+          helpMessageKey: unearned-income-sources.monthly-amount
+          validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
+          validator:
+            validation: MONEY
+            condition:
+              input: retirementAmount
+              matcher: NOT_EMPTY
+          condition:
+            input: unearnedIncome
+            value: RETIREMENT
+        - name: childOrSpousalSupportAmount
+          type: MONEY
+          promptMessage:
+            promptMessageKey: unearned-income.child-or-spousal-support
+          helpMessageKey: unearned-income-sources.monthly-amount
+          validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
+          validator:
+            validation: MONEY
+            condition:
+              input: childOrSpousalSupportAmount
+              matcher: NOT_EMPTY
+          condition:
+            input: unearnedIncome
+            value: CHILD_OR_SPOUSAL_SUPPORT
+        - name: tribalPaymentsAmount
+          type: MONEY
+          promptMessage:
+            promptMessageKey: unearned-income.tribal-payments
+          helpMessageKey: unearned-income-sources.monthly-amount
+          validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
+          validator:
+            validation: MONEY
+            condition:
+              input: tribalPaymentsAmount
+              matcher: NOT_EMPTY
+          condition:
+            input: unearnedIncome
+            value: TRIBAL_PAYMENTS
   workflow:
     landing:
       pageConfiguration: *landing
@@ -772,15 +892,6 @@ shiba-configuration:
         - pageName: personalInfo
         - pageName: homeAddress
         - pageName: mailingAddress
-          inputs:
-            - name: streetAddress
-              defaultValue:
-            - name: apartmentNumber
-              defaultValue:
-            - name: city
-              defaultValue:
-            - name: state
-              defaultValue:
         - pageName: contactInfo
     doYouLiveAlone:
       pageConfiguration: *doYouLiveAlone
@@ -840,7 +951,16 @@ shiba-configuration:
     unearnedIncome:
       pageConfiguration: *unearnedIncome
       nextPages:
+        - pageName: unearnedIncomeSources
+    unearnedIncomeSources:
+      pageConfiguration: *unearnedIncomeSources
+      nextPages:
         - pageName: importantToKnow
+      skipCondition:
+        input: unearnedIncome
+        value: NO_UNEARNED_INCOME_SELECTED
+      datasources:
+        - pageName: unearnedIncome
     ccapJob:
       pageConfiguration: *ccapJob
       skipCondition:

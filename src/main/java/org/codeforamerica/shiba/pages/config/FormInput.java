@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.pages.config;
 
 import lombok.Data;
+import org.codeforamerica.shiba.inputconditions.Condition;
 
 import java.util.Collections;
 import java.util.List;
@@ -20,20 +21,5 @@ public class FormInput {
     private String defaultValue;
     private Integer max;
     private Integer min;
-
-    public String fragment() {
-        return switch (type) {
-            case TEXT, NUMBER, SELECT, MONEY -> "single-input";
-            case DATE -> "date-input";
-            case RADIO -> "radio-input";
-            case CHECKBOX -> "checkbox-input";
-            case YES_NO -> "yes-no-input";
-            case INCREMENTER -> "incrementer-input";
-        };
-    }
-
-    @SuppressWarnings("unused")
-    public boolean hasFollowUps() {
-        return !this.followUps.isEmpty();
-    }
+    private Condition condition;
 }

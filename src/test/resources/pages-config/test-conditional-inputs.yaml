@@ -1,0 +1,47 @@
+shiba-configuration-conditional-inputs:
+  pageDefinitions:
+    - &firstPage
+      pageTitle:
+        value: dummy-page-title
+      name: firstPage
+      inputs:
+        - name: options
+          type: CHECKBOX
+          options:
+            - value: option1
+              messageKey: option1
+            - value: option2
+              messageKey: option2
+            - value: option3
+              messageKey: option3
+    - &secondPage
+      pageTitle:
+        value: dummy-page-title
+      name: secondPage
+      inputs:
+        - name: option1Text
+          type: TEXT
+          condition:
+            input: options
+            value: option1
+        - name: option2Text
+          type: TEXT
+          condition:
+            input: options
+            value: option2
+        - name: option3Text
+          type: TEXT
+          condition:
+            input: options
+            value: option3
+  workflow:
+    firstPage:
+      pageConfiguration: *firstPage
+      nextPages:
+        - pageName: secondPage
+    secondPage:
+      pageConfiguration: *secondPage
+      datasources:
+        - pageName: firstPage
+  landmarkPages:
+    landingPages: []

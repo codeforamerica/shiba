@@ -92,12 +92,12 @@ public class PageController {
         PageConfiguration pageConfiguration = pageWorkflow.getPageConfiguration();
 
         PagesData pagesData = applicationData.getPagesData();
+        PageTemplate pageTemplate = pagesData.evaluate(pageWorkflow);
+
         HashMap<String, Object> model = new HashMap<>(Map.of(
-                "page", pageConfiguration,
+                "page", pageTemplate,
                 "pageName", pageName,
-                "postTo", landmarkPagesConfiguration.isSubmitPage(pageName) ? "/submit" : "/pages/" + pageName,
-                "pageTitle", pagesData.resolveTitle(pageWorkflow),
-                "headerKey", pagesData.resolveHeader(pageWorkflow)
+                "postTo", landmarkPagesConfiguration.isSubmitPage(pageName) ? "/submit" : "/pages/" + pageName
         ));
 
         if (landmarkPagesConfiguration.isTerminalPage(pageName)) {
@@ -156,15 +156,7 @@ public class PageController {
             this.applicationData.setSubmissionTime(dateTimeFormatter.format(ZonedDateTime.ofInstant(clock.instant(), ZoneId.of("UTC"))));
             return new ModelAndView(String.format("redirect:/pages/%s/navigation", submitPage));
         } else {
-            PageWorkflowConfiguration pageWorkflow = pagesConfiguration.getPageWorkflow(submitPage);
-            return new ModelAndView("formPage", Map.of(
-                    "page", page,
-                    "data", inputDataMap,
-                    "pageName", submitPage,
-                    "postTo", "/submit",
-                    "pageTitle", pagesData.resolveTitle(pageWorkflow),
-                    "headerKey", pagesData.resolveHeader(pageWorkflow)
-            ));
+            return new ModelAndView("redirect:/pages/" + submitPage);
         }
     }
 }

@@ -147,11 +147,11 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         homeAddressPage.selectEnumeratedInput("sameMailingAddress", "No, use a different address for mail");
         Page mailingAddressPage = homeAddressPage.clickPrimaryButton();
 
-        mailingAddressPage.enterInput("zipCode", "12345");
-        mailingAddressPage.enterInput("city", "someCity");
-        mailingAddressPage.enterInput("streetAddress", "someStreetAddress");
-        mailingAddressPage.enterInput("state", "IL");
-        mailingAddressPage.enterInput("apartmentNumber", "someApartmentNumber");
+        mailingAddressPage.enterInput("mailingZipCode", "12345");
+        mailingAddressPage.enterInput("mailingCity", "someCity");
+        mailingAddressPage.enterInput("mailingStreetAddress", "someStreetAddress");
+        mailingAddressPage.enterInput("mailingState", "IL");
+        mailingAddressPage.enterInput("mailingApartmentNumber", "someApartmentNumber");
         mailingAddressPage.clickPrimaryButton();
     }
 
@@ -170,8 +170,10 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.enterInput("numberOfJobs", "4");
         Page incomeUpNext = householdJobs.clickPrimaryButton();
         Page unearnedIncome = incomeUpNext.clickPrimaryButton();
-        unearnedIncome.selectEnumeratedInput("unearnedIncome", "None of the above");
-        Page importantToKnow = unearnedIncome.clickPrimaryButton();
+        unearnedIncome.selectEnumeratedInput("unearnedIncome", "Social Security");
+        Page unearnedIncomeSources = unearnedIncome.clickPrimaryButton();
+        unearnedIncomeSources.enterInput("socialSecurityAmount", "200");
+        Page importantToKnow = unearnedIncomeSources.clickPrimaryButton();
         Page legalStuff = importantToKnow.clickPrimaryButton();
         legalStuff.selectEnumeratedInput("agreeToTerms", "I agree");
         Page signThisApplicationPage = legalStuff.clickPrimaryButton();

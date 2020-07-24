@@ -3,11 +3,14 @@ package org.codeforamerica.shiba.pages.data;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.codeforamerica.shiba.inputconditions.Condition;
+import org.codeforamerica.shiba.pages.FormInputTemplate;
+import org.codeforamerica.shiba.pages.PageTemplate;
 import org.codeforamerica.shiba.pages.config.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -107,5 +110,39 @@ public class PagesData extends HashMap<String, InputDataMap> {
                 .findFirst()
                 .map(ConditionalValue::getValue)
                 .orElse(value.getValue());
+    }
+
+    public PageTemplate evaluate(PageWorkflowConfiguration pageWorkflowConfiguration) {
+        PageConfiguration pageConfiguration = pageWorkflowConfiguration.getPageConfiguration();
+        @NotNull InputDataMap inputDataMap = this.getInputDataMapBy(pageWorkflowConfiguration.getDatasources());
+
+        return new PageTemplate(
+                pageConfiguration.getInputs().stream()
+                        .filter(input -> Optional.ofNullable(input.getCondition())
+                                .map(inputDataMap::satisfies)
+                                .orElse(true))
+                        .map(this::convert).collect(Collectors.toList()),
+                this.resolveTitle(pageWorkflowConfiguration),
+                this.resolveHeader(pageWorkflowConfiguration),
+                pageConfiguration.getHeaderHelpMessageKey(),
+                pageConfiguration.getPrimaryButtonTextKey()
+        );
+    }
+
+    FormInputTemplate convert(FormInput formInput) {
+        return new FormInputTemplate(
+                formInput.getType(),
+                formInput.getName(),
+                formInput.getPromptMessage(),
+                formInput.getHelpMessageKey(),
+                formInput.getValidationErrorMessageKey(),
+                formInput.getOptions(),
+                formInput.getFollowUps().stream().map(this::convert).collect(Collectors.toList()),
+                formInput.getFollowUpsValue(),
+                formInput.getReadOnly(),
+                formInput.getDefaultValue(),
+                formInput.getMax(),
+                formInput.getMin()
+        );
     }
 }

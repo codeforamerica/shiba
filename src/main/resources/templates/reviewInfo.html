@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<div th:replace="fragments/head :: head(#{${pageTitle}})"></div>
+<div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
 <body>
 <div class="page-wrapper">
     <section class="slab slab--shiba">
@@ -8,7 +8,7 @@
             <a th:replace="fragments/go-back"></a>
             <div class="card spacing-above-35">
                 <div class="grid__item spacing-above-35 spacing-below-35">
-                    <h2 th:text="#{${headerKey}}"></h2>
+                    <h2 th:text="#{${page.headerKey}}"></h2>
                 </div>
                 <div class="bottom-horizontal-line spacing-below-25 review-info-section">
                     <div class="spacing-below-10">
@@ -45,10 +45,10 @@
                             <a href="#" style="display: none" th:text="#{review-info.edit}"></a>
                         </div>
                     </div>
-                    <p class="spacing-below-0" th:text="${data.mailingAddress_streetAddress.value[0]}"></p>
-                    <p class="spacing-below-0" th:if="${!data.mailingAddress_apartmentNumber.value[0].isEmpty()}"
-                       th:text="|# ${data.mailingAddress_apartmentNumber.value[0]}|"></p>
-                    <p class="spacing-below-0" th:text="|${data.mailingAddress_city.value[0]}, ${data.mailingAddress_state.value[0]}|"></p>
+                    <p class="spacing-below-0" th:text="${data.mailingAddress_mailingStreetAddress.value[0]}"></p>
+                    <p class="spacing-below-0" th:if="${!data.mailingAddress_mailingApartmentNumber.value[0].isEmpty()}"
+                       th:text="|# ${data.mailingAddress_mailingApartmentNumber.value[0]}|"></p>
+                    <p class="spacing-below-0" th:text="|${data.mailingAddress_mailingCity.value[0]}, ${data.mailingAddress_mailingState.value[0]}|"></p>
                 </div>
                 <div class="bottom-horizontal-line spacing-below-25 review-info-section">
                     <div class="spacing-below-10">

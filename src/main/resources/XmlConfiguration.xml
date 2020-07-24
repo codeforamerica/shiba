@@ -55,27 +55,35 @@
             <onl:UnearnedIncomeInfo>
                 <onl:UnearnedIncome>
                     <onl:Type>{{UNEARNED_INCOME}}</onl:Type>
+                    <onl:GrossAmount>{{SOCIAL_SECURITY_AMOUNT}}</onl:GrossAmount>
                 </onl:UnearnedIncome>
                 <onl:UnearnedIncome>
                     <onl:Type>{{UNEARNED_INCOME}}</onl:Type>
+                    <onl:GrossAmount>{{SUPPLEMENTAL_SECURITY_INCOME_AMOUNT}}</onl:GrossAmount>
                 </onl:UnearnedIncome>
                 <onl:UnearnedIncome>
                     <onl:Type>{{UNEARNED_INCOME}}</onl:Type>
+                    <onl:GrossAmount>{{VETERANS_BENEFITS_AMOUNT}}</onl:GrossAmount>
                 </onl:UnearnedIncome>
                 <onl:UnearnedIncome>
                     <onl:Type>{{UNEARNED_INCOME}}</onl:Type>
+                    <onl:GrossAmount>{{UNEMPLOYMENT_AMOUNT}}</onl:GrossAmount>
                 </onl:UnearnedIncome>
                 <onl:UnearnedIncome>
                     <onl:Type>{{UNEARNED_INCOME}}</onl:Type>
+                    <onl:GrossAmount>{{WORKERS_COMPENSATION_AMOUNT}}</onl:GrossAmount>
                 </onl:UnearnedIncome>
                 <onl:UnearnedIncome>
                     <onl:Type>{{UNEARNED_INCOME}}</onl:Type>
+                    <onl:GrossAmount>{{RETIREMENT_AMOUNT}}</onl:GrossAmount>
                 </onl:UnearnedIncome>
                 <onl:UnearnedIncome>
                     <onl:Type>{{UNEARNED_INCOME}}</onl:Type>
+                    <onl:GrossAmount>{{CHILD_OR_SPOUSAL_SUPPORT_AMOUNT}}</onl:GrossAmount>
                 </onl:UnearnedIncome>
                 <onl:UnearnedIncome>
                     <onl:Type>{{UNEARNED_INCOME}}</onl:Type>
+                    <onl:GrossAmount>{{TRIBAL_PAYMENTS_AMOUNT}}</onl:GrossAmount>
                 </onl:UnearnedIncome>
             </onl:UnearnedIncomeInfo>
         </onl:HouseholdMember>

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<div th:replace="fragments/head :: head(#{${pageTitle}})"></div>
+<div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
 <body>
 <h3>Static Page</h3>
 <div th:text="#{${!data.get('firstPage_someRadioInputName').messageKeysForValue.isEmpty() ? data.get('firstPage_someRadioInputName').messageKeysForValue[0] : 'ignored'}}"></div>

@@ -35,11 +35,11 @@ caf:
       isHomeless:
         homeless: APPLICANT_HOMELESS
     mailingAddress:
-      zipCode: APPLICANT_MAILING_ZIPCODE
-      city: APPLICANT_MAILING_CITY
-      state: APPLICANT_MAILING_STATE
-      streetAddress: APPLICANT_MAILING_STREET_ADDRESS
-      apartmentNumber: APPLICANT_MAILING_APT_NUMBER
+      mailingZipCode: APPLICANT_MAILING_ZIPCODE
+      mailingCity: APPLICANT_MAILING_CITY
+      mailingState: APPLICANT_MAILING_STATE
+      mailingStreetAddress: APPLICANT_MAILING_STREET_ADDRESS
+      mailingApartmentNumber: APPLICANT_MAILING_APT_NUMBER
     expeditedIncome:
       moneyMadeLast30Days: MONEY_MADE_LAST_MONTH
     liquidAssets:
@@ -95,3 +95,12 @@ caf:
         CHILD_OR_SPOUSAL_SUPPORT: CHILD_OR_SPOUSAL_SUPPORT
         TRIBAL_PAYMENTS: TRIBAL_PAYMENTS
         NO_UNEARNED_INCOME_SELECTED: NO_UNEARNED_INCOME_SELECTED
+    unearnedIncomeSources:
+      socialSecurityAmount: SOCIAL_SECURITY_AMOUNT
+      supplementalSecurityIncomeAmount: SUPPLEMENTAL_SECURITY_INCOME_AMOUNT
+      veteransBenefitsAmount: VETERAN_BENEFITS_AMOUNT
+      unemploymentAmount: UNEMPLOYMENT_INSURANCE_AMOUNT
+      workersCompensationAmount: WORKERS_COMPENSATION_AMOUNT
+      retirementAmount: RETIREMENT_BENEFITS_AMOUNT
+      childOrSpousalSupportAmount: CHILD_SUPPORT_OR_SPOUSAL_SUPPORT_AMOUNT
+      tribalPaymentsAmount: TRIBAL_PAYMENTS_AMOUNT
