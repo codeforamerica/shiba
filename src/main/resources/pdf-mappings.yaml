@@ -40,7 +40,7 @@ caf:
       state: APPLICANT_MAILING_STATE
       streetAddress: APPLICANT_MAILING_STREET_ADDRESS
       apartmentNumber: APPLICANT_MAILING_APT_NUMBER
-    expeditedIncome:
+    thirtyDayIncome:
       moneyMadeLast30Days: MONEY_MADE_LAST_MONTH
     liquidAssets:
       liquidAssets: LIQUID_ASSETS

@@ -30,7 +30,7 @@ xml:
       streetAddress: CONTACTINFO_MAILING_STREET_ADDRESS
       state: CONTACTINFO_MAILING_STATE
       apartmentNumber: CONTACTINFO_MAILING_APARTMENT_NUMBER
-    expeditedIncome:
+    thirtyDayIncome:
       moneyMadeLast30Days: MONEY_MADE_LAST_MONTH
     liquidAssets:
       liquidAssets: LIQUID_ASSETS

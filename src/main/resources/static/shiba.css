@@ -27,6 +27,10 @@
     border-bottom: 1px solid black;
 }
 
+.bottom-horizontal-line-grey {
+    border-bottom: 1px solid #CFC5BF;
+}
+
 .icon-check_circle.large {
     color: #CFC5BF;
     font-size: 100px;
