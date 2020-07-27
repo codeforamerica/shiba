@@ -108,7 +108,7 @@ public class PageController {
         if (pageConfiguration.isStaticPage()) {
             pageToRender = pageName;
             Optional.ofNullable(pageWorkflow.getDatasources())
-                    .map(datasources -> this.applicationData.getPagesData().getInputDataMapBy(datasources, pageDatasource -> pageDatasource.getPageName() + "_"))
+                    .map(datasources -> this.applicationData.getPagesData().getDatasourcePagesBy(datasources))
                     .ifPresent(inputMap -> model.put("data", inputMap));
         } else {
             pageToRender = "formPage";

@@ -36,6 +36,7 @@ shiba-configuration-conditional-rendering:
       nextPages:
         - pageName: thirdPage
       skipCondition:
+        pageName: firstPage
         input: someRadioInputName
         value: SKIP
         matcher: CONTAINS

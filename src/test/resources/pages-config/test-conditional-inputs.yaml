@@ -22,16 +22,19 @@ shiba-configuration-conditional-inputs:
         - name: option1Text
           type: TEXT
           condition:
+            pageName: firstPage
             input: options
             value: option1
         - name: option2Text
           type: TEXT
           condition:
+            pageName: firstPage
             input: options
             value: option2
         - name: option3Text
           type: TEXT
           condition:
+            pageName: firstPage
             input: options
             value: option3
   workflow:

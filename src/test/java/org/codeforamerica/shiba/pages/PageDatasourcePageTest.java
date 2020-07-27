@@ -51,7 +51,7 @@ public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest 
         testPage.enterInput("someInputName", inputText);
         testPage.clickPrimaryButton();
 
-        assertThat(testPage.findElementTextByName("firstPage_someInputName")).isEqualTo(inputText);
+        assertThat(testPage.findElementTextByName("someInputName")).isEqualTo(inputText);
     }
 
     @Test

@@ -8,6 +8,7 @@ import java.util.List;
 @Value
 public class PageTemplate {
     List<FormInputTemplate> inputs;
+    String name;
     String pageTitle;
     String headerKey;
     String headerHelpMessageKey;

@@ -32,10 +32,12 @@ shiba-configuration-page-datasource:
           conditionalValues:
             - value: yes-answer-title
               condition:
+                pageName: yesNoQuestionPage
                 input: yesNoQuestion
                 value: "true"
             - value: no-answer-title
               condition:
+                pageName: yesNoQuestionPage
                 input: yesNoQuestion
                 value: "false"
         headerKey:
@@ -43,10 +45,12 @@ shiba-configuration-page-datasource:
           conditionalValues:
             - value: yes-header-text
               condition:
+                pageName: yesNoQuestionPage
                 input: yesNoQuestion
                 value: "true"
             - value: no-header-text
               condition:
+                pageName: yesNoQuestionPage
                 input: yesNoQuestion
                 value: "false"
         inputs:

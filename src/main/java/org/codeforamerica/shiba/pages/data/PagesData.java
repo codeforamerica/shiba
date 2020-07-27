@@ -9,7 +9,6 @@ import org.codeforamerica.shiba.pages.config.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toMap;
@@ -31,32 +30,12 @@ public class PagesData extends HashMap<String, InputDataMap> {
         this.put(pageName, inputDataMap);
     }
 
-    InputDataMap getInputDataMapBy(PageDatasource datasource) {
-        InputDataMap inputDataMap = get(datasource.getPageName());
-        if (inputDataMap == null) {
-            return new InputDataMap();
-        }
-        if (datasource.getInputs().isEmpty()) {
-            return inputDataMap;
-        }
-        return new InputDataMap(datasource.getInputs().stream()
-                .map(inputDatasource -> Map.entry(inputDatasource.getName(), inputDataMap.getInputDataBy(inputDatasource)))
-                .collect(toMap(Entry::getKey, Entry::getValue)));
-    }
-
-    InputDataMap getInputDataMapBy(List<PageDatasource> datasources) {
-        return getInputDataMapBy(datasources, datasource -> "");
-    }
-
-    public InputDataMap getInputDataMapBy(List<PageDatasource> datasources, Function<PageDatasource, String> namespaceProvider) {
-        Map<String, InputData> inputDataMaps = datasources.stream()
-                .flatMap(datasource -> {
+    public DatasourcePages getDatasourcePagesBy(List<PageDatasource> datasources) {
+        return new DatasourcePages(datasources.stream()
+                .map(datasource -> {
                     InputDataMap inputDataMap = getInputDataMapBy(datasource);
-                    return inputDataMap.entrySet().stream()
-                            .map(entry -> Map.entry(namespaceProvider.apply(datasource) + entry.getKey(), entry.getValue()));
-                })
-                .collect(toMap(Entry::getKey, Entry::getValue));
-        return new InputDataMap(inputDataMaps);
+                    return Map.entry(datasource.getPageName(), inputDataMap);
+                }).collect(toMap(Entry::getKey, Entry::getValue)));
     }
 
     public String getNextPageName(PageWorkflowConfiguration pageWorkflowConfiguration, Integer option) {
@@ -82,18 +61,21 @@ public class PagesData extends HashMap<String, InputDataMap> {
         if (skipCondition == null) {
             return false;
         }
-        @NotNull InputDataMap inputDataMap = this.getInputDataMapBy(pageWorkflowConfiguration.getDatasources());
-        return inputDataMap.satisfies(skipCondition);
+        @NotNull DatasourcePages datasourcePages = this.getDatasourcePagesBy(pageWorkflowConfiguration.getDatasources());
+        return datasourcePages.satisfies(skipCondition);
     }
 
-    public String resolveTitle(PageWorkflowConfiguration pageWorkflowConfiguration) {
-        PageConfiguration pageConfiguration = pageWorkflowConfiguration.getPageConfiguration();
-        return resolve(pageWorkflowConfiguration, pageConfiguration.getPageTitle());
-    }
-
-    public String resolveHeader(PageWorkflowConfiguration pageWorkflowConfiguration) {
-        PageConfiguration pageConfiguration = pageWorkflowConfiguration.getPageConfiguration();
-        return resolve(pageWorkflowConfiguration, pageConfiguration.getHeaderKey());
+    private InputDataMap getInputDataMapBy(PageDatasource datasource) {
+        InputDataMap inputDataMap = get(datasource.getPageName());
+        if (inputDataMap == null) {
+            return new InputDataMap();
+        }
+        if (datasource.getInputs().isEmpty()) {
+            return inputDataMap;
+        }
+        return new InputDataMap(datasource.getInputs().stream()
+                .map(inputDatasource -> Map.entry(inputDatasource.getName(), inputDataMap.getInputDataBy(inputDatasource)))
+                .collect(toMap(Entry::getKey, Entry::getValue)));
     }
 
     private String resolve(PageWorkflowConfiguration pageWorkflowConfiguration, Value value) {
@@ -104,8 +86,8 @@ public class PagesData extends HashMap<String, InputDataMap> {
                 .filter(conditionalValue -> {
                     Objects.requireNonNull(pageWorkflowConfiguration.getDatasources(),
                             "Configuration mismatch! Conditional value cannot be evaluated without a datasource.");
-                    @NotNull InputDataMap inputDataMap = this.getInputDataMapBy(pageWorkflowConfiguration.getDatasources());
-                    return inputDataMap.satisfies(conditionalValue.getCondition());
+                    DatasourcePages datasourcePages = this.getDatasourcePagesBy(pageWorkflowConfiguration.getDatasources());
+                    return datasourcePages.satisfies(conditionalValue.getCondition());
                 })
                 .findFirst()
                 .map(ConditionalValue::getValue)
@@ -114,22 +96,23 @@ public class PagesData extends HashMap<String, InputDataMap> {
 
     public PageTemplate evaluate(PageWorkflowConfiguration pageWorkflowConfiguration) {
         PageConfiguration pageConfiguration = pageWorkflowConfiguration.getPageConfiguration();
-        @NotNull InputDataMap inputDataMap = this.getInputDataMapBy(pageWorkflowConfiguration.getDatasources());
+        DatasourcePages datasourcePages = this.getDatasourcePagesBy(pageWorkflowConfiguration.getDatasources());
 
         return new PageTemplate(
                 pageConfiguration.getInputs().stream()
                         .filter(input -> Optional.ofNullable(input.getCondition())
-                                .map(inputDataMap::satisfies)
+                                .map(datasourcePages::satisfies)
                                 .orElse(true))
                         .map(this::convert).collect(Collectors.toList()),
-                this.resolveTitle(pageWorkflowConfiguration),
-                this.resolveHeader(pageWorkflowConfiguration),
+                pageConfiguration.getName(),
+                resolve(pageWorkflowConfiguration, pageConfiguration.getPageTitle()),
+                resolve(pageWorkflowConfiguration, pageConfiguration.getHeaderKey()),
                 pageConfiguration.getHeaderHelpMessageKey(),
                 pageConfiguration.getPrimaryButtonTextKey()
         );
     }
 
-    FormInputTemplate convert(FormInput formInput) {
+    private FormInputTemplate convert(FormInput formInput) {
         return new FormInputTemplate(
                 formInput.getType(),
                 formInput.getName(),

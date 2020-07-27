@@ -6,6 +6,7 @@ import java.util.List;
 
 @Data
 public class Condition {
+    String pageName;
     String input;
     String value;
     ValueMatcher matcher = ValueMatcher.CONTAINS;
