@@ -40,7 +40,7 @@ class DerivedValueApplicationInputsMapperTest {
 
     @BeforeEach
     void setUp() {
-        pagesData.put("defaultPage", new InputDataMap(Map.of("defaultInput", new InputData(List.of("defaultValue")))));
+        pagesData.put("defaultPage", new InputDataMap(Map.of("defaultInput", InputData.builder().value(List.of("defaultValue")).build())));
         applicationData.setPagesData(pagesData);
     }
 
@@ -53,7 +53,7 @@ class DerivedValueApplicationInputsMapperTest {
 
     @Test
     void shouldProjectValueIfConditionIsTrue() {
-        pagesData.put("somePage", new InputDataMap(Map.of("someInput", new InputData(List.of("someValue")))));
+        pagesData.put("somePage", new InputDataMap(Map.of("someInput", InputData.builder().value(List.of("someValue")).build())));
 
         List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
 
@@ -62,7 +62,7 @@ class DerivedValueApplicationInputsMapperTest {
 
     @Test
     void shouldProjectValueIfAnyOfTheConditionsIsTrue() {
-        pagesData.put("somePage", new InputDataMap(Map.of("someInput", new InputData(List.of("someValue")))));
+        pagesData.put("somePage", new InputDataMap(Map.of("someInput", InputData.builder().value(List.of("someValue")).build())));
 
         List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
 
@@ -71,13 +71,13 @@ class DerivedValueApplicationInputsMapperTest {
 
     @Test
     void shouldProjectValueIfAllOfTheConditionsAreTrue() {
-        pagesData.put("somePage", new InputDataMap(Map.of("someInput", new InputData(List.of("someValue")))));
+        pagesData.put("somePage", new InputDataMap(Map.of("someInput", InputData.builder().value(List.of("someValue")).build())));
 
         List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
 
         assertThat(actual).doesNotContain(new ApplicationInput("groupName4", List.of("fooBar"), "value4", ApplicationInputType.SINGLE_VALUE));
 
-        pagesData.put("someOtherPage", new InputDataMap(Map.of("someOtherInput", new InputData(List.of("someOtherValue")))));
+        pagesData.put("someOtherPage", new InputDataMap(Map.of("someOtherInput", InputData.builder().value(List.of("someOtherValue")).build())));
 
         actual = derivedValueApplicationInputsMapper.map(applicationData);
 

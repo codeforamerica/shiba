@@ -79,7 +79,7 @@ public class XmlGeneratorIntegrationTest {
                                                     })
                                                     .orElse(List.of("some-value"));
                                         };
-                                        return new InputData(value);
+                                        return InputData.builder().value(value).build();
                                     }
                             ));
                     return Map.entry(pageConfiguration.getName(), new InputDataMap(inputDataMap));

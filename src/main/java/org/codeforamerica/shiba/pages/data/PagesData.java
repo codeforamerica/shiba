@@ -32,10 +32,10 @@ public class PagesData extends HashMap<String, InputDataMap> {
 
     public DatasourcePages getDatasourcePagesBy(List<PageDatasource> datasources) {
         return new DatasourcePages(datasources.stream()
-                .map(datasource -> {
-                    InputDataMap inputDataMap = getInputDataMapBy(datasource);
-                    return Map.entry(datasource.getPageName(), inputDataMap);
-                }).collect(toMap(Entry::getKey, Entry::getValue)));
+                .map(datasource -> Map.entry(
+                        datasource.getPageName(),
+                        getOrDefault(datasource.getPageName(), new InputDataMap())))
+                .collect(toMap(Entry::getKey, Entry::getValue)));
     }
 
     public String getNextPageName(PageWorkflowConfiguration pageWorkflowConfiguration, Integer option) {
@@ -63,19 +63,6 @@ public class PagesData extends HashMap<String, InputDataMap> {
         }
         @NotNull DatasourcePages datasourcePages = this.getDatasourcePagesBy(pageWorkflowConfiguration.getDatasources());
         return datasourcePages.satisfies(skipCondition);
-    }
-
-    private InputDataMap getInputDataMapBy(PageDatasource datasource) {
-        InputDataMap inputDataMap = get(datasource.getPageName());
-        if (inputDataMap == null) {
-            return new InputDataMap();
-        }
-        if (datasource.getInputs().isEmpty()) {
-            return inputDataMap;
-        }
-        return new InputDataMap(datasource.getInputs().stream()
-                .map(inputDatasource -> Map.entry(inputDatasource.getName(), inputDataMap.getInputDataBy(inputDatasource)))
-                .collect(toMap(Entry::getKey, Entry::getValue)));
     }
 
     private String resolve(PageWorkflowConfiguration pageWorkflowConfiguration, Value value) {

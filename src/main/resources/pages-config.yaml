@@ -903,13 +903,6 @@ shiba-configuration:
         - pageName: introBasicInfo
       datasources:
         - pageName: choosePrograms
-          inputs:
-            - name: programs
-              valueMessageKeys:
-                FOOD: how-it-works.food
-                CASH: how-it-works.cash
-                CHILD_CARE: how-it-works.child-care
-                EMERGENCY: how-it-works.emergency
     introBasicInfo:
       pageConfiguration: *introBasicInfo
       nextPages:

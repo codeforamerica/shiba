@@ -4,7 +4,10 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 import org.codeforamerica.shiba.inputconditions.Condition;
-import org.codeforamerica.shiba.pages.config.*;
+import org.codeforamerica.shiba.pages.config.FormInput;
+import org.codeforamerica.shiba.pages.config.PageConfiguration;
+import org.codeforamerica.shiba.pages.config.Validation;
+import org.codeforamerica.shiba.pages.config.Validator;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.util.MultiValueMap;
 
@@ -46,10 +49,6 @@ public class InputDataMap extends HashMap<String, InputData> {
                                         .map(defaultValue -> new InputData(List.of(defaultValue)))
                                         .orElse(new InputData())
                         )));
-    }
-
-    InputData getInputDataBy(InputDatasource inputDatasource) {
-        return get(inputDatasource.getName()).withValueMessageKeys(inputDatasource.getValueMessageKeys());
     }
 
     public Boolean isValid() {

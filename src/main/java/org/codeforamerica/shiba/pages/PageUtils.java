@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.pages;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PageUtils {
     private static final String WEB_INPUT_ARRAY_TOKEN = "[]";
@@ -27,6 +28,12 @@ public class PageUtils {
             }
             return stringBuilder.toString();
         }
+    }
+
+    public static List<String> valuesToMessageKeys(List<String> values, String prefix) {
+        return values.stream()
+                .map(value -> String.join(".", prefix, value))
+                .collect(Collectors.toList());
     }
 
     public static String formatPhone(String phoneDigits) {

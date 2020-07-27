@@ -14,10 +14,6 @@ shiba-configuration-page-datasource:
               messageKey: radio-value-key-1
             - value: VALUE_2
               messageKey: radio-value-key-2
-    - &staticPageWithDatasourceInputs
-        name: staticPageWithDatasourceInputs
-        pageTitle:
-          value: static-page-with-datasource-inputs-title
     - &yesNoQuestionPage
         name: yesNoQuestionPage
         pageTitle:
@@ -65,15 +61,6 @@ shiba-configuration-page-datasource:
       pageConfiguration: *firstPage
       nextPages:
         - pageName: testStaticPage
-    staticPageWithDatasourceInputs:
-      pageConfiguration: *staticPageWithDatasourceInputs
-      datasources:
-        - pageName: firstPage
-          inputs:
-            - name: someRadioInputName
-              valueMessageKeys:
-                VALUE_1: display-value-key-1
-                VALUE_2: display-value-key-2
     yesNoQuestionPage:
       pageConfiguration: *yesNoQuestionPage
       nextPages:

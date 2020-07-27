@@ -55,28 +55,6 @@ public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest 
     }
 
     @Test
-    void shouldDisplayDataEnteredFromAPreviousPage_usingMessageKeysWhenAvailable() {
-        staticMessageSource.addMessage("radio-value-key-1", Locale.US, "RADIO 1");
-        staticMessageSource.addMessage("radio-value-key-2", Locale.US, "RADIO 2");
-        String radioValueDisplayMessage = "RADIO 2 MESSAGE";
-        staticMessageSource.addMessage("display-value-key-2", Locale.US, radioValueDisplayMessage);
-
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-
-        WebElement radioToClick = driver.findElements(By.cssSelector("span")).stream()
-                .filter(webElement -> webElement.getText().equals("RADIO 2"))
-                .findFirst()
-                .orElseThrow();
-        radioToClick.click();
-        driver.findElement(By.cssSelector("button")).click();
-
-        driver.navigate().to(baseUrl + "/pages/staticPageWithDatasourceInputs");
-        assertThat(driver.getTitle()).isEqualTo(staticPageWithDatasourceInputsTitle);
-
-        assertThat(driver.findElement(By.xpath(String.format("//*[text() = '%s']", radioValueDisplayMessage)))).isNotNull();
-    }
-
-    @Test
     void shouldDisplayPageTitleBasedOnCondition() {
         String noAnswerTitle = "no answer title";
         staticMessageSource.addMessage("foo", Locale.US, "wrong title");

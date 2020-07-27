@@ -1,6 +1,9 @@
 package org.codeforamerica.shiba.output;
 
-import org.codeforamerica.shiba.pages.config.*;
+import org.codeforamerica.shiba.pages.config.FormInput;
+import org.codeforamerica.shiba.pages.config.FormInputType;
+import org.codeforamerica.shiba.pages.config.PageConfiguration;
+import org.codeforamerica.shiba.pages.config.PagesConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.InputDataMap;
@@ -31,7 +34,7 @@ class OneToOneApplicationInputsMapperTest {
         pagesConfiguration.setPageDefinitions(List.of(page));
 
         List<String> input1Value = List.of("input1Value");
-        data.putPage(pageName, new InputDataMap(Map.of(input1Name, new InputData(Validation.NONE, input1Value))));
+        data.putPage(pageName, new InputDataMap(Map.of(input1Name, InputData.builder().value(input1Value).build())));
 
         ApplicationData applicationData = new ApplicationData();
         applicationData.setPagesData(data);
@@ -65,8 +68,8 @@ class OneToOneApplicationInputsMapperTest {
         List<String> input2Value = List.of("input2Value");
         List<String> input3Value = List.of("input3Value");
         data.putPage(pageName, new InputDataMap(Map.of(
-                input2Name, new InputData(Validation.NONE, input2Value),
-                input3Name, new InputData(Validation.NONE, input3Value)
+                input2Name, InputData.builder().value(input2Value).build(),
+                input3Name, InputData.builder().value(input3Value).build()
         )));
 
         ApplicationData applicationData = new ApplicationData();
