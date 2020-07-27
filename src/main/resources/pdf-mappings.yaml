@@ -35,11 +35,11 @@ caf:
       isHomeless:
         homeless: APPLICANT_HOMELESS
     mailingAddress:
-      mailingZipCode: APPLICANT_MAILING_ZIPCODE
-      mailingCity: APPLICANT_MAILING_CITY
-      mailingState: APPLICANT_MAILING_STATE
-      mailingStreetAddress: APPLICANT_MAILING_STREET_ADDRESS
-      mailingApartmentNumber: APPLICANT_MAILING_APT_NUMBER
+      zipCode: APPLICANT_MAILING_ZIPCODE
+      city: APPLICANT_MAILING_CITY
+      state: APPLICANT_MAILING_STATE
+      streetAddress: APPLICANT_MAILING_STREET_ADDRESS
+      apartmentNumber: APPLICANT_MAILING_APT_NUMBER
     expeditedIncome:
       moneyMadeLast30Days: MONEY_MADE_LAST_MONTH
     liquidAssets:

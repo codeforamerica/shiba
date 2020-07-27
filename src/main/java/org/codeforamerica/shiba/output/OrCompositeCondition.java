@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.output;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.pages.data.PagesData;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class OrCompositeCondition extends CompositeCondition {
                 );
     }
 
-    public void setConditions(List<DerivedValueCondition> conditions) {
+    public void setConditions(List<Condition> conditions) {
         this.conditions = conditions;
     }
 }

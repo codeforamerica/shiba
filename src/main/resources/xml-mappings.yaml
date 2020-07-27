@@ -25,11 +25,11 @@ xml:
       apartmentNumber: CONTACTINFO_HOME_APARTMENT_NUMBER
       isHomeless: CONTACTINFO_HOMELESS
     mailingAddress:
-      mailingZipCode: CONTACTINFO_MAILING_ZIPCODE
-      mailingCity: CONTACTINFO_MAILING_CITY
-      mailingStreetAddress: CONTACTINFO_MAILING_STREET_ADDRESS
-      mailingState: CONTACTINFO_MAILING_STATE
-      mailingApartmentNumber: CONTACTINFO_MAILING_APARTMENT_NUMBER
+      zipCode: CONTACTINFO_MAILING_ZIPCODE
+      city: CONTACTINFO_MAILING_CITY
+      streetAddress: CONTACTINFO_MAILING_STREET_ADDRESS
+      state: CONTACTINFO_MAILING_STATE
+      apartmentNumber: CONTACTINFO_MAILING_APARTMENT_NUMBER
     expeditedIncome:
       moneyMadeLast30Days: MONEY_MADE_LAST_MONTH
     liquidAssets:

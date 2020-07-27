@@ -45,10 +45,10 @@
                             <a href="#" style="display: none" th:text="#{review-info.edit}"></a>
                         </div>
                     </div>
-                    <p class="spacing-below-0" th:text="${data.get('mailingAddress').get('mailingStreetAddress').value[0]}"></p>
-                    <p class="spacing-below-0" th:if="${!data.get('mailingAddress').get('mailingApartmentNumber').value[0].isEmpty()}"
-                       th:text="|# ${data.get('mailingAddress').get('mailingApartmentNumber').value[0]}|"></p>
-                    <p class="spacing-below-0" th:text="|${data.get('mailingAddress').get('mailingCity').value[0]}, ${data.get('mailingAddress').get('mailingState').value[0]}|"></p>
+                    <p class="spacing-below-0" th:text="${data.get('mailingAddress').get('streetAddress').value[0]}"></p>
+                    <p class="spacing-below-0" th:if="${!data.get('mailingAddress').get('apartmentNumber').value[0].isEmpty()}"
+                       th:text="|# ${data.get('mailingAddress').get('apartmentNumber').value[0]}|"></p>
+                    <p class="spacing-below-0" th:text="|${data.get('mailingAddress').get('city').value[0]}, ${data.get('mailingAddress').get('state').value[0]}|"></p>
                 </div>
                 <div class="bottom-horizontal-line spacing-below-25 review-info-section">
                     <div class="spacing-below-10">

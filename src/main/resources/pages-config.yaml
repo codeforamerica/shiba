@@ -297,21 +297,21 @@ shiba-configuration:
       headerKey:
         value: mailing-address.where-can-the-county-send-your-mail
       inputs:
-        - name: mailingZipCode
+        - name: zipCode
           type: TEXT
           promptMessage:
             promptMessageKey: mailing-address.what-is-the-zip-code
           validationErrorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
           validator:
             validation: ZIPCODE
-        - name: mailingCity
+        - name: city
           type: TEXT
           promptMessage:
             promptMessageKey: mailing-address.what-is-the-city
           validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
           validator:
             validation: NOT_BLANK
-        - name: mailingState
+        - name: state
           type: TEXT
           promptMessage:
             promptMessageKey: mailing-address.what-is-the-state
@@ -319,14 +319,14 @@ shiba-configuration:
             validation: STATE
           validationErrorMessageKey: general.validation.make-sure-to-provide-a-valid-2-letter-state-code
           defaultValue: MN
-        - name: mailingStreetAddress
+        - name: streetAddress
           type: TEXT
           promptMessage:
             promptMessageKey: mailing-address.what-is-the-street-address
           validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
           validator:
             validation: NOT_BLANK
-        - name: mailingApartmentNumber
+        - name: apartmentNumber
           type: TEXT
           promptMessage:
             promptMessageKey: mailing-address.apartment-number
