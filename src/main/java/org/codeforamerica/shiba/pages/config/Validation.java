@@ -1,7 +1,6 @@
 package org.codeforamerica.shiba.pages.config;
 
 
-import org.apache.commons.lang3.Range;
 import org.apache.commons.validator.GenericValidator;
 
 import java.util.List;
@@ -19,9 +18,7 @@ public enum Validation {
     STATE(strings -> Set.of("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY", "AS", "DC", "FM", "GU", "MH", "MP", "PR", "VI", "AB", "BC", "MB", "NB", "NF", "NS", "ON", "PE", "PQ", "SK")
             .contains(strings.get(0))),
     PHONE(strings -> String.join("", strings).matches("[2-9]\\d{9}")),
-    MONEY(strings -> String.join("", strings).matches("[-]?\\d+")),
-    NON_NEGATIVE_INTEGER(string -> String.join("", string).matches("\\d+")),
-    NUMBER_OF_JOBS(strings -> NOT_BLANK.apply(strings) && NON_NEGATIVE_INTEGER.apply(strings) && Range.between(0, 20).contains(Integer.valueOf(strings.get(0))));
+    MONEY(strings -> String.join("", strings).matches("[-]?\\d+"));
 
     private final Predicate<List<String>> rule;
 

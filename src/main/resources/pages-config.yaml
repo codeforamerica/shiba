@@ -668,24 +668,15 @@ shiba-configuration:
       name: introIncome
       pageTitle:
         value: intro-income.title
-    - &householdJobs
-      name: householdJobs
+    - &employmentStatus
+      name: employmentStatus
       pageTitle:
-        value: household-jobs.title
+        value: employment-status.title
       headerKey:
-        value: household-jobs.tell-us-how-many-jobs-you-have
-      headerHelpMessageKey: household-jobs.this-includes-full-time-part-time-contract-and-temporary-jobs-and-self-employment
+        value: employment-status.are-you-currently-working-or-making-an-income
       inputs:
-        - name: numberOfJobs
-          type: INCREMENTER
-          defaultValue: "0"
-          promptMessage:
-            promptMessageKey: household-jobs.how-many-jobs-do-you-have
-          min: 0
-          max: 20
-          validator:
-            validation: NUMBER_OF_JOBS
-          validationErrorMessageKey: general.validation.make-sure-to-enter-a-number-between-zero-and-twenty
+        - name: areYouWorking
+          type: YES_NO
     - &incomeUpNext
       name: incomeUpNext
       pageTitle:
@@ -982,14 +973,14 @@ shiba-configuration:
     introIncome:
       pageConfiguration: *introIncome
       nextPages:
-        - pageName: householdJobs
-    householdJobs:
-      pageConfiguration: *householdJobs
+        - pageName: employmentStatus
+    employmentStatus:
+      pageConfiguration: *employmentStatus
       nextPages:
         - pageName: ccapJob
           condition:
-            input: numberOfJobs
-            value: "0"
+            input: areYouWorking
+            value: "false"
         - pageName: incomeUpNext
     incomeUpNext:
       pageConfiguration: *incomeUpNext

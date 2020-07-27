@@ -166,9 +166,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         Page disability = usCitizen.choose(NO);
         Page workSituation = disability.choose(NO);
         Page introIncome = workSituation.choose(NO);
-        Page householdJobs = introIncome.clickPrimaryButton();
-        testPage.enterInput("numberOfJobs", "4");
-        Page incomeUpNext = householdJobs.clickPrimaryButton();
+        Page employmentStatus = introIncome.clickPrimaryButton();
+        Page incomeUpNext = employmentStatus.choose(YES);
         Page unearnedIncome = incomeUpNext.clickPrimaryButton();
         unearnedIncome.selectEnumeratedInput("unearnedIncome", "Social Security");
         Page unearnedIncomeSources = unearnedIncome.clickPrimaryButton();
