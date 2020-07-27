@@ -15,26 +15,26 @@ import static java.util.stream.Collectors.toMap;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class PagesData extends HashMap<String, InputDataMap> {
-    public InputDataMap getPage(String pageName) {
+public class PagesData extends HashMap<String, PageData> {
+    public PageData getPage(String pageName) {
         return get(pageName);
     }
 
-    public InputDataMap getPageDataOrDefault(String pageName, PageConfiguration pageConfiguration) {
-        InputDataMap defaultInputDataMap = InputDataMap.initialize(pageConfiguration);
+    public PageData getPageDataOrDefault(String pageName, PageConfiguration pageConfiguration) {
+        PageData defaultPageData = PageData.initialize(pageConfiguration);
 
-        return this.getOrDefault(pageName, defaultInputDataMap);
+        return this.getOrDefault(pageName, defaultPageData);
     }
 
-    public void putPage(String pageName, InputDataMap inputDataMap) {
-        this.put(pageName, inputDataMap);
+    public void putPage(String pageName, PageData pageData) {
+        this.put(pageName, pageData);
     }
 
     public DatasourcePages getDatasourcePagesBy(List<PageDatasource> datasources) {
         return new DatasourcePages(datasources.stream()
                 .map(datasource -> Map.entry(
                         datasource.getPageName(),
-                        getOrDefault(datasource.getPageName(), new InputDataMap())))
+                        getOrDefault(datasource.getPageName(), new PageData())))
                 .collect(toMap(Entry::getKey, Entry::getValue)));
     }
 
@@ -42,14 +42,14 @@ public class PagesData extends HashMap<String, InputDataMap> {
         if (!pageWorkflowConfiguration.getConditionalNavigation()) {
             return pageWorkflowConfiguration.getNextPages().get(option).getPageName();
         }
-        InputDataMap inputDataMap = this.getPage(pageWorkflowConfiguration.getPageConfiguration().getName());
-        if (inputDataMap == null) {
+        PageData pageData = this.getPage(pageWorkflowConfiguration.getPageConfiguration().getName());
+        if (pageData == null) {
             throw new RuntimeException(String.format("Conditional navigation for %s requires page to have data/inputs.", pageWorkflowConfiguration.getPageConfiguration().getName()));
         }
 
         return pageWorkflowConfiguration.getNextPages().stream()
                 .filter(nextPage -> Optional.ofNullable(nextPage.getCondition())
-                        .map(inputDataMap::satisfies)
+                        .map(pageData::satisfies)
                         .orElse(true))
                 .findFirst()
                 .map(NextPage::getPageName)

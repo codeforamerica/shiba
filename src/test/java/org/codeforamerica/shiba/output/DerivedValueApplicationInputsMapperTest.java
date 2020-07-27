@@ -3,7 +3,7 @@ package org.codeforamerica.shiba.output;
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.InputDataMap;
+import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,7 +40,7 @@ class DerivedValueApplicationInputsMapperTest {
 
     @BeforeEach
     void setUp() {
-        pagesData.put("defaultPage", new InputDataMap(Map.of("defaultInput", InputData.builder().value(List.of("defaultValue")).build())));
+        pagesData.put("defaultPage", new PageData(Map.of("defaultInput", InputData.builder().value(List.of("defaultValue")).build())));
         applicationData.setPagesData(pagesData);
     }
 
@@ -53,7 +53,7 @@ class DerivedValueApplicationInputsMapperTest {
 
     @Test
     void shouldProjectValueIfConditionIsTrue() {
-        pagesData.put("somePage", new InputDataMap(Map.of("someInput", InputData.builder().value(List.of("someValue")).build())));
+        pagesData.put("somePage", new PageData(Map.of("someInput", InputData.builder().value(List.of("someValue")).build())));
 
         List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
 
@@ -62,7 +62,7 @@ class DerivedValueApplicationInputsMapperTest {
 
     @Test
     void shouldProjectValueIfAnyOfTheConditionsIsTrue() {
-        pagesData.put("somePage", new InputDataMap(Map.of("someInput", InputData.builder().value(List.of("someValue")).build())));
+        pagesData.put("somePage", new PageData(Map.of("someInput", InputData.builder().value(List.of("someValue")).build())));
 
         List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
 
@@ -71,13 +71,13 @@ class DerivedValueApplicationInputsMapperTest {
 
     @Test
     void shouldProjectValueIfAllOfTheConditionsAreTrue() {
-        pagesData.put("somePage", new InputDataMap(Map.of("someInput", InputData.builder().value(List.of("someValue")).build())));
+        pagesData.put("somePage", new PageData(Map.of("someInput", InputData.builder().value(List.of("someValue")).build())));
 
         List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
 
         assertThat(actual).doesNotContain(new ApplicationInput("groupName4", List.of("fooBar"), "value4", ApplicationInputType.SINGLE_VALUE));
 
-        pagesData.put("someOtherPage", new InputDataMap(Map.of("someOtherInput", InputData.builder().value(List.of("someOtherValue")).build())));
+        pagesData.put("someOtherPage", new PageData(Map.of("someOtherInput", InputData.builder().value(List.of("someOtherValue")).build())));
 
         actual = derivedValueApplicationInputsMapper.map(applicationData);
 

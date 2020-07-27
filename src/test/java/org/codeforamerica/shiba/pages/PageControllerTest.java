@@ -4,7 +4,7 @@ import org.codeforamerica.shiba.metrics.ApplicationMetric;
 import org.codeforamerica.shiba.metrics.ApplicationMetricsRepository;
 import org.codeforamerica.shiba.metrics.Metrics;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.InputDataMap;
+import org.codeforamerica.shiba.pages.data.PageData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -77,7 +77,7 @@ class PageControllerTest {
                 .param("applicantSignature[]", "some signature"))
                 .andExpect(redirectedUrl("/pages/signThisApplication/navigation"));
 
-        InputDataMap signThisApplication = applicationData.getPagesData().getPage("signThisApplication");
+        PageData signThisApplication = applicationData.getPagesData().getPage("signThisApplication");
         assertThat(signThisApplication.get("applicantSignature").getValue()).contains("some signature");
         assertThat(applicationData.getSubmissionTime()).contains("January 1, 2020");
     }

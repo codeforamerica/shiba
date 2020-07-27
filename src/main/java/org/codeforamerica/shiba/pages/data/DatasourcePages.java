@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DatasourcePages extends HashMap<String, InputDataMap> {
-    public DatasourcePages(Map<String, InputDataMap> pages) {
+public class DatasourcePages extends HashMap<String, PageData> {
+    public DatasourcePages(Map<String, PageData> pages) {
         super(pages);
     }
 

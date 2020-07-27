@@ -22,12 +22,12 @@ import static org.codeforamerica.shiba.pages.PageUtils.getFormInputName;
 @EqualsAndHashCode(callSuper = true)
 @Value
 @NoArgsConstructor
-public class InputDataMap extends HashMap<String, InputData> {
-    public InputDataMap(Map<String, InputData> inputDataMap) {
+public class PageData extends HashMap<String, InputData> {
+    public PageData(Map<String, InputData> inputDataMap) {
         super(inputDataMap);
     }
 
-    public static InputDataMap fillOut(PageConfiguration page, MultiValueMap<String, String> model) {
+    public static PageData fillOut(PageConfiguration page, MultiValueMap<String, String> model) {
         Map<String, InputData> inputDataMap = page.getFlattenedInputs().stream()
                 .map(formInput -> {
                     List<String> value = Optional.ofNullable(model)
@@ -37,11 +37,11 @@ public class InputDataMap extends HashMap<String, InputData> {
                     return Map.entry(formInput.getName(), inputData);
                 })
                 .collect(toMap(Entry::getKey, Entry::getValue));
-        return new InputDataMap(inputDataMap);
+        return new PageData(inputDataMap);
     }
 
-    static InputDataMap initialize(PageConfiguration pageConfiguration) {
-        return new InputDataMap(
+    static PageData initialize(PageConfiguration pageConfiguration) {
+        return new PageData(
                 pageConfiguration.getFlattenedInputs().stream()
                         .collect(toMap(
                                 FormInput::getName,

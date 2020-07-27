@@ -3,7 +3,7 @@ package org.codeforamerica.shiba.output.caf;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.InputDataMap;
+import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.junit.jupiter.api.Test;
 
@@ -38,7 +38,7 @@ class ExpeditedEligibilityMapperTest {
         ExpeditedEligibilityMapper mapper = new ExpeditedEligibilityMapper(mockDecider);
         ApplicationData appData = new ApplicationData();
         PagesData pagesData = new PagesData();
-        pagesData.put("page1", new InputDataMap());
+        pagesData.put("page1", new PageData());
         appData.setPagesData(pagesData);
 
         when(mockDecider.decide(any())).thenReturn(ExpeditedEligibility.NOT_ELIGIBLE);

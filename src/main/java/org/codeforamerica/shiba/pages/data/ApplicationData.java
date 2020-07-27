@@ -16,7 +16,7 @@ public class ApplicationData {
         return this.submissionTime != null;
     }
 
-    public InputDataMap getInputDataMap(String pageName) {
+    public PageData getInputDataMap(String pageName) {
         return this.pagesData.getPage(pageName);
     }
 }

@@ -8,7 +8,7 @@ import org.codeforamerica.shiba.pages.config.PageConfiguration;
 import org.codeforamerica.shiba.pages.config.PageWorkflowConfiguration;
 import org.codeforamerica.shiba.pages.config.PagesConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.InputDataMap;
+import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
@@ -125,12 +125,12 @@ public class PageController {
         PageWorkflowConfiguration pageWorkflow = pagesConfiguration.getPageWorkflow(pageName);
 
         PageConfiguration page = pageWorkflow.getPageConfiguration();
-        InputDataMap inputDataMap = InputDataMap.fillOut(page, model);
+        PageData pageData = PageData.fillOut(page, model);
 
         PagesData pagesData = applicationData.getPagesData();
-        pagesData.putPage(pageWorkflow.getPageConfiguration().getName(), inputDataMap);
+        pagesData.putPage(pageWorkflow.getPageConfiguration().getName(), pageData);
 
-        return inputDataMap.isValid() ?
+        return pageData.isValid() ?
                 new ModelAndView(String.format("redirect:/pages/%s/navigation", pageName)) :
                 new ModelAndView("redirect:/pages/" + pageName);
     }
@@ -144,11 +144,11 @@ public class PageController {
         String submitPage = landmarkPagesConfiguration.getSubmitPage();
         PageConfiguration page = pagesConfiguration.getPageWorkflow(submitPage).getPageConfiguration();
 
-        InputDataMap inputDataMap = InputDataMap.fillOut(page, model);
+        PageData pageData = PageData.fillOut(page, model);
         PagesData pagesData = applicationData.getPagesData();
-        pagesData.putPage(submitPage, inputDataMap);
+        pagesData.putPage(submitPage, pageData);
 
-        if (inputDataMap.isValid()) {
+        if (pageData.isValid()) {
             ApplicationMetric applicationMetric = new ApplicationMetric(Duration.between(metrics.getStartTime(), clock.instant()));
             repository.save(applicationMetric);
 

@@ -6,7 +6,7 @@ import org.codeforamerica.shiba.pages.config.PageConfiguration;
 import org.codeforamerica.shiba.pages.config.PagesConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.InputDataMap;
+import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +34,7 @@ class OneToOneApplicationInputsMapperTest {
         pagesConfiguration.setPageDefinitions(List.of(page));
 
         List<String> input1Value = List.of("input1Value");
-        data.putPage(pageName, new InputDataMap(Map.of(input1Name, InputData.builder().value(input1Value).build())));
+        data.putPage(pageName, new PageData(Map.of(input1Name, InputData.builder().value(input1Value).build())));
 
         ApplicationData applicationData = new ApplicationData();
         applicationData.setPagesData(data);
@@ -67,7 +67,7 @@ class OneToOneApplicationInputsMapperTest {
 
         List<String> input2Value = List.of("input2Value");
         List<String> input3Value = List.of("input3Value");
-        data.putPage(pageName, new InputDataMap(Map.of(
+        data.putPage(pageName, new PageData(Map.of(
                 input2Name, InputData.builder().value(input2Value).build(),
                 input3Name, InputData.builder().value(input3Value).build()
         )));

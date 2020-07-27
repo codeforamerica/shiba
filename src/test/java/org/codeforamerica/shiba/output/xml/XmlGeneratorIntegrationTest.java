@@ -8,7 +8,7 @@ import org.codeforamerica.shiba.pages.config.Option;
 import org.codeforamerica.shiba.pages.config.PagesConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.InputDataMap;
+import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
@@ -57,7 +57,7 @@ public class XmlGeneratorIntegrationTest {
 
     @Test
     void shouldProduceAValidDocument() throws IOException, SAXException, ParserConfigurationException {
-        Map<String, InputDataMap> data = pagesConfiguration.getPageDefinitions().stream()
+        Map<String, PageData> data = pagesConfiguration.getPageDefinitions().stream()
                 .map(pageConfiguration -> {
                     Map<String, InputData> inputDataMap = pageConfiguration.getFlattenedInputs().stream()
                             .collect(toMap(
@@ -82,7 +82,7 @@ public class XmlGeneratorIntegrationTest {
                                         return InputData.builder().value(value).build();
                                     }
                             ));
-                    return Map.entry(pageConfiguration.getName(), new InputDataMap(inputDataMap));
+                    return Map.entry(pageConfiguration.getName(), new PageData(inputDataMap));
                 })
                 .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
         PagesData pagesData = new PagesData();
