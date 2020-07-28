@@ -276,3 +276,64 @@ derived-values:
             input: unearnedIncome
             matcher: DOES_NOT_CONTAIN
             value: TRIBAL_PAYMENTS
+  homeExpenses:
+    noRentSelection:
+      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+        literal: "No"
+      type: ENUMERATED_SINGLE_VALUE
+      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        conditions:
+          - pageName: homeExpenses
+            input: homeExpenses
+            matcher: DOES_NOT_CONTAIN
+            value: RENT
+    noMortgageSelection:
+      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+        literal: "No"
+      type: ENUMERATED_SINGLE_VALUE
+      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        conditions:
+          - pageName: homeExpenses
+            input: homeExpenses
+            matcher: DOES_NOT_CONTAIN
+            value: MORTGAGE
+    noHomeownersInsuranceSelection:
+      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+        literal: "No"
+      type: ENUMERATED_SINGLE_VALUE
+      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        conditions:
+          - pageName: homeExpenses
+            input: homeExpenses
+            matcher: DOES_NOT_CONTAIN
+            value: HOMEOWNERS_INSURANCE
+    noRealEstateTaxesSelection:
+      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+        literal: "No"
+      type: ENUMERATED_SINGLE_VALUE
+      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        conditions:
+          - pageName: homeExpenses
+            input: homeExpenses
+            matcher: DOES_NOT_CONTAIN
+            value: REAL_ESTATE_TAXES
+    noAssociationFeesSelection:
+      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+        literal: "No"
+      type: ENUMERATED_SINGLE_VALUE
+      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        conditions:
+          - pageName: homeExpenses
+            input: homeExpenses
+            matcher: DOES_NOT_CONTAIN
+            value: ASSOCIATION_FEES
+    noRoomAndBoardSelection:
+      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+        literal: "No"
+      type: ENUMERATED_SINGLE_VALUE
+      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        conditions:
+          - pageName: homeExpenses
+            input: homeExpenses
+            matcher: DOES_NOT_CONTAIN
+            value: ROOM_AND_BOARD

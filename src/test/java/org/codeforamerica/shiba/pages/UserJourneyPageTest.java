@@ -178,7 +178,9 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         Page futureIncome = unearnedIncomeSources.clickPrimaryButton();
         futureIncome.selectEnumeratedInput("earnLessMoneyThisMonth", "Yes");
         Page startExpenses = futureIncome.clickPrimaryButton();
-        Page importantToKnow = startExpenses.clickPrimaryButton();
+        Page homeExpenses = startExpenses.clickPrimaryButton();
+        homeExpenses.selectEnumeratedInput("homeExpenses", "Homeowners Insurance");
+        Page importantToKnow = homeExpenses.clickPrimaryButton();
         Page legalStuff = importantToKnow.clickPrimaryButton();
         legalStuff.selectEnumeratedInput("agreeToTerms", "I agree");
         Page signThisApplicationPage = legalStuff.clickPrimaryButton();

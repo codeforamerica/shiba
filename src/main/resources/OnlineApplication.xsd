@@ -2076,7 +2076,7 @@
 			<xsd:documentation>Housing expenses</xsd:documentation>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="Type" type="xsd:string" minOccurs="0">
+			<xsd:element name="Type" type="model:ExpenseNameType" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>F# 283b, 288b, 295, 321; see model:HousingExpenseNameType,model:UtilityExpenseNameType
 					</xsd:documentation>
@@ -3962,5 +3962,8 @@
 			<xsd:enumeration value="No"/>
 			<xsd:enumeration value="Do not know"/>
 		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="ExpenseNameType">
+		<xsd:union memberTypes="model:HousingExpenseNameType model:UtilityExpenseNameType" />
 	</xsd:simpleType>
 </xsd:schema>

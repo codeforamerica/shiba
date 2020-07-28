@@ -64,6 +64,8 @@ xml:
       retirementAmount: RETIREMENT_AMOUNT
       childOrSpousalSupportAmount: CHILD_OR_SPOUSAL_SUPPORT_AMOUNT
       tribalPaymentsAmount: TRIBAL_PAYMENTS_AMOUNT
+    homeExpenses:
+      homeExpenses: HOUSING_EXPENSE_TYPE
   enums:
     true: true
     false: false
@@ -100,3 +102,9 @@ xml:
     RETIREMENT: Retirement or Pension Benefits
     CHILD_OR_SPOUSAL_SUPPORT: Child Support
     TRIBAL_PAYMENTS: Tribal Payments
+    RENT: Rent (includes mobile home lot rental)
+    MORTGAGE: Mortgage/Contract For Deed Payment
+    HOMEOWNERS_INSURANCE: Homeowner's Insurance (if not included in mortgage)
+    REAL_ESTATE_TAXES: Real Estate Taxes (if not included in mortgage)
+    ASSOCIATION_FEES: Association Fees
+    ROOM_AND_BOARD: Room and/or Board

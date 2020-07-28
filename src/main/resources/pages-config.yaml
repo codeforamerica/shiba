@@ -894,7 +894,36 @@ shiba-configuration:
     - &startExpenses
       name: startExpenses
       pageTitle:
-        value: startExpenses.title
+        value: start-expenses.title
+    - &homeExpenses
+      name: homeExpenses
+      pageTitle:
+        value: home-expenses.title
+      headerKey:
+        value: home-expenses.do-you-pay-for-any-of-these
+      headerHelpMessageKey: general.check-all-that-apply
+      inputs:
+        - name: homeExpenses
+          type: CHECKBOX
+          validator:
+            validation: SELECT_AT_LEAST_ONE
+          validationErrorMessageKey: general.validation.make-sure-you-choose-none-of-the-above-or-another-option
+          options:
+            - value: RENT
+              messageKey: home-expenses.rent
+            - value: MORTGAGE
+              messageKey: home-expenses.mortgage
+            - value: HOMEOWNERS_INSURANCE
+              messageKey: home-expenses.homeowners-insurance
+            - value: REAL_ESTATE_TAXES
+              messageKey: home-expenses.real-estate-taxes
+            - value: ASSOCIATION_FEES
+              messageKey: home-expenses.association-fees
+            - value: ROOM_AND_BOARD
+              messageKey: home-expenses.room-and-board
+            - value: NONE_OF_THE_ABOVE
+              messageKey: general.inputs.none-of-the-above
+              isNone: true
   workflow:
     landing:
       pageConfiguration: *landing
@@ -1045,6 +1074,10 @@ shiba-configuration:
         - pageName: startExpenses
     startExpenses:
       pageConfiguration: *startExpenses
+      nextPages:
+        - pageName: homeExpenses
+    homeExpenses:
+      pageConfiguration: *homeExpenses
       nextPages:
         - pageName: importantToKnow
     ccapJob:

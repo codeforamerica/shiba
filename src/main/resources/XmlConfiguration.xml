@@ -86,6 +86,26 @@
                     <onl:GrossAmount>{{TRIBAL_PAYMENTS_AMOUNT}}</onl:GrossAmount>
                 </onl:UnearnedIncome>
             </onl:UnearnedIncomeInfo>
+            <onl:ExpenseInfo>
+                <onl:HousingExpense>
+                    <onl:Type>{{HOUSING_EXPENSE_TYPE}}</onl:Type>
+                </onl:HousingExpense>
+                <onl:HousingExpense>
+                    <onl:Type>{{HOUSING_EXPENSE_TYPE}}</onl:Type>
+                </onl:HousingExpense>
+                <onl:HousingExpense>
+                    <onl:Type>{{HOUSING_EXPENSE_TYPE}}</onl:Type>
+                </onl:HousingExpense>
+                <onl:HousingExpense>
+                    <onl:Type>{{HOUSING_EXPENSE_TYPE}}</onl:Type>
+                </onl:HousingExpense>
+                <onl:HousingExpense>
+                    <onl:Type>{{HOUSING_EXPENSE_TYPE}}</onl:Type>
+                </onl:HousingExpense>
+                <onl:HousingExpense>
+                    <onl:Type>{{HOUSING_EXPENSE_TYPE}}</onl:Type>
+                </onl:HousingExpense>
+            </onl:ExpenseInfo>
         </onl:HouseholdMember>
         <onl:Program>{{PROGRAM}}</onl:Program>
         <onl:Program>{{PROGRAM}}</onl:Program>
