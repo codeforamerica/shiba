@@ -891,6 +891,10 @@ shiba-configuration:
           validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
           promptMessage:
             promptMessageKey: employers-name.what-is-the-employers-name
+    - &startExpenses
+      name: startExpenses
+      pageTitle:
+        value: startExpenses.title
   workflow:
     landing:
       pageConfiguration: *landing
@@ -1037,6 +1041,10 @@ shiba-configuration:
         - pageName: unearnedIncome
     futureIncome:
       pageConfiguration: *futureIncome
+      nextPages:
+        - pageName: startExpenses
+    startExpenses:
+      pageConfiguration: *startExpenses
       nextPages:
         - pageName: importantToKnow
     ccapJob:
