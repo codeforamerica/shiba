@@ -136,3 +136,5 @@ caf:
       noRealEstateTaxesSelection: REAL_ESTATE_TAXES
       noAssociationFeesSelection: ASSOCIATION_FEES
       noRoomAndBoardSelection: ROOM_AND_BOARD
+    homeExpensesAmount:
+      homeExpensesAmount: HOUSING_EXPENSES

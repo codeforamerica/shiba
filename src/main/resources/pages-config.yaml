@@ -924,6 +924,31 @@ shiba-configuration:
             - value: NONE_OF_THE_ABOVE
               messageKey: general.inputs.none-of-the-above
               isNone: true
+    - &homeExpensesAmount
+      name: homeExpensesAmount
+      pageTitle:
+        value: home-expenses-amount.title
+      headerKey:
+        value: home-expenses-amount.how-much-do-you-pay-for-rent-and-mortgage-every-month
+        conditionalValues:
+          - value: home-expenses-amount.how-much-do-you-pay-for-mortgage-every-month
+            condition:
+              pageName: homeExpenses
+              input: homeExpenses
+              value: RENT
+              matcher: DOES_NOT_CONTAIN
+          - value: home-expenses-amount.how-much-do-you-pay-for-rent-every-month
+            condition:
+              pageName: homeExpenses
+              input: homeExpenses
+              value: MORTGAGE
+              matcher: DOES_NOT_CONTAIN
+      inputs:
+        - name: homeExpensesAmount
+          type: MONEY
+          validator:
+            validation: MONEY
+          validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
   workflow:
     landing:
       pageConfiguration: *landing
@@ -1079,7 +1104,21 @@ shiba-configuration:
     homeExpenses:
       pageConfiguration: *homeExpenses
       nextPages:
+        - pageName: homeExpensesAmount
+          condition:
+            input: homeExpenses
+            value: RENT
+        - pageName: homeExpensesAmount
+          condition:
+            input: homeExpenses
+            value: MORTGAGE
         - pageName: importantToKnow
+    homeExpensesAmount:
+      pageConfiguration: *homeExpensesAmount
+      nextPages:
+        - pageName: importantToKnow
+      datasources:
+        - pageName: homeExpenses
     ccapJob:
       pageConfiguration: *ccapJob
       skipCondition:

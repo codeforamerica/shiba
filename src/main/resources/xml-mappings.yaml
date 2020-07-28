@@ -66,6 +66,8 @@ xml:
       tribalPaymentsAmount: TRIBAL_PAYMENTS_AMOUNT
     homeExpenses:
       homeExpenses: HOUSING_EXPENSE_TYPE
+    homeExpensesAmount:
+      homeExpensesAmount: HOUSING_EXPENSES
   enums:
     true: true
     false: false
