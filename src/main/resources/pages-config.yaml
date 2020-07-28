@@ -877,6 +877,20 @@ shiba-configuration:
           promptMessage:
             promptMessageKey: future-income.is-there-anything-else-youd-like-to-share-about-your-income
           helpMessageKey: general.inputs.optional
+    - &employersName
+      name: employersName
+      pageTitle:
+        value: employers-name.title
+      headerKey:
+        value: employers-name.add-a-job-you-have
+      inputs:
+        - name: employersName
+          type: TEXT
+          validator:
+            validation: NOT_BLANK
+          validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+          promptMessage:
+            promptMessageKey: employers-name.what-is-the-employers-name
   workflow:
     landing:
       pageConfiguration: *landing
@@ -991,8 +1005,12 @@ shiba-configuration:
     incomeByJob:
       pageConfiguration: *incomeByJob
       nextPages:
-        - pageName: incomeUpNext
+        - pageName: employersName
         - pageName: thirtyDayIncome
+    employersName:
+      pageConfiguration: *employersName
+      nextPages:
+        - pageName: incomeUpNext
     thirtyDayIncome:
       pageConfiguration: *thirtyDayIncome
       nextPages:
