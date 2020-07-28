@@ -29,8 +29,8 @@ public class DerivedValueApplicationInputsMapper implements ApplicationInputsMap
 
                                 return new ApplicationInput(
                                         groupName,
-                                        value,
                                         groupEntry.getKey(),
+                                        value,
                                         derivedValue.getType());
                             });
                 })

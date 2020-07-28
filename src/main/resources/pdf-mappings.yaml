@@ -100,7 +100,14 @@ caf:
         RETIREMENT: RETIREMENT
         CHILD_OR_SPOUSAL_SUPPORT: CHILD_OR_SPOUSAL_SUPPORT
         TRIBAL_PAYMENTS: TRIBAL_PAYMENTS
-        NO_UNEARNED_INCOME_SELECTED: NO_UNEARNED_INCOME_SELECTED
+      noSocialSecurity: SOCIAL_SECURITY
+      noSSI: SSI
+      noVeteransBenefits: VETERANS_BENEFITS
+      noUnemployment: UNEMPLOYMENT
+      noWorkersCompensation: WORKERS_COMPENSATION
+      noRetirement: RETIREMENT
+      noChildOrSpousalSupport: CHILD_OR_SPOUSAL_SUPPORT
+      noTribalPayments: TRIBAL_PAYMENTS
     unearnedIncomeSources:
       socialSecurityAmount: SOCIAL_SECURITY_AMOUNT
       supplementalSecurityIncomeAmount: SUPPLEMENTAL_SECURITY_INCOME_AMOUNT

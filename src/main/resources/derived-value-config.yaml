@@ -195,3 +195,84 @@ derived-values:
           - pageName: homeAddress
             input: sameMailingAddress
             value: "true"
+  unearnedIncome:
+    noSocialSecurity:
+      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+        literal: "No"
+      type: ENUMERATED_SINGLE_VALUE
+      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        conditions:
+          - pageName: unearnedIncome
+            input: unearnedIncome
+            matcher: DOES_NOT_CONTAIN
+            value: SOCIAL_SECURITY
+    noSSI:
+      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+        literal: "No"
+      type: ENUMERATED_SINGLE_VALUE
+      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        conditions:
+          - pageName: unearnedIncome
+            input: unearnedIncome
+            matcher: DOES_NOT_CONTAIN
+            value: SSI
+    noVeteransBenefits:
+      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+        literal: "No"
+      type: ENUMERATED_SINGLE_VALUE
+      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        conditions:
+          - pageName: unearnedIncome
+            input: unearnedIncome
+            matcher: DOES_NOT_CONTAIN
+            value: VETERANS_BENEFITS
+    noUnemployment:
+      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+        literal: "No"
+      type: ENUMERATED_SINGLE_VALUE
+      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        conditions:
+          - pageName: unearnedIncome
+            input: unearnedIncome
+            matcher: DOES_NOT_CONTAIN
+            value: UNEMPLOYMENT
+    noWorkersCompensation:
+      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+        literal: "No"
+      type: ENUMERATED_SINGLE_VALUE
+      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        conditions:
+          - pageName: unearnedIncome
+            input: unearnedIncome
+            matcher: DOES_NOT_CONTAIN
+            value: WORKERS_COMPENSATION
+    noRetirement:
+      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+        literal: "No"
+      type: ENUMERATED_SINGLE_VALUE
+      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        conditions:
+          - pageName: unearnedIncome
+            input: unearnedIncome
+            matcher: DOES_NOT_CONTAIN
+            value: RETIREMENT
+    noChildOrSpousalSupport:
+      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+        literal: "No"
+      type: ENUMERATED_SINGLE_VALUE
+      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        conditions:
+          - pageName: unearnedIncome
+            input: unearnedIncome
+            matcher: DOES_NOT_CONTAIN
+            value: CHILD_OR_SPOUSAL_SUPPORT
+    noTribalPayments:
+      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+        literal: "No"
+      type: ENUMERATED_SINGLE_VALUE
+      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        conditions:
+          - pageName: unearnedIncome
+            input: unearnedIncome
+            matcher: DOES_NOT_CONTAIN
+            value: TRIBAL_PAYMENTS

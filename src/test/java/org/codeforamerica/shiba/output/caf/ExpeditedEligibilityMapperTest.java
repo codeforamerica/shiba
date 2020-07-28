@@ -26,8 +26,8 @@ class ExpeditedEligibilityMapperTest {
         assertThat(mapper.map(appData)).containsExactly(
                 new ApplicationInput(
                         "expeditedEligibility",
-                        List.of("ELIGIBLE"),
                         "expeditedEligibility",
+                        List.of("ELIGIBLE"),
                         ApplicationInputType.ENUMERATED_SINGLE_VALUE
                 )
         );
@@ -49,8 +49,8 @@ class ExpeditedEligibilityMapperTest {
         assertThat(result).containsExactly(
                 new ApplicationInput(
                         "expeditedEligibility",
-                        List.of("NOT_ELIGIBLE"),
                         "expeditedEligibility",
+                        List.of("NOT_ELIGIBLE"),
                         ApplicationInputType.ENUMERATED_SINGLE_VALUE
                 )
         );

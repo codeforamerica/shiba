@@ -41,7 +41,7 @@ class OneToOneApplicationInputsMapperTest {
         List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(applicationData);
 
         assertThat(applicationInputs).contains(
-                new ApplicationInput(pageName, input1Value, input1Name, ApplicationInputType.SINGLE_VALUE)
+                new ApplicationInput(pageName, input1Name, input1Value, ApplicationInputType.SINGLE_VALUE)
         );
     }
 
@@ -77,8 +77,8 @@ class OneToOneApplicationInputsMapperTest {
         List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(applicationData);
 
         assertThat(applicationInputs).contains(
-                new ApplicationInput(pageName, input2Value, input2Name, ApplicationInputType.SINGLE_VALUE),
-                new ApplicationInput(pageName, input3Value, input3Name, ApplicationInputType.SINGLE_VALUE)
+                new ApplicationInput(pageName, input2Name, input2Value, ApplicationInputType.SINGLE_VALUE),
+                new ApplicationInput(pageName, input3Name, input3Value, ApplicationInputType.SINGLE_VALUE)
         );
     }
 

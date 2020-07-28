@@ -35,7 +35,7 @@ class XmlGeneratorTest {
 
         String pageName = "some-screen";
         String formInputName = "some-form-input";
-        ApplicationInput applicationInput = new ApplicationInput(pageName, List.of(), formInputName, applicationInputType);
+        ApplicationInput applicationInput = new ApplicationInput(pageName, formInputName, List.of(), applicationInputType);
         List<ApplicationInput> applicationInputs = List.of(applicationInput);
 
         Map<String, String> xmlConfigMap = Map.of(
@@ -87,11 +87,11 @@ class XmlGeneratorTest {
         String pageName = "some-screen";
         String value1 = "some-string-value";
         String formInputName1 = "some-form-input";
-        ApplicationInput applicationInput1 = new ApplicationInput(pageName, List.of(value1), formInputName1, ApplicationInputType.SINGLE_VALUE);
+        ApplicationInput applicationInput1 = new ApplicationInput(pageName, formInputName1, List.of(value1), ApplicationInputType.SINGLE_VALUE);
 
         String value2 = "some-other-string-value";
         String formInputName2 = "some-other-form-input";
-        ApplicationInput applicationInput2 = new ApplicationInput(pageName, List.of(value2), formInputName2, ApplicationInputType.SINGLE_VALUE);
+        ApplicationInput applicationInput2 = new ApplicationInput(pageName, formInputName2, List.of(value2), ApplicationInputType.SINGLE_VALUE);
 
         List<ApplicationInput> applicationInputs = List.of(applicationInput1, applicationInput2);
 
@@ -127,7 +127,7 @@ class XmlGeneratorTest {
         String pageName = "some-screen";
         String formInputValue = "some-value";
         String formInputName = "some-form-input";
-        ApplicationInput applicationInput = new ApplicationInput(pageName, List.of(formInputValue), formInputName, ApplicationInputType.ENUMERATED_MULTI_VALUE);
+        ApplicationInput applicationInput = new ApplicationInput(pageName, formInputName, List.of(formInputValue), ApplicationInputType.ENUMERATED_MULTI_VALUE);
         List<ApplicationInput> applicationInputs = List.of(applicationInput);
 
         Map<String, String> xmlConfigMap = Map.of(
@@ -159,7 +159,7 @@ class XmlGeneratorTest {
         String pageName = "some-screen";
         String formInputValue = "some-value";
         String formInputName = "some-form-input";
-        ApplicationInput applicationInput = new ApplicationInput(pageName, List.of(formInputValue), formInputName, ApplicationInputType.ENUMERATED_MULTI_VALUE);
+        ApplicationInput applicationInput = new ApplicationInput(pageName, formInputName, List.of(formInputValue), ApplicationInputType.ENUMERATED_MULTI_VALUE);
         List<ApplicationInput> applicationInputs = List.of(applicationInput);
 
         Map<String, String> xmlConfigMap = Map.of(
@@ -190,7 +190,7 @@ class XmlGeneratorTest {
         String pageName = "some-screen";
         String formInputValue = "some-value";
         String formInputName = "some-form-input";
-        ApplicationInput applicationInput = new ApplicationInput(pageName, List.of(formInputValue), formInputName, ApplicationInputType.ENUMERATED_MULTI_VALUE);
+        ApplicationInput applicationInput = new ApplicationInput(pageName, formInputName, List.of(formInputValue), ApplicationInputType.ENUMERATED_MULTI_VALUE);
         List<ApplicationInput> applicationInputs = List.of(applicationInput);
 
         Map<String, String> xmlConfigMap = Map.of(
@@ -223,7 +223,7 @@ class XmlGeneratorTest {
         String pageName = "some-screen";
         String formInputValue = "some-value";
         String formInputName = "some-form-input";
-        ApplicationInput applicationInput = new ApplicationInput(pageName, List.of(formInputValue), formInputName, ApplicationInputType.ENUMERATED_SINGLE_VALUE);
+        ApplicationInput applicationInput = new ApplicationInput(pageName, formInputName, List.of(formInputValue), ApplicationInputType.ENUMERATED_SINGLE_VALUE);
         List<ApplicationInput> applicationInputs = List.of(applicationInput);
 
         Map<String, String> xmlConfigMap = Map.of(
@@ -254,7 +254,7 @@ class XmlGeneratorTest {
         String pageName = "some-screen";
         String formInputValue = "some-value";
         String formInputName = "some-form-input";
-        ApplicationInput applicationInput = new ApplicationInput(pageName, List.of(formInputValue), formInputName, ApplicationInputType.ENUMERATED_SINGLE_VALUE);
+        ApplicationInput applicationInput = new ApplicationInput(pageName, formInputName, List.of(formInputValue), ApplicationInputType.ENUMERATED_SINGLE_VALUE);
         List<ApplicationInput> applicationInputs = List.of(applicationInput);
 
         Map<String, String> xmlConfigMap = Map.of(
@@ -286,7 +286,7 @@ class XmlGeneratorTest {
 
         String pageName = "some-screen";
         String formInputName = "some-form-input";
-        ApplicationInput applicationInput = new ApplicationInput(pageName, List.of("02", "20", "1999"), formInputName, ApplicationInputType.DATE_VALUE);
+        ApplicationInput applicationInput = new ApplicationInput(pageName, formInputName, List.of("02", "20", "1999"), ApplicationInputType.DATE_VALUE);
         List<ApplicationInput> applicationInputs = List.of(applicationInput);
 
         Map<String, String> xmlConfigMap = Map.of(

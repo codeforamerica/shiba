@@ -44,8 +44,8 @@ class FileDownLoadControllerTest {
     @Test
     void shouldPassScreensToServiceToGeneratePdfFile() throws Exception {
         when(pdfGenerator.generate(any())).thenReturn(new ApplicationFile("".getBytes(), ""));
-        ApplicationInput applicationInput1 = new ApplicationInput("screen1", List.of("input1Value"), "input 1", ApplicationInputType.SINGLE_VALUE);
-        ApplicationInput applicationInput2 = new ApplicationInput("screen1", List.of("something"), "input 1", ApplicationInputType.SINGLE_VALUE);
+        ApplicationInput applicationInput1 = new ApplicationInput("screen1", "input 1", List.of("input1Value"), ApplicationInputType.SINGLE_VALUE);
+        ApplicationInput applicationInput2 = new ApplicationInput("screen1", "input 1", List.of("something"), ApplicationInputType.SINGLE_VALUE);
         when(mappers.map(data)).thenReturn(List.of(applicationInput1, applicationInput2));
 
         mockMvc.perform(
@@ -78,8 +78,8 @@ class FileDownLoadControllerTest {
         String fileName = "some.xml";
         when(xmlGenerator.generate(any())).thenReturn(new ApplicationFile(fileBytes, fileName));
 
-        ApplicationInput applicationInput1 = new ApplicationInput("screen1", List.of("input1Value"), "input 1", ApplicationInputType.SINGLE_VALUE);
-        ApplicationInput applicationInput2 = new ApplicationInput("screen1", List.of("something"), "input 1", ApplicationInputType.SINGLE_VALUE);
+        ApplicationInput applicationInput1 = new ApplicationInput("screen1", "input 1", List.of("input1Value"), ApplicationInputType.SINGLE_VALUE);
+        ApplicationInput applicationInput2 = new ApplicationInput("screen1", "input 1", List.of("something"), ApplicationInputType.SINGLE_VALUE);
         when(mappers.map(data)).thenReturn(List.of(applicationInput1, applicationInput2));
 
         MvcResult result = mockMvc.perform(

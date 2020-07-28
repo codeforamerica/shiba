@@ -24,7 +24,7 @@ class PdfGeneratorTest {
 
     @Test
     void shouldMapPdfFieldsFromFlattenedScreenInputs() {
-        ApplicationInput input = new ApplicationInput("screen1", List.of("someValue"), "someName", ApplicationInputType.SINGLE_VALUE);
+        ApplicationInput input = new ApplicationInput("screen1", "someName", List.of("someValue"), ApplicationInputType.SINGLE_VALUE);
         pdfGenerator.generate(List.of(input));
 
         verify(pdfFieldMapper).map(List.of(input));

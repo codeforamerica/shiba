@@ -31,8 +31,8 @@ public class OneToOneApplicationInputsMapper implements ApplicationInputsMapper 
                     InputData inputData = data.getPagesData().getPage(entry.getKey()).get(formInput.getName());
                     return new ApplicationInput(
                             entry.getKey(),
-                            inputData.getValue(),
                             formInput.getName(),
+                            inputData.getValue(),
                             formInputTypeToApplicationInputType(formInput.getType()));
                 })
                 .collect(toList());

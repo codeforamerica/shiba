@@ -48,7 +48,7 @@ class DerivedValueApplicationInputsMapperTest {
     void shouldProjectValue() {
         List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
 
-        assertThat(actual).contains(new ApplicationInput("groupName1", List.of("foo"), "value1", ApplicationInputType.SINGLE_VALUE));
+        assertThat(actual).contains(new ApplicationInput("groupName1", "value1", List.of("foo"), ApplicationInputType.SINGLE_VALUE));
     }
 
     @Test
@@ -57,7 +57,7 @@ class DerivedValueApplicationInputsMapperTest {
 
         List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
 
-        assertThat(actual).contains(new ApplicationInput("groupName2", List.of("bar"), "value2", ApplicationInputType.SINGLE_VALUE));
+        assertThat(actual).contains(new ApplicationInput("groupName2", "value2", List.of("bar"), ApplicationInputType.SINGLE_VALUE));
     }
 
     @Test
@@ -66,7 +66,7 @@ class DerivedValueApplicationInputsMapperTest {
 
         List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
 
-        assertThat(actual).contains(new ApplicationInput("groupName3", List.of("baz"), "value3", ApplicationInputType.SINGLE_VALUE));
+        assertThat(actual).contains(new ApplicationInput("groupName3", "value3", List.of("baz"), ApplicationInputType.SINGLE_VALUE));
     }
 
     @Test
@@ -75,19 +75,19 @@ class DerivedValueApplicationInputsMapperTest {
 
         List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
 
-        assertThat(actual).doesNotContain(new ApplicationInput("groupName4", List.of("fooBar"), "value4", ApplicationInputType.SINGLE_VALUE));
+        assertThat(actual).doesNotContain(new ApplicationInput("groupName4", "value4", List.of("fooBar"), ApplicationInputType.SINGLE_VALUE));
 
         pagesData.put("someOtherPage", new PageData(Map.of("someOtherInput", InputData.builder().value(List.of("someOtherValue")).build())));
 
         actual = derivedValueApplicationInputsMapper.map(applicationData);
 
-        assertThat(actual).contains(new ApplicationInput("groupName4", List.of("fooBar"), "value4", ApplicationInputType.SINGLE_VALUE));
+        assertThat(actual).contains(new ApplicationInput("groupName4", "value4", List.of("fooBar"), ApplicationInputType.SINGLE_VALUE));
     }
 
     @Test
     void shouldGetReferencedValueFromPagesData() {
         List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
 
-        assertThat(actual).contains(new ApplicationInput("groupName5", List.of("defaultValue"), "value5", ApplicationInputType.SINGLE_VALUE));
+        assertThat(actual).contains(new ApplicationInput("groupName5", "value5", List.of("defaultValue"), ApplicationInputType.SINGLE_VALUE));
     }
 }
