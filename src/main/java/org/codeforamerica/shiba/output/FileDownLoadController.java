@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output;
 
+import org.codeforamerica.shiba.output.pdf.ApplicationInputsMappers;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -10,32 +11,29 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 public class FileDownLoadController {
     private final ApplicationData data;
     private final PdfGenerator pdfGenerator;
     private final XmlGenerator xmlGenerator;
-    private final List<ApplicationInputsMapper> applicationInputsMappers;
+    private final ApplicationInputsMappers mappers;
 
     public FileDownLoadController(
             ApplicationData data,
             PdfGenerator pdfGenerator,
             XmlGenerator xmlGenerator,
-            List<ApplicationInputsMapper> applicationInputsMappers
+            ApplicationInputsMappers mappers
     ) {
         this.data = data;
         this.pdfGenerator = pdfGenerator;
         this.xmlGenerator = xmlGenerator;
-        this.applicationInputsMappers = applicationInputsMappers;
+        this.mappers = mappers;
     }
 
     @GetMapping("/download")
     ResponseEntity<byte[]> downloadPdf() {
-        List<ApplicationInput> applicationInputs = applicationInputsMappers.stream()
-                .flatMap(mapper -> mapper.map(this.data).stream())
-                .collect(Collectors.toList());
+        List<ApplicationInput> applicationInputs = mappers.map(this.data);
         ApplicationFile applicationFile = pdfGenerator.generate(applicationInputs);
 
         return ResponseEntity.ok()
@@ -46,9 +44,7 @@ public class FileDownLoadController {
 
     @GetMapping("/download-xml")
     ResponseEntity<byte[]> downloadXml() {
-        List<ApplicationInput> applicationInputs = applicationInputsMappers.stream()
-                .flatMap(mapper -> mapper.map(this.data).stream())
-                .collect(Collectors.toList());
+        List<ApplicationInput> applicationInputs = mappers.map(this.data);
         ApplicationFile applicationFile = xmlGenerator.generate(applicationInputs);
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)

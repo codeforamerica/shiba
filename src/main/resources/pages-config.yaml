@@ -559,7 +559,7 @@ shiba-configuration:
             - value: COOKING_FUEL
               messageKey: expedited-utility-payments.cooking-fuel
             - value: NONE_OF_THE_ABOVE
-              messageKey: expedited-utility-payments.none-of-the-above
+              messageKey: general.inputs.none-of-the-above
               isNone: true
     - &migrantFarmWorker
       name: migrantFarmWorker

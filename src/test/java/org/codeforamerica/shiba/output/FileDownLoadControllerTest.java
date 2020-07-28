@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output;
 
+import org.codeforamerica.shiba.output.pdf.ApplicationInputsMappers;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -25,9 +26,7 @@ class FileDownLoadControllerTest {
     XmlGenerator xmlGenerator = mock(XmlGenerator.class);
     ApplicationData data = new ApplicationData();
     PdfGenerator pdfGenerator = mock(PdfGenerator.class);
-    ApplicationInputsMapper mapper1 = mock(ApplicationInputsMapper.class);
-    ApplicationInputsMapper mapper2 = mock(ApplicationInputsMapper.class);
-    List<ApplicationInputsMapper> applicationInputsMappers = List.of(mapper1, mapper2);
+    ApplicationInputsMappers mappers = mock(ApplicationInputsMappers.class);
 
     @BeforeEach
     void setUp() {
@@ -36,7 +35,7 @@ class FileDownLoadControllerTest {
                         data,
                         pdfGenerator,
                         xmlGenerator,
-                        applicationInputsMappers
+                        mappers
                 ))
                 .setViewResolvers(new InternalResourceViewResolver("", "suffix"))
                 .build();
@@ -47,8 +46,7 @@ class FileDownLoadControllerTest {
         when(pdfGenerator.generate(any())).thenReturn(new ApplicationFile("".getBytes(), ""));
         ApplicationInput applicationInput1 = new ApplicationInput("screen1", List.of("input1Value"), "input 1", ApplicationInputType.SINGLE_VALUE);
         ApplicationInput applicationInput2 = new ApplicationInput("screen1", List.of("something"), "input 1", ApplicationInputType.SINGLE_VALUE);
-        when(mapper1.map(data)).thenReturn(List.of(applicationInput1));
-        when(mapper2.map(data)).thenReturn(List.of(applicationInput2));
+        when(mappers.map(data)).thenReturn(List.of(applicationInput1, applicationInput2));
 
         mockMvc.perform(
                 get("/download"))
@@ -82,8 +80,7 @@ class FileDownLoadControllerTest {
 
         ApplicationInput applicationInput1 = new ApplicationInput("screen1", List.of("input1Value"), "input 1", ApplicationInputType.SINGLE_VALUE);
         ApplicationInput applicationInput2 = new ApplicationInput("screen1", List.of("something"), "input 1", ApplicationInputType.SINGLE_VALUE);
-        when(mapper1.map(data)).thenReturn(List.of(applicationInput1));
-        when(mapper2.map(data)).thenReturn(List.of(applicationInput2));
+        when(mappers.map(data)).thenReturn(List.of(applicationInput1, applicationInput2));
 
         MvcResult result = mockMvc.perform(
                 get("/download-xml"))

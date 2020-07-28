@@ -36,6 +36,20 @@ derived-values:
             input: payForUtilities
             matcher: CONTAINS
             value: COOLING
+    noHeatingOrCoolingSelection:
+      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+        literal: NEITHER_SELECTED
+      type: ENUMERATED_SINGLE_VALUE
+      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        conditions:
+          - pageName: expeditedUtilityPayments
+            input: payForUtilities
+            matcher: DOES_NOT_CONTAIN
+            value: HEATING
+          - pageName: expeditedUtilityPayments
+            input: payForUtilities
+            matcher: DOES_NOT_CONTAIN
+            value: COOLING
     waterOrSewerSelection:
       value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
         literal: ONE_SELECTED
@@ -50,6 +64,60 @@ derived-values:
             input: payForUtilities
             matcher: CONTAINS
             value: SEWER
+    noWaterOrsewerSelection:
+      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+        literal: NEITHER_SELECTED
+      type: ENUMERATED_SINGLE_VALUE
+      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        conditions:
+          - pageName: expeditedUtilityPayments
+            input: payForUtilities
+            matcher: DOES_NOT_CONTAIN
+            value: WATER
+          - pageName: expeditedUtilityPayments
+            input: payForUtilities
+            matcher: DOES_NOT_CONTAIN
+            value: SEWER
+    noElectricitySelection:
+      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+        literal: "No"
+      type: ENUMERATED_SINGLE_VALUE
+      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        conditions:
+          - pageName: expeditedUtilityPayments
+            input: payForUtilities
+            matcher: DOES_NOT_CONTAIN
+            value: ELECTRICITY
+    noGarbageRemovalSelection:
+      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+        literal: "No"
+      type: ENUMERATED_SINGLE_VALUE
+      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        conditions:
+          - pageName: expeditedUtilityPayments
+            input: payForUtilities
+            matcher: DOES_NOT_CONTAIN
+            value: GARBAGE_REMOVAL
+    noCookingFuelSelection:
+      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+        literal: "No"
+      type: ENUMERATED_SINGLE_VALUE
+      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        conditions:
+          - pageName: expeditedUtilityPayments
+            input: payForUtilities
+            matcher: DOES_NOT_CONTAIN
+            value: COOKING_FUEL
+    noPhoneSelection:
+      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+        literal: "No"
+      type: ENUMERATED_SINGLE_VALUE
+      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        conditions:
+          - pageName: expeditedUtilityPayments
+            input: payForUtilities
+            matcher: DOES_NOT_CONTAIN
+            value: PHONE
   goingToSchool:
     ccapHasCostsForChildCare:
       value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
