@@ -132,6 +132,9 @@
                 <onl:Name>{{PAY_FOR_UTILITIES}}</onl:Name>
             </onl:UtilityPaymentsFor>
         </onl:ExpeditedFSInfo>
+        <onl:HouseholdExpenseInfo>
+            <onl:LIHEAPInd>{{RECEIVED_LIHEAP}}</onl:LIHEAPInd>
+        </onl:HouseholdExpenseInfo>
         <onl:MiscellaneousInfo>
             <onl:PrimarySpokenLanguage>{{LANGUAGEPREFERENCES_SPOKENLANGUAGE}}</onl:PrimarySpokenLanguage>
             <onl:PreferredWrittenLanguage>{{LANGUAGEPREFERENCES_WRITTENLANGUAGE}}</onl:PreferredWrittenLanguage>
