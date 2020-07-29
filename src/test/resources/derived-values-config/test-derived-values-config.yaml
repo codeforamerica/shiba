@@ -1,53 +1,53 @@
 test-derived-values:
   groupName1:
     value1:
-      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-        literal: foo
-      type: SINGLE_VALUE
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: foo
+        type: SINGLE_VALUE
   groupName2:
     value2:
-      type: SINGLE_VALUE
-      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-        literal: bar
-      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
-        conditions:
-          - pageName: somePage
-            input: someInput
-            matcher: CONTAINS
-            value: someValue
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: bar
+        type: SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+          conditions:
+            - pageName: somePage
+              input: someInput
+              matcher: CONTAINS
+              value: someValue
   groupName3:
     value3:
-      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-        literal: baz
-      type: SINGLE_VALUE
-      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
-        conditions:
-          - pageName: someOtherPage
-            input: someOtherInput
-            matcher: CONTAINS
-            value: someOtherValue
-          - pageName: somePage
-            input: someInput
-            matcher: CONTAINS
-            value: someValue
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: baz
+        type: SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+          conditions:
+            - pageName: someOtherPage
+              input: someOtherInput
+              matcher: CONTAINS
+              value: someOtherValue
+            - pageName: somePage
+              input: someInput
+              matcher: CONTAINS
+              value: someValue
   groupName4:
     value4:
-      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-        literal: fooBar
-      type: SINGLE_VALUE
-      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
-        conditions:
-          - pageName: someOtherPage
-            input: someOtherInput
-            matcher: CONTAINS
-            value: someOtherValue
-          - pageName: somePage
-            input: someInput
-            matcher: CONTAINS
-            value: someValue
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: fooBar
+        type: SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+          conditions:
+            - pageName: someOtherPage
+              input: someOtherInput
+              matcher: CONTAINS
+              value: someOtherValue
+            - pageName: somePage
+              input: someInput
+              matcher: CONTAINS
+              value: someValue
   groupName5:
     value5:
-      type: SINGLE_VALUE
-      value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
-        pageName: defaultPage
-        inputName: defaultInput
+      - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: defaultPage
+          inputName: defaultInput
+        type: SINGLE_VALUE

@@ -138,3 +138,5 @@ caf:
       noRoomAndBoardSelection: ROOM_AND_BOARD
     homeExpensesAmount:
       homeExpensesAmount: HOUSING_EXPENSES
+    energyAssistanceGroup:
+      energyAssistanceInput: RECEIVED_LIHEAP

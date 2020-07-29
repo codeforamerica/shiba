@@ -1,339 +1,358 @@
 derived-values:
   utilityPayments:
     noExpeditedUtilitiesSelected:
-      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-        literal: NO_EXPEDITED_UTILITIES_SELECTED
-      type: ENUMERATED_MULTI_VALUE
-      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
-        conditions:
-          - pageName: utilityPayments
-            input: payForUtilities
-            matcher: DOES_NOT_CONTAIN
-            value: HEATING
-          - pageName: utilityPayments
-            input: payForUtilities
-            matcher: DOES_NOT_CONTAIN
-            value: COOLING
-          - pageName: utilityPayments
-            input: payForUtilities
-            matcher: DOES_NOT_CONTAIN
-            value: ELECTRICITY
-          - pageName: utilityPayments
-            input: payForUtilities
-            matcher: DOES_NOT_CONTAIN
-            value: PHONE
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: NO_EXPEDITED_UTILITIES_SELECTED
+        type: ENUMERATED_MULTI_VALUE
+        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+          conditions:
+            - pageName: utilityPayments
+              input: payForUtilities
+              matcher: DOES_NOT_CONTAIN
+              value: HEATING
+            - pageName: utilityPayments
+              input: payForUtilities
+              matcher: DOES_NOT_CONTAIN
+              value: COOLING
+            - pageName: utilityPayments
+              input: payForUtilities
+              matcher: DOES_NOT_CONTAIN
+              value: ELECTRICITY
+            - pageName: utilityPayments
+              input: payForUtilities
+              matcher: DOES_NOT_CONTAIN
+              value: PHONE
     heatingOrCoolingSelection:
-      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-        literal: ONE_SELECTED
-      type: ENUMERATED_SINGLE_VALUE
-      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
-        conditions:
-          - pageName: utilityPayments
-            input: payForUtilities
-            matcher: CONTAINS
-            value: HEATING
-          - pageName: utilityPayments
-            input: payForUtilities
-            matcher: CONTAINS
-            value: COOLING
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: ONE_SELECTED
+        type: ENUMERATED_SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+          conditions:
+            - pageName: utilityPayments
+              input: payForUtilities
+              matcher: CONTAINS
+              value: HEATING
+            - pageName: utilityPayments
+              input: payForUtilities
+              matcher: CONTAINS
+              value: COOLING
     noHeatingOrCoolingSelection:
-      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-        literal: NEITHER_SELECTED
-      type: ENUMERATED_SINGLE_VALUE
-      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
-        conditions:
-          - pageName: utilityPayments
-            input: payForUtilities
-            matcher: DOES_NOT_CONTAIN
-            value: HEATING
-          - pageName: utilityPayments
-            input: payForUtilities
-            matcher: DOES_NOT_CONTAIN
-            value: COOLING
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: NEITHER_SELECTED
+        type: ENUMERATED_SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+          conditions:
+            - pageName: utilityPayments
+              input: payForUtilities
+              matcher: DOES_NOT_CONTAIN
+              value: HEATING
+            - pageName: utilityPayments
+              input: payForUtilities
+              matcher: DOES_NOT_CONTAIN
+              value: COOLING
     waterOrSewerSelection:
-      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-        literal: ONE_SELECTED
-      type: ENUMERATED_SINGLE_VALUE
-      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
-        conditions:
-          - pageName: utilityPayments
-            input: payForUtilities
-            matcher: CONTAINS
-            value: WATER
-          - pageName: utilityPayments
-            input: payForUtilities
-            matcher: CONTAINS
-            value: SEWER
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: ONE_SELECTED
+        type: ENUMERATED_SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+          conditions:
+            - pageName: utilityPayments
+              input: payForUtilities
+              matcher: CONTAINS
+              value: WATER
+            - pageName: utilityPayments
+              input: payForUtilities
+              matcher: CONTAINS
+              value: SEWER
     noWaterOrsewerSelection:
-      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-        literal: NEITHER_SELECTED
-      type: ENUMERATED_SINGLE_VALUE
-      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
-        conditions:
-          - pageName: utilityPayments
-            input: payForUtilities
-            matcher: DOES_NOT_CONTAIN
-            value: WATER
-          - pageName: utilityPayments
-            input: payForUtilities
-            matcher: DOES_NOT_CONTAIN
-            value: SEWER
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: NEITHER_SELECTED
+        type: ENUMERATED_SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+          conditions:
+            - pageName: utilityPayments
+              input: payForUtilities
+              matcher: DOES_NOT_CONTAIN
+              value: WATER
+            - pageName: utilityPayments
+              input: payForUtilities
+              matcher: DOES_NOT_CONTAIN
+              value: SEWER
     noElectricitySelection:
-      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-        literal: "No"
-      type: ENUMERATED_SINGLE_VALUE
-      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
-        conditions:
-          - pageName: utilityPayments
-            input: payForUtilities
-            matcher: DOES_NOT_CONTAIN
-            value: ELECTRICITY
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "No"
+        type: ENUMERATED_SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+          conditions:
+            - pageName: utilityPayments
+              input: payForUtilities
+              matcher: DOES_NOT_CONTAIN
+              value: ELECTRICITY
     noGarbageRemovalSelection:
-      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-        literal: "No"
-      type: ENUMERATED_SINGLE_VALUE
-      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
-        conditions:
-          - pageName: utilityPayments
-            input: payForUtilities
-            matcher: DOES_NOT_CONTAIN
-            value: GARBAGE_REMOVAL
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "No"
+        type: ENUMERATED_SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+          conditions:
+            - pageName: utilityPayments
+              input: payForUtilities
+              matcher: DOES_NOT_CONTAIN
+              value: GARBAGE_REMOVAL
     noCookingFuelSelection:
-      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-        literal: "No"
-      type: ENUMERATED_SINGLE_VALUE
-      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
-        conditions:
-          - pageName: utilityPayments
-            input: payForUtilities
-            matcher: DOES_NOT_CONTAIN
-            value: COOKING_FUEL
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "No"
+        type: ENUMERATED_SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+          conditions:
+            - pageName: utilityPayments
+              input: payForUtilities
+              matcher: DOES_NOT_CONTAIN
+              value: COOKING_FUEL
     noPhoneSelection:
-      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-        literal: "No"
-      type: ENUMERATED_SINGLE_VALUE
-      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
-        conditions:
-          - pageName: utilityPayments
-            input: payForUtilities
-            matcher: DOES_NOT_CONTAIN
-            value: PHONE
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "No"
+        type: ENUMERATED_SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+          conditions:
+            - pageName: utilityPayments
+              input: payForUtilities
+              matcher: DOES_NOT_CONTAIN
+              value: PHONE
   goingToSchool:
     ccapHasCostsForChildCare:
-      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-        literal: CCAP_HAS_COSTS_FOR_CHILD_CARE
-      type: ENUMERATED_MULTI_VALUE
-      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
-        conditions:
-          - pageName: goingToSchool
-            input: goingToSchool
-            value: "true"
-          - pageName: choosePrograms
-            input: programs
-            value: CHILD_CARE
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: CCAP_HAS_COSTS_FOR_CHILD_CARE
+        type: ENUMERATED_MULTI_VALUE
+        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+          conditions:
+            - pageName: goingToSchool
+              input: goingToSchool
+              value: "true"
+            - pageName: choosePrograms
+              input: programs
+              value: CHILD_CARE
   ccapJob:
     ccapHasCostsForChildCare:
-      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-        literal: CCAP_HAS_COSTS_FOR_CHILD_CARE
-      type: ENUMERATED_MULTI_VALUE
-      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
-        conditions:
-          - pageName: ccapJob
-            input: currentlyLookingForJob
-            value: "true"
-          - pageName: choosePrograms
-            input: programs
-            value: CHILD_CARE
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: CCAP_HAS_COSTS_FOR_CHILD_CARE
+        type: ENUMERATED_MULTI_VALUE
+        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+          conditions:
+            - pageName: ccapJob
+              input: currentlyLookingForJob
+              value: "true"
+            - pageName: choosePrograms
+              input: programs
+              value: CHILD_CARE
   mailingAddress:
     zipCode:
-      type: SINGLE_VALUE
-      value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
-        pageName: homeAddress
-        inputName: zipCode
-      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
-        conditions:
-          - pageName: homeAddress
-            input: sameMailingAddress
-            value: "true"
+      - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: homeAddress
+          inputName: zipCode
+        type: SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+          conditions:
+            - pageName: homeAddress
+              input: sameMailingAddress
+              value: "true"
     city:
-      type: SINGLE_VALUE
-      value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
-        pageName: homeAddress
-        inputName: city
-      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
-        conditions:
-          - pageName: homeAddress
-            input: sameMailingAddress
-            value: "true"
+      - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: homeAddress
+          inputName: city
+        type: SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+          conditions:
+            - pageName: homeAddress
+              input: sameMailingAddress
+              value: "true"
     state:
-      type: SINGLE_VALUE
-      value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
-        pageName: homeAddress
-        inputName: state
-      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
-        conditions:
-          - pageName: homeAddress
-            input: sameMailingAddress
-            value: "true"
+      - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: homeAddress
+          inputName: state
+        type: SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+          conditions:
+            - pageName: homeAddress
+              input: sameMailingAddress
+              value: "true"
     streetAddress:
-      type: SINGLE_VALUE
-      value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
-        pageName: homeAddress
-        inputName: streetAddress
-      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
-        conditions:
-          - pageName: homeAddress
-            input: sameMailingAddress
-            value: "true"
+      - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: homeAddress
+          inputName: streetAddress
+        type: SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+          conditions:
+            - pageName: homeAddress
+              input: sameMailingAddress
+              value: "true"
     apartmentNumber:
-      type: SINGLE_VALUE
-      value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
-        pageName: homeAddress
-        inputName: apartmentNumber
-      condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
-        conditions:
-          - pageName: homeAddress
-            input: sameMailingAddress
-            value: "true"
+      - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: homeAddress
+          inputName: apartmentNumber
+        type: SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+          conditions:
+            - pageName: homeAddress
+              input: sameMailingAddress
+              value: "true"
   unearnedIncome:
     noSocialSecurity:
-      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-        literal: "No"
-      type: ENUMERATED_SINGLE_VALUE
-      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
-        conditions:
-          - pageName: unearnedIncome
-            input: unearnedIncome
-            matcher: DOES_NOT_CONTAIN
-            value: SOCIAL_SECURITY
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "No"
+        type: ENUMERATED_SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+          conditions:
+            - pageName: unearnedIncome
+              input: unearnedIncome
+              matcher: DOES_NOT_CONTAIN
+              value: SOCIAL_SECURITY
     noSSI:
-      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-        literal: "No"
-      type: ENUMERATED_SINGLE_VALUE
-      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
-        conditions:
-          - pageName: unearnedIncome
-            input: unearnedIncome
-            matcher: DOES_NOT_CONTAIN
-            value: SSI
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "No"
+        type: ENUMERATED_SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+          conditions:
+            - pageName: unearnedIncome
+              input: unearnedIncome
+              matcher: DOES_NOT_CONTAIN
+              value: SSI
     noVeteransBenefits:
-      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-        literal: "No"
-      type: ENUMERATED_SINGLE_VALUE
-      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
-        conditions:
-          - pageName: unearnedIncome
-            input: unearnedIncome
-            matcher: DOES_NOT_CONTAIN
-            value: VETERANS_BENEFITS
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "No"
+        type: ENUMERATED_SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+          conditions:
+            - pageName: unearnedIncome
+              input: unearnedIncome
+              matcher: DOES_NOT_CONTAIN
+              value: VETERANS_BENEFITS
     noUnemployment:
-      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-        literal: "No"
-      type: ENUMERATED_SINGLE_VALUE
-      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
-        conditions:
-          - pageName: unearnedIncome
-            input: unearnedIncome
-            matcher: DOES_NOT_CONTAIN
-            value: UNEMPLOYMENT
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "No"
+        type: ENUMERATED_SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+          conditions:
+            - pageName: unearnedIncome
+              input: unearnedIncome
+              matcher: DOES_NOT_CONTAIN
+              value: UNEMPLOYMENT
     noWorkersCompensation:
-      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-        literal: "No"
-      type: ENUMERATED_SINGLE_VALUE
-      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
-        conditions:
-          - pageName: unearnedIncome
-            input: unearnedIncome
-            matcher: DOES_NOT_CONTAIN
-            value: WORKERS_COMPENSATION
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "No"
+        type: ENUMERATED_SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+          conditions:
+            - pageName: unearnedIncome
+              input: unearnedIncome
+              matcher: DOES_NOT_CONTAIN
+              value: WORKERS_COMPENSATION
     noRetirement:
-      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-        literal: "No"
-      type: ENUMERATED_SINGLE_VALUE
-      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
-        conditions:
-          - pageName: unearnedIncome
-            input: unearnedIncome
-            matcher: DOES_NOT_CONTAIN
-            value: RETIREMENT
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "No"
+        type: ENUMERATED_SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+          conditions:
+            - pageName: unearnedIncome
+              input: unearnedIncome
+              matcher: DOES_NOT_CONTAIN
+              value: RETIREMENT
     noChildOrSpousalSupport:
-      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-        literal: "No"
-      type: ENUMERATED_SINGLE_VALUE
-      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
-        conditions:
-          - pageName: unearnedIncome
-            input: unearnedIncome
-            matcher: DOES_NOT_CONTAIN
-            value: CHILD_OR_SPOUSAL_SUPPORT
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "No"
+        type: ENUMERATED_SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+          conditions:
+            - pageName: unearnedIncome
+              input: unearnedIncome
+              matcher: DOES_NOT_CONTAIN
+              value: CHILD_OR_SPOUSAL_SUPPORT
     noTribalPayments:
-      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-        literal: "No"
-      type: ENUMERATED_SINGLE_VALUE
-      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
-        conditions:
-          - pageName: unearnedIncome
-            input: unearnedIncome
-            matcher: DOES_NOT_CONTAIN
-            value: TRIBAL_PAYMENTS
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "No"
+        type: ENUMERATED_SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+          conditions:
+            - pageName: unearnedIncome
+              input: unearnedIncome
+              matcher: DOES_NOT_CONTAIN
+              value: TRIBAL_PAYMENTS
   homeExpenses:
     noRentSelection:
-      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-        literal: "No"
-      type: ENUMERATED_SINGLE_VALUE
-      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
-        conditions:
-          - pageName: homeExpenses
-            input: homeExpenses
-            matcher: DOES_NOT_CONTAIN
-            value: RENT
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "No"
+        type: ENUMERATED_SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+          conditions:
+            - pageName: homeExpenses
+              input: homeExpenses
+              matcher: DOES_NOT_CONTAIN
+              value: RENT
     noMortgageSelection:
-      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-        literal: "No"
-      type: ENUMERATED_SINGLE_VALUE
-      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
-        conditions:
-          - pageName: homeExpenses
-            input: homeExpenses
-            matcher: DOES_NOT_CONTAIN
-            value: MORTGAGE
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "No"
+        type: ENUMERATED_SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+          conditions:
+            - pageName: homeExpenses
+              input: homeExpenses
+              matcher: DOES_NOT_CONTAIN
+              value: MORTGAGE
     noHomeownersInsuranceSelection:
-      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-        literal: "No"
-      type: ENUMERATED_SINGLE_VALUE
-      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
-        conditions:
-          - pageName: homeExpenses
-            input: homeExpenses
-            matcher: DOES_NOT_CONTAIN
-            value: HOMEOWNERS_INSURANCE
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "No"
+        type: ENUMERATED_SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+          conditions:
+            - pageName: homeExpenses
+              input: homeExpenses
+              matcher: DOES_NOT_CONTAIN
+              value: HOMEOWNERS_INSURANCE
     noRealEstateTaxesSelection:
-      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-        literal: "No"
-      type: ENUMERATED_SINGLE_VALUE
-      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
-        conditions:
-          - pageName: homeExpenses
-            input: homeExpenses
-            matcher: DOES_NOT_CONTAIN
-            value: REAL_ESTATE_TAXES
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "No"
+        type: ENUMERATED_SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+          conditions:
+            - pageName: homeExpenses
+              input: homeExpenses
+              matcher: DOES_NOT_CONTAIN
+              value: REAL_ESTATE_TAXES
     noAssociationFeesSelection:
-      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-        literal: "No"
-      type: ENUMERATED_SINGLE_VALUE
-      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
-        conditions:
-          - pageName: homeExpenses
-            input: homeExpenses
-            matcher: DOES_NOT_CONTAIN
-            value: ASSOCIATION_FEES
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "No"
+        type: ENUMERATED_SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+          conditions:
+            - pageName: homeExpenses
+              input: homeExpenses
+              matcher: DOES_NOT_CONTAIN
+              value: ASSOCIATION_FEES
     noRoomAndBoardSelection:
-      value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-        literal: "No"
-      type: ENUMERATED_SINGLE_VALUE
-      condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
-        conditions:
-          - pageName: homeExpenses
-            input: homeExpenses
-            matcher: DOES_NOT_CONTAIN
-            value: ROOM_AND_BOARD
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "No"
+        type: ENUMERATED_SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+          conditions:
+            - pageName: homeExpenses
+              input: homeExpenses
+              matcher: DOES_NOT_CONTAIN
+              value: ROOM_AND_BOARD
+  energyAssistanceGroup:
+    energyAssistanceInput:
+      - type: ENUMERATED_SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: energyAssistanceMoreThan20
+          inputName: energyAssistanceMoreThan20
+        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+          conditions:
+            - pageName: energyAssistance
+              input: energyAssistance
+              value: "true"
+      - type: ENUMERATED_SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "false"
+        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+          conditions:
+            - pageName: energyAssistance
+              input: energyAssistance
+              value: "false"
