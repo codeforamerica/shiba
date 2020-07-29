@@ -561,6 +561,33 @@ shiba-configuration:
             - value: NONE_OF_THE_ABOVE
               messageKey: general.inputs.none-of-the-above
               isNone: true
+    - &energyAssistance
+      name: energyAssistance
+      pageTitle:
+        value: energy-assistance.title
+      headerKey:
+        value: energy-assistance.have-you-received-money-for-energy-assistance
+      inputs:
+        - name: energyAssistance
+          type: YES_NO
+    - &energyAssistanceMoreThan20
+      name: energyAssistanceMoreThan20
+      pageTitle:
+        value: energy-assistance-more-than-20.title
+      headerKey:
+        value: energy-assistance-more-than-20.have-you-received-more-than-20-in-energy-assistance
+      inputs:
+        - name: energyAssistanceMoreThan20
+          type: YES_NO
+    - &supportAndCare
+      name: supportAndCare
+      pageTitle:
+        value: support-and-care.title
+      headerKey:
+        value: support-and-care.do-you-pay-for-court-ordered-child-support-spousal-support
+      inputs:
+        - name: supportAndCare
+          type: YES_NO
     - &migrantFarmWorker
       name: migrantFarmWorker
       pageTitle:
@@ -1122,9 +1149,34 @@ shiba-configuration:
     utilities:
       pageConfiguration: *utilityPayments
       nextPages:
-        - pageName: importantToKnow
+        - pageName: energyAssistance
       datasources:
         - pageName: doYouLiveAlone
+    energyAssistance:
+      pageConfiguration: *energyAssistance
+      nextPages:
+        - pageName: supportAndCare
+          condition:
+            input: energyAssistance
+            value: "false"
+        - pageName: energyAssistanceMoreThan20
+          condition:
+            input: energyAssistance
+            value: "true"
+    energyAssistanceMoreThan20:
+      pageConfiguration: *energyAssistanceMoreThan20
+      skipCondition:
+        pageName: energyAssistance
+        input: energyAssistance
+        value: "false"
+      nextPages:
+        - pageName: supportAndCare
+      datasources:
+        - pageName: energyAssistance
+    supportAndCare:
+      pageConfiguration: *supportAndCare
+      nextPages:
+        - pageName: importantToKnow
     ccapJob:
       pageConfiguration: *ccapJob
       skipCondition:

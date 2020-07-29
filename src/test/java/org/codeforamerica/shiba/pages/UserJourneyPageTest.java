@@ -184,7 +184,10 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         homeExpensesAmount.enterInput("homeExpensesAmount", "123321");
         Page utilities = homeExpensesAmount.clickPrimaryButton();
         utilities.selectEnumeratedInput("payForUtilities", "Heating");
-        Page importantToKnow = utilities.clickPrimaryButton();
+        Page energyAssistance = utilities.clickPrimaryButton();
+        Page energyAssistanceMoreThan20 = energyAssistance.choose(YES);
+        Page supportAndCare = energyAssistanceMoreThan20.choose(YES);
+        Page importantToKnow = supportAndCare.choose(YES);
         Page legalStuff = importantToKnow.clickPrimaryButton();
         legalStuff.selectEnumeratedInput("agreeToTerms", "I agree");
         Page signThisApplicationPage = legalStuff.clickPrimaryButton();
