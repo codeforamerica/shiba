@@ -140,3 +140,5 @@ caf:
       homeExpensesAmount: HOUSING_EXPENSES
     energyAssistanceGroup:
       energyAssistanceInput: RECEIVED_LIHEAP
+    supportAndCare:
+      supportAndCare: SUPPORT_AND_CARE
