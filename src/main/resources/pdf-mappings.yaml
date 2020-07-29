@@ -46,7 +46,7 @@ caf:
       liquidAssets: LIQUID_ASSETS
     expeditedExpensesAmount:
       expeditedExpensesAmount: HOUSING_EXPENSES
-    expeditedUtilityPayments:
+    utilityPayments:
       payForUtilities:
         HEATING: HEAT
         COOLING: AIR_CONDITIONING

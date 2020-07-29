@@ -1,17 +1,19 @@
 shiba-configuration-reset-data:
   pageDefinitions:
     - &firstPage
-        pageTitle:
-          value: first-page-title
-        inputs:
-          - name: someTextInput
-            type: TEXT
+      name: firstPage
+      pageTitle:
+        value: first-page-title
+      inputs:
+        - name: someTextInput
+          type: TEXT
     - &secondPage
-        pageTitle:
-          value: second-page-title
-        inputs:
-          - name: foo
-            type: TEXT
+      name: secondPage
+      pageTitle:
+        value: second-page-title
+      inputs:
+        - name: foo
+          type: TEXT
   workflow:
     firstPage:
       pageConfiguration: *firstPage

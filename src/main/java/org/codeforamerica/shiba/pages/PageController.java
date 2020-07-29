@@ -112,7 +112,7 @@ public class PageController {
                     .ifPresent(inputMap -> model.put("data", inputMap));
         } else {
             pageToRender = "formPage";
-            model.put("data", pagesData.getPageDataOrDefault(pageName, pageConfiguration));
+            model.put("data", pagesData.getPageDataOrDefault(pageTemplate.getName(), pageConfiguration));
         }
         return new ModelAndView(pageToRender, model);
     }

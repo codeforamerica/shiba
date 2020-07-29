@@ -13,5 +13,5 @@ expedited-eligibility:
     inputName: expeditedExpensesAmount
     defaultValue: 0
   utilityExpensesSelections:
-    pageName: expeditedUtilityPayments
+    pageName: utilityPayments
     inputName: payForUtilities

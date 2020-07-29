@@ -1,24 +1,24 @@
 derived-values:
-  expeditedUtilityPayments:
+  utilityPayments:
     noExpeditedUtilitiesSelected:
       value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
         literal: NO_EXPEDITED_UTILITIES_SELECTED
       type: ENUMERATED_MULTI_VALUE
       condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
         conditions:
-          - pageName: expeditedUtilityPayments
+          - pageName: utilityPayments
             input: payForUtilities
             matcher: DOES_NOT_CONTAIN
             value: HEATING
-          - pageName: expeditedUtilityPayments
+          - pageName: utilityPayments
             input: payForUtilities
             matcher: DOES_NOT_CONTAIN
             value: COOLING
-          - pageName: expeditedUtilityPayments
+          - pageName: utilityPayments
             input: payForUtilities
             matcher: DOES_NOT_CONTAIN
             value: ELECTRICITY
-          - pageName: expeditedUtilityPayments
+          - pageName: utilityPayments
             input: payForUtilities
             matcher: DOES_NOT_CONTAIN
             value: PHONE
@@ -28,11 +28,11 @@ derived-values:
       type: ENUMERATED_SINGLE_VALUE
       condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
         conditions:
-          - pageName: expeditedUtilityPayments
+          - pageName: utilityPayments
             input: payForUtilities
             matcher: CONTAINS
             value: HEATING
-          - pageName: expeditedUtilityPayments
+          - pageName: utilityPayments
             input: payForUtilities
             matcher: CONTAINS
             value: COOLING
@@ -42,11 +42,11 @@ derived-values:
       type: ENUMERATED_SINGLE_VALUE
       condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
         conditions:
-          - pageName: expeditedUtilityPayments
+          - pageName: utilityPayments
             input: payForUtilities
             matcher: DOES_NOT_CONTAIN
             value: HEATING
-          - pageName: expeditedUtilityPayments
+          - pageName: utilityPayments
             input: payForUtilities
             matcher: DOES_NOT_CONTAIN
             value: COOLING
@@ -56,11 +56,11 @@ derived-values:
       type: ENUMERATED_SINGLE_VALUE
       condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
         conditions:
-          - pageName: expeditedUtilityPayments
+          - pageName: utilityPayments
             input: payForUtilities
             matcher: CONTAINS
             value: WATER
-          - pageName: expeditedUtilityPayments
+          - pageName: utilityPayments
             input: payForUtilities
             matcher: CONTAINS
             value: SEWER
@@ -70,11 +70,11 @@ derived-values:
       type: ENUMERATED_SINGLE_VALUE
       condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
         conditions:
-          - pageName: expeditedUtilityPayments
+          - pageName: utilityPayments
             input: payForUtilities
             matcher: DOES_NOT_CONTAIN
             value: WATER
-          - pageName: expeditedUtilityPayments
+          - pageName: utilityPayments
             input: payForUtilities
             matcher: DOES_NOT_CONTAIN
             value: SEWER
@@ -84,7 +84,7 @@ derived-values:
       type: ENUMERATED_SINGLE_VALUE
       condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
         conditions:
-          - pageName: expeditedUtilityPayments
+          - pageName: utilityPayments
             input: payForUtilities
             matcher: DOES_NOT_CONTAIN
             value: ELECTRICITY
@@ -94,7 +94,7 @@ derived-values:
       type: ENUMERATED_SINGLE_VALUE
       condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
         conditions:
-          - pageName: expeditedUtilityPayments
+          - pageName: utilityPayments
             input: payForUtilities
             matcher: DOES_NOT_CONTAIN
             value: GARBAGE_REMOVAL
@@ -104,7 +104,7 @@ derived-values:
       type: ENUMERATED_SINGLE_VALUE
       condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
         conditions:
-          - pageName: expeditedUtilityPayments
+          - pageName: utilityPayments
             input: payForUtilities
             matcher: DOES_NOT_CONTAIN
             value: COOKING_FUEL
@@ -114,7 +114,7 @@ derived-values:
       type: ENUMERATED_SINGLE_VALUE
       condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
         conditions:
-          - pageName: expeditedUtilityPayments
+          - pageName: utilityPayments
             input: payForUtilities
             matcher: DOES_NOT_CONTAIN
             value: PHONE

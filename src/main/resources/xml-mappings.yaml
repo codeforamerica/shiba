@@ -36,7 +36,7 @@ xml:
       liquidAssets: LIQUID_ASSETS
     expeditedExpensesAmount:
       expeditedExpensesAmount: HOUSING_EXPENSES
-    expeditedUtilityPayments:
+    utilityPayments:
       payForUtilities: PAY_FOR_UTILITIES
       expeditedUtilitiesSummary: PAY_FOR_UTILITIES
     migrantFarmWorker:

@@ -508,33 +508,33 @@ shiba-configuration:
               input: expeditedExpensesAmount
               matcher: NOT_EMPTY
           validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
-    - &expeditedUtilityPayments
-      name: expeditedUtilityPayments
+    - &utilityPayments
+      name: utilityPayments
       pageTitle:
         conditionalValues:
-          - value: expedited-utility-payments.title-one-person
+          - value: utility-payments.title-one-person
             condition:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "true"
-          - value: expedited-utility-payments.title-household
+          - value: utility-payments.title-household
             condition:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "false"
       headerKey:
         conditionalValues:
-          - value: expedited-utility-payments.do-you-pay-for-any-utilities
+          - value: utility-payments.do-you-pay-for-any-utilities
             condition:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "true"
-          - value: expedited-utility-payments.does-anyone-in-your-houshold-pay-for-these-utilities
+          - value: utility-payments.does-anyone-in-your-houshold-pay-for-these-utilities
             condition:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "false"
-      headerHelpMessageKey: expedited-utility-payments.select-all-that-you-are-billed-for-even-if-you-havent-paid-it-this-month
+      headerHelpMessageKey: utility-payments.select-all-that-you-are-billed-for-even-if-you-havent-paid-it-this-month
       inputs:
         - name: payForUtilities
           type: CHECKBOX
@@ -543,21 +543,21 @@ shiba-configuration:
           validationErrorMessageKey: general.validation.make-sure-you-choose-none-of-the-above-or-another-option
           options:
             - value: HEATING
-              messageKey: expedited-utility-payments.heating
+              messageKey: utility-payments.heating
             - value: COOLING
-              messageKey: expedited-utility-payments.cooling
+              messageKey: utility-payments.cooling
             - value: ELECTRICITY
-              messageKey: expedited-utility-payments.electricity
+              messageKey: utility-payments.electricity
             - value: PHONE
-              messageKey: expedited-utility-payments.phone
+              messageKey: utility-payments.phone
             - value: WATER
-              messageKey: expedited-utility-payments.water
+              messageKey: utility-payments.water
             - value: SEWER
-              messageKey: expedited-utility-payments.sewer
+              messageKey: utility-payments.sewer
             - value: GARBAGE_REMOVAL
-              messageKey: expedited-utility-payments.garbage-removal
+              messageKey: utility-payments.garbage-removal
             - value: COOKING_FUEL
-              messageKey: expedited-utility-payments.cooking-fuel
+              messageKey: utility-payments.cooking-fuel
             - value: NONE_OF_THE_ABOVE
               messageKey: general.inputs.none-of-the-above
               isNone: true
@@ -1112,13 +1112,19 @@ shiba-configuration:
           condition:
             input: homeExpenses
             value: MORTGAGE
-        - pageName: importantToKnow
+        - pageName: utilities
     homeExpensesAmount:
       pageConfiguration: *homeExpensesAmount
       nextPages:
-        - pageName: importantToKnow
+        - pageName: utilities
       datasources:
         - pageName: homeExpenses
+    utilities:
+      pageConfiguration: *utilityPayments
+      nextPages:
+        - pageName: importantToKnow
+      datasources:
+        - pageName: doYouLiveAlone
     ccapJob:
       pageConfiguration: *ccapJob
       skipCondition:
@@ -1169,7 +1175,7 @@ shiba-configuration:
         - pageName: doYouLiveAlone
         - pageName: expeditedExpenses
     expeditedUtilityPayments:
-      pageConfiguration: *expeditedUtilityPayments
+      pageConfiguration: *utilityPayments
       nextPages:
         - pageName: expeditedMigrantFarmWorker
       datasources:
