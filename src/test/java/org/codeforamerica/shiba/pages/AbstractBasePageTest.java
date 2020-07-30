@@ -11,14 +11,10 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.springframework.beans.factory.config.CustomScopeConfigurer;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.support.SimpleThreadScope;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,17 +46,6 @@ abstract class AbstractBasePageTest {
             Metrics metrics = new Metrics();
             metrics.setStartTimeOnce(Instant.now());
             return metrics;
-        }
-    }
-
-    @SuppressWarnings("InnerClassMayBeStatic")
-    @TestConfiguration
-    class PageInteractionTestConfiguration {
-        @Bean
-        public CustomScopeConfigurer customScopeConfigurer() {
-            CustomScopeConfigurer configurer = new CustomScopeConfigurer();
-            configurer.addScope(WebApplicationContext.SCOPE_SESSION, new SimpleThreadScope());
-            return configurer;
         }
     }
 
