@@ -3,7 +3,9 @@
 <th:block th:fragment="radio-input (input, data)"
           th:with="inputData=${data.get(input.name)},formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)}"
 >
-    <div class="form-group" th:if="${!input.hasFollowUps()}">
+    <div class="form-group"
+         th:classappend="${!inputData.valid} ? 'form-group--error' : ''"
+         th:if="${!input.hasFollowUps()}">
         <div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${input})"></div>
         <p class="text--help"
            th:if="${input.helpMessageKey != null}"
@@ -16,6 +18,10 @@
                 <span th:text="#{${option.messageKey}}"></span>
             </label>
         </th:block>
+        <p class="text--error" th:if="${!inputData.valid}">
+            <i class="icon-warning"></i>
+            <span th:text="#{${input.validationErrorMessageKey}}"></span>
+        </p>
     </div>
     <div class="question-with-follow-up" th:if="${input.hasFollowUps()}">
         <div class="question-with-follow-up__question">

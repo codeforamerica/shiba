@@ -125,7 +125,7 @@ shiba-configuration:
             condition:
               input: dateOfBirth
               matcher: NOT_EMPTY
-          validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+          validationErrorMessageKey: general.validation.make-sure-to-provide-a-birthday
           promptMessage:
             promptMessageKey: personal-info.when-were-you-born
         - name: ssn
@@ -285,6 +285,9 @@ shiba-configuration:
           promptMessage:
             promptMessageKey: home-address.is-this-the-best-place-for-you-to-receive-mail
           helpMessageKey: home-address.the-county-will-need-a-place-to-send-you-mail-for-the-next-3-months
+          validator:
+            validation: NOT_BLANK
+          validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
           options:
             - value: "true"
               messageKey: home-address.yes-send-mail-here
