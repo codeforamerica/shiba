@@ -70,6 +70,14 @@ xml:
       homeExpensesAmount: HOUSING_EXPENSES
     energyAssistanceGroup:
       energyAssistanceInput: RECEIVED_LIHEAP
+    savings:
+      haveSavings: HAVE_SAVINGS
+    investments:
+      haveInvestments: HAVE_INVESTMENTS
+    vehicle:
+      haveVehicle: HAVE_VEHICLE
+    soldAssets:
+      haveSoldAssets: HAVE_SOLD_ASSETS
   enums:
     true: true
     false: false

@@ -2143,7 +2143,7 @@
 			<xsd:documentation>Asset info</xsd:documentation>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="Type" type="xsd:string" minOccurs="0">
+			<xsd:element name="Type" type="model:LiquidAssetNameType" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>F# 220; see model:LiquidAssetNameType</xsd:documentation>
 				</xsd:annotation>

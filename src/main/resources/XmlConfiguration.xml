@@ -86,6 +86,30 @@
                     <onl:GrossAmount>{{TRIBAL_PAYMENTS_AMOUNT}}</onl:GrossAmount>
                 </onl:UnearnedIncome>
             </onl:UnearnedIncomeInfo>
+            <onl:AssetInfo>
+                <onl:LiquidAsset>
+                    <onl:Type>Savings Account</onl:Type>
+                    <onl:Value>
+                        {{HAVE_SAVINGS}}
+                    </onl:Value>
+                </onl:LiquidAsset>
+                <onl:LiquidAsset>
+                    <onl:Type>Stocks</onl:Type>
+                    <onl:Value>
+                        {{HAVE_INVESTMENTS}}
+                    </onl:Value>
+                </onl:LiquidAsset>
+                <onl:VehicleAsset>
+                    <onl:AssetOtherValue>
+                        {{HAVE_VEHICLE}}
+                    </onl:AssetOtherValue>
+                </onl:VehicleAsset>
+                <onl:TransferInfo>
+                    <onl:Item>
+                        {{HAVE_SOLD_ASSETS}}
+                    </onl:Item>
+                </onl:TransferInfo>
+            </onl:AssetInfo>
             <onl:ExpenseInfo>
                 <onl:HousingExpense>
                     <onl:Type>{{HOUSING_EXPENSE_TYPE}}</onl:Type>

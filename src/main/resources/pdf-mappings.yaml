@@ -142,3 +142,11 @@ caf:
       energyAssistanceInput: RECEIVED_LIHEAP
     supportAndCare:
       supportAndCare: SUPPORT_AND_CARE
+    savings:
+      haveSavings: HAVE_SAVINGS
+    investments:
+      haveInvestments: HAVE_INVESTMENTS
+    vehicle:
+      haveVehicle: HAVE_VEHICLE
+    soldAssets:
+      haveSoldAssets: HAVE_SOLD_ASSETS

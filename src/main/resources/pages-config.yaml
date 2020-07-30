@@ -979,6 +979,55 @@ shiba-configuration:
           validator:
             validation: MONEY
           validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
+    - &savings
+      name: savings
+      pageTitle:
+        value: savings.title
+      headerKey:
+        value: savings.do-you-have-money-in-a-bank-account-or-debit-card
+      inputs:
+        - name: haveSavings
+          type: YES_NO
+    - &savingsAmount
+      name: savingsAmount
+      pageTitle:
+        value: savings-amount.title
+      headerKey:
+        value: savings-amount.how-much-money-do-you-have-available
+      inputs:
+        - name: savingsAmount
+          type: MONEY
+          promptMessage:
+            promptMessageFragmentName: savingsAmountPrompt
+    - &investments
+      name: investments
+      pageTitle:
+        value: investments.title
+      headerKey:
+        value: investments.do-you-have-any-stocks-bonds-or-a-401k
+      inputs:
+        - name: haveInvestments
+          type: YES_NO
+    - &vehicle
+      name: vehicle
+      pageTitle:
+        value: vehicle.title
+      headerKey:
+        value: vehicle.do-you-own-a-vehicle
+      inputs:
+        - name: haveVehicle
+          type: YES_NO
+    - &soldAssets
+      name: soldAssets
+      pageTitle:
+        value: sold-assets.title
+      headerKey:
+        value: sold-assets.in-the-last-12-months-have-you-given-away-or-sold-any-assets
+      inputs:
+        - name: haveSoldAssets
+          type: YES_NO
+          promptMessage:
+            promptMessageFragmentName: soldAssetsPrompt
   workflow:
     landing:
       pageConfiguration: *landing
@@ -1178,6 +1227,33 @@ shiba-configuration:
         - pageName: energyAssistance
     supportAndCare:
       pageConfiguration: *supportAndCare
+      nextPages:
+        - pageName: savings
+    savings:
+      pageConfiguration: *savings
+      nextPages:
+        - pageName: savingsAmount
+    savingsAmount:
+      pageConfiguration: *liquidAssets
+      skipCondition:
+        pageName: savings
+        input: haveSavings
+        value: "false"
+      datasources:
+        - pageName: savings
+        - pageName: doYouLiveAlone
+      nextPages:
+        - pageName: investments
+    investments:
+      pageConfiguration: *investments
+      nextPages:
+        - pageName: vehicle
+    vehicle:
+      pageConfiguration: *vehicle
+      nextPages:
+        - pageName: soldAssets
+    soldAssets:
+      pageConfiguration: *soldAssets
       nextPages:
         - pageName: importantToKnow
     ccapJob:
