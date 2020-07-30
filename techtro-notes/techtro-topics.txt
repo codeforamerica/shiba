@@ -1,0 +1,6 @@
+Ideas for next techtro(s):
+    - Java Streams, Optionals, Lambdas, and other functional concepts [+1]
+        - Input mappers
+        - Derived value
+    - Strategy when approaching refactoring or new features
+        - More on the pages framework - maybe a mock story exercise?

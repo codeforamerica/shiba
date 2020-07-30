@@ -39,8 +39,3 @@ all about "pages"
             - Directed to from the page marked as the "Submit" landmark
             - Captures application metrics - currently just duration to complete application
 
-- Page Tests (HJ, CT)
-    - Basics of round trip form submission tested with InputsPageTest
-    - Uses @SpringBootTest to test against a real, running application
-    - Does not mock any components
-    - Use Selenium webdriver to interact with the pages via a browser

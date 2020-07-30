@@ -1,0 +1,47 @@
+page tests
+
+- All page tests - include User Journey and Feature Page Tests
+    - Uses @SpringBootTest to test against a real, running application
+    - Does not mock any components
+    - Use Selenium webdriver to interact with the pages via a browser
+
+- User Journey Tests
+    - Goal is to make sure user can go through each complete flow, download files (xml/pdf), and view captured metrics
+    - Uses the real pages configuration
+    - generally one test per path
+    - Use a path that is as complete as possible
+    - not much explicit assertions; test procedure checks the elements that we expect are as we expected(visible, interactable)
+    - AbstractBasePageTest
+        - @SpringBootTest
+        - Using webdrivermanager gradle dependency to manage chrome webdriver version (keep driver in sync with host installed version)
+        - Chrome option
+            - headless flag (can be removed to see the webdriver working through the tests) - demo this
+            - setting browser's default download directory to a newly created temporary directory on the host filesystem, so we can assert that the xml and pdf files were downloaded
+        - Utility methods
+            - navigateTo for navigating to a page
+            - takeSnapshot for storing an image of the browser at any point in the test, helpful for debugging while headless
+    - Walk through expedited flow test
+        - Page object
+            - Has behaviors to represent browser interaction with our page framework
+                - Methods for entering input for each input type
+                - Read input values
+                - Go back
+                - Click primary button
+                - Click subtle link
+                - Check for input errors
+        - Certain clicks/selections return a Page, but this is inconsequential to our test. Regardless
+        of return value, the browser will have navigated to a new page. Demo what we mean by this in the context
+        of this test walkthrough.
+
+- Feature Page Tests (HJ, CT)
+    - Goal is test one feature without worrying about other features
+    - Uses a test pages configuration to provide the test setup
+        - PropertySource indicates where test configuration is read from and we replace the "real" pages configuration
+        with what is configured in PropertySource
+    - AbstractStaticMessageSourcePageTest
+        - Extends AbstractBasePageTest
+        - Overrides the production MessageSource bean with a StaticMessageSource which allows messages to be registered programmatically
+        - Messages must be registered with this test MessageSource bean whenever we want to verify that message
+         keys from our page framework resolve against the messages bundle
+    - Walk through inputs page test
+        - Show the relevance of the StaticMessageSource in test setup for shouldShowPromptAndHelpMessagesForInput
