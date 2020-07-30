@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 
 public class SuccessPage extends Page {
     @FindBy(linkText = "Download My Receipt")
@@ -14,6 +15,7 @@ public class SuccessPage extends Page {
 
     public SuccessPage(RemoteWebDriver driver) {
         super(driver);
+        PageFactory.initElements(driver, this);
     }
 
     public void downloadReceipt() {

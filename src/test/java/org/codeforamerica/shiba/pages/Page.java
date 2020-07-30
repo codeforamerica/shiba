@@ -3,7 +3,6 @@ package org.codeforamerica.shiba.pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.PageFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,7 +16,6 @@ public class Page {
 
     public Page(RemoteWebDriver driver) {
         this.driver = driver;
-        PageFactory.initElements(driver, this);
     }
 
     public Page clickSubtleLink() {
