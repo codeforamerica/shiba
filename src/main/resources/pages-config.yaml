@@ -1028,6 +1028,10 @@ shiba-configuration:
           type: YES_NO
           promptMessage:
             promptMessageFragmentName: soldAssetsPrompt
+    - &submittingApplication
+      name: submittingApplication
+      pageTitle:
+        value: submitting-application.title
   workflow:
     landing:
       pageConfiguration: *landing
@@ -1254,6 +1258,10 @@ shiba-configuration:
         - pageName: soldAssets
     soldAssets:
       pageConfiguration: *soldAssets
+      nextPages:
+        - pageName: submittingApplication
+    submittingApplication:
+      pageConfiguration: *submittingApplication
       nextPages:
         - pageName: importantToKnow
     ccapJob:

@@ -188,12 +188,13 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         Page energyAssistanceMoreThan20 = energyAssistance.choose(YES);
         Page supportAndCare = energyAssistanceMoreThan20.choose(YES);
         Page savings = supportAndCare.choose(YES);
-        Page liquidAssets = savings.choose(YES);
-        liquidAssets.enterInput("liquidAssets", "1");
-        Page investment = liquidAssets.clickPrimaryButton();
-        Page vehicle = investment.choose(YES);
+        Page savingsAmount = savings.choose(YES);
+        savingsAmount.enterInput("liquidAssets", "1234");
+        Page investments = savingsAmount.clickPrimaryButton();
+        Page vehicle = investments.choose(NO);
         Page soldAssets = vehicle.choose(YES);
-        Page importantToKnow = soldAssets.choose(YES);
+        Page submittingApplication = soldAssets.choose(NO);
+        Page importantToKnow = submittingApplication.clickPrimaryButton();
         Page legalStuff = importantToKnow.clickPrimaryButton();
         legalStuff.selectEnumeratedInput("agreeToTerms", "I agree");
         Page signThisApplicationPage = legalStuff.clickPrimaryButton();

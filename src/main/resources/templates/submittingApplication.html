@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
+<body>
+<div class="page-wrapper">
+    <section class="slab slab--shiba">
+        <div class="grid">
+            <a th:replace="fragments/go-back"></a>
+            <div class="card spacing-above-35">
+                <div class="grid__item spacing-above-35">
+                    <p class="text--help text--centered spacing-below-10"
+                       th:text="#{general.step-five-of-five}"></p>
+                    <h2 class="text--centered spacing-below-35 spacing-above-0"
+                        th:text="#{submitting-application.submitting-your-application}"></h2>
+                </div>
+                <div class="grid__item intro-box spacing-below-60">
+                    <h3 class="text--centered spacing-below-0" th:text="#{submitting-application.before-you-submit}"></h3>
+                    <h3 class="text--centered spacing-below-10 spacing-above-0" th:text="#{submitting-application.well-ask-about}"></h3>
+                    <ol class="list--numbered spacing-above-10">
+                        <li th:text="#{submitting-application.registering-to-vote}"></li>
+                        <li th:text="#{submitting-application.getting-help-with-benefits}"></li>
+                        <li th:text="#{submitting-application.agreeing-to-terms}"></li>
+                    </ol>
+                </div>
+                <div class="text--centered">
+                    <div th:replace="fragments/continue"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<div th:replace="fragments/footer"></div>
+</body>
+</html>
