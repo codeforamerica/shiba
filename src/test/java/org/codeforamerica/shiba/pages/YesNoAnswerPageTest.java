@@ -44,10 +44,4 @@ public class YesNoAnswerPageTest extends AbstractStaticMessageSourcePageTest {
         assertThat(testPage.findElementTextByName("yesOrNo")).isEqualTo("true");
     }
 
-    @Test
-    void shouldNotDisplayContinueButton() {
-        driver.navigate().to(baseUrl + "/pages/yesNoQuestionPage");
-
-        assertThat(driver.findElements(By.className("button--primary"))).isEmpty();
-    }
 }

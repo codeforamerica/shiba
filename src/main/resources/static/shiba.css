@@ -171,3 +171,7 @@
     padding-left: 3rem;
     padding-right: 3rem;
 }
+
+.vertical-button-group .button {
+    margin-left: 0;
+}

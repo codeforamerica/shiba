@@ -95,7 +95,8 @@ public class PagesData extends HashMap<String, PageData> {
                 resolve(pageWorkflowConfiguration, pageConfiguration.getPageTitle()),
                 resolve(pageWorkflowConfiguration, pageConfiguration.getHeaderKey()),
                 pageConfiguration.getHeaderHelpMessageKey(),
-                pageConfiguration.getPrimaryButtonTextKey()
+                pageConfiguration.getPrimaryButtonTextKey(),
+                pageConfiguration.getHasPrimaryButton()
         );
     }
 
@@ -103,6 +104,7 @@ public class PagesData extends HashMap<String, PageData> {
         return new FormInputTemplate(
                 formInput.getType(),
                 formInput.getName(),
+                formInput.getCustomInputFragment(),
                 formInput.getPromptMessage(),
                 formInput.getHelpMessageKey(),
                 formInput.getValidationErrorMessageKey(),

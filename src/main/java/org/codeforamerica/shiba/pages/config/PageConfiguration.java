@@ -14,6 +14,7 @@ public class PageConfiguration {
     private Value headerKey;
     private String headerHelpMessageKey;
     private String primaryButtonTextKey = "general.continue";
+    private Boolean hasPrimaryButton = true;
 
     public List<FormInput> getFlattenedInputs() {
         return this.inputs.stream()

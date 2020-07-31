@@ -150,3 +150,5 @@ caf:
       haveVehicle: HAVE_VEHICLE
     soldAssets:
       haveSoldAssets: HAVE_SOLD_ASSETS
+    registerToVote:
+      registerToVoteSelection: REGISTER_TO_VOTE

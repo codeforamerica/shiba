@@ -204,4 +204,11 @@ public class InputsPageTest extends AbstractStaticMessageSourcePageTest {
 
         assertThat(testPage.getCheckboxValues("checkboxInput")).containsOnly(checkboxOption1);
     }
+
+    @Test
+    void shouldNotDisplayPrimaryButtonWhenHasPrimaryButtonIsFalse () {
+        navigateTo("doNotHavePrimaryButtonPage");
+
+        assertThat(driver.findElements(By.className("button--primary"))).isEmpty();
+    }
 }

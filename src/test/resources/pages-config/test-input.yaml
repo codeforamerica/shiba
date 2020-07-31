@@ -77,6 +77,14 @@ shiba-configuration-input:
             type: MONEY
             promptMessage:
               promptMessageFragmentName: promptFragment
+    - &doNotHavePrimaryButtonPage
+      name: doNotHavePrimaryButtonPage
+      pageTitle:
+        value: dummy-page-title
+      inputs:
+        - name: foo
+          type: TEXT
+      hasPrimaryButton: false
   workflow:
     firstPage:
       pageConfiguration: *firstPage
@@ -86,5 +94,7 @@ shiba-configuration-input:
       pageConfiguration: *nextPage
     inputWithPromptFragmentPage:
       pageConfiguration: *inputWithPromptFragmentPage
+    doNotHavePrimaryButtonPage:
+      pageConfiguration: *doNotHavePrimaryButtonPage
   landmarkPages:
     startTimerPage:

@@ -1,7 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
 import lombok.Value;
-import org.codeforamerica.shiba.pages.config.FormInputType;
 
 import java.util.List;
 
@@ -13,15 +12,10 @@ public class PageTemplate {
     String headerKey;
     String headerHelpMessageKey;
     String primaryButtonTextKey;
+    Boolean hasPrimaryButton;
 
     @SuppressWarnings("unused")
     public boolean hasHeader() {
         return !this.headerKey.isBlank();
     }
-
-    @SuppressWarnings("unused")
-    public boolean displayContinueButton() {
-        return this.inputs.stream().noneMatch(input -> input.getType().equals(FormInputType.YES_NO));
-    }
-
 }

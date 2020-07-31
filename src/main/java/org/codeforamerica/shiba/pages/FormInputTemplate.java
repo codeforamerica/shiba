@@ -11,6 +11,7 @@ import java.util.List;
 public class FormInputTemplate {
     FormInputType type;
     String name;
+    String customInputFragment;
     PromptMessage promptMessage;
     String helpMessageKey;
     String validationErrorMessageKey;
@@ -30,6 +31,7 @@ public class FormInputTemplate {
             case CHECKBOX -> "checkbox-input";
             case YES_NO -> "yes-no-input";
             case INCREMENTER -> "incrementer-input";
+            case CUSTOM -> customInputFragment;
         };
     }
 

@@ -356,3 +356,29 @@ derived-values:
             - pageName: energyAssistance
               input: energyAssistance
               value: "false"
+  registerToVote:
+    registerToVoteSelection:
+      - type: ENUMERATED_SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "true"
+        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+          conditions:
+            - pageName: registerToVote
+              input: registerToVote
+              value: "YES"
+      - type: ENUMERATED_SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "false"
+        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+          conditions:
+            - pageName: registerToVote
+              input: registerToVote
+              value: "NO_ALREADY_REGISTERED"
+      - type: ENUMERATED_SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "false"
+        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+          conditions:
+            - pageName: registerToVote
+              input: registerToVote
+              value: "NO"

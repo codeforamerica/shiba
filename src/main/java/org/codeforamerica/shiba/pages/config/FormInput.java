@@ -10,6 +10,7 @@ import java.util.List;
 public class FormInput {
     private FormInputType type;
     private String name;
+    private String customInputFragment;
     private PromptMessage promptMessage;
     private String helpMessageKey;
     private String validationErrorMessageKey;

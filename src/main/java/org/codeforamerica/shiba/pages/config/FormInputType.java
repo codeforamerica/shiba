@@ -10,5 +10,6 @@ public enum FormInputType {
     YES_NO,
     MONEY,
     INCREMENTER,
-    TEXTAREA
+    TEXTAREA,
+    CUSTOM
 }

@@ -345,6 +345,7 @@ shiba-configuration:
         value: do-you-live-alone.do-you-live-alone
       pageTitle:
         value: do-you-live-alone.title
+      hasPrimaryButton: false
       inputs:
         - name: liveAlone
           type: YES_NO
@@ -358,6 +359,7 @@ shiba-configuration:
         value: going-to-school.title
       headerKey:
         value: going-to-school.header
+      hasPrimaryButton: false
       inputs:
         - name: goingToSchool
           type: YES_NO
@@ -367,6 +369,7 @@ shiba-configuration:
         value: pregnant.title
       headerKey:
         value: pregnant.are-you-pregnant
+      hasPrimaryButton: false
       inputs:
         - name: isPregnant
           type: YES_NO
@@ -473,6 +476,7 @@ shiba-configuration:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "false"
+            hasPrimaryButton: false
       inputs:
         - name: payRentOrMortgage
           type: YES_NO
@@ -570,6 +574,7 @@ shiba-configuration:
         value: energy-assistance.title
       headerKey:
         value: energy-assistance.have-you-received-money-for-energy-assistance
+      hasPrimaryButton: false
       inputs:
         - name: energyAssistance
           type: YES_NO
@@ -579,6 +584,7 @@ shiba-configuration:
         value: energy-assistance-more-than-20.title
       headerKey:
         value: energy-assistance-more-than-20.have-you-received-more-than-20-in-energy-assistance
+      hasPrimaryButton: false
       inputs:
         - name: energyAssistanceMoreThan20
           type: YES_NO
@@ -588,6 +594,7 @@ shiba-configuration:
         value: support-and-care.title
       headerKey:
         value: support-and-care.do-you-pay-for-court-ordered-child-support-spousal-support
+      hasPrimaryButton: false
       inputs:
         - name: supportAndCare
           type: YES_NO
@@ -617,6 +624,7 @@ shiba-configuration:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "false"
+      hasPrimaryButton: false
       inputs:
         - name: migrantOrSeasonalFarmWorker
           type: YES_NO
@@ -671,6 +679,7 @@ shiba-configuration:
       headerKey:
         value: us-citizen.are-you-a-us-citizen
       headerHelpMessageKey: us-citizen.most-immigrants-are-still-eligible-for-food-and-cash-benefits
+      hasPrimaryButton: false
       inputs:
         - name: isUsCitizen
           type: YES_NO
@@ -680,6 +689,7 @@ shiba-configuration:
         value: disability.title
       headerKey:
         value: disability.do-you-have-a-physical-or-mental-disability-that-prevents-you-from-working
+      hasPrimaryButton: false
       inputs:
         - name: hasDisability
           type: YES_NO
@@ -689,6 +699,7 @@ shiba-configuration:
         value: work-situation.title
       headerKey:
         value: work-situation.in-the-last-2-months-did-you-do-any-of-these-things
+      hasPrimaryButton: false
       inputs:
         - name: hasWorkSituation
           type: YES_NO
@@ -704,6 +715,7 @@ shiba-configuration:
         value: employment-status.title
       headerKey:
         value: employment-status.are-you-currently-working-or-making-an-income
+      hasPrimaryButton: false
       inputs:
         - name: areYouWorking
           type: YES_NO
@@ -723,6 +735,7 @@ shiba-configuration:
         value: ccap-job.title
       headerKey:
         value: ccap-job.are-you-currently-looking-for-a-job
+      hasPrimaryButton: false
       inputs:
         - name: currentlyLookingForJob
           type: YES_NO
@@ -985,26 +998,17 @@ shiba-configuration:
         value: savings.title
       headerKey:
         value: savings.do-you-have-money-in-a-bank-account-or-debit-card
+      hasPrimaryButton: false
       inputs:
         - name: haveSavings
           type: YES_NO
-    - &savingsAmount
-      name: savingsAmount
-      pageTitle:
-        value: savings-amount.title
-      headerKey:
-        value: savings-amount.how-much-money-do-you-have-available
-      inputs:
-        - name: savingsAmount
-          type: MONEY
-          promptMessage:
-            promptMessageFragmentName: savingsAmountPrompt
     - &investments
       name: investments
       pageTitle:
         value: investments.title
       headerKey:
         value: investments.do-you-have-any-stocks-bonds-or-a-401k
+      hasPrimaryButton: false
       inputs:
         - name: haveInvestments
           type: YES_NO
@@ -1014,6 +1018,7 @@ shiba-configuration:
         value: vehicle.title
       headerKey:
         value: vehicle.do-you-own-a-vehicle
+      hasPrimaryButton: false
       inputs:
         - name: haveVehicle
           type: YES_NO
@@ -1023,6 +1028,7 @@ shiba-configuration:
         value: sold-assets.title
       headerKey:
         value: sold-assets.in-the-last-12-months-have-you-given-away-or-sold-any-assets
+      hasPrimaryButton: false
       inputs:
         - name: haveSoldAssets
           type: YES_NO
@@ -1032,6 +1038,26 @@ shiba-configuration:
       name: submittingApplication
       pageTitle:
         value: submitting-application.title
+    - &registerToVote
+      name: registerToVote
+      headerKey:
+        value: register-to-vote.do-you-want-to-register-to-vote
+      inputs:
+        - name: registerToVote
+          promptMessage:
+            promptMessageFragmentName: registerToVotePrompt
+          type: CUSTOM
+          customInputFragment: registerToVoteInput
+          options:
+            - value: "YES"
+              messageKey: register-to-vote.yes-send-me-more-info
+            - value: NO_ALREADY_REGISTERED
+              messageKey: register-to-vote.ive-already-registered
+            - value: "NO"
+              messageKey: register-to-vote.no-thanks
+      pageTitle:
+        value: register-to-vote.title
+      hasPrimaryButton: false
   workflow:
     landing:
       pageConfiguration: *landing
@@ -1262,6 +1288,10 @@ shiba-configuration:
         - pageName: submittingApplication
     submittingApplication:
       pageConfiguration: *submittingApplication
+      nextPages:
+        - pageName: registerToVote
+    registerToVote:
+      pageConfiguration: *registerToVote
       nextPages:
         - pageName: importantToKnow
     ccapJob:
