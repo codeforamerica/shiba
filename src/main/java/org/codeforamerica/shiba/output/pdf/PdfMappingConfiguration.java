@@ -24,7 +24,7 @@ public class PdfMappingConfiguration {
     public PdfFieldMapper pdfFieldMapper(Map<String, String> pdfFieldMap) {
         return new PdfFieldMapper(
                 pdfFieldMap,
-                Set.of(),
-                Set.of("isHomeless"));
+                Set.of()
+        );
     }
 }

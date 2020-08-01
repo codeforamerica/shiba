@@ -33,8 +33,8 @@ class DerivedValueApplicationInputsMapperTest {
     static class TestPageConfiguration {
         @Bean
         @ConfigurationProperties(prefix = "test-derived-values")
-        public DerivedValuesConfiguration derivedValuesConfiguration() {
-            return new DerivedValuesConfiguration();
+        public PotentialDerivedValuesConfiguration derivedValuesConfiguration() {
+            return new PotentialDerivedValuesConfiguration();
         }
     }
 

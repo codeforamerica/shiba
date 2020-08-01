@@ -278,7 +278,7 @@ shiba-configuration:
         - name: isHomeless
           type: CHECKBOX
           options:
-            - value: homeless
+            - value: "true"
               messageKey: home-address.im-homeless-right-now
         - name: sameMailingAddress
           type: RADIO

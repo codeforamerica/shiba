@@ -1,6 +1,7 @@
 derived-values:
-  utilityPayments:
-    noExpeditedUtilitiesSelected:
+  - groupName: utilityPayments
+    fieldName: noExpeditedUtilitiesSelected
+    values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: NO_EXPEDITED_UTILITIES_SELECTED
         type: ENUMERATED_MULTI_VALUE
@@ -22,7 +23,9 @@ derived-values:
               input: payForUtilities
               matcher: DOES_NOT_CONTAIN
               value: PHONE
-    heatingOrCoolingSelection:
+  - groupName: utilityPayments
+    fieldName: heatingOrCoolingSelection
+    values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: ONE_SELECTED
         type: ENUMERATED_SINGLE_VALUE
@@ -36,7 +39,9 @@ derived-values:
               input: payForUtilities
               matcher: CONTAINS
               value: COOLING
-    noHeatingOrCoolingSelection:
+  - groupName: utilityPayments
+    fieldName: noHeatingOrCoolingSelection
+    values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: NEITHER_SELECTED
         type: ENUMERATED_SINGLE_VALUE
@@ -50,7 +55,9 @@ derived-values:
               input: payForUtilities
               matcher: DOES_NOT_CONTAIN
               value: COOLING
-    waterOrSewerSelection:
+  - groupName: utilityPayments
+    fieldName: waterOrSewerSelection
+    values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: ONE_SELECTED
         type: ENUMERATED_SINGLE_VALUE
@@ -64,7 +71,9 @@ derived-values:
               input: payForUtilities
               matcher: CONTAINS
               value: SEWER
-    noWaterOrsewerSelection:
+  - groupName: utilityPayments
+    fieldName: noWaterOrsewerSelection
+    values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: NEITHER_SELECTED
         type: ENUMERATED_SINGLE_VALUE
@@ -78,7 +87,9 @@ derived-values:
               input: payForUtilities
               matcher: DOES_NOT_CONTAIN
               value: SEWER
-    noElectricitySelection:
+  - groupName: utilityPayments
+    fieldName: noElectricitySelection
+    values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
@@ -88,7 +99,9 @@ derived-values:
               input: payForUtilities
               matcher: DOES_NOT_CONTAIN
               value: ELECTRICITY
-    noGarbageRemovalSelection:
+  - groupName: utilityPayments
+    fieldName: noGarbageRemovalSelection
+    values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
@@ -98,7 +111,9 @@ derived-values:
               input: payForUtilities
               matcher: DOES_NOT_CONTAIN
               value: GARBAGE_REMOVAL
-    noCookingFuelSelection:
+  - groupName: utilityPayments
+    fieldName: noCookingFuelSelection
+    values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
@@ -108,7 +123,9 @@ derived-values:
               input: payForUtilities
               matcher: DOES_NOT_CONTAIN
               value: COOKING_FUEL
-    noPhoneSelection:
+  - groupName: utilityPayments
+    fieldName: noPhoneSelection
+    values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
@@ -118,8 +135,9 @@ derived-values:
               input: payForUtilities
               matcher: DOES_NOT_CONTAIN
               value: PHONE
-  ccapHasCostsForChildCare:
-    ccapHasCostsForChildCare:
+  - groupName: ccapHasCostsForChildCare
+    fieldName: ccapHasCostsForChildCare
+    values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "true"
         type: ENUMERATED_SINGLE_VALUE
@@ -142,8 +160,9 @@ derived-values:
             - pageName: choosePrograms
               input: programs
               value: CHILD_CARE
-  mailingAddress:
-    zipCode:
+  - groupName: mailingAddress
+    fieldName: zipCode
+    values:
       - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: homeAddress
           inputName: zipCode
@@ -153,7 +172,9 @@ derived-values:
             - pageName: homeAddress
               input: sameMailingAddress
               value: "true"
-    city:
+  - groupName: mailingAddress
+    fieldName: city
+    values:
       - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: homeAddress
           inputName: city
@@ -163,7 +184,9 @@ derived-values:
             - pageName: homeAddress
               input: sameMailingAddress
               value: "true"
-    state:
+  - groupName: mailingAddress
+    fieldName: state
+    values:
       - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: homeAddress
           inputName: state
@@ -173,7 +196,9 @@ derived-values:
             - pageName: homeAddress
               input: sameMailingAddress
               value: "true"
-    streetAddress:
+  - groupName: mailingAddress
+    fieldName: streetAddress
+    values:
       - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: homeAddress
           inputName: streetAddress
@@ -183,7 +208,9 @@ derived-values:
             - pageName: homeAddress
               input: sameMailingAddress
               value: "true"
-    apartmentNumber:
+  - groupName: mailingAddress
+    fieldName: apartmentNumber
+    values:
       - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: homeAddress
           inputName: apartmentNumber
@@ -193,8 +220,9 @@ derived-values:
             - pageName: homeAddress
               input: sameMailingAddress
               value: "true"
-  unearnedIncome:
-    noSocialSecurity:
+  - fieldName: noSocialSecurity
+    groupName: unearnedIncome
+    values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
@@ -204,7 +232,9 @@ derived-values:
               input: unearnedIncome
               matcher: DOES_NOT_CONTAIN
               value: SOCIAL_SECURITY
-    noSSI:
+  - fieldName: noSSI
+    groupName: unearnedIncome
+    values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
@@ -214,7 +244,9 @@ derived-values:
               input: unearnedIncome
               matcher: DOES_NOT_CONTAIN
               value: SSI
-    noVeteransBenefits:
+  - fieldName: noVeteransBenefits
+    groupName: unearnedIncome
+    values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
@@ -224,7 +256,9 @@ derived-values:
               input: unearnedIncome
               matcher: DOES_NOT_CONTAIN
               value: VETERANS_BENEFITS
-    noUnemployment:
+  - fieldName: noUnemployment
+    groupName: unearnedIncome
+    values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
@@ -234,7 +268,9 @@ derived-values:
               input: unearnedIncome
               matcher: DOES_NOT_CONTAIN
               value: UNEMPLOYMENT
-    noWorkersCompensation:
+  - fieldName: noWorkersCompensation
+    groupName: unearnedIncome
+    values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
@@ -244,7 +280,9 @@ derived-values:
               input: unearnedIncome
               matcher: DOES_NOT_CONTAIN
               value: WORKERS_COMPENSATION
-    noRetirement:
+  - fieldName: noRetirement
+    groupName: unearnedIncome
+    values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
@@ -254,7 +292,9 @@ derived-values:
               input: unearnedIncome
               matcher: DOES_NOT_CONTAIN
               value: RETIREMENT
-    noChildOrSpousalSupport:
+  - fieldName: noChildOrSpousalSupport
+    groupName: unearnedIncome
+    values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
@@ -264,7 +304,9 @@ derived-values:
               input: unearnedIncome
               matcher: DOES_NOT_CONTAIN
               value: CHILD_OR_SPOUSAL_SUPPORT
-    noTribalPayments:
+  - fieldName: noTribalPayments
+    groupName: unearnedIncome
+    values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
@@ -274,8 +316,9 @@ derived-values:
               input: unearnedIncome
               matcher: DOES_NOT_CONTAIN
               value: TRIBAL_PAYMENTS
-  homeExpenses:
-    noRentSelection:
+  - fieldName: noRentSelection
+    groupName: homeExpenses
+    values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
@@ -285,7 +328,9 @@ derived-values:
               input: homeExpenses
               matcher: DOES_NOT_CONTAIN
               value: RENT
-    noMortgageSelection:
+  - fieldName: noMortgageSelection
+    groupName: homeExpenses
+    values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
@@ -295,7 +340,9 @@ derived-values:
               input: homeExpenses
               matcher: DOES_NOT_CONTAIN
               value: MORTGAGE
-    noHomeownersInsuranceSelection:
+  - fieldName: noHomeownersInsuranceSelection
+    groupName: homeExpenses
+    values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
@@ -305,7 +352,9 @@ derived-values:
               input: homeExpenses
               matcher: DOES_NOT_CONTAIN
               value: HOMEOWNERS_INSURANCE
-    noRealEstateTaxesSelection:
+  - fieldName: noRealEstateTaxesSelection
+    groupName: homeExpenses
+    values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
@@ -315,7 +364,9 @@ derived-values:
               input: homeExpenses
               matcher: DOES_NOT_CONTAIN
               value: REAL_ESTATE_TAXES
-    noAssociationFeesSelection:
+  - fieldName: noAssociationFeesSelection
+    groupName: homeExpenses
+    values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
@@ -325,7 +376,9 @@ derived-values:
               input: homeExpenses
               matcher: DOES_NOT_CONTAIN
               value: ASSOCIATION_FEES
-    noRoomAndBoardSelection:
+  - fieldName: noRoomAndBoardSelection
+    groupName: homeExpenses
+    values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
@@ -335,8 +388,9 @@ derived-values:
               input: homeExpenses
               matcher: DOES_NOT_CONTAIN
               value: ROOM_AND_BOARD
-  energyAssistanceGroup:
-    energyAssistanceInput:
+  - groupName: energyAssistanceGroup
+    fieldName: energyAssistanceInput
+    values:
       - type: ENUMERATED_SINGLE_VALUE
         value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: energyAssistanceMoreThan20
@@ -354,8 +408,9 @@ derived-values:
             - pageName: energyAssistance
               input: energyAssistance
               value: "false"
-  registerToVote:
-    registerToVoteSelection:
+  - groupName: registerToVote
+    fieldName: registerToVoteSelection
+    values:
       - type: ENUMERATED_SINGLE_VALUE
         value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "true"
@@ -380,3 +435,14 @@ derived-values:
             - pageName: registerToVote
               input: registerToVote
               value: "NO"
+  - groupName: homeAddress
+    fieldName: isHomelessIndicator
+    values:
+      - type: SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "homeless"
+        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+          conditions:
+            - pageName: homeAddress
+              input: isHomeless
+              value: "true"

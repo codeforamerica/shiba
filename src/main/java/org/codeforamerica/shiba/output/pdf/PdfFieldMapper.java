@@ -11,15 +11,13 @@ import java.util.stream.Stream;
 public class PdfFieldMapper {
     private final Map<String, String> pdfFieldMap;
     private final Set<String> valueExclusions;
-    private final Set<String> multiValueInputsToUseTheirValue;
 
     public PdfFieldMapper(
             Map<String, String> pdfFieldMap,
-            Set<String> valueExclusions,
-            Set<String> multiValueInputsToUseTheirValue) {
+            Set<String> valueExclusions
+    ) {
         this.pdfFieldMap = pdfFieldMap;
         this.valueExclusions = valueExclusions;
-        this.multiValueInputsToUseTheirValue = multiValueInputsToUseTheirValue;
     }
 
     public List<PdfField> map(List<ApplicationInput> applicationInputs) {
@@ -35,8 +33,7 @@ public class PdfFieldMapper {
                         case ENUMERATED_MULTI_VALUE -> input.getValue().stream()
                                 .map(value -> {
                                     String pdfFieldName = pdfFieldMap.get(String.join(".", groupName, input.getName(), value));
-                                    return this.multiValueInputsToUseTheirValue.contains(input.getName()) ?
-                                            new BinaryPdfField(pdfFieldName, value) : new BinaryPdfField(pdfFieldName);
+                                    return new BinaryPdfField(pdfFieldName);
                                 });
                         default -> Stream.of(new SimplePdfField(
                                 pdfFieldMap.get(String.join(".", groupName, input.getName())),

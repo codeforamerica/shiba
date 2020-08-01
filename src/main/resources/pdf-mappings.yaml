@@ -32,8 +32,7 @@ caf:
       state: APPLICANT_HOME_STATE
       streetAddress: APPLICANT_HOME_STREET_ADDRESS
       apartmentNumber: APPLICANT_HOME_APT_NUMBER
-      isHomeless:
-        homeless: APPLICANT_HOMELESS
+      isHomelessIndicator: APPLICANT_HOMELESS
     mailingAddress:
       zipCode: APPLICANT_MAILING_ZIPCODE
       city: APPLICANT_MAILING_CITY

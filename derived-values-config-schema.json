@@ -23,69 +23,75 @@
       }
     }
   },
-  "patternProperties": {
+  "properties": {
     "derived-values": {
-      "type": "object",
-      "patternProperties": {
-        "^.*$": {
-          "type": "object",
-          "patternProperties": {
-            "^.*$": {
-              "type": "array",
-              "items": {
-                "additionalProperties": false,
-                "type": "object",
-                "properties": {
-                  "value": {
-                    "anyOf": [
-                      {
-                        "$ref": "#/definitions/ReferenceDerivedValueConfiguration"
-                      },
-                      {
-                        "$ref": "#/definitions/LiteralDerivedValueConfiguration"
-                      }
-                    ]
-                  },
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "SINGLE_VALUE",
-                      "DATE_VALUE",
-                      "ENUMERATED_SINGLE_VALUE",
-                      "ENUMERATED_MULTI_VALUE"
-                    ]
-                  },
-                  "condition": {
-                    "type": "object",
-                    "properties": {
-                      "conditions": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "pageName": {
-                              "type": "string"
-                            },
-                            "input": {
-                              "type": "string"
-                            },
-                            "matcher": {
-                              "type": "string"
-                            },
-                            "value": {
-                              "type": "string"
-                            }
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "groupName": {
+            "type": "string"
+          },
+          "fieldName": {
+            "type": "string"
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "additionalProperties": false,
+              "type": "object",
+              "properties": {
+                "value": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/definitions/ReferenceDerivedValueConfiguration"
+                    },
+                    {
+                      "$ref": "#/definitions/LiteralDerivedValueConfiguration"
+                    }
+                  ]
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "SINGLE_VALUE",
+                    "DATE_VALUE",
+                    "ENUMERATED_SINGLE_VALUE",
+                    "ENUMERATED_MULTI_VALUE"
+                  ]
+                },
+                "condition": {
+                  "type": "object",
+                  "properties": {
+                    "conditions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "pageName": {
+                            "type": "string"
+                          },
+                          "input": {
+                            "type": "string"
+                          },
+                          "matcher": {
+                            "type": "string"
+                          },
+                          "value": {
+                            "type": "string"
                           }
                         }
                       }
                     }
                   }
                 }
-              },
-              "required": [
-                "type", "value", "condition"
-              ]
-            }
+              }
+            },
+            "required": [
+              "type",
+              "value",
+              "condition"
+            ]
           }
         }
       }
