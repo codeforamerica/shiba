@@ -16,7 +16,7 @@ public enum ValueMatcher {
         this.matcher = matcher;
     }
 
-    public Boolean matches(List<String> testValue, String targetValue) {
+    Boolean matches(List<String> testValue, String targetValue) {
         return this.matcher.apply(testValue, targetValue);
     }
 }

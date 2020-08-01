@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output;
 
+import org.codeforamerica.shiba.output.applicationinputsmappers.OneToOneApplicationInputsMapper;
 import org.codeforamerica.shiba.pages.config.FormInput;
 import org.codeforamerica.shiba.pages.config.FormInputType;
 import org.codeforamerica.shiba.pages.config.PageConfiguration;

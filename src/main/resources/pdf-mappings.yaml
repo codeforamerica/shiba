@@ -72,8 +72,8 @@ caf:
       submissionTime: SUBMISSION_TIME
     goingToSchool:
       goingToSchool: GOING_TO_SCHOOL
-      ccapHasCostsForChildCare:
-        CCAP_HAS_COSTS_FOR_CHILD_CARE: CCAP_HAS_COSTS_FOR_CHILD_CARE
+    ccapHasCostsForChildCare:
+      ccapHasCostsForChildCare: CCAP_HAS_COSTS_FOR_CHILD_CARE
     pregnant:
       isPregnant: IS_PREGNANT
     usCitizen:
@@ -86,8 +86,6 @@ caf:
       areYouWorking: IS_WORKING
     ccapJob:
       currentlyLookingForJob: LOOKING_FOR_JOB
-      ccapHasCostsForChildCare:
-        CCAP_HAS_COSTS_FOR_CHILD_CARE: CCAP_HAS_COSTS_FOR_CHILD_CARE
     expeditedEligibility:
       expeditedEligibility: EXPEDITED_ELIGIBILITY
     unearnedIncome:

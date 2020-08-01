@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.output;
 
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
+import org.codeforamerica.shiba.output.applicationinputsmappers.DerivedValueApplicationInputsMapper;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;

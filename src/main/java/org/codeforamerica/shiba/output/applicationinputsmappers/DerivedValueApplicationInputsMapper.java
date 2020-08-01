@@ -1,5 +1,7 @@
-package org.codeforamerica.shiba.output;
+package org.codeforamerica.shiba.output.applicationinputsmappers;
 
+import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.DerivedValuesConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.stereotype.Component;
 

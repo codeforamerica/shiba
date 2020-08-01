@@ -1,5 +1,6 @@
-package org.codeforamerica.shiba.output;
+package org.codeforamerica.shiba.output.applicationinputsmappers;
 
+import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.pages.config.FormInput;
 import org.codeforamerica.shiba.pages.config.PagesConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -10,7 +11,7 @@ import java.util.AbstractMap;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
-import static org.codeforamerica.shiba.output.ApplicationInputsMapper.formInputTypeToApplicationInputType;
+import static org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMapper.formInputTypeToApplicationInputType;
 
 @Component
 public class OneToOneApplicationInputsMapper implements ApplicationInputsMapper {

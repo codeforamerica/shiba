@@ -1,5 +1,7 @@
-package org.codeforamerica.shiba.output;
+package org.codeforamerica.shiba.output.applicationinputsmappers;
 
+import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.ApplicationInputType;
 import org.codeforamerica.shiba.pages.config.FormInputType;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 

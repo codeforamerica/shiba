@@ -2,7 +2,7 @@ package org.codeforamerica.shiba.output.xml;
 
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.OneToOneApplicationInputsMapper;
+import org.codeforamerica.shiba.output.applicationinputsmappers.OneToOneApplicationInputsMapper;
 import org.codeforamerica.shiba.pages.config.FormInput;
 import org.codeforamerica.shiba.pages.config.Option;
 import org.codeforamerica.shiba.pages.config.PagesConfiguration;

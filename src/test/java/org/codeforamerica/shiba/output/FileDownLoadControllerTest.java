@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.output;
 
-import org.codeforamerica.shiba.output.pdf.ApplicationInputsMappers;
+import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
