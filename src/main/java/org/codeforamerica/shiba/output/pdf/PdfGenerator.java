@@ -13,8 +13,10 @@ public class PdfGenerator implements FileGenerator {
     private final PdfFieldMapper pdfFieldMapper;
     private final PdfFieldFiller pdfFiller;
 
-    public PdfGenerator(PdfFieldMapper pdfFieldMapper,
-                        PdfFieldFiller pdfFiller) {
+    public PdfGenerator(
+            PdfFieldMapper pdfFieldMapper,
+            PdfFieldFiller pdfFiller
+    ) {
         this.pdfFieldMapper = pdfFieldMapper;
         this.pdfFiller = pdfFiller;
     }

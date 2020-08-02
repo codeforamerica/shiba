@@ -8,9 +8,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import static java.util.Collections.emptySet;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class PdfFieldMapperTest {
@@ -25,26 +23,10 @@ class PdfFieldMapperTest {
         String stringValue = "some-string-value";
         ApplicationInput applicationInput = new ApplicationInput(pageName, formInputName, List.of(stringValue), applicationInputType);
 
-        PdfFieldMapper subject = new PdfFieldMapper(configMap, emptySet());
+        PdfFieldMapper subject = new PdfFieldMapper(configMap);
         List<PdfField> fields = subject.map(List.of(applicationInput));
 
         assertThat(fields).contains(new SimplePdfField(fieldName, stringValue));
-    }
-
-    @Test
-    void shouldNotMapInputWhenValueIsExcludedFromPdf() {
-        String fieldName = "someName";
-        String formInputName = "some-input";
-        String pageName = "some-screen";
-        Map<String, String> configMap = Map.of(pageName + "." + formInputName, fieldName);
-        String excludedValue = "excluded radio selection";
-
-        ApplicationInput applicationInput = new ApplicationInput(pageName, formInputName, List.of(excludedValue), ApplicationInputType.ENUMERATED_SINGLE_VALUE);
-
-        PdfFieldMapper subject = new PdfFieldMapper(configMap, Set.of(excludedValue));
-        List<PdfField> fields = subject.map(List.of(applicationInput));
-
-        assertThat(fields).isEmpty();
     }
 
     @Test
@@ -56,7 +38,7 @@ class PdfFieldMapperTest {
 
         ApplicationInput applicationInput = new ApplicationInput(pageName, formInputName, List.of("01", "20", "3312"), ApplicationInputType.DATE_VALUE);
 
-        PdfFieldMapper subject = new PdfFieldMapper(configMap, emptySet());
+        PdfFieldMapper subject = new PdfFieldMapper(configMap);
         List<PdfField> fields = subject.map(List.of(applicationInput));
 
         assertThat(fields).contains(new SimplePdfField(fieldName, "01/20/3312"));
@@ -69,7 +51,7 @@ class PdfFieldMapperTest {
 
         ApplicationInput applicationInput = new ApplicationInput(pageName, formInputName, List.of("someValue"), ApplicationInputType.SINGLE_VALUE);
 
-        PdfFieldMapper subject = new PdfFieldMapper(Map.of(), emptySet());
+        PdfFieldMapper subject = new PdfFieldMapper(Map.of());
         List<PdfField> fields = subject.map(List.of(applicationInput));
 
         assertThat(fields).isEmpty();
@@ -85,7 +67,7 @@ class PdfFieldMapperTest {
 
         ApplicationInput applicationInput = new ApplicationInput(pageName, formInputName, List.of(), applicationInputType);
 
-        PdfFieldMapper subject = new PdfFieldMapper(configMap, emptySet());
+        PdfFieldMapper subject = new PdfFieldMapper(configMap);
         List<PdfField> fields = subject.map(List.of(applicationInput));
 
         assertThat(fields).isEmpty();
@@ -105,7 +87,7 @@ class PdfFieldMapperTest {
                 pageName + "." + formInputName + "." + value2, fieldName2
         );
 
-        PdfFieldMapper subject = new PdfFieldMapper(configMap, emptySet());
+        PdfFieldMapper subject = new PdfFieldMapper(configMap);
         List<PdfField> fields = subject.map(List.of(applicationInput));
 
         assertThat(fields).contains(

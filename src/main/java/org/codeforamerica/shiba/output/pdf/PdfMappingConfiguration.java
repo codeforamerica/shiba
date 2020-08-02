@@ -8,7 +8,6 @@ import org.springframework.context.annotation.PropertySource;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 @Configuration
 @PropertySource(value = "classpath:pdf-mappings.yaml", factory = YamlPropertySourceFactory.class)
@@ -22,9 +21,6 @@ public class PdfMappingConfiguration {
 
     @Bean
     public PdfFieldMapper pdfFieldMapper(Map<String, String> pdfFieldMap) {
-        return new PdfFieldMapper(
-                pdfFieldMap,
-                Set.of()
-        );
+        return new PdfFieldMapper(pdfFieldMap);
     }
 }
