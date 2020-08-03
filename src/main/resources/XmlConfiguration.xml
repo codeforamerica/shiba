@@ -52,6 +52,11 @@
                     <onl:WorkChangeInd>{{HAS_WORK_SITUATION}}</onl:WorkChangeInd>
                 </onl:WorkChange>
             </onl:AdditionalInfo>
+            <onl:EmploymentInfo>
+                <onl:Employment>
+                    <onl:EmployerName>{{EMPLOYERS_NAME}}</onl:EmployerName>
+                </onl:Employment>
+            </onl:EmploymentInfo>
             <onl:UnearnedIncomeInfo>
                 <onl:UnearnedIncome>
                     <onl:Type>{{UNEARNED_INCOME}}</onl:Type>
