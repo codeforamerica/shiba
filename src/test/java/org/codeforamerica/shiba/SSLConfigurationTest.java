@@ -17,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -40,6 +41,9 @@ public class SSLConfigurationTest {
 
     private HttpClient httpClient;
 
+    @Value("${client.keystore-password}")
+    String keystorePassword;
+
     @BeforeEach
     void setUp() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
         httpClient = HttpClients.custom()
@@ -52,8 +56,8 @@ public class SSLConfigurationTest {
                 .dynamicPort()
                 .dynamicHttpsPort()
                 .needClientAuth(true)
-                .trustStorePath("src/test/resources/truststore.jks")
-                .trustStorePassword("changeit");
+                .trustStorePath("src/test/resources/test-truststore.jks")
+                .trustStorePassword(keystorePassword);
         wireMockServer = new WireMockServer(options);
         wireMockServer.start();
         WireMock.configureFor(wireMockServer.port());
