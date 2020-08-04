@@ -4,3 +4,7 @@ spring:
     driverClassName: org.h2.Driver
     username: sa
     password: password
+
+client:
+  keystore: src/test/resources/keystore.jks
+  keystore-password: changeit
