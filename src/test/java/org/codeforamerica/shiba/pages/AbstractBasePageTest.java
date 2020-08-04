@@ -14,6 +14,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.context.annotation.Bean;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.File;
@@ -27,6 +28,7 @@ import java.util.HashMap;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"spring.main.allow-bean-definition-overriding=true"})
+@ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 abstract class AbstractBasePageTest {
     static protected RemoteWebDriver driver;

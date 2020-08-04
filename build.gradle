@@ -37,6 +37,7 @@ dependencies {
     implementation 'org.jetbrains:annotations:19.0.0'
     implementation 'commons-validator:commons-validator:1.6'
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    implementation 'org.apache.httpcomponents:httpclient'
     runtime 'org.flywaydb:flyway-core:6.4.4'
     runtime 'com.h2database:h2'
 
@@ -45,6 +46,7 @@ dependencies {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
     testImplementation 'org.awaitility:awaitility:4.0.2'
+    testImplementation 'com.github.tomakehurst:wiremock-standalone:2.27.1'
     testImplementation 'io.github.bonigarcia:webdrivermanager:4.0.0'
 }
 

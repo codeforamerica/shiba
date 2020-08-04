@@ -1,0 +1,3 @@
+client:
+  keystore: src/test/resources/keystore.jks
+  keystore-password: changeit

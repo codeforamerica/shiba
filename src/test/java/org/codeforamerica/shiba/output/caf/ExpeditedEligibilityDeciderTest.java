@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.HashMap;
@@ -28,6 +29,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(properties = {"spring.main.allow-bean-definition-overriding=true"})
+@ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 class ExpeditedEligibilityDeciderTest {
     private final PagesData pagesData = new PagesData();

@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -41,6 +42,7 @@ import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 public class XmlGeneratorIntegrationTest {
     @Autowired
