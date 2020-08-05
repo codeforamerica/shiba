@@ -8,4 +8,4 @@ spring:
     include: secrets
 
 client:
-  keystore: src/main/resources/local-keystore.jks
+  keystore: src/main/resources/shiba-keystore.jks
