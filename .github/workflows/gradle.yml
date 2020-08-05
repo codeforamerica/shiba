@@ -36,8 +36,17 @@ jobs:
         with:
           key: ${{ secrets.APTIBLE_SSH_PRIVATE_KEY }}
           known_hosts: ${{ secrets.APTIBLE_KNOWN_HOSTS }}
-      - name: Deploy to aptible
-        run: git push -f ${{ secrets.APTIBLE_REPO }} master
+      - name: Generate Aptible branch name
+        run: |
+          export BRANCH="deploy-$(date "+%s")"
+          echo "::set-env name=BRANCH::$BRANCH"
+      - name: Push to Aptible remote branch
+        run: git push -f ${{ secrets.APTIBLE_REPO }}:$BRANCH
+      - name: Deploy to Aptible
+        uses: aptible/aptible-deploy-action@v1.1
+        run: |
+          aptible login email=${{ secrets.APTIBLE_USERNAME }} password=${{ secrets.APTIBLE_PASSWORD}}
+          aptible deploy --app shiba-staging --git-commitish $BRANCH CLIENT_KEYSTORE-PASSWORD=${{ secrets.CLIENT_KEYSTORE_PASSWORD }}
       - name: Announce on Slack
         uses: innocarpe/actions-slack@v1
         with:
