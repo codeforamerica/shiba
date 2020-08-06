@@ -54,7 +54,22 @@
             </onl:AdditionalInfo>
             <onl:EmploymentInfo>
                 <onl:Employment>
-                    <onl:EmployerName>{{EMPLOYERS_NAME}}</onl:EmployerName>
+                    <onl:EmployerName>{{EMPLOYERS_NAME_0}}</onl:EmployerName>
+                </onl:Employment>
+                <onl:Employment>
+                    <onl:EmployerName>{{EMPLOYERS_NAME_1}}</onl:EmployerName>
+                </onl:Employment>
+                <onl:Employment>
+                    <onl:EmployerName>{{EMPLOYERS_NAME_2}}</onl:EmployerName>
+                </onl:Employment>
+                <onl:Employment>
+                    <onl:EmployerName>{{EMPLOYERS_NAME_3}}</onl:EmployerName>
+                </onl:Employment>
+                <onl:Employment>
+                    <onl:EmployerName>{{EMPLOYERS_NAME_4}}</onl:EmployerName>
+                </onl:Employment>
+                <onl:Employment>
+                    <onl:EmployerName>{{EMPLOYERS_NAME_5}}</onl:EmployerName>
                 </onl:Employment>
             </onl:EmploymentInfo>
             <onl:UnearnedIncomeInfo>

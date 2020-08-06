@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
-import org.codeforamerica.shiba.pages.config.PagesConfiguration;
+import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -41,8 +41,8 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest {
     static class TestPageConfiguration extends MetricsTestConfigurationWithExistingStartTime {
         @Bean
         @ConfigurationProperties(prefix = "shiba-configuration-test-validation")
-        public PagesConfiguration pagesConfiguration() {
-            return new PagesConfiguration();
+        public ApplicationConfiguration applicationConfiguration() {
+            return new ApplicationConfiguration();
         }
     }
 

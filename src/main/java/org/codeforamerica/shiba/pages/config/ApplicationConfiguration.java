@@ -13,10 +13,11 @@ import java.util.Map;
 @PropertySource(value = "classpath:pages-config.yaml", factory = YamlPropertySourceFactory.class)
 @ConfigurationProperties(prefix = "shiba-configuration")
 @Data
-public class PagesConfiguration {
+public class ApplicationConfiguration {
     private List<PageConfiguration> pageDefinitions;
     private LandmarkPagesConfiguration landmarkPages;
     private Map<String, PageWorkflowConfiguration> workflow;
+    private Map<String, PageGroupConfiguration> pageGroups;
 
     public PageWorkflowConfiguration getPageWorkflow(String pageName) {
         return this.workflow.get(pageName);

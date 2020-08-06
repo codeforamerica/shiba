@@ -3,9 +3,9 @@ package org.codeforamerica.shiba.output.xml;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.applicationinputsmappers.OneToOneApplicationInputsMapper;
+import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.FormInput;
 import org.codeforamerica.shiba.pages.config.Option;
-import org.codeforamerica.shiba.pages.config.PagesConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
@@ -55,11 +55,11 @@ public class XmlGeneratorIntegrationTest {
     private Resource onlineApplicationSchema;
 
     @Autowired
-    private PagesConfiguration pagesConfiguration;
+    private ApplicationConfiguration applicationConfiguration;
 
     @Test
     void shouldProduceAValidDocument() throws IOException, SAXException, ParserConfigurationException {
-        Map<String, PageData> data = pagesConfiguration.getPageDefinitions().stream()
+        Map<String, PageData> data = applicationConfiguration.getPageDefinitions().stream()
                 .map(pageConfiguration -> {
                     Map<String, InputData> inputDataMap = pageConfiguration.getFlattenedInputs().stream()
                             .collect(toMap(

@@ -5,4 +5,5 @@ import lombok.Data;
 @Data
 public class PageDatasource {
     private String pageName;
+    private String groupName;
 }

@@ -3,10 +3,10 @@ package org.codeforamerica.shiba.pages;
 import org.codeforamerica.shiba.metrics.ApplicationMetric;
 import org.codeforamerica.shiba.metrics.ApplicationMetricsRepository;
 import org.codeforamerica.shiba.metrics.Metrics;
+import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.LandmarkPagesConfiguration;
 import org.codeforamerica.shiba.pages.config.PageConfiguration;
 import org.codeforamerica.shiba.pages.config.PageWorkflowConfiguration;
-import org.codeforamerica.shiba.pages.config.PagesConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
@@ -25,25 +25,24 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 
 @Controller
 public class PageController {
     private final ApplicationData applicationData;
-    private final PagesConfiguration pagesConfiguration;
+    private final ApplicationConfiguration applicationConfiguration;
     private final Clock clock;
     private final ApplicationMetricsRepository repository;
     private final Metrics metrics;
 
     public PageController(
-            PagesConfiguration pagesConfiguration,
+            ApplicationConfiguration applicationConfiguration,
             ApplicationData applicationData,
             Clock clock,
             ApplicationMetricsRepository repository,
             Metrics metrics
     ) {
         this.applicationData = applicationData;
-        this.pagesConfiguration = pagesConfiguration;
+        this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
         this.repository = repository;
         this.metrics = metrics;
@@ -54,10 +53,10 @@ public class PageController {
             @PathVariable String pageName,
             @RequestParam(required = false, defaultValue = "0") Integer option
     ) {
-        PageWorkflowConfiguration pageWorkflow = this.pagesConfiguration.getPageWorkflow(pageName);
+        PageWorkflowConfiguration pageWorkflow = this.applicationConfiguration.getPageWorkflow(pageName);
         PagesData pagesData = this.applicationData.getPagesData();
         String nextPageName = pagesData.getNextPageName(pageWorkflow, option);
-        PageWorkflowConfiguration nextPage = this.pagesConfiguration.getPageWorkflow(nextPageName);
+        PageWorkflowConfiguration nextPage = this.applicationConfiguration.getPageWorkflow(nextPageName);
 
         if (pagesData.shouldSkip(nextPage)) {
             pagesData.remove(nextPageName);
@@ -68,11 +67,11 @@ public class PageController {
     }
 
     @GetMapping("/pages/{pageName}")
-    ModelAndView getFormPage(
+    ModelAndView getPage(
             @PathVariable String pageName,
             HttpServletResponse response
     ) {
-        LandmarkPagesConfiguration landmarkPagesConfiguration = pagesConfiguration.getLandmarkPages();
+        LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
 
         if (landmarkPagesConfiguration.isLandingPage(pageName)) {
             this.applicationData.clear();
@@ -89,10 +88,26 @@ public class PageController {
 
         response.addHeader("Cache-Control", "no-store");
 
-        PageWorkflowConfiguration pageWorkflow = this.pagesConfiguration.getPageWorkflow(pageName);
+        PageWorkflowConfiguration pageWorkflow = this.applicationConfiguration.getPageWorkflow(pageName);
         PageConfiguration pageConfiguration = pageWorkflow.getPageConfiguration();
 
-        PagesData pagesData = applicationData.getPagesData();
+        PagesData pagesData;
+        if (pageWorkflow.getGroupName() != null) {
+            String groupName = pageWorkflow.getGroupName();
+            if (applicationConfiguration.getPageGroups().get(groupName).getStartPage().equals(pageName)) {
+                pagesData = applicationData.getIncompleteIterations().getOrDefault(groupName, new PagesData());
+            } else {
+                pagesData = applicationData.getIncompleteIterations().get(groupName);
+            }
+
+            if (pagesData == null) {
+                String redirectPage = applicationConfiguration.getPageGroups().get(pageWorkflow.getGroupName()).getRedirectPage();
+                return new ModelAndView(String.format("redirect:/pages/%s", redirectPage));
+            }
+        } else {
+            pagesData = applicationData.getPagesData();
+        }
+
         PageTemplate pageTemplate = pagesData.evaluate(pageWorkflow);
 
         HashMap<String, Object> model = new HashMap<>(Map.of(
@@ -108,9 +123,8 @@ public class PageController {
         String pageToRender;
         if (pageConfiguration.isStaticPage()) {
             pageToRender = pageName;
-            Optional.ofNullable(pageWorkflow.getDatasources())
-                    .map(datasources -> this.applicationData.getPagesData().getDatasourcePagesBy(datasources))
-                    .ifPresent(inputMap -> model.put("data", inputMap));
+            model.put("data", pagesData.getDatasourcePagesBy(pageWorkflow.getDatasources()));
+            model.put("subworkflows", pageWorkflow.getSubworkflows(applicationData));
         } else {
             pageToRender = "formPage";
             model.put("data", pagesData.getPageDataOrDefault(pageTemplate.getName(), pageConfiguration));
@@ -118,18 +132,52 @@ public class PageController {
         return new ModelAndView(pageToRender, model);
     }
 
+    @PostMapping("/groups/{groupName}/{iteration}/delete")
+    ModelAndView deleteIteration(
+            @PathVariable String groupName,
+            @PathVariable int iteration,
+            @RequestHeader("referer") String referer
+    ) {
+        if (this.applicationData.getSubworkflows().get(groupName).size() == 1) {
+            String redirectPage = applicationConfiguration.getPageGroups().get(groupName).getNoDataRedirectPage();
+
+            return new ModelAndView("redirect:/pages/" + redirectPage);
+        }
+        this.applicationData.getSubworkflows().get(groupName).remove(iteration);
+        return new ModelAndView("redirect:" + referer);
+    }
+
     @PostMapping("/pages/{pageName}")
     ModelAndView postFormPage(
             @RequestBody(required = false) MultiValueMap<String, String> model,
             @PathVariable String pageName
     ) {
-        PageWorkflowConfiguration pageWorkflow = pagesConfiguration.getPageWorkflow(pageName);
+        PageWorkflowConfiguration pageWorkflow = applicationConfiguration.getPageWorkflow(pageName);
 
         PageConfiguration page = pageWorkflow.getPageConfiguration();
         PageData pageData = PageData.fillOut(page, model);
 
-        PagesData pagesData = applicationData.getPagesData();
-        pagesData.putPage(pageWorkflow.getPageConfiguration().getName(), pageData);
+        PagesData pagesData;
+        if (pageWorkflow.getGroupName() != null) {
+            String groupName = pageWorkflow.getGroupName();
+            if (applicationConfiguration.getPageGroups().get(groupName).getStartPage().equals(page.getName())) {
+                applicationData.getIncompleteIterations().put(groupName, new PagesData());
+            }
+            pagesData = applicationData.getIncompleteIterations().get(groupName);
+        } else {
+            pagesData = applicationData.getPagesData();
+        }
+
+        pagesData.putPage(page.getName(), pageData);
+
+        if (pageData.isValid() &&
+                pageWorkflow.getGroupName() != null &&
+                applicationConfiguration.getPageGroups().get(pageWorkflow.getGroupName()).getCompletePage().equals(page.getName())
+        ) {
+            String groupName = pageWorkflow.getGroupName();
+            applicationData.getSubworkflows()
+                    .addIteration(groupName, applicationData.getIncompleteIterations().remove(groupName));
+        }
 
         return pageData.isValid() ?
                 new ModelAndView(String.format("redirect:/pages/%s/navigation", pageName)) :
@@ -141,9 +189,9 @@ public class PageController {
             @RequestBody(required = false) MultiValueMap<String, String> model,
             Locale locale
     ) {
-        LandmarkPagesConfiguration landmarkPagesConfiguration = this.pagesConfiguration.getLandmarkPages();
+        LandmarkPagesConfiguration landmarkPagesConfiguration = this.applicationConfiguration.getLandmarkPages();
         String submitPage = landmarkPagesConfiguration.getSubmitPage();
-        PageConfiguration page = pagesConfiguration.getPageWorkflow(submitPage).getPageConfiguration();
+        PageConfiguration page = applicationConfiguration.getPageWorkflow(submitPage).getPageConfiguration();
 
         PageData pageData = PageData.fillOut(page, model);
         PagesData pagesData = applicationData.getPagesData();

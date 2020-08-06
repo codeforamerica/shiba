@@ -934,6 +934,16 @@ shiba-configuration:
           validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
           promptMessage:
             promptMessageKey: employers-name.what-is-the-employers-name
+    - &jobBuilder
+      name: jobBuilder
+      pageTitle:
+        value: job-builder.title
+    - &warningPage
+      name: warningPage
+      headerKey:
+        value: warning-page.warning
+      pageTitle:
+        value: warning-page.title
     - &startExpenses
       name: startExpenses
       pageTitle:
@@ -1176,8 +1186,21 @@ shiba-configuration:
         - pageName: thirtyDayIncome
     employersName:
       pageConfiguration: *employersName
+      groupName: jobs
       nextPages:
+        - pageName: jobBuilder
+    jobBuilder:
+      pageConfiguration: *jobBuilder
+      nextPages:
+        - pageName: employersName
         - pageName: incomeUpNext
+      datasources:
+        - groupName: jobs
+    warningPage:
+      pageConfiguration: *warningPage
+      nextPages:
+        - pageName: jobBuilder
+        - pageName: incomeByJob
     thirtyDayIncome:
       pageConfiguration: *thirtyDayIncome
       nextPages:
@@ -1384,6 +1407,12 @@ shiba-configuration:
       pageConfiguration: *success
       datasources:
         - pageName: signThisApplication
+  pageGroups:
+    jobs:
+      startPage: employersName
+      completePage: employersName
+      redirectPage: warningPage
+      noDataRedirectPage: warningPage
   landmarkPages:
     startTimerPage: languagePreferences
     landingPages:

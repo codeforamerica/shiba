@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
-import org.codeforamerica.shiba.pages.config.PagesConfiguration;
+import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -19,8 +19,8 @@ public class PageModelPageTest extends AbstractStaticMessageSourcePageTest {
     static class TestPageConfiguration extends AbstractBasePageTest.MetricsTestConfigurationWithExistingStartTime {
         @Bean
         @ConfigurationProperties(prefix = "shiba-configuration-page-model")
-        public PagesConfiguration pagesConfiguration() {
-            return new PagesConfiguration();
+        public ApplicationConfiguration applicationConfiguration() {
+            return new ApplicationConfiguration();
         }
     }
 

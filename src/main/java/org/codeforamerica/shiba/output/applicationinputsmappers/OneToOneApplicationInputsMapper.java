@@ -1,8 +1,8 @@
 package org.codeforamerica.shiba.output.applicationinputsmappers;
 
 import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.FormInput;
-import org.codeforamerica.shiba.pages.config.PagesConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.springframework.stereotype.Component;
@@ -15,15 +15,15 @@ import static org.codeforamerica.shiba.output.applicationinputsmappers.Applicati
 
 @Component
 public class OneToOneApplicationInputsMapper implements ApplicationInputsMapper {
-    private final PagesConfiguration pagesConfiguration;
+    private final ApplicationConfiguration applicationConfiguration;
 
-    public OneToOneApplicationInputsMapper(PagesConfiguration pagesConfiguration) {
-        this.pagesConfiguration = pagesConfiguration;
+    public OneToOneApplicationInputsMapper(ApplicationConfiguration applicationConfiguration) {
+        this.applicationConfiguration = applicationConfiguration;
     }
 
     @Override
     public List<ApplicationInput> map(ApplicationData data) {
-        return pagesConfiguration.getPageDefinitions().stream()
+        return applicationConfiguration.getPageDefinitions().stream()
                 .flatMap(pageConfiguration -> pageConfiguration.getFlattenedInputs().stream()
                         .map(input -> Map.entry(pageConfiguration.getName(), input)))
                 .filter(entry -> data.getPagesData().getPage(entry.getKey()) != null)

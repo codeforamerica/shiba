@@ -2,7 +2,7 @@ package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
 import org.codeforamerica.shiba.metrics.Metrics;
-import org.codeforamerica.shiba.pages.config.PagesConfiguration;
+import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -28,8 +28,8 @@ public class ResetDataPageTest extends AbstractStaticMessageSourcePageTest {
     static class TestPageConfiguration {
         @Bean
         @ConfigurationProperties(prefix = "shiba-configuration-reset-data")
-        public PagesConfiguration pagesConfiguration() {
-            return new PagesConfiguration();
+        public ApplicationConfiguration applicationConfiguration() {
+            return new ApplicationConfiguration();
         }
     }
 

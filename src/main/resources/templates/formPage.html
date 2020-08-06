@@ -14,7 +14,7 @@
                        th:text="#{${page.headerHelpMessageKey}}"></p>
                 </div>
                 <div class="grid__item">
-                    <form method="post" th:action="@{${postTo}}">
+                    <form autocomplete="off" method="post" th:action="@{${postTo}}">
                         <div th:each="input: ${page.inputs}">
                             <div th:replace="'fragments/'+__${input.fragment()}__ :: __${input.fragment()}__(${input}, ${data})"></div>
                         </div>

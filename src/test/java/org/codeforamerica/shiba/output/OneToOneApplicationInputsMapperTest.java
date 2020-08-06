@@ -1,10 +1,10 @@
 package org.codeforamerica.shiba.output;
 
 import org.codeforamerica.shiba.output.applicationinputsmappers.OneToOneApplicationInputsMapper;
+import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.FormInput;
 import org.codeforamerica.shiba.pages.config.FormInputType;
 import org.codeforamerica.shiba.pages.config.PageConfiguration;
-import org.codeforamerica.shiba.pages.config.PagesConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
@@ -17,9 +17,9 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class OneToOneApplicationInputsMapperTest {
-    PagesConfiguration pagesConfiguration = new PagesConfiguration();
+    ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
     PagesData data = new PagesData();
-    OneToOneApplicationInputsMapper oneToOneApplicationInputsMapper = new OneToOneApplicationInputsMapper(pagesConfiguration);
+    OneToOneApplicationInputsMapper oneToOneApplicationInputsMapper = new OneToOneApplicationInputsMapper(applicationConfiguration);
 
     @Test
     void shouldProduceAnApplicationInputForAFormInput() {
@@ -32,7 +32,7 @@ class OneToOneApplicationInputsMapperTest {
         page.setInputs(List.of(input1));
         String pageName = "screen1";
         page.setName(pageName);
-        pagesConfiguration.setPageDefinitions(List.of(page));
+        applicationConfiguration.setPageDefinitions(List.of(page));
 
         List<String> input1Value = List.of("input1Value");
         data.putPage(pageName, new PageData(Map.of(input1Name, InputData.builder().value(input1Value).build())));
@@ -64,7 +64,7 @@ class OneToOneApplicationInputsMapperTest {
         page.setInputs(List.of(input2));
         String pageName = "screen1";
         page.setName(pageName);
-        pagesConfiguration.setPageDefinitions(List.of(page));
+        applicationConfiguration.setPageDefinitions(List.of(page));
 
         List<String> input2Value = List.of("input2Value");
         List<String> input3Value = List.of("input3Value");

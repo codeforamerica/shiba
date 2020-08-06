@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
+<body>
+<div class="page-wrapper">
+    <section class="slab slab--shiba">
+        <div class="grid">
+            <a th:replace="fragments/go-back"></a>
+            <div class="card spacing-above-35">
+                <div class="grid__item spacing-above-35 spacing-below-35">
+                    <h2 th:text="#{${page.headerKey}}"></h2>
+                </div>
+                <div class="bottom-horizontal-line-grey">
+                    <p>Start over....</p>
+                </div>
+                <div class="spacing-below-15 spacing-above-35">
+                    <a class="button button--primary" th:href="'/pages/'+${pageName}+'/navigation?option=0'"
+                       >No thanks</a>
+                </div>
+                <div>
+                    <a class="link--subtle" th:href="'/pages/'+${pageName}+'/navigation?option=1'"
+                       >Yes, go back to the start</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<div th:replace="fragments/footer"></div>
+</body>
+</html>

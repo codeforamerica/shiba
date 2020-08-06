@@ -17,21 +17,15 @@ public class PdfFieldMapper {
     public List<PdfField> map(List<ApplicationInput> applicationInputs) {
         return applicationInputs.stream()
                 .filter(input -> !input.getValue().isEmpty())
-                .flatMap(input -> {
-                    String groupName = input.getGroupName();
-                    return switch (input.getType()) {
-                        case DATE_VALUE -> Stream.of(new SimplePdfField(
-                                pdfFieldMap.get(String.join(".", groupName, input.getName())),
-                                String.join("/", input.getValue())));
-                        case ENUMERATED_MULTI_VALUE -> input.getValue().stream()
-                                .map(value -> {
-                                    String pdfFieldName = pdfFieldMap.get(String.join(".", groupName, input.getName(), value));
-                                    return new BinaryPdfField(pdfFieldName);
-                                });
-                        default -> Stream.of(new SimplePdfField(
-                                pdfFieldMap.get(String.join(".", groupName, input.getName())),
-                                input.getValue().get(0)));
-                    };
+                .flatMap(input -> switch (input.getType()) {
+                    case DATE_VALUE -> Stream.of(new SimplePdfField(
+                            input.getPdfName(pdfFieldMap),
+                            String.join("/", input.getValue())));
+                    case ENUMERATED_MULTI_VALUE -> input.getValue().stream()
+                            .map(value -> new BinaryPdfField(input.getMultiValuePdfName(pdfFieldMap, value)));
+                    default -> Stream.of(new SimplePdfField(
+                            input.getPdfName(pdfFieldMap),
+                            input.getValue().get(0)));
                 })
                 .filter(pdfField -> pdfField.getName() != null)
                 .collect(Collectors.toList());

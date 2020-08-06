@@ -16,6 +16,13 @@ import static java.util.stream.Collectors.toMap;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class PagesData extends HashMap<String, PageData> {
+    public PagesData() {
+        super();
+    }
+
+    public PagesData(Map<String, PageData> map) {
+        super(map);
+    }
     public PageData getPage(String pageName) {
         return get(pageName);
     }
@@ -32,6 +39,7 @@ public class PagesData extends HashMap<String, PageData> {
 
     public DatasourcePages getDatasourcePagesBy(List<PageDatasource> datasources) {
         return new DatasourcePages(datasources.stream()
+                .filter(datasource -> datasource.getPageName() != null)
                 .map(datasource -> Map.entry(
                         datasource.getPageName(),
                         getOrDefault(datasource.getPageName(), new PageData())))

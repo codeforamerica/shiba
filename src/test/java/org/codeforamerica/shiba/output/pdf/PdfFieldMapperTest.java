@@ -94,4 +94,48 @@ class PdfFieldMapperTest {
                 new BinaryPdfField(fieldName1),
                 new BinaryPdfField(fieldName2));
     }
+
+    @Test
+    void shouldAddIterationToFieldNameForInputsWithIterations() {
+        String fieldName1 = "someName1";
+        String fieldName2 = "someName2";
+        String fieldName3 = "someName3";
+        String fieldName4 = "someName4";
+        String formInputName1 = "some-input1";
+        String formInputName2 = "some-input2";
+        String formInputName3 = "some-input3";
+        String pageName = "some-screen";
+        String value1 = "some-value";
+        String value2 = "some-other-value";
+        List<String> dateValue = List.of("01", "20", "3312");
+
+        ApplicationInput applicationInput1 = new ApplicationInput(
+                pageName, formInputName1, List.of(value1, value2), ApplicationInputType.ENUMERATED_MULTI_VALUE, 0
+        );
+        ApplicationInput applicationInput2 = new ApplicationInput(
+                pageName, formInputName2, List.of(value1), ApplicationInputType.SINGLE_VALUE, 1
+        );
+
+        ApplicationInput applicationInput3 = new ApplicationInput(
+                pageName, formInputName3, dateValue, ApplicationInputType.DATE_VALUE, 2
+        );
+
+        Map<String, String> configMap = Map.of(
+                pageName + "." + formInputName1 + "." + value1, fieldName1,
+                pageName + "." + formInputName1 + "." + value2, fieldName2,
+                pageName + "." + formInputName2, fieldName3,
+                pageName + "." + formInputName3, fieldName4
+        );
+
+
+        PdfFieldMapper subject = new PdfFieldMapper(configMap);
+        List<PdfField> fields = subject.map(List.of(applicationInput1, applicationInput2, applicationInput3));
+
+        assertThat(fields).contains(
+                new BinaryPdfField(fieldName1 + "_0"),
+                new BinaryPdfField(fieldName2 + "_0"),
+                new SimplePdfField(fieldName3 + "_1", value1),
+                new SimplePdfField(fieldName4 + "_2", "01/20/3312")
+        );
+    }
 }

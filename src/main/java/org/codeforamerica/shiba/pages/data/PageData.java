@@ -40,7 +40,7 @@ public class PageData extends HashMap<String, InputData> {
         return new PageData(inputDataMap);
     }
 
-    static PageData initialize(PageConfiguration pageConfiguration) {
+    public static PageData initialize(PageConfiguration pageConfiguration) {
         return new PageData(
                 pageConfiguration.getFlattenedInputs().stream()
                         .collect(toMap(

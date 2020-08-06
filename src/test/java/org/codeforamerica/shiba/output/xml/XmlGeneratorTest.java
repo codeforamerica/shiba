@@ -118,6 +118,43 @@ class XmlGeneratorTest {
     }
 
     @Test
+    void shouldPopulateNodeValueFromInputWithIterationNumber() throws IOException, SAXException, ParserConfigurationException {
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
+                "<ns:Root xmlns:ns='some-url'>\n" +
+                "    <ns:Child>{{SOME_TOKEN_0}}</ns:Child>\n" +
+                "    <ns:Child>{{SOME_TOKEN_1}}</ns:Child>\n" +
+                "</ns:Root>";
+
+        String pageName = "some-screen";
+        String value1 = "some-string-value";
+        String formInputName = "some-form-input";
+        ApplicationInput applicationInput1 = new ApplicationInput(pageName, formInputName, List.of(value1), ApplicationInputType.SINGLE_VALUE, 0);
+
+        String value2 = "some-other-string-value";
+        ApplicationInput applicationInput2 = new ApplicationInput(pageName, formInputName, List.of(value2), ApplicationInputType.SINGLE_VALUE, 1);
+
+        List<ApplicationInput> applicationInputs = List.of(applicationInput1, applicationInput2);
+
+        Map<String, String> xmlConfigMap = Map.of(pageName + "." + formInputName, "SOME_TOKEN");
+        XmlGenerator subject = new XmlGenerator(new ByteArrayResource(xml.getBytes()), xmlConfigMap, Map.of());
+
+        ApplicationFile applicationFile = subject.generate(applicationInputs);
+
+        SimpleNamespaceContext namespaceContext = new SimpleNamespaceContext();
+        namespaceContext.setBindings(Map.of("ns", "some-url"));
+        Document document = byteArrayToDocument(applicationFile.getFileBytes());
+        MatcherAssert.assertThat(document,
+                hasXPath("/ns:Root/ns:Child[1]/text()",
+                        namespaceContext,
+                        Matchers.equalTo(value1)));
+
+        MatcherAssert.assertThat(document,
+                hasXPath("/ns:Root/ns:Child[2]/text()",
+                        namespaceContext,
+                        Matchers.equalTo(value2)));
+    }
+
+    @Test
     void shouldPopulateNodeValueFromEnumeratedMultiValueInput() throws IOException, SAXException, ParserConfigurationException {
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
                 "<ns:Root xmlns:ns='some-url'>\n" +

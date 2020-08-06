@@ -133,6 +133,7 @@
 
 .inline {
     display: inline-block;
+    width: 100%;
 }
 
 .right {
@@ -170,6 +171,10 @@
 .padding-horizontal-30 {
     padding-left: 3rem;
     padding-right: 3rem;
+}
+
+.padding-right-25 {
+    padding-right: 2.5rem;
 }
 
 .vertical-button-group .button {

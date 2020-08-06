@@ -1,0 +1,56 @@
+shiba-configuration-sub-workflow:
+  pageDefinitions:
+    - &startPage
+      name: startPage
+      pageTitle:
+        value: start-page-title
+      inputs:
+        - name: foo
+          type: TEXT
+    - &firstPage
+      name: firstPage
+      pageTitle:
+        value: dummy-page-title
+      inputs:
+        - name: input1
+          type: TEXT
+    - &secondPage
+      name: secondPage
+      pageTitle:
+        value: dummy-page-title
+      inputs:
+        - name: input2
+          type: TEXT
+    - &endPage
+      name: endPage
+      pageTitle:
+        value: some-other-title
+  workflow:
+    startPage:
+      pageConfiguration: *startPage
+      nextPages:
+        - pageName: firstPage
+    firstPage:
+      groupName: group1
+      pageConfiguration: *firstPage
+      nextPages:
+        - pageName: secondPage
+    secondPage:
+      groupName: group1
+      pageConfiguration: *secondPage
+      nextPages:
+        - pageName: endPage
+    endPage:
+      pageConfiguration: *endPage
+      nextPages:
+        - pageName: firstPage
+      datasources:
+        - groupName: group1
+  pageGroups:
+    group1:
+      noDataRedirectPage: startPage
+      completePage: secondPage
+      startPage: firstPage
+      redirectPage: startPage
+  landmarkPages:
+    startTimerPage:

@@ -1,11 +1,10 @@
 package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
-import org.codeforamerica.shiba.pages.config.PagesConfiguration;
+import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -22,8 +21,8 @@ public class ConditionalInputsPageTest extends AbstractStaticMessageSourcePageTe
     static class TestPageConfiguration extends MetricsTestConfigurationWithExistingStartTime {
         @Bean
         @ConfigurationProperties(prefix = "shiba-configuration-conditional-inputs")
-        public PagesConfiguration pagesConfiguration() {
-            return new PagesConfiguration();
+        public ApplicationConfiguration applicationConfiguration() {
+            return new ApplicationConfiguration();
         }
     }
 

@@ -37,8 +37,8 @@ public class XmlGenerator implements FileGenerator {
             String contentsAfterReplacement = applicationInputs.stream()
                     .filter(input -> !input.getValue().isEmpty())
                     .flatMap(input -> {
-                        String configLookupCoordinate = String.join(".", input.getGroupName(), input.getName());
-                        String xmlToken = config.get(configLookupCoordinate);
+                        String baseXmlToken = config.get(String.join(".", input.getGroupName(), input.getName()));
+                        String xmlToken = input.getIteration() != null ? baseXmlToken + "_" + input.getIteration() : baseXmlToken;
                         return switch (input.getType()) {
                             case DATE_VALUE -> Stream.of(new AbstractMap.SimpleEntry<>(xmlToken, String.join("/", input.getValue())));
                             case ENUMERATED_SINGLE_VALUE -> Optional.ofNullable(enumMappings.get(input.getValue().get(0)))
