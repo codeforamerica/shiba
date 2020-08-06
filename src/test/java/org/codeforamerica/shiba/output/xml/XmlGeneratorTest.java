@@ -131,7 +131,7 @@ class XmlGeneratorTest {
         List<ApplicationInput> applicationInputs = List.of(applicationInput);
 
         Map<String, String> xmlConfigMap = Map.of(
-                pageName + "." + formInputName,
+                pageName + "." + formInputName + "." + formInputValue,
                 "SOME_TOKEN"
         );
 
@@ -149,7 +149,7 @@ class XmlGeneratorTest {
     }
 
     @Test
-    void shouldPopulateFirstNodeValueFromEnumeratedMultiValueInput() throws IOException, SAXException, ParserConfigurationException {
+    void shouldPopulateAllNodeValuesFromEnumeratedMultiValueInput() throws IOException, SAXException, ParserConfigurationException {
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
                 "<ns:Root xmlns:ns='some-url'>\n" +
                 "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
@@ -163,7 +163,7 @@ class XmlGeneratorTest {
         List<ApplicationInput> applicationInputs = List.of(applicationInput);
 
         Map<String, String> xmlConfigMap = Map.of(
-                pageName + "." + formInputName,
+                pageName + "." + formInputName + "." + formInputValue,
                 "SOME_TOKEN"
         );
 
@@ -177,7 +177,9 @@ class XmlGeneratorTest {
 
         SimpleNamespaceContext namespaceContext = new SimpleNamespaceContext();
         namespaceContext.setBindings(Map.of("ns", "some-url"));
-        MatcherAssert.assertThat(document, hasXPath("count(/ns:Root/ns:Child)", namespaceContext, Matchers.equalTo("1")));
+        MatcherAssert.assertThat(document, hasXPath("count(/ns:Root/ns:Child)", namespaceContext, Matchers.equalTo("2")));
+        MatcherAssert.assertThat(document, hasXPath("/ns:Root/ns:Child[1]/text()", namespaceContext, Matchers.equalTo("SOME_VALUE")));
+        MatcherAssert.assertThat(document, hasXPath("/ns:Root/ns:Child[2]/text()", namespaceContext, Matchers.equalTo("SOME_VALUE")));
     }
 
     @Test

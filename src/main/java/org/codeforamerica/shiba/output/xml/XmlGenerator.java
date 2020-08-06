@@ -37,16 +37,18 @@ public class XmlGenerator implements FileGenerator {
             String contentsAfterReplacement = applicationInputs.stream()
                     .filter(input -> !input.getValue().isEmpty())
                     .flatMap(input -> {
-                        String xmlToken = config.get(String.join(".", input.getGroupName(), input.getName()));
+                        String configLookupCoordinate = String.join(".", input.getGroupName(), input.getName());
+                        String xmlToken = config.get(configLookupCoordinate);
                         return switch (input.getType()) {
                             case DATE_VALUE -> Stream.of(new AbstractMap.SimpleEntry<>(xmlToken, String.join("/", input.getValue())));
                             case ENUMERATED_SINGLE_VALUE -> Optional.ofNullable(enumMappings.get(input.getValue().get(0)))
                                     .map(mappedValue -> new AbstractMap.SimpleEntry<>(xmlToken, mappedValue))
                                     .stream();
                             case ENUMERATED_MULTI_VALUE -> input.getValue().stream()
-                                    .map(enumMappings::get)
-                                    .filter(Objects::nonNull)
-                                    .map(mappedValue -> new AbstractMap.SimpleEntry<>(xmlToken, mappedValue));
+                                        .map(value -> new AbstractMap.SimpleEntry<>(
+                                                config.get(String.join(".", input.getGroupName(), input.getName(), value)),
+                                                enumMappings.get(value)))
+                                        .filter(entry -> entry.getValue() != null);
                             default -> Stream.of(new AbstractMap.SimpleEntry<>(xmlToken, input.getValue().get(0)));
                         };
                     })
@@ -54,7 +56,7 @@ public class XmlGenerator implements FileGenerator {
                     .reduce(
                             new String(xmlConfiguration.getInputStream().readAllBytes()),
                             (partiallyReplacedContent, tokenToValueEntry) ->
-                                    partiallyReplacedContent.replaceFirst(tokenFormatter.apply(tokenToValueEntry.getKey()), tokenToValueEntry.getValue()),
+                                    partiallyReplacedContent.replaceAll(tokenFormatter.apply(tokenToValueEntry.getKey()), tokenToValueEntry.getValue()),
                             UNUSED_IN_SEQUENTIAL_STREAM
                     );
             String finishedXML = contentsAfterReplacement.replaceAll("\\s*<\\w+:\\w+>\\{\\{\\w+}}</\\w+:\\w+>", "");

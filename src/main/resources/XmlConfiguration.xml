@@ -59,35 +59,35 @@
             </onl:EmploymentInfo>
             <onl:UnearnedIncomeInfo>
                 <onl:UnearnedIncome>
-                    <onl:Type>{{UNEARNED_INCOME}}</onl:Type>
+                    <onl:Type>{{SOCIAL_SECURITY}}</onl:Type>
                     <onl:GrossAmount>{{SOCIAL_SECURITY_AMOUNT}}</onl:GrossAmount>
                 </onl:UnearnedIncome>
                 <onl:UnearnedIncome>
-                    <onl:Type>{{UNEARNED_INCOME}}</onl:Type>
+                    <onl:Type>{{SSI}}</onl:Type>
                     <onl:GrossAmount>{{SUPPLEMENTAL_SECURITY_INCOME_AMOUNT}}</onl:GrossAmount>
                 </onl:UnearnedIncome>
                 <onl:UnearnedIncome>
-                    <onl:Type>{{UNEARNED_INCOME}}</onl:Type>
+                    <onl:Type>{{VETERANS_BENEFITS}}</onl:Type>
                     <onl:GrossAmount>{{VETERANS_BENEFITS_AMOUNT}}</onl:GrossAmount>
                 </onl:UnearnedIncome>
                 <onl:UnearnedIncome>
-                    <onl:Type>{{UNEARNED_INCOME}}</onl:Type>
+                    <onl:Type>{{UNEMPLOYMENT}}</onl:Type>
                     <onl:GrossAmount>{{UNEMPLOYMENT_AMOUNT}}</onl:GrossAmount>
                 </onl:UnearnedIncome>
                 <onl:UnearnedIncome>
-                    <onl:Type>{{UNEARNED_INCOME}}</onl:Type>
+                    <onl:Type>{{WORKERS_COMPENSATION}}</onl:Type>
                     <onl:GrossAmount>{{WORKERS_COMPENSATION_AMOUNT}}</onl:GrossAmount>
                 </onl:UnearnedIncome>
                 <onl:UnearnedIncome>
-                    <onl:Type>{{UNEARNED_INCOME}}</onl:Type>
+                    <onl:Type>{{RETIREMENT}}</onl:Type>
                     <onl:GrossAmount>{{RETIREMENT_AMOUNT}}</onl:GrossAmount>
                 </onl:UnearnedIncome>
                 <onl:UnearnedIncome>
-                    <onl:Type>{{UNEARNED_INCOME}}</onl:Type>
+                    <onl:Type>{{CHILD_OR_SPOUSAL_SUPPORT}}</onl:Type>
                     <onl:GrossAmount>{{CHILD_OR_SPOUSAL_SUPPORT_AMOUNT}}</onl:GrossAmount>
                 </onl:UnearnedIncome>
                 <onl:UnearnedIncome>
-                    <onl:Type>{{UNEARNED_INCOME}}</onl:Type>
+                    <onl:Type>{{TRIBAL_PAYMENTS}}</onl:Type>
                     <onl:GrossAmount>{{TRIBAL_PAYMENTS_AMOUNT}}</onl:GrossAmount>
                 </onl:UnearnedIncome>
             </onl:UnearnedIncomeInfo>
@@ -117,48 +117,48 @@
             </onl:AssetInfo>
             <onl:ExpenseInfo>
                 <onl:HousingExpense>
-                    <onl:Type>{{HOUSING_EXPENSE_TYPE}}</onl:Type>
+                    <onl:Type>{{RENT}}</onl:Type>
                 </onl:HousingExpense>
                 <onl:HousingExpense>
-                    <onl:Type>{{HOUSING_EXPENSE_TYPE}}</onl:Type>
+                    <onl:Type>{{MORTGAGE}}</onl:Type>
                 </onl:HousingExpense>
                 <onl:HousingExpense>
-                    <onl:Type>{{HOUSING_EXPENSE_TYPE}}</onl:Type>
+                    <onl:Type>{{HOMEOWNERS_INSURANCE}}</onl:Type>
                 </onl:HousingExpense>
                 <onl:HousingExpense>
-                    <onl:Type>{{HOUSING_EXPENSE_TYPE}}</onl:Type>
+                    <onl:Type>{{REAL_ESTATE_TAXES}}</onl:Type>
                 </onl:HousingExpense>
                 <onl:HousingExpense>
-                    <onl:Type>{{HOUSING_EXPENSE_TYPE}}</onl:Type>
+                    <onl:Type>{{ASSOCIATION_FEES}}</onl:Type>
                 </onl:HousingExpense>
                 <onl:HousingExpense>
-                    <onl:Type>{{HOUSING_EXPENSE_TYPE}}</onl:Type>
+                    <onl:Type>{{ROOM_AND_BOARD}}</onl:Type>
                 </onl:HousingExpense>
             </onl:ExpenseInfo>
         </onl:HouseholdMember>
-        <onl:Program>{{PROGRAM}}</onl:Program>
-        <onl:Program>{{PROGRAM}}</onl:Program>
-        <onl:Program>{{PROGRAM}}</onl:Program>
-        <onl:Program>{{PROGRAM}}</onl:Program>
+        <onl:Program>{{FOOD}}</onl:Program>
+        <onl:Program>{{CASH}}</onl:Program>
+        <onl:Program>{{EMERGENCY}}</onl:Program>
+        <onl:Program>{{CHILD_CARE}}</onl:Program>
         <onl:ExpeditedFSInfo>
             <onl:MonthlyIncome>{{MONEY_MADE_LAST_MONTH}}</onl:MonthlyIncome>
             <onl:CashInHand>{{LIQUID_ASSETS}}</onl:CashInHand>
             <onl:MortgagePayment>{{HOUSING_EXPENSES}}</onl:MortgagePayment>
             <onl:SeasonalWorkerInd>{{MIGRANT_SEASONAL_FARM_WORKER}}</onl:SeasonalWorkerInd>
             <onl:UtilityPaymentsFor>
-                <onl:Name>{{PAY_FOR_UTILITIES}}</onl:Name>
+                <onl:Name>{{HEATING}}</onl:Name>
             </onl:UtilityPaymentsFor>
             <onl:UtilityPaymentsFor>
-                <onl:Name>{{PAY_FOR_UTILITIES}}</onl:Name>
+                <onl:Name>{{ELECTRICITY}}</onl:Name>
             </onl:UtilityPaymentsFor>
             <onl:UtilityPaymentsFor>
-                <onl:Name>{{PAY_FOR_UTILITIES}}</onl:Name>
+                <onl:Name>{{COOLING}}</onl:Name>
             </onl:UtilityPaymentsFor>
             <onl:UtilityPaymentsFor>
-                <onl:Name>{{PAY_FOR_UTILITIES}}</onl:Name>
+                <onl:Name>{{PHONE}}</onl:Name>
             </onl:UtilityPaymentsFor>
             <onl:UtilityPaymentsFor>
-                <onl:Name>{{PAY_FOR_UTILITIES}}</onl:Name>
+                <onl:Name>{{NO_EXPEDITED_UTILITIES_SELECTED}}</onl:Name>
             </onl:UtilityPaymentsFor>
         </onl:ExpeditedFSInfo>
         <onl:HouseholdExpenseInfo>

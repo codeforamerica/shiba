@@ -15,7 +15,11 @@ xml:
       dateOfBirth: PERSONALINFO_DATE_OF_BIRTH
       moveToMnDate: PERSONALINFO_MOVETOMNDATE
     choosePrograms:
-      programs: PROGRAM
+      programs:
+        FOOD: FOOD
+        CASH: CASH
+        EMERGENCY: EMERGENCY
+        CHILD_CARE: CHILD_CARE
     contactInfo:
       phoneNumber: CONTACTINFO_PHONE
     homeAddress:
@@ -23,7 +27,8 @@ xml:
       city: CONTACTINFO_HOME_CITY
       streetAddress: CONTACTINFO_HOME_STREET_ADDRESS
       apartmentNumber: CONTACTINFO_HOME_APARTMENT_NUMBER
-      isHomeless: CONTACTINFO_HOMELESS
+      isHomeless:
+        true: CONTACTINFO_HOMELESS
     mailingAddress:
       zipCode: CONTACTINFO_MAILING_ZIPCODE
       city: CONTACTINFO_MAILING_CITY
@@ -37,8 +42,13 @@ xml:
     expeditedExpensesAmount:
       expeditedExpensesAmount: HOUSING_EXPENSES
     utilityPayments:
-      payForUtilities: PAY_FOR_UTILITIES
-      expeditedUtilitiesSummary: PAY_FOR_UTILITIES
+      payForUtilities:
+        HEATING: HEATING
+        COOLING: COOLING
+        ELECTRICITY: ELECTRICITY
+        PHONE: PHONE
+      noExpeditedUtilitiesSelected:
+        NO_EXPEDITED_UTILITIES_SELECTED: NO_EXPEDITED_UTILITIES_SELECTED
     migrantFarmWorker:
       migrantOrSeasonalFarmWorker: MIGRANT_SEASONAL_FARM_WORKER
     pregnant:
@@ -54,7 +64,15 @@ xml:
     nonPagesData:
       submissionTime: SUBMISSION_TIME
     unearnedIncome:
-      unearnedIncome: UNEARNED_INCOME
+      unearnedIncome:
+        SOCIAL_SECURITY: SOCIAL_SECURITY
+        SSI: SSI
+        VETERANS_BENEFITS: VETERANS_BENEFITS
+        UNEMPLOYMENT: UNEMPLOYMENT
+        WORKERS_COMPENSATION: WORKERS_COMPENSATION
+        RETIREMENT: RETIREMENT
+        CHILD_OR_SPOUSAL_SUPPORT: CHILD_OR_SPOUSAL_SUPPORT
+        TRIBAL_PAYMENTS: TRIBAL_PAYMENTS
     unearnedIncomeSources:
       socialSecurityAmount: SOCIAL_SECURITY_AMOUNT
       supplementalSecurityIncomeAmount: SUPPLEMENTAL_SECURITY_INCOME_AMOUNT
@@ -65,7 +83,13 @@ xml:
       childOrSpousalSupportAmount: CHILD_OR_SPOUSAL_SUPPORT_AMOUNT
       tribalPaymentsAmount: TRIBAL_PAYMENTS_AMOUNT
     homeExpenses:
-      homeExpenses: HOUSING_EXPENSE_TYPE
+      homeExpenses:
+        RENT: RENT
+        MORTGAGE: MORTGAGE
+        HOMEOWNERS_INSURANCE: HOMEOWNERS_INSURANCE
+        REAL_ESTATE_TAXES: REAL_ESTATE_TAXES
+        ASSOCIATION_FEES: ASSOCIATION_FEES
+        ROOM_AND_BOARD: ROOM_AND_BOARD
     homeExpensesAmount:
       homeExpensesAmount: HOUSING_EXPENSES
     energyAssistanceGroup:
@@ -83,7 +107,6 @@ xml:
   enums:
     true: true
     false: false
-    homeless: true
     NEVER_MARRIED: Never Married
     MARRIED_LIVING_WITH_SPOUSE: Married Living w/Spouse
     MARRIED_NOT_LIVING_WITH_SPOUSE: Separated (Married but living apart)
