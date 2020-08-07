@@ -173,7 +173,8 @@
             "YES_NO",
             "MONEY",
             "INCREMENTER",
-            "TEXTAREA"
+            "TEXTAREA",
+            "CUSTOM"
           ]
         },
         "name": {
