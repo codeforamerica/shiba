@@ -476,7 +476,7 @@ shiba-configuration:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "false"
-            hasPrimaryButton: false
+      hasPrimaryButton: false
       inputs:
         - name: payRentOrMortgage
           type: YES_NO

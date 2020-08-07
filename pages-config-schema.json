@@ -135,6 +135,7 @@
       ]
     },
     "value": {
+      "additionalProperties": false,
       "type": "object",
       "properties": {
         "value": {
@@ -143,6 +144,7 @@
         "conditionalValues": {
           "type": "array",
           "items": {
+            "additionalProperties": false,
             "type": "object",
             "properties": {
               "value": {
