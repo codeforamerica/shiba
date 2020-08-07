@@ -1317,15 +1317,24 @@ shiba-configuration:
     expeditedIncome:
       pageConfiguration: *thirtyDayIncome
       nextPages:
-        - pageName: liquidAssets
+        - pageName: expeditedHasSavings
       datasources:
         - pageName: doYouLiveAlone
+    expeditedHasSavings:
+      pageConfiguration: *savings
+      nextPages:
+        - pageName: liquidAssets
     liquidAssets:
       pageConfiguration: *liquidAssets
+      skipCondition:
+        pageName: savings
+        input: haveSavings
+        value: "false"
       nextPages:
         - pageName: expeditedExpenses
       datasources:
         - pageName: doYouLiveAlone
+        - pageName: savings
     expeditedExpenses:
       pageConfiguration: *expeditedExpenses
       nextPages:

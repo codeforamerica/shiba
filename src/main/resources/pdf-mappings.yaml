@@ -42,7 +42,7 @@ caf:
     thirtyDayIncome:
       moneyMadeLast30Days: MONEY_MADE_LAST_MONTH
     liquidAssets:
-      liquidAssets: LIQUID_ASSETS
+      liquidAssets: EXPEDITED_QUESTION_2
     expeditedExpensesAmount:
       expeditedExpensesAmount: HOUSING_EXPENSES
     utilityPayments:

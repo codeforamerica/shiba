@@ -2,6 +2,7 @@ expedited-eligibility:
   assets:
     pageName: liquidAssets
     inputName: liquidAssets
+    defaultValue: 0
   income:
     pageName: thirtyDayIncome
     inputName: moneyMadeLast30Days

@@ -100,4 +100,25 @@ public class ConditionalRenderingPageTest extends AbstractStaticMessageSourcePag
         driver.findElement(By.partialLinkText("Back")).click();
         assertThat(driver.getTitle()).isEqualTo(firstPageTitle);
     }
+
+    @Test
+    void shouldRemoveDataForSkippedPage() {
+        navigateTo("firstPage");
+        testPage.selectEnumeratedInput("someRadioInputName", "NOT SKIP PAGE");
+
+        Page secondPage = testPage.clickPrimaryButton();
+        secondPage.enterInput("foo", "something");
+        secondPage.clickPrimaryButton();
+
+        navigateTo("firstPage");
+        testPage.selectEnumeratedInput("someRadioInputName", "SKIP PAGE");
+        testPage.clickPrimaryButton();
+
+        navigateTo("firstPage");
+        testPage.selectEnumeratedInput("someRadioInputName", "NOT SKIP PAGE");
+        testPage.clickPrimaryButton();
+
+        assertThat(driver.getTitle()).isEqualTo(secondPageTitle);
+        assertThat(testPage.getInputValue("foo")).isEmpty();
+    }
 }

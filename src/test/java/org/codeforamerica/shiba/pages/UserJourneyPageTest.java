@@ -46,7 +46,9 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         Page expeditedIncomePage = testPage.choose(YES);
         expeditedIncomePage.enterInput("moneyMadeLast30Days", "123");
 
-        Page liquidAssetsPage = expeditedIncomePage.clickPrimaryButton();
+        Page hasLiquidAssetPage = expeditedIncomePage.clickPrimaryButton();
+        Page liquidAssetsPage = hasLiquidAssetPage.choose(YES);
+
         liquidAssetsPage.enterInput("liquidAssets", "1233");
 
         Page expeditedExpensesPage = liquidAssetsPage.clickPrimaryButton();
@@ -114,7 +116,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         Page expeditedIncomePage = testPage.choose(YES);
         expeditedIncomePage.enterInput("moneyMadeLast30Days", "1");
 
-        Page liquidAssetsPage = expeditedIncomePage.clickPrimaryButton();
+        Page hasLiquidAsserts = expeditedIncomePage.clickPrimaryButton();
+        Page liquidAssetsPage = hasLiquidAsserts.choose(YES);
         liquidAssetsPage.enterInput("liquidAssets", "1");
 
         Page expeditedExpensesPage = liquidAssetsPage.clickPrimaryButton();

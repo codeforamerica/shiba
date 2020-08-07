@@ -60,6 +60,7 @@ public class PageController {
         PageWorkflowConfiguration nextPage = this.pagesConfiguration.getPageWorkflow(nextPageName);
 
         if (pagesData.shouldSkip(nextPage)) {
+            pagesData.remove(nextPageName);
             return new RedirectView(String.format("/pages/%s", pagesData.getNextPageName(nextPage, option)));
         } else {
             return new RedirectView(String.format("/pages/%s", nextPageName));

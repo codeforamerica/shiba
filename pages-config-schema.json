@@ -106,7 +106,12 @@
           }
         },
         "skipCondition": {
-          "$ref": "#/definitions/condition"
+          "$ref": "#/definitions/condition",
+          "properties": {
+            "pageName": {
+              "type": "string"
+            }
+          }
         },
         "nextPages": {
           "type": "array",
