@@ -105,6 +105,35 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         assertThat(metricsPage.getCardValue("Completion Time")).contains("05m 30s");
     }
 
+    @Test
+    void shouldBeAbleToDecideExpeditedEligibility() {
+        completeFlowFromLandingPageToReviewInfo();
+        testPage.clickSubtleLink();
+        driver.findElement(By.linkText("Yes, I want to see if I qualify")).click();
+
+        Page expeditedIncomePage = testPage.choose(YES);
+        expeditedIncomePage.enterInput("moneyMadeLast30Days", "1");
+
+        Page liquidAssetsPage = expeditedIncomePage.clickPrimaryButton();
+        liquidAssetsPage.enterInput("liquidAssets", "1");
+
+        Page expeditedExpensesPage = liquidAssetsPage.clickPrimaryButton();
+        Page expeditedExpensesAmountPage = expeditedExpensesPage.choose(YES);
+
+        expeditedExpensesAmountPage.enterInput("expeditedExpensesAmount", "333");
+        Page expeditedUtilityPaymentsPage = expeditedExpensesAmountPage.clickPrimaryButton();
+
+        expeditedUtilityPaymentsPage.selectEnumeratedInput("payForUtilities", "Cooling");
+        Page expeditedMigrantFarmWorkerPage = expeditedUtilityPaymentsPage.clickPrimaryButton();
+
+        Page expeditedDeterminationPage = expeditedMigrantFarmWorkerPage.choose(NO);
+
+        assertThat(driver.findElement(By.tagName("p")).getText()).contains("A caseworker will contact you within 3 days to review your application.");
+
+        Page importantToKnow = expeditedDeterminationPage.clickPrimaryButton();
+        assertThat(importantToKnow.getTitle()).isEqualTo("Important to Know");
+    }
+
     private void completeFlowFromLandingPageToReviewInfo() {
         Page languagePreferencesPage = testPage
                 .clickPrimaryButton()

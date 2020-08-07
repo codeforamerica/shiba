@@ -3,7 +3,7 @@ expedited-eligibility:
     pageName: liquidAssets
     inputName: liquidAssets
   income:
-    pageName: expeditedIncome
+    pageName: thirtyDayIncome
     inputName: moneyMadeLast30Days
   migrantWorker:
     pageName: migrantFarmWorker
