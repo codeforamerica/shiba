@@ -134,6 +134,24 @@
                 <onl:HousingExpense>
                     <onl:Type>{{ROOM_AND_BOARD}}</onl:Type>
                 </onl:HousingExpense>
+                <onl:UtilityExpense>
+                    <onl:Type>{{HEATING_OR_COOLING}}</onl:Type>
+                </onl:UtilityExpense>
+                <onl:UtilityExpense>
+                    <onl:Type>{{ELECTRICITY}}</onl:Type>
+                </onl:UtilityExpense>
+                <onl:UtilityExpense>
+                    <onl:Type>{{COOKING_FUEL}}</onl:Type>
+                </onl:UtilityExpense>
+                <onl:UtilityExpense>
+                    <onl:Type>{{WATER_OR_SEWER}}</onl:Type>
+                </onl:UtilityExpense>
+                <onl:UtilityExpense>
+                    <onl:Type>{{GARBAGE_REMOVAL}}</onl:Type>
+                </onl:UtilityExpense>
+                <onl:UtilityExpense>
+                    <onl:Type>{{PHONE_CELL_PHONE}}</onl:Type>
+                </onl:UtilityExpense>
             </onl:ExpenseInfo>
         </onl:HouseholdMember>
         <onl:Program>{{FOOD}}</onl:Program>
@@ -170,7 +188,9 @@
             <onl:NeedInterpreterInd>{{LANGUAGEPREFERENCES_NEEDINTERPRETER}}</onl:NeedInterpreterInd>
         </onl:MiscellaneousInfo>
         <onl:AnyonePregnantInd>{{IS_PREGNANT}}</onl:AnyonePregnantInd>
+
     </onl:HouseholdInfo>
+
     <onl:Disclosure>
         <onl:DeclaredBy>{{APPLICANT_SIGNATURE}}</onl:DeclaredBy>
         <onl:DateDeclared>{{SUBMISSION_TIME}}</onl:DateDeclared>

@@ -40,6 +40,22 @@ derived-values:
               matcher: CONTAINS
               value: COOLING
   - groupName: utilityPayments
+    fieldName: heatingOrCooling
+    values:
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: HEATING_OR_COOLING
+        type: ENUMERATED_MULTI_VALUE
+        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+          conditions:
+            - pageName: utilityPayments
+              input: payForUtilities
+              matcher: CONTAINS
+              value: HEATING
+            - pageName: utilityPayments
+              input: payForUtilities
+              matcher: CONTAINS
+              value: COOLING
+  - groupName: utilityPayments
     fieldName: noHeatingOrCoolingSelection
     values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
@@ -61,6 +77,22 @@ derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: ONE_SELECTED
         type: ENUMERATED_SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+          conditions:
+            - pageName: utilityPayments
+              input: payForUtilities
+              matcher: CONTAINS
+              value: WATER
+            - pageName: utilityPayments
+              input: payForUtilities
+              matcher: CONTAINS
+              value: SEWER
+  - groupName: utilityPayments
+    fieldName: waterOrSewer
+    values:
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: WATER_OR_SEWER
+        type: ENUMERATED_MULTI_VALUE
         condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
           conditions:
             - pageName: utilityPayments
@@ -134,6 +166,18 @@ derived-values:
             - pageName: utilityPayments
               input: payForUtilities
               matcher: DOES_NOT_CONTAIN
+              value: PHONE
+  - groupName: utilityPayments
+    fieldName: phoneCellPhone
+    values:
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: PHONE_CELL_PHONE
+        type: ENUMERATED_MULTI_VALUE
+        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+          conditions:
+            - pageName: utilityPayments
+              input: payForUtilities
+              matcher: CONTAINS
               value: PHONE
   - groupName: ccapHasCostsForChildCare
     fieldName: ccapHasCostsForChildCare
