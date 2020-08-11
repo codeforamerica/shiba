@@ -186,6 +186,37 @@ class XmlGeneratorTest {
     }
 
     @Test
+    void shouldPopulateNodeValueFromEnumeratedMultiValueInputWithIterationNumber() throws IOException, SAXException, ParserConfigurationException {
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
+                "<ns:Root xmlns:ns='some-url'>\n" +
+                "    <ns:Child>{{SOME_TOKEN_0}}</ns:Child>\n" +
+                "</ns:Root>";
+
+        String pageName = "some-screen";
+        String formInputValue = "some-value";
+        String formInputName = "some-form-input";
+        ApplicationInput applicationInput = new ApplicationInput(pageName, formInputName, List.of(formInputValue), ApplicationInputType.ENUMERATED_MULTI_VALUE, 0);
+        List<ApplicationInput> applicationInputs = List.of(applicationInput);
+
+        Map<String, String> xmlConfigMap = Map.of(
+                pageName + "." + formInputName + "." + formInputValue,
+                "SOME_TOKEN"
+        );
+
+        String xmlEnumName = "SOME_VALUE";
+        Map<String, String> xmlEnum = Map.of(formInputValue, xmlEnumName);
+
+        XmlGenerator subject = new XmlGenerator(new ByteArrayResource(xml.getBytes()), xmlConfigMap, xmlEnum);
+        ApplicationFile applicationFile = subject.generate(applicationInputs);
+
+        Document document = byteArrayToDocument(applicationFile.getFileBytes());
+
+        SimpleNamespaceContext namespaceContext = new SimpleNamespaceContext();
+        namespaceContext.setBindings(Map.of("ns", "some-url"));
+        MatcherAssert.assertThat(document, hasXPath("/ns:Root/ns:Child/text()", namespaceContext, Matchers.equalTo(xmlEnumName)));
+    }
+
+    @Test
     void shouldPopulateAllNodeValuesFromEnumeratedMultiValueInput() throws IOException, SAXException, ParserConfigurationException {
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
                 "<ns:Root xmlns:ns='some-url'>\n" +

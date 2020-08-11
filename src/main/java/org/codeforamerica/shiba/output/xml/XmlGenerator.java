@@ -7,7 +7,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.regex.Pattern;
@@ -37,19 +40,24 @@ public class XmlGenerator implements FileGenerator {
             String contentsAfterReplacement = applicationInputs.stream()
                     .filter(input -> !input.getValue().isEmpty())
                     .flatMap(input -> {
-                        String baseXmlToken = config.get(String.join(".", input.getGroupName(), input.getName()));
-                        String xmlToken = input.getIteration() != null ? baseXmlToken + "_" + input.getIteration() : baseXmlToken;
+                        String defaultXmlConfigKey = String.join(".", input.getGroupName(), input.getName());
                         return switch (input.getType()) {
-                            case DATE_VALUE -> Stream.of(new AbstractMap.SimpleEntry<>(xmlToken, String.join("/", input.getValue())));
+                            case DATE_VALUE -> Stream.of(new AbstractMap.SimpleEntry<>(
+                                    getXmlToken(input, config.get(defaultXmlConfigKey)),
+                                    String.join("/", input.getValue())));
                             case ENUMERATED_SINGLE_VALUE -> Optional.ofNullable(enumMappings.get(input.getValue().get(0)))
-                                    .map(mappedValue -> new AbstractMap.SimpleEntry<>(xmlToken, mappedValue))
+                                    .map(mappedValue -> new AbstractMap.SimpleEntry<>(
+                                            getXmlToken(input, config.get(defaultXmlConfigKey)),
+                                            mappedValue))
                                     .stream();
                             case ENUMERATED_MULTI_VALUE -> input.getValue().stream()
                                         .map(value -> new AbstractMap.SimpleEntry<>(
-                                                config.get(String.join(".", input.getGroupName(), input.getName(), value)),
+                                                getXmlToken(input, config.get(String.join(".", defaultXmlConfigKey, value))),
                                                 enumMappings.get(value)))
                                         .filter(entry -> entry.getValue() != null);
-                            default -> Stream.of(new AbstractMap.SimpleEntry<>(xmlToken, input.getValue().get(0)));
+                            default -> Stream.of(new AbstractMap.SimpleEntry<>(
+                                    getXmlToken(input, config.get(defaultXmlConfigKey)),
+                                    input.getValue().get(0)));
                         };
                     })
                     .filter(xmlTokenToInputValueEntry -> xmlTokenToInputValueEntry.getKey() != null)
@@ -64,6 +72,10 @@ public class XmlGenerator implements FileGenerator {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String getXmlToken(ApplicationInput input, String xmlToken) {
+        return input.getIteration() != null ? xmlToken + "_" + input.getIteration() : xmlToken;
     }
 
 }
