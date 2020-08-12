@@ -490,3 +490,47 @@ derived-values:
             - pageName: homeAddress
               input: isHomeless
               value: "true"
+  - groupName: employee
+    fieldName: firstName0
+    values:
+      - type: SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: personalInfo
+          inputName: firstName
+        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+          conditions:
+            - subworkflow: jobs
+              iteration: 0
+  - groupName: employee
+    fieldName: lastName0
+    values:
+      - type: SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: personalInfo
+          inputName: lastName
+        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+          conditions:
+            - subworkflow: jobs
+              iteration: 0
+  - groupName: employee
+    fieldName: firstName1
+    values:
+      - type: SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: personalInfo
+          inputName: firstName
+        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+          conditions:
+            - subworkflow: jobs
+              iteration: 1
+  - groupName: employee
+    fieldName: lastName1
+    values:
+      - type: SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: personalInfo
+          inputName: lastName
+        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+          conditions:
+            - subworkflow: jobs
+              iteration: 1

@@ -56,3 +56,25 @@ test-derived-values:
           pageName: defaultPage
           inputName: defaultInput
         type: SINGLE_VALUE
+  - groupName: groupName6
+    fieldName: value6
+    values:
+      - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: defaultPage
+          inputName: defaultInput
+        type: SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+          conditions:
+            - subworkflow: subworkflowName
+              iteration: 0
+  - groupName: groupName7
+    fieldName: value7
+    values:
+      - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: defaultPage
+          inputName: defaultInput
+        type: SINGLE_VALUE
+        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+          conditions:
+            - subworkflow: subworkflowName
+              iteration: 1

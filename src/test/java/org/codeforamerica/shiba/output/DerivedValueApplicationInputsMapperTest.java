@@ -2,10 +2,7 @@ package org.codeforamerica.shiba.output;
 
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
 import org.codeforamerica.shiba.output.applicationinputsmappers.DerivedValueApplicationInputsMapper;
-import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.PageData;
-import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,5 +89,43 @@ class DerivedValueApplicationInputsMapperTest {
         List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
 
         assertThat(actual).contains(new ApplicationInput("groupName5", "value5", List.of("defaultValue"), ApplicationInputType.SINGLE_VALUE));
+    }
+
+    @Test
+    void shouldEvaluateBasedOnSubworkflow() {
+        Subworkflows subworkflows = new Subworkflows();
+        Subworkflow subworkflow = new Subworkflow();
+        PagesData subworkflowPages = new PagesData();
+        subworkflow.add(subworkflowPages);
+        subworkflows.put("subworkflowName", subworkflow);
+        applicationData.setSubworkflows(subworkflows);
+
+        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
+
+        assertThat(actual).contains(new ApplicationInput(
+                "groupName6",
+                "value6",
+                List.of("defaultValue"),
+                ApplicationInputType.SINGLE_VALUE
+        ));
+    }
+
+    @Test
+    void shouldEvaluateBasedOnSubworkflow_AndNotCreateApplicationInputWhenConditionIsNotMet() {
+        Subworkflows subworkflows = new Subworkflows();
+        Subworkflow subworkflow = new Subworkflow();
+        PagesData subworkflowPages = new PagesData();
+        subworkflow.add(subworkflowPages);
+        subworkflows.put("subworkflowName", subworkflow);
+        applicationData.setSubworkflows(subworkflows);
+
+        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
+
+        assertThat(actual).doesNotContain(new ApplicationInput(
+                "groupName7",
+                "value7",
+                List.of("defaultValue"),
+                ApplicationInputType.SINGLE_VALUE
+        ));
     }
 }

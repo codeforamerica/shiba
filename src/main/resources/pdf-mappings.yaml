@@ -149,3 +149,8 @@ caf:
       haveSoldAssets: HAVE_SOLD_ASSETS
     registerToVote:
       registerToVoteSelection: REGISTER_TO_VOTE
+    employee:
+      firstName0: EMPLOYEE_FIRST_NAME_0
+      lastName0: EMPLOYEE_LAST_NAME_0
+      firstName1: EMPLOYEE_FIRST_NAME_1
+      lastName1: EMPLOYEE_LAST_NAME_1

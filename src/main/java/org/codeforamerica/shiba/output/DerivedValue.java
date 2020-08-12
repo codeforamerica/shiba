@@ -11,9 +11,9 @@ public class DerivedValue {
     private ApplicationInputType type;
     private CompositeCondition condition;
 
-    public boolean shouldDeriveValue(ApplicationData applicationData){
+    public boolean shouldDeriveValue(ApplicationData applicationData) {
         return Optional.ofNullable(condition)
-                .map(compositeCondition -> compositeCondition.appliesTo(applicationData.getPagesData()))
+                .map(compositeCondition -> compositeCondition.appliesTo(applicationData))
                 .orElse(true);
     }
 }

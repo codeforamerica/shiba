@@ -11,6 +11,9 @@ public class Condition {
     String value;
     ValueMatcher matcher = ValueMatcher.CONTAINS;
 
+    String subworkflow;
+    Integer iteration;
+
     public Boolean matches(List<String> inputValue) {
         return this.matcher.matches(inputValue, value);
     }
