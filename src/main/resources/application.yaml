@@ -9,3 +9,7 @@ spring:
 
 client:
   keystore: src/main/resources/shiba-keystore.jks
+
+mnit-esb:
+  url: https://test-svcs.dhs.mn.gov/WebServices/Alfresco/CreateDocument
+  jaxb-context-path: org.codeforamerica.shiba.esbwsdl

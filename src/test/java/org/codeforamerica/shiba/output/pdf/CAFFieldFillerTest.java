@@ -89,9 +89,11 @@ class CAFFieldFillerTest {
 
     @Test
     void shouldReturnTheAppropriateFilename() {
+        when(clock.instant()).thenReturn(Instant.ofEpochSecond(43215321L));
+
         ApplicationFile applicationFile = subject.fill(emptyList());
 
-        assertThat(applicationFile.getFileName()).isEqualTo("test.pdf");
+        assertThat(applicationFile.getFileName()).isEqualTo("43215321-test.pdf");
     }
 
     private PDAcroForm getPdAcroForm(ApplicationFile applicationFile) throws IOException {

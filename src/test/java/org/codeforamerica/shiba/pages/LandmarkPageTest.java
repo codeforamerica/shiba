@@ -1,18 +1,23 @@
 package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
+import org.codeforamerica.shiba.output.ApplicationDataConsumer;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 
 import java.io.IOException;
+import java.time.ZonedDateTime;
 import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
     @TestConfiguration
@@ -28,10 +33,14 @@ public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
     String firstPageTitle = "first page title";
     String fourthPageTitle = "fourth page title";
 
+    @MockBean
+    private ApplicationDataConsumer applicationDataConsumer;
+
     @Override
     @BeforeEach
     void setUp() throws IOException {
         super.setUp();
+        when(applicationDataConsumer.process(any())).thenReturn(ZonedDateTime.now());
         staticMessageSource.addMessage("first-page-title", Locale.US, firstPageTitle);
         staticMessageSource.addMessage("fourth-page-title", Locale.US, "fourth page title");
         staticMessageSource.addMessage("first-page-title", Locale.US, "first page title");

@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
+import org.codeforamerica.shiba.output.ApplicationDataConsumer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -9,10 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.io.IOException;
-import java.time.Clock;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,12 +18,16 @@ import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.pages.DatePart.*;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @MockBean
     Clock clock;
+
+    @MockBean
+    ApplicationDataConsumer applicationDataConsumer;
 
     @Override
     @BeforeEach
@@ -34,6 +36,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         driver.navigate().to(baseUrl + "/pages/landing");
         when(clock.instant()).thenReturn(Instant.now());
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
+        when(applicationDataConsumer.process(any())).thenReturn(ZonedDateTime.now());
     }
 
     @Test
@@ -78,7 +81,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldCaptureSubmissionTimeInSuccessPage() {
-        when(clock.instant()).thenReturn(LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant());
+        when(applicationDataConsumer.process(any()))
+                .thenReturn(ZonedDateTime.of(LocalDateTime.of(2020, 1, 1, 10, 10), ZoneOffset.UTC));
 
         SuccessPage successPage = nonExpeditedFlowToSuccessPage();
 
@@ -88,18 +92,22 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldDownloadPDFWhenClickDownloadMyReceipt() {
+        when(clock.instant()).thenReturn(Instant.ofEpochSecond(1243235L));
+
         SuccessPage successPage = nonExpeditedFlowToSuccessPage();
 
         successPage.downloadReceipt();
-        await().until(() -> path.resolve("DHS-5223.pdf").toFile().exists());
+        await().until(() -> path.resolve("1243235-DHS-5223.pdf").toFile().exists());
     }
 
     @Test
     void shouldDownloadXMLWhenClickDownloadXML() {
+        when(clock.instant()).thenReturn(Instant.ofEpochSecond(1243235L));
+
         SuccessPage successPage = nonExpeditedFlowToSuccessPage();
 
         successPage.downloadXML();
-        await().until(() -> path.resolve("ApplyMN.xml").toFile().exists());
+        await().until(() -> path.resolve("1243235-ApplyMN.xml").toFile().exists());
     }
 
     @Test

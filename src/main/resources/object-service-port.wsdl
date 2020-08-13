@@ -1,0 +1,371 @@
+<wsdl:definitions name="ObjectServicePort" targetNamespace="http://www.cmis.org/2008/05"
+                  xmlns:ns1="http://www.cmis.org/2008/05" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+    <wsdl:types>
+        <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.cmis.org/2008/05" xmlns:tns="http://www.cmis.org/2008/05" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <xs:element name="createDocument">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="repositoryId" type="xs:string"/>
+                        <xs:element name="typeId" type="xs:string"/>
+                        <xs:element name="properties" type="tns:cmisPropertiesType"/>
+                        <xs:element minOccurs="0" name="folderId" type="xs:string"/>
+                        <xs:element name="contentStream" type="tns:cmisContentStreamType"/>
+                        <xs:element name="versioningState" type="tns:enumVersioningState"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="createDocumentResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="objectId" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:complexType name="cmisPropertiesType">
+                <xs:sequence>
+                    <xs:choice maxOccurs="unbounded" minOccurs="0">
+                        <xs:element name="propertyUri" nillable="true" type="tns:cmisPropertyUri"/>
+                        <xs:element name="propertyId" nillable="true" type="tns:cmisPropertyId"/>
+                        <xs:element name="propertyString" nillable="true" type="tns:cmisPropertyString"/>
+                        <xs:element name="propertyXml" nillable="true" type="tns:cmisPropertyXml"/>
+                        <xs:element name="propertyHtml" nillable="true" type="tns:cmisPropertyHtml"/>
+                        <xs:element name="propertyBoolean" nillable="true" type="tns:cmisPropertyBoolean"/>
+                        <xs:element name="propertyDecimal" nillable="true" type="tns:cmisPropertyDecimal"/>
+                        <xs:element name="propertyDateTime" nillable="true" type="tns:cmisPropertyDateTime"/>
+                        <xs:element name="propertyInteger" nillable="true" type="tns:cmisPropertyInteger"/>
+                    </xs:choice>
+                    <xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="cmisContentStreamType">
+                <xs:sequence>
+                    <xs:element name="length" type="xs:integer"/>
+                    <xs:element minOccurs="0" name="mimeType" type="xs:string"/>
+                    <xs:element minOccurs="0" name="filename" type="xs:string"/>
+                    <xs:element minOccurs="0" name="uri" type="xs:anyURI"/>
+                    <xs:element name="stream" ns1:expectedContentTypes="application/octet-stream" type="xs:base64Binary" xmlns:ns1="http://www.w3.org/2005/05/xmlmime"/>
+                    <xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:simpleType name="enumVersioningState">
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="checkedout"/>
+                    <xs:enumeration value="minor"/>
+                    <xs:enumeration value="major"/>
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:complexType name="cmisProperty">
+                <xs:sequence/>
+                <xs:attribute ref="tns:name" use="required"/>
+                <xs:attribute ref="tns:index"/>
+            </xs:complexType>
+            <xs:complexType name="cmisPropertyUri">
+                <xs:complexContent>
+                    <xs:extension base="tns:cmisProperty">
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="value" type="xs:anyURI"/>
+                        </xs:sequence>
+                        <xs:attribute ref="tns:propertyType"/>
+                        <xs:anyAttribute namespace="##other" processContents="skip"/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="cmisPropertyId">
+                <xs:complexContent>
+                    <xs:extension base="tns:cmisProperty">
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="value" type="xs:string"/>
+                        </xs:sequence>
+                        <xs:attribute ref="tns:propertyType"/>
+                        <xs:attribute ref="tns:href"/>
+                        <xs:anyAttribute namespace="##other" processContents="skip"/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="cmisPropertyString">
+                <xs:complexContent>
+                    <xs:extension base="tns:cmisProperty">
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="value" type="xs:string"/>
+                        </xs:sequence>
+                        <xs:attribute ref="tns:propertyType"/>
+                        <xs:anyAttribute namespace="##other" processContents="skip"/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="cmisPropertyXml">
+                <xs:complexContent>
+                    <xs:extension base="tns:cmisProperty">
+                        <xs:sequence>
+                            <xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+                        </xs:sequence>
+                        <xs:attribute ref="tns:propertyType"/>
+                        <xs:anyAttribute namespace="##other" processContents="skip"/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="cmisPropertyHtml">
+                <xs:complexContent>
+                    <xs:extension base="tns:cmisProperty">
+                        <xs:sequence>
+                            <xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+                        </xs:sequence>
+                        <xs:attribute ref="tns:propertyType"/>
+                        <xs:anyAttribute namespace="##other" processContents="skip"/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="cmisPropertyBoolean">
+                <xs:complexContent>
+                    <xs:extension base="tns:cmisProperty">
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="value" type="xs:boolean"/>
+                        </xs:sequence>
+                        <xs:attribute ref="tns:propertyType"/>
+                        <xs:anyAttribute namespace="##other" processContents="skip"/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="cmisPropertyDecimal">
+                <xs:complexContent>
+                    <xs:extension base="tns:cmisProperty">
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="value" type="xs:decimal"/>
+                        </xs:sequence>
+                        <xs:attribute ref="tns:propertyType"/>
+                        <xs:anyAttribute namespace="##other" processContents="skip"/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="cmisPropertyDateTime">
+                <xs:complexContent>
+                    <xs:extension base="tns:cmisProperty">
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="value" type="xs:dateTime"/>
+                        </xs:sequence>
+                        <xs:attribute ref="tns:propertyType"/>
+                        <xs:anyAttribute namespace="##other" processContents="skip"/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="cmisPropertyInteger">
+                <xs:complexContent>
+                    <xs:extension base="tns:cmisProperty">
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="value" type="xs:integer"/>
+                        </xs:sequence>
+                        <xs:attribute ref="tns:propertyType"/>
+                        <xs:anyAttribute namespace="##other" processContents="skip"/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:attribute name="propertyType" type="tns:enumPropertyType"/>
+            <xs:simpleType name="enumPropertyType">
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="boolean"/>
+                    <xs:enumeration value="id"/>
+                    <xs:enumeration value="integer"/>
+                    <xs:enumeration value="datetime"/>
+                    <xs:enumeration value="decimal"/>
+                    <xs:enumeration value="html"/>
+                    <xs:enumeration value="string"/>
+                    <xs:enumeration value="uri"/>
+                    <xs:enumeration value="xml"/>
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:attribute name="href" type="xs:anyURI"/>
+            <xs:attribute name="index" type="xs:integer"/>
+            <xs:attribute name="name" type="xs:string"/>
+
+            <xs:element name="constraintViolationException" nillable="true" type="tns:constraintViolationExceptionType"/>
+            <xs:element name="contentAlreadyExistsException" nillable="true" type="tns:contentAlreadyExistsExceptionType"/>
+            <xs:element name="filterNotValidException" nillable="true" type="tns:filterNotValidExceptionType"/>
+            <xs:element name="folderNotValidException" nillable="true" type="tns:folderNotValidExceptionType"/>
+            <xs:element name="invalidArgumentException" nillable="true" type="tns:invalidArgumentExceptionType"/>
+            <xs:element name="notInFolderException" nillable="true" type="tns:notInFolderExceptionType"/>
+            <xs:element name="objectNotFoundException" nillable="true" type="tns:objectNotFoundExceptionType"/>
+            <xs:element name="offsetException" nillable="true" type="tns:offsetExceptionType"/>
+            <xs:element name="operationNotSupportedException" nillable="true" type="tns:operationNotSupportedExceptionType"/>
+            <xs:element name="permissionDeniedException" nillable="true" type="tns:permissionDeniedExceptionType"/>
+            <xs:element name="runtimeException" nillable="true" type="tns:runtimeExceptionType"/>
+            <xs:element name="storageException" nillable="true" type="tns:storageExceptionType"/>
+            <xs:element name="streamNotSupportedException" nillable="true" type="tns:streamNotSupportedExceptionType"/>
+            <xs:element name="typeNotFoundException" nillable="true" type="tns:typeNotFoundExceptionType"/>
+            <xs:element name="updateConflictException" nillable="true" type="tns:updateConflictExceptionType"/>
+            <xs:element name="versioningException" nillable="true" type="tns:versioningExceptionType"/>
+
+
+            <xs:complexType name="notInFolderExceptionType">
+                <xs:complexContent>
+                    <xs:extension base="tns:cmisFaultType">
+                        <xs:sequence/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="cmisFaultType">
+                <xs:sequence>
+                    <xs:element name="errorCode" type="xs:integer"/>
+                    <xs:element name="errorMessage" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="operationNotSupportedExceptionType">
+                <xs:complexContent>
+                    <xs:extension base="tns:cmisFaultType">
+                        <xs:sequence/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="permissionDeniedExceptionType">
+                <xs:complexContent>
+                    <xs:extension base="tns:cmisFaultType">
+                        <xs:sequence/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="storageExceptionType">
+                <xs:complexContent>
+                    <xs:extension base="tns:cmisFaultType">
+                        <xs:sequence/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="offsetExceptionType">
+                <xs:complexContent>
+                    <xs:extension base="tns:cmisFaultType">
+                        <xs:sequence/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="constraintViolationExceptionType">
+                <xs:complexContent>
+                    <xs:extension base="tns:cmisFaultType">
+                        <xs:sequence/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="versioningExceptionType">
+                <xs:complexContent>
+                    <xs:extension base="tns:cmisFaultType">
+                        <xs:sequence/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="invalidArgumentExceptionType">
+                <xs:complexContent>
+                    <xs:extension base="tns:cmisFaultType">
+                        <xs:sequence/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="filterNotValidExceptionType">
+                <xs:complexContent>
+                    <xs:extension base="tns:cmisFaultType">
+                        <xs:sequence/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="typeNotFoundExceptionType">
+                <xs:complexContent>
+                    <xs:extension base="tns:cmisFaultType">
+                        <xs:sequence/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="updateConflictExceptionType">
+                <xs:complexContent>
+                    <xs:extension base="tns:cmisFaultType">
+                        <xs:sequence/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="folderNotValidExceptionType">
+                <xs:complexContent>
+                    <xs:extension base="tns:cmisFaultType">
+                        <xs:sequence/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="objectNotFoundExceptionType">
+                <xs:complexContent>
+                    <xs:extension base="tns:cmisFaultType">
+                        <xs:sequence/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="streamNotSupportedExceptionType">
+                <xs:complexContent>
+                    <xs:extension base="tns:cmisFaultType">
+                        <xs:sequence/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="runtimeExceptionType">
+                <xs:complexContent>
+                    <xs:extension base="tns:cmisFaultType">
+                        <xs:sequence/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="contentAlreadyExistsExceptionType">
+                <xs:complexContent>
+                    <xs:extension base="tns:cmisFaultType">
+                        <xs:sequence/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="createDocument">
+        <wsdl:part element="ns1:createDocument" name="parameters"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="createDocumentResponse">
+        <wsdl:part element="ns1:createDocumentResponse" name="parameters"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="OperationNotSupportedException">
+        <wsdl:part element="ns1:operationNotSupportedException" name="OperationNotSupportedException"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="InvalidArgumentException">
+        <wsdl:part element="ns1:invalidArgumentException" name="InvalidArgumentException"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="ConstraintViolationException">
+        <wsdl:part element="ns1:constraintViolationException" name="ConstraintViolationException"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="RuntimeException">
+        <wsdl:part element="ns1:runtimeException" name="RuntimeException"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="TypeNotFoundException">
+        <wsdl:part element="ns1:typeNotFoundException" name="TypeNotFoundException"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="FolderNotValidException">
+        <wsdl:part element="ns1:folderNotValidException" name="FolderNotValidException"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="PermissionDeniedException">
+        <wsdl:part element="ns1:permissionDeniedException" name="PermissionDeniedException"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="StreamNotSupportedException">
+        <wsdl:part element="ns1:streamNotSupportedException" name="StreamNotSupportedException"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="StorageException">
+
+        <wsdl:part element="ns1:storageException" name="StorageException"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="UpdateConflictException">
+        <wsdl:part element="ns1:updateConflictException" name="UpdateConflictException"></wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="ObjectServicePort">
+        <wsdl:operation name="createDocument">
+            <wsdl:input message="ns1:createDocument" name="createDocument"></wsdl:input>
+            <wsdl:output message="ns1:createDocumentResponse" name="createDocumentResponse"></wsdl:output>
+            <wsdl:fault message="ns1:StreamNotSupportedException" name="StreamNotSupportedException"></wsdl:fault>
+            <wsdl:fault message="ns1:UpdateConflictException" name="UpdateConflictException"></wsdl:fault>
+            <wsdl:fault message="ns1:StorageException" name="StorageException"></wsdl:fault>
+            <wsdl:fault message="ns1:PermissionDeniedException" name="PermissionDeniedException"></wsdl:fault>
+            <wsdl:fault message="ns1:TypeNotFoundException" name="TypeNotFoundException"></wsdl:fault>
+            <wsdl:fault message="ns1:RuntimeException" name="RuntimeException"></wsdl:fault>
+            <wsdl:fault message="ns1:ConstraintViolationException" name="ConstraintViolationException"></wsdl:fault>
+            <wsdl:fault message="ns1:FolderNotValidException" name="FolderNotValidException"></wsdl:fault>
+            <wsdl:fault message="ns1:InvalidArgumentException" name="InvalidArgumentException"></wsdl:fault>
+            <wsdl:fault message="ns1:OperationNotSupportedException" name="OperationNotSupportedException"></wsdl:fault>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output.pdf;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.output.ApplicationFile;
@@ -44,7 +45,10 @@ public class CAFFieldFiller implements PdfFieldFiller {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             document.save(outputStream);
             document.close();
-            return new ApplicationFile(outputStream.toByteArray(), applicationPDF.getFilename());
+
+            return new ApplicationFile(
+                    outputStream.toByteArray(),
+                    StringUtils.join(clock.instant().getEpochSecond(), "-", applicationPDF.getFilename()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

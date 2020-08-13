@@ -17,10 +17,48 @@ configurations {
     runtimeClasspath {
         extendsFrom developmentOnly
     }
+    jaxb
 }
 
 repositories {
     mavenCentral()
+}
+
+task genJaxb {
+    ext.sourcesDir = "${buildDir}/generated-sources/jaxb"
+    ext.classesDir = "${buildDir}/classes/jaxb"
+    ext.schema = "src/main/resources/object-service-port.wsdl"
+
+    outputs.dir classesDir
+
+    doLast() {
+        project.ant {
+            taskdef name: "xjc", classname: "com.sun.tools.xjc.XJCTask",
+                    classpath: configurations.jaxb.asPath
+            mkdir(dir: sourcesDir)
+            mkdir(dir: classesDir)
+
+            xjc(destdir: sourcesDir, schema: schema,
+                    package: "org.codeforamerica.shiba.esbwsdl") {
+                arg(value: "-wsdl")
+                produces(dir: sourcesDir, includes: "**/*.java")
+            }
+
+            javac(destdir: classesDir, source: 1.8, target: 1.8, debug: true,
+                    debugLevel: "lines,vars,source",
+                    classpath: configurations.jaxb.asPath) {
+                src(path: sourcesDir)
+                include(name: "**/*.java")
+                include(name: "*.java")
+            }
+
+            copy(todir: classesDir) {
+                fileset(dir: sourcesDir, erroronmissingdir: false) {
+                    exclude(name: "**/*.java")
+                }
+            }
+        }
+    }
 }
 
 dependencies {
@@ -32,6 +70,10 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation('org.springframework.boot:spring-boot-starter-web-services') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    }
+    implementation 'org.glassfish.jaxb:jaxb-runtime'
     implementation 'org.apache.pdfbox:pdfbox:2.0.19'
     implementation 'org.apache.commons:commons-lang3'
     implementation 'org.jetbrains:annotations:19.0.0'
@@ -41,6 +83,9 @@ dependencies {
     runtime 'org.flywaydb:flyway-core:6.4.4'
     runtime 'com.h2database:h2'
 
+    compile(files(genJaxb.classesDir).builtBy(genJaxb))
+    jaxb "com.sun.xml.bind:jaxb-xjc:2.1.7"
+
     testImplementation 'org.seleniumhq.selenium:selenium-java:3.141.59'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
@@ -48,6 +93,7 @@ dependencies {
     testImplementation 'org.awaitility:awaitility:4.0.2'
     testImplementation 'com.github.tomakehurst:wiremock-standalone:2.27.1'
     testImplementation 'io.github.bonigarcia:webdrivermanager:4.0.0'
+    testImplementation 'org.springframework.ws:spring-ws-test'
 }
 
 compileJava.inputs.files(processResources)

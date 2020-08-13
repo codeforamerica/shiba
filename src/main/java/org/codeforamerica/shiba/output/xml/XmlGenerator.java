@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output.xml;
 
+import org.apache.commons.lang3.StringUtils;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.springframework.beans.factory.annotation.Value;
@@ -7,6 +8,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.Clock;
 import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
@@ -21,17 +23,19 @@ public class XmlGenerator implements FileGenerator {
     private final Resource xmlConfiguration;
     private final Map<String, String> config;
     private final Map<String, String> enumMappings;
+    private final Clock clock;
     private final BinaryOperator<String> UNUSED_IN_SEQUENTIAL_STREAM = (s1, s2) -> "";
     private final Function<String, String> tokenFormatter = (token) -> Pattern.quote(String.format("{{%s}}", token));
 
     public XmlGenerator(
             @Value("classpath:XmlConfiguration.xml") Resource xmlConfiguration,
             Map<String, String> xmlConfigMap,
-            Map<String, String> xmlEnum
-    ) {
+            Map<String, String> xmlEnum,
+            Clock clock) {
         this.xmlConfiguration = xmlConfiguration;
         this.config = xmlConfigMap;
         this.enumMappings = xmlEnum;
+        this.clock = clock;
     }
 
     @Override
@@ -68,7 +72,9 @@ public class XmlGenerator implements FileGenerator {
                             UNUSED_IN_SEQUENTIAL_STREAM
                     );
             String finishedXML = contentsAfterReplacement.replaceAll("\\s*<\\w+:\\w+>\\{\\{\\w+}}</\\w+:\\w+>", "");
-            return new ApplicationFile(finishedXML.getBytes(), "ApplyMN.xml");
+            return new ApplicationFile(
+                    finishedXML.getBytes(),
+                    StringUtils.join(clock.instant().getEpochSecond(), "-", "ApplyMN.xml"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

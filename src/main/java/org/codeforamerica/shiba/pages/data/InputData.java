@@ -27,7 +27,7 @@ public class InputData {
         this(true, emptyList());
     }
 
-    InputData(@NotNull List<String> value) {
+    public InputData(@NotNull List<String> value) {
         this(true, value);
     }
 

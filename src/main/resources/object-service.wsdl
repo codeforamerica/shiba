@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="ObjectService" targetNamespace="http://www.cmis.org/ns/1.0"
+                  xmlns:ns1="http://www.cmis.org/2008/05"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://www.cmis.org/ns/1.0"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+    <wsdl:import location="object-service-port.wsdl"
+                 namespace="http://www.cmis.org/2008/05"></wsdl:import>
+    <wsdl:message name="createDocumentResponse">
+        <wsdl:part element="ns1:createDocumentResponse" name="parameters"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="createDocument">
+        <wsdl:part element="ns1:createDocument" name="parameters"></wsdl:part>
+    </wsdl:message>
+    <wsdl:binding name="ObjectServiceSoapBinding" type="ns1:ObjectServicePort">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="createDocument">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="createDocument">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="createDocumentResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="StorageException">
+                <soap:fault name="StorageException" use="literal"/>
+            </wsdl:fault>
+            <wsdl:fault name="StreamNotSupportedException">
+                <soap:fault name="StreamNotSupportedException" use="literal"/>
+            </wsdl:fault>
+            <wsdl:fault name="UpdateConflictException">
+                <soap:fault name="UpdateConflictException" use="literal"/>
+            </wsdl:fault>
+            <wsdl:fault name="PermissionDeniedException">
+                <soap:fault name="PermissionDeniedException" use="literal"/>
+            </wsdl:fault>
+            <wsdl:fault name="TypeNotFoundException">
+                <soap:fault name="TypeNotFoundException" use="literal"/>
+            </wsdl:fault>
+            <wsdl:fault name="ConstraintViolationException">
+                <soap:fault name="ConstraintViolationException" use="literal"/>
+            </wsdl:fault>
+            <wsdl:fault name="RuntimeException">
+                <soap:fault name="RuntimeException" use="literal"/>
+            </wsdl:fault>
+            <wsdl:fault name="FolderNotValidException">
+                <soap:fault name="FolderNotValidException" use="literal"/>
+            </wsdl:fault>
+            <wsdl:fault name="InvalidArgumentException">
+                <soap:fault name="InvalidArgumentException" use="literal"/>
+            </wsdl:fault>
+            <wsdl:fault name="OperationNotSupportedException">
+                <soap:fault name="OperationNotSupportedException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="ObjectService">
+        <wsdl:port binding="tns:ObjectServiceSoapBinding" name="ObjectServicePort">
+            <soap:address location="http://applymn-test.dhs.mn.gov/alfresco/cmis/ObjectService"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
