@@ -74,5 +74,10 @@
       "name": "caf.mappings.programSelection.[programs.?[#this.name() == 'EMERGENCY']]",
       "type": "java.lang.String",
       "description": "Description for caf.mappings.programSelection.[programs.?[#this.name() == 'EMERGENCY']]."
+    },
+    {
+      "name": "demoBanner",
+      "type": "java.lang.String",
+      "description": "Description for demoBanner."
     }
   ] }

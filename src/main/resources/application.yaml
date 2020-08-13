@@ -9,3 +9,5 @@ spring:
 
 client:
   keystore: src/main/resources/shiba-keystore.jks
+
+demoBanner: 0

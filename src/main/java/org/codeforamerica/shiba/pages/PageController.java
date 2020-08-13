@@ -10,6 +10,7 @@ import org.codeforamerica.shiba.pages.config.PageWorkflowConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +34,9 @@ public class PageController {
     private final Clock clock;
     private final ApplicationMetricsRepository repository;
     private final Metrics metrics;
+
+    @Value("${demoBanner}")
+    private String demoBanner;
 
     public PageController(
             ApplicationConfiguration applicationConfiguration,
@@ -129,6 +133,7 @@ public class PageController {
             pageToRender = "formPage";
             model.put("data", pagesData.getPageDataOrDefault(pageTemplate.getName(), pageConfiguration));
         }
+        model.put("demoBanner", demoBanner);
         return new ModelAndView(pageToRender, model);
     }
 
