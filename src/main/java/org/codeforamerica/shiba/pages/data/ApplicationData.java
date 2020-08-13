@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.pages.data;
 
 import lombok.Data;
 
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,7 +10,7 @@ import java.util.Map;
 public class ApplicationData {
     private PagesData pagesData = new PagesData();
     private Subworkflows subworkflows = new Subworkflows();
-    private String submissionTime;
+    private ZonedDateTime submissionTime;
     private Map<String, PagesData> incompleteIterations = new HashMap<>();
 
     public void clear() {

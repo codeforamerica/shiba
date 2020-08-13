@@ -68,4 +68,17 @@ public class StartTimerPageTest extends AbstractStaticMessageSourcePageTest {
 
         assertThat(driver.findElement(By.id("start-time")).getText()).isNotBlank();
     }
+
+    @Test
+    void doesNotResetStartTime() {
+        driver.navigate().to(baseUrl + "/pages/pageThatDoesStartTimer");
+        driver.navigate().to(baseUrl + "/pathExposingStartTime");
+        String initialStartTime = driver.findElement(By.id("start-time")).getText();
+
+        driver.navigate().to(baseUrl + "/pages/pageThatDoesStartTimer");
+        driver.navigate().to(baseUrl + "/pathExposingStartTime");
+        String startTime = driver.findElement(By.id("start-time")).getText();
+
+        assertThat(startTime).isEqualTo(initialStartTime);
+    }
 }

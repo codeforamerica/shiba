@@ -1,0 +1,23 @@
+shiba-configuration-pages-controller:
+  pageDefinitions:
+    - &firstPage
+      name: firstPage
+      pageTitle:
+        value: first-page-title
+      inputs:
+        - name: foo
+          type: TEXT
+          validator:
+            validation: NOT_BLANK
+    - &terminalPage
+      name: terminalPage
+      pageTitle:
+        value: terminal-page-title
+  workflow:
+    firstPage:
+      pageConfiguration: *firstPage
+    terminalPage:
+      pageConfiguration: *terminalPage
+  landmarkPages:
+    terminalPage: terminalPage
+    submitPage: firstPage

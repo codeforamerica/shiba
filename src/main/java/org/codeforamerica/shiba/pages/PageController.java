@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.pages;
 import org.codeforamerica.shiba.metrics.ApplicationMetric;
 import org.codeforamerica.shiba.metrics.ApplicationMetricsRepository;
 import org.codeforamerica.shiba.metrics.Metrics;
+import org.codeforamerica.shiba.output.ApplicationDataConsumer;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.LandmarkPagesConfiguration;
 import org.codeforamerica.shiba.pages.config.PageConfiguration;
@@ -20,11 +21,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.HttpServletResponse;
 import java.time.Clock;
 import java.time.Duration;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 @Controller
@@ -34,6 +31,7 @@ public class PageController {
     private final Clock clock;
     private final ApplicationMetricsRepository repository;
     private final Metrics metrics;
+    private final ApplicationDataConsumer applicationDataConsumer;
 
     @Value("${demoBanner}")
     private String demoBanner;
@@ -43,13 +41,15 @@ public class PageController {
             ApplicationData applicationData,
             Clock clock,
             ApplicationMetricsRepository repository,
-            Metrics metrics
+            Metrics metrics,
+            ApplicationDataConsumer applicationDataConsumer
     ) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
         this.repository = repository;
         this.metrics = metrics;
+        this.applicationDataConsumer = applicationDataConsumer;
     }
 
     @GetMapping("/pages/{pageName}/navigation")
@@ -191,8 +191,7 @@ public class PageController {
 
     @PostMapping("/submit")
     ModelAndView submitApplication(
-            @RequestBody(required = false) MultiValueMap<String, String> model,
-            Locale locale
+            @RequestBody(required = false) MultiValueMap<String, String> model
     ) {
         LandmarkPagesConfiguration landmarkPagesConfiguration = this.applicationConfiguration.getLandmarkPages();
         String submitPage = landmarkPagesConfiguration.getSubmitPage();
@@ -206,8 +205,8 @@ public class PageController {
             ApplicationMetric applicationMetric = new ApplicationMetric(Duration.between(metrics.getStartTime(), clock.instant()));
             repository.save(applicationMetric);
 
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy", locale);
-            this.applicationData.setSubmissionTime(dateTimeFormatter.format(ZonedDateTime.ofInstant(clock.instant(), ZoneId.of("UTC"))));
+            this.applicationData.setSubmissionTime(applicationDataConsumer.process(applicationData));
+
             return new ModelAndView(String.format("redirect:/pages/%s/navigation", submitPage));
         } else {
             return new ModelAndView("redirect:/pages/" + submitPage);

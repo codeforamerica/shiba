@@ -7,7 +7,6 @@ import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -30,11 +29,6 @@ public class PdfIntegrationTest {
 
     ApplicationData data = new ApplicationData();
     PagesData pagesData = new PagesData();
-
-    @BeforeEach
-    void setUp() {
-        data.setSubmissionTime("something");
-    }
 
     @Test
     void shouldMapNoForUnearnedIncomeOptionsThatAreNotChecked() {

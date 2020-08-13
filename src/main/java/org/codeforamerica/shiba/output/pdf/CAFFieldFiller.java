@@ -9,14 +9,20 @@ import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.Clock;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 
 @Component
 public class CAFFieldFiller implements PdfFieldFiller {
     private final Resource applicationPDF;
+    private final Clock clock;
 
-    public CAFFieldFiller(@Value("classpath:DHS-5223.pdf") Resource applicationPDF) {
+    public CAFFieldFiller(@Value("classpath:DHS-5223.pdf") Resource applicationPDF,
+                          Clock clock) {
         this.applicationPDF = applicationPDF;
+        this.clock = clock;
     }
 
     @Override
@@ -32,6 +38,8 @@ public class CAFFieldFiller implements PdfFieldFiller {
                     e.printStackTrace();
                 }
             });
+            acroForm.getField("CREATED_DATE")
+                    .setValue(DateTimeFormatter.ISO_LOCAL_DATE.format(ZonedDateTime.now(clock)));
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             document.save(outputStream);

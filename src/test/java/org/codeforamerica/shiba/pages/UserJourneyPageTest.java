@@ -30,6 +30,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         super.setUp();
         driver.navigate().to(baseUrl + "/pages/landing");
         when(clock.instant()).thenReturn(Instant.now());
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
     }
 
     @Test
