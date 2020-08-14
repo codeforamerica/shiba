@@ -1,0 +1,4 @@
+spring:
+  datasource:
+    url: ${APTIBLE_DATABASE_HREF}
+    driverClassName: org.postgresql.Driver
