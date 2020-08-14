@@ -501,6 +501,9 @@ derived-values:
           conditions:
             - subworkflow: jobs
               iteration: 0
+              pageName: employersName
+              input: employersName
+              matcher: NOT_EMPTY
   - groupName: employee
     fieldName: lastName0
     values:
@@ -512,6 +515,9 @@ derived-values:
           conditions:
             - subworkflow: jobs
               iteration: 0
+              pageName: employersName
+              input: employersName
+              matcher: NOT_EMPTY
   - groupName: employee
     fieldName: firstName1
     values:
@@ -523,6 +529,9 @@ derived-values:
           conditions:
             - subworkflow: jobs
               iteration: 1
+              pageName: employersName
+              input: employersName
+              matcher: NOT_EMPTY
   - groupName: employee
     fieldName: lastName1
     values:
@@ -534,3 +543,60 @@ derived-values:
           conditions:
             - subworkflow: jobs
               iteration: 1
+              pageName: employersName
+              input: employersName
+              matcher: NOT_EMPTY
+  - groupName: employee
+    fieldName: selfEmployed
+    values:
+      - type: ENUMERATED_SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "true"
+        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+          conditions:
+            - subworkflow: jobs
+              iteration: 0
+              pageName: selfEmployment
+              input: selfEmployment
+              value: "true"
+            - subworkflow: jobs
+              iteration: 1
+              pageName: selfEmployment
+              input: selfEmployment
+              value: "true"
+  - groupName: employee
+    fieldName: selfEmployed
+    values:
+      - type: ENUMERATED_SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "false"
+        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+          conditions:
+            - subworkflow: jobs
+              iteration: 0
+              pageName: selfEmployment
+              input: selfEmployment
+              value: "false"
+            - subworkflow: jobs
+              iteration: 1
+              pageName: selfEmployment
+              input: selfEmployment
+              value: "false"
+  - groupName: employee
+    fieldName: selfEmployedGrossMonthlyEarnings
+    values:
+      - type: SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "see question 9"
+        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+          conditions:
+            - subworkflow: jobs
+              iteration: 0
+              pageName: selfEmployment
+              input: selfEmployment
+              value: "true"
+            - subworkflow: jobs
+              iteration: 1
+              pageName: selfEmployment
+              input: selfEmployment
+              value: "true"

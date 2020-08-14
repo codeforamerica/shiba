@@ -92,29 +92,13 @@ class DerivedValueApplicationInputsMapperTest {
     }
 
     @Test
-    void shouldEvaluateBasedOnSubworkflow() {
+    void shouldNotCreateApplicationInput_WhenConditionForSubworkflow_isFalse() {
         Subworkflows subworkflows = new Subworkflows();
         Subworkflow subworkflow = new Subworkflow();
         PagesData subworkflowPages = new PagesData();
-        subworkflow.add(subworkflowPages);
-        subworkflows.put("subworkflowName", subworkflow);
-        applicationData.setSubworkflows(subworkflows);
-
-        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
-
-        assertThat(actual).contains(new ApplicationInput(
-                "groupName6",
-                "value6",
-                List.of("defaultValue"),
-                ApplicationInputType.SINGLE_VALUE
-        ));
-    }
-
-    @Test
-    void shouldEvaluateBasedOnSubworkflow_AndNotCreateApplicationInputWhenConditionIsNotMet() {
-        Subworkflows subworkflows = new Subworkflows();
-        Subworkflow subworkflow = new Subworkflow();
-        PagesData subworkflowPages = new PagesData();
+        PageData pageData = new PageData();
+        pageData.put("input1", InputData.builder().value(List.of("wrong_value")).build());
+        subworkflowPages.put("page1", pageData);
         subworkflow.add(subworkflowPages);
         subworkflows.put("subworkflowName", subworkflow);
         applicationData.setSubworkflows(subworkflows);
@@ -122,9 +106,31 @@ class DerivedValueApplicationInputsMapperTest {
         List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
 
         assertThat(actual).doesNotContain(new ApplicationInput(
-                "groupName7",
-                "value7",
-                List.of("defaultValue"),
+                "groupName8",
+                "value8",
+                List.of("bar"),
+                ApplicationInputType.SINGLE_VALUE
+        ));
+    }
+
+    @Test
+    void shouldCreateApplicationInput_WhenConditionForSubworkflow_isTrue() {
+        Subworkflows subworkflows = new Subworkflows();
+        Subworkflow subworkflow = new Subworkflow();
+        PagesData subworkflowPages = new PagesData();
+        PageData pageData = new PageData();
+        pageData.put("input1", InputData.builder().value(List.of("right_value")).build());
+        subworkflowPages.put("page1", pageData);
+        subworkflow.add(subworkflowPages);
+        subworkflows.put("subworkflowName", subworkflow);
+        applicationData.setSubworkflows(subworkflows);
+
+        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
+
+        assertThat(actual).contains(new ApplicationInput(
+                "groupName8",
+                "value8",
+                List.of("bar"),
                 ApplicationInputType.SINGLE_VALUE
         ));
     }

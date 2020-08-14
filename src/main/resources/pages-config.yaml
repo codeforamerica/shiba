@@ -934,6 +934,19 @@ shiba-configuration:
           validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
           promptMessage:
             promptMessageKey: employers-name.what-is-the-employers-name
+    - &selfEmployment
+      name: selfEmployment
+      pageTitle:
+        value: self-employment.title
+      headerKey:
+        value: self-employment.is-your-work-here
+      hasPrimaryButton: false
+      inputs:
+        - name: selfEmployment
+          promptMessage:
+            promptMessageFragmentName: selfEmploymentPrompt
+          type: YES_NO
+      contextFragment: jobContextFragment
     - &jobBuilder
       name: jobBuilder
       pageTitle:
@@ -1188,7 +1201,14 @@ shiba-configuration:
       pageConfiguration: *employersName
       groupName: jobs
       nextPages:
+        - pageName: selfEmployment
+    selfEmployment:
+      pageConfiguration: *selfEmployment
+      groupName: jobs
+      nextPages:
         - pageName: jobBuilder
+      datasources:
+        - pageName: employersName
     jobBuilder:
       pageConfiguration: *jobBuilder
       nextPages:
@@ -1410,7 +1430,7 @@ shiba-configuration:
   pageGroups:
     jobs:
       startPage: employersName
-      completePage: employersName
+      completePage: selfEmployment
       redirectPage: warningPage
       noDataRedirectPage: warningPage
   landmarkPages:

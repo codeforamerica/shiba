@@ -85,4 +85,16 @@ public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest 
 
         assertThat(driver.findElement(By.cssSelector("h2")).getText()).isEqualTo(yesHeaderText);
     }
+
+    @Test
+    void shouldDisplayDatasourceForFormPages() {
+        navigateTo("firstPage");
+
+        String value = "some input value";
+        testPage.enterInput("someInputName", value);
+        testPage.clickPrimaryButton();
+
+        navigateTo("testFormPage");
+        assertThat(driver.findElement(By.id("context-fragment")).getText()).isEqualTo(value);
+    }
 }

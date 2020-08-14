@@ -41,6 +41,9 @@ public class ApplicationInput {
     }
 
     private String getNameWithIteration(String name) {
+        if (name == null) {
+            return null;
+        }
         return this.getIteration() != null ? name + "_" + this.getIteration() : name;
     }
 }

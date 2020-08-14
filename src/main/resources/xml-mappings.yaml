@@ -112,6 +112,8 @@ xml:
       haveSoldAssets: HAVE_SOLD_ASSETS
     employersName:
       employersName: EMPLOYERS_NAME
+    employee:
+      selfEmployed: SELF_EMPLOYED
   enums:
     true: true
     false: false

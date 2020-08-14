@@ -53,6 +53,7 @@
                 </onl:WorkChange>
             </onl:AdditionalInfo>
             <onl:EmploymentInfo>
+                <onl:SelfEmployedInd>{{SELF_EMPLOYED}}</onl:SelfEmployedInd>
                 <onl:Employment>
                     <onl:EmployerName>{{EMPLOYERS_NAME_0}}</onl:EmployerName>
                 </onl:Employment>

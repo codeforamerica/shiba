@@ -180,3 +180,40 @@
 .vertical-button-group .button {
     margin-left: 0;
 }
+
+.reveal-adjacent {
+    border: 2px solid #034E46;
+    border-radius: 10px;
+}
+
+.reveal__link-adjacent {
+    width: 100%;
+    border: unset;
+    border-bottom-left-radius: unset;
+    border-bottom-right-radius: unset;
+}
+
+.reveal__link-adjacent:after {
+    float: right;
+}
+
+.is-hidden .reveal__link-adjacent {
+    border-radius: inherit;
+}
+
+/*noinspection CssReplaceWithShorthandSafely*/
+.reveal__content-adjacent {
+    margin-top: 0;
+    border: unset;
+    border-top-left-radius: unset;
+    border-top-right-radius: unset;
+    border-top: 2px solid #034E46;
+    background-color: #EBFFFA;
+    color: #034E46;
+}
+
+.job-context-employer-name {
+    color: #5F5854;
+    border-bottom: 2px solid #AAAAAA;
+    padding-bottom: 0.5rem;
+}

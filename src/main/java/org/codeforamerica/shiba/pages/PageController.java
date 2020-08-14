@@ -127,6 +127,7 @@ public class PageController {
             model.put("subworkflows", pageWorkflow.getSubworkflows(applicationData));
         } else {
             pageToRender = "formPage";
+            model.put("pageDatasources", pagesData.getDatasourcePagesBy(pageWorkflow.getDatasources()));
             model.put("data", pagesData.getPageDataOrDefault(pageTemplate.getName(), pageConfiguration));
         }
         return new ModelAndView(pageToRender, model);

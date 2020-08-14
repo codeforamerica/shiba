@@ -17,16 +17,14 @@ public abstract class CompositeCondition {
     @NotNull
     protected Predicate<Condition> getConditionPredicate(ApplicationData applicationData) {
         return condition -> {
-            if (condition.getSubworkflow() != null) {
-                return Optional.ofNullable(applicationData.getSubworkflows().get(condition.getSubworkflow()))
-                        .map(subworkflow -> subworkflow.size() > condition.getIteration())
-                        .orElse(false);
-            } else {
-                PagesData pagesData = applicationData.getPagesData();
-                return Optional.ofNullable(pagesData.getPage(condition.getPageName()))
-                        .map(inputDataMap -> inputDataMap.satisfies(condition))
-                        .orElse(false);
-            }
+            PagesData pagesData = Optional.ofNullable(condition.getSubworkflow())
+                    .map(subworkflow -> applicationData.getSubworkflows().get(subworkflow))
+                    .filter(subworkflow -> subworkflow.size() > condition.getIteration())
+                    .map(subworkflow -> subworkflow.get(condition.getIteration()))
+                    .orElse(applicationData.getPagesData());
+            return Optional.ofNullable(pagesData.getPage(condition.getPageName()))
+                    .map(inputDataMap -> inputDataMap.satisfies(condition))
+                    .orElse(false);
         };
     }
 }

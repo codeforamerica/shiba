@@ -104,7 +104,8 @@ public class PagesData extends HashMap<String, PageData> {
                 resolve(pageWorkflowConfiguration, pageConfiguration.getHeaderKey()),
                 pageConfiguration.getHeaderHelpMessageKey(),
                 pageConfiguration.getPrimaryButtonTextKey(),
-                pageConfiguration.getHasPrimaryButton()
+                pageConfiguration.getHasPrimaryButton(),
+                pageConfiguration.getContextFragment()
         );
     }
 

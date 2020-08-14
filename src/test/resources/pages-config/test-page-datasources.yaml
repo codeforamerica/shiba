@@ -53,9 +53,17 @@ shiba-configuration-page-datasource:
         - name: foo
           type: TEXT
     - &testStaticPage
-        name: testStaticPage
-        pageTitle:
-          value: dummy-page-title
+      name: testStaticPage
+      pageTitle:
+        value: dummy-page-title
+    - &testFormPage
+      name: testFormPage
+      pageTitle:
+        value: dummy-page-title
+      inputs:
+        - name: foo
+          type: TEXT
+      contextFragment: testFormPageFragment
   workflow:
     firstPage:
       pageConfiguration: *firstPage
@@ -71,6 +79,10 @@ shiba-configuration-page-datasource:
         - pageName: yesNoQuestionPage
     testStaticPage:
       pageConfiguration: *testStaticPage
+      datasources:
+        - pageName: firstPage
+    testFormPage:
+      pageConfiguration: *testFormPage
       datasources:
         - pageName: firstPage
   landmarkPages:

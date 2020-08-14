@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="testFormPageFragment"
+     id="context-fragment"
+   th:text="${pageDatasources.get('firstPage').get('someInputName').value[0]}"></div>
+</body>
+</html>

@@ -13,6 +13,7 @@ public class PageTemplate {
     String headerHelpMessageKey;
     String primaryButtonTextKey;
     Boolean hasPrimaryButton;
+    String contextFragment;
 
     @SuppressWarnings("unused")
     public boolean hasHeader() {

@@ -85,6 +85,14 @@ shiba-configuration-input:
         - name: foo
           type: TEXT
       hasPrimaryButton: false
+    - &pageWithContextFragment
+      name: pageWithContextFragment
+      pageTitle:
+        value: dummy-page-title
+      inputs:
+        - name: foo
+          type: TEXT
+      contextFragment: pageContextFragment
   workflow:
     firstPage:
       pageConfiguration: *firstPage
@@ -96,5 +104,7 @@ shiba-configuration-input:
       pageConfiguration: *inputWithPromptFragmentPage
     doNotHavePrimaryButtonPage:
       pageConfiguration: *doNotHavePrimaryButtonPage
+    pageWithContextFragment:
+      pageConfiguration: *pageWithContextFragment
   landmarkPages:
     startTimerPage:

@@ -57,6 +57,19 @@ class PdfFieldMapperTest {
         assertThat(fields).isEmpty();
     }
 
+    @Test
+    void shouldNotMapInputsWithIterationNumberWithoutPdfFieldMappings() {
+        String formInputName = "some-input";
+        String pageName = "some-screen";
+
+        ApplicationInput applicationInput = new ApplicationInput(pageName, formInputName, List.of("someValue"), ApplicationInputType.SINGLE_VALUE, 1);
+
+        PdfFieldMapper subject = new PdfFieldMapper(Map.of());
+        List<PdfField> fields = subject.map(List.of(applicationInput));
+
+        assertThat(fields).isEmpty();
+    }
+
     @ParameterizedTest
     @EnumSource(value = ApplicationInputType.class)
     void shouldNotMapInputsWithEmptyValues(ApplicationInputType applicationInputType) {

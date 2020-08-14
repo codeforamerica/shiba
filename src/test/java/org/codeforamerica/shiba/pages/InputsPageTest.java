@@ -206,9 +206,16 @@ public class InputsPageTest extends AbstractStaticMessageSourcePageTest {
     }
 
     @Test
-    void shouldNotDisplayPrimaryButtonWhenHasPrimaryButtonIsFalse () {
+    void shouldNotDisplayPrimaryButtonWhenHasPrimaryButtonIsFalse() {
         navigateTo("doNotHavePrimaryButtonPage");
 
         assertThat(driver.findElements(By.className("button--primary"))).isEmpty();
+    }
+
+    @Test
+    void shouldDisplayFragmentForPage() {
+        navigateTo("pageWithContextFragment");
+
+        assertThat(driver.findElement(By.id("pageContext")).getText()).isEqualTo("this is context");
     }
 }

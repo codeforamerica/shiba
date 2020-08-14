@@ -8,6 +8,9 @@
         <div class="grid">
             <a th:replace="fragments/go-back"></a>
             <div class="card spacing-above-35">
+                <th:block th:if="${page.contextFragment != null}">
+                    <div th:replace="'fragments/'+__${page.contextFragment}__"></div>
+                </th:block>
                 <div th:if="${page.hasHeader()}" class="grid__item spacing-above-35 spacing-below-35">
                     <h2 th:text="#{${page.headerKey}}"></h2>
                     <p class="text--help"
@@ -19,7 +22,8 @@
                         <div th:each="input: ${page.inputs}">
                             <div th:replace="'fragments/'+__${input.fragment()}__ :: __${input.fragment()}__(${input}, ${data})"></div>
                         </div>
-                        <button th:if="${page.hasPrimaryButton}" class="button button--primary" type="submit" th:text="#{${page.primaryButtonTextKey}}"></button>
+                        <button th:if="${page.hasPrimaryButton}" class="button button--primary" type="submit"
+                                th:text="#{${page.primaryButtonTextKey}}"></button>
                     </form>
                 </div>
             </div>
