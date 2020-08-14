@@ -3,6 +3,10 @@
 
 name: Deploy to demo
 
+on:
+  workflow_dispatch:
+    inputs: []
+
 jobs:
   deploy:
     name: Deploy to Aptible demo
