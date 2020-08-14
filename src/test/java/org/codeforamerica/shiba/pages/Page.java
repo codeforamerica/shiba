@@ -18,11 +18,6 @@ public class Page {
         this.driver = driver;
     }
 
-    public Page clickSubtleLink() {
-        driver.findElement(By.className("link--subtle")).click();
-        return this;
-    }
-
     public Page goBack() {
         driver.findElement(By.partialLinkText("Go Back")).click();
         return this;

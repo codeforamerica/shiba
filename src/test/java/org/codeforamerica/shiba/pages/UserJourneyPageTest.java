@@ -2,6 +2,8 @@ package org.codeforamerica.shiba.pages;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.openqa.selenium.By;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.jdbc.Sql;
@@ -38,19 +40,23 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         nonExpeditedFlowToSuccessPage();
     }
 
-    @Test
-    void userCanCompleteTheExpeditedFlow() {
+    @ParameterizedTest
+    @CsvSource(value = {
+            "123, 1233, A caseworker will contact you within 5-7 days to review your application.",
+            "1, 1, A caseworker will contact you within 3 days to review your application."
+    })
+    void userCanCompleteTheExpeditedFlow(String moneyMadeLast30Days, String liquidAssets, String expeditedServiceDetermination) {
         completeFlowFromLandingPageToReviewInfo();
-        testPage.clickSubtleLink();
+        driver.findElement(By.linkText("Submit application now with only the above information.")).click();
         driver.findElement(By.linkText("Yes, I want to see if I qualify")).click();
 
         Page expeditedIncomePage = testPage.choose(YES);
-        expeditedIncomePage.enterInput("moneyMadeLast30Days", "123");
+        expeditedIncomePage.enterInput("moneyMadeLast30Days", moneyMadeLast30Days);
 
         Page hasLiquidAssetPage = expeditedIncomePage.clickPrimaryButton();
         Page liquidAssetsPage = hasLiquidAssetPage.choose(YES);
 
-        liquidAssetsPage.enterInput("liquidAssets", "1233");
+        liquidAssetsPage.enterInput("liquidAssets", liquidAssets);
 
         Page expeditedExpensesPage = liquidAssetsPage.clickPrimaryButton();
         Page expeditedExpensesAmountPage = expeditedExpensesPage.choose(YES);
@@ -62,6 +68,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         Page expeditedMigrantFarmWorkerPage = expeditedUtilityPaymentsPage.clickPrimaryButton();
 
         Page expeditedDeterminationPage = expeditedMigrantFarmWorkerPage.choose(NO);
+
+        assertThat(driver.findElement(By.tagName("p")).getText()).contains(expeditedServiceDetermination);
 
         Page importantToKnow = expeditedDeterminationPage.clickPrimaryButton();
         assertThat(importantToKnow.getTitle()).isEqualTo("Important to Know");
@@ -106,36 +114,6 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         MetricsPage metricsPage = new MetricsPage(driver);
         assertThat(metricsPage.getCardValue("Applications Submitted")).isEqualTo("1");
         assertThat(metricsPage.getCardValue("Completion Time")).contains("05m 30s");
-    }
-
-    @Test
-    void shouldBeAbleToDecideExpeditedEligibility() {
-        completeFlowFromLandingPageToReviewInfo();
-        testPage.clickSubtleLink();
-        driver.findElement(By.linkText("Yes, I want to see if I qualify")).click();
-
-        Page expeditedIncomePage = testPage.choose(YES);
-        expeditedIncomePage.enterInput("moneyMadeLast30Days", "1");
-
-        Page hasLiquidAsserts = expeditedIncomePage.clickPrimaryButton();
-        Page liquidAssetsPage = hasLiquidAsserts.choose(YES);
-        liquidAssetsPage.enterInput("liquidAssets", "1");
-
-        Page expeditedExpensesPage = liquidAssetsPage.clickPrimaryButton();
-        Page expeditedExpensesAmountPage = expeditedExpensesPage.choose(YES);
-
-        expeditedExpensesAmountPage.enterInput("expeditedExpensesAmount", "333");
-        Page expeditedUtilityPaymentsPage = expeditedExpensesAmountPage.clickPrimaryButton();
-
-        expeditedUtilityPaymentsPage.selectEnumeratedInput("payForUtilities", "Cooling");
-        Page expeditedMigrantFarmWorkerPage = expeditedUtilityPaymentsPage.clickPrimaryButton();
-
-        Page expeditedDeterminationPage = expeditedMigrantFarmWorkerPage.choose(NO);
-
-        assertThat(driver.findElement(By.tagName("p")).getText()).contains("A caseworker will contact you within 3 days to review your application.");
-
-        Page importantToKnow = expeditedDeterminationPage.clickPrimaryButton();
-        assertThat(importantToKnow.getTitle()).isEqualTo("Important to Know");
     }
 
     private void completeFlowFromLandingPageToReviewInfo() {
