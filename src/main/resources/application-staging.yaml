@@ -2,5 +2,3 @@ spring:
   datasource:
     url: ${DATABASE_URL}
     driverClassName: org.postgresql.Driver
-
-demoBanner: 1
