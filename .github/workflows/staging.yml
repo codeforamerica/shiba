@@ -41,7 +41,7 @@ jobs:
           export BRANCH="deploy-$(date "+%s")"
           echo "::set-env name=BRANCH::$BRANCH"
       - name: Push to Aptible remote branch
-        run: git push ${{ secrets.APTIBLE_REPO }} "master:$BRANCH"
+        run: git push git@beta.aptible.com:mn-shiba-staging/shiba-staging.git "master:$BRANCH"
       - name: Install Aptible CLI and deploy to Aptible
         run: |
           wget -O aptible-package https://omnibus-aptible-toolbelt.s3.amazonaws.com/aptible/omnibus-aptible-toolbelt/master/206/pkg/aptible-toolbelt_0.16.5%2B20200508143656~ubuntu.16.04-1_amd64.deb
@@ -49,7 +49,7 @@ jobs:
           git remote add staging git@beta.aptible.com:mn-shiba-staging/shiba-staging.git
           git push staging "master:$BRANCH"
           aptible login --email=${{ secrets.APTIBLE_USERNAME }} --password=${{ secrets.APTIBLE_PASSWORD}}
-          aptible deploy --app shiba-staging --git-commitish $BRANCH 'CLIENT_KEYSTORE-PASSWORD=${{ secrets.CLIENT_KEYSTORE_PASSWORD }}'
+          aptible deploy --app shiba-staging --git-commitish $BRANCH 'SPRING_PROFILES_ACTIVE=staging CLIENT_KEYSTORE-PASSWORD=${{ secrets.CLIENT_KEYSTORE_PASSWORD }}'
       - name: Announce on Slack
         uses: innocarpe/actions-slack@v1
         with:
