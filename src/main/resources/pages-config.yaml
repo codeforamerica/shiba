@@ -967,7 +967,13 @@ shiba-configuration:
       headerKey:
         value: warning-page.going-back-will-take-you-to-the-beginning-of-the-jobs-section-where-you-will-start-over
       pageTitle:
-        value: warning-page.title
+        value: warning-page.go-back-title
+    - &noDataWarningPage
+      name: noDataWarningPage
+      headerKey:
+        value: warning-page.you-are-about-to-delete-all-of-your-jobs-and-go-back-to-the-beginning-of-this-section
+      pageTitle:
+        value: warning-page.no-data-title
     - &startExpenses
       name: startExpenses
       pageTitle:
@@ -1240,6 +1246,12 @@ shiba-configuration:
         - pageName: jobBuilder
       datasources:
         - groupName: jobs
+    noDataWarningPage:
+      pageConfiguration: *noDataWarningPage
+      nextPages:
+        - pageName: jobBuilder
+      datasources:
+        - groupName: jobs
     thirtyDayIncome:
       pageConfiguration: *thirtyDayIncome
       nextPages:
@@ -1451,7 +1463,7 @@ shiba-configuration:
       startPage: employersName
       completePage: paidByTheHour
       redirectPage: warningPage
-      noDataRedirectPage: warningPage
+      noDataRedirectPage: noDataWarningPage
       restartPage: incomeByJob
   landmarkPages:
     startTimerPage: languagePreferences
