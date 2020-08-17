@@ -10,18 +10,15 @@
             <div class="card spacing-above-35">
                 <div class="grid__item spacing-above-35 spacing-below-35">
                     <h2 th:text="#{${page.headerKey}}"></h2>
-                </div>
-                <div class="bottom-horizontal-line-grey">
-                    <p>Start over....</p>
+                    <h2 th:text="#{warning-page.is-that-ok}"></h2>
                 </div>
                 <div class="spacing-below-15 spacing-above-35">
                     <a class="button button--primary" th:href="'/pages/'+${pageName}+'/navigation?option=0'"
-                       >No thanks</a>
+                       th:text="#{warning-page.no-keep-id-rather-keep-going}"></a>
                 </div>
-                <div>
-                    <a class="link--subtle" th:href="'/pages/'+${pageName}+'/navigation?option=1'"
-                       >Yes, go back to the start</a>
-                </div>
+                <form method="post" th:action="'/groups/'+${subworkflows.keySet().iterator().next()}+'/delete'">
+                    <button class="button" type="submit" th:text="#{warning-page.yes-go-back-to-the-start}"></button>
+                </form>
             </div>
         </div>
     </section>

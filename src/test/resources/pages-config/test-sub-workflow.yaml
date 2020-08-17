@@ -25,6 +25,10 @@ shiba-configuration-sub-workflow:
       name: endPage
       pageTitle:
         value: some-other-title
+    - &testWarningPage
+      name: testWarningPage
+      pageTitle:
+        value: some-warning-title
   workflow:
     startPage:
       pageConfiguration: *startPage
@@ -46,11 +50,18 @@ shiba-configuration-sub-workflow:
         - pageName: firstPage
       datasources:
         - groupName: group1
+    testWarningPage:
+      pageConfiguration: *testWarningPage
+      nextPages:
+        - pageName: endPage
+      datasources:
+        - groupName: group1
   pageGroups:
     group1:
-      noDataRedirectPage: startPage
+      noDataRedirectPage: testWarningPage
       completePage: secondPage
       startPage: firstPage
-      redirectPage: startPage
+      redirectPage: testWarningPage
+      restartPage: startPage
   landmarkPages:
     startTimerPage:

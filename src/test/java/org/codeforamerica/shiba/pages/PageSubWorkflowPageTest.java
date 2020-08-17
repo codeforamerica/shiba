@@ -108,25 +108,25 @@ public class PageSubWorkflowPageTest extends AbstractStaticMessageSourcePageTest
 
     @Test
     void shouldGoToSpecifiedPageWhenGoBackFromEndOfTheWorkflow() {
-        String startPageTitle = "some title";
-        this.staticMessageSource.addMessage("start-page-title", Locale.US, startPageTitle);
+        String warningPageTitle = "some title";
+        this.staticMessageSource.addMessage("some-warning-title", Locale.US, warningPageTitle);
 
         navigateTo("startPage");
         Page firstPage = testPage.clickPrimaryButton();
         firstPage.enterInput("input1", "text 1");
         Page secondPage = testPage.clickPrimaryButton();
         secondPage.enterInput("input2", "text 2");
-        Page endPage = testPage.clickPrimaryButton();
+        testPage.clickPrimaryButton();
 
         testPage.goBack();
 
-        assertThat(testPage.getTitle()).isEqualTo(startPageTitle);
+        assertThat(testPage.getTitle()).isEqualTo(warningPageTitle);
     }
 
     @Test
     void shouldGoToSpecifiedPageWhenAttemptToDeleteTheLastDataEntry() {
-        String startPageTitle = "some title";
-        this.staticMessageSource.addMessage("start-page-title", Locale.US, startPageTitle);
+        String warningPageTitle = "some title";
+        this.staticMessageSource.addMessage("some-warning-title", Locale.US, warningPageTitle);
         String endPageTitle = "some other title";
         this.staticMessageSource.addMessage("some-other-title", Locale.US, endPageTitle);
         navigateTo("startPage");
@@ -137,7 +137,27 @@ public class PageSubWorkflowPageTest extends AbstractStaticMessageSourcePageTest
         Page endPage = testPage.clickPrimaryButton();
 
         driver.findElement(By.id("iteration0-delete")).click();
-        assertThat(driver.getTitle()).isEqualTo(startPageTitle);
+        assertThat(driver.getTitle()).isEqualTo(warningPageTitle);
     }
 
+    @Test
+    void shouldClearOutSubworkflowsWhenChoosingToRestartSubworkflow() {
+        navigateTo("startPage");
+        Page firstPage = testPage.clickPrimaryButton();
+        firstPage.enterInput("input1", "text 1");
+        Page secondPage = testPage.clickPrimaryButton();
+        secondPage.enterInput("input2", "text 2");
+        testPage.clickPrimaryButton();
+        testPage.goBack();
+
+        driver.findElement(By.tagName("button")).click();
+
+        firstPage = testPage.clickPrimaryButton();
+        firstPage.enterInput("input1", "new text 1");
+        secondPage = testPage.clickPrimaryButton();
+        secondPage.enterInput("input2", "new text 2");
+        testPage.clickPrimaryButton();
+
+        assertThat(driver.findElement(By.id("iteration0")).getText()).isEqualTo("new text 1");
+    }
 }

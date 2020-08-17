@@ -8,4 +8,5 @@ public class PageGroupConfiguration {
     private String completePage;
     private String startPage;
     private String redirectPage;
+    private String restartPage;
 }

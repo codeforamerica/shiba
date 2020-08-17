@@ -133,6 +133,13 @@ public class PageController {
         return new ModelAndView(pageToRender, model);
     }
 
+    @PostMapping("/groups/{groupName}/delete")
+    RedirectView deleteGroup(@PathVariable String groupName) {
+        this.applicationData.getSubworkflows().remove(groupName);
+        String startPage = applicationConfiguration.getPageGroups().get(groupName).getRestartPage();
+        return new RedirectView("/pages/" + startPage);
+    }
+
     @PostMapping("/groups/{groupName}/{iteration}/delete")
     ModelAndView deleteIteration(
             @PathVariable String groupName,
