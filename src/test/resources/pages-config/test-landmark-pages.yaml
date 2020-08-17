@@ -1,4 +1,4 @@
-shiba-configuration-flow-redirect:
+shiba-configuration-landmarks:
   pageDefinitions:
     - &firstPage
         name: firstPage

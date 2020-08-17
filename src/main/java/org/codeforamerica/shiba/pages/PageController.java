@@ -48,6 +48,11 @@ public class PageController {
         this.applicationDataConsumer = applicationDataConsumer;
     }
 
+    @GetMapping("/")
+    ModelAndView getRoot() {
+        return new ModelAndView("forward:/pages/" + applicationConfiguration.getLandmarkPages().getLandingPages().get(0));
+    }
+
     @GetMapping("/pages/{pageName}/navigation")
     RedirectView navigation(
             @PathVariable String pageName,

@@ -14,12 +14,12 @@ import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FlowRedirectPageTest extends AbstractStaticMessageSourcePageTest {
+public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
     @TestConfiguration
-    @PropertySource(value = "classpath:pages-config/test-flow-redirect.yaml", factory = YamlPropertySourceFactory.class)
+    @PropertySource(value = "classpath:pages-config/test-landmark-pages.yaml", factory = YamlPropertySourceFactory.class)
     static class TestPageConfiguration {
         @Bean
-        @ConfigurationProperties(prefix = "shiba-configuration-flow-redirect")
+        @ConfigurationProperties(prefix = "shiba-configuration-landmarks")
         public ApplicationConfiguration applicationConfiguration() {
             return new ApplicationConfiguration();
         }
@@ -39,23 +39,30 @@ public class FlowRedirectPageTest extends AbstractStaticMessageSourcePageTest {
     }
 
     @Test
+    void shouldRenderTheFirstLandingPageFromTheRoot() {
+        driver.navigate().to(baseUrl);
+
+        assertThat(testPage.getTitle()).isEqualTo(firstPageTitle);
+    }
+
+    @Test
     void shouldRedirectToFirstLandingPageWhenNavigateToAMidFlowPageDirectly() {
-        driver.navigate().to(baseUrl + "/pages/fourthPage");
+        navigateTo("fourthPage");
 
         assertThat(testPage.getTitle()).isEqualTo(firstPageTitle);
     }
 
     @Test
     void shouldNotRedirectToFirstLandingPageWhenNavigateToAMidFlowPageAfterStartTimerPage() {
-        driver.navigate().to(baseUrl + "/pages/thirdPage");
-        driver.navigate().to(baseUrl + "/pages/fourthPage");
+        navigateTo("thirdPage");
+        navigateTo("fourthPage");
 
         assertThat(testPage.getTitle()).isEqualTo(fourthPageTitle);
     }
 
     @Test
     void shouldRedirectToTerminalPageWhenUserBacksFromTerminalPage() {
-        driver.navigate().to(baseUrl + "/pages/thirdPage");
+        navigateTo("thirdPage");
         testPage.clickPrimaryButton();
 
         driver.navigate().back();
@@ -65,18 +72,18 @@ public class FlowRedirectPageTest extends AbstractStaticMessageSourcePageTest {
 
     @Test
     void shouldRedirectToTerminalPageWhenUserNavigatesToANonLandingPage() {
-        driver.navigate().to(baseUrl + "/pages/thirdPage");
+        navigateTo("thirdPage");
         testPage.clickPrimaryButton();
-        driver.navigate().to(baseUrl + "/pages/thirdPage");
+        navigateTo("thirdPage");
 
         assertThat(testPage.getTitle()).isEqualTo(fourthPageTitle);
     }
 
     @Test
     void shouldNotRedirectWhenUserNavigateToALandingPage() {
-        driver.navigate().to(baseUrl + "/pages/thirdPage");
+        navigateTo("thirdPage");
         testPage.clickPrimaryButton();
-        driver.navigate().to(baseUrl + "/pages/firstPage");
+        navigateTo("firstPage");
 
         assertThat(testPage.getTitle()).isEqualTo(firstPageTitle);
     }
