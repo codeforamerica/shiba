@@ -947,6 +947,17 @@ shiba-configuration:
             promptMessageFragmentName: selfEmploymentPrompt
           type: YES_NO
       contextFragment: jobContextFragment
+    - &paidByTheHour
+      name: paidByTheHour
+      pageTitle:
+        value: paid-by-the-hour.title
+      headerKey:
+        value: paid-by-the-hour.do-you-get-paid-by-the-hour
+      hasPrimaryButton: false
+      inputs:
+        - name: paidByTheHour
+          type: YES_NO
+      contextFragment: jobContextFragment
     - &jobBuilder
       name: jobBuilder
       pageTitle:
@@ -1206,6 +1217,13 @@ shiba-configuration:
       pageConfiguration: *selfEmployment
       groupName: jobs
       nextPages:
+        - pageName: paidByTheHour
+      datasources:
+        - pageName: employersName
+    paidByTheHour:
+      pageConfiguration: *paidByTheHour
+      groupName: jobs
+      nextPages:
         - pageName: jobBuilder
       datasources:
         - pageName: employersName
@@ -1430,7 +1448,7 @@ shiba-configuration:
   pageGroups:
     jobs:
       startPage: employersName
-      completePage: selfEmployment
+      completePage: paidByTheHour
       redirectPage: warningPage
       noDataRedirectPage: warningPage
   landmarkPages:
