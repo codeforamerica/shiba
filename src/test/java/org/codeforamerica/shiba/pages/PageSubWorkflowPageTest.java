@@ -28,38 +28,50 @@ public class PageSubWorkflowPageTest extends AbstractStaticMessageSourcePageTest
     void shouldDisplayInputFromSubflowInFinalPage() {
         navigateTo("startPage");
         Page firstPage = testPage.clickPrimaryButton();
-        firstPage.enterInput("input1", "text 1");
+        firstPage.enterInput("input1", "goToSecondPage");
         Page secondPage = testPage.clickPrimaryButton();
         secondPage.enterInput("input2", "text 2");
         Page endPage = testPage.clickPrimaryButton();
 
-        assertThat(driver.findElement(By.id("iteration0")).getText()).isEqualTo("text 1");
+        assertThat(driver.findElement(By.id("iteration0")).getText()).isEqualTo("goToSecondPage");
+    }
+
+    @Test
+    void shouldCompleteSubflowInAnyOfTheConfiguredCompletePages() {
+        navigateTo("startPage");
+        Page firstPage = testPage.clickPrimaryButton();
+        firstPage.enterInput("input1", "goToThirdPage");
+        Page thirdPage = testPage.clickPrimaryButton();
+        thirdPage.enterInput("input3", "text 3");
+        Page endPage = testPage.clickPrimaryButton();
+
+        assertThat(driver.findElement(By.id("iteration0")).getText()).isEqualTo("goToThirdPage");
     }
 
     @Test
     void shouldNotDisplayIterationInEndPageIfIterationWasNotCompleted() {
         navigateTo("startPage");
         Page firstPage = testPage.clickPrimaryButton();
-        firstPage.enterInput("input1", "text 1");
+        firstPage.enterInput("input1", "goToSecondPage");
         Page secondPage = testPage.clickPrimaryButton();
         secondPage.enterInput("input2", "text 2");
         Page endPage = testPage.clickPrimaryButton();
-        assertThat(driver.findElement(By.id("iteration0")).getText()).isEqualTo("text 1");
+        assertThat(driver.findElement(By.id("iteration0")).getText()).isEqualTo("goToSecondPage");
 
         Page firstPage1 = endPage.clickPrimaryButton();
-        firstPage.enterInput("input1", "text 3");
+        firstPage.enterInput("input1", "goToThirdPage");
         Page secondPage1 = testPage.clickPrimaryButton();
         secondPage1.goBack();
         firstPage1.goBack();
 
-        assertThat(driver.findElement(By.id("iteration0")).getText()).isEqualTo("text 1");
+        assertThat(driver.findElement(By.id("iteration0")).getText()).isEqualTo("goToSecondPage");
     }
 
     @Test
     void shouldNotDisplayDataFromPastIterationsWhenStartingANewSubworkflow() {
         navigateTo("startPage");
         Page firstPage = testPage.clickPrimaryButton();
-        firstPage.enterInput("input1", "text 1");
+        firstPage.enterInput("input1", "goToSecondPage");
         Page secondPage = testPage.clickPrimaryButton();
         secondPage.enterInput("input2", "text 2");
         Page endPage = testPage.clickPrimaryButton();
@@ -72,38 +84,38 @@ public class PageSubWorkflowPageTest extends AbstractStaticMessageSourcePageTest
     void shouldDisplayInputFromAllCompletedIterations() {
         navigateTo("startPage");
         Page firstPage = testPage.clickPrimaryButton();
-        firstPage.enterInput("input1", "text 1");
+        firstPage.enterInput("input1", "goToSecondPage");
         Page secondPage = testPage.clickPrimaryButton();
         secondPage.enterInput("input2", "text 2");
         Page endPage = testPage.clickPrimaryButton();
 
         firstPage = endPage.clickPrimaryButton();
-        firstPage.enterInput("input1", "text 3");
+        firstPage.enterInput("input1", "goToThirdPage");
         secondPage = testPage.clickPrimaryButton();
-        secondPage.enterInput("input2", "text 4");
+        secondPage.enterInput("input3", "text 3");
         endPage = testPage.clickPrimaryButton();
 
-        assertThat(driver.findElement(By.id("iteration0")).getText()).isEqualTo("text 1");
-        assertThat(driver.findElement(By.id("iteration1")).getText()).isEqualTo("text 3");
+        assertThat(driver.findElement(By.id("iteration0")).getText()).isEqualTo("goToSecondPage");
+        assertThat(driver.findElement(By.id("iteration1")).getText()).isEqualTo("goToThirdPage");
     }
 
     @Test
     void shouldRemoveTheEntryFromFinalPageIfDeleted() {
         navigateTo("startPage");
         Page firstPage = testPage.clickPrimaryButton();
-        firstPage.enterInput("input1", "text 1");
+        firstPage.enterInput("input1", "goToSecondPage");
         Page secondPage = testPage.clickPrimaryButton();
         secondPage.enterInput("input2", "text 2");
         Page endPage = testPage.clickPrimaryButton();
 
         firstPage = endPage.clickPrimaryButton();
-        firstPage.enterInput("input1", "text 3");
+        firstPage.enterInput("input1", "goToThirdPage");
         secondPage = testPage.clickPrimaryButton();
-        secondPage.enterInput("input2", "text 4");
+        secondPage.enterInput("input3", "text 4");
         testPage.clickPrimaryButton();
 
         driver.findElement(By.id("iteration0-delete")).click();
-        assertThat(driver.findElement(By.id("iteration0")).getText()).isEqualTo("text 3");
+        assertThat(driver.findElement(By.id("iteration0")).getText()).isEqualTo("goToThirdPage");
     }
 
     @Test
@@ -113,7 +125,7 @@ public class PageSubWorkflowPageTest extends AbstractStaticMessageSourcePageTest
 
         navigateTo("startPage");
         Page firstPage = testPage.clickPrimaryButton();
-        firstPage.enterInput("input1", "text 1");
+        firstPage.enterInput("input1", "goToSecondPage");
         Page secondPage = testPage.clickPrimaryButton();
         secondPage.enterInput("input2", "text 2");
         testPage.clickPrimaryButton();
@@ -131,7 +143,7 @@ public class PageSubWorkflowPageTest extends AbstractStaticMessageSourcePageTest
         this.staticMessageSource.addMessage("some-other-title", Locale.US, endPageTitle);
         navigateTo("startPage");
         Page firstPage = testPage.clickPrimaryButton();
-        firstPage.enterInput("input1", "text 1");
+        firstPage.enterInput("input1", "goToSecondPage");
         Page secondPage = testPage.clickPrimaryButton();
         secondPage.enterInput("input2", "text 2");
         Page endPage = testPage.clickPrimaryButton();
@@ -144,7 +156,7 @@ public class PageSubWorkflowPageTest extends AbstractStaticMessageSourcePageTest
     void shouldClearOutSubworkflowsWhenChoosingToRestartSubworkflow() {
         navigateTo("startPage");
         Page firstPage = testPage.clickPrimaryButton();
-        firstPage.enterInput("input1", "text 1");
+        firstPage.enterInput("input1", "goToSecondPage");
         Page secondPage = testPage.clickPrimaryButton();
         secondPage.enterInput("input2", "text 2");
         testPage.clickPrimaryButton();
@@ -153,11 +165,11 @@ public class PageSubWorkflowPageTest extends AbstractStaticMessageSourcePageTest
         driver.findElement(By.tagName("button")).click();
 
         firstPage = testPage.clickPrimaryButton();
-        firstPage.enterInput("input1", "new text 1");
+        firstPage.enterInput("input1", "goToThirdPage");
         secondPage = testPage.clickPrimaryButton();
-        secondPage.enterInput("input2", "new text 2");
+        secondPage.enterInput("input3", "new text 2");
         testPage.clickPrimaryButton();
 
-        assertThat(driver.findElement(By.id("iteration0")).getText()).isEqualTo("new text 1");
+        assertThat(driver.findElement(By.id("iteration0")).getText()).isEqualTo("goToThirdPage");
     }
 }

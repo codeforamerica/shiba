@@ -60,12 +60,12 @@ public class PageController {
     ) {
         PageWorkflowConfiguration pageWorkflow = this.applicationConfiguration.getPageWorkflow(pageName);
         PagesData pagesData = this.applicationData.getPagesData();
-        String nextPageName = pagesData.getNextPageName(pageWorkflow, option);
+        String nextPageName = applicationData.getNextPageName(pageWorkflow, option);
         PageWorkflowConfiguration nextPage = this.applicationConfiguration.getPageWorkflow(nextPageName);
 
         if (pagesData.shouldSkip(nextPage)) {
             pagesData.remove(nextPage.getPageConfiguration().getName());
-            return new RedirectView(String.format("/pages/%s", pagesData.getNextPageName(nextPage, option)));
+            return new RedirectView(String.format("/pages/%s", applicationData.getNextPageName(nextPage, option)));
         } else {
             return new RedirectView(String.format("/pages/%s", nextPageName));
         }
@@ -185,7 +185,7 @@ public class PageController {
 
         if (pageData.isValid() &&
                 pageWorkflow.getGroupName() != null &&
-                applicationConfiguration.getPageGroups().get(pageWorkflow.getGroupName()).getCompletePage().equals(page.getName())
+                applicationConfiguration.getPageGroups().get(pageWorkflow.getGroupName()).getCompletePages().contains(page.getName())
         ) {
             String groupName = pageWorkflow.getGroupName();
             applicationData.getSubworkflows()

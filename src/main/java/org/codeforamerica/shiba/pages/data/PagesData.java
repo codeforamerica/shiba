@@ -46,24 +46,6 @@ public class PagesData extends HashMap<String, PageData> {
                 .collect(toMap(Entry::getKey, Entry::getValue)));
     }
 
-    public String getNextPageName(PageWorkflowConfiguration pageWorkflowConfiguration, Integer option) {
-        if (!pageWorkflowConfiguration.getConditionalNavigation()) {
-            return pageWorkflowConfiguration.getNextPages().get(option).getPageName();
-        }
-        PageData pageData = this.getPage(pageWorkflowConfiguration.getPageConfiguration().getName());
-        if (pageData == null) {
-            throw new RuntimeException(String.format("Conditional navigation for %s requires page to have data/inputs.", pageWorkflowConfiguration.getPageConfiguration().getName()));
-        }
-
-        return pageWorkflowConfiguration.getNextPages().stream()
-                .filter(nextPage -> Optional.ofNullable(nextPage.getCondition())
-                        .map(pageData::satisfies)
-                        .orElse(true))
-                .findFirst()
-                .map(NextPage::getPageName)
-                .orElseThrow(() -> new RuntimeException("Cannot find suitable next page."));
-    }
-
     public boolean shouldSkip(PageWorkflowConfiguration pageWorkflowConfiguration) {
         Condition skipCondition = pageWorkflowConfiguration.getSkipCondition();
         if (skipCondition == null) {

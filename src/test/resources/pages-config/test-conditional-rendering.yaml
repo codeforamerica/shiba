@@ -26,6 +26,41 @@ shiba-configuration-conditional-rendering:
         inputs:
           - name: foo
             type: TEXT
+    - &fourthPage
+      name: fourthPage
+      pageTitle:
+        value: dummy-page-title
+      inputs:
+        - name: foo
+          type: TEXT
+    - &fifthPage
+      name: fifthPage
+      pageTitle:
+        value: dummy-page-title
+      inputs:
+        - name: foo
+          type: TEXT
+    - &sixthPage
+      name: sixthPage
+      pageTitle:
+        value: dummy-page-title
+      inputs:
+        - name: foo
+          type: TEXT
+    - &seventhPage
+      name: seventhPage
+      pageTitle:
+        value: dummy-page-title
+      inputs:
+        - name: foo
+          type: TEXT
+    - &eighthPage
+      name: eighthPage
+      pageTitle:
+        value: eighth-page-title
+      inputs:
+        - name: foo
+          type: TEXT
   workflow:
     firstPage:
       pageConfiguration: *firstPage
@@ -45,5 +80,45 @@ shiba-configuration-conditional-rendering:
     thirdPage:
       pageConfiguration: *thirdPage
       nextPages: []
+    fourthPage:
+      pageConfiguration: *fourthPage
+      nextPages:
+        - pageName: fifthPage
+          condition:
+            pageName: fourthPage
+            value: goToFifthPage
+            input: foo
+        - pageName: thirdPage
+          condition:
+            pageName: fourthPage
+            value: goToThirdPage
+            input: foo
+    fifthPage:
+      pageConfiguration: *fifthPage
+    sixthPage:
+      pageConfiguration: *sixthPage
+      groupName: group1
+      nextPages:
+        - pageName: seventhPage
+          condition:
+            pageName: sixthPage
+            input: foo
+            value: goToSeventhPage
+        - pageName: eighthPage
+          condition:
+            pageName: sixthPage
+            input: foo
+            value: goToEighthPage
+    seventhPage:
+      pageConfiguration: *seventhPage
+      groupName: group1
+    eighthPage:
+      pageConfiguration: *eighthPage
+      groupName: group1
+  pageGroups:
+    group1:
+      startPage: sixthPage
+      completePages:
+        - bar
   landmarkPages:
     startTimerPage:

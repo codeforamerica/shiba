@@ -21,6 +21,13 @@ shiba-configuration-sub-workflow:
       inputs:
         - name: input2
           type: TEXT
+    - &thirdPage
+      name: thirdPage
+      pageTitle:
+        value: dummy-page-title
+      inputs:
+        - name: input3
+          type: TEXT
     - &endPage
       name: endPage
       pageTitle:
@@ -39,9 +46,21 @@ shiba-configuration-sub-workflow:
       pageConfiguration: *firstPage
       nextPages:
         - pageName: secondPage
+          condition:
+            input: input1
+            value: goToSecondPage
+        - pageName: thirdPage
+          condition:
+            input: input1
+            value: goToThirdPage
     secondPage:
       groupName: group1
       pageConfiguration: *secondPage
+      nextPages:
+        - pageName: endPage
+    thirdPage:
+      groupName: group1
+      pageConfiguration: *thirdPage
       nextPages:
         - pageName: endPage
     endPage:
@@ -59,7 +78,9 @@ shiba-configuration-sub-workflow:
   pageGroups:
     group1:
       noDataRedirectPage: testWarningPage
-      completePage: secondPage
+      completePages:
+        - secondPage
+        - thirdPage
       startPage: firstPage
       redirectPage: testWarningPage
       restartPage: startPage

@@ -28,4 +28,8 @@ public class PageWorkflowConfiguration {
                 .map(datasource -> Map.entry(datasource.getGroupName(), applicationData.getSubworkflows().get(datasource.getGroupName())))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
+
+    public boolean inAGroup() {
+        return groupName != null;
+    }
 }

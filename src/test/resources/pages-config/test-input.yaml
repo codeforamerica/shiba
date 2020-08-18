@@ -44,6 +44,8 @@ shiba-configuration-input:
                 messageKey: option-2
           - name: moneyInput
             type: MONEY
+          - name: hourlyWageInput
+            type: HOURLY_WAGE
           - name: inputWithFollowUps
             type: RADIO
             options:

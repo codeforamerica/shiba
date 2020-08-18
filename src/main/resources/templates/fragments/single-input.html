@@ -9,12 +9,21 @@
     <th:block th:switch="${input.type}"
               th:with="formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)}">
         <div class="text-input-group" th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).MONEY}">
-            <div class="text-input-group__prefix ">$</div>
+            <div class="text-input-group__prefix">$</div>
             <input type="text"
                    class="text-input"
                    th:name="${formInputName}"
                    th:value="${(!inputData.value.isEmpty()) ? inputData.value[0] : ''}"
             >
+        </div>
+        <div class="text-input-group" th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).HOURLY_WAGE}">
+            <div class="text-input-group__prefix">$</div>
+            <input type="text"
+                   class="text-input"
+                   th:name="${formInputName}"
+                   th:value="${(!inputData.value.isEmpty()) ? inputData.value[0] : ''}"
+            >
+            <div class="text-input-group__postfix">/hr</div>
         </div>
         <input th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).TEXT}"
                type="text"

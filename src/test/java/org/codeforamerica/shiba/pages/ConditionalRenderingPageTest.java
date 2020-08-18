@@ -21,6 +21,7 @@ public class ConditionalRenderingPageTest extends AbstractStaticMessageSourcePag
     private final String thirdPageTitle = "thirdPageTitle";
     private final String secondPageTitle = "secondPageTitle";
     private final String firstPageTitle = "firstPageTitle";
+    private final String eighthPageTitle = "eighthPageTitle";
 
     @TestConfiguration
     @PropertySource(value = "classpath:pages-config/test-conditional-rendering.yaml", factory = YamlPropertySourceFactory.class)
@@ -38,6 +39,7 @@ public class ConditionalRenderingPageTest extends AbstractStaticMessageSourcePag
         staticMessageSource.addMessage("first-page-title", Locale.US, firstPageTitle);
         staticMessageSource.addMessage("second-page-title", Locale.US, secondPageTitle);
         staticMessageSource.addMessage("third-page-title", Locale.US, thirdPageTitle);
+        staticMessageSource.addMessage("eighth-page-title", Locale.US, eighthPageTitle);
         staticMessageSource.addMessage("skip-message-key", Locale.US, "SKIP PAGE");
         staticMessageSource.addMessage("not-skip-message-key", Locale.US, "NOT SKIP PAGE");
     }
@@ -120,5 +122,25 @@ public class ConditionalRenderingPageTest extends AbstractStaticMessageSourcePag
 
         assertThat(driver.getTitle()).isEqualTo(secondPageTitle);
         assertThat(testPage.getInputValue("foo")).isEmpty();
+    }
+
+    @Test
+    void shouldNavigateToTheFirstNextPageWhoseConditionIsTrue() {
+        navigateTo("fourthPage");
+
+        testPage.enterInput("foo", "goToThirdPage");
+        testPage.clickPrimaryButton();
+
+        assertThat(driver.getTitle()).isEqualTo(thirdPageTitle);
+    }
+
+    @Test
+    void shouldGoToFirstNextPageWhoseConditionIsTrue_forSubworkflow() {
+        navigateTo("sixthPage");
+
+        testPage.enterInput("foo", "goToEighthPage");
+        testPage.clickPrimaryButton();
+
+        assertThat(driver.getTitle()).isEqualTo(eighthPageTitle);
     }
 }

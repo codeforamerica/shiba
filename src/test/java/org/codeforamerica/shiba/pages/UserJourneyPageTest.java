@@ -183,7 +183,9 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         employerName.enterInput("employersName", "some employer");
         Page selfEmployment = employerName.clickPrimaryButton();
         Page paidByTheHour = selfEmployment.choose(YES);
-        Page jobBuilder = paidByTheHour.choose(YES);
+        Page hourlyWage = paidByTheHour.choose(YES);
+        hourlyWage.enterInput("hourlyWage", "1");
+        Page jobBuilder = hourlyWage.clickPrimaryButton();
         Page incomeUpNext = jobBuilder.clickPrimaryButton();
         Page unearnedIncome = incomeUpNext.clickPrimaryButton();
         unearnedIncome.selectEnumeratedInput("unearnedIncome", "Social Security");

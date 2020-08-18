@@ -1,0 +1,4 @@
+test-output-map:
+  page1:
+    input1:
+      SOME_VALUE: Some value

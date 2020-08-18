@@ -117,6 +117,10 @@ caf:
       additionalIncomeInfo: ADDITIONAL_INCOME_INFO
     employersName:
       employersName: EMPLOYERS_NAME
+    hourlyWage:
+      hourlyWage: HOURLY_WAGE
+    payPeriod:
+      payPeriod: PAY_FREQUENCY
     homeExpenses:
       homeExpenses:
         RENT: RENT

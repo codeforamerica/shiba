@@ -958,6 +958,37 @@ shiba-configuration:
         - name: paidByTheHour
           type: YES_NO
       contextFragment: jobContextFragment
+    - &hourlyWage
+      name: hourlyWage
+      pageTitle:
+        value: hourly-wage.title
+      headerKey:
+        value: hourly-wage.what-is-your-hourly-wage
+      inputs:
+        - name: hourlyWage
+          type: HOURLY_WAGE
+      contextFragment: jobContextFragment
+    - &payPeriod
+      name: payPeriod
+      pageTitle:
+        value: pay-period.title
+      headerKey:
+        value: pay-period.how-often-do-you-get-paid
+      inputs:
+        - name: payPeriod
+          type: RADIO
+          options:
+            - value: EVERY_WEEK
+              messageKey: pay-period.every-week
+            - value: EVERY_TWO_WEEKS
+              messageKey: pay-period.every-two-weeks
+            - value: TWICE_A_MONTH
+              messageKey: pay-period.twice-a-month
+            - value: EVERY_MONTH
+              messageKey: pay-period.every-month
+            - value: IT_VARIES
+              messageKey: pay-period.it-varies
+      contextFragment: jobContextFragment
     - &jobBuilder
       name: jobBuilder
       pageTitle:
@@ -1230,6 +1261,29 @@ shiba-configuration:
       pageConfiguration: *paidByTheHour
       groupName: jobs
       nextPages:
+        - pageName: hourlyWage
+          condition:
+            pageName: paidByTheHour
+            input: paidByTheHour
+            value: "true"
+        - pageName: payPeriod
+          condition:
+            pageName: paidByTheHour
+            input: paidByTheHour
+            value: "false"
+      datasources:
+        - pageName: employersName
+    hourlyWage:
+      pageConfiguration: *hourlyWage
+      groupName: jobs
+      nextPages:
+        - pageName: jobBuilder
+      datasources:
+        - pageName: employersName
+    payPeriod:
+      pageConfiguration: *payPeriod
+      groupName: jobs
+      nextPages:
         - pageName: jobBuilder
       datasources:
         - pageName: employersName
@@ -1461,7 +1515,9 @@ shiba-configuration:
   pageGroups:
     jobs:
       startPage: employersName
-      completePage: paidByTheHour
+      completePages:
+        - hourlyWage
+        - payPeriod
       redirectPage: warningPage
       noDataRedirectPage: noDataWarningPage
       restartPage: incomeByJob

@@ -87,6 +87,8 @@ public class InputsPageTest extends AbstractStaticMessageSourcePageTest {
         testPage.selectFromDropdown("selectInput", selectOption1);
         String moneyInputValue = "some money";
         testPage.enterInput("moneyInput", moneyInputValue);
+        String hourlyWageValue = "some wage";
+        testPage.enterInput("hourlyWageInput", hourlyWageValue);
         String incrementerInputValue = "5";
         testPage.enterInput("incrementerInput", incrementerInputValue);
 
@@ -104,6 +106,7 @@ public class InputsPageTest extends AbstractStaticMessageSourcePageTest {
         assertThat(testPage.getCheckboxValues("checkboxInput")).containsOnly(checkboxOption1, checkboxOption2);
         assertThat(testPage.getSelectValue("selectInput")).isEqualTo(selectOption1);
         assertThat(testPage.getInputValue("moneyInput")).isEqualTo(moneyInputValue);
+        assertThat(testPage.getInputValue("hourlyWageInput")).isEqualTo(hourlyWageValue);
         assertThat(testPage.getInputValue("incrementerInput")).isEqualTo(incrementerInputValue);
     }
 

@@ -11,5 +11,6 @@ public enum FormInputType {
     MONEY,
     INCREMENTER,
     TEXTAREA,
+    HOURLY_WAGE,
     CUSTOM
 }
