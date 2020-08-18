@@ -35,12 +35,12 @@ public class Page {
         input.sendKeys(value);
     }
 
-    public void selectEnumeratedInput(String inputName, String value) {
+    public void selectEnumeratedInput(String inputName, String optionText) {
         WebElement inputToSelect = driver.findElements(By.cssSelector(String.format("input[name^='%s']", inputName))).stream()
                 .map(input -> input.findElement(By.xpath("./..")))
-                .filter(label -> label.getText().equals(value))
+                .filter(label -> label.getText().equals(optionText))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException(String.format("Cannot find value \"%s\" or input \"%s\"", value, inputName)));
+                .orElseThrow(() -> new RuntimeException(String.format("Cannot find value \"%s\" or input \"%s\"", optionText, inputName)));
         inputToSelect.click();
     }
 

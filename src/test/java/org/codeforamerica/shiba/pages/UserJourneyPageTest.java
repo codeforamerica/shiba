@@ -13,6 +13,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
@@ -182,11 +183,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         Page employerName = incomeByJob.clickPrimaryButton();
         employerName.enterInput("employersName", "some employer");
         Page selfEmployment = employerName.clickPrimaryButton();
-        Page paidByTheHour = selfEmployment.choose(YES);
-        Page hourlyWage = paidByTheHour.choose(YES);
-        hourlyWage.enterInput("hourlyWage", "1");
-        Page jobBuilder = hourlyWage.clickPrimaryButton();
-        Page incomeUpNext = jobBuilder.clickPrimaryButton();
+        Page paidByTheHourPage = selfEmployment.choose(YES);
+        Page incomeUpNext = paidByTheHourOrSelectPayPeriod();
         Page unearnedIncome = incomeUpNext.clickPrimaryButton();
         unearnedIncome.selectEnumeratedInput("unearnedIncome", "Social Security");
         Page unearnedIncomeSources = unearnedIncome.clickPrimaryButton();
@@ -220,5 +218,20 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         signThisApplicationPage.clickPrimaryButton();
 
         return new SuccessPage(driver);
+    }
+
+    private Page paidByTheHourOrSelectPayPeriod() {
+        Page paidByTheHourPage = testPage;
+        if (new Random().nextBoolean()) {
+            Page hourlyWage = paidByTheHourPage.choose(YES);
+            hourlyWage.enterInput("hourlyWage", "1");
+            Page jobBuilder = hourlyWage.clickPrimaryButton();
+            return jobBuilder.clickPrimaryButton();
+        } else {
+            Page payPeriod = paidByTheHourPage.choose(NO);
+            payPeriod.selectEnumeratedInput("payPeriod", "Twice a month");
+            Page jobBuilder = payPeriod.clickPrimaryButton();
+            return jobBuilder.clickPrimaryButton();
+        }
     }
 }
