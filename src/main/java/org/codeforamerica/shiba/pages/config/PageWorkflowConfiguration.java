@@ -17,6 +17,7 @@ public class PageWorkflowConfiguration {
     private List<PageDatasource> datasources = new ArrayList<>();
     private PageConfiguration pageConfiguration;
     private String groupName;
+    private String dataMissingRedirect;
 
     public Boolean getConditionalNavigation() {
         return nextPages.stream().anyMatch(page -> page.getCondition() != null);
@@ -31,5 +32,11 @@ public class PageWorkflowConfiguration {
 
     public boolean inAGroup() {
         return groupName != null;
+    }
+
+    public boolean hasRequiredSubworkflows(ApplicationData applicationData) {
+        return datasources.stream()
+                .filter(datasource -> datasource.getGroupName() != null)
+                .allMatch(datasource -> applicationData.getSubworkflows().get(datasource.getGroupName()) != null);
     }
 }

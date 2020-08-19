@@ -129,7 +129,11 @@ public class PageController {
         if (pageConfiguration.isStaticPage()) {
             pageToRender = pageName;
             model.put("data", pagesData.getDatasourcePagesBy(pageWorkflow.getDatasources()));
-            model.put("subworkflows", pageWorkflow.getSubworkflows(applicationData));
+            if(pageWorkflow.hasRequiredSubworkflows(applicationData)) {
+                model.put("subworkflows", pageWorkflow.getSubworkflows(applicationData));
+            } else {
+                return new ModelAndView("redirect:/pages/" + pageWorkflow.getDataMissingRedirect());
+            }
         } else {
             pageToRender = "formPage";
             model.put("pageDatasources", pagesData.getDatasourcePagesBy(pageWorkflow.getDatasources()));

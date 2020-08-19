@@ -37,6 +37,14 @@ shiba-configuration-sub-workflow:
       pageTitle:
         value: some-warning-title
   workflow:
+    earlierPage:
+      pageConfiguration:
+        name: earlierPage
+        pageTitle:
+          value: earlier-page-title
+        inputs:
+          - name: input
+            type: TEXT
     startPage:
       pageConfiguration: *startPage
       nextPages:
@@ -71,6 +79,7 @@ shiba-configuration-sub-workflow:
         - groupName: group1
     testWarningPage:
       pageConfiguration: *testWarningPage
+      dataMissingRedirect: earlierPage
       nextPages:
         - pageName: endPage
       datasources:
@@ -85,4 +94,4 @@ shiba-configuration-sub-workflow:
       redirectPage: testWarningPage
       restartPage: startPage
   landmarkPages:
-    startTimerPage:
+    startTimerPage: earlierPage

@@ -1300,6 +1300,7 @@ shiba-configuration:
     selfEmployment:
       pageConfiguration: *selfEmployment
       groupName: jobs
+      dataMissingRedirect: employmentStatus
       nextPages:
         - pageName: paidByTheHour
       datasources:
@@ -1307,6 +1308,7 @@ shiba-configuration:
     paidByTheHour:
       pageConfiguration: *paidByTheHour
       groupName: jobs
+      dataMissingRedirect: employmentStatus
       nextPages:
         - pageName: hourlyWage
           condition:
@@ -1323,6 +1325,7 @@ shiba-configuration:
     hourlyWage:
       pageConfiguration: *hourlyWage
       groupName: jobs
+      dataMissingRedirect: employmentStatus
       nextPages:
         - pageName: hoursAWeek
       datasources:
@@ -1337,6 +1340,7 @@ shiba-configuration:
     payPeriod:
       pageConfiguration: *payPeriod
       groupName: jobs
+      dataMissingRedirect: employmentStatus
       nextPages:
         - pageName: incomePerPayPeriod
       datasources:
@@ -1351,6 +1355,7 @@ shiba-configuration:
         - pageName: payPeriod
     jobBuilder:
       pageConfiguration: *jobBuilder
+      dataMissingRedirect: employmentStatus
       nextPages:
         - pageName: employersName
         - pageName: incomeUpNext
@@ -1358,12 +1363,14 @@ shiba-configuration:
         - groupName: jobs
     warningPage:
       pageConfiguration: *warningPage
+      dataMissingRedirect: employmentStatus
       nextPages:
         - pageName: jobBuilder
       datasources:
         - groupName: jobs
     noDataWarningPage:
       pageConfiguration: *noDataWarningPage
+      dataMissingRedirect: employmentStatus
       nextPages:
         - pageName: jobBuilder
       datasources:

@@ -93,7 +93,7 @@ public class PageSubWorkflowPageTest extends AbstractStaticMessageSourcePageTest
         firstPage.enterInput("input1", "goToThirdPage");
         secondPage = testPage.clickPrimaryButton();
         secondPage.enterInput("input3", "text 3");
-        endPage = testPage.clickPrimaryButton();
+        testPage.clickPrimaryButton();
 
         assertThat(driver.findElement(By.id("iteration0")).getText()).isEqualTo("goToSecondPage");
         assertThat(driver.findElement(By.id("iteration1")).getText()).isEqualTo("goToThirdPage");
@@ -171,5 +171,23 @@ public class PageSubWorkflowPageTest extends AbstractStaticMessageSourcePageTest
         testPage.clickPrimaryButton();
 
         assertThat(driver.findElement(By.id("iteration0")).getText()).isEqualTo("goToThirdPage");
+    }
+
+    @Test
+    void shouldRedirectWhenPageDoesntHaveNecessaryDatasources() {
+        this.staticMessageSource.addMessage("earlier-page-title", Locale.US, "earlierPage");
+        navigateTo("startPage");
+        Page firstPage = testPage.clickPrimaryButton();
+        firstPage.enterInput("input1", "goToSecondPage");
+        Page secondPage = testPage.clickPrimaryButton();
+        secondPage.enterInput("input2", "text 2");
+        testPage.clickPrimaryButton();
+
+        driver.findElement(By.id("iteration0-delete")).click();
+        driver.findElement(By.tagName("button")).click();
+
+        testPage.goBack();
+
+        assertThat(testPage.getTitle()).isEqualTo("earlierPage");
     }
 }

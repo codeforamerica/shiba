@@ -135,6 +135,12 @@
         },
         "conditionalNavigation": {
           "type": "boolean"
+        },
+        "groupName": {
+          "type": "string"
+        },
+        "dataMissingRedirect": {
+          "type": "string"
         }
       },
       "additionalProperties": false,
@@ -182,6 +188,7 @@
             "MONEY",
             "INCREMENTER",
             "TEXTAREA",
+            "HOURLY_WAGE",
             "CUSTOM",
             "HOURLY_WAGE"
           ]
