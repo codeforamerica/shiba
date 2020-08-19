@@ -186,15 +186,21 @@
     border-radius: 10px;
 }
 
+.reveal__link__header-adjacent {
+    display: inline-block;
+    padding: .3em .5em .3em .7em;
+}
+
 .reveal__link-adjacent {
     width: 100%;
+    padding: unset;
     border: unset;
-    border-bottom-left-radius: unset;
-    border-bottom-right-radius: unset;
 }
 
 .reveal__link-adjacent:after {
-    float: right;
+    position: absolute;
+    top: 0.7rem;
+    right: 1rem;
 }
 
 .is-hidden .reveal__link-adjacent {
