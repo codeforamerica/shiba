@@ -5,7 +5,8 @@ derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: NO_EXPEDITED_UTILITIES_SELECTED
         type: ENUMERATED_MULTI_VALUE
-        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        condition:
+          logicalOperator: AND
           conditions:
             - pageName: utilityPayments
               input: payForUtilities
@@ -29,7 +30,8 @@ derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: ONE_SELECTED
         type: ENUMERATED_SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        condition:
+          logicalOperator: OR
           conditions:
             - pageName: utilityPayments
               input: payForUtilities
@@ -45,7 +47,8 @@ derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: HEATING_OR_COOLING
         type: ENUMERATED_MULTI_VALUE
-        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        condition:
+          logicalOperator: OR
           conditions:
             - pageName: utilityPayments
               input: payForUtilities
@@ -61,7 +64,8 @@ derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: NEITHER_SELECTED
         type: ENUMERATED_SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        condition:
+          logicalOperator: AND
           conditions:
             - pageName: utilityPayments
               input: payForUtilities
@@ -77,7 +81,8 @@ derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: ONE_SELECTED
         type: ENUMERATED_SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        condition:
+          logicalOperator: OR
           conditions:
             - pageName: utilityPayments
               input: payForUtilities
@@ -93,7 +98,8 @@ derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: WATER_OR_SEWER
         type: ENUMERATED_MULTI_VALUE
-        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        condition:
+          logicalOperator: OR
           conditions:
             - pageName: utilityPayments
               input: payForUtilities
@@ -109,7 +115,8 @@ derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: NEITHER_SELECTED
         type: ENUMERATED_SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        condition:
+          logicalOperator: AND
           conditions:
             - pageName: utilityPayments
               input: payForUtilities
@@ -125,7 +132,8 @@ derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        condition:
+          logicalOperator: OR
           conditions:
             - pageName: utilityPayments
               input: payForUtilities
@@ -137,7 +145,8 @@ derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        condition:
+          logicalOperator: OR
           conditions:
             - pageName: utilityPayments
               input: payForUtilities
@@ -149,7 +158,8 @@ derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        condition:
+          logicalOperator: OR
           conditions:
             - pageName: utilityPayments
               input: payForUtilities
@@ -161,7 +171,8 @@ derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        condition:
+          logicalOperator: OR
           conditions:
             - pageName: utilityPayments
               input: payForUtilities
@@ -173,7 +184,8 @@ derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: PHONE_CELL_PHONE
         type: ENUMERATED_MULTI_VALUE
-        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        condition:
+          logicalOperator: OR
           conditions:
             - pageName: utilityPayments
               input: payForUtilities
@@ -185,7 +197,8 @@ derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "true"
         type: ENUMERATED_SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        condition:
+          logicalOperator: AND
           conditions:
             - pageName: goingToSchool
               input: goingToSchool
@@ -196,7 +209,8 @@ derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "true"
         type: ENUMERATED_SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        condition:
+          logicalOperator: AND
           conditions:
             - pageName: ccapJob
               input: currentlyLookingForJob
@@ -211,7 +225,8 @@ derived-values:
           pageName: homeAddress
           inputName: zipCode
         type: SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        condition:
+          logicalOperator: OR
           conditions:
             - pageName: homeAddress
               input: sameMailingAddress
@@ -223,7 +238,8 @@ derived-values:
           pageName: homeAddress
           inputName: city
         type: SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        condition:
+          logicalOperator: OR
           conditions:
             - pageName: homeAddress
               input: sameMailingAddress
@@ -235,7 +251,8 @@ derived-values:
           pageName: homeAddress
           inputName: state
         type: SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        condition:
+          logicalOperator: OR
           conditions:
             - pageName: homeAddress
               input: sameMailingAddress
@@ -247,7 +264,8 @@ derived-values:
           pageName: homeAddress
           inputName: streetAddress
         type: SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        condition:
+          logicalOperator: OR
           conditions:
             - pageName: homeAddress
               input: sameMailingAddress
@@ -259,7 +277,8 @@ derived-values:
           pageName: homeAddress
           inputName: apartmentNumber
         type: SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        condition:
+          logicalOperator: OR
           conditions:
             - pageName: homeAddress
               input: sameMailingAddress
@@ -270,7 +289,8 @@ derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        condition:
+          logicalOperator: AND
           conditions:
             - pageName: unearnedIncome
               input: unearnedIncome
@@ -282,7 +302,8 @@ derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        condition:
+          logicalOperator: AND
           conditions:
             - pageName: unearnedIncome
               input: unearnedIncome
@@ -294,7 +315,8 @@ derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        condition:
+          logicalOperator: AND
           conditions:
             - pageName: unearnedIncome
               input: unearnedIncome
@@ -306,7 +328,8 @@ derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        condition:
+          logicalOperator: AND
           conditions:
             - pageName: unearnedIncome
               input: unearnedIncome
@@ -318,7 +341,8 @@ derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        condition:
+          logicalOperator: AND
           conditions:
             - pageName: unearnedIncome
               input: unearnedIncome
@@ -330,7 +354,8 @@ derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        condition:
+          logicalOperator: AND
           conditions:
             - pageName: unearnedIncome
               input: unearnedIncome
@@ -342,7 +367,8 @@ derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        condition:
+          logicalOperator: AND
           conditions:
             - pageName: unearnedIncome
               input: unearnedIncome
@@ -354,7 +380,8 @@ derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        condition:
+          logicalOperator: AND
           conditions:
             - pageName: unearnedIncome
               input: unearnedIncome
@@ -366,7 +393,8 @@ derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        condition:
+          logicalOperator: AND
           conditions:
             - pageName: homeExpenses
               input: homeExpenses
@@ -378,7 +406,8 @@ derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        condition:
+          logicalOperator: AND
           conditions:
             - pageName: homeExpenses
               input: homeExpenses
@@ -390,7 +419,8 @@ derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        condition:
+          logicalOperator: AND
           conditions:
             - pageName: homeExpenses
               input: homeExpenses
@@ -402,7 +432,8 @@ derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        condition:
+          logicalOperator: AND
           conditions:
             - pageName: homeExpenses
               input: homeExpenses
@@ -414,7 +445,8 @@ derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        condition:
+          logicalOperator: AND
           conditions:
             - pageName: homeExpenses
               input: homeExpenses
@@ -426,7 +458,8 @@ derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        condition:
+          logicalOperator: AND
           conditions:
             - pageName: homeExpenses
               input: homeExpenses
@@ -439,7 +472,8 @@ derived-values:
         value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: energyAssistanceMoreThan20
           inputName: energyAssistanceMoreThan20
-        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        condition:
+          logicalOperator: OR
           conditions:
             - pageName: energyAssistance
               input: energyAssistance
@@ -447,7 +481,8 @@ derived-values:
       - type: ENUMERATED_SINGLE_VALUE
         value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "false"
-        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        condition:
+          logicalOperator: OR
           conditions:
             - pageName: energyAssistance
               input: energyAssistance
@@ -458,7 +493,8 @@ derived-values:
       - type: ENUMERATED_SINGLE_VALUE
         value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "true"
-        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        condition:
+          logicalOperator: OR
           conditions:
             - pageName: registerToVote
               input: registerToVote
@@ -466,7 +502,8 @@ derived-values:
       - type: ENUMERATED_SINGLE_VALUE
         value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "false"
-        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        condition:
+          logicalOperator: OR
           conditions:
             - pageName: registerToVote
               input: registerToVote
@@ -474,7 +511,8 @@ derived-values:
       - type: ENUMERATED_SINGLE_VALUE
         value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "false"
-        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        condition:
+          logicalOperator: OR
           conditions:
             - pageName: registerToVote
               input: registerToVote
@@ -485,7 +523,8 @@ derived-values:
       - type: SINGLE_VALUE
         value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "homeless"
-        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        condition:
+          logicalOperator: OR
           conditions:
             - pageName: homeAddress
               input: isHomeless
@@ -497,7 +536,8 @@ derived-values:
         value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: personalInfo
           inputName: firstName
-        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        condition:
+          logicalOperator: OR
           conditions:
             - subworkflow: jobs
               iteration: 0
@@ -511,7 +551,8 @@ derived-values:
         value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: personalInfo
           inputName: lastName
-        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        condition:
+          logicalOperator: OR
           conditions:
             - subworkflow: jobs
               iteration: 0
@@ -525,7 +566,8 @@ derived-values:
         value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: personalInfo
           inputName: firstName
-        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        condition:
+          logicalOperator: OR
           conditions:
             - subworkflow: jobs
               iteration: 1
@@ -539,7 +581,8 @@ derived-values:
         value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: personalInfo
           inputName: lastName
-        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        condition:
+          logicalOperator: OR
           conditions:
             - subworkflow: jobs
               iteration: 1
@@ -552,15 +595,10 @@ derived-values:
       - type: ENUMERATED_SINGLE_VALUE
         value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "true"
-        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        condition:
+          logicalOperator: OR
           conditions:
             - subworkflow: jobs
-              iteration: 0
-              pageName: selfEmployment
-              input: selfEmployment
-              value: "true"
-            - subworkflow: jobs
-              iteration: 1
               pageName: selfEmployment
               input: selfEmployment
               value: "true"
@@ -570,15 +608,10 @@ derived-values:
       - type: ENUMERATED_SINGLE_VALUE
         value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "false"
-        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        condition:
+          logicalOperator: AND
           conditions:
             - subworkflow: jobs
-              iteration: 0
-              pageName: selfEmployment
-              input: selfEmployment
-              value: "false"
-            - subworkflow: jobs
-              iteration: 1
               pageName: selfEmployment
               input: selfEmployment
               value: "false"
@@ -588,15 +621,10 @@ derived-values:
       - type: SINGLE_VALUE
         value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "see question 9"
-        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        condition:
+          logicalOperator: OR
           conditions:
             - subworkflow: jobs
-              iteration: 0
-              pageName: selfEmployment
-              input: selfEmployment
-              value: "true"
-            - subworkflow: jobs
-              iteration: 1
               pageName: selfEmployment
               input: selfEmployment
               value: "true"

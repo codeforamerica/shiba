@@ -11,7 +11,8 @@ test-derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: bar
         type: SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        condition:
+          logicalOperator: OR
           conditions:
             - pageName: somePage
               input: someInput
@@ -23,7 +24,8 @@ test-derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: baz
         type: SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.OrCompositeCondition
+        condition:
+          logicalOperator: OR
           conditions:
             - pageName: someOtherPage
               input: someOtherInput
@@ -39,7 +41,8 @@ test-derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: fooBar
         type: SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        condition:
+          logicalOperator: AND
           conditions:
             - pageName: someOtherPage
               input: someOtherInput
@@ -62,10 +65,24 @@ test-derived-values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: bar
         type: SINGLE_VALUE
-        condition: !!org.codeforamerica.shiba.output.AndCompositeCondition
+        condition:
+          logicalOperator: AND
           conditions:
             - subworkflow: subworkflowName
               iteration: 0
+              pageName: page1
+              input: input1
+              value: right_value
+  - groupName: groupName9
+    fieldName: value9
+    values:
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: bar
+        type: SINGLE_VALUE
+        condition:
+          logicalOperator: OR
+          conditions:
+            - subworkflow: subworkflowName
               pageName: page1
               input: input1
               value: right_value

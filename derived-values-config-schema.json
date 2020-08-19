@@ -82,8 +82,13 @@
                           }
                         }
                       }
+                    },
+                    "logicalOperator": {
+                      "type": "string",
+                      "enum": ["OR", "AND"]
                     }
-                  }
+                  },
+                  "required": ["logicalOperator", "conditions"]
                 }
               }
             },

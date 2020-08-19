@@ -134,4 +134,31 @@ class DerivedValueApplicationInputsMapperTest {
                 ApplicationInputType.SINGLE_VALUE
         ));
     }
+
+    @Test
+    void shouldApplyConditionTypeToAllIterationsOfSubworkflowWhenASpecificIterationIsNotDeclared() {
+        Subworkflows subworkflows = new Subworkflows();
+        Subworkflow subworkflow = new Subworkflow();
+        PagesData subworkflowPages1 = new PagesData();
+        PageData pageData1 = new PageData();
+        pageData1.put("input1", InputData.builder().value(List.of("wrong_value")).build());
+        subworkflowPages1.put("page1", pageData1);
+        subworkflow.add(subworkflowPages1);
+        PagesData subworkflowPages2 = new PagesData();
+        PageData pageData2 = new PageData();
+        pageData2.put("input1", InputData.builder().value(List.of("right_value")).build());
+        subworkflowPages2.put("page1", pageData2);
+        subworkflow.add(subworkflowPages2);
+        subworkflows.put("subworkflowName", subworkflow);
+        applicationData.setSubworkflows(subworkflows);
+
+        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
+
+        assertThat(actual).contains(new ApplicationInput(
+                "groupName9",
+                "value9",
+                List.of("bar"),
+                ApplicationInputType.SINGLE_VALUE
+        ));
+    }
 }

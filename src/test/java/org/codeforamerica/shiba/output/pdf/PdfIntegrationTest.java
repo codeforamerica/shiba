@@ -3,10 +3,7 @@ package org.codeforamerica.shiba.output.pdf;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
-import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.PageData;
-import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,6 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.output.ApplicationInputType.ENUMERATED_SINGLE_VALUE;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -46,12 +44,12 @@ public class PdfIntegrationTest {
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput("unearnedIncome", "unearnedIncome", List.of("SOCIAL_SECURITY", "CHILD_OR_SPOUSAL_SUPPORT"), ApplicationInputType.ENUMERATED_MULTI_VALUE),
-                new ApplicationInput("unearnedIncome", "noSSI", List.of("No"), ApplicationInputType.ENUMERATED_SINGLE_VALUE),
-                new ApplicationInput("unearnedIncome", "noVeteransBenefits", List.of("No"), ApplicationInputType.ENUMERATED_SINGLE_VALUE),
-                new ApplicationInput("unearnedIncome", "noUnemployment", List.of("No"), ApplicationInputType.ENUMERATED_SINGLE_VALUE),
-                new ApplicationInput("unearnedIncome", "noWorkersCompensation", List.of("No"), ApplicationInputType.ENUMERATED_SINGLE_VALUE),
-                new ApplicationInput("unearnedIncome", "noRetirement", List.of("No"), ApplicationInputType.ENUMERATED_SINGLE_VALUE),
-                new ApplicationInput("unearnedIncome", "noTribalPayments", List.of("No"), ApplicationInputType.ENUMERATED_SINGLE_VALUE)
+                new ApplicationInput("unearnedIncome", "noSSI", List.of("No"), ENUMERATED_SINGLE_VALUE),
+                new ApplicationInput("unearnedIncome", "noVeteransBenefits", List.of("No"), ENUMERATED_SINGLE_VALUE),
+                new ApplicationInput("unearnedIncome", "noUnemployment", List.of("No"), ENUMERATED_SINGLE_VALUE),
+                new ApplicationInput("unearnedIncome", "noWorkersCompensation", List.of("No"), ENUMERATED_SINGLE_VALUE),
+                new ApplicationInput("unearnedIncome", "noRetirement", List.of("No"), ENUMERATED_SINGLE_VALUE),
+                new ApplicationInput("unearnedIncome", "noTribalPayments", List.of("No"), ENUMERATED_SINGLE_VALUE)
 
         );
     }
@@ -93,7 +91,7 @@ public class PdfIntegrationTest {
                         "energyAssistanceGroup",
                         "energyAssistanceInput",
                         List.of(result),
-                        ApplicationInputType.ENUMERATED_SINGLE_VALUE
+                        ENUMERATED_SINGLE_VALUE
                 )
         );
     }
@@ -115,7 +113,26 @@ public class PdfIntegrationTest {
         List<ApplicationInput> applicationInputs = mappers.map(data);
 
         assertThat(applicationInputs).contains(
-                new ApplicationInput("energyAssistanceGroup", "energyAssistanceInput", List.of("false"), ApplicationInputType.ENUMERATED_SINGLE_VALUE)
+                new ApplicationInput("energyAssistanceGroup", "energyAssistanceInput", List.of("false"), ENUMERATED_SINGLE_VALUE)
+        );
+    }
+
+    @Test
+    void shouldMapNoForSelfEmployment() {
+        Subworkflows subworkflows = new Subworkflows();
+        Subworkflow subworkflow = new Subworkflow();
+        PagesData pagesData = new PagesData();
+        PageData pageData = new PageData();
+        pageData.put("selfEmployment", InputData.builder().value(List.of("false")).build());
+        pagesData.put("selfEmployment", pageData);
+        subworkflow.add(pagesData);
+        subworkflows.put("jobs", subworkflow);
+        data.setSubworkflows(subworkflows);
+
+        List<ApplicationInput> applicationInputs = mappers.map(data);
+
+        assertThat(applicationInputs).contains(
+                new ApplicationInput("employee", "selfEmployed", List.of("false"), ENUMERATED_SINGLE_VALUE)
         );
     }
 }
