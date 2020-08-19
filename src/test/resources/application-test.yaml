@@ -1,3 +1,9 @@
 client:
   keystore: src/test/resources/test-keystore.jks
   keystore-password: changeit
+
+mnit-esb:
+  f5-username: somef5Username
+  f5-password: somef5Password
+  alfresco-username: someAlfrescoUsername
+  alfresco-password: someAlfrescoPassword
