@@ -29,6 +29,9 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     @MockBean
     ApplicationDataConsumer applicationDataConsumer;
 
+    @MockBean
+    ApplicationIdGenerator applicationIdGenerator;
+
     @Override
     @BeforeEach
     void setUp() throws IOException {
@@ -37,6 +40,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         when(clock.instant()).thenReturn(Instant.now());
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         when(applicationDataConsumer.process(any())).thenReturn(ZonedDateTime.now());
+        when(applicationIdGenerator.generate()).thenReturn("123000FAKE");
     }
 
     @Test
@@ -80,7 +84,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     @Test
-    void shouldCaptureSubmissionTimeInSuccessPage() {
+    void shouldCaptureSubmissionTimeAndApplicationIdOnSuccessPage() {
         when(applicationDataConsumer.process(any()))
                 .thenReturn(ZonedDateTime.of(LocalDateTime.of(2020, 1, 1, 10, 10), ZoneOffset.UTC));
 
@@ -88,6 +92,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
         assertThat(successPage.getTitle()).isEqualTo("Success");
         assertThat(successPage.getSubmissionTime()).contains("January 1, 2020");
+        assertThat(successPage.getApplicationId()).contains("123000FAKE");
     }
 
     @Test

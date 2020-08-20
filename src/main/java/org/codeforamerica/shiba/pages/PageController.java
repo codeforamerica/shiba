@@ -31,6 +31,7 @@ public class PageController {
     private final ApplicationMetricsRepository repository;
     private final Metrics metrics;
     private final ApplicationDataConsumer applicationDataConsumer;
+    private final ApplicationIdGenerator applicationIdGenerator;
 
     public PageController(
             ApplicationConfiguration applicationConfiguration,
@@ -38,14 +39,15 @@ public class PageController {
             Clock clock,
             ApplicationMetricsRepository repository,
             Metrics metrics,
-            ApplicationDataConsumer applicationDataConsumer
-    ) {
+            ApplicationDataConsumer applicationDataConsumer,
+            ApplicationIdGenerator applicationIdGenerator) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
         this.repository = repository;
         this.metrics = metrics;
         this.applicationDataConsumer = applicationDataConsumer;
+        this.applicationIdGenerator = applicationIdGenerator;
     }
 
     @GetMapping("/")
@@ -123,6 +125,7 @@ public class PageController {
 
         if (landmarkPagesConfiguration.isTerminalPage(pageName)) {
             model.put("submissionTime", this.applicationData.getSubmissionTime());
+            model.put("applicationId", this.applicationData.getId());
         }
 
         String pageToRender;
@@ -217,6 +220,7 @@ public class PageController {
             ApplicationMetric applicationMetric = new ApplicationMetric(Duration.between(metrics.getStartTime(), clock.instant()));
             repository.save(applicationMetric);
 
+            this.applicationData.setId(applicationIdGenerator.generate());
             this.applicationData.setSubmissionTime(applicationDataConsumer.process(applicationData));
 
             return new ModelAndView(String.format("redirect:/pages/%s/navigation", submitPage));

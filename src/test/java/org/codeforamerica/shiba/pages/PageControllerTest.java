@@ -59,6 +59,8 @@ class PageControllerTest {
 
     ApplicationDataConsumer applicationDataConsumer = mock(ApplicationDataConsumer.class);
 
+    ApplicationIdGenerator applicationIdGenerator = mock(ApplicationIdGenerator.class);
+
     @Autowired
     ApplicationConfiguration applicationConfiguration;
 
@@ -70,7 +72,8 @@ class PageControllerTest {
                 clock,
                 applicationMetricsRepository,
                 metrics,
-                applicationDataConsumer);
+                applicationDataConsumer,
+                applicationIdGenerator);
         mockMvc = MockMvcBuilders.standaloneSetup(pageController)
                 .build();
         when(clock.instant()).thenReturn(Instant.now());
@@ -141,5 +144,18 @@ class PageControllerTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
         verifyNoInteractions(applicationDataConsumer);
+    }
+
+    @Test
+    void shouldGenerateIdForApplication() throws Exception {
+        metrics.setStartTimeOnce(Instant.now());
+
+        when(applicationIdGenerator.generate()).thenReturn("42");
+
+        mockMvc.perform(post("/submit")
+                .param("foo[]", "some value")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+
+        assertThat(applicationData.getId()).isEqualTo("42");
     }
 }

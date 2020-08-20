@@ -15,6 +15,7 @@ public class ApplicationData {
     private Subworkflows subworkflows = new Subworkflows();
     private ZonedDateTime submissionTime;
     private Map<String, PagesData> incompleteIterations = new HashMap<>();
+    private String id;
 
     public void clear() {
         this.pagesData.clear();

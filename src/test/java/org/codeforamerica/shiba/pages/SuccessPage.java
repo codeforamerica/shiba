@@ -1,6 +1,5 @@
 package org.codeforamerica.shiba.pages;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
@@ -27,6 +26,8 @@ public class SuccessPage extends Page {
     }
 
     public String getSubmissionTime() {
-        return driver.findElement(By.id("submission-date")).getText();
+        return driver.findElementById("submission-date").getText();
     }
+
+    public String getApplicationId() { return driver.findElementById("application-id").getText(); }
 }
