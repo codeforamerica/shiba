@@ -22,4 +22,9 @@ public class ApplicationConfiguration {
     public PageWorkflowConfiguration getPageWorkflow(String pageName) {
         return this.workflow.get(pageName);
     }
+
+    public Map<String, PageWorkflowConfiguration> getWorkflow() {
+        return workflow;
+    }
+
 }

@@ -1,8 +1,0 @@
-output-map:
-  payPeriod:
-    payPeriod:
-      EVERY_WEEK: Every week
-      EVERY_TWO_WEEKS: Every two weeks
-      TWICE_A_MONTH: Twice a month
-      EVERY_MONTH: Every month
-      IT_VARIES: It varies

@@ -1,43 +1,51 @@
 package org.codeforamerica.shiba.output;
 
-import org.codeforamerica.shiba.YamlPropertySourceFactory;
-import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
+import org.codeforamerica.shiba.pages.config.*;
 import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(properties = {"spring.main.allow-bean-definition-overriding=true"})
-@ActiveProfiles("test")
 class SubworkflowInputMapperTest {
     private final ApplicationData applicationData = new ApplicationData();
     private final Subworkflows subworkflows = new Subworkflows();
+    private final ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
 
-    @TestConfiguration
-    @PropertySource(value = "classpath:pages-config/test-sub-workflow.yaml", factory = YamlPropertySourceFactory.class)
-    static class TestPageConfiguration {
-        @Bean
-        @ConfigurationProperties(prefix = "test-subworkflow")
-        public ApplicationConfiguration applicationConfiguration() {
-            return new ApplicationConfiguration();
-        }
-    }
-
-    @Autowired
-    SubworkflowInputMapper subworkflowInputMapper;
+    SubworkflowInputMapper subworkflowInputMapper = new SubworkflowInputMapper(applicationConfiguration);
 
     @Test
     void shouldNameSpaceValuesFromEachIteration() {
+        PageWorkflowConfiguration question1Workflow = new PageWorkflowConfiguration();
+        question1Workflow.setGroupName("group1");
+        PageConfiguration question1Page = new PageConfiguration();
+        question1Page.setName("question1");
+        FormInput question1Input1 = new FormInput();
+        question1Input1.setName("input1");
+        question1Input1.setType(FormInputType.TEXT);
+        FormInput question1Input2 = new FormInput();
+        question1Input2.setName("input2");
+        question1Input2.setType(FormInputType.RADIO);
+        question1Page.setInputs(List.of(question1Input1, question1Input2));
+        question1Workflow.setPageConfiguration(question1Page);
+
+        PageWorkflowConfiguration question2Workflow = new PageWorkflowConfiguration();
+        question2Workflow.setGroupName("group2");
+        PageConfiguration question2Page = new PageConfiguration();
+        question2Page.setName("question2");
+        FormInput question2Input1 = new FormInput();
+        question2Input1.setName("input1");
+        question2Input1.setType(FormInputType.TEXT);
+        question2Page.setInputs(List.of(question1Input1));
+        question2Workflow.setPageConfiguration(question2Page);
+
+        applicationConfiguration.setWorkflow(Map.of(
+                "question1Workflow", question1Workflow,
+                "question2Workflow", question2Workflow
+                ));
+
         PagesData iteration1 = new PagesData(
                 Map.of(
                         "question1",
@@ -80,7 +88,7 @@ class SubworkflowInputMapperTest {
                         "question1",
                         "input2",
                         List.of("coolString"),
-                        ApplicationInputType.SINGLE_VALUE,
+                        ApplicationInputType.ENUMERATED_SINGLE_VALUE,
                         0
                 ),
                 new ApplicationInput(
@@ -94,7 +102,7 @@ class SubworkflowInputMapperTest {
                         "question1",
                         "input2",
                         List.of("weirdString"),
-                        ApplicationInputType.SINGLE_VALUE,
+                        ApplicationInputType.ENUMERATED_SINGLE_VALUE,
                         1
                 ),
                 new ApplicationInput(

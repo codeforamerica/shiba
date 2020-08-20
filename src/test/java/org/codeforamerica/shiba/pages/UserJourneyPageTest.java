@@ -240,7 +240,9 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         } else {
             Page payPeriod = paidByTheHourPage.choose(NO);
             payPeriod.selectEnumeratedInput("payPeriod", "Twice a month");
-            Page jobBuilder = payPeriod.clickPrimaryButton();
+            Page payPerPeriod = payPeriod.clickPrimaryButton();
+            payPerPeriod.enterInput("incomePerPayPeriod", "1");
+            Page jobBuilder = payPerPeriod.clickPrimaryButton();
             return jobBuilder.clickPrimaryButton();
         }
     }

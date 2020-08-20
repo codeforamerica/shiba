@@ -5,6 +5,8 @@ import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -73,26 +75,9 @@ class GrossMonthlyIncomeMapperTest {
         List<ApplicationInput> applicationInputs = grossMonthlyIncomeMapper.map(applicationData);
 
         assertThat(applicationInputs).contains(
-                new ApplicationInput("employee", "grossMonthlyIncome", List.of("1440"), SINGLE_VALUE, 0),
-                new ApplicationInput("employee", "grossMonthlyIncome", List.of("1080"), SINGLE_VALUE, 1)
+                new ApplicationInput("employee", "grossMonthlyIncome", List.of("1440.0"), SINGLE_VALUE, 0),
+                new ApplicationInput("employee", "grossMonthlyIncome", List.of("1080.0"), SINGLE_VALUE, 1)
         );
-    }
-
-    @Test
-    void shouldNotIncludeGrossMonthlyIncomeForNonHourlyJob() {
-        Subworkflows subworkflows = new Subworkflows();
-        Subworkflow subworkflow = new Subworkflow();
-        PagesData pagesData = new PagesData();
-        PageData paidByTheHourPageData = new PageData();
-        paidByTheHourPageData.put("paidByTheHourInput", InputData.builder().value(List.of("false")).build());
-        pagesData.put("paidByTheHourPage", paidByTheHourPageData);
-        subworkflow.add(pagesData);
-        subworkflows.put("jobsGroup", subworkflow);
-        applicationData.setSubworkflows(subworkflows);
-
-        List<ApplicationInput> applicationInputs = grossMonthlyIncomeMapper.map(applicationData);
-
-        assertThat(applicationInputs).isEmpty();
     }
 
     @Test
@@ -123,5 +108,41 @@ class GrossMonthlyIncomeMapperTest {
         List<ApplicationInput> applicationInputs = grossMonthlyIncomeMapper.map(applicationData);
 
         assertThat(applicationInputs).isEmpty();
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {
+            "EVERY_WEEK,4.4",
+            "EVERY_TWO_WEEKS,2.2",
+            "TWICE_A_MONTH,2.2",
+            "EVERY_MONTH,1.1",
+            "IT_VARIES,1.1"
+    })
+    void shouldCalculateGrossIncomeBasedOnPayPeriod(String payPeriod, String income) {
+        Subworkflows subworkflows = new Subworkflows();
+        Subworkflow subworkflow = new Subworkflow();
+        PagesData pagesData = new PagesData();
+
+        PageData paidByTheHourPageData = new PageData();
+        paidByTheHourPageData.put("paidByTheHourInput", InputData.builder().value(List.of("false")).build());
+        pagesData.put("paidByTheHourPage", paidByTheHourPageData);
+
+        PageData payPeriodPageData = new PageData();
+        payPeriodPageData.put("payPeriodInput", InputData.builder().value(List.of(payPeriod)).build());
+        pagesData.put("payPeriodPage", payPeriodPageData);
+
+        PageData incomePerPayPeriod = new PageData();
+        incomePerPayPeriod.put("incomePerPayPeriodInput", InputData.builder().value(List.of("1.1")).build());
+        pagesData.put("incomePerPayPeriodPage", incomePerPayPeriod);
+
+        subworkflow.add(pagesData);
+        subworkflows.put("jobsGroup", subworkflow);
+        applicationData.setSubworkflows(subworkflows);
+
+        List<ApplicationInput> applicationInputs = grossMonthlyIncomeMapper.map(applicationData);
+
+        assertThat(applicationInputs).contains(
+                new ApplicationInput("employee", "grossMonthlyIncome", List.of(income), SINGLE_VALUE, 0)
+        );
     }
 }

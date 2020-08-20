@@ -128,6 +128,12 @@ public class PdfIntegrationTest {
         PageData paidByTheHourPage = new PageData();
         paidByTheHourPage.put("paidByTheHour", InputData.builder().value(List.of("false")).build());
         pagesData.put("paidByTheHour", paidByTheHourPage);
+        PageData payPeriod = new PageData();
+        payPeriod.put("payPeriod", InputData.builder().value(List.of("EVERY_WEEK")).build());
+        pagesData.put("payPeriod", payPeriod);
+        PageData payPerPeriod = new PageData();
+        payPerPeriod.put("incomePerPayPeriod", InputData.builder().value(List.of("1")).build());
+        pagesData.put("incomePerPayPeriod", payPerPeriod);
         subworkflow.add(pagesData);
         subworkflows.put("jobs", subworkflow);
         data.setSubworkflows(subworkflows);

@@ -10,3 +10,9 @@ test-gross-monthly-income:
     hoursAWeek:
       pageName: hoursAWeekPage
       inputName: hoursAWeekInput
+    payPeriod:
+      pageName: payPeriodPage
+      inputName: payPeriodInput
+    incomePerPayPeriod:
+      pageName: incomePerPayPeriodPage
+      inputName: incomePerPayPeriodInput

@@ -1000,6 +1000,42 @@ shiba-configuration:
             - value: IT_VARIES
               messageKey: pay-period.it-varies
       contextFragment: jobContextFragment
+    - &incomePerPayPeriod
+      name: incomePerPayPeriod
+      pageTitle:
+        value: income-per-pay-period.title
+      headerKey:
+        conditionalValues:
+          - value: income-per-pay-period.every-week
+            condition:
+              pageName: payPeriod
+              input: payPeriod
+              value: EVERY_WEEK
+          - value: income-per-pay-period.every-two-weeks
+            condition:
+              pageName: payPeriod
+              input: payPeriod
+              value: EVERY_TWO_WEEKS
+          - value: income-per-pay-period.twice-a-month
+            condition:
+              pageName: payPeriod
+              input: payPeriod
+              value: TWICE_A_MONTH
+          - value: income-per-pay-period.every-month
+            condition:
+              pageName: payPeriod
+              input: payPeriod
+              value: EVERY_MONTH
+          - value: income-per-pay-period.it-varies
+            condition:
+              pageName: payPeriod
+              input: payPeriod
+              value: IT_VARIES
+      headerHelpMessageKey: income-per-pay-period.provide-income-before-taxes-we-know-this-can-be-hard-to
+      inputs:
+        - name: incomePerPayPeriod
+          type: MONEY
+      contextFragment: jobContextFragment
     - &jobBuilder
       name: jobBuilder
       pageTitle:
@@ -1302,9 +1338,17 @@ shiba-configuration:
       pageConfiguration: *payPeriod
       groupName: jobs
       nextPages:
+        - pageName: incomePerPayPeriod
+      datasources:
+        - pageName: employersName
+    incomePerPayPeriod:
+      pageConfiguration: *incomePerPayPeriod
+      groupName: jobs
+      nextPages:
         - pageName: jobBuilder
       datasources:
         - pageName: employersName
+        - pageName: payPeriod
     jobBuilder:
       pageConfiguration: *jobBuilder
       nextPages:
@@ -1535,7 +1579,7 @@ shiba-configuration:
       startPage: employersName
       completePages:
         - hoursAWeek
-        - payPeriod
+        - incomePerPayPeriod
       redirectPage: warningPage
       noDataRedirectPage: noDataWarningPage
       restartPage: incomeByJob

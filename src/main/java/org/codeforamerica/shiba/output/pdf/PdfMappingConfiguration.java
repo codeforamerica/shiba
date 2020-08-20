@@ -20,7 +20,16 @@ public class PdfMappingConfiguration {
     }
 
     @Bean
-    public PdfFieldMapper pdfFieldMapper(Map<String, String> pdfFieldMap) {
-        return new PdfFieldMapper(pdfFieldMap);
+    @ConfigurationProperties(prefix = "caf.enums")
+    public Map<String, String> enumMap() {
+        return new HashMap<>();
+    }
+
+    @Bean
+    public PdfFieldMapper pdfFieldMapper(
+            Map<String, String> pdfFieldMap,
+            Map<String, String> enumMap
+    ) {
+        return new PdfFieldMapper(pdfFieldMap, enumMap);
     }
 }

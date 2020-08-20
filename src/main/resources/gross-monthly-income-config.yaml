@@ -10,3 +10,9 @@ gross-monthly-income:
     hoursAWeek:
       pageName: hoursAWeek
       inputName: hoursAWeek
+    payPeriod:
+      pageName: payPeriod
+      inputName: payPeriod
+    incomePerPayPeriod:
+      pageName: incomePerPayPeriod
+      inputName: incomePerPayPeriod
