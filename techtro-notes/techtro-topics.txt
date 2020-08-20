@@ -4,3 +4,4 @@ Ideas for next techtro(s):
         - Derived value
     - Strategy when approaching refactoring or new features
         - More on the pages framework - maybe a mock story exercise?
+    - going through a few real/made-up debug scenarios for each part of the system
