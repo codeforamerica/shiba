@@ -112,8 +112,13 @@ xml:
       haveSoldAssets: HAVE_SOLD_ASSETS
     employersName:
       employersName: EMPLOYERS_NAME
+    hoursAWeek:
+      hoursAWeek: HOURS_A_WEEK
+    payPeriod:
+      payPeriod: PAY_PERIOD
     employee:
       selfEmployed: SELF_EMPLOYED
+      grossMonthlyIncome: GROSS_MONTHLY_INCOME
   enums:
     true: true
     false: false
@@ -160,3 +165,8 @@ xml:
     REAL_ESTATE_TAXES: Real Estate Taxes (if not included in mortgage)
     ASSOCIATION_FEES: Association Fees
     ROOM_AND_BOARD: Room and/or Board
+    EVERY_WEEK: Weekly
+    EVERY_TWO_WEEKS: Every two weeks
+    TWICE_A_MONTH: Twice a month
+    EVERY_MONTH: Monthly
+    IT_VARIES: Other

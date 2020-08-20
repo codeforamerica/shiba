@@ -12,18 +12,18 @@ import java.util.stream.Collectors;
 @Component
 public class ExpeditedEligibilityDecider {
     private final UtilityDeductionCalculator utilityDeductionCalculator;
-    private final Map<String, PageInputCoordinates> pageInputCoordinatesMap;
+    private final Map<String, PageInputCoordinates> expeditedEligibilityConfiguration;
     public static final int ASSET_THRESHOLD = 100;
     public static final int INCOME_THRESHOLD = 150;
 
     public ExpeditedEligibilityDecider(UtilityDeductionCalculator utilityDeductionCalculator,
-                                       Map<String, PageInputCoordinates> pageInputCoordinatesMap) {
+                                       ExpeditedEligibilityConfiguration expeditedEligibilityConfiguration) {
         this.utilityDeductionCalculator = utilityDeductionCalculator;
-        this.pageInputCoordinatesMap = pageInputCoordinatesMap;
+        this.expeditedEligibilityConfiguration = expeditedEligibilityConfiguration;
     }
 
     public ExpeditedEligibility decide(PagesData pagesData) {
-        List<String> requiredPages = pageInputCoordinatesMap.values().stream()
+        List<String> requiredPages = expeditedEligibilityConfiguration.values().stream()
                 .filter(coordinates -> coordinates.getDefaultValue() == null)
                 .map(PageInputCoordinates::getPageName)
                 .collect(Collectors.toList());
@@ -31,12 +31,12 @@ public class ExpeditedEligibilityDecider {
             return ExpeditedEligibility.UNDETERMINED;
         }
 
-        double assets = getDouble(pagesData, pageInputCoordinatesMap.get("assets"));
-        double income = getDouble(pagesData, pageInputCoordinatesMap.get("income"));
-        double housingCosts = getDouble(pagesData, pageInputCoordinatesMap.get("housingCosts"));
-        PageInputCoordinates migrantWorkerCoordinates = pageInputCoordinatesMap.get("migrantWorker");
+        double assets = getDouble(pagesData, expeditedEligibilityConfiguration.get("assets"));
+        double income = getDouble(pagesData, expeditedEligibilityConfiguration.get("income"));
+        double housingCosts = getDouble(pagesData, expeditedEligibilityConfiguration.get("housingCosts"));
+        PageInputCoordinates migrantWorkerCoordinates = expeditedEligibilityConfiguration.get("migrantWorker");
         String isMigrantWorker = pagesData.getPage(migrantWorkerCoordinates.getPageName()).get(migrantWorkerCoordinates.getInputName()).getValue().get(0);
-        PageInputCoordinates utilityExpensesSelectionsCoordinates = pageInputCoordinatesMap.get("utilityExpensesSelections");
+        PageInputCoordinates utilityExpensesSelectionsCoordinates = expeditedEligibilityConfiguration.get("utilityExpensesSelections");
         InputData utilityExpensesSelections = pagesData.getPage(utilityExpensesSelectionsCoordinates.getPageName()).get(utilityExpensesSelectionsCoordinates.getInputName());
 
         boolean assetsAndIncomeBelowThreshold = assets <= ASSET_THRESHOLD && income < INCOME_THRESHOLD;

@@ -80,6 +80,9 @@
         "pageConfiguration": {
           "$ref": "#/definitions/page"
         },
+        "groupName": {
+          "type": "string"
+        },
         "datasources": {
           "type": "array",
           "items": {
@@ -179,7 +182,8 @@
             "MONEY",
             "INCREMENTER",
             "TEXTAREA",
-            "CUSTOM"
+            "CUSTOM",
+            "HOURLY_WAGE"
           ]
         },
         "name": {

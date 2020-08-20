@@ -156,5 +156,6 @@ caf:
       lastName0: EMPLOYEE_LAST_NAME_0
       firstName1: EMPLOYEE_FIRST_NAME_1
       lastName1: EMPLOYEE_LAST_NAME_1
+      grossMonthlyIncome: GROSS_MONTHLY_INCOME
       selfEmployed: SELF_EMPLOYED
       selfEmployedGrossMonthlyEarnings: SELF_EMPLOYED_GROSS_MONTHLY_EARNINGS

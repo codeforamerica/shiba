@@ -233,7 +233,9 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         if (new Random().nextBoolean()) {
             Page hourlyWage = paidByTheHourPage.choose(YES);
             hourlyWage.enterInput("hourlyWage", "1");
-            Page jobBuilder = hourlyWage.clickPrimaryButton();
+            Page hoursAWeek = hourlyWage.clickPrimaryButton();
+            hoursAWeek.enterInput("hoursAWeek", "30");
+            Page jobBuilder = hoursAWeek.clickPrimaryButton();
             return jobBuilder.clickPrimaryButton();
         } else {
             Page payPeriod = paidByTheHourPage.choose(NO);

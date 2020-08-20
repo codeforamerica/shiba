@@ -1,0 +1,12 @@
+gross-monthly-income:
+  groupName: jobs
+  pageInputs:
+    paidByTheHour:
+      pageName: paidByTheHour
+      inputName: paidByTheHour
+    hourlyWage:
+      pageName: hourlyWage
+      inputName: hourlyWage
+    hoursAWeek:
+      pageName: hoursAWeek
+      inputName: hoursAWeek

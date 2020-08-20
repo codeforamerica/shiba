@@ -122,9 +122,12 @@ public class PdfIntegrationTest {
         Subworkflows subworkflows = new Subworkflows();
         Subworkflow subworkflow = new Subworkflow();
         PagesData pagesData = new PagesData();
-        PageData pageData = new PageData();
-        pageData.put("selfEmployment", InputData.builder().value(List.of("false")).build());
-        pagesData.put("selfEmployment", pageData);
+        PageData selfEmploymentPageData = new PageData();
+        selfEmploymentPageData.put("selfEmployment", InputData.builder().value(List.of("false")).build());
+        pagesData.put("selfEmployment", selfEmploymentPageData);
+        PageData paidByTheHourPage = new PageData();
+        paidByTheHourPage.put("paidByTheHour", InputData.builder().value(List.of("false")).build());
+        pagesData.put("paidByTheHour", paidByTheHourPage);
         subworkflow.add(pagesData);
         subworkflows.put("jobs", subworkflow);
         data.setSubworkflows(subworkflows);

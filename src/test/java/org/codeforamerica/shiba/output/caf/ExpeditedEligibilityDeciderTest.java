@@ -19,7 +19,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,8 +44,8 @@ class ExpeditedEligibilityDeciderTest {
     static class TestPageConfiguration {
         @Bean
         @ConfigurationProperties(prefix = "test-expedited-eligibility")
-        public Map<String, PageInputCoordinates> expeditedEligibilityConfiguration() {
-            return new HashMap<>();
+        public ExpeditedEligibilityConfiguration expeditedEligibilityConfiguration() {
+            return new ExpeditedEligibilityConfiguration();
         }
     }
 

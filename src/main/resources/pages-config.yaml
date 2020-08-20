@@ -968,6 +968,17 @@ shiba-configuration:
         - name: hourlyWage
           type: HOURLY_WAGE
       contextFragment: jobContextFragment
+    - &hoursAWeek
+      name: hoursAWeek
+      pageTitle:
+        value: hours-a-week.title
+      headerKey:
+        value: hours-a-week.how-many-hours-a-week-do-you-work
+      headerHelpMessageKey: hours-a-week.we-know-this-can-be-hard-to-answer-so-just-estimate-based-on
+      inputs:
+        - name: hoursAWeek
+          type: NUMBER
+      contextFragment: jobContextFragment
     - &payPeriod
       name: payPeriod
       pageTitle:
@@ -1277,6 +1288,13 @@ shiba-configuration:
       pageConfiguration: *hourlyWage
       groupName: jobs
       nextPages:
+        - pageName: hoursAWeek
+      datasources:
+        - pageName: employersName
+    hoursAWeek:
+      pageConfiguration: *hoursAWeek
+      groupName: jobs
+      nextPages:
         - pageName: jobBuilder
       datasources:
         - pageName: employersName
@@ -1516,7 +1534,7 @@ shiba-configuration:
     jobs:
       startPage: employersName
       completePages:
-        - hourlyWage
+        - hoursAWeek
         - payPeriod
       redirectPage: warningPage
       noDataRedirectPage: noDataWarningPage

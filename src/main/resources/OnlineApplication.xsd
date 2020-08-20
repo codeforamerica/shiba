@@ -426,7 +426,7 @@
 					<xsd:documentation>F# 191</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="PaycheckFrequency" type="xsd:string" minOccurs="0">
+			<xsd:element name="PaycheckFrequency" type="model:PaycheckFrequencyType" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>F# 192; see model:PaycheckFrequencyType</xsd:documentation>
 				</xsd:annotation>
