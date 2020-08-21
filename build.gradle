@@ -80,6 +80,7 @@ dependencies {
     implementation 'commons-validator:commons-validator:1.6'
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.apache.httpcomponents:httpclient'
+    implementation 'io.sentry:sentry-spring:1.7.30'
     runtime 'org.flywaydb:flyway-core:6.4.4'
     runtime 'com.h2database:h2'
 
