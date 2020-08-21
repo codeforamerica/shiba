@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
+import org.codeforamerica.shiba.ApplicationRepository;
 import org.codeforamerica.shiba.output.ApplicationDataConsumer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     ApplicationDataConsumer applicationDataConsumer;
 
     @MockBean
-    ApplicationIdGenerator applicationIdGenerator;
+    ApplicationRepository applicationRepository;
 
     @Override
     @BeforeEach
@@ -40,7 +41,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         when(clock.instant()).thenReturn(Instant.now());
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         when(applicationDataConsumer.process(any())).thenReturn(ZonedDateTime.now());
-        when(applicationIdGenerator.generate()).thenReturn("123000FAKE");
+        when(applicationRepository.getNextId()).thenReturn("123000FAKE");
     }
 
     @Test

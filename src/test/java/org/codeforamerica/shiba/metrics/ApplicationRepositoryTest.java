@@ -14,20 +14,39 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
-@Sql(statements = "UPDATE application_id_counter SET counter = 0;")
+@Sql(statements = "ALTER SEQUENCE application_id RESTART WITH 12")
 class ApplicationRepositoryTest {
 
     @Autowired
     ApplicationRepository applicationRepository;
 
     @Test
-    void shouldSaveApplicationMetrics() {
-        Integer nextId = applicationRepository.getNextId();
+    void shouldGenerateIdForNextApplication() {
+        String nextId = applicationRepository.getNextId();
 
-        assertThat(nextId).isEqualTo(1);
+        assertThat(nextId).endsWith("12");
 
-        Integer nextIdAgain = applicationRepository.getNextId();
+        String nextIdAgain = applicationRepository.getNextId();
 
-        assertThat(nextIdAgain).isEqualTo(2);
+        assertThat(nextIdAgain).endsWith("13");
+    }
+
+    @Test
+    void shouldPrefixIdWithRandom3DigitSalt() {
+        String nextId = applicationRepository.getNextId();
+
+        assertThat(nextId).matches("^[1-9]\\d{2}.*");
+
+        String nextIdAgain = applicationRepository.getNextId();
+
+        assertThat(nextIdAgain.substring(0, 3)).isNotEqualTo(nextId.substring(0, 3));
+    }
+
+    @Test
+    void shouldPadTheIdWithZeroesUntilReach10Digits() {
+        String nextId = applicationRepository.getNextId();
+
+        assertThat(nextId).hasSize(10);
+        assertThat(nextId.substring(3, 8)).isEqualTo("00000");
     }
 }

@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
+import org.codeforamerica.shiba.ApplicationRepository;
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
 import org.codeforamerica.shiba.metrics.ApplicationMetric;
 import org.codeforamerica.shiba.metrics.ApplicationMetricsRepository;
@@ -59,7 +60,7 @@ class PageControllerTest {
 
     ApplicationDataConsumer applicationDataConsumer = mock(ApplicationDataConsumer.class);
 
-    ApplicationIdGenerator applicationIdGenerator = mock(ApplicationIdGenerator.class);
+    ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
 
     @Autowired
     ApplicationConfiguration applicationConfiguration;
@@ -73,7 +74,7 @@ class PageControllerTest {
                 applicationMetricsRepository,
                 metrics,
                 applicationDataConsumer,
-                applicationIdGenerator);
+                applicationRepository);
         mockMvc = MockMvcBuilders.standaloneSetup(pageController)
                 .build();
         when(clock.instant()).thenReturn(Instant.now());
@@ -150,7 +151,7 @@ class PageControllerTest {
     void shouldGenerateIdForApplication() throws Exception {
         metrics.setStartTimeOnce(Instant.now());
 
-        when(applicationIdGenerator.generate()).thenReturn("42");
+        when(applicationRepository.getNextId()).thenReturn("42");
 
         mockMvc.perform(post("/submit")
                 .param("foo[]", "some value")

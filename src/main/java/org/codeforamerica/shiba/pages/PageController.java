@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
+import org.codeforamerica.shiba.ApplicationRepository;
 import org.codeforamerica.shiba.metrics.ApplicationMetric;
 import org.codeforamerica.shiba.metrics.ApplicationMetricsRepository;
 import org.codeforamerica.shiba.metrics.Metrics;
@@ -31,7 +32,7 @@ public class PageController {
     private final ApplicationMetricsRepository repository;
     private final Metrics metrics;
     private final ApplicationDataConsumer applicationDataConsumer;
-    private final ApplicationIdGenerator applicationIdGenerator;
+    private final ApplicationRepository applicationRepository;
 
     public PageController(
             ApplicationConfiguration applicationConfiguration,
@@ -40,14 +41,14 @@ public class PageController {
             ApplicationMetricsRepository repository,
             Metrics metrics,
             ApplicationDataConsumer applicationDataConsumer,
-            ApplicationIdGenerator applicationIdGenerator) {
+            ApplicationRepository applicationRepository) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
         this.repository = repository;
         this.metrics = metrics;
         this.applicationDataConsumer = applicationDataConsumer;
-        this.applicationIdGenerator = applicationIdGenerator;
+        this.applicationRepository = applicationRepository;
     }
 
     @GetMapping("/")
@@ -220,7 +221,7 @@ public class PageController {
             ApplicationMetric applicationMetric = new ApplicationMetric(Duration.between(metrics.getStartTime(), clock.instant()));
             repository.save(applicationMetric);
 
-            this.applicationData.setId(applicationIdGenerator.generate());
+            this.applicationData.setId(applicationRepository.getNextId());
             this.applicationData.setSubmissionTime(applicationDataConsumer.process(applicationData));
 
             return new ModelAndView(String.format("redirect:/pages/%s/navigation", submitPage));
