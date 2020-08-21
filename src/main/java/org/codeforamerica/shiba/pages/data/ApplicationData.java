@@ -4,7 +4,6 @@ import lombok.Data;
 import org.codeforamerica.shiba.pages.config.NextPage;
 import org.codeforamerica.shiba.pages.config.PageWorkflowConfiguration;
 
-import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -13,18 +12,11 @@ import java.util.Optional;
 public class ApplicationData {
     private PagesData pagesData = new PagesData();
     private Subworkflows subworkflows = new Subworkflows();
-    private ZonedDateTime submissionTime;
     private Map<String, PagesData> incompleteIterations = new HashMap<>();
-    private String id;
 
     public void clear() {
         this.pagesData.clear();
-        this.submissionTime = null;
         this.subworkflows.clear();
-    }
-
-    public boolean isSubmitted() {
-        return this.submissionTime != null;
     }
 
     public PageData getInputDataMap(String pageName) {

@@ -161,6 +161,7 @@ caf:
       selfEmployedGrossMonthlyEarnings: SELF_EMPLOYED_GROSS_MONTHLY_EARNINGS
     nonPagesData:
       applicationId: APPLICATION_ID
+      completedAt: CREATED_DATE
   enums:
     EVERY_WEEK: Every week
     EVERY_TWO_WEEKS: Every two weeks

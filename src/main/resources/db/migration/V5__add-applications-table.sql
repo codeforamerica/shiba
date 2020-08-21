@@ -1,0 +1,5 @@
+CREATE TABLE applications (
+    id VARCHAR NOT NULL PRIMARY KEY,
+    completed_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    data JSONB NOT NULL
+)

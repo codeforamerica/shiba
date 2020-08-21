@@ -1,9 +1,7 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;
-    driverClassName: org.h2.Driver
-    username: sa
-    password: password
+    url: jdbc:postgresql://localhost:15432/shiba
+    username: shiba
   profiles:
     include: secrets
 

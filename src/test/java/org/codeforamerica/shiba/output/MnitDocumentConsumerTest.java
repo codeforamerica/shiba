@@ -10,22 +10,13 @@ import org.codeforamerica.shiba.pages.data.PagesData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 class MnitDocumentConsumerTest {
     MnitEsbWebServiceClient mnitClient = mock(MnitEsbWebServiceClient.class);
-
-    Clock clock = mock(Clock.class);
-
-    Instant now = Instant.now();
 
     PdfGenerator pdfGenerator = mock(PdfGenerator.class);
 
@@ -33,9 +24,8 @@ class MnitDocumentConsumerTest {
 
     XmlGenerator xmlGenerator = mock(XmlGenerator.class);
 
-    MnitDocumentConsumer documentSender = new MnitDocumentConsumer(
+    MnitDocumentConsumer documentConsumer = new MnitDocumentConsumer(
             mnitClient,
-            clock,
             pdfGenerator,
             xmlGenerator,
             mappers);
@@ -52,24 +42,24 @@ class MnitDocumentConsumerTest {
     @BeforeEach
     void setUp() {
         appData.setPagesData(new PagesData(Map.of("somePage", new PageData())));
-        when(clock.instant()).thenReturn(now);
-        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
     }
 
     @Test
     void generatesThePDFFromTheApplicationData() {
-        when(mappers.map(appData)).thenReturn(applicationInputs);
+        String applicationId = "someId";
+        when(mappers.map(applicationId)).thenReturn(applicationInputs);
 
-        documentSender.process(appData);
+        documentConsumer.process(applicationId);
 
         verify(pdfGenerator).generate(applicationInputs);
     }
 
     @Test
     void generatesTheXmlFromTheApplicationData() {
-        when(mappers.map(appData)).thenReturn(applicationInputs);
+        String applicationId = "someId";
+        when(mappers.map(applicationId)).thenReturn(applicationInputs);
 
-        documentSender.process(appData);
+        documentConsumer.process(applicationId);
         verify(xmlGenerator).generate(applicationInputs);
     }
 
@@ -80,15 +70,9 @@ class MnitDocumentConsumerTest {
         ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
         when(xmlGenerator.generate(anyList())).thenReturn(xmlApplicationFile);
 
-        documentSender.process(appData);
+        documentConsumer.process("someId");
 
         verify(mnitClient).send(pdfApplicationFile);
         verify(mnitClient).send(xmlApplicationFile);
-    }
-
-    @Test
-    void returnsTheCurrentTimestamp() {
-        assertThat(documentSender.process(appData))
-                .isEqualTo(ZonedDateTime.ofInstant(now, ZoneOffset.UTC));
     }
 }

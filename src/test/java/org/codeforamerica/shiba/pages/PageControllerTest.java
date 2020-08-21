@@ -1,7 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.ApplicationRepository;
-import org.codeforamerica.shiba.YamlPropertySourceFactory;
+import org.codeforamerica.shiba.*;
 import org.codeforamerica.shiba.metrics.ApplicationMetric;
 import org.codeforamerica.shiba.metrics.ApplicationMetricsRepository;
 import org.codeforamerica.shiba.metrics.Metrics;
@@ -13,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -54,6 +54,8 @@ class PageControllerTest {
 
     Metrics metrics = new Metrics();
 
+    ConfirmationData confirmationData = new ConfirmationData();
+
     Clock clock = mock(Clock.class);
 
     ApplicationMetricsRepository applicationMetricsRepository = mock(ApplicationMetricsRepository.class);
@@ -61,6 +63,8 @@ class PageControllerTest {
     ApplicationDataConsumer applicationDataConsumer = mock(ApplicationDataConsumer.class);
 
     ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
+
+    ApplicationFactory applicationFactory = mock(ApplicationFactory.class);
 
     @Autowired
     ApplicationConfiguration applicationConfiguration;
@@ -74,10 +78,13 @@ class PageControllerTest {
                 applicationMetricsRepository,
                 metrics,
                 applicationDataConsumer,
-                applicationRepository);
+                applicationRepository,
+                applicationFactory,
+                confirmationData);
         mockMvc = MockMvcBuilders.standaloneSetup(pageController)
                 .build();
         when(clock.instant()).thenReturn(Instant.now());
+        when(applicationFactory.newApplication(any())).thenReturn(new Application("defaultId", ZonedDateTime.now(), null));
     }
 
     @Test
@@ -126,19 +133,22 @@ class PageControllerTest {
     void shouldConsumeApplicationDataOnSubmit() throws Exception {
         metrics.setStartTimeOnce(Instant.now());
 
+        String applicationId = "someId";
+        Application application = new Application(applicationId, ZonedDateTime.now(), applicationData);
+        when(applicationFactory.newApplication(applicationData)).thenReturn(application);
+
         mockMvc.perform(post("/submit")
                 .param("foo[]", "some value")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
-        verify(applicationDataConsumer).process(applicationData);
+        InOrder inOrder = inOrder(applicationRepository, applicationDataConsumer);
+        inOrder.verify(applicationRepository).save(application);
+        inOrder.verify(applicationDataConsumer).process(applicationId);
     }
 
     @Test
     void shouldNotConsumeApplicationDataIfPageDataIsNotValid() throws Exception {
         metrics.setStartTimeOnce(Instant.now());
-
-        ZonedDateTime sentTime = ZonedDateTime.now();
-        when(applicationDataConsumer.process(any())).thenReturn(sentTime);
 
         mockMvc.perform(post("/submit")
                 .param("foo[]", "")
@@ -148,15 +158,19 @@ class PageControllerTest {
     }
 
     @Test
-    void shouldGenerateIdForApplication() throws Exception {
+    void shouldSaveApplication() throws Exception {
         metrics.setStartTimeOnce(Instant.now());
 
-        when(applicationRepository.getNextId()).thenReturn("42");
+        ZonedDateTime completedAt = ZonedDateTime.now();
+        Application application = new Application("someId", completedAt, applicationData);
+        when(applicationFactory.newApplication(applicationData)).thenReturn(application);
 
         mockMvc.perform(post("/submit")
                 .param("foo[]", "some value")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
-        assertThat(applicationData.getId()).isEqualTo("42");
+        verify(applicationRepository).save(application);
+        assertThat(confirmationData.getId()).isEqualTo("someId");
+        assertThat(confirmationData.getCompletedAt()).isEqualTo(completedAt);
     }
 }

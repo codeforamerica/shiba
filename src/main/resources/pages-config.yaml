@@ -1579,8 +1579,6 @@ shiba-configuration:
         - pageName: success
     success:
       pageConfiguration: *success
-      datasources:
-        - pageName: signThisApplication
   pageGroups:
     jobs:
       startPage: employersName

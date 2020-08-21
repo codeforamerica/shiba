@@ -1,3 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:15433/shiba-test
+    username: shiba
+
 client:
   keystore: src/test/resources/test-keystore.jks
   keystore-password: changeit

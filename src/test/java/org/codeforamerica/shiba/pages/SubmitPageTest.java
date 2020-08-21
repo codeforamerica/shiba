@@ -1,9 +1,11 @@
 package org.codeforamerica.shiba.pages;
 
+import org.codeforamerica.shiba.Application;
+import org.codeforamerica.shiba.ApplicationFactory;
+import org.codeforamerica.shiba.ApplicationRepository;
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
 import org.codeforamerica.shiba.output.ApplicationDataConsumer;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -35,18 +37,17 @@ public class SubmitPageTest extends AbstractStaticMessageSourcePageTest {
     @MockBean
     ApplicationDataConsumer applicationDataConsumer;
 
-    @Override
-    @BeforeEach
-    void setUp() throws java.io.IOException {
-        super.setUp();
-        when(applicationDataConsumer.process(any())).thenReturn(ZonedDateTime.now());
-    }
+    @MockBean
+    ApplicationFactory applicationFactory;
+
+    @MockBean
+    ApplicationRepository applicationRepository;
 
     @Test
-    void shouldProvideTimestampToTerminalPageWhenApplicationDataIsConsumed() {
-        when(applicationDataConsumer.process(any()))
-                .thenReturn(ZonedDateTime.of(LocalDateTime.of(2020, 1, 1, 11, 10), ZoneOffset.UTC));
-        ZonedDateTime.of(LocalDateTime.of(2020, 1, 1, 10, 10), ZoneOffset.UTC);
+    void shouldProvideTimestampToTerminalPageWhenApplicationIsSigned() {
+        String applicationId = "someId";
+        when(applicationFactory.newApplication(any()))
+                .thenReturn(new Application(applicationId, ZonedDateTime.of(LocalDateTime.of(2020, 1, 1, 11, 10), ZoneOffset.UTC), null));
 
         navigateTo("firstPage");
 
@@ -54,5 +55,6 @@ public class SubmitPageTest extends AbstractStaticMessageSourcePageTest {
         testPage.clickPrimaryButton();
 
         assertThat(driver.findElement(By.id("submission-time")).getText()).isEqualTo("2020-01-01T11:10Z");
+        assertThat(driver.findElement(By.id("application-id")).getText()).isEqualTo(applicationId);
     }
 }

@@ -12,6 +12,20 @@ jobs:
   test:
     name: Run test suite
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+          POSTGRES_DB: shiba-test
+          POSTGRES_USER: shiba
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 15433:5432
     steps:
     - uses: actions/checkout@v2
     - name: Set up ChromeDriver

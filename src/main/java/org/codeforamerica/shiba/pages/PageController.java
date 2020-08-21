@@ -1,6 +1,9 @@
 package org.codeforamerica.shiba.pages;
 
+import org.codeforamerica.shiba.Application;
+import org.codeforamerica.shiba.ApplicationFactory;
 import org.codeforamerica.shiba.ApplicationRepository;
+import org.codeforamerica.shiba.ConfirmationData;
 import org.codeforamerica.shiba.metrics.ApplicationMetric;
 import org.codeforamerica.shiba.metrics.ApplicationMetricsRepository;
 import org.codeforamerica.shiba.metrics.Metrics;
@@ -29,26 +32,32 @@ public class PageController {
     private final ApplicationData applicationData;
     private final ApplicationConfiguration applicationConfiguration;
     private final Clock clock;
-    private final ApplicationMetricsRepository repository;
+    private final ApplicationMetricsRepository metricsRepository;
     private final Metrics metrics;
     private final ApplicationDataConsumer applicationDataConsumer;
     private final ApplicationRepository applicationRepository;
+    private final ApplicationFactory applicationFactory;
+    private final ConfirmationData confirmationData;
 
     public PageController(
             ApplicationConfiguration applicationConfiguration,
             ApplicationData applicationData,
             Clock clock,
-            ApplicationMetricsRepository repository,
+            ApplicationMetricsRepository metricsRepository,
             Metrics metrics,
             ApplicationDataConsumer applicationDataConsumer,
-            ApplicationRepository applicationRepository) {
+            ApplicationRepository applicationRepository,
+            ApplicationFactory applicationFactory,
+            ConfirmationData confirmationData) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
-        this.repository = repository;
+        this.metricsRepository = metricsRepository;
         this.metrics = metrics;
         this.applicationDataConsumer = applicationDataConsumer;
         this.applicationRepository = applicationRepository;
+        this.applicationFactory = applicationFactory;
+        this.confirmationData = confirmationData;
     }
 
     @GetMapping("/")
@@ -88,7 +97,7 @@ public class PageController {
             this.metrics.setStartTimeOnce(clock.instant());
         }
 
-        if (!landmarkPagesConfiguration.isTerminalPage(pageName) && this.applicationData.isSubmitted()) {
+        if (!landmarkPagesConfiguration.isTerminalPage(pageName) && confirmationData.getCompletedAt() != null) {
             return new ModelAndView(String.format("redirect:/pages/%s", landmarkPagesConfiguration.getTerminalPage()));
         } else if (!landmarkPagesConfiguration.isLandingPage(pageName) && metrics.getStartTime() == null) {
             return new ModelAndView(String.format("redirect:/pages/%s", landmarkPagesConfiguration.getLandingPages().get(0)));
@@ -125,15 +134,15 @@ public class PageController {
         ));
 
         if (landmarkPagesConfiguration.isTerminalPage(pageName)) {
-            model.put("submissionTime", this.applicationData.getSubmissionTime());
-            model.put("applicationId", this.applicationData.getId());
+            model.put("submissionTime", confirmationData.getCompletedAt());
+            model.put("applicationId", confirmationData.getId());
         }
 
         String pageToRender;
         if (pageConfiguration.isStaticPage()) {
             pageToRender = pageName;
             model.put("data", pagesData.getDatasourcePagesBy(pageWorkflow.getDatasources()));
-            if(pageWorkflow.hasRequiredSubworkflows(applicationData)) {
+            if (pageWorkflow.hasRequiredSubworkflows(applicationData)) {
                 model.put("subworkflows", pageWorkflow.getSubworkflows(applicationData));
             } else {
                 return new ModelAndView("redirect:/pages/" + pageWorkflow.getDataMissingRedirect());
@@ -219,10 +228,13 @@ public class PageController {
 
         if (pageData.isValid()) {
             ApplicationMetric applicationMetric = new ApplicationMetric(Duration.between(metrics.getStartTime(), clock.instant()));
-            repository.save(applicationMetric);
+            metricsRepository.save(applicationMetric);
 
-            this.applicationData.setId(applicationRepository.getNextId());
-            this.applicationData.setSubmissionTime(applicationDataConsumer.process(applicationData));
+            Application application = applicationFactory.newApplication(applicationData);
+            confirmationData.setId(application.getId());
+            confirmationData.setCompletedAt(application.getCompletedAt());
+            applicationRepository.save(application);
+            applicationDataConsumer.process(application.getId());
 
             return new ModelAndView(String.format("redirect:/pages/%s/navigation", submitPage));
         } else {

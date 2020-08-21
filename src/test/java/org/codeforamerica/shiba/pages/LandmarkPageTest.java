@@ -12,12 +12,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 
 import java.io.IOException;
-import java.time.ZonedDateTime;
 import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
     @TestConfiguration
@@ -40,7 +37,6 @@ public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
     @BeforeEach
     void setUp() throws IOException {
         super.setUp();
-        when(applicationDataConsumer.process(any())).thenReturn(ZonedDateTime.now());
         staticMessageSource.addMessage("first-page-title", Locale.US, firstPageTitle);
         staticMessageSource.addMessage("fourth-page-title", Locale.US, "fourth page title");
         staticMessageSource.addMessage("first-page-title", Locale.US, "first page title");

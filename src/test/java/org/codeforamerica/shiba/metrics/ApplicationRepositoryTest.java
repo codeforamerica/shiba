@@ -1,6 +1,8 @@
 package org.codeforamerica.shiba.metrics;
 
+import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.ApplicationRepository;
+import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,12 +11,17 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
-@Sql(statements = "ALTER SEQUENCE application_id RESTART WITH 12")
+@Sql(statements = {"ALTER SEQUENCE application_id RESTART WITH 12", "TRUNCATE TABLE applications"})
 class ApplicationRepositoryTest {
 
     @Autowired
@@ -48,5 +55,26 @@ class ApplicationRepositoryTest {
 
         assertThat(nextId).hasSize(10);
         assertThat(nextId.substring(3, 8)).isEqualTo("00000");
+    }
+
+    @Test
+    void shouldSaveApplication() {
+        ApplicationData applicationData = new ApplicationData();
+        PageData pageData = new PageData();
+        pageData.put("someInput", new InputData(List.of("someValue")));
+        applicationData.setPagesData(new PagesData(Map.of("somePage", pageData)));
+        Subworkflows subworkflows = new Subworkflows();
+        PagesData subflowIteration = new PagesData();
+        PageData groupedPage = new PageData();
+        groupedPage.put("someGroupedPageInput", new InputData(List.of("someGroupedPageValue")));
+        subflowIteration.put("someGroupedPage", groupedPage);
+        subworkflows.addIteration("someGroup", subflowIteration);
+        applicationData.setSubworkflows(subworkflows);
+
+        Application application = new Application("someid", ZonedDateTime.now(ZoneOffset.UTC), applicationData);
+
+        applicationRepository.save(application);
+
+        assertThat(applicationRepository.find("someid")).isEqualTo(application);
     }
 }

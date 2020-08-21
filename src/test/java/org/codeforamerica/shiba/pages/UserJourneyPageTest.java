@@ -1,6 +1,5 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.ApplicationRepository;
 import org.codeforamerica.shiba.output.ApplicationDataConsumer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,7 +10,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.io.IOException;
-import java.time.*;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,7 +21,6 @@ import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.pages.DatePart.*;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 public class UserJourneyPageTest extends AbstractBasePageTest {
@@ -30,9 +31,6 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     @MockBean
     ApplicationDataConsumer applicationDataConsumer;
 
-    @MockBean
-    ApplicationRepository applicationRepository;
-
     @Override
     @BeforeEach
     void setUp() throws IOException {
@@ -40,8 +38,6 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         driver.navigate().to(baseUrl + "/pages/landing");
         when(clock.instant()).thenReturn(Instant.now());
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
-        when(applicationDataConsumer.process(any())).thenReturn(ZonedDateTime.now());
-        when(applicationRepository.getNextId()).thenReturn("123000FAKE");
     }
 
     @Test
@@ -82,18 +78,6 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
         Page importantToKnow = expeditedDeterminationPage.clickPrimaryButton();
         assertThat(importantToKnow.getTitle()).isEqualTo("Important to Know");
-    }
-
-    @Test
-    void shouldCaptureSubmissionTimeAndApplicationIdOnSuccessPage() {
-        when(applicationDataConsumer.process(any()))
-                .thenReturn(ZonedDateTime.of(LocalDateTime.of(2020, 1, 1, 10, 10), ZoneOffset.UTC));
-
-        SuccessPage successPage = nonExpeditedFlowToSuccessPage();
-
-        assertThat(successPage.getTitle()).isEqualTo("Success");
-        assertThat(successPage.getSubmissionTime()).contains("January 1, 2020");
-        assertThat(successPage.getApplicationId()).contains("123000FAKE");
     }
 
     @Test

@@ -1,0 +1,18 @@
+version: '3.3'
+services:
+  local-database:
+    image: postgres:12
+    ports:
+      - "15432:5432"
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_DB: shiba
+      POSTGRES_USER: shiba
+  test-database:
+    image: postgres:12
+    ports:
+      - "15433:5432"
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_DB: shiba-test
+      POSTGRES_USER: shiba
