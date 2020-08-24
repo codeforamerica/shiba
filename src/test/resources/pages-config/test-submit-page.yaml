@@ -7,8 +7,8 @@ shiba-configuration-submit-page:
       inputs:
         - name: foo
           type: TEXT
-          validator:
-            validation: NOT_BLANK
+          validators:
+            - validation: NOT_BLANK
     - &terminalPage
       pageTitle:
         value: dummy-page-title

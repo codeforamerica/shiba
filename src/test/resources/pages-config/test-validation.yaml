@@ -7,16 +7,16 @@ shiba-configuration-test-validation:
         inputs:
           - name: someInputName
             type: TEXT
-            validator:
-              validation: NOT_BLANK
+            validators:
+              - validation: NOT_BLANK
             validationErrorMessageKey: error-message-key
           - name: conditionalValidationWhenValueEquals
             type: TEXT
-            validator:
-              validation: NOT_BLANK
-              condition:
-                input: someInputName
-                value: valueToTriggerCondition
+            validators:
+              - validation: NOT_BLANK
+                condition:
+                  input: someInputName
+                  value: valueToTriggerCondition
             validationErrorMessageKey: error-message-key
     - &nextPage
         name: nextPage
@@ -30,11 +30,11 @@ shiba-configuration-test-validation:
                 messageKey: checkbox-value-key-1
           - name: conditionalValidationWhenValueIsNotPresent
             type: TEXT
-            validator:
-              validation: NOT_BLANK
-              condition:
-                input: someCheckbox
-                matcher: NOT_PRESENT
+            validators:
+              - validation: NOT_BLANK
+                condition:
+                  input: someCheckbox
+                  matcher: NOT_PRESENT
             validationErrorMessageKey: error-message-key
     - &notBlankPage
         name: notBlankPage
@@ -43,8 +43,8 @@ shiba-configuration-test-validation:
         inputs:
           - name: notBlankInput
             type: TEXT
-            validator:
-              validation: NOT_BLANK
+            validators:
+              - validation: NOT_BLANK
             validationErrorMessageKey: error-message-key
     - &zipcodePage
         name: zipcodePage
@@ -53,8 +53,8 @@ shiba-configuration-test-validation:
         inputs:
           - name: zipCodeInput
             type: TEXT
-            validator:
-              validation: ZIPCODE
+            validators:
+              - validation: ZIPCODE
             validationErrorMessageKey: error-message-key
     - &statePage
         name: statePage
@@ -63,8 +63,8 @@ shiba-configuration-test-validation:
         inputs:
           - name: stateInput
             type: TEXT
-            validator:
-              validation: STATE
+            validators:
+              - validation: STATE
             validationErrorMessageKey: error-message-key
     - &phonePage
         name: phonePage
@@ -73,8 +73,8 @@ shiba-configuration-test-validation:
         inputs:
           - name: phoneInput
             type: TEXT
-            validator:
-              validation: PHONE
+            validators:
+              - validation: PHONE
             validationErrorMessageKey: error-message-key
     - &moneyPage
         name: moneyPage
@@ -83,8 +83,8 @@ shiba-configuration-test-validation:
         inputs:
           - name: moneyInput
             type: TEXT
-            validator:
-              validation: MONEY
+            validators:
+              - validation: MONEY
             validationErrorMessageKey: error-message-key
     - &ssnPage
         name: ssnPage
@@ -93,8 +93,8 @@ shiba-configuration-test-validation:
         inputs:
           - name: ssnInput
             type: TEXT
-            validator:
-              validation: SSN
+            validators:
+              - validation: SSN
             validationErrorMessageKey: error-message-key
     - &datePage
         name: datePage
@@ -103,8 +103,8 @@ shiba-configuration-test-validation:
         inputs:
           - name: dateInput
             type: DATE
-            validator:
-              validation: DATE
+            validators:
+              - validation: DATE
             validationErrorMessageKey: error-message-key
     - &checkboxPage
         name: checkboxPage
@@ -118,8 +118,8 @@ shiba-configuration-test-validation:
                 messageKey: option-1
               - value: "2"
                 messageKey: option-2
-            validator:
-              validation: SELECT_AT_LEAST_ONE
+            validators:
+              - validation: SELECT_AT_LEAST_ONE
             validationErrorMessageKey: error-message-key
     - &doesNotContainConditionPage
         name: doesNotContainConditionPage
@@ -131,12 +131,23 @@ shiba-configuration-test-validation:
           - name: conditionTest
             validationErrorMessageKey: error-message-key
             type: TEXT
-            validator:
-              validation: NOT_BLANK
-              condition:
-                value: triggerValue
-                matcher: DOES_NOT_CONTAIN
-                input: triggerInput
+            validators:
+              - validation: NOT_BLANK
+                condition:
+                  value: triggerValue
+                  matcher: DOES_NOT_CONTAIN
+                  input: triggerInput
+    - &pageWithInputWithMultipleValidations
+      name: pageWithInputWithMultipleValidations
+      pageTitle:
+        value: page-with-input-with-multiple-validations
+      inputs:
+        - name: multipleValidations
+          type: TEXT
+          validators:
+            - validation: NOT_BLANK
+            - validation: MONEY
+          validationErrorMessageKey: error-message-key
     - &lastPage
         name: lastPage
         pageTitle:
@@ -187,6 +198,10 @@ shiba-configuration-test-validation:
         - pageName: lastPage
     doesNotContainConditionPage:
       pageConfiguration: *doesNotContainConditionPage
+      nextPages:
+        - pageName: lastPage
+    pageWithInputWithMultipleValidations:
+      pageConfiguration: *pageWithInputWithMultipleValidations
       nextPages:
         - pageName: lastPage
     lastPage:

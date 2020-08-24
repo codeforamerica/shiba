@@ -17,7 +17,7 @@ public class FormInput {
     private List<Option> options;
     private List<FormInput> followUps = Collections.emptyList();
     private String followUpsValue;
-    private Validator validator;
+    private List<Validator> validators;
     private Boolean readOnly = false;
     private String defaultValue;
     private Integer max;

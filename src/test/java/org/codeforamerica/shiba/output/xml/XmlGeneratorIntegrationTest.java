@@ -72,8 +72,8 @@ public class XmlGeneratorIntegrationTest {
                                                     .collect(Collectors.toList());
                                             case DATE -> List.of(LocalDate.ofEpochDay(0).plusDays(new Random().nextInt()).format(DateTimeFormatter.ofPattern("MM/dd/yyyy")).split("/"));
                                             case YES_NO -> List.of(String.valueOf(new Random().nextBoolean()));
-                                            default -> Optional.ofNullable(input.getValidator())
-                                                    .map(validator -> switch (validator.getValidation()) {
+                                            default -> Optional.ofNullable(input.getValidators())
+                                                    .map(validator -> switch (validator.get(0).getValidation()) {
                                                         case SSN -> List.of("123456789");
                                                         case ZIPCODE -> List.of("12345");
                                                         case STATE -> List.of("MN");

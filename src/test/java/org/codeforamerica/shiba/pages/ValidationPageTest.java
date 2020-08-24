@@ -35,6 +35,7 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest {
     private final String notBlankPageTitle = "not blank page title";
     private final String checkboxPageTitle = "checkbox page title";
     private final String option1 = "option 1";
+    private final String multipleValidationsPageTitle = "multiple validations page title";
 
     @TestConfiguration
     @PropertySource(value = "classpath:pages-config/test-validation.yaml", factory = YamlPropertySourceFactory.class)
@@ -66,6 +67,7 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest {
         staticMessageSource.addMessage("not-blank-page-title", Locale.US, notBlankPageTitle);
         staticMessageSource.addMessage("checkbox-page-title", Locale.US, checkboxPageTitle);
         staticMessageSource.addMessage("option-1", Locale.US, option1);
+        staticMessageSource.addMessage("page-with-input-with-multiple-validations", Locale.US, multipleValidationsPageTitle);
     }
 
     @Test
@@ -124,6 +126,16 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest {
 
         assertThat(driver.getTitle()).isEqualTo(firstPageTitle);
         assertThat(testPage.getInputError("conditionalValidationWhenValueEquals")).isNotNull();
+    }
+
+    @Test
+    void shouldStayOnPage_whenAnyValidationHasFailed() {
+        navigateTo("pageWithInputWithMultipleValidations");
+
+        testPage.enterInput("multipleValidations", "not money");
+        testPage.clickPrimaryButton();
+
+        assertThat(driver.getTitle()).isEqualTo(multipleValidationsPageTitle);
     }
 
     @Nested

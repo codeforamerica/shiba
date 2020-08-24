@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toMap;
 import static org.codeforamerica.shiba.pages.PageUtils.getFormInputName;
@@ -61,17 +63,13 @@ public class PageData extends HashMap<String, InputData> {
     }
 
     @NotNull
-    private static Validation validationFor(FormInput formInput, MultiValueMap<String, String> model) {
-        return Optional.ofNullable(formInput.getValidator())
-                .filter(validator -> Optional.ofNullable(validator.getCondition())
-                        .map(condition -> {
-                            List<String> inputValue = Optional.ofNullable(model)
-                                    .map(modelMap -> modelMap.get(getFormInputName(condition.getInput())))
-                                    .orElse(List.of());
-                            return condition.matches(inputValue);
-                        })
-                        .orElse(true))
-                .map(Validator::getValidation)
-                .orElse(Validation.NONE);
+    private static List<Validation> validationFor(FormInput formInput, MultiValueMap<String, String> model) {
+        return Optional.ofNullable(formInput.getValidators())
+                .map(validators -> validators.stream()
+                        .filter(validator -> validator.shouldValidate(model))
+                        .map(Validator::getValidation)
+                )
+                .orElse(Stream.of(Validation.NONE))
+                .collect(Collectors.toList());
     }
 }

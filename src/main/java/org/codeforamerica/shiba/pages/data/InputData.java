@@ -16,11 +16,11 @@ public class InputData {
     @NotNull Boolean valid;
     @NotNull List<String> value;
 
-    InputData(Validation validation,
+    InputData(List<Validation> validations,
               List<String> value) {
         List<String> valueWithDefault = Objects.requireNonNullElseGet(value, List::of);
         this.value = valueWithDefault;
-        this.valid = validation.apply(valueWithDefault);
+        this.valid = validations.stream().allMatch(validation -> validation.apply(valueWithDefault));
     }
 
     InputData() {

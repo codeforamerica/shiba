@@ -7,8 +7,8 @@ shiba-configuration-pages-controller:
       inputs:
         - name: foo
           type: TEXT
-          validator:
-            validation: NOT_BLANK
+          validators:
+            - validation: NOT_BLANK
     - &terminalPage
       name: terminalPage
       pageTitle:
