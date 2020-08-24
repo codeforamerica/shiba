@@ -40,7 +40,7 @@ public class MnitEsbWebServiceClient {
 
     public void send(ApplicationFile applicationFile) {
         CreateDocument createDocument = new CreateDocument();
-        createDocument.setFolderId("workspace://SpacesStore/45ed1eea-d045-48fe-9970-383e1b889ec5");
+        createDocument.setFolderId("workspace://SpacesStore/5195b061-9bdc-4d31-9840-90a99902d329");
         createDocument.setRepositoryId("<Unknown");
         createDocument.setTypeId("document");
         CmisPropertiesType properties = new CmisPropertiesType();
