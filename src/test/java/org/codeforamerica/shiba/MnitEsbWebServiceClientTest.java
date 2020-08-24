@@ -85,7 +85,7 @@ class MnitEsbWebServiceClientTest {
         String fileName = "someFileName";
         mockWebServiceServer.expect(connectionTo(url))
                 .andExpect(xpath("//ns2:createDocument/ns2:folderId", namespaceMapping)
-                        .evaluatesTo("workspace://SpacesStore/45ed1eea-d045-48fe-9970-383e1b889ec5"))
+                        .evaluatesTo("workspace://SpacesStore/5195b061-9bdc-4d31-9840-90a99902d329"))
                 .andExpect(xpath("//ns2:createDocument/ns2:properties/ns2:propertyString[@ns2:name='Name']/ns2:value", namespaceMapping)
                         .evaluatesTo(fileName))
                 .andExpect(xpath("//ns2:createDocument/ns2:repositoryId", namespaceMapping)
