@@ -15,8 +15,9 @@ public class ApplicationData {
     private Map<String, PagesData> incompleteIterations = new HashMap<>();
 
     public void clear() {
-        this.pagesData.clear();
-        this.subworkflows.clear();
+        pagesData.clear();
+        subworkflows.clear();
+        incompleteIterations.clear();
     }
 
     public PageData getInputDataMap(String pageName) {
