@@ -5,6 +5,10 @@ spring:
     hikari:
       maximum-pool-size: 2
 
+shiba:
+  username: testUsername
+  password: testPassword
+
 client:
   keystore: src/test/resources/test-keystore.jks
   keystore-password: changeit
