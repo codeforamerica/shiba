@@ -11,8 +11,6 @@ import org.springframework.stereotype.Component;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.Clock;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 
 @Component
@@ -39,11 +37,6 @@ public class CAFFieldFiller implements PdfFieldFiller {
                     e.printStackTrace();
                 }
             });
-//            Submit --> sent to county
-//            Signed --> when the application was signed/completed
-//            TODO: Submitted/signed date must reflect when the application was completed, not when it was created
-            acroForm.getField("CREATED_DATE")
-                    .setValue(DateTimeFormatter.ISO_LOCAL_DATE.format(ZonedDateTime.now(clock)));
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             document.save(outputStream);

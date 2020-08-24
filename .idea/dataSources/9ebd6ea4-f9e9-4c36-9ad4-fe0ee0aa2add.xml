@@ -1555,6 +1555,7 @@ true posixrules
     </table>
     <table id="30" parent="15" name="applications">
       <ObjectId>16403</ObjectId>
+      <Outdated>1</Outdated>
       <Owner>shiba</Owner>
       <StateNumber>494</StateNumber>
     </table>

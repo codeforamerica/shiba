@@ -93,6 +93,7 @@ public class PageController {
         if (landmarkPagesConfiguration.isLandingPage(pageName)) {
             this.applicationData.clear();
             this.metrics.clear();
+            this.confirmationData.clear();
         } else if (landmarkPagesConfiguration.isStartTimerPage(pageName)) {
             this.metrics.setStartTimeOnce(clock.instant());
         }

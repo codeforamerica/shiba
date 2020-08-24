@@ -8,4 +8,9 @@ import java.time.ZonedDateTime;
 public class ConfirmationData {
     private String id;
     private ZonedDateTime completedAt;
+
+    public void clear() {
+        this.id = null;
+        this.completedAt = null;
+    }
 }

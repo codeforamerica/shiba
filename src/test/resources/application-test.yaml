@@ -2,6 +2,8 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:15433/shiba-test
     username: shiba
+    hikari:
+      maximum-pool-size: 2
 
 client:
   keystore: src/test/resources/test-keystore.jks

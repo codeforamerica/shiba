@@ -36,18 +36,6 @@ class CAFFieldFillerTest {
     }
 
     @Test
-    void shouldIncludeCreatedDate() throws IOException {
-        when(clock.instant()).thenReturn(Instant.ofEpochSecond(154352134));
-
-        ApplicationFile applicationFile = subject.fill(List.of());
-
-        PDAcroForm acroForm = getPdAcroForm(applicationFile);
-
-        assertThat(acroForm.getField("CREATED_DATE").getValueAsString())
-                .isEqualTo("1974-11-22");
-    }
-
-    @Test
     void shouldMapTextFields() throws IOException {
         String expectedFieldValue = "Michael";
         Collection<PdfField> fields = List.of(

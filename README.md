@@ -19,6 +19,18 @@
 - Set the Project SDK to Java 14 in `File > Project Structure`
 - Run the application using ShibaApplication run configuration
 
+### Start the local and test databases:
+
+This project uses docker compose to manage local and test databases. 
+
+In order to start the databases, you need to have docker and docker compose installed and then you can invoke the following from the project directory:
+
+`docker-compose up -d`
+
+To stop the databases, run:
+
+`docker-compose down` 
+
 ### Test:
 
 From the project root invoke
