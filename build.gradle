@@ -81,8 +81,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.apache.httpcomponents:httpclient'
     implementation 'io.sentry:sentry-spring:1.7.30'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     runtime 'org.flywaydb:flyway-core:6.4.4'
-    runtime 'com.h2database:h2'
 
     compile(files(genJaxb.classesDir).builtBy(genJaxb))
     jaxb "com.sun.xml.bind:jaxb-xjc:2.1.7"
@@ -95,6 +95,7 @@ dependencies {
     testImplementation 'com.github.tomakehurst:wiremock-standalone:2.27.1'
     testImplementation 'io.github.bonigarcia:webdrivermanager:4.0.0'
     testImplementation 'org.springframework.ws:spring-ws-test'
+    testImplementation 'org.springframework.security:spring-security-test'
 }
 
 compileJava.inputs.files(processResources)

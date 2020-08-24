@@ -56,6 +56,20 @@ class FileDownLoadControllerTest {
     }
 
     @Test
+    void shouldAcceptApplicationIdToGeneratePdfFile() throws Exception {
+        when(pdfGenerator.generate(any())).thenReturn(new ApplicationFile("".getBytes(), ""));
+        ApplicationInput applicationInput1 = new ApplicationInput("screen1", "input 1", List.of("input1Value"), ApplicationInputType.SINGLE_VALUE);
+        ApplicationInput applicationInput2 = new ApplicationInput("screen1", "input 1", List.of("something"), ApplicationInputType.SINGLE_VALUE);
+        when(mappers.map("9870000123")).thenReturn(List.of(applicationInput1, applicationInput2));
+
+        mockMvc.perform(
+                get("/download-caf/9870000123"))
+                .andExpect(status().is2xxSuccessful());
+
+        verify(pdfGenerator).generate(List.of(applicationInput1, applicationInput2));
+    }
+
+    @Test
     void shouldReturnTheGeneratedPdf() throws Exception {
         byte[] pdfBytes = "here is the pdf".getBytes();
         String fileName = "filename.pdf";

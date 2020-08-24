@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -46,6 +47,17 @@ public class FileDownLoadController {
     ResponseEntity<byte[]> downloadXml() {
         List<ApplicationInput> applicationInputs = mappers.map(confirmationData.getId());
         ApplicationFile applicationFile = xmlGenerator.generate(applicationInputs);
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", applicationFile.getFileName()))
+                .body(applicationFile.getFileBytes());
+    }
+
+    @GetMapping("/download-caf/{applicationId}")
+    ResponseEntity<byte[]> downloadPdfWithApplicationId(@PathVariable String applicationId) {
+        List<ApplicationInput> applicationInputs = mappers.map(applicationId);
+        ApplicationFile applicationFile = pdfGenerator.generate(applicationInputs);
+
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", applicationFile.getFileName()))
