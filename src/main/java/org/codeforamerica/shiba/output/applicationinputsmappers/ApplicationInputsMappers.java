@@ -30,7 +30,8 @@ public class ApplicationInputsMappers {
 
         Stream<ApplicationInput> defaultInputs = Stream.of(
                 new ApplicationInput("nonPagesData", "applicationId", List.of(applicationId), SINGLE_VALUE),
-                new ApplicationInput("nonPagesData", "completedAt", List.of(DateTimeFormatter.ISO_LOCAL_DATE.format(application.getCompletedAt())), SINGLE_VALUE));
+                new ApplicationInput("nonPagesData", "completedDate", List.of(DateTimeFormatter.ISO_LOCAL_DATE.format(application.getCompletedAt())), SINGLE_VALUE),
+                new ApplicationInput("nonPagesData", "completedDateTime", List.of(DateTimeFormatter.ISO_DATE_TIME.format(application.getCompletedAt())), SINGLE_VALUE));
 
         return Stream.concat(defaultInputs, inputs).collect(toList());
     }

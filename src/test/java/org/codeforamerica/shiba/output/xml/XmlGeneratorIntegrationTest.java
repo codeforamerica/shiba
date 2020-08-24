@@ -1,8 +1,10 @@
 package org.codeforamerica.shiba.output.xml;
 
+import org.codeforamerica.shiba.Application;
+import org.codeforamerica.shiba.ApplicationRepository;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.applicationinputsmappers.OneToOneApplicationInputsMapper;
+import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.FormInput;
 import org.codeforamerica.shiba.pages.config.Option;
@@ -30,7 +32,9 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.time.Clock;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +53,7 @@ public class XmlGeneratorIntegrationTest {
     private FileGenerator xmlGenerator;
 
     @Autowired
-    private OneToOneApplicationInputsMapper oneToOneApplicationInputsMapper;
+    private ApplicationInputsMappers applicationInputsMappers;
 
     @Value("classpath:OnlineApplication.xsd")
     private Resource onlineApplicationSchema;
@@ -57,14 +61,24 @@ public class XmlGeneratorIntegrationTest {
     @Autowired
     private ApplicationConfiguration applicationConfiguration;
 
+    @Autowired
+    private ApplicationRepository applicationRepository;
+
+    @Autowired
+    private Clock clock;
+
     @Test
     void shouldProduceAValidDocument() throws IOException, SAXException, ParserConfigurationException {
+        String applicationId = applicationRepository.getNextId();
         Map<String, PageData> data = applicationConfiguration.getPageDefinitions().stream()
                 .map(pageConfiguration -> {
                     Map<String, InputData> inputDataMap = pageConfiguration.getFlattenedInputs().stream()
                             .collect(toMap(
                                     FormInput::getName,
                                     input -> {
+                                        if (input.getReadOnly() && input.getDefaultValue() != null) {
+                                            return InputData.builder().value(List.of(input.getDefaultValue())).build();
+                                        }
                                         @NotNull List<String> value = switch (input.getType()) {
                                             case RADIO, SELECT -> List.of(input.getOptions().get(new Random().nextInt(input.getOptions().size())).getValue());
                                             case CHECKBOX -> input.getOptions().subList(0, new Random().nextInt(input.getOptions().size()) + 1).stream()
@@ -73,7 +87,8 @@ public class XmlGeneratorIntegrationTest {
                                             case DATE -> List.of(LocalDate.ofEpochDay(0).plusDays(new Random().nextInt()).format(DateTimeFormatter.ofPattern("MM/dd/yyyy")).split("/"));
                                             case YES_NO -> List.of(String.valueOf(new Random().nextBoolean()));
                                             default -> Optional.ofNullable(input.getValidators())
-                                                    .map(validator -> switch (validator.get(0).getValidation()) {
+                                                    .filter(validators -> validators.size() == 1)
+                                                    .map(validators -> switch (validators.get(0).getValidation()) {
                                                         case SSN -> List.of("123456789");
                                                         case ZIPCODE -> List.of("12345");
                                                         case STATE -> List.of("MN");
@@ -91,7 +106,8 @@ public class XmlGeneratorIntegrationTest {
         pagesData.putAll(data);
         ApplicationData applicationData = new ApplicationData();
         applicationData.setPagesData(pagesData);
-        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(applicationData);
+        applicationRepository.save(new Application(applicationId, ZonedDateTime.now(clock), applicationData));
+        List<ApplicationInput> applicationInputs = applicationInputsMappers.map(applicationId);
         ApplicationFile applicationFile = xmlGenerator.generate(applicationInputs);
 
         Document document = byteArrayToDocument(applicationFile.getFileBytes());

@@ -69,8 +69,6 @@ xml:
       hasWorkSituation: HAS_WORK_SITUATION
     signThisApplication:
       applicantSignature: APPLICANT_SIGNATURE
-    nonPagesData:
-      submissionTime: SUBMISSION_TIME
     unearnedIncome:
       unearnedIncome:
         SOCIAL_SECURITY: SOCIAL_SECURITY
@@ -119,6 +117,10 @@ xml:
     employee:
       selfEmployed: SELF_EMPLOYED
       grossMonthlyIncome: GROSS_MONTHLY_INCOME
+    nonPagesData:
+      applicationId: APPLICATION_ID
+      completedDate: COMPLETED_DATE
+      completedDateTime: COMPLETED_DATE_TIME
   enums:
     true: true
     false: false

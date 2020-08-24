@@ -1,4 +1,9 @@
-<onl:OnlineApplication xmlns:onl="http://dhs.state.mn.us/2011/03/01/OnlineApplication">
+<onl:OnlineApplication
+        xmlns:onl="http://dhs.state.mn.us/2011/03/01/OnlineApplication"
+        xmlns:bas="http://dhs.state.mn.us/2011/03/01/BaseApplication">
+    <bas:ApplicationID>{{APPLICATION_ID}}</bas:ApplicationID>
+    <bas:SubmitDate>{{COMPLETED_DATE_TIME}}</bas:SubmitDate>
+    <onl:FilledBy>Self</onl:FilledBy>
     <onl:ContactInfo>
         <onl:HomelessInd>{{CONTACTINFO_HOMELESS}}</onl:HomelessInd>
         <onl:Person>
@@ -227,6 +232,6 @@
 
     <onl:Disclosure>
         <onl:DeclaredBy>{{APPLICANT_SIGNATURE}}</onl:DeclaredBy>
-        <onl:DateDeclared>{{SUBMISSION_TIME}}</onl:DateDeclared>
+        <onl:DateDeclared>{{COMPLETED_DATE}}</onl:DateDeclared>
     </onl:Disclosure>
 </onl:OnlineApplication>

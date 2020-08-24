@@ -18,12 +18,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.output.ApplicationInputType.ENUMERATED_SINGLE_VALUE;
-import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -44,20 +42,6 @@ public class PdfIntegrationTest {
     @BeforeEach
     void setUp() {
         when(applicationRepository.find(applicationId)).thenReturn(new Application(applicationId, completedAt, data));
-    }
-
-    @Test
-    void shouldIncludeApplicationIdInput() {
-        List<ApplicationInput> applicationInputs = mappers.map(applicationId);
-
-        assertThat(applicationInputs).contains(new ApplicationInput("nonPagesData", "applicationId", List.of(applicationId), SINGLE_VALUE));
-    }
-
-    @Test
-    void shouldIncludeCompletedAtInput() {
-        List<ApplicationInput> applicationInputs = mappers.map(applicationId);
-
-        assertThat(applicationInputs).contains(new ApplicationInput("nonPagesData", "completedAt", List.of(DateTimeFormatter.ISO_LOCAL_DATE.format(completedAt)), SINGLE_VALUE));
     }
 
     @Test
