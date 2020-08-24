@@ -1,23 +1,30 @@
 shiba-configuration-pages-controller:
-  pageDefinitions:
-    - &firstPage
-      name: firstPage
-      pageTitle:
-        value: first-page-title
-      inputs:
-        - name: foo
-          type: TEXT
-          validators:
-            - validation: NOT_BLANK
-    - &terminalPage
-      name: terminalPage
-      pageTitle:
-        value: terminal-page-title
+  pageDefinitions: []
   workflow:
     firstPage:
-      pageConfiguration: *firstPage
+      pageConfiguration:
+        name: firstPage
+        pageTitle:
+          value: first-page-title
+        inputs:
+          - name: foo
+            type: TEXT
+            validators:
+              - validation: NOT_BLANK
     terminalPage:
-      pageConfiguration: *terminalPage
+      pageConfiguration:
+        name: terminalPage
+        pageTitle:
+          value: terminal-page-title
+    landingPage:
+      pageConfiguration:
+        pageTitle:
+          value: landing-page-title
+        inputs:
+          - name: foo
+            type: TEXT
   landmarkPages:
+    landingPages:
+      - landingPage
     terminalPage: terminalPage
     submitPage: firstPage

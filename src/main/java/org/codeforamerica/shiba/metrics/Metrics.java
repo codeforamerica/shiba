@@ -1,10 +1,12 @@
 package org.codeforamerica.shiba.metrics;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.time.Instant;
 
 @Getter
+@EqualsAndHashCode
 public class Metrics {
     private Instant startTime;
 
