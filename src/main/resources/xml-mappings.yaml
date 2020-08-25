@@ -16,10 +16,10 @@ xml:
       moveToMnDate: PERSONALINFO_MOVETOMNDATE
     choosePrograms:
       programs:
-        FOOD: FOOD
+        SNAP: FOOD
         CASH: CASH
-        EMERGENCY: EMERGENCY
-        CHILD_CARE: CHILD_CARE
+        EA: EMERGENCY
+        CCAP: CHILD_CARE
     contactInfo:
       phoneNumber: CONTACTINFO_PHONE
     homeAddress:
@@ -139,10 +139,10 @@ xml:
     VIETNAMESE: Vietnamese
     RUSSIAN: Russian
     HMOOB: Hmong
-    FOOD: Supplemental Nutrition Assistance Program
+    SNAP: Supplemental Nutrition Assistance Program
     CASH: Cash
-    EMERGENCY: Emergency Help
-    CHILD_CARE: Child Care
+    EA: Emergency Help
+    CCAP: Child Care
     COOLING: Air conditioning
     ELECTRICITY: Electricity
     HEATING: Heat

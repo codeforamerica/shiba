@@ -74,13 +74,13 @@ shiba-configuration:
             - validation: SELECT_AT_LEAST_ONE
           validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
           options:
-            - value: FOOD
+            - value: SNAP
               messageKey: choose-programs.food-snap
             - value: CASH
               messageKey: choose-programs.cash-programs
-            - value: EMERGENCY
+            - value: EA
               messageKey: choose-programs.emergency-assistance
-            - value: CHILD_CARE
+            - value: CCAP
               messageKey: choose-programs.child-care-assistance
     - &howItWorks
       name: howItWorks
@@ -1502,7 +1502,7 @@ shiba-configuration:
       pageConfiguration: *ccapJob
       skipCondition:
         pageName: choosePrograms
-        value: CHILD_CARE
+        value: CCAP
         input: programs
         matcher: DOES_NOT_CONTAIN
       nextPages:

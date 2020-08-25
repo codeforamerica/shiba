@@ -16,10 +16,10 @@ caf:
       moveToMnPreviousCity: APPLICANT_PREVIOUS_CITY
     choosePrograms:
       programs:
-        FOOD: FOOD
+        SNAP: FOOD
         CASH: CASH
-        EMERGENCY: EMERGENCY
-        CHILD_CARE: CHILD_CARE
+        EA: EMERGENCY
+        CCAP: CHILD_CARE
     contactInfo:
       phoneNumber: APPLICANT_PHONE_NUMBER
       email: APPLICANT_EMAIL
@@ -162,6 +162,8 @@ caf:
     nonPagesData:
       applicationId: APPLICATION_ID
       completedDate: CREATED_DATE
+    coverPage:
+      programs: PROGRAMS
   enums:
     EVERY_WEEK: Every week
     EVERY_TWO_WEEKS: Every two weeks

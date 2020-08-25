@@ -205,7 +205,7 @@ derived-values:
               value: "true"
             - pageName: choosePrograms
               input: programs
-              value: CHILD_CARE
+              value: CCAP
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "true"
         type: ENUMERATED_SINGLE_VALUE
@@ -217,7 +217,7 @@ derived-values:
               value: "true"
             - pageName: choosePrograms
               input: programs
-              value: CHILD_CARE
+              value: CCAP
   - groupName: mailingAddress
     fieldName: zipCode
     values:

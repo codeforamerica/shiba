@@ -27,7 +27,7 @@ class ExpeditedEligibilityMapperTest {
                 new ApplicationInput(
                         "expeditedEligibility",
                         "expeditedEligibility",
-                        List.of("ELIGIBLE"),
+                        List.of("Expedited"),
                         ApplicationInputType.ENUMERATED_SINGLE_VALUE
                 )
         );
@@ -50,7 +50,7 @@ class ExpeditedEligibilityMapperTest {
                 new ApplicationInput(
                         "expeditedEligibility",
                         "expeditedEligibility",
-                        List.of("NOT_ELIGIBLE"),
+                        List.of("Non-Expedited"),
                         ApplicationInputType.ENUMERATED_SINGLE_VALUE
                 )
         );
