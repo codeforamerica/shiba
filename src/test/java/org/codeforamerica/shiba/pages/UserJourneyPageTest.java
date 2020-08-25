@@ -1,12 +1,12 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.output.ApplicationDataConsumer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.openqa.selenium.By;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.io.IOException;
@@ -29,7 +29,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     Clock clock;
 
     @MockBean
-    ApplicationDataConsumer applicationDataConsumer;
+    ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     @BeforeEach

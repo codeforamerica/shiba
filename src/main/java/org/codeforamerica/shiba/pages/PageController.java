@@ -7,7 +7,6 @@ import org.codeforamerica.shiba.ConfirmationData;
 import org.codeforamerica.shiba.metrics.ApplicationMetric;
 import org.codeforamerica.shiba.metrics.ApplicationMetricsRepository;
 import org.codeforamerica.shiba.metrics.Metrics;
-import org.codeforamerica.shiba.output.ApplicationDataConsumer;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.LandmarkPagesConfiguration;
 import org.codeforamerica.shiba.pages.config.PageConfiguration;
@@ -15,6 +14,7 @@ import org.codeforamerica.shiba.pages.config.PageWorkflowConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
@@ -34,10 +34,10 @@ public class PageController {
     private final Clock clock;
     private final ApplicationMetricsRepository metricsRepository;
     private final Metrics metrics;
-    private final ApplicationDataConsumer applicationDataConsumer;
     private final ApplicationRepository applicationRepository;
     private final ApplicationFactory applicationFactory;
     private final ConfirmationData confirmationData;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public PageController(
             ApplicationConfiguration applicationConfiguration,
@@ -45,19 +45,19 @@ public class PageController {
             Clock clock,
             ApplicationMetricsRepository metricsRepository,
             Metrics metrics,
-            ApplicationDataConsumer applicationDataConsumer,
             ApplicationRepository applicationRepository,
             ApplicationFactory applicationFactory,
-            ConfirmationData confirmationData) {
+            ConfirmationData confirmationData,
+            ApplicationEventPublisher applicationEventPublisher) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
         this.metricsRepository = metricsRepository;
         this.metrics = metrics;
-        this.applicationDataConsumer = applicationDataConsumer;
         this.applicationRepository = applicationRepository;
         this.applicationFactory = applicationFactory;
         this.confirmationData = confirmationData;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @GetMapping("/")
@@ -235,7 +235,7 @@ public class PageController {
             confirmationData.setId(application.getId());
             confirmationData.setCompletedAt(application.getCompletedAt());
             applicationRepository.save(application);
-//            applicationDataConsumer.process(application);
+            applicationEventPublisher.publishEvent(new ApplicationSubmittedEvent(application, application.getId()));
 
             return new ModelAndView(String.format("redirect:/pages/%s/navigation", submitPage));
         } else {

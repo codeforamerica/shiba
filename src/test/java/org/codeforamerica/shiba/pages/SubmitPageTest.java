@@ -4,13 +4,13 @@ import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.ApplicationFactory;
 import org.codeforamerica.shiba.ApplicationRepository;
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
-import org.codeforamerica.shiba.output.ApplicationDataConsumer;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 
@@ -35,7 +35,7 @@ public class SubmitPageTest extends AbstractStaticMessageSourcePageTest {
     }
 
     @MockBean
-    ApplicationDataConsumer applicationDataConsumer;
+    ApplicationEventPublisher applicationEventPublisher;
 
     @MockBean
     ApplicationFactory applicationFactory;

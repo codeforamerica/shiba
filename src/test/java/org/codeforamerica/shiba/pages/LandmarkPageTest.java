@@ -4,7 +4,6 @@ import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.ApplicationFactory;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
-import org.codeforamerica.shiba.output.ApplicationDataConsumer;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 
@@ -38,7 +38,7 @@ public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
     String fourthPageTitle = "fourth page title";
 
     @MockBean
-    private ApplicationDataConsumer applicationDataConsumer;
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @MockBean
     private ApplicationFactory applicationFactory;

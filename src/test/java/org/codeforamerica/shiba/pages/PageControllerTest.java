@@ -8,7 +8,6 @@ import org.codeforamerica.shiba.output.ApplicationDataConsumer;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -17,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.MediaType;
@@ -68,6 +68,8 @@ class PageControllerTest {
 
     ApplicationFactory applicationFactory = mock(ApplicationFactory.class);
 
+    ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
+
     @Autowired
     ApplicationConfiguration applicationConfiguration;
 
@@ -79,10 +81,12 @@ class PageControllerTest {
                 clock,
                 applicationMetricsRepository,
                 metrics,
-                applicationDataConsumer,
                 applicationRepository,
                 applicationFactory,
-                confirmationData);
+                confirmationData,
+                applicationEventPublisher
+        );
+
         mockMvc = MockMvcBuilders.standaloneSetup(pageController)
                 .build();
         when(clock.instant()).thenReturn(Instant.now());
@@ -132,7 +136,6 @@ class PageControllerTest {
     }
 
     @Test
-    @Disabled
     void shouldConsumeApplicationDataOnSubmit() throws Exception {
         metrics.setStartTimeOnce(Instant.now());
 
@@ -144,9 +147,9 @@ class PageControllerTest {
                 .param("foo[]", "some value")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
-        InOrder inOrder = inOrder(applicationRepository, applicationDataConsumer);
+        InOrder inOrder = inOrder(applicationRepository, applicationEventPublisher);
         inOrder.verify(applicationRepository).save(application);
-        inOrder.verify(applicationDataConsumer).process(application);
+        inOrder.verify(applicationEventPublisher).publishEvent(new ApplicationSubmittedEvent(application, applicationId));
     }
 
     @Test
