@@ -29,7 +29,7 @@ public class MnitDocumentConsumer implements ApplicationDataConsumer {
 
     public void process(Application application) {
         List<ApplicationInput> applicationInputs = mappers.map(application);
-        mnitClient.send(pdfGenerator.generate(applicationInputs), application.getCounty());
-        mnitClient.send(xmlGenerator.generate(applicationInputs), application.getCounty());
+        mnitClient.send(pdfGenerator.generate(applicationInputs, application.getId()), application.getCounty());
+        mnitClient.send(xmlGenerator.generate(applicationInputs, application.getId()), application.getCounty());
     }
 }

@@ -22,8 +22,8 @@ public class PdfGenerator implements FileGenerator {
     }
 
     @Override
-    public ApplicationFile generate(List<ApplicationInput> applicationInputs) {
+    public ApplicationFile generate(List<ApplicationInput> applicationInputs, String applicationId) {
         List<PdfField> pdfFields = pdfFieldMapper.map(applicationInputs);
-        return pdfFiller.fill(pdfFields);
+        return pdfFiller.fill(pdfFields, applicationId);
     }
 }

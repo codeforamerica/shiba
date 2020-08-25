@@ -19,13 +19,13 @@ class PdfGeneratorTest {
     @BeforeEach
     void setUp() {
         when(pdfFieldMapper.map(any())).thenReturn(List.of());
-        when(pdfFiller.fill(any())).thenReturn(new ApplicationFile("defaultBytes".getBytes(), "defaultFileName"));
+        when(pdfFiller.fill(any(), any())).thenReturn(new ApplicationFile("defaultBytes".getBytes(), "defaultFileName"));
     }
 
     @Test
     void shouldMapPdfFieldsFromFlattenedScreenInputs() {
         ApplicationInput input = new ApplicationInput("screen1", "someName", List.of("someValue"), ApplicationInputType.SINGLE_VALUE);
-        pdfGenerator.generate(List.of(input));
+        pdfGenerator.generate(List.of(input), "");
 
         verify(pdfFieldMapper).map(List.of(input));
     }
@@ -35,17 +35,18 @@ class PdfGeneratorTest {
         List<PdfField> pdfFields = List.of(new SimplePdfField("some name", "some value"));
         when(pdfFieldMapper.map(any())).thenReturn(pdfFields);
 
-        pdfGenerator.generate(List.of());
+        String applicationId = "application-id";
+        pdfGenerator.generate(List.of(), applicationId);
 
-        verify(pdfFiller).fill(pdfFields);
+        verify(pdfFiller).fill(pdfFields, applicationId);
     }
 
     @Test
     void shouldReturnTheFilledPdf() {
         ApplicationFile expectedApplicationFile = new ApplicationFile("here is the pdf".getBytes(), "filename.pdf");
-        when(pdfFiller.fill(any())).thenReturn(expectedApplicationFile);
+        when(pdfFiller.fill(any(), any())).thenReturn(expectedApplicationFile);
 
-        ApplicationFile actualApplicationFile = pdfGenerator.generate(List.of());
+        ApplicationFile actualApplicationFile = pdfGenerator.generate(List.of(), "");
 
         assertThat(actualApplicationFile).isEqualTo(expectedApplicationFile);
     }

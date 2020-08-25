@@ -54,7 +54,7 @@ class MnitDocumentConsumerTest {
 
         documentConsumer.process(application);
 
-        verify(pdfGenerator).generate(applicationInputs);
+        verify(pdfGenerator).generate(applicationInputs, application.getId());
     }
 
     @Test
@@ -63,15 +63,15 @@ class MnitDocumentConsumerTest {
         when(mappers.map(application)).thenReturn(applicationInputs);
 
         documentConsumer.process(application);
-        verify(xmlGenerator).generate(applicationInputs);
+        verify(xmlGenerator).generate(applicationInputs, application.getId());
     }
 
     @Test
     void sendsTheGeneratedXmlAndPdf() {
         ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
-        when(pdfGenerator.generate(anyList())).thenReturn(pdfApplicationFile);
+        when(pdfGenerator.generate(anyList(), any())).thenReturn(pdfApplicationFile);
         ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
-        when(xmlGenerator.generate(anyList())).thenReturn(xmlApplicationFile);
+        when(xmlGenerator.generate(anyList(), any())).thenReturn(xmlApplicationFile);
 
         Application application = new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED);
         documentConsumer.process(application);

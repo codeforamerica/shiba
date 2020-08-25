@@ -29,7 +29,7 @@ class FileDownLoadControllerTest {
     MockMvc mockMvc;
 
     XmlGenerator xmlGenerator = mock(XmlGenerator.class);
-    ConfirmationData data = new ConfirmationData();
+    ConfirmationData confirmationData = new ConfirmationData();
     PdfGenerator pdfGenerator = mock(PdfGenerator.class);
     ApplicationInputsMappers mappers = mock(ApplicationInputsMappers.class);
     ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
@@ -41,7 +41,7 @@ class FileDownLoadControllerTest {
                         pdfGenerator,
                         xmlGenerator,
                         mappers,
-                        data,
+                        confirmationData,
                         applicationRepository
                 ))
                 .setViewResolvers(new InternalResourceViewResolver("", "suffix"))
@@ -50,23 +50,23 @@ class FileDownLoadControllerTest {
 
     @Test
     void shouldPassScreensToServiceToGeneratePdfFile() throws Exception {
-        when(pdfGenerator.generate(any())).thenReturn(new ApplicationFile("".getBytes(), ""));
+        when(pdfGenerator.generate(any(), any())).thenReturn(new ApplicationFile("".getBytes(), ""));
         ApplicationInput applicationInput1 = new ApplicationInput("screen1", "input 1", List.of("input1Value"), ApplicationInputType.SINGLE_VALUE);
         ApplicationInput applicationInput2 = new ApplicationInput("screen1", "input 1", List.of("something"), ApplicationInputType.SINGLE_VALUE);
         Application application = new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED);
-        when(applicationRepository.find(data.getId())).thenReturn(application);
+        when(applicationRepository.find(confirmationData.getId())).thenReturn(application);
         when(mappers.map(application)).thenReturn(List.of(applicationInput1, applicationInput2));
 
         mockMvc.perform(
                 get("/download"))
                 .andExpect(status().is2xxSuccessful());
 
-        verify(pdfGenerator).generate(List.of(applicationInput1, applicationInput2));
+        verify(pdfGenerator).generate(List.of(applicationInput1, applicationInput2), confirmationData.getId());
     }
 
     @Test
     void shouldAcceptApplicationIdToGeneratePdfFile() throws Exception {
-        when(pdfGenerator.generate(any())).thenReturn(new ApplicationFile("".getBytes(), ""));
+        when(pdfGenerator.generate(any(), any())).thenReturn(new ApplicationFile("".getBytes(), ""));
         ApplicationInput applicationInput1 = new ApplicationInput("screen1", "input 1", List.of("input1Value"), ApplicationInputType.SINGLE_VALUE);
         ApplicationInput applicationInput2 = new ApplicationInput("screen1", "input 1", List.of("something"), ApplicationInputType.SINGLE_VALUE);
         Application application = new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED);
@@ -77,7 +77,7 @@ class FileDownLoadControllerTest {
                 get("/download-caf/9870000123"))
                 .andExpect(status().is2xxSuccessful());
 
-        verify(pdfGenerator).generate(List.of(applicationInput1, applicationInput2));
+        verify(pdfGenerator).generate(List.of(applicationInput1, applicationInput2), confirmationData.getId());
     }
 
     @Test
@@ -85,7 +85,7 @@ class FileDownLoadControllerTest {
         byte[] pdfBytes = "here is the pdf".getBytes();
         String fileName = "filename.pdf";
         ApplicationFile applicationFile = new ApplicationFile(pdfBytes, fileName);
-        when(pdfGenerator.generate(any())).thenReturn(applicationFile);
+        when(pdfGenerator.generate(any(), any())).thenReturn(applicationFile);
 
         MvcResult result = mockMvc.perform(
                 get("/download"))
@@ -101,12 +101,12 @@ class FileDownLoadControllerTest {
     void shouldGenerateXMLForTheApplication() throws Exception {
         byte[] fileBytes = "some file content".getBytes();
         String fileName = "some.xml";
-        when(xmlGenerator.generate(any())).thenReturn(new ApplicationFile(fileBytes, fileName));
+        when(xmlGenerator.generate(any(), any())).thenReturn(new ApplicationFile(fileBytes, fileName));
 
         ApplicationInput applicationInput1 = new ApplicationInput("screen1", "input 1", List.of("input1Value"), ApplicationInputType.SINGLE_VALUE);
         ApplicationInput applicationInput2 = new ApplicationInput("screen1", "input 1", List.of("something"), ApplicationInputType.SINGLE_VALUE);
         Application application = new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED);
-        when(applicationRepository.find(data.getId())).thenReturn(application);
+        when(applicationRepository.find(confirmationData.getId())).thenReturn(application);
         when(mappers.map(application)).thenReturn(List.of(applicationInput1, applicationInput2));
 
         MvcResult result = mockMvc.perform(
@@ -116,7 +116,7 @@ class FileDownLoadControllerTest {
                 .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", fileName)))
                 .andReturn();
 
-        verify(xmlGenerator).generate(List.of(applicationInput1, applicationInput2));
+        verify(xmlGenerator).generate(List.of(applicationInput1, applicationInput2), confirmationData.getId());
         assertThat(result.getResponse().getContentAsByteArray()).isEqualTo(fileBytes);
     }
 }

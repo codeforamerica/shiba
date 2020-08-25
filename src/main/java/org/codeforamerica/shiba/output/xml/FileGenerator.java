@@ -6,5 +6,5 @@ import org.codeforamerica.shiba.output.ApplicationInput;
 import java.util.List;
 
 public interface FileGenerator {
-    ApplicationFile generate(List<ApplicationInput> applicationInputs);
+    ApplicationFile generate(List<ApplicationInput> applicationInputs, String applicationId);
 }

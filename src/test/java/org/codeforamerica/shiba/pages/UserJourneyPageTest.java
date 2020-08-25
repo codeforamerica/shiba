@@ -9,11 +9,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Arrays;
 import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -87,7 +89,11 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         SuccessPage successPage = nonExpeditedFlowToSuccessPage();
 
         successPage.downloadReceipt();
-        await().until(() -> path.resolve("1243235-DHS-5223.pdf").toFile().exists());
+
+        await().until(() -> {
+            File[] listFiles = path.toFile().listFiles();
+            return Arrays.stream(listFiles).anyMatch(file -> file.getName().startsWith("cfa-") && file.getName().endsWith("-CAF.pdf"));
+        });
     }
 
     @Test
@@ -97,7 +103,10 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         SuccessPage successPage = nonExpeditedFlowToSuccessPage();
 
         successPage.downloadXML();
-        await().until(() -> path.resolve("1243235-ApplyMN.xml").toFile().exists());
+        await().until(() -> {
+            File[] listFiles = path.toFile().listFiles();
+            return Arrays.stream(listFiles).anyMatch(file -> file.getName().startsWith("cfa-") && file.getName().endsWith(".xml"));
+        });
     }
 
     @Test

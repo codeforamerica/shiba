@@ -62,7 +62,7 @@ class SecurityConfigurationTest {
                 .build();
         when(applicationRepository.find(any())).thenReturn(new Application("foo", ZonedDateTime.now(), null, null));
         when(mappers.map(any())).thenReturn(List.of());
-        when(pdfGenerator.generate(any())).thenReturn(new ApplicationFile("".getBytes(), "someFileName"));
+        when(pdfGenerator.generate(any(), any())).thenReturn(new ApplicationFile("".getBytes(), "someFileName"));
     }
 
     @Test

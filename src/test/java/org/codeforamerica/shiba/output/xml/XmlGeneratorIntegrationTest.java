@@ -108,7 +108,7 @@ public class XmlGeneratorIntegrationTest {
         applicationData.setPagesData(pagesData);
         Application application = new Application(applicationId, ZonedDateTime.now(clock), applicationData, null);
         List<ApplicationInput> applicationInputs = applicationInputsMappers.map(application);
-        ApplicationFile applicationFile = xmlGenerator.generate(applicationInputs);
+        ApplicationFile applicationFile = xmlGenerator.generate(applicationInputs, "");
 
         Document document = byteArrayToDocument(applicationFile.getFileBytes());
 

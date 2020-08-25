@@ -38,7 +38,7 @@ public class FileDownLoadController {
     @GetMapping("/download")
     ResponseEntity<byte[]> downloadPdf() {
         List<ApplicationInput> applicationInputs = mappers.map(applicationRepository.find(confirmationData.getId()));
-        ApplicationFile applicationFile = pdfGenerator.generate(applicationInputs);
+        ApplicationFile applicationFile = pdfGenerator.generate(applicationInputs, confirmationData.getId());
 
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
@@ -49,7 +49,7 @@ public class FileDownLoadController {
     @GetMapping("/download-xml")
     ResponseEntity<byte[]> downloadXml() {
         List<ApplicationInput> applicationInputs = mappers.map(applicationRepository.find(confirmationData.getId()));
-        ApplicationFile applicationFile = xmlGenerator.generate(applicationInputs);
+        ApplicationFile applicationFile = xmlGenerator.generate(applicationInputs, confirmationData.getId());
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", applicationFile.getFileName()))
@@ -59,7 +59,7 @@ public class FileDownLoadController {
     @GetMapping("/download-caf/{applicationId}")
     ResponseEntity<byte[]> downloadPdfWithApplicationId(@PathVariable String applicationId) {
         List<ApplicationInput> applicationInputs = mappers.map(applicationRepository.find(applicationId));
-        ApplicationFile applicationFile = pdfGenerator.generate(applicationInputs);
+        ApplicationFile applicationFile = pdfGenerator.generate(applicationInputs, confirmationData.getId());
 
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)

@@ -3,7 +3,6 @@ package org.codeforamerica.shiba.output.pdf;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.output.ApplicationFile;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 
@@ -11,29 +10,15 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class CAFFieldFillerTest {
 
-    private Clock clock = mock(Clock.class);
-    private final CAFFieldFiller subject = new CAFFieldFiller(
-            new ClassPathResource("test.pdf"),
-            clock);
-
-    @BeforeEach
-    void setUp() {
-        when(clock.instant()).thenReturn(Instant.now());
-        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
-    }
+    private final CAFFieldFiller subject = new CAFFieldFiller(new ClassPathResource("test.pdf"));
 
     @Test
     void shouldMapTextFields() throws IOException {
@@ -42,7 +27,7 @@ class CAFFieldFillerTest {
                 new SimplePdfField("TEXT_FIELD", expectedFieldValue)
         );
 
-        ApplicationFile applicationFile = subject.fill(fields);
+        ApplicationFile applicationFile = subject.fill(fields, "");
 
         PDAcroForm acroForm = getPdAcroForm(applicationFile);
 
@@ -55,7 +40,7 @@ class CAFFieldFillerTest {
                 new SimplePdfField("TEXT_FIELD", null)
         );
 
-        ApplicationFile applicationFile = subject.fill(fields);
+        ApplicationFile applicationFile = subject.fill(fields, "");
 
         PDAcroForm acroForm = getPdAcroForm(applicationFile);
         assertThat(acroForm.getField("TEXT_FIELD").getValueAsString()).isEqualTo("");
@@ -68,7 +53,7 @@ class CAFFieldFillerTest {
                 new BinaryPdfField("BINARY_FIELD_3")
         );
 
-        ApplicationFile applicationFile = subject.fill(fields);
+        ApplicationFile applicationFile = subject.fill(fields, "");
 
         PDAcroForm acroForm = getPdAcroForm(applicationFile);
         assertThat(acroForm.getField("BINARY_FIELD_1").getValueAsString()).isEqualTo("Yes");
@@ -77,11 +62,10 @@ class CAFFieldFillerTest {
 
     @Test
     void shouldReturnTheAppropriateFilename() {
-        when(clock.instant()).thenReturn(Instant.ofEpochSecond(43215321L));
+        String applicationId = "applicationId";
+        ApplicationFile applicationFile = subject.fill(emptyList(), applicationId);
 
-        ApplicationFile applicationFile = subject.fill(emptyList());
-
-        assertThat(applicationFile.getFileName()).isEqualTo("43215321-test.pdf");
+        assertThat(applicationFile.getFileName()).isEqualTo("cfa-" + applicationId + "-CAF.pdf");
     }
 
     private PDAcroForm getPdAcroForm(ApplicationFile applicationFile) throws IOException {
