@@ -235,7 +235,7 @@ public class PageController {
             confirmationData.setId(application.getId());
             confirmationData.setCompletedAt(application.getCompletedAt());
             applicationRepository.save(application);
-            applicationDataConsumer.process(application);
+//            applicationDataConsumer.process(application);
 
             return new ModelAndView(String.format("redirect:/pages/%s/navigation", submitPage));
         } else {
