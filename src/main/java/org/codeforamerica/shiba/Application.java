@@ -10,4 +10,5 @@ public class Application {
     String id;
     ZonedDateTime completedAt;
     ApplicationData applicationData;
+    County county;
 }

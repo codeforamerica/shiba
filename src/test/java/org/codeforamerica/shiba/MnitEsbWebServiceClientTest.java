@@ -42,7 +42,9 @@ import static org.springframework.ws.test.client.RequestMatchers.xpath;
 @SpringBootTest(properties = {
         "mnit-esb.url=some-url",
         "mnit-esb.alfresco-username=someUsername",
-        "mnit-esb.alfresco-password=somePassword"
+        "mnit-esb.alfresco-password=somePassword",
+        "county-to-folder-id.HENNEPIN=hennipin-folder-id",
+        "county-to-folder-id.OLMSTED=olmsted-folder-id"
 })
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
@@ -85,7 +87,7 @@ class MnitEsbWebServiceClientTest {
         String fileName = "someFileName";
         mockWebServiceServer.expect(connectionTo(url))
                 .andExpect(xpath("//ns2:createDocument/ns2:folderId", namespaceMapping)
-                        .evaluatesTo("workspace://SpacesStore/5195b061-9bdc-4d31-9840-90a99902d329"))
+                        .evaluatesTo("workspace://SpacesStore/olmsted-folder-id"))
                 .andExpect(xpath("//ns2:createDocument/ns2:properties/ns2:propertyString[@ns2:name='Name']/ns2:value", namespaceMapping)
                         .evaluatesTo(fileName))
                 .andExpect(xpath("//ns2:createDocument/ns2:repositoryId", namespaceMapping)
@@ -97,9 +99,10 @@ class MnitEsbWebServiceClientTest {
                 .andExpect(xpath("//ns2:createDocument/ns2:contentStream/ns2:stream", namespaceMapping)
                         .evaluatesTo(Base64.getEncoder().encodeToString(fileContent.getBytes())));
 
-        mnitEsbWebServiceClient.send(new ApplicationFile(
-                fileContent.getBytes(),
-                fileName));
+        mnitEsbWebServiceClient.send(
+                new ApplicationFile(fileContent.getBytes(), fileName),
+                County.OLMSTED
+        );
 
         mockWebServiceServer.verify();
     }
@@ -138,7 +141,7 @@ class MnitEsbWebServiceClientTest {
 
         mnitEsbWebServiceClient.send(new ApplicationFile(
                 "whatever".getBytes(),
-                "someFileName"));
+                "someFileName"), County.HENNEPIN);
 
         mockWebServiceServer.verify();
     }

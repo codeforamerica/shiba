@@ -1,9 +1,13 @@
 package org.codeforamerica.shiba.output;
 
+import org.codeforamerica.shiba.Application;
+import org.codeforamerica.shiba.ApplicationRepository;
 import org.codeforamerica.shiba.ConfirmationData;
+import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
@@ -12,6 +16,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,6 +32,7 @@ class FileDownLoadControllerTest {
     ConfirmationData data = new ConfirmationData();
     PdfGenerator pdfGenerator = mock(PdfGenerator.class);
     ApplicationInputsMappers mappers = mock(ApplicationInputsMappers.class);
+    ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
 
     @BeforeEach
     void setUp() {
@@ -35,7 +41,8 @@ class FileDownLoadControllerTest {
                         pdfGenerator,
                         xmlGenerator,
                         mappers,
-                        data
+                        data,
+                        applicationRepository
                 ))
                 .setViewResolvers(new InternalResourceViewResolver("", "suffix"))
                 .build();
@@ -46,7 +53,9 @@ class FileDownLoadControllerTest {
         when(pdfGenerator.generate(any())).thenReturn(new ApplicationFile("".getBytes(), ""));
         ApplicationInput applicationInput1 = new ApplicationInput("screen1", "input 1", List.of("input1Value"), ApplicationInputType.SINGLE_VALUE);
         ApplicationInput applicationInput2 = new ApplicationInput("screen1", "input 1", List.of("something"), ApplicationInputType.SINGLE_VALUE);
-        when(mappers.map(data.getId())).thenReturn(List.of(applicationInput1, applicationInput2));
+        Application application = new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED);
+        when(applicationRepository.find(data.getId())).thenReturn(application);
+        when(mappers.map(application)).thenReturn(List.of(applicationInput1, applicationInput2));
 
         mockMvc.perform(
                 get("/download"))
@@ -60,7 +69,9 @@ class FileDownLoadControllerTest {
         when(pdfGenerator.generate(any())).thenReturn(new ApplicationFile("".getBytes(), ""));
         ApplicationInput applicationInput1 = new ApplicationInput("screen1", "input 1", List.of("input1Value"), ApplicationInputType.SINGLE_VALUE);
         ApplicationInput applicationInput2 = new ApplicationInput("screen1", "input 1", List.of("something"), ApplicationInputType.SINGLE_VALUE);
-        when(mappers.map("9870000123")).thenReturn(List.of(applicationInput1, applicationInput2));
+        Application application = new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED);
+        when(applicationRepository.find("9870000123")).thenReturn(application);
+        when(mappers.map(application)).thenReturn(List.of(applicationInput1, applicationInput2));
 
         mockMvc.perform(
                 get("/download-caf/9870000123"))
@@ -94,7 +105,9 @@ class FileDownLoadControllerTest {
 
         ApplicationInput applicationInput1 = new ApplicationInput("screen1", "input 1", List.of("input1Value"), ApplicationInputType.SINGLE_VALUE);
         ApplicationInput applicationInput2 = new ApplicationInput("screen1", "input 1", List.of("something"), ApplicationInputType.SINGLE_VALUE);
-        when(mappers.map(data.getId())).thenReturn(List.of(applicationInput1, applicationInput2));
+        Application application = new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED);
+        when(applicationRepository.find(data.getId())).thenReturn(application);
+        when(mappers.map(application)).thenReturn(List.of(applicationInput1, applicationInput2));
 
         MvcResult result = mockMvc.perform(
                 get("/download-xml"))

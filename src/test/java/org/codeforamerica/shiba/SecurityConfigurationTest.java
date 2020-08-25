@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import static org.mockito.Mockito.any;
@@ -49,6 +50,9 @@ class SecurityConfigurationTest {
     ApplicationInputsMappers mappers;
 
     @MockBean
+    ApplicationRepository applicationRepository;
+
+    @MockBean
     PdfGenerator pdfGenerator;
 
     @BeforeEach
@@ -56,6 +60,7 @@ class SecurityConfigurationTest {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                 .apply(springSecurity())
                 .build();
+        when(applicationRepository.find(any())).thenReturn(new Application("foo", ZonedDateTime.now(), null, null));
         when(mappers.map(any())).thenReturn(List.of());
         when(pdfGenerator.generate(any())).thenReturn(new ApplicationFile("".getBytes(), "someFileName"));
     }

@@ -20,6 +20,7 @@ import java.math.BigInteger;
 import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 @Component
 public class MnitEsbWebServiceClient {
@@ -27,20 +28,24 @@ public class MnitEsbWebServiceClient {
     private final Clock clock;
     private final String alfrescoUsername;
     private final String alfrescoPassword;
+    private final Map<County, String> countyFolderMapping;
 
     public MnitEsbWebServiceClient(WebServiceTemplate webServiceTemplate,
                                    Clock clock,
                                    @Value("${mnit-esb.alfresco-username}") String alfrescoUsername,
-                                   @Value("${mnit-esb.alfresco-password}") String alfrescoPassword) {
+                                   @Value("${mnit-esb.alfresco-password}") String alfrescoPassword,
+                                   Map<County, String> countyFolderMapping
+                                   ) {
         this.webServiceTemplate = webServiceTemplate;
         this.clock = clock;
         this.alfrescoUsername = alfrescoUsername;
         this.alfrescoPassword = alfrescoPassword;
+        this.countyFolderMapping = countyFolderMapping;
     }
 
-    public void send(ApplicationFile applicationFile) {
+    public void send(ApplicationFile applicationFile, County county) {
         CreateDocument createDocument = new CreateDocument();
-        createDocument.setFolderId("workspace://SpacesStore/5195b061-9bdc-4d31-9840-90a99902d329");
+        createDocument.setFolderId("workspace://SpacesStore/" + countyFolderMapping.get(county));
         createDocument.setRepositoryId("<Unknown");
         createDocument.setTypeId("document");
         CmisPropertiesType properties = new CmisPropertiesType();

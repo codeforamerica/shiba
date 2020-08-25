@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output;
 
+import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
@@ -26,9 +27,9 @@ public class MnitDocumentConsumer implements ApplicationDataConsumer {
         this.mappers = mappers;
     }
 
-    public void process(String applicationId) {
-        List<ApplicationInput> applicationInputs = mappers.map(applicationId);
-        mnitClient.send(pdfGenerator.generate(applicationInputs));
-        mnitClient.send(xmlGenerator.generate(applicationInputs));
+    public void process(Application application) {
+        List<ApplicationInput> applicationInputs = mappers.map(application);
+        mnitClient.send(pdfGenerator.generate(applicationInputs), application.getCounty());
+        mnitClient.send(xmlGenerator.generate(applicationInputs), application.getCounty());
     }
 }

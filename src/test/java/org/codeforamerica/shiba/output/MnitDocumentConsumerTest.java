@@ -1,5 +1,7 @@
 package org.codeforamerica.shiba.output;
 
+import org.codeforamerica.shiba.Application;
+import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
@@ -10,6 +12,7 @@ import org.codeforamerica.shiba.pages.data.PagesData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -46,20 +49,20 @@ class MnitDocumentConsumerTest {
 
     @Test
     void generatesThePDFFromTheApplicationData() {
-        String applicationId = "someId";
-        when(mappers.map(applicationId)).thenReturn(applicationInputs);
+        Application application = new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED);
+        when(mappers.map(application)).thenReturn(applicationInputs);
 
-        documentConsumer.process(applicationId);
+        documentConsumer.process(application);
 
         verify(pdfGenerator).generate(applicationInputs);
     }
 
     @Test
     void generatesTheXmlFromTheApplicationData() {
-        String applicationId = "someId";
-        when(mappers.map(applicationId)).thenReturn(applicationInputs);
+        Application application = new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED);
+        when(mappers.map(application)).thenReturn(applicationInputs);
 
-        documentConsumer.process(applicationId);
+        documentConsumer.process(application);
         verify(xmlGenerator).generate(applicationInputs);
     }
 
@@ -70,9 +73,10 @@ class MnitDocumentConsumerTest {
         ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
         when(xmlGenerator.generate(anyList())).thenReturn(xmlApplicationFile);
 
-        documentConsumer.process("someId");
+        Application application = new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED);
+        documentConsumer.process(application);
 
-        verify(mnitClient).send(pdfApplicationFile);
-        verify(mnitClient).send(xmlApplicationFile);
+        verify(mnitClient).send(pdfApplicationFile, County.OLMSTED);
+        verify(mnitClient).send(xmlApplicationFile, County.OLMSTED);
     }
 }

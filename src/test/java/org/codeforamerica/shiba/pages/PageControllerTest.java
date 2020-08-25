@@ -85,7 +85,7 @@ class PageControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(pageController)
                 .build();
         when(clock.instant()).thenReturn(Instant.now());
-        when(applicationFactory.newApplication(any())).thenReturn(new Application("defaultId", ZonedDateTime.now(), null));
+        when(applicationFactory.newApplication(any())).thenReturn(new Application("defaultId", ZonedDateTime.now(), null, null));
     }
 
     @Test
@@ -135,7 +135,7 @@ class PageControllerTest {
         metrics.setStartTimeOnce(Instant.now());
 
         String applicationId = "someId";
-        Application application = new Application(applicationId, ZonedDateTime.now(), applicationData);
+        Application application = new Application(applicationId, ZonedDateTime.now(), applicationData, null);
         when(applicationFactory.newApplication(applicationData)).thenReturn(application);
 
         mockMvc.perform(post("/submit")
@@ -144,7 +144,7 @@ class PageControllerTest {
 
         InOrder inOrder = inOrder(applicationRepository, applicationDataConsumer);
         inOrder.verify(applicationRepository).save(application);
-        inOrder.verify(applicationDataConsumer).process(applicationId);
+        inOrder.verify(applicationDataConsumer).process(application);
     }
 
     @Test
@@ -163,7 +163,7 @@ class PageControllerTest {
         metrics.setStartTimeOnce(Instant.now());
 
         ZonedDateTime completedAt = ZonedDateTime.now();
-        Application application = new Application("someId", completedAt, applicationData);
+        Application application = new Application("someId", completedAt, applicationData, null);
         when(applicationFactory.newApplication(applicationData)).thenReturn(application);
 
         mockMvc.perform(post("/submit")

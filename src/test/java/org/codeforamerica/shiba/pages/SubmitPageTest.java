@@ -47,7 +47,7 @@ public class SubmitPageTest extends AbstractStaticMessageSourcePageTest {
     void shouldProvideTimestampToTerminalPageWhenApplicationIsSigned() {
         String applicationId = "someId";
         when(applicationFactory.newApplication(any()))
-                .thenReturn(new Application(applicationId, ZonedDateTime.of(LocalDateTime.of(2020, 1, 1, 11, 10), ZoneOffset.UTC), null));
+                .thenReturn(new Application(applicationId, ZonedDateTime.of(LocalDateTime.of(2020, 1, 1, 11, 10), ZoneOffset.UTC), null, null));
 
         navigateTo("firstPage");
 

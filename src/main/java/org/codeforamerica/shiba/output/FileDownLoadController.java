@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output;
 
+import org.codeforamerica.shiba.ApplicationRepository;
 import org.codeforamerica.shiba.ConfirmationData;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
@@ -19,22 +20,24 @@ public class FileDownLoadController {
     private final XmlGenerator xmlGenerator;
     private final ApplicationInputsMappers mappers;
     private final ConfirmationData confirmationData;
+    private final ApplicationRepository applicationRepository;
 
     public FileDownLoadController(
             PdfGenerator pdfGenerator,
             XmlGenerator xmlGenerator,
             ApplicationInputsMappers mappers,
-            ConfirmationData confirmationData
-    ) {
+            ConfirmationData confirmationData,
+            ApplicationRepository applicationRepository) {
         this.pdfGenerator = pdfGenerator;
         this.xmlGenerator = xmlGenerator;
         this.mappers = mappers;
         this.confirmationData = confirmationData;
+        this.applicationRepository = applicationRepository;
     }
 
     @GetMapping("/download")
     ResponseEntity<byte[]> downloadPdf() {
-        List<ApplicationInput> applicationInputs = mappers.map(confirmationData.getId());
+        List<ApplicationInput> applicationInputs = mappers.map(applicationRepository.find(confirmationData.getId()));
         ApplicationFile applicationFile = pdfGenerator.generate(applicationInputs);
 
         return ResponseEntity.ok()
@@ -45,7 +48,7 @@ public class FileDownLoadController {
 
     @GetMapping("/download-xml")
     ResponseEntity<byte[]> downloadXml() {
-        List<ApplicationInput> applicationInputs = mappers.map(confirmationData.getId());
+        List<ApplicationInput> applicationInputs = mappers.map(applicationRepository.find(confirmationData.getId()));
         ApplicationFile applicationFile = xmlGenerator.generate(applicationInputs);
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
@@ -55,7 +58,7 @@ public class FileDownLoadController {
 
     @GetMapping("/download-caf/{applicationId}")
     ResponseEntity<byte[]> downloadPdfWithApplicationId(@PathVariable String applicationId) {
-        List<ApplicationInput> applicationInputs = mappers.map(applicationId);
+        List<ApplicationInput> applicationInputs = mappers.map(applicationRepository.find(applicationId));
         ApplicationFile applicationFile = pdfGenerator.generate(applicationInputs);
 
         return ResponseEntity.ok()

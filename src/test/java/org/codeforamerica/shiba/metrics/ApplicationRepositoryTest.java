@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.County.OLMSTED;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -71,7 +72,7 @@ class ApplicationRepositoryTest {
         subworkflows.addIteration("someGroup", subflowIteration);
         applicationData.setSubworkflows(subworkflows);
 
-        Application application = new Application("someid", ZonedDateTime.now(ZoneOffset.UTC), applicationData);
+        Application application = new Application("someid", ZonedDateTime.now(ZoneOffset.UTC), applicationData, OLMSTED);
 
         applicationRepository.save(application);
 

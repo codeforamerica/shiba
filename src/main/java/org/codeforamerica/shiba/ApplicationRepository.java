@@ -45,7 +45,8 @@ public class ApplicationRepository {
             jdbcInsert.execute(Map.of(
                     "id", application.getId(),
                     "completed_at", Timestamp.from(application.getCompletedAt().toInstant()),
-                    "data", objectMapper.writeValueAsString(application.getApplicationData())
+                    "data", objectMapper.writeValueAsString(application.getApplicationData()),
+                    "county", application.getCounty().name()
             ));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -58,7 +59,11 @@ public class ApplicationRepository {
                 ApplicationData applicationData;
                 applicationData = objectMapper.readValue(resultSet.getString("data"), ApplicationData.class);
 
-                return new Application(id,  ZonedDateTime.ofInstant(resultSet.getTimestamp("completed_at").toInstant(), ZoneOffset.UTC), applicationData);
+                return new Application(
+                        id,
+                        ZonedDateTime.ofInstant(resultSet.getTimestamp("completed_at").toInstant(), ZoneOffset.UTC),
+                        applicationData,
+                        County.valueOf(resultSet.getString("county")));
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
