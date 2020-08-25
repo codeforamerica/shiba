@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output;
 
+import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMapper;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -21,7 +22,8 @@ public class SubworkflowInputMapper implements ApplicationInputsMapper {
     }
 
     @Override
-    public List<ApplicationInput> map(ApplicationData data) {
+    public List<ApplicationInput> map(Application application) {
+        ApplicationData data = application.getApplicationData();
         return applicationConfiguration.getWorkflow().values().stream()
                 .filter(workflowConfiguration -> workflowConfiguration.getGroupName() != null)
                 .flatMap(pageWorkflowConfiguration -> {

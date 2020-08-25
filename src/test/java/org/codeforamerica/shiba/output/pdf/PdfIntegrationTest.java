@@ -5,7 +5,7 @@ import org.codeforamerica.shiba.ApplicationRepository;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
-import org.codeforamerica.shiba.output.applicationinputsmappers.ProgramsListMapper;
+import org.codeforamerica.shiba.output.applicationinputsmappers.CoverPageInputsMapper;
 import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,7 +31,7 @@ public class PdfIntegrationTest {
     private ApplicationInputsMappers mappers;
 
     @MockBean
-    ProgramsListMapper programsListMapper;
+    CoverPageInputsMapper coverPageInputsMapper;
 
     @MockBean
     private ApplicationRepository applicationRepository;

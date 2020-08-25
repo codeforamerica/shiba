@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.output.xml;
 
 import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.ApplicationRepository;
+import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
@@ -106,7 +107,7 @@ public class XmlGeneratorIntegrationTest {
         pagesData.putAll(data);
         ApplicationData applicationData = new ApplicationData();
         applicationData.setPagesData(pagesData);
-        Application application = new Application(applicationId, ZonedDateTime.now(clock), applicationData, null);
+        Application application = new Application(applicationId, ZonedDateTime.now(clock), applicationData, County.OTHER);
         List<ApplicationInput> applicationInputs = applicationInputsMappers.map(application);
         ApplicationFile applicationFile = xmlGenerator.generate(applicationInputs, "");
 

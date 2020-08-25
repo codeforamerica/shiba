@@ -1,5 +1,7 @@
 package org.codeforamerica.shiba.output;
 
+import org.codeforamerica.shiba.Application;
+import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.output.applicationinputsmappers.OneToOneApplicationInputsMapper;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.FormInput;
@@ -11,6 +13,7 @@ import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.junit.jupiter.api.Test;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +42,8 @@ class OneToOneApplicationInputsMapperTest {
 
         ApplicationData applicationData = new ApplicationData();
         applicationData.setPagesData(data);
-        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(applicationData);
+        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER);
+        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput(pageName, input1Name, input1Value, ApplicationInputType.SINGLE_VALUE)
@@ -75,7 +79,8 @@ class OneToOneApplicationInputsMapperTest {
 
         ApplicationData applicationData = new ApplicationData();
         applicationData.setPagesData(data);
-        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(applicationData);
+        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER);
+        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput(pageName, input2Name, input2Value, ApplicationInputType.SINGLE_VALUE),

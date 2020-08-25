@@ -164,6 +164,7 @@ caf:
       completedDate: CREATED_DATE
     coverPage:
       programs: PROGRAMS
+      countyInstructions: COUNTY_INSTRUCTIONS
   enums:
     EVERY_WEEK: Every week
     EVERY_TWO_WEEKS: Every two weeks

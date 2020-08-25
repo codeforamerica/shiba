@@ -28,24 +28,23 @@ public class MnitEsbWebServiceClient {
     private final Clock clock;
     private final String alfrescoUsername;
     private final String alfrescoPassword;
-    private final Map<County, String> countyFolderMapping;
+    private final Map<County, String> countyFolderIdMapping;
 
     public MnitEsbWebServiceClient(WebServiceTemplate webServiceTemplate,
                                    Clock clock,
                                    @Value("${mnit-esb.alfresco-username}") String alfrescoUsername,
                                    @Value("${mnit-esb.alfresco-password}") String alfrescoPassword,
-                                   Map<County, String> countyFolderMapping
-                                   ) {
+                                   Map<County, String> countyFolderIdMapping) {
         this.webServiceTemplate = webServiceTemplate;
         this.clock = clock;
         this.alfrescoUsername = alfrescoUsername;
         this.alfrescoPassword = alfrescoPassword;
-        this.countyFolderMapping = countyFolderMapping;
+        this.countyFolderIdMapping = countyFolderIdMapping;
     }
 
     public void send(ApplicationFile applicationFile, County county) {
         CreateDocument createDocument = new CreateDocument();
-        createDocument.setFolderId("workspace://SpacesStore/" + countyFolderMapping.get(county));
+        createDocument.setFolderId("workspace://SpacesStore/" + countyFolderIdMapping.get(county));
         createDocument.setRepositoryId("<Unknown");
         createDocument.setTypeId("document");
         CmisPropertiesType properties = new CmisPropertiesType();

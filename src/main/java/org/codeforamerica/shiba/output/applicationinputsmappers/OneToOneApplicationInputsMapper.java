@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output.applicationinputsmappers;
 
+import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.FormInput;
@@ -22,7 +23,8 @@ public class OneToOneApplicationInputsMapper implements ApplicationInputsMapper 
     }
 
     @Override
-    public List<ApplicationInput> map(ApplicationData data) {
+    public List<ApplicationInput> map(Application application) {
+        ApplicationData data = application.getApplicationData();
         return applicationConfiguration.getPageDefinitions().stream()
                 .flatMap(pageConfiguration -> pageConfiguration.getFlattenedInputs().stream()
                         .map(input -> Map.entry(pageConfiguration.getName(), input)))

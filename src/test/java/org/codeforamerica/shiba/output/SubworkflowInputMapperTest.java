@@ -1,9 +1,12 @@
 package org.codeforamerica.shiba.output;
 
+import org.codeforamerica.shiba.Application;
+import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.pages.config.*;
 import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.Test;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -76,7 +79,9 @@ class SubworkflowInputMapperTest {
         subworkflows.addIteration("group2", iteration3);
 
         applicationData.setSubworkflows(subworkflows);
-        assertThat(subworkflowInputMapper.map(applicationData)).containsExactlyInAnyOrder(
+        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER);
+
+        assertThat(subworkflowInputMapper.map(application)).containsExactlyInAnyOrder(
                 new ApplicationInput(
                         "question1",
                         "input1",

@@ -1,5 +1,7 @@
 package org.codeforamerica.shiba.output;
 
+import org.codeforamerica.shiba.Application;
+import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
 import org.codeforamerica.shiba.output.applicationinputsmappers.DerivedValueApplicationInputsMapper;
 import org.codeforamerica.shiba.pages.data.*;
@@ -13,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +27,7 @@ class DerivedValueApplicationInputsMapperTest {
 
     private final ApplicationData applicationData = new ApplicationData();
     private final PagesData pagesData = new PagesData();
+    private final Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER);
 
     @TestConfiguration
     @PropertySource(value = "classpath:derived-values-config/test-derived-values-config.yaml", factory = YamlPropertySourceFactory.class)
@@ -46,7 +50,7 @@ class DerivedValueApplicationInputsMapperTest {
 
     @Test
     void shouldProjectValue() {
-        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
+        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(application);
 
         assertThat(actual).contains(new ApplicationInput("groupName1", "value1", List.of("foo"), ApplicationInputType.SINGLE_VALUE));
     }
@@ -55,7 +59,7 @@ class DerivedValueApplicationInputsMapperTest {
     void shouldProjectValueIfConditionIsTrue() {
         pagesData.put("somePage", new PageData(Map.of("someInput", InputData.builder().value(List.of("someValue")).build())));
 
-        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
+        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(application);
 
         assertThat(actual).contains(new ApplicationInput("groupName2", "value2", List.of("bar"), ApplicationInputType.SINGLE_VALUE));
     }
@@ -64,7 +68,7 @@ class DerivedValueApplicationInputsMapperTest {
     void shouldProjectValueIfAnyOfTheConditionsIsTrue() {
         pagesData.put("somePage", new PageData(Map.of("someInput", InputData.builder().value(List.of("someValue")).build())));
 
-        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
+        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(application);
 
         assertThat(actual).contains(new ApplicationInput("groupName3", "value3", List.of("baz"), ApplicationInputType.SINGLE_VALUE));
     }
@@ -73,20 +77,20 @@ class DerivedValueApplicationInputsMapperTest {
     void shouldProjectValueIfAllOfTheConditionsAreTrue() {
         pagesData.put("somePage", new PageData(Map.of("someInput", InputData.builder().value(List.of("someValue")).build())));
 
-        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
+        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(application);
 
         assertThat(actual).doesNotContain(new ApplicationInput("groupName4", "value4", List.of("fooBar"), ApplicationInputType.SINGLE_VALUE));
 
         pagesData.put("someOtherPage", new PageData(Map.of("someOtherInput", InputData.builder().value(List.of("someOtherValue")).build())));
 
-        actual = derivedValueApplicationInputsMapper.map(applicationData);
+        actual = derivedValueApplicationInputsMapper.map(application);
 
         assertThat(actual).contains(new ApplicationInput("groupName4", "value4", List.of("fooBar"), ApplicationInputType.SINGLE_VALUE));
     }
 
     @Test
     void shouldGetReferencedValueFromPagesData() {
-        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
+        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(application);
 
         assertThat(actual).contains(new ApplicationInput("groupName5", "value5", List.of("defaultValue"), ApplicationInputType.SINGLE_VALUE));
     }
@@ -103,7 +107,7 @@ class DerivedValueApplicationInputsMapperTest {
         subworkflows.put("subworkflowName", subworkflow);
         applicationData.setSubworkflows(subworkflows);
 
-        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
+        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(application);
 
         assertThat(actual).doesNotContain(new ApplicationInput(
                 "groupName8",
@@ -125,7 +129,7 @@ class DerivedValueApplicationInputsMapperTest {
         subworkflows.put("subworkflowName", subworkflow);
         applicationData.setSubworkflows(subworkflows);
 
-        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
+        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(application);
 
         assertThat(actual).contains(new ApplicationInput(
                 "groupName8",
@@ -152,7 +156,7 @@ class DerivedValueApplicationInputsMapperTest {
         subworkflows.put("subworkflowName", subworkflow);
         applicationData.setSubworkflows(subworkflows);
 
-        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(applicationData);
+        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(application);
 
         assertThat(actual).contains(new ApplicationInput(
                 "groupName9",

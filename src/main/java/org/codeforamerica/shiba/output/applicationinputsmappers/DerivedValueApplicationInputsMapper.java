@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output.applicationinputsmappers;
 
+import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.PotentialDerivedValuesConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -18,7 +19,8 @@ public class DerivedValueApplicationInputsMapper implements ApplicationInputsMap
     }
 
     @Override
-    public List<ApplicationInput> map(ApplicationData data) {
+    public List<ApplicationInput> map(Application application) {
+        ApplicationData data = application.getApplicationData();
         return this.derivedValuesConfiguration.stream()
                 .map(potentialDerivedValues -> potentialDerivedValues
                         .getValues()
