@@ -38,3 +38,4 @@ out/
 .DS_Store
 .AppleDouble
 .LSOverride
+/.idea/dataSources/
