@@ -20,6 +20,7 @@ xml:
         CASH: CASH
         EA: EMERGENCY
         CCAP: CHILD_CARE
+        GRH: HOUSING_SUPPORT
     contactInfo:
       phoneNumber: CONTACTINFO_PHONE
     homeAddress:
@@ -141,6 +142,7 @@ xml:
     HMOOB: Hmong
     SNAP: Supplemental Nutrition Assistance Program
     CASH: Cash
+    GRH: Housing Support (Group Residential Housing)
     EA: Emergency Help
     CCAP: Child Care
     COOLING: Air conditioning

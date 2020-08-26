@@ -197,6 +197,7 @@
         <onl:Program>{{CASH}}</onl:Program>
         <onl:Program>{{EMERGENCY}}</onl:Program>
         <onl:Program>{{CHILD_CARE}}</onl:Program>
+        <onl:Program>{{HOUSING_SUPPORT}}</onl:Program>
         <onl:ExpeditedFSInfo>
             <onl:MonthlyIncome>{{MONEY_MADE_LAST_MONTH}}</onl:MonthlyIncome>
             <onl:CashInHand>{{LIQUID_ASSETS}}</onl:CashInHand>

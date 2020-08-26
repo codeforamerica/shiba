@@ -3490,6 +3490,7 @@
 			<xsd:enumeration value="Emergency Help"/>
 			<xsd:enumeration value="Child Care"/>
 			<xsd:enumeration value="Health Care"/>
+			<xsd:enumeration value="Housing Support (Group Residential Housing)"/>
 			<xsd:enumeration value="None"/>
 		</xsd:restriction>
 	</xsd:simpleType>

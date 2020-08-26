@@ -78,6 +78,8 @@ shiba-configuration:
               messageKey: choose-programs.food-snap
             - value: CASH
               messageKey: choose-programs.cash-programs
+            - value: GRH
+              messageKey: choose-programs.housing-support-group-residential-housing
             - value: EA
               messageKey: choose-programs.emergency-assistance
             - value: CCAP
