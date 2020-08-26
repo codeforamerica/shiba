@@ -3,5 +3,4 @@ spring:
     url: ${DATABASE_URL}
     driverClassName: org.postgresql.Driver
 sentry:
-  dsn: "https://59933122bcb3441ab28475ecfaa48e48@o88043.ingest.sentry.io/5400094"
   environment: staging

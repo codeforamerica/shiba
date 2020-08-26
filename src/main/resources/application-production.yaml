@@ -3,4 +3,4 @@ spring:
     url: ${DATABASE_URL}
     driverClassName: org.postgresql.Driver
 sentry:
-  environment: demo
+  environment: production
