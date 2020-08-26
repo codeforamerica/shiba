@@ -1,4 +1,10 @@
 county-to-folder-id:
-  HENNEPIN: 5195b061-9bdc-4d31-9840-90a99902d329
-  OTHER: 5195b061-9bdc-4d31-9840-90a99902d329
-  OLMSTED: 6875aa2f-8852-426f-a618-d394b9a32be5
+  HENNEPIN:
+    folderId: 5195b061-9bdc-4d31-9840-90a99902d329
+    dhsProviderId: A000027200
+  OTHER:
+    folderId: 5195b061-9bdc-4d31-9840-90a99902d329
+    dhsProviderId: A000027200
+  OLMSTED:
+    folderId: 9b8e19ee-0767-4d50-8652-95fec9dbc459
+    dhsProviderId: A000055800

@@ -14,7 +14,7 @@ public class CountyFolderIdMappingConfiguration {
 
     @Bean
     @ConfigurationProperties(prefix = "county-to-folder-id")
-    Map<County, String> countyFolderIdMapping() {
+    Map<County, MnitCountyInformation> countyFolderIdMapping() {
         return new HashMap<>();
     }
 }

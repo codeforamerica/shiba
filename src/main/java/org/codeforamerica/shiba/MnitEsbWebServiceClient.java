@@ -7,6 +7,7 @@ import org.codeforamerica.shiba.esbwsdl.CmisPropertiesType;
 import org.codeforamerica.shiba.esbwsdl.CmisPropertyString;
 import org.codeforamerica.shiba.esbwsdl.CreateDocument;
 import org.codeforamerica.shiba.output.ApplicationFile;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MimeTypeUtils;
@@ -28,13 +29,13 @@ public class MnitEsbWebServiceClient {
     private final Clock clock;
     private final String alfrescoUsername;
     private final String alfrescoPassword;
-    private final Map<County, String> countyFolderIdMapping;
+    private final Map<County, MnitCountyInformation> countyFolderIdMapping;
 
     public MnitEsbWebServiceClient(WebServiceTemplate webServiceTemplate,
                                    Clock clock,
                                    @Value("${mnit-esb.alfresco-username}") String alfrescoUsername,
                                    @Value("${mnit-esb.alfresco-password}") String alfrescoPassword,
-                                   Map<County, String> countyFolderIdMapping) {
+                                   Map<County, MnitCountyInformation> countyFolderIdMapping) {
         this.webServiceTemplate = webServiceTemplate;
         this.clock = clock;
         this.alfrescoUsername = alfrescoUsername;
@@ -44,16 +45,26 @@ public class MnitEsbWebServiceClient {
 
     public void send(ApplicationFile applicationFile, County county) {
         CreateDocument createDocument = new CreateDocument();
-        createDocument.setFolderId("workspace://SpacesStore/" + countyFolderIdMapping.get(county));
+        createDocument.setFolderId("workspace://SpacesStore/" + countyFolderIdMapping.get(county).getFolderId());
         createDocument.setRepositoryId("<Unknown");
         createDocument.setTypeId("document");
         CmisPropertiesType properties = new CmisPropertiesType();
-        CmisPropertyString fileNameProperty = new CmisPropertyString();
-        fileNameProperty.setName("Name");
-        fileNameProperty.setValue(applicationFile.getFileName());
+        CmisPropertyString fileNameProperty =
+                createCmisPropertyString("Name", applicationFile.getFileName());
         properties.getPropertyUriOrPropertyIdOrPropertyString()
                 .add(fileNameProperty);
-
+        CmisPropertyString subject =
+                createCmisPropertyString("subject", applicationFile.getFileName());
+        properties.getPropertyUriOrPropertyIdOrPropertyString()
+                .add(subject);
+        CmisPropertyString description =
+                createCmisPropertyString("description", "A simple PDF document");
+        properties.getPropertyUriOrPropertyIdOrPropertyString()
+                .add(description);
+        CmisPropertyString dhsProviderId =
+                createCmisPropertyString("dhsProviderId", countyFolderIdMapping.get(county).getDhsProviderId());
+        properties.getPropertyUriOrPropertyIdOrPropertyString()
+                .add(dhsProviderId);
         createDocument.setProperties(properties);
         CmisContentStreamType contentStream = new CmisContentStreamType();
         contentStream.setLength(BigInteger.ZERO);
@@ -86,4 +97,14 @@ public class MnitEsbWebServiceClient {
             }
         });
     }
+
+    @NotNull
+    private CmisPropertyString createCmisPropertyString(String property, String value) {
+        CmisPropertyString fileNameProperty = new CmisPropertyString();
+        fileNameProperty.setName(property);
+        fileNameProperty.setValue(value);
+        return fileNameProperty;
+    }
+
+
 }
