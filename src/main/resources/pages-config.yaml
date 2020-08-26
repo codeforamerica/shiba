@@ -82,10 +82,6 @@ shiba-configuration:
               messageKey: choose-programs.emergency-assistance
             - value: CCAP
               messageKey: choose-programs.child-care-assistance
-    - &howItWorks
-      name: howItWorks
-      pageTitle:
-        value: how-it-works.title
     - &introBasicInfo
       name: introBasicInfo
       pageTitle:
@@ -1199,13 +1195,7 @@ shiba-configuration:
     choosePrograms:
       pageConfiguration: *choosePrograms
       nextPages:
-        - pageName: howItWorks
-    howItWorks:
-      pageConfiguration: *howItWorks
-      nextPages:
         - pageName: introBasicInfo
-      datasources:
-        - pageName: choosePrograms
     introBasicInfo:
       pageConfiguration: *introBasicInfo
       nextPages:

@@ -134,8 +134,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         Page chooseProgramPage = languagePreferencesPage
                 .clickPrimaryButton();
         chooseProgramPage.selectEnumeratedInput("programs", "Emergency assistance");
-        Page howItWorksPage = chooseProgramPage.clickPrimaryButton();
-        Page personalInfoPage = howItWorksPage.clickPrimaryButton().clickPrimaryButton();
+        Page introBasicInfo = chooseProgramPage.clickPrimaryButton();
+        Page personalInfoPage = introBasicInfo.clickPrimaryButton();
         personalInfoPage.enterInput("firstName", "defaultFirstName");
         personalInfoPage.enterInput("lastName", "defaultLastName");
         personalInfoPage.enterInput("otherName", "defaultOtherName");
