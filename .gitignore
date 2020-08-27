@@ -19,6 +19,7 @@ src/main/resources/application-secrets.yaml
 .idea/*.xml
 !.idea/jsonSchemas.xml
 .idea/inspectionProfiles/
+.idea/dataSources/
 *.iws
 *.iml
 *.ipr
@@ -38,4 +39,3 @@ out/
 .DS_Store
 .AppleDouble
 .LSOverride
-/.idea/dataSources/
