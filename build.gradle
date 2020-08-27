@@ -82,9 +82,9 @@ dependencies {
     implementation 'org.apache.httpcomponents:httpclient'
     implementation 'io.sentry:sentry-spring:1.7.30'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    runtime 'org.flywaydb:flyway-core:6.4.4'
+    runtimeOnly 'org.flywaydb:flyway-core:6.4.4'
 
-    compile(files(genJaxb.classesDir).builtBy(genJaxb))
+    implementation(files(genJaxb.classesDir).builtBy(genJaxb))
     jaxb "com.sun.xml.bind:jaxb-xjc:2.1.7"
 
     testImplementation 'org.seleniumhq.selenium:selenium-java:3.141.59'
