@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.stream.Stream.empty;
 
@@ -28,10 +29,21 @@ public class SubworkflowInputMapper implements ApplicationInputsMapper {
                 .filter(workflowConfiguration -> workflowConfiguration.getGroupName() != null)
                 .flatMap(pageWorkflowConfiguration -> {
                     Subworkflow subworkflow = data.getSubworkflows().get(pageWorkflowConfiguration.getGroupName());
-                    if(subworkflow == null) {
-                        return empty();
+
+                    int subworkflowCount = subworkflow == null ? 0 : subworkflow.size();
+
+                    ApplicationInput countInput = new ApplicationInput(
+                            pageWorkflowConfiguration.getGroupName(),
+                            "count",
+                            List.of(String.valueOf(subworkflowCount)),
+                            ApplicationInputType.SINGLE_VALUE
+                    );
+
+                    if (subworkflow == null) {
+                        return Stream.of(countInput);
                     }
-                    return subworkflow.stream()
+
+                    Stream<ApplicationInput> applicationInputStream = subworkflow.stream()
                             .flatMap(iteration -> {
                                         PageData pageData = iteration.get(pageWorkflowConfiguration.getPageConfiguration().getName());
                                         if (pageData == null) {
@@ -47,6 +59,7 @@ public class SubworkflowInputMapper implements ApplicationInputsMapper {
                                                 ));
                                     }
                             );
+                    return Stream.concat(applicationInputStream, Stream.of(countInput));
                 })
                 .collect(Collectors.toList());
     }

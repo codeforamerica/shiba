@@ -695,3 +695,24 @@ derived-values:
               input: phoneOrEmail
               value: TEXT
               matcher: CONTAINS
+  - groupName: coverPage
+    fieldName: jobSearching
+    values:
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "Yes"
+        type: SINGLE_VALUE
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: ccapJob
+              input: currentlyLookingForJob
+              value: "true"
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "No"
+        type: SINGLE_VALUE
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: ccapJob
+              input: currentlyLookingForJob
+              value: "false"

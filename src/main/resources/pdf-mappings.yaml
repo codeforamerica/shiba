@@ -20,13 +20,9 @@ caf:
         SNAP: FOOD
         CASH: CASH
         EA: EMERGENCY
-        CCAP: CHILD_CARE
     contactInfo:
       phoneNumber: APPLICANT_PHONE_NUMBER
       email: APPLICANT_EMAIL
-      phoneOrEmail:
-        TEXT: CONTACT_BY_TEXT
-        EMAIL: CONTACT_BY_EMAIL
       communicationOptIn: COMMUNICATION_OPT_IN
     homeAddress:
       zipCode: APPLICANT_HOME_ZIPCODE
@@ -81,10 +77,6 @@ caf:
       hasDisability: HAS_DISABILITY
     workSituation:
       hasWorkSituation: HAS_WORK_SITUATION
-    employmentStatus:
-      areYouWorking: IS_WORKING
-    ccapJob:
-      currentlyLookingForJob: LOOKING_FOR_JOB
     expeditedEligibility:
       expeditedEligibility: EXPEDITED_ELIGIBILITY
     unearnedIncome:
@@ -168,6 +160,9 @@ caf:
       programs: PROGRAMS
       countyInstructions: COUNTY_INSTRUCTIONS
       fullName: FULL_NAME
+      jobSearching: JOB_SEARCHING
+    jobs:
+      count: TOTAL_JOBS
   enums:
     EVERY_WEEK: Every week
     EVERY_TWO_WEEKS: Every two weeks
