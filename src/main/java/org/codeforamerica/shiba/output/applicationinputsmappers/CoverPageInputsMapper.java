@@ -3,12 +3,14 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.ApplicationInputType;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.PageData;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+
+import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
 
 @Component
 public class CoverPageInputsMapper implements ApplicationInputsMapper {
@@ -26,16 +28,26 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
                 .get("programs")
                 .getValue();
 
+        PageData personalInfo = application.getApplicationData().getInputDataMap("personalInfo");
         return List.of(
                 new ApplicationInput(
                         "coverPage",
                         "programs",
                         List.of(String.join(", ", programs)),
-                        ApplicationInputType.SINGLE_VALUE),
+                        SINGLE_VALUE),
                 new ApplicationInput(
                         "coverPage",
                         "countyInstructions",
                         List.of(countyInstructionsMapping.get(application.getCounty())),
-                        ApplicationInputType.SINGLE_VALUE));
+                        SINGLE_VALUE),
+                new ApplicationInput(
+                        "coverPage",
+                        "fullName",
+                        List.of(String.format("%s %s",
+                                String.join("", personalInfo.get("firstName").getValue()),
+                                String.join("", personalInfo.get("lastName").getValue())
+                        )),
+                        SINGLE_VALUE
+                ));
     }
 }

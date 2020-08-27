@@ -628,3 +628,70 @@ derived-values:
               pageName: selfEmployment
               input: selfEmployment
               value: "true"
+  - groupName: personalInfo
+    fieldName: sexText
+    values:
+      - type: SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: Female
+        condition:
+          logicalOperator: OR
+          conditions:
+            - pageName: personalInfo
+              input: sex
+              value: FEMALE
+      - type: SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: Male
+        condition:
+          logicalOperator: OR
+          conditions:
+            - pageName: personalInfo
+              input: sex
+              value: MALE
+      - type: SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: Rather Not Say
+        condition:
+          logicalOperator: OR
+          conditions:
+            - pageName: personalInfo
+              input: sex
+              value: RATHER_NOT_SAY
+  - groupName: contactInfo
+    fieldName: communicationOptIn
+    values:
+      - type: SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: Email and text
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: contactInfo
+              input: phoneOrEmail
+              value: EMAIL
+              matcher: CONTAINS
+            - pageName: contactInfo
+              input: phoneOrEmail
+              value: TEXT
+              matcher: CONTAINS
+      - type: SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: Email
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: contactInfo
+              input: phoneOrEmail
+              value: EMAIL
+              matcher: CONTAINS
+      - type: SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: Text
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: contactInfo
+              input: phoneOrEmail
+              value: TEXT
+              matcher: CONTAINS

@@ -133,25 +133,17 @@
             <onl:AssetInfo>
                 <onl:LiquidAsset>
                     <onl:Type>Savings Account</onl:Type>
-                    <onl:Value>
-                        {{HAVE_SAVINGS}}
-                    </onl:Value>
+                    <onl:Value>{{HAVE_SAVINGS}}</onl:Value>
                 </onl:LiquidAsset>
                 <onl:LiquidAsset>
                     <onl:Type>Stocks</onl:Type>
-                    <onl:Value>
-                        {{HAVE_INVESTMENTS}}
-                    </onl:Value>
+                    <onl:Value>{{HAVE_INVESTMENTS}}</onl:Value>
                 </onl:LiquidAsset>
                 <onl:VehicleAsset>
-                    <onl:AssetOtherValue>
-                        {{HAVE_VEHICLE}}
-                    </onl:AssetOtherValue>
+                    <onl:AssetOtherValue>{{HAVE_VEHICLE}}</onl:AssetOtherValue>
                 </onl:VehicleAsset>
                 <onl:TransferInfo>
-                    <onl:Item>
-                        {{HAVE_SOLD_ASSETS}}
-                    </onl:Item>
+                    <onl:Item>{{HAVE_SOLD_ASSETS}}</onl:Item>
                 </onl:TransferInfo>
             </onl:AssetInfo>
             <onl:ExpenseInfo>

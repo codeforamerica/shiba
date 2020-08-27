@@ -12,6 +12,7 @@ caf:
       dateOfBirth: DATE_OF_BIRTH
       ssn: APPLICANT_SSN
       sex: APPLICANT_SEX
+      sexText: APPLICANT_SEX_TEXT
       moveToMnDate: DATE_OF_MOVING_TO_MN
       moveToMnPreviousCity: APPLICANT_PREVIOUS_CITY
     choosePrograms:
@@ -26,6 +27,7 @@ caf:
       phoneOrEmail:
         TEXT: CONTACT_BY_TEXT
         EMAIL: CONTACT_BY_EMAIL
+      communicationOptIn: COMMUNICATION_OPT_IN
     homeAddress:
       zipCode: APPLICANT_HOME_ZIPCODE
       city: APPLICANT_HOME_CITY
@@ -165,6 +167,7 @@ caf:
     coverPage:
       programs: PROGRAMS
       countyInstructions: COUNTY_INSTRUCTIONS
+      fullName: FULL_NAME
   enums:
     EVERY_WEEK: Every week
     EVERY_TWO_WEEKS: Every two weeks
