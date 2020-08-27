@@ -2,5 +2,9 @@ spring:
   datasource:
     url: ${DATABASE_URL}
     driverClassName: org.postgresql.Driver
+
+client:
+  keystore: src/main/resources/shiba-production.jks
+
 sentry:
   environment: production
