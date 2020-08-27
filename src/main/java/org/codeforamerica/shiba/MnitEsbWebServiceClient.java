@@ -54,11 +54,11 @@ public class MnitEsbWebServiceClient {
         properties.getPropertyUriOrPropertyIdOrPropertyString()
                 .add(fileNameProperty);
         CmisPropertyString subject =
-                createCmisPropertyString("subject", applicationFile.getFileName());
+                createCmisPropertyString("subject", "MN Benefits Application");
         properties.getPropertyUriOrPropertyIdOrPropertyString()
                 .add(subject);
         CmisPropertyString description =
-                createCmisPropertyString("description", "A simple PDF document");
+                createCmisPropertyString("description", "Sent by Code for America");
         properties.getPropertyUriOrPropertyIdOrPropertyString()
                 .add(description);
         CmisPropertyString dhsProviderId =
