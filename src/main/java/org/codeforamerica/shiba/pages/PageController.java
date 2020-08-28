@@ -65,6 +65,11 @@ public class PageController {
         return new ModelAndView("forward:/pages/" + applicationConfiguration.getLandmarkPages().getLandingPages().get(0));
     }
 
+    @GetMapping("/privacy")
+    String getPrivacyPolicy() {
+        return "privacyPolicy";
+    }
+
     @GetMapping("/pages/{pageName}/navigation")
     RedirectView navigation(
             @PathVariable String pageName,

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="fragments/head :: head(#{privacy-policy.title})"></div>
+<body class="locale-en" id="landing-page">
+<div class="page-wrapper">
+    <div th:replace="fragments/demoBanner"></div>
+    <section class="slab spacing-above-35">
+        <div class="grid">
+            <div class="grid__item">
+                <h1 class="spacing-below-35" th:text="#{privacy-policy.privacy-policy}"></h1>
+                <p class="text-25 spacing-below-35" th:text="#{privacy-policy.subheader}"></p>
+                <a class="button button--primary spacing-below-0" href="/">
+                    <span th:text="#{landing.apply-now}"></span>
+                    <i class="button__icon icon-arrow_forward"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+    <section class="slab slab--white">
+        <div class="grid">
+            <div class="grid__item width-one-third">
+                <h3>Table of Contents</h3>
+                <div class="privacy-policy-link"><a href="#overview">Overview</a></div>
+                <div class="privacy-policy-link"><a href="#information-we-collect">Information we collect</a></div>
+                <div class="privacy-policy-link"><a href="#how-we-use-info">How we use your information</a></div>
+                <div class="privacy-policy-link"><a href="#how-we-share-info">How we share your information</a></div>
+                <div class="privacy-policy-link"><a href="#how-we-protect-info">How we protect your information</a></div>
+                <div class="privacy-policy-link"><a href="#changes">Changes</a></div>
+                <div class="privacy-policy-link"><a href="#effective-date">Effective Date</a></div>
+                <div class="privacy-policy-link spacing-below-60"><a href="#questions">Questions</a></div>
+            </div>
+            <div class="grid__item shift-one-twelfth width-seven-twelfths">
+                <div class="grid">
+                    <h2 class="spacing-below-35" th:text="#{privacy-policy.privacy-policy}"></h2>
+                    <div class="grid__item">
+                        <div class="grid__item spacing-below-35">
+                            <h3 id="overview" th:utext="#{privacy-policy.overview}"></h3>
+                            <p th:utext="#{privacy-policy.overviewp1}"></p>
+                            <p th:utext="#{privacy-policy.overviewp2}"></p>
+                            <p th:utext="#{privacy-policy.overviewp3}"></p>
+                            <p th:utext="#{privacy-policy.overviewp4}"></p>
+                            <p th:utext="#{privacy-policy.overviewp5}"></p>
+                            <p th:utext="#{privacy-policy.overviewp6}"></p>
+                            <h3 id="information-we-collect" class="spacing-above-60" th:utext="#{privacy-policy.info-we-collect}"></h3>
+                            <p th:utext="#{privacy-polcy.info-we-collect-0}"></p>
+                            <p th:utext="|• #{privacy-policy.info-we-collect1}|"></p>
+                            <p th:utext="|• #{privacy-policy.info-we-collect2}|"></p>
+                            <p th:utext="|• #{privacy-policy.info-we-collect3}|"></p>
+                            <p th:utext="|• #{privacy-policy.info-we-collect4}|"></p>
+                            <p th:utext="#{privacy-policy.info-we-collect5}"></p>
+                            <p th:utext="|• #{privacy-policy.info-we-collect6}|"></p>
+                            <p th:utext="|• #{privacy-policy.info-we-collect7}|"></p>
+                            <p th:utext="|• #{privacy-policy.info-we-collect8}|"></p>
+                            <p th:utext="|• #{privacy-policy.info-we-collect9}|"></p>
+                            <p th:utext="|• #{privacy-policy.info-we-collect10}|"></p>
+                            <p th:utext="|• #{privacy-policy.info-we-collect11}|"></p>
+                            <p th:utext="#{privacy-policy.info-we-collect12}"></p>
+                            <p th:utext="#{privacy-policy.info-we-collect13}"></p>
+                            <p th:utext="#{privacy-policy.info-we-collect14}"></p>
+                            <h3 id="how-we-use-info" class="spacing-above-60" th:utext="#{privacy-policy.how-we-use-info}"></h3>
+                            <p th:utext="#{privacy-policy.how-we-use-info1}"></p>
+                            <p th:utext="|• #{privacy-policy.how-we-use-info2}|"></p>
+                            <p th:utext="|• #{privacy-policy.how-we-use-info3}|"></p>
+                            <p th:utext="|• #{privacy-policy.how-we-use-info4}|"></p>
+                            <p th:utext="|• #{privacy-policy.how-we-use-info5}|"></p>
+                            <p th:utext="#{privacy-policy.how-we-use-info6}"></p>
+                            <p th:utext="|• #{privacy-policy.how-we-use-info7}|"></p>
+                            <p th:utext="|• #{privacy-policy.how-we-use-info8}|"></p>
+                            <h3 id="how-we-share-info" class="spacing-above-60" th:utext="#{privacy-policy.how-we-share-info}"></h3>
+                            <p th:utext="#{privacy-policy.how-we-share-info1}"></p>
+                            <p th:utext="#{privacy-policy.how-we-share-info2}"></p>
+                            <p th:utext="#{privacy-policy.how-we-share-info3}"></p>
+                            <p th:utext="#{privacy-policy.how-we-share-info4}"></p>
+                            <h3 id="how-we-protect-info" class="spacing-above-60" th:utext="#{privacy-policy.how-we-protect-information}"></h3>
+                            <p th:utext="#{privacy-policy.how-we-protect-info1}">Protecting your personal information is extremely important to us and we take all reasonable measures to do so. Here are some specific security practices we use:</p>
+                            <p th:utext="|• #{privacy-policy.how-we-protect-info2}|">When you enter your information on our site, we encrypt the transmission of that information using transport layer security (TLS).</p>
+                            <p th:utext="|• #{privacy-policy.how-we-protect-info3}|">Although we try our best to protect the privacy of your personal information, we cannot guarantee complete security. The transmission of information via the Internet is not completely secure. Unauthorized entry or use, hardware or software failure, and other factors, may compromise the security of user information at any time.</p>
+                            <h3 id="changes" class="spacing-above-60" th:utext="#{privacy-policy.changes}"></h3>
+                            <p th:utext="#{privacy-policy.changes1}"></p>
+                            <h3 id="effective-date" class="spacing-above-60" th:utext="#{privacy-policy.effective-date}"></h3>
+                            <p th:utext="#{privacy-policy.effective-date1}"></p>
+                            <h3 id="questions" class="spacing-above-60" th:utext="#{privacy-policy.questions}"></h3>
+                            <p th:utext="#{privacy-policy.questions1}"></p>
+                            <div>MnBenefits.org</div>
+                            <div>c/o Code for America</div>
+                            <div>972 Mission Street</div>
+                            <div>San Francisco, CA 94103</div>
+                            <br>
+                            <p th:utext="#{privacy-policy.questions6}"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<div th:replace="fragments/footer"></div>
+</body>
+</html>
