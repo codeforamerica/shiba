@@ -29,18 +29,8 @@ public class SubworkflowInputMapper implements ApplicationInputsMapper {
                 .filter(workflowConfiguration -> workflowConfiguration.getGroupName() != null)
                 .flatMap(pageWorkflowConfiguration -> {
                     Subworkflow subworkflow = data.getSubworkflows().get(pageWorkflowConfiguration.getGroupName());
-
-                    int subworkflowCount = subworkflow == null ? 0 : subworkflow.size();
-
-                    ApplicationInput countInput = new ApplicationInput(
-                            pageWorkflowConfiguration.getGroupName(),
-                            "count",
-                            List.of(String.valueOf(subworkflowCount)),
-                            ApplicationInputType.SINGLE_VALUE
-                    );
-
                     if (subworkflow == null) {
-                        return Stream.of(countInput);
+                        return Stream.empty();
                     }
 
                     Stream<ApplicationInput> applicationInputStream = subworkflow.stream()
@@ -59,7 +49,14 @@ public class SubworkflowInputMapper implements ApplicationInputsMapper {
                                                 ));
                                     }
                             );
-                    return Stream.concat(applicationInputStream, Stream.of(countInput));
+                    return Stream.concat(
+                            applicationInputStream,
+                            Stream.of(new ApplicationInput(
+                                    pageWorkflowConfiguration.getGroupName(),
+                                    "count",
+                                    List.of(String.valueOf(subworkflow.size())),
+                                    ApplicationInputType.SINGLE_VALUE
+                            )));
                 })
                 .collect(Collectors.toList());
     }

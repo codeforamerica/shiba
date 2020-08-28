@@ -131,23 +131,4 @@ class SubworkflowInputMapperTest {
                 )
         );
     }
-
-    @Test
-    void shouldIncludeSubworkflowCountInputWhenThereAreNoIterations() {
-        PageWorkflowConfiguration pageWorkflowConfiguration = new PageWorkflowConfiguration();
-        pageWorkflowConfiguration.setGroupName("someGroupName");
-        applicationConfiguration.setWorkflow(Map.of("someWorkflowName", pageWorkflowConfiguration));
-        Application application = new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED);
-
-        List<ApplicationInput> applicationInputs = subworkflowInputMapper.map(application);
-
-        assertThat(applicationInputs).contains(
-                new ApplicationInput(
-                        "someGroupName",
-                        "count",
-                        List.of("0"),
-                        ApplicationInputType.SINGLE_VALUE
-                )
-        );
-    }
 }
