@@ -18,6 +18,10 @@
     border-radius: 3px;
 }
 
+.intro-box__title {
+    margin-bottom: 20px;
+}
+
 .dob-input {
     display: inline-block;
     width: calc(30% - 3rem);
@@ -50,8 +54,34 @@
     background-color: #F7F5F4;
 }
 
-.main-footer {
-    background-color: #C4C4C4;
+.slab--minnesota-sky-blue {
+    background-color: rgba(155, 203, 235, 0.25);
+}
+
+.footer-minnesota-blue {
+    color: #FFF;
+    background-color: #003865;
+}
+
+.button--minnesota-blue {
+    color: #FFFFFF;
+    background-color: #003865;
+    border-color: #003865;
+    box-shadow: 0 2px 0 #00088E;
+}
+
+.button--minnesota-blue:hover {
+    border-color: #00223D;
+    background-color: #00223D;
+    color: #FFFFFF;
+}
+
+.minnesota-blue {
+    color: #003865;
+}
+
+.font-white {
+    color: white;
 }
 
 @media screen and (min-width: 601px) {
@@ -222,4 +252,16 @@
     color: #5F5854;
     border-bottom: 2px solid #AAAAAA;
     padding-bottom: 0.5rem;
+}
+
+.splash {
+    width: 108%;
+    max-width: none;
+    margin-top: 60px;
+}
+
+.illustration--cfa-logo {
+    background-image: url(/images/code-for-america-logo_white.svg);
+    margin-left: 0;
+    background-size: 126px 84px;
 }

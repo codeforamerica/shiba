@@ -13,8 +13,7 @@
                 </th:block>
                 <div th:if="${page.hasHeader()}" class="grid__item spacing-above-35 spacing-below-35">
                     <h2 th:text="#{${page.headerKey}}"></h2>
-                    <p class="text--help"
-                       th:if="${page.headerHelpMessageKey != null}"
+                    <p th:if="${page.headerHelpMessageKey != null}"
                        th:text="#{${page.headerHelpMessageKey}}"></p>
                 </div>
                 <div class="grid__item">
