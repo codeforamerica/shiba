@@ -9,9 +9,6 @@ public class SuccessPage extends Page {
     @FindBy(linkText = "Download My Receipt")
     WebElement downloadReceiptButton;
 
-    @FindBy(linkText = "Download XML")
-    WebElement downloadXMLButton;
-
     public SuccessPage(RemoteWebDriver driver) {
         super(driver);
         PageFactory.initElements(driver, this);
@@ -21,13 +18,4 @@ public class SuccessPage extends Page {
         downloadReceiptButton.click();
     }
 
-    public void downloadXML() {
-        downloadXMLButton.click();
-    }
-
-    public String getSubmissionTime() {
-        return driver.findElementById("submission-date").getText();
-    }
-
-    public String getApplicationId() { return driver.findElementById("application-id").getText(); }
 }

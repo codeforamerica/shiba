@@ -3,7 +3,8 @@ package org.codeforamerica.shiba.output;
 import org.codeforamerica.shiba.ApplicationRepository;
 import org.codeforamerica.shiba.ConfirmationData;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
-import org.codeforamerica.shiba.output.pdf.PdfGenerator;
+import org.codeforamerica.shiba.output.pdf.PdfFieldFiller;
+import org.codeforamerica.shiba.output.pdf.PdfFieldMapper;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -16,29 +17,35 @@ import java.util.List;
 
 @Controller
 public class FileDownLoadController {
-    private final PdfGenerator pdfGenerator;
     private final XmlGenerator xmlGenerator;
     private final ApplicationInputsMappers mappers;
     private final ConfirmationData confirmationData;
     private final ApplicationRepository applicationRepository;
+    private final PdfFieldMapper pdfFieldMapper;
+    private final PdfFieldFiller cafWithCoverPageFieldFiller;
+    private final PdfFieldFiller cafFieldFiller;
 
     public FileDownLoadController(
-            PdfGenerator pdfGenerator,
             XmlGenerator xmlGenerator,
             ApplicationInputsMappers mappers,
             ConfirmationData confirmationData,
-            ApplicationRepository applicationRepository) {
-        this.pdfGenerator = pdfGenerator;
+            ApplicationRepository applicationRepository,
+            PdfFieldMapper pdfFieldMapper,
+            PdfFieldFiller cafWithCoverPageFieldFiller,
+            PdfFieldFiller cafFieldFiller) {
         this.xmlGenerator = xmlGenerator;
         this.mappers = mappers;
         this.confirmationData = confirmationData;
         this.applicationRepository = applicationRepository;
+        this.pdfFieldMapper = pdfFieldMapper;
+        this.cafWithCoverPageFieldFiller = cafWithCoverPageFieldFiller;
+        this.cafFieldFiller = cafFieldFiller;
     }
 
     @GetMapping("/download")
     ResponseEntity<byte[]> downloadPdf() {
         List<ApplicationInput> applicationInputs = mappers.map(applicationRepository.find(confirmationData.getId()));
-        ApplicationFile applicationFile = pdfGenerator.generate(applicationInputs, confirmationData.getId());
+        ApplicationFile applicationFile = cafFieldFiller.fill(pdfFieldMapper.map(applicationInputs), confirmationData.getId());
 
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
@@ -59,7 +66,7 @@ public class FileDownLoadController {
     @GetMapping("/download-caf/{applicationId}")
     ResponseEntity<byte[]> downloadPdfWithApplicationId(@PathVariable String applicationId) {
         List<ApplicationInput> applicationInputs = mappers.map(applicationRepository.find(applicationId));
-        ApplicationFile applicationFile = pdfGenerator.generate(applicationInputs, confirmationData.getId());
+        ApplicationFile applicationFile = cafWithCoverPageFieldFiller.fill(pdfFieldMapper.map(applicationInputs), applicationId);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)

@@ -15,10 +15,14 @@ import java.util.List;
 
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
-class CAFFieldFillerTest {
+class PDFBoxFieldFillerTest {
 
-    private final CAFFieldFiller subject = new CAFFieldFiller(new ClassPathResource("test.pdf"));
+    private final PDFBoxFieldFiller PDFBoxFieldFiller = new PDFBoxFieldFiller(
+            new ClassPathResource("test-cover-pages.pdf"),
+            List.of(new ClassPathResource("test-caf.pdf"))
+    );
 
     @Test
     void shouldMapTextFields() throws IOException {
@@ -27,7 +31,7 @@ class CAFFieldFillerTest {
                 new SimplePdfField("TEXT_FIELD", expectedFieldValue)
         );
 
-        ApplicationFile applicationFile = subject.fill(fields, "");
+        ApplicationFile applicationFile = PDFBoxFieldFiller.fill(fields, "");
 
         PDAcroForm acroForm = getPdAcroForm(applicationFile);
 
@@ -40,7 +44,7 @@ class CAFFieldFillerTest {
                 new SimplePdfField("TEXT_FIELD", null)
         );
 
-        ApplicationFile applicationFile = subject.fill(fields, "");
+        ApplicationFile applicationFile = PDFBoxFieldFiller.fill(fields, "");
 
         PDAcroForm acroForm = getPdAcroForm(applicationFile);
         assertThat(acroForm.getField("TEXT_FIELD").getValueAsString()).isEqualTo("");
@@ -53,7 +57,7 @@ class CAFFieldFillerTest {
                 new BinaryPdfField("BINARY_FIELD_3")
         );
 
-        ApplicationFile applicationFile = subject.fill(fields, "");
+        ApplicationFile applicationFile = PDFBoxFieldFiller.fill(fields, "");
 
         PDAcroForm acroForm = getPdAcroForm(applicationFile);
         assertThat(acroForm.getField("BINARY_FIELD_1").getValueAsString()).isEqualTo("Yes");
@@ -63,14 +67,33 @@ class CAFFieldFillerTest {
     @Test
     void shouldReturnTheAppropriateFilename() {
         String applicationId = "applicationId";
-        ApplicationFile applicationFile = subject.fill(emptyList(), applicationId);
+        ApplicationFile applicationFile = PDFBoxFieldFiller.fill(emptyList(), applicationId);
 
         assertThat(applicationFile.getFileName()).isEqualTo("cfa-" + applicationId + "-CAF.pdf");
     }
 
+    @Test
+    void shouldConcatenateAllResourcePDFs() throws IOException {
+        ApplicationFile applicationFile = PDFBoxFieldFiller.fill(emptyList(), "id");
+
+        Path path = Files.createTempDirectory("");
+        File file = new File(path.toFile(), "test-caf.pdf");
+        Files.write(file.toPath(), applicationFile.getFileBytes());
+        PDDocument pdDocument = PDDocument.load(file);
+
+        assertThat(pdDocument.getNumberOfPages()).isGreaterThan(1);
+    }
+
+    @Test
+    void shouldNotThrowException_whenFieldIsNotFound() {
+        assertThatCode(() -> PDFBoxFieldFiller.fill(List.of(
+                new SimplePdfField("definitely-not-a-field", "")), "id"
+        )).doesNotThrowAnyException();
+    }
+
     private PDAcroForm getPdAcroForm(ApplicationFile applicationFile) throws IOException {
         Path path = Files.createTempDirectory("");
-        File file = new File(path.toFile(), "test.pdf");
+        File file = new File(path.toFile(), "test-caf.pdf");
         Files.write(file.toPath(), applicationFile.getFileBytes());
 
         PDDocument pdDocument = PDDocument.load(file);

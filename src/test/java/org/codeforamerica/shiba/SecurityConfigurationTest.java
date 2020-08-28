@@ -1,8 +1,6 @@
 package org.codeforamerica.shiba;
 
-import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
-import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,9 +50,6 @@ class SecurityConfigurationTest {
     @MockBean
     ApplicationRepository applicationRepository;
 
-    @MockBean
-    PdfGenerator pdfGenerator;
-
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
@@ -62,7 +57,6 @@ class SecurityConfigurationTest {
                 .build();
         when(applicationRepository.find(any())).thenReturn(new Application("foo", ZonedDateTime.now(), null, null));
         when(mappers.map(any())).thenReturn(List.of());
-        when(pdfGenerator.generate(any(), any())).thenReturn(new ApplicationFile("".getBytes(), "someFileName"));
     }
 
     @Test

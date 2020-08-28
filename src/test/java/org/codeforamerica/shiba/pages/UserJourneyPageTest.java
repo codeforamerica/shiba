@@ -97,19 +97,6 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     @Test
-    void shouldDownloadXMLWhenClickDownloadXML() {
-        when(clock.instant()).thenReturn(Instant.ofEpochSecond(1243235L));
-
-        SuccessPage successPage = nonExpeditedFlowToSuccessPage();
-
-        successPage.downloadXML();
-        await().until(() -> {
-            File[] listFiles = path.toFile().listFiles();
-            return Arrays.stream(listFiles).anyMatch(file -> file.getName().startsWith("cfa-") && file.getName().endsWith(".xml"));
-        });
-    }
-
-    @Test
     @Sql(statements = "TRUNCATE TABLE application_metrics;")
     void shouldCaptureMetricsAfterAnApplicationIsCompleted() {
         when(clock.instant()).thenReturn(

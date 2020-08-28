@@ -4,7 +4,10 @@ import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
-import org.codeforamerica.shiba.output.pdf.PdfGenerator;
+import org.codeforamerica.shiba.output.pdf.PdfField;
+import org.codeforamerica.shiba.output.pdf.PdfFieldFiller;
+import org.codeforamerica.shiba.output.pdf.PdfFieldMapper;
+import org.codeforamerica.shiba.output.pdf.SimplePdfField;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
@@ -21,17 +24,20 @@ import static org.mockito.Mockito.*;
 class MnitDocumentConsumerTest {
     MnitEsbWebServiceClient mnitClient = mock(MnitEsbWebServiceClient.class);
 
-    PdfGenerator pdfGenerator = mock(PdfGenerator.class);
-
     ApplicationInputsMappers mappers = mock(ApplicationInputsMappers.class);
 
     XmlGenerator xmlGenerator = mock(XmlGenerator.class);
 
+    PdfFieldFiller pdfFieldFiller = mock(PdfFieldFiller.class);
+
+    PdfFieldMapper pdfFieldMapper = mock(PdfFieldMapper.class);
+
     MnitDocumentConsumer documentConsumer = new MnitDocumentConsumer(
             mnitClient,
-            pdfGenerator,
             xmlGenerator,
-            mappers);
+            mappers,
+            pdfFieldMapper,
+            pdfFieldFiller);
 
     ApplicationData appData = new ApplicationData();
 
@@ -51,10 +57,12 @@ class MnitDocumentConsumerTest {
     void generatesThePDFFromTheApplicationData() {
         Application application = new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED);
         when(mappers.map(application)).thenReturn(applicationInputs);
+        List<PdfField> pdfFields = List.of(new SimplePdfField("field", "value"));
+        when(pdfFieldMapper.map(applicationInputs)).thenReturn(pdfFields);
 
         documentConsumer.process(application);
 
-        verify(pdfGenerator).generate(applicationInputs, application.getId());
+        verify(pdfFieldFiller).fill(pdfFields, "someId");
     }
 
     @Test
@@ -69,7 +77,7 @@ class MnitDocumentConsumerTest {
     @Test
     void sendsTheGeneratedXmlAndPdf() {
         ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
-        when(pdfGenerator.generate(anyList(), any())).thenReturn(pdfApplicationFile);
+        when(pdfFieldFiller.fill(any(), any())).thenReturn(pdfApplicationFile);
         ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
         when(xmlGenerator.generate(anyList(), any())).thenReturn(xmlApplicationFile);
 
