@@ -14,6 +14,6 @@ public class EmailContentCreator {
         } else {
             eligibilitySpecificVerbiage = "Your county will mail you a notice that will arrive in the next week.";
         }
-        return String.format("We received your Minnesota Benefits application. %s <br> Confirmation number: <strong>#%s</strong><br>Application status: <strong>in review</strong><br>**This is an automated message. Please do not reply to this message.**", eligibilitySpecificVerbiage, confirmationId);
+        return String.format("We received your Minnesota Benefits application. %s <br><br> Confirmation number: <strong>#%s</strong><br>Application status: <strong>in review</strong><br><br>**This is an automated message. Please do not reply to this message.**", eligibilitySpecificVerbiage, confirmationId);
     }
 }
