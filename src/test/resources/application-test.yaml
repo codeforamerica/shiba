@@ -18,3 +18,9 @@ mnit-esb:
   f5-password: somef5Password
   alfresco-username: someAlfrescoUsername
   alfresco-password: someAlfrescoPassword
+
+
+sender-email: sender@email.org
+mail-gun:
+  url: mailgun-url
+  api-key: some-key
