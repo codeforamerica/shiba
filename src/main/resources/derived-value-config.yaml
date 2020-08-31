@@ -716,3 +716,15 @@ derived-values:
             - pageName: ccapJob
               input: currentlyLookingForJob
               value: "false"
+  - groupName: jobs
+    fieldName: count
+    values:
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "0"
+        type: SINGLE_VALUE
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: employmentStatus
+              input: areYouWorking
+              value: "false"
