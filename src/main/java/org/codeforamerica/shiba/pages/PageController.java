@@ -240,7 +240,7 @@ public class PageController {
             confirmationData.setId(application.getId());
             confirmationData.setCompletedAt(application.getCompletedAt());
             applicationRepository.save(application);
-            applicationEventPublisher.publishEvent(new ApplicationSubmittedEvent(application, application.getId()));
+            applicationEventPublisher.publishEvent(new ApplicationSubmittedEvent(application.getId()));
 
             return new ModelAndView(String.format("redirect:/pages/%s/navigation", submitPage));
         } else {

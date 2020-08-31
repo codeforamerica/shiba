@@ -1,16 +1,12 @@
 package org.codeforamerica.shiba.pages;
 
-import lombok.EqualsAndHashCode;
 import lombok.Value;
-import org.springframework.context.ApplicationEvent;
 
-@EqualsAndHashCode(callSuper=false)
 @Value
-public class ApplicationSubmittedEvent extends ApplicationEvent {
+public class ApplicationSubmittedEvent {
     String applicationId;
 
-    public ApplicationSubmittedEvent(Object source, String applicationId) {
-        super(source);
+    public ApplicationSubmittedEvent(String applicationId) {
         this.applicationId = applicationId;
     }
 }

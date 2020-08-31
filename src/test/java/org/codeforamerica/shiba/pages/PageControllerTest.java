@@ -136,7 +136,7 @@ class PageControllerTest {
     }
 
     @Test
-    void shouldConsumeApplicationDataOnSubmit() throws Exception {
+    void shouldPublishApplicationSubmittedEvent() throws Exception {
         metrics.setStartTimeOnce(Instant.now());
 
         String applicationId = "someId";
@@ -149,7 +149,7 @@ class PageControllerTest {
 
         InOrder inOrder = inOrder(applicationRepository, applicationEventPublisher);
         inOrder.verify(applicationRepository).save(application);
-        inOrder.verify(applicationEventPublisher).publishEvent(new ApplicationSubmittedEvent(application, applicationId));
+        inOrder.verify(applicationEventPublisher).publishEvent(new ApplicationSubmittedEvent(applicationId));
     }
 
     @Test
