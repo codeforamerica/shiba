@@ -3,8 +3,11 @@
 <footer class="main-footer footer-minnesota-blue">
     <div class="grid">
         <div class="grid__item">
-            <p class="font-white text--small spacing-below-25 grid__item width-one-half"
-               th:text="#{generic.footer}"></p>
+            <div class="width-one-half grid__item">
+                <p class="font-white text--small spacing-below-25"
+                   th:text="#{generic.footer}"></p>
+                <a class="footer__privacy-policy-link font-white text--small" target="_blank" href="/privacy" th:text="#{general.privacy-policy}"></a>
+            </div>
             <div class="main-footer__cfa-logo grid__item">
                 <a href="https://www.codeforamerica.org"
                    class="illustration illustration--cfa-logo spacing-below-0"

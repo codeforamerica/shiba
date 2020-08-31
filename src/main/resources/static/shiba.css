@@ -2,6 +2,10 @@
     max-width: 750px;
 }
 
+.page-wrapper {
+    flex: 1 0 auto;
+}
+
 #landing-page .grid {
     max-width: 960px;
 }
@@ -85,20 +89,27 @@
 }
 
 @media screen and (min-width: 601px) {
-    .main-footer {
-        height: 15rem;
-    }
-
     .card {
         margin-bottom: 6rem;
         padding: 6rem 16rem;
     }
 }
 
-@media screen and (max-width: 600px) {
-    body {
-        padding-bottom: 25rem;
-    }
+.main-footer {
+    position: unset;
+    height: unset;
+    flex-shrink: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: unset;
+    height: 100%;
+}
+
+html {
+    height: 100%;
 }
 
 .textarea-readonly {
@@ -271,4 +282,12 @@
 
 .mn-logo {
     width: 50%;
+}
+
+.footer__privacy-policy-link {
+    text-transform: capitalize;
+}
+
+.footer__privacy-policy-link:hover {
+    color: white;
 }
