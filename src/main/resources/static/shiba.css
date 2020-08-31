@@ -1,4 +1,4 @@
-.grid {
+.page-wrapper .grid {
     max-width: 750px;
 }
 
@@ -86,7 +86,7 @@
 
 @media screen and (min-width: 601px) {
     .main-footer {
-        height: 18rem;
+        height: 15rem;
     }
 
     .card {
@@ -255,9 +255,8 @@
 }
 
 .splash {
-    width: 108%;
     max-width: none;
-    margin-top: 60px;
+    margin-top: 74px;
 }
 
 .illustration--cfa-logo {
