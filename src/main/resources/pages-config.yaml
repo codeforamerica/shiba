@@ -82,8 +82,6 @@ shiba-configuration:
               messageKey: choose-programs.housing-support-group-residential-housing
             - value: EA
               messageKey: choose-programs.emergency-assistance
-            - value: CCAP
-              messageKey: choose-programs.child-care-assistance
     - &introBasicInfo
       name: introBasicInfo
       pageTitle:
