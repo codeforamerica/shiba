@@ -22,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.time.Clock;
 import java.time.Duration;
 import java.util.HashMap;
@@ -91,14 +92,13 @@ public class PageController {
     @GetMapping("/pages/{pageName}")
     ModelAndView getPage(
             @PathVariable String pageName,
-            HttpServletResponse response
+            HttpServletResponse response,
+            HttpSession httpSession
     ) {
         LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
 
         if (landmarkPagesConfiguration.isLandingPage(pageName)) {
-            this.applicationData.clear();
-            this.metrics.clear();
-            this.confirmationData.clear();
+            httpSession.invalidate();
         } else if (landmarkPagesConfiguration.isStartTimerPage(pageName)) {
             this.metrics.setStartTimeOnce(clock.instant());
         }

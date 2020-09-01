@@ -6,7 +6,8 @@ import org.codeforamerica.shiba.metrics.ApplicationMetricsRepository;
 import org.codeforamerica.shiba.metrics.Metrics;
 import org.codeforamerica.shiba.output.ApplicationDataConsumer;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
-import org.codeforamerica.shiba.pages.data.*;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.PageData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,11 +28,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.*;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
@@ -178,30 +177,5 @@ class PageControllerTest {
         verify(applicationRepository).save(application);
         assertThat(confirmationData.getId()).isEqualTo("someId");
         assertThat(confirmationData.getCompletedAt()).isEqualTo(completedAt);
-    }
-
-    @Test
-    void shouldClearAllSessionDataWhenNavigateToALandingPage() throws Exception {
-        Subworkflows subworkflows = new Subworkflows();
-        subworkflows.put("something", new Subworkflow());
-        applicationData.setSubworkflows(subworkflows);
-        PagesData pagesData = new PagesData();
-        pagesData.put("something", new PageData());
-        applicationData.setPagesData(pagesData);
-        HashMap<String, PagesData> incompleteIterations = new HashMap<>();
-        incompleteIterations.put("something", new PagesData());
-        applicationData.setIncompleteIterations(incompleteIterations);
-
-        metrics.setStartTimeOnce(Instant.now());
-
-        confirmationData.setId("something");
-        confirmationData.setCompletedAt(ZonedDateTime.now());
-        confirmationData.setCounty(County.OLMSTED);
-
-        mockMvc.perform(get("/pages/landingPage"));
-
-        assertThat(applicationData).isEqualTo(new ApplicationData());
-        assertThat(metrics).isEqualTo(new Metrics());
-        assertThat(confirmationData).isEqualTo(new ConfirmationData());
     }
 }

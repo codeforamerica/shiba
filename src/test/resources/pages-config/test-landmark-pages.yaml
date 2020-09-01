@@ -24,6 +24,8 @@ shiba-configuration-landmarks:
   workflow:
     firstPage:
       pageConfiguration: *firstPage
+      nextPages:
+        - pageName: firstPage
     thirdPage:
       pageConfiguration: *thirdPage
       nextPages:

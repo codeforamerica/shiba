@@ -14,12 +14,6 @@ public class ApplicationData {
     private Subworkflows subworkflows = new Subworkflows();
     private Map<String, PagesData> incompleteIterations = new HashMap<>();
 
-    public void clear() {
-        pagesData.clear();
-        subworkflows.clear();
-        incompleteIterations.clear();
-    }
-
     public PageData getInputDataMap(String pageName) {
         return this.pagesData.getPage(pageName);
     }
