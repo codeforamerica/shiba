@@ -280,7 +280,7 @@ html {
     width: 50%;
 }
 
-.footer__privacy-policy-link {
+.capitalized {
     text-transform: capitalize;
 }
 

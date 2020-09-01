@@ -195,6 +195,8 @@ class PageControllerTest {
         metrics.setStartTimeOnce(Instant.now());
 
         confirmationData.setId("something");
+        confirmationData.setCompletedAt(ZonedDateTime.now());
+        confirmationData.setCounty(County.OLMSTED);
 
         mockMvc.perform(get("/pages/landingPage"));
 

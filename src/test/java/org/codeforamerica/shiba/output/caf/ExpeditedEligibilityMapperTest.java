@@ -32,7 +32,7 @@ class ExpeditedEligibilityMapperTest {
                         "expeditedEligibility",
                         "expeditedEligibility",
                         List.of("Expedited"),
-                        ApplicationInputType.ENUMERATED_SINGLE_VALUE
+                        ApplicationInputType.SINGLE_VALUE
                 )
         );
     }
@@ -56,7 +56,7 @@ class ExpeditedEligibilityMapperTest {
                         "expeditedEligibility",
                         "expeditedEligibility",
                         List.of("Non-Expedited"),
-                        ApplicationInputType.ENUMERATED_SINGLE_VALUE
+                        ApplicationInputType.SINGLE_VALUE
                 )
         );
     }

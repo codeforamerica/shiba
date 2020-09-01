@@ -142,6 +142,7 @@ public class PageController {
         if (landmarkPagesConfiguration.isTerminalPage(pageName)) {
             model.put("submissionTime", confirmationData.getCompletedAt());
             model.put("applicationId", confirmationData.getId());
+            model.put("county", confirmationData.getCounty());
         }
 
         String pageToRender;
@@ -239,6 +240,7 @@ public class PageController {
             Application application = applicationFactory.newApplication(applicationData);
             confirmationData.setId(application.getId());
             confirmationData.setCompletedAt(application.getCompletedAt());
+            confirmationData.setCounty(application.getCounty());
             applicationRepository.save(application);
             applicationEventPublisher.publishEvent(new ApplicationSubmittedEvent(application.getId()));
 

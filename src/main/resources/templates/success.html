@@ -11,8 +11,14 @@
                     <i class="icon-check_circle large"></i>
                     <h2 class="spacing-below-0" th:text="|#{success.success}!|"></h2>
                     <h3 id="application-id" class="spacing-below-10" th:text="|#{success.confirmation-number}: ${applicationId}|"></h3>
-                    <p class="spacing-below-35" id="submission-date"
-                       th:text="|#{success.application-submitted-to-olmsted-county-on} ${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)}.|"></p>
+                    <p th:if="${county != T(org.codeforamerica.shiba.County).OTHER}" class="spacing-below-35" id="submission-date">
+                        <span th:text="|#{success.application-submitted-to} |"></span>
+                        <span class="capitalized" th:text="${county.name().toLowerCase()}"></span>
+                        <span th:text="#{success.county-on}"></span>
+                        <span th:text="| ${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)}.|"></span>
+                    </p>
+                    <p th:if="${county == T(org.codeforamerica.shiba.County).OTHER}" class="spacing-below-35" id="submission-date"
+                       th:text="|#{success.application-submitted-on} ${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)}.|"></p>
                 </div>
                 <div class="grid__item spacing-above-35 bottom-horizontal-line">
                     <h3 th:text="#{success.new-weve-generated-a-receipt-of-your-application-for-your-records}"></h3>

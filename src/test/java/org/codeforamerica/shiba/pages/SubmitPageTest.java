@@ -1,16 +1,13 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.Application;
-import org.codeforamerica.shiba.ApplicationFactory;
-import org.codeforamerica.shiba.ApplicationRepository;
-import org.codeforamerica.shiba.YamlPropertySourceFactory;
+import org.codeforamerica.shiba.*;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 
@@ -35,7 +32,7 @@ public class SubmitPageTest extends AbstractStaticMessageSourcePageTest {
     }
 
     @MockBean
-    ApplicationEventPublisher applicationEventPublisher;
+    ApplicationSubmittedListener applicationSubmittedListener;
 
     @MockBean
     ApplicationFactory applicationFactory;
@@ -46,8 +43,9 @@ public class SubmitPageTest extends AbstractStaticMessageSourcePageTest {
     @Test
     void shouldProvideTimestampToTerminalPageWhenApplicationIsSigned() {
         String applicationId = "someId";
+        County county = County.HENNEPIN;
         when(applicationFactory.newApplication(any()))
-                .thenReturn(new Application(applicationId, ZonedDateTime.of(LocalDateTime.of(2020, 1, 1, 11, 10), ZoneOffset.UTC), null, null));
+                .thenReturn(new Application(applicationId, ZonedDateTime.of(LocalDateTime.of(2020, 1, 1, 11, 10), ZoneOffset.UTC), new ApplicationData(), county));
 
         navigateTo("firstPage");
 
@@ -56,5 +54,6 @@ public class SubmitPageTest extends AbstractStaticMessageSourcePageTest {
 
         assertThat(driver.findElement(By.id("submission-time")).getText()).isEqualTo("2020-01-01T11:10Z");
         assertThat(driver.findElement(By.id("application-id")).getText()).isEqualTo(applicationId);
+        assertThat(driver.findElement(By.id("county")).getText()).isEqualTo(county.name());
     }
 }
