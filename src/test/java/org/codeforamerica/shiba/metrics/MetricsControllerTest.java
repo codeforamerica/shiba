@@ -9,6 +9,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -25,6 +26,8 @@ class MetricsControllerTest {
     void setUp() {
         when(metricsRepository.count()).thenReturn(0);
         when(metricsRepository.getMedianTimeToComplete()).thenReturn(Duration.ZERO);
+        when(metricsRepository.getAverageTimeToCompleteWeekToDate(any())).thenReturn(Duration.ZERO);
+        when(metricsRepository.getMedianTimeToCompleteWeekToDate(any())).thenReturn(Duration.ZERO);
     }
 
     @Test
@@ -45,6 +48,5 @@ class MetricsControllerTest {
         mockMvc.perform(get("/metrics"))
                 .andExpect(MockMvcResultMatchers.view().name("metricsDashboard"))
                 .andExpect(MockMvcResultMatchers.model().attribute("medianTimeToComplete", "05m 00s"));
-
     }
 }

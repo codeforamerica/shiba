@@ -9,6 +9,7 @@ import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -30,6 +31,7 @@ import java.time.*;
 import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.County.OLMSTED;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -106,32 +108,37 @@ class PageControllerTest {
         assertThat(firstPage.get("foo").getValue()).contains("some value");
     }
 
-    @Test
-    void shouldStoreCompletedApplicationInRepository() throws Exception {
-        Instant submissionTime = LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant();
-        metrics.setStartTimeOnce(submissionTime.minus(5, ChronoUnit.MINUTES).minus(30, ChronoUnit.SECONDS));
-        when(clock.instant()).thenReturn(submissionTime);
+    @Nested
+    class ApplicationMetrics {
+        @Test
+        void shouldStoreCompletedApplicationInRepository() throws Exception {
+            ZonedDateTime completedAt = ZonedDateTime.of(LocalDateTime.of(2020, 1, 1, 10, 10), ZoneOffset.UTC);
+            metrics.setStartTimeOnce(completedAt.toInstant().minus(5, ChronoUnit.MINUTES).minus(30, ChronoUnit.SECONDS));
+            County county = OLMSTED;
+            when(applicationFactory.newApplication(any())).thenReturn(new Application("", completedAt, new ApplicationData(), county));
+            mockMvc.perform(post("/submit")
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                    .param("foo[]", "some value"));
 
-        mockMvc.perform(post("/submit")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                .param("foo[]", "some value"));
+            ArgumentCaptor<ApplicationMetric> argumentCaptor = ArgumentCaptor.forClass(ApplicationMetric.class);
+            verify(applicationMetricsRepository).save(argumentCaptor.capture());
+            ApplicationMetric applicationMetric = argumentCaptor.getValue();
+            assertThat(applicationMetric.getTimeToComplete()).isEqualTo(Duration.ofMinutes(5).plusSeconds(30));
+            assertThat(applicationMetric.getCounty()).isEqualTo(county);
+            assertThat(applicationMetric.getCompletedAt()).isEqualTo(completedAt);
+        }
 
-        ArgumentCaptor<ApplicationMetric> argumentCaptor = ArgumentCaptor.forClass(ApplicationMetric.class);
-        verify(applicationMetricsRepository).save(argumentCaptor.capture());
-        ApplicationMetric applicationMetric = argumentCaptor.getValue();
-        assertThat(applicationMetric.getTimeToComplete()).isEqualTo(Duration.ofMinutes(5).plusSeconds(30));
-    }
+        @Test
+        void shouldNotStoreCompletedApplicationInRepositoryWhenNoSignatureIsSent() throws Exception {
+            Instant submissionTime = LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant();
+            metrics.setStartTimeOnce(submissionTime.minus(5, ChronoUnit.MINUTES).minus(30, ChronoUnit.SECONDS));
+            when(clock.instant()).thenReturn(submissionTime);
 
-    @Test
-    void shouldNotStoreCompletedApplicationInRepositoryWhenNoSignatureIsSent() throws Exception {
-        Instant submissionTime = LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant();
-        metrics.setStartTimeOnce(submissionTime.minus(5, ChronoUnit.MINUTES).minus(30, ChronoUnit.SECONDS));
-        when(clock.instant()).thenReturn(submissionTime);
+            mockMvc.perform(post("/submit")
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
-        mockMvc.perform(post("/submit")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
-
-        verifyNoInteractions(applicationMetricsRepository);
+            verifyNoInteractions(applicationMetricsRepository);
+        }
     }
 
     @Test

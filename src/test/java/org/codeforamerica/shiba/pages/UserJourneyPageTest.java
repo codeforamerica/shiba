@@ -108,7 +108,12 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         driver.navigate().to(baseUrl + "/metrics");
         MetricsPage metricsPage = new MetricsPage(driver);
         assertThat(metricsPage.getCardValue("Applications Submitted")).isEqualTo("1");
-        assertThat(metricsPage.getCardValue("Completion Time")).contains("05m 30s");
+        assertThat(metricsPage.getCardValue("Median All Time")).contains("05m 30s");
+        assertThat(metricsPage.getCardValue("Median Week to Date")).contains("05m 30s");
+        assertThat(metricsPage.getCardValue("Average Week to Date")).contains("05m 30s");
+        assertThat(driver.findElements(By.tagName("td")).get(0).getText()).isEqualTo("HENNEPIN");
+        assertThat(driver.findElements(By.tagName("td")).get(1).getText()).isEqualTo("0");
+        assertThat(driver.findElements(By.tagName("td")).get(2).getText()).isEqualTo("0");
     }
 
     private void completeFlowFromLandingPageToReviewInfo() {

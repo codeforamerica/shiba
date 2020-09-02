@@ -234,8 +234,6 @@ public class PageController {
         pagesData.putPage(submitPage, pageData);
 
         if (pageData.isValid()) {
-            ApplicationMetric applicationMetric = new ApplicationMetric(Duration.between(metrics.getStartTime(), clock.instant()));
-            metricsRepository.save(applicationMetric);
 
             Application application = applicationFactory.newApplication(applicationData);
             confirmationData.setId(application.getId());
@@ -243,6 +241,12 @@ public class PageController {
             confirmationData.setCounty(application.getCounty());
             applicationRepository.save(application);
             applicationEventPublisher.publishEvent(new ApplicationSubmittedEvent(application.getId()));
+
+            ApplicationMetric applicationMetric = new ApplicationMetric(
+                    Duration.between(metrics.getStartTime(), application.getCompletedAt()),
+                    application.getCounty(),
+                    application.getCompletedAt());
+            metricsRepository.save(applicationMetric);
 
             return new ModelAndView(String.format("redirect:/pages/%s/navigation", submitPage));
         } else {

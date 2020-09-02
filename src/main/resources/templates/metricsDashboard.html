@@ -13,13 +13,41 @@
         </div>
     </div>
     <div id="median" class="grid">
-        <h1>Median Time To Complete</h1>
+        <h1>Time To Complete</h1>
         <div class="grid__item">
             <div class="statistic-card">
-                <p class="statistic-card__label">Completion Time</p>
+                <p class="statistic-card__label">Median All Time</p>
                 <p class="statistic-card__number" th:text="${medianTimeToComplete}"></p>
             </div>
         </div>
+        <div class="grid__item">
+            <div class="statistic-card">
+                <p class="statistic-card__label">Median Week to Date</p>
+                <p class="statistic-card__number" th:text="${medianTimeToCompleteForWeek}"></p>
+            </div>
+        </div>
+        <div class="grid__item">
+            <div class="statistic-card">
+                <p class="statistic-card__label">Average Week to Date</p>
+                <p class="statistic-card__number" th:text="${averageTimeToCompleteForWeek}"></p>
+            </div>
+        </div>
+        <table class="data-table">
+            <thead>
+            <tr>
+                <th>County</th>
+                <th>Total submitted</th>
+                <th>Submitted week to date</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="county: ${counties}">
+                <td th:text="${county}"></td>
+                <td th:text="${countyTotalSubmission.getOrDefault(county, 0)}"></td>
+                <td th:text="${countyTotalSubmissionWeekToDate.getOrDefault(county, 0)}"></td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 <div th:replace="fragments/footer"></div>
