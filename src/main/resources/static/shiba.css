@@ -286,5 +286,10 @@ html {
 }
 
 .footer__privacy-policy-link:hover {
-    color: rgb(230,242,250);
+    color: rgb(230, 242, 250);
+}
+
+.no-button {
+    margin-left: 0;
+    margin-right: 0;
 }

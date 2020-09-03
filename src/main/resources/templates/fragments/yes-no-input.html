@@ -17,7 +17,7 @@
             <span th:text="#{general.inputs.yes}"></span>
         </label>
         <label th:for="${#ids.next(input.name)}" class="button">
-            <input type="radio" th:name="${formInputName}" class="hide-radio-circle"
+            <input type="radio" th:name="${formInputName}" class="hide-radio-circle no-button"
                    th:id="${#ids.seq(input.name)}"
                    value="false" onclick="this.form.submit()">
             <span class="button__icon--left emoji emoji--inline emoji--crossmark"></span>
