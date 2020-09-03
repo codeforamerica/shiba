@@ -52,7 +52,7 @@ public class SubmitPageTest extends AbstractStaticMessageSourcePageTest {
         testPage.enterInput("foo", "some value");
         testPage.clickPrimaryButton();
 
-        assertThat(driver.findElement(By.id("submission-time")).getText()).isEqualTo("2020-01-01T11:10Z");
+        assertThat(driver.findElement(By.id("submission-time")).getText()).isEqualTo("2020-01-01T05:10-06:00[America/Chicago]");
         assertThat(driver.findElement(By.id("application-id")).getText()).isEqualTo(applicationId);
         assertThat(driver.findElement(By.id("county")).getText()).isEqualTo(county.name());
     }

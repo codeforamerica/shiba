@@ -45,6 +45,9 @@ public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
     @MockBean
     private ApplicationFactory applicationFactory;
 
+    @MockBean
+    private ApplicationRepository applicationRepository;
+
     private static ApplicationData applicationData;
     private static Metrics metrics;
     private static ConfirmationData confirmationData;
@@ -110,7 +113,7 @@ public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
     @Test
     void shouldNotRedirectToFirstLandingPageWhenNavigateToAMidFlowPageAfterStartTimerPage() {
         navigateTo("thirdPage");
-        navigateTo("fourthPage");
+        testPage.clickPrimaryButton();
 
         assertThat(testPage.getTitle()).isEqualTo(fourthPageTitle);
     }

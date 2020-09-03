@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.time.Clock;
 import java.time.Duration;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -140,7 +141,7 @@ public class PageController {
         ));
 
         if (landmarkPagesConfiguration.isTerminalPage(pageName)) {
-            model.put("submissionTime", confirmationData.getCompletedAt());
+            model.put("submissionTime", confirmationData.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago")));
             model.put("applicationId", confirmationData.getId());
             model.put("county", confirmationData.getCounty());
         }
