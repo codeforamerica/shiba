@@ -4,6 +4,7 @@ import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
@@ -47,7 +48,7 @@ class CoverPageInputsMapperTest {
                         .build())));
         Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER);
 
-        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application);
+        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, Recipient.CLIENT);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput(
@@ -64,7 +65,7 @@ class CoverPageInputsMapperTest {
         String countyInstructions = "olmsted instructions";
         countyInstructionsMapping.put(County.OLMSTED, countyInstructions);
 
-        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application);
+        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, Recipient.CLIENT);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput(
@@ -84,7 +85,7 @@ class CoverPageInputsMapperTest {
         );
         Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER);
 
-        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application);
+        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, Recipient.CLIENT);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput("coverPage", "fullName", List.of("someFirstName someLastName"), ApplicationInputType.SINGLE_VALUE)

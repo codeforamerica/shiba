@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.springframework.stereotype.Component;
@@ -21,7 +22,7 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
     }
 
     @Override
-    public List<ApplicationInput> map(Application application) {
+    public List<ApplicationInput> map(Application application, Recipient recipient) {
         ApplicationData data = application.getApplicationData();
         List<String> programs = data.getPagesData()
                 .getPage("choosePrograms")

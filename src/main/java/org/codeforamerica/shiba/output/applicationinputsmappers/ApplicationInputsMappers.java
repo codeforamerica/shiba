@@ -22,7 +22,8 @@ public class ApplicationInputsMappers {
 
     public List<ApplicationInput> map(Application application) {
         Stream<ApplicationInput> inputs = this.mappers.stream()
-                .flatMap(mapper -> mapper.map(application).stream());
+//                TODO: Pass in the appropriate recipient
+                .flatMap(mapper -> mapper.map(application, null).stream());
 
         Stream<ApplicationInput> defaultInputs = Stream.of(
                 new ApplicationInput("nonPagesData", "applicationId", List.of(application.getId()), SINGLE_VALUE),

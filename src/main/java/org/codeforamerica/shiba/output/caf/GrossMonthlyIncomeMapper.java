@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.output.caf;
 
 import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMapper;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.Subworkflow;
@@ -23,7 +24,7 @@ public class GrossMonthlyIncomeMapper implements ApplicationInputsMapper {
     }
 
     @Override
-    public List<ApplicationInput> map(Application application) {
+    public List<ApplicationInput> map(Application application, Recipient recipient) {
         ApplicationData data = application.getApplicationData();
         Subworkflow jobsGroup = data.getSubworkflows().get(grossMonthlyIncomeConfiguration.getGroupName());
         if (jobsGroup == null) {

@@ -12,6 +12,7 @@ import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -22,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class OneToOneApplicationInputsMapperTest {
     ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
     PagesData data = new PagesData();
-    OneToOneApplicationInputsMapper oneToOneApplicationInputsMapper = new OneToOneApplicationInputsMapper(applicationConfiguration);
+    OneToOneApplicationInputsMapper oneToOneApplicationInputsMapper = new OneToOneApplicationInputsMapper(applicationConfiguration, Map.of());
 
     @Test
     void shouldProduceAnApplicationInputForAFormInput() {
@@ -43,7 +44,107 @@ class OneToOneApplicationInputsMapperTest {
         ApplicationData applicationData = new ApplicationData();
         applicationData.setPagesData(data);
         Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER);
-        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application);
+        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, Recipient.CLIENT);
+
+        assertThat(applicationInputs).contains(
+                new ApplicationInput(pageName, input1Name, input1Value, ApplicationInputType.SINGLE_VALUE)
+        );
+    }
+
+    @Test
+    void shouldProduceAnApplicationInput_withMaskedValueForAFormInputWithPersonalData_whenRecipientIsClient() {
+        String input1Name = "input 1";
+        String maskedValue = "not-for-your-eyes";
+
+        OneToOneApplicationInputsMapper oneToOneApplicationInputsMapper =
+                new OneToOneApplicationInputsMapper(applicationConfiguration, Map.of(input1Name, maskedValue));
+
+        FormInput input1 = new FormInput();
+        input1.setName(input1Name);
+        input1.setType(FormInputType.TEXT);
+
+        PageConfiguration page = new PageConfiguration();
+        page.setInputs(List.of(input1));
+        String pageName = "screen1";
+        page.setName(pageName);
+        applicationConfiguration.setPageDefinitions(List.of(page));
+
+        data.putPage(pageName, new PageData(Map.of(
+                input1Name, InputData.builder()
+                        .value(List.of("input1Value"))
+                        .build())));
+        ApplicationData applicationData = new ApplicationData();
+        applicationData.setPagesData(data);
+
+        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER);
+
+        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, Recipient.CLIENT);
+
+        assertThat(applicationInputs)
+                .contains(new ApplicationInput(pageName, input1Name, List.of(maskedValue), ApplicationInputType.SINGLE_VALUE));
+    }
+
+    @Test
+    @ValueSource
+    void shouldNotProduceAnApplicationInput_withMaskedValueForAFormInputWithPersonalData_whenRecipientIsClient_butValueIsBlank() {
+        String input1Name = "input 1";
+        String maskedValue = "not-for-your-eyes";
+
+        OneToOneApplicationInputsMapper oneToOneApplicationInputsMapper =
+                new OneToOneApplicationInputsMapper(applicationConfiguration, Map.of(input1Name, maskedValue));
+
+        FormInput input1 = new FormInput();
+        input1.setName(input1Name);
+        input1.setType(FormInputType.TEXT);
+
+        PageConfiguration page = new PageConfiguration();
+        page.setInputs(List.of(input1));
+        String pageName = "screen1";
+        page.setName(pageName);
+        applicationConfiguration.setPageDefinitions(List.of(page));
+
+        data.putPage(pageName, new PageData(Map.of(
+                input1Name, InputData.builder()
+                        .value(List.of(""))
+                        .build())));
+        ApplicationData applicationData = new ApplicationData();
+        applicationData.setPagesData(data);
+
+        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER);
+
+        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, Recipient.CLIENT);
+
+        assertThat(applicationInputs).isEmpty();
+    }
+
+    @Test
+    void shouldProduceAnApplicationInput_withUnmaskedValueForAFormInputWithPersonalData_whenRecipientIsCaseworker() {
+        String input1Name = "input 1";
+
+        OneToOneApplicationInputsMapper oneToOneApplicationInputsMapper =
+                new OneToOneApplicationInputsMapper(applicationConfiguration, Map.of(input1Name, "not-for-your-eyes"));
+
+        FormInput input1 = new FormInput();
+        input1.setName(input1Name);
+        input1.setType(FormInputType.TEXT);
+
+        PageConfiguration page = new PageConfiguration();
+        page.setInputs(List.of(input1));
+        String pageName = "screen1";
+        page.setName(pageName);
+        applicationConfiguration.setPageDefinitions(List.of(page));
+
+        List<String> input1Value = List.of("input1Value");
+        data.putPage(pageName, new PageData(Map.of(
+                input1Name, InputData.builder()
+                        .value(input1Value)
+                        .build())));
+        ApplicationData applicationData = new ApplicationData();
+        applicationData.setPagesData(data);
+
+        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER);
+
+        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, Recipient.CASEWORKER);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput(pageName, input1Name, input1Value, ApplicationInputType.SINGLE_VALUE)
@@ -80,7 +181,7 @@ class OneToOneApplicationInputsMapperTest {
         ApplicationData applicationData = new ApplicationData();
         applicationData.setPagesData(data);
         Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER);
-        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application);
+        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, Recipient.CLIENT);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput(pageName, input2Name, input2Value, ApplicationInputType.SINGLE_VALUE),

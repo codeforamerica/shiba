@@ -23,7 +23,7 @@ public class SubworkflowInputMapper implements ApplicationInputsMapper {
     }
 
     @Override
-    public List<ApplicationInput> map(Application application) {
+    public List<ApplicationInput> map(Application application, Recipient recipient) {
         ApplicationData data = application.getApplicationData();
         return applicationConfiguration.getWorkflow().values().stream()
                 .filter(workflowConfiguration -> workflowConfiguration.getGroupName() != null)
