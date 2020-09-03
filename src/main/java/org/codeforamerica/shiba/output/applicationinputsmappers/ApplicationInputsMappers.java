@@ -4,6 +4,7 @@ import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.springframework.stereotype.Component;
 
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Stream;
@@ -25,7 +26,7 @@ public class ApplicationInputsMappers {
 
         Stream<ApplicationInput> defaultInputs = Stream.of(
                 new ApplicationInput("nonPagesData", "applicationId", List.of(application.getId()), SINGLE_VALUE),
-                new ApplicationInput("nonPagesData", "completedDate", List.of(DateTimeFormatter.ISO_LOCAL_DATE.format(application.getCompletedAt())), SINGLE_VALUE),
+                new ApplicationInput("nonPagesData", "completedDate", List.of(DateTimeFormatter.ISO_LOCAL_DATE.format(application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago")))), SINGLE_VALUE),
                 new ApplicationInput("nonPagesData", "completedDateTime", List.of(DateTimeFormatter.ISO_DATE_TIME.format(application.getCompletedAt())), SINGLE_VALUE));
 
         return Stream.concat(defaultInputs, inputs).collect(toList());

@@ -28,13 +28,13 @@ class ApplicationInputsMappersTest {
     void shouldIncludeCompletedDateInput() {
         String applicationId = "someId";
         ZonedDateTime completedAt = ZonedDateTime.of(
-                LocalDateTime.of(2014, 1, 16, 1, 2, 3),
+                LocalDateTime.of(2020, 9, 3, 1, 2, 3),
                 ZoneOffset.UTC);
         Application application = new Application(applicationId, completedAt, new ApplicationData(), null);
 
         List<ApplicationInput> applicationInputs = mappers.map(application);
 
-        assertThat(applicationInputs).contains(new ApplicationInput("nonPagesData", "completedDate", List.of("2014-01-16"), SINGLE_VALUE));
+        assertThat(applicationInputs).contains(new ApplicationInput("nonPagesData", "completedDate", List.of("2020-09-02"), SINGLE_VALUE));
     }
 
     @Test
