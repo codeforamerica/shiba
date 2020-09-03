@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 
 import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.Recipient;
 import org.springframework.stereotype.Component;
 
 import java.time.ZoneId;
@@ -20,10 +21,9 @@ public class ApplicationInputsMappers {
         this.mappers = mappers;
     }
 
-    public List<ApplicationInput> map(Application application) {
+    public List<ApplicationInput> map(Application application, Recipient recipient) {
         Stream<ApplicationInput> inputs = this.mappers.stream()
-//                TODO: Pass in the appropriate recipient
-                .flatMap(mapper -> mapper.map(application, null).stream());
+                .flatMap(mapper -> mapper.map(application, recipient).stream());
 
         Stream<ApplicationInput> defaultInputs = Stream.of(
                 new ApplicationInput("nonPagesData", "applicationId", List.of(application.getId()), SINGLE_VALUE),

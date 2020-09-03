@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
+import static org.codeforamerica.shiba.output.Recipient.CLIENT;
+
 @Controller
 public class FileDownLoadController {
     private final XmlGenerator xmlGenerator;
@@ -44,7 +46,7 @@ public class FileDownLoadController {
 
     @GetMapping("/download")
     ResponseEntity<byte[]> downloadPdf() {
-        List<ApplicationInput> applicationInputs = mappers.map(applicationRepository.find(confirmationData.getId()));
+        List<ApplicationInput> applicationInputs = mappers.map(applicationRepository.find(confirmationData.getId()), CLIENT);
         ApplicationFile applicationFile = cafFieldFiller.fill(pdfFieldMapper.map(applicationInputs), confirmationData.getId());
 
         return ResponseEntity.ok()
@@ -55,7 +57,7 @@ public class FileDownLoadController {
 
     @GetMapping("/download-xml")
     ResponseEntity<byte[]> downloadXml() {
-        List<ApplicationInput> applicationInputs = mappers.map(applicationRepository.find(confirmationData.getId()));
+        List<ApplicationInput> applicationInputs = mappers.map(applicationRepository.find(confirmationData.getId()), CLIENT);
         ApplicationFile applicationFile = xmlGenerator.generate(applicationInputs, confirmationData.getId());
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
@@ -65,7 +67,7 @@ public class FileDownLoadController {
 
     @GetMapping("/download-caf/{applicationId}")
     ResponseEntity<byte[]> downloadPdfWithApplicationId(@PathVariable String applicationId) {
-        List<ApplicationInput> applicationInputs = mappers.map(applicationRepository.find(applicationId));
+        List<ApplicationInput> applicationInputs = mappers.map(applicationRepository.find(applicationId), Recipient.CASEWORKER);
         ApplicationFile applicationFile = cafWithCoverPageFieldFiller.fill(pdfFieldMapper.map(applicationInputs), applicationId);
 
         return ResponseEntity.ok()

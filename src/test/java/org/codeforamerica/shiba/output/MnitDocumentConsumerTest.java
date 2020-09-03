@@ -19,6 +19,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 
+import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.mockito.Mockito.*;
 
 class MnitDocumentConsumerTest {
@@ -56,7 +57,7 @@ class MnitDocumentConsumerTest {
     @Test
     void generatesThePDFFromTheApplicationData() {
         Application application = new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED);
-        when(mappers.map(application)).thenReturn(applicationInputs);
+        when(mappers.map(application, CASEWORKER)).thenReturn(applicationInputs);
         List<PdfField> pdfFields = List.of(new SimplePdfField("field", "value"));
         when(pdfFieldMapper.map(applicationInputs)).thenReturn(pdfFields);
 
@@ -68,7 +69,7 @@ class MnitDocumentConsumerTest {
     @Test
     void generatesTheXmlFromTheApplicationData() {
         Application application = new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED);
-        when(mappers.map(application)).thenReturn(applicationInputs);
+        when(mappers.map(application, CASEWORKER)).thenReturn(applicationInputs);
 
         documentConsumer.process(application);
         verify(xmlGenerator).generate(applicationInputs, application.getId());

@@ -56,7 +56,7 @@ class SecurityConfigurationTest {
                 .apply(springSecurity())
                 .build();
         when(applicationRepository.find(any())).thenReturn(new Application("foo", ZonedDateTime.now(), null, null));
-        when(mappers.map(any())).thenReturn(List.of());
+        when(mappers.map(any(), any())).thenReturn(List.of());
     }
 
     @Test

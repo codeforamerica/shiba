@@ -11,8 +11,10 @@ import java.util.List;
 @Configuration
 public class PdfFieldFillersConfiguration {
     @Bean
-    public PdfFieldFiller cafFieldFiller(@Value("classpath:DHS-5223.pdf") Resource applicationPDF) {
-        return new PDFBoxFieldFiller(applicationPDF, Collections.emptyList());
+    public PdfFieldFiller cafFieldFiller(
+            @Value("classpath:cover-pages.pdf") Resource coverPages,
+            @Value("classpath:DHS-5223.pdf") Resource applicationPDF) {
+        return new PDFBoxFieldFiller(coverPages, List.of(applicationPDF));
     }
 
     @Bean

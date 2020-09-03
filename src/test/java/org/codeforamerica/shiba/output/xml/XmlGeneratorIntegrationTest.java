@@ -5,6 +5,7 @@ import org.codeforamerica.shiba.ApplicationRepository;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.FormInput;
@@ -45,6 +46,7 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -108,7 +110,7 @@ public class XmlGeneratorIntegrationTest {
         ApplicationData applicationData = new ApplicationData();
         applicationData.setPagesData(pagesData);
         Application application = new Application(applicationId, ZonedDateTime.now(clock), applicationData, County.OTHER);
-        List<ApplicationInput> applicationInputs = applicationInputsMappers.map(application);
+        List<ApplicationInput> applicationInputs = applicationInputsMappers.map(application, CASEWORKER);
         ApplicationFile applicationFile = xmlGenerator.generate(applicationInputs, "");
 
         Document document = byteArrayToDocument(applicationFile.getFileBytes());

@@ -23,6 +23,8 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
+import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -63,7 +65,7 @@ class FileDownLoadControllerTest {
         Application application = new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED);
         when(applicationRepository.find(confirmationData.getId())).thenReturn(application);
         List<ApplicationInput> applicationInputs = List.of(applicationInput1, applicationInput2);
-        when(mappers.map(application)).thenReturn(applicationInputs);
+        when(mappers.map(application, CLIENT)).thenReturn(applicationInputs);
         List<PdfField> pdfFields = List.of(new SimplePdfField("field", "value"));
         when(pdfFieldMapper.map(applicationInputs)).thenReturn(pdfFields);
 
@@ -82,7 +84,7 @@ class FileDownLoadControllerTest {
         Application application = new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED);
         when(applicationRepository.find("9870000123")).thenReturn(application);
         List<ApplicationInput> applicationInputs = List.of(applicationInput1, applicationInput2);
-        when(mappers.map(application)).thenReturn(applicationInputs);
+        when(mappers.map(application, CASEWORKER)).thenReturn(applicationInputs);
         List<PdfField> pdfFields = List.of(new SimplePdfField("field", "value"));
         when(pdfFieldMapper.map(applicationInputs)).thenReturn(pdfFields);
 
@@ -120,7 +122,7 @@ class FileDownLoadControllerTest {
         ApplicationInput applicationInput2 = new ApplicationInput("screen1", "input 1", List.of("something"), ApplicationInputType.SINGLE_VALUE);
         Application application = new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED);
         when(applicationRepository.find(confirmationData.getId())).thenReturn(application);
-        when(mappers.map(application)).thenReturn(List.of(applicationInput1, applicationInput2));
+        when(mappers.map(application, CLIENT)).thenReturn(List.of(applicationInput1, applicationInput2));
 
         MvcResult result = mockMvc.perform(
                 get("/download-xml"))

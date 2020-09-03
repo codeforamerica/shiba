@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
+
 @Component
 public class MnitDocumentConsumer implements ApplicationDataConsumer {
 
@@ -32,7 +34,7 @@ public class MnitDocumentConsumer implements ApplicationDataConsumer {
     }
 
     public void process(Application application) {
-        List<ApplicationInput> applicationInputs = mappers.map(application);
+        List<ApplicationInput> applicationInputs = mappers.map(application, CASEWORKER);
         mnitClient.send(pdfFieldFiller.fill(pdfFieldMapper.map(applicationInputs), application.getId()), application.getCounty());
         mnitClient.send(xmlGenerator.generate(applicationInputs, application.getId()), application.getCounty());
     }

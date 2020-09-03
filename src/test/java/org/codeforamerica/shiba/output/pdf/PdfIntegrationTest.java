@@ -4,6 +4,7 @@ import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.ApplicationRepository;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.codeforamerica.shiba.output.applicationinputsmappers.CoverPageInputsMapper;
 import org.codeforamerica.shiba.pages.data.*;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.output.ApplicationInputType.ENUMERATED_SINGLE_VALUE;
+import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -53,7 +55,7 @@ public class PdfIntegrationTest {
         pagesData.putPage("unearnedIncome", pageData);
         data.setPagesData(pagesData);
 
-        List<ApplicationInput> applicationInputs = mappers.map(application);
+        List<ApplicationInput> applicationInputs = mappers.map(application, CASEWORKER);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput("unearnedIncome", "unearnedIncome", List.of("SOCIAL_SECURITY", "CHILD_OR_SPOUSAL_SUPPORT"), ApplicationInputType.ENUMERATED_MULTI_VALUE),
@@ -97,7 +99,7 @@ public class PdfIntegrationTest {
 
         data.setPagesData(pagesData);
 
-        List<ApplicationInput> applicationInputs = mappers.map(application);
+        List<ApplicationInput> applicationInputs = mappers.map(application, CASEWORKER);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput(
@@ -123,7 +125,7 @@ public class PdfIntegrationTest {
 
         data.setPagesData(pagesData);
 
-        List<ApplicationInput> applicationInputs = mappers.map(application);
+        List<ApplicationInput> applicationInputs = mappers.map(application, CASEWORKER);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput("energyAssistanceGroup", "energyAssistanceInput", List.of("false"), ENUMERATED_SINGLE_VALUE)
@@ -151,7 +153,7 @@ public class PdfIntegrationTest {
         subworkflows.put("jobs", subworkflow);
         data.setSubworkflows(subworkflows);
 
-        List<ApplicationInput> applicationInputs = mappers.map(application);
+        List<ApplicationInput> applicationInputs = mappers.map(application, CASEWORKER);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput("employee", "selfEmployed", List.of("false"), ENUMERATED_SINGLE_VALUE)

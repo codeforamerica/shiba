@@ -85,7 +85,6 @@ class OneToOneApplicationInputsMapperTest {
     }
 
     @Test
-    @ValueSource
     void shouldNotProduceAnApplicationInput_withMaskedValueForAFormInputWithPersonalData_whenRecipientIsClient_butValueIsBlank() {
         String input1Name = "input 1";
         String maskedValue = "not-for-your-eyes";
@@ -114,7 +113,8 @@ class OneToOneApplicationInputsMapperTest {
 
         List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, Recipient.CLIENT);
 
-        assertThat(applicationInputs).isEmpty();
+        assertThat(applicationInputs)
+                .contains(new ApplicationInput(pageName, input1Name, List.of(""), ApplicationInputType.SINGLE_VALUE));
     }
 
     @Test
