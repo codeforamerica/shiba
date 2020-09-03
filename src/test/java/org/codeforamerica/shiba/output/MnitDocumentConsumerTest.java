@@ -4,10 +4,7 @@ import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
-import org.codeforamerica.shiba.output.pdf.PdfField;
-import org.codeforamerica.shiba.output.pdf.PdfFieldFiller;
-import org.codeforamerica.shiba.output.pdf.PdfFieldMapper;
-import org.codeforamerica.shiba.output.pdf.SimplePdfField;
+import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
@@ -29,16 +26,13 @@ class MnitDocumentConsumerTest {
 
     XmlGenerator xmlGenerator = mock(XmlGenerator.class);
 
-    PdfFieldFiller pdfFieldFiller = mock(PdfFieldFiller.class);
-
-    PdfFieldMapper pdfFieldMapper = mock(PdfFieldMapper.class);
+    PdfGenerator pdfGenerator = mock(PdfGenerator.class);
 
     MnitDocumentConsumer documentConsumer = new MnitDocumentConsumer(
             mnitClient,
             xmlGenerator,
             mappers,
-            pdfFieldMapper,
-            pdfFieldFiller);
+            pdfGenerator);
 
     ApplicationData appData = new ApplicationData();
 
@@ -58,12 +52,10 @@ class MnitDocumentConsumerTest {
     void generatesThePDFFromTheApplicationData() {
         Application application = new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED);
         when(mappers.map(application, CASEWORKER)).thenReturn(applicationInputs);
-        List<PdfField> pdfFields = List.of(new SimplePdfField("field", "value"));
-        when(pdfFieldMapper.map(applicationInputs)).thenReturn(pdfFields);
 
         documentConsumer.process(application);
 
-        verify(pdfFieldFiller).fill(pdfFields, "someId");
+        verify(pdfGenerator).generate(applicationInputs, application.getId());
     }
 
     @Test
@@ -78,7 +70,7 @@ class MnitDocumentConsumerTest {
     @Test
     void sendsTheGeneratedXmlAndPdf() {
         ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
-        when(pdfFieldFiller.fill(any(), any())).thenReturn(pdfApplicationFile);
+        when(pdfGenerator.generate(any(), any())).thenReturn(pdfApplicationFile);
         ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
         when(xmlGenerator.generate(anyList(), any())).thenReturn(xmlApplicationFile);
 

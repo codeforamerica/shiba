@@ -5,10 +5,7 @@ import org.codeforamerica.shiba.ApplicationRepository;
 import org.codeforamerica.shiba.ConfirmationData;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
-import org.codeforamerica.shiba.output.pdf.PdfField;
-import org.codeforamerica.shiba.output.pdf.PdfFieldFiller;
-import org.codeforamerica.shiba.output.pdf.PdfFieldMapper;
-import org.codeforamerica.shiba.output.pdf.SimplePdfField;
+import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,9 +34,7 @@ class FileDownLoadControllerTest {
     ConfirmationData confirmationData = new ConfirmationData();
     ApplicationInputsMappers mappers = mock(ApplicationInputsMappers.class);
     ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
-    PdfFieldMapper pdfFieldMapper = mock(PdfFieldMapper.class);
-    PdfFieldFiller cafFieldFiller = mock(PdfFieldFiller.class);
-    PdfFieldFiller cafWithCoverPageFieldFiller = mock(PdfFieldFiller.class);
+    PdfGenerator pdfGenerator = mock(PdfGenerator.class);
 
     @BeforeEach
     void setUp() {
@@ -49,9 +44,7 @@ class FileDownLoadControllerTest {
                         mappers,
                         confirmationData,
                         applicationRepository,
-                        pdfFieldMapper,
-                        cafWithCoverPageFieldFiller,
-                        cafFieldFiller
+                        pdfGenerator
                 ))
                 .setViewResolvers(new InternalResourceViewResolver("", "suffix"))
                 .build();
@@ -59,40 +52,36 @@ class FileDownLoadControllerTest {
 
     @Test
     void shouldPassScreensToServiceToGeneratePdfFile() throws Exception {
-        when(cafFieldFiller.fill(any(), any())).thenReturn(new ApplicationFile("".getBytes(), ""));
+        when(pdfGenerator.generate(any(), any())).thenReturn(new ApplicationFile("".getBytes(), ""));
         ApplicationInput applicationInput1 = new ApplicationInput("screen1", "input 1", List.of("input1Value"), ApplicationInputType.SINGLE_VALUE);
         ApplicationInput applicationInput2 = new ApplicationInput("screen1", "input 1", List.of("something"), ApplicationInputType.SINGLE_VALUE);
         Application application = new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED);
         when(applicationRepository.find(confirmationData.getId())).thenReturn(application);
         List<ApplicationInput> applicationInputs = List.of(applicationInput1, applicationInput2);
         when(mappers.map(application, CLIENT)).thenReturn(applicationInputs);
-        List<PdfField> pdfFields = List.of(new SimplePdfField("field", "value"));
-        when(pdfFieldMapper.map(applicationInputs)).thenReturn(pdfFields);
 
         mockMvc.perform(
                 get("/download"))
                 .andExpect(status().is2xxSuccessful());
 
-        verify(cafFieldFiller).fill(pdfFields, confirmationData.getId());
+        verify(pdfGenerator).generate(applicationInputs, confirmationData.getId());
     }
 
     @Test
     void shouldAcceptApplicationIdToGeneratePdfFile() throws Exception {
-        when(cafWithCoverPageFieldFiller.fill(any(), any())).thenReturn(new ApplicationFile("".getBytes(), ""));
+        when(pdfGenerator.generate(any(), any())).thenReturn(new ApplicationFile("".getBytes(), ""));
         ApplicationInput applicationInput1 = new ApplicationInput("screen1", "input 1", List.of("input1Value"), ApplicationInputType.SINGLE_VALUE);
         ApplicationInput applicationInput2 = new ApplicationInput("screen1", "input 1", List.of("something"), ApplicationInputType.SINGLE_VALUE);
         Application application = new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED);
         when(applicationRepository.find("9870000123")).thenReturn(application);
         List<ApplicationInput> applicationInputs = List.of(applicationInput1, applicationInput2);
         when(mappers.map(application, CASEWORKER)).thenReturn(applicationInputs);
-        List<PdfField> pdfFields = List.of(new SimplePdfField("field", "value"));
-        when(pdfFieldMapper.map(applicationInputs)).thenReturn(pdfFields);
 
         mockMvc.perform(
                 get("/download-caf/9870000123"))
                 .andExpect(status().is2xxSuccessful());
 
-        verify(cafWithCoverPageFieldFiller).fill(pdfFields, "9870000123");
+        verify(pdfGenerator).generate(applicationInputs, "9870000123");
     }
 
     @Test
@@ -100,7 +89,7 @@ class FileDownLoadControllerTest {
         byte[] pdfBytes = "here is the pdf".getBytes();
         String fileName = "filename.pdf";
         ApplicationFile applicationFile = new ApplicationFile(pdfBytes, fileName);
-        when(cafFieldFiller.fill(any(), any())).thenReturn(applicationFile);
+        when(pdfGenerator.generate(any(), any())).thenReturn(applicationFile);
 
         MvcResult result = mockMvc.perform(
                 get("/download"))

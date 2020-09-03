@@ -2,15 +2,22 @@ package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.ApplicationRepository;
+import org.codeforamerica.shiba.output.ApplicationFile;
+import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
+import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibilityDecider;
+import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
+
+import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 
 @Component
 public class ApplicationSubmittedListener {
@@ -18,15 +25,21 @@ public class ApplicationSubmittedListener {
     private final ApplicationRepository applicationRepository;
     private final EmailClient emailClient;
     private final ExpeditedEligibilityDecider expeditedEligibilityDecider;
+    private final ApplicationInputsMappers applicationInputsMappers;
+    private final PdfGenerator pdfGenerator;
 
     public ApplicationSubmittedListener(MnitDocumentConsumer mnitDocumentConsumer,
                                         ApplicationRepository applicationRepository,
                                         EmailClient emailClient,
-                                        ExpeditedEligibilityDecider expeditedEligibilityDecider) {
+                                        ExpeditedEligibilityDecider expeditedEligibilityDecider,
+                                        ApplicationInputsMappers applicationInputsMappers,
+                                        PdfGenerator pdfGenerator) {
         this.mnitDocumentConsumer = mnitDocumentConsumer;
         this.applicationRepository = applicationRepository;
         this.emailClient = emailClient;
         this.expeditedEligibilityDecider = expeditedEligibilityDecider;
+        this.applicationInputsMappers = applicationInputsMappers;
+        this.pdfGenerator = pdfGenerator;
     }
 
     @Async
@@ -45,9 +58,11 @@ public class ApplicationSubmittedListener {
                 .getPage("contactInfo")
                 .get("email"))
                 .ifPresent(input -> {
-                    String recipient = input.getValue().get(0);
+                    List<ApplicationInput> applicationInputs = applicationInputsMappers.map(application, CLIENT);
+                    String applicationId = application.getId();
+                    ApplicationFile pdf = pdfGenerator.generate(applicationInputs, applicationId);
                     ExpeditedEligibility expeditedEligibility = expeditedEligibilityDecider.decide(pagesData);
-                    emailClient.sendConfirmationEmail(recipient, application.getId(), expeditedEligibility);
+                    emailClient.sendConfirmationEmail(input.getValue().get(0), applicationId, expeditedEligibility, pdf);
                 });
     }
 }

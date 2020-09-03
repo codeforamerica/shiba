@@ -5,23 +5,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 
-import java.util.Collections;
 import java.util.List;
 
 @Configuration
 public class PdfFieldFillersConfiguration {
     @Bean
-    public PdfFieldFiller cafFieldFiller(
-            @Value("classpath:cover-pages.pdf") Resource coverPages,
-            @Value("classpath:DHS-5223.pdf") Resource applicationPDF) {
-        return new PDFBoxFieldFiller(coverPages, List.of(applicationPDF));
-    }
-
-    @Bean
-    public PdfFieldFiller cafWithCoverPageFieldFiller(
-            @Value("classpath:cover-pages.pdf") Resource coverPages,
+    public PdfFieldFiller cafPdfFieldFiller(
             @Value("classpath:DHS-5223.pdf") Resource applicationPDF
     ) {
-        return new PDFBoxFieldFiller(coverPages, List.of(applicationPDF));
+        return new PDFBoxFieldFiller(applicationPDF, List.of());
     }
 }

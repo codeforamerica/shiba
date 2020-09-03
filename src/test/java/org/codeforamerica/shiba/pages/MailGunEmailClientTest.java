@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.pages;
 
 import com.sun.xml.messaging.saaj.util.Base64;
+import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.client.match.MockRestRequestMatchers;
 import org.springframework.test.web.client.response.MockRestResponseCreators;
 import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -64,11 +66,13 @@ class MailGunEmailClientTest {
 
         String recipientEmail = "someRecipient";
         String emailContent = "content";
-        LinkedMultiValueMap<String, String> expectedFormData = new LinkedMultiValueMap<>();
+        MultiValueMap<String, String> expectedFormData = new LinkedMultiValueMap<>();
         expectedFormData.put("from", List.of(senderEmail));
         expectedFormData.put("to", List.of(recipientEmail));
         expectedFormData.put("subject", List.of("We received your application"));
         expectedFormData.put("html", List.of(emailContent));
+//        TODO: Figure out how to properly test that the attachment formdata is added correctly -- there may be no convenient way
+        expectedFormData.put("attachment", List.of("someContent"));
 
         ExpeditedEligibility expeditedEligibility = ELIGIBLE;
         String confirmationId = "someConfirmationId";
@@ -79,7 +83,11 @@ class MailGunEmailClientTest {
                 .andExpect(MockRestRequestMatchers.content().formData(expectedFormData))
                 .andRespond(MockRestResponseCreators.withSuccess());
 
-        mailGunEmailClient.sendConfirmationEmail(recipientEmail, confirmationId, expeditedEligibility);
+        mailGunEmailClient.sendConfirmationEmail(
+                recipientEmail,
+                confirmationId,
+                expeditedEligibility,
+                new ApplicationFile("someContent".getBytes(), "someFileName"));
 
         mockRestServiceServer.verify();
     }
