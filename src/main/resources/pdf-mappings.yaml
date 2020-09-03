@@ -115,6 +115,8 @@ caf:
       hourlyWage: [HOURLY_WAGE, INCOME_PER_PAY_PERIOD]
     payPeriod:
       payPeriod: [PAY_FREQUENCY_COVER_PAGE, PAY_FREQUENCY]
+    employmentStatus:
+      areYouWorking: IS_WORKING
     homeExpenses:
       homeExpenses:
         RENT: RENT
