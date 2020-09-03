@@ -170,6 +170,7 @@ html {
     -ms-appearance: none;
     -o-appearance: none;
     appearance: none;
+    visibility: hidden;
 }
 
 .inline {
