@@ -40,7 +40,11 @@ public class ApplicationInput {
 
     public String getMultiValuePdfName(Map<String, List<String>> pdfFieldMap, String value) {
         List<String> names = pdfFieldMap.get(String.join(".", this.getGroupName(), this.getName(), value));
-        return getNameWithIteration(names).get(0);
+        if (getNameWithIteration(names).size() > 0) {
+            return getNameWithIteration(names).get(0);
+        } else {
+            return null;
+        }
     }
 
     private List<String> getNameWithIteration(List<String> names) {
