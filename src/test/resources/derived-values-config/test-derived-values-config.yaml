@@ -61,6 +61,7 @@ test-derived-values:
         type: SINGLE_VALUE
   - groupName: groupName8
     fieldName: value8
+    iteration: 0
     values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: bar

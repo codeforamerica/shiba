@@ -135,7 +135,8 @@ class DerivedValueApplicationInputsMapperTest {
                 "groupName8",
                 "value8",
                 List.of("bar"),
-                ApplicationInputType.SINGLE_VALUE
+                ApplicationInputType.SINGLE_VALUE,
+                0
         ));
     }
 

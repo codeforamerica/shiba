@@ -5,6 +5,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import static java.util.Collections.emptyList;
 
 @Value
 public class ApplicationInput {
@@ -30,20 +33,23 @@ public class ApplicationInput {
         this.iteration = null;
     }
 
-    public String getPdfName(Map<String, String> pdfFieldMap) {
-        String name = pdfFieldMap.get(String.join(".", this.getGroupName(), this.getName()));
-        return getNameWithIteration(name);
+    public List<String> getPdfName(Map<String, List<String>> pdfFieldMap) {
+        List<String> names = pdfFieldMap.get(String.join(".", this.getGroupName(), this.getName()));
+        return this.getNameWithIteration(names);
     }
 
-    public String getMultiValuePdfName(Map<String, String> pdfFieldMap, String value) {
-        String name = pdfFieldMap.get(String.join(".", this.getGroupName(), this.getName(), value));
-        return getNameWithIteration(name);
+    public String getMultiValuePdfName(Map<String, List<String>> pdfFieldMap, String value) {
+        List<String> names = pdfFieldMap.get(String.join(".", this.getGroupName(), this.getName(), value));
+        return getNameWithIteration(names).get(0);
     }
 
-    private String getNameWithIteration(String name) {
-        if (name == null) {
-            return null;
+    private List<String> getNameWithIteration(List<String> names) {
+        if (names == null) {
+            return emptyList();
         }
-        return this.getIteration() != null ? name + "_" + this.getIteration() : name;
+
+        return names.stream()
+                .map(name -> this.getIteration() != null ? name + "_" + this.getIteration() : name)
+                .collect(Collectors.toList());
     }
 }

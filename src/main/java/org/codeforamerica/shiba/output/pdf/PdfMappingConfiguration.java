@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Configuration
@@ -15,7 +16,7 @@ public class PdfMappingConfiguration {
 
     @Bean
     @ConfigurationProperties(prefix = "caf.mappings")
-    public Map<String, String> pdfFieldMap() {
+    public Map<String, List<String>> pdfFieldMap() {
         return new HashMap<>();
     }
 
@@ -27,7 +28,7 @@ public class PdfMappingConfiguration {
 
     @Bean
     public PdfFieldMapper pdfFieldMapper(
-            Map<String, String> pdfFieldMap,
+            Map<String, List<String>> pdfFieldMap,
             Map<String, String> enumMap
     ) {
         return new PdfFieldMapper(pdfFieldMap, enumMap);

@@ -9,4 +9,5 @@ public class PotentialDerivedValues {
     String groupName;
     String fieldName;
     List<DerivedValue> values;
+    Integer iteration;
 }

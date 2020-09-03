@@ -20,7 +20,7 @@ class PdfFieldMapperTest {
         String fieldName = "someName";
         String formInputName = "some-input";
         String pageName = "some-screen";
-        Map<String, String> configMap = Map.of(pageName + "." + formInputName, fieldName);
+        Map<String, List<String>> configMap = Map.of(pageName + "." + formInputName, List.of(fieldName));
 
         String stringValue = "some-string-value";
         ApplicationInput applicationInput = new ApplicationInput(pageName, formInputName, List.of(stringValue), applicationInputType);
@@ -36,7 +36,7 @@ class PdfFieldMapperTest {
         String fieldName = "someName";
         String formInputName = "some-input";
         String pageName = "some-screen";
-        Map<String, String> configMap = Map.of(pageName + "." + formInputName, fieldName);
+        Map<String, List<String>> configMap = Map.of(pageName + "." + formInputName, List.of(fieldName));
 
         ApplicationInput applicationInput = new ApplicationInput(pageName, formInputName, List.of("01", "20", "3312"), ApplicationInputType.DATE_VALUE);
 
@@ -78,7 +78,7 @@ class PdfFieldMapperTest {
         String fieldName = "someName";
         String formInputName = "some-input";
         String pageName = "some-screen";
-        Map<String, String> configMap = Map.of(pageName + "." + formInputName, fieldName);
+        Map<String, List<String>> configMap = Map.of(pageName + "." + formInputName, List.of(fieldName));
 
         ApplicationInput applicationInput = new ApplicationInput(pageName, formInputName, List.of(), applicationInputType);
 
@@ -97,9 +97,9 @@ class PdfFieldMapperTest {
         String value1 = "some-value";
         String value2 = "some-other-value";
         ApplicationInput applicationInput = new ApplicationInput(pageName, formInputName, List.of(value1, value2), ApplicationInputType.ENUMERATED_MULTI_VALUE);
-        Map<String, String> configMap = Map.of(
-                pageName + "." + formInputName + "." + value1, fieldName1,
-                pageName + "." + formInputName + "." + value2, fieldName2
+        Map<String, List<String>> configMap = Map.of(
+                pageName + "." + formInputName + "." + value1, List.of(fieldName1),
+                pageName + "." + formInputName + "." + value2, List.of(fieldName2)
         );
 
         PdfFieldMapper subject = new PdfFieldMapper(configMap, emptyMap());
@@ -135,11 +135,11 @@ class PdfFieldMapperTest {
                 pageName, formInputName3, dateValue, ApplicationInputType.DATE_VALUE, 2
         );
 
-        Map<String, String> configMap = Map.of(
-                pageName + "." + formInputName1 + "." + value1, fieldName1,
-                pageName + "." + formInputName1 + "." + value2, fieldName2,
-                pageName + "." + formInputName2, fieldName3,
-                pageName + "." + formInputName3, fieldName4
+        Map<String, List<String>> configMap = Map.of(
+                pageName + "." + formInputName1 + "." + value1, List.of(fieldName1),
+                pageName + "." + formInputName1 + "." + value2, List.of(fieldName2),
+                pageName + "." + formInputName2, List.of(fieldName3),
+                pageName + "." + formInputName3, List.of(fieldName4)
         );
 
 
@@ -159,7 +159,7 @@ class PdfFieldMapperTest {
         String fieldName = "someName";
         String formInputName = "some-input";
         String pageName = "some-screen";
-        Map<String, String> configMap = Map.of(pageName + "." + formInputName, fieldName);
+        Map<String, List<String>> configMap = Map.of(pageName + "." + formInputName, List.of(fieldName));
 
         String stringValue = "some-string-value";
         ApplicationInput applicationInput = new ApplicationInput(pageName, formInputName, List.of(stringValue), ApplicationInputType.SINGLE_VALUE);

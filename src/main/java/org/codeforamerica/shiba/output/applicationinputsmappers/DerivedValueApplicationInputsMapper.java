@@ -31,7 +31,8 @@ public class DerivedValueApplicationInputsMapper implements ApplicationInputsMap
                                 potentialDerivedValues.getGroupName(),
                                 potentialDerivedValues.getFieldName(),
                                 derivedValue.getValue().resolve(data),
-                                derivedValue.getType()
+                                derivedValue.getType(),
+                                potentialDerivedValues.getIteration()
                         ))
                 )
                 .flatMap(Optional::stream)

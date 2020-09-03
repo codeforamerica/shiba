@@ -110,11 +110,11 @@ caf:
       earnLessMoneyThisMonth: EARN_LESS_MONEY_THIS_MONTH
       additionalIncomeInfo: ADDITIONAL_INCOME_INFO
     employersName:
-      employersName: EMPLOYERS_NAME
+      employersName: [EMPLOYERS_NAME_COVER_PAGE, EMPLOYERS_NAME]
     hourlyWage:
-      hourlyWage: HOURLY_WAGE
+      hourlyWage: [HOURLY_WAGE, INCOME_PER_PAY_PERIOD]
     payPeriod:
-      payPeriod: PAY_FREQUENCY
+      payPeriod: [PAY_FREQUENCY_COVER_PAGE, PAY_FREQUENCY]
     homeExpenses:
       homeExpenses:
         RENT: RENT
@@ -146,13 +146,13 @@ caf:
     registerToVote:
       registerToVoteSelection: REGISTER_TO_VOTE
     employee:
-      firstName0: EMPLOYEE_FIRST_NAME_0
-      lastName0: EMPLOYEE_LAST_NAME_0
-      firstName1: EMPLOYEE_FIRST_NAME_1
-      lastName1: EMPLOYEE_LAST_NAME_1
-      grossMonthlyIncome: GROSS_MONTHLY_INCOME
+      firstName: EMPLOYEE_FIRST_NAME
+      lastName: EMPLOYEE_LAST_NAME
+      grossMonthlyIncome: [GROSS_MONTHLY_INCOME_COVER_PAGE, GROSS_MONTHLY_INCOME]
       selfEmployed: SELF_EMPLOYED
       selfEmployedGrossMonthlyEarnings: SELF_EMPLOYED_GROSS_MONTHLY_EARNINGS
+    selfEmployment:
+      selfEmployment: SELF_EMPLOYMENT
     nonPagesData:
       applicationId: APPLICATION_ID
       completedDate: CREATED_DATE
@@ -163,9 +163,13 @@ caf:
       jobSearching: JOB_SEARCHING
     jobs:
       count: TOTAL_JOBS
+    incomePerPayPeriod:
+      incomePerPayPeriod: INCOME_PER_PAY_PERIOD
   enums:
     EVERY_WEEK: Every week
     EVERY_TWO_WEEKS: Every two weeks
     TWICE_A_MONTH: Twice a month
     EVERY_MONTH: Every month
     IT_VARIES: It varies
+    true: "Yes"
+    false: "No"

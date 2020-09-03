@@ -530,7 +530,8 @@ derived-values:
               input: isHomeless
               value: "true"
   - groupName: employee
-    fieldName: firstName0
+    fieldName: firstName
+    iteration: 0
     values:
       - type: SINGLE_VALUE
         value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
@@ -545,7 +546,8 @@ derived-values:
               input: employersName
               matcher: NOT_EMPTY
   - groupName: employee
-    fieldName: lastName0
+    fieldName: lastName
+    iteration: 0
     values:
       - type: SINGLE_VALUE
         value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
@@ -560,7 +562,8 @@ derived-values:
               input: employersName
               matcher: NOT_EMPTY
   - groupName: employee
-    fieldName: firstName1
+    fieldName: firstName
+    iteration: 1
     values:
       - type: SINGLE_VALUE
         value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
@@ -575,7 +578,8 @@ derived-values:
               input: employersName
               matcher: NOT_EMPTY
   - groupName: employee
-    fieldName: lastName1
+    fieldName: lastName
+    iteration: 1
     values:
       - type: SINGLE_VALUE
         value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
@@ -728,3 +732,63 @@ derived-values:
             - pageName: employmentStatus
               input: areYouWorking
               value: "false"
+  - groupName: payPeriod
+    fieldName: payPeriod
+    iteration: 0
+    values:
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "Hourly"
+        type: SINGLE_VALUE
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: paidByTheHour
+              input: paidByTheHour
+              value: "true"
+              subworkflow: jobs
+              iteration: 0
+  - groupName: payPeriod
+    fieldName: payPeriod
+    iteration: 1
+    values:
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "Hourly"
+        type: SINGLE_VALUE
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: paidByTheHour
+              input: paidByTheHour
+              value: "true"
+              subworkflow: jobs
+              iteration: 1
+  - groupName: payPeriod
+    fieldName: payPeriod
+    iteration: 2
+    values:
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "Hourly"
+        type: SINGLE_VALUE
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: paidByTheHour
+              input: paidByTheHour
+              value: "true"
+              subworkflow: jobs
+              iteration: 2
+  - groupName: payPeriod
+    fieldName: payPeriod
+    iteration: 3
+    values:
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "Hourly"
+        type: SINGLE_VALUE
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: paidByTheHour
+              input: paidByTheHour
+              value: "true"
+              subworkflow: jobs
+              iteration: 3
