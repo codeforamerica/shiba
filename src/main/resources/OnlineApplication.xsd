@@ -3430,6 +3430,7 @@
 			<xsd:enumeration value="Every two weeks"/>
 			<xsd:enumeration value="Twice a month"/>
 			<xsd:enumeration value="Monthly"/>
+			<xsd:enumeration value="Hourly"/>
 			<xsd:enumeration value="Other"/>
 		</xsd:restriction>
 	</xsd:simpleType>
