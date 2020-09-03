@@ -217,8 +217,7 @@ shiba-configuration:
         - name: phoneOrEmail
           type: CHECKBOX
           promptMessage:
-            promptMessageKey: contact-info.where-can-we-send-you-a-receipt-of-your-completed-application
-          helpMessageKey: contact-info.this-is-for-your-own-records
+            promptMessageKey: contact-info.how-can-we-send-you-updates-and-reminders-about-your-case-in-the-future
           options:
             - value: TEXT
               messageKey: contact-info.text-me
