@@ -6,25 +6,27 @@
     <div th:replace="fragments/demoBanner"></div>
     <section class="slab slab--shiba">
         <div class="grid">
-            <div class="grid__item bottom-horizontal-line">
-                <i class="icon-check_circle large"></i>
-                <h2 class="spacing-below-0" th:text="|#{success.success}!|"></h2>
-                <h3 id="application-id" class="spacing-below-10" th:text="|#{success.confirmation-number}: ${applicationId}|"></h3>
-                <p th:if="${county != T(org.codeforamerica.shiba.County).OTHER}" class="spacing-below-35" id="submission-date">
-                    <span th:text="|#{success.application-submitted-to} |"></span>
-                    <span class="capitalized" th:text="${county.name().toLowerCase()}"></span>
-                    <span th:text="#{success.county-on}"></span>
-                    <span th:text="| ${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)}.|"></span>
-                </p>
-                <p th:if="${county == T(org.codeforamerica.shiba.County).OTHER}" class="spacing-below-35" id="submission-date"
-                   th:text="|#{success.application-submitted-on} ${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)}.|"></p>
-            </div>
-            <div class="grid__item spacing-above-35 bottom-horizontal-line">
-                <h3 th:text="#{success.new-weve-generated-a-receipt-of-your-application-for-your-records}"></h3>
-                <img src="/images/receipt.svg" alt="receipt icon"/>
-                <div class="spacing-above-25 spacing-below-35">
-                    <div>
-                        <a class="button button--primary" href="/download" th:text="#{success.download-my-receipt}"></a>
+            <div class="card spacing-above-35">
+                <div class="grid__item bottom-horizontal-line">
+                    <i class="icon-check_circle large"></i>
+                    <h2 class="spacing-below-0" th:text="|#{success.success}!|"></h2>
+                    <h3 id="application-id" class="spacing-below-10" th:text="|#{success.confirmation-number}: ${applicationId}|"></h3>
+                    <p th:if="${county != T(org.codeforamerica.shiba.County).OTHER}" class="spacing-below-35" id="submission-date">
+                        <span th:text="|#{success.application-submitted-to} |"></span>
+                        <span class="capitalized" th:text="${county.name().toLowerCase()}"></span>
+                        <span th:text="#{success.county-on}"></span>
+                        <span th:text="| ${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)}.|"></span>
+                    </p>
+                    <p th:if="${county == T(org.codeforamerica.shiba.County).OTHER}" class="spacing-below-35" id="submission-date"
+                       th:text="|#{success.application-submitted-on} ${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)}.|"></p>
+                </div>
+                <div class="grid__item spacing-above-35">
+                    <h3 th:text="#{success.new-weve-generated-a-receipt-of-your-application-for-your-records}"></h3>
+                    <img src="/images/receipt.svg" alt="receipt icon"/>
+                    <div class="spacing-above-25 spacing-below-35">
+                        <div>
+                            <a class="button button--primary" href="/download" th:text="#{success.download-my-receipt}"></a>
+                        </div>
                     </div>
                 </div>
             </div>
