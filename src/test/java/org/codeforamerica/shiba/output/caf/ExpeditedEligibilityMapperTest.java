@@ -4,6 +4,7 @@ import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
@@ -27,7 +28,7 @@ class ExpeditedEligibilityMapperTest {
 
         when(mockDecider.decide(any())).thenReturn(ExpeditedEligibility.ELIGIBLE);
 
-        assertThat(mapper.map(application)).containsExactly(
+        assertThat(mapper.map(application, Recipient.CLIENT)).containsExactly(
                 new ApplicationInput(
                         "expeditedEligibility",
                         "expeditedEligibility",
@@ -48,7 +49,7 @@ class ExpeditedEligibilityMapperTest {
 
         when(mockDecider.decide(any())).thenReturn(ExpeditedEligibility.NOT_ELIGIBLE);
 
-        List<ApplicationInput> result = mapper.map(application);
+        List<ApplicationInput> result = mapper.map(application, Recipient.CLIENT);
 
         verify(mockDecider).decide(pagesData);
         assertThat(result).containsExactly(

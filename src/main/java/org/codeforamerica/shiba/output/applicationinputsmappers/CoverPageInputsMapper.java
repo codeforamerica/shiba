@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.springframework.stereotype.Component;
@@ -14,14 +15,14 @@ import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
 
 @Component
 public class CoverPageInputsMapper implements ApplicationInputsMapper {
-    private final Map<County, String> countyInstructionsMapping;
+    private final Map<County, Map<Recipient, String>> countyInstructionsMapping;
 
-    public CoverPageInputsMapper(Map<County, String> countyInstructionsMapping) {
+    public CoverPageInputsMapper(Map<County, Map<Recipient, String>> countyInstructionsMapping) {
         this.countyInstructionsMapping = countyInstructionsMapping;
     }
 
     @Override
-    public List<ApplicationInput> map(Application application) {
+    public List<ApplicationInput> map(Application application, Recipient recipient) {
         ApplicationData data = application.getApplicationData();
         List<String> programs = data.getPagesData()
                 .getPage("choosePrograms")
@@ -38,7 +39,7 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
                 new ApplicationInput(
                         "coverPage",
                         "countyInstructions",
-                        List.of(countyInstructionsMapping.get(application.getCounty())),
+                        List.of(countyInstructionsMapping.get(application.getCounty()).get(recipient)),
                         SINGLE_VALUE),
                 new ApplicationInput(
                         "coverPage",

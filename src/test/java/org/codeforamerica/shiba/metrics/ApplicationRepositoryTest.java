@@ -62,12 +62,12 @@ class ApplicationRepositoryTest {
     void shouldSaveApplication() {
         ApplicationData applicationData = new ApplicationData();
         PageData pageData = new PageData();
-        pageData.put("someInput", new InputData(List.of("someValue")));
+        pageData.put("someInput", InputData.builder().value(List.of("someValue")).build());
         applicationData.setPagesData(new PagesData(Map.of("somePage", pageData)));
         Subworkflows subworkflows = new Subworkflows();
         PagesData subflowIteration = new PagesData();
         PageData groupedPage = new PageData();
-        groupedPage.put("someGroupedPageInput", new InputData(List.of("someGroupedPageValue")));
+        groupedPage.put("someGroupedPageInput", InputData.builder().value(List.of("someGroupedPageValue")).build());
         subflowIteration.put("someGroupedPage", groupedPage);
         subworkflows.addIteration("someGroup", subflowIteration);
         applicationData.setSubworkflows(subworkflows);

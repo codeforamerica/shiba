@@ -2,9 +2,11 @@ package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.ApplicationRepository;
-import org.codeforamerica.shiba.output.MnitDocumentConsumer;
+import org.codeforamerica.shiba.output.*;
+import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibilityDecider;
+import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
@@ -22,12 +24,16 @@ class ApplicationSubmittedListenerTest {
     ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
     EmailClient emailClient = mock(EmailClient.class);
     ExpeditedEligibilityDecider expeditedEligibilityDecider = mock(ExpeditedEligibilityDecider.class);
+    ApplicationInputsMappers applicationInputsMappers = mock(ApplicationInputsMappers.class);
+    PdfGenerator pdfGenerator = mock(PdfGenerator.class);
 
     ApplicationSubmittedListener applicationSubmittedListener = new ApplicationSubmittedListener(
             mnitDocumentConsumer,
             applicationRepository,
             emailClient,
-            expeditedEligibilityDecider
+            expeditedEligibilityDecider,
+            applicationInputsMappers,
+            pdfGenerator
     );
 
     @Test
@@ -54,14 +60,18 @@ class ApplicationSubmittedListenerTest {
         pagesData.put("contactInfo", contactInfoPage);
         applicationData.setPagesData(pagesData);
         String appIdFromDb = "id";
-        when(applicationRepository.find(applicationId)).thenReturn(new Application(appIdFromDb, ZonedDateTime.now(), applicationData, null));
+        Application application = new Application(appIdFromDb, ZonedDateTime.now(), applicationData, null);
+        when(applicationRepository.find(applicationId)).thenReturn(application);
         ApplicationSubmittedEvent event = new ApplicationSubmittedEvent(applicationId);
-
         when(expeditedEligibilityDecider.decide(pagesData)).thenReturn(ExpeditedEligibility.ELIGIBLE);
+        List<ApplicationInput> applicationInputs = List.of(new ApplicationInput("someGroupName", "someName", List.of("someValue"), ApplicationInputType.SINGLE_VALUE));
+        when(applicationInputsMappers.map(application, Recipient.CLIENT)).thenReturn(applicationInputs);
+        ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
+        when(pdfGenerator.generate(applicationInputs, appIdFromDb)).thenReturn(applicationFile);
 
         applicationSubmittedListener.sendEmailForApplication(event);
 
-        verify(emailClient).sendConfirmationEmail(email, appIdFromDb, ExpeditedEligibility.ELIGIBLE);
+        verify(emailClient).sendConfirmationEmail(email, appIdFromDb, ExpeditedEligibility.ELIGIBLE, applicationFile);
     }
 
     @Test
@@ -76,6 +86,9 @@ class ApplicationSubmittedListenerTest {
 
         applicationSubmittedListener.sendEmailForApplication(event);
 
+        verifyNoInteractions(applicationInputsMappers);
+        verifyNoInteractions(pdfGenerator);
+        verifyNoInteractions(expeditedEligibilityDecider);
         verifyNoInteractions(emailClient);
     }
 }

@@ -4,6 +4,7 @@ import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
 import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -76,7 +77,7 @@ class GrossMonthlyIncomeMapperTest {
         applicationData.setSubworkflows(subworkflows);
         Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER);
 
-        List<ApplicationInput> applicationInputs = grossMonthlyIncomeMapper.map(application);
+        List<ApplicationInput> applicationInputs = grossMonthlyIncomeMapper.map(application, Recipient.CLIENT);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput("employee", "grossMonthlyIncome", List.of("1440.0"), SINGLE_VALUE, 0),
@@ -103,7 +104,7 @@ class GrossMonthlyIncomeMapperTest {
         applicationData.setSubworkflows(subworkflows);
         Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER);
 
-        List<ApplicationInput> applicationInputs = grossMonthlyIncomeMapper.map(application);
+        List<ApplicationInput> applicationInputs = grossMonthlyIncomeMapper.map(application, Recipient.CLIENT);
 
         assertThat(applicationInputs).isEmpty();
     }
@@ -112,7 +113,7 @@ class GrossMonthlyIncomeMapperTest {
     void shouldNotIncludeGrossMonthlyIncomeWhenJobsInformationIsNotAvailable() {
         Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER);
 
-        List<ApplicationInput> applicationInputs = grossMonthlyIncomeMapper.map(application);
+        List<ApplicationInput> applicationInputs = grossMonthlyIncomeMapper.map(application, Recipient.CLIENT);
 
         assertThat(applicationInputs).isEmpty();
     }
@@ -147,7 +148,7 @@ class GrossMonthlyIncomeMapperTest {
         applicationData.setSubworkflows(subworkflows);
         Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER);
 
-        List<ApplicationInput> applicationInputs = grossMonthlyIncomeMapper.map(application);
+        List<ApplicationInput> applicationInputs = grossMonthlyIncomeMapper.map(application, Recipient.CLIENT);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput("employee", "grossMonthlyIncome", List.of(income), SINGLE_VALUE, 0)

@@ -3,12 +3,13 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.config.FormInputType;
 
 import java.util.List;
 
 public interface ApplicationInputsMapper {
-    List<ApplicationInput> map(Application application);
+    List<ApplicationInput> map(Application application, Recipient recipient);
 
     static ApplicationInputType formInputTypeToApplicationInputType(FormInputType type) {
         return switch (type) {

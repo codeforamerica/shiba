@@ -88,6 +88,7 @@ dependencies {
     jaxb "com.sun.xml.bind:jaxb-xjc:2.1.7"
 
     testImplementation 'org.seleniumhq.selenium:selenium-java:3.141.59'
+
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }

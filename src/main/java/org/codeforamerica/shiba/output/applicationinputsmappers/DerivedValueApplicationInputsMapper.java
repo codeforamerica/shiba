@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.PotentialDerivedValuesConfiguration;
+import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +20,7 @@ public class DerivedValueApplicationInputsMapper implements ApplicationInputsMap
     }
 
     @Override
-    public List<ApplicationInput> map(Application application) {
+    public List<ApplicationInput> map(Application application, Recipient recipient) {
         ApplicationData data = application.getApplicationData();
         return this.derivedValuesConfiguration.stream()
                 .map(potentialDerivedValues -> potentialDerivedValues
