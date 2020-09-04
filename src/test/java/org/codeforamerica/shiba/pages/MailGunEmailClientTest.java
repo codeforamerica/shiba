@@ -1,35 +1,30 @@
 package org.codeforamerica.shiba.pages;
 
-import com.sun.xml.messaging.saaj.util.Base64;
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.BasicCredentials;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.test.web.client.match.MockRestRequestMatchers;
-import org.springframework.test.web.client.response.MockRestResponseCreators;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
-
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.matching.MultipartValuePattern.MatchingType.ANY;
 import static org.codeforamerica.shiba.output.caf.ExpeditedEligibility.ELIGIBLE;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(properties = {
-        "mail-gun.url=https://someMailGunUrl",
-        "mail-gun.api-key=someMailGunApiKey",
-        "sender-email=someSenderEmail"
-})
+@SpringBootTest
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 class MailGunEmailClientTest {
@@ -37,58 +32,90 @@ class MailGunEmailClientTest {
     @Autowired
     RestTemplate restTemplate;
 
-    @Autowired
     MailGunEmailClient mailGunEmailClient;
 
-    @MockBean
-    EmailContentCreator emailContentCreator;
+    EmailContentCreator emailContentCreator = mock(EmailContentCreator.class);
 
-    @Value("${mail-gun.url}")
-    String mailGunUrl;
+    WireMockServer wireMockServer;
 
-    @Value("${mail-gun.api-key}")
-    String mailGunApiKey;
+    int port;
 
-    @Value("${sender-email}")
-    String senderEmail;
+    String mailGunApiKey = "someMailGunApiKey";
 
-    MockRestServiceServer mockRestServiceServer;
+    String senderEmail = "someSenderEmail";
 
     @BeforeEach
     void setUp() {
-        mockRestServiceServer = MockRestServiceServer.bindTo(restTemplate)
-                .build();
+        WireMockConfiguration options = WireMockConfiguration.wireMockConfig()
+                .dynamicPort();
+        wireMockServer = new WireMockServer(options);
+        wireMockServer.start();
+        port = wireMockServer.port();
+        WireMock.configureFor(port);
+        mailGunEmailClient = new MailGunEmailClient(
+                restTemplate,
+                senderEmail,
+                "http://localhost:" + port,
+                mailGunApiKey,
+                emailContentCreator);
+    }
+
+    @AfterEach
+    void tearDown() {
+        wireMockServer.stop();
     }
 
     @Test
     void sendsEmailToTheRecipient() {
-        String encodedBasicAuthCredentials = new String(Base64.encode(String.format("api:%s", mailGunApiKey).getBytes()));
-
         String recipientEmail = "someRecipient";
         String emailContent = "content";
-        MultiValueMap<String, String> expectedFormData = new LinkedMultiValueMap<>();
-        expectedFormData.put("from", List.of(senderEmail));
-        expectedFormData.put("to", List.of(recipientEmail));
-        expectedFormData.put("subject", List.of("We received your application"));
-        expectedFormData.put("html", List.of(emailContent));
-//        TODO: Figure out how to properly test that the attachment formdata is added correctly -- there may be no convenient way
-        expectedFormData.put("attachment", List.of("someContent"));
-
         ExpeditedEligibility expeditedEligibility = ELIGIBLE;
         String confirmationId = "someConfirmationId";
         when(emailContentCreator.createHTML(confirmationId, expeditedEligibility)).thenReturn(emailContent);
 
-        mockRestServiceServer.expect(MockRestRequestMatchers.requestTo(mailGunUrl))
-                .andExpect(MockRestRequestMatchers.header(HttpHeaders.AUTHORIZATION, "Basic " + encodedBasicAuthCredentials))
-                .andExpect(MockRestRequestMatchers.content().formData(expectedFormData))
-                .andRespond(MockRestResponseCreators.withSuccess());
+        wireMockServer.stubFor(post(anyUrl())
+                .willReturn(aResponse().withStatus(200)));
 
+        String fileContent = "someContent";
+        String fileName = "someFileName";
         mailGunEmailClient.sendConfirmationEmail(
                 recipientEmail,
                 confirmationId,
                 expeditedEligibility,
-                new ApplicationFile("someContent".getBytes(), "someFileName"));
+                new ApplicationFile(fileContent.getBytes(), fileName));
 
-        mockRestServiceServer.verify();
+        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
+                .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
+                .withRequestBodyPart(aMultipart()
+                        .withName("from")
+                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withBody(equalTo(senderEmail))
+                        .matchingType(ANY)
+                        .build())
+                .withRequestBodyPart(aMultipart()
+                        .withName("to")
+                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withBody(equalTo(recipientEmail))
+                        .matchingType(ANY)
+                        .build())
+                .withRequestBodyPart(aMultipart()
+                        .withName("subject")
+                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withBody(equalTo("We received your application"))
+                        .matchingType(ANY)
+                        .build())
+                .withRequestBodyPart(aMultipart()
+                        .withName("html")
+                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withBody(equalTo(emailContent))
+                        .matchingType(ANY)
+                        .build())
+                .withRequestBodyPart(aMultipart()
+                        .withName("attachment")
+                        .withHeader(HttpHeaders.CONTENT_DISPOSITION, containing(String.format("filename=\"%s\"", fileName)))
+                        .withHeader(HttpHeaders.CONTENT_TYPE, equalTo(MediaType.APPLICATION_OCTET_STREAM_VALUE))
+                        .withBody(equalTo(fileContent))
+                        .matchingType(ANY)
+                        .build()));
     }
 }

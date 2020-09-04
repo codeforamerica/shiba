@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
@@ -46,18 +47,23 @@ public class MailGunEmailClient implements EmailClient {
         form.put("to", List.of(recipientEmail));
         form.put("subject", List.of("We received your application"));
         form.put("html", List.of(emailContentCreator.createHTML(confirmationId, expeditedEligibility)));
-        File file = new File(applicationFile.getFileName());
-        file.deleteOnExit();
-        try {
-            Files.write(file.toPath(), applicationFile.getFileBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        form.put("attachment", List.of(new FileSystemResource(file)));
+        form.put("attachment", List.of(asFileSystemResource(applicationFile)));
 
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.setBasicAuth("api", mailGunApiKey);
 
         restTemplate.postForLocation(mailGunUrl, new HttpEntity<>(form, requestHeaders));
+    }
+
+    @NotNull
+    private FileSystemResource asFileSystemResource(ApplicationFile applicationFile) {
+        File file = new File(applicationFile.getFileName());
+        file.deleteOnExit();
+        try {
+            Files.write(file.toPath(), applicationFile.getFileBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return new FileSystemResource(file);
     }
 }
