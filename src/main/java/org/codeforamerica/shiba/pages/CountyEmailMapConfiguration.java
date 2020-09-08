@@ -1,7 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +12,7 @@ import org.springframework.context.annotation.PropertySource;
 public class CountyEmailMapConfiguration {
 
     @Bean
-    @ConditionalOnMissingBean
+    @Profile("!(demo | staging | production)")
     @ConfigurationProperties(prefix = "other")
     CountyEmailMap localMapping() {
         return new CountyEmailMap();
