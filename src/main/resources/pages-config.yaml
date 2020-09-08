@@ -338,11 +338,14 @@ shiba-configuration:
       name: doYouLiveAlone
       headerKey:
         value: do-you-live-alone.do-you-live-alone
+      headerHelpMessageKey: do-you-live-alone.include-everyone-in-your-household-even-if-they-are-not-applying-for-benefits
       pageTitle:
         value: do-you-live-alone.title
       hasPrimaryButton: false
       inputs:
         - name: liveAlone
+          promptMessage:
+            promptMessageFragmentName: doYouLiveAlonePrompt
           type: YES_NO
     - &introPersonalDetails
       name: introPersonalDetails

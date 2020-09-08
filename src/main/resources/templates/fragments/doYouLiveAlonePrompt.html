@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="doYouLiveAlonePrompt" class="reveal reveal-adjacent spacing-below-60">
+    <a href="#" class="reveal__link reveal__link-adjacent">
+        <div class="reveal__link__header-adjacent" th:text="#{do-you-live-alone.why-this-matters}"></div>
+        <div class="reveal__content reveal__content-adjacent">
+            <div th:text="|• #{do-you-live-alone.we-want-to-know-who-you-live-with-so-the-county-can-correctly-calculate}|"></div>
+            <div class="spacing-above-15"
+                 th:text="|• #{do-you-live-alone.we-use-the-word-household-to-mean-you-plus-the-people-you-live-with}|"></div>
+            <p class="spacing-above-15">
+                <strong th:text="#{do-you-live-alone.snap-applicants}"></strong>
+                <span th:text="#{do-you-live-alone.after-you-name-the-people-you-live-with-we-will-ask-if-you-buy-and-prepare}"></span>
+            </p>
+        </div>
+    </a>
+</div>
+</body>
+</html>
