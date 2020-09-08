@@ -51,11 +51,11 @@ public class Page {
 
     public Page choose(YesNoAnswer yesNoAnswer) {
         List<WebElement> yesNoButtons = driver.findElements(By.className("button"));
-        WebElement radioToSelect = yesNoButtons.stream()
-                .filter(label -> label.getText().contains(yesNoAnswer.getDisplayValue()))
+        WebElement buttonToClick = yesNoButtons.stream()
+                .filter(button -> button.getText().contains(yesNoAnswer.getDisplayValue()))
                 .findFirst()
                 .orElseThrow();
-        radioToSelect.click();
+        buttonToClick.click();
         return this;
     }
 

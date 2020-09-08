@@ -10,19 +10,8 @@
                th:if="${input.helpMessageKey != null}"
                th:text="#{${input.helpMessageKey}}"></p>
         </div>
-        <label th:for="${#ids.next(input.name)}" class="button">
-            <input type="radio" th:name="${formInputName}" class="hide-radio-circle" th:id="${#ids.seq(input.name)}"
-                   value="true" onclick="this.form.submit()">
-            <span class="button__icon--left emoji emoji--inline emoji--checkmark"></span>
-            <span th:text="#{general.inputs.yes}"></span>
-        </label>
-        <label th:for="${#ids.next(input.name)}" class="button no-button">
-            <input type="radio" th:name="${formInputName}" class="hide-radio-circle"
-                   th:id="${#ids.seq(input.name)}"
-                   value="false" onclick="this.form.submit()">
-            <span class="button__icon--left emoji emoji--inline emoji--crossmark"></span>
-            <span th:text="#{general.inputs.no}"></span>
-        </label>
+        <button th:name="${formInputName}" type="submit" value="true" class="button"><span class="button__icon--left emoji emoji--inline emoji--checkmark"></span><span th:text="#{general.inputs.yes}"></span></button>
+        <button th:name="${formInputName}" type="submit" value="false" class="button"><span class="button__icon--left emoji emoji--inline emoji--crossmark"></span><span th:text="#{general.inputs.no}"></span></button>
     </div>
 </th:block>
 </html>

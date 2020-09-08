@@ -38,7 +38,7 @@ public class YesNoAnswerPageTest extends AbstractStaticMessageSourcePageTest {
     @Test
     void shouldDisplaySelectedAnswer() {
         driver.navigate().to(baseUrl + "/pages/yesNoQuestionPage");
-        driver.findElement(By.cssSelector("label:first-of-type")).click();
+        driver.findElement(By.cssSelector("button")).click();
 
         assertThat(driver.getTitle()).isEqualTo(answerPage);
         assertThat(testPage.findElementTextByName("yesOrNo")).isEqualTo("true");
