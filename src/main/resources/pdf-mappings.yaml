@@ -110,11 +110,11 @@ caf:
       earnLessMoneyThisMonth: EARN_LESS_MONEY_THIS_MONTH
       additionalIncomeInfo: ADDITIONAL_INCOME_INFO
     employersName:
-      employersName: [EMPLOYERS_NAME_COVER_PAGE, EMPLOYERS_NAME]
+      employersName: EMPLOYERS_NAME
     hourlyWage:
       hourlyWage: [HOURLY_WAGE, INCOME_PER_PAY_PERIOD]
     payPeriod:
-      payPeriod: [PAY_FREQUENCY_COVER_PAGE, PAY_FREQUENCY]
+      payPeriod: PAY_FREQUENCY
     employmentStatus:
       areYouWorking: IS_WORKING
     homeExpenses:
@@ -150,7 +150,7 @@ caf:
     employee:
       firstName: EMPLOYEE_FIRST_NAME
       lastName: EMPLOYEE_LAST_NAME
-      grossMonthlyIncome: [GROSS_MONTHLY_INCOME_COVER_PAGE, GROSS_MONTHLY_INCOME]
+      grossMonthlyIncome: GROSS_MONTHLY_INCOME
       selfEmployed: SELF_EMPLOYED
       selfEmployedGrossMonthlyEarnings: SELF_EMPLOYED_GROSS_MONTHLY_EARNINGS
     selfEmployment:
