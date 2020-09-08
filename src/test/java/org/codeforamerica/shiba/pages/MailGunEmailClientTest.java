@@ -71,7 +71,7 @@ class MailGunEmailClientTest {
         String emailContent = "content";
         ExpeditedEligibility expeditedEligibility = ELIGIBLE;
         String confirmationId = "someConfirmationId";
-        when(emailContentCreator.createHTML(confirmationId, expeditedEligibility)).thenReturn(emailContent);
+        when(emailContentCreator.createClientHTML(confirmationId, expeditedEligibility)).thenReturn(emailContent);
 
         wireMockServer.stubFor(post(anyUrl())
                 .willReturn(aResponse().withStatus(200)));
@@ -102,6 +102,58 @@ class MailGunEmailClientTest {
                         .withName("subject")
                         .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
                         .withBody(equalTo("We received your application"))
+                        .matchingType(ANY)
+                        .build())
+                .withRequestBodyPart(aMultipart()
+                        .withName("html")
+                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withBody(equalTo(emailContent))
+                        .matchingType(ANY)
+                        .build())
+                .withRequestBodyPart(aMultipart()
+                        .withName("attachment")
+                        .withHeader(HttpHeaders.CONTENT_DISPOSITION, containing(String.format("filename=\"%s\"", fileName)))
+                        .withHeader(HttpHeaders.CONTENT_TYPE, equalTo(MediaType.APPLICATION_OCTET_STREAM_VALUE))
+                        .withBody(equalTo(fileContent))
+                        .matchingType(ANY)
+                        .build()));
+    }
+
+    @Test
+    void sendsEmailToTheCaseWorker() {
+        String recipientEmail = "someRecipient";
+        String emailContent = "content";
+        String recipientName = "test recipient";
+        when(emailContentCreator.createCaseworkerHTML()).thenReturn(emailContent);
+
+        wireMockServer.stubFor(post(anyUrl())
+                .willReturn(aResponse().withStatus(200)));
+
+        String fileContent = "someContent";
+        String fileName = "someFileName";
+        mailGunEmailClient.sendCaseWorkerEmail(
+                recipientEmail,
+                recipientName,
+                new ApplicationFile(fileContent.getBytes(), fileName));
+
+        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
+                .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
+                .withRequestBodyPart(aMultipart()
+                        .withName("from")
+                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withBody(equalTo(senderEmail))
+                        .matchingType(ANY)
+                        .build())
+                .withRequestBodyPart(aMultipart()
+                        .withName("to")
+                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withBody(equalTo(recipientEmail))
+                        .matchingType(ANY)
+                        .build())
+                .withRequestBodyPart(aMultipart()
+                        .withName("subject")
+                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withBody(equalTo("MNBenefits.org Application for " + recipientName))
                         .matchingType(ANY)
                         .build())
                 .withRequestBodyPart(aMultipart()

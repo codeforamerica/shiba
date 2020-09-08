@@ -9,7 +9,9 @@ import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInput
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
+import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
 
+import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 
 @Component
@@ -27,19 +30,26 @@ public class ApplicationSubmittedListener {
     private final ExpeditedEligibilityDecider expeditedEligibilityDecider;
     private final ApplicationInputsMappers applicationInputsMappers;
     private final PdfGenerator pdfGenerator;
+    private final CountyEmailMap countyEmailMap;
+    private final boolean sendCaseWorkerEmail;
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public ApplicationSubmittedListener(MnitDocumentConsumer mnitDocumentConsumer,
                                         ApplicationRepository applicationRepository,
                                         EmailClient emailClient,
                                         ExpeditedEligibilityDecider expeditedEligibilityDecider,
                                         ApplicationInputsMappers applicationInputsMappers,
-                                        PdfGenerator pdfGenerator) {
+                                        PdfGenerator pdfGenerator,
+                                        CountyEmailMap countyEmailMap,
+                                        @Value("${submit-via-email}") boolean sendCaseWorkerEmail) {
         this.mnitDocumentConsumer = mnitDocumentConsumer;
         this.applicationRepository = applicationRepository;
         this.emailClient = emailClient;
         this.expeditedEligibilityDecider = expeditedEligibilityDecider;
         this.applicationInputsMappers = applicationInputsMappers;
         this.pdfGenerator = pdfGenerator;
+        this.countyEmailMap = countyEmailMap;
+        this.sendCaseWorkerEmail = sendCaseWorkerEmail;
     }
 
     @Async
@@ -51,7 +61,7 @@ public class ApplicationSubmittedListener {
 
     @Async
     @EventListener
-    public void sendEmailForApplication(ApplicationSubmittedEvent event) {
+    public void sendConfirmationEmail(ApplicationSubmittedEvent event) {
         Application application = applicationRepository.find(event.getApplicationId());
         PagesData pagesData = application.getApplicationData().getPagesData();
         Optional.ofNullable(pagesData
@@ -64,5 +74,22 @@ public class ApplicationSubmittedListener {
                     ExpeditedEligibility expeditedEligibility = expeditedEligibilityDecider.decide(pagesData);
                     emailClient.sendConfirmationEmail(input.getValue().get(0), applicationId, expeditedEligibility, pdf);
                 });
+    }
+
+    @Async
+    @EventListener
+    public void sendCaseWorkerEmail(ApplicationSubmittedEvent event) {
+        if (!sendCaseWorkerEmail) {
+            return;
+        }
+
+        Application application = applicationRepository.find(event.getApplicationId());
+        PageData personalInfo = application.getApplicationData().getInputDataMap("personalInfo");
+        List<ApplicationInput> applicationInputs = applicationInputsMappers.map(application, CASEWORKER);
+        String applicationId = application.getId();
+        ApplicationFile pdf = pdfGenerator.generate(applicationInputs, applicationId);
+
+        String fullName = String.join(" ", personalInfo.get("firstName").getValue().get(0), personalInfo.get("lastName").getValue().get(0));
+        emailClient.sendCaseWorkerEmail(countyEmailMap.get(application.getCounty()), fullName, pdf);
     }
 }

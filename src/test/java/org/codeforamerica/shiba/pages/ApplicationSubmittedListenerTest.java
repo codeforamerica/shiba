@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.ApplicationRepository;
+import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.output.*;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
@@ -17,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import static org.codeforamerica.shiba.County.HENNEPIN;
 import static org.mockito.Mockito.*;
 
 class ApplicationSubmittedListenerTest {
@@ -27,13 +29,18 @@ class ApplicationSubmittedListenerTest {
     ApplicationInputsMappers applicationInputsMappers = mock(ApplicationInputsMappers.class);
     PdfGenerator pdfGenerator = mock(PdfGenerator.class);
 
+    CountyEmailMap countyEmailMap = new CountyEmailMap();
+    Boolean sendCaseWorkerEmail = true;
+
     ApplicationSubmittedListener applicationSubmittedListener = new ApplicationSubmittedListener(
             mnitDocumentConsumer,
             applicationRepository,
             emailClient,
             expeditedEligibilityDecider,
             applicationInputsMappers,
-            pdfGenerator
+            pdfGenerator,
+            countyEmailMap,
+            sendCaseWorkerEmail
     );
 
     @Test
@@ -69,7 +76,7 @@ class ApplicationSubmittedListenerTest {
         ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
         when(pdfGenerator.generate(applicationInputs, appIdFromDb)).thenReturn(applicationFile);
 
-        applicationSubmittedListener.sendEmailForApplication(event);
+        applicationSubmittedListener.sendConfirmationEmail(event);
 
         verify(emailClient).sendConfirmationEmail(email, appIdFromDb, ExpeditedEligibility.ELIGIBLE, applicationFile);
     }
@@ -84,11 +91,60 @@ class ApplicationSubmittedListenerTest {
         when(applicationRepository.find(any())).thenReturn(new Application("", ZonedDateTime.now(), applicationData, null));
         ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("appId");
 
-        applicationSubmittedListener.sendEmailForApplication(event);
+        applicationSubmittedListener.sendConfirmationEmail(event);
 
         verifyNoInteractions(applicationInputsMappers);
         verifyNoInteractions(pdfGenerator);
         verifyNoInteractions(expeditedEligibilityDecider);
+        verifyNoInteractions(emailClient);
+    }
+
+    @Test
+    void shouldSendEmailToCaseWorkers() {
+        String applicationId = "applicationId";
+        ApplicationData applicationData = new ApplicationData();
+        PagesData pagesData = new PagesData();
+        PageData personalInfoPage = new PageData();
+        personalInfoPage.put("firstName", InputData.builder().value(List.of("Testy")).build());
+        personalInfoPage.put("lastName", InputData.builder().value(List.of("McTesterson")).build());
+        pagesData.put("personalInfo", personalInfoPage);
+        applicationData.setPagesData(pagesData);
+        String appIdFromDb = "id";
+        String fullName = "Testy McTesterson";
+        County recipientCounty = HENNEPIN;
+        String email = "someEmail";
+        countyEmailMap.put(recipientCounty, email);
+        Application application = new Application(appIdFromDb, ZonedDateTime.now(), applicationData, recipientCounty);
+        when(applicationRepository.find(applicationId)).thenReturn(application);
+        ApplicationSubmittedEvent event = new ApplicationSubmittedEvent(applicationId);
+        when(expeditedEligibilityDecider.decide(pagesData)).thenReturn(ExpeditedEligibility.ELIGIBLE);
+        List<ApplicationInput> applicationInputs = List.of(new ApplicationInput("someGroupName", "someName", List.of("someValue"), ApplicationInputType.SINGLE_VALUE));
+        when(applicationInputsMappers.map(application, Recipient.CASEWORKER)).thenReturn(applicationInputs);
+        ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
+        when(pdfGenerator.generate(applicationInputs, appIdFromDb)).thenReturn(applicationFile);
+
+        applicationSubmittedListener.sendCaseWorkerEmail(event);
+
+        verify(emailClient).sendCaseWorkerEmail(email, fullName, applicationFile);
+    }
+
+    @Test
+    void shouldNotSendEmailIfSendCaseWorkerEmailIsFalse() {
+        applicationSubmittedListener = new ApplicationSubmittedListener(
+                mnitDocumentConsumer,
+                applicationRepository,
+                emailClient,
+                expeditedEligibilityDecider,
+                applicationInputsMappers,
+                pdfGenerator,
+                countyEmailMap,
+                false
+        );
+
+        ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("");
+
+        applicationSubmittedListener.sendCaseWorkerEmail(event);
+
         verifyNoInteractions(emailClient);
     }
 }

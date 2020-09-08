@@ -12,7 +12,7 @@ class EmailContentCreatorTest {
 
     @Test
     void includesTheConfirmationNumber() {
-        String emailContent = emailContentCreator.createHTML("someNumber", ExpeditedEligibility.UNDETERMINED);
+        String emailContent = emailContentCreator.createClientHTML("someNumber", ExpeditedEligibility.UNDETERMINED);
 
         assertThat(emailContent).contains("someNumber");
     }
@@ -24,7 +24,7 @@ class EmailContentCreatorTest {
             "UNDETERMINED,Your county will mail you a notice that will arrive in the next week.",
     })
     void createContentForExpedited(ExpeditedEligibility expeditedEligibility, String expeditedEligibilityContent) {
-        String emailContent = emailContentCreator.createHTML("someNumber", expeditedEligibility);
+        String emailContent = emailContentCreator.createClientHTML("someNumber", expeditedEligibility);
 
         assertThat(emailContent).contains(expeditedEligibilityContent);
     }

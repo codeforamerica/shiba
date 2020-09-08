@@ -24,3 +24,5 @@ sender-email: sender@email.org
 mail-gun:
   url: mailgun-url
   api-key: some-key
+
+submit-via-email: true

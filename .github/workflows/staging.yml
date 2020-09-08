@@ -63,7 +63,7 @@ jobs:
           git remote add staging git@beta.aptible.com:mn-shiba-staging/shiba-staging.git
           git push staging "master:$BRANCH"
           aptible login --email=${{ secrets.APTIBLE_USERNAME }} --password=${{ secrets.APTIBLE_PASSWORD}}
-          aptible deploy --app shiba-staging --git-commitish $BRANCH SPRING_PROFILES_ACTIVE=staging 'MAILGUN_API_KEY=${{ secrets.MAILGUN_API_KEY }}' 'CLIENT_KEYSTORE-PASSWORD=${{ secrets.CLIENT_KEYSTORE_PASSWORD }}' 'MNIT-ESB_F5-USERNAME=${{ secrets.MNIT_ESB_F5_USERNAME }}' 'MNIT-ESB_F5-PASSWORD=${{ secrets.MNIT_ESB_F5_PASSWORD }}' 'MNIT-ESB_ALFRESCO-USERNAME=${{ secrets.MNIT_ESB_ALFRESCO_USERNAME }}' 'MNIT-ESB_ALFRESCO-PASSWORD=${{ secrets.MNIT_ESB_ALFRESCO_PASSWORD }}' 'SHIBA_USERNAME=${{ secrets.SHIBA_USERNAME }}' 'SHIBA_PASSWORD=${{ secrets.SHIBA_PASSWORD }}'
+          aptible deploy --app shiba-staging --git-commitish $BRANCH SPRING_PROFILES_ACTIVE=staging 'MAILGUN_API_KEY=${{ secrets.MAILGUN_API_KEY }}' 'CLIENT_KEYSTORE-PASSWORD=${{ secrets.CLIENT_KEYSTORE_PASSWORD }}' 'MNIT-ESB_F5-USERNAME=${{ secrets.MNIT_ESB_F5_USERNAME }}' 'MNIT-ESB_F5-PASSWORD=${{ secrets.MNIT_ESB_F5_PASSWORD }}' 'MNIT-ESB_ALFRESCO-USERNAME=${{ secrets.MNIT_ESB_ALFRESCO_USERNAME }}' 'MNIT-ESB_ALFRESCO-PASSWORD=${{ secrets.MNIT_ESB_ALFRESCO_PASSWORD }}' 'SHIBA_USERNAME=${{ secrets.SHIBA_USERNAME }}' 'SHIBA_PASSWORD=${{ secrets.SHIBA_PASSWORD }}' 'SUBMIT_VIA_EMAIL=true'
       - name: Announce on Slack
         if: ${{ always() }}
         uses: innocarpe/actions-slack@v1

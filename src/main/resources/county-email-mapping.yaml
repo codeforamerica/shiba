@@ -1,0 +1,25 @@
+demo:
+  HENNEPIN: help+demo@mnbenefits.org
+  OTHER: help+demo@mnbenefits.org
+  OLMSTED: help+demo@mnbenefits.org
+
+---
+
+staging:
+  HENNEPIN: help+staging@mnbenefits.org
+  OTHER: help+staging@mnbenefits.org
+  OLMSTED: help+staging@mnbenefits.org
+
+---
+
+production:
+  HENNEPIN: hhsews@hennepin.us
+  OTHER: hhsews@hennepin.us
+  OLMSTED: PAQ@co.olmsted.mn.us
+
+---
+
+other:
+  HENNEPIN: help+dev@mnbenefits.org
+  OTHER: help+dev@mnbenefits.org
+  OLMSTED: help+dev@mnbenefits.org

@@ -8,4 +8,8 @@ public interface EmailClient {
                                String confirmationId,
                                ExpeditedEligibility expeditedEligibility,
                                ApplicationFile applicationFile);
+
+    void sendCaseWorkerEmail(String recipientEmail,
+                             String recipientName,
+                             ApplicationFile applicationFile);
 }
