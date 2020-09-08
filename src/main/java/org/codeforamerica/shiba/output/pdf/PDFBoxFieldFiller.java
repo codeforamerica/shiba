@@ -44,7 +44,7 @@ public class PDFBoxFieldFiller implements PdfFieldFiller {
                         try {
                             pdField.setValue(field.getValue());
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            throw new RuntimeException(e);
                         }
                     }));
 
