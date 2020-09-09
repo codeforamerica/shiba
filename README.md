@@ -17,18 +17,18 @@
 - Install the Lombok plugin
 - Enable annotation processing
 - Set the Project SDK to Java 14 in `File > Project Structure`
+- Create `src/main/resources/application-secrets.yaml`
+    - Paste in values from `SHIBA application-secrets.yaml` in LastPass
 - Run the application using ShibaApplication run configuration
 
 ### Start the local and test databases:
 
-This project uses docker compose to manage local and test databases. 
-
-In order to start the databases, you need to have docker and docker compose installed and then you can invoke the following from the project directory:
-
-`docker-compose up -d`
+This project uses `docker-compose` to manage local and test databases.
+- Install docker-compose: `brew install docker-compose`
+- [Install Docker](https://hub.docker.com/editions/community/docker-ce-desktop-mac/)
+- Invoke the following from the project directory to start the databases: `docker-compose up -d`
 
 To stop the databases, run:
-
 `docker-compose down` 
 
 ### Test:
