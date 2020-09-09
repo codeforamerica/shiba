@@ -4,17 +4,15 @@ import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.util.InMemoryResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
 
 @Component
@@ -47,7 +45,7 @@ public class MailGunEmailClient implements EmailClient {
         form.put("to", List.of(recipientEmail));
         form.put("subject", List.of("We received your application"));
         form.put("html", List.of(emailContentCreator.createClientHTML(confirmationId, expeditedEligibility)));
-        form.put("attachment", List.of(asFileSystemResource(applicationFile)));
+        form.put("attachment", List.of(asResource(applicationFile)));
 
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.setBasicAuth("api", mailGunApiKey);
@@ -64,7 +62,7 @@ public class MailGunEmailClient implements EmailClient {
         form.put("to", List.of(recipientEmail));
         form.put("subject", List.of("MNBenefits.org Application for " + recipientName));
         form.put("html", List.of(emailContentCreator.createCaseworkerHTML()));
-        form.put("attachment", List.of(asFileSystemResource(applicationFile)));
+        form.put("attachment", List.of(asResource(applicationFile)));
 
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.setBasicAuth("api", mailGunApiKey);
@@ -73,14 +71,12 @@ public class MailGunEmailClient implements EmailClient {
     }
 
     @NotNull
-    private FileSystemResource asFileSystemResource(ApplicationFile applicationFile) {
-        File file = new File(applicationFile.getFileName());
-        file.deleteOnExit();
-        try {
-            Files.write(file.toPath(), applicationFile.getFileBytes());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return new FileSystemResource(file);
+    private Resource asResource(ApplicationFile applicationFile) {
+        return new InMemoryResource(applicationFile.getFileBytes()) {
+            @Override
+            public String getFilename() {
+                return applicationFile.getFileName();
+            }
+        };
     }
 }
