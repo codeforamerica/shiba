@@ -22,17 +22,20 @@ public class MailGunEmailClient implements EmailClient {
     private final String mailGunUrl;
     private final String mailGunApiKey;
     private final EmailContentCreator emailContentCreator;
+    private final boolean shouldCC;
 
     public MailGunEmailClient(RestTemplate restTemplate,
                               @Value("${sender-email}") String senderEmail,
                               @Value("${mail-gun.url}") String mailGunUrl,
                               @Value("${mail-gun.api-key}") String mailGunApiKey,
-                              EmailContentCreator emailContentCreator) {
+                              EmailContentCreator emailContentCreator,
+                              @Value("${mail-gun.shouldCC}") boolean shouldCC) {
         this.restTemplate = restTemplate;
         this.senderEmail = senderEmail;
         this.mailGunUrl = mailGunUrl;
         this.mailGunApiKey = mailGunApiKey;
         this.emailContentCreator = emailContentCreator;
+        this.shouldCC = shouldCC;
     }
 
     @Override
@@ -60,6 +63,9 @@ public class MailGunEmailClient implements EmailClient {
         MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
         form.put("from", List.of(senderEmail));
         form.put("to", List.of(recipientEmail));
+        if (shouldCC) {
+            form.put("cc", List.of(senderEmail));
+        }
         form.put("subject", List.of("MNBenefits.org Application for " + recipientName));
         form.put("html", List.of(emailContentCreator.createCaseworkerHTML()));
         form.put("attachment", List.of(asResource(applicationFile)));

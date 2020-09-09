@@ -8,3 +8,6 @@ client:
 
 sentry:
   environment: production
+
+mail-gun:
+  shouldCC: true

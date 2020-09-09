@@ -57,7 +57,8 @@ class MailGunEmailClientTest {
                 senderEmail,
                 "http://localhost:" + port,
                 mailGunApiKey,
-                emailContentCreator);
+                emailContentCreator,
+                false);
     }
 
     @AfterEach
@@ -138,6 +139,7 @@ class MailGunEmailClientTest {
 
         wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
                 .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
+                .withRequestBody(notMatching(".*name=\"cc\".*"))
                 .withRequestBodyPart(aMultipart()
                         .withName("from")
                         .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
@@ -167,6 +169,41 @@ class MailGunEmailClientTest {
                         .withHeader(HttpHeaders.CONTENT_DISPOSITION, containing(String.format("filename=\"%s\"", fileName)))
                         .withHeader(HttpHeaders.CONTENT_TYPE, equalTo(MediaType.APPLICATION_OCTET_STREAM_VALUE))
                         .withBody(equalTo(fileContent))
+                        .matchingType(ANY)
+                        .build()));
+    }
+
+    @Test
+    void shouldCCSenderEmail_whenSendingCaseworkerEmail_ifCCFlagIsTrue() {
+        String recipientEmail = "someRecipient";
+        String emailContent = "content";
+        String recipientName = "test recipient";
+        when(emailContentCreator.createCaseworkerHTML()).thenReturn(emailContent);
+
+        mailGunEmailClient = new MailGunEmailClient(
+                restTemplate,
+                senderEmail,
+                "http://localhost:" + port,
+                mailGunApiKey,
+                emailContentCreator,
+                true);
+
+        wireMockServer.stubFor(post(anyUrl())
+                .willReturn(aResponse().withStatus(200)));
+
+        String fileContent = "someContent";
+        String fileName = "someFileName";
+        mailGunEmailClient.sendCaseWorkerEmail(
+                recipientEmail,
+                recipientName,
+                new ApplicationFile(fileContent.getBytes(), fileName));
+
+        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
+                .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
+                .withRequestBodyPart(aMultipart()
+                        .withName("cc")
+                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withBody(equalTo(senderEmail))
                         .matchingType(ANY)
                         .build()));
     }
