@@ -274,7 +274,7 @@ shiba-configuration:
           type: CHECKBOX
           options:
             - value: "true"
-              messageKey: home-address.im-homeless-right-now
+              messageKey: home-address.i-dont-have-a-permanent-address
         - name: sameMailingAddress
           type: RADIO
           promptMessage:

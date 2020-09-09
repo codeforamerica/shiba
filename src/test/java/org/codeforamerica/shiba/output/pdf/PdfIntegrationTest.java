@@ -4,10 +4,10 @@ import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.ApplicationRepository;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
-import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.codeforamerica.shiba.output.applicationinputsmappers.CoverPageInputsMapper;
 import org.codeforamerica.shiba.pages.data.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -42,6 +42,20 @@ public class PdfIntegrationTest {
     PagesData pagesData = new PagesData();
     private final ZonedDateTime completedAt = ZonedDateTime.now();
     private final Application application = new Application("someId", completedAt, data, null);
+
+    @BeforeEach
+    void setUp() {
+        data.setPagesData(pagesData);
+        PageData homeAddress = new PageData();
+        homeAddress.put("zipCode", InputData.builder().value(List.of("")).build());
+        homeAddress.put("city", InputData.builder().value(List.of("")).build());
+        homeAddress.put("state", InputData.builder().value(List.of("")).build());
+        homeAddress.put("streetAddress", InputData.builder().value(List.of("")).build());
+        homeAddress.put("apartmentNumber", InputData.builder().value(List.of("")).build());
+        homeAddress.put("isHomeless", InputData.builder().value(List.of("")).build());
+        homeAddress.put("sameMailingAddress", InputData.builder().value(List.of("")).build());
+        pagesData.put("homeAddress", homeAddress);
+    }
 
     @Test
     void shouldMapNoForUnearnedIncomeOptionsThatAreNotChecked() {

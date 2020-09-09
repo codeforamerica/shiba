@@ -28,7 +28,7 @@ caf:
       zipCode: APPLICANT_HOME_ZIPCODE
       city: APPLICANT_HOME_CITY
       state: APPLICANT_HOME_STATE
-      streetAddress: APPLICANT_HOME_STREET_ADDRESS
+      streetAddressWithPermanentAddress: APPLICANT_HOME_STREET_ADDRESS
       apartmentNumber: APPLICANT_HOME_APT_NUMBER
       isHomelessIndicator: APPLICANT_HOMELESS
     mailingAddress:

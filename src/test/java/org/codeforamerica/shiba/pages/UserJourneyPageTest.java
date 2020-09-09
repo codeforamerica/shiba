@@ -154,7 +154,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         homeAddressPage.enterInput("city", "someCity");
         homeAddressPage.enterInput("streetAddress", "someStreetAddress");
         homeAddressPage.enterInput("apartmentNumber", "someApartmentNumber");
-        homeAddressPage.selectEnumeratedInput("isHomeless", "I’m homeless right now");
+        homeAddressPage.selectEnumeratedInput("isHomeless", "I don't have a permanent address");
         homeAddressPage.selectEnumeratedInput("sameMailingAddress", "No, use a different address for mail");
         Page mailingAddressPage = homeAddressPage.clickPrimaryButton();
 

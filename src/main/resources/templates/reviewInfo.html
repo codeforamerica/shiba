@@ -35,7 +35,7 @@
                     <p class="spacing-below-0" th:if="${!data.get('homeAddress').get('apartmentNumber').value[0].isEmpty()}"
                             th:text="|# ${data.get('homeAddress').get('apartmentNumber').value[0]}|"></p>
                     <p th:if="${!data.get('homeAddress').get('city').value[0].isEmpty()}" class="spacing-below-0" th:text="|${data.get('homeAddress').get('city').value[0]}, ${data.get('homeAddress').get('state').value[0]}|"></p>
-                    <p class="spacing-below-0 spacing-above-10 italic" th:if="${!data.get('homeAddress').get('isHomeless').value.isEmpty()}" th:text="#{review-info.currently-homeless}"></p>
+                    <p class="spacing-below-0 spacing-above-10 italic" th:if="${!data.get('homeAddress').get('isHomeless').value.isEmpty()}" th:text="#{review-info.no-permanent-address}"></p>
                 </div>
                 <div th:if="${data.get('homeAddress').get('sameMailingAddress').value.isEmpty() || data.get('homeAddress').get('sameMailingAddress').value[0] == 'false'}" class="bottom-horizontal-line spacing-below-25 review-info-section">
                     <div class="spacing-below-10">
