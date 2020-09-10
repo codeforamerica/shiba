@@ -5,24 +5,11 @@ spring:
     hikari:
       maximum-pool-size: 2
 
-shiba:
-  username: testUsername
-  password: testPassword
-
 client:
   keystore: src/test/resources/test-keystore.jks
-  keystore-password: changeit
-
-mnit-esb:
-  f5-username: somef5Username
-  f5-password: somef5Password
-  alfresco-username: someAlfrescoUsername
-  alfresco-password: someAlfrescoPassword
-
 
 sender-email: sender@email.org
 mail-gun:
   url: mailgun-url
-  api-key: some-key
 
 submit-via-email: true

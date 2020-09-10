@@ -17,9 +17,18 @@
 - Install the Lombok plugin
 - Enable annotation processing
 - Set the Project SDK to Java 14 in `File > Project Structure`
-- Create `src/main/resources/application-secrets.yaml`
-    - Paste in values from `SHIBA application-secrets.yaml` in LastPass
+- Install the EnvFile plugin
+- Create `.env` file in the root of the project directory
+- Paste in values from `SHIBA application-secrets.yaml` in LastPass with the format `ENV_VAR_NAME=ENV_VAR_VALUE`, translating the property notation to environment variable notation as follows:
+    - `shiba.username: someUsername` --> `SHIBA_USERNAME=someUsername`
+    - `mail-gun.api-key: someApiKey` --> `MAIL-GUN_API-KEY=someApiKey`
+- Generate an encryption key - see instructions in the next section.
 - Run the application using ShibaApplication run configuration
+
+### Generate an encryption key:
+- Install the `tinkey` command line utility to generate an encryption key, following [their docs](https://github.com/google/tink/blob/master/docs/TINKEY.md)
+- Run the following command to generate an encryption key and copy it to your clipboard: `tinkey create-keyset --key-template AES256_GCM | awk '{printf("%s",$0)}' | pbcopy`
+- Add the encryption key to the `.env` file as a new environment variable: `ENCRYPTION_KEY=<value from clipboard>`
 
 ### Start the local and test databases:
 

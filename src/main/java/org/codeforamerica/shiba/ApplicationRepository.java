@@ -1,7 +1,5 @@
 package org.codeforamerica.shiba;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -16,14 +14,14 @@ import java.util.Random;
 @Repository
 public class ApplicationRepository {
     private final JdbcTemplate jdbcTemplate;
-    private final ObjectMapper objectMapper;
+    private final Encryptor<ApplicationData> encryptor;
     private final ApplicationFactory applicationFactory;
 
     public ApplicationRepository(JdbcTemplate jdbcTemplate,
-                                 ObjectMapper objectMapper,
+                                 Encryptor<ApplicationData> encryptor,
                                  ApplicationFactory applicationFactory) {
         this.jdbcTemplate = jdbcTemplate;
-        this.objectMapper = objectMapper;
+        this.encryptor = encryptor;
         this.applicationFactory = applicationFactory;
     }
 
@@ -44,32 +42,21 @@ public class ApplicationRepository {
 
     public void save(Application application) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("applications");
-        try {
-            jdbcInsert.execute(Map.of(
-                    "id", application.getId(),
-                    "completed_at", Timestamp.from(application.getCompletedAt().toInstant()),
-                    "data", objectMapper.writeValueAsString(application.getApplicationData()),
-                    "county", application.getCounty().name()
-            ));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+        jdbcInsert.execute(Map.of(
+                "id", application.getId(),
+                "completed_at", Timestamp.from(application.getCompletedAt().toInstant()),
+                "encrypted_data", encryptor.encrypt(application.getApplicationData()),
+                "county", application.getCounty().name()
+        ));
     }
 
     public Application find(String id) {
-        return jdbcTemplate.queryForObject("SELECT * FROM applications WHERE id = ?", (resultSet, rowNum) -> {
-            try {
-                ApplicationData applicationData;
-                applicationData = objectMapper.readValue(resultSet.getString("data"), ApplicationData.class);
-
-                return applicationFactory.reconstitueApplication(
+        return jdbcTemplate.queryForObject("SELECT * FROM applications WHERE id = ?",
+                (resultSet, rowNum) -> applicationFactory.reconstitueApplication(
                         id,
                         ZonedDateTime.ofInstant(resultSet.getTimestamp("completed_at").toInstant(), ZoneOffset.UTC),
-                        applicationData,
-                        County.valueOf(resultSet.getString("county")));
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
-        }, id);
+                        encryptor.decrypt(resultSet.getBytes("encrypted_data")),
+                        County.valueOf(resultSet.getString("county"))),
+                id);
     }
 }

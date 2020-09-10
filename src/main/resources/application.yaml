@@ -2,8 +2,6 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:15432/shiba
     username: shiba
-  profiles:
-    include: secrets
 
 client:
   keystore: src/main/resources/shiba-keystore.jks
@@ -22,3 +20,5 @@ mail-gun:
   shouldCC: false
 
 submit-via-email: false
+
+encryption-key: ${ENCRYPTION_KEY}

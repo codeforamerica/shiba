@@ -8,6 +8,6 @@ client:
 
 sentry:
   environment: production
-
+submit-via-email: true
 mail-gun:
   shouldCC: true

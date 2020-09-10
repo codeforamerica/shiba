@@ -4,3 +4,4 @@ spring:
     driverClassName: org.postgresql.Driver
 sentry:
   environment: staging
+submit-via-email: true
