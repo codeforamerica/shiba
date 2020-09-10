@@ -48,7 +48,7 @@ class CoverPageInputsMapperTest {
                 new PageData(Map.of("programs", InputData.builder()
                         .value(List.of("SNAP", "CASH"))
                         .build())));
-        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER);
+        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER, "");
 
         List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, Recipient.CLIENT);
 
@@ -63,7 +63,7 @@ class CoverPageInputsMapperTest {
 
     @Test
     void shouldIncludeCountyInstructionsInputWithMatchingCountyInstructions() {
-        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OLMSTED);
+        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OLMSTED, "");
         String clientCountyInstructions = "olmsted client instructions";
         String caseworkerCountyInstructions = "olmsted caseworker instructions";
         countyInstructionsMapping.put(County.OLMSTED, Map.of(
@@ -99,7 +99,7 @@ class CoverPageInputsMapperTest {
                         "firstName", InputData.builder().value(List.of("someFirstName")).build(),
                         "lastName", InputData.builder().value(List.of("someLastName")).build()))
         );
-        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER);
+        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER, "");
 
         List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, Recipient.CLIENT);
 

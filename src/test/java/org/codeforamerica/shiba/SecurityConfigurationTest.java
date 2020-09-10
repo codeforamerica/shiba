@@ -55,7 +55,7 @@ class SecurityConfigurationTest {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                 .apply(springSecurity())
                 .build();
-        when(applicationRepository.find(any())).thenReturn(new Application("foo", ZonedDateTime.now(), null, null));
+        when(applicationRepository.find(any())).thenReturn(new Application("foo", ZonedDateTime.now(), null, null, ""));
         when(mappers.map(any(), any())).thenReturn(List.of());
     }
 

@@ -44,8 +44,8 @@ public class SubmitPageTest extends AbstractStaticMessageSourcePageTest {
     void shouldProvideTimestampToTerminalPageWhenApplicationIsSigned() {
         String applicationId = "someId";
         County county = County.HENNEPIN;
-        when(applicationFactory.newApplication(any()))
-                .thenReturn(new Application(applicationId, ZonedDateTime.of(LocalDateTime.of(2020, 1, 1, 11, 10), ZoneOffset.UTC), new ApplicationData(), county));
+        when(applicationFactory.newApplication(any(), any()))
+                .thenReturn(new Application(applicationId, ZonedDateTime.of(LocalDateTime.of(2020, 1, 1, 11, 10), ZoneOffset.UTC), new ApplicationData(), county, ""));
 
         navigateTo("firstPage");
 

@@ -17,11 +17,14 @@ import java.util.Random;
 public class ApplicationRepository {
     private final JdbcTemplate jdbcTemplate;
     private final ObjectMapper objectMapper;
+    private final ApplicationFactory applicationFactory;
 
     public ApplicationRepository(JdbcTemplate jdbcTemplate,
-                                 ObjectMapper objectMapper) {
+                                 ObjectMapper objectMapper,
+                                 ApplicationFactory applicationFactory) {
         this.jdbcTemplate = jdbcTemplate;
         this.objectMapper = objectMapper;
+        this.applicationFactory = applicationFactory;
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -59,7 +62,7 @@ public class ApplicationRepository {
                 ApplicationData applicationData;
                 applicationData = objectMapper.readValue(resultSet.getString("data"), ApplicationData.class);
 
-                return new Application(
+                return applicationFactory.reconstitueApplication(
                         id,
                         ZonedDateTime.ofInstant(resultSet.getTimestamp("completed_at").toInstant(), ZoneOffset.UTC),
                         applicationData,

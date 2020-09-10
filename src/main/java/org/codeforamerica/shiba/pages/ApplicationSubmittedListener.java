@@ -3,9 +3,7 @@ package org.codeforamerica.shiba.pages;
 import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.ApplicationRepository;
 import org.codeforamerica.shiba.output.ApplicationFile;
-import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
-import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
@@ -16,7 +14,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
@@ -28,7 +25,6 @@ public class ApplicationSubmittedListener {
     private final ApplicationRepository applicationRepository;
     private final EmailClient emailClient;
     private final ExpeditedEligibilityDecider expeditedEligibilityDecider;
-    private final ApplicationInputsMappers applicationInputsMappers;
     private final PdfGenerator pdfGenerator;
     private final CountyEmailMap countyEmailMap;
     private final boolean sendCaseWorkerEmail;
@@ -38,7 +34,6 @@ public class ApplicationSubmittedListener {
                                         ApplicationRepository applicationRepository,
                                         EmailClient emailClient,
                                         ExpeditedEligibilityDecider expeditedEligibilityDecider,
-                                        ApplicationInputsMappers applicationInputsMappers,
                                         PdfGenerator pdfGenerator,
                                         CountyEmailMap countyEmailMap,
                                         @Value("${submit-via-email}") boolean sendCaseWorkerEmail) {
@@ -46,7 +41,6 @@ public class ApplicationSubmittedListener {
         this.applicationRepository = applicationRepository;
         this.emailClient = emailClient;
         this.expeditedEligibilityDecider = expeditedEligibilityDecider;
-        this.applicationInputsMappers = applicationInputsMappers;
         this.pdfGenerator = pdfGenerator;
         this.countyEmailMap = countyEmailMap;
         this.sendCaseWorkerEmail = sendCaseWorkerEmail;
@@ -68,9 +62,8 @@ public class ApplicationSubmittedListener {
                 .getPage("contactInfo")
                 .get("email"))
                 .ifPresent(input -> {
-                    List<ApplicationInput> applicationInputs = applicationInputsMappers.map(application, CLIENT);
                     String applicationId = application.getId();
-                    ApplicationFile pdf = pdfGenerator.generate(applicationInputs, applicationId);
+                    ApplicationFile pdf = pdfGenerator.generate(applicationId, CLIENT);
                     ExpeditedEligibility expeditedEligibility = expeditedEligibilityDecider.decide(pagesData);
                     emailClient.sendConfirmationEmail(input.getValue().get(0), applicationId, expeditedEligibility, pdf);
                 });
@@ -85,9 +78,8 @@ public class ApplicationSubmittedListener {
 
         Application application = applicationRepository.find(event.getApplicationId());
         PageData personalInfo = application.getApplicationData().getInputDataMap("personalInfo");
-        List<ApplicationInput> applicationInputs = applicationInputsMappers.map(application, CASEWORKER);
         String applicationId = application.getId();
-        ApplicationFile pdf = pdfGenerator.generate(applicationInputs, applicationId);
+        ApplicationFile pdf = pdfGenerator.generate(applicationId, CASEWORKER);
 
         String fullName = String.join(" ", personalInfo.get("firstName").getValue().get(0), personalInfo.get("lastName").getValue().get(0));
         emailClient.sendCaseWorkerEmail(countyEmailMap.get(application.getCounty()), fullName, pdf);

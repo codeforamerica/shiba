@@ -235,8 +235,8 @@ public class PageController {
         pagesData.putPage(submitPage, pageData);
 
         if (pageData.isValid()) {
-
-            Application application = applicationFactory.newApplication(applicationData);
+            String id = applicationRepository.getNextId();
+            Application application = applicationFactory.newApplication(id, applicationData);
             confirmationData.setId(application.getId());
             confirmationData.setCompletedAt(application.getCompletedAt());
             confirmationData.setCounty(application.getCounty());

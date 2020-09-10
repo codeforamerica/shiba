@@ -79,7 +79,7 @@ class SubworkflowInputMapperTest {
         subworkflows.addIteration("group2", iteration3);
 
         applicationData.setSubworkflows(subworkflows);
-        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER);
+        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER, "");
 
         assertThat(subworkflowInputMapper.map(application, Recipient.CLIENT)).containsExactlyInAnyOrder(
                 new ApplicationInput(

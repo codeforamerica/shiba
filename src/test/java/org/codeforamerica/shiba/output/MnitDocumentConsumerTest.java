@@ -3,7 +3,6 @@ package org.codeforamerica.shiba.output;
 import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MnitEsbWebServiceClient;
-import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.Map;
 
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
@@ -22,8 +20,6 @@ import static org.mockito.Mockito.*;
 class MnitDocumentConsumerTest {
     MnitEsbWebServiceClient mnitClient = mock(MnitEsbWebServiceClient.class);
 
-    ApplicationInputsMappers mappers = mock(ApplicationInputsMappers.class);
-
     XmlGenerator xmlGenerator = mock(XmlGenerator.class);
 
     PdfGenerator pdfGenerator = mock(PdfGenerator.class);
@@ -31,17 +27,9 @@ class MnitDocumentConsumerTest {
     MnitDocumentConsumer documentConsumer = new MnitDocumentConsumer(
             mnitClient,
             xmlGenerator,
-            mappers,
             pdfGenerator);
 
     ApplicationData appData = new ApplicationData();
-
-    List<ApplicationInput> applicationInputs = List.of(
-            new ApplicationInput(
-                    "someGroupName",
-                    "someName",
-                    List.of("someValue"),
-                    ApplicationInputType.SINGLE_VALUE));
 
     @BeforeEach
     void setUp() {
@@ -50,21 +38,19 @@ class MnitDocumentConsumerTest {
 
     @Test
     void generatesThePDFFromTheApplicationData() {
-        Application application = new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED);
-        when(mappers.map(application, CASEWORKER)).thenReturn(applicationInputs);
+        Application application = new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED, "");
 
         documentConsumer.process(application);
 
-        verify(pdfGenerator).generate(applicationInputs, application.getId());
+        verify(pdfGenerator).generate(application.getId(), CASEWORKER);
     }
 
     @Test
     void generatesTheXmlFromTheApplicationData() {
-        Application application = new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED);
-        when(mappers.map(application, CASEWORKER)).thenReturn(applicationInputs);
+        Application application = new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED, "");
 
         documentConsumer.process(application);
-        verify(xmlGenerator).generate(applicationInputs, application.getId());
+        verify(xmlGenerator).generate(application.getId(), CASEWORKER);
     }
 
     @Test
@@ -72,9 +58,9 @@ class MnitDocumentConsumerTest {
         ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
         when(pdfGenerator.generate(any(), any())).thenReturn(pdfApplicationFile);
         ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
-        when(xmlGenerator.generate(anyList(), any())).thenReturn(xmlApplicationFile);
+        when(xmlGenerator.generate(any(), any())).thenReturn(xmlApplicationFile);
 
-        Application application = new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED);
+        Application application = new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED, "");
         documentConsumer.process(application);
 
         verify(mnitClient).send(pdfApplicationFile, County.OLMSTED);

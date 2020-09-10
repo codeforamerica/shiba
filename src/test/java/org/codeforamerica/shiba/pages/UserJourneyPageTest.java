@@ -92,7 +92,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
         await().until(() -> {
             File[] listFiles = path.toFile().listFiles();
-            return Arrays.stream(listFiles).anyMatch(file -> file.getName().startsWith("cfa-") && file.getName().endsWith("-CAF.pdf"));
+            return Arrays.stream(listFiles).anyMatch(file -> file.getName().contains("_MNB_") && file.getName().endsWith(".pdf"));
         });
     }
 

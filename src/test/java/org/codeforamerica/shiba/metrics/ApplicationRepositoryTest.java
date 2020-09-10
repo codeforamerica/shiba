@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.metrics;
 
 import org.codeforamerica.shiba.Application;
+import org.codeforamerica.shiba.ApplicationFactory;
 import org.codeforamerica.shiba.ApplicationRepository;
 import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.OLMSTED;
 
@@ -27,6 +29,9 @@ class ApplicationRepositoryTest {
 
     @Autowired
     ApplicationRepository applicationRepository;
+
+    @Autowired
+    ApplicationFactory applicationFactory;
 
     @Test
     void shouldGenerateIdForNextApplication() {
@@ -62,8 +67,8 @@ class ApplicationRepositoryTest {
     void shouldSaveApplication() {
         ApplicationData applicationData = new ApplicationData();
         PageData pageData = new PageData();
-        pageData.put("someInput", InputData.builder().value(List.of("someValue")).build());
-        applicationData.setPagesData(new PagesData(Map.of("somePage", pageData)));
+        pageData.put("programs", InputData.builder().value(emptyList()).build());
+        applicationData.setPagesData(new PagesData(Map.of("choosePrograms", pageData)));
         Subworkflows subworkflows = new Subworkflows();
         PagesData subflowIteration = new PagesData();
         PageData groupedPage = new PageData();
@@ -72,10 +77,14 @@ class ApplicationRepositoryTest {
         subworkflows.addIteration("someGroup", subflowIteration);
         applicationData.setSubworkflows(subworkflows);
 
-        Application application = new Application("someid", ZonedDateTime.now(ZoneOffset.UTC), applicationData, OLMSTED);
+        Application application = new Application("someid", ZonedDateTime.now(ZoneOffset.UTC), applicationData, OLMSTED, "");
 
         applicationRepository.save(application);
 
-        assertThat(applicationRepository.find("someid")).isEqualTo(application);
+        Application savedApplication = applicationRepository.find("someid");
+        assertThat(savedApplication.getId()).isEqualTo(application.getId());
+        assertThat(savedApplication.getCompletedAt()).isEqualTo(application.getCompletedAt());
+        assertThat(savedApplication.getApplicationData()).isEqualTo(application.getApplicationData());
+        assertThat(savedApplication.getCounty()).isEqualTo(application.getCounty());
     }
 }

@@ -24,7 +24,7 @@ class ExpeditedEligibilityMapperTest {
     void shouldReturnEligibleWhenDeciderDecidesEligible() {
         ExpeditedEligibilityMapper mapper = new ExpeditedEligibilityMapper(mockDecider);
         ApplicationData appData = new ApplicationData();
-        Application application = new Application("someId", ZonedDateTime.now(), appData, County.OTHER);
+        Application application = new Application("someId", ZonedDateTime.now(), appData, County.OTHER, "");
 
         when(mockDecider.decide(any())).thenReturn(ExpeditedEligibility.ELIGIBLE);
 
@@ -45,7 +45,7 @@ class ExpeditedEligibilityMapperTest {
         PagesData pagesData = new PagesData();
         pagesData.put("page1", new PageData());
         appData.setPagesData(pagesData);
-        Application application = new Application("someId", ZonedDateTime.now(), appData, County.OTHER);
+        Application application = new Application("someId", ZonedDateTime.now(), appData, County.OTHER, "");
 
         when(mockDecider.decide(any())).thenReturn(ExpeditedEligibility.NOT_ELIGIBLE);
 

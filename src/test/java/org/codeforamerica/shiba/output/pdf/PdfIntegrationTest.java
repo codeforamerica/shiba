@@ -41,7 +41,7 @@ public class PdfIntegrationTest {
     ApplicationData data = new ApplicationData();
     PagesData pagesData = new PagesData();
     private final ZonedDateTime completedAt = ZonedDateTime.now();
-    private final Application application = new Application("someId", completedAt, data, null);
+    private final Application application = new Application("someId", completedAt, data, null, "");
 
     @BeforeEach
     void setUp() {

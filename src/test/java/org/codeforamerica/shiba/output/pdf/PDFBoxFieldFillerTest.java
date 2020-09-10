@@ -31,7 +31,7 @@ class PDFBoxFieldFillerTest {
                 new SimplePdfField("TEXT_FIELD", expectedFieldValue)
         );
 
-        ApplicationFile applicationFile = PDFBoxFieldFiller.fill(fields, "");
+        ApplicationFile applicationFile = PDFBoxFieldFiller.fill(fields, "", "");
 
         PDAcroForm acroForm = getPdAcroForm(applicationFile);
 
@@ -44,7 +44,7 @@ class PDFBoxFieldFillerTest {
                 new SimplePdfField("TEXT_FIELD", null)
         );
 
-        ApplicationFile applicationFile = PDFBoxFieldFiller.fill(fields, "");
+        ApplicationFile applicationFile = PDFBoxFieldFiller.fill(fields, "", "");
 
         PDAcroForm acroForm = getPdAcroForm(applicationFile);
         assertThat(acroForm.getField("TEXT_FIELD").getValueAsString()).isEqualTo("");
@@ -57,7 +57,7 @@ class PDFBoxFieldFillerTest {
                 new BinaryPdfField("BINARY_FIELD_3")
         );
 
-        ApplicationFile applicationFile = PDFBoxFieldFiller.fill(fields, "");
+        ApplicationFile applicationFile = PDFBoxFieldFiller.fill(fields, "", "");
 
         PDAcroForm acroForm = getPdAcroForm(applicationFile);
         assertThat(acroForm.getField("BINARY_FIELD_1").getValueAsString()).isEqualTo("Yes");
@@ -67,14 +67,15 @@ class PDFBoxFieldFillerTest {
     @Test
     void shouldReturnTheAppropriateFilename() {
         String applicationId = "applicationId";
-        ApplicationFile applicationFile = PDFBoxFieldFiller.fill(emptyList(), applicationId);
+        String fileName = "fileName";
+        ApplicationFile applicationFile = PDFBoxFieldFiller.fill(emptyList(), applicationId, fileName);
 
-        assertThat(applicationFile.getFileName()).isEqualTo("cfa-" + applicationId + "-CAF.pdf");
+        assertThat(applicationFile.getFileName()).isEqualTo(fileName + ".pdf");
     }
 
     @Test
     void shouldConcatenateAllResourcePDFs() throws IOException {
-        ApplicationFile applicationFile = PDFBoxFieldFiller.fill(emptyList(), "id");
+        ApplicationFile applicationFile = PDFBoxFieldFiller.fill(emptyList(), "id", "");
 
         Path path = Files.createTempDirectory("");
         File file = new File(path.toFile(), "test-caf.pdf");
@@ -87,8 +88,8 @@ class PDFBoxFieldFillerTest {
     @Test
     void shouldNotThrowException_whenFieldIsNotFound() {
         assertThatCode(() -> PDFBoxFieldFiller.fill(List.of(
-                new SimplePdfField("definitely-not-a-field", "")), "id"
-        )).doesNotThrowAnyException();
+                new SimplePdfField("definitely-not-a-field", "")), "id",
+                "")).doesNotThrowAnyException();
     }
 
     private PDAcroForm getPdAcroForm(ApplicationFile applicationFile) throws IOException {

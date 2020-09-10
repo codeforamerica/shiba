@@ -91,7 +91,7 @@ class PageControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(pageController)
                 .build();
         when(clock.instant()).thenReturn(Instant.now());
-        when(applicationFactory.newApplication(any())).thenReturn(new Application("defaultId", ZonedDateTime.now(), null, null));
+        when(applicationFactory.newApplication(any(), any())).thenReturn(new Application("defaultId", ZonedDateTime.now(), null, null, ""));
     }
 
     @Test
@@ -115,7 +115,7 @@ class PageControllerTest {
             ZonedDateTime completedAt = ZonedDateTime.of(LocalDateTime.of(2020, 1, 1, 10, 10), ZoneOffset.UTC);
             metrics.setStartTimeOnce(completedAt.toInstant().minus(5, ChronoUnit.MINUTES).minus(30, ChronoUnit.SECONDS));
             County county = OLMSTED;
-            when(applicationFactory.newApplication(any())).thenReturn(new Application("", completedAt, new ApplicationData(), county));
+            when(applicationFactory.newApplication(any(), any())).thenReturn(new Application("", completedAt, new ApplicationData(), county, ""));
             mockMvc.perform(post("/submit")
                     .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                     .param("foo[]", "some value"));
@@ -146,8 +146,8 @@ class PageControllerTest {
         metrics.setStartTimeOnce(Instant.now());
 
         String applicationId = "someId";
-        Application application = new Application(applicationId, ZonedDateTime.now(), applicationData, null);
-        when(applicationFactory.newApplication(applicationData)).thenReturn(application);
+        Application application = new Application(applicationId, ZonedDateTime.now(), applicationData, null, "");
+        when(applicationFactory.newApplication(any(), eq(applicationData))).thenReturn(application);
 
         mockMvc.perform(post("/submit")
                 .param("foo[]", "some value")
@@ -174,15 +174,17 @@ class PageControllerTest {
         metrics.setStartTimeOnce(Instant.now());
 
         ZonedDateTime completedAt = ZonedDateTime.now();
-        Application application = new Application("someId", completedAt, applicationData, null);
-        when(applicationFactory.newApplication(applicationData)).thenReturn(application);
+        String applicationId = "someId";
+        Application application = new Application(applicationId, completedAt, applicationData, null, "");
+        when(applicationRepository.getNextId()).thenReturn(applicationId);
+        when(applicationFactory.newApplication(applicationId, applicationData)).thenReturn(application);
 
         mockMvc.perform(post("/submit")
                 .param("foo[]", "some value")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
         verify(applicationRepository).save(application);
-        assertThat(confirmationData.getId()).isEqualTo("someId");
+        assertThat(confirmationData.getId()).isEqualTo(applicationId);
         assertThat(confirmationData.getCompletedAt()).isEqualTo(completedAt);
     }
 }

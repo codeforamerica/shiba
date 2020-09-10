@@ -11,4 +11,5 @@ public class Application {
     ZonedDateTime completedAt;
     ApplicationData applicationData;
     County county;
+    String fileName;
 }

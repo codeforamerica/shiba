@@ -22,7 +22,7 @@ public class PDFBoxFieldFiller implements PdfFieldFiller {
     }
 
     @Override
-    public ApplicationFile fill(Collection<PdfField> fields, String applicationId) {
+    public ApplicationFile fill(Collection<PdfField> fields, String applicationId, String fileName) {
         try {
             PDFMergerUtility mergerer = new PDFMergerUtility();
             PDDocument document = PDDocument.load(destination.getInputStream());
@@ -54,7 +54,7 @@ public class PDFBoxFieldFiller implements PdfFieldFiller {
 
             return new ApplicationFile(
                     outputStream.toByteArray(),
-                    String.format("cfa-%s-CAF.pdf", applicationId));
+                    String.format("%s.pdf", fileName));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -3,8 +3,8 @@ package org.codeforamerica.shiba.pages;
 import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.ApplicationRepository;
 import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.output.*;
-import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
+import org.codeforamerica.shiba.output.ApplicationFile;
+import org.codeforamerica.shiba.output.MnitDocumentConsumer;
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
@@ -19,6 +19,8 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 import static org.codeforamerica.shiba.County.HENNEPIN;
+import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
+import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 import static org.mockito.Mockito.*;
 
 class ApplicationSubmittedListenerTest {
@@ -26,7 +28,6 @@ class ApplicationSubmittedListenerTest {
     ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
     EmailClient emailClient = mock(EmailClient.class);
     ExpeditedEligibilityDecider expeditedEligibilityDecider = mock(ExpeditedEligibilityDecider.class);
-    ApplicationInputsMappers applicationInputsMappers = mock(ApplicationInputsMappers.class);
     PdfGenerator pdfGenerator = mock(PdfGenerator.class);
 
     CountyEmailMap countyEmailMap = new CountyEmailMap();
@@ -37,7 +38,6 @@ class ApplicationSubmittedListenerTest {
             applicationRepository,
             emailClient,
             expeditedEligibilityDecider,
-            applicationInputsMappers,
             pdfGenerator,
             countyEmailMap,
             sendCaseWorkerEmail
@@ -47,7 +47,7 @@ class ApplicationSubmittedListenerTest {
     @Disabled
     void shouldSendSubmittedApplicationToMNIT() {
         String applicationId = "someId";
-        Application application = new Application(applicationId, ZonedDateTime.now(), null, null);
+        Application application = new Application(applicationId, ZonedDateTime.now(), null, null, "");
         ApplicationSubmittedEvent event = new ApplicationSubmittedEvent(applicationId);
         when(applicationRepository.find(applicationId)).thenReturn(application);
 
@@ -67,14 +67,12 @@ class ApplicationSubmittedListenerTest {
         pagesData.put("contactInfo", contactInfoPage);
         applicationData.setPagesData(pagesData);
         String appIdFromDb = "id";
-        Application application = new Application(appIdFromDb, ZonedDateTime.now(), applicationData, null);
+        Application application = new Application(appIdFromDb, ZonedDateTime.now(), applicationData, null, "");
         when(applicationRepository.find(applicationId)).thenReturn(application);
         ApplicationSubmittedEvent event = new ApplicationSubmittedEvent(applicationId);
         when(expeditedEligibilityDecider.decide(pagesData)).thenReturn(ExpeditedEligibility.ELIGIBLE);
-        List<ApplicationInput> applicationInputs = List.of(new ApplicationInput("someGroupName", "someName", List.of("someValue"), ApplicationInputType.SINGLE_VALUE));
-        when(applicationInputsMappers.map(application, Recipient.CLIENT)).thenReturn(applicationInputs);
         ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
-        when(pdfGenerator.generate(applicationInputs, appIdFromDb)).thenReturn(applicationFile);
+        when(pdfGenerator.generate(appIdFromDb, CLIENT)).thenReturn(applicationFile);
 
         applicationSubmittedListener.sendConfirmationEmail(event);
 
@@ -88,12 +86,11 @@ class ApplicationSubmittedListenerTest {
         PageData contactInfo = new PageData();
         pagesData.put("contactInfo", contactInfo);
         applicationData.setPagesData(pagesData);
-        when(applicationRepository.find(any())).thenReturn(new Application("", ZonedDateTime.now(), applicationData, null));
+        when(applicationRepository.find(any())).thenReturn(new Application("", ZonedDateTime.now(), applicationData, null, ""));
         ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("appId");
 
         applicationSubmittedListener.sendConfirmationEmail(event);
 
-        verifyNoInteractions(applicationInputsMappers);
         verifyNoInteractions(pdfGenerator);
         verifyNoInteractions(expeditedEligibilityDecider);
         verifyNoInteractions(emailClient);
@@ -114,14 +111,12 @@ class ApplicationSubmittedListenerTest {
         County recipientCounty = HENNEPIN;
         String email = "someEmail";
         countyEmailMap.put(recipientCounty, email);
-        Application application = new Application(appIdFromDb, ZonedDateTime.now(), applicationData, recipientCounty);
+        Application application = new Application(appIdFromDb, ZonedDateTime.now(), applicationData, recipientCounty, "");
         when(applicationRepository.find(applicationId)).thenReturn(application);
         ApplicationSubmittedEvent event = new ApplicationSubmittedEvent(applicationId);
         when(expeditedEligibilityDecider.decide(pagesData)).thenReturn(ExpeditedEligibility.ELIGIBLE);
-        List<ApplicationInput> applicationInputs = List.of(new ApplicationInput("someGroupName", "someName", List.of("someValue"), ApplicationInputType.SINGLE_VALUE));
-        when(applicationInputsMappers.map(application, Recipient.CASEWORKER)).thenReturn(applicationInputs);
         ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
-        when(pdfGenerator.generate(applicationInputs, appIdFromDb)).thenReturn(applicationFile);
+        when(pdfGenerator.generate(appIdFromDb, CASEWORKER)).thenReturn(applicationFile);
 
         applicationSubmittedListener.sendCaseWorkerEmail(event);
 
@@ -135,7 +130,6 @@ class ApplicationSubmittedListenerTest {
                 applicationRepository,
                 emailClient,
                 expeditedEligibilityDecider,
-                applicationInputsMappers,
                 pdfGenerator,
                 countyEmailMap,
                 false

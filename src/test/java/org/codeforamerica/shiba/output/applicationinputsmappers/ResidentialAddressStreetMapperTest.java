@@ -28,7 +28,7 @@ class ResidentialAddressStreetMapperTest {
 
         pagesData.put("homeAddress", homeAddressData);
         applicationData.setPagesData(pagesData);
-        Application application = new Application("", null, applicationData, null);
+        Application application = new Application("", null, applicationData, null, "");
         List<ApplicationInput> map = mapper.map(application, null);
 
         assertThat(map).contains(new ApplicationInput("homeAddress",
@@ -48,7 +48,7 @@ class ResidentialAddressStreetMapperTest {
 
         pagesData.put("homeAddress", homeAddressData);
         applicationData.setPagesData(pagesData);
-        Application application = new Application("", null, applicationData, null);
+        Application application = new Application("", null, applicationData, null, "");
         List<ApplicationInput> map = mapper.map(application, null);
 
         assertThat(map).contains(new ApplicationInput("homeAddress",
@@ -71,7 +71,7 @@ class ResidentialAddressStreetMapperTest {
 
         pagesData.put("homeAddress", homeAddressData);
         applicationData.setPagesData(pagesData);
-        Application application = new Application("", null, applicationData, null);
+        Application application = new Application("", null, applicationData, null, "");
         List<ApplicationInput> map = mapper.map(application, null);
 
         assertThat(map).contains(new ApplicationInput("homeAddress",

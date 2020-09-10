@@ -1,38 +1,77 @@
 package org.codeforamerica.shiba;
 
 import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.time.Clock;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Component
 public class ApplicationFactory {
-    private final ApplicationRepository applicationRepository;
     private final Clock clock;
     private final Map<String, County> countyZipCode;
+    private final Map<County, MnitCountyInformation> countyFolderIdMapping;
+    public static final Map<String, Set<String>> LETTER_TO_PROGRAMS = Map.of(
+            "E", Set.of("EA"),
+            "K", Set.of("CASH", "GRH"),
+            "F", Set.of("SNAP"),
+            "C", Set.of("CCAP")
+    );
 
-
-    public ApplicationFactory(ApplicationRepository applicationRepository,
-                              Clock clock,
-                              Map<String, County> countyZipCode) {
-        this.applicationRepository = applicationRepository;
+    public ApplicationFactory(Clock clock,
+                              Map<String, County> countyZipCode,
+                              Map<County, MnitCountyInformation> countyFolderIdMapping) {
         this.clock = clock;
         this.countyZipCode = countyZipCode;
+        this.countyFolderIdMapping = countyFolderIdMapping;
     }
 
-    public Application newApplication(ApplicationData applicationData) {
+    public Application newApplication(String id, ApplicationData applicationData) {
         ApplicationData copy = new ApplicationData();
         copy.setPagesData(applicationData.getPagesData());
         copy.setSubworkflows(applicationData.getSubworkflows());
         copy.setIncompleteIterations(applicationData.getIncompleteIterations());
         String zipCode = copy.getPagesData().get("homeAddress").get("zipCode").getValue().get(0);
-        return new Application(
-                applicationRepository.getNextId(),
-                ZonedDateTime.now(clock),
-                copy,
-                countyZipCode.getOrDefault(zipCode, County.OTHER)
+        County county = countyZipCode.getOrDefault(zipCode, County.OTHER);
+        ZonedDateTime completedAt = ZonedDateTime.now(clock);
+        String fileName = createFileName(id, applicationData, county, completedAt);
+
+        return new Application(id, completedAt, copy, county, fileName);
+    }
+
+    public Application reconstitueApplication(String id,
+                                              ZonedDateTime completedAt,
+                                              ApplicationData applicationData,
+                                              County county) {
+        return new Application(id, completedAt, applicationData, county,
+                createFileName(id, applicationData, county, completedAt)
         );
+    }
+
+    @NotNull
+    private String createFileName(String id, ApplicationData applicationData, County county, ZonedDateTime completedAt) {
+        List<String> programsList = applicationData.getPagesData().getPage("choosePrograms").get("programs").getValue();
+        final StringBuilder programs = new StringBuilder();
+        List.of("E", "K", "F", "C").forEach(letter -> {
+                    if (programsList.stream()
+                            .anyMatch(program -> LETTER_TO_PROGRAMS.get(letter)
+                                    .contains(program))) {
+                        programs.append(letter);
+                    }
+                }
+        );
+
+        return countyFolderIdMapping.get(county).getDhsProviderId() + "_" +
+                "MNB_" +
+                DateTimeFormatter.ofPattern("yyyyMMdd").format(completedAt.withZoneSameInstant(ZoneId.of("America/Chicago"))) + "_" +
+                DateTimeFormatter.ofPattern("HHmmss").format(completedAt.withZoneSameInstant(ZoneId.of("America/Chicago"))) + "_" +
+                id + "_" +
+                programs.toString();
     }
 }

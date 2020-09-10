@@ -5,16 +5,13 @@ import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.*;
+import java.util.*;
 
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.HENNEPIN;
 import static org.codeforamerica.shiba.County.OTHER;
@@ -27,27 +24,36 @@ class ApplicationFactoryTest {
     Clock clock = mock(Clock.class);
 
     Map<String, County> countyZipCodeMap = new HashMap<>();
+    Map<County, MnitCountyInformation> countyFolderIdMapping = new HashMap<>();
 
-    ApplicationFactory applicationFactory = new ApplicationFactory(applicationRepository, clock, countyZipCodeMap);
+    ApplicationFactory applicationFactory = new ApplicationFactory(clock, countyZipCodeMap, countyFolderIdMapping);
 
     ApplicationData applicationData = new ApplicationData();
 
     ZoneOffset zoneOffset = ZoneOffset.UTC;
 
+    PagesData pagesData;
+
     @BeforeEach
     void setUp() {
-        PagesData pagesData = new PagesData();
+        pagesData = new PagesData();
         PageData homeAddress = new PageData();
         homeAddress.put("zipCode", InputData.builder().value(List.of("something")).build());
         pagesData.put("homeAddress", homeAddress);
+        PageData chooseProgramsData = new PageData();
+        chooseProgramsData.put("programs", InputData.builder().value(emptyList()).build());
+        pagesData.put("choosePrograms", chooseProgramsData);
         applicationData.setPagesData(pagesData);
+
         when(clock.instant()).thenReturn(Instant.now());
         when(clock.getZone()).thenReturn(zoneOffset);
+        countyFolderIdMapping.put(OTHER, new MnitCountyInformation());
+        countyFolderIdMapping.put(HENNEPIN, new MnitCountyInformation());
     }
 
     @Test
     void shouldObtainACopyOfTheApplicationData() {
-        Application application = applicationFactory.newApplication(applicationData);
+        Application application = applicationFactory.newApplication("", applicationData);
 
         assertThat(application.getApplicationData()).isNotSameAs(applicationData);
         assertThat(application.getApplicationData()).isEqualTo(applicationData);
@@ -56,9 +62,8 @@ class ApplicationFactoryTest {
     @Test
     void shouldProvideApplicationId() {
         String applicationId = "someId";
-        when(applicationRepository.getNextId()).thenReturn(applicationId);
 
-        Application application = applicationFactory.newApplication(applicationData);
+        Application application = applicationFactory.newApplication(applicationId, applicationData);
 
         assertThat(application.getId()).isEqualTo(applicationId);
     }
@@ -68,7 +73,7 @@ class ApplicationFactoryTest {
         Instant instant = Instant.ofEpochSecond(125423L);
         when(clock.instant()).thenReturn(instant);
 
-        Application application = applicationFactory.newApplication(applicationData);
+        Application application = applicationFactory.newApplication("", applicationData);
 
         assertThat(application.getCompletedAt()).isEqualTo(ZonedDateTime.ofInstant(instant, zoneOffset));
     }
@@ -77,13 +82,11 @@ class ApplicationFactoryTest {
     void shouldProvideCounty() {
         String zipCode = "12345";
         countyZipCodeMap.put(zipCode, HENNEPIN);
-        PagesData pagesData = new PagesData();
         PageData homeAddress = new PageData();
         homeAddress.put("zipCode", InputData.builder().value(List.of(zipCode)).build());
         pagesData.put("homeAddress", homeAddress);
 
-        applicationData.setPagesData(pagesData);
-        Application application = applicationFactory.newApplication(applicationData);
+        Application application = applicationFactory.newApplication("", applicationData);
 
         assertThat(application.getCounty()).isEqualTo(HENNEPIN);
     }
@@ -91,14 +94,114 @@ class ApplicationFactoryTest {
     @Test
     void shouldLabelCountyAsOtherWhenZipCodeHasNoMapping() {
         String zipCode = "12345";
-        PagesData pagesData = new PagesData();
         PageData homeAddress = new PageData();
         homeAddress.put("zipCode", InputData.builder().value(List.of(zipCode)).build());
         pagesData.put("homeAddress", homeAddress);
 
-        applicationData.setPagesData(pagesData);
-        Application application = applicationFactory.newApplication(applicationData);
+        Application application = applicationFactory.newApplication("", applicationData);
 
         assertThat(application.getCounty()).isEqualTo(OTHER);
     }
+
+    @Nested
+    class fileName {
+        @Test
+        void shouldIncludeIdInFileNameForApplication() {
+            String applicationId = "someId";
+            Application application = applicationFactory.newApplication(applicationId, applicationData);
+            assertThat(application.getFileName()).contains(applicationId);
+        }
+
+        @Test
+        void shouldIncludeSubmitDateInCentralTimeZone() {
+            when(clock.instant()).thenReturn(Instant.parse("2007-09-10T04:59:59.00Z"));
+            Application application = applicationFactory.newApplication("", applicationData);
+            assertThat(application.getFileName()).contains("20070909");
+        }
+
+        @Test
+        void shouldIncludeSubmitTimeInCentralTimeZone() {
+            when(clock.instant()).thenReturn(Instant.parse("2007-09-10T04:05:59.00Z"));
+            Application application = applicationFactory.newApplication("", applicationData);
+            assertThat(application.getFileName()).contains("230559");
+        }
+
+        @Test
+        void shouldIncludeCorrectCountyNPI() {
+            String countyNPI = setupCounty();
+
+            Application application = applicationFactory.newApplication("", applicationData);
+
+            assertThat(application.getFileName()).contains(countyNPI);
+        }
+
+        @Test
+        void shouldIncludeProgramCodes() {
+            PageData chooseProgramsData = new PageData();
+            List<String> programs = new ArrayList<>(List.of(
+                    "SNAP", "CASH", "GRH", "EA", "CCAP"
+            ));
+            Collections.shuffle(programs);
+            chooseProgramsData.put("programs", InputData.builder().value(programs).build());
+            pagesData.put("choosePrograms", chooseProgramsData);
+            Application application = applicationFactory.newApplication("", applicationData);
+
+            assertThat(application.getFileName()).contains("EKFC");
+        }
+
+        @Test
+        void shouldArrangeNameCorrectly() {
+            String countyNPI = setupCounty();
+            String applicationId = "someId";
+            setupProgramData();
+            when(clock.instant()).thenReturn(Instant.parse("2007-09-10T04:59:59.00Z"));
+
+            Application application = applicationFactory.newApplication(applicationId, applicationData);
+
+            assertThat(application.getFileName()).isEqualTo(String.format("%s_MNB_%s_%s_%s_%s",
+                    countyNPI, "20070909", "235959", applicationId, "EKFC"));
+        }
+
+        @Test
+        void shouldCreateFileNameWhenReconstituteAnApplication() {
+            String countyNPI = setupCounty();
+            String applicationId = "someId";
+            setupProgramData();
+            Instant completedAt = Instant.parse("2007-09-10T04:59:59.00Z");
+            when(clock.instant()).thenReturn(completedAt);
+
+            Application application = applicationFactory.reconstitueApplication(
+                    applicationId,
+                    ZonedDateTime.ofInstant(completedAt, ZoneId.of("UTC")),
+                    applicationData,
+                    HENNEPIN
+            );
+
+            assertThat(application.getFileName()).isEqualTo(String.format("%s_MNB_%s_%s_%s_%s",
+                    countyNPI, "20070909", "235959", applicationId, "EKFC"));
+        }
+
+        private void setupProgramData() {
+            PageData chooseProgramsData = new PageData();
+            chooseProgramsData.put("programs", InputData.builder().value(List.of(
+                    "SNAP", "CASH", "GRH", "EA", "CCAP"
+            )).build());
+            pagesData.put("choosePrograms", chooseProgramsData);
+        }
+
+        private String setupCounty() {
+            County county = HENNEPIN;
+            String zipCode = "someZip";
+            countyZipCodeMap.put(zipCode, county);
+            MnitCountyInformation mnitCountyInformation = new MnitCountyInformation();
+            String countyNPI = "someNPI";
+            mnitCountyInformation.setDhsProviderId(countyNPI);
+            countyFolderIdMapping.put(county, mnitCountyInformation);
+            PageData homeAddress = new PageData();
+            homeAddress.put("zipCode", InputData.builder().value(List.of(zipCode)).build());
+            pagesData.put("homeAddress", homeAddress);
+            return countyNPI;
+        }
+    }
+
 }

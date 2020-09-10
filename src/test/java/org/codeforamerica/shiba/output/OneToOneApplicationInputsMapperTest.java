@@ -12,7 +12,6 @@ import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -43,7 +42,7 @@ class OneToOneApplicationInputsMapperTest {
 
         ApplicationData applicationData = new ApplicationData();
         applicationData.setPagesData(data);
-        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER);
+        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER, "");
         List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, Recipient.CLIENT);
 
         assertThat(applicationInputs).contains(
@@ -76,7 +75,7 @@ class OneToOneApplicationInputsMapperTest {
         ApplicationData applicationData = new ApplicationData();
         applicationData.setPagesData(data);
 
-        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER);
+        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER, "");
 
         List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, Recipient.CLIENT);
 
@@ -109,7 +108,7 @@ class OneToOneApplicationInputsMapperTest {
         ApplicationData applicationData = new ApplicationData();
         applicationData.setPagesData(data);
 
-        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER);
+        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER, "");
 
         List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, Recipient.CLIENT);
 
@@ -142,7 +141,7 @@ class OneToOneApplicationInputsMapperTest {
         ApplicationData applicationData = new ApplicationData();
         applicationData.setPagesData(data);
 
-        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER);
+        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER, "");
 
         List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, Recipient.CASEWORKER);
 
@@ -180,7 +179,7 @@ class OneToOneApplicationInputsMapperTest {
 
         ApplicationData applicationData = new ApplicationData();
         applicationData.setPagesData(data);
-        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER);
+        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER, "");
         List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, Recipient.CLIENT);
 
         assertThat(applicationInputs).contains(
