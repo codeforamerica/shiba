@@ -22,6 +22,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -111,7 +112,7 @@ public class XmlGeneratorIntegrationTest {
         applicationRepository.save(application);
         ApplicationFile applicationFile = xmlGenerator.generate(applicationId, CASEWORKER);
 
-        Document document = byteArrayToDocument(applicationFile.getFileBytes());
+        Node document = byteArrayToDocument(applicationFile.getFileBytes());
 
         Validator schemaValidator = SchemaFactory.newDefaultInstance()
                 .newSchema(onlineApplicationSchema.getFile())
@@ -119,10 +120,11 @@ public class XmlGeneratorIntegrationTest {
         assertThatCode(() -> schemaValidator.validate(new DOMSource(document))).doesNotThrowAnyException();
     }
 
-    private Document byteArrayToDocument(byte[] bytes) throws ParserConfigurationException, IOException, SAXException {
+    private Node byteArrayToDocument(byte[] bytes) throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware(true);
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        return documentBuilder.parse(new ByteArrayInputStream(bytes));
+        Document document = documentBuilder.parse(new ByteArrayInputStream(bytes));
+        return document.getFirstChild().getFirstChild();
     }
 }
