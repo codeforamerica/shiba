@@ -43,6 +43,8 @@ class MailGunEmailClientTest {
     String mailGunApiKey = "someMailGunApiKey";
 
     String senderEmail = "someSenderEmail";
+    String securityEmail = "someSecurityEmail";
+    String auditEmail = "someAuditEmail";
 
     @BeforeEach
     void setUp() {
@@ -55,6 +57,8 @@ class MailGunEmailClientTest {
         mailGunEmailClient = new MailGunEmailClient(
                 restTemplate,
                 senderEmail,
+                securityEmail,
+                auditEmail,
                 "http://localhost:" + port,
                 mailGunApiKey,
                 emailContentCreator,
@@ -174,6 +178,28 @@ class MailGunEmailClientTest {
     }
 
     @Test
+    void sendsDownloadCafAlertEmail() {
+        String emailContent = "content";
+        String confirmationId = "confirmation id";
+        String ip = "some ip";
+
+        when(emailContentCreator.createDownloadCafAlertContent(confirmationId, ip)).thenReturn(emailContent);
+        when(emailContentCreator.createClientHTML(confirmationId, ELIGIBLE)).thenReturn(emailContent);
+
+        wireMockServer.stubFor(post(anyUrl()).willReturn(aResponse().withStatus(200)));
+
+        mailGunEmailClient.sendDownloadCafAlertEmail(confirmationId, ip);
+
+        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
+                .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
+                .withRequestBody(containing(String.format("from=%s", securityEmail)))
+                .withRequestBody(containing(String.format("to=%s", auditEmail)))
+                .withRequestBody(containing(String.format("subject=%s", "Caseworker+CAF+downloaded")))
+                .withRequestBody(containing(String.format("html=%s", emailContent)))
+        );
+    }
+
+    @Test
     void shouldCCSenderEmail_whenSendingCaseworkerEmail_ifCCFlagIsTrue() {
         String recipientEmail = "someRecipient";
         String emailContent = "content";
@@ -183,7 +209,7 @@ class MailGunEmailClientTest {
         mailGunEmailClient = new MailGunEmailClient(
                 restTemplate,
                 senderEmail,
-                "http://localhost:" + port,
+                "", "", "http://localhost:" + port,
                 mailGunApiKey,
                 emailContentCreator,
                 true);

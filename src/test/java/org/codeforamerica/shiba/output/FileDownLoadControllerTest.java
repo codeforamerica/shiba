@@ -5,6 +5,7 @@ import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -25,6 +26,7 @@ class FileDownLoadControllerTest {
     XmlGenerator xmlGenerator = mock(XmlGenerator.class);
     ConfirmationData confirmationData = new ConfirmationData();
     PdfGenerator pdfGenerator = mock(PdfGenerator.class);
+    ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
 
     @BeforeEach
     void setUp() {
@@ -32,8 +34,8 @@ class FileDownLoadControllerTest {
                 new FileDownLoadController(
                         xmlGenerator,
                         confirmationData,
-                        pdfGenerator
-                ))
+                        pdfGenerator,
+                        applicationEventPublisher))
                 .setViewResolvers(new InternalResourceViewResolver("", "suffix"))
                 .build();
     }
@@ -58,6 +60,25 @@ class FileDownLoadControllerTest {
                 .andExpect(status().is2xxSuccessful());
 
         verify(pdfGenerator).generate("9870000123", CASEWORKER);
+    }
+
+    @Test
+    void shouldPublishEventWhenDownloadCafIsInvoked() throws Exception {
+        when(pdfGenerator.generate(any(), any())).thenReturn(new ApplicationFile("".getBytes(), ""));
+
+        String confirmationNumber = "9870000123";
+        String requestIp = "123.123.123.123";
+
+        mockMvc.perform(
+                get("/download-caf/" + confirmationNumber)
+                        .with(request -> {
+                            request.setRemoteAddr(requestIp);
+                            return request;
+                        })
+        ).andExpect(status().is2xxSuccessful());
+
+        DownloadCafEvent event = new DownloadCafEvent(confirmationNumber, requestIp);
+        verify(applicationEventPublisher).publishEvent(event);
     }
 
     @Test

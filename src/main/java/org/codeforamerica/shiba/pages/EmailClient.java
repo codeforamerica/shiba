@@ -12,4 +12,6 @@ public interface EmailClient {
     void sendCaseWorkerEmail(String recipientEmail,
                              String recipientName,
                              ApplicationFile applicationFile);
+
+    void sendDownloadCafAlertEmail(String confirmationId, String ip);
 }

@@ -11,3 +11,5 @@ sentry:
 submit-via-email: true
 mail-gun:
   shouldCC: true
+
+send-download-alert: true

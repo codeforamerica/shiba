@@ -19,6 +19,8 @@ import java.util.List;
 public class MailGunEmailClient implements EmailClient {
     private final RestTemplate restTemplate;
     private final String senderEmail;
+    private final String securityEmail;
+    private final String auditEmail;
     private final String mailGunUrl;
     private final String mailGunApiKey;
     private final EmailContentCreator emailContentCreator;
@@ -26,12 +28,16 @@ public class MailGunEmailClient implements EmailClient {
 
     public MailGunEmailClient(RestTemplate restTemplate,
                               @Value("${sender-email}") String senderEmail,
+                              @Value("${security-email}") String securityEmail,
+                              @Value("${audit-email}") String auditEmail,
                               @Value("${mail-gun.url}") String mailGunUrl,
                               @Value("${mail-gun.api-key}") String mailGunApiKey,
                               EmailContentCreator emailContentCreator,
                               @Value("${mail-gun.shouldCC}") boolean shouldCC) {
         this.restTemplate = restTemplate;
         this.senderEmail = senderEmail;
+        this.securityEmail = securityEmail;
+        this.auditEmail = auditEmail;
         this.mailGunUrl = mailGunUrl;
         this.mailGunApiKey = mailGunApiKey;
         this.emailContentCreator = emailContentCreator;
@@ -69,6 +75,20 @@ public class MailGunEmailClient implements EmailClient {
         form.put("subject", List.of("MNBenefits.org Application for " + recipientName));
         form.put("html", List.of(emailContentCreator.createCaseworkerHTML()));
         form.put("attachment", List.of(asResource(applicationFile)));
+
+        HttpHeaders requestHeaders = new HttpHeaders();
+        requestHeaders.setBasicAuth("api", mailGunApiKey);
+
+        restTemplate.postForLocation(mailGunUrl, new HttpEntity<>(form, requestHeaders));
+    }
+
+    @Override
+    public void sendDownloadCafAlertEmail(String confirmationId, String ip) {
+        MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
+        form.put("from", List.of(securityEmail));
+        form.put("to", List.of(auditEmail));
+        form.put("subject", List.of("Caseworker CAF downloaded"));
+        form.put("html", List.of(emailContentCreator.createDownloadCafAlertContent(confirmationId, ip)));
 
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.setBasicAuth("api", mailGunApiKey);

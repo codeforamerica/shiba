@@ -9,6 +9,9 @@ client:
   keystore: src/test/resources/test-keystore.jks
 
 sender-email: sender@email.org
+security-email: security@email.org
+audit-email: audit@email.org
+
 mail-gun:
   url: mailgun-url
 

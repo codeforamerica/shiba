@@ -14,6 +14,9 @@ sentry:
   dsn: ${SENTRY_DSN_URL}
 
 sender-email: help@mnbenefits.org
+security-email: security@mnbenefits.org
+audit-email: help+audit@mnbenefits.org
+
 mail-gun:
   url: "https://api.mailgun.net/v3/mail.mnbenefits.org/messages"
   api-key: ${MAILGUN_API_KEY}

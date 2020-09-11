@@ -20,4 +20,8 @@ public class EmailContentCreator {
     String createCaseworkerHTML() {
         return "<html><body><p>This application was submitted on behalf of a client.</p><p>Please keep the file pages in the order they appear in the file; intake workers will be looking for the cover page in front of the CAF.</p></body></html>";
     }
+
+    String createDownloadCafAlertContent(String confirmationId, String ip) {
+        return String.format("The CAF with confirmation number %s was downloaded from IP address %s.", confirmationId, ip);
+    }
 }

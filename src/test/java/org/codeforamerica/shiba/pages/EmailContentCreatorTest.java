@@ -28,4 +28,14 @@ class EmailContentCreatorTest {
 
         assertThat(emailContent).contains(expeditedEligibilityContent);
     }
+
+    @Test
+    void shouldIncludeConfirmationIdAndIpWhenSendingDownloadAlert() {
+        String confirmationId = "confiramtion ID";
+        String ip = "123.123.123.123";
+
+        String content = emailContentCreator.createDownloadCafAlertContent(confirmationId, ip);
+
+        assertThat(content).isEqualTo(String.format("The CAF with confirmation number %s was downloaded from IP address %s.", confirmationId, ip));
+    }
 }

@@ -3,12 +3,15 @@ package org.codeforamerica.shiba.output;
 import org.codeforamerica.shiba.ConfirmationData;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+
+import javax.servlet.http.HttpServletRequest;
 
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
@@ -18,14 +21,17 @@ public class FileDownLoadController {
     private final XmlGenerator xmlGenerator;
     private final ConfirmationData confirmationData;
     private final PdfGenerator pdfGenerator;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public FileDownLoadController(
             XmlGenerator xmlGenerator,
             ConfirmationData confirmationData,
-            PdfGenerator pdfGenerator) {
+            PdfGenerator pdfGenerator,
+            ApplicationEventPublisher applicationEventPublisher) {
         this.xmlGenerator = xmlGenerator;
         this.confirmationData = confirmationData;
         this.pdfGenerator = pdfGenerator;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @GetMapping("/download")
@@ -48,7 +54,10 @@ public class FileDownLoadController {
     }
 
     @GetMapping("/download-caf/{applicationId}")
-    ResponseEntity<byte[]> downloadPdfWithApplicationId(@PathVariable String applicationId) {
+    ResponseEntity<byte[]> downloadPdfWithApplicationId(
+            @PathVariable String applicationId,
+            HttpServletRequest request) {
+        applicationEventPublisher.publishEvent(new DownloadCafEvent(applicationId, request.getRemoteAddr()));
         ApplicationFile applicationFile = pdfGenerator.generate(applicationId, CASEWORKER);
 
         return ResponseEntity.ok()
