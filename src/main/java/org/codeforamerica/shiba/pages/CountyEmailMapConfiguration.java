@@ -12,7 +12,7 @@ import org.springframework.context.annotation.PropertySource;
 public class CountyEmailMapConfiguration {
 
     @Bean
-    @Profile("!(demo | staging | production)")
+    @Profile("default")
     @ConfigurationProperties(prefix = "other")
     CountyEmailMap localMapping() {
         return new CountyEmailMap();
