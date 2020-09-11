@@ -27,19 +27,19 @@ import java.util.Map;
 public class MnitEsbWebServiceClient {
     private final WebServiceTemplate webServiceTemplate;
     private final Clock clock;
-    private final String alfrescoUsername;
-    private final String alfrescoPassword;
+    private final String username;
+    private final String password;
     private final Map<County, MnitCountyInformation> countyFolderIdMapping;
 
     public MnitEsbWebServiceClient(WebServiceTemplate webServiceTemplate,
                                    Clock clock,
-                                   @Value("${mnit-esb.alfresco-username}") String alfrescoUsername,
-                                   @Value("${mnit-esb.alfresco-password}") String alfrescoPassword,
+                                   @Value("${mnit-esb.username}") String username,
+                                   @Value("${mnit-esb.password}") String password,
                                    Map<County, MnitCountyInformation> countyFolderIdMapping) {
         this.webServiceTemplate = webServiceTemplate;
         this.clock = clock;
-        this.alfrescoUsername = alfrescoUsername;
-        this.alfrescoPassword = alfrescoPassword;
+        this.username = username;
+        this.password = password;
         this.countyFolderIdMapping = countyFolderIdMapping;
     }
 
@@ -88,10 +88,10 @@ public class MnitEsbWebServiceClient {
 
                 SOAPElement usernameTokenElement = securityElement.addChildElement("UsernameToken", "wsse");
                 SOAPElement usernameElement = usernameTokenElement.addChildElement("Username", "wsse");
-                usernameElement.setTextContent(alfrescoUsername);
+                usernameElement.setTextContent(username);
                 SOAPElement passwordElement = usernameTokenElement.addChildElement("Password", "wsse");
                 passwordElement.addAttribute(NameImpl.createFromUnqualifiedName("Type"), "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText");
-                passwordElement.setTextContent(alfrescoPassword);
+                passwordElement.setTextContent(password);
             } catch (SOAPException e) {
                 e.printStackTrace();
             }

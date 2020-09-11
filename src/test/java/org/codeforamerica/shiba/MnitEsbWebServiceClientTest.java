@@ -41,8 +41,8 @@ import static org.springframework.ws.test.client.RequestMatchers.xpath;
 
 @SpringBootTest(properties = {
         "mnit-esb.url=some-url",
-        "mnit-esb.alfresco-username=someUsername",
-        "mnit-esb.alfresco-password=somePassword",
+        "mnit-esb.username=someUsername",
+        "mnit-esb.password=somePassword",
         "county-to-folder-id.HENNEPIN.folderId=hennipin-folder-id",
         "county-to-folder-id.HENNEPIN.dhsProviderId=whatever-dhs",
         "county-to-folder-id.OLMSTED.folderId=olmsted-folder-id",
@@ -63,10 +63,10 @@ class MnitEsbWebServiceClientTest {
     @Value("${mnit-esb.url}")
     private String url;
 
-    @Value("${mnit-esb.alfresco-username}")
+    @Value("${mnit-esb.username}")
     private String username;
 
-    @Value("${mnit-esb.alfresco-password}")
+    @Value("${mnit-esb.password}")
     private String password;
 
     @Value("classpath:object-service-port.wsdl")

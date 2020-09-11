@@ -24,13 +24,13 @@ public class MnitEsbWebServiceTemplateConfiguration {
     @Bean
     WebServiceTemplate webServiceTemplate(WebServiceTemplateBuilder webServiceTemplateBuilder,
                                           SSLContextBuilder sslContextBuilder,
-                                          @Value("${mnit-esb.f5-username}") String f5Username,
-                                          @Value("${mnit-esb.f5-password}") String f5Password,
+                                          @Value("${mnit-esb.username}") String username,
+                                          @Value("${mnit-esb.password}") String password,
                                           @Value("${mnit-esb.jaxb-context-path}") String jaxbContextPath,
                                           @Value("${mnit-esb.url}") String url) throws KeyManagementException, NoSuchAlgorithmException {
         Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
         jaxb2Marshaller.setContextPath(jaxbContextPath);
-        String auth = f5Username + ":" + f5Password;
+        String auth = username + ":" + password;
         byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(StandardCharsets.ISO_8859_1));
         HttpClient httpClient = HttpClients.custom()
                 .addInterceptorFirst(new HttpComponentsMessageSender.RemoveSoapHeadersInterceptor())
