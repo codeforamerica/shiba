@@ -5,3 +5,5 @@ spring:
 sentry:
   environment: staging
 submit-via-email: true
+
+send-download-alert: true
