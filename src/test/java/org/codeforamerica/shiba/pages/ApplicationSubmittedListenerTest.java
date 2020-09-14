@@ -12,7 +12,6 @@ import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.time.ZonedDateTime;
@@ -32,6 +31,7 @@ class ApplicationSubmittedListenerTest {
 
     CountyEmailMap countyEmailMap = new CountyEmailMap();
     Boolean sendCaseWorkerEmail = true;
+    Boolean sendViaApi = true;
 
     ApplicationSubmittedListener applicationSubmittedListener = new ApplicationSubmittedListener(
             mnitDocumentConsumer,
@@ -40,18 +40,18 @@ class ApplicationSubmittedListenerTest {
             expeditedEligibilityDecider,
             pdfGenerator,
             countyEmailMap,
-            sendCaseWorkerEmail
+            sendCaseWorkerEmail,
+            sendViaApi
     );
 
     @Test
-    @Disabled
     void shouldSendSubmittedApplicationToMNIT() {
         String applicationId = "someId";
         Application application = new Application(applicationId, ZonedDateTime.now(), null, null, "");
         ApplicationSubmittedEvent event = new ApplicationSubmittedEvent(applicationId);
         when(applicationRepository.find(applicationId)).thenReturn(application);
 
-        applicationSubmittedListener.handleApplicationSubmittedEvent(event);
+        applicationSubmittedListener.sendViaApi(event);
 
         verify(mnitDocumentConsumer).process(application);
     }
@@ -132,6 +132,7 @@ class ApplicationSubmittedListenerTest {
                 expeditedEligibilityDecider,
                 pdfGenerator,
                 countyEmailMap,
+                false,
                 false
         );
 
@@ -140,5 +141,25 @@ class ApplicationSubmittedListenerTest {
         applicationSubmittedListener.sendCaseWorkerEmail(event);
 
         verifyNoInteractions(emailClient);
+    }
+
+    @Test
+    void shouldNotSendViaApiIfSendViaApiIsFalse() {
+        applicationSubmittedListener = new ApplicationSubmittedListener(
+                mnitDocumentConsumer,
+                applicationRepository,
+                emailClient,
+                expeditedEligibilityDecider,
+                pdfGenerator,
+                countyEmailMap,
+                true,
+                false
+        );
+
+        ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("");
+
+        applicationSubmittedListener.sendViaApi(event);
+
+        verifyNoInteractions(mnitDocumentConsumer);
     }
 }

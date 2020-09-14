@@ -23,5 +23,6 @@ mail-gun:
   shouldCC: false
 
 submit-via-email: false
+submit-via-api: false
 
 encryption-key: ${ENCRYPTION_KEY}

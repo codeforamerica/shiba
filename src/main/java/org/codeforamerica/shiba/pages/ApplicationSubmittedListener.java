@@ -28,6 +28,7 @@ public class ApplicationSubmittedListener {
     private final PdfGenerator pdfGenerator;
     private final CountyEmailMap countyEmailMap;
     private final boolean sendCaseWorkerEmail;
+    private final boolean submitViaApi;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public ApplicationSubmittedListener(MnitDocumentConsumer mnitDocumentConsumer,
@@ -36,7 +37,8 @@ public class ApplicationSubmittedListener {
                                         ExpeditedEligibilityDecider expeditedEligibilityDecider,
                                         PdfGenerator pdfGenerator,
                                         CountyEmailMap countyEmailMap,
-                                        @Value("${submit-via-email}") boolean sendCaseWorkerEmail) {
+                                        @Value("${submit-via-email}") boolean sendCaseWorkerEmail,
+                                        @Value("${submit-via-api}") Boolean submitViaApi) {
         this.mnitDocumentConsumer = mnitDocumentConsumer;
         this.applicationRepository = applicationRepository;
         this.emailClient = emailClient;
@@ -44,13 +46,15 @@ public class ApplicationSubmittedListener {
         this.pdfGenerator = pdfGenerator;
         this.countyEmailMap = countyEmailMap;
         this.sendCaseWorkerEmail = sendCaseWorkerEmail;
+        this.submitViaApi = submitViaApi;
     }
 
     @Async
     @EventListener
-    public void handleApplicationSubmittedEvent(ApplicationSubmittedEvent applicationSubmittedEvent) {
-        //TODO: put this back when MN-IT integration is done
-//        this.mnitDocumentConsumer.process(this.applicationRepository.find(applicationSubmittedEvent.getApplicationId()));
+    public void sendViaApi(ApplicationSubmittedEvent applicationSubmittedEvent) {
+        if (submitViaApi) {
+            this.mnitDocumentConsumer.process(this.applicationRepository.find(applicationSubmittedEvent.getApplicationId()));
+        }
     }
 
     @Async
