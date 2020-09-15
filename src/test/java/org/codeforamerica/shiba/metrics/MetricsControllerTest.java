@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.metrics;
 
+import org.codeforamerica.shiba.ApplicationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.MockMvc;
@@ -16,24 +17,24 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 class MetricsControllerTest {
 
-    private final ApplicationMetricsRepository metricsRepository = mock(ApplicationMetricsRepository.class);
+    private final ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
 
-    private final MetricsController metricsController = new MetricsController(metricsRepository);
+    private final MetricsController metricsController = new MetricsController(applicationRepository);
 
     private final MockMvc mockMvc = MockMvcBuilders.standaloneSetup(metricsController).build();
 
     @BeforeEach
     void setUp() {
-        when(metricsRepository.count()).thenReturn(0);
-        when(metricsRepository.getMedianTimeToComplete()).thenReturn(Duration.ZERO);
-        when(metricsRepository.getAverageTimeToCompleteWeekToDate(any())).thenReturn(Duration.ZERO);
-        when(metricsRepository.getMedianTimeToCompleteWeekToDate(any())).thenReturn(Duration.ZERO);
+        when(applicationRepository.count()).thenReturn(0);
+        when(applicationRepository.getMedianTimeToComplete()).thenReturn(Duration.ZERO);
+        when(applicationRepository.getAverageTimeToCompleteWeekToDate(any())).thenReturn(Duration.ZERO);
+        when(applicationRepository.getMedianTimeToCompleteWeekToDate(any())).thenReturn(Duration.ZERO);
     }
 
     @Test
     void shouldIncludeCountOfApplicationMetrics() throws Exception {
         int applicationsSubmitted = 1421;
-        when(metricsRepository.count()).thenReturn(applicationsSubmitted);
+        when(applicationRepository.count()).thenReturn(applicationsSubmitted);
 
         mockMvc.perform(get("/metrics"))
                 .andExpect(MockMvcResultMatchers.view().name("metricsDashboard"))
@@ -43,7 +44,7 @@ class MetricsControllerTest {
     @Test
     void shouldIncludeMedianTimeToComplete() throws Exception {
         Duration medianTimeToComplete = Duration.of(5, ChronoUnit.MINUTES);
-        when(metricsRepository.getMedianTimeToComplete()).thenReturn(medianTimeToComplete);
+        when(applicationRepository.getMedianTimeToComplete()).thenReturn(medianTimeToComplete);
 
         mockMvc.perform(get("/metrics"))
                 .andExpect(MockMvcResultMatchers.view().name("metricsDashboard"))

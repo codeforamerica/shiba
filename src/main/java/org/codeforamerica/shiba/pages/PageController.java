@@ -4,8 +4,6 @@ import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.ApplicationFactory;
 import org.codeforamerica.shiba.ApplicationRepository;
 import org.codeforamerica.shiba.ConfirmationData;
-import org.codeforamerica.shiba.metrics.ApplicationMetric;
-import org.codeforamerica.shiba.metrics.ApplicationMetricsRepository;
 import org.codeforamerica.shiba.metrics.Metrics;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.LandmarkPagesConfiguration;
@@ -24,7 +22,6 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.time.Clock;
-import java.time.Duration;
 import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +31,6 @@ public class PageController {
     private final ApplicationData applicationData;
     private final ApplicationConfiguration applicationConfiguration;
     private final Clock clock;
-    private final ApplicationMetricsRepository metricsRepository;
     private final Metrics metrics;
     private final ApplicationRepository applicationRepository;
     private final ApplicationFactory applicationFactory;
@@ -45,7 +41,6 @@ public class PageController {
             ApplicationConfiguration applicationConfiguration,
             ApplicationData applicationData,
             Clock clock,
-            ApplicationMetricsRepository metricsRepository,
             Metrics metrics,
             ApplicationRepository applicationRepository,
             ApplicationFactory applicationFactory,
@@ -54,7 +49,6 @@ public class PageController {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
-        this.metricsRepository = metricsRepository;
         this.metrics = metrics;
         this.applicationRepository = applicationRepository;
         this.applicationFactory = applicationFactory;
@@ -236,18 +230,12 @@ public class PageController {
 
         if (pageData.isValid()) {
             String id = applicationRepository.getNextId();
-            Application application = applicationFactory.newApplication(id, applicationData);
+            Application application = applicationFactory.newApplication(id, applicationData, metrics);
             confirmationData.setId(application.getId());
             confirmationData.setCompletedAt(application.getCompletedAt());
             confirmationData.setCounty(application.getCounty());
             applicationRepository.save(application);
             applicationEventPublisher.publishEvent(new ApplicationSubmittedEvent(application.getId()));
-
-            ApplicationMetric applicationMetric = new ApplicationMetric(
-                    Duration.between(metrics.getStartTime(), application.getCompletedAt()),
-                    application.getCounty(),
-                    application.getCompletedAt());
-            metricsRepository.save(applicationMetric);
 
             return new ModelAndView(String.format("redirect:/pages/%s/navigation", submitPage));
         } else {

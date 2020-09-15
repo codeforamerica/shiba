@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba;
 
+import org.codeforamerica.shiba.metrics.Metrics;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
@@ -19,16 +20,18 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class ApplicationFactoryTest {
-    ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
 
     Clock clock = mock(Clock.class);
 
     Map<String, County> countyZipCodeMap = new HashMap<>();
+
     Map<County, MnitCountyInformation> countyFolderIdMapping = new HashMap<>();
 
     ApplicationFactory applicationFactory = new ApplicationFactory(clock, countyZipCodeMap, countyFolderIdMapping);
 
     ApplicationData applicationData = new ApplicationData();
+
+    Metrics defaultMetrics = new Metrics();
 
     ZoneOffset zoneOffset = ZoneOffset.UTC;
 
@@ -36,6 +39,7 @@ class ApplicationFactoryTest {
 
     @BeforeEach
     void setUp() {
+        defaultMetrics.setStartTimeOnce(Instant.EPOCH);
         pagesData = new PagesData();
         PageData homeAddress = new PageData();
         homeAddress.put("zipCode", InputData.builder().value(List.of("something")).build());
@@ -53,19 +57,10 @@ class ApplicationFactoryTest {
 
     @Test
     void shouldObtainACopyOfTheApplicationData() {
-        Application application = applicationFactory.newApplication("", applicationData);
+        Application application = applicationFactory.newApplication("", applicationData, defaultMetrics);
 
         assertThat(application.getApplicationData()).isNotSameAs(applicationData);
         assertThat(application.getApplicationData()).isEqualTo(applicationData);
-    }
-
-    @Test
-    void shouldProvideApplicationId() {
-        String applicationId = "someId";
-
-        Application application = applicationFactory.newApplication(applicationId, applicationData);
-
-        assertThat(application.getId()).isEqualTo(applicationId);
     }
 
     @Test
@@ -73,9 +68,21 @@ class ApplicationFactoryTest {
         Instant instant = Instant.ofEpochSecond(125423L);
         when(clock.instant()).thenReturn(instant);
 
-        Application application = applicationFactory.newApplication("", applicationData);
+        Application application = applicationFactory.newApplication("", applicationData, defaultMetrics);
 
         assertThat(application.getCompletedAt()).isEqualTo(ZonedDateTime.ofInstant(instant, zoneOffset));
+    }
+
+    @Test
+    void shouldProvideTimeToComplete() {
+        Instant now = Instant.now();
+        when(clock.instant()).thenReturn(now);
+        Metrics metrics = new Metrics();
+        metrics.setStartTimeOnce(now.minusSeconds(142));
+
+        Application application = applicationFactory.newApplication("", applicationData, metrics);
+
+        assertThat(application.getTimeToComplete()).isEqualTo(Duration.ofSeconds(142));
     }
 
     @Test
@@ -86,7 +93,7 @@ class ApplicationFactoryTest {
         homeAddress.put("zipCode", InputData.builder().value(List.of(zipCode)).build());
         pagesData.put("homeAddress", homeAddress);
 
-        Application application = applicationFactory.newApplication("", applicationData);
+        Application application = applicationFactory.newApplication("", applicationData, defaultMetrics);
 
         assertThat(application.getCounty()).isEqualTo(HENNEPIN);
     }
@@ -98,7 +105,7 @@ class ApplicationFactoryTest {
         homeAddress.put("zipCode", InputData.builder().value(List.of(zipCode)).build());
         pagesData.put("homeAddress", homeAddress);
 
-        Application application = applicationFactory.newApplication("", applicationData);
+        Application application = applicationFactory.newApplication("", applicationData, defaultMetrics);
 
         assertThat(application.getCounty()).isEqualTo(OTHER);
     }
@@ -108,21 +115,21 @@ class ApplicationFactoryTest {
         @Test
         void shouldIncludeIdInFileNameForApplication() {
             String applicationId = "someId";
-            Application application = applicationFactory.newApplication(applicationId, applicationData);
+            Application application = applicationFactory.newApplication(applicationId, applicationData, defaultMetrics);
             assertThat(application.getFileName()).contains(applicationId);
         }
 
         @Test
         void shouldIncludeSubmitDateInCentralTimeZone() {
             when(clock.instant()).thenReturn(Instant.parse("2007-09-10T04:59:59.00Z"));
-            Application application = applicationFactory.newApplication("", applicationData);
+            Application application = applicationFactory.newApplication("", applicationData, defaultMetrics);
             assertThat(application.getFileName()).contains("20070909");
         }
 
         @Test
         void shouldIncludeSubmitTimeInCentralTimeZone() {
             when(clock.instant()).thenReturn(Instant.parse("2007-09-10T04:05:59.00Z"));
-            Application application = applicationFactory.newApplication("", applicationData);
+            Application application = applicationFactory.newApplication("", applicationData, defaultMetrics);
             assertThat(application.getFileName()).contains("230559");
         }
 
@@ -130,7 +137,7 @@ class ApplicationFactoryTest {
         void shouldIncludeCorrectCountyNPI() {
             String countyNPI = setupCounty();
 
-            Application application = applicationFactory.newApplication("", applicationData);
+            Application application = applicationFactory.newApplication("", applicationData, defaultMetrics);
 
             assertThat(application.getFileName()).contains(countyNPI);
         }
@@ -144,7 +151,7 @@ class ApplicationFactoryTest {
             Collections.shuffle(programs);
             chooseProgramsData.put("programs", InputData.builder().value(programs).build());
             pagesData.put("choosePrograms", chooseProgramsData);
-            Application application = applicationFactory.newApplication("", applicationData);
+            Application application = applicationFactory.newApplication("", applicationData, defaultMetrics);
 
             assertThat(application.getFileName()).contains("EKFC");
         }
@@ -156,7 +163,7 @@ class ApplicationFactoryTest {
             setupProgramData();
             when(clock.instant()).thenReturn(Instant.parse("2007-09-10T04:59:59.00Z"));
 
-            Application application = applicationFactory.newApplication(applicationId, applicationData);
+            Application application = applicationFactory.newApplication(applicationId, applicationData, defaultMetrics);
 
             assertThat(application.getFileName()).isEqualTo(String.format("%s_MNB_%s_%s_%s_%s",
                     countyNPI, "20070909", "235959", applicationId, "EKFC"));
@@ -174,7 +181,8 @@ class ApplicationFactoryTest {
                     applicationId,
                     ZonedDateTime.ofInstant(completedAt, ZoneId.of("UTC")),
                     applicationData,
-                    HENNEPIN
+                    HENNEPIN,
+                    null
             );
 
             assertThat(application.getFileName()).isEqualTo(String.format("%s_MNB_%s_%s_%s_%s",

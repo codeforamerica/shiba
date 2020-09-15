@@ -27,7 +27,14 @@ class DerivedValueApplicationInputsMapperTest {
 
     private final ApplicationData applicationData = new ApplicationData();
     private final PagesData pagesData = new PagesData();
-    private final Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER, "");
+    private final Application application = Application.builder()
+            .id("someId")
+            .completedAt(ZonedDateTime.now())
+            .applicationData(applicationData)
+            .county(County.OTHER)
+            .fileName("")
+            .timeToComplete(null)
+            .build();
 
     @TestConfiguration
     @PropertySource(value = "classpath:derived-values-config/test-derived-values-config.yaml", factory = YamlPropertySourceFactory.class)

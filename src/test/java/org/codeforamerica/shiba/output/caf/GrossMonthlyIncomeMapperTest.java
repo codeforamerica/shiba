@@ -75,7 +75,14 @@ class GrossMonthlyIncomeMapperTest {
         subworkflows.put("jobsGroup", subworkflow);
 
         applicationData.setSubworkflows(subworkflows);
-        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER, "");
+        Application application = Application.builder()
+                .id("someId")
+                .completedAt(ZonedDateTime.now())
+                .applicationData(applicationData)
+                .county(County.OTHER)
+                .fileName("")
+                .timeToComplete(null)
+                .build();
 
         List<ApplicationInput> applicationInputs = grossMonthlyIncomeMapper.map(application, Recipient.CLIENT);
 
@@ -102,7 +109,14 @@ class GrossMonthlyIncomeMapperTest {
         subworkflow.add(pagesData);
         subworkflows.put("jobsGroup", subworkflow);
         applicationData.setSubworkflows(subworkflows);
-        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER, "");
+        Application application = Application.builder()
+                .id("someId")
+                .completedAt(ZonedDateTime.now())
+                .applicationData(applicationData)
+                .county(County.OTHER)
+                .fileName("")
+                .timeToComplete(null)
+                .build();
 
         List<ApplicationInput> applicationInputs = grossMonthlyIncomeMapper.map(application, Recipient.CLIENT);
 
@@ -111,7 +125,14 @@ class GrossMonthlyIncomeMapperTest {
 
     @Test
     void shouldNotIncludeGrossMonthlyIncomeWhenJobsInformationIsNotAvailable() {
-        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER, "");
+        Application application = Application.builder()
+                .id("someId")
+                .completedAt(ZonedDateTime.now())
+                .applicationData(applicationData)
+                .county(County.OTHER)
+                .fileName("")
+                .timeToComplete(null)
+                .build();
 
         List<ApplicationInput> applicationInputs = grossMonthlyIncomeMapper.map(application, Recipient.CLIENT);
 
@@ -146,7 +167,14 @@ class GrossMonthlyIncomeMapperTest {
         subworkflow.add(pagesData);
         subworkflows.put("jobsGroup", subworkflow);
         applicationData.setSubworkflows(subworkflows);
-        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER, "");
+        Application application = Application.builder()
+                .id("someId")
+                .completedAt(ZonedDateTime.now())
+                .applicationData(applicationData)
+                .county(County.OTHER)
+                .fileName("")
+                .timeToComplete(null)
+                .build();
 
         List<ApplicationInput> applicationInputs = grossMonthlyIncomeMapper.map(application, Recipient.CLIENT);
 

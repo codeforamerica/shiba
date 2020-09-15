@@ -93,7 +93,14 @@ public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
         staticMessageSource.addMessage("fourth-page-title", Locale.US, "fourth page title");
         staticMessageSource.addMessage("first-page-title", Locale.US, "first page title");
         staticMessageSource.addMessage("fourth-page-title", Locale.US, fourthPageTitle);
-        when(applicationFactory.newApplication(any(), any())).thenReturn(new Application("foo", ZonedDateTime.now(), new ApplicationData(), County.OTHER, ""));
+        when(applicationFactory.newApplication(any(), any(), any())).thenReturn(Application.builder()
+                .id("foo")
+                .completedAt(ZonedDateTime.now())
+                .applicationData(new ApplicationData())
+                .county(County.OTHER)
+                .fileName("")
+                .timeToComplete(null)
+                .build());
     }
 
     @Test

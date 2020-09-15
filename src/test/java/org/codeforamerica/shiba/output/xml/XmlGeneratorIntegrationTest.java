@@ -34,6 +34,7 @@ import javax.xml.validation.Validator;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.Clock;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -108,7 +109,14 @@ public class XmlGeneratorIntegrationTest {
         pagesData.putAll(data);
         ApplicationData applicationData = new ApplicationData();
         applicationData.setPagesData(pagesData);
-        Application application = new Application(applicationId, ZonedDateTime.now(clock), applicationData, County.OTHER, "");
+        Application application = Application.builder()
+                .id(applicationId)
+                .completedAt(ZonedDateTime.now(clock))
+                .applicationData(applicationData)
+                .county(County.OTHER)
+                .fileName("")
+                .timeToComplete(Duration.ofSeconds(534))
+                .build();
         applicationRepository.save(application);
         ApplicationFile applicationFile = xmlGenerator.generate(applicationId, CASEWORKER);
 

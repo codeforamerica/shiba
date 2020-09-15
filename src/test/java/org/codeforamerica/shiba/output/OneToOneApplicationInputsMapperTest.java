@@ -42,7 +42,14 @@ class OneToOneApplicationInputsMapperTest {
 
         ApplicationData applicationData = new ApplicationData();
         applicationData.setPagesData(data);
-        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER, "");
+        Application application = Application.builder()
+                .id("someId")
+                .completedAt(ZonedDateTime.now())
+                .applicationData(applicationData)
+                .county(County.OTHER)
+                .fileName("")
+                .timeToComplete(null)
+                .build();
         List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, Recipient.CLIENT);
 
         assertThat(applicationInputs).contains(
@@ -75,7 +82,14 @@ class OneToOneApplicationInputsMapperTest {
         ApplicationData applicationData = new ApplicationData();
         applicationData.setPagesData(data);
 
-        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER, "");
+        Application application = Application.builder()
+                .id("someId")
+                .completedAt(ZonedDateTime.now())
+                .applicationData(applicationData)
+                .county(County.OTHER)
+                .fileName("")
+                .timeToComplete(null)
+                .build();
 
         List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, Recipient.CLIENT);
 
@@ -108,7 +122,14 @@ class OneToOneApplicationInputsMapperTest {
         ApplicationData applicationData = new ApplicationData();
         applicationData.setPagesData(data);
 
-        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER, "");
+        Application application = Application.builder()
+                .id("someId")
+                .completedAt(ZonedDateTime.now())
+                .applicationData(applicationData)
+                .county(County.OTHER)
+                .fileName("")
+                .timeToComplete(null)
+                .build();
 
         List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, Recipient.CLIENT);
 
@@ -141,7 +162,14 @@ class OneToOneApplicationInputsMapperTest {
         ApplicationData applicationData = new ApplicationData();
         applicationData.setPagesData(data);
 
-        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER, "");
+        Application application = Application.builder()
+                .id("someId")
+                .completedAt(ZonedDateTime.now())
+                .applicationData(applicationData)
+                .county(County.OTHER)
+                .fileName("")
+                .timeToComplete(null)
+                .build();
 
         List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, Recipient.CASEWORKER);
 
@@ -179,7 +207,14 @@ class OneToOneApplicationInputsMapperTest {
 
         ApplicationData applicationData = new ApplicationData();
         applicationData.setPagesData(data);
-        Application application = new Application("someId", ZonedDateTime.now(), applicationData, County.OTHER, "");
+        Application application = Application.builder()
+                .id("someId")
+                .completedAt(ZonedDateTime.now())
+                .applicationData(applicationData)
+                .county(County.OTHER)
+                .fileName("")
+                .timeToComplete(null)
+                .build();
         List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, Recipient.CLIENT);
 
         assertThat(applicationInputs).contains(

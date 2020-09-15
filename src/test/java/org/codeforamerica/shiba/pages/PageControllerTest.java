@@ -1,18 +1,14 @@
 package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.*;
-import org.codeforamerica.shiba.metrics.ApplicationMetric;
-import org.codeforamerica.shiba.metrics.ApplicationMetricsRepository;
 import org.codeforamerica.shiba.metrics.Metrics;
 import org.codeforamerica.shiba.output.ApplicationDataConsumer;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -28,10 +24,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.*;
-import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.County.OLMSTED;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -61,8 +55,6 @@ class PageControllerTest {
 
     Clock clock = mock(Clock.class);
 
-    ApplicationMetricsRepository applicationMetricsRepository = mock(ApplicationMetricsRepository.class);
-
     ApplicationDataConsumer applicationDataConsumer = mock(ApplicationDataConsumer.class);
 
     ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
@@ -80,7 +72,6 @@ class PageControllerTest {
                 applicationConfiguration,
                 applicationData,
                 clock,
-                applicationMetricsRepository,
                 metrics,
                 applicationRepository,
                 applicationFactory,
@@ -91,7 +82,14 @@ class PageControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(pageController)
                 .build();
         when(clock.instant()).thenReturn(Instant.now());
-        when(applicationFactory.newApplication(any(), any())).thenReturn(new Application("defaultId", ZonedDateTime.now(), null, null, ""));
+        when(applicationFactory.newApplication(any(), any(), any())).thenReturn(Application.builder()
+                .id("defaultId")
+                .completedAt(ZonedDateTime.now())
+                .applicationData(null)
+                .county(null)
+                .fileName("")
+                .timeToComplete(null)
+                .build());
     }
 
     @Test
@@ -108,46 +106,20 @@ class PageControllerTest {
         assertThat(firstPage.get("foo").getValue()).contains("some value");
     }
 
-    @Nested
-    class ApplicationMetrics {
-        @Test
-        void shouldStoreCompletedApplicationInRepository() throws Exception {
-            ZonedDateTime completedAt = ZonedDateTime.of(LocalDateTime.of(2020, 1, 1, 10, 10), ZoneOffset.UTC);
-            metrics.setStartTimeOnce(completedAt.toInstant().minus(5, ChronoUnit.MINUTES).minus(30, ChronoUnit.SECONDS));
-            County county = OLMSTED;
-            when(applicationFactory.newApplication(any(), any())).thenReturn(new Application("", completedAt, new ApplicationData(), county, ""));
-            mockMvc.perform(post("/submit")
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                    .param("foo[]", "some value"));
-
-            ArgumentCaptor<ApplicationMetric> argumentCaptor = ArgumentCaptor.forClass(ApplicationMetric.class);
-            verify(applicationMetricsRepository).save(argumentCaptor.capture());
-            ApplicationMetric applicationMetric = argumentCaptor.getValue();
-            assertThat(applicationMetric.getTimeToComplete()).isEqualTo(Duration.ofMinutes(5).plusSeconds(30));
-            assertThat(applicationMetric.getCounty()).isEqualTo(county);
-            assertThat(applicationMetric.getCompletedAt()).isEqualTo(completedAt);
-        }
-
-        @Test
-        void shouldNotStoreCompletedApplicationInRepositoryWhenNoSignatureIsSent() throws Exception {
-            Instant submissionTime = LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant();
-            metrics.setStartTimeOnce(submissionTime.minus(5, ChronoUnit.MINUTES).minus(30, ChronoUnit.SECONDS));
-            when(clock.instant()).thenReturn(submissionTime);
-
-            mockMvc.perform(post("/submit")
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
-
-            verifyNoInteractions(applicationMetricsRepository);
-        }
-    }
-
     @Test
     void shouldPublishApplicationSubmittedEvent() throws Exception {
         metrics.setStartTimeOnce(Instant.now());
 
         String applicationId = "someId";
-        Application application = new Application(applicationId, ZonedDateTime.now(), applicationData, null, "");
-        when(applicationFactory.newApplication(any(), eq(applicationData))).thenReturn(application);
+        Application application = Application.builder()
+                .id(applicationId)
+                .completedAt(ZonedDateTime.now())
+                .applicationData(applicationData)
+                .county(null)
+                .fileName("")
+                .timeToComplete(null)
+                .build();
+        when(applicationFactory.newApplication(any(), eq(applicationData), eq(metrics))).thenReturn(application);
 
         mockMvc.perform(post("/submit")
                 .param("foo[]", "some value")
@@ -175,9 +147,16 @@ class PageControllerTest {
 
         ZonedDateTime completedAt = ZonedDateTime.now();
         String applicationId = "someId";
-        Application application = new Application(applicationId, completedAt, applicationData, null, "");
+        Application application = Application.builder()
+                .id(applicationId)
+                .completedAt(completedAt)
+                .applicationData(applicationData)
+                .county(null)
+                .fileName("")
+                .timeToComplete(null)
+                .build();
         when(applicationRepository.getNextId()).thenReturn(applicationId);
-        when(applicationFactory.newApplication(applicationId, applicationData)).thenReturn(application);
+        when(applicationFactory.newApplication(applicationId, applicationData, metrics)).thenReturn(application);
 
         mockMvc.perform(post("/submit")
                 .param("foo[]", "some value")

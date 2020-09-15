@@ -38,7 +38,14 @@ class MnitDocumentConsumerTest {
 
     @Test
     void generatesThePDFFromTheApplicationData() {
-        Application application = new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED, "");
+        Application application = Application.builder()
+                .id("someId")
+                .completedAt(ZonedDateTime.now())
+                .applicationData(new ApplicationData())
+                .county(County.OLMSTED)
+                .fileName("")
+                .timeToComplete(null)
+                .build();
 
         documentConsumer.process(application);
 
@@ -47,7 +54,14 @@ class MnitDocumentConsumerTest {
 
     @Test
     void generatesTheXmlFromTheApplicationData() {
-        Application application = new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED, "");
+        Application application = Application.builder()
+                .id("someId")
+                .completedAt(ZonedDateTime.now())
+                .applicationData(new ApplicationData())
+                .county(County.OLMSTED)
+                .fileName("")
+                .timeToComplete(null)
+                .build();
 
         documentConsumer.process(application);
         verify(xmlGenerator).generate(application.getId(), CASEWORKER);
@@ -60,7 +74,14 @@ class MnitDocumentConsumerTest {
         ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
         when(xmlGenerator.generate(any(), any())).thenReturn(xmlApplicationFile);
 
-        Application application = new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED, "");
+        Application application = Application.builder()
+                .id("someId")
+                .completedAt(ZonedDateTime.now())
+                .applicationData(new ApplicationData())
+                .county(County.OLMSTED)
+                .fileName("")
+                .timeToComplete(null)
+                .build();
         documentConsumer.process(application);
 
         verify(mnitClient).send(pdfApplicationFile, County.OLMSTED);

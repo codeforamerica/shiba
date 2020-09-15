@@ -23,7 +23,14 @@ class ApplicationInputsMappersTest {
 
     @Test
     void shouldIncludeApplicationIdInput() {
-        List<ApplicationInput> applicationInputs = mappers.map(new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED, ""), CLIENT);
+        List<ApplicationInput> applicationInputs = mappers.map(Application.builder()
+                .id("someId")
+                .completedAt(ZonedDateTime.now())
+                .applicationData(new ApplicationData())
+                .county(County.OLMSTED)
+                .fileName("")
+                .timeToComplete(null)
+                .build(), CLIENT);
 
         assertThat(applicationInputs).contains(new ApplicationInput("nonPagesData", "applicationId", List.of("someId"), SINGLE_VALUE));
     }
@@ -34,7 +41,14 @@ class ApplicationInputsMappersTest {
         ZonedDateTime completedAt = ZonedDateTime.of(
                 LocalDateTime.of(2020, 9, 3, 1, 2, 3),
                 ZoneOffset.UTC);
-        Application application = new Application(applicationId, completedAt, new ApplicationData(), null, "");
+        Application application = Application.builder()
+                .id(applicationId)
+                .completedAt(completedAt)
+                .applicationData(new ApplicationData())
+                .county(null)
+                .fileName("")
+                .timeToComplete(null)
+                .build();
 
         List<ApplicationInput> applicationInputs = mappers.map(application, CASEWORKER);
 
@@ -45,7 +59,14 @@ class ApplicationInputsMappersTest {
     void shouldIncludeCompletedDateTimeInput() {
         String applicationId = "someId";
         ZonedDateTime completedAt = ZonedDateTime.of(LocalDateTime.of(2019, 11, 16, 5, 29, 1), ZoneOffset.UTC);
-        Application application = new Application(applicationId, completedAt, new ApplicationData(), null, "");
+        Application application = Application.builder()
+                .id(applicationId)
+                .completedAt(completedAt)
+                .applicationData(new ApplicationData())
+                .county(null)
+                .fileName("")
+                .timeToComplete(null)
+                .build();
 
         List<ApplicationInput> applicationInputs = mappers.map(application, CASEWORKER);
 
@@ -58,7 +79,14 @@ class ApplicationInputsMappersTest {
 
         ApplicationInputsMappers applicationInputsMappers = new ApplicationInputsMappers(List.of(mapper));
 
-        Application application = new Application("someId", ZonedDateTime.now(), new ApplicationData(), County.OLMSTED, "");
+        Application application = Application.builder()
+                .id("someId")
+                .completedAt(ZonedDateTime.now())
+                .applicationData(new ApplicationData())
+                .county(County.OLMSTED)
+                .fileName("")
+                .timeToComplete(null)
+                .build();
         applicationInputsMappers.map(application, CASEWORKER);
 
         verify(mapper).map(application, CASEWORKER);

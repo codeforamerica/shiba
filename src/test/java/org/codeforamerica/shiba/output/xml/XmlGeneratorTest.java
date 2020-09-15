@@ -39,7 +39,14 @@ class XmlGeneratorTest {
 
     @BeforeEach
     void setUp() {
-        when(applicationRepository.find(any())).thenReturn(new Application("", null, null, null, null));
+        when(applicationRepository.find(any())).thenReturn(Application.builder()
+                .id("")
+                .completedAt(null)
+                .applicationData(null)
+                .county(null)
+                .fileName(null)
+                .timeToComplete(null)
+                .build());
     }
 
     @ParameterizedTest
@@ -464,8 +471,14 @@ class XmlGeneratorTest {
         );
 
         String fileName = "some file name";
-        when(applicationRepository.find(any())).thenReturn(new Application("", null,
-                new ApplicationData(), null, fileName));
+        when(applicationRepository.find(any())).thenReturn(Application.builder()
+                .id("")
+                .completedAt(null)
+                .applicationData(new ApplicationData())
+                .county(null)
+                .fileName(fileName)
+                .timeToComplete(null)
+                .build());
         String applicationId = "application-id";
         ApplicationFile applicationFile = subject.generate(applicationId, null);
 

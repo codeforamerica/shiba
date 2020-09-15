@@ -1,10 +1,12 @@
 package org.codeforamerica.shiba;
 
+import org.codeforamerica.shiba.metrics.Metrics;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.time.Clock;
+import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -32,7 +34,7 @@ public class ApplicationFactory {
         this.countyFolderIdMapping = countyFolderIdMapping;
     }
 
-    public Application newApplication(String id, ApplicationData applicationData) {
+    public Application newApplication(String id, ApplicationData applicationData, Metrics metrics) {
         ApplicationData copy = new ApplicationData();
         copy.setPagesData(applicationData.getPagesData());
         copy.setSubworkflows(applicationData.getSubworkflows());
@@ -42,16 +44,29 @@ public class ApplicationFactory {
         ZonedDateTime completedAt = ZonedDateTime.now(clock);
         String fileName = createFileName(id, applicationData, county, completedAt);
 
-        return new Application(id, completedAt, copy, county, fileName);
+        return Application.builder()
+                .id(id)
+                .completedAt(completedAt)
+                .applicationData(copy)
+                .county(county)
+                .fileName(fileName)
+                .timeToComplete(Duration.between(metrics.getStartTime(), completedAt))
+                .build();
     }
 
     public Application reconstitueApplication(String id,
                                               ZonedDateTime completedAt,
                                               ApplicationData applicationData,
-                                              County county) {
-        return new Application(id, completedAt, applicationData, county,
-                createFileName(id, applicationData, county, completedAt)
-        );
+                                              County county,
+                                              Duration timeToComplete) {
+        return Application.builder()
+                .id(id)
+                .completedAt(completedAt)
+                .applicationData(applicationData)
+                .county(county)
+                .fileName(createFileName(id, applicationData, county, completedAt))
+                .timeToComplete(timeToComplete)
+                .build();
     }
 
     @NotNull

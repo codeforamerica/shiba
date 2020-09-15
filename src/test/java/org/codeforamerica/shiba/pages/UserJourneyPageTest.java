@@ -97,7 +97,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     @Test
-    @Sql(statements = "TRUNCATE TABLE application_metrics;")
+    @Sql(statements = "TRUNCATE TABLE applications;")
     void shouldCaptureMetricsAfterAnApplicationIsCompleted() {
         when(clock.instant()).thenReturn(
                 LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant(),

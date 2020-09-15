@@ -28,7 +28,14 @@ class ResidentialAddressStreetMapperTest {
 
         pagesData.put("homeAddress", homeAddressData);
         applicationData.setPagesData(pagesData);
-        Application application = new Application("", null, applicationData, null, "");
+        Application application = Application.builder()
+                .id("")
+                .completedAt(null)
+                .applicationData(applicationData)
+                .county(null)
+                .fileName("")
+                .timeToComplete(null)
+                .build();
         List<ApplicationInput> map = mapper.map(application, null);
 
         assertThat(map).contains(new ApplicationInput("homeAddress",
@@ -48,7 +55,14 @@ class ResidentialAddressStreetMapperTest {
 
         pagesData.put("homeAddress", homeAddressData);
         applicationData.setPagesData(pagesData);
-        Application application = new Application("", null, applicationData, null, "");
+        Application application = Application.builder()
+                .id("")
+                .completedAt(null)
+                .applicationData(applicationData)
+                .county(null)
+                .fileName("")
+                .timeToComplete(null)
+                .build();
         List<ApplicationInput> map = mapper.map(application, null);
 
         assertThat(map).contains(new ApplicationInput("homeAddress",
@@ -71,7 +85,14 @@ class ResidentialAddressStreetMapperTest {
 
         pagesData.put("homeAddress", homeAddressData);
         applicationData.setPagesData(pagesData);
-        Application application = new Application("", null, applicationData, null, "");
+        Application application = Application.builder()
+                .id("")
+                .completedAt(null)
+                .applicationData(applicationData)
+                .county(null)
+                .fileName("")
+                .timeToComplete(null)
+                .build();
         List<ApplicationInput> map = mapper.map(application, null);
 
         assertThat(map).contains(new ApplicationInput("homeAddress",

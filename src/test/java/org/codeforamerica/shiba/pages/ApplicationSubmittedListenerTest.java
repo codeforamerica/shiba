@@ -47,7 +47,14 @@ class ApplicationSubmittedListenerTest {
     @Test
     void shouldSendSubmittedApplicationToMNIT() {
         String applicationId = "someId";
-        Application application = new Application(applicationId, ZonedDateTime.now(), null, null, "");
+        Application application = Application.builder()
+                .id(applicationId)
+                .completedAt(ZonedDateTime.now())
+                .applicationData(null)
+                .county(null)
+                .fileName("")
+                .timeToComplete(null)
+                .build();
         ApplicationSubmittedEvent event = new ApplicationSubmittedEvent(applicationId);
         when(applicationRepository.find(applicationId)).thenReturn(application);
 
@@ -67,7 +74,14 @@ class ApplicationSubmittedListenerTest {
         pagesData.put("contactInfo", contactInfoPage);
         applicationData.setPagesData(pagesData);
         String appIdFromDb = "id";
-        Application application = new Application(appIdFromDb, ZonedDateTime.now(), applicationData, null, "");
+        Application application = Application.builder()
+                .id(appIdFromDb)
+                .completedAt(ZonedDateTime.now())
+                .applicationData(applicationData)
+                .county(null)
+                .fileName("")
+                .timeToComplete(null)
+                .build();
         when(applicationRepository.find(applicationId)).thenReturn(application);
         ApplicationSubmittedEvent event = new ApplicationSubmittedEvent(applicationId);
         when(expeditedEligibilityDecider.decide(pagesData)).thenReturn(ExpeditedEligibility.ELIGIBLE);
@@ -86,7 +100,14 @@ class ApplicationSubmittedListenerTest {
         PageData contactInfo = new PageData();
         pagesData.put("contactInfo", contactInfo);
         applicationData.setPagesData(pagesData);
-        when(applicationRepository.find(any())).thenReturn(new Application("", ZonedDateTime.now(), applicationData, null, ""));
+        when(applicationRepository.find(any())).thenReturn(Application.builder()
+                .id("")
+                .completedAt(ZonedDateTime.now())
+                .applicationData(applicationData)
+                .county(null)
+                .fileName("")
+                .timeToComplete(null)
+                .build());
         ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("appId");
 
         applicationSubmittedListener.sendConfirmationEmail(event);
@@ -111,7 +132,14 @@ class ApplicationSubmittedListenerTest {
         County recipientCounty = HENNEPIN;
         String email = "someEmail";
         countyEmailMap.put(recipientCounty, email);
-        Application application = new Application(appIdFromDb, ZonedDateTime.now(), applicationData, recipientCounty, "");
+        Application application = Application.builder()
+                .id(appIdFromDb)
+                .completedAt(ZonedDateTime.now())
+                .applicationData(applicationData)
+                .county(recipientCounty)
+                .fileName("")
+                .timeToComplete(null)
+                .build();
         when(applicationRepository.find(applicationId)).thenReturn(application);
         ApplicationSubmittedEvent event = new ApplicationSubmittedEvent(applicationId);
         when(expeditedEligibilityDecider.decide(pagesData)).thenReturn(ExpeditedEligibility.ELIGIBLE);

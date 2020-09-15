@@ -33,7 +33,14 @@ class PdfGeneratorTest {
 
         String applicationId = "someAppId";
         List<PdfField> pdfFields = List.of(new SimplePdfField("someName", "someValue"));
-        Application application = new Application("", null, null, null, "some file name");
+        Application application = Application.builder()
+                .id("")
+                .completedAt(null)
+                .applicationData(null)
+                .county(null)
+                .fileName("some file name")
+                .timeToComplete(null)
+                .build();
         when(applicationRepository.find(applicationId)).thenReturn(application);
         Recipient recipient = CASEWORKER;
         when(mappers.map(application, recipient)).thenReturn(applicationInputs);
