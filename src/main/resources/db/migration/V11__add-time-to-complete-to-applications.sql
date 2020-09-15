@@ -1,5 +1,5 @@
 ALTER TABLE applications
-    ADD COLUMN time_to_complete INTEGER;
+    ADD COLUMN time_to_complete INTEGER DEFAULT 0;
 
 UPDATE applications
 SET time_to_complete = subquery.time_to_complete
