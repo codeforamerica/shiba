@@ -148,7 +148,7 @@ class ApplicationSubmittedListenerTest {
 
         applicationSubmittedListener.sendCaseWorkerEmail(event);
 
-        verify(emailClient).sendCaseWorkerEmail(email, fullName, applicationFile);
+        verify(emailClient).sendCaseWorkerEmail(email, fullName, appIdFromDb, applicationFile);
     }
 
     @Test

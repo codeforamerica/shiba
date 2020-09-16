@@ -2,6 +2,4 @@ spring:
   datasource:
     url: ${DATABASE_URL}
     driverClassName: org.postgresql.Driver
-sentry:
-  environment: demo
 submit-via-email: true

@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.pages;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
@@ -58,13 +59,14 @@ public class MailGunEmailClient implements EmailClient {
 
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.setBasicAuth("api", mailGunApiKey);
-
+        MDC.put("confirmationId", confirmationId);
         restTemplate.postForLocation(mailGunUrl, new HttpEntity<>(form, requestHeaders));
     }
 
     @Override
     public void sendCaseWorkerEmail(String recipientEmail,
                                     String recipientName,
+                                    String confirmationId,
                                     ApplicationFile applicationFile) {
         MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
         form.put("from", List.of(senderEmail));
@@ -78,7 +80,7 @@ public class MailGunEmailClient implements EmailClient {
 
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.setBasicAuth("api", mailGunApiKey);
-
+        MDC.put("confirmationId", confirmationId);
         restTemplate.postForLocation(mailGunUrl, new HttpEntity<>(form, requestHeaders));
     }
 

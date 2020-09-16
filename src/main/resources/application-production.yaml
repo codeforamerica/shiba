@@ -6,8 +6,6 @@ spring:
 client:
   keystore: src/main/resources/shiba-production.jks
 
-sentry:
-  environment: production
 submit-via-email: true
 mail-gun:
   shouldCC: true

@@ -80,7 +80,7 @@ dependencies {
     implementation 'commons-validator:commons-validator:1.6'
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.apache.httpcomponents:httpclient'
-    implementation 'io.sentry:sentry-spring:1.7.30'
+    implementation 'io.sentry:sentry-logback:1.7.30'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'com.google.crypto.tink:tink:1.4.0'
     implementation 'org.flywaydb:flyway-core:6.4.4'

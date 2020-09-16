@@ -10,9 +10,6 @@ mnit-esb:
   url: https://test-svcs.dhs.mn.gov/WebServices/Alfresco/CreateDocument
   jaxb-context-path: org.codeforamerica.shiba.esbwsdl
 
-sentry:
-  dsn: ${SENTRY_DSN_URL}
-
 sender-email: help@mnbenefits.org
 security-email: security@mnbenefits.org
 audit-email: help+audit@mnbenefits.org

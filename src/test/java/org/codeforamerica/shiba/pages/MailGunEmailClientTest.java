@@ -139,6 +139,7 @@ class MailGunEmailClientTest {
         mailGunEmailClient.sendCaseWorkerEmail(
                 recipientEmail,
                 recipientName,
+                "appId",
                 new ApplicationFile(fileContent.getBytes(), fileName));
 
         wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
@@ -222,6 +223,7 @@ class MailGunEmailClientTest {
         mailGunEmailClient.sendCaseWorkerEmail(
                 recipientEmail,
                 recipientName,
+                "appId",
                 new ApplicationFile(fileContent.getBytes(), fileName));
 
         wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))

@@ -2,8 +2,5 @@ spring:
   datasource:
     url: ${DATABASE_URL}
     driverClassName: org.postgresql.Driver
-sentry:
-  environment: staging
 submit-via-email: true
-
 send-download-alert: true
