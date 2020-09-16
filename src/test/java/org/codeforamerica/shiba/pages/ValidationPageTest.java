@@ -281,20 +281,32 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest {
             assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
         }
 
-        @Test
-        void shouldFailValidationForMoneyWhenValueIsNotNumber() {
+        @ParameterizedTest
+        @ValueSource(strings = {
+                "a123",
+                "1.",
+                "51.787",
+                "1.000",
+                "1.1",
+                "-152"
+        })
+        void shouldFailValidationForMoneyWhenValueIsNotAWholeDollarAmount(String value) {
             driver.navigate().to(baseUrl + "/pages/moneyPage");
-            driver.findElement(By.cssSelector("input[name^='moneyInput']")).sendKeys("a123");
+            driver.findElement(By.cssSelector("input[name^='moneyInput']")).sendKeys(value);
             driver.findElement(By.cssSelector("button")).click();
 
             assertThat(driver.getTitle()).isEqualTo(moneyPageTitle);
             assertThat(testPage.getInputError("moneyInput")).isNotNull();
         }
 
-        @Test
-        void shouldPassValidationForMoneyWhenValueIsNumber() {
+        @ParameterizedTest
+        @ValueSource(strings = {
+                "14",
+                "16.71"
+        })
+        void shouldPassValidationForMoneyWhenValueIsAPositiveWholeDollarAmount(String value) {
             driver.navigate().to(baseUrl + "/pages/moneyPage");
-            driver.findElement(By.cssSelector("input[name^='moneyInput']")).sendKeys("-726");
+            driver.findElement(By.cssSelector("input[name^='moneyInput']")).sendKeys(value);
             driver.findElement(By.cssSelector("button")).click();
 
             assertThat(driver.getTitle()).isEqualTo(lastPageTitle);

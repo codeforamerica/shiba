@@ -405,7 +405,7 @@ shiba-configuration:
       inputs:
         - name: moneyMadeLast30Days
           type: MONEY
-          validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
+          validationErrorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
           validators:
             - validation: MONEY
               condition:
@@ -442,7 +442,7 @@ shiba-configuration:
           type: MONEY
           promptMessage:
             promptMessageFragmentName: liquidAssetsPrompt
-          validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
+          validationErrorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
           validators:
             - validation: MONEY
               condition:
@@ -512,7 +512,7 @@ shiba-configuration:
               condition:
                 input: expeditedExpensesAmount
                 matcher: NOT_EMPTY
-          validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
+          validationErrorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
     - &utilityPayments
       name: utilityPayments
       pageTitle:
@@ -783,7 +783,7 @@ shiba-configuration:
           promptMessage:
             promptMessageKey: unearned-income.social-security
           helpMessageKey: unearned-income-sources.monthly-amount
-          validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
+          validationErrorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
           validators:
             - validation: MONEY
               condition:
@@ -798,7 +798,7 @@ shiba-configuration:
           promptMessage:
             promptMessageKey: unearned-income.ssi
           helpMessageKey: unearned-income-sources.monthly-amount
-          validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
+          validationErrorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
           validators:
             - validation: MONEY
               condition:
@@ -813,7 +813,7 @@ shiba-configuration:
           promptMessage:
             promptMessageKey: unearned-income.veterans-benefits
           helpMessageKey: unearned-income-sources.monthly-amount
-          validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
+          validationErrorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
           validators:
             - validation: MONEY
               condition:
@@ -828,7 +828,7 @@ shiba-configuration:
           promptMessage:
             promptMessageKey: unearned-income.unemployment
           helpMessageKey: unearned-income-sources.monthly-amount
-          validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
+          validationErrorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
           validators:
             - validation: MONEY
               condition:
@@ -843,7 +843,7 @@ shiba-configuration:
           promptMessage:
             promptMessageKey: unearned-income.workers-compensation
           helpMessageKey: unearned-income-sources.monthly-amount
-          validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
+          validationErrorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
           validators:
             - validation: MONEY
               condition:
@@ -858,7 +858,7 @@ shiba-configuration:
           promptMessage:
             promptMessageKey: unearned-income.retirement
           helpMessageKey: unearned-income-sources.monthly-amount
-          validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
+          validationErrorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
           validators:
             - validation: MONEY
               condition:
@@ -873,7 +873,7 @@ shiba-configuration:
           promptMessage:
             promptMessageKey: unearned-income.child-or-spousal-support
           helpMessageKey: unearned-income-sources.monthly-amount
-          validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
+          validationErrorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
           validators:
             - validation: MONEY
               condition:
@@ -888,7 +888,7 @@ shiba-configuration:
           promptMessage:
             promptMessageKey: unearned-income.tribal-payments
           helpMessageKey: unearned-income-sources.monthly-amount
-          validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
+          validationErrorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
           validators:
             - validation: MONEY
               condition:
@@ -965,6 +965,12 @@ shiba-configuration:
       inputs:
         - name: hourlyWage
           type: HOURLY_WAGE
+          validationErrorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+          validators:
+            - validation: MONEY
+              condition:
+                input: hourlyWage
+                matcher: NOT_EMPTY
       contextFragment: jobContextFragment
     - &hoursAWeek
       name: hoursAWeek
@@ -1038,7 +1044,7 @@ shiba-configuration:
           type: MONEY
           validators:
             - validation: MONEY
-          validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
+          validationErrorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
       contextFragment: jobContextFragment
     - &jobBuilder
       name: jobBuilder
@@ -1114,7 +1120,7 @@ shiba-configuration:
           validators:
             - validation: MONEY
             - validation: NOT_BLANK
-          validationErrorMessageKey: general.validation.make-sure-you-enter-a-number
+          validationErrorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
     - &savings
       name: savings
       pageTitle:

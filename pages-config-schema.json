@@ -236,26 +236,29 @@
         "followUpsValue": {
           "type": "string"
         },
-        "validator": {
-          "type": "object",
-          "properties": {
-            "validation": {
-              "type": "string",
-              "enum": [
-                "NONE",
-                "NOT_BLANK",
-                "SELECT_AT_LEAST_ONE",
-                "SSN",
-                "DATE",
-                "ZIPCODE",
-                "STATE",
-                "PHONE",
-                "MONEY",
-                "NUMBER_OF_JOBS"
-              ]
-            },
-            "condition": {
-              "$ref": "#/definitions/condition"
+        "validators": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "validation": {
+                "type": "string",
+                "enum": [
+                  "NONE",
+                  "NOT_BLANK",
+                  "SELECT_AT_LEAST_ONE",
+                  "SSN",
+                  "DATE",
+                  "ZIPCODE",
+                  "STATE",
+                  "PHONE",
+                  "MONEY",
+                  "NUMBER_OF_JOBS"
+                ]
+              },
+              "condition": {
+                "$ref": "#/definitions/condition"
+              }
             }
           }
         },
