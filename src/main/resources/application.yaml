@@ -13,6 +13,7 @@ mnit-esb:
 sender-email: help@mnbenefits.org
 security-email: security@mnbenefits.org
 audit-email: help+audit@mnbenefits.org
+support-email: mnbenefits@codeforamerica.org
 
 mail-gun:
   url: "https://api.mailgun.net/v3/mail.mnbenefits.org/messages"
@@ -21,5 +22,6 @@ mail-gun:
 
 submit-via-email: false
 submit-via-api: false
+send-non-partner-county-alert: false
 
 encryption-key: ${ENCRYPTION_KEY}

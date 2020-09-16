@@ -14,6 +14,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Component
@@ -22,6 +23,7 @@ public class MailGunEmailClient implements EmailClient {
     private final String senderEmail;
     private final String securityEmail;
     private final String auditEmail;
+    private final String supportEmail;
     private final String mailGunUrl;
     private final String mailGunApiKey;
     private final EmailContentCreator emailContentCreator;
@@ -31,6 +33,7 @@ public class MailGunEmailClient implements EmailClient {
                               @Value("${sender-email}") String senderEmail,
                               @Value("${security-email}") String securityEmail,
                               @Value("${audit-email}") String auditEmail,
+                              @Value("${support-email}") String supportEmail,
                               @Value("${mail-gun.url}") String mailGunUrl,
                               @Value("${mail-gun.api-key}") String mailGunApiKey,
                               EmailContentCreator emailContentCreator,
@@ -39,6 +42,7 @@ public class MailGunEmailClient implements EmailClient {
         this.senderEmail = senderEmail;
         this.securityEmail = securityEmail;
         this.auditEmail = auditEmail;
+        this.supportEmail = supportEmail;
         this.mailGunUrl = mailGunUrl;
         this.mailGunApiKey = mailGunApiKey;
         this.emailContentCreator = emailContentCreator;
@@ -91,6 +95,20 @@ public class MailGunEmailClient implements EmailClient {
         form.put("to", List.of(auditEmail));
         form.put("subject", List.of("Caseworker CAF downloaded"));
         form.put("html", List.of(emailContentCreator.createDownloadCafAlertContent(confirmationId, ip)));
+
+        HttpHeaders requestHeaders = new HttpHeaders();
+        requestHeaders.setBasicAuth("api", mailGunApiKey);
+
+        restTemplate.postForLocation(mailGunUrl, new HttpEntity<>(form, requestHeaders));
+    }
+
+    @Override
+    public void sendNonPartnerCountyAlert(String applicationId, ZonedDateTime submissionTime) {
+        MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
+        form.put("from", List.of(senderEmail));
+        form.put("to", List.of(supportEmail));
+        form.put("subject", List.of("ALERT new non-partner application submitted"));
+        form.put("html", List.of(emailContentCreator.createNonCountyPartnerAlert(applicationId, submissionTime)));
 
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.setBasicAuth("api", mailGunApiKey);

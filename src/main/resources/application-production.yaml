@@ -11,3 +11,4 @@ mail-gun:
   shouldCC: true
 
 send-download-alert: true
+send-non-partner-county-alert: true

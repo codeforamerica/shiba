@@ -18,6 +18,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.ZonedDateTime;
+
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.matching.MultipartValuePattern.MatchingType.ANY;
 import static org.codeforamerica.shiba.output.caf.ExpeditedEligibility.ELIGIBLE;
@@ -45,6 +47,7 @@ class MailGunEmailClientTest {
     String senderEmail = "someSenderEmail";
     String securityEmail = "someSecurityEmail";
     String auditEmail = "someAuditEmail";
+    String supportEmail = "someSupportEmail";
 
     @BeforeEach
     void setUp() {
@@ -59,6 +62,7 @@ class MailGunEmailClientTest {
                 senderEmail,
                 securityEmail,
                 auditEmail,
+                supportEmail,
                 "http://localhost:" + port,
                 mailGunApiKey,
                 emailContentCreator,
@@ -185,7 +189,6 @@ class MailGunEmailClientTest {
         String ip = "some ip";
 
         when(emailContentCreator.createDownloadCafAlertContent(confirmationId, ip)).thenReturn(emailContent);
-        when(emailContentCreator.createClientHTML(confirmationId, ELIGIBLE)).thenReturn(emailContent);
 
         wireMockServer.stubFor(post(anyUrl()).willReturn(aResponse().withStatus(200)));
 
@@ -210,7 +213,7 @@ class MailGunEmailClientTest {
         mailGunEmailClient = new MailGunEmailClient(
                 restTemplate,
                 senderEmail,
-                "", "", "http://localhost:" + port,
+                "", "", "", "http://localhost:" + port,
                 mailGunApiKey,
                 emailContentCreator,
                 true);
@@ -234,5 +237,25 @@ class MailGunEmailClientTest {
                         .withBody(equalTo(senderEmail))
                         .matchingType(ANY)
                         .build()));
+    }
+
+    @Test
+    void shouldNonPartnerCountyAlert() {
+        String emailContent = "content";
+        String confirmationId = "confirmation id";
+        ZonedDateTime submissionTime = ZonedDateTime.now();
+        when(emailContentCreator.createNonCountyPartnerAlert(confirmationId, submissionTime)).thenReturn(emailContent);
+
+        wireMockServer.stubFor(post(anyUrl()).willReturn(aResponse().withStatus(200)));
+
+        mailGunEmailClient.sendNonPartnerCountyAlert(confirmationId, submissionTime);
+
+        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
+                .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
+                .withRequestBody(containing(String.format("from=%s", senderEmail)))
+                .withRequestBody(containing(String.format("to=%s", supportEmail)))
+                .withRequestBody(containing(String.format("subject=%s", "ALERT+new+non-partner+application+submitted")))
+                .withRequestBody(containing(String.format("html=%s", emailContent)))
+        );
     }
 }

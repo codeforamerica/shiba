@@ -11,6 +11,7 @@ client:
 sender-email: sender@email.org
 security-email: security@email.org
 audit-email: audit@email.org
+support-email: support@email.org
 
 mail-gun:
   url: mailgun-url

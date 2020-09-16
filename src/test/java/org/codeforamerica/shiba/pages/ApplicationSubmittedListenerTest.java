@@ -18,6 +18,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 import static org.codeforamerica.shiba.County.HENNEPIN;
+import static org.codeforamerica.shiba.County.OTHER;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 import static org.mockito.Mockito.*;
@@ -32,6 +33,7 @@ class ApplicationSubmittedListenerTest {
     CountyEmailMap countyEmailMap = new CountyEmailMap();
     Boolean sendCaseWorkerEmail = true;
     Boolean sendViaApi = true;
+    Boolean sendNonPartnerCountyAlertEmail = true;
 
     ApplicationSubmittedListener applicationSubmittedListener = new ApplicationSubmittedListener(
             mnitDocumentConsumer,
@@ -41,8 +43,8 @@ class ApplicationSubmittedListenerTest {
             pdfGenerator,
             countyEmailMap,
             sendCaseWorkerEmail,
-            sendViaApi
-    );
+            sendViaApi,
+            sendNonPartnerCountyAlertEmail);
 
     @Test
     void shouldSendSubmittedApplicationToMNIT() {
@@ -161,8 +163,8 @@ class ApplicationSubmittedListenerTest {
                 pdfGenerator,
                 countyEmailMap,
                 false,
-                false
-        );
+                false,
+                false);
 
         ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("");
 
@@ -181,13 +183,73 @@ class ApplicationSubmittedListenerTest {
                 pdfGenerator,
                 countyEmailMap,
                 true,
-                false
-        );
+                false,
+                false);
 
         ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("");
 
         applicationSubmittedListener.sendViaApi(event);
 
         verifyNoInteractions(mnitDocumentConsumer);
+    }
+
+    @Test
+    void shouldSendNonPartnerCountyAlertWhenApplicationSubmittedIsForOTHERCounty() {
+        String applicationId = "appId";
+        ApplicationSubmittedEvent event = new ApplicationSubmittedEvent(applicationId);
+        ZonedDateTime submissionTime = ZonedDateTime.now();
+        when(applicationRepository.find(applicationId)).thenReturn(
+                Application.builder()
+                        .id(applicationId)
+                        .county(OTHER)
+                        .completedAt(submissionTime)
+                        .build()
+        );
+
+        applicationSubmittedListener.sendNonPartnerCountyAlert(event);
+
+        verify(emailClient).sendNonPartnerCountyAlert(applicationId, submissionTime);
+    }
+
+    @Test
+    void shouldNotSendNonPartnerCountyAlertWhenApplicationSubmittedIsNotForOTHERCounty() {
+        String applicationId = "appId";
+        ApplicationSubmittedEvent event = new ApplicationSubmittedEvent(applicationId);
+        ZonedDateTime submissionTime = ZonedDateTime.now();
+        when(applicationRepository.find(applicationId)).thenReturn(
+                Application.builder()
+                        .county(HENNEPIN)
+                        .completedAt(submissionTime)
+                        .build()
+        );
+
+        applicationSubmittedListener.sendNonPartnerCountyAlert(event);
+
+        verifyNoInteractions(emailClient);
+    }
+
+    @Test
+    void shouldNotSendNonPartnerCountyAlertWhenFeatureIsTurnedOff() {
+        applicationSubmittedListener = new ApplicationSubmittedListener(
+                mnitDocumentConsumer,
+                applicationRepository,
+                emailClient,
+                expeditedEligibilityDecider,
+                pdfGenerator,
+                countyEmailMap,
+                true,
+                false,
+                false);
+        when(applicationRepository.find(any())).thenReturn(
+                Application.builder()
+                        .id("appId")
+                        .county(OTHER)
+                        .completedAt(ZonedDateTime.now())
+                        .build()
+        );
+
+        applicationSubmittedListener.sendNonPartnerCountyAlert(new ApplicationSubmittedEvent("appId"));
+
+        verifyNoInteractions(emailClient);
     }
 }

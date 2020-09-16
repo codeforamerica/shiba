@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.ApplicationRepository;
+import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
@@ -29,6 +30,7 @@ public class ApplicationSubmittedListener {
     private final CountyEmailMap countyEmailMap;
     private final boolean sendCaseWorkerEmail;
     private final boolean submitViaApi;
+    private final Boolean sendNonPartnerCountyAlertEmail;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public ApplicationSubmittedListener(MnitDocumentConsumer mnitDocumentConsumer,
@@ -38,7 +40,8 @@ public class ApplicationSubmittedListener {
                                         PdfGenerator pdfGenerator,
                                         CountyEmailMap countyEmailMap,
                                         @Value("${submit-via-email}") boolean sendCaseWorkerEmail,
-                                        @Value("${submit-via-api}") Boolean submitViaApi) {
+                                        @Value("${submit-via-api}") Boolean submitViaApi,
+                                        @Value("${send-non-partner-county-alert}") Boolean sendNonPartnerCountyAlertEmail) {
         this.mnitDocumentConsumer = mnitDocumentConsumer;
         this.applicationRepository = applicationRepository;
         this.emailClient = emailClient;
@@ -47,6 +50,7 @@ public class ApplicationSubmittedListener {
         this.countyEmailMap = countyEmailMap;
         this.sendCaseWorkerEmail = sendCaseWorkerEmail;
         this.submitViaApi = submitViaApi;
+        this.sendNonPartnerCountyAlertEmail = sendNonPartnerCountyAlertEmail;
     }
 
     @Async
@@ -87,5 +91,19 @@ public class ApplicationSubmittedListener {
 
         String fullName = String.join(" ", personalInfo.get("firstName").getValue().get(0), personalInfo.get("lastName").getValue().get(0));
         emailClient.sendCaseWorkerEmail(countyEmailMap.get(application.getCounty()), fullName, applicationId, pdf);
+    }
+
+    @Async
+    @EventListener
+    public void sendNonPartnerCountyAlert(ApplicationSubmittedEvent event) {
+        if (!sendNonPartnerCountyAlertEmail) {
+            return;
+        }
+
+        Application application = applicationRepository.find(event.getApplicationId());
+
+        if (application.getCounty() == County.OTHER) {
+            emailClient.sendNonPartnerCountyAlert(application.getId(), application.getCompletedAt());
+        }
     }
 }

@@ -3,6 +3,10 @@ package org.codeforamerica.shiba.pages;
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
 import org.springframework.stereotype.Component;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 import static org.codeforamerica.shiba.output.caf.ExpeditedEligibility.ELIGIBLE;
 
 @Component
@@ -23,5 +27,10 @@ public class EmailContentCreator {
 
     String createDownloadCafAlertContent(String confirmationId, String ip) {
         return String.format("The CAF with confirmation number %s was downloaded from IP address %s.", confirmationId, ip);
+    }
+
+    public String createNonCountyPartnerAlert(String confirmationId, ZonedDateTime submissionTime) {
+        String formattedTime = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm").format(submissionTime.withZoneSameInstant(ZoneId.of("America/Chicago")));
+        return String.format("Application %s was submitted at %s.", confirmationId, formattedTime);
     }
 }

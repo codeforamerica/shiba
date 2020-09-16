@@ -5,6 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class EmailContentCreatorTest {
@@ -31,11 +35,22 @@ class EmailContentCreatorTest {
 
     @Test
     void shouldIncludeConfirmationIdAndIpWhenSendingDownloadAlert() {
-        String confirmationId = "confiramtion ID";
+        String confirmationId = "confirmation ID";
         String ip = "123.123.123.123";
 
         String content = emailContentCreator.createDownloadCafAlertContent(confirmationId, ip);
 
         assertThat(content).isEqualTo(String.format("The CAF with confirmation number %s was downloaded from IP address %s.", confirmationId, ip));
+    }
+
+    @Test
+    void shouldCreateNonCountyPartnerAlertEmail() {
+        String confirmationId = "confirm Id";
+        ZonedDateTime submissionTime = ZonedDateTime.of(LocalDateTime.of(2020, 1, 1, 11, 10), ZoneOffset.UTC);
+        String nonCountyPartnerAlertEmailContent = emailContentCreator.createNonCountyPartnerAlert(confirmationId, submissionTime);
+
+        assertThat(nonCountyPartnerAlertEmailContent).isEqualTo(
+                "Application confirm Id was submitted at 01/01/2020 05:10."
+        );
     }
 }
