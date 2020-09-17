@@ -28,7 +28,6 @@ public class MetricsController {
         Duration averageTimeToCompleteForWeek = applicationRepository.getAverageTimeToCompleteWeekToDate(CENTRAL_ZONE_ID);
         Duration medianTimeToCompleteForWeek = applicationRepository.getMedianTimeToCompleteWeekToDate(CENTRAL_ZONE_ID);
 
-
         return new ModelAndView("metricsDashboard", Map.of(
                 "applicationsSubmitted", applicationsSubmitted,
                 "medianTimeToComplete", DurationFormatUtils.formatDuration(medianTimeToComplete.toMillis(), TIME_TO_COMPLETE_FORMAT),
@@ -36,7 +35,8 @@ public class MetricsController {
                 "medianTimeToCompleteForWeek", DurationFormatUtils.formatDuration(medianTimeToCompleteForWeek.toMillis(), TIME_TO_COMPLETE_FORMAT),
                 "counties", County.values(),
                 "countyTotalSubmission", applicationRepository.countByCounty(),
-                "countyTotalSubmissionWeekToDate", applicationRepository.countByCountyWeekToDate(CENTRAL_ZONE_ID)
+                "countyTotalSubmissionWeekToDate", applicationRepository.countByCountyWeekToDate(CENTRAL_ZONE_ID),
+                "sentimentDistribution", applicationRepository.getSentimentDistribution()
         ));
     }
 }

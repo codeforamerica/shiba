@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.metrics;
 
 import org.codeforamerica.shiba.*;
+import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -108,6 +109,74 @@ class ApplicationRepositoryTest {
         assertThat(savedApplication.getApplicationData()).isEqualTo(application.getApplicationData());
         assertThat(savedApplication.getCounty()).isEqualTo(application.getCounty());
         assertThat(savedApplication.getTimeToComplete()).isEqualTo(application.getTimeToComplete());
+    }
+
+    @Test
+    void shouldSaveApplicationWithOptionalFieldsPopulated() {
+        ApplicationData applicationData = new ApplicationData();
+        applicationData.setPagesData(new PagesData(Map.of("choosePrograms", new PageData(Map.of("programs", InputData.builder().value(emptyList()).build())))));
+
+        Application application = Application.builder()
+                .id("someid")
+                .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
+                .applicationData(applicationData)
+                .county(OLMSTED)
+                .fileName("")
+                .timeToComplete(Duration.ofSeconds(12415))
+                .sentiment(Sentiment.HAPPY)
+                .feedback("so so happy")
+                .build();
+
+        applicationRepository.save(application);
+
+        Application savedApplication = applicationRepository.find("someid");
+        assertThat(savedApplication.getSentiment()).isEqualTo(application.getSentiment());
+        assertThat(savedApplication.getFeedback()).isEqualTo(application.getFeedback());
+    }
+
+    @Test
+    void shouldUpdateExistingApplication() {
+        ApplicationData applicationData = new ApplicationData();
+        applicationData.setPagesData(new PagesData(Map.of(
+                "choosePrograms", new PageData(Map.of("programs", InputData.builder().value(emptyList()).build())),
+                "somePage", new PageData(Map.of("someInput", InputData.builder().value(emptyList()).build()))
+        )));
+
+        String applicationId = "someid";
+        Application application = Application.builder()
+                .id(applicationId)
+                .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
+                .applicationData(applicationData)
+                .county(OLMSTED)
+                .timeToComplete(Duration.ofSeconds(12415))
+                .sentiment(Sentiment.MEH)
+                .feedback("someFeedback")
+                .build();
+
+        applicationRepository.save(application);
+
+        ApplicationData updatedApplicationData = new ApplicationData();
+        updatedApplicationData.setPagesData(new PagesData(Map.of(
+                "choosePrograms", new PageData(Map.of("programs", InputData.builder().value(emptyList()).build())),
+                "someUpdatedPage", new PageData(Map.of("someUpdatedInput", InputData.builder().value(emptyList()).build()))
+        )));
+        Application updatedApplication = Application.builder()
+                .id(application.getId())
+                .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
+                .applicationData(updatedApplicationData)
+                .county(HENNEPIN)
+                .timeToComplete(Duration.ofSeconds(421))
+                .sentiment(Sentiment.HAPPY)
+                .feedback("someUpdatedFeedback")
+                .build();
+
+        applicationRepository.save(updatedApplication);
+
+        Application retrievedApplication = applicationRepository.find(applicationId);
+
+        assertThat(retrievedApplication).isEqualToIgnoringGivenFields(
+                updatedApplication,
+                "fileName");
     }
 
     @Nested
@@ -488,5 +557,31 @@ class ApplicationRepositoryTest {
             assertThat(applicationRepository.getMedianTimeToCompleteWeekToDate(ZoneId.of("America/Chicago")))
                     .isEqualTo(Duration.ofSeconds(0));
         }
+
+        @Test
+        void shouldCalculateTheSentimentDistribution() {
+            Application.ApplicationBuilder applicationBuilder = Application.builder()
+                    .applicationData(new ApplicationData())
+                    .timeToComplete(defaultDuration)
+                    .county(defaultCounty)
+                    .completedAt(defaultCompletedAt);
+            Application application1 = applicationBuilder.id("id1").sentiment(Sentiment.HAPPY).build();
+            Application application2 = applicationBuilder.id("id2").sentiment(Sentiment.HAPPY).build();
+            Application application3 = applicationBuilder.id("id3").sentiment(Sentiment.MEH).build();
+            Application application4 = applicationBuilder.id("id4").sentiment(Sentiment.SAD).build();
+            Application application5 = applicationBuilder.id("id5").sentiment(null).build();
+
+            applicationRepository.save(application1);
+            applicationRepository.save(application2);
+            applicationRepository.save(application3);
+            applicationRepository.save(application4);
+            applicationRepository.save(application5);
+
+            assertThat(applicationRepository.getSentimentDistribution()).isEqualTo(Map.of(
+                    Sentiment.HAPPY, 0.5,
+                    Sentiment.MEH, 0.25,
+                    Sentiment.SAD, 0.25));
+        }
+
     }
 }

@@ -103,7 +103,9 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
                 LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant(),
                 LocalDateTime.of(2020, 1, 1, 10, 15, 30).atOffset(ZoneOffset.UTC).toInstant()
         );
-        nonExpeditedFlowToSuccessPage();
+        SuccessPage successPage = nonExpeditedFlowToSuccessPage();
+        successPage.chooseSentiment(Sentiment.HAPPY);
+        successPage.submitFeedback();
 
         driver.navigate().to(baseUrl + "/metrics");
         MetricsPage metricsPage = new MetricsPage(driver);
@@ -114,6 +116,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         assertThat(driver.findElements(By.tagName("td")).get(0).getText()).isEqualTo("HENNEPIN");
         assertThat(driver.findElements(By.tagName("td")).get(1).getText()).isEqualTo("0");
         assertThat(driver.findElements(By.tagName("td")).get(2).getText()).isEqualTo("0");
+        assertThat(metricsPage.getCardValue("Happy")).contains("100.0 %");
     }
 
     private void completeFlowFromLandingPageToReviewInfo() {

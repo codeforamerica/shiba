@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
@@ -18,4 +19,11 @@ public class SuccessPage extends Page {
         downloadReceiptButton.click();
     }
 
+    public void chooseSentiment(Sentiment sentiment) {
+        driver.findElement(By.cssSelector(String.format("label[for='%s']", sentiment.name().toLowerCase()))).click();
+    }
+
+    public void submitFeedback() {
+        driver.findElement(By.cssSelector("button")).click();
+    }
 }

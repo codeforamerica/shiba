@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <div th:replace="fragments/head :: head('Metrics')"></div>
 <body class="template--metrics">
-<div class="page-wrapper">
+<div>
     <div id="totals" class="grid">
         <h1>Totals</h1>
         <div class="grid__item width-one-half">
@@ -30,6 +30,26 @@
             <div class="statistic-card">
                 <p class="statistic-card__label">Average Week to Date</p>
                 <p class="statistic-card__number" th:text="${averageTimeToCompleteForWeek}"></p>
+            </div>
+        </div>
+        <div class="grid">
+            <div class="grid__item width-one-third">
+                <div class="statistic-card">
+                    <p class="statistic-card__label capitalized">Happy</p>
+                    <p class="statistic-card__number" th:text="|${sentimentDistribution.getOrDefault(T(org.codeforamerica.shiba.pages.Sentiment).HAPPY, 0) * 100} % 😄|"></p>
+                </div>
+            </div>
+            <div class="grid__item width-one-third">
+                <div class="statistic-card">
+                    <p class="statistic-card__label capitalized">Meh</p>
+                    <p class="statistic-card__number" th:text="|${sentimentDistribution.getOrDefault(T(org.codeforamerica.shiba.pages.Sentiment).MEH, 0) * 100} % 😐|"></p>
+                </div>
+            </div>
+            <div class="grid__item width-one-third">
+                <div class="statistic-card">
+                    <p class="statistic-card__label capitalized">Sad</p>
+                    <p class="statistic-card__number" th:text="|${sentimentDistribution.getOrDefault(T(org.codeforamerica.shiba.pages.Sentiment).SAD, 0) * 100} % 🙁|"></p>
+                </div>
             </div>
         </div>
         <table class="data-table">

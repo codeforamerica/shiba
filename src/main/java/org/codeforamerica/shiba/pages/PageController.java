@@ -13,10 +13,12 @@ import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletResponse;
@@ -24,6 +26,7 @@ import javax.servlet.http.HttpSession;
 import java.time.Clock;
 import java.time.ZoneId;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 @Controller
@@ -36,6 +39,7 @@ public class PageController {
     private final ApplicationFactory applicationFactory;
     private final ConfirmationData confirmationData;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final MessageSource messageSource;
 
     public PageController(
             ApplicationConfiguration applicationConfiguration,
@@ -45,7 +49,8 @@ public class PageController {
             ApplicationRepository applicationRepository,
             ApplicationFactory applicationFactory,
             ConfirmationData confirmationData,
-            ApplicationEventPublisher applicationEventPublisher) {
+            ApplicationEventPublisher applicationEventPublisher,
+            MessageSource messageSource) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
@@ -54,6 +59,7 @@ public class PageController {
         this.applicationFactory = applicationFactory;
         this.confirmationData = confirmationData;
         this.applicationEventPublisher = applicationEventPublisher;
+        this.messageSource = messageSource;
     }
 
     @GetMapping("/")
@@ -98,7 +104,7 @@ public class PageController {
             this.metrics.setStartTimeOnce(clock.instant());
         }
 
-        if (!landmarkPagesConfiguration.isTerminalPage(pageName) && confirmationData.getCompletedAt() != null) {
+        if (!landmarkPagesConfiguration.isTerminalPage(pageName) && confirmationData.getId() != null) {
             return new ModelAndView(String.format("redirect:/pages/%s", landmarkPagesConfiguration.getTerminalPage()));
         } else if (!landmarkPagesConfiguration.isLandingPage(pageName) && metrics.getStartTime() == null) {
             return new ModelAndView(String.format("redirect:/pages/%s", landmarkPagesConfiguration.getLandingPages().get(0)));
@@ -135,9 +141,12 @@ public class PageController {
         ));
 
         if (landmarkPagesConfiguration.isTerminalPage(pageName)) {
-            model.put("submissionTime", confirmationData.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago")));
-            model.put("applicationId", confirmationData.getId());
-            model.put("county", confirmationData.getCounty());
+            Application application = applicationRepository.find(confirmationData.getId());
+            model.put("applicationId", application.getId());
+            model.put("submissionTime", application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago")));
+            model.put("county", application.getCounty());
+            model.put("sentiment", application.getSentiment());
+            model.put("feedbackText", application.getFeedback());
         }
 
         String pageToRender;
@@ -232,8 +241,6 @@ public class PageController {
             String id = applicationRepository.getNextId();
             Application application = applicationFactory.newApplication(id, applicationData, metrics);
             confirmationData.setId(application.getId());
-            confirmationData.setCompletedAt(application.getCompletedAt());
-            confirmationData.setCounty(application.getCounty());
             applicationRepository.save(application);
             applicationEventPublisher.publishEvent(new ApplicationSubmittedEvent(application.getId()));
 
@@ -242,4 +249,25 @@ public class PageController {
             return new ModelAndView("redirect:/pages/" + submitPage);
         }
     }
+
+    @PostMapping("/submit-feedback")
+    RedirectView submitFeedback(Feedback feedback,
+                                RedirectAttributes redirectAttributes,
+                                Locale locale) {
+        String terminalPage = applicationConfiguration.getLandmarkPages().getTerminalPage();
+        if (confirmationData.getId() == null) {
+            return new RedirectView("/pages/" + terminalPage);
+        }
+        String message = messageSource.getMessage(feedback.getMessageKey(), null, locale);
+        if (feedback.isInvalid()) {
+            redirectAttributes.addFlashAttribute("feedbackFailure", message);
+            return new RedirectView("/pages/" + terminalPage);
+        }
+        redirectAttributes.addFlashAttribute("feedbackSuccess", message);
+        Application application = applicationRepository.find(confirmationData.getId());
+        Application updatedApplication = application.addFeedback(feedback);
+        applicationRepository.save(updatedApplication);
+        return new RedirectView("/pages/" + terminalPage);
+    }
+
 }

@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.StaticMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -24,16 +25,21 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.*;
+import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
 @SpringBootTest(classes = PageControllerTest.TestPageConfiguration.class, properties = {"spring.main.allow-bean-definition-overriding=true"})
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 class PageControllerTest {
+
+    private StaticMessageSource messageSource = new StaticMessageSource();
 
     @TestConfiguration
     @PropertySource(value = "classpath:pages-config/test-pages-controller.yaml", factory = YamlPropertySourceFactory.class)
@@ -76,7 +82,8 @@ class PageControllerTest {
                 applicationRepository,
                 applicationFactory,
                 confirmationData,
-                applicationEventPublisher
+                applicationEventPublisher,
+                messageSource
         );
 
         mockMvc = MockMvcBuilders.standaloneSetup(pageController)
@@ -90,6 +97,8 @@ class PageControllerTest {
                 .fileName("")
                 .timeToComplete(null)
                 .build());
+        messageSource.addMessage("success.feedback-success", Locale.ENGLISH, "default success message");
+        messageSource.addMessage("success.feedback-failure", Locale.ENGLISH, "default failure message");
     }
 
     @Test
@@ -164,6 +173,119 @@ class PageControllerTest {
 
         verify(applicationRepository).save(application);
         assertThat(confirmationData.getId()).isEqualTo(applicationId);
-        assertThat(confirmationData.getCompletedAt()).isEqualTo(completedAt);
+    }
+
+    @Test
+    void shouldUpdateApplicationWithAllFeedbackIndicatorsAndIncludeSuccessMessage() throws Exception {
+        String successMessage = "yay thanks for the feedback!";
+        Locale locale = Locale.JAPANESE;
+        messageSource.addMessage("success.feedback-success", locale, successMessage);
+
+        String applicationId = "14356236";
+        confirmationData.setId(applicationId);
+        Application application = Application.builder()
+                .id("appIdFromDb")
+                .build();
+        when(applicationRepository.find(applicationId)).thenReturn(application);
+
+        String feedback = "this was awesome!";
+        mockMvc.perform(post("/submit-feedback")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .locale(locale)
+                .param("sentiment", "HAPPY")
+                .param("feedback", feedback))
+                .andExpect(redirectedUrl("/pages/terminalPage"))
+                .andExpect(flash().attribute("feedbackSuccess", equalTo(successMessage)));
+
+        verify(applicationRepository).save(Application.builder()
+                .id(application.getId())
+                .sentiment(Sentiment.HAPPY)
+                .feedback(feedback)
+                .build());
+    }
+
+    @Test
+    void shouldUpdateApplicationWithFeedback() throws Exception {
+        String successMessage = "yay thanks for the feedback!";
+        Locale locale = Locale.GERMAN;
+        messageSource.addMessage("success.feedback-success", locale, successMessage);
+
+        String applicationId = "14356236";
+        confirmationData.setId(applicationId);
+        Application application = Application.builder()
+                .id("appIdFromDb")
+                .build();
+        when(applicationRepository.find(applicationId)).thenReturn(application);
+
+        String feedback = "this was awesome!";
+        mockMvc.perform(post("/submit-feedback")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .locale(locale)
+                .param("feedback", feedback))
+                .andExpect(redirectedUrl("/pages/terminalPage"))
+                .andExpect(flash().attribute("feedbackSuccess", equalTo(successMessage)));;
+
+        verify(applicationRepository).save(Application.builder()
+                .id(application.getId())
+                .feedback(feedback)
+                .build());
+    }
+
+    @Test
+    void shouldUpdateApplicationWithSentiment() throws Exception {
+        String successMessage = "yay thanks for the feedback!";
+        String ratingSuccessMessage = "yay thanks for the rating!";
+        Locale locale = Locale.GERMAN;
+        messageSource.addMessage("success.feedback-success", locale, successMessage);
+        messageSource.addMessage("success.feedback-rating-success", locale, ratingSuccessMessage);
+
+        String applicationId = "14356236";
+        confirmationData.setId(applicationId);
+        Application application = Application.builder()
+                .id("appIdFromDb")
+                .build();
+        when(applicationRepository.find(applicationId)).thenReturn(application);
+
+        mockMvc.perform(post("/submit-feedback")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .locale(locale)
+                .param("sentiment", "HAPPY"))
+                .andExpect(redirectedUrl("/pages/terminalPage"))
+                .andExpect(flash().attribute("feedbackSuccess", equalTo(ratingSuccessMessage)));;
+
+        verify(applicationRepository).save(Application.builder()
+                .id(application.getId())
+                .sentiment(Sentiment.HAPPY)
+                .build());
+    }
+
+    @Test
+    void shouldFailToSubmitFeedbackIfConfirmationDataIdIsNotSet() throws Exception {
+        mockMvc.perform(post("/submit-feedback")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("sentiment", "HAPPY")
+                .param("feedback", "this was awesome!"))
+                .andExpect(redirectedUrl("/pages/terminalPage"));
+
+        verifyNoInteractions(applicationRepository);
+    }
+
+    @Test
+    void shouldFailToSubmitFeedbackAndIncludeFailureMessageIfNeitherSentimentNorFeedbackIsSupplied() throws Exception {
+        String failureMessage = "bummer, that didn't work";
+        Locale locale = Locale.ITALIAN;
+        messageSource.addMessage("success.feedback-failure", locale, failureMessage);
+
+        String applicationId = "14356236";
+        confirmationData.setId(applicationId);
+
+        mockMvc.perform(post("/submit-feedback")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("feedback", "")
+                .locale(locale))
+                .andExpect(redirectedUrl("/pages/terminalPage"))
+                .andExpect(flash().attribute("feedbackFailure", equalTo(failureMessage)));
+
+        verifyNoInteractions(applicationRepository);
     }
 }

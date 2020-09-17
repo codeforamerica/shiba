@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.metrics;
 
 import org.codeforamerica.shiba.ApplicationRepository;
+import org.codeforamerica.shiba.pages.Sentiment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.MockMvc;
@@ -9,7 +10,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.Map;
 
+import static org.codeforamerica.shiba.pages.Sentiment.HAPPY;
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -29,6 +33,7 @@ class MetricsControllerTest {
         when(applicationRepository.getMedianTimeToComplete()).thenReturn(Duration.ZERO);
         when(applicationRepository.getAverageTimeToCompleteWeekToDate(any())).thenReturn(Duration.ZERO);
         when(applicationRepository.getMedianTimeToCompleteWeekToDate(any())).thenReturn(Duration.ZERO);
+        when(applicationRepository.getSentimentDistribution()).thenReturn(Map.of());
     }
 
     @Test
@@ -49,5 +54,15 @@ class MetricsControllerTest {
         mockMvc.perform(get("/metrics"))
                 .andExpect(MockMvcResultMatchers.view().name("metricsDashboard"))
                 .andExpect(MockMvcResultMatchers.model().attribute("medianTimeToComplete", "05m 00s"));
+    }
+
+    @Test
+    void shouldIncludeSentimentDistribution() throws Exception {
+        Map<Sentiment, Double> sentimentDistribution = Map.of(HAPPY, 41.31);
+        when(applicationRepository.getSentimentDistribution()).thenReturn(sentimentDistribution);
+
+        mockMvc.perform(get("/metrics"))
+                .andExpect(MockMvcResultMatchers.view().name("metricsDashboard"))
+                .andExpect(MockMvcResultMatchers.model().attribute("sentimentDistribution", equalTo(sentimentDistribution)));
     }
 }

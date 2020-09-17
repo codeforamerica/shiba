@@ -1,20 +1,20 @@
 package org.codeforamerica.shiba;
 
 import org.codeforamerica.shiba.metrics.ApplicationMetric;
+import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Random;
-import java.util.stream.Collectors;
+import java.util.*;
+import java.util.Map.Entry;
+
+import static java.util.stream.Collectors.toMap;
 
 @Repository
 public class ApplicationRepository {
@@ -49,14 +49,25 @@ public class ApplicationRepository {
     }
 
     public void save(Application application) {
-        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("applications");
-        jdbcInsert.execute(Map.of(
+        HashMap<String, Object> parameters = new HashMap<>(Map.of(
                 "id", application.getId(),
-                "completed_at", Timestamp.from(application.getCompletedAt().toInstant()),
-                "encrypted_data", encryptor.encrypt(application.getApplicationData()),
+                "completedAt", Timestamp.from(application.getCompletedAt().toInstant()),
+                "encryptedData", encryptor.encrypt(application.getApplicationData()),
                 "county", application.getCounty().name(),
-                "time_to_complete", application.getTimeToComplete().getSeconds()
+                "timeToComplete", application.getTimeToComplete().getSeconds()
         ));
+        parameters.put("sentiment", Optional.ofNullable(application.getSentiment()).map(Sentiment::name).orElse(null));
+        parameters.put("feedback", application.getFeedback());
+        new NamedParameterJdbcTemplate(jdbcTemplate)
+                .update("INSERT INTO applications (id, completed_at, encrypted_data, county, time_to_complete, sentiment, feedback) " +
+                        "VALUES (:id, :completedAt, :encryptedData, :county, :timeToComplete, :sentiment, :feedback) " +
+                        "ON CONFLICT (id) DO UPDATE SET " +
+                        "completed_at = :completedAt, " +
+                        "encrypted_data = :encryptedData, " +
+                        "county = :county, " +
+                        "time_to_complete = :timeToComplete, " +
+                        "sentiment = :sentiment, " +
+                        "feedback = :feedback", parameters);
     }
 
     public Application find(String id) {
@@ -66,7 +77,11 @@ public class ApplicationRepository {
                         ZonedDateTime.ofInstant(resultSet.getTimestamp("completed_at").toInstant(), ZoneOffset.UTC),
                         encryptor.decrypt(resultSet.getBytes("encrypted_data")),
                         County.valueOf(resultSet.getString("county")),
-                        Duration.ofSeconds(resultSet.getLong("time_to_complete"))),
+                        Duration.ofSeconds(resultSet.getLong("time_to_complete")),
+                        Optional.ofNullable(resultSet.getString("sentiment"))
+                                .map(Sentiment::valueOf)
+                                .orElse(null),
+                        resultSet.getString("feedback")),
                 id);
     }
 
@@ -94,7 +109,7 @@ public class ApplicationRepository {
                         Map.entry(
                                 County.valueOf(resultSet.getString("county")),
                                 resultSet.getInt("count"))).stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                .collect(toMap(Entry::getKey, Entry::getValue));
     }
 
     public Map<County, Integer> countByCountyWeekToDate(ZoneId zoneId) {
@@ -109,7 +124,7 @@ public class ApplicationRepository {
                         Map.entry(
                                 County.valueOf(resultSet.getString("county")),
                                 resultSet.getInt("count"))).stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                .collect(toMap(Entry::getKey, Entry::getValue));
     }
 
     public Duration getAverageTimeToCompleteWeekToDate(ZoneId zoneId) {
@@ -141,5 +156,20 @@ public class ApplicationRepository {
         LocalDate localDate = LocalDate.ofInstant(clock.instant(), zoneId);
         LocalDate beginningOfWeek = localDate.minusDays(localDate.getDayOfWeek().getValue());
         return beginningOfWeek.atStartOfDay(zoneId).withZoneSameInstant(ZoneOffset.UTC);
+    }
+
+    public Map<Sentiment, Double> getSentimentDistribution() {
+        return jdbcTemplate.query(
+                "SELECT sentiment, count, sum(count) over () as total_count " +
+                        "FROM (" +
+                        "         SELECT sentiment, count(id) as count " +
+                        "         FROM applications " +
+                        "         WHERE sentiment IS NOT NULL " +
+                        "         GROUP BY sentiment " +
+                        "     ) as subquery",
+                (resultSet, rowNumber) -> Map.entry(
+                        Sentiment.valueOf(resultSet.getString("sentiment")),
+                        resultSet.getDouble("count") / resultSet.getDouble("total_count"))).stream()
+                .collect(toMap(Entry::getKey, Entry::getValue));
     }
 }

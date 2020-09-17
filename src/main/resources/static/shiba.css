@@ -293,3 +293,53 @@ html {
     margin-left: 0;
     margin-right: 0;
 }
+
+.feedback-buttons-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.feedback-buttons {
+    margin-right: 0.5rem;
+    cursor: pointer;
+    width: 10rem;
+    text-align: center;
+    border: 1px solid #5F5854;
+    border-radius: 4px;
+    height: 10rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+.feedback-buttons i {
+    font-size: 5rem;
+}
+
+.textarea {
+    resize: none;
+}
+
+input:checked + .feedback-buttons {
+    border: 2px solid #000000;
+}
+
+input[id='happy']:checked + .feedback-buttons {
+    background-color: rgba(143, 228, 37, 0.5);
+}
+
+input[id='meh']:checked + .feedback-buttons {
+    background-color: rgba(255, 200, 69, 0.5);
+}
+
+input[id='sad']:checked + .feedback-buttons {
+    background-color: #F8C7B5;
+}
+
+.text--green {
+    font-weight: 700;
+    font-size: 1.6rem;
+    line-height: 2.5rem;
+}

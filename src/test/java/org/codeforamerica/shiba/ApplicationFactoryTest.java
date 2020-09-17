@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba;
 
 import org.codeforamerica.shiba.metrics.Metrics;
+import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
@@ -182,8 +183,9 @@ class ApplicationFactoryTest {
                     ZonedDateTime.ofInstant(completedAt, ZoneId.of("UTC")),
                     applicationData,
                     HENNEPIN,
-                    null
-            );
+                    null,
+                    Sentiment.HAPPY,
+                    "someFeedback");
 
             assertThat(application.getFileName()).isEqualTo(String.format("%s_MNB_%s_%s_%s_%s",
                     countyNPI, "20070909", "235959", applicationId, "EKFC"));

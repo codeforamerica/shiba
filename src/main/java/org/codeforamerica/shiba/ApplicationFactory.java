@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba;
 
 import org.codeforamerica.shiba.metrics.Metrics;
+import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
@@ -58,7 +59,9 @@ public class ApplicationFactory {
                                               ZonedDateTime completedAt,
                                               ApplicationData applicationData,
                                               County county,
-                                              Duration timeToComplete) {
+                                              Duration timeToComplete,
+                                              Sentiment sentiment,
+                                              String feedback) {
         return Application.builder()
                 .id(id)
                 .completedAt(completedAt)
@@ -66,6 +69,8 @@ public class ApplicationFactory {
                 .county(county)
                 .fileName(createFileName(id, applicationData, county, completedAt))
                 .timeToComplete(timeToComplete)
+                .sentiment(sentiment)
+                .feedback(feedback)
                 .build();
     }
 
