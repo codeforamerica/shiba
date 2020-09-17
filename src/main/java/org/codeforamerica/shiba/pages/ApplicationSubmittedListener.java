@@ -72,7 +72,7 @@ public class ApplicationSubmittedListener {
                 .ifPresent(input -> {
                     String applicationId = application.getId();
                     ApplicationFile pdf = pdfGenerator.generate(applicationId, CLIENT);
-                    ExpeditedEligibility expeditedEligibility = expeditedEligibilityDecider.decide(pagesData);
+                    ExpeditedEligibility expeditedEligibility = expeditedEligibilityDecider.decide(application.getApplicationData());
                     emailClient.sendConfirmationEmail(input.getValue().get(0), applicationId, expeditedEligibility, pdf);
                 });
     }

@@ -65,7 +65,7 @@ class ExpeditedEligibilityMapperTest {
 
         List<ApplicationInput> result = mapper.map(application, Recipient.CLIENT);
 
-        verify(mockDecider).decide(pagesData);
+        verify(mockDecider).decide(appData);
         assertThat(result).containsExactly(
                 new ApplicationInput(
                         "expeditedEligibility",

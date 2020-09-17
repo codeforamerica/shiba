@@ -1,0 +1,40 @@
+test-parsing:
+  expeditedEligibility:
+    pageInputs:
+      assets:
+        pageName: assetsPage
+        inputName: assetsInput
+        defaultValue: 100
+      income:
+        pageName: incomePage
+        inputName: incomeInput
+        defaultValue: 200
+      migrantWorker:
+        pageName: migrantWorkerPage
+        inputName: migrantWorkerInput
+        required: true
+      housingCosts:
+        pageName: housingCostsPage
+        inputName: housingCostsInput
+      utilityExpensesSelections:
+        pageName: utilityExpensesSelectionsPage
+        inputName: utilityExpensesSelectionsInput
+        required: true
+  grossMonthlyIncome:
+    groupName: jobsGroup
+    pageInputs:
+      paidByTheHour:
+        pageName: paidByTheHourPage
+        inputName: paidByTheHourInput
+      hourlyWage:
+        pageName: hourlyWagePage
+        inputName: hourlyWageInput
+      hoursAWeek:
+        pageName: hoursAWeekPage
+        inputName: hoursAWeekInput
+      payPeriod:
+        pageName: payPeriodPage
+        inputName: payPeriodInput
+      incomePerPayPeriod:
+        pageName: incomePerPayPeriodPage
+        inputName: incomePerPayPeriodInput

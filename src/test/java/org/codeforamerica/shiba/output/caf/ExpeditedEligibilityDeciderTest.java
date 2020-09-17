@@ -1,61 +1,39 @@
 package org.codeforamerica.shiba.output.caf;
 
-import org.codeforamerica.shiba.YamlPropertySourceFactory;
-import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.PageData;
+import org.codeforamerica.shiba.output.TotalIncome;
+import org.codeforamerica.shiba.output.TotalIncomeCalculator;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.output.caf.ExpeditedEligibility.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(properties = {"spring.main.allow-bean-definition-overriding=true"})
-@ActiveProfiles("test")
-@ExtendWith(SpringExtension.class)
 class ExpeditedEligibilityDeciderTest {
     private final PagesData pagesData = new PagesData();
+    private final ApplicationData applicationData = new ApplicationData();
 
-    @MockBean
-    UtilityDeductionCalculator mockUtilityDeductionCalculator;
+    UtilityDeductionCalculator mockUtilityDeductionCalculator = mock(UtilityDeductionCalculator.class);
+    ExpeditedEligibilityParser expeditedEligibilityParser = mock(ExpeditedEligibilityParser.class);
+    TotalIncomeCalculator totalIncomeCalculator = mock(TotalIncomeCalculator.class);
 
-    @Autowired
-    ExpeditedEligibilityDecider decider;
-
-    @TestConfiguration
-    @PropertySource(value = "classpath:test-expedited-eligibility-config.yaml", factory = YamlPropertySourceFactory.class)
-    static class TestPageConfiguration {
-        @Bean
-        @ConfigurationProperties(prefix = "test-expedited-eligibility")
-        public ExpeditedEligibilityConfiguration expeditedEligibilityConfiguration() {
-            return new ExpeditedEligibilityConfiguration();
-        }
-    }
+    ExpeditedEligibilityDecider decider = new ExpeditedEligibilityDecider(
+            mockUtilityDeductionCalculator, totalIncomeCalculator, expeditedEligibilityParser
+    );
 
     @BeforeEach
     void setup() {
-        pagesData.putPage("incomePage", new PageData(Map.of("incomeInput", InputData.builder().value(List.of("99999")).build())));
-        pagesData.putPage("assetsPage", new PageData(Map.of("assetsInput", InputData.builder().value(List.of("99999")).build())));
-        pagesData.putPage("migrantWorkerPage", new PageData(Map.of("migrantWorkerInput", InputData.builder().value(List.of("false")).build())));
-        pagesData.putPage("housingCostsPage", new PageData(Map.of("housingCostsInput", InputData.builder().value(List.of("99")).build())));
-        pagesData.putPage("utilityExpensesSelectionsPage", new PageData(Map.of("utilityExpensesSelectionsInput", InputData.builder().value(List.of()).build())));
+        applicationData.setPagesData(pagesData);
         when(mockUtilityDeductionCalculator.calculate(any())).thenReturn(0);
     }
 
@@ -67,22 +45,14 @@ class ExpeditedEligibilityDeciderTest {
             "150,101,NOT_ELIGIBLE",
     })
     void shouldQualify_whenMeetingIncomeAndAssetsThresholds(
-            String income,
-            String assets,
+            Double income,
+            Double assets,
             ExpeditedEligibility expectedDecision
     ) {
-        pagesData.putPage("incomePage", new PageData(Map.of("incomeInput", InputData.builder().value(List.of(income)).build())));
-        pagesData.putPage("assetsPage", new PageData(Map.of("assetsInput", InputData.builder().value(List.of(assets)).build())));
+        when(totalIncomeCalculator.calculate(new TotalIncome(income, emptyList()))).thenReturn(income);
+        when(expeditedEligibilityParser.parse(applicationData)).thenReturn(Optional.of(new ExpeditedEligibilityParameters(assets, income, emptyList(), false, 0.0, emptyList())));
 
-        assertThat(decider.decide(pagesData)).isEqualTo(expectedDecision);
-    }
-
-    @Test
-    void shouldUseTheConfiguredDefaultValueWhenPageInputDataNotAvailable() {
-        pagesData.remove("assetsPage");
-        pagesData.putPage("incomePage", new PageData(Map.of("incomeInput", InputData.builder().value(List.of("149")).build())));
-
-        assertThat(decider.decide(pagesData)).isEqualTo(ELIGIBLE);
+        assertThat(decider.decide(applicationData)).isEqualTo(expectedDecision);
     }
 
     @ParameterizedTest
@@ -93,46 +63,41 @@ class ExpeditedEligibilityDeciderTest {
             "101,false,NOT_ELIGIBLE"
     })
     void shouldQualify_whenApplicantIsMigrantWorkerAndMeetAssetThreshold(
-            String assets,
-            String isMigrantWorker,
+            Double assets,
+            Boolean isMigrantWorker,
             ExpeditedEligibility expectedDecision
     ) {
-        pagesData.putPage("assetsPage", new PageData(Map.of("assetsInput", InputData.builder().value(List.of(assets)).build())));
-        pagesData.putPage("migrantWorkerPage", new PageData(Map.of("migrantWorkerInput", InputData.builder().value(List.of(isMigrantWorker)).build())));
+        when(totalIncomeCalculator.calculate(any())).thenReturn(9999.0);
+        when(expeditedEligibilityParser.parse(applicationData)).thenReturn(Optional.of(
+                new ExpeditedEligibilityParameters(assets, 9999.0, emptyList(), isMigrantWorker, 0.0, emptyList())));
 
-        assertThat(decider.decide(pagesData)).isEqualTo(expectedDecision);
+        assertThat(decider.decide(applicationData)).isEqualTo(expectedDecision);
     }
 
     @Test
     void shouldQualify_whenIncomeAndAssetsAreLessThanExpenses() {
-        String income = "500";
-        String assets = "1000";
-        String rentMortgageAmount = "500";
-        when(mockUtilityDeductionCalculator.calculate(any())).thenReturn(1001);
+        List<String> utilitySelections = List.of("utility");
+        when(mockUtilityDeductionCalculator.calculate(utilitySelections)).thenReturn(1001);
+        when(totalIncomeCalculator.calculate(any())).thenReturn(500.0);
+        when(expeditedEligibilityParser.parse(applicationData)).thenReturn(Optional.of(
+                new ExpeditedEligibilityParameters(1000, 500, emptyList(),false, 500.0, utilitySelections)));
 
-        pagesData.putPage("incomePage", new PageData(Map.of("incomeInput", InputData.builder().value(List.of(income)).build())));
-        pagesData.putPage("assetsPage", new PageData(Map.of("assetsInput", InputData.builder().value(List.of(assets)).build())));
-        pagesData.putPage("housingCostsPage", new PageData(Map.of("housingCostsInput", InputData.builder().value(List.of(rentMortgageAmount)).build())));
-
-        assertThat(decider.decide(pagesData)).isEqualTo(ELIGIBLE);
+        assertThat(decider.decide(applicationData)).isEqualTo(ELIGIBLE);
     }
 
     @Test
     void shouldNotQualify_whenIncomeAndAssetsAreGreaterThanOrEqualToExpenses_andNotMeetingOtherCriteria() {
-        String income = "500";
-        String assets = "1000";
-        String rentMortgageAmount = "500";
         when(mockUtilityDeductionCalculator.calculate(any())).thenReturn(1000);
+        when(totalIncomeCalculator.calculate(any())).thenReturn(500.0);
+        when(expeditedEligibilityParser.parse(applicationData)).thenReturn(Optional.of(
+                new ExpeditedEligibilityParameters(1000, 500, emptyList(),false, 500.0, emptyList())));
 
-        pagesData.putPage("incomePage", new PageData(Map.of("incomeInput", InputData.builder().value(List.of(income)).build())));
-        pagesData.putPage("assetsPage", new PageData(Map.of("assetsInput", InputData.builder().value(List.of(assets)).build())));
-        pagesData.putPage("housingCostsPage", new PageData(Map.of("housingCostsInput", InputData.builder().value(List.of(rentMortgageAmount)).build())));
-
-        assertThat(decider.decide(pagesData)).isEqualTo(NOT_ELIGIBLE);
+        assertThat(decider.decide(applicationData)).isEqualTo(NOT_ELIGIBLE);
     }
 
     @Test
     void shouldNotQualify_whenNeededDataIsNotPresent() {
-        assertThat(decider.decide(new PagesData())).isEqualTo(UNDETERMINED);
+        when(expeditedEligibilityParser.parse(any())).thenReturn(Optional.empty());
+        assertThat(decider.decide(applicationData)).isEqualTo(UNDETERMINED);
     }
 }

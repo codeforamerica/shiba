@@ -1,9 +1,12 @@
 package org.codeforamerica.shiba.output.caf;
 
+import lombok.Value;
+
+@Value
 public class NonHourlyJobIncomeInformation implements JobIncomeInformation {
-    private final PayPeriod payPeriod;
-    private final Double incomePerPayPeriod;
-    private final int iteration;
+    PayPeriod payPeriod;
+    Double incomePerPayPeriod;
+    int iteration;
 
     public NonHourlyJobIncomeInformation(String payPeriod, String incomePerPayPeriod, int iteration) {
         this.payPeriod = payPeriod.isEmpty() ? null : PayPeriod.valueOf(payPeriod);

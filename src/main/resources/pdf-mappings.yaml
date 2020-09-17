@@ -37,8 +37,6 @@ caf:
       state: APPLICANT_MAILING_STATE
       streetAddress: APPLICANT_MAILING_STREET_ADDRESS
       apartmentNumber: APPLICANT_MAILING_APT_NUMBER
-    thirtyDayIncome:
-      moneyMadeLast30Days: MONEY_MADE_LAST_MONTH
     liquidAssets:
       liquidAssets: EXPEDITED_QUESTION_2
     expeditedExpensesAmount:
@@ -167,6 +165,8 @@ caf:
       count: TOTAL_JOBS
     incomePerPayPeriod:
       incomePerPayPeriod: INCOME_PER_PAY_PERIOD
+    totalIncome:
+      thirtyDayIncome: MONEY_MADE_LAST_MONTH
   enums:
     EVERY_WEEK: Every week
     EVERY_TWO_WEEKS: Every two weeks

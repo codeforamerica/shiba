@@ -1,62 +1,43 @@
 package org.codeforamerica.shiba.output.caf;
 
-import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.output.TotalIncome;
+import org.codeforamerica.shiba.output.TotalIncomeCalculator;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import static org.codeforamerica.shiba.output.caf.ExpeditedEligibility.UNDETERMINED;
 
 @Component
 public class ExpeditedEligibilityDecider {
     private final UtilityDeductionCalculator utilityDeductionCalculator;
-    private final Map<String, PageInputCoordinates> expeditedEligibilityConfiguration;
+    private final TotalIncomeCalculator totalIncomeCalculator;
+    private ExpeditedEligibilityParser expeditedEligibilityParser;
     public static final int ASSET_THRESHOLD = 100;
     public static final int INCOME_THRESHOLD = 150;
 
     public ExpeditedEligibilityDecider(UtilityDeductionCalculator utilityDeductionCalculator,
-                                       ExpeditedEligibilityConfiguration expeditedEligibilityConfiguration) {
+                                       TotalIncomeCalculator totalIncomeCalculator,
+                                       ExpeditedEligibilityParser expeditedEligibilityParser) {
         this.utilityDeductionCalculator = utilityDeductionCalculator;
-        this.expeditedEligibilityConfiguration = expeditedEligibilityConfiguration;
+        this.totalIncomeCalculator = totalIncomeCalculator;
+        this.expeditedEligibilityParser = expeditedEligibilityParser;
     }
 
-    public ExpeditedEligibility decide(PagesData pagesData) {
-        List<String> requiredPages = expeditedEligibilityConfiguration.values().stream()
-                .filter(coordinates -> coordinates.getDefaultValue() == null)
-                .map(PageInputCoordinates::getPageName)
-                .collect(Collectors.toList());
-        if (!pagesData.keySet().containsAll(requiredPages)) {
-            return ExpeditedEligibility.UNDETERMINED;
-        }
+    public ExpeditedEligibility decide(ApplicationData applicationData) {
+        return expeditedEligibilityParser.parse(applicationData)
+                .map(parameters -> {
+                            double assets = parameters.getAssets();
+                            double income = totalIncomeCalculator.calculate(new TotalIncome(parameters.getLastMonthsIncome(), parameters.getJobIncomeInformation()));
+                            double housingCosts = parameters.getHousingCosts();
 
-        double assets = getDouble(pagesData, expeditedEligibilityConfiguration.get("assets"));
-        double income = getDouble(pagesData, expeditedEligibilityConfiguration.get("income"));
-        double housingCosts = getDouble(pagesData, expeditedEligibilityConfiguration.get("housingCosts"));
-        PageInputCoordinates migrantWorkerCoordinates = expeditedEligibilityConfiguration.get("migrantWorker");
-        String isMigrantWorker = pagesData.getPage(migrantWorkerCoordinates.getPageName()).get(migrantWorkerCoordinates.getInputName()).getValue().get(0);
-        PageInputCoordinates utilityExpensesSelectionsCoordinates = expeditedEligibilityConfiguration.get("utilityExpensesSelections");
-        InputData utilityExpensesSelections = pagesData.getPage(utilityExpensesSelectionsCoordinates.getPageName()).get(utilityExpensesSelectionsCoordinates.getInputName());
+                            boolean assetsAndIncomeBelowThreshold = assets <= ASSET_THRESHOLD && income < INCOME_THRESHOLD;
+                            boolean migrantWorkerAndAssetsBelowThreshold = parameters.isMigrantWorker() && assets <= ASSET_THRESHOLD;
+                            int standardDeduction = utilityDeductionCalculator.calculate(parameters.getUtilityExpenses());
 
-        boolean assetsAndIncomeBelowThreshold = assets <= ASSET_THRESHOLD && income < INCOME_THRESHOLD;
-        boolean migrantWorkerAndAssetsBelowThreshold = isMigrantWorker.equals("true") && assets <= ASSET_THRESHOLD;
-        int standardDeduction = utilityDeductionCalculator.calculate(utilityExpensesSelections.getValue());
-
-        return assetsAndIncomeBelowThreshold
-                || migrantWorkerAndAssetsBelowThreshold
-                || (assets + income) < (housingCosts + standardDeduction) ? ExpeditedEligibility.ELIGIBLE : ExpeditedEligibility.NOT_ELIGIBLE;
-    }
-
-    private static double getDouble(PagesData pagesData, PageInputCoordinates pageInputCoordinates) {
-        try {
-            return Double.parseDouble(
-                    Optional.ofNullable(pagesData.get(pageInputCoordinates.getPageName()))
-                            .map(inputDataMap -> inputDataMap.get(pageInputCoordinates.getInputName()).getValue().get(0))
-                            .orElse(pageInputCoordinates.getDefaultValue())
-            );
-        } catch (NumberFormatException e) {
-            return 0.0;
-        }
+                            return assetsAndIncomeBelowThreshold
+                                    || migrantWorkerAndAssetsBelowThreshold
+                                    || (assets + income) < (housingCosts + standardDeduction) ? ExpeditedEligibility.ELIGIBLE : ExpeditedEligibility.NOT_ELIGIBLE;
+                        }
+                ).orElse(UNDETERMINED);
     }
 }

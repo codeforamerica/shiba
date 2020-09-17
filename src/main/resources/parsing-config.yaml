@@ -1,0 +1,41 @@
+parsing:
+  expeditedEligibility:
+    pageInputs:
+      assets:
+        pageName: liquidAssets
+        inputName: liquidAssets
+        defaultValue: 0
+      income:
+        pageName: thirtyDayIncome
+        inputName: moneyMadeLast30Days
+        defaultValue: 0
+      migrantWorker:
+        pageName: migrantFarmWorker
+        inputName: migrantOrSeasonalFarmWorker
+        required: true
+      housingCosts:
+        pageName: expeditedExpensesAmount
+        inputName: expeditedExpensesAmount
+        defaultValue: 0
+      utilityExpensesSelections:
+        pageName: utilityPayments
+        inputName: payForUtilities
+        required: true
+  grossMonthlyIncome:
+    groupName: jobs
+    pageInputs:
+      paidByTheHour:
+        pageName: paidByTheHour
+        inputName: paidByTheHour
+      hourlyWage:
+        pageName: hourlyWage
+        inputName: hourlyWage
+      hoursAWeek:
+        pageName: hoursAWeek
+        inputName: hoursAWeek
+      payPeriod:
+        pageName: payPeriod
+        inputName: payPeriod
+      incomePerPayPeriod:
+        pageName: incomePerPayPeriod
+        inputName: incomePerPayPeriod

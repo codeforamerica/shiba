@@ -8,7 +8,7 @@ import org.springframework.context.annotation.PropertySource;
 import java.util.HashMap;
 
 @Configuration
-@PropertySource(value = "classpath:expedited-eligibility-config.yaml", factory = YamlPropertySourceFactory.class)
-@ConfigurationProperties(prefix = "expedited-eligibility")
-public class ExpeditedEligibilityConfiguration extends HashMap<String, PageInputCoordinates> {
+@PropertySource(value = "classpath:parsing-config.yaml", factory = YamlPropertySourceFactory.class)
+@ConfigurationProperties(prefix = "parsing")
+public class ParsingConfiguration extends HashMap<String, ParsingCoordinates> {
 }

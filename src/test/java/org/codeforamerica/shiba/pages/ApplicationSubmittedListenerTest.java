@@ -86,7 +86,7 @@ class ApplicationSubmittedListenerTest {
                 .build();
         when(applicationRepository.find(applicationId)).thenReturn(application);
         ApplicationSubmittedEvent event = new ApplicationSubmittedEvent(applicationId);
-        when(expeditedEligibilityDecider.decide(pagesData)).thenReturn(ExpeditedEligibility.ELIGIBLE);
+        when(expeditedEligibilityDecider.decide(applicationData)).thenReturn(ExpeditedEligibility.ELIGIBLE);
         ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
         when(pdfGenerator.generate(appIdFromDb, CLIENT)).thenReturn(applicationFile);
 
@@ -144,7 +144,7 @@ class ApplicationSubmittedListenerTest {
                 .build();
         when(applicationRepository.find(applicationId)).thenReturn(application);
         ApplicationSubmittedEvent event = new ApplicationSubmittedEvent(applicationId);
-        when(expeditedEligibilityDecider.decide(pagesData)).thenReturn(ExpeditedEligibility.ELIGIBLE);
+        when(expeditedEligibilityDecider.decide(applicationData)).thenReturn(ExpeditedEligibility.ELIGIBLE);
         ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
         when(pdfGenerator.generate(appIdFromDb, CASEWORKER)).thenReturn(applicationFile);
 
