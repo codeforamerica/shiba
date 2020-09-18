@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
 
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
@@ -60,9 +61,11 @@ public class FileDownLoadController {
             @PathVariable String applicationId,
             HttpServletRequest request
     ) {
-        log.debug("request.getHeader(\"X-Forwarded-For\") = " + request.getHeader("X-FORWARDED-FOR"));
-        log.debug("request.getRemoteAddr()" + request.getRemoteAddr());
-        applicationEventPublisher.publishEvent(new DownloadCafEvent(applicationId, request.getRemoteAddr()));
+        String requestIpHeader = Optional.ofNullable(request.getHeader("X-FORWARDED-FOR")).orElse("");
+        String[] ipAddresses = requestIpHeader.split(",");
+        String requestIp = ipAddresses.length > 1 ? ipAddresses[ipAddresses.length - 2].trim() : "<blank>";
+
+        applicationEventPublisher.publishEvent(new DownloadCafEvent(applicationId, requestIp));
         ApplicationFile applicationFile = pdfGenerator.generate(applicationId, CASEWORKER);
 
         return ResponseEntity.ok()

@@ -5,12 +5,17 @@ import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
@@ -62,22 +67,44 @@ class FileDownLoadControllerTest {
         verify(pdfGenerator).generate("9870000123", CASEWORKER);
     }
 
-    @Test
-    void shouldPublishEventWhenDownloadCafIsInvoked() throws Exception {
+    @ParameterizedTest
+    @MethodSource
+    void shouldPublishEventWhenDownloadCafIsInvoked(
+            String expectedIp, String requestHeader
+    ) throws Exception {
         when(pdfGenerator.generate(any(), any())).thenReturn(new ApplicationFile("".getBytes(), ""));
 
         String confirmationNumber = "9870000123";
-        String requestIp = "123.123.123.123";
-
         mockMvc.perform(
                 get("/download-caf/" + confirmationNumber)
                         .with(request -> {
-                            request.setRemoteAddr(requestIp);
+                            request.addHeader("X-FORWARDED-FOR", requestHeader);
                             return request;
                         })
         ).andExpect(status().is2xxSuccessful());
 
-        DownloadCafEvent event = new DownloadCafEvent(confirmationNumber, requestIp);
+        DownloadCafEvent event = new DownloadCafEvent(confirmationNumber, expectedIp);
+        verify(applicationEventPublisher).publishEvent(event);
+    }
+
+    @SuppressWarnings("unused")
+    static List<Arguments> shouldPublishEventWhenDownloadCafIsInvoked() {
+        return List.of(
+                Arguments.of("123.123.123", "ip, someIp, 123.123.123, someOtherIp"),
+                Arguments.of("<blank>", "")
+        );
+    }
+
+    @Test
+    void shouldReturnBlankIpWhenRequestHeaderIsNull() throws Exception {
+        when(pdfGenerator.generate(any(), any())).thenReturn(new ApplicationFile("".getBytes(), ""));
+
+        String confirmationNumber = "9870000123";
+        mockMvc.perform(
+                get("/download-caf/" + confirmationNumber).with(request -> request)
+        ).andExpect(status().is2xxSuccessful());
+
+        DownloadCafEvent event = new DownloadCafEvent(confirmationNumber, "<blank>");
         verify(applicationEventPublisher).publishEvent(event);
     }
 
