@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output;
 
+import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.ConfirmationData;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
@@ -13,10 +14,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 
 @Controller
+@Slf4j
 public class FileDownLoadController {
     private final XmlGenerator xmlGenerator;
     private final ConfirmationData confirmationData;
@@ -56,13 +57,16 @@ public class FileDownLoadController {
     @GetMapping("/download-caf/{applicationId}")
     ResponseEntity<byte[]> downloadPdfWithApplicationId(
             @PathVariable String applicationId,
-            HttpServletRequest request) {
-        applicationEventPublisher.publishEvent(new DownloadCafEvent(applicationId, request.getRemoteAddr()));
-        ApplicationFile applicationFile = pdfGenerator.generate(applicationId, CASEWORKER);
+            HttpServletRequest request
+    ) {
+        log.debug("request.getHeader(\"X-Forwarded-For\") = " + request.getHeader("X-FORWARDED-FOR"));
+        log.debug("request.getRemoteAddr()" + request.getRemoteAddr());
+//        applicationEventPublisher.publishEvent(new DownloadCafEvent(applicationId, request.getRemoteAddr()));
+//        ApplicationFile applicationFile = pdfGenerator.generate(applicationId, CASEWORKER);
 
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", applicationFile.getFileName()))
-                .body(applicationFile.getFileBytes());
+        return ResponseEntity.ok().build();
+//                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+//                .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", applicationFile.getFileName()))
+//                .body(applicationFile.getFileBytes());
     }
 }
