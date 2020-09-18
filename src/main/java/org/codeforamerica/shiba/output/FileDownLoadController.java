@@ -62,7 +62,7 @@ public class FileDownLoadController {
     ) {
         log.debug("request.getHeader(\"X-Forwarded-For\") = " + request.getHeader("X-FORWARDED-FOR"));
         log.debug("request.getRemoteAddr()" + request.getRemoteAddr());
-//        applicationEventPublisher.publishEvent(new DownloadCafEvent(applicationId, request.getRemoteAddr()));
+        applicationEventPublisher.publishEvent(new DownloadCafEvent(applicationId, request.getRemoteAddr()));
         ApplicationFile applicationFile = pdfGenerator.generate(applicationId, CASEWORKER);
 
         return ResponseEntity.ok()
