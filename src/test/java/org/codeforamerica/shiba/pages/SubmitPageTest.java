@@ -1,9 +1,9 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.Application;
-import org.codeforamerica.shiba.ApplicationFactory;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
+import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;

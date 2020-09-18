@@ -1,5 +1,7 @@
 package org.codeforamerica.shiba;
 
+import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

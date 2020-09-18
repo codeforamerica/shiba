@@ -1,7 +1,8 @@
-package org.codeforamerica.shiba;
+package org.codeforamerica.shiba.application;
 
 import lombok.Builder;
 import lombok.Value;
+import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.pages.Feedback;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.ApplicationData;

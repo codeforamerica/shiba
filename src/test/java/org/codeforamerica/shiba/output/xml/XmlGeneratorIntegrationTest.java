@@ -1,8 +1,8 @@
 package org.codeforamerica.shiba.output.xml;
 
-import org.codeforamerica.shiba.Application;
-import org.codeforamerica.shiba.ApplicationRepository;
 import org.codeforamerica.shiba.County;
+import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;

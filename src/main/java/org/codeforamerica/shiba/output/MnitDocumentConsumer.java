@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.output;
 
-import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.MnitEsbWebServiceClient;
+import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.springframework.stereotype.Component;

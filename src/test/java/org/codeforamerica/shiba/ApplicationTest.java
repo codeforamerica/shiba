@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba;
 
+import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.pages.Feedback;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.junit.jupiter.api.Test;

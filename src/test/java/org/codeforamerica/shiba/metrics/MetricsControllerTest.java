@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.metrics;
 
-import org.codeforamerica.shiba.ApplicationRepository;
+import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

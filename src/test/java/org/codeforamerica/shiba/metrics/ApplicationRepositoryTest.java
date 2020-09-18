@@ -1,6 +1,10 @@
 package org.codeforamerica.shiba.metrics;
 
-import org.codeforamerica.shiba.*;
+import org.codeforamerica.shiba.County;
+import org.codeforamerica.shiba.Encryptor;
+import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.application.ApplicationFactory;
+import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,8 +1,8 @@
 package org.codeforamerica.shiba.metrics;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
-import org.codeforamerica.shiba.ApplicationRepository;
 import org.codeforamerica.shiba.County;
+import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;

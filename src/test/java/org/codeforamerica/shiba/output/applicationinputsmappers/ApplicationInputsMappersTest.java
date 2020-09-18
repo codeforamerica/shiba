@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.output.applicationinputsmappers;
 
-import org.codeforamerica.shiba.Application;
 import org.codeforamerica.shiba.County;
+import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.Test;

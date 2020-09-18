@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.output.caf;
 
-import org.codeforamerica.shiba.Application;
+import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.*;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMapper;
 import org.springframework.stereotype.Component;

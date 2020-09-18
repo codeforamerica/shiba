@@ -1,5 +1,7 @@
-package org.codeforamerica.shiba;
+package org.codeforamerica.shiba.application;
 
+import org.codeforamerica.shiba.County;
+import org.codeforamerica.shiba.MnitCountyInformation;
 import org.codeforamerica.shiba.metrics.Metrics;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.ApplicationData;

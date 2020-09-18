@@ -1,5 +1,7 @@
 package org.codeforamerica.shiba;
 
+import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.metrics.Metrics;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
