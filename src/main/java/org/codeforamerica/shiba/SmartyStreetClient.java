@@ -13,8 +13,8 @@ public class SmartyStreetClient implements LocationClient {
     private final String smartyStreetUrl;
 
     public SmartyStreetClient(
-            @Value("${smarty-street-authId}") String authId,
-            @Value("${smarty-street-authToken}") String authToken,
+            @Value("${smarty-street-auth-id}") String authId,
+            @Value("${smarty-street-auth-token}") String authToken,
             @Value("${smarty-street-url}") String smartyStreetUrl) {
         this.authId = authId;
         this.authToken = authToken;

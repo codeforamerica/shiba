@@ -13,8 +13,8 @@ security-email: security@email.org
 audit-email: audit@email.org
 support-email: support@email.org
 
-smarty-street-authId: someId
-smarty-street-authToken: someToken
+smarty-street-auth-id: someId
+smarty-street-auth-token: someToken
 smarty-street-url: someUrl
 
 mail-gun:
