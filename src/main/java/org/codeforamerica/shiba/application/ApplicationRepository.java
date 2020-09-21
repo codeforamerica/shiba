@@ -2,7 +2,6 @@ package org.codeforamerica.shiba.application;
 
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.Encryptor;
-import org.codeforamerica.shiba.metrics.ApplicationMetric;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.jetbrains.annotations.NotNull;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.time.*;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -94,13 +92,6 @@ public class ApplicationRepository {
 
     public Integer count() {
         return jdbcTemplate.queryForObject("SELECT count(*) FROM applications;", Integer.class);
-    }
-
-    public List<ApplicationMetric> findAll() {
-        return jdbcTemplate.query("SELECT * FROM applications;", (resultSet, rowNumber) ->
-                new ApplicationMetric(Duration.of(resultSet.getLong("time_to_complete"), ChronoUnit.SECONDS),
-                        County.valueOf(resultSet.getString("county")),
-                        ZonedDateTime.ofInstant(resultSet.getTimestamp("completed_at").toInstant(), ZoneOffset.UTC)));
     }
 
     public Map<County, Integer> countByCounty() {
