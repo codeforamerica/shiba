@@ -4,7 +4,7 @@
 
 ### Install the following system dependencies:
 
-- Java 14 Development Kit: `brew cask install java`
+- Java 14 Development Kit: `brew install java`
 - Gradle build tool version 6.3: `brew install gradle`
 
 ### Setup live reload:
@@ -15,9 +15,9 @@
 
 - Configure an additional dictionary in `preferences > editor > proofreading > spelling` using `.idea/dictionaries/shiba.xml`
 - Install the Lombok plugin
+- Install the EnvFile plugin
 - Enable annotation processing
 - Set the Project SDK to Java 14 in `File > Project Structure`
-- Install the EnvFile plugin
 - Create `.env` file in the root of the project directory
 - Paste in values from `SHIBA application-secrets.yaml` in LastPass with the format `ENV_VAR_NAME=ENV_VAR_VALUE`, translating the property notation to environment variable notation as follows:
     - `shiba.username: someUsername` --> `SHIBA_USERNAME=someUsername`
