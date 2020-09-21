@@ -24,6 +24,7 @@
     - `mail-gun.api-key: someApiKey` --> `MAIL-GUN_API-KEY=someApiKey`
 - Generate an encryption key - see instructions in the next section.
 - Run the application using ShibaApplication run configuration
+- If Intellij is reporting error on getters/setters/builders..., check again if you enabled Lombok plugin and annotation processing correctly.
 
 ### Generate an encryption key:
 - Install the `tinkey` command line utility to generate an encryption key, following [their docs](https://github.com/google/tink/blob/master/docs/TINKEY.md)
