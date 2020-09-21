@@ -38,3 +38,17 @@ test-parsing:
       incomePerPayPeriod:
         pageName: incomePerPayPeriodPage
         inputName: incomePerPayPeriodInput
+  homeAddress:
+    pageInputs:
+      street:
+        pageName: homeAddressPageName
+        inputName: addressLine1
+      city:
+        pageName: homeAddressPageName
+        inputName: addressLine2
+      state:
+        pageName: homeAddressPageName
+        inputName: addressLine3
+      zipcode:
+        pageName: homeAddressPageName
+        inputName: addressLine4

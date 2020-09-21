@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output.caf;
 
+import org.codeforamerica.shiba.application.parsers.ExpeditedEligibilityParser;
 import org.codeforamerica.shiba.output.TotalIncome;
 import org.codeforamerica.shiba.output.TotalIncomeCalculator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -11,7 +12,7 @@ import static org.codeforamerica.shiba.output.caf.ExpeditedEligibility.UNDETERMI
 public class ExpeditedEligibilityDecider {
     private final UtilityDeductionCalculator utilityDeductionCalculator;
     private final TotalIncomeCalculator totalIncomeCalculator;
-    private ExpeditedEligibilityParser expeditedEligibilityParser;
+    private final ExpeditedEligibilityParser expeditedEligibilityParser;
     public static final int ASSET_THRESHOLD = 100;
     public static final int INCOME_THRESHOLD = 150;
 

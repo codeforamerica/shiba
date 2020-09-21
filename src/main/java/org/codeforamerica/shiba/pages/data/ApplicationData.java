@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.pages.data;
 
 import lombok.Data;
+import org.codeforamerica.shiba.output.caf.PageInputCoordinates;
 import org.codeforamerica.shiba.pages.config.NextPage;
 import org.codeforamerica.shiba.pages.config.PageWorkflowConfiguration;
 
@@ -16,6 +17,12 @@ public class ApplicationData {
 
     public PageData getInputDataMap(String pageName) {
         return this.pagesData.getPage(pageName);
+    }
+
+    public String getValue(PageInputCoordinates pageInputCoordinates) {
+        return Optional.ofNullable(this.getInputDataMap(pageInputCoordinates.getPageName()))
+                .map(pageData -> pageData.get(pageInputCoordinates.getInputName()).getValue().get(0))
+                .orElse(pageInputCoordinates.getDefaultValue());
     }
 
     public String getNextPageName(PageWorkflowConfiguration pageWorkflowConfiguration, Integer option) {

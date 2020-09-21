@@ -39,3 +39,17 @@ parsing:
       incomePerPayPeriod:
         pageName: incomePerPayPeriod
         inputName: incomePerPayPeriod
+  homeAddress:
+    pageInputs:
+      street:
+        pageName: homeAddress
+        inputName: streetAddress
+      city:
+        pageName: homeAddress
+        inputName: city
+      state:
+        pageName: homeAddress
+        inputName: state
+      zipcode:
+        pageName: homeAddress
+        inputName: zipCode

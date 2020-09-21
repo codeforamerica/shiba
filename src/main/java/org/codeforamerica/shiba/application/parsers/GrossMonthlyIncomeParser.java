@@ -1,5 +1,6 @@
-package org.codeforamerica.shiba.output.caf;
+package org.codeforamerica.shiba.application.parsers;
 
+import org.codeforamerica.shiba.output.caf.*;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.Subworkflow;
 import org.springframework.stereotype.Component;
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class GrossMonthlyIncomeParser extends AbstractApplicationDataParser<List<JobIncomeInformation>> {
+public class GrossMonthlyIncomeParser extends ApplicationDataParser<List<JobIncomeInformation>> {
     ParsingCoordinates grossMonthlyIncomeConfiguration;
 
     public GrossMonthlyIncomeParser(ParsingConfiguration parsingConfiguration) {

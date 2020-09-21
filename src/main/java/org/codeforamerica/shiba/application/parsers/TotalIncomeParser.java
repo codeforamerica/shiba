@@ -1,6 +1,6 @@
-package org.codeforamerica.shiba.output;
+package org.codeforamerica.shiba.application.parsers;
 
-import org.codeforamerica.shiba.output.caf.AbstractApplicationDataParser;
+import org.codeforamerica.shiba.output.TotalIncome;
 import org.codeforamerica.shiba.output.caf.JobIncomeInformation;
 import org.codeforamerica.shiba.output.caf.ParsingConfiguration;
 import org.codeforamerica.shiba.output.caf.ParsingCoordinates;
@@ -10,19 +10,20 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class TotalIncomeParser extends AbstractApplicationDataParser<TotalIncome> {
+public class TotalIncomeParser extends ApplicationDataParser<TotalIncome> {
     private final ParsingCoordinates expeditedEligibilityConfiguration;
-    private final AbstractApplicationDataParser<List<JobIncomeInformation>> grossIncomeParser;
+    private final ApplicationDataParser<List<JobIncomeInformation>> grossIncomeParser;
 
     public TotalIncomeParser(ParsingConfiguration parsingConfiguration,
-                             AbstractApplicationDataParser<List<JobIncomeInformation>> grossIncomeParser) {
+                             ApplicationDataParser<List<JobIncomeInformation>> grossIncomeParser) {
         this.grossIncomeParser = grossIncomeParser;
         this.parsingConfiguration = parsingConfiguration;
         this.expeditedEligibilityConfiguration = parsingConfiguration.get("expeditedEligibility");
     }
+
     @Override
     public TotalIncome parse(ApplicationData applicationData) {
-        double income = getDouble(applicationData.getPagesData(), expeditedEligibilityConfiguration.getPageInputs().get("income"));
+        double income = getDouble(applicationData, expeditedEligibilityConfiguration.getPageInputs().get("income"));
         return new TotalIncome(income, grossIncomeParser.parse(applicationData));
     }
 }

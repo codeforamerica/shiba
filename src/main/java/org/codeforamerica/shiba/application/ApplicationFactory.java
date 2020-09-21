@@ -1,7 +1,10 @@
 package org.codeforamerica.shiba.application;
 
+import org.codeforamerica.shiba.Address;
 import org.codeforamerica.shiba.County;
+import org.codeforamerica.shiba.LocationClient;
 import org.codeforamerica.shiba.MnitCountyInformation;
+import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.metrics.Metrics;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -15,13 +18,18 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+
+import static org.codeforamerica.shiba.County.OTHER;
 
 @Component
 public class ApplicationFactory {
     private final Clock clock;
     private final Map<String, County> countyZipCode;
     private final Map<County, MnitCountyInformation> countyFolderIdMapping;
+    private final LocationClient locationClient;
+    private final ApplicationDataParser<Address> homeAddressParser;
     public static final Map<String, Set<String>> LETTER_TO_PROGRAMS = Map.of(
             "E", Set.of("EA"),
             "K", Set.of("CASH", "GRH"),
@@ -29,12 +37,17 @@ public class ApplicationFactory {
             "C", Set.of("CCAP")
     );
 
-    public ApplicationFactory(Clock clock,
-                              Map<String, County> countyZipCode,
-                              Map<County, MnitCountyInformation> countyFolderIdMapping) {
+    public ApplicationFactory(
+            Clock clock,
+            Map<String, County> countyZipCode,
+            Map<County, MnitCountyInformation> countyFolderIdMapping,
+            LocationClient locationClient,
+            ApplicationDataParser<Address> homeAddressParser) {
         this.clock = clock;
         this.countyZipCode = countyZipCode;
         this.countyFolderIdMapping = countyFolderIdMapping;
+        this.locationClient = locationClient;
+        this.homeAddressParser = homeAddressParser;
     }
 
     public Application newApplication(String id, ApplicationData applicationData, Metrics metrics) {
@@ -42,8 +55,10 @@ public class ApplicationFactory {
         copy.setPagesData(applicationData.getPagesData());
         copy.setSubworkflows(applicationData.getSubworkflows());
         copy.setIncompleteIterations(applicationData.getIncompleteIterations());
-        String zipCode = copy.getPagesData().get("homeAddress").get("zipCode").getValue().get(0);
-        County county = countyZipCode.getOrDefault(zipCode, County.OTHER);
+        Address homeAddress = homeAddressParser.parse(applicationData);
+        Optional<String> countyString = locationClient.getCounty(homeAddress);
+        County county = countyString.map(County::fromString)
+                .orElse(countyZipCode.getOrDefault(homeAddress.getZipcode(), OTHER));
         ZonedDateTime completedAt = ZonedDateTime.now(clock);
         String fileName = createFileName(id, applicationData, county, completedAt);
 

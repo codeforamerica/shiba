@@ -1,6 +1,8 @@
 package org.codeforamerica.shiba.output.caf;
 
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
+import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
+import org.codeforamerica.shiba.application.parsers.ExpeditedEligibilityParser;
 import org.codeforamerica.shiba.output.TotalIncomeCalculator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
@@ -36,7 +38,7 @@ class ExpeditedEligibilityParserTest {
     ExpeditedEligibilityParser expeditedEligibilityParser;
 
     @MockBean
-    AbstractApplicationDataParser<List<JobIncomeInformation>> grossMonthlyIncomeParser;
+    ApplicationDataParser<List<JobIncomeInformation>> grossMonthlyIncomeParser;
 
     @MockBean
     TotalIncomeCalculator totalIncomeCalculator;

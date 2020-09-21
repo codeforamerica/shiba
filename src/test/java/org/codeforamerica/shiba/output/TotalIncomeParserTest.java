@@ -1,7 +1,8 @@
 package org.codeforamerica.shiba.output;
 
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
-import org.codeforamerica.shiba.output.caf.AbstractApplicationDataParser;
+import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
+import org.codeforamerica.shiba.application.parsers.TotalIncomeParser;
 import org.codeforamerica.shiba.output.caf.JobIncomeInformation;
 import org.codeforamerica.shiba.output.caf.ParsingConfiguration;
 import org.codeforamerica.shiba.pages.data.*;
@@ -37,7 +38,7 @@ class TotalIncomeParserTest {
     TotalIncomeParser totalIncomeParser;
 
     @MockBean
-    AbstractApplicationDataParser<List<JobIncomeInformation>> grossIncomeParser;
+    ApplicationDataParser<List<JobIncomeInformation>> grossIncomeParser;
 
     @TestConfiguration
     @PropertySource(value = "classpath:test-parsing-config.yaml", factory = YamlPropertySourceFactory.class)

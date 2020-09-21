@@ -1,5 +1,9 @@
-package org.codeforamerica.shiba.output.caf;
+package org.codeforamerica.shiba.application.parsers;
 
+import org.codeforamerica.shiba.output.caf.ExpeditedEligibilityParameters;
+import org.codeforamerica.shiba.output.caf.JobIncomeInformation;
+import org.codeforamerica.shiba.output.caf.PageInputCoordinates;
+import org.codeforamerica.shiba.output.caf.ParsingConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.jetbrains.annotations.NotNull;
@@ -11,12 +15,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-public class ExpeditedEligibilityParser extends AbstractApplicationDataParser<Optional<ExpeditedEligibilityParameters>> {
+public class ExpeditedEligibilityParser extends ApplicationDataParser<Optional<ExpeditedEligibilityParameters>> {
     private final Map<String, PageInputCoordinates> parsingConfiguration;
-    private final AbstractApplicationDataParser<List<JobIncomeInformation>> jobIncomeInformationParser;
+    private final ApplicationDataParser<List<JobIncomeInformation>> jobIncomeInformationParser;
 
     public ExpeditedEligibilityParser(ParsingConfiguration parsingConfiguration,
-                                      AbstractApplicationDataParser<List<JobIncomeInformation>> jobIncomeInformationParser) {
+                                      ApplicationDataParser<List<JobIncomeInformation>> jobIncomeInformationParser) {
         this.parsingConfiguration = parsingConfiguration.get("expeditedEligibility").getPageInputs();
         this.jobIncomeInformationParser = jobIncomeInformationParser;
     }
@@ -32,10 +36,10 @@ public class ExpeditedEligibilityParser extends AbstractApplicationDataParser<Op
             return Optional.empty();
         }
 
-        double assets = getDouble(pagesData, parsingConfiguration.get("assets"));
-        double income = getDouble(applicationData.getPagesData(), parsingConfiguration.get("income"));
+        double assets = getDouble(applicationData, parsingConfiguration.get("assets"));
+        double income = getDouble(applicationData, parsingConfiguration.get("income"));
 
-        double housingCosts = getDouble(pagesData, parsingConfiguration.get("housingCosts"));
+        double housingCosts = getDouble(applicationData, parsingConfiguration.get("housingCosts"));
         boolean isMigrantWorker = Boolean.parseBoolean(pagesData.getPage(parsingConfiguration.get("migrantWorker").getPageName())
                 .get(parsingConfiguration.get("migrantWorker").getInputName()).getValue().get(0));
         @NotNull List<String> utilityExpensesSelections = pagesData.getPage(parsingConfiguration.get("utilityExpensesSelections").getPageName())

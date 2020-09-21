@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.output.caf;
 
 import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMapper;
@@ -14,9 +15,9 @@ import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
 @Component
 public class GrossMonthlyIncomeMapper implements ApplicationInputsMapper {
 
-    private final AbstractApplicationDataParser<List<JobIncomeInformation>> grossMonthlyIncomeParser;
+    private final ApplicationDataParser<List<JobIncomeInformation>> grossMonthlyIncomeParser;
 
-    public GrossMonthlyIncomeMapper(AbstractApplicationDataParser<List<JobIncomeInformation>> grossMonthlyIncomeParser) {
+    public GrossMonthlyIncomeMapper(ApplicationDataParser<List<JobIncomeInformation>> grossMonthlyIncomeParser) {
         this.grossMonthlyIncomeParser = grossMonthlyIncomeParser;
     }
 

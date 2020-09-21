@@ -24,4 +24,6 @@ submit-via-email: false
 submit-via-api: false
 send-non-partner-county-alert: false
 
+smarty-street-url: "https://us-street.api.smartystreets.com/street-address"
+
 encryption-key: ${ENCRYPTION_KEY}

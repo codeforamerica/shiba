@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
+import org.codeforamerica.shiba.SmartyStreetClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,6 +17,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,6 +25,7 @@ import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.pages.DatePart.*;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 public class UserJourneyPageTest extends AbstractBasePageTest {
@@ -33,6 +36,12 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     @MockBean
     ApplicationEventPublisher applicationEventPublisher;
 
+    @MockBean
+    SmartyStreetClient smartyStreetClient;
+
+    @MockBean
+    MailGunEmailClient mailGunEmailClient;
+
     @Override
     @BeforeEach
     void setUp() throws IOException {
@@ -40,6 +49,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         driver.navigate().to(baseUrl + "/pages/landing");
         when(clock.instant()).thenReturn(Instant.now());
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
+        when(smartyStreetClient.getCounty(any())).thenReturn(Optional.empty());
     }
 
     @Test
