@@ -6,31 +6,30 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.util.InMemoryResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
+import static org.springframework.web.reactive.function.BodyInserters.fromMultipartData;
+
 @Component
 public class MailGunEmailClient implements EmailClient {
-    private final RestTemplate restTemplate;
     private final String senderEmail;
     private final String securityEmail;
     private final String auditEmail;
     private final String supportEmail;
-    private final String mailGunUrl;
     private final String mailGunApiKey;
     private final EmailContentCreator emailContentCreator;
     private final boolean shouldCC;
+    private final WebClient webClient;
 
-    public MailGunEmailClient(RestTemplate restTemplate,
-                              @Value("${sender-email}") String senderEmail,
+    public MailGunEmailClient(@Value("${sender-email}") String senderEmail,
                               @Value("${security-email}") String securityEmail,
                               @Value("${audit-email}") String auditEmail,
                               @Value("${support-email}") String supportEmail,
@@ -38,15 +37,14 @@ public class MailGunEmailClient implements EmailClient {
                               @Value("${mail-gun.api-key}") String mailGunApiKey,
                               EmailContentCreator emailContentCreator,
                               @Value("${mail-gun.shouldCC}") boolean shouldCC) {
-        this.restTemplate = restTemplate;
         this.senderEmail = senderEmail;
         this.securityEmail = securityEmail;
         this.auditEmail = auditEmail;
         this.supportEmail = supportEmail;
-        this.mailGunUrl = mailGunUrl;
         this.mailGunApiKey = mailGunApiKey;
         this.emailContentCreator = emailContentCreator;
         this.shouldCC = shouldCC;
+        this.webClient = WebClient.builder().baseUrl(mailGunUrl).build();
     }
 
     @Override
@@ -61,10 +59,14 @@ public class MailGunEmailClient implements EmailClient {
         form.put("html", List.of(emailContentCreator.createClientHTML(confirmationId, expeditedEligibility)));
         form.put("attachment", List.of(asResource(applicationFile)));
 
-        HttpHeaders requestHeaders = new HttpHeaders();
-        requestHeaders.setBasicAuth("api", mailGunApiKey);
         MDC.put("confirmationId", confirmationId);
-        restTemplate.postForLocation(mailGunUrl, new HttpEntity<>(form, requestHeaders));
+
+        webClient.post()
+                .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
+                .body(fromMultipartData(form))
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
     }
 
     @Override
@@ -82,38 +84,46 @@ public class MailGunEmailClient implements EmailClient {
         form.put("html", List.of(emailContentCreator.createCaseworkerHTML()));
         form.put("attachment", List.of(asResource(applicationFile)));
 
-        HttpHeaders requestHeaders = new HttpHeaders();
-        requestHeaders.setBasicAuth("api", mailGunApiKey);
         MDC.put("confirmationId", confirmationId);
-        restTemplate.postForLocation(mailGunUrl, new HttpEntity<>(form, requestHeaders));
+
+        webClient.post()
+                .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
+                .body(fromMultipartData(form))
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
     }
 
     @Override
     public void sendDownloadCafAlertEmail(String confirmationId, String ip) {
-        MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
+        MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
         form.put("from", List.of(securityEmail));
         form.put("to", List.of(auditEmail));
         form.put("subject", List.of("Caseworker CAF downloaded"));
         form.put("html", List.of(emailContentCreator.createDownloadCafAlertContent(confirmationId, ip)));
 
-        HttpHeaders requestHeaders = new HttpHeaders();
-        requestHeaders.setBasicAuth("api", mailGunApiKey);
-
-        restTemplate.postForLocation(mailGunUrl, new HttpEntity<>(form, requestHeaders));
+        webClient.post()
+                .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
+                .body(fromFormData(form))
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
     }
 
     @Override
     public void sendNonPartnerCountyAlert(String applicationId, ZonedDateTime submissionTime) {
-        MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
+        MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
         form.put("from", List.of(senderEmail));
         form.put("to", List.of(supportEmail));
         form.put("subject", List.of("ALERT new non-partner application submitted"));
         form.put("html", List.of(emailContentCreator.createNonCountyPartnerAlert(applicationId, submissionTime)));
 
-        HttpHeaders requestHeaders = new HttpHeaders();
-        requestHeaders.setBasicAuth("api", mailGunApiKey);
-
-        restTemplate.postForLocation(mailGunUrl, new HttpEntity<>(form, requestHeaders));
+        webClient.post()
+                .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
+                .body(fromFormData(form))
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
     }
 
     @NotNull

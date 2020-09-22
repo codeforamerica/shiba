@@ -10,13 +10,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.client.RestTemplate;
 
 import java.time.ZonedDateTime;
 
@@ -30,9 +28,6 @@ import static org.mockito.Mockito.when;
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 class MailGunEmailClientTest {
-
-    @Autowired
-    RestTemplate restTemplate;
 
     MailGunEmailClient mailGunEmailClient;
 
@@ -58,7 +53,6 @@ class MailGunEmailClientTest {
         port = wireMockServer.port();
         WireMock.configureFor(port);
         mailGunEmailClient = new MailGunEmailClient(
-                restTemplate,
                 senderEmail,
                 securityEmail,
                 auditEmail,
@@ -211,7 +205,6 @@ class MailGunEmailClientTest {
         when(emailContentCreator.createCaseworkerHTML()).thenReturn(emailContent);
 
         mailGunEmailClient = new MailGunEmailClient(
-                restTemplate,
                 senderEmail,
                 "", "", "", "http://localhost:" + port,
                 mailGunApiKey,
