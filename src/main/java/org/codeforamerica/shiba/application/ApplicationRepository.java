@@ -74,19 +74,20 @@ public class ApplicationRepository {
 
     public Application find(String id) {
         return jdbcTemplate.queryForObject("SELECT * FROM applications WHERE id = ?",
-                (resultSet, rowNum) -> applicationFactory.reconstituteApplication(
-                        id,
-                        ZonedDateTime.ofInstant(resultSet.getTimestamp("completed_at").toInstant(), ZoneOffset.UTC),
-                        encryptor.decrypt(resultSet.getBytes("encrypted_data")),
-                        County.valueOf(resultSet.getString("county")),
-                        Duration.ofSeconds(resultSet.getLong("time_to_complete")),
-                        Optional.ofNullable(resultSet.getString("flow"))
+                (resultSet, rowNum) -> Application.builder()
+                                .id(id)
+                                .completedAt(ZonedDateTime.ofInstant(resultSet.getTimestamp("completed_at").toInstant(), ZoneOffset.UTC))
+                                .applicationData(encryptor.decrypt(resultSet.getBytes("encrypted_data")))
+                                .county(County.valueOf(resultSet.getString("county")))
+                                .timeToComplete(Duration.ofSeconds(resultSet.getLong("time_to_complete")))
+                                .sentiment(Optional.ofNullable(resultSet.getString("sentiment"))
+                                                .map(Sentiment::valueOf)
+                                                .orElse(null))
+                                .feedback(resultSet.getString("feedback"))
+                                .flow(Optional.ofNullable(resultSet.getString("flow"))
                                 .map(FlowType::valueOf)
-                                .orElse(null),
-                        Optional.ofNullable(resultSet.getString("sentiment"))
-                                .map(Sentiment::valueOf)
-                                .orElse(null),
-                        resultSet.getString("feedback")),
+                                .orElse(null))
+                                .build(),
                 id);
     }
 

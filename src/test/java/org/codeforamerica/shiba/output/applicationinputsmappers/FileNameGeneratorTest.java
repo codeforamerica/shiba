@@ -1,0 +1,128 @@
+package org.codeforamerica.shiba.output.applicationinputsmappers;
+
+import org.codeforamerica.shiba.County;
+import org.codeforamerica.shiba.MnitCountyInformation;
+import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.pages.CountyMap;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.InputData;
+import org.codeforamerica.shiba.pages.data.PageData;
+import org.codeforamerica.shiba.pages.data.PagesData;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.Collections.emptyList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.County.HENNEPIN;
+
+class FileNameGeneratorTest {
+
+    CountyMap<MnitCountyInformation> countyMap = new CountyMap<>();
+
+    FileNameGenerator fileNameGenerator = new FileNameGenerator(countyMap);
+
+    Application.ApplicationBuilder defaultApplicationBuilder;
+
+    @BeforeEach
+    void setUp() {
+        PagesData pagesData = new PagesData();
+        ApplicationData applicationData = new ApplicationData();
+        PageData chooseProgramsData = new PageData();
+        chooseProgramsData.put("programs", InputData.builder().value(emptyList()).build());
+        pagesData.put("choosePrograms", chooseProgramsData);
+        applicationData.setPagesData(pagesData);
+        countyMap.setDefaultValue(MnitCountyInformation.builder()
+                .folderId("defaultFolderId")
+                .dhsProviderId("defaultDhsProviderId")
+                .email("defaultEmail")
+                .build());
+        defaultApplicationBuilder = Application.builder()
+                .id("defaultId")
+                .applicationData(applicationData)
+                .completedAt(ZonedDateTime.now(ZoneOffset.UTC));
+    }
+
+    @Test
+    void shouldIncludeIdInFileNameForApplication() {
+        String applicationId = "someId";
+        Application application = defaultApplicationBuilder.id(applicationId).build();
+        String fileName = fileNameGenerator.generateFileName(application);
+        assertThat(fileName).contains(applicationId);
+    }
+
+    @Test
+    void shouldIncludeSubmitDateInCentralTimeZone() {
+        Application application = defaultApplicationBuilder.completedAt(ZonedDateTime.ofInstant(Instant.parse("2007-09-10T04:59:59.00Z"), ZoneOffset.UTC)).build();
+        String fileName = fileNameGenerator.generateFileName(application);
+        assertThat(fileName).contains("20070909");
+    }
+
+    @Test
+    void shouldIncludeSubmitTimeInCentralTimeZone() {
+        Application application = defaultApplicationBuilder.completedAt(ZonedDateTime.ofInstant(Instant.parse("2007-09-10T04:05:59.00Z"), ZoneOffset.UTC)).build();
+        String fileName = fileNameGenerator.generateFileName(application);
+        assertThat(fileName).contains("230559");
+    }
+
+    @Test
+    void shouldIncludeCorrectCountyNPI() {
+        String countyNPI = "someNPI";
+        County county = HENNEPIN;
+        countyMap.getCounties().put(county, MnitCountyInformation.builder().dhsProviderId(countyNPI).build());
+        Application application = defaultApplicationBuilder.county(county).build();
+
+        String fileName = fileNameGenerator.generateFileName(application);
+
+        assertThat(fileName).contains(countyNPI);
+    }
+
+    @Test
+    void shouldIncludeProgramCodes() {
+        PageData chooseProgramsData = new PageData();
+        List<String> programs = new ArrayList<>(List.of(
+                "SNAP", "CASH", "GRH", "EA", "CCAP"
+        ));
+        Collections.shuffle(programs);
+        chooseProgramsData.put("programs", InputData.builder().value(programs).build());
+        ApplicationData applicationData = new ApplicationData();
+        applicationData.setPagesData(new PagesData(Map.of("choosePrograms", chooseProgramsData)));
+        Application application = defaultApplicationBuilder.applicationData(applicationData).build();
+
+        String fileName = fileNameGenerator.generateFileName(application);
+
+        assertThat(fileName).contains("EKFC");
+    }
+
+    @Test
+    void shouldArrangeNameCorrectly() {
+        PageData chooseProgramsData = new PageData(Map.of("programs", InputData.builder().value(List.of("SNAP")).build()));
+        ApplicationData applicationData = new ApplicationData();
+        applicationData.setPagesData(new PagesData(Map.of("choosePrograms", chooseProgramsData)));
+
+        String countyNPI = "someNPI";
+        County county = HENNEPIN;
+        countyMap.getCounties().put(county, MnitCountyInformation.builder().dhsProviderId(countyNPI).build());
+
+        String applicationId = "someId";
+
+        Application application = defaultApplicationBuilder
+                .id(applicationId)
+                .county(county)
+                .completedAt(ZonedDateTime.ofInstant(Instant.parse("2007-09-10T04:59:59.00Z"), ZoneOffset.UTC))
+                .applicationData(applicationData)
+                .build();
+
+        String fileName = fileNameGenerator.generateFileName(application);
+
+        assertThat(fileName).isEqualTo(String.format("%s_MNB_%s_%s_%s_%s",
+                countyNPI, "20070909", "235959", applicationId, "F"));
+    }
+}

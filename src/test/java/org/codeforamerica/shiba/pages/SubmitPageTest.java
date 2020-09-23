@@ -6,15 +6,11 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.PageData;
-import org.codeforamerica.shiba.pages.data.PagesData;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.jdbc.Sql;
@@ -23,12 +19,10 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.Map;
 
-import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 
 @Sql(statements = {"TRUNCATE TABLE applications"})
 public class SubmitPageTest extends AbstractStaticMessageSourcePageTest {
@@ -46,7 +40,7 @@ public class SubmitPageTest extends AbstractStaticMessageSourcePageTest {
     @MockBean
     ApplicationSubmittedListener applicationSubmittedListener;
 
-    @SpyBean
+    @MockBean
     ApplicationFactory applicationFactory;
 
     @Test
@@ -54,7 +48,6 @@ public class SubmitPageTest extends AbstractStaticMessageSourcePageTest {
         String applicationId = "someId";
         County county = County.HENNEPIN;
         ApplicationData applicationData = new ApplicationData();
-        applicationData.setPagesData(new PagesData(Map.of("choosePrograms", new PageData(Map.of("programs", InputData.builder().value(emptyList()).build())))));
         Sentiment sentiment = Sentiment.HAPPY;
         String feedbackText = "someFeedback";
         Application application = Application.builder()
@@ -62,12 +55,11 @@ public class SubmitPageTest extends AbstractStaticMessageSourcePageTest {
                 .completedAt(ZonedDateTime.of(LocalDateTime.of(2020, 1, 1, 11, 10), ZoneOffset.UTC))
                 .applicationData(applicationData)
                 .county(county)
-                .fileName("")
                 .timeToComplete(Duration.ofSeconds(124))
                 .sentiment(sentiment)
                 .feedback(feedbackText)
                 .build();
-        doReturn(application).when(applicationFactory).newApplication(any(), any(), any());
+        when(applicationFactory.newApplication(any(), any(), any())).thenReturn(application);
 
         navigateTo("firstPage");
 

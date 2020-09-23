@@ -46,7 +46,6 @@ public class PdfIntegrationTest {
             .completedAt(completedAt)
             .applicationData(data)
             .county(null)
-            .fileName("")
             .timeToComplete(null)
             .build();
 

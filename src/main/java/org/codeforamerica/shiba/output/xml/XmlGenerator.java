@@ -6,6 +6,7 @@ import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
+import org.codeforamerica.shiba.output.applicationinputsmappers.FileNameGenerator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -27,6 +28,7 @@ public class XmlGenerator implements FileGenerator {
     private final Map<String, String> enumMappings;
     private final ApplicationRepository applicationRepository;
     private final ApplicationInputsMappers mappers;
+    private final FileNameGenerator fileNameGenerator;
     private final BinaryOperator<String> UNUSED_IN_SEQUENTIAL_STREAM = (s1, s2) -> "";
     private final Function<String, String> tokenFormatter = (token) -> Pattern.quote(String.format("{{%s}}", token));
 
@@ -35,12 +37,14 @@ public class XmlGenerator implements FileGenerator {
             Map<String, String> xmlConfigMap,
             Map<String, String> xmlEnum,
             ApplicationRepository applicationRepository,
-            ApplicationInputsMappers mappers) {
+            ApplicationInputsMappers mappers,
+            FileNameGenerator fileNameGenerator) {
         this.xmlConfiguration = xmlConfiguration;
         this.config = xmlConfigMap;
         this.enumMappings = xmlEnum;
         this.applicationRepository = applicationRepository;
         this.mappers = mappers;
+        this.fileNameGenerator = fileNameGenerator;
     }
 
     @Override
@@ -82,7 +86,7 @@ public class XmlGenerator implements FileGenerator {
             String finishedXML = contentsAfterReplacement.replaceAll("\\s*<\\w+:\\w+>\\{\\{\\w+}}</\\w+:\\w+>", "");
             return new ApplicationFile(
                     finishedXML.getBytes(),
-                    String.format("%s.xml", application.getFileName()));
+                    String.format("%s.xml", fileNameGenerator.generateFileName(application)));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

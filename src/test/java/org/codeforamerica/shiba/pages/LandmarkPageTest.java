@@ -1,22 +1,15 @@
 package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.ConfirmationData;
-import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
-import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.metrics.Metrics;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.PageData;
-import org.codeforamerica.shiba.pages.data.PagesData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
@@ -24,15 +17,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.io.IOException;
-import java.time.Duration;
-import java.time.ZonedDateTime;
 import java.util.Locale;
-import java.util.Map;
 
-import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
 
 @Import(LandmarkPageTest.TestController.class)
 public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
@@ -52,9 +39,6 @@ public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
 
     @MockBean
     private PageEventPublisher pageEventPublisher;
-
-    @SpyBean
-    private ApplicationFactory applicationFactory;
 
     @MockBean
     private ApplicationSubmittedListener applicationSubmittedListener;
@@ -102,17 +86,6 @@ public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
         staticMessageSource.addMessage("fourth-page-title", Locale.US, "fourth page title");
         staticMessageSource.addMessage("first-page-title", Locale.US, "first page title");
         staticMessageSource.addMessage("fourth-page-title", Locale.US, fourthPageTitle);
-        ApplicationData applicationData = new ApplicationData();
-        applicationData.setPagesData(new PagesData(Map.of("choosePrograms", new PageData(Map.of("programs", InputData.builder().value(emptyList()).build())))));
-        Application application = Application.builder()
-                .id("foo")
-                .completedAt(ZonedDateTime.now())
-                .applicationData(applicationData)
-                .county(County.OTHER)
-                .fileName("")
-                .timeToComplete(Duration.ofSeconds(45))
-                .build();
-        doReturn(application).when(applicationFactory).newApplication(any(), any(), any());
     }
 
     @Test

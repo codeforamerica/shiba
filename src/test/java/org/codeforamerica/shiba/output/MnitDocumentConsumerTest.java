@@ -43,7 +43,6 @@ class MnitDocumentConsumerTest {
                 .completedAt(ZonedDateTime.now())
                 .applicationData(new ApplicationData())
                 .county(County.OLMSTED)
-                .fileName("")
                 .timeToComplete(null)
                 .build();
 
@@ -59,7 +58,6 @@ class MnitDocumentConsumerTest {
                 .completedAt(ZonedDateTime.now())
                 .applicationData(new ApplicationData())
                 .county(County.OLMSTED)
-                .fileName("")
                 .timeToComplete(null)
                 .build();
 
@@ -79,7 +77,6 @@ class MnitDocumentConsumerTest {
                 .completedAt(ZonedDateTime.now())
                 .applicationData(new ApplicationData())
                 .county(County.OLMSTED)
-                .fileName("")
                 .timeToComplete(null)
                 .build();
         documentConsumer.process(application);

@@ -47,7 +47,6 @@ class OneToOneApplicationInputsMapperTest {
                 .completedAt(ZonedDateTime.now())
                 .applicationData(applicationData)
                 .county(County.OTHER)
-                .fileName("")
                 .timeToComplete(null)
                 .build();
         List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, Recipient.CLIENT);
@@ -87,7 +86,6 @@ class OneToOneApplicationInputsMapperTest {
                 .completedAt(ZonedDateTime.now())
                 .applicationData(applicationData)
                 .county(County.OTHER)
-                .fileName("")
                 .timeToComplete(null)
                 .build();
 
@@ -127,7 +125,6 @@ class OneToOneApplicationInputsMapperTest {
                 .completedAt(ZonedDateTime.now())
                 .applicationData(applicationData)
                 .county(County.OTHER)
-                .fileName("")
                 .timeToComplete(null)
                 .build();
 
@@ -167,7 +164,6 @@ class OneToOneApplicationInputsMapperTest {
                 .completedAt(ZonedDateTime.now())
                 .applicationData(applicationData)
                 .county(County.OTHER)
-                .fileName("")
                 .timeToComplete(null)
                 .build();
 
@@ -212,7 +208,6 @@ class OneToOneApplicationInputsMapperTest {
                 .completedAt(ZonedDateTime.now())
                 .applicationData(applicationData)
                 .county(County.OTHER)
-                .fileName("")
                 .timeToComplete(null)
                 .build();
         List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, Recipient.CLIENT);

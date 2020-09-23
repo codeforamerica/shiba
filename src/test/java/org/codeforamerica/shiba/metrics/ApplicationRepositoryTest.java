@@ -87,8 +87,8 @@ class ApplicationRepositoryTest {
     void shouldSaveApplication() {
         ApplicationData applicationData = new ApplicationData();
         PageData pageData = new PageData();
-        pageData.put("programs", InputData.builder().value(emptyList()).build());
-        applicationData.setPagesData(new PagesData(Map.of("choosePrograms", pageData)));
+        pageData.put("someInput", InputData.builder().value(emptyList()).build());
+        applicationData.setPagesData(new PagesData(Map.of("somePage", pageData)));
         Subworkflows subworkflows = new Subworkflows();
         PagesData subflowIteration = new PagesData();
         PageData groupedPage = new PageData();
@@ -102,7 +102,6 @@ class ApplicationRepositoryTest {
                 .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
                 .applicationData(applicationData)
                 .county(OLMSTED)
-                .fileName("")
                 .timeToComplete(Duration.ofSeconds(12415))
                 .build();
 
@@ -119,14 +118,13 @@ class ApplicationRepositoryTest {
     @Test
     void shouldSaveApplicationWithOptionalFieldsPopulated() {
         ApplicationData applicationData = new ApplicationData();
-        applicationData.setPagesData(new PagesData(Map.of("choosePrograms", new PageData(Map.of("programs", InputData.builder().value(emptyList()).build())))));
+        applicationData.setPagesData(new PagesData(Map.of("somePage", new PageData(Map.of("someInput", InputData.builder().value(emptyList()).build())))));
 
         Application application = Application.builder()
                 .id("someid")
                 .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
                 .applicationData(applicationData)
                 .county(OLMSTED)
-                .fileName("")
                 .timeToComplete(Duration.ofSeconds(12415))
                 .sentiment(Sentiment.HAPPY)
                 .feedback("so so happy")
@@ -145,7 +143,6 @@ class ApplicationRepositoryTest {
     void shouldUpdateExistingApplication() {
         ApplicationData applicationData = new ApplicationData();
         applicationData.setPagesData(new PagesData(Map.of(
-                "choosePrograms", new PageData(Map.of("programs", InputData.builder().value(emptyList()).build())),
                 "somePage", new PageData(Map.of("someInput", InputData.builder().value(emptyList()).build()))
         )));
 
@@ -165,7 +162,6 @@ class ApplicationRepositoryTest {
 
         ApplicationData updatedApplicationData = new ApplicationData();
         updatedApplicationData.setPagesData(new PagesData(Map.of(
-                "choosePrograms", new PageData(Map.of("programs", InputData.builder().value(emptyList()).build())),
                 "someUpdatedPage", new PageData(Map.of("someUpdatedInput", InputData.builder().value(emptyList()).build()))
         )));
         Application updatedApplication = Application.builder()
@@ -208,7 +204,6 @@ class ApplicationRepositoryTest {
                     .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
                     .applicationData(applicationData)
                     .county(OLMSTED)
-                    .fileName("")
                     .timeToComplete(Duration.ofSeconds(1))
                     .build();
 
@@ -225,7 +220,6 @@ class ApplicationRepositoryTest {
                     .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
                     .applicationData(applicationData)
                     .county(OLMSTED)
-                    .fileName("")
                     .timeToComplete(Duration.ofSeconds(1))
                     .build();
             byte[] expectedEncryptedData = "here is the encrypted data".getBytes();
@@ -249,13 +243,12 @@ class ApplicationRepositoryTest {
                     .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
                     .applicationData(applicationData)
                     .county(OLMSTED)
-                    .fileName("")
                     .timeToComplete(Duration.ofSeconds(1))
                     .build();
             byte[] encryptedData = "here is the encrypted data".getBytes();
             when(mockEncryptor.encrypt(any())).thenReturn(encryptedData);
             ApplicationData decryptedApplicationData = new ApplicationData();
-            decryptedApplicationData.setPagesData(new PagesData(Map.of("choosePrograms", new PageData(Map.of("programs", InputData.builder().value(List.of("CASH")).build())))));
+            decryptedApplicationData.setPagesData(new PagesData(Map.of("somePage", new PageData(Map.of("someInput", InputData.builder().value(List.of("CASH")).build())))));
             when(mockEncryptor.decrypt(any())).thenReturn(decryptedApplicationData);
 
             applicationRepositoryWithMockEncryptor.save(application);
@@ -275,11 +268,10 @@ class ApplicationRepositoryTest {
                     .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
                     .applicationData(applicationData)
                     .county(OLMSTED)
-                    .fileName("")
                     .timeToComplete(Duration.ofSeconds(1))
                     .build();
             ApplicationData decryptedApplicationData = new ApplicationData();
-            decryptedApplicationData.setPagesData(new PagesData(Map.of("choosePrograms", new PageData(Map.of("programs", InputData.builder().value(List.of("CASH")).build())))));
+            decryptedApplicationData.setPagesData(new PagesData(Map.of("somePage", new PageData(Map.of("someInput", InputData.builder().value(List.of("CASH")).build())))));
 
             when(mockEncryptor.decrypt(any())).thenReturn(decryptedApplicationData);
 

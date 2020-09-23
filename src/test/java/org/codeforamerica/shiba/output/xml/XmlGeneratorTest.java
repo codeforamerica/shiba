@@ -6,6 +6,7 @@ import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
+import org.codeforamerica.shiba.output.applicationinputsmappers.FileNameGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -36,6 +37,7 @@ import static org.mockito.Mockito.when;
 class XmlGeneratorTest {
     ApplicationInputsMappers mappers = mock(ApplicationInputsMappers.class);
     ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
+    FileNameGenerator fileNameGenerator = mock(FileNameGenerator.class);
 
     @BeforeEach
     void setUp() {
@@ -44,7 +46,6 @@ class XmlGeneratorTest {
                 .completedAt(null)
                 .applicationData(null)
                 .county(null)
-                .fileName(null)
                 .timeToComplete(null)
                 .build());
     }
@@ -66,12 +67,14 @@ class XmlGeneratorTest {
                 pageName + "." + formInputName,
                 "SOME_TOKEN"
         );
+        fileNameGenerator = mock(FileNameGenerator.class);
         XmlGenerator subject = new XmlGenerator(
                 new ByteArrayResource(xml.getBytes()),
                 xmlConfigMap,
                 Map.of(),
                 applicationRepository,
-                mappers
+                mappers,
+                fileNameGenerator
         );
 
         when(mappers.map(any(), any())).thenReturn(applicationInputs);
@@ -102,7 +105,8 @@ class XmlGeneratorTest {
                 Map.of(),
                 Map.of(),
                 applicationRepository,
-                mappers);
+                mappers,
+                fileNameGenerator);
 
         ApplicationFile applicationFile = subject.generate("someId", CLIENT);
         Document document = byteArrayToDocument(applicationFile.getFileBytes());
@@ -141,7 +145,8 @@ class XmlGeneratorTest {
                 xmlConfigMap,
                 Map.of(),
                 applicationRepository,
-                mappers);
+                mappers,
+                fileNameGenerator);
 
         when(mappers.map(any(), any())).thenReturn(applicationInputs);
 
@@ -184,7 +189,8 @@ class XmlGeneratorTest {
                 xmlConfigMap,
                 Map.of(),
                 applicationRepository,
-                mappers);
+                mappers,
+                fileNameGenerator);
         when(mappers.map(any(), any())).thenReturn(applicationInputs);
 
         ApplicationFile applicationFile = subject.generate("", null);
@@ -228,7 +234,8 @@ class XmlGeneratorTest {
                 xmlConfigMap,
                 xmlEnum,
                 applicationRepository,
-                mappers);
+                mappers,
+                fileNameGenerator);
         when(mappers.map(any(), any())).thenReturn(applicationInputs);
         ApplicationFile applicationFile = subject.generate("", null);
 
@@ -264,7 +271,8 @@ class XmlGeneratorTest {
                 xmlConfigMap,
                 xmlEnum,
                 applicationRepository,
-                mappers);
+                mappers,
+                fileNameGenerator);
         when(mappers.map(any(), any())).thenReturn(applicationInputs);
         ApplicationFile applicationFile = subject.generate("", null);
 
@@ -301,7 +309,8 @@ class XmlGeneratorTest {
                 xmlConfigMap,
                 xmlEnum,
                 applicationRepository,
-                mappers);
+                mappers,
+                fileNameGenerator);
         when(mappers.map(any(), any())).thenReturn(applicationInputs);
         ApplicationFile applicationFile = subject.generate("", null);
 
@@ -338,7 +347,8 @@ class XmlGeneratorTest {
                 xmlConfigMap,
                 xmlEnum,
                 applicationRepository,
-                mappers);
+                mappers,
+                fileNameGenerator);
         when(mappers.map(any(), any())).thenReturn(applicationInputs);
         ApplicationFile applicationFile = subject.generate("", null);
 
@@ -377,7 +387,8 @@ class XmlGeneratorTest {
                 xmlConfigMap,
                 xmlEnum,
                 applicationRepository,
-                mappers);
+                mappers,
+                fileNameGenerator);
         when(mappers.map(any(), any())).thenReturn(applicationInputs);
         ApplicationFile applicationFile = subject.generate("", null);
 
@@ -412,7 +423,8 @@ class XmlGeneratorTest {
                 xmlConfigMap,
                 xmlEnum,
                 applicationRepository,
-                mappers);
+                mappers,
+                fileNameGenerator);
         when(mappers.map(any(), any())).thenReturn(applicationInputs);
         ApplicationFile applicationFile = subject.generate("", null);
 
@@ -446,7 +458,8 @@ class XmlGeneratorTest {
                 xmlConfigMap,
                 Map.of(),
                 applicationRepository,
-                mappers);
+                mappers,
+                fileNameGenerator);
         when(mappers.map(any(), any())).thenReturn(applicationInputs);
         ApplicationFile applicationFile = subject.generate("", null);
         Document document = byteArrayToDocument(applicationFile.getFileBytes());
@@ -467,18 +480,20 @@ class XmlGeneratorTest {
                 Map.of(),
                 Map.of(),
                 applicationRepository,
-                mappers
+                mappers,
+                fileNameGenerator
         );
 
         String fileName = "some file name";
-        when(applicationRepository.find(any())).thenReturn(Application.builder()
+        Application application = Application.builder()
                 .id("")
                 .completedAt(null)
                 .applicationData(new ApplicationData())
                 .county(null)
-                .fileName(fileName)
                 .timeToComplete(null)
-                .build());
+                .build();
+        when(applicationRepository.find(any())).thenReturn(application);
+        when(fileNameGenerator.generateFileName(application)).thenReturn(fileName);
         String applicationId = "application-id";
         ApplicationFile applicationFile = subject.generate(applicationId, null);
 

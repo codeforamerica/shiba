@@ -2,7 +2,10 @@ package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.ConfirmationData;
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
-import org.codeforamerica.shiba.application.*;
+import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.application.ApplicationFactory;
+import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.metrics.Metrics;
 import org.codeforamerica.shiba.output.ApplicationDataConsumer;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
@@ -88,7 +91,6 @@ class PageControllerTest {
                 .completedAt(ZonedDateTime.now())
                 .applicationData(null)
                 .county(null)
-                .fileName("")
                 .timeToComplete(null)
                 .build());
         messageSource.addMessage("success.feedback-success", Locale.ENGLISH, "default success message");
@@ -119,7 +121,6 @@ class PageControllerTest {
                 .completedAt(ZonedDateTime.now())
                 .applicationData(applicationData)
                 .county(null)
-                .fileName("")
                 .timeToComplete(null)
                 .flow(FlowType.FULL)
                 .build();
@@ -159,7 +160,6 @@ class PageControllerTest {
                 .completedAt(completedAt)
                 .applicationData(applicationData)
                 .county(null)
-                .fileName("")
                 .timeToComplete(null)
                 .build();
         when(applicationRepository.getNextId()).thenReturn(applicationId);

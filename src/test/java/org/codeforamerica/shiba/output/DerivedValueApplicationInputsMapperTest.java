@@ -32,7 +32,6 @@ class DerivedValueApplicationInputsMapperTest {
             .completedAt(ZonedDateTime.now())
             .applicationData(applicationData)
             .county(County.OTHER)
-            .fileName("")
             .timeToComplete(null)
             .build();
 

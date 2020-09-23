@@ -19,7 +19,6 @@ public class Application {
     ZonedDateTime completedAt;
     ApplicationData applicationData;
     County county;
-    String fileName;
     Duration timeToComplete;
     FlowType flow;
     Sentiment sentiment;
@@ -34,7 +33,6 @@ public class Application {
                 this.completedAt,
                 this.applicationData,
                 this.county,
-                this.fileName,
                 this.timeToComplete,
                 this.flow,
                 sentiment,

@@ -33,7 +33,6 @@ class ResidentialAddressStreetMapperTest {
                 .completedAt(null)
                 .applicationData(applicationData)
                 .county(null)
-                .fileName("")
                 .timeToComplete(null)
                 .build();
         List<ApplicationInput> map = mapper.map(application, null);
@@ -60,7 +59,6 @@ class ResidentialAddressStreetMapperTest {
                 .completedAt(null)
                 .applicationData(applicationData)
                 .county(null)
-                .fileName("")
                 .timeToComplete(null)
                 .build();
         List<ApplicationInput> map = mapper.map(application, null);
@@ -90,7 +88,6 @@ class ResidentialAddressStreetMapperTest {
                 .completedAt(null)
                 .applicationData(applicationData)
                 .county(null)
-                .fileName("")
                 .timeToComplete(null)
                 .build();
         List<ApplicationInput> map = mapper.map(application, null);

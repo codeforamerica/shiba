@@ -54,7 +54,6 @@ class ApplicationSubmittedListenerTest {
                 .completedAt(ZonedDateTime.now())
                 .applicationData(null)
                 .county(null)
-                .fileName("")
                 .timeToComplete(null)
                 .build();
         ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null);
@@ -81,7 +80,6 @@ class ApplicationSubmittedListenerTest {
                 .completedAt(ZonedDateTime.now())
                 .applicationData(applicationData)
                 .county(null)
-                .fileName("")
                 .timeToComplete(null)
                 .build();
         when(applicationRepository.find(applicationId)).thenReturn(application);
@@ -107,7 +105,6 @@ class ApplicationSubmittedListenerTest {
                 .completedAt(ZonedDateTime.now())
                 .applicationData(applicationData)
                 .county(null)
-                .fileName("")
                 .timeToComplete(null)
                 .build());
         ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", "appId", null);
@@ -139,7 +136,6 @@ class ApplicationSubmittedListenerTest {
                 .completedAt(ZonedDateTime.now())
                 .applicationData(applicationData)
                 .county(recipientCounty)
-                .fileName("")
                 .timeToComplete(null)
                 .build();
         when(applicationRepository.find(applicationId)).thenReturn(application);

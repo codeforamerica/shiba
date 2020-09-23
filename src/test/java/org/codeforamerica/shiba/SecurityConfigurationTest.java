@@ -3,6 +3,7 @@ package org.codeforamerica.shiba;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
+import org.codeforamerica.shiba.output.applicationinputsmappers.FileNameGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,6 +53,9 @@ class SecurityConfigurationTest {
     @MockBean
     ApplicationRepository applicationRepository;
 
+    @MockBean
+    FileNameGenerator fileNameGenerator;
+
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
@@ -62,10 +66,10 @@ class SecurityConfigurationTest {
                 .completedAt(ZonedDateTime.now())
                 .applicationData(null)
                 .county(null)
-                .fileName("")
                 .timeToComplete(null)
                 .build());
         when(mappers.map(any(), any())).thenReturn(List.of());
+        when(fileNameGenerator.generateFileName(any())).thenReturn("");
     }
 
     @Test

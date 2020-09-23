@@ -28,7 +28,6 @@ class ApplicationInputsMappersTest {
                 .completedAt(ZonedDateTime.now())
                 .applicationData(new ApplicationData())
                 .county(County.OLMSTED)
-                .fileName("")
                 .timeToComplete(null)
                 .build(), CLIENT);
 
@@ -46,7 +45,6 @@ class ApplicationInputsMappersTest {
                 .completedAt(completedAt)
                 .applicationData(new ApplicationData())
                 .county(null)
-                .fileName("")
                 .timeToComplete(null)
                 .build();
 
@@ -64,7 +62,6 @@ class ApplicationInputsMappersTest {
                 .completedAt(completedAt)
                 .applicationData(new ApplicationData())
                 .county(null)
-                .fileName("")
                 .timeToComplete(null)
                 .build();
 
@@ -84,7 +81,6 @@ class ApplicationInputsMappersTest {
                 .completedAt(ZonedDateTime.now())
                 .applicationData(new ApplicationData())
                 .county(County.OLMSTED)
-                .fileName("")
                 .timeToComplete(null)
                 .build();
         applicationInputsMappers.map(application, CASEWORKER);

@@ -53,7 +53,6 @@ class CoverPageInputsMapperTest {
                 .completedAt(ZonedDateTime.now())
                 .applicationData(applicationData)
                 .county(County.OTHER)
-                .fileName("")
                 .timeToComplete(null)
                 .build();
 
@@ -75,7 +74,6 @@ class CoverPageInputsMapperTest {
                 .completedAt(ZonedDateTime.now())
                 .applicationData(applicationData)
                 .county(County.OLMSTED)
-                .fileName("")
                 .timeToComplete(null)
                 .build();
         String clientCountyInstructions = "olmsted client instructions";
@@ -118,7 +116,6 @@ class CoverPageInputsMapperTest {
                 .completedAt(ZonedDateTime.now())
                 .applicationData(applicationData)
                 .county(County.OTHER)
-                .fileName("")
                 .timeToComplete(null)
                 .build();
 

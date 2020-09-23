@@ -6,6 +6,7 @@ import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
+import org.codeforamerica.shiba.output.applicationinputsmappers.FileNameGenerator;
 import org.codeforamerica.shiba.output.xml.FileGenerator;
 import org.springframework.stereotype.Component;
 
@@ -17,16 +18,19 @@ public class PdfGenerator implements FileGenerator {
     private final PdfFieldFiller pdfFieldFiller;
     private final ApplicationRepository applicationRepository;
     private final ApplicationInputsMappers mappers;
+    private final FileNameGenerator fileNameGenerator;
 
     public PdfGenerator(PdfFieldMapper pdfFieldMapper,
                         PdfFieldFiller pdfFieldFiller,
                         ApplicationRepository applicationRepository,
-                        ApplicationInputsMappers mappers
+                        ApplicationInputsMappers mappers,
+                        FileNameGenerator fileNameGenerator
                         ) {
         this.pdfFieldMapper = pdfFieldMapper;
         this.pdfFieldFiller = pdfFieldFiller;
         this.applicationRepository = applicationRepository;
         this.mappers = mappers;
+        this.fileNameGenerator = fileNameGenerator;
     }
 
     @Override
@@ -34,6 +38,6 @@ public class PdfGenerator implements FileGenerator {
         Application application = applicationRepository.find(applicationId);
         List<ApplicationInput> applicationInputs = mappers.map(application, recipient);
 
-        return pdfFieldFiller.fill(pdfFieldMapper.map(applicationInputs), applicationId, application.getFileName());
+        return pdfFieldFiller.fill(pdfFieldMapper.map(applicationInputs), applicationId, fileNameGenerator.generateFileName(application));
     }
 }

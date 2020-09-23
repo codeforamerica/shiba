@@ -7,6 +7,7 @@ import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
+import org.codeforamerica.shiba.output.applicationinputsmappers.FileNameGenerator;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -23,12 +24,15 @@ class PdfGeneratorTest {
         PdfFieldFiller pdfFieldFiller = mock(PdfFieldFiller.class);
         ApplicationInputsMappers mappers = mock(ApplicationInputsMappers.class);
         ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
+        FileNameGenerator fileNameGenerator = mock(FileNameGenerator.class);
 
         PdfGenerator pdfGenerator = new PdfGenerator(
                 pdfFieldMapper,
                 pdfFieldFiller,
                 applicationRepository,
-                mappers);
+                mappers,
+                fileNameGenerator);
+
         List<ApplicationInput> applicationInputs = List.of(new ApplicationInput("someGroupName", "someName", List.of("someValue"), ApplicationInputType.SINGLE_VALUE));
 
         String applicationId = "someAppId";
@@ -38,15 +42,16 @@ class PdfGeneratorTest {
                 .completedAt(null)
                 .applicationData(null)
                 .county(null)
-                .fileName("some file name")
                 .timeToComplete(null)
                 .build();
+        String fileName = "some file name";
+        when(fileNameGenerator.generateFileName(application)).thenReturn(fileName);
         when(applicationRepository.find(applicationId)).thenReturn(application);
         Recipient recipient = CASEWORKER;
         when(mappers.map(application, recipient)).thenReturn(applicationInputs);
         when(pdfFieldMapper.map(applicationInputs)).thenReturn(pdfFields);
         ApplicationFile expectedApplicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
-        when(pdfFieldFiller.fill(pdfFields, applicationId, application.getFileName()))
+        when(pdfFieldFiller.fill(pdfFields, applicationId, fileName))
                 .thenReturn(expectedApplicationFile);
 
         ApplicationFile actualApplicationFile = pdfGenerator.generate(applicationId, recipient);
