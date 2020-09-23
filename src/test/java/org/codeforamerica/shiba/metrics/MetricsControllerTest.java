@@ -58,11 +58,11 @@ class MetricsControllerTest {
 
     @Test
     void shouldIncludeSentimentDistribution() throws Exception {
-        Map<Sentiment, Double> sentimentDistribution = Map.of(HAPPY, 41.31);
+        Map<Sentiment, Double> sentimentDistribution = Map.of(HAPPY, 41.3141351);
         when(applicationRepository.getSentimentDistribution()).thenReturn(sentimentDistribution);
 
         mockMvc.perform(get("/metrics"))
                 .andExpect(MockMvcResultMatchers.view().name("metricsDashboard"))
-                .andExpect(MockMvcResultMatchers.model().attribute("sentimentDistribution", equalTo(sentimentDistribution)));
+                .andExpect(MockMvcResultMatchers.model().attribute("sentimentDistribution", equalTo(Map.of(HAPPY, "4131.41"))));
     }
 }

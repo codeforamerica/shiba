@@ -126,7 +126,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         assertThat(driver.findElements(By.tagName("td")).get(0).getText()).isEqualTo("HENNEPIN");
         assertThat(driver.findElements(By.tagName("td")).get(1).getText()).isEqualTo("0");
         assertThat(driver.findElements(By.tagName("td")).get(2).getText()).isEqualTo("0");
-        assertThat(metricsPage.getCardValue("Happy")).contains("100.0 %");
+        assertThat(metricsPage.getCardValue("Happy")).contains("100%");
     }
 
     private void completeFlowFromLandingPageToReviewInfo() {
