@@ -4,6 +4,7 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.metrics.Metrics;
+import org.codeforamerica.shiba.pages.CountyMap;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
@@ -31,10 +32,11 @@ class ApplicationFactoryTest {
 
     Map<String, County> countyZipCodeMap = new HashMap<>();
 
-    Map<County, MnitCountyInformation> countyFolderIdMapping = new HashMap<>();
+    CountyMap<MnitCountyInformation> countyMap = new CountyMap<>();
 
+    @SuppressWarnings("unchecked")
     ApplicationDataParser<Address> homeAddressParser = mock(ApplicationDataParser.class);
-    ApplicationFactory applicationFactory = new ApplicationFactory(clock, countyZipCodeMap, countyFolderIdMapping, locationClient, homeAddressParser);
+    ApplicationFactory applicationFactory = new ApplicationFactory(clock, countyZipCodeMap, countyMap, locationClient, homeAddressParser);
 
     ApplicationData applicationData = new ApplicationData();
 
@@ -59,8 +61,8 @@ class ApplicationFactoryTest {
         when(clock.instant()).thenReturn(Instant.now());
         when(clock.getZone()).thenReturn(zoneOffset);
         when(homeAddressParser.parse(any())).thenReturn(new Address("", "", "", "something"));
-        countyFolderIdMapping.put(OTHER, new MnitCountyInformation());
-        countyFolderIdMapping.put(HENNEPIN, new MnitCountyInformation());
+        countyMap.getCounties().put(OTHER, new MnitCountyInformation());
+        countyMap.getCounties().put(HENNEPIN, new MnitCountyInformation());
     }
 
     @Test
@@ -228,7 +230,7 @@ class ApplicationFactoryTest {
             MnitCountyInformation mnitCountyInformation = new MnitCountyInformation();
             String countyNPI = "someNPI";
             mnitCountyInformation.setDhsProviderId(countyNPI);
-            countyFolderIdMapping.put(county, mnitCountyInformation);
+            countyMap.getCounties().put(county, mnitCountyInformation);
             PageData homeAddress = new PageData();
             homeAddress.put("zipCode", InputData.builder().value(List.of(zipCode)).build());
             pagesData.put("homeAddress", homeAddress);

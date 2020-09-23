@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
+import org.codeforamerica.shiba.MnitCountyInformation;
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -8,34 +9,34 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-@PropertySource(value = "classpath:county-email-mapping.yaml", factory = YamlPropertySourceFactory.class)
-public class CountyEmailMapConfiguration {
+@PropertySource(value = "classpath:county-mapping.yaml", factory = YamlPropertySourceFactory.class)
+public class CountyMapConfiguration {
 
     @Bean
     @Profile("default")
     @ConfigurationProperties(prefix = "other")
-    CountyEmailMap localMapping() {
-        return new CountyEmailMap();
+    CountyMap<MnitCountyInformation> localMapping() {
+        return new CountyMap<>();
     }
 
     @Bean
     @Profile("demo")
     @ConfigurationProperties(prefix = "demo")
-    CountyEmailMap demoMapping() {
-        return new CountyEmailMap();
+    CountyMap<MnitCountyInformation> demoMapping() {
+        return new CountyMap<>();
     }
 
     @Bean
     @Profile("staging")
     @ConfigurationProperties(prefix = "staging")
-    CountyEmailMap stagingMapping() {
-        return new CountyEmailMap();
+    CountyMap<MnitCountyInformation> stagingMapping() {
+        return new CountyMap<>();
     }
 
     @Bean
     @Profile("production")
     @ConfigurationProperties(prefix = "production")
-    CountyEmailMap productionMapping() {
-        return new CountyEmailMap();
+    CountyMap<MnitCountyInformation> productionMapping() {
+        return new CountyMap<>();
     }
 }

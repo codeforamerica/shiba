@@ -1,9 +1,9 @@
 package org.codeforamerica.shiba.output.applicationinputsmappers;
 
-import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.Recipient;
+import org.codeforamerica.shiba.pages.CountyMap;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.springframework.stereotype.Component;
@@ -15,9 +15,9 @@ import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
 
 @Component
 public class CoverPageInputsMapper implements ApplicationInputsMapper {
-    private final Map<County, Map<Recipient, String>> countyInstructionsMapping;
+    private final CountyMap<Map<Recipient, String>> countyInstructionsMapping;
 
-    public CoverPageInputsMapper(Map<County, Map<Recipient, String>> countyInstructionsMapping) {
+    public CoverPageInputsMapper(CountyMap<Map<Recipient, String>> countyInstructionsMapping) {
         this.countyInstructionsMapping = countyInstructionsMapping;
     }
 

@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.County;
+import org.codeforamerica.shiba.MnitCountyInformation;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.output.ApplicationFile;
@@ -30,7 +31,7 @@ class ApplicationSubmittedListenerTest {
     ExpeditedEligibilityDecider expeditedEligibilityDecider = mock(ExpeditedEligibilityDecider.class);
     PdfGenerator pdfGenerator = mock(PdfGenerator.class);
 
-    CountyEmailMap countyEmailMap = new CountyEmailMap();
+    CountyMap<MnitCountyInformation> countyMap = new CountyMap<>();
     Boolean sendCaseWorkerEmail = true;
     Boolean sendViaApi = true;
     Boolean sendNonPartnerCountyAlertEmail = true;
@@ -41,7 +42,7 @@ class ApplicationSubmittedListenerTest {
             emailClient,
             expeditedEligibilityDecider,
             pdfGenerator,
-            countyEmailMap,
+            countyMap,
             sendCaseWorkerEmail,
             sendViaApi,
             sendNonPartnerCountyAlertEmail);
@@ -133,7 +134,7 @@ class ApplicationSubmittedListenerTest {
         String fullName = "Testy McTesterson";
         County recipientCounty = HENNEPIN;
         String email = "someEmail";
-        countyEmailMap.put(recipientCounty, email);
+        countyMap.getCounties().put(recipientCounty, MnitCountyInformation.builder().email(email).build());
         Application application = Application.builder()
                 .id(appIdFromDb)
                 .completedAt(ZonedDateTime.now())
@@ -161,7 +162,7 @@ class ApplicationSubmittedListenerTest {
                 emailClient,
                 expeditedEligibilityDecider,
                 pdfGenerator,
-                countyEmailMap,
+                countyMap,
                 false,
                 false,
                 false);
@@ -181,7 +182,7 @@ class ApplicationSubmittedListenerTest {
                 emailClient,
                 expeditedEligibilityDecider,
                 pdfGenerator,
-                countyEmailMap,
+                countyMap,
                 true,
                 false,
                 false);
@@ -236,7 +237,7 @@ class ApplicationSubmittedListenerTest {
                 emailClient,
                 expeditedEligibilityDecider,
                 pdfGenerator,
-                countyEmailMap,
+                countyMap,
                 true,
                 false,
                 false);

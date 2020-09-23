@@ -43,10 +43,10 @@ import static org.springframework.ws.test.client.RequestMatchers.xpath;
         "mnit-esb.url=some-url",
         "mnit-esb.username=someUsername",
         "mnit-esb.password=somePassword",
-        "county-to-folder-id.HENNEPIN.folderId=hennipin-folder-id",
-        "county-to-folder-id.HENNEPIN.dhsProviderId=whatever-dhs",
-        "county-to-folder-id.OLMSTED.folderId=olmsted-folder-id",
-        "county-to-folder-id.OLMSTED.dhsProviderId=olmested-dhs-provider-id"
+        "test.counties.HENNEPIN.folderId=hennepin-folder-id",
+        "test.counties.HENNEPIN.dhsProviderId=whatever-dhs",
+        "test.counties.OLMSTED.folderId=olmsted-folder-id",
+        "test.counties.OLMSTED.dhsProviderId=olmsted-dhs-provider-id"
 })
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
@@ -93,7 +93,7 @@ class MnitEsbWebServiceClientTest {
                 .andExpect(xpath("//ns2:createDocument/ns2:properties/ns2:propertyString[@ns2:name='Name']/ns2:value", namespaceMapping)
                         .evaluatesTo(fileName))
                 .andExpect(xpath("//ns2:createDocument/ns2:properties/ns2:propertyString[@ns2:name='dhsProviderId']/ns2:value", namespaceMapping)
-                        .evaluatesTo("olmested-dhs-provider-id"))
+                        .evaluatesTo("olmsted-dhs-provider-id"))
                 .andExpect(xpath("//ns2:createDocument/ns2:repositoryId", namespaceMapping)
                         .evaluatesTo("<Unknown"))
                 .andExpect(xpath("//ns2:createDocument/ns2:typeId", namespaceMapping)

@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.County;
+import org.codeforamerica.shiba.MnitCountyInformation;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.output.ApplicationFile;
@@ -27,7 +28,7 @@ public class ApplicationSubmittedListener {
     private final EmailClient emailClient;
     private final ExpeditedEligibilityDecider expeditedEligibilityDecider;
     private final PdfGenerator pdfGenerator;
-    private final CountyEmailMap countyEmailMap;
+    private final CountyMap<MnitCountyInformation> countyMap;
     private final boolean sendCaseWorkerEmail;
     private final boolean submitViaApi;
     private final Boolean sendNonPartnerCountyAlertEmail;
@@ -38,7 +39,7 @@ public class ApplicationSubmittedListener {
                                         EmailClient emailClient,
                                         ExpeditedEligibilityDecider expeditedEligibilityDecider,
                                         PdfGenerator pdfGenerator,
-                                        CountyEmailMap countyEmailMap,
+                                        CountyMap<MnitCountyInformation> countyMap,
                                         @Value("${submit-via-email}") boolean sendCaseWorkerEmail,
                                         @Value("${submit-via-api}") Boolean submitViaApi,
                                         @Value("${send-non-partner-county-alert}") Boolean sendNonPartnerCountyAlertEmail) {
@@ -47,7 +48,7 @@ public class ApplicationSubmittedListener {
         this.emailClient = emailClient;
         this.expeditedEligibilityDecider = expeditedEligibilityDecider;
         this.pdfGenerator = pdfGenerator;
-        this.countyEmailMap = countyEmailMap;
+        this.countyMap = countyMap;
         this.sendCaseWorkerEmail = sendCaseWorkerEmail;
         this.submitViaApi = submitViaApi;
         this.sendNonPartnerCountyAlertEmail = sendNonPartnerCountyAlertEmail;
@@ -90,7 +91,7 @@ public class ApplicationSubmittedListener {
         ApplicationFile pdf = pdfGenerator.generate(applicationId, CASEWORKER);
 
         String fullName = String.join(" ", personalInfo.get("firstName").getValue().get(0), personalInfo.get("lastName").getValue().get(0));
-        emailClient.sendCaseWorkerEmail(countyEmailMap.get(application.getCounty()), fullName, applicationId, pdf);
+        emailClient.sendCaseWorkerEmail(countyMap.get(application.getCounty()).getEmail(), fullName, applicationId, pdf);
     }
 
     @Async

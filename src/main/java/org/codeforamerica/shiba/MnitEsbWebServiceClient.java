@@ -7,6 +7,7 @@ import org.codeforamerica.shiba.esbwsdl.CmisPropertiesType;
 import org.codeforamerica.shiba.esbwsdl.CmisPropertyString;
 import org.codeforamerica.shiba.esbwsdl.CreateDocument;
 import org.codeforamerica.shiba.output.ApplicationFile;
+import org.codeforamerica.shiba.pages.CountyMap;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -21,7 +22,6 @@ import java.math.BigInteger;
 import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Map;
 
 @Component
 public class MnitEsbWebServiceClient {
@@ -29,23 +29,24 @@ public class MnitEsbWebServiceClient {
     private final Clock clock;
     private final String username;
     private final String password;
-    private final Map<County, MnitCountyInformation> countyFolderIdMapping;
+    private final CountyMap<MnitCountyInformation> countyMap;
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public MnitEsbWebServiceClient(WebServiceTemplate webServiceTemplate,
                                    Clock clock,
                                    @Value("${mnit-esb.username}") String username,
                                    @Value("${mnit-esb.password}") String password,
-                                   Map<County, MnitCountyInformation> countyFolderIdMapping) {
+                                   CountyMap<MnitCountyInformation> countyMap) {
         this.webServiceTemplate = webServiceTemplate;
         this.clock = clock;
         this.username = username;
         this.password = password;
-        this.countyFolderIdMapping = countyFolderIdMapping;
+        this.countyMap = countyMap;
     }
 
     public void send(ApplicationFile applicationFile, County county) {
         CreateDocument createDocument = new CreateDocument();
-        createDocument.setFolderId("workspace://SpacesStore/" + countyFolderIdMapping.get(county).getFolderId());
+        createDocument.setFolderId("workspace://SpacesStore/" + countyMap.get(county).getFolderId());
         createDocument.setRepositoryId("<Unknown");
         createDocument.setTypeId("document");
         CmisPropertiesType properties = new CmisPropertiesType();
@@ -62,7 +63,7 @@ public class MnitEsbWebServiceClient {
         properties.getPropertyUriOrPropertyIdOrPropertyString()
                 .add(description);
         CmisPropertyString dhsProviderId =
-                createCmisPropertyString("dhsProviderId", countyFolderIdMapping.get(county).getDhsProviderId());
+                createCmisPropertyString("dhsProviderId", countyMap.get(county).getDhsProviderId());
         properties.getPropertyUriOrPropertyIdOrPropertyString()
                 .add(dhsProviderId);
         createDocument.setProperties(properties);

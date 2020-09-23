@@ -6,6 +6,7 @@ import org.codeforamerica.shiba.LocationClient;
 import org.codeforamerica.shiba.MnitCountyInformation;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.metrics.Metrics;
+import org.codeforamerica.shiba.pages.CountyMap;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +28,7 @@ import static org.codeforamerica.shiba.County.OTHER;
 public class ApplicationFactory {
     private final Clock clock;
     private final Map<String, County> countyZipCode;
-    private final Map<County, MnitCountyInformation> countyFolderIdMapping;
+    private final CountyMap<MnitCountyInformation> countyMap;
     private final LocationClient locationClient;
     private final ApplicationDataParser<Address> homeAddressParser;
     public static final Map<String, Set<String>> LETTER_TO_PROGRAMS = Map.of(
@@ -37,15 +38,16 @@ public class ApplicationFactory {
             "C", Set.of("CCAP")
     );
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public ApplicationFactory(
             Clock clock,
             Map<String, County> countyZipCode,
-            Map<County, MnitCountyInformation> countyFolderIdMapping,
+            CountyMap<MnitCountyInformation> countyMap,
             LocationClient locationClient,
             ApplicationDataParser<Address> homeAddressParser) {
         this.clock = clock;
         this.countyZipCode = countyZipCode;
-        this.countyFolderIdMapping = countyFolderIdMapping;
+        this.countyMap = countyMap;
         this.locationClient = locationClient;
         this.homeAddressParser = homeAddressParser;
     }
@@ -104,7 +106,7 @@ public class ApplicationFactory {
                 }
         );
 
-        return countyFolderIdMapping.get(county).getDhsProviderId() + "_" +
+        return countyMap.get(county).getDhsProviderId() + "_" +
                 "MNB_" +
                 DateTimeFormatter.ofPattern("yyyyMMdd").format(completedAt.withZoneSameInstant(ZoneId.of("America/Chicago"))) + "_" +
                 DateTimeFormatter.ofPattern("HHmmss").format(completedAt.withZoneSameInstant(ZoneId.of("America/Chicago"))) + "_" +
