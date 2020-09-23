@@ -6,6 +6,9 @@ spring:
 client:
   keystore: src/main/resources/shiba-production.jks
 
+mnit-esb:
+  url: https://svcs.dhs.mn.gov/WebServices/Alfresco/CreateDocument
+
 submit-via-email: true
 mail-gun:
   shouldCC: true
