@@ -3,4 +3,3 @@ spring:
     url: ${DATABASE_URL}
     driverClassName: org.postgresql.Driver
 submit-via-email: true
-send-download-alert: true
