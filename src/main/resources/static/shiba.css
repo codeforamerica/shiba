@@ -96,8 +96,8 @@
 }
 
 .main-footer {
-    position: unset;
-    height: unset;
+    position: relative;
+    height: auto !important;
     flex-shrink: 0;
 }
 
