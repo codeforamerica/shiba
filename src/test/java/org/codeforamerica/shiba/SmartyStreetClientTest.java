@@ -116,4 +116,18 @@ class SmartyStreetClientTest {
 
         assertThat(county).isEmpty();
     }
+
+    @Test
+    void returnEmptyOptional_whenResponseCodeIsNot2XX() {
+        String street = "1725 Slough Avenue";
+        String city = "Scranton";
+        String state = "PA";
+        String zipcode = "91402";
+        Address address = new Address(street, city, state, zipcode);
+        wireMockServer.stubFor(get(anyUrl()).willReturn(status(400)));
+
+        Optional<String> county = smartyStreetClient.getCounty(address);
+
+        assertThat(county).isEmpty();
+    }
 }

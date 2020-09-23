@@ -3,6 +3,7 @@ package org.codeforamerica.shiba;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 
@@ -35,6 +36,7 @@ public class SmartyStreetClient implements LocationClient {
                         .queryParam("candidates", 1).build())
                 .retrieve()
                 .bodyToMono(SmartyStreetVerifyStreetResponse.class)
+                .onErrorResume(error -> Mono.empty())
                 .blockOptional();
 
         return response
