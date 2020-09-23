@@ -2,13 +2,18 @@ package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -16,6 +21,7 @@ import java.util.Locale;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 
+@Import(UserDecisionNavigationPageTest.TestController.class)
 public class UserDecisionNavigationPageTest extends AbstractStaticMessageSourcePageTest {
 
     private final String optionZeroPageTitle = "page zero title";
@@ -29,6 +35,20 @@ public class UserDecisionNavigationPageTest extends AbstractStaticMessageSourceP
         @ConfigurationProperties(prefix = "shiba-configuration-user-decision-navigation")
         public ApplicationConfiguration applicationConfiguration() {
             return new ApplicationConfiguration();
+        }
+    }
+
+    @Controller
+    static class TestController {
+        private final ApplicationData applicationData;
+
+        public TestController(ApplicationData applicationData) {
+            this.applicationData = applicationData;
+        }
+
+        @GetMapping("/pathExposingFlow")
+        ModelAndView endpointExposingFlow() {
+            return new ModelAndView("viewExposingFlow", "flow", applicationData.getFlow());
         }
     }
 
@@ -46,6 +66,33 @@ public class UserDecisionNavigationPageTest extends AbstractStaticMessageSourceP
         driver.findElement(By.partialLinkText("option 1")).click();
 
         assertThat(driver.getTitle()).isEqualTo(optionOnePageTitle);
+    }
+
+    @Test
+    void shouldSetTheFlow_fromTheSelectedOption() {
+        driver.navigate().to(baseUrl + "/pathExposingFlow");
+        assertThat(driver.findElement(By.id("flow")).getText()).isEmpty();
+
+        driver.navigate().to(baseUrl + "/pages/userDecisionNavigationPage");
+        driver.findElement(By.partialLinkText("option 1")).click();
+
+        driver.navigate().to(baseUrl + "/pathExposingFlow");
+        assertThat(driver.findElement(By.id("flow")).getText()).isEqualTo("FULL");
+    }
+
+    @Test
+    void shouldNotUnsetTheFlow_ifTheSelectedOptionDoesNotHaveOne() {
+        driver.navigate().to(baseUrl + "/pathExposingFlow");
+        assertThat(driver.findElement(By.id("flow")).getText()).isEmpty();
+
+        driver.navigate().to(baseUrl + "/pages/userDecisionNavigationPage");
+        driver.findElement(By.partialLinkText("option 1")).click();
+        driver.navigate().back();
+        driver.findElement(By.partialLinkText("option 0")).click();
+
+        driver.navigate().to(baseUrl + "/pathExposingFlow");
+        assertThat(driver.findElement(By.id("flow")).getText()).isEqualTo("FULL");
+
     }
 
     @Test

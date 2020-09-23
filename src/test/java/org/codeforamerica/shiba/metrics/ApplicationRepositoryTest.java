@@ -5,6 +5,7 @@ import org.codeforamerica.shiba.Encryptor;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -129,6 +130,7 @@ class ApplicationRepositoryTest {
                 .timeToComplete(Duration.ofSeconds(12415))
                 .sentiment(Sentiment.HAPPY)
                 .feedback("so so happy")
+                .flow(FlowType.FULL)
                 .build();
 
         applicationRepository.save(application);
@@ -136,6 +138,7 @@ class ApplicationRepositoryTest {
         Application savedApplication = applicationRepository.find("someid");
         assertThat(savedApplication.getSentiment()).isEqualTo(application.getSentiment());
         assertThat(savedApplication.getFeedback()).isEqualTo(application.getFeedback());
+        assertThat(savedApplication.getFlow()).isEqualTo(FlowType.FULL);
     }
 
     @Test
@@ -155,6 +158,7 @@ class ApplicationRepositoryTest {
                 .timeToComplete(Duration.ofSeconds(12415))
                 .sentiment(Sentiment.MEH)
                 .feedback("someFeedback")
+                .flow(FlowType.FULL)
                 .build();
 
         applicationRepository.save(application);
@@ -172,6 +176,7 @@ class ApplicationRepositoryTest {
                 .timeToComplete(Duration.ofSeconds(421))
                 .sentiment(Sentiment.HAPPY)
                 .feedback("someUpdatedFeedback")
+                .flow(FlowType.EXPEDITED)
                 .build();
 
         applicationRepository.save(updatedApplication);

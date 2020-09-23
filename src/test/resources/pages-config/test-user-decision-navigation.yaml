@@ -45,6 +45,7 @@ shiba-configuration-user-decision-navigation:
       nextPages:
         - pageName: optionZeroPage
         - pageName: optionOnePage
+          flow: FULL
     optionZeroPage:
       pageConfiguration: *optionZeroPage
     optionOnePage:

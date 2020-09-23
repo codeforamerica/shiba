@@ -17,7 +17,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
@@ -48,10 +47,11 @@ public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
     }
 
     String firstPageTitle = "first page title";
+
     String fourthPageTitle = "fourth page title";
 
     @MockBean
-    private ApplicationEventPublisher applicationEventPublisher;
+    private PageEventPublisher pageEventPublisher;
 
     @SpyBean
     private ApplicationFactory applicationFactory;

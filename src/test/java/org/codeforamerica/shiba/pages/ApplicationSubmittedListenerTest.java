@@ -30,7 +30,6 @@ class ApplicationSubmittedListenerTest {
     EmailClient emailClient = mock(EmailClient.class);
     ExpeditedEligibilityDecider expeditedEligibilityDecider = mock(ExpeditedEligibilityDecider.class);
     PdfGenerator pdfGenerator = mock(PdfGenerator.class);
-
     CountyMap<MnitCountyInformation> countyMap = new CountyMap<>();
     Boolean sendCaseWorkerEmail = true;
     Boolean sendViaApi = true;
@@ -58,7 +57,7 @@ class ApplicationSubmittedListenerTest {
                 .fileName("")
                 .timeToComplete(null)
                 .build();
-        ApplicationSubmittedEvent event = new ApplicationSubmittedEvent(applicationId);
+        ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null);
         when(applicationRepository.find(applicationId)).thenReturn(application);
 
         applicationSubmittedListener.sendViaApi(event);
@@ -86,7 +85,7 @@ class ApplicationSubmittedListenerTest {
                 .timeToComplete(null)
                 .build();
         when(applicationRepository.find(applicationId)).thenReturn(application);
-        ApplicationSubmittedEvent event = new ApplicationSubmittedEvent(applicationId);
+        ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null);
         when(expeditedEligibilityDecider.decide(applicationData)).thenReturn(ExpeditedEligibility.ELIGIBLE);
         ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
         when(pdfGenerator.generate(appIdFromDb, CLIENT)).thenReturn(applicationFile);
@@ -111,7 +110,7 @@ class ApplicationSubmittedListenerTest {
                 .fileName("")
                 .timeToComplete(null)
                 .build());
-        ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("appId");
+        ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", "appId", null);
 
         applicationSubmittedListener.sendConfirmationEmail(event);
 
@@ -144,7 +143,7 @@ class ApplicationSubmittedListenerTest {
                 .timeToComplete(null)
                 .build();
         when(applicationRepository.find(applicationId)).thenReturn(application);
-        ApplicationSubmittedEvent event = new ApplicationSubmittedEvent(applicationId);
+        ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null);
         when(expeditedEligibilityDecider.decide(applicationData)).thenReturn(ExpeditedEligibility.ELIGIBLE);
         ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
         when(pdfGenerator.generate(appIdFromDb, CASEWORKER)).thenReturn(applicationFile);
@@ -167,7 +166,7 @@ class ApplicationSubmittedListenerTest {
                 false,
                 false);
 
-        ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("");
+        ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("", "", null);
 
         applicationSubmittedListener.sendCaseWorkerEmail(event);
 
@@ -187,7 +186,7 @@ class ApplicationSubmittedListenerTest {
                 false,
                 false);
 
-        ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("");
+        ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("", "", null);
 
         applicationSubmittedListener.sendViaApi(event);
 
@@ -197,7 +196,7 @@ class ApplicationSubmittedListenerTest {
     @Test
     void shouldSendNonPartnerCountyAlertWhenApplicationSubmittedIsForOTHERCounty() {
         String applicationId = "appId";
-        ApplicationSubmittedEvent event = new ApplicationSubmittedEvent(applicationId);
+        ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null);
         ZonedDateTime submissionTime = ZonedDateTime.now();
         when(applicationRepository.find(applicationId)).thenReturn(
                 Application.builder()
@@ -215,7 +214,7 @@ class ApplicationSubmittedListenerTest {
     @Test
     void shouldNotSendNonPartnerCountyAlertWhenApplicationSubmittedIsNotForOTHERCounty() {
         String applicationId = "appId";
-        ApplicationSubmittedEvent event = new ApplicationSubmittedEvent(applicationId);
+        ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null);
         ZonedDateTime submissionTime = ZonedDateTime.now();
         when(applicationRepository.find(applicationId)).thenReturn(
                 Application.builder()
@@ -249,7 +248,7 @@ class ApplicationSubmittedListenerTest {
                         .build()
         );
 
-        applicationSubmittedListener.sendNonPartnerCountyAlert(new ApplicationSubmittedEvent("appId"));
+        applicationSubmittedListener.sendNonPartnerCountyAlert(new ApplicationSubmittedEvent("someSessionId", "appId", null));
 
         verifyNoInteractions(emailClient);
     }

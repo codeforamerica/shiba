@@ -2,14 +2,12 @@ package org.codeforamerica.shiba;
 
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
+import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.metrics.Metrics;
 import org.codeforamerica.shiba.pages.CountyMap;
 import org.codeforamerica.shiba.pages.Sentiment;
-import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.PageData;
-import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -57,6 +55,10 @@ class ApplicationFactoryTest {
         chooseProgramsData.put("programs", InputData.builder().value(emptyList()).build());
         pagesData.put("choosePrograms", chooseProgramsData);
         applicationData.setPagesData(pagesData);
+        Subworkflows subworkflows = new Subworkflows();
+        subworkflows.addIteration("someGroup", new PagesData(Map.of("somePage", new PageData(Map.of("someInput", InputData.builder().value(List.of("someValue")).build())))));
+        applicationData.setSubworkflows(subworkflows);
+        applicationData.setFlow(FlowType.FULL);
 
         when(clock.instant()).thenReturn(Instant.now());
         when(clock.getZone()).thenReturn(zoneOffset);
@@ -93,6 +95,16 @@ class ApplicationFactoryTest {
         Application application = applicationFactory.newApplication("", applicationData, metrics);
 
         assertThat(application.getTimeToComplete()).isEqualTo(Duration.ofSeconds(142));
+    }
+
+    @Test
+    void shouldProvideApplicationFlow() {
+        FlowType flow = FlowType.FULL;
+        applicationData.setFlow(flow);
+
+        Application application = applicationFactory.newApplication("", applicationData, defaultMetrics);
+
+        assertThat(application.getFlow()).isEqualTo(flow);
     }
 
     @Test
@@ -201,14 +213,14 @@ class ApplicationFactoryTest {
             Instant completedAt = Instant.parse("2007-09-10T04:59:59.00Z");
             when(clock.instant()).thenReturn(completedAt);
 
-            Application application = applicationFactory.reconstitueApplication(
+            Application application = applicationFactory.reconstituteApplication(
                     applicationId,
                     ZonedDateTime.ofInstant(completedAt, ZoneId.of("UTC")),
                     applicationData,
                     HENNEPIN,
                     null,
-                    Sentiment.HAPPY,
-                    "someFeedback");
+                    null,
+                    Sentiment.HAPPY, "someFeedback");
 
             assertThat(application.getFileName()).isEqualTo(String.format("%s_MNB_%s_%s_%s_%s",
                     countyNPI, "20070909", "235959", applicationId, "EKFC"));

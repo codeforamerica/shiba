@@ -1234,6 +1234,7 @@ shiba-configuration:
       pageConfiguration: *reviewInfo
       nextPages:
         - pageName: doYouLiveAlone
+          flow: FULL
         - pageName: doYouNeedHelpImmediately
       datasources:
         - pageName: personalInfo
@@ -1511,7 +1512,9 @@ shiba-configuration:
       pageConfiguration: *doYouNeedHelpImmediately
       nextPages:
         - pageName: doYouLiveAloneExpedited
+          flow: EXPEDITED
         - pageName: importantToKnow
+          flow: MINIMUM
     doYouLiveAloneExpedited:
       pageConfiguration: *doYouLiveAlone
       nextPages:

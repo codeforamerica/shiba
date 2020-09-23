@@ -6,12 +6,14 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 
 import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 
 public class PageSubWorkflowPageTest extends AbstractStaticMessageSourcePageTest {
     @TestConfiguration
@@ -23,6 +25,9 @@ public class PageSubWorkflowPageTest extends AbstractStaticMessageSourcePageTest
             return new ApplicationConfiguration();
         }
     }
+
+    @MockBean
+    PageEventPublisher pageEventPublisher;
 
     @Test
     void shouldDisplayInputFromSubflowInFinalPage() {
@@ -46,6 +51,19 @@ public class PageSubWorkflowPageTest extends AbstractStaticMessageSourcePageTest
         Page endPage = testPage.clickPrimaryButton();
 
         assertThat(driver.findElement(By.id("iteration0")).getText()).isEqualTo("goToThirdPage");
+    }
+
+    @Test
+    void shouldPublishSubflowCompletedEventAnyOfTheConfiguredCompletePages() {
+        navigateTo("startPage");
+        Page firstPage = testPage.clickPrimaryButton();
+        firstPage.enterInput("input1", "goToThirdPage");
+        Page thirdPage = testPage.clickPrimaryButton();
+        thirdPage.enterInput("input3", "text 3");
+        String sessionId = driver.manage().getCookieNamed("JSESSIONID").getValue();
+        testPage.clickPrimaryButton();
+
+        verify(pageEventPublisher).publish(new SubworkflowCompletedEvent(sessionId, "group1"));
     }
 
     @Test
@@ -119,6 +137,42 @@ public class PageSubWorkflowPageTest extends AbstractStaticMessageSourcePageTest
     }
 
     @Test
+    void shouldPublishSubflowIterationDeleted() {
+        navigateTo("startPage");
+        Page firstPage = testPage.clickPrimaryButton();
+        firstPage.enterInput("input1", "goToSecondPage");
+        Page secondPage = testPage.clickPrimaryButton();
+        secondPage.enterInput("input2", "text 2");
+        Page endPage = testPage.clickPrimaryButton();
+
+        firstPage = endPage.clickPrimaryButton();
+        firstPage.enterInput("input1", "goToThirdPage");
+        secondPage = testPage.clickPrimaryButton();
+        secondPage.enterInput("input3", "text 4");
+        testPage.clickPrimaryButton();
+
+        String sessionId = driver.manage().getCookieNamed("JSESSIONID").getValue();
+        driver.findElement(By.id("iteration0-delete")).click();
+        verify(pageEventPublisher).publish(new SubworkflowIterationDeletedEvent(sessionId, "group1"));
+    }
+
+    @Test
+    void shouldPublishSubflowIterationDeletedOnGroupDelete() {
+        navigateTo("startPage");
+        Page firstPage = testPage.clickPrimaryButton();
+        firstPage.enterInput("input1", "goToSecondPage");
+        Page secondPage = testPage.clickPrimaryButton();
+        secondPage.enterInput("input2", "text 2");
+        testPage.clickPrimaryButton();
+
+        String sessionId = driver.manage().getCookieNamed("JSESSIONID").getValue();
+        driver.findElement(By.id("iteration0-delete")).click();
+        driver.findElement(By.tagName("button")).click();
+
+        verify(pageEventPublisher).publish(new SubworkflowIterationDeletedEvent(sessionId, "group1"));
+    }
+
+    @Test
     void shouldGoToSpecifiedPageWhenGoBackFromEndOfTheWorkflow() {
         String warningPageTitle = "some title";
         this.staticMessageSource.addMessage("some-warning-title", Locale.US, warningPageTitle);
@@ -146,7 +200,7 @@ public class PageSubWorkflowPageTest extends AbstractStaticMessageSourcePageTest
         firstPage.enterInput("input1", "goToSecondPage");
         Page secondPage = testPage.clickPrimaryButton();
         secondPage.enterInput("input2", "text 2");
-        Page endPage = testPage.clickPrimaryButton();
+        testPage.clickPrimaryButton();
 
         driver.findElement(By.id("iteration0-delete")).click();
         assertThat(driver.getTitle()).isEqualTo(warningPageTitle);

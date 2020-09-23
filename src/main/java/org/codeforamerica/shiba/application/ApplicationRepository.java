@@ -56,28 +56,33 @@ public class ApplicationRepository {
                 "county", application.getCounty().name(),
                 "timeToComplete", application.getTimeToComplete().getSeconds()
         ));
+        parameters.put("flow", Optional.ofNullable(application.getFlow()).map(FlowType::name).orElse(null));
         parameters.put("sentiment", Optional.ofNullable(application.getSentiment()).map(Sentiment::name).orElse(null));
         parameters.put("feedback", application.getFeedback());
         new NamedParameterJdbcTemplate(jdbcTemplate)
-                .update("INSERT INTO applications (id, completed_at, encrypted_data, county, time_to_complete, sentiment, feedback) " +
-                        "VALUES (:id, :completedAt, :encryptedData, :county, :timeToComplete, :sentiment, :feedback) " +
+                .update("INSERT INTO applications (id, completed_at, encrypted_data, county, time_to_complete, sentiment, feedback, flow) " +
+                        "VALUES (:id, :completedAt, :encryptedData, :county, :timeToComplete, :sentiment, :feedback, :flow) " +
                         "ON CONFLICT (id) DO UPDATE SET " +
                         "completed_at = :completedAt, " +
                         "encrypted_data = :encryptedData, " +
                         "county = :county, " +
                         "time_to_complete = :timeToComplete, " +
                         "sentiment = :sentiment, " +
-                        "feedback = :feedback", parameters);
+                        "feedback = :feedback, " +
+                        "flow = :flow", parameters);
     }
 
     public Application find(String id) {
         return jdbcTemplate.queryForObject("SELECT * FROM applications WHERE id = ?",
-                (resultSet, rowNum) -> applicationFactory.reconstitueApplication(
+                (resultSet, rowNum) -> applicationFactory.reconstituteApplication(
                         id,
                         ZonedDateTime.ofInstant(resultSet.getTimestamp("completed_at").toInstant(), ZoneOffset.UTC),
                         encryptor.decrypt(resultSet.getBytes("encrypted_data")),
                         County.valueOf(resultSet.getString("county")),
                         Duration.ofSeconds(resultSet.getLong("time_to_complete")),
+                        Optional.ofNullable(resultSet.getString("flow"))
+                                .map(FlowType::valueOf)
+                                .orElse(null),
                         Optional.ofNullable(resultSet.getString("sentiment"))
                                 .map(Sentiment::valueOf)
                                 .orElse(null),

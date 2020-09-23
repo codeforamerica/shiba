@@ -2,9 +2,7 @@ package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.ConfirmationData;
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
-import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.application.ApplicationFactory;
-import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.*;
 import org.codeforamerica.shiba.metrics.Metrics;
 import org.codeforamerica.shiba.output.ApplicationDataConsumer;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
@@ -18,11 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.StaticMessageSource;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -56,22 +54,14 @@ class PageControllerTest {
     }
 
     ApplicationData applicationData = new ApplicationData();
-
     MockMvc mockMvc;
-
     Metrics metrics = new Metrics();
-
     ConfirmationData confirmationData = new ConfirmationData();
-
     Clock clock = mock(Clock.class);
-
     ApplicationDataConsumer applicationDataConsumer = mock(ApplicationDataConsumer.class);
-
     ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
-
     ApplicationFactory applicationFactory = mock(ApplicationFactory.class);
-
-    ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
+    PageEventPublisher pageEventPublisher = mock(PageEventPublisher.class);
 
     @Autowired
     ApplicationConfiguration applicationConfiguration;
@@ -86,8 +76,8 @@ class PageControllerTest {
                 applicationRepository,
                 applicationFactory,
                 confirmationData,
-                applicationEventPublisher,
-                messageSource
+                messageSource,
+                pageEventPublisher
         );
 
         mockMvc = MockMvcBuilders.standaloneSetup(pageController)
@@ -131,16 +121,20 @@ class PageControllerTest {
                 .county(null)
                 .fileName("")
                 .timeToComplete(null)
+                .flow(FlowType.FULL)
                 .build();
         when(applicationFactory.newApplication(any(), eq(applicationData), eq(metrics))).thenReturn(application);
 
+        String sessionId = "someSessionId";
+        MockHttpSession session = new MockHttpSession(null, sessionId);
         mockMvc.perform(post("/submit")
+                .session(session)
                 .param("foo[]", "some value")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
-        InOrder inOrder = inOrder(applicationRepository, applicationEventPublisher);
+        InOrder inOrder = inOrder(applicationRepository, pageEventPublisher);
         inOrder.verify(applicationRepository).save(application);
-        inOrder.verify(applicationEventPublisher).publishEvent(new ApplicationSubmittedEvent(applicationId));
+        inOrder.verify(pageEventPublisher).publish(new ApplicationSubmittedEvent(sessionId, applicationId, FlowType.FULL));
     }
 
     @Test
@@ -227,7 +221,7 @@ class PageControllerTest {
                 .locale(locale)
                 .param("feedback", feedback))
                 .andExpect(redirectedUrl("/pages/terminalPage"))
-                .andExpect(flash().attribute("feedbackSuccess", equalTo(successMessage)));;
+                .andExpect(flash().attribute("feedbackSuccess", equalTo(successMessage)));
 
         verify(applicationRepository).save(Application.builder()
                 .id(application.getId())
@@ -255,7 +249,7 @@ class PageControllerTest {
                 .locale(locale)
                 .param("sentiment", "HAPPY"))
                 .andExpect(redirectedUrl("/pages/terminalPage"))
-                .andExpect(flash().attribute("feedbackSuccess", equalTo(ratingSuccessMessage)));;
+                .andExpect(flash().attribute("feedbackSuccess", equalTo(ratingSuccessMessage)));
 
         verify(applicationRepository).save(Application.builder()
                 .id(application.getId())

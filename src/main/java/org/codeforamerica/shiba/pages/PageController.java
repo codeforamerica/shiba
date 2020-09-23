@@ -5,14 +5,10 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.metrics.Metrics;
-import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
-import org.codeforamerica.shiba.pages.config.LandmarkPagesConfiguration;
-import org.codeforamerica.shiba.pages.config.PageConfiguration;
-import org.codeforamerica.shiba.pages.config.PageWorkflowConfiguration;
+import org.codeforamerica.shiba.pages.config.*;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
@@ -28,6 +24,7 @@ import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 public class PageController {
@@ -38,8 +35,8 @@ public class PageController {
     private final ApplicationRepository applicationRepository;
     private final ApplicationFactory applicationFactory;
     private final ConfirmationData confirmationData;
-    private final ApplicationEventPublisher applicationEventPublisher;
     private final MessageSource messageSource;
+    private final PageEventPublisher pageEventPublisher;
 
     public PageController(
             ApplicationConfiguration applicationConfiguration,
@@ -49,8 +46,8 @@ public class PageController {
             ApplicationRepository applicationRepository,
             ApplicationFactory applicationFactory,
             ConfirmationData confirmationData,
-            ApplicationEventPublisher applicationEventPublisher,
-            MessageSource messageSource) {
+            MessageSource messageSource,
+            PageEventPublisher pageEventPublisher) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
@@ -58,8 +55,8 @@ public class PageController {
         this.applicationRepository = applicationRepository;
         this.applicationFactory = applicationFactory;
         this.confirmationData = confirmationData;
-        this.applicationEventPublisher = applicationEventPublisher;
         this.messageSource = messageSource;
+        this.pageEventPublisher = pageEventPublisher;
     }
 
     @GetMapping("/")
@@ -79,14 +76,15 @@ public class PageController {
     ) {
         PageWorkflowConfiguration pageWorkflow = this.applicationConfiguration.getPageWorkflow(pageName);
         PagesData pagesData = this.applicationData.getPagesData();
-        String nextPageName = applicationData.getNextPageName(pageWorkflow, option);
-        PageWorkflowConfiguration nextPage = this.applicationConfiguration.getPageWorkflow(nextPageName);
+        NextPage nextPage = applicationData.getNextPageName(pageWorkflow, option);
+        Optional.ofNullable(nextPage.getFlow()).ifPresent(applicationData::setFlow);
+        PageWorkflowConfiguration nextPageWorkflow = this.applicationConfiguration.getPageWorkflow(nextPage.getPageName());
 
-        if (pagesData.shouldSkip(nextPage)) {
-            pagesData.remove(nextPage.getPageConfiguration().getName());
-            return new RedirectView(String.format("/pages/%s", applicationData.getNextPageName(nextPage, option)));
+        if (pagesData.shouldSkip(nextPageWorkflow)) {
+            pagesData.remove(nextPageWorkflow.getPageConfiguration().getName());
+            return new RedirectView(String.format("/pages/%s", applicationData.getNextPageName(nextPageWorkflow, option).getPageName()));
         } else {
-            return new RedirectView(String.format("/pages/%s", nextPageName));
+            return new RedirectView(String.format("/pages/%s", nextPage.getPageName()));
         }
     }
 
@@ -167,8 +165,9 @@ public class PageController {
     }
 
     @PostMapping("/groups/{groupName}/delete")
-    RedirectView deleteGroup(@PathVariable String groupName) {
+    RedirectView deleteGroup(@PathVariable String groupName, HttpSession httpSession) {
         this.applicationData.getSubworkflows().remove(groupName);
+        pageEventPublisher.publish(new SubworkflowIterationDeletedEvent(httpSession.getId(), groupName));
         String startPage = applicationConfiguration.getPageGroups().get(groupName).getRestartPage();
         return new RedirectView("/pages/" + startPage);
     }
@@ -177,7 +176,8 @@ public class PageController {
     ModelAndView deleteIteration(
             @PathVariable String groupName,
             @PathVariable int iteration,
-            @RequestHeader("referer") String referer
+            @RequestHeader("referer") String referer,
+            HttpSession httpSession
     ) {
         if (this.applicationData.getSubworkflows().get(groupName).size() == 1) {
             String redirectPage = applicationConfiguration.getPageGroups().get(groupName).getNoDataRedirectPage();
@@ -185,13 +185,15 @@ public class PageController {
             return new ModelAndView("redirect:/pages/" + redirectPage);
         }
         this.applicationData.getSubworkflows().get(groupName).remove(iteration);
+        pageEventPublisher.publish(new SubworkflowIterationDeletedEvent(httpSession.getId(), groupName));
         return new ModelAndView("redirect:" + referer);
     }
 
     @PostMapping("/pages/{pageName}")
     ModelAndView postFormPage(
             @RequestBody(required = false) MultiValueMap<String, String> model,
-            @PathVariable String pageName
+            @PathVariable String pageName,
+            HttpSession httpSession
     ) {
         PageWorkflowConfiguration pageWorkflow = applicationConfiguration.getPageWorkflow(pageName);
 
@@ -218,6 +220,7 @@ public class PageController {
             String groupName = pageWorkflow.getGroupName();
             applicationData.getSubworkflows()
                     .addIteration(groupName, applicationData.getIncompleteIterations().remove(groupName));
+            pageEventPublisher.publish(new SubworkflowCompletedEvent(httpSession.getId(), groupName));
         }
 
         return pageData.isValid() ?
@@ -227,7 +230,8 @@ public class PageController {
 
     @PostMapping("/submit")
     ModelAndView submitApplication(
-            @RequestBody(required = false) MultiValueMap<String, String> model
+            @RequestBody(required = false) MultiValueMap<String, String> model,
+            HttpSession httpSession
     ) {
         LandmarkPagesConfiguration landmarkPagesConfiguration = this.applicationConfiguration.getLandmarkPages();
         String submitPage = landmarkPagesConfiguration.getSubmitPage();
@@ -242,7 +246,9 @@ public class PageController {
             Application application = applicationFactory.newApplication(id, applicationData, metrics);
             confirmationData.setId(application.getId());
             applicationRepository.save(application);
-            applicationEventPublisher.publishEvent(new ApplicationSubmittedEvent(application.getId()));
+            pageEventPublisher.publish(
+                    new ApplicationSubmittedEvent(httpSession.getId(), application.getId(), application.getFlow())
+            );
 
             return new ModelAndView(String.format("redirect:/pages/%s/navigation", submitPage));
         } else {

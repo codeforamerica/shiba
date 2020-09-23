@@ -40,7 +40,8 @@ jobs:
           'SHIBA_PASSWORD=${{ secrets.SHIBA_PASSWORD }}' \
           'ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY_DEMO }}' \
           'SENTRY_DSN=${{ secrets.SENTRY_DSN }}' \
-          'SENTRY_ENVIRONMENT=demo'
+          'SENTRY_ENVIRONMENT=demo' \
+          'MIXPANEL_API-KEY=${{ secrets.MIXPANEL_API_KEY_STAGING }}'
       - name: Announce on Slack
         if: ${{ always() }}
         uses: innocarpe/actions-slack@v1

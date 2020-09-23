@@ -7,7 +7,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.openqa.selenium.By;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.io.File;
@@ -34,7 +33,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     Clock clock;
 
     @MockBean
-    ApplicationEventPublisher applicationEventPublisher;
+    PageEventPublisher pageEventPublisher;
 
     @MockBean
     SmartyStreetClient smartyStreetClient;

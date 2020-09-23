@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.pages.data;
 
 import lombok.Data;
+import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.output.caf.PageInputCoordinates;
 import org.codeforamerica.shiba.pages.config.NextPage;
 import org.codeforamerica.shiba.pages.config.PageWorkflowConfiguration;
@@ -11,6 +12,7 @@ import java.util.Optional;
 
 @Data
 public class ApplicationData {
+    private FlowType flow = null;
     private PagesData pagesData = new PagesData();
     private Subworkflows subworkflows = new Subworkflows();
     private Map<String, PagesData> incompleteIterations = new HashMap<>();
@@ -25,9 +27,9 @@ public class ApplicationData {
                 .orElse(pageInputCoordinates.getDefaultValue());
     }
 
-    public String getNextPageName(PageWorkflowConfiguration pageWorkflowConfiguration, Integer option) {
+    public NextPage getNextPageName(PageWorkflowConfiguration pageWorkflowConfiguration, Integer option) {
         if (!pageWorkflowConfiguration.getConditionalNavigation()) {
-            return pageWorkflowConfiguration.getNextPages().get(option).getPageName();
+            return pageWorkflowConfiguration.getNextPages().get(option);
         }
         PageData pageData;
         if (pageWorkflowConfiguration.inAGroup()) {
@@ -45,7 +47,6 @@ public class ApplicationData {
                         .map(pageData::satisfies)
                         .orElse(true))
                 .findFirst()
-                .map(NextPage::getPageName)
                 .orElseThrow(() -> new RuntimeException("Cannot find suitable next page."));
     }
 

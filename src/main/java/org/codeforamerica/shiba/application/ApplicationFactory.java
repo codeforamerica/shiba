@@ -57,6 +57,7 @@ public class ApplicationFactory {
         copy.setPagesData(applicationData.getPagesData());
         copy.setSubworkflows(applicationData.getSubworkflows());
         copy.setIncompleteIterations(applicationData.getIncompleteIterations());
+        copy.setFlow(applicationData.getFlow());
         Address homeAddress = homeAddressParser.parse(applicationData);
         Optional<String> countyString = locationClient.getCounty(homeAddress);
         County county = countyString.map(County::fromString)
@@ -71,16 +72,18 @@ public class ApplicationFactory {
                 .county(county)
                 .fileName(fileName)
                 .timeToComplete(Duration.between(metrics.getStartTime(), completedAt))
+                .flow(applicationData.getFlow())
                 .build();
     }
 
-    public Application reconstitueApplication(String id,
-                                              ZonedDateTime completedAt,
-                                              ApplicationData applicationData,
-                                              County county,
-                                              Duration timeToComplete,
-                                              Sentiment sentiment,
-                                              String feedback) {
+    public Application reconstituteApplication(String id,
+                                               ZonedDateTime completedAt,
+                                               ApplicationData applicationData,
+                                               County county,
+                                               Duration timeToComplete,
+                                               FlowType flow,
+                                               Sentiment sentiment,
+                                               String feedback) {
         return Application.builder()
                 .id(id)
                 .completedAt(completedAt)
@@ -90,6 +93,7 @@ public class ApplicationFactory {
                 .timeToComplete(timeToComplete)
                 .sentiment(sentiment)
                 .feedback(feedback)
+                .flow(flow)
                 .build();
     }
 

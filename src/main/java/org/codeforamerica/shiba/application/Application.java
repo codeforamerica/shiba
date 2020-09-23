@@ -21,6 +21,7 @@ public class Application {
     County county;
     String fileName;
     Duration timeToComplete;
+    FlowType flow;
     Sentiment sentiment;
     String feedback;
 
@@ -35,6 +36,7 @@ public class Application {
                 this.county,
                 this.fileName,
                 this.timeToComplete,
+                this.flow,
                 sentiment,
                 feedbackText);
     }
