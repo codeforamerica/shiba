@@ -68,8 +68,8 @@ jobs:
           'SMARTY_STREET_AUTH_ID=${{ secrets.SMARTY_STREET_AUTH_ID }}' \
           'SMARTY_STREET_AUTH_TOKEN=${{ secrets.SMARTY_STREET_AUTH_TOKEN }}' \
           'CLIENT_KEYSTORE-PASSWORD=${{ secrets.CLIENT_KEYSTORE_PASSWORD }}' \
-          'MNIT-ESB_USERNAME=${{ secrets.MNIT_ESB_ALFRESCO_USERNAME }}' \
-          'MNIT-ESB_PASSWORD=${{ secrets.MNIT_ESB_ALFRESCO_PASSWORD }}' \
+          'MNIT-ESB_USERNAME=${{ secrets.MNIT_USERNAME }}' \
+          'MNIT-ESB_PASSWORD=${{ secrets.MNIT_PASSWORD }}' \
           'SHIBA_USERNAME=${{ secrets.SHIBA_USERNAME }}' \
           'SHIBA_PASSWORD=${{ secrets.SHIBA_PASSWORD }}' \
           'ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY_STAGING }}' \
