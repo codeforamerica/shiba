@@ -11,7 +11,6 @@ import org.codeforamerica.shiba.output.ApplicationFile;
 import org.springframework.core.io.Resource;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
@@ -36,11 +35,8 @@ public class PDFBoxFieldFiller implements PdfFieldFiller {
             PDDocument document = pdfs.stream().reduce(
                     new PDDocument(),
                     (pdDocument, resource) -> {
-                        try {
-                            mergerer.appendDocument(
-                                    pdDocument,
-                                    PDDocument.load(resource.getInputStream())
-                            );
+                        try (PDDocument loadedDoc = PDDocument.load(resource.getInputStream())){
+                            mergerer.appendDocument(pdDocument, loadedDoc);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -51,7 +47,7 @@ public class PDFBoxFieldFiller implements PdfFieldFiller {
             );
 
             PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
-            PDFont font = PDType0Font.load(document, new FileInputStream(fontResource.getFile()), false);
+            PDFont font = PDType0Font.load(document, fontResource.getInputStream(), false);
             PDResources res = acroForm.getDefaultResources();
             String fontName = res.add(font).getName();
 

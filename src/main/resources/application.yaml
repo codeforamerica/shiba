@@ -27,3 +27,6 @@ send-non-partner-county-alert: false
 smarty-street-url: "https://us-street.api.smartystreets.com/street-address"
 
 encryption-key: ${ENCRYPTION_KEY}
+logging:
+  level:
+    org.apache.pdfbox.multipdf: off
