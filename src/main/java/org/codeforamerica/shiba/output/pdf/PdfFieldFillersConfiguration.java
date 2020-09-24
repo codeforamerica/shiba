@@ -17,9 +17,10 @@ public class PdfFieldFillersConfiguration {
     @Bean
     public PdfFieldFiller caseWorkerFiller(
             @Value("classpath:cover-pages.pdf") Resource coverPages,
-            @Value("classpath:caf-body.pdf") Resource cafBody
+            @Value("classpath:caf-body.pdf") Resource cafBody,
+            @Value("classpath:LiberationSans-Regular.ttf") Resource font
     ) {
-        return new PDFBoxFieldFiller(List.of(coverPages, cafBody));
+        return new PDFBoxFieldFiller(List.of(coverPages, cafBody), font);
     }
 
     @Bean
@@ -27,11 +28,12 @@ public class PdfFieldFillersConfiguration {
             @Value("classpath:cover-pages.pdf") Resource coverPages,
             @Value("classpath:caf-standard-headers.pdf") Resource standardHeaders,
             @Value("classpath:caf-body.pdf") Resource cafBody,
-            @Value("classpath:caf-standard-footers.pdf") Resource standardFooters
+            @Value("classpath:caf-standard-footers.pdf") Resource standardFooters,
+            @Value("classpath:LiberationSans-Regular.ttf") Resource font
     ) {
         return new PDFBoxFieldFiller(List.of(
                 coverPages, standardHeaders, cafBody, standardFooters
-        ));
+        ), font);
     }
 
     @Bean

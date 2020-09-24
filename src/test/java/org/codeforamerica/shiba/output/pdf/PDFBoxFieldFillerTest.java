@@ -23,7 +23,8 @@ class PDFBoxFieldFillerTest {
             List.of(
                     new ClassPathResource("test-cover-pages.pdf"),
                     new ClassPathResource("test-caf.pdf")
-            )
+            ),
+            new ClassPathResource("LiberationSans-Regular.ttf")
     );
 
     @Test
