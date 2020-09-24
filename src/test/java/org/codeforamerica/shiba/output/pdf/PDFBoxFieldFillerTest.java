@@ -20,8 +20,10 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 class PDFBoxFieldFillerTest {
 
     private final PDFBoxFieldFiller PDFBoxFieldFiller = new PDFBoxFieldFiller(
-            new ClassPathResource("test-cover-pages.pdf"),
-            List.of(new ClassPathResource("test-caf.pdf"))
+            List.of(
+                    new ClassPathResource("test-cover-pages.pdf"),
+                    new ClassPathResource("test-caf.pdf")
+            )
     );
 
     @Test
@@ -82,7 +84,7 @@ class PDFBoxFieldFillerTest {
         Files.write(file.toPath(), applicationFile.getFileBytes());
         PDDocument pdDocument = PDDocument.load(file);
 
-        assertThat(pdDocument.getNumberOfPages()).isGreaterThan(1);
+        assertThat(pdDocument.getNumberOfPages()).isEqualTo(21);
     }
 
     @Test
