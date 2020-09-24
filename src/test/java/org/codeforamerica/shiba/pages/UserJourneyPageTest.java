@@ -77,7 +77,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         Page expeditedExpensesPage = liquidAssetsPage.clickPrimaryButton();
         Page expeditedExpensesAmountPage = expeditedExpensesPage.choose(YES);
 
-        expeditedExpensesAmountPage.enterInput("expeditedExpensesAmount", "333");
+        expeditedExpensesAmountPage.enterInput("homeExpensesAmount", "333");
         Page expeditedUtilityPaymentsPage = expeditedExpensesAmountPage.clickPrimaryButton();
 
         expeditedUtilityPaymentsPage.selectEnumeratedInput("payForUtilities", "Cooling");

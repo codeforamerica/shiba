@@ -40,8 +40,6 @@ xml:
       moneyMadeLast30Days: MONEY_MADE_LAST_MONTH
     liquidAssets:
       liquidAssets: LIQUID_ASSETS
-    expeditedExpensesAmount:
-      expeditedExpensesAmount: HOUSING_EXPENSES
     utilityPayments:
       payForUtilities:
         HEATING: HEATING

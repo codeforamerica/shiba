@@ -30,7 +30,7 @@ public class PageWorkflowConfiguration {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    public boolean inAGroup() {
+    public boolean isInAGroup() {
         return groupName != null;
     }
 

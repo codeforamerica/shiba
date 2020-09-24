@@ -39,8 +39,6 @@ caf:
       apartmentNumber: APPLICANT_MAILING_APT_NUMBER
     liquidAssets:
       liquidAssets: EXPEDITED_QUESTION_2
-    expeditedExpensesAmount:
-      expeditedExpensesAmount: HOUSING_EXPENSES
     utilityPayments:
       payForUtilities:
         HEATING: HEAT

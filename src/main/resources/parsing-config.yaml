@@ -14,8 +14,8 @@ parsing:
         inputName: migrantOrSeasonalFarmWorker
         required: true
       housingCosts:
-        pageName: expeditedExpensesAmount
-        inputName: expeditedExpensesAmount
+        pageName: homeExpensesAmount
+        inputName: homeExpensesAmount
         defaultValue: 0
       utilityExpensesSelections:
         pageName: utilityPayments

@@ -479,7 +479,7 @@ shiba-configuration:
         - name: payRentOrMortgage
           type: YES_NO
     - &expeditedExpensesAmount
-      name: expeditedExpensesAmount
+      name: homeExpensesAmount
       pageTitle:
         conditionalValues:
           - value: expedited-expenses-amount.title-one-person
@@ -505,12 +505,12 @@ shiba-configuration:
               input: liveAlone
               value: "false"
       inputs:
-        - name: expeditedExpensesAmount
+        - name: homeExpensesAmount
           type: MONEY
           validators:
             - validation: MONEY
               condition:
-                input: expeditedExpensesAmount
+                input: homeExpensesAmount
                 matcher: NOT_EMPTY
           validationErrorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
     - &utilityPayments

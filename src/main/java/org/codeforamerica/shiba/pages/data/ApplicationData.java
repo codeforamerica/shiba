@@ -32,7 +32,7 @@ public class ApplicationData {
             return pageWorkflowConfiguration.getNextPages().get(option);
         }
         PageData pageData;
-        if (pageWorkflowConfiguration.inAGroup()) {
+        if (pageWorkflowConfiguration.isInAGroup()) {
             pageData = incompleteIterations.get(pageWorkflowConfiguration.getGroupName()).get(pageWorkflowConfiguration.getPageConfiguration().getName());
         } else {
             pageData = pagesData.getPage(pageWorkflowConfiguration.getPageConfiguration().getName());
