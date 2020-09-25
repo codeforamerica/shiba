@@ -4,7 +4,7 @@
           th:with="inputData=${data.get(input.name)},formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)}"
 >
     <div class="form-group"
-         th:classappend="${!inputData.valid} ? 'form-group--error' : ''"
+         th:classappend="${!inputData.valid()} ? 'form-group--error' : ''"
          th:if="${!input.hasFollowUps()}">
         <div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${input})"></div>
         <p class="text--help"
@@ -18,7 +18,7 @@
                 <span th:text="#{${option.messageKey}}"></span>
             </label>
         </th:block>
-        <p class="text--error" th:if="${!inputData.valid}">
+        <p class="text--error" th:if="${!inputData.valid()}">
             <i class="icon-warning"></i>
             <span th:text="#{${input.validationErrorMessageKey}}"></span>
         </p>

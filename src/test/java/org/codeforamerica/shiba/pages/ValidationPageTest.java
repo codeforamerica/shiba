@@ -36,6 +36,8 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest {
     private final String checkboxPageTitle = "checkbox page title";
     private final String option1 = "option 1";
     private final String multipleValidationsPageTitle = "multiple validations page title";
+    private final String moneyErrorMessageKey = "money is error";
+    private final String notBlankErrorMessage = "not blank is error";
 
     @TestConfiguration
     @PropertySource(value = "classpath:pages-config/test-validation.yaml", factory = YamlPropertySourceFactory.class)
@@ -58,6 +60,8 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest {
         staticMessageSource.addMessage("next-page-title", Locale.US, nextPageTitle);
         staticMessageSource.addMessage("last-page-title", Locale.US, lastPageTitle);
         staticMessageSource.addMessage("error-message-key", Locale.US, errorMessage);
+        staticMessageSource.addMessage("money-error-message-key", Locale.US, moneyErrorMessageKey);
+        staticMessageSource.addMessage("not-blank-error-message-key ", Locale.US, notBlankErrorMessage);
         staticMessageSource.addMessage("zip-code-page-title", Locale.US, zipcodePageTitle);
         staticMessageSource.addMessage("state-page-title", Locale.US, statePageTitle);
         staticMessageSource.addMessage("phone-page-title", Locale.US, phonePageTitle);
@@ -136,6 +140,7 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest {
         testPage.clickPrimaryButton();
 
         assertThat(driver.getTitle()).isEqualTo(multipleValidationsPageTitle);
+        assertThat(testPage.getInputError("multipleValidations").getText()).isEqualTo(moneyErrorMessageKey);
     }
 
     @Nested

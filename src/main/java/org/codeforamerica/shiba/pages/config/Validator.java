@@ -12,6 +12,7 @@ import static org.codeforamerica.shiba.pages.PageUtils.getFormInputName;
 @Data
 public class Validator {
     private Validation validation = Validation.NONE;
+    private String errorMessageKey;
     private Condition condition;
 
     public Boolean shouldValidate(MultiValueMap<String, String> model) {

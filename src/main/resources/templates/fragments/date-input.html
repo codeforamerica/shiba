@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="date-input (input, data)"
      class="form-group"
-     th:classappend="${!inputData.valid} ? 'form-group--error' : ''"
+     th:classappend="${!inputData.valid()} ? 'form-group--error' : ''"
      th:with="inputData=${data.get(input.name)}, formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)}">
     <div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${input})"></div>
     <p class="text--help">
@@ -15,7 +15,7 @@
                          th:id="${input.name}+'-day'" th:name="${formInputName}" th:value="${!inputData.value.isEmpty() ? inputData.value[1]: ''}">
     &nbsp;/&nbsp; <input type="text" maxlength="4" class="text-input form-width--4-character dob-input"
                          th:id="${input.name}+'-year'" th:name="${formInputName}" th:value="${!inputData.value.isEmpty() ? inputData.value[2]: ''}">
-    <p class="text--error" th:if="${!inputData.valid}">
+    <p class="text--error" th:if="${!inputData.valid()}">
         <i class="icon-warning"></i>
         <span th:text="#{${input.validationErrorMessageKey}}"></span>
     </p>

@@ -80,9 +80,6 @@
         "pageConfiguration": {
           "$ref": "#/definitions/page"
         },
-        "groupName": {
-          "type": "string"
-        },
         "datasources": {
           "type": "array",
           "items": {
@@ -188,7 +185,6 @@
             "MONEY",
             "INCREMENTER",
             "TEXTAREA",
-            "HOURLY_WAGE",
             "CUSTOM",
             "HOURLY_WAGE"
           ]
@@ -208,9 +204,6 @@
           }
         },
         "helpMessageKey": {
-          "type": "string"
-        },
-        "validationErrorMessageKey": {
           "type": "string"
         },
         "options": {
@@ -236,11 +229,20 @@
         "followUpsValue": {
           "type": "string"
         },
+        "customInputFragment": {
+          "type": "string"
+        },
+        "condition": {
+          "$ref": "#/definitions/condition"
+        },
         "validators": {
           "type": "array",
           "items": {
             "type": "object",
             "properties": {
+              "errorMessageKey": {
+                "type": "string"
+              },
               "validation": {
                 "type": "string",
                 "enum": [
@@ -269,6 +271,7 @@
           "type": "string"
         }
       },
+      "additionalProperties": false,
       "required": [
         "name",
         "type"

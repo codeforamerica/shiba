@@ -6,9 +6,7 @@ import lombok.Value;
 import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.pages.config.FormInput;
 import org.codeforamerica.shiba.pages.config.PageConfiguration;
-import org.codeforamerica.shiba.pages.config.Validation;
 import org.codeforamerica.shiba.pages.config.Validator;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.util.MultiValueMap;
 
 import java.util.HashMap;
@@ -16,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toMap;
 import static org.codeforamerica.shiba.pages.PageUtils.getFormInputName;
@@ -35,7 +32,7 @@ public class PageData extends HashMap<String, InputData> {
                     List<String> value = Optional.ofNullable(model)
                             .map(modelMap -> modelMap.get(getFormInputName(formInput.getName())))
                             .orElse(null);
-                    InputData inputData = new InputData(validationFor(formInput, model), value);
+                    InputData inputData = new InputData(value, validatorsFor(formInput, model));
                     return Map.entry(formInput.getName(), inputData);
                 })
                 .collect(toMap(Entry::getKey, Entry::getValue));
@@ -54,7 +51,7 @@ public class PageData extends HashMap<String, InputData> {
     }
 
     public Boolean isValid() {
-        return values().stream().allMatch(InputData::getValid);
+        return values().stream().allMatch(InputData::valid);
     }
 
     public Boolean satisfies(Condition condition) {
@@ -62,14 +59,10 @@ public class PageData extends HashMap<String, InputData> {
         return condition.matches(inputValue);
     }
 
-    @NotNull
-    private static List<Validation> validationFor(FormInput formInput, MultiValueMap<String, String> model) {
-        return Optional.ofNullable(formInput.getValidators())
-                .map(validators -> validators.stream()
-                        .filter(validator -> validator.shouldValidate(model))
-                        .map(Validator::getValidation)
-                )
-                .orElse(Stream.of(Validation.NONE))
+    private static List<Validator> validatorsFor(FormInput formInput, MultiValueMap<String, String> model) {
+        return formInput.getValidators()
+                .stream()
+                .filter(validator -> validator.shouldValidate(model))
                 .collect(Collectors.toList());
     }
 }

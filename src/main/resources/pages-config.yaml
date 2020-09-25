@@ -72,7 +72,7 @@ shiba-configuration:
           type: CHECKBOX
           validators:
             - validation: SELECT_AT_LEAST_ONE
-          validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+              errorMessageKey: general.validation.make-sure-you-answer-this-question
           options:
             - value: SNAP
               messageKey: choose-programs.food-snap
@@ -100,7 +100,7 @@ shiba-configuration:
           helpMessageKey: personal-info.legally-as-it-appears-on-your-id
           validators:
             - validation: NOT_BLANK
-          validationErrorMessageKey: general.validation.make-sure-to-provide-a-first-name
+              errorMessageKey: general.validation.make-sure-to-provide-a-first-name
         - name: lastName
           type: TEXT
           promptMessage:
@@ -108,7 +108,7 @@ shiba-configuration:
           helpMessageKey: personal-info.legally-as-it-appears-on-your-id
           validators:
             - validation: NOT_BLANK
-          validationErrorMessageKey: general.validation.make-sure-to-provide-a-last-name
+              errorMessageKey: general.validation.make-sure-to-provide-a-last-name
         - name: otherName
           type: TEXT
           promptMessage:
@@ -118,20 +118,20 @@ shiba-configuration:
           type: DATE
           validators:
             - validation: DATE
+              errorMessageKey: general.validation.make-sure-to-provide-a-birthday
               condition:
                 input: dateOfBirth
                 matcher: NOT_EMPTY
-          validationErrorMessageKey: general.validation.make-sure-to-provide-a-birthday
           promptMessage:
             promptMessageKey: personal-info.when-were-you-born
         - name: ssn
           type: NUMBER
           validators:
             - validation: SSN
+              errorMessageKey: general.validation.make-sure-your-SSN-has-9-digits
               condition:
                 input: ssn
                 matcher: NOT_EMPTY
-          validationErrorMessageKey: general.validation.make-sure-your-SSN-has-9-digits
           promptMessage:
             promptMessageKey: personal-info.whats-your-social-security-number
           helpMessageKey: personal-info.if-you-have-one-we-strongly-recommend-including-it-here-your-caseworker-will
@@ -179,10 +179,10 @@ shiba-configuration:
               type: DATE
               validators:
                 - validation: DATE
+                  errorMessageKey: general.validation.make-sure-you-answer-this-question
                   condition:
                     input: moveToMnDate
                     matcher: NOT_EMPTY
-              validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
               promptMessage:
                 promptMessageKey: personal-info.when-did-you-move-to-minnesota
             - name: moveToMnPreviousCity
@@ -203,7 +203,7 @@ shiba-configuration:
             promptMessageKey: contact-info.whats-your-phone-number
           validators:
             - validation: PHONE
-          validationErrorMessageKey: general.validation.make-sure-to-enter-a-phone-number-with-10-digits
+              errorMessageKey: general.validation.make-sure-to-enter-a-phone-number-with-10-digits
         - name: email
           type: TEXT
           promptMessage:
@@ -213,7 +213,7 @@ shiba-configuration:
               condition:
                 input: phoneOrEmail
                 value: EMAIL
-          validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+              errorMessageKey: general.validation.make-sure-you-answer-this-question
         - name: phoneOrEmail
           type: CHECKBOX
           promptMessage:
@@ -234,22 +234,32 @@ shiba-configuration:
           type: TEXT
           promptMessage:
             promptMessageKey: home-address.what-is-the-zip-code
-          validationErrorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
           validators:
             - validation: ZIPCODE
+              errorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
               condition:
                 input: isHomeless
                 matcher: NOT_PRESENT
+            - validation: ZIPCODE
+              errorMessageKey: general.validation.make-sure-to-provide-a-home-address-or-select-no-use-a-different-address-for-mail
+              condition:
+                input: sameMailingAddress
+                value: "true"
         - name: city
           type: TEXT
           promptMessage:
             promptMessageKey: home-address.what-is-the-city
-          validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
           validators:
             - validation: NOT_BLANK
+              errorMessageKey: general.validation.make-sure-you-answer-this-question
               condition:
                 input: isHomeless
                 matcher: NOT_PRESENT
+            - validation: NOT_BLANK
+              errorMessageKey: general.validation.make-sure-to-provide-a-home-address-or-select-no-use-a-different-address-for-mail
+              condition:
+                input: sameMailingAddress
+                value: "true"
         - name: state
           type: TEXT
           promptMessage:
@@ -260,12 +270,17 @@ shiba-configuration:
           type: TEXT
           promptMessage:
             promptMessageKey: home-address.what-is-the-street-address
-          validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
           validators:
             - validation: NOT_BLANK
+              errorMessageKey: general.validation.make-sure-you-answer-this-question
               condition:
                 input: isHomeless
                 matcher: NOT_PRESENT
+            - validation: NOT_BLANK
+              errorMessageKey: general.validation.make-sure-to-provide-a-home-address-or-select-no-use-a-different-address-for-mail
+              condition:
+                input: sameMailingAddress
+                value: "true"
         - name: apartmentNumber
           type: TEXT
           promptMessage:
@@ -282,7 +297,7 @@ shiba-configuration:
           helpMessageKey: home-address.the-county-will-need-a-place-to-send-you-mail-for-the-next-3-months
           validators:
             - validation: NOT_BLANK
-          validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+              errorMessageKey: general.validation.make-sure-you-answer-this-question
           options:
             - value: "true"
               messageKey: home-address.yes-send-mail-here
@@ -299,31 +314,31 @@ shiba-configuration:
           type: TEXT
           promptMessage:
             promptMessageKey: mailing-address.what-is-the-zip-code
-          validationErrorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
           validators:
             - validation: ZIPCODE
+              errorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
         - name: city
           type: TEXT
           promptMessage:
             promptMessageKey: mailing-address.what-is-the-city
-          validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
           validators:
             - validation: NOT_BLANK
+              errorMessageKey: general.validation.make-sure-you-answer-this-question
         - name: state
           type: TEXT
           promptMessage:
             promptMessageKey: mailing-address.what-is-the-state
           validators:
             - validation: STATE
-          validationErrorMessageKey: general.validation.make-sure-to-provide-a-valid-2-letter-state-code
+              errorMessageKey: general.validation.make-sure-to-provide-a-valid-2-letter-state-code
           defaultValue: MN
         - name: streetAddress
           type: TEXT
           promptMessage:
             promptMessageKey: mailing-address.what-is-the-street-address
-          validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
           validators:
             - validation: NOT_BLANK
+              errorMessageKey: general.validation.make-sure-you-answer-this-question
         - name: apartmentNumber
           type: TEXT
           promptMessage:
@@ -405,9 +420,9 @@ shiba-configuration:
       inputs:
         - name: moneyMadeLast30Days
           type: MONEY
-          validationErrorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
           validators:
             - validation: MONEY
+              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
               condition:
                 input: moneyMadeLast30Days
                 matcher: NOT_EMPTY
@@ -442,9 +457,9 @@ shiba-configuration:
           type: MONEY
           promptMessage:
             promptMessageFragmentName: liquidAssetsPrompt
-          validationErrorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
           validators:
             - validation: MONEY
+              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
               condition:
                 input: liquidAssets
                 matcher: NOT_EMPTY
@@ -509,10 +524,10 @@ shiba-configuration:
           type: MONEY
           validators:
             - validation: MONEY
+              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
               condition:
                 input: homeExpensesAmount
                 matcher: NOT_EMPTY
-          validationErrorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
     - &utilityPayments
       name: utilityPayments
       pageTitle:
@@ -545,7 +560,7 @@ shiba-configuration:
           type: CHECKBOX
           validators:
             - validation: SELECT_AT_LEAST_ONE
-          validationErrorMessageKey: general.validation.make-sure-you-choose-none-of-the-above-or-another-option
+              errorMessageKey: general.validation.make-sure-you-choose-none-of-the-above-or-another-option
           options:
             - value: HEATING
               messageKey: utility-payments.heating
@@ -648,7 +663,7 @@ shiba-configuration:
             promptMessageFragmentName: legal-terms-prompt
           validators:
             - validation: SELECT_AT_LEAST_ONE
-          validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+              errorMessageKey: general.validation.make-sure-you-answer-this-question
           options:
             - value: "true"
               messageKey: legal-stuff.i-agree
@@ -665,7 +680,7 @@ shiba-configuration:
           type: TEXT
           validators:
             - validation: NOT_BLANK
-          validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+              errorMessageKey: general.validation.make-sure-you-answer-this-question
     - &success
       name: success
       pageTitle:
@@ -749,7 +764,7 @@ shiba-configuration:
           type: CHECKBOX
           validators:
             - validation: SELECT_AT_LEAST_ONE
-          validationErrorMessageKey: general.validation.make-sure-you-choose-none-of-the-above-or-another-option
+              errorMessageKey: general.validation.make-sure-you-choose-none-of-the-above-or-another-option
           options:
             - value: SOCIAL_SECURITY
               messageKey: unearned-income.social-security
@@ -783,9 +798,9 @@ shiba-configuration:
           promptMessage:
             promptMessageKey: unearned-income.social-security
           helpMessageKey: unearned-income-sources.monthly-amount
-          validationErrorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
           validators:
             - validation: MONEY
+              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
               condition:
                 input: socialSecurityAmount
                 matcher: NOT_EMPTY
@@ -798,9 +813,9 @@ shiba-configuration:
           promptMessage:
             promptMessageKey: unearned-income.ssi
           helpMessageKey: unearned-income-sources.monthly-amount
-          validationErrorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
           validators:
             - validation: MONEY
+              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
               condition:
                 input: supplementalSecurityIncomeAmount
                 matcher: NOT_EMPTY
@@ -813,9 +828,9 @@ shiba-configuration:
           promptMessage:
             promptMessageKey: unearned-income.veterans-benefits
           helpMessageKey: unearned-income-sources.monthly-amount
-          validationErrorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
           validators:
             - validation: MONEY
+              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
               condition:
                 input: veteransBenefitsAmount
                 matcher: NOT_EMPTY
@@ -828,9 +843,9 @@ shiba-configuration:
           promptMessage:
             promptMessageKey: unearned-income.unemployment
           helpMessageKey: unearned-income-sources.monthly-amount
-          validationErrorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
           validators:
             - validation: MONEY
+              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
               condition:
                 input: unemploymentAmount
                 matcher: NOT_EMPTY
@@ -843,9 +858,9 @@ shiba-configuration:
           promptMessage:
             promptMessageKey: unearned-income.workers-compensation
           helpMessageKey: unearned-income-sources.monthly-amount
-          validationErrorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
           validators:
             - validation: MONEY
+              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
               condition:
                 input: workersCompensationAmount
                 matcher: NOT_EMPTY
@@ -858,9 +873,9 @@ shiba-configuration:
           promptMessage:
             promptMessageKey: unearned-income.retirement
           helpMessageKey: unearned-income-sources.monthly-amount
-          validationErrorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
           validators:
             - validation: MONEY
+              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
               condition:
                 input: retirementAmount
                 matcher: NOT_EMPTY
@@ -873,9 +888,9 @@ shiba-configuration:
           promptMessage:
             promptMessageKey: unearned-income.child-or-spousal-support
           helpMessageKey: unearned-income-sources.monthly-amount
-          validationErrorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
           validators:
             - validation: MONEY
+              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
               condition:
                 input: childOrSpousalSupportAmount
                 matcher: NOT_EMPTY
@@ -888,9 +903,9 @@ shiba-configuration:
           promptMessage:
             promptMessageKey: unearned-income.tribal-payments
           helpMessageKey: unearned-income-sources.monthly-amount
-          validationErrorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
           validators:
             - validation: MONEY
+              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
               condition:
                 input: tribalPaymentsAmount
                 matcher: NOT_EMPTY
@@ -929,7 +944,7 @@ shiba-configuration:
           type: TEXT
           validators:
             - validation: NOT_BLANK
-          validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+              errorMessageKey: general.validation.make-sure-you-answer-this-question
           promptMessage:
             promptMessageKey: employers-name.what-is-the-employers-name
     - &selfEmployment
@@ -965,9 +980,9 @@ shiba-configuration:
       inputs:
         - name: hourlyWage
           type: HOURLY_WAGE
-          validationErrorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
           validators:
             - validation: MONEY
+              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
               condition:
                 input: hourlyWage
                 matcher: NOT_EMPTY
@@ -994,7 +1009,7 @@ shiba-configuration:
           type: RADIO
           validators:
             - validation: NOT_BLANK
-          validationErrorMessageKey: general.validation.make-sure-you-answer-this-question
+              errorMessageKey: general.validation.make-sure-you-answer-this-question
           options:
             - value: EVERY_WEEK
               messageKey: pay-period.every-week
@@ -1044,7 +1059,7 @@ shiba-configuration:
           type: MONEY
           validators:
             - validation: MONEY
-          validationErrorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
       contextFragment: jobContextFragment
     - &jobBuilder
       name: jobBuilder
@@ -1078,7 +1093,7 @@ shiba-configuration:
           type: CHECKBOX
           validators:
             - validation: SELECT_AT_LEAST_ONE
-          validationErrorMessageKey: general.validation.make-sure-you-choose-none-of-the-above-or-another-option
+              errorMessageKey: general.validation.make-sure-you-choose-none-of-the-above-or-another-option
           options:
             - value: RENT
               messageKey: home-expenses.rent
@@ -1119,8 +1134,9 @@ shiba-configuration:
           type: MONEY
           validators:
             - validation: MONEY
+              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
             - validation: NOT_BLANK
-          validationErrorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
     - &savings
       name: savings
       pageTitle:

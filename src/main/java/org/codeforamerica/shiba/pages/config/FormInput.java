@@ -13,11 +13,10 @@ public class FormInput {
     private String customInputFragment;
     private PromptMessage promptMessage;
     private String helpMessageKey;
-    private String validationErrorMessageKey;
     private List<Option> options;
     private List<FormInput> followUps = Collections.emptyList();
     private String followUpsValue;
-    private List<Validator> validators;
+    private List<Validator> validators = Collections.emptyList();
     private Boolean readOnly = false;
     private String defaultValue;
     private Integer max;

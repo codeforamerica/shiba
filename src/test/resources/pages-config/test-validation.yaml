@@ -9,7 +9,7 @@ shiba-configuration-test-validation:
             type: TEXT
             validators:
               - validation: NOT_BLANK
-            validationErrorMessageKey: error-message-key
+                errorMessageKey: error-message-key
           - name: conditionalValidationWhenValueEquals
             type: TEXT
             validators:
@@ -17,7 +17,7 @@ shiba-configuration-test-validation:
                 condition:
                   input: someInputName
                   value: valueToTriggerCondition
-            validationErrorMessageKey: error-message-key
+                errorMessageKey: error-message-key
     - &nextPage
         name: nextPage
         pageTitle:
@@ -35,7 +35,7 @@ shiba-configuration-test-validation:
                 condition:
                   input: someCheckbox
                   matcher: NOT_PRESENT
-            validationErrorMessageKey: error-message-key
+                errorMessageKey: error-message-key
     - &notBlankPage
         name: notBlankPage
         pageTitle:
@@ -45,7 +45,7 @@ shiba-configuration-test-validation:
             type: TEXT
             validators:
               - validation: NOT_BLANK
-            validationErrorMessageKey: error-message-key
+                errorMessageKey: error-message-key
     - &zipcodePage
         name: zipcodePage
         pageTitle:
@@ -55,7 +55,7 @@ shiba-configuration-test-validation:
             type: TEXT
             validators:
               - validation: ZIPCODE
-            validationErrorMessageKey: error-message-key
+                errorMessageKey: error-message-key
     - &statePage
         name: statePage
         pageTitle:
@@ -65,7 +65,7 @@ shiba-configuration-test-validation:
             type: TEXT
             validators:
               - validation: STATE
-            validationErrorMessageKey: error-message-key
+                errorMessageKey: error-message-key
     - &phonePage
         name: phonePage
         pageTitle:
@@ -75,7 +75,7 @@ shiba-configuration-test-validation:
             type: TEXT
             validators:
               - validation: PHONE
-            validationErrorMessageKey: error-message-key
+                errorMessageKey: error-message-key
     - &moneyPage
         name: moneyPage
         pageTitle:
@@ -85,7 +85,7 @@ shiba-configuration-test-validation:
             type: TEXT
             validators:
               - validation: MONEY
-            validationErrorMessageKey: error-message-key
+                errorMessageKey: error-message-key
     - &ssnPage
         name: ssnPage
         pageTitle:
@@ -95,7 +95,7 @@ shiba-configuration-test-validation:
             type: TEXT
             validators:
               - validation: SSN
-            validationErrorMessageKey: error-message-key
+                errorMessageKey: error-message-key
     - &datePage
         name: datePage
         pageTitle:
@@ -105,7 +105,7 @@ shiba-configuration-test-validation:
             type: DATE
             validators:
               - validation: DATE
-            validationErrorMessageKey: error-message-key
+                errorMessageKey: error-message-key
     - &checkboxPage
         name: checkboxPage
         pageTitle:
@@ -120,7 +120,7 @@ shiba-configuration-test-validation:
                 messageKey: option-2
             validators:
               - validation: SELECT_AT_LEAST_ONE
-            validationErrorMessageKey: error-message-key
+                errorMessageKey: error-message-key
     - &doesNotContainConditionPage
         name: doesNotContainConditionPage
         pageTitle:
@@ -129,10 +129,10 @@ shiba-configuration-test-validation:
           - name: triggerInput
             type: TEXT
           - name: conditionTest
-            validationErrorMessageKey: error-message-key
             type: TEXT
             validators:
               - validation: NOT_BLANK
+                errorMessageKey: error-message-key
                 condition:
                   value: triggerValue
                   matcher: DOES_NOT_CONTAIN
@@ -146,8 +146,9 @@ shiba-configuration-test-validation:
           type: TEXT
           validators:
             - validation: NOT_BLANK
+              errorMessageKey: not-blank-error-message-key
             - validation: MONEY
-          validationErrorMessageKey: error-message-key
+              errorMessageKey: money-error-message-key
     - &lastPage
         name: lastPage
         pageTitle:

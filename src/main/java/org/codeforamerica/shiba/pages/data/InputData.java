@@ -2,38 +2,45 @@ package org.codeforamerica.shiba.pages.data;
 
 import lombok.Builder;
 import lombok.Value;
-import org.codeforamerica.shiba.pages.config.Validation;
+import org.codeforamerica.shiba.pages.config.Validator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static java.util.Collections.emptyList;
 
 @Value
 @Builder
 public class InputData {
-    @NotNull Boolean valid;
     @NotNull List<String> value;
+    @NotNull List<Validator> validators;
 
-    InputData(List<Validation> validations,
-              List<String> value) {
-        List<String> valueWithDefault = Objects.requireNonNullElseGet(value, List::of);
-        this.value = valueWithDefault;
-        this.valid = validations.stream().allMatch(validation -> validation.apply(valueWithDefault));
+    InputData(List<String> value,
+              @NotNull List<Validator> validators) {
+        this.value = Objects.requireNonNullElseGet(value, List::of);
+        this.validators = validators;
     }
 
     InputData() {
-        this(true, emptyList());
+        this(emptyList(), emptyList());
     }
 
     public InputData(@NotNull List<String> value) {
-        this(true, value);
+        this(value, emptyList());
     }
 
-    private InputData(@NotNull Boolean valid,
-                      @NotNull List<String> value) {
-        this.valid = valid;
-        this.value = value;
+    public Boolean valid() {
+        return this.validators.stream()
+                .map(Validator::getValidation)
+                .allMatch(validation -> validation.apply(this.value));
+    }
+
+    public Optional<String> errorMessageKey() {
+        return this.validators.stream()
+                .filter(validator -> !validator.getValidation().apply(this.value))
+                .findFirst()
+                .map(Validator::getErrorMessageKey);
     }
 }

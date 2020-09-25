@@ -80,7 +80,8 @@ public class PagesData extends HashMap<String, PageData> {
                         .filter(input -> Optional.ofNullable(input.getCondition())
                                 .map(datasourcePages::satisfies)
                                 .orElse(true))
-                        .map(this::convert).collect(Collectors.toList()),
+                        .map(formInput -> convert(pageConfiguration.getName(), formInput))
+                        .collect(Collectors.toList()),
                 pageConfiguration.getName(),
                 resolve(pageWorkflowConfiguration, pageConfiguration.getPageTitle()),
                 resolve(pageWorkflowConfiguration, pageConfiguration.getHeaderKey()),
@@ -91,16 +92,20 @@ public class PagesData extends HashMap<String, PageData> {
         );
     }
 
-    private FormInputTemplate convert(FormInput formInput) {
+    private FormInputTemplate convert(String pageName, FormInput formInput) {
+        String errorMessageKey = Optional.ofNullable(this.getPage(pageName))
+                .map(pageData -> pageData.get(formInput.getName()))
+                .flatMap(InputData::errorMessageKey)
+                .orElse("");
         return new FormInputTemplate(
                 formInput.getType(),
                 formInput.getName(),
                 formInput.getCustomInputFragment(),
                 formInput.getPromptMessage(),
                 formInput.getHelpMessageKey(),
-                formInput.getValidationErrorMessageKey(),
+                errorMessageKey,
                 formInput.getOptions(),
-                formInput.getFollowUps().stream().map(this::convert).collect(Collectors.toList()),
+                formInput.getFollowUps().stream().map(followup -> convert(pageName, followup)).collect(Collectors.toList()),
                 formInput.getFollowUpsValue(),
                 formInput.getReadOnly(),
                 formInput.getDefaultValue(),
