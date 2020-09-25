@@ -10,19 +10,18 @@ import java.util.Map;
 
 @Component
 public class HomeAddressParser extends ApplicationDataParser<Address> {
-    private final Map<String, PageInputCoordinates> homeAddressInputCoordinates;
-
     public HomeAddressParser(ParsingConfiguration parsingConfiguration) {
-        homeAddressInputCoordinates = parsingConfiguration.get("homeAddress").getPageInputs();
+        this.parsingConfiguration = parsingConfiguration;
     }
 
     @Override
     public Address parse(ApplicationData applicationData) {
+        Map<String, PageInputCoordinates> coordinates = parsingConfiguration.get("homeAddress").getPageInputs();
         return new Address(
-                applicationData.getValue(homeAddressInputCoordinates.get("street")),
-                applicationData.getValue(homeAddressInputCoordinates.get("city")),
-                applicationData.getValue(homeAddressInputCoordinates.get("state")),
-                applicationData.getValue(homeAddressInputCoordinates.get("zipcode"))
+                applicationData.getValue(coordinates.get("street")),
+                applicationData.getValue(coordinates.get("city")),
+                applicationData.getValue(coordinates.get("state")),
+                applicationData.getValue(coordinates.get("zipcode"))
         );
     }
 }

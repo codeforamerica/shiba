@@ -11,14 +11,12 @@ import java.util.stream.Collectors;
 
 @Component
 public class GrossMonthlyIncomeParser extends ApplicationDataParser<List<JobIncomeInformation>> {
-    ParsingCoordinates grossMonthlyIncomeConfiguration;
-
     public GrossMonthlyIncomeParser(ParsingConfiguration parsingConfiguration) {
         this.parsingConfiguration = parsingConfiguration;
-        this.grossMonthlyIncomeConfiguration = parsingConfiguration.get("grossMonthlyIncome");
     }
 
     public List<JobIncomeInformation> parse(ApplicationData data) {
+        ParsingCoordinates grossMonthlyIncomeConfiguration = parsingConfiguration.get("grossMonthlyIncome");
         Subworkflow jobsGroup = data.getSubworkflows().get(grossMonthlyIncomeConfiguration.getGroupName());
         if (jobsGroup == null) {
             return Collections.emptyList();

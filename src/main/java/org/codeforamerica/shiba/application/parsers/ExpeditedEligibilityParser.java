@@ -16,19 +16,19 @@ import java.util.stream.Collectors;
 
 @Component
 public class ExpeditedEligibilityParser extends ApplicationDataParser<Optional<ExpeditedEligibilityParameters>> {
-    private final Map<String, PageInputCoordinates> parsingConfiguration;
     private final ApplicationDataParser<List<JobIncomeInformation>> jobIncomeInformationParser;
 
     public ExpeditedEligibilityParser(ParsingConfiguration parsingConfiguration,
                                       ApplicationDataParser<List<JobIncomeInformation>> jobIncomeInformationParser) {
-        this.parsingConfiguration = parsingConfiguration.get("expeditedEligibility").getPageInputs();
+        this.parsingConfiguration = parsingConfiguration;
         this.jobIncomeInformationParser = jobIncomeInformationParser;
     }
 
     public Optional<ExpeditedEligibilityParameters> parse(ApplicationData applicationData) {
+        Map<String, PageInputCoordinates> coordinatesMap = parsingConfiguration.get("expeditedEligibility").getPageInputs();
         PagesData pagesData = applicationData.getPagesData();
 
-        List<String> requiredPages = parsingConfiguration.values().stream()
+        List<String> requiredPages = coordinatesMap.values().stream()
                 .filter(PageInputCoordinates::getRequired)
                 .map(PageInputCoordinates::getPageName)
                 .collect(Collectors.toList());
@@ -36,14 +36,14 @@ public class ExpeditedEligibilityParser extends ApplicationDataParser<Optional<E
             return Optional.empty();
         }
 
-        double assets = getDouble(applicationData, parsingConfiguration.get("assets"));
-        double income = getDouble(applicationData, parsingConfiguration.get("income"));
+        double assets = getDouble(applicationData, coordinatesMap.get("assets"));
+        double income = getDouble(applicationData, coordinatesMap.get("income"));
 
-        double housingCosts = getDouble(applicationData, parsingConfiguration.get("housingCosts"));
-        boolean isMigrantWorker = Boolean.parseBoolean(pagesData.getPage(parsingConfiguration.get("migrantWorker").getPageName())
-                .get(parsingConfiguration.get("migrantWorker").getInputName()).getValue().get(0));
-        @NotNull List<String> utilityExpensesSelections = pagesData.getPage(parsingConfiguration.get("utilityExpensesSelections").getPageName())
-                .get(parsingConfiguration.get("utilityExpensesSelections").getInputName()).getValue();
+        double housingCosts = getDouble(applicationData, coordinatesMap.get("housingCosts"));
+        boolean isMigrantWorker = Boolean.parseBoolean(pagesData.getPage(coordinatesMap.get("migrantWorker").getPageName())
+                .get(coordinatesMap.get("migrantWorker").getInputName()).getValue().get(0));
+        @NotNull List<String> utilityExpensesSelections = pagesData.getPage(coordinatesMap.get("utilityExpensesSelections").getPageName())
+                .get(coordinatesMap.get("utilityExpensesSelections").getInputName()).getValue();
         return Optional.of(new ExpeditedEligibilityParameters(assets, income, jobIncomeInformationParser.parse(applicationData), isMigrantWorker, housingCosts, utilityExpensesSelections));
     }
 }
