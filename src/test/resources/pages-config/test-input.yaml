@@ -46,16 +46,35 @@ shiba-configuration-input:
             type: MONEY
           - name: hourlyWageInput
             type: HOURLY_WAGE
-          - name: inputWithFollowUps
+          - name: radioInputWithFollowUps
             type: RADIO
             options:
               - value: "true"
-                messageKey: radio-true
+                messageKey: follow-up-true
               - value: "false"
-                messageKey: radio-false
-            followUpsValue: "false"
+                messageKey: follow-up-false
+              - value: "uncertain"
+                messageKey: follow-up-uncertain
+            followUpValues:
+              - "false"
+              - "uncertain"
             followUps:
-              - name: followUpTextInput
+              - name: radioInputWithFollowUps-followUpTextInput
+                type: TEXT
+          - name: checkboxInputWithFollowUps
+            type: CHECKBOX
+            options:
+              - value: "true"
+                messageKey: follow-up-true
+              - value: "false"
+                messageKey: follow-up-false
+              - value: "uncertain"
+                messageKey: follow-up-uncertain
+            followUpValues:
+              - "false"
+              - "uncertain"
+            followUps:
+              - name: checkboxInputWithFollowUps-followUpTextInput
                 type: TEXT
           - name: incrementerInput
             type: INCREMENTER

@@ -226,8 +226,11 @@
             "$ref": "#/definitions/input"
           }
         },
-        "followUpsValue": {
-          "type": "string"
+        "followUpValues": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         },
         "customInputFragment": {
           "type": "string"

@@ -19,7 +19,7 @@
                 <div class="grid__item">
                     <form autocomplete="off" method="post" th:action="@{${postTo}}">
                         <div th:each="input: ${page.inputs}">
-                            <div th:replace="'fragments/'+__${input.fragment()}__ :: __${input.fragment()}__(${input}, ${data})"></div>
+                            <div th:replace="'fragments/input-with-followups' :: input-with-followups(${input}, ${data})"></div>
                         </div>
                         <button th:if="${page.hasPrimaryButton}" class="button button--primary" type="submit"
                                 th:text="#{${page.primaryButtonTextKey}}"></button>

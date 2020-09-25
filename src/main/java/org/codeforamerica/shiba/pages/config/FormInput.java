@@ -15,7 +15,7 @@ public class FormInput {
     private String helpMessageKey;
     private List<Option> options;
     private List<FormInput> followUps = Collections.emptyList();
-    private String followUpsValue;
+    private List<String> followUpValues = Collections.emptyList();
     private List<Validator> validators = Collections.emptyList();
     private Boolean readOnly = false;
     private String defaultValue;

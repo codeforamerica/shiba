@@ -66,7 +66,7 @@ shiba-configuration:
         value: choose-programs.title
       headerKey:
         value: choose-programs.what-do-you-need-help-with-today
-      headerHelpMessageKey: choose-programs.check-all-that-apply
+      headerHelpMessageKey: general.check-all-that-apply
       inputs:
         - name: programs
           type: CHECKBOX
@@ -141,17 +141,17 @@ shiba-configuration:
             promptMessageKey: personal-info.whats-your-marital-status
           options:
             - value: NEVER_MARRIED
-              messageKey: personal-info.never-married
+              messageKey: general.never-married
             - value: MARRIED_LIVING_WITH_SPOUSE
-              messageKey: personal-info.married-living-with-spouse
+              messageKey: general.married-living-with-spouse
             - value: MARRIED_NOT_LIVING_WITH_SPOUSE
-              messageKey: personal-info.married-not-living-with-spouse
+              messageKey: general.married-not-living-with-spouse
             - value: LEGALLY_SEPARATED
-              messageKey: personal-info.legally-separated
+              messageKey: general.legally-separated
             - value: DIVORCED
-              messageKey: personal-info.divorced
+              messageKey: general.divorced
             - value: WIDOWED
-              messageKey: personal-info.widowed
+              messageKey: general.widowed
         - name: sex
           type: RADIO
           promptMessage:
@@ -159,11 +159,11 @@ shiba-configuration:
           helpMessageKey: personal-info.legally-as-it-appears-on-your-id-we-regret-that-this-question-is-limited
           options:
             - value: FEMALE
-              messageKey: personal-info.female
+              messageKey: general.female
             - value: MALE
-              messageKey: personal-info.male
+              messageKey: general.male
             - value: RATHER_NOT_SAY
-              messageKey: personal-info.rather-not-say
+              messageKey: general.rather-not-say
         - name: livedInMnWholeLife
           type: RADIO
           promptMessage:
@@ -173,7 +173,8 @@ shiba-configuration:
               messageKey: general.inputs.no
             - value: "true"
               messageKey: general.inputs.yes
-          followUpsValue: "true"
+          followUpValues:
+            - "true"
           followUps:
             - name: moveToMnDate
               type: DATE
@@ -362,6 +363,144 @@ shiba-configuration:
           promptMessage:
             promptMessageFragmentName: doYouLiveAlonePrompt
           type: YES_NO
+    - &startHousehold
+      name: startHousehold
+      pageTitle:
+        value: start-household.title
+    - &householdMemberInfo
+      name: householdMemberInfo
+      pageTitle:
+        value: household-member-info.title
+      headerKey:
+        value: household-member-info.add-a-person-who-lives-with-you
+      inputs:
+        - name: firstName
+          type: TEXT
+          promptMessage:
+            promptMessageKey: household-member-info.whats-their-first-name
+          helpMessageKey: household-member-info.legally-as-it-appears-on-their-id
+          validators:
+            - validation: NOT_BLANK
+              errorMessageKey: general.validation.make-sure-to-provide-a-first-name
+        - name: lastName
+          type: TEXT
+          promptMessage:
+            promptMessageKey: household-member-info.whats-their-last-name
+          helpMessageKey: household-member-info.legally-as-it-appears-on-their-id
+          validators:
+            - validation: NOT_BLANK
+              errorMessageKey: general.validation.make-sure-to-provide-a-last-name
+        - name: otherName
+          type: TEXT
+          promptMessage:
+            promptMessageKey: household-member-info.list-any-other-names-they-have-gone-by-in-the-past
+          helpMessageKey: personal-info.include-maiden-names-or-legal-changes
+        - name: dateOfBirth
+          type: DATE
+          promptMessage:
+            promptMessageKey: household-member-info.when-were-they-born
+          validators:
+            - validation: DATE
+              condition:
+                input: dateOfBirth
+                matcher: NOT_EMPTY
+              errorMessageKey: general.validation.make-sure-to-provide-a-birthday
+        - name: maritalStatus
+          type: RADIO
+          promptMessage:
+            promptMessageKey: household-member-info.whats-their-martial-status
+          options:
+            - value: NEVER_MARRIED
+              messageKey: general.never-married
+            - value: MARRIED_LIVING_WITH_SPOUSE
+              messageKey: general.married-living-with-spouse
+            - value: MARRIED_NOT_LIVING_WITH_SPOUSE
+              messageKey: general.married-not-living-with-spouse
+            - value: LEGALLY_SEPARATED
+              messageKey: general.legally-separated
+            - value: DIVORCED
+              messageKey: general.divorced
+            - value: WIDOWED
+              messageKey: general.widowed
+        - name: sex
+          type: RADIO
+          promptMessage:
+            promptMessageKey: household-member-info.whats-their-sex
+          helpMessageKey: household-member-info.legally-as-it-appears-on-their-id-we-regret-that-this-question-is-limited
+          options:
+            - value: FEMALE
+              messageKey: general.female
+            - value: MALE
+              messageKey: general.male
+            - value: RATHER_NOT_SAY
+              messageKey: general.rather-not-say
+        - name: livedInMnWholeLife
+          type: RADIO
+          promptMessage:
+            promptMessageKey: household-member-info.have-they-lived-in-minnesota-their-whole-life
+          options:
+            - value: "false"
+              messageKey: general.inputs.no
+            - value: "true"
+              messageKey: general.inputs.yes
+          followUpValues:
+            - "true"
+          followUps:
+            - name: moveToMnDate
+              type: DATE
+              validators:
+                - validation: DATE
+                  condition:
+                    input: moveToMnDate
+                    matcher: NOT_EMPTY
+                  errorMessageKey: general.validation.make-sure-you-answer-this-question
+              promptMessage:
+                promptMessageKey: household-member-info.when-did-they-move-to-minnesota
+            - name: moveToMnPreviousState
+              type: TEXT
+              promptMessage:
+                promptMessageKey: household-member-info.what-state-did-they-move-from
+        - name: relationship
+          type: TEXT
+          promptMessage:
+            promptMessageKey: household-member-info.whats-their-relationship-to-you
+        - name: programs
+          type: CHECKBOX
+          promptMessage:
+            promptMessageKey: household-member-info.what-do-they-need-help-with
+          helpMessageKey: general.check-all-that-apply
+          followUpValues:
+            - SNAP
+            - CASH
+            - EA
+            - GRH
+          followUps:
+            - name: ssn
+              type: NUMBER
+              validators:
+                - validation: SSN
+                  errorMessageKey: general.validation.make-sure-your-SSN-has-9-digits
+                  condition:
+                    input: ssn
+                    matcher: NOT_EMPTY
+              promptMessage:
+                promptMessageKey: household-member-info.whats-their-social-security-number
+              helpMessageKey: household-member-info.if-they-have-one-we-strongly-recommend-including-it-here-your-caseworker-will
+          validators:
+            - validation: SELECT_AT_LEAST_ONE
+              errorMessageKey: general.validation.make-sure-you-answer-this-question
+          options:
+            - value: SNAP
+              messageKey: choose-programs.food-snap
+            - value: CASH
+              messageKey: choose-programs.cash-programs
+            - value: EA
+              messageKey: choose-programs.emergency-assistance
+            - value: GRH
+              messageKey: choose-programs.housing-support-group-residential-housing
+            - value: NONE
+              messageKey: general.inputs.none-of-the-above
+              isNone: true
     - &introPersonalDetails
       name: introPersonalDetails
       pageTitle:
@@ -1261,6 +1400,21 @@ shiba-configuration:
       pageConfiguration: *doYouLiveAlone
       nextPages:
         - pageName: introPersonalDetails
+          condition:
+            input: liveAlone
+            value: "true"
+        - pageName: startHousehold
+          condition:
+            input: liveAlone
+            value: "false"
+    startHousehold:
+      pageConfiguration: *startHousehold
+      nextPages:
+        - pageName: householdMemberInfo
+    householdMemberInfo:
+      pageConfiguration: *householdMemberInfo
+      nextPages:
+        - pageName: goingToSchool
     introPersonalDetails:
       pageConfiguration: *introPersonalDetails
       nextPages:

@@ -17,7 +17,7 @@ public class FormInputTemplate {
     String validationErrorMessageKey;
     List<Option> options;
     List<FormInputTemplate> followUps;
-    String followUpsValue;
+    List<String> followUpValues;
     Boolean readOnly;
     String defaultValue;
     Integer max;

@@ -106,7 +106,7 @@ public class PagesData extends HashMap<String, PageData> {
                 errorMessageKey,
                 formInput.getOptions(),
                 formInput.getFollowUps().stream().map(followup -> convert(pageName, followup)).collect(Collectors.toList()),
-                formInput.getFollowUpsValue(),
+                formInput.getFollowUpValues(),
                 formInput.getReadOnly(),
                 formInput.getDefaultValue(),
                 formInput.getMax(),

@@ -4,8 +4,7 @@
           th:with="inputData=${data.get(input.name)},formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)}"
 >
     <div class="form-group"
-         th:classappend="${!inputData.valid()} ? 'form-group--error' : ''"
-         th:if="${!input.hasFollowUps()}">
+         th:classappend="${!inputData.valid()} ? 'form-group--error' : ''">
         <div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${input})"></div>
         <p class="text--help"
            th:if="${input.helpMessageKey != null}"
@@ -14,7 +13,8 @@
             <label th:for="${#ids.next(input.name)}" class="radio-button">
                 <input type="radio" th:name="${formInputName}" th:id="${#ids.seq(input.name)}"
                        th:value="${option.value}"
-                       th:checked="${inputData.value.contains(option.value)}">
+                       th:checked="${inputData.value.contains(option.value)}"
+                       th:attrappend="data-follow-up=${input.followUpValues.contains(option.value)} ? |#${input.name}-follow-up| : ''">
                 <span th:text="#{${option.messageKey}}"></span>
             </label>
         </th:block>
@@ -22,30 +22,6 @@
             <i class="icon-warning"></i>
             <span th:text="#{${input.validationErrorMessageKey}}"></span>
         </p>
-    </div>
-    <div class="question-with-follow-up" th:if="${input.hasFollowUps()}">
-        <div class="question-with-follow-up__question">
-            <div class="form-group">
-                <div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${input})"></div>
-                <p class="text--help"
-                   th:if="${input.helpMessageKey != null}"
-                   th:text="#{${input.helpMessageKey}}"></p>
-                <th:block th:each="option: ${input.options}">
-                    <label th:for="${#ids.next(input.name)}" class="radio-button">
-                        <input type="radio" th:name="${formInputName}" th:id="${#ids.seq(input.name)}"
-                               th:value="${option.value}"
-                               th:checked="${inputData.value.contains(option.value)}"
-                               th:attrappend="data-follow-up=${option.value == input.followUpsValue ? '#follow-up' : ''}">
-                        <span th:text="#{${option.messageKey}}"></span>
-                    </label>
-                </th:block>
-            </div>
-        </div>
-        <div class="question-with-follow-up__follow-up" id="follow-up">
-            <th:block th:each="followUp: ${input.followUps}">
-                <div th:replace="'fragments/'+__${followUp.fragment()}__ :: __${followUp.fragment()}__(${followUp}, ${data})"></div>
-            </th:block>
-        </div>
     </div>
 </th:block>
 

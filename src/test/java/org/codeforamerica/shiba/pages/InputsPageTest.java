@@ -3,7 +3,10 @@ package org.codeforamerica.shiba.pages;
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -32,8 +35,9 @@ public class InputsPageTest extends AbstractStaticMessageSourcePageTest {
     String checkboxOption2 = "checkbox option 2";
     String noneCheckboxOption = "none checkbox option";
     String selectOption1 = "select option 1";
-    String radioTrue = "YEP";
-    String radioFalse = "NOPE";
+    String followUpTrue = "YEP";
+    String followUpFalse = "NOPE";
+    String followUpUncertain = "UNSURE";
 
     @Override
     @BeforeEach
@@ -46,8 +50,9 @@ public class InputsPageTest extends AbstractStaticMessageSourcePageTest {
         staticMessageSource.addMessage("checkbox-option-2", Locale.US, checkboxOption2);
         staticMessageSource.addMessage("none-checkbox-option", Locale.US, noneCheckboxOption);
         staticMessageSource.addMessage("select-option-1", Locale.US, selectOption1);
-        staticMessageSource.addMessage("radio-true", Locale.US, radioTrue);
-        staticMessageSource.addMessage("radio-false", Locale.US, radioFalse);
+        staticMessageSource.addMessage("follow-up-true", Locale.US, followUpTrue);
+        staticMessageSource.addMessage("follow-up-false", Locale.US, followUpFalse);
+        staticMessageSource.addMessage("follow-up-uncertain", Locale.US, followUpUncertain);
     }
 
     @Test
@@ -128,33 +133,72 @@ public class InputsPageTest extends AbstractStaticMessageSourcePageTest {
         assertThat(testPage.getInputValue("incrementerInput")).isEqualTo("3");
     }
 
-    @Test
-    void shouldNotDisplayFollowUpQuestionsWhenFollowUpValueIsNotSelected() {
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-        testPage.selectEnumeratedInput("inputWithFollowUps", radioTrue);
+    @Nested
+    class FollowUps {
+        @ParameterizedTest
+        @ValueSource(strings = {
+                "radioInputWithFollowUps",
+                "checkboxInputWithFollowUps",
+        })
+        void shouldNotDisplayFollowUpQuestionsWhenFollowUpValueIsNotSelected(String inputName) {
+            driver.navigate().to(baseUrl + "/pages/firstPage");
+            testPage.selectEnumeratedInput(inputName, followUpTrue);
 
-        assertThat(driver.findElement(By.cssSelector("input[name^='followUpTextInput']")).isDisplayed()).isFalse();
-    }
+            assertThat(driver.findElement(By.cssSelector(String.format("input[name^='%s-followUpTextInput']", inputName))).isDisplayed()).isFalse();
+        }
 
-    @Test
-    void shouldDisplayFollowUpQuestionsWhenFollowUpValueIsSelected() {
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-        testPage.selectEnumeratedInput("inputWithFollowUps", radioFalse);
+        @ParameterizedTest
+        @ValueSource(strings = {
+                "radioInputWithFollowUps",
+                "checkboxInputWithFollowUps",
+        })
+        void shouldDisplayFollowUpQuestionsWhenFollowUpValueIsSelected(String inputName) {
+            driver.navigate().to(baseUrl + "/pages/firstPage");
+            testPage.selectEnumeratedInput(inputName, followUpFalse);
 
-        assertThat(driver.findElement(By.cssSelector("input[name^='followUpTextInput']")).isDisplayed()).isTrue();
-    }
+            assertThat(driver.findElement(By.cssSelector(String.format("input[name^='%s-followUpTextInput']", inputName))).isDisplayed()).isTrue();
+        }
 
-    @Test
-    void shouldPreserveAnswerToFollowUpQuestions() {
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-        testPage.selectEnumeratedInput("inputWithFollowUps", radioFalse);
-        String followUpTextInputValue = "some follow up";
-        testPage.enterInput("followUpTextInput", followUpTextInputValue);
+        @ParameterizedTest
+        @ValueSource(strings = {
+                "radioInputWithFollowUps",
+                "checkboxInputWithFollowUps",
+        })
+        void shouldPreserveAnswerToFollowUpQuestions(String inputName) {
+            driver.navigate().to(baseUrl + "/pages/firstPage");
+            testPage.selectEnumeratedInput(inputName, followUpFalse);
+            String followUpTextInputValue = "some follow up";
+            String followUpInputName = String.format("%s-followUpTextInput", inputName);
+            testPage.enterInput(followUpInputName, followUpTextInputValue);
 
-        testPage.clickPrimaryButton();
-        testPage.goBack();
+            testPage.clickPrimaryButton();
+            testPage.goBack();
 
-        assertThat(testPage.getInputValue("followUpTextInput")).isEqualTo(followUpTextInputValue);
+            assertThat(driver.findElement(By.cssSelector(String.format("input[name^='%s-followUpTextInput']", inputName))).isDisplayed()).isTrue();
+            assertThat(testPage.getInputValue(followUpInputName)).isEqualTo(followUpTextInputValue);
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {
+                "radioInputWithFollowUps",
+                "checkboxInputWithFollowUps",
+        })
+        void shouldDisplayFollowUpQuestionsWhenAnyFollowUpValueIsSelected(String inputName) {
+            driver.navigate().to(baseUrl + "/pages/firstPage");
+            testPage.selectEnumeratedInput(inputName, followUpUncertain);
+
+            assertThat(driver.findElement(By.cssSelector(String.format("input[name^='%s-followUpTextInput']", inputName))).isDisplayed()).isTrue();
+        }
+
+        @Test
+        void shouldContinueDisplayingFollowUpQuestionsWhenAFollowUpValueIsStillSelected() {
+            driver.navigate().to(baseUrl + "/pages/firstPage");
+            testPage.selectEnumeratedInput("checkboxInputWithFollowUps", followUpFalse);
+            testPage.selectEnumeratedInput("checkboxInputWithFollowUps", followUpUncertain);
+            testPage.selectEnumeratedInput("checkboxInputWithFollowUps", followUpUncertain);
+
+            assertThat(driver.findElement(By.cssSelector("input[name^='checkboxInputWithFollowUps-followUpTextInput']")).isDisplayed()).isTrue();
+        }
     }
 
     @Test

@@ -11751,12 +11751,15 @@ var followUpQuestion = (function() {
     init: function() {
       $('.question-with-follow-up').each(function(index, question) {
         var self = this;
+        var showFollowUpIfChecked = function(element) {
+        	if(element.is(':checked') && element.attr('data-follow-up') != null) {
+        		$(element.attr('data-follow-up')).show();
+        	}
+        };
 
         // set initial state of follow-ups based on the page
         $(this).find('input').each(function(index, input) {
-          if($(this).attr('data-follow-up') != null) {
-            $($(this).attr('data-follow-up')).toggle($(this).is(':checked'));
-          }
+        	showFollowUpIfChecked($(input));
         });
 
         // add click listeners to initial question inputs
@@ -11766,12 +11769,17 @@ var followUpQuestion = (function() {
           $(self).find('.question-with-follow-up__follow-up').find('input[type="text"], input[type="number"]').val('');
           $(self).find('.question-with-follow-up__follow-up').find('.radio-button, .checkbox').removeClass('is-selected');
           $(self).find('.question-with-follow-up__follow-up').hide();
+        });
 
-          // show the current follow up
-          if($(this).is(':checked') && $(this).attr('data-follow-up') != null) {
-            $($(this).attr('data-follow-up')).show();
-          }
-        })
+        $(self).find('.question-with-follow-up__question .radio-button input').click(function(e) {
+            showFollowUpIfChecked($(this));
+        });
+
+        $(self).find('.question-with-follow-up__question .checkbox input').click(function(e) {
+            $(this).closest('.form-group').find('input').each(function(index, element) {
+                showFollowUpIfChecked($(element));
+            });
+        });
       });
     }
   }
@@ -11906,11 +11914,11 @@ var accordion = (function() {
 $(document).ready(function() {
   radioSelector.init();
   checkboxSelector.init();
+  noneOfTheAbove.init();
   followUpQuestion.init();
   immediateUpload.init();
   revealer.init();
   inputGroupSelector.init();
-  noneOfTheAbove.init();
   showMore.init();
   accordion.init();
   incrementer.init();
