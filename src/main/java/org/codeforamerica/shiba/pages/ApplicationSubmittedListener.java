@@ -4,19 +4,17 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MnitCountyInformation;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.parsers.EmailParser;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.data.PageData;
-import org.codeforamerica.shiba.pages.data.PagesData;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
@@ -32,6 +30,7 @@ public class ApplicationSubmittedListener {
     private final boolean sendCaseWorkerEmail;
     private final boolean submitViaApi;
     private final Boolean sendNonPartnerCountyAlertEmail;
+    private final EmailParser emailParser;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public ApplicationSubmittedListener(MnitDocumentConsumer mnitDocumentConsumer,
@@ -42,7 +41,8 @@ public class ApplicationSubmittedListener {
                                         CountyMap<MnitCountyInformation> countyMap,
                                         @Value("${submit-via-email}") boolean sendCaseWorkerEmail,
                                         @Value("${submit-via-api}") Boolean submitViaApi,
-                                        @Value("${send-non-partner-county-alert}") Boolean sendNonPartnerCountyAlertEmail) {
+                                        @Value("${send-non-partner-county-alert}") Boolean sendNonPartnerCountyAlertEmail,
+                                        EmailParser emailParser) {
         this.mnitDocumentConsumer = mnitDocumentConsumer;
         this.applicationRepository = applicationRepository;
         this.emailClient = emailClient;
@@ -52,6 +52,7 @@ public class ApplicationSubmittedListener {
         this.sendCaseWorkerEmail = sendCaseWorkerEmail;
         this.submitViaApi = submitViaApi;
         this.sendNonPartnerCountyAlertEmail = sendNonPartnerCountyAlertEmail;
+        this.emailParser = emailParser;
     }
 
     @Async
@@ -66,15 +67,13 @@ public class ApplicationSubmittedListener {
     @EventListener
     public void sendConfirmationEmail(ApplicationSubmittedEvent event) {
         Application application = applicationRepository.find(event.getApplicationId());
-        PagesData pagesData = application.getApplicationData().getPagesData();
-        Optional.ofNullable(pagesData
-                .getPage("contactInfo")
-                .get("email"))
-                .ifPresent(input -> {
+
+        emailParser.parse(application.getApplicationData())
+                .ifPresent(email -> {
                     String applicationId = application.getId();
                     ApplicationFile pdf = pdfGenerator.generate(applicationId, CLIENT);
                     ExpeditedEligibility expeditedEligibility = expeditedEligibilityDecider.decide(application.getApplicationData());
-                    emailClient.sendConfirmationEmail(input.getValue().get(0), applicationId, expeditedEligibility, pdf);
+                    emailClient.sendConfirmationEmail(email, applicationId, expeditedEligibility, pdf);
                 });
     }
 

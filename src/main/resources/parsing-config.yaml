@@ -53,3 +53,8 @@ parsing:
       zipcode:
         pageName: homeAddress
         inputName: zipCode
+  contactInfo:
+    pageInputs:
+      email:
+        pageName: contactInfo
+        inputName: email

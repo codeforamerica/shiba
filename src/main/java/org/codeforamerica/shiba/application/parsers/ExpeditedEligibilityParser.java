@@ -20,7 +20,7 @@ public class ExpeditedEligibilityParser extends ApplicationDataParser<Optional<E
 
     public ExpeditedEligibilityParser(ParsingConfiguration parsingConfiguration,
                                       ApplicationDataParser<List<JobIncomeInformation>> jobIncomeInformationParser) {
-        this.parsingConfiguration = parsingConfiguration;
+        super(parsingConfiguration);
         this.jobIncomeInformationParser = jobIncomeInformationParser;
     }
 

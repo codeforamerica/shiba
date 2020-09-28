@@ -11,7 +11,7 @@ import java.util.Map;
 @Component
 public class HomeAddressParser extends ApplicationDataParser<Address> {
     public HomeAddressParser(ParsingConfiguration parsingConfiguration) {
-        this.parsingConfiguration = parsingConfiguration;
+        super(parsingConfiguration);
     }
 
     @Override
