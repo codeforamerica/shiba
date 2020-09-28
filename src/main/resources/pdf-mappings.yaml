@@ -20,6 +20,21 @@ caf:
         SNAP: FOOD
         CASH: CASH
         EA: EMERGENCY
+    householdMemberInfo:
+      firstName: PERSON_2_FIRST_NAME
+      lastName: PERSON_2_LAST_NAME
+      maritalStatus: PERSON_2_MARITAL_STATUS
+      otherName: PERSON_2_OTHER_NAME
+      dateOfBirth: PERSON_2_DATE_OF_BIRTH
+      ssn: PERSON_2_SSN
+      sex: PERSON_2_SEX
+      relationship: PERSON_2_RELATIONSHIP
+      moveToMnDate: PERSON_2_DATE_OF_MOVING_TO_MN
+      moveToMnPreviousState: PERSON_2_PREVIOUS_STATE
+      programs:
+        SNAP: PERSON_2_FOOD
+        CASH: PERSON_2_CASH
+        EA: PERSON_2_EMERGENCY
     contactInfo:
       phoneNumber: APPLICANT_PHONE_NUMBER
       email: APPLICANT_EMAIL

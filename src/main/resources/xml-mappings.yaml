@@ -21,6 +21,22 @@ xml:
         EA: EMERGENCY
         CCAP: CHILD_CARE
         GRH: HOUSING_SUPPORT
+    householdMemberInfo:
+      firstName: PERSON_2_FIRSTNAME
+      middleName: PERSON_2_MIDDLENAME
+      lastName: PERSON_2_LASTNAME
+      otherName: PERSON_2_OTHERNAME
+      ssn: PERSON_2_SSN
+      maritalStatus: PERSON_2_MARITALSTATUS
+      sex: PERSON_2_SEX
+      dateOfBirth: PERSON_2_DATE_OF_BIRTH
+      moveToMnDate: PERSON_2_MOVETOMNDATE
+      programs:
+        SNAP: FOOD
+        CASH: CASH
+        EA: EMERGENCY
+        CCAP: CHILD_CARE
+        GRH: HOUSING_SUPPORT
     contactInfo:
       phoneNumber: CONTACTINFO_PHONE
     homeAddress:

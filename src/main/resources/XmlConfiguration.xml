@@ -189,6 +189,33 @@
                 </ns4:UtilityExpense>
             </ns4:ExpenseInfo>
         </ns4:HouseholdMember>
+        <ns4:HouseholdMember>
+            <ns4:PersonalInfo>
+                <ns4:Person>
+                    <ns4:FirstName>{{PERSON_2_FIRSTNAME}}</ns4:FirstName>
+                    <ns4:LastName>{{PERSON_2_LASTNAME}}</ns4:LastName>
+                </ns4:Person>
+                <ns4:OtherName>
+                    <ns4:FirstName>{{PERSON_2_OTHERNAME}}</ns4:FirstName>
+                </ns4:OtherName>
+                <ns4:Gender>{{PERSON_2_SEX}}</ns4:Gender>
+                <ns4:MaritalStatus>{{PERSON_2_MARITALSTATUS}}</ns4:MaritalStatus>
+                <ns4:DOB>{{PERSON_2_DATE_OF_BIRTH}}</ns4:DOB>
+            </ns4:PersonalInfo>
+            <ns4:ResidencyInfo>
+                <ns4:DateRecentMoveToMN>{{PERSON_2_MOVETOMNDATE}}</ns4:DateRecentMoveToMN>
+            </ns4:ResidencyInfo>
+            <ns4:CitizenshipInfo>
+                <ns4:CitizenshipInd>{{IS_US_CITIZEN}}</ns4:CitizenshipInd>
+                <ns4:SSNInfo>
+                    <ns4:SSN>{{PERSON_2_SSN}}</ns4:SSN>
+                </ns4:SSNInfo>
+            </ns4:CitizenshipInfo><ns4:Program>{{FOOD}}</ns4:Program>
+            <ns4:Program>{{CASH}}</ns4:Program>
+            <ns4:Program>{{EMERGENCY}}</ns4:Program>
+            <ns4:Program>{{CHILD_CARE}}</ns4:Program>
+            <ns4:Program>{{HOUSING_SUPPORT}}</ns4:Program>
+        </ns4:HouseholdMember>
         <ns4:Program>{{FOOD}}</ns4:Program>
         <ns4:Program>{{CASH}}</ns4:Program>
         <ns4:Program>{{EMERGENCY}}</ns4:Program>
