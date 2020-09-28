@@ -15,8 +15,8 @@ public class TotalIncomeParser extends ApplicationDataParser<TotalIncome> {
 
     public TotalIncomeParser(ParsingConfiguration parsingConfiguration,
                              ApplicationDataParser<List<JobIncomeInformation>> grossIncomeParser) {
+        super(parsingConfiguration);
         this.grossIncomeParser = grossIncomeParser;
-        this.parsingConfiguration = parsingConfiguration;
     }
 
     @Override

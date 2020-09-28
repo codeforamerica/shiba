@@ -52,3 +52,8 @@ test-parsing:
       zipcode:
         pageName: homeAddressPageName
         inputName: addressLine4
+  contactInfo:
+    pageInputs:
+      email:
+        pageName: contactInfoPageName
+        inputName: contactEmail

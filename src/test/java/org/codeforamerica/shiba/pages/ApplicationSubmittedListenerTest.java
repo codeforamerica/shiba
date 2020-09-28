@@ -4,6 +4,7 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MnitCountyInformation;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.parsers.EmailParser;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
@@ -13,11 +14,15 @@ import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
 
+import static java.util.Optional.empty;
 import static org.codeforamerica.shiba.County.HENNEPIN;
 import static org.codeforamerica.shiba.County.OTHER;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
@@ -30,6 +35,7 @@ class ApplicationSubmittedListenerTest {
     EmailClient emailClient = mock(EmailClient.class);
     ExpeditedEligibilityDecider expeditedEligibilityDecider = mock(ExpeditedEligibilityDecider.class);
     PdfGenerator pdfGenerator = mock(PdfGenerator.class);
+    EmailParser emailParser = mock(EmailParser.class);
     CountyMap<MnitCountyInformation> countyMap = new CountyMap<>();
     Boolean sendCaseWorkerEmail = true;
     Boolean sendViaApi = true;
@@ -44,208 +50,209 @@ class ApplicationSubmittedListenerTest {
             countyMap,
             sendCaseWorkerEmail,
             sendViaApi,
-            sendNonPartnerCountyAlertEmail);
+            sendNonPartnerCountyAlertEmail,
+            emailParser
+    );
 
-    @Test
-    void shouldSendSubmittedApplicationToMNIT() {
-        String applicationId = "someId";
-        Application application = Application.builder()
-                .id(applicationId)
-                .completedAt(ZonedDateTime.now())
-                .applicationData(null)
-                .county(null)
-                .timeToComplete(null)
-                .build();
-        ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null);
-        when(applicationRepository.find(applicationId)).thenReturn(application);
+    @Nested
+    class sendApplicationToMNIT {
+        @Test
+        void shouldSendSubmittedApplicationToMNIT() {
+            String applicationId = "someId";
+            Application application = Application.builder().id(applicationId).build();
+            ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null);
+            when(applicationRepository.find(applicationId)).thenReturn(application);
 
-        applicationSubmittedListener.sendViaApi(event);
+            applicationSubmittedListener.sendViaApi(event);
 
-        verify(mnitDocumentConsumer).process(application);
+            verify(mnitDocumentConsumer).process(application);
+        }
+
+        @Test
+        void shouldNotSendViaApiIfSendViaApiIsFalse() {
+            applicationSubmittedListener = new ApplicationSubmittedListener(
+                    mnitDocumentConsumer,
+                    applicationRepository,
+                    emailClient,
+                    expeditedEligibilityDecider,
+                    pdfGenerator,
+                    countyMap,
+                    true,
+                    false,
+                    false, emailParser);
+
+            ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("", "", null);
+
+            applicationSubmittedListener.sendViaApi(event);
+
+            verifyNoInteractions(mnitDocumentConsumer);
+        }
     }
 
-    @Test
-    void shouldSendMailForSubmittedApplication() {
-        String applicationId = "applicationId";
-        ApplicationData applicationData = new ApplicationData();
-        PagesData pagesData = new PagesData();
-        PageData contactInfoPage = new PageData();
-        String email = "abc@123.com";
-        contactInfoPage.put("email", InputData.builder().value(List.of(email)).build());
-        pagesData.put("contactInfo", contactInfoPage);
-        applicationData.setPagesData(pagesData);
-        String appIdFromDb = "id";
-        Application application = Application.builder()
-                .id(appIdFromDb)
-                .completedAt(ZonedDateTime.now())
-                .applicationData(applicationData)
-                .county(null)
-                .timeToComplete(null)
-                .build();
-        when(applicationRepository.find(applicationId)).thenReturn(application);
-        ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null);
-        when(expeditedEligibilityDecider.decide(applicationData)).thenReturn(ExpeditedEligibility.ELIGIBLE);
-        ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
-        when(pdfGenerator.generate(appIdFromDb, CLIENT)).thenReturn(applicationFile);
+    @Nested
+    class sendClientConfirmationEmail {
+        @BeforeEach
+        void setUp() {
+            when(emailParser.parse(any())).thenReturn(Optional.of("email@address"));
+        }
 
-        applicationSubmittedListener.sendConfirmationEmail(event);
+        @Test
+        void shouldSendConfirmationMailForSubmittedApplication() {
+            String applicationId = "applicationId";
+            ApplicationData applicationData = new ApplicationData();
+            String email = "abc@123.com";
+            String appIdFromDb = "id";
+            Application application = Application.builder()
+                    .id(appIdFromDb)
+                    .completedAt(ZonedDateTime.now())
+                    .applicationData(applicationData)
+                    .build();
+            when(applicationRepository.find(applicationId)).thenReturn(application);
+            ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null);
+            when(expeditedEligibilityDecider.decide(applicationData)).thenReturn(ExpeditedEligibility.ELIGIBLE);
+            ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
+            when(pdfGenerator.generate(appIdFromDb, CLIENT)).thenReturn(applicationFile);
+            when(emailParser.parse(applicationData)).thenReturn(Optional.of(email));
+            applicationSubmittedListener.sendConfirmationEmail(event);
 
-        verify(emailClient).sendConfirmationEmail(email, appIdFromDb, ExpeditedEligibility.ELIGIBLE, applicationFile);
+            verify(emailClient).sendConfirmationEmail(email, appIdFromDb, ExpeditedEligibility.ELIGIBLE, applicationFile);
+        }
+
+        @Test
+        void shouldNotSendConfirmationEmailIfEmailIsMissingFromTheApplication() {
+            ApplicationData applicationData = new ApplicationData();
+            when(applicationRepository.find(any())).thenReturn(Application.builder()
+                    .id("")
+                    .completedAt(ZonedDateTime.now())
+                    .applicationData(applicationData)
+                    .build());
+            when(emailParser.parse(applicationData)).thenReturn(empty());
+            ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", "appId", null);
+
+            applicationSubmittedListener.sendConfirmationEmail(event);
+
+            verifyNoInteractions(pdfGenerator);
+            verifyNoInteractions(expeditedEligibilityDecider);
+            verifyNoInteractions(emailClient);
+        }
     }
 
-    @Test
-    void shouldNotSendEmailIfEmailIsMissing() {
-        ApplicationData applicationData = new ApplicationData();
-        PagesData pagesData = new PagesData();
-        PageData contactInfo = new PageData();
-        pagesData.put("contactInfo", contactInfo);
-        applicationData.setPagesData(pagesData);
-        when(applicationRepository.find(any())).thenReturn(Application.builder()
-                .id("")
-                .completedAt(ZonedDateTime.now())
-                .applicationData(applicationData)
-                .county(null)
-                .timeToComplete(null)
-                .build());
-        ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", "appId", null);
+    @Nested
+    class sendCaseWorkerEmail {
+        @Test
+        void shouldSendEmailToCaseWorkers() {
+            String applicationId = "applicationId";
+            ApplicationData applicationData = new ApplicationData();
+            PagesData pagesData = new PagesData();
+            PageData personalInfoPage = new PageData();
+            personalInfoPage.put("firstName", InputData.builder().value(List.of("Testy")).build());
+            personalInfoPage.put("lastName", InputData.builder().value(List.of("McTesterson")).build());
+            pagesData.put("personalInfo", personalInfoPage);
+            applicationData.setPagesData(pagesData);
+            String appIdFromDb = "id";
+            String fullName = "Testy McTesterson";
+            County recipientCounty = HENNEPIN;
+            String email = "someEmail";
+            countyMap.getCounties().put(recipientCounty, MnitCountyInformation.builder().email(email).build());
+            Application application = Application.builder()
+                    .id(appIdFromDb)
+                    .completedAt(ZonedDateTime.now())
+                    .applicationData(applicationData)
+                    .county(recipientCounty)
+                    .timeToComplete(null)
+                    .build();
+            when(applicationRepository.find(applicationId)).thenReturn(application);
+            ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null);
+            when(expeditedEligibilityDecider.decide(applicationData)).thenReturn(ExpeditedEligibility.ELIGIBLE);
+            ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
+            when(pdfGenerator.generate(appIdFromDb, CASEWORKER)).thenReturn(applicationFile);
 
-        applicationSubmittedListener.sendConfirmationEmail(event);
+            applicationSubmittedListener.sendCaseWorkerEmail(event);
 
-        verifyNoInteractions(pdfGenerator);
-        verifyNoInteractions(expeditedEligibilityDecider);
-        verifyNoInteractions(emailClient);
+            verify(emailClient).sendCaseWorkerEmail(email, fullName, appIdFromDb, applicationFile);
+        }
+
+        @Test
+        void shouldNotSendEmailIfSendCaseWorkerEmailIsFalse() {
+            applicationSubmittedListener = new ApplicationSubmittedListener(
+                    mnitDocumentConsumer,
+                    applicationRepository,
+                    emailClient,
+                    expeditedEligibilityDecider,
+                    pdfGenerator,
+                    countyMap,
+                    false,
+                    false,
+                    false, emailParser);
+
+            ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("", "", null);
+
+            applicationSubmittedListener.sendCaseWorkerEmail(event);
+
+            verifyNoInteractions(emailClient);
+        }
     }
 
-    @Test
-    void shouldSendEmailToCaseWorkers() {
-        String applicationId = "applicationId";
-        ApplicationData applicationData = new ApplicationData();
-        PagesData pagesData = new PagesData();
-        PageData personalInfoPage = new PageData();
-        personalInfoPage.put("firstName", InputData.builder().value(List.of("Testy")).build());
-        personalInfoPage.put("lastName", InputData.builder().value(List.of("McTesterson")).build());
-        pagesData.put("personalInfo", personalInfoPage);
-        applicationData.setPagesData(pagesData);
-        String appIdFromDb = "id";
-        String fullName = "Testy McTesterson";
-        County recipientCounty = HENNEPIN;
-        String email = "someEmail";
-        countyMap.getCounties().put(recipientCounty, MnitCountyInformation.builder().email(email).build());
-        Application application = Application.builder()
-                .id(appIdFromDb)
-                .completedAt(ZonedDateTime.now())
-                .applicationData(applicationData)
-                .county(recipientCounty)
-                .timeToComplete(null)
-                .build();
-        when(applicationRepository.find(applicationId)).thenReturn(application);
-        ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null);
-        when(expeditedEligibilityDecider.decide(applicationData)).thenReturn(ExpeditedEligibility.ELIGIBLE);
-        ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
-        when(pdfGenerator.generate(appIdFromDb, CASEWORKER)).thenReturn(applicationFile);
+    @Nested
+    class sendNonPartnerCountyAlert {
+        @Test
+        void shouldSendNonPartnerCountyAlertWhenApplicationSubmittedIsForOTHERCounty() {
+            String applicationId = "appId";
+            ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null);
+            ZonedDateTime submissionTime = ZonedDateTime.now();
+            when(applicationRepository.find(applicationId)).thenReturn(
+                    Application.builder()
+                            .id(applicationId)
+                            .county(OTHER)
+                            .completedAt(submissionTime)
+                            .build()
+            );
 
-        applicationSubmittedListener.sendCaseWorkerEmail(event);
+            applicationSubmittedListener.sendNonPartnerCountyAlert(event);
 
-        verify(emailClient).sendCaseWorkerEmail(email, fullName, appIdFromDb, applicationFile);
-    }
+            verify(emailClient).sendNonPartnerCountyAlert(applicationId, submissionTime);
+        }
 
-    @Test
-    void shouldNotSendEmailIfSendCaseWorkerEmailIsFalse() {
-        applicationSubmittedListener = new ApplicationSubmittedListener(
-                mnitDocumentConsumer,
-                applicationRepository,
-                emailClient,
-                expeditedEligibilityDecider,
-                pdfGenerator,
-                countyMap,
-                false,
-                false,
-                false);
+        @Test
+        void shouldNotSendNonPartnerCountyAlertWhenApplicationSubmittedIsNotForOTHERCounty() {
+            String applicationId = "appId";
+            ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null);
+            ZonedDateTime submissionTime = ZonedDateTime.now();
+            when(applicationRepository.find(applicationId)).thenReturn(
+                    Application.builder()
+                            .county(HENNEPIN)
+                            .completedAt(submissionTime)
+                            .build()
+            );
 
-        ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("", "", null);
+            applicationSubmittedListener.sendNonPartnerCountyAlert(event);
 
-        applicationSubmittedListener.sendCaseWorkerEmail(event);
+            verifyNoInteractions(emailClient);
+        }
 
-        verifyNoInteractions(emailClient);
-    }
+        @Test
+        void shouldNotSendNonPartnerCountyAlertWhenFeatureIsTurnedOff() {
+            applicationSubmittedListener = new ApplicationSubmittedListener(
+                    mnitDocumentConsumer,
+                    applicationRepository,
+                    emailClient,
+                    expeditedEligibilityDecider,
+                    pdfGenerator,
+                    countyMap,
+                    true,
+                    false,
+                    false, emailParser);
+            when(applicationRepository.find(any())).thenReturn(
+                    Application.builder()
+                            .id("appId")
+                            .county(OTHER)
+                            .completedAt(ZonedDateTime.now())
+                            .build()
+            );
 
-    @Test
-    void shouldNotSendViaApiIfSendViaApiIsFalse() {
-        applicationSubmittedListener = new ApplicationSubmittedListener(
-                mnitDocumentConsumer,
-                applicationRepository,
-                emailClient,
-                expeditedEligibilityDecider,
-                pdfGenerator,
-                countyMap,
-                true,
-                false,
-                false);
+            applicationSubmittedListener.sendNonPartnerCountyAlert(new ApplicationSubmittedEvent("someSessionId", "appId", null));
 
-        ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("", "", null);
-
-        applicationSubmittedListener.sendViaApi(event);
-
-        verifyNoInteractions(mnitDocumentConsumer);
-    }
-
-    @Test
-    void shouldSendNonPartnerCountyAlertWhenApplicationSubmittedIsForOTHERCounty() {
-        String applicationId = "appId";
-        ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null);
-        ZonedDateTime submissionTime = ZonedDateTime.now();
-        when(applicationRepository.find(applicationId)).thenReturn(
-                Application.builder()
-                        .id(applicationId)
-                        .county(OTHER)
-                        .completedAt(submissionTime)
-                        .build()
-        );
-
-        applicationSubmittedListener.sendNonPartnerCountyAlert(event);
-
-        verify(emailClient).sendNonPartnerCountyAlert(applicationId, submissionTime);
-    }
-
-    @Test
-    void shouldNotSendNonPartnerCountyAlertWhenApplicationSubmittedIsNotForOTHERCounty() {
-        String applicationId = "appId";
-        ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null);
-        ZonedDateTime submissionTime = ZonedDateTime.now();
-        when(applicationRepository.find(applicationId)).thenReturn(
-                Application.builder()
-                        .county(HENNEPIN)
-                        .completedAt(submissionTime)
-                        .build()
-        );
-
-        applicationSubmittedListener.sendNonPartnerCountyAlert(event);
-
-        verifyNoInteractions(emailClient);
-    }
-
-    @Test
-    void shouldNotSendNonPartnerCountyAlertWhenFeatureIsTurnedOff() {
-        applicationSubmittedListener = new ApplicationSubmittedListener(
-                mnitDocumentConsumer,
-                applicationRepository,
-                emailClient,
-                expeditedEligibilityDecider,
-                pdfGenerator,
-                countyMap,
-                true,
-                false,
-                false);
-        when(applicationRepository.find(any())).thenReturn(
-                Application.builder()
-                        .id("appId")
-                        .county(OTHER)
-                        .completedAt(ZonedDateTime.now())
-                        .build()
-        );
-
-        applicationSubmittedListener.sendNonPartnerCountyAlert(new ApplicationSubmittedEvent("someSessionId", "appId", null));
-
-        verifyNoInteractions(emailClient);
+            verifyNoInteractions(emailClient);
+        }
     }
 }

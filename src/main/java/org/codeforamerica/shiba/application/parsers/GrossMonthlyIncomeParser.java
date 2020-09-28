@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @Component
 public class GrossMonthlyIncomeParser extends ApplicationDataParser<List<JobIncomeInformation>> {
     public GrossMonthlyIncomeParser(ParsingConfiguration parsingConfiguration) {
-        this.parsingConfiguration = parsingConfiguration;
+        super(parsingConfiguration);
     }
 
     public List<JobIncomeInformation> parse(ApplicationData data) {
