@@ -18,6 +18,7 @@
 - Install the EnvFile plugin
 - Enable annotation processing
 - Set the Project SDK to Java 14 in `File > Project Structure`
+- Set the Gradle JVM version to 14 in `Preferences -> Build, Execution, Deployment -> Build Tools -> Gradle`
 - Create `.env` file in the root of the project directory
 - Paste in values from `SHIBA application-secrets.yaml` in LastPass with the format `ENV_VAR_NAME=ENV_VAR_VALUE`, translating the property notation to environment variable notation as follows:
     - `shiba.username: someUsername` --> `SHIBA_USERNAME=someUsername`
