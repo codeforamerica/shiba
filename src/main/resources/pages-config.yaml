@@ -510,7 +510,17 @@ shiba-configuration:
       pageTitle:
         value: going-to-school.title
       headerKey:
-        value: going-to-school.header
+        conditionalValues:
+          - value: going-to-school.header
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "true"
+          - value: going-to-school.header-household
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "false"
       hasPrimaryButton: false
       inputs:
         - name: goingToSchool
@@ -840,7 +850,17 @@ shiba-configuration:
       pageTitle:
         value: disability.title
       headerKey:
-        value: disability.do-you-have-a-physical-or-mental-disability-that-prevents-you-from-working
+        conditionalValues:
+          - value: disability.does-anyone-in-your-household-have-a-physical-or-mental-disability-that-prevents
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "false"
+          - value: disability.do-you-have-a-physical-or-mental-disability-that-prevents-you-from-working
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "true"
       hasPrimaryButton: false
       inputs:
         - name: hasDisability
@@ -850,7 +870,17 @@ shiba-configuration:
       pageTitle:
         value: work-situation.title
       headerKey:
-        value: work-situation.in-the-last-2-months-did-you-do-any-of-these-things
+        conditionalValues:
+          - value: work-situation.in-the-last-2-months-did-you-do-any-of-these-things
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "true"
+          - value: work-situation.in-the-last-2-months-did-anyone-in-your-household-do-any-of-these-things
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "false"
       hasPrimaryButton: false
       inputs:
         - name: hasWorkSituation
@@ -1421,6 +1451,8 @@ shiba-configuration:
         - pageName: goingToSchool
     goingToSchool:
       pageConfiguration: *goingToSchool
+      datasources:
+        - pageName: doYouLiveAlone
       nextPages:
         - pageName: pregnant
     pregnant:
@@ -1445,10 +1477,14 @@ shiba-configuration:
         - pageName: disability
     disability:
       pageConfiguration: *disability
+      datasources:
+        - pageName: doYouLiveAlone
       nextPages:
         - pageName: workSituation
     workSituation:
       pageConfiguration: *workSituation
+      datasources:
+        - pageName: doYouLiveAlone
       nextPages:
         - pageName: introIncome
     introIncome:
