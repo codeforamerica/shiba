@@ -40,18 +40,18 @@ xml:
     contactInfo:
       phoneNumber: CONTACTINFO_PHONE
     homeAddress:
-      zipCode: CONTACTINFO_HOME_ZIPCODE
-      city: CONTACTINFO_HOME_CITY
-      streetAddress: CONTACTINFO_HOME_STREET_ADDRESS
-      apartmentNumber: CONTACTINFO_HOME_APARTMENT_NUMBER
+      selectedZipCode: CONTACTINFO_HOME_ZIPCODE
+      selectedCity: CONTACTINFO_HOME_CITY
+      selectedStreetAddress: CONTACTINFO_HOME_STREET_ADDRESS
+      selectedApartmentNumber: CONTACTINFO_HOME_APARTMENT_NUMBER
       isHomeless:
         true: CONTACTINFO_HOMELESS
     mailingAddress:
-      zipCode: CONTACTINFO_MAILING_ZIPCODE
-      city: CONTACTINFO_MAILING_CITY
-      streetAddress: CONTACTINFO_MAILING_STREET_ADDRESS
-      state: CONTACTINFO_MAILING_STATE
-      apartmentNumber: CONTACTINFO_MAILING_APARTMENT_NUMBER
+      selectedZipCode: CONTACTINFO_MAILING_ZIPCODE
+      selectedCity: CONTACTINFO_MAILING_CITY
+      selectedStreetAddress: CONTACTINFO_MAILING_STREET_ADDRESS
+      selectedState: CONTACTINFO_MAILING_STATE
+      selectedApartmentNumber: CONTACTINFO_MAILING_APARTMENT_NUMBER
     thirtyDayIncome:
       moneyMadeLast30Days: MONEY_MADE_LAST_MONTH
     liquidAssets:

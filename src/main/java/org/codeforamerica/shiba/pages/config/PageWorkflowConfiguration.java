@@ -18,6 +18,7 @@ public class PageWorkflowConfiguration {
     private PageConfiguration pageConfiguration;
     private String groupName;
     private String dataMissingRedirect;
+    private String enrichment;
 
     public Boolean getConditionalNavigation() {
         return nextPages.stream().anyMatch(page -> page.getCondition() != null);

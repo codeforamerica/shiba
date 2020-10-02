@@ -112,4 +112,9 @@ public class Page {
     public String findElementTextByName(String name) {
         return driver.findElement(By.id(name)).getText();
     }
+
+    public void clickInputById(String id) {
+        WebElement inputToSelect = driver.findElementById(id);
+        inputToSelect.click();
+    }
 }

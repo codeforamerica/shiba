@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
+import org.codeforamerica.shiba.Address;
 import org.codeforamerica.shiba.SmartyStreetClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,6 +50,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         when(clock.instant()).thenReturn(Instant.now());
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         when(smartyStreetClient.getCounty(any())).thenReturn(Optional.empty());
+        when(smartyStreetClient.validateAddress(any())).thenReturn(Optional.empty());
     }
 
     @Test
@@ -168,14 +170,25 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         homeAddressPage.enterInput("apartmentNumber", "someApartmentNumber");
         homeAddressPage.selectEnumeratedInput("isHomeless", "I don't have a permanent address");
         homeAddressPage.selectEnumeratedInput("sameMailingAddress", "No, use a different address for mail");
-        Page mailingAddressPage = homeAddressPage.clickPrimaryButton();
+        homeAddressPage.clickPrimaryButton();
+
+        driver.findElement(By.cssSelector("button[type='submit']")).click();
+        @SuppressWarnings("UnnecessaryLocalVariable")
+        Page mailingAddressPage = homeAddressPage;
 
         mailingAddressPage.enterInput("zipCode", "12345");
         mailingAddressPage.enterInput("city", "someCity");
         mailingAddressPage.enterInput("streetAddress", "someStreetAddress");
         mailingAddressPage.enterInput("state", "IL");
         mailingAddressPage.enterInput("apartmentNumber", "someApartmentNumber");
-        mailingAddressPage.clickPrimaryButton();
+        when(smartyStreetClient.validateAddress(any())).thenReturn(
+                Optional.of(new Address("smarty street", "City", "CA", "03104", ""))
+        );
+        Page validationPage = mailingAddressPage.clickPrimaryButton();
+
+        validationPage.clickInputById("enriched-address");
+        validationPage.clickPrimaryButton();
+        assertThat(driver.findElementById("mailing-address_street").getText()).isEqualTo("smarty street");
     }
 
     private SuccessPage nonExpeditedFlowToSuccessPage() {

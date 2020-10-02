@@ -1352,6 +1352,34 @@ shiba-configuration:
       name: submittingApplication
       pageTitle:
         value: submitting-application.title
+    - &homeAddressValidation
+      name: homeAddressValidation
+      pageTitle:
+        value: address-validation.title
+      hasPrimaryButton: false
+      inputs:
+        - name: useEnrichedAddress
+          type: CUSTOM
+          customInputFragment: addressValidationInput
+          options:
+            - value: "true"
+              messageKey: address-validation.suggested-address
+            - value: "false"
+              messageKey: address-validation.address-you-entered
+    - &mailingAddressValidation
+      name: mailingAddressValidation
+      pageTitle:
+        value: address-validation.title
+      hasPrimaryButton: false
+      inputs:
+        - name: useEnrichedAddress
+          type: CUSTOM
+          customInputFragment: addressValidationInput
+          options:
+            - value: "true"
+              messageKey: address-validation.suggested-address
+            - value: "false"
+              messageKey: address-validation.address-you-entered
     - &registerToVote
       name: registerToVote
       headerKey:
@@ -1403,18 +1431,39 @@ shiba-configuration:
         - pageName: homeAddress
     homeAddress:
       pageConfiguration: *homeAddress
+      enrichment: homeAddressEnrichment
+      nextPages:
+        - pageName: verifyHomeAddress
+    verifyHomeAddress:
+      pageConfiguration: *homeAddressValidation
+      datasources:
+        - pageName: homeAddress
       nextPages:
         - pageName: mailingAddress
+        - pageName: homeAddress
     mailingAddress:
       pageConfiguration: *mailingAddress
+      enrichment: mailingAddressEnrichment
       skipCondition:
         pageName: homeAddress
         input: sameMailingAddress
         value: "true"
       nextPages:
-        - pageName: reviewInfo
+        - pageName: verifyMailingAddress
       datasources:
         - pageName: homeAddress
+    verifyMailingAddress:
+      pageConfiguration: *mailingAddressValidation
+      skipCondition:
+        pageName: homeAddress
+        input: sameMailingAddress
+        value: "true"
+      datasources:
+        - pageName: mailingAddress
+        - pageName: homeAddress
+      nextPages:
+        - pageName: reviewInfo
+        - pageName: mailingAddress
     reviewInfo:
       pageConfiguration: *reviewInfo
       nextPages:
@@ -1424,7 +1473,9 @@ shiba-configuration:
       datasources:
         - pageName: personalInfo
         - pageName: homeAddress
+        - pageName: homeAddressValidation
         - pageName: mailingAddress
+        - pageName: mailingAddressValidation
         - pageName: contactInfo
     doYouLiveAlone:
       pageConfiguration: *doYouLiveAlone

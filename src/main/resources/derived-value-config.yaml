@@ -219,69 +219,279 @@ derived-values:
               input: programs
               value: CCAP
   - groupName: mailingAddress
-    fieldName: zipCode
+    fieldName: selectedZipCode
     values:
+      - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: homeAddress
+          inputName: enrichedZipCode
+        type: SINGLE_VALUE
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: homeAddress
+              input: sameMailingAddress
+              value: "true"
+            - pageName: homeAddressValidation
+              input: useEnrichedAddress
+              value: "true"
       - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: homeAddress
           inputName: zipCode
         type: SINGLE_VALUE
         condition:
-          logicalOperator: OR
+          logicalOperator: AND
           conditions:
             - pageName: homeAddress
               input: sameMailingAddress
               value: "true"
+            - pageName: homeAddressValidation
+              input: useEnrichedAddress
+              value: "false"
+      - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: mailingAddress
+          inputName: zipCode
+        type: SINGLE_VALUE
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: homeAddress
+              input: sameMailingAddress
+              value: "false"
+            - pageName: mailingAddressValidation
+              input: useEnrichedAddress
+              value: "false"
+      - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: mailingAddress
+          inputName: enrichedZipCode
+        type: SINGLE_VALUE
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: homeAddress
+              input: sameMailingAddress
+              value: "false"
+            - pageName: mailingAddressValidation
+              input: useEnrichedAddress
+              value: "true"
   - groupName: mailingAddress
-    fieldName: city
+    fieldName: selectedCity
     values:
+      - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: homeAddress
+          inputName: enrichedCity
+        type: SINGLE_VALUE
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: homeAddress
+              input: sameMailingAddress
+              value: "true"
+            - pageName: homeAddressValidation
+              input: useEnrichedAddress
+              value: "true"
       - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: homeAddress
           inputName: city
         type: SINGLE_VALUE
         condition:
-          logicalOperator: OR
+          logicalOperator: AND
           conditions:
             - pageName: homeAddress
               input: sameMailingAddress
               value: "true"
+            - pageName: homeAddressValidation
+              input: useEnrichedAddress
+              value: "false"
+      - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: mailingAddress
+          inputName: city
+        type: SINGLE_VALUE
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: homeAddress
+              input: sameMailingAddress
+              value: "false"
+            - pageName: mailingAddressValidation
+              input: useEnrichedAddress
+              value: "false"
+      - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: mailingAddress
+          inputName: enrichedCity
+        type: SINGLE_VALUE
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: homeAddress
+              input: sameMailingAddress
+              value: "false"
+            - pageName: mailingAddressValidation
+              input: useEnrichedAddress
+              value: "true"
   - groupName: mailingAddress
-    fieldName: state
+    fieldName: selectedState
     values:
+      - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: homeAddress
+          inputName: enrichedState
+        type: SINGLE_VALUE
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: homeAddress
+              input: sameMailingAddress
+              value: "true"
+            - pageName: homeAddressValidation
+              input: useEnrichedAddress
+              value: "true"
       - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: homeAddress
           inputName: state
         type: SINGLE_VALUE
         condition:
-          logicalOperator: OR
+          logicalOperator: AND
           conditions:
             - pageName: homeAddress
               input: sameMailingAddress
               value: "true"
+            - pageName: homeAddressValidation
+              input: useEnrichedAddress
+              value: "false"
+      - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: mailingAddress
+          inputName: state
+        type: SINGLE_VALUE
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: homeAddress
+              input: sameMailingAddress
+              value: "false"
+            - pageName: mailingAddressValidation
+              input: useEnrichedAddress
+              value: "false"
+      - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: mailingAddress
+          inputName: enrichedState
+        type: SINGLE_VALUE
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: homeAddress
+              input: sameMailingAddress
+              value: "false"
+            - pageName: mailingAddressValidation
+              input: useEnrichedAddress
+              value: "true"
   - groupName: mailingAddress
-    fieldName: streetAddress
+    fieldName: selectedStreetAddress
     values:
+      - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: homeAddress
+          inputName: enrichedStreetAddress
+        type: SINGLE_VALUE
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: homeAddress
+              input: sameMailingAddress
+              value: "true"
+            - pageName: homeAddressValidation
+              input: useEnrichedAddress
+              value: "true"
       - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: homeAddress
           inputName: streetAddress
         type: SINGLE_VALUE
         condition:
-          logicalOperator: OR
+          logicalOperator: AND
           conditions:
             - pageName: homeAddress
               input: sameMailingAddress
               value: "true"
+            - pageName: homeAddressValidation
+              input: useEnrichedAddress
+              value: "false"
+      - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: mailingAddress
+          inputName: streetAddress
+        type: SINGLE_VALUE
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: homeAddress
+              input: sameMailingAddress
+              value: "false"
+            - pageName: mailingAddressValidation
+              input: useEnrichedAddress
+              value: "false"
+      - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: mailingAddress
+          inputName: enrichedStreetAddress
+        type: SINGLE_VALUE
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: homeAddress
+              input: sameMailingAddress
+              value: "false"
+            - pageName: mailingAddressValidation
+              input: useEnrichedAddress
+              value: "true"
   - groupName: mailingAddress
-    fieldName: apartmentNumber
+    fieldName: selectedApartmentNumber
     values:
+      - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: homeAddress
+          inputName: enrichedApartmentNumber
+        type: SINGLE_VALUE
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: homeAddress
+              input: sameMailingAddress
+              value: "true"
+            - pageName: homeAddressValidation
+              input: useEnrichedAddress
+              value: "true"
       - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: homeAddress
           inputName: apartmentNumber
         type: SINGLE_VALUE
         condition:
-          logicalOperator: OR
+          logicalOperator: AND
           conditions:
             - pageName: homeAddress
               input: sameMailingAddress
+              value: "true"
+            - pageName: homeAddressValidation
+              input: useEnrichedAddress
+              value: "false"
+      - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: mailingAddress
+          inputName: apartmentNumber
+        type: SINGLE_VALUE
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: homeAddress
+              input: sameMailingAddress
+              value: "false"
+            - pageName: mailingAddressValidation
+              input: useEnrichedAddress
+              value: "false"
+      - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: mailingAddress
+          inputName: enrichedApartmentNumber
+        type: SINGLE_VALUE
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: homeAddress
+              input: sameMailingAddress
+              value: "false"
+            - pageName: mailingAddressValidation
+              input: useEnrichedAddress
               value: "true"
   - fieldName: noSocialSecurity
     groupName: unearnedIncome
@@ -517,18 +727,6 @@ derived-values:
             - pageName: registerToVote
               input: registerToVote
               value: "NO"
-  - groupName: homeAddress
-    fieldName: isHomelessIndicator
-    values:
-      - type: SINGLE_VALUE
-        value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-          literal: "homeless"
-        condition:
-          logicalOperator: OR
-          conditions:
-            - pageName: homeAddress
-              input: isHomeless
-              value: "true"
   - groupName: employee
     fieldName: firstName
     iteration: 0
@@ -792,3 +990,108 @@ derived-values:
               value: "true"
               subworkflow: jobs
               iteration: 3
+  - groupName: homeAddress
+    fieldName: isHomelessIndicator
+    values:
+      - type: SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "homeless"
+        condition:
+          logicalOperator: OR
+          conditions:
+            - pageName: homeAddress
+              input: isHomeless
+              value: "true"
+  - groupName: homeAddress
+    fieldName: selectedApartmentNumber
+    values:
+      - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: homeAddress
+          inputName: enrichedApartmentNumber
+        type: SINGLE_VALUE
+        condition:
+          logicalOperator: OR
+          conditions:
+            - pageName: homeAddressValidation
+              input: useEnrichedAddress
+              value: "true"
+      - type: SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: homeAddress
+          inputName: apartmentNumber
+        condition:
+          logicalOperator: OR
+          conditions:
+            - pageName: homeAddressValidation
+              input: useEnrichedAddress
+              value: "false"
+  - groupName: homeAddress
+    fieldName: selectedCity
+    values:
+      - type: SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: homeAddress
+          inputName: enrichedCity
+        condition:
+          logicalOperator: OR
+          conditions:
+            - pageName: homeAddressValidation
+              input: useEnrichedAddress
+              value: "true"
+      - type: SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: homeAddress
+          inputName: city
+        condition:
+          logicalOperator: OR
+          conditions:
+            - pageName: homeAddressValidation
+              input: useEnrichedAddress
+              value: "false"
+  - groupName: homeAddress
+    fieldName: selectedState
+    values:
+      - type: SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: homeAddress
+          inputName: enrichedState
+        condition:
+          logicalOperator: OR
+          conditions:
+            - pageName: homeAddressValidation
+              input: useEnrichedAddress
+              value: "true"
+      - type: SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: homeAddress
+          inputName: state
+        condition:
+          logicalOperator: OR
+          conditions:
+            - pageName: homeAddressValidation
+              input: useEnrichedAddress
+              value: "false"
+  - groupName: homeAddress
+    fieldName: selectedZipCode
+    values:
+      - type: SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: homeAddress
+          inputName: enrichedZipCode
+        condition:
+          logicalOperator: OR
+          conditions:
+            - pageName: homeAddressValidation
+              input: useEnrichedAddress
+              value: "true"
+      - type: SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: homeAddress
+          inputName: zipCode
+        condition:
+          logicalOperator: OR
+          conditions:
+            - pageName: homeAddressValidation
+              input: useEnrichedAddress
+              value: "false"
+

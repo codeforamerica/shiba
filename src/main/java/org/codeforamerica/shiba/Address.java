@@ -8,4 +8,5 @@ public class Address {
     String city;
     String state;
     String zipcode;
+    String apartmentNumber;
 }

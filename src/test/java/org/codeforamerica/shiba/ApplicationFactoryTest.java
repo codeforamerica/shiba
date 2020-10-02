@@ -57,7 +57,7 @@ class ApplicationFactoryTest {
 
         when(clock.instant()).thenReturn(Instant.now());
         when(clock.getZone()).thenReturn(zoneOffset);
-        when(homeAddressParser.parse(any())).thenReturn(new Address("", "", "", "something"));
+        when(homeAddressParser.parse(any())).thenReturn(new Address("", "", "", "something",""));
     }
 
     @Test
@@ -118,7 +118,7 @@ class ApplicationFactoryTest {
         pagesData.put("homeAddress", homeAddress);
 
         when(locationClient.getCounty(any())).thenReturn(Optional.empty());
-        when(homeAddressParser.parse(applicationData)).thenReturn(new Address("", "", "", zipCode));
+        when(homeAddressParser.parse(applicationData)).thenReturn(new Address("", "", "", zipCode, ""));
 
         Application application = applicationFactory.newApplication("", applicationData, defaultMetrics);
 

@@ -165,12 +165,12 @@ html {
 }
 
 .hide-radio-circle {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    -ms-appearance: none;
-    -o-appearance: none;
-    appearance: none;
-    display: none;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    -ms-appearance: none !important;
+    -o-appearance: none !important;
+    appearance: none !important;
+    display: none !important;
 }
 
 .inline {
@@ -342,4 +342,23 @@ input[id='sad']:checked + .feedback-buttons {
     font-weight: 700;
     font-size: 1.6rem;
     line-height: 2.5rem;
+}
+
+.address-validation .radio-button.is-selected {
+    border: 2px #00891B solid;
+    border-radius: 5px;
+    background-color: unset;
+}
+
+.address-validation .radio-button.left-aligned {
+    padding-left: 2.5rem;
+}
+
+.address-validation .radio-button {
+    border: 2px transparent solid;
+    border-radius: 5px;
+}
+
+.address-validation .radio-button div {
+    font-weight: normal;
 }

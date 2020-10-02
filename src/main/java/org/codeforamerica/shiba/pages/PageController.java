@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
+import org.codeforamerica.shiba.ApplicationEnrichment;
 import org.codeforamerica.shiba.ConfirmationData;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
@@ -28,6 +29,7 @@ import java.util.Optional;
 
 @Controller
 public class PageController {
+    private static final ZoneId CENTRAL_TIMEZONE = ZoneId.of("America/Chicago");
     private final ApplicationData applicationData;
     private final ApplicationConfiguration applicationConfiguration;
     private final Clock clock;
@@ -37,6 +39,7 @@ public class PageController {
     private final ConfirmationData confirmationData;
     private final MessageSource messageSource;
     private final PageEventPublisher pageEventPublisher;
+    private final ApplicationEnrichment applicationEnrichment;
 
     public PageController(
             ApplicationConfiguration applicationConfiguration,
@@ -47,7 +50,8 @@ public class PageController {
             ApplicationFactory applicationFactory,
             ConfirmationData confirmationData,
             MessageSource messageSource,
-            PageEventPublisher pageEventPublisher) {
+            PageEventPublisher pageEventPublisher,
+            ApplicationEnrichment applicationEnrichment) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
@@ -57,6 +61,7 @@ public class PageController {
         this.confirmationData = confirmationData;
         this.messageSource = messageSource;
         this.pageEventPublisher = pageEventPublisher;
+        this.applicationEnrichment = applicationEnrichment;
     }
 
     @GetMapping("/")
@@ -82,7 +87,7 @@ public class PageController {
 
         if (pagesData.shouldSkip(nextPageWorkflow)) {
             pagesData.remove(nextPageWorkflow.getPageConfiguration().getName());
-            return new RedirectView(String.format("/pages/%s", applicationData.getNextPageName(nextPageWorkflow, option).getPageName()));
+            return new RedirectView(String.format("/pages/%s/navigation", nextPage.getPageName()));
         } else {
             return new RedirectView(String.format("/pages/%s", nextPage.getPageName()));
         }
@@ -141,7 +146,7 @@ public class PageController {
         if (landmarkPagesConfiguration.isTerminalPage(pageName)) {
             Application application = applicationRepository.find(confirmationData.getId());
             model.put("applicationId", application.getId());
-            model.put("submissionTime", application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago")));
+            model.put("submissionTime", application.getCompletedAt().withZoneSameInstant(CENTRAL_TIMEZONE));
             model.put("county", application.getCounty());
             model.put("sentiment", application.getSentiment());
             model.put("feedbackText", application.getFeedback());
@@ -223,9 +228,15 @@ public class PageController {
             pageEventPublisher.publish(new SubworkflowCompletedEvent(httpSession.getId(), groupName));
         }
 
-        return pageData.isValid() ?
-                new ModelAndView(String.format("redirect:/pages/%s/navigation", pageName)) :
-                new ModelAndView("redirect:/pages/" + pageName);
+        if (pageData.isValid()) {
+            Optional.ofNullable(pageWorkflow.getEnrichment())
+                    .map(applicationEnrichment::getEnrichment)
+                    .map(enrichment -> enrichment.process(applicationData))
+                    .ifPresent(pageData::putAll);
+            return new ModelAndView(String.format("redirect:/pages/%s/navigation", pageName));
+        } else {
+            return new ModelAndView("redirect:/pages/" + pageName);
+        }
     }
 
     @PostMapping("/submit")

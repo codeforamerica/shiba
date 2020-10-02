@@ -20,7 +20,8 @@
                             <a href="#" style="display: none" th:text="#{review-info.edit}"></a>
                         </div>
                     </div>
-                    <p class="spacing-below-0" th:text="|${data.get('personalInfo').get('firstName').value[0]} ${data.get('personalInfo').get('lastName').value[0]}|"></p>
+                    <p class="spacing-below-0"
+                       th:text="|${data.get('personalInfo').get('firstName').value[0]} ${data.get('personalInfo').get('lastName').value[0]}|"></p>
                 </div>
                 <div class="bottom-horizontal-line spacing-below-25 review-info-section">
                     <div class="spacing-below-10">
@@ -31,13 +32,28 @@
                             <a href="#" style="display: none" th:text="#{review-info.edit}"></a>
                         </div>
                     </div>
-                    <p class="spacing-below-0" th:text="${data.get('homeAddress').get('streetAddress').value[0]}"></p>
-                    <p class="spacing-below-0" th:if="${!data.get('homeAddress').get('apartmentNumber').value[0].isEmpty()}"
-                            th:text="|# ${data.get('homeAddress').get('apartmentNumber').value[0]}|"></p>
-                    <p th:if="${!data.get('homeAddress').get('city').value[0].isEmpty()}" class="spacing-below-0" th:text="|${data.get('homeAddress').get('city').value[0]}, ${data.get('homeAddress').get('state').value[0]}|"></p>
-                    <p class="spacing-below-0 spacing-above-10 italic" th:if="${!data.get('homeAddress').get('isHomeless').value.isEmpty()}" th:text="#{review-info.no-permanent-address}"></p>
+                    <th:block th:with="
+                            useEnrichedInput=${data.get('homeAddressValidation').get('useEnrichedAddress')},
+                            useEnriched=${useEnrichedInput != null && useEnrichedInput.value.contains('true')}">
+                        <th:block th:unless="${useEnriched}">
+                            <p class="spacing-below-0"
+                               th:text="${data.get('homeAddress').get('streetAddress').value[0]}"></p>
+                            <p class="spacing-below-0" th:text="${data.get('homeAddress').get('apartmentNumber').value[0]}"></p>
+                            <p class="spacing-below-0" th:text="${T(org.codeforamerica.shiba.pages.PageUtils).joinNonEmpty(data.get('homeAddress').get('city').value[0], data.get('homeAddress').get('state').value[0])}"></p>
+                        </th:block>
+                        <th:block th:if="${useEnriched}">
+                            <p class="spacing-below-0"
+                               th:text="${data.get('homeAddress').get('enrichedStreetAddress').value[0]}"></p>
+                            <p class="spacing-below-0" th:text="${data.get('homeAddress').get('enrichedApartmentNumber').value[0]}"></p>
+                            <p class="spacing-below-0" th:text="${T(org.codeforamerica.shiba.pages.PageUtils).joinNonEmpty(data.get('homeAddress').get('enrichedCity').value[0], data.get('homeAddress').get('enrichedState').value[0])}"></p>
+                        </th:block>
+                    </th:block>
+                    <p class="spacing-below-0 spacing-above-10 italic"
+                       th:if="${!data.get('homeAddress').get('isHomeless').value.isEmpty()}"
+                       th:text="#{review-info.no-permanent-address}"></p>
                 </div>
-                <div th:if="${data.get('homeAddress').get('sameMailingAddress').value.isEmpty() || data.get('homeAddress').get('sameMailingAddress').value[0] == 'false'}" class="bottom-horizontal-line spacing-below-25 review-info-section">
+                <div th:if="${data.get('homeAddress').get('sameMailingAddress').value.isEmpty() || data.get('homeAddress').get('sameMailingAddress').value[0] == 'false'}"
+                     class="bottom-horizontal-line spacing-below-25 review-info-section">
                     <div class="spacing-below-10">
                         <div class="inline">
                             <strong th:text="#{review-info.mailing-address}"></strong>
@@ -46,10 +62,22 @@
                             <a href="#" style="display: none" th:text="#{review-info.edit}"></a>
                         </div>
                     </div>
-                    <p class="spacing-below-0" th:text="${data.get('mailingAddress').get('streetAddress').value[0]}"></p>
-                    <p class="spacing-below-0" th:if="${!data.get('mailingAddress').get('apartmentNumber').value[0].isEmpty()}"
-                       th:text="|# ${data.get('mailingAddress').get('apartmentNumber').value[0]}|"></p>
-                    <p class="spacing-below-0" th:text="|${data.get('mailingAddress').get('city').value[0]}, ${data.get('mailingAddress').get('state').value[0]}|"></p>
+                    <th:block th:with="
+                            useEnrichedInput=${data.get('mailingAddressValidation').get('useEnrichedAddress')},
+                            useEnriched=${useEnrichedInput != null && useEnrichedInput.value.contains('true')}">
+                        <th:block th:unless="${useEnriched}">
+                            <p id="mailing-address_street" class="spacing-below-0"
+                               th:text="${data.get('mailingAddress').get('streetAddress').value[0]}"></p>
+                            <p class="spacing-below-0" th:text="${data.get('mailingAddress').get('apartmentNumber').value[0]}"></p>
+                            <p class="spacing-below-0" th:text="${T(org.codeforamerica.shiba.pages.PageUtils).joinNonEmpty(data.get('mailingAddress').get('city').value[0], data.get('mailingAddress').get('state').value[0])}"></p>
+                        </th:block>
+                        <th:block th:if="${useEnriched}">
+                            <p id="mailing-address_street" class="spacing-below-0"
+                               th:text="${data.get('mailingAddress').get('enrichedStreetAddress').value[0]}"></p>
+                            <p class="spacing-below-0" th:text="${data.get('mailingAddress').get('enrichedApartmentNumber').value[0]}"></p>
+                            <p class="spacing-below-0" th:text="${T(org.codeforamerica.shiba.pages.PageUtils).joinNonEmpty(data.get('mailingAddress').get('enrichedCity').value[0], data.get('mailingAddress').get('enrichedState').value[0])}"></p>
+                        </th:block>
+                    </th:block>
                 </div>
                 <div class="bottom-horizontal-line spacing-below-25 review-info-section">
                     <div class="spacing-below-10">
@@ -60,8 +88,10 @@
                             <a href="#" style="display: none" th:text="#{review-info.edit}"></a>
                         </div>
                     </div>
-                    <p class="spacing-below-0" th:text="${T(org.codeforamerica.shiba.pages.PageUtils).formatPhone(data.get('contactInfo').get('phoneNumber').value[0])}"></p>
-                    <p class="spacing-below-0" th:if="${!data.get('contactInfo').get('email').value[0].isEmpty()}" th:text="${data.get('contactInfo').get('email').value[0]}"></p>
+                    <p class="spacing-below-0"
+                       th:text="${T(org.codeforamerica.shiba.pages.PageUtils).formatPhone(data.get('contactInfo').get('phoneNumber').value[0])}"></p>
+                    <p class="spacing-below-0" th:if="${!data.get('contactInfo').get('email').value[0].isEmpty()}"
+                       th:text="${data.get('contactInfo').get('email').value[0]}"></p>
                 </div>
                 <div class="spacing-below-15 spacing-above-60">
                     <a class="button button--primary" th:href="'/pages/'+${pageName}+'/navigation?option=0'"

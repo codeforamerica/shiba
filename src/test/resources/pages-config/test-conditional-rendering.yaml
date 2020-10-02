@@ -12,6 +12,13 @@ shiba-configuration-conditional-rendering:
               messageKey: skip-message-key
             - value: NOT_SKIP
               messageKey: not-skip-message-key
+        - name: radioInputToSkipThirdPage
+          type: RADIO
+          options:
+            - value: SKIP
+              messageKey: skip-message-key
+            - value: NOT_SKIP
+              messageKey: not-skip-message-key
     - &secondPage
         name: secondPage
         pageTitle:
@@ -29,7 +36,7 @@ shiba-configuration-conditional-rendering:
     - &fourthPage
       name: fourthPage
       pageTitle:
-        value: dummy-page-title
+        value: fourth-page-title
       inputs:
         - name: foo
           type: TEXT
@@ -79,7 +86,15 @@ shiba-configuration-conditional-rendering:
         - pageName: firstPage
     thirdPage:
       pageConfiguration: *thirdPage
-      nextPages: []
+      nextPages:
+        - pageName: fourthPage
+      skipCondition:
+        pageName: firstPage
+        input: radioInputToSkipThirdPage
+        value: SKIP
+        matcher: CONTAINS
+      datasources:
+        - pageName: firstPage
     fourthPage:
       pageConfiguration: *fourthPage
       nextPages:
@@ -88,10 +103,10 @@ shiba-configuration-conditional-rendering:
             pageName: fourthPage
             value: goToFifthPage
             input: foo
-        - pageName: thirdPage
+        - pageName: firstPage
           condition:
             pageName: fourthPage
-            value: goToThirdPage
+            value: goToFirstPage
             input: foo
     fifthPage:
       pageConfiguration: *fifthPage

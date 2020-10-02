@@ -25,9 +25,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(properties = {"spring.main.allow-bean-definition-overriding=true"})
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
-class HomeAddressParserTest {
+class MailingAddressParserTest {
     @Autowired
-    HomeAddressParser homeAddressParser;
+    MailingAddressParser mailingAddressParser;
 
     @TestConfiguration
     @PropertySource(value = "classpath:test-parsing-config.yaml", factory = YamlPropertySourceFactory.class)
@@ -49,17 +49,17 @@ class HomeAddressParserTest {
         String city = "city address";
         String state = "state address";
         String zipcode = "zipcode address";
-        String apartmentNumber = "apartment number";
+        String apartment = "addressLine5";
         homePageData.put("addressLine1", InputData.builder().value(List.of(street)).build());
         homePageData.put("addressLine2", InputData.builder().value(List.of(city)).build());
         homePageData.put("addressLine3", InputData.builder().value(List.of(state)).build());
         homePageData.put("addressLine4", InputData.builder().value(List.of(zipcode)).build());
-        homePageData.put("addressLine5", InputData.builder().value(List.of(apartmentNumber)).build());
-        pagesData.put("homeAddressPageName", homePageData);
+        homePageData.put("addressLine5", InputData.builder().value(List.of(apartment)).build());
+        pagesData.put("mailingAddressPageName", homePageData);
         applicationData.setPagesData(pagesData);
 
-        Address address = homeAddressParser.parse(applicationData);
+        Address address = mailingAddressParser.parse(applicationData);
 
-        assertThat(address).isEqualTo(new Address(street, city, state, zipcode, apartmentNumber));
+        assertThat(address).isEqualTo(new Address(street, city, state, zipcode, apartment));
     }
 }

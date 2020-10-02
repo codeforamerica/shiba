@@ -9,14 +9,14 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 @Component
-public class HomeAddressParser extends ApplicationDataParser<Address> {
-    public HomeAddressParser(ParsingConfiguration parsingConfiguration) {
+public class MailingAddressParser extends ApplicationDataParser<Address> {
+    public MailingAddressParser(ParsingConfiguration parsingConfiguration) {
         super(parsingConfiguration);
     }
 
     @Override
     public Address parse(ApplicationData applicationData) {
-        Map<String, PageInputCoordinates> coordinates = parsingConfiguration.get("homeAddress").getPageInputs();
+        Map<String, PageInputCoordinates> coordinates = parsingConfiguration.get("mailingAddress").getPageInputs();
         return new Address(
                 applicationData.getValue(coordinates.get("street")),
                 applicationData.getValue(coordinates.get("city")),

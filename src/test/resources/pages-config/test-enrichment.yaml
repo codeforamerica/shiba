@@ -1,0 +1,24 @@
+shiba-configuration-enrichment:
+  pageDefinitions:
+    - &testEnrichmentPage
+      name: testEnrichmentPage
+      pageTitle:
+        value: dummy-page-title
+      inputs:
+        - name: someTextInput
+          type: TEXT
+          promptMessage:
+            promptMessageFragmentName: testEnrichmentPage
+          validators:
+            - validation: NOT_BLANK
+              errorMessageKey: dummy-error-message-key
+  workflow:
+    testEnrichmentPage:
+      pageConfiguration: *testEnrichmentPage
+      enrichment: testEnrichment
+      nextPages:
+        - pageName: testEnrichmentPage
+      datasources:
+        - pageName: testEnrichmentPage
+  landmarkPages:
+    landingPages: [ ]

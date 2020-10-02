@@ -1,13 +1,22 @@
 package org.codeforamerica.shiba.pages;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class PageUtils {
     private static final String WEB_INPUT_ARRAY_TOKEN = "[]";
 
     public static String getFormInputName(String name) {
         return name + WEB_INPUT_ARRAY_TOKEN;
+    }
+
+    public static String joinNonEmpty(String... strings) {
+        return Arrays.stream(strings)
+                .filter(Predicate.not(String::isEmpty))
+                .collect(Collectors.joining(", "));
     }
 
     public static String getTitleString(List<String> strings) {

@@ -63,6 +63,9 @@
         "headerKey": {
           "$ref": "#/definitions/value"
         },
+        "hasPrimaryButton": {
+          "type": "boolean"
+        },
         "headerHelpMessageKey": {
           "type": "string"
         },
@@ -137,6 +140,9 @@
           "type": "string"
         },
         "dataMissingRedirect": {
+          "type": "string"
+        },
+        "enrichment": {
           "type": "string"
         }
       },

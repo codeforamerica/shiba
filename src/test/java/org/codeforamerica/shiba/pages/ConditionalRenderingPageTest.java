@@ -18,6 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConditionalRenderingPageTest extends AbstractStaticMessageSourcePageTest {
 
+    private final String fourthPageTitle = "fourthPageTitle";
     private final String thirdPageTitle = "thirdPageTitle";
     private final String secondPageTitle = "secondPageTitle";
     private final String firstPageTitle = "firstPageTitle";
@@ -39,6 +40,7 @@ public class ConditionalRenderingPageTest extends AbstractStaticMessageSourcePag
         staticMessageSource.addMessage("first-page-title", Locale.US, firstPageTitle);
         staticMessageSource.addMessage("second-page-title", Locale.US, secondPageTitle);
         staticMessageSource.addMessage("third-page-title", Locale.US, thirdPageTitle);
+        staticMessageSource.addMessage("fourth-page-title", Locale.US, fourthPageTitle);
         staticMessageSource.addMessage("eighth-page-title", Locale.US, eighthPageTitle);
         staticMessageSource.addMessage("skip-message-key", Locale.US, "SKIP PAGE");
         staticMessageSource.addMessage("not-skip-message-key", Locale.US, "NOT SKIP PAGE");
@@ -47,15 +49,20 @@ public class ConditionalRenderingPageTest extends AbstractStaticMessageSourcePag
     @Test
     void shouldNotRenderPageAndNavigateToTheNextPageIfTheSkipConditionIsTrue() {
         driver.navigate().to(baseUrl + "/pages/firstPage");
-        WebElement radioToClick = driver.findElements(By.cssSelector("span")).stream()
-                .filter(webElement -> webElement.getText().equals("SKIP PAGE"))
-                .findFirst()
-                .orElseThrow();
-        radioToClick.click();
-
+        testPage.selectEnumeratedInput("someRadioInputName", "SKIP PAGE");
         driver.findElement(By.cssSelector("button")).click();
 
         assertThat(driver.getTitle()).isEqualTo(thirdPageTitle);
+    }
+
+    @Test
+    void shouldSupportSkippingMoreThanOnePageInARow() {
+        driver.navigate().to(baseUrl + "/pages/firstPage");
+        testPage.selectEnumeratedInput("someRadioInputName", "SKIP PAGE");
+        testPage.selectEnumeratedInput("radioInputToSkipThirdPage", "SKIP PAGE");
+
+        driver.findElement(By.cssSelector("button")).click();
+        assertThat(driver.getTitle()).isEqualTo(fourthPageTitle);
     }
 
     @Test
@@ -75,11 +82,7 @@ public class ConditionalRenderingPageTest extends AbstractStaticMessageSourcePag
     @Test
     void shouldSkipGoingBackwardsAsWell() {
         driver.navigate().to(baseUrl + "/pages/firstPage");
-        WebElement radioToClick = driver.findElements(By.cssSelector("span")).stream()
-                .filter(webElement -> webElement.getText().equals("SKIP PAGE"))
-                .findFirst()
-                .orElseThrow();
-        radioToClick.click();
+        testPage.selectEnumeratedInput("someRadioInputName", "SKIP PAGE");
 
         driver.findElement(By.cssSelector("button")).click();
 
@@ -128,10 +131,10 @@ public class ConditionalRenderingPageTest extends AbstractStaticMessageSourcePag
     void shouldNavigateToTheFirstNextPageWhoseConditionIsTrue() {
         navigateTo("fourthPage");
 
-        testPage.enterInput("foo", "goToThirdPage");
+        testPage.enterInput("foo", "goToFirstPage");
         testPage.clickPrimaryButton();
 
-        assertThat(driver.getTitle()).isEqualTo(thirdPageTitle);
+        assertThat(driver.getTitle()).isEqualTo(firstPageTitle);
     }
 
     @Test

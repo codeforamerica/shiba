@@ -40,18 +40,18 @@ caf:
       email: APPLICANT_EMAIL
       communicationOptIn: COMMUNICATION_OPT_IN
     homeAddress:
-      zipCode: APPLICANT_HOME_ZIPCODE
-      city: APPLICANT_HOME_CITY
-      state: APPLICANT_HOME_STATE
+      selectedZipCode: APPLICANT_HOME_ZIPCODE
+      selectedCity: APPLICANT_HOME_CITY
+      selectedState: APPLICANT_HOME_STATE
+      selectedApartmentNumber: APPLICANT_HOME_APT_NUMBER
       streetAddressWithPermanentAddress: APPLICANT_HOME_STREET_ADDRESS
-      apartmentNumber: APPLICANT_HOME_APT_NUMBER
       isHomelessIndicator: APPLICANT_HOMELESS
     mailingAddress:
-      zipCode: APPLICANT_MAILING_ZIPCODE
-      city: APPLICANT_MAILING_CITY
-      state: APPLICANT_MAILING_STATE
-      streetAddress: APPLICANT_MAILING_STREET_ADDRESS
-      apartmentNumber: APPLICANT_MAILING_APT_NUMBER
+      selectedZipCode: APPLICANT_MAILING_ZIPCODE
+      selectedCity: APPLICANT_MAILING_CITY
+      selectedState: APPLICANT_MAILING_STATE
+      selectedStreetAddress: APPLICANT_MAILING_STREET_ADDRESS
+      selectedApartmentNumber: APPLICANT_MAILING_APT_NUMBER
     liquidAssets:
       liquidAssets: EXPEDITED_QUESTION_2
     utilityPayments:
