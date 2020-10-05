@@ -3,8 +3,6 @@ package org.codeforamerica.shiba.pages.data;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.codeforamerica.shiba.inputconditions.Condition;
-import org.codeforamerica.shiba.pages.FormInputTemplate;
-import org.codeforamerica.shiba.pages.PageTemplate;
 import org.codeforamerica.shiba.pages.config.*;
 import org.jetbrains.annotations.NotNull;
 

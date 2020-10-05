@@ -1,13 +1,13 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.InteractionTracker;
 import org.codeforamerica.shiba.application.FlowType;
+import org.codeforamerica.shiba.pages.events.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static org.codeforamerica.shiba.pages.InteractionType.APPLICATION_SUBMITTED;
-import static org.codeforamerica.shiba.pages.InteractionType.SUBWORKFLOW_COMPLETED;
+import static org.codeforamerica.shiba.pages.events.InteractionType.APPLICATION_SUBMITTED;
+import static org.codeforamerica.shiba.pages.events.InteractionType.SUBWORKFLOW_COMPLETED;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 

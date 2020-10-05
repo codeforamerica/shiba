@@ -1,7 +1,6 @@
 package org.codeforamerica.shiba.application;
 
 import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.Encryptor;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.jetbrains.annotations.NotNull;

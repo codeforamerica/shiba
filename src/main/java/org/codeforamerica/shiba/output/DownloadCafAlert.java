@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.output;
 
-import org.codeforamerica.shiba.pages.EmailClient;
+import org.codeforamerica.shiba.pages.emails.EmailClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;

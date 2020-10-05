@@ -2,6 +2,8 @@ package org.codeforamerica.shiba.output;
 
 import org.codeforamerica.shiba.output.caf.HourlyJobIncomeInformation;
 import org.codeforamerica.shiba.output.caf.NonHourlyJobIncomeInformation;
+import org.codeforamerica.shiba.output.caf.TotalIncome;
+import org.codeforamerica.shiba.output.caf.TotalIncomeCalculator;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

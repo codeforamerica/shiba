@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.output.caf;
 
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
 import org.codeforamerica.shiba.application.parsers.GrossMonthlyIncomeParser;
+import org.codeforamerica.shiba.application.parsers.ParsingConfiguration;
 import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,6 +32,7 @@ class GrossMonthlyIncomeParserTest {
     @TestConfiguration
     @PropertySource(value = "classpath:test-parsing-config.yaml", factory = YamlPropertySourceFactory.class)
     static class TestPageConfiguration {
+        @SuppressWarnings("ConfigurationProperties")
         @Bean
         @ConfigurationProperties(prefix = "test-parsing")
         public ParsingConfiguration parsingConfiguration() {

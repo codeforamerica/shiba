@@ -1,8 +1,6 @@
 package org.codeforamerica.shiba.output.caf;
 
 import org.codeforamerica.shiba.application.parsers.ExpeditedEligibilityParser;
-import org.codeforamerica.shiba.output.TotalIncome;
-import org.codeforamerica.shiba.output.TotalIncomeCalculator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.junit.jupiter.api.BeforeEach;

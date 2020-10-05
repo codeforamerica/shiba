@@ -6,7 +6,7 @@ import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
-import org.codeforamerica.shiba.output.applicationinputsmappers.FileNameGenerator;
+import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;

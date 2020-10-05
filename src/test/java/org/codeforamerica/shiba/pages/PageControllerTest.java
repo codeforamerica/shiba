@@ -1,6 +1,5 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.ApplicationEnrichment;
 import org.codeforamerica.shiba.ConfirmationData;
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
 import org.codeforamerica.shiba.application.Application;
@@ -8,10 +7,12 @@ import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.metrics.Metrics;
-import org.codeforamerica.shiba.output.ApplicationDataConsumer;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
+import org.codeforamerica.shiba.pages.enrichment.ApplicationEnrichment;
+import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
+import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -63,7 +64,6 @@ class PageControllerTest {
     Metrics metrics = new Metrics();
     ConfirmationData confirmationData = new ConfirmationData();
     Clock clock = mock(Clock.class);
-    ApplicationDataConsumer applicationDataConsumer = mock(ApplicationDataConsumer.class);
     ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
     ApplicationFactory applicationFactory = mock(ApplicationFactory.class);
     PageEventPublisher pageEventPublisher = mock(PageEventPublisher.class);
@@ -138,17 +138,6 @@ class PageControllerTest {
         InOrder inOrder = inOrder(applicationRepository, pageEventPublisher);
         inOrder.verify(applicationRepository).save(application);
         inOrder.verify(pageEventPublisher).publish(new ApplicationSubmittedEvent(sessionId, applicationId, FlowType.FULL));
-    }
-
-    @Test
-    void shouldNotConsumeApplicationDataIfPageDataIsNotValid() throws Exception {
-        metrics.setStartTimeOnce(Instant.now());
-
-        mockMvc.perform(post("/submit")
-                .param("foo[]", "")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
-
-        verifyNoInteractions(applicationDataConsumer);
     }
 
     @Test

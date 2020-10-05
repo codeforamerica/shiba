@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.output;
 
-import org.codeforamerica.shiba.pages.EmailClient;
+import org.codeforamerica.shiba.pages.emails.EmailClient;
 import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.mock;

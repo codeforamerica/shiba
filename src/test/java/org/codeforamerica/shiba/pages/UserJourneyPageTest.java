@@ -1,7 +1,9 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.Address;
-import org.codeforamerica.shiba.SmartyStreetClient;
+import org.codeforamerica.shiba.pages.emails.MailGunEmailClient;
+import org.codeforamerica.shiba.pages.enrichment.Address;
+import org.codeforamerica.shiba.pages.enrichment.smartystreets.SmartyStreetClient;
+import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

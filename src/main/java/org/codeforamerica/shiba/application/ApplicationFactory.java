@@ -1,11 +1,11 @@
 package org.codeforamerica.shiba.application;
 
-import org.codeforamerica.shiba.Address;
 import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.LocationClient;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.metrics.Metrics;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.enrichment.Address;
+import org.codeforamerica.shiba.pages.enrichment.LocationClient;
 import org.springframework.stereotype.Component;
 
 import java.time.Clock;

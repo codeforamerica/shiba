@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.MnitCountyInformation;
+import org.codeforamerica.shiba.CountyMap;
+import org.codeforamerica.shiba.mnit.MnitCountyInformation;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

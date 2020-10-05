@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.output;
 
-import org.codeforamerica.shiba.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.springframework.stereotype.Component;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
 @Component
-public class MnitDocumentConsumer implements ApplicationDataConsumer {
+public class MnitDocumentConsumer {
 
     private final MnitEsbWebServiceClient mnitClient;
     private final XmlGenerator xmlGenerator;

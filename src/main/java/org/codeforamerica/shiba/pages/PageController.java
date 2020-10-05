@@ -1,6 +1,5 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.ApplicationEnrichment;
 import org.codeforamerica.shiba.ConfirmationData;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
@@ -10,6 +9,11 @@ import org.codeforamerica.shiba.pages.config.*;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.pages.enrichment.ApplicationEnrichment;
+import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
+import org.codeforamerica.shiba.pages.events.PageEventPublisher;
+import org.codeforamerica.shiba.pages.events.SubworkflowCompletedEvent;
+import org.codeforamerica.shiba.pages.events.SubworkflowIterationDeletedEvent;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;

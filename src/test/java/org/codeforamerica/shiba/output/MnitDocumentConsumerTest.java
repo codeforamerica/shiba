@@ -1,8 +1,8 @@
 package org.codeforamerica.shiba.output;
 
 import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;

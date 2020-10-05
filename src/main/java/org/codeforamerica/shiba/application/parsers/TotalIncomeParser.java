@@ -1,9 +1,7 @@
 package org.codeforamerica.shiba.application.parsers;
 
-import org.codeforamerica.shiba.output.TotalIncome;
 import org.codeforamerica.shiba.output.caf.JobIncomeInformation;
-import org.codeforamerica.shiba.output.caf.ParsingConfiguration;
-import org.codeforamerica.shiba.output.caf.ParsingCoordinates;
+import org.codeforamerica.shiba.output.caf.TotalIncome;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.stereotype.Component;
 

@@ -1,12 +1,12 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.ApplicationEnrichment;
-import org.codeforamerica.shiba.Enrichment;
-import org.codeforamerica.shiba.EnrichmentResult;
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
+import org.codeforamerica.shiba.pages.enrichment.ApplicationEnrichment;
+import org.codeforamerica.shiba.pages.enrichment.Enrichment;
+import org.codeforamerica.shiba.pages.enrichment.EnrichmentResult;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.springframework.beans.factory.annotation.Autowired;

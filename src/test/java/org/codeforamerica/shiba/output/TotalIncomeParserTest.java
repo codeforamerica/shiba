@@ -2,9 +2,10 @@ package org.codeforamerica.shiba.output;
 
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
+import org.codeforamerica.shiba.application.parsers.ParsingConfiguration;
 import org.codeforamerica.shiba.application.parsers.TotalIncomeParser;
 import org.codeforamerica.shiba.output.caf.JobIncomeInformation;
-import org.codeforamerica.shiba.output.caf.ParsingConfiguration;
+import org.codeforamerica.shiba.output.caf.TotalIncome;
 import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,6 +44,7 @@ class TotalIncomeParserTest {
     @TestConfiguration
     @PropertySource(value = "classpath:test-parsing-config.yaml", factory = YamlPropertySourceFactory.class)
     static class TestPageConfiguration {
+        @SuppressWarnings("ConfigurationProperties")
         @Bean
         @ConfigurationProperties(prefix = "test-parsing")
         public ParsingConfiguration parsingConfiguration() {

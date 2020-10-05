@@ -2,8 +2,6 @@ package org.codeforamerica.shiba.application.parsers;
 
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibilityParameters;
 import org.codeforamerica.shiba.output.caf.JobIncomeInformation;
-import org.codeforamerica.shiba.output.caf.PageInputCoordinates;
-import org.codeforamerica.shiba.output.caf.ParsingConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.jetbrains.annotations.NotNull;

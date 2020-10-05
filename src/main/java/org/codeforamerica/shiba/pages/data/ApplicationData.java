@@ -2,7 +2,7 @@ package org.codeforamerica.shiba.pages.data;
 
 import lombok.Data;
 import org.codeforamerica.shiba.application.FlowType;
-import org.codeforamerica.shiba.output.caf.PageInputCoordinates;
+import org.codeforamerica.shiba.application.parsers.PageInputCoordinates;
 import org.codeforamerica.shiba.pages.config.NextPage;
 import org.codeforamerica.shiba.pages.config.PageWorkflowConfiguration;
 
