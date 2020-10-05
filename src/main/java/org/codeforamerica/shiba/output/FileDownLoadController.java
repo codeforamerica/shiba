@@ -1,9 +1,9 @@
 package org.codeforamerica.shiba.output;
 
 import lombok.extern.slf4j.Slf4j;
-import org.codeforamerica.shiba.ConfirmationData;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -22,24 +22,24 @@ import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 @Slf4j
 public class FileDownLoadController {
     private final XmlGenerator xmlGenerator;
-    private final ConfirmationData confirmationData;
     private final PdfGenerator pdfGenerator;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final ApplicationData applicationData;
 
     public FileDownLoadController(
             XmlGenerator xmlGenerator,
-            ConfirmationData confirmationData,
             PdfGenerator pdfGenerator,
-            ApplicationEventPublisher applicationEventPublisher) {
+            ApplicationEventPublisher applicationEventPublisher,
+            ApplicationData applicationData) {
         this.xmlGenerator = xmlGenerator;
-        this.confirmationData = confirmationData;
         this.pdfGenerator = pdfGenerator;
         this.applicationEventPublisher = applicationEventPublisher;
+        this.applicationData = applicationData;
     }
 
     @GetMapping("/download")
     ResponseEntity<byte[]> downloadPdf() {
-        ApplicationFile applicationFile = pdfGenerator.generate(confirmationData.getId(), CLIENT);
+        ApplicationFile applicationFile = pdfGenerator.generate(applicationData.getId(), CLIENT);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
@@ -49,7 +49,7 @@ public class FileDownLoadController {
 
     @GetMapping("/download-xml")
     ResponseEntity<byte[]> downloadXml() {
-        ApplicationFile applicationFile = xmlGenerator.generate(confirmationData.getId(), CLIENT);
+        ApplicationFile applicationFile = xmlGenerator.generate(applicationData.getId(), CLIENT);
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", applicationFile.getFileName()))

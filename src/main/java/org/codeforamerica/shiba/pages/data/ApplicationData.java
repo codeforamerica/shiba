@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @Data
 public class ApplicationData {
+    private String id;
     private FlowType flow = null;
     private PagesData pagesData = new PagesData();
     private Subworkflows subworkflows = new Subworkflows();

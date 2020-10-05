@@ -1,6 +1,5 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.ConfirmationData;
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
@@ -62,7 +61,6 @@ class PageControllerTest {
     ApplicationData applicationData = new ApplicationData();
     MockMvc mockMvc;
     Metrics metrics = new Metrics();
-    ConfirmationData confirmationData = new ConfirmationData();
     Clock clock = mock(Clock.class);
     ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
     ApplicationFactory applicationFactory = mock(ApplicationFactory.class);
@@ -80,7 +78,6 @@ class PageControllerTest {
                 metrics,
                 applicationRepository,
                 applicationFactory,
-                confirmationData,
                 messageSource,
                 pageEventPublisher,
                 applicationEnrichment);
@@ -161,7 +158,7 @@ class PageControllerTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
         verify(applicationRepository).save(application);
-        assertThat(confirmationData.getId()).isEqualTo(applicationId);
+        assertThat(applicationData.getId()).isEqualTo(applicationId);
     }
 
     @Test
@@ -171,7 +168,7 @@ class PageControllerTest {
         messageSource.addMessage("success.feedback-success", locale, successMessage);
 
         String applicationId = "14356236";
-        confirmationData.setId(applicationId);
+        applicationData.setId(applicationId);
         Application application = Application.builder()
                 .id("appIdFromDb")
                 .build();
@@ -200,7 +197,7 @@ class PageControllerTest {
         messageSource.addMessage("success.feedback-success", locale, successMessage);
 
         String applicationId = "14356236";
-        confirmationData.setId(applicationId);
+        applicationData.setId(applicationId);
         Application application = Application.builder()
                 .id("appIdFromDb")
                 .build();
@@ -229,7 +226,7 @@ class PageControllerTest {
         messageSource.addMessage("success.feedback-rating-success", locale, ratingSuccessMessage);
 
         String applicationId = "14356236";
-        confirmationData.setId(applicationId);
+        applicationData.setId(applicationId);
         Application application = Application.builder()
                 .id("appIdFromDb")
                 .build();
@@ -249,7 +246,7 @@ class PageControllerTest {
     }
 
     @Test
-    void shouldFailToSubmitFeedbackIfConfirmationDataIdIsNotSet() throws Exception {
+    void shouldFailToSubmitFeedbackIfjIdIsNotSet() throws Exception {
         mockMvc.perform(post("/submit-feedback")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("sentiment", "HAPPY")
@@ -266,7 +263,7 @@ class PageControllerTest {
         messageSource.addMessage("success.feedback-failure", locale, failureMessage);
 
         String applicationId = "14356236";
-        confirmationData.setId(applicationId);
+        applicationData.setId(applicationId);
 
         mockMvc.perform(post("/submit-feedback")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)

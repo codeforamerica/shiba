@@ -25,15 +25,6 @@ public class SessionConfiguration {
             value = SCOPE_SESSION,
             proxyMode = TARGET_CLASS
     )
-    public ConfirmationData confirmationData() {
-        return new ConfirmationData();
-    }
-
-    @Bean
-    @Scope(
-            value = SCOPE_SESSION,
-            proxyMode = TARGET_CLASS
-    )
     public Metrics sessionMetadata() {
         return new Metrics();
     }

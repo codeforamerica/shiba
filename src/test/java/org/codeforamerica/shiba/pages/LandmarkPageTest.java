@@ -1,6 +1,5 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.ConfirmationData;
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
 import org.codeforamerica.shiba.metrics.Metrics;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
@@ -47,20 +46,16 @@ public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
 
     private static ApplicationData applicationData;
     private static Metrics metrics;
-    private static ConfirmationData confirmationData;
 
     @Controller
     static class TestController {
         private final ApplicationData applicationData;
         private final Metrics metrics;
-        private final ConfirmationData confirmationData;
 
         public TestController(ApplicationData applicationData,
-                              Metrics metrics,
-                              ConfirmationData confirmationData) {
+                              Metrics metrics) {
             this.applicationData = applicationData;
             this.metrics = metrics;
-            this.confirmationData = confirmationData;
         }
 
         @GetMapping("/testPath")
@@ -69,13 +64,11 @@ public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
             applicationDataClone.setPagesData(this.applicationData.getPagesData());
             applicationDataClone.setSubworkflows(this.applicationData.getSubworkflows());
             applicationDataClone.setIncompleteIterations(this.applicationData.getIncompleteIterations());
+            applicationDataClone.setId(this.applicationData.getId());
             LandmarkPageTest.applicationData = applicationDataClone;
             Metrics metricsClone = new Metrics();
             metricsClone.setStartTimeOnce(this.metrics.getStartTime());
             LandmarkPageTest.metrics = metricsClone;
-            ConfirmationData confirmationDataClone = new ConfirmationData();
-            confirmationDataClone.setId(this.confirmationData.getId());
-            LandmarkPageTest.confirmationData = confirmationDataClone;
             return "testTerminalPage";
         }
     }
@@ -153,6 +146,5 @@ public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
         driver.navigate().to(baseUrl + "/testPath");
         assertThat(LandmarkPageTest.applicationData).isEqualTo(new ApplicationData());
         assertThat(LandmarkPageTest.metrics).isEqualTo(new Metrics());
-        assertThat(LandmarkPageTest.confirmationData).isEqualTo(new ConfirmationData());
     }
 }

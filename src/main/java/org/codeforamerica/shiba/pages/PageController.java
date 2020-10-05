@@ -1,6 +1,5 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.ConfirmationData;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
@@ -40,7 +39,6 @@ public class PageController {
     private final Metrics metrics;
     private final ApplicationRepository applicationRepository;
     private final ApplicationFactory applicationFactory;
-    private final ConfirmationData confirmationData;
     private final MessageSource messageSource;
     private final PageEventPublisher pageEventPublisher;
     private final ApplicationEnrichment applicationEnrichment;
@@ -52,7 +50,6 @@ public class PageController {
             Metrics metrics,
             ApplicationRepository applicationRepository,
             ApplicationFactory applicationFactory,
-            ConfirmationData confirmationData,
             MessageSource messageSource,
             PageEventPublisher pageEventPublisher,
             ApplicationEnrichment applicationEnrichment) {
@@ -62,7 +59,6 @@ public class PageController {
         this.metrics = metrics;
         this.applicationRepository = applicationRepository;
         this.applicationFactory = applicationFactory;
-        this.confirmationData = confirmationData;
         this.messageSource = messageSource;
         this.pageEventPublisher = pageEventPublisher;
         this.applicationEnrichment = applicationEnrichment;
@@ -111,7 +107,7 @@ public class PageController {
             this.metrics.setStartTimeOnce(clock.instant());
         }
 
-        if (!landmarkPagesConfiguration.isTerminalPage(pageName) && confirmationData.getId() != null) {
+        if (!landmarkPagesConfiguration.isTerminalPage(pageName) && applicationData.getId() != null) {
             return new ModelAndView(String.format("redirect:/pages/%s", landmarkPagesConfiguration.getTerminalPage()));
         } else if (!landmarkPagesConfiguration.isLandingPage(pageName) && metrics.getStartTime() == null) {
             return new ModelAndView(String.format("redirect:/pages/%s", landmarkPagesConfiguration.getLandingPages().get(0)));
@@ -148,7 +144,7 @@ public class PageController {
         ));
 
         if (landmarkPagesConfiguration.isTerminalPage(pageName)) {
-            Application application = applicationRepository.find(confirmationData.getId());
+            Application application = applicationRepository.find(applicationData.getId());
             model.put("applicationId", application.getId());
             model.put("submissionTime", application.getCompletedAt().withZoneSameInstant(CENTRAL_TIMEZONE));
             model.put("county", application.getCounty());
@@ -259,7 +255,7 @@ public class PageController {
         if (pageData.isValid()) {
             String id = applicationRepository.getNextId();
             Application application = applicationFactory.newApplication(id, applicationData, metrics);
-            confirmationData.setId(application.getId());
+            applicationData.setId(application.getId());
             applicationRepository.save(application);
             pageEventPublisher.publish(
                     new ApplicationSubmittedEvent(httpSession.getId(), application.getId(), application.getFlow())
@@ -276,7 +272,7 @@ public class PageController {
                                 RedirectAttributes redirectAttributes,
                                 Locale locale) {
         String terminalPage = applicationConfiguration.getLandmarkPages().getTerminalPage();
-        if (confirmationData.getId() == null) {
+        if (applicationData.getId() == null) {
             return new RedirectView("/pages/" + terminalPage);
         }
         String message = messageSource.getMessage(feedback.getMessageKey(), null, locale);
@@ -285,7 +281,7 @@ public class PageController {
             return new RedirectView("/pages/" + terminalPage);
         }
         redirectAttributes.addFlashAttribute("feedbackSuccess", message);
-        Application application = applicationRepository.find(confirmationData.getId());
+        Application application = applicationRepository.find(applicationData.getId());
         Application updatedApplication = application.addFeedback(feedback);
         applicationRepository.save(updatedApplication);
         return new RedirectView("/pages/" + terminalPage);

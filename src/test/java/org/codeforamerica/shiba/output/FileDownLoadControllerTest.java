@@ -1,8 +1,8 @@
 package org.codeforamerica.shiba.output;
 
-import org.codeforamerica.shiba.ConfirmationData;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,7 +29,7 @@ class FileDownLoadControllerTest {
     MockMvc mockMvc;
 
     XmlGenerator xmlGenerator = mock(XmlGenerator.class);
-    ConfirmationData confirmationData = new ConfirmationData();
+    ApplicationData applicationData = new ApplicationData();
     PdfGenerator pdfGenerator = mock(PdfGenerator.class);
     ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
 
@@ -38,9 +38,9 @@ class FileDownLoadControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(
                 new FileDownLoadController(
                         xmlGenerator,
-                        confirmationData,
                         pdfGenerator,
-                        applicationEventPublisher))
+                        applicationEventPublisher,
+                        applicationData))
                 .setViewResolvers(new InternalResourceViewResolver("", "suffix"))
                 .build();
     }
@@ -53,7 +53,7 @@ class FileDownLoadControllerTest {
                 get("/download"))
                 .andExpect(status().is2xxSuccessful());
 
-        verify(pdfGenerator).generate(confirmationData.getId(), CLIENT);
+        verify(pdfGenerator).generate(applicationData.getId(), CLIENT);
     }
 
     @Test
@@ -138,7 +138,7 @@ class FileDownLoadControllerTest {
                 .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", fileName)))
                 .andReturn();
 
-        verify(xmlGenerator).generate(confirmationData.getId(), CLIENT);
+        verify(xmlGenerator).generate(applicationData.getId(), CLIENT);
         assertThat(result.getResponse().getContentAsByteArray()).isEqualTo(fileBytes);
     }
 }
