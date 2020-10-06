@@ -88,7 +88,7 @@ dependencies {
     implementation 'com.mixpanel:mixpanel-java:1.4.4'
 
     implementation(files(genJaxb.classesDir).builtBy(genJaxb))
-    jaxb "com.sun.xml.bind:jaxb-xjc:2.1.7"
+    jaxb "com.sun.xml.bind:jaxb-xjc:2.3.3"
 
     testImplementation 'org.seleniumhq.selenium:selenium-java:3.141.59'
 
