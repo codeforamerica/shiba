@@ -4,6 +4,7 @@ import org.codeforamerica.shiba.pages.emails.MailGunEmailClient;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.pages.enrichment.smartystreets.SmartyStreetClient;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -57,7 +58,12 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void userCanCompleteTheNonExpeditedFlow() {
-        nonExpeditedFlowToSuccessPage();
+        nonExpeditedFlowToSuccessPage(false);
+    }
+
+    @Test
+    void userCanCompleteTheNonExpeditedHouseholdFlow() {
+        nonExpeditedFlowToSuccessPage(true);
     }
 
     @ParameterizedTest
@@ -66,7 +72,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
             "1, 1, A caseworker will contact you within 3 days to review your application."
     })
     void userCanCompleteTheExpeditedFlow(String moneyMadeLast30Days, String liquidAssets, String expeditedServiceDetermination) {
-        completeFlowFromLandingPageToReviewInfo();
+        completeFlowFromLandingPageThroughReviewInfo();
         driver.findElement(By.linkText("Submit application now with only the above information.")).click();
         driver.findElement(By.linkText("Yes, I want to see if I qualify")).click();
 
@@ -99,7 +105,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     void shouldDownloadPDFWhenClickDownloadMyReceipt() {
         when(clock.instant()).thenReturn(Instant.ofEpochSecond(1243235L));
 
-        SuccessPage successPage = nonExpeditedFlowToSuccessPage();
+        SuccessPage successPage = nonExpeditedFlowToSuccessPage(false);
 
         successPage.downloadReceipt();
 
@@ -116,7 +122,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
                 LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant(),
                 LocalDateTime.of(2020, 1, 1, 10, 15, 30).atOffset(ZoneOffset.UTC).toInstant()
         );
-        SuccessPage successPage = nonExpeditedFlowToSuccessPage();
+        SuccessPage successPage = nonExpeditedFlowToSuccessPage(false);
         successPage.chooseSentiment(Sentiment.HAPPY);
         successPage.submitFeedback();
 
@@ -132,7 +138,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         assertThat(metricsPage.getCardValue("Happy")).contains("100%");
     }
 
-    private void completeFlowFromLandingPageToReviewInfo() {
+
+    private void completeFlowFromLandingPageThroughReviewInfo() {
         Page languagePreferencesPage = testPage
                 .clickPrimaryButton()
                 .clickPrimaryButton();
@@ -144,20 +151,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         chooseProgramPage.selectEnumeratedInput("programs", "Emergency assistance");
         Page introBasicInfo = chooseProgramPage.clickPrimaryButton();
         Page personalInfoPage = introBasicInfo.clickPrimaryButton();
-        personalInfoPage.enterInput("firstName", "defaultFirstName");
-        personalInfoPage.enterInput("lastName", "defaultLastName");
-        personalInfoPage.enterInput("otherName", "defaultOtherName");
-        personalInfoPage.enterDateInput("dateOfBirth", MONTH, "01");
-        personalInfoPage.enterDateInput("dateOfBirth", DAY, "12");
-        personalInfoPage.enterDateInput("dateOfBirth", YEAR, "1928");
-        personalInfoPage.enterInput("ssn", "123456789");
-        personalInfoPage.selectEnumeratedInput("maritalStatus", "Never married");
-        personalInfoPage.selectEnumeratedInput("sex", "Female");
-        personalInfoPage.selectEnumeratedInput("livedInMnWholeLife", "Yes");
-        personalInfoPage.enterDateInput("moveToMnDate", MONTH, "02");
-        personalInfoPage.enterDateInput("moveToMnDate", DAY, "18");
-        personalInfoPage.enterDateInput("moveToMnDate", YEAR, "1776");
-        personalInfoPage.enterInput("moveToMnPreviousCity", "Chicago");
+        fillOutPersonalInfo();
 
         Page contactInfoPage = personalInfoPage.clickPrimaryButton();
         contactInfoPage.enterInput("phoneNumber", "7234567890");
@@ -193,11 +187,50 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         assertThat(driver.findElementById("mailing-address_street").getText()).isEqualTo("smarty street");
     }
 
-    private SuccessPage nonExpeditedFlowToSuccessPage() {
-        completeFlowFromLandingPageToReviewInfo();
+    private void fillOutPersonInfo() {
+        testPage.enterInput("firstName", "defaultFirstName");
+        testPage.enterInput("lastName", "defaultLastName");
+        testPage.enterInput("otherName", "defaultOtherName");
+        testPage.enterDateInput("dateOfBirth", MONTH, "01");
+        testPage.enterDateInput("dateOfBirth", DAY, "12");
+        testPage.enterDateInput("dateOfBirth", YEAR, "1928");
+        testPage.enterInput("ssn", "123456789");
+        testPage.selectEnumeratedInput("maritalStatus", "Never married");
+        testPage.selectEnumeratedInput("sex", "Female");
+        testPage.selectEnumeratedInput("livedInMnWholeLife", "Yes");
+        testPage.enterDateInput("moveToMnDate", MONTH, "02");
+        testPage.enterDateInput("moveToMnDate", DAY, "18");
+        testPage.enterDateInput("moveToMnDate", YEAR, "1776");
+    }
+
+    private void fillOutPersonalInfo() {
+        fillOutPersonInfo();
+        testPage.enterInput("moveToMnPreviousCity", "Chicago");
+    }
+
+    private void fillOutHousemateInfo() {
+        testPage.enterInput("relationship", "housemate");
+        testPage.selectEnumeratedInput("programs", "Emergency assistance");
+        fillOutPersonInfo(); // need to fill out programs checkbox set above first
+        testPage.enterInput("moveToMnPreviousState", "Illinois");
+    }
+
+    private SuccessPage nonExpeditedFlowToSuccessPage(boolean hasHousehold) {
+        completeFlowFromLandingPageThroughReviewInfo();
         driver.findElement(By.linkText("This looks correct")).click();
-        Page introPersonDetailsPage = testPage.choose(YES);
-        Page goingToSchool = introPersonDetailsPage.clickPrimaryButton();
+
+        Page goingToSchool;
+        if (hasHousehold) {
+            Page startHouseholdPage = testPage.choose(NO);
+            Page personPage = startHouseholdPage.clickPrimaryButton();
+            fillOutHousemateInfo();
+            Page householdList = personPage.clickPrimaryButton();
+            goingToSchool = householdList.clickPrimaryButton();
+        } else {
+            Page introPersonalDetailsPage = testPage.choose(YES);
+            goingToSchool = introPersonalDetailsPage.clickPrimaryButton();
+        }
+
         Page pregnant = goingToSchool.choose(NO);
         Page migrantWorker = pregnant.choose(NO);
         Page usCitizen = migrantWorker.choose(NO);

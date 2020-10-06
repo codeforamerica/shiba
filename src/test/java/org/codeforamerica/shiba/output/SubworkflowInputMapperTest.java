@@ -18,7 +18,7 @@ class SubworkflowInputMapperTest {
     private final Subworkflows subworkflows = new Subworkflows();
     private final ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
 
-    SubworkflowInputMapper subworkflowInputMapper = new SubworkflowInputMapper(applicationConfiguration);
+    SubworkflowInputMapper subworkflowInputMapper = new SubworkflowInputMapper(applicationConfiguration, Map.of());
 
     @Test
     void shouldNameSpaceValuesFromEachIteration() {

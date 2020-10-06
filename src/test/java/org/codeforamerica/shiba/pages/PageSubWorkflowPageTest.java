@@ -45,6 +45,24 @@ public class PageSubWorkflowPageTest extends AbstractStaticMessageSourcePageTest
     }
 
     @Test
+    void shouldSupportSoloPageSubworkflow() {
+        navigateTo("soloPage");
+        String sessionId = driver.manage().getCookieNamed("JSESSIONID").getValue();
+        Page endPage = testPage.clickPrimaryButton();
+        verify(pageEventPublisher).publish(new SubworkflowCompletedEvent(sessionId, "group2"));
+    }
+
+    @Test
+    void shouldDeleteLastSubworkflowAndRedirectBackIfNoDataRedirectPageIsNotPresent() {
+        this.staticMessageSource.addMessage("end-page-title", Locale.US, "end-page-title");
+        navigateTo("soloPage");
+        String sessionId = driver.manage().getCookieNamed("JSESSIONID").getValue();
+        Page endSoloPage = testPage.clickPrimaryButton();
+        driver.findElement(By.id("iteration0-delete")).click();
+        assertThat(driver.getTitle()).isEqualTo("end-page-title");
+    }
+
+    @Test
     void shouldCompleteSubflowInAnyOfTheConfiguredCompletePages() {
         navigateTo("startPage");
         Page firstPage = testPage.clickPrimaryButton();

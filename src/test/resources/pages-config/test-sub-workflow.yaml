@@ -31,11 +31,18 @@ shiba-configuration-sub-workflow:
     - &endPage
       name: endPage
       pageTitle:
-        value: some-other-title
+        value: end-page-title
     - &testWarningPage
       name: testWarningPage
       pageTitle:
         value: some-warning-title
+    - &soloPage
+      name: soloPage
+      pageTitle:
+        value: solo-page-title
+      inputs:
+        - name: input-solo
+          type: TEXT
   workflow:
     earlierPage:
       pageConfiguration:
@@ -84,6 +91,17 @@ shiba-configuration-sub-workflow:
         - pageName: endPage
       datasources:
         - groupName: group1
+    soloPage:
+      groupName: group2
+      pageConfiguration: *soloPage
+      nextPages:
+        - pageName: endSoloPage
+    endSoloPage:
+      pageConfiguration: *endPage
+      nextPages:
+        - pageName: startPage
+      datasources:
+        - groupName: group2
   pageGroups:
     group1:
       noDataRedirectPage: testWarningPage
@@ -93,5 +111,9 @@ shiba-configuration-sub-workflow:
       startPage: firstPage
       redirectPage: testWarningPage
       restartPage: startPage
+    group2:
+      startPage: soloPage
+      completePages:
+        - soloPage
   landmarkPages:
     startTimerPage: earlierPage

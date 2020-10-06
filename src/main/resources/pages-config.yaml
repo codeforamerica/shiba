@@ -189,7 +189,7 @@ shiba-configuration:
             - name: moveToMnPreviousCity
               type: TEXT
               promptMessage:
-                promptMessageKey: personal-info.what-city-did-you-move-from
+                promptMessageKey: personal-info.what-state-did-you-move-from
     - &contactInfo
       name: contactInfo
       pageTitle:
@@ -501,6 +501,10 @@ shiba-configuration:
             - value: NONE
               messageKey: general.inputs.none-of-the-above
               isNone: true
+    - &householdList
+      name: householdList
+      pageTitle:
+        value: household-list.title
     - &introPersonalDetails
       name: introPersonalDetails
       pageTitle:
@@ -1494,8 +1498,17 @@ shiba-configuration:
         - pageName: householdMemberInfo
     householdMemberInfo:
       pageConfiguration: *householdMemberInfo
+      groupName: household
       nextPages:
+        - pageName: householdList
+    householdList:
+      pageConfiguration: *householdList
+      nextPages:
+        - pageName: householdMemberInfo
         - pageName: goingToSchool
+      datasources:
+        - groupName: household
+        - pageName: personalInfo
     introPersonalDetails:
       pageConfiguration: *introPersonalDetails
       nextPages:
@@ -1853,6 +1866,10 @@ shiba-configuration:
       redirectPage: warningPage
       noDataRedirectPage: noDataWarningPage
       restartPage: incomeByJob
+    household:
+      startPage: householdMemberInfo
+      completePages:
+        - householdMemberInfo
   landmarkPages:
     startTimerPage: languagePreferences
     landingPages:

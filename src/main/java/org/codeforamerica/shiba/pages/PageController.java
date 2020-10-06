@@ -30,6 +30,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
+import static java.util.Optional.ofNullable;
+
 @Controller
 public class PageController {
     private static final ZoneId CENTRAL_TIMEZONE = ZoneId.of("America/Chicago");
@@ -82,7 +84,7 @@ public class PageController {
         PageWorkflowConfiguration pageWorkflow = this.applicationConfiguration.getPageWorkflow(pageName);
         PagesData pagesData = this.applicationData.getPagesData();
         NextPage nextPage = applicationData.getNextPageName(pageWorkflow, option);
-        Optional.ofNullable(nextPage.getFlow()).ifPresent(applicationData::setFlow);
+        ofNullable(nextPage.getFlow()).ifPresent(applicationData::setFlow);
         PageWorkflowConfiguration nextPageWorkflow = this.applicationConfiguration.getPageWorkflow(nextPage.getPageName());
 
         if (pagesData.shouldSkip(nextPageWorkflow)) {
@@ -184,14 +186,14 @@ public class PageController {
             @RequestHeader("referer") String referer,
             HttpSession httpSession
     ) {
-        if (this.applicationData.getSubworkflows().get(groupName).size() == 1) {
-            String redirectPage = applicationConfiguration.getPageGroups().get(groupName).getNoDataRedirectPage();
-
-            return new ModelAndView("redirect:/pages/" + redirectPage);
+        Optional<String> noDataRedirectPage = ofNullable(applicationConfiguration.getPageGroups().get(groupName).getNoDataRedirectPage());
+        if (this.applicationData.getSubworkflows().get(groupName).size() == 1 && noDataRedirectPage.isPresent()) {
+            return new ModelAndView("redirect:/pages/" + noDataRedirectPage.get());
+        } else {
+            this.applicationData.getSubworkflows().get(groupName).remove(iteration);
+            pageEventPublisher.publish(new SubworkflowIterationDeletedEvent(httpSession.getId(), groupName));
+            return new ModelAndView("redirect:" + referer);
         }
-        this.applicationData.getSubworkflows().get(groupName).remove(iteration);
-        pageEventPublisher.publish(new SubworkflowIterationDeletedEvent(httpSession.getId(), groupName));
-        return new ModelAndView("redirect:" + referer);
     }
 
     @PostMapping("/pages/{pageName}")
@@ -229,7 +231,7 @@ public class PageController {
         }
 
         if (pageData.isValid()) {
-            Optional.ofNullable(pageWorkflow.getEnrichment())
+            ofNullable(pageWorkflow.getEnrichment())
                     .map(applicationEnrichment::getEnrichment)
                     .map(enrichment -> enrichment.process(applicationData))
                     .ifPresent(pageData::putAll);
