@@ -56,4 +56,8 @@ public class ApplicationInput {
                 .map(name -> this.getIteration() != null ? name + "_" + this.getIteration() : name)
                 .collect(Collectors.toList());
     }
+
+    public String getValue(int i) {
+        return getValue().get(i);
+    }
 }

@@ -4,35 +4,28 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.metrics.Metrics;
 import org.codeforamerica.shiba.pages.data.*;
-import org.codeforamerica.shiba.pages.enrichment.Address;
-import org.codeforamerica.shiba.pages.enrichment.LocationClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.*;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.County.HENNEPIN;
-import static org.codeforamerica.shiba.County.OTHER;
-import static org.mockito.ArgumentMatchers.any;
+import static org.codeforamerica.shiba.County.Hennepin;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class ApplicationFactoryTest {
 
     Clock clock = mock(Clock.class);
-    LocationClient locationClient = mock(LocationClient.class);
-
-    Map<String, County> countyZipCodeMap = new HashMap<>();
 
     @SuppressWarnings("unchecked")
-    ApplicationDataParser<Address> homeAddressParser = mock(ApplicationDataParser.class);
+    ApplicationDataParser<County> countyParser = mock(ApplicationDataParser.class);
 
-    ApplicationFactory applicationFactory = new ApplicationFactory(clock, countyZipCodeMap, locationClient, homeAddressParser);
+    ApplicationFactory applicationFactory = new ApplicationFactory(
+            clock,
+            countyParser);
 
     ApplicationData applicationData = new ApplicationData();
 
@@ -57,7 +50,6 @@ class ApplicationFactoryTest {
 
         when(clock.instant()).thenReturn(Instant.now());
         when(clock.getZone()).thenReturn(zoneOffset);
-        when(homeAddressParser.parse(any())).thenReturn(new Address("", "", "", "something",""));
     }
 
     @Test
@@ -101,41 +93,11 @@ class ApplicationFactoryTest {
     }
 
     @Test
-    void shouldUseLocationClientToGetCounty() {
-        when(locationClient.getCounty(any())).thenReturn(Optional.of("Hennepin"));
+    void shouldParseCounty() {
+        when(countyParser.parse(applicationData)).thenReturn(Hennepin);
 
         Application application = applicationFactory.newApplication("", applicationData, defaultMetrics);
 
-        assertThat(application.getCounty()).isEqualTo(HENNEPIN);
-    }
-
-    @Test
-    void shouldProvideCountyThroughMappingWhenLocationCountyIsNotDetermined() {
-        String zipCode = "12345";
-        countyZipCodeMap.put(zipCode, HENNEPIN);
-        PageData homeAddress = new PageData();
-        homeAddress.put("zipCode", InputData.builder().value(List.of(zipCode)).build());
-        pagesData.put("homeAddress", homeAddress);
-
-        when(locationClient.getCounty(any())).thenReturn(Optional.empty());
-        when(homeAddressParser.parse(applicationData)).thenReturn(new Address("", "", "", zipCode, ""));
-
-        Application application = applicationFactory.newApplication("", applicationData, defaultMetrics);
-
-        assertThat(application.getCounty()).isEqualTo(HENNEPIN);
-    }
-
-    @Test
-    void shouldProvideCountyThroughMappingWhenLocationCountyIsNotDetermined_labelCountyAsOtherWhenZipCodeHasNoMapping() {
-        String zipCode = "12345";
-        PageData homeAddress = new PageData();
-        homeAddress.put("zipCode", InputData.builder().value(List.of(zipCode)).build());
-        pagesData.put("homeAddress", homeAddress);
-
-        when(locationClient.getCounty(any())).thenReturn(Optional.empty());
-
-        Application application = applicationFactory.newApplication("", applicationData, defaultMetrics);
-
-        assertThat(application.getCounty()).isEqualTo(OTHER);
+        assertThat(application.getCounty()).isEqualTo(Hennepin);
     }
 }

@@ -39,7 +39,7 @@ public class ExpeditedEligibilityParser extends ApplicationDataParser<Optional<E
 
         double housingCosts = getDouble(applicationData, coordinatesMap.get("housingCosts"));
         boolean isMigrantWorker = Boolean.parseBoolean(pagesData.getPage(coordinatesMap.get("migrantWorker").getPageName())
-                .get(coordinatesMap.get("migrantWorker").getInputName()).getValue().get(0));
+                .get(coordinatesMap.get("migrantWorker").getInputName()).getValue(0));
         @NotNull List<String> utilityExpensesSelections = pagesData.getPage(coordinatesMap.get("utilityExpensesSelections").getPageName())
                 .get(coordinatesMap.get("utilityExpensesSelections").getInputName()).getValue();
         return Optional.of(new ExpeditedEligibilityParameters(assets, income, jobIncomeInformationParser.parse(applicationData), isMigrantWorker, housingCosts, utilityExpensesSelections));

@@ -42,7 +42,7 @@ class MnitDocumentConsumerTest {
                 .id("someId")
                 .completedAt(ZonedDateTime.now())
                 .applicationData(new ApplicationData())
-                .county(County.OLMSTED)
+                .county(County.Olmsted)
                 .timeToComplete(null)
                 .build();
 
@@ -57,7 +57,7 @@ class MnitDocumentConsumerTest {
                 .id("someId")
                 .completedAt(ZonedDateTime.now())
                 .applicationData(new ApplicationData())
-                .county(County.OLMSTED)
+                .county(County.Olmsted)
                 .timeToComplete(null)
                 .build();
 
@@ -76,12 +76,12 @@ class MnitDocumentConsumerTest {
                 .id("someId")
                 .completedAt(ZonedDateTime.now())
                 .applicationData(new ApplicationData())
-                .county(County.OLMSTED)
+                .county(County.Olmsted)
                 .timeToComplete(null)
                 .build();
         documentConsumer.process(application);
 
-        verify(mnitClient).send(pdfApplicationFile, County.OLMSTED);
-        verify(mnitClient).send(xmlApplicationFile, County.OLMSTED);
+        verify(mnitClient).send(pdfApplicationFile, County.Olmsted);
+        verify(mnitClient).send(xmlApplicationFile, County.Olmsted);
     }
 }

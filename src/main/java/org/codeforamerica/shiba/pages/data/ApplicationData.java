@@ -24,7 +24,7 @@ public class ApplicationData {
 
     public String getValue(PageInputCoordinates pageInputCoordinates) {
         return Optional.ofNullable(this.getInputDataMap(pageInputCoordinates.getPageName()))
-                .map(pageData -> pageData.get(pageInputCoordinates.getInputName()).getValue().get(0))
+                .map(pageData -> pageData.get(pageInputCoordinates.getInputName()).getValue(0))
                 .orElse(pageInputCoordinates.getDefaultValue());
     }
 

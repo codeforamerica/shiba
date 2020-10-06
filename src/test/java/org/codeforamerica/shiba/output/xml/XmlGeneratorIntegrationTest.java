@@ -114,7 +114,7 @@ public class XmlGeneratorIntegrationTest {
                 .id(applicationId)
                 .completedAt(ZonedDateTime.now(clock))
                 .applicationData(applicationData)
-                .county(County.OTHER)
+                .county(County.Other)
                 .timeToComplete(Duration.ofSeconds(534))
                 .build();
         applicationRepository.save(application);

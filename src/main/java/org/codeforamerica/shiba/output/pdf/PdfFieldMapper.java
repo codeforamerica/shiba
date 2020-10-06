@@ -24,7 +24,7 @@ public class PdfFieldMapper {
                     case ENUMERATED_MULTI_VALUE -> input.getValue().stream()
                             .map(value -> new BinaryPdfField(input.getMultiValuePdfName(pdfFieldMap, value)));
                     default -> input.getPdfName(pdfFieldMap).stream().map(pdfName ->
-                            new SimplePdfField(pdfName, enumMap.getOrDefault(input.getValue().get(0), input.getValue().get(0))));
+                            new SimplePdfField(pdfName, enumMap.getOrDefault(input.getValue(0), input.getValue(0))));
                 })
                 .filter(pdfField -> pdfField.getName() != null)
                 .collect(Collectors.toList());

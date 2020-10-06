@@ -31,7 +31,7 @@ class CoverPageInputsMapperTest {
     @BeforeEach
     void setUp() {
         applicationData.setPagesData(pagesData);
-        countyInstructionsMapping.getCounties().put(County.OTHER, Map.of(
+        countyInstructionsMapping.getCounties().put(County.Other, Map.of(
                 Recipient.CLIENT, "other client instructions",
                 Recipient.CASEWORKER, "other caseworker instructions"));
 
@@ -53,7 +53,7 @@ class CoverPageInputsMapperTest {
                 .id("someId")
                 .completedAt(ZonedDateTime.now())
                 .applicationData(applicationData)
-                .county(County.OTHER)
+                .county(County.Other)
                 .timeToComplete(null)
                 .build();
 
@@ -74,12 +74,12 @@ class CoverPageInputsMapperTest {
                 .id("someId")
                 .completedAt(ZonedDateTime.now())
                 .applicationData(applicationData)
-                .county(County.OLMSTED)
+                .county(County.Olmsted)
                 .timeToComplete(null)
                 .build();
         String clientCountyInstructions = "olmsted client instructions";
         String caseworkerCountyInstructions = "olmsted caseworker instructions";
-        countyInstructionsMapping.getCounties().put(County.OLMSTED, Map.of(
+        countyInstructionsMapping.getCounties().put(County.Olmsted, Map.of(
                 Recipient.CLIENT, clientCountyInstructions,
                 Recipient.CASEWORKER, caseworkerCountyInstructions
         ));
@@ -116,7 +116,7 @@ class CoverPageInputsMapperTest {
                 .id("someId")
                 .completedAt(ZonedDateTime.now())
                 .applicationData(applicationData)
-                .county(County.OTHER)
+                .county(County.Other)
                 .timeToComplete(null)
                 .build();
 

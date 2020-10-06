@@ -44,10 +44,10 @@ import static org.springframework.ws.test.client.RequestMatchers.xpath;
         "mnit-esb.url=some-url",
         "mnit-esb.username=someUsername",
         "mnit-esb.password=somePassword",
-        "test.counties.HENNEPIN.folderId=hennepin-folder-id",
-        "test.counties.HENNEPIN.dhsProviderId=whatever-dhs",
-        "test.counties.OLMSTED.folderId=olmsted-folder-id",
-        "test.counties.OLMSTED.dhsProviderId=olmsted-dhs-provider-id"
+        "test.counties.Hennepin.folderId=hennepin-folder-id",
+        "test.counties.Hennepin.dhsProviderId=whatever-dhs",
+        "test.counties.Olmsted.folderId=olmsted-folder-id",
+        "test.counties.Olmsted.dhsProviderId=olmsted-dhs-provider-id"
 })
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
@@ -106,7 +106,7 @@ class MnitEsbWebServiceClientTest {
 
         mnitEsbWebServiceClient.send(
                 new ApplicationFile(fileContent.getBytes(), fileName),
-                County.OLMSTED
+                County.Olmsted
         );
 
         mockWebServiceServer.verify();
@@ -146,7 +146,7 @@ class MnitEsbWebServiceClientTest {
 
         mnitEsbWebServiceClient.send(new ApplicationFile(
                 "whatever".getBytes(),
-                "someFileName"), County.HENNEPIN);
+                "someFileName"), County.Hennepin);
 
         mockWebServiceServer.verify();
     }

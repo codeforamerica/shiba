@@ -80,8 +80,8 @@ public class SmartyStreetClient implements LocationClient {
                             components.getZipcode() + "-" + components.getPlus4Code(),
                             Stream.of(components.getSecondaryDesignator(), components.getSecondaryNumber())
                                     .filter(Objects::nonNull)
-                                    .collect(Collectors.joining(" "))
-                    );
+                                    .collect(Collectors.joining(" ")),
+                            addressCandidate.getMetadata().getCountyName());
                 });
     }
 }

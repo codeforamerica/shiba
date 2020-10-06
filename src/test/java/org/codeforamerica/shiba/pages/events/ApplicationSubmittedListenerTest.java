@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.Optional.empty;
-import static org.codeforamerica.shiba.County.HENNEPIN;
-import static org.codeforamerica.shiba.County.OTHER;
+import static org.codeforamerica.shiba.County.Hennepin;
+import static org.codeforamerica.shiba.County.Other;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 import static org.mockito.Mockito.*;
@@ -153,7 +153,7 @@ class ApplicationSubmittedListenerTest {
             applicationData.setPagesData(pagesData);
             String appIdFromDb = "id";
             String fullName = "Testy McTesterson";
-            County recipientCounty = HENNEPIN;
+            County recipientCounty = Hennepin;
             String email = "someEmail";
             countyMap.getCounties().put(recipientCounty, MnitCountyInformation.builder().email(email).build());
             Application application = Application.builder()
@@ -205,7 +205,7 @@ class ApplicationSubmittedListenerTest {
             when(applicationRepository.find(applicationId)).thenReturn(
                     Application.builder()
                             .id(applicationId)
-                            .county(OTHER)
+                            .county(Other)
                             .completedAt(submissionTime)
                             .build()
             );
@@ -222,7 +222,7 @@ class ApplicationSubmittedListenerTest {
             ZonedDateTime submissionTime = ZonedDateTime.now();
             when(applicationRepository.find(applicationId)).thenReturn(
                     Application.builder()
-                            .county(HENNEPIN)
+                            .county(Hennepin)
                             .completedAt(submissionTime)
                             .build()
             );
@@ -247,7 +247,7 @@ class ApplicationSubmittedListenerTest {
             when(applicationRepository.find(any())).thenReturn(
                     Application.builder()
                             .id("appId")
-                            .county(OTHER)
+                            .county(Other)
                             .completedAt(ZonedDateTime.now())
                             .build()
             );

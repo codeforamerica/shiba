@@ -59,6 +59,6 @@ class MailingAddressParserTest {
 
         Address address = mailingAddressParser.parse(applicationData);
 
-        assertThat(address).isEqualTo(new Address(street, city, state, zipcode, apartment));
+        assertThat(address).isEqualTo(new Address(street, city, state, zipcode, apartment, null));
     }
 }

@@ -61,7 +61,7 @@ public class XmlGenerator implements FileGenerator {
                             case DATE_VALUE -> Stream.of(new AbstractMap.SimpleEntry<>(
                                     getXmlToken(input, config.get(defaultXmlConfigKey)),
                                     String.join("/", input.getValue())));
-                            case ENUMERATED_SINGLE_VALUE -> Optional.ofNullable(enumMappings.get(input.getValue().get(0)))
+                            case ENUMERATED_SINGLE_VALUE -> Optional.ofNullable(enumMappings.get(input.getValue(0)))
                                     .map(mappedValue -> new AbstractMap.SimpleEntry<>(
                                             getXmlToken(input, config.get(defaultXmlConfigKey)),
                                             mappedValue))
@@ -73,7 +73,7 @@ public class XmlGenerator implements FileGenerator {
                                         .filter(entry -> entry.getValue() != null);
                             default -> Stream.of(new AbstractMap.SimpleEntry<>(
                                     getXmlToken(input, config.get(defaultXmlConfigKey)),
-                                    input.getValue().get(0)));
+                                    input.getValue(0)));
                         };
                     })
                     .filter(xmlTokenToInputValueEntry -> xmlTokenToInputValueEntry.getKey() != null)

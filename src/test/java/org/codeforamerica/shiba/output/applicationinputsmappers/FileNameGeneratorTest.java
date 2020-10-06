@@ -22,7 +22,7 @@ import java.util.Map;
 
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.County.HENNEPIN;
+import static org.codeforamerica.shiba.County.Hennepin;
 
 class FileNameGeneratorTest {
 
@@ -76,7 +76,7 @@ class FileNameGeneratorTest {
     @Test
     void shouldIncludeCorrectCountyNPI() {
         String countyNPI = "someNPI";
-        County county = HENNEPIN;
+        County county = Hennepin;
         countyMap.getCounties().put(county, MnitCountyInformation.builder().dhsProviderId(countyNPI).build());
         Application application = defaultApplicationBuilder.county(county).build();
 
@@ -109,7 +109,7 @@ class FileNameGeneratorTest {
         applicationData.setPagesData(new PagesData(Map.of("choosePrograms", chooseProgramsData)));
 
         String countyNPI = "someNPI";
-        County county = HENNEPIN;
+        County county = Hennepin;
         countyMap.getCounties().put(county, MnitCountyInformation.builder().dhsProviderId(countyNPI).build());
 
         String applicationId = "someId";

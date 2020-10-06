@@ -92,6 +92,8 @@ dependencies {
 
     testImplementation 'org.seleniumhq.selenium:selenium-java:3.141.59'
 
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }

@@ -27,7 +27,7 @@ class ApplicationInputsMappersTest {
                 .id("someId")
                 .completedAt(ZonedDateTime.now())
                 .applicationData(new ApplicationData())
-                .county(County.OLMSTED)
+                .county(County.Olmsted)
                 .timeToComplete(null)
                 .build(), CLIENT);
 
@@ -80,7 +80,7 @@ class ApplicationInputsMappersTest {
                 .id("someId")
                 .completedAt(ZonedDateTime.now())
                 .applicationData(new ApplicationData())
-                .county(County.OLMSTED)
+                .county(County.Olmsted)
                 .timeToComplete(null)
                 .build();
         applicationInputsMappers.map(application, CASEWORKER);

@@ -97,7 +97,7 @@ class ApplicationRepositoryTest {
                 .id("someid")
                 .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
                 .applicationData(applicationData)
-                .county(OLMSTED)
+                .county(Olmsted)
                 .timeToComplete(Duration.ofSeconds(12415))
                 .build();
 
@@ -120,7 +120,7 @@ class ApplicationRepositoryTest {
                 .id("someid")
                 .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
                 .applicationData(applicationData)
-                .county(OLMSTED)
+                .county(Olmsted)
                 .timeToComplete(Duration.ofSeconds(12415))
                 .sentiment(Sentiment.HAPPY)
                 .feedback("so so happy")
@@ -147,7 +147,7 @@ class ApplicationRepositoryTest {
                 .id(applicationId)
                 .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
                 .applicationData(applicationData)
-                .county(OLMSTED)
+                .county(Olmsted)
                 .timeToComplete(Duration.ofSeconds(12415))
                 .sentiment(Sentiment.MEH)
                 .feedback("someFeedback")
@@ -164,7 +164,7 @@ class ApplicationRepositoryTest {
                 .id(application.getId())
                 .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
                 .applicationData(updatedApplicationData)
-                .county(HENNEPIN)
+                .county(Hennepin)
                 .timeToComplete(Duration.ofSeconds(421))
                 .sentiment(Sentiment.HAPPY)
                 .feedback("someUpdatedFeedback")
@@ -199,7 +199,7 @@ class ApplicationRepositoryTest {
                     .id("someid")
                     .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
                     .applicationData(applicationData)
-                    .county(OLMSTED)
+                    .county(Olmsted)
                     .timeToComplete(Duration.ofSeconds(1))
                     .build();
 
@@ -215,7 +215,7 @@ class ApplicationRepositoryTest {
                     .id("someid")
                     .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
                     .applicationData(applicationData)
-                    .county(OLMSTED)
+                    .county(Olmsted)
                     .timeToComplete(Duration.ofSeconds(1))
                     .build();
             byte[] expectedEncryptedData = "here is the encrypted data".getBytes();
@@ -238,7 +238,7 @@ class ApplicationRepositoryTest {
                     .id(applicationId)
                     .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
                     .applicationData(applicationData)
-                    .county(OLMSTED)
+                    .county(Olmsted)
                     .timeToComplete(Duration.ofSeconds(1))
                     .build();
             byte[] encryptedData = "here is the encrypted data".getBytes();
@@ -263,7 +263,7 @@ class ApplicationRepositoryTest {
                     .id(applicationId)
                     .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
                     .applicationData(applicationData)
-                    .county(OLMSTED)
+                    .county(Olmsted)
                     .timeToComplete(Duration.ofSeconds(1))
                     .build();
             ApplicationData decryptedApplicationData = new ApplicationData();
@@ -285,7 +285,7 @@ class ApplicationRepositoryTest {
     @ActiveProfiles("test")
     @Sql(statements = {"TRUNCATE TABLE applications"})
     class MetricsQueries {
-        County defaultCounty = County.OTHER;
+        County defaultCounty = County.Other;
 
         ZonedDateTime defaultCompletedAt = ZonedDateTime.now(ZoneOffset.UTC);
 
@@ -380,7 +380,7 @@ class ApplicationRepositoryTest {
                     .id("someId1")
                     .applicationData(new ApplicationData())
                     .timeToComplete(defaultDuration)
-                    .county(OLMSTED)
+                    .county(Olmsted)
                     .completedAt(defaultCompletedAt)
                     .build();
             Application application2 = Application.builder()
@@ -394,14 +394,14 @@ class ApplicationRepositoryTest {
                     .id("someId3")
                     .applicationData(new ApplicationData())
                     .timeToComplete(defaultDuration)
-                    .county(HENNEPIN)
+                    .county(Hennepin)
                     .completedAt(defaultCompletedAt)
                     .build();
             Application application4 = Application.builder()
                     .id("someId4")
                     .applicationData(new ApplicationData())
                     .timeToComplete(defaultDuration)
-                    .county(HENNEPIN)
+                    .county(Hennepin)
                     .completedAt(defaultCompletedAt)
                     .build();
 
@@ -412,9 +412,9 @@ class ApplicationRepositoryTest {
 
             assertThat(applicationRepository.countByCounty()).isEqualTo(
                     Map.of(
-                            HENNEPIN, 2,
-                            OLMSTED, 1,
-                            OTHER, 1
+                            Hennepin, 2,
+                            Olmsted, 1,
+                            Other, 1
                     )
             );
         }
@@ -431,21 +431,21 @@ class ApplicationRepositoryTest {
                     .id("someId1")
                     .applicationData(new ApplicationData())
                     .timeToComplete(defaultDuration)
-                    .county(OLMSTED)
+                    .county(Olmsted)
                     .completedAt(ZonedDateTime.of(2019, 12, 29, 5, 59, 59, 0, ZoneId.of("UTC")))
                     .build();
             Application application2 = Application.builder()
                     .id("someId2")
                     .applicationData(new ApplicationData())
                     .timeToComplete(defaultDuration)
-                    .county(OLMSTED)
+                    .county(Olmsted)
                     .completedAt(ZonedDateTime.of(2019, 12, 29, 6, 0, 0, 0, ZoneId.of("UTC")))
                     .build();
             Application application3 = Application.builder()
                     .id("someId3")
                     .applicationData(new ApplicationData())
                     .timeToComplete(defaultDuration)
-                    .county(HENNEPIN)
+                    .county(Hennepin)
                     .completedAt(ZonedDateTime.of(2019, 12, 31, 17, 59, 59, 0, ZoneId.of("UTC")))
                     .build();
 
@@ -455,8 +455,8 @@ class ApplicationRepositoryTest {
 
             assertThat(applicationRepository.countByCountyWeekToDate(ZoneId.of("America/Chicago"))).isEqualTo(
                     Map.of(
-                            HENNEPIN, 1,
-                            OLMSTED, 1
+                            Hennepin, 1,
+                            Olmsted, 1
                     )
             );
         }

@@ -57,35 +57,6 @@ class SmartyStreetClientTest {
     }
 
     @Test
-    void retrieveCountyByAddress() {
-        ApplicationData applicationData = new ApplicationData();
-        applicationData.setPagesData(new PagesData(Map.of("something", new PageData())));
-
-        String street = "1725 Slough Avenue";
-        String city = "Scranton";
-        String state = "PA";
-        String zipcode = "91402";
-        Address address = new Address(street, city, state, zipcode, null);
-        wireMockServer.stubFor(get(anyUrl())
-                .willReturn(okJson("[{\"metadata\": {\"county_name\": \"Cook\"}}]"))
-        );
-
-        String county = smartyStreetClient.getCounty(address).get();
-
-        wireMockServer.verify(getRequestedFor(urlPathEqualTo("/"))
-                .withQueryParam("auth-id", equalTo(authId))
-                .withQueryParam("auth-token", equalTo(authToken))
-                .withQueryParam("street", equalTo(street))
-                .withQueryParam("city", equalTo(city))
-                .withQueryParam("state", equalTo(state))
-                .withQueryParam("zipcode", equalTo(zipcode))
-                .withQueryParam("candidates", equalTo("1"))
-        );
-
-        assertThat(county).isEqualTo("Cook");
-    }
-
-    @Test
     void shouldReturnEmptyOptional_whenNoAddressIsReturned() {
         ApplicationData applicationData = new ApplicationData();
         applicationData.setPagesData(new PagesData(Map.of("something", new PageData())));
@@ -94,10 +65,10 @@ class SmartyStreetClientTest {
         String city = "Scranton";
         String state = "PA";
         String zipcode = "91402";
-        Address address = new Address(street, city, state, zipcode, null);
+        Address address = new Address(street, city, state, zipcode, null, null);
         wireMockServer.stubFor(get(anyUrl()).willReturn(okJson("[]")));
 
-        Optional<String> county = smartyStreetClient.getCounty(address);
+        Optional<Address> county = smartyStreetClient.validateAddress(address);
 
         assertThat(county).isEmpty();
     }
@@ -111,10 +82,10 @@ class SmartyStreetClientTest {
         String city = "Scranton";
         String state = "PA";
         String zipcode = "91402";
-        Address address = new Address(street, city, state, zipcode, null);
+        Address address = new Address(street, city, state, zipcode, null, null);
         wireMockServer.stubFor(get(anyUrl()).willReturn(status(200)));
 
-        Optional<String> county = smartyStreetClient.getCounty(address);
+        Optional<Address> county = smartyStreetClient.validateAddress(address);
 
         assertThat(county).isEmpty();
     }
@@ -125,10 +96,10 @@ class SmartyStreetClientTest {
         String city = "Scranton";
         String state = "PA";
         String zipcode = "91402";
-        Address address = new Address(street, city, state, zipcode, null);
+        Address address = new Address(street, city, state, zipcode, null, null);
         wireMockServer.stubFor(get(anyUrl()).willReturn(status(400)));
 
-        Optional<String> county = smartyStreetClient.getCounty(address);
+        Optional<Address> county = smartyStreetClient.validateAddress(address);
 
         assertThat(county).isEmpty();
     }
@@ -143,10 +114,11 @@ class SmartyStreetClientTest {
         String state = "PA";
         String zipcode = "91402";
         String apartmentNumber = "apt 1104";
-        Address address = new Address(street, city, state, zipcode, apartmentNumber);
+        Address address = new Address(street, city, state, zipcode, apartmentNumber, null);
         wireMockServer.stubFor(get(anyUrl())
                 .willReturn(okJson("[\n" +
                         "  {\n" +
+                        "    \"metadata\": {\"county_name\": \"Cook\"},\n" +
                         "    \"components\": {\n" +
                         "      \"primary_number\": \"222\",\n" +
                         "      \"street_name\": \"Merchandise Mart\",\n" +
@@ -175,7 +147,13 @@ class SmartyStreetClientTest {
                 .withQueryParam("secondary", equalTo(apartmentNumber))
         );
 
-        assertThat(resultAddress).isEqualTo(new Address("222 Merchandise Mart Plz", "Chicago", "IL", "60654-1103", "apt 1104"));
+        assertThat(resultAddress).isEqualTo(new Address(
+                "222 Merchandise Mart Plz",
+                "Chicago",
+                "IL",
+                "60654-1103",
+                "apt 1104",
+                "Cook"));
     }
 
     @Test
@@ -187,10 +165,11 @@ class SmartyStreetClientTest {
         String city = "Scranton";
         String state = "PA";
         String zipcode = "91402";
-        Address address = new Address(street, city, state, zipcode, null);
+        Address address = new Address(street, city, state, zipcode, null, null);
         wireMockServer.stubFor(get(anyUrl())
                 .willReturn(okJson("[\n" +
                         "  {\n" +
+                        "    \"metadata\": {\"county_name\": \"Cook\"},\n" +
                         "    \"components\": {\n" +
                         "      \"primary_number\": \"222\",\n" +
                         "      \"street_name\": \"Merchandise Mart\",\n" +
@@ -217,6 +196,6 @@ class SmartyStreetClientTest {
                 .withQueryParam("secondary", equalTo(""))
         );
 
-        assertThat(resultAddress).isEqualTo(new Address("222 Merchandise Mart Plz", "Chicago", "IL", "60654-1103", ""));
+        assertThat(resultAddress).isEqualTo(new Address("222 Merchandise Mart Plz", "Chicago", "IL", "60654-1103", "", "Cook"));
     }
 }

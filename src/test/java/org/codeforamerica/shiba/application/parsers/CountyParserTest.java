@@ -1,11 +1,11 @@
 package org.codeforamerica.shiba.application.parsers;
 
+import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
-import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +24,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(properties = {"spring.main.allow-bean-definition-overriding=true"})
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
-class HomeAddressParserTest {
+class CountyParserTest {
     @Autowired
-    HomeAddressParser homeAddressParser;
+    CountyParser countyParser;
 
     @TestConfiguration
     @PropertySource(value = "classpath:test-parsing-config.yaml", factory = YamlPropertySourceFactory.class)
@@ -40,25 +40,29 @@ class HomeAddressParserTest {
     }
 
     @Test
-    void shouldParseApplicationData() {
+    void shouldParseCounty() {
         ApplicationData applicationData = new ApplicationData();
         PagesData pagesData = new PagesData();
         PageData homePageData = new PageData();
-        String street = "street address";
-        String city = "city address";
-        String state = "state address";
-        String zipcode = "zipcode address";
-        String apartmentNumber = "apartment number";
-        homePageData.put("addressLine1", InputData.builder().value(List.of(street)).build());
-        homePageData.put("addressLine2", InputData.builder().value(List.of(city)).build());
-        homePageData.put("addressLine3", InputData.builder().value(List.of(state)).build());
-        homePageData.put("addressLine4", InputData.builder().value(List.of(zipcode)).build());
-        homePageData.put("addressLine5", InputData.builder().value(List.of(apartmentNumber)).build());
+        homePageData.put("addressLine6", InputData.builder().value(List.of("Olmsted")).build());
         pagesData.put("homeAddressPageName", homePageData);
         applicationData.setPagesData(pagesData);
 
-        Address address = homeAddressParser.parse(applicationData);
+        County county = countyParser.parse(applicationData);
 
-        assertThat(address).isEqualTo(new Address(street, city, state, zipcode, apartmentNumber, null));
+        assertThat(county).isEqualTo(County.Olmsted);
+    }
+
+    @Test
+    void shouldUseDefaultValueWhenCountyIsNotPresent() {
+        ApplicationData applicationData = new ApplicationData();
+        PagesData pagesData = new PagesData();
+        PageData homePageData = new PageData();
+        pagesData.put("homeAddressPageName", homePageData);
+        applicationData.setPagesData(pagesData);
+
+        County county = countyParser.parse(applicationData);
+
+        assertThat(county).isEqualTo(County.Hennepin);
     }
 }

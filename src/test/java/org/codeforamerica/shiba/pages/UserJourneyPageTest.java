@@ -4,7 +4,6 @@ import org.codeforamerica.shiba.pages.emails.MailGunEmailClient;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.pages.enrichment.smartystreets.SmartyStreetClient;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -132,7 +131,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         assertThat(metricsPage.getCardValue("Median All Time")).contains("05m 30s");
         assertThat(metricsPage.getCardValue("Median Week to Date")).contains("05m 30s");
         assertThat(metricsPage.getCardValue("Average Week to Date")).contains("05m 30s");
-        assertThat(driver.findElements(By.tagName("td")).get(0).getText()).isEqualTo("HENNEPIN");
+        assertThat(driver.findElements(By.tagName("td")).get(0).getText()).isEqualTo("Hennepin");
         assertThat(driver.findElements(By.tagName("td")).get(1).getText()).isEqualTo("0");
         assertThat(driver.findElements(By.tagName("td")).get(2).getText()).isEqualTo("0");
         assertThat(metricsPage.getCardValue("Happy")).contains("100%");
@@ -178,7 +177,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         mailingAddressPage.enterInput("state", "IL");
         mailingAddressPage.enterInput("apartmentNumber", "someApartmentNumber");
         when(smartyStreetClient.validateAddress(any())).thenReturn(
-                Optional.of(new Address("smarty street", "City", "CA", "03104", ""))
+                Optional.of(new Address("smarty street", "City", "CA", "03104", "", "someCounty"))
         );
         Page validationPage = mailingAddressPage.clickPrimaryButton();
 

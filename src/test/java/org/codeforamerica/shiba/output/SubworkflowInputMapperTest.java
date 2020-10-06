@@ -84,7 +84,7 @@ class SubworkflowInputMapperTest {
                 .id("someId")
                 .completedAt(ZonedDateTime.now())
                 .applicationData(applicationData)
-                .county(County.OTHER)
+                .county(County.Other)
                 .timeToComplete(null)
                 .build();
 

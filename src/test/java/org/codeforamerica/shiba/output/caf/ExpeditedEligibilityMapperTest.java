@@ -28,7 +28,7 @@ class ExpeditedEligibilityMapperTest {
                 .id("someId")
                 .completedAt(ZonedDateTime.now())
                 .applicationData(appData)
-                .county(County.OTHER)
+                .county(County.Other)
                 .timeToComplete(null)
                 .build();
 
@@ -55,7 +55,7 @@ class ExpeditedEligibilityMapperTest {
                 .id("someId")
                 .completedAt(ZonedDateTime.now())
                 .applicationData(appData)
-                .county(County.OTHER)
+                .county(County.Other)
                 .timeToComplete(null)
                 .build();
 

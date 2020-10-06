@@ -47,7 +47,7 @@ public class SubmitPageTest extends AbstractStaticMessageSourcePageTest {
     @Test
     void shouldProvideApplicationDataToTerminalPageWhenApplicationIsSigned() {
         String applicationId = "someId";
-        County county = County.HENNEPIN;
+        County county = County.Hennepin;
         ApplicationData applicationData = new ApplicationData();
         Sentiment sentiment = Sentiment.HAPPY;
         String feedbackText = "someFeedback";

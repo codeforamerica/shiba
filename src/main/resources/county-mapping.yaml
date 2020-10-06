@@ -4,11 +4,11 @@ demo:
     dhsProviderId: A000027200
     email: help+demo@mnbenefits.org
   counties:
-    HENNEPIN:
+    Hennepin:
       folderId: 5195b061-9bdc-4d31-9840-90a99902d329
       dhsProviderId: A000027200
       email: help+demo@mnbenefits.org
-    OLMSTED:
+    Olmsted:
       folderId: 9b8e19ee-0767-4d50-8652-95fec9dbc459
       dhsProviderId: A000055800
       email: help+demo@mnbenefits.org
@@ -21,11 +21,11 @@ staging:
     folderId: 5195b061-9bdc-4d31-9840-90a99902d329
     dhsProviderId: A000027200
   counties:
-    HENNEPIN:
+    Hennepin:
       email: help+staging@mnbenefits.org
       folderId: 5195b061-9bdc-4d31-9840-90a99902d329
       dhsProviderId: A000027200
-    OLMSTED:
+    Olmsted:
       email: help+staging@mnbenefits.org
       folderId: 9b8e19ee-0767-4d50-8652-95fec9dbc459
       dhsProviderId: A000055800
@@ -38,11 +38,11 @@ production:
     folderId: 39e0ea57-cc12-4cc1-a074-0ad3d7216d01
     dhsProviderId: A000027200
   counties:
-    HENNEPIN:
+    Hennepin:
       email: hhsews@hennepin.us
       folderId: 39e0ea57-cc12-4cc1-a074-0ad3d7216d01
       dhsProviderId: A000027200
-    OLMSTED:
+    Olmsted:
       email: PAQ@co.olmsted.mn.us
       folderId: 0dcade2f-4c2a-4450-8347-5888c9f966fb
       dhsProviderId: A000055800
@@ -55,11 +55,11 @@ other:
     folderId: 5195b061-9bdc-4d31-9840-90a99902d329
     dhsProviderId: A000027200
   counties:
-    HENNEPIN:
+    Hennepin:
       email: help+dev@mnbenefits.org
       folderId: 5195b061-9bdc-4d31-9840-90a99902d329
       dhsProviderId: A000027200
-    OLMSTED:
+    Olmsted:
       email: help+dev@mnbenefits.org
       folderId: 9b8e19ee-0767-4d50-8652-95fec9dbc459
       dhsProviderId: A000055800

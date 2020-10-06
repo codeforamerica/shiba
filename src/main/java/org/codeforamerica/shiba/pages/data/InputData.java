@@ -43,4 +43,8 @@ public class InputData {
                 .findFirst()
                 .map(Validator::getErrorMessageKey);
     }
+
+    public String getValue(int i) {
+        return this.getValue().get(i);
+    }
 }

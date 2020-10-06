@@ -56,6 +56,10 @@ parsing:
       apartmentNumber:
         pageName: homeAddress
         inputName: apartmentNumber
+      county:
+        pageName: homeAddress
+        inputName: enrichedCounty
+        defaultValue: Other
   mailingAddress:
     pageInputs:
       street:
