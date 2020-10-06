@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '2.2.6.RELEASE'
+    id 'org.springframework.boot' version '2.3.4.RELEASE'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'java'
     id 'com.github.jk1.dependency-license-report' version '1.14'
@@ -74,32 +74,30 @@ dependencies {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
     }
     implementation 'org.glassfish.jaxb:jaxb-runtime'
-    implementation 'org.apache.pdfbox:pdfbox:2.0.21'
+    implementation 'org.apache.pdfbox:pdfbox:2.0.19'
     implementation 'org.apache.commons:commons-lang3'
-    implementation 'org.jetbrains:annotations:20.1.0'
-    implementation 'commons-validator:commons-validator:1.7'
+    implementation 'org.jetbrains:annotations:19.0.0'
+    implementation 'commons-validator:commons-validator:1.6'
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.apache.httpcomponents:httpclient'
-    implementation 'io.sentry:sentry-logback:3.0.0'
+    implementation 'io.sentry:sentry-logback:1.7.30'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'com.google.crypto.tink:tink:1.4.0'
     implementation 'org.flywaydb:flyway-core:6.4.4'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'com.mixpanel:mixpanel-java:1.5.0'
+    implementation 'com.mixpanel:mixpanel-java:1.4.4'
 
     implementation(files(genJaxb.classesDir).builtBy(genJaxb))
-    jaxb "com.sun.xml.bind:jaxb-xjc:2.3.3"
+    jaxb "com.sun.xml.bind:jaxb-xjc:2.1.7"
 
     testImplementation 'org.seleniumhq.selenium:selenium-java:3.141.59'
 
-    testCompileOnly 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
     testImplementation 'org.awaitility:awaitility:4.0.3'
     testImplementation 'com.github.tomakehurst:wiremock-standalone:2.27.1'
-    testImplementation 'io.github.bonigarcia:webdrivermanager:4.2.2'
+    testImplementation 'io.github.bonigarcia:webdrivermanager:4.0.0'
     testImplementation 'org.springframework.ws:spring-ws-test'
     testImplementation 'org.springframework.security:spring-security-test'
 }
