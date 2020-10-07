@@ -51,7 +51,6 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         driver.navigate().to(baseUrl + "/pages/landing");
         when(clock.instant()).thenReturn(Instant.now());
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
-        when(smartyStreetClient.getCounty(any())).thenReturn(Optional.empty());
         when(smartyStreetClient.validateAddress(any())).thenReturn(Optional.empty());
     }
 
