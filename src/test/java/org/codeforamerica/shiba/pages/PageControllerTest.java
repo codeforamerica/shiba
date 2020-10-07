@@ -5,7 +5,6 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
-import org.codeforamerica.shiba.metrics.Metrics;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
@@ -46,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class PageControllerTest {
 
     private final StaticMessageSource messageSource = new StaticMessageSource();
-    private ApplicationEnrichment applicationEnrichment = mock(ApplicationEnrichment.class);
+    private final ApplicationEnrichment applicationEnrichment = mock(ApplicationEnrichment.class);
 
     @TestConfiguration
     @PropertySource(value = "classpath:pages-config/test-pages-controller.yaml", factory = YamlPropertySourceFactory.class)
@@ -60,7 +59,6 @@ class PageControllerTest {
 
     ApplicationData applicationData = new ApplicationData();
     MockMvc mockMvc;
-    Metrics metrics = new Metrics();
     Clock clock = mock(Clock.class);
     ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
     ApplicationFactory applicationFactory = mock(ApplicationFactory.class);
@@ -75,7 +73,6 @@ class PageControllerTest {
                 applicationConfiguration,
                 applicationData,
                 clock,
-                metrics,
                 applicationRepository,
                 applicationFactory,
                 messageSource,
@@ -85,7 +82,7 @@ class PageControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(pageController)
                 .build();
         when(clock.instant()).thenReturn(Instant.now());
-        when(applicationFactory.newApplication(any(), any(), any())).thenReturn(Application.builder()
+        when(applicationFactory.newApplication(any(), any())).thenReturn(Application.builder()
                 .id("defaultId")
                 .completedAt(ZonedDateTime.now())
                 .applicationData(null)
@@ -98,7 +95,7 @@ class PageControllerTest {
 
     @Test
     void shouldWriteTheInputDataMapForSubmitPage() throws Exception {
-        metrics.setStartTimeOnce(Instant.now());
+        applicationData.setStartTimeOnce(Instant.now());
         when(clock.instant()).thenReturn(LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant());
 
         mockMvc.perform(post("/submit")
@@ -112,7 +109,7 @@ class PageControllerTest {
 
     @Test
     void shouldPublishApplicationSubmittedEvent() throws Exception {
-        metrics.setStartTimeOnce(Instant.now());
+        applicationData.setStartTimeOnce(Instant.now());
 
         String applicationId = "someId";
         Application application = Application.builder()
@@ -123,7 +120,7 @@ class PageControllerTest {
                 .timeToComplete(null)
                 .flow(FlowType.FULL)
                 .build();
-        when(applicationFactory.newApplication(any(), eq(applicationData), eq(metrics))).thenReturn(application);
+        when(applicationFactory.newApplication(any(), eq(applicationData))).thenReturn(application);
 
         String sessionId = "someSessionId";
         MockHttpSession session = new MockHttpSession(null, sessionId);
@@ -139,7 +136,7 @@ class PageControllerTest {
 
     @Test
     void shouldSaveApplication() throws Exception {
-        metrics.setStartTimeOnce(Instant.now());
+        applicationData.setStartTimeOnce(Instant.now());
 
         ZonedDateTime completedAt = ZonedDateTime.now();
         String applicationId = "someId";
@@ -151,7 +148,7 @@ class PageControllerTest {
                 .timeToComplete(null)
                 .build();
         when(applicationRepository.getNextId()).thenReturn(applicationId);
-        when(applicationFactory.newApplication(applicationId, applicationData, metrics)).thenReturn(application);
+        when(applicationFactory.newApplication(applicationId, applicationData)).thenReturn(application);
 
         mockMvc.perform(post("/submit")
                 .param("foo[]", "some value")

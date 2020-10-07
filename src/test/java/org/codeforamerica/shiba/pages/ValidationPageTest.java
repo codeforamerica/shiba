@@ -20,7 +20,7 @@ import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ValidationPageTest extends AbstractStaticMessageSourcePageTest {
+public class ValidationPageTest extends AbstractExistingStartTimePageTest {
 
     private final String errorMessage = "error message";
     private final String nextPageTitle = "next Page Title";
@@ -41,7 +41,7 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest {
 
     @TestConfiguration
     @PropertySource(value = "classpath:pages-config/test-validation.yaml", factory = YamlPropertySourceFactory.class)
-    static class TestPageConfiguration extends MetricsTestConfigurationWithExistingStartTime {
+    static class TestPageConfiguration {
         @Bean
         @ConfigurationProperties(prefix = "shiba-configuration-test-validation")
         public ApplicationConfiguration applicationConfiguration() {

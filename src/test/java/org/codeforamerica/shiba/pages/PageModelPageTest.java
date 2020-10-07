@@ -13,10 +13,10 @@ import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PageModelPageTest extends AbstractStaticMessageSourcePageTest {
+public class PageModelPageTest extends AbstractExistingStartTimePageTest {
     @TestConfiguration
     @PropertySource(value = "classpath:pages-config/test-page-model.yaml", factory = YamlPropertySourceFactory.class)
-    static class TestPageConfiguration extends AbstractBasePageTest.MetricsTestConfigurationWithExistingStartTime {
+    static class TestPageConfiguration {
         @Bean
         @ConfigurationProperties(prefix = "shiba-configuration-page-model")
         public ApplicationConfiguration applicationConfiguration() {

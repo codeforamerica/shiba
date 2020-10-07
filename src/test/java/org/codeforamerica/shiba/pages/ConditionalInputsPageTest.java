@@ -15,10 +15,10 @@ import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ConditionalInputsPageTest extends AbstractStaticMessageSourcePageTest {
+public class ConditionalInputsPageTest extends AbstractExistingStartTimePageTest {
     @TestConfiguration
     @PropertySource(value = "classpath:pages-config/test-conditional-inputs.yaml", factory = YamlPropertySourceFactory.class)
-    static class TestPageConfiguration extends MetricsTestConfigurationWithExistingStartTime {
+    static class TestPageConfiguration {
         @Bean
         @ConfigurationProperties(prefix = "shiba-configuration-conditional-inputs")
         public ApplicationConfiguration applicationConfiguration() {

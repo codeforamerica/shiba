@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 
 @Import(UserDecisionNavigationPageTest.TestController.class)
-public class UserDecisionNavigationPageTest extends AbstractStaticMessageSourcePageTest {
+public class UserDecisionNavigationPageTest extends AbstractExistingStartTimePageTest {
 
     private final String optionZeroPageTitle = "page zero title";
     private final String optionOnePageTitle = "page one title";
@@ -30,7 +30,7 @@ public class UserDecisionNavigationPageTest extends AbstractStaticMessageSourceP
 
     @TestConfiguration
     @PropertySource(value = "classpath:pages-config/test-user-decision-navigation.yaml", factory = YamlPropertySourceFactory.class)
-    static class TestPageConfiguration extends MetricsTestConfigurationWithExistingStartTime {
+    static class TestPageConfiguration {
         @Bean
         @ConfigurationProperties(prefix = "shiba-configuration-user-decision-navigation")
         public ApplicationConfiguration applicationConfiguration() {

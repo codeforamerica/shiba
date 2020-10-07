@@ -60,7 +60,7 @@ public class SubmitPageTest extends AbstractStaticMessageSourcePageTest {
                 .sentiment(sentiment)
                 .feedback(feedbackText)
                 .build();
-        when(applicationFactory.newApplication(any(), any(), any())).thenReturn(application);
+        when(applicationFactory.newApplication(any(), any())).thenReturn(application);
 
         navigateTo("firstPage");
 

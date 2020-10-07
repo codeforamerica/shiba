@@ -2,7 +2,6 @@ package org.codeforamerica.shiba.application;
 
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
-import org.codeforamerica.shiba.metrics.Metrics;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.stereotype.Component;
 
@@ -22,12 +21,13 @@ public class ApplicationFactory {
         this.countyParser = countyParser;
     }
 
-    public Application newApplication(String id, ApplicationData applicationData, Metrics metrics) {
+    public Application newApplication(String id, ApplicationData applicationData) {
         ApplicationData copy = new ApplicationData();
         copy.setPagesData(applicationData.getPagesData());
         copy.setSubworkflows(applicationData.getSubworkflows());
         copy.setIncompleteIterations(applicationData.getIncompleteIterations());
         copy.setFlow(applicationData.getFlow());
+        copy.setStartTime(applicationData.getStartTime());
         ZonedDateTime completedAt = ZonedDateTime.now(clock);
 
         return Application.builder()
@@ -35,7 +35,7 @@ public class ApplicationFactory {
                 .completedAt(completedAt)
                 .applicationData(copy)
                 .county(countyParser.parse(applicationData))
-                .timeToComplete(Duration.between(metrics.getStartTime(), completedAt))
+                .timeToComplete(Duration.between(applicationData.getStartTime(), completedAt))
                 .flow(applicationData.getFlow())
                 .build();
     }

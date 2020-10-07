@@ -6,6 +6,7 @@ import org.codeforamerica.shiba.application.parsers.PageInputCoordinates;
 import org.codeforamerica.shiba.pages.config.NextPage;
 import org.codeforamerica.shiba.pages.config.PageWorkflowConfiguration;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -13,10 +14,17 @@ import java.util.Optional;
 @Data
 public class ApplicationData {
     private String id;
+    private Instant startTime;
     private FlowType flow = null;
     private PagesData pagesData = new PagesData();
     private Subworkflows subworkflows = new Subworkflows();
     private Map<String, PagesData> incompleteIterations = new HashMap<>();
+
+    public void setStartTimeOnce(Instant instant) {
+        if (startTime == null) {
+            startTime = instant;
+        }
+    }
 
     public PageData getInputDataMap(String pageName) {
         return this.pagesData.getPage(pageName);

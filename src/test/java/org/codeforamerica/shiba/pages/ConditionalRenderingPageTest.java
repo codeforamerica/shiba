@@ -16,7 +16,7 @@ import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ConditionalRenderingPageTest extends AbstractStaticMessageSourcePageTest {
+public class ConditionalRenderingPageTest extends AbstractExistingStartTimePageTest {
 
     private final String fourthPageTitle = "fourthPageTitle";
     private final String thirdPageTitle = "thirdPageTitle";
@@ -26,7 +26,7 @@ public class ConditionalRenderingPageTest extends AbstractStaticMessageSourcePag
 
     @TestConfiguration
     @PropertySource(value = "classpath:pages-config/test-conditional-rendering.yaml", factory = YamlPropertySourceFactory.class)
-    static class TestPageConfiguration extends MetricsTestConfigurationWithExistingStartTime {
+    static class TestPageConfiguration {
         @Bean
         @ConfigurationProperties(prefix = "shiba-configuration-conditional-rendering")
         public ApplicationConfiguration applicationConfiguration() {

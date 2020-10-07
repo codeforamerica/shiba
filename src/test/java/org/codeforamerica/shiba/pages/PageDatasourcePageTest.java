@@ -17,13 +17,13 @@ import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PageDatasourcePageTest extends AbstractStaticMessageSourcePageTest {
+public class PageDatasourcePageTest extends AbstractExistingStartTimePageTest {
     private final String staticPageWithDatasourceInputsTitle = "staticPageWithDatasourceInputsTitle";
     private final String yesHeaderText = "yes header text";
 
     @TestConfiguration
     @PropertySource(value = "classpath:pages-config/test-page-datasources.yaml", factory = YamlPropertySourceFactory.class)
-    static class TestPageConfiguration extends MetricsTestConfigurationWithExistingStartTime {
+    static class TestPageConfiguration {
         @Bean
         @ConfigurationProperties(prefix = "shiba-configuration-page-datasource")
         public ApplicationConfiguration applicationConfiguration() {

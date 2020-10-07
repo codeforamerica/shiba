@@ -15,13 +15,13 @@ import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class YesNoAnswerPageTest extends AbstractStaticMessageSourcePageTest {
+public class YesNoAnswerPageTest extends AbstractExistingStartTimePageTest {
 
     private final String answerPage = "option-zero-page-title";
 
     @TestConfiguration
     @PropertySource(value = "classpath:pages-config/yes-no-answer.yaml", factory = YamlPropertySourceFactory.class)
-    static class TestPageConfiguration extends MetricsTestConfigurationWithExistingStartTime {
+    static class TestPageConfiguration {
         @Bean
         @ConfigurationProperties(prefix = "shiba-configuration-yes-no-answer")
         public ApplicationConfiguration applicationConfiguration() {

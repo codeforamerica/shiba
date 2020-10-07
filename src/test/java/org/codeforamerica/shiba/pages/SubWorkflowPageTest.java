@@ -18,10 +18,10 @@ import java.util.Locale;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 
-public class SubWorkflowPageTest extends AbstractStaticMessageSourcePageTest {
+public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
     @TestConfiguration
     @PropertySource(value = "classpath:pages-config/test-sub-workflow.yaml", factory = YamlPropertySourceFactory.class)
-    static class TestPageConfiguration extends MetricsTestConfigurationWithExistingStartTime {
+    static class TestPageConfiguration {
         @Bean
         @ConfigurationProperties(prefix = "shiba-configuration-sub-workflow")
         public ApplicationConfiguration applicationConfiguration() {

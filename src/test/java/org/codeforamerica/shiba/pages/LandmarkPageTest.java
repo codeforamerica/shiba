@@ -1,7 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
-import org.codeforamerica.shiba.metrics.Metrics;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedListener;
@@ -45,17 +44,13 @@ public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
     private ApplicationSubmittedListener applicationSubmittedListener;
 
     private static ApplicationData applicationData;
-    private static Metrics metrics;
 
     @Controller
     static class TestController {
         private final ApplicationData applicationData;
-        private final Metrics metrics;
 
-        public TestController(ApplicationData applicationData,
-                              Metrics metrics) {
+        public TestController(ApplicationData applicationData) {
             this.applicationData = applicationData;
-            this.metrics = metrics;
         }
 
         @GetMapping("/testPath")
@@ -65,10 +60,8 @@ public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
             applicationDataClone.setSubworkflows(this.applicationData.getSubworkflows());
             applicationDataClone.setIncompleteIterations(this.applicationData.getIncompleteIterations());
             applicationDataClone.setId(this.applicationData.getId());
+            applicationDataClone.setStartTime(this.applicationData.getStartTime());
             LandmarkPageTest.applicationData = applicationDataClone;
-            Metrics metricsClone = new Metrics();
-            metricsClone.setStartTimeOnce(this.metrics.getStartTime());
-            LandmarkPageTest.metrics = metricsClone;
             return "testTerminalPage";
         }
     }
@@ -145,6 +138,5 @@ public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
         navigateTo("firstPage");
         driver.navigate().to(baseUrl + "/testPath");
         assertThat(LandmarkPageTest.applicationData).isEqualTo(new ApplicationData());
-        assertThat(LandmarkPageTest.metrics).isEqualTo(new Metrics());
     }
 }

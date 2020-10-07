@@ -20,11 +20,11 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class EnrichmentPageTest extends AbstractBasePageTest {
+public class EnrichmentPageTest extends AbstractExistingStartTimePageTest {
 
     @TestConfiguration
     @PropertySource(value = "classpath:pages-config/test-enrichment.yaml", factory = YamlPropertySourceFactory.class)
-    static class TestPageConfiguration extends MetricsTestConfigurationWithExistingStartTime {
+    static class TestPageConfiguration {
         @Bean
         @ConfigurationProperties(prefix = "shiba-configuration-enrichment")
         public ApplicationConfiguration applicationConfiguration() {

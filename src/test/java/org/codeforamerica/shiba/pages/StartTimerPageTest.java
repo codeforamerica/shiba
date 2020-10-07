@@ -1,8 +1,8 @@
 package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
-import org.codeforamerica.shiba.metrics.Metrics;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -36,15 +36,15 @@ public class StartTimerPageTest extends AbstractStaticMessageSourcePageTest {
 
     @Controller
     static class TestController {
-        private final Metrics metrics;
+        private final ApplicationData applicationData;
 
-        public TestController(Metrics metrics) {
-            this.metrics = metrics;
+        public TestController(ApplicationData applicationData) {
+            this.applicationData = applicationData;
         }
 
         @GetMapping("/pathExposingStartTime")
         ModelAndView endpointExposingStartTime() {
-            String startTime = Optional.ofNullable(metrics.getStartTime())
+            String startTime = Optional.ofNullable(applicationData.getStartTime())
                     .map(instant -> new InstantFormatter().print(instant, Locale.US))
                     .orElse("");
             return new ModelAndView("viewExposingStartTime", Map.of("startTime", startTime));

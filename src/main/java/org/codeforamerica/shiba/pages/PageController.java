@@ -3,7 +3,6 @@ package org.codeforamerica.shiba.pages;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.metrics.Metrics;
 import org.codeforamerica.shiba.pages.config.*;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
@@ -38,7 +37,6 @@ public class PageController {
     private final ApplicationData applicationData;
     private final ApplicationConfiguration applicationConfiguration;
     private final Clock clock;
-    private final Metrics metrics;
     private final ApplicationRepository applicationRepository;
     private final ApplicationFactory applicationFactory;
     private final MessageSource messageSource;
@@ -49,7 +47,6 @@ public class PageController {
             ApplicationConfiguration applicationConfiguration,
             ApplicationData applicationData,
             Clock clock,
-            Metrics metrics,
             ApplicationRepository applicationRepository,
             ApplicationFactory applicationFactory,
             MessageSource messageSource,
@@ -58,7 +55,6 @@ public class PageController {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
-        this.metrics = metrics;
         this.applicationRepository = applicationRepository;
         this.applicationFactory = applicationFactory;
         this.messageSource = messageSource;
@@ -106,12 +102,12 @@ public class PageController {
         if (landmarkPagesConfiguration.isLandingPage(pageName)) {
             httpSession.invalidate();
         } else if (landmarkPagesConfiguration.isStartTimerPage(pageName)) {
-            this.metrics.setStartTimeOnce(clock.instant());
+            this.applicationData.setStartTimeOnce(clock.instant());
         }
 
         if (!landmarkPagesConfiguration.isTerminalPage(pageName) && applicationData.getId() != null) {
             return new ModelAndView(String.format("redirect:/pages/%s", landmarkPagesConfiguration.getTerminalPage()));
-        } else if (!landmarkPagesConfiguration.isLandingPage(pageName) && metrics.getStartTime() == null) {
+        } else if (!landmarkPagesConfiguration.isLandingPage(pageName) && applicationData.getStartTime() == null) {
             return new ModelAndView(String.format("redirect:/pages/%s", landmarkPagesConfiguration.getLandingPages().get(0)));
         }
 
@@ -256,7 +252,7 @@ public class PageController {
 
         if (pageData.isValid()) {
             String id = applicationRepository.getNextId();
-            Application application = applicationFactory.newApplication(id, applicationData, metrics);
+            Application application = applicationFactory.newApplication(id, applicationData);
             applicationData.setId(application.getId());
             applicationRepository.save(application);
             pageEventPublisher.publish(
