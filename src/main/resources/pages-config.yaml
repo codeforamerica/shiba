@@ -231,21 +231,25 @@ shiba-configuration:
       pageTitle:
         value: home-address.title
       inputs:
-        - name: zipCode
+        - name: streetAddress
           type: TEXT
           promptMessage:
-            promptMessageKey: home-address.what-is-the-zip-code
+            promptMessageKey: home-address.what-is-the-street-address
           validators:
-            - validation: ZIPCODE
-              errorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
+            - validation: NOT_BLANK
+              errorMessageKey: general.validation.make-sure-you-answer-this-question
               condition:
                 input: isHomeless
                 matcher: NOT_PRESENT
-            - validation: ZIPCODE
+            - validation: NOT_BLANK
               errorMessageKey: general.validation.make-sure-to-provide-a-home-address-or-select-no-use-a-different-address-for-mail
               condition:
                 input: sameMailingAddress
                 value: "true"
+        - name: apartmentNumber
+          type: TEXT
+          promptMessage:
+            promptMessageKey: home-address.apartment-number
         - name: city
           type: TEXT
           promptMessage:
@@ -267,25 +271,21 @@ shiba-configuration:
             promptMessageKey: home-address.what-is-the-state
           readOnly: true
           defaultValue: MN
-        - name: streetAddress
+        - name: zipCode
           type: TEXT
           promptMessage:
-            promptMessageKey: home-address.what-is-the-street-address
+            promptMessageKey: home-address.what-is-the-zip-code
           validators:
-            - validation: NOT_BLANK
-              errorMessageKey: general.validation.make-sure-you-answer-this-question
+            - validation: ZIPCODE
+              errorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
               condition:
                 input: isHomeless
                 matcher: NOT_PRESENT
-            - validation: NOT_BLANK
+            - validation: ZIPCODE
               errorMessageKey: general.validation.make-sure-to-provide-a-home-address-or-select-no-use-a-different-address-for-mail
               condition:
                 input: sameMailingAddress
                 value: "true"
-        - name: apartmentNumber
-          type: TEXT
-          promptMessage:
-            promptMessageKey: home-address.apartment-number
         - name: isHomeless
           type: CHECKBOX
           options:
@@ -311,13 +311,17 @@ shiba-configuration:
       headerKey:
         value: mailing-address.where-can-the-county-send-your-mail
       inputs:
-        - name: zipCode
+        - name: streetAddress
           type: TEXT
           promptMessage:
-            promptMessageKey: mailing-address.what-is-the-zip-code
+            promptMessageKey: mailing-address.what-is-the-street-address
           validators:
-            - validation: ZIPCODE
-              errorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
+            - validation: NOT_BLANK
+              errorMessageKey: general.validation.make-sure-you-answer-this-question
+        - name: apartmentNumber
+          type: TEXT
+          promptMessage:
+            promptMessageKey: mailing-address.apartment-number
         - name: city
           type: TEXT
           promptMessage:
@@ -333,17 +337,13 @@ shiba-configuration:
             - validation: STATE
               errorMessageKey: general.validation.make-sure-to-provide-a-valid-2-letter-state-code
           defaultValue: MN
-        - name: streetAddress
+        - name: zipCode
           type: TEXT
           promptMessage:
-            promptMessageKey: mailing-address.what-is-the-street-address
+            promptMessageKey: mailing-address.what-is-the-zip-code
           validators:
-            - validation: NOT_BLANK
-              errorMessageKey: general.validation.make-sure-you-answer-this-question
-        - name: apartmentNumber
-          type: TEXT
-          promptMessage:
-            promptMessageKey: mailing-address.apartment-number
+            - validation: ZIPCODE
+              errorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
     - &reviewInfo
       name: reviewInfo
       pageTitle:
@@ -1440,6 +1440,10 @@ shiba-configuration:
         - pageName: verifyHomeAddress
     verifyHomeAddress:
       pageConfiguration: *homeAddressValidation
+      skipCondition:
+        pageName: homeAddress
+        input: streetAddress
+        matcher: EMPTY
       datasources:
         - pageName: homeAddress
       nextPages:

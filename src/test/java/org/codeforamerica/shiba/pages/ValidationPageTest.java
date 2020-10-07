@@ -190,6 +190,27 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest {
 
             assertThat(testPage.hasInputError("conditionTest")).isTrue();
         }
+
+        @Test
+        void shouldTriggerValidation_whenConditionInputIsEmptyOrBlank() {
+            navigateTo("emptyInputConditionPage");
+
+            testPage.enterInput("triggerInput", "");
+            testPage.clickPrimaryButton();
+
+            assertThat(driver.getTitle()).isNotEqualTo(lastPageTitle);
+            assertThat(testPage.hasInputError("conditionTest")).isTrue();
+        }
+
+        @Test
+        void shouldNotTriggerValidation_whenConditionInputIsNotEmptyOrBlank() {
+            navigateTo("emptyInputConditionPage");
+
+            testPage.enterInput("triggerInput", "something");
+            testPage.clickPrimaryButton();
+
+            assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
+        }
     }
 
     @Nested

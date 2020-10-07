@@ -301,7 +301,8 @@
             "NOT_PRESENT",
             "CONTAINS",
             "NOT_EMPTY",
-            "DOES_NOT_CONTAIN"
+            "DOES_NOT_CONTAIN",
+            "EMPTY"
           ]
         }
       }

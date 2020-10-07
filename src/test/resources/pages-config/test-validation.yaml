@@ -134,9 +134,24 @@ shiba-configuration-test-validation:
               - validation: NOT_BLANK
                 errorMessageKey: error-message-key
                 condition:
-                  value: triggerValue
-                  matcher: DOES_NOT_CONTAIN
                   input: triggerInput
+                  matcher: DOES_NOT_CONTAIN
+                  value: triggerValue
+    - &emptyInputConditionPage
+      name: emptyInputConditionPage
+      pageTitle:
+        value: dummy-page-title
+      inputs:
+        - name: triggerInput
+          type: TEXT
+        - name: conditionTest
+          type: TEXT
+          validators:
+            - validation: NOT_BLANK
+              errorMessageKey: error-message-key
+              condition:
+                input: triggerInput
+                matcher: EMPTY
     - &pageWithInputWithMultipleValidations
       name: pageWithInputWithMultipleValidations
       pageTitle:
@@ -203,6 +218,10 @@ shiba-configuration-test-validation:
         - pageName: lastPage
     pageWithInputWithMultipleValidations:
       pageConfiguration: *pageWithInputWithMultipleValidations
+      nextPages:
+        - pageName: lastPage
+    emptyInputConditionPage:
+      pageConfiguration: *emptyInputConditionPage
       nextPages:
         - pageName: lastPage
     lastPage:
