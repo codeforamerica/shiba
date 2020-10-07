@@ -9,21 +9,21 @@
             <a th:replace="fragments/go-back"></a>
             <div class="card spacing-above-35">
                 <div class="grid__item spacing-above-35">
-                    <h2 class="text--centered spacing-below-35 spacing-above-0"
+                    <h2 class="spacing-below-10 spacing-above-0"
                         th:text="#{household-list.is-this-everyone-that-lives-with-you}"></h2>
-                    <p class="text--help text--centered spacing-below-10"
+                    <p class="text--help spacing-below-10"
                        th:text="#{household-list.include-children-and-everyone-who-lives-with-you}"></p>
                 </div>
                 <div class="grid__item intro-box spacing-below-60">
                     <h3 class="text--centered intro-box__title" th:text="#{household-list.your-household}"></h3>
-                    <ul class="spacing-above-10">
-                        <li class="inline padding-horizontal-30" th:text="|• ${data.get('personalInfo').get('firstName').value[0]}&nbsp;${data.get('personalInfo').get('lastName').value[0]} #{household-list.thats-you}|"></li>
+                    <ul class="list--bulleted spacing-above-10 spacing-below-60">
+                        <li th:text="|${data.get('personalInfo').get('firstName').value[0]}&nbsp;${data.get('personalInfo').get('lastName').value[0]} #{household-list.thats-you}|"></li>
                         <th:block th:each="subworkflow: ${subworkflows}">
                             <th:block th:each="iteration, iterationStat: ${subworkflow.value}">
-                                <li class="inline padding-horizontal-30" th:id="|iteration${iterationStat.index}|">
+                                <li th:id="|iteration${iterationStat.index}|">
                                     <form method="post"
                                           th:action="@{|/groups/${subworkflow.key}/${iterationStat.index}/delete|}">
-                                        <span th:text="|• ${iteration.get('householdMemberInfo').get('firstName').value[0]}&nbsp;${iteration.get('householdMemberInfo').get('lastName').value[0]}|"></span>
+                                        <span th:text="|${iteration.get('householdMemberInfo').get('firstName').value[0]}&nbsp;${iteration.get('householdMemberInfo').get('lastName').value[0]}|"></span>
                                         <button class="button--link right"
                                                 th:id="|iteration${iterationStat.index}-delete|"
                                                 type="submit"
