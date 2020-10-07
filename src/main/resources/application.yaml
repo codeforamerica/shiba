@@ -2,9 +2,6 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:15432/shiba
     username: shiba
-  thymeleaf:
-    cache: false
-    prefix: file:src/main/resources/templates/
 
 client:
   keystore: src/main/resources/shiba-keystore.jks
