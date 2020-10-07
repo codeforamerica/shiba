@@ -18,7 +18,7 @@ import java.util.Locale;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 
-public class PageSubWorkflowPageTest extends AbstractStaticMessageSourcePageTest {
+public class SubWorkflowPageTest extends AbstractStaticMessageSourcePageTest {
     @TestConfiguration
     @PropertySource(value = "classpath:pages-config/test-sub-workflow.yaml", factory = YamlPropertySourceFactory.class)
     static class TestPageConfiguration extends MetricsTestConfigurationWithExistingStartTime {

@@ -11,4 +11,5 @@ public class PageGroupConfiguration {
     private String startPage;
     private String redirectPage;
     private String restartPage;
+    private Integer startingCount;
 }

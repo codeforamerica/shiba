@@ -175,13 +175,12 @@ caf:
       programs: PROGRAMS
       countyInstructions: COUNTY_INSTRUCTIONS
       fullName: FULL_NAME
-      jobSearching: JOB_SEARCHING
-    jobs:
-      count: TOTAL_JOBS
     incomePerPayPeriod:
       incomePerPayPeriod: INCOME_PER_PAY_PERIOD
     totalIncome:
       thirtyDayIncome: MONEY_MADE_LAST_MONTH
+    household:
+      count: TOTAL_HOUSEHOLD
   enums:
     EVERY_WEEK: Every week
     EVERY_TWO_WEEKS: Every two weeks
