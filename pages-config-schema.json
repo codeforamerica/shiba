@@ -298,7 +298,7 @@
         "matcher": {
           "type": "string",
           "enum": [
-            "NOT_PRESENT",
+            "NONE_SELECTED",
             "CONTAINS",
             "NOT_EMPTY",
             "DOES_NOT_CONTAIN",

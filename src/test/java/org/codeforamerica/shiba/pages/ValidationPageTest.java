@@ -146,7 +146,7 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest {
     @Nested
     class Condition {
         @Test
-        void shouldTriggerValidation_whenConditionInputValueIsNotPresent() {
+        void shouldTriggerValidation_whenConditionInputValueIsNoneSelected() {
             driver.navigate().to(baseUrl + "/pages/firstPage");
             driver.findElement(By.cssSelector("input[name^='someInputName']")).sendKeys("do not trigger validation");
             driver.findElement(By.cssSelector("button")).click();
@@ -155,11 +155,11 @@ public class ValidationPageTest extends AbstractStaticMessageSourcePageTest {
 
             driver.findElement(By.cssSelector("button")).click();
 
-            assertThat(testPage.getInputError("conditionalValidationWhenValueIsNotPresent")).isNotNull();
+            assertThat(testPage.getInputError("conditionalValidationWhenValueIsNoneSelected")).isNotNull();
         }
 
         @Test
-        void shouldNotTriggerValidation_whenConditionInputValueIsPresent() {
+        void shouldNotTriggerValidation_whenConditionInputValueIsSelected() {
             driver.navigate().to(baseUrl + "/pages/firstPage");
             driver.findElement(By.cssSelector("input[name^='someInputName']")).sendKeys("do not trigger validation");
             driver.findElement(By.cssSelector("button")).click();

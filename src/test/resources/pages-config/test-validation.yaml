@@ -28,13 +28,13 @@ shiba-configuration-test-validation:
             options:
               - value: VALUE_1
                 messageKey: checkbox-value-key-1
-          - name: conditionalValidationWhenValueIsNotPresent
+          - name: conditionalValidationWhenValueIsNoneSelected
             type: TEXT
             validators:
               - validation: NOT_BLANK
                 condition:
                   input: someCheckbox
-                  matcher: NOT_PRESENT
+                  matcher: NONE_SELECTED
                 errorMessageKey: error-message-key
     - &notBlankPage
         name: notBlankPage

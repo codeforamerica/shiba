@@ -240,7 +240,7 @@ shiba-configuration:
               errorMessageKey: general.validation.make-sure-you-answer-this-question
               condition:
                 input: isHomeless
-                matcher: NOT_PRESENT
+                matcher: NONE_SELECTED
             - validation: NOT_BLANK
               errorMessageKey: general.validation.make-sure-to-provide-a-home-address-or-select-no-use-a-different-address-for-mail
               condition:
@@ -259,7 +259,7 @@ shiba-configuration:
               errorMessageKey: general.validation.make-sure-you-answer-this-question
               condition:
                 input: isHomeless
-                matcher: NOT_PRESENT
+                matcher: NONE_SELECTED
             - validation: NOT_BLANK
               errorMessageKey: general.validation.make-sure-to-provide-a-home-address-or-select-no-use-a-different-address-for-mail
               condition:
@@ -280,7 +280,7 @@ shiba-configuration:
               errorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
               condition:
                 input: isHomeless
-                matcher: NOT_PRESENT
+                matcher: NONE_SELECTED
             - validation: ZIPCODE
               errorMessageKey: general.validation.make-sure-to-provide-a-home-address-or-select-no-use-a-different-address-for-mail
               condition:

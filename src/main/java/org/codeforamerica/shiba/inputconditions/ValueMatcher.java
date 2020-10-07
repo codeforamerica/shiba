@@ -6,7 +6,7 @@ import java.util.function.BiFunction;
 @SuppressWarnings("unused")
 public enum ValueMatcher {
     EMPTY((testValue, ignoredTargetValue) -> testValue.stream().allMatch(String::isEmpty)),
-    NOT_PRESENT((testValue, ignoredTargetValue) -> testValue.isEmpty()),
+    NONE_SELECTED((testValue, ignoredTargetValue) -> testValue.isEmpty()),
     CONTAINS(List::contains),
     NOT_EMPTY((testValue, ignoredTargetValue) -> !String.join("", testValue).isBlank()),
     DOES_NOT_CONTAIN((testValue, targetValue) -> !testValue.contains(targetValue));
