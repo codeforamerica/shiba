@@ -509,6 +509,16 @@ shiba-configuration:
       name: introPersonalDetails
       pageTitle:
         value: intro-personal-details.title
+    - &preparingMealsTogether
+      name: preparingMealsTogether
+      pageTitle:
+        value: preparing-meals-together.title
+      headerKey:
+        value: preparing-meals-together.header
+      hasPrimaryButton: false
+      inputs:
+        - name: isPreparingMealsTogether
+          type: YES_NO
     - &goingToSchool
       name: goingToSchool
       pageTitle:
@@ -1509,7 +1519,7 @@ shiba-configuration:
       pageConfiguration: *householdList
       nextPages:
         - pageName: householdMemberInfo
-        - pageName: goingToSchool
+        - pageName: preparingMealsTogether
       datasources:
         - groupName: household
         - pageName: personalInfo
@@ -1517,6 +1527,17 @@ shiba-configuration:
       pageConfiguration: *introPersonalDetails
       nextPages:
         - pageName: goingToSchool
+    preparingMealsTogether:
+      pageConfiguration: *preparingMealsTogether
+      skipCondition:
+        pageName: choosePrograms
+        value: SNAP
+        input: programs
+        matcher: DOES_NOT_CONTAIN
+      nextPages:
+        - pageName: goingToSchool
+      datasources:
+        - pageName: choosePrograms
     goingToSchool:
       pageConfiguration: *goingToSchool
       datasources:

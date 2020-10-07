@@ -331,6 +331,7 @@
             <ns4:PreferredWrittenLanguage>{{LANGUAGEPREFERENCES_WRITTENLANGUAGE}}</ns4:PreferredWrittenLanguage>
             <ns4:NeedInterpreterInd>{{LANGUAGEPREFERENCES_NEEDINTERPRETER}}</ns4:NeedInterpreterInd>
         </ns4:MiscellaneousInfo>
+        <ns4:AnyoneBuyOrFixFoodInd>{{PREPARING_MEALS_TOGETHER}}</ns4:AnyoneBuyOrFixFoodInd>
         <ns4:AnyonePregnantInd>{{IS_PREGNANT}}</ns4:AnyonePregnantInd>
     </ns4:HouseholdInfo>
     <ns4:Disclosure>

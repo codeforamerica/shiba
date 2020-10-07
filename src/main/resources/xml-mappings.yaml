@@ -37,6 +37,8 @@ xml:
         EA: EMERGENCY
         CCAP: CHILD_CARE
         GRH: HOUSING_SUPPORT
+    preparingMealsTogether:
+      isPreparingMealsTogether: PREPARING_MEALS_TOGETHER
     contactInfo:
       phoneNumber: CONTACTINFO_PHONE
     homeAddress:

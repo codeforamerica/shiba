@@ -35,6 +35,8 @@ caf:
         SNAP: FOOD
         CASH: CASH
         EA: EMERGENCY
+    preparingMealsTogether:
+      isPreparingMealsTogether: PREPARING_MEALS_TOGETHER
     contactInfo:
       phoneNumber: APPLICANT_PHONE_NUMBER
       email: APPLICANT_EMAIL
