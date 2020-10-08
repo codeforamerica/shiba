@@ -100,6 +100,90 @@ class ResearchDataParserTest {
     }
 
     @Test
+    void shouldParseResearchData_withoutOptionalInputs() {
+        ApplicationData applicationData = new ApplicationData();
+
+        PagesData pagesData = pagesDataBuilder.build(List.of(
+                new PageDataBuilder("languagePreferences", Map.of(
+                        "spokenLanguage", List.of("English"),
+                        "writtenLanguage", List.of("Spanish")
+                )),
+                new PageDataBuilder("personalInfo", Map.of(
+                        "firstName", List.of("Person"),
+                        "lastName", List.of("Fake")
+                )),
+                new PageDataBuilder("contactInfo", Map.of(
+                        "phoneNumber", List.of("6038791111")
+                )),
+                new PageDataBuilder("homeAddress", Map.of(
+                )),
+                new PageDataBuilder("choosePrograms", Map.of(
+                        "programs", List.of("SNAP", "GRH", "EA")
+                )),
+                new PageDataBuilder("doYouLiveAlone", Map.of(
+                        "liveAlone", List.of("true")
+                )),
+                new PageDataBuilder("homeExpensesAmount", Map.of(
+                )),
+                new PageDataBuilder("employmentStatus", Map.of(
+                        "areYouWorking", List.of("true")
+                ))
+        ));
+        applicationData.setPagesData(pagesData);
+
+        when(totalIncomeCalculator.calculate(new TotalIncome(789.0, emptyList()))).thenReturn(123.0);
+        when(totalIncomeParser.parse(any())).thenReturn(new TotalIncome(789.0, emptyList()));
+
+        ResearchData researchData = researchDataParser.parse(applicationData);
+
+        ResearchData expectedResearchData = ResearchData.builder()
+                .spokenLanguage("English")
+                .writtenLanguage("Spanish")
+                .sex(null)
+                .firstName("Person")
+                .lastName("Fake")
+                .dateOfBirth(null)
+                .enteredSsn(false)
+                .phoneNumber("6038791111")
+                .email(null)
+                .phoneOptIn(false)
+                .emailOptIn(false)
+                .zipCode(null)
+                .snap(true)
+                .cash(false)
+                .housing(true)
+                .emergency(true)
+                .liveAlone(true)
+                .moneyMadeLast30Days(123.0)
+                .homeExpensesAmount(null)
+                .areYouWorking(true)
+                .county(null)
+                .build();
+        assertThat(researchData).isEqualTo(expectedResearchData);
+    }
+
+    @Test
+    void shouldParseResearchData_whenContactInfoPageDataIsMissing() {
+        ApplicationData applicationData = new ApplicationData();
+        applicationData.setPagesData(new PagesData());
+
+        ResearchData researchData = researchDataParser.parse(applicationData);
+
+        assertThat(researchData.getEmailOptIn()).isNull();
+        assertThat(researchData.getPhoneOptIn()).isNull();
+    }
+
+    @Test
+    void shouldParseResearchData_withEnteredSsnWhenPersonalInfoPageDataIsMissing() {
+        ApplicationData applicationData = new ApplicationData();
+        applicationData.setPagesData(new PagesData());
+
+        ResearchData researchData = researchDataParser.parse(applicationData);
+
+        assertThat(researchData.getEnteredSsn()).isNull();
+    }
+
+    @Test
     void shouldParseResearchData_whenCountyInfoIsNotPresent() {
         ApplicationData applicationData = new ApplicationData();
         PagesData pagesData = pagesDataBuilder.build(List.of(
@@ -112,7 +196,6 @@ class ResearchDataParserTest {
         ResearchData researchData = researchDataParser.parse(applicationData);
 
         assertThat(researchData.getCounty()).isNull();
-
     }
 
     @Test
@@ -266,11 +349,7 @@ class ResearchDataParserTest {
 
         ResearchData researchData = researchDataParser.parse(applicationData);
 
-        ResearchData expectedResearchData = ResearchData.builder()
-                .householdSize(2)
-                .build();
-
-        assertThat(researchData).isEqualTo(expectedResearchData);
+        assertThat(researchData.getHouseholdSize()).isEqualTo(3);
     }
 
     @Test

@@ -44,6 +44,13 @@ public class PagesData extends HashMap<String, PageData> {
                 .collect(toMap(Entry::getKey, Entry::getValue)));
     }
 
+    public List<String> safeGetPageInputValue(String pageName, String inputName) {
+        return Optional.ofNullable(get(pageName))
+                .flatMap(pageData -> Optional.ofNullable(pageData.get(inputName)))
+                .map(InputData::getValue)
+                .orElse(List.of());
+    }
+
     public boolean shouldSkip(PageWorkflowConfiguration pageWorkflowConfiguration) {
         Condition skipCondition = pageWorkflowConfiguration.getSkipCondition();
         if (skipCondition == null) {
