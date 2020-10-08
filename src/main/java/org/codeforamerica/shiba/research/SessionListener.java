@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba;
+package org.codeforamerica.shiba.research;
 
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 

@@ -1,6 +1,8 @@
 package org.codeforamerica.shiba;
 
 import org.codeforamerica.shiba.application.FlowType;
+import org.codeforamerica.shiba.research.ResearchData;
+import org.codeforamerica.shiba.research.ResearchDataRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

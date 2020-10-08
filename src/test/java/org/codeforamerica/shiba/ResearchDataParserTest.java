@@ -7,6 +7,8 @@ import org.codeforamerica.shiba.output.caf.TotalIncomeCalculator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.pages.data.Subworkflows;
+import org.codeforamerica.shiba.research.ResearchData;
+import org.codeforamerica.shiba.research.ResearchDataParser;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;

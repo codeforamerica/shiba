@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba;
+package org.codeforamerica.shiba.research;
 
 import lombok.Builder;
 import lombok.Value;
