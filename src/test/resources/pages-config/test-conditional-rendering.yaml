@@ -68,6 +68,29 @@ shiba-configuration-conditional-rendering:
       inputs:
         - name: foo
           type: TEXT
+    - &startingPage
+      name: startingPage
+      pageTitle:
+        value: starting-page-title
+      inputs:
+        - name: randomInput
+          type: TEXT
+        - name:  anotherInput
+          type: TEXT
+    - &pageToSkip
+      name: pageToSkip
+      pageTitle:
+        value: page-to-skip-title
+      inputs:
+        - name: yetAnotherInput
+          type: TEXT
+    - &lastPage
+      name: lastPage
+      pageTitle:
+        value: last-page-title
+      inputs:
+        - name: weirdInput
+          type: YES_NO
   workflow:
     firstPage:
       pageConfiguration: *firstPage
@@ -78,10 +101,10 @@ shiba-configuration-conditional-rendering:
       nextPages:
         - pageName: thirdPage
       skipCondition:
-        pageName: firstPage
-        input: someRadioInputName
-        value: SKIP
-        matcher: CONTAINS
+        conditions:
+          - pageName: firstPage
+            input: someRadioInputName
+            value: SKIP
       datasources:
         - pageName: firstPage
     thirdPage:
@@ -89,10 +112,10 @@ shiba-configuration-conditional-rendering:
       nextPages:
         - pageName: fourthPage
       skipCondition:
-        pageName: firstPage
-        input: radioInputToSkipThirdPage
-        value: SKIP
-        matcher: CONTAINS
+        conditions:
+         - pageName: firstPage
+           input: radioInputToSkipThirdPage
+           value: SKIP
       datasources:
         - pageName: firstPage
     fourthPage:
@@ -130,6 +153,49 @@ shiba-configuration-conditional-rendering:
     eighthPage:
       pageConfiguration: *eighthPage
       groupName: group1
+    startingPage:
+      pageConfiguration: *startingPage
+      nextPages:
+        - pageName: pageToSkip
+    pageToSkip:
+      pageConfiguration: *pageToSkip
+      nextPages:
+        - pageName: lastPage
+      datasources:
+        - pageName: startingPage
+      skipCondition:
+        conditions:
+          - pageName: startingPage
+            input: randomInput
+            matcher: CONTAINS
+            value: "someTextInput"
+          - pageName: startingPage
+            input: anotherInput
+            matcher: CONTAINS
+            value: "AnotherTextInput"
+    secondStartingPage:
+      pageConfiguration: *startingPage
+      nextPages:
+        - pageName: secondPageToSkip
+    secondPageToSkip:
+      pageConfiguration: *pageToSkip
+      nextPages:
+        - pageName: lastPage
+      datasources:
+        - pageName: startingPage
+      skipCondition:
+        logicalOperator: OR
+        conditions:
+          - pageName: startingPage
+            input: randomInput
+            matcher: CONTAINS
+            value: "someTextInput"
+          - pageName: startingPage
+            input: anotherInput
+            matcher: CONTAINS
+            value: "AnotherTextInput"
+    lastPage:
+      pageConfiguration: *lastPage
   pageGroups:
     group1:
       startPage: sixthPage

@@ -1451,9 +1451,10 @@ shiba-configuration:
     verifyHomeAddress:
       pageConfiguration: *homeAddressValidation
       skipCondition:
-        pageName: homeAddress
-        input: streetAddress
-        matcher: EMPTY
+        conditions:
+          - pageName: homeAddress
+            input: streetAddress
+            matcher: EMPTY
       datasources:
         - pageName: homeAddress
       nextPages:
@@ -1463,9 +1464,10 @@ shiba-configuration:
       pageConfiguration: *mailingAddress
       enrichment: mailingAddressEnrichment
       skipCondition:
-        pageName: homeAddress
-        input: sameMailingAddress
-        value: "true"
+        conditions:
+          - pageName: homeAddress
+            input: sameMailingAddress
+            value: "true"
       nextPages:
         - pageName: verifyMailingAddress
       datasources:
@@ -1473,9 +1475,10 @@ shiba-configuration:
     verifyMailingAddress:
       pageConfiguration: *mailingAddressValidation
       skipCondition:
-        pageName: homeAddress
-        input: sameMailingAddress
-        value: "true"
+        conditions:
+          - pageName: homeAddress
+            input: sameMailingAddress
+            value: "true"
       datasources:
         - pageName: mailingAddress
         - pageName: homeAddress
@@ -1530,10 +1533,11 @@ shiba-configuration:
     preparingMealsTogether:
       pageConfiguration: *preparingMealsTogether
       skipCondition:
-        pageName: choosePrograms
-        value: SNAP
-        input: programs
-        matcher: DOES_NOT_CONTAIN
+        conditions:
+          - pageName: choosePrograms
+            value: SNAP
+            input: programs
+            matcher: DOES_NOT_CONTAIN
       nextPages:
         - pageName: goingToSchool
       datasources:
@@ -1551,9 +1555,10 @@ shiba-configuration:
       datasources:
         - pageName: personalInfo
       skipCondition:
-        pageName: personalInfo
-        input: sex
-        value: MALE
+        conditions:
+          - pageName: personalInfo
+            input: sex
+            value: MALE
     migrantFarmWorker:
       pageConfiguration: *migrantFarmWorker
       nextPages:
@@ -1695,9 +1700,10 @@ shiba-configuration:
       nextPages:
         - pageName: futureIncome
       skipCondition:
-        pageName: unearnedIncome
-        input: unearnedIncome
-        value: NO_UNEARNED_INCOME_SELECTED
+        conditions:
+          - pageName: unearnedIncome
+            input: unearnedIncome
+            value: NO_UNEARNED_INCOME_SELECTED
       datasources:
         - pageName: unearnedIncome
     futureIncome:
@@ -1746,9 +1752,10 @@ shiba-configuration:
     energyAssistanceMoreThan20:
       pageConfiguration: *energyAssistanceMoreThan20
       skipCondition:
-        pageName: energyAssistance
-        input: energyAssistance
-        value: "false"
+        conditions:
+          - pageName: energyAssistance
+            input: energyAssistance
+            value: "false"
       nextPages:
         - pageName: supportAndCare
       datasources:
@@ -1764,9 +1771,10 @@ shiba-configuration:
     savingsAmount:
       pageConfiguration: *liquidAssets
       skipCondition:
-        pageName: savings
-        input: haveSavings
-        value: "false"
+        conditions:
+          - pageName: savings
+            input: haveSavings
+            value: "false"
       datasources:
         - pageName: savings
         - pageName: doYouLiveAlone
@@ -1795,10 +1803,11 @@ shiba-configuration:
     ccapJob:
       pageConfiguration: *ccapJob
       skipCondition:
-        pageName: choosePrograms
-        value: CCAP
-        input: programs
-        matcher: DOES_NOT_CONTAIN
+        conditions:
+          - pageName: choosePrograms
+            value: CCAP
+            input: programs
+            matcher: DOES_NOT_CONTAIN
       nextPages:
         - pageName: incomeUpNext
       datasources:
@@ -1827,9 +1836,10 @@ shiba-configuration:
     liquidAssets:
       pageConfiguration: *liquidAssets
       skipCondition:
-        pageName: savings
-        input: haveSavings
-        value: "false"
+        conditions:
+          - pageName: savings
+            input: haveSavings
+            value: "false"
       nextPages:
         - pageName: expeditedExpenses
       datasources:
@@ -1844,9 +1854,10 @@ shiba-configuration:
     expeditedExpensesAmount:
       pageConfiguration: *expeditedExpensesAmount
       skipCondition:
-        pageName: expeditedExpenses
-        input: payRentOrMortgage
-        value: "false"
+        conditions:
+          - pageName: expeditedExpenses
+            input: payRentOrMortgage
+            value: "false"
       nextPages:
         - pageName: expeditedUtilityPayments
       datasources:

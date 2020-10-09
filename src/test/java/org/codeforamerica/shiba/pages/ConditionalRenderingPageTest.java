@@ -23,6 +23,8 @@ public class ConditionalRenderingPageTest extends AbstractExistingStartTimePageT
     private final String secondPageTitle = "secondPageTitle";
     private final String firstPageTitle = "firstPageTitle";
     private final String eighthPageTitle = "eighthPageTitle";
+    private final String pageToSkip = "pageToSkip";
+    private final String lastPageTitle = "lastPageTitle";
 
     @TestConfiguration
     @PropertySource(value = "classpath:pages-config/test-conditional-rendering.yaml", factory = YamlPropertySourceFactory.class)
@@ -44,6 +46,8 @@ public class ConditionalRenderingPageTest extends AbstractExistingStartTimePageT
         staticMessageSource.addMessage("eighth-page-title", Locale.US, eighthPageTitle);
         staticMessageSource.addMessage("skip-message-key", Locale.US, "SKIP PAGE");
         staticMessageSource.addMessage("not-skip-message-key", Locale.US, "NOT SKIP PAGE");
+        staticMessageSource.addMessage("page-to-skip-title", Locale.US, pageToSkip);
+        staticMessageSource.addMessage("last-page-title", Locale.US, lastPageTitle);
     }
 
     @Test
@@ -145,5 +149,45 @@ public class ConditionalRenderingPageTest extends AbstractExistingStartTimePageT
         testPage.clickContinue();
 
         assertThat(driver.getTitle()).isEqualTo(eighthPageTitle);
+    }
+
+    @Test
+    void shouldSupportConditionalRenderingForMultipleConditions() {
+        navigateTo("startingPage");
+        testPage.enterInput("randomInput", "someTextInput");
+        testPage.enterInput("anotherInput", "AnotherTextInput");
+        testPage.clickPrimaryButton();
+
+        assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
+    }
+
+    @Test
+    void shouldNotSkipIfMultipleConditionsAreNotMet() {
+        navigateTo("startingPage");
+        testPage.enterInput("randomInput", "someTextInput");
+        testPage.enterInput("anotherInput", "notCorrectInput");
+        testPage.clickPrimaryButton();
+
+        assertThat(driver.getTitle()).isEqualTo(pageToSkip);
+    }
+
+    @Test
+    void shouldSupportConditionalRenderingForMultipleConditionsWithOrOperator() {
+        navigateTo("secondStartingPage");
+        testPage.enterInput("randomInput", "someTextInput");
+        testPage.enterInput("anotherInput", "notCorrectInput");
+        testPage.clickPrimaryButton();
+
+        assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
+    }
+
+    @Test
+    void shouldNotSkipIfMultipleConditionsAreNotMetWithOrOperator() {
+        navigateTo("secondStartingPage");
+        testPage.enterInput("randomInput", "notCorrectInput");
+        testPage.enterInput("anotherInput", "alsoNotCorrectInput");
+        testPage.clickPrimaryButton();
+
+        assertThat(driver.getTitle()).isEqualTo(pageToSkip);
     }
 }

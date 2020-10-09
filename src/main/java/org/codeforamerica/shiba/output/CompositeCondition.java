@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 @Data
 public class CompositeCondition {
     private List<Condition> conditions;
-    private LogicalOperator logicalOperator;
+    private LogicalOperator logicalOperator = LogicalOperator.AND;
 
     boolean appliesTo(ApplicationData applicationData) {
         Stream<Condition> conditionStream = addIterationConditionsForSubworkflows(applicationData);

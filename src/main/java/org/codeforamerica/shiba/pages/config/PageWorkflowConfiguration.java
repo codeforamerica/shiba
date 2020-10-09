@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.pages.config;
 
 import lombok.Data;
-import org.codeforamerica.shiba.inputconditions.Condition;
+import org.codeforamerica.shiba.output.CompositeCondition;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.Subworkflow;
 
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Data
 public class PageWorkflowConfiguration {
     private List<NextPage> nextPages;
-    private Condition skipCondition;
+    private CompositeCondition skipCondition;
     private List<PageDatasource> datasources = new ArrayList<>();
     private PageConfiguration pageConfiguration;
     private String groupName;

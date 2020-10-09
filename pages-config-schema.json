@@ -109,12 +109,22 @@
           }
         },
         "skipCondition": {
-          "$ref": "#/definitions/condition",
           "properties": {
-            "pageName": {
-              "type": "string"
+            "conditions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/condition",
+                "pageName": {
+                  "type": "string"
+                }
+              }
+            },
+            "logicalOperator": {
+              "type": "string",
+              "enum": ["OR", "AND"]
             }
-          }
+          },
+          "required": ["conditions"]
         },
         "nextPages": {
           "type": "array",

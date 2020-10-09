@@ -5,6 +5,7 @@ import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.parsers.PageInputCoordinates;
 import org.codeforamerica.shiba.pages.config.NextPage;
 import org.codeforamerica.shiba.pages.config.PageWorkflowConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -36,7 +37,7 @@ public class ApplicationData {
                 .orElse(pageInputCoordinates.getDefaultValue());
     }
 
-    public NextPage getNextPageName(PageWorkflowConfiguration pageWorkflowConfiguration, Integer option) {
+    public NextPage getNextPageName(@NotNull PageWorkflowConfiguration pageWorkflowConfiguration, Integer option) {
         if (!pageWorkflowConfiguration.getConditionalNavigation()) {
             return pageWorkflowConfiguration.getNextPages().get(option);
         }

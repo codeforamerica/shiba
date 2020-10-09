@@ -2,7 +2,7 @@ package org.codeforamerica.shiba.pages.data;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.codeforamerica.shiba.inputconditions.Condition;
+import org.codeforamerica.shiba.output.CompositeCondition;
 import org.codeforamerica.shiba.pages.config.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -52,7 +52,7 @@ public class PagesData extends HashMap<String, PageData> {
     }
 
     public boolean shouldSkip(PageWorkflowConfiguration pageWorkflowConfiguration) {
-        Condition skipCondition = pageWorkflowConfiguration.getSkipCondition();
+        CompositeCondition skipCondition = pageWorkflowConfiguration.getSkipCondition();
         if (skipCondition == null) {
             return false;
         }
