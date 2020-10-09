@@ -74,18 +74,18 @@ dependencies {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
     }
     implementation 'org.glassfish.jaxb:jaxb-runtime'
-    implementation 'org.apache.pdfbox:pdfbox:2.0.19'
+    implementation 'org.apache.pdfbox:pdfbox:2.0.21'
     implementation 'org.apache.commons:commons-lang3'
     implementation 'org.jetbrains:annotations:19.0.0'
-    implementation 'commons-validator:commons-validator:1.6'
+    implementation 'commons-validator:commons-validator:1.7'
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.apache.httpcomponents:httpclient'
-    implementation 'io.sentry:sentry-logback:1.7.30'
+    implementation 'io.sentry:sentry-logback:3.0.0'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'com.google.crypto.tink:tink:1.4.0'
     implementation 'org.flywaydb:flyway-core:6.4.4'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'com.mixpanel:mixpanel-java:1.4.4'
+    implementation 'com.mixpanel:mixpanel-java:1.5.0'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'com.sun.activation:jakarta.activation:1.2.2'
 
@@ -100,7 +100,7 @@ dependencies {
     }
     testImplementation 'org.awaitility:awaitility:4.0.3'
     testImplementation 'com.github.tomakehurst:wiremock-standalone:2.27.1'
-    testImplementation 'io.github.bonigarcia:webdrivermanager:4.0.0'
+    testImplementation 'io.github.bonigarcia:webdrivermanager:4.2.2'
     testImplementation 'org.springframework.ws:spring-ws-test'
     testImplementation 'org.springframework.security:spring-security-test'
 }
