@@ -74,28 +74,26 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
         driver.navigate().to(baseUrl + "/pages/firstPage");
 
         String textInputValue = "some input";
-        testPage.enterInput("editableTextInput", textInputValue);
+        testPage.enter("editableTextInput", textInputValue);
 
         String dateMonth = "10";
         String dateDay = "02";
         String dateYear = "1823";
-        testPage.enterDateInput("dateInput", DatePart.MONTH, dateMonth);
-        testPage.enterDateInput("dateInput", DatePart.DAY, dateDay);
-        testPage.enterDateInput("dateInput", DatePart.YEAR, dateYear);
+        testPage.enter("dateInput", String.join("/", dateMonth, dateDay, dateYear));
 
         String numberInputValue = "11";
-        testPage.enterInput("numberInput", numberInputValue);
+        testPage.enter("numberInput", numberInputValue);
 
-        testPage.selectEnumeratedInput("radioInput", radioOption1);
-        testPage.selectEnumeratedInput("checkboxInput", checkboxOption1);
-        testPage.selectEnumeratedInput("checkboxInput", checkboxOption2);
-        testPage.selectFromDropdown("selectInput", selectOption1);
+        testPage.enter("radioInput", radioOption1);
+        testPage.enter("checkboxInput", checkboxOption1);
+        testPage.enter("checkboxInput", checkboxOption2);
+        testPage.enter("selectInput", selectOption1);
         String moneyInputValue = "some money";
-        testPage.enterInput("moneyInput", moneyInputValue);
+        testPage.enter("moneyInput", moneyInputValue);
         String hourlyWageValue = "some wage";
-        testPage.enterInput("hourlyWageInput", hourlyWageValue);
-        String incrementerInputValue = "5";
-        testPage.enterInput("incrementerInput", incrementerInputValue);
+        testPage.enter("hourlyWageInput", hourlyWageValue);
+        String incremeValue = "5";
+        testPage.enter("increme", incremeValue);
 
         driver.findElement(By.cssSelector("button")).click();
         assertThat(driver.getTitle()).isEqualTo("nextPageTitle");
@@ -112,16 +110,16 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
         assertThat(testPage.getSelectValue("selectInput")).isEqualTo(selectOption1);
         assertThat(testPage.getInputValue("moneyInput")).isEqualTo(moneyInputValue);
         assertThat(testPage.getInputValue("hourlyWageInput")).isEqualTo(hourlyWageValue);
-        assertThat(testPage.getInputValue("incrementerInput")).isEqualTo(incrementerInputValue);
+        assertThat(testPage.getInputValue("increme")).isEqualTo(incremeValue);
     }
 
     @Test
     void incrementerShouldUseForMaxMinAndDefaultValue() {
         navigateTo("firstPage");
-        assertThat(testPage.getInputValue("incrementerInput")).isEqualTo("4");
+        assertThat(testPage.getInputValue("increme")).isEqualTo("4");
 
         driver.findElement(By.className("incrementer__add")).click();
-        assertThat(testPage.getInputValue("incrementerInput")).isEqualTo("5");
+        assertThat(testPage.getInputValue("increme")).isEqualTo("5");
         driver.findElement(By.className("incrementer__add")).click();
         assertThat(testPage.getInputValue("incrementerInput")).isEqualTo("5");
 
@@ -142,7 +140,7 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
         })
         void shouldNotDisplayFollowUpQuestionsWhenFollowUpValueIsNotSelected(String inputName) {
             driver.navigate().to(baseUrl + "/pages/firstPage");
-            testPage.selectEnumeratedInput(inputName, followUpTrue);
+            testPage.enter(inputName, followUpTrue);
 
             assertThat(driver.findElement(By.cssSelector(String.format("input[name^='%s-followUpTextInput']", inputName))).isDisplayed()).isFalse();
         }
@@ -154,7 +152,7 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
         })
         void shouldDisplayFollowUpQuestionsWhenFollowUpValueIsSelected(String inputName) {
             driver.navigate().to(baseUrl + "/pages/firstPage");
-            testPage.selectEnumeratedInput(inputName, followUpFalse);
+            testPage.enter(inputName, followUpFalse);
 
             assertThat(driver.findElement(By.cssSelector(String.format("input[name^='%s-followUpTextInput']", inputName))).isDisplayed()).isTrue();
         }
@@ -166,12 +164,12 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
         })
         void shouldPreserveAnswerToFollowUpQuestions(String inputName) {
             driver.navigate().to(baseUrl + "/pages/firstPage");
-            testPage.selectEnumeratedInput(inputName, followUpFalse);
+            testPage.enter(inputName, followUpFalse);
             String followUpTextInputValue = "some follow up";
             String followUpInputName = String.format("%s-followUpTextInput", inputName);
-            testPage.enterInput(followUpInputName, followUpTextInputValue);
+            testPage.enter(followUpInputName, followUpTextInputValue);
 
-            testPage.clickPrimaryButton();
+            testPage.clickContinue();
             testPage.goBack();
 
             assertThat(driver.findElement(By.cssSelector(String.format("input[name^='%s-followUpTextInput']", inputName))).isDisplayed()).isTrue();
@@ -185,7 +183,7 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
         })
         void shouldDisplayFollowUpQuestionsWhenAnyFollowUpValueIsSelected(String inputName) {
             driver.navigate().to(baseUrl + "/pages/firstPage");
-            testPage.selectEnumeratedInput(inputName, followUpUncertain);
+            testPage.enter(inputName, followUpUncertain);
 
             assertThat(driver.findElement(By.cssSelector(String.format("input[name^='%s-followUpTextInput']", inputName))).isDisplayed()).isTrue();
         }
@@ -193,9 +191,9 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
         @Test
         void shouldContinueDisplayingFollowUpQuestionsWhenAFollowUpValueIsStillSelected() {
             driver.navigate().to(baseUrl + "/pages/firstPage");
-            testPage.selectEnumeratedInput("checkboxInputWithFollowUps", followUpFalse);
-            testPage.selectEnumeratedInput("checkboxInputWithFollowUps", followUpUncertain);
-            testPage.selectEnumeratedInput("checkboxInputWithFollowUps", followUpUncertain);
+            testPage.enter("checkboxInputWithFollowUps", followUpFalse);
+            testPage.enter("checkboxInputWithFollowUps", followUpUncertain);
+            testPage.enter("checkboxInputWithFollowUps", followUpUncertain);
 
             assertThat(driver.findElement(By.cssSelector("input[name^='checkboxInputWithFollowUps-followUpTextInput']")).isDisplayed()).isTrue();
         }
@@ -235,9 +233,9 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
     void shouldUncheckAnyOtherCheckedBoxesWhenNoneCheckboxIsSelected() {
         driver.navigate().to(baseUrl + "/pages/firstPage");
 
-        testPage.selectEnumeratedInput("checkboxInput", checkboxOption1);
-        testPage.selectEnumeratedInput("checkboxInput", checkboxOption2);
-        testPage.selectEnumeratedInput("checkboxInput", noneCheckboxOption);
+        testPage.enter("checkboxInput", checkboxOption1);
+        testPage.enter("checkboxInput", checkboxOption2);
+        testPage.enter("checkboxInput", noneCheckboxOption);
 
         assertThat(testPage.getCheckboxValues("checkboxInput")).containsOnly(noneCheckboxOption);
     }
@@ -246,8 +244,8 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
     void shouldUncheckNoneCheckboxWhenAnyOtherCheckboxIsSelected() {
         driver.navigate().to(baseUrl + "/pages/firstPage");
 
-        testPage.selectEnumeratedInput("checkboxInput", noneCheckboxOption);
-        testPage.selectEnumeratedInput("checkboxInput", checkboxOption1);
+        testPage.enter("checkboxInput", noneCheckboxOption);
+        testPage.enter("checkboxInput", checkboxOption1);
 
         assertThat(testPage.getCheckboxValues("checkboxInput")).containsOnly(checkboxOption1);
     }

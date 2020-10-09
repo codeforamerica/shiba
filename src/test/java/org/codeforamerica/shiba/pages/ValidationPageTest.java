@@ -94,12 +94,12 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
     @Test
     void shouldClearValidationError_afterErrorHasBeenFixed() {
         driver.navigate().to(baseUrl + "/pages/firstPage");
-        testPage.clickPrimaryButton();
+        testPage.clickContinue();
 
         assertThat(testPage.hasInputError("someInputName")).isTrue();
 
-        testPage.enterInput("someInputName", "not blank");
-        testPage.clickPrimaryButton();
+        testPage.enter("someInputName", "not blank");
+        testPage.clickContinue();
         testPage.goBack();
 
         assertThat(testPage.hasInputError("someInputName")).isFalse();
@@ -136,8 +136,8 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
     void shouldStayOnPage_whenAnyValidationHasFailed() {
         navigateTo("pageWithInputWithMultipleValidations");
 
-        testPage.enterInput("multipleValidations", "not money");
-        testPage.clickPrimaryButton();
+        testPage.enter("multipleValidations", "not money");
+        testPage.clickContinue();
 
         assertThat(driver.getTitle()).isEqualTo(multipleValidationsPageTitle);
         assertThat(testPage.getInputError("multipleValidations").getText()).isEqualTo(moneyErrorMessageKey);
@@ -175,8 +175,8 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         void shouldNotTriggerValidation_whenConditionInputContainsValue() {
             navigateTo("doesNotContainConditionPage");
 
-            testPage.enterInput("triggerInput", "triggerValue");
-            testPage.clickPrimaryButton();
+            testPage.enter("triggerInput", "triggerValue");
+            testPage.clickContinue();
 
             assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
         }
@@ -185,8 +185,8 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         void shouldTriggerValidation_whenConditionInputDoesNotContainValue() {
             navigateTo("doesNotContainConditionPage");
 
-            testPage.enterInput("triggerInput", "not trigger");
-            testPage.clickPrimaryButton();
+            testPage.enter("triggerInput", "not trigger");
+            testPage.clickContinue();
 
             assertThat(testPage.hasInputError("conditionTest")).isTrue();
         }
@@ -195,8 +195,8 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         void shouldTriggerValidation_whenConditionInputIsEmptyOrBlank() {
             navigateTo("emptyInputConditionPage");
 
-            testPage.enterInput("triggerInput", "");
-            testPage.clickPrimaryButton();
+            testPage.enter("triggerInput", "");
+            testPage.clickContinue();
 
             assertThat(driver.getTitle()).isNotEqualTo(lastPageTitle);
             assertThat(testPage.hasInputError("conditionTest")).isTrue();
@@ -206,8 +206,8 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         void shouldNotTriggerValidation_whenConditionInputIsNotEmptyOrBlank() {
             navigateTo("emptyInputConditionPage");
 
-            testPage.enterInput("triggerInput", "something");
-            testPage.clickPrimaryButton();
+            testPage.enter("triggerInput", "something");
+            testPage.clickContinue();
 
             assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
         }
@@ -222,18 +222,18 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         })
         void shouldFailValidationForNOT_BLANKWhenThereIsEmptyOrBlankInput(String textInputValue) {
             driver.navigate().to(baseUrl + "/pages/notBlankPage");
-            testPage.enterInput("notBlankInput", textInputValue);
+            testPage.enter("notBlankInput", textInputValue);
 
-            testPage.clickPrimaryButton();
+            testPage.clickContinue();
             assertThat(testPage.getTitle()).isEqualTo(notBlankPageTitle);
         }
 
         @Test
         void shouldPassValidationForNOT_BLANKWhenThereIsAtLeast1CharacterInput() {
             driver.navigate().to(baseUrl + "/pages/notBlankPage");
-            testPage.enterInput("notBlankInput", "something");
+            testPage.enter("notBlankInput", "something");
 
-            testPage.clickPrimaryButton();
+            testPage.clickContinue();
             assertThat(testPage.getTitle()).isEqualTo(lastPageTitle);
         }
 
@@ -402,7 +402,7 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         void shouldFailValidationForSELECT_AT_LEAST_ONEWhenNoValuesAreSelected() {
             driver.navigate().to(baseUrl + "/pages/checkboxPage");
 
-            testPage.clickPrimaryButton();
+            testPage.clickContinue();
             assertThat(testPage.getTitle()).isEqualTo(checkboxPageTitle);
         }
 
@@ -410,8 +410,8 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         void shouldPassValidationForSELECT_AT_LEAST_ONEWhenAtLeastOneValueIsSelected() {
             driver.navigate().to(baseUrl + "/pages/checkboxPage");
 
-            testPage.selectEnumeratedInput("checkboxInput", option1);
-            testPage.clickPrimaryButton();
+            testPage.enter("checkboxInput", option1);
+            testPage.clickContinue();
             assertThat(testPage.getTitle()).isEqualTo(lastPageTitle);
         }
     }

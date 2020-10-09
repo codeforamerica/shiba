@@ -57,8 +57,8 @@ public class EnrichmentPageTest extends AbstractExistingStartTimePageTest {
     @Test
     void enrichesThePageDataWithTheEnrichmentResults() {
         navigateTo("testEnrichmentPage");
-        testPage.enterInput("someTextInput", "someText");
-        testPage.clickPrimaryButton();
+        testPage.enter("someTextInput", "someText");
+        testPage.clickContinue();
 
         assertThat(driver.findElementById("originalInput").getText()).isEqualTo("someText");
         assertThat(driver.findElementById("enrichmentInput").getText()).isEqualTo("someText-someEnrichmentValue");
@@ -67,7 +67,7 @@ public class EnrichmentPageTest extends AbstractExistingStartTimePageTest {
     @Test
     void doesNotEnrichThePageDataIfPageDataIsInvalid() {
         navigateTo("testEnrichmentPage");
-        testPage.clickPrimaryButton();
+        testPage.clickContinue();
 
         assertThat(driver.findElements(By.id("enrichmentInput"))).isEmpty();
     }

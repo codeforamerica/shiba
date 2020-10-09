@@ -54,8 +54,8 @@ public class PageModelPageTest extends AbstractExistingStartTimePageTest {
         navigateTo("lastPage");
 
         String expectedValue = "some value";
-        testPage.enterInput("someInput", expectedValue);
-        testPage.clickPrimaryButton();
+        testPage.enter("someInput", expectedValue);
+        testPage.clickContinue();
 
         assertThat(testPage.getInputValue("someInput")).isEqualTo(expectedValue);
     }

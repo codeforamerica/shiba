@@ -24,7 +24,6 @@ import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.codeforamerica.shiba.pages.DatePart.*;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 import static org.mockito.ArgumentMatchers.any;
@@ -48,7 +47,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     @BeforeEach
     void setUp() throws IOException {
         super.setUp();
-        driver.navigate().to(baseUrl + "/pages/landing");
+        driver.navigate().to(baseUrl);
         when(clock.instant()).thenReturn(Instant.now());
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         when(smartyStreetClient.validateAddress(any())).thenReturn(Optional.empty());
@@ -71,32 +70,32 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     })
     void userCanCompleteTheExpeditedFlow(String moneyMadeLast30Days, String liquidAssets, String expeditedServiceDetermination) {
         completeFlowFromLandingPageThroughReviewInfo();
-        driver.findElement(By.linkText("Submit application now with only the above information.")).click();
-        driver.findElement(By.linkText("Yes, I want to see if I qualify")).click();
+        testPage.clickLink("Submit application now with only the above information.");
+        testPage.clickLink("Yes, I want to see if I qualify");
 
-        Page expeditedIncomePage = testPage.choose(YES);
-        expeditedIncomePage.enterInput("moneyMadeLast30Days", moneyMadeLast30Days);
+        testPage.enter("liveAlone", YES.getDisplayValue());
+        testPage.enter("moneyMadeLast30Days", moneyMadeLast30Days);
 
-        Page hasLiquidAssetPage = expeditedIncomePage.clickPrimaryButton();
-        Page liquidAssetsPage = hasLiquidAssetPage.choose(YES);
+        testPage.clickButton("Continue");
+        testPage.enter("haveSavings", YES.getDisplayValue());
 
-        liquidAssetsPage.enterInput("liquidAssets", liquidAssets);
+        testPage.enter("liquidAssets", liquidAssets);
 
-        Page expeditedExpensesPage = liquidAssetsPage.clickPrimaryButton();
-        Page expeditedExpensesAmountPage = expeditedExpensesPage.choose(YES);
+        testPage.clickButton("Continue");
+        testPage.enter("payRentOrMortgage", YES.getDisplayValue());
 
-        expeditedExpensesAmountPage.enterInput("homeExpensesAmount", "333");
-        Page expeditedUtilityPaymentsPage = expeditedExpensesAmountPage.clickPrimaryButton();
+        testPage.enter("homeExpensesAmount", "333");
+        testPage.clickButton("Continue");
 
-        expeditedUtilityPaymentsPage.selectEnumeratedInput("payForUtilities", "Cooling");
-        Page expeditedMigrantFarmWorkerPage = expeditedUtilityPaymentsPage.clickPrimaryButton();
+        testPage.enter("payForUtilities", "Cooling");
+        testPage.clickButton("Continue");
 
-        Page expeditedDeterminationPage = expeditedMigrantFarmWorkerPage.choose(NO);
+        testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
 
         assertThat(driver.findElement(By.tagName("p")).getText()).contains(expeditedServiceDetermination);
 
-        Page importantToKnow = expeditedDeterminationPage.clickPrimaryButton();
-        assertThat(importantToKnow.getTitle()).isEqualTo("Important to Know");
+        testPage.clickButton("Finish application");
+        assertThat(testPage.getTitle()).isEqualTo("Important to Know");
     }
 
     @Test
@@ -136,163 +135,149 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         assertThat(metricsPage.getCardValue("Happy")).contains("100%");
     }
 
-
     private void completeFlowFromLandingPageThroughReviewInfo() {
-        Page languagePreferencesPage = testPage
-                .clickPrimaryButton()
-                .clickPrimaryButton();
-        languagePreferencesPage.selectFromDropdown("writtenLanguage", "English");
-        languagePreferencesPage.selectFromDropdown("spokenLanguage", "English");
-        languagePreferencesPage.selectEnumeratedInput("needInterpreter", "Yes");
-        Page chooseProgramPage = languagePreferencesPage
-                .clickPrimaryButton();
-        chooseProgramPage.selectEnumeratedInput("programs", "Emergency assistance");
-        Page introBasicInfo = chooseProgramPage.clickPrimaryButton();
-        Page personalInfoPage = introBasicInfo.clickPrimaryButton();
+        testPage.clickButton("Apply now");
+        testPage.clickButton("Continue");
+        testPage.enter("writtenLanguage", "English");
+        testPage.enter("spokenLanguage", "English");
+        testPage.enter("needInterpreter", "Yes");
+        testPage.clickButton("Continue");
+        testPage.enter("programs", "Emergency assistance");
+        testPage.clickButton("Continue");
+        testPage.clickButton("Continue");
+
         fillOutPersonalInfo();
 
-        Page contactInfoPage = personalInfoPage.clickPrimaryButton();
-        contactInfoPage.enterInput("phoneNumber", "7234567890");
-        contactInfoPage.enterInput("email", "some@email.com");
-        contactInfoPage.selectEnumeratedInput("phoneOrEmail", "Text me");
+        testPage.clickButton("Continue");
+        testPage.enter("phoneNumber", "7234567890");
+        testPage.enter("email", "some@email.com");
+        testPage.enter("phoneOrEmail", "Text me");
+        testPage.clickButton("Continue");
+        testPage.enter("zipCode", "12345");
+        testPage.enter("city", "someCity");
+        testPage.enter("streetAddress", "someStreetAddress");
+        testPage.enter("apartmentNumber", "someApartmentNumber");
+        testPage.enter("isHomeless", "I don't have a permanent address");
+        testPage.enter("sameMailingAddress", "No, use a different address for mail");
+        testPage.clickButton("Continue");
 
-        Page homeAddressPage = contactInfoPage.clickPrimaryButton();
-
-        homeAddressPage.enterInput("zipCode", "12345");
-        homeAddressPage.enterInput("city", "someCity");
-        homeAddressPage.enterInput("streetAddress", "someStreetAddress");
-        homeAddressPage.enterInput("apartmentNumber", "someApartmentNumber");
-        homeAddressPage.selectEnumeratedInput("isHomeless", "I don't have a permanent address");
-        homeAddressPage.selectEnumeratedInput("sameMailingAddress", "No, use a different address for mail");
-        homeAddressPage.clickPrimaryButton();
-
-        driver.findElement(By.cssSelector("button[type='submit']")).click();
-        @SuppressWarnings("UnnecessaryLocalVariable")
-        Page mailingAddressPage = homeAddressPage;
-
-        mailingAddressPage.enterInput("zipCode", "12345");
-        mailingAddressPage.enterInput("city", "someCity");
-        mailingAddressPage.enterInput("streetAddress", "someStreetAddress");
-        mailingAddressPage.enterInput("state", "IL");
-        mailingAddressPage.enterInput("apartmentNumber", "someApartmentNumber");
+        testPage.clickButton("Use this address");
+        testPage.enter("zipCode", "12345");
+        testPage.enter("city", "someCity");
+        testPage.enter("streetAddress", "someStreetAddress");
+        testPage.enter("state", "IL");
+        testPage.enter("apartmentNumber", "someApartmentNumber");
         when(smartyStreetClient.validateAddress(any())).thenReturn(
                 Optional.of(new Address("smarty street", "City", "CA", "03104", "", "someCounty"))
         );
-        Page validationPage = mailingAddressPage.clickPrimaryButton();
+        testPage.clickButton("Continue");
 
-        validationPage.clickInputById("enriched-address");
-        validationPage.clickPrimaryButton();
+        testPage.clickInputById("enriched-address");
+        testPage.clickButton("Continue");
         assertThat(driver.findElementById("mailing-address_street").getText()).isEqualTo("smarty street");
     }
 
     private void fillOutPersonInfo() {
-        testPage.enterInput("firstName", "defaultFirstName");
-        testPage.enterInput("lastName", "defaultLastName");
-        testPage.enterInput("otherName", "defaultOtherName");
-        testPage.enterDateInput("dateOfBirth", MONTH, "01");
-        testPage.enterDateInput("dateOfBirth", DAY, "12");
-        testPage.enterDateInput("dateOfBirth", YEAR, "1928");
-        testPage.enterInput("ssn", "123456789");
-        testPage.selectEnumeratedInput("maritalStatus", "Never married");
-        testPage.selectEnumeratedInput("sex", "Female");
-        testPage.selectEnumeratedInput("livedInMnWholeLife", "Yes");
-        testPage.enterDateInput("moveToMnDate", MONTH, "02");
-        testPage.enterDateInput("moveToMnDate", DAY, "18");
-        testPage.enterDateInput("moveToMnDate", YEAR, "1776");
+        testPage.enter("firstName", "defaultFirstName");
+        testPage.enter("lastName", "defaultLastName");
+        testPage.enter("otherName", "defaultOtherName");
+        testPage.enter("dateOfBirth", "01/12/1928");
+        testPage.enter("ssn", "123456789");
+        testPage.enter("maritalStatus", "Never married");
+        testPage.enter("sex", "Female");
+        testPage.enter("livedInMnWholeLife", "Yes");
+        testPage.enter("moveToMnDate", "02/18/1776");
     }
 
     private void fillOutPersonalInfo() {
         fillOutPersonInfo();
-        testPage.enterInput("moveToMnPreviousCity", "Chicago");
+        testPage.enter("moveToMnPreviousCity", "Chicago");
     }
 
     private void fillOutHousemateInfo() {
-        testPage.enterInput("relationship", "housemate");
-        testPage.selectEnumeratedInput("programs", "Emergency assistance");
+        testPage.enter("relationship", "housemate");
+        testPage.enter("programs", "Emergency assistance");
         fillOutPersonInfo(); // need to fill out programs checkbox set above first
-        testPage.enterInput("moveToMnPreviousState", "Illinois");
+        testPage.enter("moveToMnPreviousState", "Illinois");
     }
 
     private SuccessPage nonExpeditedFlowToSuccessPage(boolean hasHousehold) {
         completeFlowFromLandingPageThroughReviewInfo();
-        driver.findElement(By.linkText("This looks correct")).click();
+        testPage.clickLink("This looks correct");
 
-        Page goingToSchool;
         if (hasHousehold) {
-            Page startHouseholdPage = testPage.choose(NO);
-            Page personPage = startHouseholdPage.clickPrimaryButton();
+            testPage.enter("liveAlone", NO.getDisplayValue());
+            testPage.clickButton("Continue");
             fillOutHousemateInfo();
-            Page householdList = personPage.clickPrimaryButton();
-            goingToSchool = householdList.clickPrimaryButton();
+            testPage.clickButton("Continue");
+            testPage.clickButton("No, that's it.");
         } else {
-            Page introPersonalDetailsPage = testPage.choose(YES);
-            goingToSchool = introPersonalDetailsPage.clickPrimaryButton();
+            testPage.enter("liveAlone", YES.getDisplayValue());
+            testPage.clickButton("Continue");
         }
 
-        Page pregnant = goingToSchool.choose(NO);
-        Page migrantWorker = pregnant.choose(NO);
-        Page usCitizen = migrantWorker.choose(NO);
-        Page disability = usCitizen.choose(NO);
-        Page workSituation = disability.choose(NO);
-        Page introIncome = workSituation.choose(NO);
-        Page employmentStatus = introIncome.clickPrimaryButton();
-        Page incomeByJob = employmentStatus.choose(YES);
-        Page employerName = incomeByJob.clickPrimaryButton();
-        employerName.enterInput("employersName", "some employer");
-        Page selfEmployment = employerName.clickPrimaryButton();
-        Page paidByTheHourPage = selfEmployment.choose(YES);
-        Page incomeUpNext = paidByTheHourOrSelectPayPeriod();
-        Page unearnedIncome = incomeUpNext.clickPrimaryButton();
-        unearnedIncome.selectEnumeratedInput("unearnedIncome", "Social Security");
-        Page unearnedIncomeSources = unearnedIncome.clickPrimaryButton();
-        unearnedIncomeSources.enterInput("socialSecurityAmount", "200");
-        Page futureIncome = unearnedIncomeSources.clickPrimaryButton();
-        futureIncome.selectEnumeratedInput("earnLessMoneyThisMonth", "Yes");
-        Page startExpenses = futureIncome.clickPrimaryButton();
-        Page homeExpenses = startExpenses.clickPrimaryButton();
-        homeExpenses.selectEnumeratedInput("homeExpenses", "Rent");
-        Page homeExpensesAmount = homeExpenses.clickPrimaryButton();
-        homeExpensesAmount.enterInput("homeExpensesAmount", "123321");
-        Page utilities = homeExpensesAmount.clickPrimaryButton();
-        utilities.selectEnumeratedInput("payForUtilities", "Heating");
-        Page energyAssistance = utilities.clickPrimaryButton();
-        Page energyAssistanceMoreThan20 = energyAssistance.choose(YES);
-        Page supportAndCare = energyAssistanceMoreThan20.choose(YES);
-        Page savings = supportAndCare.choose(YES);
-        Page savingsAmount = savings.choose(YES);
-        savingsAmount.enterInput("liquidAssets", "1234");
-        Page investments = savingsAmount.clickPrimaryButton();
-        Page vehicle = investments.choose(NO);
-        Page soldAssets = vehicle.choose(YES);
-        Page submittingApplication = soldAssets.choose(NO);
-        Page registerToVote = submittingApplication.clickPrimaryButton();
-        Page importantToKnow = registerToVote.choose(YES);
-        Page legalStuff = importantToKnow.clickPrimaryButton();
-        legalStuff.selectEnumeratedInput("agreeToTerms", "I agree");
-        Page signThisApplicationPage = legalStuff.clickPrimaryButton();
-
-        signThisApplicationPage.enterInput("applicantSignature", "some name");
-        signThisApplicationPage.clickPrimaryButton();
+        testPage.enter("goingToSchool", NO.getDisplayValue());
+        testPage.enter("isPregnant", NO.getDisplayValue());
+        testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
+        testPage.enter("isUsCitizen", NO.getDisplayValue());
+        testPage.enter("hasDisability", NO.getDisplayValue());
+        testPage.enter("hasWorkSituation", NO.getDisplayValue());
+        testPage.clickButton("Continue");
+        testPage.enter("areYouWorking", YES.getDisplayValue());
+        testPage.clickButton("Add a job");
+        testPage.enter("employersName", "some employer");
+        testPage.clickButton("Continue");
+        testPage.enter("selfEmployment", YES.getDisplayValue());
+        paidByTheHourOrSelectPayPeriod();
+        testPage.clickButton("Continue");
+        testPage.enter("unearnedIncome", "Social Security");
+        testPage.clickButton("Continue");
+        testPage.enter("socialSecurityAmount", "200");
+        testPage.clickButton("Continue");
+        testPage.enter("earnLessMoneyThisMonth", "Yes");
+        testPage.clickButton("Continue");
+        testPage.clickButton("Continue");
+        testPage.enter("homeExpenses", "Rent");
+        testPage.clickButton("Continue");
+        testPage.enter("homeExpensesAmount", "123321");
+        testPage.clickButton("Continue");
+        testPage.enter("payForUtilities", "Heating");
+        testPage.clickButton("Continue");
+        testPage.enter("energyAssistance", YES.getDisplayValue());
+        testPage.enter("energyAssistanceMoreThan20", YES.getDisplayValue());
+        testPage.enter("supportAndCare", YES.getDisplayValue());
+        testPage.enter("haveSavings", YES.getDisplayValue());
+        testPage.enter("liquidAssets", "1234");
+        testPage.clickButton("Continue");
+        testPage.enter("haveInvestments", NO.getDisplayValue());
+        testPage.enter("haveVehicle", YES.getDisplayValue());
+        testPage.enter("haveSoldAssets", NO.getDisplayValue());
+        testPage.clickButton("Continue");
+        testPage.enter("registerToVote", "Yes, send me more info");
+        testPage.clickButton("Continue");
+        testPage.enter("agreeToTerms", "I agree");
+        testPage.clickButton("Continue");
+        testPage.enter("applicantSignature", "some name");
+        testPage.clickButton("Submit");
 
         return new SuccessPage(driver);
     }
 
-    private Page paidByTheHourOrSelectPayPeriod() {
-        Page paidByTheHourPage = testPage;
+    private void paidByTheHourOrSelectPayPeriod() {
         if (new Random().nextBoolean()) {
-            Page hourlyWage = paidByTheHourPage.choose(YES);
-            hourlyWage.enterInput("hourlyWage", "1");
-            Page hoursAWeek = hourlyWage.clickPrimaryButton();
-            hoursAWeek.enterInput("hoursAWeek", "30");
-            Page jobBuilder = hoursAWeek.clickPrimaryButton();
-            return jobBuilder.clickPrimaryButton();
+            testPage.enter("paidByTheHour", YES.getDisplayValue());
+            testPage.enter("hourlyWage", "1");
+            testPage.clickButton("Continue");
+            testPage.enter("hoursAWeek", "30");
+            testPage.clickButton("Continue");
+            testPage.clickButton("No, that's it.");
         } else {
-            Page payPeriod = paidByTheHourPage.choose(NO);
-            payPeriod.selectEnumeratedInput("payPeriod", "Twice a month");
-            Page payPerPeriod = payPeriod.clickPrimaryButton();
-            payPerPeriod.enterInput("incomePerPayPeriod", "1");
-            Page jobBuilder = payPerPeriod.clickPrimaryButton();
-            return jobBuilder.clickPrimaryButton();
+            testPage.enter("paidByTheHour", NO.getDisplayValue());
+            testPage.enter("payPeriod", "Twice a month");
+            testPage.clickButton("Continue");
+            testPage.enter("incomePerPayPeriod", "1");
+            testPage.clickButton("Continue");
+            testPage.clickButton("No, that's it.");
         }
     }
 }

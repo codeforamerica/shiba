@@ -39,8 +39,8 @@ public class ConditionalInputsPageTest extends AbstractExistingStartTimePageTest
     void shouldOnlyRenderInputsBasedOnCondition() {
         navigateTo("firstPage");
 
-        testPage.selectEnumeratedInput("options", "option 1");
-        testPage.clickPrimaryButton();
+        testPage.enter("options", "option 1");
+        testPage.clickContinue();
 
         assertThat(driver.findElement(By.name("option1Text[]")).isDisplayed()).isTrue();
         assertThat(driver.findElements(By.name("option2Text[]"))).isEmpty();

@@ -98,7 +98,7 @@ public class UserDecisionNavigationPageTest extends AbstractExistingStartTimePag
     @Test
     void shouldNavigateToNextPageBasedOnCondition() {
         navigateTo("formPageBranchingNavigationPage");
-        testPage.choose(YES);
+        testPage.enter("yesNoQuestion", YES.getDisplayValue());
 
         assertThat(driver.getTitle()).isEqualTo(yesAnswerTitle);
     }

@@ -49,7 +49,7 @@ public class ConditionalRenderingPageTest extends AbstractExistingStartTimePageT
     @Test
     void shouldNotRenderPageAndNavigateToTheNextPageIfTheSkipConditionIsTrue() {
         driver.navigate().to(baseUrl + "/pages/firstPage");
-        testPage.selectEnumeratedInput("someRadioInputName", "SKIP PAGE");
+        testPage.enter("someRadioInputName", "SKIP PAGE");
         driver.findElement(By.cssSelector("button")).click();
 
         assertThat(driver.getTitle()).isEqualTo(thirdPageTitle);
@@ -58,8 +58,8 @@ public class ConditionalRenderingPageTest extends AbstractExistingStartTimePageT
     @Test
     void shouldSupportSkippingMoreThanOnePageInARow() {
         driver.navigate().to(baseUrl + "/pages/firstPage");
-        testPage.selectEnumeratedInput("someRadioInputName", "SKIP PAGE");
-        testPage.selectEnumeratedInput("radioInputToSkipThirdPage", "SKIP PAGE");
+        testPage.enter("someRadioInputName", "SKIP PAGE");
+        testPage.enter("radioInputToSkipThirdPage", "SKIP PAGE");
 
         driver.findElement(By.cssSelector("button")).click();
         assertThat(driver.getTitle()).isEqualTo(fourthPageTitle);
@@ -82,7 +82,7 @@ public class ConditionalRenderingPageTest extends AbstractExistingStartTimePageT
     @Test
     void shouldSkipGoingBackwardsAsWell() {
         driver.navigate().to(baseUrl + "/pages/firstPage");
-        testPage.selectEnumeratedInput("someRadioInputName", "SKIP PAGE");
+        testPage.enter("someRadioInputName", "SKIP PAGE");
 
         driver.findElement(By.cssSelector("button")).click();
 
@@ -109,19 +109,19 @@ public class ConditionalRenderingPageTest extends AbstractExistingStartTimePageT
     @Test
     void shouldRemoveDataForSkippedPage() {
         navigateTo("firstPage");
-        testPage.selectEnumeratedInput("someRadioInputName", "NOT SKIP PAGE");
+        testPage.enter("someRadioInputName", "NOT SKIP PAGE");
 
-        Page secondPage = testPage.clickPrimaryButton();
-        secondPage.enterInput("foo", "something");
-        secondPage.clickPrimaryButton();
-
-        navigateTo("firstPage");
-        testPage.selectEnumeratedInput("someRadioInputName", "SKIP PAGE");
-        testPage.clickPrimaryButton();
+        testPage.clickContinue();
+        testPage.enter("foo", "something");
+        testPage.clickContinue();
 
         navigateTo("firstPage");
-        testPage.selectEnumeratedInput("someRadioInputName", "NOT SKIP PAGE");
-        testPage.clickPrimaryButton();
+        testPage.enter("someRadioInputName", "SKIP PAGE");
+        testPage.clickContinue();
+
+        navigateTo("firstPage");
+        testPage.enter("someRadioInputName", "NOT SKIP PAGE");
+        testPage.clickContinue();
 
         assertThat(driver.getTitle()).isEqualTo(secondPageTitle);
         assertThat(testPage.getInputValue("foo")).isEmpty();
@@ -131,8 +131,8 @@ public class ConditionalRenderingPageTest extends AbstractExistingStartTimePageT
     void shouldNavigateToTheFirstNextPageWhoseConditionIsTrue() {
         navigateTo("fourthPage");
 
-        testPage.enterInput("foo", "goToFirstPage");
-        testPage.clickPrimaryButton();
+        testPage.enter("foo", "goToFirstPage");
+        testPage.clickContinue();
 
         assertThat(driver.getTitle()).isEqualTo(firstPageTitle);
     }
@@ -141,8 +141,8 @@ public class ConditionalRenderingPageTest extends AbstractExistingStartTimePageT
     void shouldGoToFirstNextPageWhoseConditionIsTrue_forSubworkflow() {
         navigateTo("sixthPage");
 
-        testPage.enterInput("foo", "goToEighthPage");
-        testPage.clickPrimaryButton();
+        testPage.enter("foo", "goToEighthPage");
+        testPage.clickContinue();
 
         assertThat(driver.getTitle()).isEqualTo(eighthPageTitle);
     }

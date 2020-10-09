@@ -18,15 +18,75 @@ public class Page {
         this.driver = driver;
     }
 
-    public Page goBack() {
+    public void goBack() {
         driver.findElement(By.partialLinkText("Go Back")).click();
-        return this;
     }
 
-    public void enterInput(String inputName, String input) {
+    public void clickLink(String linkText) {
+        driver.findElement(By.linkText(linkText)).click();
+    }
+
+    public void clickContinue() {
+        clickButton("Continue");
+    }
+
+    public void clickButton(String buttonText) {
+        WebElement buttonToClick = driver.findElements(By.className("button")).stream()
+                .filter(button -> button.getText().contains(buttonText))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("No button found containing text: " + buttonText));
+        buttonToClick.click();
+        System.out.println("pageTitle: " + driver.getTitle());
+    }
+
+    public void enter(String inputName, String value) {
+        WebElement formInputElement = driver.findElement(By.cssSelector(String.format("[name^='%s']", inputName)));
+        FormInputHtmlTag formInputHtmlTag = FormInputHtmlTag.valueOf(formInputElement.getTagName());
+        switch (formInputHtmlTag) {
+            case select -> selectFromDropdown(inputName, value);
+            case button -> choose(value);
+            case textarea -> enterInput(inputName, value);
+            case input -> {
+                switch (InputTypeHtmlAttribute.valueOf(formInputElement.getAttribute("type"))) {
+                    case text -> {
+                        if (formInputElement.getAttribute("class").contains("dob-input")) {
+                            enterDateInput(inputName, value);
+                        } else {
+                            enterInput(inputName, value);
+                        }
+                    }
+                    case number -> enterInput(inputName, value);
+                    case radio, checkbox -> selectEnumeratedInput(inputName, value);
+                }
+            }
+        }
+    }
+
+    enum FormInputHtmlTag {
+        input,
+        textarea,
+        select,
+        button
+    }
+
+    enum InputTypeHtmlAttribute {
+        text,
+        number,
+        radio,
+        checkbox
+    }
+
+    private void enterInput(String inputName, String input) {
         WebElement webElement = driver.findElement(By.cssSelector(String.format("input[name^='%s']", inputName)));
         webElement.clear();
         webElement.sendKeys(input);
+    }
+
+    private void enterDateInput(String inputName, String value) {
+        String[] dateParts = value.split("/", 3);
+        enterDateInput(inputName, DatePart.MONTH, dateParts[DatePart.MONTH.getPosition() - 1]);
+        enterDateInput(inputName, DatePart.DAY, dateParts[DatePart.DAY.getPosition() - 1]);
+        enterDateInput(inputName, DatePart.YEAR, dateParts[DatePart.YEAR.getPosition() - 1]);
     }
 
     public void enterDateInput(String inputName, DatePart datePart, String value) {
@@ -35,7 +95,7 @@ public class Page {
         input.sendKeys(value);
     }
 
-    public void selectEnumeratedInput(String inputName, String optionText) {
+    private void selectEnumeratedInput(String inputName, String optionText) {
         WebElement inputToSelect = driver.findElements(By.cssSelector(String.format("input[name^='%s']", inputName))).stream()
                 .map(input -> input.findElement(By.xpath("./..")))
                 .filter(label -> label.getText().equals(optionText))
@@ -44,22 +104,16 @@ public class Page {
         inputToSelect.click();
     }
 
-    public Page clickPrimaryButton() {
-        driver.findElement(By.className("button--primary")).click();
-        return this;
-    }
-
-    public Page choose(YesNoAnswer yesNoAnswer) {
+    private void choose(String value) {
         List<WebElement> yesNoButtons = driver.findElements(By.className("button"));
         WebElement buttonToClick = yesNoButtons.stream()
-                .filter(button -> button.getText().contains(yesNoAnswer.getDisplayValue()))
+                .filter(button -> button.getText().contains(value))
                 .findFirst()
                 .orElseThrow();
         buttonToClick.click();
-        return this;
     }
 
-    public void selectFromDropdown(String inputName, String optionText) {
+    private void selectFromDropdown(String inputName, String optionText) {
         WebElement optionToSelect = driver.findElement(By.cssSelector(String.format("select[name^='%s']", inputName)))
                 .findElements(By.tagName("option")).stream()
                 .filter(option -> option.getText().equals(optionText))

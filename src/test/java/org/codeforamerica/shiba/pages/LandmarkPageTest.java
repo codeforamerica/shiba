@@ -93,7 +93,7 @@ public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
     @Test
     void shouldNotRedirectToFirstLandingPageWhenNavigateToAMidFlowPageAfterStartTimerPage() {
         navigateTo("thirdPage");
-        testPage.clickPrimaryButton();
+        testPage.clickContinue();
 
         assertThat(testPage.getTitle()).isEqualTo(fourthPageTitle);
     }
@@ -101,7 +101,7 @@ public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
     @Test
     void shouldRedirectToTerminalPageWhenUserBacksFromTerminalPage() {
         navigateTo("thirdPage");
-        testPage.clickPrimaryButton();
+        testPage.clickContinue();
 
         driver.navigate().back();
 
@@ -111,7 +111,7 @@ public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
     @Test
     void shouldRedirectToTerminalPageWhenUserNavigatesToANonLandingPage() {
         navigateTo("thirdPage");
-        testPage.clickPrimaryButton();
+        testPage.clickContinue();
         navigateTo("thirdPage");
 
         assertThat(testPage.getTitle()).isEqualTo(fourthPageTitle);
@@ -120,7 +120,7 @@ public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
     @Test
     void shouldNotRedirectWhenUserNavigateToALandingPage() {
         navigateTo("thirdPage");
-        testPage.clickPrimaryButton();
+        testPage.clickContinue();
         navigateTo("firstPage");
 
         assertThat(testPage.getTitle()).isEqualTo(firstPageTitle);
@@ -130,10 +130,10 @@ public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
     void shouldClearTheSessionWhenUserNavigatesToALandingPage() {
         navigateTo("firstPage");
 
-        testPage.enterInput("foo", "someInput");
-        testPage.clickPrimaryButton();
+        testPage.enter("foo", "someInput");
+        testPage.clickContinue();
 
-        testPage.clickPrimaryButton();
+        testPage.clickContinue();
 
         navigateTo("firstPage");
         driver.navigate().to(baseUrl + "/testPath");

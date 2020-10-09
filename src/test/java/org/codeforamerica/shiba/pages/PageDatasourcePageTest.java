@@ -48,8 +48,8 @@ public class PageDatasourcePageTest extends AbstractExistingStartTimePageTest {
     void shouldDisplayDataEnteredFromAPreviousPage() {
         driver.navigate().to(baseUrl + "/pages/firstPage");
         String inputText = "some input";
-        testPage.enterInput("someInputName", inputText);
-        testPage.clickPrimaryButton();
+        testPage.enter("someInputName", inputText);
+        testPage.clickContinue();
 
         assertThat(testPage.findElementTextByName("someInputName")).isEqualTo(inputText);
     }
@@ -91,8 +91,8 @@ public class PageDatasourcePageTest extends AbstractExistingStartTimePageTest {
         navigateTo("firstPage");
 
         String value = "some input value";
-        testPage.enterInput("someInputName", value);
-        testPage.clickPrimaryButton();
+        testPage.enter("someInputName", value);
+        testPage.clickContinue();
 
         navigateTo("testFormPage");
         assertThat(driver.findElement(By.id("context-fragment")).getText()).isEqualTo(value);

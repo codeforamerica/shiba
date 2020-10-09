@@ -35,11 +35,11 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
     @Test
     void shouldDisplayInputFromSubflowInFinalPage() {
         navigateTo("startPage");
-        Page firstPage = testPage.clickPrimaryButton();
-        firstPage.enterInput("input1", "goToSecondPage");
-        Page secondPage = testPage.clickPrimaryButton();
-        secondPage.enterInput("input2", "text 2");
-        Page endPage = testPage.clickPrimaryButton();
+        testPage.clickContinue();
+        testPage.enter("input1", "goToSecondPage");
+        testPage.clickContinue();
+        testPage.enter("input2", "text 2");
+        testPage.clickContinue();
 
         assertThat(driver.findElement(By.id("iteration0")).getText()).isEqualTo("goToSecondPage");
     }
@@ -48,7 +48,7 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
     void shouldSupportSoloPageSubworkflow() {
         navigateTo("soloPage");
         String sessionId = driver.manage().getCookieNamed("JSESSIONID").getValue();
-        Page endPage = testPage.clickPrimaryButton();
+        testPage.clickContinue();
         verify(pageEventPublisher).publish(new SubworkflowCompletedEvent(sessionId, "group2"));
     }
 
@@ -56,8 +56,7 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
     void shouldDeleteLastSubworkflowAndRedirectBackIfNoDataRedirectPageIsNotPresent() {
         this.staticMessageSource.addMessage("end-page-title", Locale.US, "end-page-title");
         navigateTo("soloPage");
-        String sessionId = driver.manage().getCookieNamed("JSESSIONID").getValue();
-        Page endSoloPage = testPage.clickPrimaryButton();
+        testPage.clickContinue();
         driver.findElement(By.id("iteration0-delete")).click();
         assertThat(driver.getTitle()).isEqualTo("end-page-title");
     }
@@ -65,11 +64,11 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
     @Test
     void shouldCompleteSubflowInAnyOfTheConfiguredCompletePages() {
         navigateTo("startPage");
-        Page firstPage = testPage.clickPrimaryButton();
-        firstPage.enterInput("input1", "goToThirdPage");
-        Page thirdPage = testPage.clickPrimaryButton();
-        thirdPage.enterInput("input3", "text 3");
-        Page endPage = testPage.clickPrimaryButton();
+        testPage.clickContinue();
+        testPage.enter("input1", "goToThirdPage");
+        testPage.clickContinue();
+        testPage.enter("input3", "text 3");
+        testPage.clickContinue();
 
         assertThat(driver.findElement(By.id("iteration0")).getText()).isEqualTo("goToThirdPage");
     }
@@ -77,12 +76,12 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
     @Test
     void shouldPublishSubflowCompletedEventAnyOfTheConfiguredCompletePages() {
         navigateTo("startPage");
-        Page firstPage = testPage.clickPrimaryButton();
-        firstPage.enterInput("input1", "goToThirdPage");
-        Page thirdPage = testPage.clickPrimaryButton();
-        thirdPage.enterInput("input3", "text 3");
+        testPage.clickContinue();
+        testPage.enter("input1", "goToThirdPage");
+        testPage.clickContinue();
+        testPage.enter("input3", "text 3");
         String sessionId = driver.manage().getCookieNamed("JSESSIONID").getValue();
-        testPage.clickPrimaryButton();
+        testPage.clickContinue();
 
         verify(pageEventPublisher).publish(new SubworkflowCompletedEvent(sessionId, "group1"));
     }
@@ -90,18 +89,18 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
     @Test
     void shouldNotDisplayIterationInEndPageIfIterationWasNotCompleted() {
         navigateTo("startPage");
-        Page firstPage = testPage.clickPrimaryButton();
-        firstPage.enterInput("input1", "goToSecondPage");
-        Page secondPage = testPage.clickPrimaryButton();
-        secondPage.enterInput("input2", "text 2");
-        Page endPage = testPage.clickPrimaryButton();
+        testPage.clickContinue();
+        testPage.enter("input1", "goToSecondPage");
+        testPage.clickContinue();
+        testPage.enter("input2", "text 2");
+        testPage.clickContinue();
         assertThat(driver.findElement(By.id("iteration0")).getText()).isEqualTo("goToSecondPage");
 
-        Page firstPage1 = endPage.clickPrimaryButton();
-        firstPage.enterInput("input1", "goToThirdPage");
-        Page secondPage1 = testPage.clickPrimaryButton();
-        secondPage1.goBack();
-        firstPage1.goBack();
+        testPage.clickContinue();
+        testPage.enter("input1", "goToThirdPage");
+        testPage.clickContinue();
+        testPage.goBack();
+        testPage.goBack();
 
         assertThat(driver.findElement(By.id("iteration0")).getText()).isEqualTo("goToSecondPage");
     }
@@ -109,30 +108,30 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
     @Test
     void shouldNotDisplayDataFromPastIterationsWhenStartingANewSubworkflow() {
         navigateTo("startPage");
-        Page firstPage = testPage.clickPrimaryButton();
-        firstPage.enterInput("input1", "goToSecondPage");
-        Page secondPage = testPage.clickPrimaryButton();
-        secondPage.enterInput("input2", "text 2");
-        Page endPage = testPage.clickPrimaryButton();
-        Page firstPage1 = endPage.clickPrimaryButton();
+        testPage.clickContinue();
+        testPage.enter("input1", "goToSecondPage");
+        testPage.clickContinue();
+        testPage.enter("input2", "text 2");
+        testPage.clickContinue();
+        testPage.clickContinue();
 
-        assertThat(firstPage1.getInputValue("input1")).isEmpty();
+        assertThat(testPage.getInputValue("input1")).isEmpty();
     }
 
     @Test
     void shouldDisplayInputFromAllCompletedIterations() {
         navigateTo("startPage");
-        Page firstPage = testPage.clickPrimaryButton();
-        firstPage.enterInput("input1", "goToSecondPage");
-        Page secondPage = testPage.clickPrimaryButton();
-        secondPage.enterInput("input2", "text 2");
-        Page endPage = testPage.clickPrimaryButton();
+        testPage.clickContinue();
+        testPage.enter("input1", "goToSecondPage");
+        testPage.clickContinue();
+        testPage.enter("input2", "text 2");
+        testPage.clickContinue();
 
-        firstPage = endPage.clickPrimaryButton();
-        firstPage.enterInput("input1", "goToThirdPage");
-        secondPage = testPage.clickPrimaryButton();
-        secondPage.enterInput("input3", "text 3");
-        testPage.clickPrimaryButton();
+        testPage.clickContinue();
+        testPage.enter("input1", "goToThirdPage");
+        testPage.clickContinue();
+        testPage.enter("input3", "text 3");
+        testPage.clickContinue();
 
         assertThat(driver.findElement(By.id("iteration0")).getText()).isEqualTo("goToSecondPage");
         assertThat(driver.findElement(By.id("iteration1")).getText()).isEqualTo("goToThirdPage");
@@ -141,17 +140,17 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
     @Test
     void shouldRemoveTheEntryFromFinalPageIfDeleted() {
         navigateTo("startPage");
-        Page firstPage = testPage.clickPrimaryButton();
-        firstPage.enterInput("input1", "goToSecondPage");
-        Page secondPage = testPage.clickPrimaryButton();
-        secondPage.enterInput("input2", "text 2");
-        Page endPage = testPage.clickPrimaryButton();
+        testPage.clickContinue();
+        testPage.enter("input1", "goToSecondPage");
+        testPage.clickContinue();
+        testPage.enter("input2", "text 2");
+        testPage.clickContinue();
 
-        firstPage = endPage.clickPrimaryButton();
-        firstPage.enterInput("input1", "goToThirdPage");
-        secondPage = testPage.clickPrimaryButton();
-        secondPage.enterInput("input3", "text 4");
-        testPage.clickPrimaryButton();
+        testPage.clickContinue();
+        testPage.enter("input1", "goToThirdPage");
+        testPage.clickContinue();
+        testPage.enter("input3", "text 4");
+        testPage.clickContinue();
 
         driver.findElement(By.id("iteration0-delete")).click();
         assertThat(driver.findElement(By.id("iteration0")).getText()).isEqualTo("goToThirdPage");
@@ -160,17 +159,17 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
     @Test
     void shouldPublishSubflowIterationDeleted() {
         navigateTo("startPage");
-        Page firstPage = testPage.clickPrimaryButton();
-        firstPage.enterInput("input1", "goToSecondPage");
-        Page secondPage = testPage.clickPrimaryButton();
-        secondPage.enterInput("input2", "text 2");
-        Page endPage = testPage.clickPrimaryButton();
+        testPage.clickContinue();
+        testPage.enter("input1", "goToSecondPage");
+        testPage.clickContinue();
+        testPage.enter("input2", "text 2");
+        testPage.clickContinue();
 
-        firstPage = endPage.clickPrimaryButton();
-        firstPage.enterInput("input1", "goToThirdPage");
-        secondPage = testPage.clickPrimaryButton();
-        secondPage.enterInput("input3", "text 4");
-        testPage.clickPrimaryButton();
+        testPage.clickContinue();
+        testPage.enter("input1", "goToThirdPage");
+        testPage.clickContinue();
+        testPage.enter("input3", "text 4");
+        testPage.clickContinue();
 
         String sessionId = driver.manage().getCookieNamed("JSESSIONID").getValue();
         driver.findElement(By.id("iteration0-delete")).click();
@@ -180,11 +179,11 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
     @Test
     void shouldPublishSubflowIterationDeletedOnGroupDelete() {
         navigateTo("startPage");
-        Page firstPage = testPage.clickPrimaryButton();
-        firstPage.enterInput("input1", "goToSecondPage");
-        Page secondPage = testPage.clickPrimaryButton();
-        secondPage.enterInput("input2", "text 2");
-        testPage.clickPrimaryButton();
+        testPage.clickContinue();
+        testPage.enter("input1", "goToSecondPage");
+        testPage.clickContinue();
+        testPage.enter("input2", "text 2");
+        testPage.clickContinue();
 
         String sessionId = driver.manage().getCookieNamed("JSESSIONID").getValue();
         driver.findElement(By.id("iteration0-delete")).click();
@@ -199,11 +198,11 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
         this.staticMessageSource.addMessage("some-warning-title", Locale.US, warningPageTitle);
 
         navigateTo("startPage");
-        Page firstPage = testPage.clickPrimaryButton();
-        firstPage.enterInput("input1", "goToSecondPage");
-        Page secondPage = testPage.clickPrimaryButton();
-        secondPage.enterInput("input2", "text 2");
-        testPage.clickPrimaryButton();
+        testPage.clickContinue();
+        testPage.enter("input1", "goToSecondPage");
+        testPage.clickContinue();
+        testPage.enter("input2", "text 2");
+        testPage.clickContinue();
 
         testPage.goBack();
 
@@ -217,11 +216,11 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
         String endPageTitle = "some other title";
         this.staticMessageSource.addMessage("some-other-title", Locale.US, endPageTitle);
         navigateTo("startPage");
-        Page firstPage = testPage.clickPrimaryButton();
-        firstPage.enterInput("input1", "goToSecondPage");
-        Page secondPage = testPage.clickPrimaryButton();
-        secondPage.enterInput("input2", "text 2");
-        testPage.clickPrimaryButton();
+        testPage.clickContinue();
+        testPage.enter("input1", "goToSecondPage");
+        testPage.clickContinue();
+        testPage.enter("input2", "text 2");
+        testPage.clickContinue();
 
         driver.findElement(By.id("iteration0-delete")).click();
         assertThat(driver.getTitle()).isEqualTo(warningPageTitle);
@@ -230,20 +229,20 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
     @Test
     void shouldClearOutSubworkflowsWhenChoosingToRestartSubworkflow() {
         navigateTo("startPage");
-        Page firstPage = testPage.clickPrimaryButton();
-        firstPage.enterInput("input1", "goToSecondPage");
-        Page secondPage = testPage.clickPrimaryButton();
-        secondPage.enterInput("input2", "text 2");
-        testPage.clickPrimaryButton();
+        testPage.clickContinue();
+        testPage.enter("input1", "goToSecondPage");
+        testPage.clickContinue();
+        testPage.enter("input2", "text 2");
+        testPage.clickContinue();
         testPage.goBack();
 
         driver.findElement(By.tagName("button")).click();
 
-        firstPage = testPage.clickPrimaryButton();
-        firstPage.enterInput("input1", "goToThirdPage");
-        secondPage = testPage.clickPrimaryButton();
-        secondPage.enterInput("input3", "new text 2");
-        testPage.clickPrimaryButton();
+        testPage.clickContinue();
+        testPage.enter("input1", "goToThirdPage");
+        testPage.clickContinue();
+        testPage.enter("input3", "new text 2");
+        testPage.clickContinue();
 
         assertThat(driver.findElement(By.id("iteration0")).getText()).isEqualTo("goToThirdPage");
     }
@@ -252,11 +251,11 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
     void shouldRedirectWhenPageDoesntHaveNecessaryDatasources() {
         this.staticMessageSource.addMessage("earlier-page-title", Locale.US, "earlierPage");
         navigateTo("startPage");
-        Page firstPage = testPage.clickPrimaryButton();
-        firstPage.enterInput("input1", "goToSecondPage");
-        Page secondPage = testPage.clickPrimaryButton();
-        secondPage.enterInput("input2", "text 2");
-        testPage.clickPrimaryButton();
+        testPage.clickContinue();
+        testPage.enter("input1", "goToSecondPage");
+        testPage.clickContinue();
+        testPage.enter("input2", "text 2");
+        testPage.clickContinue();
 
         driver.findElement(By.id("iteration0-delete")).click();
         driver.findElement(By.tagName("button")).click();
