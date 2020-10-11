@@ -28,13 +28,15 @@ public class DerivedValueApplicationInputsMapper implements ApplicationInputsMap
                         .stream()
                         .filter(derivedValue -> derivedValue.shouldDeriveValue(data))
                         .findFirst()
-                        .map(derivedValue -> new ApplicationInput(
-                                potentialDerivedValues.getGroupName(),
-                                potentialDerivedValues.getFieldName(),
-                                derivedValue.getValue().resolve(data),
-                                derivedValue.getType(),
-                                potentialDerivedValues.getIteration()
-                        ))
+                        .flatMap(derivedValue -> derivedValue.getValue().resolveOptional(data)
+                                .map(value -> new ApplicationInput(
+                                        potentialDerivedValues.getGroupName(),
+                                        potentialDerivedValues.getFieldName(),
+                                        value,
+                                        derivedValue.getType(),
+                                        potentialDerivedValues.getIteration()
+                                ))
+                        )
                 )
                 .flatMap(Optional::stream)
                 .collect(Collectors.toList());

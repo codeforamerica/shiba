@@ -103,6 +103,16 @@ class FileNameGeneratorTest {
     }
 
     @Test
+    void omitsProgramCodes_ifNoProgramsAreChosen() {
+        ApplicationData applicationData = new ApplicationData();
+        Application application = defaultApplicationBuilder.applicationData(applicationData).build();
+
+        String fileName = fileNameGenerator.generateFileName(application);
+
+        assertThat(fileName).endsWith("defaultId_");
+    }
+
+    @Test
     void shouldArrangeNameCorrectly() {
         PageData chooseProgramsData = new PageData(Map.of("programs", InputData.builder().value(List.of("SNAP")).build()));
         ApplicationData applicationData = new ApplicationData();

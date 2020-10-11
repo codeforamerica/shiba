@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
+import org.codeforamerica.shiba.AbstractStaticMessageSourcePageTest;
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;

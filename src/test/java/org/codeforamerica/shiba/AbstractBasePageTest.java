@@ -1,6 +1,7 @@
-package org.codeforamerica.shiba.pages;
+package org.codeforamerica.shiba;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.codeforamerica.shiba.pages.Page;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +28,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"spring.main.allow-bean-definition-overriding=true"})
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
-abstract class AbstractBasePageTest {
+public abstract class AbstractBasePageTest {
     static protected RemoteWebDriver driver;
 
     protected Path path;
@@ -45,7 +46,7 @@ abstract class AbstractBasePageTest {
     }
 
     @BeforeEach
-    void setUp() throws IOException {
+    protected void setUp() throws IOException {
         baseUrl = String.format("http://localhost:%s", localServerPort);
         ChromeOptions options = new ChromeOptions();
         path = Files.createTempDirectory("");
@@ -62,7 +63,7 @@ abstract class AbstractBasePageTest {
         driver.quit();
     }
 
-    void navigateTo(String pageName) {
+    protected void navigateTo(String pageName) {
         driver.navigate().to(baseUrl + "/pages/" + pageName);
     }
 

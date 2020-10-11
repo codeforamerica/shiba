@@ -19,6 +19,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(properties = {"spring.main.allow-bean-definition-overriding=true"})
@@ -99,6 +100,17 @@ class DerivedValueApplicationInputsMapperTest {
         List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(application, Recipient.CLIENT);
 
         assertThat(actual).contains(new ApplicationInput("groupName5", "value5", List.of("defaultValue"), ApplicationInputType.SINGLE_VALUE));
+    }
+
+    @Test
+    void shouldSkipReferencedValuesThatCannotBeResolved() {
+        pagesData.remove("defaultPage");
+
+        List<String> actual = derivedValueApplicationInputsMapper.map(application, Recipient.CLIENT).stream()
+                .map(ApplicationInput::getName)
+                .collect(toList());
+        
+        assertThat(actual).doesNotContain("value5");
     }
 
     @Test

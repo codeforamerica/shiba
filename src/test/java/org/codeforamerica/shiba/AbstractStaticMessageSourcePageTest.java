@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba.pages;
+package org.codeforamerica.shiba;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class AbstractStaticMessageSourcePageTest extends AbstractBasePageTest {
 
     @Override
     @BeforeEach
-    void setUp() throws IOException {
+    protected void setUp() throws IOException {
         super.setUp();
         staticMessageSource = (StaticMessageSource) messageSource;
         staticMessageSource.addMessage("general.go-back", Locale.US, "Go Back");

@@ -15,6 +15,9 @@ public class HomeAddressStreetMapper implements ApplicationInputsMapper {
     @Override
     public List<ApplicationInput> map(Application application, Recipient recipient) {
         PageData homeAddressPageData = application.getApplicationData().getPagesData().getPage("homeAddress");
+        if (homeAddressPageData == null) {
+            return List.of();
+        }
         if (String.join("", homeAddressPageData.get("streetAddress").getValue()).isBlank()) {
             return List.of(new ApplicationInput(
                     "homeAddress",

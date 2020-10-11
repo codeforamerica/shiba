@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
+import org.codeforamerica.shiba.AbstractExistingStartTimePageTest;
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,7 +54,7 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
 
     @Override
     @BeforeEach
-    void setUp() throws IOException {
+    protected void setUp() throws IOException {
         super.setUp();
         testPage = new Page(driver);
         staticMessageSource.addMessage("first-page-title", Locale.US, firstPageTitle);

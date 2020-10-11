@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba.pages;
+package org.codeforamerica.shiba;
 
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +14,7 @@ public class AbstractExistingStartTimePageTest extends AbstractStaticMessageSour
 
     @Override
     @BeforeEach
-    void setUp() throws IOException {
+    protected void setUp() throws IOException {
         super.setUp();
         driver.navigate().to(baseUrl + "/setStartTimeForTest");
     }

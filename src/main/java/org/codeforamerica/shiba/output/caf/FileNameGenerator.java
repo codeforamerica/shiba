@@ -27,7 +27,7 @@ public class FileNameGenerator {
     }
 
     public String generateFileName(Application application) {
-        List<String> programsList = application.getApplicationData().getPagesData().getPage("choosePrograms").get("programs").getValue();
+        List<String> programsList = application.getApplicationData().getPagesData().safeGetPageInputValue("choosePrograms", "programs");
         final StringBuilder programs = new StringBuilder();
         List.of("E", "K", "F", "C").forEach(letter -> {
                     if (programsList.stream()

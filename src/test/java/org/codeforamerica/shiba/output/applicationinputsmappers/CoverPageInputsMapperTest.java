@@ -17,8 +17,8 @@ import org.junit.jupiter.api.Test;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class CoverPageInputsMapperTest {
@@ -34,13 +34,6 @@ class CoverPageInputsMapperTest {
         countyInstructionsMapping.getCounties().put(County.Other, Map.of(
                 Recipient.CLIENT, "other client instructions",
                 Recipient.CASEWORKER, "other caseworker instructions"));
-
-        pagesData.put("choosePrograms", new PageData(Map.of(
-                "programs", InputData.builder().value(List.of()).build())));
-        pagesData.put("personalInfo", new PageData(Map.of(
-                "firstName", InputData.builder().value(emptyList()).build(),
-                "lastName", InputData.builder().value(emptyList()).build()))
-        );
     }
 
     @Test
@@ -50,11 +43,8 @@ class CoverPageInputsMapperTest {
                         .value(List.of("SNAP", "CASH"))
                         .build())));
         Application application = Application.builder()
-                .id("someId")
-                .completedAt(ZonedDateTime.now())
                 .applicationData(applicationData)
                 .county(County.Other)
-                .timeToComplete(null)
                 .build();
 
         List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, Recipient.CLIENT);
@@ -66,6 +56,34 @@ class CoverPageInputsMapperTest {
                         List.of("SNAP, CASH"),
                         ApplicationInputType.SINGLE_VALUE
                 ));
+    }
+
+    @Test
+    void shouldNotIncludeProgramsInput_whenThereAreNoChosenPrograms() {
+        Application application = Application.builder()
+                .applicationData(applicationData)
+                .county(County.Other)
+                .build();
+
+        List<String> appInputNames = coverPageInputsMapper.map(application, Recipient.CLIENT).stream()
+                .map(ApplicationInput::getName)
+                .collect(Collectors.toList());
+
+        assertThat(appInputNames).doesNotContain("programs");
+    }
+
+    @Test
+    void shouldNotIncludeFullNameInput_whenThereIsNoPersonalInfo() {
+        Application application = Application.builder()
+                .applicationData(applicationData)
+                .county(County.Other)
+                .build();
+
+        List<String> appInputNames = coverPageInputsMapper.map(application, Recipient.CLIENT).stream()
+                .map(ApplicationInput::getName)
+                .collect(Collectors.toList());
+
+        assertThat(appInputNames).doesNotContain("fullName");
     }
 
     @Test

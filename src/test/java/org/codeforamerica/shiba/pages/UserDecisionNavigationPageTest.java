@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
+import org.codeforamerica.shiba.AbstractExistingStartTimePageTest;
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -53,7 +54,7 @@ public class UserDecisionNavigationPageTest extends AbstractExistingStartTimePag
     }
 
     @BeforeEach
-    void setUp() throws IOException {
+    protected void setUp() throws IOException {
         super.setUp();
         staticMessageSource.addMessage("option-zero-page-title", Locale.US, optionZeroPageTitle);
         staticMessageSource.addMessage("option-one-page-title", Locale.US, optionOnePageTitle);
