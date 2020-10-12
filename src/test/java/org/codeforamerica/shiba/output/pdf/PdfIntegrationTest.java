@@ -112,6 +112,8 @@ public class PdfIntegrationTest {
     @ParameterizedTest
     @CsvSource(value = {
             "true,false,false",
+            "false,true,false",
+            "false,false,false",
             "true,true,true"
     })
     void shouldAnswerEnergyAssistanceQuestion(
