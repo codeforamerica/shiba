@@ -59,11 +59,11 @@ public class PDFBoxFieldFiller implements PdfFieldFiller {
         return (pdDocument1, pdDocument2) -> {
             try {
                 mergerer.appendDocument(pdDocument1, pdDocument2);
+                pdDocument2.close();
             } catch (IOException e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
-
             return pdDocument1;
         };
     }
