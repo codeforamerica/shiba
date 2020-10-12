@@ -105,4 +105,17 @@ class HomeAddressStreetMapperTest {
                 List.of("No permanent address"),
                 ApplicationInputType.SINGLE_VALUE));
     }
+
+    @Test
+    void shouldUseUnenrichedStreetAddressWhen_clientHasntAnsweredEnrichmentQuestion() {
+        String streetAddress = "street address";
+        homeAddressData.put("streetAddress", InputData.builder().value(List.of(streetAddress)).build());
+        homeAddressData.put("isHomeless", InputData.builder().value(List.of()).build());
+
+        List<ApplicationInput> map = mapper.map(application, null);
+        assertThat(map).contains(new ApplicationInput("homeAddress",
+                "streetAddressWithPermanentAddress",
+                List.of(streetAddress),
+                ApplicationInputType.SINGLE_VALUE));
+    }
 }
