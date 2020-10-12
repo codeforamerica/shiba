@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.inputconditions;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ public class Condition {
     String pageName;
     String input;
     String value;
+    @JsonIgnore
     ValueMatcher matcher = ValueMatcher.CONTAINS;
 
     String subworkflow;
