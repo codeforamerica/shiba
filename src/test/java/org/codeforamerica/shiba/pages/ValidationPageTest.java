@@ -264,7 +264,7 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         }
 
         @Test
-        void shouldPassValidationForStateWhenValueIsAKnownStateCode() {
+        void shouldPassValidationForStateWhenValueIsAKnownStateCode_caseInsensitive() {
             driver.navigate().to(baseUrl + "/pages/statePage");
             driver.findElement(By.cssSelector("input[name^='stateInput']")).sendKeys("XY");
             driver.findElement(By.cssSelector("button")).click();
@@ -273,7 +273,7 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
             assertThat(testPage.getInputError("stateInput")).isNotNull();
 
             driver.findElement(By.cssSelector("input[name^='stateInput']")).clear();
-            driver.findElement(By.cssSelector("input[name^='stateInput']")).sendKeys("MN");
+            driver.findElement(By.cssSelector("input[name^='stateInput']")).sendKeys("mn");
             driver.findElement(By.cssSelector("button")).click();
 
             assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
