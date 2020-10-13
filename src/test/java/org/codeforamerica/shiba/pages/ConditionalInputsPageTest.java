@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
+import org.codeforamerica.shiba.AbstractExistingStartTimePageTest;
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +29,7 @@ public class ConditionalInputsPageTest extends AbstractExistingStartTimePageTest
 
     @Override
     @BeforeEach
-    void setUp() throws IOException {
+    protected void setUp() throws IOException {
         super.setUp();
         staticMessageSource.addMessage("option1", Locale.US, "option 1");
         staticMessageSource.addMessage("option2", Locale.US, "option 2");

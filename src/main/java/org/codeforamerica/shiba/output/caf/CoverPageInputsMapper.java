@@ -5,12 +5,14 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMapper;
-import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.PageData;
+import org.codeforamerica.shiba.pages.data.InputData;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
 
@@ -24,32 +26,36 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
 
     @Override
     public List<ApplicationInput> map(Application application, Recipient recipient) {
-        ApplicationData data = application.getApplicationData();
-        List<String> programs = data.getPagesData()
-                .getPage("choosePrograms")
-                .get("programs")
-                .getValue();
-
-        PageData personalInfo = application.getApplicationData().getInputDataMap("personalInfo");
-        return List.of(
-                new ApplicationInput(
+        ApplicationInput programsInput = Optional.ofNullable(application.getApplicationData().getPagesData().getPage("choosePrograms"))
+                .flatMap(pageData -> Optional.ofNullable(pageData.get("programs")))
+                .map(InputData::getValue)
+                .map(values -> String.join(", ", values))
+                .map(value -> new ApplicationInput(
                         "coverPage",
                         "programs",
-                        List.of(String.join(", ", programs)),
-                        SINGLE_VALUE),
-                new ApplicationInput(
+                        List.of(value),
+                        SINGLE_VALUE))
+                .orElse(null);
+        ApplicationInput fullNameInput = Optional.ofNullable(application.getApplicationData().getPagesData().getPage("personalInfo"))
+                .map(pageData ->
+                        Stream.concat(Stream.ofNullable(pageData.get("firstName")), Stream.ofNullable(pageData.get("lastName")))
+                                .map(nameInput -> String.join("", nameInput.getValue()))
+                                .collect(Collectors.joining(" ")))
+                .map(value -> new ApplicationInput(
+                        "coverPage",
+                        "fullName",
+                        List.of(value),
+                        SINGLE_VALUE
+                ))
+                .orElse(null);
+
+        return Stream.concat(
+                Stream.of(new ApplicationInput(
                         "coverPage",
                         "countyInstructions",
                         List.of(countyInstructionsMapping.get(application.getCounty()).get(recipient)),
-                        SINGLE_VALUE),
-                new ApplicationInput(
-                        "coverPage",
-                        "fullName",
-                        List.of(String.format("%s %s",
-                                String.join("", personalInfo.get("firstName").getValue()),
-                                String.join("", personalInfo.get("lastName").getValue())
-                        )),
-                        SINGLE_VALUE
-                ));
+                        SINGLE_VALUE)),
+                Stream.concat(Stream.ofNullable(programsInput), Stream.ofNullable(fullNameInput)))
+                .collect(Collectors.toList());
     }
 }

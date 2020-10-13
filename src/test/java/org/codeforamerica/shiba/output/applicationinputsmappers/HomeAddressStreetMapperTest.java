@@ -118,4 +118,13 @@ class HomeAddressStreetMapperTest {
                 List.of(streetAddress),
                 ApplicationInputType.SINGLE_VALUE));
     }
+
+    @Test
+    void shouldNotIncludeApplicationInputs_whenThereIsNoHomeAddress() {
+        applicationData.setPagesData(new PagesData());
+
+        List<ApplicationInput> map = mapper.map(application, null);
+
+        assertThat(map).isEmpty();
+    }
 }

@@ -1,5 +1,8 @@
 package org.codeforamerica.shiba.pages;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
+import org.codeforamerica.shiba.AbstractBasePageTest;
 import org.codeforamerica.shiba.pages.emails.MailGunEmailClient;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.pages.enrichment.smartystreets.SmartyStreetClient;
@@ -45,7 +48,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Override
     @BeforeEach
-    void setUp() throws IOException {
+    protected void setUp() throws IOException {
         super.setUp();
         driver.navigate().to(baseUrl);
         when(clock.instant()).thenReturn(Instant.now());
@@ -133,6 +136,39 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         assertThat(driver.findElements(By.tagName("td")).get(1).getText()).isEqualTo("0");
         assertThat(driver.findElements(By.tagName("td")).get(2).getText()).isEqualTo("0");
         assertThat(metricsPage.getCardValue("Happy")).contains("100%");
+    }
+
+    @Test
+    void partialFlow() throws IOException {
+        testPage.clickButton("Apply now");
+        testPage.clickButton("Continue");
+        testPage.enter("writtenLanguage", "English");
+        testPage.enter("spokenLanguage", "English");
+        testPage.enter("needInterpreter", "Yes");
+        testPage.clickButton("Continue");
+        testPage.enter("programs", "Emergency assistance");
+        testPage.clickButton("Continue");
+        testPage.clickButton("Continue");
+        fillOutPersonalInfo();
+        testPage.clickButton("Continue");
+        navigateTo("signThisApplication");
+        testPage.enter("applicantSignature", "some name");
+        testPage.clickButton("Submit");
+        SuccessPage successPage = new SuccessPage(driver);
+        successPage.downloadReceipt();
+        await().until(() -> {
+            File[] listFiles = path.toFile().listFiles();
+            return Arrays.stream(listFiles).anyMatch(file -> file.getName().contains("_MNB_") && file.getName().endsWith(".pdf"));
+        });
+
+        File pdfFile = Arrays.stream(path.toFile().listFiles()).findFirst().orElseThrow();
+        PDAcroForm acroForm = PDDocument.load(pdfFile).getDocumentCatalog().getAcroForm();
+        assertThat(acroForm.getField("APPLICANT_WRITTEN_LANGUAGE_PREFERENCE").getValueAsString())
+                .isEqualTo("ENGLISH");
+        assertThat(acroForm.getField("APPLICANT_WRITTEN_LANGUAGE_PREFERENCE").getValueAsString())
+                .isEqualTo("ENGLISH");
+        assertThat(acroForm.getField("NEED_INTERPRETER").getValueAsString())
+                .isEqualTo("Yes");
     }
 
     private void completeFlowFromLandingPageThroughReviewInfo() {

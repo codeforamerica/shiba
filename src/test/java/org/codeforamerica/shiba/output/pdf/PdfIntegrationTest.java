@@ -1,487 +1,335 @@
 package org.codeforamerica.shiba.output.pdf;
 
-import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.ApplicationInputType;
-import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
-import org.codeforamerica.shiba.output.caf.CoverPageInputsMapper;
-import org.codeforamerica.shiba.pages.data.*;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
+import org.codeforamerica.shiba.AbstractBasePageTest;
+import org.codeforamerica.shiba.pages.SuccessPage;
+import org.codeforamerica.shiba.pages.enrichment.Address;
+import org.codeforamerica.shiba.pages.enrichment.LocationClient;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.io.IOException;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.util.Arrays;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.output.ApplicationInputType.ENUMERATED_SINGLE_VALUE;
-import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
+import static org.awaitility.Awaitility.await;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
-@SpringBootTest
-@ActiveProfiles("test")
-@ExtendWith(SpringExtension.class)
-public class PdfIntegrationTest {
-    @Autowired
-    private ApplicationInputsMappers mappers;
+public class PdfIntegrationTest extends AbstractBasePageTest {
+    @MockBean
+    Clock clock;
 
     @MockBean
-    CoverPageInputsMapper coverPageInputsMapper;
+    LocationClient locationClient;
 
-    @MockBean
-    private ApplicationRepository applicationRepository;
-
-    ApplicationData data = new ApplicationData();
-    PagesData pagesData = new PagesData();
-    private final ZonedDateTime completedAt = ZonedDateTime.now();
-    private final Application application = Application.builder()
-            .id("someId")
-            .completedAt(completedAt)
-            .applicationData(data)
-            .county(null)
-            .timeToComplete(null)
-            .build();
-    private final PageData homeAddressPageData = new PageData();
-    private final PageData mailingAddressPageData = new PageData();
-    private final PageData homeAddressValidationPageData = new PageData();
-    private final PageData mailingAddressValidationPageData = new PageData();
-
+    @Override
     @BeforeEach
-    void setUp() {
-        data.setPagesData(pagesData);
-
-        homeAddressPageData.put("zipCode", InputData.builder().value(List.of("")).build());
-        homeAddressPageData.put("enrichedZipCode", InputData.builder().value(List.of("")).build());
-        homeAddressPageData.put("city", InputData.builder().value(List.of("")).build());
-        homeAddressPageData.put("enrichedCity", InputData.builder().value(List.of("")).build());
-        homeAddressPageData.put("state", InputData.builder().value(List.of("")).build());
-        homeAddressPageData.put("streetAddress", InputData.builder().value(List.of("")).build());
-        homeAddressPageData.put("apartmentNumber", InputData.builder().value(List.of("")).build());
-        homeAddressPageData.put("isHomeless", InputData.builder().value(List.of("")).build());
-        homeAddressPageData.put("sameMailingAddress", InputData.builder().value(List.of("")).build());
-        homeAddressValidationPageData.put("useEnrichedAddress", InputData.builder().value(List.of("")).build());
-
-        mailingAddressPageData.put("zipCode", InputData.builder().value(List.of("")).build());
-        mailingAddressPageData.put("city", InputData.builder().value(List.of("")).build());
-        mailingAddressPageData.put("state", InputData.builder().value(List.of("")).build());
-        mailingAddressPageData.put("streetAddress", InputData.builder().value(List.of("")).build());
-        mailingAddressPageData.put("apartmentNumber", InputData.builder().value(List.of("")).build());
-        mailingAddressValidationPageData.put("useEnrichedAddress", InputData.builder().value(List.of("")).build());
-
-
-        pagesData.putPage("homeAddress", homeAddressPageData);
-        pagesData.putPage("homeAddressValidation", homeAddressValidationPageData);
-        pagesData.putPage("mailingAddress", mailingAddressPageData);
-        pagesData.putPage("mailingAddressValidation", mailingAddressValidationPageData);
+    protected void setUp() throws IOException {
+        super.setUp();
+        when(clock.instant()).thenReturn(Instant.now());
+        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
+        when(locationClient.validateAddress(any())).thenReturn(Optional.empty());
+        driver.navigate().to(baseUrl);
+        testPage.clickButton("Apply now");
+        testPage.clickContinue();
+        testPage.clickContinue();
     }
 
     @Test
     void shouldMapNoForUnearnedIncomeOptionsThatAreNotChecked() {
-        PageData pageData = new PageData();
-        pageData.put(
-                "unearnedIncome",
-                InputData.builder()
-                        .value(List.of("SOCIAL_SECURITY", "CHILD_OR_SPOUSAL_SUPPORT"))
-                        .build()
-        );
-        pagesData.putPage("unearnedIncome", pageData);
-        data.setPagesData(pagesData);
+        navigateTo("unearnedIncome");
+        testPage.enter("unearnedIncome", "Social Security");
+        testPage.enter("unearnedIncome", "Child or Spousal support");
+        testPage.clickContinue();
 
-        List<ApplicationInput> applicationInputs = mappers.map(application, CASEWORKER);
-
-        assertThat(applicationInputs).contains(
-                new ApplicationInput("unearnedIncome", "unearnedIncome", List.of("SOCIAL_SECURITY", "CHILD_OR_SPOUSAL_SUPPORT"), ApplicationInputType.ENUMERATED_MULTI_VALUE),
-                new ApplicationInput("unearnedIncome", "noSSI", List.of("No"), ENUMERATED_SINGLE_VALUE),
-                new ApplicationInput("unearnedIncome", "noVeteransBenefits", List.of("No"), ENUMERATED_SINGLE_VALUE),
-                new ApplicationInput("unearnedIncome", "noUnemployment", List.of("No"), ENUMERATED_SINGLE_VALUE),
-                new ApplicationInput("unearnedIncome", "noWorkersCompensation", List.of("No"), ENUMERATED_SINGLE_VALUE),
-                new ApplicationInput("unearnedIncome", "noRetirement", List.of("No"), ENUMERATED_SINGLE_VALUE),
-                new ApplicationInput("unearnedIncome", "noTribalPayments", List.of("No"), ENUMERATED_SINGLE_VALUE)
-
-        );
+        PDAcroForm pdAcroForm = submitAndDownloadReceipt();
+        assertThat(pdAcroForm.getField("SOCIAL_SECURITY").getValueAsString()).isEqualTo("Yes");
+        assertThat(pdAcroForm.getField("CHILD_OR_SPOUSAL_SUPPORT").getValueAsString()).isEqualTo("Yes");
+        assertThat(pdAcroForm.getField("SSI").getValueAsString()).isEqualTo("No");
+        assertThat(pdAcroForm.getField("VETERANS_BENEFITS").getValueAsString()).isEqualTo("No");
+        assertThat(pdAcroForm.getField("UNEMPLOYMENT").getValueAsString()).isEqualTo("No");
+        assertThat(pdAcroForm.getField("WORKERS_COMPENSATION").getValueAsString()).isEqualTo("No");
+        assertThat(pdAcroForm.getField("RETIREMENT").getValueAsString()).isEqualTo("No");
+        assertThat(pdAcroForm.getField("TRIBAL_PAYMENTS").getValueAsString()).isEqualTo("No");
     }
 
-    @ParameterizedTest
-    @CsvSource(value = {
-            "true,false,false",
-            "false,true,false",
-            "false,false,false",
-            "true,true,true"
-    })
-    void shouldAnswerEnergyAssistanceQuestion(
-            Boolean hasEnergyAssistance,
-            Boolean hasMoreThan20ForEnergyAssistance,
-            String result
-    ) {
-        PageData energyAssistancePageData = new PageData();
-        energyAssistancePageData.put(
-                "energyAssistance",
-                InputData.builder()
-                        .value(List.of(hasEnergyAssistance.toString()))
-                        .build()
-        );
+    @Nested
+    class EnergyAssistanceLIHEAP {
+        @ParameterizedTest
+        @CsvSource(value = {
+                "Yes,No,No",
+                "Yes,Yes,Yes"
+        })
+        void shouldAnswerEnergyAssistanceQuestion(
+                String hasEnergyAssistance,
+                String hasMoreThan20ForEnergyAssistance,
+                String result
+        ) {
+            navigateTo("energyAssistance");
+            testPage.enter("energyAssistance", hasEnergyAssistance);
+            testPage.enter("energyAssistanceMoreThan20", hasMoreThan20ForEnergyAssistance);
 
-        PageData energyAssistanceMoreThan20PageData = new PageData();
-        energyAssistanceMoreThan20PageData.put(
-                "energyAssistanceMoreThan20",
-                InputData.builder()
-                        .value(List.of(hasMoreThan20ForEnergyAssistance.toString()))
-                        .build()
-        );
-        pagesData.putPage("energyAssistance", energyAssistancePageData);
-        pagesData.putPage("energyAssistanceMoreThan20", energyAssistanceMoreThan20PageData);
+            PDAcroForm pdAcroForm = submitAndDownloadReceipt();
+            assertThat(pdAcroForm.getField("RECEIVED_LIHEAP").getValueAsString()).isEqualTo(result);
+        }
 
-        data.setPagesData(pagesData);
+        @Test
+        void shouldMapEnergyAssistanceWhenUserReceivedNoAssistance() {
+            navigateTo("energyAssistance");
+            testPage.enter("energyAssistance", "No");
 
-        List<ApplicationInput> applicationInputs = mappers.map(application, CASEWORKER);
-
-        assertThat(applicationInputs).contains(
-                new ApplicationInput(
-                        "energyAssistanceGroup",
-                        "energyAssistanceInput",
-                        List.of(result),
-                        ENUMERATED_SINGLE_VALUE
-                )
-        );
-    }
-
-    @Test
-    void shouldMapEnergyAssistanceWhenUserReceivedNoAssistance() {
-        PageData energyAssistancePageData = new PageData();
-        energyAssistancePageData.put(
-                "energyAssistance",
-                InputData.builder()
-                        .value(List.of("false"))
-                        .build()
-        );
-
-        pagesData.putPage("energyAssistance", energyAssistancePageData);
-
-        data.setPagesData(pagesData);
-
-        List<ApplicationInput> applicationInputs = mappers.map(application, CASEWORKER);
-
-        assertThat(applicationInputs).contains(
-                new ApplicationInput("energyAssistanceGroup", "energyAssistanceInput", List.of("false"), ENUMERATED_SINGLE_VALUE)
-        );
+            PDAcroForm pdAcroForm = submitAndDownloadReceipt();
+            assertThat(pdAcroForm.getField("RECEIVED_LIHEAP").getValueAsString()).isEqualTo("No");
+        }
     }
 
     @Test
     void shouldMapNoForSelfEmployment() {
-        Subworkflows subworkflows = new Subworkflows();
-        Subworkflow subworkflow = new Subworkflow();
-        PagesData pagesData = new PagesData();
-        PageData selfEmploymentPageData = new PageData();
-        selfEmploymentPageData.put("selfEmployment", InputData.builder().value(List.of("false")).build());
-        pagesData.put("selfEmployment", selfEmploymentPageData);
-        PageData paidByTheHourPage = new PageData();
-        paidByTheHourPage.put("paidByTheHour", InputData.builder().value(List.of("false")).build());
-        pagesData.put("paidByTheHour", paidByTheHourPage);
-        PageData payPeriod = new PageData();
-        payPeriod.put("payPeriod", InputData.builder().value(List.of("EVERY_WEEK")).build());
-        pagesData.put("payPeriod", payPeriod);
-        PageData payPerPeriod = new PageData();
-        payPerPeriod.put("incomePerPayPeriod", InputData.builder().value(List.of("1")).build());
-        pagesData.put("incomePerPayPeriod", payPerPeriod);
-        subworkflow.add(pagesData);
-        subworkflows.put("jobs", subworkflow);
-        data.setSubworkflows(subworkflows);
+        navigateTo("incomeByJob");
+        testPage.clickButton("Add a job");
+        testPage.enter("employersName", "someEmployerName");
+        testPage.clickContinue();
+        testPage.enter("selfEmployment", "No");
+        testPage.enter("paidByTheHour", "No");
+        testPage.enter("payPeriod", "Every week");
+        testPage.clickContinue();
+        testPage.enter("incomePerPayPeriod", "1");
+        testPage.clickContinue();
 
-        List<ApplicationInput> applicationInputs = mappers.map(application, CASEWORKER);
-
-        assertThat(applicationInputs).contains(
-                new ApplicationInput("employee", "selfEmployed", List.of("false"), ENUMERATED_SINGLE_VALUE)
-        );
+        PDAcroForm pdAcroForm = submitAndDownloadReceipt();
+        assertThat(pdAcroForm.getField("SELF_EMPLOYED").getValueAsString()).isEqualTo("No");
     }
 
     @Test
     void shouldMapOriginalAddressIfHomeAddressDoesNotUseEnrichedAddress() {
-        List<String> originalCityValue = List.of("originalCity");
-        List<String> originalZipCodeValue = List.of("originalZipCode");
-        List<String> originalApartmentNumber = List.of("originalApt");
-        List<String> originalState = List.of("originalState");
-        homeAddressPageData.putAll(Map.of(
-                "city", InputData.builder().value(originalCityValue).build(),
-                "zipCode", InputData.builder().value(originalZipCodeValue).build(),
-                "apartmentNumber", InputData.builder().value(originalApartmentNumber).build(),
-                "state", InputData.builder().value(originalState).build()));
-        homeAddressValidationPageData.put("useEnrichedAddress", InputData.builder().value(List.of("false")).build());
-
-        List<ApplicationInput> applicationInputs = mappers.map(application, CASEWORKER);
-
-        assertThat(applicationInputs).contains(
-                new ApplicationInput(
-                        "homeAddress",
-                        "selectedCity",
-                        originalCityValue,
-                        ApplicationInputType.SINGLE_VALUE
-                ),
-                new ApplicationInput(
-                        "homeAddress",
-                        "selectedZipCode",
-                        originalZipCodeValue,
-                        ApplicationInputType.SINGLE_VALUE
-                ),
-                new ApplicationInput(
-                        "homeAddress",
-                        "selectedApartmentNumber",
-                        originalApartmentNumber,
-                        ApplicationInputType.SINGLE_VALUE
-                ),
-                new ApplicationInput(
-                        "homeAddress",
-                        "selectedState",
-                        originalState,
-                        ApplicationInputType.SINGLE_VALUE
-                )
-        );
+        navigateTo("homeAddress");
+        String originalStreetAddress = "originalStreetAddress";
+        String originalApt = "originalApt";
+        String originalCity = "originalCity";
+        String originalZipCode = "54321";
+        testPage.enter("streetAddress", originalStreetAddress);
+        testPage.enter("apartmentNumber", originalApt);
+        testPage.enter("city", originalCity);
+        testPage.enter("zipCode", originalZipCode);
+        testPage.enter("sameMailingAddress", "No, use a different address for mail");
+        testPage.clickContinue();
+        testPage.clickButton("Use this address");
+        PDAcroForm pdAcroForm = submitAndDownloadReceipt();
+        assertThat(pdAcroForm.getField("APPLICANT_HOME_STREET_ADDRESS").getValueAsString())
+                .isEqualTo(originalStreetAddress);
+        assertThat(pdAcroForm.getField("APPLICANT_HOME_APT_NUMBER").getValueAsString())
+                .isEqualTo(originalApt);
+        assertThat(pdAcroForm.getField("APPLICANT_HOME_CITY").getValueAsString())
+                .isEqualTo(originalCity);
+        assertThat(pdAcroForm.getField("APPLICANT_HOME_STATE").getValueAsString())
+                .isEqualTo("MN");
+        assertThat(pdAcroForm.getField("APPLICANT_HOME_ZIPCODE").getValueAsString())
+                .isEqualTo(originalZipCode);
     }
 
     @Test
     void shouldMapEnrichedAddressIfHomeAddressUsesEnrichedAddress() {
-        List<String> enrichedCityValue = List.of("testCity");
-        List<String> enrichedZipCodeValue = List.of("testZipCode");
-        List<String> enrichedApartmentNumber = List.of("someApt");
-        List<String> enrichedState = List.of("someState");
-        homeAddressPageData.putAll(Map.of(
-                "enrichedCity", InputData.builder().value(enrichedCityValue).build(),
-                "enrichedZipCode", InputData.builder().value(enrichedZipCodeValue).build(),
-                "enrichedApartmentNumber", InputData.builder().value(enrichedApartmentNumber).build(),
-                "enrichedState", InputData.builder().value(enrichedState).build()));
-        homeAddressValidationPageData.put("useEnrichedAddress", InputData.builder().value(List.of("true")).build());
-
-        List<ApplicationInput> applicationInputs = mappers.map(application, CASEWORKER);
-
-        assertThat(applicationInputs).contains(
-                new ApplicationInput(
-                        "homeAddress",
-                        "selectedCity",
+        navigateTo("homeAddress");
+        testPage.enter("streetAddress", "originalStreetAddress");
+        testPage.enter("apartmentNumber", "originalApt");
+        testPage.enter("city", "originalCity");
+        testPage.enter("zipCode", "54321");
+        testPage.enter("sameMailingAddress", "No, use a different address for mail");
+        String enrichedStreetValue = "testStreet";
+        String enrichedCityValue = "testCity";
+        String enrichedZipCodeValue = "testZipCode";
+        String enrichedApartmentNumber = "someApt";
+        String enrichedState = "someState";
+        when(locationClient.validateAddress(any()))
+                .thenReturn(Optional.of(new Address(
+                        enrichedStreetValue,
                         enrichedCityValue,
-                        ApplicationInputType.SINGLE_VALUE
-                ),
-                new ApplicationInput(
-                        "homeAddress",
-                        "selectedZipCode",
-                        enrichedZipCodeValue,
-                        ApplicationInputType.SINGLE_VALUE
-                ),
-                new ApplicationInput(
-                        "homeAddress",
-                        "selectedApartmentNumber",
-                        enrichedApartmentNumber,
-                        ApplicationInputType.SINGLE_VALUE
-                ),
-                new ApplicationInput(
-                        "homeAddress",
-                        "selectedState",
                         enrichedState,
-                        ApplicationInputType.SINGLE_VALUE
-                )
-        );
+                        enrichedZipCodeValue,
+                        enrichedApartmentNumber,
+                        "Hennepin")));
+        testPage.clickContinue();
+        testPage.clickContinue();
+        PDAcroForm pdAcroForm = submitAndDownloadReceipt();
+        assertThat(pdAcroForm.getField("APPLICANT_HOME_STREET_ADDRESS").getValueAsString())
+                .isEqualTo(enrichedStreetValue);
+        assertThat(pdAcroForm.getField("APPLICANT_HOME_APT_NUMBER").getValueAsString())
+                .isEqualTo(enrichedApartmentNumber);
+        assertThat(pdAcroForm.getField("APPLICANT_HOME_CITY").getValueAsString())
+                .isEqualTo(enrichedCityValue);
+        assertThat(pdAcroForm.getField("APPLICANT_HOME_STATE").getValueAsString())
+                .isEqualTo(enrichedState);
+        assertThat(pdAcroForm.getField("APPLICANT_HOME_ZIPCODE").getValueAsString())
+                .isEqualTo(enrichedZipCodeValue);
     }
 
     @Test
     void shouldMapOriginalHomeAddressToMailingAddressIfSameMailingAddressIsTrueAndUseEnrichedAddressIsFalse() {
-        homeAddressPageData.putAll(Map.of(
-                "zipCode", InputData.builder().value(List.of("someZipCode")).build(),
-                "city", InputData.builder().value(List.of("someCity")).build(),
-                "state", InputData.builder().value(List.of("someState")).build(),
-                "streetAddress", InputData.builder().value(List.of("someStreetAddress")).build(),
-                "apartmentNumber", InputData.builder().value(List.of("someApartmentNumber")).build(),
-                "sameMailingAddress", InputData.builder().value(List.of("true")).build()
-        ));
-
-        homeAddressValidationPageData.put("useEnrichedAddress", InputData.builder().value(List.of("false")).build());
-
-        List<ApplicationInput> applicationInputs = mappers.map(application, CASEWORKER);
-
-        assertThat(applicationInputs).contains(
-                new ApplicationInput(
-                        "mailingAddress",
-                        "selectedZipCode",
-                        List.of("someZipCode"),
-                        ApplicationInputType.SINGLE_VALUE
-                ),
-                new ApplicationInput(
-                        "mailingAddress",
-                        "selectedCity",
-                        List.of("someCity"),
-                        ApplicationInputType.SINGLE_VALUE
-                ),
-                new ApplicationInput(
-                        "mailingAddress",
-                        "selectedState",
-                        List.of("someState"),
-                        ApplicationInputType.SINGLE_VALUE
-                ),
-                new ApplicationInput(
-                        "mailingAddress",
-                        "selectedStreetAddress",
-                        List.of("someStreetAddress"),
-                        ApplicationInputType.SINGLE_VALUE
-                ),
-                new ApplicationInput(
-                        "mailingAddress",
-                        "selectedApartmentNumber",
-                        List.of("someApartmentNumber"),
-                        ApplicationInputType.SINGLE_VALUE
-                )
-        );
+        navigateTo("homeAddress");
+        String originalStreetAddress = "originalStreetAddress";
+        String originalApt = "originalApt";
+        String originalCity = "originalCity";
+        String originalZipCode = "54321";
+        testPage.enter("streetAddress", originalStreetAddress);
+        testPage.enter("apartmentNumber", originalApt);
+        testPage.enter("city", originalCity);
+        testPage.enter("zipCode", originalZipCode);
+        testPage.enter("sameMailingAddress", "Yes, send mail here");
+        testPage.clickContinue();
+        testPage.clickButton("Use this address");
+        PDAcroForm pdAcroForm = submitAndDownloadReceipt();
+        assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
+                .isEqualTo(originalStreetAddress);
+        assertThat(pdAcroForm.getField("APPLICANT_MAILING_APT_NUMBER").getValueAsString())
+                .isEqualTo(originalApt);
+        assertThat(pdAcroForm.getField("APPLICANT_MAILING_CITY").getValueAsString())
+                .isEqualTo(originalCity);
+        assertThat(pdAcroForm.getField("APPLICANT_MAILING_STATE").getValueAsString())
+                .isEqualTo("MN");
+        assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
+                .isEqualTo(originalZipCode);
     }
 
     @Test
     void shouldMapEnrichedHomeAddressToMailingAddressIfSameMailingAddressIsTrueAndUseEnrichedAddressIsTrue() {
-        homeAddressPageData.putAll(Map.of(
-                "enrichedZipCode", InputData.builder().value(List.of("someZipCode")).build(),
-                "enrichedCity", InputData.builder().value(List.of("someCity")).build(),
-                "enrichedState", InputData.builder().value(List.of("someState")).build(),
-                "enrichedStreetAddress", InputData.builder().value(List.of("someStreetAddress")).build(),
-                "enrichedApartmentNumber", InputData.builder().value(List.of("someApartmentNumber")).build(),
-                "sameMailingAddress", InputData.builder().value(List.of("true")).build()
-        ));
-        homeAddressValidationPageData.put("useEnrichedAddress", InputData.builder().value(List.of("true")).build());
-
-        List<ApplicationInput> applicationInputs = mappers.map(application, CASEWORKER);
-
-        assertThat(applicationInputs).contains(
-                new ApplicationInput(
-                        "mailingAddress",
-                        "selectedZipCode",
-                        List.of("someZipCode"),
-                        ApplicationInputType.SINGLE_VALUE
-                ),
-                new ApplicationInput(
-                        "mailingAddress",
-                        "selectedCity",
-                        List.of("someCity"),
-                        ApplicationInputType.SINGLE_VALUE
-                ),
-                new ApplicationInput(
-                        "mailingAddress",
-                        "selectedState",
-                        List.of("someState"),
-                        ApplicationInputType.SINGLE_VALUE
-                ),
-                new ApplicationInput(
-                        "mailingAddress",
-                        "selectedStreetAddress",
-                        List.of("someStreetAddress"),
-                        ApplicationInputType.SINGLE_VALUE
-                ),
-                new ApplicationInput(
-                        "mailingAddress",
-                        "selectedApartmentNumber",
-                        List.of("someApartmentNumber"),
-                        ApplicationInputType.SINGLE_VALUE
-                )
-        );
+        navigateTo("homeAddress");
+        testPage.enter("streetAddress", "originalStreetAddress");
+        testPage.enter("apartmentNumber", "originalApt");
+        testPage.enter("city", "originalCity");
+        testPage.enter("zipCode", "54321");
+        testPage.enter("sameMailingAddress", "Yes, send mail here");
+        String enrichedStreetValue = "testStreet";
+        String enrichedCityValue = "testCity";
+        String enrichedZipCodeValue = "testZipCode";
+        String enrichedApartmentNumber = "someApt";
+        String enrichedState = "someState";
+        when(locationClient.validateAddress(any()))
+                .thenReturn(Optional.of(new Address(
+                        enrichedStreetValue,
+                        enrichedCityValue,
+                        enrichedState,
+                        enrichedZipCodeValue,
+                        enrichedApartmentNumber,
+                        "Hennepin")));
+        testPage.clickContinue();
+        testPage.clickContinue();
+        PDAcroForm pdAcroForm = submitAndDownloadReceipt();
+        assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
+                .isEqualTo(enrichedStreetValue);
+        assertThat(pdAcroForm.getField("APPLICANT_MAILING_APT_NUMBER").getValueAsString())
+                .isEqualTo(enrichedApartmentNumber);
+        assertThat(pdAcroForm.getField("APPLICANT_MAILING_CITY").getValueAsString())
+                .isEqualTo(enrichedCityValue);
+        assertThat(pdAcroForm.getField("APPLICANT_MAILING_STATE").getValueAsString())
+                .isEqualTo(enrichedState);
+        assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
+                .isEqualTo(enrichedZipCodeValue);
     }
 
     @Test
     void shouldMapToOriginalMailingAddressIfSameMailingAddressIsFalseAndUseEnrichedAddressIsFalse() {
-        mailingAddressPageData.putAll(Map.of(
-                "zipCode", InputData.builder().value(List.of("someZipCode")).build(),
-                "city", InputData.builder().value(List.of("someCity")).build(),
-                "state", InputData.builder().value(List.of("someState")).build(),
-                "streetAddress", InputData.builder().value(List.of("someStreetAddress")).build(),
-                "apartmentNumber", InputData.builder().value(List.of("someApartmentNumber")).build()
-        ));
+        navigateTo("homeAddress");
+        testPage.enter("streetAddress", "originalHomeStreetAddress");
+        testPage.enter("apartmentNumber", "originalHomeApt");
+        testPage.enter("city", "originalHomeCity");
+        testPage.enter("zipCode", "54321");
+        testPage.enter("sameMailingAddress", "No, use a different address for mail");
+        testPage.clickContinue();
+        testPage.clickButton("Use this address");
+        String originalStreetAddress = "originalStreetAddress";
+        String originalApt = "originalApt";
+        String originalCity = "originalCity";
+        String originalState = "IL";
+        String originalZipCode = "54321";
+        testPage.enter("streetAddress", originalStreetAddress);
+        testPage.enter("apartmentNumber", originalApt);
+        testPage.enter("city", originalCity);
+        testPage.enter("state", originalState);
+        testPage.enter("zipCode", originalZipCode);
+        testPage.clickContinue();
+        testPage.clickButton("Use this address");
 
-        mailingAddressValidationPageData.put("useEnrichedAddress", InputData.builder().value(List.of("false")).build());
-
-        homeAddressPageData.put("sameMailingAddress", InputData.builder().value(List.of("false")).build());
-
-        List<ApplicationInput> applicationInputs = mappers.map(application, CASEWORKER);
-
-        assertThat(applicationInputs).contains(
-                new ApplicationInput(
-                        "mailingAddress",
-                        "selectedZipCode",
-                        List.of("someZipCode"),
-                        ApplicationInputType.SINGLE_VALUE
-                ),
-                new ApplicationInput(
-                        "mailingAddress",
-                        "selectedCity",
-                        List.of("someCity"),
-                        ApplicationInputType.SINGLE_VALUE
-                ),
-                new ApplicationInput(
-                        "mailingAddress",
-                        "selectedState",
-                        List.of("someState"),
-                        ApplicationInputType.SINGLE_VALUE
-                ),
-                new ApplicationInput(
-                        "mailingAddress",
-                        "selectedStreetAddress",
-                        List.of("someStreetAddress"),
-                        ApplicationInputType.SINGLE_VALUE
-                ),
-                new ApplicationInput(
-                        "mailingAddress",
-                        "selectedApartmentNumber",
-                        List.of("someApartmentNumber"),
-                        ApplicationInputType.SINGLE_VALUE
-                )
-        );
+        PDAcroForm pdAcroForm = submitAndDownloadReceipt();
+        assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
+                .isEqualTo(originalStreetAddress);
+        assertThat(pdAcroForm.getField("APPLICANT_MAILING_APT_NUMBER").getValueAsString())
+                .isEqualTo(originalApt);
+        assertThat(pdAcroForm.getField("APPLICANT_MAILING_CITY").getValueAsString())
+                .isEqualTo(originalCity);
+        assertThat(pdAcroForm.getField("APPLICANT_MAILING_STATE").getValueAsString())
+                .isEqualTo(originalState);
+        assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
+                .isEqualTo(originalZipCode);
     }
 
     @Test
     void shouldMapToEnrichedMailingAddressIfSameMailingAddressIsFalseAndUseEnrichedAddressIsTrue() {
-        mailingAddressPageData.putAll(Map.of(
-                "enrichedZipCode", InputData.builder().value(List.of("someZipCode")).build(),
-                "enrichedCity", InputData.builder().value(List.of("someCity")).build(),
-                "enrichedState", InputData.builder().value(List.of("someState")).build(),
-                "enrichedStreetAddress", InputData.builder().value(List.of("someStreetAddress")).build(),
-                "enrichedApartmentNumber", InputData.builder().value(List.of("someApartmentNumber")).build()
-        ));
+        navigateTo("homeAddress");
+        testPage.enter("streetAddress", "originalHomeStreetAddress");
+        testPage.enter("apartmentNumber", "originalHomeApt");
+        testPage.enter("city", "originalHomeCity");
+        testPage.enter("zipCode", "54321");
+        testPage.enter("sameMailingAddress", "No, use a different address for mail");
+        testPage.clickContinue();
+        testPage.clickButton("Use this address");
+        testPage.enter("streetAddress", "originalStreetAddress");
+        testPage.enter("apartmentNumber", "originalApt");
+        testPage.enter("city", "originalCity");
+        testPage.enter("state", "IL");
+        testPage.enter("zipCode", "54321");
+        String enrichedStreetValue = "testStreet";
+        String enrichedCityValue = "testCity";
+        String enrichedZipCodeValue = "testZipCode";
+        String enrichedApartmentNumber = "someApt";
+        String enrichedState = "someState";
+        when(locationClient.validateAddress(any()))
+                .thenReturn(Optional.of(new Address(
+                        enrichedStreetValue,
+                        enrichedCityValue,
+                        enrichedState,
+                        enrichedZipCodeValue,
+                        enrichedApartmentNumber,
+                        "Hennepin")));
+        testPage.clickContinue();
+        testPage.clickContinue();
 
-        mailingAddressValidationPageData.put("useEnrichedAddress", InputData.builder().value(List.of("true")).build());
+        PDAcroForm pdAcroForm = submitAndDownloadReceipt();
+        assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
+                .isEqualTo(enrichedStreetValue);
+        assertThat(pdAcroForm.getField("APPLICANT_MAILING_APT_NUMBER").getValueAsString())
+                .isEqualTo(enrichedApartmentNumber);
+        assertThat(pdAcroForm.getField("APPLICANT_MAILING_CITY").getValueAsString())
+                .isEqualTo(enrichedCityValue);
+        assertThat(pdAcroForm.getField("APPLICANT_MAILING_STATE").getValueAsString())
+                .isEqualTo(enrichedState);
+        assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
+                .isEqualTo(enrichedZipCodeValue);
+    }
 
-        homeAddressPageData.put("sameMailingAddress", InputData.builder().value(List.of("false")).build());
+    private PDAcroForm submitAndDownloadReceipt() {
+        navigateTo("signThisApplication");
+        testPage.enter("applicantSignature", "someSignature");
+        testPage.clickButton("Submit");
+        SuccessPage successPage = new SuccessPage(driver);
+        successPage.downloadReceipt();
+        await().until(() -> path.toFile().listFiles().length > 0);
 
-        List<ApplicationInput> applicationInputs = mappers.map(application, CASEWORKER);
-
-        assertThat(applicationInputs).contains(
-                new ApplicationInput(
-                        "mailingAddress",
-                        "selectedZipCode",
-                        List.of("someZipCode"),
-                        ApplicationInputType.SINGLE_VALUE
-                ),
-                new ApplicationInput(
-                        "mailingAddress",
-                        "selectedCity",
-                        List.of("someCity"),
-                        ApplicationInputType.SINGLE_VALUE
-                ),
-                new ApplicationInput(
-                        "mailingAddress",
-                        "selectedState",
-                        List.of("someState"),
-                        ApplicationInputType.SINGLE_VALUE
-                ),
-                new ApplicationInput(
-                        "mailingAddress",
-                        "selectedStreetAddress",
-                        List.of("someStreetAddress"),
-                        ApplicationInputType.SINGLE_VALUE
-                ),
-                new ApplicationInput(
-                        "mailingAddress",
-                        "selectedApartmentNumber",
-                        List.of("someApartmentNumber"),
-                        ApplicationInputType.SINGLE_VALUE
-                )
-        );
+        File pdfFile = Arrays.stream(path.toFile().listFiles()).findFirst().orElseThrow();
+        try {
+            return PDDocument.load(pdfFile).getDocumentCatalog().getAcroForm();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

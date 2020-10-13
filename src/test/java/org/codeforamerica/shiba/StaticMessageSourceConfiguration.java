@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba.pages;
+package org.codeforamerica.shiba;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
