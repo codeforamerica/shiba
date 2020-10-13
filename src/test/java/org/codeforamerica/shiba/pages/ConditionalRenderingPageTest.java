@@ -154,9 +154,9 @@ public class ConditionalRenderingPageTest extends AbstractExistingStartTimePageT
     @Test
     void shouldSupportConditionalRenderingForMultipleConditions() {
         navigateTo("startingPage");
-        testPage.enterInput("randomInput", "someTextInput");
-        testPage.enterInput("anotherInput", "AnotherTextInput");
-        testPage.clickPrimaryButton();
+        testPage.enter("randomInput", "someTextInput");
+        testPage.enter("anotherInput", "AnotherTextInput");
+        testPage.clickContinue();
 
         assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
     }
@@ -164,9 +164,9 @@ public class ConditionalRenderingPageTest extends AbstractExistingStartTimePageT
     @Test
     void shouldNotSkipIfMultipleConditionsAreNotMet() {
         navigateTo("startingPage");
-        testPage.enterInput("randomInput", "someTextInput");
-        testPage.enterInput("anotherInput", "notCorrectInput");
-        testPage.clickPrimaryButton();
+        testPage.enter("randomInput", "someTextInput");
+        testPage.enter("anotherInput", "notCorrectInput");
+        testPage.clickContinue();
 
         assertThat(driver.getTitle()).isEqualTo(pageToSkip);
     }
@@ -174,9 +174,9 @@ public class ConditionalRenderingPageTest extends AbstractExistingStartTimePageT
     @Test
     void shouldSupportConditionalRenderingForMultipleConditionsWithOrOperator() {
         navigateTo("secondStartingPage");
-        testPage.enterInput("randomInput", "someTextInput");
-        testPage.enterInput("anotherInput", "notCorrectInput");
-        testPage.clickPrimaryButton();
+        testPage.enter("randomInput", "someTextInput");
+        testPage.enter("anotherInput", "notCorrectInput");
+        testPage.clickContinue();
 
         assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
     }
@@ -184,9 +184,9 @@ public class ConditionalRenderingPageTest extends AbstractExistingStartTimePageT
     @Test
     void shouldNotSkipIfMultipleConditionsAreNotMetWithOrOperator() {
         navigateTo("secondStartingPage");
-        testPage.enterInput("randomInput", "notCorrectInput");
-        testPage.enterInput("anotherInput", "alsoNotCorrectInput");
-        testPage.clickPrimaryButton();
+        testPage.enter("randomInput", "notCorrectInput");
+        testPage.enter("anotherInput", "alsoNotCorrectInput");
+        testPage.clickContinue();
 
         assertThat(driver.getTitle()).isEqualTo(pageToSkip);
     }
