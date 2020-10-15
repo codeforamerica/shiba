@@ -29,10 +29,10 @@ public class HomeAddressStreetMapper implements ApplicationInputsMapper {
 
         String notPermanentAddressIndicator = homeAddressPageData.get("isHomeless").getValue().isEmpty() ?
                 "" : " (not permanent)";
-        PageData enrichedAddressPage = application.getApplicationData().getPagesData().getPage("homeAddressValidation");
-        String usesEnriched = (!enrichedAddressPage.isEmpty()) ?
-                enrichedAddressPage.get("useEnrichedAddress").getValue().get(0) :
-                "false";
+        String usesEnriched = application.getApplicationData().getPagesData()
+                .getPage("homeAddressValidation")
+                .get("useEnrichedAddress")
+                .getValue().get(0);
         String streetInputName = Boolean.parseBoolean(usesEnriched) ? "enrichedStreetAddress" : "streetAddress";
         String value = homeAddressPageData.get(streetInputName).getValue().get(0) + notPermanentAddressIndicator;
         return List.of(
