@@ -43,13 +43,13 @@ jobs:
           'SENTRY_ENVIRONMENT=demo' \
           'MIXPANEL_API-KEY=${{ secrets.MIXPANEL_API_KEY_STAGING }}'
       - name: Create Sentry release
-          uses: getsentry/action-release@v1
-          env:
-            SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-            SENTRY_ORG: codeforamerica
-            SENTRY_PROJECT: shiba
-          with:
-            environment: demo
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: codeforamerica
+          SENTRY_PROJECT: shiba
+        with:
+          environment: demo
       - name: Announce on Slack
         if: ${{ always() }}
         uses: innocarpe/actions-slack@v1
