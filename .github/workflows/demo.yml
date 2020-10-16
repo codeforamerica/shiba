@@ -23,16 +23,14 @@ jobs:
           known_hosts: ${{ secrets.APTIBLE_KNOWN_HOSTS }}
       - name: Generate Aptible branch name
         run: |
-          export BRANCH="deploy-$(date "+%s")"
+          export BRANCH=${{ github.event.inputs.branch }}
           echo "::set-env name=BRANCH::$BRANCH"
       - name: Push to Aptible remote branch
-        run: git push git@beta.aptible.com:mn-shiba-prod/demo.git "master:$BRANCH"
+        run: git push git@beta.aptible.com:mn-shiba-prod/demo.git "$BRANCH:$BRANCH"
       - name: Install Aptible CLI and deploy to Aptible
         run: |
           wget -O aptible-package https://omnibus-aptible-toolbelt.s3.amazonaws.com/aptible/omnibus-aptible-toolbelt/master/206/pkg/aptible-toolbelt_0.16.5%2B20200508143656~ubuntu.16.04-1_amd64.deb
           sudo dpkg -i aptible-package
-          git remote add demo git@beta.aptible.com:mn-shiba-prod/demo.git
-          git push demo "master:$BRANCH"
           aptible login --email=${{ secrets.APTIBLE_USERNAME }} --password=${{ secrets.APTIBLE_PASSWORD}}
           aptible deploy --app demo --git-commitish $BRANCH SPRING_PROFILES_ACTIVE=demo \
           'MAILGUN_API_KEY=${{ secrets.MAILGUN_API_KEY }}' \
