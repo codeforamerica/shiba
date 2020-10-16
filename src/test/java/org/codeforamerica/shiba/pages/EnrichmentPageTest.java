@@ -43,7 +43,7 @@ public class EnrichmentPageTest extends AbstractExistingStartTimePageTest {
         @Override
         public EnrichmentResult process(ApplicationData applicationData) {
             String pageInputValue = applicationData
-                    .getInputDataMap("testEnrichmentPage")
+                    .getPageData("testEnrichmentPage")
                     .get("someTextInput")
                     .getValue().get(0);
             return new EnrichmentResult(Map.of(

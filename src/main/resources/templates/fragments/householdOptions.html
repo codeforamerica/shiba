@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="householdOptions (input, data)"
+          th:with="formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)},
+                    inputData=${data.get(input.name)}">
+    <div class="spacing-below-60">
+        <label th:for="householdMember-me" class="checkbox"
+               th:with="fullName=${input.options.datasources.get('personalInfo').get('firstName').value[0] + ' ' + input.options.datasources.get('personalInfo').get('lastName').value[0]}">
+            <input type="checkbox"
+                   th:id="householdMember-me"
+                   th:value="${fullName}"
+                   th:name="${formInputName}"
+                   th:checked="${inputData.value.contains(fullName)}">
+            <span th:text="#{general.me}"></span>
+        </label>
+        <th:block th:each="pagesData, iterationStat: ${input.options.subworkflows.get('household')}">
+            <label th:for="|householdMember${iterationStat.index}|"
+                   class="checkbox"
+                   th:with="fullName=${pagesData.get('householdMemberInfo').get('firstName').value[0] + ' ' + pagesData.get('householdMemberInfo').get('lastName').value[0]}">
+                <input type="checkbox"
+                       th:id="|householdMember${iterationStat.index}|"
+                       th:value="${fullName}"
+                       th:name="${formInputName}"
+                       th:checked="${inputData.value.contains(fullName)}">
+                <span th:text="|${pagesData.get('householdMemberInfo').get('firstName').value[0]}&nbsp;${pagesData.get('householdMemberInfo').get('lastName').value[0]}|"></span>
+            </label>
+        </th:block>
+    </div>
+</th:block>
+</html>

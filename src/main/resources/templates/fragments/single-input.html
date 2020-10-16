@@ -54,7 +54,7 @@
                     class="select__element"
                     th:name="${formInputName}"
             >
-                <th:block th:each="option: ${input.options}">
+                <th:block th:each="option: ${input.options.selectableOptions}">
                     <option th:value="${option.value}" th:text="#{${option.messageKey}}"
                             th:selected="${inputData.value.contains(option.value)}"></option>
                 </th:block>

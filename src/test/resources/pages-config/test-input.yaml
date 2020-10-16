@@ -21,27 +21,30 @@ shiba-configuration-input:
           - name: radioInput
             type: RADIO
             options:
-              - value: "1"
-                messageKey: radio-option-1
-              - value: "2"
-                messageKey: option-2
+              selectableOptions:
+                - value: "1"
+                  messageKey: radio-option-1
+                - value: "2"
+                  messageKey: option-2
           - name: checkboxInput
             type: CHECKBOX
             options:
-              - value: "1"
-                messageKey: checkbox-option-1
-              - value: "2"
-                messageKey: checkbox-option-2
-              - value: "3"
-                messageKey: none-checkbox-option
-                isNone: true
+              selectableOptions:
+                - value: "1"
+                  messageKey: checkbox-option-1
+                - value: "2"
+                  messageKey: checkbox-option-2
+                - value: "3"
+                  messageKey: none-checkbox-option
+                  isNone: true
           - name: selectInput
             type: SELECT
             options:
-              - value: "1"
-                messageKey: select-option-1
-              - value: "2"
-                messageKey: option-2
+              selectableOptions:
+                - value: "1"
+                  messageKey: select-option-1
+                - value: "2"
+                  messageKey: option-2
           - name: moneyInput
             type: MONEY
           - name: hourlyWageInput
@@ -49,12 +52,13 @@ shiba-configuration-input:
           - name: radioInputWithFollowUps
             type: RADIO
             options:
-              - value: "true"
-                messageKey: follow-up-true
-              - value: "false"
-                messageKey: follow-up-false
-              - value: "uncertain"
-                messageKey: follow-up-uncertain
+              selectableOptions:
+                - value: "true"
+                  messageKey: follow-up-true
+                - value: "false"
+                  messageKey: follow-up-false
+                - value: "uncertain"
+                  messageKey: follow-up-uncertain
             followUpValues:
               - "false"
               - "uncertain"
@@ -64,12 +68,13 @@ shiba-configuration-input:
           - name: checkboxInputWithFollowUps
             type: CHECKBOX
             options:
-              - value: "true"
-                messageKey: follow-up-true
-              - value: "false"
-                messageKey: follow-up-false
-              - value: "uncertain"
-                messageKey: follow-up-uncertain
+              selectableOptions:
+                - value: "true"
+                  messageKey: follow-up-true
+                - value: "false"
+                  messageKey: follow-up-false
+                - value: "uncertain"
+                  messageKey: follow-up-uncertain
             followUpValues:
               - "false"
               - "uncertain"
@@ -114,6 +119,18 @@ shiba-configuration-input:
         - name: foo
           type: TEXT
       contextFragment: pageContextFragment
+    - &pageWithReferenceCheckboxes
+      name: pageWithReferenceCheckboxes
+      pageTitle:
+        value: dummy-page-title
+      inputs:
+        - name: referenceCheckboxes
+          type: CUSTOM
+          customInputFragment: applicationOptions
+          options:
+            datasources:
+              - groupName: subworkflow1
+              - pageName: firstPage
   workflow:
     firstPage:
       pageConfiguration: *firstPage
@@ -127,5 +144,25 @@ shiba-configuration-input:
       pageConfiguration: *doNotHavePrimaryButtonPage
     pageWithContextFragment:
       pageConfiguration: *pageWithContextFragment
+    pageWithReferenceCheckboxes:
+      pageConfiguration: *pageWithReferenceCheckboxes
+      datasources:
+        - groupName: subworkflow1
+    subworkflowPage:
+      groupName: subworkflow1
+      pageConfiguration:
+        name: subworkflowPage
+        pageTitle:
+          value: dummy-page-title
+        inputs:
+          - name: value1
+            type: TEXT
+      nextPages:
+        - pageName: subworkflowPage
+  pageGroups:
+    subworkflow1:
+      startPage: subworkflowPage
+      completePages:
+        - subworkflowPage
   landmarkPages:
     startTimerPage:

@@ -9,7 +9,7 @@
         <p class="text--help"
            th:if="${input.helpMessageKey != null}"
            th:text="#{${input.helpMessageKey}}"></p>
-        <th:block th:each="option: ${input.options}">
+        <th:block th:each="option: ${input.options.selectableOptions}">
             <label th:for="${#ids.next(input.name)}" class="radio-button">
                 <input type="radio" th:name="${formInputName}" th:id="${#ids.seq(input.name)}"
                        th:value="${option.value}"

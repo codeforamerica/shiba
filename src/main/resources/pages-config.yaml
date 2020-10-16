@@ -21,45 +21,48 @@ shiba-configuration:
             promptMessageKey: language-preferences.what-language-do-you-prefer-to-speak
           helpMessageKey: language-preferences.the-county-will-do-their-best-to-connect-you-with-someone-who-speaks-your
           options:
-            - value: ENGLISH
-              messageKey: language-preferences.english
-            - value: SPANISH
-              messageKey: language-preferences.spanish
-            - value: SOOMAALI
-              messageKey: language-preferences.soomaali
-            - value: VIETNAMESE
-              messageKey: language-preferences.vietnamese
-            - value: RUSSIAN
-              messageKey: language-preferences.russian
-            - value: HMOOB
-              messageKey: language-preferences.hmoob
+            selectableOptions:
+              - value: ENGLISH
+                messageKey: language-preferences.english
+              - value: SPANISH
+                messageKey: language-preferences.spanish
+              - value: SOOMAALI
+                messageKey: language-preferences.soomaali
+              - value: VIETNAMESE
+                messageKey: language-preferences.vietnamese
+              - value: RUSSIAN
+                messageKey: language-preferences.russian
+              - value: HMOOB
+                messageKey: language-preferences.hmoob
         - name: writtenLanguage
           type: SELECT
           promptMessage:
             promptMessageKey: language-preferences.what-language-do-you-prefer-to-read-or-write
           helpMessageKey: language-preferences.the-county-will-do-their-best-to-provide-documents-in-your-preferred-language
           options:
-            - value: ENGLISH
-              messageKey: language-preferences.english
-            - value: SPANISH
-              messageKey: language-preferences.spanish
-            - value: SOOMAALI
-              messageKey: language-preferences.soomaali
-            - value: VIETNAMESE
-              messageKey: language-preferences.vietnamese
-            - value: RUSSIAN
-              messageKey: language-preferences.russian
-            - value: HMOOB
-              messageKey: language-preferences.hmoob
+            selectableOptions:
+              - value: ENGLISH
+                messageKey: language-preferences.english
+              - value: SPANISH
+                messageKey: language-preferences.spanish
+              - value: SOOMAALI
+                messageKey: language-preferences.soomaali
+              - value: VIETNAMESE
+                messageKey: language-preferences.vietnamese
+              - value: RUSSIAN
+                messageKey: language-preferences.russian
+              - value: HMOOB
+                messageKey: language-preferences.hmoob
         - name: needInterpreter
           type: RADIO
           promptMessage:
             promptMessageKey: language-preferences.do-you-need-an-interpreter
           options:
-            - value: "true"
-              messageKey: general.inputs.yes
-            - value: "false"
-              messageKey: general.inputs.no
+            selectableOptions:
+              - value: "true"
+                messageKey: general.inputs.yes
+              - value: "false"
+                messageKey: general.inputs.no
     - &choosePrograms
       name: choosePrograms
       pageTitle:
@@ -74,14 +77,15 @@ shiba-configuration:
             - validation: SELECT_AT_LEAST_ONE
               errorMessageKey: general.validation.make-sure-you-answer-this-question
           options:
-            - value: SNAP
-              messageKey: choose-programs.food-snap
-            - value: CASH
-              messageKey: choose-programs.cash-programs
-            - value: GRH
-              messageKey: choose-programs.housing-support-group-residential-housing
-            - value: EA
-              messageKey: choose-programs.emergency-assistance
+            selectableOptions:
+              - value: SNAP
+                messageKey: choose-programs.food-snap
+              - value: CASH
+                messageKey: choose-programs.cash-programs
+              - value: GRH
+                messageKey: choose-programs.housing-support-group-residential-housing
+              - value: EA
+                messageKey: choose-programs.emergency-assistance
     - &introBasicInfo
       name: introBasicInfo
       pageTitle:
@@ -140,39 +144,42 @@ shiba-configuration:
           promptMessage:
             promptMessageKey: personal-info.whats-your-marital-status
           options:
-            - value: NEVER_MARRIED
-              messageKey: general.never-married
-            - value: MARRIED_LIVING_WITH_SPOUSE
-              messageKey: general.married-living-with-spouse
-            - value: MARRIED_NOT_LIVING_WITH_SPOUSE
-              messageKey: general.married-not-living-with-spouse
-            - value: LEGALLY_SEPARATED
-              messageKey: general.legally-separated
-            - value: DIVORCED
-              messageKey: general.divorced
-            - value: WIDOWED
-              messageKey: general.widowed
+            selectableOptions:
+              - value: NEVER_MARRIED
+                messageKey: general.never-married
+              - value: MARRIED_LIVING_WITH_SPOUSE
+                messageKey: general.married-living-with-spouse
+              - value: MARRIED_NOT_LIVING_WITH_SPOUSE
+                messageKey: general.married-not-living-with-spouse
+              - value: LEGALLY_SEPARATED
+                messageKey: general.legally-separated
+              - value: DIVORCED
+                messageKey: general.divorced
+              - value: WIDOWED
+                messageKey: general.widowed
         - name: sex
           type: RADIO
           promptMessage:
             promptMessageKey: personal-info.whats-your-sex
           helpMessageKey: personal-info.legally-as-it-appears-on-your-id-we-regret-that-this-question-is-limited
           options:
-            - value: FEMALE
-              messageKey: general.female
-            - value: MALE
-              messageKey: general.male
-            - value: RATHER_NOT_SAY
-              messageKey: general.rather-not-say
+            selectableOptions:
+              - value: FEMALE
+                messageKey: general.female
+              - value: MALE
+                messageKey: general.male
+              - value: RATHER_NOT_SAY
+                messageKey: general.rather-not-say
         - name: livedInMnWholeLife
           type: RADIO
           promptMessage:
             promptMessageKey: personal-info.have-you-lived-in-minnesota-your-whole-life
           options:
-            - value: "false"
-              messageKey: general.inputs.no
-            - value: "true"
-              messageKey: general.inputs.yes
+            selectableOptions:
+              - value: "false"
+                messageKey: general.inputs.no
+              - value: "true"
+                messageKey: general.inputs.yes
           followUpValues:
             - "true"
           followUps:
@@ -220,10 +227,11 @@ shiba-configuration:
           promptMessage:
             promptMessageKey: contact-info.how-can-we-send-you-updates-and-reminders-about-your-case-in-the-future
           options:
-            - value: TEXT
-              messageKey: contact-info.text-me
-            - value: EMAIL
-              messageKey: contact-info.email-me
+            selectableOptions:
+              - value: TEXT
+                messageKey: contact-info.text-me
+              - value: EMAIL
+                messageKey: contact-info.email-me
     - &homeAddress
       name: homeAddress
       headerKey:
@@ -289,8 +297,9 @@ shiba-configuration:
         - name: isHomeless
           type: CHECKBOX
           options:
-            - value: "true"
-              messageKey: home-address.i-dont-have-a-permanent-address
+            selectableOptions:
+              - value: "true"
+                messageKey: home-address.i-dont-have-a-permanent-address
         - name: sameMailingAddress
           type: RADIO
           promptMessage:
@@ -300,10 +309,11 @@ shiba-configuration:
             - validation: NOT_BLANK
               errorMessageKey: general.validation.make-sure-you-answer-this-question
           options:
-            - value: "true"
-              messageKey: home-address.yes-send-mail-here
-            - value: "false"
-              messageKey: home-address.no-use-a-different-address-for-mail
+            selectableOptions:
+              - value: "true"
+                messageKey: home-address.yes-send-mail-here
+              - value: "false"
+                messageKey: home-address.no-use-a-different-address-for-mail
     - &mailingAddress
       name: mailingAddress
       pageTitle:
@@ -410,39 +420,42 @@ shiba-configuration:
           promptMessage:
             promptMessageKey: household-member-info.whats-their-martial-status
           options:
-            - value: NEVER_MARRIED
-              messageKey: general.never-married
-            - value: MARRIED_LIVING_WITH_SPOUSE
-              messageKey: general.married-living-with-spouse
-            - value: MARRIED_NOT_LIVING_WITH_SPOUSE
-              messageKey: general.married-not-living-with-spouse
-            - value: LEGALLY_SEPARATED
-              messageKey: general.legally-separated
-            - value: DIVORCED
-              messageKey: general.divorced
-            - value: WIDOWED
-              messageKey: general.widowed
+            selectableOptions:
+              - value: NEVER_MARRIED
+                messageKey: general.never-married
+              - value: MARRIED_LIVING_WITH_SPOUSE
+                messageKey: general.married-living-with-spouse
+              - value: MARRIED_NOT_LIVING_WITH_SPOUSE
+                messageKey: general.married-not-living-with-spouse
+              - value: LEGALLY_SEPARATED
+                messageKey: general.legally-separated
+              - value: DIVORCED
+                messageKey: general.divorced
+              - value: WIDOWED
+                messageKey: general.widowed
         - name: sex
           type: RADIO
           promptMessage:
             promptMessageKey: household-member-info.whats-their-sex
           helpMessageKey: household-member-info.legally-as-it-appears-on-their-id-we-regret-that-this-question-is-limited
           options:
-            - value: FEMALE
-              messageKey: general.female
-            - value: MALE
-              messageKey: general.male
-            - value: RATHER_NOT_SAY
-              messageKey: general.rather-not-say
+            selectableOptions:
+              - value: FEMALE
+                messageKey: general.female
+              - value: MALE
+                messageKey: general.male
+              - value: RATHER_NOT_SAY
+                messageKey: general.rather-not-say
         - name: livedInMnWholeLife
           type: RADIO
           promptMessage:
             promptMessageKey: household-member-info.have-they-lived-in-minnesota-their-whole-life
           options:
-            - value: "false"
-              messageKey: general.inputs.no
-            - value: "true"
-              messageKey: general.inputs.yes
+            selectableOptions:
+              - value: "false"
+                messageKey: general.inputs.no
+              - value: "true"
+                messageKey: general.inputs.yes
           followUpValues:
             - "true"
           followUps:
@@ -490,17 +503,18 @@ shiba-configuration:
             - validation: SELECT_AT_LEAST_ONE
               errorMessageKey: general.validation.make-sure-you-answer-this-question
           options:
-            - value: SNAP
-              messageKey: choose-programs.food-snap
-            - value: CASH
-              messageKey: choose-programs.cash-programs
-            - value: EA
-              messageKey: choose-programs.emergency-assistance
-            - value: GRH
-              messageKey: choose-programs.housing-support-group-residential-housing
-            - value: NONE
-              messageKey: general.inputs.none-of-the-above
-              isNone: true
+            selectableOptions:
+              - value: SNAP
+                messageKey: choose-programs.food-snap
+              - value: CASH
+                messageKey: choose-programs.cash-programs
+              - value: EA
+                messageKey: choose-programs.emergency-assistance
+              - value: GRH
+                messageKey: choose-programs.housing-support-group-residential-housing
+              - value: NONE
+                messageKey: general.inputs.none-of-the-above
+                isNone: true
     - &householdList
       name: householdList
       pageTitle:
@@ -544,11 +558,36 @@ shiba-configuration:
       pageTitle:
         value: pregnant.title
       headerKey:
-        value: pregnant.are-you-pregnant
+        conditionalValues:
+          - value: pregnant.are-you-pregnant
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "true"
+          - value: pregnant.is-anyone-pregnant
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "false"
       hasPrimaryButton: false
       inputs:
         - name: isPregnant
           type: YES_NO
+    - &whoIsPregnant
+      name: whoIsPregnant
+      pageTitle:
+        value: who-is-pregnant.title
+      headerKey:
+        value: who-is-pregnant.header
+      headerHelpMessageKey: general.check-all-that-apply
+      inputs:
+        - type: CUSTOM
+          name: whoIsPregnant
+          customInputFragment: householdOptions
+          options:
+            datasources:
+              - pageName: personalInfo
+              - groupName: household
     - &doYouNeedHelpImmediately
       name: doYouNeedHelpImmediately
       pageTitle:
@@ -725,25 +764,26 @@ shiba-configuration:
             - validation: SELECT_AT_LEAST_ONE
               errorMessageKey: general.validation.make-sure-you-choose-none-of-the-above-or-another-option
           options:
-            - value: HEATING
-              messageKey: utility-payments.heating
-            - value: COOLING
-              messageKey: utility-payments.cooling
-            - value: ELECTRICITY
-              messageKey: utility-payments.electricity
-            - value: PHONE
-              messageKey: utility-payments.phone
-            - value: WATER
-              messageKey: utility-payments.water
-            - value: SEWER
-              messageKey: utility-payments.sewer
-            - value: GARBAGE_REMOVAL
-              messageKey: utility-payments.garbage-removal
-            - value: COOKING_FUEL
-              messageKey: utility-payments.cooking-fuel
-            - value: NONE_OF_THE_ABOVE
-              messageKey: general.inputs.none-of-the-above
-              isNone: true
+            selectableOptions:
+              - value: HEATING
+                messageKey: utility-payments.heating
+              - value: COOLING
+                messageKey: utility-payments.cooling
+              - value: ELECTRICITY
+                messageKey: utility-payments.electricity
+              - value: PHONE
+                messageKey: utility-payments.phone
+              - value: WATER
+                messageKey: utility-payments.water
+              - value: SEWER
+                messageKey: utility-payments.sewer
+              - value: GARBAGE_REMOVAL
+                messageKey: utility-payments.garbage-removal
+              - value: COOKING_FUEL
+                messageKey: utility-payments.cooking-fuel
+              - value: NONE_OF_THE_ABOVE
+                messageKey: general.inputs.none-of-the-above
+                isNone: true
     - &energyAssistance
       name: energyAssistance
       pageTitle:
@@ -832,8 +872,9 @@ shiba-configuration:
             - validation: SELECT_AT_LEAST_ONE
               errorMessageKey: general.validation.make-sure-you-answer-this-question
           options:
-            - value: "true"
-              messageKey: legal-stuff.i-agree
+            selectableOptions:
+              - value: "true"
+                messageKey: legal-stuff.i-agree
     - &signThisApplication
       name: signThisApplication
       pageTitle:
@@ -953,25 +994,26 @@ shiba-configuration:
             - validation: SELECT_AT_LEAST_ONE
               errorMessageKey: general.validation.make-sure-you-choose-none-of-the-above-or-another-option
           options:
-            - value: SOCIAL_SECURITY
-              messageKey: unearned-income.social-security
-            - value: SSI
-              messageKey: unearned-income.ssi
-            - value: VETERANS_BENEFITS
-              messageKey: unearned-income.veterans-benefits
-            - value: UNEMPLOYMENT
-              messageKey: unearned-income.unemployment
-            - value: WORKERS_COMPENSATION
-              messageKey: unearned-income.workers-compensation
-            - value: RETIREMENT
-              messageKey: unearned-income.retirement
-            - value: CHILD_OR_SPOUSAL_SUPPORT
-              messageKey: unearned-income.child-or-spousal-support
-            - value: TRIBAL_PAYMENTS
-              messageKey: unearned-income.tribal-payments
-            - value: NO_UNEARNED_INCOME_SELECTED
-              messageKey: general.inputs.none-of-the-above
-              isNone: true
+            selectableOptions:
+              - value: SOCIAL_SECURITY
+                messageKey: unearned-income.social-security
+              - value: SSI
+                messageKey: unearned-income.ssi
+              - value: VETERANS_BENEFITS
+                messageKey: unearned-income.veterans-benefits
+              - value: UNEMPLOYMENT
+                messageKey: unearned-income.unemployment
+              - value: WORKERS_COMPENSATION
+                messageKey: unearned-income.workers-compensation
+              - value: RETIREMENT
+                messageKey: unearned-income.retirement
+              - value: CHILD_OR_SPOUSAL_SUPPORT
+                messageKey: unearned-income.child-or-spousal-support
+              - value: TRIBAL_PAYMENTS
+                messageKey: unearned-income.tribal-payments
+              - value: NO_UNEARNED_INCOME_SELECTED
+                messageKey: general.inputs.none-of-the-above
+                isNone: true
     - &unearnedIncomeSources
       name: unearnedIncomeSources
       pageTitle:
@@ -1111,10 +1153,11 @@ shiba-configuration:
         - name: earnLessMoneyThisMonth
           type: RADIO
           options:
-            - value: "true"
-              messageKey: general.inputs.yes
-            - value: "false"
-              messageKey: general.inputs.no
+            selectableOptions:
+              - value: "true"
+                messageKey: general.inputs.yes
+              - value: "false"
+                messageKey: general.inputs.no
         - name: additionalIncomeInfo
           type: TEXTAREA
           promptMessage:
@@ -1198,16 +1241,17 @@ shiba-configuration:
             - validation: NOT_BLANK
               errorMessageKey: general.validation.make-sure-you-answer-this-question
           options:
-            - value: EVERY_WEEK
-              messageKey: pay-period.every-week
-            - value: EVERY_TWO_WEEKS
-              messageKey: pay-period.every-two-weeks
-            - value: TWICE_A_MONTH
-              messageKey: pay-period.twice-a-month
-            - value: EVERY_MONTH
-              messageKey: pay-period.every-month
-            - value: IT_VARIES
-              messageKey: pay-period.it-varies
+            selectableOptions:
+              - value: EVERY_WEEK
+                messageKey: pay-period.every-week
+              - value: EVERY_TWO_WEEKS
+                messageKey: pay-period.every-two-weeks
+              - value: TWICE_A_MONTH
+                messageKey: pay-period.twice-a-month
+              - value: EVERY_MONTH
+                messageKey: pay-period.every-month
+              - value: IT_VARIES
+                messageKey: pay-period.it-varies
       contextFragment: jobContextFragment
     - &incomePerPayPeriod
       name: incomePerPayPeriod
@@ -1282,21 +1326,22 @@ shiba-configuration:
             - validation: SELECT_AT_LEAST_ONE
               errorMessageKey: general.validation.make-sure-you-choose-none-of-the-above-or-another-option
           options:
-            - value: RENT
-              messageKey: home-expenses.rent
-            - value: MORTGAGE
-              messageKey: home-expenses.mortgage
-            - value: HOMEOWNERS_INSURANCE
-              messageKey: home-expenses.homeowners-insurance
-            - value: REAL_ESTATE_TAXES
-              messageKey: home-expenses.real-estate-taxes
-            - value: ASSOCIATION_FEES
-              messageKey: home-expenses.association-fees
-            - value: ROOM_AND_BOARD
-              messageKey: home-expenses.room-and-board
-            - value: NONE_OF_THE_ABOVE
-              messageKey: general.inputs.none-of-the-above
-              isNone: true
+            selectableOptions:
+              - value: RENT
+                messageKey: home-expenses.rent
+              - value: MORTGAGE
+                messageKey: home-expenses.mortgage
+              - value: HOMEOWNERS_INSURANCE
+                messageKey: home-expenses.homeowners-insurance
+              - value: REAL_ESTATE_TAXES
+                messageKey: home-expenses.real-estate-taxes
+              - value: ASSOCIATION_FEES
+                messageKey: home-expenses.association-fees
+              - value: ROOM_AND_BOARD
+                messageKey: home-expenses.room-and-board
+              - value: NONE_OF_THE_ABOVE
+                messageKey: general.inputs.none-of-the-above
+                isNone: true
     - &homeExpensesAmount
       name: homeExpensesAmount
       pageTitle:
@@ -1380,10 +1425,11 @@ shiba-configuration:
           type: CUSTOM
           customInputFragment: addressValidationInput
           options:
-            - value: "true"
-              messageKey: address-validation.suggested-address
-            - value: "false"
-              messageKey: address-validation.address-you-entered
+            selectableOptions:
+              - value: "true"
+                messageKey: address-validation.suggested-address
+              - value: "false"
+                messageKey: address-validation.address-you-entered
     - &mailingAddressValidation
       name: mailingAddressValidation
       pageTitle:
@@ -1394,10 +1440,11 @@ shiba-configuration:
           type: CUSTOM
           customInputFragment: addressValidationInput
           options:
-            - value: "true"
-              messageKey: address-validation.suggested-address
-            - value: "false"
-              messageKey: address-validation.address-you-entered
+            selectableOptions:
+              - value: "true"
+                messageKey: address-validation.suggested-address
+              - value: "false"
+                messageKey: address-validation.address-you-entered
     - &registerToVote
       name: registerToVote
       headerKey:
@@ -1409,12 +1456,13 @@ shiba-configuration:
           type: CUSTOM
           customInputFragment: registerToVoteInput
           options:
-            - value: "YES"
-              messageKey: register-to-vote.yes-send-me-more-info
-            - value: NO_ALREADY_REGISTERED
-              messageKey: register-to-vote.ive-already-registered
-            - value: "NO"
-              messageKey: register-to-vote.no-thanks
+            selectableOptions:
+              - value: "YES"
+                messageKey: register-to-vote.yes-send-me-more-info
+              - value: NO_ALREADY_REGISTERED
+                messageKey: register-to-vote.ive-already-registered
+              - value: "NO"
+                messageKey: register-to-vote.no-thanks
       pageTitle:
         value: register-to-vote.title
       hasPrimaryButton: false
@@ -1555,14 +1603,25 @@ shiba-configuration:
     pregnant:
       pageConfiguration: *pregnant
       nextPages:
+        - pageName: whoIsPregnant
+      datasources:
+        - pageName: doYouLiveAlone
+    whoIsPregnant:
+      pageConfiguration: *whoIsPregnant
+      nextPages:
         - pageName: migrantFarmWorker
       datasources:
-        - pageName: personalInfo
+        - pageName: doYouLiveAlone
+        - pageName: pregnant
       skipCondition:
+        logicalOperator: OR
         conditions:
-          - pageName: personalInfo
-            input: sex
-            value: MALE
+          - pageName: doYouLiveAlone
+            input: liveAlone
+            value: "true"
+          - pageName: pregnant
+            input: isPregnant
+            value: "false"
     migrantFarmWorker:
       pageConfiguration: *migrantFarmWorker
       nextPages:

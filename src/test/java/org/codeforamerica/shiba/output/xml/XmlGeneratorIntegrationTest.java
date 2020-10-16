@@ -83,8 +83,8 @@ public class XmlGeneratorIntegrationTest {
                                             return InputData.builder().value(List.of(input.getDefaultValue())).build();
                                         }
                                         @NotNull List<String> value = switch (input.getType()) {
-                                            case RADIO, SELECT -> List.of(input.getOptions().get(new Random().nextInt(input.getOptions().size())).getValue());
-                                            case CHECKBOX -> input.getOptions().subList(0, new Random().nextInt(input.getOptions().size()) + 1).stream()
+                                            case RADIO, SELECT -> List.of(input.getOptions().getSelectableOptions().get(new Random().nextInt(input.getOptions().getSelectableOptions().size())).getValue());
+                                            case CHECKBOX -> input.getOptions().getSelectableOptions().subList(0, new Random().nextInt(input.getOptions().getSelectableOptions().size()) + 1).stream()
                                                     .map(Option::getValue)
                                                     .collect(Collectors.toList());
                                             case DATE -> List.of(LocalDate.ofEpochDay(0).plusDays(new Random().nextInt()).format(DateTimeFormatter.ofPattern("MM/dd/yyyy")).split("/"));

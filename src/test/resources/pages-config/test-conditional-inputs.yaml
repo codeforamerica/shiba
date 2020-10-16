@@ -8,12 +8,13 @@ shiba-configuration-conditional-inputs:
         - name: options
           type: CHECKBOX
           options:
-            - value: option1
-              messageKey: option1
-            - value: option2
-              messageKey: option2
-            - value: option3
-              messageKey: option3
+            selectableOptions:
+              - value: option1
+                messageKey: option1
+              - value: option2
+                messageKey: option2
+              - value: option3
+                messageKey: option3
     - &secondPage
       pageTitle:
         value: dummy-page-title

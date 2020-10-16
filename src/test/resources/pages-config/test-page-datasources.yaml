@@ -10,10 +10,11 @@ shiba-configuration-page-datasource:
         - name: someRadioInputName
           type: RADIO
           options:
-            - value: VALUE_1
-              messageKey: radio-value-key-1
-            - value: VALUE_2
-              messageKey: radio-value-key-2
+            selectableOptions:
+              - value: VALUE_1
+                messageKey: radio-value-key-1
+              - value: VALUE_2
+                messageKey: radio-value-key-2
     - &yesNoQuestionPage
         name: yesNoQuestionPage
         pageTitle:

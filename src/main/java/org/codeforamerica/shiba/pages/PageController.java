@@ -133,7 +133,7 @@ public class PageController {
             pagesData = applicationData.getPagesData();
         }
 
-        PageTemplate pageTemplate = pagesData.evaluate(pageWorkflow);
+        PageTemplate pageTemplate = pagesData.evaluate(pageWorkflow, applicationData);
 
         HashMap<String, Object> model = new HashMap<>(Map.of(
                 "page", pageTemplate,
@@ -154,7 +154,7 @@ public class PageController {
         if (pageConfiguration.isStaticPage()) {
             pageToRender = pageName;
             model.put("data", pagesData.getDatasourcePagesBy(pageWorkflow.getDatasources()));
-            if (pageWorkflow.hasRequiredSubworkflows(applicationData)) {
+            if (applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources())) {
                 model.put("subworkflows", pageWorkflow.getSubworkflows(applicationData));
             } else {
                 return new ModelAndView("redirect:/pages/" + pageWorkflow.getDataMissingRedirect());

@@ -14,7 +14,7 @@ public class ReferenceDerivedValueConfiguration implements DerivedValueConfigura
 
     @Override
     public Optional<List<String>> resolveOptional(ApplicationData data) {
-        return Optional.ofNullable(data.getInputDataMap(pageName))
+        return Optional.ofNullable(data.getPageData(pageName))
                 .flatMap(pageData -> Optional.ofNullable(pageData.get(inputName)))
                 .map(InputData::getValue);
     }

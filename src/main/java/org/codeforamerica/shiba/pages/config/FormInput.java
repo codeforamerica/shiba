@@ -13,7 +13,7 @@ public class FormInput {
     private String customInputFragment;
     private PromptMessage promptMessage;
     private String helpMessageKey;
-    private List<Option> options;
+    private OptionsWithDataSource options;
     private List<FormInput> followUps = Collections.emptyList();
     private List<String> followUpValues = Collections.emptyList();
     private List<Validator> validators = Collections.emptyList();

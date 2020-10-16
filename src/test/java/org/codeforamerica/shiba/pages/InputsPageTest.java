@@ -93,8 +93,8 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
         testPage.enter("moneyInput", moneyInputValue);
         String hourlyWageValue = "some wage";
         testPage.enter("hourlyWageInput", hourlyWageValue);
-        String incremeValue = "5";
-        testPage.enter("increme", incremeValue);
+        String incrementerInputValue = "5";
+        testPage.enter("incrementerInput", incrementerInputValue);
 
         driver.findElement(By.cssSelector("button")).click();
         assertThat(driver.getTitle()).isEqualTo("nextPageTitle");
@@ -111,7 +111,7 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
         assertThat(testPage.getSelectValue("selectInput")).isEqualTo(selectOption1);
         assertThat(testPage.getInputValue("moneyInput")).isEqualTo(moneyInputValue);
         assertThat(testPage.getInputValue("hourlyWageInput")).isEqualTo(hourlyWageValue);
-        assertThat(testPage.getInputValue("increme")).isEqualTo(incremeValue);
+        assertThat(testPage.getInputValue("increme")).isEqualTo(incrementerInputValue);
     }
 
     @Test
@@ -263,5 +263,29 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
         navigateTo("pageWithContextFragment");
 
         assertThat(driver.findElement(By.id("pageContext")).getText()).isEqualTo("this is context");
+    }
+
+    @Test
+    void shouldHaveAccessToDatasources() {
+        navigateTo("firstPage");
+        String datasourceText = "Datasource Text";
+        testPage.enter("editableTextInput", datasourceText);
+        testPage.clickContinue();
+
+        navigateTo("subworkflowPage");
+
+        testPage.enter("value1", "a");
+        testPage.clickContinue();
+        testPage.enter("value1", "b");
+        testPage.clickContinue();
+        testPage.enter("value1", "c");
+        testPage.clickContinue();
+
+        navigateTo("pageWithReferenceCheckboxes");
+
+        assertThat(testPage.findElementTextByName("iteration0")).isEqualTo("a");
+        assertThat(testPage.findElementTextByName("iteration1")).isEqualTo("b");
+        assertThat(testPage.findElementTextByName("iteration2")).isEqualTo("c");
+        assertThat(testPage.findElementTextByName("datasourceText")).isEqualTo(datasourceText);
     }
 }

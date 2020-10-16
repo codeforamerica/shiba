@@ -87,7 +87,7 @@ public class ApplicationSubmittedListener {
         }
 
         Application application = applicationRepository.find(event.getApplicationId());
-        PageData personalInfo = application.getApplicationData().getInputDataMap("personalInfo");
+        PageData personalInfo = application.getApplicationData().getPageData("personalInfo");
         String applicationId = application.getId();
         ApplicationFile pdf = pdfGenerator.generate(applicationId, CASEWORKER);
 

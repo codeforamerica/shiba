@@ -3,12 +3,10 @@ package org.codeforamerica.shiba.pages.config;
 import lombok.Data;
 import org.codeforamerica.shiba.output.CompositeCondition;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.Subworkflow;
+import org.codeforamerica.shiba.pages.data.Subworkflows;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Data
 public class PageWorkflowConfiguration {
@@ -24,20 +22,11 @@ public class PageWorkflowConfiguration {
         return nextPages.stream().anyMatch(page -> page.getCondition() != null);
     }
 
-    public Map<String, Subworkflow> getSubworkflows(ApplicationData applicationData) {
-        return datasources.stream()
-                .filter(datasource -> datasource.getGroupName() != null)
-                .map(datasource -> Map.entry(datasource.getGroupName(), applicationData.getSubworkflows().get(datasource.getGroupName())))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    public Subworkflows getSubworkflows(ApplicationData applicationData) {
+        return applicationData.getSubworkflowsForPageDatasources(datasources);
     }
 
     public boolean isInAGroup() {
         return groupName != null;
-    }
-
-    public boolean hasRequiredSubworkflows(ApplicationData applicationData) {
-        return datasources.stream()
-                .filter(datasource -> datasource.getGroupName() != null)
-                .allMatch(datasource -> applicationData.getSubworkflows().get(datasource.getGroupName()) != null);
     }
 }

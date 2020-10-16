@@ -4,13 +4,16 @@ import lombok.Data;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.parsers.PageInputCoordinates;
 import org.codeforamerica.shiba.pages.config.NextPage;
+import org.codeforamerica.shiba.pages.config.PageDatasource;
 import org.codeforamerica.shiba.pages.config.PageWorkflowConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Data
 public class ApplicationData {
@@ -27,14 +30,29 @@ public class ApplicationData {
         }
     }
 
-    public PageData getInputDataMap(String pageName) {
+    public PageData getPageData(String pageName) {
         return this.pagesData.getPage(pageName);
     }
 
     public String getValue(PageInputCoordinates pageInputCoordinates) {
-        return Optional.ofNullable(this.getInputDataMap(pageInputCoordinates.getPageName()))
+        return Optional.ofNullable(this.getPageData(pageInputCoordinates.getPageName()))
                 .map(pageData -> pageData.get(pageInputCoordinates.getInputName()).getValue(0))
                 .orElse(pageInputCoordinates.getDefaultValue());
+    }
+
+    public Subworkflows getSubworkflowsForPageDatasources(List<PageDatasource> pageDatasources) {
+        return new Subworkflows(pageDatasources.stream()
+                .filter(datasource -> datasource.getGroupName() != null)
+                .map(datasource -> Map.entry(
+                        datasource.getGroupName(),
+                        subworkflows.get(datasource.getGroupName())))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+    }
+
+    public boolean hasRequiredSubworkflows(List<PageDatasource> datasources) {
+        return datasources.stream()
+                .filter(datasource -> datasource.getGroupName() != null)
+                .allMatch(datasource -> getSubworkflows().get(datasource.getGroupName()) != null);
     }
 
     public NextPage getNextPageName(@NotNull PageWorkflowConfiguration pageWorkflowConfiguration, Integer option) {

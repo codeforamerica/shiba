@@ -1,0 +1,42 @@
+package org.codeforamerica.shiba.output.applicationinputsmappers;
+
+import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.InputData;
+import org.codeforamerica.shiba.pages.data.PageData;
+import org.codeforamerica.shiba.pages.data.PagesData;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+class HouseholdPregnancyMapperTest {
+    HouseholdPregnancyMapper mapper = new HouseholdPregnancyMapper();
+
+    @Test
+    void shouldJoinAllNamesTogether() {
+        ApplicationData applicationData = new ApplicationData();
+        PagesData pagesData = new PagesData();
+        PageData whoIsPregnantPage = new PageData();
+        whoIsPregnantPage.put("whoIsPregnant", InputData.builder()
+                .value(List.of("personA", "personB"))
+                .build());
+        pagesData.put("whoIsPregnant", whoIsPregnantPage);
+        applicationData.setPagesData(pagesData);
+
+        List<ApplicationInput> result = mapper.map(Application.builder()
+                .applicationData(applicationData)
+                .build(), null);
+
+        assertThat(result).contains(new ApplicationInput(
+                "householdPregnancy",
+                "householdPregnancy",
+                List.of("personA, personB"),
+                ApplicationInputType.SINGLE_VALUE,
+                null
+        ));
+    }
+}

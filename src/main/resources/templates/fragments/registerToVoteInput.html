@@ -8,7 +8,7 @@
         <p class="text--help"
            th:if="${input.helpMessageKey != null}"
            th:text="#{${input.helpMessageKey}}"></p>
-        <label th:each="option: ${input.options}" th:for="${#ids.next(input.name)}" class="button">
+        <label th:each="option: ${input.options.selectableOptions}" th:for="${#ids.next(input.name)}" class="button">
             <input type="radio" th:name="${formInputName}" class="hide-radio-circle" th:id="${#ids.seq(input.name)}"
                    th:value="${option.value}" onclick="this.form.submit()">
             <span class="button__icon--left emoji emoji--inline" th:classappend="${option.value == 'YES' ? 'emoji--checkmark' : 'emoji--crossmark'}"></span>

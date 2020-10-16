@@ -86,26 +86,7 @@
         "datasources": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "pageName": {
-                "type": "string"
-              },
-              "inputs": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "name": {
-                      "type": "string"
-                    },
-                    "valueMessageKeys": {
-                      "type": "object"
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/definitions/datasource"
           }
         },
         "skipCondition": {
@@ -205,6 +186,12 @@
             "HOURLY_WAGE"
           ]
         },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
         "name": {
           "type": "string"
         },
@@ -223,18 +210,22 @@
           "type": "string"
         },
         "options": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "value": {
-                "type": "string"
-              },
-              "messageKey": {
-                "type": "string"
+          "type": "object",
+          "properties": {
+            "selectableOptions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/option"
+              }
+            },
+            "datasources": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/datasource"
               }
             }
-          }
+          },
+          "additionalProperties": false
         },
         "followUps": {
           "type": "array",
@@ -316,6 +307,37 @@
           ]
         }
       }
+    },
+    "option": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string"
+        },
+        "messageKey": {
+          "type": "string"
+        },
+        "isNone": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "value",
+        "messageKey"
+      ],
+      "additionalProperties": false
+    },
+    "datasource": {
+      "type": "object",
+      "properties": {
+        "pageName": {
+          "type": "string"
+        },
+        "groupName": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
     }
   }
 }

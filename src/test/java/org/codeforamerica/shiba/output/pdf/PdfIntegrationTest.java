@@ -4,6 +4,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.AbstractBasePageTest;
 import org.codeforamerica.shiba.pages.SuccessPage;
+import org.codeforamerica.shiba.pages.YesNoAnswer;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.pages.enrichment.LocationClient;
 import org.junit.jupiter.api.BeforeEach;
@@ -315,6 +316,39 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
                 .isEqualTo(enrichedState);
         assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
                 .isEqualTo(enrichedZipCodeValue);
+    }
+
+    @Test
+    void shouldMapPregnantHouseholdMembers() {
+        navigateTo("personalInfo");
+        testPage.enter("firstName", "Dwight");
+        testPage.enter("lastName", "Schrute");
+        testPage.clickContinue();
+
+        navigateTo("doYouLiveAlone");
+        testPage.enter("liveAlone", YesNoAnswer.NO.getDisplayValue());
+        testPage.clickContinue();
+
+        testPage.enter("firstName", "Jim");
+        testPage.enter("lastName", "Halpert");
+        testPage.enter("programs", "None of the above");
+        testPage.clickContinue();
+
+        testPage.clickButton("No, that's it.");
+        navigateTo("pregnant");
+        testPage.enter("isPregnant", YesNoAnswer.YES.getDisplayValue());
+        testPage.enter("whoIsPregnant", "Me");
+        testPage.enter("whoIsPregnant", "Jim Halpert");
+        testPage.clickContinue();
+
+        PDAcroForm pdAcroForm = submitAndDownloadReceipt();
+        assertThat(getPdfFieldText(pdAcroForm, "WHO_IS_PREGNANT")).isEqualTo(
+                "Dwight Schrute, Jim Halpert"
+        );
+    }
+
+    private String getPdfFieldText(PDAcroForm pdAcroForm, String fieldName) {
+        return pdAcroForm.getField(fieldName).getValueAsString();
     }
 
     private PDAcroForm submitAndDownloadReceipt() {

@@ -26,8 +26,9 @@ shiba-configuration-test-validation:
           - name: someCheckbox
             type: CHECKBOX
             options:
-              - value: VALUE_1
-                messageKey: checkbox-value-key-1
+              selectableOptions:
+                - value: VALUE_1
+                  messageKey: checkbox-value-key-1
           - name: conditionalValidationWhenValueIsNoneSelected
             type: TEXT
             validators:
@@ -114,10 +115,11 @@ shiba-configuration-test-validation:
           - name: checkboxInput
             type: CHECKBOX
             options:
-              - value: "1"
-                messageKey: option-1
-              - value: "2"
-                messageKey: option-2
+              selectableOptions:
+                - value: "1"
+                  messageKey: option-1
+                - value: "2"
+                  messageKey: option-2
             validators:
               - validation: SELECT_AT_LEAST_ONE
                 errorMessageKey: error-message-key

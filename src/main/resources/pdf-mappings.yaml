@@ -181,6 +181,8 @@ caf:
       thirtyDayIncome: MONEY_MADE_LAST_MONTH
     household:
       count: TOTAL_HOUSEHOLD
+    householdPregnancy:
+      householdPregnancy: WHO_IS_PREGNANT
   enums:
     EVERY_WEEK: Every week
     EVERY_TWO_WEEKS: Every two weeks
