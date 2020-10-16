@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @Configuration
-@PropertySource(value = "classpath:pages-config.yaml", factory = YamlPropertySourceFactory.class)
+@PropertySource(value = "classpath:${pagesConfig:dev}-pages-config.yaml", factory = YamlPropertySourceFactory.class)
 @ConfigurationProperties(prefix = "shiba-configuration")
 @Data
 public class ApplicationConfiguration {

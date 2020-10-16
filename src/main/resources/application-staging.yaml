@@ -3,3 +3,4 @@ spring:
     url: ${DATABASE_URL}
     driverClassName: org.postgresql.Driver
 submit-via-email: true
+pagesConfig: dev

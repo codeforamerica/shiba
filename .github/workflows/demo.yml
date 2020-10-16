@@ -2,10 +2,7 @@ name: Deploy to demo
 
 on:
   workflow_dispatch:
-    inputs:
-      branch:
-        description: 'Release Branch'
-        required: true
+    inputs: {}
 
 jobs:
   deploy:
