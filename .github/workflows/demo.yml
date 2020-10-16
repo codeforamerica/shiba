@@ -2,7 +2,10 @@ name: Deploy to demo
 
 on:
   workflow_dispatch:
-    inputs: {}
+    inputs:
+      branch:
+        description: 'Release Branch'
+        required: true
 
 jobs:
   deploy:
@@ -10,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.branch }}
       - run: git fetch --prune --unshallow
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2.0.3
