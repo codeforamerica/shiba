@@ -804,6 +804,10 @@ shiba-configuration:
       inputs:
         - name: migrantOrSeasonalFarmWorker
           type: YES_NO
+    - &transitionHouseholdPersonDetails
+      name: transitionHouseholdPersonDetails
+      pageTitle:
+        value: transition-household-person-details.title
     - &expeditedDetermination
       name: expeditedDetermination
     - &importantToKnow
@@ -1562,9 +1566,20 @@ shiba-configuration:
     migrantFarmWorker:
       pageConfiguration: *migrantFarmWorker
       nextPages:
-        - pageName: usCitizen
+        - pageName: transitionHouseholdPersonDetails
       datasources:
         - pageName: doYouLiveAlone
+    transitionHouseholdPersonDetails:
+      pageConfiguration: *transitionHouseholdPersonDetails
+      datasources:
+        - pageName: doYouLiveAlone
+      nextPages:
+        - pageName: usCitizen
+      skipCondition:
+        conditions:
+          - pageName: doYouLiveAlone
+            input: liveAlone
+            value: "true"
     usCitizen:
       pageConfiguration: *usCitizen
       nextPages:
