@@ -111,16 +111,16 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
         assertThat(testPage.getSelectValue("selectInput")).isEqualTo(selectOption1);
         assertThat(testPage.getInputValue("moneyInput")).isEqualTo(moneyInputValue);
         assertThat(testPage.getInputValue("hourlyWageInput")).isEqualTo(hourlyWageValue);
-        assertThat(testPage.getInputValue("increme")).isEqualTo(incrementerInputValue);
+        assertThat(testPage.getInputValue("incrementerInput")).isEqualTo(incrementerInputValue);
     }
 
     @Test
     void incrementerShouldUseForMaxMinAndDefaultValue() {
         navigateTo("firstPage");
-        assertThat(testPage.getInputValue("increme")).isEqualTo("4");
+        assertThat(testPage.getInputValue("incrementerInput")).isEqualTo("4");
 
         driver.findElement(By.className("incrementer__add")).click();
-        assertThat(testPage.getInputValue("increme")).isEqualTo("5");
+        assertThat(testPage.getInputValue("incrementerInput")).isEqualTo("5");
         driver.findElement(By.className("incrementer__add")).click();
         assertThat(testPage.getInputValue("incrementerInput")).isEqualTo("5");
 
