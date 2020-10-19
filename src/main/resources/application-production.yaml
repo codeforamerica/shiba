@@ -9,10 +9,11 @@ client:
 mnit-esb:
   url: https://svcs.dhs.mn.gov/WebServices/Alfresco/CreateDocument
 
-submit-via-email: true
 mail-gun:
   shouldCC: true
 
 send-download-alert: true
 send-non-partner-county-alert: true
+submit-via-email: false
+submit-via-api: true
 pagesConfig: release
