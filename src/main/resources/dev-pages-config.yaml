@@ -588,6 +588,42 @@ shiba-configuration:
             datasources:
               - pageName: personalInfo
               - groupName: household
+    - &usCitizen
+      name: usCitizen
+      pageTitle:
+        value: us-citizen.title
+      headerKey:
+        conditionalValues:
+          - value: us-citizen.are-you-a-us-citizen
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "true"
+          - value: us-citizen.is-everyone-us-citizen
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "false"
+      headerHelpMessageKey: us-citizen.most-immigrants-are-still-eligible-for-food-and-cash-benefits
+      hasPrimaryButton: false
+      inputs:
+        - name: isUSCitizen
+          type: YES_NO
+    - &whoIsNonCitizen
+      name: whoIsNonCitizen
+      pageTitle:
+        value: who-is-non-citizen.title
+      headerKey:
+        value: who-is-non-citizen.header
+      headerHelperMessageKey: general.check-all-that-apply
+      inputs:
+        - type: CUSTOM
+          name: whoIsNonCitizen
+          customInputFragment: householdOptions
+          options:
+            datasources:
+              - pageName: personalInfo
+              - groupName: household
     - &doYouNeedHelpImmediately
       name: doYouNeedHelpImmediately
       pageTitle:
@@ -893,17 +929,6 @@ shiba-configuration:
       name: success
       pageTitle:
         value: success.title
-    - &usCitizen
-      name: usCitizen
-      pageTitle:
-        value: us-citizen.title
-      headerKey:
-        value: us-citizen.are-you-a-us-citizen
-      headerHelpMessageKey: us-citizen.most-immigrants-are-still-eligible-for-food-and-cash-benefits
-      hasPrimaryButton: false
-      inputs:
-        - name: isUsCitizen
-          type: YES_NO
     - &disability
       name: disability
       pageTitle:
@@ -1642,6 +1667,28 @@ shiba-configuration:
           - pageName: pregnant
             input: isPregnant
             value: "false"
+    usCitizen:
+      pageConfiguration: *usCitizen
+      nextPages:
+        - pageName: whoIsNonCitizen
+      datasources:
+        - pageName: doYouLiveAlone
+    whoIsNonCitizen:
+      pageConfiguration: *whoIsNonCitizen
+      nextPages:
+        - pageName: disability
+      datasources:
+        - pageName: doYouLiveAlone
+        - pageName: usCitizen
+      skipCondition:
+        logicalOperator: OR
+        conditions:
+          - pageName: doYouLiveAlone
+            input: liveAlone
+            value: "true"
+          - pageName: usCitizen
+            input: isUSCitizen
+            value: "true"
     migrantFarmWorker:
       pageConfiguration: *migrantFarmWorker
       nextPages:
@@ -1659,10 +1706,6 @@ shiba-configuration:
           - pageName: doYouLiveAlone
             input: liveAlone
             value: "true"
-    usCitizen:
-      pageConfiguration: *usCitizen
-      nextPages:
-        - pageName: disability
     disability:
       pageConfiguration: *disability
       datasources:

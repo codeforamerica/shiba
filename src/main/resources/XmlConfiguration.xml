@@ -206,6 +206,7 @@
                 <ns4:DateRecentMoveToMN>{{MOVETOMNDATE_0}}</ns4:DateRecentMoveToMN>
             </ns4:ResidencyInfo>
             <ns4:CitizenshipInfo>
+                <ns4:CitizenshipInd>{{IS_US_CITIZEN_0}}</ns4:CitizenshipInd>
                 <ns4:SSNInfo>
                     <ns4:SSN>{{SSN_0}}</ns4:SSN>
                 </ns4:SSNInfo>
@@ -233,6 +234,7 @@
                 <ns4:DateRecentMoveToMN>{{MOVETOMNDATE_1}}</ns4:DateRecentMoveToMN>
             </ns4:ResidencyInfo>
             <ns4:CitizenshipInfo>
+                <ns4:CitizenshipInd>{{IS_US_CITIZEN_1}}</ns4:CitizenshipInd>
                 <ns4:SSNInfo>
                     <ns4:SSN>{{SSN_1}}</ns4:SSN>
                 </ns4:SSNInfo>
@@ -260,6 +262,7 @@
                 <ns4:DateRecentMoveToMN>{{MOVETOMNDATE_2}}</ns4:DateRecentMoveToMN>
             </ns4:ResidencyInfo>
             <ns4:CitizenshipInfo>
+                <ns4:CitizenshipInd>{{IS_US_CITIZEN_2}}</ns4:CitizenshipInd>
                 <ns4:SSNInfo>
                     <ns4:SSN>{{SSN_2}}</ns4:SSN>
                 </ns4:SSNInfo>
@@ -287,6 +290,7 @@
                 <ns4:DateRecentMoveToMN>{{MOVETOMNDATE_3}}</ns4:DateRecentMoveToMN>
             </ns4:ResidencyInfo>
             <ns4:CitizenshipInfo>
+                <ns4:CitizenshipInd>{{IS_US_CITIZEN_3}}</ns4:CitizenshipInd>
                 <ns4:SSNInfo>
                     <ns4:SSN>{{SSN_3}}</ns4:SSN>
                 </ns4:SSNInfo>

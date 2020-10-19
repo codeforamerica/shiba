@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class HouseholdPregnancyMapper implements ApplicationInputsMapper {
+
     @Override
     public List<ApplicationInput> map(Application application, Recipient recipient) {
 
