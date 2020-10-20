@@ -365,4 +365,28 @@ class ResearchDataParserTest {
 
         assertThat(researchData).isEqualTo(expectedResearchData);
     }
+
+    @Test
+    void shouldParseResearchData_forBlankDateOfBirth() {
+        ApplicationData applicationData = new ApplicationData();
+
+        PagesData pagesData = pagesDataBuilder.build(List.of(
+                new PageDataBuilder("languagePreferences", Map.of(
+                        "spokenLanguage", List.of("English"),
+                        "writtenLanguage", List.of("Spanish")
+                )),
+                new PageDataBuilder("personalInfo", Map.of(
+                        "dateOfBirth", List.of("", "", "")
+                ))));
+
+        applicationData.setPagesData(pagesData);
+
+        ResearchData researchData = researchDataParser.parse(applicationData);
+        ResearchData expectedResearchData = ResearchData.builder()
+                .dateOfBirth(null)
+                .build();
+
+        assertThat(researchData.getDateOfBirth()).isEqualTo(expectedResearchData.getDateOfBirth());
+    }
+
 }

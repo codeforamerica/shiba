@@ -45,7 +45,7 @@ public class ResearchDataParser {
                 .firstName(pagesData.safeGetPageInputValue("personalInfo", "firstName").stream().findFirst().orElse(null))
                 .lastName(pagesData.safeGetPageInputValue("personalInfo", "lastName").stream().findFirst().orElse(null))
                 .dateOfBirth(String.join("-", pagesData.safeGetPageInputValue("personalInfo", "dateOfBirth"))
-                        .transform(dateString -> dateString.isBlank() ? null : LocalDate.parse(dateString, DateTimeFormatter.ofPattern("MM-dd-yyyy"))))
+                        .transform(dateString -> dateString.isBlank() || dateString.equals("--") ? null : LocalDate.parse(dateString, DateTimeFormatter.ofPattern("MM-dd-yyyy"))))
                 .phoneNumber(pagesData.safeGetPageInputValue("contactInfo", "phoneNumber").stream().findFirst().orElse(null))
                 .email(pagesData.safeGetPageInputValue("contactInfo", "email").stream().findFirst().orElse(null))
                 .phoneOptIn(contactInfoOptional
