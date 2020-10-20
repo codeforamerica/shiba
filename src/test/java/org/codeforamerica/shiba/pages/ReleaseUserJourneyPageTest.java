@@ -239,7 +239,7 @@ public class ReleaseUserJourneyPageTest extends AbstractBasePageTest {
         completeFlowFromLandingPageThroughReviewInfo();
         testPage.clickLink("This looks correct");
 
-        testPage.enter("liveAlone", YES.getDisplayValue());
+        testPage.enter("liveAlone", NO.getDisplayValue());
         testPage.clickButton("Continue");
         testPage.enter("goingToSchool", NO.getDisplayValue());
         testPage.enter("isPregnant", NO.getDisplayValue());

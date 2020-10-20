@@ -1603,7 +1603,7 @@ shiba-configuration:
     pregnant:
       pageConfiguration: *pregnant
       nextPages:
-        - pageName: whoIsPregnant
+        - pageName: migrantFarmWorker
       datasources:
         - pageName: doYouLiveAlone
     whoIsPregnant:
@@ -1625,7 +1625,7 @@ shiba-configuration:
     migrantFarmWorker:
       pageConfiguration: *migrantFarmWorker
       nextPages:
-        - pageName: transitionHouseholdPersonDetails
+        - pageName: usCitizen
       datasources:
         - pageName: doYouLiveAlone
     transitionHouseholdPersonDetails:
