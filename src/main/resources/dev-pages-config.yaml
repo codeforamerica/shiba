@@ -955,7 +955,17 @@ shiba-configuration:
       pageTitle:
         value: employment-status.title
       headerKey:
-        value: employment-status.are-you-currently-working-or-making-an-income
+        conditionalValues:
+          - value: employment-status.are-you-currently-working-or-making-an-income
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "true"
+          - value: employment-status.is-anyone-in-your-household-making-money-from-a-job
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "false"
       hasPrimaryButton: false
       inputs:
         - name: areYouWorking
@@ -965,7 +975,17 @@ shiba-configuration:
       pageTitle:
         value: income-by-job.title
       headerKey:
-        value: income-by-job.tell-us-about-your-income-by-job
+        conditionalValues:
+          - value: income-by-job.lets-add-your-job-information
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "true"
+          - value: income-by-job.lets-add-all-the-jobs-in-your-household
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "false"
     - &incomeUpNext
       name: incomeUpNext
       pageTitle:
@@ -1661,6 +1681,8 @@ shiba-configuration:
         - pageName: employmentStatus
     employmentStatus:
       pageConfiguration: *employmentStatus
+      datasources:
+        - pageName: doYouLiveAlone
       nextPages:
         - pageName: ccapJob
           condition:
@@ -1669,6 +1691,8 @@ shiba-configuration:
         - pageName: incomeByJob
     incomeByJob:
       pageConfiguration: *incomeByJob
+      datasources:
+        - pageName: doYouLiveAlone
       nextPages:
         - pageName: employersName
         - pageName: thirtyDayIncome

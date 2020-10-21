@@ -11,11 +11,11 @@
                 <div class="grid__item spacing-above-35 spacing-below-35">
                     <h2 th:text="#{${page.headerKey}}"></h2>
                 </div>
-                <div class="bottom-horizontal-line-grey">
+                <div>
                     <p th:text="#{income-by-job.this-includes-full-time-part-time-contract-self-employment-work}"></p>
                 </div>
-                <div class="spacing-below-15 spacing-above-35">
-                    <a class="button button--primary" th:href="'/pages/'+${pageName}+'/navigation?option=0'"
+                <div class="spacing-below-35 spacing-above-35 bottom-horizontal-line-grey">
+                    <a class="button button--primary spacing-below-35" th:href="'/pages/'+${pageName}+'/navigation?option=0'"
                        th:text="#{income-by-job.add-a-job}"></a>
                 </div>
                 <div>
