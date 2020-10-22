@@ -97,6 +97,9 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
 
     @Test
     void shouldMapNoForSelfEmployment() {
+        navigateTo("doYouLiveAlone");
+        testPage.enter("liveAlone", YesNoAnswer.NO.getDisplayValue());
+        testPage.clickContinue();
         navigateTo("incomeByJob");
         testPage.clickButton("Add a job");
         testPage.enter("employersName", "someEmployerName");
