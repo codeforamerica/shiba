@@ -38,6 +38,15 @@ jobs:
       run: chmod +x gradlew
     - name: Test with Gradle
       run: ./gradlew clean test
+    - name: Announce test failure on slack
+      if: ${{ failure() }}
+      uses: innocarpe/actions-slack@v1
+      with:
+        status: ${{ job.status }}
+        failure_text: 'Tests failed in CI! :disappointed:'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
   deploy:
     name: Deploy to Aptible staging
     runs-on: ubuntu-latest
