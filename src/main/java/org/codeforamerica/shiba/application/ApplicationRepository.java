@@ -77,7 +77,7 @@ public class ApplicationRepository {
                                 .id(id)
                                 .completedAt(ZonedDateTime.ofInstant(resultSet.getTimestamp("completed_at").toInstant(), ZoneOffset.UTC))
                                 .applicationData(encryptor.decrypt(resultSet.getBytes("encrypted_data")))
-                                .county(County.valueOf(resultSet.getString("county")))
+                                .county(County.valueFor(resultSet.getString("county")))
                                 .timeToComplete(Duration.ofSeconds(resultSet.getLong("time_to_complete")))
                                 .sentiment(Optional.ofNullable(resultSet.getString("sentiment"))
                                                 .map(Sentiment::valueOf)
@@ -105,7 +105,7 @@ public class ApplicationRepository {
                         "FROM applications " +
                         "GROUP BY county", (resultSet, rowNumber) ->
                         Map.entry(
-                                County.valueOf(resultSet.getString("county")),
+                                County.valueFor(resultSet.getString("county")),
                                 resultSet.getInt("count"))).stream()
                 .collect(toMap(Entry::getKey, Entry::getValue));
     }
@@ -120,7 +120,7 @@ public class ApplicationRepository {
                 new Object[]{Timestamp.from(lowerBound.toInstant())},
                 (resultSet, rowNumber) ->
                         Map.entry(
-                                County.valueOf(resultSet.getString("county")),
+                                County.valueFor(resultSet.getString("county")),
                                 resultSet.getInt("count"))).stream()
                 .collect(toMap(Entry::getKey, Entry::getValue));
     }

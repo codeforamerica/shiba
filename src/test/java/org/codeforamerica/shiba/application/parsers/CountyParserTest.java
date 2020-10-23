@@ -65,4 +65,16 @@ class CountyParserTest {
 
         assertThat(county).isEqualTo(County.Hennepin);
     }
+
+    @Test
+    void shouldUseDefaultValueWhenCountyIsNotAKnownCounty() {
+        ApplicationData applicationData = new ApplicationData();
+        PagesData pagesData = new PagesData();
+        PageData homePageData = new PageData();
+        pagesData.put("homeAddressPageName", homePageData);
+        homePageData.put("addressLine6", InputData.builder().value(List.of("not a county")).build());
+        applicationData.setPagesData(pagesData);
+
+        assertThat(countyParser.parse(applicationData)).isEqualTo(County.Other);
+    }
 }

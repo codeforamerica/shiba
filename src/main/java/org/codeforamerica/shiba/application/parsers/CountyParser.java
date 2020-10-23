@@ -19,6 +19,6 @@ public class CountyParser extends ApplicationDataParser<County> {
                 .flatMap(pageData -> Optional.ofNullable(pageData.get(pageInputCoordinates.getInputName())))
                 .map(inputData -> inputData.getValue().get(0))
                 .orElse(pageInputCoordinates.getDefaultValue());
-        return County.valueOf(countyName);
+        return County.valueFor(countyName);
     }
 }
