@@ -88,7 +88,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'com.mixpanel:mixpanel-java:1.5.0'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'com.sun.activation:jakarta.activation:1.2.2'
+    implementation 'com.sun.activation:jakarta.activation:2.0.0'
 
     implementation(files(genJaxb.classesDir).builtBy(genJaxb))
     jaxb "com.sun.xml.bind:jaxb-xjc:2.3.3"
