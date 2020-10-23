@@ -10,7 +10,5 @@ public class CountyMap<T> {
     T defaultValue;
     Map<County, T> counties = new HashMap<>();
 
-    public T get(County county) {
-        return counties.getOrDefault(county, defaultValue);
-    }
+    public T get(County county) { return counties.getOrDefault(county, defaultValue); }
 }

@@ -965,7 +965,7 @@ shiba-configuration:
       pageTitle:
         value: income-by-job.title
       headerKey:
-        value: income-by-job.tell-us-about-your-income-by-job
+        value: income-by-job.lets-add-your-job-information
     - &incomeUpNext
       name: incomeUpNext
       pageTitle:
