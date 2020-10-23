@@ -55,7 +55,7 @@ public class SubworkflowInputMapper implements ApplicationInputsMapper {
 
                     Stream<ApplicationInput> applicationInputStream = subworkflow.stream()
                         .flatMap(iteration -> {
-                            PageData pageData = iteration.get(pageWorkflowConfiguration.getPageConfiguration().getName());
+                            PageData pageData = iteration.getPagesData().get(pageWorkflowConfiguration.getPageConfiguration().getName());
                             if (pageData == null) {
                                 return empty();
                             }

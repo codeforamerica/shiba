@@ -33,7 +33,7 @@ public class CompositeCondition {
             PagesData pagesData = Optional.ofNullable(condition.getSubworkflow())
                     .map(subworkflow -> applicationData.getSubworkflows().get(subworkflow))
                     .filter(subworkflow -> subworkflow.size() > condition.getIteration())
-                    .map(subworkflow -> subworkflow.get(condition.getIteration()))
+                    .map(subworkflow -> subworkflow.get(condition.getIteration()).getPagesData())
                     .orElse(applicationData.getPagesData());
             return Optional.ofNullable(pagesData.getPage(condition.getPageName()))
                     .map(inputDataMap -> inputDataMap.satisfies(condition))

@@ -8,21 +8,21 @@
                th:with="fullName=${input.options.datasources.get('personalInfo').get('firstName').value[0] + ' ' + input.options.datasources.get('personalInfo').get('lastName').value[0]}">
             <input type="checkbox"
                    th:id="householdMember-me"
-                   th:value="${fullName}"
+                   th:value="${fullName} + ' me'"
                    th:name="${formInputName}"
                    th:checked="${inputData.value.contains(fullName)}">
             <span th:text="#{general.me}"></span>
         </label>
-        <th:block th:each="pagesData, iterationStat: ${input.options.subworkflows.get('household')}">
+        <th:block th:each="iteration, iterationStat: ${input.options.subworkflows.get('household')}">
             <label th:for="|householdMember${iterationStat.index}|"
                    class="checkbox"
-                   th:with="fullName=${pagesData.get('householdMemberInfo').get('firstName').value[0] + ' ' + pagesData.get('householdMemberInfo').get('lastName').value[0]}">
+                   th:with="fullName=${iteration.getPagesData().get('householdMemberInfo').get('firstName').value[0] + ' ' + iteration.getPagesData().get('householdMemberInfo').get('lastName').value[0]}">
                 <input type="checkbox"
                        th:id="|householdMember${iterationStat.index}|"
-                       th:value="${fullName}"
+                       th:value="${fullName} + ' ' + ${iteration.id}"
                        th:name="${formInputName}"
                        th:checked="${inputData.value.contains(fullName)}">
-                <span th:text="|${pagesData.get('householdMemberInfo').get('firstName').value[0]}&nbsp;${pagesData.get('householdMemberInfo').get('lastName').value[0]}|"></span>
+                <span th:text="|${iteration.getPagesData().get('householdMemberInfo').get('firstName').value[0]}&nbsp;${iteration.getPagesData().get('householdMemberInfo').get('lastName').value[0]}|"></span>
             </label>
         </th:block>
     </div>

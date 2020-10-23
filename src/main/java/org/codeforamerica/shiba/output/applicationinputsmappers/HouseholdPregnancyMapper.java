@@ -7,8 +7,10 @@ import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class HouseholdPregnancyMapper implements ApplicationInputsMapper {
@@ -18,7 +20,11 @@ public class HouseholdPregnancyMapper implements ApplicationInputsMapper {
         List<String> pregnantHouseholdMembers = Optional.ofNullable(application.getApplicationData().getPageData("whoIsPregnant"))
                 .map(pageData -> pageData.get("whoIsPregnant"))
                 .map(InputData::getValue)
-                .orElse(List.of(""));
+                .orElse(List.of(""))
+                .stream().map(selectedHouseholdMember -> {
+                    List<String> householdMemberParts = Arrays.asList(selectedHouseholdMember.split(" "));
+                    return householdMemberParts.stream().limit(householdMemberParts.size() - 1).collect(Collectors.joining(" "));
+                }).collect(Collectors.toList());
 
         return List.of(
                 new ApplicationInput("householdPregnancy", "householdPregnancy",

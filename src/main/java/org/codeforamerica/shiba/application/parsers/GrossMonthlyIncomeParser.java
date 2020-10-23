@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.application.parsers;
 
 import org.codeforamerica.shiba.output.caf.*;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.pages.data.Subworkflow;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +24,8 @@ public class GrossMonthlyIncomeParser extends ApplicationDataParser<List<JobInco
         }
 
         return jobsGroup.stream()
-                .map(pagesData -> {
+                .map(iteration -> {
+                    PagesData pagesData = iteration.getPagesData();
                     PageInputCoordinates isHourlyJobCoordinates = grossMonthlyIncomeConfiguration.getPageInputs().get("paidByTheHour");
                     boolean isHourlyJob = Boolean.parseBoolean(pagesData.getPage(isHourlyJobCoordinates.getPageName()).get(isHourlyJobCoordinates.getInputName()).getValue(0));
                     if (isHourlyJob) {

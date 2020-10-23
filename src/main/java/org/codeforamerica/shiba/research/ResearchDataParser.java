@@ -106,6 +106,6 @@ public class ResearchDataParser {
 
     private Boolean getSelfEmployment(Subworkflow jobsSubworkflow) {
         return jobsSubworkflow.stream()
-                .anyMatch(job -> job.getPage("selfEmployment").get("selfEmployment").getValue().contains("true"));
+                .anyMatch(job -> job.getPagesData().getPage("selfEmployment").get("selfEmployment").getValue().contains("true"));
     }
 }
