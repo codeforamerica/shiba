@@ -607,7 +607,7 @@ shiba-configuration:
       headerHelpMessageKey: us-citizen.most-immigrants-are-still-eligible-for-food-and-cash-benefits
       hasPrimaryButton: false
       inputs:
-        - name: isUSCitizen
+        - name: isUsCitizen
           type: YES_NO
     - &whoIsNonCitizen
       name: whoIsNonCitizen
@@ -1687,7 +1687,7 @@ shiba-configuration:
             input: liveAlone
             value: "true"
           - pageName: usCitizen
-            input: isUSCitizen
+            input: isUsCitizen
             value: "true"
     migrantFarmWorker:
       pageConfiguration: *migrantFarmWorker

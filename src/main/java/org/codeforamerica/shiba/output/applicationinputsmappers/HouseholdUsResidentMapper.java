@@ -37,10 +37,13 @@ public class HouseholdUsResidentMapper implements ApplicationInputsMapper {
                 ApplicationInputType.SINGLE_VALUE, null));
 
         Subworkflow householdMemberSubworkflow = application.getApplicationData().getSubworkflows().get("household");
-        for (int i = 0; i < householdMemberSubworkflow.size(); i++) {
-            result.add(new ApplicationInput("usCitizen", "isUsCitizen",
-                    List.of(householdMemberIDs.contains(householdMemberSubworkflow.get(i).getId().toString()) ? "false" : "true"),
-                    ApplicationInputType.SINGLE_VALUE, i));
+
+        if (householdMemberSubworkflow != null) {
+            for (int i = 0; i < householdMemberSubworkflow.size(); i++) {
+                result.add(new ApplicationInput("usCitizen", "isUsCitizen",
+                        List.of(householdMemberIDs.contains(householdMemberSubworkflow.get(i).getId().toString()) ? "false" : "true"),
+                        ApplicationInputType.SINGLE_VALUE, i));
+            }
         }
 
         return result;
