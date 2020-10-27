@@ -239,7 +239,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
             testPage.clickContinue();
             fillOutHousemateInfo();
             testPage.clickContinue();
-            testPage.clickButton("No, that's it.");
+            testPage.clickButton("Yes, that's everyone");
             testPage.enter("goingToSchool", NO.getDisplayValue());
             testPage.enter("isPregnant", YES.getDisplayValue());
             testPage.enter("whoIsPregnant", "Me");

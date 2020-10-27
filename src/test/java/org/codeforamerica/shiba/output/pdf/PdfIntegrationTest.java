@@ -337,7 +337,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         testPage.enter("programs", "None of the above");
         testPage.clickContinue();
 
-        testPage.clickButton("No, that's it.");
+        testPage.clickButton("Yes, that's everyone");
         navigateTo("pregnant");
         testPage.enter("isPregnant", YesNoAnswer.YES.getDisplayValue());
         testPage.enter("whoIsPregnant", "Me");
