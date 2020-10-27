@@ -13,8 +13,7 @@ public class Iteration {
     PagesData pagesData;
 
     public Iteration() {
-        id = UUID.randomUUID();
-        pagesData = new PagesData();
+        this(new PagesData());
     }
 
     public Iteration(PagesData pagesData) {
