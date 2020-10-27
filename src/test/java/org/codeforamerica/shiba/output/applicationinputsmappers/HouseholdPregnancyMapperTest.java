@@ -22,7 +22,7 @@ class HouseholdPregnancyMapperTest {
         PagesData pagesData = new PagesData();
         PageData whoIsPregnantPage = new PageData();
         whoIsPregnantPage.put("whoIsPregnant", InputData.builder()
-                .value(List.of("personAFirstName personALastName b99f3f7e-d13a-4cf0-9093-23ccdba2a64d", "personBFirstName personBLastName b99f3f7e-d13a-4cf0-9093-23ccdba2a64d"))
+                .value(List.of("personAFirstName personALastName applicant", "personBFirstName personBLastName b99f3f7e-d13a-4cf0-9093-23ccdba2a64d"))
                 .build());
         pagesData.put("whoIsPregnant", whoIsPregnantPage);
         applicationData.setPagesData(pagesData);

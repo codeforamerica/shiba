@@ -7,6 +7,13 @@ shiba-configuration-sub-workflow:
       inputs:
         - name: foo
           type: TEXT
+    - &skippableFirstPage
+      name: skippableFirstPage
+      pageTitle:
+        value: dummy-page-title
+      inputs:
+        - name: inputSkippable
+          type: TEXT
     - &firstPage
       name: firstPage
       pageTitle:
@@ -55,7 +62,20 @@ shiba-configuration-sub-workflow:
     startPage:
       pageConfiguration: *startPage
       nextPages:
+        - pageName: skippableFirstPage
         - pageName: firstPage
+    skippableFirstPage:
+      groupName: group1
+      pageConfiguration: *skippableFirstPage
+      nextPages:
+        - pageName: firstPage
+      skipCondition:
+        conditions:
+          - pageName: startPage
+            input: foo
+            matcher: EMPTY
+      datasources:
+        - pageName: startPage
     firstPage:
       groupName: group1
       pageConfiguration: *firstPage
@@ -108,11 +128,14 @@ shiba-configuration-sub-workflow:
       completePages:
         - secondPage
         - thirdPage
-      startPage: firstPage
+      startPages:
+        - skippableFirstPage
+        - firstPage
       redirectPage: testWarningPage
       restartPage: startPage
     group2:
-      startPage: soloPage
+      startPages:
+        - soloPage
       completePages:
         - soloPage
   landmarkPages:

@@ -161,7 +161,8 @@ shiba-configuration-input:
         - pageName: subworkflowPage
   pageGroups:
     subworkflow1:
-      startPage: subworkflowPage
+      startPages:
+        - subworkflowPage
       completePages:
         - subworkflowPage
   landmarkPages:

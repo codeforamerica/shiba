@@ -587,7 +587,7 @@ shiba-configuration:
       inputs:
         - type: CUSTOM
           name: whoIsPregnant
-          customInputFragment: householdOptions
+          customInputFragment: householdOptionsCheckboxes
           options:
             datasources:
               - pageName: personalInfo
@@ -624,7 +624,7 @@ shiba-configuration:
       inputs:
         - type: CUSTOM
           name: whoIsNonCitizen
-          customInputFragment: householdOptions
+          customInputFragment: householdOptionsCheckboxes
           options:
             datasources:
               - pageName: personalInfo
@@ -637,15 +637,22 @@ shiba-configuration:
       headerKey:
         conditionalValues:
           - value: thirty-day-income.how-much-money-have-you-made-in-the-last-30-days
+            compositeCondition:
+              logicalOperator: OR
+              conditions:
+                - pageName: householdSelectionForIncome
+                  input: whoseJobIsIt
+                  value: "applicant"
+                  matcher: CONTAINS_SUBSTRING
+                - pageName: doYouLiveAlone
+                  input: liveAlone
+                  value: "true"
+          - value: thirty-day-income.how-much-money-have-they-made-in-the-last-30-days
             condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
-          - value: thirty-day-income.how-much-money-has-your-household-made-in-the-last-30-days
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
+              pageName: householdSelectionForIncome
+              input: whoseJobIsIt
+              value: "applicant"
+              matcher: DOES_NOT_CONTAIN_SUBSTRING
       headerHelpMessageKey:
         value: thirty-day-income.if-you-dont-know-the-exact-amount
       name: thirtyDayIncome
@@ -1060,6 +1067,23 @@ shiba-configuration:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "false"
+    - &householdSelectionForIncome
+      name: householdSelectionForIncome
+      pageTitle:
+        value: household-selection-for-income.title
+      headerKey:
+        value: household-selection-for-income.header
+      inputs:
+        - type: CUSTOM
+          name: whoseJobIsIt
+          customInputFragment: householdOptionsRadios
+          validators:
+            - validation: NOT_BLANK
+              errorMessageKey: general.validation.make-sure-you-answer-this-question
+          options:
+            datasources:
+              - pageName: personalInfo
+              - groupName: household
     - &incomeUpNext
       name: incomeUpNext
       pageTitle:
@@ -1265,7 +1289,24 @@ shiba-configuration:
       pageTitle:
         value: employers-name.title
       headerKey:
-        value: employers-name.add-a-job-you-have
+        conditionalValues:
+          - value: employers-name.add-a-job-you-have
+            compositeCondition:
+              logicalOperator: OR
+              conditions:
+              - pageName: householdSelectionForIncome
+                input: whoseJobIsIt
+                value: "applicant"
+                matcher: CONTAINS_SUBSTRING
+              - pageName: doYouLiveAlone
+                input: liveAlone
+                value: "true"
+          - value: employers-name.add-a-job-they-have
+            condition:
+              pageName: householdSelectionForIncome
+              input: whoseJobIsIt
+              value: "applicant"
+              matcher: DOES_NOT_CONTAIN_SUBSTRING
       inputs:
         - name: employersName
           type: LONG_TEXT
@@ -1279,7 +1320,24 @@ shiba-configuration:
       pageTitle:
         value: self-employment.title
       headerKey:
-        value: self-employment.is-your-work-here
+        conditionalValues:
+          - value: self-employment.is-your-work-here
+            compositeCondition:
+              logicalOperator: OR
+              conditions:
+                - pageName: householdSelectionForIncome
+                  input: whoseJobIsIt
+                  value: "applicant"
+                  matcher: CONTAINS_SUBSTRING
+                - pageName: doYouLiveAlone
+                  input: liveAlone
+                  value: "true"
+          - value: self-employment.is-their-work-here
+            condition:
+              pageName: householdSelectionForIncome
+              input: whoseJobIsIt
+              value: "applicant"
+              matcher: DOES_NOT_CONTAIN_SUBSTRING
       hasPrimaryButton: false
       inputs:
         - name: selfEmployment
@@ -1292,7 +1350,24 @@ shiba-configuration:
       pageTitle:
         value: paid-by-the-hour.title
       headerKey:
-        value: paid-by-the-hour.do-you-get-paid-by-the-hour
+        conditionalValues:
+          - value: paid-by-the-hour.do-you-get-paid-by-the-hour
+            compositeCondition:
+              logicalOperator: OR
+              conditions:
+                - pageName: householdSelectionForIncome
+                  input: whoseJobIsIt
+                  value: "applicant"
+                  matcher: CONTAINS_SUBSTRING
+                - pageName: doYouLiveAlone
+                  input: liveAlone
+                  value: "true"
+          - value: paid-by-the-hour.do-they-get-paid-by-the-hour
+            condition:
+              pageName: householdSelectionForIncome
+              input: whoseJobIsIt
+              value: "applicant"
+              matcher: DOES_NOT_CONTAIN_SUBSTRING
       hasPrimaryButton: false
       inputs:
         - name: paidByTheHour
@@ -1303,7 +1378,24 @@ shiba-configuration:
       pageTitle:
         value: hourly-wage.title
       headerKey:
-        value: hourly-wage.what-is-your-hourly-wage
+        conditionalValues:
+          - value: hourly-wage.what-is-your-hourly-wage
+            compositeCondition:
+              logicalOperator: OR
+              conditions:
+                - pageName: householdSelectionForIncome
+                  input: whoseJobIsIt
+                  value: "applicant"
+                  matcher: CONTAINS_SUBSTRING
+                - pageName: doYouLiveAlone
+                  input: liveAlone
+                  value: "true"
+          - value: hourly-wage.what-is-their-hourly-wage
+            condition:
+              pageName: householdSelectionForIncome
+              input: whoseJobIsIt
+              value: "applicant"
+              matcher: DOES_NOT_CONTAIN_SUBSTRING
       inputs:
         - name: hourlyWage
           type: HOURLY_WAGE
@@ -1319,9 +1411,43 @@ shiba-configuration:
       pageTitle:
         value: hours-a-week.title
       headerKey:
-        value: hours-a-week.how-many-hours-a-week-do-you-work
+        conditionalValues:
+          - value: hours-a-week.how-many-hours-a-week-do-you-work
+            compositeCondition:
+              logicalOperator: OR
+              conditions:
+                - pageName: householdSelectionForIncome
+                  input: whoseJobIsIt
+                  value: "applicant"
+                  matcher: CONTAINS_SUBSTRING
+                - pageName: doYouLiveAlone
+                  input: liveAlone
+                  value: "true"
+          - value: hours-a-week.how-many-hours-a-week-do-they-work
+            condition:
+              pageName: householdSelectionForIncome
+              input: whoseJobIsIt
+              value: "applicant"
+              matcher: DOES_NOT_CONTAIN_SUBSTRING
       headerHelpMessageKey:
-        value: hours-a-week.we-know-this-can-be-hard-to-answer-so-just-estimate-based-on
+        conditionalValues:
+          - value: hours-a-week.we-know-this-can-be-hard-to-answer-so-just-estimate-based-on
+            compositeCondition:
+              logicalOperator: OR
+              conditions:
+                - pageName: householdSelectionForIncome
+                  input: whoseJobIsIt
+                  value: "applicant"
+                  matcher: CONTAINS_SUBSTRING
+                - pageName: doYouLiveAlone
+                  input: liveAlone
+                  value: "true"
+          - value: hours-a-week.we-know-this-can-be-hard-to-answer-so-just-estimate-based-on-their
+            condition:
+              pageName: householdSelectionForIncome
+              input: whoseJobIsIt
+              value: "applicant"
+              matcher: DOES_NOT_CONTAIN_SUBSTRING
       inputs:
         - name: hoursAWeek
           type: NUMBER
@@ -1331,7 +1457,24 @@ shiba-configuration:
       pageTitle:
         value: pay-period.title
       headerKey:
-        value: pay-period.how-often-do-you-get-paid
+        conditionalValues:
+          - value: pay-period.how-often-do-you-get-paid
+            compositeCondition:
+              logicalOperator: OR
+              conditions:
+                - pageName: householdSelectionForIncome
+                  input: whoseJobIsIt
+                  value: "applicant"
+                  matcher: CONTAINS_SUBSTRING
+                - pageName: doYouLiveAlone
+                  input: liveAlone
+                  value: "true"
+          - value: pay-period.how-often-do-they-get-paid
+            condition:
+              pageName: householdSelectionForIncome
+              input: whoseJobIsIt
+              value: "applicant"
+              matcher: DOES_NOT_CONTAIN_SUBSTRING
       inputs:
         - name: payPeriod
           type: RADIO
@@ -1840,13 +1983,28 @@ shiba-configuration:
       datasources:
         - pageName: doYouLiveAlone
       nextPages:
-        - pageName: employersName
+        - pageName: householdSelectionForIncome
         - pageName: thirtyDayIncome
+    householdSelectionForIncome:
+      pageConfiguration: *householdSelectionForIncome
+      groupName: jobs
+      datasources:
+        - pageName: doYouLiveAlone
+      nextPages:
+        - pageName: employersName
+      skipCondition:
+        conditions:
+          - pageName: doYouLiveAlone
+            input: liveAlone
+            value: "true"
     employersName:
       pageConfiguration: *employersName
       groupName: jobs
       nextPages:
         - pageName: selfEmployment
+      datasources:
+        - pageName: householdSelectionForIncome
+        - pageName: doYouLiveAlone
     selfEmployment:
       pageConfiguration: *selfEmployment
       groupName: jobs
@@ -1855,6 +2013,8 @@ shiba-configuration:
         - pageName: paidByTheHour
       datasources:
         - pageName: employersName
+        - pageName: householdSelectionForIncome
+        - pageName: doYouLiveAlone
     paidByTheHour:
       pageConfiguration: *paidByTheHour
       groupName: jobs
@@ -1872,6 +2032,8 @@ shiba-configuration:
             value: "false"
       datasources:
         - pageName: employersName
+        - pageName: householdSelectionForIncome
+        - pageName: doYouLiveAlone
     hourlyWage:
       pageConfiguration: *hourlyWage
       groupName: jobs
@@ -1880,6 +2042,8 @@ shiba-configuration:
         - pageName: hoursAWeek
       datasources:
         - pageName: employersName
+        - pageName: householdSelectionForIncome
+        - pageName: doYouLiveAlone
     hoursAWeek:
       pageConfiguration: *hoursAWeek
       groupName: jobs
@@ -1887,6 +2051,8 @@ shiba-configuration:
         - pageName: jobBuilder
       datasources:
         - pageName: employersName
+        - pageName: householdSelectionForIncome
+        - pageName: doYouLiveAlone
     payPeriod:
       pageConfiguration: *payPeriod
       groupName: jobs
@@ -1895,6 +2061,8 @@ shiba-configuration:
         - pageName: incomePerPayPeriod
       datasources:
         - pageName: employersName
+        - pageName: householdSelectionForIncome
+        - pageName: doYouLiveAlone
     incomePerPayPeriod:
       pageConfiguration: *incomePerPayPeriod
       groupName: jobs
@@ -1907,7 +2075,7 @@ shiba-configuration:
       pageConfiguration: *jobBuilder
       dataMissingRedirect: employmentStatus
       nextPages:
-        - pageName: employersName
+        - pageName: householdSelectionForIncome
         - pageName: incomeUpNext
       datasources:
         - groupName: jobs
@@ -1931,6 +2099,7 @@ shiba-configuration:
         - pageName: incomeUpNext
       datasources:
         - pageName: doYouLiveAlone
+        - pageName: householdSelectionForIncome
     incomeUpNext:
       pageConfiguration: *incomeUpNext
       nextPages:
@@ -2156,7 +2325,9 @@ shiba-configuration:
       pageConfiguration: *success
   pageGroups:
     jobs:
-      startPage: employersName
+      startPages:
+        - householdSelectionForIncome
+        - employersName
       completePages:
         - hoursAWeek
         - incomePerPayPeriod
@@ -2164,7 +2335,8 @@ shiba-configuration:
       noDataRedirectPage: noDataWarningPage
       restartPage: incomeByJob
     household:
-      startPage: householdMemberInfo
+      startPages:
+        - householdMemberInfo
       completePages:
         - householdMemberInfo
       startingCount: 1

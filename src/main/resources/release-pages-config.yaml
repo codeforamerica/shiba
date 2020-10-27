@@ -587,7 +587,7 @@ shiba-configuration:
       inputs:
         - type: CUSTOM
           name: whoIsPregnant
-          customInputFragment: householdOptions
+          customInputFragment: householdOptionsCheckboxes
           options:
             datasources:
               - pageName: personalInfo
@@ -938,6 +938,18 @@ shiba-configuration:
       name: success
       pageTitle:
         value: success.title
+    - &usCitizen
+      name: usCitizen
+      pageTitle:
+        value: us-citizen.title
+      headerKey:
+        value: us-citizen.are-you-a-us-citizen
+      headerHelpMessageKey:
+        value: us-citizen.most-immigrants-are-still-eligible-for-food-and-cash-benefits
+      hasPrimaryButton: false
+      inputs:
+        - name: isUsCitizen
+          type: YES_NO
     - &disability
       name: disability
       pageTitle:
@@ -2031,7 +2043,8 @@ shiba-configuration:
       pageConfiguration: *success
   pageGroups:
     jobs:
-      startPage: employersName
+      startPages:
+        - employersName
       completePages:
         - hoursAWeek
         - incomePerPayPeriod
@@ -2039,7 +2052,8 @@ shiba-configuration:
       noDataRedirectPage: noDataWarningPage
       restartPage: incomeByJob
     household:
-      startPage: householdMemberInfo
+      startPages:
+        - householdMemberInfo
       completePages:
         - householdMemberInfo
       startingCount: 1

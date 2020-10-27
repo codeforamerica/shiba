@@ -21,6 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PageDatasourcePageTest extends AbstractExistingStartTimePageTest {
     private final String staticPageWithDatasourceInputsTitle = "staticPageWithDatasourceInputsTitle";
     private final String yesHeaderText = "yes header text";
+    private final String noHeaderText = "no header text";
+    private final String noAnswerTitle = "no answer title";
 
     @TestConfiguration
     @PropertySource(value = "classpath:pages-config/test-page-datasources.yaml", factory = YamlPropertySourceFactory.class)
@@ -39,10 +41,12 @@ public class PageDatasourcePageTest extends AbstractExistingStartTimePageTest {
         staticMessageSource.addMessage("first-page-title", Locale.US, "firstPageTitle");
         staticMessageSource.addMessage("static-page-with-datasource-inputs-title", Locale.US, staticPageWithDatasourceInputsTitle);
         staticMessageSource.addMessage("yes-header-text", Locale.US, yesHeaderText);
+        staticMessageSource.addMessage("no-header-text", Locale.US, noHeaderText);
         staticMessageSource.addMessage("general.inputs.yes", Locale.US, YesNoAnswer.YES.getDisplayValue());
         staticMessageSource.addMessage("general.inputs.no", Locale.US, YesNoAnswer.NO.getDisplayValue());
         staticMessageSource.addMessage("some-other-header", Locale.US, "some other header");
         staticMessageSource.addMessage("some-header", Locale.US, "some other header");
+        staticMessageSource.addMessage("no-answer-title", Locale.US, noAnswerTitle);
         staticMessageSource.addMessage("radio-value-key-1", Locale.US, "radio value 1");
         staticMessageSource.addMessage("radio-value-key-2", Locale.US, "radio value 2");
     }
@@ -90,6 +94,49 @@ public class PageDatasourcePageTest extends AbstractExistingStartTimePageTest {
     }
 
     @Test
+    void shouldDisplayPageHeaderBasedOnCompositeCondition() {
+        driver.navigate().to(baseUrl + "/pages/yesNoQuestionPage2");
+
+        List<WebElement> yesNoRadios = driver.findElements(By.cssSelector(".button"));
+        WebElement radioToSelect = yesNoRadios.stream()
+                .filter(label -> label.getText().equals(YesNoAnswer.YES.getDisplayValue()))
+                .findFirst()
+                .orElseThrow();
+        radioToSelect.click();
+
+        List<WebElement> yesNoRadios2 = driver.findElements(By.cssSelector(".button"));
+        WebElement radioToSelect2 = yesNoRadios2.stream()
+                .filter(label -> label.getText().equals(YesNoAnswer.NO.getDisplayValue()))
+                .findFirst()
+                .orElseThrow();
+        radioToSelect2.click();
+
+        assertThat(driver.findElement(By.cssSelector("h2")).getText()).isEqualTo(yesHeaderText);
+    }
+
+
+    @Test
+    void shouldDisplayPageHeaderBasedOnCompositeConditionOtherPath() {
+        driver.navigate().to(baseUrl + "/pages/yesNoQuestionPage2");
+
+        List<WebElement> yesNoRadios = driver.findElements(By.cssSelector(".button"));
+        WebElement radioToSelect = yesNoRadios.stream()
+                .filter(label -> label.getText().equals(YesNoAnswer.NO.getDisplayValue()))
+                .findFirst()
+                .orElseThrow();
+        radioToSelect.click();
+
+        List<WebElement> yesNoRadios2 = driver.findElements(By.cssSelector(".button"));
+        WebElement radioToSelect2 = yesNoRadios2.stream()
+                .filter(label -> label.getText().equals(YesNoAnswer.YES.getDisplayValue()))
+                .findFirst()
+                .orElseThrow();
+        radioToSelect2.click();
+
+        assertThat(driver.findElement(By.cssSelector("h2")).getText()).isEqualTo(noHeaderText);
+    }
+
+    @Test
     void shouldDisplayDatasourceForFormPages() {
         navigateTo("firstPage");
 
@@ -99,5 +146,33 @@ public class PageDatasourcePageTest extends AbstractExistingStartTimePageTest {
 
         navigateTo("testFormPage");
         assertThat(driver.findElement(By.id("context-fragment")).getText()).isEqualTo(value);
+    }
+
+    @Test
+    void shouldGetDataFromDatasourcesOutsideOfSubworkflow() {
+        driver.navigate().to(baseUrl + "/pages/outsideSubworkflowPage");
+
+        List<WebElement> yesNoRadios = driver.findElements(By.cssSelector(".button"));
+        WebElement radioToSelect = yesNoRadios.stream()
+                .filter(label -> label.getText().equals(YesNoAnswer.YES.getDisplayValue()))
+                .findFirst()
+                .orElseThrow();
+        radioToSelect.click();
+
+        assertThat(driver.findElement(By.cssSelector("h2")).getText()).isEqualTo(yesHeaderText);
+    }
+
+    @Test
+    void shouldHandleMissingDatasourcePagesWhenDatasourcePageWasSkipped() {
+        driver.navigate().to(baseUrl + "/pages/outsideSubworkflowPage");
+
+        List<WebElement> yesNoRadios = driver.findElements(By.cssSelector(".button"));
+        WebElement radioToSelect = yesNoRadios.stream()
+                .filter(label -> label.getText().equals(YesNoAnswer.YES.getDisplayValue()))
+                .findFirst()
+                .orElseThrow();
+        radioToSelect.click();
+
+        assertThat(driver.getTitle()).isEqualTo(noAnswerTitle);
     }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 public class PageGroupConfiguration {
     private String noDataRedirectPage;
     private List<String> completePages;
-    private String startPage;
+    private List<String> startPages;
     private String redirectPage;
     private String restartPage;
     private Integer startingCount;

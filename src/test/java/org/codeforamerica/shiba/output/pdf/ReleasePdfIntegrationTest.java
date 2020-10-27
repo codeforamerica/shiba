@@ -107,6 +107,7 @@ public class ReleasePdfIntegrationTest extends AbstractBasePageTest {
         testPage.enter("liveAlone", YesNoAnswer.NO.getDisplayValue());
         testPage.clickContinue();
         navigateTo("incomeByJob");
+        takeSnapShot("test.png");
         testPage.clickButton("Add a job");
         testPage.enter("employersName", "someEmployerName");
         testPage.clickContinue();

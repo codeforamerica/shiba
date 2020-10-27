@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<th:block th:fragment="householdOptions (input, data)"
+<th:block th:fragment="householdOptionsCheckboxes (input, data)"
           th:with="formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)},
                     inputData=${data.get(input.name)}">
     <div class="spacing-below-60">
@@ -8,7 +8,7 @@
                th:with="fullName=${input.options.datasources.get('personalInfo').get('firstName').value[0] + ' ' + input.options.datasources.get('personalInfo').get('lastName').value[0]}">
             <input type="checkbox"
                    th:id="householdMember-me"
-                   th:value="${fullName} + ' me'"
+                   th:value="${fullName} + ' applicant'"
                    th:name="${formInputName}"
                    th:checked="${inputData.value.contains(fullName)}">
             <span th:text="#{general.me}"></span>

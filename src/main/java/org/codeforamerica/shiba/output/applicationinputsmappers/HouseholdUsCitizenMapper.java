@@ -33,7 +33,7 @@ public class HouseholdUsCitizenMapper implements ApplicationInputsMapper {
 
         List<ApplicationInput> result = new ArrayList<>();
         result.add(new ApplicationInput("usCitizen", "isUsCitizen",
-                List.of(householdMemberIDs.contains("me") ? "false" : "true"),
+                List.of(householdMemberIDs.contains("applicant") ? "false" : "true"),
                 ApplicationInputType.SINGLE_VALUE, null));
 
         Subworkflow householdMemberSubworkflow = application.getApplicationData().getSubworkflows().get("household");

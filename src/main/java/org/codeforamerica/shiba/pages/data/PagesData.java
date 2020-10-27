@@ -71,6 +71,9 @@ public class PagesData extends HashMap<String, PageData> {
                     Objects.requireNonNull(pageWorkflowConfiguration.getDatasources(),
                             "Configuration mismatch! Conditional value cannot be evaluated without a datasource.");
                     DatasourcePages datasourcePages = this.getDatasourcePagesBy(pageWorkflowConfiguration.getDatasources());
+                    if (conditionalValue.isCompositeCondition(conditionalValue.getCompositeCondition())) {
+                        return datasourcePages.satisfies(conditionalValue.getCompositeCondition());
+                    }
                     return datasourcePages.satisfies(conditionalValue.getCondition());
                 })
                 .findFirst()

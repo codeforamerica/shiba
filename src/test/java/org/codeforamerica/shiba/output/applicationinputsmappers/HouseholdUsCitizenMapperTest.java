@@ -25,7 +25,7 @@ class HouseholdUsCitizenMapperTest {
 
         PageData whoIsUsCitizenPage = new PageData();
         whoIsUsCitizenPage.put("whoIsNonCitizen", InputData.builder()
-                .value(List.of("personAFirstName personALastName me", "personBFirstName personBLastName " + householdMemberID))
+                .value(List.of("personAFirstName personALastName applicant", "personBFirstName personBLastName " + householdMemberID))
                 .build());
         pagesData.put("whoIsNonCitizen", whoIsUsCitizenPage);
         applicationData.setPagesData(pagesData);

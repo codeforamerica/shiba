@@ -57,6 +57,21 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
     }
 
     @Test
+    void shouldSupportSkippableFirstPage() {
+        navigateTo("startPage");
+        testPage.enter("foo", "someinput");
+        testPage.clickContinue();
+        testPage.enter("inputSkippable", "bar");
+        testPage.clickContinue();
+        testPage.enter("input1", "goToSecondPage");
+        testPage.clickContinue();
+        testPage.enter("input2", "text 2");
+        testPage.clickContinue();
+
+        assertThat(driver.findElement(By.id("iteration0")).getText()).isEqualTo("goToSecondPage");
+    }
+
+    @Test
     void shouldSupportSoloPageSubworkflow() {
         navigateTo("soloPage");
         String sessionId = driver.manage().getCookieNamed("JSESSIONID").getValue();

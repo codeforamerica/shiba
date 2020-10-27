@@ -119,21 +119,23 @@ public class PageController {
         PageWorkflowConfiguration pageWorkflow = this.applicationConfiguration.getPageWorkflow(pageName);
         PageConfiguration pageConfiguration = pageWorkflow.getPageConfiguration();
 
-        PagesData pagesData;
+        PagesData pagesData = applicationData.getPagesData();
         if (pageWorkflow.getGroupName() != null) {
+            PagesData currentIterationPagesData;
             String groupName = pageWorkflow.getGroupName();
-            if (applicationConfiguration.getPageGroups().get(groupName).getStartPage().equals(pageName)) {
-                pagesData = applicationData.getIncompleteIterations().getOrDefault(groupName, new PagesData());
+            if (applicationConfiguration.getPageGroups().get(groupName).getStartPages().contains(pageName)) {
+                currentIterationPagesData = applicationData.getIncompleteIterations().getOrDefault(groupName, new PagesData());
             } else {
-                pagesData = applicationData.getIncompleteIterations().get(groupName);
+                currentIterationPagesData = applicationData.getIncompleteIterations().get(groupName);
             }
 
-            if (pagesData == null) {
+            if (currentIterationPagesData == null) {
                 String redirectPage = applicationConfiguration.getPageGroups().get(pageWorkflow.getGroupName()).getRedirectPage();
                 return new ModelAndView(String.format("redirect:/pages/%s", redirectPage));
             }
-        } else {
-            pagesData = applicationData.getPagesData();
+            // Avoid changing the original applicationData PagesData by cloning the object
+            pagesData = (PagesData) pagesData.clone();
+            pagesData.putAll(currentIterationPagesData);
         }
 
         PageTemplate pageTemplate = pagesData.evaluate(pageWorkflow, applicationData);
@@ -208,12 +210,13 @@ public class PageController {
         PageData pageData = PageData.fillOut(page, model);
 
         PagesData pagesData;
+        Map<String, PagesData> incompleteIterations = applicationData.getIncompleteIterations();
         if (pageWorkflow.getGroupName() != null) {
             String groupName = pageWorkflow.getGroupName();
-            if (applicationConfiguration.getPageGroups().get(groupName).getStartPage().equals(page.getName())) {
-                applicationData.getIncompleteIterations().put(groupName, new PagesData());
+            if (applicationConfiguration.getPageGroups().get(groupName).getStartPages().contains(page.getName())) {
+                incompleteIterations.putIfAbsent(groupName, new PagesData());
             }
-            pagesData = applicationData.getIncompleteIterations().get(groupName);
+            pagesData = incompleteIterations.get(groupName);
         } else {
             pagesData = applicationData.getPagesData();
         }
@@ -226,7 +229,7 @@ public class PageController {
         ) {
             String groupName = pageWorkflow.getGroupName();
             applicationData.getSubworkflows()
-                    .addIteration(groupName, applicationData.getIncompleteIterations().remove(groupName));
+                    .addIteration(groupName, incompleteIterations.remove(groupName));
             pageEventPublisher.publish(new SubworkflowCompletedEvent(httpSession.getId(), groupName));
         }
 

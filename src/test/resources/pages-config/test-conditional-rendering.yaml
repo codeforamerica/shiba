@@ -200,7 +200,8 @@ shiba-configuration-conditional-rendering:
       pageConfiguration: *lastPage
   pageGroups:
     group1:
-      startPage: sixthPage
+      startPages:
+        - sixthPage
       completePages:
         - bar
   landmarkPages:

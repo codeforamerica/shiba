@@ -265,6 +265,12 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.clickContinue();
         testPage.enter("areYouWorking", YES.getDisplayValue());
         testPage.clickButton("Add a job");
+
+        if (hasHousehold) {
+            testPage.enter("whoseJobIsIt", "defaultFirstName defaultLastName");
+            testPage.clickContinue();
+        }
+
         testPage.enter("employersName", "some employer");
         testPage.clickContinue();
         testPage.enter("selfEmployment", YES.getDisplayValue());

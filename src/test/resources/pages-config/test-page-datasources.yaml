@@ -65,6 +65,88 @@ shiba-configuration-page-datasource:
         - name: foo
           type: TEXT
       contextFragment: testFormPageFragment
+    - &yesNoQuestionPage2
+      name: yesNoQuestionPage2
+      pageTitle:
+        value: foo
+      inputs:
+        - name: yesNoQuestion2
+          type: YES_NO
+    - &yesNoQuestionPage3
+      name: yesNoQuestionPage3
+      pageTitle:
+        value: foo
+      inputs:
+        - name: yesNoQuestion3
+          type: YES_NO
+    - &yesNoCompositeAnswerPage
+      name: yesNoCompositeAnswerPage
+      pageTitle:
+        value: foo
+      headerKey:
+        conditionalValues:
+          - value: yes-header-text
+            compositeCondition:
+              logicalOperator: OR
+              conditions:
+              - pageName: yesNoQuestionPage2
+                input: yesNoQuestion2
+                value: "true"
+              - pageName: yesNoQuestionPage3
+                input: yesNoQuestion3
+                value: "false"
+          - value: no-header-text
+            compositeCondition:
+              conditions:
+              - pageName: yesNoQuestionPage2
+                input: yesNoQuestion2
+                value: "false"
+              - pageName: yesNoQuestionPage3
+                input: yesNoQuestion3
+                value: "true"
+      inputs:
+        - name: foo
+          type: TEXT
+    - &outsideSubworkflowPage
+      name: outsideSubworkflowPage
+      pageTitle:
+        value: outside-subworkflow-page-title
+      inputs:
+        - name: outside-subworkflow-input
+          type: YES_NO
+    - &pageThatGetsSkipped
+      name: pageThatGetsSkipped
+      pageTitle:
+        value: page-that-gets-skipped
+      inputs:
+        - name: skipped-input
+          type: YES_NO
+    - &subworkflowPage
+      name: subworkflowPage
+      pageTitle:
+        value: no-answer-title
+        conditionalValues:
+          - value: yes-answer-title
+            condition:
+              pageName: pageThatGetsSkipped
+              input: skipped-input
+              value: "true"
+      headerKey:
+        value: foo
+        conditionalValues:
+          - value: yes-header-text
+            condition:
+              pageName: outsideSubworkflowPage
+              input: outside-subworkflow-input
+              value: "true"
+          - value: no-header-text
+            condition:
+              pageName: outsideSubworkflowPage
+              input: outside-subworkflow-input
+              value: "false"
+      inputs:
+        - name: input-solo
+          type: TEXT
   workflow:
     firstPage:
       pageConfiguration: *firstPage
@@ -86,5 +168,45 @@ shiba-configuration-page-datasource:
       pageConfiguration: *testFormPage
       datasources:
         - pageName: firstPage
+    yesNoQuestionPage2:
+      pageConfiguration: *yesNoQuestionPage2
+      nextPages:
+        - pageName: yesNoQuestionPage3
+    yesNoQuestionPage3:
+      pageConfiguration: *yesNoQuestionPage3
+      nextPages:
+        - pageName: yesNoCompositeAnswerPage
+    yesNoCompositeAnswerPage:
+      pageConfiguration: *yesNoCompositeAnswerPage
+      datasources:
+        - pageName: yesNoQuestionPage2
+        - pageName: yesNoQuestionPage3
+    outsideSubworkflowPage:
+      pageConfiguration: *outsideSubworkflowPage
+      nextPages:
+        - pageName: pageThatGetsSkipped
+    pageThatGetsSkipped:
+      pageConfiguration: *pageThatGetsSkipped
+      skipCondition:
+        conditions:
+          - pageName: outsideSubworkflowPage
+            input: outside-subworkflow-input
+            value: "true"
+      datasources:
+        - pageName: outsideSubworkflowPage
+      nextPages:
+        - pageName: subworkflowPage
+    subworkflowPage:
+      pageConfiguration: *subworkflowPage
+      groupName: group1
+      datasources:
+        - pageName: outsideSubworkflowPage
+        - pageName: pageThatGetsSkipped
+  pageGroups:
+    group1:
+      startPages:
+        - subworkflowPage
+      completePages:
+        - subworkflowPage
   landmarkPages:
     startTimerPage:
