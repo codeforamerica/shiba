@@ -28,7 +28,8 @@ public class ApplicationInputsMappers {
         Stream<ApplicationInput> defaultInputs = Stream.of(
                 new ApplicationInput("nonPagesData", "applicationId", List.of(application.getId()), SINGLE_VALUE),
                 new ApplicationInput("nonPagesData", "completedDate", List.of(DateTimeFormatter.ISO_LOCAL_DATE.format(application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago")))), SINGLE_VALUE),
-                new ApplicationInput("nonPagesData", "completedDateTime", List.of(DateTimeFormatter.ISO_DATE_TIME.format(application.getCompletedAt())), SINGLE_VALUE));
+                new ApplicationInput("nonPagesData", "completedDateTime", List.of(DateTimeFormatter.ISO_DATE_TIME.format(application.getCompletedAt())), SINGLE_VALUE),
+                new ApplicationInput("nonPagesData", "submissionDateTime", List.of(DateTimeFormatter.ofPattern("MM/dd/yyyy' at 'hh:mm a").format(application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago")))), SINGLE_VALUE));
 
         return Stream.concat(defaultInputs, inputs).collect(toList());
     }

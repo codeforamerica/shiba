@@ -35,12 +35,16 @@ caf:
         SNAP: FOOD
         CASH: CASH
         EA: EMERGENCY
+      programList: PROGRAMS
     preparingMealsTogether:
       isPreparingMealsTogether: PREPARING_MEALS_TOGETHER
     contactInfo:
       phoneNumber: APPLICANT_PHONE_NUMBER
       email: APPLICANT_EMAIL
       communicationOptIn: COMMUNICATION_OPT_IN
+      phoneOrEmail:
+        TEXT: PHONE_OPTIN
+        EMAIL: EMAIL_OPTIN
     homeAddress:
       selectedZipCode: APPLICANT_HOME_ZIPCODE
       selectedCity: APPLICANT_HOME_CITY
@@ -171,6 +175,7 @@ caf:
     nonPagesData:
       applicationId: APPLICATION_ID
       completedDate: CREATED_DATE
+      submissionDateTime: SUBMISSION_DATETIME
     coverPage:
       programs: PROGRAMS
       countyInstructions: COUNTY_INSTRUCTIONS

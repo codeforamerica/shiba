@@ -2,15 +2,14 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
+import org.codeforamerica.shiba.PageDataBuilder;
+import org.codeforamerica.shiba.PagesDataBuilder;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.caf.CoverPageInputsMapper;
-import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.PageData;
-import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -24,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class CoverPageInputsMapperTest {
     private final CountyMap<Map<Recipient, String>> countyInstructionsMapping = new CountyMap<>();
     private final CoverPageInputsMapper coverPageInputsMapper = new CoverPageInputsMapper(countyInstructionsMapping);
+    private final PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
 
     PagesData pagesData = new PagesData();
     ApplicationData applicationData = new ApplicationData();
@@ -55,6 +55,66 @@ class CoverPageInputsMapperTest {
                         "programs",
                         List.of("SNAP, CASH"),
                         ApplicationInputType.SINGLE_VALUE
+                ));
+    }
+
+    @Test
+    void shouldIncludeSubworkflowProgramsInputWithCombinedProgramSelection() {
+        PagesData pagesData = pagesDataBuilder.build(List.of(
+                new PageDataBuilder("householdMemberInfo", Map.of(
+                        "programs", List.of("SNAP", "CASH"),
+                        "firstName", List.of("Jane"),
+                        "lastName", List.of("Testuser")
+                ))
+        ));
+
+        Subworkflows subworkflows = new Subworkflows();
+        subworkflows.addIteration("household", pagesData);
+        applicationData.setSubworkflows(subworkflows);
+        Application application = Application.builder()
+                .applicationData(applicationData)
+                .county(County.Other)
+                .build();
+
+        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, Recipient.CLIENT);
+
+        assertThat(applicationInputs).contains(
+                new ApplicationInput(
+                        "coverPage",
+                        "programs",
+                        List.of("SNAP, CASH"),
+                        ApplicationInputType.SINGLE_VALUE,
+                        0
+                ));
+    }
+
+
+    @Test
+    void shouldIncludeSubworkflowFullNames() {
+        PagesData pagesData = pagesDataBuilder.build(List.of(
+                new PageDataBuilder("householdMemberInfo", Map.of(
+                        "programs", List.of("SNAP", "CASH"),
+                        "firstName", List.of("Jane"),
+                        "lastName", List.of("Testuser")
+                ))
+        ));
+        Subworkflows subworkflows = new Subworkflows();
+        subworkflows.addIteration("household", pagesData);
+        applicationData.setSubworkflows(subworkflows);
+        Application application = Application.builder()
+                .applicationData(applicationData)
+                .county(County.Other)
+                .build();
+
+        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, Recipient.CLIENT);
+
+        assertThat(applicationInputs).contains(
+                new ApplicationInput(
+                        "coverPage",
+                        "fullName",
+                        List.of("Jane Testuser"),
+                        ApplicationInputType.SINGLE_VALUE,
+                        0
                 ));
     }
 
@@ -144,5 +204,4 @@ class CoverPageInputsMapperTest {
                 new ApplicationInput("coverPage", "fullName", List.of("someFirstName someLastName"), ApplicationInputType.SINGLE_VALUE)
         );
     }
-
 }

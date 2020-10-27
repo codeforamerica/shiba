@@ -6,14 +6,19 @@ import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMapper;
 import org.codeforamerica.shiba.pages.data.InputData;
+import org.codeforamerica.shiba.pages.data.PageData;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
 import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
 
 @Component
@@ -26,8 +31,8 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
 
     @Override
     public List<ApplicationInput> map(Application application, Recipient recipient) {
-        ApplicationInput programsInput = Optional.ofNullable(application.getApplicationData().getPagesData().getPage("choosePrograms"))
-                .flatMap(pageData -> Optional.ofNullable(pageData.get("programs")))
+        ApplicationInput programsInput = ofNullable(application.getApplicationData().getPagesData().getPage("choosePrograms"))
+                .flatMap(pageData -> ofNullable(pageData.get("programs")))
                 .map(InputData::getValue)
                 .map(values -> String.join(", ", values))
                 .map(value -> new ApplicationInput(
@@ -36,7 +41,8 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
                         List.of(value),
                         SINGLE_VALUE))
                 .orElse(null);
-        ApplicationInput fullNameInput = Optional.ofNullable(application.getApplicationData().getPagesData().getPage("personalInfo"))
+
+        ApplicationInput fullNameInput = ofNullable(application.getApplicationData().getPagesData().getPage("personalInfo"))
                 .map(pageData ->
                         Stream.concat(Stream.ofNullable(pageData.get("firstName")), Stream.ofNullable(pageData.get("lastName")))
                                 .map(nameInput -> String.join("", nameInput.getValue()))
@@ -49,13 +55,37 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
                 ))
                 .orElse(null);
 
-        return Stream.concat(
-                Stream.of(new ApplicationInput(
-                        "coverPage",
-                        "countyInstructions",
-                        List.of(countyInstructionsMapping.get(application.getCounty()).get(recipient)),
-                        SINGLE_VALUE)),
-                Stream.concat(Stream.ofNullable(programsInput), Stream.ofNullable(fullNameInput)))
-                .collect(Collectors.toList());
+        List<ApplicationInput> householdMemberInputs = ofNullable(application.getApplicationData().getSubworkflows().get("household"))
+                .stream().map(subworkflow -> IntStream.range(0, subworkflow.size()).mapToObj(i -> {
+                            PageData householdMemberInfo = subworkflow.get(i).getPagesData().get("householdMemberInfo");
+
+                            String firstName = householdMemberInfo.get("firstName").getValue(0);
+                            String lastName = householdMemberInfo.get("lastName").getValue(0);
+                            ApplicationInput fullName = new ApplicationInput("coverPage", "fullName",
+                                    List.of(String.join(" ", firstName, lastName)),
+                                    SINGLE_VALUE, i);
+
+                            ApplicationInput programs = new ApplicationInput("coverPage", "programs",
+                                    List.of(String.join(", ", householdMemberInfo.get("programs").getValue())),
+                                    SINGLE_VALUE, i);
+
+                            return List.of(fullName, programs);
+                        }).flatMap(Collection::stream).collect(Collectors.toList())
+                ).flatMap(Collection::stream).collect(Collectors.toList());
+
+        ApplicationInput countyInstructionsInput = new ApplicationInput(
+                "coverPage",
+                "countyInstructions",
+                List.of(countyInstructionsMapping.get(application.getCounty()).get(recipient)),
+                SINGLE_VALUE
+        );
+        List<ApplicationInput> inputs = Stream.of(
+                of(countyInstructionsInput),
+                ofNullable(programsInput),
+                ofNullable(fullNameInput)
+        ).flatMap(Optional::stream).collect(Collectors.toList());
+        inputs.addAll(householdMemberInputs);
+
+        return inputs;
     }
 }

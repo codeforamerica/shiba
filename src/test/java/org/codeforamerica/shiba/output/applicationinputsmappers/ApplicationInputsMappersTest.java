@@ -7,6 +7,7 @@ import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -68,6 +69,25 @@ class ApplicationInputsMappersTest {
         List<ApplicationInput> applicationInputs = mappers.map(application, CASEWORKER);
 
         assertThat(applicationInputs).contains(new ApplicationInput("nonPagesData", "completedDateTime", List.of("2019-11-16T05:29:01Z"), SINGLE_VALUE));
+    }
+
+    @Test
+    void shouldIncludeSubmissionDateTimeInput() {
+        String applicationId = "someId";
+        ZonedDateTime completedAt = ZonedDateTime.of(
+                LocalDateTime.of(2020, 9, 3, 1, 2, 3),
+                ZoneId.of("America/Chicago"));
+        Application application = Application.builder()
+                .id(applicationId)
+                .completedAt(completedAt)
+                .applicationData(new ApplicationData())
+                .county(null)
+                .timeToComplete(null)
+                .build();
+
+        List<ApplicationInput> applicationInputs = mappers.map(application, CASEWORKER);
+
+        assertThat(applicationInputs).contains(new ApplicationInput("nonPagesData", "submissionDateTime", List.of("09/03/2020 at 01:02 AM"), SINGLE_VALUE));
     }
 
     @Test
