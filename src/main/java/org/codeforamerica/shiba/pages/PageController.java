@@ -1,5 +1,7 @@
 package org.codeforamerica.shiba.pages;
 
+import io.sentry.Breadcrumb;
+import io.sentry.Sentry;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
@@ -97,6 +99,7 @@ public class PageController {
             HttpServletResponse response,
             HttpSession httpSession
     ) {
+        setSentryContext(pageName, "Viewing page");
         LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
 
         if (landmarkPagesConfiguration.isLandingPage(pageName)) {
@@ -198,6 +201,7 @@ public class PageController {
             @PathVariable String pageName,
             HttpSession httpSession
     ) {
+        setSentryContext(pageName, "Saving page");
         PageWorkflowConfiguration pageWorkflow = applicationConfiguration.getPageWorkflow(pageName);
 
         PageConfiguration page = pageWorkflow.getPageConfiguration();
@@ -285,4 +289,11 @@ public class PageController {
         return new RedirectView("/pages/" + terminalPage);
     }
 
+    private void setSentryContext(String pageName, String message) {
+        Sentry.configureScope(scope -> {
+            Breadcrumb breadcrumb = new Breadcrumb(message);
+            breadcrumb.setData("pageName", ofNullable(pageName).orElse("null"));
+            scope.addBreadcrumb(breadcrumb);
+        });
+    }
 }
