@@ -14,7 +14,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-public class HouseholdUsResidentMapper implements ApplicationInputsMapper {
+public class HouseholdUsCitizenMapper implements ApplicationInputsMapper {
 
     @Override
     public List<ApplicationInput> map(Application application, Recipient recipient) {

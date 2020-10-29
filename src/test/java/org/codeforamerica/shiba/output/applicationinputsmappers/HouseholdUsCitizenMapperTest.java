@@ -11,11 +11,11 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class HouseholdUsResidentMapperTest {
-    HouseholdUsResidentMapper mapper = new HouseholdUsResidentMapper();
+class HouseholdUsCitizenMapperTest {
+    HouseholdUsCitizenMapper mapper = new HouseholdUsCitizenMapper();
 
     @Test
-    void shouldParseTrueOrFalseForHouseholdMemberUsResidency() {
+    void shouldParseTrueOrFalseForHouseholdMemberUsCitizenship() {
         ApplicationData applicationData = new ApplicationData();
         PagesData pagesData = new PagesData();
         PagesData householdMember = new PagesData();
