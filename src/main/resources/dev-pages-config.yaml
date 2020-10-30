@@ -1216,7 +1216,7 @@ shiba-configuration:
         value: employers-name.add-a-job-you-have
       inputs:
         - name: employersName
-          type: TEXT
+          type: LONG_TEXT
           validators:
             - validation: NOT_BLANK
               errorMessageKey: general.validation.make-sure-you-answer-this-question
