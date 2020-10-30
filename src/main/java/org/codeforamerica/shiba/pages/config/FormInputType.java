@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.pages.config;
 
 public enum FormInputType {
     TEXT,
+    LONG_TEXT,
     DATE,
     NUMBER,
     RADIO,

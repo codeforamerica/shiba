@@ -16,10 +16,10 @@
                    th:value="${(!inputData.value.isEmpty()) ? inputData.value[0] : ''}"
             >
         </div>
-        <div class="text-input-group" th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).HOURLY_WAGE}">
+        <div class="text-input-group form-width--phone" th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).HOURLY_WAGE}">
             <div class="text-input-group__prefix">$</div>
             <input type="text"
-                   class="text-input"
+                   class="text-input form-width--phone"
                    th:name="${formInputName}"
                    th:value="${(!inputData.value.isEmpty()) ? inputData.value[0] : ''}"
             >
@@ -27,7 +27,15 @@
         </div>
         <input th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).TEXT}"
                type="text"
-               class="text-input form-width--name"
+               class="text-input form-width--medium"
+               th:readonly="${input.readOnly}"
+               th:id="${input.name}"
+               th:value="${(!inputData.value.isEmpty()) ? inputData.value[0] : ''}"
+               th:name="${formInputName}"
+        >
+        <input th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).LONG_TEXT}"
+               type="text"
+               class="text-input form-width--long"
                th:readonly="${input.readOnly}"
                th:id="${input.name}"
                th:value="${(!inputData.value.isEmpty()) ? inputData.value[0] : ''}"
@@ -44,7 +52,7 @@
         ></textarea>
         <input th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).NUMBER}"
                type="number"
-               class="text-input form-width--name"
+               class="text-input form-width--medium"
                th:id="${input.name}"
                th:value="${(!inputData.value.isEmpty()) ? inputData.value[0] : ''}"
                th:name="${formInputName}"
