@@ -4,6 +4,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.AbstractBasePageTest;
 import org.codeforamerica.shiba.pages.SuccessPage;
+import org.codeforamerica.shiba.pages.YesNoAnswer;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.pages.enrichment.LocationClient;
 import org.junit.jupiter.api.BeforeEach;
@@ -102,6 +103,9 @@ public class ReleasePdfIntegrationTest extends AbstractBasePageTest {
 
     @Test
     void shouldMapNoForSelfEmployment() {
+        navigateTo("doYouLiveAlone");
+        testPage.enter("liveAlone", YesNoAnswer.NO.getDisplayValue());
+        testPage.clickContinue();
         navigateTo("incomeByJob");
         testPage.clickButton("Add a job");
         testPage.enter("employersName", "someEmployerName");

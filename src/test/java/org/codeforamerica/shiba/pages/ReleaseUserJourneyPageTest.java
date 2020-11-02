@@ -239,12 +239,32 @@ public class ReleaseUserJourneyPageTest extends AbstractBasePageTest {
         completeFlowFromLandingPageThroughReviewInfo();
         testPage.clickLink("This looks correct");
 
-        testPage.enter("liveAlone", NO.getDisplayValue());
-        testPage.clickButton("Continue");
-        testPage.enter("goingToSchool", NO.getDisplayValue());
-        testPage.enter("isPregnant", NO.getDisplayValue());
+        if (hasHousehold) {
+            testPage.enter("liveAlone", NO.getDisplayValue());
+            testPage.clickContinue();
+            fillOutHousemateInfo();
+            testPage.clickContinue();
+            testPage.clickButton("Yes, that's everyone");
+            testPage.enter("goingToSchool", NO.getDisplayValue());
+            testPage.enter("isPregnant", YES.getDisplayValue());
+            testPage.enter("whoIsPregnant", "Me");
+            testPage.clickContinue();
+        } else {
+            testPage.enter("liveAlone", YES.getDisplayValue());
+            testPage.clickButton("Continue");
+            testPage.enter("goingToSchool", NO.getDisplayValue());
+            testPage.enter("isPregnant", NO.getDisplayValue());
+        }
+
         testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
-        testPage.enter("isUsCitizen", NO.getDisplayValue());
+        if (hasHousehold) {
+            testPage.clickButton("Continue");
+            testPage.enter("isUsCitizen", NO.getDisplayValue());
+            testPage.enter("whoIsNonCitizen", "Me");
+            testPage.clickContinue();
+        } else {
+            testPage.enter("isUsCitizen", YES.getDisplayValue());
+        }
         testPage.enter("hasDisability", NO.getDisplayValue());
         testPage.enter("hasWorkSituation", NO.getDisplayValue());
         testPage.clickButton("Continue");
@@ -286,6 +306,13 @@ public class ReleaseUserJourneyPageTest extends AbstractBasePageTest {
         testPage.clickButton("Submit");
 
         return new SuccessPage(driver);
+    }
+
+    private void fillOutHousemateInfo() {
+        testPage.enter("relationship", "housemate");
+        testPage.enter("programs", "Emergency assistance");
+        fillOutPersonInfo(); // need to fill out programs checkbox set above first
+        testPage.enter("moveToMnPreviousState", "Illinois");
     }
 
     private void paidByTheHourOrSelectPayPeriod() {
