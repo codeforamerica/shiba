@@ -980,17 +980,7 @@ shiba-configuration:
       pageTitle:
         value: employment-status.title
       headerKey:
-        conditionalValues:
-          - value: employment-status.are-you-currently-working-or-making-an-income
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
-          - value: employment-status.is-anyone-in-your-household-making-money-from-a-job
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
+        value: employment-status.are-you-currently-working-or-making-an-income
       hasPrimaryButton: false
       inputs:
         - name: areYouWorking
@@ -1000,17 +990,7 @@ shiba-configuration:
       pageTitle:
         value: income-by-job.title
       headerKey:
-        conditionalValues:
-          - value: income-by-job.lets-add-your-job-information
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
-          - value: income-by-job.lets-add-all-the-jobs-in-your-household
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
+        value: income-by-job.lets-add-your-job-information
     - &incomeUpNext
       name: incomeUpNext
       pageTitle:
