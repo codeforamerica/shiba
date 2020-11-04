@@ -7,6 +7,8 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class Page {
     protected final RemoteWebDriver driver;
 
@@ -18,19 +20,22 @@ public class Page {
         this.driver = driver;
     }
 
+    private void checkForBadMessageKeys() {
+        assertThat(getTitle()).doesNotContain("??");
+        assertThat(driver.findElementByClassName("page-wrapper").getText()).doesNotContain("??");
+    }
+
     public void goBack() {
         driver.findElement(By.partialLinkText("Go Back")).click();
     }
 
     public void clickLink(String linkText) {
+        checkForBadMessageKeys();
         driver.findElement(By.linkText(linkText)).click();
     }
 
-    public void clickContinue() {
-        clickButton("Continue");
-    }
-
     public void clickButton(String buttonText) {
+        checkForBadMessageKeys();
         WebElement buttonToClick = driver.findElements(By.className("button")).stream()
                 .filter(button -> button.getText().contains(buttonText))
                 .findFirst()
@@ -39,7 +44,12 @@ public class Page {
         System.out.println("pageTitle: " + driver.getTitle());
     }
 
+    public void clickContinue() {
+        clickButton("Continue");
+    }
+
     public void enter(String inputName, String value) {
+        checkForBadMessageKeys();
         WebElement formInputElement = driver.findElement(By.cssSelector(String.format("[name^='%s']", inputName)));
         FormInputHtmlTag formInputHtmlTag = FormInputHtmlTag.valueOf(formInputElement.getTagName());
         switch (formInputHtmlTag) {

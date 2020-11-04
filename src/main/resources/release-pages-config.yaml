@@ -787,7 +787,7 @@ shiba-configuration:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "true"
-          - value: utility-payments.does-anyone-in-your-houshold-pay-for-these-utilities
+          - value: utility-payments.does-anyone-in-your-household-pay-for-these-utilities
             condition:
               pageName: doYouLiveAlone
               input: liveAlone

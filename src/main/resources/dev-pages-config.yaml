@@ -787,7 +787,7 @@ shiba-configuration:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "true"
-          - value: utility-payments.does-anyone-in-your-houshold-pay-for-these-utilities
+          - value: utility-payments.does-anyone-in-your-household-pay-for-these-utilities
             condition:
               pageName: doYouLiveAlone
               input: liveAlone
@@ -1496,8 +1496,6 @@ shiba-configuration:
         value: register-to-vote.do-you-want-to-register-to-vote
       inputs:
         - name: registerToVote
-          promptMessage:
-            promptMessageFragmentName: registerToVotePrompt
           type: CUSTOM
           customInputFragment: registerToVoteInput
           options:

@@ -84,19 +84,19 @@ public class ReleaseUserJourneyPageTest extends AbstractBasePageTest {
         testPage.enter("liveAlone", YES.getDisplayValue());
         testPage.enter("moneyMadeLast30Days", moneyMadeLast30Days);
 
-        testPage.clickButton("Continue");
+        testPage.clickContinue();
         testPage.enter("haveSavings", YES.getDisplayValue());
 
         testPage.enter("liquidAssets", liquidAssets);
 
-        testPage.clickButton("Continue");
+        testPage.clickContinue();
         testPage.enter("payRentOrMortgage", YES.getDisplayValue());
 
         testPage.enter("homeExpensesAmount", "333");
-        testPage.clickButton("Continue");
+        testPage.clickContinue();
 
         testPage.enter("payForUtilities", "Cooling");
-        testPage.clickButton("Continue");
+        testPage.clickContinue();
 
         testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
 
@@ -146,16 +146,16 @@ public class ReleaseUserJourneyPageTest extends AbstractBasePageTest {
     @Test
     void partialFlow() throws IOException {
         testPage.clickButton("Apply now");
-        testPage.clickButton("Continue");
+        testPage.clickContinue();
         testPage.enter("writtenLanguage", "English");
         testPage.enter("spokenLanguage", "English");
         testPage.enter("needInterpreter", "Yes");
-        testPage.clickButton("Continue");
+        testPage.clickContinue();
         testPage.enter("programs", "Emergency assistance");
-        testPage.clickButton("Continue");
-        testPage.clickButton("Continue");
+        testPage.clickContinue();
+        testPage.clickContinue();
         fillOutPersonalInfo();
-        testPage.clickButton("Continue");
+        testPage.clickContinue();
         navigateTo("signThisApplication");
         testPage.enter("applicantSignature", "some name");
         testPage.clickButton("Submit");
@@ -178,29 +178,29 @@ public class ReleaseUserJourneyPageTest extends AbstractBasePageTest {
 
     private void completeFlowFromLandingPageThroughReviewInfo() {
         testPage.clickButton("Apply now");
-        testPage.clickButton("Continue");
+        testPage.clickContinue();
         testPage.enter("writtenLanguage", "English");
         testPage.enter("spokenLanguage", "English");
         testPage.enter("needInterpreter", "Yes");
-        testPage.clickButton("Continue");
+        testPage.clickContinue();
         testPage.enter("programs", "Emergency assistance");
-        testPage.clickButton("Continue");
-        testPage.clickButton("Continue");
+        testPage.clickContinue();
+        testPage.clickContinue();
 
         fillOutPersonalInfo();
 
-        testPage.clickButton("Continue");
+        testPage.clickContinue();
         testPage.enter("phoneNumber", "7234567890");
         testPage.enter("email", "some@email.com");
         testPage.enter("phoneOrEmail", "Text me");
-        testPage.clickButton("Continue");
+        testPage.clickContinue();
         testPage.enter("zipCode", "12345");
         testPage.enter("city", "someCity");
         testPage.enter("streetAddress", "someStreetAddress");
         testPage.enter("apartmentNumber", "someApartmentNumber");
         testPage.enter("isHomeless", "I don't have a permanent address");
         testPage.enter("sameMailingAddress", "No, use a different address for mail");
-        testPage.clickButton("Continue");
+        testPage.clickContinue();
 
         testPage.clickButton("Use this address");
         testPage.enter("zipCode", "12345");
@@ -211,10 +211,10 @@ public class ReleaseUserJourneyPageTest extends AbstractBasePageTest {
         when(smartyStreetClient.validateAddress(any())).thenReturn(
                 Optional.of(new Address("smarty street", "City", "CA", "03104", "", "someCounty"))
         );
-        testPage.clickButton("Continue");
+        testPage.clickContinue();
 
         testPage.clickInputById("enriched-address");
-        testPage.clickButton("Continue");
+        testPage.clickContinue();
         assertThat(driver.findElementById("mailing-address_street").getText()).isEqualTo("smarty street");
     }
 
@@ -251,14 +251,14 @@ public class ReleaseUserJourneyPageTest extends AbstractBasePageTest {
             testPage.clickContinue();
         } else {
             testPage.enter("liveAlone", YES.getDisplayValue());
-            testPage.clickButton("Continue");
+            testPage.clickContinue();
             testPage.enter("goingToSchool", NO.getDisplayValue());
             testPage.enter("isPregnant", NO.getDisplayValue());
         }
 
         testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
         if (hasHousehold) {
-            testPage.clickButton("Continue");
+            testPage.clickContinue();
             testPage.enter("isUsCitizen", NO.getDisplayValue());
             testPage.enter("whoIsNonCitizen", "Me");
             testPage.clickContinue();
@@ -267,41 +267,41 @@ public class ReleaseUserJourneyPageTest extends AbstractBasePageTest {
         }
         testPage.enter("hasDisability", NO.getDisplayValue());
         testPage.enter("hasWorkSituation", NO.getDisplayValue());
-        testPage.clickButton("Continue");
+        testPage.clickContinue();
         testPage.enter("areYouWorking", YES.getDisplayValue());
         testPage.clickButton("Add a job");
         testPage.enter("employersName", "some employer");
-        testPage.clickButton("Continue");
+        testPage.clickContinue();
         testPage.enter("selfEmployment", YES.getDisplayValue());
         paidByTheHourOrSelectPayPeriod();
-        testPage.clickButton("Continue");
+        testPage.clickContinue();
         testPage.enter("unearnedIncome", "Social Security");
-        testPage.clickButton("Continue");
+        testPage.clickContinue();
         testPage.enter("socialSecurityAmount", "200");
-        testPage.clickButton("Continue");
+        testPage.clickContinue();
         testPage.enter("earnLessMoneyThisMonth", "Yes");
-        testPage.clickButton("Continue");
-        testPage.clickButton("Continue");
+        testPage.clickContinue();
+        testPage.clickContinue();
         testPage.enter("homeExpenses", "Rent");
-        testPage.clickButton("Continue");
+        testPage.clickContinue();
         testPage.enter("homeExpensesAmount", "123321");
-        testPage.clickButton("Continue");
+        testPage.clickContinue();
         testPage.enter("payForUtilities", "Heating");
-        testPage.clickButton("Continue");
+        testPage.clickContinue();
         testPage.enter("energyAssistance", YES.getDisplayValue());
         testPage.enter("energyAssistanceMoreThan20", YES.getDisplayValue());
         testPage.enter("supportAndCare", YES.getDisplayValue());
         testPage.enter("haveSavings", YES.getDisplayValue());
         testPage.enter("liquidAssets", "1234");
-        testPage.clickButton("Continue");
+        testPage.clickContinue();
         testPage.enter("haveInvestments", NO.getDisplayValue());
         testPage.enter("haveVehicle", YES.getDisplayValue());
         testPage.enter("haveSoldAssets", NO.getDisplayValue());
-        testPage.clickButton("Continue");
+        testPage.clickContinue();
         testPage.enter("registerToVote", "Yes, send me more info");
-        testPage.clickButton("Continue");
+        testPage.clickContinue();
         testPage.enter("agreeToTerms", "I agree");
-        testPage.clickButton("Continue");
+        testPage.clickContinue();
         testPage.enter("applicantSignature", "some name");
         testPage.clickButton("Submit");
 
@@ -319,16 +319,16 @@ public class ReleaseUserJourneyPageTest extends AbstractBasePageTest {
         if (new Random().nextBoolean()) {
             testPage.enter("paidByTheHour", YES.getDisplayValue());
             testPage.enter("hourlyWage", "1");
-            testPage.clickButton("Continue");
+            testPage.clickContinue();
             testPage.enter("hoursAWeek", "30");
-            testPage.clickButton("Continue");
+            testPage.clickContinue();
             testPage.clickButton("No, that's it.");
         } else {
             testPage.enter("paidByTheHour", NO.getDisplayValue());
             testPage.enter("payPeriod", "Twice a month");
-            testPage.clickButton("Continue");
+            testPage.clickContinue();
             testPage.enter("incomePerPayPeriod", "1");
-            testPage.clickButton("Continue");
+            testPage.clickContinue();
             testPage.clickButton("No, that's it.");
         }
     }
