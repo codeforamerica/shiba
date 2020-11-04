@@ -22,7 +22,7 @@ public class Page {
 
     private void checkForBadMessageKeys() {
         assertThat(getTitle()).doesNotContain("??");
-        assertThat(driver.findElementByClassName("page-wrapper").getText()).doesNotContain("??");
+        assertThat(driver.findElementByXPath("/html").getText()).doesNotContain("??");
     }
 
     public void goBack() {

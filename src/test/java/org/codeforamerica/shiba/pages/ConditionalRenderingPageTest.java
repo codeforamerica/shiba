@@ -40,6 +40,7 @@ public class ConditionalRenderingPageTest extends AbstractExistingStartTimePageT
     @BeforeEach
     protected void setUp() throws IOException {
         super.setUp();
+        staticMessageSource.addMessage("starting-page-title", Locale.US, "starting page");
         staticMessageSource.addMessage("first-page-title", Locale.US, firstPageTitle);
         staticMessageSource.addMessage("second-page-title", Locale.US, secondPageTitle);
         staticMessageSource.addMessage("third-page-title", Locale.US, thirdPageTitle);

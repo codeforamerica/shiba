@@ -35,7 +35,6 @@ public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
     }
 
     String firstPageTitle = "first page title";
-
     String fourthPageTitle = "fourth page title";
 
     @MockBean
@@ -72,8 +71,7 @@ public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
     protected void setUp() throws IOException {
         super.setUp();
         staticMessageSource.addMessage("first-page-title", Locale.US, firstPageTitle);
-        staticMessageSource.addMessage("fourth-page-title", Locale.US, "fourth page title");
-        staticMessageSource.addMessage("first-page-title", Locale.US, "first page title");
+        staticMessageSource.addMessage("third-page-title", Locale.US, "third page title");
         staticMessageSource.addMessage("fourth-page-title", Locale.US, fourthPageTitle);
     }
 

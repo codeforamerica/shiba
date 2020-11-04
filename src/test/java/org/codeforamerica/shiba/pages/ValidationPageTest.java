@@ -38,7 +38,6 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
     private final String option1 = "option 1";
     private final String multipleValidationsPageTitle = "multiple validations page title";
     private final String moneyErrorMessageKey = "money is error";
-    private final String notBlankErrorMessage = "not blank is error";
 
     @TestConfiguration
     @PropertySource(value = "classpath:pages-config/test-validation.yaml", factory = YamlPropertySourceFactory.class)
@@ -62,7 +61,7 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         staticMessageSource.addMessage("last-page-title", Locale.US, lastPageTitle);
         staticMessageSource.addMessage("error-message-key", Locale.US, errorMessage);
         staticMessageSource.addMessage("money-error-message-key", Locale.US, moneyErrorMessageKey);
-        staticMessageSource.addMessage("not-blank-error-message-key ", Locale.US, notBlankErrorMessage);
+        staticMessageSource.addMessage("not-blank-error-message-key ", Locale.US, "not blank is error");
         staticMessageSource.addMessage("zip-code-page-title", Locale.US, zipcodePageTitle);
         staticMessageSource.addMessage("state-page-title", Locale.US, statePageTitle);
         staticMessageSource.addMessage("phone-page-title", Locale.US, phonePageTitle);
@@ -72,6 +71,7 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         staticMessageSource.addMessage("not-blank-page-title", Locale.US, notBlankPageTitle);
         staticMessageSource.addMessage("checkbox-page-title", Locale.US, checkboxPageTitle);
         staticMessageSource.addMessage("option-1", Locale.US, option1);
+        staticMessageSource.addMessage("option-2", Locale.US, "option-2");
         staticMessageSource.addMessage("page-with-input-with-multiple-validations", Locale.US, multipleValidationsPageTitle);
     }
 

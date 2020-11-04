@@ -25,7 +25,7 @@ shiba-configuration-input:
                 - value: "1"
                   messageKey: radio-option-1
                 - value: "2"
-                  messageKey: option-2
+                  messageKey: radio-option-2
           - name: checkboxInput
             type: CHECKBOX
             options:
@@ -44,7 +44,7 @@ shiba-configuration-input:
                 - value: "1"
                   messageKey: select-option-1
                 - value: "2"
-                  messageKey: option-2
+                  messageKey: select-option-2
           - name: moneyInput
             type: MONEY
           - name: hourlyWageInput

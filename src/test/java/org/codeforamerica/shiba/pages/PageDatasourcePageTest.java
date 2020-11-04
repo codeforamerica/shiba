@@ -43,6 +43,8 @@ public class PageDatasourcePageTest extends AbstractExistingStartTimePageTest {
         staticMessageSource.addMessage("general.inputs.no", Locale.US, YesNoAnswer.NO.getDisplayValue());
         staticMessageSource.addMessage("some-other-header", Locale.US, "some other header");
         staticMessageSource.addMessage("some-header", Locale.US, "some other header");
+        staticMessageSource.addMessage("radio-value-key-1", Locale.US, "radio value 1");
+        staticMessageSource.addMessage("radio-value-key-2", Locale.US, "radio value 2");
     }
 
     @Test

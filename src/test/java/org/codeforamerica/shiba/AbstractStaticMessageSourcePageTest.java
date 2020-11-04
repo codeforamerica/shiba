@@ -26,5 +26,9 @@ public class AbstractStaticMessageSourcePageTest extends AbstractBasePageTest {
         staticMessageSource.addMessage("general.inputs.yes", Locale.US, "Yes");
         staticMessageSource.addMessage("general.inputs.no", Locale.US, "No");
         staticMessageSource.addMessage("dummy-page-title", Locale.US, "Dummy page title");
+        staticMessageSource.addMessage("generic.footer", Locale.US, "footer");
+        staticMessageSource.addMessage("general.privacy", Locale.US, "privacy");
+        staticMessageSource.addMessage("general.code-for-america", Locale.US, "cfa");
+        staticMessageSource.addMessage("general.privacy-policy", Locale.US, "pp");
     }
 }

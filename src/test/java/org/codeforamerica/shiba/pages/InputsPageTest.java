@@ -21,6 +21,8 @@ import java.util.Locale;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class InputsPageTest extends AbstractExistingStartTimePageTest {
+
+
     @TestConfiguration
     @PropertySource(value = "classpath:pages-config/test-input.yaml", factory = YamlPropertySourceFactory.class)
     static class TestPageConfiguration {
@@ -32,13 +34,17 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
     }
 
     String radioOption1 = "radio option 1";
+    String radioOption2 = "option-2";
     String checkboxOption1 = "checkbox option 1";
     String checkboxOption2 = "checkbox option 2";
     String noneCheckboxOption = "none checkbox option";
     String selectOption1 = "select option 1";
+    String selectOption2 = "select option 2";
     String followUpTrue = "YEP";
     String followUpFalse = "NOPE";
     String followUpUncertain = "UNSURE";
+    String promptMessage = "prompt message";
+    String helpMessage = "help message";
 
     @Override
     @BeforeEach
@@ -47,22 +53,21 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
         staticMessageSource.addMessage("first-page-title", Locale.US, "firstPageTitle");
         staticMessageSource.addMessage("next-page-title", Locale.US, "nextPageTitle");
         staticMessageSource.addMessage("radio-option-1", Locale.US, radioOption1);
+        staticMessageSource.addMessage("radio-option-2", Locale.US, radioOption2);
         staticMessageSource.addMessage("checkbox-option-1", Locale.US, checkboxOption1);
         staticMessageSource.addMessage("checkbox-option-2", Locale.US, checkboxOption2);
         staticMessageSource.addMessage("none-checkbox-option", Locale.US, noneCheckboxOption);
         staticMessageSource.addMessage("select-option-1", Locale.US, selectOption1);
+        staticMessageSource.addMessage("select-option-2", Locale.US, selectOption2);
         staticMessageSource.addMessage("follow-up-true", Locale.US, followUpTrue);
         staticMessageSource.addMessage("follow-up-false", Locale.US, followUpFalse);
         staticMessageSource.addMessage("follow-up-uncertain", Locale.US, followUpUncertain);
+        staticMessageSource.addMessage("prompt-message-key", Locale.US, promptMessage);
+        staticMessageSource.addMessage("help-message-key", Locale.US, helpMessage);
     }
 
     @Test
     void shouldShowPromptAndHelpMessagesForInput() {
-        String promptMessage = "prompt message";
-        staticMessageSource.addMessage("prompt-message-key", Locale.US, promptMessage);
-        String helpMessage = "help message";
-        staticMessageSource.addMessage("help-message-key", Locale.US, helpMessage);
-
         driver.navigate().to(baseUrl + "/pages/firstPage");
         assertThat(driver.getTitle()).isEqualTo("firstPageTitle");
 

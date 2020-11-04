@@ -6,6 +6,7 @@ import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.codeforamerica.shiba.pages.events.SubworkflowCompletedEvent;
 import org.codeforamerica.shiba.pages.events.SubworkflowIterationDeletedEvent;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 
+import java.io.IOException;
 import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,6 +34,15 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
 
     @MockBean
     PageEventPublisher pageEventPublisher;
+
+    @Override
+    @BeforeEach
+    protected void setUp() throws IOException {
+        super.setUp();
+        staticMessageSource.addMessage("start-page-title", Locale.US, "start-page-title");
+        staticMessageSource.addMessage("end-page-title", Locale.US, "end-page-title");
+        staticMessageSource.addMessage("solo-page-title", Locale.US, "solo-page-title");
+    }
 
     @Test
     void shouldDisplayInputFromSubflowInFinalPage() {
@@ -55,7 +66,6 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
 
     @Test
     void shouldDeleteLastSubworkflowAndRedirectBackIfNoDataRedirectPageIsNotPresent() {
-        this.staticMessageSource.addMessage("end-page-title", Locale.US, "end-page-title");
         navigateTo("soloPage");
         testPage.clickContinue();
         driver.findElement(By.id("iteration0-delete")).click();
