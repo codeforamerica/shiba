@@ -16,9 +16,8 @@ jobs:
       postgres:
         image: postgres:12
         env:
+          POSTGRES_HOST_AUTH_METHOD: trust
           POSTGRES_DB: shiba-test
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
