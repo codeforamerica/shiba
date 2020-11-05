@@ -39,6 +39,7 @@
 - Install PostgreSQL via an [official download](https://www.postgresql.org/download/)
     - Or on macOS, through homebrew: `brew install postgres`
 - Create the databases using the command line:
+    - `$ createuser -s shiba`
     - `$ createdb shiba`
     - `$ createdb shiba-test`
  
