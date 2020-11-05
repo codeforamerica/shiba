@@ -620,7 +620,8 @@ shiba-configuration:
         value: who-is-non-citizen.title
       headerKey:
         value: who-is-non-citizen.header
-      headerHelperMessageKey: general.check-all-that-apply
+      headerHelpMessageKey:
+        value: general.check-all-that-apply
       inputs:
         - type: CUSTOM
           name: whoIsNonCitizen
@@ -1600,20 +1601,77 @@ shiba-configuration:
       pageTitle:
         value: home-expenses-amount.title
       headerKey:
-        value: home-expenses-amount.how-much-do-you-pay-for-rent-and-mortgage-every-month
         conditionalValues:
-          - value: home-expenses-amount.how-much-do-you-pay-for-mortgage-every-month
-            condition:
-              pageName: homeExpenses
-              input: homeExpenses
-              value: RENT
-              matcher: DOES_NOT_CONTAIN
           - value: home-expenses-amount.how-much-do-you-pay-for-rent-every-month
-            condition:
-              pageName: homeExpenses
-              input: homeExpenses
-              value: MORTGAGE
-              matcher: DOES_NOT_CONTAIN
+            compositeCondition:
+              logicalOperator: AND
+              conditions:
+              - pageName: homeExpenses
+                input: homeExpenses
+                value: MORTGAGE
+                matcher: DOES_NOT_CONTAIN
+              - pageName: doYouLiveAlone
+                input: liveAlone
+                value: "true"
+          - value: home-expenses-amount.how-much-do-you-pay-for-mortgage-every-month
+            compositeCondition:
+              logicalOperator: AND
+              conditions:
+              - pageName: homeExpenses
+                input: homeExpenses
+                value: RENT
+                matcher: DOES_NOT_CONTAIN
+              - pageName: doYouLiveAlone
+                input: liveAlone
+                value: "true"
+          - value: home-expenses-amount.how-much-do-you-pay-for-rent-and-mortgage-every-month
+            compositeCondition:
+              logicalOperator: AND
+              conditions:
+              - pageName: doYouLiveAlone
+                input: liveAlone
+                value: "true"
+              - pageName: homeExpenses
+                input: homeExpenses
+                value: RENT
+              - pageName: homeExpenses
+                input: homeExpenses
+                value: MORTGAGE
+          - value: home-expenses-amount.household-pay-rent-every-month
+            compositeCondition:
+              logicalOperator: AND
+              conditions:
+              - pageName: homeExpenses
+                input: homeExpenses
+                value: MORTGAGE
+                matcher: DOES_NOT_CONTAIN
+              - pageName: doYouLiveAlone
+                input: liveAlone
+                value: "false"
+          - value: home-expenses-amount.household-pay-mortgage-every-month
+            compositeCondition:
+              logicalOperator: AND
+              conditions:
+              - pageName: homeExpenses
+                input: homeExpenses
+                value: RENT
+                matcher: DOES_NOT_CONTAIN
+              - pageName: doYouLiveAlone
+                input: liveAlone
+                value: "false"
+          - value: home-expenses-amount.how-much-does-household-pay-for-rent-and-mortgage-every-month
+            compositeCondition:
+              logicalOperator: AND
+              conditions:
+              - pageName: doYouLiveAlone
+                input: liveAlone
+                value: "false"
+              - pageName: homeExpenses
+                input: homeExpenses
+                value: RENT
+              - pageName: homeExpenses
+                input: homeExpenses
+                value: MORTGAGE
       inputs:
         - name: homeExpensesAmount
           type: MONEY
@@ -2147,6 +2205,7 @@ shiba-configuration:
         - pageName: utilities
       datasources:
         - pageName: homeExpenses
+        - pageName: doYouLiveAlone
     utilities:
       pageConfiguration: *utilityPayments
       nextPages:
