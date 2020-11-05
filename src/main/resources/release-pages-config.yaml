@@ -624,7 +624,7 @@ shiba-configuration:
       inputs:
         - type: CUSTOM
           name: whoIsNonCitizen
-          customInputFragment: householdOptions
+          customInputFragment: householdOptionsCheckboxes
           options:
             datasources:
               - pageName: personalInfo
