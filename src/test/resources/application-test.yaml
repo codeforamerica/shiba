@@ -1,6 +1,7 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/shiba-test
+    username: postgres
     hikari:
       maximum-pool-size: 2
 

@@ -16,7 +16,6 @@ jobs:
       postgres:
         image: postgres:12
         env:
-          POSTGRES_HOST_AUTH_METHOD: trust
           POSTGRES_USER: postgres
           POSTGRES_DB: shiba-test
         options: >-
