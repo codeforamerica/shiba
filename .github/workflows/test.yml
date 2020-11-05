@@ -16,8 +16,8 @@ jobs:
       postgres:
         image: postgres:12
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: shiba
+          POSTGRES_PASSWORD: shiba
           POSTGRES_DB: shiba-test
         options: >-
           --health-cmd pg_isready
