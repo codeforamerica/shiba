@@ -26,6 +26,8 @@
 - Generate an encryption key - see instructions in the next section.
 - Run the application using ShibaApplication run configuration
 - If Intellij is reporting error on getters/setters/builders..., check again if you enabled Lombok plugin and annotation processing correctly.
+- Open "Edit Run/Debug configuration" dialog
+    - Enter comma-separated names of the profiles in "Active profiles"
 
 ### Generate an encryption key:
 - Install the `tinkey` command line utility to generate an encryption key, following [their docs](https://github.com/google/tink/blob/master/docs/TINKEY.md)
@@ -34,20 +36,18 @@
 
 ### Start the local and test databases:
 
-This project uses `docker-compose` to manage local and test databases.
-- Install docker-compose: `brew install docker-compose`
-- [Install Docker](https://hub.docker.com/editions/community/docker-ce-desktop-mac/)
-- Invoke the following from the project directory to start the databases: `docker-compose up -d`
-
-To stop the databases, run:
-`docker-compose down` 
-
+- Install PostgreSQL via an [official download](https://www.postgresql.org/download/)
+    - Or on macOS, through homebrew: `brew install postgres`
+- Create the databases using the command line:
+    - `$ createdb shiba`
+    - `$ createdb shiba-test`
+ 
 ### Test:
 
 From the project root invoke
 ```./gradlew clean test```
 
-### Setup Fake Filler(optional, Chrome only):
+### Setup Fake Filler (optional, Chrome only):
 
 - Using an automatic form filler makes manual test easier.
 - Install Fake Filler for Chrome(https://chrome.google.com/webstore/detail/fake-filler/bnjjngeaknajbdcgpfkgnonkmififhfo)
@@ -55,14 +55,17 @@ From the project root invoke
 - Import the configuration from project root/fakeFillerConfig.txt
 - Setup keyboard shortcuts following (chrome-extension://bnjjngeaknajbdcgpfkgnonkmififhfo/options.html#/keyboard-shortcuts)
 
-## SSL Certificates Setup (local and test)
+### Configuring TLS certs for use between a client and external server (optional)
+
+**NOTE: Certificates are already installed into the app's Java KeyStore.**
+
+Follow the instructions below to set up new certificates as needed.
 
 For local and test environments, we rely on self-signed certificates for SSL communication.
+
 The following steps can be followed to set these up. Self-signed server and client certificates require a root CA certificate, which is also self-signed and can be generated with:
  
 `openssl req -x509 -sha256 -days 3650 -newkey rsa:4096 -keyout rootCA.key -out rootCA.crt`
-
-### Configuring SSL communication between a client (us) and an external server
 
 Client-side self-signed certificates can be generated and installed into a new java keystore:
 
@@ -92,7 +95,4 @@ The client certificate can then be shared with external servers who can register
 
 `keytool -importcert -keystore server-truststore.jks -alias client -file client.crt -storepass <password>`
 
-### Setting Spring active profiles
-Open "Edit Run/Debug configuration" dialog
 
-Enter comma separated names of the profiles in "Active profiles"

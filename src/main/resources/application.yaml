@@ -1,7 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:15432/shiba
-    username: shiba
+    url: jdbc:postgresql://localhost:5432/shiba
 
 client:
   keystore: src/main/resources/shiba-keystore.jks
