@@ -12,7 +12,7 @@ public class PageConfiguration {
     private String name;
     private Value pageTitle;
     private Value headerKey;
-    private String headerHelpMessageKey;
+    private Value headerHelpMessageKey;
     private String primaryButtonTextKey = "general.continue";
     private Boolean hasPrimaryButton = true;
     private String contextFragment;

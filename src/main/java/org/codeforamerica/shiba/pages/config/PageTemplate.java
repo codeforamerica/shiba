@@ -19,4 +19,9 @@ public class PageTemplate {
     public boolean hasHeader() {
         return !this.headerKey.isBlank();
     }
+
+    @SuppressWarnings("unused")
+    public boolean hasHeaderHelpMessageKey() {
+        return !this.headerHelpMessageKey.isBlank();
+    }
 }

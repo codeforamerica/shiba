@@ -45,6 +45,8 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         testPage.clickButton("Apply now");
         testPage.clickContinue();
         testPage.clickContinue();
+        navigateTo("doYouLiveAlone");
+        testPage.clickButton("Yes");
     }
 
     @Test

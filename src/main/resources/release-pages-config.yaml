@@ -69,7 +69,8 @@ shiba-configuration:
         value: choose-programs.title
       headerKey:
         value: choose-programs.what-do-you-need-help-with-today
-      headerHelpMessageKey: general.check-all-that-apply
+      headerHelpMessageKey:
+        value: general.check-all-that-apply
       inputs:
         - name: programs
           type: CHECKBOX
@@ -203,7 +204,8 @@ shiba-configuration:
         value: contact-info.title
       headerKey:
         value: contact-info.how-can-we-stay-in-touch-with-you
-      headerHelpMessageKey: contact-info.most-of-our-communication-will-be-through-mail
+      headerHelpMessageKey:
+        value: contact-info.most-of-our-communication-will-be-through-mail
       inputs:
         - name: phoneNumber
           type: TEXT
@@ -364,7 +366,8 @@ shiba-configuration:
       name: doYouLiveAlone
       headerKey:
         value: do-you-live-alone.do-you-live-alone
-      headerHelpMessageKey: do-you-live-alone.include-everyone-in-your-household-even-if-they-are-not-applying-for-benefits
+      headerHelpMessageKey:
+        value: do-you-live-alone.include-everyone-in-your-household-even-if-they-are-not-applying-for-benefits
       pageTitle:
         value: do-you-live-alone.title
       hasPrimaryButton: false
@@ -579,7 +582,8 @@ shiba-configuration:
         value: who-is-pregnant.title
       headerKey:
         value: who-is-pregnant.header
-      headerHelpMessageKey: general.check-all-that-apply
+      headerHelpMessageKey:
+        value: general.check-all-that-apply
       inputs:
         - type: CUSTOM
           name: whoIsPregnant
@@ -604,7 +608,8 @@ shiba-configuration:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "false"
-      headerHelpMessageKey: us-citizen.most-immigrants-are-still-eligible-for-food-and-cash-benefits
+      headerHelpMessageKey:
+        value: us-citizen.most-immigrants-are-still-eligible-for-food-and-cash-benefits
       hasPrimaryButton: false
       inputs:
         - name: isUsCitizen
@@ -641,7 +646,8 @@ shiba-configuration:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "false"
-      headerHelpMessageKey: thirty-day-income.if-you-dont-know-the-exact-amount
+      headerHelpMessageKey:
+        value: thirty-day-income.if-you-dont-know-the-exact-amount
       name: thirtyDayIncome
       pageTitle:
         conditionalValues:
@@ -685,7 +691,7 @@ shiba-configuration:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "true"
-          - value: thirty-day-income.how-much-money-does-your-household-have-available
+          - value: thirty-day-income.how-much-money-is-available
             condition:
               pageName: doYouLiveAlone
               input: liveAlone
@@ -792,7 +798,8 @@ shiba-configuration:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "false"
-      headerHelpMessageKey: utility-payments.select-all-that-you-are-billed-for-even-if-you-havent-paid-it-this-month
+      headerHelpMessageKey:
+        value: utility-payments.select-all-that-you-are-billed-for-even-if-you-havent-paid-it-this-month
       inputs:
         - name: payForUtilities
           type: CHECKBOX
@@ -898,7 +905,8 @@ shiba-configuration:
         value: legal-stuff.title
       headerKey:
         value: legal-stuff.the-legal-stuff
-      headerHelpMessageKey: legal-stuff.scroll-down-to-agree-to-the-terms
+      headerHelpMessageKey:
+        value: legal-stuff.scroll-down-to-agree-to-the-terms
       inputs:
         - name: agreeToTerms
           type: CHECKBOX
@@ -917,7 +925,8 @@ shiba-configuration:
         value: sign-this-application.title
       headerKey:
         value: sign-this-application.type-your-full-legal-name-here-to-sign-this-application
-      headerHelpMessageKey: sign-this-application.by-signing-this-application-you-agree-that-you-want-to
+      headerHelpMessageKey:
+        value: sign-this-application.by-signing-this-application-you-agree-that-you-want-to
       primaryButtonTextKey: sign-this-application.submit
       inputs:
         - name: applicantSignature
@@ -1011,7 +1020,8 @@ shiba-configuration:
         value: unearned-income.title
       headerKey:
         value: unearned-income.do-you-get-income-from-any-of-these-sources
-      headerHelpMessageKey: unearned-income.check-all-that-apply-you-do-not-need-to-report-income-you-havent-received-yet
+      headerHelpMessageKey:
+        value: unearned-income.check-all-that-apply-you-do-not-need-to-report-income-you-havent-received-yet
       inputs:
         - name: unearnedIncome
           type: CHECKBOX
@@ -1045,7 +1055,8 @@ shiba-configuration:
         value: unearned-income-sources.title
       headerKey:
         value: unearned-income-sources.tell-us-how-much-money-you-receive
-      headerHelpMessageKey: unearned-income-sources.if-you-dont-have-all-this-information-on-hand-skip
+      headerHelpMessageKey:
+        value: unearned-income-sources.if-you-dont-have-all-this-information-on-hand-skip
       inputs:
         - name: socialSecurityAmount
           type: MONEY
@@ -1173,7 +1184,8 @@ shiba-configuration:
         value: future-income.title
       headerKey:
         value: future-income.do-you-think-youll-earn-less-money-this-month-than-last-month
-      headerHelpMessageKey: future-income.if-youre-not-sure-you-can-guess
+      headerHelpMessageKey:
+        value: future-income.if-youre-not-sure-you-can-guess
       inputs:
         - name: earnLessMoneyThisMonth
           type: RADIO
@@ -1248,7 +1260,8 @@ shiba-configuration:
         value: hours-a-week.title
       headerKey:
         value: hours-a-week.how-many-hours-a-week-do-you-work
-      headerHelpMessageKey: hours-a-week.we-know-this-can-be-hard-to-answer-so-just-estimate-based-on
+      headerHelpMessageKey:
+        value: hours-a-week.we-know-this-can-be-hard-to-answer-so-just-estimate-based-on
       inputs:
         - name: hoursAWeek
           type: NUMBER
@@ -1309,7 +1322,8 @@ shiba-configuration:
               pageName: payPeriod
               input: payPeriod
               value: IT_VARIES
-      headerHelpMessageKey: income-per-pay-period.provide-income-before-taxes-we-know-this-can-be-hard-to
+      headerHelpMessageKey:
+        value: income-per-pay-period.provide-income-before-taxes-we-know-this-can-be-hard-to
       inputs:
         - name: incomePerPayPeriod
           type: MONEY
@@ -1343,7 +1357,8 @@ shiba-configuration:
         value: home-expenses.title
       headerKey:
         value: home-expenses.do-you-pay-for-any-of-these
-      headerHelpMessageKey: general.check-all-that-apply
+      headerHelpMessageKey:
+        value: general.check-all-that-apply
       inputs:
         - name: homeExpenses
           type: CHECKBOX

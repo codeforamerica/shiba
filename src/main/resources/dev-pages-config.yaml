@@ -69,7 +69,8 @@ shiba-configuration:
         value: choose-programs.title
       headerKey:
         value: choose-programs.what-do-you-need-help-with-today
-      headerHelpMessageKey: general.check-all-that-apply
+      headerHelpMessageKey:
+        value: general.check-all-that-apply
       inputs:
         - name: programs
           type: CHECKBOX
@@ -203,7 +204,8 @@ shiba-configuration:
         value: contact-info.title
       headerKey:
         value: contact-info.how-can-we-stay-in-touch-with-you
-      headerHelpMessageKey: contact-info.most-of-our-communication-will-be-through-mail
+      headerHelpMessageKey:
+        value: contact-info.most-of-our-communication-will-be-through-mail
       inputs:
         - name: phoneNumber
           type: TEXT
@@ -364,7 +366,8 @@ shiba-configuration:
       name: doYouLiveAlone
       headerKey:
         value: do-you-live-alone.do-you-live-alone
-      headerHelpMessageKey: do-you-live-alone.include-everyone-in-your-household-even-if-they-are-not-applying-for-benefits
+      headerHelpMessageKey:
+        value: do-you-live-alone.include-everyone-in-your-household-even-if-they-are-not-applying-for-benefits
       pageTitle:
         value: do-you-live-alone.title
       hasPrimaryButton: false
@@ -579,7 +582,8 @@ shiba-configuration:
         value: who-is-pregnant.title
       headerKey:
         value: who-is-pregnant.header
-      headerHelpMessageKey: general.check-all-that-apply
+      headerHelpMessageKey:
+        value: general.check-all-that-apply
       inputs:
         - type: CUSTOM
           name: whoIsPregnant
@@ -604,7 +608,8 @@ shiba-configuration:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "false"
-      headerHelpMessageKey: us-citizen.most-immigrants-are-still-eligible-for-food-and-cash-benefits
+      headerHelpMessageKey:
+        value: us-citizen.most-immigrants-are-still-eligible-for-food-and-cash-benefits
       hasPrimaryButton: false
       inputs:
         - name: isUsCitizen
@@ -641,7 +646,8 @@ shiba-configuration:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "false"
-      headerHelpMessageKey: thirty-day-income.if-you-dont-know-the-exact-amount
+      headerHelpMessageKey:
+        value: thirty-day-income.if-you-dont-know-the-exact-amount
       name: thirtyDayIncome
       pageTitle:
         conditionalValues:
@@ -685,7 +691,7 @@ shiba-configuration:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "true"
-          - value: thirty-day-income.how-much-money-does-your-household-have-available
+          - value: thirty-day-income.how-much-money-is-available
             condition:
               pageName: doYouLiveAlone
               input: liveAlone
@@ -792,7 +798,18 @@ shiba-configuration:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "false"
-      headerHelpMessageKey: utility-payments.select-all-that-you-are-billed-for-even-if-you-havent-paid-it-this-month
+      headerHelpMessageKey:
+        conditionalValues:
+          - value: utility-payments.select-all-that-you-are-billed-for-even-if-you-havent-paid-it-this-month
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "true"
+          - value: utility-payments.household-billed
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "false"
       inputs:
         - name: payForUtilities
           type: CHECKBOX
@@ -825,7 +842,17 @@ shiba-configuration:
       pageTitle:
         value: energy-assistance.title
       headerKey:
-        value: energy-assistance.have-you-received-money-for-energy-assistance
+        conditionalValues:
+          - value: energy-assistance.have-you-received-money-for-energy-assistance
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "true"
+          - value: energy-assistance.household-received-money
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "false"
       hasPrimaryButton: false
       inputs:
         - name: energyAssistance
@@ -835,7 +862,17 @@ shiba-configuration:
       pageTitle:
         value: energy-assistance-more-than-20.title
       headerKey:
-        value: energy-assistance-more-than-20.have-you-received-more-than-20-in-energy-assistance
+        conditionalValues:
+          - value: energy-assistance-more-than-20.have-you-received-more-than-20-in-energy-assistance
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "true"
+          - value: energy-assistance-more-than-20.household-received
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "false"
       hasPrimaryButton: false
       inputs:
         - name: energyAssistanceMoreThan20
@@ -845,7 +882,17 @@ shiba-configuration:
       pageTitle:
         value: support-and-care.title
       headerKey:
-        value: support-and-care.do-you-pay-for-court-ordered-child-support-spousal-support
+        conditionalValues:
+          - value: support-and-care.do-you-pay-for-court-ordered-child-support-spousal-support
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "true"
+          - value: support-and-care.household-support
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "false"
       hasPrimaryButton: false
       inputs:
         - name: supportAndCare
@@ -898,7 +945,8 @@ shiba-configuration:
         value: legal-stuff.title
       headerKey:
         value: legal-stuff.the-legal-stuff
-      headerHelpMessageKey: legal-stuff.scroll-down-to-agree-to-the-terms
+      headerHelpMessageKey:
+        value: legal-stuff.scroll-down-to-agree-to-the-terms
       inputs:
         - name: agreeToTerms
           type: CHECKBOX
@@ -917,7 +965,8 @@ shiba-configuration:
         value: sign-this-application.title
       headerKey:
         value: sign-this-application.type-your-full-legal-name-here-to-sign-this-application
-      headerHelpMessageKey: sign-this-application.by-signing-this-application-you-agree-that-you-want-to
+      headerHelpMessageKey:
+        value: sign-this-application.by-signing-this-application-you-agree-that-you-want-to
       primaryButtonTextKey: sign-this-application.submit
       inputs:
         - name: applicantSignature
@@ -1031,7 +1080,8 @@ shiba-configuration:
         value: unearned-income.title
       headerKey:
         value: unearned-income.do-you-get-income-from-any-of-these-sources
-      headerHelpMessageKey: unearned-income.check-all-that-apply-you-do-not-need-to-report-income-you-havent-received-yet
+      headerHelpMessageKey:
+        value: unearned-income.check-all-that-apply-you-do-not-need-to-report-income-you-havent-received-yet
       inputs:
         - name: unearnedIncome
           type: CHECKBOX
@@ -1065,7 +1115,8 @@ shiba-configuration:
         value: unearned-income-sources.title
       headerKey:
         value: unearned-income-sources.tell-us-how-much-money-you-receive
-      headerHelpMessageKey: unearned-income-sources.if-you-dont-have-all-this-information-on-hand-skip
+      headerHelpMessageKey:
+        value: unearned-income-sources.if-you-dont-have-all-this-information-on-hand-skip
       inputs:
         - name: socialSecurityAmount
           type: MONEY
@@ -1193,7 +1244,8 @@ shiba-configuration:
         value: future-income.title
       headerKey:
         value: future-income.do-you-think-youll-earn-less-money-this-month-than-last-month
-      headerHelpMessageKey: future-income.if-youre-not-sure-you-can-guess
+      headerHelpMessageKey:
+        value: future-income.if-youre-not-sure-you-can-guess
       inputs:
         - name: earnLessMoneyThisMonth
           type: RADIO
@@ -1268,7 +1320,8 @@ shiba-configuration:
         value: hours-a-week.title
       headerKey:
         value: hours-a-week.how-many-hours-a-week-do-you-work
-      headerHelpMessageKey: hours-a-week.we-know-this-can-be-hard-to-answer-so-just-estimate-based-on
+      headerHelpMessageKey:
+        value: hours-a-week.we-know-this-can-be-hard-to-answer-so-just-estimate-based-on
       inputs:
         - name: hoursAWeek
           type: NUMBER
@@ -1329,7 +1382,8 @@ shiba-configuration:
               pageName: payPeriod
               input: payPeriod
               value: IT_VARIES
-      headerHelpMessageKey: income-per-pay-period.provide-income-before-taxes-we-know-this-can-be-hard-to
+      headerHelpMessageKey:
+        value: income-per-pay-period.provide-income-before-taxes-we-know-this-can-be-hard-to
       inputs:
         - name: incomePerPayPeriod
           type: MONEY
@@ -1362,8 +1416,19 @@ shiba-configuration:
       pageTitle:
         value: home-expenses.title
       headerKey:
-        value: home-expenses.do-you-pay-for-any-of-these
-      headerHelpMessageKey: general.check-all-that-apply
+        conditionalValues:
+          - value: home-expenses.do-you-pay-for-any-of-these
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "true"
+          - value: home-expenses.household-pay-for-these
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "false"
+      headerHelpMessageKey:
+        value: general.check-all-that-apply
       inputs:
         - name: homeExpenses
           type: CHECKBOX
@@ -1419,7 +1484,17 @@ shiba-configuration:
       pageTitle:
         value: savings.title
       headerKey:
-        value: savings.do-you-have-money-in-a-bank-account-or-debit-card
+        conditionalValues:
+          - value: savings.do-you-have-money-in-a-bank-account-or-debit-card
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "true"
+          - value: savings.household-bank-account
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "false"
       hasPrimaryButton: false
       inputs:
         - name: haveSavings
@@ -1429,7 +1504,17 @@ shiba-configuration:
       pageTitle:
         value: investments.title
       headerKey:
-        value: investments.do-you-have-any-stocks-bonds-or-a-401k
+        conditionalValues:
+          - value: investments.do-you-have-any-stocks-bonds-or-a-401k
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "true"
+          - value: investments.household-stocks
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "false"
       hasPrimaryButton: false
       inputs:
         - name: haveInvestments
@@ -1439,7 +1524,17 @@ shiba-configuration:
       pageTitle:
         value: vehicle.title
       headerKey:
-        value: vehicle.do-you-own-a-vehicle
+        conditionalValues:
+          - value: vehicle.do-you-own-a-vehicle
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "true"
+          - value: vehicle.household-own-vehicle
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "false"
       hasPrimaryButton: false
       inputs:
         - name: haveVehicle
@@ -1449,7 +1544,17 @@ shiba-configuration:
       pageTitle:
         value: sold-assets.title
       headerKey:
-        value: sold-assets.in-the-last-12-months-have-you-given-away-or-sold-any-assets
+        conditionalValues:
+          - value: sold-assets.in-the-last-12-months-have-you-given-away-or-sold-any-assets
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "true"
+          - value: sold-assets.households-given-or-sold
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "false"
       hasPrimaryButton: false
       inputs:
         - name: haveSoldAssets
@@ -1865,6 +1970,8 @@ shiba-configuration:
             input: homeExpenses
             value: MORTGAGE
         - pageName: utilities
+      datasources:
+        - pageName: doYouLiveAlone
     homeExpensesAmount:
       pageConfiguration: *homeExpensesAmount
       nextPages:
@@ -1888,6 +1995,8 @@ shiba-configuration:
           condition:
             input: energyAssistance
             value: "true"
+      datasources:
+        - pageName: doYouLiveAlone
     energyAssistanceMoreThan20:
       pageConfiguration: *energyAssistanceMoreThan20
       skipCondition:
@@ -1899,14 +2008,19 @@ shiba-configuration:
         - pageName: supportAndCare
       datasources:
         - pageName: energyAssistance
+        - pageName: doYouLiveAlone
     supportAndCare:
       pageConfiguration: *supportAndCare
       nextPages:
         - pageName: savings
+      datasources:
+        - pageName: doYouLiveAlone
     savings:
       pageConfiguration: *savings
       nextPages:
         - pageName: savingsAmount
+      datasources:
+        - pageName: doYouLiveAlone
     savingsAmount:
       pageConfiguration: *liquidAssets
       skipCondition:
@@ -1923,14 +2037,20 @@ shiba-configuration:
       pageConfiguration: *investments
       nextPages:
         - pageName: vehicle
+      datasources:
+        - pageName: doYouLiveAlone
     vehicle:
       pageConfiguration: *vehicle
       nextPages:
         - pageName: soldAssets
+      datasources:
+        - pageName: doYouLiveAlone
     soldAssets:
       pageConfiguration: *soldAssets
       nextPages:
         - pageName: submittingApplication
+      datasources:
+        - pageName: doYouLiveAlone
     submittingApplication:
       pageConfiguration: *submittingApplication
       nextPages:
@@ -1972,6 +2092,8 @@ shiba-configuration:
       pageConfiguration: *savings
       nextPages:
         - pageName: liquidAssets
+      datasources:
+        - pageName: doYouLiveAlone
     liquidAssets:
       pageConfiguration: *liquidAssets
       skipCondition:
