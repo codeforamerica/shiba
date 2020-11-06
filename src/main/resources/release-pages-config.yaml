@@ -642,7 +642,7 @@ shiba-configuration:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "true"
-          - value: thirty-day-income.how-much-money-has-your-household-made-in-the-last-30-days
+          - value: thirty-day-income.how-much-money-have-they-made-in-the-last-30-days
             condition:
               pageName: doYouLiveAlone
               input: liveAlone
