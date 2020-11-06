@@ -25,7 +25,6 @@ jobs:
         run: |
           echo "BRANCH=${{ github.event.inputs.branch }}" >> $GITHUB_ENV
       - name: Push to Aptible remote branch
-        if: ${{ github.event.inputs.branch != 'master' }}
         run: git push -f git@beta.aptible.com:mn-shiba-prod/prod.git "$BRANCH:$BRANCH"
       - name: Install Aptible CLI and deploy to Aptible
         run: |
