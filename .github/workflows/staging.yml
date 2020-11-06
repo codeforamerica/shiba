@@ -61,8 +61,7 @@ jobs:
           known_hosts: ${{ secrets.APTIBLE_KNOWN_HOSTS }}
       - name: Generate Aptible branch name
         run: |
-          export BRANCH="deploy-$(date "+%s")"
-          echo "::set-env name=BRANCH::$BRANCH"
+          echo "BRANCH=deploy-$(date "+%s")" >> $GITHUB_ENV
       - name: Wait for last deploy to complete
         uses: softprops/turnstyle@v1
         env:
