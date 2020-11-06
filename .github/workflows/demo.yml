@@ -25,7 +25,7 @@ jobs:
         run: |
           echo "BRANCH=${{ github.event.inputs.branch }}" >> $GITHUB_ENV
       - name: Push to Aptible remote branch
-        run: git push git@beta.aptible.com:mn-shiba-prod/demo.git "$BRANCH:$BRANCH"
+        run: git push -f git@beta.aptible.com:mn-shiba-prod/demo.git "$BRANCH:$BRANCH"
       - name: Install Aptible CLI and deploy to Aptible
         run: |
           wget -O aptible-package https://omnibus-aptible-toolbelt.s3.amazonaws.com/aptible/omnibus-aptible-toolbelt/master/206/pkg/aptible-toolbelt_0.16.5%2B20200508143656~ubuntu.16.04-1_amd64.deb
