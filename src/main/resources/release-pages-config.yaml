@@ -1336,6 +1336,8 @@ shiba-configuration:
       name: jobBuilder
       pageTitle:
         value: job-builder.title
+      headerKey:
+        value: job-builder.your-jobs
     - &warningPage
       name: warningPage
       headerKey:

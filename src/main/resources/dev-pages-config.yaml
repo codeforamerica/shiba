@@ -1569,6 +1569,18 @@ shiba-configuration:
       name: jobBuilder
       pageTitle:
         value: job-builder.title
+      headerKey:
+        conditionalValues:
+          - value: job-builder.your-jobs
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "true"
+          - value: job-builder.your-household-jobs
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "false"
     - &warningPage
       name: warningPage
       headerKey:
@@ -2167,6 +2179,7 @@ shiba-configuration:
         - pageName: incomeUpNext
       datasources:
         - groupName: jobs
+        - pageName: doYouLiveAlone
     warningPage:
       pageConfiguration: *warningPage
       dataMissingRedirect: employmentStatus
