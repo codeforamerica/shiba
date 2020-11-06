@@ -1,10 +1,12 @@
 package org.codeforamerica.shiba.pages;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class PageUtils {
     private static final String WEB_INPUT_ARRAY_TOKEN = "[]";
@@ -43,5 +45,12 @@ public class PageUtils {
             throw new IllegalArgumentException("Phone must contain exactly 10 digits in order to format!");
         }
         return String.format("(%s) %s-%s", phoneDigits.substring(0,3), phoneDigits.substring(3,6), phoneDigits.substring(6,10));
+    }
+
+    public static List<String> householdMemberSort(Collection<String> householdMembers) {
+        Stream<String> applicant = householdMembers.stream().filter(householdMember -> householdMember.endsWith("applicant"));
+        Stream<String> nonApplicantHouseholdMembers = householdMembers.stream().filter(householdMember -> !householdMember.endsWith("applicant")).sorted();
+
+        return Stream.concat(applicant, nonApplicantHouseholdMembers).collect(Collectors.toList());
     }
 }
