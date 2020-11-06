@@ -1494,8 +1494,6 @@ shiba-configuration:
         value: register-to-vote.do-you-want-to-register-to-vote
       inputs:
         - name: registerToVote
-          promptMessage:
-            promptMessageFragmentName: registerToVotePrompt
           type: CUSTOM
           customInputFragment: registerToVoteInput
           options:
