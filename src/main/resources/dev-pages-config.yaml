@@ -1104,7 +1104,17 @@ shiba-configuration:
       pageTitle:
         value: unearned-income.title
       headerKey:
-        value: unearned-income.do-you-get-income-from-any-of-these-sources
+        conditionalValues:
+          - value: unearned-income.do-you-get-income-from-any-of-these-sources
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "true"
+          - value: unearned-income.household-get-income-from-any-of-these-sources
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "false"
       headerHelpMessageKey:
         value: unearned-income.check-all-that-apply-you-do-not-need-to-report-income-you-havent-received-yet
       inputs:
@@ -1139,7 +1149,17 @@ shiba-configuration:
       pageTitle:
         value: unearned-income-sources.title
       headerKey:
-        value: unearned-income-sources.tell-us-how-much-money-you-receive
+        conditionalValues:
+          - value: unearned-income-sources.tell-us-how-much-money-you-receive
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "true"
+          - value: unearned-income-sources.tell-us-how-much-money-is-received
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "false"
       headerHelpMessageKey:
         value: unearned-income-sources.if-you-dont-have-all-this-information-on-hand-skip
       inputs:
@@ -1268,7 +1288,17 @@ shiba-configuration:
       pageTitle:
         value: future-income.title
       headerKey:
-        value: future-income.do-you-think-youll-earn-less-money-this-month-than-last-month
+        conditionalValues:
+          - value: future-income.do-you-think-youll-earn-less-money-this-month-than-last-month
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "true"
+          - value: future-income.do-you-think-household-will-earn-less-money-this-month-than-last-month
+            condition:
+              pageName: doYouLiveAlone
+              input: liveAlone
+              value: "false"
       headerHelpMessageKey:
         value: future-income.if-youre-not-sure-you-can-guess
       inputs:
@@ -2166,6 +2196,8 @@ shiba-configuration:
       pageConfiguration: *unearnedIncome
       nextPages:
         - pageName: unearnedIncomeSources
+      datasources:
+        - pageName: doYouLiveAlone
     unearnedIncomeSources:
       pageConfiguration: *unearnedIncomeSources
       nextPages:
@@ -2177,10 +2209,13 @@ shiba-configuration:
             value: NO_UNEARNED_INCOME_SELECTED
       datasources:
         - pageName: unearnedIncome
+        - pageName: doYouLiveAlone
     futureIncome:
       pageConfiguration: *futureIncome
       nextPages:
         - pageName: startExpenses
+      datasources:
+        - pageName: doYouLiveAlone
     startExpenses:
       pageConfiguration: *startExpenses
       nextPages:
