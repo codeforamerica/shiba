@@ -1,3 +1,5 @@
+$page-padding: $s35;
+
 * {
   box-sizing: border-box;
 }
@@ -22,7 +24,7 @@ body {
   padding-left: $s15;
   padding-right: $s15;
   @include media($tablet-up) {
-    padding-left: $s35;
-    padding-right: $s35;
+    padding-left: $page-padding;
+    padding-right: $page-padding;
   }
 }

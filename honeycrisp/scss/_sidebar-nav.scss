@@ -1,15 +1,40 @@
-/* -------------
-Color Class Updates
-----------------*/
+$sidebar-width: $s250;
+
+.toolbar--with-sidebar{
+  max-width: $site-max-up;
+  display: flex;
+  justify-content: space-between;
+  margin: auto;
+  content: "";
+  clear: both;
+}
+
+.toolbar--with-sidebar.clearfix:after {
+  content: "";
+  visibility: hidden;
+  display: block;
+  height: 0;
+  clear: both;
+}
+
+.toolbar--with-sidebar > .main-header__title{
+  float: left;
+  margin-top: $s15;
+  margin-left: $s15;
+  line-height: $s25;
+}
+
+.sidebar-collapse-toggle{
+  float: right;
+  margin-top: $s15;
+  margin-right: $s15;
+}
 
 /* -------------
 Sidebar
 ----------------*/
 .sidebar {
   position: absolute;
-  //width: 33.3333%;
-  width: 17em;
-  height: 100%;
   visibility: visible;
   -webkit-backface-visibility: hidden;
   float:left;
@@ -22,21 +47,12 @@ Sidebar
   }
 }
 
-/* .sidebar > a{
-  @include transition(all 0.6s ease);
-
-  &:hover{
-    @include transition(all 0.6s ease);
-  }
-} */
-
 /* -------------
 Sidebar Nav
 ----------------*/
 .sidebar-nav {
   position: fixed;
-  border-right: 2px black solid;
-  width: 12em;
+  width: $sidebar-width;
   height: 100%;
   padding-bottom: 6em;
   z-index: 9;
@@ -55,7 +71,6 @@ Sidebar Nav
 
     li{
       margin-left: 0;
-      //min-width: 13em;
       display:inline-block;
       width: 100%;
       line-height: 16px;
@@ -63,50 +78,33 @@ Sidebar Nav
       .section-header{
         display:block;
         background-color: $color-green-light;
-        padding: .75em 1em;
+        padding: .75em 1.5em;
         color: $color-grey-dark;
         width: 100% !important;
         line-height: 16px;
       }
 
-      $sidebar-a-tags: 'a, a:active, a:hover, a:visited';
-      $sidebar-a-tags-hover: 'a:hover';
-      $sidebar-a-tags-active: 'a:active';
-
-      #{$sidebar-a-tags} {
-        line-height: 16px;
-        text-decoration: none;
-      }
-
-      #{$sidebar-a-tags-active} {
-        border-right: $color-teal 2px;
-        font-weight: 900;
-      }
-
-      #{$sidebar-a-tags-hover} {
-        text-decoration: underline;
-      }
-
       .sidebar__sub-items{
         padding: .05em 1em;
-        li{
-          #{$sidebar-a-tags} {
+        li {
+          padding-left: 0.25em;
+
+          a, a:visited {
             color: $color-grey-darkest;
             line-height: 1.2em;
+            text-decoration: none;
           }
 
-          #{$sidebar-a-tags-active} {
-            /*border-left: 2px solid $color-teal;*/
-            font-weight: 700;
-          }
-
-          #{$sidebar-a-tags-hover} {
-            /*border-left: 2px solid $color-teal;*/
+          a:hover {
             text-decoration: underline;
+          }
+
+          &.active {
+            font-weight: $font-weight-bold;
+            border-left: 3px solid $color-teal;
           }
         }
       }
-
     }
   }
 }
@@ -119,13 +117,23 @@ Sidebar Nav
 Sidebar Nav
 ----------------*/
 .left-sidebar-slab-container{
-  margin-left: 11em;
-  padding-left: 1em;
+  margin-left: $sidebar-width - $page-padding;
+  padding-left: $s35;
 }
 
-@media screen and (max-width: 1400px) {
+$sidebar-width-px: 250px;
+
+@media screen and (max-width: $tablet-up + $sidebar-width-px - 1) {
   .sidebar{
     display: none;
+  }
+
+  .sidebar.open {
+    display: inline-block;
+
+    .sidebar-nav {
+      width: 100%;
+    }
   }
 
   .sidebar-collapse-toggle{
@@ -137,9 +145,17 @@ Sidebar Nav
     padding-left: 0;
     padding-right: 0;
   }
+
+  .main-header__title .main-header__logo{
+    color: #fff !important;
+  }
+
+  .main-footer {
+    left: 0;
+  }
 }
 
-@media screen and (min-width: 1401px) {
+@media screen and (min-width: $tablet-up + $sidebar-width-px) {
   .sidebar{
     display: inline-block;
   }
@@ -148,12 +164,11 @@ Sidebar Nav
     display: none;
   }
 
-  .left-sidebar-slab-container{
-    margin-left: 11em;
-    padding-left: 1em;
+  .sidebar-nav {
+    width: $sidebar-width !important;
   }
 
-  .sidebar-nav {
-    width: 12em !important;
+  .main-footer {
+    left: $sidebar-width;
   }
 }

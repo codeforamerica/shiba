@@ -13,7 +13,8 @@
     position: relative;
     top: .1em;
     font-family: $font-icon;
-    content: '\a0\e313';
+    vertical-align: -.1em;
+    content: '\a0'+map_get($icons, keyboard_arrow_down);
   }
 }
 
@@ -34,7 +35,7 @@
   &.is-hidden {
     .reveal__link {
       &:after {
-        content: '\a0\e315';
+        content: '\a0'+map_get($icons, keyboard_arrow_right);
       }
     }
     .reveal__content {

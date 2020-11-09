@@ -12,7 +12,6 @@
  * Date: 2016-05-20T17:17Z
  */
 
-
 (function( global, factory ) {
 
 	if ( typeof module === "object" && typeof module.exports === "object" ) {
@@ -11563,81 +11562,59 @@ return jQuery;
 
 })( jQuery );
 $(document).ready(function() {
-    //collapse menu if its mobile and you click a link in menu sub items
     $('.sidebar-nav').on('click', 'a', function ()
     {
         if( $('.sidebar-collapse-toggle').is(':visible') ) {
-            $(".sidebar").css({
-                "width": "17em",
-                "display": "none"
-            });
-            $(".left-sidebar-slab-container").css({
-                "margin-left": "0",
-                "padding-left": "0"
-            });
+            collapseSidebar();
         }
     });
-});
 
-$(window).resize(function() {
-    //needed jquery resize for when someone changes screen size
-    //works if same size but gets caught in either mobile or desktop without this
-    if( $('.sidebar-collapse-toggle').first().is(':hidden') )
-    {
-        $(".sidebar").css({
-            "display" : "inline-block"
-        });
-        $(".sidebar-nav").css({
-            "width": "12em"
-        });
-        $(".left-sidebar-slab-container").css({
-            "margin-left": "11em",
-            "padding-left": "1em"
-        });
-    }
-    else
-    {
-        $(".sidebar").css({
-            "width": "17em",
-            "display" : "none"
-        });
+    setSelectedState();
 
-        $(".left-sidebar-slab-container").css({
-            "margin-left": "0",
-            "padding-left": "0"
-        });
-    }
+    $(window).on('hashchange', function() {
+        setSelectedState();
+    });
 });
 
 function toggleNav() {
     if($(".sidebar").is(":hidden"))
     {
-        $(".sidebar").css({
-            "display" : "inline-block"
-        });
-
-        $(".sidebar-nav").css({
-            "width": "100%"
-        });
-
-        $(".left-sidebar-slab-container").css({
-            "margin-left": "11em",
-            "padding-left": "1em"
-        });
+      openSidebar();
     }
     else
     {
-        $(".sidebar").css({
-            "width": "17em",
-            "display" : "none"
-        });
-        $(".left-sidebar-slab-container").css({
-            "margin-left": "0",
-            "padding-left": "0"
-        });
+      collapseSidebar();
     }
 }
-;
+
+function collapseSidebar() {
+  $('.sidebar-collapse-toggle').text('Menu');
+  $(".sidebar").removeClass("open");
+}
+
+function openSidebar() {
+  $('.sidebar-collapse-toggle').text('Close');
+  $(".sidebar").addClass("open");
+}
+
+function setSelectedState() {
+  $('.sidebar__sub-items li').removeClass("active");
+
+  var url_array = window.location.toString().split("/");
+  var page = url_array[url_array.length - 1].split("#")[0];
+
+  if (page !== "styleguide") {
+    var sidebar_page_match = $('.sidebar__sub-items a[href*="' + page + '"]');
+    if (sidebar_page_match.length) {
+      sidebar_page_match.parent().addClass('active');
+    }
+  }
+  else {
+    if (window.location.hash) {
+      $('.sidebar__sub-items a[href*="' + window.location.hash + '"]').parent().addClass("active");
+    }
+  }
+};
 // This is a manifest file that'll be compiled into application.js, which will include all the files
 // listed below.
 //
@@ -11902,7 +11879,52 @@ var accordion = (function() {
   }
 })();
 
-$(document).ready(function() {
+var selectBodyBottomMargin = (function () {
+  return {
+    init: function () {
+      var $compactFooter = $('body').find('.main-footer__compact');
+
+      if ($compactFooter) {
+        $('body').css("margin-bottom", $compactFooter.css("height"));
+      }
+    }
+  }
+})();
+
+var autoformatEventHandler = function(characterMap, maxDigits) {
+  return function (_e) {
+    var input = $(this);
+    var unformattedValue = input.val()
+      .replace(/[^\d]/g, "")
+      .substring(0, maxDigits);
+    var formattedStr = [];
+    for (var i = 0; i < unformattedValue.length; i++) {
+      var specialChar = characterMap[i];
+      if (specialChar !== undefined) {
+        formattedStr.push(specialChar);
+      }
+      formattedStr.push(unformattedValue.charAt(i));
+    }
+    input.val(formattedStr.join(""));
+  }
+};
+
+function formatNumericInput(selector, characterMap, maxDigits){
+  var handler = autoformatEventHandler(characterMap, maxDigits);
+  $(selector).each(function (_index, input){
+    handler.call(this, null); // format existing value on page load (not yet tested, need JS testing first)
+    $(input).on('input', handler);
+  });
+}
+
+var numericFormatters = {
+  init: function(){
+    formatNumericInput('.phone-input', {0: '(', 3: ') ', 6: '-'}, 10);
+    formatNumericInput('.ssn-input', {3: '-', 5: '-'}, 9);
+  }
+};
+
+$(document).ready(function () {
   radioSelector.init();
   checkboxSelector.init();
   followUpQuestion.init();
@@ -11912,4 +11934,6 @@ $(document).ready(function() {
   noneOfTheAbove.init();
   showMore.init();
   accordion.init();
+  selectBodyBottomMargin.init();
+  numericFormatters.init();
 });

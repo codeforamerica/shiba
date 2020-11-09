@@ -136,7 +136,7 @@ label {
       &:before {
         font-family: $font-icon;
         font-size: $font-size-25-small;
-        content: '\e5ca';
+        content: map_get($icons, check);
         display: inline-block;
         position: absolute;
         top: -5px;
@@ -187,7 +187,7 @@ label {
     display: block;
     font-family: $font-icon;
     font-size: $font-size-35;
-    content: '\e5c5';
+    content: map_get($icons, arrow_drop_down);
     color: $color-grey-darkest;
     border-left: 0;
     width: $s60;

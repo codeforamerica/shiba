@@ -103,9 +103,16 @@ h4 {
 
 a {
   @include outline;
-  color: $color-teal;
+  color: $color-link-default;
+
   &:hover {
-    color: $color-teal-dark;
+    color: $color-link-hover;
+  }
+  &:visited {
+    color: $color-link-visited;
+  }
+  &:active {
+    color: $color-link-active;
   }
 }
 

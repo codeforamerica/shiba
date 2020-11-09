@@ -98,6 +98,15 @@
   }
 }
 
+@mixin icons($icons-names, $project-icons: ()) {
+  $icon: map_merge($icons-names, $project-icons);
+  @each $name, $slash-code in $icon {
+    &-#{$name}:before {
+      content: $slash-code;
+    }
+  }
+}
+
 .is-mobile-hidden {
   display: none !important;
   @include media($mobile-up) {

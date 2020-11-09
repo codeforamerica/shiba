@@ -24,7 +24,7 @@
         font-family: $font-icon;
         font-size: $font-size-35;
         display: block;
-        content: '\e313';
+        content: map_get($icons, keyboard_arrow_down);
         text-align: center;
         line-height: 1.5em;
     }

@@ -51,3 +51,15 @@ body {
 .main-footer .select__element:focus {
   border-color: $color-grey-dark
 }
+
+.main-footer__compact {
+  @extend .main-footer;
+  padding: 1.5rem 2rem;
+  font-size: $font-size-25-small;
+  font-weight: $font-weight-normal;
+  height: unset;
+
+  @include media($tablet-up) {
+    padding: 1.5rem $s35;
+  }
+}
