@@ -1,8 +1,10 @@
-package org.codeforamerica.shiba.output;
+package org.codeforamerica.shiba.output.applicationinputsmappers;
 
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.applicationinputsmappers.OneToOneApplicationInputsMapper;
+import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.FormInput;
 import org.codeforamerica.shiba.pages.config.FormInputType;

@@ -3,11 +3,11 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.FullNameFormatter;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,10 +22,7 @@ public class HouseholdPregnancyMapper implements ApplicationInputsMapper {
                 .map(pageData -> pageData.get("whoIsPregnant"))
                 .map(InputData::getValue)
                 .orElse(List.of(""))
-                .stream().map(selectedHouseholdMember -> {
-                    List<String> householdMemberParts = Arrays.asList(selectedHouseholdMember.split(" "));
-                    return householdMemberParts.stream().limit(householdMemberParts.size() - 1).collect(Collectors.joining(" "));
-                }).collect(Collectors.toList());
+                .stream().map(FullNameFormatter::format).collect(Collectors.toList());
 
         return List.of(
                 new ApplicationInput("householdPregnancy", "householdPregnancy",

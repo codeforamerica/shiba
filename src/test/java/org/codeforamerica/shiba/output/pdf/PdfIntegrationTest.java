@@ -352,6 +352,41 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         );
     }
 
+    @Test
+    void shouldMapFullEmployeeNames() {
+        navigateTo("personalInfo");
+        testPage.enter("firstName", "Dwight");
+        testPage.enter("lastName", "Schrute");
+        testPage.clickContinue();
+
+        navigateTo("doYouLiveAlone");
+        testPage.enter("liveAlone", YesNoAnswer.NO.getDisplayValue());
+        testPage.clickContinue();
+
+        testPage.enter("firstName", "Jim");
+        testPage.enter("lastName", "Halpert");
+        testPage.enter("programs", "None of the above");
+        testPage.clickContinue();
+
+        navigateTo("incomeByJob");
+        testPage.clickButton("Add a job");
+        testPage.enter("whoseJobIsIt", "Jim Halpert");
+        testPage.clickContinue();
+        testPage.enter("employersName", "someEmployerName");
+        testPage.clickContinue();
+        testPage.enter("selfEmployment", "No");
+        testPage.enter("paidByTheHour", "No");
+        testPage.enter("payPeriod", "Every week");
+        testPage.clickContinue();
+        testPage.enter("incomePerPayPeriod", "1");
+        testPage.clickContinue();
+
+        PDAcroForm pdAcroForm = submitAndDownloadReceipt();
+        assertThat(getPdfFieldText(pdAcroForm, "EMPLOYEE_FULL_NAME_0")).isEqualTo(
+                "Jim Halpert"
+        );
+    }
+
     private String getPdfFieldText(PDAcroForm pdAcroForm, String fieldName) {
         return pdAcroForm.getField(fieldName).getValueAsString();
     }

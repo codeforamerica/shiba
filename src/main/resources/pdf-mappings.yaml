@@ -190,6 +190,8 @@ caf:
       householdPregnancy: WHO_IS_PREGNANT
     householdNonUsCitizen:
       householdNonUsCitizen: IS_US_CITIZEN
+    householdSelectionForIncome:
+      employeeFullName: EMPLOYEE_FULL_NAME
   enums:
     EVERY_WEEK: Every week
     EVERY_TWO_WEEKS: Every two weeks
