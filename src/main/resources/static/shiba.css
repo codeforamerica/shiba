@@ -29,6 +29,10 @@
     padding-right: 2.5rem;
 }
 
+.list-header {
+    padding-left: 2.5rem;
+}
+
 .intro-box__title {
     margin-bottom: 20px;
 }

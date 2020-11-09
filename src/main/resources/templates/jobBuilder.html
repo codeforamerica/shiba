@@ -16,34 +16,34 @@
                 </div>
                 <div class="grid__item boxed-content spacing-below-60">
                     <h3 class="text--centered intro-box__title" th:text="#{${page.headerKey}}"></h3>
-                    <ul class="list--bulleted spacing-above-10 spacing-below-60 builder-list">
-                        <th:block th:each="subworkflow: ${subworkflows}">
-                            <th:block th:with="
-                                    fakeApplicantNameAndId='x y applicant',
-                                    householdMembers=${#sets.toSet({})}">
-                                <th:block th:each="householdMemberIteration, householdMemberIterationStat: ${subworkflow.value}">
-                                    <th:block th:with="
-                                            householdSelectionPageData=${householdMemberIteration.getPagesData().get('householdSelectionForIncome')}">
-                                        <th:block th:if="${householdSelectionPageData == null}">
-                                            <th:block th:with="
-                                                    unused=${householdMembers.add(fakeApplicantNameAndId)}"></th:block>
-                                        </th:block>
-                                        <th:block th:unless="${householdSelectionPageData == null}">
-                                            <th:block th:with="
-                                                    householdMemberNameAndId=${householdMemberIteration.getPagesData().get('householdSelectionForIncome').get('whoseJobIsIt').value[0]},
-                                                    unused=${householdMembers.add(householdMemberNameAndId)}"></th:block>
-                                        </th:block>
+                    <th:block th:each="subworkflow: ${subworkflows}">
+                        <th:block th:with="
+                                fakeApplicantNameAndId='x y applicant',
+                                householdMembers=${#sets.toSet({})}">
+                            <th:block th:each="householdMemberIteration, householdMemberIterationStat: ${subworkflow.value}">
+                                <th:block th:with="
+                                        householdSelectionPageData=${householdMemberIteration.getPagesData().get('householdSelectionForIncome')}">
+                                    <th:block th:if="${householdSelectionPageData == null}">
+                                        <th:block th:with="
+                                                unused=${householdMembers.add(fakeApplicantNameAndId)}"></th:block>
+                                    </th:block>
+                                    <th:block th:unless="${householdSelectionPageData == null}">
+                                        <th:block th:with="
+                                                householdMemberNameAndId=${householdMemberIteration.getPagesData().get('householdSelectionForIncome').get('whoseJobIsIt').value[0]},
+                                                unused=${householdMembers.add(householdMemberNameAndId)}"></th:block>
                                     </th:block>
                                 </th:block>
+                            </th:block>
 
-                                <th:block th:with="sortedHouseholdMembers=${T(org.codeforamerica.shiba.pages.PageUtils).householdMemberSort(householdMembers)}">
-                                    <th:block th:each="householdMemberNameAndId, householdMemberStat: ${sortedHouseholdMembers}">
-                                        <th:block th:with="
-                                            householdMemberNameAndIdTokens=${householdMemberNameAndId.split(' ')},
-                                            householdMemberNameTokens=${#lists.toList(householdMemberNameAndIdTokens).subList(0, householdMemberNameAndIdTokens.length - 1)},
-                                            householdMemberName=${#strings.listJoin(householdMemberNameTokens, ' ')},
-                                            householdMemberId=${householdMemberNameAndIdTokens[householdMemberNameAndIdTokens.length - 1]}">
-                                            <h3 th:text="${householdMemberId == 'applicant' ? 'You' : householdMemberName}"></h3>
+                            <th:block th:with="sortedHouseholdMembers=${T(org.codeforamerica.shiba.pages.PageUtils).householdMemberSort(householdMembers)}">
+                                <th:block th:each="householdMemberNameAndId, householdMemberStat: ${sortedHouseholdMembers}">
+                                    <th:block th:with="
+                                        householdMemberNameAndIdTokens=${householdMemberNameAndId.split(' ')},
+                                        householdMemberNameTokens=${#lists.toList(householdMemberNameAndIdTokens).subList(0, householdMemberNameAndIdTokens.length - 1)},
+                                        householdMemberName=${#strings.listJoin(householdMemberNameTokens, ' ')},
+                                        householdMemberId=${householdMemberNameAndIdTokens[householdMemberNameAndIdTokens.length - 1]}">
+                                        <h3 class="list-header spacing-below-10" th:text="${householdMemberId == 'applicant' ? 'You' : householdMemberName}"></h3>
+                                        <ul class="list--bulleted spacing-above-10 spacing-below-35 builder-list">
                                             <th:block th:each="jobIteration, jobIterationStat: ${subworkflow.value}">
                                                 <th:block th:with="jobIterationPageData=${jobIteration.getPagesData().get('householdSelectionForIncome')}">
                                                     <th:block th:with="jobHouseholdMemberNameAndId=${jobIterationPageData == null ? fakeApplicantNameAndId : jobIterationPageData.get('whoseJobIsIt').value[0]}">
@@ -53,12 +53,12 @@
                                                     </th:block>
                                                 </th:block>
                                             </th:block>
-                                        </th:block>
+                                        </ul>
                                     </th:block>
                                 </th:block>
                             </th:block>
                         </th:block>
-                    </ul>
+                    </th:block>
                     <div class="text--centered">
                         <a class="button button--secondary" th:href="'/pages/'+${pageName}+'/navigation?option=0'">
                             <i class="icon-add"></i>
