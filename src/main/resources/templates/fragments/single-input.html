@@ -57,6 +57,23 @@
                th:value="${(!inputData.value.isEmpty()) ? inputData.value[0] : ''}"
                th:name="${formInputName}"
         >
+        <input th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).PHONE}"
+               type="tel"
+               class="text-input form-width--medium phone-input"
+               placeholder="(999) 999-9999"
+               th:id="${input.name}"
+               th:value="${(!inputData.value.isEmpty()) ? inputData.value[0] : ''}"
+               th:name="${formInputName}"
+        >
+        <input th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).SSN}"
+               type="text"
+               inputmode="numeric"
+               class="text-input form-width--medium ssn-input"
+               placeholder="123-45-6789"
+               th:id="${input.name}"
+               th:value="${(!inputData.value.isEmpty()) ? inputData.value[0] : ''}"
+               th:name="${formInputName}"
+        >
         <div th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).SELECT}" class="select">
             <select th:id="${input.name}"
                     class="select__element"

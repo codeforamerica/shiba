@@ -29,13 +29,9 @@
         color: $color-grey-darkest;
     }
     &:active {
-        color: $color-grey-darkest;
         background-color: $color-grey-light;
         box-shadow: none;
         top: 1px;
-    }
-    &:visited {
-      color: $color-grey-darkest;
     }
 
   .emoji--checkmark, .emoji--crossmark {
@@ -58,10 +54,6 @@
     &:active {
         background-color: $color-teal-dark;
         border-color: $color-teal-dark;
-        color: #FFFFFF;
-    }
-    &:visited {
-        color: #FFFFFF;
     }
 }
 
@@ -72,15 +64,9 @@
 
 .button--danger {
   color: $color-red;
-  &:visited {
-    color: $color-red;
-  }
-  &:active {
-    color: $color-red;
-  }
   &:hover {
-    background-color: $color-red;
-    color: #fff;
+      background-color: $color-red;
+      color: #fff;
   }
 }
 

@@ -16,8 +16,7 @@ $font-system:         	-apple-system, BlinkMacSystemFont,
                         "Fira Sans", "Droid Sans", "Helvetica Neue",
                         sans-serif;
 
-/* use !important to prevent issues with browser extensions that change fonts */
-$font-icon:           	'Material Icons' !important;;
+$font-icon:           	'icomoon';
 
 
 // Typopgraphy
@@ -60,10 +59,6 @@ $color-yellow-light: 	#FFF2D1 !default;
 
 $color-background:    	$color-grey-light !default;
 
-$color-link-default:    $color-teal !default;
-$color-link-hover:      $color-teal-dark !default;
-$color-link-visited:    $color-teal !default;
-$color-link-active:     $color-teal !default;
 
 // Breakpoints
 $small-mobile-up:     	320px !default;
@@ -95,10 +90,10 @@ $width-form-long:	    25em !default;
 $width-form-short:     	8em !default;
 
 $width-form-casenumber: 8em !default;
-$width-form-phone:      11em !default;
+$width-form-phone:      9.5em !default;
 $width-form-name:       12em !default;
 $width-form-zip:        6.5em !default;
-$width-form-ssn:        10em !default;
+$width-form-ssn:        9em !default;
 $width-form-searchbar:  30em !default;
 
 // Shadows
@@ -107,89 +102,3 @@ $box-shadow: 			0px 3px 5px rgba(0,0,0,.15) !default;
 // Animations
 $animation-fast:      	.1s ease-out !default;
 $animation-med:      	.2s ease-out !default;
-
-// Icons
-$icons: (
-        add: "\e145",
-        add_a_photo: "\e439",
-        add_circle: "\e147",
-        control_point: "\e3ba",
-        arrow_back: "\e5c4",
-        arrow_downward: "\e5db",
-        arrow_drop_down: "\e5c5",
-        arrow_drop_up: "\e5c7",
-        arrow_forward: "\e5c8",
-        arrow_upward: "\e5d8",
-        call_made: "\e0b2",
-        call_received: "\e0b5",
-        cancel: "\e5c9",
-        check: "\e5ca",
-        check_box: "\e834",
-        check_box_outline_blank: "\e835",
-        check_circle: "\e86c",
-        navigate_before: "\e408",
-        navigate_next: "\e409",
-        close: "\e5cd",
-        mode_edit: "\e254",
-        delete: "\e872",
-        delete_forever: "\e92b",
-        done: "\e876",
-        done_all: "\e877",
-        time_to_leave: "\e62c",
-        markunread: "\e159",
-        expand_less: "\e5ce",
-        favorite: "\e87d",
-        favorite_border: "\e87e",
-        get_app: "\e884",
-        file_upload: "\e2c6",
-        people: "\e7fb",
-        group_add : "\e7f0",
-        help: "\e887",
-        help_outline: "\e8fd",
-        highlight_off: "\e888",
-        photo: "\e410",
-        info: "\e88e",
-        info_outline: "\e88f",
-        insert_comment: "\e24c",
-        tag_faces: "\e420",
-        keyboard_arrow_down: "\e313",
-        keyboard_arrow_left: "\e314",
-        keyboard_arrow_right: "\e315",
-        keyboard_arrow_up: "\e316",
-        keyboard_backspace: "\e317",
-        language: "\e894",
-        room: "\e8b4",
-        lock_open: "\e898",
-        lock_outline: "\e899",
-        mood_bad: "\e7f3",
-        move_to_inbox: "\e168",
-        no_encryption: "\e641",
-        notifications: "\e7f4",
-        notifications_active: "\e7f7",
-        notifications_off: "\e7f6",
-        person: "\e7fd",
-        person_add: "\e7fe",
-        phone_in_talk: "\e61d",
-        phone_iphone: "\e325",
-        visibility: "\e8f4",
-        replay: "\e042",
-        report: "\e160",
-        warning: "\e002",
-        sentiment_dissatisfied: "\e811",
-        sentiment_neutral: "\e812",
-        sentiment_satisfied: "\e813",
-        sentiment_very_dissatisfied: "\e814",
-        sentiment_very_satisfied: "\e815",
-        settings: "\e8b8",
-        star_border: "\e83a",
-        stars: "\e8d0",
-        thumb_down: "\e8db",
-        thumb_up: "\e8dc",
-        timer: "\e425",
-        translate: "\e8e2",
-        vertical_align_bottom: "\e258",
-        vertical_align_top: "\e25a",
-        watch_later: "\e924",
-        zoom_in: "\e8ff",
-        zoom_out: "\e900"
-);

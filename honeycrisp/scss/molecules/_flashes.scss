@@ -46,7 +46,7 @@
   color: $color-red;
   border-color: $color-red;
   .flash__message:before {
-    content: map_get($icons, warning);
+    content: "\e002";
   }
   .flash__dismiss {
     border-color: $color-red;
@@ -65,7 +65,7 @@
     display: inline-block;
     font-family: $font-icon;
     margin-right: .5em;
-    vertical-align: -.1em;
+    margin-top: .1em;
   }
 }
 
@@ -84,8 +84,5 @@
   border-bottom-right-radius: $border-radius-large;
   &:hover {
     background-color: $color-green-light;
-  }
-  &:visited {
-    color: $color-grey-darkest;
   }
 }

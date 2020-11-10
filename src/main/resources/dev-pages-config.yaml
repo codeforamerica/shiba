@@ -130,7 +130,7 @@ shiba-configuration:
           promptMessage:
             promptMessageKey: personal-info.when-were-you-born
         - name: ssn
-          type: NUMBER
+          type: SSN
           validators:
             - validation: SSN
               errorMessageKey: general.validation.make-sure-your-SSN-has-9-digits
@@ -208,10 +208,12 @@ shiba-configuration:
         value: contact-info.most-of-our-communication-will-be-through-mail
       inputs:
         - name: phoneNumber
-          type: TEXT
+          type: PHONE
           promptMessage:
             promptMessageKey: contact-info.whats-your-phone-number
           validators:
+            - validation: PHONE_STARTS_WITH_ONE
+              errorMessageKey: general.validation.area-codes-can-not-begin-with-1
             - validation: PHONE
               errorMessageKey: general.validation.make-sure-to-enter-a-phone-number-with-10-digits
         - name: email

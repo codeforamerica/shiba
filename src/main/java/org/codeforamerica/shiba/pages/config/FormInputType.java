@@ -13,5 +13,7 @@ public enum FormInputType {
     INCREMENTER,
     TEXTAREA,
     HOURLY_WAGE,
+    PHONE,
+    SSN,
     CUSTOM
 }
