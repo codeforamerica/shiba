@@ -494,7 +494,7 @@ shiba-configuration:
             - GRH
           followUps:
             - name: ssn
-              type: NUMBER
+              type: SSN
               validators:
                 - validation: SSN
                   errorMessageKey: general.validation.make-sure-your-SSN-has-9-digits
