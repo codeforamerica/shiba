@@ -65,7 +65,7 @@ public class Page {
                             enterInput(inputName, value);
                         }
                     }
-                    case number -> enterInput(inputName, value);
+                    case number, tel -> enterInput(inputName, value);
                     case radio, checkbox -> selectEnumeratedInput(inputName, value);
                 }
             }
@@ -83,7 +83,8 @@ public class Page {
         text,
         number,
         radio,
-        checkbox
+        checkbox,
+        tel
     }
 
     private void enterInput(String inputName, String input) {

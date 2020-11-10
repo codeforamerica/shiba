@@ -89,7 +89,7 @@
                         </div>
                     </div>
                     <p class="spacing-below-0"
-                       th:text="${T(org.codeforamerica.shiba.pages.PageUtils).formatPhone(data.get('contactInfo').get('phoneNumber').value[0])}"></p>
+                       th:text="${data.get('contactInfo').get('phoneNumber').value[0]}"></p>
                     <p class="spacing-below-0" th:if="${!data.get('contactInfo').get('email').value[0].isEmpty()}"
                        th:text="${data.get('contactInfo').get('email').value[0]}"></p>
                 </div>

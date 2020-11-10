@@ -11911,6 +11911,39 @@ var accordion = (function() {
   }
 })();
 
+var autoformatEventHandler = function(characterMap, maxDigits) {
+	return function (_e) {
+		var input = $(this);
+		var unformattedValue = input.val()
+			.replace(/[^\d]/g, "")
+			.substring(0, maxDigits);
+		var formattedStr = [];
+		for (var i = 0; i < unformattedValue.length; i++) {
+			var specialChar = characterMap[i];
+			if (specialChar !== undefined) {
+				formattedStr.push(specialChar);
+			}
+			formattedStr.push(unformattedValue.charAt(i));
+		}
+		input.val(formattedStr.join(""));
+	}
+};
+
+function formatNumericInput(selector, characterMap, maxDigits){
+	var handler = autoformatEventHandler(characterMap, maxDigits);
+	$(selector).each(function (_index, input){
+		handler.call(this, null); // format existing value on page load (not yet tested, need JS testing first)
+		$(input).on('input', handler);
+	});
+}
+
+var numericFormatters = {
+	init: function(){
+		formatNumericInput('.phone-input', {0: '(', 3: ') ', 6: '-'}, 10);
+		formatNumericInput('.ssn-input', {3: '-', 5: '-'}, 9);
+	}
+};
+
 $(document).ready(function() {
   radioSelector.init();
   checkboxSelector.init();
@@ -11922,4 +11955,5 @@ $(document).ready(function() {
   showMore.init();
   accordion.init();
   incrementer.init();
+  numericFormatters.init();
 });

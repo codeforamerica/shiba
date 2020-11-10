@@ -22,7 +22,7 @@ public class FormInputTemplate {
 
     public String fragment() {
         return switch (type) {
-            case TEXT, LONG_TEXT, NUMBER, SELECT, MONEY, TEXTAREA, HOURLY_WAGE -> "single-input";
+            case TEXT, LONG_TEXT, NUMBER, SELECT, MONEY, TEXTAREA, HOURLY_WAGE, PHONE, SSN -> "single-input";
             case DATE -> "date-input";
             case RADIO -> "radio-input";
             case CHECKBOX -> "checkbox-input";

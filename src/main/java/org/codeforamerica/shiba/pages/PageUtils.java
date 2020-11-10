@@ -40,13 +40,6 @@ public class PageUtils {
         }
     }
 
-    public static String formatPhone(String phoneDigits) {
-        if (phoneDigits.length() != 10) {
-            throw new IllegalArgumentException("Phone must contain exactly 10 digits in order to format!");
-        }
-        return String.format("(%s) %s-%s", phoneDigits.substring(0,3), phoneDigits.substring(3,6), phoneDigits.substring(6,10));
-    }
-
     public static List<String> householdMemberSort(Collection<String> householdMembers) {
         Stream<String> applicant = householdMembers.stream().filter(householdMember -> householdMember.endsWith("applicant"));
         Stream<String> nonApplicantHouseholdMembers = householdMembers.stream().filter(householdMember -> !householdMember.endsWith("applicant")).sorted();

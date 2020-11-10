@@ -27,11 +27,4 @@ class PageUtilsTest {
 
         assertThat(titleString).isEqualTo("emergency, child care, cash and food");
     }
-
-    @Test
-    void shouldProperlyFormatPhoneNumbers() {
-        String phoneNumber = "5105552525";
-
-        assertThat(PageUtils.formatPhone(phoneNumber)).isEqualTo("(510) 555-2525");
-    }
 }
