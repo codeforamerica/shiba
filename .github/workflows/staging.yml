@@ -77,19 +77,18 @@ jobs:
           git push staging "master:$BRANCH"
           aptible login --email=${{ secrets.APTIBLE_USERNAME }} --password=${{ secrets.APTIBLE_PASSWORD}}
           aptible deploy --app shiba-staging --git-commitish $BRANCH SPRING_PROFILES_ACTIVE=staging \
-          "MAILGUN_API_KEY=${{ secrets.MAILGUN_API_KEY }}" \
-          "SMARTY_STREET_AUTH_ID=${{ secrets.SMARTY_STREET_AUTH_ID }}" \
-          "SMARTY_STREET_AUTH_TOKEN=${{ secrets.SMARTY_STREET_AUTH_TOKEN }}" \
-          "CLIENT_KEYSTORE-PASSWORD=${{ secrets.CLIENT_KEYSTORE_PASSWORD }}" \
-          "MNIT-ESB_USERNAME=${{ secrets.MNIT_USERNAME }}" \
-          "MNIT-ESB_PASSWORD=${{ secrets.MNIT_PASSWORD }}" \
-          "SHIBA_USERNAME=${{ secrets.SHIBA_USERNAME }}" \
-          "SHIBA_PASSWORD=${{ secrets.SHIBA_PASSWORD }}" \
-          "ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY_STAGING }}" \
-          "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" \
-          "SENTRY_ENVIRONMENT=staging" \
-          "MIXPANEL_API-KEY=${{ secrets.MIXPANEL_API_KEY_STAGING }}" \
-          "RELEASE=$RELEASE_SHA"
+          'MAILGUN_API_KEY=${{ secrets.MAILGUN_API_KEY }}' \
+          'SMARTY_STREET_AUTH_ID=${{ secrets.SMARTY_STREET_AUTH_ID }}' \
+          'SMARTY_STREET_AUTH_TOKEN=${{ secrets.SMARTY_STREET_AUTH_TOKEN }}' \
+          'CLIENT_KEYSTORE-PASSWORD=${{ secrets.CLIENT_KEYSTORE_PASSWORD }}' \
+          'MNIT-ESB_USERNAME=${{ secrets.MNIT_USERNAME }}' \
+          'MNIT-ESB_PASSWORD=${{ secrets.MNIT_PASSWORD }}' \
+          'SHIBA_USERNAME=${{ secrets.SHIBA_USERNAME }}' \
+          'SHIBA_PASSWORD=${{ secrets.SHIBA_PASSWORD }}' \
+          'ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY_STAGING }}' \
+          'SENTRY_DSN=${{ secrets.SENTRY_DSN }}' \
+          'SENTRY_ENVIRONMENT=staging' \
+          'MIXPANEL_API-KEY=${{ secrets.MIXPANEL_API_KEY_STAGING }}'
       - name: Create Sentry release
         uses: getsentry/action-release@v1
         env:
