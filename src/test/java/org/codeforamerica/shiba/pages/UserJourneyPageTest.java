@@ -101,6 +101,41 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         assertThat(testPage.getTitle()).isEqualTo("Important to Know");
     }
 
+    @ParameterizedTest
+    @CsvSource(value = {
+            "123, 1233, A caseworker will contact you within 5-7 days to review your application.",
+            "1, 1, A caseworker will contact you within 3 days to review your application."
+    })
+    void userCanCompleteTheExpeditedFlowWithHousehold(String moneyMadeLast30Days, String liquidAssets, String expeditedServiceDetermination) {
+        completeFlowFromLandingPageThroughReviewInfo();
+        testPage.clickLink("Submit application now with only the above information.");
+        testPage.clickLink("Yes, I want to see if I qualify");
+
+        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.enter("moneyMadeLast30Days", moneyMadeLast30Days);
+
+        testPage.clickContinue();
+        testPage.enter("haveSavings", YES.getDisplayValue());
+
+        testPage.enter("liquidAssets", liquidAssets);
+
+        testPage.clickContinue();
+        testPage.enter("payRentOrMortgage", YES.getDisplayValue());
+
+        testPage.enter("homeExpensesAmount", "333");
+        testPage.clickContinue();
+
+        testPage.enter("payForUtilities", "Cooling");
+        testPage.clickContinue();
+
+        testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
+
+        assertThat(driver.findElement(By.tagName("p")).getText()).contains(expeditedServiceDetermination);
+
+        testPage.clickButton("Finish application");
+        assertThat(testPage.getTitle()).isEqualTo("Important to Know");
+    }
+
     @Test
     void shouldDownloadPDFWhenClickDownloadMyReceipt() {
         when(clock.instant()).thenReturn(Instant.ofEpochSecond(1243235L));

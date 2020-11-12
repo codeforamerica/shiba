@@ -651,11 +651,16 @@ shiba-configuration:
                   input: liveAlone
                   value: "true"
           - value: thirty-day-income.how-much-money-have-they-made-in-the-last-30-days
-            condition:
-              pageName: householdSelectionForIncome
-              input: whoseJobIsIt
-              value: "applicant"
-              matcher: DOES_NOT_CONTAIN_SUBSTRING
+            compositeCondition:
+              logicalOperator: OR
+              conditions:
+                - pageName: householdSelectionForIncome
+                  input: whoseJobIsIt
+                  value: "applicant"
+                  matcher: DOES_NOT_CONTAIN_SUBSTRING
+                - pageName: doYouLiveAlone
+                  input: liveAlone
+                  value: "false"
       headerHelpMessageKey:
         value: thirty-day-income.if-you-dont-know-the-exact-amount
       name: thirtyDayIncome
