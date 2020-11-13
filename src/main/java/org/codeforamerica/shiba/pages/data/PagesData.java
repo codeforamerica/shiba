@@ -62,6 +62,9 @@ public class PagesData extends HashMap<String, PageData> {
         return datasourcePages.satisfies(skipCondition);
     }
 
+    /**
+     * Defaults to {@code value.getValue()} if all {@code value.getConditionalValues()} evaluate to "false".
+     */
     private String resolve(PageWorkflowConfiguration pageWorkflowConfiguration, Value value) {
         if (value == null) {
             return "";

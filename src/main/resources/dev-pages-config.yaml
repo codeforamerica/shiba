@@ -543,12 +543,8 @@ shiba-configuration:
       pageTitle:
         value: going-to-school.title
       headerKey:
+        value: going-to-school.header
         conditionalValues:
-          - value: going-to-school.header
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
           - value: going-to-school.header-household
             condition:
               pageName: doYouLiveAlone
@@ -563,17 +559,13 @@ shiba-configuration:
       pageTitle:
         value: pregnant.title
       headerKey:
+        value: pregnant.is-anyone-pregnant
         conditionalValues:
           - value: pregnant.are-you-pregnant
             condition:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "true"
-          - value: pregnant.is-anyone-pregnant
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
       hasPrimaryButton: false
       inputs:
         - name: isPregnant
@@ -599,17 +591,13 @@ shiba-configuration:
       pageTitle:
         value: us-citizen.title
       headerKey:
+        value: us-citizen.is-everyone-us-citizen
         conditionalValues:
           - value: us-citizen.are-you-a-us-citizen
             condition:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "true"
-          - value: us-citizen.is-everyone-us-citizen
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
       headerHelpMessageKey:
         value: us-citizen.most-immigrants-are-still-eligible-for-food-and-cash-benefits
       hasPrimaryButton: false
@@ -638,6 +626,7 @@ shiba-configuration:
         value: do-you-need-help-immediately.title
     - &thirtyDayIncome
       headerKey:
+        value: thirty-day-income.how-much-money-have-they-made-in-the-last-30-days
         conditionalValues:
           - value: thirty-day-income.how-much-money-have-you-made-in-the-last-30-days
             compositeCondition:
@@ -650,32 +639,17 @@ shiba-configuration:
                 - pageName: doYouLiveAlone
                   input: liveAlone
                   value: "true"
-          - value: thirty-day-income.how-much-money-have-they-made-in-the-last-30-days
-            compositeCondition:
-              logicalOperator: OR
-              conditions:
-                - pageName: householdSelectionForIncome
-                  input: whoseJobIsIt
-                  value: "applicant"
-                  matcher: DOES_NOT_CONTAIN_SUBSTRING
-                - pageName: doYouLiveAlone
-                  input: liveAlone
-                  value: "false"
       headerHelpMessageKey:
         value: thirty-day-income.if-you-dont-know-the-exact-amount
       name: thirtyDayIncome
       pageTitle:
+        value: thirty-day-income.title-household
         conditionalValues:
           - value: thirty-day-income.title-one-person
             condition:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "true"
-          - value: thirty-day-income.title-household
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
       inputs:
         - name: moneyMadeLast30Days
           type: MONEY
@@ -688,29 +662,21 @@ shiba-configuration:
     - &liquidAssets
       name: liquidAssets
       pageTitle:
+        value: liquid-assets-prompt.title-household
         conditionalValues:
           - value: liquid-assets-prompt.title-one-person
             condition:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "true"
-          - value: liquid-assets-prompt.title-household
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
       headerKey:
+        value: thirty-day-income.how-much-money-is-available
         conditionalValues:
           - value: thirty-day-income.how-much-money-do-you-have-available
             condition:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "true"
-          - value: thirty-day-income.how-much-money-is-available
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
       inputs:
         - name: liquidAssets
           type: MONEY
@@ -725,24 +691,16 @@ shiba-configuration:
     - &expeditedExpenses
       name: expeditedExpenses
       pageTitle:
+        value: expedited-expenses.title-one-person
         conditionalValues:
-          - value: expedited-expenses.title-one-person
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
           - value: expedited-expenses.title-household
             condition:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "false"
       headerKey:
+        value: expedited-expenses.header-one-person
         conditionalValues:
-          - value: expedited-expenses.header-one-person
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
           - value: expedited-expenses.header-household
             condition:
               pageName: doYouLiveAlone
@@ -755,24 +713,16 @@ shiba-configuration:
     - &expeditedExpensesAmount
       name: homeExpensesAmount
       pageTitle:
+        value: expedited-expenses-amount.title-one-person
         conditionalValues:
-          - value: expedited-expenses-amount.title-one-person
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
           - value: expedited-expenses-amount.title-household
             condition:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "false"
       headerKey:
+        value: expedited-expenses-amount.how-much-do-you-pay-for-rent-or-mortgage-every-month
         conditionalValues:
-          - value: expedited-expenses-amount.how-much-do-you-pay-for-rent-or-mortgage-every-month
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
           - value: expedited-expenses-amount.how-much-is-paid-for-rent-or-mortgage-every-month
             condition:
               pageName: doYouLiveAlone
@@ -790,36 +740,24 @@ shiba-configuration:
     - &utilityPayments
       name: utilityPayments
       pageTitle:
+        value: utility-payments.title-one-person
         conditionalValues:
-          - value: utility-payments.title-one-person
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
           - value: utility-payments.title-household
             condition:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "false"
       headerKey:
+        value: utility-payments.do-you-pay-for-any-utilities
         conditionalValues:
-          - value: utility-payments.do-you-pay-for-any-utilities
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
           - value: utility-payments.does-anyone-in-your-household-pay-for-these-utilities
             condition:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "false"
       headerHelpMessageKey:
+        value: utility-payments.select-all-that-you-are-billed-for-even-if-you-havent-paid-it-this-month
         conditionalValues:
-          - value: utility-payments.select-all-that-you-are-billed-for-even-if-you-havent-paid-it-this-month
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
           - value: utility-payments.household-billed
             condition:
               pageName: doYouLiveAlone
@@ -857,17 +795,12 @@ shiba-configuration:
       pageTitle:
         value: energy-assistance.title
       headerKey:
+        value: energy-assistance.have-you-received-money-for-energy-assistance
         conditionalValues:
-          - value: energy-assistance.have-you-received-money-for-energy-assistance
             condition:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "true"
-          - value: energy-assistance.household-received-money
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
       hasPrimaryButton: false
       inputs:
         - name: energyAssistance
@@ -877,12 +810,8 @@ shiba-configuration:
       pageTitle:
         value: energy-assistance-more-than-20.title
       headerKey:
+        value: energy-assistance-more-than-20.have-you-received-more-than-20-in-energy-assistance
         conditionalValues:
-          - value: energy-assistance-more-than-20.have-you-received-more-than-20-in-energy-assistance
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
           - value: energy-assistance-more-than-20.household-received
             condition:
               pageName: doYouLiveAlone
@@ -897,12 +826,8 @@ shiba-configuration:
       pageTitle:
         value: support-and-care.title
       headerKey:
+        value: support-and-care.do-you-pay-for-court-ordered-child-support-spousal-support
         conditionalValues:
-          - value: support-and-care.do-you-pay-for-court-ordered-child-support-spousal-support
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
           - value: support-and-care.household-support
             condition:
               pageName: doYouLiveAlone
@@ -915,24 +840,16 @@ shiba-configuration:
     - &migrantFarmWorker
       name: migrantFarmWorker
       pageTitle:
+        value: expedited-migrant-farm-worker.title-one-person
         conditionalValues:
-          - value: expedited-migrant-farm-worker.title-one-person
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
           - value: expedited-migrant-farm-worker.title-household
             condition:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "false"
       headerKey:
+        value: expedited-migrant-farm-worker.header-one-person
         conditionalValues:
-          - value: expedited-migrant-farm-worker.header-one-person
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
           - value: expedited-migrant-farm-worker.header-household
             condition:
               pageName: doYouLiveAlone
@@ -998,12 +915,8 @@ shiba-configuration:
       pageTitle:
         value: disability.title
       headerKey:
+        value: disability.does-anyone-in-your-household-have-a-physical-or-mental-disability-that-prevents
         conditionalValues:
-          - value: disability.does-anyone-in-your-household-have-a-physical-or-mental-disability-that-prevents
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
           - value: disability.do-you-have-a-physical-or-mental-disability-that-prevents-you-from-working
             condition:
               pageName: doYouLiveAlone
@@ -1018,12 +931,8 @@ shiba-configuration:
       pageTitle:
         value: work-situation.title
       headerKey:
+        value: work-situation.in-the-last-2-months-did-you-do-any-of-these-things
         conditionalValues:
-          - value: work-situation.in-the-last-2-months-did-you-do-any-of-these-things
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
           - value: work-situation.in-the-last-2-months-did-anyone-in-your-household-do-any-of-these-things
             condition:
               pageName: doYouLiveAlone
@@ -1044,12 +953,8 @@ shiba-configuration:
       pageTitle:
         value: employment-status.title
       headerKey:
+        value: employment-status.are-you-currently-working-or-making-an-income
         conditionalValues:
-          - value: employment-status.are-you-currently-working-or-making-an-income
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
           - value: employment-status.is-anyone-in-your-household-making-money-from-a-job
             condition:
               pageName: doYouLiveAlone
@@ -1064,12 +969,8 @@ shiba-configuration:
       pageTitle:
         value: income-by-job.title
       headerKey:
+        value: income-by-job.lets-add-your-job-information
         conditionalValues:
-          - value: income-by-job.lets-add-your-job-information
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
           - value: income-by-job.lets-add-all-the-jobs-in-your-household
             condition:
               pageName: doYouLiveAlone
@@ -1111,12 +1012,8 @@ shiba-configuration:
       pageTitle:
         value: unearned-income.title
       headerKey:
+        value: unearned-income.do-you-get-income-from-any-of-these-sources
         conditionalValues:
-          - value: unearned-income.do-you-get-income-from-any-of-these-sources
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
           - value: unearned-income.household-get-income-from-any-of-these-sources
             condition:
               pageName: doYouLiveAlone
@@ -1156,12 +1053,8 @@ shiba-configuration:
       pageTitle:
         value: unearned-income-sources.title
       headerKey:
+        value: unearned-income-sources.tell-us-how-much-money-you-receive
         conditionalValues:
-          - value: unearned-income-sources.tell-us-how-much-money-you-receive
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
           - value: unearned-income-sources.tell-us-how-much-money-is-received
             condition:
               pageName: doYouLiveAlone
@@ -1295,12 +1188,8 @@ shiba-configuration:
       pageTitle:
         value: future-income.title
       headerKey:
+        value: future-income.do-you-think-youll-earn-less-money-this-month-than-last-month
         conditionalValues:
-          - value: future-income.do-you-think-youll-earn-less-money-this-month-than-last-month
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
           - value: future-income.do-you-think-household-will-earn-less-money-this-month-than-last-month
             condition:
               pageName: doYouLiveAlone
@@ -1327,6 +1216,7 @@ shiba-configuration:
       pageTitle:
         value: employers-name.title
       headerKey:
+        value: employers-name.add-a-job-they-have
         conditionalValues:
           - value: employers-name.add-a-job-you-have
             compositeCondition:
@@ -1339,12 +1229,6 @@ shiba-configuration:
               - pageName: doYouLiveAlone
                 input: liveAlone
                 value: "true"
-          - value: employers-name.add-a-job-they-have
-            condition:
-              pageName: householdSelectionForIncome
-              input: whoseJobIsIt
-              value: "applicant"
-              matcher: DOES_NOT_CONTAIN_SUBSTRING
       inputs:
         - name: employersName
           type: LONG_TEXT
@@ -1358,6 +1242,7 @@ shiba-configuration:
       pageTitle:
         value: self-employment.title
       headerKey:
+        value: self-employment.is-their-work-here
         conditionalValues:
           - value: self-employment.is-your-work-here
             compositeCondition:
@@ -1370,12 +1255,6 @@ shiba-configuration:
                 - pageName: doYouLiveAlone
                   input: liveAlone
                   value: "true"
-          - value: self-employment.is-their-work-here
-            condition:
-              pageName: householdSelectionForIncome
-              input: whoseJobIsIt
-              value: "applicant"
-              matcher: DOES_NOT_CONTAIN_SUBSTRING
       hasPrimaryButton: false
       inputs:
         - name: selfEmployment
@@ -1388,6 +1267,7 @@ shiba-configuration:
       pageTitle:
         value: paid-by-the-hour.title
       headerKey:
+        value: paid-by-the-hour.do-they-get-paid-by-the-hour
         conditionalValues:
           - value: paid-by-the-hour.do-you-get-paid-by-the-hour
             compositeCondition:
@@ -1400,12 +1280,6 @@ shiba-configuration:
                 - pageName: doYouLiveAlone
                   input: liveAlone
                   value: "true"
-          - value: paid-by-the-hour.do-they-get-paid-by-the-hour
-            condition:
-              pageName: householdSelectionForIncome
-              input: whoseJobIsIt
-              value: "applicant"
-              matcher: DOES_NOT_CONTAIN_SUBSTRING
       hasPrimaryButton: false
       inputs:
         - name: paidByTheHour
@@ -1416,6 +1290,7 @@ shiba-configuration:
       pageTitle:
         value: hourly-wage.title
       headerKey:
+        value: hourly-wage.what-is-their-hourly-wage
         conditionalValues:
           - value: hourly-wage.what-is-your-hourly-wage
             compositeCondition:
@@ -1428,12 +1303,6 @@ shiba-configuration:
                 - pageName: doYouLiveAlone
                   input: liveAlone
                   value: "true"
-          - value: hourly-wage.what-is-their-hourly-wage
-            condition:
-              pageName: householdSelectionForIncome
-              input: whoseJobIsIt
-              value: "applicant"
-              matcher: DOES_NOT_CONTAIN_SUBSTRING
       inputs:
         - name: hourlyWage
           type: HOURLY_WAGE
@@ -1449,6 +1318,7 @@ shiba-configuration:
       pageTitle:
         value: hours-a-week.title
       headerKey:
+        value: hours-a-week.how-many-hours-a-week-do-they-work
         conditionalValues:
           - value: hours-a-week.how-many-hours-a-week-do-you-work
             compositeCondition:
@@ -1461,13 +1331,8 @@ shiba-configuration:
                 - pageName: doYouLiveAlone
                   input: liveAlone
                   value: "true"
-          - value: hours-a-week.how-many-hours-a-week-do-they-work
-            condition:
-              pageName: householdSelectionForIncome
-              input: whoseJobIsIt
-              value: "applicant"
-              matcher: DOES_NOT_CONTAIN_SUBSTRING
       headerHelpMessageKey:
+        value: hours-a-week.we-know-this-can-be-hard-to-answer-so-just-estimate-based-on-their
         conditionalValues:
           - value: hours-a-week.we-know-this-can-be-hard-to-answer-so-just-estimate-based-on
             compositeCondition:
@@ -1480,12 +1345,6 @@ shiba-configuration:
                 - pageName: doYouLiveAlone
                   input: liveAlone
                   value: "true"
-          - value: hours-a-week.we-know-this-can-be-hard-to-answer-so-just-estimate-based-on-their
-            condition:
-              pageName: householdSelectionForIncome
-              input: whoseJobIsIt
-              value: "applicant"
-              matcher: DOES_NOT_CONTAIN_SUBSTRING
       inputs:
         - name: hoursAWeek
           type: NUMBER
@@ -1495,6 +1354,7 @@ shiba-configuration:
       pageTitle:
         value: pay-period.title
       headerKey:
+        value: pay-period.how-often-do-they-get-paid
         conditionalValues:
           - value: pay-period.how-often-do-you-get-paid
             compositeCondition:
@@ -1507,12 +1367,6 @@ shiba-configuration:
                 - pageName: doYouLiveAlone
                   input: liveAlone
                   value: "true"
-          - value: pay-period.how-often-do-they-get-paid
-            condition:
-              pageName: householdSelectionForIncome
-              input: whoseJobIsIt
-              value: "applicant"
-              matcher: DOES_NOT_CONTAIN_SUBSTRING
       inputs:
         - name: payPeriod
           type: RADIO
@@ -1577,12 +1431,8 @@ shiba-configuration:
       pageTitle:
         value: job-builder.title
       headerKey:
+        value: job-builder.your-jobs
         conditionalValues:
-          - value: job-builder.your-jobs
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
           - value: job-builder.your-household-jobs
             condition:
               pageName: doYouLiveAlone
@@ -1609,12 +1459,8 @@ shiba-configuration:
       pageTitle:
         value: home-expenses.title
       headerKey:
+        value: home-expenses.do-you-pay-for-any-of-these
         conditionalValues:
-          - value: home-expenses.do-you-pay-for-any-of-these
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
           - value: home-expenses.household-pay-for-these
             condition:
               pageName: doYouLiveAlone
@@ -1734,12 +1580,8 @@ shiba-configuration:
       pageTitle:
         value: savings.title
       headerKey:
+        value: savings.do-you-have-money-in-a-bank-account-or-debit-card
         conditionalValues:
-          - value: savings.do-you-have-money-in-a-bank-account-or-debit-card
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
           - value: savings.household-bank-account
             condition:
               pageName: doYouLiveAlone
@@ -1754,12 +1596,8 @@ shiba-configuration:
       pageTitle:
         value: investments.title
       headerKey:
+        value: investments.do-you-have-any-stocks-bonds-or-a-401k
         conditionalValues:
-          - value: investments.do-you-have-any-stocks-bonds-or-a-401k
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
           - value: investments.household-stocks
             condition:
               pageName: doYouLiveAlone
@@ -1774,12 +1612,8 @@ shiba-configuration:
       pageTitle:
         value: vehicle.title
       headerKey:
+        value: vehicle.do-you-own-a-vehicle
         conditionalValues:
-          - value: vehicle.do-you-own-a-vehicle
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
           - value: vehicle.household-own-vehicle
             condition:
               pageName: doYouLiveAlone
@@ -1794,12 +1628,8 @@ shiba-configuration:
       pageTitle:
         value: sold-assets.title
       headerKey:
+        value: sold-assets.in-the-last-12-months-have-you-given-away-or-sold-any-assets
         conditionalValues:
-          - value: sold-assets.in-the-last-12-months-have-you-given-away-or-sold-any-assets
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
           - value: sold-assets.households-given-or-sold
             condition:
               pageName: doYouLiveAlone
