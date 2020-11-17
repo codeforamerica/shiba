@@ -26,7 +26,7 @@ public class ExpeditedEligibilityDecider {
         return expeditedEligibilityParser.parse(applicationData)
                 .map(parameters -> {
                             double assets = parameters.getAssets();
-                            double income = totalIncomeCalculator.calculate(new TotalIncome(parameters.getLastMonthsIncome(), parameters.getJobIncomeInformation()));
+                            double income = totalIncomeCalculator.calculate(new TotalIncome(parameters.getLast30DaysIncome(), parameters.getJobIncomeInformation()));
                             double housingCosts = parameters.getHousingCosts();
 
                             boolean assetsAndIncomeBelowThreshold = assets <= ASSET_THRESHOLD && income < INCOME_THRESHOLD;

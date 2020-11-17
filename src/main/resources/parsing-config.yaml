@@ -39,6 +39,9 @@ parsing:
       incomePerPayPeriod:
         pageName: incomePerPayPeriod
         inputName: incomePerPayPeriod
+      lastThirtyDaysJobIncome:
+        pageName: lastThirtyDaysJobIncome
+        inputName: lastThirtyDaysJobIncome
   homeAddress:
     pageInputs:
       street:

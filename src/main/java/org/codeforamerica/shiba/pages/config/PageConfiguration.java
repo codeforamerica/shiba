@@ -13,6 +13,7 @@ public class PageConfiguration {
     private Value pageTitle;
     private Value headerKey;
     private Value headerHelpMessageKey;
+    private Value subtleLinkTextKey;
     private String primaryButtonTextKey = "general.continue";
     private Boolean hasPrimaryButton = true;
     private String contextFragment;

@@ -7,7 +7,7 @@ import java.util.List;
 @Value
 public class ExpeditedEligibilityParameters {
     double assets;
-    double lastMonthsIncome;
+    double last30DaysIncome;
     List<JobIncomeInformation> jobIncomeInformation;
     boolean isMigrantWorker;
     double housingCosts;

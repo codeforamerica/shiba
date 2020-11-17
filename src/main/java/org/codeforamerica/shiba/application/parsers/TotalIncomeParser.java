@@ -20,7 +20,7 @@ public class TotalIncomeParser extends ApplicationDataParser<TotalIncome> {
     @Override
     public TotalIncome parse(ApplicationData applicationData) {
         ParsingCoordinates expeditedEligibilityConfiguration = parsingConfiguration.get("expeditedEligibility");
-        double income = getDouble(applicationData, expeditedEligibilityConfiguration.getPageInputs().get("income"));
-        return new TotalIncome(income, grossIncomeParser.parse(applicationData));
+        double last30DaysIncome = getDouble(applicationData, expeditedEligibilityConfiguration.getPageInputs().get("income"));
+        return new TotalIncome(last30DaysIncome, grossIncomeParser.parse(applicationData));
     }
 }

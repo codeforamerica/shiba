@@ -27,23 +27,30 @@ public class GrossMonthlyIncomeParser extends ApplicationDataParser<List<JobInco
                 .map(iteration -> {
                     PagesData pagesData = iteration.getPagesData();
                     PageInputCoordinates isHourlyJobCoordinates = grossMonthlyIncomeConfiguration.getPageInputs().get("paidByTheHour");
-                    boolean isHourlyJob = Boolean.parseBoolean(pagesData.getPage(isHourlyJobCoordinates.getPageName()).get(isHourlyJobCoordinates.getInputName()).getValue(0));
-                    if (isHourlyJob) {
-                        PageInputCoordinates hourlyWageCoordinates = grossMonthlyIncomeConfiguration.getPageInputs().get("hourlyWage");
-                        String hourlyWageInputValue = pagesData.getPage(hourlyWageCoordinates.getPageName())
-                                .get(hourlyWageCoordinates.getInputName()).getValue(0);
-                        PageInputCoordinates hoursAWeekCoordinates = grossMonthlyIncomeConfiguration.getPageInputs().get("hoursAWeek");
-                        String hoursAWeekInputValue = pagesData.getPage(hoursAWeekCoordinates.getPageName())
-                                .get(hoursAWeekCoordinates.getInputName()).getValue(0);
-                        return new HourlyJobIncomeInformation(hourlyWageInputValue, hoursAWeekInputValue, jobsGroup.indexOf(pagesData));
+                    PageInputCoordinates lastThirtyDaysIncomeCoordinates = grossMonthlyIncomeConfiguration.getPageInputs().get("lastThirtyDaysJobIncome");
+                    boolean hasLastThirtyDaysIncome = pagesData.containsKey(lastThirtyDaysIncomeCoordinates.getPageName());
+                    if (hasLastThirtyDaysIncome) {
+                        String lastThirtyDaysIncome = pagesData.getPage(lastThirtyDaysIncomeCoordinates.getPageName()).get(lastThirtyDaysIncomeCoordinates.getInputName()).getValue(0);
+                        return new LastThirtyDaysJobIncomeInformation(lastThirtyDaysIncome, jobsGroup.indexOf(pagesData));
                     } else {
-                        PageInputCoordinates payPeriodCoordinates = grossMonthlyIncomeConfiguration.getPageInputs().get("payPeriod");
-                        String payPeriodInputValue = pagesData.getPage(payPeriodCoordinates.getPageName())
-                                .get(payPeriodCoordinates.getInputName()).getValue(0);
-                        PageInputCoordinates incomePerPayPeriodCoordinates = grossMonthlyIncomeConfiguration.getPageInputs().get("incomePerPayPeriod");
-                        String incomePerPayPeriodInputValue = pagesData.getPage(incomePerPayPeriodCoordinates.getPageName())
-                                .get(incomePerPayPeriodCoordinates.getInputName()).getValue(0);
-                        return new NonHourlyJobIncomeInformation(payPeriodInputValue, incomePerPayPeriodInputValue, jobsGroup.indexOf(pagesData));
+                        boolean isHourlyJob = Boolean.parseBoolean(pagesData.getPage(isHourlyJobCoordinates.getPageName()).get(isHourlyJobCoordinates.getInputName()).getValue(0));
+                        if (isHourlyJob) {
+                            PageInputCoordinates hourlyWageCoordinates = grossMonthlyIncomeConfiguration.getPageInputs().get("hourlyWage");
+                            String hourlyWageInputValue = pagesData.getPage(hourlyWageCoordinates.getPageName())
+                                    .get(hourlyWageCoordinates.getInputName()).getValue(0);
+                            PageInputCoordinates hoursAWeekCoordinates = grossMonthlyIncomeConfiguration.getPageInputs().get("hoursAWeek");
+                            String hoursAWeekInputValue = pagesData.getPage(hoursAWeekCoordinates.getPageName())
+                                    .get(hoursAWeekCoordinates.getInputName()).getValue(0);
+                            return new HourlyJobIncomeInformation(hourlyWageInputValue, hoursAWeekInputValue, jobsGroup.indexOf(pagesData));
+                        } else {
+                            PageInputCoordinates payPeriodCoordinates = grossMonthlyIncomeConfiguration.getPageInputs().get("payPeriod");
+                            String payPeriodInputValue = pagesData.getPage(payPeriodCoordinates.getPageName())
+                                    .get(payPeriodCoordinates.getInputName()).getValue(0);
+                            PageInputCoordinates incomePerPayPeriodCoordinates = grossMonthlyIncomeConfiguration.getPageInputs().get("incomePerPayPeriod");
+                            String incomePerPayPeriodInputValue = pagesData.getPage(incomePerPayPeriodCoordinates.getPageName())
+                                    .get(incomePerPayPeriodCoordinates.getInputName()).getValue(0);
+                            return new NonHourlyJobIncomeInformation(payPeriodInputValue, incomePerPayPeriodInputValue, jobsGroup.indexOf(pagesData));
+                        }
                     }
                 })
                 .filter(JobIncomeInformation::isComplete)

@@ -1,5 +1,7 @@
 package org.codeforamerica.shiba.output.caf;
 
+import org.codeforamerica.shiba.PageDataBuilder;
+import org.codeforamerica.shiba.PagesDataBuilder;
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
 import org.codeforamerica.shiba.application.parsers.GrossMonthlyIncomeParser;
 import org.codeforamerica.shiba.application.parsers.ParsingConfiguration;
@@ -28,6 +30,8 @@ class GrossMonthlyIncomeParserTest {
 
     @Autowired
     private GrossMonthlyIncomeParser grossMonthlyIncomeParser;
+
+    private final PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
 
     @TestConfiguration
     @PropertySource(value = "classpath:test-parsing-config.yaml", factory = YamlPropertySourceFactory.class)
@@ -82,28 +86,22 @@ class GrossMonthlyIncomeParserTest {
 
     @Test
     void shouldNotProvideJobInformationForJobsWithInsufficientInformationForCalculation() {
-        Subworkflows subworkflows = new Subworkflows();
+        PagesData hourlyJobPagesData = pagesDataBuilder.build(List.of(
+                new PageDataBuilder("paidByTheHourPage", Map.of("paidByTheHourInput", List.of("true"))),
+                new PageDataBuilder("hourlyWagePage", Map.of("hourlyWageInput", List.of(""))),
+                new PageDataBuilder("hoursAWeekPage", Map.of("hoursAWeekInput", List.of("")))
+        ));
+
+        PagesData nonHourlyJobPagesData = pagesDataBuilder.build(List.of(
+                new PageDataBuilder("paidByTheHourPage", Map.of("paidByTheHourInput", List.of("false"))),
+                new PageDataBuilder("payPeriodPage", Map.of("payPeriodInput", List.of(""))),
+                new PageDataBuilder("incomePerPayPeriodPage", Map.of("incomePerPayPeriodInput", List.of(""))),
+                new PageDataBuilder("last30DaysJobIncomePage", Map.of("last30DaysJobIncomeInput", List.of("")))
+        ));
+
         Subworkflow subworkflow = new Subworkflow();
-        PagesData hourlyJobPagesData = new PagesData();
-        hourlyJobPagesData.put("paidByTheHourPage", new PageData(Map.of("paidByTheHourInput", InputData.builder().value(List.of("true")).build())));
-        PageData hourlyWagePageData1 = new PageData();
-        hourlyWagePageData1.put("hourlyWageInput", InputData.builder().value(List.of("")).build());
-        hourlyJobPagesData.put("hourlyWagePage", hourlyWagePageData1);
-        PageData hoursAWeekPageData1 = new PageData();
-        hoursAWeekPageData1.put("hoursAWeekInput", InputData.builder().value(List.of("")).build());
-        hourlyJobPagesData.put("hoursAWeekPage", hoursAWeekPageData1);
+        Subworkflows subworkflows = new Subworkflows();
         subworkflow.add(hourlyJobPagesData);
-        PagesData nonHourlyJobPagesData = new PagesData();
-        nonHourlyJobPagesData.put("paidByTheHourPage", new PageData(Map.of("paidByTheHourInput", InputData.builder().value(List.of("false")).build())));
-
-        PageData payPeriodPageData = new PageData();
-        payPeriodPageData.put("payPeriodInput", InputData.builder().value(List.of("")).build());
-        nonHourlyJobPagesData.put("payPeriodPage", payPeriodPageData);
-
-        PageData incomePerPayPeriod = new PageData();
-        incomePerPayPeriod.put("incomePerPayPeriodInput", InputData.builder().value(List.of("")).build());
-        nonHourlyJobPagesData.put("incomePerPayPeriodPage", incomePerPayPeriod);
-
         subworkflow.add(nonHourlyJobPagesData);
         subworkflows.put("jobsGroup", subworkflow);
         applicationData.setSubworkflows(subworkflows);

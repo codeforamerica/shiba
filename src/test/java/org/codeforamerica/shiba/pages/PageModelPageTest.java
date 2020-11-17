@@ -26,6 +26,8 @@ public class PageModelPageTest extends AbstractExistingStartTimePageTest {
     }
 
     String title;
+    String subtleLink;
+    String subtleLinkTitle;
 
     @Override
     @BeforeEach
@@ -33,7 +35,11 @@ public class PageModelPageTest extends AbstractExistingStartTimePageTest {
         super.setUp();
 
         title = "first page title";
+        subtleLink = "subtle link text";
+        subtleLinkTitle = "subtle link title";
         staticMessageSource.addMessage("first-page-title", Locale.US, title);
+        staticMessageSource.addMessage("subtle-link-text", Locale.US, subtleLink);
+        staticMessageSource.addMessage("subtle-link-page-title", Locale.US, subtleLinkTitle);
     }
 
     @Test
@@ -47,6 +53,19 @@ public class PageModelPageTest extends AbstractExistingStartTimePageTest {
     void shouldRenderTheConfiguredPageModel() {
         navigateTo("lastPage");
 
+        assertThat(testPage.getTitle()).isEqualTo(title);
+    }
+
+    @Test
+    void shouldRenderTheConfiguredSubtleLink() {
+        navigateTo("subtleLinkPage");
+        assertThat(testPage.driver.findElementById("subtle-link").getText()).isEqualTo(subtleLink);
+    }
+
+    @Test
+    void shouldNavigateToSubtleLinkTargetPage() {
+        navigateTo("subtleLinkPage");
+        testPage.clickLink(subtleLink);
         assertThat(testPage.getTitle()).isEqualTo(title);
     }
 

@@ -24,6 +24,8 @@
                         <button th:if="${page.hasPrimaryButton}" class="button button--primary" type="submit"
                                 th:text="#{${page.primaryButtonTextKey}}"></button>
                     </form>
+                    <a th:if="${page.hasSubtleLinkTextKey()}" class="link--subtle" id="subtle-link"
+                       th:href="|/pages/${page.subtleLinkTargetPage}|" th:text="#{${page.subtleLinkTextKey}}"></a>
                 </div>
             </div>
         </div>

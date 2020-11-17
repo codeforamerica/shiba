@@ -659,6 +659,41 @@ shiba-configuration:
               condition:
                 input: moneyMadeLast30Days
                 matcher: NOT_EMPTY
+    - &lastThirtyDaysJobIncome
+      headerKey:
+        conditionalValues:
+          - value: thirty-day-job-income.how-much-money-have-you-made-at-this-job-in-the-last-30-days
+            compositeCondition:
+              logicalOperator: OR
+              conditions:
+                - pageName: householdSelectionForIncome
+                  input: whoseJobIsIt
+                  value: "applicant"
+                  matcher: CONTAINS_SUBSTRING
+                - pageName: doYouLiveAlone
+                  input: liveAlone
+                  value: "true"
+          - value: thirty-day-job-income.how-much-money-have-they-made-at-this-job-in-the-last-30-days
+            condition:
+              pageName: householdSelectionForIncome
+              input: whoseJobIsIt
+              value: "applicant"
+              matcher: DOES_NOT_CONTAIN_SUBSTRING
+      headerHelpMessageKey:
+        value: thirty-day-income.if-you-dont-know-the-exact-amount
+      name: lastThirtyDaysJobIncome
+      pageTitle:
+        value: thirty-day-job-income.title
+      inputs:
+        - name: lastThirtyDaysJobIncome
+          type: MONEY
+          validators:
+            - validation: MONEY
+              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+              condition:
+                input: lastThirtyDaysJobIncome
+                matcher: NOT_EMPTY
+      contextFragment: jobContextFragment
     - &liquidAssets
       name: liquidAssets
       pageTitle:
@@ -1284,6 +1319,8 @@ shiba-configuration:
       inputs:
         - name: paidByTheHour
           type: YES_NO
+      subtleLinkTextKey:
+        value: paid-by-the-hour.i-dont-know-these-details
       contextFragment: jobContextFragment
     - &hourlyWage
       name: hourlyWage
@@ -1971,6 +2008,7 @@ shiba-configuration:
         - pageName: employersName
         - pageName: householdSelectionForIncome
         - pageName: doYouLiveAlone
+      subtleLinkTargetPage: lastThirtyDaysJobIncome
     hourlyWage:
       pageConfiguration: *hourlyWage
       groupName: jobs
@@ -2038,6 +2076,15 @@ shiba-configuration:
       datasources:
         - pageName: doYouLiveAlone
         - pageName: householdSelectionForIncome
+    lastThirtyDaysJobIncome:
+      pageConfiguration: *lastThirtyDaysJobIncome
+      nextPages:
+        - pageName: jobBuilder
+      datasources:
+        - pageName: doYouLiveAlone
+        - pageName: householdSelectionForIncome
+        - pageName: employersName
+      groupName: jobs
     incomeUpNext:
       pageConfiguration: *incomeUpNext
       nextPages:
@@ -2275,6 +2322,7 @@ shiba-configuration:
       completePages:
         - hoursAWeek
         - incomePerPayPeriod
+        - lastThirtyDaysJobIncome
       redirectPage: warningPage
       noDataRedirectPage: noDataWarningPage
       restartPage: incomeByJob

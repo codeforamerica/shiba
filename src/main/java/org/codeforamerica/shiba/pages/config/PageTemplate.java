@@ -12,6 +12,8 @@ public class PageTemplate {
     String headerKey;
     String headerHelpMessageKey;
     String primaryButtonTextKey;
+    String subtleLinkTextKey;
+    String subtleLinkTargetPage;
     Boolean hasPrimaryButton;
     String contextFragment;
 
@@ -23,5 +25,10 @@ public class PageTemplate {
     @SuppressWarnings("unused")
     public boolean hasHeaderHelpMessageKey() {
         return !this.headerHelpMessageKey.isBlank();
+    }
+
+    @SuppressWarnings("unused")
+    public boolean hasSubtleLinkTextKey() {
+        return !this.subtleLinkTextKey.isBlank();
     }
 }

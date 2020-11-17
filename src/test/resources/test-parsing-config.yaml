@@ -38,6 +38,9 @@ test-parsing:
       incomePerPayPeriod:
         pageName: incomePerPayPeriodPage
         inputName: incomePerPayPeriodInput
+      lastThirtyDaysJobIncome:
+        pageName: lastThirtyDaysJobIncome
+        inputName: lastThirtyDaysJobIncomeInput
   homeAddress:
     pageInputs:
       street:
