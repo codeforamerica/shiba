@@ -60,9 +60,11 @@ jobs:
           key: ${{ secrets.APTIBLE_SSH_PRIVATE_KEY }}
           known_hosts: ${{ secrets.APTIBLE_KNOWN_HOSTS }}
       - name: Generate Aptible branch name
+        id: generate-release
         run: |
           echo "BRANCH=deploy-$(date "+%s")" >> $GITHUB_ENV
           echo "RELEASE_SHA=$(git rev-parse HEAD)" >> $GITHUB_ENV
+          ::set-output name=release::$RELEASE_SHA
       - name: Wait for last deploy to complete
         uses: softprops/turnstyle@v1
         env:
@@ -88,7 +90,8 @@ jobs:
           'ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY_STAGING }}' \
           'SENTRY_DSN=${{ secrets.SENTRY_DSN }}' \
           'SENTRY_ENVIRONMENT=staging' \
-          'MIXPANEL_API-KEY=${{ secrets.MIXPANEL_API_KEY_STAGING }}'
+          'MIXPANEL_API-KEY=${{ secrets.MIXPANEL_API_KEY_STAGING }}' \
+          'RELEASE=${{ steps.generate-release.outputs.release }}'
       - name: Create Sentry release
         uses: getsentry/action-release@v1
         env:
