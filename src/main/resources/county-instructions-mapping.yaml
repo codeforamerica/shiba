@@ -9,3 +9,6 @@ county-to-instructions:
     Olmsted:
       CLIENT: This application was sent to a caseworker in Olmsted County. If you need additional support, you can contact Olmsted County at 507-328-6500
       CASEWORKER: If this application is for an Olmsted County resident, route it to the CAFs inbox and add a task note "From Code for America". If you have questions on how to process, reach out to Linda Schroeder (schroeder.linda@co.olmsted.mn.us) or Laura Larson (larson.laura@co.olmsted.mn.us). If you have general feedback, please contact Code for America (mnbenefits@codeforamerica.org).
+    Wabasha:
+      CLIENT: This application was sent to a caseworker in Wabasha County. If you need additional support, you can contact Wabasha County at 651-565-3351 (Preferred) or 1-888-315-8815
+      CASEWORKER: This cover page is for an application submitted via MNbenefits.org. Please print this into OnBase using the Hyland Printer. If you have questions or issues on how to process, please contact Lisa McNally (lmcnally@co.wabasha.mn.us). For general feedback, please contact Code for America (mnbenefis@codeforamerica.org).
