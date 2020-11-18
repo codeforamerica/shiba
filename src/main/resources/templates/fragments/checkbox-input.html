@@ -16,6 +16,7 @@
                        th:checked="${inputData.value.contains(option.value)}"
                        th:attrappend="data-follow-up=${input.followUpValues.contains(option.value)} ? |#${input.name}-follow-up| : ''">
                 <span th:text="#{${option.messageKey}}"></span>
+                <p th:if="${option.helpMessageKey != null}" th:text="#{${option.helpMessageKey}}" class="text--help with-no-padding"></p>
             </label>
         </th:block>
         <p class="text--error" th:if="${!inputData.valid()}">

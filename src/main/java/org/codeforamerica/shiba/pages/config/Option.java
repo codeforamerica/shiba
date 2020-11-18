@@ -7,4 +7,5 @@ public class Option {
     private String value;
     private String messageKey;
     private Boolean isNone;
+    private String helpMessageKey;
 }

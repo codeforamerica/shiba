@@ -32,6 +32,7 @@ shiba-configuration-input:
               selectableOptions:
                 - value: "1"
                   messageKey: checkbox-option-1
+                  helpMessageKey: option-help-key
                 - value: "2"
                   messageKey: checkbox-option-2
                 - value: "3"

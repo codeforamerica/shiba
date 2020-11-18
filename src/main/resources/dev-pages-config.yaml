@@ -81,12 +81,16 @@ shiba-configuration:
             selectableOptions:
               - value: SNAP
                 messageKey: choose-programs.food-snap
+                helpMessageKey: choose-programs.food-snap-help
               - value: CASH
                 messageKey: choose-programs.cash-programs
-              - value: GRH
-                messageKey: choose-programs.housing-support-group-residential-housing
+                helpMessageKey: choose-programs.cash-programs-help
               - value: EA
                 messageKey: choose-programs.emergency-assistance
+                helpMessageKey: choose-programs.emergency-assistance-help
+              - value: GRH
+                messageKey: choose-programs.housing-support-group-residential-housing
+                helpMessageKey: choose-programs.housing-grh-help
     - &introBasicInfo
       name: introBasicInfo
       pageTitle:

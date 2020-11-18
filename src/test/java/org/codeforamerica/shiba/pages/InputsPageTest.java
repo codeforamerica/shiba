@@ -45,6 +45,7 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
     String followUpUncertain = "UNSURE";
     String promptMessage = "prompt message";
     String helpMessage = "help message";
+    String optionHelpMessage = "option help message";
 
     @Override
     @BeforeEach
@@ -64,6 +65,7 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
         staticMessageSource.addMessage("follow-up-uncertain", Locale.US, followUpUncertain);
         staticMessageSource.addMessage("prompt-message-key", Locale.US, promptMessage);
         staticMessageSource.addMessage("help-message-key", Locale.US, helpMessage);
+        staticMessageSource.addMessage("option-help-key", Locale.US, optionHelpMessage);
     }
 
     @Test
@@ -254,6 +256,13 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
         testPage.enter("checkboxInput", checkboxOption1);
 
         assertThat(testPage.getCheckboxValues("checkboxInput")).containsOnly(checkboxOption1);
+    }
+
+    @Test
+    void shouldShowHelpMessageKeyOnCheckboxOptions() {
+        driver.navigate().to(baseUrl + "/pages/firstPage");
+
+        assertThat(testPage.driver.findElementByClassName("checkbox").getText()).contains(optionHelpMessage);
     }
 
     @Test

@@ -317,6 +317,9 @@
         "messageKey": {
           "type": "string"
         },
+        "helpMessageKey": {
+          "type": "string"
+        },
         "isNone": {
           "type": "boolean"
         }
