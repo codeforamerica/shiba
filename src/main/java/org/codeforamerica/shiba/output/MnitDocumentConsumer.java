@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output;
 
+import io.sentry.Sentry;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
@@ -24,6 +25,9 @@ public class MnitDocumentConsumer {
     }
 
     public void process(Application application) {
+        Sentry.configureScope(scope -> {
+            scope.setContexts("applicationId", application.getId());
+        });
         mnitClient.send(pdfGenerator.generate(application.getId(), CASEWORKER), application.getCounty());
         mnitClient.send(xmlGenerator.generate(application.getId(), CASEWORKER), application.getCounty());
     }

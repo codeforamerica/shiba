@@ -321,6 +321,7 @@ public class PageController {
             Breadcrumb breadcrumb = new Breadcrumb(message);
             breadcrumb.setData("pageName", ofNullable(pageName).orElse("null"));
             scope.addBreadcrumb(breadcrumb);
+            scope.setContexts("applicationId", applicationData.getId());
         });
     }
 }
