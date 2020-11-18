@@ -90,8 +90,8 @@ jobs:
           'ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY_STAGING }}' \
           'SENTRY_DSN=${{ secrets.SENTRY_DSN }}' \
           'SENTRY_ENVIRONMENT=staging' \
-          'MIXPANEL_API-KEY=${{ secrets.MIXPANEL_API_KEY_STAGING }}' \
-          'RELEASE=${{ steps.generate-release.outputs.RELEASE }}'
+          'SENTRY_RELEASE=${{ steps.generate-release.outputs.RELEASE }}' \
+          'MIXPANEL_API-KEY=${{ secrets.MIXPANEL_API_KEY_STAGING }}'
       - name: Create Sentry release
         uses: getsentry/action-release@v1
         env:
