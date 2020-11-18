@@ -19,6 +19,7 @@ caf:
       programs:
         SNAP: FOOD
         CASH: CASH
+        GRH: GRH
         EA: EMERGENCY
     householdMemberInfo:
       firstName: FIRST_NAME

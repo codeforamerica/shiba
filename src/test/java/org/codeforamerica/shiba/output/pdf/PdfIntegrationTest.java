@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.openqa.selenium.By;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.io.File;
@@ -365,6 +366,58 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
     }
 
     @Test
+    void shouldMapPrograms() {
+        navigateTo("choosePrograms");
+
+        takeSnapShot("test1.png");
+
+        testPage.enter("programs", "Food (SNAP)");
+        testPage.enter("programs", "Cash programs");
+        testPage.enter("programs", "Housing Support (Group Residential Housing)");
+        testPage.enter("programs", "Emergency assistance");
+
+        takeSnapShot("test2.png");
+
+        testPage.clickContinue();
+
+        PDAcroForm pdAcroForm = submitAndDownloadReceipt();
+        assertThat(getPdfFieldText(pdAcroForm, "FOOD")).isEqualTo("Yes");
+        assertThat(getPdfFieldText(pdAcroForm, "CASH")).isEqualTo("Yes");
+        assertThat(getPdfFieldText(pdAcroForm, "EMERGENCY")).isEqualTo("Yes");
+        assertThat(getPdfFieldText(pdAcroForm, "GRH")).isEqualTo("Yes");
+    }
+
+    @Test
+    void shouldMapAdditionalIncomeInfo() {
+        navigateTo("futureIncome");
+
+        testPage.enter("earnLessMoneyThisMonth", YesNoAnswer.YES.getDisplayValue());
+        driver.findElement(By.id("additionalIncomeInfo")).sendKeys("abc");
+        testPage.clickContinue();
+
+        PDAcroForm pdAcroForm = submitAndDownloadReceipt();
+        assertThat(getPdfFieldText(pdAcroForm, "ADDITIONAL_INCOME_INFO")).isEqualTo("abc");
+    }
+
+    @Test
+    void shouldMapNoPermanentAddressIfSelected() {
+        navigateTo("homeAddress");
+        testPage.enter("streetAddress", "originalHomeStreetAddress");
+        testPage.enter("apartmentNumber", "originalHomeApt");
+        testPage.enter("city", "originalHomeCity");
+        testPage.enter("zipCode", "54321");
+        testPage.enter("isHomeless", "I don't have a permanent address");
+        testPage.enter("sameMailingAddress", "Yes, send mail here");
+        testPage.clickContinue();
+        testPage.clickButton("Use this address");
+
+        PDAcroForm pdAcroForm = submitAndDownloadReceipt();
+        assertThat(pdAcroForm.getField("APPLICANT_HOMELESS").getValueAsString())
+                .isEqualTo("homeless");
+    }
+
+
+    @Test
     void shouldMapJobLastThirtyDayIncome() {
         addHouseholdMembers();
 
@@ -501,6 +554,4 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             throw new RuntimeException(e);
         }
     }
-
-
 }
