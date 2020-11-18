@@ -632,7 +632,7 @@ shiba-configuration:
         value: do-you-need-help-immediately.title
     - &thirtyDayIncome
       headerKey:
-        value: thirty-day-income.how-much-money-have-they-made-in-the-last-30-days
+        value: thirty-day-income.how-much-money-has-your-household-made-in-the-last-30-days
         conditionalValues:
           - value: thirty-day-income.how-much-money-have-you-made-in-the-last-30-days
             compositeCondition:
