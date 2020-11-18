@@ -12,3 +12,6 @@ county-to-instructions:
     Wabasha:
       CLIENT: This application was sent to a caseworker in Wabasha County. If you need additional support, you can contact Wabasha County at 651-565-3351 (Preferred) or 1-888-315-8815
       CASEWORKER: This cover page is for an application submitted via MNbenefits.org. Please print this into OnBase using the Hyland Printer. If you have questions or issues on how to process, please contact Lisa McNally (lmcnally@co.wabasha.mn.us). For general feedback, please contact Code for America (mnbenefis@codeforamerica.org).
+    Wright:
+      CLIENT: This application was sent to a caseworker in Wright County. If you need additional support, you can contact Wright County at 763-682-7414.
+      CASEWORKER: This cover page is for an application submitted via MNbenefits.org, a new pilot benefits application for Minnesotans. If you are an OT or eligibility worker, please process as a normal SNAP/cash application. For additional questions on how to process, reach out to Stephanie Wiley (Stephanie-Bridgette.Wiley@co.wright.mn.us). If you have general feedback or problems with the form, please contact Code for America (mnbenefits@codeforamerica.org).
