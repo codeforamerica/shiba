@@ -368,16 +368,10 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
     @Test
     void shouldMapPrograms() {
         navigateTo("choosePrograms");
-
-        takeSnapShot("test1.png");
-
         testPage.enter("programs", "Food (SNAP)");
         testPage.enter("programs", "Cash programs");
         testPage.enter("programs", "Housing Support (Group Residential Housing)");
         testPage.enter("programs", "Emergency assistance");
-
-        takeSnapShot("test2.png");
-
         testPage.clickContinue();
 
         PDAcroForm pdAcroForm = submitAndDownloadReceipt();
