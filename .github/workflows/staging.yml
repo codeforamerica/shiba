@@ -7,6 +7,12 @@ on:
   push:
     branches:
       - master
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to Test/Deploy to Staging'
+        required: true
+        default: master
 
 jobs:
   test:
