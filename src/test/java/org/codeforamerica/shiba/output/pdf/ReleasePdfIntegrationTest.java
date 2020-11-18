@@ -25,6 +25,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
+import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -51,6 +52,8 @@ public class ReleasePdfIntegrationTest extends AbstractBasePageTest {
         testPage.clickButton("Apply now");
         testPage.clickContinue();
         testPage.clickContinue();
+        navigateTo("doYouLiveAlone");
+        testPage.clickButton("Yes");
     }
 
     @Test
@@ -104,7 +107,7 @@ public class ReleasePdfIntegrationTest extends AbstractBasePageTest {
     @Test
     void shouldMapNoForSelfEmployment() {
         navigateTo("doYouLiveAlone");
-        testPage.enter("liveAlone", YesNoAnswer.NO.getDisplayValue());
+        testPage.enter("liveAlone", YesNoAnswer.YES.getDisplayValue());
         testPage.clickContinue();
         navigateTo("incomeByJob");
         testPage.clickButton("Add a job");
@@ -325,6 +328,168 @@ public class ReleasePdfIntegrationTest extends AbstractBasePageTest {
                 .isEqualTo(enrichedState);
         assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
                 .isEqualTo(enrichedZipCodeValue);
+    }
+
+    @Test
+    void shouldMapPregnantHouseholdMembers() {
+        addHouseholdMembers();
+
+        testPage.clickButton("Yes, that's everyone");
+        navigateTo("pregnant");
+        testPage.enter("isPregnant", YesNoAnswer.YES.getDisplayValue());
+        testPage.enter("whoIsPregnant", "Me");
+        testPage.enter("whoIsPregnant", "Jim Halpert");
+        testPage.clickContinue();
+
+        PDAcroForm pdAcroForm = submitAndDownloadReceipt();
+        assertThat(getPdfFieldText(pdAcroForm, "WHO_IS_PREGNANT")).isEqualTo(
+                "Dwight Schrute, Jim Halpert"
+        );
+    }
+
+    @Test
+    void shouldMapFullEmployeeNames() {
+        addHouseholdMembers();
+
+        navigateTo("incomeByJob");
+        testPage.clickButton("Add a job");
+        testPage.enter("whoseJobIsIt", "Jim Halpert");
+        testPage.clickContinue();
+        testPage.enter("employersName", "someEmployerName");
+        testPage.clickContinue();
+        testPage.enter("selfEmployment", "No");
+        testPage.enter("paidByTheHour", "No");
+        testPage.enter("payPeriod", "Every week");
+        testPage.clickContinue();
+        testPage.enter("incomePerPayPeriod", "1");
+        testPage.clickContinue();
+
+        PDAcroForm pdAcroForm = submitAndDownloadReceipt();
+        assertThat(getPdfFieldText(pdAcroForm, "EMPLOYEE_FULL_NAME_0")).isEqualTo(
+                "Jim Halpert"
+        );
+    }
+
+    @Test
+    void shouldMapJobLastThirtyDayIncome() {
+        addHouseholdMembers();
+
+        fillInRequiredPages();
+
+        navigateTo("incomeByJob");
+        testPage.clickButton("Add a job");
+        testPage.enter("whoseJobIsIt", "Jim Halpert");
+        testPage.clickContinue();
+        testPage.enter("employersName", "someEmployerName");
+        testPage.clickContinue();
+        testPage.enter("selfEmployment", "No");
+
+        testPage.clickInputById("subtle-link");
+        testPage.enter("lastThirtyDaysJobIncome", "123");
+        testPage.clickContinue();
+
+        PDAcroForm pdAcroForm = submitAndDownloadReceipt();
+        assertThat(getPdfFieldText(pdAcroForm, "GROSS_MONTHLY_INCOME_0")).isEqualTo("123.0");
+        assertThat(getPdfFieldText(pdAcroForm, "MONEY_MADE_LAST_MONTH")).isEqualTo("123.0");
+        assertThat(getPdfFieldText(pdAcroForm, "EXPEDITED_ELIGIBILITY")).isEqualTo("Expedited");
+    }
+
+    @Test
+    void shouldMapJobLastThirtyDayIncomeAllBlankIsUndetermind() {
+        addHouseholdMembers();
+
+        fillInRequiredPages();
+
+        navigateTo("incomeByJob");
+        testPage.clickButton("Add a job");
+        testPage.enter("whoseJobIsIt", "Jim Halpert");
+        testPage.clickContinue();
+        testPage.enter("employersName", "someEmployerName");
+        testPage.clickContinue();
+        testPage.enter("selfEmployment", "No");
+
+        testPage.clickInputById("subtle-link");
+        testPage.enter("lastThirtyDaysJobIncome", "");
+        testPage.clickContinue();
+
+        testPage.clickButton("Add a job");
+        testPage.enter("whoseJobIsIt", "Me");
+        testPage.clickContinue();
+        testPage.enter("employersName", "someEmployerName");
+        testPage.clickContinue();
+        testPage.enter("selfEmployment", "No");
+
+        testPage.clickInputById("subtle-link");
+        testPage.enter("lastThirtyDaysJobIncome", "");
+        testPage.clickContinue();
+
+        PDAcroForm pdAcroForm = submitAndDownloadReceipt();
+        assertThat(getPdfFieldText(pdAcroForm, "EXPEDITED_ELIGIBILITY")).isEqualTo("Undetermined");
+    }
+
+    @Test
+    void shouldMapJobLastThirtyDayIncomeSomeBlankIsDetermined() {
+        addHouseholdMembers();
+
+        fillInRequiredPages();
+
+        navigateTo("incomeByJob");
+        // Job 1
+        testPage.clickButton("Add a job");
+        testPage.enter("whoseJobIsIt", "Jim Halpert");
+        testPage.clickContinue();
+        testPage.enter("employersName", "someEmployerName");
+        testPage.clickContinue();
+        testPage.enter("selfEmployment", "No");
+
+        testPage.clickInputById("subtle-link");
+        testPage.enter("lastThirtyDaysJobIncome", "123");
+        testPage.clickContinue();
+
+        // Job 2
+        testPage.clickButton("Add a job");
+        testPage.enter("whoseJobIsIt", "Me");
+        testPage.clickContinue();
+        testPage.enter("employersName", "someEmployerName");
+        testPage.clickContinue();
+        testPage.enter("selfEmployment", "No");
+
+        testPage.clickInputById("subtle-link");
+        testPage.enter("lastThirtyDaysJobIncome", "");
+        testPage.clickContinue();
+
+        PDAcroForm pdAcroForm = submitAndDownloadReceipt();
+        assertThat(getPdfFieldText(pdAcroForm, "GROSS_MONTHLY_INCOME_0")).isEqualTo("123.0");
+        assertThat(getPdfFieldText(pdAcroForm, "MONEY_MADE_LAST_MONTH")).isEqualTo("123.0");
+        assertThat(getPdfFieldText(pdAcroForm, "EXPEDITED_ELIGIBILITY")).isEqualTo("Expedited");
+    }
+
+    private void addHouseholdMembers() {
+        navigateTo("personalInfo");
+        testPage.enter("firstName", "Dwight");
+        testPage.enter("lastName", "Schrute");
+        testPage.clickContinue();
+
+        navigateTo("doYouLiveAlone");
+        testPage.enter("liveAlone", YesNoAnswer.NO.getDisplayValue());
+        testPage.clickContinue();
+
+        testPage.enter("firstName", "Jim");
+        testPage.enter("lastName", "Halpert");
+        testPage.enter("programs", "None of the above");
+        testPage.clickContinue();
+    }
+
+    private void fillInRequiredPages() {
+        navigateTo("migrantFarmWorker");
+        testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
+        navigateTo("utilities");
+        testPage.enter("payForUtilities", "Cooling");
+        testPage.clickContinue();
+    }
+
+    private String getPdfFieldText(PDAcroForm pdAcroForm, String fieldName) {
+        return pdAcroForm.getField(fieldName).getValueAsString();
     }
 
     private PDAcroForm submitAndDownloadReceipt() {
