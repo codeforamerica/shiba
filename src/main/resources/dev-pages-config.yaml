@@ -524,6 +524,12 @@ shiba-configuration:
       name: householdList
       pageTitle:
         value: household-list.title
+    - &householdDeleteWarningPage
+      name: householdDeleteWarningPage
+      headerKey:
+        value: warning-page.you-are-about-to-delete-household-member
+      pageTitle:
+        value: warning-page.delete-household-member-warning
     - &introPersonalDetails
       name: introPersonalDetails
       pageTitle:
@@ -1475,16 +1481,50 @@ shiba-configuration:
               pageName: doYouLiveAlone
               input: liveAlone
               value: "false"
-    - &warningPage
-      name: warningPage
+    - &jobRedirectPage
+      name: jobRedirectPage
       headerKey:
-        value: warning-page.going-back-will-take-you-to-the-beginning-of-the-jobs-section-where-you-will-start-over
+        conditionalValues:
+          - value: warning-page.you-are-about-to-delete-your-job
+            compositeCondition:
+              logicalOperator: OR
+              conditions:
+                - pageName: householdSelectionForIncome
+                  input: whoseJobIsIt
+                  value: "applicant"
+                  matcher: CONTAINS_SUBSTRING
+                - pageName: doYouLiveAlone
+                  input: liveAlone
+                  value: "true"
+          - value: warning-page.you-are-about-to-delete-member-job
+            condition:
+              pageName: householdSelectionForIncome
+              input: whoseJobIsIt
+              value: "applicant"
+              matcher: DOES_NOT_CONTAIN_SUBSTRING
       pageTitle:
         value: warning-page.go-back-title
-    - &noDataWarningPage
-      name: noDataWarningPage
+    - &jobDeleteWarningPage
+      name: jobDeleteWarningPage
       headerKey:
-        value: warning-page.you-are-about-to-delete-all-of-your-jobs-and-go-back-to-the-beginning-of-this-section
+        conditionalValues:
+          - value: warning-page.you-are-about-to-delete-your-job
+            compositeCondition:
+              logicalOperator: OR
+              conditions:
+                - pageName: householdSelectionForIncome
+                  input: whoseJobIsIt
+                  value: "applicant"
+                  matcher: CONTAINS_SUBSTRING
+                - pageName: doYouLiveAlone
+                  input: liveAlone
+                  value: "true"
+          - value: warning-page.you-are-about-to-delete-member-job
+            condition:
+              pageName: householdSelectionForIncome
+              input: whoseJobIsIt
+              value: "applicant"
+              matcher: DOES_NOT_CONTAIN_SUBSTRING
       pageTitle:
         value: warning-page.no-data-title
     - &startExpenses
@@ -1843,6 +1883,13 @@ shiba-configuration:
       datasources:
         - groupName: household
         - pageName: personalInfo
+    householdDeleteWarningPage:
+      pageConfiguration: *householdDeleteWarningPage
+      appliesToGroup: household
+      nextPages:
+        - pageName: householdList
+      datasources:
+        - groupName: household
     introPersonalDetails:
       pageConfiguration: *introPersonalDetails
       nextPages:
@@ -2055,20 +2102,23 @@ shiba-configuration:
       datasources:
         - groupName: jobs
         - pageName: doYouLiveAlone
-    warningPage:
-      pageConfiguration: *warningPage
+    jobRedirectPage:
+      pageConfiguration: *jobRedirectPage
       dataMissingRedirect: employmentStatus
       nextPages:
         - pageName: jobBuilder
       datasources:
         - groupName: jobs
-    noDataWarningPage:
-      pageConfiguration: *noDataWarningPage
+    jobDeleteWarningPage:
+      pageConfiguration: *jobDeleteWarningPage
       dataMissingRedirect: employmentStatus
+      appliesToGroup: jobs
       nextPages:
         - pageName: jobBuilder
       datasources:
         - groupName: jobs
+        - pageName: doYouLiveAlone
+        - pageName: householdSelectionForIncome
     thirtyDayIncome:
       pageConfiguration: *thirtyDayIncome
       nextPages:
@@ -2323,14 +2373,18 @@ shiba-configuration:
         - hoursAWeek
         - incomePerPayPeriod
         - lastThirtyDaysJobIncome
-      redirectPage: warningPage
-      noDataRedirectPage: noDataWarningPage
+      reviewPage: jobBuilder
+      redirectPage: jobRedirectPage
+      deleteWarningPage: jobDeleteWarningPage
       restartPage: incomeByJob
     household:
       startPages:
         - householdMemberInfo
       completePages:
         - householdMemberInfo
+      reviewPage: householdList
+      deleteWarningPage: householdDeleteWarningPage
+      restartPage: doYouLiveAlone
       startingCount: 1
   landmarkPages:
     startTimerPage: languagePreferences

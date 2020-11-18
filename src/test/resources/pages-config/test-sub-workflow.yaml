@@ -39,10 +39,14 @@ shiba-configuration-sub-workflow:
       name: endPage
       pageTitle:
         value: end-page-title
-    - &testWarningPage
-      name: testWarningPage
+    - &deleteWarningPage
+      name: deleteWarningPage
       pageTitle:
         value: some-warning-title
+    - &redirectPage
+      name: redirectPage
+      pageTitle:
+        value: some-redirect-title
     - &soloPage
       name: soloPage
       pageTitle:
@@ -104,8 +108,16 @@ shiba-configuration-sub-workflow:
         - pageName: firstPage
       datasources:
         - groupName: group1
-    testWarningPage:
-      pageConfiguration: *testWarningPage
+    deleteWarningPage:
+      pageConfiguration: *deleteWarningPage
+      dataMissingRedirect: earlierPage
+      appliesToGroup: group1
+      nextPages:
+        - pageName: endPage
+      datasources:
+        - groupName: group1
+    redirectPage:
+      pageConfiguration:  *redirectPage
       dataMissingRedirect: earlierPage
       nextPages:
         - pageName: endPage
@@ -124,14 +136,15 @@ shiba-configuration-sub-workflow:
         - groupName: group2
   pageGroups:
     group1:
-      noDataRedirectPage: testWarningPage
       completePages:
         - secondPage
         - thirdPage
       startPages:
         - skippableFirstPage
         - firstPage
-      redirectPage: testWarningPage
+      reviewPage: endPage
+      deleteWarningPage: deleteWarningPage
+      redirectPage: redirectPage
       restartPage: startPage
     group2:
       startPages:

@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
 <li th:fragment="job(employersName, subworkflowKey, index)" th:id="|iteration${index}|">
-    <form method="post" th:action="@{|/groups/${subworkflowKey}/${index}/delete|}">
+    <form method="post" th:action="@{|/groups/${subworkflowKey}/${index}/deleteWarning|}">
         <span th:text="|${employersName}|"></span>
         <button class="button--link right"
                 th:id="|iteration${index}-delete|"

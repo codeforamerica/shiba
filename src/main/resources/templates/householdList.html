@@ -22,7 +22,7 @@
                             <th:block th:each="iteration, iterationStat: ${subworkflow.value}">
                                 <li th:id="|iteration${iterationStat.index}|">
                                     <form method="post"
-                                          th:action="@{|/groups/${subworkflow.key}/${iterationStat.index}/delete|}">
+                                          th:action="@{|/groups/${subworkflow.key}/${iterationStat.index}/deleteWarning|}">
                                         <span th:text="|${iteration.getPagesData().get('householdMemberInfo').get('firstName').value[0]}&nbsp;${iteration.getPagesData().get('householdMemberInfo').get('lastName').value[0]}|"></span>
                                         <button class="button--link right"
                                                 th:id="|iteration${iterationStat.index}-delete|"

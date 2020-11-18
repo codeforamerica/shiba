@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
-<body>
+<body th:with="householdMemberName=${iterationData.getPagesData().get('householdMemberInfo').get('firstName').value[0] + ' ' + iterationData.getPagesData().get('householdMemberInfo').get('lastName').value[0]}">
 <div class="page-wrapper">
     <div th:replace="fragments/demoBanner"></div>
     <section class="slab slab--shiba">
@@ -9,15 +9,15 @@
             <a th:replace="fragments/go-back"></a>
             <div class="card spacing-above-35">
                 <div class="grid__item spacing-above-35 spacing-below-35">
-                    <h2 th:text="#{${page.headerKey}}"></h2>
+                    <h2 th:text="#{${page.headerKey}(${householdMemberName})}"></h2>
                     <h2 th:text="#{warning-page.is-that-ok}"></h2>
                 </div>
                 <div class="spacing-below-15 spacing-above-35">
                     <a class="button button--primary" th:href="'/pages/'+${pageName}+'/navigation?option=0'"
-                       th:text="#{warning-page.nevermind-ill-keep-my-job}"></a>
+                       th:text="#{warning-page.nevermind-lets-keep-them}"></a>
                 </div>
-                <form method="post" th:action="'/groups/'+${subworkflows.keySet().iterator().next()}+'/delete'">
-                    <button class="button" type="submit" th:text="#{warning-page.yes-go-back-to-the-start}"></button>
+                <form method="post" th:action="'/groups/'+${subworkflows.keySet().iterator().next()}+'/'+${param.iterationIndex}+'/delete'">
+                    <button class="button" type="submit" th:text="#{warning-page.yes-remove-them}"></button>
                 </form>
             </div>
         </div>

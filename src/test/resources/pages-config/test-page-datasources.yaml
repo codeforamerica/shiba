@@ -4,6 +4,8 @@ shiba-configuration-page-datasource:
         name: firstPage
         pageTitle:
           value: first-page-title
+        headerKey:
+          value: first-page-title
         inputs:
         - name: someInputName
           type: TEXT

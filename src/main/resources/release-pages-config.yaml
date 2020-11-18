@@ -2040,7 +2040,7 @@ shiba-configuration:
         - hoursAWeek
         - incomePerPayPeriod
       redirectPage: warningPage
-      noDataRedirectPage: noDataWarningPage
+      warningPage: noDataWarningPage
       restartPage: incomeByJob
     household:
       startPages:

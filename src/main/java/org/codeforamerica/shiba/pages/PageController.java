@@ -29,7 +29,6 @@ import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
 
@@ -96,6 +95,7 @@ public class PageController {
     @GetMapping("/pages/{pageName}")
     ModelAndView getPage(
             @PathVariable String pageName,
+            @RequestParam(required = false, defaultValue = "") String iterationIndex,
             HttpServletResponse response,
             HttpSession httpSession
     ) {
@@ -138,6 +138,14 @@ public class PageController {
             pagesData.putAll(currentIterationPagesData);
         }
 
+        if (iterationIndex != null && !iterationIndex.isBlank() && applicationData.getSubworkflows().containsKey(pageWorkflow.getAppliesToGroup())) {
+            PagesData iterationData = pageWorkflow.getSubworkflows(applicationData)
+                    .get(pageWorkflow.getAppliesToGroup()).get(Integer.parseInt(iterationIndex)).getPagesData();
+
+            pagesData = (PagesData) pagesData.clone();
+            pagesData.putAll(iterationData);
+        }
+
         PageTemplate pageTemplate = pagesData.evaluate(pageWorkflow, applicationData);
 
         HashMap<String, Object> model = new HashMap<>(Map.of(
@@ -161,6 +169,10 @@ public class PageController {
             model.put("data", pagesData.getDatasourcePagesBy(pageWorkflow.getDatasources()));
             if (applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources())) {
                 model.put("subworkflows", pageWorkflow.getSubworkflows(applicationData));
+                if (iterationIndex != null && !iterationIndex.isBlank()) {
+                    model.put("iterationData", pageWorkflow.getSubworkflows(applicationData)
+                        .get(pageWorkflow.getAppliesToGroup()).get(Integer.parseInt(iterationIndex)));
+                }
             } else {
                 return new ModelAndView("redirect:/pages/" + pageWorkflow.getDataMissingRedirect());
             }
@@ -184,17 +196,29 @@ public class PageController {
     ModelAndView deleteIteration(
             @PathVariable String groupName,
             @PathVariable int iteration,
-            @RequestHeader("referer") String referer,
             HttpSession httpSession
     ) {
-        Optional<String> noDataRedirectPage = ofNullable(applicationConfiguration.getPageGroups().get(groupName).getNoDataRedirectPage());
-        if (this.applicationData.getSubworkflows().get(groupName).size() == 1 && noDataRedirectPage.isPresent()) {
-            return new ModelAndView("redirect:/pages/" + noDataRedirectPage.get());
+        String nextPage;
+        this.applicationData.getSubworkflows().get(groupName).remove(iteration);
+        pageEventPublisher.publish(new SubworkflowIterationDeletedEvent(httpSession.getId(), groupName));
+
+        if (this.applicationData.getSubworkflows().get(groupName).size() == 0) {
+            this.applicationData.getSubworkflows().remove(groupName);
+            nextPage = applicationConfiguration.getPageGroups().get(groupName).getRestartPage();
         } else {
-            this.applicationData.getSubworkflows().get(groupName).remove(iteration);
-            pageEventPublisher.publish(new SubworkflowIterationDeletedEvent(httpSession.getId(), groupName));
-            return new ModelAndView("redirect:" + referer);
+            nextPage = applicationConfiguration.getPageGroups().get(groupName).getReviewPage();
         }
+
+        return new ModelAndView(String.format("redirect:/pages/%s", nextPage));
+    }
+
+    @PostMapping("/groups/{groupName}/{iteration}/deleteWarning")
+    ModelAndView deleteIterationWarning(
+            @PathVariable String groupName,
+            @PathVariable int iteration
+    ) {
+        String deleteWarningPage = applicationConfiguration.getPageGroups().get(groupName).getDeleteWarningPage();
+        return new ModelAndView("redirect:/pages/" + deleteWarningPage + "?iterationIndex=" + iteration);
     }
 
     @PostMapping("/pages/{pageName}")

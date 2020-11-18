@@ -114,7 +114,6 @@ public class PageDatasourcePageTest extends AbstractExistingStartTimePageTest {
         assertThat(driver.findElement(By.cssSelector("h2")).getText()).isEqualTo(yesHeaderText);
     }
 
-
     @Test
     void shouldDisplayPageHeaderBasedOnCompositeConditionOtherPath() {
         driver.navigate().to(baseUrl + "/pages/yesNoQuestionPage2");

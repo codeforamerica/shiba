@@ -15,6 +15,7 @@ public class PageWorkflowConfiguration {
     private List<PageDatasource> datasources = new ArrayList<>();
     private PageConfiguration pageConfiguration;
     private String groupName;
+    private String appliesToGroup;
     private String dataMissingRedirect;
     private String enrichment;
     private String subtleLinkTargetPage;

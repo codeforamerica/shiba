@@ -42,6 +42,7 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
         staticMessageSource.addMessage("start-page-title", Locale.US, "start-page-title");
         staticMessageSource.addMessage("end-page-title", Locale.US, "end-page-title");
         staticMessageSource.addMessage("solo-page-title", Locale.US, "solo-page-title");
+        staticMessageSource.addMessage("warning-page-header", Locale.US, "This is a warning for: {0}");
     }
 
     @Test
@@ -77,14 +78,6 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
         String sessionId = driver.manage().getCookieNamed("JSESSIONID").getValue();
         testPage.clickContinue();
         verify(pageEventPublisher).publish(new SubworkflowCompletedEvent(sessionId, "group2"));
-    }
-
-    @Test
-    void shouldDeleteLastSubworkflowAndRedirectBackIfNoDataRedirectPageIsNotPresent() {
-        navigateTo("soloPage");
-        testPage.clickContinue();
-        driver.findElement(By.id("iteration0-delete")).click();
-        assertThat(driver.getTitle()).isEqualTo("end-page-title");
     }
 
     @Test
@@ -164,63 +157,52 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
     }
 
     @Test
-    void shouldRemoveTheEntryFromFinalPageIfDeleted() {
+    void shouldShowDeleteWarningPage() {
+        String warningPageTitle = "warning page title";
+        staticMessageSource.addMessage("some-warning-title", Locale.US, warningPageTitle);
+
+        String firstIterationInput1Value = "goToSecondPage";
+        String secondIterationInput1Value = "goToThirdPage";
+
         navigateTo("startPage");
         testPage.clickContinue();
-        testPage.enter("input1", "goToSecondPage");
+        testPage.enter("input1", firstIterationInput1Value);
         testPage.clickContinue();
         testPage.enter("input2", "text 2");
         testPage.clickContinue();
 
         testPage.clickContinue();
-        testPage.enter("input1", "goToThirdPage");
+        testPage.enter("input1", secondIterationInput1Value);
         testPage.clickContinue();
         testPage.enter("input3", "text 4");
         testPage.clickContinue();
 
+        assertThat(driver.findElement(By.id("iteration0-delete"))).isNotNull();
+        assertThat(driver.findElement(By.id("iteration1-delete"))).isNotNull();
+        assertThat(driver.findElements(By.id("iteration2-delete"))).isEmpty();
+
+        driver.findElement(By.id("iteration1-delete")).click();
+
+        assertThat(testPage.getTitle()).isEqualTo(warningPageTitle);
+        assertThat(testPage.findElementTextByName("warning-message")).isEqualTo("This is a warning for: " + secondIterationInput1Value);
+        testPage.clickButton("Yes, remove it");
+
+        assertThat(driver.findElement(By.id("iteration0-delete"))).isNotNull();
+        assertThat(driver.findElements(By.id("iteration1-delete"))).isEmpty();
+
         driver.findElement(By.id("iteration0-delete")).click();
-        assertThat(driver.findElement(By.id("iteration0")).getText()).isEqualTo("goToThirdPage");
+
+        assertThat(testPage.getTitle()).isEqualTo(warningPageTitle);
+        assertThat(testPage.findElementTextByName("warning-message")).isEqualTo("This is a warning for: " + firstIterationInput1Value);
+        testPage.clickButton("Yes, remove it");
+
+        assertThat(driver.findElements(By.id("iteration0-delete"))).isEmpty();
     }
+
 
     @Test
     void shouldPublishSubflowIterationDeleted() {
-        navigateTo("startPage");
-        testPage.clickContinue();
-        testPage.enter("input1", "goToSecondPage");
-        testPage.clickContinue();
-        testPage.enter("input2", "text 2");
-        testPage.clickContinue();
-
-        testPage.clickContinue();
-        testPage.enter("input1", "goToThirdPage");
-        testPage.clickContinue();
-        testPage.enter("input3", "text 4");
-        testPage.clickContinue();
-
-        String sessionId = driver.manage().getCookieNamed("JSESSIONID").getValue();
-        driver.findElement(By.id("iteration0-delete")).click();
-        verify(pageEventPublisher).publish(new SubworkflowIterationDeletedEvent(sessionId, "group1"));
-    }
-
-    @Test
-    void shouldPublishSubflowIterationDeletedOnGroupDelete() {
-        navigateTo("startPage");
-        testPage.clickContinue();
-        testPage.enter("input1", "goToSecondPage");
-        testPage.clickContinue();
-        testPage.enter("input2", "text 2");
-        testPage.clickContinue();
-
-        String sessionId = driver.manage().getCookieNamed("JSESSIONID").getValue();
-        driver.findElement(By.id("iteration0-delete")).click();
-        driver.findElement(By.tagName("button")).click();
-
-        verify(pageEventPublisher).publish(new SubworkflowIterationDeletedEvent(sessionId, "group1"));
-    }
-
-    @Test
-    void shouldGoToSpecifiedPageWhenGoBackFromEndOfTheWorkflow() {
-        String warningPageTitle = "some title";
+        String warningPageTitle = "warning page title";
         this.staticMessageSource.addMessage("some-warning-title", Locale.US, warningPageTitle);
 
         navigateTo("startPage");
@@ -230,13 +212,36 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
         testPage.enter("input2", "text 2");
         testPage.clickContinue();
 
-        testPage.goBack();
+        testPage.clickContinue();
+        testPage.enter("input1", "goToThirdPage");
+        testPage.clickContinue();
+        testPage.enter("input3", "text 4");
+        testPage.clickContinue();
 
-        assertThat(testPage.getTitle()).isEqualTo(warningPageTitle);
+        String sessionId = driver.manage().getCookieNamed("JSESSIONID").getValue();
+        driver.findElement(By.id("iteration0-delete")).click();
+        testPage.clickButton("Yes, remove it");
+        verify(pageEventPublisher).publish(new SubworkflowIterationDeletedEvent(sessionId, "group1"));
     }
 
     @Test
-    void shouldGoToSpecifiedPageWhenAttemptToDeleteTheLastDataEntry() {
+    void shouldGoToSpecifiedPageWhenGoBackFromEndOfTheWorkflow() {
+        String redirectPageTitle = "some title";
+        this.staticMessageSource.addMessage("some-redirect-title", Locale.US, redirectPageTitle);
+
+        navigateTo("startPage");
+        testPage.clickContinue();
+        testPage.enter("input1", "goToSecondPage");
+        testPage.clickContinue();
+        testPage.enter("input2", "text 2");
+        testPage.clickContinue();
+        testPage.goBack();
+
+        assertThat(testPage.getTitle()).isEqualTo(redirectPageTitle);
+    }
+
+    @Test
+    void shouldGoToSpecifiedPageWhenAttemptToDeleteAnyDataEntry() {
         String warningPageTitle = "some title";
         this.staticMessageSource.addMessage("some-warning-title", Locale.US, warningPageTitle);
         String endPageTitle = "some other title";
@@ -284,10 +289,9 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
         testPage.clickContinue();
 
         driver.findElement(By.id("iteration0-delete")).click();
+
         driver.findElement(By.tagName("button")).click();
-
         testPage.goBack();
-
         assertThat(testPage.getTitle()).isEqualTo("earlierPage");
     }
 }
