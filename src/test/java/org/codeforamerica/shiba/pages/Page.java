@@ -109,7 +109,7 @@ public class Page {
     private void selectEnumeratedInput(String inputName, String optionText) {
         WebElement inputToSelect = driver.findElements(By.cssSelector(String.format("input[name^='%s']", inputName))).stream()
                 .map(input -> input.findElement(By.xpath("./..")))
-                .filter(label -> label.getText().equals(optionText))
+                .filter(label -> label.getText().contains(optionText))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException(String.format("Cannot find value \"%s\" or input \"%s\"", optionText, inputName)));
         inputToSelect.click();
@@ -153,7 +153,7 @@ public class Page {
     public List<String> getCheckboxValues(String inputName) {
         return driver.findElements(By.cssSelector(String.format("input[name^='%s']", inputName))).stream()
                 .filter(WebElement::isSelected)
-                .map(input -> input.findElement(By.xpath("./..")).getText())
+                .map(input -> input.findElement(By.xpath("./..")).getText().split("\n")[0])
                 .collect(Collectors.toList());
     }
 
