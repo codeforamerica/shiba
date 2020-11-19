@@ -842,10 +842,11 @@ shiba-configuration:
       headerKey:
         value: energy-assistance.have-you-received-money-for-energy-assistance
         conditionalValues:
+          - value: energy-assistance.household-received-money
             condition:
               pageName: doYouLiveAlone
               input: liveAlone
-              value: "true"
+              value: "false"
       hasPrimaryButton: false
       inputs:
         - name: energyAssistance

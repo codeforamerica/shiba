@@ -67,7 +67,7 @@
           "type": "boolean"
         },
         "headerHelpMessageKey": {
-          "type": "string"
+          "#ref": "#/definitions/value"
         },
         "inputs": {
           "type": "array",
@@ -82,6 +82,12 @@
       "properties": {
         "pageConfiguration": {
           "$ref": "#/definitions/page"
+        },
+        "appliesToGroup": {
+          "type": "string"
+        },
+        "subtleLinkTargetPage": {
+          "type": "string"
         },
         "datasources": {
           "type": "array",
@@ -160,6 +166,9 @@
               },
               "condition": {
                 "$ref": "#/definitions/condition"
+              },
+              "compositeCondition" : {
+                "$ref": "#/definitions/compositeCondition"
               }
             }
           }
@@ -183,7 +192,10 @@
             "INCREMENTER",
             "TEXTAREA",
             "CUSTOM",
-            "HOURLY_WAGE"
+            "HOURLY_WAGE",
+            "SSN",
+            "PHONE",
+            "LONG_TEXT"
           ]
         },
         "min": {
@@ -265,7 +277,8 @@
                   "STATE",
                   "PHONE",
                   "MONEY",
-                  "NUMBER_OF_JOBS"
+                  "NUMBER_OF_JOBS",
+                  "PHONE_STARTS_WITH_ONE"
                 ]
               },
               "condition": {
@@ -303,8 +316,24 @@
             "CONTAINS",
             "NOT_EMPTY",
             "DOES_NOT_CONTAIN",
-            "EMPTY"
+            "EMPTY",
+            "CONTAINS_SUBSTRING",
+            "DOES_NOT_CONTAIN_SUBSTRING"
           ]
+        }
+      }
+    },
+    "compositeCondition": {
+      "type": "object",
+      "properties": {
+        "logicalOperator": {
+          "type": "string"
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/condition"
+          }
         }
       }
     },

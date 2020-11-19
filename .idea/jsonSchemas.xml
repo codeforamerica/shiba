@@ -30,11 +30,13 @@
                 <list>
                   <Item>
                     <option name="pattern" value="true" />
-                    <option name="path" value="src/test/resources/pages-config/*.yaml" />
+                    <option name="path" value="src/main/resources/*-pages-config.yaml" />
                     <option name="mappingKind" value="Pattern" />
                   </Item>
                   <Item>
-                    <option name="path" value="src/main/resources/pages-config.yaml" />
+                    <option name="pattern" value="true" />
+                    <option name="path" value="src/test/resources/pages-config/*.yaml" />
+                    <option name="mappingKind" value="Pattern" />
                   </Item>
                 </list>
               </option>
