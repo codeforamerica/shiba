@@ -82,15 +82,19 @@ shiba-configuration:
               - value: SNAP
                 messageKey: choose-programs.food-snap
                 helpMessageKey: choose-programs.food-snap-help
+                helpIcon: icon-apple
               - value: CASH
                 messageKey: choose-programs.cash-programs
                 helpMessageKey: choose-programs.cash-programs-help
+                helpIcon: icon-monetization_on
               - value: EA
                 messageKey: choose-programs.emergency-assistance
                 helpMessageKey: choose-programs.emergency-assistance-help
+                helpIcon: icon-home
               - value: GRH
                 messageKey: choose-programs.housing-support-group-residential-housing
                 helpMessageKey: choose-programs.housing-grh-help
+                helpIcon: apartment
     - &introBasicInfo
       name: introBasicInfo
       pageTitle:

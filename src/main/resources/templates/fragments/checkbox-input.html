@@ -9,14 +9,22 @@
         <th:block th:each="option: ${input.options.selectableOptions}"
                   th:with="formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)}">
             <label th:for="${option.isNone} ? 'none__checkbox' : ${option.value}" class="checkbox">
-                <input type="checkbox"
-                       th:id="${option.isNone} ? 'none__checkbox' : ${option.value}"
-                       th:value="${option.value}"
-                       th:name="${formInputName}"
-                       th:checked="${inputData.value.contains(option.value)}"
-                       th:attrappend="data-follow-up=${input.followUpValues.contains(option.value)} ? |#${input.name}-follow-up| : ''">
-                <span th:text="#{${option.messageKey}}"></span>
-                <p th:if="${option.helpMessageKey != null}" th:text="#{${option.helpMessageKey}}" class="text--help with-no-padding"></p>
+                <div class="display-flex">
+                    <input type="checkbox"
+                           th:id="${option.isNone} ? 'none__checkbox' : ${option.value}"
+                           th:value="${option.value}"
+                           th:name="${formInputName}"
+                           th:checked="${inputData.value.contains(option.value)}"
+                           th:attrappend="data-follow-up=${input.followUpValues.contains(option.value)} ? |#${input.name}-follow-up| : ''">
+                    <div th:if="${option.getHelpIcon() != null}"
+                          class="padding-right-10"
+                          th:classappend="${option.getHelpIcon()}">
+                    </div>
+                    <div>
+                        <span th:text="#{${option.messageKey}}"></span>
+                        <p th:if="${option.helpMessageKey != null}" th:text="#{${option.helpMessageKey}}" class="text--help with-no-padding"></p>
+                    </div>
+                </div>
             </label>
         </th:block>
         <p class="text--error" th:if="${!inputData.valid()}">

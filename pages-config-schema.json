@@ -349,6 +349,9 @@
         "helpMessageKey": {
           "type": "string"
         },
+        "helpIcon": {
+          "type": "string"
+        },
         "isNone": {
           "type": "boolean"
         }

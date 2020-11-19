@@ -1200,16 +1200,19 @@ hr {
 }
 
 @font-face {
-    font-family: 'icomoon';
-    src: url(/fonts/icomoon.eot?ia7soh);
-    src: url(/fonts/icomoon.eot?ia7soh#iefix) format("embedded-opentype"), url(/fonts/icomoon.ttf?ia7soh) format("truetype"), url(/fonts/icomoon.woff?ia7soh) format("woff"), url(/fonts/icomoon.svg?ia7soh#icomoon) format("svg");
+    font-family: 'MaterialIcons-Regular';
+    src: url(/fonts/MaterialIcons-Regular.eot?ia7soh);
+    src: url(/fonts/MaterialIcons-Regular.eot?ia7soh#iefix) format("embedded-opentype"),
+    url(/fonts/MaterialIcons-Regular.ttf?ia7soh) format("truetype"),
+    url(/fonts/MaterialIcons-Regular.woff?ia7soh) format("woff"),
+    url(/fonts/MaterialIcons-Regular.svg?ia7soh#MaterialIcons-Regular) format("svg");
     font-weight: normal;
     font-style: normal;
 }
 
 [class^="icon-"], [class*=" icon-"] {
     /* use !important to prevent issues with browser extensions that change fonts */
-    font-family: 'icomoon' !important;
+    font-family: 'MaterialIcons-Regular' !important;
     speak: none;
     font-style: normal;
     font-weight: normal;
@@ -2333,7 +2336,7 @@ label {
 }
 
 .checkbox input[type='checkbox']:checked:before {
-    font-family: "icomoon";
+    font-family: "MaterialIcons-Regular";
     font-size: 1.6rem;
     content: '\e5ca';
     display: inline-block;
@@ -2406,7 +2409,7 @@ label {
     top: 0em;
     bottom: 0;
     display: block;
-    font-family: "icomoon";
+    font-family: "MaterialIcons-Regular";
     font-size: 2.7rem;
     content: '\e5c5';
     color: #121111;
@@ -2725,7 +2728,7 @@ label {
 
 .flash__message:before {
     display: inline-block;
-    font-family: "icomoon";
+    font-family: "MaterialIcons-Regular";
     margin-right: .5em;
     margin-top: .1em;
 }
@@ -3411,7 +3414,7 @@ label {
 .reveal__link:after {
     position: relative;
     top: .1em;
-    font-family: "icomoon";
+    font-family: "MaterialIcons-Regular";
     content: '\a0\e313';
 }
 
@@ -3523,7 +3526,7 @@ label {
 }
 
 .scroller:before {
-    font-family: "icomoon";
+    font-family: "MaterialIcons-Regular";
     font-size: 2.7rem;
     display: block;
     content: '\e313';
