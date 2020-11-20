@@ -1,3 +1,23 @@
+demo:
+  defaultValue:
+    folderId: 5195b061-9bdc-4d31-9840-90a99902d329
+    dhsProviderId: A000027200
+    email: help+demo@mnbenefits.org
+  counties:
+    Hennepin:
+      folderId: 5195b061-9bdc-4d31-9840-90a99902d329
+      dhsProviderId: A000027200
+      email: help+demo@mnbenefits.org
+    Olmsted:
+      folderId: 9b8e19ee-0767-4d50-8652-95fec9dbc459
+      dhsProviderId: A000055800
+      email: help+demo@mnbenefits.org
+    Wabasha:
+      folderId: 88c8dc91-20e0-449b-8cac-6aad788d0f4e
+      dhsProviderId: A000079500
+      email: help+demo@mnbenefits.org
+---
+
 staging:
   defaultValue:
     email: help+staging@mnbenefits.org
@@ -16,34 +36,6 @@ staging:
       email: help+staging@mnbenefits.org
       folderId: 88c8dc91-20e0-449b-8cac-6aad788d0f4e
       dhsProviderId: A000079500
-    Wright:
-      email: help+staging@mnbenefits.org
-      folderId: c4aea212-5139-4323-a28d-fbd97f80540c
-      dhsProviderId: 1124197249
----
-
-demo:
-  defaultValue:
-    email: help+demo@mnbenefits.org
-    folderId: 5195b061-9bdc-4d31-9840-90a99902d329
-    dhsProviderId: A000027200
-  counties:
-    Hennepin:
-      email: help+demo@mnbenefits.org
-      folderId: 5195b061-9bdc-4d31-9840-90a99902d329
-      dhsProviderId: A000027200
-    Olmsted:
-      email: help+demo@mnbenefits.org
-      folderId: 9b8e19ee-0767-4d50-8652-95fec9dbc459
-      dhsProviderId: A000055800
-    Wabasha:
-      email: help+demo@mnbenefits.org
-      folderId: 88c8dc91-20e0-449b-8cac-6aad788d0f4e
-      dhsProviderId: A000079500
-    Wright:
-      email: help+demo@mnbenefits.org
-      folderId: c4aea212-5139-4323-a28d-fbd97f80540c
-      dhsProviderId: 1124197249
 ---
 
 production:
@@ -64,10 +56,6 @@ production:
       email: imuinterview@co.wabasha.mn.us
       folderId: 4b087cdb-ccee-44ad-b461-e5a829988b01
       dhsProviderId: A000079500
-    Wright:
-      email: HSFSPrograms@co.wright.mn.us
-      folderId: 644cae25-1cd5-481a-8f71-19446b83d3e1
-      dhsProviderId: 1124197249
 ---
 
 other:
@@ -85,10 +73,6 @@ other:
       folderId: 9b8e19ee-0767-4d50-8652-95fec9dbc459
       dhsProviderId: A000055800
     Wabasha:
-      email: help+dev@mnbenefits.org
       folderId: 88c8dc91-20e0-449b-8cac-6aad788d0f4e
       dhsProviderId: A000079500
-    Wright:
-      email: help+dev@mnbenefits.org
-      folderId: 359cf4ee-7147-4c3c-bfc0-f29213b68fc0
-      dhsProviderId: 1124197249
+      email: help+demo@mnbenefits.org
