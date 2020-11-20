@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.mnit;
 
 import com.sun.istack.ByteArrayDataSource;
 import com.sun.xml.messaging.saaj.soap.name.NameImpl;
+import io.sentry.Sentry;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.esbwsdl.CmisContentStreamType;
@@ -96,6 +97,7 @@ public class MnitEsbWebServiceClient {
                 passwordElement.setTextContent(password);
             } catch (SOAPException e) {
                 e.printStackTrace();
+                Sentry.captureMessage(e.getMessage());
             }
         });
     }
