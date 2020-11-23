@@ -54,10 +54,8 @@ public class ResearchDataRepository {
         jdbcInsert.execute(sqlParameterSource);
     }
 
-    public List<ResearchData> findAll() {
-        return jdbcTemplate.query("SELECT * FROM research", (resultSet, rowNum) ->
-                ResearchData.builder()
-                        .spokenLanguage(resultSet.getString("spoken_language"))
-                        .build());
+    public List<ResearchData> findAllIds() {
+        return jdbcTemplate.query("SELECT application_id FROM research", (resultSet, rowNum) ->
+                ResearchData.builder().applicationId(resultSet.getString("application_id")).build());
     }
 }

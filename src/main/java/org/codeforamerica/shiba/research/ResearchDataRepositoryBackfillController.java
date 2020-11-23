@@ -27,13 +27,11 @@ public class ResearchDataRepositoryBackfillController {
 
     @GetMapping("/researchdb/backfill")
     ModelAndView getPage() {
-        List<String> existingResearchData = researchDataRepository.findAll().stream().map(ResearchData::getApplicationId).collect(Collectors.toList());
-
+        List<String> existingResearchData = researchDataRepository.findAllIds().stream().map(ResearchData::getApplicationId).collect(Collectors.toList());
         List<Application> existingApplicationData = applicationRepository.findAll();
 
         existingApplicationData.stream()
-                .filter(application -> application.getId() != null
-                        && !existingResearchData.contains(application.getId()))
+                .filter(application -> application.getId() != null && !existingResearchData.contains(application.getId()))
                 .forEach(application -> {
                     ApplicationData applicationData = application.getApplicationData();
                     if (!application.getId().equals(application.getApplicationData().getId())) {
