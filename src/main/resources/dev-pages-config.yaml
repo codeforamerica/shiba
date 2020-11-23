@@ -86,7 +86,7 @@ shiba-configuration:
               - value: CASH
                 messageKey: choose-programs.cash-programs
                 helpMessageKey: choose-programs.cash-programs-help
-                helpIcon: icon-monetization_on
+                helpIcon: icon-dollar-circle
               - value: EA
                 messageKey: choose-programs.emergency-assistance
                 helpMessageKey: choose-programs.emergency-assistance-help
@@ -94,7 +94,7 @@ shiba-configuration:
               - value: GRH
                 messageKey: choose-programs.housing-support-group-residential-housing
                 helpMessageKey: choose-programs.housing-grh-help
-                helpIcon: apartment
+                helpIcon: icon-apartment
     - &introBasicInfo
       name: introBasicInfo
       pageTitle:

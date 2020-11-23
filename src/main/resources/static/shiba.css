@@ -386,26 +386,10 @@ input[id='sad']:checked + .feedback-buttons {
     line-height: 3rem;
 }
 /* MaterialIcons that haven't been added to honeycrisp variables.scss */
-.icon-monetization_on:before {
-    content: "\e263";
-}
-
-.icon-home:before {
-    content: "\e88a";
-}
-
-.apartment:before {
-    /*content: "\ea40";*/
-    content: close-quote;
-    background: url(images/apartment.svg) no-repeat;
-    padding-right: 1.5rem;
-    line-height: 2rem;
-}
-
-.icon-apple:before {
-    content: close-quote;
-    background: url(images/noun_Apple_629216.svg) no-repeat;
-    padding-right: 1.5rem;
+.checkbox-icons {
+    font-weight: bold;
+    width: 3rem;
+    height: 2.5rem;
 }
 
 label.checkbox p.text--help {
