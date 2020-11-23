@@ -408,6 +408,11 @@ input[id='sad']:checked + .feedback-buttons {
     padding-right: 1.5rem;
 }
 
+label.checkbox p.text--help {
+    font-weight: 400;
+    padding-top: 1rem;
+}
+
 /* CSS styling to remove scroll from number input types */
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
