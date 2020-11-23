@@ -357,15 +357,15 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
             testPage.enter("hourlyWage", "1");
             testPage.clickContinue();
             testPage.enter("hoursAWeek", "30");
-            testPage.clickContinue();
-            testPage.clickButton("No, that's it.");
         } else {
             testPage.enter("paidByTheHour", NO.getDisplayValue());
             testPage.enter("payPeriod", "Twice a month");
             testPage.clickContinue();
             testPage.enter("incomePerPayPeriod", "1");
-            testPage.clickContinue();
-            testPage.clickButton("No, that's it.");
         }
+        testPage.clickContinue();
+        testPage.goBack();
+        testPage.clickButton("No, I'd rather keep going");
+        testPage.clickButton("No, that's it.");
     }
 }

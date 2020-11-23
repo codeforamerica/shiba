@@ -1485,24 +1485,7 @@ shiba-configuration:
     - &jobRedirectPage
       name: jobRedirectPage
       headerKey:
-        conditionalValues:
-          - value: warning-page.you-are-about-to-delete-your-job
-            compositeCondition:
-              logicalOperator: OR
-              conditions:
-                - pageName: householdSelectionForIncome
-                  input: whoseJobIsIt
-                  value: "applicant"
-                  matcher: CONTAINS_SUBSTRING
-                - pageName: doYouLiveAlone
-                  input: liveAlone
-                  value: "true"
-          - value: warning-page.you-are-about-to-delete-member-job
-            condition:
-              pageName: householdSelectionForIncome
-              input: whoseJobIsIt
-              value: "applicant"
-              matcher: DOES_NOT_CONTAIN_SUBSTRING
+        value: warning-page.going-back-will-take-you-to-the-beginning-of-the-jobs-section-where-you-will-start-over
       pageTitle:
         value: warning-page.go-back-title
     - &jobDeleteWarningPage
