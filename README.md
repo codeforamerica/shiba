@@ -42,6 +42,10 @@
     - `$ createuser -s shiba`
     - `$ createdb shiba`
     - `$ createdb shiba-test`
+    
+### Inspecting hosted databases
+- To generate an access string to our hosted dbs, run:`aptible db:tunnel <name of db>`
+- You can find all our db names by running `aptible db:list`
  
 ### Test:
 
