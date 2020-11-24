@@ -66,7 +66,7 @@
 }
 
 .slab--shiba {
-    background-color: #F7F5F4;
+    background-color: #E9F6FF;
 }
 
 .slab--minnesota-sky-blue {
@@ -382,9 +382,6 @@ input[id='sad']:checked + .feedback-buttons {
     display: flex;
 }
 
-[class^="icon-"], [class*=" icon-"] {
-    line-height: 3rem;
-}
 /* MaterialIcons that haven't been added to honeycrisp variables.scss */
 .checkbox-icons {
     font-weight: bold;
@@ -409,3 +406,14 @@ input::-webkit-inner-spin-button {
 input[type=number] {
     -moz-appearance: textfield;
 }
+
+/* Branding Phase 2 Link styles */
+a:not(.button), .button--link, .button--link:focus, a:not(.button):focus {
+    color: #003865;
+}
+
+a:not(.button):hover, .button--link:hover, .button--link:active, a:not(.button):active  {
+    color: #741078;
+}
+
+
