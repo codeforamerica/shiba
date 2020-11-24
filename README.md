@@ -55,10 +55,11 @@ From the project root invoke
 ### Setup Fake Filler (optional, Chrome only):
 
 - Using an automatic form filler makes manual test easier.
-- Install Fake Filler for Chrome(https://chrome.google.com/webstore/detail/fake-filler/bnjjngeaknajbdcgpfkgnonkmififhfo)
-- Go to Fake Filler options/backup and restore(chrome-extension://bnjjngeaknajbdcgpfkgnonkmififhfo/options.html#/backup)
-- Import the configuration from project root/fakeFillerConfig.txt
-- Setup keyboard shortcuts following (chrome-extension://bnjjngeaknajbdcgpfkgnonkmififhfo/options.html#/keyboard-shortcuts)
+- Install [Fake Filler for Chrome](https://chrome.google.com/webstore/detail/fake-filler/bnjjngeaknajbdcgpfkgnonkmififhfo)
+- Go to the [fakeFillerConfig.txt], click on "Raw", then save the file to your computer.
+- Open the Fake Filler Options then click on [Backup and Restore](chrome-extension://bnjjngeaknajbdcgpfkgnonkmififhfo/options.html#/backup)
+- Click on "Import Settings" and upload the config file that you saved above.
+- Click on [Keyboard Shortcuts](chrome-extension://bnjjngeaknajbdcgpfkgnonkmififhfo/options.html#/keyboard-shortcuts) to chooce the shortcut you want to use to fill out the page. 
 
 ### Configuring TLS certs for use between a client and external server (optional)
 
