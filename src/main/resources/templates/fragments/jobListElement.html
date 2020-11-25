@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
-<li th:fragment="job(employersName, subworkflowKey, index)" th:id="|iteration${index}|">
+<li class="grid" th:fragment="job(employersName, subworkflowKey, index)" th:id="|iteration${index}|">
     <form method="post" th:action="@{|/groups/${subworkflowKey}/${index}/deleteWarning|}">
-        <span th:text="|${employersName}|"></span>
-        <button class="button--link right"
+        <span class="grid__item width-five-sixths" th:text="|${employersName}|"></span>
+        <button class="grid__item width-one-sixth button--link right"
                 th:id="|iteration${index}-delete|"
                 type="submit"
                 th:text="#{job-builder.delete}"></button>
