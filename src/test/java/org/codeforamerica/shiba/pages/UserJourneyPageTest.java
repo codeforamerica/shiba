@@ -288,7 +288,6 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
         testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
         if (hasHousehold) {
-            testPage.clickContinue();
             testPage.enter("isUsCitizen", NO.getDisplayValue());
             testPage.enter("whoIsNonCitizen", "Me");
             testPage.clickContinue();
