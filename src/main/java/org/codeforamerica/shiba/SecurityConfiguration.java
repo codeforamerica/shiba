@@ -33,7 +33,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/download-caf/**", "/researchdb/backfill")
+                .antMatchers("/download-caf/**")
                 .authenticated()
                 .and()
                 .httpBasic();

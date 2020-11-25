@@ -90,24 +90,6 @@ public class ApplicationRepository {
                 id);
     }
 
-    public List<Application> findAll() {
-        return jdbcTemplate.query("SELECT * FROM applications",
-                (resultSet, rowNum) -> Application.builder()
-                        .id(resultSet.getString("id"))
-                        .completedAt(ZonedDateTime.ofInstant(resultSet.getTimestamp("completed_at").toInstant(), ZoneOffset.UTC))
-                        .applicationData(encryptor.decrypt(resultSet.getBytes("encrypted_data")))
-                        .county(County.valueFor(resultSet.getString("county")))
-                        .timeToComplete(Duration.ofSeconds(resultSet.getLong("time_to_complete")))
-                        .sentiment(Optional.ofNullable(resultSet.getString("sentiment"))
-                                .map(Sentiment::valueOf)
-                                .orElse(null))
-                        .feedback(resultSet.getString("feedback"))
-                        .flow(Optional.ofNullable(resultSet.getString("flow"))
-                                .map(FlowType::valueOf)
-                                .orElse(null))
-                        .build());
-    }
-
     public Duration getMedianTimeToComplete() {
         Long medianTimeToComplete = jdbcTemplate.queryForObject("SELECT COALESCE(percentile_cont(0.5) WITHIN GROUP (ORDER BY time_to_complete), 0) FROM applications", Long.class);
         return Duration.ofSeconds(Objects.requireNonNull(medianTimeToComplete));

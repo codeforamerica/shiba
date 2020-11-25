@@ -5,8 +5,6 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public class ResearchDataRepository {
     private final JdbcTemplate jdbcTemplate;
@@ -52,10 +50,5 @@ public class ResearchDataRepository {
                 .addValue("household_size", researchData.getHouseholdSize())
                 .addValue("flow", researchData.getFlow());
         jdbcInsert.execute(sqlParameterSource);
-    }
-
-    public List<ResearchData> findAllIds() {
-        return jdbcTemplate.query("SELECT application_id FROM research", (resultSet, rowNum) ->
-                ResearchData.builder().applicationId(resultSet.getString("application_id")).build());
     }
 }
