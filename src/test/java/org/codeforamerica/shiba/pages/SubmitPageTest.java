@@ -2,19 +2,14 @@ package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.AbstractStaticMessageSourcePageTest;
 import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.YamlPropertySourceFactory;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
-import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedListener;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.time.Duration;
@@ -25,19 +20,14 @@ import java.time.ZonedDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @Sql(statements = {"TRUNCATE TABLE applications"})
+@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
+        "spring.main.allow-bean-definition-overriding=true",
+        "pagesConfig=pages-config/test-submit-page.yaml"
+})
 public class SubmitPageTest extends AbstractStaticMessageSourcePageTest {
-
-    @TestConfiguration
-    @PropertySource(value = "classpath:pages-config/test-submit-page.yaml", factory = YamlPropertySourceFactory.class)
-    static class TestPageConfiguration {
-        @Bean
-        @ConfigurationProperties(prefix = "shiba-configuration-submit-page")
-        public ApplicationConfiguration applicationConfiguration() {
-            return new ApplicationConfiguration();
-        }
-    }
 
     @MockBean
     ApplicationSubmittedListener applicationSubmittedListener;

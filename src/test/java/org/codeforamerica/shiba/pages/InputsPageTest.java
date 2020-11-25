@@ -1,8 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.AbstractExistingStartTimePageTest;
-import org.codeforamerica.shiba.YamlPropertySourceFactory;
-import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -10,28 +8,19 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
 import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
+@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
+        "spring.main.allow-bean-definition-overriding=true",
+        "pagesConfig=pages-config/test-input.yaml"
+})
 public class InputsPageTest extends AbstractExistingStartTimePageTest {
-
-
-    @TestConfiguration
-    @PropertySource(value = "classpath:pages-config/test-input.yaml", factory = YamlPropertySourceFactory.class)
-    static class TestPageConfiguration {
-        @Bean
-        @ConfigurationProperties(prefix = "shiba-configuration-input")
-        public ApplicationConfiguration applicationConfiguration() {
-            return new ApplicationConfiguration();
-        }
-    }
 
     String radioOption1 = "radio option 1";
     String radioOption2 = "option-2";

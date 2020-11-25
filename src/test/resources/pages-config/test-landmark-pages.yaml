@@ -1,40 +1,39 @@
-shiba-configuration-landmarks:
-  pageDefinitions:
-    - &firstPage
-      name: firstPage
-      pageTitle:
-        value: first-page-title
-      inputs:
-      - name: foo
-        type: TEXT
-    - &thirdPage
-      name: thirdPage
-      pageTitle:
-        value: third-page-title
-      inputs:
-      - name: foo
-        type: TEXT
-    - &fourthPage
-      name: fourthPage
-      pageTitle:
-        value: fourth-page-title
-      inputs:
-      - name: foo
-        type: TEXT
-  workflow:
-    firstPage:
-      pageConfiguration: *firstPage
-      nextPages:
-        - pageName: firstPage
-    thirdPage:
-      pageConfiguration: *thirdPage
-      nextPages:
-        - pageName: fourthPage
-    fourthPage:
-      pageConfiguration: *fourthPage
-  landmarkPages:
-    startTimerPage: thirdPage
-    landingPages:
-      - firstPage
-    terminalPage: fourthPage
-    submitPage: thirdPage
+pageDefinitions:
+  - &firstPage
+    name: firstPage
+    pageTitle:
+      value: first-page-title
+    inputs:
+    - name: foo
+      type: TEXT
+  - &thirdPage
+    name: thirdPage
+    pageTitle:
+      value: third-page-title
+    inputs:
+    - name: foo
+      type: TEXT
+  - &fourthPage
+    name: fourthPage
+    pageTitle:
+      value: fourth-page-title
+    inputs:
+    - name: foo
+      type: TEXT
+workflow:
+  firstPage:
+    pageConfiguration: *firstPage
+    nextPages:
+      - pageName: firstPage
+  thirdPage:
+    pageConfiguration: *thirdPage
+    nextPages:
+      - pageName: fourthPage
+  fourthPage:
+    pageConfiguration: *fourthPage
+landmarkPages:
+  startTimerPage: thirdPage
+  landingPages:
+    - firstPage
+  terminalPage: fourthPage
+  submitPage: thirdPage

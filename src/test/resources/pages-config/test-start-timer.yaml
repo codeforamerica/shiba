@@ -1,23 +1,22 @@
-shiba-configuration-start-timer:
-  pageDefinitions:
-    - &pageThatDoesNotStartTimer
-        name: pageThatDoesNotStartTimer
-        pageTitle:
-          value: not-start-timer-title
-        inputs:
-          - name: foo
-            type: TEXT
-    - &pageThatDoesStartTimer
-        name: pageThatDoesStartTimer
-        pageTitle:
-          value: start-timer-title
-        inputs:
-          - name: foo
-            type: TEXT
-  workflow:
-    pageThatDoesNotStartTimer:
-      pageConfiguration: *pageThatDoesNotStartTimer
-    pageThatDoesStartTimer:
-      pageConfiguration: *pageThatDoesStartTimer
-  landmarkPages:
-    startTimerPage: pageThatDoesStartTimer
+pageDefinitions:
+  - &pageThatDoesNotStartTimer
+      name: pageThatDoesNotStartTimer
+      pageTitle:
+        value: not-start-timer-title
+      inputs:
+        - name: foo
+          type: TEXT
+  - &pageThatDoesStartTimer
+      name: pageThatDoesStartTimer
+      pageTitle:
+        value: start-timer-title
+      inputs:
+        - name: foo
+          type: TEXT
+workflow:
+  pageThatDoesNotStartTimer:
+    pageConfiguration: *pageThatDoesNotStartTimer
+  pageThatDoesStartTimer:
+    pageConfiguration: *pageThatDoesStartTimer
+landmarkPages:
+  startTimerPage: pageThatDoesStartTimer

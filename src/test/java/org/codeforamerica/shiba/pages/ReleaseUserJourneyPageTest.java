@@ -36,7 +36,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
         "spring.main.allow-bean-definition-overriding=true",
-        "pagesConfig=release"
+        "pagesConfig=release-pages-config.yaml"
 })
 public class ReleaseUserJourneyPageTest extends AbstractBasePageTest {
 

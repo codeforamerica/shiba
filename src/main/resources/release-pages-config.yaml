@@ -1,2387 +1,2386 @@
-shiba-configuration:
-  pageDefinitions:
-    - &landing
-      name: landing
-      pageTitle:
-        value: landing.title
-    - &prepareToApply
-      name: prepareToApply
-      pageTitle:
-        value: prepare-to-apply.title
-    - &languagePreferences
-      name: languagePreferences
-      pageTitle:
-        value: language-preferences.title
-      headerKey:
-        value: language-preferences.language-preferences
-      inputs:
-        - name: spokenLanguage
-          type: SELECT
-          promptMessage:
-            promptMessageKey: language-preferences.what-language-do-you-prefer-to-speak
-          helpMessageKey: language-preferences.the-county-will-do-their-best-to-connect-you-with-someone-who-speaks-your
-          options:
-            selectableOptions:
-              - value: ENGLISH
-                messageKey: language-preferences.english
-              - value: SPANISH
-                messageKey: language-preferences.spanish
-              - value: SOOMAALI
-                messageKey: language-preferences.soomaali
-              - value: VIETNAMESE
-                messageKey: language-preferences.vietnamese
-              - value: RUSSIAN
-                messageKey: language-preferences.russian
-              - value: HMOOB
-                messageKey: language-preferences.hmoob
-        - name: writtenLanguage
-          type: SELECT
-          promptMessage:
-            promptMessageKey: language-preferences.what-language-do-you-prefer-to-read-or-write
-          helpMessageKey: language-preferences.the-county-will-do-their-best-to-provide-documents-in-your-preferred-language
-          options:
-            selectableOptions:
-              - value: ENGLISH
-                messageKey: language-preferences.english
-              - value: SPANISH
-                messageKey: language-preferences.spanish
-              - value: SOOMAALI
-                messageKey: language-preferences.soomaali
-              - value: VIETNAMESE
-                messageKey: language-preferences.vietnamese
-              - value: RUSSIAN
-                messageKey: language-preferences.russian
-              - value: HMOOB
-                messageKey: language-preferences.hmoob
-        - name: needInterpreter
-          type: RADIO
-          promptMessage:
-            promptMessageKey: language-preferences.do-you-need-an-interpreter
-          options:
-            selectableOptions:
-              - value: "true"
-                messageKey: general.inputs.yes
-              - value: "false"
-                messageKey: general.inputs.no
-    - &choosePrograms
-      name: choosePrograms
-      pageTitle:
-        value: choose-programs.title
-      headerKey:
-        value: choose-programs.what-do-you-need-help-with-today
-      headerHelpMessageKey:
-        value: general.check-all-that-apply
-      inputs:
-        - name: programs
-          type: CHECKBOX
-          validators:
-            - validation: SELECT_AT_LEAST_ONE
-              errorMessageKey: general.validation.make-sure-you-answer-this-question
-          options:
-            selectableOptions:
-              - value: SNAP
-                messageKey: choose-programs.food-snap
-                helpMessageKey: choose-programs.food-snap-help
-                helpIcon: icon-apple
-              - value: CASH
-                messageKey: choose-programs.cash-programs
-                helpMessageKey: choose-programs.cash-programs-help
-                helpIcon: icon-dollar-circle
-              - value: EA
-                messageKey: choose-programs.emergency-assistance
-                helpMessageKey: choose-programs.emergency-assistance-help
-                helpIcon: icon-home
-              - value: GRH
-                messageKey: choose-programs.housing-support-group-residential-housing
-                helpMessageKey: choose-programs.housing-grh-help
-                helpIcon: icon-apartment
-    - &introBasicInfo
-      name: introBasicInfo
-      pageTitle:
-        value: intro-basic-info.title
-    - &personalInfo
-      name: personalInfo
-      pageTitle:
-        value: personal-info.title
-      headerKey:
-        value: personal-info.tell-us-about-yourself
-      inputs:
-        - name: firstName
-          type: TEXT
-          promptMessage:
-            promptMessageKey: personal-info.whats-your-first-name
-          helpMessageKey: personal-info.legally-as-it-appears-on-your-id
-          validators:
-            - validation: NOT_BLANK
-              errorMessageKey: general.validation.make-sure-to-provide-a-first-name
-        - name: lastName
-          type: TEXT
-          promptMessage:
-            promptMessageKey: personal-info.whats-your-last-name
-          helpMessageKey: personal-info.legally-as-it-appears-on-your-id
-          validators:
-            - validation: NOT_BLANK
-              errorMessageKey: general.validation.make-sure-to-provide-a-last-name
-        - name: otherName
-          type: TEXT
-          promptMessage:
-            promptMessageKey: personal-info.list-any-names-that-you-have-gone-by-in-the-past
-          helpMessageKey: personal-info.include-maiden-names-or-legal-changes
-        - name: dateOfBirth
-          type: DATE
-          validators:
-            - validation: DATE
-              errorMessageKey: general.validation.make-sure-to-provide-a-birthday
-              condition:
-                input: dateOfBirth
-                matcher: NOT_EMPTY
-          promptMessage:
-            promptMessageKey: personal-info.when-were-you-born
-        - name: ssn
-          type: SSN
-          validators:
-            - validation: SSN
-              errorMessageKey: general.validation.make-sure-your-SSN-has-9-digits
-              condition:
-                input: ssn
-                matcher: NOT_EMPTY
-          promptMessage:
-            promptMessageKey: personal-info.whats-your-social-security-number
-          helpMessageKey: personal-info.if-you-have-one-we-strongly-recommend-including-it-here-your-caseworker-will
-        - name: maritalStatus
-          type: RADIO
-          promptMessage:
-            promptMessageKey: personal-info.whats-your-marital-status
-          options:
-            selectableOptions:
-              - value: NEVER_MARRIED
-                messageKey: general.never-married
-              - value: MARRIED_LIVING_WITH_SPOUSE
-                messageKey: general.married-living-with-spouse
-              - value: MARRIED_NOT_LIVING_WITH_SPOUSE
-                messageKey: general.married-not-living-with-spouse
-              - value: LEGALLY_SEPARATED
-                messageKey: general.legally-separated
-              - value: DIVORCED
-                messageKey: general.divorced
-              - value: WIDOWED
-                messageKey: general.widowed
-        - name: sex
-          type: RADIO
-          promptMessage:
-            promptMessageKey: personal-info.whats-your-sex
-          helpMessageKey: personal-info.legally-as-it-appears-on-your-id-we-regret-that-this-question-is-limited
-          options:
-            selectableOptions:
-              - value: FEMALE
-                messageKey: general.female
-              - value: MALE
-                messageKey: general.male
-              - value: RATHER_NOT_SAY
-                messageKey: general.rather-not-say
-        - name: livedInMnWholeLife
-          type: RADIO
-          promptMessage:
-            promptMessageKey: personal-info.have-you-lived-in-minnesota-your-whole-life
-          options:
-            selectableOptions:
-              - value: "false"
-                messageKey: general.inputs.no
-              - value: "true"
-                messageKey: general.inputs.yes
-          followUpValues:
-            - "true"
-          followUps:
-            - name: moveToMnDate
-              type: DATE
-              validators:
-                - validation: DATE
-                  errorMessageKey: general.validation.make-sure-you-answer-this-question
-                  condition:
-                    input: moveToMnDate
-                    matcher: NOT_EMPTY
-              promptMessage:
-                promptMessageKey: personal-info.when-did-you-move-to-minnesota
-            - name: moveToMnPreviousCity
-              type: TEXT
-              promptMessage:
-                promptMessageKey: personal-info.what-state-did-you-move-from
-    - &contactInfo
-      name: contactInfo
-      pageTitle:
-        value: contact-info.title
-      headerKey:
-        value: contact-info.how-can-we-stay-in-touch-with-you
-      headerHelpMessageKey:
-        value: contact-info.most-of-our-communication-will-be-through-mail
-      inputs:
-        - name: phoneNumber
-          type: PHONE
-          promptMessage:
-            promptMessageKey: contact-info.whats-your-phone-number
-          validators:
-            - validation: PHONE_STARTS_WITH_ONE
-              errorMessageKey: general.validation.area-codes-can-not-begin-with-1
-            - validation: PHONE
-              errorMessageKey: general.validation.make-sure-to-enter-a-phone-number-with-10-digits
-        - name: email
-          type: TEXT
-          promptMessage:
-            promptMessageKey: contact-info.whats-your-email-address
-          validators:
-            - validation: NOT_BLANK
-              condition:
-                input: phoneOrEmail
-                value: EMAIL
-              errorMessageKey: general.validation.make-sure-you-answer-this-question
-        - name: phoneOrEmail
-          type: CHECKBOX
-          promptMessage:
-            promptMessageKey: contact-info.how-can-we-send-you-updates-and-reminders-about-your-case-in-the-future
-          options:
-            selectableOptions:
-              - value: TEXT
-                messageKey: contact-info.text-me
-              - value: EMAIL
-                messageKey: contact-info.email-me
-    - &homeAddress
-      name: homeAddress
-      headerKey:
-        value: home-address.where-are-you-currently-living
-      pageTitle:
-        value: home-address.title
-      inputs:
-        - name: streetAddress
-          type: TEXT
-          promptMessage:
-            promptMessageKey: home-address.what-is-the-street-address
-          validators:
-            - validation: NOT_BLANK
-              errorMessageKey: general.validation.make-sure-you-answer-this-question
-              condition:
-                input: isHomeless
-                matcher: NONE_SELECTED
-            - validation: NOT_BLANK
-              errorMessageKey: general.validation.make-sure-to-provide-a-home-address-or-select-no-use-a-different-address-for-mail
-              condition:
-                input: sameMailingAddress
-                value: "true"
-        - name: apartmentNumber
-          type: TEXT
-          promptMessage:
-            promptMessageKey: home-address.apartment-number
-        - name: city
-          type: TEXT
-          promptMessage:
-            promptMessageKey: home-address.what-is-the-city
-          validators:
-            - validation: NOT_BLANK
-              errorMessageKey: general.validation.make-sure-you-answer-this-question
-              condition:
-                input: isHomeless
-                matcher: NONE_SELECTED
-            - validation: NOT_BLANK
-              errorMessageKey: general.validation.make-sure-to-provide-a-home-address-or-select-no-use-a-different-address-for-mail
-              condition:
-                input: sameMailingAddress
-                value: "true"
-        - name: state
-          type: TEXT
-          promptMessage:
-            promptMessageKey: home-address.what-is-the-state
-          readOnly: true
-          defaultValue: MN
-        - name: zipCode
-          type: TEXT
-          promptMessage:
-            promptMessageKey: home-address.what-is-the-zip-code
-          validators:
-            - validation: ZIPCODE
-              errorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
-              condition:
-                input: isHomeless
-                matcher: NONE_SELECTED
-            - validation: ZIPCODE
-              errorMessageKey: general.validation.make-sure-to-provide-a-home-address-or-select-no-use-a-different-address-for-mail
-              condition:
-                input: sameMailingAddress
-                value: "true"
-        - name: isHomeless
-          type: CHECKBOX
-          options:
-            selectableOptions:
-              - value: "true"
-                messageKey: home-address.i-dont-have-a-permanent-address
-        - name: sameMailingAddress
-          type: RADIO
-          promptMessage:
-            promptMessageKey: home-address.is-this-the-best-place-for-you-to-receive-mail
-          helpMessageKey: home-address.the-county-will-need-a-place-to-send-you-mail-for-the-next-3-months
-          validators:
-            - validation: NOT_BLANK
-              errorMessageKey: general.validation.make-sure-you-answer-this-question
-          options:
-            selectableOptions:
-              - value: "true"
-                messageKey: home-address.yes-send-mail-here
-              - value: "false"
-                messageKey: home-address.no-use-a-different-address-for-mail
-    - &mailingAddress
-      name: mailingAddress
-      pageTitle:
-        value: mailing-address.title
-      headerKey:
-        value: mailing-address.where-can-the-county-send-your-mail
-      inputs:
-        - name: streetAddress
-          type: TEXT
-          promptMessage:
-            promptMessageKey: mailing-address.what-is-the-street-address
-          validators:
-            - validation: NOT_BLANK
-              errorMessageKey: general.validation.make-sure-you-answer-this-question
-        - name: apartmentNumber
-          type: TEXT
-          promptMessage:
-            promptMessageKey: mailing-address.apartment-number
-        - name: city
-          type: TEXT
-          promptMessage:
-            promptMessageKey: mailing-address.what-is-the-city
-          validators:
-            - validation: NOT_BLANK
-              errorMessageKey: general.validation.make-sure-you-answer-this-question
-        - name: state
-          type: TEXT
-          promptMessage:
-            promptMessageKey: mailing-address.what-is-the-state
-          validators:
-            - validation: STATE
-              errorMessageKey: general.validation.make-sure-to-provide-a-valid-2-letter-state-code
-          defaultValue: MN
-        - name: zipCode
-          type: TEXT
-          promptMessage:
-            promptMessageKey: mailing-address.what-is-the-zip-code
-          validators:
-            - validation: ZIPCODE
-              errorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
-    - &reviewInfo
-      name: reviewInfo
-      pageTitle:
-        value: review-info.title
-      headerKey:
-        value: review-info.lets-review-your-info
-    - &doYouLiveAlone
-      name: doYouLiveAlone
-      headerKey:
-        value: do-you-live-alone.do-you-live-alone
-      headerHelpMessageKey:
-        value: do-you-live-alone.include-everyone-in-your-household-even-if-they-are-not-applying-for-benefits
-      pageTitle:
-        value: do-you-live-alone.title
-      hasPrimaryButton: false
-      inputs:
-        - name: liveAlone
-          promptMessage:
-            promptMessageFragmentName: doYouLiveAlonePrompt
-          type: YES_NO
-    - &startHousehold
-      name: startHousehold
-      pageTitle:
-        value: start-household.title
-    - &householdMemberInfo
-      name: householdMemberInfo
-      pageTitle:
-        value: household-member-info.title
-      headerKey:
-        value: household-member-info.add-a-person-who-lives-with-you
-      inputs:
-        - name: firstName
-          type: TEXT
-          promptMessage:
-            promptMessageKey: household-member-info.whats-their-first-name
-          helpMessageKey: household-member-info.legally-as-it-appears-on-their-id
-          validators:
-            - validation: NOT_BLANK
-              errorMessageKey: general.validation.make-sure-to-provide-a-first-name
-        - name: lastName
-          type: TEXT
-          promptMessage:
-            promptMessageKey: household-member-info.whats-their-last-name
-          helpMessageKey: household-member-info.legally-as-it-appears-on-their-id
-          validators:
-            - validation: NOT_BLANK
-              errorMessageKey: general.validation.make-sure-to-provide-a-last-name
-        - name: otherName
-          type: TEXT
-          promptMessage:
-            promptMessageKey: household-member-info.list-any-other-names-they-have-gone-by-in-the-past
-          helpMessageKey: personal-info.include-maiden-names-or-legal-changes
-        - name: dateOfBirth
-          type: DATE
-          promptMessage:
-            promptMessageKey: household-member-info.when-were-they-born
-          validators:
-            - validation: DATE
-              condition:
-                input: dateOfBirth
-                matcher: NOT_EMPTY
-              errorMessageKey: general.validation.make-sure-to-provide-a-birthday
-        - name: maritalStatus
-          type: RADIO
-          promptMessage:
-            promptMessageKey: household-member-info.whats-their-martial-status
-          options:
-            selectableOptions:
-              - value: NEVER_MARRIED
-                messageKey: general.never-married
-              - value: MARRIED_LIVING_WITH_SPOUSE
-                messageKey: general.married-living-with-spouse
-              - value: MARRIED_NOT_LIVING_WITH_SPOUSE
-                messageKey: general.married-not-living-with-spouse
-              - value: LEGALLY_SEPARATED
-                messageKey: general.legally-separated
-              - value: DIVORCED
-                messageKey: general.divorced
-              - value: WIDOWED
-                messageKey: general.widowed
-        - name: sex
-          type: RADIO
-          promptMessage:
-            promptMessageKey: household-member-info.whats-their-sex
-          helpMessageKey: household-member-info.legally-as-it-appears-on-their-id-we-regret-that-this-question-is-limited
-          options:
-            selectableOptions:
-              - value: FEMALE
-                messageKey: general.female
-              - value: MALE
-                messageKey: general.male
-              - value: RATHER_NOT_SAY
-                messageKey: general.rather-not-say
-        - name: livedInMnWholeLife
-          type: RADIO
-          promptMessage:
-            promptMessageKey: household-member-info.have-they-lived-in-minnesota-their-whole-life
-          options:
-            selectableOptions:
-              - value: "false"
-                messageKey: general.inputs.no
-              - value: "true"
-                messageKey: general.inputs.yes
-          followUpValues:
-            - "true"
-          followUps:
-            - name: moveToMnDate
-              type: DATE
-              validators:
-                - validation: DATE
-                  condition:
-                    input: moveToMnDate
-                    matcher: NOT_EMPTY
-                  errorMessageKey: general.validation.make-sure-you-answer-this-question
-              promptMessage:
-                promptMessageKey: household-member-info.when-did-they-move-to-minnesota
-            - name: moveToMnPreviousState
-              type: TEXT
-              promptMessage:
-                promptMessageKey: household-member-info.what-state-did-they-move-from
-        - name: relationship
-          type: TEXT
-          promptMessage:
-            promptMessageKey: household-member-info.whats-their-relationship-to-you
-        - name: programs
-          type: CHECKBOX
-          promptMessage:
-            promptMessageKey: household-member-info.what-do-they-need-help-with
-          helpMessageKey: general.check-all-that-apply
-          followUpValues:
-            - SNAP
-            - CASH
-            - EA
-            - GRH
-          followUps:
-            - name: ssn
-              type: SSN
-              validators:
-                - validation: SSN
-                  errorMessageKey: general.validation.make-sure-your-SSN-has-9-digits
-                  condition:
-                    input: ssn
-                    matcher: NOT_EMPTY
-              promptMessage:
-                promptMessageKey: household-member-info.whats-their-social-security-number
-              helpMessageKey: household-member-info.if-they-have-one-we-strongly-recommend-including-it-here-your-caseworker-will
-          validators:
-            - validation: SELECT_AT_LEAST_ONE
-              errorMessageKey: general.validation.make-sure-you-answer-this-question
-          options:
-            selectableOptions:
-              - value: SNAP
-                messageKey: choose-programs.food-snap
-              - value: CASH
-                messageKey: choose-programs.cash-programs
-              - value: EA
-                messageKey: choose-programs.emergency-assistance
-              - value: GRH
-                messageKey: choose-programs.housing-support-group-residential-housing
-              - value: NONE
-                messageKey: general.inputs.none-of-the-above
-                isNone: true
-    - &householdList
-      name: householdList
-      pageTitle:
-        value: household-list.title
-    - &householdDeleteWarningPage
-      name: householdDeleteWarningPage
-      headerKey:
-        value: warning-page.you-are-about-to-delete-household-member
-      pageTitle:
-        value: warning-page.delete-household-member-warning
-    - &introPersonalDetails
-      name: introPersonalDetails
-      pageTitle:
-        value: intro-personal-details.title
-    - &preparingMealsTogether
-      name: preparingMealsTogether
-      pageTitle:
-        value: preparing-meals-together.title
-      headerKey:
-        value: preparing-meals-together.header
-      hasPrimaryButton: false
-      inputs:
-        - name: isPreparingMealsTogether
-          type: YES_NO
-    - &goingToSchool
-      name: goingToSchool
-      pageTitle:
-        value: going-to-school.title
-      headerKey:
-        value: going-to-school.header
-        conditionalValues:
-          - value: going-to-school.header-household
+pageDefinitions:
+  - &landing
+    name: landing
+    pageTitle:
+      value: landing.title
+  - &prepareToApply
+    name: prepareToApply
+    pageTitle:
+      value: prepare-to-apply.title
+  - &languagePreferences
+    name: languagePreferences
+    pageTitle:
+      value: language-preferences.title
+    headerKey:
+      value: language-preferences.language-preferences
+    inputs:
+      - name: spokenLanguage
+        type: SELECT
+        promptMessage:
+          promptMessageKey: language-preferences.what-language-do-you-prefer-to-speak
+        helpMessageKey: language-preferences.the-county-will-do-their-best-to-connect-you-with-someone-who-speaks-your
+        options:
+          selectableOptions:
+            - value: ENGLISH
+              messageKey: language-preferences.english
+            - value: SPANISH
+              messageKey: language-preferences.spanish
+            - value: SOOMAALI
+              messageKey: language-preferences.soomaali
+            - value: VIETNAMESE
+              messageKey: language-preferences.vietnamese
+            - value: RUSSIAN
+              messageKey: language-preferences.russian
+            - value: HMOOB
+              messageKey: language-preferences.hmoob
+      - name: writtenLanguage
+        type: SELECT
+        promptMessage:
+          promptMessageKey: language-preferences.what-language-do-you-prefer-to-read-or-write
+        helpMessageKey: language-preferences.the-county-will-do-their-best-to-provide-documents-in-your-preferred-language
+        options:
+          selectableOptions:
+            - value: ENGLISH
+              messageKey: language-preferences.english
+            - value: SPANISH
+              messageKey: language-preferences.spanish
+            - value: SOOMAALI
+              messageKey: language-preferences.soomaali
+            - value: VIETNAMESE
+              messageKey: language-preferences.vietnamese
+            - value: RUSSIAN
+              messageKey: language-preferences.russian
+            - value: HMOOB
+              messageKey: language-preferences.hmoob
+      - name: needInterpreter
+        type: RADIO
+        promptMessage:
+          promptMessageKey: language-preferences.do-you-need-an-interpreter
+        options:
+          selectableOptions:
+            - value: "true"
+              messageKey: general.inputs.yes
+            - value: "false"
+              messageKey: general.inputs.no
+  - &choosePrograms
+    name: choosePrograms
+    pageTitle:
+      value: choose-programs.title
+    headerKey:
+      value: choose-programs.what-do-you-need-help-with-today
+    headerHelpMessageKey:
+      value: general.check-all-that-apply
+    inputs:
+      - name: programs
+        type: CHECKBOX
+        validators:
+          - validation: SELECT_AT_LEAST_ONE
+            errorMessageKey: general.validation.make-sure-you-answer-this-question
+        options:
+          selectableOptions:
+            - value: SNAP
+              messageKey: choose-programs.food-snap
+              helpMessageKey: choose-programs.food-snap-help
+              helpIcon: icon-apple
+            - value: CASH
+              messageKey: choose-programs.cash-programs
+              helpMessageKey: choose-programs.cash-programs-help
+              helpIcon: icon-dollar-circle
+            - value: EA
+              messageKey: choose-programs.emergency-assistance
+              helpMessageKey: choose-programs.emergency-assistance-help
+              helpIcon: icon-home
+            - value: GRH
+              messageKey: choose-programs.housing-support-group-residential-housing
+              helpMessageKey: choose-programs.housing-grh-help
+              helpIcon: icon-apartment
+  - &introBasicInfo
+    name: introBasicInfo
+    pageTitle:
+      value: intro-basic-info.title
+  - &personalInfo
+    name: personalInfo
+    pageTitle:
+      value: personal-info.title
+    headerKey:
+      value: personal-info.tell-us-about-yourself
+    inputs:
+      - name: firstName
+        type: TEXT
+        promptMessage:
+          promptMessageKey: personal-info.whats-your-first-name
+        helpMessageKey: personal-info.legally-as-it-appears-on-your-id
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-provide-a-first-name
+      - name: lastName
+        type: TEXT
+        promptMessage:
+          promptMessageKey: personal-info.whats-your-last-name
+        helpMessageKey: personal-info.legally-as-it-appears-on-your-id
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-provide-a-last-name
+      - name: otherName
+        type: TEXT
+        promptMessage:
+          promptMessageKey: personal-info.list-any-names-that-you-have-gone-by-in-the-past
+        helpMessageKey: personal-info.include-maiden-names-or-legal-changes
+      - name: dateOfBirth
+        type: DATE
+        validators:
+          - validation: DATE
+            errorMessageKey: general.validation.make-sure-to-provide-a-birthday
             condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
-      hasPrimaryButton: false
-      inputs:
-        - name: goingToSchool
-          type: YES_NO
-    - &pregnant
-      name: pregnant
-      pageTitle:
-        value: pregnant.title
-      headerKey:
-        value: pregnant.is-anyone-pregnant
-        conditionalValues:
-          - value: pregnant.are-you-pregnant
+              input: dateOfBirth
+              matcher: NOT_EMPTY
+        promptMessage:
+          promptMessageKey: personal-info.when-were-you-born
+      - name: ssn
+        type: SSN
+        validators:
+          - validation: SSN
+            errorMessageKey: general.validation.make-sure-your-SSN-has-9-digits
             condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
+              input: ssn
+              matcher: NOT_EMPTY
+        promptMessage:
+          promptMessageKey: personal-info.whats-your-social-security-number
+        helpMessageKey: personal-info.if-you-have-one-we-strongly-recommend-including-it-here-your-caseworker-will
+      - name: maritalStatus
+        type: RADIO
+        promptMessage:
+          promptMessageKey: personal-info.whats-your-marital-status
+        options:
+          selectableOptions:
+            - value: NEVER_MARRIED
+              messageKey: general.never-married
+            - value: MARRIED_LIVING_WITH_SPOUSE
+              messageKey: general.married-living-with-spouse
+            - value: MARRIED_NOT_LIVING_WITH_SPOUSE
+              messageKey: general.married-not-living-with-spouse
+            - value: LEGALLY_SEPARATED
+              messageKey: general.legally-separated
+            - value: DIVORCED
+              messageKey: general.divorced
+            - value: WIDOWED
+              messageKey: general.widowed
+      - name: sex
+        type: RADIO
+        promptMessage:
+          promptMessageKey: personal-info.whats-your-sex
+        helpMessageKey: personal-info.legally-as-it-appears-on-your-id-we-regret-that-this-question-is-limited
+        options:
+          selectableOptions:
+            - value: FEMALE
+              messageKey: general.female
+            - value: MALE
+              messageKey: general.male
+            - value: RATHER_NOT_SAY
+              messageKey: general.rather-not-say
+      - name: livedInMnWholeLife
+        type: RADIO
+        promptMessage:
+          promptMessageKey: personal-info.have-you-lived-in-minnesota-your-whole-life
+        options:
+          selectableOptions:
+            - value: "false"
+              messageKey: general.inputs.no
+            - value: "true"
+              messageKey: general.inputs.yes
+        followUpValues:
+          - "true"
+        followUps:
+          - name: moveToMnDate
+            type: DATE
+            validators:
+              - validation: DATE
+                errorMessageKey: general.validation.make-sure-you-answer-this-question
+                condition:
+                  input: moveToMnDate
+                  matcher: NOT_EMPTY
+            promptMessage:
+              promptMessageKey: personal-info.when-did-you-move-to-minnesota
+          - name: moveToMnPreviousCity
+            type: TEXT
+            promptMessage:
+              promptMessageKey: personal-info.what-state-did-you-move-from
+  - &contactInfo
+    name: contactInfo
+    pageTitle:
+      value: contact-info.title
+    headerKey:
+      value: contact-info.how-can-we-stay-in-touch-with-you
+    headerHelpMessageKey:
+      value: contact-info.most-of-our-communication-will-be-through-mail
+    inputs:
+      - name: phoneNumber
+        type: PHONE
+        promptMessage:
+          promptMessageKey: contact-info.whats-your-phone-number
+        validators:
+          - validation: PHONE_STARTS_WITH_ONE
+            errorMessageKey: general.validation.area-codes-can-not-begin-with-1
+          - validation: PHONE
+            errorMessageKey: general.validation.make-sure-to-enter-a-phone-number-with-10-digits
+      - name: email
+        type: TEXT
+        promptMessage:
+          promptMessageKey: contact-info.whats-your-email-address
+        validators:
+          - validation: NOT_BLANK
+            condition:
+              input: phoneOrEmail
+              value: EMAIL
+            errorMessageKey: general.validation.make-sure-you-answer-this-question
+      - name: phoneOrEmail
+        type: CHECKBOX
+        promptMessage:
+          promptMessageKey: contact-info.how-can-we-send-you-updates-and-reminders-about-your-case-in-the-future
+        options:
+          selectableOptions:
+            - value: TEXT
+              messageKey: contact-info.text-me
+            - value: EMAIL
+              messageKey: contact-info.email-me
+  - &homeAddress
+    name: homeAddress
+    headerKey:
+      value: home-address.where-are-you-currently-living
+    pageTitle:
+      value: home-address.title
+    inputs:
+      - name: streetAddress
+        type: TEXT
+        promptMessage:
+          promptMessageKey: home-address.what-is-the-street-address
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-you-answer-this-question
+            condition:
+              input: isHomeless
+              matcher: NONE_SELECTED
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-provide-a-home-address-or-select-no-use-a-different-address-for-mail
+            condition:
+              input: sameMailingAddress
               value: "true"
-      hasPrimaryButton: false
-      inputs:
-        - name: isPregnant
-          type: YES_NO
-    - &whoIsPregnant
-      name: whoIsPregnant
-      pageTitle:
-        value: who-is-pregnant.title
-      headerKey:
-        value: who-is-pregnant.header
-      headerHelpMessageKey:
-        value: general.check-all-that-apply
-      inputs:
-        - type: CUSTOM
-          name: whoIsPregnant
-          customInputFragment: householdOptionsCheckboxes
-          options:
-            datasources:
-              - pageName: personalInfo
-              - groupName: household
-    - &usCitizen
-      name: usCitizen
-      pageTitle:
-        value: us-citizen.title
-      headerKey:
-        value: us-citizen.is-everyone-us-citizen
-        conditionalValues:
-          - value: us-citizen.are-you-a-us-citizen
+      - name: apartmentNumber
+        type: TEXT
+        promptMessage:
+          promptMessageKey: home-address.apartment-number
+      - name: city
+        type: TEXT
+        promptMessage:
+          promptMessageKey: home-address.what-is-the-city
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-you-answer-this-question
             condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
+              input: isHomeless
+              matcher: NONE_SELECTED
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-provide-a-home-address-or-select-no-use-a-different-address-for-mail
+            condition:
+              input: sameMailingAddress
               value: "true"
-      headerHelpMessageKey:
-        value: us-citizen.most-immigrants-are-still-eligible-for-food-and-cash-benefits
-      hasPrimaryButton: false
-      inputs:
-        - name: isUsCitizen
-          type: YES_NO
-    - &whoIsNonCitizen
-      name: whoIsNonCitizen
-      pageTitle:
-        value: who-is-non-citizen.title
-      headerKey:
-        value: who-is-non-citizen.header
-      headerHelpMessageKey:
-        value: general.check-all-that-apply
-      inputs:
-        - type: CUSTOM
-          name: whoIsNonCitizen
-          customInputFragment: householdOptionsCheckboxes
-          options:
-            datasources:
-              - pageName: personalInfo
-              - groupName: household
-    - &doYouNeedHelpImmediately
-      name: doYouNeedHelpImmediately
-      pageTitle:
-        value: do-you-need-help-immediately.title
-    - &thirtyDayIncome
-      headerKey:
-        value: thirty-day-income.how-much-money-has-your-household-made-in-the-last-30-days
-        conditionalValues:
-          - value: thirty-day-income.how-much-money-have-you-made-in-the-last-30-days
-            compositeCondition:
-              logicalOperator: OR
-              conditions:
-                - pageName: householdSelectionForIncome
-                  input: whoseJobIsIt
-                  value: "applicant"
-                  matcher: CONTAINS_SUBSTRING
-                - pageName: doYouLiveAlone
-                  input: liveAlone
-                  value: "true"
-      headerHelpMessageKey:
-        value: thirty-day-income.if-you-dont-know-the-exact-amount
-      name: thirtyDayIncome
-      pageTitle:
-        value: thirty-day-income.title-household
-        conditionalValues:
-          - value: thirty-day-income.title-one-person
+      - name: state
+        type: TEXT
+        promptMessage:
+          promptMessageKey: home-address.what-is-the-state
+        readOnly: true
+        defaultValue: MN
+      - name: zipCode
+        type: TEXT
+        promptMessage:
+          promptMessageKey: home-address.what-is-the-zip-code
+        validators:
+          - validation: ZIPCODE
+            errorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
             condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
+              input: isHomeless
+              matcher: NONE_SELECTED
+          - validation: ZIPCODE
+            errorMessageKey: general.validation.make-sure-to-provide-a-home-address-or-select-no-use-a-different-address-for-mail
+            condition:
+              input: sameMailingAddress
               value: "true"
-      inputs:
-        - name: moneyMadeLast30Days
-          type: MONEY
-          validators:
-            - validation: MONEY
-              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
-              condition:
-                input: moneyMadeLast30Days
-                matcher: NOT_EMPTY
-    - &lastThirtyDaysJobIncome
-      headerKey:
-        conditionalValues:
-          - value: thirty-day-job-income.how-much-money-have-you-made-at-this-job-in-the-last-30-days
-            compositeCondition:
-              logicalOperator: OR
-              conditions:
-                - pageName: householdSelectionForIncome
-                  input: whoseJobIsIt
-                  value: "applicant"
-                  matcher: CONTAINS_SUBSTRING
-                - pageName: doYouLiveAlone
-                  input: liveAlone
-                  value: "true"
-          - value: thirty-day-job-income.how-much-money-have-they-made-at-this-job-in-the-last-30-days
+      - name: isHomeless
+        type: CHECKBOX
+        options:
+          selectableOptions:
+            - value: "true"
+              messageKey: home-address.i-dont-have-a-permanent-address
+      - name: sameMailingAddress
+        type: RADIO
+        promptMessage:
+          promptMessageKey: home-address.is-this-the-best-place-for-you-to-receive-mail
+        helpMessageKey: home-address.the-county-will-need-a-place-to-send-you-mail-for-the-next-3-months
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-you-answer-this-question
+        options:
+          selectableOptions:
+            - value: "true"
+              messageKey: home-address.yes-send-mail-here
+            - value: "false"
+              messageKey: home-address.no-use-a-different-address-for-mail
+  - &mailingAddress
+    name: mailingAddress
+    pageTitle:
+      value: mailing-address.title
+    headerKey:
+      value: mailing-address.where-can-the-county-send-your-mail
+    inputs:
+      - name: streetAddress
+        type: TEXT
+        promptMessage:
+          promptMessageKey: mailing-address.what-is-the-street-address
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-you-answer-this-question
+      - name: apartmentNumber
+        type: TEXT
+        promptMessage:
+          promptMessageKey: mailing-address.apartment-number
+      - name: city
+        type: TEXT
+        promptMessage:
+          promptMessageKey: mailing-address.what-is-the-city
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-you-answer-this-question
+      - name: state
+        type: TEXT
+        promptMessage:
+          promptMessageKey: mailing-address.what-is-the-state
+        validators:
+          - validation: STATE
+            errorMessageKey: general.validation.make-sure-to-provide-a-valid-2-letter-state-code
+        defaultValue: MN
+      - name: zipCode
+        type: TEXT
+        promptMessage:
+          promptMessageKey: mailing-address.what-is-the-zip-code
+        validators:
+          - validation: ZIPCODE
+            errorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
+  - &reviewInfo
+    name: reviewInfo
+    pageTitle:
+      value: review-info.title
+    headerKey:
+      value: review-info.lets-review-your-info
+  - &doYouLiveAlone
+    name: doYouLiveAlone
+    headerKey:
+      value: do-you-live-alone.do-you-live-alone
+    headerHelpMessageKey:
+      value: do-you-live-alone.include-everyone-in-your-household-even-if-they-are-not-applying-for-benefits
+    pageTitle:
+      value: do-you-live-alone.title
+    hasPrimaryButton: false
+    inputs:
+      - name: liveAlone
+        promptMessage:
+          promptMessageFragmentName: doYouLiveAlonePrompt
+        type: YES_NO
+  - &startHousehold
+    name: startHousehold
+    pageTitle:
+      value: start-household.title
+  - &householdMemberInfo
+    name: householdMemberInfo
+    pageTitle:
+      value: household-member-info.title
+    headerKey:
+      value: household-member-info.add-a-person-who-lives-with-you
+    inputs:
+      - name: firstName
+        type: TEXT
+        promptMessage:
+          promptMessageKey: household-member-info.whats-their-first-name
+        helpMessageKey: household-member-info.legally-as-it-appears-on-their-id
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-provide-a-first-name
+      - name: lastName
+        type: TEXT
+        promptMessage:
+          promptMessageKey: household-member-info.whats-their-last-name
+        helpMessageKey: household-member-info.legally-as-it-appears-on-their-id
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-provide-a-last-name
+      - name: otherName
+        type: TEXT
+        promptMessage:
+          promptMessageKey: household-member-info.list-any-other-names-they-have-gone-by-in-the-past
+        helpMessageKey: personal-info.include-maiden-names-or-legal-changes
+      - name: dateOfBirth
+        type: DATE
+        promptMessage:
+          promptMessageKey: household-member-info.when-were-they-born
+        validators:
+          - validation: DATE
             condition:
-              pageName: householdSelectionForIncome
-              input: whoseJobIsIt
-              value: "applicant"
-              matcher: DOES_NOT_CONTAIN_SUBSTRING
-      headerHelpMessageKey:
-        value: thirty-day-income.if-you-dont-know-the-exact-amount
-      name: lastThirtyDaysJobIncome
-      pageTitle:
-        value: thirty-day-job-income.title
-      inputs:
-        - name: lastThirtyDaysJobIncome
-          type: MONEY
-          validators:
-            - validation: MONEY
-              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
-              condition:
-                input: lastThirtyDaysJobIncome
-                matcher: NOT_EMPTY
-      contextFragment: jobContextFragment
-    - &liquidAssets
-      name: liquidAssets
-      pageTitle:
-        value: liquid-assets-prompt.title-household
-        conditionalValues:
-          - value: liquid-assets-prompt.title-one-person
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
-      headerKey:
-        value: thirty-day-income.how-much-money-is-available
-        conditionalValues:
-          - value: thirty-day-income.how-much-money-do-you-have-available
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
-      inputs:
-        - name: liquidAssets
-          type: MONEY
-          promptMessage:
-            promptMessageFragmentName: liquidAssetsPrompt
-          validators:
-            - validation: MONEY
-              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
-              condition:
-                input: liquidAssets
-                matcher: NOT_EMPTY
-    - &expeditedExpenses
-      name: expeditedExpenses
-      pageTitle:
-        value: expedited-expenses.title-one-person
-        conditionalValues:
-          - value: expedited-expenses.title-household
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
-      headerKey:
-        value: expedited-expenses.header-one-person
-        conditionalValues:
-          - value: expedited-expenses.header-household
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
-      hasPrimaryButton: false
-      inputs:
-        - name: payRentOrMortgage
-          type: YES_NO
-    - &expeditedExpensesAmount
-      name: homeExpensesAmount
-      pageTitle:
-        value: expedited-expenses-amount.title-one-person
-        conditionalValues:
-          - value: expedited-expenses-amount.title-household
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
-      headerKey:
-        value: expedited-expenses-amount.how-much-do-you-pay-for-rent-or-mortgage-every-month
-        conditionalValues:
-          - value: expedited-expenses-amount.how-much-is-paid-for-rent-or-mortgage-every-month
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
-      inputs:
-        - name: homeExpensesAmount
-          type: MONEY
-          validators:
-            - validation: MONEY
-              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
-              condition:
-                input: homeExpensesAmount
-                matcher: NOT_EMPTY
-    - &utilityPayments
-      name: utilityPayments
-      pageTitle:
-        value: utility-payments.title-one-person
-        conditionalValues:
-          - value: utility-payments.title-household
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
-      headerKey:
-        value: utility-payments.do-you-pay-for-any-utilities
-        conditionalValues:
-          - value: utility-payments.does-anyone-in-your-household-pay-for-these-utilities
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
-      headerHelpMessageKey:
-        value: utility-payments.select-all-that-you-are-billed-for-even-if-you-havent-paid-it-this-month
-        conditionalValues:
-          - value: utility-payments.household-billed
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
-      inputs:
-        - name: payForUtilities
-          type: CHECKBOX
-          validators:
-            - validation: SELECT_AT_LEAST_ONE
-              errorMessageKey: general.validation.make-sure-you-choose-none-of-the-above-or-another-option
-          options:
-            selectableOptions:
-              - value: HEATING
-                messageKey: utility-payments.heating
-              - value: COOLING
-                messageKey: utility-payments.cooling
-              - value: ELECTRICITY
-                messageKey: utility-payments.electricity
-              - value: PHONE
-                messageKey: utility-payments.phone
-              - value: WATER
-                messageKey: utility-payments.water
-              - value: SEWER
-                messageKey: utility-payments.sewer
-              - value: GARBAGE_REMOVAL
-                messageKey: utility-payments.garbage-removal
-              - value: COOKING_FUEL
-                messageKey: utility-payments.cooking-fuel
-              - value: NONE_OF_THE_ABOVE
-                messageKey: general.inputs.none-of-the-above
-                isNone: true
-    - &energyAssistance
-      name: energyAssistance
-      pageTitle:
-        value: energy-assistance.title
-      headerKey:
-        value: energy-assistance.have-you-received-money-for-energy-assistance
-        conditionalValues:
-          - value: energy-assistance.household-received-money
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
-      hasPrimaryButton: false
-      inputs:
-        - name: energyAssistance
-          type: YES_NO
-    - &energyAssistanceMoreThan20
-      name: energyAssistanceMoreThan20
-      pageTitle:
-        value: energy-assistance-more-than-20.title
-      headerKey:
-        value: energy-assistance-more-than-20.have-you-received-more-than-20-in-energy-assistance
-        conditionalValues:
-          - value: energy-assistance-more-than-20.household-received
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
-      hasPrimaryButton: false
-      inputs:
-        - name: energyAssistanceMoreThan20
-          type: YES_NO
-    - &supportAndCare
-      name: supportAndCare
-      pageTitle:
-        value: support-and-care.title
-      headerKey:
-        value: support-and-care.do-you-pay-for-court-ordered-child-support-spousal-support
-        conditionalValues:
-          - value: support-and-care.household-support
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
-      hasPrimaryButton: false
-      inputs:
-        - name: supportAndCare
-          type: YES_NO
-    - &migrantFarmWorker
-      name: migrantFarmWorker
-      pageTitle:
-        value: expedited-migrant-farm-worker.title-one-person
-        conditionalValues:
-          - value: expedited-migrant-farm-worker.title-household
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
-      headerKey:
-        value: expedited-migrant-farm-worker.header-one-person
-        conditionalValues:
-          - value: expedited-migrant-farm-worker.header-household
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
-      hasPrimaryButton: false
-      inputs:
-        - name: migrantOrSeasonalFarmWorker
-          type: YES_NO
-    - &transitionHouseholdPersonDetails
-      name: transitionHouseholdPersonDetails
-      pageTitle:
-        value: transition-household-person-details.title
-    - &expeditedDetermination
-      name: expeditedDetermination
-    - &importantToKnow
-      name: importantToKnow
-      pageTitle:
-        value: important-to-know.title
-      headerKey:
-        value: important-to-know.important-stuff-to-know-about
-    - &legalStuff
-      name: legalStuff
-      pageTitle:
-        value: legal-stuff.title
-      headerKey:
-        value: legal-stuff.the-legal-stuff
-      headerHelpMessageKey:
-        value: legal-stuff.scroll-down-to-agree-to-the-terms
-      inputs:
-        - name: agreeToTerms
-          type: CHECKBOX
-          promptMessage:
-            promptMessageFragmentName: legal-terms-prompt
-          validators:
-            - validation: SELECT_AT_LEAST_ONE
-              errorMessageKey: general.validation.make-sure-you-answer-this-question
-          options:
-            selectableOptions:
-              - value: "true"
-                messageKey: legal-stuff.i-agree
-    - &signThisApplication
-      name: signThisApplication
-      pageTitle:
-        value: sign-this-application.title
-      headerKey:
-        value: sign-this-application.type-your-full-legal-name-here-to-sign-this-application
-      headerHelpMessageKey:
-        value: sign-this-application.by-signing-this-application-you-agree-that-you-want-to
-      primaryButtonTextKey: sign-this-application.submit
-      inputs:
-        - name: applicantSignature
-          type: TEXT
-          validators:
-            - validation: NOT_BLANK
-              errorMessageKey: general.validation.make-sure-you-answer-this-question
-    - &success
-      name: success
-      pageTitle:
-        value: success.title
-    - &disability
-      name: disability
-      pageTitle:
-        value: disability.title
-      headerKey:
-        value: disability.does-anyone-in-your-household-have-a-physical-or-mental-disability-that-prevents
-        conditionalValues:
-          - value: disability.do-you-have-a-physical-or-mental-disability-that-prevents-you-from-working
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
-      hasPrimaryButton: false
-      inputs:
-        - name: hasDisability
-          type: YES_NO
-    - &workSituation
-      name: workSituation
-      pageTitle:
-        value: work-situation.title
-      headerKey:
-        value: work-situation.in-the-last-2-months-did-you-do-any-of-these-things
-        conditionalValues:
-          - value: work-situation.in-the-last-2-months-did-anyone-in-your-household-do-any-of-these-things
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
-      hasPrimaryButton: false
-      inputs:
-        - name: hasWorkSituation
-          type: YES_NO
-          promptMessage:
-            promptMessageFragmentName: workSituationPrompt
-    - &introIncome
-      name: introIncome
-      pageTitle:
-        value: intro-income.title
-    - &employmentStatus
-      name: employmentStatus
-      pageTitle:
-        value: employment-status.title
-      headerKey:
-        value: employment-status.are-you-currently-working-or-making-an-income
-        conditionalValues:
-          - value: employment-status.is-anyone-in-your-household-making-money-from-a-job
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
-      hasPrimaryButton: false
-      inputs:
-        - name: areYouWorking
-          type: YES_NO
-    - &incomeByJob
-      name: incomeByJob
-      pageTitle:
-        value: income-by-job.title
-      headerKey:
-        value: income-by-job.lets-add-your-job-information
-        conditionalValues:
-          - value: income-by-job.lets-add-all-the-jobs-in-your-household
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
-    - &householdSelectionForIncome
-      name: householdSelectionForIncome
-      pageTitle:
-        value: household-selection-for-income.title
-      headerKey:
-        value: household-selection-for-income.header
-      inputs:
-        - type: CUSTOM
-          name: whoseJobIsIt
-          customInputFragment: householdOptionsRadios
-          validators:
-            - validation: NOT_BLANK
-              errorMessageKey: general.validation.make-sure-you-answer-this-question
-          options:
-            datasources:
-              - pageName: personalInfo
-              - groupName: household
-    - &incomeUpNext
-      name: incomeUpNext
-      pageTitle:
-        value: income-up-next.title
-    - &ccapJob
-      name: ccapJob
-      pageTitle:
-        value: ccap-job.title
-      headerKey:
-        value: ccap-job.are-you-currently-looking-for-a-job
-      hasPrimaryButton: false
-      inputs:
-        - name: currentlyLookingForJob
-          type: YES_NO
-    - &unearnedIncome
-      name: unearnedIncome
-      pageTitle:
-        value: unearned-income.title
-      headerKey:
-        value: unearned-income.do-you-get-income-from-any-of-these-sources
-        conditionalValues:
-          - value: unearned-income.household-get-income-from-any-of-these-sources
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
-      headerHelpMessageKey:
-        value: unearned-income.check-all-that-apply-you-do-not-need-to-report-income-you-havent-received-yet
-      inputs:
-        - name: unearnedIncome
-          type: CHECKBOX
-          validators:
-            - validation: SELECT_AT_LEAST_ONE
-              errorMessageKey: general.validation.make-sure-you-choose-none-of-the-above-or-another-option
-          options:
-            selectableOptions:
-              - value: SOCIAL_SECURITY
-                messageKey: unearned-income.social-security
-              - value: SSI
-                messageKey: unearned-income.ssi
-              - value: VETERANS_BENEFITS
-                messageKey: unearned-income.veterans-benefits
-              - value: UNEMPLOYMENT
-                messageKey: unearned-income.unemployment
-              - value: WORKERS_COMPENSATION
-                messageKey: unearned-income.workers-compensation
-              - value: RETIREMENT
-                messageKey: unearned-income.retirement
-              - value: CHILD_OR_SPOUSAL_SUPPORT
-                messageKey: unearned-income.child-or-spousal-support
-              - value: TRIBAL_PAYMENTS
-                messageKey: unearned-income.tribal-payments
-              - value: NO_UNEARNED_INCOME_SELECTED
-                messageKey: general.inputs.none-of-the-above
-                isNone: true
-    - &unearnedIncomeSources
-      name: unearnedIncomeSources
-      pageTitle:
-        value: unearned-income-sources.title
-      headerKey:
-        value: unearned-income-sources.tell-us-how-much-money-you-receive
-        conditionalValues:
-          - value: unearned-income-sources.tell-us-how-much-money-is-received
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
-      headerHelpMessageKey:
-        value: unearned-income-sources.if-you-dont-have-all-this-information-on-hand-skip
-      inputs:
-        - name: socialSecurityAmount
-          type: MONEY
-          promptMessage:
-            promptMessageKey: unearned-income.social-security
-          helpMessageKey: unearned-income-sources.monthly-amount
-          validators:
-            - validation: MONEY
-              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
-              condition:
-                input: socialSecurityAmount
-                matcher: NOT_EMPTY
+              input: dateOfBirth
+              matcher: NOT_EMPTY
+            errorMessageKey: general.validation.make-sure-to-provide-a-birthday
+      - name: maritalStatus
+        type: RADIO
+        promptMessage:
+          promptMessageKey: household-member-info.whats-their-martial-status
+        options:
+          selectableOptions:
+            - value: NEVER_MARRIED
+              messageKey: general.never-married
+            - value: MARRIED_LIVING_WITH_SPOUSE
+              messageKey: general.married-living-with-spouse
+            - value: MARRIED_NOT_LIVING_WITH_SPOUSE
+              messageKey: general.married-not-living-with-spouse
+            - value: LEGALLY_SEPARATED
+              messageKey: general.legally-separated
+            - value: DIVORCED
+              messageKey: general.divorced
+            - value: WIDOWED
+              messageKey: general.widowed
+      - name: sex
+        type: RADIO
+        promptMessage:
+          promptMessageKey: household-member-info.whats-their-sex
+        helpMessageKey: household-member-info.legally-as-it-appears-on-their-id-we-regret-that-this-question-is-limited
+        options:
+          selectableOptions:
+            - value: FEMALE
+              messageKey: general.female
+            - value: MALE
+              messageKey: general.male
+            - value: RATHER_NOT_SAY
+              messageKey: general.rather-not-say
+      - name: livedInMnWholeLife
+        type: RADIO
+        promptMessage:
+          promptMessageKey: household-member-info.have-they-lived-in-minnesota-their-whole-life
+        options:
+          selectableOptions:
+            - value: "false"
+              messageKey: general.inputs.no
+            - value: "true"
+              messageKey: general.inputs.yes
+        followUpValues:
+          - "true"
+        followUps:
+          - name: moveToMnDate
+            type: DATE
+            validators:
+              - validation: DATE
+                condition:
+                  input: moveToMnDate
+                  matcher: NOT_EMPTY
+                errorMessageKey: general.validation.make-sure-you-answer-this-question
+            promptMessage:
+              promptMessageKey: household-member-info.when-did-they-move-to-minnesota
+          - name: moveToMnPreviousState
+            type: TEXT
+            promptMessage:
+              promptMessageKey: household-member-info.what-state-did-they-move-from
+      - name: relationship
+        type: TEXT
+        promptMessage:
+          promptMessageKey: household-member-info.whats-their-relationship-to-you
+      - name: programs
+        type: CHECKBOX
+        promptMessage:
+          promptMessageKey: household-member-info.what-do-they-need-help-with
+        helpMessageKey: general.check-all-that-apply
+        followUpValues:
+          - SNAP
+          - CASH
+          - EA
+          - GRH
+        followUps:
+          - name: ssn
+            type: SSN
+            validators:
+              - validation: SSN
+                errorMessageKey: general.validation.make-sure-your-SSN-has-9-digits
+                condition:
+                  input: ssn
+                  matcher: NOT_EMPTY
+            promptMessage:
+              promptMessageKey: household-member-info.whats-their-social-security-number
+            helpMessageKey: household-member-info.if-they-have-one-we-strongly-recommend-including-it-here-your-caseworker-will
+        validators:
+          - validation: SELECT_AT_LEAST_ONE
+            errorMessageKey: general.validation.make-sure-you-answer-this-question
+        options:
+          selectableOptions:
+            - value: SNAP
+              messageKey: choose-programs.food-snap
+            - value: CASH
+              messageKey: choose-programs.cash-programs
+            - value: EA
+              messageKey: choose-programs.emergency-assistance
+            - value: GRH
+              messageKey: choose-programs.housing-support-group-residential-housing
+            - value: NONE
+              messageKey: general.inputs.none-of-the-above
+              isNone: true
+  - &householdList
+    name: householdList
+    pageTitle:
+      value: household-list.title
+  - &householdDeleteWarningPage
+    name: householdDeleteWarningPage
+    headerKey:
+      value: warning-page.you-are-about-to-delete-household-member
+    pageTitle:
+      value: warning-page.delete-household-member-warning
+  - &introPersonalDetails
+    name: introPersonalDetails
+    pageTitle:
+      value: intro-personal-details.title
+  - &preparingMealsTogether
+    name: preparingMealsTogether
+    pageTitle:
+      value: preparing-meals-together.title
+    headerKey:
+      value: preparing-meals-together.header
+    hasPrimaryButton: false
+    inputs:
+      - name: isPreparingMealsTogether
+        type: YES_NO
+  - &goingToSchool
+    name: goingToSchool
+    pageTitle:
+      value: going-to-school.title
+    headerKey:
+      value: going-to-school.header
+      conditionalValues:
+        - value: going-to-school.header-household
           condition:
-            pageName: unearnedIncome
-            input: unearnedIncome
-            value: SOCIAL_SECURITY
-        - name: supplementalSecurityIncomeAmount
-          type: MONEY
-          promptMessage:
-            promptMessageKey: unearned-income.ssi
-          helpMessageKey: unearned-income-sources.monthly-amount
-          validators:
-            - validation: MONEY
-              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
-              condition:
-                input: supplementalSecurityIncomeAmount
-                matcher: NOT_EMPTY
-          condition:
-            pageName: unearnedIncome
-            input: unearnedIncome
-            value: SSI
-        - name: veteransBenefitsAmount
-          type: MONEY
-          promptMessage:
-            promptMessageKey: unearned-income.veterans-benefits
-          helpMessageKey: unearned-income-sources.monthly-amount
-          validators:
-            - validation: MONEY
-              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
-              condition:
-                input: veteransBenefitsAmount
-                matcher: NOT_EMPTY
-          condition:
-            pageName: unearnedIncome
-            input: unearnedIncome
-            value: VETERANS_BENEFITS
-        - name: unemploymentAmount
-          type: MONEY
-          promptMessage:
-            promptMessageKey: unearned-income.unemployment
-          helpMessageKey: unearned-income-sources.monthly-amount
-          validators:
-            - validation: MONEY
-              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
-              condition:
-                input: unemploymentAmount
-                matcher: NOT_EMPTY
-          condition:
-            pageName: unearnedIncome
-            input: unearnedIncome
-            value: UNEMPLOYMENT
-        - name: workersCompensationAmount
-          type: MONEY
-          promptMessage:
-            promptMessageKey: unearned-income.workers-compensation
-          helpMessageKey: unearned-income-sources.monthly-amount
-          validators:
-            - validation: MONEY
-              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
-              condition:
-                input: workersCompensationAmount
-                matcher: NOT_EMPTY
-          condition:
-            pageName: unearnedIncome
-            input: unearnedIncome
-            value: WORKERS_COMPENSATION
-        - name: retirementAmount
-          type: MONEY
-          promptMessage:
-            promptMessageKey: unearned-income.retirement
-          helpMessageKey: unearned-income-sources.monthly-amount
-          validators:
-            - validation: MONEY
-              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
-              condition:
-                input: retirementAmount
-                matcher: NOT_EMPTY
-          condition:
-            pageName: unearnedIncome
-            input: unearnedIncome
-            value: RETIREMENT
-        - name: childOrSpousalSupportAmount
-          type: MONEY
-          promptMessage:
-            promptMessageKey: unearned-income.child-or-spousal-support
-          helpMessageKey: unearned-income-sources.monthly-amount
-          validators:
-            - validation: MONEY
-              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
-              condition:
-                input: childOrSpousalSupportAmount
-                matcher: NOT_EMPTY
-          condition:
-            pageName: unearnedIncome
-            input: unearnedIncome
-            value: CHILD_OR_SPOUSAL_SUPPORT
-        - name: tribalPaymentsAmount
-          type: MONEY
-          promptMessage:
-            promptMessageKey: unearned-income.tribal-payments
-          helpMessageKey: unearned-income-sources.monthly-amount
-          validators:
-            - validation: MONEY
-              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
-              condition:
-                input: tribalPaymentsAmount
-                matcher: NOT_EMPTY
-          condition:
-            pageName: unearnedIncome
-            input: unearnedIncome
-            value: TRIBAL_PAYMENTS
-    - &futureIncome
-      name: futureIncome
-      pageTitle:
-        value: future-income.title
-      headerKey:
-        value: future-income.do-you-think-youll-earn-less-money-this-month-than-last-month
-        conditionalValues:
-          - value: future-income.do-you-think-household-will-earn-less-money-this-month-than-last-month
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
-      headerHelpMessageKey:
-        value: future-income.if-youre-not-sure-you-can-guess
-      inputs:
-        - name: earnLessMoneyThisMonth
-          type: RADIO
-          options:
-            selectableOptions:
-              - value: "true"
-                messageKey: general.inputs.yes
-              - value: "false"
-                messageKey: general.inputs.no
-        - name: additionalIncomeInfo
-          type: TEXTAREA
-          promptMessage:
-            promptMessageKey: future-income.is-there-anything-else-youd-like-to-share-about-your-income
-          helpMessageKey: general.inputs.optional
-    - &employersName
-      name: employersName
-      pageTitle:
-        value: employers-name.title
-      headerKey:
-        value: employers-name.add-a-job-they-have
-        conditionalValues:
-          - value: employers-name.add-a-job-you-have
-            compositeCondition:
-              logicalOperator: OR
-              conditions:
-                - pageName: householdSelectionForIncome
-                  input: whoseJobIsIt
-                  value: "applicant"
-                  matcher: CONTAINS_SUBSTRING
-                - pageName: doYouLiveAlone
-                  input: liveAlone
-                  value: "true"
-      inputs:
-        - name: employersName
-          type: LONG_TEXT
-          validators:
-            - validation: NOT_BLANK
-              errorMessageKey: general.validation.make-sure-you-answer-this-question
-          promptMessage:
-            promptMessageKey: employers-name.what-is-the-employers-name
-    - &selfEmployment
-      name: selfEmployment
-      pageTitle:
-        value: self-employment.title
-      headerKey:
-        value: self-employment.is-their-work-here
-        conditionalValues:
-          - value: self-employment.is-your-work-here
-            compositeCondition:
-              logicalOperator: OR
-              conditions:
-                - pageName: householdSelectionForIncome
-                  input: whoseJobIsIt
-                  value: "applicant"
-                  matcher: CONTAINS_SUBSTRING
-                - pageName: doYouLiveAlone
-                  input: liveAlone
-                  value: "true"
-      hasPrimaryButton: false
-      inputs:
-        - name: selfEmployment
-          promptMessage:
-            promptMessageFragmentName: selfEmploymentPrompt
-          type: YES_NO
-      contextFragment: jobContextFragment
-    - &paidByTheHour
-      name: paidByTheHour
-      pageTitle:
-        value: paid-by-the-hour.title
-      headerKey:
-        value: paid-by-the-hour.do-they-get-paid-by-the-hour
-        conditionalValues:
-          - value: paid-by-the-hour.do-you-get-paid-by-the-hour
-            compositeCondition:
-              logicalOperator: OR
-              conditions:
-                - pageName: householdSelectionForIncome
-                  input: whoseJobIsIt
-                  value: "applicant"
-                  matcher: CONTAINS_SUBSTRING
-                - pageName: doYouLiveAlone
-                  input: liveAlone
-                  value: "true"
-      hasPrimaryButton: false
-      inputs:
-        - name: paidByTheHour
-          type: YES_NO
-      subtleLinkTextKey:
-        value: paid-by-the-hour.i-dont-know-these-details
-      contextFragment: jobContextFragment
-    - &hourlyWage
-      name: hourlyWage
-      pageTitle:
-        value: hourly-wage.title
-      headerKey:
-        value: hourly-wage.what-is-their-hourly-wage
-        conditionalValues:
-          - value: hourly-wage.what-is-your-hourly-wage
-            compositeCondition:
-              logicalOperator: OR
-              conditions:
-                - pageName: householdSelectionForIncome
-                  input: whoseJobIsIt
-                  value: "applicant"
-                  matcher: CONTAINS_SUBSTRING
-                - pageName: doYouLiveAlone
-                  input: liveAlone
-                  value: "true"
-      inputs:
-        - name: hourlyWage
-          type: HOURLY_WAGE
-          validators:
-            - validation: MONEY
-              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
-              condition:
-                input: hourlyWage
-                matcher: NOT_EMPTY
-      contextFragment: jobContextFragment
-    - &hoursAWeek
-      name: hoursAWeek
-      pageTitle:
-        value: hours-a-week.title
-      headerKey:
-        value: hours-a-week.how-many-hours-a-week-do-they-work
-        conditionalValues:
-          - value: hours-a-week.how-many-hours-a-week-do-you-work
-            compositeCondition:
-              logicalOperator: OR
-              conditions:
-                - pageName: householdSelectionForIncome
-                  input: whoseJobIsIt
-                  value: "applicant"
-                  matcher: CONTAINS_SUBSTRING
-                - pageName: doYouLiveAlone
-                  input: liveAlone
-                  value: "true"
-      headerHelpMessageKey:
-        value: hours-a-week.we-know-this-can-be-hard-to-answer-so-just-estimate-based-on-their
-        conditionalValues:
-          - value: hours-a-week.we-know-this-can-be-hard-to-answer-so-just-estimate-based-on
-            compositeCondition:
-              logicalOperator: OR
-              conditions:
-                - pageName: householdSelectionForIncome
-                  input: whoseJobIsIt
-                  value: "applicant"
-                  matcher: CONTAINS_SUBSTRING
-                - pageName: doYouLiveAlone
-                  input: liveAlone
-                  value: "true"
-      inputs:
-        - name: hoursAWeek
-          type: NUMBER
-      contextFragment: jobContextFragment
-    - &payPeriod
-      name: payPeriod
-      pageTitle:
-        value: pay-period.title
-      headerKey:
-        value: pay-period.how-often-do-they-get-paid
-        conditionalValues:
-          - value: pay-period.how-often-do-you-get-paid
-            compositeCondition:
-              logicalOperator: OR
-              conditions:
-                - pageName: householdSelectionForIncome
-                  input: whoseJobIsIt
-                  value: "applicant"
-                  matcher: CONTAINS_SUBSTRING
-                - pageName: doYouLiveAlone
-                  input: liveAlone
-                  value: "true"
-      inputs:
-        - name: payPeriod
-          type: RADIO
-          validators:
-            - validation: NOT_BLANK
-              errorMessageKey: general.validation.make-sure-you-answer-this-question
-          options:
-            selectableOptions:
-              - value: EVERY_WEEK
-                messageKey: pay-period.every-week
-              - value: EVERY_TWO_WEEKS
-                messageKey: pay-period.every-two-weeks
-              - value: TWICE_A_MONTH
-                messageKey: pay-period.twice-a-month
-              - value: EVERY_MONTH
-                messageKey: pay-period.every-month
-              - value: IT_VARIES
-                messageKey: pay-period.it-varies
-      contextFragment: jobContextFragment
-    - &incomePerPayPeriod
-      name: incomePerPayPeriod
-      pageTitle:
-        value: income-per-pay-period.title
-      headerKey:
-        conditionalValues:
-          - value: income-per-pay-period.every-week
-            condition:
-              pageName: payPeriod
-              input: payPeriod
-              value: EVERY_WEEK
-          - value: income-per-pay-period.every-two-weeks
-            condition:
-              pageName: payPeriod
-              input: payPeriod
-              value: EVERY_TWO_WEEKS
-          - value: income-per-pay-period.twice-a-month
-            condition:
-              pageName: payPeriod
-              input: payPeriod
-              value: TWICE_A_MONTH
-          - value: income-per-pay-period.every-month
-            condition:
-              pageName: payPeriod
-              input: payPeriod
-              value: EVERY_MONTH
-          - value: income-per-pay-period.it-varies
-            condition:
-              pageName: payPeriod
-              input: payPeriod
-              value: IT_VARIES
-      headerHelpMessageKey:
-        value: income-per-pay-period.provide-income-before-taxes-we-know-this-can-be-hard-to
-      inputs:
-        - name: incomePerPayPeriod
-          type: MONEY
-          validators:
-            - validation: MONEY
-              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
-      contextFragment: jobContextFragment
-    - &jobBuilder
-      name: jobBuilder
-      pageTitle:
-        value: job-builder.title
-      headerKey:
-        value: job-builder.your-jobs
-        conditionalValues:
-          - value: job-builder.your-household-jobs
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
-    - &jobRedirectPage
-      name: jobRedirectPage
-      headerKey:
-        value: warning-page.going-back-will-take-you-to-the-beginning-of-the-jobs-section-where-you-will-start-over
-      pageTitle:
-        value: warning-page.go-back-title
-    - &jobDeleteWarningPage
-      name: jobDeleteWarningPage
-      headerKey:
-        conditionalValues:
-          - value: warning-page.you-are-about-to-delete-your-job
-            compositeCondition:
-              logicalOperator: OR
-              conditions:
-                - pageName: householdSelectionForIncome
-                  input: whoseJobIsIt
-                  value: "applicant"
-                  matcher: CONTAINS_SUBSTRING
-                - pageName: doYouLiveAlone
-                  input: liveAlone
-                  value: "true"
-          - value: warning-page.you-are-about-to-delete-member-job
-            condition:
-              pageName: householdSelectionForIncome
-              input: whoseJobIsIt
-              value: "applicant"
-              matcher: DOES_NOT_CONTAIN_SUBSTRING
-      pageTitle:
-        value: warning-page.no-data-title
-    - &startExpenses
-      name: startExpenses
-      pageTitle:
-        value: start-expenses.title
-    - &homeExpenses
-      name: homeExpenses
-      pageTitle:
-        value: home-expenses.title
-      headerKey:
-        value: home-expenses.do-you-pay-for-any-of-these
-        conditionalValues:
-          - value: home-expenses.household-pay-for-these
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
-      headerHelpMessageKey:
-        value: general.check-all-that-apply
-      inputs:
-        - name: homeExpenses
-          type: CHECKBOX
-          validators:
-            - validation: SELECT_AT_LEAST_ONE
-              errorMessageKey: general.validation.make-sure-you-choose-none-of-the-above-or-another-option
-          options:
-            selectableOptions:
-              - value: RENT
-                messageKey: home-expenses.rent
-              - value: MORTGAGE
-                messageKey: home-expenses.mortgage
-              - value: HOMEOWNERS_INSURANCE
-                messageKey: home-expenses.homeowners-insurance
-              - value: REAL_ESTATE_TAXES
-                messageKey: home-expenses.real-estate-taxes
-              - value: ASSOCIATION_FEES
-                messageKey: home-expenses.association-fees
-              - value: ROOM_AND_BOARD
-                messageKey: home-expenses.room-and-board
-              - value: NONE_OF_THE_ABOVE
-                messageKey: general.inputs.none-of-the-above
-                isNone: true
-    - &homeExpensesAmount
-      name: homeExpensesAmount
-      pageTitle:
-        value: home-expenses-amount.title
-      headerKey:
-        conditionalValues:
-          - value: home-expenses-amount.how-much-do-you-pay-for-rent-every-month
-            compositeCondition:
-              logicalOperator: AND
-              conditions:
-                - pageName: homeExpenses
-                  input: homeExpenses
-                  value: MORTGAGE
-                  matcher: DOES_NOT_CONTAIN
-                - pageName: doYouLiveAlone
-                  input: liveAlone
-                  value: "true"
-          - value: home-expenses-amount.how-much-do-you-pay-for-mortgage-every-month
-            compositeCondition:
-              logicalOperator: AND
-              conditions:
-                - pageName: homeExpenses
-                  input: homeExpenses
-                  value: RENT
-                  matcher: DOES_NOT_CONTAIN
-                - pageName: doYouLiveAlone
-                  input: liveAlone
-                  value: "true"
-          - value: home-expenses-amount.how-much-do-you-pay-for-rent-and-mortgage-every-month
-            compositeCondition:
-              logicalOperator: AND
-              conditions:
-                - pageName: doYouLiveAlone
-                  input: liveAlone
-                  value: "true"
-                - pageName: homeExpenses
-                  input: homeExpenses
-                  value: RENT
-                - pageName: homeExpenses
-                  input: homeExpenses
-                  value: MORTGAGE
-          - value: home-expenses-amount.household-pay-rent-every-month
-            compositeCondition:
-              logicalOperator: AND
-              conditions:
-                - pageName: homeExpenses
-                  input: homeExpenses
-                  value: MORTGAGE
-                  matcher: DOES_NOT_CONTAIN
-                - pageName: doYouLiveAlone
-                  input: liveAlone
-                  value: "false"
-          - value: home-expenses-amount.household-pay-mortgage-every-month
-            compositeCondition:
-              logicalOperator: AND
-              conditions:
-                - pageName: homeExpenses
-                  input: homeExpenses
-                  value: RENT
-                  matcher: DOES_NOT_CONTAIN
-                - pageName: doYouLiveAlone
-                  input: liveAlone
-                  value: "false"
-          - value: home-expenses-amount.how-much-does-household-pay-for-rent-and-mortgage-every-month
-            compositeCondition:
-              logicalOperator: AND
-              conditions:
-                - pageName: doYouLiveAlone
-                  input: liveAlone
-                  value: "false"
-                - pageName: homeExpenses
-                  input: homeExpenses
-                  value: RENT
-                - pageName: homeExpenses
-                  input: homeExpenses
-                  value: MORTGAGE
-      inputs:
-        - name: homeExpensesAmount
-          type: MONEY
-          validators:
-            - validation: MONEY
-              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
-            - validation: NOT_BLANK
-              errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
-    - &savings
-      name: savings
-      pageTitle:
-        value: savings.title
-      headerKey:
-        value: savings.do-you-have-money-in-a-bank-account-or-debit-card
-        conditionalValues:
-          - value: savings.household-bank-account
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
-      hasPrimaryButton: false
-      inputs:
-        - name: haveSavings
-          type: YES_NO
-    - &investments
-      name: investments
-      pageTitle:
-        value: investments.title
-      headerKey:
-        value: investments.do-you-have-any-stocks-bonds-or-a-401k
-        conditionalValues:
-          - value: investments.household-stocks
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
-      hasPrimaryButton: false
-      inputs:
-        - name: haveInvestments
-          type: YES_NO
-    - &vehicle
-      name: vehicle
-      pageTitle:
-        value: vehicle.title
-      headerKey:
-        value: vehicle.do-you-own-a-vehicle
-        conditionalValues:
-          - value: vehicle.household-own-vehicle
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
-      hasPrimaryButton: false
-      inputs:
-        - name: haveVehicle
-          type: YES_NO
-    - &soldAssets
-      name: soldAssets
-      pageTitle:
-        value: sold-assets.title
-      headerKey:
-        value: sold-assets.in-the-last-12-months-have-you-given-away-or-sold-any-assets
-        conditionalValues:
-          - value: sold-assets.households-given-or-sold
-            condition:
-              pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
-      hasPrimaryButton: false
-      inputs:
-        - name: haveSoldAssets
-          type: YES_NO
-          promptMessage:
-            promptMessageFragmentName: soldAssetsPrompt
-    - &submittingApplication
-      name: submittingApplication
-      pageTitle:
-        value: submitting-application.title
-    - &homeAddressValidation
-      name: homeAddressValidation
-      pageTitle:
-        value: address-validation.title
-      hasPrimaryButton: false
-      inputs:
-        - name: useEnrichedAddress
-          type: CUSTOM
-          customInputFragment: addressValidationInput
-          options:
-            selectableOptions:
-              - value: "true"
-                messageKey: address-validation.suggested-address
-              - value: "false"
-                messageKey: address-validation.address-you-entered
-    - &mailingAddressValidation
-      name: mailingAddressValidation
-      pageTitle:
-        value: address-validation.title
-      hasPrimaryButton: false
-      inputs:
-        - name: useEnrichedAddress
-          type: CUSTOM
-          customInputFragment: addressValidationInput
-          options:
-            selectableOptions:
-              - value: "true"
-                messageKey: address-validation.suggested-address
-              - value: "false"
-                messageKey: address-validation.address-you-entered
-    - &registerToVote
-      name: registerToVote
-      headerKey:
-        value: register-to-vote.do-you-want-to-register-to-vote
-      inputs:
-        - name: registerToVote
-          type: CUSTOM
-          customInputFragment: registerToVoteInput
-          options:
-            selectableOptions:
-              - value: "YES"
-                messageKey: register-to-vote.yes-send-me-more-info
-              - value: NO_ALREADY_REGISTERED
-                messageKey: register-to-vote.ive-already-registered
-              - value: "NO"
-                messageKey: register-to-vote.no-thanks
-      pageTitle:
-        value: register-to-vote.title
-      hasPrimaryButton: false
-  workflow:
-    landing:
-      pageConfiguration: *landing
-      nextPages:
-        - pageName: prepareToApply
-    prepareToApply:
-      pageConfiguration: *prepareToApply
-      nextPages:
-        - pageName: languagePreferences
-    languagePreferences:
-      pageConfiguration: *languagePreferences
-      nextPages:
-        - pageName: choosePrograms
-    choosePrograms:
-      pageConfiguration: *choosePrograms
-      nextPages:
-        - pageName: introBasicInfo
-    introBasicInfo:
-      pageConfiguration: *introBasicInfo
-      nextPages:
-        - pageName: personalInfo
-    personalInfo:
-      pageConfiguration: *personalInfo
-      nextPages:
-        - pageName: contactInfo
-    contactInfo:
-      pageConfiguration: *contactInfo
-      nextPages:
-        - pageName: homeAddress
-    homeAddress:
-      pageConfiguration: *homeAddress
-      enrichment: homeAddressEnrichment
-      nextPages:
-        - pageName: verifyHomeAddress
-    verifyHomeAddress:
-      pageConfiguration: *homeAddressValidation
-      skipCondition:
-        conditions:
-          - pageName: homeAddress
-            input: streetAddress
-            matcher: EMPTY
-      datasources:
-        - pageName: homeAddress
-      nextPages:
-        - pageName: mailingAddress
-        - pageName: homeAddress
-    mailingAddress:
-      pageConfiguration: *mailingAddress
-      enrichment: mailingAddressEnrichment
-      skipCondition:
-        conditions:
-          - pageName: homeAddress
-            input: sameMailingAddress
-            value: "true"
-      nextPages:
-        - pageName: verifyMailingAddress
-      datasources:
-        - pageName: homeAddress
-    verifyMailingAddress:
-      pageConfiguration: *mailingAddressValidation
-      skipCondition:
-        conditions:
-          - pageName: homeAddress
-            input: sameMailingAddress
-            value: "true"
-      datasources:
-        - pageName: mailingAddress
-        - pageName: homeAddress
-      nextPages:
-        - pageName: reviewInfo
-        - pageName: mailingAddress
-    reviewInfo:
-      pageConfiguration: *reviewInfo
-      nextPages:
-        - pageName: doYouLiveAlone
-          flow: FULL
-        - pageName: doYouNeedHelpImmediately
-      datasources:
-        - pageName: personalInfo
-        - pageName: homeAddress
-        - pageName: homeAddressValidation
-        - pageName: mailingAddress
-        - pageName: mailingAddressValidation
-        - pageName: contactInfo
-    doYouLiveAlone:
-      pageConfiguration: *doYouLiveAlone
-      nextPages:
-        - pageName: introPersonalDetails
-          condition:
-            input: liveAlone
-            value: "true"
-        - pageName: startHousehold
-          condition:
+            pageName: doYouLiveAlone
             input: liveAlone
             value: "false"
-    startHousehold:
-      pageConfiguration: *startHousehold
-      nextPages:
-        - pageName: householdMemberInfo
-    householdMemberInfo:
-      pageConfiguration: *householdMemberInfo
-      groupName: household
-      nextPages:
-        - pageName: householdList
-    householdList:
-      pageConfiguration: *householdList
-      nextPages:
-        - pageName: householdMemberInfo
-        - pageName: preparingMealsTogether
-      datasources:
-        - groupName: household
-        - pageName: personalInfo
-    householdDeleteWarningPage:
-      pageConfiguration: *householdDeleteWarningPage
-      appliesToGroup: household
-      nextPages:
-        - pageName: householdList
-      datasources:
-        - groupName: household
-    introPersonalDetails:
-      pageConfiguration: *introPersonalDetails
-      nextPages:
-        - pageName: goingToSchool
-    preparingMealsTogether:
-      pageConfiguration: *preparingMealsTogether
-      skipCondition:
-        conditions:
-          - pageName: choosePrograms
-            value: SNAP
-            input: programs
-            matcher: DOES_NOT_CONTAIN
-      nextPages:
-        - pageName: goingToSchool
-      datasources:
+    hasPrimaryButton: false
+    inputs:
+      - name: goingToSchool
+        type: YES_NO
+  - &pregnant
+    name: pregnant
+    pageTitle:
+      value: pregnant.title
+    headerKey:
+      value: pregnant.is-anyone-pregnant
+      conditionalValues:
+        - value: pregnant.are-you-pregnant
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "true"
+    hasPrimaryButton: false
+    inputs:
+      - name: isPregnant
+        type: YES_NO
+  - &whoIsPregnant
+    name: whoIsPregnant
+    pageTitle:
+      value: who-is-pregnant.title
+    headerKey:
+      value: who-is-pregnant.header
+    headerHelpMessageKey:
+      value: general.check-all-that-apply
+    inputs:
+      - type: CUSTOM
+        name: whoIsPregnant
+        customInputFragment: householdOptionsCheckboxes
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+  - &usCitizen
+    name: usCitizen
+    pageTitle:
+      value: us-citizen.title
+    headerKey:
+      value: us-citizen.is-everyone-us-citizen
+      conditionalValues:
+        - value: us-citizen.are-you-a-us-citizen
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "true"
+    headerHelpMessageKey:
+      value: us-citizen.most-immigrants-are-still-eligible-for-food-and-cash-benefits
+    hasPrimaryButton: false
+    inputs:
+      - name: isUsCitizen
+        type: YES_NO
+  - &whoIsNonCitizen
+    name: whoIsNonCitizen
+    pageTitle:
+      value: who-is-non-citizen.title
+    headerKey:
+      value: who-is-non-citizen.header
+    headerHelpMessageKey:
+      value: general.check-all-that-apply
+    inputs:
+      - type: CUSTOM
+        name: whoIsNonCitizen
+        customInputFragment: householdOptionsCheckboxes
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+  - &doYouNeedHelpImmediately
+    name: doYouNeedHelpImmediately
+    pageTitle:
+      value: do-you-need-help-immediately.title
+  - &thirtyDayIncome
+    headerKey:
+      value: thirty-day-income.how-much-money-has-your-household-made-in-the-last-30-days
+      conditionalValues:
+        - value: thirty-day-income.how-much-money-have-you-made-in-the-last-30-days
+          compositeCondition:
+            logicalOperator: OR
+            conditions:
+              - pageName: householdSelectionForIncome
+                input: whoseJobIsIt
+                value: "applicant"
+                matcher: CONTAINS_SUBSTRING
+              - pageName: doYouLiveAlone
+                input: liveAlone
+                value: "true"
+    headerHelpMessageKey:
+      value: thirty-day-income.if-you-dont-know-the-exact-amount
+    name: thirtyDayIncome
+    pageTitle:
+      value: thirty-day-income.title-household
+      conditionalValues:
+        - value: thirty-day-income.title-one-person
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "true"
+    inputs:
+      - name: moneyMadeLast30Days
+        type: MONEY
+        validators:
+          - validation: MONEY
+            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            condition:
+              input: moneyMadeLast30Days
+              matcher: NOT_EMPTY
+  - &lastThirtyDaysJobIncome
+    headerKey:
+      conditionalValues:
+        - value: thirty-day-job-income.how-much-money-have-you-made-at-this-job-in-the-last-30-days
+          compositeCondition:
+            logicalOperator: OR
+            conditions:
+              - pageName: householdSelectionForIncome
+                input: whoseJobIsIt
+                value: "applicant"
+                matcher: CONTAINS_SUBSTRING
+              - pageName: doYouLiveAlone
+                input: liveAlone
+                value: "true"
+        - value: thirty-day-job-income.how-much-money-have-they-made-at-this-job-in-the-last-30-days
+          condition:
+            pageName: householdSelectionForIncome
+            input: whoseJobIsIt
+            value: "applicant"
+            matcher: DOES_NOT_CONTAIN_SUBSTRING
+    headerHelpMessageKey:
+      value: thirty-day-income.if-you-dont-know-the-exact-amount
+    name: lastThirtyDaysJobIncome
+    pageTitle:
+      value: thirty-day-job-income.title
+    inputs:
+      - name: lastThirtyDaysJobIncome
+        type: MONEY
+        validators:
+          - validation: MONEY
+            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            condition:
+              input: lastThirtyDaysJobIncome
+              matcher: NOT_EMPTY
+    contextFragment: jobContextFragment
+  - &liquidAssets
+    name: liquidAssets
+    pageTitle:
+      value: liquid-assets-prompt.title-household
+      conditionalValues:
+        - value: liquid-assets-prompt.title-one-person
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "true"
+    headerKey:
+      value: thirty-day-income.how-much-money-is-available
+      conditionalValues:
+        - value: thirty-day-income.how-much-money-do-you-have-available
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "true"
+    inputs:
+      - name: liquidAssets
+        type: MONEY
+        promptMessage:
+          promptMessageFragmentName: liquidAssetsPrompt
+        validators:
+          - validation: MONEY
+            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            condition:
+              input: liquidAssets
+              matcher: NOT_EMPTY
+  - &expeditedExpenses
+    name: expeditedExpenses
+    pageTitle:
+      value: expedited-expenses.title-one-person
+      conditionalValues:
+        - value: expedited-expenses.title-household
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "false"
+    headerKey:
+      value: expedited-expenses.header-one-person
+      conditionalValues:
+        - value: expedited-expenses.header-household
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "false"
+    hasPrimaryButton: false
+    inputs:
+      - name: payRentOrMortgage
+        type: YES_NO
+  - &expeditedExpensesAmount
+    name: homeExpensesAmount
+    pageTitle:
+      value: expedited-expenses-amount.title-one-person
+      conditionalValues:
+        - value: expedited-expenses-amount.title-household
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "false"
+    headerKey:
+      value: expedited-expenses-amount.how-much-do-you-pay-for-rent-or-mortgage-every-month
+      conditionalValues:
+        - value: expedited-expenses-amount.how-much-is-paid-for-rent-or-mortgage-every-month
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "false"
+    inputs:
+      - name: homeExpensesAmount
+        type: MONEY
+        validators:
+          - validation: MONEY
+            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            condition:
+              input: homeExpensesAmount
+              matcher: NOT_EMPTY
+  - &utilityPayments
+    name: utilityPayments
+    pageTitle:
+      value: utility-payments.title-one-person
+      conditionalValues:
+        - value: utility-payments.title-household
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "false"
+    headerKey:
+      value: utility-payments.do-you-pay-for-any-utilities
+      conditionalValues:
+        - value: utility-payments.does-anyone-in-your-household-pay-for-these-utilities
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "false"
+    headerHelpMessageKey:
+      value: utility-payments.select-all-that-you-are-billed-for-even-if-you-havent-paid-it-this-month
+      conditionalValues:
+        - value: utility-payments.household-billed
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "false"
+    inputs:
+      - name: payForUtilities
+        type: CHECKBOX
+        validators:
+          - validation: SELECT_AT_LEAST_ONE
+            errorMessageKey: general.validation.make-sure-you-choose-none-of-the-above-or-another-option
+        options:
+          selectableOptions:
+            - value: HEATING
+              messageKey: utility-payments.heating
+            - value: COOLING
+              messageKey: utility-payments.cooling
+            - value: ELECTRICITY
+              messageKey: utility-payments.electricity
+            - value: PHONE
+              messageKey: utility-payments.phone
+            - value: WATER
+              messageKey: utility-payments.water
+            - value: SEWER
+              messageKey: utility-payments.sewer
+            - value: GARBAGE_REMOVAL
+              messageKey: utility-payments.garbage-removal
+            - value: COOKING_FUEL
+              messageKey: utility-payments.cooking-fuel
+            - value: NONE_OF_THE_ABOVE
+              messageKey: general.inputs.none-of-the-above
+              isNone: true
+  - &energyAssistance
+    name: energyAssistance
+    pageTitle:
+      value: energy-assistance.title
+    headerKey:
+      value: energy-assistance.have-you-received-money-for-energy-assistance
+      conditionalValues:
+        - value: energy-assistance.household-received-money
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "false"
+    hasPrimaryButton: false
+    inputs:
+      - name: energyAssistance
+        type: YES_NO
+  - &energyAssistanceMoreThan20
+    name: energyAssistanceMoreThan20
+    pageTitle:
+      value: energy-assistance-more-than-20.title
+    headerKey:
+      value: energy-assistance-more-than-20.have-you-received-more-than-20-in-energy-assistance
+      conditionalValues:
+        - value: energy-assistance-more-than-20.household-received
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "false"
+    hasPrimaryButton: false
+    inputs:
+      - name: energyAssistanceMoreThan20
+        type: YES_NO
+  - &supportAndCare
+    name: supportAndCare
+    pageTitle:
+      value: support-and-care.title
+    headerKey:
+      value: support-and-care.do-you-pay-for-court-ordered-child-support-spousal-support
+      conditionalValues:
+        - value: support-and-care.household-support
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "false"
+    hasPrimaryButton: false
+    inputs:
+      - name: supportAndCare
+        type: YES_NO
+  - &migrantFarmWorker
+    name: migrantFarmWorker
+    pageTitle:
+      value: expedited-migrant-farm-worker.title-one-person
+      conditionalValues:
+        - value: expedited-migrant-farm-worker.title-household
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "false"
+    headerKey:
+      value: expedited-migrant-farm-worker.header-one-person
+      conditionalValues:
+        - value: expedited-migrant-farm-worker.header-household
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "false"
+    hasPrimaryButton: false
+    inputs:
+      - name: migrantOrSeasonalFarmWorker
+        type: YES_NO
+  - &transitionHouseholdPersonDetails
+    name: transitionHouseholdPersonDetails
+    pageTitle:
+      value: transition-household-person-details.title
+  - &expeditedDetermination
+    name: expeditedDetermination
+  - &importantToKnow
+    name: importantToKnow
+    pageTitle:
+      value: important-to-know.title
+    headerKey:
+      value: important-to-know.important-stuff-to-know-about
+  - &legalStuff
+    name: legalStuff
+    pageTitle:
+      value: legal-stuff.title
+    headerKey:
+      value: legal-stuff.the-legal-stuff
+    headerHelpMessageKey:
+      value: legal-stuff.scroll-down-to-agree-to-the-terms
+    inputs:
+      - name: agreeToTerms
+        type: CHECKBOX
+        promptMessage:
+          promptMessageFragmentName: legal-terms-prompt
+        validators:
+          - validation: SELECT_AT_LEAST_ONE
+            errorMessageKey: general.validation.make-sure-you-answer-this-question
+        options:
+          selectableOptions:
+            - value: "true"
+              messageKey: legal-stuff.i-agree
+  - &signThisApplication
+    name: signThisApplication
+    pageTitle:
+      value: sign-this-application.title
+    headerKey:
+      value: sign-this-application.type-your-full-legal-name-here-to-sign-this-application
+    headerHelpMessageKey:
+      value: sign-this-application.by-signing-this-application-you-agree-that-you-want-to
+    primaryButtonTextKey: sign-this-application.submit
+    inputs:
+      - name: applicantSignature
+        type: TEXT
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-you-answer-this-question
+  - &success
+    name: success
+    pageTitle:
+      value: success.title
+  - &disability
+    name: disability
+    pageTitle:
+      value: disability.title
+    headerKey:
+      value: disability.does-anyone-in-your-household-have-a-physical-or-mental-disability-that-prevents
+      conditionalValues:
+        - value: disability.do-you-have-a-physical-or-mental-disability-that-prevents-you-from-working
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "true"
+    hasPrimaryButton: false
+    inputs:
+      - name: hasDisability
+        type: YES_NO
+  - &workSituation
+    name: workSituation
+    pageTitle:
+      value: work-situation.title
+    headerKey:
+      value: work-situation.in-the-last-2-months-did-you-do-any-of-these-things
+      conditionalValues:
+        - value: work-situation.in-the-last-2-months-did-anyone-in-your-household-do-any-of-these-things
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "false"
+    hasPrimaryButton: false
+    inputs:
+      - name: hasWorkSituation
+        type: YES_NO
+        promptMessage:
+          promptMessageFragmentName: workSituationPrompt
+  - &introIncome
+    name: introIncome
+    pageTitle:
+      value: intro-income.title
+  - &employmentStatus
+    name: employmentStatus
+    pageTitle:
+      value: employment-status.title
+    headerKey:
+      value: employment-status.are-you-currently-working-or-making-an-income
+      conditionalValues:
+        - value: employment-status.is-anyone-in-your-household-making-money-from-a-job
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "false"
+    hasPrimaryButton: false
+    inputs:
+      - name: areYouWorking
+        type: YES_NO
+  - &incomeByJob
+    name: incomeByJob
+    pageTitle:
+      value: income-by-job.title
+    headerKey:
+      value: income-by-job.lets-add-your-job-information
+      conditionalValues:
+        - value: income-by-job.lets-add-all-the-jobs-in-your-household
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "false"
+  - &householdSelectionForIncome
+    name: householdSelectionForIncome
+    pageTitle:
+      value: household-selection-for-income.title
+    headerKey:
+      value: household-selection-for-income.header
+    inputs:
+      - type: CUSTOM
+        name: whoseJobIsIt
+        customInputFragment: householdOptionsRadios
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-you-answer-this-question
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+  - &incomeUpNext
+    name: incomeUpNext
+    pageTitle:
+      value: income-up-next.title
+  - &ccapJob
+    name: ccapJob
+    pageTitle:
+      value: ccap-job.title
+    headerKey:
+      value: ccap-job.are-you-currently-looking-for-a-job
+    hasPrimaryButton: false
+    inputs:
+      - name: currentlyLookingForJob
+        type: YES_NO
+  - &unearnedIncome
+    name: unearnedIncome
+    pageTitle:
+      value: unearned-income.title
+    headerKey:
+      value: unearned-income.do-you-get-income-from-any-of-these-sources
+      conditionalValues:
+        - value: unearned-income.household-get-income-from-any-of-these-sources
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "false"
+    headerHelpMessageKey:
+      value: unearned-income.check-all-that-apply-you-do-not-need-to-report-income-you-havent-received-yet
+    inputs:
+      - name: unearnedIncome
+        type: CHECKBOX
+        validators:
+          - validation: SELECT_AT_LEAST_ONE
+            errorMessageKey: general.validation.make-sure-you-choose-none-of-the-above-or-another-option
+        options:
+          selectableOptions:
+            - value: SOCIAL_SECURITY
+              messageKey: unearned-income.social-security
+            - value: SSI
+              messageKey: unearned-income.ssi
+            - value: VETERANS_BENEFITS
+              messageKey: unearned-income.veterans-benefits
+            - value: UNEMPLOYMENT
+              messageKey: unearned-income.unemployment
+            - value: WORKERS_COMPENSATION
+              messageKey: unearned-income.workers-compensation
+            - value: RETIREMENT
+              messageKey: unearned-income.retirement
+            - value: CHILD_OR_SPOUSAL_SUPPORT
+              messageKey: unearned-income.child-or-spousal-support
+            - value: TRIBAL_PAYMENTS
+              messageKey: unearned-income.tribal-payments
+            - value: NO_UNEARNED_INCOME_SELECTED
+              messageKey: general.inputs.none-of-the-above
+              isNone: true
+  - &unearnedIncomeSources
+    name: unearnedIncomeSources
+    pageTitle:
+      value: unearned-income-sources.title
+    headerKey:
+      value: unearned-income-sources.tell-us-how-much-money-you-receive
+      conditionalValues:
+        - value: unearned-income-sources.tell-us-how-much-money-is-received
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "false"
+    headerHelpMessageKey:
+      value: unearned-income-sources.if-you-dont-have-all-this-information-on-hand-skip
+    inputs:
+      - name: socialSecurityAmount
+        type: MONEY
+        promptMessage:
+          promptMessageKey: unearned-income.social-security
+        helpMessageKey: unearned-income-sources.monthly-amount
+        validators:
+          - validation: MONEY
+            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            condition:
+              input: socialSecurityAmount
+              matcher: NOT_EMPTY
+        condition:
+          pageName: unearnedIncome
+          input: unearnedIncome
+          value: SOCIAL_SECURITY
+      - name: supplementalSecurityIncomeAmount
+        type: MONEY
+        promptMessage:
+          promptMessageKey: unearned-income.ssi
+        helpMessageKey: unearned-income-sources.monthly-amount
+        validators:
+          - validation: MONEY
+            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            condition:
+              input: supplementalSecurityIncomeAmount
+              matcher: NOT_EMPTY
+        condition:
+          pageName: unearnedIncome
+          input: unearnedIncome
+          value: SSI
+      - name: veteransBenefitsAmount
+        type: MONEY
+        promptMessage:
+          promptMessageKey: unearned-income.veterans-benefits
+        helpMessageKey: unearned-income-sources.monthly-amount
+        validators:
+          - validation: MONEY
+            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            condition:
+              input: veteransBenefitsAmount
+              matcher: NOT_EMPTY
+        condition:
+          pageName: unearnedIncome
+          input: unearnedIncome
+          value: VETERANS_BENEFITS
+      - name: unemploymentAmount
+        type: MONEY
+        promptMessage:
+          promptMessageKey: unearned-income.unemployment
+        helpMessageKey: unearned-income-sources.monthly-amount
+        validators:
+          - validation: MONEY
+            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            condition:
+              input: unemploymentAmount
+              matcher: NOT_EMPTY
+        condition:
+          pageName: unearnedIncome
+          input: unearnedIncome
+          value: UNEMPLOYMENT
+      - name: workersCompensationAmount
+        type: MONEY
+        promptMessage:
+          promptMessageKey: unearned-income.workers-compensation
+        helpMessageKey: unearned-income-sources.monthly-amount
+        validators:
+          - validation: MONEY
+            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            condition:
+              input: workersCompensationAmount
+              matcher: NOT_EMPTY
+        condition:
+          pageName: unearnedIncome
+          input: unearnedIncome
+          value: WORKERS_COMPENSATION
+      - name: retirementAmount
+        type: MONEY
+        promptMessage:
+          promptMessageKey: unearned-income.retirement
+        helpMessageKey: unearned-income-sources.monthly-amount
+        validators:
+          - validation: MONEY
+            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            condition:
+              input: retirementAmount
+              matcher: NOT_EMPTY
+        condition:
+          pageName: unearnedIncome
+          input: unearnedIncome
+          value: RETIREMENT
+      - name: childOrSpousalSupportAmount
+        type: MONEY
+        promptMessage:
+          promptMessageKey: unearned-income.child-or-spousal-support
+        helpMessageKey: unearned-income-sources.monthly-amount
+        validators:
+          - validation: MONEY
+            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            condition:
+              input: childOrSpousalSupportAmount
+              matcher: NOT_EMPTY
+        condition:
+          pageName: unearnedIncome
+          input: unearnedIncome
+          value: CHILD_OR_SPOUSAL_SUPPORT
+      - name: tribalPaymentsAmount
+        type: MONEY
+        promptMessage:
+          promptMessageKey: unearned-income.tribal-payments
+        helpMessageKey: unearned-income-sources.monthly-amount
+        validators:
+          - validation: MONEY
+            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            condition:
+              input: tribalPaymentsAmount
+              matcher: NOT_EMPTY
+        condition:
+          pageName: unearnedIncome
+          input: unearnedIncome
+          value: TRIBAL_PAYMENTS
+  - &futureIncome
+    name: futureIncome
+    pageTitle:
+      value: future-income.title
+    headerKey:
+      value: future-income.do-you-think-youll-earn-less-money-this-month-than-last-month
+      conditionalValues:
+        - value: future-income.do-you-think-household-will-earn-less-money-this-month-than-last-month
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "false"
+    headerHelpMessageKey:
+      value: future-income.if-youre-not-sure-you-can-guess
+    inputs:
+      - name: earnLessMoneyThisMonth
+        type: RADIO
+        options:
+          selectableOptions:
+            - value: "true"
+              messageKey: general.inputs.yes
+            - value: "false"
+              messageKey: general.inputs.no
+      - name: additionalIncomeInfo
+        type: TEXTAREA
+        promptMessage:
+          promptMessageKey: future-income.is-there-anything-else-youd-like-to-share-about-your-income
+        helpMessageKey: general.inputs.optional
+  - &employersName
+    name: employersName
+    pageTitle:
+      value: employers-name.title
+    headerKey:
+      value: employers-name.add-a-job-they-have
+      conditionalValues:
+        - value: employers-name.add-a-job-you-have
+          compositeCondition:
+            logicalOperator: OR
+            conditions:
+              - pageName: householdSelectionForIncome
+                input: whoseJobIsIt
+                value: "applicant"
+                matcher: CONTAINS_SUBSTRING
+              - pageName: doYouLiveAlone
+                input: liveAlone
+                value: "true"
+    inputs:
+      - name: employersName
+        type: LONG_TEXT
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-you-answer-this-question
+        promptMessage:
+          promptMessageKey: employers-name.what-is-the-employers-name
+  - &selfEmployment
+    name: selfEmployment
+    pageTitle:
+      value: self-employment.title
+    headerKey:
+      value: self-employment.is-their-work-here
+      conditionalValues:
+        - value: self-employment.is-your-work-here
+          compositeCondition:
+            logicalOperator: OR
+            conditions:
+              - pageName: householdSelectionForIncome
+                input: whoseJobIsIt
+                value: "applicant"
+                matcher: CONTAINS_SUBSTRING
+              - pageName: doYouLiveAlone
+                input: liveAlone
+                value: "true"
+    hasPrimaryButton: false
+    inputs:
+      - name: selfEmployment
+        promptMessage:
+          promptMessageFragmentName: selfEmploymentPrompt
+        type: YES_NO
+    contextFragment: jobContextFragment
+  - &paidByTheHour
+    name: paidByTheHour
+    pageTitle:
+      value: paid-by-the-hour.title
+    headerKey:
+      value: paid-by-the-hour.do-they-get-paid-by-the-hour
+      conditionalValues:
+        - value: paid-by-the-hour.do-you-get-paid-by-the-hour
+          compositeCondition:
+            logicalOperator: OR
+            conditions:
+              - pageName: householdSelectionForIncome
+                input: whoseJobIsIt
+                value: "applicant"
+                matcher: CONTAINS_SUBSTRING
+              - pageName: doYouLiveAlone
+                input: liveAlone
+                value: "true"
+    hasPrimaryButton: false
+    inputs:
+      - name: paidByTheHour
+        type: YES_NO
+    subtleLinkTextKey:
+      value: paid-by-the-hour.i-dont-know-these-details
+    contextFragment: jobContextFragment
+  - &hourlyWage
+    name: hourlyWage
+    pageTitle:
+      value: hourly-wage.title
+    headerKey:
+      value: hourly-wage.what-is-their-hourly-wage
+      conditionalValues:
+        - value: hourly-wage.what-is-your-hourly-wage
+          compositeCondition:
+            logicalOperator: OR
+            conditions:
+              - pageName: householdSelectionForIncome
+                input: whoseJobIsIt
+                value: "applicant"
+                matcher: CONTAINS_SUBSTRING
+              - pageName: doYouLiveAlone
+                input: liveAlone
+                value: "true"
+    inputs:
+      - name: hourlyWage
+        type: HOURLY_WAGE
+        validators:
+          - validation: MONEY
+            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            condition:
+              input: hourlyWage
+              matcher: NOT_EMPTY
+    contextFragment: jobContextFragment
+  - &hoursAWeek
+    name: hoursAWeek
+    pageTitle:
+      value: hours-a-week.title
+    headerKey:
+      value: hours-a-week.how-many-hours-a-week-do-they-work
+      conditionalValues:
+        - value: hours-a-week.how-many-hours-a-week-do-you-work
+          compositeCondition:
+            logicalOperator: OR
+            conditions:
+              - pageName: householdSelectionForIncome
+                input: whoseJobIsIt
+                value: "applicant"
+                matcher: CONTAINS_SUBSTRING
+              - pageName: doYouLiveAlone
+                input: liveAlone
+                value: "true"
+    headerHelpMessageKey:
+      value: hours-a-week.we-know-this-can-be-hard-to-answer-so-just-estimate-based-on-their
+      conditionalValues:
+        - value: hours-a-week.we-know-this-can-be-hard-to-answer-so-just-estimate-based-on
+          compositeCondition:
+            logicalOperator: OR
+            conditions:
+              - pageName: householdSelectionForIncome
+                input: whoseJobIsIt
+                value: "applicant"
+                matcher: CONTAINS_SUBSTRING
+              - pageName: doYouLiveAlone
+                input: liveAlone
+                value: "true"
+    inputs:
+      - name: hoursAWeek
+        type: NUMBER
+    contextFragment: jobContextFragment
+  - &payPeriod
+    name: payPeriod
+    pageTitle:
+      value: pay-period.title
+    headerKey:
+      value: pay-period.how-often-do-they-get-paid
+      conditionalValues:
+        - value: pay-period.how-often-do-you-get-paid
+          compositeCondition:
+            logicalOperator: OR
+            conditions:
+              - pageName: householdSelectionForIncome
+                input: whoseJobIsIt
+                value: "applicant"
+                matcher: CONTAINS_SUBSTRING
+              - pageName: doYouLiveAlone
+                input: liveAlone
+                value: "true"
+    inputs:
+      - name: payPeriod
+        type: RADIO
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-you-answer-this-question
+        options:
+          selectableOptions:
+            - value: EVERY_WEEK
+              messageKey: pay-period.every-week
+            - value: EVERY_TWO_WEEKS
+              messageKey: pay-period.every-two-weeks
+            - value: TWICE_A_MONTH
+              messageKey: pay-period.twice-a-month
+            - value: EVERY_MONTH
+              messageKey: pay-period.every-month
+            - value: IT_VARIES
+              messageKey: pay-period.it-varies
+    contextFragment: jobContextFragment
+  - &incomePerPayPeriod
+    name: incomePerPayPeriod
+    pageTitle:
+      value: income-per-pay-period.title
+    headerKey:
+      conditionalValues:
+        - value: income-per-pay-period.every-week
+          condition:
+            pageName: payPeriod
+            input: payPeriod
+            value: EVERY_WEEK
+        - value: income-per-pay-period.every-two-weeks
+          condition:
+            pageName: payPeriod
+            input: payPeriod
+            value: EVERY_TWO_WEEKS
+        - value: income-per-pay-period.twice-a-month
+          condition:
+            pageName: payPeriod
+            input: payPeriod
+            value: TWICE_A_MONTH
+        - value: income-per-pay-period.every-month
+          condition:
+            pageName: payPeriod
+            input: payPeriod
+            value: EVERY_MONTH
+        - value: income-per-pay-period.it-varies
+          condition:
+            pageName: payPeriod
+            input: payPeriod
+            value: IT_VARIES
+    headerHelpMessageKey:
+      value: income-per-pay-period.provide-income-before-taxes-we-know-this-can-be-hard-to
+    inputs:
+      - name: incomePerPayPeriod
+        type: MONEY
+        validators:
+          - validation: MONEY
+            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+    contextFragment: jobContextFragment
+  - &jobBuilder
+    name: jobBuilder
+    pageTitle:
+      value: job-builder.title
+    headerKey:
+      value: job-builder.your-jobs
+      conditionalValues:
+        - value: job-builder.your-household-jobs
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "false"
+  - &jobRedirectPage
+    name: jobRedirectPage
+    headerKey:
+      value: warning-page.going-back-will-take-you-to-the-beginning-of-the-jobs-section-where-you-will-start-over
+    pageTitle:
+      value: warning-page.go-back-title
+  - &jobDeleteWarningPage
+    name: jobDeleteWarningPage
+    headerKey:
+      conditionalValues:
+        - value: warning-page.you-are-about-to-delete-your-job
+          compositeCondition:
+            logicalOperator: OR
+            conditions:
+              - pageName: householdSelectionForIncome
+                input: whoseJobIsIt
+                value: "applicant"
+                matcher: CONTAINS_SUBSTRING
+              - pageName: doYouLiveAlone
+                input: liveAlone
+                value: "true"
+        - value: warning-page.you-are-about-to-delete-member-job
+          condition:
+            pageName: householdSelectionForIncome
+            input: whoseJobIsIt
+            value: "applicant"
+            matcher: DOES_NOT_CONTAIN_SUBSTRING
+    pageTitle:
+      value: warning-page.no-data-title
+  - &startExpenses
+    name: startExpenses
+    pageTitle:
+      value: start-expenses.title
+  - &homeExpenses
+    name: homeExpenses
+    pageTitle:
+      value: home-expenses.title
+    headerKey:
+      value: home-expenses.do-you-pay-for-any-of-these
+      conditionalValues:
+        - value: home-expenses.household-pay-for-these
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "false"
+    headerHelpMessageKey:
+      value: general.check-all-that-apply
+    inputs:
+      - name: homeExpenses
+        type: CHECKBOX
+        validators:
+          - validation: SELECT_AT_LEAST_ONE
+            errorMessageKey: general.validation.make-sure-you-choose-none-of-the-above-or-another-option
+        options:
+          selectableOptions:
+            - value: RENT
+              messageKey: home-expenses.rent
+            - value: MORTGAGE
+              messageKey: home-expenses.mortgage
+            - value: HOMEOWNERS_INSURANCE
+              messageKey: home-expenses.homeowners-insurance
+            - value: REAL_ESTATE_TAXES
+              messageKey: home-expenses.real-estate-taxes
+            - value: ASSOCIATION_FEES
+              messageKey: home-expenses.association-fees
+            - value: ROOM_AND_BOARD
+              messageKey: home-expenses.room-and-board
+            - value: NONE_OF_THE_ABOVE
+              messageKey: general.inputs.none-of-the-above
+              isNone: true
+  - &homeExpensesAmount
+    name: homeExpensesAmount
+    pageTitle:
+      value: home-expenses-amount.title
+    headerKey:
+      conditionalValues:
+        - value: home-expenses-amount.how-much-do-you-pay-for-rent-every-month
+          compositeCondition:
+            logicalOperator: AND
+            conditions:
+              - pageName: homeExpenses
+                input: homeExpenses
+                value: MORTGAGE
+                matcher: DOES_NOT_CONTAIN
+              - pageName: doYouLiveAlone
+                input: liveAlone
+                value: "true"
+        - value: home-expenses-amount.how-much-do-you-pay-for-mortgage-every-month
+          compositeCondition:
+            logicalOperator: AND
+            conditions:
+              - pageName: homeExpenses
+                input: homeExpenses
+                value: RENT
+                matcher: DOES_NOT_CONTAIN
+              - pageName: doYouLiveAlone
+                input: liveAlone
+                value: "true"
+        - value: home-expenses-amount.how-much-do-you-pay-for-rent-and-mortgage-every-month
+          compositeCondition:
+            logicalOperator: AND
+            conditions:
+              - pageName: doYouLiveAlone
+                input: liveAlone
+                value: "true"
+              - pageName: homeExpenses
+                input: homeExpenses
+                value: RENT
+              - pageName: homeExpenses
+                input: homeExpenses
+                value: MORTGAGE
+        - value: home-expenses-amount.household-pay-rent-every-month
+          compositeCondition:
+            logicalOperator: AND
+            conditions:
+              - pageName: homeExpenses
+                input: homeExpenses
+                value: MORTGAGE
+                matcher: DOES_NOT_CONTAIN
+              - pageName: doYouLiveAlone
+                input: liveAlone
+                value: "false"
+        - value: home-expenses-amount.household-pay-mortgage-every-month
+          compositeCondition:
+            logicalOperator: AND
+            conditions:
+              - pageName: homeExpenses
+                input: homeExpenses
+                value: RENT
+                matcher: DOES_NOT_CONTAIN
+              - pageName: doYouLiveAlone
+                input: liveAlone
+                value: "false"
+        - value: home-expenses-amount.how-much-does-household-pay-for-rent-and-mortgage-every-month
+          compositeCondition:
+            logicalOperator: AND
+            conditions:
+              - pageName: doYouLiveAlone
+                input: liveAlone
+                value: "false"
+              - pageName: homeExpenses
+                input: homeExpenses
+                value: RENT
+              - pageName: homeExpenses
+                input: homeExpenses
+                value: MORTGAGE
+    inputs:
+      - name: homeExpensesAmount
+        type: MONEY
+        validators:
+          - validation: MONEY
+            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+  - &savings
+    name: savings
+    pageTitle:
+      value: savings.title
+    headerKey:
+      value: savings.do-you-have-money-in-a-bank-account-or-debit-card
+      conditionalValues:
+        - value: savings.household-bank-account
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "false"
+    hasPrimaryButton: false
+    inputs:
+      - name: haveSavings
+        type: YES_NO
+  - &investments
+    name: investments
+    pageTitle:
+      value: investments.title
+    headerKey:
+      value: investments.do-you-have-any-stocks-bonds-or-a-401k
+      conditionalValues:
+        - value: investments.household-stocks
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "false"
+    hasPrimaryButton: false
+    inputs:
+      - name: haveInvestments
+        type: YES_NO
+  - &vehicle
+    name: vehicle
+    pageTitle:
+      value: vehicle.title
+    headerKey:
+      value: vehicle.do-you-own-a-vehicle
+      conditionalValues:
+        - value: vehicle.household-own-vehicle
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "false"
+    hasPrimaryButton: false
+    inputs:
+      - name: haveVehicle
+        type: YES_NO
+  - &soldAssets
+    name: soldAssets
+    pageTitle:
+      value: sold-assets.title
+    headerKey:
+      value: sold-assets.in-the-last-12-months-have-you-given-away-or-sold-any-assets
+      conditionalValues:
+        - value: sold-assets.households-given-or-sold
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "false"
+    hasPrimaryButton: false
+    inputs:
+      - name: haveSoldAssets
+        type: YES_NO
+        promptMessage:
+          promptMessageFragmentName: soldAssetsPrompt
+  - &submittingApplication
+    name: submittingApplication
+    pageTitle:
+      value: submitting-application.title
+  - &homeAddressValidation
+    name: homeAddressValidation
+    pageTitle:
+      value: address-validation.title
+    hasPrimaryButton: false
+    inputs:
+      - name: useEnrichedAddress
+        type: CUSTOM
+        customInputFragment: addressValidationInput
+        options:
+          selectableOptions:
+            - value: "true"
+              messageKey: address-validation.suggested-address
+            - value: "false"
+              messageKey: address-validation.address-you-entered
+  - &mailingAddressValidation
+    name: mailingAddressValidation
+    pageTitle:
+      value: address-validation.title
+    hasPrimaryButton: false
+    inputs:
+      - name: useEnrichedAddress
+        type: CUSTOM
+        customInputFragment: addressValidationInput
+        options:
+          selectableOptions:
+            - value: "true"
+              messageKey: address-validation.suggested-address
+            - value: "false"
+              messageKey: address-validation.address-you-entered
+  - &registerToVote
+    name: registerToVote
+    headerKey:
+      value: register-to-vote.do-you-want-to-register-to-vote
+    inputs:
+      - name: registerToVote
+        type: CUSTOM
+        customInputFragment: registerToVoteInput
+        options:
+          selectableOptions:
+            - value: "YES"
+              messageKey: register-to-vote.yes-send-me-more-info
+            - value: NO_ALREADY_REGISTERED
+              messageKey: register-to-vote.ive-already-registered
+            - value: "NO"
+              messageKey: register-to-vote.no-thanks
+    pageTitle:
+      value: register-to-vote.title
+    hasPrimaryButton: false
+workflow:
+  landing:
+    pageConfiguration: *landing
+    nextPages:
+      - pageName: prepareToApply
+  prepareToApply:
+    pageConfiguration: *prepareToApply
+    nextPages:
+      - pageName: languagePreferences
+  languagePreferences:
+    pageConfiguration: *languagePreferences
+    nextPages:
+      - pageName: choosePrograms
+  choosePrograms:
+    pageConfiguration: *choosePrograms
+    nextPages:
+      - pageName: introBasicInfo
+  introBasicInfo:
+    pageConfiguration: *introBasicInfo
+    nextPages:
+      - pageName: personalInfo
+  personalInfo:
+    pageConfiguration: *personalInfo
+    nextPages:
+      - pageName: contactInfo
+  contactInfo:
+    pageConfiguration: *contactInfo
+    nextPages:
+      - pageName: homeAddress
+  homeAddress:
+    pageConfiguration: *homeAddress
+    enrichment: homeAddressEnrichment
+    nextPages:
+      - pageName: verifyHomeAddress
+  verifyHomeAddress:
+    pageConfiguration: *homeAddressValidation
+    skipCondition:
+      conditions:
+        - pageName: homeAddress
+          input: streetAddress
+          matcher: EMPTY
+    datasources:
+      - pageName: homeAddress
+    nextPages:
+      - pageName: mailingAddress
+      - pageName: homeAddress
+  mailingAddress:
+    pageConfiguration: *mailingAddress
+    enrichment: mailingAddressEnrichment
+    skipCondition:
+      conditions:
+        - pageName: homeAddress
+          input: sameMailingAddress
+          value: "true"
+    nextPages:
+      - pageName: verifyMailingAddress
+    datasources:
+      - pageName: homeAddress
+  verifyMailingAddress:
+    pageConfiguration: *mailingAddressValidation
+    skipCondition:
+      conditions:
+        - pageName: homeAddress
+          input: sameMailingAddress
+          value: "true"
+    datasources:
+      - pageName: mailingAddress
+      - pageName: homeAddress
+    nextPages:
+      - pageName: reviewInfo
+      - pageName: mailingAddress
+  reviewInfo:
+    pageConfiguration: *reviewInfo
+    nextPages:
+      - pageName: doYouLiveAlone
+        flow: FULL
+      - pageName: doYouNeedHelpImmediately
+    datasources:
+      - pageName: personalInfo
+      - pageName: homeAddress
+      - pageName: homeAddressValidation
+      - pageName: mailingAddress
+      - pageName: mailingAddressValidation
+      - pageName: contactInfo
+  doYouLiveAlone:
+    pageConfiguration: *doYouLiveAlone
+    nextPages:
+      - pageName: introPersonalDetails
+        condition:
+          input: liveAlone
+          value: "true"
+      - pageName: startHousehold
+        condition:
+          input: liveAlone
+          value: "false"
+  startHousehold:
+    pageConfiguration: *startHousehold
+    nextPages:
+      - pageName: householdMemberInfo
+  householdMemberInfo:
+    pageConfiguration: *householdMemberInfo
+    groupName: household
+    nextPages:
+      - pageName: householdList
+  householdList:
+    pageConfiguration: *householdList
+    nextPages:
+      - pageName: householdMemberInfo
+      - pageName: preparingMealsTogether
+    datasources:
+      - groupName: household
+      - pageName: personalInfo
+  householdDeleteWarningPage:
+    pageConfiguration: *householdDeleteWarningPage
+    appliesToGroup: household
+    nextPages:
+      - pageName: householdList
+    datasources:
+      - groupName: household
+  introPersonalDetails:
+    pageConfiguration: *introPersonalDetails
+    nextPages:
+      - pageName: goingToSchool
+  preparingMealsTogether:
+    pageConfiguration: *preparingMealsTogether
+    skipCondition:
+      conditions:
         - pageName: choosePrograms
-    goingToSchool:
-      pageConfiguration: *goingToSchool
-      datasources:
+          value: SNAP
+          input: programs
+          matcher: DOES_NOT_CONTAIN
+    nextPages:
+      - pageName: goingToSchool
+    datasources:
+      - pageName: choosePrograms
+  goingToSchool:
+    pageConfiguration: *goingToSchool
+    datasources:
+      - pageName: doYouLiveAlone
+    nextPages:
+      - pageName: pregnant
+  pregnant:
+    pageConfiguration: *pregnant
+    nextPages:
+      - pageName: whoIsPregnant
+    datasources:
+      - pageName: doYouLiveAlone
+  whoIsPregnant:
+    pageConfiguration: *whoIsPregnant
+    nextPages:
+      - pageName: migrantFarmWorker
+    datasources:
+      - pageName: doYouLiveAlone
+      - pageName: pregnant
+    skipCondition:
+      logicalOperator: OR
+      conditions:
         - pageName: doYouLiveAlone
-      nextPages:
+          input: liveAlone
+          value: "true"
         - pageName: pregnant
-    pregnant:
-      pageConfiguration: *pregnant
-      nextPages:
-        - pageName: whoIsPregnant
-      datasources:
+          input: isPregnant
+          value: "false"
+  usCitizen:
+    pageConfiguration: *usCitizen
+    nextPages:
+      - pageName: whoIsNonCitizen
+    datasources:
+      - pageName: doYouLiveAlone
+  whoIsNonCitizen:
+    pageConfiguration: *whoIsNonCitizen
+    nextPages:
+      - pageName: disability
+    datasources:
+      - pageName: doYouLiveAlone
+      - pageName: usCitizen
+    skipCondition:
+      logicalOperator: OR
+      conditions:
         - pageName: doYouLiveAlone
-    whoIsPregnant:
-      pageConfiguration: *whoIsPregnant
-      nextPages:
-        - pageName: migrantFarmWorker
-      datasources:
-        - pageName: doYouLiveAlone
-        - pageName: pregnant
-      skipCondition:
-        logicalOperator: OR
-        conditions:
-          - pageName: doYouLiveAlone
-            input: liveAlone
-            value: "true"
-          - pageName: pregnant
-            input: isPregnant
-            value: "false"
-    usCitizen:
-      pageConfiguration: *usCitizen
-      nextPages:
-        - pageName: whoIsNonCitizen
-      datasources:
-        - pageName: doYouLiveAlone
-    whoIsNonCitizen:
-      pageConfiguration: *whoIsNonCitizen
-      nextPages:
-        - pageName: disability
-      datasources:
-        - pageName: doYouLiveAlone
+          input: liveAlone
+          value: "true"
         - pageName: usCitizen
-      skipCondition:
-        logicalOperator: OR
-        conditions:
-          - pageName: doYouLiveAlone
-            input: liveAlone
-            value: "true"
-          - pageName: usCitizen
-            input: isUsCitizen
-            value: "true"
-    migrantFarmWorker:
-      pageConfiguration: *migrantFarmWorker
-      nextPages:
-        - pageName: transitionHouseholdPersonDetails
-      datasources:
+          input: isUsCitizen
+          value: "true"
+  migrantFarmWorker:
+    pageConfiguration: *migrantFarmWorker
+    nextPages:
+      - pageName: transitionHouseholdPersonDetails
+    datasources:
+      - pageName: doYouLiveAlone
+  transitionHouseholdPersonDetails:
+    pageConfiguration: *transitionHouseholdPersonDetails
+    datasources:
+      - pageName: doYouLiveAlone
+    nextPages:
+      - pageName: usCitizen
+    skipCondition:
+      conditions:
         - pageName: doYouLiveAlone
-    transitionHouseholdPersonDetails:
-      pageConfiguration: *transitionHouseholdPersonDetails
-      datasources:
+          input: liveAlone
+          value: "true"
+  disability:
+    pageConfiguration: *disability
+    datasources:
+      - pageName: doYouLiveAlone
+    nextPages:
+      - pageName: workSituation
+  workSituation:
+    pageConfiguration: *workSituation
+    datasources:
+      - pageName: doYouLiveAlone
+    nextPages:
+      - pageName: introIncome
+  introIncome:
+    pageConfiguration: *introIncome
+    nextPages:
+      - pageName: employmentStatus
+  employmentStatus:
+    pageConfiguration: *employmentStatus
+    datasources:
+      - pageName: doYouLiveAlone
+    nextPages:
+      - pageName: ccapJob
+        condition:
+          input: areYouWorking
+          value: "false"
+      - pageName: incomeByJob
+  incomeByJob:
+    pageConfiguration: *incomeByJob
+    datasources:
+      - pageName: doYouLiveAlone
+    nextPages:
+      - pageName: householdSelectionForIncome
+      - pageName: thirtyDayIncome
+  householdSelectionForIncome:
+    pageConfiguration: *householdSelectionForIncome
+    groupName: jobs
+    datasources:
+      - pageName: doYouLiveAlone
+    nextPages:
+      - pageName: employersName
+    skipCondition:
+      conditions:
         - pageName: doYouLiveAlone
-      nextPages:
-        - pageName: usCitizen
-      skipCondition:
-        conditions:
-          - pageName: doYouLiveAlone
-            input: liveAlone
-            value: "true"
-    disability:
-      pageConfiguration: *disability
-      datasources:
-        - pageName: doYouLiveAlone
-      nextPages:
-        - pageName: workSituation
-    workSituation:
-      pageConfiguration: *workSituation
-      datasources:
-        - pageName: doYouLiveAlone
-      nextPages:
-        - pageName: introIncome
-    introIncome:
-      pageConfiguration: *introIncome
-      nextPages:
-        - pageName: employmentStatus
-    employmentStatus:
-      pageConfiguration: *employmentStatus
-      datasources:
-        - pageName: doYouLiveAlone
-      nextPages:
-        - pageName: ccapJob
-          condition:
-            input: areYouWorking
-            value: "false"
-        - pageName: incomeByJob
-    incomeByJob:
-      pageConfiguration: *incomeByJob
-      datasources:
-        - pageName: doYouLiveAlone
-      nextPages:
-        - pageName: householdSelectionForIncome
-        - pageName: thirtyDayIncome
-    householdSelectionForIncome:
-      pageConfiguration: *householdSelectionForIncome
-      groupName: jobs
-      datasources:
-        - pageName: doYouLiveAlone
-      nextPages:
-        - pageName: employersName
-      skipCondition:
-        conditions:
-          - pageName: doYouLiveAlone
-            input: liveAlone
-            value: "true"
-    employersName:
-      pageConfiguration: *employersName
-      groupName: jobs
-      nextPages:
-        - pageName: selfEmployment
-      datasources:
-        - pageName: householdSelectionForIncome
-        - pageName: doYouLiveAlone
-    selfEmployment:
-      pageConfiguration: *selfEmployment
-      groupName: jobs
-      dataMissingRedirect: employmentStatus
-      nextPages:
-        - pageName: paidByTheHour
-      datasources:
-        - pageName: employersName
-        - pageName: householdSelectionForIncome
-        - pageName: doYouLiveAlone
-    paidByTheHour:
-      pageConfiguration: *paidByTheHour
-      groupName: jobs
-      dataMissingRedirect: employmentStatus
-      nextPages:
-        - pageName: hourlyWage
-          condition:
-            pageName: paidByTheHour
-            input: paidByTheHour
-            value: "true"
-        - pageName: payPeriod
-          condition:
-            pageName: paidByTheHour
-            input: paidByTheHour
-            value: "false"
-      datasources:
-        - pageName: employersName
-        - pageName: householdSelectionForIncome
-        - pageName: doYouLiveAlone
-      subtleLinkTargetPage: lastThirtyDaysJobIncome
-    hourlyWage:
-      pageConfiguration: *hourlyWage
-      groupName: jobs
-      dataMissingRedirect: employmentStatus
-      nextPages:
-        - pageName: hoursAWeek
-      datasources:
-        - pageName: employersName
-        - pageName: householdSelectionForIncome
-        - pageName: doYouLiveAlone
-    hoursAWeek:
-      pageConfiguration: *hoursAWeek
-      groupName: jobs
-      nextPages:
-        - pageName: jobBuilder
-      datasources:
-        - pageName: employersName
-        - pageName: householdSelectionForIncome
-        - pageName: doYouLiveAlone
-    payPeriod:
-      pageConfiguration: *payPeriod
-      groupName: jobs
-      dataMissingRedirect: employmentStatus
-      nextPages:
-        - pageName: incomePerPayPeriod
-      datasources:
-        - pageName: employersName
-        - pageName: householdSelectionForIncome
-        - pageName: doYouLiveAlone
-    incomePerPayPeriod:
-      pageConfiguration: *incomePerPayPeriod
-      groupName: jobs
-      nextPages:
-        - pageName: jobBuilder
-      datasources:
-        - pageName: employersName
-        - pageName: payPeriod
-    jobBuilder:
-      pageConfiguration: *jobBuilder
-      dataMissingRedirect: employmentStatus
-      nextPages:
-        - pageName: householdSelectionForIncome
-        - pageName: incomeUpNext
-      datasources:
-        - groupName: jobs
-        - pageName: doYouLiveAlone
-    jobRedirectPage:
-      pageConfiguration: *jobRedirectPage
-      dataMissingRedirect: employmentStatus
-      nextPages:
-        - pageName: jobBuilder
-      datasources:
-        - groupName: jobs
-    jobDeleteWarningPage:
-      pageConfiguration: *jobDeleteWarningPage
-      dataMissingRedirect: employmentStatus
-      appliesToGroup: jobs
-      nextPages:
-        - pageName: jobBuilder
-      datasources:
-        - groupName: jobs
-        - pageName: doYouLiveAlone
-        - pageName: householdSelectionForIncome
-    thirtyDayIncome:
-      pageConfiguration: *thirtyDayIncome
-      nextPages:
-        - pageName: incomeUpNext
-      datasources:
-        - pageName: doYouLiveAlone
-        - pageName: householdSelectionForIncome
-    lastThirtyDaysJobIncome:
-      pageConfiguration: *lastThirtyDaysJobIncome
-      nextPages:
-        - pageName: jobBuilder
-      datasources:
-        - pageName: doYouLiveAlone
-        - pageName: householdSelectionForIncome
-        - pageName: employersName
-      groupName: jobs
-    incomeUpNext:
-      pageConfiguration: *incomeUpNext
-      nextPages:
+          input: liveAlone
+          value: "true"
+  employersName:
+    pageConfiguration: *employersName
+    groupName: jobs
+    nextPages:
+      - pageName: selfEmployment
+    datasources:
+      - pageName: householdSelectionForIncome
+      - pageName: doYouLiveAlone
+  selfEmployment:
+    pageConfiguration: *selfEmployment
+    groupName: jobs
+    dataMissingRedirect: employmentStatus
+    nextPages:
+      - pageName: paidByTheHour
+    datasources:
+      - pageName: employersName
+      - pageName: householdSelectionForIncome
+      - pageName: doYouLiveAlone
+  paidByTheHour:
+    pageConfiguration: *paidByTheHour
+    groupName: jobs
+    dataMissingRedirect: employmentStatus
+    nextPages:
+      - pageName: hourlyWage
+        condition:
+          pageName: paidByTheHour
+          input: paidByTheHour
+          value: "true"
+      - pageName: payPeriod
+        condition:
+          pageName: paidByTheHour
+          input: paidByTheHour
+          value: "false"
+    datasources:
+      - pageName: employersName
+      - pageName: householdSelectionForIncome
+      - pageName: doYouLiveAlone
+    subtleLinkTargetPage: lastThirtyDaysJobIncome
+  hourlyWage:
+    pageConfiguration: *hourlyWage
+    groupName: jobs
+    dataMissingRedirect: employmentStatus
+    nextPages:
+      - pageName: hoursAWeek
+    datasources:
+      - pageName: employersName
+      - pageName: householdSelectionForIncome
+      - pageName: doYouLiveAlone
+  hoursAWeek:
+    pageConfiguration: *hoursAWeek
+    groupName: jobs
+    nextPages:
+      - pageName: jobBuilder
+    datasources:
+      - pageName: employersName
+      - pageName: householdSelectionForIncome
+      - pageName: doYouLiveAlone
+  payPeriod:
+    pageConfiguration: *payPeriod
+    groupName: jobs
+    dataMissingRedirect: employmentStatus
+    nextPages:
+      - pageName: incomePerPayPeriod
+    datasources:
+      - pageName: employersName
+      - pageName: householdSelectionForIncome
+      - pageName: doYouLiveAlone
+  incomePerPayPeriod:
+    pageConfiguration: *incomePerPayPeriod
+    groupName: jobs
+    nextPages:
+      - pageName: jobBuilder
+    datasources:
+      - pageName: employersName
+      - pageName: payPeriod
+  jobBuilder:
+    pageConfiguration: *jobBuilder
+    dataMissingRedirect: employmentStatus
+    nextPages:
+      - pageName: householdSelectionForIncome
+      - pageName: incomeUpNext
+    datasources:
+      - groupName: jobs
+      - pageName: doYouLiveAlone
+  jobRedirectPage:
+    pageConfiguration: *jobRedirectPage
+    dataMissingRedirect: employmentStatus
+    nextPages:
+      - pageName: jobBuilder
+    datasources:
+      - groupName: jobs
+  jobDeleteWarningPage:
+    pageConfiguration: *jobDeleteWarningPage
+    dataMissingRedirect: employmentStatus
+    appliesToGroup: jobs
+    nextPages:
+      - pageName: jobBuilder
+    datasources:
+      - groupName: jobs
+      - pageName: doYouLiveAlone
+      - pageName: householdSelectionForIncome
+  thirtyDayIncome:
+    pageConfiguration: *thirtyDayIncome
+    nextPages:
+      - pageName: incomeUpNext
+    datasources:
+      - pageName: doYouLiveAlone
+      - pageName: householdSelectionForIncome
+  lastThirtyDaysJobIncome:
+    pageConfiguration: *lastThirtyDaysJobIncome
+    nextPages:
+      - pageName: jobBuilder
+    datasources:
+      - pageName: doYouLiveAlone
+      - pageName: householdSelectionForIncome
+      - pageName: employersName
+    groupName: jobs
+  incomeUpNext:
+    pageConfiguration: *incomeUpNext
+    nextPages:
+      - pageName: unearnedIncome
+  unearnedIncome:
+    pageConfiguration: *unearnedIncome
+    nextPages:
+      - pageName: unearnedIncomeSources
+    datasources:
+      - pageName: doYouLiveAlone
+  unearnedIncomeSources:
+    pageConfiguration: *unearnedIncomeSources
+    nextPages:
+      - pageName: futureIncome
+    skipCondition:
+      conditions:
         - pageName: unearnedIncome
-    unearnedIncome:
-      pageConfiguration: *unearnedIncome
-      nextPages:
-        - pageName: unearnedIncomeSources
-      datasources:
-        - pageName: doYouLiveAlone
-    unearnedIncomeSources:
-      pageConfiguration: *unearnedIncomeSources
-      nextPages:
-        - pageName: futureIncome
-      skipCondition:
-        conditions:
-          - pageName: unearnedIncome
-            input: unearnedIncome
-            value: NO_UNEARNED_INCOME_SELECTED
-      datasources:
-        - pageName: unearnedIncome
-        - pageName: doYouLiveAlone
-    futureIncome:
-      pageConfiguration: *futureIncome
-      nextPages:
-        - pageName: startExpenses
-      datasources:
-        - pageName: doYouLiveAlone
-    startExpenses:
-      pageConfiguration: *startExpenses
-      nextPages:
-        - pageName: homeExpenses
-    homeExpenses:
-      pageConfiguration: *homeExpenses
-      nextPages:
-        - pageName: homeExpensesAmount
-          condition:
-            input: homeExpenses
-            value: RENT
-        - pageName: homeExpensesAmount
-          condition:
-            input: homeExpenses
-            value: MORTGAGE
-        - pageName: utilities
-      datasources:
-        - pageName: doYouLiveAlone
-    homeExpensesAmount:
-      pageConfiguration: *homeExpensesAmount
-      nextPages:
-        - pageName: utilities
-      datasources:
-        - pageName: homeExpenses
-        - pageName: doYouLiveAlone
-    utilities:
-      pageConfiguration: *utilityPayments
-      nextPages:
+          input: unearnedIncome
+          value: NO_UNEARNED_INCOME_SELECTED
+    datasources:
+      - pageName: unearnedIncome
+      - pageName: doYouLiveAlone
+  futureIncome:
+    pageConfiguration: *futureIncome
+    nextPages:
+      - pageName: startExpenses
+    datasources:
+      - pageName: doYouLiveAlone
+  startExpenses:
+    pageConfiguration: *startExpenses
+    nextPages:
+      - pageName: homeExpenses
+  homeExpenses:
+    pageConfiguration: *homeExpenses
+    nextPages:
+      - pageName: homeExpensesAmount
+        condition:
+          input: homeExpenses
+          value: RENT
+      - pageName: homeExpensesAmount
+        condition:
+          input: homeExpenses
+          value: MORTGAGE
+      - pageName: utilities
+    datasources:
+      - pageName: doYouLiveAlone
+  homeExpensesAmount:
+    pageConfiguration: *homeExpensesAmount
+    nextPages:
+      - pageName: utilities
+    datasources:
+      - pageName: homeExpenses
+      - pageName: doYouLiveAlone
+  utilities:
+    pageConfiguration: *utilityPayments
+    nextPages:
+      - pageName: energyAssistance
+    datasources:
+      - pageName: doYouLiveAlone
+  energyAssistance:
+    pageConfiguration: *energyAssistance
+    nextPages:
+      - pageName: supportAndCare
+        condition:
+          input: energyAssistance
+          value: "false"
+      - pageName: energyAssistanceMoreThan20
+        condition:
+          input: energyAssistance
+          value: "true"
+    datasources:
+      - pageName: doYouLiveAlone
+  energyAssistanceMoreThan20:
+    pageConfiguration: *energyAssistanceMoreThan20
+    skipCondition:
+      conditions:
         - pageName: energyAssistance
-      datasources:
-        - pageName: doYouLiveAlone
-    energyAssistance:
-      pageConfiguration: *energyAssistance
-      nextPages:
-        - pageName: supportAndCare
-          condition:
-            input: energyAssistance
-            value: "false"
-        - pageName: energyAssistanceMoreThan20
-          condition:
-            input: energyAssistance
-            value: "true"
-      datasources:
-        - pageName: doYouLiveAlone
-    energyAssistanceMoreThan20:
-      pageConfiguration: *energyAssistanceMoreThan20
-      skipCondition:
-        conditions:
-          - pageName: energyAssistance
-            input: energyAssistance
-            value: "false"
-      nextPages:
-        - pageName: supportAndCare
-      datasources:
-        - pageName: energyAssistance
-        - pageName: doYouLiveAlone
-    supportAndCare:
-      pageConfiguration: *supportAndCare
-      nextPages:
+          input: energyAssistance
+          value: "false"
+    nextPages:
+      - pageName: supportAndCare
+    datasources:
+      - pageName: energyAssistance
+      - pageName: doYouLiveAlone
+  supportAndCare:
+    pageConfiguration: *supportAndCare
+    nextPages:
+      - pageName: savings
+    datasources:
+      - pageName: doYouLiveAlone
+  savings:
+    pageConfiguration: *savings
+    nextPages:
+      - pageName: savingsAmount
+    datasources:
+      - pageName: doYouLiveAlone
+  savingsAmount:
+    pageConfiguration: *liquidAssets
+    skipCondition:
+      conditions:
         - pageName: savings
-      datasources:
-        - pageName: doYouLiveAlone
-    savings:
-      pageConfiguration: *savings
-      nextPages:
-        - pageName: savingsAmount
-      datasources:
-        - pageName: doYouLiveAlone
-    savingsAmount:
-      pageConfiguration: *liquidAssets
-      skipCondition:
-        conditions:
-          - pageName: savings
-            input: haveSavings
-            value: "false"
-      datasources:
-        - pageName: savings
-        - pageName: doYouLiveAlone
-      nextPages:
-        - pageName: investments
-    investments:
-      pageConfiguration: *investments
-      nextPages:
-        - pageName: vehicle
-      datasources:
-        - pageName: doYouLiveAlone
-    vehicle:
-      pageConfiguration: *vehicle
-      nextPages:
-        - pageName: soldAssets
-      datasources:
-        - pageName: doYouLiveAlone
-    soldAssets:
-      pageConfiguration: *soldAssets
-      nextPages:
-        - pageName: submittingApplication
-      datasources:
-        - pageName: doYouLiveAlone
-    submittingApplication:
-      pageConfiguration: *submittingApplication
-      nextPages:
-        - pageName: registerToVote
-    registerToVote:
-      pageConfiguration: *registerToVote
-      nextPages:
-        - pageName: importantToKnow
-    ccapJob:
-      pageConfiguration: *ccapJob
-      skipCondition:
-        conditions:
-          - pageName: choosePrograms
-            value: CCAP
-            input: programs
-            matcher: DOES_NOT_CONTAIN
-      nextPages:
-        - pageName: incomeUpNext
-      datasources:
+          input: haveSavings
+          value: "false"
+    datasources:
+      - pageName: savings
+      - pageName: doYouLiveAlone
+    nextPages:
+      - pageName: investments
+  investments:
+    pageConfiguration: *investments
+    nextPages:
+      - pageName: vehicle
+    datasources:
+      - pageName: doYouLiveAlone
+  vehicle:
+    pageConfiguration: *vehicle
+    nextPages:
+      - pageName: soldAssets
+    datasources:
+      - pageName: doYouLiveAlone
+  soldAssets:
+    pageConfiguration: *soldAssets
+    nextPages:
+      - pageName: submittingApplication
+    datasources:
+      - pageName: doYouLiveAlone
+  submittingApplication:
+    pageConfiguration: *submittingApplication
+    nextPages:
+      - pageName: registerToVote
+  registerToVote:
+    pageConfiguration: *registerToVote
+    nextPages:
+      - pageName: importantToKnow
+  ccapJob:
+    pageConfiguration: *ccapJob
+    skipCondition:
+      conditions:
         - pageName: choosePrograms
-    doYouNeedHelpImmediately:
-      pageConfiguration: *doYouNeedHelpImmediately
-      nextPages:
-        - pageName: doYouLiveAloneExpedited
-          flow: EXPEDITED
-        - pageName: importantToKnow
-          flow: MINIMUM
-    doYouLiveAloneExpedited:
-      pageConfiguration: *doYouLiveAlone
-      nextPages:
-        - pageName: expeditedIncome
-    expeditedIncome:
-      pageConfiguration: *thirtyDayIncome
-      nextPages:
-        - pageName: expeditedHasSavings
-      datasources:
-        - pageName: doYouLiveAlone
-    expeditedHasSavings:
-      pageConfiguration: *savings
-      nextPages:
-        - pageName: liquidAssets
-      datasources:
-        - pageName: doYouLiveAlone
-    liquidAssets:
-      pageConfiguration: *liquidAssets
-      skipCondition:
-        conditions:
-          - pageName: savings
-            input: haveSavings
-            value: "false"
-      nextPages:
-        - pageName: expeditedExpenses
-      datasources:
-        - pageName: doYouLiveAlone
+          value: CCAP
+          input: programs
+          matcher: DOES_NOT_CONTAIN
+    nextPages:
+      - pageName: incomeUpNext
+    datasources:
+      - pageName: choosePrograms
+  doYouNeedHelpImmediately:
+    pageConfiguration: *doYouNeedHelpImmediately
+    nextPages:
+      - pageName: doYouLiveAloneExpedited
+        flow: EXPEDITED
+      - pageName: importantToKnow
+        flow: MINIMUM
+  doYouLiveAloneExpedited:
+    pageConfiguration: *doYouLiveAlone
+    nextPages:
+      - pageName: expeditedIncome
+  expeditedIncome:
+    pageConfiguration: *thirtyDayIncome
+    nextPages:
+      - pageName: expeditedHasSavings
+    datasources:
+      - pageName: doYouLiveAlone
+  expeditedHasSavings:
+    pageConfiguration: *savings
+    nextPages:
+      - pageName: liquidAssets
+    datasources:
+      - pageName: doYouLiveAlone
+  liquidAssets:
+    pageConfiguration: *liquidAssets
+    skipCondition:
+      conditions:
         - pageName: savings
-    expeditedExpenses:
-      pageConfiguration: *expeditedExpenses
-      nextPages:
-        - pageName: expeditedExpensesAmount
-      datasources:
-        - pageName: doYouLiveAlone
-    expeditedExpensesAmount:
-      pageConfiguration: *expeditedExpensesAmount
-      skipCondition:
-        conditions:
-          - pageName: expeditedExpenses
-            input: payRentOrMortgage
-            value: "false"
-      nextPages:
-        - pageName: expeditedUtilityPayments
-      datasources:
-        - pageName: doYouLiveAlone
+          input: haveSavings
+          value: "false"
+    nextPages:
+      - pageName: expeditedExpenses
+    datasources:
+      - pageName: doYouLiveAlone
+      - pageName: savings
+  expeditedExpenses:
+    pageConfiguration: *expeditedExpenses
+    nextPages:
+      - pageName: expeditedExpensesAmount
+    datasources:
+      - pageName: doYouLiveAlone
+  expeditedExpensesAmount:
+    pageConfiguration: *expeditedExpensesAmount
+    skipCondition:
+      conditions:
         - pageName: expeditedExpenses
-    expeditedUtilityPayments:
-      pageConfiguration: *utilityPayments
-      nextPages:
-        - pageName: expeditedMigrantFarmWorker
-      datasources:
-        - pageName: doYouLiveAlone
-    expeditedMigrantFarmWorker:
-      pageConfiguration: *migrantFarmWorker
-      nextPages:
-        - pageName: expeditedDetermination
-      datasources:
-        - pageName: doYouLiveAlone
-    expeditedDetermination:
-      pageConfiguration: *expeditedDetermination
-      nextPages:
-        - pageName: importantToKnow
-    importantToKnow:
-      pageConfiguration: *importantToKnow
-      nextPages:
-        - pageName: legalStuff
-    legalStuff:
-      pageConfiguration: *legalStuff
-      nextPages:
-        - pageName: signThisApplication
-    signThisApplication:
-      pageConfiguration: *signThisApplication
-      nextPages:
-        - pageName: success
-    success:
-      pageConfiguration: *success
-  pageGroups:
-    jobs:
-      startPages:
-        - householdSelectionForIncome
-        - employersName
-      completePages:
-        - hoursAWeek
-        - incomePerPayPeriod
-        - lastThirtyDaysJobIncome
-      reviewPage: jobBuilder
-      redirectPage: jobRedirectPage
-      deleteWarningPage: jobDeleteWarningPage
-      restartPage: incomeByJob
-    household:
-      startPages:
-        - householdMemberInfo
-      completePages:
-        - householdMemberInfo
-      reviewPage: householdList
-      deleteWarningPage: householdDeleteWarningPage
-      restartPage: doYouLiveAlone
-      startingCount: 1
-  landmarkPages:
-    startTimerPage: languagePreferences
-    landingPages:
-      - landing
-      - prepareToApply
-    terminalPage: success
-    submitPage: signThisApplication
+          input: payRentOrMortgage
+          value: "false"
+    nextPages:
+      - pageName: expeditedUtilityPayments
+    datasources:
+      - pageName: doYouLiveAlone
+      - pageName: expeditedExpenses
+  expeditedUtilityPayments:
+    pageConfiguration: *utilityPayments
+    nextPages:
+      - pageName: expeditedMigrantFarmWorker
+    datasources:
+      - pageName: doYouLiveAlone
+  expeditedMigrantFarmWorker:
+    pageConfiguration: *migrantFarmWorker
+    nextPages:
+      - pageName: expeditedDetermination
+    datasources:
+      - pageName: doYouLiveAlone
+  expeditedDetermination:
+    pageConfiguration: *expeditedDetermination
+    nextPages:
+      - pageName: importantToKnow
+  importantToKnow:
+    pageConfiguration: *importantToKnow
+    nextPages:
+      - pageName: legalStuff
+  legalStuff:
+    pageConfiguration: *legalStuff
+    nextPages:
+      - pageName: signThisApplication
+  signThisApplication:
+    pageConfiguration: *signThisApplication
+    nextPages:
+      - pageName: success
+  success:
+    pageConfiguration: *success
+pageGroups:
+  jobs:
+    startPages:
+      - householdSelectionForIncome
+      - employersName
+    completePages:
+      - hoursAWeek
+      - incomePerPayPeriod
+      - lastThirtyDaysJobIncome
+    reviewPage: jobBuilder
+    redirectPage: jobRedirectPage
+    deleteWarningPage: jobDeleteWarningPage
+    restartPage: incomeByJob
+  household:
+    startPages:
+      - householdMemberInfo
+    completePages:
+      - householdMemberInfo
+    reviewPage: householdList
+    deleteWarningPage: householdDeleteWarningPage
+    restartPage: doYouLiveAlone
+    startingCount: 1
+landmarkPages:
+  startTimerPage: languagePreferences
+  landingPages:
+    - landing
+    - prepareToApply
+  terminalPage: success
+  submitPage: signThisApplication

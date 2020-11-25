@@ -1,155 +1,154 @@
-shiba-configuration-sub-workflow:
-  pageDefinitions:
-    - &startPage
-      name: startPage
+pageDefinitions:
+  - &startPage
+    name: startPage
+    pageTitle:
+      value: start-page-title
+    inputs:
+      - name: foo
+        type: TEXT
+  - &skippableFirstPage
+    name: skippableFirstPage
+    pageTitle:
+      value: dummy-page-title
+    inputs:
+      - name: inputSkippable
+        type: TEXT
+  - &firstPage
+    name: firstPage
+    pageTitle:
+      value: dummy-page-title
+    inputs:
+      - name: input1
+        type: TEXT
+  - &secondPage
+    name: secondPage
+    pageTitle:
+      value: dummy-page-title
+    inputs:
+      - name: input2
+        type: TEXT
+  - &thirdPage
+    name: thirdPage
+    pageTitle:
+      value: dummy-page-title
+    inputs:
+      - name: input3
+        type: TEXT
+  - &endPage
+    name: endPage
+    pageTitle:
+      value: end-page-title
+  - &deleteWarningPage
+    name: deleteWarningPage
+    pageTitle:
+      value: some-warning-title
+  - &redirectPage
+    name: redirectPage
+    pageTitle:
+      value: some-redirect-title
+  - &soloPage
+    name: soloPage
+    pageTitle:
+      value: solo-page-title
+    inputs:
+      - name: input-solo
+        type: TEXT
+workflow:
+  earlierPage:
+    pageConfiguration:
+      name: earlierPage
       pageTitle:
-        value: start-page-title
+        value: earlier-page-title
       inputs:
-        - name: foo
+        - name: input
           type: TEXT
-    - &skippableFirstPage
-      name: skippableFirstPage
-      pageTitle:
-        value: dummy-page-title
-      inputs:
-        - name: inputSkippable
-          type: TEXT
-    - &firstPage
-      name: firstPage
-      pageTitle:
-        value: dummy-page-title
-      inputs:
-        - name: input1
-          type: TEXT
-    - &secondPage
-      name: secondPage
-      pageTitle:
-        value: dummy-page-title
-      inputs:
-        - name: input2
-          type: TEXT
-    - &thirdPage
-      name: thirdPage
-      pageTitle:
-        value: dummy-page-title
-      inputs:
-        - name: input3
-          type: TEXT
-    - &endPage
-      name: endPage
-      pageTitle:
-        value: end-page-title
-    - &deleteWarningPage
-      name: deleteWarningPage
-      pageTitle:
-        value: some-warning-title
-    - &redirectPage
-      name: redirectPage
-      pageTitle:
-        value: some-redirect-title
-    - &soloPage
-      name: soloPage
-      pageTitle:
-        value: solo-page-title
-      inputs:
-        - name: input-solo
-          type: TEXT
-  workflow:
-    earlierPage:
-      pageConfiguration:
-        name: earlierPage
-        pageTitle:
-          value: earlier-page-title
-        inputs:
-          - name: input
-            type: TEXT
-    startPage:
-      pageConfiguration: *startPage
-      nextPages:
-        - pageName: skippableFirstPage
-        - pageName: firstPage
-    skippableFirstPage:
-      groupName: group1
-      pageConfiguration: *skippableFirstPage
-      nextPages:
-        - pageName: firstPage
-      skipCondition:
-        conditions:
-          - pageName: startPage
-            input: foo
-            matcher: EMPTY
-      datasources:
+  startPage:
+    pageConfiguration: *startPage
+    nextPages:
+      - pageName: skippableFirstPage
+      - pageName: firstPage
+  skippableFirstPage:
+    groupName: group1
+    pageConfiguration: *skippableFirstPage
+    nextPages:
+      - pageName: firstPage
+    skipCondition:
+      conditions:
         - pageName: startPage
-    firstPage:
-      groupName: group1
-      pageConfiguration: *firstPage
-      nextPages:
-        - pageName: secondPage
-          condition:
-            input: input1
-            value: goToSecondPage
-        - pageName: thirdPage
-          condition:
-            input: input1
-            value: goToThirdPage
-    secondPage:
-      groupName: group1
-      pageConfiguration: *secondPage
-      nextPages:
-        - pageName: endPage
-    thirdPage:
-      groupName: group1
-      pageConfiguration: *thirdPage
-      nextPages:
-        - pageName: endPage
-    endPage:
-      pageConfiguration: *endPage
-      nextPages:
-        - pageName: firstPage
-      datasources:
-        - groupName: group1
-    deleteWarningPage:
-      pageConfiguration: *deleteWarningPage
-      dataMissingRedirect: earlierPage
-      appliesToGroup: group1
-      nextPages:
-        - pageName: endPage
-      datasources:
-        - groupName: group1
-    redirectPage:
-      pageConfiguration:  *redirectPage
-      dataMissingRedirect: earlierPage
-      nextPages:
-        - pageName: endPage
-      datasources:
-        - groupName: group1
-    soloPage:
-      groupName: group2
-      pageConfiguration: *soloPage
-      nextPages:
-        - pageName: endSoloPage
-    endSoloPage:
-      pageConfiguration: *endPage
-      nextPages:
-        - pageName: startPage
-      datasources:
-        - groupName: group2
-  pageGroups:
-    group1:
-      completePages:
-        - secondPage
-        - thirdPage
-      startPages:
-        - skippableFirstPage
-        - firstPage
-      reviewPage: endPage
-      deleteWarningPage: deleteWarningPage
-      redirectPage: redirectPage
-      restartPage: startPage
-    group2:
-      startPages:
-        - soloPage
-      completePages:
-        - soloPage
-  landmarkPages:
-    startTimerPage: earlierPage
+          input: foo
+          matcher: EMPTY
+    datasources:
+      - pageName: startPage
+  firstPage:
+    groupName: group1
+    pageConfiguration: *firstPage
+    nextPages:
+      - pageName: secondPage
+        condition:
+          input: input1
+          value: goToSecondPage
+      - pageName: thirdPage
+        condition:
+          input: input1
+          value: goToThirdPage
+  secondPage:
+    groupName: group1
+    pageConfiguration: *secondPage
+    nextPages:
+      - pageName: endPage
+  thirdPage:
+    groupName: group1
+    pageConfiguration: *thirdPage
+    nextPages:
+      - pageName: endPage
+  endPage:
+    pageConfiguration: *endPage
+    nextPages:
+      - pageName: firstPage
+    datasources:
+      - groupName: group1
+  deleteWarningPage:
+    pageConfiguration: *deleteWarningPage
+    dataMissingRedirect: earlierPage
+    appliesToGroup: group1
+    nextPages:
+      - pageName: endPage
+    datasources:
+      - groupName: group1
+  redirectPage:
+    pageConfiguration:  *redirectPage
+    dataMissingRedirect: earlierPage
+    nextPages:
+      - pageName: endPage
+    datasources:
+      - groupName: group1
+  soloPage:
+    groupName: group2
+    pageConfiguration: *soloPage
+    nextPages:
+      - pageName: endSoloPage
+  endSoloPage:
+    pageConfiguration: *endPage
+    nextPages:
+      - pageName: startPage
+    datasources:
+      - groupName: group2
+pageGroups:
+  group1:
+    completePages:
+      - secondPage
+      - thirdPage
+    startPages:
+      - skippableFirstPage
+      - firstPage
+    reviewPage: endPage
+    deleteWarningPage: deleteWarningPage
+    redirectPage: redirectPage
+    restartPage: startPage
+  group2:
+    startPages:
+      - soloPage
+    completePages:
+      - soloPage
+landmarkPages:
+  startTimerPage: earlierPage

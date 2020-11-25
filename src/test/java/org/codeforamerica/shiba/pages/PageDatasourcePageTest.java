@@ -1,38 +1,28 @@
 package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.AbstractExistingStartTimePageTest;
-import org.codeforamerica.shiba.YamlPropertySourceFactory;
-import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
+@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
+        "spring.main.allow-bean-definition-overriding=true",
+        "pagesConfig=pages-config/test-page-datasources.yaml"
+})
 public class PageDatasourcePageTest extends AbstractExistingStartTimePageTest {
     private final String staticPageWithDatasourceInputsTitle = "staticPageWithDatasourceInputsTitle";
     private final String yesHeaderText = "yes header text";
     private final String noHeaderText = "no header text";
     private final String noAnswerTitle = "no answer title";
-
-    @TestConfiguration
-    @PropertySource(value = "classpath:pages-config/test-page-datasources.yaml", factory = YamlPropertySourceFactory.class)
-    static class TestPageConfiguration {
-        @Bean
-        @ConfigurationProperties(prefix = "shiba-configuration-page-datasource")
-        public ApplicationConfiguration applicationConfiguration() {
-            return new ApplicationConfiguration();
-        }
-    }
 
     @Override
     @BeforeEach

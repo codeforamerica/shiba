@@ -1,25 +1,24 @@
-shiba-configuration-submit-page:
-  pageDefinitions:
-    - &firstPage
-      name: firstPage
-      pageTitle:
-        value: dummy-page-title
-      inputs:
-        - name: foo
-          type: TEXT
-          validators:
-            - validation: NOT_BLANK
-    - &terminalPage
-      pageTitle:
-        value: dummy-page-title
-  workflow:
-    firstPage:
-      pageConfiguration: *firstPage
-      nextPages:
-        - pageName: testTerminalPage
-    testTerminalPage:
-      pageConfiguration: *terminalPage
-  landmarkPages:
-    startTimerPage: firstPage
-    submitPage: firstPage
-    terminalPage: testTerminalPage
+pageDefinitions:
+  - &firstPage
+    name: firstPage
+    pageTitle:
+      value: dummy-page-title
+    inputs:
+      - name: foo
+        type: TEXT
+        validators:
+          - validation: NOT_BLANK
+  - &terminalPage
+    pageTitle:
+      value: dummy-page-title
+workflow:
+  firstPage:
+    pageConfiguration: *firstPage
+    nextPages:
+      - pageName: testTerminalPage
+  testTerminalPage:
+    pageConfiguration: *terminalPage
+landmarkPages:
+  startTimerPage: firstPage
+  submitPage: firstPage
+  terminalPage: testTerminalPage

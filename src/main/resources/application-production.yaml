@@ -16,4 +16,4 @@ send-download-alert: true
 send-non-partner-county-alert: true
 submit-via-email: false
 submit-via-api: true
-pagesConfig: release
+pagesConfig: release-pages-config.yaml

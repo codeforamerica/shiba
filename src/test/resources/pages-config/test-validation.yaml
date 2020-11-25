@@ -1,146 +1,129 @@
-shiba-configuration-test-validation:
-  pageDefinitions:
-    - &firstPage
-        name: firstPage
-        pageTitle:
-          value: first-page-title
-        inputs:
-          - name: someInputName
-            type: TEXT
-            validators:
-              - validation: NOT_BLANK
-                errorMessageKey: error-message-key
-          - name: conditionalValidationWhenValueEquals
-            type: TEXT
-            validators:
-              - validation: NOT_BLANK
-                condition:
-                  input: someInputName
-                  value: valueToTriggerCondition
-                errorMessageKey: error-message-key
-    - &nextPage
-        name: nextPage
-        pageTitle:
-          value: next-page-title
-        inputs:
-          - name: someCheckbox
-            type: CHECKBOX
-            options:
-              selectableOptions:
-                - value: VALUE_1
-                  messageKey: checkbox-value-key-1
-          - name: conditionalValidationWhenValueIsNoneSelected
-            type: TEXT
-            validators:
-              - validation: NOT_BLANK
-                condition:
-                  input: someCheckbox
-                  matcher: NONE_SELECTED
-                errorMessageKey: error-message-key
-    - &notBlankPage
-        name: notBlankPage
-        pageTitle:
-          value: not-blank-page-title
-        inputs:
-          - name: notBlankInput
-            type: TEXT
-            validators:
-              - validation: NOT_BLANK
-                errorMessageKey: error-message-key
-    - &zipcodePage
-        name: zipcodePage
-        pageTitle:
-          value: zip-code-page-title
-        inputs:
-          - name: zipCodeInput
-            type: TEXT
-            validators:
-              - validation: ZIPCODE
-                errorMessageKey: error-message-key
-    - &statePage
-        name: statePage
-        pageTitle:
-          value: state-page-title
-        inputs:
-          - name: stateInput
-            type: TEXT
-            validators:
-              - validation: STATE
-                errorMessageKey: error-message-key
-    - &phonePage
-        name: phonePage
-        pageTitle:
-          value: phone-page-title
-        inputs:
-          - name: phoneInput
-            type: TEXT
-            validators:
-              - validation: PHONE
-                errorMessageKey: error-message-key
-    - &moneyPage
-        name: moneyPage
-        pageTitle:
-          value: money-page-title
-        inputs:
-          - name: moneyInput
-            type: TEXT
-            validators:
-              - validation: MONEY
-                errorMessageKey: error-message-key
-    - &ssnPage
-        name: ssnPage
-        pageTitle:
-          value: ssn-page-title
-        inputs:
-          - name: ssnInput
-            type: TEXT
-            validators:
-              - validation: SSN
-                errorMessageKey: error-message-key
-    - &datePage
-        name: datePage
-        pageTitle:
-          value: date-page-title
-        inputs:
-          - name: dateInput
-            type: DATE
-            validators:
-              - validation: DATE
-                errorMessageKey: error-message-key
-    - &checkboxPage
-        name: checkboxPage
-        pageTitle:
-          value: checkbox-page-title
-        inputs:
-          - name: checkboxInput
-            type: CHECKBOX
-            options:
-              selectableOptions:
-                - value: "1"
-                  messageKey: option-1
-                - value: "2"
-                  messageKey: option-2
-            validators:
-              - validation: SELECT_AT_LEAST_ONE
-                errorMessageKey: error-message-key
-    - &doesNotContainConditionPage
-        name: doesNotContainConditionPage
-        pageTitle:
-          value: dummy-page-title
-        inputs:
-          - name: triggerInput
-            type: TEXT
-          - name: conditionTest
-            type: TEXT
-            validators:
-              - validation: NOT_BLANK
-                errorMessageKey: error-message-key
-                condition:
-                  input: triggerInput
-                  matcher: DOES_NOT_CONTAIN
-                  value: triggerValue
-    - &emptyInputConditionPage
-      name: emptyInputConditionPage
+pageDefinitions:
+  - &firstPage
+      name: firstPage
+      pageTitle:
+        value: first-page-title
+      inputs:
+        - name: someInputName
+          type: TEXT
+          validators:
+            - validation: NOT_BLANK
+              errorMessageKey: error-message-key
+        - name: conditionalValidationWhenValueEquals
+          type: TEXT
+          validators:
+            - validation: NOT_BLANK
+              condition:
+                input: someInputName
+                value: valueToTriggerCondition
+              errorMessageKey: error-message-key
+  - &nextPage
+      name: nextPage
+      pageTitle:
+        value: next-page-title
+      inputs:
+        - name: someCheckbox
+          type: CHECKBOX
+          options:
+            selectableOptions:
+              - value: VALUE_1
+                messageKey: checkbox-value-key-1
+        - name: conditionalValidationWhenValueIsNoneSelected
+          type: TEXT
+          validators:
+            - validation: NOT_BLANK
+              condition:
+                input: someCheckbox
+                matcher: NONE_SELECTED
+              errorMessageKey: error-message-key
+  - &notBlankPage
+      name: notBlankPage
+      pageTitle:
+        value: not-blank-page-title
+      inputs:
+        - name: notBlankInput
+          type: TEXT
+          validators:
+            - validation: NOT_BLANK
+              errorMessageKey: error-message-key
+  - &zipcodePage
+      name: zipcodePage
+      pageTitle:
+        value: zip-code-page-title
+      inputs:
+        - name: zipCodeInput
+          type: TEXT
+          validators:
+            - validation: ZIPCODE
+              errorMessageKey: error-message-key
+  - &statePage
+      name: statePage
+      pageTitle:
+        value: state-page-title
+      inputs:
+        - name: stateInput
+          type: TEXT
+          validators:
+            - validation: STATE
+              errorMessageKey: error-message-key
+  - &phonePage
+      name: phonePage
+      pageTitle:
+        value: phone-page-title
+      inputs:
+        - name: phoneInput
+          type: TEXT
+          validators:
+            - validation: PHONE
+              errorMessageKey: error-message-key
+  - &moneyPage
+      name: moneyPage
+      pageTitle:
+        value: money-page-title
+      inputs:
+        - name: moneyInput
+          type: TEXT
+          validators:
+            - validation: MONEY
+              errorMessageKey: error-message-key
+  - &ssnPage
+      name: ssnPage
+      pageTitle:
+        value: ssn-page-title
+      inputs:
+        - name: ssnInput
+          type: TEXT
+          validators:
+            - validation: SSN
+              errorMessageKey: error-message-key
+  - &datePage
+      name: datePage
+      pageTitle:
+        value: date-page-title
+      inputs:
+        - name: dateInput
+          type: DATE
+          validators:
+            - validation: DATE
+              errorMessageKey: error-message-key
+  - &checkboxPage
+      name: checkboxPage
+      pageTitle:
+        value: checkbox-page-title
+      inputs:
+        - name: checkboxInput
+          type: CHECKBOX
+          options:
+            selectableOptions:
+              - value: "1"
+                messageKey: option-1
+              - value: "2"
+                messageKey: option-2
+          validators:
+            - validation: SELECT_AT_LEAST_ONE
+              errorMessageKey: error-message-key
+  - &doesNotContainConditionPage
+      name: doesNotContainConditionPage
       pageTitle:
         value: dummy-page-title
       inputs:
@@ -153,80 +136,96 @@ shiba-configuration-test-validation:
               errorMessageKey: error-message-key
               condition:
                 input: triggerInput
-                matcher: EMPTY
-    - &pageWithInputWithMultipleValidations
-      name: pageWithInputWithMultipleValidations
+                matcher: DOES_NOT_CONTAIN
+                value: triggerValue
+  - &emptyInputConditionPage
+    name: emptyInputConditionPage
+    pageTitle:
+      value: dummy-page-title
+    inputs:
+      - name: triggerInput
+        type: TEXT
+      - name: conditionTest
+        type: TEXT
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: error-message-key
+            condition:
+              input: triggerInput
+              matcher: EMPTY
+  - &pageWithInputWithMultipleValidations
+    name: pageWithInputWithMultipleValidations
+    pageTitle:
+      value: page-with-input-with-multiple-validations
+    inputs:
+      - name: multipleValidations
+        type: TEXT
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: not-blank-error-message-key
+          - validation: MONEY
+            errorMessageKey: money-error-message-key
+  - &lastPage
+      name: lastPage
       pageTitle:
-        value: page-with-input-with-multiple-validations
+        value: last-page-title
       inputs:
-        - name: multipleValidations
+        - name: foo
           type: TEXT
-          validators:
-            - validation: NOT_BLANK
-              errorMessageKey: not-blank-error-message-key
-            - validation: MONEY
-              errorMessageKey: money-error-message-key
-    - &lastPage
-        name: lastPage
-        pageTitle:
-          value: last-page-title
-        inputs:
-          - name: foo
-            type: TEXT
-  workflow:
-    firstPage:
-      pageConfiguration: *firstPage
-      nextPages:
-        - pageName: nextPage
-    nextPage:
-      pageConfiguration: *nextPage
-      nextPages:
-        - pageName: lastPage
-    notBlankPage:
-      pageConfiguration: *notBlankPage
-      nextPages:
-        - pageName: lastPage
-    zipcodePage:
-      pageConfiguration: *zipcodePage
-      nextPages:
-        - pageName: lastPage
-    statePage:
-      pageConfiguration: *statePage
-      nextPages:
-        - pageName: lastPage
-    phonePage:
-      pageConfiguration: *phonePage
-      nextPages:
-        - pageName: lastPage
-    moneyPage:
-      pageConfiguration: *moneyPage
-      nextPages:
-        - pageName: lastPage
-    ssnPage:
-      pageConfiguration: *ssnPage
-      nextPages:
-        - pageName: lastPage
-    datePage:
-      pageConfiguration: *datePage
-      nextPages:
-        - pageName: lastPage
-    checkboxPage:
-      pageConfiguration: *checkboxPage
-      nextPages:
-        - pageName: lastPage
-    doesNotContainConditionPage:
-      pageConfiguration: *doesNotContainConditionPage
-      nextPages:
-        - pageName: lastPage
-    pageWithInputWithMultipleValidations:
-      pageConfiguration: *pageWithInputWithMultipleValidations
-      nextPages:
-        - pageName: lastPage
-    emptyInputConditionPage:
-      pageConfiguration: *emptyInputConditionPage
-      nextPages:
-        - pageName: lastPage
-    lastPage:
-      pageConfiguration: *lastPage
-  landmarkPages:
-    startTimerPage:
+workflow:
+  firstPage:
+    pageConfiguration: *firstPage
+    nextPages:
+      - pageName: nextPage
+  nextPage:
+    pageConfiguration: *nextPage
+    nextPages:
+      - pageName: lastPage
+  notBlankPage:
+    pageConfiguration: *notBlankPage
+    nextPages:
+      - pageName: lastPage
+  zipcodePage:
+    pageConfiguration: *zipcodePage
+    nextPages:
+      - pageName: lastPage
+  statePage:
+    pageConfiguration: *statePage
+    nextPages:
+      - pageName: lastPage
+  phonePage:
+    pageConfiguration: *phonePage
+    nextPages:
+      - pageName: lastPage
+  moneyPage:
+    pageConfiguration: *moneyPage
+    nextPages:
+      - pageName: lastPage
+  ssnPage:
+    pageConfiguration: *ssnPage
+    nextPages:
+      - pageName: lastPage
+  datePage:
+    pageConfiguration: *datePage
+    nextPages:
+      - pageName: lastPage
+  checkboxPage:
+    pageConfiguration: *checkboxPage
+    nextPages:
+      - pageName: lastPage
+  doesNotContainConditionPage:
+    pageConfiguration: *doesNotContainConditionPage
+    nextPages:
+      - pageName: lastPage
+  pageWithInputWithMultipleValidations:
+    pageConfiguration: *pageWithInputWithMultipleValidations
+    nextPages:
+      - pageName: lastPage
+  emptyInputConditionPage:
+    pageConfiguration: *emptyInputConditionPage
+    nextPages:
+      - pageName: lastPage
+  lastPage:
+    pageConfiguration: *lastPage
+landmarkPages:
+  startTimerPage:

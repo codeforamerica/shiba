@@ -1,17 +1,12 @@
 package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.AbstractExistingStartTimePageTest;
-import org.codeforamerica.shiba.YamlPropertySourceFactory;
-import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -21,23 +16,18 @@ import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @Import(UserDecisionNavigationPageTest.TestController.class)
+@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
+        "spring.main.allow-bean-definition-overriding=true",
+        "pagesConfig=pages-config/test-user-decision-navigation.yaml"
+})
 public class UserDecisionNavigationPageTest extends AbstractExistingStartTimePageTest {
 
     private final String optionZeroPageTitle = "page zero title";
     private final String optionOnePageTitle = "page one title";
     private final String yesAnswerTitle = "yes answer title";
-
-    @TestConfiguration
-    @PropertySource(value = "classpath:pages-config/test-user-decision-navigation.yaml", factory = YamlPropertySourceFactory.class)
-    static class TestPageConfiguration {
-        @Bean
-        @ConfigurationProperties(prefix = "shiba-configuration-user-decision-navigation")
-        public ApplicationConfiguration applicationConfiguration() {
-            return new ApplicationConfiguration();
-        }
-    }
 
     @Controller
     static class TestController {

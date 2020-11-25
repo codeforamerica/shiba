@@ -1,16 +1,11 @@
 package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.AbstractStaticMessageSourcePageTest;
-import org.codeforamerica.shiba.YamlPropertySourceFactory;
-import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.format.datetime.standard.InstantFormatter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,20 +16,14 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @Import(StartTimerPageTest.TestController.class)
+@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
+        "spring.main.allow-bean-definition-overriding=true",
+        "pagesConfig=pages-config/test-start-timer.yaml"
+})
 public class StartTimerPageTest extends AbstractStaticMessageSourcePageTest {
-
-    @TestConfiguration
-    @PropertySource(value = "classpath:pages-config/test-start-timer.yaml", factory = YamlPropertySourceFactory.class)
-    static class TestPageConfiguration {
-        @Bean
-        @ConfigurationProperties(prefix = "shiba-configuration-start-timer")
-        public ApplicationConfiguration applicationConfiguration() {
-            return new ApplicationConfiguration();
-        }
-    }
-
     @Controller
     static class TestController {
         private final ApplicationData applicationData;

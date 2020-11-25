@@ -1,30 +1,29 @@
-shiba-configuration-pages-controller:
-  pageDefinitions: []
-  workflow:
-    firstPage:
-      pageConfiguration:
-        name: firstPage
-        pageTitle:
-          value: first-page-title
-        inputs:
-          - name: foo
-            type: TEXT
-            validators:
-              - validation: NOT_BLANK
-    terminalPage:
-      pageConfiguration:
-        name: terminalPage
-        pageTitle:
-          value: terminal-page-title
-    landingPage:
-      pageConfiguration:
-        pageTitle:
-          value: landing-page-title
-        inputs:
-          - name: foo
-            type: TEXT
-  landmarkPages:
-    landingPages:
-      - landingPage
-    terminalPage: terminalPage
-    submitPage: firstPage
+pageDefinitions: []
+workflow:
+  firstPage:
+    pageConfiguration:
+      name: firstPage
+      pageTitle:
+        value: first-page-title
+      inputs:
+        - name: foo
+          type: TEXT
+          validators:
+            - validation: NOT_BLANK
+  terminalPage:
+    pageConfiguration:
+      name: terminalPage
+      pageTitle:
+        value: terminal-page-title
+  landingPage:
+    pageConfiguration:
+      pageTitle:
+        value: landing-page-title
+      inputs:
+        - name: foo
+          type: TEXT
+landmarkPages:
+  landingPages:
+    - landingPage
+  terminalPage: terminalPage
+  submitPage: firstPage

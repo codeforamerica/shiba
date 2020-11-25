@@ -1,24 +1,23 @@
-shiba-configuration-yes-no-answer:
-  pageDefinitions:
-    - &yesNoQuestionPage
-        name: yesNoQuestionPage
-        pageTitle:
-          value: yes-no-question-page
-        inputs:
-          - name: yesOrNo
-            type: YES_NO
-    - &testStaticPage
-        name: testStaticPage
-        pageTitle:
-          value: answer-page
-  workflow:
-    yesNoQuestionPage:
-      pageConfiguration: *yesNoQuestionPage
-      nextPages:
-        - pageName: testStaticPage
-    testStaticPage:
-      pageConfiguration: *testStaticPage
-      datasources:
-        - pageName: yesNoQuestionPage
-  landmarkPages:
-    startTimerPage:
+pageDefinitions:
+  - &yesNoQuestionPage
+      name: yesNoQuestionPage
+      pageTitle:
+        value: yes-no-question-page
+      inputs:
+        - name: yesOrNo
+          type: YES_NO
+  - &testStaticPage
+      name: testStaticPage
+      pageTitle:
+        value: answer-page
+workflow:
+  yesNoQuestionPage:
+    pageConfiguration: *yesNoQuestionPage
+    nextPages:
+      - pageName: testStaticPage
+  testStaticPage:
+    pageConfiguration: *testStaticPage
+    datasources:
+      - pageName: yesNoQuestionPage
+landmarkPages:
+  startTimerPage:

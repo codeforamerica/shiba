@@ -1,6 +1,5 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.YamlPropertySourceFactory;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
@@ -16,11 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.StaticMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
@@ -35,27 +30,21 @@ import java.util.Locale;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.*;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
-@SpringBootTest(classes = PageControllerTest.TestPageConfiguration.class, properties = {"spring.main.allow-bean-definition-overriding=true"})
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
+@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
+        "spring.main.allow-bean-definition-overriding=true",
+        "pagesConfig=pages-config/test-pages-controller.yaml"
+})
 class PageControllerTest {
 
     private final StaticMessageSource messageSource = new StaticMessageSource();
     private final ApplicationEnrichment applicationEnrichment = mock(ApplicationEnrichment.class);
-
-    @TestConfiguration
-    @PropertySource(value = "classpath:pages-config/test-pages-controller.yaml", factory = YamlPropertySourceFactory.class)
-    static class TestPageConfiguration {
-        @Bean
-        @ConfigurationProperties(prefix = "shiba-configuration-pages-controller")
-        public ApplicationConfiguration applicationConfiguration() {
-            return new ApplicationConfiguration();
-        }
-    }
 
     ApplicationData applicationData = new ApplicationData();
     MockMvc mockMvc;

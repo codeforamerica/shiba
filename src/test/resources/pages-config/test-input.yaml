@@ -1,170 +1,169 @@
-shiba-configuration-input:
-  pageDefinitions:
-    - &firstPage
-        name: firstPage
-        pageTitle:
-          value: first-page-title
-        inputs:
-          - name: editableTextInput
-            type: TEXT
-            promptMessage:
-              promptMessageKey: prompt-message-key
-            helpMessageKey: help-message-key
-          - name: uneditableInput
-            type: TEXT
-            readOnly: true
-            defaultValue: "default value"
-          - name: dateInput
-            type: DATE
-          - name: numberInput
-            type: NUMBER
-          - name: radioInput
-            type: RADIO
-            options:
-              selectableOptions:
-                - value: "1"
-                  messageKey: radio-option-1
-                - value: "2"
-                  messageKey: radio-option-2
-          - name: checkboxInput
-            type: CHECKBOX
-            options:
-              selectableOptions:
-                - value: "1"
-                  messageKey: checkbox-option-1
-                  helpMessageKey: option-help-key
-                - value: "2"
-                  messageKey: checkbox-option-2
-                - value: "3"
-                  messageKey: none-checkbox-option
-                  isNone: true
-          - name: selectInput
-            type: SELECT
-            options:
-              selectableOptions:
-                - value: "1"
-                  messageKey: select-option-1
-                - value: "2"
-                  messageKey: select-option-2
-          - name: moneyInput
-            type: MONEY
-          - name: hourlyWageInput
-            type: HOURLY_WAGE
-          - name: radioInputWithFollowUps
-            type: RADIO
-            options:
-              selectableOptions:
-                - value: "true"
-                  messageKey: follow-up-true
-                - value: "false"
-                  messageKey: follow-up-false
-                - value: "uncertain"
-                  messageKey: follow-up-uncertain
-            followUpValues:
-              - "false"
-              - "uncertain"
-            followUps:
-              - name: radioInputWithFollowUps-followUpTextInput
-                type: TEXT
-          - name: checkboxInputWithFollowUps
-            type: CHECKBOX
-            options:
-              selectableOptions:
-                - value: "true"
-                  messageKey: follow-up-true
-                - value: "false"
-                  messageKey: follow-up-false
-                - value: "uncertain"
-                  messageKey: follow-up-uncertain
-            followUpValues:
-              - "false"
-              - "uncertain"
-            followUps:
-              - name: checkboxInputWithFollowUps-followUpTextInput
-                type: TEXT
-          - name: incrementerInput
-            type: INCREMENTER
-            defaultValue: "4"
-            min: 3
-            max: 5
-    - &nextPage
-        name: nextPage
-        pageTitle:
-          value: next-page-title
-        inputs:
-          - name: someInputName
-            type: TEXT
-            helpMessageKey: help-message-key
-    - &inputWithPromptFragmentPage
-        name: inputWithPromptFragmentPage
-        pageTitle:
-          value: prompt-fragment-page-title
-        inputs:
-          - name: promptFragmentInput
-            type: MONEY
-            promptMessage:
-              promptMessageFragmentName: promptFragment
-    - &doNotHavePrimaryButtonPage
-      name: doNotHavePrimaryButtonPage
+pageDefinitions:
+  - &firstPage
+      name: firstPage
       pageTitle:
-        value: dummy-page-title
+        value: first-page-title
       inputs:
-        - name: foo
+        - name: editableTextInput
           type: TEXT
-      hasPrimaryButton: false
-    - &pageWithContextFragment
-      name: pageWithContextFragment
-      pageTitle:
-        value: dummy-page-title
-      inputs:
-        - name: foo
+          promptMessage:
+            promptMessageKey: prompt-message-key
+          helpMessageKey: help-message-key
+        - name: uneditableInput
           type: TEXT
-      contextFragment: pageContextFragment
-    - &pageWithReferenceCheckboxes
-      name: pageWithReferenceCheckboxes
-      pageTitle:
-        value: dummy-page-title
-      inputs:
-        - name: referenceCheckboxes
-          type: CUSTOM
-          customInputFragment: applicationOptions
+          readOnly: true
+          defaultValue: "default value"
+        - name: dateInput
+          type: DATE
+        - name: numberInput
+          type: NUMBER
+        - name: radioInput
+          type: RADIO
           options:
-            datasources:
-              - groupName: subworkflow1
-              - pageName: firstPage
-  workflow:
-    firstPage:
-      pageConfiguration: *firstPage
-      nextPages:
-        - pageName: nextPage
-    nextPage:
-      pageConfiguration: *nextPage
-    inputWithPromptFragmentPage:
-      pageConfiguration: *inputWithPromptFragmentPage
-    doNotHavePrimaryButtonPage:
-      pageConfiguration: *doNotHavePrimaryButtonPage
-    pageWithContextFragment:
-      pageConfiguration: *pageWithContextFragment
-    pageWithReferenceCheckboxes:
-      pageConfiguration: *pageWithReferenceCheckboxes
-      datasources:
-        - groupName: subworkflow1
-    subworkflowPage:
-      groupName: subworkflow1
-      pageConfiguration:
-        name: subworkflowPage
-        pageTitle:
-          value: dummy-page-title
-        inputs:
-          - name: value1
-            type: TEXT
-      nextPages:
-        - pageName: subworkflowPage
-  pageGroups:
-    subworkflow1:
-      startPages:
-        - subworkflowPage
-      completePages:
-        - subworkflowPage
-  landmarkPages:
-    startTimerPage:
+            selectableOptions:
+              - value: "1"
+                messageKey: radio-option-1
+              - value: "2"
+                messageKey: radio-option-2
+        - name: checkboxInput
+          type: CHECKBOX
+          options:
+            selectableOptions:
+              - value: "1"
+                messageKey: checkbox-option-1
+                helpMessageKey: option-help-key
+              - value: "2"
+                messageKey: checkbox-option-2
+              - value: "3"
+                messageKey: none-checkbox-option
+                isNone: true
+        - name: selectInput
+          type: SELECT
+          options:
+            selectableOptions:
+              - value: "1"
+                messageKey: select-option-1
+              - value: "2"
+                messageKey: select-option-2
+        - name: moneyInput
+          type: MONEY
+        - name: hourlyWageInput
+          type: HOURLY_WAGE
+        - name: radioInputWithFollowUps
+          type: RADIO
+          options:
+            selectableOptions:
+              - value: "true"
+                messageKey: follow-up-true
+              - value: "false"
+                messageKey: follow-up-false
+              - value: "uncertain"
+                messageKey: follow-up-uncertain
+          followUpValues:
+            - "false"
+            - "uncertain"
+          followUps:
+            - name: radioInputWithFollowUps-followUpTextInput
+              type: TEXT
+        - name: checkboxInputWithFollowUps
+          type: CHECKBOX
+          options:
+            selectableOptions:
+              - value: "true"
+                messageKey: follow-up-true
+              - value: "false"
+                messageKey: follow-up-false
+              - value: "uncertain"
+                messageKey: follow-up-uncertain
+          followUpValues:
+            - "false"
+            - "uncertain"
+          followUps:
+            - name: checkboxInputWithFollowUps-followUpTextInput
+              type: TEXT
+        - name: incrementerInput
+          type: INCREMENTER
+          defaultValue: "4"
+          min: 3
+          max: 5
+  - &nextPage
+      name: nextPage
+      pageTitle:
+        value: next-page-title
+      inputs:
+        - name: someInputName
+          type: TEXT
+          helpMessageKey: help-message-key
+  - &inputWithPromptFragmentPage
+      name: inputWithPromptFragmentPage
+      pageTitle:
+        value: prompt-fragment-page-title
+      inputs:
+        - name: promptFragmentInput
+          type: MONEY
+          promptMessage:
+            promptMessageFragmentName: promptFragment
+  - &doNotHavePrimaryButtonPage
+    name: doNotHavePrimaryButtonPage
+    pageTitle:
+      value: dummy-page-title
+    inputs:
+      - name: foo
+        type: TEXT
+    hasPrimaryButton: false
+  - &pageWithContextFragment
+    name: pageWithContextFragment
+    pageTitle:
+      value: dummy-page-title
+    inputs:
+      - name: foo
+        type: TEXT
+    contextFragment: pageContextFragment
+  - &pageWithReferenceCheckboxes
+    name: pageWithReferenceCheckboxes
+    pageTitle:
+      value: dummy-page-title
+    inputs:
+      - name: referenceCheckboxes
+        type: CUSTOM
+        customInputFragment: applicationOptions
+        options:
+          datasources:
+            - groupName: subworkflow1
+            - pageName: firstPage
+workflow:
+  firstPage:
+    pageConfiguration: *firstPage
+    nextPages:
+      - pageName: nextPage
+  nextPage:
+    pageConfiguration: *nextPage
+  inputWithPromptFragmentPage:
+    pageConfiguration: *inputWithPromptFragmentPage
+  doNotHavePrimaryButtonPage:
+    pageConfiguration: *doNotHavePrimaryButtonPage
+  pageWithContextFragment:
+    pageConfiguration: *pageWithContextFragment
+  pageWithReferenceCheckboxes:
+    pageConfiguration: *pageWithReferenceCheckboxes
+    datasources:
+      - groupName: subworkflow1
+  subworkflowPage:
+    groupName: subworkflow1
+    pageConfiguration:
+      name: subworkflowPage
+      pageTitle:
+        value: dummy-page-title
+      inputs:
+        - name: value1
+          type: TEXT
+    nextPages:
+      - pageName: subworkflowPage
+pageGroups:
+  subworkflow1:
+    startPages:
+      - subworkflowPage
+    completePages:
+      - subworkflowPage
+landmarkPages:
+  startTimerPage:

@@ -29,4 +29,4 @@ encryption-key: ${ENCRYPTION_KEY}
 logging:
   level:
     org.apache.pdfbox.multipdf: off
-pagesConfig: dev
+pagesConfig: dev-pages-config.yaml
