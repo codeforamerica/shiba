@@ -23,7 +23,7 @@ public class YesNoAnswerPageTest extends AbstractExistingStartTimePageTest {
     @BeforeEach
     protected void setUp() throws IOException {
         super.setUp();
-        staticMessageSource.addMessage("answer-page", Locale.US, answerPage);
+        staticMessageSource.addMessage("answer-page", Locale.ENGLISH, answerPage);
     }
 
     @Test

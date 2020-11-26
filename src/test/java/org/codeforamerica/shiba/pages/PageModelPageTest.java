@@ -28,9 +28,9 @@ public class PageModelPageTest extends AbstractExistingStartTimePageTest {
         title = "first page title";
         subtleLink = "subtle link text";
         subtleLinkTitle = "subtle link title";
-        staticMessageSource.addMessage("first-page-title", Locale.US, title);
-        staticMessageSource.addMessage("subtle-link-text", Locale.US, subtleLink);
-        staticMessageSource.addMessage("subtle-link-page-title", Locale.US, subtleLinkTitle);
+        staticMessageSource.addMessage("first-page-title", Locale.ENGLISH, title);
+        staticMessageSource.addMessage("subtle-link-text", Locale.ENGLISH, subtleLink);
+        staticMessageSource.addMessage("subtle-link-page-title", Locale.ENGLISH, subtleLinkTitle);
     }
 
     @Test

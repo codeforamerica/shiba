@@ -8,7 +8,7 @@
         <div th:replace="fragments/demoBanner"></div>
         <section class="slab slab--shiba">
             <div class="grid">
-                <a th:replace="fragments/go-back"></a>
+                <div th:replace="fragments/card-header"></div>
                 <div class="card spacing-above-35">
                     <h2 th:text="#{${qualified} ? 'expedited-determination.qualified-header':'expedited-determination.denied-header'}"></h2>
                     <p class="spacing-below-60" th:text="#{${qualified} ? 'expedited-determination.qualified-detail':'expedited-determination.denied-detail'}"></p>

@@ -30,16 +30,16 @@ public class ConditionalRenderingPageTest extends AbstractExistingStartTimePageT
     @BeforeEach
     protected void setUp() throws IOException {
         super.setUp();
-        staticMessageSource.addMessage("starting-page-title", Locale.US, "starting page");
-        staticMessageSource.addMessage("first-page-title", Locale.US, firstPageTitle);
-        staticMessageSource.addMessage("second-page-title", Locale.US, secondPageTitle);
-        staticMessageSource.addMessage("third-page-title", Locale.US, thirdPageTitle);
-        staticMessageSource.addMessage("fourth-page-title", Locale.US, fourthPageTitle);
-        staticMessageSource.addMessage("eighth-page-title", Locale.US, eighthPageTitle);
-        staticMessageSource.addMessage("skip-message-key", Locale.US, "SKIP PAGE");
-        staticMessageSource.addMessage("not-skip-message-key", Locale.US, "NOT SKIP PAGE");
-        staticMessageSource.addMessage("page-to-skip-title", Locale.US, pageToSkip);
-        staticMessageSource.addMessage("last-page-title", Locale.US, lastPageTitle);
+        staticMessageSource.addMessage("starting-page-title", Locale.ENGLISH, "starting page");
+        staticMessageSource.addMessage("first-page-title", Locale.ENGLISH, firstPageTitle);
+        staticMessageSource.addMessage("second-page-title", Locale.ENGLISH, secondPageTitle);
+        staticMessageSource.addMessage("third-page-title", Locale.ENGLISH, thirdPageTitle);
+        staticMessageSource.addMessage("fourth-page-title", Locale.ENGLISH, fourthPageTitle);
+        staticMessageSource.addMessage("eighth-page-title", Locale.ENGLISH, eighthPageTitle);
+        staticMessageSource.addMessage("skip-message-key", Locale.ENGLISH, "SKIP PAGE");
+        staticMessageSource.addMessage("not-skip-message-key", Locale.ENGLISH, "NOT SKIP PAGE");
+        staticMessageSource.addMessage("page-to-skip-title", Locale.ENGLISH, pageToSkip);
+        staticMessageSource.addMessage("last-page-title", Locale.ENGLISH, lastPageTitle);
     }
 
     @Test

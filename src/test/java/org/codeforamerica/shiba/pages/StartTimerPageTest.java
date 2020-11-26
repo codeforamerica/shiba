@@ -35,7 +35,7 @@ public class StartTimerPageTest extends AbstractStaticMessageSourcePageTest {
         @GetMapping("/pathExposingStartTime")
         ModelAndView endpointExposingStartTime() {
             String startTime = Optional.ofNullable(applicationData.getStartTime())
-                    .map(instant -> new InstantFormatter().print(instant, Locale.US))
+                    .map(instant -> new InstantFormatter().print(instant, Locale.ENGLISH))
                     .orElse("");
             return new ModelAndView("viewExposingStartTime", Map.of("startTime", startTime));
         }

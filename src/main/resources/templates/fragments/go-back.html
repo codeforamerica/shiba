@@ -2,6 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
 <a id="back-link"
+   class="toolbar__left"
    th:fragment="goBackLink"
    href="#"
    onclick="mixpanel.track('CLICKED_BACK', null, null, function() { window.history.back(); }); return false;"

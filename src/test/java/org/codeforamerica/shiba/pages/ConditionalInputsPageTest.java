@@ -22,9 +22,9 @@ public class ConditionalInputsPageTest extends AbstractExistingStartTimePageTest
     @BeforeEach
     protected void setUp() throws IOException {
         super.setUp();
-        staticMessageSource.addMessage("option1", Locale.US, "option 1");
-        staticMessageSource.addMessage("option2", Locale.US, "option 2");
-        staticMessageSource.addMessage("option3", Locale.US, "option 3");
+        staticMessageSource.addMessage("option1", Locale.ENGLISH, "option 1");
+        staticMessageSource.addMessage("option2", Locale.ENGLISH, "option 2");
+        staticMessageSource.addMessage("option3", Locale.ENGLISH, "option 3");
     }
 
     @Test

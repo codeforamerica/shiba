@@ -61,9 +61,9 @@ public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
     @BeforeEach
     protected void setUp() throws IOException {
         super.setUp();
-        staticMessageSource.addMessage("first-page-title", Locale.US, firstPageTitle);
-        staticMessageSource.addMessage("third-page-title", Locale.US, "third page title");
-        staticMessageSource.addMessage("fourth-page-title", Locale.US, fourthPageTitle);
+        staticMessageSource.addMessage("first-page-title", Locale.ENGLISH, firstPageTitle);
+        staticMessageSource.addMessage("third-page-title", Locale.ENGLISH, "third page title");
+        staticMessageSource.addMessage("fourth-page-title", Locale.ENGLISH, fourthPageTitle);
     }
 
     @Test

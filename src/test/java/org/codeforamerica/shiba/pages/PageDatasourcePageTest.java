@@ -28,17 +28,17 @@ public class PageDatasourcePageTest extends AbstractExistingStartTimePageTest {
     @BeforeEach
     protected void setUp() throws IOException {
         super.setUp();
-        staticMessageSource.addMessage("first-page-title", Locale.US, "firstPageTitle");
-        staticMessageSource.addMessage("static-page-with-datasource-inputs-title", Locale.US, staticPageWithDatasourceInputsTitle);
-        staticMessageSource.addMessage("yes-header-text", Locale.US, yesHeaderText);
-        staticMessageSource.addMessage("no-header-text", Locale.US, noHeaderText);
-        staticMessageSource.addMessage("general.inputs.yes", Locale.US, YesNoAnswer.YES.getDisplayValue());
-        staticMessageSource.addMessage("general.inputs.no", Locale.US, YesNoAnswer.NO.getDisplayValue());
-        staticMessageSource.addMessage("some-other-header", Locale.US, "some other header");
-        staticMessageSource.addMessage("some-header", Locale.US, "some other header");
-        staticMessageSource.addMessage("no-answer-title", Locale.US, noAnswerTitle);
-        staticMessageSource.addMessage("radio-value-key-1", Locale.US, "radio value 1");
-        staticMessageSource.addMessage("radio-value-key-2", Locale.US, "radio value 2");
+        staticMessageSource.addMessage("first-page-title", Locale.ENGLISH, "firstPageTitle");
+        staticMessageSource.addMessage("static-page-with-datasource-inputs-title", Locale.ENGLISH, staticPageWithDatasourceInputsTitle);
+        staticMessageSource.addMessage("yes-header-text", Locale.ENGLISH, yesHeaderText);
+        staticMessageSource.addMessage("no-header-text", Locale.ENGLISH, noHeaderText);
+        staticMessageSource.addMessage("general.inputs.yes", Locale.ENGLISH, YesNoAnswer.YES.getDisplayValue());
+        staticMessageSource.addMessage("general.inputs.no", Locale.ENGLISH, YesNoAnswer.NO.getDisplayValue());
+        staticMessageSource.addMessage("some-other-header", Locale.ENGLISH, "some other header");
+        staticMessageSource.addMessage("some-header", Locale.ENGLISH, "some other header");
+        staticMessageSource.addMessage("no-answer-title", Locale.ENGLISH, noAnswerTitle);
+        staticMessageSource.addMessage("radio-value-key-1", Locale.ENGLISH, "radio value 1");
+        staticMessageSource.addMessage("radio-value-key-2", Locale.ENGLISH, "radio value 2");
     }
 
     @Test
@@ -54,8 +54,8 @@ public class PageDatasourcePageTest extends AbstractExistingStartTimePageTest {
     @Test
     void shouldDisplayPageTitleBasedOnCondition() {
         String noAnswerTitle = "no answer title";
-        staticMessageSource.addMessage("foo", Locale.US, "wrong title");
-        staticMessageSource.addMessage("no-answer-title", Locale.US, noAnswerTitle);
+        staticMessageSource.addMessage("foo", Locale.ENGLISH, "wrong title");
+        staticMessageSource.addMessage("no-answer-title", Locale.ENGLISH, noAnswerTitle);
 
         driver.navigate().to(baseUrl + "/pages/yesNoQuestionPage");
 

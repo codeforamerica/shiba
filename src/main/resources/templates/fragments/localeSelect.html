@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div class="select toolbar__right language-select" th:with="lang=${#locale.toString()}">
+    <select class="select__element language-selector"  name="locales" id="locales">
+        <option value="en" th:selected="${lang.equals('en')}" th:text="#{language-preferences.english}"></option>
+        <option value="es" th:selected="${lang.equals('es')}" th:text="#{language-preferences.spanish}"></option>
+    </select>
+    <script>
+        $(document).ready(function() {
+            $("#locales").change(function () {
+                if ($("#locales").val() !== ''){
+                    window.location.replace('?lang=' + $("#locales").val());
+                }
+            });
+        });
+    </script>
+</div>
+</body>
+</html>

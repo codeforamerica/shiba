@@ -30,10 +30,10 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
     @BeforeEach
     protected void setUp() throws IOException {
         super.setUp();
-        staticMessageSource.addMessage("start-page-title", Locale.US, "start-page-title");
-        staticMessageSource.addMessage("end-page-title", Locale.US, "end-page-title");
-        staticMessageSource.addMessage("solo-page-title", Locale.US, "solo-page-title");
-        staticMessageSource.addMessage("warning-page-header", Locale.US, "This is a warning for: {0}");
+        staticMessageSource.addMessage("start-page-title", Locale.ENGLISH, "start-page-title");
+        staticMessageSource.addMessage("end-page-title", Locale.ENGLISH, "end-page-title");
+        staticMessageSource.addMessage("solo-page-title", Locale.ENGLISH, "solo-page-title");
+        staticMessageSource.addMessage("warning-page-header", Locale.ENGLISH, "This is a warning for: {0}");
     }
 
     @Test
@@ -150,7 +150,7 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
     @Test
     void shouldShowDeleteWarningPage() {
         String warningPageTitle = "warning page title";
-        staticMessageSource.addMessage("some-warning-title", Locale.US, warningPageTitle);
+        staticMessageSource.addMessage("some-warning-title", Locale.ENGLISH, warningPageTitle);
 
         String firstIterationInput1Value = "goToSecondPage";
         String secondIterationInput1Value = "goToThirdPage";
@@ -194,7 +194,7 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
     @Test
     void shouldPublishSubflowIterationDeleted() {
         String warningPageTitle = "warning page title";
-        this.staticMessageSource.addMessage("some-warning-title", Locale.US, warningPageTitle);
+        staticMessageSource.addMessage("some-warning-title", Locale.ENGLISH, warningPageTitle);
 
         navigateTo("startPage");
         testPage.clickContinue();
@@ -218,7 +218,7 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
     @Test
     void shouldGoToSpecifiedPageWhenGoBackFromEndOfTheWorkflow() {
         String redirectPageTitle = "some title";
-        this.staticMessageSource.addMessage("some-redirect-title", Locale.US, redirectPageTitle);
+        staticMessageSource.addMessage("some-redirect-title", Locale.ENGLISH, redirectPageTitle);
 
         navigateTo("startPage");
         testPage.clickContinue();
@@ -234,9 +234,9 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
     @Test
     void shouldGoToSpecifiedPageWhenAttemptToDeleteAnyDataEntry() {
         String warningPageTitle = "some title";
-        this.staticMessageSource.addMessage("some-warning-title", Locale.US, warningPageTitle);
+        staticMessageSource.addMessage("some-warning-title", Locale.ENGLISH, warningPageTitle);
         String endPageTitle = "some other title";
-        this.staticMessageSource.addMessage("some-other-title", Locale.US, endPageTitle);
+        staticMessageSource.addMessage("some-other-title", Locale.ENGLISH, endPageTitle);
         navigateTo("startPage");
         testPage.clickContinue();
         testPage.enter("input1", "goToSecondPage");
@@ -271,7 +271,7 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
 
     @Test
     void shouldRedirectWhenPageDoesntHaveNecessaryDatasources() {
-        this.staticMessageSource.addMessage("earlier-page-title", Locale.US, "earlierPage");
+        staticMessageSource.addMessage("earlier-page-title", Locale.ENGLISH, "earlierPage");
         navigateTo("startPage");
         testPage.clickContinue();
         testPage.enter("input1", "goToSecondPage");

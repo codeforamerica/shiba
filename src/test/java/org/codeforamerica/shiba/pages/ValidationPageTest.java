@@ -46,23 +46,23 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
     protected void setUp() throws IOException {
         super.setUp();
         testPage = new Page(driver);
-        staticMessageSource.addMessage("first-page-title", Locale.US, firstPageTitle);
-        staticMessageSource.addMessage("next-page-title", Locale.US, nextPageTitle);
-        staticMessageSource.addMessage("last-page-title", Locale.US, lastPageTitle);
-        staticMessageSource.addMessage("error-message-key", Locale.US, errorMessage);
-        staticMessageSource.addMessage("money-error-message-key", Locale.US, moneyErrorMessageKey);
-        staticMessageSource.addMessage("not-blank-error-message-key ", Locale.US, "not blank is error");
-        staticMessageSource.addMessage("zip-code-page-title", Locale.US, zipcodePageTitle);
-        staticMessageSource.addMessage("state-page-title", Locale.US, statePageTitle);
-        staticMessageSource.addMessage("phone-page-title", Locale.US, phonePageTitle);
-        staticMessageSource.addMessage("money-page-title", Locale.US, moneyPageTitle);
-        staticMessageSource.addMessage("ssn-page-title", Locale.US, ssnPageTitle);
-        staticMessageSource.addMessage("date-page-title", Locale.US, datePageTitle);
-        staticMessageSource.addMessage("not-blank-page-title", Locale.US, notBlankPageTitle);
-        staticMessageSource.addMessage("checkbox-page-title", Locale.US, checkboxPageTitle);
-        staticMessageSource.addMessage("option-1", Locale.US, option1);
-        staticMessageSource.addMessage("option-2", Locale.US, "option-2");
-        staticMessageSource.addMessage("page-with-input-with-multiple-validations", Locale.US, multipleValidationsPageTitle);
+        staticMessageSource.addMessage("first-page-title", Locale.ENGLISH, firstPageTitle);
+        staticMessageSource.addMessage("next-page-title", Locale.ENGLISH, nextPageTitle);
+        staticMessageSource.addMessage("last-page-title", Locale.ENGLISH, lastPageTitle);
+        staticMessageSource.addMessage("error-message-key", Locale.ENGLISH, errorMessage);
+        staticMessageSource.addMessage("money-error-message-key", Locale.ENGLISH, moneyErrorMessageKey);
+        staticMessageSource.addMessage("not-blank-error-message-key ", Locale.ENGLISH, "not blank is error");
+        staticMessageSource.addMessage("zip-code-page-title", Locale.ENGLISH, zipcodePageTitle);
+        staticMessageSource.addMessage("state-page-title", Locale.ENGLISH, statePageTitle);
+        staticMessageSource.addMessage("phone-page-title", Locale.ENGLISH, phonePageTitle);
+        staticMessageSource.addMessage("money-page-title", Locale.ENGLISH, moneyPageTitle);
+        staticMessageSource.addMessage("ssn-page-title", Locale.ENGLISH, ssnPageTitle);
+        staticMessageSource.addMessage("date-page-title", Locale.ENGLISH, datePageTitle);
+        staticMessageSource.addMessage("not-blank-page-title", Locale.ENGLISH, notBlankPageTitle);
+        staticMessageSource.addMessage("checkbox-page-title", Locale.ENGLISH, checkboxPageTitle);
+        staticMessageSource.addMessage("option-1", Locale.ENGLISH, option1);
+        staticMessageSource.addMessage("option-2", Locale.ENGLISH, "option-2");
+        staticMessageSource.addMessage("page-with-input-with-multiple-validations", Locale.ENGLISH, multipleValidationsPageTitle);
     }
 
     @Test

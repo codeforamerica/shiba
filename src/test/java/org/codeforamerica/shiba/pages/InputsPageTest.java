@@ -40,21 +40,21 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
     @BeforeEach
     protected void setUp() throws IOException {
         super.setUp();
-        staticMessageSource.addMessage("first-page-title", Locale.US, "firstPageTitle");
-        staticMessageSource.addMessage("next-page-title", Locale.US, "nextPageTitle");
-        staticMessageSource.addMessage("radio-option-1", Locale.US, radioOption1);
-        staticMessageSource.addMessage("radio-option-2", Locale.US, radioOption2);
-        staticMessageSource.addMessage("checkbox-option-1", Locale.US, checkboxOption1);
-        staticMessageSource.addMessage("checkbox-option-2", Locale.US, checkboxOption2);
-        staticMessageSource.addMessage("none-checkbox-option", Locale.US, noneCheckboxOption);
-        staticMessageSource.addMessage("select-option-1", Locale.US, selectOption1);
-        staticMessageSource.addMessage("select-option-2", Locale.US, selectOption2);
-        staticMessageSource.addMessage("follow-up-true", Locale.US, followUpTrue);
-        staticMessageSource.addMessage("follow-up-false", Locale.US, followUpFalse);
-        staticMessageSource.addMessage("follow-up-uncertain", Locale.US, followUpUncertain);
-        staticMessageSource.addMessage("prompt-message-key", Locale.US, promptMessage);
-        staticMessageSource.addMessage("help-message-key", Locale.US, helpMessage);
-        staticMessageSource.addMessage("option-help-key", Locale.US, optionHelpMessage);
+        staticMessageSource.addMessage("first-page-title", Locale.ENGLISH, "firstPageTitle");
+        staticMessageSource.addMessage("next-page-title", Locale.ENGLISH, "nextPageTitle");
+        staticMessageSource.addMessage("radio-option-1", Locale.ENGLISH, radioOption1);
+        staticMessageSource.addMessage("radio-option-2", Locale.ENGLISH, radioOption2);
+        staticMessageSource.addMessage("checkbox-option-1", Locale.ENGLISH, checkboxOption1);
+        staticMessageSource.addMessage("checkbox-option-2", Locale.ENGLISH, checkboxOption2);
+        staticMessageSource.addMessage("none-checkbox-option", Locale.ENGLISH, noneCheckboxOption);
+        staticMessageSource.addMessage("select-option-1", Locale.ENGLISH, selectOption1);
+        staticMessageSource.addMessage("select-option-2", Locale.ENGLISH, selectOption2);
+        staticMessageSource.addMessage("follow-up-true", Locale.ENGLISH, followUpTrue);
+        staticMessageSource.addMessage("follow-up-false", Locale.ENGLISH, followUpFalse);
+        staticMessageSource.addMessage("follow-up-uncertain", Locale.ENGLISH, followUpUncertain);
+        staticMessageSource.addMessage("prompt-message-key", Locale.ENGLISH, promptMessage);
+        staticMessageSource.addMessage("help-message-key", Locale.ENGLISH, helpMessage);
+        staticMessageSource.addMessage("option-help-key", Locale.ENGLISH, optionHelpMessage);
     }
 
     @Test

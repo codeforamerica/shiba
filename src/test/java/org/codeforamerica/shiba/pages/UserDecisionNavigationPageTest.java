@@ -46,9 +46,9 @@ public class UserDecisionNavigationPageTest extends AbstractExistingStartTimePag
     @BeforeEach
     protected void setUp() throws IOException {
         super.setUp();
-        staticMessageSource.addMessage("option-zero-page-title", Locale.US, optionZeroPageTitle);
-        staticMessageSource.addMessage("option-one-page-title", Locale.US, optionOnePageTitle);
-        staticMessageSource.addMessage("yes-answer-title", Locale.US, yesAnswerTitle);
+        staticMessageSource.addMessage("option-zero-page-title", Locale.ENGLISH, optionZeroPageTitle);
+        staticMessageSource.addMessage("option-one-page-title", Locale.ENGLISH, optionOnePageTitle);
+        staticMessageSource.addMessage("yes-answer-title", Locale.ENGLISH, yesAnswerTitle);
     }
 
     @Test
