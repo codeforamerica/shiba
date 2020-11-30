@@ -408,11 +408,11 @@ input[type=number] {
 }
 
 /* Branding Phase 2 Link styles */
-a:not(.button), .button--link, .button--link:focus, a:not(.button):focus {
+a:not(.button):not(.reveal__link), .button--link, .button--link:focus, a:not(.button):not(.reveal__link):focus {
     color: #003865;
 }
 
-a:not(.button):hover, .button--link:hover, .button--link:active, a:not(.button):active  {
+a:not(.button):not(.reveal__link):hover, .button--link:hover, .button--link:active, a:not(.button):not(.reveal__link):active  {
     color: #741078;
 }
 
