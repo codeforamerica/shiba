@@ -27,6 +27,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
+import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -505,6 +506,24 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         assertThat(getPdfFieldText(pdAcroForm, "GROSS_MONTHLY_INCOME_0")).isEqualTo("123.0");
         assertThat(getPdfFieldText(pdAcroForm, "MONEY_MADE_LAST_MONTH")).isEqualTo("123.0");
         assertThat(getPdfFieldText(pdAcroForm, "EXPEDITED_ELIGIBILITY")).isEqualTo("Expedited");
+    }
+
+    @Test
+    void shouldAddAuthorizedRepFieldsIfYes() {
+        navigateTo("authorizedRep");
+        testPage.enter("communicateOnYourBehalf", YES.getDisplayValue());
+
+        PDAcroForm pdAcroForm = submitAndDownloadReceipt();
+        assertThat(getPdfFieldText(pdAcroForm, "AUTHORIZED_REP_FILL_OUT_FORM")).isEqualTo("Yes");
+    }
+
+    @Test
+    void shouldNotAddAuthorizedRepFieldsIfNo() {
+        navigateTo("authorizedRep");
+        testPage.enter("communicateOnYourBehalf", NO.getDisplayValue());
+
+        PDAcroForm pdAcroForm = submitAndDownloadReceipt();
+        assertThat(getPdfFieldText(pdAcroForm, "AUTHORIZED_REP_FILL_OUT_FORM")).isEqualTo("Off");
     }
 
     private void addHouseholdMembers() {

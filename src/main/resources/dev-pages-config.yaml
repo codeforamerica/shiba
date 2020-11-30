@@ -1768,6 +1768,18 @@ pageDefinitions:
     pageTitle:
       value: helper.title
     hasPrimaryButton: false
+  - &authorizedRep
+    name: authorizedRep
+    headerKey:
+      value: authorized-rep.do-you-want-your-helper-to-communicate-with-the-county-on-your-behalf
+    inputs:
+      - name: communicateOnYourBehalf
+        type: YES_NO
+        promptMessage:
+          promptMessageFragmentName: authorizedRepPrompt
+    pageTitle:
+      value: authorized-rep.title
+    hasPrimaryButton: false
 workflow:
   landing:
     pageConfiguration: *landing
@@ -2257,6 +2269,17 @@ workflow:
       - pageName: helper
   helper:
     pageConfiguration: *helper
+    nextPages:
+      - pageName: importantToKnow
+        condition:
+          input: helpWithBenefits
+          value: "false"
+      - pageName: authorizedRep
+        condition:
+          input: helpWithBenefits
+          value: "true"
+  authorizedRep:
+    pageConfiguration: *authorizedRep
     nextPages:
       - pageName: importantToKnow
   ccapJob:

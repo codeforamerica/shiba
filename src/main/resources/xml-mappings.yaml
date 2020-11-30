@@ -125,6 +125,8 @@ xml:
       haveVehicle: HAVE_VEHICLE
     soldAssets:
       haveSoldAssets: HAVE_SOLD_ASSETS
+    authorizedRep:
+      authorizedRepFillForm: AUTHORIZED_REP_FILL_OUT_FORM_XML
     employersName:
       employersName: EMPLOYERS_NAME
     hoursAWeek:

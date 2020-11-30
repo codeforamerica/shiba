@@ -372,6 +372,11 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     private void completeHelperWorkflow() {
-        testPage.enter("helpWithBenefits", YES.getDisplayValue());
+        if (new Random().nextBoolean()) {
+            testPage.enter("helpWithBenefits", YES.getDisplayValue());
+            testPage.enter("communicateOnYourBehalf", YES.getDisplayValue());
+        } else {
+            testPage.enter("helpWithBenefits", NO.getDisplayValue());
+        }
     }
 }

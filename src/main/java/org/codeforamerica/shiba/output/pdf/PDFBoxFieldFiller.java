@@ -6,6 +6,7 @@ import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
+import org.apache.pdfbox.pdmodel.interactive.form.PDCheckBox;
 import org.apache.pdfbox.pdmodel.interactive.form.PDVariableText;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.jetbrains.annotations.NotNull;
@@ -92,7 +93,11 @@ public class PDFBoxFieldFiller implements PdfFieldFiller {
                         if (pdField instanceof PDVariableText) {
                             ((PDVariableText) pdField).setDefaultAppearance("/" + fontName + " 10 Tf 0 g");
                         }
-                        pdField.setValue(field.getValue());
+                        String fieldValue = field.getValue();
+                        if (pdField instanceof PDCheckBox && field.getValue().equals("No")) {
+                            fieldValue = "Off";
+                        }
+                        pdField.setValue(fieldValue);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

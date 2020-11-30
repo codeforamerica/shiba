@@ -1073,3 +1073,14 @@ derived-values:
             - pageName: homeAddressValidation
               input: useEnrichedAddress
               value: "false"
+  - groupName: authorizedRep
+    fieldName: authorizedRepFillForm
+    values:
+      - type: SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "Fill out forms and apply for help on my behalf"
+        condition:
+          conditions:
+            - pageName: authorizedRep
+              input: communicateOnYourBehalf
+              value: "true"

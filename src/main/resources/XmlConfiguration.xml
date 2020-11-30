@@ -327,6 +327,7 @@
                 <ns4:Name>{{NO_EXPEDITED_UTILITIES_SELECTED}}</ns4:Name>
             </ns4:UtilityPaymentsFor>
         </ns4:ExpeditedFSInfo>
+        <ns4:RepresentativeRole>{{AUTHORIZED_REP_FILL_OUT_FORM_XML}}</ns4:RepresentativeRole>
         <ns4:HouseholdExpenseInfo>
             <ns4:LIHEAPInd>{{RECEIVED_LIHEAP}}</ns4:LIHEAPInd>
         </ns4:HouseholdExpenseInfo>
