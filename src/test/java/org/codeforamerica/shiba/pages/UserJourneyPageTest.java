@@ -334,6 +334,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.enter("haveSoldAssets", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.enter("registerToVote", "Yes, send me more info");
+        completeHelperWorkflow();
         testPage.clickContinue();
         testPage.enter("agreeToTerms", "I agree");
         testPage.clickContinue();
@@ -366,5 +367,9 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.goBack();
         testPage.clickButton("No, I'd rather keep going");
         testPage.clickButton("No, that's it.");
+    }
+
+    private void completeHelperWorkflow() {
+        testPage.enter("helpWithBenefits", YES.getDisplayValue());
     }
 }

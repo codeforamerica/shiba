@@ -1759,6 +1759,16 @@ shiba-configuration:
       pageTitle:
         value: register-to-vote.title
       hasPrimaryButton: false
+    - &helper
+      name: helper
+      headerKey:
+        value: helper.do-you-want-to-designate-someone-to-help-with-your-benefits
+      inputs:
+        - name: helpWithBenefits
+          type: YES_NO
+      pageTitle:
+        value: helper.title
+      hasPrimaryButton: false
   workflow:
     landing:
       pageConfiguration: *landing
@@ -2244,6 +2254,10 @@ shiba-configuration:
         - pageName: registerToVote
     registerToVote:
       pageConfiguration: *registerToVote
+      nextPages:
+        - pageName: helper
+    helper:
+      pageConfiguration: *helper
       nextPages:
         - pageName: importantToKnow
     ccapJob:
