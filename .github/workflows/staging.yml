@@ -43,7 +43,7 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Test with Gradle
-      run: ./gradlew clean test
+      run: ./gradlew clean testAll
     - name: Announce test failure on slack
       if: ${{ failure() }}
       uses: innocarpe/actions-slack@v1
