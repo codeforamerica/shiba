@@ -8,6 +8,7 @@ import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.pages.enrichment.smartystreets.SmartyStreetClient;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -38,6 +39,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
         "spring.main.allow-bean-definition-overriding=true",
         "pagesConfig=release-pages-config.yaml"
 })
+@Tag("integration")
 public class ReleaseUserJourneyPageTest extends AbstractBasePageTest {
 
     @MockBean

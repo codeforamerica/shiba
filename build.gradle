@@ -108,14 +108,42 @@ dependencies {
 
 compileJava.inputs.files(processResources)
 
-test {
-    doFirst {
-        file('.env.test').readLines().each() {
-            def (key, value) = it.split('=', 2)
-            environment(key, value)
+def unitTest = tasks.register("unitTest", Test) {
+    Test task ->
+        task.useJUnitPlatform {
+            org.gradle.api.tasks.testing.junitplatform.JUnitPlatformOptions options ->
+                options.excludeTags 'integration'
         }
-    }
+        task.maxParallelForks(Runtime.runtime.availableProcessors().intdiv(2) ?: 1)
+}
+
+def integrationTest = tasks.register("integrationTest", Test) {
+    Test task ->
+        task.useJUnitPlatform {
+            org.gradle.api.tasks.testing.junitplatform.JUnitPlatformOptions options ->
+                options.includeTags 'integration'
+        }
+        task.shouldRunAfter test
+}
+
+def testAll = tasks.register("testAll", Test) {
+    Test task ->
+        task.dependsOn(unitTest)
+        task.dependsOn(integrationTest)
+}
+
+test {
     useJUnitPlatform()
+}
+
+tasks.withType(Test).configureEach {
+    Test task ->
+        task.doFirst {
+            file('.env.test').readLines().each() {
+                def (key, value) = it.split('=', 2)
+                environment(key, value)
+            }
+        }
 }
 
 licenseReport {

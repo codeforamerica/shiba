@@ -9,6 +9,7 @@ import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.pages.enrichment.LocationClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -29,6 +30,7 @@ import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+@Tag("integration")
 public class PdfIntegrationTest extends AbstractBasePageTest {
     @MockBean
     Clock clock;

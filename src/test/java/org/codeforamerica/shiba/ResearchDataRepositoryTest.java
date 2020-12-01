@@ -3,6 +3,7 @@ package org.codeforamerica.shiba;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.research.ResearchData;
 import org.codeforamerica.shiba.research.ResearchDataRepository;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @Sql(statements = {"TRUNCATE TABLE research"})
+@Tag("integration")
 class ResearchDataRepositoryTest {
     @Autowired
     ResearchDataRepository researchDataRepository;
