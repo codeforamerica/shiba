@@ -65,7 +65,7 @@
     padding: 0 2rem;
 }
 
-.slab--shiba {
+.slab--shiba, body:not(#landing-page) {
     background-color: #E9F6FF;
 }
 
@@ -416,11 +416,17 @@ input[type=number] {
 }
 
 /* Branding Phase 2 Link styles */
-a:not(.button):not(.reveal__link), .button--link, .button--link:focus, a:not(.button):not(.reveal__link):focus {
+.slab a:not(.button):not(.reveal__link),
+.slab a:not(.button):not(.reveal__link):focus,
+.button--link,
+.button--link:focus {
     color: #003865;
 }
 
-a:not(.button):not(.reveal__link):hover, .button--link:hover, .button--link:active, a:not(.button):not(.reveal__link):active  {
+.slab a:not(.button):not(.reveal__link):hover,
+.slab a:not(.button):not(.reveal__link):active,
+.button--link:hover,
+.button--link:active {
     color: #741078;
 }
 
