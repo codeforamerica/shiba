@@ -9,8 +9,7 @@ import org.springframework.core.io.Resource;
 import java.util.List;
 import java.util.Map;
 
-import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
-import static org.codeforamerica.shiba.output.Recipient.CLIENT;
+import static org.codeforamerica.shiba.output.Recipient.*;
 
 @Configuration
 public class PdfFieldFillersConfiguration {
@@ -37,13 +36,26 @@ public class PdfFieldFillersConfiguration {
     }
 
     @Bean
+    public PdfFieldFiller ccapFiller(
+            @Value("classpath:cover-pages.pdf") Resource coverPages,
+            @Value("classpath:ccap-cover.pdf") Resource ccapCover,
+            @Value("classpath:LiberationSans-Regular.ttf") Resource font
+    ) {
+        return new PDFBoxFieldFiller(List.of(
+                coverPages, ccapCover
+        ), font);
+    }
+
+    @Bean
     public Map<Recipient, PdfFieldFiller> pdfFieldFillers(
             PdfFieldFiller caseWorkerFiller,
-            PdfFieldFiller clientFiller
+            PdfFieldFiller clientFiller,
+            PdfFieldFiller ccapFiller
     ) {
         return Map.of(
                 CASEWORKER, caseWorkerFiller,
-                CLIENT, clientFiller
+                CLIENT, clientFiller,
+                CCAP, ccapFiller
         );
     }
 }

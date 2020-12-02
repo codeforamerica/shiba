@@ -18,8 +18,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
-import static org.codeforamerica.shiba.output.Recipient.CLIENT;
+import static org.codeforamerica.shiba.output.Recipient.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -65,6 +64,17 @@ class FileDownLoadControllerTest {
                 .andExpect(status().is2xxSuccessful());
 
         verify(pdfGenerator).generate("9870000123", CASEWORKER);
+    }
+
+    @Test
+    void shouldAcceptApplicationIdToGenerateCCAPPdfFile() throws Exception {
+        when(pdfGenerator.generate(any(), any())).thenReturn(new ApplicationFile("".getBytes(), ""));
+
+        mockMvc.perform(
+                get("/download-ccap/9870000123"))
+                .andExpect(status().is2xxSuccessful());
+
+        verify(pdfGenerator).generate("9870000123", CCAP);
     }
 
     @ParameterizedTest

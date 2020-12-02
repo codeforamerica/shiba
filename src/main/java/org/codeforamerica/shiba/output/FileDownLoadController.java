@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
-import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
-import static org.codeforamerica.shiba.output.Recipient.CLIENT;
+import static org.codeforamerica.shiba.output.Recipient.*;
 
 @Controller
 @Slf4j
@@ -67,6 +66,24 @@ public class FileDownLoadController {
 
         applicationEventPublisher.publishEvent(new DownloadCafEvent(applicationId, requestIp));
         ApplicationFile applicationFile = pdfGenerator.generate(applicationId, CASEWORKER);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", applicationFile.getFileName()))
+                .body(applicationFile.getFileBytes());
+    }
+
+    @GetMapping("/download-ccap/{applicationId}")
+    ResponseEntity<byte[]> downloadCcapPdfWithApplicationId(
+            @PathVariable String applicationId,
+            HttpServletRequest request
+    ) {
+        String requestIpHeader = Optional.ofNullable(request.getHeader("X-FORWARDED-FOR")).orElse("");
+        String[] ipAddresses = requestIpHeader.split(",");
+        String requestIp = ipAddresses.length > 1 ? ipAddresses[ipAddresses.length - 2].trim() : "<blank>";
+
+//        applicationEventPublisher.publishEvent(new DownloadCafEvent(applicationId, requestIp));
+        ApplicationFile applicationFile = pdfGenerator.generate(applicationId, CCAP);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
