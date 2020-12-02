@@ -189,7 +189,7 @@ public class ReleaseUserJourneyPageTest extends AbstractBasePageTest {
         testPage.enter("spokenLanguage", "English");
         testPage.enter("needInterpreter", "Yes");
         testPage.clickContinue();
-        testPage.enter("programs", "Emergency assistance");
+        testPage.enter("programs", "Emergency Assistance");
         testPage.clickContinue();
         testPage.clickContinue();
         fillOutPersonalInfo();
@@ -221,7 +221,7 @@ public class ReleaseUserJourneyPageTest extends AbstractBasePageTest {
         testPage.enter("spokenLanguage", "English");
         testPage.enter("needInterpreter", "Yes");
         testPage.clickContinue();
-        testPage.enter("programs", "Emergency assistance");
+        testPage.enter("programs", "Emergency Assistance");
         testPage.clickContinue();
         testPage.clickContinue();
 
@@ -352,7 +352,7 @@ public class ReleaseUserJourneyPageTest extends AbstractBasePageTest {
 
     private void fillOutHousemateInfo() {
         testPage.enter("relationship", "housemate");
-        testPage.enter("programs", "Emergency assistance");
+        testPage.enter("programs", "Emergency Assistance");
         fillOutPersonInfo(); // need to fill out programs checkbox set above first
         testPage.enter("moveToMnPreviousState", "Illinois");
     }

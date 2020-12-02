@@ -60,12 +60,22 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void userCanCompleteTheNonExpeditedFlow() {
-        nonExpeditedFlowToSuccessPage(false);
+        nonExpeditedFlowToSuccessPage(false, true);
     }
 
     @Test
     void userCanCompleteTheNonExpeditedHouseholdFlow() {
-        nonExpeditedFlowToSuccessPage(true);
+        nonExpeditedFlowToSuccessPage(true, true);
+    }
+
+    @Test
+    void userCanCompleteTheNonExpeditedFlowWithNoEmployment() {
+        nonExpeditedFlowToSuccessPage(false, false);
+    }
+
+    @Test
+    void userCanCompleteTheNonExpeditedHouseholdFlowWithNoEmployment() {
+        nonExpeditedFlowToSuccessPage(true, false);
     }
 
     @ParameterizedTest
@@ -142,7 +152,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     void shouldDownloadPDFWhenClickDownloadMyReceipt() {
         when(clock.instant()).thenReturn(Instant.ofEpochSecond(1243235L));
 
-        SuccessPage successPage = nonExpeditedFlowToSuccessPage(false);
+        SuccessPage successPage = nonExpeditedFlowToSuccessPage(false, true);
 
         successPage.downloadReceipt();
 
@@ -159,7 +169,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
                 LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant(),
                 LocalDateTime.of(2020, 1, 1, 10, 15, 30).atOffset(ZoneOffset.UTC).toInstant()
         );
-        SuccessPage successPage = nonExpeditedFlowToSuccessPage(false);
+        SuccessPage successPage = nonExpeditedFlowToSuccessPage(false, true);
         successPage.chooseSentiment(Sentiment.HAPPY);
         successPage.submitFeedback();
 
@@ -183,7 +193,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.enter("spokenLanguage", "English");
         testPage.enter("needInterpreter", "Yes");
         testPage.clickContinue();
-        testPage.enter("programs", "Emergency assistance");
+        testPage.enter("programs", "Emergency Assistance");
         testPage.clickContinue();
         testPage.clickContinue();
         fillOutPersonalInfo();
@@ -215,7 +225,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.enter("spokenLanguage", "English");
         testPage.enter("needInterpreter", "Yes");
         testPage.clickContinue();
-        testPage.enter("programs", "Emergency assistance");
+        testPage.enter("programs", "Child Care Assistance");
         testPage.clickContinue();
         testPage.clickContinue();
 
@@ -267,7 +277,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.enter("moveToMnPreviousCity", "Chicago");
     }
 
-    private SuccessPage nonExpeditedFlowToSuccessPage(boolean hasHousehold) {
+    private SuccessPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking) {
         completeFlowFromLandingPageThroughReviewInfo();
         testPage.clickLink("This looks correct");
 
@@ -299,18 +309,30 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.enter("hasDisability", NO.getDisplayValue());
         testPage.enter("hasWorkSituation", NO.getDisplayValue());
         testPage.clickContinue();
-        testPage.enter("areYouWorking", YES.getDisplayValue());
-        testPage.clickButton("Add a job");
 
-        if (hasHousehold) {
-            testPage.enter("whoseJobIsIt", "defaultFirstName defaultLastName");
+        if(isWorking){
+            testPage.enter("areYouWorking", YES.getDisplayValue());
+            testPage.clickButton("Add a job");
+
+            if (hasHousehold) {
+                testPage.enter("whoseJobIsIt", "defaultFirstName defaultLastName");
+                testPage.clickContinue();
+            }
+
+            testPage.enter("employersName", "some employer");
             testPage.clickContinue();
+            testPage.enter("selfEmployment", YES.getDisplayValue());
+            paidByTheHourOrSelectPayPeriod();
+        } else {
+            testPage.enter("areYouWorking", NO.getDisplayValue());
+            testPage.enter("currentlyLookingForJob", YES.getDisplayValue());
+
+            if(hasHousehold) {
+                testPage.enter("whoIsLookingForAJob", "defaultFirstName defaultLastName");
+                testPage.clickContinue();
+            }
         }
 
-        testPage.enter("employersName", "some employer");
-        testPage.clickContinue();
-        testPage.enter("selfEmployment", YES.getDisplayValue());
-        paidByTheHourOrSelectPayPeriod();
         testPage.clickContinue();
         testPage.enter("unearnedIncome", "Social Security");
         testPage.clickContinue();
@@ -348,7 +370,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     private void fillOutHousemateInfo() {
         testPage.enter("relationship", "housemate");
-        testPage.enter("programs", "Emergency assistance");
+        testPage.enter("programs", "Emergency Assistance");
         fillOutPersonInfo(); // need to fill out programs checkbox set above first
         testPage.enter("moveToMnPreviousState", "Illinois");
     }

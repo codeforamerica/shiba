@@ -86,6 +86,10 @@ pageDefinitions:
               messageKey: choose-programs.cash-programs
               helpMessageKey: choose-programs.cash-programs-help
               helpIcon: icon-dollar-circle
+            - value: CCAP
+              messageKey: choose-programs.child-care-assistance
+              helpMessageKey: choose-programs.child-care-assistance-help
+              helpIcon: icon-child-care
             - value: EA
               messageKey: choose-programs.emergency-assistance
               helpMessageKey: choose-programs.emergency-assistance-help
@@ -1042,16 +1046,36 @@ pageDefinitions:
     name: incomeUpNext
     pageTitle:
       value: income-up-next.title
-  - &ccapJob
-    name: ccapJob
+  - &jobSearch
+    name: jobSearch
     pageTitle:
-      value: ccap-job.title
+      value: ccap-job-search.title
     headerKey:
-      value: ccap-job.are-you-currently-looking-for-a-job
+      value: ccap-job-search.are-you-currently-looking-for-a-job
+      conditionalValues:
+        - value: ccap-job-search.is-household-currently-looking-for-a-job
+          condition:
+            pageName: doYouLiveAlone
+            input: liveAlone
+            value: "false"
     hasPrimaryButton: false
     inputs:
       - name: currentlyLookingForJob
         type: YES_NO
+  - &whoIsLookingForAJob
+    name: whoIsLookingForAJob
+    pageTitle:
+      value: who-is-looking-for-job.title
+    headerKey:
+      value: who-is-looking-for-job.who-in-your-household-is-looking-for-a-job
+    inputs:
+      - type: CUSTOM
+        name: whoIsLookingForAJob
+        customInputFragment: householdOptionsCheckboxes
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
   - &unearnedIncome
     name: unearnedIncome
     pageTitle:
@@ -2004,7 +2028,7 @@ workflow:
     datasources:
       - pageName: doYouLiveAlone
     nextPages:
-      - pageName: ccapJob
+      - pageName: jobSearch
         condition:
           input: areYouWorking
           value: "false"
@@ -2298,8 +2322,8 @@ workflow:
     pageConfiguration: *speakToCounty
     nextPages:
       - pageName: importantToKnow
-  ccapJob:
-    pageConfiguration: *ccapJob
+  jobSearch:
+    pageConfiguration: *jobSearch
     skipCondition:
       conditions:
         - pageName: choosePrograms
@@ -2307,9 +2331,26 @@ workflow:
           input: programs
           matcher: DOES_NOT_CONTAIN
     nextPages:
-      - pageName: incomeUpNext
+      - pageName: whoIsLookingForAJob
     datasources:
       - pageName: choosePrograms
+      - pageName: doYouLiveAlone
+  whoIsLookingForAJob:
+    pageConfiguration: *whoIsLookingForAJob
+    nextPages:
+      - pageName: incomeUpNext
+    datasources:
+      - pageName: doYouLiveAlone
+      - pageName: jobSearch
+    skipCondition:
+      logicalOperator: OR
+      conditions:
+        - pageName: doYouLiveAlone
+          input: liveAlone
+          value: "true"
+        - pageName: jobSearch
+          input: currentlyLookingForJob
+          value: "false"
   doYouNeedHelpImmediately:
     pageConfiguration: *doYouNeedHelpImmediately
     nextPages:

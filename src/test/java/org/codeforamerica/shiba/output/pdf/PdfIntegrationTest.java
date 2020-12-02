@@ -374,7 +374,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         testPage.enter("programs", "Food (SNAP)");
         testPage.enter("programs", "Cash programs");
         testPage.enter("programs", "Housing Support");
-        testPage.enter("programs", "Emergency assistance");
+        testPage.enter("programs", "Emergency Assistance");
         testPage.clickContinue();
 
         PDAcroForm pdAcroForm = submitAndDownloadReceipt();
