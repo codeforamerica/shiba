@@ -18,6 +18,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import static org.codeforamerica.shiba.output.DocumentType.CAF;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 
@@ -73,7 +74,7 @@ public class ApplicationSubmittedListener {
         emailParser.parse(application.getApplicationData())
                 .ifPresent(email -> {
                     String applicationId = application.getId();
-                    ApplicationFile pdf = pdfGenerator.generate(applicationId, CLIENT);
+                    ApplicationFile pdf = pdfGenerator.generate(applicationId, CAF, CLIENT);
                     ExpeditedEligibility expeditedEligibility = expeditedEligibilityDecider.decide(application.getApplicationData());
                     emailClient.sendConfirmationEmail(email, applicationId, expeditedEligibility, pdf, event.getLocale());
                 });
@@ -89,7 +90,7 @@ public class ApplicationSubmittedListener {
         Application application = applicationRepository.find(event.getApplicationId());
         PageData personalInfo = application.getApplicationData().getPageData("personalInfo");
         String applicationId = application.getId();
-        ApplicationFile pdf = pdfGenerator.generate(applicationId, CASEWORKER);
+        ApplicationFile pdf = pdfGenerator.generate(applicationId, CAF, CASEWORKER);
 
         String fullName = String.join(" ", personalInfo.get("firstName").getValue(0), personalInfo.get("lastName").getValue(0));
         emailClient.sendCaseWorkerEmail(countyMap.get(application.getCounty()).getEmail(), fullName, applicationId, pdf);

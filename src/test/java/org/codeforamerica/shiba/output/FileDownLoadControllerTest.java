@@ -18,8 +18,9 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
-import static org.codeforamerica.shiba.output.Recipient.CLIENT;
+import static org.codeforamerica.shiba.output.DocumentType.CAF;
+import static org.codeforamerica.shiba.output.DocumentType.CCAP;
+import static org.codeforamerica.shiba.output.Recipient.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -47,24 +48,35 @@ class FileDownLoadControllerTest {
 
     @Test
     void shouldPassScreensToServiceToGeneratePdfFile() throws Exception {
-        when(pdfGenerator.generate(any(), any())).thenReturn(new ApplicationFile("".getBytes(), ""));
+        when(pdfGenerator.generate(any(), any(), any())).thenReturn(new ApplicationFile("".getBytes(), ""));
 
         mockMvc.perform(
                 get("/download"))
                 .andExpect(status().is2xxSuccessful());
 
-        verify(pdfGenerator).generate(applicationData.getId(), CLIENT);
+        verify(pdfGenerator).generate(applicationData.getId(), CAF, CLIENT);
     }
 
     @Test
     void shouldAcceptApplicationIdToGeneratePdfFile() throws Exception {
-        when(pdfGenerator.generate(any(), any())).thenReturn(new ApplicationFile("".getBytes(), ""));
+        when(pdfGenerator.generate(any(), any(), any())).thenReturn(new ApplicationFile("".getBytes(), ""));
 
         mockMvc.perform(
                 get("/download-caf/9870000123"))
                 .andExpect(status().is2xxSuccessful());
 
-        verify(pdfGenerator).generate("9870000123", CASEWORKER);
+        verify(pdfGenerator).generate("9870000123", CAF, CASEWORKER);
+    }
+
+    @Test
+    void shouldAcceptApplicationIdToGenerateCCAPPdfFile() throws Exception {
+        when(pdfGenerator.generate(any(), any(), any())).thenReturn(new ApplicationFile("".getBytes(), ""));
+
+        mockMvc.perform(
+                get("/download-ccap/9870000123"))
+                .andExpect(status().is2xxSuccessful());
+
+        verify(pdfGenerator).generate("9870000123", CCAP, CASEWORKER);
     }
 
     @ParameterizedTest
@@ -72,7 +84,7 @@ class FileDownLoadControllerTest {
     void shouldPublishEventWhenDownloadCafIsInvoked(
             String expectedIp, String requestHeader
     ) throws Exception {
-        when(pdfGenerator.generate(any(), any())).thenReturn(new ApplicationFile("".getBytes(), ""));
+        when(pdfGenerator.generate(any(), any(), any())).thenReturn(new ApplicationFile("".getBytes(), ""));
 
         String confirmationNumber = "9870000123";
         mockMvc.perform(
@@ -97,7 +109,7 @@ class FileDownLoadControllerTest {
 
     @Test
     void shouldReturnBlankIpWhenRequestHeaderIsNull() throws Exception {
-        when(pdfGenerator.generate(any(), any())).thenReturn(new ApplicationFile("".getBytes(), ""));
+        when(pdfGenerator.generate(any(), any(), any())).thenReturn(new ApplicationFile("".getBytes(), ""));
 
         String confirmationNumber = "9870000123";
         mockMvc.perform(
@@ -113,7 +125,7 @@ class FileDownLoadControllerTest {
         byte[] pdfBytes = "here is the pdf".getBytes();
         String fileName = "filename.pdf";
         ApplicationFile applicationFile = new ApplicationFile(pdfBytes, fileName);
-        when(pdfGenerator.generate(any(), any())).thenReturn(applicationFile);
+        when(pdfGenerator.generate(any(), any(), any())).thenReturn(applicationFile);
 
         MvcResult result = mockMvc.perform(
                 get("/download"))
@@ -129,7 +141,7 @@ class FileDownLoadControllerTest {
     void shouldGenerateXMLForTheApplication() throws Exception {
         byte[] fileBytes = "some file content".getBytes();
         String fileName = "some.xml";
-        when(xmlGenerator.generate(any(), any())).thenReturn(new ApplicationFile(fileBytes, fileName));
+        when(xmlGenerator.generate(any(), any(), any())).thenReturn(new ApplicationFile(fileBytes, fileName));
 
         MvcResult result = mockMvc.perform(
                 get("/download-xml"))
@@ -138,7 +150,7 @@ class FileDownLoadControllerTest {
                 .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", fileName)))
                 .andReturn();
 
-        verify(xmlGenerator).generate(applicationData.getId(), CLIENT);
+        verify(xmlGenerator).generate(applicationData.getId(), CAF, CLIENT);
         assertThat(result.getResponse().getContentAsByteArray()).isEqualTo(fileBytes);
     }
 }

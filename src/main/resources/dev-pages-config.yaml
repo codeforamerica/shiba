@@ -2367,6 +2367,15 @@ pageGroups:
     redirectPage: jobRedirectPage
     deleteWarningPage: jobDeleteWarningPage
     restartPage: incomeByJob
+    addedScope:
+      selfEmployment:
+        pageName: selfEmployment
+        input: selfEmployment
+        value: "true"
+      nonSelfEmployment:
+        pageName: selfEmployment
+        input: selfEmployment
+        value: "false"
   household:
     startPages:
       - householdMemberInfo

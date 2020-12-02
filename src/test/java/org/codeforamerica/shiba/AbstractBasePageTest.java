@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.pages.Page;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -21,7 +22,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Optional;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
@@ -65,6 +68,16 @@ public abstract class AbstractBasePageTest {
 
     protected void navigateTo(String pageName) {
         driver.navigate().to(baseUrl + "/pages/" + pageName);
+    }
+
+    protected String getPdfFieldText(PDAcroForm pdAcroForm, String fieldName) {
+        return pdAcroForm.getField(fieldName).getValueAsString();
+    }
+
+    protected Optional<File> getCafFile() {
+        return Arrays.stream(path.toFile().listFiles())
+                .filter(file -> file.getName().contains("_CAF_") && file.getName().endsWith(".pdf"))
+                .findFirst();
     }
 
     @SuppressWarnings("unused")

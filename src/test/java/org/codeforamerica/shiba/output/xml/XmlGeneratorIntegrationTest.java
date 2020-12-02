@@ -4,6 +4,7 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.output.ApplicationFile;
+import org.codeforamerica.shiba.output.DocumentType;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.FormInput;
@@ -118,7 +119,7 @@ public class XmlGeneratorIntegrationTest {
                 .timeToComplete(Duration.ofSeconds(534))
                 .build();
         applicationRepository.save(application);
-        ApplicationFile applicationFile = xmlGenerator.generate(applicationId, CASEWORKER);
+        ApplicationFile applicationFile = xmlGenerator.generate(applicationId, DocumentType.NONE, CASEWORKER);
 
         Node document = byteArrayToDocument(applicationFile.getFileBytes());
 

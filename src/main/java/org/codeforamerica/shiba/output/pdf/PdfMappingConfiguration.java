@@ -15,13 +15,13 @@ import java.util.Map;
 public class PdfMappingConfiguration {
 
     @Bean
-    @ConfigurationProperties(prefix = "caf.mappings")
+    @ConfigurationProperties(prefix = "mappings")
     public Map<String, List<String>> pdfFieldMap() {
         return new HashMap<>();
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "caf.enums")
+    @ConfigurationProperties(prefix = "enums")
     public Map<String, String> enumMap() {
         return new HashMap<>();
     }

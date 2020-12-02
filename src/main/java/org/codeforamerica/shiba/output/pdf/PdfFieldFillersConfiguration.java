@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output.pdf;
 
+import org.codeforamerica.shiba.output.DocumentType;
 import org.codeforamerica.shiba.output.Recipient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -9,13 +10,15 @@ import org.springframework.core.io.Resource;
 import java.util.List;
 import java.util.Map;
 
+import static org.codeforamerica.shiba.output.DocumentType.CAF;
+import static org.codeforamerica.shiba.output.DocumentType.CCAP;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 
 @Configuration
 public class PdfFieldFillersConfiguration {
     @Bean
-    public PdfFieldFiller caseWorkerFiller(
+    public PdfFieldFiller caseworkerCafFiller(
             @Value("classpath:cover-pages.pdf") Resource coverPages,
             @Value("classpath:caf-body.pdf") Resource cafBody,
             @Value("classpath:LiberationSans-Regular.ttf") Resource font
@@ -24,7 +27,7 @@ public class PdfFieldFillersConfiguration {
     }
 
     @Bean
-    public PdfFieldFiller clientFiller(
+    public PdfFieldFiller clientCafFiller(
             @Value("classpath:cover-pages.pdf") Resource coverPages,
             @Value("classpath:caf-standard-headers.pdf") Resource standardHeaders,
             @Value("classpath:caf-body.pdf") Resource cafBody,
@@ -37,13 +40,30 @@ public class PdfFieldFillersConfiguration {
     }
 
     @Bean
-    public Map<Recipient, PdfFieldFiller> pdfFieldFillers(
-            PdfFieldFiller caseWorkerFiller,
-            PdfFieldFiller clientFiller
+    public PdfFieldFiller ccapFiller(
+            @Value("classpath:cover-pages.pdf") Resource coverPages,
+            @Value("classpath:ccap-body.pdf") Resource ccapBody,
+            @Value("classpath:ccap-footers.pdf") Resource ccapFooters,
+            @Value("classpath:LiberationSans-Regular.ttf") Resource font
+    ) {
+        return new PDFBoxFieldFiller(List.of(
+                coverPages, ccapBody, ccapFooters
+        ), font);
+    }
+
+    @Bean
+    public Map<Recipient, Map<DocumentType, PdfFieldFiller>> pdfFieldFillers(
+            PdfFieldFiller caseworkerCafFiller,
+            PdfFieldFiller clientCafFiller,
+            PdfFieldFiller ccapFiller
     ) {
         return Map.of(
-                CASEWORKER, caseWorkerFiller,
-                CLIENT, clientFiller
+                CASEWORKER, Map.of(
+                        CAF, caseworkerCafFiller,
+                        CCAP, ccapFiller),
+                CLIENT, Map.of(
+                        CAF, clientCafFiller,
+                        CCAP, ccapFiller)
         );
     }
 }

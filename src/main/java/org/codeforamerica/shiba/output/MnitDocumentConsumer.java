@@ -7,6 +7,7 @@ import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.springframework.stereotype.Component;
 
+import static org.codeforamerica.shiba.output.DocumentType.CAF;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
 @Component
@@ -28,7 +29,7 @@ public class MnitDocumentConsumer {
         Sentry.configureScope(scope -> {
             scope.setContexts("applicationId", application.getId());
         });
-        mnitClient.send(pdfGenerator.generate(application.getId(), CASEWORKER), application.getCounty());
-        mnitClient.send(xmlGenerator.generate(application.getId(), CASEWORKER), application.getCounty());
+        mnitClient.send(pdfGenerator.generate(application.getId(), CAF, CASEWORKER), application.getCounty());
+        mnitClient.send(xmlGenerator.generate(application.getId(), CAF, CASEWORKER), application.getCounty());
     }
 }

@@ -2,10 +2,7 @@ package org.codeforamerica.shiba.output.pdf;
 
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.output.ApplicationFile;
-import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.ApplicationInputType;
-import org.codeforamerica.shiba.output.Recipient;
+import org.codeforamerica.shiba.output.*;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,9 +23,10 @@ class PdfGeneratorTest {
     PdfFieldMapper pdfFieldMapper = mock(PdfFieldMapper.class);
     PdfFieldFiller caseworkerFiller = mock(PdfFieldFiller.class);
     PdfFieldFiller clientFiller = mock(PdfFieldFiller.class);
-    Map<Recipient, PdfFieldFiller> pdfFieldFillers = Map.of(
-            CASEWORKER, caseworkerFiller,
-            CLIENT, clientFiller
+    PdfFieldFiller ccapFiller = mock(PdfFieldFiller.class);
+    Map<Recipient, Map<DocumentType, PdfFieldFiller>> pdfFieldFillers = Map.of(
+            CASEWORKER, Map.of(DocumentType.CAF, caseworkerFiller, DocumentType.CCAP, ccapFiller),
+            CLIENT, Map.of(DocumentType.CAF, clientFiller, DocumentType.CCAP, ccapFiller)
     );
     ApplicationInputsMappers mappers = mock(ApplicationInputsMappers.class);
     ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
@@ -58,7 +56,7 @@ class PdfGeneratorTest {
                 .timeToComplete(null)
                 .build();
         String fileName = "some file name";
-        when(fileNameGenerator.generateFileName(application)).thenReturn(fileName);
+        when(fileNameGenerator.generateFileName(application, DocumentType.CAF)).thenReturn(fileName);
         when(applicationRepository.find(applicationId)).thenReturn(application);
         Recipient recipient = CASEWORKER;
         when(mappers.map(application, recipient)).thenReturn(applicationInputs);
@@ -67,7 +65,7 @@ class PdfGeneratorTest {
         when(caseworkerFiller.fill(pdfFields, applicationId, fileName))
                 .thenReturn(expectedApplicationFile);
 
-        ApplicationFile actualApplicationFile = pdfGenerator.generate(applicationId, recipient);
+        ApplicationFile actualApplicationFile = pdfGenerator.generate(applicationId, DocumentType.CAF, recipient);
 
         assertThat(actualApplicationFile).isEqualTo(expectedApplicationFile);
     }
@@ -75,8 +73,8 @@ class PdfGeneratorTest {
     @ParameterizedTest
     @EnumSource(Recipient.class)
     void shouldUseFillerRespectToRecipient(Recipient recipient) {
-        pdfGenerator.generate("", recipient);
+        pdfGenerator.generate("", DocumentType.CAF, recipient);
 
-        verify(pdfFieldFillers.get(recipient)).fill(any(), any(), any());
+        verify(pdfFieldFillers.get(recipient).get(DocumentType.CAF)).fill(any(), any(), any());
     }
 }
