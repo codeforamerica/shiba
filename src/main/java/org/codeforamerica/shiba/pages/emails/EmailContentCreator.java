@@ -1,36 +1,66 @@
 package org.codeforamerica.shiba.pages.emails;
 
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
+import static java.util.Optional.ofNullable;
 import static org.codeforamerica.shiba.output.caf.ExpeditedEligibility.ELIGIBLE;
 
 @Component
 public class EmailContentCreator {
+    private final MessageSource messageSource;
+    private final String expeditedWaitTime = "email.expedited-wait-time";
+    private final String nonExpeditedWaitTime = "email.nonexpedited-wait-time";
+    private final String clientBody = "email.client-body";
+    private final String caseworkerBody = "email.caseworker-body";
+    private final String downloadCafAlert = "email.download-caf-alert";
+    private final String nonCountyPartnerAlert = "email.non-county-partner-alert";
+
+    public EmailContentCreator(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
+
     String createClientHTML(String confirmationId, ExpeditedEligibility expeditedEligibility) {
         String eligibilitySpecificVerbiage;
         if (ELIGIBLE == expeditedEligibility) {
-            eligibilitySpecificVerbiage = "Your county will call you in the next 3 days for your phone interview.";
+            eligibilitySpecificVerbiage = getMessage(expeditedWaitTime, null);
         } else {
-            eligibilitySpecificVerbiage = "Your county will mail you a notice that will arrive in the next week.";
+            eligibilitySpecificVerbiage = getMessage(nonExpeditedWaitTime, null);
         }
-        return String.format("We received your Minnesota Benefits application. %s <br><br> Confirmation number: <strong>#%s</strong><br>Application status: <strong>in review</strong><br><br>**This is an automated message. Please do not reply to this message.**", eligibilitySpecificVerbiage, confirmationId);
+        return wrapHtml(getMessage(clientBody, List.of(eligibilitySpecificVerbiage, confirmationId)));
     }
 
     String createCaseworkerHTML() {
-        return "<html><body><p>This application was submitted on behalf of a client.</p><p>Please keep the file pages in the order they appear in the file; intake workers will be looking for the cover page in front of the CAF.</p></body></html>";
+        return wrapHtml(getMessage(caseworkerBody, null));
     }
 
     String createDownloadCafAlertContent(String confirmationId, String ip) {
-        return String.format("The CAF with confirmation number %s was downloaded from IP address %s.", confirmationId, ip);
+        return getMessage(downloadCafAlert, List.of(confirmationId, ip));
     }
 
     public String createNonCountyPartnerAlert(String confirmationId, ZonedDateTime submissionTime) {
         String formattedTime = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm").format(submissionTime.withZoneSameInstant(ZoneId.of("America/Chicago")));
-        return String.format("Application %s was submitted at %s.", confirmationId, formattedTime);
+        return getMessage(nonCountyPartnerAlert, List.of(confirmationId, formattedTime));
     }
+
+    private String getMessage(String expeditedWaitTime, @Nullable List<String> args) {
+        return messageSource.getMessage(
+                expeditedWaitTime,
+                ofNullable(args).map(List::toArray).orElse(null),
+                LocaleContextHolder.getLocale()
+        );
+    }
+
+    private String wrapHtml(String message) {
+        return String.format("<html><body>%s</body><html>", message);
+    }
+
 }

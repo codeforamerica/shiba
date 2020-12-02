@@ -1,31 +1,47 @@
 package org.codeforamerica.shiba.pages.emails;
 
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.StaticMessageSource;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class EmailContentCreatorTest {
-    private final EmailContentCreator emailContentCreator = new EmailContentCreator();
+    private final StaticMessageSource staticMessageSource = new StaticMessageSource();
+    private EmailContentCreator emailContentCreator;
+
+    @BeforeEach
+    void setUp() {
+        LocaleContextHolder.setLocale(Locale.ENGLISH);
+        emailContentCreator = new EmailContentCreator(staticMessageSource);
+        staticMessageSource.addMessage("email.expedited-wait-time", Locale.ENGLISH, "you've been expedited!");
+        staticMessageSource.addMessage("email.nonexpedited-wait-time", Locale.ENGLISH, "not expedited :(");
+        staticMessageSource.addMessage("email.client-body", Locale.ENGLISH, "confirmation email! {0} confirmation number: {1}");
+        staticMessageSource.addMessage("email.download-caf-alert", Locale.ENGLISH, "confirmation number: {0} ip address: {1}.");
+        staticMessageSource.addMessage("email.non-county-partner-alert", Locale.ENGLISH, "Application {0} was submitted at {1}.");
+    }
 
     @Test
     void includesTheConfirmationNumber() {
         String emailContent = emailContentCreator.createClientHTML("someNumber", ExpeditedEligibility.UNDETERMINED);
-
+        System.out.println(emailContent);
         assertThat(emailContent).contains("someNumber");
     }
 
     @ParameterizedTest
     @CsvSource(value = {
-            "ELIGIBLE,Your county will call you in the next 3 days for your phone interview.",
-            "NOT_ELIGIBLE,Your county will mail you a notice that will arrive in the next week.",
-            "UNDETERMINED,Your county will mail you a notice that will arrive in the next week.",
+            "ELIGIBLE, you've been expedited!",
+            "NOT_ELIGIBLE, not expedited :(",
+            "UNDETERMINED, not expedited :(",
     })
     void createContentForExpedited(ExpeditedEligibility expeditedEligibility, String expeditedEligibilityContent) {
         String emailContent = emailContentCreator.createClientHTML("someNumber", expeditedEligibility);
@@ -40,7 +56,7 @@ class EmailContentCreatorTest {
 
         String content = emailContentCreator.createDownloadCafAlertContent(confirmationId, ip);
 
-        assertThat(content).isEqualTo(String.format("The CAF with confirmation number %s was downloaded from IP address %s.", confirmationId, ip));
+        assertThat(content).isEqualTo(String.format("confirmation number: %s ip address: %s.", confirmationId, ip));
     }
 
     @Test
