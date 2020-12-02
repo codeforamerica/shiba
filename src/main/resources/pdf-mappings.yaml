@@ -167,6 +167,8 @@ caf:
       registerToVoteSelection: REGISTER_TO_VOTE
     authorizedRep:
       communicateOnYourBehalf: AUTHORIZED_REP_FILL_OUT_FORM
+    speakToCounty:
+      getMailNotices: AUTHORIZED_REP_GET_NOTICES
     employee:
       firstName: EMPLOYEE_FIRST_NAME
       lastName: EMPLOYEE_LAST_NAME

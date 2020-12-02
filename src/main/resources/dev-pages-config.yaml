@@ -1780,6 +1780,18 @@ pageDefinitions:
     pageTitle:
       value: authorized-rep.title
     hasPrimaryButton: false
+  - &speakToCounty
+    name: speakToCounty
+    headerKey:
+      value: speak-to-county.do-you-want-your-helper-to-get-mail-and-notices-for-you
+    inputs:
+      - name: getMailNotices
+        type: YES_NO
+        promptMessage:
+          promptMessageFragmentName: getMailNoticesPrompt
+    pageTitle:
+      value: speak-to-county.title
+    hasPrimaryButton: false
 workflow:
   landing:
     pageConfiguration: *landing
@@ -2280,6 +2292,10 @@ workflow:
           value: "true"
   authorizedRep:
     pageConfiguration: *authorizedRep
+    nextPages:
+      - pageName: speakToCounty
+  speakToCounty:
+    pageConfiguration: *speakToCounty
     nextPages:
       - pageName: importantToKnow
   ccapJob:

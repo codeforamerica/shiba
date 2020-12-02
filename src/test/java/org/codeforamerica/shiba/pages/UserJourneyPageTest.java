@@ -375,6 +375,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         if (new Random().nextBoolean()) {
             testPage.enter("helpWithBenefits", YES.getDisplayValue());
             testPage.enter("communicateOnYourBehalf", YES.getDisplayValue());
+            testPage.enter("getMailNotices", YES.getDisplayValue());
         } else {
             testPage.enter("helpWithBenefits", NO.getDisplayValue());
         }
