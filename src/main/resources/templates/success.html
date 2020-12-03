@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+<script type="text/javascript">
+    function downloadReceipts() {
+        window.open("\\download");
+        window.open("\\download-ccap");
+    }
+</script>
 <div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
 <body>
 <div class="page-wrapper">
@@ -28,7 +34,8 @@
                     <img src="/images/receipt.svg" alt="receipt icon"/>
                     <div class="spacing-above-25 spacing-below-35">
                         <div>
-                            <a class="button button--primary" href="/download"
+                            <a class="button button--primary"
+                               onClick="downloadReceipts()"
                                th:text="#{success.download-my-receipt}"></a>
                         </div>
                     </div>

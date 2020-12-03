@@ -39,20 +39,19 @@ public class FileDownLoadController {
     @GetMapping("/download")
     ResponseEntity<byte[]> downloadPdf() {
         ApplicationFile applicationFile = pdfGenerator.generate(applicationData.getId(), CLIENT);
+        return createResponse(applicationFile);
+    }
 
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", applicationFile.getFileName()))
-                .body(applicationFile.getFileBytes());
+    @GetMapping("/download-ccap")
+    ResponseEntity<byte[]> downloadCcapPdf() {
+        ApplicationFile applicationFile = pdfGenerator.generate(applicationData.getId(), CCAP);
+        return createResponse(applicationFile);
     }
 
     @GetMapping("/download-xml")
     ResponseEntity<byte[]> downloadXml() {
         ApplicationFile applicationFile = xmlGenerator.generate(applicationData.getId(), CLIENT);
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", applicationFile.getFileName()))
-                .body(applicationFile.getFileBytes());
+        return createResponse(applicationFile);
     }
 
     @GetMapping("/download-caf/{applicationId}")
@@ -67,24 +66,10 @@ public class FileDownLoadController {
         applicationEventPublisher.publishEvent(new DownloadCafEvent(applicationId, requestIp));
         ApplicationFile applicationFile = pdfGenerator.generate(applicationId, CASEWORKER);
 
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", applicationFile.getFileName()))
-                .body(applicationFile.getFileBytes());
+        return createResponse(applicationFile);
     }
 
-    @GetMapping("/download-ccap/{applicationId}")
-    ResponseEntity<byte[]> downloadCcapPdfWithApplicationId(
-            @PathVariable String applicationId,
-            HttpServletRequest request
-    ) {
-        String requestIpHeader = Optional.ofNullable(request.getHeader("X-FORWARDED-FOR")).orElse("");
-        String[] ipAddresses = requestIpHeader.split(",");
-        String requestIp = ipAddresses.length > 1 ? ipAddresses[ipAddresses.length - 2].trim() : "<blank>";
-
-//        applicationEventPublisher.publishEvent(new DownloadCafEvent(applicationId, requestIp));
-        ApplicationFile applicationFile = pdfGenerator.generate(applicationId, CCAP);
-
+    private ResponseEntity<byte[]> createResponse(ApplicationFile applicationFile) {
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", applicationFile.getFileName()))
