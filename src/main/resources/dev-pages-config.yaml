@@ -1,3 +1,35 @@
+conditionDefinitions:
+  - &livesAlone?
+    pageName: doYouLiveAlone
+    input: liveAlone
+    value: "true"
+  - &doesNotLiveAlone?
+    pageName: doYouLiveAlone
+    input: liveAlone
+    value: "false"
+  - &isApplicantsJob?
+    pageName: householdSelectionForIncome
+    input: whoseJobIsIt
+    value: "applicant"
+    matcher: CONTAINS_SUBSTRING
+  - &doesNotHaveMortgage?
+    pageName: homeExpenses
+    input: homeExpenses
+    value: MORTGAGE
+    matcher: DOES_NOT_CONTAIN
+  - &doesNotHaveRent?
+    pageName: homeExpenses
+    input: homeExpenses
+    value: RENT
+    matcher: DOES_NOT_CONTAIN
+  - &hasMortgage?
+    pageName: homeExpenses
+    input: homeExpenses
+    value: MORTGAGE
+  - &hasRent?
+    pageName: homeExpenses
+    input: homeExpenses
+    value: RENT
 pageDefinitions:
   - &landing
     name: landing
@@ -563,10 +595,7 @@ pageDefinitions:
       value: going-to-school.header
       conditionalValues:
         - value: going-to-school.header-household
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "false"
+          condition: *doesNotLiveAlone?
     hasPrimaryButton: false
     inputs:
       - name: goingToSchool
@@ -579,10 +608,7 @@ pageDefinitions:
       value: pregnant.is-anyone-pregnant
       conditionalValues:
         - value: pregnant.are-you-pregnant
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "true"
+          condition: *livesAlone?
     hasPrimaryButton: false
     inputs:
       - name: isPregnant
@@ -611,10 +637,7 @@ pageDefinitions:
       value: us-citizen.is-everyone-us-citizen
       conditionalValues:
         - value: us-citizen.are-you-a-us-citizen
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "true"
+          condition: *livesAlone?
     headerHelpMessageKey:
       value: us-citizen.most-immigrants-are-still-eligible-for-food-and-cash-benefits
     hasPrimaryButton: false
@@ -649,13 +672,8 @@ pageDefinitions:
           compositeCondition:
             logicalOperator: OR
             conditions:
-              - pageName: householdSelectionForIncome
-                input: whoseJobIsIt
-                value: "applicant"
-                matcher: CONTAINS_SUBSTRING
-              - pageName: doYouLiveAlone
-                input: liveAlone
-                value: "true"
+              - *isApplicantsJob?
+              - *livesAlone?
     headerHelpMessageKey:
       value: thirty-day-income.if-you-dont-know-the-exact-amount
     name: thirtyDayIncome
@@ -663,10 +681,7 @@ pageDefinitions:
       value: thirty-day-income.title-household
       conditionalValues:
         - value: thirty-day-income.title-one-person
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "true"
+          condition: *livesAlone?
     inputs:
       - name: moneyMadeLast30Days
         type: MONEY
@@ -683,13 +698,8 @@ pageDefinitions:
           compositeCondition:
             logicalOperator: OR
             conditions:
-              - pageName: householdSelectionForIncome
-                input: whoseJobIsIt
-                value: "applicant"
-                matcher: CONTAINS_SUBSTRING
-              - pageName: doYouLiveAlone
-                input: liveAlone
-                value: "true"
+              - *isApplicantsJob?
+              - *livesAlone?
         - value: thirty-day-job-income.how-much-money-have-they-made-at-this-job-in-the-last-30-days
           condition:
             pageName: householdSelectionForIncome
@@ -717,18 +727,12 @@ pageDefinitions:
       value: liquid-assets-prompt.title-household
       conditionalValues:
         - value: liquid-assets-prompt.title-one-person
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "true"
+          condition: *livesAlone?
     headerKey:
       value: thirty-day-income.how-much-money-is-available
       conditionalValues:
         - value: thirty-day-income.how-much-money-do-you-have-available
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "true"
+          condition: *livesAlone?
     inputs:
       - name: liquidAssets
         type: MONEY
@@ -746,18 +750,12 @@ pageDefinitions:
       value: expedited-expenses.title-one-person
       conditionalValues:
         - value: expedited-expenses.title-household
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "false"
+          condition: *doesNotLiveAlone?
     headerKey:
       value: expedited-expenses.header-one-person
       conditionalValues:
         - value: expedited-expenses.header-household
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "false"
+          condition: *doesNotLiveAlone?
     hasPrimaryButton: false
     inputs:
       - name: payRentOrMortgage
@@ -768,18 +766,12 @@ pageDefinitions:
       value: expedited-expenses-amount.title-one-person
       conditionalValues:
         - value: expedited-expenses-amount.title-household
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "false"
+          condition: *doesNotLiveAlone?
     headerKey:
       value: expedited-expenses-amount.how-much-do-you-pay-for-rent-or-mortgage-every-month
       conditionalValues:
         - value: expedited-expenses-amount.how-much-is-paid-for-rent-or-mortgage-every-month
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "false"
+          condition: *doesNotLiveAlone?
     inputs:
       - name: homeExpensesAmount
         type: MONEY
@@ -795,26 +787,17 @@ pageDefinitions:
       value: utility-payments.title-one-person
       conditionalValues:
         - value: utility-payments.title-household
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "false"
+          condition: *doesNotLiveAlone?
     headerKey:
       value: utility-payments.do-you-pay-for-any-utilities
       conditionalValues:
         - value: utility-payments.does-anyone-in-your-household-pay-for-these-utilities
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "false"
+          condition: *doesNotLiveAlone?
     headerHelpMessageKey:
       value: utility-payments.select-all-that-you-are-billed-for-even-if-you-havent-paid-it-this-month
       conditionalValues:
         - value: utility-payments.household-billed
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "false"
+          condition: *doesNotLiveAlone?
     inputs:
       - name: payForUtilities
         type: CHECKBOX
@@ -850,10 +833,7 @@ pageDefinitions:
       value: energy-assistance.have-you-received-money-for-energy-assistance
       conditionalValues:
         - value: energy-assistance.household-received-money
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "false"
+          condition: *doesNotLiveAlone?
     hasPrimaryButton: false
     inputs:
       - name: energyAssistance
@@ -866,10 +846,7 @@ pageDefinitions:
       value: energy-assistance-more-than-20.have-you-received-more-than-20-in-energy-assistance
       conditionalValues:
         - value: energy-assistance-more-than-20.household-received
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "false"
+          condition: *doesNotLiveAlone?
     hasPrimaryButton: false
     inputs:
       - name: energyAssistanceMoreThan20
@@ -882,10 +859,7 @@ pageDefinitions:
       value: support-and-care.do-you-pay-for-court-ordered-child-support-spousal-support
       conditionalValues:
         - value: support-and-care.household-support
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "false"
+          condition: *doesNotLiveAlone?
     hasPrimaryButton: false
     inputs:
       - name: supportAndCare
@@ -896,18 +870,12 @@ pageDefinitions:
       value: expedited-migrant-farm-worker.title-one-person
       conditionalValues:
         - value: expedited-migrant-farm-worker.title-household
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "false"
+          condition: *doesNotLiveAlone?
     headerKey:
       value: expedited-migrant-farm-worker.header-one-person
       conditionalValues:
         - value: expedited-migrant-farm-worker.header-household
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "false"
+          condition: *doesNotLiveAlone?
     hasPrimaryButton: false
     inputs:
       - name: migrantOrSeasonalFarmWorker
@@ -967,10 +935,7 @@ pageDefinitions:
       value: disability.does-anyone-in-your-household-have-a-physical-or-mental-disability-that-prevents
       conditionalValues:
         - value: disability.do-you-have-a-physical-or-mental-disability-that-prevents-you-from-working
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "true"
+          condition: *livesAlone?
     hasPrimaryButton: false
     inputs:
       - name: hasDisability
@@ -983,10 +948,7 @@ pageDefinitions:
       value: work-situation.in-the-last-2-months-did-you-do-any-of-these-things
       conditionalValues:
         - value: work-situation.in-the-last-2-months-did-anyone-in-your-household-do-any-of-these-things
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "false"
+          condition: *doesNotLiveAlone?
     hasPrimaryButton: false
     inputs:
       - name: hasWorkSituation
@@ -1005,10 +967,7 @@ pageDefinitions:
       value: employment-status.are-you-currently-working-or-making-an-income
       conditionalValues:
         - value: employment-status.is-anyone-in-your-household-making-money-from-a-job
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "false"
+          condition: *doesNotLiveAlone?
     hasPrimaryButton: false
     inputs:
       - name: areYouWorking
@@ -1021,10 +980,7 @@ pageDefinitions:
       value: income-by-job.lets-add-your-job-information
       conditionalValues:
         - value: income-by-job.lets-add-all-the-jobs-in-your-household
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "false"
+          condition: *doesNotLiveAlone?
   - &householdSelectionForIncome
     name: householdSelectionForIncome
     pageTitle:
@@ -1054,10 +1010,7 @@ pageDefinitions:
       value: ccap-job-search.are-you-currently-looking-for-a-job
       conditionalValues:
         - value: ccap-job-search.is-household-currently-looking-for-a-job
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "false"
+          condition: *doesNotLiveAlone?
     hasPrimaryButton: false
     inputs:
       - name: currentlyLookingForJob
@@ -1084,10 +1037,7 @@ pageDefinitions:
       value: unearned-income.do-you-get-income-from-any-of-these-sources
       conditionalValues:
         - value: unearned-income.household-get-income-from-any-of-these-sources
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "false"
+          condition: *doesNotLiveAlone?
     headerHelpMessageKey:
       value: unearned-income.check-all-that-apply-you-do-not-need-to-report-income-you-havent-received-yet
     inputs:
@@ -1125,10 +1075,7 @@ pageDefinitions:
       value: unearned-income-sources.tell-us-how-much-money-you-receive
       conditionalValues:
         - value: unearned-income-sources.tell-us-how-much-money-is-received
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "false"
+          condition: *doesNotLiveAlone?
     headerHelpMessageKey:
       value: unearned-income-sources.if-you-dont-have-all-this-information-on-hand-skip
     inputs:
@@ -1260,10 +1207,7 @@ pageDefinitions:
       value: future-income.do-you-think-youll-earn-less-money-this-month-than-last-month
       conditionalValues:
         - value: future-income.do-you-think-household-will-earn-less-money-this-month-than-last-month
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "false"
+          condition: *doesNotLiveAlone?
     headerHelpMessageKey:
       value: future-income.if-youre-not-sure-you-can-guess
     inputs:
@@ -1291,13 +1235,8 @@ pageDefinitions:
           compositeCondition:
             logicalOperator: OR
             conditions:
-            - pageName: householdSelectionForIncome
-              input: whoseJobIsIt
-              value: "applicant"
-              matcher: CONTAINS_SUBSTRING
-            - pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
+              - *isApplicantsJob?
+              - *livesAlone?
     inputs:
       - name: employersName
         type: LONG_TEXT
@@ -1317,13 +1256,8 @@ pageDefinitions:
           compositeCondition:
             logicalOperator: OR
             conditions:
-              - pageName: householdSelectionForIncome
-                input: whoseJobIsIt
-                value: "applicant"
-                matcher: CONTAINS_SUBSTRING
-              - pageName: doYouLiveAlone
-                input: liveAlone
-                value: "true"
+              - *isApplicantsJob?
+              - *livesAlone?
     hasPrimaryButton: false
     inputs:
       - name: selfEmployment
@@ -1342,13 +1276,8 @@ pageDefinitions:
           compositeCondition:
             logicalOperator: OR
             conditions:
-              - pageName: householdSelectionForIncome
-                input: whoseJobIsIt
-                value: "applicant"
-                matcher: CONTAINS_SUBSTRING
-              - pageName: doYouLiveAlone
-                input: liveAlone
-                value: "true"
+              - *isApplicantsJob?
+              - *livesAlone?
     hasPrimaryButton: false
     inputs:
       - name: paidByTheHour
@@ -1367,13 +1296,8 @@ pageDefinitions:
           compositeCondition:
             logicalOperator: OR
             conditions:
-              - pageName: householdSelectionForIncome
-                input: whoseJobIsIt
-                value: "applicant"
-                matcher: CONTAINS_SUBSTRING
-              - pageName: doYouLiveAlone
-                input: liveAlone
-                value: "true"
+              - *isApplicantsJob?
+              - *livesAlone?
     inputs:
       - name: hourlyWage
         type: HOURLY_WAGE
@@ -1395,13 +1319,8 @@ pageDefinitions:
           compositeCondition:
             logicalOperator: OR
             conditions:
-              - pageName: householdSelectionForIncome
-                input: whoseJobIsIt
-                value: "applicant"
-                matcher: CONTAINS_SUBSTRING
-              - pageName: doYouLiveAlone
-                input: liveAlone
-                value: "true"
+              - *isApplicantsJob?
+              - *livesAlone?
     headerHelpMessageKey:
       value: hours-a-week.we-know-this-can-be-hard-to-answer-so-just-estimate-based-on-their
       conditionalValues:
@@ -1409,13 +1328,8 @@ pageDefinitions:
           compositeCondition:
             logicalOperator: OR
             conditions:
-              - pageName: householdSelectionForIncome
-                input: whoseJobIsIt
-                value: "applicant"
-                matcher: CONTAINS_SUBSTRING
-              - pageName: doYouLiveAlone
-                input: liveAlone
-                value: "true"
+              - *isApplicantsJob?
+              - *livesAlone?
     inputs:
       - name: hoursAWeek
         type: NUMBER
@@ -1431,13 +1345,8 @@ pageDefinitions:
           compositeCondition:
             logicalOperator: OR
             conditions:
-              - pageName: householdSelectionForIncome
-                input: whoseJobIsIt
-                value: "applicant"
-                matcher: CONTAINS_SUBSTRING
-              - pageName: doYouLiveAlone
-                input: liveAlone
-                value: "true"
+              - *isApplicantsJob?
+              - *livesAlone?
     inputs:
       - name: payPeriod
         type: RADIO
@@ -1505,10 +1414,7 @@ pageDefinitions:
       value: job-builder.your-jobs
       conditionalValues:
         - value: job-builder.your-household-jobs
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "false"
+          condition: *doesNotLiveAlone?
   - &jobRedirectPage
     name: jobRedirectPage
     headerKey:
@@ -1523,13 +1429,8 @@ pageDefinitions:
           compositeCondition:
             logicalOperator: OR
             conditions:
-              - pageName: householdSelectionForIncome
-                input: whoseJobIsIt
-                value: "applicant"
-                matcher: CONTAINS_SUBSTRING
-              - pageName: doYouLiveAlone
-                input: liveAlone
-                value: "true"
+              - *isApplicantsJob?
+              - *livesAlone?
         - value: warning-page.you-are-about-to-delete-member-job
           condition:
             pageName: householdSelectionForIncome
@@ -1550,10 +1451,7 @@ pageDefinitions:
       value: home-expenses.do-you-pay-for-any-of-these
       conditionalValues:
         - value: home-expenses.household-pay-for-these
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "false"
+          condition: *doesNotLiveAlone?
     headerHelpMessageKey:
       value: general.check-all-that-apply
     inputs:
@@ -1589,72 +1487,40 @@ pageDefinitions:
           compositeCondition:
             logicalOperator: AND
             conditions:
-            - pageName: homeExpenses
-              input: homeExpenses
-              value: MORTGAGE
-              matcher: DOES_NOT_CONTAIN
-            - pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
+              - *doesNotHaveMortgage?
+              - *livesAlone?
         - value: home-expenses-amount.how-much-do-you-pay-for-mortgage-every-month
           compositeCondition:
             logicalOperator: AND
             conditions:
-            - pageName: homeExpenses
-              input: homeExpenses
-              value: RENT
-              matcher: DOES_NOT_CONTAIN
-            - pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
+              - *doesNotHaveRent?
+              - *livesAlone?
         - value: home-expenses-amount.how-much-do-you-pay-for-rent-and-mortgage-every-month
           compositeCondition:
             logicalOperator: AND
             conditions:
-            - pageName: doYouLiveAlone
-              input: liveAlone
-              value: "true"
-            - pageName: homeExpenses
-              input: homeExpenses
-              value: RENT
-            - pageName: homeExpenses
-              input: homeExpenses
-              value: MORTGAGE
+              - *livesAlone?
+              - *hasRent?
+              - *hasMortgage?
         - value: home-expenses-amount.household-pay-rent-every-month
           compositeCondition:
             logicalOperator: AND
             conditions:
-            - pageName: homeExpenses
-              input: homeExpenses
-              value: MORTGAGE
-              matcher: DOES_NOT_CONTAIN
-            - pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
+              - *doesNotHaveMortgage?
+              - *doesNotLiveAlone?
         - value: home-expenses-amount.household-pay-mortgage-every-month
           compositeCondition:
             logicalOperator: AND
             conditions:
-            - pageName: homeExpenses
-              input: homeExpenses
-              value: RENT
-              matcher: DOES_NOT_CONTAIN
-            - pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
+              - *doesNotHaveRent?
+              - *doesNotLiveAlone?
         - value: home-expenses-amount.how-much-does-household-pay-for-rent-and-mortgage-every-month
           compositeCondition:
             logicalOperator: AND
             conditions:
-            - pageName: doYouLiveAlone
-              input: liveAlone
-              value: "false"
-            - pageName: homeExpenses
-              input: homeExpenses
-              value: RENT
-            - pageName: homeExpenses
-              input: homeExpenses
-              value: MORTGAGE
+              - *doesNotLiveAlone?
+              - *hasRent?
+              - *hasMortgage?
     inputs:
       - name: homeExpensesAmount
         type: MONEY
@@ -1671,10 +1537,7 @@ pageDefinitions:
       value: savings.do-you-have-money-in-a-bank-account-or-debit-card
       conditionalValues:
         - value: savings.household-bank-account
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "false"
+          condition: *doesNotLiveAlone?
     hasPrimaryButton: false
     inputs:
       - name: haveSavings
@@ -1687,10 +1550,7 @@ pageDefinitions:
       value: investments.do-you-have-any-stocks-bonds-or-a-401k
       conditionalValues:
         - value: investments.household-stocks
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "false"
+          condition: *doesNotLiveAlone?
     hasPrimaryButton: false
     inputs:
       - name: haveInvestments
@@ -1703,10 +1563,7 @@ pageDefinitions:
       value: vehicle.do-you-own-a-vehicle
       conditionalValues:
         - value: vehicle.household-own-vehicle
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "false"
+          condition: *doesNotLiveAlone?
     hasPrimaryButton: false
     inputs:
       - name: haveVehicle
@@ -1719,10 +1576,7 @@ pageDefinitions:
       value: sold-assets.in-the-last-12-months-have-you-given-away-or-sold-any-assets
       conditionalValues:
         - value: sold-assets.households-given-or-sold
-          condition:
-            pageName: doYouLiveAlone
-            input: liveAlone
-            value: "false"
+          condition: *doesNotLiveAlone?
     hasPrimaryButton: false
     inputs:
       - name: haveSoldAssets
@@ -1973,9 +1827,7 @@ workflow:
     skipCondition:
       logicalOperator: OR
       conditions:
-        - pageName: doYouLiveAlone
-          input: liveAlone
-          value: "true"
+        - *livesAlone?
         - pageName: pregnant
           input: isPregnant
           value: "false"
@@ -1995,9 +1847,7 @@ workflow:
     skipCondition:
       logicalOperator: OR
       conditions:
-        - pageName: doYouLiveAlone
-          input: liveAlone
-          value: "true"
+        - *livesAlone?
         - pageName: usCitizen
           input: isUsCitizen
           value: "true"
@@ -2049,9 +1899,7 @@ workflow:
       - pageName: employersName
     skipCondition:
       conditions:
-        - pageName: doYouLiveAlone
-          input: liveAlone
-          value: "true"
+        - *livesAlone?
   employersName:
     pageConfiguration: *employersName
     groupName: jobs
@@ -2345,9 +2193,7 @@ workflow:
     skipCondition:
       logicalOperator: OR
       conditions:
-        - pageName: doYouLiveAlone
-          input: liveAlone
-          value: "true"
+        - *livesAlone?
         - pageName: jobSearch
           input: currentlyLookingForJob
           value: "false"

@@ -8,8 +8,8 @@ import java.util.stream.Stream;
 
 @Data
 public class PageConfiguration {
-    private List<FormInput> inputs = List.of();
     private String name;
+    private List<FormInput> inputs = List.of();
     private Value pageTitle;
     private Value headerKey;
     private Value headerHelpMessageKey;
