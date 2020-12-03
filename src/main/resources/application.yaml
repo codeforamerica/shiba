@@ -30,3 +30,6 @@ logging:
   level:
     org.apache.pdfbox.multipdf: off
 pagesConfig: dev-pages-config.yaml
+
+flag:
+  ccap: ${FLAG_CCAP}
