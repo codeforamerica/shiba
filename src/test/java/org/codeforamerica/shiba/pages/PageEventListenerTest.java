@@ -4,6 +4,7 @@ import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.pages.events.*;
 import org.junit.jupiter.api.Test;
 
+import java.util.Locale;
 import java.util.Map;
 
 import static org.codeforamerica.shiba.pages.events.InteractionType.APPLICATION_SUBMITTED;
@@ -46,7 +47,7 @@ class PageEventListenerTest {
     @Test
     void shouldTrackApplicationSubmittedEvents() {
         ApplicationSubmittedEvent applicationSubmittedEvent = new ApplicationSubmittedEvent(
-                "sessionId", "applicationId", FlowType.FULL
+                "sessionId", "applicationId", FlowType.FULL, Locale.ENGLISH
         );
 
         pageEventListener.captureInteraction(applicationSubmittedEvent);

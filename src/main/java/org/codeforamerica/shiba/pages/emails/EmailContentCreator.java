@@ -3,13 +3,13 @@ package org.codeforamerica.shiba.pages.emails;
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 import static java.util.Optional.ofNullable;
 import static org.codeforamerica.shiba.output.caf.ExpeditedEligibility.ELIGIBLE;
@@ -28,34 +28,34 @@ public class EmailContentCreator {
         this.messageSource = messageSource;
     }
 
-    String createClientHTML(String confirmationId, ExpeditedEligibility expeditedEligibility) {
+    String createClientHTML(String confirmationId, ExpeditedEligibility expeditedEligibility, Locale locale) {
         String eligibilitySpecificVerbiage;
         if (ELIGIBLE == expeditedEligibility) {
-            eligibilitySpecificVerbiage = getMessage(expeditedWaitTime, null);
+            eligibilitySpecificVerbiage = getMessage(expeditedWaitTime, null, locale);
         } else {
-            eligibilitySpecificVerbiage = getMessage(nonExpeditedWaitTime, null);
+            eligibilitySpecificVerbiage = getMessage(nonExpeditedWaitTime, null, locale);
         }
-        return wrapHtml(getMessage(clientBody, List.of(eligibilitySpecificVerbiage, confirmationId)));
+        return wrapHtml(getMessage(clientBody, List.of(eligibilitySpecificVerbiage, confirmationId), locale));
     }
 
-    String createCaseworkerHTML() {
-        return wrapHtml(getMessage(caseworkerBody, null));
+    String createCaseworkerHTML(Locale locale) {
+        return wrapHtml(getMessage(caseworkerBody, null, locale));
     }
 
-    String createDownloadCafAlertContent(String confirmationId, String ip) {
-        return getMessage(downloadCafAlert, List.of(confirmationId, ip));
+    String createDownloadCafAlertContent(String confirmationId, String ip, Locale locale) {
+        return getMessage(downloadCafAlert, List.of(confirmationId, ip), locale);
     }
 
-    public String createNonCountyPartnerAlert(String confirmationId, ZonedDateTime submissionTime) {
+    public String createNonCountyPartnerAlert(String confirmationId, ZonedDateTime submissionTime, Locale locale) {
         String formattedTime = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm").format(submissionTime.withZoneSameInstant(ZoneId.of("America/Chicago")));
-        return getMessage(nonCountyPartnerAlert, List.of(confirmationId, formattedTime));
+        return getMessage(nonCountyPartnerAlert, List.of(confirmationId, formattedTime), locale);
     }
 
-    private String getMessage(String expeditedWaitTime, @Nullable List<String> args) {
+    private String getMessage(String expeditedWaitTime, @Nullable List<String> args, Locale locale) {
         return messageSource.getMessage(
                 expeditedWaitTime,
                 ofNullable(args).map(List::toArray).orElse(null),
-                LocaleContextHolder.getLocale()
+                locale
         );
     }
 

@@ -19,9 +19,11 @@ import org.codeforamerica.shiba.pages.emails.EmailClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import static java.util.Optional.empty;
@@ -62,7 +64,7 @@ class ApplicationSubmittedListenerTest {
         void shouldSendSubmittedApplicationToMNIT() {
             String applicationId = "someId";
             Application application = Application.builder().id(applicationId).build();
-            ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null);
+            ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null, Locale.ENGLISH);
             when(applicationRepository.find(applicationId)).thenReturn(application);
 
             applicationSubmittedListener.sendViaApi(event);
@@ -83,12 +85,17 @@ class ApplicationSubmittedListenerTest {
                     false,
                     false, emailParser);
 
-            ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("", "", null);
+            ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("", "", null, Locale.ENGLISH);
 
             applicationSubmittedListener.sendViaApi(event);
 
             verifyNoInteractions(mnitDocumentConsumer);
         }
+    }
+
+    @BeforeEach
+    void setUp() {
+        LocaleContextHolder.setLocale(Locale.ENGLISH);
     }
 
     @Nested
@@ -110,14 +117,14 @@ class ApplicationSubmittedListenerTest {
                     .applicationData(applicationData)
                     .build();
             when(applicationRepository.find(applicationId)).thenReturn(application);
-            ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null);
+            ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null, Locale.ENGLISH);
             when(expeditedEligibilityDecider.decide(applicationData)).thenReturn(ExpeditedEligibility.ELIGIBLE);
             ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
             when(pdfGenerator.generate(appIdFromDb, CLIENT)).thenReturn(applicationFile);
             when(emailParser.parse(applicationData)).thenReturn(Optional.of(email));
             applicationSubmittedListener.sendConfirmationEmail(event);
 
-            verify(emailClient).sendConfirmationEmail(email, appIdFromDb, ExpeditedEligibility.ELIGIBLE, applicationFile);
+            verify(emailClient).sendConfirmationEmail(email, appIdFromDb, ExpeditedEligibility.ELIGIBLE, applicationFile, Locale.ENGLISH);
         }
 
         @Test
@@ -129,7 +136,7 @@ class ApplicationSubmittedListenerTest {
                     .applicationData(applicationData)
                     .build());
             when(emailParser.parse(applicationData)).thenReturn(empty());
-            ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", "appId", null);
+            ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", "appId", null, Locale.ENGLISH);
 
             applicationSubmittedListener.sendConfirmationEmail(event);
 
@@ -164,14 +171,14 @@ class ApplicationSubmittedListenerTest {
                     .timeToComplete(null)
                     .build();
             when(applicationRepository.find(applicationId)).thenReturn(application);
-            ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null);
+            ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null, Locale.ENGLISH);
             when(expeditedEligibilityDecider.decide(applicationData)).thenReturn(ExpeditedEligibility.ELIGIBLE);
             ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
             when(pdfGenerator.generate(appIdFromDb, CASEWORKER)).thenReturn(applicationFile);
 
             applicationSubmittedListener.sendCaseWorkerEmail(event);
 
-            verify(emailClient).sendCaseWorkerEmail(email, fullName, appIdFromDb, applicationFile);
+            verify(emailClient).sendCaseWorkerEmail(email, fullName, appIdFromDb, applicationFile, Locale.ENGLISH);
         }
 
         @Test
@@ -187,7 +194,7 @@ class ApplicationSubmittedListenerTest {
                     false,
                     false, emailParser);
 
-            ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("", "", null);
+            ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("", "", null, Locale.ENGLISH);
 
             applicationSubmittedListener.sendCaseWorkerEmail(event);
 
@@ -200,7 +207,7 @@ class ApplicationSubmittedListenerTest {
         @Test
         void shouldSendNonPartnerCountyAlertWhenApplicationSubmittedIsForOTHERCounty() {
             String applicationId = "appId";
-            ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null);
+            ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null, Locale.ENGLISH);
             ZonedDateTime submissionTime = ZonedDateTime.now();
             when(applicationRepository.find(applicationId)).thenReturn(
                     Application.builder()
@@ -212,13 +219,13 @@ class ApplicationSubmittedListenerTest {
 
             applicationSubmittedListener.sendNonPartnerCountyAlert(event);
 
-            verify(emailClient).sendNonPartnerCountyAlert(applicationId, submissionTime);
+            verify(emailClient).sendNonPartnerCountyAlert(applicationId, submissionTime, Locale.ENGLISH);
         }
 
         @Test
         void shouldNotSendNonPartnerCountyAlertWhenApplicationSubmittedIsNotForOTHERCounty() {
             String applicationId = "appId";
-            ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null);
+            ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null, Locale.ENGLISH);
             ZonedDateTime submissionTime = ZonedDateTime.now();
             when(applicationRepository.find(applicationId)).thenReturn(
                     Application.builder()
@@ -252,7 +259,7 @@ class ApplicationSubmittedListenerTest {
                             .build()
             );
 
-            applicationSubmittedListener.sendNonPartnerCountyAlert(new ApplicationSubmittedEvent("someSessionId", "appId", null));
+            applicationSubmittedListener.sendNonPartnerCountyAlert(new ApplicationSubmittedEvent("someSessionId", "appId", null, Locale.ENGLISH));
 
             verifyNoInteractions(emailClient);
         }

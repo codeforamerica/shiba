@@ -120,7 +120,7 @@ class PageControllerTest {
 
         InOrder inOrder = inOrder(applicationRepository, pageEventPublisher);
         inOrder.verify(applicationRepository).save(application);
-        inOrder.verify(pageEventPublisher).publish(new ApplicationSubmittedEvent(sessionId, applicationId, FlowType.FULL));
+        inOrder.verify(pageEventPublisher).publish(new ApplicationSubmittedEvent(sessionId, applicationId, FlowType.FULL, Locale.ENGLISH));
     }
 
     @Test

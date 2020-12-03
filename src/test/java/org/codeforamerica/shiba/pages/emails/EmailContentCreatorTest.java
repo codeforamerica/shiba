@@ -32,7 +32,7 @@ class EmailContentCreatorTest {
 
     @Test
     void includesTheConfirmationNumber() {
-        String emailContent = emailContentCreator.createClientHTML("someNumber", ExpeditedEligibility.UNDETERMINED);
+        String emailContent = emailContentCreator.createClientHTML("someNumber", ExpeditedEligibility.UNDETERMINED, Locale.ENGLISH);
         System.out.println(emailContent);
         assertThat(emailContent).contains("someNumber");
     }
@@ -44,7 +44,7 @@ class EmailContentCreatorTest {
             "UNDETERMINED, not expedited :(",
     })
     void createContentForExpedited(ExpeditedEligibility expeditedEligibility, String expeditedEligibilityContent) {
-        String emailContent = emailContentCreator.createClientHTML("someNumber", expeditedEligibility);
+        String emailContent = emailContentCreator.createClientHTML("someNumber", expeditedEligibility, Locale.ENGLISH);
 
         assertThat(emailContent).contains(expeditedEligibilityContent);
     }
@@ -54,7 +54,7 @@ class EmailContentCreatorTest {
         String confirmationId = "confirmation ID";
         String ip = "123.123.123.123";
 
-        String content = emailContentCreator.createDownloadCafAlertContent(confirmationId, ip);
+        String content = emailContentCreator.createDownloadCafAlertContent(confirmationId, ip, Locale.ENGLISH);
 
         assertThat(content).isEqualTo(String.format("confirmation number: %s ip address: %s.", confirmationId, ip));
     }
@@ -63,7 +63,7 @@ class EmailContentCreatorTest {
     void shouldCreateNonCountyPartnerAlertEmail() {
         String confirmationId = "confirm Id";
         ZonedDateTime submissionTime = ZonedDateTime.of(LocalDateTime.of(2020, 1, 1, 11, 10), ZoneOffset.UTC);
-        String nonCountyPartnerAlertEmailContent = emailContentCreator.createNonCountyPartnerAlert(confirmationId, submissionTime);
+        String nonCountyPartnerAlertEmailContent = emailContentCreator.createNonCountyPartnerAlert(confirmationId, submissionTime, Locale.ENGLISH);
 
         assertThat(nonCountyPartnerAlertEmailContent).isEqualTo(
                 "Application confirm Id was submitted at 01/01/2020 05:10."

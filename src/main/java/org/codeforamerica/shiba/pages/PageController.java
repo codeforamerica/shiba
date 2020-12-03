@@ -15,6 +15,7 @@ import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.codeforamerica.shiba.pages.events.SubworkflowCompletedEvent;
 import org.codeforamerica.shiba.pages.events.SubworkflowIterationDeletedEvent;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
@@ -287,7 +288,7 @@ public class PageController {
             applicationData.setId(application.getId());
             applicationRepository.save(application);
             pageEventPublisher.publish(
-                    new ApplicationSubmittedEvent(httpSession.getId(), application.getId(), application.getFlow())
+                    new ApplicationSubmittedEvent(httpSession.getId(), application.getId(), application.getFlow(), LocaleContextHolder.getLocale())
             );
 
             return new ModelAndView(String.format("redirect:/pages/%s/navigation", submitPage));

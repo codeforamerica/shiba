@@ -3,6 +3,10 @@ package org.codeforamerica.shiba.output;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
 import org.junit.jupiter.api.Test;
 
+import java.util.Locale;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -17,6 +21,6 @@ class DownloadCafAlertTest {
 
         downloadCafAlert.sendEmail(new DownloadCafEvent(confirmationNumber, ip));
 
-        verify(emailClient).sendDownloadCafAlertEmail(confirmationNumber, ip);
+        verify(emailClient).sendDownloadCafAlertEmail(eq(confirmationNumber), eq(ip), any(Locale.class));
     }
 }

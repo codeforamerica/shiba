@@ -17,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.ZonedDateTime;
+import java.util.Locale;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.matching.MultipartValuePattern.MatchingType.ANY;
@@ -74,7 +75,7 @@ class MailGunEmailClientTest {
         String emailContent = "content";
         ExpeditedEligibility expeditedEligibility = ELIGIBLE;
         String confirmationId = "someConfirmationId";
-        when(emailContentCreator.createClientHTML(confirmationId, expeditedEligibility)).thenReturn(emailContent);
+        when(emailContentCreator.createClientHTML(confirmationId, expeditedEligibility, Locale.ENGLISH)).thenReturn(emailContent);
 
         wireMockServer.stubFor(post(anyUrl())
                 .willReturn(aResponse().withStatus(200)));
@@ -85,7 +86,7 @@ class MailGunEmailClientTest {
                 recipientEmail,
                 confirmationId,
                 expeditedEligibility,
-                new ApplicationFile(fileContent.getBytes(), fileName));
+                new ApplicationFile(fileContent.getBytes(), fileName), Locale.ENGLISH);
 
         wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
                 .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
@@ -127,7 +128,7 @@ class MailGunEmailClientTest {
         String recipientEmail = "someRecipient";
         String emailContent = "content";
         String recipientName = "test recipient";
-        when(emailContentCreator.createCaseworkerHTML()).thenReturn(emailContent);
+        when(emailContentCreator.createCaseworkerHTML(Locale.ENGLISH)).thenReturn(emailContent);
 
         wireMockServer.stubFor(post(anyUrl())
                 .willReturn(aResponse().withStatus(200)));
@@ -138,7 +139,9 @@ class MailGunEmailClientTest {
                 recipientEmail,
                 recipientName,
                 "appId",
-                new ApplicationFile(fileContent.getBytes(), fileName));
+                new ApplicationFile(fileContent.getBytes(), fileName),
+                Locale.ENGLISH
+        );
 
         wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
                 .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
@@ -182,11 +185,11 @@ class MailGunEmailClientTest {
         String confirmationId = "confirmation id";
         String ip = "some ip";
 
-        when(emailContentCreator.createDownloadCafAlertContent(confirmationId, ip)).thenReturn(emailContent);
+        when(emailContentCreator.createDownloadCafAlertContent(confirmationId, ip, Locale.ENGLISH)).thenReturn(emailContent);
 
         wireMockServer.stubFor(post(anyUrl()).willReturn(aResponse().withStatus(200)));
 
-        mailGunEmailClient.sendDownloadCafAlertEmail(confirmationId, ip);
+        mailGunEmailClient.sendDownloadCafAlertEmail(confirmationId, ip, Locale.ENGLISH);
 
         wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
                 .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
@@ -202,7 +205,7 @@ class MailGunEmailClientTest {
         String recipientEmail = "someRecipient";
         String emailContent = "content";
         String recipientName = "test recipient";
-        when(emailContentCreator.createCaseworkerHTML()).thenReturn(emailContent);
+        when(emailContentCreator.createCaseworkerHTML(Locale.ENGLISH)).thenReturn(emailContent);
 
         mailGunEmailClient = new MailGunEmailClient(
                 senderEmail,
@@ -220,7 +223,9 @@ class MailGunEmailClientTest {
                 recipientEmail,
                 recipientName,
                 "appId",
-                new ApplicationFile(fileContent.getBytes(), fileName));
+                new ApplicationFile(fileContent.getBytes(), fileName),
+                Locale.ENGLISH
+        );
 
         wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
                 .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
@@ -237,11 +242,11 @@ class MailGunEmailClientTest {
         String emailContent = "content";
         String confirmationId = "confirmation id";
         ZonedDateTime submissionTime = ZonedDateTime.now();
-        when(emailContentCreator.createNonCountyPartnerAlert(confirmationId, submissionTime)).thenReturn(emailContent);
+        when(emailContentCreator.createNonCountyPartnerAlert(confirmationId, submissionTime, Locale.ENGLISH)).thenReturn(emailContent);
 
         wireMockServer.stubFor(post(anyUrl()).willReturn(aResponse().withStatus(200)));
 
-        mailGunEmailClient.sendNonPartnerCountyAlert(confirmationId, submissionTime);
+        mailGunEmailClient.sendNonPartnerCountyAlert(confirmationId, submissionTime, Locale.ENGLISH);
 
         wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
                 .withBasicAuth(new BasicCredentials("api", mailGunApiKey))

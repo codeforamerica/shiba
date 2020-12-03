@@ -75,7 +75,7 @@ public class ApplicationSubmittedListener {
                     String applicationId = application.getId();
                     ApplicationFile pdf = pdfGenerator.generate(applicationId, CLIENT);
                     ExpeditedEligibility expeditedEligibility = expeditedEligibilityDecider.decide(application.getApplicationData());
-                    emailClient.sendConfirmationEmail(email, applicationId, expeditedEligibility, pdf);
+                    emailClient.sendConfirmationEmail(email, applicationId, expeditedEligibility, pdf, event.getLocale());
                 });
     }
 
@@ -92,7 +92,7 @@ public class ApplicationSubmittedListener {
         ApplicationFile pdf = pdfGenerator.generate(applicationId, CASEWORKER);
 
         String fullName = String.join(" ", personalInfo.get("firstName").getValue(0), personalInfo.get("lastName").getValue(0));
-        emailClient.sendCaseWorkerEmail(countyMap.get(application.getCounty()).getEmail(), fullName, applicationId, pdf);
+        emailClient.sendCaseWorkerEmail(countyMap.get(application.getCounty()).getEmail(), fullName, applicationId, pdf, event.getLocale());
     }
 
     @Async
@@ -105,7 +105,7 @@ public class ApplicationSubmittedListener {
         Application application = applicationRepository.find(event.getApplicationId());
 
         if (application.getCounty() == County.Other) {
-            emailClient.sendNonPartnerCountyAlert(application.getId(), application.getCompletedAt());
+            emailClient.sendNonPartnerCountyAlert(application.getId(), application.getCompletedAt(), event.getLocale());
         }
     }
 }

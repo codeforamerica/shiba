@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
         "spring.main.allow-bean-definition-overriding=true",
         "pagesConfig=pages-config/test-enrichment.yaml"
 })
+@ContextConfiguration(classes = EnrichmentPageTest.TestBeans.class)
 public class EnrichmentPageTest extends AbstractExistingStartTimePageTest {
 
     @TestConfiguration
