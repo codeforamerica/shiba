@@ -514,10 +514,12 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         testPage.enter("communicateOnYourBehalf", YES.getDisplayValue());
         navigateTo("speakToCounty");
         testPage.enter("getMailNotices", YES.getDisplayValue());
+        testPage.enter("spendOnYourBehalf", YES.getDisplayValue());
 
         PDAcroForm pdAcroForm = submitAndDownloadReceipt();
         assertThat(getPdfFieldText(pdAcroForm, "AUTHORIZED_REP_FILL_OUT_FORM")).isEqualTo("Yes");
         assertThat(getPdfFieldText(pdAcroForm, "AUTHORIZED_REP_GET_NOTICES")).isEqualTo("Yes");
+        assertThat(getPdfFieldText(pdAcroForm, "AUTHORIZED_REP_SPEND_ON_YOUR_BEHALF")).isEqualTo("Yes");
     }
 
     @Test
@@ -528,6 +530,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         PDAcroForm pdAcroForm = submitAndDownloadReceipt();
         assertThat(getPdfFieldText(pdAcroForm, "AUTHORIZED_REP_FILL_OUT_FORM")).isEqualTo("Off");
         assertThat(getPdfFieldText(pdAcroForm, "AUTHORIZED_REP_GET_NOTICES")).isEqualTo("Off");
+        assertThat(getPdfFieldText(pdAcroForm, "AUTHORIZED_REP_SPEND_ON_YOUR_BEHALF")).isEqualTo("Off");
     }
 
     private void addHouseholdMembers() {

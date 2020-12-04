@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:fragment="liquidAssetsPrompt" class="bullet-points spacing-below-35">
-    <div th:text="#{liquid-assets-prompt.this-includes}"></div>
-    <div th:text="|• #{liquid-assets-prompt.checking-accounts}|"></div>
-    <div th:text="|• #{liquid-assets-prompt.savings}|"></div>
+<div th:fragment="liquidAssetsPrompt" class="spacing-below-35">
+    <p th:text="#{liquid-assets-prompt.this-includes}"></p>
+    <ul class="list--bulleted">
+        <li th:text="#{liquid-assets-prompt.checking-accounts}"></li>
+        <li th:text="#{liquid-assets-prompt.savings}"></li>
+    </ul>
 </div>
 </body>
 </html>

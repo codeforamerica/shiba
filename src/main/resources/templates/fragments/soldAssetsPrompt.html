@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:fragment="soldAssetsPrompt" class="bullet-points spacing-below-35">
+<div th:fragment="soldAssetsPrompt" class="spacing-below-35">
     <p th:text="#{sold-assets.this-includes}"></p>
-    <div th:text="|• #{sold-assets.vehicles}|"></div>
-    <div th:text="|• #{sold-assets.stocks-and-bonds}|"></div>
-    <div th:text="|• #{sold-assets.household-valuables}|"></div>
+    <ul class="list--bulleted">
+        <li th:text="#{sold-assets.vehicles}"></li>
+        <li th:text="#{sold-assets.stocks-and-bonds}"></li>
+        <li th:text="#{sold-assets.household-valuables}"></li>
+    </ul>
 </div>
 </body>
 </html>

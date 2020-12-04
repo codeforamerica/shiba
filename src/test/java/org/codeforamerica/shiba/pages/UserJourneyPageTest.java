@@ -398,6 +398,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
             testPage.enter("helpWithBenefits", YES.getDisplayValue());
             testPage.enter("communicateOnYourBehalf", YES.getDisplayValue());
             testPage.enter("getMailNotices", YES.getDisplayValue());
+            testPage.enter("spendOnYourBehalf", YES.getDisplayValue());
         } else {
             testPage.enter("helpWithBenefits", NO.getDisplayValue());
         }

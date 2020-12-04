@@ -169,6 +169,8 @@ caf:
       communicateOnYourBehalf: AUTHORIZED_REP_FILL_OUT_FORM
     speakToCounty:
       getMailNotices: AUTHORIZED_REP_GET_NOTICES
+    spendOnYourBehalf:
+      spendOnYourBehalf: AUTHORIZED_REP_SPEND_ON_YOUR_BEHALF
     employee:
       firstName: EMPLOYEE_FIRST_NAME
       lastName: EMPLOYEE_LAST_NAME

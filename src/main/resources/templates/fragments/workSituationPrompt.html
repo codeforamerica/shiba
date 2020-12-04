@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:fragment="workSituationPrompt" class="bullet-points spacing-below-35">
-    <div th:text="|• #{work-situation.stop-working}|"></div>
-    <div th:text="|• #{work-situation.quit-a-job}|"></div>
-    <div th:text="|• #{work-situation.refuse-a-job-offer}|"></div>
-    <div th:text="|• #{work-situation.ask-to-work-fewer-hours}|"></div>
-    <div th:text="|• #{work-situation.go-on-strike}|"></div>
+<div th:fragment="workSituationPrompt" class="spacing-below-35">
+    <ul class="list--bulleted">
+        <li th:text="#{work-situation.stop-working}"></li>
+        <li th:text="#{work-situation.quit-a-job}"></li>
+        <li th:text="#{work-situation.refuse-a-job-offer}"></li>
+        <li th:text="#{work-situation.ask-to-work-fewer-hours}"></li>
+        <li th:text="#{work-situation.go-on-strike}"></li>
+    </ul>
 </div>
 </body>
 </html>

@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
     <body>
-        <div th:fragment="authorizedRepPrompt" class="bullet-points spacing-below-35">
+        <div th:fragment="authorizedRepPrompt" class="spacing-below-35">
             <p th:text="#{general.this-person-can}"></p>
-            <div th:text="|• #{authorized-rep.speak-for-you-in-an-interview}|"></div>
-            <div th:text="|• #{authorized-rep.help-you-complete-forms}|"></div>
-            <div th:text="|• #{authorized-rep.talk-to-a-service-provider}|"></div>
+            <ul class="list--bulleted">
+                <li th:text="#{authorized-rep.speak-for-you-in-an-interview}"></li>
+                <li th:text="#{authorized-rep.help-you-complete-forms}"></li>
+                <li th:text="#{authorized-rep.talk-to-a-service-provider}"></li>
+            </ul>
         </div>
     </body>
 </html>

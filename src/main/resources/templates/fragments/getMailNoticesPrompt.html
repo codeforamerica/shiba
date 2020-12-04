@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
     <body>
-        <div th:fragment="getMailNoticesPrompt" class="bullet-points spacing-below-35">
+        <div th:fragment="getMailNoticesPrompt" class="spacing-below-35">
             <p th:text="#{general.this-person-can}"></p>
-            <div th:text="|• #{speak-to-county.get-mail-about-your-benefits}|"></div>
-            <div th:text="|• #{speak-to-county.receive-notices-by-mail-or-phone}|"></div>
+            <ul class="list--bulleted">
+                <li th:text="#{speak-to-county.get-mail-about-your-benefits}"></li>
+                <li th:text="#{speak-to-county.receive-notices-by-mail-or-phone}"></li>
+            </ul>
         </div>
     </body>
 </html>

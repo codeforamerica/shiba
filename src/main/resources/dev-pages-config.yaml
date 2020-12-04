@@ -1670,6 +1670,18 @@ pageDefinitions:
     pageTitle:
       value: speak-to-county.title
     hasPrimaryButton: false
+  - &spendOnYourBehalf
+    name: spendOnYourBehalf
+    headerKey:
+      value: spend-on-your-behalf.do-you-want-your-helper-to-spend-your-benefits-on-your-behalf
+    inputs:
+      - name: spendOnYourBehalf
+        type: YES_NO
+        promptMessage:
+          promptMessageFragmentName: spendOnYourBehalfPrompt
+    pageTitle:
+      value: spend-on-your-behalf.title
+    hasPrimaryButton: false
 workflow:
   landing:
     pageConfiguration: *landing
@@ -2168,6 +2180,10 @@ workflow:
       - pageName: speakToCounty
   speakToCounty:
     pageConfiguration: *speakToCounty
+    nextPages:
+      - pageName: spendOnYourBehalf
+  spendOnYourBehalf:
+    pageConfiguration: *spendOnYourBehalf
     nextPages:
       - pageName: importantToKnow
   jobSearch:
