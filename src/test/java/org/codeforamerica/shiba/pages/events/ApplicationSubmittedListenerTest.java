@@ -178,7 +178,7 @@ class ApplicationSubmittedListenerTest {
 
             applicationSubmittedListener.sendCaseWorkerEmail(event);
 
-            verify(emailClient).sendCaseWorkerEmail(email, fullName, appIdFromDb, applicationFile, Locale.ENGLISH);
+            verify(emailClient).sendCaseWorkerEmail(email, fullName, appIdFromDb, applicationFile);
         }
 
         @Test
@@ -219,7 +219,7 @@ class ApplicationSubmittedListenerTest {
 
             applicationSubmittedListener.sendNonPartnerCountyAlert(event);
 
-            verify(emailClient).sendNonPartnerCountyAlert(applicationId, submissionTime, Locale.ENGLISH);
+            verify(emailClient).sendNonPartnerCountyAlert(applicationId, submissionTime);
         }
 
         @Test

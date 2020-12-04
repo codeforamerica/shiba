@@ -139,8 +139,7 @@ class MailGunEmailClientTest {
                 recipientEmail,
                 recipientName,
                 "appId",
-                new ApplicationFile(fileContent.getBytes(), fileName),
-                Locale.ENGLISH
+                new ApplicationFile(fileContent.getBytes(), fileName)
         );
 
         wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
@@ -223,8 +222,7 @@ class MailGunEmailClientTest {
                 recipientEmail,
                 recipientName,
                 "appId",
-                new ApplicationFile(fileContent.getBytes(), fileName),
-                Locale.ENGLISH
+                new ApplicationFile(fileContent.getBytes(), fileName)
         );
 
         wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
@@ -246,7 +244,7 @@ class MailGunEmailClientTest {
 
         wireMockServer.stubFor(post(anyUrl()).willReturn(aResponse().withStatus(200)));
 
-        mailGunEmailClient.sendNonPartnerCountyAlert(confirmationId, submissionTime, Locale.ENGLISH);
+        mailGunEmailClient.sendNonPartnerCountyAlert(confirmationId, submissionTime);
 
         wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
                 .withBasicAuth(new BasicCredentials("api", mailGunApiKey))

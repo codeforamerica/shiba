@@ -75,8 +75,7 @@ public class MailGunEmailClient implements EmailClient {
     public void sendCaseWorkerEmail(String recipientEmail,
                                     String recipientName,
                                     String confirmationId,
-                                    ApplicationFile applicationFile,
-                                    Locale locale) {
+                                    ApplicationFile applicationFile) {
         MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
         form.put("from", List.of(senderEmail));
         form.put("to", List.of(recipientEmail));
@@ -84,7 +83,7 @@ public class MailGunEmailClient implements EmailClient {
             form.put("cc", List.of(senderEmail));
         }
         form.put("subject", List.of("MNBenefits.org Application for " + recipientName));
-        form.put("html", List.of(emailContentCreator.createCaseworkerHTML(locale)));
+        form.put("html", List.of(emailContentCreator.createCaseworkerHTML(Locale.ENGLISH)));
         form.put("attachment", List.of(asResource(applicationFile)));
 
         MDC.put("confirmationId", confirmationId);
@@ -114,12 +113,12 @@ public class MailGunEmailClient implements EmailClient {
     }
 
     @Override
-    public void sendNonPartnerCountyAlert(String applicationId, ZonedDateTime submissionTime, Locale locale) {
+    public void sendNonPartnerCountyAlert(String applicationId, ZonedDateTime submissionTime) {
         MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
         form.put("from", List.of(senderEmail));
         form.put("to", List.of(supportEmail));
         form.put("subject", List.of("ALERT new non-partner application submitted"));
-        form.put("html", List.of(emailContentCreator.createNonCountyPartnerAlert(applicationId, submissionTime, locale)));
+        form.put("html", List.of(emailContentCreator.createNonCountyPartnerAlert(applicationId, submissionTime, Locale.ENGLISH)));
 
         webClient.post()
                 .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))

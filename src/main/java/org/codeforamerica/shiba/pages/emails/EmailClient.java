@@ -16,10 +16,9 @@ public interface EmailClient {
     void sendCaseWorkerEmail(String recipientEmail,
                              String recipientName,
                              String confirmationId,
-                             ApplicationFile applicationFile,
-                             Locale locale);
+                             ApplicationFile applicationFile);
 
     void sendDownloadCafAlertEmail(String confirmationId, String ip, Locale locale);
 
-    void sendNonPartnerCountyAlert(String applicationId, ZonedDateTime submissionTime, Locale locale);
+    void sendNonPartnerCountyAlert(String applicationId, ZonedDateTime submissionTime);
 }

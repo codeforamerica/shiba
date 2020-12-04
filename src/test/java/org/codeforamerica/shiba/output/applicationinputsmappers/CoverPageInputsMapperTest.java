@@ -12,9 +12,13 @@ import org.codeforamerica.shiba.output.caf.CoverPageInputsMapper;
 import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.MessageSource;
+import org.springframework.context.support.StaticMessageSource;
 
+import javax.annotation.Resource;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -22,8 +26,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class CoverPageInputsMapperTest {
     private final CountyMap<Map<Recipient, String>> countyInstructionsMapping = new CountyMap<>();
-    private final CoverPageInputsMapper coverPageInputsMapper = new CoverPageInputsMapper(countyInstructionsMapping);
+    private final StaticMessageSource staticMessageSource = new StaticMessageSource();
+    private final CoverPageInputsMapper coverPageInputsMapper = new CoverPageInputsMapper(countyInstructionsMapping, staticMessageSource);
     private final PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
+
 
     PagesData pagesData = new PagesData();
     ApplicationData applicationData = new ApplicationData();
@@ -32,8 +38,12 @@ class CoverPageInputsMapperTest {
     void setUp() {
         applicationData.setPagesData(pagesData);
         countyInstructionsMapping.getCounties().put(County.Other, Map.of(
-                Recipient.CLIENT, "other client instructions",
-                Recipient.CASEWORKER, "other caseworker instructions"));
+                Recipient.CLIENT, "county-to-instructions.default-client",
+                Recipient.CASEWORKER, "county-to-instructions.default-caseworker"));
+        staticMessageSource.addMessage("county-to-instructions.default-client", Locale.US, "Default client");
+        staticMessageSource.addMessage("county-to-instructions.default-caseworker", Locale.US, "Default caseworker");
+        staticMessageSource.addMessage("county-to-instructions.olmsted-caseworker", Locale.US, "Olmsted caseworker");
+        staticMessageSource.addMessage("county-to-instructions.olmsted-client", Locale.US, "Olmsted client");
     }
 
     @Test
@@ -155,8 +165,8 @@ class CoverPageInputsMapperTest {
                 .county(County.Olmsted)
                 .timeToComplete(null)
                 .build();
-        String clientCountyInstructions = "olmsted client instructions";
-        String caseworkerCountyInstructions = "olmsted caseworker instructions";
+        String clientCountyInstructions = "county-to-instructions.olmsted-caseworker";
+        String caseworkerCountyInstructions = "county-to-instructions.olmsted-client";
         countyInstructionsMapping.getCounties().put(County.Olmsted, Map.of(
                 Recipient.CLIENT, clientCountyInstructions,
                 Recipient.CASEWORKER, caseworkerCountyInstructions
@@ -168,7 +178,7 @@ class CoverPageInputsMapperTest {
                 new ApplicationInput(
                         "coverPage",
                         "countyInstructions",
-                        List.of(caseworkerCountyInstructions),
+                        List.of(staticMessageSource.getMessage(caseworkerCountyInstructions, null, Locale.US)),
                         ApplicationInputType.SINGLE_VALUE
                 ));
 
@@ -178,7 +188,7 @@ class CoverPageInputsMapperTest {
                 new ApplicationInput(
                         "coverPage",
                         "countyInstructions",
-                        List.of(clientCountyInstructions),
+                        List.of(staticMessageSource.getMessage(clientCountyInstructions, null, Locale.US)),
                         ApplicationInputType.SINGLE_VALUE
                 ));
     }

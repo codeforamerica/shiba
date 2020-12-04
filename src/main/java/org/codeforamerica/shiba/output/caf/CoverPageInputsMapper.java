@@ -7,8 +7,11 @@ import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMapper;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +28,12 @@ import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
 public class CoverPageInputsMapper implements ApplicationInputsMapper {
     private final CountyMap<Map<Recipient, String>> countyInstructionsMapping;
 
-    public CoverPageInputsMapper(CountyMap<Map<Recipient, String>> countyInstructionsMapping) {
+    @Resource
+    MessageSource messageSource;
+
+    public CoverPageInputsMapper(CountyMap<Map<Recipient, String>> countyInstructionsMapping, MessageSource messageSource) {
         this.countyInstructionsMapping = countyInstructionsMapping;
+        this.messageSource=messageSource;
     }
 
     @Override
@@ -76,7 +83,7 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
         ApplicationInput countyInstructionsInput = new ApplicationInput(
                 "coverPage",
                 "countyInstructions",
-                List.of(countyInstructionsMapping.get(application.getCounty()).get(recipient)),
+                List.of(messageSource.getMessage(countyInstructionsMapping.get(application.getCounty()).get(recipient),null, LocaleContextHolder.getLocale())),
                 SINGLE_VALUE
         );
         List<ApplicationInput> inputs = Stream.of(

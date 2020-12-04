@@ -92,7 +92,7 @@ public class ApplicationSubmittedListener {
         ApplicationFile pdf = pdfGenerator.generate(applicationId, CASEWORKER);
 
         String fullName = String.join(" ", personalInfo.get("firstName").getValue(0), personalInfo.get("lastName").getValue(0));
-        emailClient.sendCaseWorkerEmail(countyMap.get(application.getCounty()).getEmail(), fullName, applicationId, pdf, event.getLocale());
+        emailClient.sendCaseWorkerEmail(countyMap.get(application.getCounty()).getEmail(), fullName, applicationId, pdf);
     }
 
     @Async
@@ -105,7 +105,7 @@ public class ApplicationSubmittedListener {
         Application application = applicationRepository.find(event.getApplicationId());
 
         if (application.getCounty() == County.Other) {
-            emailClient.sendNonPartnerCountyAlert(application.getId(), application.getCompletedAt(), event.getLocale());
+            emailClient.sendNonPartnerCountyAlert(application.getId(), application.getCompletedAt());
         }
     }
 }
