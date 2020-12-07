@@ -1,9 +1,6 @@
 package org.codeforamerica.shiba.output.applicationinputsmappers;
 
-import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.CountyMap;
-import org.codeforamerica.shiba.PageDataBuilder;
-import org.codeforamerica.shiba.PagesDataBuilder;
+import org.codeforamerica.shiba.*;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
@@ -14,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.support.StaticMessageSource;
 
+import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Locale;
@@ -22,18 +20,19 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class CoverPageInputsMapperTest {
+class CoverPageInputsMapperTest extends AbstractBasePageTest {
     private final CountyMap<Map<Recipient, String>> countyInstructionsMapping = new CountyMap<>();
     private CoverPageInputsMapper coverPageInputsMapper;
     private final PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
     private final StaticMessageSource staticMessageSource = new StaticMessageSource();
 
-
     PagesData pagesData = new PagesData();
     ApplicationData applicationData = new ApplicationData();
 
+    @Override
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws IOException {
+        super.setUp();
         applicationData.setPagesData(pagesData);
         coverPageInputsMapper = new CoverPageInputsMapper(countyInstructionsMapping, staticMessageSource);
         countyInstructionsMapping.getCounties().put(County.Other, Map.of(
