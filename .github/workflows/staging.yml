@@ -17,7 +17,7 @@ on:
 jobs:
   test:
     name: Run test suite
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     services:
       postgres:
         image: postgres:12
