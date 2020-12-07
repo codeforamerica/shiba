@@ -2,6 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
 <div class="select toolbar__right language-select" th:with="lang=${#locale.toString()}">
+    <label th:text="#{language-preferences.title}" hidden for="locales"></label>
     <select class="select__element language-selector"  name="locales" id="locales">
         <option value="en" th:selected="${lang.equals('en')}" th:text="#{language-preferences.english}"></option>
         <option value="es" th:selected="${lang.equals('es')}" th:text="#{language-preferences.spanish}"></option>
