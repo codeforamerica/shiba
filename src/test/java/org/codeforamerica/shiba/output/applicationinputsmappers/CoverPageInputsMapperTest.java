@@ -12,10 +12,8 @@ import org.codeforamerica.shiba.output.caf.CoverPageInputsMapper;
 import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.context.MessageSource;
 import org.springframework.context.support.StaticMessageSource;
 
-import javax.annotation.Resource;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Locale;
@@ -26,17 +24,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class CoverPageInputsMapperTest {
     private final CountyMap<Map<Recipient, String>> countyInstructionsMapping = new CountyMap<>();
-    private final StaticMessageSource staticMessageSource = new StaticMessageSource();
-    private final CoverPageInputsMapper coverPageInputsMapper = new CoverPageInputsMapper(countyInstructionsMapping, staticMessageSource);
+    private CoverPageInputsMapper coverPageInputsMapper;
     private final PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
+    private final StaticMessageSource staticMessageSource = new StaticMessageSource();
 
 
     PagesData pagesData = new PagesData();
     ApplicationData applicationData = new ApplicationData();
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         applicationData.setPagesData(pagesData);
+        coverPageInputsMapper = new CoverPageInputsMapper(countyInstructionsMapping, staticMessageSource);
         countyInstructionsMapping.getCounties().put(County.Other, Map.of(
                 Recipient.CLIENT, "county-to-instructions.default-client",
                 Recipient.CASEWORKER, "county-to-instructions.default-caseworker"));
