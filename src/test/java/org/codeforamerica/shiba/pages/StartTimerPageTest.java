@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.AbstractStaticMessageSourcePageTest;
+import org.codeforamerica.shiba.AbstractBasePageTest;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -23,7 +23,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
         "spring.main.allow-bean-definition-overriding=true",
         "pagesConfig=pages-config/test-start-timer.yaml"
 })
-public class StartTimerPageTest extends AbstractStaticMessageSourcePageTest {
+public class StartTimerPageTest extends AbstractBasePageTest {
     @Controller
     static class TestController {
         private final ApplicationData applicationData;

@@ -28,7 +28,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"spring.main.allow-bean-definition-overriding=true"})
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
-public abstract class AbstractBasePageTest {
+public abstract class AbstractBasePageTest extends AbstractStaticMessageSourceTest {
     static protected RemoteWebDriver driver;
 
     protected Path path;
@@ -45,8 +45,10 @@ public abstract class AbstractBasePageTest {
         WebDriverManager.chromedriver().setup();
     }
 
+    @Override
     @BeforeEach
     protected void setUp() throws IOException {
+        super.setUp();
         baseUrl = String.format("http://localhost:%s", localServerPort);
         ChromeOptions options = new ChromeOptions();
         path = Files.createTempDirectory("");

@@ -9,7 +9,6 @@ import org.codeforamerica.shiba.output.caf.CoverPageInputsMapper;
 import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.context.support.StaticMessageSource;
 
 import java.io.IOException;
 import java.time.ZonedDateTime;
@@ -24,17 +23,16 @@ class CoverPageInputsMapperTest extends AbstractBasePageTest {
     private final CountyMap<Map<Recipient, String>> countyInstructionsMapping = new CountyMap<>();
     private CoverPageInputsMapper coverPageInputsMapper;
     private final PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
-    private final StaticMessageSource staticMessageSource = new StaticMessageSource();
 
     PagesData pagesData = new PagesData();
     ApplicationData applicationData = new ApplicationData();
 
-    @Override
     @BeforeEach
+    @Override
     public void setUp() throws IOException {
         super.setUp();
-        applicationData.setPagesData(pagesData);
         coverPageInputsMapper = new CoverPageInputsMapper(countyInstructionsMapping, staticMessageSource);
+        applicationData.setPagesData(pagesData);
         countyInstructionsMapping.getCounties().put(County.Other, Map.of(
                 Recipient.CLIENT, "county-to-instructions.default-client",
                 Recipient.CASEWORKER, "county-to-instructions.default-caseworker"));

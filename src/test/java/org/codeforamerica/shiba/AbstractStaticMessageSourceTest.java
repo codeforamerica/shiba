@@ -10,16 +10,14 @@ import java.io.IOException;
 import java.util.Locale;
 
 @ContextConfiguration(classes = StaticMessageSourceConfiguration.class)
-public class AbstractStaticMessageSourcePageTest extends AbstractBasePageTest {
+public class AbstractStaticMessageSourceTest {
     @Autowired
     private MessageSource messageSource;
 
     protected StaticMessageSource staticMessageSource;
 
-    @Override
     @BeforeEach
     protected void setUp() throws IOException {
-        super.setUp();
         staticMessageSource = (StaticMessageSource) messageSource;
         staticMessageSource.addMessage("general.go-back", Locale.ENGLISH, "Go Back");
         staticMessageSource.addMessage("general.continue", Locale.ENGLISH, "Continue");

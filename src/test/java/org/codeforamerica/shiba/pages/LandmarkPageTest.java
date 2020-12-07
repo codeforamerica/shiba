@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.AbstractStaticMessageSourcePageTest;
+import org.codeforamerica.shiba.AbstractBasePageTest;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedListener;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
@@ -23,7 +23,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
         "spring.main.allow-bean-definition-overriding=true",
         "pagesConfig=pages-config/test-landmark-pages.yaml"
 })
-public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
+public class LandmarkPageTest extends AbstractBasePageTest {
 
     String firstPageTitle = "first page title";
     String fourthPageTitle = "fourth page title";

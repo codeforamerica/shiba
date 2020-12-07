@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.AbstractStaticMessageSourcePageTest;
+import org.codeforamerica.shiba.AbstractBasePageTest;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
@@ -27,7 +27,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
         "spring.main.allow-bean-definition-overriding=true",
         "pagesConfig=pages-config/test-submit-page.yaml"
 })
-public class SubmitPageTest extends AbstractStaticMessageSourcePageTest {
+public class SubmitPageTest extends AbstractBasePageTest {
 
     @MockBean
     ApplicationSubmittedListener applicationSubmittedListener;
