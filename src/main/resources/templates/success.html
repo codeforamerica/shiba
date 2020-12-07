@@ -13,15 +13,10 @@
                     <h3 id="application-id" class="spacing-below-10"
                         th:text="|#{success.confirmation-number}: ${applicationId}|"></h3>
                     <p th:if="${county != T(org.codeforamerica.shiba.County).Other}" class="spacing-below-35"
-                       id="submission-date">
-                        <span th:text="|#{success.application-submitted-to} |"></span>
-                        <span class="capitalized" th:text="${county.name().toLowerCase()}"></span>
-                        <span th:text="#{success.county-on}"></span>
-                        <span th:text="| ${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)}.|"></span>
-                    </p>
-                    <p th:if="${county == T(org.codeforamerica.shiba.County).Other}" class="spacing-below-35"
+                       id="submission-date" th:text="#{success.application-submitted(${county.name()}, ${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)})}"></p>
+                        <p th:if="${county == T(org.codeforamerica.shiba.County).Other}" class="spacing-below-35"
                        id="submission-date"
-                       th:text="|#{success.application-submitted-on} ${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)}.|"></p>
+                       th:text="#{success.application-submitted-other(${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)})}"></p>
                 </div>
                 <div class="grid__item spacing-above-35">
                     <h3 th:text="#{success.new-weve-generated-a-receipt-of-your-application-for-your-records}"></h3>
