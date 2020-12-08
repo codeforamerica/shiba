@@ -54,7 +54,6 @@
                         <textarea th:if="${feedbackText == null}"
                                   autocomplete="off" autocapitalize="off" spellcheck="false"
                                   class="textarea" rows="2"
-                                  aria-describedby="form_example_method_name__errors"
                                   name="feedback" id="feedback-textarea"
                                   th:placeholder="#{success.do-you-have-any-feedback-for-us}"></textarea>
                         <p class="text--error" th:if="${feedbackFailure != null}">

@@ -12,6 +12,7 @@
             <div class="text-input-group__prefix">$</div>
             <input type="text"
                    class="text-input"
+                   th:id="${input.name}"
                    th:name="${formInputName}"
                    th:value="${(!inputData.value.isEmpty()) ? inputData.value[0] : ''}"
             >
@@ -20,6 +21,7 @@
             <div class="text-input-group__prefix">$</div>
             <input type="text"
                    class="text-input form-width--phone"
+                   th:id="${input.name}"
                    th:name="${formInputName}"
                    th:value="${(!inputData.value.isEmpty()) ? inputData.value[0] : ''}"
             >

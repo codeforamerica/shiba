@@ -6,15 +6,29 @@
      th:with="inputData=${data.get(input.name)}, formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)}">
     <div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${input})"></div>
     <p class="text--help">
-        <label th:for="${input.name}+'-month'">mm</label>/<label th:for="${input.name}+'-day'">dd</label>/<label
-            th:for="${input.name}+'-year'">yyyy</label>
+        <label th:for="${input.name}+'-month'"
+               th:text="#{general.month}"></label>
+        &nbsp;/&nbsp;
+        <label th:for="${input.name}+'-day'"
+               th:text="#{general.day}"></label>
+        &nbsp;/&nbsp;
+        <label th:for="${input.name}+'-year'"
+               th:text="#{general.year}"></label>
     </p>
     <input type="text" maxlength="2" class="text-input form-width--2-character dob-input"
-           th:id="${input.name}+'-month'" th:name="${formInputName}" th:value="${!inputData.value.isEmpty() ? inputData.value[0]: ''}">
-    &nbsp;/&nbsp; <input type="text" maxlength="2" class="text-input form-width--2-character dob-input"
-                         th:id="${input.name}+'-day'" th:name="${formInputName}" th:value="${!inputData.value.isEmpty() ? inputData.value[1]: ''}">
-    &nbsp;/&nbsp; <input type="text" maxlength="4" class="text-input form-width--4-character dob-input"
-                         th:id="${input.name}+'-year'" th:name="${formInputName}" th:value="${!inputData.value.isEmpty() ? inputData.value[2]: ''}">
+           th:id="${input.name}+'-month'" th:name="${formInputName}"
+           th:value="${!inputData.value.isEmpty() ? inputData.value[0]: ''}"
+           th:placeholder="mm"/>
+    &nbsp;/&nbsp;
+    <input type="text" maxlength="2" class="text-input form-width--2-character dob-input"
+           th:id="${input.name}+'-day'"
+           th:name="${formInputName}" th:value="${!inputData.value.isEmpty() ? inputData.value[1]: ''}"
+           th:placeholder="dd"/>
+    &nbsp;/&nbsp;
+    <input type="text" maxlength="4" class="text-input form-width--4-character dob-input"
+           th:id="${input.name}+'-year'"
+           th:name="${formInputName}" th:value="${!inputData.value.isEmpty() ? inputData.value[2]: ''}"
+           th:placeholder="yyyy"/>
     <p class="text--error" th:if="${!inputData.valid()}">
         <i class="icon-warning"></i>
         <span th:text="#{${input.validationErrorMessageKey}}"></span>
