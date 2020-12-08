@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.StaticMessageSource;
 
 @TestConfiguration
-class StaticMessageSourceConfiguration {
+public class StaticMessageSourceConfiguration {
     @Bean
     public MessageSource messageSource() {
         return new StaticMessageSource();
