@@ -34,14 +34,14 @@ class CoverPageInputsMapperTest extends AbstractBasePageTest {
     public void setUp() throws IOException {
         super.setUp();
         applicationData.setPagesData(pagesData);
-        coverPageInputsMapper = new CoverPageInputsMapper(countyInstructionsMapping, staticMessageSource);
-        countyInstructionsMapping.getCounties().put(County.Other, Map.of(
-                Recipient.CLIENT, "county-to-instructions.default-client",
-                Recipient.CASEWORKER, "county-to-instructions.default-caseworker"));
         staticMessageSource.addMessage("county-to-instructions.default-client", Locale.US, "Default client");
         staticMessageSource.addMessage("county-to-instructions.default-caseworker", Locale.US, "Default caseworker");
         staticMessageSource.addMessage("county-to-instructions.olmsted-caseworker", Locale.US, "Olmsted caseworker");
         staticMessageSource.addMessage("county-to-instructions.olmsted-client", Locale.US, "Olmsted client");
+        coverPageInputsMapper = new CoverPageInputsMapper(countyInstructionsMapping, staticMessageSource);
+        countyInstructionsMapping.getCounties().put(County.Other, Map.of(
+                Recipient.CLIENT, "county-to-instructions.default-client",
+                Recipient.CASEWORKER, "county-to-instructions.default-caseworker"));
     }
 
     @Test
