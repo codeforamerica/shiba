@@ -10,6 +10,7 @@ import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.support.StaticMessageSource;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.io.IOException;
 import java.time.ZonedDateTime;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ContextConfiguration(classes = StaticMessageSourceConfiguration.class)
 class CoverPageInputsMapperTest extends AbstractBasePageTest {
     private final CountyMap<Map<Recipient, String>> countyInstructionsMapping = new CountyMap<>();
     private CoverPageInputsMapper coverPageInputsMapper;
@@ -34,14 +36,14 @@ class CoverPageInputsMapperTest extends AbstractBasePageTest {
     public void setUp() throws IOException {
         super.setUp();
         applicationData.setPagesData(pagesData);
-        staticMessageSource.addMessage("county-to-instructions.default-client", Locale.US, "Default client");
-        staticMessageSource.addMessage("county-to-instructions.default-caseworker", Locale.US, "Default caseworker");
-        staticMessageSource.addMessage("county-to-instructions.olmsted-caseworker", Locale.US, "Olmsted caseworker");
-        staticMessageSource.addMessage("county-to-instructions.olmsted-client", Locale.US, "Olmsted client");
         coverPageInputsMapper = new CoverPageInputsMapper(countyInstructionsMapping, staticMessageSource);
         countyInstructionsMapping.getCounties().put(County.Other, Map.of(
                 Recipient.CLIENT, "county-to-instructions.default-client",
                 Recipient.CASEWORKER, "county-to-instructions.default-caseworker"));
+        staticMessageSource.addMessage("county-to-instructions.default-client", Locale.US, "Default client");
+        staticMessageSource.addMessage("county-to-instructions.default-caseworker", Locale.US, "Default caseworker");
+        staticMessageSource.addMessage("county-to-instructions.olmsted-caseworker", Locale.US, "Olmsted caseworker");
+        staticMessageSource.addMessage("county-to-instructions.olmsted-client", Locale.US, "Olmsted client");
     }
 
     @Test
