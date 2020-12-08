@@ -9,12 +9,12 @@ import org.codeforamerica.shiba.output.caf.CoverPageInputsMapper;
 import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.StaticMessageSource;
 
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -38,10 +38,10 @@ class CoverPageInputsMapperTest extends AbstractBasePageTest {
         countyInstructionsMapping.getCounties().put(County.Other, Map.of(
                 Recipient.CLIENT, "county-to-instructions.default-client",
                 Recipient.CASEWORKER, "county-to-instructions.default-caseworker"));
-        staticMessageSource.addMessage("county-to-instructions.default-client", Locale.US, "Default client");
-        staticMessageSource.addMessage("county-to-instructions.default-caseworker", Locale.US, "Default caseworker");
-        staticMessageSource.addMessage("county-to-instructions.olmsted-caseworker", Locale.US, "Olmsted caseworker");
-        staticMessageSource.addMessage("county-to-instructions.olmsted-client", Locale.US, "Olmsted client");
+        staticMessageSource.addMessage("county-to-instructions.default-client", LocaleContextHolder.getLocale(), "Default client");
+        staticMessageSource.addMessage("county-to-instructions.default-caseworker", LocaleContextHolder.getLocale(), "Default caseworker");
+        staticMessageSource.addMessage("county-to-instructions.olmsted-caseworker", LocaleContextHolder.getLocale(), "Olmsted caseworker");
+        staticMessageSource.addMessage("county-to-instructions.olmsted-client", LocaleContextHolder.getLocale(), "Olmsted client");
     }
 
     @Test
@@ -176,7 +176,7 @@ class CoverPageInputsMapperTest extends AbstractBasePageTest {
                 new ApplicationInput(
                         "coverPage",
                         "countyInstructions",
-                        List.of(staticMessageSource.getMessage(caseworkerCountyInstructions, null, Locale.US)),
+                        List.of(staticMessageSource.getMessage(caseworkerCountyInstructions, null, LocaleContextHolder.getLocale())),
                         ApplicationInputType.SINGLE_VALUE
                 ));
 
@@ -186,7 +186,7 @@ class CoverPageInputsMapperTest extends AbstractBasePageTest {
                 new ApplicationInput(
                         "coverPage",
                         "countyInstructions",
-                        List.of(staticMessageSource.getMessage(clientCountyInstructions, null, Locale.US)),
+                        List.of(staticMessageSource.getMessage(clientCountyInstructions, null, LocaleContextHolder.getLocale())),
                         ApplicationInputType.SINGLE_VALUE
                 ));
     }
