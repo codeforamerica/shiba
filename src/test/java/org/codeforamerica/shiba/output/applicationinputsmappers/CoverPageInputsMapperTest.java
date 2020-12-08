@@ -179,7 +179,7 @@ class CoverPageInputsMapperTest extends AbstractBasePageTest {
                 new ApplicationInput(
                         "coverPage",
                         "countyInstructions",
-                        List.of(staticMessageSource.getMessage(caseworkerCountyInstructions, null, Locale.US)),
+                        List.of(staticMessageSource.getMessage(caseworkerCountyInstructions, null, LocaleContextHolder.getLocale())),
                         ApplicationInputType.SINGLE_VALUE
                 ));
 
@@ -189,7 +189,7 @@ class CoverPageInputsMapperTest extends AbstractBasePageTest {
                 new ApplicationInput(
                         "coverPage",
                         "countyInstructions",
-                        List.of(staticMessageSource.getMessage(clientCountyInstructions, null, Locale.US)),
+                        List.of(staticMessageSource.getMessage(clientCountyInstructions, null, LocaleContextHolder.getLocale())),
                         ApplicationInputType.SINGLE_VALUE
                 ));
     }
