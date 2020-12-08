@@ -2684,27 +2684,6 @@
 			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
-	<xsd:element name="AuthorizedRepresentative" >
-		<xsd:complexType>
-			<xsd:sequence>
-				<xsd:element name="LegalGuardianInd" type="xsd:boolean" minOccurs="0">
-					<xsd:annotation>
-						<xsd:documentation>F# 82</xsd:documentation>
-					</xsd:annotation>
-				</xsd:element>
-				<xsd:element name="SomeoneActAsRepresentativeInd" type="xsd:boolean" minOccurs="0">
-					<xsd:annotation>
-						<xsd:documentation>F# 82</xsd:documentation>
-					</xsd:annotation>
-				</xsd:element>
-				<xsd:element name="Representative" type="model:RepresentativeType" minOccurs="0">
-					<xsd:annotation>
-						<xsd:documentation>F# 82 - 96</xsd:documentation>
-					</xsd:annotation>
-				</xsd:element>
-			</xsd:sequence>
-		</xsd:complexType>
-	</xsd:element>
 	<xsd:simpleType name="AccidentType">
 		<xsd:annotation>
 			<xsd:documentation>AccidentType</xsd:documentation>
