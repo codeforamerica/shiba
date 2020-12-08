@@ -11,18 +11,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.StaticMessageSource;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ContextConfiguration(classes = StaticMessageSourceConfiguration.class)
 class CoverPageInputsMapperTest extends AbstractBasePageTest {
     private final CountyMap<Map<Recipient, String>> countyInstructionsMapping = new CountyMap<>();
     private CoverPageInputsMapper coverPageInputsMapper;
