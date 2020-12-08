@@ -9,6 +9,7 @@ import org.codeforamerica.shiba.output.caf.CoverPageInputsMapper;
 import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.StaticMessageSource;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -40,10 +41,10 @@ class CoverPageInputsMapperTest extends AbstractBasePageTest {
         countyInstructionsMapping.getCounties().put(County.Other, Map.of(
                 Recipient.CLIENT, "county-to-instructions.default-client",
                 Recipient.CASEWORKER, "county-to-instructions.default-caseworker"));
-        staticMessageSource.addMessage("county-to-instructions.default-client", Locale.US, "Default client");
-        staticMessageSource.addMessage("county-to-instructions.default-caseworker", Locale.US, "Default caseworker");
-        staticMessageSource.addMessage("county-to-instructions.olmsted-caseworker", Locale.US, "Olmsted caseworker");
-        staticMessageSource.addMessage("county-to-instructions.olmsted-client", Locale.US, "Olmsted client");
+        staticMessageSource.addMessage("county-to-instructions.default-client", LocaleContextHolder.getLocale(), "Default client");
+        staticMessageSource.addMessage("county-to-instructions.default-caseworker", LocaleContextHolder.getLocale(), "Default caseworker");
+        staticMessageSource.addMessage("county-to-instructions.olmsted-caseworker", LocaleContextHolder.getLocale(), "Olmsted caseworker");
+        staticMessageSource.addMessage("county-to-instructions.olmsted-client", LocaleContextHolder.getLocale(), "Olmsted client");
     }
 
     @Test
