@@ -171,6 +171,12 @@ caf:
       getMailNotices: AUTHORIZED_REP_GET_NOTICES
     spendOnYourBehalf:
       spendOnYourBehalf: AUTHORIZED_REP_SPEND_ON_YOUR_BEHALF
+    helperContactInfo:
+      helpersFullName: AUTHORIZED_REP_NAME
+      helpersStreetAddress: AUTHORIZED_REP_ADDRESS
+      helpersCity: AUTHORIZED_REP_CITY
+      helpersZipCode: AUTHORIZED_REP_ZIP_CODE
+      helpersPhoneNumber: AUTHORIZED_REP_PHONE_NUMBER
     employee:
       firstName: EMPLOYEE_FIRST_NAME
       lastName: EMPLOYEE_LAST_NAME

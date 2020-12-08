@@ -393,12 +393,22 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.clickButton("No, that's it.");
     }
 
+    private void fillOutHelperInfo() {
+        testPage.enter("helpersFullName", "defaultFirstName defaultLastName");
+        testPage.enter("helpersStreetAddress", "someStreetAddress");
+        testPage.enter("helpersCity", "someCity");
+        testPage.enter("helpersZipCode", "12345");
+        testPage.enter("helpersPhoneNumber", "7234567890");
+        testPage.clickContinue();
+    }
+
     private void completeHelperWorkflow() {
         if (new Random().nextBoolean()) {
             testPage.enter("helpWithBenefits", YES.getDisplayValue());
             testPage.enter("communicateOnYourBehalf", YES.getDisplayValue());
             testPage.enter("getMailNotices", YES.getDisplayValue());
             testPage.enter("spendOnYourBehalf", YES.getDisplayValue());
+            fillOutHelperInfo();
         } else {
             testPage.enter("helpWithBenefits", NO.getDisplayValue());
         }

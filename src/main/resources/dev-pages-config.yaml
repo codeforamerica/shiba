@@ -1682,6 +1682,40 @@ pageDefinitions:
     pageTitle:
       value: spend-on-your-behalf.title
     hasPrimaryButton: false
+  - &helperContactInfo
+    name: helperContactInfo
+    pageTitle:
+      value: helper-contact-info.title
+    headerKey:
+      value: helper-contact-info.lets-get-your-helpers-contact-information
+    headerHelpMessageKey:
+      value: helper-contact-info.we-need-to-send-this-information-to-your-county
+    inputs:
+      - name: helpersFullName
+        type: TEXT
+        promptMessage:
+          promptMessageKey: helper-contact-info.whats-their-name
+      - name: helpersStreetAddress
+        type: TEXT
+        promptMessage:
+          promptMessageKey: helper-contact-info.whats-their-street-address
+      - name: helpersCity
+        type: TEXT
+        promptMessage:
+          promptMessageKey: helper-contact-info.what-city-do-they-live-in
+      - name: helpersZipCode
+        type: TEXT
+        promptMessage:
+          promptMessageKey: helper-contact-info.what-is-their-zip-code
+      - name: helpersPhoneNumber
+        type: PHONE
+        promptMessage:
+          promptMessageKey: helper-contact-info.what-is-their-phone-number
+        validators:
+          - validation: PHONE_STARTS_WITH_ONE
+            errorMessageKey: general.validation.area-codes-can-not-begin-with-1
+          - validation: PHONE
+            errorMessageKey: general.validation.make-sure-to-enter-a-phone-number-with-10-digits
 workflow:
   landing:
     pageConfiguration: *landing
@@ -2185,7 +2219,23 @@ workflow:
   spendOnYourBehalf:
     pageConfiguration: *spendOnYourBehalf
     nextPages:
+      - pageName: helperContactInfo
+  helperContactInfo:
+    pageConfiguration: *helperContactInfo
+    nextPages:
       - pageName: importantToKnow
+    skipCondition:
+      logicalOperator: AND
+      conditions:
+        - pageName: authorizedRep
+          input: communicateOnYourBehalf
+          value: "false"
+        - pageName: speakToCounty
+          input: getMailNotices
+          value: "false"
+        - pageName: spendOnYourBehalf
+          input: spendOnYourBehalf
+          value: "false"
   jobSearch:
     pageConfiguration: *jobSearch
     skipCondition:
