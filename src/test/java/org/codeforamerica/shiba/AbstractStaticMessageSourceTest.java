@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.Locale;
 
 @ContextConfiguration(classes = StaticMessageSourceConfiguration.class)
-public class AbstractStaticMessageSourceTest {
+public class AbstractStaticMessageSourceTest extends AbstractBasePageTest {
     @Autowired
     private MessageSource messageSource;
 

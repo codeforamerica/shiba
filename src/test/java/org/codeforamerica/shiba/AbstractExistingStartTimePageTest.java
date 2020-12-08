@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.time.Instant;
 
 @Import(AbstractExistingStartTimePageTest.TestController.class)
-public class AbstractExistingStartTimePageTest extends AbstractBasePageTest {
+public class AbstractExistingStartTimePageTest extends AbstractStaticMessageSourceTest {
 
     @Override
     @BeforeEach
