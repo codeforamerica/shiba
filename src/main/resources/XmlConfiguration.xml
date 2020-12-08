@@ -328,6 +328,11 @@
             </ns4:UtilityPaymentsFor>
         </ns4:ExpeditedFSInfo>
         <ns4:RepresentativeRole>{{AUTHORIZED_REP_FILL_OUT_FORM_XML}}</ns4:RepresentativeRole>
+        <ns4:Representative>
+            <ns4:Name>{{AUTHORIZED_REP_NAME}}</ns4:Name>
+            <ns4:MailingAddress>{{AUTHORIZED_REP_ADDRESS}}</ns4:MailingAddress>
+            <ns4:Phone>{{AUTHORIZED_REP_PHONE_NUMBER</ns4:Phone>
+        </ns4:Representative>
         <ns4:HouseholdExpenseInfo>
             <ns4:LIHEAPInd>{{RECEIVED_LIHEAP}}</ns4:LIHEAPInd>
         </ns4:HouseholdExpenseInfo>

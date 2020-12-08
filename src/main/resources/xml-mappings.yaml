@@ -127,6 +127,12 @@ xml:
       haveSoldAssets: HAVE_SOLD_ASSETS
     authorizedRep:
       authorizedRepFillForm: AUTHORIZED_REP_FILL_OUT_FORM_XML
+    helperContactInfo:
+      helpersFullName: AUTHORIZED_REP_NAME
+      helpersStreetAddress: AUTHORIZED_REP_ADDRESS
+      helpersCity: AUTHORIZED_REP_CITY
+      helpersZipCode: AUTHORIZED_REP_ZIP_CODE
+      helpersPhoneNumber: AUTHORIZED_REP_PHONE_NUMBER
     employersName:
       employersName: EMPLOYERS_NAME
     hoursAWeek:
