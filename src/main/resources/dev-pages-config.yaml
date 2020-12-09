@@ -535,6 +535,7 @@ pageDefinitions:
           - CASH
           - EA
           - GRH
+          - CCAP
         followUps:
           - name: ssn
             type: SSN
@@ -558,6 +559,8 @@ pageDefinitions:
               messageKey: choose-programs.cash-programs
             - value: EA
               messageKey: choose-programs.emergency-assistance
+            - value: CCAP
+              messageKey: choose-programs.child-care-assistance
             - value: GRH
               messageKey: choose-programs.housing-support-group-residential-housing
             - value: NONE

@@ -370,7 +370,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     private void fillOutHousemateInfo() {
         testPage.enter("relationship", "housemate");
-        testPage.enter("programs", "Emergency Assistance");
+        testPage.enter("programs", "Child Care Assistance");
         fillOutPersonInfo(); // need to fill out programs checkbox set above first
         testPage.enter("moveToMnPreviousState", "Illinois");
     }

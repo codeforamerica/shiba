@@ -559,7 +559,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
 
         testPage.enter("firstName", "Jim");
         testPage.enter("lastName", "Halpert");
-        testPage.enter("programs", "None of the above");
+        testPage.enter("programs", "Child Care Assistance");
         testPage.clickContinue();
     }
 
