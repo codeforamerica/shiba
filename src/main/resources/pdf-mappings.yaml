@@ -12,7 +12,6 @@ caf:
       dateOfBirth: DATE_OF_BIRTH
       ssn: APPLICANT_SSN
       sex: APPLICANT_SEX
-      sexText: APPLICANT_SEX_TEXT
       moveToMnDate: DATE_OF_MOVING_TO_MN
       moveToMnPreviousCity: APPLICANT_PREVIOUS_STATE
     choosePrograms:
@@ -42,7 +41,6 @@ caf:
     contactInfo:
       phoneNumber: APPLICANT_PHONE_NUMBER
       email: APPLICANT_EMAIL
-      communicationOptIn: COMMUNICATION_OPT_IN
       phoneOrEmail:
         TEXT: PHONE_OPTIN
         EMAIL: EMAIL_OPTIN
@@ -197,8 +195,6 @@ caf:
       incomePerPayPeriod: INCOME_PER_PAY_PERIOD
     totalIncome:
       thirtyDayIncome: MONEY_MADE_LAST_MONTH
-    household:
-      count: TOTAL_HOUSEHOLD
     householdPregnancy:
       householdPregnancy: WHO_IS_PREGNANT
     householdNonUsCitizen:
