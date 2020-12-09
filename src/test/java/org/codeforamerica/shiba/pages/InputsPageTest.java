@@ -55,6 +55,9 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
         staticMessageSource.addMessage("prompt-message-key", Locale.ENGLISH, promptMessage);
         staticMessageSource.addMessage("help-message-key", Locale.ENGLISH, helpMessage);
         staticMessageSource.addMessage("option-help-key", Locale.ENGLISH, optionHelpMessage);
+        staticMessageSource.addMessage("general.month", Locale.ENGLISH, "month");
+        staticMessageSource.addMessage("general.day", Locale.ENGLISH, "day");
+        staticMessageSource.addMessage("general.year", Locale.ENGLISH, "year");
     }
 
     @Test
