@@ -62,6 +62,12 @@ test-parsing:
         pageName: homeAddressPageName
         inputName: addressLine6
         defaultValue: Hennepin
+      isHomeless:
+        pageName: homeAddressPageName
+        inputName: addressLine7
+      sameMailingAddress:
+        pageName: homeAddressPageName
+        inputName: addressLine8
   mailingAddress:
     pageInputs:
       street:
@@ -79,6 +85,10 @@ test-parsing:
       apartmentNumber:
         pageName: mailingAddressPageName
         inputName: addressLine5
+      county:
+        pageName: mailingAddressPageName
+        inputName: addressLine6
+        defaultValue: Hennepin
   contactInfo:
     pageInputs:
       email:

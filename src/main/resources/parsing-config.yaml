@@ -63,6 +63,12 @@ parsing:
         pageName: homeAddress
         inputName: enrichedCounty
         defaultValue: Other
+      isHomeless:
+        pageName: homeAddress
+        inputName: isHomeless
+      sameMailingAddress:
+        pageName: homeAddress
+        inputName: sameMailingAddress
   mailingAddress:
     pageInputs:
       street:
@@ -80,6 +86,10 @@ parsing:
       apartmentNumber:
         pageName: mailingAddress
         inputName: apartmentNumber
+      county:
+        pageName: mailingAddress
+        inputName: enrichedCounty
+        defaultValue: Other
   contactInfo:
     pageInputs:
       email:
