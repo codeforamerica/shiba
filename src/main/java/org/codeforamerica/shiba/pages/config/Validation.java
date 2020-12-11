@@ -19,7 +19,8 @@ public enum Validation {
             .contains(strings.get(0).toUpperCase())),
     PHONE(strings -> String.join("", strings).replaceAll("[^\\d]", "").matches("[2-9]\\d{9}")),
     PHONE_STARTS_WITH_ONE(strings -> !String.join("", strings).replaceAll("[^\\d]", "").startsWith("1")),
-    MONEY(strings -> String.join("", strings).matches("\\d+(\\.\\d{2})?"));
+    MONEY(strings -> String.join("", strings).matches("\\d+(\\.\\d{2})?")),
+    EMAIL(strings -> String.join("", strings).matches("[a-z0-9!#$%&'*+=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"));
 
     private final Predicate<List<String>> rule;
 

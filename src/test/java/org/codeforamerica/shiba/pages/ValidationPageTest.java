@@ -38,6 +38,7 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
     private final String option1 = "option 1";
     private final String multipleValidationsPageTitle = "multiple validations page title";
     private final String moneyErrorMessageKey = "money is error";
+    private final String emailPageTitle = "email page title";
 
     Page testPage;
 
@@ -58,6 +59,7 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         staticMessageSource.addMessage("money-page-title", Locale.ENGLISH, moneyPageTitle);
         staticMessageSource.addMessage("ssn-page-title", Locale.ENGLISH, ssnPageTitle);
         staticMessageSource.addMessage("date-page-title", Locale.ENGLISH, datePageTitle);
+        staticMessageSource.addMessage("email-page-title", Locale.ENGLISH, emailPageTitle);
         staticMessageSource.addMessage("not-blank-page-title", Locale.ENGLISH, notBlankPageTitle);
         staticMessageSource.addMessage("checkbox-page-title", Locale.ENGLISH, checkboxPageTitle);
         staticMessageSource.addMessage("option-1", Locale.ENGLISH, option1);
@@ -404,6 +406,21 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
             testPage.enter("checkboxInput", option1);
             testPage.clickContinue();
             assertThat(testPage.getTitle()).isEqualTo(lastPageTitle);
+        }
+
+        @ParameterizedTest
+        @CsvSource(value = {
+                "asdf, " + emailPageTitle,
+                "almost@.com, " + emailPageTitle,
+                "\" \" , " + emailPageTitle,
+                "fake@test.com, " + lastPageTitle,
+        })
+        void shouldPassValidationForEMAILWhenThereIsAValidEmail(String emailInput, String expectedPage) {
+            driver.navigate().to(baseUrl + "/pages/pageWithEmail");
+            testPage.enter("emailInput", emailInput);
+
+            testPage.clickContinue();
+            assertThat(testPage.getTitle()).isEqualTo(expectedPage);
         }
     }
 

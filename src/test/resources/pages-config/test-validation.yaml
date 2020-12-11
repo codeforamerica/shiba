@@ -165,6 +165,16 @@ pageDefinitions:
             errorMessageKey: not-blank-error-message-key
           - validation: MONEY
             errorMessageKey: money-error-message-key
+  - &pageWithEmail
+    name: pageWithEmail
+    pageTitle:
+      value: email-page-title
+    inputs:
+      - name: emailInput
+        type: TEXT
+        validators:
+          - validation: EMAIL
+            errorMessageKey: error-message-key
   - &lastPage
       name: lastPage
       pageTitle:
@@ -223,6 +233,10 @@ workflow:
       - pageName: lastPage
   emptyInputConditionPage:
     pageConfiguration: *emptyInputConditionPage
+    nextPages:
+      - pageName: lastPage
+  pageWithEmail:
+    pageConfiguration: *pageWithEmail
     nextPages:
       - pageName: lastPage
   lastPage:
