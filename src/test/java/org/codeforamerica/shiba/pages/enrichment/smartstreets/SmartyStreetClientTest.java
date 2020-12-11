@@ -130,7 +130,8 @@ class SmartyStreetClientTest {
                         "      \"plus4_code\": \"1103\",\n" +
                         "      \"secondary_number\": \"1104\",\n" +
                         "      \"secondary_designator\": \"apt\"\n" +
-                        "    }\n" +
+                        "    },\n" +
+                        "   \"delivery_line_1\": \"222 Merchandise Mart Plz\"\n" +
                         "  }\n" +
                         "]")));
 
@@ -179,7 +180,8 @@ class SmartyStreetClientTest {
                         "      \"state_abbreviation\": \"IL\",\n" +
                         "      \"zipcode\": \"60654\",\n" +
                         "      \"plus4_code\": \"1103\"\n" +
-                        "    }\n" +
+                        "    },\n" +
+                        "   \"delivery_line_1\": \"222 Merchandise Mart Plz\"\n" +
                         "  }\n" +
                         "]")));
 

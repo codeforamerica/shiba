@@ -49,10 +49,7 @@ public class SmartyStreetClient implements LocationClient {
                 .map(addressCandidate -> {
                     Components components = addressCandidate.getComponents();
                     return new Address(
-                            String.format(
-                                    "%s %s %s",
-                                    components.getPrimaryNumber(), components.getStreetName(), components.getStreetSuffix()
-                            ),
+                            addressCandidate.getDeliveryLine1(),
                             components.getCityName(),
                             components.getStateAbbreviation(),
                             components.getZipcode() + "-" + components.getPlus4Code(),
