@@ -56,7 +56,7 @@ From the project root invoke
 
 - Using an automatic form filler makes manual test easier.
 - Install [Fake Filler for Chrome](https://chrome.google.com/webstore/detail/fake-filler/bnjjngeaknajbdcgpfkgnonkmififhfo)
-- Go to the [fakeFillerConfig.txt], click on "Raw", then save the file to your computer.
+- Go to [fakeFillerConfig.txt](fakeFIllerConfig.txt), click on "Raw", then save the file to your computer.
 - Open the Fake Filler Options then click on [Backup and Restore](chrome-extension://bnjjngeaknajbdcgpfkgnonkmififhfo/options.html#/backup)
 - Click on "Import Settings" and upload the config file that you saved above.
 - Click on [Keyboard Shortcuts](chrome-extension://bnjjngeaknajbdcgpfkgnonkmififhfo/options.html#/keyboard-shortcuts) to chooce the shortcut you want to use to fill out the page. 
