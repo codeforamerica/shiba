@@ -35,6 +35,7 @@ caf:
         SNAP: FOOD
         CASH: CASH
         EA: EMERGENCY
+        CCAP: CCAP
       programList: PROGRAMS
     preparingMealsTogether:
       isPreparingMealsTogether: PREPARING_MEALS_TOGETHER
