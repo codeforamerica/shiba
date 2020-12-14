@@ -2259,6 +2259,7 @@ workflow:
     datasources:
       - pageName: doYouLiveAlone
       - pageName: jobSearch
+      - pageName: choosePrograms
     skipCondition:
       logicalOperator: OR
       conditions:
@@ -2266,6 +2267,10 @@ workflow:
         - pageName: jobSearch
           input: currentlyLookingForJob
           value: "false"
+        - pageName: choosePrograms
+          value: CCAP
+          input: programs
+          matcher: DOES_NOT_CONTAIN
   doYouNeedHelpImmediately:
     pageConfiguration: *doYouNeedHelpImmediately
     nextPages:
