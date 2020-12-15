@@ -15,7 +15,7 @@ class NonHourlyJobIncomeInformationTest {
             "IT_VARIES,1.1"
     })
     void shouldCalculateGrossMonthlyIncome(String payPeriod, Double income) {
-        assertThat(new NonHourlyJobIncomeInformation(payPeriod, "1.1", 0).grossMonthlyIncome())
+        assertThat(new NonHourlyJobIncomeInformation(payPeriod, "1.1", 0, null).grossMonthlyIncome())
                 .isEqualTo(income);
     }
 }

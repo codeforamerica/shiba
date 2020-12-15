@@ -80,17 +80,15 @@ public class SubworkflowInputMapper implements ApplicationInputsMapper {
                                                                 valuesForInput,
                                                                 ApplicationInputsMapper.formInputTypeToApplicationInputType(inputType),
                                                                 subworkflow.indexOf(iteration)));
-                                                        if (scopeTracker != null) {
-                                                            IterationScopeInfo scopeInfo = scopeTracker.getIterationScopeInfo(pageGroupConfiguration, iteration);
-                                                            if (scopeInfo != null) {
-                                                                inputs = Stream.concat(inputs, Stream.of(new ApplicationInput(
-                                                                        scopeInfo.getScope() + "_" + pageName,
-                                                                        inputName,
-                                                                        valuesForInput,
-                                                                        ApplicationInputsMapper.formInputTypeToApplicationInputType(inputType),
-                                                                        scopeInfo.getIndex()
-                                                                )));
-                                                            }
+                                                        IterationScopeInfo scopeInfo = scopeTracker.getIterationScopeInfo(pageGroupConfiguration, iteration);
+                                                        if (scopeInfo != null) {
+                                                            inputs = Stream.concat(inputs, Stream.of(new ApplicationInput(
+                                                                    scopeInfo.getScope() + "_" + pageName,
+                                                                    inputName,
+                                                                    valuesForInput,
+                                                                    ApplicationInputsMapper.formInputTypeToApplicationInputType(inputType),
+                                                                    scopeInfo.getIndex()
+                                                            )));
                                                         }
                                                         return inputs;
                                                     });

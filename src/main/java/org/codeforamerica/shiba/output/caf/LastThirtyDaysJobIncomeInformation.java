@@ -1,14 +1,17 @@
 package org.codeforamerica.shiba.output.caf;
 
 import lombok.Value;
+import org.codeforamerica.shiba.pages.data.Iteration;
 
 @Value
 public class LastThirtyDaysJobIncomeInformation implements JobIncomeInformation {
     Double lastThirtyDaysIncome;
-    int iteration;
+    int indexInJobsSubworkflow;
+    Iteration iteration;
 
-    public LastThirtyDaysJobIncomeInformation(String lastThirtyDaysIncome, int iteration) {
+    public LastThirtyDaysJobIncomeInformation(String lastThirtyDaysIncome, int indexInJobsSubworkflow, Iteration iteration) {
         this.lastThirtyDaysIncome = lastThirtyDaysIncome.isBlank() ? 0.0 : Double.parseDouble(lastThirtyDaysIncome);
+        this.indexInJobsSubworkflow = indexInJobsSubworkflow;
         this.iteration = iteration;
     }
 
@@ -21,10 +24,4 @@ public class LastThirtyDaysJobIncomeInformation implements JobIncomeInformation 
     public Double grossMonthlyIncome() {
         return lastThirtyDaysIncome;
     }
-
-    @Override
-    public int getIteration() {
-        return iteration;
-    }
-
 }

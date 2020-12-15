@@ -128,11 +128,13 @@ mappings:
   employersName:
     employersName: EMPLOYERS_NAME
   hourlyWage:
-    hourlyWage: [HOURLY_WAGE, INCOME_PER_PAY_PERIOD]
+    hourlyWage: [ HOURLY_WAGE, INCOME_PER_PAY_PERIOD ]
   nonSelfEmployment_hourlyWage:
     hourlyWage: NON_SELF_EMPLOYMENT_HOURLY_WAGE
   payPeriod:
     payPeriod: PAY_FREQUENCY
+  nonSelfEmployment_payPeriod:
+    payPeriod: NON_SELF_EMPLOYMENT_PAY_FREQUENCY
   employmentStatus:
     areYouWorking: IS_WORKING
   homeExpenses:
@@ -187,10 +189,12 @@ mappings:
     employersName: NON_SELF_EMPLOYMENT_EMPLOYERS_NAME
   selfEmployment:
     selfEmployment: SELF_EMPLOYMENT
+  nonSelfEmployment_employee:
+    grossMonthlyIncome: NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME
   selfEmployment_employee:
     firstName: SELF_EMPLOYMENT_EMPLOYEE_FIRST_NAME
     lastName: SELF_EMPLOYMENT_EMPLOYEE_LAST_NAME
-    selfEmployedGrossMonthlyEarnings: SELF_EMPLOYED_GROSS_MONTHLY_EARNINGS
+    grossMonthlyIncome: SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME
   selfEmployment_hoursAWeek:
     hoursAWeek: SELF_EMPLOYMENT_HOURS_A_WEEK
   nonSelfEmployment_hoursAWeek:

@@ -25,8 +25,8 @@ class TotalIncomeCalculatorTest {
                 new TotalIncome(
                         9999.0,
                         List.of(
-                                new NonHourlyJobIncomeInformation("EVERY_MONTH", "10", 0),
-                                new HourlyJobIncomeInformation("25", "1", 0)
+                                new NonHourlyJobIncomeInformation("EVERY_MONTH", "10", 0, null),
+                                new HourlyJobIncomeInformation("25", "1", 0, null)
                         )
                 )
         )).isEqualTo(110.0);
