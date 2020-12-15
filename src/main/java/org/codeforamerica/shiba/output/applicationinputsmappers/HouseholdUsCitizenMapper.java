@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class HouseholdUsCitizenMapper implements ApplicationInputsMapper {
 
     @Override
-    public List<ApplicationInput> map(Application application, Recipient recipient) {
+    public List<ApplicationInput> map(Application application, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
 
         List<String> nonUsCitizenHouseholdMembers = Optional.ofNullable(application.getApplicationData().getPageData("whoIsNonCitizen"))
                 .map(pageData -> pageData.get("whoIsNonCitizen"))

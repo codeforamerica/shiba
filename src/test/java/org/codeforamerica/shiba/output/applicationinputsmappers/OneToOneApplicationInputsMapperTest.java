@@ -51,7 +51,7 @@ class OneToOneApplicationInputsMapperTest {
                 .county(County.Other)
                 .timeToComplete(null)
                 .build();
-        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, Recipient.CLIENT);
+        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, Recipient.CLIENT, null);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput(pageName, input1Name, input1Value, ApplicationInputType.SINGLE_VALUE)
@@ -91,7 +91,7 @@ class OneToOneApplicationInputsMapperTest {
                 .timeToComplete(null)
                 .build();
 
-        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, Recipient.CLIENT);
+        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, Recipient.CLIENT, null);
 
         assertThat(applicationInputs)
                 .contains(new ApplicationInput(pageName, input1Name, List.of(maskedValue), ApplicationInputType.SINGLE_VALUE));
@@ -130,7 +130,7 @@ class OneToOneApplicationInputsMapperTest {
                 .timeToComplete(null)
                 .build();
 
-        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, Recipient.CLIENT);
+        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, Recipient.CLIENT, null);
 
         assertThat(applicationInputs)
                 .contains(new ApplicationInput(pageName, input1Name, List.of(""), ApplicationInputType.SINGLE_VALUE));
@@ -169,7 +169,7 @@ class OneToOneApplicationInputsMapperTest {
                 .timeToComplete(null)
                 .build();
 
-        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, Recipient.CASEWORKER);
+        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, Recipient.CASEWORKER, null);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput(pageName, input1Name, input1Value, ApplicationInputType.SINGLE_VALUE)
@@ -212,7 +212,7 @@ class OneToOneApplicationInputsMapperTest {
                 .county(County.Other)
                 .timeToComplete(null)
                 .build();
-        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, Recipient.CLIENT);
+        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, Recipient.CLIENT, null);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput(pageName, input2Name, input2Value, ApplicationInputType.SINGLE_VALUE),

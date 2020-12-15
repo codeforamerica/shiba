@@ -5,6 +5,7 @@ import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMapper;
+import org.codeforamerica.shiba.output.applicationinputsmappers.SubworkflowIterationScopeTracker;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class GrossMonthlyIncomeMapper implements ApplicationInputsMapper {
     }
 
     @Override
-    public List<ApplicationInput> map(Application application, Recipient recipient) {
+    public List<ApplicationInput> map(Application application, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
         return grossMonthlyIncomeParser.parse(application.getApplicationData()).stream()
                 .map(jobIncomeInformation ->
                         new ApplicationInput(

@@ -26,7 +26,7 @@ class GrossMonthlyIncomeMapperTest {
                 new HourlyJobIncomeInformation("12", "30", 0),
                 new HourlyJobIncomeInformation("6", "45", 1)
         ));
-        List<ApplicationInput> applicationInputs = grossMonthlyIncomeMapper.map(application, Recipient.CLIENT);
+        List<ApplicationInput> applicationInputs = grossMonthlyIncomeMapper.map(application, Recipient.CLIENT, null);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput("employee", "grossMonthlyIncome", List.of("1440.0"), SINGLE_VALUE, 0),

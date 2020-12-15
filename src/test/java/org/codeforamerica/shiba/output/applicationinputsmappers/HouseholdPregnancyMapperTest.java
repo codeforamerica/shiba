@@ -29,7 +29,7 @@ class HouseholdPregnancyMapperTest {
 
         List<ApplicationInput> result = mapper.map(Application.builder()
                 .applicationData(applicationData)
-                .build(), null);
+                .build(), null, null);
 
         assertThat(result).contains(new ApplicationInput(
                 "householdPregnancy",

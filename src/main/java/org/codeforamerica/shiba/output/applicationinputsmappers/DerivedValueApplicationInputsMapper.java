@@ -20,7 +20,7 @@ public class DerivedValueApplicationInputsMapper implements ApplicationInputsMap
     }
 
     @Override
-    public List<ApplicationInput> map(Application application, Recipient recipient) {
+    public List<ApplicationInput> map(Application application, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
         ApplicationData data = application.getApplicationData();
         return this.derivedValuesConfiguration.stream()
                 .map(potentialDerivedValues -> potentialDerivedValues

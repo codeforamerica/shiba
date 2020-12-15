@@ -55,7 +55,7 @@ class CoverPageInputsMapperTest extends AbstractBasePageTest {
                 .county(County.Other)
                 .build();
 
-        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, Recipient.CLIENT);
+        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, Recipient.CLIENT, null);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput(
@@ -84,7 +84,7 @@ class CoverPageInputsMapperTest extends AbstractBasePageTest {
                 .county(County.Other)
                 .build();
 
-        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, Recipient.CLIENT);
+        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, Recipient.CLIENT, null);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput(
@@ -114,7 +114,7 @@ class CoverPageInputsMapperTest extends AbstractBasePageTest {
                 .county(County.Other)
                 .build();
 
-        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, Recipient.CLIENT);
+        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, Recipient.CLIENT, null);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput(
@@ -133,7 +133,7 @@ class CoverPageInputsMapperTest extends AbstractBasePageTest {
                 .county(County.Other)
                 .build();
 
-        List<String> appInputNames = coverPageInputsMapper.map(application, Recipient.CLIENT).stream()
+        List<String> appInputNames = coverPageInputsMapper.map(application, Recipient.CLIENT, null).stream()
                 .map(ApplicationInput::getName)
                 .collect(Collectors.toList());
 
@@ -147,7 +147,7 @@ class CoverPageInputsMapperTest extends AbstractBasePageTest {
                 .county(County.Other)
                 .build();
 
-        List<String> appInputNames = coverPageInputsMapper.map(application, Recipient.CLIENT).stream()
+        List<String> appInputNames = coverPageInputsMapper.map(application, Recipient.CLIENT, null).stream()
                 .map(ApplicationInput::getName)
                 .collect(Collectors.toList());
 
@@ -170,7 +170,7 @@ class CoverPageInputsMapperTest extends AbstractBasePageTest {
                 Recipient.CASEWORKER, caseworkerCountyInstructions
         ));
 
-        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, Recipient.CASEWORKER);
+        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, Recipient.CASEWORKER, null);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput(
@@ -180,7 +180,7 @@ class CoverPageInputsMapperTest extends AbstractBasePageTest {
                         ApplicationInputType.SINGLE_VALUE
                 ));
 
-        applicationInputs = coverPageInputsMapper.map(application, Recipient.CLIENT);
+        applicationInputs = coverPageInputsMapper.map(application, Recipient.CLIENT, null);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput(
@@ -206,7 +206,7 @@ class CoverPageInputsMapperTest extends AbstractBasePageTest {
                 .timeToComplete(null)
                 .build();
 
-        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, Recipient.CLIENT);
+        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, Recipient.CLIENT, null);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput("coverPage", "fullName", List.of("someFirstName someLastName"), ApplicationInputType.SINGLE_VALUE)

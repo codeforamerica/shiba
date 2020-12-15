@@ -34,7 +34,7 @@ class ExpeditedEligibilityMapperTest {
 
         when(mockDecider.decide(any())).thenReturn(ExpeditedEligibility.ELIGIBLE);
 
-        assertThat(mapper.map(application, Recipient.CLIENT)).containsExactly(
+        assertThat(mapper.map(application, Recipient.CLIENT, null)).containsExactly(
                 new ApplicationInput(
                         "expeditedEligibility",
                         "expeditedEligibility",
@@ -61,7 +61,7 @@ class ExpeditedEligibilityMapperTest {
 
         when(mockDecider.decide(any())).thenReturn(ExpeditedEligibility.NOT_ELIGIBLE);
 
-        List<ApplicationInput> result = mapper.map(application, Recipient.CLIENT);
+        List<ApplicationInput> result = mapper.map(application, Recipient.CLIENT, null);
 
         verify(mockDecider).decide(appData);
         assertThat(result).containsExactly(

@@ -5,6 +5,7 @@ import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMapper;
+import org.codeforamerica.shiba.output.applicationinputsmappers.SubworkflowIterationScopeTracker;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +14,7 @@ import java.util.List;
 @Component
 public class HomeAddressStreetMapper implements ApplicationInputsMapper {
     @Override
-    public List<ApplicationInput> map(Application application, Recipient recipient) {
+    public List<ApplicationInput> map(Application application, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
         PageData homeAddressPageData = application.getApplicationData().getPagesData().getPage("homeAddress");
         if (homeAddressPageData == null) {
             return List.of();

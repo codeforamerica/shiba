@@ -16,6 +16,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -105,6 +107,6 @@ class ApplicationInputsMappersTest {
                 .build();
         applicationInputsMappers.map(application, CASEWORKER);
 
-        verify(mapper).map(application, CASEWORKER);
+        verify(mapper).map(eq(application), eq(CASEWORKER), any());
     }
 }

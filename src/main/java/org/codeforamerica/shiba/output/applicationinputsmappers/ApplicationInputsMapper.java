@@ -9,7 +9,7 @@ import org.codeforamerica.shiba.pages.config.FormInputType;
 import java.util.List;
 
 public interface ApplicationInputsMapper {
-    List<ApplicationInput> map(Application application, Recipient recipient);
+    List<ApplicationInput> map(Application application, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker);
 
     static ApplicationInputType formInputTypeToApplicationInputType(FormInputType type) {
         return switch (type) {
