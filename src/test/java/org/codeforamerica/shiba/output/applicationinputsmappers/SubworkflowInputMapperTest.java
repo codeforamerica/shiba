@@ -4,6 +4,7 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.PageDataBuilder;
 import org.codeforamerica.shiba.PagesDataBuilder;
 import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.inputconditions.ValueMatcher;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
 import org.codeforamerica.shiba.output.Recipient;
@@ -11,6 +12,7 @@ import org.codeforamerica.shiba.pages.config.*;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.pages.data.Subworkflows;
+import org.codeforamerica.shiba.inputconditions.Condition;
 import org.junit.jupiter.api.Test;
 
 import java.time.ZonedDateTime;
@@ -72,6 +74,11 @@ class SubworkflowInputMapperTest {
                 ))
         ));
 
+        applicationConfiguration.setPageDefinitions(List.of(
+                question1Page,
+                question2Page
+        ));
+
         applicationConfiguration.setWorkflow(Map.of(
                 "question1Workflow", question1Workflow,
                 "question2Workflow", question2Workflow
@@ -97,7 +104,7 @@ class SubworkflowInputMapperTest {
                 .timeToComplete(null)
                 .build();
 
-        assertThat(subworkflowInputMapper.map(application, Recipient.CLIENT)).containsExactlyInAnyOrder(
+        assertThat(subworkflowInputMapper.map(application, Recipient.CLIENT)).contains(
                 new ApplicationInput(
                         "question1",
                         "input1",
@@ -184,6 +191,138 @@ class SubworkflowInputMapperTest {
                         "count",
                         List.of("5"),
                         ApplicationInputType.SINGLE_VALUE
+                )
+        );
+    }
+
+    @Test
+    void shouldIncludeFilteredInputs() {
+        Condition condition1 = new Condition("question1", "input1", "true", ValueMatcher.CONTAINS, null, null);
+        String prefix1 = "prefix1";
+        Condition condition2 = new Condition("question1", "input1", "false", ValueMatcher.CONTAINS, null, null);
+        String prefix2 = "prefix2";
+        Map<String, Condition> addedScope = Map.of(prefix1, condition1, prefix2, condition2);
+        PageGroupConfiguration group1 = new PageGroupConfiguration();
+        group1.setAddedScope(addedScope);
+
+        PageWorkflowConfiguration question1Workflow = new PageWorkflowConfiguration();
+        question1Workflow.setGroupName("group1");
+        PageConfiguration question1Page = new PageConfiguration();
+        question1Workflow.setPageConfiguration(question1Page);
+
+        question1Page.setName("question1");
+        FormInput question1Input1 = new FormInput();
+        question1Input1.setName("input1");
+        question1Input1.setType(FormInputType.TEXT);
+
+        FormInput question1Input2 = new FormInput();
+        question1Input2.setName("input2");
+        question1Input2.setType(FormInputType.RADIO);
+        question1Page.setInputs(List.of(question1Input1, question1Input2));
+
+        PageWorkflowConfiguration question2Workflow = new PageWorkflowConfiguration();
+        question2Workflow.setGroupName("group1");
+        PageConfiguration question2Page = new PageConfiguration();
+        question2Workflow.setPageConfiguration(question2Page);
+
+        question2Page.setName("question2");
+        FormInput question2Input1 = new FormInput();
+        question2Input1.setName("input1");
+        question2Input1.setType(FormInputType.TEXT);
+
+        question2Page.setInputs(List.of(question2Input1));
+
+        PagesData iteration1 = pagesDataBuilder.build(List.of(
+                new PageDataBuilder("question1", Map.of(
+                        "input1", List.of("false"),
+                        "input2", List.of("coolString")
+                )),
+                new PageDataBuilder("question2", Map.of(
+                        "input1", List.of("foo")
+                ))
+        ));
+
+        PagesData iteration2 = pagesDataBuilder.build(List.of(
+                new PageDataBuilder("question1", Map.of(
+                        "input1", List.of("true"),
+                        "input2", List.of("weirdString")
+                )),
+                new PageDataBuilder("question2", Map.of(
+                        "input1", List.of("bar")
+                ))
+        ));
+
+        applicationConfiguration.setPageDefinitions(List.of(
+                question1Page,
+                question2Page
+        ));
+
+        applicationConfiguration.setWorkflow(Map.of(
+                "question1Workflow", question1Workflow,
+                "question2Workflow", question2Workflow
+        ));
+
+        applicationConfiguration.setPageGroups(Map.of(
+                "group1", group1
+        ));
+
+        subworkflows.addIteration("group1", iteration1);
+        subworkflows.addIteration("group1", iteration2);
+
+        applicationData.setSubworkflows(subworkflows);
+        Application application = Application.builder()
+                .id("someId")
+                .completedAt(ZonedDateTime.now())
+                .applicationData(applicationData)
+                .county(County.Other)
+                .timeToComplete(null)
+                .build();
+
+        List<ApplicationInput> mapResult = subworkflowInputMapper.map(application, Recipient.CLIENT);
+        assertThat(mapResult).contains(
+                new ApplicationInput(
+                        prefix1 + "_question1",
+                        "input1",
+                        List.of("true"),
+                        ApplicationInputType.SINGLE_VALUE,
+                        0
+                ),
+                new ApplicationInput(
+                        prefix1 + "_question1",
+                        "input2",
+                        List.of("weirdString"),
+                        ApplicationInputType.ENUMERATED_SINGLE_VALUE,
+                        0
+                ),
+                new ApplicationInput(
+                        prefix1 + "_question2",
+                        "input1",
+                        List.of("bar"),
+                        ApplicationInputType.SINGLE_VALUE,
+                        0
+                )
+        );
+        assertThat(mapResult).contains(
+                new ApplicationInput(
+                        prefix2 + "_question1",
+                        "input1",
+                        List.of("false"),
+                        ApplicationInputType.SINGLE_VALUE,
+                        0
+                ),
+                new ApplicationInput(
+                        prefix2 + "_question1",
+                        "input2",
+                        List.of("coolString"),
+                        ApplicationInputType.ENUMERATED_SINGLE_VALUE,
+                        0
+                ),
+                new ApplicationInput(
+                        prefix2 + "_question2",
+                        "input1",
+                        List.of("foo"),
+                        ApplicationInputType.SINGLE_VALUE,
+                        0
                 )
         );
     }

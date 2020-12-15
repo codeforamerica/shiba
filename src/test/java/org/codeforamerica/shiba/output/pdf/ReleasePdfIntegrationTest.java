@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
-import java.util.Arrays;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -537,19 +536,15 @@ public class ReleasePdfIntegrationTest extends AbstractBasePageTest {
         testPage.clickContinue();
     }
 
-    private String getPdfFieldText(PDAcroForm pdAcroForm, String fieldName) {
-        return pdAcroForm.getField(fieldName).getValueAsString();
-    }
-
     private PDAcroForm submitAndDownloadReceipt() {
         navigateTo("signThisApplication");
         testPage.enter("applicantSignature", "someSignature");
         testPage.clickButton("Submit");
         SuccessPage successPage = new SuccessPage(driver);
         successPage.downloadReceipt();
-        await().until(() -> path.toFile().listFiles().length > 0);
+        await().until(() -> getCafFile().isPresent());
 
-        File pdfFile = Arrays.stream(path.toFile().listFiles()).findFirst().orElseThrow();
+        File pdfFile = getCafFile().orElseThrow();
         try {
             return PDDocument.load(pdfFile).getDocumentCatalog().getAcroForm();
         } catch (IOException e) {

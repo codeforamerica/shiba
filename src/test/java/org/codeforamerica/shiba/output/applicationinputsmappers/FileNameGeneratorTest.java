@@ -4,6 +4,7 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.mnit.MnitCountyInformation;
+import org.codeforamerica.shiba.output.DocumentType;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
@@ -55,21 +56,21 @@ class FileNameGeneratorTest {
     void shouldIncludeIdInFileNameForApplication() {
         String applicationId = "someId";
         Application application = defaultApplicationBuilder.id(applicationId).build();
-        String fileName = fileNameGenerator.generateFileName(application);
+        String fileName = fileNameGenerator.generateFileName(application, DocumentType.CAF);
         assertThat(fileName).contains(applicationId);
     }
 
     @Test
     void shouldIncludeSubmitDateInCentralTimeZone() {
         Application application = defaultApplicationBuilder.completedAt(ZonedDateTime.ofInstant(Instant.parse("2007-09-10T04:59:59.00Z"), ZoneOffset.UTC)).build();
-        String fileName = fileNameGenerator.generateFileName(application);
+        String fileName = fileNameGenerator.generateFileName(application, DocumentType.CAF);
         assertThat(fileName).contains("20070909");
     }
 
     @Test
     void shouldIncludeSubmitTimeInCentralTimeZone() {
         Application application = defaultApplicationBuilder.completedAt(ZonedDateTime.ofInstant(Instant.parse("2007-09-10T04:05:59.00Z"), ZoneOffset.UTC)).build();
-        String fileName = fileNameGenerator.generateFileName(application);
+        String fileName = fileNameGenerator.generateFileName(application, DocumentType.CAF);
         assertThat(fileName).contains("230559");
     }
 
@@ -80,7 +81,7 @@ class FileNameGeneratorTest {
         countyMap.getCounties().put(county, MnitCountyInformation.builder().dhsProviderId(countyNPI).build());
         Application application = defaultApplicationBuilder.county(county).build();
 
-        String fileName = fileNameGenerator.generateFileName(application);
+        String fileName = fileNameGenerator.generateFileName(application, DocumentType.CAF);
 
         assertThat(fileName).contains(countyNPI);
     }
@@ -97,7 +98,7 @@ class FileNameGeneratorTest {
         applicationData.setPagesData(new PagesData(Map.of("choosePrograms", chooseProgramsData)));
         Application application = defaultApplicationBuilder.applicationData(applicationData).build();
 
-        String fileName = fileNameGenerator.generateFileName(application);
+        String fileName = fileNameGenerator.generateFileName(application, DocumentType.CAF);
 
         assertThat(fileName).contains("EKFC");
     }
@@ -107,7 +108,7 @@ class FileNameGeneratorTest {
         ApplicationData applicationData = new ApplicationData();
         Application application = defaultApplicationBuilder.applicationData(applicationData).build();
 
-        String fileName = fileNameGenerator.generateFileName(application);
+        String fileName = fileNameGenerator.generateFileName(application, DocumentType.CAF);
 
         assertThat(fileName).endsWith("defaultId_");
     }
@@ -131,9 +132,9 @@ class FileNameGeneratorTest {
                 .applicationData(applicationData)
                 .build();
 
-        String fileName = fileNameGenerator.generateFileName(application);
+        String fileName = fileNameGenerator.generateFileName(application, DocumentType.CAF);
 
-        assertThat(fileName).isEqualTo(String.format("%s_MNB_%s_%s_%s_%s",
-                countyNPI, "20070909", "235959", applicationId, "F"));
+        assertThat(fileName).isEqualTo(String.format("%s_MNB_%s_%s_%s_%s_%s",
+                countyNPI, "CAF", "20070909", "235959", applicationId, "F"));
     }
 }

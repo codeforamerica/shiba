@@ -5,6 +5,7 @@ import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.DocumentType;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -31,6 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 import static org.hamcrest.Matchers.hasXPath;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -79,7 +81,7 @@ class XmlGeneratorTest {
 
         when(mappers.map(any(), any())).thenReturn(applicationInputs);
 
-        ApplicationFile applicationFile = subject.generate("someId", CLIENT);
+        ApplicationFile applicationFile = subject.generate("someId", DocumentType.NONE, CLIENT);
 
         SimpleNamespaceContext namespaceContext = new SimpleNamespaceContext();
         namespaceContext.setBindings(Map.of("ns", "some-url"));
@@ -108,7 +110,7 @@ class XmlGeneratorTest {
                 mappers,
                 fileNameGenerator);
 
-        ApplicationFile applicationFile = subject.generate("someId", CLIENT);
+        ApplicationFile applicationFile = subject.generate("someId", DocumentType.NONE, CLIENT);
         Document document = byteArrayToDocument(applicationFile.getFileBytes());
         SimpleNamespaceContext namespaceContext = new SimpleNamespaceContext();
         namespaceContext.setBindings(Map.of("ns", "some-url"));
@@ -150,7 +152,7 @@ class XmlGeneratorTest {
 
         when(mappers.map(any(), any())).thenReturn(applicationInputs);
 
-        ApplicationFile applicationFile = subject.generate("", null);
+        ApplicationFile applicationFile = subject.generate("", DocumentType.NONE, null);
 
         SimpleNamespaceContext namespaceContext = new SimpleNamespaceContext();
         namespaceContext.setBindings(Map.of("ns", "some-url"));
@@ -193,7 +195,7 @@ class XmlGeneratorTest {
                 fileNameGenerator);
         when(mappers.map(any(), any())).thenReturn(applicationInputs);
 
-        ApplicationFile applicationFile = subject.generate("", null);
+        ApplicationFile applicationFile = subject.generate("", DocumentType.NONE, null);
 
         SimpleNamespaceContext namespaceContext = new SimpleNamespaceContext();
         namespaceContext.setBindings(Map.of("ns", "some-url"));
@@ -237,7 +239,7 @@ class XmlGeneratorTest {
                 mappers,
                 fileNameGenerator);
         when(mappers.map(any(), any())).thenReturn(applicationInputs);
-        ApplicationFile applicationFile = subject.generate("", null);
+        ApplicationFile applicationFile = subject.generate("", DocumentType.NONE, null);
 
         Document document = byteArrayToDocument(applicationFile.getFileBytes());
 
@@ -274,7 +276,7 @@ class XmlGeneratorTest {
                 mappers,
                 fileNameGenerator);
         when(mappers.map(any(), any())).thenReturn(applicationInputs);
-        ApplicationFile applicationFile = subject.generate("", null);
+        ApplicationFile applicationFile = subject.generate("", DocumentType.NONE, null);
 
         Document document = byteArrayToDocument(applicationFile.getFileBytes());
 
@@ -312,7 +314,7 @@ class XmlGeneratorTest {
                 mappers,
                 fileNameGenerator);
         when(mappers.map(any(), any())).thenReturn(applicationInputs);
-        ApplicationFile applicationFile = subject.generate("", null);
+        ApplicationFile applicationFile = subject.generate("", DocumentType.NONE, null);
 
         Document document = byteArrayToDocument(applicationFile.getFileBytes());
 
@@ -350,7 +352,7 @@ class XmlGeneratorTest {
                 mappers,
                 fileNameGenerator);
         when(mappers.map(any(), any())).thenReturn(applicationInputs);
-        ApplicationFile applicationFile = subject.generate("", null);
+        ApplicationFile applicationFile = subject.generate("", DocumentType.NONE, null);
 
         Document document = byteArrayToDocument(applicationFile.getFileBytes());
 
@@ -390,7 +392,7 @@ class XmlGeneratorTest {
                 mappers,
                 fileNameGenerator);
         when(mappers.map(any(), any())).thenReturn(applicationInputs);
-        ApplicationFile applicationFile = subject.generate("", null);
+        ApplicationFile applicationFile = subject.generate("", DocumentType.NONE, null);
 
         Document document = byteArrayToDocument(applicationFile.getFileBytes());
 
@@ -426,7 +428,7 @@ class XmlGeneratorTest {
                 mappers,
                 fileNameGenerator);
         when(mappers.map(any(), any())).thenReturn(applicationInputs);
-        ApplicationFile applicationFile = subject.generate("", null);
+        ApplicationFile applicationFile = subject.generate("", DocumentType.NONE, null);
 
         Document document = byteArrayToDocument(applicationFile.getFileBytes());
 
@@ -461,7 +463,7 @@ class XmlGeneratorTest {
                 mappers,
                 fileNameGenerator);
         when(mappers.map(any(), any())).thenReturn(applicationInputs);
-        ApplicationFile applicationFile = subject.generate("", null);
+        ApplicationFile applicationFile = subject.generate("", null, null);
         Document document = byteArrayToDocument(applicationFile.getFileBytes());
 
         SimpleNamespaceContext namespaceContext = new SimpleNamespaceContext();
@@ -493,9 +495,9 @@ class XmlGeneratorTest {
                 .timeToComplete(null)
                 .build();
         when(applicationRepository.find(any())).thenReturn(application);
-        when(fileNameGenerator.generateFileName(application)).thenReturn(fileName);
+        when(fileNameGenerator.generateFileName(eq(application), any())).thenReturn(fileName);
         String applicationId = "application-id";
-        ApplicationFile applicationFile = subject.generate(applicationId, null);
+        ApplicationFile applicationFile = subject.generate(applicationId, null, null);
 
         assertThat(applicationFile.getFileName()).isEqualTo(fileName + ".xml");
     }

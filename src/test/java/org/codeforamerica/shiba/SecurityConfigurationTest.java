@@ -2,6 +2,7 @@ package org.codeforamerica.shiba;
 
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.output.DocumentType;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.junit.jupiter.api.BeforeEach;
@@ -69,7 +70,7 @@ class SecurityConfigurationTest {
                 .timeToComplete(null)
                 .build());
         when(mappers.map(any(), any())).thenReturn(List.of());
-        when(fileNameGenerator.generateFileName(any())).thenReturn("");
+        when(fileNameGenerator.generateFileName(any(), any())).thenReturn("");
     }
 
     @Test

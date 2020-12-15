@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import java.time.ZonedDateTime;
 import java.util.Map;
 
+import static org.codeforamerica.shiba.output.DocumentType.CAF;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.mockito.Mockito.*;
 
@@ -48,7 +49,7 @@ class MnitDocumentConsumerTest {
 
         documentConsumer.process(application);
 
-        verify(pdfGenerator).generate(application.getId(), CASEWORKER);
+        verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
     }
 
     @Test
@@ -62,15 +63,15 @@ class MnitDocumentConsumerTest {
                 .build();
 
         documentConsumer.process(application);
-        verify(xmlGenerator).generate(application.getId(), CASEWORKER);
+        verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
     }
 
     @Test
     void sendsTheGeneratedXmlAndPdf() {
         ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
-        when(pdfGenerator.generate(any(), any())).thenReturn(pdfApplicationFile);
+        when(pdfGenerator.generate(any(), any(), any())).thenReturn(pdfApplicationFile);
         ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
-        when(xmlGenerator.generate(any(), any())).thenReturn(xmlApplicationFile);
+        when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
 
         Application application = Application.builder()
                 .id("someId")

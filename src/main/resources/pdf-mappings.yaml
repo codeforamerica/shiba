@@ -1,212 +1,219 @@
-caf:
-  mappings:
-    languagePreferences:
-      spokenLanguage: APPLICANT_SPOKEN_LANGUAGE_PREFERENCE
-      writtenLanguage: APPLICANT_WRITTEN_LANGUAGE_PREFERENCE
-      needInterpreter: NEED_INTERPRETER
-    personalInfo:
-      firstName: APPLICANT_FIRST_NAME
-      lastName: APPLICANT_LAST_NAME
-      maritalStatus: MARITAL_STATUS
-      otherName: APPLICANT_OTHER_NAME
-      dateOfBirth: DATE_OF_BIRTH
-      ssn: APPLICANT_SSN
-      sex: APPLICANT_SEX
-      moveToMnDate: DATE_OF_MOVING_TO_MN
-      moveToMnPreviousCity: APPLICANT_PREVIOUS_STATE
-    choosePrograms:
-      programs:
-        SNAP: FOOD
-        CASH: CASH
-        GRH: GRH
-        EA: EMERGENCY
-    householdMemberInfo:
-      firstName: FIRST_NAME
-      lastName: LAST_NAME
-      maritalStatus: MARITAL_STATUS
-      otherName: OTHER_NAME
-      dateOfBirth: DATE_OF_BIRTH
-      ssn: SSN
-      sex: SEX
-      relationship: RELATIONSHIP
-      moveToMnDate: DATE_OF_MOVING_TO_MN
-      moveToMnPreviousState: PREVIOUS_STATE
-      programs:
-        SNAP: FOOD
-        CASH: CASH
-        EA: EMERGENCY
-        CCAP: CCAP
-      programList: PROGRAMS
-    preparingMealsTogether:
-      isPreparingMealsTogether: PREPARING_MEALS_TOGETHER
-    contactInfo:
-      phoneNumber: APPLICANT_PHONE_NUMBER
-      email: APPLICANT_EMAIL
-      phoneOrEmail:
-        TEXT: PHONE_OPTIN
-        EMAIL: EMAIL_OPTIN
-    homeAddress:
-      selectedZipCode: APPLICANT_HOME_ZIPCODE
-      selectedCity: APPLICANT_HOME_CITY
-      selectedState: APPLICANT_HOME_STATE
-      selectedApartmentNumber: APPLICANT_HOME_APT_NUMBER
-      streetAddressWithPermanentAddress: APPLICANT_HOME_STREET_ADDRESS
-      isHomelessIndicator: APPLICANT_HOMELESS
-    mailingAddress:
-      selectedZipCode: APPLICANT_MAILING_ZIPCODE
-      selectedCity: APPLICANT_MAILING_CITY
-      selectedState: APPLICANT_MAILING_STATE
-      selectedStreetAddress: APPLICANT_MAILING_STREET_ADDRESS
-      selectedApartmentNumber: APPLICANT_MAILING_APT_NUMBER
-    liquidAssets:
-      liquidAssets: EXPEDITED_QUESTION_2
-    utilityPayments:
-      payForUtilities:
-        HEATING: HEAT
-        COOLING: AIR_CONDITIONING
-        ELECTRICITY: ELECTRICITY
-        PHONE: PHONE
-        GARBAGE_REMOVAL: GARBAGE_REMOVAL
-        COOKING_FUEL: COOKING_FUEL
-      noExpeditedUtilitiesSelected:
-        NO_EXPEDITED_UTILITIES_SELECTED: NO_EXPEDITED_UTILITIES_SELECTED
-      heatingOrCoolingSelection: HEATING_COOLING_SELECTION
-      noHeatingOrCoolingSelection: HEATING_COOLING_SELECTION
-      waterOrSewerSelection: WATER_SEWER_SELECTION
-      noWaterOrsewerSelection: WATER_SEWER_SELECTION
-      noElectricitySelection: ELECTRICITY
-      noGarbageRemovalSelection: GARBAGE_REMOVAL
-      noCookingFuelSelection: COOKING_FUEL
-      noPhoneSelection: PHONE
-    migrantFarmWorker:
-      migrantOrSeasonalFarmWorker: MIGRANT_SEASONAL_FARM_WORKER
-    signThisApplication:
-      applicantSignature: APPLICANT_SIGNATURE
-    goingToSchool:
-      goingToSchool: GOING_TO_SCHOOL
-    ccapHasCostsForChildCare:
-      ccapHasCostsForChildCare: CCAP_HAS_COSTS_FOR_CHILD_CARE
-    pregnant:
-      isPregnant: IS_PREGNANT
-    usCitizen:
-      isUsCitizen: IS_US_CITIZEN
-    disability:
-      hasDisability: HAS_DISABILITY
-    workSituation:
-      hasWorkSituation: HAS_WORK_SITUATION
-    expeditedEligibility:
-      expeditedEligibility: EXPEDITED_ELIGIBILITY
+mappings:
+  languagePreferences:
+    spokenLanguage: APPLICANT_SPOKEN_LANGUAGE_PREFERENCE
+    writtenLanguage: APPLICANT_WRITTEN_LANGUAGE_PREFERENCE
+    needInterpreter: NEED_INTERPRETER
+  personalInfo:
+    firstName: APPLICANT_FIRST_NAME
+    lastName: APPLICANT_LAST_NAME
+    maritalStatus: MARITAL_STATUS
+    otherName: APPLICANT_OTHER_NAME
+    dateOfBirth: DATE_OF_BIRTH
+    ssn: APPLICANT_SSN
+    sex: APPLICANT_SEX
+    moveToMnDate: DATE_OF_MOVING_TO_MN
+    moveToMnPreviousCity: APPLICANT_PREVIOUS_STATE
+  choosePrograms:
+    programs:
+      SNAP: FOOD
+      CASH: CASH
+      GRH: GRH
+      EA: EMERGENCY
+  householdMemberInfo:
+    firstName: FIRST_NAME
+    lastName: LAST_NAME
+    maritalStatus: MARITAL_STATUS
+    otherName: OTHER_NAME
+    dateOfBirth: DATE_OF_BIRTH
+    ssn: SSN
+    sex: SEX
+    relationship: RELATIONSHIP
+    moveToMnDate: DATE_OF_MOVING_TO_MN
+    moveToMnPreviousState: PREVIOUS_STATE
+    programs:
+      SNAP: FOOD
+      CASH: CASH
+      EA: EMERGENCY
+      CCAP: CCAP
+    programList: PROGRAMS
+  preparingMealsTogether:
+    isPreparingMealsTogether: PREPARING_MEALS_TOGETHER
+  contactInfo:
+    phoneNumber: APPLICANT_PHONE_NUMBER
+    email: APPLICANT_EMAIL
+    phoneOrEmail:
+      TEXT: PHONE_OPTIN
+      EMAIL: EMAIL_OPTIN
+  homeAddress:
+    selectedZipCode: APPLICANT_HOME_ZIPCODE
+    selectedCity: APPLICANT_HOME_CITY
+    selectedState: APPLICANT_HOME_STATE
+    selectedApartmentNumber: APPLICANT_HOME_APT_NUMBER
+    streetAddressWithPermanentAddress: APPLICANT_HOME_STREET_ADDRESS
+    isHomelessIndicator: APPLICANT_HOMELESS
+  mailingAddress:
+    selectedZipCode: APPLICANT_MAILING_ZIPCODE
+    selectedCity: APPLICANT_MAILING_CITY
+    selectedState: APPLICANT_MAILING_STATE
+    selectedStreetAddress: APPLICANT_MAILING_STREET_ADDRESS
+    selectedApartmentNumber: APPLICANT_MAILING_APT_NUMBER
+  liquidAssets:
+    liquidAssets: EXPEDITED_QUESTION_2
+  utilityPayments:
+    payForUtilities:
+      HEATING: HEAT
+      COOLING: AIR_CONDITIONING
+      ELECTRICITY: ELECTRICITY
+      PHONE: PHONE
+      GARBAGE_REMOVAL: GARBAGE_REMOVAL
+      COOKING_FUEL: COOKING_FUEL
+    noExpeditedUtilitiesSelected:
+      NO_EXPEDITED_UTILITIES_SELECTED: NO_EXPEDITED_UTILITIES_SELECTED
+    heatingOrCoolingSelection: HEATING_COOLING_SELECTION
+    noHeatingOrCoolingSelection: HEATING_COOLING_SELECTION
+    waterOrSewerSelection: WATER_SEWER_SELECTION
+    noWaterOrsewerSelection: WATER_SEWER_SELECTION
+    noElectricitySelection: ELECTRICITY
+    noGarbageRemovalSelection: GARBAGE_REMOVAL
+    noCookingFuelSelection: COOKING_FUEL
+    noPhoneSelection: PHONE
+  migrantFarmWorker:
+    migrantOrSeasonalFarmWorker: MIGRANT_SEASONAL_FARM_WORKER
+  signThisApplication:
+    applicantSignature: APPLICANT_SIGNATURE
+  goingToSchool:
+    goingToSchool: GOING_TO_SCHOOL
+  ccapHasCostsForChildCare:
+    ccapHasCostsForChildCare: CCAP_HAS_COSTS_FOR_CHILD_CARE
+  pregnant:
+    isPregnant: IS_PREGNANT
+  usCitizen:
+    isUsCitizen: IS_US_CITIZEN
+  disability:
+    hasDisability: HAS_DISABILITY
+  workSituation:
+    hasWorkSituation: HAS_WORK_SITUATION
+  expeditedEligibility:
+    expeditedEligibility: EXPEDITED_ELIGIBILITY
+  unearnedIncome:
     unearnedIncome:
-      unearnedIncome:
-        SOCIAL_SECURITY: SOCIAL_SECURITY
-        SSI: SSI
-        VETERANS_BENEFITS: VETERANS_BENEFITS
-        UNEMPLOYMENT: UNEMPLOYMENT
-        WORKERS_COMPENSATION: WORKERS_COMPENSATION
-        RETIREMENT: RETIREMENT
-        CHILD_OR_SPOUSAL_SUPPORT: CHILD_OR_SPOUSAL_SUPPORT
-        TRIBAL_PAYMENTS: TRIBAL_PAYMENTS
-      noSocialSecurity: SOCIAL_SECURITY
-      noSSI: SSI
-      noVeteransBenefits: VETERANS_BENEFITS
-      noUnemployment: UNEMPLOYMENT
-      noWorkersCompensation: WORKERS_COMPENSATION
-      noRetirement: RETIREMENT
-      noChildOrSpousalSupport: CHILD_OR_SPOUSAL_SUPPORT
-      noTribalPayments: TRIBAL_PAYMENTS
-    unearnedIncomeSources:
-      socialSecurityAmount: SOCIAL_SECURITY_AMOUNT
-      supplementalSecurityIncomeAmount: SUPPLEMENTAL_SECURITY_INCOME_AMOUNT
-      veteransBenefitsAmount: VETERAN_BENEFITS_AMOUNT
-      unemploymentAmount: UNEMPLOYMENT_INSURANCE_AMOUNT
-      workersCompensationAmount: WORKERS_COMPENSATION_AMOUNT
-      retirementAmount: RETIREMENT_BENEFITS_AMOUNT
-      childOrSpousalSupportAmount: CHILD_SUPPORT_OR_SPOUSAL_SUPPORT_AMOUNT
-      tribalPaymentsAmount: TRIBAL_PAYMENTS_AMOUNT
-    futureIncome:
-      earnLessMoneyThisMonth: EARN_LESS_MONEY_THIS_MONTH
-      additionalIncomeInfo: ADDITIONAL_INCOME_INFO
-    employersName:
-      employersName: EMPLOYERS_NAME
-    hourlyWage:
-      hourlyWage: [HOURLY_WAGE, INCOME_PER_PAY_PERIOD]
-    payPeriod:
-      payPeriod: PAY_FREQUENCY
-    employmentStatus:
-      areYouWorking: IS_WORKING
+      SOCIAL_SECURITY: SOCIAL_SECURITY
+      SSI: SSI
+      VETERANS_BENEFITS: VETERANS_BENEFITS
+      UNEMPLOYMENT: UNEMPLOYMENT
+      WORKERS_COMPENSATION: WORKERS_COMPENSATION
+      RETIREMENT: RETIREMENT
+      CHILD_OR_SPOUSAL_SUPPORT: CHILD_OR_SPOUSAL_SUPPORT
+      TRIBAL_PAYMENTS: TRIBAL_PAYMENTS
+    noSocialSecurity: SOCIAL_SECURITY
+    noSSI: SSI
+    noVeteransBenefits: VETERANS_BENEFITS
+    noUnemployment: UNEMPLOYMENT
+    noWorkersCompensation: WORKERS_COMPENSATION
+    noRetirement: RETIREMENT
+    noChildOrSpousalSupport: CHILD_OR_SPOUSAL_SUPPORT
+    noTribalPayments: TRIBAL_PAYMENTS
+  unearnedIncomeSources:
+    socialSecurityAmount: SOCIAL_SECURITY_AMOUNT
+    supplementalSecurityIncomeAmount: SUPPLEMENTAL_SECURITY_INCOME_AMOUNT
+    veteransBenefitsAmount: VETERAN_BENEFITS_AMOUNT
+    unemploymentAmount: UNEMPLOYMENT_INSURANCE_AMOUNT
+    workersCompensationAmount: WORKERS_COMPENSATION_AMOUNT
+    retirementAmount: RETIREMENT_BENEFITS_AMOUNT
+    childOrSpousalSupportAmount: CHILD_SUPPORT_OR_SPOUSAL_SUPPORT_AMOUNT
+    tribalPaymentsAmount: TRIBAL_PAYMENTS_AMOUNT
+  futureIncome:
+    earnLessMoneyThisMonth: EARN_LESS_MONEY_THIS_MONTH
+    additionalIncomeInfo: ADDITIONAL_INCOME_INFO
+  employersName:
+    employersName: EMPLOYERS_NAME
+  hourlyWage:
+    hourlyWage: [HOURLY_WAGE, INCOME_PER_PAY_PERIOD]
+  payPeriod:
+    payPeriod: PAY_FREQUENCY
+  employmentStatus:
+    areYouWorking: IS_WORKING
+  homeExpenses:
     homeExpenses:
-      homeExpenses:
-        RENT: RENT
-        MORTGAGE: MORTGAGE
-        HOMEOWNERS_INSURANCE: HOMEOWNERS_INSURANCE
-        REAL_ESTATE_TAXES: REAL_ESTATE_TAXES
-        ASSOCIATION_FEES: ASSOCIATION_FEES
-        ROOM_AND_BOARD: ROOM_AND_BOARD
-      noRentSelection: RENT
-      noMortgageSelection: MORTGAGE
-      noHomeownersInsuranceSelection: HOMEOWNERS_INSURANCE
-      noRealEstateTaxesSelection: REAL_ESTATE_TAXES
-      noAssociationFeesSelection: ASSOCIATION_FEES
-      noRoomAndBoardSelection: ROOM_AND_BOARD
-    homeExpensesAmount:
-      homeExpensesAmount: HOUSING_EXPENSES
-    energyAssistanceGroup:
-      energyAssistanceInput: RECEIVED_LIHEAP
-    supportAndCare:
-      supportAndCare: SUPPORT_AND_CARE
-    savings:
-      haveSavings: HAVE_SAVINGS
-    investments:
-      haveInvestments: HAVE_INVESTMENTS
-    vehicle:
-      haveVehicle: HAVE_VEHICLE
-    soldAssets:
-      haveSoldAssets: HAVE_SOLD_ASSETS
-    registerToVote:
-      registerToVoteSelection: REGISTER_TO_VOTE
-    authorizedRep:
-      communicateOnYourBehalf: AUTHORIZED_REP_FILL_OUT_FORM
-    speakToCounty:
-      getMailNotices: AUTHORIZED_REP_GET_NOTICES
-    spendOnYourBehalf:
-      spendOnYourBehalf: AUTHORIZED_REP_SPEND_ON_YOUR_BEHALF
-    helperContactInfo:
-      helpersFullName: AUTHORIZED_REP_NAME
-      helpersStreetAddress: AUTHORIZED_REP_ADDRESS
-      helpersCity: AUTHORIZED_REP_CITY
-      helpersZipCode: AUTHORIZED_REP_ZIP_CODE
-      helpersPhoneNumber: AUTHORIZED_REP_PHONE_NUMBER
-    employee:
-      firstName: EMPLOYEE_FIRST_NAME
-      lastName: EMPLOYEE_LAST_NAME
-      grossMonthlyIncome: GROSS_MONTHLY_INCOME
-      selfEmployed: SELF_EMPLOYED
-      selfEmployedGrossMonthlyEarnings: SELF_EMPLOYED_GROSS_MONTHLY_EARNINGS
-    selfEmployment:
-      selfEmployment: SELF_EMPLOYMENT
-    nonPagesData:
-      applicationId: APPLICATION_ID
-      completedDate: CREATED_DATE
-      submissionDateTime: SUBMISSION_DATETIME
-    coverPage:
-      programs: PROGRAMS
-      countyInstructions: COUNTY_INSTRUCTIONS
-      fullName: FULL_NAME
-    incomePerPayPeriod:
-      incomePerPayPeriod: INCOME_PER_PAY_PERIOD
-    totalIncome:
-      thirtyDayIncome: MONEY_MADE_LAST_MONTH
-    householdPregnancy:
-      householdPregnancy: WHO_IS_PREGNANT
-    householdNonUsCitizen:
-      householdNonUsCitizen: IS_US_CITIZEN
-    householdSelectionForIncome:
-      employeeFullName: EMPLOYEE_FULL_NAME
-  enums:
-    EVERY_WEEK: Every week
-    EVERY_TWO_WEEKS: Every two weeks
-    TWICE_A_MONTH: Twice a month
-    EVERY_MONTH: Every month
-    IT_VARIES: It varies
-    true: "Yes"
-    false: "No"
+      RENT: RENT
+      MORTGAGE: MORTGAGE
+      HOMEOWNERS_INSURANCE: HOMEOWNERS_INSURANCE
+      REAL_ESTATE_TAXES: REAL_ESTATE_TAXES
+      ASSOCIATION_FEES: ASSOCIATION_FEES
+      ROOM_AND_BOARD: ROOM_AND_BOARD
+    noRentSelection: RENT
+    noMortgageSelection: MORTGAGE
+    noHomeownersInsuranceSelection: HOMEOWNERS_INSURANCE
+    noRealEstateTaxesSelection: REAL_ESTATE_TAXES
+    noAssociationFeesSelection: ASSOCIATION_FEES
+    noRoomAndBoardSelection: ROOM_AND_BOARD
+  homeExpensesAmount:
+    homeExpensesAmount: HOUSING_EXPENSES
+  energyAssistanceGroup:
+    energyAssistanceInput: RECEIVED_LIHEAP
+  supportAndCare:
+    supportAndCare: SUPPORT_AND_CARE
+  savings:
+    haveSavings: HAVE_SAVINGS
+  investments:
+    haveInvestments: HAVE_INVESTMENTS
+  vehicle:
+    haveVehicle: HAVE_VEHICLE
+  soldAssets:
+    haveSoldAssets: HAVE_SOLD_ASSETS
+  registerToVote:
+    registerToVoteSelection: REGISTER_TO_VOTE
+  authorizedRep:
+    communicateOnYourBehalf: AUTHORIZED_REP_FILL_OUT_FORM
+  speakToCounty:
+    getMailNotices: AUTHORIZED_REP_GET_NOTICES
+  spendOnYourBehalf:
+    spendOnYourBehalf: AUTHORIZED_REP_SPEND_ON_YOUR_BEHALF
+  helperContactInfo:
+    helpersFullName: AUTHORIZED_REP_NAME
+    helpersStreetAddress: AUTHORIZED_REP_ADDRESS
+    helpersCity: AUTHORIZED_REP_CITY
+    helpersZipCode: AUTHORIZED_REP_ZIP_CODE
+    helpersPhoneNumber: AUTHORIZED_REP_PHONE_NUMBER
+  employee:
+    firstName: EMPLOYEE_FIRST_NAME
+    lastName: EMPLOYEE_LAST_NAME
+    grossMonthlyIncome: GROSS_MONTHLY_INCOME
+    selfEmployed: SELF_EMPLOYED
+    selfEmployedGrossMonthlyEarnings: SELF_EMPLOYED_GROSS_MONTHLY_EARNINGS
+  nonSelfEmployment_employersName:
+    employersName: NON_SELF_EMPLOYMENT_EMPLOYERS_NAME
+  selfEmployment:
+    selfEmployment: SELF_EMPLOYMENT
+  selfEmployment_employee:
+    firstName: SELF_EMPLOYMENT_EMPLOYEE_FIRST_NAME
+    lastName: SELF_EMPLOYMENT_EMPLOYEE_LAST_NAME
+    selfEmployedGrossMonthlyEarnings: SELF_EMPLOYED_GROSS_MONTHLY_EARNINGS
+  selfEmployment_hoursAWeek:
+    hoursAWeek: SELF_EMPLOYMENT_HOURS_A_WEEK
+  nonPagesData:
+    applicationId: APPLICATION_ID
+    completedDate: CREATED_DATE
+    submissionDateTime: SUBMISSION_DATETIME
+  coverPage:
+    programs: PROGRAMS
+    countyInstructions: COUNTY_INSTRUCTIONS
+    fullName: FULL_NAME
+  incomePerPayPeriod:
+    incomePerPayPeriod: INCOME_PER_PAY_PERIOD
+  totalIncome:
+    thirtyDayIncome: MONEY_MADE_LAST_MONTH
+  householdPregnancy:
+    householdPregnancy: WHO_IS_PREGNANT
+  householdNonUsCitizen:
+    householdNonUsCitizen: IS_US_CITIZEN
+  householdSelectionForIncome:
+    employeeFullName: EMPLOYEE_FULL_NAME
+enums:
+  EVERY_WEEK: Every week
+  EVERY_TWO_WEEKS: Every two weeks
+  TWICE_A_MONTH: Twice a month
+  EVERY_MONTH: Every month
+  IT_VARIES: It varies
+  true: "Yes"
+  false: "No"
