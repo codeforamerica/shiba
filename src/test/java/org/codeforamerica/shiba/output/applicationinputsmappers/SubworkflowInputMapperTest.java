@@ -104,7 +104,7 @@ class SubworkflowInputMapperTest {
                 .timeToComplete(null)
                 .build();
 
-        assertThat(subworkflowInputMapper.map(application, Recipient.CLIENT, null)).contains(
+        assertThat(subworkflowInputMapper.map(application, Recipient.CLIENT, new SubworkflowIterationScopeTracker())).contains(
                 new ApplicationInput(
                         "question1",
                         "input1",

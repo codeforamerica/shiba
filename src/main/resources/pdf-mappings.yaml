@@ -134,7 +134,7 @@ mappings:
   payPeriod:
     payPeriod: PAY_FREQUENCY
   nonSelfEmployment_payPeriod:
-    payPeriod: NON_SELF_EMPLOYMENT_PAY_FREQUENCY
+    payPeriod: [ NON_SELF_EMPLOYMENT_PAY_FREQUENCY, NON_SELF_EMPLOYMENT_PAY_FREQUENCY_TEXT ]
   employmentStatus:
     areYouWorking: IS_WORKING
   homeExpenses:
