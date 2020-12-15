@@ -28,6 +28,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
+import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -418,7 +419,6 @@ public class ReleasePdfIntegrationTest extends AbstractBasePageTest {
                 .isEqualTo("homeless");
     }
 
-
     @Test
     void shouldMapJobLastThirtyDayIncome() {
         addHouseholdMembers();
@@ -511,6 +511,45 @@ public class ReleasePdfIntegrationTest extends AbstractBasePageTest {
         assertThat(getPdfFieldText(pdAcroForm, "GROSS_MONTHLY_INCOME_0")).isEqualTo("123.0");
         assertThat(getPdfFieldText(pdAcroForm, "MONEY_MADE_LAST_MONTH")).isEqualTo("123.0");
         assertThat(getPdfFieldText(pdAcroForm, "EXPEDITED_ELIGIBILITY")).isEqualTo("Expedited");
+    }
+
+    @Test
+    void shouldAddAuthorizedRepFieldsIfYes() {
+        navigateTo("authorizedRep");
+        testPage.enter("communicateOnYourBehalf", YES.getDisplayValue());
+        navigateTo("speakToCounty");
+        testPage.enter("getMailNotices", YES.getDisplayValue());
+        testPage.enter("spendOnYourBehalf", YES.getDisplayValue());
+
+        testPage.enter("helpersFullName", "defaultFirstName defaultLastName");
+        testPage.enter("helpersStreetAddress", "someStreetAddress");
+        testPage.enter("helpersCity", "someCity");
+        testPage.enter("helpersZipCode", "12345");
+        testPage.enter("helpersPhoneNumber", "7234567890");
+        testPage.clickContinue();
+
+        PDAcroForm pdAcroForm = submitAndDownloadReceipt();
+        assertThat(getPdfFieldText(pdAcroForm, "AUTHORIZED_REP_FILL_OUT_FORM")).isEqualTo("Yes");
+        assertThat(getPdfFieldText(pdAcroForm, "AUTHORIZED_REP_GET_NOTICES")).isEqualTo("Yes");
+        assertThat(getPdfFieldText(pdAcroForm, "AUTHORIZED_REP_SPEND_ON_YOUR_BEHALF")).isEqualTo("Yes");
+        assertThat(getPdfFieldText(pdAcroForm, "AUTHORIZED_REP_NAME")).isEqualTo("defaultFirstName defaultLastName");
+        assertThat(getPdfFieldText(pdAcroForm, "AUTHORIZED_REP_ADDRESS")).isEqualTo("someStreetAddress");
+        assertThat(getPdfFieldText(pdAcroForm, "AUTHORIZED_REP_CITY")).isEqualTo("someCity");
+        assertThat(getPdfFieldText(pdAcroForm, "AUTHORIZED_REP_ZIP_CODE")).isEqualTo("12345");
+        assertThat(getPdfFieldText(pdAcroForm, "AUTHORIZED_REP_PHONE_NUMBER")).isEqualTo("(723) 456-7890");
+
+
+    }
+
+    @Test
+    void shouldNotAddAuthorizedRepFieldsIfNo() {
+        navigateTo("authorizedRep");
+        testPage.enter("communicateOnYourBehalf", NO.getDisplayValue());
+
+        PDAcroForm pdAcroForm = submitAndDownloadReceipt();
+        assertThat(getPdfFieldText(pdAcroForm, "AUTHORIZED_REP_FILL_OUT_FORM")).isEqualTo("Off");
+        assertThat(getPdfFieldText(pdAcroForm, "AUTHORIZED_REP_GET_NOTICES")).isEqualTo("Off");
+        assertThat(getPdfFieldText(pdAcroForm, "AUTHORIZED_REP_SPEND_ON_YOUR_BEHALF")).isEqualTo("Off");
     }
 
     private void addHouseholdMembers() {

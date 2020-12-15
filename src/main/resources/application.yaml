@@ -29,7 +29,7 @@ encryption-key: ${ENCRYPTION_KEY}
 logging:
   level:
     org.apache.pdfbox.multipdf: off
-pagesConfig: dev-pages-config.yaml
+pagesConfig: release-pages-config.yaml
 
 flag:
   ccap: ${FLAG_CCAP}
