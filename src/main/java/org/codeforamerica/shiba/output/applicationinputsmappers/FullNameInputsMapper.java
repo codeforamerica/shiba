@@ -5,6 +5,7 @@ import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
 import org.codeforamerica.shiba.output.FullNameFormatter;
 import org.codeforamerica.shiba.output.Recipient;
+import org.codeforamerica.shiba.output.applicationinputsmappers.SubworkflowIterationScopeTracker.IterationScopeInfo;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.PageGroupConfiguration;
 import org.codeforamerica.shiba.pages.data.PageData;
@@ -48,7 +49,7 @@ public class FullNameInputsMapper implements ApplicationInputsMapper {
                             List.of(fullName), ApplicationInputType.SINGLE_VALUE, subworkflow.indexOf(iteration)));
 
                     if (scopeTracker != null && pageGroupConfiguration.isPresent()) {
-                        SubworkflowIterationScopeTracker.IterationScopeInfo scopeInfo = scopeTracker.getIterationScopeInfo(pageGroupConfiguration.get(), iteration);
+                        IterationScopeInfo scopeInfo = scopeTracker.getIterationScopeInfo(pageGroupConfiguration.get(), iteration);
                         if (scopeInfo != null) {
                             inputs = Stream.concat(inputs, Stream.of(new ApplicationInput(
                                     scopeInfo.getScope() + "_" + pageName,

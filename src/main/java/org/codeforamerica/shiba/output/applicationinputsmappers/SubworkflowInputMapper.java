@@ -4,11 +4,13 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
 import org.codeforamerica.shiba.output.Recipient;
+import org.codeforamerica.shiba.output.applicationinputsmappers.SubworkflowIterationScopeTracker.IterationScopeInfo;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.FormInput;
 import org.codeforamerica.shiba.pages.config.FormInputType;
 import org.codeforamerica.shiba.pages.config.PageGroupConfiguration;
 import org.codeforamerica.shiba.pages.data.*;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -35,23 +37,7 @@ public class SubworkflowInputMapper implements ApplicationInputsMapper {
         ApplicationData data = application.getApplicationData();
         Map<String, PageGroupConfiguration> pageGroups = applicationConfiguration.getPageGroups();
 
-        Stream<ApplicationInput> subworkflowIterationCountInputs = pageGroups.entrySet().stream()
-                .map(entry -> {
-                    String groupName = entry.getKey();
-                    PageGroupConfiguration pageGroupConfiguration = entry.getValue();
-
-                    Integer startingCount = ofNullable(pageGroupConfiguration.getStartingCount()).orElse(0);
-
-                    Subworkflow subworkflow = data.getSubworkflows().get(groupName);
-                    Integer subworkflowCount = ofNullable(subworkflow).map(ArrayList::size).orElse(0);
-
-                    return new ApplicationInput(
-                            groupName,
-                            "count",
-                            List.of(String.valueOf(subworkflowCount + startingCount)),
-                            ApplicationInputType.SINGLE_VALUE
-                    );
-                });
+        Stream<ApplicationInput> subworkflowIterationCountInputs = getCount(data, pageGroups);
 
         Stream<ApplicationInput> pageInputs = data.getSubworkflows().entrySet().stream()
                 .flatMap(subworkflowsEntry -> {
@@ -72,25 +58,16 @@ public class SubworkflowInputMapper implements ApplicationInputsMapper {
                                                 return empty();
                                             }
 
+                                            List<FormInput> inputConfigurations = applicationConfiguration.getPageDefinitions().stream()
+                                                    .filter(pageConfig -> pageConfig.getName().equals(pageName)).findAny().orElse(null).getInputs();
+
                                             return pageData.entrySet().stream()
                                                     .flatMap(pageDataEntry -> {
                                                         String inputName = pageDataEntry.getKey();
                                                         InputData inputData = pageDataEntry.getValue();
 
-                                                        List<String> valuesForInput = inputData.getValue().stream()
-                                                                .map(value -> {
-                                                                    if (Recipient.CLIENT.equals(recipient) &&
-                                                                            personalDataMappings.get(inputName) != null &&
-                                                                            !value.isEmpty()) {
-                                                                        return personalDataMappings.get(inputName);
-                                                                    } else {
-                                                                        return value;
-                                                                    }
-                                                                })
-                                                                .collect(Collectors.toList());
+                                                        List<String> valuesForInput = getValuesForInput(recipient, inputName, inputData);
 
-                                                        List<FormInput> inputConfigurations = applicationConfiguration.getPageDefinitions().stream()
-                                                                .filter(pageConfig -> pageConfig.getName().equals(pageName)).findAny().orElse(null).getInputs();
                                                         FormInputType inputType = inputConfigurations.stream()
                                                                 .filter(inputConfiguration -> inputConfiguration.getName().equals(inputName))
                                                                 .findAny()
@@ -104,7 +81,7 @@ public class SubworkflowInputMapper implements ApplicationInputsMapper {
                                                                 ApplicationInputsMapper.formInputTypeToApplicationInputType(inputType),
                                                                 subworkflow.indexOf(iteration)));
                                                         if (scopeTracker != null) {
-                                                            SubworkflowIterationScopeTracker.IterationScopeInfo scopeInfo = scopeTracker.getIterationScopeInfo(pageGroupConfiguration, iteration);
+                                                            IterationScopeInfo scopeInfo = scopeTracker.getIterationScopeInfo(pageGroupConfiguration, iteration);
                                                             if (scopeInfo != null) {
                                                                 inputs = Stream.concat(inputs, Stream.of(new ApplicationInput(
                                                                         scopeInfo.getScope() + "_" + pageName,
@@ -121,5 +98,41 @@ public class SubworkflowInputMapper implements ApplicationInputsMapper {
                             });
                 });
         return Stream.concat(subworkflowIterationCountInputs, pageInputs).collect(Collectors.toList());
+    }
+
+    @NotNull
+    private List<String> getValuesForInput(Recipient recipient, String inputName, InputData inputData) {
+        return inputData.getValue().stream()
+                .map(value -> {
+                    if (Recipient.CLIENT.equals(recipient) &&
+                            personalDataMappings.get(inputName) != null &&
+                            !value.isEmpty()) {
+                        return personalDataMappings.get(inputName);
+                    } else {
+                        return value;
+                    }
+                })
+                .collect(Collectors.toList());
+    }
+
+    @NotNull
+    private Stream<ApplicationInput> getCount(ApplicationData data, Map<String, PageGroupConfiguration> pageGroups) {
+        return pageGroups.entrySet().stream()
+                .map(entry -> {
+                    String groupName = entry.getKey();
+                    PageGroupConfiguration pageGroupConfiguration = entry.getValue();
+
+                    Integer startingCount = ofNullable(pageGroupConfiguration.getStartingCount()).orElse(0);
+
+                    Subworkflow subworkflow = data.getSubworkflows().get(groupName);
+                    Integer subworkflowCount = ofNullable(subworkflow).map(ArrayList::size).orElse(0);
+
+                    return new ApplicationInput(
+                            groupName,
+                            "count",
+                            List.of(String.valueOf(subworkflowCount + startingCount)),
+                            ApplicationInputType.SINGLE_VALUE
+                    );
+                });
     }
 }
