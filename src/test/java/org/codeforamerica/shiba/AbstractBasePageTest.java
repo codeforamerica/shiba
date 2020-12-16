@@ -1,7 +1,9 @@
 package org.codeforamerica.shiba;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
+import org.codeforamerica.shiba.output.DocumentType;
 import org.codeforamerica.shiba.pages.Page;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -24,7 +26,9 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
@@ -79,6 +83,30 @@ public abstract class AbstractBasePageTest {
                 .filter(file -> file.getName().contains("_CAF_") && file.getName().endsWith(".pdf"))
                 .findFirst();
     }
+
+    protected Map<DocumentType, PDAcroForm> getAllFiles() {
+        return Arrays.stream(path.toFile().listFiles())
+                .filter(file -> file.getName().endsWith(".pdf"))
+                .collect(Collectors.toMap(this::getDocumentType, pdfFile -> {
+                    try {
+                        return PDDocument.load(pdfFile).getDocumentCatalog().getAcroForm();
+                    } catch (IOException e) {
+                        throw new IllegalStateException(e);
+                    }
+                }));
+    }
+
+    private DocumentType getDocumentType(File file) {
+        String fileName = file.getName();
+        if (fileName.contains("_CAF_")) {
+            return DocumentType.CAF;
+        } else if (fileName.contains("_CCAP_")) {
+            return DocumentType.CCAP;
+        } else {
+            return DocumentType.NONE;
+        }
+    }
+
 
     @SuppressWarnings("unused")
     public static void takeSnapShot(String fileWithPath) {
