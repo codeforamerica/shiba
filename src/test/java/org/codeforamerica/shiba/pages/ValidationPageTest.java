@@ -414,6 +414,7 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
                 "almost@.com, " + emailPageTitle,
                 "\" \" , " + emailPageTitle,
                 "fake@test.com, " + lastPageTitle,
+                "FAKE@TEST.COM, " + lastPageTitle
         })
         void shouldPassValidationForEMAILWhenThereIsAValidEmail(String emailInput, String expectedPage) {
             driver.navigate().to(baseUrl + "/pages/pageWithEmail");
