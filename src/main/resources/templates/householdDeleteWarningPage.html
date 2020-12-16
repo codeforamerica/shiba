@@ -3,6 +3,7 @@
 <div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
 <body th:with="householdMemberName=${iterationData.getPagesData().get('householdMemberInfo').get('firstName').value[0] + ' ' + iterationData.getPagesData().get('householdMemberInfo').get('lastName').value[0]}">
 <div class="page-wrapper">
+    <div th:replace="fragments/toolbar"></div>
     <div th:replace="fragments/demoBanner"></div>
     <section class="slab slab--shiba">
         <div class="grid">
