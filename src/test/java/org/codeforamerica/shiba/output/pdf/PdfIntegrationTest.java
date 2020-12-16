@@ -147,17 +147,22 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         testPage.enter("sameMailingAddress", "No, use a different address for mail");
         testPage.clickContinue();
         testPage.clickButton("Use this address");
-        PDAcroForm pdAcroForm = submitAndDownloadCaf();
-        assertThat(pdAcroForm.getField("APPLICANT_HOME_STREET_ADDRESS").getValueAsString())
-                .isEqualTo(originalStreetAddress);
-        assertThat(pdAcroForm.getField("APPLICANT_HOME_APT_NUMBER").getValueAsString())
+
+        Map<DocumentType, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+        List.of(CAF, DocumentType.CCAP).forEach(type -> {
+            PDAcroForm pdAcroForm = pdAcroForms.get(type);
+            assertThat(pdAcroForm.getField("APPLICANT_HOME_STREET_ADDRESS").getValueAsString())
+                    .isEqualTo(originalStreetAddress);
+            assertThat(pdAcroForm.getField("APPLICANT_HOME_CITY").getValueAsString())
+                    .isEqualTo(originalCity);
+            assertThat(pdAcroForm.getField("APPLICANT_HOME_STATE").getValueAsString())
+                    .isEqualTo("MN");
+            assertThat(pdAcroForm.getField("APPLICANT_HOME_ZIPCODE").getValueAsString())
+                    .isEqualTo(originalZipCode);
+        });
+
+        assertThat(pdAcroForms.get(CAF).getField("APPLICANT_HOME_APT_NUMBER").getValueAsString())
                 .isEqualTo(originalApt);
-        assertThat(pdAcroForm.getField("APPLICANT_HOME_CITY").getValueAsString())
-                .isEqualTo(originalCity);
-        assertThat(pdAcroForm.getField("APPLICANT_HOME_STATE").getValueAsString())
-                .isEqualTo("MN");
-        assertThat(pdAcroForm.getField("APPLICANT_HOME_ZIPCODE").getValueAsString())
-                .isEqualTo(originalZipCode);
     }
 
     @Test
@@ -183,17 +188,21 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
                         "Hennepin")));
         testPage.clickContinue();
         testPage.clickContinue();
-        PDAcroForm pdAcroForm = submitAndDownloadCaf();
-        assertThat(pdAcroForm.getField("APPLICANT_HOME_STREET_ADDRESS").getValueAsString())
-                .isEqualTo(enrichedStreetValue);
-        assertThat(pdAcroForm.getField("APPLICANT_HOME_APT_NUMBER").getValueAsString())
+        Map<DocumentType, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+        List.of(CAF, DocumentType.CCAP).forEach(type -> {
+            PDAcroForm pdAcroForm = pdAcroForms.get(type);
+            assertThat(pdAcroForm.getField("APPLICANT_HOME_STREET_ADDRESS").getValueAsString())
+                    .isEqualTo(enrichedStreetValue);
+            assertThat(pdAcroForm.getField("APPLICANT_HOME_CITY").getValueAsString())
+                    .isEqualTo(enrichedCityValue);
+            assertThat(pdAcroForm.getField("APPLICANT_HOME_STATE").getValueAsString())
+                    .isEqualTo(enrichedState);
+            assertThat(pdAcroForm.getField("APPLICANT_HOME_ZIPCODE").getValueAsString())
+                    .isEqualTo(enrichedZipCodeValue);
+        });
+
+        assertThat(pdAcroForms.get(CAF).getField("APPLICANT_HOME_APT_NUMBER").getValueAsString())
                 .isEqualTo(enrichedApartmentNumber);
-        assertThat(pdAcroForm.getField("APPLICANT_HOME_CITY").getValueAsString())
-                .isEqualTo(enrichedCityValue);
-        assertThat(pdAcroForm.getField("APPLICANT_HOME_STATE").getValueAsString())
-                .isEqualTo(enrichedState);
-        assertThat(pdAcroForm.getField("APPLICANT_HOME_ZIPCODE").getValueAsString())
-                .isEqualTo(enrichedZipCodeValue);
     }
 
     @Test
@@ -210,17 +219,20 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         testPage.enter("sameMailingAddress", "Yes, send mail here");
         testPage.clickContinue();
         testPage.clickButton("Use this address");
-        PDAcroForm pdAcroForm = submitAndDownloadCaf();
-        assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
-                .isEqualTo(originalStreetAddress);
-        assertThat(pdAcroForm.getField("APPLICANT_MAILING_APT_NUMBER").getValueAsString())
+        Map<DocumentType, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+        List.of(CAF, DocumentType.CCAP).forEach(type -> {
+            PDAcroForm pdAcroForm = pdAcroForms.get(type);
+            assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
+                    .isEqualTo(originalStreetAddress);
+            assertThat(pdAcroForm.getField("APPLICANT_MAILING_CITY").getValueAsString())
+                    .isEqualTo(originalCity);
+            assertThat(pdAcroForm.getField("APPLICANT_MAILING_STATE").getValueAsString())
+                    .isEqualTo("MN");
+            assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
+                    .isEqualTo(originalZipCode);
+        });
+        assertThat(pdAcroForms.get(CAF).getField("APPLICANT_MAILING_APT_NUMBER").getValueAsString())
                 .isEqualTo(originalApt);
-        assertThat(pdAcroForm.getField("APPLICANT_MAILING_CITY").getValueAsString())
-                .isEqualTo(originalCity);
-        assertThat(pdAcroForm.getField("APPLICANT_MAILING_STATE").getValueAsString())
-                .isEqualTo("MN");
-        assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
-                .isEqualTo(originalZipCode);
     }
 
     @Test
@@ -246,26 +258,26 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
                         "Hennepin")));
         testPage.clickContinue();
         testPage.clickContinue();
-        PDAcroForm pdAcroForm = submitAndDownloadCaf();
-        assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
-                .isEqualTo(enrichedStreetValue);
-        assertThat(pdAcroForm.getField("APPLICANT_MAILING_APT_NUMBER").getValueAsString())
+        Map<DocumentType, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+        List.of(CAF, DocumentType.CCAP).forEach(type -> {
+            PDAcroForm pdAcroForm = pdAcroForms.get(type);
+            assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
+                    .isEqualTo(enrichedStreetValue);
+            assertThat(pdAcroForm.getField("APPLICANT_MAILING_CITY").getValueAsString())
+                    .isEqualTo(enrichedCityValue);
+            assertThat(pdAcroForm.getField("APPLICANT_MAILING_STATE").getValueAsString())
+                    .isEqualTo(enrichedState);
+            assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
+                    .isEqualTo(enrichedZipCodeValue);
+        });
+        assertThat(pdAcroForms.get(CAF).getField("APPLICANT_MAILING_APT_NUMBER").getValueAsString())
                 .isEqualTo(enrichedApartmentNumber);
-        assertThat(pdAcroForm.getField("APPLICANT_MAILING_CITY").getValueAsString())
-                .isEqualTo(enrichedCityValue);
-        assertThat(pdAcroForm.getField("APPLICANT_MAILING_STATE").getValueAsString())
-                .isEqualTo(enrichedState);
-        assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
-                .isEqualTo(enrichedZipCodeValue);
     }
 
     @Test
     void shouldMapToOriginalMailingAddressIfSameMailingAddressIsFalseAndUseEnrichedAddressIsFalse() {
         navigateTo("homeAddress");
-        testPage.enter("streetAddress", "originalHomeStreetAddress");
-        testPage.enter("apartmentNumber", "originalHomeApt");
-        testPage.enter("city", "originalHomeCity");
-        testPage.enter("zipCode", "54321");
+        fillInAddress();
         testPage.enter("sameMailingAddress", "No, use a different address for mail");
         testPage.clickContinue();
         testPage.clickButton("Use this address");
@@ -282,26 +294,27 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         testPage.clickContinue();
         testPage.clickButton("Use this address");
 
-        PDAcroForm pdAcroForm = submitAndDownloadCaf();
-        assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
-                .isEqualTo(originalStreetAddress);
-        assertThat(pdAcroForm.getField("APPLICANT_MAILING_APT_NUMBER").getValueAsString())
+        Map<DocumentType, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+        List.of(CAF, DocumentType.CCAP).forEach(type -> {
+            PDAcroForm pdAcroForm = pdAcroForms.get(type);
+            assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
+                    .isEqualTo(originalStreetAddress);
+            assertThat(pdAcroForm.getField("APPLICANT_MAILING_CITY").getValueAsString())
+                    .isEqualTo(originalCity);
+            assertThat(pdAcroForm.getField("APPLICANT_MAILING_STATE").getValueAsString())
+                    .isEqualTo(originalState);
+            assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
+                    .isEqualTo(originalZipCode);
+        });
+
+        assertThat(pdAcroForms.get(CAF).getField("APPLICANT_MAILING_APT_NUMBER").getValueAsString())
                 .isEqualTo(originalApt);
-        assertThat(pdAcroForm.getField("APPLICANT_MAILING_CITY").getValueAsString())
-                .isEqualTo(originalCity);
-        assertThat(pdAcroForm.getField("APPLICANT_MAILING_STATE").getValueAsString())
-                .isEqualTo(originalState);
-        assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
-                .isEqualTo(originalZipCode);
     }
 
     @Test
     void shouldMapToEnrichedMailingAddressIfSameMailingAddressIsFalseAndUseEnrichedAddressIsTrue() {
         navigateTo("homeAddress");
-        testPage.enter("streetAddress", "originalHomeStreetAddress");
-        testPage.enter("apartmentNumber", "originalHomeApt");
-        testPage.enter("city", "originalHomeCity");
-        testPage.enter("zipCode", "54321");
+        fillInAddress();
         testPage.enter("sameMailingAddress", "No, use a different address for mail");
         testPage.clickContinue();
         testPage.clickButton("Use this address");
@@ -326,18 +339,23 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         testPage.clickContinue();
         testPage.clickContinue();
 
-        PDAcroForm pdAcroForm = submitAndDownloadCaf();
-        assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
-                .isEqualTo(enrichedStreetValue);
-        assertThat(pdAcroForm.getField("APPLICANT_MAILING_APT_NUMBER").getValueAsString())
+        Map<DocumentType, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+        List.of(CAF, DocumentType.CCAP).forEach(type -> {
+            PDAcroForm pdAcroForm = pdAcroForms.get(type);
+            assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
+                    .isEqualTo(enrichedStreetValue);
+            assertThat(pdAcroForm.getField("APPLICANT_MAILING_CITY").getValueAsString())
+                    .isEqualTo(enrichedCityValue);
+            assertThat(pdAcroForm.getField("APPLICANT_MAILING_STATE").getValueAsString())
+                    .isEqualTo(enrichedState);
+            assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
+                    .isEqualTo(enrichedZipCodeValue);
+        });
+
+        assertThat(pdAcroForms.get(CAF).getField("APPLICANT_MAILING_APT_NUMBER").getValueAsString())
                 .isEqualTo(enrichedApartmentNumber);
-        assertThat(pdAcroForm.getField("APPLICANT_MAILING_CITY").getValueAsString())
-                .isEqualTo(enrichedCityValue);
-        assertThat(pdAcroForm.getField("APPLICANT_MAILING_STATE").getValueAsString())
-                .isEqualTo(enrichedState);
-        assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
-                .isEqualTo(enrichedZipCodeValue);
     }
+
 
     @Test
     void shouldMapPregnantHouseholdMembers() {
@@ -373,10 +391,13 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         testPage.enter("incomePerPayPeriod", "1");
         testPage.clickContinue();
 
-        PDAcroForm pdAcroForm = submitAndDownloadCaf();
-        assertThat(getPdfFieldText(pdAcroForm, "EMPLOYEE_FULL_NAME_0")).isEqualTo(
-                "Jim Halpert"
-        );
+        Map<DocumentType, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+        assertThat(getPdfFieldText(pdAcroForms.get(CAF), "EMPLOYEE_FULL_NAME_0"))
+                .isEqualTo("Jim Halpert");
+
+        assertThat(pdAcroForms.get(CCAP).getField("NON_SELF_EMPLOYMENT_EMPLOYEE_FULL_NAME_0").getValueAsString())
+                .isEqualTo("Jim Halpert");
+
     }
 
     @Test
@@ -403,17 +424,17 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         driver.findElement(By.id("additionalIncomeInfo")).sendKeys("abc");
         testPage.clickContinue();
 
-        PDAcroForm pdAcroForm = submitAndDownloadCaf();
-        assertThat(getPdfFieldText(pdAcroForm, "ADDITIONAL_INCOME_INFO")).isEqualTo("abc");
+        Map<DocumentType, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+        List.of(CAF, DocumentType.CCAP).forEach(type -> {
+            PDAcroForm pdAcroForm = pdAcroForms.get(type);
+            assertThat(getPdfFieldText(pdAcroForm, "ADDITIONAL_INCOME_INFO")).isEqualTo("abc");
+        });
     }
 
     @Test
     void shouldMapNoPermanentAddressIfSelected() {
         navigateTo("homeAddress");
-        testPage.enter("streetAddress", "originalHomeStreetAddress");
-        testPage.enter("apartmentNumber", "originalHomeApt");
-        testPage.enter("city", "originalHomeCity");
-        testPage.enter("zipCode", "54321");
+        fillInAddress();
         testPage.enter("isHomeless", "I don't have a permanent address");
         testPage.enter("sameMailingAddress", "Yes, send mail here");
         testPage.clickContinue();
@@ -442,10 +463,12 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         testPage.enter("lastThirtyDaysJobIncome", "123");
         testPage.clickContinue();
 
-        PDAcroForm pdAcroForm = submitAndDownloadCaf();
-        assertThat(getPdfFieldText(pdAcroForm, "GROSS_MONTHLY_INCOME_0")).isEqualTo("123.0");
-        assertThat(getPdfFieldText(pdAcroForm, "MONEY_MADE_LAST_MONTH")).isEqualTo("123.0");
-        assertThat(getPdfFieldText(pdAcroForm, "EXPEDITED_ELIGIBILITY")).isEqualTo("Expedited");
+        Map<DocumentType, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+        assertThat(getPdfFieldText(pdAcroForms.get(CAF), "GROSS_MONTHLY_INCOME_0")).isEqualTo("123.0");
+        assertThat(getPdfFieldText(pdAcroForms.get(CAF), "MONEY_MADE_LAST_MONTH")).isEqualTo("123.0");
+        assertThat(getPdfFieldText(pdAcroForms.get(CAF), "EXPEDITED_ELIGIBILITY")).isEqualTo("Expedited");
+
+        assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0")).isEqualTo("123.0");
     }
 
     @Test
@@ -512,10 +535,12 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         testPage.enter("lastThirtyDaysJobIncome", "");
         testPage.clickContinue();
 
-        PDAcroForm pdAcroForm = submitAndDownloadCaf();
-        assertThat(getPdfFieldText(pdAcroForm, "GROSS_MONTHLY_INCOME_0")).isEqualTo("123.0");
-        assertThat(getPdfFieldText(pdAcroForm, "MONEY_MADE_LAST_MONTH")).isEqualTo("123.0");
-        assertThat(getPdfFieldText(pdAcroForm, "EXPEDITED_ELIGIBILITY")).isEqualTo("Expedited");
+        Map<DocumentType, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+        assertThat(getPdfFieldText(pdAcroForms.get(CAF), "GROSS_MONTHLY_INCOME_0")).isEqualTo("123.0");
+        assertThat(getPdfFieldText(pdAcroForms.get(CAF), "MONEY_MADE_LAST_MONTH")).isEqualTo("123.0");
+        assertThat(getPdfFieldText(pdAcroForms.get(CAF), "EXPEDITED_ELIGIBILITY")).isEqualTo("Expedited");
+
+        assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0")).isEqualTo("123.0");
     }
 
     @Test
@@ -579,6 +604,13 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         navigateTo("utilities");
         testPage.enter("payForUtilities", "Cooling");
         testPage.clickContinue();
+    }
+
+    private void fillInAddress() {
+        testPage.enter("streetAddress", "originalHomeStreetAddress");
+        testPage.enter("apartmentNumber", "originalHomeApt");
+        testPage.enter("city", "originalHomeCity");
+        testPage.enter("zipCode", "54321");
     }
 
     private Map<DocumentType, PDAcroForm> submitAndDownloadReceipt() {
