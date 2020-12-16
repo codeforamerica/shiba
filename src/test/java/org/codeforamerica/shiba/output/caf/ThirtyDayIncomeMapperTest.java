@@ -27,7 +27,7 @@ class ThirtyDayIncomeMapperTest {
         when(totalIncomeParser.parse(appData)).thenReturn(new TotalIncome(thirtyDayIncome, jobIncomeInformationList));
         when(totalIncomeCalculator.calculate(new TotalIncome(thirtyDayIncome, jobIncomeInformationList))).thenReturn(111.0);
 
-        assertThat(thirtyDayIncomeMapper.map(application, Recipient.CLIENT)).isEqualTo(List.of(
+        assertThat(thirtyDayIncomeMapper.map(application, Recipient.CLIENT, null)).isEqualTo(List.of(
                 new ApplicationInput(
                         "totalIncome",
                         "thirtyDayIncome",

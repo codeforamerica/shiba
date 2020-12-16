@@ -128,9 +128,13 @@ mappings:
   employersName:
     employersName: EMPLOYERS_NAME
   hourlyWage:
-    hourlyWage: [HOURLY_WAGE, INCOME_PER_PAY_PERIOD]
+    hourlyWage: [ HOURLY_WAGE, INCOME_PER_PAY_PERIOD ]
+  nonSelfEmployment_hourlyWage:
+    hourlyWage: NON_SELF_EMPLOYMENT_HOURLY_WAGE
   payPeriod:
     payPeriod: PAY_FREQUENCY
+  nonSelfEmployment_payPeriod:
+    payPeriod: [ NON_SELF_EMPLOYMENT_PAY_FREQUENCY, NON_SELF_EMPLOYMENT_PAY_FREQUENCY_TEXT ]
   employmentStatus:
     areYouWorking: IS_WORKING
   homeExpenses:
@@ -185,12 +189,16 @@ mappings:
     employersName: NON_SELF_EMPLOYMENT_EMPLOYERS_NAME
   selfEmployment:
     selfEmployment: SELF_EMPLOYMENT
+  nonSelfEmployment_employee:
+    grossMonthlyIncome: NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME
   selfEmployment_employee:
     firstName: SELF_EMPLOYMENT_EMPLOYEE_FIRST_NAME
     lastName: SELF_EMPLOYMENT_EMPLOYEE_LAST_NAME
-    selfEmployedGrossMonthlyEarnings: SELF_EMPLOYED_GROSS_MONTHLY_EARNINGS
+    grossMonthlyIncome: SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME
   selfEmployment_hoursAWeek:
     hoursAWeek: SELF_EMPLOYMENT_HOURS_A_WEEK
+  nonSelfEmployment_hoursAWeek:
+    hoursAWeek: NON_SELF_EMPLOYMENT_HOURS_A_WEEK
   nonPagesData:
     applicationId: APPLICATION_ID
     completedDate: CREATED_DATE
@@ -209,6 +217,10 @@ mappings:
     householdNonUsCitizen: IS_US_CITIZEN
   householdSelectionForIncome:
     employeeFullName: EMPLOYEE_FULL_NAME
+  nonSelfEmployment_householdSelectionForIncome:
+    employeeFullName: NON_SELF_EMPLOYMENT_EMPLOYEE_FULL_NAME
+  selfEmployment_householdSelectionForIncome:
+    employeeFullName: SELF_EMPLOYMENT_EMPLOYEE_FULL_NAME
 enums:
   EVERY_WEEK: Every week
   EVERY_TWO_WEEKS: Every two weeks

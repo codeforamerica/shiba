@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class HouseholdPregnancyMapper implements ApplicationInputsMapper {
 
     @Override
-    public List<ApplicationInput> map(Application application, Recipient recipient) {
+    public List<ApplicationInput> map(Application application, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
 
         List<String> pregnantHouseholdMembers = Optional.ofNullable(application.getApplicationData().getPageData("whoIsPregnant"))
                 .map(pageData -> pageData.get("whoIsPregnant"))

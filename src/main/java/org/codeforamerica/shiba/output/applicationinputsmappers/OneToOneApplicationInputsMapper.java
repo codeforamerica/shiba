@@ -27,7 +27,7 @@ public class OneToOneApplicationInputsMapper implements ApplicationInputsMapper 
     }
 
     @Override
-    public List<ApplicationInput> map(Application application, Recipient recipient) {
+    public List<ApplicationInput> map(Application application, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
         ApplicationData data = application.getApplicationData();
         return applicationConfiguration.getPageDefinitions().stream()
                 .flatMap(pageConfiguration -> pageConfiguration.getFlattenedInputs().stream()

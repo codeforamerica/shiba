@@ -79,8 +79,8 @@ class GrossMonthlyIncomeParserTest {
         List<JobIncomeInformation> jobIncomeInformation = grossMonthlyIncomeParser.parse(applicationData);
 
         assertThat(jobIncomeInformation).contains(
-                new HourlyJobIncomeInformation("12", "30", 0),
-                new HourlyJobIncomeInformation("6", "45", 1)
+                new HourlyJobIncomeInformation("12", "30", 0, subworkflow.get(0)),
+                new HourlyJobIncomeInformation("6", "45", 1, subworkflow.get(1))
         );
     }
 
@@ -143,7 +143,7 @@ class GrossMonthlyIncomeParserTest {
         List<JobIncomeInformation> jobIncomeInformation = grossMonthlyIncomeParser.parse(applicationData);
 
         assertThat(jobIncomeInformation).contains(
-                new NonHourlyJobIncomeInformation("EVERY_WEEK", "1.1", 0)
+                new NonHourlyJobIncomeInformation("EVERY_WEEK", "1.1", 0, subworkflow.get(0))
         );
     }
 }

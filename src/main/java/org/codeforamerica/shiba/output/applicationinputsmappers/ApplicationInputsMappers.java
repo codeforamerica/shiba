@@ -22,8 +22,11 @@ public class ApplicationInputsMappers {
     }
 
     public List<ApplicationInput> map(Application application, Recipient recipient) {
+
+        SubworkflowIterationScopeTracker scopeTracker = new SubworkflowIterationScopeTracker();
+
         Stream<ApplicationInput> inputs = this.mappers.stream()
-                .flatMap(mapper -> mapper.map(application, recipient).stream());
+                .flatMap(mapper -> mapper.map(application, recipient, scopeTracker).stream());
 
         Stream<ApplicationInput> defaultInputs = Stream.of(
                 new ApplicationInput("nonPagesData", "applicationId", List.of(application.getId()), SINGLE_VALUE),

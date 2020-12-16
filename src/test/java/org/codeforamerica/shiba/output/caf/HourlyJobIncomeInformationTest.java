@@ -7,7 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class HourlyJobIncomeInformationTest {
     @Test
     void shouldCalculateGrossMonthlyIncome() {
-        HourlyJobIncomeInformation hourlyJobIncomeInformation = new HourlyJobIncomeInformation("2", "5", 0);
+        HourlyJobIncomeInformation hourlyJobIncomeInformation = new HourlyJobIncomeInformation("2", "5", 0, null);
         assertThat(hourlyJobIncomeInformation.grossMonthlyIncome()).isEqualTo(40);
     }
 }

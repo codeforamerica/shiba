@@ -1,6 +1,9 @@
 package org.codeforamerica.shiba.application.parsers;
 
-import org.codeforamerica.shiba.output.caf.*;
+import org.codeforamerica.shiba.output.caf.HourlyJobIncomeInformation;
+import org.codeforamerica.shiba.output.caf.JobIncomeInformation;
+import org.codeforamerica.shiba.output.caf.LastThirtyDaysJobIncomeInformation;
+import org.codeforamerica.shiba.output.caf.NonHourlyJobIncomeInformation;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.pages.data.Subworkflow;
@@ -31,7 +34,7 @@ public class GrossMonthlyIncomeParser extends ApplicationDataParser<List<JobInco
                     boolean hasLastThirtyDaysIncome = pagesData.containsKey(lastThirtyDaysIncomeCoordinates.getPageName());
                     if (hasLastThirtyDaysIncome) {
                         String lastThirtyDaysIncome = pagesData.getPage(lastThirtyDaysIncomeCoordinates.getPageName()).get(lastThirtyDaysIncomeCoordinates.getInputName()).getValue(0);
-                        return new LastThirtyDaysJobIncomeInformation(lastThirtyDaysIncome, jobsGroup.indexOf(pagesData));
+                        return new LastThirtyDaysJobIncomeInformation(lastThirtyDaysIncome, jobsGroup.indexOf(pagesData), iteration);
                     } else {
                         boolean isHourlyJob = Boolean.parseBoolean(pagesData.getPage(isHourlyJobCoordinates.getPageName()).get(isHourlyJobCoordinates.getInputName()).getValue(0));
                         if (isHourlyJob) {
@@ -41,7 +44,7 @@ public class GrossMonthlyIncomeParser extends ApplicationDataParser<List<JobInco
                             PageInputCoordinates hoursAWeekCoordinates = grossMonthlyIncomeConfiguration.getPageInputs().get("hoursAWeek");
                             String hoursAWeekInputValue = pagesData.getPage(hoursAWeekCoordinates.getPageName())
                                     .get(hoursAWeekCoordinates.getInputName()).getValue(0);
-                            return new HourlyJobIncomeInformation(hourlyWageInputValue, hoursAWeekInputValue, jobsGroup.indexOf(pagesData));
+                            return new HourlyJobIncomeInformation(hourlyWageInputValue, hoursAWeekInputValue, jobsGroup.indexOf(pagesData), iteration);
                         } else {
                             PageInputCoordinates payPeriodCoordinates = grossMonthlyIncomeConfiguration.getPageInputs().get("payPeriod");
                             String payPeriodInputValue = pagesData.getPage(payPeriodCoordinates.getPageName())
@@ -49,7 +52,7 @@ public class GrossMonthlyIncomeParser extends ApplicationDataParser<List<JobInco
                             PageInputCoordinates incomePerPayPeriodCoordinates = grossMonthlyIncomeConfiguration.getPageInputs().get("incomePerPayPeriod");
                             String incomePerPayPeriodInputValue = pagesData.getPage(incomePerPayPeriodCoordinates.getPageName())
                                     .get(incomePerPayPeriodCoordinates.getInputName()).getValue(0);
-                            return new NonHourlyJobIncomeInformation(payPeriodInputValue, incomePerPayPeriodInputValue, jobsGroup.indexOf(pagesData));
+                            return new NonHourlyJobIncomeInformation(payPeriodInputValue, incomePerPayPeriodInputValue, jobsGroup.indexOf(pagesData), iteration);
                         }
                     }
                 })

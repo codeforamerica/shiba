@@ -104,7 +104,7 @@ class SubworkflowInputMapperTest {
                 .timeToComplete(null)
                 .build();
 
-        assertThat(subworkflowInputMapper.map(application, Recipient.CLIENT)).contains(
+        assertThat(subworkflowInputMapper.map(application, Recipient.CLIENT, new SubworkflowIterationScopeTracker())).contains(
                 new ApplicationInput(
                         "question1",
                         "input1",
@@ -177,7 +177,7 @@ class SubworkflowInputMapperTest {
         ));
 
         Application application = Application.builder().applicationData(new ApplicationData()).build();
-        List<ApplicationInput> applicationInputs = subworkflowInputMapper.map(application, Recipient.CLIENT);
+        List<ApplicationInput> applicationInputs = subworkflowInputMapper.map(application, Recipient.CLIENT, null);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput(
@@ -278,7 +278,7 @@ class SubworkflowInputMapperTest {
                 .timeToComplete(null)
                 .build();
 
-        List<ApplicationInput> mapResult = subworkflowInputMapper.map(application, Recipient.CLIENT);
+        List<ApplicationInput> mapResult = subworkflowInputMapper.map(application, Recipient.CLIENT, new SubworkflowIterationScopeTracker());
         assertThat(mapResult).contains(
                 new ApplicationInput(
                         prefix1 + "_question1",

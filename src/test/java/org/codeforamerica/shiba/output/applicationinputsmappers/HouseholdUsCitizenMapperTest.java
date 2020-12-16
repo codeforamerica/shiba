@@ -32,7 +32,7 @@ class HouseholdUsCitizenMapperTest {
 
         List<ApplicationInput> result = mapper.map(Application.builder()
                 .applicationData(applicationData)
-                .build(), null);
+                .build(), null, null);
 
         assertThat(result).isEqualTo(List.of(
                 new ApplicationInput(
