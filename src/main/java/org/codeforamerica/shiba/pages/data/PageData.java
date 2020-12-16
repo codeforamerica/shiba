@@ -9,10 +9,7 @@ import org.codeforamerica.shiba.pages.config.PageConfiguration;
 import org.codeforamerica.shiba.pages.config.Validator;
 import org.springframework.util.MultiValueMap;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toMap;
@@ -64,5 +61,20 @@ public class PageData extends HashMap<String, InputData> {
                 .stream()
                 .filter(validator -> validator.shouldValidate(model))
                 .collect(Collectors.toList());
+    }
+
+
+    /**
+     * Merges the InputData values of otherPage into this PageData.
+     *
+     * @param otherPage PageData containing values to merge.
+     */
+    public void mergeInputDataValues(PageData otherPage) {
+        if (otherPage != null) {
+            otherPage.forEach((key, value) -> {
+                putIfAbsent(key, new InputData(new ArrayList<>()));
+                get(key).getValue().addAll(value.getValue());
+            });
+        }
     }
 }

@@ -570,6 +570,20 @@ pageDefinitions:
     name: householdList
     pageTitle:
       value: household-list.title
+  - &childrenInNeedOfCare
+    name: childrenInNeedOfCare
+    pageTitle:
+      value: children-in-need-of-care.title
+    headerKey:
+      value: children-in-need-of-care.who-are-the-children-in-need-of-childcare
+    inputs:
+      - type: CUSTOM
+        name: whoNeedsChildCare
+        customInputFragment: householdOptionsCheckboxes
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
   - &householdDeleteWarningPage
     name: householdDeleteWarningPage
     headerKey:
@@ -1827,10 +1841,28 @@ workflow:
     pageConfiguration: *householdList
     nextPages:
       - pageName: householdMemberInfo
-      - pageName: preparingMealsTogether
+      - pageName: childrenInNeedOfCare
     datasources:
       - groupName: household
       - pageName: personalInfo
+  childrenInNeedOfCare:
+    pageConfiguration: *childrenInNeedOfCare
+    nextPages:
+      - pageName: preparingMealsTogether
+    datasources:
+      - pageName: choosePrograms
+      - groupName: household
+        pageName: householdMemberInfo
+    skipCondition:
+      conditions:
+        - pageName: choosePrograms
+          value: CCAP
+          input: programs
+          matcher: DOES_NOT_CONTAIN
+        - pageName: householdMemberInfo
+          value: CCAP
+          input: programs
+          matcher: DOES_NOT_CONTAIN
   householdDeleteWarningPage:
     pageConfiguration: *householdDeleteWarningPage
     appliesToGroup: household
