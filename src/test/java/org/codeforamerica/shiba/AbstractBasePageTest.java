@@ -60,6 +60,7 @@ public abstract class AbstractBasePageTest {
         HashMap<String, Object> chromePrefs = new HashMap<>();
         chromePrefs.put("download.default_directory", path.toString());
         options.setExperimentalOption("prefs", chromePrefs);
+        options.addArguments("--window-size=1280,800");
         options.addArguments("--headless");
         driver = new ChromeDriver(options);
         testPage = new Page(driver);

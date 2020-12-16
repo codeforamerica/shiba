@@ -356,6 +356,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.enter("haveInvestments", NO.getDisplayValue());
         testPage.enter("haveVehicle", YES.getDisplayValue());
         testPage.enter("haveSoldAssets", NO.getDisplayValue());
+        takeSnapShot("testing.png");
         testPage.clickContinue();
         testPage.enter("registerToVote", "Yes, send me more info");
         completeHelperWorkflow();
