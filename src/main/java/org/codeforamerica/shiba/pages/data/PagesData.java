@@ -2,9 +2,7 @@ package org.codeforamerica.shiba.pages.data;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.codeforamerica.shiba.output.CompositeCondition;
 import org.codeforamerica.shiba.pages.config.*;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -51,15 +49,6 @@ public class PagesData extends HashMap<String, PageData> {
                 .flatMap(pageData -> Optional.ofNullable(pageData.get(inputName)))
                 .map(InputData::getValue)
                 .orElse(List.of());
-    }
-
-    public boolean shouldSkip(PageWorkflowConfiguration pageWorkflowConfiguration) {
-        CompositeCondition skipCondition = pageWorkflowConfiguration.getSkipCondition();
-        if (skipCondition == null) {
-            return false;
-        }
-        @NotNull DatasourcePages datasourcePages = this.getDatasourcePagesBy(pageWorkflowConfiguration.getDatasources());
-        return datasourcePages.satisfies(skipCondition);
     }
 
     /**

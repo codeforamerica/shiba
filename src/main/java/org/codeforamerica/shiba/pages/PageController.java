@@ -5,15 +5,15 @@ import io.sentry.Sentry;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.output.CompositeCondition;
 import org.codeforamerica.shiba.pages.config.*;
-import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.PageData;
-import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.pages.data.*;
 import org.codeforamerica.shiba.pages.enrichment.ApplicationEnrichment;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.codeforamerica.shiba.pages.events.SubworkflowCompletedEvent;
 import org.codeforamerica.shiba.pages.events.SubworkflowIterationDeletedEvent;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
@@ -85,12 +85,38 @@ public class PageController {
         ofNullable(nextPage.getFlow()).ifPresent(applicationData::setFlow);
         PageWorkflowConfiguration nextPageWorkflow = this.applicationConfiguration.getPageWorkflow(nextPage.getPageName());
 
-        if (pagesData.shouldSkip(nextPageWorkflow)) {
+        if (shouldSkip(nextPageWorkflow)) {
             pagesData.remove(nextPageWorkflow.getPageConfiguration().getName());
             return new RedirectView(String.format("/pages/%s/navigation", nextPage.getPageName()));
         } else {
             return new RedirectView(String.format("/pages/%s", nextPage.getPageName()));
         }
+    }
+
+    private boolean shouldSkip(PageWorkflowConfiguration nextPageWorkflow) {
+        CompositeCondition skipCondition = nextPageWorkflow.getSkipCondition();
+        if (skipCondition != null) {
+            PagesData pagesData = this.applicationData.getPagesData();
+            Subworkflows subworkflows = this.applicationData.getSubworkflows();
+            Map<String, PageData> pages = new HashMap<>();
+            nextPageWorkflow.getDatasources().stream()
+                    .filter(datasource -> datasource.getPageName() != null)
+                    .forEach(datasource -> {
+                        String key = datasource.getPageName();
+                        PageData value = new PageData();
+                        if (datasource.getGroupName() == null) {
+                            value.mergeInputDataValues(pagesData.get(datasource.getPageName()));
+                        } else {
+                            subworkflows.get(datasource.getGroupName()).stream()
+                                    .map(iteration -> iteration.getPagesData().getPage(datasource.getPageName()))
+                                    .forEach(value::mergeInputDataValues);
+                        }
+                        pages.put(key, value);
+                    });
+            @NotNull DatasourcePages datasourcePages = new DatasourcePages(pages);
+            return datasourcePages.satisfies(skipCondition);
+        }
+        return false;
     }
 
     @GetMapping("/pages/{pageName}")

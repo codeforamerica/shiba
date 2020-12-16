@@ -84,7 +84,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
             "1, 1, A caseworker will contact you within 3 days to review your application."
     })
     void userCanCompleteTheExpeditedFlow(String moneyMadeLast30Days, String liquidAssets, String expeditedServiceDetermination) {
-        completeFlowFromLandingPageThroughReviewInfo();
+        completeFlowFromLandingPageThroughReviewInfo("Child Care Assistance");
         testPage.clickLink("Submit application now with only the above information.");
         testPage.clickLink("Yes, I want to see if I qualify");
 
@@ -119,7 +119,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
             "1, 1, A caseworker will contact you within 3 days to review your application."
     })
     void userCanCompleteTheExpeditedFlowWithHousehold(String moneyMadeLast30Days, String liquidAssets, String expeditedServiceDetermination) {
-        completeFlowFromLandingPageThroughReviewInfo();
+        completeFlowFromLandingPageThroughReviewInfo("Child Care Assistance");
         testPage.clickLink("Submit application now with only the above information.");
         testPage.clickLink("Yes, I want to see if I qualify");
 
@@ -218,14 +218,26 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
                 .isEqualTo("Yes");
     }
 
-    private void completeFlowFromLandingPageThroughReviewInfo() {
+    @Test
+    void shouldSkipChildcareAssistancePageIfCCAPNotSelected() {
+        completeFlowFromLandingPageThroughReviewInfo("Food (SNAP)");
+        testPage.clickLink("This looks correct");
+        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.clickContinue();
+        fillOutHousemateInfo("Emergency Assistance");
+        testPage.clickContinue();
+        testPage.clickButton("Yes, that's everyone");
+        testPage.enter("isPreparingMealsTogether", NO.getDisplayValue());
+    }
+
+    private void completeFlowFromLandingPageThroughReviewInfo(String programSelection) {
         testPage.clickButton("Apply now");
         testPage.clickContinue();
         testPage.enter("writtenLanguage", "English");
         testPage.enter("spokenLanguage", "English");
         testPage.enter("needInterpreter", "Yes");
         testPage.clickContinue();
-        testPage.enter("programs", "Child Care Assistance");
+        testPage.enter("programs", programSelection);
         testPage.clickContinue();
         testPage.clickContinue();
 
@@ -278,15 +290,17 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     private SuccessPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking) {
-        completeFlowFromLandingPageThroughReviewInfo();
+        completeFlowFromLandingPageThroughReviewInfo("Child Care Assistance");
         testPage.clickLink("This looks correct");
 
         if (hasHousehold) {
             testPage.enter("liveAlone", NO.getDisplayValue());
             testPage.clickContinue();
-            fillOutHousemateInfo();
+            fillOutHousemateInfo("Child Care Assistance");
             testPage.clickContinue();
             testPage.clickButton("Yes, that's everyone");
+            testPage.enter("whoNeedsChildCare", "defaultFirstName defaultLastName");
+            testPage.clickContinue();
             testPage.enter("goingToSchool", NO.getDisplayValue());
             testPage.enter("isPregnant", YES.getDisplayValue());
             testPage.enter("whoIsPregnant", "Me");
@@ -368,9 +382,9 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         return new SuccessPage(driver);
     }
 
-    private void fillOutHousemateInfo() {
+    private void fillOutHousemateInfo(String programSelection) {
         testPage.enter("relationship", "housemate");
-        testPage.enter("programs", "Child Care Assistance");
+        testPage.enter("programs", programSelection);
         fillOutPersonInfo(); // need to fill out programs checkbox set above first
         testPage.enter("moveToMnPreviousState", "Illinois");
     }

@@ -36,6 +36,7 @@ public class ConditionalRenderingPageTest extends AbstractExistingStartTimePageT
         staticMessageSource.addMessage("third-page-title", Locale.ENGLISH, thirdPageTitle);
         staticMessageSource.addMessage("fourth-page-title", Locale.ENGLISH, fourthPageTitle);
         staticMessageSource.addMessage("eighth-page-title", Locale.ENGLISH, eighthPageTitle);
+        staticMessageSource.addMessage("ninth-page-title", Locale.ENGLISH, "ninthPageTitle");
         staticMessageSource.addMessage("skip-message-key", Locale.ENGLISH, "SKIP PAGE");
         staticMessageSource.addMessage("not-skip-message-key", Locale.ENGLISH, "NOT SKIP PAGE");
         staticMessageSource.addMessage("page-to-skip-title", Locale.ENGLISH, pageToSkip);
@@ -73,6 +74,19 @@ public class ConditionalRenderingPageTest extends AbstractExistingStartTimePageT
         driver.findElement(By.cssSelector("button")).click();
 
         assertThat(driver.getTitle()).isEqualTo(secondPageTitle);
+    }
+
+    @Test
+    void skipConditionBasedOnPageGroupData() {
+        navigateTo("sixthPage");
+
+        testPage.enter("foo", "goToSeventhPage");
+        testPage.clickContinue();
+        testPage.enter("foo", "SKIP");
+        testPage.clickContinue();
+        testPage.clickContinue();
+
+        assertThat(driver.getTitle()).isEqualTo(fourthPageTitle);
     }
 
     @Test

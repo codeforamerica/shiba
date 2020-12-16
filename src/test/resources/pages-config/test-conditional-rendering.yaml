@@ -69,6 +69,13 @@ pageDefinitions:
     inputs:
       - name: foo
         type: TEXT
+  - &ninthPage
+    name: ninthPage
+    pageTitle:
+      value: ninth-page-title
+    inputs:
+      - name: foo
+        type: TEXT
   - &startingPage
     name: startingPage
     pageTitle:
@@ -151,9 +158,25 @@ workflow:
   seventhPage:
     pageConfiguration: *seventhPage
     groupName: group1
+    nextPages:
+      - pageName: eighthPage
   eighthPage:
     pageConfiguration: *eighthPage
     groupName: group1
+    nextPages:
+      - pageName: ninthPage
+  ninthPage:
+    pageConfiguration: *ninthPage
+    nextPages:
+      - pageName: fourthPage
+    datasources:
+      - pageName: seventhPage
+        groupName: group1
+    skipCondition:
+      conditions:
+        - pageName: seventhPage
+          input: foo
+          value: SKIP
   startingPage:
     pageConfiguration: *startingPage
     nextPages:
@@ -202,6 +225,6 @@ pageGroups:
     startPages:
       - sixthPage
     completePages:
-      - bar
+      - eighthPage
 landmarkPages:
   startTimerPage:
