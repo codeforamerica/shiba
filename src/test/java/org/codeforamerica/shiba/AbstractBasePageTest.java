@@ -81,7 +81,7 @@ public abstract class AbstractBasePageTest {
 
     protected Optional<File> getCafFile() {
         return Arrays.stream(path.toFile().listFiles())
-                .filter(file -> file.getName().contains("_CAF_") && file.getName().endsWith(".pdf"))
+                .filter(file -> file.getName().endsWith("_CAF.pdf"))
                 .findFirst();
     }
 
