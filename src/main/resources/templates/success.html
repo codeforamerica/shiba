@@ -1,5 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+<script type="text/javascript">
+    function downloadReceipts(downloadCcap) {
+        window.location = "\\download";
+        if(downloadCcap) {
+            window.open("\\download-ccap");
+        }
+        return false;
+    }
+</script>
 <div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
 <body>
 <div class="page-wrapper">
@@ -24,8 +33,11 @@
                     <img src="/images/receipt.svg" alt="receipt icon"/>
                     <div class="spacing-above-25 spacing-below-35">
                         <div>
-                            <a class="button button--primary" href="/download"
+                            <th:block th:with="downloadCcap=${@environment.getProperty('flag.ccap') == '1'}">
+                            <a class="button button--primary"
+                               th:onclick="|downloadReceipts(${downloadCcap})|"
                                th:text="#{success.download-my-receipt}"></a>
+                            </th:block>
                         </div>
                     </div>
                 </div>

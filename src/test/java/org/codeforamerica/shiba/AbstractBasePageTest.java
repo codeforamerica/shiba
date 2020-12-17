@@ -99,9 +99,9 @@ public abstract class AbstractBasePageTest {
 
     private DocumentType getDocumentType(File file) {
         String fileName = file.getName();
-        if (fileName.contains("_CAF_")) {
+        if (fileName.contains("_CAF")) {
             return DocumentType.CAF;
-        } else if (fileName.contains("_CCAP_")) {
+        } else if (fileName.contains("_CCAP")) {
             return DocumentType.CCAP;
         } else {
             return DocumentType.NONE;
