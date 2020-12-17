@@ -41,11 +41,11 @@ public class FileNameGenerator {
 
         return countyMap.get(application.getCounty()).getDhsProviderId() + "_" +
                 "MNB_" +
-                documentType.toString() + "_" +
                 DateTimeFormatter.ofPattern("yyyyMMdd").format(application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago"))) + "_" +
                 DateTimeFormatter.ofPattern("HHmmss").format(application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago"))) + "_" +
                 application.getId() + "_" +
-                programs.toString();
+                programs.toString() + "_" +
+                documentType.toString();
     }
 
 }

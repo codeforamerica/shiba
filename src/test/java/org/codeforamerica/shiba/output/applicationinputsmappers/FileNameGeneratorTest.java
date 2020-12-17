@@ -110,7 +110,7 @@ class FileNameGeneratorTest {
 
         String fileName = fileNameGenerator.generateFileName(application, DocumentType.CAF);
 
-        assertThat(fileName).endsWith("defaultId_");
+        assertThat(fileName).endsWith("defaultId__CAF");
     }
 
     @Test
@@ -135,6 +135,6 @@ class FileNameGeneratorTest {
         String fileName = fileNameGenerator.generateFileName(application, DocumentType.CAF);
 
         assertThat(fileName).isEqualTo(String.format("%s_MNB_%s_%s_%s_%s_%s",
-                countyNPI, "CAF", "20070909", "235959", applicationId, "F"));
+                countyNPI, "20070909", "235959", applicationId, "F", "CAF"));
     }
 }
