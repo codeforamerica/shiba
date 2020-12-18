@@ -80,7 +80,7 @@ public class PageDatasourcePageTest extends AbstractExistingStartTimePageTest {
                 .orElseThrow();
         radioToSelect.click();
 
-        assertThat(driver.findElement(By.cssSelector("h2")).getText()).isEqualTo(yesHeaderText);
+        assertThat(driver.findElement(By.cssSelector("h1")).getText()).isEqualTo(yesHeaderText);
     }
 
     @Test
@@ -101,7 +101,7 @@ public class PageDatasourcePageTest extends AbstractExistingStartTimePageTest {
                 .orElseThrow();
         radioToSelect2.click();
 
-        assertThat(driver.findElement(By.cssSelector("h2")).getText()).isEqualTo(yesHeaderText);
+        assertThat(driver.findElement(By.cssSelector("h1")).getText()).isEqualTo(yesHeaderText);
     }
 
     @Test
@@ -122,7 +122,7 @@ public class PageDatasourcePageTest extends AbstractExistingStartTimePageTest {
                 .orElseThrow();
         radioToSelect2.click();
 
-        assertThat(driver.findElement(By.cssSelector("h2")).getText()).isEqualTo(noHeaderText);
+        assertThat(driver.findElement(By.cssSelector("h1")).getText()).isEqualTo(noHeaderText);
     }
 
     @Test
@@ -148,7 +148,7 @@ public class PageDatasourcePageTest extends AbstractExistingStartTimePageTest {
                 .orElseThrow();
         radioToSelect.click();
 
-        assertThat(driver.findElement(By.cssSelector("h2")).getText()).isEqualTo(yesHeaderText);
+        assertThat(driver.findElement(By.cssSelector("h1")).getText()).isEqualTo(yesHeaderText);
     }
 
     @Test
