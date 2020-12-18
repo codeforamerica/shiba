@@ -6,8 +6,8 @@
                    foundEnrichedAddress=${addressData.containsKey('enrichedStreetAddress')}"
 >
     <div class="grid__item spacing-above-35 spacing-below-35">
-        <h2 th:if="${foundEnrichedAddress}" th:text="#{address-validation.check-your-address}"></h2>
-        <h2 th:unless="${foundEnrichedAddress}" th:text="#{address-validation.make-sure-your-address-is-correct}"></h2>
+        <h1 class="h2" th:if="${foundEnrichedAddress}" th:text="#{address-validation.check-your-address}"></h1>
+        <h1 class="h2" th:unless="${foundEnrichedAddress}" th:text="#{address-validation.make-sure-your-address-is-correct}"></h1>
         <p th:if="${foundEnrichedAddress}" th:text="#{address-validation.we-updated-the-address-you-entered}" class="notice--warning"></p>
         <p th:unless="${foundEnrichedAddress}" th:text="#{address-validation.we-couldnt-find-your-address}" class="notice--warning"></p>
     </div>

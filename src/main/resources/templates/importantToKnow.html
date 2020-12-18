@@ -10,31 +10,31 @@
             <div th:replace="fragments/card-header"></div>
             <div class="card spacing-above-35">
                 <div th:if="${page.hasHeader()}" class="grid__item spacing-above-35 spacing-below-35">
-                    <h2 th:text="#{${page.headerKey}}"></h2>
+                    <h1 class="h2" th:text="#{${page.headerKey}}"></h1>
                     <p class="text--help"
                        th:if="${page.hasHeaderHelpMessageKey()}"
                        th:text="#{${page.headerHelpMessageKey}}"></p>
                 </div>
                 <div class="grid__item spacing-below-60">
                     <div class="grid__item spacing-below-35">
-                        <h3 class="spacing-below-10"
-                            th:text="#{important-to-know.employment-services-registration}"></h3>
+                        <h2 class="h3 spacing-below-10"
+                            th:text="#{important-to-know.employment-services-registration}"></h2>
                         <p class="textarea-readonly"
                            th:text="#{important-to-know.this-application-registers-you-for-employment-services-you-or-others-in-your}"></p>
                     </div>
                     <div class="grid__item spacing-below-35">
-                        <h3 class="spacing-below-10" th:text="#{important-to-know.child-support-payments}"></h3>
+                        <h2 class="h3 spacing-below-10" th:text="#{important-to-know.child-support-payments}"></h2>
                         <p class="textarea-readonly"
                            th:text="#{important-to-know.when-you-get-cash-assistance-mfip-you-must-assign-your-rights-to-child}"></p>
                     </div>
                     <div class="grid__item spacing-below-35">
-                        <h3 class="spacing-below-10" th:text="#{important-to-know.audits}"></h3>
+                        <h2 class="h3 spacing-below-10" th:text="#{important-to-know.audits}"></h2>
                         <p class="textarea-readonly"
                            th:text="#{important-to-know.the-information-you-provided-can-be-shared-with-state-and-federal-auditors-this}"></p>
                     </div>
                     <div class="grid__item spacing-below-35">
-                        <h3 class="spacing-below-10"
-                            th:text="#{important-to-know.drug-testing-for-people-who-have-committed-drug-related-felonies}"></h3>
+                        <h2 class="h3 spacing-below-10"
+                            th:text="#{important-to-know.drug-testing-for-people-who-have-committed-drug-related-felonies}"></h2>
                         <p class="textarea-readonly"
                            th:text="#{important-to-know.if-you-mark-that-someone-in-your-household-has-committed-a-drug-felony-in-the}"></p>
                     </div>

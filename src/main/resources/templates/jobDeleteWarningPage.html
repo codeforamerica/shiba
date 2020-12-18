@@ -13,8 +13,8 @@
             <div th:replace="fragments/card-header"></div>
             <div class="card spacing-above-35">
                 <div class="grid__item spacing-above-35 spacing-below-35">
-                    <h2 th:text="#{${page.headerKey}(${employerName}, ${T(org.codeforamerica.shiba.output.FullNameFormatter).format(householdMemberName)})}"></h2>
-                    <h2 th:text="#{warning-page.is-that-ok}"></h2>
+                    <h1 class="h2" th:text="#{${page.headerKey}(${employerName}, ${T(org.codeforamerica.shiba.output.FullNameFormatter).format(householdMemberName)})}"></h1>
+                    <h1 class="h2" th:text="#{warning-page.is-that-ok}"></h1>
                 </div>
                 <div class="spacing-below-15 spacing-above-35">
                     <a class="button button--primary" th:href="'/pages/'+${pageName}+'/navigation?option=0'"

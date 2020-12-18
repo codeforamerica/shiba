@@ -11,7 +11,7 @@
             <div class="grid">
                 <div th:replace="fragments/card-header"></div>
                 <div class="card spacing-above-35">
-                    <h2 th:text="#{${qualified} ? 'expedited-determination.qualified-header':'expedited-determination.denied-header'}"></h2>
+                    <h1 class="h2" th:text="#{${qualified} ? 'expedited-determination.qualified-header':'expedited-determination.denied-header'}"></h1>
                     <p class="spacing-below-60" th:text="#{${qualified} ? 'expedited-determination.qualified-detail':'expedited-determination.denied-detail'}"></p>
                     <a class="button button--primary" th:href="'/pages/'+${pageName}+'/navigation'" th:text="#{expedited-determination.finish-application}"></a>
                 </div>

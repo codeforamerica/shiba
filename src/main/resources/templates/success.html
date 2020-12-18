@@ -19,9 +19,9 @@
             <div class="card spacing-above-35">
                 <div class="grid__item bottom-horizontal-line">
                     <i class="icon-check_circle large"></i>
-                    <h2 class="spacing-below-0" th:text="|#{success.success}!|"></h2>
-                    <h3 id="application-id" class="spacing-below-10"
-                        th:text="|#{success.confirmation-number}: ${applicationId}|"></h3>
+                    <h1 class="h2 spacing-below-0" th:text="|#{success.success}!|"></h1>
+                    <h2 id="application-id" class="spacing-below-10 h3"
+                        th:text="|#{success.confirmation-number}: ${applicationId}|"></h2>
                     <p th:if="${county != T(org.codeforamerica.shiba.County).Other}" class="spacing-below-35"
                        id="submission-date" th:text="#{success.application-submitted(${county.name()}, ${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)})}"></p>
                         <p th:if="${county == T(org.codeforamerica.shiba.County).Other}" class="spacing-below-35"
@@ -29,7 +29,7 @@
                        th:text="#{success.application-submitted-other(${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)})}"></p>
                 </div>
                 <div class="grid__item spacing-above-35">
-                    <h3 th:text="#{success.new-weve-generated-a-receipt-of-your-application-for-your-records}"></h3>
+                    <h2 class="h3" th:text="#{success.new-weve-generated-a-receipt-of-your-application-for-your-records}"></h2>
                     <img src="/images/receipt.svg" alt="receipt icon"/>
                     <div class="spacing-above-25 spacing-below-35">
                         <div>
@@ -42,10 +42,10 @@
                     </div>
                 </div>
                 <div class="form-group" th:if="${sentiment == null || feedbackText == null}">
-                    <h3>
+                    <h2 class="h3">
                         <label th:text="#{success.how-was-your-experience-filling-out-the-combined-benefits-application}"
                                for="feedback-textarea"></label>
-                    </h3>
+                    </h2>
                     <form method="post" th:action="'/submit-feedback'">
                         <div th:if="${sentiment == null}" class="feedback-buttons-group spacing-below-25">
                             <input type="radio" class="hide-radio-circle" id="happy" name="sentiment" value="HAPPY">
