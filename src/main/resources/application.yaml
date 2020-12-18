@@ -29,6 +29,9 @@ encryption-key: ${ENCRYPTION_KEY}
 logging:
   level:
     org.apache.pdfbox.multipdf: off
+    org.apache.pdfbox.cos: ERROR
+    org.apache.pdfbox.pdmodel.font: ERROR
+
 pagesConfig: dev-pages-config.yaml
 
 flag:
