@@ -230,6 +230,46 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.enter("isPreparingMealsTogether", NO.getDisplayValue());
     }
 
+    @Test
+    void shouldSkipWhoIsGoingToSchoolPageIfCCAPNotSelected() {
+        completeFlowFromLandingPageThroughReviewInfo("Food (SNAP)");
+        testPage.clickLink("This looks correct");
+        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.clickContinue();
+        fillOutHousemateInfo("Emergency Assistance");
+        testPage.clickContinue();
+        testPage.clickButton("Yes, that's everyone");
+        assertThat(driver.findElementByClassName("h2").getText().equals("Does everyone in your household buy and prepare food with you?"));
+        testPage.clickButton(NO.getDisplayValue());
+        testPage.clickButton(YES.getDisplayValue());
+        assertThat(driver.findElementByClassName("h2").getText().equals("Is anyone in your household pregnant?"));
+    }
+
+    @Test
+    void shouldAskWhoIsGoingToSchoolWhenCCAPIsSelected() {
+        completeFlowFromLandingPageThroughReviewInfo("Child Care Assistance");
+        testPage.clickLink("This looks correct");
+        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.clickContinue();
+        fillOutHousemateInfo("Emergency Assistance");
+        testPage.clickContinue();
+        testPage.clickButton("Yes, that's everyone");
+        assertThat(driver.getTitle()).isEqualTo("Who are the children in need of care?");
+        testPage.clickContinue();
+        testPage.clickButton(YES.getDisplayValue());
+        assertThat(driver.getTitle()).isEqualTo("Who is going to school?");
+    }
+
+    @Test
+    void shouldSkipWhoIsGoingToSchoolPageIfCCAPSelectedButLiveAloneIsTrue() {
+        completeFlowFromLandingPageThroughReviewInfo("Child Care Assistance");
+        testPage.clickLink("This looks correct");
+        testPage.enter("liveAlone", YES.getDisplayValue());
+        testPage.clickContinue();
+        testPage.clickButton(YES.getDisplayValue());
+        assertThat(driver.getTitle()).isEqualTo("Pregnant");
+    }
+
     private void completeFlowFromLandingPageThroughReviewInfo(String programSelection) {
         testPage.clickButton("Apply now");
         testPage.clickContinue();

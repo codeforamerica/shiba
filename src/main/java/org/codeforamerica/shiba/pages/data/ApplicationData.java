@@ -72,7 +72,12 @@ public class ApplicationData {
 
         return pageWorkflowConfiguration.getNextPages().stream()
                 .filter(nextPage -> Optional.ofNullable(nextPage.getCondition())
-                        .map(pageData::satisfies)
+                        .map(condition -> {
+                            if (condition.getPageName() != null) {
+                               return pagesData.getPage(condition.getPageName()).satisfies(condition);
+                            }
+                            return pageData.satisfies(condition);
+                        })
                         .orElse(true))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Cannot find suitable next page."));

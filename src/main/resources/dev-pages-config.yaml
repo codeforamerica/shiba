@@ -617,6 +617,20 @@ pageDefinitions:
     inputs:
       - name: goingToSchool
         type: YES_NO
+  - &whoIsGoingToSchool
+    name: whoIsGoingToSchool
+    pageTitle:
+      value: who-is-going-to-school.title
+    headerKey:
+      value: who-is-going-to-school.who-is-going-to-school
+    inputs:
+      - type: CUSTOM
+        name: whoIsGoingToSchool
+        customInputFragment: householdOptionsCheckboxes
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
   - &pregnant
     name: pregnant
     pageTitle:
@@ -1891,6 +1905,42 @@ workflow:
     datasources:
       - pageName: doYouLiveAlone
     nextPages:
+      - pageName: whoIsGoingToSchool
+        condition:
+          pageName: doYouLiveAlone
+          input: liveAlone
+          value: "false"
+      - pageName: pregnant
+        condition:
+          pageName: doYouLiveAlone
+          input: liveAlone
+          value: "true"
+  whoIsGoingToSchool:
+    pageConfiguration: *whoIsGoingToSchool
+    datasources:
+      - pageName: choosePrograms
+      - pageName: goingToSchool
+      - groupName: household
+        pageName: householdMemberInfo
+    skipCondition:
+      logicalOperator: OR
+      compositeConditions:
+        - compositeConditions:
+            - conditions:
+                - pageName: choosePrograms
+                  value: CCAP
+                  input: programs
+                  matcher: DOES_NOT_CONTAIN
+                - pageName: householdMemberInfo
+                  value: CCAP
+                  input: programs
+                  matcher: DOES_NOT_CONTAIN
+        - compositeConditions:
+            - conditions:
+                - pageName: goingToSchool
+                  value: "false"
+                  input: goingToSchool
+    nextPages:
       - pageName: pregnant
   pregnant:
     pageConfiguration: *pregnant
@@ -2006,12 +2056,10 @@ workflow:
     nextPages:
       - pageName: hourlyWage
         condition:
-          pageName: paidByTheHour
           input: paidByTheHour
           value: "true"
       - pageName: payPeriod
         condition:
-          pageName: paidByTheHour
           input: paidByTheHour
           value: "false"
     datasources:

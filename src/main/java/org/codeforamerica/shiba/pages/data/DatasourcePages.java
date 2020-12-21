@@ -23,6 +23,14 @@ public class DatasourcePages extends HashMap<String, PageData> {
     }
 
     public Boolean satisfies(CompositeCondition compositeCondition) {
+        if (compositeCondition.getCompositeConditions() != null) {
+            Stream<CompositeCondition> conditionStream = compositeCondition.getCompositeConditions().stream();
+            return switch (compositeCondition.getLogicalOperator()) {
+                case AND -> conditionStream.allMatch(this::satisfies);
+                case OR -> conditionStream.anyMatch(this::satisfies);
+            };
+        }
+
         Stream<Condition> conditionStream = compositeCondition.getConditions().stream();
         return switch (compositeCondition.getLogicalOperator()) {
             case AND -> conditionStream.allMatch(this::satisfies);

@@ -131,12 +131,10 @@ workflow:
     nextPages:
       - pageName: fifthPage
         condition:
-          pageName: fourthPage
           value: goToFifthPage
           input: foo
       - pageName: firstPage
         condition:
-          pageName: fourthPage
           value: goToFirstPage
           input: foo
   fifthPage:
@@ -147,12 +145,10 @@ workflow:
     nextPages:
       - pageName: seventhPage
         condition:
-          pageName: sixthPage
           input: foo
           value: goToSeventhPage
       - pageName: eighthPage
         condition:
-          pageName: sixthPage
           input: foo
           value: goToEighthPage
   seventhPage:

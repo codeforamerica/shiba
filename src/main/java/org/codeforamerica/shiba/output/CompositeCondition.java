@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 
 @Data
 public class CompositeCondition {
+    private List<CompositeCondition> compositeConditions;
     private List<Condition> conditions;
     private LogicalOperator logicalOperator = LogicalOperator.AND;
 

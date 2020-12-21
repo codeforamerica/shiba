@@ -1940,12 +1940,10 @@ workflow:
     nextPages:
       - pageName: hourlyWage
         condition:
-          pageName: paidByTheHour
           input: paidByTheHour
           value: "true"
       - pageName: payPeriod
         condition:
-          pageName: paidByTheHour
           input: paidByTheHour
           value: "false"
     datasources:
