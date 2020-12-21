@@ -401,6 +401,23 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
     }
 
     @Test
+    void shouldMapChildrenNeedingChildcareFullNames() {
+        addHouseholdMembers();
+
+        testPage.clickButton("Yes, that's everyone");
+        navigateTo("childrenInNeedOfCare");
+        testPage.enter("whoNeedsChildCare", "Me");
+        testPage.enter("whoNeedsChildCare", "Jim Halpert");
+        testPage.clickContinue();
+
+        Map<DocumentType, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+        assertThat(pdAcroForms.get(CCAP).getField("CHILD_NEEDS_CHILDCARE_FULL_NAME_0").getValueAsString())
+                .isEqualTo("Dwight Schrute");
+        assertThat(pdAcroForms.get(CCAP).getField("CHILD_NEEDS_CHILDCARE_FULL_NAME_1").getValueAsString())
+                .isEqualTo("Jim Halpert");
+    }
+
+    @Test
     void shouldMapPrograms() {
         navigateTo("choosePrograms");
         testPage.enter("programs", "Food (SNAP)");
