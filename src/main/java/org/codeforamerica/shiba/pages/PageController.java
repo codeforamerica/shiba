@@ -106,7 +106,7 @@ public class PageController {
                         PageData value = new PageData();
                         if (datasource.getGroupName() == null) {
                             value.mergeInputDataValues(pagesData.get(datasource.getPageName()));
-                        } else {
+                        } else if (subworkflows.containsKey(datasource.getGroupName())) {
                             subworkflows.get(datasource.getGroupName()).stream()
                                     .map(iteration -> iteration.getPagesData().getPage(datasource.getPageName()))
                                     .forEach(value::mergeInputDataValues);

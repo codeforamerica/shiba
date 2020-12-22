@@ -246,7 +246,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     @Test
-    void shouldAskWhoIsGoingToSchoolWhenCCAPIsSelected() {
+    void shouldAskWhoIsGoingToSchoolAndWhoIsLookingForWorkWhenCCAPIsSelectedInPrograms() {
         completeFlowFromLandingPageThroughReviewInfo("Child Care Assistance");
         testPage.clickLink("This looks correct");
         testPage.enter("liveAlone", NO.getDisplayValue());
@@ -258,16 +258,82 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.clickContinue();
         testPage.clickButton(YES.getDisplayValue());
         assertThat(driver.getTitle()).isEqualTo("Who is going to school?");
+        testPage.clickContinue();
+        testPage.clickButton(NO.getDisplayValue());
+        testPage.clickButton(YES.getDisplayValue());
+        testPage.clickButton(YES.getDisplayValue());
+        testPage.clickButton(NO.getDisplayValue());
+        testPage.clickButton(NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.clickButton(NO.getDisplayValue());
+        testPage.clickButton(YES.getDisplayValue());
+        assertThat(driver.getTitle()).isEqualTo("Who is looking for a job");
     }
 
     @Test
-    void shouldSkipWhoIsGoingToSchoolPageIfCCAPSelectedButLiveAloneIsTrue() {
+    void shouldAskWhoIsGoingToSchoolAndWhoIsLookingForWorkWhenCCAPIsSelectedInHouseholdMemberInfo() {
+        completeFlowFromLandingPageThroughReviewInfo("Food (SNAP)");
+        testPage.clickLink("This looks correct");
+        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.clickContinue();
+        fillOutHousemateInfo("Child Care Assistance");
+        testPage.clickContinue();
+        testPage.clickButton("Yes, that's everyone");
+        assertThat(driver.getTitle()).isEqualTo("Who are the children in need of care?");
+        testPage.clickContinue();
+        testPage.clickButton(YES.getDisplayValue());
+        testPage.clickButton(YES.getDisplayValue());
+        assertThat(driver.getTitle()).isEqualTo("Who is going to school?");
+        testPage.clickContinue();
+        testPage.clickButton(NO.getDisplayValue());
+        testPage.clickButton(YES.getDisplayValue());
+        testPage.clickButton(YES.getDisplayValue());
+        testPage.clickButton(NO.getDisplayValue());
+        testPage.clickButton(NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.clickButton(NO.getDisplayValue());
+        testPage.clickButton(YES.getDisplayValue());
+        assertThat(driver.getTitle()).isEqualTo("Who is looking for a job");
+    }
+
+    @Test
+    void shouldSkipWhoIsGoingToSchoolAndWhoIsLookingForWorkPageIfCCAPSelectedButLiveAloneIsTrue() {
         completeFlowFromLandingPageThroughReviewInfo("Child Care Assistance");
         testPage.clickLink("This looks correct");
         testPage.enter("liveAlone", YES.getDisplayValue());
         testPage.clickContinue();
         testPage.clickButton(YES.getDisplayValue());
         assertThat(driver.getTitle()).isEqualTo("Pregnant");
+        testPage.clickButton(YES.getDisplayValue());
+        testPage.clickButton(YES.getDisplayValue());
+        testPage.clickButton(YES.getDisplayValue());
+        testPage.clickButton(YES.getDisplayValue());
+        testPage.clickButton(YES.getDisplayValue());
+        testPage.clickContinue();
+        testPage.clickButton(NO.getDisplayValue());
+        testPage.clickButton(YES.getDisplayValue());
+        assertThat(driver.getTitle()).isEqualTo("Income Up Next");
+    }
+
+    @Test
+    void shouldSkipWhoIsLookingForWorkPageIfCCAPIsNotSelectedInHouseholdOrPrograms() {
+        completeFlowFromLandingPageThroughReviewInfo("Food (SNAP)");
+        testPage.clickLink("This looks correct");
+        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.clickContinue();
+        fillOutHousemateInfo("Emergency Assistance");
+        testPage.clickContinue();
+        testPage.clickButton("Yes, that's everyone");
+        testPage.clickButton(YES.getDisplayValue());
+        testPage.clickButton(NO.getDisplayValue());
+        testPage.clickButton(NO.getDisplayValue());
+        testPage.clickButton(NO.getDisplayValue());
+        testPage.clickButton(YES.getDisplayValue());
+        testPage.clickButton(NO.getDisplayValue());
+        testPage.clickButton(NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.clickButton(NO.getDisplayValue());
+        assertThat(driver.getTitle()).isEqualTo("Income Up Next");
     }
 
     private void completeFlowFromLandingPageThroughReviewInfo(String programSelection) {

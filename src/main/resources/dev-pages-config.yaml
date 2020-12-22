@@ -30,6 +30,16 @@ conditionDefinitions:
     pageName: homeExpenses
     input: homeExpenses
     value: RENT
+  - &applicantDidNotChooseCCAP?
+    pageName: choosePrograms
+    value: CCAP
+    input: programs
+    matcher: DOES_NOT_CONTAIN
+  - &householdMemberDidNotChooseCCAP?
+    pageName: householdMemberInfo
+    value: CCAP
+    input: programs
+    matcher: DOES_NOT_CONTAIN
 pageDefinitions:
   - &landing
     name: landing
@@ -1869,14 +1879,8 @@ workflow:
         pageName: householdMemberInfo
     skipCondition:
       conditions:
-        - pageName: choosePrograms
-          value: CCAP
-          input: programs
-          matcher: DOES_NOT_CONTAIN
-        - pageName: householdMemberInfo
-          value: CCAP
-          input: programs
-          matcher: DOES_NOT_CONTAIN
+        - *applicantDidNotChooseCCAP?
+        - *householdMemberDidNotChooseCCAP?
   householdDeleteWarningPage:
     pageConfiguration: *householdDeleteWarningPage
     appliesToGroup: household
@@ -1927,14 +1931,8 @@ workflow:
       compositeConditions:
         - compositeConditions:
             - conditions:
-                - pageName: choosePrograms
-                  value: CCAP
-                  input: programs
-                  matcher: DOES_NOT_CONTAIN
-                - pageName: householdMemberInfo
-                  value: CCAP
-                  input: programs
-                  matcher: DOES_NOT_CONTAIN
+                - *applicantDidNotChooseCCAP?
+                - *householdMemberDidNotChooseCCAP?
         - compositeConditions:
             - conditions:
                 - pageName: goingToSchool
@@ -2323,15 +2321,15 @@ workflow:
     pageConfiguration: *jobSearch
     skipCondition:
       conditions:
-        - pageName: choosePrograms
-          value: CCAP
-          input: programs
-          matcher: DOES_NOT_CONTAIN
+        - *applicantDidNotChooseCCAP?
+        - *householdMemberDidNotChooseCCAP?
     nextPages:
       - pageName: whoIsLookingForAJob
     datasources:
       - pageName: choosePrograms
       - pageName: doYouLiveAlone
+      - pageName: householdMemberInfo
+        groupName: household
   whoIsLookingForAJob:
     pageConfiguration: *whoIsLookingForAJob
     nextPages:
@@ -2340,17 +2338,22 @@ workflow:
       - pageName: doYouLiveAlone
       - pageName: jobSearch
       - pageName: choosePrograms
+      - pageName: householdMemberInfo
+        groupName: household
     skipCondition:
       logicalOperator: OR
-      conditions:
-        - *livesAlone?
-        - pageName: jobSearch
-          input: currentlyLookingForJob
-          value: "false"
-        - pageName: choosePrograms
-          value: CCAP
-          input: programs
-          matcher: DOES_NOT_CONTAIN
+      compositeConditions:
+        - compositeConditions:
+          - conditions:
+              - *applicantDidNotChooseCCAP?
+              - *householdMemberDidNotChooseCCAP?
+        - compositeConditions:
+          - conditions:
+            - *livesAlone?
+            - pageName: jobSearch
+              input: currentlyLookingForJob
+              value: "false"
+            logicalOperator: OR
   doYouNeedHelpImmediately:
     pageConfiguration: *doYouNeedHelpImmediately
     nextPages:
