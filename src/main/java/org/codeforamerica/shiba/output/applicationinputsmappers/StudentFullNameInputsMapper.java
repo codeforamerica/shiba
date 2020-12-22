@@ -7,19 +7,25 @@ import org.codeforamerica.shiba.output.Recipient;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import static org.codeforamerica.shiba.output.FullNameFormatter.getListOfSelectedFullNames;
 
 @Component
-public class HouseholdPregnancyMapper implements ApplicationInputsMapper {
+public class StudentFullNameInputsMapper implements ApplicationInputsMapper {
 
     @Override
     public List<ApplicationInput> map(Application application, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
-        List<String> pregnantHouseholdMembers = getListOfSelectedFullNames(application, "whoIsPregnant", "whoIsPregnant");
 
-        return List.of(
-                new ApplicationInput("householdPregnancy", "householdPregnancy",
-                        List.of(String.join(", ", pregnantHouseholdMembers)), ApplicationInputType.SINGLE_VALUE, null)
-        );
+        List<String> students = getListOfSelectedFullNames(application, "whoIsGoingToSchool", "whoIsGoingToSchool");
+
+        AtomicInteger i = new AtomicInteger(0);
+
+        return students.stream()
+                .map(fullName -> new ApplicationInput("whoIsGoingToSchool", "fullName",
+                       List.of(fullName), ApplicationInputType.SINGLE_VALUE, i.getAndIncrement())).collect(Collectors.toList());
     }
+
+
 }

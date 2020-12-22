@@ -223,6 +223,8 @@ mappings:
     employeeFullName: SELF_EMPLOYMENT_EMPLOYEE_FULL_NAME
   childNeedsChildcare:
     fullName: CHILD_NEEDS_CHILDCARE_FULL_NAME
+  whoIsGoingToSchool:
+    fullName: STUDENT_FULL_NAME
 enums:
   EVERY_WEEK: Every week
   EVERY_TWO_WEEKS: Every two weeks
