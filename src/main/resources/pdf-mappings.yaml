@@ -225,6 +225,8 @@ mappings:
     fullName: CHILD_NEEDS_CHILDCARE_FULL_NAME
   whoIsGoingToSchool:
     fullName: STUDENT_FULL_NAME
+  adultRequestingChildcareLookingForJob:
+    fullName: ADULT_REQUESTING_CHILDCARE_LOOKING_FOR_JOB_FULL_NAME
 enums:
   EVERY_WEEK: Every week
   EVERY_TWO_WEEKS: Every two weeks

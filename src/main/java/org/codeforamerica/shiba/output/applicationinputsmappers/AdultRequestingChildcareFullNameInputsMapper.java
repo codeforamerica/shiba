@@ -6,6 +6,7 @@ import org.codeforamerica.shiba.output.ApplicationInputType;
 import org.codeforamerica.shiba.output.Recipient;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -13,18 +14,18 @@ import java.util.stream.Collectors;
 import static org.codeforamerica.shiba.output.FullNameFormatter.getListOfSelectedFullNames;
 
 @Component
-public class StudentFullNameInputsMapper implements ApplicationInputsMapper {
+public class AdultRequestingChildcareFullNameInputsMapper implements ApplicationInputsMapper {
 
     @Override
     public List<ApplicationInput> map(Application application, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
+        List<ApplicationInput> applicationInputs = new ArrayList<>();
 
-        List<String> students = getListOfSelectedFullNames(application, "whoIsGoingToSchool", "whoIsGoingToSchool");
+        List<String> adultsLookingForAJob = getListOfSelectedFullNames(application, "whoIsLookingForAJob", "whoIsLookingForAJob");
+        AtomicInteger iLookingForAJob = new AtomicInteger(0);
+        adultsLookingForAJob.forEach(fullName -> applicationInputs.add(new ApplicationInput("adultRequestingChildcareLookingForJob", "fullName",
+                        List.of(fullName), ApplicationInputType.SINGLE_VALUE, iLookingForAJob.getAndIncrement())));
 
-        AtomicInteger i = new AtomicInteger(0);
-
-        return students.stream()
-                .map(fullName -> new ApplicationInput("whoIsGoingToSchool", "fullName",
-                       List.of(fullName), ApplicationInputType.SINGLE_VALUE, i.getAndIncrement())).collect(Collectors.toList());
+        return applicationInputs;
     }
-
+    
 }
