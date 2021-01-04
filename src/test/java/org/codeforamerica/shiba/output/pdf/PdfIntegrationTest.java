@@ -616,21 +616,56 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
     void shouldMapAdultsRequestingChildcareAssistance() {
         addHouseholdMembers();
 
-        navigateTo("jobSearch");
-        testPage.enter("currentlyLookingForJob", "Yes");
-
-        testPage.enter("whoIsLookingForAJob", "Jim Halpert");
-        testPage.enter("whoIsLookingForAJob", "Pam Beesly");
-        testPage.clickContinue();
-
         navigateTo("childrenInNeedOfCare");
         testPage.enter("whoNeedsChildCare", "Jim Halpert");
         testPage.clickContinue();
 
+        navigateTo("jobSearch");
+        testPage.enter("currentlyLookingForJob", "Yes");
+        testPage.enter("whoIsLookingForAJob", "Jim Halpert");
+        testPage.enter("whoIsLookingForAJob", "Pam Beesly");
+        testPage.clickContinue();
+
+        navigateTo("whoIsGoingToSchool");
+        testPage.enter("whoIsGoingToSchool", "Me");
+        testPage.enter("whoIsGoingToSchool", "Jim Halpert");
+        testPage.clickContinue();
+
+        navigateTo("incomeByJob");
+        testPage.clickButton("Add a job");
+        testPage.enter("whoseJobIsIt", "Jim Halpert");
+        testPage.clickContinue();
+        testPage.enter("employersName", "Jim's Employer");
+        testPage.clickContinue();
+        testPage.enter("selfEmployment", "No");
+        testPage.enter("paidByTheHour", "No");
+        testPage.enter("payPeriod", "Every week");
+        testPage.clickContinue();
+        testPage.enter("incomePerPayPeriod", "1");
+        testPage.clickContinue();
+
+        testPage.clickButton("Add a job");
+        testPage.enter("whoseJobIsIt", "Pam Beesly");
+        testPage.clickContinue();
+        testPage.enter("employersName", "Pam's Employer");
+        testPage.clickContinue();
+        testPage.enter("selfEmployment", "No");
+        testPage.enter("paidByTheHour", "No");
+        testPage.enter("payPeriod", "Every week");
+        testPage.clickContinue();
+        testPage.enter("incomePerPayPeriod", "1");
+        testPage.clickContinue();
+
         Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
 
-        assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_LOOKING_FOR_JOB_FULL_NAME_0")).isEqualTo("Jim Halpert");
-        assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_LOOKING_FOR_JOB_FULL_NAME_1")).isEqualTo("Pam Beesly");
+        assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_LOOKING_FOR_JOB_FULL_NAME_0")).isEqualTo("Pam Beesly");
+        assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_GOING_TO_SCHOOL_FULL_NAME_0")).isEqualTo("Dwight Schrute");
+        assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_WORKING_FULL_NAME_0")).isEqualTo("Pam Beesly");
+        assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_WORKING_EMPLOYERS_NAME_0")).isEqualTo("Pam's Employer");
+        assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_LOOKING_FOR_JOB_FULL_NAME_1")).isEmpty();
+        assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_GOING_TO_SCHOOL_FULL_NAME_1")).isEmpty();
+        assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_WORKING_FULL_NAME_1")).isEmpty();
+        assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_WORKING_EMPLOYERS_NAME_1")).isEmpty();
     }
 
     private void addHouseholdMembers() {

@@ -28,7 +28,7 @@ public class FullNameFormatter {
                 .map(FullNameFormatter::format).collect(Collectors.toList());
     }
 
-    private static List<String> getListOfSelectedNameStrings(Application application, String pageName, String inputName) {
+    public static List<String> getListOfSelectedNameStrings(Application application, String pageName, String inputName) {
         return Optional.ofNullable(application.getApplicationData().getPageData(pageName))
                 .map(pageData -> pageData.get(inputName))
                 .map(InputData::getValue)
