@@ -4,13 +4,12 @@ import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.mnit.MnitCountyInformation;
 import org.codeforamerica.shiba.output.DocumentType;
+import org.codeforamerica.shiba.pages.data.Iteration;
 import org.springframework.stereotype.Component;
 
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class FileNameGenerator {
@@ -28,7 +27,7 @@ public class FileNameGenerator {
     }
 
     public String generateFileName(Application application, DocumentType documentType) {
-        List<String> programsList = application.getApplicationData().getPagesData().safeGetPageInputValue("choosePrograms", "programs");
+        Set<String> programsList = programList(application);
         final StringBuilder programs = new StringBuilder();
         List.of("E", "K", "F", "C").forEach(letter -> {
                     if (programsList.stream()
@@ -46,6 +45,20 @@ public class FileNameGenerator {
                 application.getId() + "_" +
                 programs.toString() + "_" +
                 documentType.toString();
+    }
+
+
+    private Set<String> programList( Application application){
+        List<String> applicantProgramsList = application.getApplicationData().getPagesData().safeGetPageInputValue("choosePrograms", "programs");
+        Set<String> programList = new HashSet<>(applicantProgramsList);
+        boolean hasHousehold = application.getApplicationData().getSubworkflows().containsKey("household");
+        if (hasHousehold) {
+            List<Iteration> householdIteration = application.getApplicationData().getSubworkflows().get("household");
+            householdIteration.stream().map(household -> household.getPagesData().safeGetPageInputValue("householdMemberInfo", "programs")).forEach(programList::addAll);
+        }
+
+        return programList;
+
     }
 
 }

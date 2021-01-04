@@ -6,12 +6,10 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.mnit.MnitCountyInformation;
 import org.codeforamerica.shiba.output.DocumentType;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
-import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.PageData;
-import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.core.parameters.P;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -96,6 +94,22 @@ class FileNameGeneratorTest {
         chooseProgramsData.put("programs", InputData.builder().value(programs).build());
         ApplicationData applicationData = new ApplicationData();
         applicationData.setPagesData(new PagesData(Map.of("choosePrograms", chooseProgramsData)));
+        Application application = defaultApplicationBuilder.applicationData(applicationData).build();
+
+        String fileName = fileNameGenerator.generateFileName(application, DocumentType.CAF);
+
+        assertThat(fileName).contains("EKFC");
+    }
+
+    @Test
+    void shouldIncludeProgramCodesForHouseholdMembers() {
+        ApplicationData applicationData = new ApplicationData();
+        PagesData pagesData = new PagesData();
+        PageData householdMemberProgramsPage = new PageData();
+        householdMemberProgramsPage.put("programs", InputData.builder().value(List.of("SNAP", "CASH", "GRH", "EA", "CCAP")).build());
+        pagesData.put("householdMemberInfo", householdMemberProgramsPage);
+        applicationData.getSubworkflows().addIteration("household", pagesData);
+
         Application application = defaultApplicationBuilder.applicationData(applicationData).build();
 
         String fileName = fileNameGenerator.generateFileName(application, DocumentType.CAF);
