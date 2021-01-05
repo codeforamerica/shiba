@@ -443,6 +443,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
             testPage.clickContinue();
             testPage.enter("selfEmployment", YES.getDisplayValue());
             paidByTheHourOrSelectPayPeriod();
+            testPage.enter("currentlyLookingForJob", NO.getDisplayValue());
         } else {
             testPage.enter("areYouWorking", NO.getDisplayValue());
             testPage.enter("currentlyLookingForJob", YES.getDisplayValue());

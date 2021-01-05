@@ -2107,7 +2107,7 @@ workflow:
     dataMissingRedirect: employmentStatus
     nextPages:
       - pageName: householdSelectionForIncome
-      - pageName: incomeUpNext
+      - pageName: jobSearch
     datasources:
       - groupName: jobs
       - pageName: doYouLiveAlone
