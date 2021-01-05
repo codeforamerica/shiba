@@ -92,8 +92,6 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
         testPage.enter("moneyInput", moneyInputValue);
         String hourlyWageValue = "some wage";
         testPage.enter("hourlyWageInput", hourlyWageValue);
-        String incrementerInputValue = "5";
-        testPage.enter("incrementerInput", incrementerInputValue);
 
         driver.findElement(By.cssSelector("button")).click();
         assertThat(driver.getTitle()).isEqualTo("nextPageTitle");
@@ -110,25 +108,6 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
         assertThat(testPage.getSelectValue("selectInput")).isEqualTo(selectOption1);
         assertThat(testPage.getInputValue("moneyInput")).isEqualTo(moneyInputValue);
         assertThat(testPage.getInputValue("hourlyWageInput")).isEqualTo(hourlyWageValue);
-        assertThat(testPage.getInputValue("incrementerInput")).isEqualTo(incrementerInputValue);
-    }
-
-    @Test
-    void incrementerShouldUseForMaxMinAndDefaultValue() {
-        navigateTo("firstPage");
-        assertThat(testPage.getInputValue("incrementerInput")).isEqualTo("4");
-
-        driver.findElement(By.className("incrementer__add")).click();
-        assertThat(testPage.getInputValue("incrementerInput")).isEqualTo("5");
-        driver.findElement(By.className("incrementer__add")).click();
-        assertThat(testPage.getInputValue("incrementerInput")).isEqualTo("5");
-
-        driver.findElement(By.className("incrementer__subtract")).click();
-        assertThat(testPage.getInputValue("incrementerInput")).isEqualTo("4");
-        driver.findElement(By.className("incrementer__subtract")).click();
-        assertThat(testPage.getInputValue("incrementerInput")).isEqualTo("3");
-        driver.findElement(By.className("incrementer__subtract")).click();
-        assertThat(testPage.getInputValue("incrementerInput")).isEqualTo("3");
     }
 
     @Nested

@@ -10,7 +10,6 @@ public enum FormInputType {
     SELECT,
     YES_NO,
     MONEY,
-    INCREMENTER,
     TEXTAREA,
     HOURLY_WAGE,
     PHONE,

@@ -189,7 +189,6 @@
             "SELECT",
             "YES_NO",
             "MONEY",
-            "INCREMENTER",
             "TEXTAREA",
             "CUSTOM",
             "HOURLY_WAGE",
