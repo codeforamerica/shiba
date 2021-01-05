@@ -16,18 +16,15 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 
-import static org.codeforamerica.shiba.output.DocumentType.CAF;
-import static org.codeforamerica.shiba.output.DocumentType.CCAP;
+import static org.codeforamerica.shiba.output.Document.CAF;
+import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.mockito.Mockito.*;
 
 class MnitDocumentConsumerTest {
     MnitEsbWebServiceClient mnitClient = mock(MnitEsbWebServiceClient.class);
-
     XmlGenerator xmlGenerator = mock(XmlGenerator.class);
-
     PdfGenerator pdfGenerator = mock(PdfGenerator.class);
-
     MnitDocumentConsumer documentConsumer = new MnitDocumentConsumer(
             mnitClient,
             xmlGenerator,
@@ -48,6 +45,7 @@ class MnitDocumentConsumerTest {
                 .applicationData(new ApplicationData())
                 .county(County.Olmsted)
                 .timeToComplete(null)
+                .documents(List.of(CAF))
                 .build();
 
         documentConsumer.process(application);
@@ -63,6 +61,7 @@ class MnitDocumentConsumerTest {
                 .applicationData(new ApplicationData())
                 .county(County.Olmsted)
                 .timeToComplete(null)
+                .documents(List.of(CAF))
                 .build();
 
         documentConsumer.process(application);
@@ -82,6 +81,7 @@ class MnitDocumentConsumerTest {
                 .applicationData(new ApplicationData())
                 .county(County.Olmsted)
                 .timeToComplete(null)
+                .documents(List.of(CAF))
                 .build();
         documentConsumer.process(application);
 
@@ -110,6 +110,7 @@ class MnitDocumentConsumerTest {
                 .applicationData(applicationData)
                 .county(County.Olmsted)
                 .timeToComplete(null)
+                .documents(List.of(CAF, CCAP))
                 .build();
         documentConsumer.process(application);
 

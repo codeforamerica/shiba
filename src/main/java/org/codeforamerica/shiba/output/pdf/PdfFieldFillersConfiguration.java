@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.output.pdf;
 
-import org.codeforamerica.shiba.output.DocumentType;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -10,8 +10,8 @@ import org.springframework.core.io.Resource;
 import java.util.List;
 import java.util.Map;
 
-import static org.codeforamerica.shiba.output.DocumentType.CAF;
-import static org.codeforamerica.shiba.output.DocumentType.CCAP;
+import static org.codeforamerica.shiba.output.Document.CAF;
+import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 
@@ -52,7 +52,7 @@ public class PdfFieldFillersConfiguration {
     }
 
     @Bean
-    public Map<Recipient, Map<DocumentType, PdfFieldFiller>> pdfFieldFillers(
+    public Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers(
             PdfFieldFiller caseworkerCafFiller,
             PdfFieldFiller clientCafFiller,
             PdfFieldFiller ccapFiller

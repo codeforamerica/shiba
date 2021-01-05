@@ -24,9 +24,9 @@ class PdfGeneratorTest {
     PdfFieldFiller caseworkerFiller = mock(PdfFieldFiller.class);
     PdfFieldFiller clientFiller = mock(PdfFieldFiller.class);
     PdfFieldFiller ccapFiller = mock(PdfFieldFiller.class);
-    Map<Recipient, Map<DocumentType, PdfFieldFiller>> pdfFieldFillers = Map.of(
-            CASEWORKER, Map.of(DocumentType.CAF, caseworkerFiller, DocumentType.CCAP, ccapFiller),
-            CLIENT, Map.of(DocumentType.CAF, clientFiller, DocumentType.CCAP, ccapFiller)
+    Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers = Map.of(
+            CASEWORKER, Map.of(Document.CAF, caseworkerFiller, Document.CCAP, ccapFiller),
+            CLIENT, Map.of(Document.CAF, clientFiller, Document.CCAP, ccapFiller)
     );
     ApplicationInputsMappers mappers = mock(ApplicationInputsMappers.class);
     ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
@@ -56,7 +56,7 @@ class PdfGeneratorTest {
                 .timeToComplete(null)
                 .build();
         String fileName = "some file name";
-        when(fileNameGenerator.generateFileName(application, DocumentType.CAF)).thenReturn(fileName);
+        when(fileNameGenerator.generateFileName(application, Document.CAF)).thenReturn(fileName);
         when(applicationRepository.find(applicationId)).thenReturn(application);
         Recipient recipient = CASEWORKER;
         when(mappers.map(application, recipient)).thenReturn(applicationInputs);
@@ -65,7 +65,7 @@ class PdfGeneratorTest {
         when(caseworkerFiller.fill(pdfFields, applicationId, fileName))
                 .thenReturn(expectedApplicationFile);
 
-        ApplicationFile actualApplicationFile = pdfGenerator.generate(applicationId, DocumentType.CAF, recipient);
+        ApplicationFile actualApplicationFile = pdfGenerator.generate(applicationId, Document.CAF, recipient);
 
         assertThat(actualApplicationFile).isEqualTo(expectedApplicationFile);
     }
@@ -73,8 +73,8 @@ class PdfGeneratorTest {
     @ParameterizedTest
     @EnumSource(Recipient.class)
     void shouldUseFillerRespectToRecipient(Recipient recipient) {
-        pdfGenerator.generate("", DocumentType.CAF, recipient);
+        pdfGenerator.generate("", Document.CAF, recipient);
 
-        verify(pdfFieldFillers.get(recipient).get(DocumentType.CAF)).fill(any(), any(), any());
+        verify(pdfFieldFillers.get(recipient).get(Document.CAF)).fill(any(), any(), any());
     }
 }

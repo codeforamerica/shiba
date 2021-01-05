@@ -2,7 +2,7 @@ package org.codeforamerica.shiba.output.pdf;
 
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.AbstractBasePageTest;
-import org.codeforamerica.shiba.output.DocumentType;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.SuccessPage;
 import org.codeforamerica.shiba.pages.YesNoAnswer;
 import org.codeforamerica.shiba.pages.enrichment.Address;
@@ -26,8 +26,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.codeforamerica.shiba.output.DocumentType.CAF;
-import static org.codeforamerica.shiba.output.DocumentType.CCAP;
+import static org.codeforamerica.shiba.output.Document.CAF;
+import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 import static org.mockito.ArgumentMatchers.any;
@@ -63,9 +63,9 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         testPage.enter("unearnedIncome", "Child or Spousal support");
         testPage.clickContinue();
 
-        Map<DocumentType, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+        Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
 
-        List.of(CAF, DocumentType.CCAP).forEach(type -> {
+        List.of(CAF, Document.CCAP).forEach(type -> {
                     PDAcroForm pdAcroForm = pdAcroForms.get(type);
                     assertThat(pdAcroForm.getField("SOCIAL_SECURITY").getValueAsString()).isEqualTo("Yes");
                     assertThat(pdAcroForm.getField("CHILD_OR_SPOUSAL_SUPPORT").getValueAsString()).isEqualTo("Yes");
@@ -125,7 +125,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         testPage.enter("incomePerPayPeriod", "1");
         testPage.clickContinue();
 
-        Map<DocumentType, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+        Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
         assertThat(pdAcroForms.get(CAF).getField("SELF_EMPLOYED").getValueAsString()).isEqualTo("No");
 
         assertThat(pdAcroForms.get(CCAP).getField("NON_SELF_EMPLOYMENT_EMPLOYERS_NAME_0").getValueAsString()).isEqualTo("someEmployerName");
@@ -148,8 +148,8 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         testPage.clickContinue();
         testPage.clickButton("Use this address");
 
-        Map<DocumentType, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-        List.of(CAF, DocumentType.CCAP).forEach(type -> {
+        Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+        List.of(CAF, Document.CCAP).forEach(type -> {
             PDAcroForm pdAcroForm = pdAcroForms.get(type);
             assertThat(pdAcroForm.getField("APPLICANT_HOME_STREET_ADDRESS").getValueAsString())
                     .isEqualTo(originalStreetAddress);
@@ -188,8 +188,8 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
                         "Hennepin")));
         testPage.clickContinue();
         testPage.clickContinue();
-        Map<DocumentType, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-        List.of(CAF, DocumentType.CCAP).forEach(type -> {
+        Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+        List.of(CAF, Document.CCAP).forEach(type -> {
             PDAcroForm pdAcroForm = pdAcroForms.get(type);
             assertThat(pdAcroForm.getField("APPLICANT_HOME_STREET_ADDRESS").getValueAsString())
                     .isEqualTo(enrichedStreetValue);
@@ -219,8 +219,8 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         testPage.enter("sameMailingAddress", "Yes, send mail here");
         testPage.clickContinue();
         testPage.clickButton("Use this address");
-        Map<DocumentType, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-        List.of(CAF, DocumentType.CCAP).forEach(type -> {
+        Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+        List.of(CAF, Document.CCAP).forEach(type -> {
             PDAcroForm pdAcroForm = pdAcroForms.get(type);
             assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
                     .isEqualTo(originalStreetAddress);
@@ -258,8 +258,8 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
                         "Hennepin")));
         testPage.clickContinue();
         testPage.clickContinue();
-        Map<DocumentType, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-        List.of(CAF, DocumentType.CCAP).forEach(type -> {
+        Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+        List.of(CAF, Document.CCAP).forEach(type -> {
             PDAcroForm pdAcroForm = pdAcroForms.get(type);
             assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
                     .isEqualTo(enrichedStreetValue);
@@ -294,8 +294,8 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         testPage.clickContinue();
         testPage.clickButton("Use this address");
 
-        Map<DocumentType, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-        List.of(CAF, DocumentType.CCAP).forEach(type -> {
+        Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+        List.of(CAF, Document.CCAP).forEach(type -> {
             PDAcroForm pdAcroForm = pdAcroForms.get(type);
             assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
                     .isEqualTo(originalStreetAddress);
@@ -339,8 +339,8 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         testPage.clickContinue();
         testPage.clickContinue();
 
-        Map<DocumentType, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-        List.of(CAF, DocumentType.CCAP).forEach(type -> {
+        Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+        List.of(CAF, Document.CCAP).forEach(type -> {
             PDAcroForm pdAcroForm = pdAcroForms.get(type);
             assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
                     .isEqualTo(enrichedStreetValue);
@@ -391,7 +391,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         testPage.enter("incomePerPayPeriod", "1");
         testPage.clickContinue();
 
-        Map<DocumentType, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+        Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
         assertThat(getPdfFieldText(pdAcroForms.get(CAF), "EMPLOYEE_FULL_NAME_0"))
                 .isEqualTo("Jim Halpert");
 
@@ -410,7 +410,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         testPage.enter("whoNeedsChildCare", "Jim Halpert");
         testPage.clickContinue();
 
-        Map<DocumentType, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+        Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
         assertThat(pdAcroForms.get(CCAP).getField("CHILD_NEEDS_CHILDCARE_FULL_NAME_0").getValueAsString())
                 .isEqualTo("Dwight Schrute");
         assertThat(pdAcroForms.get(CCAP).getField("CHILD_NEEDS_CHILDCARE_FULL_NAME_1").getValueAsString())
@@ -428,7 +428,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         testPage.enter("whoIsGoingToSchool", "Jim Halpert");
         testPage.clickContinue();
 
-        Map<DocumentType, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+        Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
         assertThat(pdAcroForms.get(CCAP).getField("STUDENT_FULL_NAME_0").getValueAsString())
                 .isEqualTo("Dwight Schrute");
         assertThat(pdAcroForms.get(CCAP).getField("STUDENT_FULL_NAME_1").getValueAsString())
@@ -459,8 +459,8 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         driver.findElement(By.id("additionalIncomeInfo")).sendKeys("abc");
         testPage.clickContinue();
 
-        Map<DocumentType, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-        List.of(CAF, DocumentType.CCAP).forEach(type -> {
+        Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+        List.of(CAF, Document.CCAP).forEach(type -> {
             PDAcroForm pdAcroForm = pdAcroForms.get(type);
             assertThat(getPdfFieldText(pdAcroForm, "ADDITIONAL_INCOME_INFO")).isEqualTo("abc");
         });
@@ -498,7 +498,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         testPage.enter("lastThirtyDaysJobIncome", "123");
         testPage.clickContinue();
 
-        Map<DocumentType, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+        Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
         assertThat(getPdfFieldText(pdAcroForms.get(CAF), "GROSS_MONTHLY_INCOME_0")).isEqualTo("123.0");
         assertThat(getPdfFieldText(pdAcroForms.get(CAF), "MONEY_MADE_LAST_MONTH")).isEqualTo("123.0");
         assertThat(getPdfFieldText(pdAcroForms.get(CAF), "EXPEDITED_ELIGIBILITY")).isEqualTo("Expedited");
@@ -570,7 +570,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         testPage.enter("lastThirtyDaysJobIncome", "");
         testPage.clickContinue();
 
-        Map<DocumentType, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+        Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
         assertThat(getPdfFieldText(pdAcroForms.get(CAF), "GROSS_MONTHLY_INCOME_0")).isEqualTo("123.0");
         assertThat(getPdfFieldText(pdAcroForms.get(CAF), "MONEY_MADE_LAST_MONTH")).isEqualTo("123.0");
         assertThat(getPdfFieldText(pdAcroForms.get(CAF), "EXPEDITED_ELIGIBILITY")).isEqualTo("Expedited");
@@ -648,7 +648,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         testPage.enter("zipCode", "54321");
     }
 
-    private Map<DocumentType, PDAcroForm> submitAndDownloadReceipt() {
+    private Map<Document, PDAcroForm> submitAndDownloadReceipt() {
         navigateTo("signThisApplication");
         testPage.enter("applicantSignature", "someSignature");
         testPage.clickButton("Submit");

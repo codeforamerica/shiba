@@ -7,7 +7,7 @@ import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.EmailParser;
 import org.codeforamerica.shiba.mnit.MnitCountyInformation;
 import org.codeforamerica.shiba.output.ApplicationFile;
-import org.codeforamerica.shiba.output.DocumentType;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibilityDecider;
@@ -121,7 +121,7 @@ class ApplicationSubmittedListenerTest {
             ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null, Locale.ENGLISH);
             when(expeditedEligibilityDecider.decide(applicationData)).thenReturn(ExpeditedEligibility.ELIGIBLE);
             ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
-            when(pdfGenerator.generate(appIdFromDb, DocumentType.CAF, CLIENT)).thenReturn(applicationFile);
+            when(pdfGenerator.generate(appIdFromDb, Document.CAF, CLIENT)).thenReturn(applicationFile);
             when(emailParser.parse(applicationData)).thenReturn(Optional.of(email));
             applicationSubmittedListener.sendConfirmationEmail(event);
 
@@ -175,7 +175,7 @@ class ApplicationSubmittedListenerTest {
             ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null, Locale.ENGLISH);
             when(expeditedEligibilityDecider.decide(applicationData)).thenReturn(ExpeditedEligibility.ELIGIBLE);
             ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
-            when(pdfGenerator.generate(appIdFromDb, DocumentType.CAF, CASEWORKER)).thenReturn(applicationFile);
+            when(pdfGenerator.generate(appIdFromDb, Document.CAF, CASEWORKER)).thenReturn(applicationFile);
 
             applicationSubmittedListener.sendCaseWorkerEmail(event);
 

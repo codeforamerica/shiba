@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.application;
 
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,10 +22,9 @@ class ApplicationFactoryTest {
 
     @SuppressWarnings("unchecked")
     ApplicationDataParser<County> countyParser = mock(ApplicationDataParser.class);
+    ApplicationDataParser<List<Document>> documentListParser = mock(ApplicationDataParser.class);
 
-    ApplicationFactory applicationFactory = new ApplicationFactory(
-            clock,
-            countyParser);
+    ApplicationFactory applicationFactory = new ApplicationFactory(clock, countyParser, documentListParser);
 
     ApplicationData applicationData = new ApplicationData();
 
@@ -95,5 +95,14 @@ class ApplicationFactoryTest {
         Application application = applicationFactory.newApplication("", applicationData);
 
         assertThat(application.getCounty()).isEqualTo(Hennepin);
+    }
+
+    @Test
+    void shouldDetermineDocumentTypes() {
+        when(documentListParser.parse(applicationData)).thenReturn(List.of(Document.CAF, Document.CCAP));
+
+        Application application = applicationFactory.newApplication("", applicationData);
+
+        assertThat(application.getDocuments()).isEqualTo(List.of(Document.CAF, Document.CCAP));
     }
 }

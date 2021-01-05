@@ -4,7 +4,7 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.DocumentType;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
@@ -49,7 +49,7 @@ public class XmlGenerator implements FileGenerator {
     }
 
     @Override
-    public ApplicationFile generate(String applicationId, DocumentType documentType, Recipient recipient) {
+    public ApplicationFile generate(String applicationId, Document document, Recipient recipient) {
         Application application = applicationRepository.find(applicationId);
         List<ApplicationInput> applicationInputs = mappers.map(application, recipient);
 
@@ -87,7 +87,7 @@ public class XmlGenerator implements FileGenerator {
             String finishedXML = contentsAfterReplacement.replaceAll("\\s*<\\w+:\\w+>\\{\\{\\w+}}</\\w+:\\w+>", "");
             return new ApplicationFile(
                     finishedXML.getBytes(),
-                    String.format("%s.xml", fileNameGenerator.generateFileName(application, documentType)));
+                    String.format("%s.xml", fileNameGenerator.generateFileName(application, document)));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -5,7 +5,7 @@ import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
-import org.codeforamerica.shiba.output.DocumentType;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -17,7 +17,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.util.xml.SimpleNamespaceContext;
-import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -81,11 +80,11 @@ class XmlGeneratorTest {
 
         when(mappers.map(any(), any())).thenReturn(applicationInputs);
 
-        ApplicationFile applicationFile = subject.generate("someId", DocumentType.NONE, CLIENT);
+        ApplicationFile applicationFile = subject.generate("someId", Document.CAF, CLIENT);
 
         SimpleNamespaceContext namespaceContext = new SimpleNamespaceContext();
         namespaceContext.setBindings(Map.of("ns", "some-url"));
-        Document document = byteArrayToDocument(applicationFile.getFileBytes());
+        org.w3c.dom.Document document = byteArrayToDocument(applicationFile.getFileBytes());
         MatcherAssert.assertThat(document,
                 hasXPath("count(/ns:Root/ns:Child)",
                         namespaceContext,
@@ -110,8 +109,8 @@ class XmlGeneratorTest {
                 mappers,
                 fileNameGenerator);
 
-        ApplicationFile applicationFile = subject.generate("someId", DocumentType.NONE, CLIENT);
-        Document document = byteArrayToDocument(applicationFile.getFileBytes());
+        ApplicationFile applicationFile = subject.generate("someId", Document.CAF, CLIENT);
+        org.w3c.dom.Document document = byteArrayToDocument(applicationFile.getFileBytes());
         SimpleNamespaceContext namespaceContext = new SimpleNamespaceContext();
         namespaceContext.setBindings(Map.of("ns", "some-url"));
         MatcherAssert.assertThat(document,
@@ -152,11 +151,11 @@ class XmlGeneratorTest {
 
         when(mappers.map(any(), any())).thenReturn(applicationInputs);
 
-        ApplicationFile applicationFile = subject.generate("", DocumentType.NONE, null);
+        ApplicationFile applicationFile = subject.generate("", Document.CAF, null);
 
         SimpleNamespaceContext namespaceContext = new SimpleNamespaceContext();
         namespaceContext.setBindings(Map.of("ns", "some-url"));
-        Document document = byteArrayToDocument(applicationFile.getFileBytes());
+        org.w3c.dom.Document document = byteArrayToDocument(applicationFile.getFileBytes());
         MatcherAssert.assertThat(document,
                 hasXPath("/ns:Root/ns:Child[1]/text()",
                         namespaceContext,
@@ -195,11 +194,11 @@ class XmlGeneratorTest {
                 fileNameGenerator);
         when(mappers.map(any(), any())).thenReturn(applicationInputs);
 
-        ApplicationFile applicationFile = subject.generate("", DocumentType.NONE, null);
+        ApplicationFile applicationFile = subject.generate("", Document.CAF, null);
 
         SimpleNamespaceContext namespaceContext = new SimpleNamespaceContext();
         namespaceContext.setBindings(Map.of("ns", "some-url"));
-        Document document = byteArrayToDocument(applicationFile.getFileBytes());
+        org.w3c.dom.Document document = byteArrayToDocument(applicationFile.getFileBytes());
         MatcherAssert.assertThat(document,
                 hasXPath("/ns:Root/ns:Child[1]/text()",
                         namespaceContext,
@@ -239,9 +238,9 @@ class XmlGeneratorTest {
                 mappers,
                 fileNameGenerator);
         when(mappers.map(any(), any())).thenReturn(applicationInputs);
-        ApplicationFile applicationFile = subject.generate("", DocumentType.NONE, null);
+        ApplicationFile applicationFile = subject.generate("", Document.CAF, null);
 
-        Document document = byteArrayToDocument(applicationFile.getFileBytes());
+        org.w3c.dom.Document document = byteArrayToDocument(applicationFile.getFileBytes());
 
         SimpleNamespaceContext namespaceContext = new SimpleNamespaceContext();
         namespaceContext.setBindings(Map.of("ns", "some-url"));
@@ -276,9 +275,9 @@ class XmlGeneratorTest {
                 mappers,
                 fileNameGenerator);
         when(mappers.map(any(), any())).thenReturn(applicationInputs);
-        ApplicationFile applicationFile = subject.generate("", DocumentType.NONE, null);
+        ApplicationFile applicationFile = subject.generate("", Document.CAF, null);
 
-        Document document = byteArrayToDocument(applicationFile.getFileBytes());
+        org.w3c.dom.Document document = byteArrayToDocument(applicationFile.getFileBytes());
 
         SimpleNamespaceContext namespaceContext = new SimpleNamespaceContext();
         namespaceContext.setBindings(Map.of("ns", "some-url"));
@@ -314,9 +313,9 @@ class XmlGeneratorTest {
                 mappers,
                 fileNameGenerator);
         when(mappers.map(any(), any())).thenReturn(applicationInputs);
-        ApplicationFile applicationFile = subject.generate("", DocumentType.NONE, null);
+        ApplicationFile applicationFile = subject.generate("", Document.CAF, null);
 
-        Document document = byteArrayToDocument(applicationFile.getFileBytes());
+        org.w3c.dom.Document document = byteArrayToDocument(applicationFile.getFileBytes());
 
         SimpleNamespaceContext namespaceContext = new SimpleNamespaceContext();
         namespaceContext.setBindings(Map.of("ns", "some-url"));
@@ -352,9 +351,9 @@ class XmlGeneratorTest {
                 mappers,
                 fileNameGenerator);
         when(mappers.map(any(), any())).thenReturn(applicationInputs);
-        ApplicationFile applicationFile = subject.generate("", DocumentType.NONE, null);
+        ApplicationFile applicationFile = subject.generate("", Document.CAF, null);
 
-        Document document = byteArrayToDocument(applicationFile.getFileBytes());
+        org.w3c.dom.Document document = byteArrayToDocument(applicationFile.getFileBytes());
 
         SimpleNamespaceContext namespaceContext = new SimpleNamespaceContext();
         namespaceContext.setBindings(Map.of("ns", "some-url"));
@@ -392,9 +391,9 @@ class XmlGeneratorTest {
                 mappers,
                 fileNameGenerator);
         when(mappers.map(any(), any())).thenReturn(applicationInputs);
-        ApplicationFile applicationFile = subject.generate("", DocumentType.NONE, null);
+        ApplicationFile applicationFile = subject.generate("", Document.CAF, null);
 
-        Document document = byteArrayToDocument(applicationFile.getFileBytes());
+        org.w3c.dom.Document document = byteArrayToDocument(applicationFile.getFileBytes());
 
         SimpleNamespaceContext namespaceContext = new SimpleNamespaceContext();
         namespaceContext.setBindings(Map.of("ns", "some-url"));
@@ -428,9 +427,9 @@ class XmlGeneratorTest {
                 mappers,
                 fileNameGenerator);
         when(mappers.map(any(), any())).thenReturn(applicationInputs);
-        ApplicationFile applicationFile = subject.generate("", DocumentType.NONE, null);
+        ApplicationFile applicationFile = subject.generate("", Document.CAF, null);
 
-        Document document = byteArrayToDocument(applicationFile.getFileBytes());
+        org.w3c.dom.Document document = byteArrayToDocument(applicationFile.getFileBytes());
 
         SimpleNamespaceContext namespaceContext = new SimpleNamespaceContext();
         namespaceContext.setBindings(Map.of("ns", "some-url"));
@@ -464,7 +463,7 @@ class XmlGeneratorTest {
                 fileNameGenerator);
         when(mappers.map(any(), any())).thenReturn(applicationInputs);
         ApplicationFile applicationFile = subject.generate("", null, null);
-        Document document = byteArrayToDocument(applicationFile.getFileBytes());
+        org.w3c.dom.Document document = byteArrayToDocument(applicationFile.getFileBytes());
 
         SimpleNamespaceContext namespaceContext = new SimpleNamespaceContext();
         namespaceContext.setBindings(Map.of("ns", "some-url"));
@@ -502,7 +501,7 @@ class XmlGeneratorTest {
         assertThat(applicationFile.getFileName()).isEqualTo(fileName + ".xml");
     }
 
-    private Document byteArrayToDocument(byte[] bytes) throws ParserConfigurationException, IOException, SAXException {
+    private org.w3c.dom.Document byteArrayToDocument(byte[] bytes) throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware(true);
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();

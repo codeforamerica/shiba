@@ -3,7 +3,7 @@ package org.codeforamerica.shiba;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
-import org.codeforamerica.shiba.output.DocumentType;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.Page;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -85,7 +85,7 @@ public abstract class AbstractBasePageTest {
                 .findFirst();
     }
 
-    protected Map<DocumentType, PDAcroForm> getAllFiles() {
+    protected Map<Document, PDAcroForm> getAllFiles() {
         return Arrays.stream(path.toFile().listFiles())
                 .filter(file -> file.getName().endsWith(".pdf"))
                 .collect(Collectors.toMap(this::getDocumentType, pdfFile -> {
@@ -97,14 +97,14 @@ public abstract class AbstractBasePageTest {
                 }));
     }
 
-    private DocumentType getDocumentType(File file) {
+    private Document getDocumentType(File file) {
         String fileName = file.getName();
         if (fileName.contains("_CAF")) {
-            return DocumentType.CAF;
+            return Document.CAF;
         } else if (fileName.contains("_CCAP")) {
-            return DocumentType.CCAP;
+            return Document.CCAP;
         } else {
-            return DocumentType.NONE;
+            return Document.CAF;
         }
     }
 

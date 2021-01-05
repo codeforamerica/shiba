@@ -18,8 +18,8 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.output.DocumentType.CAF;
-import static org.codeforamerica.shiba.output.DocumentType.CCAP;
+import static org.codeforamerica.shiba.output.Document.CAF;
+import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Recipient.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;

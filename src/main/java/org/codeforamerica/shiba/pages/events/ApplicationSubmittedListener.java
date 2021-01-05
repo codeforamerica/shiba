@@ -18,7 +18,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import static org.codeforamerica.shiba.output.DocumentType.CAF;
+import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 

@@ -4,7 +4,7 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.output.ApplicationFile;
-import org.codeforamerica.shiba.output.DocumentType;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.FormInput;
@@ -22,7 +22,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
@@ -119,7 +118,7 @@ public class XmlGeneratorIntegrationTest {
                 .timeToComplete(Duration.ofSeconds(534))
                 .build();
         applicationRepository.save(application);
-        ApplicationFile applicationFile = xmlGenerator.generate(applicationId, DocumentType.NONE, CASEWORKER);
+        ApplicationFile applicationFile = xmlGenerator.generate(applicationId, Document.CAF, CASEWORKER);
 
         Node document = byteArrayToDocument(applicationFile.getFileBytes());
 
@@ -133,7 +132,7 @@ public class XmlGeneratorIntegrationTest {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware(true);
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Document document = documentBuilder.parse(new ByteArrayInputStream(bytes));
+        org.w3c.dom.Document document = documentBuilder.parse(new ByteArrayInputStream(bytes));
         return document.getFirstChild().getFirstChild();
     }
 }

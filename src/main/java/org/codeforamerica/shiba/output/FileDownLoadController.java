@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 import static org.codeforamerica.shiba.output.Recipient.*;
-import static org.codeforamerica.shiba.output.DocumentType.*;
+import static org.codeforamerica.shiba.output.Document.*;
 
 @Controller
 @Slf4j

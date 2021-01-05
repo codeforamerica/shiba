@@ -3,7 +3,7 @@ package org.codeforamerica.shiba.output.caf;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.mnit.MnitCountyInformation;
-import org.codeforamerica.shiba.output.DocumentType;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.data.Iteration;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +26,7 @@ public class FileNameGenerator {
         this.countyMap = countyMap;
     }
 
-    public String generateFileName(Application application, DocumentType documentType) {
+    public String generateFileName(Application application, Document document) {
         Set<String> programsList = programList(application);
         final StringBuilder programs = new StringBuilder();
         List.of("E", "K", "F", "C").forEach(letter -> {
@@ -44,7 +44,7 @@ public class FileNameGenerator {
                 DateTimeFormatter.ofPattern("HHmmss").format(application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago"))) + "_" +
                 application.getId() + "_" +
                 programs.toString() + "_" +
-                documentType.toString();
+                document.toString();
     }
 
 

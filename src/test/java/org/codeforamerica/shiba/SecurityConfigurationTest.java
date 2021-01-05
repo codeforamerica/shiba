@@ -2,7 +2,6 @@ package org.codeforamerica.shiba;
 
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.output.DocumentType;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.junit.jupiter.api.BeforeEach;
