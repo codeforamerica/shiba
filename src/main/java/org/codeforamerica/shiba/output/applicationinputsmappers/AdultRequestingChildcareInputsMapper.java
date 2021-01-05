@@ -1,11 +1,11 @@
 package org.codeforamerica.shiba.output.applicationinputsmappers;
 
+import io.sentry.protocol.App;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
 import org.codeforamerica.shiba.output.FullNameFormatter;
 import org.codeforamerica.shiba.output.Recipient;
-import org.codeforamerica.shiba.pages.data.Subworkflow;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
@@ -36,10 +36,9 @@ public class AdultRequestingChildcareInputsMapper implements ApplicationInputsMa
     private static Stream<ApplicationInput> getAdultsForWorkingSection(Application application) {
         AtomicInteger i = new AtomicInteger(0);
         List<String> exceptNameStrings = getListOfSelectedNameStrings(application, "childrenInNeedOfCare", "whoNeedsChildCare");
-        return Optional.ofNullable(application.getApplicationData().getSubworkflows().get("jobs"))
-                .orElse(new Subworkflow())
+        return application.getApplicationData().getSubworkflows().get("jobs")
                 .stream().filter(iteration -> {
-                    String nameString = iteration.getPagesData().getPage("householdSelectionForIncome").get("whoseJobIsIt").getValue(0);
+                    String nameString = Optional.ofNullable(iteration.getPagesData().getPage("householdSelectionForIncome").get("whoseJobIsIt").getValue(0)).orElse("");
                     return !exceptNameStrings.contains(nameString);
                 })
                 .flatMap(iteration -> {
@@ -76,5 +75,12 @@ public class AdultRequestingChildcareInputsMapper implements ApplicationInputsMa
                                 List.of(fullName),
                                 ApplicationInputType.SINGLE_VALUE,
                                 i.getAndIncrement()));
+    }
+
+    private static boolean shouldNotMap(Application application) {
+        boolean livesAlone = application.getApplicationData().getPagesData().safeGetPageInputValue("doYouLiveAlone", "liveAlone").equals("true");
+        boolean noCCAP =
+
+        return livesAlone || noCCAP;
     }
 }

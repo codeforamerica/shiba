@@ -504,7 +504,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
     }
 
     @Test
-    void shouldMapJobLastThirtyDayIncomeAllBlankIsUndetermind() {
+    void shouldMapJobLastThirtyDayIncomeAllBlankIsUndetermined() {
         addHouseholdMembers();
 
         fillInRequiredPages();
@@ -613,7 +613,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
     }
 
     @Test
-    void shouldMapAdultsRequestingChildcareAssistance() {
+    void shouldMapAdultsInHouseholdRequestingChildcareAssistance() {
         addHouseholdMembers();
 
         navigateTo("childrenInNeedOfCare");
