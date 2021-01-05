@@ -16,7 +16,7 @@ public interface ApplicationInputsMapper {
             case CHECKBOX -> ApplicationInputType.ENUMERATED_MULTI_VALUE;
             case RADIO, SELECT -> ApplicationInputType.ENUMERATED_SINGLE_VALUE;
             case DATE -> ApplicationInputType.DATE_VALUE;
-            case TEXT, LONG_TEXT, HOURLY_WAGE, NUMBER, YES_NO, MONEY, INCREMENTER, TEXTAREA, PHONE, SSN, CUSTOM -> ApplicationInputType.SINGLE_VALUE;
+            case TEXT, LONG_TEXT, HOURLY_WAGE, NUMBER, YES_NO, MONEY, TEXTAREA, PHONE, SSN, CUSTOM -> ApplicationInputType.SINGLE_VALUE;
         };
     }
 }

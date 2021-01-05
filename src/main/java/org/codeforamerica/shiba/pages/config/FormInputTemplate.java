@@ -27,7 +27,6 @@ public class FormInputTemplate {
             case RADIO -> "radio-input";
             case CHECKBOX -> "checkbox-input";
             case YES_NO -> "yes-no-input";
-            case INCREMENTER -> "incrementer-input";
             case CUSTOM -> customInputFragment;
         };
     }
