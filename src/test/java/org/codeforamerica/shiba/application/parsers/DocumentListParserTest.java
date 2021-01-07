@@ -53,6 +53,4 @@ class DocumentListParserTest {
 
         assertThat(documentListParser.parse(applicationData)).containsExactlyInAnyOrder(CAF, CCAP);
     }
-
-
 }

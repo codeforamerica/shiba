@@ -1,11 +1,8 @@
 package org.codeforamerica.shiba.output.applicationinputsmappers;
 
-import io.sentry.protocol.App;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.ApplicationInputType;
-import org.codeforamerica.shiba.output.FullNameFormatter;
-import org.codeforamerica.shiba.output.Recipient;
+import org.codeforamerica.shiba.application.parsers.DocumentListParser;
+import org.codeforamerica.shiba.output.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
@@ -21,47 +18,57 @@ import static org.codeforamerica.shiba.output.FullNameFormatter.getListOfSelecte
 
 @Component
 public class AdultRequestingChildcareInputsMapper implements ApplicationInputsMapper {
+    private final DocumentListParser documentListParser;
+
+    public AdultRequestingChildcareInputsMapper(DocumentListParser documentListParser) {
+        this.documentListParser = documentListParser;
+    }
 
     @Override
     public List<ApplicationInput> map(Application application, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
         Stream<ApplicationInput> lookingForAJob = getAdultsForSection(application, "whoIsLookingForAJob", "whoIsLookingForAJob", "adultRequestingChildcareLookingForJob");
         Stream<ApplicationInput> goingToSchool = getAdultsForSection(application, "whoIsGoingToSchool", "whoIsGoingToSchool", "adultRequestingChildcareGoingToSchool");
-        Stream<ApplicationInput> working = getAdultsForWorkingSection(application);
+        Stream<ApplicationInput> working = getAdultsForWorkingSection(application, documentListParser);
 
         return Stream.of(lookingForAJob, goingToSchool, working)
                 .flatMap(Function.identity())
                 .collect(Collectors.toList());
     }
 
-    private static Stream<ApplicationInput> getAdultsForWorkingSection(Application application) {
+    private static Stream<ApplicationInput> getAdultsForWorkingSection(Application application, DocumentListParser documentListParser) {
         AtomicInteger i = new AtomicInteger(0);
         List<String> exceptNameStrings = getListOfSelectedNameStrings(application, "childrenInNeedOfCare", "whoNeedsChildCare");
-        return application.getApplicationData().getSubworkflows().get("jobs")
-                .stream().filter(iteration -> {
-                    String nameString = Optional.ofNullable(iteration.getPagesData().getPage("householdSelectionForIncome").get("whoseJobIsIt").getValue(0)).orElse("");
-                    return !exceptNameStrings.contains(nameString);
-                })
-                .flatMap(iteration -> {
-                    String nameString = iteration.getPagesData().getPage("householdSelectionForIncome").get("whoseJobIsIt").getValue(0);
-                    String fullName = FullNameFormatter.format(nameString);
-                    String employersName = iteration.getPagesData().getPage("employersName").get("employersName").getValue(0);
+        if (!documentListParser.parse(application.getApplicationData()).contains(Document.CCAP) ||
+                !application.getApplicationData().getSubworkflows().containsKey("jobs")) {
+            return Stream.of();
+        } else {
+            return application.getApplicationData().getSubworkflows().get("jobs")
+                    .stream().filter(iteration -> {
+                        String nameString = Optional.ofNullable(iteration.getPagesData().getPage("householdSelectionForIncome").get("whoseJobIsIt").getValue(0)).orElse("");
+                        return !exceptNameStrings.contains(nameString);
+                    })
+                    .flatMap(iteration -> {
+                        String nameString = iteration.getPagesData().getPage("householdSelectionForIncome").get("whoseJobIsIt").getValue(0);
+                        String fullName = FullNameFormatter.format(nameString);
+                        String employersName = iteration.getPagesData().getPage("employersName").get("employersName").getValue(0);
 
-                    Stream<ApplicationInput> inputs = Stream.of(
-                            new ApplicationInput(
-                                    "adultRequestingChildcareWorking",
-                                    "fullName",
-                                    List.of(fullName),
-                                    ApplicationInputType.SINGLE_VALUE,
-                                    i.get()),
-                            new ApplicationInput(
-                                    "adultRequestingChildcareWorking",
-                                    "employersName",
-                                    List.of(employersName),
-                                    ApplicationInputType.SINGLE_VALUE,
-                                    i.get()));
-                    i.getAndIncrement();
-                    return inputs;
-                });
+                        Stream<ApplicationInput> inputs = Stream.of(
+                                new ApplicationInput(
+                                        "adultRequestingChildcareWorking",
+                                        "fullName",
+                                        List.of(fullName),
+                                        ApplicationInputType.SINGLE_VALUE,
+                                        i.get()),
+                                new ApplicationInput(
+                                        "adultRequestingChildcareWorking",
+                                        "employersName",
+                                        List.of(employersName),
+                                        ApplicationInputType.SINGLE_VALUE,
+                                        i.get()));
+                        i.getAndIncrement();
+                        return inputs;
+                    });
+        }
     }
 
     @NotNull
@@ -75,12 +82,5 @@ public class AdultRequestingChildcareInputsMapper implements ApplicationInputsMa
                                 List.of(fullName),
                                 ApplicationInputType.SINGLE_VALUE,
                                 i.getAndIncrement()));
-    }
-
-    private static boolean shouldNotMap(Application application) {
-        boolean livesAlone = application.getApplicationData().getPagesData().safeGetPageInputValue("doYouLiveAlone", "liveAlone").equals("true");
-        boolean noCCAP =
-
-        return livesAlone || noCCAP;
     }
 }
