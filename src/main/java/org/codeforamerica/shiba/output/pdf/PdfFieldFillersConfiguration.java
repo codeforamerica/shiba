@@ -40,14 +40,30 @@ public class PdfFieldFillersConfiguration {
     }
 
     @Bean
-    public PdfFieldFiller ccapFiller(
+    public PdfFieldFiller caseworkerCcapFiller(
             @Value("classpath:cover-pages.pdf") Resource coverPages,
+            @Value("classpath:ccap-headers.pdf") Resource ccapHeaders,
+            @Value("classpath:ccap-body-caseworker-page1.pdf") Resource ccapPage1,
             @Value("classpath:ccap-body.pdf") Resource ccapBody,
             @Value("classpath:ccap-footers.pdf") Resource ccapFooters,
             @Value("classpath:LiberationSans-Regular.ttf") Resource font
     ) {
         return new PDFBoxFieldFiller(List.of(
-                coverPages, ccapBody, ccapFooters
+                coverPages, ccapHeaders, ccapPage1, ccapBody, ccapFooters
+        ), font);
+    }
+
+    @Bean
+    public PdfFieldFiller clientCcapFiller(
+            @Value("classpath:cover-pages.pdf") Resource coverPages,
+            @Value("classpath:ccap-headers.pdf") Resource ccapHeaders,
+            @Value("classpath:ccap-body-client-page1.pdf") Resource ccapPage1,
+            @Value("classpath:ccap-body.pdf") Resource ccapBody,
+            @Value("classpath:ccap-footers.pdf") Resource ccapFooters,
+            @Value("classpath:LiberationSans-Regular.ttf") Resource font
+    ) {
+        return new PDFBoxFieldFiller(List.of(
+                coverPages, ccapHeaders, ccapPage1, ccapBody, ccapFooters
         ), font);
     }
 
@@ -55,15 +71,16 @@ public class PdfFieldFillersConfiguration {
     public Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers(
             PdfFieldFiller caseworkerCafFiller,
             PdfFieldFiller clientCafFiller,
-            PdfFieldFiller ccapFiller
+            PdfFieldFiller caseworkerCcapFiller,
+            PdfFieldFiller clientCcapFiller
     ) {
         return Map.of(
                 CASEWORKER, Map.of(
                         CAF, caseworkerCafFiller,
-                        CCAP, ccapFiller),
+                        CCAP, caseworkerCcapFiller),
                 CLIENT, Map.of(
                         CAF, clientCafFiller,
-                        CCAP, ccapFiller)
+                        CCAP, clientCcapFiller)
         );
     }
 }
