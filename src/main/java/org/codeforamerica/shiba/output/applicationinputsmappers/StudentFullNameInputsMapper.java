@@ -27,5 +27,4 @@ public class StudentFullNameInputsMapper implements ApplicationInputsMapper {
                        List.of(fullName), ApplicationInputType.SINGLE_VALUE, i.getAndIncrement())).collect(Collectors.toList());
     }
 
-
 }

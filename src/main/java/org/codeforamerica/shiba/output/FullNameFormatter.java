@@ -16,10 +16,23 @@ public class FullNameFormatter {
 
     @NotNull
     public static List<String> getListOfSelectedFullNames(Application application, String pageName, String inputName) {
+        return getListOfSelectedNameStrings(application, pageName, inputName)
+                .stream().map(FullNameFormatter::format).collect(Collectors.toList());
+    }
+
+    @NotNull
+    public static List<String> getListOfSelectedFullNamesExceptFor(Application application, String pageName, String inputName, String exceptPageName, String exceptInputName) {
+        List<String> exceptNameStrings = getListOfSelectedNameStrings(application, exceptPageName, exceptInputName);
+        return getListOfSelectedNameStrings(application, pageName, inputName)
+                .stream().filter(nameString -> !exceptNameStrings.contains(nameString))
+                .map(FullNameFormatter::format).collect(Collectors.toList());
+    }
+
+    public static List<String> getListOfSelectedNameStrings(Application application, String pageName, String inputName) {
         return Optional.ofNullable(application.getApplicationData().getPageData(pageName))
                 .map(pageData -> pageData.get(inputName))
                 .map(InputData::getValue)
-                .orElse(List.of(""))
-                .stream().map(FullNameFormatter::format).collect(Collectors.toList());
+                .orElse(List.of(""));
     }
+
 }
