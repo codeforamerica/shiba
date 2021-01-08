@@ -4,6 +4,9 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
+import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
+import org.codeforamerica.shiba.application.parsers.DocumentListParser;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
@@ -25,6 +28,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.*;
+import java.util.List;
 import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -52,6 +56,7 @@ class PageControllerTest {
     ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
     ApplicationFactory applicationFactory = mock(ApplicationFactory.class);
     PageEventPublisher pageEventPublisher = mock(PageEventPublisher.class);
+    ApplicationDataParser<List<Document>> documentListParser = mock(DocumentListParser.class);
 
     @Autowired
     ApplicationConfiguration applicationConfiguration;
@@ -66,7 +71,9 @@ class PageControllerTest {
                 applicationFactory,
                 messageSource,
                 pageEventPublisher,
-                applicationEnrichment);
+                applicationEnrichment,
+                documentListParser
+        );
 
         mockMvc = MockMvcBuilders.standaloneSetup(pageController)
                 .build();

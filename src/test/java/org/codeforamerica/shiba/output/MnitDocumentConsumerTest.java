@@ -2,6 +2,8 @@ package org.codeforamerica.shiba.output;
 
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
+import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
@@ -25,12 +27,14 @@ class MnitDocumentConsumerTest {
     MnitEsbWebServiceClient mnitClient = mock(MnitEsbWebServiceClient.class);
     XmlGenerator xmlGenerator = mock(XmlGenerator.class);
     PdfGenerator pdfGenerator = mock(PdfGenerator.class);
-    MnitDocumentConsumer documentConsumer = new MnitDocumentConsumer(
-            mnitClient,
-            xmlGenerator,
-            pdfGenerator);
-
+    ApplicationDataParser<List<Document>> documentListParser = mock(DocumentListParser.class);
     ApplicationData appData = new ApplicationData();
+    MnitDocumentConsumer documentConsumer = new MnitDocumentConsumer(
+        mnitClient,
+        xmlGenerator,
+        pdfGenerator,
+        documentListParser
+    );
 
     @BeforeEach
     void setUp() {
@@ -39,13 +43,13 @@ class MnitDocumentConsumerTest {
 
     @Test
     void generatesThePDFFromTheApplicationData() {
+        when(documentListParser.parse(any())).thenReturn(List.of(CAF));
         Application application = Application.builder()
                 .id("someId")
                 .completedAt(ZonedDateTime.now())
                 .applicationData(new ApplicationData())
                 .county(County.Olmsted)
                 .timeToComplete(null)
-                .documents(List.of(CAF))
                 .build();
 
         documentConsumer.process(application);
@@ -55,13 +59,13 @@ class MnitDocumentConsumerTest {
 
     @Test
     void generatesTheXmlFromTheApplicationData() {
+        when(documentListParser.parse(any())).thenReturn(List.of(CAF));
         Application application = Application.builder()
                 .id("someId")
                 .completedAt(ZonedDateTime.now())
                 .applicationData(new ApplicationData())
                 .county(County.Olmsted)
                 .timeToComplete(null)
-                .documents(List.of(CAF))
                 .build();
 
         documentConsumer.process(application);
@@ -74,6 +78,7 @@ class MnitDocumentConsumerTest {
         when(pdfGenerator.generate(any(), any(), any())).thenReturn(pdfApplicationFile);
         ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
         when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
+        when(documentListParser.parse(any())).thenReturn(List.of(CAF));
 
         Application application = Application.builder()
                 .id("someId")
@@ -81,7 +86,6 @@ class MnitDocumentConsumerTest {
                 .applicationData(new ApplicationData())
                 .county(County.Olmsted)
                 .timeToComplete(null)
-                .documents(List.of(CAF))
                 .build();
         documentConsumer.process(application);
 
@@ -95,6 +99,7 @@ class MnitDocumentConsumerTest {
         when(pdfGenerator.generate(any(), eq(CCAP), any())).thenReturn(pdfApplicationFile);
         ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
         when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
+        when(documentListParser.parse(any())).thenReturn(List.of(CCAP, CAF));
 
         ApplicationData applicationData = new ApplicationData();
         PagesData pagesData = new PagesData();
@@ -110,7 +115,6 @@ class MnitDocumentConsumerTest {
                 .applicationData(applicationData)
                 .county(County.Olmsted)
                 .timeToComplete(null)
-                .documents(List.of(CAF, CCAP))
                 .build();
         documentConsumer.process(application);
 

@@ -5,7 +5,9 @@ import io.sentry.Sentry;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.output.CompositeCondition;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.config.*;
 import org.codeforamerica.shiba.pages.data.*;
 import org.codeforamerica.shiba.pages.enrichment.ApplicationEnrichment;
@@ -28,6 +30,7 @@ import javax.servlet.http.HttpSession;
 import java.time.Clock;
 import java.time.ZoneId;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -44,6 +47,7 @@ public class PageController {
     private final MessageSource messageSource;
     private final PageEventPublisher pageEventPublisher;
     private final ApplicationEnrichment applicationEnrichment;
+    private final ApplicationDataParser<List<Document>> documentListParser;
 
     public PageController(
             ApplicationConfiguration applicationConfiguration,
@@ -53,7 +57,8 @@ public class PageController {
             ApplicationFactory applicationFactory,
             MessageSource messageSource,
             PageEventPublisher pageEventPublisher,
-            ApplicationEnrichment applicationEnrichment) {
+            ApplicationEnrichment applicationEnrichment,
+            ApplicationDataParser<List<Document>> documentListParser) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
@@ -62,6 +67,7 @@ public class PageController {
         this.messageSource = messageSource;
         this.pageEventPublisher = pageEventPublisher;
         this.applicationEnrichment = applicationEnrichment;
+        this.documentListParser = documentListParser;
     }
 
     @GetMapping("/")
@@ -184,6 +190,7 @@ public class PageController {
         if (landmarkPagesConfiguration.isTerminalPage(pageName)) {
             Application application = applicationRepository.find(applicationData.getId());
             model.put("applicationId", application.getId());
+            model.put("documents", documentListParser.parse(applicationData));
             model.put("submissionTime", application.getCompletedAt().withZoneSameInstant(CENTRAL_TIMEZONE));
             model.put("county", application.getCounty());
             model.put("sentiment", application.getSentiment());

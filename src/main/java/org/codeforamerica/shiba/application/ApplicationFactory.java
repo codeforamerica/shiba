@@ -2,28 +2,21 @@ package org.codeforamerica.shiba.application;
 
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
-import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.stereotype.Component;
 
 import java.time.Clock;
 import java.time.Duration;
 import java.time.ZonedDateTime;
-import java.util.List;
 
 @Component
 public class ApplicationFactory {
     private final Clock clock;
     private final ApplicationDataParser<County> countyParser;
-    private final ApplicationDataParser<List<Document>> documentListParser;
 
-    public ApplicationFactory(
-            Clock clock,
-            ApplicationDataParser<County> countyParser,
-            ApplicationDataParser<List<Document>> documentListParser) {
+    public ApplicationFactory(Clock clock, ApplicationDataParser<County> countyParser) {
         this.clock = clock;
         this.countyParser = countyParser;
-        this.documentListParser = documentListParser;
     }
 
     public Application newApplication(String id, ApplicationData applicationData) {
@@ -42,7 +35,6 @@ public class ApplicationFactory {
                 .county(countyParser.parse(applicationData))
                 .timeToComplete(Duration.between(applicationData.getStartTime(), completedAt))
                 .flow(applicationData.getFlow())
-                .documents(documentListParser.parse(applicationData))
                 .build();
     }
 }
