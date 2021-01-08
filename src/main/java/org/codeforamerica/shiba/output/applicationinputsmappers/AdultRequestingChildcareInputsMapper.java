@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -44,7 +43,12 @@ public class AdultRequestingChildcareInputsMapper implements ApplicationInputsMa
         } else {
             return application.getApplicationData().getSubworkflows().get("jobs")
                     .stream().filter(iteration -> {
-                        String nameString = Optional.ofNullable(iteration.getPagesData().getPage("householdSelectionForIncome").get("whoseJobIsIt").getValue(0)).orElse("");
+                        String nameString;
+                        if (iteration.getPagesData().containsKey("householdSelectionForIncome")) {
+                            nameString = iteration.getPagesData().getPage("householdSelectionForIncome").get("whoseJobIsIt").getValue(0);
+                        } else {
+                            nameString = "";
+                        }
                         return !exceptNameStrings.contains(nameString);
                     })
                     .flatMap(iteration -> {
