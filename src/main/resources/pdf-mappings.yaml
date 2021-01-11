@@ -117,12 +117,20 @@ mappings:
   unearnedIncomeSources:
     socialSecurityAmount: SOCIAL_SECURITY_AMOUNT
     supplementalSecurityIncomeAmount: SUPPLEMENTAL_SECURITY_INCOME_AMOUNT
-    veteransBenefitsAmount: VETERAN_BENEFITS_AMOUNT
+    veteransBenefitsAmount: VETERANS_BENEFITS_AMOUNT
     unemploymentAmount: UNEMPLOYMENT_INSURANCE_AMOUNT
     workersCompensationAmount: WORKERS_COMPENSATION_AMOUNT
     retirementAmount: RETIREMENT_BENEFITS_AMOUNT
-    childOrSpousalSupportAmount: CHILD_SUPPORT_OR_SPOUSAL_SUPPORT_AMOUNT
+    childOrSpousalSupportAmount: CHILD_OR_SPOUSAL_SUPPORT_AMOUNT
     tribalPaymentsAmount: TRIBAL_PAYMENTS_AMOUNT
+    socialSecurityFrequency: SOCIAL_SECURITY_FREQUENCY
+    supplementalSecurityIncomeFrequency: SUPPLEMENTAL_SECURITY_INCOME_FREQUENCY
+    veteransBenefitsFrequency: VETERANS_BENEFITS_FREQUENCY
+    unemploymentFrequency: UNEMPLOYMENT_INSURANCE_FREQUENCY
+    workersCompensationFrequency: WORKERS_COMPENSATION_FREQUENCY
+    retirementFrequency: RETIREMENT_BENEFITS_FREQUENCY
+    childOrSpousalSupportFrequency: CHILD_OR_SPOUSAL_SUPPORT_FREQUENCY
+    tribalPaymentsFrequency: TRIBAL_PAYMENTS_FREQUENCY
   futureIncome:
     earnLessMoneyThisMonth: EARN_LESS_MONEY_THIS_MONTH
     additionalIncomeInfo: ADDITIONAL_INCOME_INFO
