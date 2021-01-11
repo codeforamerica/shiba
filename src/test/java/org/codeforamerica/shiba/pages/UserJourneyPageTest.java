@@ -343,7 +343,18 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         assertThat(driver.getTitle()).isEqualTo("Income Up Next");
     }
 
-    private void completeFlowFromLandingPageThroughReviewInfo(List<String> programSelections) {
+    @Test
+    void shouldValidateContactInfoEmailEvenIfEmailNotSelected() {
+        completeFlowFromLandingPageThroughContactInfo(List.of("Child Care Assistance"));
+        testPage.enter("phoneNumber", "7234567890");
+        testPage.enter("email", "email.com");
+        testPage.enter("phoneOrEmail", "Text me");
+        testPage.clickContinue();
+
+        assertThat(driver.getTitle()).isEqualTo("Contact Info");
+    }
+
+    private void completeFlowFromLandingPageThroughContactInfo(List<String> programSelections) {
         testPage.clickButton("Apply now");
         testPage.clickContinue();
         testPage.enter("writtenLanguage", "English");
@@ -357,6 +368,11 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         fillOutPersonalInfo();
 
         testPage.clickContinue();
+    }
+
+    private void completeFlowFromLandingPageThroughReviewInfo(List<String> programSelections) {
+        completeFlowFromLandingPageThroughContactInfo(programSelections);
+
         testPage.enter("phoneNumber", "7234567890");
         testPage.enter("email", "some@email.com");
         testPage.enter("phoneOrEmail", "Text me");

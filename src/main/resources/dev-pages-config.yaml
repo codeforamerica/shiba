@@ -274,11 +274,16 @@ pageDefinitions:
         promptMessage:
           promptMessageKey: contact-info.whats-your-email-address
         validators:
-          - validation: EMAIL
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.email
             condition:
               input: phoneOrEmail
               value: EMAIL
+          - validation: EMAIL
             errorMessageKey: general.validation.email
+            condition:
+              input: email
+              matcher: NOT_EMPTY
       - name: phoneOrEmail
         type: CHECKBOX
         promptMessage:
