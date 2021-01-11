@@ -306,7 +306,6 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
                 "1.",
                 "51.787",
                 "1.000",
-                "1.1",
                 "-152"
         })
         void shouldFailValidationForMoneyWhenValueIsNotAWholeDollarAmount(String value) {
@@ -321,6 +320,7 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         @ParameterizedTest
         @ValueSource(strings = {
                 "14",
+                "1.1",
                 "16.71"
         })
         void shouldPassValidationForMoneyWhenValueIsAPositiveWholeDollarAmount(String value) {
@@ -360,7 +360,8 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         @ParameterizedTest
         @CsvSource(value = {
                 "13,42,1492",
-                "1,2,1929",
+                "0,2,1929",
+                "1,2,929",
         })
         void shouldFailValidationForDateWhenValueIsNotAValidDate(String month,
                                                                  String day,
@@ -377,15 +378,21 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
             assertThat(testPage.getInputError("dateInput")).isNotNull();
         }
 
-        @Test
-        void shouldPassValidationForDateWhenValueIsAValidDate() {
+        @ParameterizedTest
+        @CsvSource(value = {
+                "02,20,1492",
+                "1,2,1929",
+        })
+        void shouldPassValidationForDateWhenValueIsAValidDate(String month,
+                                                              String day,
+                                                              String year) {
             driver.navigate().to(baseUrl + "/pages/datePage");
 
             driver.findElements(By.cssSelector("input[name^='dateInput']")).forEach(WebElement::clear);
 
-            driver.findElement(By.id("dateInput-month")).sendKeys("02");
-            driver.findElement(By.id("dateInput-day")).sendKeys("20");
-            driver.findElement(By.id("dateInput-year")).sendKeys("1492");
+            driver.findElement(By.id("dateInput-month")).sendKeys(month);
+            driver.findElement(By.id("dateInput-day")).sendKeys(day);
+            driver.findElement(By.id("dateInput-year")).sendKeys(year);
             driver.findElement(By.cssSelector("button")).click();
 
             assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
