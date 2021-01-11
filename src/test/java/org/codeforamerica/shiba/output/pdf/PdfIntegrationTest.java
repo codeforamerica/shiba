@@ -55,6 +55,11 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
 
     @Nested
     class EnergyAssistanceLIHEAP {
+        @BeforeEach
+        void setUp() {
+            selectPrograms(List.of("Cash programs"));
+        }
+
         @ParameterizedTest
         @CsvSource(value = {
                 "Yes,No,No",
@@ -87,63 +92,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
     class CCAP {
         @BeforeEach
         void setUp() {
-            selectProgram(List.of("Child Care Assistance"));
-        }
-
-        @Test
-        void shouldMapNoForSelfEmployment() {
-            navigateTo("doYouLiveAlone");
-            testPage.enter("liveAlone", YesNoAnswer.YES.getDisplayValue());
-            testPage.clickContinue();
-            navigateTo("incomeByJob");
-            testPage.clickButton("Add a job");
-            testPage.enter("employersName", "someEmployerName");
-            testPage.clickContinue();
-            testPage.enter("selfEmployment", "No");
-            testPage.enter("paidByTheHour", "No");
-            testPage.enter("payPeriod", "Every week");
-            testPage.clickContinue();
-            testPage.enter("incomePerPayPeriod", "1");
-            testPage.clickContinue();
-
-            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-            assertThat(pdAcroForms.get(CAF).getField("SELF_EMPLOYED").getValueAsString()).isEqualTo("No");
-
-            assertThat(pdAcroForms.get(CCAP).getField("NON_SELF_EMPLOYMENT_EMPLOYERS_NAME_0").getValueAsString()).isEqualTo("someEmployerName");
-            assertThat(pdAcroForms.get(CCAP).getField("NON_SELF_EMPLOYMENT_PAY_FREQUENCY_0").getValueAsString()).isEqualTo("Every week");
-            assertThat(pdAcroForms.get(CCAP).getField("NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0").getValueAsString()).isEqualTo("4.0");
-        }
-
-        @Test
-        void shouldMapOriginalAddressIfHomeAddressDoesNotUseEnrichedAddress() {
-            navigateTo("homeAddress");
-            String originalStreetAddress = "originalStreetAddress";
-            String originalApt = "originalApt";
-            String originalCity = "originalCity";
-            String originalZipCode = "54321";
-            testPage.enter("streetAddress", originalStreetAddress);
-            testPage.enter("apartmentNumber", originalApt);
-            testPage.enter("city", originalCity);
-            testPage.enter("zipCode", originalZipCode);
-            testPage.enter("sameMailingAddress", "No, use a different address for mail");
-            testPage.clickContinue();
-            testPage.clickButton("Use this address");
-
-            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-            List.of(CAF, CCAP).forEach(type -> {
-                PDAcroForm pdAcroForm = pdAcroForms.get(type);
-                assertThat(pdAcroForm.getField("APPLICANT_HOME_STREET_ADDRESS").getValueAsString())
-                        .isEqualTo(originalStreetAddress);
-                assertThat(pdAcroForm.getField("APPLICANT_HOME_CITY").getValueAsString())
-                        .isEqualTo(originalCity);
-                assertThat(pdAcroForm.getField("APPLICANT_HOME_STATE").getValueAsString())
-                        .isEqualTo("MN");
-                assertThat(pdAcroForm.getField("APPLICANT_HOME_ZIPCODE").getValueAsString())
-                        .isEqualTo(originalZipCode);
-            });
-
-            assertThat(pdAcroForms.get(CAF).getField("APPLICANT_HOME_APT_NUMBER").getValueAsString())
-                    .isEqualTo(originalApt);
+            selectPrograms(List.of("Child Care Assistance"));
         }
 
         @Test
@@ -242,7 +191,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
     class CAF {
         @BeforeEach
         void setUp() {
-            selectProgram(List.of("Cash programs"));
+            selectPrograms(List.of("Cash programs"));
         }
 
         @Test
@@ -266,7 +215,6 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         void shouldMapPrograms() {
             navigateTo("choosePrograms");
             testPage.enter("programs", "Food (SNAP)");
-            testPage.enter("programs", "Cash programs");
             testPage.enter("programs", "Housing Support");
             testPage.enter("programs", "Emergency Assistance");
             testPage.clickContinue();
@@ -368,7 +316,64 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
     class CAFandCCAP {
         @BeforeEach
         void setUp() {
-            selectProgram(List.of("Child Care Assistance", "Cash programs"));
+            selectPrograms(List.of("Child Care Assistance", "Cash programs"));
+        }
+
+
+        @Test
+        void shouldMapOriginalAddressIfHomeAddressDoesNotUseEnrichedAddress() {
+            navigateTo("homeAddress");
+            String originalStreetAddress = "originalStreetAddress";
+            String originalApt = "originalApt";
+            String originalCity = "originalCity";
+            String originalZipCode = "54321";
+            testPage.enter("streetAddress", originalStreetAddress);
+            testPage.enter("apartmentNumber", originalApt);
+            testPage.enter("city", originalCity);
+            testPage.enter("zipCode", originalZipCode);
+            testPage.enter("sameMailingAddress", "No, use a different address for mail");
+            testPage.clickContinue();
+            testPage.clickButton("Use this address");
+
+            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+            List.of(CAF, CCAP).forEach(type -> {
+                PDAcroForm pdAcroForm = pdAcroForms.get(type);
+                assertThat(pdAcroForm.getField("APPLICANT_HOME_STREET_ADDRESS").getValueAsString())
+                        .isEqualTo(originalStreetAddress);
+                assertThat(pdAcroForm.getField("APPLICANT_HOME_CITY").getValueAsString())
+                        .isEqualTo(originalCity);
+                assertThat(pdAcroForm.getField("APPLICANT_HOME_STATE").getValueAsString())
+                        .isEqualTo("MN");
+                assertThat(pdAcroForm.getField("APPLICANT_HOME_ZIPCODE").getValueAsString())
+                        .isEqualTo(originalZipCode);
+            });
+
+            assertThat(pdAcroForms.get(CAF).getField("APPLICANT_HOME_APT_NUMBER").getValueAsString())
+                    .isEqualTo(originalApt);
+        }
+
+        @Test
+        void shouldMapNoForSelfEmployment() {
+            navigateTo("doYouLiveAlone");
+            testPage.enter("liveAlone", YesNoAnswer.YES.getDisplayValue());
+            testPage.clickContinue();
+            navigateTo("incomeByJob");
+            testPage.clickButton("Add a job");
+            testPage.enter("employersName", "someEmployerName");
+            testPage.clickContinue();
+            testPage.enter("selfEmployment", "No");
+            testPage.enter("paidByTheHour", "No");
+            testPage.enter("payPeriod", "Every week");
+            testPage.clickContinue();
+            testPage.enter("incomePerPayPeriod", "1");
+            testPage.clickContinue();
+
+            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+            assertThat(pdAcroForms.get(CAF).getField("SELF_EMPLOYED").getValueAsString()).isEqualTo("No");
+
+            assertThat(pdAcroForms.get(CCAP).getField("NON_SELF_EMPLOYMENT_EMPLOYERS_NAME_0").getValueAsString()).isEqualTo("someEmployerName");
+            assertThat(pdAcroForms.get(CCAP).getField("NON_SELF_EMPLOYMENT_PAY_FREQUENCY_0").getValueAsString()).isEqualTo("Every week");
+            assertThat(pdAcroForms.get(CCAP).getField("NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0").getValueAsString()).isEqualTo("4.0");
         }
 
         @Test
@@ -744,7 +749,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         return submitAndDownloadReceipt().get(CAF);
     }
 
-    private void selectProgram(List<String> programs) {
+    private void selectPrograms(List<String> programs) {
         navigateTo("choosePrograms");
         programs.forEach(program -> testPage.enter("programs", program));
         testPage.clickContinue();

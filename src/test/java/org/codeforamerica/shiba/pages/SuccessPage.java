@@ -20,8 +20,13 @@ public class SuccessPage extends Page {
     }
 
     public void downloadPdfs() {
-        downloadCafLink.click();
+        if (CAFdownloadPresent()) downloadCafLink.click();
         if (CCAPdownloadPresent()) downloadCCAPApplicationLink.click();
+    }
+
+    private boolean CAFdownloadPresent() {
+        try { return downloadCafLink.isDisplayed(); }
+        catch (NoSuchElementException e) { return false; }
     }
 
     private boolean CCAPdownloadPresent() {
