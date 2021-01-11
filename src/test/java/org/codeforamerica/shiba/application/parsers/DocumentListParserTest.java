@@ -20,13 +20,6 @@ class DocumentListParserTest {
     PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
 
     @Test
-    void parseShouldAlwaysIncludeCAFByDefault() {
-        Application application = Application.builder().applicationData(new ApplicationData()).build();
-
-        assertThat(documentListParser.parse(application.getApplicationData())).containsExactlyInAnyOrder(CAF);
-    }
-
-    @Test
     void parseShouldIncludeCCAPWhenProgramsContainCCAP() {
         Application application = Application.builder().applicationData(new ApplicationData()).build();
         ApplicationData applicationData = application.getApplicationData();
@@ -39,7 +32,7 @@ class DocumentListParserTest {
     }
 
     @Test
-    void parseShouldIncludeCCAPWhenHouseholdMembersProgramsIncludeCCAP() {
+    void parseShouldIncludeCCAPAndCAFWhenHouseholdMembersProgramsIncludeCCAPAndOtherPrograms() {
         Application application = Application.builder().applicationData(new ApplicationData()).build();
         Subworkflows subworkflows = new Subworkflows();
         ApplicationData applicationData = application.getApplicationData();
@@ -53,4 +46,38 @@ class DocumentListParserTest {
 
         assertThat(documentListParser.parse(applicationData)).containsExactlyInAnyOrder(CAF, CCAP);
     }
+
+    @Test
+    void parseShouldIncludeOnlyCCAPIfCCAPIsOnlyProgramSelected() {
+        Application application = Application.builder().applicationData(new ApplicationData()).build();
+        Subworkflows subworkflows = new Subworkflows();
+        ApplicationData applicationData = application.getApplicationData();
+        PagesData pagesData = pagesDataBuilder.build(List.of(
+                new PageDataBuilder("householdMemberInfo", Map.of(
+                        "programs", List.of("CCAP")
+                ))
+        ));
+        subworkflows.addIteration("household", pagesData);
+        applicationData.setSubworkflows(subworkflows);
+
+        assertThat(documentListParser.parse(applicationData)).containsExactlyInAnyOrder(CCAP);
+
+    }
+    @Test
+    void parseShouldOnlyIncludeCAFIfCCAPIsNotASelectedProgram() {
+        Application application = Application.builder().applicationData(new ApplicationData()).build();
+        Subworkflows subworkflows = new Subworkflows();
+        ApplicationData applicationData = application.getApplicationData();
+        PagesData pagesData = pagesDataBuilder.build(List.of(
+                new PageDataBuilder("householdMemberInfo", Map.of(
+                        "programs", List.of("SNAP")
+                ))
+        ));
+        subworkflows.addIteration("household", pagesData);
+        applicationData.setSubworkflows(subworkflows);
+
+        assertThat(documentListParser.parse(applicationData)).containsExactlyInAnyOrder(CAF);
+    }
+
+
 }

@@ -87,7 +87,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
     class CCAP {
         @BeforeEach
         void setUp() {
-            selectCCAP();
+            selectProgram(List.of("Child Care Assistance"));
         }
 
         @Test
@@ -240,6 +240,11 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
 
     @Nested
     class CAF {
+        @BeforeEach
+        void setUp() {
+            selectProgram(List.of("Cash programs"));
+        }
+
         @Test
         void shouldMapPregnantHouseholdMembers() {
             addHouseholdMembers();
@@ -275,7 +280,6 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
 
         @Test
         void shouldMapNoPermanentAddressIfSelected() {
-            selectCCAP();
             navigateTo("homeAddress");
             fillInAddress();
             testPage.enter("isHomeless", "I don't have a permanent address");
@@ -364,7 +368,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
     class CAFandCCAP {
         @BeforeEach
         void setUp() {
-            selectCCAP();
+            selectProgram(List.of("Child Care Assistance", "Cash programs"));
         }
 
         @Test
@@ -740,9 +744,9 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         return submitAndDownloadReceipt().get(CAF);
     }
 
-    private void selectCCAP() {
+    private void selectProgram(List<String> programs) {
         navigateTo("choosePrograms");
-        testPage.enter("programs", "Child Care Assistance");
+        programs.forEach(program -> testPage.enter("programs", program));
         testPage.clickContinue();
     }
 }

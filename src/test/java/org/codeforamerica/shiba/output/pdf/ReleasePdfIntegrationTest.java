@@ -55,6 +55,8 @@ public class ReleasePdfIntegrationTest extends AbstractBasePageTest {
         testPage.clickButton("Apply now");
         testPage.clickContinue();
         testPage.clickContinue();
+        testPage.enter("programs", "Cash programs");
+        testPage.clickContinue();
         navigateTo("doYouLiveAlone");
         testPage.clickButton("Yes");
     }
@@ -377,7 +379,6 @@ public class ReleasePdfIntegrationTest extends AbstractBasePageTest {
     void shouldMapPrograms() {
         navigateTo("choosePrograms");
         testPage.enter("programs", "Food (SNAP)");
-        testPage.enter("programs", "Cash programs");
         testPage.enter("programs", "Housing Support");
         testPage.enter("programs", "Emergency Assistance");
         testPage.clickContinue();

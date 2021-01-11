@@ -88,7 +88,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
             "1, 1, A caseworker will contact you within 3 days to review your application."
     })
     void userCanCompleteTheExpeditedFlow(String moneyMadeLast30Days, String liquidAssets, String expeditedServiceDetermination) {
-        completeFlowFromLandingPageThroughReviewInfo("Child Care Assistance");
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance"));
         testPage.clickLink("Submit application now with only the above information.");
         testPage.clickLink("Yes, I want to see if I qualify");
 
@@ -123,7 +123,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
             "1, 1, A caseworker will contact you within 3 days to review your application."
     })
     void userCanCompleteTheExpeditedFlowWithHousehold(String moneyMadeLast30Days, String liquidAssets, String expeditedServiceDetermination) {
-        completeFlowFromLandingPageThroughReviewInfo("Child Care Assistance");
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance"));
         testPage.clickLink("Submit application now with only the above information.");
         testPage.clickLink("Yes, I want to see if I qualify");
 
@@ -227,7 +227,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldSkipChildcareAssistancePageIfCCAPNotSelected() {
-        completeFlowFromLandingPageThroughReviewInfo("Food (SNAP)");
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
         testPage.clickLink("This looks correct");
         testPage.enter("liveAlone", NO.getDisplayValue());
         testPage.clickContinue();
@@ -239,7 +239,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldSkipWhoIsGoingToSchoolPageIfCCAPNotSelected() {
-        completeFlowFromLandingPageThroughReviewInfo("Food (SNAP)");
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
         testPage.clickLink("This looks correct");
         testPage.enter("liveAlone", NO.getDisplayValue());
         testPage.clickContinue();
@@ -254,7 +254,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldAskWhoIsGoingToSchoolAndWhoIsLookingForWorkWhenCCAPIsSelectedInPrograms() {
-        completeFlowFromLandingPageThroughReviewInfo("Child Care Assistance");
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance"));
         testPage.clickLink("This looks correct");
         testPage.enter("liveAlone", NO.getDisplayValue());
         testPage.clickContinue();
@@ -279,7 +279,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldAskWhoIsGoingToSchoolAndWhoIsLookingForWorkWhenCCAPIsSelectedInHouseholdMemberInfo() {
-        completeFlowFromLandingPageThroughReviewInfo("Food (SNAP)");
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
         testPage.clickLink("This looks correct");
         testPage.enter("liveAlone", NO.getDisplayValue());
         testPage.clickContinue();
@@ -305,7 +305,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldSkipWhoIsGoingToSchoolAndWhoIsLookingForWorkPageIfCCAPSelectedButLiveAloneIsTrue() {
-        completeFlowFromLandingPageThroughReviewInfo("Child Care Assistance");
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance"));
         testPage.clickLink("This looks correct");
         testPage.enter("liveAlone", YES.getDisplayValue());
         testPage.clickContinue();
@@ -324,7 +324,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldSkipWhoIsLookingForWorkPageIfCCAPIsNotSelectedInHouseholdOrPrograms() {
-        completeFlowFromLandingPageThroughReviewInfo("Food (SNAP)");
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
         testPage.clickLink("This looks correct");
         testPage.enter("liveAlone", NO.getDisplayValue());
         testPage.clickContinue();
@@ -343,14 +343,14 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         assertThat(driver.getTitle()).isEqualTo("Income Up Next");
     }
 
-    private void completeFlowFromLandingPageThroughReviewInfo(String programSelection) {
+    private void completeFlowFromLandingPageThroughReviewInfo(List<String> programSelections) {
         testPage.clickButton("Apply now");
         testPage.clickContinue();
         testPage.enter("writtenLanguage", "English");
         testPage.enter("spokenLanguage", "English");
         testPage.enter("needInterpreter", "Yes");
         testPage.clickContinue();
-        testPage.enter("programs", programSelection);
+        programSelections.forEach(program -> testPage.enter("programs", program));
         testPage.clickContinue();
         testPage.clickContinue();
 
@@ -403,7 +403,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     private SuccessPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking) {
-        completeFlowFromLandingPageThroughReviewInfo("Child Care Assistance");
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance", "Cash programs"));
         testPage.clickLink("This looks correct");
 
         if (hasHousehold) {
