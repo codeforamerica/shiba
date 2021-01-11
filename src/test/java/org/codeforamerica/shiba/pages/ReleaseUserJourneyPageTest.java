@@ -150,7 +150,7 @@ public class ReleaseUserJourneyPageTest extends AbstractBasePageTest {
 
         SuccessPage successPage = nonExpeditedFlowToSuccessPage(false);
 
-        successPage.downloadReceipt();
+        successPage.downloadPdfs();
 
         await().until(() -> {
             File[] listFiles = path.toFile().listFiles();
@@ -198,7 +198,7 @@ public class ReleaseUserJourneyPageTest extends AbstractBasePageTest {
         testPage.enter("applicantSignature", "some name");
         testPage.clickButton("Submit");
         SuccessPage successPage = new SuccessPage(driver);
-        successPage.downloadReceipt();
+        successPage.downloadPdfs();
         await().until(() -> {
             File[] listFiles = path.toFile().listFiles();
             return Arrays.stream(listFiles).anyMatch(file -> file.getName().contains("_MNB_") && file.getName().endsWith(".pdf"));

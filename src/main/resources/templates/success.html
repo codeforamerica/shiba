@@ -1,14 +1,5 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<script type="text/javascript">
-    function downloadReceipts(downloadCcap) {
-        window.location = "\\download";
-        if(downloadCcap) {
-            window.open("\\download-ccap");
-        }
-        return false;
-    }
-</script>
 <div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
 <body>
 <div class="page-wrapper">
@@ -18,31 +9,52 @@
         <div class="grid">
             <div class="card spacing-above-35">
                 <div class="grid__item bottom-horizontal-line">
-                    <i class="icon-check_circle large"></i>
-                    <h1 class="h2 spacing-below-0" th:text="|#{success.success}!|"></h1>
+                    <div th:replace="fragments/icons/icon-submission-success"></div>
+                    <h1 class="h2 spacing-below-0" th:text="|#{success.done-your-application-has-been-submitted}|"></h1>
                     <h2 id="application-id" class="spacing-below-10 h3"
                         th:text="|#{success.confirmation-number}: ${applicationId}|"></h2>
-                    <p th:if="${county != T(org.codeforamerica.shiba.County).Other}" class="spacing-below-35"
-                       id="submission-date" th:text="#{success.application-submitted(${county.name()}, ${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)})}"></p>
-                        <p th:if="${county == T(org.codeforamerica.shiba.County).Other}" class="spacing-below-35"
+                    <p th:if="${county != T(org.codeforamerica.shiba.County).Other}" class="spacing-below-35 text--help"
+                       id="submission-date"
+                       th:text="#{success.application-submitted(${county.name()}, ${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)})}"></p>
+                    <p th:if="${county == T(org.codeforamerica.shiba.County).Other}" class="spacing-below-35 text--help"
                        id="submission-date"
                        th:text="#{success.application-submitted-other(${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)})}"></p>
                 </div>
-                <div class="grid__item spacing-above-35">
-                    <h2 class="h3" th:text="#{success.new-weve-generated-a-receipt-of-your-application-for-your-records}"></h2>
-                    <img src="/images/receipt.svg" alt="receipt icon"/>
-                    <div class="spacing-above-25 spacing-below-35">
-                        <div>
-                            <th:block th:with="downloadCcap=${@environment.getProperty('flag.ccap') == '1'}">
-                            <a class="button button--primary"
-                               th:onclick="|downloadReceipts(${downloadCcap})|"
-                               th:text="#{success.download-my-receipt}"></a>
+                <div class="grid__item spacing-above-35 bottom-horizontal-line">
+                    <h2 class="h3" th:text="#{success.whats-next}"></h2>
+                    <div class="grid spacing-below-35">
+                        <div class="grid__item width-one-sixth spacing-below-15">
+                            <div th:replace="fragments/icons/icon-download" class="success-icons width-one-sixth"></div>
+                        </div>
+                        <div class="grid__item width-five-sixths">
+                            <div class="spacing-below-15" th:text="#{success.download-my-application}"></div>
+                            <h3><a class="button--link" href="/download" th:text="#{success.combined-application}"></a></h3>
+                            <th:block th:if="${@environment.getProperty('flag.ccap') == '1' && documents.contains(T(org.codeforamerica.shiba.output.Document).CCAP)}">
+                                <h3><a class="button--link" href="/download-ccap" th:text="#{success.child-care-application}"></a></h3>
                             </th:block>
                         </div>
                     </div>
+
+                    <div class="grid spacing-below-60">
+                        <div class="grid__item width-one-sixth spacing-below-15">
+                            <div th:replace="fragments/icons/icon-communications" class="success-icons width-one-sixth"></div>
+                        </div>
+                        <div class="grid__item width-five-sixths">
+                            <div th:text="#{success.your-county-will-contact-within-one-week}" class="width-five-sixths"></div>
+                        </div>
+                    </div>
+
+                    <div class="grid spacing-below-60">
+                        <div class="grid__item width-one-sixth spacing-below-15">
+                            <div th:replace="fragments/icons/icon-documents" class="success-icons width-one-sixth"></div>
+                        </div>
+                        <div class="grid__item width-five-sixths">
+                            <div th:text="#{success.additional-documents}" class="width-five-sixths"></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group" th:if="${sentiment == null || feedbackText == null}">
-                    <h2 class="h3">
+                <div class="form-group " th:if="${sentiment == null || feedbackText == null}">
+                    <h2 class="h3 spacing-above-35">
                         <label th:text="#{success.how-was-your-experience-filling-out-the-combined-benefits-application}"
                                for="feedback-textarea"></label>
                     </h2>

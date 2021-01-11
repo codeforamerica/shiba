@@ -4,6 +4,7 @@ import org.codeforamerica.shiba.AbstractStaticMessageSourcePageTest;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
+import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedListener;
 import org.junit.jupiter.api.Test;
@@ -16,8 +17,11 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.output.Document.CAF;
+import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -29,11 +33,9 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 })
 public class SubmitPageTest extends AbstractStaticMessageSourcePageTest {
 
-    @MockBean
-    ApplicationSubmittedListener applicationSubmittedListener;
-
-    @MockBean
-    ApplicationFactory applicationFactory;
+    @MockBean ApplicationSubmittedListener applicationSubmittedListener;
+    @MockBean ApplicationFactory applicationFactory;
+    @MockBean DocumentListParser documentListParser;
 
     @Test
     void shouldProvideApplicationDataToTerminalPageWhenApplicationIsSigned() {
@@ -52,6 +54,7 @@ public class SubmitPageTest extends AbstractStaticMessageSourcePageTest {
                 .feedback(feedbackText)
                 .build();
         when(applicationFactory.newApplication(any(), any())).thenReturn(application);
+        when(documentListParser.parse(any())).thenReturn(List.of(CAF, CCAP));
 
         navigateTo("firstPage");
 
@@ -63,5 +66,7 @@ public class SubmitPageTest extends AbstractStaticMessageSourcePageTest {
         assertThat(driver.findElement(By.id("county")).getText()).isEqualTo(county.name());
         assertThat(driver.findElement(By.id("sentiment")).getText()).isEqualTo(sentiment.name());
         assertThat(driver.findElement(By.id("feedback-text")).getText()).isEqualTo(feedbackText);
+        assertThat(driver.findElement(By.id("CAF")).getText()).contains("CAF");
+        assertThat(driver.findElement(By.id("CCAP")).getText()).contains("CCAP");
     }
 }

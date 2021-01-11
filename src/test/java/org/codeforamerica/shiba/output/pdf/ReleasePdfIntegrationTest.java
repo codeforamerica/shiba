@@ -580,8 +580,8 @@ public class ReleasePdfIntegrationTest extends AbstractBasePageTest {
         testPage.enter("applicantSignature", "someSignature");
         testPage.clickButton("Submit");
         SuccessPage successPage = new SuccessPage(driver);
-        successPage.downloadReceipt();
-        await().until(() -> getCafFile().isPresent());
+        successPage.downloadPdfs();
+        await().until(() -> getAllFiles().size() == successPage.pdfDownloadLinks());
 
         File pdfFile = getCafFile().orElseThrow();
         try {

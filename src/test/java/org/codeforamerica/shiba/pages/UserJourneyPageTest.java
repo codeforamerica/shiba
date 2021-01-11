@@ -23,11 +23,15 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
+import static org.codeforamerica.shiba.output.Document.CAF;
+import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 import static org.mockito.ArgumentMatchers.any;
@@ -151,14 +155,17 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     @Test
     void shouldDownloadPDFWhenClickDownloadMyReceipt() {
         when(clock.instant()).thenReturn(Instant.ofEpochSecond(1243235L));
-
         SuccessPage successPage = nonExpeditedFlowToSuccessPage(false, true);
-
-        successPage.downloadReceipt();
+        successPage.downloadPdfs();
 
         await().until(() -> {
             File[] listFiles = path.toFile().listFiles();
-            return Arrays.stream(listFiles).anyMatch(file -> file.getName().contains("_MNB_") && file.getName().endsWith(".pdf"));
+            List<String> documentNames = Arrays.stream(listFiles).map(File::getName).collect(Collectors.toList());
+
+            return List.of(CAF, CCAP).stream().map(document -> documentNames.stream().anyMatch(documentName ->
+                    documentName.contains("_MNB_") && documentName.endsWith(".pdf") &&
+                    documentName.contains(document.toString())
+            )).collect(Collectors.toList()).stream().allMatch(assertion -> assertion.equals(true));
         });
     }
 
@@ -202,7 +209,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.enter("applicantSignature", "some name");
         testPage.clickButton("Submit");
         SuccessPage successPage = new SuccessPage(driver);
-        successPage.downloadReceipt();
+        successPage.downloadPdfs();
         await().until(() -> {
             File[] listFiles = path.toFile().listFiles();
             return Arrays.stream(listFiles).anyMatch(file -> file.getName().contains("_MNB_") && file.getName().endsWith(".pdf"));
@@ -430,7 +437,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.enter("hasWorkSituation", NO.getDisplayValue());
         testPage.clickContinue();
 
-        if(isWorking){
+        if (isWorking) {
             testPage.enter("areYouWorking", YES.getDisplayValue());
             testPage.clickButton("Add a job");
 
@@ -448,7 +455,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
             testPage.enter("areYouWorking", NO.getDisplayValue());
             testPage.enter("currentlyLookingForJob", YES.getDisplayValue());
 
-            if(hasHousehold) {
+            if (hasHousehold) {
                 testPage.enter("whoIsLookingForAJob", "defaultFirstName defaultLastName");
                 testPage.clickContinue();
             }
