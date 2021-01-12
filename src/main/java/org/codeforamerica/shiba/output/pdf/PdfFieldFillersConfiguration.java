@@ -45,10 +45,11 @@ public class PdfFieldFillersConfiguration {
             @Value("classpath:ccap-body-caseworker-page1.pdf") Resource ccapPage1,
             @Value("classpath:ccap-body.pdf") Resource ccapBody,
             @Value("classpath:ccap-body-perjury-and-general-declarations.pdf") Resource ccapDeclarations,
+            @Value("classpath:ccap-body-additional-room.pdf") Resource ccapAdditionalRoom,
             @Value("classpath:LiberationSans-Regular.ttf") Resource font
     ) {
         return new PDFBoxFieldFiller(List.of(
-                coverPages, ccapPage1, ccapBody, ccapDeclarations
+                coverPages, ccapPage1, ccapBody, ccapDeclarations, ccapAdditionalRoom
         ), font);
     }
 
@@ -60,11 +61,12 @@ public class PdfFieldFillersConfiguration {
             @Value("classpath:ccap-body.pdf") Resource ccapBody,
             @Value("classpath:ccap-body-authorize-info-sharing.pdf") Resource ccapInfoSharing,
             @Value("classpath:ccap-body-perjury-and-general-declarations.pdf") Resource ccapDeclarations,
+            @Value("classpath:ccap-body-additional-room.pdf") Resource ccapAdditionalRoom,
             @Value("classpath:ccap-footers.pdf") Resource ccapFooters,
             @Value("classpath:LiberationSans-Regular.ttf") Resource font
     ) {
         return new PDFBoxFieldFiller(List.of(
-                coverPages, ccapHeaders, ccapPage1, ccapBody, ccapInfoSharing, ccapDeclarations, ccapFooters
+                coverPages, ccapHeaders, ccapPage1, ccapBody, ccapInfoSharing, ccapDeclarations, ccapAdditionalRoom, ccapFooters
         ), font);
     }
 
