@@ -17,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Locale;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -86,7 +87,7 @@ class MailGunEmailClientTest {
                 recipientEmail,
                 confirmationId,
                 expeditedEligibility,
-                new ApplicationFile(fileContent.getBytes(), fileName), Locale.ENGLISH);
+                List.of(new ApplicationFile(fileContent.getBytes(), fileName)), Locale.ENGLISH);
 
         wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
                 .withBasicAuth(new BasicCredentials("api", mailGunApiKey))

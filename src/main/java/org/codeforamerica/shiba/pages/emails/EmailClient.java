@@ -4,13 +4,14 @@ import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Locale;
 
 public interface EmailClient {
     void sendConfirmationEmail(String recipientEmail,
                                String confirmationId,
                                ExpeditedEligibility expeditedEligibility,
-                               ApplicationFile applicationFile,
+                               List<ApplicationFile> applicationFiles,
                                Locale locale);
 
     void sendCaseWorkerEmail(String recipientEmail,

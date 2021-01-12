@@ -15,6 +15,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 import static org.springframework.web.reactive.function.BodyInserters.fromMultipartData;
@@ -52,14 +53,14 @@ public class MailGunEmailClient implements EmailClient {
     public void sendConfirmationEmail(String recipientEmail,
                                       String confirmationId,
                                       ExpeditedEligibility expeditedEligibility,
-                                      ApplicationFile applicationFile,
+                                      List <ApplicationFile> applicationFiles,
                                       Locale locale) {
         MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
         form.put("from", List.of(senderEmail));
         form.put("to", List.of(recipientEmail));
         form.put("subject", List.of("We received your application"));
         form.put("html", List.of(emailContentCreator.createClientHTML(confirmationId, expeditedEligibility, locale)));
-        form.put("attachment", List.of(asResource(applicationFile)));
+        form.put("attachment", applicationFiles.stream().map(file -> asResource(file)).collect(Collectors.toList()));
 
         MDC.put("confirmationId", confirmationId);
 

@@ -4,19 +4,25 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.application.parsers.EmailParser;
 import org.codeforamerica.shiba.mnit.MnitCountyInformation;
 import org.codeforamerica.shiba.output.ApplicationFile;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
@@ -34,6 +40,7 @@ public class ApplicationSubmittedListener {
     private final boolean submitViaApi;
     private final Boolean sendNonPartnerCountyAlertEmail;
     private final EmailParser emailParser;
+    private final DocumentListParser documentListParser;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public ApplicationSubmittedListener(MnitDocumentConsumer mnitDocumentConsumer,
@@ -45,7 +52,8 @@ public class ApplicationSubmittedListener {
                                         @Value("${submit-via-email}") boolean sendCaseWorkerEmail,
                                         @Value("${submit-via-api}") Boolean submitViaApi,
                                         @Value("${send-non-partner-county-alert}") Boolean sendNonPartnerCountyAlertEmail,
-                                        EmailParser emailParser) {
+                                        EmailParser emailParser,
+                                        DocumentListParser documentListParser) {
         this.mnitDocumentConsumer = mnitDocumentConsumer;
         this.applicationRepository = applicationRepository;
         this.emailClient = emailClient;
@@ -56,6 +64,7 @@ public class ApplicationSubmittedListener {
         this.submitViaApi = submitViaApi;
         this.sendNonPartnerCountyAlertEmail = sendNonPartnerCountyAlertEmail;
         this.emailParser = emailParser;
+        this.documentListParser = documentListParser;
     }
 
     @Async
@@ -70,13 +79,15 @@ public class ApplicationSubmittedListener {
     @EventListener
     public void sendConfirmationEmail(ApplicationSubmittedEvent event) {
         Application application = applicationRepository.find(event.getApplicationId());
+        ApplicationData applicationData = application.getApplicationData();
 
-        emailParser.parse(application.getApplicationData())
+        emailParser.parse(applicationData)
                 .ifPresent(email -> {
                     String applicationId = application.getId();
-                    ApplicationFile pdf = pdfGenerator.generate(applicationId, CAF, CLIENT);
                     ExpeditedEligibility expeditedEligibility = expeditedEligibilityDecider.decide(application.getApplicationData());
-                    emailClient.sendConfirmationEmail(email, applicationId, expeditedEligibility, pdf, event.getLocale());
+                    List<Document> docs = documentListParser.parse(applicationData);
+                    List<ApplicationFile> pdfs = docs.stream().map(doc -> pdfGenerator.generate(applicationId,doc,CLIENT)).collect(Collectors.toList());
+                    emailClient.sendConfirmationEmail(email, applicationId, expeditedEligibility, pdfs, event.getLocale());
                 });
     }
 

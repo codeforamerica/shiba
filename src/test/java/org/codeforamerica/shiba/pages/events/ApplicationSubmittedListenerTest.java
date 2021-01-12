@@ -4,6 +4,7 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.application.parsers.EmailParser;
 import org.codeforamerica.shiba.mnit.MnitCountyInformation;
 import org.codeforamerica.shiba.output.ApplicationFile;
@@ -45,6 +46,7 @@ class ApplicationSubmittedListenerTest {
     Boolean sendCaseWorkerEmail = true;
     Boolean sendViaApi = true;
     Boolean sendNonPartnerCountyAlertEmail = true;
+    DocumentListParser documentListParser = mock(DocumentListParser.class);
 
     ApplicationSubmittedListener applicationSubmittedListener = new ApplicationSubmittedListener(
             mnitDocumentConsumer,
@@ -56,8 +58,10 @@ class ApplicationSubmittedListenerTest {
             sendCaseWorkerEmail,
             sendViaApi,
             sendNonPartnerCountyAlertEmail,
-            emailParser
+            emailParser,
+            documentListParser
     );
+
 
     @Nested
     class sendApplicationToMNIT {
@@ -84,7 +88,7 @@ class ApplicationSubmittedListenerTest {
                     countyMap,
                     true,
                     false,
-                    false, emailParser);
+                    false, emailParser, documentListParser);
 
             ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("", "", null, Locale.ENGLISH);
 
@@ -107,7 +111,7 @@ class ApplicationSubmittedListenerTest {
         }
 
         @Test
-        void shouldSendConfirmationMailForSubmittedApplication() {
+        void shouldSendConfirmationMailForSubmittedApplicationWithCAF() {
             String applicationId = "applicationId";
             ApplicationData applicationData = new ApplicationData();
             String email = "abc@123.com";
@@ -121,12 +125,64 @@ class ApplicationSubmittedListenerTest {
             ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null, Locale.ENGLISH);
             when(expeditedEligibilityDecider.decide(applicationData)).thenReturn(ExpeditedEligibility.ELIGIBLE);
             ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
+            when(documentListParser.parse(applicationData)).thenReturn(List.of(Document.CAF));
             when(pdfGenerator.generate(appIdFromDb, Document.CAF, CLIENT)).thenReturn(applicationFile);
             when(emailParser.parse(applicationData)).thenReturn(Optional.of(email));
             applicationSubmittedListener.sendConfirmationEmail(event);
 
-            verify(emailClient).sendConfirmationEmail(email, appIdFromDb, ExpeditedEligibility.ELIGIBLE, applicationFile, Locale.ENGLISH);
+            verify(emailClient).sendConfirmationEmail(email, appIdFromDb, ExpeditedEligibility.ELIGIBLE, List.of(applicationFile), Locale.ENGLISH);
         }
+
+        @Test
+        void shouldSendConfirmationMailForSubmittedApplicationWithCCAP() {
+            String applicationId = "applicationId";
+            ApplicationData applicationData = new ApplicationData();
+            String email = "abc@123.com";
+            String appIdFromDb = "id";
+            Application application = Application.builder()
+                    .id(appIdFromDb)
+                    .completedAt(ZonedDateTime.now())
+                    .applicationData(applicationData)
+                    .build();
+            when(applicationRepository.find(applicationId)).thenReturn(application);
+            ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null, Locale.ENGLISH);
+            when(expeditedEligibilityDecider.decide(applicationData)).thenReturn(ExpeditedEligibility.ELIGIBLE);
+            ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
+            when(documentListParser.parse(applicationData)).thenReturn(List.of(Document.CCAP));
+            when(pdfGenerator.generate(appIdFromDb, Document.CCAP, CLIENT)).thenReturn(applicationFile);
+            when(emailParser.parse(applicationData)).thenReturn(Optional.of(email));
+            applicationSubmittedListener.sendConfirmationEmail(event);
+
+            verify(emailClient).sendConfirmationEmail(email, appIdFromDb, ExpeditedEligibility.ELIGIBLE, List.of(applicationFile), Locale.ENGLISH);
+        }
+
+        @Test
+        void shouldSendConfirmationMailForSubmittedApplicationWithCAFAndCCAP() {
+            String applicationId = "applicationId";
+            ApplicationData applicationData = new ApplicationData();
+            String email = "abc@123.com";
+            String appIdFromDb = "id";
+            Application application = Application.builder()
+                    .id(appIdFromDb)
+                    .completedAt(ZonedDateTime.now())
+                    .applicationData(applicationData)
+                    .build();
+            when(applicationRepository.find(applicationId)).thenReturn(application);
+            ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null, Locale.ENGLISH);
+            when(expeditedEligibilityDecider.decide(applicationData)).thenReturn(ExpeditedEligibility.ELIGIBLE);
+            ApplicationFile applicationFileCAF = new ApplicationFile("someContent".getBytes(), "someFileName");
+            when(documentListParser.parse(applicationData)).thenReturn(List.of(Document.CAF, Document.CCAP));
+            when(pdfGenerator.generate(appIdFromDb, Document.CAF, CLIENT)).thenReturn(applicationFileCAF);
+            ApplicationFile applicationFileCCAP = new ApplicationFile("someContent".getBytes(), "someFileName");
+            when(pdfGenerator.generate(appIdFromDb, Document.CCAP, CLIENT)).thenReturn(applicationFileCCAP);
+            List<ApplicationFile> applicationFiles = List.of(applicationFileCAF, applicationFileCCAP);
+
+            when(emailParser.parse(applicationData)).thenReturn(Optional.of(email));
+            applicationSubmittedListener.sendConfirmationEmail(event);
+
+            verify(emailClient).sendConfirmationEmail(email, appIdFromDb, ExpeditedEligibility.ELIGIBLE, applicationFiles, Locale.ENGLISH);
+        }
+
 
         @Test
         void shouldNotSendConfirmationEmailIfEmailIsMissingFromTheApplication() {
@@ -193,7 +249,7 @@ class ApplicationSubmittedListenerTest {
                     countyMap,
                     false,
                     false,
-                    false, emailParser);
+                    false, emailParser, documentListParser);
 
             ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("", "", null, Locale.ENGLISH);
 
@@ -251,7 +307,7 @@ class ApplicationSubmittedListenerTest {
                     countyMap,
                     true,
                     false,
-                    false, emailParser);
+                    false, emailParser, documentListParser);
             when(applicationRepository.find(any())).thenReturn(
                     Application.builder()
                             .id("appId")
