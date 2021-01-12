@@ -462,9 +462,15 @@ input[type=number] {
     vertical-align: -15px;
 }
 
-.success-icons {
+.success-icons svg {
     width: 36px;
     margin-top: 0.5rem;
+}
+
+.success-text {
+    float: right;
+    width: 80%;
+    display: block;
 }
 
 .select__element:focus {
