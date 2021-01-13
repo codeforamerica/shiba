@@ -31,6 +31,11 @@ logging:
     org.apache.pdfbox.multipdf: off
     org.apache.pdfbox.cos: ERROR
     org.apache.pdfbox.pdmodel.font: ERROR
+    org.springframework.web: ERROR
+    org.springframework.ws.client.MessageTracing.sent: DEBUG
+    org.springframework.ws.server.MessageTracing.sent: DEBUG
+    org.springframework.ws.client.MessageTracing.received: DEBUG
+    org.springframework.ws.server.MessageTracing.received: DEBUG
 
 pagesConfig: dev-pages-config.yaml
 
