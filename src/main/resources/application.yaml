@@ -38,6 +38,3 @@ logging:
     org.springframework.ws.server.MessageTracing.received: DEBUG
 
 pagesConfig: dev-pages-config.yaml
-
-flag:
-  ccap: ${FLAG_CCAP}

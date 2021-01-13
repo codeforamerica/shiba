@@ -30,6 +30,16 @@ conditionDefinitions:
     pageName: homeExpenses
     input: homeExpenses
     value: RENT
+  - &applicantDidNotChooseCCAP?
+    pageName: choosePrograms
+    value: CCAP
+    input: programs
+    matcher: DOES_NOT_CONTAIN
+  - &householdMemberDidNotChooseCCAP?
+    pageName: householdMemberInfo
+    value: CCAP
+    input: programs
+    matcher: DOES_NOT_CONTAIN
 pageDefinitions:
   - &landing
     name: landing
@@ -118,6 +128,10 @@ pageDefinitions:
               messageKey: choose-programs.cash-programs
               helpMessageKey: choose-programs.cash-programs-help
               helpIcon: icon-dollar-circle
+            - value: CCAP
+              messageKey: choose-programs.child-care-assistance
+              helpMessageKey: choose-programs.child-care-assistance-help
+              helpIcon: icon-child-care
             - value: EA
               messageKey: choose-programs.emergency-assistance
               helpMessageKey: choose-programs.emergency-assistance-help
@@ -260,11 +274,16 @@ pageDefinitions:
         promptMessage:
           promptMessageKey: contact-info.whats-your-email-address
         validators:
-          - validation: EMAIL
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.email
             condition:
               input: phoneOrEmail
               value: EMAIL
+          - validation: EMAIL
             errorMessageKey: general.validation.email
+            condition:
+              input: email
+              matcher: NOT_EMPTY
       - name: phoneOrEmail
         type: CHECKBOX
         promptMessage:
@@ -531,6 +550,7 @@ pageDefinitions:
           - CASH
           - EA
           - GRH
+          - CCAP
         followUps:
           - name: ssn
             type: SSN
@@ -554,6 +574,8 @@ pageDefinitions:
               messageKey: choose-programs.cash-programs
             - value: EA
               messageKey: choose-programs.emergency-assistance
+            - value: CCAP
+              messageKey: choose-programs.child-care-assistance
             - value: GRH
               messageKey: choose-programs.housing-support-group-residential-housing
             - value: NONE
@@ -563,6 +585,20 @@ pageDefinitions:
     name: householdList
     pageTitle:
       value: household-list.title
+  - &childrenInNeedOfCare
+    name: childrenInNeedOfCare
+    pageTitle:
+      value: children-in-need-of-care.title
+    headerKey:
+      value: children-in-need-of-care.who-are-the-children-in-need-of-childcare
+    inputs:
+      - type: CUSTOM
+        name: whoNeedsChildCare
+        customInputFragment: householdOptionsCheckboxes
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
   - &householdDeleteWarningPage
     name: householdDeleteWarningPage
     headerKey:
@@ -596,6 +632,20 @@ pageDefinitions:
     inputs:
       - name: goingToSchool
         type: YES_NO
+  - &whoIsGoingToSchool
+    name: whoIsGoingToSchool
+    pageTitle:
+      value: who-is-going-to-school.title
+    headerKey:
+      value: who-is-going-to-school.who-is-going-to-school
+    inputs:
+      - type: CUSTOM
+        name: whoIsGoingToSchool
+        customInputFragment: householdOptionsCheckboxes
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
   - &pregnant
     name: pregnant
     pageTitle:
@@ -998,6 +1048,33 @@ pageDefinitions:
     name: incomeUpNext
     pageTitle:
       value: income-up-next.title
+  - &jobSearch
+    name: jobSearch
+    pageTitle:
+      value: ccap-job-search.title
+    headerKey:
+      value: ccap-job-search.are-you-currently-looking-for-a-job
+      conditionalValues:
+        - value: ccap-job-search.is-household-currently-looking-for-a-job
+          condition: *doesNotLiveAlone?
+    hasPrimaryButton: false
+    inputs:
+      - name: currentlyLookingForJob
+        type: YES_NO
+  - &whoIsLookingForAJob
+    name: whoIsLookingForAJob
+    pageTitle:
+      value: who-is-looking-for-job.title
+    headerKey:
+      value: who-is-looking-for-job.who-in-your-household-is-looking-for-a-job
+    inputs:
+      - type: CUSTOM
+        name: whoIsLookingForAJob
+        customInputFragment: householdOptionsCheckboxes
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
   - &unearnedIncome
     name: unearnedIncome
     pageTitle:
@@ -1793,10 +1870,22 @@ workflow:
     pageConfiguration: *householdList
     nextPages:
       - pageName: householdMemberInfo
-      - pageName: preparingMealsTogether
+      - pageName: childrenInNeedOfCare
     datasources:
       - groupName: household
       - pageName: personalInfo
+  childrenInNeedOfCare:
+    pageConfiguration: *childrenInNeedOfCare
+    nextPages:
+      - pageName: preparingMealsTogether
+    datasources:
+      - pageName: choosePrograms
+      - groupName: household
+        pageName: householdMemberInfo
+    skipCondition:
+      conditions:
+        - *applicantDidNotChooseCCAP?
+        - *householdMemberDidNotChooseCCAP?
   householdDeleteWarningPage:
     pageConfiguration: *householdDeleteWarningPage
     appliesToGroup: household
@@ -1824,6 +1913,36 @@ workflow:
     pageConfiguration: *goingToSchool
     datasources:
       - pageName: doYouLiveAlone
+    nextPages:
+      - pageName: whoIsGoingToSchool
+        condition:
+          pageName: doYouLiveAlone
+          input: liveAlone
+          value: "false"
+      - pageName: pregnant
+        condition:
+          pageName: doYouLiveAlone
+          input: liveAlone
+          value: "true"
+  whoIsGoingToSchool:
+    pageConfiguration: *whoIsGoingToSchool
+    datasources:
+      - pageName: choosePrograms
+      - pageName: goingToSchool
+      - groupName: household
+        pageName: householdMemberInfo
+    skipCondition:
+      logicalOperator: OR
+      compositeConditions:
+        - compositeConditions:
+            - conditions:
+                - *applicantDidNotChooseCCAP?
+                - *householdMemberDidNotChooseCCAP?
+        - compositeConditions:
+            - conditions:
+                - pageName: goingToSchool
+                  value: "false"
+                  input: goingToSchool
     nextPages:
       - pageName: pregnant
   pregnant:
@@ -1893,7 +2012,7 @@ workflow:
     datasources:
       - pageName: doYouLiveAlone
     nextPages:
-      - pageName: incomeUpNext
+      - pageName: jobSearch
         condition:
           input: areYouWorking
           value: "false"
@@ -1993,7 +2112,7 @@ workflow:
     dataMissingRedirect: employmentStatus
     nextPages:
       - pageName: householdSelectionForIncome
-      - pageName: incomeUpNext
+      - pageName: jobSearch
     datasources:
       - groupName: jobs
       - pageName: doYouLiveAlone
@@ -2203,6 +2322,43 @@ workflow:
         - pageName: spendOnYourBehalf
           input: spendOnYourBehalf
           value: "false"
+  jobSearch:
+    pageConfiguration: *jobSearch
+    skipCondition:
+      conditions:
+        - *applicantDidNotChooseCCAP?
+        - *householdMemberDidNotChooseCCAP?
+    nextPages:
+      - pageName: whoIsLookingForAJob
+    datasources:
+      - pageName: choosePrograms
+      - pageName: doYouLiveAlone
+      - pageName: householdMemberInfo
+        groupName: household
+  whoIsLookingForAJob:
+    pageConfiguration: *whoIsLookingForAJob
+    nextPages:
+      - pageName: incomeUpNext
+    datasources:
+      - pageName: doYouLiveAlone
+      - pageName: jobSearch
+      - pageName: choosePrograms
+      - pageName: householdMemberInfo
+        groupName: household
+    skipCondition:
+      logicalOperator: OR
+      compositeConditions:
+        - compositeConditions:
+            - conditions:
+                - *applicantDidNotChooseCCAP?
+                - *householdMemberDidNotChooseCCAP?
+        - compositeConditions:
+            - conditions:
+                - *livesAlone?
+                - pageName: jobSearch
+                  input: currentlyLookingForJob
+                  value: "false"
+              logicalOperator: OR
   doYouNeedHelpImmediately:
     pageConfiguration: *doYouNeedHelpImmediately
     nextPages:
@@ -2299,6 +2455,15 @@ pageGroups:
     redirectPage: jobRedirectPage
     deleteWarningPage: jobDeleteWarningPage
     restartPage: incomeByJob
+    addedScope:
+      selfEmployment:
+        pageName: selfEmployment
+        input: selfEmployment
+        value: "true"
+      nonSelfEmployment:
+        pageName: selfEmployment
+        input: selfEmployment
+        value: "false"
   household:
     startPages:
       - householdMemberInfo

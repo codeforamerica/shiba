@@ -24,11 +24,15 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
+import static org.codeforamerica.shiba.output.Document.CAF;
+import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 import static org.mockito.ArgumentMatchers.any;
@@ -66,12 +70,22 @@ public class ReleaseUserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void userCanCompleteTheNonExpeditedFlow() {
-        nonExpeditedFlowToSuccessPage(false);
+        nonExpeditedFlowToSuccessPage(false, true);
     }
 
     @Test
     void userCanCompleteTheNonExpeditedHouseholdFlow() {
-        nonExpeditedFlowToSuccessPage(true);
+        nonExpeditedFlowToSuccessPage(true, true);
+    }
+
+    @Test
+    void userCanCompleteTheNonExpeditedFlowWithNoEmployment() {
+        nonExpeditedFlowToSuccessPage(false, false);
+    }
+
+    @Test
+    void userCanCompleteTheNonExpeditedHouseholdFlowWithNoEmployment() {
+        nonExpeditedFlowToSuccessPage(true, false);
     }
 
     @ParameterizedTest
@@ -80,7 +94,7 @@ public class ReleaseUserJourneyPageTest extends AbstractBasePageTest {
             "1, 1, A caseworker will contact you within 3 days to review your application."
     })
     void userCanCompleteTheExpeditedFlow(String moneyMadeLast30Days, String liquidAssets, String expeditedServiceDetermination) {
-        completeFlowFromLandingPageThroughReviewInfo();
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance"));
         testPage.clickLink("Submit application now with only the above information.");
         testPage.clickLink("Yes, I want to see if I qualify");
 
@@ -115,7 +129,7 @@ public class ReleaseUserJourneyPageTest extends AbstractBasePageTest {
             "1, 1, A caseworker will contact you within 3 days to review your application."
     })
     void userCanCompleteTheExpeditedFlowWithHousehold(String moneyMadeLast30Days, String liquidAssets, String expeditedServiceDetermination) {
-        completeFlowFromLandingPageThroughReviewInfo();
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance"));
         testPage.clickLink("Submit application now with only the above information.");
         testPage.clickLink("Yes, I want to see if I qualify");
 
@@ -147,14 +161,17 @@ public class ReleaseUserJourneyPageTest extends AbstractBasePageTest {
     @Test
     void shouldDownloadPDFWhenClickDownloadMyReceipt() {
         when(clock.instant()).thenReturn(Instant.ofEpochSecond(1243235L));
-
-        SuccessPage successPage = nonExpeditedFlowToSuccessPage(false);
-
+        SuccessPage successPage = nonExpeditedFlowToSuccessPage(false, true);
         successPage.downloadPdfs();
 
         await().until(() -> {
             File[] listFiles = path.toFile().listFiles();
-            return Arrays.stream(listFiles).anyMatch(file -> file.getName().contains("_MNB_") && file.getName().endsWith(".pdf"));
+            List<String> documentNames = Arrays.stream(listFiles).map(File::getName).collect(Collectors.toList());
+
+            return List.of(CAF, CCAP).stream().map(document -> documentNames.stream().anyMatch(documentName ->
+                    documentName.contains("_MNB_") && documentName.endsWith(".pdf") &&
+                            documentName.contains(document.toString())
+            )).collect(Collectors.toList()).stream().allMatch(assertion -> assertion.equals(true));
         });
     }
 
@@ -165,7 +182,7 @@ public class ReleaseUserJourneyPageTest extends AbstractBasePageTest {
                 LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant(),
                 LocalDateTime.of(2020, 1, 1, 10, 15, 30).atOffset(ZoneOffset.UTC).toInstant()
         );
-        SuccessPage successPage = nonExpeditedFlowToSuccessPage(false);
+        SuccessPage successPage = nonExpeditedFlowToSuccessPage(false, true);
         successPage.chooseSentiment(Sentiment.HAPPY);
         successPage.submitFeedback();
 
@@ -214,20 +231,154 @@ public class ReleaseUserJourneyPageTest extends AbstractBasePageTest {
                 .isEqualTo("Yes");
     }
 
-    private void completeFlowFromLandingPageThroughReviewInfo() {
+    @Test
+    void shouldSkipChildcareAssistancePageIfCCAPNotSelected() {
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
+        testPage.clickLink("This looks correct");
+        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.clickContinue();
+        fillOutHousemateInfo("Emergency Assistance");
+        testPage.clickContinue();
+        testPage.clickButton("Yes, that's everyone");
+        testPage.enter("isPreparingMealsTogether", NO.getDisplayValue());
+    }
+
+    @Test
+    void shouldSkipWhoIsGoingToSchoolPageIfCCAPNotSelected() {
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
+        testPage.clickLink("This looks correct");
+        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.clickContinue();
+        fillOutHousemateInfo("Emergency Assistance");
+        testPage.clickContinue();
+        testPage.clickButton("Yes, that's everyone");
+        assertThat(driver.findElementByClassName("h2").getText().equals("Does everyone in your household buy and prepare food with you?"));
+        testPage.clickButton(NO.getDisplayValue());
+        testPage.clickButton(YES.getDisplayValue());
+        assertThat(driver.findElementByClassName("h2").getText().equals("Is anyone in your household pregnant?"));
+    }
+
+    @Test
+    void shouldAskWhoIsGoingToSchoolAndWhoIsLookingForWorkWhenCCAPIsSelectedInPrograms() {
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance"));
+        testPage.clickLink("This looks correct");
+        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.clickContinue();
+        fillOutHousemateInfo("Emergency Assistance");
+        testPage.clickContinue();
+        testPage.clickButton("Yes, that's everyone");
+        assertThat(driver.getTitle()).isEqualTo("Who are the children in need of care?");
+        testPage.clickContinue();
+        testPage.clickButton(YES.getDisplayValue());
+        assertThat(driver.getTitle()).isEqualTo("Who is going to school?");
+        testPage.clickContinue();
+        testPage.clickButton(NO.getDisplayValue());
+        testPage.clickButton(YES.getDisplayValue());
+        testPage.clickButton(YES.getDisplayValue());
+        testPage.clickButton(NO.getDisplayValue());
+        testPage.clickButton(NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.clickButton(NO.getDisplayValue());
+        testPage.clickButton(YES.getDisplayValue());
+        assertThat(driver.getTitle()).isEqualTo("Who is looking for a job");
+    }
+
+    @Test
+    void shouldAskWhoIsGoingToSchoolAndWhoIsLookingForWorkWhenCCAPIsSelectedInHouseholdMemberInfo() {
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
+        testPage.clickLink("This looks correct");
+        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.clickContinue();
+        fillOutHousemateInfo("Child Care Assistance");
+        testPage.clickContinue();
+        testPage.clickButton("Yes, that's everyone");
+        assertThat(driver.getTitle()).isEqualTo("Who are the children in need of care?");
+        testPage.clickContinue();
+        testPage.clickButton(YES.getDisplayValue());
+        testPage.clickButton(YES.getDisplayValue());
+        assertThat(driver.getTitle()).isEqualTo("Who is going to school?");
+        testPage.clickContinue();
+        testPage.clickButton(NO.getDisplayValue());
+        testPage.clickButton(YES.getDisplayValue());
+        testPage.clickButton(YES.getDisplayValue());
+        testPage.clickButton(NO.getDisplayValue());
+        testPage.clickButton(NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.clickButton(NO.getDisplayValue());
+        testPage.clickButton(YES.getDisplayValue());
+        assertThat(driver.getTitle()).isEqualTo("Who is looking for a job");
+    }
+
+    @Test
+    void shouldSkipWhoIsGoingToSchoolAndWhoIsLookingForWorkPageIfCCAPSelectedButLiveAloneIsTrue() {
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance"));
+        testPage.clickLink("This looks correct");
+        testPage.enter("liveAlone", YES.getDisplayValue());
+        testPage.clickContinue();
+        testPage.clickButton(YES.getDisplayValue());
+        assertThat(driver.getTitle()).isEqualTo("Pregnant");
+        testPage.clickButton(YES.getDisplayValue());
+        testPage.clickButton(YES.getDisplayValue());
+        testPage.clickButton(YES.getDisplayValue());
+        testPage.clickButton(YES.getDisplayValue());
+        testPage.clickButton(YES.getDisplayValue());
+        testPage.clickContinue();
+        testPage.clickButton(NO.getDisplayValue());
+        testPage.clickButton(YES.getDisplayValue());
+        assertThat(driver.getTitle()).isEqualTo("Income Up Next");
+    }
+
+    @Test
+    void shouldSkipWhoIsLookingForWorkPageIfCCAPIsNotSelectedInHouseholdOrPrograms() {
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
+        testPage.clickLink("This looks correct");
+        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.clickContinue();
+        fillOutHousemateInfo("Emergency Assistance");
+        testPage.clickContinue();
+        testPage.clickButton("Yes, that's everyone");
+        testPage.clickButton(YES.getDisplayValue());
+        testPage.clickButton(NO.getDisplayValue());
+        testPage.clickButton(NO.getDisplayValue());
+        testPage.clickButton(NO.getDisplayValue());
+        testPage.clickButton(YES.getDisplayValue());
+        testPage.clickButton(NO.getDisplayValue());
+        testPage.clickButton(NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.clickButton(NO.getDisplayValue());
+        assertThat(driver.getTitle()).isEqualTo("Income Up Next");
+    }
+
+    @Test
+    void shouldValidateContactInfoEmailEvenIfEmailNotSelected() {
+        completeFlowFromLandingPageThroughContactInfo(List.of("Child Care Assistance"));
+        testPage.enter("phoneNumber", "7234567890");
+        testPage.enter("email", "email.com");
+        testPage.enter("phoneOrEmail", "Text me");
+        testPage.clickContinue();
+
+        assertThat(driver.getTitle()).isEqualTo("Contact Info");
+    }
+
+    private void completeFlowFromLandingPageThroughContactInfo(List<String> programSelections) {
         testPage.clickButton("Apply now");
         testPage.clickContinue();
         testPage.enter("writtenLanguage", "English");
         testPage.enter("spokenLanguage", "English");
         testPage.enter("needInterpreter", "Yes");
         testPage.clickContinue();
-        testPage.enter("programs", "Emergency Assistance");
+        programSelections.forEach(program -> testPage.enter("programs", program));
         testPage.clickContinue();
         testPage.clickContinue();
 
         fillOutPersonalInfo();
 
         testPage.clickContinue();
+    }
+
+    private void completeFlowFromLandingPageThroughReviewInfo(List<String> programSelections) {
+        completeFlowFromLandingPageThroughContactInfo(programSelections);
+
         testPage.enter("phoneNumber", "7234567890");
         testPage.enter("email", "some@email.com");
         testPage.enter("phoneOrEmail", "Text me");
@@ -273,16 +424,18 @@ public class ReleaseUserJourneyPageTest extends AbstractBasePageTest {
         testPage.enter("moveToMnPreviousCity", "Chicago");
     }
 
-    private SuccessPage nonExpeditedFlowToSuccessPage(boolean hasHousehold) {
-        completeFlowFromLandingPageThroughReviewInfo();
+    private SuccessPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking) {
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance", "Cash programs"));
         testPage.clickLink("This looks correct");
 
         if (hasHousehold) {
             testPage.enter("liveAlone", NO.getDisplayValue());
             testPage.clickContinue();
-            fillOutHousemateInfo();
+            fillOutHousemateInfo("Child Care Assistance");
             testPage.clickContinue();
             testPage.clickButton("Yes, that's everyone");
+            testPage.enter("whoNeedsChildCare", "defaultFirstName defaultLastName");
+            testPage.clickContinue();
             testPage.enter("goingToSchool", NO.getDisplayValue());
             testPage.enter("isPregnant", YES.getDisplayValue());
             testPage.enter("whoIsPregnant", "Me");
@@ -305,16 +458,31 @@ public class ReleaseUserJourneyPageTest extends AbstractBasePageTest {
         testPage.enter("hasDisability", NO.getDisplayValue());
         testPage.enter("hasWorkSituation", NO.getDisplayValue());
         testPage.clickContinue();
-        testPage.enter("areYouWorking", YES.getDisplayValue());
-        testPage.clickButton("Add a job");
-        if (hasHousehold) {
-            testPage.enter("whoseJobIsIt", "defaultFirstName defaultLastName");
+
+        if (isWorking) {
+            testPage.enter("areYouWorking", YES.getDisplayValue());
+            testPage.clickButton("Add a job");
+
+            if (hasHousehold) {
+                testPage.enter("whoseJobIsIt", "defaultFirstName defaultLastName");
+                testPage.clickContinue();
+            }
+
+            testPage.enter("employersName", "some employer");
             testPage.clickContinue();
+            testPage.enter("selfEmployment", YES.getDisplayValue());
+            paidByTheHourOrSelectPayPeriod();
+            testPage.enter("currentlyLookingForJob", NO.getDisplayValue());
+        } else {
+            testPage.enter("areYouWorking", NO.getDisplayValue());
+            testPage.enter("currentlyLookingForJob", YES.getDisplayValue());
+
+            if (hasHousehold) {
+                testPage.enter("whoIsLookingForAJob", "defaultFirstName defaultLastName");
+                testPage.clickContinue();
+            }
         }
-        testPage.enter("employersName", "some employer");
-        testPage.clickContinue();
-        testPage.enter("selfEmployment", YES.getDisplayValue());
-        paidByTheHourOrSelectPayPeriod();
+
         testPage.clickContinue();
         testPage.enter("unearnedIncome", "Social Security");
         testPage.clickContinue();
@@ -350,9 +518,9 @@ public class ReleaseUserJourneyPageTest extends AbstractBasePageTest {
         return new SuccessPage(driver);
     }
 
-    private void fillOutHousemateInfo() {
+    private void fillOutHousemateInfo(String programSelection) {
         testPage.enter("relationship", "housemate");
-        testPage.enter("programs", "Emergency Assistance");
+        testPage.enter("programs", programSelection);
         fillOutPersonInfo(); // need to fill out programs checkbox set above first
         testPage.enter("moveToMnPreviousState", "Illinois");
     }
@@ -375,18 +543,22 @@ public class ReleaseUserJourneyPageTest extends AbstractBasePageTest {
         testPage.clickButton("No, that's it.");
     }
 
+    private void fillOutHelperInfo() {
+        testPage.enter("helpersFullName", "defaultFirstName defaultLastName");
+        testPage.enter("helpersStreetAddress", "someStreetAddress");
+        testPage.enter("helpersCity", "someCity");
+        testPage.enter("helpersZipCode", "12345");
+        testPage.enter("helpersPhoneNumber", "7234567890");
+        testPage.clickContinue();
+    }
+
     private void completeHelperWorkflow() {
         if (new Random().nextBoolean()) {
             testPage.enter("helpWithBenefits", YES.getDisplayValue());
             testPage.enter("communicateOnYourBehalf", YES.getDisplayValue());
             testPage.enter("getMailNotices", YES.getDisplayValue());
             testPage.enter("spendOnYourBehalf", YES.getDisplayValue());
-            testPage.enter("helpersFullName", "defaultFirstName defaultLastName");
-            testPage.enter("helpersStreetAddress", "someStreetAddress");
-            testPage.enter("helpersCity", "someCity");
-            testPage.enter("helpersZipCode", "12345");
-            testPage.enter("helpersPhoneNumber", "7234567890");
-            testPage.clickContinue();
+            fillOutHelperInfo();
         } else {
             testPage.enter("helpWithBenefits", NO.getDisplayValue());
         }

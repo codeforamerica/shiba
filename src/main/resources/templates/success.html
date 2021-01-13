@@ -31,7 +31,7 @@
                             <th:block th:if="${documents.contains(T(org.codeforamerica.shiba.output.Document).CAF)}">
                                 <h3><a class="button--link" href="/download" th:text="#{success.combined-application}"></a></h3>
                             </th:block>
-                            <th:block th:if="${@environment.getProperty('flag.ccap') == '1' && documents.contains(T(org.codeforamerica.shiba.output.Document).CCAP)}">
+                            <th:block th:if="${documents.contains(T(org.codeforamerica.shiba.output.Document).CCAP)}">
                                 <h3><a class="button--link" href="/download-ccap" th:text="#{success.child-care-application}"></a></h3>
                             </th:block>
                         </div>
