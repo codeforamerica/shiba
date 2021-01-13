@@ -8,7 +8,7 @@
     <section class="slab slab--shiba">
         <div class="grid-ignore-mobile">
             <div class="card spacing-above-35">
-                <div class="grid__item bottom-horizontal-line">
+                <div class="grid__item bottom-horizontal-line-dark-grey">
                     <div th:replace="fragments/icons/icon-submission-success"></div>
                     <h1 class="h2 spacing-below-0" th:text="|#{success.done-your-application-has-been-submitted}|"></h1>
                     <h2 id="application-id" class="spacing-below-10 h3"
@@ -20,7 +20,7 @@
                        id="submission-date"
                        th:text="#{success.application-submitted-other(${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)})}"></p>
                 </div>
-                <div class="grid__item spacing-above-35 bottom-horizontal-line">
+                <div class="grid__item spacing-above-35 bottom-horizontal-line-dark-grey">
                     <h2 class="h3" th:text="#{success.whats-next}"></h2>
                     <div class="grid-ignore-mobile spacing-below-35">
                         <div class="success-icons grid__item width-one-sixth spacing-below-15">
@@ -37,7 +37,7 @@
                         </div>
                     </div>
 
-                    <div class="grid-ignore-mobile spacing-below-60">
+                    <div class="grid-ignore-mobile spacing-below-35">
                         <div class="success-icons grid__item width-one-sixth spacing-below-15">
                             <div th:replace="fragments/icons/icon-communications" class="success-icons width-one-sixth"></div>
                         </div>
@@ -46,7 +46,7 @@
                         </div>
                     </div>
 
-                    <div class="grid-ignore-mobile spacing-below-60">
+                    <div class="grid-ignore-mobile spacing-below-35">
                         <div class="success-icons grid__item width-one-sixth spacing-below-15">
                             <div th:replace="fragments/icons/icon-documents" class="success-icons width-one-sixth"></div>
                         </div>

@@ -50,6 +50,10 @@
     border-bottom: 1px solid #CFC5BF;
 }
 
+.bottom-horizontal-line-dark-grey {
+    border-bottom: 1px solid #AAAAAA;
+}
+
 .icon-check_circle.large {
     color: #CFC5BF;
     font-size: 100px;
@@ -293,11 +297,10 @@ html {
 .feedback-buttons-group {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
 }
 
 .feedback-buttons {
-    margin-right: 0.5rem;
+    margin-right: 20px;
     cursor: pointer;
     width: 10rem;
     text-align: center;
