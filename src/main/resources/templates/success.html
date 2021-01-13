@@ -6,7 +6,7 @@
     <div th:replace="fragments/toolbar"></div>
     <div th:replace="fragments/demoBanner"></div>
     <section class="slab slab--shiba">
-        <div class="grid">
+        <div class="grid-ignore-mobile">
             <div class="card spacing-above-35">
                 <div class="grid__item bottom-horizontal-line">
                     <div th:replace="fragments/icons/icon-submission-success"></div>
@@ -22,11 +22,11 @@
                 </div>
                 <div class="grid__item spacing-above-35 bottom-horizontal-line">
                     <h2 class="h3" th:text="#{success.whats-next}"></h2>
-                    <div class="spacing-below-35">
-                        <span class="success-icons spacing-below-15">
-                            <div th:replace="fragments/icons/icon-download"></div>
-                        </span>
-                        <div class="success-text">
+                    <div class="grid-ignore-mobile spacing-below-35">
+                        <div class="success-icons grid__item width-one-sixth spacing-below-15">
+                            <div th:replace="fragments/icons/icon-download" class="success-icons width-one-sixth"></div>
+                        </div>
+                        <div class="grid__item width-five-sixths">
                             <div class="spacing-below-15" th:text="#{success.download-my-application}"></div>
                             <th:block th:if="${documents.contains(T(org.codeforamerica.shiba.output.Document).CAF)}">
                                 <h3><a class="button--link" href="/download" th:text="#{success.combined-application}"></a></h3>
@@ -37,21 +37,21 @@
                         </div>
                     </div>
 
-                    <div class="spacing-below-60">
-                        <span class="success-icons spacing-below-15">
-                            <div th:replace="fragments/icons/icon-communications"></div>
-                        </span>
-                        <div class="success-text">
+                    <div class="grid-ignore-mobile spacing-below-60">
+                        <div class="success-icons grid__item width-one-sixth spacing-below-15">
+                            <div th:replace="fragments/icons/icon-communications" class="success-icons width-one-sixth"></div>
+                        </div>
+                        <div class="grid__item width-five-sixths">
                             <div th:text="#{success.your-county-will-contact-within-one-week}" class="width-five-sixths"></div>
                         </div>
                     </div>
 
-                    <div class="spacing-below-60">
-                        <span class="success-icons spacing-below-15">
-                            <div th:replace="fragments/icons/icon-documents"></div>
-                        </span>
-                        <div>
-                            <div th:text="#{success.additional-documents}"></div>
+                    <div class="grid-ignore-mobile spacing-below-60">
+                        <div class="success-icons grid__item width-one-sixth spacing-below-15">
+                            <div th:replace="fragments/icons/icon-documents" class="success-icons width-one-sixth"></div>
+                        </div>
+                        <div class="grid__item width-five-sixths">
+                            <div th:text="#{success.additional-documents}" class="width-five-sixths"></div>
                         </div>
                     </div>
                 </div>
