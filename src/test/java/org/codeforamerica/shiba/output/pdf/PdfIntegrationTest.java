@@ -122,11 +122,12 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             testPage.enter("whoIsGoingToSchool", "Me");
             testPage.enter("whoIsGoingToSchool", "Jim Halpert");
             testPage.clickContinue();
+            navigateTo("childrenInNeedOfCare");
+            testPage.enter("whoNeedsChildCare", "Jim Halpert");
+            testPage.clickContinue();
 
             Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
             assertThat(pdAcroForms.get(CCAP).getField("STUDENT_FULL_NAME_0").getValueAsString())
-                    .isEqualTo("Dwight Schrute");
-            assertThat(pdAcroForms.get(CCAP).getField("STUDENT_FULL_NAME_1").getValueAsString())
                     .isEqualTo("Jim Halpert");
         }
 

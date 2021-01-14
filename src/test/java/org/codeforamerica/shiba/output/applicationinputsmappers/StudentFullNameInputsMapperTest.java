@@ -25,6 +25,11 @@ public class StudentFullNameInputsMapperTest {
                 .value(List.of("studentAFirstName studentALastName 939dc33-d13a-4cf0-9093-309293k3", "studentBFirstName studentBLastName b99f3f7e-d13a-4cf0-9093-23ccdba2a64d"))
                 .build());
         pagesData.put("whoIsGoingToSchool", studentsPage);
+        PageData childrenWhoNeedCare = new PageData();
+        childrenWhoNeedCare.put("whoNeedsChildCare", InputData.builder()
+                .value(List.of("studentBFirstName studentBLastName b99f3f7e-d13a-4cf0-9093-23ccdba2a64d"))
+                .build());
+        pagesData.put("childrenInNeedOfCare", childrenWhoNeedCare);
         applicationData.setPagesData(pagesData);
 
         List<ApplicationInput> result = mapper.map(Application.builder()
@@ -35,15 +40,9 @@ public class StudentFullNameInputsMapperTest {
                 new ApplicationInput(
                         "whoIsGoingToSchool",
                         "fullName",
-                        List.of("studentAFirstName studentALastName"),
-                        ApplicationInputType.SINGLE_VALUE,
-                        0),
-                new ApplicationInput(
-                        "whoIsGoingToSchool",
-                        "fullName",
                         List.of("studentBFirstName studentBLastName"),
                         ApplicationInputType.SINGLE_VALUE,
-                        1
+                        0
                 ));
     }
 }

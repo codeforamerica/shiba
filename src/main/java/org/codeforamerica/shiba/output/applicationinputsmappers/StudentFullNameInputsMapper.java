@@ -17,14 +17,13 @@ public class StudentFullNameInputsMapper implements ApplicationInputsMapper {
 
     @Override
     public List<ApplicationInput> map(Application application, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
-
         List<String> students = getListOfSelectedFullNames(application, "whoIsGoingToSchool", "whoIsGoingToSchool");
+        List<String> children = getListOfSelectedFullNames(application, "childrenInNeedOfCare", "whoNeedsChildCare");
 
+        students.retainAll(children);
         AtomicInteger i = new AtomicInteger(0);
-
         return students.stream()
                 .map(fullName -> new ApplicationInput("whoIsGoingToSchool", "fullName",
                        List.of(fullName), ApplicationInputType.SINGLE_VALUE, i.getAndIncrement())).collect(Collectors.toList());
     }
-
 }
