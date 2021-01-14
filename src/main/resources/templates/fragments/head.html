@@ -30,6 +30,7 @@
         mixpanel.people.set({
             language: [[${#locale.toString()}]]
         });
+        mixpanel.track_links('#back-link', 'CLICKED_BACK');
     </script>
 </head>
 </html>

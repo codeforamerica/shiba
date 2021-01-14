@@ -5,7 +5,7 @@
    class="toolbar__left"
    th:fragment="goBackLink"
    href="#"
-   onclick="mixpanel.track('CLICKED_BACK', null, null, function() { window.history.back(); }); return false;"
+   onclick="window.history.back(); return false;"
    th:text="'&lt; '+#{general.go-back}"></a>
 </body>
 </html>
