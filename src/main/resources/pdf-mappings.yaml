@@ -232,6 +232,8 @@ mappings:
   adultRequestingChildcareWorking:
     fullName: ADULT_REQUESTING_CHILDCARE_WORKING_FULL_NAME
     employersName: ADULT_REQUESTING_CHILDCARE_WORKING_EMPLOYERS_NAME
+  additionalInfo:
+    additionalInfo: ADDITIONAL_APPLICATION_INFO
 enums:
   EVERY_WEEK: Every week
   EVERY_TWO_WEEKS: Every two weeks
