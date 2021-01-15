@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <body>
 <div th:if="${pageDatasources.get('testEnrichmentPage').get('someTextInput') != null}">
     <div id="originalInput" th:text="${pageDatasources.get('testEnrichmentPage').get('someTextInput').value[0]}"></div>

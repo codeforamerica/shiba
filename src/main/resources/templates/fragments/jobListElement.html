@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <body>
 <li class="grid" th:fragment="job(employersName, subworkflowKey, index)" th:id="|iteration${index}|">
     <form method="post" th:action="@{|/groups/${subworkflowKey}/${index}/deleteWarning|}" class="display-flex">
