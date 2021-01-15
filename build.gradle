@@ -101,7 +101,7 @@ dependencies {
     }
     testImplementation 'org.awaitility:awaitility:4.0.3'
     testImplementation 'com.github.tomakehurst:wiremock-standalone:2.27.1'
-    testImplementation 'io.github.bonigarcia:webdrivermanager:4.2.2'
+    testImplementation 'io.github.bonigarcia:webdrivermanager:4.3.0'
     testImplementation 'org.springframework.ws:spring-ws-test'
     testImplementation 'org.springframework.security:spring-security-test'
 }
