@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
 <body th:with="householdMemberName=${iterationData.getPagesData().get('householdMemberInfo').get('firstName').value[0] + ' ' + iterationData.getPagesData().get('householdMemberInfo').get('lastName').value[0]}">
 <div class="page-wrapper">

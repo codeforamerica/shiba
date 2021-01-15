@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <th:block
         th:with="qualified=${@expeditedEligibilityDecider.decide(@applicationData).equals(T(org.codeforamerica.shiba.output.caf.ExpeditedEligibility).ELIGIBLE)}">
     <div th:replace="fragments/head :: head(#{${qualified} ? 'expedited-determination.qualified-title' : 'expedited-determination.denied-title'})"></div>

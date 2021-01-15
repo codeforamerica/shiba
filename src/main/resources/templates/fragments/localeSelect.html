@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <body>
 <div class="select toolbar__right language-select" th:with="lang=${#locale.toString()}">
     <label th:text="#{language-preferences.title}" hidden for="locales"></label>

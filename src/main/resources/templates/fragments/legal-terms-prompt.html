@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="legal-terms-prompt">
     <div class="textarea-readonly legal-stuff-window spacing-below-35">
         <h2 class="h3" th:text="#{legal-stuff.summary}"></h2>

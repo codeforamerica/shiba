@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="checkbox-input (input, data)" th:with="inputData=${data.get(input.name)}" class="form-group" >
     <div class="spacing-above-35 form-group" th:classappend="${!inputData.valid()} ? 'form-group--error' : ''">
         <div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${input})"></div>

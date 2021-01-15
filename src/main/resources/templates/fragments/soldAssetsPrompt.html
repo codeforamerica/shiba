@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <body>
 <div th:fragment="soldAssetsPrompt" class="spacing-below-35">
     <p th:text="#{sold-assets.this-includes}"></p>
