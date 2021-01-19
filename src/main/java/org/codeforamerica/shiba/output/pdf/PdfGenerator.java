@@ -41,6 +41,6 @@ public class PdfGenerator implements FileGenerator {
         List<ApplicationInput> applicationInputs = mappers.map(application, recipient);
         PdfFieldFiller pdfFieldFiller = this.pdfFieldFiller.get(recipient).get(document);
 
-        return pdfFieldFiller.fill(pdfFieldMapper.map(applicationInputs), applicationId, fileNameGenerator.generateFileName(application, document));
+        return pdfFieldFiller.fill(pdfFieldMapper.map(applicationInputs), applicationId, fileNameGenerator.generatePdfFileName(application, document));
     }
 }

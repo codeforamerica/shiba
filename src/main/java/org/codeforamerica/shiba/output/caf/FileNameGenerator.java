@@ -26,7 +26,30 @@ public class FileNameGenerator {
         this.countyMap = countyMap;
     }
 
-    public String generateFileName(Application application, Document document) {
+    public String generatePdfFileName(Application application, Document document) {
+        StringBuilder programs = programs(application);
+
+
+        return countyMap.get(application.getCounty()).getDhsProviderId() + "_" +
+                "MNB_" +
+                DateTimeFormatter.ofPattern("yyyyMMdd").format(application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago"))) + "_" +
+                DateTimeFormatter.ofPattern("HHmmss").format(application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago"))) + "_" +
+                application.getId() + "_" +
+                programs.toString() + "_" +
+                document.toString();
+    }
+
+    public String generateXmlFileName(Application application) {
+        StringBuilder programs = programs(application);
+        return countyMap.get(application.getCounty()).getDhsProviderId() + "_" +
+                "MNB_" +
+                DateTimeFormatter.ofPattern("yyyyMMdd").format(application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago"))) + "_" +
+                DateTimeFormatter.ofPattern("HHmmss").format(application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago"))) + "_" +
+                application.getId() + "_" +
+                programs.toString();
+    }
+
+    private StringBuilder programs(Application application) {
         Set<String> programsList = programList(application);
         final StringBuilder programs = new StringBuilder();
         List.of("E", "K", "F", "C").forEach(letter -> {
@@ -38,13 +61,7 @@ public class FileNameGenerator {
                 }
         );
 
-        return countyMap.get(application.getCounty()).getDhsProviderId() + "_" +
-                "MNB_" +
-                DateTimeFormatter.ofPattern("yyyyMMdd").format(application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago"))) + "_" +
-                DateTimeFormatter.ofPattern("HHmmss").format(application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago"))) + "_" +
-                application.getId() + "_" +
-                programs.toString() + "_" +
-                document.toString();
+        return programs;
     }
 
 

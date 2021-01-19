@@ -69,7 +69,7 @@ class SecurityConfigurationTest {
                 .timeToComplete(null)
                 .build());
         when(mappers.map(any(), any())).thenReturn(List.of());
-        when(fileNameGenerator.generateFileName(any(), any())).thenReturn("");
+        when(fileNameGenerator.generatePdfFileName(any(), any())).thenReturn("");
     }
 
     @Test

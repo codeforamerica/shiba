@@ -87,7 +87,7 @@ public class XmlGenerator implements FileGenerator {
             String finishedXML = contentsAfterReplacement.replaceAll("\\s*<\\w+:\\w+>\\{\\{\\w+}}</\\w+:\\w+>", "");
             return new ApplicationFile(
                     finishedXML.getBytes(),
-                    String.format("%s.xml", fileNameGenerator.generateFileName(application, document)));
+                    String.format("%s.xml", fileNameGenerator.generateXmlFileName(application)));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

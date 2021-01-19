@@ -56,7 +56,7 @@ class PdfGeneratorTest {
                 .timeToComplete(null)
                 .build();
         String fileName = "some file name";
-        when(fileNameGenerator.generateFileName(application, Document.CAF)).thenReturn(fileName);
+        when(fileNameGenerator.generatePdfFileName(application, Document.CAF)).thenReturn(fileName);
         when(applicationRepository.find(applicationId)).thenReturn(application);
         Recipient recipient = CASEWORKER;
         when(mappers.map(application, recipient)).thenReturn(applicationInputs);

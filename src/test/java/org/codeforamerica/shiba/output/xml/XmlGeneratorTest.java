@@ -494,7 +494,7 @@ class XmlGeneratorTest {
                 .timeToComplete(null)
                 .build();
         when(applicationRepository.find(any())).thenReturn(application);
-        when(fileNameGenerator.generateFileName(eq(application), any())).thenReturn(fileName);
+        when(fileNameGenerator.generateXmlFileName(eq(application))).thenReturn(fileName);
         String applicationId = "application-id";
         ApplicationFile applicationFile = subject.generate(applicationId, null, null);
 

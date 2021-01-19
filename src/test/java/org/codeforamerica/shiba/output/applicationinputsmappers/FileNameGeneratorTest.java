@@ -53,21 +53,21 @@ class FileNameGeneratorTest {
     void shouldIncludeIdInFileNameForApplication() {
         String applicationId = "someId";
         Application application = defaultApplicationBuilder.id(applicationId).build();
-        String fileName = fileNameGenerator.generateFileName(application, Document.CAF);
+        String fileName = fileNameGenerator.generatePdfFileName(application, Document.CAF);
         assertThat(fileName).contains(applicationId);
     }
 
     @Test
     void shouldIncludeSubmitDateInCentralTimeZone() {
         Application application = defaultApplicationBuilder.completedAt(ZonedDateTime.ofInstant(Instant.parse("2007-09-10T04:59:59.00Z"), ZoneOffset.UTC)).build();
-        String fileName = fileNameGenerator.generateFileName(application, Document.CAF);
+        String fileName = fileNameGenerator.generatePdfFileName(application, Document.CAF);
         assertThat(fileName).contains("20070909");
     }
 
     @Test
     void shouldIncludeSubmitTimeInCentralTimeZone() {
         Application application = defaultApplicationBuilder.completedAt(ZonedDateTime.ofInstant(Instant.parse("2007-09-10T04:05:59.00Z"), ZoneOffset.UTC)).build();
-        String fileName = fileNameGenerator.generateFileName(application, Document.CAF);
+        String fileName = fileNameGenerator.generatePdfFileName(application, Document.CAF);
         assertThat(fileName).contains("230559");
     }
 
@@ -78,7 +78,7 @@ class FileNameGeneratorTest {
         countyMap.getCounties().put(county, MnitCountyInformation.builder().dhsProviderId(countyNPI).build());
         Application application = defaultApplicationBuilder.county(county).build();
 
-        String fileName = fileNameGenerator.generateFileName(application, Document.CAF);
+        String fileName = fileNameGenerator.generatePdfFileName(application, Document.CAF);
 
         assertThat(fileName).contains(countyNPI);
     }
@@ -95,7 +95,7 @@ class FileNameGeneratorTest {
         applicationData.setPagesData(new PagesData(Map.of("choosePrograms", chooseProgramsData)));
         Application application = defaultApplicationBuilder.applicationData(applicationData).build();
 
-        String fileName = fileNameGenerator.generateFileName(application, Document.CAF);
+        String fileName = fileNameGenerator.generatePdfFileName(application, Document.CAF);
 
         assertThat(fileName).contains("EKFC");
     }
@@ -111,7 +111,7 @@ class FileNameGeneratorTest {
 
         Application application = defaultApplicationBuilder.applicationData(applicationData).build();
 
-        String fileName = fileNameGenerator.generateFileName(application, Document.CAF);
+        String fileName = fileNameGenerator.generatePdfFileName(application, Document.CAF);
 
         assertThat(fileName).contains("EKFC");
     }
@@ -121,13 +121,13 @@ class FileNameGeneratorTest {
         ApplicationData applicationData = new ApplicationData();
         Application application = defaultApplicationBuilder.applicationData(applicationData).build();
 
-        String fileName = fileNameGenerator.generateFileName(application, Document.CAF);
+        String fileName = fileNameGenerator.generatePdfFileName(application, Document.CAF);
 
         assertThat(fileName).endsWith("defaultId__CAF");
     }
 
     @Test
-    void shouldArrangeNameCorrectly() {
+    void shouldArrangeNameCorrectlyForPdf() {
         PageData chooseProgramsData = new PageData(Map.of("programs", InputData.builder().value(List.of("SNAP")).build()));
         ApplicationData applicationData = new ApplicationData();
         applicationData.setPagesData(new PagesData(Map.of("choosePrograms", chooseProgramsData)));
@@ -145,9 +145,34 @@ class FileNameGeneratorTest {
                 .applicationData(applicationData)
                 .build();
 
-        String fileName = fileNameGenerator.generateFileName(application, Document.CAF);
+        String fileName = fileNameGenerator.generatePdfFileName(application, Document.CAF);
 
         assertThat(fileName).isEqualTo(String.format("%s_MNB_%s_%s_%s_%s_%s",
                 countyNPI, "20070909", "235959", applicationId, "F", "CAF"));
+    }
+
+    @Test
+    void shouldArrangeNameCorrectlyForXML() {
+        PageData chooseProgramsData = new PageData(Map.of("programs", InputData.builder().value(List.of("SNAP")).build()));
+        ApplicationData applicationData = new ApplicationData();
+        applicationData.setPagesData(new PagesData(Map.of("choosePrograms", chooseProgramsData)));
+
+        String countyNPI = "someNPI";
+        County county = Hennepin;
+        countyMap.getCounties().put(county, MnitCountyInformation.builder().dhsProviderId(countyNPI).build());
+
+        String applicationId = "someId";
+
+        Application application = defaultApplicationBuilder
+                .id(applicationId)
+                .county(county)
+                .completedAt(ZonedDateTime.ofInstant(Instant.parse("2007-09-10T04:59:59.00Z"), ZoneOffset.UTC))
+                .applicationData(applicationData)
+                .build();
+
+        String fileName = fileNameGenerator.generateXmlFileName(application);
+
+        assertThat(fileName).isEqualTo(String.format("%s_MNB_%s_%s_%s_%s",
+                countyNPI, "20070909", "235959", applicationId, "F"));
     }
 }
