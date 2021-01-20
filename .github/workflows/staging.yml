@@ -98,6 +98,12 @@ jobs:
           'SENTRY_ENVIRONMENT=staging' \
           'SENTRY_RELEASE=${{ steps.generate-release.outputs.RELEASE }}' \
           'MIXPANEL_API-KEY=${{ secrets.MIXPANEL_API_KEY_STAGING }}'
+      - name: Merge master -> staging
+        uses: devmasx/merge-branch@v1.3.1
+        with:
+          type: now
+          target_branch: staging
+          github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Sentry release
         uses: getsentry/action-release@v1
         env:
