@@ -227,9 +227,38 @@ html {
     margin-left: 0;
 }
 
+.dz-button {
+    border-radius: 50%;
+    font-size: 6rem;
+    background-color: #003865;
+    padding: 3rem;
+    color: #FFF;
+}
+
 .reveal-adjacent {
     border: 2px solid #034E46;
     border-radius: 10px;
+    position: relative;
+}
+
+.reveal-purple {
+    border: 2px solid #741078;
+}
+
+.reveal-purple h3 {
+    color: #000;
+    margin-bottom: 0;
+}
+
+.reveal-purple .reveal__link {
+    color: #741078;
+    background-color: #FFF5FF;
+}
+
+.reveal-purple .reveal__content-adjacent {
+    background-color: #FFF5FF;
+    color: #000;
+    border-top: solid 2px #741078;
 }
 
 .reveal__link__header-adjacent {

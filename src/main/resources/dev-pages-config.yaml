@@ -973,6 +973,10 @@ pageDefinitions:
     name: documentRecommendation
     pageTitle:
       value: document-recommendation.title
+  - &uploadDocuments
+    name: uploadDocuments
+    pageTitle:
+      value: upload-documents.title
   - &success
     name: success
     pageTitle:
@@ -2462,7 +2466,11 @@ workflow:
   documentRecommendation:
     pageConfiguration: *documentRecommendation
     nextPages:
+      - pageName: uploadDocuments
       - pageName: success
+  uploadDocuments:
+    pageConfiguration: *uploadDocuments
+    nextPages:
       - pageName: success
   success:
     pageConfiguration: *success
@@ -2504,6 +2512,7 @@ landmarkPages:
     - prepareToApply
   postSubmitPages:
     - documentRecommendation
+    - uploadDocuments
     - success
   terminalPage: success
   submitPage: signThisApplication

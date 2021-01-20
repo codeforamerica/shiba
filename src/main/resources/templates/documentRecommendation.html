@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
 <body>
 <div class="page-wrapper">
@@ -9,7 +9,7 @@
         <div class="grid-ignore-mobile">
             <div class="card spacing-above-35">
                 <div th:replace="fragments/icons/icon-document-recommendations"></div>
-                <h2 th:text="#{document-recommendation.submit-documents-within-30-days}"></h2>
+                <h1 class="h2" th:text="#{document-recommendation.submit-documents-within-30-days}"></h1>
                 <p th:text="#{document-recommendation.the-sooner-you-submit}"></p>
                 <div class="grid__item spacing-above-35">
                     <div class="grid-ignore-mobile spacing-below-60">

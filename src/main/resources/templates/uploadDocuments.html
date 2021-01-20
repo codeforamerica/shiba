@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
+<body>
+<div class="page-wrapper">
+    <div th:replace="fragments/toolbar"></div>
+    <div th:replace="fragments/demoBanner"></div>
+    <section class="slab slab--shiba">
+        <div class="grid">
+            <div class="card spacing-above-35">
+                <h1 class="h2" th:text="#{upload-documents.title}"></h1>
+                <div class="spacing-below-60">
+                    <div id="dropzone">
+                        <form action="/file-upload" class="dropzone needsclick" id="demo-upload">
+
+                            <div class="dz-message needsclick">
+                                <button type="button" class="dz-button icon-add spacing-below-30"></button>
+                            </div>
+                            <div class="reveal reveal-adjacent reveal-purple">
+                                <a href="#" class="reveal__link reveal__link-adjacent">
+                                    <div class="reveal__link__header-adjacent"
+                                         th:text="#{upload-documents.view-document-list}"></div>
+                                    <div class="reveal__content reveal__content-adjacent">
+                                        <h3 class="h4" th:text="#{upload-documents.proof-of-income}"></h3>
+                                        <div th:text="#{upload-documents.share-pay-stubs}"></div>
+                                        <h3 class="h4 spacing-above-15"
+                                            th:text="#{upload-documents.proof-of-shelter-costs}"></h3>
+                                        <div th:text="#{upload-documents.share-rent-receipts-or-lease-agreements}"></div>
+                                        <h3 class="h4 spacing-above-15"
+                                            th:text="#{upload-documents.proof-of-job-loss}"></h3>
+                                        <div th:text="#{upload-documents.share-work-verification-statements}"></div>
+                                    </div>
+                                </a>
+                            </div>
+                            <button id="submit" th:text="Submit"></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<div th:replace="fragments/footer"></div>
+<script th:inline="javascript">
+    Dropzone.autoDiscover = false;
+
+    $("#demo-upload").dropzone({
+        success: function (file, response) {
+            console.log('Response ' + response + ' uploaded successfully');
+            console.log('File ' + file.name + ' uploaded successfully');
+        },
+        sending: function (file, xhr, formData) {
+            const csrfToken = [[${_csrf.token}]];
+            formData.append("_csrf", csrfToken)
+        },
+        autoProcessQueue: false
+    });
+
+    $('#submit').click(function (e) {
+        Dropzone.forElement("#demo-upload").processQueue();
+        e.preventDefault()
+        alert("Submitted files!");
+    });
+</script>
+</body>
+</html>
