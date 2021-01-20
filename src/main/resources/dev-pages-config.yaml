@@ -969,6 +969,10 @@ pageDefinitions:
         validators:
           - validation: NOT_BLANK
             errorMessageKey: general.validation.make-sure-you-answer-this-question
+  - &documentRecommendation
+    name: documentRecommendation
+    pageTitle:
+      value: document-recommendation.title
   - &success
     name: success
     pageTitle:
@@ -2454,6 +2458,11 @@ workflow:
   signThisApplication:
     pageConfiguration: *signThisApplication
     nextPages:
+      - pageName: documentRecommendation
+  documentRecommendation:
+    pageConfiguration: *documentRecommendation
+    nextPages:
+      - pageName: success
       - pageName: success
   success:
     pageConfiguration: *success
@@ -2493,5 +2502,8 @@ landmarkPages:
   landingPages:
     - landing
     - prepareToApply
+  postSubmitPages:
+    - documentRecommendation
+    - success
   terminalPage: success
   submitPage: signThisApplication

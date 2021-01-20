@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
+<body>
+<div class="page-wrapper">
+    <div th:replace="fragments/toolbar"></div>
+    <div th:replace="fragments/demoBanner"></div>
+    <section class="slab slab--shiba">
+        <div class="grid-ignore-mobile">
+            <div class="card spacing-above-35">
+                <div th:replace="fragments/icons/icon-document-recommendations"></div>
+                <h2 th:text="#{document-recommendation.submit-documents-within-30-days}"></h2>
+                <p th:text="#{document-recommendation.the-sooner-you-submit}"></p>
+                <div class="grid__item spacing-above-35">
+                    <div class="grid-ignore-mobile spacing-below-60">
+                        <div class="success-icons grid__item width-one-sixth spacing-below-15">
+                            <div th:replace="fragments/icons/icon-income" class="success-icons width-one-sixth"></div>
+                        </div>
+                        <div class="grid__item width-five-sixths">
+                            <h2 class="h3 spacing-below-10" th:text="#{document-recommendation.proof-of-income}"></h2>
+                            <div class=" spacing-below-10" th:text="#{document-recommendation.proof-of-income-explanation}"></div>
+                            <div class="body-gray" th:text="#{document-recommendation.proof-of-income-example}"></div>
+                        </div>
+                    </div>
+
+                    <div class="grid-ignore-mobile spacing-below-60">
+                        <div class="success-icons grid__item width-one-sixth spacing-below-15">
+                            <div th:replace="fragments/icons/icon-home" class="success-icons width-one-sixth"></div>
+                        </div>
+                        <div class="grid__item width-five-sixths">
+                            <h2 class="h3 spacing-below-10" th:text="#{document-recommendation.proof-of-housing-costs}"></h2>
+                            <div class=" spacing-below-10" th:text="#{document-recommendation.proof-of-housing-costs-explanation}"></div>
+                            <div class="body-gray" th:text="#{document-recommendation.proof-of-housing-costs-example}"></div>
+                        </div>
+                    </div>
+
+                    <div class="grid-ignore-mobile spacing-below-60">
+                        <div class="success-icons grid__item width-one-sixth spacing-below-15">
+                            <div th:replace="fragments/icons/icon-job-loss" class="success-icons width-one-sixth"></div>
+                        </div>
+                        <div class="grid__item width-five-sixths">
+                            <h2 class="h3 spacing-below-10" th:text="#{document-recommendation.proof-of-job-loss}"></h2>
+                            <div class=" spacing-below-10" th:text="#{document-recommendation.proof-of-job-loss-explanation}"></div>
+                            <div class="body-gray" th:text="#{document-recommendation.proof-of-job-loss-example}"></div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <a class="button button--primary" th:href="'/pages/'+${pageName}+'/navigation?option=0'"
+                       th:text="#{document-recommendation.upload-documents-now}"></a>
+                </div>
+                <div>
+                    <a class="button button--secondary" th:href="'/pages/'+${pageName}+'/navigation?option=1'"
+                       th:text="#{document-recommendation.skip-this-for-now}"></a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<div th:replace="fragments/footer"></div>
+</body>
+</html>

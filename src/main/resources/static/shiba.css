@@ -123,6 +123,10 @@ body {
     height: 100%;
 }
 
+.body-gray {
+    color: #5F5854;
+}
+
 html {
     height: 100%;
 }
@@ -377,8 +381,14 @@ input[id='sad']:checked + .feedback-buttons {
 /* MaterialIcons that haven't been added to honeycrisp variables.scss */
 .checkbox-icons {
     font-weight: bold;
-    width: 3rem;
-    height: 2.5rem;
+    max-width: 2rem;
+    padding-top: .25rem;
+    margin-right: 1rem;
+}
+
+.checkbox-icons svg {
+    width: 100%;
+    height: auto;
 }
 
 label.checkbox p.text--help {
@@ -469,7 +479,6 @@ input[type=number] {
 
 .success-icons svg {
     max-width: 36px;
-    margin-top: 0.5rem;
 }
 
 .select__element:focus {

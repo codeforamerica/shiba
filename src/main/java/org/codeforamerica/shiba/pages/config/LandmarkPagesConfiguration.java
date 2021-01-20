@@ -9,6 +9,7 @@ import java.util.List;
 public class LandmarkPagesConfiguration {
     private String startTimerPage;
     private List<String> landingPages = new ArrayList<>();
+    private List<String> postSubmitPages = new ArrayList<>();
     private String terminalPage;
     private String submitPage;
 
@@ -18,6 +19,10 @@ public class LandmarkPagesConfiguration {
 
     public boolean isTerminalPage(String pageName) {
         return pageName.equals(this.getTerminalPage());
+    }
+
+    public boolean isPostSubmitPage(String pageName) {
+        return this.getPostSubmitPages().contains(pageName);
     }
 
     public boolean isStartTimerPage(String pageName) {

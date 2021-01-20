@@ -141,7 +141,7 @@ public class PageController {
             this.applicationData.setStartTimeOnce(clock.instant());
         }
 
-        if (!landmarkPagesConfiguration.isTerminalPage(pageName) && applicationData.getId() != null) {
+        if (!landmarkPagesConfiguration.isPostSubmitPage(pageName) && applicationData.getId() != null) {
             return new ModelAndView(String.format("redirect:/pages/%s", landmarkPagesConfiguration.getTerminalPage()));
         } else if (!landmarkPagesConfiguration.isLandingPage(pageName) && applicationData.getStartTime() == null) {
             return new ModelAndView(String.format("redirect:/pages/%s", landmarkPagesConfiguration.getLandingPages().get(0)));

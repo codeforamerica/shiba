@@ -208,6 +208,9 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         navigateTo("signThisApplication");
         testPage.enter("applicantSignature", "some name");
         testPage.clickButton("Submit");
+
+        completeDocumentUploadFlow();
+
         SuccessPage successPage = new SuccessPage(driver);
         successPage.downloadPdfs();
         await().until(() -> {
@@ -511,7 +514,13 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.enter("applicantSignature", "some name");
         testPage.clickButton("Submit");
 
+        completeDocumentUploadFlow();
+
         return new SuccessPage(driver);
+    }
+
+    private void completeDocumentUploadFlow() {
+        testPage.clickButton("Upload documents now");
     }
 
     private void fillOutHousemateInfo(String programSelection) {
