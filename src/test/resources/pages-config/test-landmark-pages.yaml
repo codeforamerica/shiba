@@ -35,5 +35,7 @@ landmarkPages:
   startTimerPage: thirdPage
   landingPages:
     - firstPage
+  postSubmitPages:
+    - fourthPage
   terminalPage: fourthPage
   submitPage: thirdPage

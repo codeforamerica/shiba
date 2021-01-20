@@ -20,5 +20,7 @@ workflow:
     pageConfiguration: *terminalPage
 landmarkPages:
   startTimerPage: firstPage
+  postSubmitPages:
+    - testTerminalPage
   submitPage: firstPage
   terminalPage: testTerminalPage
