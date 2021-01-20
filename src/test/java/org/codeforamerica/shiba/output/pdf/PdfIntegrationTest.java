@@ -749,6 +749,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         navigateTo("signThisApplication");
         testPage.enter("applicantSignature", "someSignature");
         testPage.clickButton("Submit");
+        testPage.clickButton("Skip this for now");
         SuccessPage successPage = new SuccessPage(driver);
         successPage.downloadPdfs();
         await().until(() -> getAllFiles().size() == successPage.pdfDownloadLinks());

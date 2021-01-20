@@ -1,6 +1,5 @@
 package org.codeforamerica.shiba.output.pdf;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.AbstractBasePageTest;
 import org.codeforamerica.shiba.output.Document;
@@ -18,7 +17,6 @@ import org.openqa.selenium.By;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.Clock;
 import java.time.Instant;
