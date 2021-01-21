@@ -21,7 +21,7 @@ jobs:
           stable_branch: 'staging'
           development_branch: 'master'
           allow_ff: true
-          ff_only:
+          ff_only: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   draft-release:
