@@ -8,13 +8,13 @@
     <section class="slab slab--shiba">
         <div class="grid">
             <div class="card spacing-above-35">
-                <h1 class="h2" th:text="#{upload-documents.title}"></h1>
+                <h1 class="h2 text--centered" th:text="#{upload-documents.title}"></h1>
                 <div class="spacing-below-60">
                     <div id="dropzone">
                         <form action="/file-upload" class="dropzone needsclick" id="demo-upload">
-
-                            <div class="dz-message needsclick">
-                                <button type="button" class="dz-button icon-add spacing-below-30"></button>
+                            <h2 class="blue-label text--centered">Add your files</h2>
+                            <div class="dz-message needsclick spacing-below-35 text--centered">
+                                <button type="button" class="dz-button icon-add"></button>
                             </div>
                             <div class="reveal reveal-adjacent reveal-purple">
                                 <a href="#" class="reveal__link reveal__link-adjacent">
@@ -32,7 +32,7 @@
                                     </div>
                                 </a>
                             </div>
-                            <button id="submit" th:text="Submit"></button>
+                            <button id="submit" class="button" th:text="#{upload-documents.im-finished-uploading}"></button>
                         </form>
                     </div>
                 </div>

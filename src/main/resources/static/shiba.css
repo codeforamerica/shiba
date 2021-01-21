@@ -228,11 +228,20 @@ html {
 }
 
 .dz-button {
+    border: none;
     border-radius: 50%;
     font-size: 6rem;
     background-color: #003865;
-    padding: 3rem;
+    padding: 1rem;
     color: #FFF;
+    -webkit-box-shadow: 0 8px 6px -6px gray;
+    -moz-box-shadow: 0 8px 6px -6px gray;
+    box-shadow: 0 8px 6px -6px gray;
+}
+
+.blue-label {
+    color: #003865;
+    font-weight: normal;
 }
 
 .reveal-adjacent {
