@@ -1,16 +1,40 @@
 name: Deploy to demo
 
-on:
-  push:
-    tags:
-      - 'release-*'
+workflow_dispatch:
+  inputs:
+    branch:
+      description: 'Target branch to be released'
+      required: true
+      default: staging
 
 jobs:
+  draft-release:
+    name: Draft a new release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create tag name
+        id: create-tagname
+        run: echo "::set-output name=TAG_NAME::$(date +'%Y-%m-%d-%H%M')"
+      - name: Draft Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: release-${{ steps.create-tagname.outputs.TAG_NAME }}
+          release_name: release-${{ steps.create-tagname.outputs.TAG_NAME }}
+          commitish: ${{ github.event.inputs.branch }}
+          body: |
+            Fill in details about this release
+          draft: true
+          prerelease: true
   deploy:
     name: Deploy to Aptible demo
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.branch }}
       - run: git fetch --prune --unshallow
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2.0.3
