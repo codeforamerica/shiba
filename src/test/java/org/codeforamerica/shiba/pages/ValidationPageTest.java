@@ -430,6 +430,15 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
             testPage.clickContinue();
             assertThat(testPage.getTitle()).isEqualTo(expectedPage);
         }
+
+        @Test
+        void shouldPassValidationForEMAILWhenValidEmailHasTrailingWhitespace() {
+            driver.navigate().to(baseUrl + "/pages/pageWithEmail");
+            testPage.enter("emailInput", "fake@test.com ");
+
+            testPage.clickContinue();
+            assertThat(testPage.getTitle()).isEqualTo(lastPageTitle);
+        }
     }
 
 }
