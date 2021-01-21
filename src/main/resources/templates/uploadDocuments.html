@@ -11,13 +11,21 @@
                 <h1 class="h2 text--centered" th:text="#{upload-documents.title}"></h1>
                 <div class="spacing-below-60">
                     <div id="dropzone">
-                        <form action="/file-upload" class="dropzone needsclick" id="demo-upload">
-                            <h2 class="blue-label text--centered">Add your files</h2>
-                            <div class="dz-message needsclick spacing-below-35 text--centered">
-                                <button type="button" class="dz-button icon-add"></button>
+                        <form class="dropzone needsclick" id="document-upload">
+                            <div class="drag-and-drop-box spacing-below-35 spacing-above-35">
+                                <h2 class="blue-label text--centered hide-on-mobile narrow-centered-text"
+                                    th:text="#{upload-documents.drag-and-drop-or-add-your-files}"></h2>
+                                <h2 class="blue-label text--centered hide-on-desktop"
+                                    th:text="#{upload-documents.add-your-files}"></h2>
+                                <div class="dz-message needsclick text--centered">
+                                    <button th:aria-label="#{upload-documents.add-your-files}" type="button" class="button dz-button icon-add"></button>
+                                </div>
                             </div>
                             <div class="reveal reveal-adjacent reveal-purple">
                                 <a href="#" class="reveal__link reveal__link-adjacent">
+                                    <span class="reveal-icon" >
+                                        <div th:replace="fragments/icons/icon-multiple-documents  :: icon-multiple-documents"></div>
+                                    </span>
                                     <div class="reveal__link__header-adjacent"
                                          th:text="#{upload-documents.view-document-list}"></div>
                                     <div class="reveal__content reveal__content-adjacent">
@@ -32,7 +40,10 @@
                                     </div>
                                 </a>
                             </div>
-                            <button id="submit" class="button" th:text="#{upload-documents.im-finished-uploading}"></button>
+                            <!-- This is temporarily incorrect, but implemented to allow for navigation to the next page for acceptance -->
+                            <a id="submit" class="button"
+                                    th:href="'/pages/'+${pageName}+'/navigation?option=0'"
+                                    th:text="#{upload-documents.im-finished-uploading}"></a>
                         </form>
                     </div>
                 </div>
@@ -44,7 +55,7 @@
 <script th:inline="javascript">
     Dropzone.autoDiscover = false;
 
-    $("#demo-upload").dropzone({
+    $("#document-upload").dropzone({
         success: function (file, response) {
             console.log('Response ' + response + ' uploaded successfully');
             console.log('File ' + file.name + ' uploaded successfully');
@@ -57,7 +68,7 @@
     });
 
     $('#submit').click(function (e) {
-        Dropzone.forElement("#demo-upload").processQueue();
+        Dropzone.forElement("#document-upload").processQueue();
         e.preventDefault()
         alert("Submitted files!");
     });

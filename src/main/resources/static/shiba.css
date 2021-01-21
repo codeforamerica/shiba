@@ -227,6 +227,34 @@ html {
     margin-left: 0;
 }
 
+/* Upload Documents Page Styles */
+
+@media screen and (min-width: 601px) {
+    .hide-on-desktop {
+        display: none;
+    }
+
+    .drag-and-drop-box {
+        border: 2px dashed rgba(0, 56, 101, 0.7);
+        border-radius: 5px;
+        padding-top: 8rem;
+        padding-bottom: 13rem;
+        background-color: #F7F5F4;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .hide-on-mobile {
+        display: none;
+    }
+}
+
+.narrow-centered-text {
+    max-width: 190px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .dz-button {
     border: none;
     border-radius: 50%;
@@ -237,6 +265,12 @@ html {
     -webkit-box-shadow: 0 8px 6px -6px gray;
     -moz-box-shadow: 0 8px 6px -6px gray;
     box-shadow: 0 8px 6px -6px gray;
+    line-height: 6rem;
+}
+
+.dz-button:hover {
+    background-color: #00223D;
+    color: #FFF;
 }
 
 .blue-label {
@@ -270,6 +304,10 @@ html {
     border-top: solid 2px #741078;
 }
 
+.reveal-purple .reveal-icon svg {
+    fill: #741078;
+}
+
 .reveal__link__header-adjacent {
     display: inline-block;
     padding: .3em .5em .3em .7em;
@@ -289,6 +327,12 @@ html {
 
 .is-hidden .reveal__link-adjacent {
     border-radius: inherit;
+}
+
+.reveal-icon {
+    position: relative;
+    top: 3px;
+    left: 9px;
 }
 
 /*noinspection CssReplaceWithShorthandSafely*/
