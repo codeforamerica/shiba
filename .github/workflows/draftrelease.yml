@@ -2,9 +2,25 @@ name: Draft a new release
 
 on:
   workflow_dispatch:
-    inputs: {}
+    inputs:
+      branch:
+        description: 'Branch to draft-release'
+        required: true
+        default: staging
 
 jobs:
+  merge-to-staging:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Nightly Merge
+      uses: robotology/gh-action-nightly-merge@v1.3.1
+      with:
+        stable_branch: 'staging'
+        development_branch: 'master'
+        allow_ff: true
+        ff_only:
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   draft-release:
     name: Draft a new release
     runs-on: ubuntu-latest
@@ -12,7 +28,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          ref: 'staging'
+          ref: ${{ inputs.branch }}
           fetch-depth: '0'
       - name: Create tag name
         id: create-tagname
