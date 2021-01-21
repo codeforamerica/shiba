@@ -1,11 +1,12 @@
 name: Deploy to demo
 
-workflow_dispatch:
-  inputs:
-    branch:
-      description: 'Target branch to be released'
-      required: true
-      default: staging
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Target branch to be released'
+        required: true
+        default: staging
 
 jobs:
   draft-release:
