@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
+<body>
+<div class="page-wrapper">
+    <div th:replace="fragments/toolbar"></div>
+    <div th:replace="fragments/demoBanner"></div>
+    <section class="slab slab--shiba">
+        <div class="grid">
+            <div class="card spacing-above-35">
+                <h1 class="h2 text--centered" th:text="#{upload-documents.title}"></h1>
+                <div class="spacing-below-60">
+                    <div id="dropzone">
+                        <form class="dropzone needsclick" id="document-upload">
+                            <div class="drag-and-drop-box spacing-below-35 spacing-above-35">
+                                <h2 class="blue-label text--centered hide-on-mobile narrow-centered-text"
+                                    th:text="#{upload-documents.drag-and-drop-or-add-your-files}"></h2>
+                                <h2 class="blue-label text--centered hide-on-desktop"
+                                    th:text="#{upload-documents.add-your-files}"></h2>
+                                <div class="dz-message needsclick text--centered">
+                                    <button th:aria-label="#{upload-documents.add-your-files}" type="button" class="button dz-button icon-add"></button>
+                                </div>
+                            </div>
+                            <div class="reveal reveal-adjacent reveal-purple">
+                                <a href="#" class="reveal__link reveal__link-adjacent">
+                                    <span class="reveal-icon" >
+                                        <div th:replace="fragments/icons/icon-multiple-documents  :: icon-multiple-documents"></div>
+                                    </span>
+                                    <div class="reveal__link__header-adjacent"
+                                         th:text="#{upload-documents.view-document-list}"></div>
+                                    <div class="reveal__content reveal__content-adjacent">
+                                        <h3 class="h4" th:text="#{upload-documents.proof-of-income}"></h3>
+                                        <div th:text="#{upload-documents.share-pay-stubs}"></div>
+                                        <h3 class="h4 spacing-above-15"
+                                            th:text="#{upload-documents.proof-of-shelter-costs}"></h3>
+                                        <div th:text="#{upload-documents.share-rent-receipts-or-lease-agreements}"></div>
+                                        <h3 class="h4 spacing-above-15"
+                                            th:text="#{upload-documents.proof-of-job-loss}"></h3>
+                                        <div th:text="#{upload-documents.share-work-verification-statements}"></div>
+                                    </div>
+                                </a>
+                            </div>
+                            <!-- This is temporarily incorrect, but implemented to allow for navigation to the next page for acceptance -->
+                            <a id="submit" class="button"
+                                    th:href="'/pages/'+${pageName}+'/navigation?option=0'"
+                                    th:text="#{upload-documents.im-finished-uploading}"></a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<div th:replace="fragments/footer"></div>
+<script th:inline="javascript">
+    Dropzone.autoDiscover = false;
+
+    $("#document-upload").dropzone({
+        success: function (file, response) {
+            console.log('Response ' + response + ' uploaded successfully');
+            console.log('File ' + file.name + ' uploaded successfully');
+        },
+        sending: function (file, xhr, formData) {
+            const csrfToken = [[${_csrf.token}]];
+            formData.append("_csrf", csrfToken)
+        },
+        autoProcessQueue: false
+    });
+
+    $('#submit').click(function (e) {
+        Dropzone.forElement("#document-upload").processQueue();
+        e.preventDefault()
+        alert("Submitted files!");
+    });
+</script>
+</body>
+</html>

@@ -227,9 +227,85 @@ html {
     margin-left: 0;
 }
 
+/* Upload Documents Page Styles */
+
+@media screen and (min-width: 601px) {
+    .hide-on-desktop {
+        display: none;
+    }
+
+    .drag-and-drop-box {
+        border: 2px dashed rgba(0, 56, 101, 0.7);
+        border-radius: 5px;
+        padding-top: 8rem;
+        padding-bottom: 13rem;
+        background-color: #F7F5F4;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .hide-on-mobile {
+        display: none;
+    }
+}
+
+.narrow-centered-text {
+    max-width: 190px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.dz-button {
+    border: none;
+    border-radius: 50%;
+    font-size: 6rem;
+    background-color: #003865;
+    padding: 1rem;
+    color: #FFF;
+    -webkit-box-shadow: 0 8px 6px -6px gray;
+    -moz-box-shadow: 0 8px 6px -6px gray;
+    box-shadow: 0 8px 6px -6px gray;
+    line-height: 6rem;
+}
+
+.dz-button:hover {
+    background-color: #00223D;
+    color: #FFF;
+}
+
+.blue-label {
+    color: #003865;
+    font-weight: normal;
+}
+
 .reveal-adjacent {
     border: 2px solid #034E46;
     border-radius: 10px;
+    position: relative;
+}
+
+.reveal-purple {
+    border: 2px solid #741078;
+}
+
+.reveal-purple h3 {
+    color: #000;
+    margin-bottom: 0;
+}
+
+.reveal-purple .reveal__link {
+    color: #741078;
+    background-color: #FFF5FF;
+}
+
+.reveal-purple .reveal__content-adjacent {
+    background-color: #FFF5FF;
+    color: #000;
+    border-top: solid 2px #741078;
+}
+
+.reveal-purple .reveal-icon svg {
+    fill: #741078;
 }
 
 .reveal__link__header-adjacent {
@@ -251,6 +327,12 @@ html {
 
 .is-hidden .reveal__link-adjacent {
     border-radius: inherit;
+}
+
+.reveal-icon {
+    position: relative;
+    top: 3px;
+    left: 9px;
 }
 
 /*noinspection CssReplaceWithShorthandSafely*/

@@ -521,6 +521,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     private void completeDocumentUploadFlow() {
         testPage.clickButton("Upload documents now");
+        testPage.clickButton("I'm finished uploading");
     }
 
     private void fillOutHousemateInfo(String programSelection) {
