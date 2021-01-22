@@ -661,7 +661,7 @@ public class ReleasePdfIntegrationTest extends AbstractBasePageTest {
             Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
             assertThat(getPdfFieldText(pdAcroForms.get(CAF), "GROSS_MONTHLY_INCOME_0")).isEqualTo("123.0");
             assertThat(getPdfFieldText(pdAcroForms.get(CAF), "MONEY_MADE_LAST_MONTH")).isEqualTo("123.0");
-            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "EXPEDITED_ELIGIBILITY")).isEqualTo("Expedited");
+            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "EXPEDITED_ELIGIBILITY")).isEqualTo("Expedited-SNAP");
 
             assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0")).isEqualTo("123.0");
         }
@@ -700,7 +700,7 @@ public class ReleasePdfIntegrationTest extends AbstractBasePageTest {
             Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
             assertThat(getPdfFieldText(pdAcroForms.get(CAF), "GROSS_MONTHLY_INCOME_0")).isEqualTo("123.0");
             assertThat(getPdfFieldText(pdAcroForms.get(CAF), "MONEY_MADE_LAST_MONTH")).isEqualTo("123.0");
-            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "EXPEDITED_ELIGIBILITY")).isEqualTo("Expedited");
+            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "EXPEDITED_ELIGIBILITY")).isEqualTo("Expedited-SNAP");
 
             assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0")).isEqualTo("123.0");
         }
