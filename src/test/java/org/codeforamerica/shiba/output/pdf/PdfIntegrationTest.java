@@ -320,6 +320,12 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             selectPrograms(List.of("Child Care Assistance", "Cash programs"));
         }
 
+        @Test
+        void shouldMapPrograms() {
+            PDAcroForm pdAcroForm = submitAndDownloadCaf();
+            assertThat(getPdfFieldText(pdAcroForm, "CCAP")).isEqualTo("Yes");
+            assertThat(getPdfFieldText(pdAcroForm, "CASH")).isEqualTo("Yes");
+        }
 
         @Test
         void shouldMapOriginalAddressIfHomeAddressDoesNotUseEnrichedAddress() {

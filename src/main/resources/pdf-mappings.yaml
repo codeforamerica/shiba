@@ -15,6 +15,7 @@ mappings:
     moveToMnPreviousCity: APPLICANT_PREVIOUS_STATE
   choosePrograms:
     programs:
+      CCAP: CCAP
       SNAP: FOOD
       CASH: CASH
       GRH: GRH
