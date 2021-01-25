@@ -333,6 +333,7 @@ html {
     position: relative;
     top: 3px;
     left: 9px;
+    margin-left: 16px;
 }
 
 /*noinspection CssReplaceWithShorthandSafely*/
