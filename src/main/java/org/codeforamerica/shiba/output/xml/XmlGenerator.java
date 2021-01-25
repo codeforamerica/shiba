@@ -59,11 +59,12 @@ public class XmlGenerator implements FileGenerator {
             String contentsAfterReplacement = applicationInputs.stream()
                     .filter(input -> !input.getValue().isEmpty())
                     .flatMap(input -> {
+
                         String defaultXmlConfigKey = String.join(".", input.getGroupName(), input.getName());
                         return switch (input.getType()) {
                             case DATE_VALUE -> Stream.of(new AbstractMap.SimpleEntry<>(
                                     getXmlToken(input, config.get(defaultXmlConfigKey)),
-                                    String.join("/", input.getValue().stream().map(v -> StringEscapeUtils.escapeXml10(v)).collect(Collectors.toList()))));
+                                    String.join("/", input.getValue().stream().map(StringEscapeUtils::escapeXml10).collect(Collectors.toList()))));
                             case ENUMERATED_SINGLE_VALUE -> Optional.ofNullable(enumMappings.get(input.getValue(0)))
                                     .map(mappedValue -> new AbstractMap.SimpleEntry<>(
                                             getXmlToken(input, config.get(defaultXmlConfigKey)),
