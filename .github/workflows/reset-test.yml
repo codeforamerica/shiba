@@ -1,0 +1,22 @@
+
+name: Git reset
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'git reset staging to specified branch'
+        required: true
+        default: master
+
+jobs:
+  merge:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Merge to staging
+        run: |
+#          https://github.com/robotology/gh-action-nightly-merge/blob/master/entrypoint.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
