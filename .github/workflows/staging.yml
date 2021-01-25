@@ -98,6 +98,23 @@ jobs:
           'SENTRY_ENVIRONMENT=staging' \
           'SENTRY_RELEASE=${{ steps.generate-release.outputs.RELEASE }}' \
           'MIXPANEL_API-KEY=${{ secrets.MIXPANEL_API_KEY_STAGING }}'
+      - id: branch-output
+        run: |
+          if [[ "${{ github.event.inputs.branch }}" == "" ]]
+          then
+            echo "::set-output name=BRANCH_NAME::master"
+          else
+            echo "::set-output name=BRANCH_NAME::${{ github.event.inputs.branch }}"
+          fi
+      - name: Merge ${{ steps.branch-output.outputs.BRANCH_NAME }} -> staging
+        uses: robotology/gh-action-nightly-merge@v1.3.2
+        with:
+          stable_branch: 'staging'
+          development_branch: ${{ steps.branch-output.outputs.BRANCH_NAME }}
+          allow_ff: true
+          ff_only: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Sentry release
         uses: getsentry/action-release@v1
         env:
