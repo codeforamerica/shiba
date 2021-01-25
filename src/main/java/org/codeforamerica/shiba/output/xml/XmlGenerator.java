@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output.xml;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.output.ApplicationFile;
@@ -20,6 +21,7 @@ import java.util.Optional;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component
@@ -61,20 +63,20 @@ public class XmlGenerator implements FileGenerator {
                         return switch (input.getType()) {
                             case DATE_VALUE -> Stream.of(new AbstractMap.SimpleEntry<>(
                                     getXmlToken(input, config.get(defaultXmlConfigKey)),
-                                    String.join("/", input.getValue())));
+                                    String.join("/", input.getValue().stream().map(v -> StringEscapeUtils.escapeXml10(v)).collect(Collectors.toList()))));
                             case ENUMERATED_SINGLE_VALUE -> Optional.ofNullable(enumMappings.get(input.getValue(0)))
                                     .map(mappedValue -> new AbstractMap.SimpleEntry<>(
                                             getXmlToken(input, config.get(defaultXmlConfigKey)),
-                                            mappedValue))
+                                            StringEscapeUtils.escapeXml10(mappedValue)))
                                     .stream();
                             case ENUMERATED_MULTI_VALUE -> input.getValue().stream()
                                         .map(value -> new AbstractMap.SimpleEntry<>(
-                                                getXmlToken(input, config.get(String.join(".", defaultXmlConfigKey, value))),
+                                                getXmlToken(input, config.get(String.join(".", defaultXmlConfigKey, StringEscapeUtils.escapeXml10(value)))),
                                                 enumMappings.get(value)))
                                         .filter(entry -> entry.getValue() != null);
                             default -> Stream.of(new AbstractMap.SimpleEntry<>(
                                     getXmlToken(input, config.get(defaultXmlConfigKey)),
-                                    input.getValue(0)));
+                                    StringEscapeUtils.escapeXml10(input.getValue(0))));
                         };
                     })
                     .filter(xmlTokenToInputValueEntry -> xmlTokenToInputValueEntry.getKey() != null)
