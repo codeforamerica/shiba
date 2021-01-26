@@ -3,14 +3,14 @@
 <div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
 <body>
 <div class="page-wrapper">
-    <div th:replace="fragments/toolbar"></div>
-    <div th:replace="fragments/demoBanner"></div>
+    <div th:replace="fragments/toolbar :: toolbar" ></div>
+    <div th:replace="fragments/demoBanner :: demoBanner"></div>
     <section class="slab slab--shiba">
         <div class="grid">
-            <div th:replace="fragments/card-header"></div>
+            <div th:replace="fragments/cardHeader :: cardHeader"></div>
             <div class="card spacing-above-35">
                 <th:block th:if="${page.contextFragment != null}">
-                    <div th:replace="'fragments/'+__${page.contextFragment}__"></div>
+                    <div th:replace="'fragments/'+__${page.contextFragment}__ :: ${page.contextFragment}"></div>
                 </th:block>
                 <div th:if="${page.hasHeader()}" class="grid__item spacing-above-35 spacing-below-35">
                     <h1 class="h2" th:text="#{${page.headerKey}}"></h1>
@@ -32,6 +32,6 @@
         </div>
     </section>
 </div>
-<div th:replace="fragments/footer"></div>
+<div th:replace="fragments/footer :: footer"></div>
 </body>
 </html>

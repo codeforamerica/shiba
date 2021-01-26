@@ -3,19 +3,19 @@
 <div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
 <body>
 <div class="page-wrapper">
-    <div th:replace="fragments/toolbar"></div>
-    <div th:replace="fragments/demoBanner"></div>
+    <div th:replace="fragments/toolbar :: toolbar" ></div>
+    <div th:replace="fragments/demoBanner :: demoBanner"></div>
     <section class="slab slab--shiba">
         <div class="grid-ignore-mobile">
-            <div th:replace="fragments/card-header"></div>
+            <div th:replace="fragments/cardHeader :: cardHeader"></div>
             <div class="card spacing-above-35">
-                <div th:replace="fragments/icons/icon-document-recommendations"></div>
+                <div th:replace="fragments/icons/icon-document-recommendations :: icon-document-recommendations"></div>
                 <h1 class="h2" th:text="#{document-recommendation.submit-documents-within-30-days}"></h1>
                 <p th:text="#{document-recommendation.the-sooner-you-submit}"></p>
                 <div class="grid__item spacing-above-35">
                     <div class="grid-ignore-mobile spacing-below-60">
                         <div class="success-icons grid__item width-one-sixth spacing-below-15">
-                            <div th:replace="fragments/icons/icon-income" class="success-icons width-one-sixth"></div>
+                            <div th:replace="fragments/icons/icon-income :: icon-income" class="success-icons width-one-sixth"></div>
                         </div>
                         <div class="grid__item width-five-sixths">
                             <h2 class="h3 spacing-below-10" th:text="#{document-recommendation.proof-of-income}"></h2>
@@ -26,7 +26,7 @@
 
                     <div class="grid-ignore-mobile spacing-below-60">
                         <div class="success-icons grid__item width-one-sixth spacing-below-15">
-                            <div th:replace="fragments/icons/icon-home" class="success-icons width-one-sixth"></div>
+                            <div th:replace="fragments/icons/icon-home :: icon-home" class="success-icons width-one-sixth"></div>
                         </div>
                         <div class="grid__item width-five-sixths">
                             <h2 class="h3 spacing-below-10" th:text="#{document-recommendation.proof-of-housing-costs}"></h2>
@@ -37,7 +37,7 @@
 
                     <div class="grid-ignore-mobile spacing-below-60">
                         <div class="success-icons grid__item width-one-sixth spacing-below-15">
-                            <div th:replace="fragments/icons/icon-job-loss" class="success-icons width-one-sixth"></div>
+                            <div th:replace="fragments/icons/icon-job-loss :: icon-job-loss" class="success-icons width-one-sixth"></div>
                         </div>
                         <div class="grid__item width-five-sixths">
                             <h2 class="h3 spacing-below-10" th:text="#{document-recommendation.proof-of-job-loss}"></h2>
@@ -58,6 +58,6 @@
         </div>
     </section>
 </div>
-<div th:replace="fragments/footer"></div>
+<div th:replace="fragments/footer :: footer"></div>
 </body>
 </html>

@@ -17,7 +17,7 @@
                        th:attrappend="data-follow-up=${input.followUpValues.contains(option.value)} ? |#${input.name}-follow-up| : ''">
                 <div th:if="${option.getHelpIcon() != null}"
                      class="checkbox-icons">
-                    <div th:replace="|fragments/icons/${option.getHelpIcon()}|"></div>
+                    <div th:replace="|fragments/icons/${option.getHelpIcon()}| :: ${option.getHelpIcon()}"></div>
                 </div>
                 <div>
                     <span th:text="#{${option.messageKey}}"></span>

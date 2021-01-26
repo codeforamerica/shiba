@@ -2,7 +2,7 @@
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
 <body>
-<div th:replace="fragments/card-header"></div>
+<div th:replace="fragments/cardHeader :: cardHeader"></div>
 <!--    subworkflowIterations: committed sub workflow data-->
 <!-- [
         {pageName: pageData},
@@ -21,6 +21,6 @@
         </form>
     </th:block>
 </th:block>
-<div th:replace="fragments/continue"></div>
+<div th:replace="fragments/continue :: continue"></div>
 </body>
 </html>
