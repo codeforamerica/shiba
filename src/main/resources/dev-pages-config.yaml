@@ -928,12 +928,6 @@ pageDefinitions:
         type: YES_NO
   - &expeditedDetermination
     name: expeditedDetermination
-  - &importantToKnow
-    name: importantToKnow
-    pageTitle:
-      value: important-to-know.title
-    headerKey:
-      value: important-to-know.important-stuff-to-know-about
   - &legalStuff
     name: legalStuff
     pageTitle:
@@ -2383,7 +2377,7 @@ workflow:
     nextPages:
       - pageName: doYouLiveAloneExpedited
         flow: EXPEDITED
-      - pageName: importantToKnow
+      - pageName: legalStuff
         flow: MINIMUM
   doYouLiveAloneExpedited:
     pageConfiguration: *doYouLiveAlone
@@ -2446,19 +2440,19 @@ workflow:
   expeditedDetermination:
     pageConfiguration: *expeditedDetermination
     nextPages:
-      - pageName: importantToKnow
+      - pageName: legalStuff
   additionalInfo:
     pageConfiguration: *additionalInfo
-    nextPages:
-      - pageName: importantToKnow
-  importantToKnow:
-    pageConfiguration: *importantToKnow
     nextPages:
       - pageName: legalStuff
   legalStuff:
     pageConfiguration: *legalStuff
     nextPages:
       - pageName: signThisApplication
+    datasources:
+      - pageName: choosePrograms
+      - groupName: household
+        pageName: householdMemberInfo
   signThisApplication:
     pageConfiguration: *signThisApplication
     nextPages:

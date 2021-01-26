@@ -44,6 +44,20 @@ public class PagesData extends HashMap<String, PageData> {
                 .collect(toMap(Entry::getKey, Entry::getValue)));
     }
 
+    public DatasourcePages getDatasourceGroupBy(List<PageDatasource> datasources, Subworkflows subworkflows) {
+        Map<String, PageData> pages = new HashMap<>();
+        datasources.stream()
+                .filter(datasource -> datasource.getGroupName() != null && subworkflows.containsKey(datasource.getGroupName()))
+                .forEach(datasource -> {
+                    PageData value = new PageData();
+                    subworkflows.get(datasource.getGroupName()).stream()
+                            .map(iteration -> iteration.getPagesData().getPage(datasource.getPageName()))
+                            .forEach(value::mergeInputDataValues);
+                    pages.put(datasource.getPageName(), value);
+                });
+        return new DatasourcePages(pages);
+    }
+
     public List<String> safeGetPageInputValue(String pageName, String inputName) {
         return Optional.ofNullable(get(pageName))
                 .flatMap(pageData -> Optional.ofNullable(pageData.get(inputName)))
