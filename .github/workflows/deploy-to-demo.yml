@@ -78,7 +78,7 @@ jobs:
         if: ${{ always() }}
         uses: innocarpe/actions-slack@v1.1
         with:
-          status: ${{ job.status }}
+          status: ${{ jobs.deploy.status }}
           success_text: 'Deploy to Aptible demo succeeded :smile:'
           failure_text: 'Deploy to Aptible demo failed :frowning:'
         env:

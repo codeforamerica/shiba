@@ -42,7 +42,7 @@ jobs:
       if: ${{ failure() }}
       uses: innocarpe/actions-slack@v1.1
       with:
-        status: ${{ job.status }}
+        status: ${{ jobs.test.status }}
         failure_text: 'Tests failed in CI! :disappointed:'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -108,7 +108,7 @@ jobs:
         if: ${{ always() }}
         uses: innocarpe/actions-slack@v1.1
         with:
-          status: ${{ job.status }}
+          status: ${{ jobs.deploy.status }}
           success_text: 'Deploy to Aptible staging succeeded :smile:'
           failure_text: 'Deploy to Aptible staging failed :frowning:'
         env:
