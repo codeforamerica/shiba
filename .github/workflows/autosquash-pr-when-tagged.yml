@@ -1,4 +1,4 @@
-name: Autosquash
+name: Autosquash PR when tagged with 'autosquash'
 on:
   check_run:
     types:
