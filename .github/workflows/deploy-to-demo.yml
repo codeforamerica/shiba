@@ -76,9 +76,9 @@ jobs:
           environment: demo
       - name: Announce on Slack
         if: ${{ always() }}
-        uses: innocarpe/actions-slack@v1.1
+        uses: innocarpe/actions-slack@v1
         with:
-          status: ${{ jobs.deploy.status }}
+          status: ${{ job.status }}
           success_text: 'Deploy to Aptible demo succeeded :smile:'
           failure_text: 'Deploy to Aptible demo failed :frowning:'
         env:

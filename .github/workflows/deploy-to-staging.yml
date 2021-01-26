@@ -40,9 +40,9 @@ jobs:
       run: ./gradlew clean testAll
     - name: Announce test failure on slack
       if: ${{ failure() }}
-      uses: innocarpe/actions-slack@v1.1
+      uses: innocarpe/actions-slack@v1
       with:
-        status: ${{ jobs.test.status }}
+        status: ${{ job.status }}
         failure_text: 'Tests failed in CI! :disappointed:'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -106,9 +106,9 @@ jobs:
           environment: staging
       - name: Announce on Slack
         if: ${{ always() }}
-        uses: innocarpe/actions-slack@v1.1
+        uses: innocarpe/actions-slack@v1
         with:
-          status: ${{ jobs.deploy.status }}
+          status: ${{ job.status }}
           success_text: 'Deploy to Aptible staging succeeded :smile:'
           failure_text: 'Deploy to Aptible staging failed :frowning:'
         env:
