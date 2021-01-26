@@ -133,7 +133,7 @@ html {
 
 .textarea-readonly {
     font-weight: normal;
-    font-size: 14px;
+    font-size: 16px;
     border: none;
     box-shadow: none;
     overflow-wrap: break-word;
@@ -142,7 +142,8 @@ html {
     padding: 1.5rem;
     line-height: 2.5rem;
     margin-bottom: 1.5rem;
-    background-color: #F7F5F4;
+    background-color: #FFF;
+    border: solid 2px #000;
 }
 
 .legal-stuff-window {
@@ -152,12 +153,20 @@ html {
 }
 
 .legal-stuff-window div {
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     line-height: 1.5;
 }
 
-.legal-stuff-window h3 {
+.legal-stuff-window .h3 {
     margin-bottom: 10px;
+    font-size: 19px;
+    font-weight: bold;
+}
+
+.legal-stuff-window .h4 {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 8px;
 }
 
 .textarea-readonly::-webkit-scrollbar {
@@ -169,7 +178,7 @@ html {
 }
 
 .textarea-readonly::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, .2);
+    background-color: rgba(0, 0, 0, 1);
     border-radius: 10px;
     border: 2px solid #ffffff;
 }
@@ -594,3 +603,4 @@ input[type=number] {
 .emoji--crossmark {
     background-image: url(images/crossmark.png);
 }
+

@@ -212,7 +212,7 @@ public class PageController {
             }
         } else {
             pageToRender = "formPage";
-            model.put("pageDatasources", pagesData.getDatasourcePagesBy(pageWorkflow.getDatasources()));
+            model.put("pageDatasources", pagesData.getDatasourcePagesBy(pageWorkflow.getDatasources()).mergeDatasourcePages(pagesData.getDatasourceGroupBy(pageWorkflow.getDatasources(), applicationData.getSubworkflows())));
             model.put("data", pagesData.getPageDataOrDefault(pageTemplate.getName(), pageConfiguration));
         }
         return new ModelAndView(pageToRender, model);

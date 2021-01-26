@@ -1,5 +1,7 @@
 package org.codeforamerica.shiba.pages;
 
+import org.codeforamerica.shiba.pages.data.*;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -7,6 +9,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 
 public class PageUtils {
     private static final String WEB_INPUT_ARRAY_TOKEN = "[]";
@@ -45,5 +48,17 @@ public class PageUtils {
         Stream<String> nonApplicantHouseholdMembers = householdMembers.stream().filter(householdMember -> !householdMember.endsWith("applicant")).sorted();
 
         return Stream.concat(applicant, nonApplicantHouseholdMembers).collect(Collectors.toList());
+    }
+
+    public static Boolean isCCAPEligible(DatasourcePages datasourcePages) {
+        List<String> applicantPrograms = datasourcePages.get("choosePrograms").get("programs").getValue();
+        boolean applicantHasCCAP = applicantPrograms.contains("CCAP");
+        boolean hasHousehold = !datasourcePages.get("householdMemberInfo").isEmpty();
+        boolean householdHasCCAP = false;
+        if (hasHousehold) {
+            householdHasCCAP = datasourcePages.get("householdMemberInfo").get("programs").getValue().stream().anyMatch(iteration ->
+                    iteration.contains("CCAP"));
+        }
+        return applicantHasCCAP || householdHasCCAP;
     }
 }
