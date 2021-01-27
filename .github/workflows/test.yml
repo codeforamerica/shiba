@@ -9,20 +9,8 @@ on:
         default: staging
 
 jobs:
-  determine-branch:
-    runs-on: ubuntu-latest
-    outputs:
-      branch-name: ${{ steps.branch-output.branch-name }}
-    steps:
-      - id: branch-output
-        run: |
-          if [[ "${{ github.event.inputs.branch }}" == "" ]]
-          then
-            echo "::set-output name=branch-name::staging"
-          else
-            echo "::set-output name=branch-name::${{ github.event.inputs.branch }}"
-          fi
   show-branch:
     runs-on: ubuntu-latest
+    if: github.event.inputs.branch == 'staging'
     steps:
-      - run: echo ${{ needs.determine-branch.outputs.branch-name }}
+      - run: echo ${{ github.event.inputs.branch }}
