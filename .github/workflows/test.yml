@@ -17,6 +17,5 @@ jobs:
   show-branch:
     needs: skipped-action
     runs-on: ubuntu-latest
-    if: github.event.inputs.branch == 'staging'
     steps:
       - run: echo ${{ github.event.inputs.branch }}
