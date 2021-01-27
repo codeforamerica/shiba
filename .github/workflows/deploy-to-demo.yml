@@ -1,16 +1,89 @@
 name: Deploy to demo
 
 on:
-  push:
-    tags:
-      - 'release-*'
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Target branch to be released'
+        required: true
+        default: staging
 
 jobs:
+  test:
+    name: Run test suite (non-staging only)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_USER: shiba
+          POSTGRES_PASSWORD: shiba
+          POSTGRES_DB: shiba-test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up ChromeDriver
+        if: github.event.inputs.branch != 'staging'
+        uses: nanasess/setup-chromedriver@v1.0.1
+      - name: Set up JDK
+        if: github.event.inputs.branch != 'staging'
+        uses: actions/setup-java@v1
+        with:
+          java-version: '14'
+      - name: Grant execute permission for gradlew
+        if: github.event.inputs.branch != 'staging'
+        run: chmod +x gradlew
+      - name: Test with Gradle (only on branches that aren't staging)
+        run: |
+          if [[ "${{ github.event.inputs.branch }}" == "staging" ]]; then
+            exit 0
+          else
+            ./gradlew clean testAll
+          fi
+      - name: Announce test failure on slack
+        if: ${{ failure() }}
+        uses: innocarpe/actions-slack@v1
+        with:
+          status: ${{ job.status }}
+          failure_text: 'Tests failed in CI! :disappointed:'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+  draft-release:
+    name: Draft a new release
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create tag name
+        id: create-tagname
+        run: echo "::set-output name=TAG_NAME::$(date +'%Y-%m-%d-%H%M')"
+      - name: Draft Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: release-${{ steps.create-tagname.outputs.TAG_NAME }}
+          release_name: release-${{ steps.create-tagname.outputs.TAG_NAME }}
+          commitish: ${{ github.event.inputs.branch }}
+          body: |
+            Fill in details about this release
+          draft: true
+          prerelease: true
   deploy:
     name: Deploy to Aptible demo
+    needs: draft-release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.branch }}
       - run: git fetch --prune --unshallow
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2.0.3

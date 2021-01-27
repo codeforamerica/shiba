@@ -11,8 +11,8 @@
 </head>
 <body class="locale-en" id="landing-page">
 <div class="page-wrapper">
-    <div th:replace="fragments/toolbar"></div>
-    <div th:replace="fragments/demoBanner"></div>
+    <div th:replace="fragments/toolbar :: toolbar" ></div>
+    <div th:replace="fragments/demoBanner :: demoBanner"></div>
     <section class="slab spacing-above-35">
         <div class="grid">
             <div class="grid__item">
@@ -99,6 +99,6 @@
         </div>
     </section>
 </div>
-<div th:replace="fragments/footer"></div>
+<div th:replace="fragments/footer :: footer"></div>
 </body>
 </html>

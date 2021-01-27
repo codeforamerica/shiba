@@ -13,7 +13,7 @@
            th:text="${input.name}">
     </label>
     <th:block th:if="${input.promptMessage != null && input.promptMessage.promptMessageFragmentName != null}">
-        <div th:replace="|fragments/${input.promptMessage.promptMessageFragmentName}|"></div>
+        <div th:replace="|fragments/${input.promptMessage.promptMessageFragmentName}| :: ${input.promptMessage.promptMessageFragmentName}"></div>
     </th:block>
 </th:block>
 </body>

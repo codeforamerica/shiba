@@ -176,7 +176,7 @@ pageDefinitions:
         type: DATE
         validators:
           - validation: DATE
-            errorMessageKey: general.validation.make-sure-to-provide-a-birthday
+            errorMessageKey: general.validation.please-enter-your-birthday-in-this-format
             condition:
               input: dateOfBirth
               matcher: NOT_EMPTY
@@ -477,7 +477,7 @@ pageDefinitions:
             condition:
               input: dateOfBirth
               matcher: NOT_EMPTY
-            errorMessageKey: general.validation.make-sure-to-provide-a-birthday
+            errorMessageKey: general.validation.please-enter-your-birthday-in-this-format
       - name: maritalStatus
         type: RADIO
         promptMessage:
@@ -1762,6 +1762,17 @@ pageDefinitions:
             errorMessageKey: general.validation.area-codes-can-not-begin-with-1
           - validation: PHONE
             errorMessageKey: general.validation.make-sure-to-enter-a-phone-number-with-10-digits
+  - &additionalInfo
+    name: additionalInfo
+    headerKey:
+      value: additional-info.is-there-anything-else-you-want-to-share
+    headerHelpMessageKey:
+      value: additional-info.this-is-optional
+    inputs:
+      - name: additionalInfo
+        type: TEXTAREA
+    pageTitle:
+      value: additional-info.title
 workflow:
   landing:
     pageConfiguration: *landing
@@ -2286,7 +2297,7 @@ workflow:
   helper:
     pageConfiguration: *helper
     nextPages:
-      - pageName: importantToKnow
+      - pageName: additionalInfo
         condition:
           input: helpWithBenefits
           value: "false"
@@ -2309,7 +2320,7 @@ workflow:
   helperContactInfo:
     pageConfiguration: *helperContactInfo
     nextPages:
-      - pageName: importantToKnow
+      - pageName: additionalInfo
     skipCondition:
       logicalOperator: AND
       conditions:
@@ -2426,6 +2437,10 @@ workflow:
       - pageName: doYouLiveAlone
   expeditedDetermination:
     pageConfiguration: *expeditedDetermination
+    nextPages:
+      - pageName: importantToKnow
+  additionalInfo:
+    pageConfiguration: *additionalInfo
     nextPages:
       - pageName: importantToKnow
   importantToKnow:

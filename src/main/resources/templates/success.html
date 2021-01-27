@@ -3,13 +3,13 @@
 <div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
 <body>
 <div class="page-wrapper">
-    <div th:replace="fragments/toolbar"></div>
-    <div th:replace="fragments/demoBanner"></div>
+    <div th:replace="fragments/toolbar :: toolbar" ></div>
+    <div th:replace="fragments/demoBanner :: demoBanner"></div>
     <section class="slab slab--shiba">
         <div class="grid-ignore-mobile">
             <div class="card spacing-above-35">
                 <div class="grid__item bottom-horizontal-line-dark-grey">
-                    <div th:replace="fragments/icons/icon-submission-success"></div>
+                    <div th:replace="fragments/icons/icon-submission-success :: icon-submission-success"></div>
                     <h1 class="h2 spacing-below-0" th:text="|#{success.done-your-application-has-been-submitted}|"></h1>
                     <h2 id="application-id" class="spacing-below-10 h3"
                         th:text="|#{success.confirmation-number}: ${applicationId}|"></h2>
@@ -24,7 +24,7 @@
                     <h2 class="h3" th:text="#{success.whats-next}"></h2>
                     <div class="grid-ignore-mobile spacing-below-35">
                         <div class="success-icons grid__item width-one-sixth spacing-below-15">
-                            <div th:replace="fragments/icons/icon-download" class="success-icons width-one-sixth"></div>
+                            <div th:replace="fragments/icons/icon-download :: icon-download"></div>
                         </div>
                         <div class="grid__item width-five-sixths">
                             <div class="spacing-below-15" th:text="#{success.download-my-application}"></div>
@@ -39,7 +39,7 @@
 
                     <div class="grid-ignore-mobile spacing-below-35">
                         <div class="success-icons grid__item width-one-sixth spacing-below-15">
-                            <div th:replace="fragments/icons/icon-communications" class="success-icons width-one-sixth"></div>
+                            <div th:replace="fragments/icons/icon-communications :: icon-communications"></div>
                         </div>
                         <div class="grid__item width-five-sixths">
                             <div th:text="#{success.your-county-will-contact-within-one-week}" class="width-five-sixths"></div>
@@ -48,7 +48,7 @@
 
                     <div class="grid-ignore-mobile spacing-below-35">
                         <div class="success-icons grid__item width-one-sixth spacing-below-15">
-                            <div th:replace="fragments/icons/icon-documents" class="success-icons width-one-sixth"></div>
+                            <div th:replace="fragments/icons/icon-documents :: icon-documents"></div>
                         </div>
                         <div class="grid__item width-five-sixths">
                             <div th:text="#{success.additional-documents}" class="width-five-sixths"></div>
@@ -103,6 +103,6 @@
         </div>
     </section>
 </div>
-<div th:replace="fragments/footer"></div>
+<div th:replace="fragments/footer :: footer"></div>
 </body>
 </html>

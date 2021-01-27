@@ -44,7 +44,7 @@ xml:
     homeAddress:
       selectedZipCode: CONTACTINFO_HOME_ZIPCODE
       selectedCity: CONTACTINFO_HOME_CITY
-      selectedStreetAddress: CONTACTINFO_HOME_STREET_ADDRESS
+      streetAddressWithPermanentAddress: CONTACTINFO_HOME_STREET_ADDRESS
       selectedApartmentNumber: CONTACTINFO_HOME_APARTMENT_NUMBER
       isHomeless:
         true: CONTACTINFO_HOMELESS

@@ -509,6 +509,8 @@ public class ReleaseUserJourneyPageTest extends AbstractBasePageTest {
         testPage.clickContinue();
         testPage.enter("registerToVote", "Yes, send me more info");
         completeHelperWorkflow();
+        driver.findElement(By.id("additionalInfo")).sendKeys("Some additional information about my application");
+        testPage.clickContinue();
         testPage.clickContinue();
         testPage.enter("agreeToTerms", "I agree");
         testPage.clickContinue();

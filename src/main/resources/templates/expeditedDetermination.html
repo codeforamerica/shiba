@@ -5,11 +5,11 @@
     <div th:replace="fragments/head :: head(#{${qualified} ? 'expedited-determination.qualified-title' : 'expedited-determination.denied-title'})"></div>
     <body>
     <div class="page-wrapper">
-        <div th:replace="fragments/toolbar"></div>
-        <div th:replace="fragments/demoBanner"></div>
+        <div th:replace="fragments/toolbar :: toolbar" ></div>
+        <div th:replace="fragments/demoBanner :: demoBanner"></div>
         <section class="slab slab--shiba">
             <div class="grid">
-                <div th:replace="fragments/card-header"></div>
+                <div th:replace="fragments/cardHeader :: cardHeader"></div>
                 <div class="card spacing-above-35">
                     <h1 class="h2" th:text="#{${qualified} ? 'expedited-determination.qualified-header':'expedited-determination.denied-header'}"></h1>
                     <p class="spacing-below-60" th:text="#{${qualified} ? 'expedited-determination.qualified-detail':'expedited-determination.denied-detail'}"></p>
@@ -18,7 +18,7 @@
             </div>
         </section>
     </div>
-    <div th:replace="fragments/footer"></div>
+    <div th:replace="fragments/footer :: footer"></div>
     </body>
 </th:block>
 </html>

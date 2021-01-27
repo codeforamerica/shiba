@@ -3,11 +3,11 @@
 <div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
 <body>
 <div class="page-wrapper">
-    <div th:replace="fragments/toolbar"></div>
-    <div th:replace="fragments/demoBanner"></div>
+    <div th:replace="fragments/toolbar :: toolbar" ></div>
+    <div th:replace="fragments/demoBanner :: demoBanner"></div>
     <section class="slab slab--shiba">
         <div class="grid">
-            <div th:replace="fragments/card-header"></div>
+            <div th:replace="fragments/cardHeader :: cardHeader"></div>
             <div class="card spacing-above-35">
                 <div class="grid__item spacing-above-35">
                     <p class="text--help text--centered spacing-below-10"
@@ -25,12 +25,13 @@
                     </ol>
                 </div>
                 <div class="text--centered">
-                    <div th:replace="fragments/continue"></div>
+                    <div th:replace="fragments/continue :: continue"></div>
                 </div>
             </div>
         </div>
     </section>
 </div>
-<div th:replace="fragments/footer"></div>
+<div th:replace="fragments/footer :: footer"></div>
 </body>
 </html>
+

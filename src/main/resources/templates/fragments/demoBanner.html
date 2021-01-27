@@ -1,4 +1,4 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
-<div class="demo-banner" th:if="${!#arrays.contains(@environment.getActiveProfiles(),'production') && !#arrays.contains(@environment.getActiveProfiles(),'test')}">This site is for example purposes only. If you need to submit an application, apply on <a class="link--subtle" href="https://applymn.dhs.mn.gov/">ApplyMN</a>.</div>
+<div th:fragment="demoBanner" class="demo-banner" th:if="${!#arrays.contains(@environment.getActiveProfiles(),'production') && !#arrays.contains(@environment.getActiveProfiles(),'test')}">This site is for example purposes only. If you need to submit an application, apply on <a class="link--subtle" href="https://applymn.dhs.mn.gov/">ApplyMN</a>.</div>
 </html>
