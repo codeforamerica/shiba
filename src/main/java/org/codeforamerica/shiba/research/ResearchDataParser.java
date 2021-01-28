@@ -42,6 +42,7 @@ public class ResearchDataParser {
                 .cash(programsOptional.map(c -> c.get("programs").getValue().contains("CASH")).orElse(null))
                 .housing(programsOptional.map(c -> c.get("programs").getValue().contains("GRH")).orElse(null))
                 .emergency(programsOptional.map(c -> c.get("programs").getValue().contains("EA")).orElse(null))
+                .childcare(programsOptional.map(c -> c.get("programs").getValue().contains("CCAP")).orElse(null))
                 .firstName(pagesData.safeGetPageInputValue("personalInfo", "firstName").stream().findFirst().orElse(null))
                 .lastName(pagesData.safeGetPageInputValue("personalInfo", "lastName").stream().findFirst().orElse(null))
                 .dateOfBirth(String.join("-", pagesData.safeGetPageInputValue("personalInfo", "dateOfBirth"))

@@ -29,6 +29,7 @@ public class ResearchDataRepository {
                 .addValue("cash", researchData.getCash())
                 .addValue("housing", researchData.getHousing())
                 .addValue("emergency", researchData.getEmergency())
+                .addValue("childcare", researchData.getChildcare())
                 .addValue("phone_opt_in", researchData.getPhoneOptIn())
                 .addValue("email_opt_in", researchData.getEmailOptIn())
                 .addValue("live_alone", researchData.getLiveAlone())

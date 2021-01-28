@@ -16,6 +16,7 @@ public class ResearchData {
     Boolean cash;
     Boolean housing;
     Boolean emergency;
+    Boolean childcare;
     String firstName;
     String lastName;
     LocalDate dateOfBirth;
