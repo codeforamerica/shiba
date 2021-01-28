@@ -39,6 +39,7 @@ class ResearchDataRepositoryTest {
                 .cash(false)
                 .housing(true)
                 .emergency(false)
+                .childcare(true)
                 .firstName("someFirstName")
                 .lastName("someLastName")
                 .dateOfBirth(LocalDate.now())
@@ -83,6 +84,7 @@ class ResearchDataRepositoryTest {
             assertThat(resultSet.getBoolean("cash")).isEqualTo(researchData.getCash());
             assertThat(resultSet.getBoolean("housing")).isEqualTo(researchData.getHousing());
             assertThat(resultSet.getBoolean("emergency")).isEqualTo(researchData.getEmergency());
+            assertThat(resultSet.getBoolean("childcare")).isEqualTo(researchData.getChildcare());
             assertThat(resultSet.getBoolean("phone_opt_in")).isEqualTo(researchData.getPhoneOptIn());
             assertThat(resultSet.getBoolean("email_opt_in")).isEqualTo(researchData.getEmailOptIn());
             assertThat(resultSet.getBoolean("live_alone")).isEqualTo(researchData.getLiveAlone());

@@ -6,7 +6,8 @@
     <div th:replace="fragments/toolbar :: toolbar" ></div>
     <div th:replace="fragments/demoBanner :: demoBanner"></div>
     <section class="slab slab--shiba">
-        <div class="grid">
+        <div class="grid-ignore-mobile">
+            <div th:replace="fragments/cardHeader :: cardHeader"></div>
             <div class="card spacing-above-35">
                 <h1 class="h2 text--centered" th:text="#{upload-documents.title}"></h1>
                 <div class="spacing-below-60">
