@@ -37,4 +37,13 @@ public class DatasourcePages extends HashMap<String, PageData> {
             case OR -> conditionStream.anyMatch(this::satisfies);
         };
     }
+
+    public DatasourcePages mergeDatasourcePages(DatasourcePages datasourcePages) {
+        datasourcePages.forEach((key, value) -> {
+            PageData current = this.get(key);
+            if(current != null)
+                current.mergeInputDataValues(value);
+        });
+        return this;
+    }
 }

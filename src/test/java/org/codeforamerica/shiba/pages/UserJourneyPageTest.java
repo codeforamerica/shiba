@@ -114,7 +114,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         assertThat(driver.findElement(By.tagName("p")).getText()).contains(expeditedServiceDetermination);
 
         testPage.clickButton("Finish application");
-        assertThat(testPage.getTitle()).isEqualTo("Important to Know");
+        assertThat(testPage.getTitle()).isEqualTo("Legal Stuff");
+        assertThat(driver.findElement(By.id("ccap-legal"))).isNotNull();
     }
 
     @ParameterizedTest
@@ -149,7 +150,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         assertThat(driver.findElement(By.tagName("p")).getText()).contains(expeditedServiceDetermination);
 
         testPage.clickButton("Finish application");
-        assertThat(testPage.getTitle()).isEqualTo("Important to Know");
+        assertThat(testPage.getTitle()).isEqualTo("Legal Stuff");
+        assertThat(driver.findElement(By.id("ccap-legal"))).isNotNull();
     }
 
     @Test
@@ -357,6 +359,34 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         assertThat(driver.getTitle()).isEqualTo("Contact Info");
     }
 
+    @Test
+    void shouldShowCCAPInLegalStuffWhenHousholdSelectsCCAP(){
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Emergency Assistance"));
+        testPage.clickLink("This looks correct");
+        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.clickContinue();
+        fillOutHousemateInfo("Child Care Assistance");
+        testPage.clickContinue();
+        testPage.clickButton("Yes, that's everyone");
+
+        navigateTo("legalStuff");
+        assertThat(driver.findElement(By.id("ccap-legal"))).isNotNull();
+    }
+
+    @Test
+    void shouldNotShowCCAPInLegalStuffWhenNotSelectedByAnyone(){
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Emergency Assistance"));
+        testPage.clickLink("This looks correct");
+        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.clickContinue();
+        fillOutHousemateInfo("Emergency Assistance");
+        testPage.clickContinue();
+        testPage.clickButton("Yes, that's everyone");
+
+        navigateTo("legalStuff");
+        assertThat(driver.findElements(By.id("ccap-legal"))).isEmpty();
+    }
+
     private void completeFlowFromLandingPageThroughContactInfo(List<String> programSelections) {
         testPage.clickButton("Apply now");
         testPage.clickContinue();
@@ -507,7 +537,6 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.enter("registerToVote", "Yes, send me more info");
         completeHelperWorkflow();
         driver.findElement(By.id("additionalInfo")).sendKeys("Some additional information about my application");
-        testPage.clickContinue();
         testPage.clickContinue();
         testPage.enter("agreeToTerms", "I agree");
         testPage.clickContinue();
