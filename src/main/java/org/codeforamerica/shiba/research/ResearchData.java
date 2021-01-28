@@ -12,11 +12,16 @@ public class ResearchData {
     String spokenLanguage;
     String writtenLanguage;
     String sex;
-    Boolean snap;
-    Boolean cash;
-    Boolean housing;
-    Boolean emergency;
-    Boolean childcare;
+    @Builder.Default
+    Boolean snap = false;
+    @Builder.Default
+    Boolean cash = false;
+    @Builder.Default
+    Boolean housing = false;
+    @Builder.Default
+    Boolean emergency = false;
+    @Builder.Default
+    Boolean childcare = false;
     String firstName;
     String lastName;
     LocalDate dateOfBirth;

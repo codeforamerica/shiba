@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class ResearchDataParser {
@@ -31,6 +31,7 @@ public class ResearchDataParser {
         TotalIncome totalIncome = totalIncomeParser.parse(applicationData);
         Optional<PageData> programsOptional = Optional.ofNullable(pagesData.getPage("choosePrograms"));
         Optional<Subworkflow> jobsOptional = Optional.ofNullable(applicationData.getSubworkflows().get("jobs"));
+        List<String> applicationPrograms = getApplicationPrograms(applicationData);
         Optional<PageData> unearnedIncomeOptional = Optional.ofNullable(pagesData.getPage("unearnedIncome"));
         Optional<Subworkflow> householdSizeOptional = Optional.ofNullable(applicationData.getSubworkflows().get("household"));
 
@@ -38,11 +39,11 @@ public class ResearchDataParser {
                 .spokenLanguage(pagesData.safeGetPageInputValue("languagePreferences", "spokenLanguage").stream().findFirst().orElse(null))
                 .writtenLanguage(pagesData.safeGetPageInputValue("languagePreferences", "writtenLanguage").stream().findFirst().orElse(null))
                 .sex(pagesData.safeGetPageInputValue("personalInfo", "sex").stream().findFirst().orElse(null))
-                .snap(programsOptional.map(c -> c.get("programs").getValue().contains("SNAP")).orElse(null))
-                .cash(programsOptional.map(c -> c.get("programs").getValue().contains("CASH")).orElse(null))
-                .housing(programsOptional.map(c -> c.get("programs").getValue().contains("GRH")).orElse(null))
-                .emergency(programsOptional.map(c -> c.get("programs").getValue().contains("EA")).orElse(null))
-                .childcare(programsOptional.map(c -> c.get("programs").getValue().contains("CCAP")).orElse(null))
+                .snap(applicationPrograms.contains("SNAP"))
+                .cash(applicationPrograms.contains("CASH"))
+                .housing(applicationPrograms.contains("GRH"))
+                .emergency(applicationPrograms.contains("EA"))
+                .childcare(applicationPrograms.contains("CCAP"))
                 .firstName(pagesData.safeGetPageInputValue("personalInfo", "firstName").stream().findFirst().orElse(null))
                 .lastName(pagesData.safeGetPageInputValue("personalInfo", "lastName").stream().findFirst().orElse(null))
                 .dateOfBirth(String.join("-", pagesData.safeGetPageInputValue("personalInfo", "dateOfBirth"))
@@ -108,5 +109,25 @@ public class ResearchDataParser {
     private Boolean getSelfEmployment(Subworkflow jobsSubworkflow) {
         return jobsSubworkflow.stream()
                 .anyMatch(job -> job.getPagesData().getPage("selfEmployment").get("selfEmployment").getValue().contains("true"));
+    }
+
+    private List<String> getApplicationPrograms (ApplicationData applicationData) {
+
+        List<String> applicantPrograms = applicationData.getPagesData().safeGetPageInputValue("choosePrograms", "programs");
+        List<String> applicationPrograms = new ArrayList<String>(applicantPrograms);
+        boolean hasHousehold = applicationData.getSubworkflows().containsKey("household");
+        if (hasHousehold) {
+            List<List<String>> householdPrograms = applicationData.getSubworkflows().get("household").stream().map(iteration ->
+                    iteration.getPagesData().safeGetPageInputValue("householdMemberInfo", "programs")).collect(Collectors.toList());
+            householdPrograms.forEach(programSelections -> {
+                programSelections.forEach(program -> {
+                    if (!applicationPrograms.contains(program)) {
+                        applicationPrograms.add(program);
+                    }
+                });
+            });
+        }
+
+        return applicationPrograms;
     }
 }

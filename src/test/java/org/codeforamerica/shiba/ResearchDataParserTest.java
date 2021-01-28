@@ -283,6 +283,31 @@ class ResearchDataParserTest {
     }
 
     @Test
+    void shouldParseResearchData_forHouseholdMemberPrograms() {
+        ApplicationData applicationData = new ApplicationData();
+        Subworkflows subworkflows = applicationData.getSubworkflows();
+        subworkflows.addIteration("household", pagesDataBuilder.build(List.of(
+                new PageDataBuilder("householdMemberInfo", Map.of("programs", List.of("SNAP")))
+        )));
+        subworkflows.addIteration("household", pagesDataBuilder.build(List.of(
+                new PageDataBuilder("householdMemberInfo", Map.of("programs", List.of("CCAP")))
+        )));
+
+        ResearchData researchData = researchDataParser.parse(applicationData);
+
+        ResearchData expectedResearchData = ResearchData.builder()
+                .snap(true)
+                .childcare(true)
+                .cash(false)
+                .housing(false)
+                .emergency(false)
+                .householdSize(3)
+                .build();
+
+        assertThat(researchData).isEqualTo(expectedResearchData);
+    }
+
+    @Test
     void shouldParseResearchData_selfEmploymentWorkflowIsNull() {
         ApplicationData applicationData = new ApplicationData();
 
