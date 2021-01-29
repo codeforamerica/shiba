@@ -5,9 +5,14 @@ import org.codeforamerica.shiba.AbstractBasePageTest;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.SuccessPage;
 import org.codeforamerica.shiba.pages.YesNoAnswer;
+import org.codeforamerica.shiba.pages.config.FeatureFlag;
+import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.pages.enrichment.LocationClient;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.openqa.selenium.By;
@@ -38,6 +43,9 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
     @MockBean
     LocationClient locationClient;
 
+    @MockBean
+    FeatureFlagConfiguration featureFlagConfiguration;
+
     @Override
     @BeforeEach
     protected void setUp() throws IOException {
@@ -51,6 +59,8 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         testPage.clickContinue();
         navigateTo("doYouLiveAlone");
         testPage.clickButton("Yes");
+
+        when(featureFlagConfiguration.get("document-upload-feature")).thenReturn(FeatureFlag.ON);
     }
 
     @Nested

@@ -19,9 +19,11 @@ mail-gun:
   api-key: ${MAILGUN_API_KEY}
   shouldCC: false
 
-submit-via-email: false
-submit-via-api: false
-send-non-partner-county-alert: false
+feature-flag:
+  submit-via-email: off
+  submit-via-api: off
+  send-non-partner-county-alert: off
+  document-upload-feature: on
 
 smarty-street-url: "https://us-street.api.smartystreets.com/street-address"
 
@@ -37,4 +39,4 @@ logging:
     org.springframework.ws.client.MessageTracing.received: DEBUG
     org.springframework.ws.server.MessageTracing.received: DEBUG
 
-pagesConfig: dev-pages-config.yaml
+pagesConfig: pages-config.yaml

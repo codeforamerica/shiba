@@ -2457,6 +2457,8 @@ workflow:
     pageConfiguration: *signThisApplication
     nextPages:
       - pageName: documentRecommendation
+        flag: document-upload-feature
+      - pageName: success
   documentRecommendation:
     pageConfiguration: *documentRecommendation
     nextPages:

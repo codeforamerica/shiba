@@ -12,8 +12,9 @@ mnit-esb:
 mail-gun:
   shouldCC: true
 
-send-download-alert: true
-send-non-partner-county-alert: true
-submit-via-email: false
-submit-via-api: true
-pagesConfig: release-pages-config.yaml
+feature-flag:
+  send-download-alert: on
+  send-non-partner-county-alert: on
+  submit-via-email: off
+  submit-via-api: on
+  document-upload-feature: off

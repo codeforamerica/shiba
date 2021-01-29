@@ -9,4 +9,5 @@ public class NextPage {
     private String pageName;
     private Condition condition;
     private FlowType flow;
+    private String flag;
 }
