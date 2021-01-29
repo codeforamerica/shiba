@@ -77,7 +77,6 @@
                th:name="${formInputName}"
         >
         <div th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).SELECT}" class="select">
-            <label hidden th:for="${input.name}" th:text="${input.name}"></label>
             <select th:id="${input.name}"
                     class="select__element"
                     th:name="${formInputName}"
