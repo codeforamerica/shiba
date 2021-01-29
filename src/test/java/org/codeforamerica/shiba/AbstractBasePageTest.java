@@ -14,6 +14,7 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
@@ -41,6 +42,9 @@ public abstract class AbstractBasePageTest {
     protected Path path;
 
     protected String baseUrl;
+    protected String baseUrlWithAuth;
+    @Value("${shiba-username}:${shiba-password}")
+    protected String authParams;
 
     @LocalServerPort
     protected String localServerPort;
@@ -55,6 +59,7 @@ public abstract class AbstractBasePageTest {
     @BeforeEach
     protected void setUp() throws IOException {
         baseUrl = String.format("http://localhost:%s", localServerPort);
+        baseUrlWithAuth = String.format("http://%s@localhost:%s", authParams, localServerPort);
         ChromeOptions options = new ChromeOptions();
         path = Files.createTempDirectory("");
         HashMap<String, Object> chromePrefs = new HashMap<>();
