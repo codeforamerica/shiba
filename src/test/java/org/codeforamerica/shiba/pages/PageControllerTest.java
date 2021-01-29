@@ -8,6 +8,7 @@ import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
+import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.enrichment.ApplicationEnrichment;
@@ -57,6 +58,7 @@ class PageControllerTest {
     ApplicationFactory applicationFactory = mock(ApplicationFactory.class);
     PageEventPublisher pageEventPublisher = mock(PageEventPublisher.class);
     ApplicationDataParser<List<Document>> documentListParser = mock(DocumentListParser.class);
+    FeatureFlagConfiguration featureFlags = mock(FeatureFlagConfiguration.class);
 
     @Autowired
     ApplicationConfiguration applicationConfiguration;
@@ -72,7 +74,8 @@ class PageControllerTest {
                 messageSource,
                 pageEventPublisher,
                 applicationEnrichment,
-                documentListParser
+                documentListParser,
+                featureFlags
         );
 
         mockMvc = MockMvcBuilders.standaloneSetup(pageController)

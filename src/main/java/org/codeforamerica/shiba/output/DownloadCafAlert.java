@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConditionalOnProperty(
-        value = "send-download-alert",
-        havingValue = "true"
+        value = "feature-flag.send-download-alert",
+        havingValue = "on"
 )
 public class DownloadCafAlert {
     private final EmailClient emailClient;

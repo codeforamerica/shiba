@@ -48,6 +48,7 @@ public class PageController {
     private final PageEventPublisher pageEventPublisher;
     private final ApplicationEnrichment applicationEnrichment;
     private final ApplicationDataParser<List<Document>> documentListParser;
+    private final FeatureFlagConfiguration featureFlags;
 
     public PageController(
             ApplicationConfiguration applicationConfiguration,
@@ -58,7 +59,8 @@ public class PageController {
             MessageSource messageSource,
             PageEventPublisher pageEventPublisher,
             ApplicationEnrichment applicationEnrichment,
-            ApplicationDataParser<List<Document>> documentListParser) {
+            ApplicationDataParser<List<Document>> documentListParser,
+            FeatureFlagConfiguration featureFlags) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
@@ -68,6 +70,7 @@ public class PageController {
         this.pageEventPublisher = pageEventPublisher;
         this.applicationEnrichment = applicationEnrichment;
         this.documentListParser = documentListParser;
+        this.featureFlags = featureFlags;
     }
 
     @GetMapping("/")
@@ -87,7 +90,7 @@ public class PageController {
     ) {
         PageWorkflowConfiguration pageWorkflow = this.applicationConfiguration.getPageWorkflow(pageName);
         PagesData pagesData = this.applicationData.getPagesData();
-        NextPage nextPage = applicationData.getNextPageName(pageWorkflow, option);
+        NextPage nextPage = applicationData.getNextPageName(featureFlags, pageWorkflow, option);
         ofNullable(nextPage.getFlow()).ifPresent(applicationData::setFlow);
         PageWorkflowConfiguration nextPageWorkflow = this.applicationConfiguration.getPageWorkflow(nextPage.getPageName());
 

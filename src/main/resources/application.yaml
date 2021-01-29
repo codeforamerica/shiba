@@ -19,9 +19,10 @@ mail-gun:
   api-key: ${MAILGUN_API_KEY}
   shouldCC: false
 
-submit-via-email: false
-submit-via-api: false
-send-non-partner-county-alert: false
+feature-flag:
+  submit-via-email: off
+  submit-via-api: off
+  send-non-partner-county-alert: off
 
 smarty-street-url: "https://us-street.api.smartystreets.com/street-address"
 
