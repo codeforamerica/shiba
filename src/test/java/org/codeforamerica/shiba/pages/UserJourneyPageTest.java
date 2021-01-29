@@ -63,6 +63,11 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     @Test
+    void intercomButtonIsPresent() {
+        assertThat(driver.findElementById("intercom-frame")).isNotNull();
+    }
+
+    @Test
     void userCanCompleteTheNonExpeditedFlow() {
         nonExpeditedFlowToSuccessPage(false, true);
     }
