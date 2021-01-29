@@ -474,6 +474,7 @@ input[id='sad']:checked + .feedback-buttons {
 .checkbox-icons {
     font-weight: bold;
     max-width: 2rem;
+    min-width: 2rem;
     padding-top: .25rem;
     margin-right: 1rem;
 }
