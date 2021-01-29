@@ -30,8 +30,8 @@ public class FeatureFlagPageTest extends AbstractExistingStartTimePageTest {
 
     @DynamicPropertySource
     static void registerFeatureFlagProperty(DynamicPropertyRegistry registry) {
-        registry.add("feature-flags.first-feature", () -> "on");
-        registry.add("feature-flags.second-feature", () -> "off");
+        registry.add("feature-flag.first-feature", () -> "on");
+        registry.add("feature-flag.second-feature", () -> "off");
     }
 
     @Test
