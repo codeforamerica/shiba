@@ -10,7 +10,7 @@ class FeatureFlagConfigurationTest {
     @Test
     void getShouldReturnFeatureFlagWhenPresent() {
         FeatureFlagConfiguration featureFlags = new FeatureFlagConfiguration(Map.of("flag", FeatureFlag.OFF));
-        assertThat(featureFlags.get("flag").isOn()).isTrue();
+        assertThat(featureFlags.get("flag").isOff()).isTrue();
     }
 
     @Test

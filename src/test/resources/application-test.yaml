@@ -21,7 +21,5 @@ smarty-street-url: someUrl
 mail-gun:
   url: mailgun-url
 
-submit-via-email: true
-
-#feature-flags:
-#  arbitrary-flag: on
+feature-flag:
+  submit-via-email: on

@@ -3,6 +3,8 @@ package org.codeforamerica.shiba.pages;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.AbstractBasePageTest;
+import org.codeforamerica.shiba.pages.config.FeatureFlag;
+import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.emails.MailGunEmailClient;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.pages.enrichment.smartystreets.SmartyStreetClient;
@@ -53,6 +55,9 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     @MockBean
     MailGunEmailClient mailGunEmailClient;
 
+    @MockBean
+    FeatureFlagConfiguration featureFlagConfiguration;
+
     @Override
     @BeforeEach
     protected void setUp() throws IOException {
@@ -61,6 +66,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         when(clock.instant()).thenReturn(Instant.now());
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         when(smartyStreetClient.validateAddress(any())).thenReturn(Optional.empty());
+
+        when(featureFlagConfiguration.get("document-upload-feature")).thenReturn(FeatureFlag.ON);
     }
 
     @Test

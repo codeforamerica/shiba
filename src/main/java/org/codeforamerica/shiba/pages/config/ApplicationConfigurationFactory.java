@@ -12,7 +12,7 @@ import org.yaml.snakeyaml.representer.Representer;
 import java.io.IOException;
 
 public class ApplicationConfigurationFactory implements FactoryBean<ApplicationConfiguration> {
-    @Value("${pagesConfig:dev-pages-config.yaml}") String configPath;
+    @Value("${pagesConfig:pages-config.yaml}") String configPath;
 
     @Override
     public ApplicationConfiguration getObject() {

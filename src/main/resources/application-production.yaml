@@ -17,5 +17,4 @@ feature-flag:
   send-non-partner-county-alert: on
   submit-via-email: off
   submit-via-api: on
-
-pagesConfig: release-pages-config.yaml
+  document-upload-feature: off
