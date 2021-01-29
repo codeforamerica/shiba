@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -64,6 +65,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void intercomButtonIsPresent() {
+        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         assertThat(driver.findElementById("intercom-frame")).isNotNull();
     }
 
