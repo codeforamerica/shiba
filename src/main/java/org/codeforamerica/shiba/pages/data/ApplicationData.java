@@ -3,9 +3,8 @@ package org.codeforamerica.shiba.pages.data;
 import lombok.Data;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.parsers.PageInputCoordinates;
-import org.codeforamerica.shiba.pages.config.NextPage;
-import org.codeforamerica.shiba.pages.config.PageDatasource;
-import org.codeforamerica.shiba.pages.config.PageWorkflowConfiguration;
+import org.codeforamerica.shiba.inputconditions.Condition;
+import org.codeforamerica.shiba.pages.config.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
@@ -55,8 +54,8 @@ public class ApplicationData {
                 .allMatch(datasource -> getSubworkflows().get(datasource.getGroupName()) != null);
     }
 
-    public NextPage getNextPageName(@NotNull PageWorkflowConfiguration pageWorkflowConfiguration, Integer option) {
-        if (!pageWorkflowConfiguration.getConditionalNavigation()) {
+    public NextPage getNextPageName(FeatureFlagConfiguration featureFlags, @NotNull PageWorkflowConfiguration pageWorkflowConfiguration, Integer option) {
+        if (pageWorkflowConfiguration.isDirectNavigation()) {
             return pageWorkflowConfiguration.getNextPages().get(option);
         }
         PageData pageData;
@@ -71,15 +70,20 @@ public class ApplicationData {
         }
 
         return pageWorkflowConfiguration.getNextPages().stream()
-                .filter(nextPage -> Optional.ofNullable(nextPage.getCondition())
-                        .map(condition -> {
-                            if (condition.getPageName() != null) {
-                               return pagesData.getPage(condition.getPageName()).satisfies(condition);
-                            }
+                .filter(nextPage -> {
+                    Condition condition = nextPage.getCondition();
+                    if (condition != null) {
+                        if (condition.getPageName() != null) {
+                            return pagesData.getPage(condition.getPageName()).satisfies(condition);
+                        } else {
                             return pageData.satisfies(condition);
-                        })
-                        .orElse(true))
-                .findFirst()
+                        }
+                    }
+                    if (nextPage.getFlag() != null) {
+                        return featureFlags.get(nextPage.getFlag()) == FeatureFlag.ON;
+                    }
+                    return true;
+                }).findFirst()
                 .orElseThrow(() -> new RuntimeException("Cannot find suitable next page."));
     }
 

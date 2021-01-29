@@ -2,4 +2,3 @@ spring:
   datasource:
     url: ${DATABASE_URL}
     driverClassName: org.postgresql.Driver
-pagesConfig: dev-pages-config.yaml

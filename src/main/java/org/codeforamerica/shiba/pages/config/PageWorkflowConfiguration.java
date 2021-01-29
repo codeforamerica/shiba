@@ -20,8 +20,8 @@ public class PageWorkflowConfiguration {
     private String enrichment;
     private String subtleLinkTargetPage;
 
-    public Boolean getConditionalNavigation() {
-        return nextPages.stream().anyMatch(page -> page.getCondition() != null);
+    public Boolean isDirectNavigation() {
+        return nextPages.stream().noneMatch(page -> page.getCondition() != null || page.getFlag() != null);
     }
 
     public Subworkflows getSubworkflows(ApplicationData applicationData) {

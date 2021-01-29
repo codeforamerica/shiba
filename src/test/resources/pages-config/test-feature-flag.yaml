@@ -1,0 +1,57 @@
+pageDefinitions:
+  - &firstPage
+    name: firstPage
+    pageTitle:
+      value: first-page-title
+    inputs:
+      - name: foo
+        type: TEXT
+  - &secondPage
+    name: secondPage
+    pageTitle:
+      value: second-page-title
+    inputs:
+      - name: foo
+        type: TEXT
+  - &firstFeaturePage
+    name: featurePage
+    pageTitle:
+      value: first-feature-page-title
+    inputs:
+      - name: foo
+        type: TEXT
+  - &secondFeaturePage
+    name: secondFeaturePage
+    pageTitle:
+      value: second-feature-page-title
+    inputs:
+      - name: foo
+        type: TEXT
+workflow:
+  firstPage:
+    pageConfiguration: *firstPage
+    nextPages:
+      - pageName: firstFeaturePage
+        flag: first-feature
+      - pageName: secondPage
+  firstFeaturePage:
+    pageConfiguration: *firstFeaturePage
+    nextPages:
+      - pageName: secondFeaturePage
+        flag: second-feature
+      - pageName: secondPage
+  secondFeaturePage:
+    pageConfiguration: *secondFeaturePage
+    nextPages:
+      - pageName: secondPage
+      - pageName: secondFeaturePage
+        flag: second-feature
+  secondPage:
+    pageConfiguration: *secondPage
+    nextPages:
+    - pageName: secondFeaturePage
+      flag: fake-feature
+    - pageName: firstPage
+pageGroups:
+landmarkPages:
+  startTimerPage:
