@@ -498,6 +498,7 @@ class ApplicationRepositoryTest {
 
         @Test
         void shouldGetAverageTimeToCompleteForWeekToDateInSpecifiedTimezone_whenNoApplicationIsFound() {
+            when(clock.instant()).thenReturn(Instant.now());
             assertThat(applicationRepository.getAverageTimeToCompleteWeekToDate(ZoneId.of("America/Chicago")))
                     .isEqualTo(Duration.ofSeconds(0));
         }
@@ -553,6 +554,7 @@ class ApplicationRepositoryTest {
 
         @Test
         void shouldGetMedianForWeekToDate_whenNoApplicationIsFound() {
+            when(clock.instant()).thenReturn(Instant.now());
             assertThat(applicationRepository.getMedianTimeToCompleteWeekToDate(ZoneId.of("America/Chicago")))
                     .isEqualTo(Duration.ofSeconds(0));
         }
