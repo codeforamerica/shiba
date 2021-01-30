@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-@ConfigurationProperties(prefix = "feature-flags")
+@ConfigurationProperties(prefix = "feature-flag")
 public class FeatureFlagConfiguration extends HashMap<String, FeatureFlag> {
 
     public FeatureFlagConfiguration(Map<String, FeatureFlag> featureFlags) {

@@ -196,7 +196,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         successPage.chooseSentiment(Sentiment.HAPPY);
         successPage.submitFeedback();
 
-        driver.navigate().to(baseUrl + "/metrics");
+        driver.navigate().to(baseUrlWithAuth + "/metrics");
         MetricsPage metricsPage = new MetricsPage(driver);
         assertThat(metricsPage.getCardValue("Applications Submitted")).isEqualTo("1");
         assertThat(metricsPage.getCardValue("Median All Time")).contains("05m 30s");
