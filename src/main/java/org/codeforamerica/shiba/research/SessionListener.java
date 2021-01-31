@@ -1,12 +1,12 @@
 package org.codeforamerica.shiba.research;
 
 import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.springframework.stereotype.Component;
 
-import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
-@WebListener
+@Component
 public class SessionListener implements HttpSessionListener {
 
     private final ResearchDataRepository researchDataRepository;
