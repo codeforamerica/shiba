@@ -180,7 +180,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
             return List.of(CAF, CCAP).stream().map(document -> documentNames.stream().anyMatch(documentName ->
                     documentName.contains("_MNB_") && documentName.endsWith(".pdf") &&
-                            documentName.contains(document.toString())
+                    documentName.contains(document.toString())
             )).collect(Collectors.toList()).stream().allMatch(assertion -> assertion.equals(true));
         });
     }

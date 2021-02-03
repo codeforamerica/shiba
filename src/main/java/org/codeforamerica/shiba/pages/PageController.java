@@ -316,7 +316,6 @@ public class PageController {
     @PostMapping("/file-upload")
     @ResponseStatus(HttpStatus.OK)
     public void upload(@RequestParam("file") MultipartFile file) {
-        System.out.println("file-upload triggered");
         if(!file.isEmpty()) {
             this.applicationData.addUploadedDocument(file);
         }
