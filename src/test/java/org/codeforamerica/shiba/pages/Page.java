@@ -72,6 +72,10 @@ public class Page {
         }
     }
 
+    public void mockUploadFile(String filename) {
+        driver.executeScript("$('#document-upload').get(0).dropzone._callbacks.addedfiles[0]([{name: '" + filename + "'}])");
+    }
+
     enum FormInputHtmlTag {
         input,
         textarea,
@@ -178,7 +182,7 @@ public class Page {
         return driver.findElement(By.id(name)).getText();
     }
 
-    public void clickInputById(String id) {
+    public void clickElementById(String id) {
         WebElement inputToSelect = driver.findElementById(id);
         inputToSelect.click();
     }

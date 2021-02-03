@@ -264,7 +264,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             testPage.clickContinue();
             testPage.enter("selfEmployment", "No");
 
-            testPage.clickInputById("subtle-link");
+            testPage.clickElementById("subtle-link");
             testPage.enter("lastThirtyDaysJobIncome", "");
             testPage.clickContinue();
 
@@ -275,7 +275,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             testPage.clickContinue();
             testPage.enter("selfEmployment", "No");
 
-            testPage.clickInputById("subtle-link");
+            testPage.clickElementById("subtle-link");
             testPage.enter("lastThirtyDaysJobIncome", "");
             testPage.clickContinue();
 
@@ -661,7 +661,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             testPage.clickContinue();
             testPage.enter("selfEmployment", "No");
 
-            testPage.clickInputById("subtle-link");
+            testPage.clickElementById("subtle-link");
             testPage.enter("lastThirtyDaysJobIncome", "123");
             testPage.clickContinue();
 
@@ -688,7 +688,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             testPage.clickContinue();
             testPage.enter("selfEmployment", "No");
 
-            testPage.clickInputById("subtle-link");
+            testPage.clickElementById("subtle-link");
             testPage.enter("lastThirtyDaysJobIncome", "123");
             testPage.clickContinue();
 
@@ -700,7 +700,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             testPage.clickContinue();
             testPage.enter("selfEmployment", "No");
 
-            testPage.clickInputById("subtle-link");
+            testPage.clickElementById("subtle-link");
             testPage.enter("lastThirtyDaysJobIncome", "");
             testPage.clickContinue();
 
