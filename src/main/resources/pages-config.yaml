@@ -1616,6 +1616,19 @@ pageDefinitions:
     inputs:
       - name: haveVehicle
         type: YES_NO
+  - &realEstate
+    name: realEstate
+    pageTitle:
+      value: real-estate.title
+    headerKey:
+      value: real-estate.do-you-own-any-real-estate
+      conditionalValues:
+        - value: real-estate.household-own-real-estate
+          condition: *doesNotLiveAlone?
+    hasPrimaryButton: false
+    inputs:
+      - name: ownRealEstate
+        type: YES_NO
   - &soldAssets
     name: soldAssets
     pageTitle:
@@ -2278,10 +2291,28 @@ workflow:
       - pageName: doYouLiveAlone
   vehicle:
     pageConfiguration: *vehicle
+    skipCondition:
+      conditions:
+        - pageName: savings
+          input: haveSavings
+          value: "false"
+    nextPages:
+      - pageName: realEstate
+    datasources:
+      - pageName: doYouLiveAlone
+  realEstate:
+    pageConfiguration: *realEstate
+    skipCondition:
+      conditions:
+        - *applicantDidNotChooseCCAP?
+        - *householdMemberDidNotChooseCCAP?
     nextPages:
       - pageName: soldAssets
     datasources:
       - pageName: doYouLiveAlone
+      - pageName: choosePrograms
+      - pageName: householdMemberInfo
+        groupName: household
   soldAssets:
     pageConfiguration: *soldAssets
     nextPages:

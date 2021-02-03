@@ -257,6 +257,15 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     @Test
+    void shouldSkipJobSearchPageIfCCAPNotSelected() {
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
+        testPage.clickLink("This looks correct");
+        testPage.enter("liveAlone", YES.getDisplayValue());
+        testPage.clickContinue();
+        takeSnapShot("stop.png");
+    }
+
+    @Test
     void shouldSkipWhoIsGoingToSchoolPageIfCCAPNotSelected() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
         testPage.clickLink("This looks correct");
@@ -546,6 +555,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.clickContinue();
         testPage.enter("haveInvestments", NO.getDisplayValue());
         testPage.enter("haveVehicle", YES.getDisplayValue());
+
         testPage.enter("haveSoldAssets", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.enter("registerToVote", "Yes, send me more info");
