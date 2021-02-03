@@ -2512,3 +2512,4 @@ landmarkPages:
     - success
   terminalPage: success
   submitPage: signThisApplication
+  uploadDocumentsPage: uploadDocuments

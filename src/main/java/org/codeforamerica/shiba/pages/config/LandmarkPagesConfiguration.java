@@ -12,6 +12,7 @@ public class LandmarkPagesConfiguration {
     private List<String> postSubmitPages = new ArrayList<>();
     private String terminalPage;
     private String submitPage;
+    private String uploadDocumentsPage;
 
     public boolean isLandingPage(String pageName) {
         return this.getLandingPages().contains(pageName);
@@ -31,5 +32,9 @@ public class LandmarkPagesConfiguration {
 
     public boolean isSubmitPage(String pageName) {
         return pageName.equals(this.getSubmitPage());
+    }
+
+    public boolean isUploadDocumentsPage(String pageName) {
+        return pageName.equals(this.getUploadDocumentsPage());
     }
 }

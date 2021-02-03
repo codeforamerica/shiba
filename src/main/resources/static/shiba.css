@@ -249,6 +249,26 @@ html {
         padding-top: 8rem;
         padding-bottom: 13rem;
         background-color: #F7F5F4;
+        box-sizing: border-box;
+    }
+
+    .drag-and-drop-box:hover {
+        border: 5px solid #FFAE00;
+        box-sizing: border-box;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    .drag-and-drop-box h2 {
+        user-select: none;
+    }
+
+    .drag-and-drop-box:hover .hide-on-mobile  {
+        margin-top: -3px;
+    }
+
+    .drag-and-drop-box:hover .needsclick {
+        margin-bottom: -3px;
     }
 }
 

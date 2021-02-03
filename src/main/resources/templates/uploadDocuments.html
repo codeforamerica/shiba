@@ -3,7 +3,7 @@
 <div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
 <body>
 <div class="page-wrapper">
-    <div th:replace="fragments/toolbar :: toolbar" ></div>
+    <div th:replace="fragments/toolbar :: toolbar"></div>
     <div th:replace="fragments/demoBanner :: demoBanner"></div>
     <section class="slab slab--shiba">
         <div class="grid-ignore-mobile">
@@ -12,19 +12,33 @@
                 <h1 class="h2 text--centered" th:text="#{upload-documents.title}"></h1>
                 <div class="spacing-below-60">
                     <div id="dropzone">
-                        <form class="dropzone needsclick" id="document-upload">
+                        <form action="/file-upload" class="dropzone needsclick" id="document-upload" method="post"
+                              enctype="multipart/form-data">
                             <div class="drag-and-drop-box spacing-below-35 spacing-above-35">
                                 <h2 class="blue-label text--centered hide-on-mobile narrow-centered-text"
                                     th:text="#{upload-documents.drag-and-drop-or-add-your-files}"></h2>
                                 <h2 class="blue-label text--centered hide-on-desktop"
                                     th:text="#{upload-documents.add-your-files}"></h2>
-                                <div class="dz-message needsclick text--centered">
-                                    <button th:aria-label="#{upload-documents.add-your-files}" type="button" class="button dz-button icon-add"></button>
+                                <div class="dz-message text--centered">
+                                    <button id="upload-button" th:aria-label="#{upload-documents.add-your-files}" type="button"
+                                            class="button dz-button icon-add"></button>
+                                </div>
+                            </div>
+                            <div class="bottom-horizontal-line spacing-below-25">
+                                <p>Uploaded documents</p>
+                            </div>
+                            <div id="file-preview">
+                                <div id="file-preview-template">
+                                    <div th:if="${!uploadedDocuments.isEmpty()}">
+                                        <th:block th:each="instance : ${uploadedDocuments}">
+                                            <p th:text="${instance.key}"></p>
+                                        </th:block>
+                                    </div>
                                 </div>
                             </div>
                             <div class="reveal reveal-adjacent reveal-purple">
                                 <a href="#" class="reveal__link reveal__link-adjacent">
-                                    <span class="reveal-icon" >
+                                    <span class="reveal-icon">
                                         <div th:replace="fragments/icons/icon-multiple-documents  :: icon-multiple-documents"></div>
                                     </span>
                                     <div class="reveal__link__header-adjacent"
@@ -43,8 +57,8 @@
                             </div>
                             <!-- This is temporarily incorrect, but implemented to allow for navigation to the next page for acceptance -->
                             <a id="submit" class="button"
-                                    th:href="'/pages/'+${pageName}+'/navigation?option=0'"
-                                    th:text="#{upload-documents.im-finished-uploading}"></a>
+                               th:href="'/pages/'+${pageName}+'/navigation?option=0'"
+                               th:text="#{upload-documents.im-finished-uploading}"></a>
                         </form>
                     </div>
                 </div>
@@ -55,23 +69,25 @@
 <div th:replace="fragments/footer :: footer"></div>
 <script th:inline="javascript">
     Dropzone.autoDiscover = false;
+    const previewNode = document.querySelector("#file-preview-template");
 
     $("#document-upload").dropzone({
-        success: function (file, response) {
-            console.log('Response ' + response + ' uploaded successfully');
-            console.log('File ' + file.name + ' uploaded successfully');
-        },
+        previewContainer: "#file-preview",
+        previewTemplate: "#file-preview-template",
         sending: function (file, xhr, formData) {
             const csrfToken = [[${_csrf.token}]];
             formData.append("_csrf", csrfToken)
         },
-        autoProcessQueue: false
-    });
-
-    $('#submit').click(function (e) {
-        Dropzone.forElement("#document-upload").processQueue();
-        e.preventDefault()
-        alert("Submitted files!");
+        addedfiles: files => {
+            for (let i = 0; i < files.length; i++) {
+                let fileElement = document.createElement("p")
+                fileElement.innerHTML = `${files[i].name}`;
+                previewNode.append(fileElement);
+            }
+        },
+        addedfile: () => {},
+        autoProcessQueue: true,
+        clickable: ".drag-and-drop-box"
     });
 </script>
 </body>

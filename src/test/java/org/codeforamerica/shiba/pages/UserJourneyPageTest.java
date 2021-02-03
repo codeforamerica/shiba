@@ -374,7 +374,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     @Test
-    void shouldShowCCAPInLegalStuffWhenHousholdSelectsCCAP(){
+    void shouldShowCCAPInLegalStuffWhenHousholdSelectsCCAP() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Emergency Assistance"));
         testPage.clickLink("This looks correct");
         testPage.enter("liveAlone", NO.getDisplayValue());
@@ -388,7 +388,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     @Test
-    void shouldNotShowCCAPInLegalStuffWhenNotSelectedByAnyone(){
+    void shouldNotShowCCAPInLegalStuffWhenNotSelectedByAnyone() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Emergency Assistance"));
         testPage.clickLink("This looks correct");
         testPage.enter("liveAlone", NO.getDisplayValue());
@@ -443,7 +443,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         );
         testPage.clickContinue();
 
-        testPage.clickInputById("enriched-address");
+        testPage.clickElementById("enriched-address");
         testPage.clickContinue();
         assertThat(driver.findElementById("mailing-address_street").getText()).isEqualTo("smarty street");
     }
@@ -564,6 +564,11 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     private void completeDocumentUploadFlow() {
         testPage.clickButton("Upload documents now");
+        testPage.clickElementById("upload-button");
+        String filename = "testUploadFile.png";
+        testPage.mockUploadFile(filename);
+
+        assertThat(driver.findElement(By.id("document-upload")).getText()).contains(filename);
         testPage.clickButton("I'm finished uploading");
     }
 

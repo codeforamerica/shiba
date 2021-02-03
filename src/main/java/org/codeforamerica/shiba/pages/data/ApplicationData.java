@@ -6,12 +6,10 @@ import org.codeforamerica.shiba.application.parsers.PageInputCoordinates;
 import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.pages.config.*;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Data
@@ -22,6 +20,7 @@ public class ApplicationData {
     private PagesData pagesData = new PagesData();
     private Subworkflows subworkflows = new Subworkflows();
     private Map<String, PagesData> incompleteIterations = new HashMap<>();
+    private Map<String,MultipartFile> uploadedDocuments = new HashMap<>();
 
     public void setStartTimeOnce(Instant instant) {
         if (startTime == null) {
@@ -85,6 +84,10 @@ public class ApplicationData {
                     return true;
                 }).findFirst()
                 .orElseThrow(() -> new RuntimeException("Cannot find suitable next page."));
+    }
+
+    public void addUploadedDocument(MultipartFile file) {
+        uploadedDocuments.put(file.getOriginalFilename(),file);
     }
 
 }
