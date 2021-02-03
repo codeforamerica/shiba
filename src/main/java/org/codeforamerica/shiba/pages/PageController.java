@@ -18,9 +18,11 @@ import org.codeforamerica.shiba.pages.events.SubworkflowIterationDeletedEvent;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
@@ -202,10 +204,16 @@ public class PageController {
             model.put("feedbackText", application.getFeedback());
         }
 
+
         String pageToRender;
         if (pageConfiguration.isStaticPage()) {
             pageToRender = pageName;
             model.put("data", pagesData.getDatasourcePagesBy(pageWorkflow.getDatasources()));
+
+            if (landmarkPagesConfiguration.isUploadDocumentsPage(pageName)) {
+                model.put("uploadedDocuments", applicationData.getUploadedDocuments());
+            }
+
             if (applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources())) {
                 model.put("subworkflows", pageWorkflow.getSubworkflows(applicationData));
                 if (iterationIndex != null && !iterationIndex.isBlank()) {
@@ -304,6 +312,14 @@ public class PageController {
             return new ModelAndView(String.format("redirect:/pages/%s/navigation", pageName));
         } else {
             return new ModelAndView("redirect:/pages/" + pageName);
+        }
+    }
+
+    @PostMapping("/file-upload")
+    @ResponseStatus(HttpStatus.OK)
+    public void upload(@RequestParam("file") MultipartFile file) {
+        if(!file.isEmpty()) {
+            this.applicationData.addUploadedDocument(file);
         }
     }
 
