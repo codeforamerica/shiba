@@ -295,7 +295,6 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.clickContinue();
         testPage.enter("homeExpenses", "None of the above");
         testPage.clickContinue();
-        takeSnapShot("test.png");
         testPage.enter("payForUtilities", "None of the above");
         testPage.clickContinue();
         testPage.enter("energyAssistance", NO.getDisplayValue());
