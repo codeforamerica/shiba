@@ -2303,9 +2303,15 @@ workflow:
   realEstate:
     pageConfiguration: *realEstate
     skipCondition:
-      conditions:
-        - *applicantDidNotChooseCCAP?
-        - *householdMemberDidNotChooseCCAP?
+      compositeConditions:
+        - logicalOperator: AND
+          compositeConditions:
+            - conditions:
+                - *applicantDidNotChooseCCAP?
+            - logicalOperator: OR
+              conditions:
+                - *householdMemberDidNotChooseCCAP?
+                - *livesAlone?
     nextPages:
       - pageName: soldAssets
     datasources:
@@ -2369,9 +2375,15 @@ workflow:
   jobSearch:
     pageConfiguration: *jobSearch
     skipCondition:
-      conditions:
-        - *applicantDidNotChooseCCAP?
-        - *householdMemberDidNotChooseCCAP?
+      compositeConditions:
+        - logicalOperator: AND
+          compositeConditions:
+            - conditions:
+              - *applicantDidNotChooseCCAP?
+            - logicalOperator: OR
+              conditions:
+                - *householdMemberDidNotChooseCCAP?
+                - *livesAlone?
     nextPages:
       - pageName: whoIsLookingForAJob
     datasources:
