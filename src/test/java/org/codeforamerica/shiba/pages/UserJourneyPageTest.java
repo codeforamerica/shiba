@@ -262,7 +262,15 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.clickLink("This looks correct");
         testPage.enter("liveAlone", YES.getDisplayValue());
         testPage.clickContinue();
-        takeSnapShot("stop.png");
+        testPage.enter("goingToSchool", YES.getDisplayValue());
+        testPage.enter("isPregnant", NO.getDisplayValue());
+        testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
+        testPage.enter("isUsCitizen", YES.getDisplayValue());
+        testPage.enter("hasDisability", NO.getDisplayValue());
+        testPage.enter("hasWorkSituation", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.enter("areYouWorking", NO.getDisplayValue());
+        assertThat(testPage.getTitle().equals("Income Up Next"));
     }
 
     @Test
