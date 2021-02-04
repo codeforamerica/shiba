@@ -14,7 +14,7 @@
                     <div id="dropzone">
                         <form action="/file-upload" class="dropzone needsclick" id="document-upload" method="post"
                               enctype="multipart/form-data">
-                            <div class="drag-and-drop-box spacing-below-35 spacing-above-35">
+                            <div id="drag-and-drop-box" class="drag-and-drop-box spacing-below-35 spacing-above-35" ondragenter="addDragBorder(event)" ondrop="removeDragBorder(event)" ondragleave="removeDragBorder(event)">
                                 <h2 class="blue-label text--centered hide-on-mobile narrow-centered-text"
                                     th:text="#{upload-documents.drag-and-drop-or-add-your-files}"></h2>
                                 <h2 class="blue-label text--centered hide-on-desktop"
@@ -70,6 +70,17 @@
 <script th:inline="javascript">
     Dropzone.autoDiscover = false;
     const previewNode = document.querySelector("#file-preview-template");
+
+    function addDragBorder(event) {
+        let dragAndDropBox = document.getElementById("drag-and-drop-box");
+        dragAndDropBox.classList.add("drag-over");
+    }
+
+    function removeDragBorder(event) {
+        let dragAndDropBox = document.getElementById("drag-and-drop-box");
+        dragAndDropBox.classList.remove("drag-over");
+    }
+
 
     $("#document-upload").dropzone({
         previewContainer: "#file-preview",
