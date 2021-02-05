@@ -2,9 +2,3 @@ spring:
   datasource:
     url: ${DATABASE_URL}
     driverClassName: org.postgresql.Driver
-
-feature-flag:
-  submit-via-email: off
-  submit-via-api: off
-  send-non-partner-county-alert: off
-  document-upload-feature: on
