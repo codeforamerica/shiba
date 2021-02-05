@@ -616,7 +616,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     private void completeDocumentUploadFlow() {
         testPage.clickButton("Upload documents now");
-        testPage.clickElementById("upload-button");
+        testPage.clickElementById("drag-and-drop-box");
         String filename = "testUploadFile.png";
         testPage.mockUploadFile(filename);
 
