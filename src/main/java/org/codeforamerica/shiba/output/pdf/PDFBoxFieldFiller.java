@@ -99,7 +99,7 @@ public class PDFBoxFieldFiller implements PdfFieldFiller {
                         }
                         pdField.setValue(fieldValue);
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        throw new RuntimeException("Error setting field: " + field.getName(), e);
                     }
                 }));
     }
