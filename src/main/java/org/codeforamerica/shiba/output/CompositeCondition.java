@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 
 @Data
 public class CompositeCondition {
+    // WARNING: compositeConditions and conditions are mutually exclusive - if compositeConditions is present, conditions will not be checked
     private List<CompositeCondition> compositeConditions;
     private List<Condition> conditions;
     private LogicalOperator logicalOperator = LogicalOperator.AND;

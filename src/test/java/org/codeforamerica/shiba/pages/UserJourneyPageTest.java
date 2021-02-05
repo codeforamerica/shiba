@@ -257,6 +257,57 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     @Test
+    void shouldSkipJobSearchPageIfCCAPNotSelected() {
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
+        testPage.clickLink("This looks correct");
+        testPage.enter("liveAlone", YES.getDisplayValue());
+        testPage.clickContinue();
+        testPage.enter("goingToSchool", YES.getDisplayValue());
+        testPage.enter("isPregnant", NO.getDisplayValue());
+        testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
+        testPage.enter("isUsCitizen", YES.getDisplayValue());
+        testPage.enter("hasDisability", NO.getDisplayValue());
+        testPage.enter("hasWorkSituation", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.enter("areYouWorking", NO.getDisplayValue());
+        assertThat(testPage.getTitle()).isEqualTo("Income Up Next");
+    }
+
+    @Test
+    void shouldSkipRealEstatePageIfCCAPNotSelected() {
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
+        testPage.clickLink("This looks correct");
+        testPage.enter("liveAlone", YES.getDisplayValue());
+        testPage.clickContinue();
+        testPage.enter("goingToSchool", YES.getDisplayValue());
+        testPage.enter("isPregnant", NO.getDisplayValue());
+        testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
+        testPage.enter("isUsCitizen", YES.getDisplayValue());
+        testPage.enter("hasDisability", NO.getDisplayValue());
+        testPage.enter("hasWorkSituation", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.enter("areYouWorking", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.enter("unearnedIncome", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.clickContinue();
+        testPage.enter("homeExpenses", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("payForUtilities", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("energyAssistance", NO.getDisplayValue());
+        testPage.enter("supportAndCare", NO.getDisplayValue());
+        testPage.enter("haveSavings", YES.getDisplayValue());
+        testPage.enter("liquidAssets", "1234");
+        testPage.clickContinue();
+        testPage.enter("haveInvestments", NO.getDisplayValue());
+        testPage.enter("haveVehicle", YES.getDisplayValue());
+        assertThat(testPage.getTitle()).isEqualTo("Sold assets");
+    }
+
+    @Test
     void shouldSkipWhoIsGoingToSchoolPageIfCCAPNotSelected() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
         testPage.clickLink("This looks correct");
@@ -265,10 +316,10 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         fillOutHousemateInfo("Emergency Assistance");
         testPage.clickContinue();
         testPage.clickButton("Yes, that's everyone");
-        assertThat(driver.findElementByClassName("h2").getText().equals("Does everyone in your household buy and prepare food with you?"));
+        assertThat(driver.findElementByClassName("h2").getText()).isEqualTo("Does everyone in your household buy and prepare food with you?");
         testPage.clickButton(NO.getDisplayValue());
         testPage.clickButton(YES.getDisplayValue());
-        assertThat(driver.findElementByClassName("h2").getText().equals("Is anyone in your household pregnant?"));
+        assertThat(driver.findElementByClassName("h2").getText()).isEqualTo("Is anyone in your household pregnant?");
     }
 
     @Test
@@ -546,6 +597,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.clickContinue();
         testPage.enter("haveInvestments", NO.getDisplayValue());
         testPage.enter("haveVehicle", YES.getDisplayValue());
+        testPage.enter("ownRealEstate", NO.getDisplayValue());
         testPage.enter("haveSoldAssets", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.enter("registerToVote", "Yes, send me more info");

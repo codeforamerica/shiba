@@ -122,9 +122,11 @@ public class PageController {
                                     .map(iteration -> iteration.getPagesData().getPage(datasource.getPageName()))
                                     .forEach(value::mergeInputDataValues);
                         }
+
                         pages.put(key, value);
                     });
             @NotNull DatasourcePages datasourcePages = new DatasourcePages(pages);
+
             return datasourcePages.satisfies(skipCondition);
         }
         return false;
