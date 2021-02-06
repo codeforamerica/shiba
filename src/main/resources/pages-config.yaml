@@ -1638,6 +1638,16 @@ pageDefinitions:
               messageKey: real-estate.yes-i-own-real-estate-that-is-not-my-home
             - value: OWN_NO_REAL_ESTATE
               messageKey: real-estate.no-i-do-not-own-any-real-estate
+  - &millionDollar
+    name: millionDollar
+    pageTitle:
+      value: million-dollar.title
+    headerKey:
+      value: million-dollar.does-your-family-have-more-than-1-million
+    hasPrimaryButton: false
+    inputs:
+      - name: haveMillionDollars
+        type: YES_NO
   - &soldAssets
     name: soldAssets
     pageTitle:
@@ -2321,6 +2331,27 @@ workflow:
               conditions:
                 - *householdMemberDidNotChooseCCAP?
                 - *livesAlone?
+    nextPages:
+      - pageName: millionDollar
+    datasources:
+      - pageName: doYouLiveAlone
+      - pageName: choosePrograms
+      - pageName: householdMemberInfo
+        groupName: household
+  millionDollar:
+    pageConfiguration: *millionDollar
+    skipCondition:
+      compositeConditions:
+        - logicalOperator: AND
+          compositeConditions:
+            - conditions:
+                - *applicantDidNotChooseCCAP?
+            - logicalOperator: OR
+              conditions:
+                - *householdMemberDidNotChooseCCAP?
+                - *livesAlone?
+        - logicalOperator: AND
+
     nextPages:
       - pageName: soldAssets
     datasources:
