@@ -95,6 +95,20 @@ class PDFBoxFieldFillerTest {
                 "")).doesNotThrowAnyException();
     }
 
+    @Test
+    void shouldStripUnsupportedUnicode() throws IOException {
+        String submittedValue = "Michael😃";
+        String expectedValue = "Michael";
+
+        Collection<PdfField> fields = List.of(
+                new SimplePdfField("TEXT_FIELD", submittedValue)
+        );
+        ApplicationFile applicationFile = PDFBoxFieldFiller.fill(fields, "", "");
+        PDAcroForm acroForm = getPdAcroForm(applicationFile);
+
+        assertThat(acroForm.getField("TEXT_FIELD").getValueAsString()).isEqualTo(expectedValue);
+    }
+
     private PDAcroForm getPdAcroForm(ApplicationFile applicationFile) throws IOException {
         Path path = Files.createTempDirectory("");
         File file = new File(path.toFile(), "test-caf.pdf");
