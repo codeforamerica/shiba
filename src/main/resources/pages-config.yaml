@@ -1625,10 +1625,19 @@ pageDefinitions:
       conditionalValues:
         - value: real-estate.household-own-real-estate
           condition: *doesNotLiveAlone?
-    hasPrimaryButton: false
+    headerHelpMessageKey:
+      value: real-estate.pick-one
     inputs:
       - name: ownRealEstate
-        type: YES_NO
+        type: RADIO
+        options:
+          selectableOptions:
+            - value: JUST_OWN_HOME
+              messageKey: real-estate.yes-i-just-own-the-home-i-live-in
+            - value: OWN_OTHER_REAL_ESTATE
+              messageKey: real-estate.yes-i-own-real-estate-that-is-not-my-home
+            - value: OWN_NO_REAL_ESTATE
+              messageKey: real-estate.no-i-do-not-own-any-real-estate
   - &soldAssets
     name: soldAssets
     pageTitle:
