@@ -308,6 +308,41 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     @Test
+    void shouldSkipMillionDollarPageIfYesCcapButNoVehicleInvestmentsRealEstateOrSavings() {
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance"));
+        testPage.clickLink("This looks correct");
+        testPage.enter("liveAlone", YES.getDisplayValue());
+        testPage.clickContinue();
+        testPage.enter("goingToSchool", YES.getDisplayValue());
+        testPage.enter("isPregnant", NO.getDisplayValue());
+        testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
+        testPage.enter("isUsCitizen", YES.getDisplayValue());
+        testPage.enter("hasDisability", NO.getDisplayValue());
+        testPage.enter("hasWorkSituation", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.enter("areYouWorking", NO.getDisplayValue());
+        testPage.enter("currentlyLookingForJob", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.enter("unearnedIncome", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.clickContinue();
+        testPage.enter("homeExpenses", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("payForUtilities", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("energyAssistance", NO.getDisplayValue());
+        testPage.enter("supportAndCare", NO.getDisplayValue());
+        testPage.enter("haveVehicle", NO.getDisplayValue());
+        testPage.enter("ownRealEstate", "No, I do not own any real estate");
+        testPage.clickContinue();
+        testPage.enter("haveInvestments", NO.getDisplayValue());
+        testPage.enter("haveSavings", NO.getDisplayValue());
+        assertThat(testPage.getTitle()).isEqualTo("Sold assets");
+    }
+
+    @Test
     void shouldSkipWhoIsGoingToSchoolPageIfCCAPNotSelected() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
         testPage.clickLink("This looks correct");

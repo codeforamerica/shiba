@@ -142,6 +142,38 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         }
 
         @Test
+        void shouldDefaultToNoForMillionDollarQuestionWhenQuestionPageIsNotShown() {
+            navigateTo("energyAssistance");
+            testPage.enter("energyAssistance", NO.getDisplayValue());
+            testPage.enter("supportAndCare", NO.getDisplayValue());
+            testPage.enter("haveVehicle", NO.getDisplayValue());
+            testPage.enter("ownRealEstate", "No, I do not own any real estate");
+            testPage.clickContinue();
+            testPage.enter("haveInvestments", NO.getDisplayValue());
+            testPage.enter("haveSavings", NO.getDisplayValue());
+
+            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+            assertThat(pdAcroForms.get(CCAP).getField("HAVE_MILLION_DOLLARS").getValueAsString())
+                    .isEqualTo("No");
+        }
+
+        @Test
+        void shouldMarkYesForMillionDollarQuestionWhenChoiceIsYes() {
+            navigateTo("energyAssistance");
+            testPage.enter("energyAssistance", NO.getDisplayValue());
+            testPage.enter("supportAndCare", NO.getDisplayValue());
+            testPage.enter("haveVehicle", NO.getDisplayValue());
+            testPage.enter("ownRealEstate", "No, I do not own any real estate");
+            testPage.clickContinue();
+            testPage.enter("haveInvestments", YES.getDisplayValue());
+            testPage.enter("haveSavings", NO.getDisplayValue());
+            testPage.enter("haveMillionDollars", YES.getDisplayValue());
+            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+            assertThat(pdAcroForms.get(CCAP).getField("HAVE_MILLION_DOLLARS").getValueAsString())
+                    .isEqualTo("Yes");
+        }
+
+        @Test
         void shouldMapAdultsInHouseholdRequestingChildcareAssistance() {
             addHouseholdMembers();
 

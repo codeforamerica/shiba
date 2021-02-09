@@ -164,6 +164,8 @@ mappings:
     haveInvestments: HAVE_INVESTMENTS
   vehicle:
     haveVehicle: HAVE_VEHICLE
+  millionDollar:
+    haveMillionDollars: HAVE_MILLION_DOLLARS
   soldAssets:
     haveSoldAssets: HAVE_SOLD_ASSETS
   registerToVote:
