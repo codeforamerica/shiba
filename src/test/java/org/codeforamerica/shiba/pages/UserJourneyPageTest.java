@@ -299,11 +299,166 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.clickContinue();
         testPage.enter("energyAssistance", NO.getDisplayValue());
         testPage.enter("supportAndCare", NO.getDisplayValue());
+        testPage.enter("haveVehicle", NO.getDisplayValue());
+        testPage.enter("haveInvestments", NO.getDisplayValue());
         testPage.enter("haveSavings", YES.getDisplayValue());
         testPage.enter("liquidAssets", "1234");
         testPage.clickContinue();
+        assertThat(testPage.getTitle()).isEqualTo("Sold assets");
+    }
+
+    @Test
+    void shouldSkipRealEstatePageIfCCAPNotSelectedWithHouseholdMember() {
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
+        testPage.clickLink("This looks correct");
+        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.clickContinue();
+        fillOutHousemateInfo("Emergency Assistance");
+        testPage.clickContinue();
+        testPage.clickButton("Yes, that's everyone");
+        testPage.enter("isPreparingMealsTogether", NO.getDisplayValue());
+        takeSnapShot("test.png");
+        testPage.enter("goingToSchool", YES.getDisplayValue());
+        testPage.enter("isPregnant", NO.getDisplayValue());
+        testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
+        testPage.enter("isUsCitizen", YES.getDisplayValue());
+        testPage.enter("hasDisability", NO.getDisplayValue());
+        testPage.enter("hasWorkSituation", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.enter("areYouWorking", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.enter("unearnedIncome", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.clickContinue();
+        testPage.enter("homeExpenses", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("payForUtilities", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("energyAssistance", NO.getDisplayValue());
+        testPage.enter("supportAndCare", NO.getDisplayValue());
+        testPage.enter("haveVehicle", NO.getDisplayValue());
         testPage.enter("haveInvestments", NO.getDisplayValue());
+        testPage.enter("haveSavings", YES.getDisplayValue());
+        testPage.enter("liquidAssets", "1234");
+        testPage.clickContinue();
+        assertThat(testPage.getTitle()).isEqualTo("Sold assets");
+    }
+
+    @Test
+    void shouldAskRealEstateQuestionIfCCAPNotSelectedByApplicantButHouseholdSelected() {
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
+        testPage.clickLink("This looks correct");
+        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.clickContinue();
+        fillOutHousemateInfo("Child Care Assistance");
+        testPage.clickContinue();
+        testPage.clickButton("Yes, that's everyone");
+        testPage.clickContinue();
+        testPage.enter("isPreparingMealsTogether", NO.getDisplayValue());
+        testPage.enter("goingToSchool", NO.getDisplayValue());
+        testPage.enter("isPregnant", NO.getDisplayValue());
+        testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
+        testPage.enter("isUsCitizen", YES.getDisplayValue());
+        testPage.enter("hasDisability", NO.getDisplayValue());
+        testPage.enter("hasWorkSituation", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.enter("areYouWorking", NO.getDisplayValue());
+        testPage.enter("currentlyLookingForJob", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.enter("unearnedIncome", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.clickContinue();
+        testPage.enter("homeExpenses", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("payForUtilities", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("energyAssistance", NO.getDisplayValue());
+        testPage.enter("supportAndCare", NO.getDisplayValue());
+        testPage.enter("haveVehicle", NO.getDisplayValue());
+        testPage.enter("ownRealEstate", "Yes, I just own the home I live in");
+        testPage.clickContinue();
+        testPage.enter("haveInvestments", NO.getDisplayValue());
+        testPage.enter("haveSavings", NO.getDisplayValue());
+        assertThat(testPage.getTitle()).isEqualTo("Sold assets");
+    }
+
+    @Test
+    void shouldAskMillionDollarQuestionIfCCAPNotSelectedByApplicantButHouseholdSelected() {
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
+        testPage.clickLink("This looks correct");
+        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.clickContinue();
+        fillOutHousemateInfo("Child Care Assistance");
+        testPage.clickContinue();
+        testPage.clickButton("Yes, that's everyone");
+        testPage.clickContinue();
+        testPage.enter("isPreparingMealsTogether", NO.getDisplayValue());
+        testPage.enter("goingToSchool", NO.getDisplayValue());
+        testPage.enter("isPregnant", NO.getDisplayValue());
+        testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
+        testPage.enter("isUsCitizen", YES.getDisplayValue());
+        testPage.enter("hasDisability", NO.getDisplayValue());
+        testPage.enter("hasWorkSituation", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.enter("areYouWorking", NO.getDisplayValue());
+        testPage.enter("currentlyLookingForJob", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.enter("unearnedIncome", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.clickContinue();
+        testPage.enter("homeExpenses", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("payForUtilities", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("energyAssistance", NO.getDisplayValue());
+        testPage.enter("supportAndCare", NO.getDisplayValue());
         testPage.enter("haveVehicle", YES.getDisplayValue());
+        testPage.enter("ownRealEstate", "Yes, I just own the home I live in");
+        testPage.clickContinue();
+        testPage.enter("haveInvestments", NO.getDisplayValue());
+        testPage.enter("haveSavings", NO.getDisplayValue());
+        testPage.enter("haveMillionDollars", NO.getDisplayValue());
+        assertThat(testPage.getTitle()).isEqualTo("Sold assets");
+    }
+
+    @Test
+    void shouldSkipMillionDollarPageIfYesCcapButNoVehicleInvestmentsRealEstateOrSavings() {
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance"));
+        testPage.clickLink("This looks correct");
+        testPage.enter("liveAlone", YES.getDisplayValue());
+        testPage.clickContinue();
+        testPage.enter("goingToSchool", YES.getDisplayValue());
+        testPage.enter("isPregnant", NO.getDisplayValue());
+        testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
+        testPage.enter("isUsCitizen", YES.getDisplayValue());
+        testPage.enter("hasDisability", NO.getDisplayValue());
+        testPage.enter("hasWorkSituation", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.enter("areYouWorking", NO.getDisplayValue());
+        testPage.enter("currentlyLookingForJob", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.enter("unearnedIncome", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.clickContinue();
+        testPage.enter("homeExpenses", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("payForUtilities", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("energyAssistance", NO.getDisplayValue());
+        testPage.enter("supportAndCare", NO.getDisplayValue());
+        testPage.enter("haveVehicle", NO.getDisplayValue());
+        testPage.enter("ownRealEstate", "No, I do not own any real estate");
+        testPage.clickContinue();
+        testPage.enter("haveInvestments", NO.getDisplayValue());
+        testPage.enter("haveSavings", NO.getDisplayValue());
         assertThat(testPage.getTitle()).isEqualTo("Sold assets");
     }
 
@@ -592,12 +747,14 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.enter("energyAssistance", YES.getDisplayValue());
         testPage.enter("energyAssistanceMoreThan20", YES.getDisplayValue());
         testPage.enter("supportAndCare", YES.getDisplayValue());
+        testPage.enter("haveVehicle", YES.getDisplayValue());
+        testPage.enter("ownRealEstate", "Yes, I just own the home I live in");
+        testPage.clickContinue();
+        testPage.enter("haveInvestments", NO.getDisplayValue());
         testPage.enter("haveSavings", YES.getDisplayValue());
         testPage.enter("liquidAssets", "1234");
         testPage.clickContinue();
-        testPage.enter("haveInvestments", NO.getDisplayValue());
-        testPage.enter("haveVehicle", YES.getDisplayValue());
-        testPage.clickContinue();
+        testPage.enter("haveMillionDollars", NO.getDisplayValue());
         testPage.enter("haveSoldAssets", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.enter("registerToVote", "Yes, send me more info");
