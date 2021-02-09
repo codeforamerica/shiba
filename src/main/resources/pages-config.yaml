@@ -1638,6 +1638,16 @@ pageDefinitions:
               messageKey: real-estate.yes-i-own-real-estate-that-is-not-my-home
             - value: OWN_NO_REAL_ESTATE
               messageKey: real-estate.no-i-do-not-own-any-real-estate
+  - &millionDollar
+    name: millionDollar
+    pageTitle:
+      value: million-dollar.title
+    headerKey:
+      value: million-dollar.does-your-family-have-more-than-1-million
+    hasPrimaryButton: false
+    inputs:
+      - name: haveMillionDollars
+        type: YES_NO
   - &soldAssets
     name: soldAssets
     pageTitle:
@@ -2271,7 +2281,7 @@ workflow:
   supportAndCare:
     pageConfiguration: *supportAndCare
     nextPages:
-      - pageName: savings
+      - pageName: vehicle
     datasources:
       - pageName: doYouLiveAlone
   savings:
@@ -2291,20 +2301,15 @@ workflow:
       - pageName: savings
       - pageName: doYouLiveAlone
     nextPages:
-      - pageName: investments
+      - pageName: millionDollar
   investments:
     pageConfiguration: *investments
     nextPages:
-      - pageName: vehicle
+      - pageName: savings
     datasources:
       - pageName: doYouLiveAlone
   vehicle:
     pageConfiguration: *vehicle
-    skipCondition:
-      conditions:
-        - pageName: savings
-          input: haveSavings
-          value: "false"
     nextPages:
       - pageName: realEstate
     datasources:
@@ -2322,12 +2327,52 @@ workflow:
                 - *householdMemberDidNotChooseCCAP?
                 - *livesAlone?
     nextPages:
+      - pageName: investments
+    datasources:
+      - pageName: doYouLiveAlone
+      - pageName: choosePrograms
+      - pageName: householdMemberInfo
+        groupName: household
+  millionDollar:
+    pageConfiguration: *millionDollar
+    skipCondition:
+      compositeConditions:
+        - logicalOperator: OR
+          compositeConditions:
+            - logicalOperator: AND
+              compositeConditions:
+                - conditions:
+                    - *applicantDidNotChooseCCAP?
+                - logicalOperator: OR
+                  conditions:
+                    - *householdMemberDidNotChooseCCAP?
+                    - *livesAlone?
+            - logicalOperator: AND
+              conditions:
+                - pageName: vehicle
+                  input: haveVehicle
+                  value: "false"
+                - pageName: investments
+                  input: haveInvestments
+                  value: "false"
+                - pageName: savings
+                  input: haveSavings
+                  value: "false"
+                - pageName: realEstate
+                  input: ownRealEstate
+                  value: OWN_OTHER_REAL_ESTATE
+                  matcher: DOES_NOT_CONTAIN
+    nextPages:
       - pageName: soldAssets
     datasources:
       - pageName: doYouLiveAlone
       - pageName: choosePrograms
       - pageName: householdMemberInfo
         groupName: household
+      - pageName: vehicle
+      - pageName: investments
+      - pageName: savings
+      - pageName: realEstate
   soldAssets:
     pageConfiguration: *soldAssets
     nextPages:
