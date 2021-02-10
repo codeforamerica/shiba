@@ -7,6 +7,7 @@ import org.codeforamerica.shiba.output.Recipient;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -14,15 +15,18 @@ public class UnearnedIncomeFrequencyInputsMapper implements ApplicationInputsMap
 
     @Override
     public List<ApplicationInput> map(Application application, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
-        return application.getApplicationData().getPageData("unearnedIncomeSources").entrySet().stream()
-                .filter(inputData -> !inputData.getValue().getValue().isEmpty())
-                .map(inputData ->
-                        new ApplicationInput(
-                                "unearnedIncomeSources",
-                                inputData.getKey().replace("Amount", "Frequency"),
-                                List.of("Monthly"),
-                                ApplicationInputType.SINGLE_VALUE)
-                )
-                .collect(Collectors.toList());
+        return Optional.ofNullable(application.getApplicationData().getPageData("unearnedIncomeSources"))
+                .map(pageData -> pageData
+                        .entrySet().stream()
+                        .filter(inputData -> !inputData.getValue().getValue().isEmpty())
+                        .map(inputData ->
+                                new ApplicationInput(
+                                        "unearnedIncomeSources",
+                                        inputData.getKey().replace("Amount", "Frequency"),
+                                        List.of("Monthly"),
+                                        ApplicationInputType.SINGLE_VALUE)
+                        )
+                        .collect(Collectors.toList()))
+                .orElse(List.of());
     }
 }
