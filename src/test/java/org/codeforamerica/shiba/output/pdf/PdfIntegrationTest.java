@@ -426,10 +426,14 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         }
 
         @Test
-        void shouldMapNoForUnearnedIncomeOptionsThatAreNotChecked() {
+        void shouldMapUnearnedIncome() {
             navigateTo("unearnedIncome");
             testPage.enter("unearnedIncome", "Social Security");
             testPage.enter("unearnedIncome", "Child or Spousal support");
+            testPage.clickContinue();
+
+            testPage.enter("socialSecurityAmount", "10");
+            testPage.enter("childOrSpousalSupportAmount", "20");
             testPage.clickContinue();
 
             Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
@@ -446,6 +450,24 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
                         assertThat(pdAcroForm.getField("TRIBAL_PAYMENTS").getValueAsString()).isEqualTo("No");
                     }
             );
+            PDAcroForm ccap = pdAcroForms.get(CCAP);
+            assertThat(ccap.getField("SOCIAL_SECURITY_AMOUNT").getValueAsString()).isEqualTo("10");
+            assertThat(ccap.getField("CHILD_OR_SPOUSAL_SUPPORT_AMOUNT").getValueAsString()).isEqualTo("20");
+            assertThat(ccap.getField("SUPPLEMENTAL_SECURITY_INCOME_AMOUNT").getValueAsString()).isEqualTo("");
+            assertThat(ccap.getField("VETERANS_BENEFITS_AMOUNT").getValueAsString()).isEqualTo("");
+            assertThat(ccap.getField("UNEMPLOYMENT_INSURANCE_AMOUNT").getValueAsString()).isEqualTo("");
+            assertThat(ccap.getField("WORKERS_COMPENSATION_AMOUNT").getValueAsString()).isEqualTo("");
+            assertThat(ccap.getField("RETIREMENT_BENEFITS_AMOUNT").getValueAsString()).isEqualTo("");
+            assertThat(ccap.getField("TRIBAL_PAYMENTS_AMOUNT").getValueAsString()).isEqualTo("");
+
+            assertThat(ccap.getField("SOCIAL_SECURITY_FREQUENCY").getValueAsString()).isEqualTo("Monthly");
+            assertThat(ccap.getField("CHILD_OR_SPOUSAL_SUPPORT_FREQUENCY").getValueAsString()).isEqualTo("Monthly");
+            assertThat(ccap.getField("SUPPLEMENTAL_SECURITY_INCOME_FREQUENCY").getValueAsString()).isEqualTo("");
+            assertThat(ccap.getField("VETERANS_BENEFITS_FREQUENCY").getValueAsString()).isEqualTo("");
+            assertThat(ccap.getField("UNEMPLOYMENT_INSURANCE_FREQUENCY").getValueAsString()).isEqualTo("");
+            assertThat(ccap.getField("WORKERS_COMPENSATION_FREQUENCY").getValueAsString()).isEqualTo("");
+            assertThat(ccap.getField("RETIREMENT_BENEFITS_FREQUENCY").getValueAsString()).isEqualTo("");
+            assertThat(ccap.getField("TRIBAL_PAYMENTS_FREQUENCY").getValueAsString()).isEqualTo("");
         }
 
         @Test
