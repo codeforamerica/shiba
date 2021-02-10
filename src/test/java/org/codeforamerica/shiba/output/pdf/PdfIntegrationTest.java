@@ -228,6 +228,19 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_WORKING_FULL_NAME_1")).isEmpty();
             assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_WORKING_EMPLOYERS_NAME_1")).isEmpty();
         }
+
+        @Test
+        void shouldMapLivingSituationToSelectedResponseForApplicant() {
+            fillInRequiredPages();
+
+            navigateTo("livingSituation");
+            testPage.enter("livingSituation", "Staying in a hotel or motel");
+            testPage.clickContinue();
+
+            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "LIVING_SITUATION")).isEqualTo("HOTEL_OR_MOTEL");
+        }
     }
 
     @Nested
@@ -267,20 +280,6 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             assertThat(getPdfFieldText(pdAcroForm, "CASH")).isEqualTo("Yes");
             assertThat(getPdfFieldText(pdAcroForm, "EMERGENCY")).isEqualTo("Yes");
             assertThat(getPdfFieldText(pdAcroForm, "GRH")).isEqualTo("Yes");
-        }
-
-        @Test
-        void shouldMapNoPermanentAddressIfSelected() {
-            navigateTo("homeAddress");
-            fillInAddress();
-            testPage.enter("isHomeless", "I don't have a permanent address");
-            testPage.enter("sameMailingAddress", "Yes, send mail here");
-            testPage.clickContinue();
-            testPage.clickButton("Use this address");
-
-            PDAcroForm pdAcroForm = submitAndDownloadCaf();
-            assertThat(pdAcroForm.getField("APPLICANT_HOMELESS").getValueAsString())
-                    .isEqualTo("homeless");
         }
 
         @Test
@@ -774,6 +773,32 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
             assertThat(getPdfFieldText(pdAcroForms.get(CAF), "ADDITIONAL_APPLICATION_INFO")).isEqualTo("Some additional information about my application");
             assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADDITIONAL_APPLICATION_INFO")).isEqualTo("Some additional information about my application");
+        }
+
+        @Test
+        void shouldMapLivingSituationToUnknownIfNoneOfTheseIsSelected() {
+            fillInRequiredPages();
+
+            navigateTo("livingSituation");
+            testPage.enter("livingSituation", "None of these");
+            testPage.clickContinue();
+
+            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+
+            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "LIVING_SITUATION")).isEqualTo("UNKNOWN");
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "LIVING_SITUATION")).isEqualTo("UNKNOWN");
+        }
+
+        @Test
+        void shouldNotMapLivingSituationIfNotAnswered() {
+            fillInRequiredPages();
+            navigateTo("livingSituation");
+            testPage.clickContinue();
+
+            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+
+            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "LIVING_SITUATION")).isEqualTo("Off");
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "LIVING_SITUATION")).isEqualTo("Off");
         }
     }
 

@@ -369,6 +369,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.clickContinue();
         testPage.enter("unearnedIncome", "None of the above");
         testPage.clickContinue();
+        testPage.enter("livingSituation", "I prefer not to say");
+        testPage.clickContinue();
         testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.clickContinue();
@@ -605,6 +607,91 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
         navigateTo("legalStuff");
         assertThat(driver.findElements(By.id("ccap-legal"))).isEmpty();
+    }
+
+    @Test
+    void shouldAskLivingSituationIfCCAPApplicant() {
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance"));
+        testPage.clickLink("This looks correct");
+        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.clickContinue();
+        fillOutHousemateInfo("Emergency Assistance");
+        testPage.clickContinue();
+        testPage.clickButton("Yes, that's everyone");
+
+        navigateTo("unearnedIncome");
+        testPage.enter("unearnedIncome", "None of the above");
+        testPage.clickContinue();
+
+        assertThat(driver.getTitle()).isEqualTo("Living situation");
+    }
+
+    @Test
+    void shouldAskLivingSituationIfGRHApplicant() {
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Housing Support (GRH)"));
+        testPage.clickLink("This looks correct");
+        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.clickContinue();
+        fillOutHousemateInfo("Emergency Assistance");
+        testPage.clickContinue();
+        testPage.clickButton("Yes, that's everyone");
+
+        navigateTo("unearnedIncome");
+        testPage.enter("unearnedIncome", "None of the above");
+        testPage.clickContinue();
+
+        assertThat(driver.getTitle()).isEqualTo("Living situation");
+    }
+
+    @Test
+    void shouldAskLivingSituationIfCCAPHouseholdMember() {
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Emergency Assistance"));
+        testPage.clickLink("This looks correct");
+        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.clickContinue();
+        fillOutHousemateInfo("Child Care Assistance");
+        testPage.clickContinue();
+        testPage.clickButton("Yes, that's everyone");
+
+        navigateTo("unearnedIncome");
+        testPage.enter("unearnedIncome", "None of the above");
+        testPage.clickContinue();
+
+        assertThat(driver.getTitle()).isEqualTo("Living situation");
+    }
+
+    @Test
+    void shouldAskLivingSituationIfGRHHouseholdMember() {
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Emergency Assistance"));
+        testPage.clickLink("This looks correct");
+        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.clickContinue();
+        fillOutHousemateInfo("Housing Support (GRH)");
+        testPage.clickContinue();
+        testPage.clickButton("Yes, that's everyone");
+
+        navigateTo("unearnedIncome");
+        testPage.enter("unearnedIncome", "None of the above");
+        testPage.clickContinue();
+
+        assertThat(driver.getTitle()).isEqualTo("Living situation");
+    }
+
+    @Test
+    void shouldNotAskLivingSituationIfNotCCAPorGRH() {
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Emergency Assistance"));
+        testPage.clickLink("This looks correct");
+        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.clickContinue();
+        fillOutHousemateInfo("Emergency Assistance");
+        testPage.clickContinue();
+        testPage.clickButton("Yes, that's everyone");
+
+        navigateTo("unearnedIncome");
+        testPage.enter("unearnedIncome", "None of the above");
+        testPage.clickContinue();
+
+        assertThat(driver.getTitle()).isEqualTo("Future Income");
     }
 
     private void completeFlowFromLandingPageThroughContactInfo(List<String> programSelections) {
