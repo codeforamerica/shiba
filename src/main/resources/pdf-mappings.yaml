@@ -183,8 +183,7 @@ mappings:
     helpersZipCode: AUTHORIZED_REP_ZIP_CODE
     helpersPhoneNumber: AUTHORIZED_REP_PHONE_NUMBER
   employee:
-    firstName: EMPLOYEE_FIRST_NAME
-    lastName: EMPLOYEE_LAST_NAME
+    fullName: EMPLOYEE_FULL_NAME
     grossMonthlyIncome: GROSS_MONTHLY_INCOME
     selfEmployed: SELF_EMPLOYED
     selfEmployedGrossMonthlyEarnings: SELF_EMPLOYED_GROSS_MONTHLY_EARNINGS
