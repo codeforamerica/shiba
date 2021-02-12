@@ -2,9 +2,9 @@ package org.codeforamerica.shiba.mnit;
 
 import com.sun.istack.ByteArrayDataSource;
 import com.sun.xml.messaging.saaj.soap.name.NameImpl;
-import io.sentry.Sentry;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
+import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.esbwsdl.CmisContentStreamType;
 import org.codeforamerica.shiba.esbwsdl.CmisPropertiesType;
 import org.codeforamerica.shiba.esbwsdl.CmisPropertyString;
@@ -32,18 +32,21 @@ public class MnitEsbWebServiceClient {
     private final String username;
     private final String password;
     private final CountyMap<MnitCountyInformation> countyMap;
+    private final MonitoringService monitoringService;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public MnitEsbWebServiceClient(WebServiceTemplate webServiceTemplate,
                                    Clock clock,
                                    @Value("${mnit-esb.username}") String username,
                                    @Value("${mnit-esb.password}") String password,
-                                   CountyMap<MnitCountyInformation> countyMap) {
+                                   CountyMap<MnitCountyInformation> countyMap,
+                                   MonitoringService monitoringService) {
         this.webServiceTemplate = webServiceTemplate;
         this.clock = clock;
         this.username = username;
         this.password = password;
         this.countyMap = countyMap;
+        this.monitoringService = monitoringService;
     }
 
     public void send(ApplicationFile applicationFile, County county) {
@@ -97,7 +100,7 @@ public class MnitEsbWebServiceClient {
                 passwordElement.setTextContent(password);
             } catch (SOAPException e) {
                 e.printStackTrace();
-                Sentry.captureMessage(e.getMessage());
+                monitoringService.sendEvent(e.getMessage());
             }
         });
     }

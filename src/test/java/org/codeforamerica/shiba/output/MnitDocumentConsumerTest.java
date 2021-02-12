@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.output;
 
 import org.codeforamerica.shiba.County;
+import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
@@ -29,11 +30,13 @@ class MnitDocumentConsumerTest {
     PdfGenerator pdfGenerator = mock(PdfGenerator.class);
     ApplicationDataParser<List<Document>> documentListParser = mock(DocumentListParser.class);
     ApplicationData appData = new ApplicationData();
+    MonitoringService monitoringService = mock(MonitoringService.class);
     MnitDocumentConsumer documentConsumer = new MnitDocumentConsumer(
         mnitClient,
         xmlGenerator,
         pdfGenerator,
-        documentListParser
+        documentListParser,
+        monitoringService
     );
 
     @BeforeEach
@@ -119,5 +122,19 @@ class MnitDocumentConsumerTest {
         documentConsumer.process(application);
 
         verify(mnitClient).send(pdfApplicationFile, County.Olmsted);
+    }
+
+    @Test
+    void sendsApplicationIdToMonitoringService() {
+        Application application = Application.builder()
+                .id("someId")
+                .completedAt(ZonedDateTime.now())
+                .applicationData(new ApplicationData())
+                .county(County.Olmsted)
+                .timeToComplete(null)
+                .build();
+        documentConsumer.process(application);
+
+        verify(monitoringService).setApplicationId(application.getId());
     }
 }
