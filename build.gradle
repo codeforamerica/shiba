@@ -90,6 +90,8 @@ dependencies {
     implementation 'com.mixpanel:mixpanel-java:1.5.0'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'com.sun.activation:jakarta.activation:1.2.2'
+    implementation 'org.springframework.retry:spring-retry:1.3.1'
+    implementation 'org.springframework:spring-aspects:5.3.3'
 
     implementation(files(genJaxb.classesDir).builtBy(genJaxb))
     jaxb "com.sun.xml.bind:jaxb-xjc:2.3.3"
@@ -99,6 +101,7 @@ dependencies {
     testImplementation 'org.seleniumhq.selenium:selenium-java:3.141.59'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+        exclude group: 'com.vaadin.external.google', module: 'android-json'
     }
     testImplementation 'org.awaitility:awaitility:4.0.3'
     testImplementation 'com.github.tomakehurst:wiremock-standalone:2.27.1'
@@ -112,7 +115,7 @@ compileJava.inputs.files(processResources)
 def unitTest = tasks.register("unitTest", Test) {
     Test task ->
         task.useJUnitPlatform {
-            org.gradle.api.tasks.testing.junitplatform.JUnitPlatformOptions options ->
+            JUnitPlatformOptions options ->
                 options.excludeTags 'integration'
         }
         task.maxParallelForks(Runtime.runtime.availableProcessors().intdiv(2) ?: 1)
@@ -121,7 +124,7 @@ def unitTest = tasks.register("unitTest", Test) {
 def integrationTest = tasks.register("integrationTest", Test) {
     Test task ->
         task.useJUnitPlatform {
-            org.gradle.api.tasks.testing.junitplatform.JUnitPlatformOptions options ->
+            JUnitPlatformOptions options ->
                 options.includeTags 'integration'
         }
         task.shouldRunAfter test
