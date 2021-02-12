@@ -317,7 +317,6 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.clickContinue();
         testPage.clickButton("Yes, that's everyone");
         testPage.enter("isPreparingMealsTogether", NO.getDisplayValue());
-        takeSnapShot("test.png");
         testPage.enter("goingToSchool", YES.getDisplayValue());
         testPage.enter("isPregnant", NO.getDisplayValue());
         testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
@@ -411,6 +410,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.clickContinue();
         testPage.enter("unearnedIncome", "None of the above");
         testPage.clickContinue();
+        testPage.enter("livingSituation", "Paying for my own housing with rent, lease, or mortgage payments");
+        testPage.clickContinue();
         testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.clickContinue();
@@ -446,6 +447,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.enter("currentlyLookingForJob", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.enter("unearnedIncome", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("livingSituation", "Paying for my own housing with rent, lease, or mortgage payments");
         testPage.clickContinue();
         testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
         testPage.clickContinue();
@@ -821,6 +824,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.enter("unearnedIncome", "Social Security");
         testPage.clickContinue();
         testPage.enter("socialSecurityAmount", "200");
+        testPage.clickContinue();
+        testPage.enter("livingSituation", "Paying for my own housing with rent, lease, or mortgage payments");
         testPage.clickContinue();
         testPage.enter("earnLessMoneyThisMonth", "Yes");
         testPage.clickContinue();

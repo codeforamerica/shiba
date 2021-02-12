@@ -2263,17 +2263,18 @@ workflow:
       - pageName: futureIncome
     skipCondition:
       compositeConditions:
-        - logicalOperator: OR
+        - logicalOperator: AND
           compositeConditions:
             - conditions:
                 - *applicantDidNotChooseCCAP?
                 - *applicantDidNotChooseGRH?
-                - *livesAlone?
-            - logicalOperator: AND
-              conditions:
-                - *householdMemberDidNotChooseCCAP?
-                - *householdMemberDidNotChooseGRH?
-                - *doesNotLiveAlone?
+            - logicalOperator: OR
+              compositeConditions:
+                - conditions:
+                  - *householdMemberDidNotChooseCCAP?
+                  - *householdMemberDidNotChooseGRH?
+                - conditions:
+                  - *livesAlone?
     datasources:
       - pageName: choosePrograms
       - pageName: doYouLiveAlone
