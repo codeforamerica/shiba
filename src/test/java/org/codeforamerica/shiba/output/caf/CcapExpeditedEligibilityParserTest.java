@@ -59,9 +59,9 @@ class CcapExpeditedEligibilityParserTest {
     }
 
     @Test
-    void shouldReturnNullWhenEligibilityInputsNotAvailable() {
+    void shouldReturnUnknownWhenEligibilityInputsNotAvailable() {
         CcapExpeditedEligibilityParameters parameters = ccapExpeditedEligibilityParser.parse(applicationData).get();
 
-        assertThat(parameters).isEqualTo(new CcapExpeditedEligibilityParameters(null));
+        assertThat(parameters).isEqualTo(new CcapExpeditedEligibilityParameters("UNKNOWN"));
     }
 }

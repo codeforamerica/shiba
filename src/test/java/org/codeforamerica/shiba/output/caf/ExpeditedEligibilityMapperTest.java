@@ -34,12 +34,19 @@ class ExpeditedEligibilityMapperTest {
                 .build();
 
         when(mockSnapDecider.decide(any())).thenReturn(SnapExpeditedEligibility.ELIGIBLE);
+        when(mockCcapDecider.decide(any())).thenReturn(CcapExpeditedEligibility.ELIGIBLE);
 
         assertThat(mapper.map(application, Recipient.CLIENT, null)).containsExactly(
                 new ApplicationInput(
-                        "expeditedEligibility",
-                        "expeditedEligibility",
+                        "snapExpeditedEligibility",
+                        "snapExpeditedEligibility",
                         List.of("Expedited-SNAP"),
+                        ApplicationInputType.SINGLE_VALUE
+                ),
+                new ApplicationInput(
+                        "ccapExpeditedEligibility",
+                        "ccapExpeditedEligibility",
+                        List.of("Expedited-CCAP"),
                         ApplicationInputType.SINGLE_VALUE
                 )
         );
@@ -61,17 +68,25 @@ class ExpeditedEligibilityMapperTest {
                 .build();
 
         when(mockSnapDecider.decide(any())).thenReturn(SnapExpeditedEligibility.NOT_ELIGIBLE);
+        when(mockCcapDecider.decide(any())).thenReturn(CcapExpeditedEligibility.NOT_ELIGIBLE);
 
         List<ApplicationInput> result = mapper.map(application, Recipient.CLIENT, null);
 
         verify(mockSnapDecider).decide(appData);
         assertThat(result).containsExactly(
                 new ApplicationInput(
-                        "expeditedEligibility",
-                        "expeditedEligibility",
+                        "snapExpeditedEligibility",
+                        "snapExpeditedEligibility",
                         List.of("Non-Expedited-SNAP"),
                         ApplicationInputType.SINGLE_VALUE
+                ),
+                new ApplicationInput(
+                        "ccapExpeditedEligibility",
+                        "ccapExpeditedEligibility",
+                        List.of("Non-Expedited-CCAP"),
+                        ApplicationInputType.SINGLE_VALUE
                 )
+
         );
     }
 }
