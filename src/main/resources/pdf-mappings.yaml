@@ -131,6 +131,8 @@ mappings:
     retirementFrequency: RETIREMENT_BENEFITS_FREQUENCY
     childOrSpousalSupportFrequency: CHILD_OR_SPOUSAL_SUPPORT_FREQUENCY
     tribalPaymentsFrequency: TRIBAL_PAYMENTS_FREQUENCY
+  livingSituation:
+    livingSituation: LIVING_SITUATION  
   futureIncome:
     earnLessMoneyThisMonth: EARN_LESS_MONEY_THIS_MONTH
     additionalIncomeInfo: ADDITIONAL_INCOME_INFO

@@ -35,9 +35,19 @@ conditionDefinitions:
     value: CCAP
     input: programs
     matcher: DOES_NOT_CONTAIN
+  - &applicantDidNotChooseGRH?
+    pageName: choosePrograms
+    value: GRH
+    input: programs
+    matcher: DOES_NOT_CONTAIN
   - &householdMemberDidNotChooseCCAP?
     pageName: householdMemberInfo
     value: CCAP
+    input: programs
+    matcher: DOES_NOT_CONTAIN
+  - &householdMemberDidNotChooseGRH?
+    pageName: householdMemberInfo
+    value: GRH
     input: programs
     matcher: DOES_NOT_CONTAIN
 pageDefinitions:
@@ -1247,6 +1257,37 @@ pageDefinitions:
           pageName: unearnedIncome
           input: unearnedIncome
           value: TRIBAL_PAYMENTS
+  - &livingSituation
+    name: livingSituation
+    pageTitle:
+      value: living-situation.title
+    headerKey:
+      value: living-situation.what-is-your-current-living-situation
+    inputs:
+      - name: livingSituation
+        type: RADIO
+        options:
+          selectableOptions:
+            - value: PAYING_FOR_HOUSING_WITH_RENT_LEASE_OR_MORTGAGE
+              messageKey: living-situation.paying-for-my-own-housing-with-rent-lease-or-mortgage-payments
+            - value: LIVING_IN_A_PLACE_NOT_MEANT_FOR_HOUSING
+              messageKey: living-situation.living-outside-in-a-vehicle-or-another-place-not-meant-for-housing
+            - value: TEMPORARILY_WITH_FRIENDS_OR_FAMILY
+              messageKey: living-situation.temporarily-staying-with-friends-or-family
+            - value: HOTEL_OR_MOTEL
+              messageKey: living-situation.staying-in-a-hotel-or-motel
+            - value: EMERGENCY_SHELTER
+              messageKey: living-situation.staying-in-an-emergency-shelter
+            - value: FOSTER_CARE_OR_GROUP_HOME
+              messageKey: living-situation.living-in-foster-care-or-a-group-home
+            - value: HOSPITAL_OR_OTHER_TREATMENT_FACILITY
+              messageKey: living-situation.staying-in-a-hospital-treatment-facility-detox-center-or-nursing-home
+            - value: JAIL_OR_JUVENILE_DETENTION_FACILITY
+              messageKey: living-situation.in-jail-prison-or-juvenile-detention
+            - value: UNKNOWN
+              messageKey: living-situation.none-of-these
+            - value: PREFER_NOT_TO_SAY
+              messageKey: living-situation.i-prefer-not-to-say
   - &futureIncome
     name: futureIncome
     pageTitle:
@@ -2207,7 +2248,7 @@ workflow:
   unearnedIncomeSources:
     pageConfiguration: *unearnedIncomeSources
     nextPages:
-      - pageName: futureIncome
+      - pageName: livingSituation
     skipCondition:
       conditions:
         - pageName: unearnedIncome
@@ -2216,6 +2257,29 @@ workflow:
     datasources:
       - pageName: unearnedIncome
       - pageName: doYouLiveAlone
+  livingSituation:
+    pageConfiguration: *livingSituation
+    nextPages:
+      - pageName: futureIncome
+    skipCondition:
+      compositeConditions:
+        - logicalOperator: AND
+          compositeConditions:
+            - conditions:
+                - *applicantDidNotChooseCCAP?
+                - *applicantDidNotChooseGRH?
+            - logicalOperator: OR
+              compositeConditions:
+                - conditions:
+                  - *householdMemberDidNotChooseCCAP?
+                  - *householdMemberDidNotChooseGRH?
+                - conditions:
+                  - *livesAlone?
+    datasources:
+      - pageName: choosePrograms
+      - pageName: doYouLiveAlone
+      - groupName: household
+        pageName: householdMemberInfo
   futureIncome:
     pageConfiguration: *futureIncome
     nextPages:
