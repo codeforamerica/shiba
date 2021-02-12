@@ -471,6 +471,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.clickContinue();
         testPage.enter("unearnedIncome", "None of the above");
         testPage.clickContinue();
+        testPage.enter("livingSituation", "Paying for my own housing with rent, lease, or mortgage payments");
+        testPage.clickContinue();
         testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.clickContinue();
@@ -498,6 +500,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.clickContinue();
         testPage.enter("unearnedIncome", "None of the above");
         testPage.clickContinue();
+        testPage.enter("livingSituation", "Paying for my own housing with rent, lease, or mortgage payments");
+        testPage.clickContinue();
         testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.clickContinue();
@@ -511,7 +515,6 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
         assertThat(driver.getTitle()).isEqualTo("Success");
     }
-
 
     @Test
     void shouldDisplayDocumentRecommendations() {
@@ -530,6 +533,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         paidByTheHourOrSelectPayPeriod();
         testPage.clickContinue();
         testPage.enter("unearnedIncome", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("livingSituation", "Paying for my own housing with rent, lease, or mortgage payments");
         testPage.clickContinue();
         testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
         testPage.clickContinue();
