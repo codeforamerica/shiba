@@ -43,6 +43,12 @@ import static org.mockito.Mockito.when;
 @Tag("integration")
 public class UserJourneyPageTest extends AbstractBasePageTest {
 
+    private static final String PROGRAM_SNAP = "Food (SNAP)";
+    private static final String PROGRAM_CASH = "Cash programs";
+    private static final String PROGRAM_GRH = "Housing Support (GRH)";
+    private static final String PROGRAM_CCAP = "Child Care Assistance";
+    private static final String PROGRAM_EA = "Emergency Assistance";
+
     @MockBean
     Clock clock;
 
@@ -259,14 +265,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     @Test
     void shouldSkipJobSearchPageIfCCAPNotSelected() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
-        testPage.clickLink("This looks correct");
-        testPage.enter("liveAlone", YES.getDisplayValue());
-        testPage.clickContinue();
-        testPage.enter("goingToSchool", YES.getDisplayValue());
-        testPage.enter("isPregnant", NO.getDisplayValue());
-        testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
-        testPage.enter("isUsCitizen", YES.getDisplayValue());
-        testPage.enter("hasDisability", NO.getDisplayValue());
+        completeFlowFromReviewInfoToDisability();
         testPage.enter("hasWorkSituation", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.enter("areYouWorking", NO.getDisplayValue());
@@ -276,14 +275,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     @Test
     void shouldSkipRealEstatePageIfCCAPNotSelected() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
-        testPage.clickLink("This looks correct");
-        testPage.enter("liveAlone", YES.getDisplayValue());
-        testPage.clickContinue();
-        testPage.enter("goingToSchool", YES.getDisplayValue());
-        testPage.enter("isPregnant", NO.getDisplayValue());
-        testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
-        testPage.enter("isUsCitizen", YES.getDisplayValue());
-        testPage.enter("hasDisability", NO.getDisplayValue());
+        completeFlowFromReviewInfoToDisability();
         testPage.enter("hasWorkSituation", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.enter("areYouWorking", NO.getDisplayValue());
@@ -433,14 +425,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     @Test
     void shouldSkipMillionDollarPageIfYesCcapButNoVehicleInvestmentsRealEstateOrSavings() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance"));
-        testPage.clickLink("This looks correct");
-        testPage.enter("liveAlone", YES.getDisplayValue());
-        testPage.clickContinue();
-        testPage.enter("goingToSchool", YES.getDisplayValue());
-        testPage.enter("isPregnant", NO.getDisplayValue());
-        testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
-        testPage.enter("isUsCitizen", YES.getDisplayValue());
-        testPage.enter("hasDisability", NO.getDisplayValue());
+        completeFlowFromReviewInfoToDisability();
         testPage.enter("hasWorkSituation", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.enter("areYouWorking", NO.getDisplayValue());
@@ -465,6 +450,105 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.enter("haveInvestments", NO.getDisplayValue());
         testPage.enter("haveSavings", NO.getDisplayValue());
         assertThat(testPage.getTitle()).isEqualTo("Sold assets");
+    }
+
+    @Test
+    void shouldSkipDocumentUploadFlowIfNoApplicablePrograms() {
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance"));
+        completeFlowFromReviewInfoToDisability();
+
+        // Recommend proof of job loss (if programs were applicable)
+        testPage.enter("hasWorkSituation", YES.getDisplayValue());
+        testPage.clickContinue();
+        // Recommend proof of income (if programs were applicable)
+        testPage.enter("areYouWorking", YES.getDisplayValue());
+        testPage.clickButton("Add a job");
+        testPage.enter("employersName", "some employer");
+        testPage.clickContinue();
+        testPage.enter("selfEmployment", YES.getDisplayValue());
+        paidByTheHourOrSelectPayPeriod();
+        testPage.enter("currentlyLookingForJob", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.enter("unearnedIncome", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("livingSituation", "Paying for my own housing with rent, lease, or mortgage payments");
+        testPage.clickContinue();
+        testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.clickContinue();
+        // Recommend proof of shelter (if programs were applicable)
+        testPage.enter("homeExpenses", "Rent");
+        testPage.clickContinue();
+
+        navigateTo("signThisApplication");
+        testPage.enter("applicantSignature", "some name");
+        testPage.clickButton("Submit");
+
+        assertThat(driver.getTitle()).isEqualTo("Success");
+    }
+
+    @Test
+    void shouldSkipDocumentUploadFlowIfNotApplicableRegardlessOfPrograms() {
+        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_SNAP, PROGRAM_CASH, PROGRAM_EA, PROGRAM_GRH));
+        completeFlowFromReviewInfoToDisability();
+
+        // Do not recommend proof of job loss
+        testPage.enter("hasWorkSituation", NO.getDisplayValue());
+        testPage.clickContinue();
+        // Do not recommend proof of income
+        testPage.enter("areYouWorking", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.enter("unearnedIncome", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("livingSituation", "Paying for my own housing with rent, lease, or mortgage payments");
+        testPage.clickContinue();
+        testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.clickContinue();
+        // Do not recommend proof of shelter
+        testPage.enter("homeExpenses", "None of the above");
+        testPage.clickContinue();
+
+        navigateTo("signThisApplication");
+        testPage.enter("applicantSignature", "some name");
+        testPage.clickButton("Submit");
+
+        assertThat(driver.getTitle()).isEqualTo("Success");
+    }
+
+    @Test
+    void shouldDisplayDocumentRecommendations() {
+        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_SNAP, PROGRAM_CASH, PROGRAM_EA, PROGRAM_GRH));
+        completeFlowFromReviewInfoToDisability();
+
+        // Recommend proof of job loss
+        testPage.enter("hasWorkSituation", YES.getDisplayValue());
+        testPage.clickContinue();
+        // Recommend proof of income
+        testPage.enter("areYouWorking", YES.getDisplayValue());
+        testPage.clickButton("Add a job");
+        testPage.enter("employersName", "some employer");
+        testPage.clickContinue();
+        testPage.enter("selfEmployment", YES.getDisplayValue());
+        paidByTheHourOrSelectPayPeriod();
+        testPage.clickContinue();
+        testPage.enter("unearnedIncome", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("livingSituation", "Paying for my own housing with rent, lease, or mortgage payments");
+        testPage.clickContinue();
+        testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.clickContinue();
+        // Recommend proof of shelter
+        testPage.enter("homeExpenses", "Rent");
+        testPage.clickContinue();
+
+        navigateTo("signThisApplication");
+        testPage.enter("applicantSignature", "some name");
+        testPage.clickButton("Submit");
+
+        assertThat(driver.getTitle()).isEqualTo("Document Recommendation");
+        assertThat(driver.findElementsByClassName("success-icons")).hasSize(3);
     }
 
     @Test
@@ -861,6 +945,17 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         completeDocumentUploadFlow();
 
         return new SuccessPage(driver);
+    }
+
+    private void completeFlowFromReviewInfoToDisability() {
+        testPage.clickLink("This looks correct");
+        testPage.enter("liveAlone", YES.getDisplayValue());
+        testPage.clickContinue();
+        testPage.enter("goingToSchool", YES.getDisplayValue());
+        testPage.enter("isPregnant", NO.getDisplayValue());
+        testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
+        testPage.enter("isUsCitizen", YES.getDisplayValue());
+        testPage.enter("hasDisability", NO.getDisplayValue());
     }
 
     private void completeDocumentUploadFlow() {

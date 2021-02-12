@@ -13,7 +13,8 @@
                 <h1 class="h2" th:text="#{document-recommendation.submit-documents-within-30-days}"></h1>
                 <p th:text="#{document-recommendation.the-sooner-you-submit}"></p>
                 <div class="grid__item spacing-above-35">
-                    <div class="grid-ignore-mobile spacing-below-60">
+                    <div th:if="${data.get('employmentStatus').inputDataValueContainsAny('areYouWorking', T(java.util.List).of('true')) &&
+                                  data.get('choosePrograms').inputDataValueContainsAny('programs', T(java.util.List).of('SNAP', 'CASH', 'EA', 'GRH'))}" class="grid-ignore-mobile spacing-below-60">
                         <div class="success-icons grid__item width-one-sixth spacing-below-15">
                             <div th:replace="fragments/icons/icon-income :: icon-income" class="success-icons width-one-sixth"></div>
                         </div>
@@ -24,7 +25,8 @@
                         </div>
                     </div>
 
-                    <div class="grid-ignore-mobile spacing-below-60">
+                    <div th:if="${!data.get('homeExpenses').inputDataValueContainsAny('homeExpenses', T(java.util.List).of('NONE_OF_THE_ABOVE')) &&
+                                  data.get('choosePrograms').inputDataValueContainsAny('programs', T(java.util.List).of('SNAP', 'CASH', 'EA'))}" class="grid-ignore-mobile spacing-below-60">
                         <div class="success-icons grid__item width-one-sixth spacing-below-15">
                             <div th:replace="fragments/icons/icon-home :: icon-home" class="success-icons width-one-sixth"></div>
                         </div>
@@ -35,7 +37,8 @@
                         </div>
                     </div>
 
-                    <div class="grid-ignore-mobile spacing-below-60">
+                    <div th:if="${data.get('workSituation').inputDataValueContainsAny('hasWorkSituation', T(java.util.List).of('true')) &&
+                                  data.get('choosePrograms').inputDataValueContainsAny('programs', T(java.util.List).of('SNAP', 'CASH', 'GRH'))}" class="grid-ignore-mobile spacing-below-60">
                         <div class="success-icons grid__item width-one-sixth spacing-below-15">
                             <div th:replace="fragments/icons/icon-job-loss :: icon-job-loss" class="success-icons width-one-sixth"></div>
                         </div>
