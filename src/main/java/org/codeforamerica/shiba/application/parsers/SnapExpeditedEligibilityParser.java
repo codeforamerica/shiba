@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.application.parsers;
 
-import org.codeforamerica.shiba.output.caf.ExpeditedEligibilityParameters;
+import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityParameters;
 import org.codeforamerica.shiba.output.caf.JobIncomeInformation;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
@@ -14,17 +14,17 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-public class ExpeditedEligibilityParser extends ApplicationDataParser<Optional<ExpeditedEligibilityParameters>> {
+public class SnapExpeditedEligibilityParser extends ApplicationDataParser<Optional<SnapExpeditedEligibilityParameters>> {
     private final ApplicationDataParser<List<JobIncomeInformation>> jobIncomeInformationParser;
 
-    public ExpeditedEligibilityParser(ParsingConfiguration parsingConfiguration,
-                                      ApplicationDataParser<List<JobIncomeInformation>> jobIncomeInformationParser) {
+    public SnapExpeditedEligibilityParser(ParsingConfiguration parsingConfiguration,
+                                          ApplicationDataParser<List<JobIncomeInformation>> jobIncomeInformationParser) {
         super(parsingConfiguration);
         this.jobIncomeInformationParser = jobIncomeInformationParser;
     }
 
-    public Optional<ExpeditedEligibilityParameters> parse(ApplicationData applicationData) {
-        Map<String, PageInputCoordinates> coordinatesMap = parsingConfiguration.get("expeditedEligibility").getPageInputs();
+    public Optional<SnapExpeditedEligibilityParameters> parse(ApplicationData applicationData) {
+        Map<String, PageInputCoordinates> coordinatesMap = parsingConfiguration.get("snapExpeditedEligibility").getPageInputs();
         PagesData pagesData = applicationData.getPagesData();
 
         List<String> requiredPages = coordinatesMap.values().stream()
@@ -55,6 +55,6 @@ public class ExpeditedEligibilityParser extends ApplicationDataParser<Optional<E
                 .get(coordinatesMap.get("migrantWorker").getInputName()).getValue(0));
         @NotNull List<String> utilityExpensesSelections = pagesData.getPage(coordinatesMap.get("utilityExpensesSelections").getPageName())
                 .get(coordinatesMap.get("utilityExpensesSelections").getInputName()).getValue();
-        return Optional.of(new ExpeditedEligibilityParameters(assets, last30DaysIncome, jobIncomeInformationParser.parse(applicationData), isMigrantWorker, housingCosts, utilityExpensesSelections));
+        return Optional.of(new SnapExpeditedEligibilityParameters(assets, last30DaysIncome, jobIncomeInformationParser.parse(applicationData), isMigrantWorker, housingCosts, utilityExpensesSelections));
     }
 }

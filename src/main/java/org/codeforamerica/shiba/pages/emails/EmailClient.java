@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.pages.emails;
 
 import org.codeforamerica.shiba.output.ApplicationFile;
-import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.Locale;
 public interface EmailClient {
     void sendConfirmationEmail(String recipientEmail,
                                String confirmationId,
-                               ExpeditedEligibility expeditedEligibility,
+                               SnapExpeditedEligibility snapExpeditedEligibility,
                                List<ApplicationFile> applicationFiles,
                                Locale locale);
 

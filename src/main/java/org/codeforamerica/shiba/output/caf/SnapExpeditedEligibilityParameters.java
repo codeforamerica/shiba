@@ -5,7 +5,7 @@ import lombok.Value;
 import java.util.List;
 
 @Value
-public class ExpeditedEligibilityParameters {
+public class SnapExpeditedEligibilityParameters {
     double assets;
     double last30DaysIncome;
     List<JobIncomeInformation> jobIncomeInformation;

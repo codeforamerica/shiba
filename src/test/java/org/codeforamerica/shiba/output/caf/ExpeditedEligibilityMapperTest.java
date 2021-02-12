@@ -18,11 +18,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class ExpeditedEligibilityMapperTest {
-    ExpeditedEligibilityDecider mockDecider = mock(ExpeditedEligibilityDecider.class);
+    SnapExpeditedEligibilityDecider mockSnapDecider = mock(SnapExpeditedEligibilityDecider.class);
+    CcapExpeditedEligibilityDecider mockCcapDecider = mock(CcapExpeditedEligibilityDecider.class);
 
     @Test
     void shouldReturnEligibleWhenDeciderDecidesEligible() {
-        ExpeditedEligibilityMapper mapper = new ExpeditedEligibilityMapper(mockDecider);
+        ExpeditedEligibilityMapper mapper = new ExpeditedEligibilityMapper(mockSnapDecider, mockCcapDecider);
         ApplicationData appData = new ApplicationData();
         Application application = Application.builder()
                 .id("someId")
@@ -32,7 +33,7 @@ class ExpeditedEligibilityMapperTest {
                 .timeToComplete(null)
                 .build();
 
-        when(mockDecider.decide(any())).thenReturn(ExpeditedEligibility.ELIGIBLE);
+        when(mockSnapDecider.decide(any())).thenReturn(SnapExpeditedEligibility.ELIGIBLE);
 
         assertThat(mapper.map(application, Recipient.CLIENT, null)).containsExactly(
                 new ApplicationInput(
@@ -46,7 +47,7 @@ class ExpeditedEligibilityMapperTest {
 
     @Test
     void shouldReturnNotEligibleWhenDeciderDecidesNotEligible() {
-        ExpeditedEligibilityMapper mapper = new ExpeditedEligibilityMapper(mockDecider);
+        ExpeditedEligibilityMapper mapper = new ExpeditedEligibilityMapper(mockSnapDecider, mockCcapDecider);
         ApplicationData appData = new ApplicationData();
         PagesData pagesData = new PagesData();
         pagesData.put("page1", new PageData());
@@ -59,11 +60,11 @@ class ExpeditedEligibilityMapperTest {
                 .timeToComplete(null)
                 .build();
 
-        when(mockDecider.decide(any())).thenReturn(ExpeditedEligibility.NOT_ELIGIBLE);
+        when(mockSnapDecider.decide(any())).thenReturn(SnapExpeditedEligibility.NOT_ELIGIBLE);
 
         List<ApplicationInput> result = mapper.map(application, Recipient.CLIENT, null);
 
-        verify(mockDecider).decide(appData);
+        verify(mockSnapDecider).decide(appData);
         assertThat(result).containsExactly(
                 new ApplicationInput(
                         "expeditedEligibility",

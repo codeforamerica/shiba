@@ -34,7 +34,9 @@ public class ApplicationData {
 
     public String getValue(PageInputCoordinates pageInputCoordinates) {
         return Optional.ofNullable(this.getPageData(pageInputCoordinates.getPageName()))
-                .map(pageData -> pageData.get(pageInputCoordinates.getInputName()).getValue(0))
+                .map(pageData -> pageData.get(pageInputCoordinates.getInputName()))
+                .filter(inputData -> !inputData.getValue().isEmpty())
+                .map(inputData -> inputData.getValue(0))
                 .orElse(pageInputCoordinates.getDefaultValue());
     }
 

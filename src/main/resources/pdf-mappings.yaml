@@ -94,8 +94,10 @@ mappings:
     hasDisability: HAS_DISABILITY
   workSituation:
     hasWorkSituation: HAS_WORK_SITUATION
-  expeditedEligibility:
-    expeditedEligibility: EXPEDITED_ELIGIBILITY
+  snapExpeditedEligibility:
+    snapExpeditedEligibility: SNAP_EXPEDITED_ELIGIBILITY
+  ccapExpeditedEligibility:
+    ccapExpeditedEligibility: CCAP_EXPEDITED_ELIGIBILITY
   unearnedIncome:
     unearnedIncome:
       SOCIAL_SECURITY: SOCIAL_SECURITY

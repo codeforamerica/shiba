@@ -5,7 +5,7 @@ import com.github.tomakehurst.wiremock.client.BasicCredentials;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import org.codeforamerica.shiba.output.ApplicationFile;
-import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ import java.util.Locale;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.matching.MultipartValuePattern.MatchingType.ANY;
-import static org.codeforamerica.shiba.output.caf.ExpeditedEligibility.ELIGIBLE;
+import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.ELIGIBLE;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -74,9 +74,9 @@ class MailGunEmailClientTest {
     void sendsEmailToTheRecipient() {
         String recipientEmail = "someRecipient";
         String emailContent = "content";
-        ExpeditedEligibility expeditedEligibility = ELIGIBLE;
+        SnapExpeditedEligibility snapExpeditedEligibility = ELIGIBLE;
         String confirmationId = "someConfirmationId";
-        when(emailContentCreator.createClientHTML(confirmationId, expeditedEligibility, Locale.ENGLISH)).thenReturn(emailContent);
+        when(emailContentCreator.createClientHTML(confirmationId, snapExpeditedEligibility, Locale.ENGLISH)).thenReturn(emailContent);
 
         wireMockServer.stubFor(post(anyUrl())
                 .willReturn(aResponse().withStatus(200)));
@@ -86,7 +86,7 @@ class MailGunEmailClientTest {
         mailGunEmailClient.sendConfirmationEmail(
                 recipientEmail,
                 confirmationId,
-                expeditedEligibility,
+                snapExpeditedEligibility,
                 List.of(new ApplicationFile(fileContent.getBytes(), fileName)), Locale.ENGLISH);
 
         wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))

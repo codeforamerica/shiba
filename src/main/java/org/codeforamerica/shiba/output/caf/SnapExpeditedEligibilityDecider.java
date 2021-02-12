@@ -1,29 +1,29 @@
 package org.codeforamerica.shiba.output.caf;
 
-import org.codeforamerica.shiba.application.parsers.ExpeditedEligibilityParser;
+import org.codeforamerica.shiba.application.parsers.SnapExpeditedEligibilityParser;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.stereotype.Component;
 
-import static org.codeforamerica.shiba.output.caf.ExpeditedEligibility.UNDETERMINED;
+import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.UNDETERMINED;
 
 @Component
-public class ExpeditedEligibilityDecider {
+public class SnapExpeditedEligibilityDecider {
     private final UtilityDeductionCalculator utilityDeductionCalculator;
     private final TotalIncomeCalculator totalIncomeCalculator;
-    private final ExpeditedEligibilityParser expeditedEligibilityParser;
+    private final SnapExpeditedEligibilityParser snapExpeditedEligibilityParser;
     public static final int ASSET_THRESHOLD = 100;
     public static final int INCOME_THRESHOLD = 150;
 
-    public ExpeditedEligibilityDecider(UtilityDeductionCalculator utilityDeductionCalculator,
-                                       TotalIncomeCalculator totalIncomeCalculator,
-                                       ExpeditedEligibilityParser expeditedEligibilityParser) {
+    public SnapExpeditedEligibilityDecider(UtilityDeductionCalculator utilityDeductionCalculator,
+                                           TotalIncomeCalculator totalIncomeCalculator,
+                                           SnapExpeditedEligibilityParser snapExpeditedEligibilityParser) {
         this.utilityDeductionCalculator = utilityDeductionCalculator;
         this.totalIncomeCalculator = totalIncomeCalculator;
-        this.expeditedEligibilityParser = expeditedEligibilityParser;
+        this.snapExpeditedEligibilityParser = snapExpeditedEligibilityParser;
     }
 
-    public ExpeditedEligibility decide(ApplicationData applicationData) {
-        return expeditedEligibilityParser.parse(applicationData)
+    public SnapExpeditedEligibility decide(ApplicationData applicationData) {
+        return snapExpeditedEligibilityParser.parse(applicationData)
                 .map(parameters -> {
                             double assets = parameters.getAssets();
                             double income = totalIncomeCalculator.calculate(new TotalIncome(parameters.getLast30DaysIncome(), parameters.getJobIncomeInformation()));
@@ -35,7 +35,7 @@ public class ExpeditedEligibilityDecider {
 
                             return assetsAndIncomeBelowThreshold
                                     || migrantWorkerAndAssetsBelowThreshold
-                                    || (assets + income) < (housingCosts + standardDeduction) ? ExpeditedEligibility.ELIGIBLE : ExpeditedEligibility.NOT_ELIGIBLE;
+                                    || (assets + income) < (housingCosts + standardDeduction) ? SnapExpeditedEligibility.ELIGIBLE : SnapExpeditedEligibility.NOT_ELIGIBLE;
                         }
                 ).orElse(UNDETERMINED);
     }
