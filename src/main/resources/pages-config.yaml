@@ -35,6 +35,21 @@ conditionDefinitions:
     value: CCAP
     input: programs
     matcher: DOES_NOT_CONTAIN
+  - &applicantDidNotChooseSNAP?
+    pageName: choosePrograms
+    value: SNAP
+    input: programs
+    matcher: DOES_NOT_CONTAIN
+  - &applicantDidNotChooseCASH?
+    pageName: choosePrograms
+    value: CASH
+    input: programs
+    matcher: DOES_NOT_CONTAIN
+  - &applicantDidNotChooseEA?
+    pageName: choosePrograms
+    value: EA
+    input: programs
+    matcher: DOES_NOT_CONTAIN
   - &applicantDidNotChooseGRH?
     pageName: choosePrograms
     value: GRH
@@ -1987,10 +2002,7 @@ workflow:
     pageConfiguration: *preparingMealsTogether
     skipCondition:
       conditions:
-        - pageName: choosePrograms
-          value: SNAP
-          input: programs
-          matcher: DOES_NOT_CONTAIN
+        - *applicantDidNotChooseSNAP?
     nextPages:
       - pageName: goingToSchool
     datasources:
@@ -2001,15 +2013,9 @@ workflow:
       - pageName: doYouLiveAlone
     nextPages:
       - pageName: whoIsGoingToSchool
-        condition:
-          pageName: doYouLiveAlone
-          input: liveAlone
-          value: "false"
+        condition: *doesNotLiveAlone?
       - pageName: pregnant
-        condition:
-          pageName: doYouLiveAlone
-          input: liveAlone
-          value: "true"
+        condition: *livesAlone?
   whoIsGoingToSchool:
     pageConfiguration: *whoIsGoingToSchool
     datasources:
@@ -2625,10 +2631,90 @@ workflow:
     nextPages:
       - pageName: uploadDocuments
       - pageName: success
+    datasources:
+      - pageName: choosePrograms
+      - pageName: employmentStatus
+      - pageName: homeExpenses
+      - pageName: workSituation
+    skipCondition:
+      logicalOperator: AND
+      compositeConditions:
+      - logicalOperator: OR
+        compositeConditions:
+        - conditions:
+          - pageName: employmentStatus
+            input: areYouWorking
+            value: "false"
+        - conditions:
+          - *applicantDidNotChooseSNAP?
+          - *applicantDidNotChooseCASH?
+          - *applicantDidNotChooseEA?
+          - *applicantDidNotChooseGRH?
+      - logicalOperator: OR
+        compositeConditions:
+        - conditions:
+          - pageName: homeExpenses
+            input: homeExpenses
+            value: NONE_OF_THE_ABOVE
+            matcher: CONTAINS
+        - conditions:
+          - *applicantDidNotChooseSNAP?
+          - *applicantDidNotChooseCASH?
+          - *applicantDidNotChooseEA?
+      - logicalOperator: OR
+        compositeConditions:
+        - conditions:
+          - pageName: workSituation
+            input: hasWorkSituation
+            value: "false"
+        - conditions:
+          - *applicantDidNotChooseSNAP?
+          - *applicantDidNotChooseCASH?
+          - *applicantDidNotChooseGRH?
   uploadDocuments:
     pageConfiguration: *uploadDocuments
     nextPages:
       - pageName: success
+    datasources:
+      - pageName: choosePrograms
+      - pageName: employmentStatus
+      - pageName: homeExpenses
+      - pageName: workSituation
+    skipCondition:
+      logicalOperator: AND
+      compositeConditions:
+      - logicalOperator: OR
+        compositeConditions:
+        - conditions:
+          - pageName: employmentStatus
+            input: areYouWorking
+            value: "false"
+        - conditions:
+          - *applicantDidNotChooseSNAP?
+          - *applicantDidNotChooseCASH?
+          - *applicantDidNotChooseEA?
+          - *applicantDidNotChooseGRH?
+      - logicalOperator: OR
+        compositeConditions:
+        - conditions:
+          - pageName: homeExpenses
+            input: homeExpenses
+            value: NONE_OF_THE_ABOVE
+            matcher: CONTAINS
+        - conditions:
+          - *applicantDidNotChooseSNAP?
+          - *applicantDidNotChooseCASH?
+          - *applicantDidNotChooseEA?
+      - logicalOperator: OR
+        compositeConditions:
+        - conditions:
+          - pageName: workSituation
+            input: hasWorkSituation
+            value: "false"
+        - conditions:
+          - *applicantDidNotChooseSNAP?
+          - *applicantDidNotChooseCASH?
+          - *applicantDidNotChooseGRH?
   success:
     pageConfiguration: *success
 pageGroups:

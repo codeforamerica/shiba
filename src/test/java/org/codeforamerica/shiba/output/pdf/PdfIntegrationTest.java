@@ -61,6 +61,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         testPage.clickButton("Yes");
 
         when(featureFlagConfiguration.get("document-upload-feature")).thenReturn(FeatureFlag.ON);
+        when(featureFlagConfiguration.get("submit-via-email")).thenReturn(FeatureFlag.OFF);
     }
 
     @Nested
@@ -844,7 +845,10 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         navigateTo("signThisApplication");
         testPage.enter("applicantSignature", "someSignature");
         testPage.clickButton("Submit");
-        testPage.clickButton("Skip this for now");
+        if (driver.getPageSource().contains("Skip this for now")) {
+            // Skip button might not be present if application does not support doc upload
+            testPage.clickButton("Skip this for now");
+        }
         SuccessPage successPage = new SuccessPage(driver);
         successPage.downloadPdfs();
         await().until(() -> getAllFiles().size() == successPage.pdfDownloadLinks());
