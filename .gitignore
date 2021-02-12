@@ -25,6 +25,8 @@ src/main/resources/application-secrets.yaml
 *.iml
 *.ipr
 out/
+.idea/dictionaries/*
+!.idea/dictionaries/shiba.xml
 
 ### NetBeans ###
 /nbproject/private/
