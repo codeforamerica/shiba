@@ -10,8 +10,8 @@ import org.codeforamerica.shiba.mnit.MnitCountyInformation;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
-import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
-import org.codeforamerica.shiba.output.caf.ExpeditedEligibilityDecider;
+import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
@@ -41,7 +41,7 @@ class ApplicationSubmittedListenerTest {
     MnitDocumentConsumer mnitDocumentConsumer = mock(MnitDocumentConsumer.class);
     ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
     EmailClient emailClient = mock(EmailClient.class);
-    ExpeditedEligibilityDecider expeditedEligibilityDecider = mock(ExpeditedEligibilityDecider.class);
+    SnapExpeditedEligibilityDecider expeditedEligibilityDecider = mock(SnapExpeditedEligibilityDecider.class);
     PdfGenerator pdfGenerator = mock(PdfGenerator.class);
     EmailParser emailParser = mock(EmailParser.class);
     CountyMap<MnitCountyInformation> countyMap = new CountyMap<>();
@@ -122,14 +122,14 @@ class ApplicationSubmittedListenerTest {
                     .build();
             when(applicationRepository.find(applicationId)).thenReturn(application);
             ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null, Locale.ENGLISH);
-            when(expeditedEligibilityDecider.decide(applicationData)).thenReturn(ExpeditedEligibility.ELIGIBLE);
+            when(expeditedEligibilityDecider.decide(applicationData)).thenReturn(SnapExpeditedEligibility.ELIGIBLE);
             ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
             when(documentListParser.parse(applicationData)).thenReturn(List.of(Document.CAF));
             when(pdfGenerator.generate(appIdFromDb, Document.CAF, CLIENT)).thenReturn(applicationFile);
             when(emailParser.parse(applicationData)).thenReturn(Optional.of(email));
             applicationSubmittedListener.sendConfirmationEmail(event);
 
-            verify(emailClient).sendConfirmationEmail(email, appIdFromDb, ExpeditedEligibility.ELIGIBLE, List.of(applicationFile), Locale.ENGLISH);
+            verify(emailClient).sendConfirmationEmail(email, appIdFromDb, SnapExpeditedEligibility.ELIGIBLE, List.of(applicationFile), Locale.ENGLISH);
         }
 
         @Test
@@ -145,14 +145,14 @@ class ApplicationSubmittedListenerTest {
                     .build();
             when(applicationRepository.find(applicationId)).thenReturn(application);
             ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null, Locale.ENGLISH);
-            when(expeditedEligibilityDecider.decide(applicationData)).thenReturn(ExpeditedEligibility.ELIGIBLE);
+            when(expeditedEligibilityDecider.decide(applicationData)).thenReturn(SnapExpeditedEligibility.ELIGIBLE);
             ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
             when(documentListParser.parse(applicationData)).thenReturn(List.of(Document.CCAP));
             when(pdfGenerator.generate(appIdFromDb, Document.CCAP, CLIENT)).thenReturn(applicationFile);
             when(emailParser.parse(applicationData)).thenReturn(Optional.of(email));
             applicationSubmittedListener.sendConfirmationEmail(event);
 
-            verify(emailClient).sendConfirmationEmail(email, appIdFromDb, ExpeditedEligibility.ELIGIBLE, List.of(applicationFile), Locale.ENGLISH);
+            verify(emailClient).sendConfirmationEmail(email, appIdFromDb, SnapExpeditedEligibility.ELIGIBLE, List.of(applicationFile), Locale.ENGLISH);
         }
 
         @Test
@@ -168,7 +168,7 @@ class ApplicationSubmittedListenerTest {
                     .build();
             when(applicationRepository.find(applicationId)).thenReturn(application);
             ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null, Locale.ENGLISH);
-            when(expeditedEligibilityDecider.decide(applicationData)).thenReturn(ExpeditedEligibility.ELIGIBLE);
+            when(expeditedEligibilityDecider.decide(applicationData)).thenReturn(SnapExpeditedEligibility.ELIGIBLE);
             ApplicationFile applicationFileCAF = new ApplicationFile("someContent".getBytes(), "someFileName");
             when(documentListParser.parse(applicationData)).thenReturn(List.of(Document.CAF, Document.CCAP));
             when(pdfGenerator.generate(appIdFromDb, Document.CAF, CLIENT)).thenReturn(applicationFileCAF);
@@ -179,7 +179,7 @@ class ApplicationSubmittedListenerTest {
             when(emailParser.parse(applicationData)).thenReturn(Optional.of(email));
             applicationSubmittedListener.sendConfirmationEmail(event);
 
-            verify(emailClient).sendConfirmationEmail(email, appIdFromDb, ExpeditedEligibility.ELIGIBLE, applicationFiles, Locale.ENGLISH);
+            verify(emailClient).sendConfirmationEmail(email, appIdFromDb, SnapExpeditedEligibility.ELIGIBLE, applicationFiles, Locale.ENGLISH);
         }
 
 
@@ -235,7 +235,7 @@ class ApplicationSubmittedListenerTest {
                         .build();
                 when(applicationRepository.find(applicationId)).thenReturn(application);
                 ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null, Locale.ENGLISH);
-                when(expeditedEligibilityDecider.decide(applicationData)).thenReturn(ExpeditedEligibility.ELIGIBLE);
+                when(expeditedEligibilityDecider.decide(applicationData)).thenReturn(SnapExpeditedEligibility.ELIGIBLE);
                 ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
                 when(pdfGenerator.generate(appIdFromDb, Document.CAF, CASEWORKER)).thenReturn(applicationFile);
 

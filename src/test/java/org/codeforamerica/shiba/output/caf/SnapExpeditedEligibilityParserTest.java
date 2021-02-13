@@ -2,7 +2,7 @@ package org.codeforamerica.shiba.output.caf;
 
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
-import org.codeforamerica.shiba.application.parsers.ExpeditedEligibilityParser;
+import org.codeforamerica.shiba.application.parsers.SnapExpeditedEligibilityParser;
 import org.codeforamerica.shiba.application.parsers.ParsingConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
@@ -33,9 +33,9 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(properties = {"spring.main.allow-bean-definition-overriding=true"})
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
-class ExpeditedEligibilityParserTest {
+class SnapExpeditedEligibilityParserTest {
     @Autowired
-    ExpeditedEligibilityParser expeditedEligibilityParser;
+    SnapExpeditedEligibilityParser snapExpeditedEligibilityParser;
 
     @MockBean
     ApplicationDataParser<List<JobIncomeInformation>> grossMonthlyIncomeParser;
@@ -74,9 +74,9 @@ class ExpeditedEligibilityParserTest {
         String utilitySelection = "some utility";
         pagesData.putPage("utilityExpensesSelectionsPage", new PageData(Map.of("utilityExpensesSelectionsInput", InputData.builder().value(List.of(utilitySelection)).build())));
 
-        ExpeditedEligibilityParameters parameters = expeditedEligibilityParser.parse(applicationData).get();
+        SnapExpeditedEligibilityParameters parameters = snapExpeditedEligibilityParser.parse(applicationData).get();
 
-        assertThat(parameters).isEqualTo(new ExpeditedEligibilityParameters(2.0, 1.0, jobIncomeInformation, false, 3.0, List.of(utilitySelection)));
+        assertThat(parameters).isEqualTo(new SnapExpeditedEligibilityParameters(2.0, 1.0, jobIncomeInformation, false, 3.0, List.of(utilitySelection)));
     }
 
     @Test
@@ -87,9 +87,9 @@ class ExpeditedEligibilityParserTest {
         String utilitySelection = "some utility";
         pagesData.putPage("utilityExpensesSelectionsPage", new PageData(Map.of("utilityExpensesSelectionsInput", InputData.builder().value(List.of(utilitySelection)).build())));
 
-        ExpeditedEligibilityParameters parameters = expeditedEligibilityParser.parse(applicationData).get();
+        SnapExpeditedEligibilityParameters parameters = snapExpeditedEligibilityParser.parse(applicationData).get();
 
-        assertThat(parameters).isEqualTo(new ExpeditedEligibilityParameters(100.0, 1.0, jobIncomeInformation, false, 3.0, List.of(utilitySelection)));
+        assertThat(parameters).isEqualTo(new SnapExpeditedEligibilityParameters(100.0, 1.0, jobIncomeInformation, false, 3.0, List.of(utilitySelection)));
     }
 
     @Test
@@ -101,9 +101,9 @@ class ExpeditedEligibilityParserTest {
         String utilitySelection = "some utility";
         pagesData.putPage("utilityExpensesSelectionsPage", new PageData(Map.of("utilityExpensesSelectionsInput", InputData.builder().value(List.of(utilitySelection)).build())));
 
-        ExpeditedEligibilityParameters parameters = expeditedEligibilityParser.parse(applicationData).get();
+        SnapExpeditedEligibilityParameters parameters = snapExpeditedEligibilityParser.parse(applicationData).get();
 
-        assertThat(parameters).isEqualTo(new ExpeditedEligibilityParameters(2.0, 200.0, jobIncomeInformation, false, 3.0, List.of(utilitySelection)));
+        assertThat(parameters).isEqualTo(new SnapExpeditedEligibilityParameters(2.0, 200.0, jobIncomeInformation, false, 3.0, List.of(utilitySelection)));
     }
 
     @Test
@@ -114,7 +114,7 @@ class ExpeditedEligibilityParserTest {
         String utilitySelection = "some utility";
         pagesData.putPage("utilityExpensesSelectionsPage", new PageData(Map.of("utilityExpensesSelectionsInput", InputData.builder().value(List.of(utilitySelection)).build())));
 
-        Optional<ExpeditedEligibilityParameters> parameters = expeditedEligibilityParser.parse(applicationData);
+        Optional<SnapExpeditedEligibilityParameters> parameters = snapExpeditedEligibilityParser.parse(applicationData);
 
         assertThat(parameters).isEmpty();
     }

@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.pages.emails;
 
 import org.codeforamerica.shiba.output.ApplicationFile;
-import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,14 +52,14 @@ public class MailGunEmailClient implements EmailClient {
     @Override
     public void sendConfirmationEmail(String recipientEmail,
                                       String confirmationId,
-                                      ExpeditedEligibility expeditedEligibility,
+                                      SnapExpeditedEligibility snapExpeditedEligibility,
                                       List <ApplicationFile> applicationFiles,
                                       Locale locale) {
         MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
         form.put("from", List.of(senderEmail));
         form.put("to", List.of(recipientEmail));
         form.put("subject", List.of("We received your application"));
-        form.put("html", List.of(emailContentCreator.createClientHTML(confirmationId, expeditedEligibility, locale)));
+        form.put("html", List.of(emailContentCreator.createClientHTML(confirmationId, snapExpeditedEligibility, locale)));
         form.put("attachment", applicationFiles.stream().map(file -> asResource(file)).collect(Collectors.toList()));
 
         MDC.put("confirmationId", confirmationId);
