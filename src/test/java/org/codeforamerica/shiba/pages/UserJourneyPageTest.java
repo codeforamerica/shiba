@@ -74,6 +74,9 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         when(smartyStreetClient.validateAddress(any())).thenReturn(Optional.empty());
 
         when(featureFlagConfiguration.get("document-upload-feature")).thenReturn(FeatureFlag.ON);
+        when(featureFlagConfiguration.get("submit-via-email")).thenReturn(FeatureFlag.OFF);
+        when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.OFF);
+        when(featureFlagConfiguration.get("send-non-partner-county-alert")).thenReturn(FeatureFlag.OFF);
     }
 
     @Test
@@ -826,23 +829,6 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.clickElementById("enriched-address");
         testPage.clickContinue();
         assertThat(driver.findElementById("mailing-address_street").getText()).isEqualTo("smarty street");
-    }
-
-    private void fillOutPersonInfo() {
-        testPage.enter("firstName", "defaultFirstName");
-        testPage.enter("lastName", "defaultLastName");
-        testPage.enter("otherName", "defaultOtherName");
-        testPage.enter("dateOfBirth", "01/12/1928");
-        testPage.enter("ssn", "123456789");
-        testPage.enter("maritalStatus", "Never married");
-        testPage.enter("sex", "Female");
-        testPage.enter("livedInMnWholeLife", "Yes");
-        testPage.enter("moveToMnDate", "02/18/1776");
-    }
-
-    private void fillOutPersonalInfo() {
-        fillOutPersonInfo();
-        testPage.enter("moveToMnPreviousCity", "Chicago");
     }
 
     private SuccessPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking) {

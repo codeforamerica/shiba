@@ -62,7 +62,7 @@ public class UserDecisionNavigationPageTest extends AbstractExistingStartTimePag
     @Test
     void shouldSetTheFlow_fromTheSelectedOption() {
         driver.navigate().to(baseUrl + "/pathExposingFlow");
-        assertThat(driver.findElement(By.id("flow")).getText()).isEmpty();
+        assertThat(driver.findElement(By.id("flow")).getText()).isEqualTo("UNDETERMINED");
 
         driver.navigate().to(baseUrl + "/pages/userDecisionNavigationPage");
         driver.findElement(By.partialLinkText("option 1")).click();
@@ -74,7 +74,7 @@ public class UserDecisionNavigationPageTest extends AbstractExistingStartTimePag
     @Test
     void shouldNotUnsetTheFlow_ifTheSelectedOptionDoesNotHaveOne() {
         driver.navigate().to(baseUrl + "/pathExposingFlow");
-        assertThat(driver.findElement(By.id("flow")).getText()).isEmpty();
+        assertThat(driver.findElement(By.id("flow")).getText()).isEqualTo("UNDETERMINED");
 
         driver.navigate().to(baseUrl + "/pages/userDecisionNavigationPage");
         driver.findElement(By.partialLinkText("option 1")).click();

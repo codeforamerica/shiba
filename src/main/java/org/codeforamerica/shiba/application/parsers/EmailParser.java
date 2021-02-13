@@ -16,7 +16,7 @@ public class EmailParser extends ApplicationDataParser<Optional<String>> {
         ParsingCoordinates contactInfoCoordinates = this.parsingConfiguration.get("contactInfo");
         PageInputCoordinates emailCoordinates = contactInfoCoordinates.getPageInputs().get("email");
         String email = applicationData.getValue(emailCoordinates);
-        if (email.isEmpty()) {
+        if (null == email || email.isEmpty()) {
             return Optional.empty();
         }
 

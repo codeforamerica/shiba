@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class ApplicationData {
     private String id;
     private Instant startTime;
-    private FlowType flow = null;
+    private FlowType flow = FlowType.UNDETERMINED;
     private PagesData pagesData = new PagesData();
     private Subworkflows subworkflows = new Subworkflows();
     private Map<String, PagesData> incompleteIterations = new HashMap<>();

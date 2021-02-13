@@ -47,7 +47,8 @@ public class ResearchData {
     Boolean tribalPayments;
     Integer householdSize;
     Boolean enteredSsn;
-    FlowType flow;
+    @Builder.Default
+    FlowType flow = FlowType.UNDETERMINED;
     String applicationId;
     String county;
 }
