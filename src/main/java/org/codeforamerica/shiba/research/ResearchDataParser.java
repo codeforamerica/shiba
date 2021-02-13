@@ -102,7 +102,7 @@ public class ResearchDataParser {
                         return housingExpenses.contains("MORTGAGE") || housingExpenses.contains("RENT");
                     })
                     .orElse(null);
-            case MINIMUM -> null;
+            case MINIMUM, UNDETERMINED -> null;
         };
     }
 
@@ -114,18 +114,16 @@ public class ResearchDataParser {
     private List<String> getApplicationPrograms (ApplicationData applicationData) {
 
         List<String> applicantPrograms = applicationData.getPagesData().safeGetPageInputValue("choosePrograms", "programs");
-        List<String> applicationPrograms = new ArrayList<String>(applicantPrograms);
+        List<String> applicationPrograms = new ArrayList<>(applicantPrograms);
         boolean hasHousehold = applicationData.getSubworkflows().containsKey("household");
         if (hasHousehold) {
             List<List<String>> householdPrograms = applicationData.getSubworkflows().get("household").stream().map(iteration ->
                     iteration.getPagesData().safeGetPageInputValue("householdMemberInfo", "programs")).collect(Collectors.toList());
-            householdPrograms.forEach(programSelections -> {
-                programSelections.forEach(program -> {
-                    if (!applicationPrograms.contains(program)) {
-                        applicationPrograms.add(program);
-                    }
-                });
-            });
+            householdPrograms.forEach(programSelections -> programSelections.forEach(program -> {
+                if (!applicationPrograms.contains(program)) {
+                    applicationPrograms.add(program);
+                }
+            }));
         }
 
         return applicationPrograms;
