@@ -38,7 +38,7 @@ public class CompositeCondition {
                     .map(subworkflow -> subworkflow.get(condition.getIteration()).getPagesData())
                     .orElse(applicationData.getPagesData());
             return Optional.ofNullable(pagesData.getPage(condition.getPageName()))
-                    .map(inputDataMap -> inputDataMap.satisfies(condition))
+                    .map(pageData -> condition.matches(pageData, pagesData))
                     .orElse(false);
         };
     }

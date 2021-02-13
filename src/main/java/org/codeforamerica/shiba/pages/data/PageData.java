@@ -3,7 +3,6 @@ package org.codeforamerica.shiba.pages.data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Value;
-import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.pages.config.FormInput;
 import org.codeforamerica.shiba.pages.config.PageConfiguration;
 import org.codeforamerica.shiba.pages.config.Validator;
@@ -49,11 +48,6 @@ public class PageData extends HashMap<String, InputData> {
 
     public Boolean isValid() {
         return values().stream().allMatch(InputData::valid);
-    }
-
-    public Boolean satisfies(Condition condition) {
-        List<String> inputValue = this.get(condition.getInput()).getValue();
-        return condition.matches(inputValue);
     }
 
     private static List<Validator> validatorsFor(FormInput formInput, MultiValueMap<String, String> model) {
