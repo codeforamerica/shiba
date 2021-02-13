@@ -13,10 +13,13 @@ import java.util.List;
 
 @Component
 public class ExpeditedEligibilityMapper implements ApplicationInputsMapper {
-    private final ExpeditedEligibilityDecider eligibilityDecider;
+    private final SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider;
+    private final CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
 
-    public ExpeditedEligibilityMapper(ExpeditedEligibilityDecider eligibilityDecider) {
-        this.eligibilityDecider = eligibilityDecider;
+    public ExpeditedEligibilityMapper(SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider,
+                                      CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider) {
+        this.snapExpeditedEligibilityDecider = snapExpeditedEligibilityDecider;
+        this.ccapExpeditedEligibilityDecider = ccapExpeditedEligibilityDecider;
     }
 
     @Override
@@ -24,9 +27,15 @@ public class ExpeditedEligibilityMapper implements ApplicationInputsMapper {
         ApplicationData data = application.getApplicationData();
         return List.of(
                 new ApplicationInput(
-                        "expeditedEligibility",
-                        "expeditedEligibility",
-                        List.of(eligibilityDecider.decide(data).getStatus()),
+                        "snapExpeditedEligibility",
+                        "snapExpeditedEligibility",
+                        List.of(snapExpeditedEligibilityDecider.decide(data).getStatus()),
+                        ApplicationInputType.SINGLE_VALUE
+                ),
+                new ApplicationInput(
+                        "ccapExpeditedEligibility",
+                        "ccapExpeditedEligibility",
+                        List.of(ccapExpeditedEligibilityDecider.decide(data).getStatus()),
                         ApplicationInputType.SINGLE_VALUE
                 ));
     }

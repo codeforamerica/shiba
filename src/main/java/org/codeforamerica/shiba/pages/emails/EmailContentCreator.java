@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.pages.emails;
 
-import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
@@ -12,13 +12,13 @@ import java.util.List;
 import java.util.Locale;
 
 import static java.util.Optional.ofNullable;
-import static org.codeforamerica.shiba.output.caf.ExpeditedEligibility.ELIGIBLE;
+import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.ELIGIBLE;
 
 @Component
 public class EmailContentCreator {
     private final MessageSource messageSource;
-    private final String expeditedWaitTime = "email.expedited-wait-time";
-    private final String nonExpeditedWaitTime = "email.nonexpedited-wait-time";
+    private final String snapExpeditedWaitTime = "email.snap-expedited-wait-time";
+    private final String snapNonExpeditedWaitTime = "email.snap-nonexpedited-wait-time";
     private final String clientBody = "email.client-body";
     private final String caseworkerBody = "email.caseworker-body";
     private final String downloadCafAlert = "email.download-caf-alert";
@@ -28,12 +28,12 @@ public class EmailContentCreator {
         this.messageSource = messageSource;
     }
 
-    String createClientHTML(String confirmationId, ExpeditedEligibility expeditedEligibility, Locale locale) {
+    String createClientHTML(String confirmationId, SnapExpeditedEligibility snapExpeditedEligibility, Locale locale) {
         String eligibilitySpecificVerbiage;
-        if (ELIGIBLE == expeditedEligibility) {
-            eligibilitySpecificVerbiage = getMessage(expeditedWaitTime, null, locale);
+        if (ELIGIBLE == snapExpeditedEligibility) {
+            eligibilitySpecificVerbiage = getMessage(snapExpeditedWaitTime, null, locale);
         } else {
-            eligibilitySpecificVerbiage = getMessage(nonExpeditedWaitTime, null, locale);
+            eligibilitySpecificVerbiage = getMessage(snapNonExpeditedWaitTime, null, locale);
         }
         return wrapHtml(getMessage(clientBody, List.of(eligibilitySpecificVerbiage, confirmationId), locale));
     }
@@ -51,9 +51,9 @@ public class EmailContentCreator {
         return getMessage(nonCountyPartnerAlert, List.of(confirmationId, formattedTime), locale);
     }
 
-    private String getMessage(String expeditedWaitTime, @Nullable List<String> args, Locale locale) {
+    private String getMessage(String snapExpeditedWaitTime, @Nullable List<String> args, Locale locale) {
         return messageSource.getMessage(
-                expeditedWaitTime,
+                snapExpeditedWaitTime,
                 ofNullable(args).map(List::toArray).orElse(null),
                 locale
         );

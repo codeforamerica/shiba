@@ -10,8 +10,8 @@ import org.codeforamerica.shiba.mnit.MnitCountyInformation;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
-import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
-import org.codeforamerica.shiba.output.caf.ExpeditedEligibilityDecider;
+import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -33,7 +33,7 @@ public class ApplicationSubmittedListener {
     private final MnitDocumentConsumer mnitDocumentConsumer;
     private final ApplicationRepository applicationRepository;
     private final EmailClient emailClient;
-    private final ExpeditedEligibilityDecider expeditedEligibilityDecider;
+    private final SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider;
     private final PdfGenerator pdfGenerator;
     private final CountyMap<MnitCountyInformation> countyMap;
     private final EmailParser emailParser;
@@ -44,7 +44,7 @@ public class ApplicationSubmittedListener {
     public ApplicationSubmittedListener(MnitDocumentConsumer mnitDocumentConsumer,
                                         ApplicationRepository applicationRepository,
                                         EmailClient emailClient,
-                                        ExpeditedEligibilityDecider expeditedEligibilityDecider,
+                                        SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider,
                                         PdfGenerator pdfGenerator,
                                         CountyMap<MnitCountyInformation> countyMap,
                                         FeatureFlagConfiguration featureFlagConfiguration,
@@ -53,7 +53,7 @@ public class ApplicationSubmittedListener {
         this.mnitDocumentConsumer = mnitDocumentConsumer;
         this.applicationRepository = applicationRepository;
         this.emailClient = emailClient;
-        this.expeditedEligibilityDecider = expeditedEligibilityDecider;
+        this.snapExpeditedEligibilityDecider = snapExpeditedEligibilityDecider;
         this.pdfGenerator = pdfGenerator;
         this.countyMap = countyMap;
         this.featureFlags = featureFlagConfiguration;
@@ -78,10 +78,10 @@ public class ApplicationSubmittedListener {
         emailParser.parse(applicationData)
                 .ifPresent(email -> {
                     String applicationId = application.getId();
-                    ExpeditedEligibility expeditedEligibility = expeditedEligibilityDecider.decide(application.getApplicationData());
+                    SnapExpeditedEligibility snapExpeditedEligibility = snapExpeditedEligibilityDecider.decide(application.getApplicationData());
                     List<Document> docs = documentListParser.parse(applicationData);
                     List<ApplicationFile> pdfs = docs.stream().map(doc -> pdfGenerator.generate(applicationId,doc,CLIENT)).collect(Collectors.toList());
-                    emailClient.sendConfirmationEmail(email, applicationId, expeditedEligibility, pdfs, event.getLocale());
+                    emailClient.sendConfirmationEmail(email, applicationId, snapExpeditedEligibility, pdfs, event.getLocale());
                 });
     }
 

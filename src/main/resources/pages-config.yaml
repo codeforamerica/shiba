@@ -951,8 +951,8 @@ pageDefinitions:
     inputs:
       - name: migrantOrSeasonalFarmWorker
         type: YES_NO
-  - &expeditedDetermination
-    name: expeditedDetermination
+  - &snapExpeditedDetermination
+    name: snapExpeditedDetermination
   - &legalStuff
     name: legalStuff
     pageTitle:
@@ -2601,11 +2601,11 @@ workflow:
   expeditedMigrantFarmWorker:
     pageConfiguration: *migrantFarmWorker
     nextPages:
-      - pageName: expeditedDetermination
+      - pageName: snapExpeditedDetermination
     datasources:
       - pageName: doYouLiveAlone
-  expeditedDetermination:
-    pageConfiguration: *expeditedDetermination
+  snapExpeditedDetermination:
+    pageConfiguration: *snapExpeditedDetermination
     nextPages:
       - pageName: legalStuff
   additionalInfo:

@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.pages.emails;
 
-import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -23,8 +23,8 @@ class EmailContentCreatorTest {
     void setUp() {
         LocaleContextHolder.setLocale(Locale.ENGLISH);
         emailContentCreator = new EmailContentCreator(staticMessageSource);
-        staticMessageSource.addMessage("email.expedited-wait-time", Locale.ENGLISH, "you've been expedited!");
-        staticMessageSource.addMessage("email.nonexpedited-wait-time", Locale.ENGLISH, "not expedited :(");
+        staticMessageSource.addMessage("email.snap-expedited-wait-time", Locale.ENGLISH, "you've been expedited!");
+        staticMessageSource.addMessage("email.snap-nonexpedited-wait-time", Locale.ENGLISH, "not expedited :(");
         staticMessageSource.addMessage("email.client-body", Locale.ENGLISH, "confirmation email! {0} confirmation number: {1}");
         staticMessageSource.addMessage("email.download-caf-alert", Locale.ENGLISH, "confirmation number: {0} ip address: {1}.");
         staticMessageSource.addMessage("email.non-county-partner-alert", Locale.ENGLISH, "Application {0} was submitted at {1}.");
@@ -32,7 +32,7 @@ class EmailContentCreatorTest {
 
     @Test
     void includesTheConfirmationNumber() {
-        String emailContent = emailContentCreator.createClientHTML("someNumber", ExpeditedEligibility.UNDETERMINED, Locale.ENGLISH);
+        String emailContent = emailContentCreator.createClientHTML("someNumber", SnapExpeditedEligibility.UNDETERMINED, Locale.ENGLISH);
         System.out.println(emailContent);
         assertThat(emailContent).contains("someNumber");
     }
@@ -43,8 +43,8 @@ class EmailContentCreatorTest {
             "NOT_ELIGIBLE, not expedited :(",
             "UNDETERMINED, not expedited :(",
     })
-    void createContentForExpedited(ExpeditedEligibility expeditedEligibility, String expeditedEligibilityContent) {
-        String emailContent = emailContentCreator.createClientHTML("someNumber", expeditedEligibility, Locale.ENGLISH);
+    void createContentForExpedited(SnapExpeditedEligibility snapExpeditedEligibility, String expeditedEligibilityContent) {
+        String emailContent = emailContentCreator.createClientHTML("someNumber", snapExpeditedEligibility, Locale.ENGLISH);
 
         assertThat(emailContent).contains(expeditedEligibilityContent);
     }
