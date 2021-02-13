@@ -113,7 +113,6 @@ public abstract class AbstractBasePageTest {
         }
     }
 
-
     @SuppressWarnings("unused")
     public static void takeSnapShot(String fileWithPath) {
         TakesScreenshot screenshot = driver;
@@ -124,5 +123,28 @@ public abstract class AbstractBasePageTest {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    protected void fillOutPersonalInfo() {
+        navigateTo("personalInfo");
+        fillOutPersonInfo();
+        testPage.enter("moveToMnPreviousCity", "Chicago");
+    }
+
+    protected void fillOutPersonInfo() {
+        testPage.enter("firstName", "defaultFirstName");
+        testPage.enter("lastName", "defaultLastName");
+        testPage.enter("otherName", "defaultOtherName");
+        testPage.enter("dateOfBirth", "01/12/1928");
+        testPage.enter("ssn", "123456789");
+        testPage.enter("maritalStatus", "Never married");
+        testPage.enter("sex", "Female");
+        testPage.enter("livedInMnWholeLife", "Yes");
+        testPage.enter("moveToMnDate", "02/18/1776");
+    }
+
+    protected void fillOutContactInfo() {
+        testPage.enter("phoneNumber", "7234567890");
+        testPage.enter("phoneOrEmail", "Text me");
     }
 }

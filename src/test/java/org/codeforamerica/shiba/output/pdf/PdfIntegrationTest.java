@@ -62,6 +62,9 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
 
         when(featureFlagConfiguration.get("document-upload-feature")).thenReturn(FeatureFlag.ON);
         when(featureFlagConfiguration.get("submit-via-email")).thenReturn(FeatureFlag.OFF);
+        when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.OFF);
+        when(featureFlagConfiguration.get("send-non-partner-county-alert")).thenReturn(FeatureFlag.OFF);
+
     }
 
     @Nested
@@ -510,155 +513,166 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
                     .isEqualTo(enrichedApartmentNumber);
         }
 
-        @Test
-        void shouldMapOriginalHomeAddressToMailingAddressIfSameMailingAddressIsTrueAndUseEnrichedAddressIsFalse() {
-            navigateTo("homeAddress");
-            String originalStreetAddress = "originalStreetAddress";
-            String originalApt = "originalApt";
-            String originalCity = "originalCity";
-            String originalZipCode = "54321";
-            testPage.enter("streetAddress", originalStreetAddress);
-            testPage.enter("apartmentNumber", originalApt);
-            testPage.enter("city", originalCity);
-            testPage.enter("zipCode", originalZipCode);
-            testPage.enter("sameMailingAddress", "Yes, send mail here");
-            testPage.clickContinue();
-            testPage.clickButton("Use this address");
-            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-            List.of(CAF, CCAP).forEach(type -> {
-                PDAcroForm pdAcroForm = pdAcroForms.get(type);
-                assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
-                        .isEqualTo(originalStreetAddress);
-                assertThat(pdAcroForm.getField("APPLICANT_MAILING_CITY").getValueAsString())
-                        .isEqualTo(originalCity);
-                assertThat(pdAcroForm.getField("APPLICANT_MAILING_STATE").getValueAsString())
-                        .isEqualTo("MN");
-                assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
-                        .isEqualTo(originalZipCode);
-            });
-            assertThat(pdAcroForms.get(CAF).getField("APPLICANT_MAILING_APT_NUMBER").getValueAsString())
-                    .isEqualTo(originalApt);
-        }
+        @Nested
+        class WithPersonalAndContactInfo {
+            @BeforeEach
+            void setUp() {
+                fillOutPersonalInfo();
+                testPage.clickContinue();
+                fillOutContactInfo();
+                testPage.clickContinue();
+            }
 
-        @Test
-        void shouldMapEnrichedHomeAddressToMailingAddressIfSameMailingAddressIsTrueAndUseEnrichedAddressIsTrue() {
-            navigateTo("homeAddress");
-            testPage.enter("streetAddress", "originalStreetAddress");
-            testPage.enter("apartmentNumber", "originalApt");
-            testPage.enter("city", "originalCity");
-            testPage.enter("zipCode", "54321");
-            testPage.enter("sameMailingAddress", "Yes, send mail here");
-            String enrichedStreetValue = "testStreet";
-            String enrichedCityValue = "testCity";
-            String enrichedZipCodeValue = "testZipCode";
-            String enrichedApartmentNumber = "someApt";
-            String enrichedState = "someState";
-            when(locationClient.validateAddress(any()))
-                    .thenReturn(Optional.of(new Address(
-                            enrichedStreetValue,
-                            enrichedCityValue,
-                            enrichedState,
-                            enrichedZipCodeValue,
-                            enrichedApartmentNumber,
-                            "Hennepin")));
-            testPage.clickContinue();
-            testPage.clickContinue();
-            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-            List.of(CAF, CCAP).forEach(type -> {
-                PDAcroForm pdAcroForm = pdAcroForms.get(type);
-                assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
-                        .isEqualTo(enrichedStreetValue);
-                assertThat(pdAcroForm.getField("APPLICANT_MAILING_CITY").getValueAsString())
-                        .isEqualTo(enrichedCityValue);
-                assertThat(pdAcroForm.getField("APPLICANT_MAILING_STATE").getValueAsString())
-                        .isEqualTo(enrichedState);
-                assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
-                        .isEqualTo(enrichedZipCodeValue);
-            });
-            assertThat(pdAcroForms.get(CAF).getField("APPLICANT_MAILING_APT_NUMBER").getValueAsString())
-                    .isEqualTo(enrichedApartmentNumber);
-        }
+            @Test
+            void shouldMapOriginalHomeAddressToMailingAddressIfSameMailingAddressIsTrueAndUseEnrichedAddressIsFalse() {
+                navigateTo("homeAddress");
+                String originalStreetAddress = "originalStreetAddress";
+                String originalApt = "originalApt";
+                String originalCity = "originalCity";
+                String originalZipCode = "54321";
+                testPage.enter("streetAddress", originalStreetAddress);
+                testPage.enter("apartmentNumber", originalApt);
+                testPage.enter("city", originalCity);
+                testPage.enter("zipCode", originalZipCode);
+                testPage.enter("sameMailingAddress", "Yes, send mail here");
+                testPage.clickContinue();
+                testPage.clickButton("Use this address");
+                Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+                List.of(CAF, CCAP).forEach(type -> {
+                    PDAcroForm pdAcroForm = pdAcroForms.get(type);
+                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
+                            .isEqualTo(originalStreetAddress);
+                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_CITY").getValueAsString())
+                            .isEqualTo(originalCity);
+                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_STATE").getValueAsString())
+                            .isEqualTo("MN");
+                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
+                            .isEqualTo(originalZipCode);
+                });
+                assertThat(pdAcroForms.get(CAF).getField("APPLICANT_MAILING_APT_NUMBER").getValueAsString())
+                        .isEqualTo(originalApt);
+            }
 
-        @Test
-        void shouldMapToOriginalMailingAddressIfSameMailingAddressIsFalseAndUseEnrichedAddressIsFalse() {
-            navigateTo("homeAddress");
-            fillInAddress();
-            testPage.enter("sameMailingAddress", "No, use a different address for mail");
-            testPage.clickContinue();
-            testPage.clickButton("Use this address");
-            String originalStreetAddress = "originalStreetAddress";
-            String originalApt = "originalApt";
-            String originalCity = "originalCity";
-            String originalState = "IL";
-            String originalZipCode = "54321";
-            testPage.enter("streetAddress", originalStreetAddress);
-            testPage.enter("apartmentNumber", originalApt);
-            testPage.enter("city", originalCity);
-            testPage.enter("state", originalState);
-            testPage.enter("zipCode", originalZipCode);
-            testPage.clickContinue();
-            testPage.clickButton("Use this address");
+            @Test
+            void shouldMapEnrichedHomeAddressToMailingAddressIfSameMailingAddressIsTrueAndUseEnrichedAddressIsTrue() {
+                navigateTo("homeAddress");
+                testPage.enter("streetAddress", "originalStreetAddress");
+                testPage.enter("apartmentNumber", "originalApt");
+                testPage.enter("city", "originalCity");
+                testPage.enter("zipCode", "54321");
+                testPage.enter("sameMailingAddress", "Yes, send mail here");
+                String enrichedStreetValue = "testStreet";
+                String enrichedCityValue = "testCity";
+                String enrichedZipCodeValue = "testZipCode";
+                String enrichedApartmentNumber = "someApt";
+                String enrichedState = "someState";
+                when(locationClient.validateAddress(any()))
+                        .thenReturn(Optional.of(new Address(
+                                enrichedStreetValue,
+                                enrichedCityValue,
+                                enrichedState,
+                                enrichedZipCodeValue,
+                                enrichedApartmentNumber,
+                                "Hennepin")));
+                testPage.clickContinue();
+                testPage.clickContinue();
+                Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+                List.of(CAF, CCAP).forEach(type -> {
+                    PDAcroForm pdAcroForm = pdAcroForms.get(type);
+                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
+                            .isEqualTo(enrichedStreetValue);
+                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_CITY").getValueAsString())
+                            .isEqualTo(enrichedCityValue);
+                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_STATE").getValueAsString())
+                            .isEqualTo(enrichedState);
+                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
+                            .isEqualTo(enrichedZipCodeValue);
+                });
+                assertThat(pdAcroForms.get(CAF).getField("APPLICANT_MAILING_APT_NUMBER").getValueAsString())
+                        .isEqualTo(enrichedApartmentNumber);
+            }
 
-            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-            List.of(CAF, CCAP).forEach(type -> {
-                PDAcroForm pdAcroForm = pdAcroForms.get(type);
-                assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
-                        .isEqualTo(originalStreetAddress);
-                assertThat(pdAcroForm.getField("APPLICANT_MAILING_CITY").getValueAsString())
-                        .isEqualTo(originalCity);
-                assertThat(pdAcroForm.getField("APPLICANT_MAILING_STATE").getValueAsString())
-                        .isEqualTo(originalState);
-                assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
-                        .isEqualTo(originalZipCode);
-            });
+            @Test
+            void shouldMapToOriginalMailingAddressIfSameMailingAddressIsFalseAndUseEnrichedAddressIsFalse() {
+                navigateTo("homeAddress");
+                fillInAddress();
+                testPage.enter("sameMailingAddress", "No, use a different address for mail");
+                testPage.clickContinue();
+                testPage.clickButton("Use this address");
+                String originalStreetAddress = "originalStreetAddress";
+                String originalApt = "originalApt";
+                String originalCity = "originalCity";
+                String originalState = "IL";
+                String originalZipCode = "54321";
+                testPage.enter("streetAddress", originalStreetAddress);
+                testPage.enter("apartmentNumber", originalApt);
+                testPage.enter("city", originalCity);
+                testPage.enter("state", originalState);
+                testPage.enter("zipCode", originalZipCode);
+                testPage.clickContinue();
+                testPage.clickButton("Use this address");
 
-            assertThat(pdAcroForms.get(CAF).getField("APPLICANT_MAILING_APT_NUMBER").getValueAsString())
-                    .isEqualTo(originalApt);
-        }
+                Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+                List.of(CAF, CCAP).forEach(type -> {
+                    PDAcroForm pdAcroForm = pdAcroForms.get(type);
+                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
+                            .isEqualTo(originalStreetAddress);
+                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_CITY").getValueAsString())
+                            .isEqualTo(originalCity);
+                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_STATE").getValueAsString())
+                            .isEqualTo(originalState);
+                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
+                            .isEqualTo(originalZipCode);
+                });
 
-        @Test
-        void shouldMapToEnrichedMailingAddressIfSameMailingAddressIsFalseAndUseEnrichedAddressIsTrue() {
-            navigateTo("homeAddress");
-            fillInAddress();
-            testPage.enter("sameMailingAddress", "No, use a different address for mail");
-            testPage.clickContinue();
-            testPage.clickButton("Use this address");
-            testPage.enter("streetAddress", "originalStreetAddress");
-            testPage.enter("apartmentNumber", "originalApt");
-            testPage.enter("city", "originalCity");
-            testPage.enter("state", "IL");
-            testPage.enter("zipCode", "54321");
-            String enrichedStreetValue = "testStreet";
-            String enrichedCityValue = "testCity";
-            String enrichedZipCodeValue = "testZipCode";
-            String enrichedApartmentNumber = "someApt";
-            String enrichedState = "someState";
-            when(locationClient.validateAddress(any()))
-                    .thenReturn(Optional.of(new Address(
-                            enrichedStreetValue,
-                            enrichedCityValue,
-                            enrichedState,
-                            enrichedZipCodeValue,
-                            enrichedApartmentNumber,
-                            "Hennepin")));
-            testPage.clickContinue();
-            testPage.clickContinue();
+                assertThat(pdAcroForms.get(CAF).getField("APPLICANT_MAILING_APT_NUMBER").getValueAsString())
+                        .isEqualTo(originalApt);
+            }
 
-            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-            List.of(CAF, CCAP).forEach(type -> {
-                PDAcroForm pdAcroForm = pdAcroForms.get(type);
-                assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
-                        .isEqualTo(enrichedStreetValue);
-                assertThat(pdAcroForm.getField("APPLICANT_MAILING_CITY").getValueAsString())
-                        .isEqualTo(enrichedCityValue);
-                assertThat(pdAcroForm.getField("APPLICANT_MAILING_STATE").getValueAsString())
-                        .isEqualTo(enrichedState);
-                assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
-                        .isEqualTo(enrichedZipCodeValue);
-            });
+            @Test
+            void shouldMapToEnrichedMailingAddressIfSameMailingAddressIsFalseAndUseEnrichedAddressIsTrue() {
+                navigateTo("homeAddress");
+                fillInAddress();
+                testPage.enter("sameMailingAddress", "No, use a different address for mail");
+                testPage.clickContinue();
+                testPage.clickButton("Use this address");
+                testPage.enter("streetAddress", "originalStreetAddress");
+                testPage.enter("apartmentNumber", "originalApt");
+                testPage.enter("city", "originalCity");
+                testPage.enter("state", "IL");
+                testPage.enter("zipCode", "54321");
+                String enrichedStreetValue = "testStreet";
+                String enrichedCityValue = "testCity";
+                String enrichedZipCodeValue = "testZipCode";
+                String enrichedApartmentNumber = "someApt";
+                String enrichedState = "someState";
+                when(locationClient.validateAddress(any()))
+                        .thenReturn(Optional.of(new Address(
+                                enrichedStreetValue,
+                                enrichedCityValue,
+                                enrichedState,
+                                enrichedZipCodeValue,
+                                enrichedApartmentNumber,
+                                "Hennepin")));
+                testPage.clickContinue();
+                testPage.clickContinue();
 
-            assertThat(pdAcroForms.get(CAF).getField("APPLICANT_MAILING_APT_NUMBER").getValueAsString())
-                    .isEqualTo(enrichedApartmentNumber);
+                Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+                List.of(CAF, CCAP).forEach(type -> {
+                    PDAcroForm pdAcroForm = pdAcroForms.get(type);
+                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
+                            .isEqualTo(enrichedStreetValue);
+                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_CITY").getValueAsString())
+                            .isEqualTo(enrichedCityValue);
+                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_STATE").getValueAsString())
+                            .isEqualTo(enrichedState);
+                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
+                            .isEqualTo(enrichedZipCodeValue);
+                });
+
+                assertThat(pdAcroForms.get(CAF).getField("APPLICANT_MAILING_APT_NUMBER").getValueAsString())
+                        .isEqualTo(enrichedApartmentNumber);
+            }
         }
 
         @Test
