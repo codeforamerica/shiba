@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba;
+package org.codeforamerica.shiba.configurations;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
