@@ -1,5 +1,7 @@
-package org.codeforamerica.shiba;
+package org.codeforamerica.shiba.configurations;
 
+import org.codeforamerica.shiba.CountyMap;
+import org.codeforamerica.shiba.YamlPropertySourceFactory;
 import org.codeforamerica.shiba.output.Recipient;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;

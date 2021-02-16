@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba;
+package org.codeforamerica.shiba.configurations;
 
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.SSLContexts;

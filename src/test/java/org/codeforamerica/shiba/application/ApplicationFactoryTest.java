@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.application;
 
 import org.codeforamerica.shiba.County;
+import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,8 +13,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.Hennepin;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class ApplicationFactoryTest {
 
@@ -21,7 +21,8 @@ class ApplicationFactoryTest {
 
     @SuppressWarnings("unchecked")
     ApplicationDataParser<County> countyParser = mock(ApplicationDataParser.class);
-    ApplicationFactory applicationFactory = new ApplicationFactory(clock, countyParser);
+    MonitoringService monitoringService = mock(MonitoringService.class);
+    ApplicationFactory applicationFactory = new ApplicationFactory(clock, countyParser, monitoringService);
     ApplicationData applicationData = new ApplicationData();
     ZoneOffset zoneOffset = ZoneOffset.UTC;
     PagesData pagesData;
@@ -89,5 +90,12 @@ class ApplicationFactoryTest {
         Application application = applicationFactory.newApplication("", applicationData);
 
         assertThat(application.getCounty()).isEqualTo(Hennepin);
+    }
+
+    @Test
+    void shouldSendApplicationIdToMonitoringService() {
+        applicationFactory.newApplication("appId", applicationData);
+
+        verify(monitoringService).setApplicationId("appId");
     }
 }

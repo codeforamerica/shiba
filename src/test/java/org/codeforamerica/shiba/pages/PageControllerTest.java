@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
+import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
@@ -36,6 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -59,9 +61,11 @@ class PageControllerTest {
     PageEventPublisher pageEventPublisher = mock(PageEventPublisher.class);
     ApplicationDataParser<List<Document>> documentListParser = mock(DocumentListParser.class);
     FeatureFlagConfiguration featureFlags = mock(FeatureFlagConfiguration.class);
+    MonitoringService monitoringService = mock(MonitoringService.class);
 
     @Autowired
     ApplicationConfiguration applicationConfiguration;
+
 
     @BeforeEach
     void setUp() {
@@ -75,7 +79,8 @@ class PageControllerTest {
                 pageEventPublisher,
                 applicationEnrichment,
                 documentListParser,
-                featureFlags
+                featureFlags,
+                monitoringService
         );
 
         mockMvc = MockMvcBuilders.standaloneSetup(pageController)
@@ -90,6 +95,13 @@ class PageControllerTest {
                 .build());
         messageSource.addMessage("success.feedback-success", Locale.ENGLISH, "default success message");
         messageSource.addMessage("success.feedback-failure", Locale.ENGLISH, "default failure message");
+    }
+
+    @Test
+    void gettingAPageCallsMonitoringService() throws Exception {
+        mockMvc.perform(get("/"));
+
+        verify(monitoringService).setPage("/landing", "Viewing page");
     }
 
     @Test

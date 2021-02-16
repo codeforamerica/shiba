@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba;
+package org.codeforamerica.shiba.configurations;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

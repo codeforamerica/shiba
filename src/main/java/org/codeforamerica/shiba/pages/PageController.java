@@ -1,7 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
-import io.sentry.Breadcrumb;
-import io.sentry.Sentry;
+import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
@@ -51,6 +50,7 @@ public class PageController {
     private final ApplicationEnrichment applicationEnrichment;
     private final ApplicationDataParser<List<Document>> documentListParser;
     private final FeatureFlagConfiguration featureFlags;
+    private final MonitoringService monitoringService;
 
     public PageController(
             ApplicationConfiguration applicationConfiguration,
@@ -62,7 +62,8 @@ public class PageController {
             PageEventPublisher pageEventPublisher,
             ApplicationEnrichment applicationEnrichment,
             ApplicationDataParser<List<Document>> documentListParser,
-            FeatureFlagConfiguration featureFlags) {
+            FeatureFlagConfiguration featureFlags,
+            MonitoringService monitoringService) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
@@ -73,10 +74,12 @@ public class PageController {
         this.applicationEnrichment = applicationEnrichment;
         this.documentListParser = documentListParser;
         this.featureFlags = featureFlags;
+        this.monitoringService = monitoringService;
     }
 
     @GetMapping("/")
     ModelAndView getRoot() {
+        monitoringService.setPage("/landing", "Viewing page");
         return new ModelAndView("forward:/pages/" + applicationConfiguration.getLandmarkPages().getLandingPages().get(0));
     }
 
@@ -139,7 +142,7 @@ public class PageController {
             HttpServletResponse response,
             HttpSession httpSession
     ) {
-        setSentryContext(pageName, "Viewing page");
+        monitoringService.setPage(pageName, "Viewing page");
         LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
 
         if (landmarkPagesConfiguration.isLandingPage(pageName)) {
@@ -274,7 +277,7 @@ public class PageController {
             @PathVariable String pageName,
             HttpSession httpSession
     ) {
-        setSentryContext(pageName, "Saving page");
+        monitoringService.setPage(pageName, "Saving page");
         PageWorkflowConfiguration pageWorkflow = applicationConfiguration.getPageWorkflow(pageName);
 
         PageConfiguration page = pageWorkflow.getPageConfiguration();
@@ -371,12 +374,4 @@ public class PageController {
         return new RedirectView("/pages/" + terminalPage);
     }
 
-    private void setSentryContext(String pageName, String message) {
-        Sentry.configureScope(scope -> {
-            Breadcrumb breadcrumb = new Breadcrumb(message);
-            breadcrumb.setData("pageName", ofNullable(pageName).orElse("null"));
-            scope.addBreadcrumb(breadcrumb);
-            scope.setContexts("applicationId", applicationData.getId());
-        });
-    }
 }
