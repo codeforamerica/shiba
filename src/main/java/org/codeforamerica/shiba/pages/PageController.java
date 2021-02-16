@@ -128,7 +128,7 @@ public class PageController {
 
                         pages.put(key, value);
                     });
-            @NotNull DatasourcePages datasourcePages = new DatasourcePages(pages);
+            @NotNull DatasourcePages datasourcePages = new DatasourcePages(new PagesData(pages));
 
             return datasourcePages.satisfies(skipCondition);
         }

@@ -36,11 +36,8 @@ public class Condition {
         }
     }
 
-    public Boolean satisfies(PageData pageData) {
-        return this.matches(pageData.get(this.getInput()).getValue());
+    public boolean satisfies(PageData pageData) {
+        return this.matcher.matches(pageData.get(this.getInput()).getValue(), value);
     }
 
-    public Boolean matches(List<String> inputValue) {
-        return this.matcher.matches(inputValue, value);
-    }
 }
