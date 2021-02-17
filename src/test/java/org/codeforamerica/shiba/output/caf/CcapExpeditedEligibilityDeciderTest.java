@@ -38,13 +38,19 @@ class CcapExpeditedEligibilityDeciderTest {
             String livingSituation,
             CcapExpeditedEligibility expectedDecision
     ) {
-        when(ccapExpeditedEligibilityParser.parse(applicationData)).thenReturn(Optional.of(new CcapExpeditedEligibilityParameters(livingSituation)));
+        when(ccapExpeditedEligibilityParser.parse(applicationData)).thenReturn(Optional.of(new CcapExpeditedEligibilityParameters(livingSituation, true)));
         assertThat(ccapExpeditedEligibilityDecider.decide(applicationData)).isEqualTo(expectedDecision);
     }
 
     @Test
     void shouldBeUndeterminedWhenLivingSituationIsNotAvailable() {
-        when(ccapExpeditedEligibilityParser.parse(applicationData)).thenReturn(Optional.of(new CcapExpeditedEligibilityParameters(null)));
+        when(ccapExpeditedEligibilityParser.parse(applicationData)).thenReturn(Optional.of(new CcapExpeditedEligibilityParameters(null, true)));
+        assertThat(ccapExpeditedEligibilityDecider.decide(applicationData)).isEqualTo(CcapExpeditedEligibility.UNDETERMINED);
+    }
+
+    @Test
+    void shouldBeUndeterminedWhenNotCcapApplication() {
+        when(ccapExpeditedEligibilityParser.parse(applicationData)).thenReturn(Optional.of(new CcapExpeditedEligibilityParameters("HOTEL_OR_MOTEL", false)));
         assertThat(ccapExpeditedEligibilityDecider.decide(applicationData)).isEqualTo(CcapExpeditedEligibility.UNDETERMINED);
     }
 

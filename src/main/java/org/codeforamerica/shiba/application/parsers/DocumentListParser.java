@@ -17,41 +17,13 @@ public class DocumentListParser extends ApplicationDataParser<List<Document>> {
     @Override
     public List<Document> parse(ApplicationData applicationData) {
         ArrayList<Document> documents = new ArrayList<>();
-        if (isCCAPApplication(applicationData)) {
+        if (applicationData.isCCAPApplication()) {
             documents.add(CCAP);
         }
-        if (isCAFApplication(applicationData)) {
+        if (applicationData.isCAFApplication()) {
             documents.add(CAF);
         }
 
         return documents;
-    }
-
-    private boolean isCCAPApplication(ApplicationData applicationData) {
-        List<String> applicantPrograms = applicationData.getPagesData().safeGetPageInputValue("choosePrograms", "programs");
-        boolean applicantHasCCAP = applicantPrograms.contains("CCAP");
-        boolean hasHousehold = applicationData.getSubworkflows().containsKey("household");
-        boolean householdHasCCAP = false;
-        if (hasHousehold) {
-            householdHasCCAP = applicationData.getSubworkflows().get("household").stream().anyMatch(iteration ->
-                iteration.getPagesData().safeGetPageInputValue("householdMemberInfo", "programs").contains("CCAP"));
-        }
-        return applicantHasCCAP || householdHasCCAP;
-    }
-
-    private boolean isCAFApplication(ApplicationData applicationData) {
-        List<String> applicantPrograms = applicationData.getPagesData().safeGetPageInputValue("choosePrograms", "programs");
-        List<String> availablePrograms = List.of("SNAP", "CASH", "GRH", "EA");
-        boolean applicantIsCAF = availablePrograms.stream().anyMatch(applicantPrograms::contains);
-        boolean hasHousehold = applicationData.getSubworkflows().containsKey("household");
-        boolean householdIsCAF = false;
-        if (hasHousehold) {
-            householdIsCAF = applicationData.getSubworkflows().get("household").stream().anyMatch(iteration -> {
-                List<String> iterationsPrograms = iteration.getPagesData().safeGetPageInputValue("householdMemberInfo", "programs");
-                return availablePrograms.stream().anyMatch(iterationsPrograms::contains);
-            });
-        }
-
-        return applicantIsCAF || householdIsCAF;
     }
 }

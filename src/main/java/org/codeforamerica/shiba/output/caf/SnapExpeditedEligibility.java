@@ -1,9 +1,9 @@
 package org.codeforamerica.shiba.output.caf;
 
 public enum SnapExpeditedEligibility {
-    ELIGIBLE("Expedited-SNAP"),
-    NOT_ELIGIBLE("Non-Expedited-SNAP"),
-    UNDETERMINED("Undetermined");
+    ELIGIBLE("SNAP"),
+    NOT_ELIGIBLE(""), // leave blank on cover page
+    UNDETERMINED(""); // leave blank on cover page
 
     private final String status;
 

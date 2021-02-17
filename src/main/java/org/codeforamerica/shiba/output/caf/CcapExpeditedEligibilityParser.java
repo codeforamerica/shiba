@@ -30,8 +30,10 @@ public class CcapExpeditedEligibilityParser extends ApplicationDataParser<Option
             return Optional.empty();
         }
 
+        boolean isCcapApplication = applicationData.isCCAPApplication();
+
         String livingSituation = applicationData.getValue(coordinatesMap.get("livingSituation"));
-        return Optional.of(new CcapExpeditedEligibilityParameters(livingSituation));
+        return Optional.of(new CcapExpeditedEligibilityParameters(livingSituation, isCcapApplication));
     }
 
 }
