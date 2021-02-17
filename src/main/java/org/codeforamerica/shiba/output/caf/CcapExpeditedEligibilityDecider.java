@@ -21,7 +21,7 @@ public class CcapExpeditedEligibilityDecider {
         return ccapExpeditedEligibilityParser.parse(applicationData)
                 .map(parameters -> {
                             String livingSituation = parameters.getLivingSituation();
-                            if (null == livingSituation) {
+                            if (null == livingSituation || !parameters.isCcapApplication()) {
                                 return UNDETERMINED;
                             }
                             return expeditedLivingSituations.contains(livingSituation) ? ELIGIBLE : NOT_ELIGIBLE;

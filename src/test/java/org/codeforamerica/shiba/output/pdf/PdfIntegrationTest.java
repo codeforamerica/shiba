@@ -103,6 +103,30 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
     }
 
     @Nested
+    class GRH {
+        @BeforeEach
+        void setUp() {
+            selectPrograms(List.of("Housing Support (GRH)"));
+        }
+
+        @Test
+        void shouldMapPrograms() {
+            PDAcroForm pdAcroForm = submitAndDownloadCaf();
+            assertThat(pdAcroForm.getField("GRH").getValueAsString()).isEqualTo("Yes");
+        }
+
+        @Test
+        void shouldNotListExpeditedCcapIfNotApplyingForCcap() {
+            navigateTo("livingSituation");
+            testPage.enter("livingSituation", "Staying in a hotel or motel");
+            testPage.clickContinue();
+
+            PDAcroForm pdAcroForm = submitAndDownloadCaf();
+            assertThat(getPdfFieldText(pdAcroForm, "CCAP_EXPEDITED_ELIGIBILITY")).isEqualTo("Undetermined");
+        }
+    }
+
+    @Nested
     class CCAP {
         @BeforeEach
         void setUp() {
