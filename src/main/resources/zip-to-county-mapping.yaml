@@ -1,3 +1,4 @@
+# Zipcodes pulled from various sources. Zillow listings useful: https://www.zillow.com/browse/homes/mn/anoka-county/, can replace anoka with the name of the county you want.
 zip-code-to-county:
   55025: Anoka
   55330: Anoka
