@@ -49,23 +49,88 @@ demo:
 production:
   defaultValue:
     email: hhsews@hennepin.us
+    phoneNumber: 612-596-1300
     folderId: 39e0ea57-cc12-4cc1-a074-0ad3d7216d01
     dhsProviderId: A000027200
   counties:
+    Anoka:
+      email: EADocs@co.anoka.mn.us
+      phoneNumber: 763-422-7200
+      folderId: 2daf63e7-64f7-4c59-9a1e-4da18cfbeb10
+      dhsProviderId: 1023250115
+    Carver:
+      email: cssfinancial@co.carver.mn.us
+      phoneNumber: 952-361-1660
+      folderId: 1882e083-60e7-467a-ae66-ae0de945ad8e
+      dhsProviderId: A000010800
+    Clay:
+      email: social.services@co.clay.mn.us
+      phoneNumber: 218-299-5200
+      folderId: c0e972ab-c0f3-4172-9c75-ea593f912e6e
+      dhsProviderId: A000014100
+    Cook:
+      email: IM@co.cook.mn.us
+      phoneNumber: 218-387-3620
+      folderId: 00ba833d-41ff-49e9-815a-e1f3f82826e4
+      dhsProviderId: A000016700
+    Dodge:
+      email: OSS@MNPrairie.org
+      phoneNumber: 507-431-5600
+      folderId: 4d5d9570-33ed-4511-8792-dde6711dde36
+      dhsProviderId: A000020500
     Hennepin:
       email: hhsews@hennepin.us
+      phoneNumber: 612-596-1300
       folderId: 39e0ea57-cc12-4cc1-a074-0ad3d7216d01
       dhsProviderId: A000027200
+    Morrison:
+      email: callcenter@co.morrison.mn.us
+      phoneNumber: 320-631-3599
+      folderId: ad862c99-4292-4674-a7cd-2dc019eb464e
+      dhsProviderId: 1255406286
     Olmsted:
       email: PAQ@co.olmsted.mn.us
+      phoneNumber: 507-328-6500
       folderId: 0dcade2f-4c2a-4450-8347-5888c9f966fb
       dhsProviderId: A000055800
+    OtterTail:
+      email: imques@co.ottertail.mn.us
+      phoneNumber: 218-998-8281
+      folderId: 77ba1a64-524d-492a-892e-09243ca4b9ab
+      dhsProviderId: A000056600
+    Sherburne:
+      email: PADocs@co.sherburne.mn.us
+      phoneNumber: 763-765-4000
+      folderId: 7587e3c7-5409-4caf-b3c0-e4864f8b09b6
+      dhsProviderId: 1447381660
+    Steele:
+      email: OSS@MNPrairie.org
+      phoneNumber: 507-431-5600
+      folderId: 2e0023fa-2ffb-4582-a28f-495f7606b41f
+      dhsProviderId: A000074400
+    StLouis:
+      email: ESS@stlouiscountymn.gov
+      phoneNumber: 800-450-9777 or 218-726-2101
+      folderId: 8e50a17a-6f8e-43bd-9de1-da4dff40a478
+      dhsProviderId: A000069800
     Wabasha:
       email: imuinterview@co.wabasha.mn.us
+      phoneNumber: 651-565-3351
       folderId: 4b087cdb-ccee-44ad-b461-e5a829988b01
       dhsProviderId: A000079500
+    Wadena:
+      email: Jennifer.westrum@co.wadena.mn.us
+      phoneNumber: 218-631-7605
+      folderId: 8d10df90-416f-46e7-80e1-e5f3bf02ae73
+      dhsProviderId: A000080900
+    Waseca:
+      email: OSS@MNPrairie.org
+      phoneNumber: 507-431-5600
+      folderId: f8fcee94-ae6e-4a1c-9b97-1e1bcf683249
+      dhsProviderId: A000081700
     Wright:
       email: HSFSPrograms@co.wright.mn.us
+      phoneNumber: 763-682-7414
       folderId: 644cae25-1cd5-481a-8f71-19446b83d3e1
       dhsProviderId: 1124197249
 ---
@@ -73,22 +138,87 @@ production:
 other:
   defaultValue:
     email: help+dev@mnbenefits.org
-    folderId: 5195b061-9bdc-4d31-9840-90a99902d329
+    phoneNumber: 612-596-1300
+    folderId: 39e0ea57-cc12-4cc1-a074-0ad3d7216d01
     dhsProviderId: A000027200
   counties:
+    Anoka:
+      email: help+dev@mnbenefits.org
+      phoneNumber: 763-422-7200
+      folderId: 2daf63e7-64f7-4c59-9a1e-4da18cfbeb10
+      dhsProviderId: 1023250115
+    Carver:
+      email: help+dev@mnbenefits.org
+      phoneNumber: 952-361-1660
+      folderId: 1882e083-60e7-467a-ae66-ae0de945ad8e
+      dhsProviderId: A000010800
+    Clay:
+      email: help+dev@mnbenefits.org
+      phoneNumber: 218-299-5200
+      folderId: c0e972ab-c0f3-4172-9c75-ea593f912e6e
+      dhsProviderId: A000014100
+    Cook:
+      email: help+dev@mnbenefits.org
+      phoneNumber: 218-387-3620
+      folderId: 00ba833d-41ff-49e9-815a-e1f3f82826e4
+      dhsProviderId: A000016700
+    Dodge:
+      email: help+dev@mnbenefits.org
+      phoneNumber: 507-431-5600
+      folderId: 4d5d9570-33ed-4511-8792-dde6711dde36
+      dhsProviderId: A000020500
     Hennepin:
       email: help+dev@mnbenefits.org
-      folderId: 5195b061-9bdc-4d31-9840-90a99902d329
+      phoneNumber: 612-596-1300
+      folderId: 39e0ea57-cc12-4cc1-a074-0ad3d7216d01
       dhsProviderId: A000027200
+    Morrison:
+      email: help+dev@mnbenefits.org
+      phoneNumber: 320-631-3599
+      folderId: ad862c99-4292-4674-a7cd-2dc019eb464e
+      dhsProviderId: 1255406286
     Olmsted:
       email: help+dev@mnbenefits.org
-      folderId: 9b8e19ee-0767-4d50-8652-95fec9dbc459
+      phoneNumber: 507-328-6500
+      folderId: 0dcade2f-4c2a-4450-8347-5888c9f966fb
       dhsProviderId: A000055800
+    OtterTail:
+      email: help+dev@mnbenefits.org
+      phoneNumber: 218-998-8281
+      folderId: 77ba1a64-524d-492a-892e-09243ca4b9ab
+      dhsProviderId: A000056600
+    Sherburne:
+      email: help+dev@mnbenefits.org
+      phoneNumber: 763-765-4000
+      folderId: 7587e3c7-5409-4caf-b3c0-e4864f8b09b6
+      dhsProviderId: 1447381660
+    Steele:
+      email: help+dev@mnbenefits.org
+      phoneNumber: 507-431-5600
+      folderId: 2e0023fa-2ffb-4582-a28f-495f7606b41f
+      dhsProviderId: A000074400
+    StLouis:
+      email: help+dev@mnbenefits.org
+      phoneNumber: 800-450-9777 or 218-726-2101
+      folderId: 8e50a17a-6f8e-43bd-9de1-da4dff40a478
+      dhsProviderId: A000069800
     Wabasha:
       email: help+dev@mnbenefits.org
-      folderId: 88c8dc91-20e0-449b-8cac-6aad788d0f4e
+      phoneNumber: 651-565-3351
+      folderId: 4b087cdb-ccee-44ad-b461-e5a829988b01
       dhsProviderId: A000079500
+    Wadena:
+      email: help+dev@mnbenefits.org
+      phoneNumber: 218-631-7605
+      folderId: 8d10df90-416f-46e7-80e1-e5f3bf02ae73
+      dhsProviderId: A000080900
+    Waseca:
+      email: help+dev@mnbenefits.org
+      phoneNumber: 507-431-5600
+      folderId: f8fcee94-ae6e-4a1c-9b97-1e1bcf683249
+      dhsProviderId: A000081700
     Wright:
       email: help+dev@mnbenefits.org
-      folderId: 359cf4ee-7147-4c3c-bfc0-f29213b68fc0
+      phoneNumber: 763-682-7414
+      folderId: 644cae25-1cd5-481a-8f71-19446b83d3e1
       dhsProviderId: 1124197249
