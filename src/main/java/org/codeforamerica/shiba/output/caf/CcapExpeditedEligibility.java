@@ -1,9 +1,9 @@
 package org.codeforamerica.shiba.output.caf;
 
 public enum CcapExpeditedEligibility {
-    ELIGIBLE("Expedited-CCAP"),
-    NOT_ELIGIBLE("Non-Expedited-CCAP"),
-    UNDETERMINED("Undetermined");
+    ELIGIBLE("CCAP"),
+    NOT_ELIGIBLE(""), // leave blank on cover page
+    UNDETERMINED(""); // leave blank on cover page
 
     private final String status;
 

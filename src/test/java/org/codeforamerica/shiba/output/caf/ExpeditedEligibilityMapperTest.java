@@ -40,13 +40,13 @@ class ExpeditedEligibilityMapperTest {
                 new ApplicationInput(
                         "snapExpeditedEligibility",
                         "snapExpeditedEligibility",
-                        List.of("Expedited-SNAP"),
+                        List.of("SNAP"),
                         ApplicationInputType.SINGLE_VALUE
                 ),
                 new ApplicationInput(
                         "ccapExpeditedEligibility",
                         "ccapExpeditedEligibility",
-                        List.of("Expedited-CCAP"),
+                        List.of("CCAP"),
                         ApplicationInputType.SINGLE_VALUE
                 )
         );
@@ -77,13 +77,13 @@ class ExpeditedEligibilityMapperTest {
                 new ApplicationInput(
                         "snapExpeditedEligibility",
                         "snapExpeditedEligibility",
-                        List.of("Non-Expedited-SNAP"),
+                        List.of(""),
                         ApplicationInputType.SINGLE_VALUE
                 ),
                 new ApplicationInput(
                         "ccapExpeditedEligibility",
                         "ccapExpeditedEligibility",
-                        List.of("Non-Expedited-CCAP"),
+                        List.of(""),
                         ApplicationInputType.SINGLE_VALUE
                 )
 
