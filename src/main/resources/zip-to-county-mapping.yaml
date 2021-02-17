@@ -1,4 +1,55 @@
 zip-code-to-county:
+  55025: Anoka
+  55330: Anoka
+  55038: Anoka
+  55070: Anoka
+  55079: Anoka
+  55092: Anoka
+  55421: Anoka
+  55433: Anoka
+  55432: Anoka
+  55304: Anoka
+  55434: Anoka
+  55303: Anoka
+  55005: Anoka
+  55011: Anoka
+  55014: Anoka
+  55449: Anoka
+  55448: Anoka
+  55397: Carver
+  55339: Carver
+  55360: Carver
+  55368: Carver
+  55367: Carver
+  55315: Carver
+  55318: Carver
+  55317: Carver
+  55386: Carver
+  55322: Carver
+  55387: Carver
+  56536: Clay
+  56580: Clay
+  56547: Clay
+  56546: Clay
+  56549: Clay
+  56585: Clay
+  56514: Clay
+  56552: Clay
+  56519: Clay
+  56560: Clay
+  56525: Clay
+  56529: Clay
+  55605: Cook
+  55604: Cook
+  55606: Cook
+  55612: Cook
+  55613: Cook
+  55615: Cook
+  55940: Dodge
+  55944: Dodge
+  55955: Dodge
+  55985: Dodge
+  55927: Dodge
   55323: Hennepin
   55327: Hennepin
   55331: Hennepin
@@ -73,6 +124,20 @@ zip-code-to-county:
   55305: Hennepin
   55311: Hennepin
   55316: Hennepin
+  56473: Morrison
+  56475: Morrison
+  56364: Morrison
+  56382: Morrison
+  56384: Morrison
+  56314: Morrison
+  56317: Morrison
+  56318: Morrison
+  56328: Morrison
+  56443: Morrison
+  56338: Morrison
+  56345: Morrison
+  56344: Morrison
+  56466: Morrison
   55932: Olmsted
   55972: Olmsted
   55934: Olmsted
@@ -87,6 +152,101 @@ zip-code-to-county:
   55960: Olmsted
   55963: Olmsted
   55929: Olmsted
+  56573: Otter Tail
+  56361: Otter Tail
+  56572: Otter Tail
+  56477: Otter Tail
+  56576: Otter Tail
+  56579: Otter Tail
+  56482: Otter Tail
+  56586: Otter Tail
+  56588: Otter Tail
+  56515: Otter Tail
+  56587: Otter Tail
+  56309: Otter Tail
+  56518: Otter Tail
+  56522: Otter Tail
+  56524: Otter Tail
+  56528: Otter Tail
+  56527: Otter Tail
+  56534: Otter Tail
+  56324: Otter Tail
+  56533: Otter Tail
+  56537: Otter Tail
+  56437: Otter Tail
+  56544: Otter Tail
+  56446: Otter Tail
+  56551: Otter Tail
+  56453: Otter Tail
+  56567: Otter Tail
+  56571: Otter Tail
+  55398: Sherburne
+  56304: Sherburne
+  55371: Sherburne
+  55308: Sherburne
+  55309: Sherburne
+  55377: Sherburne
+  55588: Sherburne
+  55319: Sherburne
+  56026: Steele
+  56072: Steele
+  55049: Steele
+  56046: Steele
+  55060: Steele
+  55924: Steele
+  55763: St. Louis
+  55765: St. Louis
+  55768: St. Louis
+  55771: St. Louis
+  55772: St. Louis
+  55779: St. Louis
+  55777: St. Louis
+  55781: St. Louis
+  55782: St. Louis
+  55790: St. Louis
+  55792: St. Louis
+  55796: St. Louis
+  55798: St. Louis
+  55802: St. Louis
+  55801: St. Louis
+  55804: St. Louis
+  55803: St. Louis
+  55806: St. Louis
+  55805: St. Louis
+  55808: St. Louis
+  55807: St. Louis
+  55811: St. Louis
+  55810: St. Louis
+  55812: St. Louis
+  55816: St. Louis
+  56649: St. Louis
+  56669: St. Louis
+  55602: St. Louis
+  55616: St. Louis
+  55702: St. Louis
+  55703: St. Louis
+  55706: St. Louis
+  55705: St. Louis
+  55708: St. Louis
+  55710: St. Louis
+  55711: St. Louis
+  55713: St. Louis
+  55717: St. Louis
+  55720: St. Louis
+  55719: St. Louis
+  55724: St. Louis
+  55723: St. Louis
+  55725: St. Louis
+  55731: St. Louis
+  55732: St. Louis
+  55734: St. Louis
+  55738: St. Louis
+  55736: St. Louis
+  55741: St. Louis
+  55746: St. Louis
+  55751: St. Louis
+  55750: St. Louis
+  55758: St. Louis
   55981: Wabasha
   55991: Wabasha
   55945: Wabasha
@@ -95,6 +255,9 @@ zip-code-to-county:
   55957: Wabasha
   55964: Wabasha
   55968: Wabasha
+  56478: Wadena
+  56091: Waseca
+  56093: Waseca
   55301: Wright
   55302: Wright
   55313: Wright
