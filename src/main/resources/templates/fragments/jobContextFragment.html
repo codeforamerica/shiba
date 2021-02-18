@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
-<div class="job-context-employer-name spacing-above-35">
-    <strong th:fragment="jobContextFragment" th:text="${pageDatasources.get('employersName').get('employersName').value.get(0)}"></strong>
+<div class="spacing-above-35">
+    <div class="job-context-employer-name" th:fragment="jobContextFragment" th:text="${pageDatasources.get('employersName').get('employersName').value.get(0)}"></div>
 </div>
 </html>
