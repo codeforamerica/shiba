@@ -363,6 +363,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.clickContinue();
         testPage.enter("unearnedIncome", "None of the above");
         testPage.clickContinue();
+        testPage.enter("unearnedIncomeCcap", "None of the above");
+        testPage.clickContinue();
         testPage.enter("livingSituation", "I prefer not to say");
         testPage.clickContinue();
         testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
@@ -405,6 +407,10 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.clickContinue();
         testPage.enter("unearnedIncome", "None of the above");
         testPage.clickContinue();
+        testPage.enter("unearnedIncomeCcap", "Contract for Deed");
+        testPage.clickContinue();
+        testPage.enter("contractForDeedAmount", "200");
+        testPage.clickContinue();
         testPage.enter("livingSituation", "Paying for my own housing with rent, lease, or mortgage payments");
         testPage.clickContinue();
         testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
@@ -435,6 +441,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.enter("currentlyLookingForJob", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.enter("unearnedIncome", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("unearnedIncomeCcap", "None of the above");
         testPage.clickContinue();
         testPage.enter("livingSituation", "Paying for my own housing with rent, lease, or mortgage payments");
         testPage.clickContinue();
@@ -473,6 +481,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.enter("currentlyLookingForJob", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.enter("unearnedIncome", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("unearnedIncomeCcap", "None of the above");
         testPage.clickContinue();
         testPage.enter("livingSituation", "Paying for my own housing with rent, lease, or mortgage payments");
         testPage.clickContinue();
@@ -712,6 +722,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         navigateTo("unearnedIncome");
         testPage.enter("unearnedIncome", "None of the above");
         testPage.clickContinue();
+        testPage.enter("unearnedIncomeCcap", "None of the above");
+        testPage.clickContinue();
 
         assertThat(driver.getTitle()).isEqualTo("Living situation");
     }
@@ -745,6 +757,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
         navigateTo("unearnedIncome");
         testPage.enter("unearnedIncome", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("unearnedIncomeCcap", "None of the above");
         testPage.clickContinue();
 
         assertThat(driver.getTitle()).isEqualTo("Living situation");
@@ -781,6 +795,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.enter("unearnedIncome", "None of the above");
         testPage.clickContinue();
 
+        takeSnapShot("test.png");
         assertThat(driver.getTitle()).isEqualTo("Future Income");
     }
 
@@ -894,6 +909,10 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.enter("unearnedIncome", "Social Security");
         testPage.clickContinue();
         testPage.enter("socialSecurityAmount", "200");
+        testPage.clickContinue();
+        testPage.enter("unearnedIncomeCcap", "Money from a Trust");
+        testPage.clickContinue();
+        testPage.enter("trustMoneyAmount", "200");
         testPage.clickContinue();
         testPage.enter("livingSituation", "Paying for my own housing with rent, lease, or mortgage payments");
         testPage.clickContinue();

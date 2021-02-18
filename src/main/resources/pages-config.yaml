@@ -1272,6 +1272,125 @@ pageDefinitions:
           pageName: unearnedIncome
           input: unearnedIncome
           value: TRIBAL_PAYMENTS
+  - &unearnedIncomeCcap
+    name: unearnedIncomeCcap
+    pageTitle:
+      value: unearned-income.title
+    headerKey:
+      value: unearned-income-ccap.do-you-get-income-from-any-of-these-sources
+      conditionalValues:
+        - value: unearned-income-ccap.household-get-income-from-any-of-these-sources
+          condition: *doesNotLiveAlone?
+    headerHelpMessageKey:
+      value: unearned-income.check-all-that-apply-you-do-not-need-to-report-income-you-havent-received-yet
+    inputs:
+      - name: unearnedIncomeCcap
+        type: CHECKBOX
+        validators:
+          - validation: SELECT_AT_LEAST_ONE
+            errorMessageKey: general.validation.make-sure-you-choose-none-of-the-above-or-another-option
+        options:
+          selectableOptions:
+            - value: BENEFITS
+              messageKey: unearned-income-ccap.benefits-programs
+            - value: INSURANCE_PAYMENTS
+              messageKey: unearned-income-ccap.insurance-payments
+            - value: CONTRACT_FOR_DEED
+              messageKey: unearned-income-ccap.contract-for-deed
+            - value: TRUST_MONEY
+              messageKey: unearned-income-ccap.money-from-a-trust
+            - value: HEALTH_CARE_REIMBURSEMENT
+              messageKey: unearned-income-ccap.health-care-reimbursement
+            - value: NO_UNEARNED_INCOME_CCAP_SELECTED
+              messageKey: general.inputs.none-of-the-above
+              isNone: true
+  - &unearnedIncomeSourcesCcap
+    name: unearnedIncomeSourcesCcap
+    pageTitle:
+      value: unearned-income-sources.title
+    headerKey:
+      value: unearned-income-sources.tell-us-how-much-money-you-receive
+      conditionalValues:
+        - value: unearned-income-sources.tell-us-how-much-money-is-received
+          condition: *doesNotLiveAlone?
+    headerHelpMessageKey:
+      value: unearned-income-sources.if-you-dont-have-all-this-information-on-hand-skip
+    inputs:
+      - name: benefitsAmount
+        type: MONEY
+        promptMessage:
+          promptMessageKey: unearned-income-ccap.benefits-program
+        helpMessageKey: unearned-income-sources.monthly-amount
+        validators:
+          - validation: MONEY
+            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            condition:
+              input: benefitsAmount
+              matcher: NOT_EMPTY
+        condition:
+          pageName: unearnedIncomeCcap
+          input: unearnedIncomeCcap
+          value: BENEFITS
+      - name: insurancePaymentsAmount
+        type: MONEY
+        promptMessage:
+          promptMessageKey: unearned-income-ccap.insurance-payments
+        helpMessageKey: unearned-income-sources.monthly-amount
+        validators:
+          - validation: MONEY
+            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            condition:
+              input: insurancePaymentsAmount
+              matcher: NOT_EMPTY
+        condition:
+          pageName: unearnedIncomeCcap
+          input: unearnedIncomeCcap
+          value: INSURANCE_PAYMENTS
+      - name: contractForDeedAmount
+        type: MONEY
+        promptMessage:
+          promptMessageKey: unearned-income-ccap.contract-for-deed
+        helpMessageKey: unearned-income-sources.monthly-amount
+        validators:
+          - validation: MONEY
+            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            condition:
+              input: contractForDeedAmount
+              matcher: NOT_EMPTY
+        condition:
+          pageName: unearnedIncomeCcap
+          input: unearnedIncomeCcap
+          value: CONTRACT_FOR_DEED
+      - name: trustMoneyAmount
+        type: MONEY
+        promptMessage:
+          promptMessageKey: unearned-income-ccap.money-from-a-trust
+        helpMessageKey: unearned-income-sources.monthly-amount
+        validators:
+          - validation: MONEY
+            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            condition:
+              input: trustMoneyAmount
+              matcher: NOT_EMPTY
+        condition:
+          pageName: unearnedIncomeCcap
+          input: unearnedIncomeCcap
+          value: TRUST_MONEY
+      - name: healthCareReimburementAmount
+        type: MONEY
+        promptMessage:
+          promptMessageKey: unearned-income-ccap.health-care-reimbursement
+        helpMessageKey: unearned-income-sources.monthly-amount
+        validators:
+          - validation: MONEY
+            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            condition:
+              input: healthCareReimburementAmount
+              matcher: NOT_EMPTY
+        condition:
+          pageName: unearnedIncomeCcap
+          input: unearnedIncomeCcap
+          value: HEALTH_CARE_REIMBURSEMENT
   - &livingSituation
     name: livingSituation
     pageTitle:
@@ -2254,7 +2373,7 @@ workflow:
   unearnedIncomeSources:
     pageConfiguration: *unearnedIncomeSources
     nextPages:
-      - pageName: livingSituation
+      - pageName: unearnedIncomeCcap
     skipCondition:
       conditions:
         - pageName: unearnedIncome
@@ -2263,6 +2382,51 @@ workflow:
     datasources:
       - pageName: unearnedIncome
       - pageName: doYouLiveAlone
+  unearnedIncomeCcap:
+    pageConfiguration: *unearnedIncomeCcap
+    skipCondition:
+      compositeConditions:
+        - logicalOperator: AND
+          compositeConditions:
+            - conditions:
+                - *applicantDidNotChooseCCAP?
+            - logicalOperator: OR
+              conditions:
+                - *householdMemberDidNotChooseCCAP?
+                - *livesAlone?
+    nextPages:
+      - pageName: unearnedIncomeSourcesCcap
+    datasources:
+      - pageName: choosePrograms
+      - pageName: doYouLiveAlone
+      - pageName: householdMemberInfo
+        groupName: household
+  unearnedIncomeSourcesCcap:
+    pageConfiguration: *unearnedIncomeSourcesCcap
+    nextPages:
+      - pageName: livingSituation
+    skipCondition:
+      compositeConditions:
+        - logicalOperator: OR
+          compositeConditions:
+            - logicalOperator: AND
+              compositeConditions:
+                - conditions:
+                  - *applicantDidNotChooseCCAP?
+                - logicalOperator: OR
+                  conditions:
+                    - *householdMemberDidNotChooseCCAP?
+                    - *livesAlone?
+            - conditions:
+                - pageName: unearnedIncomeCcap
+                  input: unearnedIncomeCcap
+                  value: NO_UNEARNED_INCOME_CCAP_SELECTED
+    datasources:
+      - pageName: unearnedIncomeCcap
+      - pageName: doYouLiveAlone
+      - pageName: choosePrograms
+      - pageName: householdMemberInfo
+        groupName: household
   livingSituation:
     pageConfiguration: *livingSituation
     nextPages:
