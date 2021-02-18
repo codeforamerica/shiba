@@ -612,6 +612,12 @@ input[type=number] {
     color: #FFFFFF;
 }
 
+.yes-no-button {
+    min-width: 128px;
+    margin-right: 2.5rem;
+    margin-left: 0;
+}
+
 .reveal {
     border: 2px solid #741078;
 }
