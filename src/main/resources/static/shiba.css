@@ -82,23 +82,6 @@
     background-color: #003865;
 }
 
-.button--minnesota-blue {
-    color: #FFFFFF;
-    background-color: #003865;
-    border-color: #003865;
-    box-shadow: 0 2px 0 #00088E;
-}
-
-.button--minnesota-blue:hover {
-    border-color: #00223D;
-    background-color: #00223D;
-    color: #FFFFFF;
-}
-
-.minnesota-blue {
-    color: #003865;
-}
-
 .font-white {
     color: white;
 }
@@ -638,4 +621,15 @@ input[type=number] {
     background-color: #EEFFE6;
 }
 
+.button--primary {
+    color: #FFFFFF;
+    background-color: #003865;
+    border-color: #003865;
+    box-shadow: 0 2px 0 #00088E;
+}
 
+.button--primary:hover {
+    border-color: #00223D;
+    background-color: #00223D;
+    color: #FFFFFF;
+}
