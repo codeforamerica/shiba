@@ -305,30 +305,6 @@ html {
     position: relative;
 }
 
-.reveal-purple {
-    border: 2px solid #741078;
-}
-
-.reveal-purple h3 {
-    color: #000;
-    margin-bottom: 0;
-}
-
-.reveal-purple .reveal__link {
-    color: #741078;
-    background-color: #FFF5FF;
-}
-
-.reveal-purple .reveal__content-adjacent {
-    background-color: #FFF5FF;
-    color: #000;
-    border-top: solid 2px #741078;
-}
-
-.reveal-purple .reveal-icon svg {
-    fill: #741078;
-}
-
 .reveal__link__header-adjacent {
     display: inline-block;
     padding: .3em .5em .3em .7em;
@@ -634,4 +610,28 @@ input[type=number] {
     border-color: #00223D;
     background-color: #00223D;
     color: #FFFFFF;
+}
+
+.reveal {
+    border: 2px solid #741078;
+}
+
+.reveal h3 {
+    color: #000;
+    margin-bottom: 0;
+}
+
+.reveal .reveal__link {
+    color: #741078;
+    background-color: #FFF5FF;
+}
+
+.reveal .reveal__content-adjacent {
+    background-color: #FFF5FF;
+    color: #000;
+    border-top: solid 2px #741078;
+}
+
+.reveal .reveal-icon svg {
+    fill: #741078;
 }
