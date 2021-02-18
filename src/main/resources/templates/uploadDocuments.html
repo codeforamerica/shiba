@@ -27,11 +27,12 @@
                             <div class="bottom-horizontal-line spacing-below-25">
                                 <p>Uploaded documents</p>
                             </div>
-                            <div id="file-preview">
+                            <div id="file-preview" class="dz-preview dz-file-preview">
                                 <div id="file-preview-template">
                                     <div th:if="${!uploadedDocuments.isEmpty()}">
                                         <th:block th:each="instance : ${uploadedDocuments}">
                                             <p th:text="${instance.key}"></p>
+                                            <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
                                         </th:block>
                                     </div>
                                 </div>
@@ -84,10 +85,15 @@
 
     $("#document-upload").dropzone({
         previewContainer: "#file-preview",
-        previewTemplate: "#file-preview-template",
+        previewTemplate: document.querySelector("#file-preview-template").innerHTML,
         sending: function (file, xhr, formData) {
             const csrfToken = [[${_csrf.token}]];
             formData.append("_csrf", csrfToken)
+        },
+        uploadprogress: function (file, progress, bytesSent) {
+            console.log(file);
+            const progressElement = file.previewElement.querySelector("[data-dz-uploadprogress]");
+            progressElement.style.width = progress + "%";
         },
         addedfiles: files => {
             for (let i = 0; i < files.length; i++) {
