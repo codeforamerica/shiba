@@ -9,10 +9,11 @@
         <div class="grid">
             <div th:replace="fragments/cardHeader :: cardHeader"></div>
             <div class="card spacing-above-35">
-                <div class="grid__item spacing-above-35">
-                    <p class="text--help text--centered spacing-below-10"
+                <div class="grid__item spacing-above-35 text--centered">
+                    <div th:replace="fragments/icons/milestone-person :: milestone-person"></div>
+                    <p class="text--help spacing-below-10"
                        th:text="#{general.step-one-of-five}"></p>
-                    <h1 class="h2 text--centered spacing-below-35 spacing-above-0"
+                    <h1 class="h2 spacing-below-35 spacing-above-0"
                         th:text="#{intro-basic-info.getting-to-know-you}"></h1>
                 </div>
                 <div class="grid__item intro-section boxed-content spacing-below-60">
