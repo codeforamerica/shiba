@@ -278,18 +278,33 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             testPage.enter("unearnedIncomeCcap", "Money from a Trust");
             testPage.enter("unearnedIncomeCcap", "Benefits programs like MFIP, DWP, GA, or Tribal TANF");
             testPage.enter("unearnedIncomeCcap", "Contract for Deed");
-            testPage.enter("unearnedIncomeCcap", "Health Care Reimbursement");
 
-            takeSnapShot("test.png");
+            testPage.clickContinue();
+
+            testPage.enter("benefitsAmount", "10");
+            testPage.enter("contractForDeedAmount", "20");
             testPage.clickContinue();
 
             Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+            PDAcroForm ccap = pdAcroForms.get(CCAP);
 
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "BENEFITS")).isEqualTo("Yes");
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "INSURANCE_PAYMENTS")).isEqualTo("Yes");
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "CONTRACT_FOR_DEED")).isEqualTo("Yes");
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "TRUST_MONEY")).isEqualTo("Yes");
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "HEALTH_CARE_REIMBURSEMENT")).isEqualTo("Yes");
+            assertThat(getPdfFieldText(ccap, "BENEFITS")).isEqualTo("Yes");
+            assertThat(getPdfFieldText(ccap, "INSURANCE_PAYMENTS")).isEqualTo("Yes");
+            assertThat(getPdfFieldText(ccap, "CONTRACT_FOR_DEED")).isEqualTo("Yes");
+            assertThat(getPdfFieldText(ccap, "TRUST_MONEY")).isEqualTo("Yes");
+            assertThat(getPdfFieldText(ccap, "HEALTH_CARE_REIMBURSEMENT")).isEqualTo("Off");
+
+            assertThat(getPdfFieldText(ccap,"BENEFITS_AMOUNT")).isEqualTo("10");
+            assertThat(getPdfFieldText(ccap,"INSURANCE_PAYMENTS_AMOUNT")).isEqualTo("");
+            assertThat(getPdfFieldText(ccap,"CONTRACT_FOR_DEED_AMOUNT")).isEqualTo("20");
+            assertThat(getPdfFieldText(ccap,"TRUST_MONEY_AMOUNT")).isEqualTo("");
+            assertThat(getPdfFieldText(ccap,"HEALTH_CARE_REIMBURSEMENT_AMOUNT")).isEqualTo("");
+
+            assertThat(getPdfFieldText(ccap,"BENEFITS_FREQUENCY")).isEqualTo("Monthly");
+            assertThat(getPdfFieldText(ccap,"INSURANCE_PAYMENTS_FREQUENCY")).isEqualTo("Monthly");
+            assertThat(getPdfFieldText(ccap,"CONTRACT_FOR_DEED_FREQUENCY")).isEqualTo("Monthly");
+            assertThat(getPdfFieldText(ccap,"TRUST_MONEY_FREQUENCY")).isEqualTo("Monthly");
+            assertThat(getPdfFieldText(ccap,"HEALTH_CARE_REIMBURSEMENT_FREQUENCY")).isEqualTo("");
 
         }
 

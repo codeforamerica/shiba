@@ -108,13 +108,6 @@ mappings:
       RETIREMENT: RETIREMENT
       CHILD_OR_SPOUSAL_SUPPORT: CHILD_OR_SPOUSAL_SUPPORT
       TRIBAL_PAYMENTS: TRIBAL_PAYMENTS
-    unearnedIncomeCcap:
-      unearnedIncomeCcap:
-        BENEFITS: BENEFITS
-        INSURANCE_PAYMENTS: INSURANCE_PAYMENTS
-        CONTRACT_FOR_DEED: CONTRACT_FOR_DEED
-        TRUST_MONEY: TRUST_MONEY
-        HEALTH_CARE_REIMBURSEMENT: HEALTH_CARE_REIMBURSEMENT
     noSocialSecurity: SOCIAL_SECURITY
     noSSI: SSI
     noVeteransBenefits: VETERANS_BENEFITS
@@ -123,6 +116,13 @@ mappings:
     noRetirement: RETIREMENT
     noChildOrSpousalSupport: CHILD_OR_SPOUSAL_SUPPORT
     noTribalPayments: TRIBAL_PAYMENTS
+  unearnedIncomeCcap:
+    unearnedIncomeCcap:
+      BENEFITS: BENEFITS
+      INSURANCE_PAYMENTS: INSURANCE_PAYMENTS
+      CONTRACT_FOR_DEED: CONTRACT_FOR_DEED
+      TRUST_MONEY: TRUST_MONEY
+      HEALTH_CARE_REIMBURSEMENT: HEALTH_CARE_REIMBURSEMENT
   unearnedIncomeSources:
     socialSecurityAmount: SOCIAL_SECURITY_AMOUNT
     supplementalSecurityIncomeAmount: SUPPLEMENTAL_SECURITY_INCOME_AMOUNT
@@ -140,6 +140,17 @@ mappings:
     retirementFrequency: RETIREMENT_BENEFITS_FREQUENCY
     childOrSpousalSupportFrequency: CHILD_OR_SPOUSAL_SUPPORT_FREQUENCY
     tribalPaymentsFrequency: TRIBAL_PAYMENTS_FREQUENCY
+  unearnedIncomeSourcesCcap:
+    benefitsAmount: BENEFITS_AMOUNT
+    insurancePaymentsAmount: INSURANCE_PAYMENTS_AMOUNT
+    contractForDeedAmount: CONTRACT_FOR_DEED_AMOUNT
+    trustMoneyAmount: TRUST_MONEY_AMOUNT
+    healthCareReimbursementAmount: HEALTH_CARE_REIMBURSEMENT_AMOUNT
+    benefitsFrequency: BENEFITS_FREQUENCY
+    insurancePaymentsFrequency: INSURANCE_PAYMENTS_FREQUENCY
+    contractForDeedFrequency: CONTRACT_FOR_DEED_FREQUENCY
+    trustMoneyFrequency: TRUST_MONEY_FREQUENCY
+    healthCareReimbursementFrequency: HEALTH_CARE_REIMBURSEMENT_FREQUENCY
   livingSituation:
     livingSituation: LIVING_SITUATION  
   futureIncome:

@@ -1319,7 +1319,7 @@ pageDefinitions:
       - name: benefitsAmount
         type: MONEY
         promptMessage:
-          promptMessageKey: unearned-income-ccap.benefits-program
+          promptMessageKey: unearned-income-ccap.benefits-programs
         helpMessageKey: unearned-income-sources.monthly-amount
         validators:
           - validation: MONEY
@@ -1376,7 +1376,7 @@ pageDefinitions:
           pageName: unearnedIncomeCcap
           input: unearnedIncomeCcap
           value: TRUST_MONEY
-      - name: healthCareReimburementAmount
+      - name: healthCareReimbursementAmount
         type: MONEY
         promptMessage:
           promptMessageKey: unearned-income-ccap.health-care-reimbursement
@@ -1385,7 +1385,7 @@ pageDefinitions:
           - validation: MONEY
             errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
             condition:
-              input: healthCareReimburementAmount
+              input: healthCareReimbursementAmount
               matcher: NOT_EMPTY
         condition:
           pageName: unearnedIncomeCcap
