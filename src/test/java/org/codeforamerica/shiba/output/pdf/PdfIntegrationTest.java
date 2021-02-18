@@ -456,7 +456,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         void shouldMapUnearnedIncome() {
             navigateTo("unearnedIncome");
             testPage.enter("unearnedIncome", "Social Security");
-            testPage.enter("unearnedIncome", "Child or Spousal support");
+            testPage.enter("unearnedIncome", "Child or Spousal Support");
             testPage.clickContinue();
 
             testPage.enter("socialSecurityAmount", "10");
