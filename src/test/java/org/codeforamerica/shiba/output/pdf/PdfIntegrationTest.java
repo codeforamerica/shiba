@@ -269,6 +269,46 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
 
             assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "LIVING_SITUATION")).isEqualTo("HOTEL_OR_MOTEL");
         }
+
+        @Test
+        void shouldMapUnearnedIncomeCcapAnswers() {
+            fillInRequiredPages();
+            navigateTo("unearnedIncomeCcap");
+            testPage.enter("unearnedIncomeCcap", "Insurance Payments");
+            testPage.enter("unearnedIncomeCcap", "Money from a Trust");
+            testPage.enter("unearnedIncomeCcap", "Benefits programs like MFIP, DWP, GA, or Tribal TANF");
+            testPage.enter("unearnedIncomeCcap", "Contract for Deed");
+            testPage.enter("unearnedIncomeCcap", "Health Care Reimbursement");
+
+            takeSnapShot("test.png");
+            testPage.clickContinue();
+
+            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "BENEFITS")).isEqualTo("Yes");
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "INSURANCE_PAYMENTS")).isEqualTo("Yes");
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "CONTRACT_FOR_DEED")).isEqualTo("Yes");
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "TRUST_MONEY")).isEqualTo("Yes");
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "HEALTH_CARE_REIMBURSEMENT")).isEqualTo("Yes");
+
+        }
+
+        @Test
+        void shouldNotMapUnearnedIncomeCcapWhenNoneOfTheAboveIsSelected() {
+            fillInRequiredPages();
+            navigateTo("unearnedIncomeCcap");
+            testPage.enter("unearnedIncomeCcap", "None of the above");
+            testPage.clickContinue();
+
+            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "BENEFITS")).isEqualTo("Off");
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "INSURANCE_PAYMENTS")).isEqualTo("Off");
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "CONTRACT_FOR_DEED")).isEqualTo("Off");
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "TRUST_MONEY")).isEqualTo("Off");
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "HEALTH_CARE_REIMBURSEMENT")).isEqualTo("Off");
+
+        }
     }
 
     @Nested
