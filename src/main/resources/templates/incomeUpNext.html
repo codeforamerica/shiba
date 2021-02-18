@@ -9,18 +9,16 @@
         <div class="grid">
             <div th:replace="fragments/cardHeader :: cardHeader"></div>
             <div class="card spacing-above-35">
-                <div class="grid__item spacing-above-35">
-                    <h1 class="h2 spacing-below-35 spacing-above-0"
+                <div class="grid__item text--centered spacing-below-15">
+                    <div th:replace="fragments/icons/icon-checkbox :: icon-checkbox"></div>
+                </div>
+                <div class="grid__item text--centered">
+                    <h1 class="h2 spacing-below-60 spacing-above-0"
                         th:text="#{income-up-next.got-it-youre-almost-done-with-the-income-section}"></h1>
                 </div>
-                <div class="grid__item text--centered spacing-below-35">
-                    <i class="icon-check_circle large"></i>
+                <div class="grid__item text--centered spacing-below-15">
+                    <div th:replace="fragments/continue :: continue"></div>
                 </div>
-                <div class="grid__item intro-section boxed-content spacing-below-60 padding-horizontal-30">
-                    <strong><span th:text="#{income-up-next.up-next}"></span></strong>
-                    <span th:text="#{income-up-next.unearned-income-and-recent-changes}"></span>
-                </div>
-                <div th:replace="fragments/continue :: continue"></div>
             </div>
         </div>
     </section>
