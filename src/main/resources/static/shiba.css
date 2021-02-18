@@ -372,6 +372,8 @@ html {
     color: #5F5854;
     border-bottom: 2px solid #AAAAAA;
     padding-bottom: 0.5rem;
+    font-style: normal;
+    font-weight: bold;
 }
 
 .splash {
