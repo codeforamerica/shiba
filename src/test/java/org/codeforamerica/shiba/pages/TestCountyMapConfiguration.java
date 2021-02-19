@@ -19,7 +19,7 @@ public class TestCountyMapConfiguration {
         CountyMap<MnitCountyInformation> mnitCountyInformationCountyMap = new CountyMap<>();
         mnitCountyInformationCountyMap.setCounties(new HashMap<>());
         mnitCountyInformationCountyMap.setDefaultValue(new MnitCountyInformation(
-                "some-folder-id", "some-dhs-provider-id", "someemail"
+                "some-folder-id", "some-dhs-provider-id", "someemail", "somephone"
         ));
         return mnitCountyInformationCountyMap;
     }

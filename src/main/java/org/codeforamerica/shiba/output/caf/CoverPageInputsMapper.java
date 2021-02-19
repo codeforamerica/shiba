@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.output.caf;
 
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.mnit.MnitCountyInformation;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMapper;
@@ -28,12 +29,14 @@ import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
 @Component
 public class CoverPageInputsMapper implements ApplicationInputsMapper {
     private final CountyMap<Map<Recipient, String>> countyInstructionsMapping;
+    private final CountyMap<MnitCountyInformation> countyInformationMapping;
 
     @Resource
     MessageSource messageSource;
 
-    public CoverPageInputsMapper(CountyMap<Map<Recipient, String>> countyInstructionsMapping, MessageSource messageSource) {
+    public CoverPageInputsMapper(CountyMap<Map<Recipient, String>> countyInstructionsMapping, CountyMap<MnitCountyInformation> countyInformationMapping, MessageSource messageSource) {
         this.countyInstructionsMapping = countyInstructionsMapping;
+        this.countyInformationMapping = countyInformationMapping;
         this.messageSource=messageSource;
     }
 
@@ -84,7 +87,11 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
         ApplicationInput countyInstructionsInput = new ApplicationInput(
                 "coverPage",
                 "countyInstructions",
-                List.of(messageSource.getMessage(countyInstructionsMapping.get(application.getCounty()).get(recipient),null, LocaleContextHolder.getLocale())),
+                List.of(messageSource.getMessage(countyInstructionsMapping.get(application.getCounty()).get(recipient),
+                        List.of(application.getCounty(),
+                                Optional.ofNullable(countyInformationMapping.get(application.getCounty()).getPhoneNumber()).orElse(null)
+                        ).toArray(),
+                        LocaleContextHolder.getLocale())),
                 SINGLE_VALUE
         );
         List<ApplicationInput> inputs = Stream.of(

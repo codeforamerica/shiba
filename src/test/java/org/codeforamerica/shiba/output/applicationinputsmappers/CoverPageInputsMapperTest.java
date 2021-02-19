@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 
 import org.codeforamerica.shiba.*;
 import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.mnit.MnitCountyInformation;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
 import org.codeforamerica.shiba.output.Recipient;
@@ -22,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class CoverPageInputsMapperTest extends AbstractBasePageTest {
     private final CountyMap<Map<Recipient, String>> countyInstructionsMapping = new CountyMap<>();
+    private final CountyMap<MnitCountyInformation> countyInformationMapping = new CountyMap<>();
     private CoverPageInputsMapper coverPageInputsMapper;
     private final PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
     private final StaticMessageSource staticMessageSource = new StaticMessageSource();
@@ -34,10 +36,17 @@ class CoverPageInputsMapperTest extends AbstractBasePageTest {
     public void setUp() throws IOException {
         super.setUp();
         applicationData.setPagesData(pagesData);
-        coverPageInputsMapper = new CoverPageInputsMapper(countyInstructionsMapping, staticMessageSource);
+        coverPageInputsMapper = new CoverPageInputsMapper(countyInstructionsMapping, countyInformationMapping, staticMessageSource);
         countyInstructionsMapping.getCounties().put(County.Other, Map.of(
                 Recipient.CLIENT, "county-to-instructions.default-client",
                 Recipient.CASEWORKER, "county-to-instructions.default-caseworker"));
+        countyInformationMapping.setDefaultValue(
+                MnitCountyInformation.builder()
+                    .dhsProviderId("someDhsProviderId")
+                    .email("someEmail")
+                    .phoneNumber("555-123-4567")
+                    .folderId("someFolderId")
+                    .build());
         staticMessageSource.addMessage("county-to-instructions.default-client", LocaleContextHolder.getLocale(), "Default client");
         staticMessageSource.addMessage("county-to-instructions.default-caseworker", LocaleContextHolder.getLocale(), "Default caseworker");
         staticMessageSource.addMessage("county-to-instructions.olmsted-caseworker", LocaleContextHolder.getLocale(), "Olmsted caseworker");
