@@ -1800,25 +1800,18 @@ pageDefinitions:
       conditionalValues:
         - value: real-estate.household-own-real-estate
           condition: *doesNotLiveAlone?
-    headerHelpMessageKey:
-      value: real-estate.pick-one
+    hasPrimaryButton: false
     inputs:
       - name: ownRealEstate
-        type: RADIO
-        options:
-          selectableOptions:
-            - value: JUST_OWN_HOME
-              messageKey: real-estate.yes-i-just-own-the-home-i-live-in
-            - value: OWN_OTHER_REAL_ESTATE
-              messageKey: real-estate.yes-i-own-real-estate-that-is-not-my-home
-            - value: OWN_NO_REAL_ESTATE
-              messageKey: real-estate.no-i-do-not-own-any-real-estate
+        type: YES_NO
   - &millionDollar
     name: millionDollar
     pageTitle:
       value: million-dollar.title
     headerKey:
       value: million-dollar.does-your-family-have-more-than-1-million
+    headerHelpMessageKey:
+      value: million-dollar.do-not-include
     hasPrimaryButton: false
     inputs:
       - name: haveMillionDollars
@@ -2581,8 +2574,7 @@ workflow:
                   conditions:
                     - *householdMemberDidNotChooseCCAP?
                     - *livesAlone?
-            - logicalOperator: AND
-              conditions:
+            - conditions:
                 - pageName: vehicle
                   input: haveVehicle
                   value: "false"
@@ -2594,19 +2586,18 @@ workflow:
                   value: "false"
                 - pageName: realEstate
                   input: ownRealEstate
-                  value: OWN_OTHER_REAL_ESTATE
-                  matcher: DOES_NOT_CONTAIN
+                  value: "false"
     nextPages:
       - pageName: soldAssets
     datasources:
-      - pageName: doYouLiveAlone
-      - pageName: choosePrograms
-      - pageName: householdMemberInfo
-        groupName: household
       - pageName: vehicle
       - pageName: investments
       - pageName: savings
       - pageName: realEstate
+      - pageName: doYouLiveAlone
+      - pageName: choosePrograms
+      - pageName: householdMemberInfo
+        groupName: household
   soldAssets:
     pageConfiguration: *soldAssets
     nextPages:
