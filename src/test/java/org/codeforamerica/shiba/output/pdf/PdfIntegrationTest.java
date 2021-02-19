@@ -175,8 +175,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             testPage.enter("energyAssistance", NO.getDisplayValue());
             testPage.enter("supportAndCare", NO.getDisplayValue());
             testPage.enter("haveVehicle", NO.getDisplayValue());
-            testPage.enter("ownRealEstate", "No, I do not own any real estate");
-            testPage.clickContinue();
+            testPage.enter("ownRealEstate", NO.getDisplayValue());
             testPage.enter("haveInvestments", NO.getDisplayValue());
             testPage.enter("haveSavings", NO.getDisplayValue());
 
@@ -191,8 +190,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             testPage.enter("energyAssistance", NO.getDisplayValue());
             testPage.enter("supportAndCare", NO.getDisplayValue());
             testPage.enter("haveVehicle", NO.getDisplayValue());
-            testPage.enter("ownRealEstate", "No, I do not own any real estate");
-            testPage.clickContinue();
+            testPage.enter("ownRealEstate", NO.getDisplayValue());
             testPage.enter("haveInvestments", YES.getDisplayValue());
             testPage.enter("haveSavings", NO.getDisplayValue());
             testPage.enter("haveMillionDollars", YES.getDisplayValue());

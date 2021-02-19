@@ -377,8 +377,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.enter("energyAssistance", NO.getDisplayValue());
         testPage.enter("supportAndCare", NO.getDisplayValue());
         testPage.enter("haveVehicle", NO.getDisplayValue());
-        testPage.enter("ownRealEstate", "Yes, I just own the home I live in");
-        testPage.clickContinue();
+        testPage.enter("ownRealEstate", NO.getDisplayValue());
         testPage.enter("haveInvestments", NO.getDisplayValue());
         testPage.enter("haveSavings", NO.getDisplayValue());
         assertThat(testPage.getTitle()).isEqualTo("Sold assets");
@@ -848,12 +847,10 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         fillOutHousemateInfo("Emergency Assistance");
         testPage.clickContinue();
         testPage.clickButton("Yes, that's everyone");
-
         navigateTo("unearnedIncome");
         testPage.enter("unearnedIncome", "None of the above");
         testPage.clickContinue();
 
-        takeSnapShot("test.png");
         assertThat(driver.getTitle()).isEqualTo("Future Income");
     }
 
@@ -987,8 +984,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.enter("energyAssistanceMoreThan20", YES.getDisplayValue());
         testPage.enter("supportAndCare", YES.getDisplayValue());
         testPage.enter("haveVehicle", YES.getDisplayValue());
-        testPage.enter("ownRealEstate", "Yes, I just own the home I live in");
-        testPage.clickContinue();
+        testPage.enter("ownRealEstate", YES.getDisplayValue());
         testPage.enter("haveInvestments", NO.getDisplayValue());
         testPage.enter("haveSavings", YES.getDisplayValue());
         testPage.enter("liquidAssets", "1234");
