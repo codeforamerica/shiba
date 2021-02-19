@@ -12,4 +12,5 @@ public class SnapExpeditedEligibilityParameters {
     boolean isMigrantWorker;
     double housingCosts;
     List<String> utilityExpenses;
+    boolean applyingForSnap;
 }

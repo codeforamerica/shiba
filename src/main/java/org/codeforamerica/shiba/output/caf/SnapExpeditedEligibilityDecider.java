@@ -33,9 +33,13 @@ public class SnapExpeditedEligibilityDecider {
                             boolean migrantWorkerAndAssetsBelowThreshold = parameters.isMigrantWorker() && assets <= ASSET_THRESHOLD;
                             int standardDeduction = utilityDeductionCalculator.calculate(parameters.getUtilityExpenses());
 
-                            return assetsAndIncomeBelowThreshold
-                                    || migrantWorkerAndAssetsBelowThreshold
-                                    || (assets + income) < (housingCosts + standardDeduction) ? SnapExpeditedEligibility.ELIGIBLE : SnapExpeditedEligibility.NOT_ELIGIBLE;
+                            boolean passesAssetTest = (assets + income) < (housingCosts + standardDeduction);
+                            
+                            boolean applyingForSnap = parameters.isApplyingForSnap();
+
+                            return (applyingForSnap &&
+                                    (assetsAndIncomeBelowThreshold || migrantWorkerAndAssetsBelowThreshold || passesAssetTest))
+                                    ? SnapExpeditedEligibility.ELIGIBLE : SnapExpeditedEligibility.NOT_ELIGIBLE;
                         }
                 ).orElse(UNDETERMINED);
     }

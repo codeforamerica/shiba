@@ -73,10 +73,11 @@ class SnapExpeditedEligibilityParserTest {
         pagesData.putPage("housingCostsPage", new PageData(Map.of("housingCostsInput", InputData.builder().value(List.of("3")).build())));
         String utilitySelection = "some utility";
         pagesData.putPage("utilityExpensesSelectionsPage", new PageData(Map.of("utilityExpensesSelectionsInput", InputData.builder().value(List.of(utilitySelection)).build())));
+        pagesData.putPage("choosePrograms", new PageData(Map.of("programs", InputData.builder().value(List.of("SNAP")).build())));
 
         SnapExpeditedEligibilityParameters parameters = snapExpeditedEligibilityParser.parse(applicationData).get();
 
-        assertThat(parameters).isEqualTo(new SnapExpeditedEligibilityParameters(2.0, 1.0, jobIncomeInformation, false, 3.0, List.of(utilitySelection)));
+        assertThat(parameters).isEqualTo(new SnapExpeditedEligibilityParameters(2.0, 1.0, jobIncomeInformation, false, 3.0, List.of(utilitySelection), true));
     }
 
     @Test
@@ -86,10 +87,11 @@ class SnapExpeditedEligibilityParserTest {
         pagesData.putPage("housingCostsPage", new PageData(Map.of("housingCostsInput", InputData.builder().value(List.of("3")).build())));
         String utilitySelection = "some utility";
         pagesData.putPage("utilityExpensesSelectionsPage", new PageData(Map.of("utilityExpensesSelectionsInput", InputData.builder().value(List.of(utilitySelection)).build())));
+        pagesData.putPage("choosePrograms", new PageData(Map.of("programs", InputData.builder().value(List.of("SNAP")).build())));
 
         SnapExpeditedEligibilityParameters parameters = snapExpeditedEligibilityParser.parse(applicationData).get();
 
-        assertThat(parameters).isEqualTo(new SnapExpeditedEligibilityParameters(100.0, 1.0, jobIncomeInformation, false, 3.0, List.of(utilitySelection)));
+        assertThat(parameters).isEqualTo(new SnapExpeditedEligibilityParameters(100.0, 1.0, jobIncomeInformation, false, 3.0, List.of(utilitySelection), true));
     }
 
     @Test
@@ -100,10 +102,11 @@ class SnapExpeditedEligibilityParserTest {
         pagesData.putPage("housingCostsPage", new PageData(Map.of("housingCostsInput", InputData.builder().value(List.of("3")).build())));
         String utilitySelection = "some utility";
         pagesData.putPage("utilityExpensesSelectionsPage", new PageData(Map.of("utilityExpensesSelectionsInput", InputData.builder().value(List.of(utilitySelection)).build())));
+        pagesData.putPage("choosePrograms", new PageData(Map.of("programs", InputData.builder().value(List.of("SNAP")).build())));
 
         SnapExpeditedEligibilityParameters parameters = snapExpeditedEligibilityParser.parse(applicationData).get();
 
-        assertThat(parameters).isEqualTo(new SnapExpeditedEligibilityParameters(2.0, 200.0, jobIncomeInformation, false, 3.0, List.of(utilitySelection)));
+        assertThat(parameters).isEqualTo(new SnapExpeditedEligibilityParameters(2.0, 200.0, jobIncomeInformation, false, 3.0, List.of(utilitySelection), true));
     }
 
     @Test
@@ -113,6 +116,7 @@ class SnapExpeditedEligibilityParserTest {
         pagesData.putPage("housingCostsPage", new PageData(Map.of("housingCostsInput", InputData.builder().value(List.of("3")).build())));
         String utilitySelection = "some utility";
         pagesData.putPage("utilityExpensesSelectionsPage", new PageData(Map.of("utilityExpensesSelectionsInput", InputData.builder().value(List.of(utilitySelection)).build())));
+        pagesData.putPage("choosePrograms", new PageData(Map.of("programs", InputData.builder().value(List.of("SNAP")).build())));
 
         Optional<SnapExpeditedEligibilityParameters> parameters = snapExpeditedEligibilityParser.parse(applicationData);
 
