@@ -122,7 +122,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             testPage.clickContinue();
 
             PDAcroForm pdAcroForm = submitAndDownloadCaf();
-            assertThat(getPdfFieldText(pdAcroForm, "CCAP_EXPEDITED_ELIGIBILITY")).isEqualTo("");
+            assertThat(getPdfFieldText(pdAcroForm, "CCAP_EXPEDITED_ELIGIBILITY")).isBlank();
         }
     }
 
