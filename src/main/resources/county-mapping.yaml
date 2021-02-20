@@ -3,6 +3,7 @@ staging:
     email: help+staging@mnbenefits.org
     folderId: 5195b061-9bdc-4d31-9840-90a99902d329
     dhsProviderId: A000027200
+    phoneNumber: 612-596-1300
   counties:
     Anoka:
       email: help+staging@mnbenefits.org
@@ -91,6 +92,7 @@ demo:
     email: help+staging@mnbenefits.org
     folderId: 5195b061-9bdc-4d31-9840-90a99902d329
     dhsProviderId: A000027200
+    phoneNumber: 612-596-1300
   counties:
     Anoka:
       email: help+staging@mnbenefits.org
