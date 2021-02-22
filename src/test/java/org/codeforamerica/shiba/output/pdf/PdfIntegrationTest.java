@@ -267,6 +267,73 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
 
             assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "LIVING_SITUATION")).isEqualTo("HOTEL_OR_MOTEL");
         }
+
+        @Test
+        void shouldMapUnearnedIncomeCcapAnswers() {
+            fillInRequiredPages();
+            navigateTo("unearnedIncomeCcap");
+            testPage.enter("unearnedIncomeCcap", "Insurance Payments");
+            testPage.enter("unearnedIncomeCcap", "Money from a Trust");
+            testPage.enter("unearnedIncomeCcap", "Benefits programs like MFIP, DWP, GA, or Tribal TANF");
+            testPage.enter("unearnedIncomeCcap", "Contract for Deed");
+            testPage.enter("unearnedIncomeCcap", "Health Care Reimbursement");
+            testPage.enter("unearnedIncomeCcap", "Interest/Dividends");
+            testPage.enter("unearnedIncomeCcap", "Income from Other Sources");
+
+            testPage.clickContinue();
+
+            testPage.enter("benefitsAmount", "10");
+            testPage.enter("contractForDeedAmount", "20");
+            testPage.enter("interestDividendsAmount", "30");
+            testPage.enter("otherSourcesAmount", "40");
+            testPage.clickContinue();
+
+            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+            PDAcroForm ccap = pdAcroForms.get(CCAP);
+
+            assertThat(getPdfFieldText(ccap, "BENEFITS")).isEqualTo("Yes");
+            assertThat(getPdfFieldText(ccap, "INSURANCE_PAYMENTS")).isEqualTo("Yes");
+            assertThat(getPdfFieldText(ccap, "CONTRACT_FOR_DEED")).isEqualTo("Yes");
+            assertThat(getPdfFieldText(ccap, "TRUST_MONEY")).isEqualTo("Yes");
+            assertThat(getPdfFieldText(ccap, "HEALTH_CARE_REIMBURSEMENT")).isEqualTo("Yes");
+            assertThat(getPdfFieldText(ccap, "INTEREST_DIVIDENDS")).isEqualTo("Yes");
+            assertThat(getPdfFieldText(ccap, "OTHER_SOURCES")).isEqualTo("Yes");
+
+            assertThat(getPdfFieldText(ccap,"BENEFITS_AMOUNT")).isEqualTo("10");
+            assertThat(getPdfFieldText(ccap,"INSURANCE_PAYMENTS_AMOUNT")).isEqualTo("");
+            assertThat(getPdfFieldText(ccap,"CONTRACT_FOR_DEED_AMOUNT")).isEqualTo("20");
+            assertThat(getPdfFieldText(ccap,"TRUST_MONEY_AMOUNT")).isEqualTo("");
+            assertThat(getPdfFieldText(ccap,"HEALTH_CARE_REIMBURSEMENT_AMOUNT")).isEqualTo("");
+            assertThat(getPdfFieldText(ccap, "INTEREST_DIVIDENDS_AMOUNT")).isEqualTo("30");
+            assertThat(getPdfFieldText(ccap, "OTHER_SOURCES_AMOUNT")).isEqualTo("40");
+
+            assertThat(getPdfFieldText(ccap,"BENEFITS_FREQUENCY")).isEqualTo("Monthly");
+            assertThat(getPdfFieldText(ccap,"INSURANCE_PAYMENTS_FREQUENCY")).isEqualTo("Monthly");
+            assertThat(getPdfFieldText(ccap,"CONTRACT_FOR_DEED_FREQUENCY")).isEqualTo("Monthly");
+            assertThat(getPdfFieldText(ccap,"TRUST_MONEY_FREQUENCY")).isEqualTo("Monthly");
+            assertThat(getPdfFieldText(ccap,"HEALTH_CARE_REIMBURSEMENT_FREQUENCY")).isEqualTo("Monthly");
+            assertThat(getPdfFieldText(ccap, "INTEREST_DIVIDENDS_FREQUENCY")).isEqualTo("Monthly");
+            assertThat(getPdfFieldText(ccap, "OTHER_SOURCES_FREQUENCY")).isEqualTo("Monthly");
+        }
+
+        @Test
+        void shouldNotMapUnearnedIncomeCcapWhenNoneOfTheAboveIsSelected() {
+            fillInRequiredPages();
+            navigateTo("unearnedIncomeCcap");
+            testPage.enter("unearnedIncomeCcap", "None of the above");
+            testPage.clickContinue();
+
+            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+            PDAcroForm ccap = pdAcroForms.get(CCAP);
+            assertThat(getPdfFieldText(ccap, "BENEFITS")).isEqualTo("No");
+            assertThat(getPdfFieldText(ccap, "INSURANCE_PAYMENTS")).isEqualTo("No");
+            assertThat(getPdfFieldText(ccap, "CONTRACT_FOR_DEED")).isEqualTo("No");
+            assertThat(getPdfFieldText(ccap, "TRUST_MONEY")).isEqualTo("No");
+            assertThat(getPdfFieldText(ccap, "HEALTH_CARE_REIMBURSEMENT")).isEqualTo("No");
+            assertThat(getPdfFieldText(ccap, "INTEREST_DIVIDENDS")).isEqualTo("No");
+            assertThat(getPdfFieldText(ccap, "OTHER_SOURCES")).isEqualTo("No");
+
+        }
     }
 
     @Nested
