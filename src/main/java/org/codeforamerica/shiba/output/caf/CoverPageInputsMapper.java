@@ -34,6 +34,7 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
     @Resource
     MessageSource messageSource;
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public CoverPageInputsMapper(CountyMap<Map<Recipient, String>> countyInstructionsMapping, CountyMap<MnitCountyInformation> countyInformationMapping, MessageSource messageSource) {
         this.countyInstructionsMapping = countyInstructionsMapping;
         this.countyInformationMapping = countyInformationMapping;

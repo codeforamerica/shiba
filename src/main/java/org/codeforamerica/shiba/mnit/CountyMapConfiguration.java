@@ -31,7 +31,6 @@ public class CountyMapConfiguration {
     }
 
     @Bean
-    @Primary
     @Profile("production")
     @ConfigurationProperties(prefix = "production")
     CountyMap<MnitCountyInformation> productionMapping() {
