@@ -1301,6 +1301,10 @@ pageDefinitions:
               messageKey: unearned-income-ccap.money-from-a-trust
             - value: HEALTH_CARE_REIMBURSEMENT
               messageKey: unearned-income-ccap.health-care-reimbursement
+            - value: INTEREST_DIVIDENDS
+              messageKey: unearned-income-ccap.interest-dividends
+            - value: OTHER_SOURCES
+              messageKey: unearned-income-ccap.other-sources
             - value: NO_UNEARNED_INCOME_CCAP_SELECTED
               messageKey: general.inputs.none-of-the-above
               isNone: true
@@ -1391,6 +1395,36 @@ pageDefinitions:
           pageName: unearnedIncomeCcap
           input: unearnedIncomeCcap
           value: HEALTH_CARE_REIMBURSEMENT
+      - name: interestDividendsAmount
+        type: MONEY
+        promptMessage:
+          promptMessageKey: unearned-income-ccap.interest-dividends
+        helpMessageKey: unearned-income-sources.monthly-amount
+        validators:
+          - validation: MONEY
+            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            condition:
+              input: interestDividendsAmount
+              matcher: NOT_EMPTY
+        condition:
+          pageName: unearnedIncomeCcap
+          input: unearnedIncomeCcap
+          value: INTEREST_DIVIDENDS
+      - name: otherSourcesAmount
+        type: MONEY
+        promptMessage:
+          promptMessageKey: unearned-income-ccap.other-sources
+        helpMessageKey: unearned-income-sources.monthly-amount
+        validators:
+          - validation: MONEY
+            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            condition:
+              input: otherSourcesAmount
+              matcher: NOT_EMPTY
+        condition:
+          pageName: unearnedIncomeCcap
+          input: unearnedIncomeCcap
+          value: OTHER_SOURCES
   - &livingSituation
     name: livingSituation
     pageTitle:
