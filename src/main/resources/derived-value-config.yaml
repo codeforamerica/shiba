@@ -597,6 +597,97 @@ derived-values:
               input: unearnedIncome
               matcher: DOES_NOT_CONTAIN
               value: TRIBAL_PAYMENTS
+  - fieldName: noBenefits
+    groupName: unearnedIncomeCcap
+    values:
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "No"
+        type: ENUMERATED_SINGLE_VALUE
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: unearnedIncomeCcap
+              input: unearnedIncomeCcap
+              matcher: DOES_NOT_CONTAIN
+              value: BENEFITS
+  - fieldName: noInsurancePayments
+    groupName: unearnedIncomeCcap
+    values:
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "No"
+        type: ENUMERATED_SINGLE_VALUE
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: unearnedIncomeCcap
+              input: unearnedIncomeCcap
+              matcher: DOES_NOT_CONTAIN
+              value: INSURANCE_PAYMENTS
+  - fieldName: noContractForDeed
+    groupName: unearnedIncomeCcap
+    values:
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "No"
+        type: ENUMERATED_SINGLE_VALUE
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: unearnedIncomeCcap
+              input: unearnedIncomeCcap
+              matcher: DOES_NOT_CONTAIN
+              value: CONTRACT_FOR_DEED
+  - fieldName: noTrustMoney
+    groupName: unearnedIncomeCcap
+    values:
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "No"
+        type: ENUMERATED_SINGLE_VALUE
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: unearnedIncomeCcap
+              input: unearnedIncomeCcap
+              matcher: DOES_NOT_CONTAIN
+              value: TRUST_MONEY
+  - fieldName: noHealthCareReimbursement
+    groupName: unearnedIncomeCcap
+    values:
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "No"
+        type: ENUMERATED_SINGLE_VALUE
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: unearnedIncomeCcap
+              input: unearnedIncomeCcap
+              matcher: DOES_NOT_CONTAIN
+              value: HEALTH_CARE_REIMBURSEMENT
+  - fieldName: noInterestDividends
+    groupName: unearnedIncomeCcap
+    values:
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "No"
+        type: ENUMERATED_SINGLE_VALUE
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: unearnedIncomeCcap
+              input: unearnedIncomeCcap
+              matcher: DOES_NOT_CONTAIN
+              value: INTEREST_DIVIDENDS
+  - fieldName: noOtherSources
+    groupName: unearnedIncomeCcap
+    values:
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "No"
+        type: ENUMERATED_SINGLE_VALUE
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: unearnedIncomeCcap
+              input: unearnedIncomeCcap
+              matcher: DOES_NOT_CONTAIN
+              value: OTHER_SOURCES
   - fieldName: noRentSelection
     groupName: homeExpenses
     values:

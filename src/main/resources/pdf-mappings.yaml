@@ -116,6 +116,22 @@ mappings:
     noRetirement: RETIREMENT
     noChildOrSpousalSupport: CHILD_OR_SPOUSAL_SUPPORT
     noTribalPayments: TRIBAL_PAYMENTS
+  unearnedIncomeCcap:
+    unearnedIncomeCcap:
+      BENEFITS: BENEFITS
+      INSURANCE_PAYMENTS: INSURANCE_PAYMENTS
+      CONTRACT_FOR_DEED: CONTRACT_FOR_DEED
+      TRUST_MONEY: TRUST_MONEY
+      HEALTH_CARE_REIMBURSEMENT: HEALTH_CARE_REIMBURSEMENT
+      INTEREST_DIVIDENDS: INTEREST_DIVIDENDS
+      OTHER_SOURCES: OTHER_SOURCES
+    noBenefits: BENEFITS
+    noInsurancePayments: INSURANCE_PAYMENTS
+    noContractForDeed: CONTRACT_FOR_DEED
+    noTrustMoney: TRUST_MONEY
+    noHealthCareReimbursement: HEALTH_CARE_REIMBURSEMENT
+    noInterestDividends: INTEREST_DIVIDENDS
+    noOtherSources: OTHER_SOURCES
   unearnedIncomeSources:
     socialSecurityAmount: SOCIAL_SECURITY_AMOUNT
     supplementalSecurityIncomeAmount: SUPPLEMENTAL_SECURITY_INCOME_AMOUNT
@@ -133,8 +149,23 @@ mappings:
     retirementFrequency: RETIREMENT_BENEFITS_FREQUENCY
     childOrSpousalSupportFrequency: CHILD_OR_SPOUSAL_SUPPORT_FREQUENCY
     tribalPaymentsFrequency: TRIBAL_PAYMENTS_FREQUENCY
+  unearnedIncomeSourcesCcap:
+    benefitsAmount: BENEFITS_AMOUNT
+    insurancePaymentsAmount: INSURANCE_PAYMENTS_AMOUNT
+    contractForDeedAmount: CONTRACT_FOR_DEED_AMOUNT
+    trustMoneyAmount: TRUST_MONEY_AMOUNT
+    healthCareReimbursementAmount: HEALTH_CARE_REIMBURSEMENT_AMOUNT
+    interestDividendsAmount: INTEREST_DIVIDENDS_AMOUNT
+    otherSourcesAmount: OTHER_SOURCES_AMOUNT
+    benefitsFrequency: BENEFITS_FREQUENCY
+    insurancePaymentsFrequency: INSURANCE_PAYMENTS_FREQUENCY
+    contractForDeedFrequency: CONTRACT_FOR_DEED_FREQUENCY
+    trustMoneyFrequency: TRUST_MONEY_FREQUENCY
+    healthCareReimbursementFrequency: HEALTH_CARE_REIMBURSEMENT_FREQUENCY
+    interestDividendsFrequency: INTEREST_DIVIDENDS_FREQUENCY
+    otherSourcesFrequency: OTHER_SOURCES_FREQUENCY
   livingSituation:
-    livingSituation: LIVING_SITUATION  
+    livingSituation: LIVING_SITUATION
   futureIncome:
     earnLessMoneyThisMonth: EARN_LESS_MONEY_THIS_MONTH
     additionalIncomeInfo: ADDITIONAL_INCOME_INFO
