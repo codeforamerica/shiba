@@ -14,7 +14,9 @@
                     <div id="dropzone">
                         <form action="/file-upload" class="dropzone needsclick" id="document-upload" method="post"
                               enctype="multipart/form-data">
-                            <div id="drag-and-drop-box" class="drag-and-drop-box spacing-below-35 spacing-above-35" ondragenter="addDragBorder(event)" ondrop="removeDragBorder(event)" ondragleave="removeDragBorder(event)">
+                            <div id="drag-and-drop-box" class="drag-and-drop-box spacing-below-35 spacing-above-35"
+                                 ondragenter="addDragBorder(event)" ondrop="removeDragBorder(event)"
+                                 ondragleave="removeDragBorder(event)">
                                 <h2 class="blue-label text--centered hide-on-mobile narrow-centered-text"
                                     th:text="#{upload-documents.drag-and-drop-or-add-your-files}"></h2>
                                 <h2 class="blue-label text--centered hide-on-desktop"
@@ -27,12 +29,20 @@
                             <div class="bottom-horizontal-line spacing-below-25">
                                 <p>Uploaded documents</p>
                             </div>
-                            <div id="file-preview" class="dz-preview dz-file-preview">
-                                <div id="file-preview-template">
+                            <div id="file-preview-template">
+                                <div class="this-is-my-dz-container">
                                     <div th:if="${!uploadedDocuments.isEmpty()}">
                                         <th:block th:each="instance : ${uploadedDocuments}">
-                                            <p th:text="${instance.key}"></p>
-                                            <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+
+                                            <div class="dz-preview dz-file-preview">
+                                                <div class="dz-details">
+                                                    <p th:text="${instance.key}"></p>
+                                                    <div class="dz-size" data-dz-size></div>
+                                                    <img data-dz-thumbnail/>
+                                                </div>
+                                                <div class="dz-progress"><span class="dz-upload"
+                                                                               data-dz-uploadprogress></span></div>
+                                            </div>
                                         </th:block>
                                     </div>
                                 </div>
@@ -70,7 +80,7 @@
 <div th:replace="fragments/footer :: footer"></div>
 <script th:inline="javascript">
     Dropzone.autoDiscover = false;
-    const previewNode = document.querySelector("#file-preview-template");
+    const previewNode = document.querySelector('.dz-preview')
 
     function addDragBorder(event) {
         let dragAndDropBox = document.getElementById("drag-and-drop-box");
@@ -82,29 +92,55 @@
         dragAndDropBox.classList.remove("drag-over");
     }
 
+    // Dropzone.options.documentUpload = {
+    //     uploadMultiple: false,
+    //     addRemoveLinks: false,
+    //     previewsContainer: null,
+    //     autoProcessQueue: true,
+    //     clickable: ".drag-and-drop-box",
+    //     previewTemplate: document.getElementById('file-preview-template').innerHTML,
+    //     init: function () {
+    //         this.on('addedfile', (file) => {
+    //             console.log(file.previewElement)
+    //         });
+    //
+    //         this.on('uploadprogress', (file, progress, bytesSent) => {
+    //             // console.log(file);
+    //             // console.log(file.upload.progress);
+    //             // console.log(file.upload.bytesSent);
+    //
+    //         });
+    //     }
+    // };
+
 
     $("#document-upload").dropzone({
-        previewContainer: "#file-preview",
-        previewTemplate: document.querySelector("#file-preview-template").innerHTML,
+        uploadMultiple: false,
+        addRemoveLinks: true,
+        previewsContainer: ".this-is-my-dz-container",
+        autoProcessQueue: true,
+        clickable: ".drag-and-drop-box",
+        //previewTemplate: document.getElementById('file-preview-template').innerHTML,
         sending: function (file, xhr, formData) {
             const csrfToken = [[${_csrf.token}]];
             formData.append("_csrf", csrfToken)
         },
-        uploadprogress: function (file, progress, bytesSent) {
-            console.log(file);
-            const progressElement = file.previewElement.querySelector("[data-dz-uploadprogress]");
-            progressElement.style.width = progress + "%";
-        },
-        addedfiles: files => {
-            for (let i = 0; i < files.length; i++) {
-                let fileElement = document.createElement("p")
-                fileElement.innerHTML = `${files[i].name}`;
-                previewNode.append(fileElement);
-            }
-        },
-        addedfile: () => {},
-        autoProcessQueue: true,
-        clickable: ".drag-and-drop-box"
+        init: function () {
+            this.on('addedfile', file => {
+                console.log("added file, preview element is, ", file.previewElement)
+            });
+            this.on('uploadprogress', (file, progress, bytesSent) => {
+                // if (file.previewElement) {
+                //     var progressElement = file.previewElement.querySelector("[data-dz-uploadprogress]");
+                //     progressElement.style.width = progress + "%";
+                //     progressElement.querySelector(".progress-text").textContent = progress + "%";
+                // }
+                console.log("uploadprogess file previewElement, ", file.previewElement);
+                console.log("uploadprogress file.upload.progress, ", file.upload.progress);
+                console.log("uploadprogress file.upload.bytesSent, ", file.upload.bytesSent);
+
+            });
+        }
     });
 </script>
 </body>
