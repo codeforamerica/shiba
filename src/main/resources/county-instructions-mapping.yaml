@@ -3,15 +3,51 @@ county-to-instructions:
     CLIENT: county-to-instructions.default-client
     CASEWORKER: county-to-instructions.default-caseworker
   counties:
+    Anoka:
+      CLIENT: county-to-instructions.anoka-client
+      CASEWORKER: county-to-instructions.anoka-caseworker
+    Carver:
+      CLIENT: county-to-instructions.carver-client
+      CASEWORKER: county-to-instructions.carver-caseworker
+    Clay:
+      CLIENT: county-to-instructions.clay-client
+      CASEWORKER: county-to-instructions.clay-caseworker
+    Cook:
+      CLIENT: county-to-instructions.cook-client
+      CASEWORKER: county-to-instructions.cook-caseworker
+    Dodge:
+      CLIENT: county-to-instructions.dodge-client
+      CASEWORKER: county-to-instructions.dodge-caseworker
     Hennepin:
       CLIENT: county-to-instructions.hennepin-client
       CASEWORKER: county-to-instructions.hennepin-caseworker
+    Morrison:
+      CLIENT: county-to-instructions.morrison-client
+      CASEWORKER: county-to-instructions.morrison-caseworker
     Olmsted:
       CLIENT: county-to-instructions.olmsted-client
       CASEWORKER: county-to-instructions.olmsted-caseworker
+    OtterTail:
+      CLIENT: county-to-instructions.ottertail-client
+      CASEWORKER: county-to-instructions.ottertail-caseworker
+    Sherburne:
+      CLIENT: county-to-instructions.sherburne-client
+      CASEWORKER: county-to-instructions.sherburne-caseworker
+    Steele:
+      CLIENT: county-to-instructions.steele-client
+      CASEWORKER: county-to-instructions.steele-caseworker
+    StLouis:
+      CLIENT: county-to-instructions.stlouis-client
+      CASEWORKER: county-to-instructions.stlouis-caseworker
     Wabasha:
       CLIENT: county-to-instructions.wabasha-client
       CASEWORKER: county-to-instructions.wabasha-caseworker
+    Wadena:
+      CLIENT: county-to-instructions.wadena-client
+      CASEWORKER: county-to-instructions.wadena-caseworker
+    Waseca:
+      CLIENT: county-to-instructions.waseca-client
+      CASEWORKER: county-to-instructions.waseca-caseworker
     Wright:
       CLIENT: county-to-instructions.wright-client
       CASEWORKER: county-to-instructions.wright-caseworker
