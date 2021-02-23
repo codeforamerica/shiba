@@ -15,8 +15,8 @@
                         <form action="/file-upload" class="dropzone needsclick" id="document-upload" method="post"
                               enctype="multipart/form-data">
                             <div id="drag-and-drop-box" class="drag-and-drop-box spacing-below-35 spacing-above-35"
-                                 ondragenter="addDragBorder(event)" ondrop="removeDragBorder(event)"
-                                 ondragleave="removeDragBorder(event)">
+                                 ondragenter="addDragBorder()" ondrop="removeDragBorder()"
+                                 ondragleave="removeDragBorder()">
                                 <h2 class="blue-label text--centered hide-on-mobile narrow-centered-text"
                                     th:text="#{upload-documents.drag-and-drop-or-add-your-files}"></h2>
                                 <h2 class="blue-label text--centered hide-on-desktop"
@@ -80,39 +80,16 @@
 <div th:replace="fragments/footer :: footer"></div>
 <script th:inline="javascript">
     Dropzone.autoDiscover = false;
-    const previewNode = document.querySelector('.dz-preview')
 
-    function addDragBorder(event) {
+    function addDragBorder() {
         let dragAndDropBox = document.getElementById("drag-and-drop-box");
         dragAndDropBox.classList.add("drag-over");
     }
 
-    function removeDragBorder(event) {
+    function removeDragBorder() {
         let dragAndDropBox = document.getElementById("drag-and-drop-box");
         dragAndDropBox.classList.remove("drag-over");
     }
-
-    // Dropzone.options.documentUpload = {
-    //     uploadMultiple: false,
-    //     addRemoveLinks: false,
-    //     previewsContainer: null,
-    //     autoProcessQueue: true,
-    //     clickable: ".drag-and-drop-box",
-    //     previewTemplate: document.getElementById('file-preview-template').innerHTML,
-    //     init: function () {
-    //         this.on('addedfile', (file) => {
-    //             console.log(file.previewElement)
-    //         });
-    //
-    //         this.on('uploadprogress', (file, progress, bytesSent) => {
-    //             // console.log(file);
-    //             // console.log(file.upload.progress);
-    //             // console.log(file.upload.bytesSent);
-    //
-    //         });
-    //     }
-    // };
-
 
     $("#document-upload").dropzone({
         uploadMultiple: false,
@@ -128,31 +105,21 @@
             // '    <img data-dz-thumbnail />\n' +
             '  </div>\n' +
             '</div>',
-        sending: function (file, xhr, formData) {
+        sending: (file, xhr, formData) => {
             const csrfToken = [[${_csrf.token}]];
             formData.append("_csrf", csrfToken)
         },
-        init: function () {
-            this.on('addedfile', file => {
-                console.log("added file, preview element is, ", file.previewElement)
-            });
+        init: () => {
             this.on('uploadprogress', (file, progress, bytesSent) => {
-                function wait(ms){
+                function wait(ms) {
                     var start = new Date().getTime();
                     var end = start;
-                    while(end < start + ms) {
+                    while (end < start + ms) {
                         end = new Date().getTime();
                     }
                 }
                 wait(3000)
-                console.log("sup wit it")
             });
-            // this.on('success', file => {
-            //     file.previewElement.removeClass('dz-processing')
-            // });
-            // this.on('success', file => {
-            //     file.previewElement.removeClass('dz-processing')
-            // });
         }
     });
 </script>
