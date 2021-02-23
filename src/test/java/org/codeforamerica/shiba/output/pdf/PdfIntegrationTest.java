@@ -64,6 +64,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         when(featureFlagConfiguration.get("submit-via-email")).thenReturn(FeatureFlag.OFF);
         when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.OFF);
         when(featureFlagConfiguration.get("send-non-partner-county-alert")).thenReturn(FeatureFlag.OFF);
+        when(featureFlagConfiguration.get("county-anoka")).thenReturn(FeatureFlag.OFF);
 
     }
 
@@ -641,6 +642,26 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
                 });
                 assertThat(pdAcroForms.get(CAF).getField("APPLICANT_MAILING_APT_NUMBER").getValueAsString())
                         .isEqualTo(originalApt);
+            }
+
+            @Test
+            void shouldMapDefaultCoverPageCountyInstructionsIfCountyIsFlaggedOff() {
+                navigateTo("homeAddress");
+                String originalStreetAddress = "2168 7th Ave";
+                String originalCity = "Anoka";
+                String originalZipCode = "55303";
+                testPage.enter("streetAddress", originalStreetAddress);
+                testPage.enter("city", originalCity);
+                testPage.enter("zipCode", originalZipCode);
+                testPage.enter("sameMailingAddress", "Yes, send mail here");
+                testPage.clickContinue();
+                testPage.clickButton("Use this address");
+                Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+                List.of(CAF, CCAP).forEach(type -> {
+                    PDAcroForm pdAcroForm = pdAcroForms.get(type);
+                    assertThat(pdAcroForm.getField("COUNTY_INSTRUCTIONS").getValueAsString())
+                            .isEqualTo("This application was submitted. A caseworker at Hennepin County will help route your application to your county. For more support with your application, you can call Hennepin County at 612-596-1300.");
+                });
             }
 
             @Test
