@@ -1,6 +1,8 @@
 package org.codeforamerica.shiba.application.parsers;
 
 import org.codeforamerica.shiba.County;
+import org.codeforamerica.shiba.pages.config.FeatureFlag;
+import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.stereotype.Component;
 
@@ -11,8 +13,11 @@ import static java.util.Optional.ofNullable;
 
 @Component
 public class CountyParser extends ApplicationDataParser<County> {
-    public CountyParser(ParsingConfiguration parsingConfiguration) {
+    private final FeatureFlagConfiguration featureFlagConfiguration;
+
+    public CountyParser(ParsingConfiguration parsingConfiguration, FeatureFlagConfiguration featureFlagConfiguration) {
         super(parsingConfiguration);
+        this.featureFlagConfiguration = featureFlagConfiguration;
     }
 
     @Override
@@ -31,6 +36,10 @@ public class CountyParser extends ApplicationDataParser<County> {
                 .flatMap(pageData -> ofNullable(pageData.get(pageInputs.get("county").getInputName())))
                 .map(inputData -> inputData.getValue().get(0))
                 .orElse(pageInputs.get("county").getDefaultValue());
+
+        if (featureFlagConfiguration.get("county-" + countyName.toLowerCase()) == FeatureFlag.OFF) {
+            return County.Other;
+        }
         return County.valueFor(countyName);
     }
 }
