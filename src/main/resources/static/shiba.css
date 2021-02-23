@@ -299,6 +299,14 @@ html {
 /*    background-color: red;*/
 /*}*/
 
+.dz-processing .dz-filename {
+    color: #CFC5BF;
+}
+
+#file-preview-template .dz-success .dz-filename {
+    color: #000;
+}
+
 .blue-label {
     color: #003865;
     font-weight: normal;

@@ -116,11 +116,18 @@
 
     $("#document-upload").dropzone({
         uploadMultiple: false,
-        addRemoveLinks: true,
+        addRemoveLinks: false,
         previewsContainer: ".this-is-my-dz-container",
         autoProcessQueue: true,
         clickable: ".drag-and-drop-box",
-        //previewTemplate: document.getElementById('file-preview-template').innerHTML,
+        previewTemplate: '<div class="testing dz-preview dz-file-preview">\n' +
+            '  <div class="dz-details">\n' +
+            '    <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>\n' +
+            '    <div class="dz-filename"><span data-dz-name></span></div>\n' +
+            // '    <div class="dz-size" data-dz-size></div>\n' +
+            // '    <img data-dz-thumbnail />\n' +
+            '  </div>\n' +
+            '</div>',
         sending: function (file, xhr, formData) {
             const csrfToken = [[${_csrf.token}]];
             formData.append("_csrf", csrfToken)
@@ -130,16 +137,22 @@
                 console.log("added file, preview element is, ", file.previewElement)
             });
             this.on('uploadprogress', (file, progress, bytesSent) => {
-                // if (file.previewElement) {
-                //     var progressElement = file.previewElement.querySelector("[data-dz-uploadprogress]");
-                //     progressElement.style.width = progress + "%";
-                //     progressElement.querySelector(".progress-text").textContent = progress + "%";
-                // }
-                console.log("uploadprogess file previewElement, ", file.previewElement);
-                console.log("uploadprogress file.upload.progress, ", file.upload.progress);
-                console.log("uploadprogress file.upload.bytesSent, ", file.upload.bytesSent);
-
+                function wait(ms){
+                    var start = new Date().getTime();
+                    var end = start;
+                    while(end < start + ms) {
+                        end = new Date().getTime();
+                    }
+                }
+                wait(3000)
+                console.log("sup wit it")
             });
+            // this.on('success', file => {
+            //     file.previewElement.removeClass('dz-processing')
+            // });
+            // this.on('success', file => {
+            //     file.previewElement.removeClass('dz-processing')
+            // });
         }
     });
 </script>
