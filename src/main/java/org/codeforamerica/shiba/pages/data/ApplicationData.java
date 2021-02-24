@@ -74,11 +74,7 @@ public class ApplicationData {
                 .filter(nextPage -> {
                     Condition condition = nextPage.getCondition();
                     if (condition != null) {
-                        if (condition.getPageName() != null) {
-                            return pagesData.getPage(condition.getPageName()).satisfies(condition);
-                        } else {
-                            return pageData.satisfies(condition);
-                        }
+                        return condition.matches(pageData, pagesData);
                     }
                     if (nextPage.getFlag() != null) {
                         return featureFlags.get(nextPage.getFlag()) == FeatureFlag.ON;

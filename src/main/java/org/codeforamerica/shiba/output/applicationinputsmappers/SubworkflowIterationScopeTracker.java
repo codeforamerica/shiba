@@ -48,7 +48,7 @@ public class SubworkflowIterationScopeTracker {
         Map<String, Condition> scopes = pageGroupConfiguration.getAddedScope();
         return ofNullable(scopes).flatMap(allScopes -> allScopes.entrySet().stream()
                 .filter(entry -> ofNullable(iteration.getPagesData().get(entry.getValue().getPageName()))
-                        .map(pagesData -> pagesData.satisfies(entry.getValue()))
+                        .map(pageData -> entry.getValue().matches(pageData, iteration.getPagesData()))
                         .orElse(false))
                 .findAny()
                 .map(Map.Entry::getKey)).orElse(null);

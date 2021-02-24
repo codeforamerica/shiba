@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 public class DatasourcePages extends HashMap<String, PageData> {
-    public DatasourcePages(Map<String, PageData> pages) {
-        super(pages);
+    public DatasourcePages(PagesData pagesData) {
+        super(pagesData);
     }
 
     public Boolean satisfies(Condition condition) {
@@ -18,7 +18,7 @@ public class DatasourcePages extends HashMap<String, PageData> {
             // This page's skipCondition was satisfied, so the client didn't provide an answer, so this condition can't be satisfied
             return false;
         } else {
-            return condition.matches(pageData.get(condition.getInput()).getValue());
+            return condition.matches(pageData, new PagesData(this));
         }
     }
 
