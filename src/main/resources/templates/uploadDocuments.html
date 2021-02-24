@@ -35,7 +35,7 @@
                                         <th:block th:each="doc : ${uploadedDocuments}">
                                             <div class="dz-preview dz-file-preview">
                                                 <div class="dz-details">
-                                                    <span class="persisted-file-name" th:text="${doc.filename}"></span>
+                                                    <div class="dz-filename"><span class="filename-text persisted-file-name" th:text="${doc.filename}"></span></div>
                                                 </div>
                                             </div>
                                         </th:block>
@@ -113,9 +113,9 @@
         clickable: ".drag-and-drop-box",
         previewTemplate: `
             <div class="dz-preview dz-file-preview">
-              <div class="dz-details">
-                <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
-                <div class="dz-filename"><span class="filename-text" data-dz-name></span></div>
+              <div class="dz-details grid">
+                <div class="dz-progress grid__item width-one-fourth"><span class="dz-upload" data-dz-uploadprogress></span></div>
+                <div class="dz-filename grid__item width-three-fourths"><span class="filename-text" data-dz-name></span></div>
               </div>
             </div>`,
         sending: (file, xhr, formData) => {
