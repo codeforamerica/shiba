@@ -112,7 +112,7 @@
         autoProcessQueue: true,
         clickable: ".drag-and-drop-box",
         previewTemplate: `
-            <div class="testing dz-preview dz-file-preview">
+            <div class="dz-preview dz-file-preview">
               <div class="dz-details">
                 <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
                 <div class="dz-filename"><span class="filename-text" data-dz-name></span></div>
@@ -124,14 +124,14 @@
         },
         init: function () {
             this.on('uploadprogress', (file, progress, bytesSent) => {
-                // function wait(ms) {
-                //     var start = new Date().getTime();
-                //     var end = start;
-                //     while (end < start + ms) {
-                //         end = new Date().getTime();
-                //     }
-                // }
-                // wait(3000)
+                function wait(ms) {
+                    var start = new Date().getTime();
+                    var end = start;
+                    while (end < start + ms) {
+                        end = new Date().getTime();
+                    }
+                }
+                wait(3000)
             });
             this.on('addedfile', file => {
                 const fileNameSpan = file.previewElement.getElementsByClassName('filename-text')[0]
