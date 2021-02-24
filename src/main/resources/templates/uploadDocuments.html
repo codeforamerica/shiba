@@ -30,13 +30,13 @@
                                 <p>Uploaded documents</p>
                             </div>
                             <div id="file-preview-template">
-                                <div class="this-is-my-dz-container">
+                                <div class="preview-container">
                                     <div th:if="${!uploadedDocuments.isEmpty()}">
                                         <th:block th:each="instance : ${uploadedDocuments}">
 
                                             <div class="dz-preview dz-file-preview">
                                                 <div class="dz-details">
-                                                    <p th:text="${instance.key}"></p>
+                                                    <p class="persisted-fileName" th:text="${instance.key}"></p>
                                                     <div class="dz-size" data-dz-size></div>
                                                     <img data-dz-thumbnail/>
                                                 </div>
@@ -91,34 +91,56 @@
         dragAndDropBox.classList.remove("drag-over");
     }
 
+    const truncateFileName = (name) => {
+        const MAX_LEN = 14
+        if (name.length > MAX_LEN) {
+            const splitUpName = name.split('.');
+            const firstPart = splitUpName.slice(0, -1).join('.')
+            const ext = splitUpName.slice(-1)
+
+            return `${firstPart.slice(0, MAX_LEN)}...${ext}`;
+        }
+
+        return name;
+    }
+
+    const persistedFileNames = document.getElementsByClassName('persisted-fileName');
+
+    for (p of persistedFileNames) {
+        p.innerText = truncateFileName(p.innerText);
+    }
+
     $("#document-upload").dropzone({
         uploadMultiple: false,
         addRemoveLinks: false,
-        previewsContainer: ".this-is-my-dz-container",
+        previewsContainer: ".preview-container",
         autoProcessQueue: true,
         clickable: ".drag-and-drop-box",
-        previewTemplate: '<div class="testing dz-preview dz-file-preview">\n' +
-            '  <div class="dz-details">\n' +
-            '    <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>\n' +
-            '    <div class="dz-filename"><span data-dz-name></span></div>\n' +
-            // '    <div class="dz-size" data-dz-size></div>\n' +
-            // '    <img data-dz-thumbnail />\n' +
-            '  </div>\n' +
-            '</div>',
+        previewTemplate: `
+            <div class="testing dz-preview dz-file-preview">
+              <div class="dz-details">
+                <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+                <div class="dz-filename"><span class="filename-text" data-dz-name></span></div>
+              </div>
+            </div>`,
         sending: (file, xhr, formData) => {
             const csrfToken = [[${_csrf.token}]];
             formData.append("_csrf", csrfToken)
         },
-        init: () => {
+        init: function () {
             this.on('uploadprogress', (file, progress, bytesSent) => {
-                function wait(ms) {
-                    var start = new Date().getTime();
-                    var end = start;
-                    while (end < start + ms) {
-                        end = new Date().getTime();
-                    }
-                }
-                wait(3000)
+                // function wait(ms) {
+                //     var start = new Date().getTime();
+                //     var end = start;
+                //     while (end < start + ms) {
+                //         end = new Date().getTime();
+                //     }
+                // }
+                // wait(3000)
+            });
+            this.on('addedfile', file => {
+                const fileNameSpan = file.previewElement.getElementsByClassName('filename-text')[0]
+                fileNameSpan.innerText = truncateFileName(fileNameSpan.innerText);
             });
         }
     });
