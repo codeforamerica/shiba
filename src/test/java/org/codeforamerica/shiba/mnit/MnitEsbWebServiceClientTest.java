@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.mnit;
 
 import org.codeforamerica.shiba.County;
+import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -15,13 +16,16 @@ import org.springframework.core.io.Resource;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.ws.client.WebServiceTransportException;
 import org.springframework.ws.client.core.WebServiceTemplate;
+import org.springframework.ws.soap.client.SoapFaultClientException;
 import org.springframework.ws.soap.saaj.SaajSoapMessage;
 import org.springframework.ws.test.client.MockWebServiceServer;
 import org.springframework.xml.namespace.SimpleNamespaceContext;
 import org.springframework.xml.transform.StringSource;
 import org.w3c.dom.Node;
 
+import javax.xml.soap.SOAPException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -36,9 +40,10 @@ import java.util.Base64;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.ws.test.client.RequestMatchers.connectionTo;
 import static org.springframework.ws.test.client.RequestMatchers.xpath;
+import static org.springframework.ws.test.client.ResponseCreators.*;
 
 @SpringBootTest(properties = {
         "mnit-esb.url=some-url",
@@ -75,7 +80,12 @@ class MnitEsbWebServiceClientTest {
 
     private MockWebServiceServer mockWebServiceServer;
 
+    @MockBean
+    private MonitoringService monitoringService;
+
     private final Map<String, String> namespaceMapping = Map.of("ns2", "http://www.cmis.org/2008/05");
+    String fileContent = "fileContent";
+    String fileName = "fileName";
 
     @BeforeEach
     void setUp() {
@@ -86,8 +96,6 @@ class MnitEsbWebServiceClientTest {
 
     @Test
     void sendsTheDocument() {
-        String fileContent = "here is some file content";
-        String fileName = "someFileName";
         mockWebServiceServer.expect(connectionTo(url))
                 .andExpect(xpath("//ns2:createDocument/ns2:folderId", namespaceMapping)
                         .evaluatesTo("workspace://SpacesStore/olmsted-folder-id"))
@@ -110,6 +118,46 @@ class MnitEsbWebServiceClientTest {
         );
 
         mockWebServiceServer.verify();
+    }
+
+    @Test
+    void sendingDocumentRetriesIfSOAPExceptionIsThrown() {
+        mockWebServiceServer.expect(connectionTo(url))
+                .andRespond(withException(new RuntimeException(new SOAPException("soap exception ahhh"))));
+
+        mockWebServiceServer.expect(connectionTo(url))
+                .andRespond(withSoapEnvelope(new StringSource("" +
+                        "<SOAP-ENV:Envelope xmlns:SOAP-ENV='http://schemas.xmlsoap.org/soap/envelope/'>" +
+                            "<SOAP-ENV:Body xmlns='http://www.cmis.org/2008/05'>" +
+                                "<createDocumentResponse></createDocumentResponse>" +
+                            "</SOAP-ENV:Body>" +
+                        "</SOAP-ENV:Envelope>")));
+
+        mnitEsbWebServiceClient.send(new ApplicationFile(fileContent.getBytes(), fileName), County.Olmsted);
+
+        mockWebServiceServer.verify();
+        verifyNoInteractions(monitoringService);
+    }
+
+    @Test
+    void sendingDocumentRecoveryReportsLastErrorIfSOAPExceptionIsThrown3Times() {
+        mockWebServiceServer.expect(connectionTo(url))
+                .andRespond(withException(new RuntimeException(new SOAPException("initial failure"))));
+
+        mockWebServiceServer.expect(connectionTo(url))
+                .andRespond(withException(new RuntimeException(new SOAPException("retry 1 failure"))));
+
+        mockWebServiceServer.expect(connectionTo(url))
+                .andRespond(withException(new RuntimeException(new WebServiceTransportException("retry 2 failure"))));
+
+        RuntimeException exceptionToSend = new RuntimeException(mock(SoapFaultClientException.class));
+        mockWebServiceServer.expect(connectionTo(url))
+                .andRespond(withException(exceptionToSend));
+
+        mnitEsbWebServiceClient.send(new ApplicationFile(fileContent.getBytes(), fileName), County.Olmsted);
+
+        mockWebServiceServer.verify();
+        verify(monitoringService).sendException(exceptionToSend);
     }
 
     @Test

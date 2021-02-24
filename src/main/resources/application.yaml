@@ -12,6 +12,10 @@ client:
 mnit-esb:
   url: https://test-svcs.dhs.mn.gov/WebServices/Alfresco/CreateDocument
   jaxb-context-path: org.codeforamerica.shiba.esbwsdl
+  max-attempts: 2
+  delay: 1000
+  multiplier: 2
+  max-delay: 6000
 
 sender-email: help@mnbenefits.org
 security-email: security@mnbenefits.org
