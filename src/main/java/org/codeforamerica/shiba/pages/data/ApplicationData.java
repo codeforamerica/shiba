@@ -20,7 +20,7 @@ public class ApplicationData {
     private PagesData pagesData = new PagesData();
     private Subworkflows subworkflows = new Subworkflows();
     private Map<String, PagesData> incompleteIterations = new HashMap<>();
-    private Map<String,MultipartFile> uploadedDocuments = new HashMap<>();
+    private List<UploadedDocument> uploadedDocuments = new ArrayList<>();
 
     public void setStartTimeOnce(Instant instant) {
         if (startTime == null) {
@@ -86,7 +86,11 @@ public class ApplicationData {
     }
 
     public void addUploadedDocument(MultipartFile file) {
-        uploadedDocuments.put(file.getOriginalFilename(),file);
+        UploadedDocument uploadedDocument = new UploadedDocument();
+        //TODO can we make a constructor for Uploaded Document
+        uploadedDocument.setFile(file);
+        uploadedDocument.setFilename(file.getOriginalFilename());
+        uploadedDocuments.add(uploadedDocument);
     }
 
     public boolean isCCAPApplication() {

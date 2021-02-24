@@ -32,16 +32,11 @@
                             <div id="file-preview-template">
                                 <div class="preview-container">
                                     <div th:if="${!uploadedDocuments.isEmpty()}">
-                                        <th:block th:each="instance : ${uploadedDocuments}">
-
+                                        <th:block th:each="doc : ${uploadedDocuments}">
                                             <div class="dz-preview dz-file-preview">
                                                 <div class="dz-details">
-                                                    <p class="persisted-fileName" th:text="${instance.key}"></p>
-                                                    <div class="dz-size" data-dz-size></div>
-                                                    <img data-dz-thumbnail/>
+                                                    <span class="persisted-file-name" th:text="${doc.filename}"></span>
                                                 </div>
-                                                <div class="dz-progress"><span class="dz-upload"
-                                                                               data-dz-uploadprogress></span></div>
                                             </div>
                                         </th:block>
                                     </div>
@@ -104,7 +99,7 @@
         return name;
     }
 
-    const persistedFileNames = document.getElementsByClassName('persisted-fileName');
+    const persistedFileNames = document.getElementsByClassName('persisted-file-name');
 
     for (p of persistedFileNames) {
         p.innerText = truncateFileName(p.innerText);
