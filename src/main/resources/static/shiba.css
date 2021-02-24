@@ -251,14 +251,6 @@ html {
         user-select: none;
     }
 
-    /*.drag-and-drop-box:hover .hide-on-mobile  {*/
-    /*    margin-top: -3px;*/
-    /*}*/
-
-    /*.drag-and-drop-box:hover .needsclick {*/
-    /*    margin-bottom: -3px;*/
-    /*}*/
-
     .drag-and-drop-box * {
         pointer-events: none;
     }
@@ -293,11 +285,6 @@ html {
     background-color: #00223D;
     color: #FFF;
 }
-
-/*.dz-progress {*/
-/*    height: 20px;*/
-/*    background-color: red;*/
-/*}*/
 
 .dz-processing .dz-filename {
     color: #CFC5BF;
@@ -656,6 +643,8 @@ input[type=number] {
 }
 
 /*
+ * CSS from dropzone below this comment
+ *
  * The MIT License
  * Copyright (c) 2012 Matias Meno <m@tias.me>
  */
@@ -967,6 +956,7 @@ input[type=number] {
 
 .dropzone .dz-preview:hover .dz-details {
     opacity: 1;
+    display: flex;
 }
 
 /*.dropzone .dz-preview .dz-details {*/

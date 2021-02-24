@@ -87,7 +87,7 @@
     }
 
     const truncateFileName = (name) => {
-        const MAX_LEN = 14
+        const MAX_LEN = 18
         if (name.length > MAX_LEN) {
             const splitUpName = name.split('.');
             const firstPart = splitUpName.slice(0, -1).join('.')
@@ -99,9 +99,9 @@
         return name;
     }
 
+    // On page load, truncate all filenames
     const persistedFileNames = document.getElementsByClassName('persisted-file-name');
-
-    for (p of persistedFileNames) {
+    for (const p of persistedFileNames) {
         p.innerText = truncateFileName(p.innerText);
     }
 
