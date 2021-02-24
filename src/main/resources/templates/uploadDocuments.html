@@ -31,7 +31,7 @@
                             </div>
                             <div id="file-preview-template">
                                 <div class="preview-container">
-                                    <div th:if="${!uploadedDocuments.isEmpty()}">
+                                    <th:block th:if="${!uploadedDocuments.isEmpty()}">
                                         <th:block th:each="doc : ${uploadedDocuments}">
                                             <div class="dz-preview dz-file-preview">
                                                 <div class="dz-details">
@@ -39,7 +39,7 @@
                                                 </div>
                                             </div>
                                         </th:block>
-                                    </div>
+                                    </th:block>
                                 </div>
                             </div>
                             <div class="reveal reveal-adjacent">
@@ -125,12 +125,13 @@
         init: function () {
             this.on('uploadprogress', (file, progress, bytesSent) => {
                 function wait(ms) {
-                    var start = new Date().getTime();
-                    var end = start;
+                    const start = new Date().getTime();
+                    let end = start;
                     while (end < start + ms) {
                         end = new Date().getTime();
                     }
                 }
+
                 wait(3000)
             });
             this.on('addedfile', file => {
