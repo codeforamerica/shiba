@@ -2,10 +2,15 @@
 <configuration>
     <!-- Configure the Console appender -->
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
+        <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
+            <jsonFormatter
+                    class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
+                <prettyPrint>true</prettyPrint>
+            </jsonFormatter>
+            <timestampFormat>yyyy-MM-dd' 'HH:mm:ss.SSS</timestampFormat>
+        </layout>
     </appender>
+
 
     <!-- Configure the Sentry appender, overriding the logging threshold to the WARN level -->
     <appender name="Sentry" class="io.sentry.logback.SentryAppender">
