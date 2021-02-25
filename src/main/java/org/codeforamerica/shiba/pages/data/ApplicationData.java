@@ -87,8 +87,9 @@ public class ApplicationData {
 
     public void addUploadedDocument(MultipartFile file) {
         UploadedDocument uploadedDocument = new UploadedDocument();
-        //TODO can we make a constructor for Uploaded Document
-        uploadedDocument.setFile(file);
+        // TODO can we make a constructor for Uploaded Document
+        // TODO Save file since MultipartFile will not retain it after the request completes
+        uploadedDocument.setSize(file.getSize());
         uploadedDocument.setFilename(file.getOriginalFilename());
         uploadedDocuments.add(uploadedDocument);
     }

@@ -325,8 +325,6 @@ public class PageController {
         if(!file.isEmpty()) {
             this.applicationData.addUploadedDocument(file);
         }
-
-        System.out.println(this.applicationData);
     }
 
     @PostMapping("/submit")

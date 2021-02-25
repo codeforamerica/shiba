@@ -352,6 +352,13 @@ html {
     font-weight: bold;
 }
 
+.upload-doc-text {
+    color: #5F5854;
+    border-bottom: 2px solid #AAAAAA;
+    padding-bottom: 0.5rem;
+    font-style: normal;
+}
+
 .splash {
     max-width: none;
     margin-top: 74px;
@@ -640,6 +647,37 @@ input[type=number] {
 
 .reveal .reveal-icon svg {
     fill: #741078;
+}
+
+.doc-rectangle {
+    height: 60px;
+    background: #F7F5F4;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    display: flex !important;
+    justify-content: center;
+}
+
+.filename-text {
+    margin-left: 16px;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 19px;
+    line-height: 25px;
+}
+
+.dz-size {
+    margin-left: 16px;
+}
+
+.dz-remove {
+    margin-left: 8px;
+    text-decoration: underline;
+}
+
+.file-details-delimiter {
+    margin-left: 8px;
+    font-size: small;
 }
 
 /*
@@ -1086,12 +1124,12 @@ input[type=number] {
     z-index: 1000;
     pointer-events: none;
     /*position: absolute;*/
-    height: 16px;
+    height: 8px;
     left: 50%;
     top: 50%;
-    margin-top: -8px;
-    width: 80px;
-    margin-left: -40px;
+    margin-top: 25px;
+    width: 80%;
+    /*margin-left: -40px;*/
     background: rgba(255, 255, 255, 0.9);
     -webkit-transform: scale(1);
     border-radius: 8px;
@@ -1100,7 +1138,7 @@ input[type=number] {
 
 .dropzone .dz-preview .dz-progress .dz-upload {
     background: #333;
-    background: linear-gradient(to bottom, #666, #444);
+    background: linear-gradient(to bottom, #666, #003865);
     position: absolute;
     top: 0;
     left: 0;

@@ -26,23 +26,33 @@
                                             class="button dz-button icon-add"></button>
                                 </div>
                             </div>
-                            <div class="bottom-horizontal-line spacing-below-25">
-                                <p>Uploaded documents</p>
+                            <div class="spacing-below-25">
+                                <p class="upload-doc-text">Uploaded documents</p>
                             </div>
                             <div id="file-preview-template">
                                 <div class="preview-container">
                                     <th:block th:if="${!uploadedDocuments.isEmpty()}">
                                         <th:block th:each="doc : ${uploadedDocuments}">
-                                            <div class="dz-preview dz-file-preview">
-                                                <div class="dz-details">
-                                                    <div class="dz-filename"><span class="filename-text persisted-file-name" th:text="${doc.filename}"></span></div>
+                                            <div class="dz-preview dz-file-preview dz-success dz-complete">
+                                                <div class="dz-details grid">
+                                                    <div class="grid__item width-one-sixth doc-rectangle">
+                                                        <div class="dz-progress"></div>
+                                                    </div>
+                                                    <div class="grid__item width-five-sixths">
+                                                        <div class="dz-filename"><span class="filename-text persisted-file-name" th:text="${doc.filename}"></span></div>
+                                                        <div class="display-flex body-gray">
+                                                            <div class="dz-size"><strong th:text="${doc.size}"></strong></div>
+                                                            <span class="file-details-delimiter">•</span>
+                                                            <a class="dz-remove" data-dz-remove onclick="removeFileLink(this)">delete</a>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </th:block>
                                     </th:block>
                                 </div>
                             </div>
-                            <div class="reveal reveal-adjacent">
+                            <div class="reveal reveal-adjacent spacing-above-35">
                                 <a href="#" class="reveal__link reveal__link-adjacent">
                                     <span class="reveal-icon">
                                         <div th:replace="fragments/icons/icon-multiple-documents  :: icon-multiple-documents"></div>
@@ -76,6 +86,10 @@
 <script th:inline="javascript">
     Dropzone.autoDiscover = false;
 
+    function removeFileLink(e) {
+        e.parentElement.parentElement.parentElement.remove()
+    }
+
     function addDragBorder() {
         let dragAndDropBox = document.getElementById("drag-and-drop-box");
         dragAndDropBox.classList.add("drag-over");
@@ -107,15 +121,27 @@
 
     $("#document-upload").dropzone({
         uploadMultiple: false,
-        addRemoveLinks: false,
+        thumbnailMethod: 'contain',
+        addRemoveLinks: true,
+        dictCancelUpload: "cancel",
+        dictRemoveFile: "delete",
         previewsContainer: ".preview-container",
         autoProcessQueue: true,
         clickable: ".drag-and-drop-box",
         previewTemplate: `
             <div class="dz-preview dz-file-preview">
               <div class="dz-details grid">
-                <div class="dz-progress grid__item width-one-fourth"><span class="dz-upload" data-dz-uploadprogress></span></div>
-                <div class="dz-filename grid__item width-three-fourths"><span class="filename-text" data-dz-name></span></div>
+                <div class="grid__item width-one-sixth doc-rectangle">
+                    <img data-dz-thumbnail />
+                    <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+                </div>
+                <div class="grid__item width-five-sixths">
+                    <div class="dz-filename"><span class="filename-text" data-dz-name></span></div>
+                    <div class="display-flex body-gray file-details">
+                        <div class="dz-size" data-dz-size></div>
+                        <span class="file-details-delimiter">•</span>
+                    </div>
+                </div>
               </div>
             </div>`,
         sending: (file, xhr, formData) => {
@@ -137,6 +163,9 @@
             this.on('addedfile', file => {
                 const fileNameSpan = file.previewElement.getElementsByClassName('filename-text')[0]
                 fileNameSpan.innerText = truncateFileName(fileNameSpan.innerText);
+
+                const removeLink = file.previewElement.getElementsByClassName("dz-remove")[0]
+                file.previewElement.getElementsByClassName("file-details")[0].appendChild(removeLink)
             });
         }
     });
