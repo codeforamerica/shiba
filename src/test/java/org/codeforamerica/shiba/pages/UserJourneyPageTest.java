@@ -588,7 +588,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     @Test
-    void shouldDisplayDocumentRecommendations() {
+    void shouldDisplayDocumentRecommendationsForSingleApplicant() {
         completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_SNAP, PROGRAM_CASH, PROGRAM_EA, PROGRAM_GRH));
         completeFlowFromReviewInfoToDisability();
 
@@ -604,6 +604,64 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         paidByTheHourOrSelectPayPeriod();
         testPage.clickContinue();
         testPage.enter("unearnedIncome", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("livingSituation", "Paying for my own housing with rent, lease, or mortgage payments");
+        testPage.clickContinue();
+        testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.clickContinue();
+        // Recommend proof of shelter
+        testPage.enter("homeExpenses", "Rent");
+        testPage.clickContinue();
+
+        navigateTo("signThisApplication");
+        testPage.enter("applicantSignature", "some name");
+        testPage.clickButton("Submit");
+
+        assertThat(driver.getTitle()).isEqualTo("Document Recommendation");
+        assertThat(driver.findElementsByClassName("success-icons")).hasSize(3);
+    }
+
+    @Test
+    void shouldDisplayDocumentRecommendationsForHousehold() {
+        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_CCAP));
+        testPage.clickLink("This looks correct");
+        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.clickContinue();
+        fillOutHousemateInfo(PROGRAM_SNAP);
+        testPage.clickContinue();
+        testPage.clickButton("Yes, that's everyone");
+        testPage.clickContinue();
+        testPage.enter("goingToSchool", NO.getDisplayValue());
+        testPage.enter("isPregnant", NO.getDisplayValue());
+        testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
+        testPage.enter("isUsCitizen", YES.getDisplayValue());
+        testPage.enter("hasDisability", NO.getDisplayValue());
+
+        // Recommend proof of job loss
+        testPage.enter("hasWorkSituation", YES.getDisplayValue());
+        testPage.clickContinue();
+        // Recommend proof of income
+        testPage.enter("areYouWorking", YES.getDisplayValue());
+        testPage.clickButton("Add a job");
+        testPage.enter("whoseJobIsIt", "defaultFirstName defaultLastName");
+        testPage.clickContinue();
+        testPage.enter("employersName", "some employer");
+        testPage.clickContinue();
+        testPage.enter("selfEmployment", YES.getDisplayValue());
+
+        testPage.enter("paidByTheHour", YES.getDisplayValue());
+        testPage.enter("hourlyWage", "1");
+        testPage.clickContinue();
+        testPage.enter("hoursAWeek", "30");
+        testPage.clickContinue();
+        testPage.clickButton("No, that's it.");
+        testPage.enter("currentlyLookingForJob", NO.getDisplayValue());
+
+        testPage.clickContinue();
+        testPage.enter("unearnedIncome", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("unearnedIncomeCcap", "None of the above");
         testPage.clickContinue();
         testPage.enter("livingSituation", "Paying for my own housing with rent, lease, or mortgage payments");
         testPage.clickContinue();

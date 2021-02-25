@@ -115,4 +115,19 @@ public class ApplicationData {
 
         return applicantIsCAF || householdIsCAF;
     }
+
+    public boolean isApplicationWith(List<String> programs) {
+        List<String> applicantPrograms = this.getPagesData().safeGetPageInputValue("choosePrograms", "programs");
+        boolean applicantWith = programs.stream().anyMatch(applicantPrograms::contains);
+        boolean hasHousehold = this.getSubworkflows().containsKey("household");
+        boolean householdWith = false;
+        if (hasHousehold) {
+            householdWith = this.getSubworkflows().get("household").stream().anyMatch(iteration -> {
+                List<String> iterationsPrograms = iteration.getPagesData().safeGetPageInputValue("householdMemberInfo", "programs");
+                return programs.stream().anyMatch(iterationsPrograms::contains);
+            });
+        }
+
+        return applicantWith || householdWith;
+    }
 }
