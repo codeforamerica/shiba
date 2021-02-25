@@ -13,9 +13,9 @@ public abstract class ApplicationDataParser<T> {
 
     protected static double getDouble(ApplicationData applicationData, PageInputCoordinates pageInputCoordinates) {
         try {
-            return Double.parseDouble(applicationData.getValue(pageInputCoordinates));
+            return Double.parseDouble(applicationData.getValue(pageInputCoordinates).replace(",",""));
         } catch (NumberFormatException e) {
-            return Double.parseDouble(pageInputCoordinates.getDefaultValue());
+            return Double.parseDouble(pageInputCoordinates.getDefaultValue().replace(",",""));
         }
     }
 }
