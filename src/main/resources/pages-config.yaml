@@ -2879,6 +2879,9 @@ workflow:
       - pageName: employmentStatus
       - pageName: homeExpenses
       - pageName: workSituation
+      - pageName: doYouLiveAlone
+      - groupName: household
+        pageName: householdMemberInfo
     skipCondition:
       logicalOperator: AND
       compositeConditions:
@@ -2889,38 +2892,6 @@ workflow:
           - *noOneChoseCASH?
           - *noOneChoseEA?
           - *noOneChoseGRH?
-#          - logicalOperator: AND
-#            compositeConditions:
-#              - conditions:
-#                  - *applicantDidNotChooseSNAP?
-#              - logicalOperator: OR
-#                conditions:
-#                  - *householdMemberDidNotChooseSNAP?
-#                  - *livesAlone?
-#          - logicalOperator: AND
-#            compositeConditions:
-#              - conditions:
-#                  - *applicantDidNotChooseCASH?
-#              - logicalOperator: OR
-#                conditions:
-#                  - *householdMemberDidNotChooseCASH?
-#                  - *livesAlone?
-#          - logicalOperator: AND
-#            compositeConditions:
-#              - conditions:
-#                  - *applicantDidNotChooseEA?
-#              - logicalOperator: OR
-#                conditions:
-#                  - *householdMemberDidNotChooseEA?
-#                  - *livesAlone?
-#          - logicalOperator: AND
-#            compositeConditions:
-#              - conditions:
-#                  - *applicantDidNotChooseGRH?
-#              - logicalOperator: OR
-#                conditions:
-#                  - *householdMemberDidNotChooseGRH?
-#                  - *livesAlone?
         - compositeConditions:
           - conditions:
             - pageName: employmentStatus
