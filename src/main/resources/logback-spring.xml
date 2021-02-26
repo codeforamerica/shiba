@@ -22,6 +22,9 @@
                     <pattern>${DATADOG_API_KEY} %mdc{keyThatDoesNotExist}</pattern>
                 </layout>
             </prefix>
+            <customFields>
+                {"ddsource":"client","service":"Spring"}
+            </customFields>
         </encoder>
     </appender>
 
