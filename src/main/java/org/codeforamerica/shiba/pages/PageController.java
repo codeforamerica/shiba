@@ -325,10 +325,10 @@ public class PageController {
         if(!file.isEmpty()) this.applicationData.addUploadedDocument(file);
     }
 
-    @PatchMapping("/file-upload")
+    @PostMapping("/remove-upload")
     @ResponseStatus(HttpStatus.OK)
-    public void upload(@RequestParam("file") MultipartFile file) {
-        if(!file.isEmpty()) this.applicationData.removeUploadedDocument(file.getOriginalFilename());
+    public void removeUpload(@RequestParam("filename") String filename) {
+        this.applicationData.removeUploadedDocument(filename);
     }
 
     @PostMapping("/submit")

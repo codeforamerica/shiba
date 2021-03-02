@@ -135,6 +135,9 @@ public class ApplicationData {
     }
 
     public void removeUploadedDocument(String fileToDelete) {
-        uploadedDocuments.stream().filter(fileToDelete)
+        UploadedDocument toRemove = uploadedDocuments.stream()
+                .filter(uploadedDocument -> uploadedDocument.getFilename().equals(fileToDelete))
+                .findFirst().orElse(null);
+        uploadedDocuments.remove(toRemove);
     }
 }

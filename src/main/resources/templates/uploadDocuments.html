@@ -66,10 +66,6 @@
 <script th:inline="javascript">
     Dropzone.autoDiscover = false;
 
-    function removeFileLink(e) {
-        e.parentElement.parentElement.parentElement.remove()
-    }
-
     function addDragBorder() {
         let dragAndDropBox = document.getElementById("drag-and-drop-box");
         dragAndDropBox.classList.add("drag-over");
@@ -138,12 +134,15 @@
                 file.previewElement.getElementsByClassName("file-details")[0].appendChild(removeLink)
             });
             this.on('removedfile', file => {
-                $.ajax("", options)
+                $.post("/remove-upload", {
+                    filename: file.name,
+                    _csrf: [[${_csrf.token}]]
+                })
             });
 
             var documents = [[${uploadedDocuments}]];
-            $.each(documents, function(key,value) {
-                var mockFile = { name: value.filename, size: value.size };
+            $.each(documents, function (key, value) {
+                var mockFile = {name: value.filename, size: value.size};
 
                 myDropZone.emit("addedfile", mockFile);
                 myDropZone.emit("thumbnail", mockFile, value.path);

@@ -255,6 +255,32 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     @Test
+    void documentUpload() throws IOException {
+        testPage.clickButton("Apply now");
+        testPage.clickContinue();
+        testPage.enter("writtenLanguage", "English");
+        testPage.enter("spokenLanguage", "English");
+        testPage.enter("needInterpreter", "Yes");
+        testPage.clickContinue();
+        testPage.enter("programs", "Emergency Assistance");
+        testPage.clickContinue();
+        testPage.clickContinue();
+        fillOutPersonalInfo();
+        testPage.clickContinue();
+        navigateTo("signThisApplication");
+        testPage.enter("applicantSignature", "some name");
+        testPage.clickButton("Submit");
+
+        testPage.clickButton("Upload documents now");
+        testPage.clickElementById("drag-and-drop-box");
+        String filename = "testUploadFile.png";
+        testPage.mockUploadFile(filename);
+
+        assertThat(driver.findElement(By.id("document-upload")).getText()).contains(filename);
+        testPage.clickButton("I'm finished uploading");
+    }
+
+    @Test
     void shouldSkipChildcareAssistancePageIfCCAPNotSelected() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
         testPage.clickLink("This looks correct");
