@@ -85,15 +85,6 @@ public class ApplicationData {
                 .orElseThrow(() -> new RuntimeException("Cannot find suitable next page."));
     }
 
-    public void addUploadedDocument(MultipartFile file) {
-        UploadedDocument uploadedDocument = new UploadedDocument();
-        // TODO can we make a constructor for Uploaded Document
-        // TODO Save file since MultipartFile will not retain it after the request completes
-        uploadedDocument.setSize(getFilesizeFormatted(file.getSize()));
-        uploadedDocument.setFilename(file.getOriginalFilename());
-        uploadedDocuments.add(uploadedDocument);
-    }
-
     public boolean isCCAPApplication() {
         List<String> applicantPrograms = this.getPagesData().safeGetPageInputValue("choosePrograms", "programs");
         boolean applicantHasCCAP = applicantPrograms.contains("CCAP");
@@ -135,5 +126,15 @@ public class ApplicationData {
         }
 
         return applicantWith || householdWith;
+    }
+
+    public void addUploadedDocument(MultipartFile file) {
+        UploadedDocument uploadedDocument = new UploadedDocument(file.getOriginalFilename(), file.getSize());
+        uploadedDocuments.add(uploadedDocument);
+        // TODO Save file since MultipartFile will not retain it after the request completes
+    }
+
+    public void removeUploadedDocument(String fileToDelete) {
+        uploadedDocuments.stream().filter(fileToDelete)
     }
 }

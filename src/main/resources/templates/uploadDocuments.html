@@ -30,27 +30,7 @@
                                 <p class="upload-doc-text">Uploaded documents</p>
                             </div>
                             <div id="file-preview-template">
-                                <div class="preview-container">
-                                    <th:block th:if="${!uploadedDocuments.isEmpty()}">
-                                        <th:block th:each="doc : ${uploadedDocuments}">
-                                            <div class="dz-preview dz-file-preview dz-success dz-complete">
-                                                <div class="dz-details grid">
-                                                    <div class="grid__item width-one-sixth doc-rectangle">
-                                                        <div class="dz-progress"></div>
-                                                    </div>
-                                                    <div class="grid__item width-five-sixths">
-                                                        <div class="dz-filename"><span class="filename-text persisted-file-name" th:text="${doc.filename}"></span></div>
-                                                        <div class="display-flex body-gray">
-                                                            <div class="dz-size"><strong th:text="${doc.size}"></strong></div>
-                                                            <span class="file-details-delimiter">•</span>
-                                                            <a class="dz-remove" data-dz-remove onclick="removeFileLink(this)">delete</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </th:block>
-                                    </th:block>
-                                </div>
+                                <div class="preview-container"></div>
                             </div>
                             <div class="reveal reveal-adjacent spacing-above-35">
                                 <a href="#" class="reveal__link reveal__link-adjacent">
@@ -118,7 +98,7 @@
     for (const p of persistedFileNames) {
         p.innerText = truncateFileName(p.innerText);
     }
-
+    var myDropZone;
     $("#document-upload").dropzone({
         uploadMultiple: false,
         thumbnailMethod: 'contain',
@@ -132,7 +112,6 @@
             <div class="dz-preview dz-file-preview">
               <div class="dz-details grid">
                 <div class="grid__item width-one-sixth doc-rectangle">
-                    <img data-dz-thumbnail />
                     <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
                 </div>
                 <div class="grid__item width-five-sixths">
@@ -145,21 +124,12 @@
               </div>
             </div>`,
         sending: (file, xhr, formData) => {
+            console.log("SENDING");
             const csrfToken = [[${_csrf.token}]];
             formData.append("_csrf", csrfToken)
         },
         init: function () {
-            this.on('uploadprogress', (file, progress, bytesSent) => {
-                function wait(ms) {
-                    const start = new Date().getTime();
-                    let end = start;
-                    while (end < start + ms) {
-                        end = new Date().getTime();
-                    }
-                }
-
-                wait(3000)
-            });
+            myDropZone = this;
             this.on('addedfile', file => {
                 const fileNameSpan = file.previewElement.getElementsByClassName('filename-text')[0]
                 fileNameSpan.innerText = truncateFileName(fileNameSpan.innerText);
@@ -167,6 +137,21 @@
                 const removeLink = file.previewElement.getElementsByClassName("dz-remove")[0]
                 file.previewElement.getElementsByClassName("file-details")[0].appendChild(removeLink)
             });
+            this.on('removedfile', file => {
+                $.ajax("", options)
+            });
+
+            var documents = [[${uploadedDocuments}]];
+            $.each(documents, function(key,value) {
+                var mockFile = { name: value.filename, size: value.size };
+
+                myDropZone.emit("addedfile", mockFile);
+                myDropZone.emit("thumbnail", mockFile, value.path);
+                myDropZone.emit("complete", mockFile);
+            });
+        },
+        error: function(file, errorMessage, xhr) {
+            alert(`Upload Error for ${file.name}: ${errorMessage}`);
         }
     });
 </script>
