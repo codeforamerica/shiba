@@ -2913,40 +2913,25 @@ workflow:
       - pageName: homeExpenses
       - pageName: workSituation
     skipCondition:
-      logicalOperator: AND
+      logicalOperator: OR
       compositeConditions:
-      - logicalOperator: OR
-        compositeConditions:
-        - conditions:
-          - pageName: employmentStatus
-            input: areYouWorking
-            value: "false"
-        - conditions:
-          - *applicantDidNotChooseSNAP?
-          - *applicantDidNotChooseCASH?
-          - *applicantDidNotChooseEA?
-          - *applicantDidNotChooseGRH?
-      - logicalOperator: OR
-        compositeConditions:
-        - conditions:
-          - pageName: homeExpenses
-            input: homeExpenses
-            value: NONE_OF_THE_ABOVE
-            matcher: CONTAINS
-        - conditions:
-          - *applicantDidNotChooseSNAP?
-          - *applicantDidNotChooseCASH?
-          - *applicantDidNotChooseEA?
-      - logicalOperator: OR
-        compositeConditions:
-        - conditions:
-          - pageName: workSituation
-            input: hasWorkSituation
-            value: "false"
-        - conditions:
-          - *applicantDidNotChooseSNAP?
-          - *applicantDidNotChooseCASH?
-          - *applicantDidNotChooseGRH?
+        - compositeConditions:
+            - *noOneChoseGRH?
+            - *noOneChoseSNAP?
+            - *noOneChoseCASH?
+            - *noOneChoseEA?
+        - compositeConditions:
+            - conditions:
+                - pageName: employmentStatus
+                  input: areYouWorking
+                  value: "false"
+                - pageName: homeExpenses
+                  input: homeExpenses
+                  value: NONE_OF_THE_ABOVE
+                  matcher: CONTAINS
+                - pageName: workSituation
+                  input: hasWorkSituation
+                  value: "false"
   success:
     pageConfiguration: *success
 pageGroups:
