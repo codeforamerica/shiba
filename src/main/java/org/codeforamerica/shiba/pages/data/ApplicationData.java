@@ -43,6 +43,7 @@ public class ApplicationData {
     public Subworkflows getSubworkflowsForPageDatasources(List<PageDatasource> pageDatasources) {
         return new Subworkflows(pageDatasources.stream()
                 .filter(datasource -> datasource.getGroupName() != null)
+                .filter(datasource -> !datasource.isOptional() || subworkflows.containsKey(datasource.getGroupName()))
                 .map(datasource -> Map.entry(
                         datasource.getGroupName(),
                         subworkflows.get(datasource.getGroupName())))
@@ -52,7 +53,7 @@ public class ApplicationData {
     public boolean hasRequiredSubworkflows(List<PageDatasource> datasources) {
         return datasources.stream()
                 .filter(datasource -> datasource.getGroupName() != null)
-                .allMatch(datasource -> getSubworkflows().get(datasource.getGroupName()) != null);
+                .allMatch(datasource -> datasource.isOptional() || getSubworkflows().get(datasource.getGroupName()) != null);
     }
 
     public NextPage getNextPageName(FeatureFlagConfiguration featureFlags, @NotNull PageWorkflowConfiguration pageWorkflowConfiguration, Integer option) {

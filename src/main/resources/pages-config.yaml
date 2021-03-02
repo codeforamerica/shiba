@@ -2882,41 +2882,24 @@ workflow:
       - pageName: doYouLiveAlone
       - groupName: household
         pageName: householdMemberInfo
+        optional: "true"
     skipCondition:
-      logicalOperator: AND
+      logicalOperator: OR
       compositeConditions:
-      - logicalOperator: OR
-        compositeConditions:
         - compositeConditions:
+          - *noOneChoseGRH?
           - *noOneChoseSNAP?
           - *noOneChoseCASH?
           - *noOneChoseEA?
-          - *noOneChoseGRH?
         - compositeConditions:
           - conditions:
             - pageName: employmentStatus
               input: areYouWorking
               value: "false"
-      - logicalOperator: OR
-        compositeConditions:
-        - compositeConditions:
-          - *noOneChoseSNAP?
-          - *noOneChoseCASH?
-          - *noOneChoseEA?
-        - compositeConditions:
-          - conditions:
             - pageName: homeExpenses
               input: homeExpenses
               value: NONE_OF_THE_ABOVE
               matcher: CONTAINS
-      - logicalOperator: OR
-        compositeConditions:
-        - compositeConditions:
-          - *noOneChoseSNAP?
-          - *noOneChoseCASH?
-          - *noOneChoseGRH?
-        - compositeConditions:
-          - conditions:
             - pageName: workSituation
               input: hasWorkSituation
               value: "false"

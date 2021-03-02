@@ -522,6 +522,32 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     @Test
+    void shouldNotShowUnearnedIncomeCcapIfNoOneChoseCcap() {
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
+        testPage.clickLink("This looks correct");
+        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.clickContinue();
+        fillOutHousemateInfo(PROGRAM_SNAP);
+        testPage.clickContinue();
+        testPage.clickButton("Yes, that's everyone");
+        testPage.enter("isPreparingMealsTogether", NO.getDisplayValue());
+        testPage.enter("goingToSchool", NO.getDisplayValue());
+        testPage.enter("isPregnant", NO.getDisplayValue());
+        testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
+        testPage.enter("isUsCitizen", YES.getDisplayValue());
+        testPage.enter("hasDisability", NO.getDisplayValue());
+
+        // Recommend proof of job loss
+        testPage.enter("hasWorkSituation", YES.getDisplayValue());
+        testPage.clickContinue();
+        testPage.enter("areYouWorking", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.enter("unearnedIncome", "None of the above");
+        testPage.clickContinue();
+        assertThat(testPage.getTitle()).isEqualTo("Future Income");
+    }
+
+    @Test
     void shouldSkipDocumentUploadFlowIfNoApplicablePrograms() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance"));
         completeFlowFromReviewInfoToDisability();
@@ -589,7 +615,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldDisplayDocumentRecommendationsForSingleApplicant() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_SNAP, PROGRAM_CASH, PROGRAM_EA, PROGRAM_GRH));
+        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_GRH, PROGRAM_SNAP));
         completeFlowFromReviewInfoToDisability();
 
         // Recommend proof of job loss
@@ -620,6 +646,67 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
         assertThat(driver.getTitle()).isEqualTo("Document Recommendation");
         assertThat(driver.findElementsByClassName("success-icons")).hasSize(3);
+    }
+
+    @Test
+    void shouldSkipDocumentRecommendationsWhenNoEligibleProgram() {
+        // Skip because only CCAP
+        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_CCAP));
+        completeFlowFromReviewInfoToDisability();
+
+        testPage.enter("hasWorkSituation", YES.getDisplayValue());
+        testPage.clickContinue();
+        testPage.enter("areYouWorking", YES.getDisplayValue());
+        testPage.clickButton("Add a job");
+        testPage.enter("employersName", "some employer");
+        testPage.clickContinue();
+        testPage.enter("selfEmployment", YES.getDisplayValue());
+        paidByTheHourOrSelectPayPeriod();
+        testPage.enter("currentlyLookingForJob", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.enter("unearnedIncome", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("unearnedIncomeCcap", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("livingSituation", "Paying for my own housing with rent, lease, or mortgage payments");
+        testPage.clickContinue();
+        testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.clickContinue();
+        testPage.enter("homeExpenses", "Rent");
+        testPage.clickContinue();
+
+        navigateTo("signThisApplication");
+        testPage.enter("applicantSignature", "some name");
+        testPage.clickButton("Submit");
+
+        assertThat(driver.getTitle()).isEqualTo("Success");
+    }
+
+    @Test
+    void shouldSkipDocumentRecommendationsIfChoseEligibleProgramsButNoOnEmploymentStatusNoOnHasWorkSituationAndNoneOfTheAboveOnHomeExpenses() {
+        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_GRH, PROGRAM_SNAP));
+        completeFlowFromReviewInfoToDisability();
+
+        testPage.enter("hasWorkSituation", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.enter("areYouWorking", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.enter("unearnedIncome", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("livingSituation", "Paying for my own housing with rent, lease, or mortgage payments");
+        testPage.clickContinue();
+        testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.clickContinue();
+        testPage.enter("homeExpenses", "None of the above");
+        testPage.clickContinue();
+
+        navigateTo("signThisApplication");
+        testPage.enter("applicantSignature", "some name");
+        testPage.clickButton("Submit");
+        takeSnapShot("bruh.png");
+        assertThat(driver.getTitle()).isEqualTo("Success");
     }
 
     @Test
