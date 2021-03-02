@@ -2912,6 +2912,10 @@ workflow:
       - pageName: employmentStatus
       - pageName: homeExpenses
       - pageName: workSituation
+      - pageName: doYouLiveAlone
+      - groupName: household
+        pageName: householdMemberInfo
+        optional: "true"
     skipCondition:
       logicalOperator: OR
       compositeConditions:

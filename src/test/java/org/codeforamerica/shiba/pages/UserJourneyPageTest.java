@@ -705,7 +705,6 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         navigateTo("signThisApplication");
         testPage.enter("applicantSignature", "some name");
         testPage.clickButton("Submit");
-        takeSnapShot("bruh.png");
         assertThat(driver.getTitle()).isEqualTo("Success");
     }
 
