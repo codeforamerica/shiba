@@ -321,7 +321,9 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         @ValueSource(strings = {
                 "14",
                 "1.1",
-                "16.71"
+                "16.71",
+                "11,000",
+                "11,000.15"
         })
         void shouldPassValidationForMoneyWhenValueIsAPositiveWholeDollarAmount(String value) {
             driver.navigate().to(baseUrl + "/pages/moneyPage");

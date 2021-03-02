@@ -25,7 +25,7 @@ public enum Validation {
     PHONE(strings -> String.join("", strings).replaceAll("[^\\d]", "").matches("[2-9]\\d{9}")),
     PHONE_STARTS_WITH_ONE(strings -> !String.join("", strings).replaceAll("[^\\d]", "").startsWith("1")),
     //MONEY(strings -> String.join("", strings).matches("\\d+(\\.\\d{1,2})?")),
-    MONEY(strings -> String.join("", strings).matches("^([0-9]{1,3},([0-9]{3},)*[0-9]{3}|[0-9]+)(.[0-9][0-9])?")),
+    MONEY(strings -> String.join("", strings).matches("^(\\d{1,3},(\\d{3},)*\\d{3}|\\d+)(\\.\\d{1,2})?")),
     EMAIL(strings -> String.join("", strings).trim().matches("[a-zA-Z0-9!#$%&'*+=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?"));
 
     private final Predicate<List<String>> rule;
