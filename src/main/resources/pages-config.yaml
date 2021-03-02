@@ -60,11 +60,72 @@ conditionDefinitions:
     value: CCAP
     input: programs
     matcher: DOES_NOT_CONTAIN
+  - &householdMemberDidNotChooseSNAP?
+    pageName: householdMemberInfo
+    value: SNAP
+    input: programs
+    matcher: DOES_NOT_CONTAIN
+  - &householdMemberDidNotChooseCASH?
+    pageName: householdMemberInfo
+    value: CASH
+    input: programs
+    matcher: DOES_NOT_CONTAIN
+  - &householdMemberDidNotChooseEA?
+    pageName: householdMemberInfo
+    value: EA
+    input: programs
+    matcher: DOES_NOT_CONTAIN
   - &householdMemberDidNotChooseGRH?
     pageName: householdMemberInfo
     value: GRH
     input: programs
     matcher: DOES_NOT_CONTAIN
+compositeConditionDefinitions:
+  - &noOneChoseCCAP?
+    logicalOperator: AND
+    compositeConditions:
+      - conditions:
+          - *applicantDidNotChooseCCAP?
+      - logicalOperator: OR
+        conditions:
+          - *householdMemberDidNotChooseCCAP?
+          - *livesAlone?
+  - &noOneChoseSNAP?
+    logicalOperator: AND
+    compositeConditions:
+      - conditions:
+          - *applicantDidNotChooseSNAP?
+      - logicalOperator: OR
+        conditions:
+          - *householdMemberDidNotChooseSNAP?
+          - *livesAlone?
+  - &noOneChoseCASH?
+    logicalOperator: AND
+    compositeConditions:
+      - conditions:
+          - *applicantDidNotChooseCASH?
+      - logicalOperator: OR
+        conditions:
+          - *householdMemberDidNotChooseCASH?
+          - *livesAlone?
+  - &noOneChoseEA?
+    logicalOperator: AND
+    compositeConditions:
+      - conditions:
+          - *applicantDidNotChooseEA?
+      - logicalOperator: OR
+        conditions:
+          - *householdMemberDidNotChooseEA?
+          - *livesAlone?
+  - &noOneChoseGRH?
+    logicalOperator: AND
+    compositeConditions:
+      - conditions:
+          - *applicantDidNotChooseGRH?
+      - logicalOperator: OR
+        conditions:
+          - *householdMemberDidNotChooseGRH?
+          - *livesAlone?
 pageDefinitions:
   - &landing
     name: landing
@@ -2413,14 +2474,7 @@ workflow:
     pageConfiguration: *unearnedIncomeCcap
     skipCondition:
       compositeConditions:
-        - logicalOperator: AND
-          compositeConditions:
-            - conditions:
-                - *applicantDidNotChooseCCAP?
-            - logicalOperator: OR
-              conditions:
-                - *householdMemberDidNotChooseCCAP?
-                - *livesAlone?
+        - *noOneChoseCCAP?
     nextPages:
       - pageName: unearnedIncomeSourcesCcap
     datasources:
@@ -2825,41 +2879,30 @@ workflow:
       - pageName: employmentStatus
       - pageName: homeExpenses
       - pageName: workSituation
+      - pageName: doYouLiveAlone
+      - groupName: household
+        pageName: householdMemberInfo
+        optional: "true"
     skipCondition:
-      logicalOperator: AND
+      logicalOperator: OR
       compositeConditions:
-      - logicalOperator: OR
-        compositeConditions:
-        - conditions:
-          - pageName: employmentStatus
-            input: areYouWorking
-            value: "false"
-        - conditions:
-          - *applicantDidNotChooseSNAP?
-          - *applicantDidNotChooseCASH?
-          - *applicantDidNotChooseEA?
-          - *applicantDidNotChooseGRH?
-      - logicalOperator: OR
-        compositeConditions:
-        - conditions:
-          - pageName: homeExpenses
-            input: homeExpenses
-            value: NONE_OF_THE_ABOVE
-            matcher: CONTAINS
-        - conditions:
-          - *applicantDidNotChooseSNAP?
-          - *applicantDidNotChooseCASH?
-          - *applicantDidNotChooseEA?
-      - logicalOperator: OR
-        compositeConditions:
-        - conditions:
-          - pageName: workSituation
-            input: hasWorkSituation
-            value: "false"
-        - conditions:
-          - *applicantDidNotChooseSNAP?
-          - *applicantDidNotChooseCASH?
-          - *applicantDidNotChooseGRH?
+        - compositeConditions:
+          - *noOneChoseGRH?
+          - *noOneChoseSNAP?
+          - *noOneChoseCASH?
+          - *noOneChoseEA?
+        - compositeConditions:
+          - conditions:
+            - pageName: employmentStatus
+              input: areYouWorking
+              value: "false"
+            - pageName: homeExpenses
+              input: homeExpenses
+              value: NONE_OF_THE_ABOVE
+              matcher: CONTAINS
+            - pageName: workSituation
+              input: hasWorkSituation
+              value: "false"
   uploadDocuments:
     pageConfiguration: *uploadDocuments
     nextPages:
@@ -2869,41 +2912,30 @@ workflow:
       - pageName: employmentStatus
       - pageName: homeExpenses
       - pageName: workSituation
+      - pageName: doYouLiveAlone
+      - groupName: household
+        pageName: householdMemberInfo
+        optional: "true"
     skipCondition:
-      logicalOperator: AND
+      logicalOperator: OR
       compositeConditions:
-      - logicalOperator: OR
-        compositeConditions:
-        - conditions:
-          - pageName: employmentStatus
-            input: areYouWorking
-            value: "false"
-        - conditions:
-          - *applicantDidNotChooseSNAP?
-          - *applicantDidNotChooseCASH?
-          - *applicantDidNotChooseEA?
-          - *applicantDidNotChooseGRH?
-      - logicalOperator: OR
-        compositeConditions:
-        - conditions:
-          - pageName: homeExpenses
-            input: homeExpenses
-            value: NONE_OF_THE_ABOVE
-            matcher: CONTAINS
-        - conditions:
-          - *applicantDidNotChooseSNAP?
-          - *applicantDidNotChooseCASH?
-          - *applicantDidNotChooseEA?
-      - logicalOperator: OR
-        compositeConditions:
-        - conditions:
-          - pageName: workSituation
-            input: hasWorkSituation
-            value: "false"
-        - conditions:
-          - *applicantDidNotChooseSNAP?
-          - *applicantDidNotChooseCASH?
-          - *applicantDidNotChooseGRH?
+        - compositeConditions:
+            - *noOneChoseGRH?
+            - *noOneChoseSNAP?
+            - *noOneChoseCASH?
+            - *noOneChoseEA?
+        - compositeConditions:
+            - conditions:
+                - pageName: employmentStatus
+                  input: areYouWorking
+                  value: "false"
+                - pageName: homeExpenses
+                  input: homeExpenses
+                  value: NONE_OF_THE_ABOVE
+                  matcher: CONTAINS
+                - pageName: workSituation
+                  input: hasWorkSituation
+                  value: "false"
   success:
     pageConfiguration: *success
 pageGroups:
