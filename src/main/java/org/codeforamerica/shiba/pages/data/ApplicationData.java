@@ -43,6 +43,7 @@ public class ApplicationData {
     public Subworkflows getSubworkflowsForPageDatasources(List<PageDatasource> pageDatasources) {
         return new Subworkflows(pageDatasources.stream()
                 .filter(datasource -> datasource.getGroupName() != null)
+                .filter(datasource -> !datasource.isOptional() || subworkflows.containsKey(datasource.getGroupName()))
                 .map(datasource -> Map.entry(
                         datasource.getGroupName(),
                         subworkflows.get(datasource.getGroupName())))
@@ -52,7 +53,7 @@ public class ApplicationData {
     public boolean hasRequiredSubworkflows(List<PageDatasource> datasources) {
         return datasources.stream()
                 .filter(datasource -> datasource.getGroupName() != null)
-                .allMatch(datasource -> getSubworkflows().get(datasource.getGroupName()) != null);
+                .allMatch(datasource -> datasource.isOptional() || getSubworkflows().get(datasource.getGroupName()) != null);
     }
 
     public NextPage getNextPageName(FeatureFlagConfiguration featureFlags, @NotNull PageWorkflowConfiguration pageWorkflowConfiguration, Integer option) {
@@ -114,5 +115,20 @@ public class ApplicationData {
         }
 
         return applicantIsCAF || householdIsCAF;
+    }
+
+    public boolean isApplicationWith(List<String> programs) {
+        List<String> applicantPrograms = this.getPagesData().safeGetPageInputValue("choosePrograms", "programs");
+        boolean applicantWith = programs.stream().anyMatch(applicantPrograms::contains);
+        boolean hasHousehold = this.getSubworkflows().containsKey("household");
+        boolean householdWith = false;
+        if (hasHousehold) {
+            householdWith = this.getSubworkflows().get("household").stream().anyMatch(iteration -> {
+                List<String> iterationsPrograms = iteration.getPagesData().safeGetPageInputValue("householdMemberInfo", "programs");
+                return programs.stream().anyMatch(iterationsPrograms::contains);
+            });
+        }
+
+        return applicantWith || householdWith;
     }
 }
