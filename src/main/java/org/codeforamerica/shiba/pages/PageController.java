@@ -212,7 +212,6 @@ public class PageController {
         if (pageConfiguration.isStaticPage()) {
             pageToRender = pageName;
             model.put("data", pagesData.getDatasourcePagesBy(pageWorkflow.getDatasources()));
-            model.put("applicationData", applicationData);
 
             if (landmarkPagesConfiguration.isUploadDocumentsPage(pageName)) {
                 model.put("uploadedDocuments", applicationData.getUploadedDocuments());
