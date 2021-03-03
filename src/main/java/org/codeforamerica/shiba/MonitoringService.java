@@ -6,6 +6,4 @@ public interface MonitoringService {
     void sendEvent(String message);
 
     void setApplicationId(String applicationId);
-
-    void sendException(Exception exception);
 }

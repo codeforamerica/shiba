@@ -26,7 +26,4 @@ public class SentryClient implements MonitoringService {
     public void sendEvent(String message) {
         Sentry.captureMessage(message);
     }
-
-    @Override
-    public void sendException(Exception exception) { Sentry.captureException(exception); }
 }

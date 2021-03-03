@@ -23,9 +23,3 @@ mail-gun:
 
 feature-flag:
   submit-via-email: on
-
-mnit-esb:
-  max-attempts: 4
-  delay: 1
-  multiplier: 1
-  max-delay: 1

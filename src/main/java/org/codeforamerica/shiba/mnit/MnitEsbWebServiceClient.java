@@ -5,18 +5,16 @@ import com.sun.xml.messaging.saaj.soap.name.NameImpl;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.MonitoringService;
-import org.codeforamerica.shiba.esbwsdl.*;
+import org.codeforamerica.shiba.esbwsdl.CmisContentStreamType;
+import org.codeforamerica.shiba.esbwsdl.CmisPropertiesType;
+import org.codeforamerica.shiba.esbwsdl.CmisPropertyString;
+import org.codeforamerica.shiba.esbwsdl.CreateDocument;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Recover;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MimeTypeUtils;
-import org.springframework.ws.client.WebServiceTransportException;
 import org.springframework.ws.client.core.WebServiceTemplate;
-import org.springframework.ws.soap.client.SoapFaultClientException;
 import org.springframework.ws.soap.saaj.SaajSoapMessage;
 
 import javax.activation.DataHandler;
@@ -26,7 +24,6 @@ import java.math.BigInteger;
 import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 @Component
 public class MnitEsbWebServiceClient {
@@ -52,30 +49,29 @@ public class MnitEsbWebServiceClient {
         this.monitoringService = monitoringService;
     }
 
-    @Retryable(
-            value = {SoapFaultClientException.class, SOAPException.class, WebServiceTransportException.class},
-            maxAttemptsExpression = "#{${mnit-esb.max-attempts}}",
-            backoff = @Backoff(
-                    delayExpression = "#{${mnit-esb.delay}}",
-                    multiplierExpression = "#{${mnit-esb.multiplier}}",
-                    maxDelayExpression = "#{${mnit-esb.max-delay}}"
-            )
-    )
     public void send(ApplicationFile applicationFile, County county) {
         CreateDocument createDocument = new CreateDocument();
         createDocument.setFolderId("workspace://SpacesStore/" + countyMap.get(county).getFolderId());
         createDocument.setRepositoryId("<Unknown");
         createDocument.setTypeId("document");
-
         CmisPropertiesType properties = new CmisPropertiesType();
-        List<CmisProperty> propertyUris = properties.getPropertyUriOrPropertyIdOrPropertyString();
-        CmisPropertyString fileNameProperty = createCmisPropertyString("Name", applicationFile.getFileName());
-        CmisPropertyString subject = createCmisPropertyString("subject", "MN Benefits Application");
-        CmisPropertyString description = createCmisPropertyString("description", "Sent by Code for America");
-        CmisPropertyString dhsProviderId = createCmisPropertyString("dhsProviderId", countyMap.get(county).getDhsProviderId());
-        propertyUris.addAll(List.of(fileNameProperty, subject, description, description, dhsProviderId));
+        CmisPropertyString fileNameProperty =
+                createCmisPropertyString("Name", applicationFile.getFileName());
+        properties.getPropertyUriOrPropertyIdOrPropertyString()
+                .add(fileNameProperty);
+        CmisPropertyString subject =
+                createCmisPropertyString("subject", "MN Benefits Application");
+        properties.getPropertyUriOrPropertyIdOrPropertyString()
+                .add(subject);
+        CmisPropertyString description =
+                createCmisPropertyString("description", "Sent by Code for America");
+        properties.getPropertyUriOrPropertyIdOrPropertyString()
+                .add(description);
+        CmisPropertyString dhsProviderId =
+                createCmisPropertyString("dhsProviderId", countyMap.get(county).getDhsProviderId());
+        properties.getPropertyUriOrPropertyIdOrPropertyString()
+                .add(dhsProviderId);
         createDocument.setProperties(properties);
-
         CmisContentStreamType contentStream = new CmisContentStreamType();
         contentStream.setLength(BigInteger.ZERO);
         contentStream.setStream(new DataHandler(new ByteArrayDataSource(applicationFile.getFileBytes(), MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE)));
@@ -103,15 +99,10 @@ public class MnitEsbWebServiceClient {
                 passwordElement.addAttribute(NameImpl.createFromUnqualifiedName("Type"), "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText");
                 passwordElement.setTextContent(password);
             } catch (SOAPException e) {
-                logErrorToSentry(e);
+                e.printStackTrace();
+                monitoringService.sendEvent(e.getMessage());
             }
         });
-    }
-
-    @Recover
-    public void logErrorToSentry(Exception e) {
-        e.printStackTrace();
-        monitoringService.sendException(e);
     }
 
     @NotNull
@@ -121,5 +112,6 @@ public class MnitEsbWebServiceClient {
         fileNameProperty.setValue(value);
         return fileNameProperty;
     }
+
 
 }
