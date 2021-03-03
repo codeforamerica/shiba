@@ -2877,7 +2877,7 @@ workflow:
       - pageName: employmentStatus
       - pageName: homeExpenses
       - pageName: workSituation
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
       - groupName: household
         pageName: householdMemberInfo
         optional: "true"
@@ -2910,7 +2910,7 @@ workflow:
       - pageName: employmentStatus
       - pageName: homeExpenses
       - pageName: workSituation
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
       - groupName: household
         pageName: householdMemberInfo
         optional: "true"

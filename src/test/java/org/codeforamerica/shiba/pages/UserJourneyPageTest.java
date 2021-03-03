@@ -525,7 +525,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     void shouldNotShowUnearnedIncomeCcapIfNoOneChoseCcap() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
         testPage.clickLink("This looks correct");
-        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
         fillOutHousemateInfo(PROGRAM_SNAP);
         testPage.clickContinue();
@@ -549,7 +549,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldSkipDocumentUploadFlowIfNoApplicablePrograms() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance"));
+        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_CCAP));
         completeFlowFromReviewInfoToDisability();
 
         // Recommend proof of job loss (if programs were applicable)
@@ -712,7 +712,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     void shouldDisplayDocumentRecommendationsForHousehold() {
         completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_CCAP));
         testPage.clickLink("This looks correct");
-        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
         fillOutHousemateInfo(PROGRAM_SNAP);
         testPage.clickContinue();
