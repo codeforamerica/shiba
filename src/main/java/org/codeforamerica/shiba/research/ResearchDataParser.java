@@ -61,7 +61,7 @@ public class ResearchDataParser {
                                 .orElse(false))
                         .orElse(null))
                 .zipCode(pagesData.safeGetPageInputValue("homeAddress", "zipCode").stream().findFirst().orElse(null))
-                .liveAlone(pagesData.safeGetPageInputValue("doYouLiveAlone", "liveAlone").stream().findFirst().map(Boolean::valueOf).orElse(null))
+                .hasHousehold(pagesData.safeGetPageInputValue("addHouseholdMembers", "addHouseholdMembers").stream().findFirst().map(Boolean::parseBoolean).orElse(null))
                 .moneyMadeLast30Days(totalIncomeCalculator.calculate(totalIncome))
                 .payRentOrMortgage(getPayRentOrMortgage(applicationData))
                 .homeExpensesAmount(pagesData.safeGetPageInputValue("homeExpensesAmount", "homeExpensesAmount").stream().findFirst().map(Double::valueOf).orElse(null))

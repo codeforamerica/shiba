@@ -1,12 +1,12 @@
 conditionDefinitions:
   - &livesAlone?
-    pageName: doYouLiveAlone
-    input: liveAlone
-    value: "true"
-  - &doesNotLiveAlone?
-    pageName: doYouLiveAlone
-    input: liveAlone
+    pageName: addHouseholdMembers
+    input: addHouseholdMembers
     value: "false"
+  - &doesNotLiveAlone?
+    pageName: addHouseholdMembers
+    input: addHouseholdMembers
+    value: "true"
   - &isApplicantsJob?
     pageName: householdSelectionForIncome
     input: whoseJobIsIt
@@ -508,19 +508,17 @@ pageDefinitions:
       value: review-info.title
     headerKey:
       value: review-info.lets-review-your-info
-  - &doYouLiveAlone
-    name: doYouLiveAlone
+  - &addHouseholdMembers
+    name: addHouseholdMembers
     headerKey:
-      value: do-you-live-alone.do-you-live-alone
+      value: add-household-members.do-you-want-to-add-household-members
     headerHelpMessageKey:
-      value: do-you-live-alone.include-everyone-in-your-household-even-if-they-are-not-applying-for-benefits
+      value: add-household-members.add-everyone-in-your-home
     pageTitle:
-      value: do-you-live-alone.title
+      value: add-household-members.title
     hasPrimaryButton: false
     inputs:
-      - name: liveAlone
-        promptMessage:
-          promptMessageFragmentName: doYouLiveAlonePrompt
+      - name: addHouseholdMembers
         type: YES_NO
   - &startHousehold
     name: startHousehold
@@ -2144,7 +2142,7 @@ workflow:
   reviewInfo:
     pageConfiguration: *reviewInfo
     nextPages:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
         flow: FULL
       - pageName: doYouNeedHelpImmediately
     datasources:
@@ -2154,17 +2152,17 @@ workflow:
       - pageName: mailingAddress
       - pageName: mailingAddressValidation
       - pageName: contactInfo
-  doYouLiveAlone:
-    pageConfiguration: *doYouLiveAlone
+  addHouseholdMembers:
+    pageConfiguration: *addHouseholdMembers
     nextPages:
       - pageName: introPersonalDetails
         condition:
-          input: liveAlone
-          value: "true"
+          input: addHouseholdMembers
+          value: "false"
       - pageName: startHousehold
         condition:
-          input: liveAlone
-          value: "false"
+          input: addHouseholdMembers
+          value: "true"
   startHousehold:
     pageConfiguration: *startHousehold
     nextPages:
@@ -2217,7 +2215,7 @@ workflow:
   goingToSchool:
     pageConfiguration: *goingToSchool
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
     nextPages:
       - pageName: whoIsGoingToSchool
         condition: *doesNotLiveAlone?
@@ -2249,13 +2247,13 @@ workflow:
     nextPages:
       - pageName: whoIsPregnant
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
   whoIsPregnant:
     pageConfiguration: *whoIsPregnant
     nextPages:
       - pageName: migrantFarmWorker
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
       - pageName: pregnant
     skipCondition:
       logicalOperator: OR
@@ -2269,13 +2267,13 @@ workflow:
     nextPages:
       - pageName: whoIsNonCitizen
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
   whoIsNonCitizen:
     pageConfiguration: *whoIsNonCitizen
     nextPages:
       - pageName: disability
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
       - pageName: usCitizen
     skipCondition:
       logicalOperator: OR
@@ -2289,17 +2287,17 @@ workflow:
     nextPages:
       - pageName: usCitizen
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
   disability:
     pageConfiguration: *disability
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
     nextPages:
       - pageName: workSituation
   workSituation:
     pageConfiguration: *workSituation
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
     nextPages:
       - pageName: introIncome
   introIncome:
@@ -2309,7 +2307,7 @@ workflow:
   employmentStatus:
     pageConfiguration: *employmentStatus
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
     nextPages:
       - pageName: jobSearch
         condition:
@@ -2319,7 +2317,7 @@ workflow:
   incomeByJob:
     pageConfiguration: *incomeByJob
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
     nextPages:
       - pageName: householdSelectionForIncome
       - pageName: thirtyDayIncome
@@ -2327,7 +2325,7 @@ workflow:
     pageConfiguration: *householdSelectionForIncome
     groupName: jobs
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
     nextPages:
       - pageName: employersName
     skipCondition:
@@ -2340,7 +2338,7 @@ workflow:
       - pageName: selfEmployment
     datasources:
       - pageName: householdSelectionForIncome
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
   selfEmployment:
     pageConfiguration: *selfEmployment
     groupName: jobs
@@ -2350,7 +2348,7 @@ workflow:
     datasources:
       - pageName: employersName
       - pageName: householdSelectionForIncome
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
   paidByTheHour:
     pageConfiguration: *paidByTheHour
     groupName: jobs
@@ -2367,7 +2365,7 @@ workflow:
     datasources:
       - pageName: employersName
       - pageName: householdSelectionForIncome
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
     subtleLinkTargetPage: lastThirtyDaysJobIncome
   hourlyWage:
     pageConfiguration: *hourlyWage
@@ -2378,7 +2376,7 @@ workflow:
     datasources:
       - pageName: employersName
       - pageName: householdSelectionForIncome
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
   hoursAWeek:
     pageConfiguration: *hoursAWeek
     groupName: jobs
@@ -2387,7 +2385,7 @@ workflow:
     datasources:
       - pageName: employersName
       - pageName: householdSelectionForIncome
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
   payPeriod:
     pageConfiguration: *payPeriod
     groupName: jobs
@@ -2397,7 +2395,7 @@ workflow:
     datasources:
       - pageName: employersName
       - pageName: householdSelectionForIncome
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
   incomePerPayPeriod:
     pageConfiguration: *incomePerPayPeriod
     groupName: jobs
@@ -2414,7 +2412,7 @@ workflow:
       - pageName: jobSearch
     datasources:
       - groupName: jobs
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
   jobRedirectPage:
     pageConfiguration: *jobRedirectPage
     dataMissingRedirect: employmentStatus
@@ -2430,21 +2428,21 @@ workflow:
       - pageName: jobBuilder
     datasources:
       - groupName: jobs
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
       - pageName: householdSelectionForIncome
   thirtyDayIncome:
     pageConfiguration: *thirtyDayIncome
     nextPages:
       - pageName: incomeUpNext
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
       - pageName: householdSelectionForIncome
   lastThirtyDaysJobIncome:
     pageConfiguration: *lastThirtyDaysJobIncome
     nextPages:
       - pageName: jobBuilder
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
       - pageName: householdSelectionForIncome
       - pageName: employersName
     groupName: jobs
@@ -2457,7 +2455,7 @@ workflow:
     nextPages:
       - pageName: unearnedIncomeSources
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
   unearnedIncomeSources:
     pageConfiguration: *unearnedIncomeSources
     nextPages:
@@ -2469,7 +2467,7 @@ workflow:
           value: NO_UNEARNED_INCOME_SELECTED
     datasources:
       - pageName: unearnedIncome
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
   unearnedIncomeCcap:
     pageConfiguration: *unearnedIncomeCcap
     skipCondition:
@@ -2479,7 +2477,7 @@ workflow:
       - pageName: unearnedIncomeSourcesCcap
     datasources:
       - pageName: choosePrograms
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
       - pageName: householdMemberInfo
         groupName: household
   unearnedIncomeSourcesCcap:
@@ -2504,7 +2502,7 @@ workflow:
                   value: NO_UNEARNED_INCOME_CCAP_SELECTED
     datasources:
       - pageName: unearnedIncomeCcap
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
       - pageName: choosePrograms
       - pageName: householdMemberInfo
         groupName: household
@@ -2528,7 +2526,7 @@ workflow:
                   - *livesAlone?
     datasources:
       - pageName: choosePrograms
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
       - groupName: household
         pageName: householdMemberInfo
   futureIncome:
@@ -2536,7 +2534,7 @@ workflow:
     nextPages:
       - pageName: startExpenses
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
   startExpenses:
     pageConfiguration: *startExpenses
     nextPages:
@@ -2554,20 +2552,20 @@ workflow:
           value: MORTGAGE
       - pageName: utilities
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
   homeExpensesAmount:
     pageConfiguration: *homeExpensesAmount
     nextPages:
       - pageName: utilities
     datasources:
       - pageName: homeExpenses
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
   utilities:
     pageConfiguration: *utilityPayments
     nextPages:
       - pageName: energyAssistance
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
   energyAssistance:
     pageConfiguration: *energyAssistance
     nextPages:
@@ -2580,7 +2578,7 @@ workflow:
           input: energyAssistance
           value: "true"
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
   energyAssistanceMoreThan20:
     pageConfiguration: *energyAssistanceMoreThan20
     skipCondition:
@@ -2592,19 +2590,19 @@ workflow:
       - pageName: supportAndCare
     datasources:
       - pageName: energyAssistance
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
   supportAndCare:
     pageConfiguration: *supportAndCare
     nextPages:
       - pageName: vehicle
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
   savings:
     pageConfiguration: *savings
     nextPages:
       - pageName: savingsAmount
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
   savingsAmount:
     pageConfiguration: *liquidAssets
     skipCondition:
@@ -2614,7 +2612,7 @@ workflow:
           value: "false"
     datasources:
       - pageName: savings
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
     nextPages:
       - pageName: millionDollar
   investments:
@@ -2622,13 +2620,13 @@ workflow:
     nextPages:
       - pageName: savings
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
   vehicle:
     pageConfiguration: *vehicle
     nextPages:
       - pageName: realEstate
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
   realEstate:
     pageConfiguration: *realEstate
     skipCondition:
@@ -2644,7 +2642,7 @@ workflow:
     nextPages:
       - pageName: investments
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
       - pageName: choosePrograms
       - pageName: householdMemberInfo
         groupName: household
@@ -2682,7 +2680,7 @@ workflow:
       - pageName: investments
       - pageName: savings
       - pageName: realEstate
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
       - pageName: choosePrograms
       - pageName: householdMemberInfo
         groupName: household
@@ -2691,7 +2689,7 @@ workflow:
     nextPages:
       - pageName: submittingApplication
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
   submittingApplication:
     pageConfiguration: *submittingApplication
     nextPages:
@@ -2755,7 +2753,7 @@ workflow:
       - pageName: whoIsLookingForAJob
     datasources:
       - pageName: choosePrograms
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
       - pageName: householdMemberInfo
         groupName: household
   whoIsLookingForAJob:
@@ -2763,7 +2761,7 @@ workflow:
     nextPages:
       - pageName: incomeUpNext
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
       - pageName: jobSearch
       - pageName: choosePrograms
       - pageName: householdMemberInfo
@@ -2785,12 +2783,12 @@ workflow:
   doYouNeedHelpImmediately:
     pageConfiguration: *doYouNeedHelpImmediately
     nextPages:
-      - pageName: doYouLiveAloneExpedited
+      - pageName: addHouseholdMembersExpedited
         flow: EXPEDITED
       - pageName: legalStuff
         flow: MINIMUM
-  doYouLiveAloneExpedited:
-    pageConfiguration: *doYouLiveAlone
+  addHouseholdMembersExpedited:
+    pageConfiguration: *addHouseholdMembers
     nextPages:
       - pageName: expeditedIncome
   expeditedIncome:
@@ -2798,13 +2796,13 @@ workflow:
     nextPages:
       - pageName: expeditedHasSavings
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
   expeditedHasSavings:
     pageConfiguration: *savings
     nextPages:
       - pageName: liquidAssets
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
   liquidAssets:
     pageConfiguration: *liquidAssets
     skipCondition:
@@ -2815,14 +2813,14 @@ workflow:
     nextPages:
       - pageName: expeditedExpenses
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
       - pageName: savings
   expeditedExpenses:
     pageConfiguration: *expeditedExpenses
     nextPages:
       - pageName: expeditedExpensesAmount
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
   expeditedExpensesAmount:
     pageConfiguration: *expeditedExpensesAmount
     skipCondition:
@@ -2833,20 +2831,20 @@ workflow:
     nextPages:
       - pageName: expeditedUtilityPayments
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
       - pageName: expeditedExpenses
   expeditedUtilityPayments:
     pageConfiguration: *utilityPayments
     nextPages:
       - pageName: expeditedMigrantFarmWorker
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
   expeditedMigrantFarmWorker:
     pageConfiguration: *migrantFarmWorker
     nextPages:
       - pageName: snapExpeditedDetermination
     datasources:
-      - pageName: doYouLiveAlone
+      - pageName: addHouseholdMembers
   snapExpeditedDetermination:
     pageConfiguration: *snapExpeditedDetermination
     nextPages:
@@ -2967,7 +2965,7 @@ pageGroups:
       - householdMemberInfo
     reviewPage: householdList
     deleteWarningPage: householdDeleteWarningPage
-    restartPage: doYouLiveAlone
+    restartPage: addHouseholdMembers
     startingCount: 1
 landmarkPages:
   startTimerPage: languagePreferences
