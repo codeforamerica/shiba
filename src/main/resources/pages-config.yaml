@@ -819,7 +819,7 @@ pageDefinitions:
         type: MONEY
         validators:
           - validation: MONEY
-            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             condition:
               input: moneyMadeLast30Days
               matcher: NOT_EMPTY
@@ -848,7 +848,7 @@ pageDefinitions:
         type: MONEY
         validators:
           - validation: MONEY
-            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             condition:
               input: lastThirtyDaysJobIncome
               matcher: NOT_EMPTY
@@ -872,7 +872,7 @@ pageDefinitions:
           promptMessageFragmentName: liquidAssetsPrompt
         validators:
           - validation: MONEY
-            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             condition:
               input: liquidAssets
               matcher: NOT_EMPTY
@@ -909,7 +909,7 @@ pageDefinitions:
         type: MONEY
         validators:
           - validation: MONEY
-            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             condition:
               input: homeExpensesAmount
               matcher: NOT_EMPTY
@@ -1220,7 +1220,7 @@ pageDefinitions:
         helpMessageKey: unearned-income-sources.monthly-amount
         validators:
           - validation: MONEY
-            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             condition:
               input: socialSecurityAmount
               matcher: NOT_EMPTY
@@ -1235,7 +1235,7 @@ pageDefinitions:
         helpMessageKey: unearned-income-sources.monthly-amount
         validators:
           - validation: MONEY
-            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             condition:
               input: supplementalSecurityIncomeAmount
               matcher: NOT_EMPTY
@@ -1250,7 +1250,7 @@ pageDefinitions:
         helpMessageKey: unearned-income-sources.monthly-amount
         validators:
           - validation: MONEY
-            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             condition:
               input: veteransBenefitsAmount
               matcher: NOT_EMPTY
@@ -1265,7 +1265,7 @@ pageDefinitions:
         helpMessageKey: unearned-income-sources.monthly-amount
         validators:
           - validation: MONEY
-            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             condition:
               input: unemploymentAmount
               matcher: NOT_EMPTY
@@ -1280,7 +1280,7 @@ pageDefinitions:
         helpMessageKey: unearned-income-sources.monthly-amount
         validators:
           - validation: MONEY
-            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             condition:
               input: workersCompensationAmount
               matcher: NOT_EMPTY
@@ -1295,7 +1295,7 @@ pageDefinitions:
         helpMessageKey: unearned-income-sources.monthly-amount
         validators:
           - validation: MONEY
-            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             condition:
               input: retirementAmount
               matcher: NOT_EMPTY
@@ -1310,7 +1310,7 @@ pageDefinitions:
         helpMessageKey: unearned-income-sources.monthly-amount
         validators:
           - validation: MONEY
-            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             condition:
               input: childOrSpousalSupportAmount
               matcher: NOT_EMPTY
@@ -1325,7 +1325,7 @@ pageDefinitions:
         helpMessageKey: unearned-income-sources.monthly-amount
         validators:
           - validation: MONEY
-            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             condition:
               input: tribalPaymentsAmount
               matcher: NOT_EMPTY
@@ -1388,7 +1388,7 @@ pageDefinitions:
         helpMessageKey: unearned-income-sources.monthly-amount
         validators:
           - validation: MONEY
-            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             condition:
               input: benefitsAmount
               matcher: NOT_EMPTY
@@ -1403,7 +1403,7 @@ pageDefinitions:
         helpMessageKey: unearned-income-sources.monthly-amount
         validators:
           - validation: MONEY
-            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             condition:
               input: insurancePaymentsAmount
               matcher: NOT_EMPTY
@@ -1418,7 +1418,7 @@ pageDefinitions:
         helpMessageKey: unearned-income-sources.monthly-amount
         validators:
           - validation: MONEY
-            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             condition:
               input: contractForDeedAmount
               matcher: NOT_EMPTY
@@ -1433,7 +1433,7 @@ pageDefinitions:
         helpMessageKey: unearned-income-sources.monthly-amount
         validators:
           - validation: MONEY
-            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             condition:
               input: trustMoneyAmount
               matcher: NOT_EMPTY
@@ -1448,7 +1448,7 @@ pageDefinitions:
         helpMessageKey: unearned-income-sources.monthly-amount
         validators:
           - validation: MONEY
-            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             condition:
               input: healthCareReimbursementAmount
               matcher: NOT_EMPTY
@@ -1463,7 +1463,7 @@ pageDefinitions:
         helpMessageKey: unearned-income-sources.monthly-amount
         validators:
           - validation: MONEY
-            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             condition:
               input: interestDividendsAmount
               matcher: NOT_EMPTY
@@ -1478,7 +1478,7 @@ pageDefinitions:
         helpMessageKey: unearned-income-sources.monthly-amount
         validators:
           - validation: MONEY
-            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             condition:
               input: otherSourcesAmount
               matcher: NOT_EMPTY
@@ -1621,7 +1621,7 @@ pageDefinitions:
         type: HOURLY_WAGE
         validators:
           - validation: MONEY
-            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             condition:
               input: hourlyWage
               matcher: NOT_EMPTY
@@ -1722,7 +1722,7 @@ pageDefinitions:
         type: MONEY
         validators:
           - validation: MONEY
-            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
     contextFragment: jobContextFragment
   - &jobBuilder
     name: jobBuilder
@@ -1844,9 +1844,9 @@ pageDefinitions:
         type: MONEY
         validators:
           - validation: MONEY
-            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
           - validation: NOT_BLANK
-            errorMessageKey: general.validation.make-sure-you-enter-a-whole-dollar-amount
+            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
   - &savings
     name: savings
     pageTitle:
