@@ -58,8 +58,8 @@ class ResearchDataParserTest {
                 new PageDataBuilder("choosePrograms", Map.of(
                         "programs", List.of("SNAP", "GRH", "EA")
                 )),
-                new PageDataBuilder("doYouLiveAlone", Map.of(
-                        "liveAlone", List.of("true")
+                new PageDataBuilder("addHouseholdMembers", Map.of(
+                        "addHouseholdMembers", List.of("false")
                 )),
                 new PageDataBuilder("homeExpensesAmount", Map.of(
                         "homeExpensesAmount", List.of("111.1")
@@ -93,7 +93,7 @@ class ResearchDataParserTest {
                 .housing(true)
                 .emergency(true)
                 .childcare(false)
-                .liveAlone(true)
+                .hasHousehold(false)
                 .moneyMadeLast30Days(123.0)
                 .homeExpensesAmount(111.1)
                 .areYouWorking(true)
@@ -123,8 +123,8 @@ class ResearchDataParserTest {
                 new PageDataBuilder("choosePrograms", Map.of(
                         "programs", List.of("SNAP", "GRH", "EA", "CCAP")
                 )),
-                new PageDataBuilder("doYouLiveAlone", Map.of(
-                        "liveAlone", List.of("true")
+                new PageDataBuilder("addHouseholdMembers", Map.of(
+                        "addHouseholdMembers", List.of("false")
                 )),
                 new PageDataBuilder("homeExpensesAmount", Map.of(
                 )),
@@ -157,7 +157,7 @@ class ResearchDataParserTest {
                 .housing(true)
                 .emergency(true)
                 .childcare(true)
-                .liveAlone(true)
+                .hasHousehold(false)
                 .moneyMadeLast30Days(123.0)
                 .homeExpensesAmount(null)
                 .areYouWorking(true)

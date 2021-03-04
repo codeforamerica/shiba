@@ -30,7 +30,7 @@ class AdultRequestingChildcareInputsMapperTest {
     void shouldReturnEmptyListWhenLivingAlone() {
         ApplicationData appData = new ApplicationData();
         appData.setPagesData(new PagesDataBuilder().build(List.of(
-                new PageDataBuilder("doYouLiveAlone", Map.of("liveAlone", List.of("true")))
+                new PageDataBuilder("addHouseholdMembers", Map.of("addHouseholdMembers", List.of("false")))
         )));
 
         Application application = Application.builder().applicationData(appData).build();

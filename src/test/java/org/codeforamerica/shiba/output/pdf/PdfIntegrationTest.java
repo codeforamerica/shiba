@@ -57,8 +57,8 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         testPage.clickButton("Apply now");
         testPage.clickContinue();
         testPage.clickContinue();
-        navigateTo("doYouLiveAlone");
-        testPage.clickButton("Yes");
+        navigateTo("addHouseholdMembers");
+        testPage.clickButton("No");
 
         when(featureFlagConfiguration.get("document-upload-feature")).thenReturn(FeatureFlag.ON);
         when(featureFlagConfiguration.get("submit-via-email")).thenReturn(FeatureFlag.OFF);
@@ -497,8 +497,8 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
 
         @Test
         void shouldMapNoForSelfEmployment() {
-            navigateTo("doYouLiveAlone");
-            testPage.enter("liveAlone", YesNoAnswer.YES.getDisplayValue());
+            navigateTo("addHouseholdMembers");
+            testPage.enter("addHouseholdMembers", NO.getDisplayValue());
             testPage.clickContinue();
             navigateTo("incomeByJob");
             testPage.clickButton("Add a job");
@@ -948,8 +948,8 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         testPage.enter("lastName", "Schrute");
         testPage.clickContinue();
 
-        navigateTo("doYouLiveAlone");
-        testPage.enter("liveAlone", YesNoAnswer.NO.getDisplayValue());
+        navigateTo("addHouseholdMembers");
+        testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
 
         testPage.enter("firstName", "Jim");
