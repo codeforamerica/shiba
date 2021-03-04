@@ -20,7 +20,7 @@ public class ApplicationData {
     private PagesData pagesData = new PagesData();
     private Subworkflows subworkflows = new Subworkflows();
     private Map<String, PagesData> incompleteIterations = new HashMap<>();
-    private Map<String,MultipartFile> uploadedDocuments = new HashMap<>();
+    private List<UploadedDocument> uploadedDocuments = new ArrayList<>();
 
     public void setStartTimeOnce(Instant instant) {
         if (startTime == null) {
@@ -85,10 +85,6 @@ public class ApplicationData {
                 .orElseThrow(() -> new RuntimeException("Cannot find suitable next page."));
     }
 
-    public void addUploadedDocument(MultipartFile file) {
-        uploadedDocuments.put(file.getOriginalFilename(),file);
-    }
-
     public boolean isCCAPApplication() {
         List<String> applicantPrograms = this.getPagesData().safeGetPageInputValue("choosePrograms", "programs");
         boolean applicantHasCCAP = applicantPrograms.contains("CCAP");
@@ -130,5 +126,18 @@ public class ApplicationData {
         }
 
         return applicantWith || householdWith;
+    }
+
+    public void addUploadedDocument(MultipartFile file) {
+        UploadedDocument uploadedDocument = new UploadedDocument(file.getOriginalFilename(), file.getSize());
+        uploadedDocuments.add(uploadedDocument);
+        // TODO Save file since MultipartFile will not retain it after the request completes
+    }
+
+    public void removeUploadedDocument(String fileToDelete) {
+        UploadedDocument toRemove = uploadedDocuments.stream()
+                .filter(uploadedDocument -> uploadedDocument.getFilename().equals(fileToDelete))
+                .findFirst().orElse(null);
+        uploadedDocuments.remove(toRemove);
     }
 }

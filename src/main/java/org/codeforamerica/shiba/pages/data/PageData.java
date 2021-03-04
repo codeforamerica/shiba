@@ -5,9 +5,11 @@ import lombok.NoArgsConstructor;
 import lombok.Value;
 import org.codeforamerica.shiba.pages.config.FormInput;
 import org.codeforamerica.shiba.pages.config.PageConfiguration;
+import org.codeforamerica.shiba.pages.config.Validator;
 import org.springframework.util.MultiValueMap;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static java.util.Optional.ofNullable;
@@ -47,13 +49,15 @@ public class PageData extends HashMap<String, InputData> {
     }
 
     public Boolean isValid() {
-        List<InputData> collect = values().stream()
-                .filter(inputData -> inputData.getValidators().stream()
-                        .anyMatch(validator -> ofNullable(validator.getCondition())
-                                .map(condition -> condition.satisfies(this))
-                                .orElse(true))).collect(Collectors.toList());
-        return collect.stream()
-                .allMatch(InputData::valid);
+        Predicate<Validator> validatorForThisInputShouldRun = validator -> ofNullable(validator.getCondition()).map(
+                condition -> condition.satisfies(this)
+        ).orElse(true);
+
+        List<InputData> inputDataToValidate = values().stream().filter(
+                inputData -> inputData.getValidators().stream().anyMatch(validatorForThisInputShouldRun)
+        ).collect(Collectors.toList());
+
+        return inputDataToValidate.stream().allMatch(InputData::valid);
     }
 
     /**

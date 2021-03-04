@@ -14,7 +14,9 @@
                     <div id="dropzone">
                         <form action="/file-upload" class="dropzone needsclick" id="document-upload" method="post"
                               enctype="multipart/form-data">
-                            <div id="drag-and-drop-box" class="drag-and-drop-box spacing-below-35 spacing-above-35" ondragenter="addDragBorder(event)" ondrop="removeDragBorder(event)" ondragleave="removeDragBorder(event)">
+                            <div id="drag-and-drop-box" class="drag-and-drop-box spacing-below-35 spacing-above-35"
+                                 ondragenter="addDragBorder()" ondrop="removeDragBorder()"
+                                 ondragleave="removeDragBorder()">
                                 <h2 class="blue-label text--centered hide-on-mobile narrow-centered-text"
                                     th:text="#{upload-documents.drag-and-drop-or-add-your-files}"></h2>
                                 <h2 class="blue-label text--centered hide-on-desktop"
@@ -24,19 +26,13 @@
                                             class="button dz-button icon-add"></button>
                                 </div>
                             </div>
-                            <div class="bottom-horizontal-line spacing-below-25">
-                                <p>Uploaded documents</p>
+                            <div class="spacing-below-25">
+                                <p class="upload-doc-text">Uploaded documents</p>
                             </div>
-                            <div id="file-preview">
-                                <div id="file-preview-template">
-                                    <div th:if="${!uploadedDocuments.isEmpty()}">
-                                        <th:block th:each="instance : ${uploadedDocuments}">
-                                            <p th:text="${instance.key}"></p>
-                                        </th:block>
-                                    </div>
-                                </div>
+                            <div id="file-preview-template">
+                                <div class="preview-container"></div>
                             </div>
-                            <div class="reveal reveal-adjacent">
+                            <div class="reveal reveal-adjacent spacing-above-35">
                                 <a href="#" class="reveal__link reveal__link-adjacent">
                                     <span class="reveal-icon">
                                         <div th:replace="fragments/icons/icon-multiple-documents  :: icon-multiple-documents"></div>
@@ -69,36 +65,91 @@
 <div th:replace="fragments/footer :: footer"></div>
 <script th:inline="javascript">
     Dropzone.autoDiscover = false;
-    const previewNode = document.querySelector("#file-preview-template");
 
-    function addDragBorder(event) {
+    function addDragBorder() {
         let dragAndDropBox = document.getElementById("drag-and-drop-box");
         dragAndDropBox.classList.add("drag-over");
     }
 
-    function removeDragBorder(event) {
+    function removeDragBorder() {
         let dragAndDropBox = document.getElementById("drag-and-drop-box");
         dragAndDropBox.classList.remove("drag-over");
     }
 
+    const truncateFileName = (name) => {
+        const MAX_LEN = 18
+        if (name.length > MAX_LEN) {
+            const splitUpName = name.split('.');
+            const firstPart = splitUpName.slice(0, -1).join('.')
+            const ext = splitUpName.slice(-1)
+
+            return `${firstPart.slice(0, MAX_LEN)}...${ext}`;
+        }
+
+        return name;
+    }
+
+    // On page load, truncate all filenames
+    const persistedFileNames = document.getElementsByClassName('persisted-file-name');
+    for (const p of persistedFileNames) {
+        p.innerText = truncateFileName(p.innerText);
+    }
 
     $("#document-upload").dropzone({
-        previewContainer: "#file-preview",
-        previewTemplate: "#file-preview-template",
-        sending: function (file, xhr, formData) {
+        uploadMultiple: false,
+        addRemoveLinks: true,
+        dictCancelUpload: "cancel",
+        dictRemoveFile: "delete",
+        previewsContainer: ".preview-container",
+        autoProcessQueue: true,
+        clickable: ".drag-and-drop-box",
+        previewTemplate: `
+            <div class="dz-preview dz-file-preview">
+              <div class="dz-details grid">
+                <div class="grid__item width-one-sixth doc-rectangle">
+                    <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+                </div>
+                <div class="grid__item width-five-sixths">
+                    <div class="dz-filename"><span class="filename-text" data-dz-name></span></div>
+                    <div class="display-flex body-gray file-details">
+                        <div class="dz-size" data-dz-size></div>
+                        <span class="file-details-delimiter">•</span>
+                    </div>
+                </div>
+              </div>
+            </div>`,
+        sending: (file, xhr, formData) => {
             const csrfToken = [[${_csrf.token}]];
             formData.append("_csrf", csrfToken)
         },
-        addedfiles: files => {
-            for (let i = 0; i < files.length; i++) {
-                let fileElement = document.createElement("p")
-                fileElement.innerHTML = `${files[i].name}`;
-                previewNode.append(fileElement);
-            }
+        init: function () {
+            var myDropZone = this;
+            this.on('addedfile', file => {
+                const fileNameSpan = file.previewElement.getElementsByClassName('filename-text')[0]
+                fileNameSpan.innerText = truncateFileName(fileNameSpan.innerText);
+
+                const removeLink = file.previewElement.getElementsByClassName("dz-remove")[0]
+                file.previewElement.getElementsByClassName("file-details")[0].appendChild(removeLink)
+            });
+            this.on('removedfile', file => {
+                $.post("/remove-upload", {
+                    filename: file.name,
+                    _csrf: [[${_csrf.token}]]
+                })
+            });
+
+            var documents = [[${uploadedDocuments}]];
+            $.each(documents, function (key, value) {
+                var mockFile = {name: value.filename, size: value.size};
+
+                myDropZone.emit("addedfile", mockFile);
+                myDropZone.emit("thumbnail", mockFile, value.path);
+                myDropZone.emit("complete", mockFile);
+            });
         },
-        addedfile: () => {},
-        autoProcessQueue: true,
-        clickable: ".drag-and-drop-box"
+        error: function(file, errorMessage, xhr) {
+            alert(`Upload Error for ${file.name}: ${errorMessage}`);
+        }
     });
 </script>
 </body>
