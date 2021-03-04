@@ -255,7 +255,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     @Test
-    void documentUpload() throws IOException {
+    void clickDeleteLinkShouldRemoveUploadedDocument() {
         testPage.clickButton("Apply now");
         testPage.clickContinue();
         testPage.enter("writtenLanguage", "English");
@@ -277,6 +277,10 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.mockUploadFile(filename);
 
         assertThat(driver.findElement(By.id("document-upload")).getText()).contains(filename);
+
+        testPage.clickLink("delete");
+        assertThat(driver.findElement(By.id("document-upload")).getText()).doesNotContain(filename);
+
         testPage.clickButton("I'm finished uploading");
     }
 

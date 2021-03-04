@@ -94,10 +94,9 @@
     for (const p of persistedFileNames) {
         p.innerText = truncateFileName(p.innerText);
     }
-    var myDropZone;
+
     $("#document-upload").dropzone({
         uploadMultiple: false,
-        thumbnailMethod: 'contain',
         addRemoveLinks: true,
         dictCancelUpload: "cancel",
         dictRemoveFile: "delete",
@@ -120,12 +119,11 @@
               </div>
             </div>`,
         sending: (file, xhr, formData) => {
-            console.log("SENDING");
             const csrfToken = [[${_csrf.token}]];
             formData.append("_csrf", csrfToken)
         },
         init: function () {
-            myDropZone = this;
+            var myDropZone = this;
             this.on('addedfile', file => {
                 const fileNameSpan = file.previewElement.getElementsByClassName('filename-text')[0]
                 fileNameSpan.innerText = truncateFileName(fileNameSpan.innerText);
