@@ -115,7 +115,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.clickLink("Submit application now with only the above information.");
         testPage.clickLink("Yes, I want to see if I qualify");
 
-        testPage.enter("liveAlone", YES.getDisplayValue());
+        testPage.enter("addHouseholdMembers", NO.getDisplayValue());
         testPage.enter("moneyMadeLast30Days", moneyMadeLast30Days);
 
         testPage.clickContinue();
@@ -151,7 +151,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.clickLink("Submit application now with only the above information.");
         testPage.clickLink("Yes, I want to see if I qualify");
 
-        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.enter("moneyMadeLast30Days", moneyMadeLast30Days);
 
         testPage.clickContinue();
@@ -258,7 +258,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     void shouldSkipChildcareAssistancePageIfCCAPNotSelected() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
         testPage.clickLink("This looks correct");
-        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
         fillOutHousemateInfo("Emergency Assistance");
         testPage.clickContinue();
@@ -307,7 +307,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     void shouldSkipRealEstatePageIfCCAPNotSelectedWithHouseholdMember() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
         testPage.clickLink("This looks correct");
-        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
         fillOutHousemateInfo("Emergency Assistance");
         testPage.clickContinue();
@@ -345,7 +345,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     void shouldAskRealEstateQuestionIfCCAPNotSelectedByApplicantButHouseholdSelected() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
         testPage.clickLink("This looks correct");
-        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
         fillOutHousemateInfo("Child Care Assistance");
         testPage.clickContinue();
@@ -388,7 +388,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     void shouldAskMillionDollarQuestionIfRealEstateAnswerIsYes() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
         testPage.clickLink("This looks correct");
-        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
         fillOutHousemateInfo("Child Care Assistance");
         testPage.clickContinue();
@@ -525,7 +525,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     void shouldNotShowUnearnedIncomeCcapIfNoOneChoseCcap() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
         testPage.clickLink("This looks correct");
-        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
         fillOutHousemateInfo(PROGRAM_SNAP);
         testPage.clickContinue();
@@ -549,7 +549,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldSkipDocumentUploadFlowIfNoApplicablePrograms() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance"));
+        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_CCAP));
         completeFlowFromReviewInfoToDisability();
 
         // Recommend proof of job loss (if programs were applicable)
@@ -712,7 +712,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     void shouldDisplayDocumentRecommendationsForHousehold() {
         completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_CCAP));
         testPage.clickLink("This looks correct");
-        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
         fillOutHousemateInfo(PROGRAM_SNAP);
         testPage.clickContinue();
@@ -770,7 +770,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     void shouldSkipWhoIsGoingToSchoolPageIfCCAPNotSelected() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
         testPage.clickLink("This looks correct");
-        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
         fillOutHousemateInfo("Emergency Assistance");
         testPage.clickContinue();
@@ -785,7 +785,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     void shouldAskWhoIsGoingToSchoolAndWhoIsLookingForWorkWhenCCAPIsSelectedInPrograms() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance"));
         testPage.clickLink("This looks correct");
-        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
         fillOutHousemateInfo("Emergency Assistance");
         testPage.clickContinue();
@@ -810,7 +810,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     void shouldAskWhoIsGoingToSchoolAndWhoIsLookingForWorkWhenCCAPIsSelectedInHouseholdMemberInfo() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
         testPage.clickLink("This looks correct");
-        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
         fillOutHousemateInfo("Child Care Assistance");
         testPage.clickContinue();
@@ -833,10 +833,10 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     @Test
-    void shouldSkipWhoIsGoingToSchoolAndWhoIsLookingForWorkPageIfCCAPSelectedButLiveAloneIsTrue() {
+    void shouldSkipWhoIsGoingToSchoolAndWhoIsLookingForWorkPageIfCCAPSelectedButAddHouseholdMembersIsFalse() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance"));
         testPage.clickLink("This looks correct");
-        testPage.enter("liveAlone", YES.getDisplayValue());
+        testPage.enter("addHouseholdMembers", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.clickButton(YES.getDisplayValue());
         assertThat(driver.getTitle()).isEqualTo("Pregnant");
@@ -855,7 +855,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     void shouldSkipWhoIsLookingForWorkPageIfCCAPIsNotSelectedInHouseholdOrPrograms() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
         testPage.clickLink("This looks correct");
-        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
         fillOutHousemateInfo("Emergency Assistance");
         testPage.clickContinue();
@@ -887,7 +887,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     void shouldShowCCAPInLegalStuffWhenHousholdSelectsCCAP() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Emergency Assistance"));
         testPage.clickLink("This looks correct");
-        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
         fillOutHousemateInfo("Child Care Assistance");
         testPage.clickContinue();
@@ -901,7 +901,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     void shouldNotShowCCAPInLegalStuffWhenNotSelectedByAnyone() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Emergency Assistance"));
         testPage.clickLink("This looks correct");
-        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
         fillOutHousemateInfo("Emergency Assistance");
         testPage.clickContinue();
@@ -915,7 +915,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     void shouldAskLivingSituationIfCCAPApplicant() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance"));
         testPage.clickLink("This looks correct");
-        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
         fillOutHousemateInfo("Emergency Assistance");
         testPage.clickContinue();
@@ -934,7 +934,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     void shouldAskLivingSituationIfGRHApplicant() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Housing Support (GRH)"));
         testPage.clickLink("This looks correct");
-        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
         fillOutHousemateInfo("Emergency Assistance");
         testPage.clickContinue();
@@ -951,7 +951,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     void shouldAskLivingSituationIfCCAPHouseholdMember() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Emergency Assistance"));
         testPage.clickLink("This looks correct");
-        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
         fillOutHousemateInfo("Child Care Assistance");
         testPage.clickContinue();
@@ -970,7 +970,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     void shouldAskLivingSituationIfGRHHouseholdMember() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Emergency Assistance"));
         testPage.clickLink("This looks correct");
-        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
         fillOutHousemateInfo("Housing Support (GRH)");
         testPage.clickContinue();
@@ -987,7 +987,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     void shouldNotAskLivingSituationIfNotCCAPorGRH() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Emergency Assistance"));
         testPage.clickLink("This looks correct");
-        testPage.enter("liveAlone", NO.getDisplayValue());
+        testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
         fillOutHousemateInfo("Emergency Assistance");
         testPage.clickContinue();
@@ -1051,7 +1051,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.clickLink("This looks correct");
 
         if (hasHousehold) {
-            testPage.enter("liveAlone", NO.getDisplayValue());
+            testPage.enter("addHouseholdMembers", YES.getDisplayValue());
             testPage.clickContinue();
             fillOutHousemateInfo("Child Care Assistance");
             testPage.clickContinue();
@@ -1063,7 +1063,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
             testPage.enter("whoIsPregnant", "Me");
             testPage.clickContinue();
         } else {
-            testPage.enter("liveAlone", YES.getDisplayValue());
+            testPage.enter("addHouseholdMembers", NO.getDisplayValue());
             testPage.clickContinue();
             testPage.enter("goingToSchool", NO.getDisplayValue());
             testPage.enter("isPregnant", NO.getDisplayValue());
@@ -1153,7 +1153,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     private void completeFlowFromReviewInfoToDisability() {
         testPage.clickLink("This looks correct");
-        testPage.enter("liveAlone", YES.getDisplayValue());
+        testPage.enter("addHouseholdMembers", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.enter("goingToSchool", YES.getDisplayValue());
         testPage.enter("isPregnant", NO.getDisplayValue());

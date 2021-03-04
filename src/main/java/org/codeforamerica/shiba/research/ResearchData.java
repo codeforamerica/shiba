@@ -30,7 +30,7 @@ public class ResearchData {
     Boolean phoneOptIn;
     Boolean emailOptIn;
     String zipCode;
-    Boolean liveAlone;
+    Boolean hasHousehold;
     @Builder.Default
     Double moneyMadeLast30Days = 0.0;
     Boolean payRentOrMortgage;

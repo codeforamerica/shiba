@@ -32,7 +32,7 @@ public class ResearchDataRepository {
                 .addValue("childcare", researchData.getChildcare())
                 .addValue("phone_opt_in", researchData.getPhoneOptIn())
                 .addValue("email_opt_in", researchData.getEmailOptIn())
-                .addValue("live_alone", researchData.getLiveAlone())
+                .addValue("has_household", researchData.getHasHousehold())
                 .addValue("pay_rent_or_mortgage", researchData.getPayRentOrMortgage())
                 .addValue("are_you_working", researchData.getAreYouWorking())
                 .addValue("self_employment", researchData.getSelfEmployment())

@@ -48,7 +48,7 @@ class ResearchDataRepositoryTest {
                 .phoneOptIn(false)
                 .emailOptIn(true)
                 .zipCode("someZipCode")
-                .liveAlone(false)
+                .hasHousehold(true)
                 .moneyMadeLast30Days(123.31)
                 .payRentOrMortgage(false)
                 .homeExpensesAmount(431.51)
@@ -87,7 +87,7 @@ class ResearchDataRepositoryTest {
             assertThat(resultSet.getBoolean("childcare")).isEqualTo(researchData.getChildcare());
             assertThat(resultSet.getBoolean("phone_opt_in")).isEqualTo(researchData.getPhoneOptIn());
             assertThat(resultSet.getBoolean("email_opt_in")).isEqualTo(researchData.getEmailOptIn());
-            assertThat(resultSet.getBoolean("live_alone")).isEqualTo(researchData.getLiveAlone());
+            assertThat(resultSet.getBoolean("has_household")).isEqualTo(researchData.getHasHousehold());
             assertThat(resultSet.getBoolean("pay_rent_or_mortgage")).isEqualTo(researchData.getPayRentOrMortgage());
             assertThat(resultSet.getBoolean("are_you_working")).isEqualTo(researchData.getAreYouWorking());
             assertThat(resultSet.getBoolean("self_employment")).isEqualTo(researchData.getSelfEmployment());
