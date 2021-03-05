@@ -1,7 +1,9 @@
 package org.codeforamerica.shiba;
 
 import lombok.extern.slf4j.Slf4j;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.slf4j.MDC;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -9,11 +11,23 @@ import java.io.IOException;
 
 @Slf4j
 public class SessionLogFilter implements Filter {
+    ApplicationData applicationData;
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        applicationData = (ApplicationData) WebApplicationContextUtils.
+                getRequiredWebApplicationContext(filterConfig.getServletContext()).getBean("applicationData");
+    }
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpReq = (HttpServletRequest) request;
         MDC.put("url", String.valueOf(httpReq.getRequestURL()));
         MDC.put("sessionId", httpReq.getSession().getId());
+        MDC.put("scrubbedApplicationData", ScrubbedAppDataFactory.scrub(applicationData);
+//        MDC.put("id", applicationData.getPagesData()); //TODO: scrubbed pagesdata for pagesData, subworkflows, incompleteIterations
+//        {pagesData: {programs: {filled: [programs], unfilled: [other thing]}}
+
         log.info("Request Log");
         chain.doFilter(request, response);
     }
