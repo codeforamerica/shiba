@@ -21,6 +21,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -49,7 +50,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     private static final String PROGRAM_GRH = "Housing Support (GRH)";
     private static final String PROGRAM_CCAP = "Child Care Assistance";
     private static final String PROGRAM_EA = "Emergency Assistance";
-    private static final String UPLOADED_FILE_NAME = "testUploadFile.png";
+    private static final String UPLOADED_FILE_NAME = "shiba.jpg";
 
     @MockBean
     Clock clock;
@@ -191,7 +192,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
             return List.of(CAF, CCAP).stream().map(document -> documentNames.stream().anyMatch(documentName ->
                     documentName.contains("_MNB_") && documentName.endsWith(".pdf") &&
-                    documentName.contains(document.toString())
+                            documentName.contains(document.toString())
             )).collect(Collectors.toList()).stream().allMatch(assertion -> assertion.equals(true));
         });
     }
@@ -257,58 +258,39 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     @Test
-    void clickDeleteLinkShouldRemoveUploadedDocument() {
-        testPage.clickButton("Apply now");
-        testPage.clickContinue();
-        testPage.enter("writtenLanguage", "English");
-        testPage.enter("spokenLanguage", "English");
-        testPage.enter("needInterpreter", "Yes");
-        testPage.clickContinue();
-        testPage.enter("programs", "Emergency Assistance");
-        testPage.clickContinue();
-        testPage.clickContinue();
-        fillOutPersonalInfo();
-        testPage.clickContinue();
-        navigateTo("signThisApplication");
-        testPage.enter("applicantSignature", "some name");
-        testPage.clickButton("Submit");
-
-        testPage.clickButton("Upload documents now");
-        testPage.clickElementById("drag-and-drop-box");
-        testPage.mockUploadFile(UPLOADED_FILE_NAME);
-        testPage.mockUploadFile("very_long_file_name_that_should_truncate.jpeg");
-
-        assertThat(driver.findElement(By.id("document-upload")).getText()).contains(UPLOADED_FILE_NAME);
+    void deletingUploadedFileShouldLoadDocumentRecommendationScreenIfOneFileUploaded() {
+        getToDocumentUploadScreen();
+        uploadDefaultFile();
 
         testPage.clickLink("delete");
-        assertThat(driver.findElement(By.id("document-upload")).getText()).doesNotContain(UPLOADED_FILE_NAME);
 
-        testPage.clickButton("I'm finished uploading");
+        assertThat(testPage.getTitle()).isEqualTo("Delete a file");
+        testPage.clickButton("Yes, delete the file");
+
+        assertThat(testPage.getTitle()).isEqualTo("Document Recommendation");
+    }
+
+    @Test
+    void deletingUploadedFileShouldLoadDocumentUploadScreenIfMoreThanOneFileIsUploaded() {
+        getToDocumentUploadScreen();
+        uploadDefaultFile();
+        uploadDefaultFile();
+
+        testPage.clickLink("delete");
+
+        assertThat(testPage.getTitle()).isEqualTo("Delete a file");
+        testPage.clickButton("Yes, delete the file");
+
+        assertThat(testPage.getTitle()).isEqualTo("Upload Documents");
     }
 
     @Test
     void longFileNamesShouldGetTruncated() {
-        testPage.clickButton("Apply now");
-        testPage.clickContinue();
-        testPage.enter("writtenLanguage", "English");
-        testPage.enter("spokenLanguage", "English");
-        testPage.enter("needInterpreter", "Yes");
-        testPage.clickContinue();
-        testPage.enter("programs", "Emergency Assistance");
-        testPage.clickContinue();
-        testPage.clickContinue();
-        fillOutPersonalInfo();
-        testPage.clickContinue();
-        navigateTo("signThisApplication");
-        testPage.enter("applicantSignature", "some name");
-        testPage.clickButton("Submit");
-
-        testPage.clickButton("Upload documents now");
-        testPage.clickElementById("drag-and-drop-box");
+        getToDocumentUploadScreen();
 
         String filename = "very_long_file_name_that_should_truncate.jpeg";
         String truncatedName = "very_long_file...jpeg";
-        testPage.mockUploadFile(filename);
+        uploadFile(getAbsoluteFilepath(filename));
 
         assertThat(driver.findElement(By.id("document-upload")).getText()).contains(truncatedName);
     }
@@ -1236,9 +1218,8 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     private void completeDocumentUploadFlow() {
         testPage.clickButton("Upload documents now");
         testPage.clickElementById("drag-and-drop-box");
-        testPage.mockUploadFile(UPLOADED_FILE_NAME);
+        uploadDefaultFile();
 
-        assertThat(driver.findElement(By.id("document-upload")).getText()).contains(UPLOADED_FILE_NAME);
         testPage.clickButton("I'm finished uploading");
     }
 
@@ -1286,5 +1267,44 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         } else {
             testPage.enter("helpWithBenefits", NO.getDisplayValue());
         }
+    }
+
+
+    private String getAbsoluteFilepath(String resourceFilename) {
+        URL resource = this.getClass().getClassLoader().getResource(resourceFilename);
+        if (resource != null) {
+            return resource.getFile();
+        }
+        return "";
+    }
+
+    private void uploadFile(String filepath) {
+        testPage.clickElementById("drag-and-drop-box"); // is this needed?
+        WebElement upload = driver.findElement(By.cssSelector("input"));
+        upload.sendKeys(filepath);
+    }
+
+    private void uploadDefaultFile() {
+        uploadFile(getAbsoluteFilepath(UPLOADED_FILE_NAME));
+        assertThat(driver.findElement(By.id("document-upload")).getText()).contains(UPLOADED_FILE_NAME);
+    }
+
+    private void getToDocumentUploadScreen() {
+        testPage.clickButton("Apply now");
+        testPage.clickContinue();
+        testPage.enter("writtenLanguage", "English");
+        testPage.enter("spokenLanguage", "English");
+        testPage.enter("needInterpreter", "Yes");
+        testPage.clickContinue();
+        testPage.enter("programs", "Emergency Assistance");
+        testPage.clickContinue();
+        testPage.clickContinue();
+        fillOutPersonalInfo();
+        testPage.clickContinue();
+        navigateTo("signThisApplication");
+        testPage.enter("applicantSignature", "some name");
+        testPage.clickButton("Submit");
+
+        testPage.clickButton("Upload documents now");
     }
 }

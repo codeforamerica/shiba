@@ -322,13 +322,17 @@ public class PageController {
     @PostMapping("/file-upload")
     @ResponseStatus(HttpStatus.OK)
     public void upload(@RequestParam("file") MultipartFile file) {
-        if(!file.isEmpty()) this.applicationData.addUploadedDocument(file);
+        this.applicationData.addUploadedDocument(file);
     }
 
-    @PostMapping("/remove-upload")
-    @ResponseStatus(HttpStatus.OK)
-    public void removeUpload(@RequestParam("filename") String filename) {
+    @SuppressWarnings("SpringMVCViewInspection")
+    @PostMapping("/remove-upload/{filename}")
+    ModelAndView removeUpload(@PathVariable String filename) {
         this.applicationData.removeUploadedDocument(filename);
+        if (this.applicationData.getUploadedDocuments().isEmpty()) {
+            return new ModelAndView("redirect:/pages/documentRecommendation");
+        }
+        return new ModelAndView("redirect:/pages/uploadDocuments");
     }
 
     @PostMapping("/submit")

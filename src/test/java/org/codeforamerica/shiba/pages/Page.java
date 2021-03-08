@@ -71,10 +71,6 @@ public class Page {
         }
     }
 
-    public void mockUploadFile(String filename) {
-        driver.executeScript("$('#document-upload').get(0).dropzone.emit(\"addedfile\", {name: '" + filename + "'})");
-    }
-
     enum FormInputHtmlTag {
         input,
         textarea,
