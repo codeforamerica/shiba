@@ -1086,6 +1086,12 @@ pageDefinitions:
     name: uploadDocuments
     pageTitle:
       value: upload-documents.title
+  - &uploadDocumentsDeleteWarningPage
+    name: uploadDocumentsDeleteWarningPage
+    headerKey:
+      value: upload-documents-delete-warning.you-are-about-to-delete
+    pageTitle:
+      value: upload-documents-delete-warning.title
   - &success
     name: success
     pageTitle:
@@ -3003,6 +3009,10 @@ workflow:
                 - pageName: workSituation
                   input: hasWorkSituation
                   value: "false"
+  uploadDocumentsDeleteWarningPage:
+    pageConfiguration: *uploadDocumentsDeleteWarningPage
+    nextPages:
+      - pageName: uploadDocuments
   success:
     pageConfiguration: *success
 pageGroups:
@@ -3044,6 +3054,7 @@ landmarkPages:
   postSubmitPages:
     - documentRecommendation
     - uploadDocuments
+    - uploadDocumentsDeleteWarningPage
     - success
   terminalPage: success
   submitPage: signThisApplication

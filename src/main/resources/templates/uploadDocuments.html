@@ -95,12 +95,10 @@
     for (const p of persistedFileNames) {
         p.innerText = truncateFileName(p.innerText);
     }
-
+    var myDropZone;
     $("#document-upload").dropzone({
         uploadMultiple: false,
-        addRemoveLinks: true,
         dictCancelUpload: "cancel",
-        dictRemoveFile: "delete",
         previewsContainer: ".preview-container",
         autoProcessQueue: true,
         clickable: ".drag-and-drop-box",
@@ -115,6 +113,7 @@
                     <div class="display-flex body-gray file-details">
                         <div class="dz-size" data-dz-size></div>
                         <span class="file-details-delimiter">•</span>
+                        <a class="dz-remove" href="#">delete</a>
                     </div>
                 </div>
               </div>
@@ -124,25 +123,19 @@
             formData.append("_csrf", csrfToken)
         },
         init: function () {
-            var myDropZone = this;
+            myDropZone = this;
             this.on('addedfile', file => {
-                const fileNameSpan = file.previewElement.getElementsByClassName('filename-text')[0]
+                const fileNameSpan = file.previewElement.getElementsByClassName('filename-text')[0];
                 fileNameSpan.innerText = truncateFileName(fileNameSpan.innerText);
 
-                const removeLink = file.previewElement.getElementsByClassName("dz-remove")[0]
-                file.previewElement.getElementsByClassName("file-details")[0].appendChild(removeLink)
+                const removeLink = file.previewElement.getElementsByClassName("dz-remove")[0];
+                const fileName = file.name;
+                removeLink.setAttribute('href', '/pages/uploadDocumentsDeleteWarningPage?filename=' + fileName);
             });
-            this.on('removedfile', file => {
-                $.post("/remove-upload", {
-                    filename: file.name,
-                    _csrf: [[${_csrf.token}]]
-                })
-            });
-
             var documents = [[${uploadedDocuments}]];
             $.each(documents, function (key, value) {
                 var mockFile = {name: value.filename, size: value.size};
-
+                myDropZone.files.push(mockFile);
                 myDropZone.emit("addedfile", mockFile);
                 myDropZone.emit("thumbnail", mockFile, value.path);
                 myDropZone.emit("complete", mockFile);
