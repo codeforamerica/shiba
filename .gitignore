@@ -27,6 +27,7 @@ src/main/resources/application-secrets.yaml
 out/
 .idea/dictionaries/*
 !.idea/dictionaries/shiba.xml
+.idea/shelf/
 
 ### NetBeans ###
 /nbproject/private/
