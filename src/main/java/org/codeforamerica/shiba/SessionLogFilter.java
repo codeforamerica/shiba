@@ -24,11 +24,8 @@ public class SessionLogFilter implements Filter {
         HttpServletRequest httpReq = (HttpServletRequest) request;
         MDC.put("url", String.valueOf(httpReq.getRequestURL()));
         MDC.put("sessionId", httpReq.getSession().getId());
-        MDC.put("scrubbedApplicationData", ScrubbedAppDataFactory.scrub(applicationData);
-//        MDC.put("id", applicationData.getPagesData()); //TODO: scrubbed pagesdata for pagesData, subworkflows, incompleteIterations
-//        {pagesData: {programs: {filled: [programs], unfilled: [other thing]}}
 
-        log.info("Request Log");
+        log.info(httpReq.getMethod() + " " + httpReq.getRequestURI());
         chain.doFilter(request, response);
     }
 }
