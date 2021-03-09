@@ -1,6 +1,5 @@
 package org.codeforamerica.shiba;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.slf4j.MDC;
@@ -25,7 +24,7 @@ public class SessionLogFilter implements Filter {
         HttpServletRequest httpReq = (HttpServletRequest) request;
         MDC.put("url", String.valueOf(httpReq.getRequestURL()));
         MDC.put("sessionId", httpReq.getSession().getId());
-        MDC.put("pagesData", new ObjectMapper().writeValueAsString(applicationData.getPagesData()));
+
         log.info(httpReq.getMethod() + " " + httpReq.getRequestURI());
         chain.doFilter(request, response);
     }
