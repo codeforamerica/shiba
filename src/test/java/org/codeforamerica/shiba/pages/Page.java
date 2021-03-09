@@ -41,7 +41,6 @@ public class Page {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("No button found containing text: " + buttonText));
         buttonToClick.click();
-        System.out.println("pageTitle: " + driver.getTitle());
     }
 
     public void clickContinue() {

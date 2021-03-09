@@ -28,7 +28,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -82,12 +81,6 @@ public abstract class AbstractBasePageTest {
 
     protected String getPdfFieldText(PDAcroForm pdAcroForm, String fieldName) {
         return pdAcroForm.getField(fieldName).getValueAsString();
-    }
-
-    protected Optional<File> getCafFile() {
-        return Arrays.stream(path.toFile().listFiles())
-                .filter(file -> file.getName().endsWith("_CAF.pdf"))
-                .findFirst();
     }
 
     protected Map<Document, PDAcroForm> getAllFiles() {
