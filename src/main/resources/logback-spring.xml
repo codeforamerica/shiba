@@ -1,57 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <springProfile name="default, test">
-        <!-- Configure the Console appender -->
-        <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder>
-                <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-            </encoder>
-        </appender>
-    </springProfile>
+    <appender name="LocalConsole" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
 
-    <springProfile name="staging, demo, production">
-        <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
-            <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
-                <jsonFormatter
-                        class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
-                    <prettyPrint>true</prettyPrint>
-                </jsonFormatter>
-                <timestampFormat>yyyy-MM-dd' 'HH:mm:ss.SSS</timestampFormat>
-            </layout>
-            <encoder>
-                <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-            </encoder>
-        </appender>
-        <!-- Configure Datadog appender -->
-        <appender name="JSON_TCP" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-            <remoteHost>intake.logs.datadoghq.com</remoteHost>
-            <port>10514</port>
-            <keepAliveDuration>20 seconds</keepAliveDuration>
-            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-                <prefix class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
-                    <layout class="ch.qos.logback.classic.PatternLayout">
-                        <pattern>${DATADOG_API_KEY} %mdc{keyThatDoesNotExist}</pattern>
-                    </layout>
-                </prefix>
-                <customFields>
-                    {"ddsource":"client","service":"Spring"}
-                </customFields>
-            </encoder>
-        </appender>
-        <root level="INFO">
-            <appender-ref ref="JSON_TCP" />
-        </root>
-    </springProfile>
+    <appender name="HostedConsole" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
+            <jsonFormatter
+                    class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
+                <prettyPrint>true</prettyPrint>
+            </jsonFormatter>
+            <timestampFormat>yyyy-MM-dd' 'HH:mm:ss.SSS</timestampFormat>
+        </layout>
+    </appender>
 
-    <!-- Configure the Sentry appender, overriding the logging threshold to the WARN level -->
+    <appender name="DatadogJSON" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <remoteHost>intake.logs.datadoghq.com</remoteHost>
+        <port>10514</port>
+        <keepAliveDuration>20 seconds</keepAliveDuration>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <prefix class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+                <layout class="ch.qos.logback.classic.PatternLayout">
+                    <pattern>${DATADOG_API_KEY} %mdc{keyThatDoesNotExist}</pattern>
+                </layout>
+            </prefix>
+            <customFields>
+                {"ddsource":"client","service":"Spring"}
+            </customFields>
+        </encoder>
+    </appender>
+
     <appender name="Sentry" class="io.sentry.logback.SentryAppender">
         <minimumEventLevel>WARN</minimumEventLevel>
     </appender>
 
-    <!-- Enable the Console and Sentry appenders, Console is provided as an example
-    of a non-Sentry logger that is set to a different logging threshold -->
-    <root level="INFO">
-        <appender-ref ref="Console"/>
-        <appender-ref ref="Sentry"/>
-    </root>
+    <springProfile name="default | test">
+        <root level="INFO">
+            <appender-ref ref="LocalConsole"/>
+            <appender-ref ref="Sentry"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="staging | demo | production">
+        <root level="INFO">
+            <appender-ref ref="HostedConsole"/>
+            <appender-ref ref="DatadogJSON" />
+            <appender-ref ref="Sentry"/>
+        </root>
+    </springProfile>
 </configuration>
