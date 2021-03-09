@@ -8,10 +8,10 @@
 
     <appender name="HostedConsole" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
-            <jsonFormatter
-                    class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
-                <prettyPrint>true</prettyPrint>
+            <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
+                <prettyPrint>false</prettyPrint>
             </jsonFormatter>
+            <appendLineSeparator>true</appendLineSeparator>
             <timestampFormat>yyyy-MM-dd' 'HH:mm:ss.SSS</timestampFormat>
         </layout>
     </appender>
@@ -46,7 +46,7 @@
     <springProfile name="staging | demo | production">
         <root level="INFO">
             <appender-ref ref="HostedConsole"/>
-            <appender-ref ref="DatadogJSON" />
+            <appender-ref ref="DatadogJSON"/>
             <appender-ref ref="Sentry"/>
         </root>
     </springProfile>
