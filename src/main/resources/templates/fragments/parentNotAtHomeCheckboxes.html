@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="parentNotAtHomeCheckboxes (input, data)"
+          th:with="formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)},
+                    inputData=${data.get(input.name)}">
+    <div class="spacing-below-60">
+        <th:block
+                th:each="fullNameAndId, iterationStat: ${input.options.datasources.get('childrenInNeedOfCare').get('whoNeedsChildCare').value}"
+                th:with="childArray=${#strings.arraySplit(fullNameAndId, ' ')},
+                         childId=${childArray[#arrays.length(childArray)-1]},
+                         childName=${#strings.substringBefore(fullNameAndId, ' ' + childId)},
+                         me=#{general.me}">
+            <label th:for="|householdMember${iterationStat.index}|" class="checkbox">
+                <input type="checkbox"
+                       th:id="|householdMember${iterationStat.index}|"
+                       th:value="${fullNameAndId}"
+                       th:name="${formInputName}"
+                       th:checked="${inputData.value.contains(fullNameAndId)}">
+                <span th:text="|${childId.contains('applicant') ? me : childName}|"></span>
+            </label>
+        </th:block>
+    </div>
+</th:block>
+</html>

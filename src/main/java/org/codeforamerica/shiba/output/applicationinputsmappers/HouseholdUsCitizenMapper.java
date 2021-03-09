@@ -30,7 +30,6 @@ public class HouseholdUsCitizenMapper implements ApplicationInputsMapper {
                     return householdMemberParts[householdMemberParts.length - 1];
                 }).collect(Collectors.toList());
 
-
         List<ApplicationInput> result = new ArrayList<>();
         result.add(new ApplicationInput("usCitizen", "isUsCitizen",
                 List.of(householdMemberIDs.contains("applicant") ? "false" : "true"),

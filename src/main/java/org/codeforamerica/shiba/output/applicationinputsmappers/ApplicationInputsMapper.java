@@ -17,6 +17,7 @@ public interface ApplicationInputsMapper {
             case RADIO, SELECT -> ApplicationInputType.ENUMERATED_SINGLE_VALUE;
             case DATE -> ApplicationInputType.DATE_VALUE;
             case TEXT, LONG_TEXT, HOURLY_WAGE, NUMBER, YES_NO, MONEY, TEXTAREA, PHONE, SSN, CUSTOM -> ApplicationInputType.SINGLE_VALUE;
+            case HIDDEN -> ApplicationInputType.UNUSED;
         };
     }
 }

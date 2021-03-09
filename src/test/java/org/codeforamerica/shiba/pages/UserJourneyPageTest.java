@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -837,7 +838,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     @Test
-    void shouldAskWhoIsGoingToSchoolAndWhoIsLookingForWorkWhenCCAPIsSelectedInHouseholdMemberInfo() {
+    void shouldAskRelevantCCAPQuestionsWhenCCAPIsSelectedInHouseholdMemberInfo() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
         testPage.clickLink("This looks correct");
         testPage.enter("addHouseholdMembers", YES.getDisplayValue());
@@ -846,6 +847,17 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.clickContinue();
         testPage.clickButton("Yes, that's everyone");
         assertThat(driver.getTitle()).isEqualTo("Who are the children in need of care?");
+        testPage.enter("whoNeedsChildCare", "defaultFirstName defaultLastName");
+        testPage.enter("whoNeedsChildCare", "Me");
+        testPage.clickContinue();
+        assertThat(driver.getTitle()).isEqualTo("Who are the children that have a parent not living in the home?");
+        testPage.enter("whoHasAParentNotLivingAtHome", "defaultFirstName defaultLastName");
+        testPage.enter("whoHasAParentNotLivingAtHome", "Me");
+        testPage.clickContinue();
+        assertThat(driver.getTitle()).isEqualTo("Name of parent outside home");
+        List<WebElement> whatAreParentNames = driver.findElementsByName("whatAreTheParentsNames[]");
+        whatAreParentNames.get(0).sendKeys("My Parent");
+        whatAreParentNames.get(1).sendKeys("Default's Parent");
         testPage.clickContinue();
         testPage.clickButton(YES.getDisplayValue());
         testPage.clickButton(YES.getDisplayValue());
@@ -1087,6 +1099,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
             testPage.clickContinue();
             testPage.clickButton("Yes, that's everyone");
             testPage.enter("whoNeedsChildCare", "defaultFirstName defaultLastName");
+            testPage.clickContinue();
             testPage.clickContinue();
             testPage.enter("goingToSchool", NO.getDisplayValue());
             testPage.enter("isPregnant", YES.getDisplayValue());

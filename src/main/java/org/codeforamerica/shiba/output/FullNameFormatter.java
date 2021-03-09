@@ -14,6 +14,11 @@ public class FullNameFormatter {
         return lastIndex == -1 ? "" : unformattedName.trim().substring(0, lastIndex);
     }
 
+    public static String getId(String unformattedName) {
+        int lastIndex = unformattedName.trim().lastIndexOf(' ');
+        return unformattedName.trim().substring(lastIndex + 1);
+    }
+
     @NotNull
     public static List<String> getListOfSelectedFullNames(Application application, String pageName, String inputName) {
         return getListOfSelectedNameStrings(application, pageName, inputName)
