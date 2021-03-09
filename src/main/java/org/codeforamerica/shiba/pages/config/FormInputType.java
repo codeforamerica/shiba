@@ -14,5 +14,6 @@ public enum FormInputType {
     HOURLY_WAGE,
     PHONE,
     SSN,
-    CUSTOM
+    CUSTOM,
+    HIDDEN
 }

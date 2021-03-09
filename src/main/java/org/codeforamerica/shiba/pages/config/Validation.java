@@ -11,6 +11,7 @@ import java.util.function.Predicate;
 public enum Validation {
     NONE(strings -> true),
     NOT_BLANK(strings -> !String.join("", strings).isBlank()),
+    NONE_BLANK(strings -> strings.stream().noneMatch(String::isBlank)),
     SELECT_AT_LEAST_ONE(strings -> strings.size() > 0),
     SSN(strings -> String.join("", strings).replace("-", "").matches("\\d{9}")),
     DATE(strings -> {

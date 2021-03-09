@@ -683,6 +683,40 @@ pageDefinitions:
           datasources:
             - pageName: personalInfo
             - groupName: household
+              pageName: householdMemberInfo
+  - &whoHasParentNotAtHome
+    name: whoHasParentNotAtHome
+    pageTitle:
+      value: parent-not-at-home.title
+    headerKey:
+      value: parent-not-at-home.who-are-the-children-that-have-a-parent-not-living-at-home
+    inputs:
+      - type: CUSTOM
+        name: whoHasAParentNotLivingAtHome
+        customInputFragment: parentNotAtHomeCheckboxes
+        options:
+          datasources:
+            - pageName: childrenInNeedOfCare
+  - &parentNotAtHomeNames
+    name: parentNotAtHomeNames
+    pageTitle:
+      value: parent-not-at-home-names.title
+    headerKey:
+      value: parent-not-at-home-names.what-are-the-parents-names
+    inputs:
+      - type: CUSTOM
+        name: whatAreTheParentsNames
+        customInputFragment: parentNotAtHomeNameInput
+        promptMessage:
+          promptMessageKey: parent-not-at-home-names.what-is-the-parents-name
+        validators:
+          - validation: NONE_BLANK
+            errorMessageKey: parent-not-at-home-names.make-sure-to-provide-a-name
+        options:
+          datasources:
+            - pageName: whoHasParentNotAtHome
+      - type: HIDDEN
+        name: childIdMap # This input is controlled by whatAreTheParentsNames
   - &householdDeleteWarningPage
     name: householdDeleteWarningPage
     headerKey:
@@ -2183,15 +2217,53 @@ workflow:
   childrenInNeedOfCare:
     pageConfiguration: *childrenInNeedOfCare
     nextPages:
-      - pageName: preparingMealsTogether
+      - pageName: whoHasParentNotAtHome
     datasources:
       - pageName: choosePrograms
       - groupName: household
         pageName: householdMemberInfo
     skipCondition:
-      conditions:
-        - *applicantDidNotChooseCCAP?
-        - *householdMemberDidNotChooseCCAP?
+      compositeConditions:
+        - *noOneChoseCCAP?
+  whoHasParentNotAtHome:
+    pageConfiguration: *whoHasParentNotAtHome
+    nextPages:
+      - pageName: parentNotAtHomeNames
+    datasources:
+      - pageName: childrenInNeedOfCare
+      - pageName: choosePrograms
+      - groupName: household
+        pageName: householdMemberInfo
+    skipCondition:
+      logicalOperator: OR
+      compositeConditions:
+        - *noOneChoseCCAP?
+        - conditions:
+          - pageName: childrenInNeedOfCare
+            input: whoNeedsChildCare
+            matcher: NONE_SELECTED
+  parentNotAtHomeNames:
+    pageConfiguration: *parentNotAtHomeNames
+    nextPages:
+      - pageName: preparingMealsTogether
+    datasources:
+      - pageName: choosePrograms
+      - groupName: household
+        pageName: householdMemberInfo
+      - pageName: childrenInNeedOfCare
+      - pageName: whoHasParentNotAtHome
+    skipCondition:
+      logicalOperator: OR
+      compositeConditions:
+        - *noOneChoseCCAP?
+        - conditions:
+            - pageName: childrenInNeedOfCare
+              input: whoNeedsChildCare
+              matcher: NONE_SELECTED
+        - conditions:
+            - pageName: whoHasParentNotAtHome
+              input: whoHasAParentNotLivingAtHome
+              matcher: NONE_SELECTED
   householdDeleteWarningPage:
     pageConfiguration: *householdDeleteWarningPage
     appliesToGroup: household

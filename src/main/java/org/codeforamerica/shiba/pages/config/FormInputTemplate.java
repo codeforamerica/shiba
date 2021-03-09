@@ -27,6 +27,7 @@ public class FormInputTemplate {
             case RADIO -> "radio-input";
             case CHECKBOX -> "checkbox-input";
             case YES_NO -> "yes-no-input";
+            case HIDDEN -> "hidden-input";
             case CUSTOM -> customInputFragment;
         };
     }
@@ -35,5 +36,4 @@ public class FormInputTemplate {
     public boolean hasFollowUps() {
         return !this.followUps.isEmpty();
     }
-
 }

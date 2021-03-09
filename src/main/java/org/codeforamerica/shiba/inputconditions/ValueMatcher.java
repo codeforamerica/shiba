@@ -11,8 +11,7 @@ public enum ValueMatcher {
     NOT_EMPTY((testValue, ignoredTargetValue) -> !String.join("", testValue).isBlank()),
     DOES_NOT_CONTAIN((testValue, targetValue) -> !testValue.contains(targetValue)),
     CONTAINS_SUBSTRING((testValue, targetValue) -> testValue.stream().anyMatch(string -> string.contains(targetValue))),
-    DOES_NOT_CONTAIN_SUBSTRING((testValue, targetValue) -> testValue.stream().allMatch(string -> !string.contains(targetValue)));
-
+    DOES_NOT_CONTAIN_SUBSTRING((testValue, targetValue) -> testValue.stream().noneMatch(string -> string.contains(targetValue)));
 
     private final BiFunction<List<String>, String, Boolean> matcher;
 

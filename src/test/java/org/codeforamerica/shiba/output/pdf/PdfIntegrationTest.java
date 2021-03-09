@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.io.IOException;
@@ -143,12 +144,32 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             testPage.enter("whoNeedsChildCare", "Me");
             testPage.enter("whoNeedsChildCare", "Jim Halpert");
             testPage.clickContinue();
+            testPage.enter("whoHasAParentNotLivingAtHome", "Me");
+            testPage.enter("whoHasAParentNotLivingAtHome", "Jim Halpert");
+            testPage.clickContinue();
+            List<WebElement> whatAreParentNames = driver.findElementsByName("whatAreTheParentsNames[]");
+            whatAreParentNames.get(0).sendKeys("My Parent");
+            whatAreParentNames.get(1).sendKeys("Jim's Parent");
+            testPage.clickContinue();
 
             Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-            assertThat(pdAcroForms.get(CCAP).getField("CHILD_NEEDS_CHILDCARE_FULL_NAME_0").getValueAsString())
+            PDAcroForm ccapPdf = pdAcroForms.get(CCAP);
+            assertThat(ccapPdf.getField("CHILD_NEEDS_CHILDCARE_FULL_NAME_0").getValueAsString())
                     .isEqualTo("Dwight Schrute");
-            assertThat(pdAcroForms.get(CCAP).getField("CHILD_NEEDS_CHILDCARE_FULL_NAME_1").getValueAsString())
+            assertThat(ccapPdf.getField("CHILD_NEEDS_CHILDCARE_FULL_NAME_1").getValueAsString())
                     .isEqualTo("Jim Halpert");
+            assertThat(ccapPdf.getField("CHILD_FULL_NAME_0").getValueAsString())
+                    .isEqualTo("Dwight Schrute");
+            assertThat(ccapPdf.getField("PARENT_NOT_LIVING_AT_HOME_0").getValueAsString())
+                    .isEqualTo("My Parent");
+            assertThat(ccapPdf.getField("CHILD_FULL_NAME_1").getValueAsString())
+                    .isEqualTo("Jim Halpert");
+            assertThat(ccapPdf.getField("PARENT_NOT_LIVING_AT_HOME_1").getValueAsString())
+                    .isEqualTo("Jim's Parent");
+            assertThat(ccapPdf.getField("CHILD_FULL_NAME_2").getValueAsString())
+                    .isEmpty();
+            assertThat(ccapPdf.getField("PARENT_NOT_LIVING_AT_HOME_2").getValueAsString())
+                    .isEmpty();
         }
 
         @Test
