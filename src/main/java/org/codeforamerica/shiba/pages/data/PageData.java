@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages.data;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Value;
@@ -19,6 +20,7 @@ import static org.codeforamerica.shiba.pages.PageUtils.getFormInputName;
 @EqualsAndHashCode(callSuper = true)
 @Value
 @NoArgsConstructor
+@JsonSerialize(using = MaskedSerializer.class)
 public class PageData extends HashMap<String, InputData> {
     public PageData(Map<String, InputData> inputDataMap) {
         super(inputDataMap);
