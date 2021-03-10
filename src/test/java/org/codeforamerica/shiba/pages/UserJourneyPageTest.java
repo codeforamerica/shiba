@@ -1208,7 +1208,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     private void completeDocumentUploadFlow() {
         testPage.clickButton("Upload documents now");
         testPage.clickElementById("drag-and-drop-box");
-        String filename = "testUploadFile.png";
+        String filename = "testUploadFi...png";
         testPage.mockUploadFile(filename);
 
         assertThat(driver.findElement(By.id("document-upload")).getText()).contains(filename);
