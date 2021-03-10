@@ -49,6 +49,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     private static final String PROGRAM_GRH = "Housing Support (GRH)";
     private static final String PROGRAM_CCAP = "Child Care Assistance";
     private static final String PROGRAM_EA = "Emergency Assistance";
+    private static final String UPLOADED_FILE_NAME = "testUploadFi...png";
 
     @MockBean
     Clock clock;
@@ -274,13 +275,12 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
         testPage.clickButton("Upload documents now");
         testPage.clickElementById("drag-and-drop-box");
-        String filename = "testUploadFile.png";
-        testPage.mockUploadFile(filename);
+        testPage.mockUploadFile(UPLOADED_FILE_NAME);
 
-        assertThat(driver.findElement(By.id("document-upload")).getText()).contains(filename);
+        assertThat(driver.findElement(By.id("document-upload")).getText()).contains(UPLOADED_FILE_NAME);
 
         testPage.clickLink("delete");
-        assertThat(driver.findElement(By.id("document-upload")).getText()).doesNotContain(filename);
+        assertThat(driver.findElement(By.id("document-upload")).getText()).doesNotContain(UPLOADED_FILE_NAME);
 
         testPage.clickButton("I'm finished uploading");
     }
@@ -1208,10 +1208,9 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     private void completeDocumentUploadFlow() {
         testPage.clickButton("Upload documents now");
         testPage.clickElementById("drag-and-drop-box");
-        String filename = "testUploadFi...png";
-        testPage.mockUploadFile(filename);
+        testPage.mockUploadFile(UPLOADED_FILE_NAME);
 
-        assertThat(driver.findElement(By.id("document-upload")).getText()).contains(filename);
+        assertThat(driver.findElement(By.id("document-upload")).getText()).contains(UPLOADED_FILE_NAME);
         testPage.clickButton("I'm finished uploading");
     }
 
