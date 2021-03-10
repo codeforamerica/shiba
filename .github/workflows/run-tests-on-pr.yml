@@ -5,7 +5,7 @@ on:
     types:
       - completed
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
   status: { }
 
 jobs:

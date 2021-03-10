@@ -6,7 +6,7 @@ name: Run tests and deploy to staging
 on:
   push:
     branches:
-      - master
+      - main
   workflow_dispatch:
     inputs: { }
 
@@ -58,7 +58,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: '0'
-          ref: master
+          ref: main
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2.0.3
         with:
@@ -72,7 +72,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_KEY }}
       - name: Push to Aptible remote branch
-        run: git push --force git@beta.aptible.com:mn-shiba-staging/shiba-staging.git "master:staging-deploy"
+        run: git push --force git@beta.aptible.com:mn-shiba-staging/shiba-staging.git "main:staging-deploy"
       - name: Install Aptible CLI and deploy to Aptible
         run: |
           wget -O aptible-package https://omnibus-aptible-toolbelt.s3.amazonaws.com/aptible/omnibus-aptible-toolbelt/master/206/pkg/aptible-toolbelt_0.16.5%2B20200508143656~ubuntu.16.04-1_amd64.deb
@@ -92,10 +92,10 @@ jobs:
           'SENTRY_ENVIRONMENT=staging' \
           'SENTRY_RELEASE=${{ steps.generate-release.outputs.RELEASE }}' \
           'MIXPANEL_API-KEY=${{ secrets.MIXPANEL_API_KEY_STAGING }}'
-      - name: Merge master -> staging
+      - name: Merge main -> staging
         uses: MaximeHeckel/github-action-merge-fast-forward@v1.1.0
         with:
-          branchtomerge: master
+          branchtomerge: main
           branch: staging
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
