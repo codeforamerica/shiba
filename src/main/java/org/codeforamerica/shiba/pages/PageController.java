@@ -215,7 +215,7 @@ public class PageController {
             model.put("applicationData", applicationData);
 
             if (landmarkPagesConfiguration.isUploadDocumentsPage(pageName)) {
-                model.put("uploadedDocuments", applicationData.getUploadedDocuments());
+                model.put("uploadedDocs", applicationData.getUploadedDocs());
             }
 
             if (applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources())) {
@@ -322,14 +322,14 @@ public class PageController {
     @PostMapping("/file-upload")
     @ResponseStatus(HttpStatus.OK)
     public void upload(@RequestParam("file") MultipartFile file) {
-        this.applicationData.addUploadedDocument(file);
+        this.applicationData.addUploadedDoc(file);
     }
 
     @SuppressWarnings("SpringMVCViewInspection")
     @PostMapping("/remove-upload/{filename}")
     ModelAndView removeUpload(@PathVariable String filename) {
-        this.applicationData.removeUploadedDocument(filename);
-        if (this.applicationData.getUploadedDocuments().isEmpty()) {
+        this.applicationData.removeUploadedDoc(filename);
+        if (this.applicationData.getUploadedDocs().isEmpty()) {
             return new ModelAndView("redirect:/pages/documentRecommendation");
         }
         return new ModelAndView("redirect:/pages/uploadDocuments");

@@ -132,7 +132,7 @@
                 const fileName = file.name;
                 removeLink.setAttribute('href', '/pages/uploadDocumentsDeleteWarningPage?filename=' + fileName);
             });
-            var documents = [[${uploadedDocuments}]];
+            var documents = [[${uploadedDocs}]];
             $.each(documents, function (key, value) {
                 var mockFile = {name: value.filename, size: value.size};
                 myDropZone.files.push(mockFile);
