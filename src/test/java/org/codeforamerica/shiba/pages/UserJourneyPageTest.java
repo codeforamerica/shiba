@@ -49,7 +49,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     private static final String PROGRAM_GRH = "Housing Support (GRH)";
     private static final String PROGRAM_CCAP = "Child Care Assistance";
     private static final String PROGRAM_EA = "Emergency Assistance";
-    private static final String UPLOADED_FILE_NAME = "testUploadFi...png";
+    private static final String UPLOADED_FILE_NAME = "testUploadFile.png";
 
     @MockBean
     Clock clock;
@@ -276,6 +276,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.clickButton("Upload documents now");
         testPage.clickElementById("drag-and-drop-box");
         testPage.mockUploadFile(UPLOADED_FILE_NAME);
+        testPage.mockUploadFile("very_long_file_name_that_should_truncate.jpeg");
 
         assertThat(driver.findElement(By.id("document-upload")).getText()).contains(UPLOADED_FILE_NAME);
 
@@ -283,6 +284,33 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         assertThat(driver.findElement(By.id("document-upload")).getText()).doesNotContain(UPLOADED_FILE_NAME);
 
         testPage.clickButton("I'm finished uploading");
+    }
+
+    @Test
+    void longFileNamesShouldGetTruncated() {
+        testPage.clickButton("Apply now");
+        testPage.clickContinue();
+        testPage.enter("writtenLanguage", "English");
+        testPage.enter("spokenLanguage", "English");
+        testPage.enter("needInterpreter", "Yes");
+        testPage.clickContinue();
+        testPage.enter("programs", "Emergency Assistance");
+        testPage.clickContinue();
+        testPage.clickContinue();
+        fillOutPersonalInfo();
+        testPage.clickContinue();
+        navigateTo("signThisApplication");
+        testPage.enter("applicantSignature", "some name");
+        testPage.clickButton("Submit");
+
+        testPage.clickButton("Upload documents now");
+        testPage.clickElementById("drag-and-drop-box");
+
+        String filename = "very_long_file_name_that_should_truncate.jpeg";
+        String truncatedName = "very_long_file...jpeg";
+        testPage.mockUploadFile(filename);
+
+        assertThat(driver.findElement(By.id("document-upload")).getText()).contains(truncatedName);
     }
 
     @Test

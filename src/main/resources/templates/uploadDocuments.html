@@ -77,7 +77,7 @@
     }
 
     const truncateFileName = (name) => {
-        const MAX_LEN = 15
+        const MAX_LEN = screen.width < 350 ? 15 : 18
         if (name.length > MAX_LEN) {
             const splitUpName = name.split('.');
             const firstPart = splitUpName.slice(0, -1).join('.')
