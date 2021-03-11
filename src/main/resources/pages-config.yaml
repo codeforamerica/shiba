@@ -709,9 +709,6 @@ pageDefinitions:
         customInputFragment: parentNotAtHomeNameInput
         promptMessage:
           promptMessageKey: parent-not-at-home-names.what-is-the-parents-name
-        validators:
-          - validation: NONE_BLANK
-            errorMessageKey: parent-not-at-home-names.make-sure-to-provide-a-name
         options:
           datasources:
             - pageName: whoHasParentNotAtHome

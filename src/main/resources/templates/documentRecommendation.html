@@ -35,7 +35,7 @@
                         </div>
                     </div>
 
-                    <div th:if="${data.get('workSituation').inputDataValueContainsAny('hasWorkSituation', T(java.util.List).of('true')) &&  applicationData.isApplicationWith(T(java.util.List).of('SNAP', 'CASH', 'GRH'))}" class="grid-ignore-mobile spacing-below-60">
+                    <div th:if="${data.get('workSituation').inputDataValueContainsAny('hasWorkSituation', T(java.util.List).of('true')) && applicationData.isApplicationWith(T(java.util.List).of('SNAP', 'CASH', 'GRH'))}" class="grid-ignore-mobile spacing-below-60">
                         <div class="success-icons grid__item width-one-sixth spacing-below-15">
                             <div th:replace="fragments/icons/icon-job-loss :: icon-job-loss" class="success-icons width-one-sixth"></div>
                         </div>

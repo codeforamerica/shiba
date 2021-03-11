@@ -148,7 +148,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             testPage.enter("whoHasAParentNotLivingAtHome", "Jim Halpert");
             testPage.clickContinue();
             List<WebElement> whatAreParentNames = driver.findElementsByName("whatAreTheParentsNames[]");
-            whatAreParentNames.get(0).sendKeys("My Parent");
+            whatAreParentNames.get(0).sendKeys(""); // blank should still get added to the PDF
             whatAreParentNames.get(1).sendKeys("Jim's Parent");
             testPage.clickContinue();
 
@@ -161,7 +161,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             assertThat(ccapPdf.getField("CHILD_FULL_NAME_0").getValueAsString())
                     .isEqualTo("Dwight Schrute");
             assertThat(ccapPdf.getField("PARENT_NOT_LIVING_AT_HOME_0").getValueAsString())
-                    .isEqualTo("My Parent");
+                    .isEqualTo("");
             assertThat(ccapPdf.getField("CHILD_FULL_NAME_1").getValueAsString())
                     .isEqualTo("Jim Halpert");
             assertThat(ccapPdf.getField("PARENT_NOT_LIVING_AT_HOME_1").getValueAsString())
