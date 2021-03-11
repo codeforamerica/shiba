@@ -86,6 +86,13 @@ class MnitEsbWebServiceClientTest {
     private final Map<String, String> namespaceMapping = Map.of("ns2", "http://www.cmis.org/2008/05");
     String fileContent = "fileContent";
     String fileName = "fileName";
+    StringSource successResponse = new StringSource("" +
+            "<SOAP-ENV:Envelope xmlns:SOAP-ENV='http://schemas.xmlsoap.org/soap/envelope/'>" +
+                "<SOAP-ENV:Body xmlns='http://www.cmis.org/2008/05'>" +
+                    "<createDocumentResponse></createDocumentResponse>" +
+                "</SOAP-ENV:Body>" +
+            "</SOAP-ENV:Envelope>"
+    );
 
     @BeforeEach
     void setUp() {
@@ -110,7 +117,8 @@ class MnitEsbWebServiceClientTest {
                 .andExpect(xpath("//ns2:createDocument/ns2:contentStream/ns2:length", namespaceMapping)
                         .evaluatesTo(0))
                 .andExpect(xpath("//ns2:createDocument/ns2:contentStream/ns2:stream", namespaceMapping)
-                        .evaluatesTo(Base64.getEncoder().encodeToString(fileContent.getBytes())));
+                        .evaluatesTo(Base64.getEncoder().encodeToString(fileContent.getBytes())))
+                .andRespond(withSoapEnvelope(successResponse));
 
         mnitEsbWebServiceClient.send(
                 new ApplicationFile(fileContent.getBytes(), fileName),
@@ -126,12 +134,7 @@ class MnitEsbWebServiceClientTest {
                 .andRespond(withException(new RuntimeException(new SOAPException("soap exception ahhh"))));
 
         mockWebServiceServer.expect(connectionTo(url))
-                .andRespond(withSoapEnvelope(new StringSource("" +
-                        "<SOAP-ENV:Envelope xmlns:SOAP-ENV='http://schemas.xmlsoap.org/soap/envelope/'>" +
-                            "<SOAP-ENV:Body xmlns='http://www.cmis.org/2008/05'>" +
-                                "<createDocumentResponse></createDocumentResponse>" +
-                            "</SOAP-ENV:Body>" +
-                        "</SOAP-ENV:Envelope>")));
+                .andRespond(withSoapEnvelope(successResponse));
 
         mnitEsbWebServiceClient.send(new ApplicationFile(fileContent.getBytes(), fileName), County.Olmsted);
 

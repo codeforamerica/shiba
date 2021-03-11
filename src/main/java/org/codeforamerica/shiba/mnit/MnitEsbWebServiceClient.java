@@ -2,12 +2,14 @@ package org.codeforamerica.shiba.mnit;
 
 import com.sun.istack.ByteArrayDataSource;
 import com.sun.xml.messaging.saaj.soap.name.NameImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.esbwsdl.*;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
@@ -29,6 +31,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Component
+@Slf4j
 public class MnitEsbWebServiceClient {
     private final WebServiceTemplate webServiceTemplate;
     private final Clock clock;
@@ -59,9 +62,11 @@ public class MnitEsbWebServiceClient {
                     delayExpression = "#{${mnit-esb.delay}}",
                     multiplierExpression = "#{${mnit-esb.multiplier}}",
                     maxDelayExpression = "#{${mnit-esb.max-delay}}"
-            )
+            ),
+            listeners = {"esbRetryListener"}
     )
     public void send(ApplicationFile applicationFile, County county) {
+        MDC.put("applicationFile", applicationFile.getFileName());
         CreateDocument createDocument = new CreateDocument();
         createDocument.setFolderId("workspace://SpacesStore/" + countyMap.get(county).getFolderId());
         createDocument.setRepositoryId("<Unknown");
@@ -103,14 +108,14 @@ public class MnitEsbWebServiceClient {
                 passwordElement.addAttribute(NameImpl.createFromUnqualifiedName("Type"), "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText");
                 passwordElement.setTextContent(password);
             } catch (SOAPException e) {
-                logErrorToSentry(e);
+                logErrorToSentry(e, applicationFile);
             }
         });
     }
 
     @Recover
-    public void logErrorToSentry(Exception e) {
-        e.printStackTrace();
+    public void logErrorToSentry(Exception e, ApplicationFile applicationFile) {
+        log.info("Application failed to send: " + applicationFile.getFileName());
         monitoringService.sendException(e);
     }
 
