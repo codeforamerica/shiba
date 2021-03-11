@@ -12,7 +12,7 @@ public class NonHourlyJobIncomeInformation implements JobIncomeInformation {
 
     public NonHourlyJobIncomeInformation(String payPeriod, String incomePerPayPeriod, int indexInJobsSubworkflow, Iteration iteration) {
         this.payPeriod = payPeriod.isEmpty() ? null : PayPeriod.valueOf(payPeriod);
-        this.incomePerPayPeriod = incomePerPayPeriod.isEmpty() ? null : Double.valueOf(incomePerPayPeriod);
+        this.incomePerPayPeriod = incomePerPayPeriod.isEmpty() ? null : Double.valueOf(incomePerPayPeriod.replace(",",""));
         this.indexInJobsSubworkflow = indexInJobsSubworkflow;
         this.iteration = iteration;
     }
