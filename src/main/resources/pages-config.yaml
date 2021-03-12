@@ -2211,6 +2211,7 @@ workflow:
       - pageName: householdList
   householdList:
     pageConfiguration: *householdList
+    dataMissingRedirect: reviewInfo
     nextPages:
       - pageName: householdMemberInfo
       - pageName: childrenInNeedOfCare
@@ -2270,6 +2271,7 @@ workflow:
   householdDeleteWarningPage:
     pageConfiguration: *householdDeleteWarningPage
     appliesToGroup: household
+    dataMissingRedirect: reviewInfo
     nextPages:
       - pageName: householdList
     datasources:

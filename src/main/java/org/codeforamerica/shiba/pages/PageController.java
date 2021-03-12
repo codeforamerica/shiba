@@ -182,6 +182,7 @@ public class PageController {
         }
 
         if (iterationIndex != null && !iterationIndex.isBlank() && applicationData.getSubworkflows().containsKey(pageWorkflow.getAppliesToGroup())) {
+
             PagesData iterationData = pageWorkflow.getSubworkflows(applicationData)
                     .get(pageWorkflow.getAppliesToGroup()).get(Integer.parseInt(iterationIndex)).getPagesData();
 

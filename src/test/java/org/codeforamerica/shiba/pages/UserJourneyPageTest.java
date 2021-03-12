@@ -925,6 +925,21 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     @Test
+    void shouldHandleDeletionOfLastHouseholdMember() {
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
+        testPage.clickLink("This looks correct");
+        testPage.enter("addHouseholdMembers", YES.getDisplayValue());
+        testPage.clickContinue();
+        fillOutHousemateInfo("Emergency Assistance");
+        testPage.clickContinue();
+        testPage.clickButtonLink("delete");
+        testPage.clickButton("Yes, remove them");
+        testPage.goBack();
+
+        assertThat(driver.getTitle()).isEqualTo("Review info");
+    }
+
+    @Test
     void shouldValidateContactInfoEmailEvenIfEmailNotSelected() {
         completeFlowFromLandingPageThroughContactInfo(List.of("Child Care Assistance"));
         testPage.enter("phoneNumber", "7234567890");

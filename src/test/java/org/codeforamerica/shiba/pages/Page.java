@@ -43,6 +43,15 @@ public class Page {
         buttonToClick.click();
     }
 
+    public void clickButtonLink(String buttonLinkText) {
+        checkForBadMessageKeys();
+        WebElement buttonToClick = driver.findElements(By.className("button--link")).stream()
+                .filter(button -> button.getText().contains(buttonLinkText))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("No button link found containing text: " + buttonLinkText));
+        buttonToClick.click();
+    }
+
     public void clickContinue() {
         clickButton("Continue");
     }
