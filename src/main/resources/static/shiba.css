@@ -667,6 +667,22 @@ input[type=number] {
     line-height: 25px;
 }
 
+.filename-text-name {
+    width: 90%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+}
+
+.filename-text-ext {
+    width: 10%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+    display: inline-block;
+}
+
 .dz-size {
     margin-left: 16px;
 }

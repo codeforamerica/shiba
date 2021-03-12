@@ -77,6 +77,14 @@
     }
 
     const truncateFileName = (name) => {
+        // test full filename width against container width
+        // if it doesn't fit:
+        // loop:
+        //   test successively truncated filename + extension against full container width
+
+        // get untruncated text width
+        // get container width
+        // use container width to see how much of text should be truncated
         const MAX_LEN = screen.width < 350 ? 15 : 18
         if (name.length > MAX_LEN) {
             const splitUpName = name.split('.');
@@ -88,6 +96,11 @@
         }
 
         return name;
+    }
+
+    const getFilenameComponents = (name) => {
+            const extIdx = name.lastIndexOf('.');
+            return extIdx === -1 ? [name] : [name.slice(0, extIdx), name.slice(extIdx+1, name.length)];
     }
 
     // On page load, truncate all filenames
@@ -109,7 +122,7 @@
                     <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
                 </div>
                 <div class="grid__item width-five-sixths">
-                    <div class="dz-filename"><span class="filename-text" data-dz-name></span></div>
+                    <div class="dz-filename"><div class="filename-text" data-dz-name></div></div>
                     <div class="display-flex body-gray file-details">
                         <div class="dz-size" data-dz-size></div>
                         <span class="file-details-delimiter">•</span>
@@ -125,8 +138,14 @@
         init: function () {
             myDropZone = this;
             this.on('addedfile', file => {
-                const fileNameSpan = file.previewElement.getElementsByClassName('filename-text')[0];
-                fileNameSpan.innerText = truncateFileName(fileNameSpan.innerText);
+                const fileNameSpan = file.previewElement.getElementsByClassName('filename-text')[0]
+                const fileNameComponents = getFilenameComponents(fileNameSpan.innerText);
+                // fileNameSpan.innerText = truncateFileName(fileNameSpan.innerText);
+                console.log(fileNameComponents)
+
+                const formattedHtml = "<span class='filename-text-name'>"+fileNameComponents[0] + "</span>" +
+                    "<span class='filename-text-ext'>"+fileNameComponents[1] + "</span>"
+                fileNameSpan.innerHTML = formattedHtml
 
                 const removeLink = file.previewElement.getElementsByClassName("dz-remove")[0];
                 const fileName = file.name;
