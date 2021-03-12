@@ -665,6 +665,13 @@ input[type=number] {
     font-weight: bold;
     font-size: 19px;
     line-height: 25px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+
+    font-family: monospace;
+    font-weight: lighter;
 }
 
 .filename-text-name {

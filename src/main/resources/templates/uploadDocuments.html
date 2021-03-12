@@ -91,19 +91,28 @@
         // use container width to see how much of text should be truncated
 
         const name = elementContainer.innerText
-        const containerWidth = elementContainer.width
+        const containerWidth = elementContainer.clientWidth
 
         const charactersPerPixel = 0.08
 
         const MAX_LEN = containerWidth * charactersPerPixel
         console.log(MAX_LEN)
         if (name.length > MAX_LEN) {
-            const splitUpName = name.split('.');
-            const firstPart = splitUpName.slice(0, -1).join('.')
-            const ext = splitUpName.slice(-1)
-            const extLen = ext[0].length
 
-            return `${firstPart.slice(0, MAX_LEN - extLen)}...${ext}`;
+            if (name.includes("."))
+            {
+                const splitUpName = name.split('.');
+                const firstPart = splitUpName.slice(0, -1).join('.')
+                const ext = splitUpName.slice(-1)
+                const extLen = ext[0].length
+
+                return `${firstPart.slice(0, MAX_LEN - extLen)}…${ext}`
+            }
+            else
+            {
+                return `${name.slice(0, MAX_LEN)}…`
+            }
+
         }
 
         return name;
@@ -152,7 +161,6 @@
                 const fileNameSpan = file.previewElement.getElementsByClassName('filename-text')[0]
                 // const fileNameComponents = getFilenameComponents(fileNameSpan.innerText);
                 fileNameSpan.innerText = truncateFileName(fileNameSpan);
-                console.log(fileNameComponents)
                 //
                 // const formattedHtml = "<span class='filename-text-name'>"+fileNameComponents[0] + "</span>" +
                 //     "<span class='filename-text-ext'>"+fileNameComponents[1] + "</span>"
