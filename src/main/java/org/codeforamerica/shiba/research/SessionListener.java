@@ -24,6 +24,8 @@ public class SessionListener implements HttpSessionListener {
         if (applicationData != null && !applicationData.getPagesData().isEmpty()) {
             researchDataRepository.save(researchDataParser.parse(applicationData));
         }
+
+        // Maybe we could tell sentry the session ended here?
     }
 
 }
