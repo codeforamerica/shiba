@@ -675,7 +675,7 @@ input[type=number] {
 }
 
 .filename-text-name {
-    width: 90%;
+    max-width: 75%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -683,7 +683,7 @@ input[type=number] {
 }
 
 .filename-text-ext {
-    width: 10%;
+    width: 25%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: clip;
