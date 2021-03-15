@@ -258,20 +258,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     @Test
-    void deletingUploadedFileShouldLoadDocumentRecommendationScreenIfOneFileUploaded() {
-        getToDocumentUploadScreen();
-        uploadDefaultFile();
-
-        testPage.clickLink("delete");
-
-        assertThat(testPage.getTitle()).isEqualTo("Delete a file");
-        testPage.clickButton("Yes, delete the file");
-
-        assertThat(testPage.getTitle()).isEqualTo("Document Recommendation");
-    }
-
-    @Test
-    void deletingUploadedFileShouldLoadDocumentUploadScreenIfMoreThanOneFileIsUploaded() {
+    void deletingUploadedFileShouldLoadDocumentUploadScreenUponConfirmDeletion() {
         getToDocumentUploadScreen();
         uploadDefaultFile();
         uploadDefaultFile();

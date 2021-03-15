@@ -330,9 +330,7 @@ public class PageController {
     @PostMapping("/remove-upload/{filename}")
     ModelAndView removeUpload(@PathVariable String filename) {
         this.applicationData.removeUploadedDoc(filename);
-        if (this.applicationData.getUploadedDocs().isEmpty()) {
-            return new ModelAndView("redirect:/pages/documentRecommendation");
-        }
+
         return new ModelAndView("redirect:/pages/uploadDocuments");
     }
 
