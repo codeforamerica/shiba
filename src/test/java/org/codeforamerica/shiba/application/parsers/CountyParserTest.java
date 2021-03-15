@@ -58,6 +58,19 @@ class CountyParserTest {
     }
 
     @Test
+    void shouldParseCountyWithASpace() {
+        applicationData.setPagesData(new PagesDataBuilder().build(List.of(
+                new PageDataBuilder("homeAddressPageName", Map.of(
+                        "addressLine6", List.of("Otter Tail"))
+                )
+        )));
+
+        County county = countyParser.parse(applicationData);
+
+        assertThat(county).isEqualTo(County.OtterTail);
+    }
+
+    @Test
     void shouldParseCountyFromMailingAddressWhenHomelessAndDifferentMailingAddress() {
         applicationData.setPagesData(new PagesDataBuilder().build(List.of(
                 new PageDataBuilder("mailingAddressPageName", Map.of(

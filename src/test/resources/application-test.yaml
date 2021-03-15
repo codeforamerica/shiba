@@ -23,6 +23,7 @@ mail-gun:
 
 feature-flag:
   submit-via-email: on
+  county-ottertail: on
 
 mnit-esb:
   max-attempts: 4
