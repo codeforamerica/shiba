@@ -7,12 +7,24 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class FilterConfig {
+    SessionLogFilter sessionLogFilter;
+
+    public FilterConfig(SessionLogFilter sessionLogFilter) {
+        this.sessionLogFilter = sessionLogFilter;
+    }
+
     @Bean
-    public FilterRegistrationBean<SessionLogFilter> loggingFilter(){
+    public FilterRegistrationBean<SessionLogFilter> loggingFilter() {
         FilterRegistrationBean<SessionLogFilter> registrationBean = new FilterRegistrationBean<>();
 
-        registrationBean.setFilter(new SessionLogFilter());
-        registrationBean.addUrlPatterns("/pages/*");
+        registrationBean.setFilter(sessionLogFilter);
+        registrationBean.addUrlPatterns(
+                "/pages/*",
+                "/groups/*",
+                "/remove-upload/*",
+                "/submit",
+                "/submit-feedback"
+        );
 
         return registrationBean;
     }

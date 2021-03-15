@@ -39,21 +39,18 @@ public class MnitEsbWebServiceClient {
     private final String username;
     private final String password;
     private final CountyMap<MnitCountyInformation> countyMap;
-    private final MonitoringService monitoringService;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public MnitEsbWebServiceClient(WebServiceTemplate webServiceTemplate,
                                    Clock clock,
                                    @Value("${mnit-esb.username}") String username,
                                    @Value("${mnit-esb.password}") String password,
-                                   CountyMap<MnitCountyInformation> countyMap,
-                                   MonitoringService monitoringService) {
+                                   CountyMap<MnitCountyInformation> countyMap) {
         this.webServiceTemplate = webServiceTemplate;
         this.clock = clock;
         this.username = username;
         this.password = password;
         this.countyMap = countyMap;
-        this.monitoringService = monitoringService;
     }
 
     @Retryable(
@@ -116,8 +113,7 @@ public class MnitEsbWebServiceClient {
 
     @Recover
     public void logErrorToSentry(Exception e, ApplicationFile applicationFile) {
-        log.info("Application failed to send: " + applicationFile.getFileName());
-        monitoringService.sendException(e);
+        log.error("Application failed to send: " + applicationFile.getFileName(), e);
     }
 
     @NotNull

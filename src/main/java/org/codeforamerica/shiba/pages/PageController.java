@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.MonitoringService;
+import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
@@ -38,6 +38,7 @@ import java.util.Map;
 import static java.util.Optional.ofNullable;
 
 @Controller
+@Slf4j
 public class PageController {
     private static final ZoneId CENTRAL_TIMEZONE = ZoneId.of("America/Chicago");
     private final ApplicationData applicationData;
@@ -50,7 +51,6 @@ public class PageController {
     private final ApplicationEnrichment applicationEnrichment;
     private final ApplicationDataParser<List<Document>> documentListParser;
     private final FeatureFlagConfiguration featureFlags;
-    private final MonitoringService monitoringService;
 
     public PageController(
             ApplicationConfiguration applicationConfiguration,
@@ -62,8 +62,7 @@ public class PageController {
             PageEventPublisher pageEventPublisher,
             ApplicationEnrichment applicationEnrichment,
             ApplicationDataParser<List<Document>> documentListParser,
-            FeatureFlagConfiguration featureFlags,
-            MonitoringService monitoringService) {
+            FeatureFlagConfiguration featureFlags) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
@@ -74,12 +73,10 @@ public class PageController {
         this.applicationEnrichment = applicationEnrichment;
         this.documentListParser = documentListParser;
         this.featureFlags = featureFlags;
-        this.monitoringService = monitoringService;
     }
 
     @GetMapping("/")
     ModelAndView getRoot() {
-        monitoringService.setPage("/landing", "Viewing page");
         return new ModelAndView("forward:/pages/" + applicationConfiguration.getLandmarkPages().getLandingPages().get(0));
     }
 
@@ -145,7 +142,6 @@ public class PageController {
             HttpServletResponse response,
             HttpSession httpSession
     ) {
-        monitoringService.setPage(pageName, "Viewing page");
         LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
 
         if (landmarkPagesConfiguration.isLandingPage(pageName)) {
@@ -226,7 +222,7 @@ public class PageController {
                 model.put("subworkflows", pageWorkflow.getSubworkflows(applicationData));
                 if (iterationIndex != null && !iterationIndex.isBlank()) {
                     model.put("iterationData", pageWorkflow.getSubworkflows(applicationData)
-                        .get(pageWorkflow.getAppliesToGroup()).get(Integer.parseInt(iterationIndex)));
+                            .get(pageWorkflow.getAppliesToGroup()).get(Integer.parseInt(iterationIndex)));
                 }
             } else {
                 return new ModelAndView("redirect:/pages/" + pageWorkflow.getDataMissingRedirect());
@@ -282,7 +278,6 @@ public class PageController {
             @PathVariable String pageName,
             HttpSession httpSession
     ) {
-        monitoringService.setPage(pageName, "Saving page");
         PageWorkflowConfiguration pageWorkflow = applicationConfiguration.getPageWorkflow(pageName);
 
         PageConfiguration page = pageWorkflow.getPageConfiguration();

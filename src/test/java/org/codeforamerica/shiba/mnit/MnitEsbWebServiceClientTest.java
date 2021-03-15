@@ -81,9 +81,6 @@ class MnitEsbWebServiceClientTest {
 
     private MockWebServiceServer mockWebServiceServer;
 
-    @MockBean
-    private MonitoringService monitoringService;
-
     private final Map<String, String> namespaceMapping = Map.of("ns2", "http://www.cmis.org/2008/05");
     String fileContent = "fileContent";
     String fileName = "fileName";
@@ -140,7 +137,6 @@ class MnitEsbWebServiceClientTest {
         mnitEsbWebServiceClient.send(new ApplicationFile(fileContent.getBytes(), fileName), County.Olmsted, "someId", Document.CAF);
 
         mockWebServiceServer.verify();
-        verifyNoInteractions(monitoringService);
     }
 
     @Test
@@ -161,7 +157,6 @@ class MnitEsbWebServiceClientTest {
         mnitEsbWebServiceClient.send(new ApplicationFile(fileContent.getBytes(), fileName), County.Olmsted, "someId", Document.CAF);
 
         mockWebServiceServer.verify();
-        verify(monitoringService).sendException(exceptionToSend);
     }
 
     @Test
