@@ -276,10 +276,13 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         getToDocumentUploadScreen();
 
         String filename = "very_long_file_name_that_should_truncate.jpeg";
-        String truncatedName = "very_long_file...jpeg";
+        String filenameName = "very_long_file_name_that_should_truncate";
+        String filenameExtension = ".jpeg";
         uploadFile(getAbsoluteFilepath(filename));
 
-        assertThat(driver.findElement(By.id("document-upload")).getText()).contains(truncatedName);
+
+        assertThat(driver.findElement(By.className("filename-text-name")).getText()).contains(filenameName);
+        assertThat(driver.findElement(By.className("filename-text-ext")).getText()).contains(filenameExtension);
     }
 
     @Test
