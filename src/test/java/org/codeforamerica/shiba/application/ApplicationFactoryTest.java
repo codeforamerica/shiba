@@ -93,7 +93,7 @@ class ApplicationFactoryTest {
     }
 
     @Test
-    void shouldSendApplicationIdToMonitoringService() {
+    void shouldAddApplicationIdToMonitoringServiceForSentry() {
         applicationFactory.newApplication("appId", applicationData);
 
         verify(monitoringService).setApplicationId("appId");

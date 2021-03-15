@@ -61,7 +61,6 @@ class PageControllerTest {
     PageEventPublisher pageEventPublisher = mock(PageEventPublisher.class);
     ApplicationDataParser<List<Document>> documentListParser = mock(DocumentListParser.class);
     FeatureFlagConfiguration featureFlags = mock(FeatureFlagConfiguration.class);
-    MonitoringService monitoringService = mock(MonitoringService.class);
 
     @Autowired
     ApplicationConfiguration applicationConfiguration;
@@ -79,8 +78,7 @@ class PageControllerTest {
                 pageEventPublisher,
                 applicationEnrichment,
                 documentListParser,
-                featureFlags,
-                monitoringService
+                featureFlags
         );
 
         mockMvc = MockMvcBuilders.standaloneSetup(pageController)
@@ -95,13 +93,6 @@ class PageControllerTest {
                 .build());
         messageSource.addMessage("success.feedback-success", Locale.ENGLISH, "default success message");
         messageSource.addMessage("success.feedback-failure", Locale.ENGLISH, "default failure message");
-    }
-
-    @Test
-    void gettingAPageCallsMonitoringService() throws Exception {
-        mockMvc.perform(get("/"));
-
-        verify(monitoringService).setPage("/landing", "Viewing page");
     }
 
     @Test
