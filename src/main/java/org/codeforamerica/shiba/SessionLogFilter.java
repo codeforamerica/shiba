@@ -45,12 +45,8 @@ public class SessionLogFilter implements Filter {
         MDC.put("sessionId", httpReq.getSession().getId());
         MDC.put("pagesData", objectMapper.writeValueAsString(applicationData.getPagesData()));
         log.info(httpReq.getMethod() + " " + httpReq.getRequestURI());
-
-        User user = new User();
-        user.setId(httpReq.getSession().getId());
-        Sentry.setExtra("pagesData", MDC.get("pagesData"));
-        Sentry.setUser(user);
-
+        monitoringService.setSessionId(httpReq.getSession().getId());
+        monitoringService.setPagesData(MDC.get("pagesData"));
         if (applicationData.getId() != null) {
             monitoringService.setApplicationId(applicationData.getId());
         }
