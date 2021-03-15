@@ -133,13 +133,12 @@ public class MnitEsbWebServiceClient {
         String docDescription = String.format("Associated with MNBenefits Application #%s", applicationNumber);
         if (applicationDocument== Document.CAF || applicationDocument==Document.CCAP) {
         	if (applicationFile.getFileName().toLowerCase().endsWith(".xml")) {
-            	docDescription = String.format("XML representation of MNBenefits Application #%s", applicationNumber);
+            	docDescription = String.format("XML of MNBenefits Application #%s", applicationNumber);
         	}
         	else if (applicationFile.getFileName().toLowerCase().endsWith(".pdf")) {
-            	docDescription = String.format("PDF representation of MNBenefits Application #%s", applicationNumber);
+            	docDescription = String.format("PDF of MNBenefits %s Application #%s", applicationDocument.toString(), applicationNumber);
         	}
         }
-System.out.println("Doc description: " + docDescription);
         return docDescription;
     }
 
