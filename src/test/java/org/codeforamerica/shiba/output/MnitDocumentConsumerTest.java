@@ -92,8 +92,8 @@ class MnitDocumentConsumerTest {
                 .build();
         documentConsumer.process(application);
 
-        verify(mnitClient).send(pdfApplicationFile, County.Olmsted);
-        verify(mnitClient).send(xmlApplicationFile, County.Olmsted);
+        verify(mnitClient).send(pdfApplicationFile, County.Olmsted, application.getId(), Document.CAF);
+        verify(mnitClient).send(xmlApplicationFile, County.Olmsted, application.getId(), Document.CAF);
     }
 
     @Test
@@ -121,7 +121,7 @@ class MnitDocumentConsumerTest {
                 .build();
         documentConsumer.process(application);
 
-        verify(mnitClient).send(pdfApplicationFile, County.Olmsted);
+        verify(mnitClient).send(pdfApplicationFile, County.Olmsted, application.getId(), Document.CCAP);
     }
 
     @Test

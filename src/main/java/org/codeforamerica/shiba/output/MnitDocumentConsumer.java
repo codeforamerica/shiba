@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
 @Component
@@ -38,8 +37,9 @@ public class MnitDocumentConsumer {
         monitoringService.setApplicationId(application.getId());
 
         documentListParser.parse(application.getApplicationData()).forEach(documentType -> mnitClient.send(
-                pdfGenerator.generate(application.getId(), documentType, CASEWORKER), application.getCounty())
+                pdfGenerator.generate(application.getId(), documentType, CASEWORKER), application.getCounty(), 
+                application.getId(), documentType)
         );
-        mnitClient.send(xmlGenerator.generate(application.getId(), CAF, CASEWORKER), application.getCounty());
+        mnitClient.send(xmlGenerator.generate(application.getId(), Document.CAF, CASEWORKER), application.getCounty(), application.getId(), Document.CAF);
     }
 }

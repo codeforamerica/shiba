@@ -8,6 +8,7 @@ import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.esbwsdl.*;
 import org.codeforamerica.shiba.output.ApplicationFile;
+import org.codeforamerica.shiba.output.Document;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
@@ -65,7 +66,7 @@ public class MnitEsbWebServiceClient {
             ),
             listeners = {"esbRetryListener"}
     )
-    public void send(ApplicationFile applicationFile, County county) {
+    public void send(ApplicationFile applicationFile, County county, String applicationNumber, Document applicationDocument) {
         MDC.put("applicationFile", applicationFile.getFileName());
         CreateDocument createDocument = new CreateDocument();
         createDocument.setFolderId("workspace://SpacesStore/" + countyMap.get(county).getFolderId());
@@ -76,7 +77,7 @@ public class MnitEsbWebServiceClient {
         List<CmisProperty> propertyUris = properties.getPropertyUriOrPropertyIdOrPropertyString();
         CmisPropertyString fileNameProperty = createCmisPropertyString("Name", applicationFile.getFileName());
         CmisPropertyString subject = createCmisPropertyString("subject", "MN Benefits Application");
-        CmisPropertyString description = createCmisPropertyString("description", "Sent by Code for America");
+        CmisPropertyString description = createCmisPropertyString("description", generateDocumentDescription(applicationFile, applicationDocument, applicationNumber ));
         CmisPropertyString dhsProviderId = createCmisPropertyString("dhsProviderId", countyMap.get(county).getDhsProviderId());
         propertyUris.addAll(List.of(fileNameProperty, subject, description, description, dhsProviderId));
         createDocument.setProperties(properties);
@@ -125,6 +126,21 @@ public class MnitEsbWebServiceClient {
         fileNameProperty.setName(property);
         fileNameProperty.setValue(value);
         return fileNameProperty;
+    }
+    
+    @NotNull
+    private String generateDocumentDescription(ApplicationFile applicationFile, Document applicationDocument, String applicationNumber) {
+        String docDescription = String.format("Associated with MNBenefits Application #%s", applicationNumber);
+        if (applicationDocument== Document.CAF || applicationDocument==Document.CCAP) {
+        	if (applicationFile.getFileName().toLowerCase().endsWith(".xml")) {
+            	docDescription = String.format("XML representation of MNBenefits Application #%s", applicationNumber);
+        	}
+        	else if (applicationFile.getFileName().toLowerCase().endsWith(".pdf")) {
+            	docDescription = String.format("PDF representation of MNBenefits Application #%s", applicationNumber);
+        	}
+        }
+System.out.println("Doc description: " + docDescription);
+        return docDescription;
     }
 
 }
