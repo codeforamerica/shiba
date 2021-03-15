@@ -22,6 +22,4 @@ public class SentryClient implements MonitoringService {
     public void setPagesData(String pagesData) {
         Sentry.setExtra("pagesData", pagesData);
     }
-
-
 }
