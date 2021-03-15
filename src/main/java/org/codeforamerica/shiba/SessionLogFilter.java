@@ -39,6 +39,7 @@ public class SessionLogFilter implements Filter {
 
         User user = new User();
         user.setId(httpReq.getSession().getId());
+        Sentry.setExtra("pagesData", MDC.get("pagesData"));
         Sentry.setUser(user);
 
         chain.doFilter(request, response);
