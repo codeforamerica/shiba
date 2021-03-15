@@ -88,6 +88,9 @@ public class PageController {
         return "privacyPolicy";
     }
 
+    @GetMapping("/faq")
+    String getFaq() { return "faq"; }
+
     @GetMapping("/pages/{pageName}/navigation")
     RedirectView navigation(
             @PathVariable String pageName,
