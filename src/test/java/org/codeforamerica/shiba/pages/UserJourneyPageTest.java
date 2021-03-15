@@ -1021,23 +1021,6 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     @Test
-    void shouldAskLivingSituationIfGRHHouseholdMember() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of("Emergency Assistance"));
-        testPage.clickLink("This looks correct");
-        testPage.enter("addHouseholdMembers", YES.getDisplayValue());
-        testPage.clickContinue();
-        fillOutHousemateInfo("Housing Support (GRH)");
-        testPage.clickContinue();
-        testPage.clickButton("Yes, that's everyone");
-
-        navigateTo("unearnedIncome");
-        testPage.enter("unearnedIncome", "None of the above");
-        testPage.clickContinue();
-
-        assertThat(driver.getTitle()).isEqualTo("Living situation");
-    }
-
-    @Test
     void shouldNotAskLivingSituationIfNotCCAPorGRH() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Emergency Assistance"));
         testPage.clickLink("This looks correct");

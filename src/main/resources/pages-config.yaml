@@ -75,11 +75,6 @@ conditionDefinitions:
     value: EA
     input: programs
     matcher: DOES_NOT_CONTAIN
-  - &householdMemberDidNotChooseGRH?
-    pageName: householdMemberInfo
-    value: GRH
-    input: programs
-    matcher: DOES_NOT_CONTAIN
 compositeConditionDefinitions:
   - &noOneChoseCCAP?
     logicalOperator: AND
@@ -122,10 +117,6 @@ compositeConditionDefinitions:
     compositeConditions:
       - conditions:
           - *applicantDidNotChooseGRH?
-      - logicalOperator: OR
-        conditions:
-          - *householdMemberDidNotChooseGRH?
-          - *livesAlone?
 pageDefinitions:
   - &landing
     name: landing
@@ -633,7 +624,6 @@ pageDefinitions:
           - SNAP
           - CASH
           - EA
-          - GRH
           - CCAP
         followUps:
           - name: ssn
@@ -660,8 +650,6 @@ pageDefinitions:
               messageKey: choose-programs.emergency-assistance
             - value: CCAP
               messageKey: choose-programs.child-care-assistance
-            - value: GRH
-              messageKey: choose-programs.housing-support-group-residential-housing
             - value: NONE
               messageKey: general.inputs.none-of-the-above
               isNone: true
@@ -2598,7 +2586,6 @@ workflow:
               compositeConditions:
                 - conditions:
                   - *householdMemberDidNotChooseCCAP?
-                  - *householdMemberDidNotChooseGRH?
                 - conditions:
                   - *livesAlone?
     datasources:
