@@ -76,58 +76,11 @@
         dragAndDropBox.classList.remove("drag-over");
     }
 
-    const truncateFileName = (elementContainer) => {
-        // test full filename width against container width
-        // if it doesn't fit:
-        // loop:
-        //   test successively truncated filename + extension against full container width
-
-        // element with truncation for inital css auto-truncation [aaaaaam...]
-        // get the possibly-truncated string out, stick it in a normal span that autosizes to it
-        // have the extension in a normal span after that
-
-        // get untruncated text width
-        // get container width
-        // use container width to see how much of text should be truncated
-
-        const name = elementContainer.innerText
-        const containerWidth = elementContainer.clientWidth
-
-        const charactersPerPixel = 0.08
-
-        const MAX_LEN = containerWidth * charactersPerPixel
-        console.log(MAX_LEN)
-        if (name.length > MAX_LEN) {
-
-            if (name.includes("."))
-            {
-                const splitUpName = name.split('.');
-                const firstPart = splitUpName.slice(0, -1).join('.')
-                const ext = splitUpName.slice(-1)
-                const extLen = ext[0].length
-
-                return `${firstPart.slice(0, MAX_LEN - extLen)}…${ext}`
-            }
-            else
-            {
-                return `${name.slice(0, MAX_LEN)}…`
-            }
-
-        }
-
-        return name;
-    }
-
     const getFilenameComponents = (name) => {
             const extIdx = name.lastIndexOf('.');
             return extIdx === -1 ? [name] : [name.slice(0, extIdx), name.slice(extIdx+1, name.length)];
     }
 
-    // On page load, truncate all filenames
-    const persistedFileNames = document.getElementsByClassName('persisted-file-name');
-    for (const p of persistedFileNames) {
-        p.innerText = truncateFileName(p.innerText);
-    }
     var myDropZone;
     $("#document-upload").dropzone({
         uploadMultiple: false,
@@ -145,7 +98,7 @@
                     <div class="dz-filename"><div class="filename-text" data-dz-name></div></div>
                     <div class="display-flex body-gray file-details">
                         <div class="dz-size" data-dz-size></div>
-                        <span class="file-details-delimiter">•</span>
+                        <span class="file-details-delimiter" aria-hidden="true">•</span>
                         <a class="dz-remove" href="#">delete</a>
                     </div>
                 </div>
@@ -159,12 +112,11 @@
             myDropZone = this;
             this.on('addedfile', file => {
                 const fileNameSpan = file.previewElement.getElementsByClassName('filename-text')[0]
-                // const fileNameComponents = getFilenameComponents(fileNameSpan.innerText);
-                fileNameSpan.innerText = truncateFileName(fileNameSpan);
-                //
-                // const formattedHtml = "<span class='filename-text-name'>"+fileNameComponents[0] + "</span>" +
-                //     "<span class='filename-text-ext'>"+fileNameComponents[1] + "</span>"
-                // fileNameSpan.innerHTML = formattedHtml
+                fileNameSpan.setAttribute('aria-label', fileNameSpan.innerText)
+                const fileNameComponents = getFilenameComponents(fileNameSpan.innerText);
+                const formattedHtml = "<span class='filename-text-name' aria-hidden='true'>"+fileNameComponents[0] + "</span>" +
+                    "<span class='filename-text-ext' aria-hidden='true'>."+fileNameComponents[1] + "</span>"
+                fileNameSpan.innerHTML = formattedHtml
 
                 const removeLink = file.previewElement.getElementsByClassName("dz-remove")[0];
                 const fileName = file.name;

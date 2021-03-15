@@ -669,9 +669,6 @@ input[type=number] {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: clip;
-
-    font-family: monospace;
-    font-weight: lighter;
 }
 
 .filename-text-name {
