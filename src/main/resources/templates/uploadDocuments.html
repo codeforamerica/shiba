@@ -76,9 +76,18 @@
         dragAndDropBox.classList.remove("drag-over");
     }
 
-    const getFilenameComponents = (name) => {
-            const extIdx = name.lastIndexOf('.');
-            return extIdx === -1 ? [name] : [name.slice(0, extIdx), name.slice(extIdx+1, name.length)];
+    const getFilenameComponents = (element) => {
+        const name = element.innerText
+        const extIdx = name.lastIndexOf('.');
+        if (extIdx === -1) {
+            return [name, ""];
+        }
+
+        let extStr = name.slice(extIdx + 1, name.length);
+        if (element.scrollWidth <= element.clientWidth) {
+            extStr = "." + extStr;
+        }
+        return [name.slice(0, extIdx), extStr];
     }
 
     var myDropZone;
@@ -113,10 +122,9 @@
             this.on('addedfile', file => {
                 const fileNameSpan = file.previewElement.getElementsByClassName('filename-text')[0]
                 fileNameSpan.setAttribute('aria-label', fileNameSpan.innerText)
-                const fileNameComponents = getFilenameComponents(fileNameSpan.innerText);
-                const formattedHtml = "<span class='filename-text-name' aria-hidden='true'>"+fileNameComponents[0] + "</span>" +
-                    "<span class='filename-text-ext' aria-hidden='true'>."+fileNameComponents[1] + "</span>"
-                fileNameSpan.innerHTML = formattedHtml
+                const fileNameComponents = getFilenameComponents(fileNameSpan);
+                fileNameSpan.innerHTML = "<span class='filename-text-name' aria-hidden='true'>" + fileNameComponents[0] + "</span>" +
+                    "<span class='filename-text-ext' aria-hidden='true'>" + fileNameComponents[1] + "</span>"
 
                 const removeLink = file.previewElement.getElementsByClassName("dz-remove")[0];
                 const fileName = file.name;

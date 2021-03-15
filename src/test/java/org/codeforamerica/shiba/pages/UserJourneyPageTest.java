@@ -277,7 +277,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
         String filename = "very_long_file_name_that_should_truncate.jpeg";
         String filenameName = "very_long_file_name_that_should_truncate";
-        String filenameExtension = ".jpeg";
+        String filenameExtension = "jpeg";
         uploadFile(getAbsoluteFilepath(filename));
 
 
