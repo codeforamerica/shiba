@@ -2,8 +2,6 @@ package org.codeforamerica.shiba;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import io.sentry.Sentry;
-import io.sentry.protocol.User;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.MaskedSerializer;
