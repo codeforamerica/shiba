@@ -1,10 +1,12 @@
 package org.codeforamerica.shiba.metrics;
 
 import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.application.*;
+import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.application.ApplicationFactory;
+import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.*;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -24,8 +26,7 @@ import java.util.Map;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -37,8 +38,6 @@ class ApplicationRepositoryTest {
     @Autowired
     ApplicationRepository applicationRepository;
 
-    @SuppressWarnings("unchecked")
-    Encryptor<ApplicationData> mockEncryptor = mock(Encryptor.class);
 
     @Autowired
     JdbcTemplate jdbcTemplate;
@@ -48,8 +47,6 @@ class ApplicationRepositoryTest {
 
     @MockBean
     Clock clock;
-
-    ApplicationRepository applicationRepositoryWithMockEncryptor;
 
     @Test
     void shouldGenerateIdForNextApplication() {
@@ -180,104 +177,104 @@ class ApplicationRepositoryTest {
         assertThat(retrievedApplication).usingRecursiveComparison().ignoringFields("fileName").isEqualTo(updatedApplication);
     }
 
-    @Nested
-    @SpringBootTest
-    @ExtendWith(SpringExtension.class)
-    @ActiveProfiles("test")
-    @Sql(statements = {"TRUNCATE TABLE applications"})
-    class EncryptionAndDecryption {
-        @BeforeEach
-        void setUp() {
-            applicationRepositoryWithMockEncryptor = new ApplicationRepository(jdbcTemplate, mockEncryptor, applicationFactory, clock);
-            when(mockEncryptor.encrypt(any())).thenReturn("default encrypted data".getBytes());
-        }
-
-        @Test
-        void shouldEncryptApplicationData() {
-            ApplicationData applicationData = new ApplicationData();
-            Application application = Application.builder()
-                    .id("someid")
-                    .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
-                    .applicationData(applicationData)
-                    .county(Olmsted)
-                    .timeToComplete(Duration.ofSeconds(1))
-                    .build();
-
-            applicationRepositoryWithMockEncryptor.save(application);
-
-            verify(mockEncryptor).encrypt(applicationData);
-        }
-
-        @Test
-        void shouldStoreEncryptedApplicationData() {
-            ApplicationData applicationData = new ApplicationData();
-            Application application = Application.builder()
-                    .id("someid")
-                    .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
-                    .applicationData(applicationData)
-                    .county(Olmsted)
-                    .timeToComplete(Duration.ofSeconds(1))
-                    .build();
-            byte[] expectedEncryptedData = "here is the encrypted data".getBytes();
-            when(mockEncryptor.encrypt(any())).thenReturn(expectedEncryptedData);
-
-            applicationRepositoryWithMockEncryptor.save(application);
-
-            byte[] actualEncryptedData = jdbcTemplate.queryForObject(
-                    "SELECT encrypted_data " +
-                            "FROM applications " +
-                            "WHERE id = 'someid'", byte[].class);
-            assertThat(actualEncryptedData).isEqualTo(expectedEncryptedData);
-        }
-
-        @Test
-        void shouldDecryptApplicationData() {
-            ApplicationData applicationData = new ApplicationData();
-            String applicationId = "someid";
-            Application application = Application.builder()
-                    .id(applicationId)
-                    .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
-                    .applicationData(applicationData)
-                    .county(Olmsted)
-                    .timeToComplete(Duration.ofSeconds(1))
-                    .build();
-            byte[] encryptedData = "here is the encrypted data".getBytes();
-            when(mockEncryptor.encrypt(any())).thenReturn(encryptedData);
-            ApplicationData decryptedApplicationData = new ApplicationData();
-            decryptedApplicationData.setPagesData(new PagesData(Map.of("somePage", new PageData(Map.of("someInput", InputData.builder().value(List.of("CASH")).build())))));
-            when(mockEncryptor.decrypt(any())).thenReturn(decryptedApplicationData);
-
-            applicationRepositoryWithMockEncryptor.save(application);
-
-            applicationRepositoryWithMockEncryptor.find(applicationId);
-
-            verify(mockEncryptor).decrypt(encryptedData);
-        }
-
-        @Test
-        void shouldUseDecryptedApplicationDataForTheRetrievedApplication() {
-            ApplicationData applicationData = new ApplicationData();
-            applicationData.setPagesData(new PagesData(Map.of("somePage", new PageData())));
-            String applicationId = "someid";
-            Application application = Application.builder()
-                    .id(applicationId)
-                    .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
-                    .applicationData(applicationData)
-                    .county(Olmsted)
-                    .timeToComplete(Duration.ofSeconds(1))
-                    .build();
-            ApplicationData decryptedApplicationData = new ApplicationData();
-            decryptedApplicationData.setPagesData(new PagesData(Map.of("somePage", new PageData(Map.of("someInput", InputData.builder().value(List.of("CASH")).build())))));
-
-            when(mockEncryptor.decrypt(any())).thenReturn(decryptedApplicationData);
-
-            applicationRepositoryWithMockEncryptor.save(application);
-
-            Application retrievedApplication = applicationRepositoryWithMockEncryptor.find(applicationId);
-
-            assertThat(retrievedApplication.getApplicationData()).isEqualTo(decryptedApplicationData);
-        }
-    }
+//    @Nested
+//    @SpringBootTest
+//    @ExtendWith(SpringExtension.class)
+//    @ActiveProfiles("test")
+//    @Sql(statements = {"TRUNCATE TABLE applications"})
+//    class EncryptionAndDecryption {
+//        @BeforeEach
+//        void setUp() {
+//            applicationRepositoryWithMockEncryptor = new ApplicationRepository(jdbcTemplate, mockEncryptor, applicationFactory, clock);
+//            when(mockEncryptor.encrypt(any())).thenReturn("default encrypted data".getBytes());
+//        }
+//
+//        @Test
+//        void shouldEncryptApplicationData() {
+//            ApplicationData applicationData = new ApplicationData();
+//            Application application = Application.builder()
+//                    .id("someid")
+//                    .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
+//                    .applicationData(applicationData)
+//                    .county(Olmsted)
+//                    .timeToComplete(Duration.ofSeconds(1))
+//                    .build();
+//
+//            applicationRepositoryWithMockEncryptor.save(application);
+//
+//            verify(mockEncryptor).encrypt(applicationData);
+//        }
+//
+//        @Test
+//        void shouldStoreEncryptedApplicationData() {
+//            ApplicationData applicationData = new ApplicationData();
+//            Application application = Application.builder()
+//                    .id("someid")
+//                    .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
+//                    .applicationData(applicationData)
+//                    .county(Olmsted)
+//                    .timeToComplete(Duration.ofSeconds(1))
+//                    .build();
+//            byte[] expectedEncryptedData = "here is the encrypted data".getBytes();
+//            when(mockEncryptor.encrypt(any())).thenReturn(expectedEncryptedData);
+//
+//            applicationRepositoryWithMockEncryptor.save(application);
+//
+//            byte[] actualEncryptedData = jdbcTemplate.queryForObject(
+//                    "SELECT encrypted_data " +
+//                            "FROM applications " +
+//                            "WHERE id = 'someid'", byte[].class);
+//            assertThat(actualEncryptedData).isEqualTo(expectedEncryptedData);
+//        }
+//
+//        @Test
+//        void shouldDecryptApplicationData() {
+//            ApplicationData applicationData = new ApplicationData();
+//            String applicationId = "someid";
+//            Application application = Application.builder()
+//                    .id(applicationId)
+//                    .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
+//                    .applicationData(applicationData)
+//                    .county(Olmsted)
+//                    .timeToComplete(Duration.ofSeconds(1))
+//                    .build();
+//            byte[] encryptedData = "here is the encrypted data".getBytes();
+//            when(mockEncryptor.encrypt(any())).thenReturn(encryptedData);
+//            ApplicationData decryptedApplicationData = new ApplicationData();
+//            decryptedApplicationData.setPagesData(new PagesData(Map.of("somePage", new PageData(Map.of("someInput", InputData.builder().value(List.of("CASH")).build())))));
+//            when(mockEncryptor.decrypt(any())).thenReturn(decryptedApplicationData);
+//
+//            applicationRepositoryWithMockEncryptor.save(application);
+//
+//            applicationRepositoryWithMockEncryptor.find(applicationId);
+//
+//            verify(mockEncryptor).decrypt(encryptedData);
+//        }
+//
+//        @Test
+//        void shouldUseDecryptedApplicationDataForTheRetrievedApplication() {
+//            ApplicationData applicationData = new ApplicationData();
+//            applicationData.setPagesData(new PagesData(Map.of("somePage", new PageData())));
+//            String applicationId = "someid";
+//            Application application = Application.builder()
+//                    .id(applicationId)
+//                    .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
+//                    .applicationData(applicationData)
+//                    .county(Olmsted)
+//                    .timeToComplete(Duration.ofSeconds(1))
+//                    .build();
+//            ApplicationData decryptedApplicationData = new ApplicationData();
+//            decryptedApplicationData.setPagesData(new PagesData(Map.of("somePage", new PageData(Map.of("someInput", InputData.builder().value(List.of("CASH")).build())))));
+//
+//            when(mockEncryptor.decrypt(any())).thenReturn(decryptedApplicationData);
+//
+//            applicationRepositoryWithMockEncryptor.save(application);
+//
+//            Application retrievedApplication = applicationRepositoryWithMockEncryptor.find(applicationId);
+//
+//            assertThat(retrievedApplication.getApplicationData()).isEqualTo(decryptedApplicationData);
+//        }
+//    }
 
     @Nested
     @SpringBootTest

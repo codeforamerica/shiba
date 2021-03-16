@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.pages.data;
 
 import lombok.Data;
 import org.codeforamerica.shiba.application.FlowType;
+import org.codeforamerica.shiba.application.StringEncryptor;
 import org.codeforamerica.shiba.application.parsers.PageInputCoordinates;
 import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.pages.config.*;
@@ -21,6 +22,7 @@ public class ApplicationData {
     private Subworkflows subworkflows = new Subworkflows();
     private Map<String, PagesData> incompleteIterations = new HashMap<>();
     private List<UploadedDocument> uploadedDocs = new ArrayList<>();
+    private StringEncryptor stringEncryptor;
 
     public void setStartTimeOnce(Instant instant) {
         if (startTime == null) {
@@ -139,5 +141,17 @@ public class ApplicationData {
                 .filter(uploadedDocument -> uploadedDocument.getFilename().equals(fileToDelete))
                 .findFirst().orElse(null);
         uploadedDocs.remove(toRemove);
+    }
+
+    public ApplicationData encrypted() {
+        String applicantSSN = this.getPagesData().safeGetPageInputValue("personalInfo", "ssn").get(0);
+        this.getPagesData().getPage("personalInfo").get("ssn").setValue(stringEncryptor.encrypt(applicantSSN).toString(), 0);
+        return this;
+
+
+//        boolean hasHousehold = this.getSubworkflows().containsKey("household");
+//        if (hasHousehold) {
+//            List<String> householdSSNs = this.getSubworkflows().get("household").stream().map(iteration -> iteration.getPagesData().safeGetPageInputValue("householdMemberInfo", "ssn").get(0)).collect(Collectors.toList());
+//        }
     }
 }

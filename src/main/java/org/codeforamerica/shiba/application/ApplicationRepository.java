@@ -1,5 +1,7 @@
 package org.codeforamerica.shiba.application;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -21,15 +23,18 @@ public class ApplicationRepository {
     private final Encryptor<ApplicationData> encryptor;
     private final ApplicationFactory applicationFactory;
     private final Clock clock;
+    private final ObjectMapper objectMapper;
 
     public ApplicationRepository(JdbcTemplate jdbcTemplate,
                                  Encryptor<ApplicationData> encryptor,
                                  ApplicationFactory applicationFactory,
-                                 Clock clock) {
+                                 Clock clock,
+                                 ObjectMapper objectMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.encryptor = encryptor;
         this.applicationFactory = applicationFactory;
         this.clock = clock;
+        this.objectMapper = objectMapper;
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -48,22 +53,27 @@ public class ApplicationRepository {
     }
 
     public void save(Application application) {
-        HashMap<String, Object> parameters = new HashMap<>(Map.of(
-                "id", application.getId(),
-                "completedAt", Timestamp.from(application.getCompletedAt().toInstant()),
-                "encryptedData", encryptor.encrypt(application.getApplicationData()),
-                "county", application.getCounty().name(),
-                "timeToComplete", application.getTimeToComplete().getSeconds()
-        ));
+        HashMap<String, Object> parameters = null;
+        try {
+            parameters = new HashMap<>(Map.of(
+                    "id", application.getId(),
+                    "completedAt", Timestamp.from(application.getCompletedAt().toInstant()),
+                    "jsonData", objectMapper.writeValueAsString(application.getApplicationData().encrypted()),
+                    "county", application.getCounty().name(),
+                    "timeToComplete", application.getTimeToComplete().getSeconds()
+            ));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
         parameters.put("flow", Optional.ofNullable(application.getFlow()).map(FlowType::name).orElse(null));
         parameters.put("sentiment", Optional.ofNullable(application.getSentiment()).map(Sentiment::name).orElse(null));
         parameters.put("feedback", application.getFeedback());
         new NamedParameterJdbcTemplate(jdbcTemplate)
-                .update("INSERT INTO applications (id, completed_at, encrypted_data, county, time_to_complete, sentiment, feedback, flow) " +
-                        "VALUES (:id, :completedAt, :encryptedData, :county, :timeToComplete, :sentiment, :feedback, :flow) " +
+                .update("INSERT INTO applications (id, completed_at, json_data, county, time_to_complete, sentiment, feedback, flow) " +
+                        "VALUES (:id, :completedAt, :jsonData ::jsonb, :county, :timeToComplete, :sentiment, :feedback, :flow) " +
                         "ON CONFLICT (id) DO UPDATE SET " +
                         "completed_at = :completedAt, " +
-                        "encrypted_data = :encryptedData, " +
+                        "json_data = :jsonData ::jsonb, " +
                         "county = :county, " +
                         "time_to_complete = :timeToComplete, " +
                         "sentiment = :sentiment, " +
@@ -73,21 +83,27 @@ public class ApplicationRepository {
 
     public Application find(String id) {
         return jdbcTemplate.queryForObject("SELECT * FROM applications WHERE id = ?",
-                (resultSet, rowNum) -> Application.builder()
-                                .id(id)
-                                .completedAt(ZonedDateTime.ofInstant(resultSet.getTimestamp("completed_at").toInstant(), ZoneOffset.UTC))
-                                .applicationData(encryptor.decrypt(resultSet.getBytes("encrypted_data")))
-                                .county(County.valueFor(resultSet.getString("county")))
-                                .timeToComplete(Duration.ofSeconds(resultSet.getLong("time_to_complete")))
-                                .sentiment(Optional.ofNullable(resultSet.getString("sentiment"))
-                                                .map(Sentiment::valueOf)
-                                                .orElse(null))
-                                .feedback(resultSet.getString("feedback"))
-                                .flow(Optional.ofNullable(resultSet.getString("flow"))
-                                .map(FlowType::valueOf)
-                                .orElse(null))
-                                .build(),
-                id);
+                (resultSet, rowNum) -> {
+                    try {
+                        return Application.builder()
+                                        .id(id)
+                                        .completedAt(ZonedDateTime.ofInstant(resultSet.getTimestamp("completed_at").toInstant(), ZoneOffset.UTC))
+                                        .applicationData(objectMapper.readValue(resultSet.getString("json_data"), ApplicationData.class))
+                                        .county(County.valueFor(resultSet.getString("county")))
+                                        .timeToComplete(Duration.ofSeconds(resultSet.getLong("time_to_complete")))
+                                        .sentiment(Optional.ofNullable(resultSet.getString("sentiment"))
+                                                        .map(Sentiment::valueOf)
+                                                        .orElse(null))
+                                        .feedback(resultSet.getString("feedback"))
+                                        .flow(Optional.ofNullable(resultSet.getString("flow"))
+                                        .map(FlowType::valueOf)
+                                        .orElse(null))
+                                        .build();
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }, id);
     }
 
     public Duration getMedianTimeToComplete() {

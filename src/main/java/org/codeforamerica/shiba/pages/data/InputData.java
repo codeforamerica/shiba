@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Value;
 import org.codeforamerica.shiba.pages.config.Validator;
@@ -15,7 +16,8 @@ import static java.util.Collections.emptyList;
 @Builder
 public class InputData {
     @NotNull List<String> value;
-    @NotNull List<Validator> validators;
+    @NotNull @JsonIgnore
+    List<Validator> validators;
 
     InputData(List<String> value,
               @NotNull List<Validator> validators) {
@@ -46,5 +48,9 @@ public class InputData {
 
     public String getValue(int i) {
         return this.getValue().get(i);
+    }
+
+    public void setValue(String newValue, int i) {
+        this.value.set(i, newValue);
     }
 }
