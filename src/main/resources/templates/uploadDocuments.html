@@ -76,25 +76,20 @@
         dragAndDropBox.classList.remove("drag-over");
     }
 
-    const truncateFileName = (name) => {
-        const MAX_LEN = screen.width < 350 ? 15 : 18
-        if (name.length > MAX_LEN) {
-            const splitUpName = name.split('.');
-            const firstPart = splitUpName.slice(0, -1).join('.')
-            const ext = splitUpName.slice(-1)
-            const extLen = ext[0].length
-
-            return `${firstPart.slice(0, MAX_LEN - extLen)}...${ext}`;
+    const getFilenameComponents = (element) => {
+        const name = element.innerText
+        const extIdx = name.lastIndexOf('.');
+        if (extIdx === -1) {
+            return [name, ""];
         }
 
-        return name;
+        let extStr = name.slice(extIdx + 1, name.length);
+        if (element.scrollWidth <= element.clientWidth) {
+            extStr = "." + extStr;
+        }
+        return [name.slice(0, extIdx), extStr];
     }
 
-    // On page load, truncate all filenames
-    const persistedFileNames = document.getElementsByClassName('persisted-file-name');
-    for (const p of persistedFileNames) {
-        p.innerText = truncateFileName(p.innerText);
-    }
     var myDropZone;
     $("#document-upload").dropzone({
         uploadMultiple: false,
@@ -103,16 +98,16 @@
         autoProcessQueue: true,
         clickable: ".drag-and-drop-box",
         previewTemplate: `
-            <div class="dz-preview dz-file-preview">
+            <div class="dz-preview dz-file-preview spacing-below-15">
               <div class="dz-details grid">
                 <div class="grid__item width-one-sixth doc-rectangle">
                     <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
                 </div>
                 <div class="grid__item width-five-sixths">
-                    <div class="dz-filename"><span class="filename-text" data-dz-name></span></div>
+                    <div class="dz-filename"><div class="filename-text" data-dz-name></div></div>
                     <div class="display-flex body-gray file-details">
                         <div class="dz-size" data-dz-size></div>
-                        <span class="file-details-delimiter">•</span>
+                        <span class="file-details-delimiter" aria-hidden="true">•</span>
                         <a class="dz-remove" href="#">delete</a>
                     </div>
                 </div>
@@ -125,8 +120,11 @@
         init: function () {
             myDropZone = this;
             this.on('addedfile', file => {
-                const fileNameSpan = file.previewElement.getElementsByClassName('filename-text')[0];
-                fileNameSpan.innerText = truncateFileName(fileNameSpan.innerText);
+                const fileNameSpan = file.previewElement.getElementsByClassName('filename-text')[0]
+                fileNameSpan.setAttribute('aria-label', fileNameSpan.innerText)
+                const fileNameComponents = getFilenameComponents(fileNameSpan);
+                fileNameSpan.innerHTML = "<span class='filename-text-name' aria-hidden='true'>" + fileNameComponents[0] + "</span>" +
+                    "<span class='filename-text-ext' aria-hidden='true'>" + fileNameComponents[1] + "</span>"
 
                 const removeLink = file.previewElement.getElementsByClassName("dz-remove")[0];
                 const fileName = file.name;

@@ -665,6 +665,26 @@ input[type=number] {
     font-weight: bold;
     font-size: 19px;
     line-height: 25px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+}
+
+.filename-text-name {
+    max-width: 75%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+}
+
+.filename-text-ext {
+    width: 25%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+    display: inline-block;
 }
 
 .dz-size {
