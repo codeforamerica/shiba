@@ -52,9 +52,14 @@
                                 </a>
                             </div>
                             <!-- This is temporarily incorrect, but implemented to allow for navigation to the next page for acceptance -->
-                            <a id="submit" class="button"
-                               th:href="'/pages/'+${pageName}+'/navigation?option=0'"
-                               th:text="#{upload-documents.im-finished-uploading}"></a>
+                            <div class="form-group">
+	                            <a id="submit" class="button" onclick="onSubmit()"
+	                               th:text="#{upload-documents.im-finished-uploading}"></a>
+	                            <p class="text--error">
+	        						<i class="icon-warning"></i>
+	        						<span th:text="#{upload-documents.wait-for-upload-warning}"></span>
+	    						</p>
+    						</div>
                         </form>
                     </div>
                 </div>
@@ -89,6 +94,18 @@
         }
         return [name.slice(0, extIdx), extStr];
     }
+    
+    var isUploadComplete = true;
+    function onSubmit() {
+    	if (!isUploadComplete) {
+    		$('.form-group').addClass('form-group--error');
+    		$('.text--error').show();
+    	} else {
+    		window.location = "/pages/" + [[${pageName}]] + "/navigation?option=0"
+    	}
+    }
+    
+    $('.text--error').hide()
 
     var myDropZone;
     $("#document-upload").dropzone({
@@ -129,7 +146,12 @@
                 const removeLink = file.previewElement.getElementsByClassName("dz-remove")[0];
                 const fileName = file.name;
                 removeLink.setAttribute('href', '/pages/uploadDocumentsDeleteWarningPage?filename=' + fileName);
+                isUploadComplete = false;
             });
+            this.on('queuecomplete', function(file) {
+            	isUploadComplete = true;
+            });
+            
             var documents = [[${uploadedDocs}]];
             $.each(documents, function (key, value) {
                 var mockFile = {name: value.filename, size: value.size};
