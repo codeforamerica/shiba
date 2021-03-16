@@ -272,20 +272,6 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     @Test
-    void longFileNamesShouldGetTruncated() {
-        getToDocumentUploadScreen();
-
-        String filename = "very_long_file_name_that_should_truncate.jpeg";
-        String filenameName = "very_long_file_name_that_should_truncate";
-        String filenameExtension = "jpeg";
-        uploadFile(getAbsoluteFilepath(filename));
-
-
-        assertThat(driver.findElement(By.className("filename-text-name")).getText()).contains(filenameName);
-        assertThat(driver.findElement(By.className("filename-text-ext")).getText()).contains(filenameExtension);
-    }
-
-    @Test
     void shouldSkipChildcareAssistancePageIfCCAPNotSelected() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
         testPage.clickLink("This looks correct");
