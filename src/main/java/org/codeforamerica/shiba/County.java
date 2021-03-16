@@ -17,7 +17,7 @@ public enum County {
             case "Otter Tail" -> OtterTail;
             case "Sherburne" -> Sherburne;
             case "Steele" -> Steele;
-            case "St. Louis" -> StLouis;
+            case "St. Louis", "Saint Louis" -> StLouis;
             case "Wabasha" -> Wabasha;
             case "Wadena" -> Wadena;
             case "Waseca" -> Waseca;
