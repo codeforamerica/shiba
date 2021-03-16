@@ -64,7 +64,7 @@ public class ResearchDataParser {
                 .hasHousehold(pagesData.safeGetPageInputValue("addHouseholdMembers", "addHouseholdMembers").stream().findFirst().map(Boolean::parseBoolean).orElse(null))
                 .moneyMadeLast30Days(totalIncomeCalculator.calculate(totalIncome))
                 .payRentOrMortgage(getPayRentOrMortgage(applicationData))
-                .homeExpensesAmount(pagesData.safeGetPageInputValue("homeExpensesAmount", "homeExpensesAmount").stream().findFirst().map(Double::valueOf).orElse(null))
+                .homeExpensesAmount(pagesData.safeGetPageInputValue("homeExpensesAmount", "homeExpensesAmount").stream().findFirst().map(n -> Double.valueOf(n.replace(",",""))).orElse(null))
                 .areYouWorking(pagesData.safeGetPageInputValue("employmentStatus", "areYouWorking").stream().findFirst().map(Boolean::valueOf).orElse(null))
                 .selfEmployment(jobsOptional.map(this::getSelfEmployment).orElse(null))
                 .socialSecurity(unearnedIncomeOptional.map(i -> i.get("unearnedIncome").getValue().contains("SOCIAL_SECURITY")).orElse(null))

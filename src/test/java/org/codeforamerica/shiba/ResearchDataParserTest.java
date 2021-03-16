@@ -416,4 +416,22 @@ class ResearchDataParserTest {
         assertThat(researchData.getDateOfBirth()).isEqualTo(expectedResearchData.getDateOfBirth());
     }
 
+    @Test
+    void shouldParseResearchData_forHomeExpensesAmountWithCommas() {
+        ApplicationData applicationData = new ApplicationData();
+
+        PagesData pagesData = pagesDataBuilder.build(List.of(
+                new PageDataBuilder("homeExpensesAmount", Map.of("homeExpensesAmount", List.of("1,200"))))
+        );
+
+        applicationData.setPagesData(pagesData);
+
+        ResearchData researchData = researchDataParser.parse(applicationData);
+        ResearchData expectedResearchData = ResearchData.builder()
+                .homeExpensesAmount(Double.valueOf("1200"))
+                .build();
+
+        assertThat(researchData.getHomeExpensesAmount()).isEqualTo(expectedResearchData.getHomeExpensesAmount());
+    }
+
 }
