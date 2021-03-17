@@ -70,7 +70,6 @@ class CountyParserTest {
         assertThat(county).isEqualTo(County.OtterTail);
     }
 
-
     @Test
     void shouldParseCountyFromMailingAddressWhenHomelessAndDifferentMailingAddress() {
         applicationData.setPagesData(new PagesDataBuilder().build(List.of(
