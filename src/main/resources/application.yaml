@@ -40,10 +40,10 @@ feature-flag:
   county-hennepin: on
   county-morrison: off
   county-olmsted: on
-  county-ottertail: on
+  county-ottertail: off
   county-sherburne: off
   county-steele: off
-  county-stlouis: on
+  county-stlouis: off
   county-wabasha: on
   county-wadena: off
   county-waseca: off
