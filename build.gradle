@@ -134,7 +134,6 @@ def integrationTest = tasks.register("integrationTest", Test) {
                 options.includeTags 'integration'
         }
         task.shouldRunAfter test
-        task.maxParallelForks(Runtime.runtime.availableProcessors().intdiv(2) ?: 1)
 }
 
 def testAll = tasks.register("testAll", Test) {
