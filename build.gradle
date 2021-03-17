@@ -127,6 +127,7 @@ def unitTest = tasks.register("unitTest", Test) {
         task.maxParallelForks(Runtime.runtime.availableProcessors().intdiv(2) ?: 1)
 }
 
+// Integration tests here just mean tests that directly access the real database
 def integrationTest = tasks.register("integrationTest", Test) {
     Test task ->
         task.useJUnitPlatform {
