@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.pages;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.AbstractBasePageTest;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.emails.MailGunEmailClient;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -84,11 +86,6 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     void intercomButtonIsPresent() {
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         assertThat(driver.findElementById("intercom-frame")).isNotNull();
-    }
-
-    @Test
-    void userCanCompleteTheNonExpeditedFlow() {
-        nonExpeditedFlowToSuccessPage(false, true);
     }
 
     @Test
@@ -179,33 +176,22 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     @Test
-    void shouldDownloadPDFWhenClickDownloadMyReceipt() {
-        when(clock.instant()).thenReturn(Instant.ofEpochSecond(1243235L));
-        SuccessPage successPage = nonExpeditedFlowToSuccessPage(false, true);
-        successPage.downloadPdfs();
-
-        await().until(() -> {
-            File[] listFiles = path.toFile().listFiles();
-            List<String> documentNames = Arrays.stream(listFiles).map(File::getName).collect(Collectors.toList());
-
-            return List.of(CAF, CCAP).stream().map(document -> documentNames.stream().anyMatch(documentName ->
-                    documentName.contains("_MNB_") && documentName.endsWith(".pdf") &&
-                            documentName.contains(document.toString())
-            )).collect(Collectors.toList()).stream().allMatch(assertion -> assertion.equals(true));
-        });
-    }
-
-    @Test
     @Sql(statements = "TRUNCATE TABLE applications;")
-    void shouldCaptureMetricsAfterAnApplicationIsCompleted() {
+    void userCanCompleteTheNonExpeditedFlowAndCanDownloadPdfsAndShibaShouldCaptureMetricsAfterApplicationIsCompleted() {
         when(clock.instant()).thenReturn(
                 LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant(),
                 LocalDateTime.of(2020, 1, 1, 10, 15, 30).atOffset(ZoneOffset.UTC).toInstant()
         );
+
         SuccessPage successPage = nonExpeditedFlowToSuccessPage(false, true);
+
+        // Downloading PDfs
+        successPage.downloadPdfs();
+        await().until(this::allPdfsHaveBeenDownloaded);
+
+        // Submitting Feedback
         successPage.chooseSentiment(Sentiment.HAPPY);
         successPage.submitFeedback();
-
         driver.navigate().to(baseUrlWithAuth + "/metrics");
         MetricsPage metricsPage = new MetricsPage(driver);
         assertThat(metricsPage.getCardValue("Applications Submitted")).isEqualTo("1");
@@ -1278,5 +1264,16 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.clickButton("Submit");
 
         testPage.clickButton("Upload documents now");
+    }
+
+    private Boolean allPdfsHaveBeenDownloaded() {
+        File[] listFiles = path.toFile().listFiles();
+        List<String> documentNames = Arrays.stream(listFiles).map(File::getName).collect(Collectors.toList());
+
+        Function<Document, Boolean> expectedPdfExists = expectedPdfName -> documentNames.stream().anyMatch(documentName ->
+                documentName.contains("_MNB_") && documentName.endsWith(".pdf") &&
+                        documentName.contains(expectedPdfName.toString())
+        );
+        return List.of(CAF, CCAP).stream().allMatch(expectedPdfExists::apply);
     }
 }
