@@ -15,7 +15,7 @@
                         th:text="|#{success.confirmation-number}: ${applicationId}|"></h2>
                     <p th:if="${county != T(org.codeforamerica.shiba.County).Other}" class="spacing-below-35 text--help"
                        id="submission-date"
-                       th:text="#{success.application-submitted(${county.name()}, ${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)})}"></p>
+                       th:text="#{success.application-submitted(${county.displayName()}, ${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)})}"></p>
                     <p th:if="${county == T(org.codeforamerica.shiba.County).Other}" class="spacing-below-35 text--help"
                        id="submission-date"
                        th:text="#{success.application-submitted-other(${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)})}"></p>

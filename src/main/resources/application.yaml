@@ -32,9 +32,9 @@ feature-flag:
   submit-via-api: off
   send-non-partner-county-alert: off
   document-upload-feature: on
-  county-anoka: off
-  county-carver: off
-  county-clay: off
+  county-anoka: on
+  county-carver: on
+  county-clay: on
   county-cook: off
   county-dodge: off
   county-hennepin: on

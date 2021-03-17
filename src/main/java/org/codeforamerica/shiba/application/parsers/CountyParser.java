@@ -37,7 +37,7 @@ public class CountyParser extends ApplicationDataParser<County> {
                 .map(inputData -> inputData.getValue().get(0))
                 .orElse(pageInputs.get("county").getDefaultValue());
 
-        if (featureFlagConfiguration.get("county-" + County.valueFor(countyName).toString().toLowerCase()) == FeatureFlag.OFF) {
+        if (featureFlagConfiguration.get("county-" + County.valueFor(countyName).name().toLowerCase()) == FeatureFlag.OFF) {
             return County.Other;
         }
         return County.valueFor(countyName);
