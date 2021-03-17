@@ -14,10 +14,10 @@ public enum County {
             case "Hennepin" -> Hennepin;
             case "Morrison" -> Morrison;
             case "Olmsted" -> Olmsted;
-            case "Otter Tail" -> OtterTail;
+            case "Otter Tail", "OtterTail" -> OtterTail;
             case "Sherburne" -> Sherburne;
             case "Steele" -> Steele;
-            case "St. Louis", "Saint Louis" -> StLouis;
+            case "St. Louis", "Saint Louis", "StLouis" -> StLouis;
             case "Wabasha" -> Wabasha;
             case "Wadena" -> Wadena;
             case "Waseca" -> Waseca;
