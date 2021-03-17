@@ -207,21 +207,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void partialFlow() throws IOException {
-        testPage.clickButton("Apply now");
-        testPage.clickContinue();
-        testPage.enter("writtenLanguage", "English");
-        testPage.enter("spokenLanguage", "English");
-        testPage.enter("needInterpreter", "Yes");
-        testPage.clickContinue();
-        testPage.enter("programs", "Emergency Assistance");
-        testPage.clickContinue();
-        testPage.clickContinue();
-        fillOutPersonalInfo();
-        testPage.clickContinue();
-        navigateTo("signThisApplication");
-        testPage.enter("applicantSignature", "some name");
-        testPage.clickButton("Submit");
-
+        getToDocumentUploadScreen();
         completeDocumentUploadFlow();
 
         SuccessPage successPage = new SuccessPage(driver);
