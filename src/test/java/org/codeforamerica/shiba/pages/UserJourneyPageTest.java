@@ -10,7 +10,6 @@ import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.pages.enrichment.smartystreets.SmartyStreetClient;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -42,7 +41,6 @@ import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@Tag("integration")
 public class UserJourneyPageTest extends AbstractBasePageTest {
 
     private static final String PROGRAM_SNAP = "Food (SNAP)";
