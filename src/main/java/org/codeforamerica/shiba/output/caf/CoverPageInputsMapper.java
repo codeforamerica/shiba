@@ -89,7 +89,7 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
                 "coverPage",
                 "countyInstructions",
                 List.of(messageSource.getMessage(countyInstructionsMapping.get(application.getCounty()).get(recipient),
-                        List.of(application.getCounty(),
+                        List.of(application.getCounty().displayName(),
                                 Optional.ofNullable(countyInformationMapping.get(application.getCounty()).getPhoneNumber()).orElse(null)
                         ).toArray(),
                         LocaleContextHolder.getLocale())),

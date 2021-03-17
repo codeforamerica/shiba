@@ -1,8 +1,12 @@
 package org.codeforamerica.shiba;
 
 public enum County {
-    Anoka, Carver, Clay, Cook, Dodge, Hennepin, Morrison, Olmsted, OtterTail, Sherburne, Steele, StLouis, Wabasha,
-    Wadena, Waseca, Wright, Other;
+    Anoka("Anoka"), Carver("Carver"), Clay("Clay"), Cook("Cook"), Dodge("Dodge"),
+    Hennepin("Hennepin"), Morrison("Morrisoin"), Olmsted("Olmsted"), OtterTail("Otter Tail"),
+    Sherburne("Sherburne"), Steele("Steele"), StLouis("St. Louis"), Wabasha("Wabasha"),
+    Wadena("Wadena"), Waseca("Waseca"), Wright("Wright"), Other("Other");
+
+    private String displayName;
 
     public static County valueFor(String county) {
         return switch (county) {
@@ -24,5 +28,19 @@ public enum County {
             case "Wright" -> Wright;
             default -> Other;
         };
+    }
+
+    County(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String displayName(){
+        return displayName;
+    }
+
+
+    @Override
+    public String toString() {
+        return displayName;
     }
 }
