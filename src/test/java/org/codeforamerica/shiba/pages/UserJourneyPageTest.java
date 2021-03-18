@@ -3,11 +3,9 @@ package org.codeforamerica.shiba.pages;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.AbstractBasePageTest;
-import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.emails.MailGunEmailClient;
-import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.pages.enrichment.smartystreets.SmartyStreetClient;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,40 +15,30 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.jdbc.Sql;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.time.Clock;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.codeforamerica.shiba.output.Document.CAF;
-import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 public class UserJourneyPageTest extends AbstractBasePageTest {
-
     private static final String PROGRAM_SNAP = "Food (SNAP)";
     private static final String PROGRAM_CASH = "Cash programs";
     private static final String PROGRAM_GRH = "Housing Support (GRH)";
     private static final String PROGRAM_CCAP = "Child Care Assistance";
     private static final String PROGRAM_EA = "Emergency Assistance";
-    private static final String UPLOADED_FILE_NAME = "shiba.jpg";
 
     @MockBean
     Clock clock;
@@ -90,17 +78,17 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void userCanCompleteTheNonExpeditedHouseholdFlow() {
-        nonExpeditedFlowToSuccessPage(true, true);
+        nonExpeditedFlowToSuccessPage(true, true, smartyStreetClient);
     }
 
     @Test
     void userCanCompleteTheNonExpeditedFlowWithNoEmployment() {
-        nonExpeditedFlowToSuccessPage(false, false);
+        nonExpeditedFlowToSuccessPage(false, false, smartyStreetClient);
     }
 
     @Test
     void userCanCompleteTheNonExpeditedHouseholdFlowWithNoEmployment() {
-        nonExpeditedFlowToSuccessPage(true, false);
+        nonExpeditedFlowToSuccessPage(true, false, smartyStreetClient);
     }
 
     @ParameterizedTest
@@ -109,7 +97,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
             "1, 1, A caseworker will contact you within 3 days to review your application."
     })
     void userCanCompleteTheExpeditedFlow(String moneyMadeLast30Days, String liquidAssets, String expeditedServiceDetermination) {
-        completeFlowFromLandingPageThroughReviewInfo(List.of("SNAP", "Child Care Assistance"));
+        completeFlowFromLandingPageThroughReviewInfo(List.of("SNAP", "Child Care Assistance"), smartyStreetClient);
         testPage.clickLink("Submit application now with only the above information.");
         testPage.clickLink("Yes, I want to see if I qualify");
 
@@ -145,7 +133,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
             "1, 1, A caseworker will contact you within 3 days to review your application."
     })
     void userCanCompleteTheExpeditedFlowWithHousehold(String moneyMadeLast30Days, String liquidAssets, String expeditedServiceDetermination) {
-        completeFlowFromLandingPageThroughReviewInfo(List.of("SNAP", "Child Care Assistance"));
+        completeFlowFromLandingPageThroughReviewInfo(List.of("SNAP", "Child Care Assistance"), smartyStreetClient);
         testPage.clickLink("Submit application now with only the above information.");
         testPage.clickLink("Yes, I want to see if I qualify");
 
@@ -173,36 +161,6 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         testPage.clickButton("Finish application");
         assertThat(testPage.getTitle()).isEqualTo("Legal Stuff");
         assertThat(driver.findElement(By.id("ccap-legal"))).isNotNull();
-    }
-
-    @Test
-    @Sql(statements = "TRUNCATE TABLE applications;")
-    void userCanCompleteTheNonExpeditedFlowAndCanDownloadPdfsAndShibaShouldCaptureMetricsAfterApplicationIsCompleted() {
-        when(clock.instant()).thenReturn(
-                LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant(),
-                LocalDateTime.of(2020, 1, 1, 10, 15, 30).atOffset(ZoneOffset.UTC).toInstant()
-        );
-
-        SuccessPage successPage = nonExpeditedFlowToSuccessPage(false, true);
-
-        // Downloading PDfs
-        successPage.downloadPdfs();
-        await().until(this::allPdfsHaveBeenDownloaded);
-
-        // Submitting Feedback
-        successPage.chooseSentiment(Sentiment.HAPPY);
-        successPage.submitFeedback();
-        driver.navigate().to(baseUrlWithAuth + "/metrics");
-        MetricsPage metricsPage = new MetricsPage(driver);
-        assertThat(metricsPage.getCardValue("Applications Submitted")).isEqualTo("1");
-        assertThat(metricsPage.getCardValue("Median All Time")).contains("05m 30s");
-        assertThat(metricsPage.getCardValue("Median Week to Date")).contains("05m 30s");
-        assertThat(metricsPage.getCardValue("Average Week to Date")).contains("05m 30s");
-        // When adding new counties, this TD will be equal to the first county in the list
-        assertThat(driver.findElements(By.tagName("td")).get(0).getText()).isEqualTo("Anoka");
-        assertThat(driver.findElements(By.tagName("td")).get(1).getText()).isEqualTo("0");
-        assertThat(driver.findElements(By.tagName("td")).get(2).getText()).isEqualTo("0");
-        assertThat(metricsPage.getCardValue("Happy")).contains("100%");
     }
 
     @Test
@@ -243,7 +201,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldSkipChildcareAssistancePageIfCCAPNotSelected() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"), smartyStreetClient);
         testPage.clickLink("This looks correct");
         testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
@@ -255,7 +213,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldSkipJobSearchPageIfCCAPNotSelected() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"), smartyStreetClient);
         completeFlowFromReviewInfoToDisability();
         testPage.enter("hasWorkSituation", NO.getDisplayValue());
         testPage.clickContinue();
@@ -265,7 +223,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldSkipRealEstatePageIfCCAPNotSelected() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"), smartyStreetClient);
         completeFlowFromReviewInfoToDisability();
         testPage.enter("hasWorkSituation", NO.getDisplayValue());
         testPage.clickContinue();
@@ -292,7 +250,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldSkipRealEstatePageIfCCAPNotSelectedWithHouseholdMember() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"), smartyStreetClient);
         testPage.clickLink("This looks correct");
         testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
@@ -330,7 +288,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldAskRealEstateQuestionIfCCAPNotSelectedByApplicantButHouseholdSelected() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"), smartyStreetClient);
         testPage.clickLink("This looks correct");
         testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
@@ -373,7 +331,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldAskMillionDollarQuestionIfRealEstateAnswerIsYes() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"), smartyStreetClient);
         testPage.clickLink("This looks correct");
         testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
@@ -419,7 +377,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldSkipMillionDollarPageIfNoVehicleInvestmentsRealEstateOrSavings() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance"));
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance"), smartyStreetClient);
         completeFlowFromReviewInfoToDisability();
         testPage.enter("hasWorkSituation", NO.getDisplayValue());
         testPage.clickContinue();
@@ -450,7 +408,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldShowMillionDollarPageIfYesOnAnAssetPageButNoOnRealEstate() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance"));
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance"), smartyStreetClient);
         completeFlowFromReviewInfoToDisability();
         testPage.enter("hasWorkSituation", NO.getDisplayValue());
         testPage.clickContinue();
@@ -483,7 +441,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldNotShowMillionDollarQuestionIfNoCCAP() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"), smartyStreetClient);
         completeFlowFromReviewInfoToDisability();
         testPage.enter("hasWorkSituation", NO.getDisplayValue());
         testPage.clickContinue();
@@ -510,7 +468,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldNotShowUnearnedIncomeCcapIfNoOneChoseCcap() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"), smartyStreetClient);
         testPage.clickLink("This looks correct");
         testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
@@ -536,7 +494,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldSkipDocumentUploadFlowIfNoApplicablePrograms() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_CCAP));
+        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_CCAP), smartyStreetClient);
         completeFlowFromReviewInfoToDisability();
 
         // Recommend proof of job loss (if programs were applicable)
@@ -573,7 +531,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldSkipDocumentUploadFlowIfNotApplicableRegardlessOfPrograms() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_SNAP, PROGRAM_CASH, PROGRAM_EA, PROGRAM_GRH));
+        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_SNAP, PROGRAM_CASH, PROGRAM_EA, PROGRAM_GRH), smartyStreetClient);
         completeFlowFromReviewInfoToDisability();
 
         // Do not recommend proof of job loss
@@ -602,7 +560,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldDisplayDocumentRecommendationsForSingleApplicant() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_GRH, PROGRAM_SNAP));
+        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_GRH, PROGRAM_SNAP), smartyStreetClient);
         completeFlowFromReviewInfoToDisability();
 
         // Recommend proof of job loss
@@ -638,7 +596,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     @Test
     void shouldSkipDocumentRecommendationsWhenNoEligibleProgram() {
         // Skip because only CCAP
-        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_CCAP));
+        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_CCAP), smartyStreetClient);
         completeFlowFromReviewInfoToDisability();
 
         testPage.enter("hasWorkSituation", YES.getDisplayValue());
@@ -672,7 +630,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldSkipDocumentRecommendationsIfChoseEligibleProgramsButNoOnEmploymentStatusNoOnHasWorkSituationAndNoneOfTheAboveOnHomeExpenses() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_GRH, PROGRAM_SNAP));
+        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_GRH, PROGRAM_SNAP), smartyStreetClient);
         completeFlowFromReviewInfoToDisability();
 
         testPage.enter("hasWorkSituation", NO.getDisplayValue());
@@ -697,7 +655,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldDisplayDocumentRecommendationsForHousehold() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_CCAP));
+        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_CCAP), smartyStreetClient);
         testPage.clickLink("This looks correct");
         testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
@@ -755,7 +713,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldSkipWhoIsGoingToSchoolPageIfCCAPNotSelected() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"), smartyStreetClient);
         testPage.clickLink("This looks correct");
         testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
@@ -770,7 +728,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldAskWhoIsGoingToSchoolAndWhoIsLookingForWorkWhenCCAPIsSelectedInPrograms() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance"));
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance"), smartyStreetClient);
         testPage.clickLink("This looks correct");
         testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
@@ -795,7 +753,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldAskRelevantCCAPQuestionsWhenCCAPIsSelectedInHouseholdMemberInfo() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"), smartyStreetClient);
         testPage.clickLink("This looks correct");
         testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
@@ -832,7 +790,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldSkipWhoIsGoingToSchoolAndWhoIsLookingForWorkPageIfCCAPSelectedButAddHouseholdMembersIsFalse() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance"));
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance"), smartyStreetClient);
         testPage.clickLink("This looks correct");
         testPage.enter("addHouseholdMembers", NO.getDisplayValue());
         testPage.clickContinue();
@@ -851,7 +809,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldSkipWhoIsLookingForWorkPageIfCCAPIsNotSelectedInHouseholdOrPrograms() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"), smartyStreetClient);
         testPage.clickLink("This looks correct");
         testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
@@ -872,7 +830,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldHandleDeletionOfLastHouseholdMember() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"), smartyStreetClient);
         testPage.clickLink("This looks correct");
         testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
@@ -898,7 +856,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldShowCCAPInLegalStuffWhenHousholdSelectsCCAP() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of("Emergency Assistance"));
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Emergency Assistance"), smartyStreetClient);
         testPage.clickLink("This looks correct");
         testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
@@ -912,7 +870,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldNotShowCCAPInLegalStuffWhenNotSelectedByAnyone() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of("Emergency Assistance"));
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Emergency Assistance"), smartyStreetClient);
         testPage.clickLink("This looks correct");
         testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
@@ -926,7 +884,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldAskLivingSituationIfCCAPApplicant() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance"));
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance"), smartyStreetClient);
         testPage.clickLink("This looks correct");
         testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
@@ -945,7 +903,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldAskLivingSituationIfGRHApplicant() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of("Housing Support (GRH)"));
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Housing Support (GRH)"), smartyStreetClient);
         testPage.clickLink("This looks correct");
         testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
@@ -962,7 +920,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldAskLivingSituationIfCCAPHouseholdMember() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of("Emergency Assistance"));
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Emergency Assistance"), smartyStreetClient);
         testPage.clickLink("This looks correct");
         testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
@@ -981,7 +939,7 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
 
     @Test
     void shouldNotAskLivingSituationIfNotCCAPorGRH() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of("Emergency Assistance"));
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Emergency Assistance"), smartyStreetClient);
         testPage.clickLink("This looks correct");
         testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
@@ -995,271 +953,5 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
         assertThat(driver.getTitle()).isEqualTo("Future Income");
     }
 
-    private void completeFlowFromLandingPageThroughContactInfo(List<String> programSelections) {
-        testPage.clickButton("Apply now");
-        testPage.clickContinue();
-        testPage.enter("writtenLanguage", "English");
-        testPage.enter("spokenLanguage", "English");
-        testPage.enter("needInterpreter", "Yes");
-        testPage.clickContinue();
-        programSelections.forEach(program -> testPage.enter("programs", program));
-        testPage.clickContinue();
-        testPage.clickContinue();
 
-        fillOutPersonalInfo();
-
-        testPage.clickContinue();
-    }
-
-    private void completeFlowFromLandingPageThroughReviewInfo(List<String> programSelections) {
-        completeFlowFromLandingPageThroughContactInfo(programSelections);
-
-        testPage.enter("phoneNumber", "7234567890");
-        testPage.enter("email", "some@email.com");
-        testPage.enter("phoneOrEmail", "Text me");
-        testPage.clickContinue();
-        testPage.enter("zipCode", "12345");
-        testPage.enter("city", "someCity");
-        testPage.enter("streetAddress", "someStreetAddress");
-        testPage.enter("apartmentNumber", "someApartmentNumber");
-        testPage.enter("isHomeless", "I don't have a permanent address");
-        testPage.enter("sameMailingAddress", "No, use a different address for mail");
-        testPage.clickContinue();
-
-        testPage.clickButton("Use this address");
-        testPage.enter("zipCode", "12345");
-        testPage.enter("city", "someCity");
-        testPage.enter("streetAddress", "someStreetAddress");
-        testPage.enter("state", "IL");
-        testPage.enter("apartmentNumber", "someApartmentNumber");
-        when(smartyStreetClient.validateAddress(any())).thenReturn(
-                Optional.of(new Address("smarty street", "City", "CA", "03104", "", "someCounty"))
-        );
-        testPage.clickContinue();
-
-        testPage.clickElementById("enriched-address");
-        testPage.clickContinue();
-        assertThat(driver.findElementById("mailing-address_street").getText()).isEqualTo("smarty street");
-    }
-
-    private SuccessPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking) {
-        completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance", "Cash programs"));
-        testPage.clickLink("This looks correct");
-
-        if (hasHousehold) {
-            testPage.enter("addHouseholdMembers", YES.getDisplayValue());
-            testPage.clickContinue();
-            fillOutHousemateInfo("Child Care Assistance");
-            testPage.clickContinue();
-            testPage.clickButton("Yes, that's everyone");
-            testPage.enter("whoNeedsChildCare", "defaultFirstName defaultLastName");
-            testPage.clickContinue();
-            testPage.clickContinue();
-            testPage.enter("goingToSchool", NO.getDisplayValue());
-            testPage.enter("isPregnant", YES.getDisplayValue());
-            testPage.enter("whoIsPregnant", "Me");
-            testPage.clickContinue();
-        } else {
-            testPage.enter("addHouseholdMembers", NO.getDisplayValue());
-            testPage.clickContinue();
-            testPage.enter("goingToSchool", NO.getDisplayValue());
-            testPage.enter("isPregnant", NO.getDisplayValue());
-        }
-
-        testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
-        if (hasHousehold) {
-            testPage.enter("isUsCitizen", NO.getDisplayValue());
-            testPage.enter("whoIsNonCitizen", "Me");
-            testPage.clickContinue();
-        } else {
-            testPage.enter("isUsCitizen", YES.getDisplayValue());
-        }
-        testPage.enter("hasDisability", NO.getDisplayValue());
-        testPage.enter("hasWorkSituation", NO.getDisplayValue());
-        testPage.clickContinue();
-
-        if (isWorking) {
-            testPage.enter("areYouWorking", YES.getDisplayValue());
-            testPage.clickButton("Add a job");
-
-            if (hasHousehold) {
-                testPage.enter("whoseJobIsIt", "defaultFirstName defaultLastName");
-                testPage.clickContinue();
-            }
-
-            testPage.enter("employersName", "some employer");
-            testPage.clickContinue();
-            testPage.enter("selfEmployment", YES.getDisplayValue());
-            paidByTheHourOrSelectPayPeriod();
-            testPage.enter("currentlyLookingForJob", NO.getDisplayValue());
-        } else {
-            testPage.enter("areYouWorking", NO.getDisplayValue());
-            testPage.enter("currentlyLookingForJob", YES.getDisplayValue());
-
-            if (hasHousehold) {
-                testPage.enter("whoIsLookingForAJob", "defaultFirstName defaultLastName");
-                testPage.clickContinue();
-            }
-        }
-
-        testPage.clickContinue();
-        testPage.enter("unearnedIncome", "Social Security");
-        testPage.clickContinue();
-        testPage.enter("socialSecurityAmount", "200");
-        testPage.clickContinue();
-        testPage.enter("unearnedIncomeCcap", "Money from a Trust");
-        testPage.clickContinue();
-        testPage.enter("trustMoneyAmount", "200");
-        testPage.clickContinue();
-        testPage.enter("livingSituation", "Paying for my own housing with rent, lease, or mortgage payments");
-        testPage.clickContinue();
-        testPage.enter("earnLessMoneyThisMonth", "Yes");
-        testPage.clickContinue();
-        testPage.clickContinue();
-        testPage.enter("homeExpenses", "Rent");
-        testPage.clickContinue();
-        testPage.enter("homeExpensesAmount", "123321");
-        testPage.clickContinue();
-        testPage.enter("payForUtilities", "Heating");
-        testPage.clickContinue();
-        testPage.enter("energyAssistance", YES.getDisplayValue());
-        testPage.enter("energyAssistanceMoreThan20", YES.getDisplayValue());
-        testPage.enter("supportAndCare", YES.getDisplayValue());
-        testPage.enter("haveVehicle", YES.getDisplayValue());
-        testPage.enter("ownRealEstate", YES.getDisplayValue());
-        testPage.enter("haveInvestments", NO.getDisplayValue());
-        testPage.enter("haveSavings", YES.getDisplayValue());
-        testPage.enter("liquidAssets", "1234");
-        testPage.clickContinue();
-        testPage.enter("haveMillionDollars", NO.getDisplayValue());
-        testPage.enter("haveSoldAssets", NO.getDisplayValue());
-        testPage.clickContinue();
-        testPage.enter("registerToVote", "Yes, send me more info");
-        completeHelperWorkflow();
-        driver.findElement(By.id("additionalInfo")).sendKeys("Some additional information about my application");
-        testPage.clickContinue();
-        testPage.enter("agreeToTerms", "I agree");
-        testPage.clickContinue();
-        testPage.enter("applicantSignature", "some name");
-        testPage.clickButton("Submit");
-
-        completeDocumentUploadFlow();
-
-        return new SuccessPage(driver);
-    }
-
-    private void completeFlowFromReviewInfoToDisability() {
-        testPage.clickLink("This looks correct");
-        testPage.enter("addHouseholdMembers", NO.getDisplayValue());
-        testPage.clickContinue();
-        testPage.enter("goingToSchool", YES.getDisplayValue());
-        testPage.enter("isPregnant", NO.getDisplayValue());
-        testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
-        testPage.enter("isUsCitizen", YES.getDisplayValue());
-        testPage.enter("hasDisability", NO.getDisplayValue());
-    }
-
-    private void completeDocumentUploadFlow() {
-        testPage.clickButton("Upload documents now");
-        testPage.clickElementById("drag-and-drop-box");
-        uploadDefaultFile();
-
-        testPage.clickButton("I'm finished uploading");
-    }
-
-    private void fillOutHousemateInfo(String programSelection) {
-        testPage.enter("relationship", "housemate");
-        testPage.enter("programs", programSelection);
-        fillOutPersonInfo(); // need to fill out programs checkbox set above first
-        testPage.enter("moveToMnPreviousState", "Illinois");
-    }
-
-    private void paidByTheHourOrSelectPayPeriod() {
-        if (new Random().nextBoolean()) {
-            testPage.enter("paidByTheHour", YES.getDisplayValue());
-            testPage.enter("hourlyWage", "1");
-            testPage.clickContinue();
-            testPage.enter("hoursAWeek", "30");
-        } else {
-            testPage.enter("paidByTheHour", NO.getDisplayValue());
-            testPage.enter("payPeriod", "Twice a month");
-            testPage.clickContinue();
-            testPage.enter("incomePerPayPeriod", "1");
-        }
-        testPage.clickContinue();
-        testPage.goBack();
-        testPage.clickButton("No, I'd rather keep going");
-        testPage.clickButton("No, that's it.");
-    }
-
-    private void fillOutHelperInfo() {
-        testPage.enter("helpersFullName", "defaultFirstName defaultLastName");
-        testPage.enter("helpersStreetAddress", "someStreetAddress");
-        testPage.enter("helpersCity", "someCity");
-        testPage.enter("helpersZipCode", "12345");
-        testPage.enter("helpersPhoneNumber", "7234567890");
-        testPage.clickContinue();
-    }
-
-    private void completeHelperWorkflow() {
-        if (new Random().nextBoolean()) {
-            testPage.enter("helpWithBenefits", YES.getDisplayValue());
-            testPage.enter("communicateOnYourBehalf", YES.getDisplayValue());
-            testPage.enter("getMailNotices", YES.getDisplayValue());
-            testPage.enter("spendOnYourBehalf", YES.getDisplayValue());
-            fillOutHelperInfo();
-        } else {
-            testPage.enter("helpWithBenefits", NO.getDisplayValue());
-        }
-    }
-
-
-    private String getAbsoluteFilepath(String resourceFilename) {
-        URL resource = this.getClass().getClassLoader().getResource(resourceFilename);
-        if (resource != null) {
-            return resource.getFile();
-        }
-        return "";
-    }
-
-    private void uploadFile(String filepath) {
-        testPage.clickElementById("drag-and-drop-box"); // is this needed?
-        WebElement upload = driver.findElement(By.cssSelector("input"));
-        upload.sendKeys(filepath);
-    }
-
-    private void uploadDefaultFile() {
-        uploadFile(getAbsoluteFilepath(UPLOADED_FILE_NAME));
-        assertThat(driver.findElement(By.id("document-upload")).getText()).contains(UPLOADED_FILE_NAME);
-    }
-
-    private void getToDocumentUploadScreen() {
-        testPage.clickButton("Apply now");
-        testPage.clickContinue();
-        testPage.enter("writtenLanguage", "English");
-        testPage.enter("spokenLanguage", "English");
-        testPage.enter("needInterpreter", "Yes");
-        testPage.clickContinue();
-        testPage.enter("programs", "Emergency Assistance");
-        testPage.clickContinue();
-        testPage.clickContinue();
-        fillOutPersonalInfo();
-        testPage.clickContinue();
-        navigateTo("signThisApplication");
-        testPage.enter("applicantSignature", "some name");
-        testPage.clickButton("Submit");
-
-        testPage.clickButton("Upload documents now");
-    }
-
-    private Boolean allPdfsHaveBeenDownloaded() {
-        File[] listFiles = path.toFile().listFiles();
-        List<String> documentNames = Arrays.stream(listFiles).map(File::getName).collect(Collectors.toList());
-
-        Function<Document, Boolean> expectedPdfExists = expectedPdfName -> documentNames.stream().anyMatch(documentName ->
-                documentName.contains("_MNB_") && documentName.endsWith(".pdf") &&
-                        documentName.contains(expectedPdfName.toString())
-        );
-        return List.of(CAF, CCAP).stream().allMatch(expectedPdfExists::apply);
-    }
 }

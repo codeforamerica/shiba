@@ -434,12 +434,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             testPage.enter("getMailNotices", YES.getDisplayValue());
             testPage.enter("spendOnYourBehalf", YES.getDisplayValue());
 
-            testPage.enter("helpersFullName", "defaultFirstName defaultLastName");
-            testPage.enter("helpersStreetAddress", "someStreetAddress");
-            testPage.enter("helpersCity", "someCity");
-            testPage.enter("helpersZipCode", "12345");
-            testPage.enter("helpersPhoneNumber", "7234567890");
-            testPage.clickContinue();
+            fillOutHelperInfo();
 
             PDAcroForm pdAcroForm = submitAndDownloadCaf();
             assertThat(getPdfFieldText(pdAcroForm, "AUTHORIZED_REP_FILL_OUT_FORM")).isEqualTo("Yes");
@@ -450,8 +445,6 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             assertThat(getPdfFieldText(pdAcroForm, "AUTHORIZED_REP_CITY")).isEqualTo("someCity");
             assertThat(getPdfFieldText(pdAcroForm, "AUTHORIZED_REP_ZIP_CODE")).isEqualTo("12345");
             assertThat(getPdfFieldText(pdAcroForm, "AUTHORIZED_REP_PHONE_NUMBER")).isEqualTo("(723) 456-7890");
-
-
         }
 
         @Test
@@ -1004,7 +997,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         testPage.clickButton("Submit");
         if (driver.getPageSource().contains("Skip this for now")) {
             // Skip button might not be present if application does not support doc upload
-            testPage.clickButton("Skip this for now");
+            skipDocumentUploadFlow();
         }
         SuccessPage successPage = new SuccessPage(driver);
         successPage.downloadPdfs();

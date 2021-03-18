@@ -5,12 +5,17 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.Page;
+import org.codeforamerica.shiba.pages.SuccessPage;
+import org.codeforamerica.shiba.pages.enrichment.Address;
+import org.codeforamerica.shiba.pages.enrichment.smartystreets.SmartyStreetClient;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -22,20 +27,28 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.output.Document.CAF;
+import static org.codeforamerica.shiba.output.Document.CCAP;
+import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
+import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"spring.main.allow-bean-definition-overriding=true"})
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 public abstract class AbstractBasePageTest {
+    private static final String UPLOADED_FILE_NAME = "shiba.jpg";
     static protected RemoteWebDriver driver;
 
     protected Path path;
@@ -139,5 +152,278 @@ public abstract class AbstractBasePageTest {
     protected void fillOutContactInfo() {
         testPage.enter("phoneNumber", "7234567890");
         testPage.enter("phoneOrEmail", "Text me");
+    }
+
+    protected Boolean allPdfsHaveBeenDownloaded() {
+        File[] listFiles = path.toFile().listFiles();
+        List<String> documentNames = Arrays.stream(listFiles).map(File::getName).collect(Collectors.toList());
+
+        Function<Document, Boolean> expectedPdfExists = expectedPdfName -> documentNames.stream().anyMatch(documentName ->
+                documentName.contains("_MNB_") && documentName.endsWith(".pdf") &&
+                        documentName.contains(expectedPdfName.toString())
+        );
+        return List.of(CAF, CCAP).stream().allMatch(expectedPdfExists::apply);
+    }
+
+    protected void completeFlowFromLandingPageThroughContactInfo(List<String> programSelections) {
+        testPage.clickButton("Apply now");
+        testPage.clickContinue();
+        testPage.enter("writtenLanguage", "English");
+        testPage.enter("spokenLanguage", "English");
+        testPage.enter("needInterpreter", "Yes");
+        testPage.clickContinue();
+        programSelections.forEach(program -> testPage.enter("programs", program));
+        testPage.clickContinue();
+        testPage.clickContinue();
+
+        fillOutPersonalInfo();
+
+        testPage.clickContinue();
+    }
+
+    protected void completeFlowFromLandingPageThroughReviewInfo(List<String> programSelections, SmartyStreetClient mockSmartyStreetClient) {
+        completeFlowFromLandingPageThroughContactInfo(programSelections);
+
+        testPage.enter("phoneNumber", "7234567890");
+        testPage.enter("email", "some@email.com");
+        testPage.enter("phoneOrEmail", "Text me");
+        testPage.clickContinue();
+        testPage.enter("zipCode", "12345");
+        testPage.enter("city", "someCity");
+        testPage.enter("streetAddress", "someStreetAddress");
+        testPage.enter("apartmentNumber", "someApartmentNumber");
+        testPage.enter("isHomeless", "I don't have a permanent address");
+        testPage.enter("sameMailingAddress", "No, use a different address for mail");
+        testPage.clickContinue();
+
+        testPage.clickButton("Use this address");
+        testPage.enter("zipCode", "12345");
+        testPage.enter("city", "someCity");
+        testPage.enter("streetAddress", "someStreetAddress");
+        testPage.enter("state", "IL");
+        testPage.enter("apartmentNumber", "someApartmentNumber");
+        when(mockSmartyStreetClient.validateAddress(any())).thenReturn(
+                Optional.of(new Address("smarty street", "City", "CA", "03104", "", "someCounty"))
+        );
+        testPage.clickContinue();
+
+        testPage.clickElementById("enriched-address");
+        testPage.clickContinue();
+        assertThat(driver.findElementById("mailing-address_street").getText()).isEqualTo("smarty street");
+    }
+
+    protected SuccessPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking, SmartyStreetClient mockSmartyStreetClient) {
+        completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance", "Cash programs"), mockSmartyStreetClient);
+        testPage.clickLink("This looks correct");
+
+        if (hasHousehold) {
+            testPage.enter("addHouseholdMembers", YES.getDisplayValue());
+            testPage.clickContinue();
+            fillOutHousemateInfo("Child Care Assistance");
+            testPage.clickContinue();
+            testPage.clickButton("Yes, that's everyone");
+            testPage.enter("whoNeedsChildCare", "defaultFirstName defaultLastName");
+            testPage.clickContinue();
+            testPage.clickContinue();
+            testPage.enter("goingToSchool", NO.getDisplayValue());
+            testPage.enter("isPregnant", YES.getDisplayValue());
+            testPage.enter("whoIsPregnant", "Me");
+            testPage.clickContinue();
+        } else {
+            testPage.enter("addHouseholdMembers", NO.getDisplayValue());
+            testPage.clickContinue();
+            testPage.enter("goingToSchool", NO.getDisplayValue());
+            testPage.enter("isPregnant", NO.getDisplayValue());
+        }
+
+        testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
+        if (hasHousehold) {
+            testPage.enter("isUsCitizen", NO.getDisplayValue());
+            testPage.enter("whoIsNonCitizen", "Me");
+            testPage.clickContinue();
+        } else {
+            testPage.enter("isUsCitizen", YES.getDisplayValue());
+        }
+        testPage.enter("hasDisability", NO.getDisplayValue());
+        testPage.enter("hasWorkSituation", NO.getDisplayValue());
+        testPage.clickContinue();
+
+        if (isWorking) {
+            testPage.enter("areYouWorking", YES.getDisplayValue());
+            testPage.clickButton("Add a job");
+
+            if (hasHousehold) {
+                testPage.enter("whoseJobIsIt", "defaultFirstName defaultLastName");
+                testPage.clickContinue();
+            }
+
+            testPage.enter("employersName", "some employer");
+            testPage.clickContinue();
+            testPage.enter("selfEmployment", YES.getDisplayValue());
+            paidByTheHourOrSelectPayPeriod();
+            testPage.enter("currentlyLookingForJob", NO.getDisplayValue());
+        } else {
+            testPage.enter("areYouWorking", NO.getDisplayValue());
+            testPage.enter("currentlyLookingForJob", YES.getDisplayValue());
+
+            if (hasHousehold) {
+                testPage.enter("whoIsLookingForAJob", "defaultFirstName defaultLastName");
+                testPage.clickContinue();
+            }
+        }
+
+        testPage.clickContinue();
+        testPage.enter("unearnedIncome", "Social Security");
+        testPage.clickContinue();
+        testPage.enter("socialSecurityAmount", "200");
+        testPage.clickContinue();
+        testPage.enter("unearnedIncomeCcap", "Money from a Trust");
+        testPage.clickContinue();
+        testPage.enter("trustMoneyAmount", "200");
+        testPage.clickContinue();
+        testPage.enter("livingSituation", "Paying for my own housing with rent, lease, or mortgage payments");
+        testPage.clickContinue();
+        testPage.enter("earnLessMoneyThisMonth", "Yes");
+        testPage.clickContinue();
+        testPage.clickContinue();
+        testPage.enter("homeExpenses", "Rent");
+        testPage.clickContinue();
+        testPage.enter("homeExpensesAmount", "123321");
+        testPage.clickContinue();
+        testPage.enter("payForUtilities", "Heating");
+        testPage.clickContinue();
+        testPage.enter("energyAssistance", YES.getDisplayValue());
+        testPage.enter("energyAssistanceMoreThan20", YES.getDisplayValue());
+        testPage.enter("supportAndCare", YES.getDisplayValue());
+        testPage.enter("haveVehicle", YES.getDisplayValue());
+        testPage.enter("ownRealEstate", YES.getDisplayValue());
+        testPage.enter("haveInvestments", NO.getDisplayValue());
+        testPage.enter("haveSavings", YES.getDisplayValue());
+        testPage.enter("liquidAssets", "1234");
+        testPage.clickContinue();
+        testPage.enter("haveMillionDollars", NO.getDisplayValue());
+        testPage.enter("haveSoldAssets", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.enter("registerToVote", "Yes, send me more info");
+        completeHelperWorkflow();
+        driver.findElement(By.id("additionalInfo")).sendKeys("Some additional information about my application");
+        testPage.clickContinue();
+        testPage.enter("agreeToTerms", "I agree");
+        testPage.clickContinue();
+        testPage.enter("applicantSignature", "some name");
+        testPage.clickButton("Submit");
+
+        skipDocumentUploadFlow();
+
+        return new SuccessPage(driver);
+    }
+
+    protected void skipDocumentUploadFlow() {
+        testPage.clickButton("Skip this for now");
+    }
+
+    protected void fillOutHousemateInfo(String programSelection) {
+        testPage.enter("relationship", "housemate");
+        testPage.enter("programs", programSelection);
+        fillOutPersonInfo(); // need to fill out programs checkbox set above first
+        testPage.enter("moveToMnPreviousState", "Illinois");
+    }
+
+    protected void paidByTheHourOrSelectPayPeriod() {
+        if (new Random().nextBoolean()) {
+            testPage.enter("paidByTheHour", YES.getDisplayValue());
+            testPage.enter("hourlyWage", "1");
+            testPage.clickContinue();
+            testPage.enter("hoursAWeek", "30");
+        } else {
+            testPage.enter("paidByTheHour", NO.getDisplayValue());
+            testPage.enter("payPeriod", "Twice a month");
+            testPage.clickContinue();
+            testPage.enter("incomePerPayPeriod", "1");
+        }
+        testPage.clickContinue();
+        testPage.goBack();
+        testPage.clickButton("No, I'd rather keep going");
+        testPage.clickButton("No, that's it.");
+    }
+
+    protected void fillOutHelperInfo() {
+        testPage.enter("helpersFullName", "defaultFirstName defaultLastName");
+        testPage.enter("helpersStreetAddress", "someStreetAddress");
+        testPage.enter("helpersCity", "someCity");
+        testPage.enter("helpersZipCode", "12345");
+        testPage.enter("helpersPhoneNumber", "7234567890");
+        testPage.clickContinue();
+    }
+
+    private void completeHelperWorkflow() {
+        if (new Random().nextBoolean()) {
+            testPage.enter("helpWithBenefits", YES.getDisplayValue());
+            testPage.enter("communicateOnYourBehalf", YES.getDisplayValue());
+            testPage.enter("getMailNotices", YES.getDisplayValue());
+            testPage.enter("spendOnYourBehalf", YES.getDisplayValue());
+            fillOutHelperInfo();
+        } else {
+            testPage.enter("helpWithBenefits", NO.getDisplayValue());
+        }
+    }
+
+    protected void completeFlowFromReviewInfoToDisability() {
+        testPage.clickLink("This looks correct");
+        testPage.enter("addHouseholdMembers", NO.getDisplayValue());
+        testPage.clickContinue();
+        testPage.enter("goingToSchool", YES.getDisplayValue());
+        testPage.enter("isPregnant", NO.getDisplayValue());
+        testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
+        testPage.enter("isUsCitizen", YES.getDisplayValue());
+        testPage.enter("hasDisability", NO.getDisplayValue());
+    }
+
+    protected void completeDocumentUploadFlow() {
+        testPage.clickElementById("drag-and-drop-box");
+        uploadDefaultFile();
+
+        testPage.clickButton("I'm finished uploading");
+    }
+
+    private String getAbsoluteFilepath(String resourceFilename) {
+        URL resource = this.getClass().getClassLoader().getResource(resourceFilename);
+        if (resource != null) {
+            return resource.getFile();
+        }
+        return "";
+    }
+
+    private void uploadFile(String filepath) {
+        testPage.clickElementById("drag-and-drop-box"); // is this needed?
+        WebElement upload = driver.findElement(By.cssSelector("input"));
+        upload.sendKeys(filepath);
+    }
+
+    protected void uploadDefaultFile() {
+        uploadFile(getAbsoluteFilepath(UPLOADED_FILE_NAME));
+        assertThat(driver.findElement(By.id("document-upload")).getText()).contains(UPLOADED_FILE_NAME);
+    }
+
+    private void getToDocumentRecommendationScreen() {
+        testPage.clickButton("Apply now");
+        testPage.clickContinue();
+        testPage.enter("writtenLanguage", "English");
+        testPage.enter("spokenLanguage", "English");
+        testPage.enter("needInterpreter", "Yes");
+        testPage.clickContinue();
+        testPage.enter("programs", "Emergency Assistance");
+        testPage.clickContinue();
+        testPage.clickContinue();
+        fillOutPersonalInfo();
+        testPage.clickContinue();
+        navigateTo("signThisApplication");
+        testPage.enter("applicantSignature", "some name");
+        testPage.clickButton("Submit");
+    }
+
+    protected void getToDocumentUploadScreen() {
+        getToDocumentRecommendationScreen();
+        testPage.clickButton("Upload documents now");
     }
 }
