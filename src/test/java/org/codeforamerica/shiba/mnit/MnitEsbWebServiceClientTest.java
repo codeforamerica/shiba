@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.core.io.Resource;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.ws.client.WebServiceTransportException;
@@ -25,13 +24,7 @@ import org.springframework.xml.transform.StringSource;
 import org.w3c.dom.Node;
 
 import javax.xml.soap.SOAPException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.StringWriter;
 import java.time.*;
 import java.util.Base64;
 import java.util.Map;
@@ -72,9 +65,6 @@ class MnitEsbWebServiceClientTest {
 
     @Value("${mnit-esb.password}")
     private String password;
-
-    @Value("classpath:object-service-port.wsdl")
-    private Resource bodySchema;
 
     private MockWebServiceServer mockWebServiceServer;
 
@@ -184,10 +174,4 @@ class MnitEsbWebServiceClientTest {
         return domResult.getNode();
     }
 
-    private String xmlNodeToXmlString(Node node) throws TransformerException {
-        StringWriter stringWriter = new StringWriter();
-        Transformer transformer = TransformerFactory.newInstance().newTransformer();
-        transformer.transform(new DOMSource(node), new StreamResult(stringWriter));
-        return stringWriter.toString();
-    }
 }
