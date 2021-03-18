@@ -49,11 +49,14 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @ExtendWith(SpringExtension.class)
 public abstract class AbstractBasePageTest {
     private static final String UPLOADED_FILE_NAME = "shiba.jpg";
-
+    public static final String PROGRAM_SNAP = "Food (SNAP)";
+    public static final String PROGRAM_CASH = "Cash programs";
+    public static final String PROGRAM_GRH = "Housing Support (GRH)";
+    public static final String PROGRAM_CCAP = "Child Care Assistance";
+    public static final String PROGRAM_EA = "Emergency Assistance";
     static protected RemoteWebDriver driver;
 
     protected Path path;
-
     protected String baseUrl;
     protected String baseUrlWithAuth;
     @Value("${shiba-username}:${shiba-password}")
@@ -214,13 +217,13 @@ public abstract class AbstractBasePageTest {
     }
 
     protected SuccessPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking, SmartyStreetClient mockSmartyStreetClient) {
-        completeFlowFromLandingPageThroughReviewInfo(List.of("Child Care Assistance", "Cash programs"), mockSmartyStreetClient);
+        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_CCAP, PROGRAM_CASH), mockSmartyStreetClient);
         testPage.clickLink("This looks correct");
 
         if (hasHousehold) {
             testPage.enter("addHouseholdMembers", YES.getDisplayValue());
             testPage.clickContinue();
-            fillOutHousemateInfo("Child Care Assistance");
+            fillOutHousemateInfo(PROGRAM_CCAP);
             testPage.clickContinue();
             testPage.clickButton("Yes, that's everyone");
             testPage.enter("whoNeedsChildCare", "defaultFirstName defaultLastName");
@@ -413,7 +416,7 @@ public abstract class AbstractBasePageTest {
         testPage.enter("spokenLanguage", "English");
         testPage.enter("needInterpreter", "Yes");
         testPage.clickContinue();
-        testPage.enter("programs", "Emergency Assistance");
+        testPage.enter("programs", PROGRAM_EA);
         testPage.clickContinue();
         testPage.clickContinue();
         fillOutPersonalInfo();

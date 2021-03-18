@@ -1,59 +1,29 @@
-package org.codeforamerica.shiba.pages;
+package org.codeforamerica.shiba.pages.features;
 
-import org.codeforamerica.shiba.AbstractBasePageTest;
-import org.codeforamerica.shiba.pages.config.FeatureFlag;
-import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
-import org.codeforamerica.shiba.pages.emails.MailGunEmailClient;
-import org.codeforamerica.shiba.pages.enrichment.smartystreets.SmartyStreetClient;
+import org.codeforamerica.shiba.pages.MetricsPage;
+import org.codeforamerica.shiba.pages.Sentiment;
+import org.codeforamerica.shiba.pages.SuccessPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.io.IOException;
-import java.time.Clock;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @Sql(statements = "TRUNCATE TABLE applications;")
 @Tag("integration")
-public class NonParallelizableUserJourneyPageTest extends AbstractBasePageTest {
-
-    @MockBean
-    Clock clock;
-
-    @MockBean
-    FeatureFlagConfiguration featureFlagConfiguration;
-
-    @MockBean
-    MailGunEmailClient mailGunEmailClient;
-
-    @MockBean
-    SmartyStreetClient smartyStreetClient;
+public class NonParallelizableUserJourneyPageTest extends FeatureTest {
 
     @Override
     @BeforeEach
-    protected void setUp() throws IOException {
-        super.setUp();
-        driver.navigate().to(baseUrl);
-        when(clock.instant()).thenReturn(Instant.now());
-        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
-        when(smartyStreetClient.validateAddress(any())).thenReturn(Optional.empty());
-
-        when(featureFlagConfiguration.get("document-upload-feature")).thenReturn(FeatureFlag.ON);
-        when(featureFlagConfiguration.get("submit-via-email")).thenReturn(FeatureFlag.OFF);
-        when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.OFF);
-        when(featureFlagConfiguration.get("send-non-partner-county-alert")).thenReturn(FeatureFlag.OFF);
-    }
+    protected void setUp() throws IOException { super.setUp(); }
 
     @Test
     void userCanCompleteTheNonExpeditedFlowAndCanDownloadPdfsAndShibaShouldCaptureMetricsAfterApplicationIsCompleted() {

@@ -24,7 +24,6 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
         "pagesConfig=pages-config/test-landmark-pages.yaml"
 })
 public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
-
     String firstPageTitle = "first page title";
     String fourthPageTitle = "fourth page title";
 
