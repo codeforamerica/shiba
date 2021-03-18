@@ -15,7 +15,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.ws.client.WebServiceTransportException;
 import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.ws.soap.client.SoapFaultClientException;
@@ -32,14 +31,11 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.validation.SchemaFactory;
 import java.io.StringWriter;
-import java.net.URL;
 import java.time.*;
 import java.util.Base64;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.ws.test.client.RequestMatchers.connectionTo;
@@ -174,23 +170,7 @@ class MnitEsbWebServiceClientTest {
                     MatcherAssert.assertThat(soapHeaderNode, Matchers.hasXPath("//wsse:Security/wsse:UsernameToken/wsse:Username/text()", namespaceContext, Matchers.equalTo(username)));
                     MatcherAssert.assertThat(soapHeaderNode, Matchers.hasXPath("//wsse:Security/wsse:UsernameToken/wsse:Password/text()", namespaceContext, Matchers.equalTo(password)));
                     MatcherAssert.assertThat(soapHeaderNode, Matchers.hasXPath("//wsse:Security/wsse:UsernameToken/wsse:Password[@Type='http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText']", namespaceContext));
-                })
-                .andExpect((uri, request) -> {
-                    Node soapHeaderNode = extractHeaderNodeFromSoapMessage((SaajSoapMessage) request);
-                    URL schemaURL = UriComponentsBuilder.fromHttpUrl("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd")
-                            .build()
-                            .toUri()
-                            .toURL();
-                    assertThatCode(() -> {
-                        Node wsSecurityNode = soapHeaderNode.getFirstChild();
-                        String xmlAsString = xmlNodeToXmlString(wsSecurityNode);
-                        SchemaFactory.newDefaultInstance()
-                                .newSchema(schemaURL)
-                                .newValidator()
-                                .validate(new StringSource(xmlAsString));
-                    }).doesNotThrowAnyException();
                 });
-
 
         mnitEsbWebServiceClient.send(new ApplicationFile(
                 "whatever".getBytes(),
