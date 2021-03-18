@@ -1044,7 +1044,6 @@ input[type=number] {
     transition: width 300ms ease-in-out;
 }
 
-
 .long-file-name {
     overflow-wrap: break-word;
 }
