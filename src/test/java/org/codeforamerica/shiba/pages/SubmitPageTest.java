@@ -7,6 +7,7 @@ import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedListener;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,6 +32,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
         "spring.main.allow-bean-definition-overriding=true",
         "pagesConfig=pages-config/test-submit-page.yaml"
 })
+@Tag("integration")
 public class SubmitPageTest extends AbstractStaticMessageSourcePageTest {
 
     @MockBean ApplicationSubmittedListener applicationSubmittedListener;

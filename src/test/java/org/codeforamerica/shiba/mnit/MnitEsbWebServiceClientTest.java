@@ -1,7 +1,6 @@
 package org.codeforamerica.shiba.mnit;
 
 import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.hamcrest.MatcherAssert;
@@ -41,10 +40,12 @@ import java.util.Base64;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.springframework.ws.test.client.RequestMatchers.connectionTo;
 import static org.springframework.ws.test.client.RequestMatchers.xpath;
-import static org.springframework.ws.test.client.ResponseCreators.*;
+import static org.springframework.ws.test.client.ResponseCreators.withException;
+import static org.springframework.ws.test.client.ResponseCreators.withSoapEnvelope;
 
 @SpringBootTest(properties = {
         "mnit-esb.url=some-url",
