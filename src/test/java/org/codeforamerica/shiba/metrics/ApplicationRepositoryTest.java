@@ -177,9 +177,7 @@ class ApplicationRepositoryTest {
 
         Application retrievedApplication = applicationRepository.find(applicationId);
 
-        assertThat(retrievedApplication).isEqualToIgnoringGivenFields(
-                updatedApplication,
-                "fileName");
+        assertThat(retrievedApplication).usingRecursiveComparison().ignoringFields("fileName").isEqualTo(updatedApplication);
     }
 
     @Nested
