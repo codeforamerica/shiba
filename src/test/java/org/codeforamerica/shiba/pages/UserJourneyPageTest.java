@@ -272,6 +272,17 @@ public class UserJourneyPageTest extends AbstractBasePageTest {
     }
 
     @Test
+    void shouldShowMaxFileMessageWhenDocumentUploadReaches20() {
+        getToDocumentUploadScreen();
+        for(int c = 0; c < 20; c++) {
+            System.out.println(c);
+            uploadDefaultFile();
+        }
+
+        assertThat(driver.findElement(By.id("max-files")));
+    }
+
+    @Test
     void shouldSkipChildcareAssistancePageIfCCAPNotSelected() {
         completeFlowFromLandingPageThroughReviewInfo(List.of("Food (SNAP)"));
         testPage.clickLink("This looks correct");

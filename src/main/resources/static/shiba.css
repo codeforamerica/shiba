@@ -262,6 +262,17 @@ html {
     }
 }
 
+.max-files{
+    height: 100%;
+    background-color: #FFF2D1;
+    border: 2px solid #FFAE00;
+    box-sizing: border-box;
+    padding: 17px;
+    flex-direction: row;
+    align-items: flex-start;
+    display: none;
+}
+
 .narrow-centered-text {
     max-width: 190px;
     margin-left: auto;
