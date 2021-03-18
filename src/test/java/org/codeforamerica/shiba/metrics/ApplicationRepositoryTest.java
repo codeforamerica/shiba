@@ -31,7 +31,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @Sql(statements = {"ALTER SEQUENCE application_id RESTART WITH 12", "TRUNCATE TABLE applications"})
-@Tag("integration")
+@Tag("db")
 class ApplicationRepositoryTest {
 
     @Autowired

@@ -127,11 +127,11 @@ def unitTest = tasks.register("unitTest", Test) {
         task.maxParallelForks(Runtime.runtime.availableProcessors().intdiv(2) ?: 1)
 }
 
-def integrationTest = tasks.register("integrationTest", Test) {
+def dbTest = tasks.register("dbTest", Test) {
     Test task ->
         task.useJUnitPlatform {
             JUnitPlatformOptions options ->
-                options.includeTags 'integration'
+                options.includeTags 'db'
         }
         task.shouldRunAfter test
 }
@@ -139,7 +139,7 @@ def integrationTest = tasks.register("integrationTest", Test) {
 def testAll = tasks.register("testAll", Test) {
     Test task ->
         task.dependsOn(unitTest)
-        task.dependsOn(integrationTest)
+        task.dependsOn(dbTest)
 }
 
 test {
