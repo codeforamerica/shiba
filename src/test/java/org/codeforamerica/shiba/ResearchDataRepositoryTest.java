@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @Sql(statements = {"TRUNCATE TABLE research"})
-@Tag("integration")
+@Tag("db")
 class ResearchDataRepositoryTest {
     @Autowired
     ResearchDataRepository researchDataRepository;

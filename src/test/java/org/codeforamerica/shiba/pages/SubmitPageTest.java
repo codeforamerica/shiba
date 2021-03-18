@@ -32,7 +32,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
         "spring.main.allow-bean-definition-overriding=true",
         "pagesConfig=pages-config/test-submit-page.yaml"
 })
-@Tag("integration")
+@Tag("db")
 public class SubmitPageTest extends AbstractStaticMessageSourcePageTest {
 
     @MockBean ApplicationSubmittedListener applicationSubmittedListener;

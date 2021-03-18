@@ -18,7 +18,7 @@ import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.when;
 
 @Sql(statements = "TRUNCATE TABLE applications;")
-@Tag("integration")
+@Tag("db")
 public class NonParallelizableUserJourneyPageTest extends FeatureTest {
 
     @Override
