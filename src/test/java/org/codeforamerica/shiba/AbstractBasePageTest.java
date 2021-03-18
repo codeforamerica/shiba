@@ -49,6 +49,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @ExtendWith(SpringExtension.class)
 public abstract class AbstractBasePageTest {
     private static final String UPLOADED_FILE_NAME = "shiba.jpg";
+
     static protected RemoteWebDriver driver;
 
     protected Path path;
