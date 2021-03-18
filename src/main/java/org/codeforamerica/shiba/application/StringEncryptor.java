@@ -4,6 +4,8 @@ import com.google.crypto.tink.Aead;
 import com.google.crypto.tink.CleartextKeysetHandle;
 import com.google.crypto.tink.JsonKeysetReader;
 import com.google.crypto.tink.config.TinkConfig;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +27,22 @@ public class StringEncryptor implements Encryptor<String> {
         try {
             return aead.encrypt(data.getBytes(), null);
         } catch (GeneralSecurityException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String hexEncodeEncrypt(String data) {
+        try {
+            return String.valueOf(Hex.encodeHex(aead.encrypt(data.getBytes(), null)));
+        } catch (GeneralSecurityException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String hexDecodeDecrypt(String encryptedData) {
+        try {
+            return new String(aead.decrypt(Hex.decodeHex(encryptedData.toCharArray()), null));
+        } catch (GeneralSecurityException | DecoderException e) {
             throw new RuntimeException(e);
         }
     }

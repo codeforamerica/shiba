@@ -9,6 +9,7 @@ import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.output.xml.FileGenerator;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -38,6 +39,8 @@ public class PdfGenerator implements FileGenerator {
     @Override
     public ApplicationFile generate(String applicationId, Document document, Recipient recipient) {
         Application application = applicationRepository.find(applicationId);
+        ApplicationData unencryptedApplicationData = application.getApplicationData().unencrypted();
+        application.setApplicationData(unencryptedApplicationData);
         List<ApplicationInput> applicationInputs = mappers.map(application, recipient);
         PdfFieldFiller pdfFieldFiller = this.pdfFieldFiller.get(recipient).get(document);
 

@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.StringEncryptor;
@@ -9,6 +10,8 @@ import org.codeforamerica.shiba.pages.config.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,6 +25,7 @@ public class ApplicationData {
     private Subworkflows subworkflows = new Subworkflows();
     private Map<String, PagesData> incompleteIterations = new HashMap<>();
     private List<UploadedDocument> uploadedDocs = new ArrayList<>();
+    @JsonIgnore
     private StringEncryptor stringEncryptor;
 
     public void setStartTimeOnce(Instant instant) {
@@ -143,15 +147,47 @@ public class ApplicationData {
         uploadedDocs.remove(toRemove);
     }
 
+    public StringEncryptor getStringEncryptor() {
+        if (stringEncryptor == null) {
+            try {
+                stringEncryptor = new StringEncryptor(System.getenv("ENCRYPTION_KEY"));
+            } catch (GeneralSecurityException | IOException e) {
+                throw new IllegalStateException(e);
+            }
+        }
+
+        return stringEncryptor;
+    }
+
     public ApplicationData encrypted() {
         String applicantSSN = this.getPagesData().safeGetPageInputValue("personalInfo", "ssn").get(0);
-        this.getPagesData().getPage("personalInfo").get("ssn").setValue(stringEncryptor.encrypt(applicantSSN).toString(), 0);
+        String encryptedApplicantSSN = getStringEncryptor().hexEncodeEncrypt(applicantSSN);
+        this.getPagesData().getPage("personalInfo").get("ssn").setValue(encryptedApplicantSSN, 0);
+
+        boolean hasHousehold = this.getSubworkflows().containsKey("household");
+        if (hasHousehold) {
+            this.getSubworkflows().get("household").forEach(iteration -> {
+                    String houseHoldMemberSSN = iteration.getPagesData().safeGetPageInputValue("householdMemberInfo", "ssn").get(0);
+                    String encryptedHouseholdMemberSSN = getStringEncryptor().hexEncodeEncrypt(houseHoldMemberSSN);
+                    iteration.getPagesData().getPage("householdMemberInfo").get("ssn").setValue(encryptedHouseholdMemberSSN, 0);
+            });
+        }
+
         return this;
+    }
 
+    public ApplicationData unencrypted() {
+        String applicantSSN = this.getPagesData().safeGetPageInputValue("personalInfo", "ssn").get(0);
+        this.getPagesData().getPage("personalInfo").get("ssn").setValue(getStringEncryptor().hexDecodeDecrypt(applicantSSN), 0);
 
-//        boolean hasHousehold = this.getSubworkflows().containsKey("household");
-//        if (hasHousehold) {
-//            List<String> householdSSNs = this.getSubworkflows().get("household").stream().map(iteration -> iteration.getPagesData().safeGetPageInputValue("householdMemberInfo", "ssn").get(0)).collect(Collectors.toList());
-//        }
+        boolean hasHousehold = this.getSubworkflows().containsKey("household");
+        if (hasHousehold) {
+            this.getSubworkflows().get("household").stream().forEach(iteration -> {
+                String houseHoldMemberSSN = iteration.getPagesData().safeGetPageInputValue("householdMemberInfo", "ssn").get(0);
+                iteration.getPagesData().getPage("householdMemberInfo").get("ssn").setValue(getStringEncryptor().hexDecodeDecrypt(houseHoldMemberSSN), 0);
+            });
+        }
+
+        return this;
     }
 }

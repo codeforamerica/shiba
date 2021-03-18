@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.application;
 
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.pages.Feedback;
 import org.codeforamerica.shiba.pages.Sentiment;
@@ -12,7 +12,7 @@ import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 
-@Value
+@Data
 @Builder
 public class Application {
     String id;
