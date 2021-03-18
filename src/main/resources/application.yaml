@@ -16,6 +16,7 @@ mnit-esb:
   delay: 5400000 # 1.5 hours
   multiplier: 2
   max-delay: 10800000 # 3 hours
+  timeout-seconds: 300
 
 sender-email: help@mnbenefits.org
 security-email: security@mnbenefits.org
