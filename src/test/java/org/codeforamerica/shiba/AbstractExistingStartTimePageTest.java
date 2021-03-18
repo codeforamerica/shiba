@@ -11,7 +11,6 @@ import java.time.Instant;
 
 @Import(AbstractExistingStartTimePageTest.TestController.class)
 public class AbstractExistingStartTimePageTest extends AbstractStaticMessageSourcePageTest {
-
     @Override
     @BeforeEach
     protected void setUp() throws IOException {

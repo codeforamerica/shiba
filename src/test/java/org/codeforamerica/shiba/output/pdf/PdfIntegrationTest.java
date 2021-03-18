@@ -70,7 +70,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
     class EnergyAssistanceLIHEAP {
         @BeforeEach
         void setUp() {
-            selectPrograms(List.of("Cash programs"));
+            selectPrograms(List.of(PROGRAM_CASH));
         }
 
         @ParameterizedTest
@@ -105,7 +105,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
     class GRH {
         @BeforeEach
         void setUp() {
-            selectPrograms(List.of("Housing Support (GRH)"));
+            selectPrograms(List.of(PROGRAM_GRH));
         }
 
         @Test
@@ -129,7 +129,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
     class CCAP {
         @BeforeEach
         void setUp() {
-            selectPrograms(List.of("Child Care Assistance"));
+            selectPrograms(List.of(PROGRAM_CCAP));
         }
 
         @Test
@@ -318,19 +318,19 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             assertThat(getPdfFieldText(ccap, "INTEREST_DIVIDENDS")).isEqualTo("Yes");
             assertThat(getPdfFieldText(ccap, "OTHER_SOURCES")).isEqualTo("Yes");
 
-            assertThat(getPdfFieldText(ccap,"BENEFITS_AMOUNT")).isEqualTo("10");
-            assertThat(getPdfFieldText(ccap,"INSURANCE_PAYMENTS_AMOUNT")).isEqualTo("");
-            assertThat(getPdfFieldText(ccap,"CONTRACT_FOR_DEED_AMOUNT")).isEqualTo("20");
-            assertThat(getPdfFieldText(ccap,"TRUST_MONEY_AMOUNT")).isEqualTo("");
-            assertThat(getPdfFieldText(ccap,"HEALTH_CARE_REIMBURSEMENT_AMOUNT")).isEqualTo("");
+            assertThat(getPdfFieldText(ccap, "BENEFITS_AMOUNT")).isEqualTo("10");
+            assertThat(getPdfFieldText(ccap, "INSURANCE_PAYMENTS_AMOUNT")).isEqualTo("");
+            assertThat(getPdfFieldText(ccap, "CONTRACT_FOR_DEED_AMOUNT")).isEqualTo("20");
+            assertThat(getPdfFieldText(ccap, "TRUST_MONEY_AMOUNT")).isEqualTo("");
+            assertThat(getPdfFieldText(ccap, "HEALTH_CARE_REIMBURSEMENT_AMOUNT")).isEqualTo("");
             assertThat(getPdfFieldText(ccap, "INTEREST_DIVIDENDS_AMOUNT")).isEqualTo("30");
             assertThat(getPdfFieldText(ccap, "OTHER_SOURCES_AMOUNT")).isEqualTo("40");
 
-            assertThat(getPdfFieldText(ccap,"BENEFITS_FREQUENCY")).isEqualTo("Monthly");
-            assertThat(getPdfFieldText(ccap,"INSURANCE_PAYMENTS_FREQUENCY")).isEqualTo("Monthly");
-            assertThat(getPdfFieldText(ccap,"CONTRACT_FOR_DEED_FREQUENCY")).isEqualTo("Monthly");
-            assertThat(getPdfFieldText(ccap,"TRUST_MONEY_FREQUENCY")).isEqualTo("Monthly");
-            assertThat(getPdfFieldText(ccap,"HEALTH_CARE_REIMBURSEMENT_FREQUENCY")).isEqualTo("Monthly");
+            assertThat(getPdfFieldText(ccap, "BENEFITS_FREQUENCY")).isEqualTo("Monthly");
+            assertThat(getPdfFieldText(ccap, "INSURANCE_PAYMENTS_FREQUENCY")).isEqualTo("Monthly");
+            assertThat(getPdfFieldText(ccap, "CONTRACT_FOR_DEED_FREQUENCY")).isEqualTo("Monthly");
+            assertThat(getPdfFieldText(ccap, "TRUST_MONEY_FREQUENCY")).isEqualTo("Monthly");
+            assertThat(getPdfFieldText(ccap, "HEALTH_CARE_REIMBURSEMENT_FREQUENCY")).isEqualTo("Monthly");
             assertThat(getPdfFieldText(ccap, "INTEREST_DIVIDENDS_FREQUENCY")).isEqualTo("Monthly");
             assertThat(getPdfFieldText(ccap, "OTHER_SOURCES_FREQUENCY")).isEqualTo("Monthly");
         }
@@ -359,7 +359,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
     class CAF {
         @BeforeEach
         void setUp() {
-            selectPrograms(List.of("Cash programs"));
+            selectPrograms(List.of(PROGRAM_CASH));
         }
 
         @Test
@@ -382,9 +382,9 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         @Test
         void shouldMapPrograms() {
             navigateTo("choosePrograms");
-            testPage.enter("programs", "Food (SNAP)");
+            testPage.enter("programs", PROGRAM_SNAP);
             testPage.enter("programs", "Housing Support");
-            testPage.enter("programs", "Emergency Assistance");
+            testPage.enter("programs", PROGRAM_EA);
             testPage.clickContinue();
 
             PDAcroForm pdAcroForm = submitAndDownloadCaf();
@@ -463,7 +463,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
     class CAFandCCAP {
         @BeforeEach
         void setUp() {
-            selectPrograms(List.of("Food (SNAP)", "Child Care Assistance", "Cash programs"));
+            selectPrograms(List.of(PROGRAM_SNAP, PROGRAM_CCAP, PROGRAM_CASH));
         }
 
         @Test
@@ -965,14 +965,14 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
 
         testPage.enter("firstName", "Jim");
         testPage.enter("lastName", "Halpert");
-        testPage.enter("programs", "Child Care Assistance");
+        testPage.enter("programs", PROGRAM_CCAP);
         testPage.clickContinue();
 
         testPage.clickButton("Add a person");
 
         testPage.enter("firstName", "Pam");
         testPage.enter("lastName", "Beesly");
-        testPage.enter("programs", "Child Care Assistance");
+        testPage.enter("programs", PROGRAM_CCAP);
         testPage.clickContinue();
     }
 
