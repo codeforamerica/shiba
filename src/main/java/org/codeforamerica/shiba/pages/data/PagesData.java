@@ -66,6 +66,24 @@ public class PagesData extends HashMap<String, PageData> {
     }
 
     /**
+     * Get the first element in the inputData values for the given pageName and inputName or null if it doesn't exist.
+     *
+     * @param pageName  page that the element is stored on
+     * @param inputName input name of the element
+     * @return first element stored at that pageName > inputName or null if it doesn't exist
+     */
+    public String getPageInputFirstValue(String pageName, String inputName) {
+        PageData pageData = get(pageName);
+        if (pageData != null) {
+            InputData inputData = pageData.get(inputName);
+            if (inputData != null && !inputData.getValue().isEmpty()) {
+                return inputData.getValue(0);
+            }
+        }
+        return null;
+    }
+
+    /**
      * Defaults to {@code value.getValue()} if all {@code value.getConditionalValues()} evaluate to "false".
      */
     private String resolve(PageWorkflowConfiguration pageWorkflowConfiguration, Value value) {

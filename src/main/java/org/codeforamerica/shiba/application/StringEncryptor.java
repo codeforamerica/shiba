@@ -33,7 +33,7 @@ public class StringEncryptor implements Encryptor<String> {
 
     public String hexEncodeEncrypt(String data) {
         try {
-            return String.valueOf(Hex.encodeHex(aead.encrypt(data.getBytes(), null)));
+            return new String(Hex.encodeHex(aead.encrypt(data.getBytes(), null)));
         } catch (GeneralSecurityException e) {
             throw new RuntimeException(e);
         }
