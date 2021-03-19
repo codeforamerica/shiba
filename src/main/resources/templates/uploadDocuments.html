@@ -56,13 +56,13 @@
                             </div>
                             <!-- This is temporarily incorrect, but implemented to allow for navigation to the next page for acceptance -->
                             <div class="form-group">
-	                            <a id="submit" class="button" onclick="onSubmit()"
-	                               th:text="#{upload-documents.im-finished-uploading}"></a>
-	                            <p class="text--error">
-	        						<i class="icon-warning"></i>
-	        						<span th:text="#{upload-documents.wait-for-upload-warning}"></span>
-	    						</p>
-    						</div>
+                                <a id="submit" class="button" onclick="onSubmit()"
+                                   th:text="#{upload-documents.im-finished-uploading}"></a>
+                                <p class="text--error">
+                                    <i class="icon-warning"></i>
+                                    <span th:text="#{upload-documents.wait-for-upload-warning}"></span>
+                                </p>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -97,15 +97,15 @@
         }
         return [name.slice(0, extIdx), extStr];
     }
-    
+
     var isUploadComplete = true;
     function onSubmit() {
-    	if (!isUploadComplete) {
-    		$('.form-group').addClass('form-group--error');
-    		$('.text--error').show();
-    	} else {
-    		window.location = "/pages/" + [[${pageName}]] + "/navigation?option=0"
-    	}
+        if (!isUploadComplete) {
+            $('.form-group').addClass('form-group--error');
+            $('.text--error').show();
+        } else {
+            window.location = "/pages/" + [[${pageName}]] + "/navigation?option=0"
+        }
     }
 
     function showMaxFileMessage(){
@@ -114,14 +114,19 @@
         let maxFilesReached = document.getElementById("max-files");
         maxFilesReached.style.display = "flex"
     }
-    
+
     $('.text--error').hide();
 
-
     var myDropZone;
+
+    function destroyerCreator(file) {
+        return function () {
+            myDropZone.emit('destroy', file);
+        }
+    }
+
     $("#document-upload").dropzone({
         uploadMultiple: false,
-        dictCancelUpload: "cancel",
         previewsContainer: ".preview-container",
         autoProcessQueue: true,
         maxFiles: 20,
@@ -137,7 +142,7 @@
                     <div class="display-flex body-gray file-details">
                         <div class="dz-size" data-dz-size></div>
                         <span class="file-details-delimiter" aria-hidden="true">•</span>
-                        <a class="dz-remove" href="#">delete</a>
+                        <a class="dz-remove" href="javascript:undefined;" ></a>
                     </div>
                 </div>
               </div>
@@ -165,11 +170,11 @@
                     "<span class='filename-text-ext' aria-hidden='true'>" + fileNameComponents[1] + "</span>"
 
                 const removeLink = file.previewElement.getElementsByClassName("dz-remove")[0];
-                const fileName = file.name;
-                removeLink.setAttribute('href', '/pages/uploadDocumentsDeleteWarningPage?filename=' + fileName);
+                removeLink.onclick = destroyerCreator(file);
+                removeLink.innerText = [[#{general.cancel}]].toLowerCase()
                 isUploadComplete = false;
             });
-            this.on('queuecomplete', function(file) {
+            this.on('queuecomplete', function (file) {
             	isUploadComplete = true;
 
                 if(documents.length >= this.options.maxFiles){
@@ -183,17 +188,26 @@
                 showMaxFileMessage();
             });
 
+            this.on('success', function (file) {
+                var removeLink = file.previewElement.getElementsByClassName("dz-remove")[0];
+                removeLink.innerText = [[#{general.delete}]].toLowerCase()
+                var fileName = file.name;
+                removeLink.onclick = undefined;
+                removeLink.setAttribute('href', '/pages/uploadDocumentsDeleteWarningPage?filename=' + fileName);
+            });
+
+            this.on('destroy', function (file) {
+                myDropZone.removeFile(file)
+            });
+
             $.each(documents, function (key, value) {
                 var mockFile = {name: value.filename, size: value.size};
                 myDropZone.files.push(mockFile);
                 myDropZone.emit("addedfile", mockFile);
                 myDropZone.emit("thumbnail", mockFile, value.path);
+                myDropZone.emit("success", mockFile);
                 myDropZone.emit("complete", mockFile);
             });
-
-        },
-        error: function(file, errorMessage, xhr) {
-            alert(`Upload Error for ${file.name}: ${errorMessage}`);
         }
     });
 </script>

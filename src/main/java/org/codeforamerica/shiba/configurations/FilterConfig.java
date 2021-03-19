@@ -21,6 +21,7 @@ public class FilterConfig {
         registrationBean.addUrlPatterns(
                 "/pages/*",
                 "/groups/*",
+                "/file-upload",
                 "/remove-upload/*",
                 "/submit",
                 "/submit-feedback"
