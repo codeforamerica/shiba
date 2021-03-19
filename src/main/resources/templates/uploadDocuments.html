@@ -148,7 +148,12 @@
         },
         init: function () {
             myDropZone = this;
+            var documents = [[${uploadedDocs}]];
+
             this.on('addedfile', file => {
+                if(this.files.length >= this.options.maxFiles){
+                    showMaxFileMessage();
+                }
                 const fileNameSpan = file.previewElement.getElementsByClassName('filename-text')[0]
                 fileNameSpan.setAttribute('aria-label', fileNameSpan.innerText)
                 const fileNameComponents = getFilenameComponents(fileNameSpan);
@@ -170,8 +175,10 @@
             this.on('maxfilesreached', function(file) {
                 showMaxFileMessage();
             });
-
-            var documents = [[${uploadedDocs}]];
+            this.on('maxfilesexceeded', function (file) {
+                showMaxFileMessage();
+                location.reload();
+            });
 
             if(documents.length >= this.options.maxFiles){
                 showMaxFileMessage();

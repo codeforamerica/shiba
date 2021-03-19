@@ -321,7 +321,10 @@ public class PageController {
     @PostMapping("/file-upload")
     @ResponseStatus(HttpStatus.OK)
     public void upload(@RequestParam("file") MultipartFile file) {
-        this.applicationData.addUploadedDoc(file);
+        if(this.applicationData.getUploadedDocs().size() < 20){
+            this.applicationData.addUploadedDoc(file);
+        }
+
     }
 
     @SuppressWarnings("SpringMVCViewInspection")
