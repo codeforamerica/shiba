@@ -2407,7 +2407,6 @@ workflow:
   selfEmployment:
     pageConfiguration: *selfEmployment
     groupName: jobs
-    dataMissingRedirect: employmentStatus
     nextPages:
       - pageName: paidByTheHour
     datasources:
@@ -2417,7 +2416,6 @@ workflow:
   paidByTheHour:
     pageConfiguration: *paidByTheHour
     groupName: jobs
-    dataMissingRedirect: employmentStatus
     nextPages:
       - pageName: hourlyWage
         condition:
@@ -2435,7 +2433,6 @@ workflow:
   hourlyWage:
     pageConfiguration: *hourlyWage
     groupName: jobs
-    dataMissingRedirect: employmentStatus
     nextPages:
       - pageName: hoursAWeek
     datasources:
@@ -2454,7 +2451,6 @@ workflow:
   payPeriod:
     pageConfiguration: *payPeriod
     groupName: jobs
-    dataMissingRedirect: employmentStatus
     nextPages:
       - pageName: incomePerPayPeriod
     datasources:
@@ -2471,7 +2467,7 @@ workflow:
       - pageName: payPeriod
   jobBuilder:
     pageConfiguration: *jobBuilder
-    dataMissingRedirect: employmentStatus
+    dataMissingRedirect: introIncome
     nextPages:
       - pageName: householdSelectionForIncome
       - pageName: jobSearch
@@ -2480,7 +2476,7 @@ workflow:
       - pageName: addHouseholdMembers
   jobRedirectPage:
     pageConfiguration: *jobRedirectPage
-    dataMissingRedirect: employmentStatus
+    dataMissingRedirect: workSituation
     nextPages:
       - pageName: jobBuilder
     datasources:
