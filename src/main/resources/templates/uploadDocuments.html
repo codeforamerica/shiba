@@ -35,7 +35,7 @@
                             <div id="file-preview-template">
                                 <div class="preview-container"></div>
                             </div>
-                            <div class="reveal reveal-adjacent spacing-above-35">
+                            <div class="reveal reveal-adjacent spacing-above-60">
                                 <a href="#" class="reveal__link reveal__link-adjacent">
                                     <span class="reveal-icon">
                                         <div th:replace="fragments/icons/icon-multiple-documents  :: icon-multiple-documents"></div>
@@ -130,6 +130,8 @@
         previewsContainer: ".preview-container",
         autoProcessQueue: true,
         maxFiles: 20,
+        maxFilesize: 1,
+        dictFileTooBig: "This file is too large (max size: {{maxFilesize}} MB)",
         clickable: ".drag-and-drop-box",
         previewTemplate: `
             <div class="dz-preview dz-file-preview spacing-below-15">
@@ -146,6 +148,7 @@
                     </div>
                 </div>
               </div>
+              <p class='text--error spacing-above-0'></p>
             </div>`,
         sending: (file, xhr, formData) => {
             const csrfToken = [[${_csrf.token}]];
@@ -208,6 +211,21 @@
                 myDropZone.emit("success", mockFile);
                 myDropZone.emit("complete", mockFile);
             });
+
+        },
+        error: function(file, errorMessage, xhr) {
+            file.previewElement.getElementsByClassName("text--error")[0].innerText = errorMessage;
+            file.previewElement.classList.add("form-group--error")
+
+            var removeLink = file.previewElement.getElementsByClassName("dz-remove")[0]
+            removeLink.innerText = "remove";
+            removeLink.classList.add("text--red")
+
+            // TODO put the correct svg here
+            var filePreview = file.previewElement.getElementsByClassName("doc-rectangle")[0]
+            filePreview.innerHTML = "<svg viewBox=\"0 0 36 42\" xmlns=\"http://www.w3.org/2000/svg\">\n" +
+                "<path d=\"M24 0H4C2.93913 0 1.92172 0.491665 1.17157 1.36683C0.421427 2.242 0 3.42899 0 4.66667V37.3333C0 38.571 0.421427 39.758 1.17157 40.6332C1.92172 41.5083 2.93913 42 4 42H32C33.0609 42 34.0783 41.5083 34.8284 40.6332C35.5786 39.758 36 38.571 36 37.3333V14L24 0ZM32 37.3333H4V4.66667H22V16.3333H32V37.3333ZM28 25.6667H8V21H28V25.6667ZM22 32.6667H8V28H22\" fill=\"red\"/>\n" +
+                "</svg>"
         }
     });
 </script>
