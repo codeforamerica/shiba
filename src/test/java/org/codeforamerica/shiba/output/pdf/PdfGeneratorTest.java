@@ -5,6 +5,7 @@ import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.output.*;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,6 +21,8 @@ import static org.mockito.Mockito.*;
 
 class PdfGeneratorTest {
     PdfGenerator pdfGenerator;
+    Application application;
+    String applicationId = "someApplicationId";
     PdfFieldMapper pdfFieldMapper = mock(PdfFieldMapper.class);
     PdfFieldFiller caseworkerFiller = mock(PdfFieldFiller.class);
     PdfFieldFiller clientFiller = mock(PdfFieldFiller.class);
@@ -34,30 +37,28 @@ class PdfGeneratorTest {
 
     @BeforeEach
     void setUp() {
+        application = Application.builder()
+                .id("someApplicationId")
+                .completedAt(null)
+                .applicationData(new ApplicationData())
+                .county(null)
+                .timeToComplete(null)
+                .build();
         pdfGenerator = new PdfGenerator(
                 pdfFieldMapper,
                 pdfFieldFillers,
                 applicationRepository,
                 mappers,
                 fileNameGenerator);
+        when(applicationRepository.find(applicationId)).thenReturn(application);
     }
 
     @Test
     void producesPdfFieldsAndFillsThePdf() {
         List<ApplicationInput> applicationInputs = List.of(new ApplicationInput("someGroupName", "someName", List.of("someValue"), ApplicationInputType.SINGLE_VALUE));
-
-        String applicationId = "someAppId";
         List<PdfField> pdfFields = List.of(new SimplePdfField("someName", "someValue"));
-        Application application = Application.builder()
-                .id("")
-                .completedAt(null)
-                .applicationData(null)
-                .county(null)
-                .timeToComplete(null)
-                .build();
         String fileName = "some file name";
         when(fileNameGenerator.generatePdfFileName(application, Document.CAF)).thenReturn(fileName);
-        when(applicationRepository.find(applicationId)).thenReturn(application);
         Recipient recipient = CASEWORKER;
         when(mappers.map(application, recipient)).thenReturn(applicationInputs);
         when(pdfFieldMapper.map(applicationInputs)).thenReturn(pdfFields);
@@ -73,7 +74,7 @@ class PdfGeneratorTest {
     @ParameterizedTest
     @EnumSource(Recipient.class)
     void shouldUseFillerRespectToRecipient(Recipient recipient) {
-        pdfGenerator.generate("", Document.CAF, recipient);
+        pdfGenerator.generate("someApplicationId", Document.CAF, recipient);
 
         verify(pdfFieldFillers.get(recipient).get(Document.CAF)).fill(any(), any(), any());
     }

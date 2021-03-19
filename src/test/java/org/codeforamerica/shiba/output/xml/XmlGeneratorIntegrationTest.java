@@ -38,10 +38,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toMap;
@@ -92,7 +89,7 @@ public class XmlGeneratorIntegrationTest {
                                             default -> Optional.ofNullable(input.getValidators())
                                                     .filter(validators -> validators.size() == 1)
                                                     .map(validators -> switch (validators.get(0).getValidation()) {
-                                                        case SSN -> List.of("123456789");
+                                                        case SSN -> new ArrayList<>(List.of("1234-56-789"));
                                                         case ZIPCODE -> List.of("12345");
                                                         case STATE -> List.of("MN");
                                                         default -> List.of("some-value");
