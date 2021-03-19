@@ -150,6 +150,10 @@
             myDropZone = this;
             var documents = [[${uploadedDocs}]];
 
+            if(documents.length >= this.options.maxFiles){
+                showMaxFileMessage();
+            }
+
             this.on('addedfile', file => {
                 if(this.files.length >= this.options.maxFiles){
                     showMaxFileMessage();
@@ -178,10 +182,6 @@
             this.on('maxfilesexceeded', function (file) {
                 showMaxFileMessage();
             });
-
-            if(documents.length >= this.options.maxFiles){
-                showMaxFileMessage();
-            }
 
             $.each(documents, function (key, value) {
                 var mockFile = {name: value.filename, size: value.size};
