@@ -150,6 +150,16 @@ public class UserJourneyPageTest extends FeatureTest {
     }
 
     @Test
+    void showMaxFileUploadMessageWhenClientHasUploaded20Documents() {
+        getToDocumentUploadScreen();
+        for (int c = 0; c < 20; c++){
+            uploadDefaultFile();
+        }
+
+        assertThat(driver.findElementById("max-files"));
+    }
+
+    @Test
     void shouldHandleDeletionOfLastHouseholdMember() {
         completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_CCAP), smartyStreetClient);
         testPage.clickLink("This looks correct");

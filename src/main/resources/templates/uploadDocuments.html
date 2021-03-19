@@ -14,6 +14,9 @@
                     <div id="dropzone">
                         <form action="/file-upload" class="dropzone needsclick" id="document-upload" method="post"
                               enctype="multipart/form-data">
+                            <div id="max-files-reached">
+                                <div class='max-files spacing-below-35' id="max-files" th:text='#{upload-documents.maximum-number-of-files}'></div>
+                            </div>
                             <div id="drag-and-drop-box" class="drag-and-drop-box spacing-below-35 spacing-above-35"
                                  ondragenter="addDragBorder()" ondrop="removeDragBorder()"
                                  ondragleave="removeDragBorder()">
@@ -104,8 +107,16 @@
     		window.location = "/pages/" + [[${pageName}]] + "/navigation?option=0"
     	}
     }
+
+    function showMaxFileMessage(){
+        let dragBox = document.getElementById("drag-and-drop-box");
+        dragBox.style.display = "none";
+        let maxFilesReached = document.getElementById("max-files");
+        maxFilesReached.style.display = "flex"
+    }
     
-    $('.text--error').hide()
+    $('.text--error').hide();
+
 
     var myDropZone;
     $("#document-upload").dropzone({
@@ -113,6 +124,7 @@
         dictCancelUpload: "cancel",
         previewsContainer: ".preview-container",
         autoProcessQueue: true,
+        maxFiles: 20,
         clickable: ".drag-and-drop-box",
         previewTemplate: `
             <div class="dz-preview dz-file-preview spacing-below-15">
@@ -136,7 +148,16 @@
         },
         init: function () {
             myDropZone = this;
+            var documents = [[${uploadedDocs}]];
+
+            if(documents.length >= this.options.maxFiles){
+                showMaxFileMessage();
+            }
+
             this.on('addedfile', file => {
+                if(this.files.length >= this.options.maxFiles){
+                    showMaxFileMessage();
+                }
                 const fileNameSpan = file.previewElement.getElementsByClassName('filename-text')[0]
                 fileNameSpan.setAttribute('aria-label', fileNameSpan.innerText)
                 const fileNameComponents = getFilenameComponents(fileNameSpan);
@@ -150,9 +171,18 @@
             });
             this.on('queuecomplete', function(file) {
             	isUploadComplete = true;
+
+                if(documents.length >= this.options.maxFiles){
+                    showMaxFileMessage();
+                }
             });
-            
-            var documents = [[${uploadedDocs}]];
+            this.on('maxfilesreached', function(file) {
+                showMaxFileMessage();
+            });
+            this.on('maxfilesexceeded', function (file) {
+                showMaxFileMessage();
+            });
+
             $.each(documents, function (key, value) {
                 var mockFile = {name: value.filename, size: value.size};
                 myDropZone.files.push(mockFile);
@@ -160,6 +190,7 @@
                 myDropZone.emit("thumbnail", mockFile, value.path);
                 myDropZone.emit("complete", mockFile);
             });
+
         },
         error: function(file, errorMessage, xhr) {
             alert(`Upload Error for ${file.name}: ${errorMessage}`);

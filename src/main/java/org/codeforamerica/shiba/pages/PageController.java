@@ -41,6 +41,7 @@ import static java.util.Optional.ofNullable;
 @Slf4j
 public class PageController {
     private static final ZoneId CENTRAL_TIMEZONE = ZoneId.of("America/Chicago");
+    private final int MAX_FILES_UPLOADED = 20;
     private final ApplicationData applicationData;
     private final ApplicationConfiguration applicationConfiguration;
     private final Clock clock;
@@ -321,7 +322,10 @@ public class PageController {
     @PostMapping("/file-upload")
     @ResponseStatus(HttpStatus.OK)
     public void upload(@RequestParam("file") MultipartFile file) {
-        this.applicationData.addUploadedDoc(file);
+        if(this.applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED){
+            this.applicationData.addUploadedDoc(file);
+        }
+
     }
 
     @SuppressWarnings("SpringMVCViewInspection")
