@@ -149,7 +149,7 @@
                 </div>
               </div>
             </div>`,
-        sending(file, xhr, formData) {
+        sending: function (file, xhr, formData) {
             var csrfToken = [[${_csrf.token}]];
             formData.append("_csrf", csrfToken)
         },
