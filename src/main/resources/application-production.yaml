@@ -18,3 +18,19 @@ feature-flag:
   submit-via-email: off
   submit-via-api: on
   document-upload-feature: off
+  county-anoka: off
+  county-carver: off
+  county-clay: off
+  county-cook: off
+  county-dodge: off
+  county-hennepin: on
+  county-morrison: off
+  county-olmsted: on
+  county-ottertail: off
+  county-sherburne: off
+  county-steele: off
+  county-stlouis: off
+  county-wabasha: on
+  county-wadena: off
+  county-waseca: off
+  county-wright: on
