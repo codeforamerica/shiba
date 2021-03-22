@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.pages.features;
 
 import org.codeforamerica.shiba.AbstractBasePageTest;
+import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.emails.MailGunEmailClient;
@@ -24,6 +25,7 @@ public abstract class FeatureTest extends AbstractBasePageTest {
     @MockBean PageEventPublisher pageEventPublisher;
     @MockBean MailGunEmailClient mailGunEmailClient;
     @MockBean FeatureFlagConfiguration featureFlagConfiguration;
+    @MockBean UploadDocumentConfiguration uploadDocumentConfiguration;
 
     @Override
     @BeforeEach
@@ -38,5 +40,7 @@ public abstract class FeatureTest extends AbstractBasePageTest {
         when(featureFlagConfiguration.get("submit-via-email")).thenReturn(FeatureFlag.OFF);
         when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.OFF);
         when(featureFlagConfiguration.get("send-non-partner-county-alert")).thenReturn(FeatureFlag.OFF);
+
+        when(uploadDocumentConfiguration.getMaxFilesize()).thenReturn(50);
     }
 }

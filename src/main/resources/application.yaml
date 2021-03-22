@@ -3,8 +3,8 @@ spring:
     url: jdbc:postgresql://localhost:5432/shiba
   servlet:
     multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
+      max-file-size: 50MB
+      max-request-size: 50MB
 
 client:
   keystore: src/main/resources/shiba-keystore.jks

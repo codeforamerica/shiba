@@ -160,6 +160,16 @@ public class UserJourneyPageTest extends FeatureTest {
     }
 
     @Test
+    void showMaxFilesizeErrorMessageWhenClientHasUploadedLargeDocument() {
+        getToDocumentUploadScreen();
+        long largeFilesize = 50000000000L;
+        driver.executeScript("$('#document-upload').get(0).dropzone.addFile({name: 'testFile.pdf', size: " + largeFilesize + ", type: 'not-an-image'})");
+
+        int maxFileSize = uploadDocumentConfiguration.getMaxFilesize();
+        assertThat(driver.findElementById("file-error-message").getText()).contains("This file is too large (max size: " + maxFileSize + " MB)");
+    }
+
+    @Test
     void shouldHandleDeletionOfLastHouseholdMember() {
         completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_CCAP), smartyStreetClient);
         testPage.clickLink("This looks correct");

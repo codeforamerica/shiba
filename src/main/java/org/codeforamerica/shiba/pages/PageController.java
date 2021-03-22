@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.pages;
 
 import lombok.extern.slf4j.Slf4j;
+import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
@@ -52,6 +53,7 @@ public class PageController {
     private final ApplicationEnrichment applicationEnrichment;
     private final ApplicationDataParser<List<Document>> documentListParser;
     private final FeatureFlagConfiguration featureFlags;
+    private final UploadDocumentConfiguration uploadDocumentConfiguration;
 
     public PageController(
             ApplicationConfiguration applicationConfiguration,
@@ -63,7 +65,8 @@ public class PageController {
             PageEventPublisher pageEventPublisher,
             ApplicationEnrichment applicationEnrichment,
             ApplicationDataParser<List<Document>> documentListParser,
-            FeatureFlagConfiguration featureFlags) {
+            FeatureFlagConfiguration featureFlags,
+            UploadDocumentConfiguration uploadDocumentConfiguration) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
@@ -74,6 +77,7 @@ public class PageController {
         this.applicationEnrichment = applicationEnrichment;
         this.documentListParser = documentListParser;
         this.featureFlags = featureFlags;
+        this.uploadDocumentConfiguration = uploadDocumentConfiguration;
     }
 
     @GetMapping("/")
@@ -217,6 +221,7 @@ public class PageController {
 
             if (landmarkPagesConfiguration.isUploadDocumentsPage(pageName)) {
                 model.put("uploadedDocs", applicationData.getUploadedDocs());
+                model.put("uploadDocMaxFileSize", uploadDocumentConfiguration.getMaxFilesize());
             }
 
             if (applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources())) {
@@ -322,10 +327,10 @@ public class PageController {
     @PostMapping("/file-upload")
     @ResponseStatus(HttpStatus.OK)
     public void upload(@RequestParam("file") MultipartFile file) {
-        if(this.applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED){
+        if (this.applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
+                file.getSize() <= uploadDocumentConfiguration.getMaxFilesize()) {
             this.applicationData.addUploadedDoc(file);
         }
-
     }
 
     @SuppressWarnings("SpringMVCViewInspection")

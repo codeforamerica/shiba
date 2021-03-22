@@ -670,6 +670,10 @@ input[type=number] {
     justify-content: center;
 }
 
+.margin-auto {
+    margin: auto;
+}
+
 .filename-text {
     margin-left: 16px;
     font-style: normal;
