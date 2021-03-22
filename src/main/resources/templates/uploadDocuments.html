@@ -201,6 +201,8 @@
                 removeLink.setAttribute('href', '/pages/uploadDocumentsDeleteWarningPage?filename=' + fileName);
             });
 
+            // `destroy` is a custom event that we have defined, not something built into dropzone.
+            // This event is emitted when the client clicks cancel on a file that has not finished uploading.
             this.on('destroy', function (file) {
                 myDropZone.removeFile(file)
             });
