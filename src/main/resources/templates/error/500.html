@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="fragments/head :: head(#{error-500.title})"></div>
+<body>
+<div class="page-wrapper">
+    <div th:replace="fragments/toolbar :: toolbar"></div>
+    <div th:replace="fragments/demoBanner :: demoBanner"></div>
+    <section class="slab slab--shiba">
+        <div class="grid">
+            <div th:replace="fragments/cardHeader :: cardHeader"></div>
+            <div class="card spacing-above-35 text--centered">
+                <div th:replace="fragments/icons/icon-500 :: icon-500"></div>
+                <h1 class="h2" th:text="#{error-500.something-went-wrong}"></h1>
+                <h3 th:text="#{error-500.error-code}"></h3>
+                <p th:text="#{error-500.something-went-wrong-on-our-end}"></p>
+                <div th:replace="fragments/returnHome :: returnHome"></div>
+            </div>
+        </div>
+    </section>
+</div>
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

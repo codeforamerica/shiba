@@ -2093,6 +2093,14 @@ pageDefinitions:
         type: TEXTAREA
     pageTitle:
       value: additional-info.title
+  - &404
+    name: 404
+    pageTitle:
+      value: error-404.title
+  - &500
+    name: 500
+    pageTitle:
+      value: error-404.title
 workflow:
   landing:
     pageConfiguration: *landing
@@ -3000,6 +3008,10 @@ workflow:
       - pageName: uploadDocuments
   success:
     pageConfiguration: *success
+  404:
+    pageConfiguration: *404
+  500:
+    pageConfiguration: *500
 pageGroups:
   jobs:
     startPages:
