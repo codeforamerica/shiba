@@ -298,8 +298,8 @@ html {
     color: #FFF;
 }
 
-.dz-processing .dz-filename {
-    color: #CFC5BF;
+:not(.dz-complete) .dz-filename  {
+    color: #cfc5bf;
 }
 
 #file-preview-template .dz-success .dz-filename {

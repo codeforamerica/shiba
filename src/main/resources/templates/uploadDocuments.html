@@ -177,7 +177,7 @@
                 isUploadComplete = false;
             });
 
-            this.on('queuecomplete', function (file) {
+            this.on('queuecomplete', function () {
                 isUploadComplete = true;
 
                 if (documents.length >= this.options.maxFiles) {
@@ -185,11 +185,11 @@
                 }
             });
 
-            this.on('maxfilesreached', function (file) {
+            this.on('maxfilesreached', function () {
                 showMaxFileMessage();
             });
 
-            this.on('maxfilesexceeded', function (file) {
+            this.on('maxfilesexceeded', function () {
                 showMaxFileMessage();
             });
 
