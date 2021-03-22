@@ -15,7 +15,8 @@
                         <form action="/file-upload" class="dropzone needsclick" id="document-upload" method="post"
                               enctype="multipart/form-data">
                             <div id="max-files-reached">
-                                <div class='max-files spacing-below-35' id="max-files" th:text='#{upload-documents.maximum-number-of-files}'></div>
+                                <div class='max-files spacing-below-35' id="max-files"
+                                     th:text='#{upload-documents.maximum-number-of-files}'></div>
                             </div>
                             <div id="drag-and-drop-box" class="drag-and-drop-box spacing-below-35 spacing-above-35"
                                  ondragenter="addDragBorder()" ondrop="removeDragBorder()"
@@ -75,23 +76,23 @@
     Dropzone.autoDiscover = false;
 
     function addDragBorder() {
-        let dragAndDropBox = document.getElementById("drag-and-drop-box");
+        var dragAndDropBox = document.getElementById("drag-and-drop-box");
         dragAndDropBox.classList.add("drag-over");
     }
 
     function removeDragBorder() {
-        let dragAndDropBox = document.getElementById("drag-and-drop-box");
+        var dragAndDropBox = document.getElementById("drag-and-drop-box");
         dragAndDropBox.classList.remove("drag-over");
     }
 
-    const getFilenameComponents = (element) => {
-        const name = element.innerText
-        const extIdx = name.lastIndexOf('.');
+    function getFilenameComponents(element) {
+        var name = element.innerText
+        var extIdx = name.lastIndexOf('.');
         if (extIdx === -1) {
             return [name, ""];
         }
 
-        let extStr = name.slice(extIdx + 1, name.length);
+        var extStr = name.slice(extIdx + 1, name.length);
         if (element.scrollWidth <= element.clientWidth) {
             extStr = "." + extStr;
         }
@@ -99,6 +100,7 @@
     }
 
     var isUploadComplete = true;
+
     function onSubmit() {
         if (!isUploadComplete) {
             $('.form-group').addClass('form-group--error');
@@ -108,10 +110,10 @@
         }
     }
 
-    function showMaxFileMessage(){
-        let dragBox = document.getElementById("drag-and-drop-box");
+    function showMaxFileMessage() {
+        var dragBox = document.getElementById("drag-and-drop-box");
         dragBox.style.display = "none";
-        let maxFilesReached = document.getElementById("max-files");
+        var maxFilesReached = document.getElementById("max-files");
         maxFilesReached.style.display = "flex"
     }
 
@@ -147,43 +149,46 @@
                 </div>
               </div>
             </div>`,
-        sending: (file, xhr, formData) => {
-            const csrfToken = [[${_csrf.token}]];
+        sending: function (file, xhr, formData) {
+            var csrfToken = [[${_csrf.token}]];
             formData.append("_csrf", csrfToken)
         },
         init: function () {
             myDropZone = this;
             var documents = [[${uploadedDocs}]];
 
-            if(documents.length >= this.options.maxFiles){
+            if (documents.length >= this.options.maxFiles) {
                 showMaxFileMessage();
             }
 
-            this.on('addedfile', file => {
-                if(this.files.length >= this.options.maxFiles){
+            this.on('addedfile', function (file) {
+                if (myDropZone.files.length >= myDropZone.options.maxFiles) {
                     showMaxFileMessage();
                 }
-                const fileNameSpan = file.previewElement.getElementsByClassName('filename-text')[0]
+                var fileNameSpan = file.previewElement.getElementsByClassName('filename-text')[0]
                 fileNameSpan.setAttribute('aria-label', fileNameSpan.innerText)
-                const fileNameComponents = getFilenameComponents(fileNameSpan);
+                var fileNameComponents = getFilenameComponents(fileNameSpan);
                 fileNameSpan.innerHTML = "<span class='filename-text-name' aria-hidden='true'>" + fileNameComponents[0] + "</span>" +
                     "<span class='filename-text-ext' aria-hidden='true'>" + fileNameComponents[1] + "</span>"
 
-                const removeLink = file.previewElement.getElementsByClassName("dz-remove")[0];
+                var removeLink = file.previewElement.getElementsByClassName("dz-remove")[0];
                 removeLink.onclick = destroyerCreator(file);
                 removeLink.innerText = [[#{general.cancel}]].toLowerCase()
                 isUploadComplete = false;
             });
-            this.on('queuecomplete', function (file) {
-            	isUploadComplete = true;
 
-                if(documents.length >= this.options.maxFiles){
+            this.on('queuecomplete', function (file) {
+                isUploadComplete = true;
+
+                if (documents.length >= this.options.maxFiles) {
                     showMaxFileMessage();
                 }
             });
-            this.on('maxfilesreached', function(file) {
+
+            this.on('maxfilesreached', function (file) {
                 showMaxFileMessage();
             });
+
             this.on('maxfilesexceeded', function (file) {
                 showMaxFileMessage();
             });
