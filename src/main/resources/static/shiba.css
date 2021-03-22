@@ -512,8 +512,8 @@ input[type=number] {
 }
 
 /* Branding Phase 2 Link styles */
-.slab a:not(.button):not(.reveal__link),
-.slab a:not(.button):not(.reveal__link):focus,
+.slab a:not(.button):not(.reveal__link):not(.text--red),
+.slab a:not(.button):not(.reveal__link):not(.text--red):focus,
 .button--link,
 .button--link:focus {
     color: #003865;
@@ -668,6 +668,10 @@ input[type=number] {
     border-radius: 10px;
     display: flex !important;
     justify-content: center;
+}
+
+.margin-auto {
+    margin: auto;
 }
 
 .filename-text {

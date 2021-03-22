@@ -36,7 +36,7 @@
                             <div id="file-preview-template">
                                 <div class="preview-container"></div>
                             </div>
-                            <div class="reveal reveal-adjacent spacing-above-35">
+                            <div class="reveal reveal-adjacent spacing-above-60">
                                 <a href="#" class="reveal__link reveal__link-adjacent">
                                     <span class="reveal-icon">
                                         <div th:replace="fragments/icons/icon-multiple-documents  :: icon-multiple-documents"></div>
@@ -127,11 +127,14 @@
         }
     }
 
+    var fileTooBigMsg = [[#{upload-documents.this-file-is-too-large(${uploadDocMaxFileSize})}]]
     $("#document-upload").dropzone({
         uploadMultiple: false,
         previewsContainer: ".preview-container",
         autoProcessQueue: true,
         maxFiles: 20,
+        maxFilesize: [[${uploadDocMaxFileSize}]],
+        dictFileTooBig: fileTooBigMsg,
         clickable: ".drag-and-drop-box",
         previewTemplate: `
             <div class="dz-preview dz-file-preview spacing-below-15">
@@ -148,6 +151,7 @@
                     </div>
                 </div>
               </div>
+              <p id='file-error-message' class='text--error spacing-above-0'></p>
             </div>`,
         sending: function (file, xhr, formData) {
             var csrfToken = [[${_csrf.token}]];
@@ -215,6 +219,21 @@
                 myDropZone.emit("success", mockFile);
                 myDropZone.emit("complete", mockFile);
             });
+
+        },
+        error: function (file, errorMessage, xhr) {
+            file.previewElement.getElementsByClassName("text--error")[0].innerText = errorMessage;
+            file.previewElement.classList.add("form-group--error")
+
+            var removeLink = file.previewElement.getElementsByClassName("dz-remove")[0]
+            removeLink.innerText = "remove";
+            removeLink.classList.add("text--red")
+
+            var filePreview = file.previewElement.getElementsByClassName("doc-rectangle")[0]
+            filePreview.innerHTML = "<svg class=\"margin-auto\" width=\"40\" height=\"47\" viewBox=\"0 0 40 47\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n" +
+                "<path d=\"M6.625 40.125H20.375L13.5 28.25L6.625 40.125ZM14.125 38.25H12.875V37H14.125V38.25ZM14.125 35.75H12.875V33.25H14.125V35.75Z\" fill=\"#D13F00\"/>\n" +
+                "<path d=\"M26.6667 0H4.44444C3.2657 0 2.13524 0.550197 1.30175 1.52955C0.468252 2.50891 0 3.8372 0 5.22222V41.7778C0 43.1628 0.468252 44.4911 1.30175 45.4704C2.13524 46.4498 3.2657 47 4.44444 47H35.5556C36.7343 47 37.8648 46.4498 38.6983 45.4704C39.5317 44.4911 40 43.1628 40 41.7778V15.6667L26.6667 0ZM35.5556 41.7778H4.44444V5.22222H24.4444V18.2778H35.5556V41.7778Z\" fill=\"#D13F00\" fill-opacity=\"0.5\"/>\n" +
+                "</svg>"
         }
     });
 </script>
