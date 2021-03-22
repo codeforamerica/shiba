@@ -163,7 +163,11 @@ public class PageController {
 
         response.addHeader("Cache-Control", "no-store");
 
+        if (this.applicationConfiguration.getPageWorkflow(pageName) == null) {
+            return new ModelAndView("error/404");
+        }
         PageWorkflowConfiguration pageWorkflow = this.applicationConfiguration.getPageWorkflow(pageName);
+
         PageConfiguration pageConfiguration = pageWorkflow.getPageConfiguration();
 
         PagesData pagesData = applicationData.getPagesData();

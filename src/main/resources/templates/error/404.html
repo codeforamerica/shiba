@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="fragments/head :: head(#{error-404.title})"></div>
+<body>
+<div class="page-wrapper">
+    <div th:replace="fragments/toolbar :: toolbar"></div>
+    <div th:replace="fragments/demoBanner :: demoBanner"></div>
+    <section class="slab slab--shiba">
+        <div class="grid">
+            <div th:replace="fragments/cardHeader :: cardHeader"></div>
+            <div class="card spacing-above-35 text--centered">
+                <div th:replace="fragments/icons/icon-404 :: icon-404"></div>
+                <h1 class="h2" th:text="#{error-404.we-cant-find}"></h1>
+                <h2 th:text="#{error-404.error-code}"></h2>
+                <p th:text="#{error-404.it-looks-like}"></p>
+                <div th:replace="fragments/returnHome :: returnHome"></div>
+            </div>
+        </div>
+    </section>
+</div>
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>
