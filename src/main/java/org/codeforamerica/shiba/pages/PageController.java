@@ -344,7 +344,8 @@ public class PageController {
                 file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
             this.applicationData.addUploadedDoc(file);
             String bucket = "documents-mnbenefits-org"; // TODO should be app configuration
-            transferManager.upload(bucket, file.getOriginalFilename(), file.getInputStream(), new ObjectMetadata());
+            String s3FilePath = String.format("%s/%s", applicationData.getId(), file.getOriginalFilename());
+            transferManager.upload(bucket, s3FilePath, file.getInputStream(), new ObjectMetadata());
         }
     }
 
