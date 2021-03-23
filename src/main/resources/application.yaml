@@ -6,6 +6,15 @@ spring:
       max-file-size: 50MB
       max-request-size: 50MB
 
+# TODO move to environment variables
+cloud:
+  aws:
+    region:
+      static: us-east-2
+    credentials:
+      access-key: <access-key>
+      secret-key: <secret-key>
+
 client:
   keystore: src/main/resources/shiba-keystore.jks
 

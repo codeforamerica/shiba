@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
+import com.amazonaws.services.s3.AmazonS3;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
@@ -63,8 +64,11 @@ class PageControllerTest {
     UploadDocumentConfiguration uploadDocumentConfiguration = mock(UploadDocumentConfiguration.class);
 
     @Autowired
-    ApplicationConfiguration applicationConfiguration;
+    private ApplicationConfiguration applicationConfiguration;
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    @Autowired
+    private AmazonS3 amazonS3Client;
 
     @BeforeEach
     void setUp() {
@@ -79,8 +83,8 @@ class PageControllerTest {
                 applicationEnrichment,
                 documentListParser,
                 featureFlags,
-                uploadDocumentConfiguration
-        );
+                uploadDocumentConfiguration,
+                amazonS3Client);
 
         mockMvc = MockMvcBuilders.standaloneSetup(pageController)
                 .build();

@@ -1,5 +1,9 @@
 package org.codeforamerica.shiba.pages;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.transfer.TransferManager;
+import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
@@ -29,6 +33,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.time.Clock;
 import java.time.ZoneId;
 import java.util.HashMap;
@@ -54,6 +59,7 @@ public class PageController {
     private final ApplicationDataParser<List<Document>> documentListParser;
     private final FeatureFlagConfiguration featureFlags;
     private final UploadDocumentConfiguration uploadDocumentConfiguration;
+    private final AmazonS3 s3Client;
 
     public PageController(
             ApplicationConfiguration applicationConfiguration,
@@ -66,6 +72,7 @@ public class PageController {
             ApplicationEnrichment applicationEnrichment,
             ApplicationDataParser<List<Document>> documentListParser,
             FeatureFlagConfiguration featureFlags,
+            @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") AmazonS3 s3Client,
             UploadDocumentConfiguration uploadDocumentConfiguration) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
@@ -77,6 +84,7 @@ public class PageController {
         this.applicationEnrichment = applicationEnrichment;
         this.documentListParser = documentListParser;
         this.featureFlags = featureFlags;
+        this.s3Client = s3Client;
         this.uploadDocumentConfiguration = uploadDocumentConfiguration;
     }
 
@@ -91,7 +99,9 @@ public class PageController {
     }
 
     @GetMapping("/faq")
-    String getFaq() { return "faq"; }
+    String getFaq() {
+        return "faq";
+    }
 
     @GetMapping("/pages/{pageName}/navigation")
     RedirectView navigation(
@@ -330,10 +340,16 @@ public class PageController {
 
     @PostMapping("/file-upload")
     @ResponseStatus(HttpStatus.OK)
-    public void upload(@RequestParam("file") MultipartFile file) {
+    public void upload(@RequestParam("file") MultipartFile file) throws IOException {
         if (this.applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
                 file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
             this.applicationData.addUploadedDoc(file);
+            String bucket = "documents-mnbenefits-org";
+            TransferManager transferManager = TransferManagerBuilder.standard()
+                    .withS3Client(this.s3Client)
+                    .build();
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            transferManager.upload(bucket, file.getName(), file.getInputStream(), objectMetadata);
         }
     }
 
