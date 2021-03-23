@@ -128,10 +128,9 @@ public class ApplicationData {
         return applicantWith || householdWith;
     }
 
-    public void addUploadedDoc(MultipartFile file) {
-        UploadedDocument uploadedDocument = new UploadedDocument(file.getOriginalFilename(), file.getSize());
+    public void addUploadedDoc(MultipartFile file, String s3Filepath) {
+        UploadedDocument uploadedDocument = new UploadedDocument(file.getOriginalFilename(), s3Filepath, file.getSize());
         uploadedDocs.add(uploadedDocument);
-        // TODO Save file since MultipartFile will not retain it after the request completes
     }
 
     public void removeUploadedDoc(String fileToDelete) {

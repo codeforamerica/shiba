@@ -1,6 +1,5 @@
 package org.codeforamerica.shiba.pages;
 
-import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import lombok.extern.slf4j.Slf4j;
@@ -35,10 +34,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.Clock;
 import java.time.ZoneId;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.Optional.ofNullable;
 
@@ -71,7 +67,7 @@ public class PageController {
             ApplicationEnrichment applicationEnrichment,
             ApplicationDataParser<List<Document>> documentListParser,
             FeatureFlagConfiguration featureFlags,
-            @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") AmazonS3 s3Client,
+            TransferManager transferManager,
             UploadDocumentConfiguration uploadDocumentConfiguration) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
@@ -342,10 +338,9 @@ public class PageController {
     public void upload(@RequestParam("file") MultipartFile file) throws IOException {
         if (this.applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
                 file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
-            this.applicationData.addUploadedDoc(file);
-            String bucket = "documents-mnbenefits-org"; // TODO should be app configuration
-            String s3FilePath = String.format("%s/%s", applicationData.getId(), file.getOriginalFilename());
-            transferManager.upload(bucket, s3FilePath, file.getInputStream(), new ObjectMetadata());
+            String s3FilePath = String.format("%s/%s", applicationData.getId(), UUID.randomUUID());
+            transferManager.upload(System.getenv("S3-BUCKET"), s3FilePath, file.getInputStream(), new ObjectMetadata());
+            this.applicationData.addUploadedDoc(file, s3FilePath);
         }
     }
 
