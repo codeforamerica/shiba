@@ -349,7 +349,7 @@ public class PageController {
                     .withS3Client(this.s3Client)
                     .build();
             ObjectMetadata objectMetadata = new ObjectMetadata();
-            transferManager.upload(bucket, file.getName(), file.getInputStream(), objectMetadata);
+            transferManager.upload(bucket, file.getOriginalFilename(), file.getInputStream(), objectMetadata);
         }
     }
 
