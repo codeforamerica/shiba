@@ -3,7 +3,6 @@ package org.codeforamerica.shiba.pages;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.transfer.TransferManager;
-import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
@@ -59,7 +58,7 @@ public class PageController {
     private final ApplicationDataParser<List<Document>> documentListParser;
     private final FeatureFlagConfiguration featureFlags;
     private final UploadDocumentConfiguration uploadDocumentConfiguration;
-    private final AmazonS3 s3Client;
+    private final TransferManager transferManager;
 
     public PageController(
             ApplicationConfiguration applicationConfiguration,
@@ -84,7 +83,7 @@ public class PageController {
         this.applicationEnrichment = applicationEnrichment;
         this.documentListParser = documentListParser;
         this.featureFlags = featureFlags;
-        this.s3Client = s3Client;
+        this.transferManager = transferManager;
         this.uploadDocumentConfiguration = uploadDocumentConfiguration;
     }
 
@@ -344,12 +343,8 @@ public class PageController {
         if (this.applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
                 file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
             this.applicationData.addUploadedDoc(file);
-            String bucket = "documents-mnbenefits-org";
-            TransferManager transferManager = TransferManagerBuilder.standard()
-                    .withS3Client(this.s3Client)
-                    .build();
-            ObjectMetadata objectMetadata = new ObjectMetadata();
-            transferManager.upload(bucket, file.getOriginalFilename(), file.getInputStream(), objectMetadata);
+            String bucket = "documents-mnbenefits-org"; // TODO should be app configuration
+            transferManager.upload(bucket, file.getOriginalFilename(), file.getInputStream(), new ObjectMetadata());
         }
     }
 
