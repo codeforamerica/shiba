@@ -83,8 +83,8 @@ class PageControllerTest {
                 applicationEnrichment,
                 documentListParser,
                 featureFlags,
-                uploadDocumentConfiguration,
-                amazonS3Client);
+                amazonS3Client,
+                uploadDocumentConfiguration);
 
         mockMvc = MockMvcBuilders.standaloneSetup(pageController)
                 .build();
