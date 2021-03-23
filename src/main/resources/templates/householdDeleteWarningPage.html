@@ -10,6 +10,7 @@
             <div th:replace="fragments/cardHeader :: cardHeader"></div>
             <div class="card spacing-above-35">
                 <div class="grid__item spacing-above-35 spacing-below-35">
+                    <div th:replace="fragments/icons/icon-delete-document :: icon-delete-document"></div>
                     <h1 class="h2" th:text="#{${page.headerKey}(${householdMemberName})}"></h1>
                     <h2 th:text="#{warning-page.is-that-ok}"></h2>
                 </div>
