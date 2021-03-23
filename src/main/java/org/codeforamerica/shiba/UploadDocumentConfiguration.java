@@ -25,4 +25,13 @@ public class UploadDocumentConfiguration {
         String maxFileSize = uploadDocumentProperties().get("max-file-size");
         return Integer.parseInt(maxFileSize.substring(0, maxFileSize.length()-2));
     }
+
+    /**
+     * Return the value of max file size in bytes.
+     *
+     * @return value of max-file-size in bytes
+     */
+    public long getMaxFilesizeInBytes() {
+        return (long) (getMaxFilesize() * Math.pow(1024, 2));
+    }
 }

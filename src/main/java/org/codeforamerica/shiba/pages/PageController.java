@@ -332,7 +332,7 @@ public class PageController {
     @ResponseStatus(HttpStatus.OK)
     public void upload(@RequestParam("file") MultipartFile file) {
         if (this.applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
-                file.getSize() <= uploadDocumentConfiguration.getMaxFilesize()) {
+                file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
             this.applicationData.addUploadedDoc(file);
         }
     }
