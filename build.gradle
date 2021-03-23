@@ -64,7 +64,6 @@ task genJaxb {
 
 dependencies {
     compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'org.postgresql:postgresql'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
@@ -75,6 +74,7 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-web-services') {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
     }
+    implementation 'org.postgresql:postgresql'
     implementation 'org.glassfish.jaxb:jaxb-runtime'
     implementation 'org.apache.pdfbox:pdfbox:2.0.21'
     implementation 'org.apache.commons:commons-lang3'
