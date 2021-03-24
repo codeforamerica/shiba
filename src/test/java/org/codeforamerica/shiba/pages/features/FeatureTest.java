@@ -9,6 +9,7 @@ import org.codeforamerica.shiba.pages.enrichment.smartystreets.SmartyStreetClien
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.io.IOException;
 import java.time.Clock;
@@ -25,7 +26,7 @@ public abstract class FeatureTest extends AbstractBasePageTest {
     @MockBean PageEventPublisher pageEventPublisher;
     @MockBean MailGunEmailClient mailGunEmailClient;
     @MockBean FeatureFlagConfiguration featureFlagConfiguration;
-    @MockBean UploadDocumentConfiguration uploadDocumentConfiguration;
+    @SpyBean UploadDocumentConfiguration uploadDocumentConfiguration;
 
     @Override
     @BeforeEach

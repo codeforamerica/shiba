@@ -1,11 +1,7 @@
 package org.codeforamerica.shiba.pages;
 
-import com.amazonaws.SdkClientException;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.transfer.TransferManager;
 import lombok.extern.slf4j.Slf4j;
+import org.codeforamerica.shiba.DocumentUploadService;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
@@ -35,7 +31,8 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.time.*;
+import java.time.Clock;
+import java.time.ZoneId;
 import java.util.*;
 
 import static java.util.Optional.ofNullable;
@@ -56,9 +53,7 @@ public class PageController {
     private final ApplicationDataParser<List<Document>> documentListParser;
     private final FeatureFlagConfiguration featureFlags;
     private final UploadDocumentConfiguration uploadDocumentConfiguration;
-    private final AmazonS3 s3Client;
-    private final TransferManager transferManager;
-    private final String bucketName;
+    private final DocumentUploadService documentUploadService;
 
     public PageController(
             ApplicationConfiguration applicationConfiguration,
@@ -71,9 +66,8 @@ public class PageController {
             ApplicationEnrichment applicationEnrichment,
             ApplicationDataParser<List<Document>> documentListParser,
             FeatureFlagConfiguration featureFlags,
-            TransferManager transferManager,
             UploadDocumentConfiguration uploadDocumentConfiguration,
-            @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") AmazonS3 s3Client) {
+            DocumentUploadService documentUploadService) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
@@ -84,10 +78,8 @@ public class PageController {
         this.applicationEnrichment = applicationEnrichment;
         this.documentListParser = documentListParser;
         this.featureFlags = featureFlags;
-        this.transferManager = transferManager;
         this.uploadDocumentConfiguration = uploadDocumentConfiguration;
-        this.s3Client = s3Client;
-        bucketName = System.getenv("S3-BUCKET");
+        this.documentUploadService = documentUploadService;
     }
 
     @GetMapping("/")
@@ -342,12 +334,11 @@ public class PageController {
 
     @PostMapping("/file-upload")
     @ResponseStatus(HttpStatus.OK)
-    public void upload(@RequestParam("file") MultipartFile file) throws IOException {
+    public void upload(@RequestParam("file") MultipartFile file) throws IOException, InterruptedException {
         if (this.applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
                 file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
             String s3FilePath = String.format("%s/%s", applicationData.getId(), UUID.randomUUID());
-
-            transferManager.upload(bucketName, s3FilePath, file.getInputStream(), new ObjectMetadata());
+            documentUploadService.upload(s3FilePath, file);
             this.applicationData.addUploadedDoc(file, s3FilePath);
         }
     }
@@ -355,18 +346,12 @@ public class PageController {
     @SuppressWarnings("SpringMVCViewInspection")
     @PostMapping("/remove-upload/{filename}")
     ModelAndView removeUpload(@PathVariable String filename) {
-        try {
-            applicationData.getUploadedDocs().stream()
-                    .filter(uploadedDocument -> uploadedDocument.getFilename().equals(filename))
-                    .findFirst()
-                    .ifPresent(
-                            documentToRemove ->
-                                    s3Client.deleteObject(new DeleteObjectRequest(bucketName, documentToRemove.getS3Filepath()))
-                    );
-            this.applicationData.removeUploadedDoc(filename);
-        } catch (SdkClientException e) {
-            e.printStackTrace();
-        }
+        applicationData.getUploadedDocs().stream()
+                .filter(uploadedDocument -> uploadedDocument.getFilename().equals(filename))
+                .map(UploadedDocument::getS3Filepath)
+                .findFirst()
+                .ifPresent(documentUploadService::delete);
+        this.applicationData.removeUploadedDoc(filename);
 
         return new ModelAndView("redirect:/pages/uploadDocuments");
     }
