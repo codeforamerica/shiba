@@ -6,7 +6,6 @@ spring:
       max-file-size: 50MB
       max-request-size: 50MB
 
-# TODO move to environment variables
 cloud:
   aws:
     region:

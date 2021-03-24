@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.pages.features;
 
 import org.codeforamerica.shiba.AbstractBasePageTest;
-import org.codeforamerica.shiba.DocumentUploadService;
+import org.codeforamerica.shiba.documents.DocumentUploadService;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;

@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba;
+package org.codeforamerica.shiba.documents;
 
 import org.springframework.web.multipart.MultipartFile;
 

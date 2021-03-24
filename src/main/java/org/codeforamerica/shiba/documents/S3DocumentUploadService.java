@@ -1,5 +1,4 @@
-package org.codeforamerica.shiba;
-
+package org.codeforamerica.shiba.documents;
 
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;

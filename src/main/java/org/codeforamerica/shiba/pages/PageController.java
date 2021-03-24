@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.pages;
 
 import lombok.extern.slf4j.Slf4j;
-import org.codeforamerica.shiba.DocumentUploadService;
+import org.codeforamerica.shiba.documents.DocumentUploadService;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
