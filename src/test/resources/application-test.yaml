@@ -5,8 +5,6 @@ spring:
     password: shiba
     hikari:
       maximum-pool-size: 2
-  profiles:
-    active: test
 
 client:
   keystore: src/test/resources/test-keystore.jks
