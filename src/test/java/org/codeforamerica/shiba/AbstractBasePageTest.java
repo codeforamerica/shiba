@@ -236,6 +236,8 @@ public abstract class AbstractBasePageTest {
         } else {
             testPage.enter("addHouseholdMembers", NO.getDisplayValue());
             testPage.clickContinue();
+            testPage.enter("livingSituation", "None of these");
+            testPage.clickContinue();
             testPage.enter("goingToSchool", NO.getDisplayValue());
             testPage.enter("isPregnant", NO.getDisplayValue());
         }
@@ -284,8 +286,6 @@ public abstract class AbstractBasePageTest {
         testPage.enter("unearnedIncomeCcap", "Money from a Trust");
         testPage.clickContinue();
         testPage.enter("trustMoneyAmount", "200");
-        testPage.clickContinue();
-        testPage.enter("livingSituation", "Paying for my own housing with rent, lease, or mortgage payments");
         testPage.clickContinue();
         testPage.enter("earnLessMoneyThisMonth", "Yes");
         testPage.clickContinue();
