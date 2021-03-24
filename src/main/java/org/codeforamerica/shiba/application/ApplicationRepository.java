@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.security.SecureRandom;
 import java.sql.Timestamp;
 import java.time.*;
 import java.util.*;
@@ -20,18 +21,15 @@ import static java.util.stream.Collectors.toMap;
 @Repository
 public class ApplicationRepository {
     private final JdbcTemplate jdbcTemplate;
-    private final Encryptor<ApplicationData> encryptor;
     private final ApplicationFactory applicationFactory;
     private final Clock clock;
     private final ObjectMapper objectMapper;
 
     public ApplicationRepository(JdbcTemplate jdbcTemplate,
-                                 Encryptor<ApplicationData> encryptor,
                                  ApplicationFactory applicationFactory,
                                  Clock clock,
                                  ObjectMapper objectMapper) {
         this.jdbcTemplate = jdbcTemplate;
-        this.encryptor = encryptor;
         this.applicationFactory = applicationFactory;
         this.clock = clock;
         this.objectMapper = objectMapper;
@@ -39,7 +37,7 @@ public class ApplicationRepository {
 
     @SuppressWarnings("ConstantConditions")
     public String getNextId() {
-        int random3DigitNumber = new Random().nextInt(900) + 100;
+        int random3DigitNumber = new SecureRandom().nextInt(900) + 100;
 
         String id = jdbcTemplate.queryForObject("SELECT nextval('application_id');", String.class);
         int numberOfZeros = 10 - id.length();
