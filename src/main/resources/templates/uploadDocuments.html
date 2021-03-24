@@ -44,14 +44,20 @@
                                     <div class="reveal__link__header-adjacent"
                                          th:text="#{upload-documents.view-document-list}"></div>
                                     <div class="reveal__content reveal__content-adjacent">
-                                        <h3 class="h4" th:text="#{upload-documents.proof-of-income}"></h3>
-                                        <div th:text="#{upload-documents.a-document-with-employer-and-employee-names}"></div>
-                                        <h3 class="h4 spacing-above-15"
-                                            th:text="#{upload-documents.proof-of-housing-costs}"></h3>
-                                        <div th:text="#{upload-documents.a-document-showing-total-amount-payed-for-housing}"></div>
-                                        <h3 class="h4 spacing-above-15"
-                                            th:text="#{upload-documents.proof-of-job-loss}"></h3>
-                                        <div th:text="#{upload-documents.a-document-with-your-former-employers-name-and-signature}"></div>
+                                        <div th:if="${data.get('employmentStatus').inputDataValueContainsAny('areYouWorking', T(java.util.List).of('true')) && applicationData.isApplicationWith(T(java.util.List).of('SNAP', 'CASH', 'EA', 'GRH'))}">
+                                            <h3 class="h4" th:text="#{upload-documents.proof-of-income}"></h3>
+                                            <div th:text="#{upload-documents.a-document-with-employer-and-employee-names}"></div>
+                                        </div>
+                                        <div th:if="${!data.get('homeExpenses').inputDataValueContainsAny('homeExpenses', T(java.util.List).of('NONE_OF_THE_ABOVE')) && applicationData.isApplicationWith(T(java.util.List).of('SNAP', 'CASH', 'EA'))}">
+                                            <h3 class="h4 spacing-above-15"
+                                                th:text="#{upload-documents.proof-of-housing-costs}"></h3>
+                                            <div th:text="#{upload-documents.a-document-showing-total-amount-payed-for-housing}"></div>
+                                        </div>
+                                        <div th:if="${data.get('workSituation').inputDataValueContainsAny('hasWorkSituation', T(java.util.List).of('true')) && applicationData.isApplicationWith(T(java.util.List).of('SNAP', 'CASH', 'GRH'))}">
+                                            <h3 class="h4 spacing-above-15"
+                                                th:text="#{upload-documents.proof-of-job-loss}"></h3>
+                                            <div th:text="#{upload-documents.a-document-with-your-former-employers-name-and-signature}"></div>
+                                        </div>
                                     </div>
                                 </a>
                             </div>
