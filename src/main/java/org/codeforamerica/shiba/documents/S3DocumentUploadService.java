@@ -5,12 +5,16 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.transfer.TransferManager;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
 @Service
+@Profile({"demo", "staging", "production"})
+@Slf4j
 public class S3DocumentUploadService implements DocumentUploadService {
     private final TransferManager transferManager;
     private final String bucketName;
@@ -24,6 +28,7 @@ public class S3DocumentUploadService implements DocumentUploadService {
 
     @Override
     public void upload(String filepath, MultipartFile file) throws IOException, InterruptedException {
+        log.info("Uploading file {} to S3 at filepath {}", file.getOriginalFilename(), filepath);
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(file.getSize());
         transferManager
@@ -33,7 +38,9 @@ public class S3DocumentUploadService implements DocumentUploadService {
 
     @Override
     public void delete(String filepath) {
+        // TODO do we actually want to catch this?
         try {
+            log.info("Deleting file at filepath {} from S3", filepath);
             s3Client.deleteObject(new DeleteObjectRequest(bucketName, filepath));
         } catch (SdkClientException e) {
             e.printStackTrace();
