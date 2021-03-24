@@ -156,7 +156,7 @@ public class UserJourneyPageTest extends FeatureTest {
             uploadDefaultFile();
         }
 
-        assertThat(driver.findElementById("max-files"));
+        assertThat(driver.findElementById("max-files").getText()).contains("You have uploaded the maximum number of files (20). You will have the opportunity to share more with a county worker later.");
     }
 
     @Test
