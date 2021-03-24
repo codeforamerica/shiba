@@ -1,11 +1,7 @@
 package org.codeforamerica.shiba.pages;
 
-import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
-import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.transfer.TransferManager;
@@ -61,6 +57,7 @@ public class PageController {
     private final ApplicationDataParser<List<Document>> documentListParser;
     private final FeatureFlagConfiguration featureFlags;
     private final UploadDocumentConfiguration uploadDocumentConfiguration;
+    private final AmazonS3 s3Client;
     private final TransferManager transferManager;
 
     public PageController(
@@ -75,7 +72,8 @@ public class PageController {
             ApplicationDataParser<List<Document>> documentListParser,
             FeatureFlagConfiguration featureFlags,
             TransferManager transferManager,
-            UploadDocumentConfiguration uploadDocumentConfiguration) {
+            UploadDocumentConfiguration uploadDocumentConfiguration,
+            @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") AmazonS3 s3Client) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
@@ -88,6 +86,7 @@ public class PageController {
         this.featureFlags = featureFlags;
         this.transferManager = transferManager;
         this.uploadDocumentConfiguration = uploadDocumentConfiguration;
+        this.s3Client = s3Client;
     }
 
     @GetMapping("/")
@@ -355,24 +354,15 @@ public class PageController {
     @PostMapping("/remove-upload/{filename}")
     ModelAndView removeUpload(@PathVariable String filename) {
         try {
-            AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
-                    .withCredentials(new ProfileCredentialsProvider())
-                    .withRegion(Regions.DEFAULT_REGION)
-                    .build();
-
-            UploadedDocument documentToRemove = applicationData.getUploadedDocs().stream()
+            applicationData.getUploadedDocs().stream()
                     .filter(uploadedDocument -> uploadedDocument.getFilename().equals(filename))
-                    .findFirst().orElse(null);
-            s3Client.deleteObject(new DeleteObjectRequest(System.getenv("S3-BUCKET"), documentToRemove.getS3Filepath()));
-            // TODO should removing it from our application state happen here? If Amazon throws, it probably shouldn't be removed from app state?
+                    .findFirst()
+                    .ifPresent(
+                            documentToRemove ->
+                                    s3Client.deleteObject(new DeleteObjectRequest(System.getenv("S3-BUCKET"), documentToRemove.getS3Filepath()))
+                    );
             this.applicationData.removeUploadedDoc(filename);
-        } catch (AmazonServiceException e) {
-            // The call was transmitted successfully, but Amazon S3 couldn't process
-            // it, so it returned an error response.
-            e.printStackTrace();
         } catch (SdkClientException e) {
-            // Amazon S3 couldn't be contacted for a response, or the client
-            // couldn't parse the response from Amazon S3.
             e.printStackTrace();
         }
 
