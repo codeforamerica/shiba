@@ -35,8 +35,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.time.Clock;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.*;
 
 import static java.util.Optional.ofNullable;
@@ -59,6 +58,7 @@ public class PageController {
     private final UploadDocumentConfiguration uploadDocumentConfiguration;
     private final AmazonS3 s3Client;
     private final TransferManager transferManager;
+    private final String bucketName;
 
     public PageController(
             ApplicationConfiguration applicationConfiguration,
@@ -87,6 +87,7 @@ public class PageController {
         this.transferManager = transferManager;
         this.uploadDocumentConfiguration = uploadDocumentConfiguration;
         this.s3Client = s3Client;
+        bucketName = System.getenv("S3-BUCKET");
     }
 
     @GetMapping("/")
@@ -345,7 +346,8 @@ public class PageController {
         if (this.applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
                 file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
             String s3FilePath = String.format("%s/%s", applicationData.getId(), UUID.randomUUID());
-            transferManager.upload(System.getenv("S3-BUCKET"), s3FilePath, file.getInputStream(), new ObjectMetadata());
+
+            transferManager.upload(bucketName, s3FilePath, file.getInputStream(), new ObjectMetadata());
             this.applicationData.addUploadedDoc(file, s3FilePath);
         }
     }
@@ -359,7 +361,7 @@ public class PageController {
                     .findFirst()
                     .ifPresent(
                             documentToRemove ->
-                                    s3Client.deleteObject(new DeleteObjectRequest(System.getenv("S3-BUCKET"), documentToRemove.getS3Filepath()))
+                                    s3Client.deleteObject(new DeleteObjectRequest(bucketName, documentToRemove.getS3Filepath()))
                     );
             this.applicationData.removeUploadedDoc(filename);
         } catch (SdkClientException e) {
