@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +20,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 
 public class UserJourneyPageTest extends FeatureTest {
     @Test
@@ -136,11 +140,26 @@ public class UserJourneyPageTest extends FeatureTest {
     }
 
     @Test
+    void whenDocumentUploadFailsThenThereShouldBeAnError() throws IOException, InterruptedException {
+        doThrow(new InterruptedException())
+                .when(documentUploadService).upload(any(String.class), any(MultipartFile.class));
+
+        getToDocumentUploadScreen();
+        uploadDefaultFile();
+
+        List<WebElement> deleteLinks = driver.findElements(By.linkText("delete"));
+        assertThat(deleteLinks.size()).isEqualTo(0);
+        assertThat(driver.findElementById("file-error-message").getText()).isEqualTo("Internal Server Error");
+    }
+
+    @Test
     void deletingUploadedFileShouldLoadDocumentUploadScreenUponConfirmDeletion() {
         getToDocumentUploadScreen();
         uploadDefaultFile();
         uploadDefaultFile();
 
+        List<WebElement> deleteLinks = driver.findElements(By.linkText("delete"));
+        assertThat(deleteLinks.size()).isEqualTo(2);
         testPage.clickLink("delete");
 
         assertThat(testPage.getTitle()).isEqualTo("Delete a file");
@@ -152,7 +171,7 @@ public class UserJourneyPageTest extends FeatureTest {
     @Test
     void showMaxFileUploadMessageWhenClientHasUploaded20Documents() {
         getToDocumentUploadScreen();
-        for (int c = 0; c < 20; c++){
+        for (int c = 0; c < 20; c++) {
             uploadDefaultFile();
         }
 
