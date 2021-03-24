@@ -55,7 +55,7 @@ public class SubmitPageTest extends AbstractStaticMessageSourcePageTest {
                 .sentiment(sentiment)
                 .feedback(feedbackText)
                 .build();
-        when(applicationFactory.newApplication(any(), any())).thenReturn(application);
+        when(applicationFactory.newApplication(any())).thenReturn(application);
         when(documentListParser.parse(any())).thenReturn(List.of(CAF, CCAP));
 
         navigateTo("firstPage");

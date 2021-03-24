@@ -46,7 +46,7 @@ class ApplicationFactoryTest {
 
     @Test
     void shouldObtainACopyOfTheApplicationData() {
-        Application application = applicationFactory.newApplication("", applicationData);
+        Application application = applicationFactory.newApplication(applicationData);
 
         assertThat(application.getApplicationData()).isNotSameAs(applicationData);
         assertThat(application.getApplicationData()).isEqualTo(applicationData);
@@ -57,7 +57,7 @@ class ApplicationFactoryTest {
         Instant instant = Instant.ofEpochSecond(125423L);
         when(clock.instant()).thenReturn(instant);
 
-        Application application = applicationFactory.newApplication("", applicationData);
+        Application application = applicationFactory.newApplication(applicationData);
 
         assertThat(application.getCompletedAt()).isEqualTo(ZonedDateTime.ofInstant(instant, zoneOffset));
     }
@@ -68,7 +68,7 @@ class ApplicationFactoryTest {
         when(clock.instant()).thenReturn(now);
         applicationData.setStartTime(now.minusSeconds(142));
 
-        Application application = applicationFactory.newApplication("", applicationData);
+        Application application = applicationFactory.newApplication(applicationData);
 
         assertThat(application.getTimeToComplete()).isEqualTo(Duration.ofSeconds(142));
     }
@@ -78,7 +78,7 @@ class ApplicationFactoryTest {
         FlowType flow = FlowType.FULL;
         applicationData.setFlow(flow);
 
-        Application application = applicationFactory.newApplication("", applicationData);
+        Application application = applicationFactory.newApplication(applicationData);
 
         assertThat(application.getFlow()).isEqualTo(flow);
     }
@@ -87,14 +87,15 @@ class ApplicationFactoryTest {
     void shouldParseCounty() {
         when(countyParser.parse(applicationData)).thenReturn(Hennepin);
 
-        Application application = applicationFactory.newApplication("", applicationData);
+        Application application = applicationFactory.newApplication(applicationData);
 
         assertThat(application.getCounty()).isEqualTo(Hennepin);
     }
 
     @Test
     void shouldAddApplicationIdToMonitoringServiceForSentry() {
-        applicationFactory.newApplication("appId", applicationData);
+        applicationData.setId("appId");
+        applicationFactory.newApplication(applicationData);
 
         verify(monitoringService).setApplicationId("appId");
     }

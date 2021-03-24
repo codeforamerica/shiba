@@ -88,7 +88,7 @@ public class ApplicationRepository {
                         return Application.builder()
                                         .id(id)
                                         .completedAt(ZonedDateTime.ofInstant(resultSet.getTimestamp("completed_at").toInstant(), ZoneOffset.UTC))
-                                        .applicationData(objectMapper.readValue(resultSet.getString("json_data"), ApplicationData.class))
+                                        .applicationData(objectMapper.readValue(resultSet.getString("json_data"), ApplicationData.class).unencrypted())
                                         .county(County.valueFor(resultSet.getString("county")))
                                         .timeToComplete(Duration.ofSeconds(resultSet.getLong("time_to_complete")))
                                         .sentiment(Optional.ofNullable(resultSet.getString("sentiment"))

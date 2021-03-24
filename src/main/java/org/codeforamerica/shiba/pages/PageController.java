@@ -360,8 +360,8 @@ public class PageController {
 
         if (pageData.isValid()) {
             String id = applicationRepository.getNextId();
-            Application application = applicationFactory.newApplication(id, applicationData);
-            applicationData.setId(application.getId());
+            applicationData.setId(id);
+            Application application = applicationFactory.newApplication(applicationData);
             applicationRepository.save(application);
             pageEventPublisher.publish(
                     new ApplicationSubmittedEvent(httpSession.getId(), application.getId(), application.getFlow(), LocaleContextHolder.getLocale())
