@@ -22,18 +22,19 @@ public class ApplicationFactory {
         this.monitoringService = monitoringService;
     }
 
-    public Application newApplication(String id, ApplicationData applicationData) {
+    public Application newApplication(ApplicationData applicationData) {
         ApplicationData copy = new ApplicationData();
+        copy.setId(applicationData.getId());
         copy.setPagesData(applicationData.getPagesData());
         copy.setSubworkflows(applicationData.getSubworkflows());
         copy.setIncompleteIterations(applicationData.getIncompleteIterations());
         copy.setFlow(applicationData.getFlow());
         copy.setStartTime(applicationData.getStartTime());
         ZonedDateTime completedAt = ZonedDateTime.now(clock);
-        monitoringService.setApplicationId(id);
+        monitoringService.setApplicationId(applicationData.getId());
 
         return Application.builder()
-                .id(id)
+                .id(applicationData.getId())
                 .completedAt(completedAt)
                 .applicationData(copy)
                 .county(countyParser.parse(applicationData))

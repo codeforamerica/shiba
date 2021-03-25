@@ -3,7 +3,7 @@ package org.codeforamerica.shiba.pages;
 import org.codeforamerica.shiba.AbstractStaticMessageSourcePageTest;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.application.ApplicationFactory;
+import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedListener;
@@ -36,7 +36,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 public class SubmitPageTest extends AbstractStaticMessageSourcePageTest {
 
     @MockBean ApplicationSubmittedListener applicationSubmittedListener;
-    @MockBean ApplicationFactory applicationFactory;
+    @MockBean ApplicationRepository applicationRepository;
     @MockBean DocumentListParser documentListParser;
 
     @Test
@@ -55,7 +55,7 @@ public class SubmitPageTest extends AbstractStaticMessageSourcePageTest {
                 .sentiment(sentiment)
                 .feedback(feedbackText)
                 .build();
-        when(applicationFactory.newApplication(any(), any())).thenReturn(application);
+        when(applicationRepository.find(any())).thenReturn(application);
         when(documentListParser.parse(any())).thenReturn(List.of(CAF, CCAP));
 
         navigateTo("firstPage");

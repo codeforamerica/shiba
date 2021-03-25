@@ -4,12 +4,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.crypto.tink.Aead;
+import com.google.crypto.tink.CleartextKeysetHandle;
+import com.google.crypto.tink.JsonKeysetReader;
+import com.google.crypto.tink.aead.AeadConfig;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 import org.codeforamerica.shiba.application.FlowType;
-import org.codeforamerica.shiba.application.StringEncryptor;
 import org.flywaydb.core.api.migration.BaseJavaMigration;
 import org.flywaydb.core.api.migration.Context;
 import org.jetbrains.annotations.NotNull;
@@ -20,6 +23,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Instant;
@@ -165,6 +169,32 @@ public class V18__AddHomeAddressValidationPage extends BaseJavaMigration {
             try {
                 return stringEncryptor.encrypt(objectMapper.writeValueAsString(data));
             } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    protected static class StringEncryptor {
+        private final Aead aead;
+
+        public StringEncryptor(String encryptionKey) throws GeneralSecurityException, IOException {
+            AeadConfig.register();
+            aead = CleartextKeysetHandle.read(
+                    JsonKeysetReader.withString(encryptionKey)).getPrimitive(Aead.class);
+        }
+
+        public byte[] encrypt(String data) {
+            try {
+                return aead.encrypt(data.getBytes(), null);
+            } catch (GeneralSecurityException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        public String decrypt(byte[] encryptedData) {
+            try {
+                return new String(aead.decrypt(encryptedData, null));
+            } catch (GeneralSecurityException e) {
                 throw new RuntimeException(e);
             }
         }

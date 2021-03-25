@@ -359,9 +359,8 @@ public class PageController {
         pagesData.putPage(submitPage, pageData);
 
         if (pageData.isValid()) {
-            String id = applicationRepository.getNextId();
-            Application application = applicationFactory.newApplication(id, applicationData);
-            applicationData.setId(application.getId());
+            applicationData.setId(applicationRepository.getNextId());
+            Application application = applicationFactory.newApplication(applicationData);
             applicationRepository.save(application);
             pageEventPublisher.publish(
                     new ApplicationSubmittedEvent(httpSession.getId(), application.getId(), application.getFlow(), LocaleContextHolder.getLocale())

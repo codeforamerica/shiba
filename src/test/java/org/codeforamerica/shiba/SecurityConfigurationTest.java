@@ -4,6 +4,7 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -64,7 +65,7 @@ class SecurityConfigurationTest {
         when(applicationRepository.find(any())).thenReturn(Application.builder()
                 .id("foo")
                 .completedAt(ZonedDateTime.now())
-                .applicationData(null)
+                .applicationData(new ApplicationData())
                 .county(null)
                 .timeToComplete(null)
                 .build());

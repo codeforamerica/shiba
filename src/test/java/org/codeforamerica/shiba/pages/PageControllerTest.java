@@ -85,7 +85,7 @@ class PageControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(pageController)
                 .build();
         when(clock.instant()).thenReturn(Instant.now());
-        when(applicationFactory.newApplication(any(), any())).thenReturn(Application.builder()
+        when(applicationFactory.newApplication(any())).thenReturn(Application.builder()
                 .id("defaultId")
                 .completedAt(ZonedDateTime.now())
                 .applicationData(null)
@@ -123,7 +123,7 @@ class PageControllerTest {
                 .timeToComplete(null)
                 .flow(FlowType.FULL)
                 .build();
-        when(applicationFactory.newApplication(any(), eq(applicationData))).thenReturn(application);
+        when(applicationFactory.newApplication(eq(applicationData))).thenReturn(application);
 
         String sessionId = "someSessionId";
         MockHttpSession session = new MockHttpSession(null, sessionId);
@@ -151,7 +151,7 @@ class PageControllerTest {
                 .timeToComplete(null)
                 .build();
         when(applicationRepository.getNextId()).thenReturn(applicationId);
-        when(applicationFactory.newApplication(applicationId, applicationData)).thenReturn(application);
+        when(applicationFactory.newApplication(applicationData)).thenReturn(application);
 
         mockMvc.perform(post("/submit")
                 .param("foo[]", "some value")

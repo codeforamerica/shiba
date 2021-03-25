@@ -19,16 +19,13 @@ import static java.util.stream.Collectors.toMap;
 public class ApplicationRepository {
     private final JdbcTemplate jdbcTemplate;
     private final Encryptor<ApplicationData> encryptor;
-    private final ApplicationFactory applicationFactory;
     private final Clock clock;
 
     public ApplicationRepository(JdbcTemplate jdbcTemplate,
                                  Encryptor<ApplicationData> encryptor,
-                                 ApplicationFactory applicationFactory,
                                  Clock clock) {
         this.jdbcTemplate = jdbcTemplate;
         this.encryptor = encryptor;
-        this.applicationFactory = applicationFactory;
         this.clock = clock;
     }
 
@@ -51,7 +48,7 @@ public class ApplicationRepository {
         HashMap<String, Object> parameters = new HashMap<>(Map.of(
                 "id", application.getId(),
                 "completedAt", Timestamp.from(application.getCompletedAt().toInstant()),
-                "encryptedData", encryptor.encrypt(application.getApplicationData()),
+                "applicationData", encryptor.encrypt(application.getApplicationData()),
                 "county", application.getCounty().name(),
                 "timeToComplete", application.getTimeToComplete().getSeconds()
         ));
@@ -59,11 +56,11 @@ public class ApplicationRepository {
         parameters.put("sentiment", Optional.ofNullable(application.getSentiment()).map(Sentiment::name).orElse(null));
         parameters.put("feedback", application.getFeedback());
         new NamedParameterJdbcTemplate(jdbcTemplate)
-                .update("INSERT INTO applications (id, completed_at, encrypted_data, county, time_to_complete, sentiment, feedback, flow) " +
-                        "VALUES (:id, :completedAt, :encryptedData, :county, :timeToComplete, :sentiment, :feedback, :flow) " +
+                .update("INSERT INTO applications (id, completed_at, application_data, county, time_to_complete, sentiment, feedback, flow) " +
+                        "VALUES (:id, :completedAt, :applicationData ::jsonb, :county, :timeToComplete, :sentiment, :feedback, :flow) " +
                         "ON CONFLICT (id) DO UPDATE SET " +
                         "completed_at = :completedAt, " +
-                        "encrypted_data = :encryptedData, " +
+                        "application_data = :applicationData ::jsonb, " +
                         "county = :county, " +
                         "time_to_complete = :timeToComplete, " +
                         "sentiment = :sentiment, " +
@@ -73,21 +70,21 @@ public class ApplicationRepository {
 
     public Application find(String id) {
         return jdbcTemplate.queryForObject("SELECT * FROM applications WHERE id = ?",
-                (resultSet, rowNum) -> Application.builder()
+                (resultSet, rowNum) ->
+                        Application.builder()
                                 .id(id)
                                 .completedAt(ZonedDateTime.ofInstant(resultSet.getTimestamp("completed_at").toInstant(), ZoneOffset.UTC))
-                                .applicationData(encryptor.decrypt(resultSet.getBytes("encrypted_data")))
+                                .applicationData(encryptor.decrypt(resultSet.getString("application_data")))
                                 .county(County.valueFor(resultSet.getString("county")))
                                 .timeToComplete(Duration.ofSeconds(resultSet.getLong("time_to_complete")))
                                 .sentiment(Optional.ofNullable(resultSet.getString("sentiment"))
-                                                .map(Sentiment::valueOf)
-                                                .orElse(null))
+                                        .map(Sentiment::valueOf)
+                                        .orElse(null))
                                 .feedback(resultSet.getString("feedback"))
                                 .flow(Optional.ofNullable(resultSet.getString("flow"))
-                                .map(FlowType::valueOf)
-                                .orElse(null))
-                                .build(),
-                id);
+                                        .map(FlowType::valueOf)
+                                        .orElse(null))
+                                .build(), id);
     }
 
     public Duration getMedianTimeToComplete() {
@@ -121,8 +118,8 @@ public class ApplicationRepository {
                 (resultSet, rowNumber) ->
                         Map.entry(
                                 County.valueFor(resultSet.getString("county")),
-                                resultSet.getInt("count"))).stream()
-                .collect(toMap(Entry::getKey, Entry::getValue));
+                                resultSet.getInt("count"))).stream().collect(toMap(Entry::getKey, Entry::getValue)
+        );
     }
 
     public Duration getAverageTimeToCompleteWeekToDate(ZoneId zoneId) {

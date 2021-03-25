@@ -37,9 +37,6 @@ class ApplicationRepositoryTest {
     @Autowired
     ApplicationRepository applicationRepository;
 
-    @SuppressWarnings("unchecked")
-    Encryptor<ApplicationData> mockEncryptor = mock(Encryptor.class);
-
     @Autowired
     JdbcTemplate jdbcTemplate;
 
@@ -48,8 +45,6 @@ class ApplicationRepositoryTest {
 
     @MockBean
     Clock clock;
-
-    ApplicationRepository applicationRepositoryWithMockEncryptor;
 
     @Test
     void shouldGenerateIdForNextApplication() {
@@ -186,10 +181,15 @@ class ApplicationRepositoryTest {
     @ActiveProfiles("test")
     @Sql(statements = {"TRUNCATE TABLE applications"})
     class EncryptionAndDecryption {
+        ApplicationRepository applicationRepositoryWithMockEncryptor;
+        @SuppressWarnings("unchecked")
+        Encryptor<ApplicationData> mockEncryptor = mock(Encryptor.class);
+        String jsonData = "\"{here: 'is the encrypted data'}\"";
+
         @BeforeEach
         void setUp() {
-            applicationRepositoryWithMockEncryptor = new ApplicationRepository(jdbcTemplate, mockEncryptor, applicationFactory, clock);
-            when(mockEncryptor.encrypt(any())).thenReturn("default encrypted data".getBytes());
+            applicationRepositoryWithMockEncryptor = new ApplicationRepository(jdbcTemplate, mockEncryptor, clock);
+            when(mockEncryptor.encrypt(any())).thenReturn(jsonData);
         }
 
         @Test
@@ -218,16 +218,14 @@ class ApplicationRepositoryTest {
                     .county(Olmsted)
                     .timeToComplete(Duration.ofSeconds(1))
                     .build();
-            byte[] expectedEncryptedData = "here is the encrypted data".getBytes();
-            when(mockEncryptor.encrypt(any())).thenReturn(expectedEncryptedData);
 
             applicationRepositoryWithMockEncryptor.save(application);
 
-            byte[] actualEncryptedData = jdbcTemplate.queryForObject(
-                    "SELECT encrypted_data " +
+            String actualEncryptedData = jdbcTemplate.queryForObject(
+                    "SELECT application_data " +
                             "FROM applications " +
-                            "WHERE id = 'someid'", byte[].class);
-            assertThat(actualEncryptedData).isEqualTo(expectedEncryptedData);
+                            "WHERE id = 'someid'", String.class);
+            assertThat(actualEncryptedData).isEqualTo(jsonData);
         }
 
         @Test
@@ -241,8 +239,6 @@ class ApplicationRepositoryTest {
                     .county(Olmsted)
                     .timeToComplete(Duration.ofSeconds(1))
                     .build();
-            byte[] encryptedData = "here is the encrypted data".getBytes();
-            when(mockEncryptor.encrypt(any())).thenReturn(encryptedData);
             ApplicationData decryptedApplicationData = new ApplicationData();
             decryptedApplicationData.setPagesData(new PagesData(Map.of("somePage", new PageData(Map.of("someInput", InputData.builder().value(List.of("CASH")).build())))));
             when(mockEncryptor.decrypt(any())).thenReturn(decryptedApplicationData);
@@ -251,7 +247,7 @@ class ApplicationRepositoryTest {
 
             applicationRepositoryWithMockEncryptor.find(applicationId);
 
-            verify(mockEncryptor).decrypt(encryptedData);
+            verify(mockEncryptor).decrypt(jsonData);
         }
 
         @Test
@@ -274,7 +270,6 @@ class ApplicationRepositoryTest {
             applicationRepositoryWithMockEncryptor.save(application);
 
             Application retrievedApplication = applicationRepositoryWithMockEncryptor.find(applicationId);
-
             assertThat(retrievedApplication.getApplicationData()).isEqualTo(decryptedApplicationData);
         }
     }
