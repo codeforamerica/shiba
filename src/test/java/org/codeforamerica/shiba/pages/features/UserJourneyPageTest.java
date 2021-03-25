@@ -156,16 +156,17 @@ public class UserJourneyPageTest extends FeatureTest {
     void deletingUploadedFileShouldLoadDocumentUploadScreenUponConfirmDeletion() {
         getToDocumentUploadScreen();
         uploadDefaultFile();
-        uploadDefaultFile();
 
         List<WebElement> deleteLinks = driver.findElements(By.linkText("delete"));
-        assertThat(deleteLinks.size()).isEqualTo(2);
+        assertThat(deleteLinks.size()).isEqualTo(1);
         testPage.clickLink("delete");
 
         assertThat(testPage.getTitle()).isEqualTo("Delete a file");
         testPage.clickButton("Yes, delete the file");
 
         assertThat(testPage.getTitle()).isEqualTo("Upload Documents");
+        deleteLinks = driver.findElements(By.linkText("delete"));
+        assertThat(deleteLinks.size()).isEqualTo(0);
     }
 
     @Test

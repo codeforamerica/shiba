@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
-@Profile("!demo & !staging & !production")
+@Profile("!demo & !staging & !production & !test")
 @Slf4j
 public class NoopDocumentUploadService implements DocumentUploadService {
     @Override

@@ -19,6 +19,9 @@ jobs:
           POSTGRES_USER: shiba
           POSTGRES_PASSWORD: shiba
           POSTGRES_DB: shiba-test
+          S3-BUCKET: ${{ secret.S3_TEST_BUCKET}}
+          CLOUD_AWS_CREDENTIALS_ACCESS-KEY: ${{ secret.CLOUD_AWS_CREDENTIALS_ACCESS_KEY }}
+          CLOUD_AWS_CREDENTIALS_SECRET-KEY: ${{ secret.CLOUD_AWS_CREDENTIALS_SECRET_KEY }}
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
