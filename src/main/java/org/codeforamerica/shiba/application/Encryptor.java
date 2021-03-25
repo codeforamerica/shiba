@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.application;
 
 public interface Encryptor<T> {
-    byte[] encrypt(T data);
+    String encrypt(T data);
 
-    T decrypt(byte[] encryptedData);
+    T decrypt(String encryptedData);
 }

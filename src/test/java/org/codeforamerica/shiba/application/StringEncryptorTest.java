@@ -10,8 +10,8 @@ class StringEncryptorTest {
     @Test
     void shouldEncryptAndDecryptToSameValue() throws GeneralSecurityException, IOException {
         StringEncryptor stringEncryptor = new StringEncryptor(System.getenv("ENCRYPTION_KEY"));
-        String hexEncodedEncrypted = stringEncryptor.hexEncodeEncrypt("abc");
-        String hexDecodedDecrypted = stringEncryptor.hexDecodeDecrypt(hexEncodedEncrypted);
+        String hexEncodedEncrypted = stringEncryptor.encrypt("abc");
+        String hexDecodedDecrypted = stringEncryptor.decrypt(hexEncodedEncrypted);
         assert(hexDecodedDecrypted.equals("abc"));
     }
 }

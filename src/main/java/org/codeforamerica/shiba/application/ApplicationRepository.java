@@ -1,6 +1,5 @@
 package org.codeforamerica.shiba.application;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.pages.Sentiment;
@@ -13,23 +12,29 @@ import org.springframework.stereotype.Repository;
 import java.security.SecureRandom;
 import java.sql.Timestamp;
 import java.time.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toMap;
 
 @Repository
 public class ApplicationRepository {
     private final JdbcTemplate jdbcTemplate;
+    private final Encryptor<ApplicationData> encryptor;
     private final ApplicationFactory applicationFactory;
     private final Clock clock;
     private final ObjectMapper objectMapper;
 
     public ApplicationRepository(JdbcTemplate jdbcTemplate,
+                                 Encryptor<ApplicationData> encryptor,
                                  ApplicationFactory applicationFactory,
                                  Clock clock,
                                  ObjectMapper objectMapper) {
         this.jdbcTemplate = jdbcTemplate;
+        this.encryptor = encryptor;
         this.applicationFactory = applicationFactory;
         this.clock = clock;
         this.objectMapper = objectMapper;
@@ -51,18 +56,13 @@ public class ApplicationRepository {
     }
 
     public void save(Application application) {
-        HashMap<String, Object> parameters = null;
-        try {
-            parameters = new HashMap<>(Map.of(
-                    "id", application.getId(),
-                    "completedAt", Timestamp.from(application.getCompletedAt().toInstant()),
-                    "jsonData", objectMapper.writeValueAsString(application.getApplicationData().encrypted()),
-                    "county", application.getCounty().name(),
-                    "timeToComplete", application.getTimeToComplete().getSeconds()
-            ));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+        HashMap<String, Object> parameters = new HashMap<>(Map.of(
+                "id", application.getId(),
+                "completedAt", Timestamp.from(application.getCompletedAt().toInstant()),
+                "jsonData", encryptor.encrypt(application.getApplicationData()),
+                "county", application.getCounty().name(),
+                "timeToComplete", application.getTimeToComplete().getSeconds()
+        ));
         parameters.put("flow", Optional.ofNullable(application.getFlow()).map(FlowType::name).orElse(null));
         parameters.put("sentiment", Optional.ofNullable(application.getSentiment()).map(Sentiment::name).orElse(null));
         parameters.put("feedback", application.getFeedback());
@@ -81,27 +81,21 @@ public class ApplicationRepository {
 
     public Application find(String id) {
         return jdbcTemplate.queryForObject("SELECT * FROM applications WHERE id = ?",
-                (resultSet, rowNum) -> {
-                    try {
-                        return Application.builder()
-                                        .id(id)
-                                        .completedAt(ZonedDateTime.ofInstant(resultSet.getTimestamp("completed_at").toInstant(), ZoneOffset.UTC))
-                                        .applicationData(objectMapper.readValue(resultSet.getString("json_data"), ApplicationData.class).unencrypted())
-                                        .county(County.valueFor(resultSet.getString("county")))
-                                        .timeToComplete(Duration.ofSeconds(resultSet.getLong("time_to_complete")))
-                                        .sentiment(Optional.ofNullable(resultSet.getString("sentiment"))
-                                                        .map(Sentiment::valueOf)
-                                                        .orElse(null))
-                                        .feedback(resultSet.getString("feedback"))
-                                        .flow(Optional.ofNullable(resultSet.getString("flow"))
+                (resultSet, rowNum) ->
+                        Application.builder()
+                                .id(id)
+                                .completedAt(ZonedDateTime.ofInstant(resultSet.getTimestamp("completed_at").toInstant(), ZoneOffset.UTC))
+                                .applicationData(encryptor.decrypt(resultSet.getString("json_data")))
+                                .county(County.valueFor(resultSet.getString("county")))
+                                .timeToComplete(Duration.ofSeconds(resultSet.getLong("time_to_complete")))
+                                .sentiment(Optional.ofNullable(resultSet.getString("sentiment"))
+                                        .map(Sentiment::valueOf)
+                                        .orElse(null))
+                                .feedback(resultSet.getString("feedback"))
+                                .flow(Optional.ofNullable(resultSet.getString("flow"))
                                         .map(FlowType::valueOf)
                                         .orElse(null))
-                                        .build();
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                }, id);
+                                .build(), id);
     }
 
     public Duration getMedianTimeToComplete() {

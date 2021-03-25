@@ -11,8 +11,6 @@ import org.codeforamerica.shiba.pages.config.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -147,57 +145,5 @@ public class ApplicationData {
                 .filter(uploadedDocument -> uploadedDocument.getFilename().equals(fileToDelete))
                 .findFirst().orElse(null);
         uploadedDocs.remove(toRemove);
-    }
-
-    private StringEncryptor getStringEncryptor() {
-        if (stringEncryptor == null) {
-            try {
-                stringEncryptor = new StringEncryptor(System.getenv("ENCRYPTION_KEY"));
-            } catch (GeneralSecurityException | IOException e) {
-                throw new IllegalStateException(e);
-            }
-        }
-
-        return stringEncryptor;
-    }
-
-    public ApplicationData encrypted() {
-        String applicantSSN = getPagesData().getPageInputFirstValue("personalInfo", "ssn");
-        if (applicantSSN != null) {
-            String encryptedApplicantSSN = getStringEncryptor().hexEncodeEncrypt(applicantSSN);
-            getPagesData().getPage("personalInfo").get("ssn").setValue(encryptedApplicantSSN, 0);
-
-            boolean hasHousehold = getSubworkflows().containsKey("household");
-            if (hasHousehold) {
-                getSubworkflows().get("household").forEach(iteration -> {
-                    String houseHoldMemberSSN = iteration.getPagesData().getPageInputFirstValue("householdMemberInfo", "ssn");
-                    if (houseHoldMemberSSN != null) {
-                        String encryptedHouseholdMemberSSN = getStringEncryptor().hexEncodeEncrypt(houseHoldMemberSSN);
-                        iteration.getPagesData().getPage("householdMemberInfo").get("ssn").setValue(encryptedHouseholdMemberSSN, 0);
-                    }
-                });
-            }
-        }
-
-        return this;
-    }
-
-    public ApplicationData unencrypted() {
-        String applicantSSN = getPagesData().getPageInputFirstValue("personalInfo", "ssn");
-        if (applicantSSN != null) {
-            getPagesData().getPage("personalInfo").get("ssn").setValue(getStringEncryptor().hexDecodeDecrypt(applicantSSN), 0);
-
-            boolean hasHousehold = getSubworkflows().containsKey("household");
-            if (hasHousehold) {
-                getSubworkflows().get("household").forEach(iteration -> {
-                    String houseHoldMemberSSN = iteration.getPagesData().getPageInputFirstValue("householdMemberInfo", "ssn");
-                    if (houseHoldMemberSSN != null) {
-                        iteration.getPagesData().getPage("householdMemberInfo").get("ssn").setValue(getStringEncryptor().hexDecodeDecrypt(houseHoldMemberSSN), 0);
-                    }
-                });
-            }
-        }
-
-        return this;
     }
 }

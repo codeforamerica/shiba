@@ -33,7 +33,7 @@ class ApplicationDataEncryptorTest {
         when(objectMapper.writeValueAsString(any())).thenReturn(appDataWithLegacyUploadedDocumentsMap);
 
         assertDoesNotThrow(() -> {
-            byte[] encryptedApp = applicationDataEncryptor.encrypt(new ApplicationData());
+            String encryptedApp = applicationDataEncryptor.encrypt(new ApplicationData());
             applicationDataEncryptor.decrypt(encryptedApp);
         });
     }

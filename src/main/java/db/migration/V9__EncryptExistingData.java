@@ -1,6 +1,9 @@
 package db.migration;
 
-import org.codeforamerica.shiba.application.StringEncryptor;
+import com.google.crypto.tink.Aead;
+import com.google.crypto.tink.CleartextKeysetHandle;
+import com.google.crypto.tink.JsonKeysetReader;
+import com.google.crypto.tink.aead.AeadConfig;
 import org.flywaydb.core.api.migration.BaseJavaMigration;
 import org.flywaydb.core.api.migration.Context;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -29,5 +32,23 @@ public class V9__EncryptExistingData extends BaseJavaMigration {
                 "UPDATE applications " +
                         "SET encrypted_data = :encryptedData " +
                         "WHERE id = :id", sqlParameterSources);
+    }
+
+    protected static class StringEncryptor {
+        private final Aead aead;
+
+        public StringEncryptor(String encryptionKey) throws GeneralSecurityException, IOException {
+            AeadConfig.register();
+            aead = CleartextKeysetHandle.read(
+                    JsonKeysetReader.withString(encryptionKey)).getPrimitive(Aead.class);
+        }
+
+        public byte[] encrypt(String data) {
+            try {
+                return aead.encrypt(data.getBytes(), null);
+            } catch (GeneralSecurityException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }
