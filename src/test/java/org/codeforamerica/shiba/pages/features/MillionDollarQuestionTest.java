@@ -17,11 +17,6 @@ public class MillionDollarQuestionTest extends FeatureTest {
         fillOutHousemateInfo(PROGRAM_EA);
         testPage.clickContinue();
         testPage.clickButton("Yes, that's everyone");
-
-        navigateTo("unearnedIncome");
-        testPage.enter("unearnedIncome", "None of the above");
-        testPage.clickContinue();
-        testPage.enter("unearnedIncomeCcap", "None of the above");
         testPage.clickContinue();
 
         assertThat(driver.getTitle()).isEqualTo("Living situation");
@@ -36,9 +31,6 @@ public class MillionDollarQuestionTest extends FeatureTest {
         fillOutHousemateInfo(PROGRAM_EA);
         testPage.clickContinue();
         testPage.clickButton("Yes, that's everyone");
-
-        navigateTo("unearnedIncome");
-        testPage.enter("unearnedIncome", "None of the above");
         testPage.clickContinue();
 
         assertThat(driver.getTitle()).isEqualTo("Living situation");
@@ -53,11 +45,6 @@ public class MillionDollarQuestionTest extends FeatureTest {
         fillOutHousemateInfo(PROGRAM_CCAP);
         testPage.clickContinue();
         testPage.clickButton("Yes, that's everyone");
-
-        navigateTo("unearnedIncome");
-        testPage.enter("unearnedIncome", "None of the above");
-        testPage.clickContinue();
-        testPage.enter("unearnedIncomeCcap", "None of the above");
         testPage.clickContinue();
 
         assertThat(driver.getTitle()).isEqualTo("Living situation");

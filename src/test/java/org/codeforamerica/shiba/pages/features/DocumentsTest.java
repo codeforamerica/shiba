@@ -180,6 +180,7 @@ public class DocumentsTest extends FeatureTest {
         testPage.clickContinue();
         testPage.clickButton("Yes, that's everyone");
         testPage.clickContinue();
+        testPage.enter("livingSituation", "None of these");
         testPage.enter("goingToSchool", NO.getDisplayValue());
         testPage.enter("isPregnant", NO.getDisplayValue());
         testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
