@@ -43,6 +43,8 @@ public class V23__UnencryptApplicationData extends BaseJavaMigration {
                         return new MapSqlParameterSource("json_data", unencryptedAppDataWithEncryptedSSN(rs))
                                 .addValue("id", rs.getString("id"));
                     } catch (Exception e) {
+                        System.out.println("Unable to migrate id=" + rs.getString("id"));
+                        e.printStackTrace();
                         return new MapSqlParameterSource("json_data", "")
                                 .addValue("id", rs.getString("id"));
                     }
