@@ -154,8 +154,8 @@ test {
 tasks.withType(Test).configureEach {
     Test task ->
         task.doFirst {
-            def file = new File('.env')
-            if (file.exists()) {
+            def env = new File('.env')
+            if (env.exists()) {
                 file('.env').readLines().each() {
                     def (key, value) = it.split('=', 2)
                     environment(key, value)
