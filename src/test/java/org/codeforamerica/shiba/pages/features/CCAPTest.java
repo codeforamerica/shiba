@@ -259,7 +259,6 @@ public class CCAPTest extends FeatureTest {
         whatAreParentNames.get(1).sendKeys("Default's Parent");
         testPage.clickContinue();
         testPage.clickButton(YES.getDisplayValue());
-        takeSnapShot("test.png");
         testPage.clickButton(YES.getDisplayValue());
         assertThat(driver.getTitle()).isEqualTo("Who is going to school?");
         testPage.clickContinue();
