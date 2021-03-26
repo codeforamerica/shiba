@@ -37,4 +37,4 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Test with Gradle
-      run: ./gradlew clean test --tests --stacktrace *ApplicationRepositoryTest.shouldSaveApplicationWithOptionalFieldsPopulated -PS3-BUCKET=${{ secrets.S3_TEST_BUCKET }} -PCLOUD_AWS_CREDENTIALS_ACCESS-KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_ACCESS_KEY }} -PCLOUD_AWS_CREDENTIALS_SECRET-KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY }}
+      run: S3_BUCKET=${{ secrets.S3_TEST_BUCKET }} env 'CLOUD_AWS_CREDENTIALS_ACCESS-KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_ACCESS_KEY }}' env 'CLOUD_AWS_CREDENTIALS_SECRET-KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY }}' ./gradlew clean testAll

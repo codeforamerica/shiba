@@ -6,7 +6,6 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,10 +22,9 @@ public class S3DocumentUploadService implements DocumentUploadService {
 
     public S3DocumentUploadService(
             TransferManager transferManager,
-            @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") AmazonS3 s3Client,
-            @Value("${s3-bucket}") String bucketName) {
+            @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") AmazonS3 s3Client) {
         this.s3Client = s3Client;
-        this.bucketName = bucketName;
+        this.bucketName = System.getenv("S3_BUCKET");
         this.transferManager = transferManager;
     }
 
