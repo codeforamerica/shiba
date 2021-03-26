@@ -47,8 +47,8 @@ jobs:
           'SENTRY_RELEASE=${{ steps.generate-release.outputs.RELEASE }}' \
           'MIXPANEL_API-KEY=${{ secrets.MIXPANEL_API_KEY_PRODUCTION }}' \
           'S3_PROD_BUCKET=${{ secrets.S3_PROD_BUCKET }}' \
-          'CLOUD_AWS_CREDENTIALS_ACCESS_KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_ACCESS_KEY }}' \
-          'CLOUD_AWS_CREDENTIALS_SECRET_KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY }}'
+          'CLOUD_AWS_CREDENTIALS_ACCESS-KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_ACCESS_KEY_PROD }}' \
+          'CLOUD_AWS_CREDENTIALS_SECRET-KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY_PROD }}'
       - name: Create Sentry release
         uses: getsentry/action-release@v1
         env:

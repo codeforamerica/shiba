@@ -39,11 +39,10 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Test with Gradle
-      run: ./gradlew clean testAll
-      env:
-        S3-BUCKET: ${{ secrets.S3_TEST_BUCKET }}
-        CLOUD_AWS_CREDENTIALS_ACCESS-KEY: ${{ secrets.CLOUD_AWS_CREDENTIALS_ACCESS_KEY }}
-        CLOUD_AWS_CREDENTIALS_SECRET-KEY: ${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY }}
+      run: S3_BUCKET=${{ secrets.S3_TEST_BUCKET }} \
+        env 'CLOUD_AWS_CREDENTIALS_ACCESS-KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_ACCESS_KEY }}' \
+        env 'CLOUD_AWS_CREDENTIALS_SECRET-KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY }}' \
+        ./gradlew clean testAll
     - name: Announce test failure on slack
       if: ${{ failure() }}
       uses: innocarpe/actions-slack@v1
@@ -97,8 +96,8 @@ jobs:
           'SENTRY_RELEASE=${{ steps.generate-release.outputs.RELEASE }}' \
           'MIXPANEL_API-KEY=${{ secrets.MIXPANEL_API_KEY_STAGING }}' \
           'S3_STAGING_BUCKET=${{ secrets.S3_STAGING_BUCKET }}' \
-          'CLOUD_AWS_CREDENTIALS_ACCESS_KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_ACCESS_KEY }}' \
-          'CLOUD_AWS_CREDENTIALS_SECRET_KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY }}'
+          'CLOUD_AWS_CREDENTIALS_ACCESS-KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_ACCESS_KEY }}' \
+          'CLOUD_AWS_CREDENTIALS_SECRET-KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY }}'
       - name: Merge main -> staging
         uses: MaximeHeckel/github-action-merge-fast-forward@v1.1.0
         with:
