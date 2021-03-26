@@ -71,3 +71,7 @@ logging:
     org.springframework.ws.server.MessageTracing.received: DEBUG
 
 pagesConfig: pages-config.yaml
+
+s3-bucket: ${S3-BUCKET}
+CLOUD_AWS_CREDENTIALS_ACCESS-KEY: ${CLOUD_AWS_CREDENTIALS_ACCESS-KEY}
+CLOUD_AWS_CREDENTIALS_SECRET-KEY: ${CLOUD_AWS_CREDENTIALS_SECRET-KEY}
