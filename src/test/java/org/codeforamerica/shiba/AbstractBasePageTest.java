@@ -125,6 +125,11 @@ public abstract class AbstractBasePageTest {
         }
     }
 
+    protected void waitForDocumentUploadToComplete() {
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText("delete")));
+    }
+
     @SuppressWarnings("unused")
     public static void takeSnapShot(String fileWithPath) {
         TakesScreenshot screenshot = driver;
@@ -388,7 +393,7 @@ public abstract class AbstractBasePageTest {
     protected void completeDocumentUploadFlow() {
         testPage.clickElementById("drag-and-drop-box");
         uploadDefaultFile();
-
+        waitForDocumentUploadToComplete();
         testPage.clickButton("I'm finished uploading");
     }
 
@@ -408,8 +413,6 @@ public abstract class AbstractBasePageTest {
 
     protected void uploadDefaultFile() {
         uploadFile(getAbsoluteFilepath(UPLOADED_FILE_NAME));
-        WebDriverWait wait = new WebDriverWait(driver, 5);
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText("delete")));
         assertThat(driver.findElement(By.id("document-upload")).getText()).contains(UPLOADED_FILE_NAME);
     }
 
