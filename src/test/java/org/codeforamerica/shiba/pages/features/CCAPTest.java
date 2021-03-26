@@ -25,8 +25,9 @@ public class CCAPTest extends FeatureTest {
 
     @Test
     void shouldSkipJobSearchPageIfCCAPNotSelected() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_SNAP), smartyStreetClient);
-        completeFlowFromReviewInfoToDisability(List.of(PROGRAM_SNAP));
+        List<String> applicantPrograms = List.of(PROGRAM_SNAP);
+        completeFlowFromLandingPageThroughReviewInfo(applicantPrograms, smartyStreetClient);
+        completeFlowFromReviewInfoToDisability(applicantPrograms);
         testPage.enter("hasWorkSituation", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.enter("areYouWorking", NO.getDisplayValue());
@@ -35,8 +36,9 @@ public class CCAPTest extends FeatureTest {
 
     @Test
     void shouldSkipRealEstatePageIfCCAPNotSelected() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_SNAP), smartyStreetClient);
-        completeFlowFromReviewInfoToDisability(List.of(PROGRAM_SNAP));
+        List<String> applicantPrograms = List.of(PROGRAM_SNAP);
+        completeFlowFromLandingPageThroughReviewInfo(applicantPrograms, smartyStreetClient);
+        completeFlowFromReviewInfoToDisability(applicantPrograms);
         testPage.enter("hasWorkSituation", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.enter("areYouWorking", NO.getDisplayValue());
@@ -142,8 +144,9 @@ public class CCAPTest extends FeatureTest {
 
     @Test
     void shouldNotShowMillionDollarQuestionIfNoCCAP() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_SNAP), smartyStreetClient);
-        completeFlowFromReviewInfoToDisability(List.of(PROGRAM_SNAP));
+        List<String> applicantPrograms = List.of(PROGRAM_SNAP);
+        completeFlowFromLandingPageThroughReviewInfo(applicantPrograms, smartyStreetClient);
+        completeFlowFromReviewInfoToDisability(applicantPrograms);
         testPage.enter("hasWorkSituation", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.enter("areYouWorking", NO.getDisplayValue());

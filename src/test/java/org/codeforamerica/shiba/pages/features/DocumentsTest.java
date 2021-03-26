@@ -11,8 +11,9 @@ import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 public class DocumentsTest extends FeatureTest {
     @Test
     void shouldSkipDocumentUploadFlowIfNoApplicablePrograms() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_CCAP), smartyStreetClient);
-        completeFlowFromReviewInfoToDisability(List.of(PROGRAM_CCAP));
+        List<String> applicantPrograms = List.of(PROGRAM_CCAP);
+        completeFlowFromLandingPageThroughReviewInfo(applicantPrograms, smartyStreetClient);
+        completeFlowFromReviewInfoToDisability(applicantPrograms);
 
         // Recommend proof of job loss (if programs were applicable)
         testPage.enter("hasWorkSituation", YES.getDisplayValue());
@@ -46,8 +47,9 @@ public class DocumentsTest extends FeatureTest {
 
     @Test
     void shouldSkipDocumentUploadFlowIfNotApplicableRegardlessOfPrograms() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_SNAP, PROGRAM_CASH, PROGRAM_EA, PROGRAM_GRH), smartyStreetClient);
-        completeFlowFromReviewInfoToDisability(List.of(PROGRAM_SNAP, PROGRAM_CASH, PROGRAM_EA, PROGRAM_GRH));
+        List<String> applicantPrograms = List.of(PROGRAM_SNAP, PROGRAM_CASH, PROGRAM_EA, PROGRAM_GRH);
+        completeFlowFromLandingPageThroughReviewInfo(applicantPrograms, smartyStreetClient);
+        completeFlowFromReviewInfoToDisability(applicantPrograms);
 
         // Do not recommend proof of job loss
         testPage.enter("hasWorkSituation", NO.getDisplayValue());
@@ -73,8 +75,9 @@ public class DocumentsTest extends FeatureTest {
 
     @Test
     void shouldDisplayDocumentRecommendationsForSingleApplicant() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_GRH, PROGRAM_SNAP), smartyStreetClient);
-        completeFlowFromReviewInfoToDisability(List.of(PROGRAM_GRH, PROGRAM_SNAP));
+        List<String> applicantPrograms = List.of(PROGRAM_GRH, PROGRAM_SNAP);
+        completeFlowFromLandingPageThroughReviewInfo(applicantPrograms, smartyStreetClient);
+        completeFlowFromReviewInfoToDisability(applicantPrograms);
 
         // Recommend proof of job loss
         testPage.enter("hasWorkSituation", YES.getDisplayValue());
@@ -107,8 +110,9 @@ public class DocumentsTest extends FeatureTest {
     @Test
     void shouldSkipDocumentRecommendationsWhenNoEligibleProgram() {
         // Skip because only CCAP
-        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_CCAP), smartyStreetClient);
-        completeFlowFromReviewInfoToDisability(List.of(PROGRAM_CCAP));
+        List<String> applicantPrograms = List.of(PROGRAM_CCAP);
+        completeFlowFromLandingPageThroughReviewInfo(applicantPrograms, smartyStreetClient);
+        completeFlowFromReviewInfoToDisability(applicantPrograms);
 
         testPage.enter("hasWorkSituation", YES.getDisplayValue());
         testPage.clickContinue();
@@ -139,8 +143,9 @@ public class DocumentsTest extends FeatureTest {
 
     @Test
     void shouldSkipDocumentRecommendationsIfChoseEligibleProgramsButNoOnEmploymentStatusNoOnHasWorkSituationAndNoneOfTheAboveOnHomeExpenses() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_GRH, PROGRAM_SNAP), smartyStreetClient);
-        completeFlowFromReviewInfoToDisability(List.of(PROGRAM_GRH, PROGRAM_SNAP));
+        List<String> applicantPrograms = List.of(PROGRAM_GRH, PROGRAM_SNAP);
+        completeFlowFromLandingPageThroughReviewInfo(applicantPrograms, smartyStreetClient);
+        completeFlowFromReviewInfoToDisability(applicantPrograms);
 
         testPage.enter("hasWorkSituation", NO.getDisplayValue());
         testPage.clickContinue();
