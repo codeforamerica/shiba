@@ -12,7 +12,7 @@ public class DocumentsTest extends FeatureTest {
     @Test
     void shouldSkipDocumentUploadFlowIfNoApplicablePrograms() {
         completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_CCAP), smartyStreetClient);
-        completeFlowFromReviewInfoToDisability();
+        completeFlowFromReviewInfoToDisability(List.of(PROGRAM_CCAP));
 
         // Recommend proof of job loss (if programs were applicable)
         testPage.enter("hasWorkSituation", YES.getDisplayValue());
@@ -29,8 +29,6 @@ public class DocumentsTest extends FeatureTest {
         testPage.enter("unearnedIncome", "None of the above");
         testPage.clickContinue();
         testPage.enter("unearnedIncomeCcap", "None of the above");
-        testPage.clickContinue();
-        testPage.enter("livingSituation", "Paying for my own housing with rent, lease, or mortgage payments");
         testPage.clickContinue();
         testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
         testPage.clickContinue();
@@ -49,7 +47,7 @@ public class DocumentsTest extends FeatureTest {
     @Test
     void shouldSkipDocumentUploadFlowIfNotApplicableRegardlessOfPrograms() {
         completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_SNAP, PROGRAM_CASH, PROGRAM_EA, PROGRAM_GRH), smartyStreetClient);
-        completeFlowFromReviewInfoToDisability();
+        completeFlowFromReviewInfoToDisability(List.of(PROGRAM_SNAP, PROGRAM_CASH, PROGRAM_EA, PROGRAM_GRH));
 
         // Do not recommend proof of job loss
         testPage.enter("hasWorkSituation", NO.getDisplayValue());
@@ -58,8 +56,6 @@ public class DocumentsTest extends FeatureTest {
         testPage.enter("areYouWorking", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.enter("unearnedIncome", "None of the above");
-        testPage.clickContinue();
-        testPage.enter("livingSituation", "Paying for my own housing with rent, lease, or mortgage payments");
         testPage.clickContinue();
         testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
         testPage.clickContinue();
@@ -78,7 +74,7 @@ public class DocumentsTest extends FeatureTest {
     @Test
     void shouldDisplayDocumentRecommendationsForSingleApplicant() {
         completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_GRH, PROGRAM_SNAP), smartyStreetClient);
-        completeFlowFromReviewInfoToDisability();
+        completeFlowFromReviewInfoToDisability(List.of(PROGRAM_GRH, PROGRAM_SNAP));
 
         // Recommend proof of job loss
         testPage.enter("hasWorkSituation", YES.getDisplayValue());
@@ -92,8 +88,6 @@ public class DocumentsTest extends FeatureTest {
         paidByTheHourOrSelectPayPeriod();
         testPage.clickContinue();
         testPage.enter("unearnedIncome", "None of the above");
-        testPage.clickContinue();
-        testPage.enter("livingSituation", "Paying for my own housing with rent, lease, or mortgage payments");
         testPage.clickContinue();
         testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
         testPage.clickContinue();
@@ -114,7 +108,7 @@ public class DocumentsTest extends FeatureTest {
     void shouldSkipDocumentRecommendationsWhenNoEligibleProgram() {
         // Skip because only CCAP
         completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_CCAP), smartyStreetClient);
-        completeFlowFromReviewInfoToDisability();
+        completeFlowFromReviewInfoToDisability(List.of(PROGRAM_CCAP));
 
         testPage.enter("hasWorkSituation", YES.getDisplayValue());
         testPage.clickContinue();
@@ -129,8 +123,6 @@ public class DocumentsTest extends FeatureTest {
         testPage.enter("unearnedIncome", "None of the above");
         testPage.clickContinue();
         testPage.enter("unearnedIncomeCcap", "None of the above");
-        testPage.clickContinue();
-        testPage.enter("livingSituation", "Paying for my own housing with rent, lease, or mortgage payments");
         testPage.clickContinue();
         testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
         testPage.clickContinue();
@@ -148,15 +140,13 @@ public class DocumentsTest extends FeatureTest {
     @Test
     void shouldSkipDocumentRecommendationsIfChoseEligibleProgramsButNoOnEmploymentStatusNoOnHasWorkSituationAndNoneOfTheAboveOnHomeExpenses() {
         completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_GRH, PROGRAM_SNAP), smartyStreetClient);
-        completeFlowFromReviewInfoToDisability();
+        completeFlowFromReviewInfoToDisability(List.of(PROGRAM_GRH, PROGRAM_SNAP));
 
         testPage.enter("hasWorkSituation", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.enter("areYouWorking", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.enter("unearnedIncome", "None of the above");
-        testPage.clickContinue();
-        testPage.enter("livingSituation", "Paying for my own housing with rent, lease, or mortgage payments");
         testPage.clickContinue();
         testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
         testPage.clickContinue();
@@ -181,6 +171,7 @@ public class DocumentsTest extends FeatureTest {
         testPage.clickButton("Yes, that's everyone");
         testPage.clickContinue();
         testPage.enter("livingSituation", "None of these");
+        testPage.clickContinue();
         testPage.enter("goingToSchool", NO.getDisplayValue());
         testPage.enter("isPregnant", NO.getDisplayValue());
         testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
@@ -211,8 +202,6 @@ public class DocumentsTest extends FeatureTest {
         testPage.enter("unearnedIncome", "None of the above");
         testPage.clickContinue();
         testPage.enter("unearnedIncomeCcap", "None of the above");
-        testPage.clickContinue();
-        testPage.enter("livingSituation", "Paying for my own housing with rent, lease, or mortgage payments");
         testPage.clickContinue();
         testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
         testPage.clickContinue();

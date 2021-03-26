@@ -26,7 +26,7 @@ public class CCAPTest extends FeatureTest {
     @Test
     void shouldSkipJobSearchPageIfCCAPNotSelected() {
         completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_SNAP), smartyStreetClient);
-        completeFlowFromReviewInfoToDisability();
+        completeFlowFromReviewInfoToDisability(List.of(PROGRAM_SNAP));
         testPage.enter("hasWorkSituation", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.enter("areYouWorking", NO.getDisplayValue());
@@ -36,7 +36,7 @@ public class CCAPTest extends FeatureTest {
     @Test
     void shouldSkipRealEstatePageIfCCAPNotSelected() {
         completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_SNAP), smartyStreetClient);
-        completeFlowFromReviewInfoToDisability();
+        completeFlowFromReviewInfoToDisability(List.of(PROGRAM_SNAP));
         testPage.enter("hasWorkSituation", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.enter("areYouWorking", NO.getDisplayValue());
@@ -124,8 +124,6 @@ public class CCAPTest extends FeatureTest {
         testPage.clickContinue();
         testPage.enter("unearnedIncomeCcap", "None of the above");
         testPage.clickContinue();
-        testPage.enter("livingSituation", "I prefer not to say");
-        testPage.clickContinue();
         testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.clickContinue();
@@ -145,7 +143,7 @@ public class CCAPTest extends FeatureTest {
     @Test
     void shouldNotShowMillionDollarQuestionIfNoCCAP() {
         completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_SNAP), smartyStreetClient);
-        completeFlowFromReviewInfoToDisability();
+        completeFlowFromReviewInfoToDisability(List.of(PROGRAM_SNAP));
         testPage.enter("hasWorkSituation", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.enter("areYouWorking", NO.getDisplayValue());
@@ -259,6 +257,8 @@ public class CCAPTest extends FeatureTest {
         whatAreParentNames.get(1).sendKeys("Default's Parent");
         testPage.clickContinue();
         testPage.clickButton(YES.getDisplayValue());
+        testPage.enter("livingSituation", "None of these");
+        testPage.clickContinue();
         testPage.clickButton(YES.getDisplayValue());
         assertThat(driver.getTitle()).isEqualTo("Who is going to school?");
         testPage.clickContinue();
