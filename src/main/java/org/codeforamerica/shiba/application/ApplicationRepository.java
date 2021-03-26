@@ -8,10 +8,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.security.SecureRandom;
 import java.sql.Timestamp;
 import java.time.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -31,7 +35,7 @@ public class ApplicationRepository {
 
     @SuppressWarnings("ConstantConditions")
     public String getNextId() {
-        int random3DigitNumber = new Random().nextInt(900) + 100;
+        int random3DigitNumber = new SecureRandom().nextInt(900) + 100;
 
         String id = jdbcTemplate.queryForObject("SELECT nextval('application_id');", String.class);
         int numberOfZeros = 10 - id.length();
@@ -114,12 +118,11 @@ public class ApplicationRepository {
                         "FROM applications " +
                         "WHERE completed_at >= ? " +
                         "GROUP BY county",
-                new Object[]{Timestamp.from(lowerBound.toInstant())},
-                (resultSet, rowNumber) ->
-                        Map.entry(
-                                County.valueFor(resultSet.getString("county")),
-                                resultSet.getInt("count"))).stream().collect(toMap(Entry::getKey, Entry::getValue)
-        );
+                (resultSet, rowNumber) -> Map.entry(
+                        County.valueFor(resultSet.getString("county")),
+                        resultSet.getInt("count")),
+                Timestamp.from(lowerBound.toInstant())
+        ).stream().collect(toMap(Entry::getKey, Entry::getValue));
     }
 
     public Duration getAverageTimeToCompleteWeekToDate(ZoneId zoneId) {
@@ -128,8 +131,8 @@ public class ApplicationRepository {
                 "SELECT COALESCE(AVG(time_to_complete), 0) as averageTime " +
                         "FROM applications " +
                         "WHERE completed_at >= ?",
-                new Object[]{Timestamp.from(lowerBound.toInstant())},
-                Double.class
+                Double.class,
+                Timestamp.from(lowerBound.toInstant())
         );
 
         return Duration.ofSeconds(Objects.requireNonNull(averageTimeToComplete).longValue());
@@ -141,8 +144,8 @@ public class ApplicationRepository {
                 "SELECT COALESCE(percentile_cont(0.5) WITHIN GROUP (ORDER BY time_to_complete), 0) " +
                         "FROM applications " +
                         "WHERE completed_at >= ?",
-                new Object[]{Timestamp.from(lowerBound.toInstant())},
-                Long.class);
+                Long.class,
+                Timestamp.from(lowerBound.toInstant()));
         return Duration.ofSeconds(Objects.requireNonNull(medianTimeToComplete));
     }
 
