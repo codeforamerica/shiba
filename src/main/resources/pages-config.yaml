@@ -2275,16 +2275,38 @@ workflow:
   introPersonalDetails:
     pageConfiguration: *introPersonalDetails
     nextPages:
-      - pageName: goingToSchool
+      - pageName: livingSituation
   preparingMealsTogether:
     pageConfiguration: *preparingMealsTogether
     skipCondition:
       conditions:
         - *applicantDidNotChooseSNAP?
     nextPages:
-      - pageName: goingToSchool
+      - pageName: livingSituation
     datasources:
       - pageName: choosePrograms
+  livingSituation:
+    pageConfiguration: *livingSituation
+    nextPages:
+      - pageName: goingToSchool
+    skipCondition:
+      compositeConditions:
+        - logicalOperator: AND
+          compositeConditions:
+            - conditions:
+                - *applicantDidNotChooseCCAP?
+                - *applicantDidNotChooseGRH?
+            - logicalOperator: OR
+              compositeConditions:
+                - conditions:
+                    - *householdMemberDidNotChooseCCAP?
+                - conditions:
+                    - *livesAlone?
+    datasources:
+      - pageName: choosePrograms
+      - pageName: addHouseholdMembers
+      - groupName: household
+        pageName: householdMemberInfo
   goingToSchool:
     pageConfiguration: *goingToSchool
     datasources:
@@ -2552,7 +2574,7 @@ workflow:
   unearnedIncomeSourcesCcap:
     pageConfiguration: *unearnedIncomeSourcesCcap
     nextPages:
-      - pageName: livingSituation
+      - pageName: futureIncome
     skipCondition:
       compositeConditions:
         - logicalOperator: OR
@@ -2575,28 +2597,6 @@ workflow:
       - pageName: choosePrograms
       - pageName: householdMemberInfo
         groupName: household
-  livingSituation:
-    pageConfiguration: *livingSituation
-    nextPages:
-      - pageName: futureIncome
-    skipCondition:
-      compositeConditions:
-        - logicalOperator: AND
-          compositeConditions:
-            - conditions:
-                - *applicantDidNotChooseCCAP?
-                - *applicantDidNotChooseGRH?
-            - logicalOperator: OR
-              compositeConditions:
-                - conditions:
-                  - *householdMemberDidNotChooseCCAP?
-                - conditions:
-                  - *livesAlone?
-    datasources:
-      - pageName: choosePrograms
-      - pageName: addHouseholdMembers
-      - groupName: household
-        pageName: householdMemberInfo
   futureIncome:
     pageConfiguration: *futureIncome
     nextPages:
