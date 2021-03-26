@@ -229,6 +229,8 @@ public abstract class AbstractBasePageTest {
             testPage.enter("whoNeedsChildCare", "defaultFirstName defaultLastName");
             testPage.clickContinue();
             testPage.clickContinue();
+			testPage.enter("livingSituation", "None of these");
+			testPage.clickContinue();
             testPage.enter("goingToSchool", NO.getDisplayValue());
             testPage.enter("isPregnant", YES.getDisplayValue());
             testPage.enter("whoIsPregnant", "Me");
@@ -376,7 +378,7 @@ public abstract class AbstractBasePageTest {
 		testPage.clickLink("This looks correct");
 		testPage.enter("addHouseholdMembers", NO.getDisplayValue());
 		testPage.clickContinue();
-		if(programSelections.contains(PROGRAM_CCAP)) {
+		if(programSelections.contains(PROGRAM_CCAP) || programSelections.contains(PROGRAM_GRH)) {
 			testPage.enter("livingSituation", "None of these");
 			testPage.clickContinue();
 		}

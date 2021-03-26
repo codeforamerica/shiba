@@ -6,6 +6,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
+import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 
 public class MillionDollarQuestionTest extends FeatureTest {
     @Test
@@ -26,13 +27,8 @@ public class MillionDollarQuestionTest extends FeatureTest {
     void shouldAskLivingSituationIfGRHApplicant() {
         completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_GRH), smartyStreetClient);
         testPage.clickLink("This looks correct");
-        testPage.enter("addHouseholdMembers", YES.getDisplayValue());
+        testPage.enter("addHouseholdMembers", NO.getDisplayValue());
         testPage.clickContinue();
-        fillOutHousemateInfo(PROGRAM_EA);
-        testPage.clickContinue();
-        testPage.clickButton("Yes, that's everyone");
-        testPage.clickContinue();
-
         assertThat(driver.getTitle()).isEqualTo("Living situation");
     }
 
