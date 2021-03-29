@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
+import org.codeforamerica.shiba.documents.DocumentUploadService;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
@@ -63,8 +64,10 @@ class PageControllerTest {
     UploadDocumentConfiguration uploadDocumentConfiguration = mock(UploadDocumentConfiguration.class);
 
     @Autowired
-    ApplicationConfiguration applicationConfiguration;
+    private ApplicationConfiguration applicationConfiguration;
 
+    @Autowired
+    private DocumentUploadService documentUploadService;
 
     @BeforeEach
     void setUp() {
@@ -79,8 +82,8 @@ class PageControllerTest {
                 applicationEnrichment,
                 documentListParser,
                 featureFlags,
-                uploadDocumentConfiguration
-        );
+                uploadDocumentConfiguration,
+                documentUploadService);
 
         mockMvc = MockMvcBuilders.standaloneSetup(pageController)
                 .build();

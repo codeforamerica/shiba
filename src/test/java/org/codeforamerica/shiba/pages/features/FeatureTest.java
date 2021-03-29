@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.pages.features;
 
 import org.codeforamerica.shiba.AbstractBasePageTest;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
+import org.codeforamerica.shiba.documents.DocumentUploadService;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.emails.MailGunEmailClient;
@@ -9,6 +10,7 @@ import org.codeforamerica.shiba.pages.enrichment.smartystreets.SmartyStreetClien
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.io.IOException;
 import java.time.Clock;
@@ -20,12 +22,16 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 public abstract class FeatureTest extends AbstractBasePageTest {
-    @MockBean public Clock clock;
-    @MockBean public SmartyStreetClient smartyStreetClient;
+    @MockBean
+    protected Clock clock;
+    @MockBean
+    protected SmartyStreetClient smartyStreetClient;
+    @SpyBean
+    protected DocumentUploadService documentUploadService;
     @MockBean PageEventPublisher pageEventPublisher;
     @MockBean MailGunEmailClient mailGunEmailClient;
     @MockBean FeatureFlagConfiguration featureFlagConfiguration;
-    @MockBean UploadDocumentConfiguration uploadDocumentConfiguration;
+    @SpyBean UploadDocumentConfiguration uploadDocumentConfiguration;
 
     @Override
     @BeforeEach

@@ -6,6 +6,7 @@ build/
 !**/src/test/**
 src/main/resources/application-secrets.yaml
 .env
+.env.externalService
 
 ### STS ###
 .apt_generated

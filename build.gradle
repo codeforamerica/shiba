@@ -74,6 +74,10 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-web-services') {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
     }
+
+    implementation 'io.awspring.cloud:spring-cloud-aws-context:2.3.0'
+    implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.3.0'
+    implementation 'io.awspring.cloud:spring-cloud-aws-autoconfigure:2.3.0'
     implementation 'org.postgresql:postgresql'
     implementation 'org.glassfish.jaxb:jaxb-runtime'
     implementation 'org.apache.pdfbox:pdfbox:2.0.21'
@@ -122,7 +126,7 @@ def unitTest = tasks.register("unitTest", Test) {
     Test task ->
         task.useJUnitPlatform {
             JUnitPlatformOptions options ->
-                options.excludeTags 'integration'
+                options.excludeTags("db", "externalService")
         }
         task.maxParallelForks(Runtime.runtime.availableProcessors().intdiv(2) ?: 1)
 }
@@ -136,6 +140,7 @@ def dbTest = tasks.register("dbTest", Test) {
         task.shouldRunAfter test
 }
 
+
 def testAll = tasks.register("testAll", Test) {
     Test task ->
         task.dependsOn(unitTest)
@@ -144,11 +149,21 @@ def testAll = tasks.register("testAll", Test) {
 
 test {
     useJUnitPlatform()
+    testLogging {
+        exceptionFormat = 'full'
+    }
 }
 
 tasks.withType(Test).configureEach {
     Test task ->
         task.doFirst {
+            def env = new File('.env')
+            if (env.exists()) {
+                file('.env').readLines().each() {
+                    def (key, value) = it.split('=', 2)
+                    environment(key, value)
+                }
+            }
             file('.env.test').readLines().each() {
                 def (key, value) = it.split('=', 2)
                 environment(key, value)

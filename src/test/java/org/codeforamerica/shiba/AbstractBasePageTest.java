@@ -19,6 +19,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -121,6 +123,11 @@ public abstract class AbstractBasePageTest {
         } else {
             return Document.CAF;
         }
+    }
+
+    protected void waitForDocumentUploadToComplete() {
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText("delete")));
     }
 
     @SuppressWarnings("unused")
@@ -392,7 +399,7 @@ public abstract class AbstractBasePageTest {
     protected void completeDocumentUploadFlow() {
         testPage.clickElementById("drag-and-drop-box");
         uploadDefaultFile();
-
+        waitForDocumentUploadToComplete();
         testPage.clickButton("I'm finished uploading");
     }
 

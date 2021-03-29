@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.pages;
 
 import lombok.extern.slf4j.Slf4j;
+import org.codeforamerica.shiba.documents.DocumentUploadService;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
@@ -29,12 +30,10 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.time.Clock;
 import java.time.ZoneId;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.Optional.ofNullable;
 
@@ -54,6 +53,7 @@ public class PageController {
     private final ApplicationDataParser<List<Document>> documentListParser;
     private final FeatureFlagConfiguration featureFlags;
     private final UploadDocumentConfiguration uploadDocumentConfiguration;
+    private final DocumentUploadService documentUploadService;
 
     public PageController(
             ApplicationConfiguration applicationConfiguration,
@@ -66,7 +66,8 @@ public class PageController {
             ApplicationEnrichment applicationEnrichment,
             ApplicationDataParser<List<Document>> documentListParser,
             FeatureFlagConfiguration featureFlags,
-            UploadDocumentConfiguration uploadDocumentConfiguration) {
+            UploadDocumentConfiguration uploadDocumentConfiguration,
+            DocumentUploadService documentUploadService) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
@@ -78,6 +79,7 @@ public class PageController {
         this.documentListParser = documentListParser;
         this.featureFlags = featureFlags;
         this.uploadDocumentConfiguration = uploadDocumentConfiguration;
+        this.documentUploadService = documentUploadService;
     }
 
     @GetMapping("/")
@@ -91,7 +93,9 @@ public class PageController {
     }
 
     @GetMapping("/faq")
-    String getFaq() { return "faq"; }
+    String getFaq() {
+        return "faq";
+    }
 
     @GetMapping("/pages/{pageName}/navigation")
     RedirectView navigation(
@@ -330,16 +334,23 @@ public class PageController {
 
     @PostMapping("/file-upload")
     @ResponseStatus(HttpStatus.OK)
-    public void upload(@RequestParam("file") MultipartFile file) {
+    public void upload(@RequestParam("file") MultipartFile file) throws IOException, InterruptedException {
         if (this.applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
                 file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
-            this.applicationData.addUploadedDoc(file);
+            String s3FilePath = String.format("%s/%s", applicationData.getId(), UUID.randomUUID());
+            documentUploadService.upload(s3FilePath, file);
+            this.applicationData.addUploadedDoc(file, s3FilePath);
         }
     }
 
     @SuppressWarnings("SpringMVCViewInspection")
     @PostMapping("/remove-upload/{filename}")
     ModelAndView removeUpload(@PathVariable String filename) {
+        applicationData.getUploadedDocs().stream()
+                .filter(uploadedDocument -> uploadedDocument.getFilename().equals(filename))
+                .map(UploadedDocument::getS3Filepath)
+                .findFirst()
+                .ifPresent(documentUploadService::delete);
         this.applicationData.removeUploadedDoc(filename);
 
         return new ModelAndView("redirect:/pages/uploadDocuments");
