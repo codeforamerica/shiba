@@ -12,8 +12,12 @@ import java.nio.file.Paths;
 public class SSLConfiguration {
     @Bean
     SSLContextBuilder sslContextBuilder(@Value("${client.keystore}") String keystore,
-                                        @Value("${client.keystore-password}") String keystorePassword) throws Exception {
+                                        @Value("${client.keystore-password}") String keystorePassword,
+                                        @Value("${client.truststore}") String truststore,
+                                        @Value("${client.truststore-password}") String truststorePassword
+                                        ) throws Exception {
         return SSLContexts.custom()
-                .loadKeyMaterial(Paths.get(keystore).toFile(), keystorePassword.toCharArray(), keystorePassword.toCharArray());
+                .loadKeyMaterial(Paths.get(keystore).toFile(), keystorePassword.toCharArray(), keystorePassword.toCharArray())
+                .loadTrustMaterial(Paths.get(truststore).toFile(), truststorePassword.toCharArray());
     }
 }

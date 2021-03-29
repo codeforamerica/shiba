@@ -20,7 +20,7 @@ public class EsbRetryListener extends RetryListenerSupport {
     @Override
     public <T, E extends Throwable> void close(RetryContext context,
                                                RetryCallback<T, E> callback, Throwable throwable) {
-        log.info("ESB Sending Complete for: " + MDC.get("applicationFile") + ", Retries Attempted: {} ", context.getRetryCount());
+        log.info("ESB Retry closing for: " + MDC.get("applicationFile") + ", Retries Attempted: {} ", context.getRetryCount());
         super.close(context, callback, throwable);
     }
 

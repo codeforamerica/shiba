@@ -20,7 +20,6 @@ public class EmailContentCreator {
     private final String snapExpeditedWaitTime = "email.snap-expedited-wait-time";
     private final String snapNonExpeditedWaitTime = "email.snap-nonexpedited-wait-time";
     private final String clientBody = "email.client-body";
-    private final String caseworkerBody = "email.caseworker-body";
     private final String downloadCafAlert = "email.download-caf-alert";
     private final String nonCountyPartnerAlert = "email.non-county-partner-alert";
 
@@ -39,7 +38,7 @@ public class EmailContentCreator {
     }
 
     String createCaseworkerHTML(Locale locale) {
-        return wrapHtml(getMessage(caseworkerBody, null, locale));
+        return wrapHtml("<p>This application was submitted on behalf of a client.</p><p>Please keep the file pages in the order they appear in the file; intake workers will be looking for the cover page in front of the CAF.</p>");
     }
 
     String createDownloadCafAlertContent(String confirmationId, String ip, Locale locale) {

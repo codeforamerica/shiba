@@ -13,6 +13,7 @@ cloud:
 
 client:
   keystore: src/main/resources/shiba-keystore.jks
+  truststore: src/main/resources/shiba-truststore.jks
 
 mnit-esb:
   url: https://test-svcs.dhs.mn.gov/WebServices/Alfresco/CreateDocument

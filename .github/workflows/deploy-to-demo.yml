@@ -46,7 +46,10 @@ jobs:
           if [[ "${{ github.event.inputs.branch }}" == "staging" ]]; then
             exit 0
           else
-            ./gradlew clean testAll
+            S3_BUCKET=${{ secrets.S3_TEST_BUCKET }} \
+                  env 'CLOUD_AWS_CREDENTIALS_ACCESS-KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_ACCESS_KEY }}' \
+                  env 'CLOUD_AWS_CREDENTIALS_SECRET-KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY }}' \
+                  ./gradlew clean testAll
           fi
         env:
           S3_BUCKET: ${{ secrets.S3_TEST_BUCKET }}
@@ -111,6 +114,7 @@ jobs:
           'SMARTY_STREET_AUTH_ID=${{ secrets.SMARTY_STREET_AUTH_ID }}' \
           'SMARTY_STREET_AUTH_TOKEN=${{ secrets.SMARTY_STREET_AUTH_TOKEN }}' \
           'CLIENT_KEYSTORE-PASSWORD=${{ secrets.CLIENT_KEYSTORE_PASSWORD}}' \
+          'CLIENT_TRUSTSTORE-PASSWORD=${{ secrets.CLIENT_TRUSTSTORE_PASSWORD }}' \
           'MNIT-ESB_USERNAME=${{ secrets.MNIT_USERNAME }}' \
           'MNIT-ESB_PASSWORD=${{ secrets.MNIT_PASSWORD }}' \
           'SHIBA_USERNAME=${{ secrets.SHIBA_USERNAME }}' \
