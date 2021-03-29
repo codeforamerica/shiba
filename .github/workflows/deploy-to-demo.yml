@@ -51,6 +51,10 @@ jobs:
                   env 'CLOUD_AWS_CREDENTIALS_SECRET-KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY }}' \
                   ./gradlew clean testAll
           fi
+        env:
+          S3_BUCKET: ${{ secrets.S3_DEMO_BUCKET }}
+          AWS_ACCESS_KEY: ${{ secrets.CLOUD_AWS_CREDENTIALS_ACCESS_KEY }}
+          AWS_SECRET_KEY: ${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY }}
       - name: Announce test failure on slack
         if: ${{ failure() }}
         uses: innocarpe/actions-slack@v1
