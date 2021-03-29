@@ -141,6 +141,14 @@ public class Page {
         optionToSelect.click();
     }
 
+    protected WebElement getSelectedOption(String elementId) {
+        return driver.findElementById(elementId)
+                .findElements(By.tagName("option")).stream()
+                .filter(WebElement::isSelected)
+                .findFirst()
+                .orElseThrow();
+    }
+
     public String getInputValue(String inputName) {
         return driver.findElement(By.cssSelector(String.format("input[name^='%s']", inputName))).getAttribute("value");
     }

@@ -10,10 +10,31 @@
     <script>
         $(document).ready(function() {
             $("#locales").change(function () {
-                if ($("#locales").val() !== ''){
+                if ($("#locales").val() !== '') {
                     window.location.replace('?lang=' + $("#locales").val());
                 }
             });
+
+            // language preferences
+            var writtenLanguage = $("#writtenLanguage");
+            if (writtenLanguage) {
+                var localeToLanguage = {'es': 'SPANISH', 'en': 'ENGLISH'}
+                var languageToLocale = {'SPANISH': 'es', 'ENGLISH': 'en'}
+                var localeLang = localeToLanguage[$("#locales").val()]
+                if (localeLang) {
+                    $('#writtenLanguage option[value="' + localeLang + '"]').prop('selected', true)
+                }
+
+                writtenLanguage.change(function () {
+                    var writtenLanguageSelected = $("#writtenLanguage option:selected");
+                    var languagePreference = languageToLocale[writtenLanguageSelected.val()]
+                    if (languagePreference) {
+                        window.location.replace('?lang=' + languagePreference + '')
+                    } else if ($("#locales").val() !== 'en') {
+                        window.location.replace('?lang=en')
+                    }
+                });
+            }
         });
     </script>
 </div>
