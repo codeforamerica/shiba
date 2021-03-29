@@ -133,11 +133,11 @@ pageDefinitions:
     headerKey:
       value: language-preferences.language-preferences
     inputs:
-      - name: spokenLanguage
+      - name: writtenLanguage
         type: SELECT
         promptMessage:
-          promptMessageKey: language-preferences.what-language-do-you-prefer-to-speak
-        helpMessageKey: language-preferences.the-county-will-do-their-best-to-connect-you-with-someone-who-speaks-your
+          promptMessageKey: language-preferences.what-language-do-you-prefer-to-read-or-write
+        helpMessageKey: language-preferences.the-county-will-do-their-best-to-provide-documents-in-your-preferred-language
         options:
           selectableOptions:
             - value: ENGLISH
@@ -152,11 +152,11 @@ pageDefinitions:
               messageKey: language-preferences.russian
             - value: HMOOB
               messageKey: language-preferences.hmoob
-      - name: writtenLanguage
+      - name: spokenLanguage
         type: SELECT
         promptMessage:
-          promptMessageKey: language-preferences.what-language-do-you-prefer-to-read-or-write
-        helpMessageKey: language-preferences.the-county-will-do-their-best-to-provide-documents-in-your-preferred-language
+          promptMessageKey: language-preferences.what-language-do-you-prefer-to-speak
+        helpMessageKey: language-preferences.the-county-will-do-their-best-to-connect-you-with-someone-who-speaks-your
         options:
           selectableOptions:
             - value: ENGLISH
