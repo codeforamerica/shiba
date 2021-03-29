@@ -41,7 +41,7 @@ jobs:
     - name: Test with Gradle
       run: ./gradlew clean testAll
       env:
-        S3_BUCKET: ${{ secrets.S3_TEST_BUCKET }}
+        S3_BUCKET: ${{ secrets.S3_STAGING_BUCKET }}
         AWS_ACCESS_KEY: ${{ secrets.CLOUD_AWS_CREDENTIALS_ACCESS_KEY }}
         AWS_SECRET_KEY: ${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY }}
     - name: Announce test failure on slack
