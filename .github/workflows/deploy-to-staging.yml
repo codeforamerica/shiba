@@ -95,9 +95,9 @@ jobs:
           'SENTRY_ENVIRONMENT=staging' \
           'SENTRY_RELEASE=${{ steps.generate-release.outputs.RELEASE }}' \
           'MIXPANEL_API-KEY=${{ secrets.MIXPANEL_API_KEY_STAGING }}' \
-          'S3_STAGING_BUCKET=${{ secrets.S3_STAGING_BUCKET }}' \
-          'CLOUD_AWS_CREDENTIALS_ACCESS-KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_ACCESS_KEY }}' \
-          'CLOUD_AWS_CREDENTIALS_SECRET-KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY }}'
+          'S3_BUCKET=${{ secrets.S3_STAGING_BUCKET }}' \
+          'AWS_ACCESS_KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_ACCESS_KEY }}' \
+          'AWS_SECRET_KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY }}'
       - name: Merge main -> staging
         uses: MaximeHeckel/github-action-merge-fast-forward@v1.1.0
         with:
