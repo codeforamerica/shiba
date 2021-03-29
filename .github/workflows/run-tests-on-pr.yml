@@ -37,8 +37,8 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Test with Gradle
-      run: |
-        S3_BUCKET=${{ secrets.S3_TEST_BUCKET }} \
-        env 'CLOUD_AWS_CREDENTIALS_ACCESS-KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_ACCESS_KEY }}' \
-        env 'CLOUD_AWS_CREDENTIALS_SECRET-KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY }}' \
-        ./gradlew clean test -d --tests --stacktrace *UserJourneyPageTest.deletingUploadedFileShouldLoadDocumentUploadScreenUponConfirmDeletion
+      run: ./gradlew clean test -d --tests --stacktrace *UserJourneyPageTest.deletingUploadedFileShouldLoadDocumentUploadScreenUponConfirmDeletion
+      env:
+        S3_BUCKET: ${{ secrets.S3_TEST_BUCKET }}
+        CLOUD_AWS_CREDENTIALS_ACCESS-KEY: ${{ secrets.CLOUD_AWS_CREDENTIALS_ACCESS_KEY }}
+        CLOUD_AWS_CREDENTIALS_SECRET-KEY: ${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY }}
