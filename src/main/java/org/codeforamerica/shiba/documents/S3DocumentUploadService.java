@@ -30,7 +30,7 @@ public class S3DocumentUploadService implements DocumentUploadService {
 
     @Override
     public void upload(String filepath, MultipartFile file) throws IOException, InterruptedException {
-        log.info("Uploading file {} to S3 at filepath {}", file.getOriginalFilename(), filepath);
+        log.info("Uploading file {} to to bucketName {} S3 at filepath {}", file.getOriginalFilename(), bucketName, filepath);
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(file.getSize());
         transferManager
