@@ -4,50 +4,50 @@ county-to-instructions:
     CASEWORKER: county-to-instructions.default-caseworker
   counties:
     Anoka:
-      CLIENT: county-to-instructions.anoka-client
-      CASEWORKER: county-to-instructions.anoka-caseworker
+      CLIENT: county-to-instructions.generic-client
+      CASEWORKER: county-to-instructions.generic-caseworker
     Carver:
-      CLIENT: county-to-instructions.carver-client
-      CASEWORKER: county-to-instructions.carver-caseworker
+      CLIENT: county-to-instructions.generic-client
+      CASEWORKER: county-to-instructions.generic-caseworker
     Clay:
-      CLIENT: county-to-instructions.clay-client
-      CASEWORKER: county-to-instructions.clay-caseworker
+      CLIENT: county-to-instructions.generic-client
+      CASEWORKER: county-to-instructions.generic-caseworker
     Cook:
-      CLIENT: county-to-instructions.cook-client
-      CASEWORKER: county-to-instructions.cook-caseworker
+      CLIENT: county-to-instructions.generic-client
+      CASEWORKER: county-to-instructions.generic-caseworker
     Dodge:
-      CLIENT: county-to-instructions.dodge-client
-      CASEWORKER: county-to-instructions.dodge-caseworker
+      CLIENT: county-to-instructions.generic-client
+      CASEWORKER: county-to-instructions.generic-caseworker
     Hennepin:
       CLIENT: county-to-instructions.hennepin-client
       CASEWORKER: county-to-instructions.hennepin-caseworker
     Morrison:
-      CLIENT: county-to-instructions.morrison-client
-      CASEWORKER: county-to-instructions.morrison-caseworker
+      CLIENT: county-to-instructions.generic-client
+      CASEWORKER: county-to-instructions.generic-caseworker
     Olmsted:
       CLIENT: county-to-instructions.olmsted-client
       CASEWORKER: county-to-instructions.olmsted-caseworker
     OtterTail:
-      CLIENT: county-to-instructions.ottertail-client
-      CASEWORKER: county-to-instructions.ottertail-caseworker
+      CLIENT: county-to-instructions.generic-client
+      CASEWORKER: county-to-instructions.generic-caseworker
     Sherburne:
-      CLIENT: county-to-instructions.sherburne-client
-      CASEWORKER: county-to-instructions.sherburne-caseworker
+      CLIENT: county-to-instructions.generic-client
+      CASEWORKER: county-to-instructions.generic-caseworker
     Steele:
-      CLIENT: county-to-instructions.steele-client
-      CASEWORKER: county-to-instructions.steele-caseworker
+      CLIENT: county-to-instructions.generic-client
+      CASEWORKER: county-to-instructions.generic-caseworker
     StLouis:
-      CLIENT: county-to-instructions.stlouis-client
-      CASEWORKER: county-to-instructions.stlouis-caseworker
+      CLIENT: county-to-instructions.generic-client
+      CASEWORKER: county-to-instructions.generic-caseworker
     Wabasha:
       CLIENT: county-to-instructions.wabasha-client
       CASEWORKER: county-to-instructions.wabasha-caseworker
     Wadena:
-      CLIENT: county-to-instructions.wadena-client
-      CASEWORKER: county-to-instructions.wadena-caseworker
+      CLIENT: county-to-instructions.generic-client
+      CASEWORKER: county-to-instructions.generic-caseworker
     Waseca:
-      CLIENT: county-to-instructions.waseca-client
-      CASEWORKER: county-to-instructions.waseca-caseworker
+      CLIENT: county-to-instructions.generic-client
+      CASEWORKER: county-to-instructions.generic-caseworker
     Wright:
       CLIENT: county-to-instructions.wright-client
       CASEWORKER: county-to-instructions.wright-caseworker

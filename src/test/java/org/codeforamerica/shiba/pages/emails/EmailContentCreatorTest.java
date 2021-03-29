@@ -33,8 +33,15 @@ class EmailContentCreatorTest {
     @Test
     void includesTheConfirmationNumber() {
         String emailContent = emailContentCreator.createClientHTML("someNumber", SnapExpeditedEligibility.UNDETERMINED, Locale.ENGLISH);
-        System.out.println(emailContent);
+
         assertThat(emailContent).contains("someNumber");
+    }
+
+    @Test
+    void includesCaseworkerInstructions() {
+        String emailContent = emailContentCreator.createCaseworkerHTML(Locale.ENGLISH);
+
+        assertThat(emailContent).contains("This application was submitted on behalf of a client.");
     }
 
     @ParameterizedTest

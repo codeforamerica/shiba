@@ -236,12 +236,16 @@ public abstract class AbstractBasePageTest {
             testPage.enter("whoNeedsChildCare", "defaultFirstName defaultLastName");
             testPage.clickContinue();
             testPage.clickContinue();
+            testPage.enter("livingSituation", "None of these");
+            testPage.clickContinue();
             testPage.enter("goingToSchool", NO.getDisplayValue());
             testPage.enter("isPregnant", YES.getDisplayValue());
             testPage.enter("whoIsPregnant", "Me");
             testPage.clickContinue();
         } else {
             testPage.enter("addHouseholdMembers", NO.getDisplayValue());
+            testPage.clickContinue();
+            testPage.enter("livingSituation", "None of these");
             testPage.clickContinue();
             testPage.enter("goingToSchool", NO.getDisplayValue());
             testPage.enter("isPregnant", NO.getDisplayValue());
@@ -291,8 +295,6 @@ public abstract class AbstractBasePageTest {
         testPage.enter("unearnedIncomeCcap", "Money from a Trust");
         testPage.clickContinue();
         testPage.enter("trustMoneyAmount", "200");
-        testPage.clickContinue();
-        testPage.enter("livingSituation", "Paying for my own housing with rent, lease, or mortgage payments");
         testPage.clickContinue();
         testPage.enter("earnLessMoneyThisMonth", "Yes");
         testPage.clickContinue();
@@ -379,10 +381,14 @@ public abstract class AbstractBasePageTest {
         }
     }
 
-    protected void completeFlowFromReviewInfoToDisability() {
+    protected void completeFlowFromReviewInfoToDisability(List<String> programSelections) {
         testPage.clickLink("This looks correct");
         testPage.enter("addHouseholdMembers", NO.getDisplayValue());
         testPage.clickContinue();
+        if (programSelections.contains(PROGRAM_CCAP) || programSelections.contains(PROGRAM_GRH)) {
+            testPage.enter("livingSituation", "None of these");
+            testPage.clickContinue();
+        }
         testPage.enter("goingToSchool", YES.getDisplayValue());
         testPage.enter("isPregnant", NO.getDisplayValue());
         testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());

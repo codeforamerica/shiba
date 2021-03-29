@@ -6,6 +6,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
+import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 
 public class MillionDollarQuestionTest extends FeatureTest {
     @Test
@@ -17,11 +18,6 @@ public class MillionDollarQuestionTest extends FeatureTest {
         fillOutHousemateInfo(PROGRAM_EA);
         testPage.clickContinue();
         testPage.clickButton("Yes, that's everyone");
-
-        navigateTo("unearnedIncome");
-        testPage.enter("unearnedIncome", "None of the above");
-        testPage.clickContinue();
-        testPage.enter("unearnedIncomeCcap", "None of the above");
         testPage.clickContinue();
 
         assertThat(driver.getTitle()).isEqualTo("Living situation");
@@ -31,16 +27,8 @@ public class MillionDollarQuestionTest extends FeatureTest {
     void shouldAskLivingSituationIfGRHApplicant() {
         completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_GRH), smartyStreetClient);
         testPage.clickLink("This looks correct");
-        testPage.enter("addHouseholdMembers", YES.getDisplayValue());
+        testPage.enter("addHouseholdMembers", NO.getDisplayValue());
         testPage.clickContinue();
-        fillOutHousemateInfo(PROGRAM_EA);
-        testPage.clickContinue();
-        testPage.clickButton("Yes, that's everyone");
-
-        navigateTo("unearnedIncome");
-        testPage.enter("unearnedIncome", "None of the above");
-        testPage.clickContinue();
-
         assertThat(driver.getTitle()).isEqualTo("Living situation");
     }
 
@@ -53,11 +41,6 @@ public class MillionDollarQuestionTest extends FeatureTest {
         fillOutHousemateInfo(PROGRAM_CCAP);
         testPage.clickContinue();
         testPage.clickButton("Yes, that's everyone");
-
-        navigateTo("unearnedIncome");
-        testPage.enter("unearnedIncome", "None of the above");
-        testPage.clickContinue();
-        testPage.enter("unearnedIncomeCcap", "None of the above");
         testPage.clickContinue();
 
         assertThat(driver.getTitle()).isEqualTo("Living situation");

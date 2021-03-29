@@ -5,6 +5,7 @@ spring:
 
 client:
   keystore: src/main/resources/shiba-production.jks
+  truststore: src/main/resources/shiba-truststore-production.jks
 
 mnit-esb:
   url: https://svcs.dhs.mn.gov/WebServices/Alfresco/CreateDocument
