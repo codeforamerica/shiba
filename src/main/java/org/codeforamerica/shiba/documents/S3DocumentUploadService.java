@@ -40,13 +40,8 @@ public class S3DocumentUploadService implements DocumentUploadService {
     }
 
     @Override
-    public void delete(String filepath) {
-        // TODO do we actually want to catch this?
-        try {
-            log.info("Deleting file at filepath {} from S3", filepath);
-            s3Client.deleteObject(new DeleteObjectRequest(bucketName, filepath));
-        } catch (SdkClientException e) {
-            e.printStackTrace();
-        }
+    public void delete(String filepath) throws SdkClientException {
+        log.info("Deleting file at filepath {} from S3", filepath);
+        s3Client.deleteObject(new DeleteObjectRequest(bucketName, filepath));
     }
 }
