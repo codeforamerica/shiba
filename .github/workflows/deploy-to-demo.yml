@@ -107,6 +107,7 @@ jobs:
           'SMARTY_STREET_AUTH_ID=${{ secrets.SMARTY_STREET_AUTH_ID }}' \
           'SMARTY_STREET_AUTH_TOKEN=${{ secrets.SMARTY_STREET_AUTH_TOKEN }}' \
           'CLIENT_KEYSTORE-PASSWORD=${{ secrets.CLIENT_KEYSTORE_PASSWORD}}' \
+          'CLIENT_TRUSTSTORE-PASSWORD=${{ secrets.CLIENT_TRUSTSTORE_PASSWORD }}' \
           'MNIT-ESB_USERNAME=${{ secrets.MNIT_USERNAME }}' \
           'MNIT-ESB_PASSWORD=${{ secrets.MNIT_PASSWORD }}' \
           'SHIBA_USERNAME=${{ secrets.SHIBA_USERNAME }}' \
