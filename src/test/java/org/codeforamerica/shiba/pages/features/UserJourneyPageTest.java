@@ -157,7 +157,7 @@ public class UserJourneyPageTest extends FeatureTest {
         getToDocumentUploadScreen();
         uploadDefaultFile();
         waitForDocumentUploadToComplete();
-        List<WebElement> deleteLinks = driver.findElements(By.linkText("foo"));
+        List<WebElement> deleteLinks = driver.findElements(By.linkText("delete"));
         assertThat(deleteLinks.size()).isEqualTo(1);
         testPage.clickLink("delete");
 
