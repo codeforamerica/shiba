@@ -41,4 +41,4 @@ jobs:
         S3_BUCKET=${{ secrets.S3_TEST_BUCKET }} \
         env 'CLOUD_AWS_CREDENTIALS_ACCESS-KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_ACCESS_KEY }}' \
         env 'CLOUD_AWS_CREDENTIALS_SECRET-KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY }}' \
-        ./gradlew clean test --tests *UserJourneyPageTest.deletingUploadedFileShouldLoadDocumentUploadScreenUponConfirmDeletion
+        ./gradlew clean test --tests --stacktrace *UserJourneyPageTest.deletingUploadedFileShouldLoadDocumentUploadScreenUponConfirmDeletion
