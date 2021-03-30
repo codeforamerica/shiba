@@ -8,5 +8,6 @@ import lombok.Data;
 public class UploadedDocument {
     private String filename;
     private String s3Filepath;
+    private String dataURL;
     private long size;
 }
