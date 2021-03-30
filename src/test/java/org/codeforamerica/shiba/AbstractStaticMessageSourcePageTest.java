@@ -31,6 +31,7 @@ public class AbstractStaticMessageSourcePageTest extends AbstractBasePageTest {
         staticMessageSource.addMessage("general.code-for-america", Locale.ENGLISH, "cfa");
         staticMessageSource.addMessage("general.privacy-policy", Locale.ENGLISH, "pp");
         staticMessageSource.addMessage("faq.faq", Locale.ENGLISH, "faq");
+        staticMessageSource.addMessage("language-preferences.title", Locale.ENGLISH, "Language Preferences");
         staticMessageSource.addMessage("language-preferences.english", Locale.ENGLISH, "english");
         staticMessageSource.addMessage("language-preferences.spanish", Locale.ENGLISH, "spanish");
     }
