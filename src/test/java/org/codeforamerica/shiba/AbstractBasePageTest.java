@@ -399,7 +399,7 @@ public abstract class AbstractBasePageTest {
     private String getAbsoluteFilepath(String resourceFilename) {
         URL resource = this.getClass().getClassLoader().getResource(resourceFilename);
         if (resource != null) {
-            return resource.getFile();
+        	return (new File(resource.getFile())).getAbsolutePath();
         }
         return "";
     }

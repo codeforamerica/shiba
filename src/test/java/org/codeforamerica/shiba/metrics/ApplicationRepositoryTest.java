@@ -18,6 +18,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.*;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 
@@ -92,7 +93,7 @@ class ApplicationRepositoryTest {
 
         Application application = Application.builder()
                 .id("someid")
-                .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
+                .completedAt(ZonedDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS))
                 .applicationData(applicationData)
                 .county(Olmsted)
                 .timeToComplete(Duration.ofSeconds(12415))
@@ -142,7 +143,7 @@ class ApplicationRepositoryTest {
         String applicationId = "someid";
         Application application = Application.builder()
                 .id(applicationId)
-                .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
+                .completedAt(ZonedDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS))
                 .applicationData(applicationData)
                 .county(Olmsted)
                 .timeToComplete(Duration.ofSeconds(12415))
@@ -159,7 +160,7 @@ class ApplicationRepositoryTest {
         )));
         Application updatedApplication = Application.builder()
                 .id(application.getId())
-                .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
+                .completedAt(ZonedDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS))
                 .applicationData(updatedApplicationData)
                 .county(Hennepin)
                 .timeToComplete(Duration.ofSeconds(421))
