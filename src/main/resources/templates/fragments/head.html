@@ -26,7 +26,7 @@
         MIXPANEL_CUSTOM_LIB_URL:"file:"===c.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";d=c.getElementsByTagName("script")[0];d.parentNode.insertBefore(b,d)}})(document,window.mixpanel||[]);
 
         mixpanel.init([[${@environment.getProperty("MIXPANEL_API-KEY")}]], {batch_requests: true});
-        mixpanel.identify([[${#session.getId()}]]);
+        mixpanel.identify([[${#session == null ? #session.getId() : ''}]]);
         mixpanel.track('PAGE_VIEW');
         mixpanel.people.set({
             language: [[${#locale.toString()}]]
