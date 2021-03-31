@@ -1,6 +1,10 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/shiba
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: always
   servlet:
     multipart:
       max-file-size: 50MB
