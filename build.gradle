@@ -62,12 +62,19 @@ task genJaxb {
     }
 }
 
+dependencyManagement {
+  imports {
+    mavenBom 'org.springframework.session:spring-session-bom:2020.0.3'
+  }
+}
+
 dependencies {
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
+	implementation 'org.springframework.session:spring-session-jdbc'
     implementation 'io.sentry:sentry-spring-boot-starter:4.3.0'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'

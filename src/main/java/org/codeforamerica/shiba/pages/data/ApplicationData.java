@@ -8,12 +8,13 @@ import org.codeforamerica.shiba.pages.config.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Data
-public class ApplicationData {
+public class ApplicationData implements Serializable {
     private String id;
     private Instant startTime;
     private FlowType flow = FlowType.UNDETERMINED;

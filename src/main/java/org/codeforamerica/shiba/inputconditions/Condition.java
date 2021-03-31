@@ -8,13 +8,14 @@ import lombok.With;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
 @With
 @AllArgsConstructor
 @NoArgsConstructor
-public class Condition {
+public class Condition implements Serializable {
     String pageName;
     String input;
     String value;

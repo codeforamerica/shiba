@@ -3,11 +3,12 @@ package org.codeforamerica.shiba.pages.data;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 @EqualsAndHashCode()
 @Data
-public class Iteration {
+public class Iteration implements Serializable {
 
     UUID id;
     PagesData pagesData;
