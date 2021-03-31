@@ -225,10 +225,10 @@
             });
 
             $.each(documents, function (key, value) {
-                var mockFile = {name: value.filename, size: value.size};
+                var mockFile = { name: value.filename, size: value.size };
                 myDropZone.files.push(mockFile);
                 myDropZone.emit("addedfile", mockFile);
-                myDropZone.emit("thumbnail", mockFile, value.path);
+                myDropZone.emit("thumbnail", mockFile, value.dataURL);
                 myDropZone.emit("success", mockFile);
                 myDropZone.emit("complete", mockFile);
             });
