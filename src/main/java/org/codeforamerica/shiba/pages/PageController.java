@@ -148,6 +148,7 @@ public class PageController {
     ModelAndView getPage(
             @PathVariable String pageName,
             @RequestParam(required = false, defaultValue = "") String iterationIndex,
+            @RequestParam(name = "utm_source", defaultValue = "", required = false) String utmSource,
             HttpServletResponse response,
             HttpSession httpSession
     ) {
@@ -157,6 +158,9 @@ public class PageController {
             httpSession.invalidate();
         } else if (landmarkPagesConfiguration.isStartTimerPage(pageName)) {
             this.applicationData.setStartTimeOnce(clock.instant());
+            if(!utmSource.isEmpty()) {
+                this.applicationData.setUtmSource(utmSource);
+            }
         }
 
         if (!landmarkPagesConfiguration.isPostSubmitPage(pageName) && applicationData.getId() != null) {

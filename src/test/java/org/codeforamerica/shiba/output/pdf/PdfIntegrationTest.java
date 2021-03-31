@@ -30,6 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
+import static org.codeforamerica.shiba.output.applicationinputsmappers.UtmSourceInputsMapper.CHILDCARE_WAITING_LIST_UTM_SOURCE;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 import static org.mockito.ArgumentMatchers.any;
@@ -351,7 +352,16 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             assertThat(getPdfFieldText(ccap, "HEALTH_CARE_REIMBURSEMENT")).isEqualTo("No");
             assertThat(getPdfFieldText(ccap, "INTEREST_DIVIDENDS")).isEqualTo("No");
             assertThat(getPdfFieldText(ccap, "OTHER_SOURCES")).isEqualTo("No");
+        }
 
+        @Test
+        void shouldMapRecognizedUtmSource() {
+            navigateTo("languagePreferences?utm_source=" + CHILDCARE_WAITING_LIST_UTM_SOURCE);
+            fillInRequiredPages();
+
+            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+            PDAcroForm ccap = pdAcroForms.get(CCAP);
+            assertThat(getPdfFieldText(ccap, "UTM_SOURCE")).isEqualTo("FROM BSF WAITING LIST");
         }
     }
 

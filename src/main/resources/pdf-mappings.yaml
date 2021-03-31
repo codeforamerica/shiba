@@ -248,6 +248,7 @@ mappings:
     applicationId: APPLICATION_ID
     completedDate: CREATED_DATE
     submissionDateTime: SUBMISSION_DATETIME
+    utmSource: UTM_SOURCE
   coverPage:
     programs: PROGRAMS
     countyInstructions: COUNTY_INSTRUCTIONS
