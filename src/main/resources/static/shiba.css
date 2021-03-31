@@ -103,6 +103,7 @@ body {
     display: flex;
     flex-direction: column;
     margin-bottom: unset;
+    min-height: 100%;
 }
 
 .body-gray {
