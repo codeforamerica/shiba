@@ -3,7 +3,10 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
-import org.codeforamerica.shiba.pages.data.*;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.InputData;
+import org.codeforamerica.shiba.pages.data.PageData;
+import org.codeforamerica.shiba.pages.data.PagesData;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -26,7 +29,7 @@ public class ChildFullNameInputsMapperTest {
 
         List<ApplicationInput> result = mapper.map(Application.builder()
                 .applicationData(applicationData)
-                .build(), null, null);
+                .build(), null, null, null);
 
         assertThat(result).contains(
                 new ApplicationInput(

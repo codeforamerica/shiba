@@ -1,10 +1,7 @@
 package org.codeforamerica.shiba.output.applicationinputsmappers;
 
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.ApplicationInputType;
-import org.codeforamerica.shiba.output.FullNameFormatter;
-import org.codeforamerica.shiba.output.Recipient;
+import org.codeforamerica.shiba.output.*;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +14,7 @@ import java.util.stream.Collectors;
 public class ParentNotLivingAtHomeInputsMapper implements ApplicationInputsMapper {
 
     @Override
-    public List<ApplicationInput> map(Application application, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
+    public List<ApplicationInput> map(Application application, Document document, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
         Map<String, String> idToChild = application.getApplicationData().getPagesData()
                 .safeGetPageInputValue("childrenInNeedOfCare", "whoNeedsChildCare").stream()
                 .collect(Collectors.toMap(FullNameFormatter::getId, FullNameFormatter::format));

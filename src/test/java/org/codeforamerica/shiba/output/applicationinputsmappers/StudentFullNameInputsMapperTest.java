@@ -34,7 +34,7 @@ public class StudentFullNameInputsMapperTest {
 
         List<ApplicationInput> result = mapper.map(Application.builder()
                 .applicationData(applicationData)
-                .build(), null, null);
+                .build(), null, null, null);
 
         assertThat(result).contains(
                 new ApplicationInput(

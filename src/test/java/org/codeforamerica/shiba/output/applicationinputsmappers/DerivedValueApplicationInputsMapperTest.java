@@ -60,7 +60,7 @@ class DerivedValueApplicationInputsMapperTest {
 
     @Test
     void shouldProjectValue() {
-        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(application, Recipient.CLIENT, null);
+        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(application, null, Recipient.CLIENT, null);
 
         assertThat(actual).contains(new ApplicationInput("groupName1", "value1", List.of("foo"), ApplicationInputType.SINGLE_VALUE));
     }
@@ -69,7 +69,7 @@ class DerivedValueApplicationInputsMapperTest {
     void shouldProjectValueIfConditionIsTrue() {
         pagesData.put("somePage", new PageData(Map.of("someInput", InputData.builder().value(List.of("someValue")).build())));
 
-        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(application, Recipient.CLIENT, null);
+        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(application, null, Recipient.CLIENT, null);
 
         assertThat(actual).contains(new ApplicationInput("groupName2", "value2", List.of("bar"), ApplicationInputType.SINGLE_VALUE));
     }
@@ -78,7 +78,7 @@ class DerivedValueApplicationInputsMapperTest {
     void shouldProjectValueIfAnyOfTheConditionsIsTrue() {
         pagesData.put("somePage", new PageData(Map.of("someInput", InputData.builder().value(List.of("someValue")).build())));
 
-        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(application, Recipient.CLIENT, null);
+        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(application, null, Recipient.CLIENT, null);
 
         assertThat(actual).contains(new ApplicationInput("groupName3", "value3", List.of("baz"), ApplicationInputType.SINGLE_VALUE));
     }
@@ -87,20 +87,20 @@ class DerivedValueApplicationInputsMapperTest {
     void shouldProjectValueIfAllOfTheConditionsAreTrue() {
         pagesData.put("somePage", new PageData(Map.of("someInput", InputData.builder().value(List.of("someValue")).build())));
 
-        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(application, Recipient.CLIENT, null);
+        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(application, null, Recipient.CLIENT, null);
 
         assertThat(actual).doesNotContain(new ApplicationInput("groupName4", "value4", List.of("fooBar"), ApplicationInputType.SINGLE_VALUE));
 
         pagesData.put("someOtherPage", new PageData(Map.of("someOtherInput", InputData.builder().value(List.of("someOtherValue")).build())));
 
-        actual = derivedValueApplicationInputsMapper.map(application, Recipient.CLIENT, null);
+        actual = derivedValueApplicationInputsMapper.map(application, null, Recipient.CLIENT, null);
 
         assertThat(actual).contains(new ApplicationInput("groupName4", "value4", List.of("fooBar"), ApplicationInputType.SINGLE_VALUE));
     }
 
     @Test
     void shouldGetReferencedValueFromPagesData() {
-        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(application, Recipient.CLIENT, null);
+        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(application, null, Recipient.CLIENT, null);
 
         assertThat(actual).contains(new ApplicationInput("groupName5", "value5", List.of("defaultValue"), ApplicationInputType.SINGLE_VALUE));
     }
@@ -109,7 +109,7 @@ class DerivedValueApplicationInputsMapperTest {
     void shouldSkipReferencedValuesThatCannotBeResolved() {
         pagesData.remove("defaultPage");
 
-        List<String> actual = derivedValueApplicationInputsMapper.map(application, Recipient.CLIENT, null).stream()
+        List<String> actual = derivedValueApplicationInputsMapper.map(application, null, Recipient.CLIENT, null).stream()
                 .map(ApplicationInput::getName)
                 .collect(toList());
         
@@ -128,7 +128,7 @@ class DerivedValueApplicationInputsMapperTest {
         subworkflows.put("subworkflowName", subworkflow);
         applicationData.setSubworkflows(subworkflows);
 
-        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(application, Recipient.CLIENT, null);
+        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(application, null, Recipient.CLIENT, null);
 
         assertThat(actual).doesNotContain(new ApplicationInput(
                 "groupName8",
@@ -150,7 +150,7 @@ class DerivedValueApplicationInputsMapperTest {
         subworkflows.put("subworkflowName", subworkflow);
         applicationData.setSubworkflows(subworkflows);
 
-        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(application, Recipient.CLIENT, null);
+        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(application, null, Recipient.CLIENT, null);
 
         assertThat(actual).contains(new ApplicationInput(
                 "groupName8",
@@ -178,7 +178,7 @@ class DerivedValueApplicationInputsMapperTest {
         subworkflows.put("subworkflowName", subworkflow);
         applicationData.setSubworkflows(subworkflows);
 
-        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(application, Recipient.CLIENT, null);
+        List<ApplicationInput> actual = derivedValueApplicationInputsMapper.map(application, null, Recipient.CLIENT, null);
 
         assertThat(actual).contains(new ApplicationInput(
                 "groupName9",

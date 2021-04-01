@@ -24,7 +24,7 @@ public class AdultRequestingChildcareInputsMapper implements ApplicationInputsMa
     }
 
     @Override
-    public List<ApplicationInput> map(Application application, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
+    public List<ApplicationInput> map(Application application, Document document, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
         Stream<ApplicationInput> lookingForAJob = getAdultsForSection(application, "whoIsLookingForAJob", "whoIsLookingForAJob", "adultRequestingChildcareLookingForJob");
         Stream<ApplicationInput> goingToSchool = getAdultsForSection(application, "whoIsGoingToSchool", "whoIsGoingToSchool", "adultRequestingChildcareGoingToSchool");
         Stream<ApplicationInput> working = getAdultsForWorkingSection(application, documentListParser);

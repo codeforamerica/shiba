@@ -38,7 +38,7 @@ class HomeAddressStreetMapperTest {
         homeAddressData.put("isHomeless", InputData.builder().value(List.of("true")).build());
         verifyHomeAddressData.put("useEnrichedAddress", InputData.builder().value(List.of("false")).build());
 
-        List<ApplicationInput> map = mapper.map(application, null, null);
+        List<ApplicationInput> map = mapper.map(application, null, null, null);
 
         assertThat(map).contains(new ApplicationInput("homeAddress",
                 "streetAddressWithPermanentAddress",
@@ -54,7 +54,7 @@ class HomeAddressStreetMapperTest {
         homeAddressData.put("isHomeless", InputData.builder().value(List.of("true")).build());
         verifyHomeAddressData.put("useEnrichedAddress", InputData.builder().value(List.of("true")).build());
 
-        List<ApplicationInput> map = mapper.map(application, null, null);
+        List<ApplicationInput> map = mapper.map(application, null, null, null);
 
         assertThat(map).contains(new ApplicationInput("homeAddress",
                 "streetAddressWithPermanentAddress",
@@ -69,7 +69,7 @@ class HomeAddressStreetMapperTest {
         homeAddressData.put("streetAddress", InputData.builder().value(List.of(streetAddress)).build());
         verifyHomeAddressData.put("useEnrichedAddress", InputData.builder().value(List.of("false")).build());
 
-        List<ApplicationInput> map = mapper.map(application, null, null);
+        List<ApplicationInput> map = mapper.map(application, null, null, null);
 
         assertThat(map).contains(new ApplicationInput("homeAddress",
                 "streetAddressWithPermanentAddress",
@@ -85,7 +85,7 @@ class HomeAddressStreetMapperTest {
         homeAddressData.put("enrichedStreetAddress", InputData.builder().value(List.of(streetAddress)).build());
         verifyHomeAddressData.put("useEnrichedAddress", InputData.builder().value(List.of("true")).build());
 
-        List<ApplicationInput> map = mapper.map(application, null, null);
+        List<ApplicationInput> map = mapper.map(application, null, null, null);
 
         assertThat(map).contains(new ApplicationInput("homeAddress",
                 "streetAddressWithPermanentAddress",
@@ -98,7 +98,7 @@ class HomeAddressStreetMapperTest {
         homeAddressData.put("streetAddress", InputData.builder().value(List.of("")).build());
         homeAddressData.put("isHomeless", InputData.builder().value(List.of("true")).build());
 
-        List<ApplicationInput> map = mapper.map(application, null, null);
+        List<ApplicationInput> map = mapper.map(application, null, null, null);
 
         assertThat(map).contains(new ApplicationInput("homeAddress",
                 "streetAddressWithPermanentAddress",
@@ -110,7 +110,7 @@ class HomeAddressStreetMapperTest {
     void shouldNotIncludeApplicationInputs_whenThereIsNoHomeAddress() {
         applicationData.setPagesData(new PagesData());
 
-        List<ApplicationInput> map = mapper.map(application, null, null);
+        List<ApplicationInput> map = mapper.map(application, null, null, null);
 
         assertThat(map).isEmpty();
     }

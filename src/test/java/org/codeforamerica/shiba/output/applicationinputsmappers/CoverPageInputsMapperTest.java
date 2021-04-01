@@ -5,6 +5,7 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.mnit.MnitCountyInformation;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.caf.CoverPageInputsMapper;
 import org.codeforamerica.shiba.pages.data.*;
@@ -20,6 +21,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.output.caf.CoverPageInputsMapper.CHILDCARE_WAITING_LIST_UTM_SOURCE;
+import static org.mockito.ArgumentMatchers.any;
 
 class CoverPageInputsMapperTest extends AbstractBasePageTest {
     private final CountyMap<Map<Recipient, String>> countyInstructionsMapping = new CountyMap<>();
@@ -64,7 +67,7 @@ class CoverPageInputsMapperTest extends AbstractBasePageTest {
                 .county(County.Other)
                 .build();
 
-        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, Recipient.CLIENT, null);
+        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, null, Recipient.CLIENT, null);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput(
@@ -93,7 +96,7 @@ class CoverPageInputsMapperTest extends AbstractBasePageTest {
                 .county(County.Other)
                 .build();
 
-        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, Recipient.CLIENT, null);
+        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, null, Recipient.CLIENT, null);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput(
@@ -123,7 +126,7 @@ class CoverPageInputsMapperTest extends AbstractBasePageTest {
                 .county(County.Other)
                 .build();
 
-        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, Recipient.CLIENT, null);
+        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, null, Recipient.CLIENT, null);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput(
@@ -142,7 +145,7 @@ class CoverPageInputsMapperTest extends AbstractBasePageTest {
                 .county(County.Other)
                 .build();
 
-        List<String> appInputNames = coverPageInputsMapper.map(application, Recipient.CLIENT, null).stream()
+        List<String> appInputNames = coverPageInputsMapper.map(application, null, Recipient.CLIENT, null).stream()
                 .map(ApplicationInput::getName)
                 .collect(Collectors.toList());
 
@@ -156,7 +159,7 @@ class CoverPageInputsMapperTest extends AbstractBasePageTest {
                 .county(County.Other)
                 .build();
 
-        List<String> appInputNames = coverPageInputsMapper.map(application, Recipient.CLIENT, null).stream()
+        List<String> appInputNames = coverPageInputsMapper.map(application, null, Recipient.CLIENT, null).stream()
                 .map(ApplicationInput::getName)
                 .collect(Collectors.toList());
 
@@ -179,7 +182,7 @@ class CoverPageInputsMapperTest extends AbstractBasePageTest {
                 Recipient.CASEWORKER, caseworkerCountyInstructions
         ));
 
-        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, Recipient.CASEWORKER, null);
+        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, null, Recipient.CASEWORKER, null);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput(
@@ -189,7 +192,7 @@ class CoverPageInputsMapperTest extends AbstractBasePageTest {
                         ApplicationInputType.SINGLE_VALUE
                 ));
 
-        applicationInputs = coverPageInputsMapper.map(application, Recipient.CLIENT, null);
+        applicationInputs = coverPageInputsMapper.map(application, null, Recipient.CLIENT, null);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput(
@@ -215,10 +218,70 @@ class CoverPageInputsMapperTest extends AbstractBasePageTest {
                 .timeToComplete(null)
                 .build();
 
-        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, Recipient.CLIENT, null);
+        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, null, Recipient.CLIENT, null);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput("coverPage", "fullName", List.of("someFirstName someLastName"), ApplicationInputType.SINGLE_VALUE)
         );
+    }
+
+
+    @Test
+    void shouldMapRecognizedUtmSourceForCCAPOnly() {
+        applicationData.setUtmSource(CHILDCARE_WAITING_LIST_UTM_SOURCE);
+
+        Application application = Application.builder()
+                .id("someId")
+                .completedAt(ZonedDateTime.now())
+                .applicationData(applicationData)
+                .county(County.Other)
+                .timeToComplete(null)
+                .build();
+        List<ApplicationInput> result = coverPageInputsMapper.map(application, Document.CCAP, Recipient.CLIENT, null);
+
+        assertThat(result).contains(
+                new ApplicationInput(
+                        "nonPagesData",
+                        "utmSource",
+                        List.of("FROM BSF WAITING LIST"),
+                        ApplicationInputType.SINGLE_VALUE));
+
+        result = coverPageInputsMapper.map(application, Document.CCAP, Recipient.CLIENT, null);
+        assertThat(result).doesNotContain(
+                new ApplicationInput(
+                        "nonPagesData",
+                        "utmSource",
+                        any(),
+                        ApplicationInputType.SINGLE_VALUE));
+    }
+
+    @Test
+    void shouldMapUnrecognizedUtmSourceToEmptyForCCAPAndCAF() {
+        applicationData.setUtmSource("somewhere_unknown");
+
+        Application application = Application.builder()
+                .id("someId")
+                .completedAt(ZonedDateTime.now())
+                .applicationData(applicationData)
+                .county(County.Other)
+                .timeToComplete(null)
+                .build();
+        List<ApplicationInput> result = coverPageInputsMapper.map(application, Document.CCAP, Recipient.CLIENT, null);
+
+        assertThat(result).contains(
+                new ApplicationInput(
+                        "nonPagesData",
+                        "utmSource",
+                        List.of(""),
+                        ApplicationInputType.SINGLE_VALUE));
+
+        result = coverPageInputsMapper.map(application, Document.CCAP, Recipient.CLIENT, null);
+
+        assertThat(result).contains(
+                new ApplicationInput(
+                        "nonPagesData",
+                        "utmSource",
+                        List.of(""),
+                        ApplicationInputType.SINGLE_VALUE));
     }
 }

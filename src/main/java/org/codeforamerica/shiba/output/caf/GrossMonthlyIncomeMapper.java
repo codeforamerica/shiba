@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.output.caf;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMapper;
 import org.codeforamerica.shiba.output.applicationinputsmappers.SubworkflowIterationScopeTracker;
@@ -29,7 +30,7 @@ public class GrossMonthlyIncomeMapper implements ApplicationInputsMapper {
     }
 
     @Override
-    public List<ApplicationInput> map(Application application, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
+    public List<ApplicationInput> map(Application application, Document document, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
         PageGroupConfiguration pageGroupConfiguration = applicationConfiguration.getPageGroups().get("jobs");
         return grossMonthlyIncomeParser.parse(application.getApplicationData()).stream()
                 .flatMap(jobIncomeInformation -> {
