@@ -30,6 +30,7 @@ public class ApplicationFactory {
         copy.setIncompleteIterations(applicationData.getIncompleteIterations());
         copy.setFlow(applicationData.getFlow());
         copy.setStartTime(applicationData.getStartTime());
+        copy.setUtmSource(applicationData.getUtmSource());
         ZonedDateTime completedAt = ZonedDateTime.now(clock);
         monitoringService.setApplicationId(applicationData.getId());
 

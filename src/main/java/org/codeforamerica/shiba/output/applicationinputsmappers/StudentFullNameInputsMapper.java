@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +17,7 @@ import static org.codeforamerica.shiba.output.FullNameFormatter.getListOfSelecte
 public class StudentFullNameInputsMapper implements ApplicationInputsMapper {
 
     @Override
-    public List<ApplicationInput> map(Application application, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
+    public List<ApplicationInput> map(Application application, Document document, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
         List<String> students = getListOfSelectedFullNames(application, "whoIsGoingToSchool", "whoIsGoingToSchool");
         List<String> children = getListOfSelectedFullNames(application, "childrenInNeedOfCare", "whoNeedsChildCare");
 
@@ -24,6 +25,6 @@ public class StudentFullNameInputsMapper implements ApplicationInputsMapper {
         AtomicInteger i = new AtomicInteger(0);
         return students.stream()
                 .map(fullName -> new ApplicationInput("whoIsGoingToSchool", "fullName",
-                       List.of(fullName), ApplicationInputType.SINGLE_VALUE, i.getAndIncrement())).collect(Collectors.toList());
+                        List.of(fullName), ApplicationInputType.SINGLE_VALUE, i.getAndIncrement())).collect(Collectors.toList());
     }
 }

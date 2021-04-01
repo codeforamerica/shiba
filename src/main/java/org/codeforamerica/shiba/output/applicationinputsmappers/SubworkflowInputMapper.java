@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.SubworkflowIterationScopeTracker.IterationScopeInfo;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
@@ -33,7 +34,7 @@ public class SubworkflowInputMapper implements ApplicationInputsMapper {
     }
 
     @Override
-    public List<ApplicationInput> map(Application application, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
+    public List<ApplicationInput> map(Application application, Document document, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
         ApplicationData data = application.getApplicationData();
         Map<String, PageGroupConfiguration> pageGroups = applicationConfiguration.getPageGroups();
 

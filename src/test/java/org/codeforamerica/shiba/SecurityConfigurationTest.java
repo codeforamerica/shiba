@@ -69,7 +69,7 @@ class SecurityConfigurationTest {
                 .county(null)
                 .timeToComplete(null)
                 .build());
-        when(mappers.map(any(), any())).thenReturn(List.of());
+        when(mappers.map(any(), any(), any())).thenReturn(List.of());
         when(fileNameGenerator.generatePdfFileName(any(), any())).thenReturn("");
     }
 

@@ -6,7 +6,9 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.Recipient;
-import org.codeforamerica.shiba.pages.data.*;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.pages.data.Subworkflows;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -34,7 +36,7 @@ class AdultRequestingChildcareInputsMapperTest {
         )));
 
         Application application = Application.builder().applicationData(appData).build();
-        assertThat(new AdultRequestingChildcareInputsMapper(documentListParser).map(application, Recipient.CLIENT, new SubworkflowIterationScopeTracker())).isEqualTo(emptyList());
+        assertThat(new AdultRequestingChildcareInputsMapper(documentListParser).map(application, null, Recipient.CLIENT, new SubworkflowIterationScopeTracker())).isEqualTo(emptyList());
     }
 
     @Test
@@ -44,7 +46,7 @@ class AdultRequestingChildcareInputsMapperTest {
         when(documentListParser.parse(appData)).thenReturn(List.of(CAF));
 
         Application application = Application.builder().applicationData(appData).build();
-        assertThat(adultRequestingChildcareInputsMapper.map(application, Recipient.CLIENT, new SubworkflowIterationScopeTracker())).isEqualTo(emptyList());
+        assertThat(adultRequestingChildcareInputsMapper.map(application, null, Recipient.CLIENT, new SubworkflowIterationScopeTracker())).isEqualTo(emptyList());
     }
 
     @Test
@@ -77,7 +79,7 @@ class AdultRequestingChildcareInputsMapperTest {
         applicationData.setSubworkflows(subworkflows);
         Application application = Application.builder().applicationData(applicationData).build();
 
-        List<ApplicationInput> result = adultRequestingChildcareInputsMapper.map(application, null, null);
+        List<ApplicationInput> result = adultRequestingChildcareInputsMapper.map(application, null, null, null);
 
         assertThat(result).contains(
                 new ApplicationInput(
@@ -141,7 +143,7 @@ class AdultRequestingChildcareInputsMapperTest {
         applicationData.setPagesData(pagesData);
         Application application = Application.builder().applicationData(applicationData).build();
 
-        List<ApplicationInput> result = adultRequestingChildcareInputsMapper.map(application, null, null);
+        List<ApplicationInput> result = adultRequestingChildcareInputsMapper.map(application, null, null, null);
 
         assertThat(result).contains(
                 new ApplicationInput(
@@ -191,7 +193,7 @@ class AdultRequestingChildcareInputsMapperTest {
         applicationData.setPagesData(pagesData);
         Application application = Application.builder().applicationData(applicationData).build();
 
-        List<ApplicationInput> result = adultRequestingChildcareInputsMapper.map(application, null, null);
+        List<ApplicationInput> result = adultRequestingChildcareInputsMapper.map(application, null, null, null);
 
         assertThat(result).contains(
                 new ApplicationInput(

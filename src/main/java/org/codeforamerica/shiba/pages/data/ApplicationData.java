@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 public class ApplicationData implements Serializable {
     private String id;
     private Instant startTime;
+    private String utmSource;
     private FlowType flow = FlowType.UNDETERMINED;
     private PagesData pagesData = new PagesData();
     private Subworkflows subworkflows = new Subworkflows();

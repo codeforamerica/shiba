@@ -64,7 +64,7 @@ public class FullNameInputsMapperTest {
         applicationData.setSubworkflows(subworkflows);
         Application application = Application.builder().applicationData(applicationData).build();
 
-        assertThat(fullNameInputsMapper.map(application, Recipient.CLIENT, new SubworkflowIterationScopeTracker())).containsExactlyInAnyOrder(
+        assertThat(fullNameInputsMapper.map(application, null, Recipient.CLIENT, new SubworkflowIterationScopeTracker())).containsExactlyInAnyOrder(
                 new ApplicationInput(
                         "householdSelectionForIncome",
                         "employeeFullName",
@@ -101,6 +101,6 @@ public class FullNameInputsMapperTest {
 
         applicationData.setSubworkflows(subworkflows);
         Application application = Application.builder().applicationData(applicationData).build();
-        assertThat(fullNameInputsMapper.map(application, Recipient.CLIENT, null)).isEqualTo(emptyList());
+        assertThat(fullNameInputsMapper.map(application, null, Recipient.CLIENT, null)).isEqualTo(emptyList());
     }
 }

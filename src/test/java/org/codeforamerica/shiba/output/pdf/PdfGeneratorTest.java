@@ -60,7 +60,7 @@ class PdfGeneratorTest {
         String fileName = "some file name";
         when(fileNameGenerator.generatePdfFileName(application, Document.CAF)).thenReturn(fileName);
         Recipient recipient = CASEWORKER;
-        when(mappers.map(application, recipient)).thenReturn(applicationInputs);
+        when(mappers.map(application, Document.CAF, recipient)).thenReturn(applicationInputs);
         when(pdfFieldMapper.map(applicationInputs)).thenReturn(pdfFields);
         ApplicationFile expectedApplicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
         when(caseworkerFiller.fill(pdfFields, applicationId, fileName))

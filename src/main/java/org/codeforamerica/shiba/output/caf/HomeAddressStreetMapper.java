@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.output.caf;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMapper;
 import org.codeforamerica.shiba.output.applicationinputsmappers.SubworkflowIterationScopeTracker;
@@ -14,7 +15,7 @@ import java.util.List;
 @Component
 public class HomeAddressStreetMapper implements ApplicationInputsMapper {
     @Override
-    public List<ApplicationInput> map(Application application, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
+    public List<ApplicationInput> map(Application application, Document document, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
         PageData homeAddressPageData = application.getApplicationData().getPagesData().getPage("homeAddress");
         if (homeAddressPageData == null) {
             return List.of();

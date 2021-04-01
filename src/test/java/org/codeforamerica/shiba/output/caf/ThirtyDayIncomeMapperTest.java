@@ -2,7 +2,9 @@ package org.codeforamerica.shiba.output.caf;
 
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.TotalIncomeParser;
-import org.codeforamerica.shiba.output.*;
+import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +29,7 @@ class ThirtyDayIncomeMapperTest {
         when(totalIncomeParser.parse(appData)).thenReturn(new TotalIncome(thirtyDayIncome, jobIncomeInformationList));
         when(totalIncomeCalculator.calculate(new TotalIncome(thirtyDayIncome, jobIncomeInformationList))).thenReturn(111.0);
 
-        assertThat(thirtyDayIncomeMapper.map(application, Recipient.CLIENT, null)).isEqualTo(List.of(
+        assertThat(thirtyDayIncomeMapper.map(application, null, Recipient.CLIENT, null)).isEqualTo(List.of(
                 new ApplicationInput(
                         "totalIncome",
                         "thirtyDayIncome",

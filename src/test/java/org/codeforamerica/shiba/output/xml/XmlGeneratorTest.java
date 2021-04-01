@@ -78,7 +78,7 @@ class XmlGeneratorTest {
                 fileNameGenerator
         );
 
-        when(mappers.map(any(), any())).thenReturn(applicationInputs);
+        when(mappers.map(any(), any(), any())).thenReturn(applicationInputs);
 
         ApplicationFile applicationFile = subject.generate("someId", Document.CAF, CLIENT);
 
@@ -100,7 +100,7 @@ class XmlGeneratorTest {
 
         List<ApplicationInput> applicationInputs = List.of();
 
-        when(mappers.map(any(), any())).thenReturn(applicationInputs);
+        when(mappers.map(any(), any(), any())).thenReturn(applicationInputs);
 
         XmlGenerator subject = new XmlGenerator(new ByteArrayResource(xml.getBytes()),
                 Map.of(),
@@ -149,7 +149,7 @@ class XmlGeneratorTest {
                 mappers,
                 fileNameGenerator);
 
-        when(mappers.map(any(), any())).thenReturn(applicationInputs);
+        when(mappers.map(any(), any(), any())).thenReturn(applicationInputs);
 
         ApplicationFile applicationFile = subject.generate("", Document.CAF, null);
 
@@ -192,7 +192,7 @@ class XmlGeneratorTest {
                 applicationRepository,
                 mappers,
                 fileNameGenerator);
-        when(mappers.map(any(), any())).thenReturn(applicationInputs);
+        when(mappers.map(any(), any(), any())).thenReturn(applicationInputs);
 
         ApplicationFile applicationFile = subject.generate("", Document.CAF, null);
 
@@ -237,7 +237,7 @@ class XmlGeneratorTest {
                 applicationRepository,
                 mappers,
                 fileNameGenerator);
-        when(mappers.map(any(), any())).thenReturn(applicationInputs);
+        when(mappers.map(any(), any(), any())).thenReturn(applicationInputs);
         ApplicationFile applicationFile = subject.generate("", Document.CAF, null);
 
         org.w3c.dom.Document document = byteArrayToDocument(applicationFile.getFileBytes());
@@ -274,7 +274,7 @@ class XmlGeneratorTest {
                 applicationRepository,
                 mappers,
                 fileNameGenerator);
-        when(mappers.map(any(), any())).thenReturn(applicationInputs);
+        when(mappers.map(any(), any(), any())).thenReturn(applicationInputs);
         ApplicationFile applicationFile = subject.generate("", Document.CAF, null);
 
         org.w3c.dom.Document document = byteArrayToDocument(applicationFile.getFileBytes());
@@ -312,7 +312,7 @@ class XmlGeneratorTest {
                 applicationRepository,
                 mappers,
                 fileNameGenerator);
-        when(mappers.map(any(), any())).thenReturn(applicationInputs);
+        when(mappers.map(any(), any(), any())).thenReturn(applicationInputs);
         ApplicationFile applicationFile = subject.generate("", Document.CAF, null);
 
         org.w3c.dom.Document document = byteArrayToDocument(applicationFile.getFileBytes());
@@ -350,7 +350,7 @@ class XmlGeneratorTest {
                 applicationRepository,
                 mappers,
                 fileNameGenerator);
-        when(mappers.map(any(), any())).thenReturn(applicationInputs);
+        when(mappers.map(any(), any(), any())).thenReturn(applicationInputs);
         ApplicationFile applicationFile = subject.generate("", Document.CAF, null);
 
         org.w3c.dom.Document document = byteArrayToDocument(applicationFile.getFileBytes());
@@ -390,7 +390,7 @@ class XmlGeneratorTest {
                 applicationRepository,
                 mappers,
                 fileNameGenerator);
-        when(mappers.map(any(), any())).thenReturn(applicationInputs);
+        when(mappers.map(any(), any(), any())).thenReturn(applicationInputs);
         ApplicationFile applicationFile = subject.generate("", Document.CAF, null);
 
         org.w3c.dom.Document document = byteArrayToDocument(applicationFile.getFileBytes());
@@ -426,7 +426,7 @@ class XmlGeneratorTest {
                 applicationRepository,
                 mappers,
                 fileNameGenerator);
-        when(mappers.map(any(), any())).thenReturn(applicationInputs);
+        when(mappers.map(any(), any(), any())).thenReturn(applicationInputs);
         ApplicationFile applicationFile = subject.generate("", Document.CAF, null);
 
         org.w3c.dom.Document document = byteArrayToDocument(applicationFile.getFileBytes());
@@ -461,7 +461,7 @@ class XmlGeneratorTest {
                 applicationRepository,
                 mappers,
                 fileNameGenerator);
-        when(mappers.map(any(), any())).thenReturn(applicationInputs);
+        when(mappers.map(any(), any(), any())).thenReturn(applicationInputs);
         ApplicationFile applicationFile = subject.generate("", null, null);
         org.w3c.dom.Document document = byteArrayToDocument(applicationFile.getFileBytes());
 

@@ -4,6 +4,7 @@ import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.mnit.MnitCountyInformation;
 import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMapper;
 import org.codeforamerica.shiba.output.applicationinputsmappers.SubworkflowIterationScopeTracker;
@@ -31,6 +32,11 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
     private final CountyMap<Map<Recipient, String>> countyInstructionsMapping;
     private final CountyMap<MnitCountyInformation> countyInformationMapping;
 
+    public static final String CHILDCARE_WAITING_LIST_UTM_SOURCE = "childcare_waiting_list";
+    private static final Map<String, String> UTM_SOURCE_MAPPING = Map.of(
+            CHILDCARE_WAITING_LIST_UTM_SOURCE, "FROM BSF WAITING LIST"
+    );
+
     @Resource
     MessageSource messageSource;
 
@@ -38,11 +44,11 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
     public CoverPageInputsMapper(CountyMap<Map<Recipient, String>> countyInstructionsMapping, CountyMap<MnitCountyInformation> countyInformationMapping, MessageSource messageSource) {
         this.countyInstructionsMapping = countyInstructionsMapping;
         this.countyInformationMapping = countyInformationMapping;
-        this.messageSource=messageSource;
+        this.messageSource = messageSource;
     }
 
     @Override
-    public List<ApplicationInput> map(Application application, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
+    public List<ApplicationInput> map(Application application, Document document, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
         ApplicationInput programsInput = ofNullable(application.getApplicationData().getPagesData().getPage("choosePrograms"))
                 .flatMap(pageData -> ofNullable(pageData.get("programs")))
                 .map(InputData::getValue)
@@ -95,10 +101,18 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
                         LocaleContextHolder.getLocale())),
                 SINGLE_VALUE
         );
+
+        ApplicationInput utmSourceInput = null;
+        if (document == Document.CCAP) {
+            String applicationUtmSource = (application.getApplicationData().getUtmSource() != null) ? application.getApplicationData().getUtmSource() : "";
+            utmSourceInput = new ApplicationInput("nonPagesData", "utmSource", List.of(UTM_SOURCE_MAPPING.getOrDefault(applicationUtmSource, "")), SINGLE_VALUE);
+        }
+
         List<ApplicationInput> inputs = Stream.of(
                 of(countyInstructionsInput),
                 ofNullable(programsInput),
-                ofNullable(fullNameInput)
+                ofNullable(fullNameInput),
+                ofNullable(utmSourceInput)
         ).flatMap(Optional::stream).collect(Collectors.toList());
         inputs.addAll(householdMemberInputs);
 

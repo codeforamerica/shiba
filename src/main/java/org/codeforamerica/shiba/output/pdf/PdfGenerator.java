@@ -38,7 +38,7 @@ public class PdfGenerator implements FileGenerator {
     @Override
     public ApplicationFile generate(String applicationId, Document document, Recipient recipient) {
         Application application = applicationRepository.find(applicationId);
-        List<ApplicationInput> applicationInputs = mappers.map(application, recipient);
+        List<ApplicationInput> applicationInputs = mappers.map(application, document, recipient);
         PdfFieldFiller pdfFieldFiller = this.pdfFieldFiller.get(recipient).get(document);
 
         return pdfFieldFiller.fill(pdfFieldMapper.map(applicationInputs), applicationId, fileNameGenerator.generatePdfFileName(application, document));

@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.PotentialDerivedValuesConfiguration;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -20,7 +21,7 @@ public class DerivedValueApplicationInputsMapper implements ApplicationInputsMap
     }
 
     @Override
-    public List<ApplicationInput> map(Application application, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
+    public List<ApplicationInput> map(Application application, Document document, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
         ApplicationData data = application.getApplicationData();
         return this.derivedValuesConfiguration.stream()
                 .map(potentialDerivedValues -> potentialDerivedValues

@@ -53,7 +53,7 @@ public class XmlGenerator implements FileGenerator {
     @Override
     public ApplicationFile generate(String applicationId, Document document, Recipient recipient) {
         Application application = applicationRepository.find(applicationId);
-        List<ApplicationInput> applicationInputs = mappers.map(application, recipient);
+        List<ApplicationInput> applicationInputs = mappers.map(application, null, recipient);
 
         try {
             String contentsAfterReplacement = applicationInputs.stream()

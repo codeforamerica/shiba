@@ -4,6 +4,7 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.PageDataBuilder;
 import org.codeforamerica.shiba.PagesDataBuilder;
 import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.inputconditions.ValueMatcher;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
@@ -12,7 +13,6 @@ import org.codeforamerica.shiba.pages.config.*;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.pages.data.Subworkflows;
-import org.codeforamerica.shiba.inputconditions.Condition;
 import org.junit.jupiter.api.Test;
 
 import java.time.ZonedDateTime;
@@ -104,7 +104,7 @@ class SubworkflowInputMapperTest {
                 .timeToComplete(null)
                 .build();
 
-        assertThat(subworkflowInputMapper.map(application, Recipient.CLIENT, new SubworkflowIterationScopeTracker())).contains(
+        assertThat(subworkflowInputMapper.map(application, null, Recipient.CLIENT, new SubworkflowIterationScopeTracker())).contains(
                 new ApplicationInput(
                         "question1",
                         "input1",
@@ -177,7 +177,7 @@ class SubworkflowInputMapperTest {
         ));
 
         Application application = Application.builder().applicationData(new ApplicationData()).build();
-        List<ApplicationInput> applicationInputs = subworkflowInputMapper.map(application, Recipient.CLIENT, null);
+        List<ApplicationInput> applicationInputs = subworkflowInputMapper.map(application, null, Recipient.CLIENT, null);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput(
@@ -278,7 +278,7 @@ class SubworkflowInputMapperTest {
                 .timeToComplete(null)
                 .build();
 
-        List<ApplicationInput> mapResult = subworkflowInputMapper.map(application, Recipient.CLIENT, new SubworkflowIterationScopeTracker());
+        List<ApplicationInput> mapResult = subworkflowInputMapper.map(application, null, Recipient.CLIENT, new SubworkflowIterationScopeTracker());
         assertThat(mapResult).contains(
                 new ApplicationInput(
                         prefix1 + "_question1",

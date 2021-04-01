@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.Test;
 
@@ -32,7 +33,7 @@ class ApplicationInputsMappersTest {
                 .applicationData(new ApplicationData())
                 .county(County.Olmsted)
                 .timeToComplete(null)
-                .build(), CLIENT);
+                .build(), null, CLIENT);
 
         assertThat(applicationInputs).contains(new ApplicationInput("nonPagesData", "applicationId", List.of("someId"), SINGLE_VALUE));
     }
@@ -51,7 +52,7 @@ class ApplicationInputsMappersTest {
                 .timeToComplete(null)
                 .build();
 
-        List<ApplicationInput> applicationInputs = mappers.map(application, CASEWORKER);
+        List<ApplicationInput> applicationInputs = mappers.map(application, null, CASEWORKER);
 
         assertThat(applicationInputs).contains(new ApplicationInput("nonPagesData", "completedDate", List.of("2020-09-02"), SINGLE_VALUE));
     }
@@ -68,7 +69,7 @@ class ApplicationInputsMappersTest {
                 .timeToComplete(null)
                 .build();
 
-        List<ApplicationInput> applicationInputs = mappers.map(application, CASEWORKER);
+        List<ApplicationInput> applicationInputs = mappers.map(application, null, CASEWORKER);
 
         assertThat(applicationInputs).contains(new ApplicationInput("nonPagesData", "completedDateTime", List.of("2019-11-16T05:29:01Z"), SINGLE_VALUE));
     }
@@ -87,13 +88,13 @@ class ApplicationInputsMappersTest {
                 .timeToComplete(null)
                 .build();
 
-        List<ApplicationInput> applicationInputs = mappers.map(application, CASEWORKER);
+        List<ApplicationInput> applicationInputs = mappers.map(application, null, CASEWORKER);
 
         assertThat(applicationInputs).contains(new ApplicationInput("nonPagesData", "submissionDateTime", List.of("09/03/2020 at 01:02 AM"), SINGLE_VALUE));
     }
 
     @Test
-    void shouldUseMatchingRecipientForMappers() {
+    void shouldUseMatchingRecipientAndDocumentForMappers() {
         ApplicationInputsMapper mapper = mock(ApplicationInputsMapper.class);
 
         ApplicationInputsMappers applicationInputsMappers = new ApplicationInputsMappers(List.of(mapper));
@@ -105,8 +106,8 @@ class ApplicationInputsMappersTest {
                 .county(County.Olmsted)
                 .timeToComplete(null)
                 .build();
-        applicationInputsMappers.map(application, CASEWORKER);
+        applicationInputsMappers.map(application, Document.CAF, CASEWORKER);
 
-        verify(mapper).map(eq(application), eq(CASEWORKER), any());
+        verify(mapper).map(eq(application), eq(Document.CAF), eq(CASEWORKER), any());
     }
 }

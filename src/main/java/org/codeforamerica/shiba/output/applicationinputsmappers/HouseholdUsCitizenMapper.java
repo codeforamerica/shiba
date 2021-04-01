@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.Subworkflow;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 public class HouseholdUsCitizenMapper implements ApplicationInputsMapper {
 
     @Override
-    public List<ApplicationInput> map(Application application, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
+    public List<ApplicationInput> map(Application application, Document document, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
 
         List<String> nonUsCitizenHouseholdMembers = Optional.ofNullable(application.getApplicationData().getPageData("whoIsNonCitizen"))
                 .map(pageData -> pageData.get("whoIsNonCitizen"))

@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.springframework.stereotype.Component;
 
@@ -15,17 +16,17 @@ import java.util.stream.Stream;
 public class UnearnedIncomeFrequencyInputsMapper implements ApplicationInputsMapper {
 
     @Override
-    public List<ApplicationInput> map(Application application, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
+    public List<ApplicationInput> map(Application application, Document document, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
         return List.of("unearnedIncomeSources", "unearnedIncomeSourcesCcap")
                 .stream()
                 .flatMap(pageName ->
                         Optional.ofNullable(application.getApplicationData().getPageData(pageName))
-                        .map(pageData -> pageData
-                                .entrySet().stream()
-                                .filter(inputData -> !inputData.getValue().getValue().isEmpty())
-                                .map(inputData ->
-                                        new ApplicationInput(
-                                                pageName,
+                                .map(pageData -> pageData
+                                        .entrySet().stream()
+                                        .filter(inputData -> !inputData.getValue().getValue().isEmpty())
+                                        .map(inputData ->
+                                                new ApplicationInput(
+                                                        pageName,
                                                 inputData.getKey().replace("Amount", "Frequency"),
                                                 List.of("Monthly"),
                                                 ApplicationInputType.SINGLE_VALUE)
