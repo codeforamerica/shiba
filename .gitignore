@@ -16,6 +16,8 @@ src/main/resources/application-secrets.yaml
 .settings
 .springBeans
 .sts4-cache
+bin/**
+.temp*
 
 ### IntelliJ IDEA ###
 .idea/*.xml
