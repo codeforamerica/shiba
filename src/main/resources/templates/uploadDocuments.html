@@ -80,7 +80,7 @@
 <div th:replace="fragments/footer :: footer"></div>
 <script th:inline="javascript">
     Dropzone.autoDiscover = false;
-    var documentIcon = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDciIHZpZXdCb3g9IjAgMCA0MCA0NyIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTI2LjY2NjcgMEg0LjQ0NDQ0QzMuMjY1NyAwIDIuMTM1MjQgMC41NTAxOTcgMS4zMDE3NSAxLjUyOTU1QzAuNDY4MjUyIDIuNTA4OTEgMCAzLjgzNzIgMCA1LjIyMjIyVjQxLjc3NzhDMCA0My4xNjI4IDAuNDY4MjUyIDQ0LjQ5MTEgMS4zMDE3NSA0NS40NzA0QzIuMTM1MjQgNDYuNDQ5OCAzLjI2NTcgNDcgNC40NDQ0NCA0N0gzNS41NTU2QzM2LjczNDMgNDcgMzcuODY0OCA0Ni40NDk4IDM4LjY5ODMgNDUuNDcwNEMzOS41MzE3IDQ0LjQ5MTEgNDAgNDMuMTYyOCA0MCA0MS43Nzc4VjE1LjY2NjdMMjYuNjY2NyAwWk0zNS41NTU2IDQxLjc3NzhINC40NDQ0NFY1LjIyMjIySDI0LjQ0NDRWMTguMjc3OEgzNS41NTU2VjQxLjc3NzhaIiBmaWxsPSIjNUY1ODU0IiBmaWxsLW9wYWNpdHk9IjAuNSIvPgo8L3N2Zz4K";
+    var documentIcon = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEsAAABGCAYAAACE0Gk0AAAFK0lEQVR4Xu2caVcTSRSG314SyEJQPIAsMucoihDmzJE1BBhnEZ35xzPjmU9ABAR/AThnFBBQQciedLrn3Epaw6Z9OxsTqr7kQ25XVz31VtWt5baSTiYsyOSIgCJhOeIkjCQs56wkLAYrCasusFKpFF5vbmJ/7x1My4KmqZz3VmRr5A3oHh3DI6Po6e2tKC/Ow67GrJOTE7xaX8PB/gG8Xi8URYFl1XNStZDNZtF+4yamIzO42dHBqbNrWzasbDaDtZUV7GxvIxgMNgAUTUsALCCRSKCzsxMzc3Pw+wOuITh9kA3r9dYmNtZforW1FaqiflEUVaDWqUy8pGbTMpGIx3Fn4DtEorPQdb2mJWDDii0t4mB/Dx6Pt85dj8RkQRGyKiYCZhQMpJJJDN5/gPHJKahq7cZONqznf/6BZCLxuRXtAmfS6RK8WknMgq57hKLLk6KqyGbSSKfTGJuYxPBIuGbqqggWtbRlWtB0HT6fT7RqoVCAUgNeiqLCMPLIZDJFVdkKUyDeSw1Ik8zM7JzolrVIbFh/P/8L8ZMTMXWbBRPpdAq9fX2YikTR0tKCXC5X1lGqV2RN17C3t4dX6y9Fg2iq9iVzhbqkKsrl8/sQnZ1HZ1dX9V5ud3vu2vAsrFQqKVoyOjcvxpBapg8f3mM1FoNhGNC0Mlil8YuUTgN+e/sNROfnxW81U0XKskwTyWRRWSR/j8dTzbKdy+vd7i421tdQMArnYJX6JqhMx8fH6OnpxeyPj8+NcZUUsCqw+vr7EIleAVglheXzOcTjcTwYeojpmWglfE5PJpV0Q1tZVwmWGPxphsxmQDP0D4/GEB79virAmk5ZdncUM2QyiVw2i8npiFBZpak5YRV9C+FSHH/6JFyK+cc/487AQEW8mhdWGbCjw0PhB/70yxN03LrlGlhzwyqNX+TRHH78KECRwtra2lwBa3pYREXViisL6pL9dwYQmYmi1edjA7sWsGxg+XweiXgC94eG8GhsnO0XXhtYtkuRz+VAftjDkTBGwqMXO7eXaO5awRLAFEXAorXkcDjMcimuHSzbDyP/K9TejidPf3M8dv2vYO3u7mBjbRXGZWvDr1T77KYgLcYDwQAWnv3enLBo33/1xTILFjmk1PW8Xg9UVfu8u0uw2kIh/LrwtDlhHR0d4p+tLZimKdZ/ThJt5ZDb8P5gX6wVaaOSNg6bHlY5HKdHb+JgwyxgeXFRnEgFAn4Bms4em1pZTpR0kQ2paCW2jO23b8SRGTmpEtYlNMkZXYktYWd7RyrrW4qTsL5FqOx/CUvCYhBgmEplSVgMAgxTqSwJi0GAYSqVJWExCDBMpbIkLAYBhqlUloTFIMAwlcqSsBgEGKZSWRIWgwDDVCpLwmIQYJhKZUlYDAIMU6ksCYtBgGF6pZRVrwgLBp9TpgTrxfISdncaeMhKgU71jN1xC4vuRVCc5Ns3/zbu+L6eUWFuQFHgK8VwUzz12kpMKMvn89fvrkN5cGY94w1dwbIg7ozSFSUK3iwYBhSVLhwVrxwFgkEsPKvhzb/GRbK6wUXPFC+z0VVuXdNPXWarOaxGxki7xXX2OfsSblf3bREn6TSx75Q2NPreaa0usitF7ttR+xQ+PD4xibv3Bh3nyoZ1Jb7r4Lh6pw3tj3XQ9yD6+vsxFYmgpeV0gPrXsmbDoswa/8UQPi0bFMVwd3V3YWxiCqFQiJWRK1j0hkZ+i4ZVw5JxoWBCVRR03+7B3cFB+P1+djauYbHf1AQPSFiMRpSwJCwGAYbpf7oLq5uJEmkZAAAAAElFTkSuQmCC";
     var dataURL = "";
     var isUploadComplete = true;
 
@@ -149,11 +149,13 @@
               <div class="dz-details grid">
                 <div class="grid__item width-one-sixth doc-rectangle">
                     <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
-                    <img class="dz-thumb" data-dz-thumbnail />
+                    <img class="dz-thumb" data-dz-thumbnail aria-hidden="true" />
                 </div>
                 <div class="grid__item width-five-sixths">
                     <div class="dz-filename"><div class="filename-text" data-dz-name></div></div>
                     <div class="display-flex body-gray file-details">
+                        <div class="file-count"></div>
+                        <span class="file-details-delimiter" aria-hidden="true">•</span>
                         <div class="dz-size" data-dz-size></div>
                         <span class="file-details-delimiter" aria-hidden="true">•</span>
                         <a class="dz-remove" href="javascript:undefined;" ></a>
@@ -183,9 +185,14 @@
                 removeLink.onclick = destroyerCreator(file);
                 removeLink.innerText = [[#{general.cancel}]].toLowerCase();
 
+                var fileCount = file.previewElement.getElementsByClassName('file-count')[0];
+
                 if (!file.type.includes("image")) {
                     file.dataURL = documentIcon;
                     myDropZone.emit("thumbnail", file, documentIcon);
+                } else if (file.type.includes("image")) {
+                    fileCount.setAttribute('aria-label', fileCount.innerText);
+                    fileCount.innerHTML = "<span>1 image</span>"
                 }
 
                 isUploadComplete = false;
