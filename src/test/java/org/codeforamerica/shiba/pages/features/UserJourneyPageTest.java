@@ -186,7 +186,7 @@ public class UserJourneyPageTest extends FeatureTest {
         driver.executeScript("$('#document-upload').get(0).dropzone.addFile({name: 'testFile.pdf', size: " + largeFilesize + ", type: 'not-an-image'})");
 
         int maxFileSize = uploadDocumentConfiguration.getMaxFilesize();
-        assertThat(driver.findElementById("file-error-message").getText()).contains("This file is too large (max size: " + maxFileSize + " MB)");
+        assertThat(driver.findElementById("file-error-message").getText()).contains("This file is too large and cannot be uploaded (max size: " + maxFileSize + " MB)");
     }
 
     @Test
