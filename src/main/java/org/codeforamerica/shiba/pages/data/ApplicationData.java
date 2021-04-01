@@ -128,8 +128,8 @@ public class ApplicationData {
         return applicantWith || householdWith;
     }
 
-    public void addUploadedDoc(MultipartFile file, String s3Filepath, String dataURL) {
-        UploadedDocument uploadedDocument = new UploadedDocument(file.getOriginalFilename(), s3Filepath, dataURL, file.getSize());
+    public void addUploadedDoc(MultipartFile file, String s3Filepath, String dataURL, String type) {
+        UploadedDocument uploadedDocument = new UploadedDocument(file.getOriginalFilename(), s3Filepath, dataURL, type, file.getSize());
         uploadedDocs.add(uploadedDocument);
     }
 

@@ -334,12 +334,14 @@ public class PageController {
 
     @PostMapping("/file-upload")
     @ResponseStatus(HttpStatus.OK)
-    public void upload(@RequestParam("file") MultipartFile file, @RequestParam("dataURL") String dataURL) throws IOException, InterruptedException {
+    public void upload(@RequestParam("file") MultipartFile file,
+                       @RequestParam("dataURL") String dataURL,
+                       @RequestParam("type") String type) throws IOException, InterruptedException {
         if (this.applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
                 file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
             String s3FilePath = String.format("%s/%s", applicationData.getId(), UUID.randomUUID());
             documentUploadService.upload(s3FilePath, file);
-            this.applicationData.addUploadedDoc(file, s3FilePath, dataURL);
+            this.applicationData.addUploadedDoc(file, s3FilePath, dataURL, type);
         }
     }
 

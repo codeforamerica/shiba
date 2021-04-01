@@ -9,5 +9,6 @@ public class UploadedDocument {
     private String filename;
     private String s3Filepath;
     private String dataURL;
+    private String type;
     private long size;
 }
