@@ -261,7 +261,12 @@ html {
     }
 }
 
-.max-files{
+/* TEMPORARILY HIDING UNTIL WE ADD DOCUMENT PAGE COUNT */
+.document-info {
+    display: none
+}
+
+.max-files {
     height: 100%;
     background-color: #FFF2D1;
     border: 2px solid #FFAE00;
@@ -977,7 +982,7 @@ input[type=number] {
 }
 
 .dropzone .dz-preview .dz-remove {
-    font-size: 14px;
+    font-size: 16px;
     text-align: center;
     display: block;
     cursor: pointer;
