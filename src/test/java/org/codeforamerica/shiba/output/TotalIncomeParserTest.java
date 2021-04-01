@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -64,7 +65,7 @@ class TotalIncomeParserTest {
         JobIncomeInformation mockJobInfo1 = mock(JobIncomeInformation.class);
         JobIncomeInformation mockJobInfo2 = mock(JobIncomeInformation.class);
         List<JobIncomeInformation> jobInfo = List.of(mockJobInfo1, mockJobInfo2);
-        when(grossIncomeParser.parse(applicationData)).thenReturn(jobInfo);
+        when(grossIncomeParser.parse(eq(applicationData))).thenReturn(jobInfo);
 
         TotalIncome totalIncome = totalIncomeParser.parse(applicationData);
 
