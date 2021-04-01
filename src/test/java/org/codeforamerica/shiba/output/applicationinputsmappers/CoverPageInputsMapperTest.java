@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.output.caf.CoverPageInputsMapper.CHILDCARE_WAITING_LIST_UTM_SOURCE;
-import static org.mockito.ArgumentMatchers.any;
 
 class CoverPageInputsMapperTest extends AbstractBasePageTest {
     private final CountyMap<Map<Recipient, String>> countyInstructionsMapping = new CountyMap<>();
@@ -251,7 +250,7 @@ class CoverPageInputsMapperTest extends AbstractBasePageTest {
                 new ApplicationInput(
                         "nonPagesData",
                         "utmSource",
-                        any(),
+                        List.of(""),
                         ApplicationInputType.SINGLE_VALUE));
     }
 
