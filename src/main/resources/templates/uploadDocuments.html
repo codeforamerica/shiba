@@ -147,15 +147,17 @@
         previewTemplate: `
             <div class="dz-preview dz-file-preview spacing-below-15">
               <div class="dz-details grid">
-                <div class="grid__item width-one-sixth doc-rectangle">
+                <div class="grid__item width-one-sixth mobile-width-one-fourth doc-rectangle">
                     <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
                     <img class="dz-thumb" data-dz-thumbnail aria-hidden="true" />
                 </div>
-                <div class="grid__item width-five-sixths">
+                <div class="grid__item width-five-sixths mobile-width-three-fourths">
                     <div class="dz-filename"><div class="filename-text" data-dz-name></div></div>
                     <div class="display-flex body-gray file-details">
-                        <div class="file-count"></div>
-                        <span class="file-details-delimiter" aria-hidden="true">•</span>
+                        <span class="document-info">
+                            <div class="file-count"></div>
+                            <span class="file-count-delimiter" aria-hidden="true">•</span>
+                        </span>
                         <div class="dz-size" data-dz-size></div>
                         <span class="file-details-delimiter" aria-hidden="true">•</span>
                         <a class="dz-remove" href="javascript:undefined;" ></a>
@@ -186,10 +188,13 @@
                 removeLink.innerText = [[#{general.cancel}]].toLowerCase();
 
                 var fileCount = file.previewElement.getElementsByClassName('file-count')[0];
+                var documentInfo = file.previewElement.getElementsByClassName('document-info')[0];
 
                 if (!file.type.includes("image")) {
                     file.dataURL = documentIcon;
                     myDropZone.emit("thumbnail", file, documentIcon);
+                    // This hides delimiter for documents since we haven't implemented document count yet, will probably need to refactor when we implement document count
+                    documentInfo.classList.add("hidden");
                 } else if (file.type.includes("image")) {
                     fileCount.setAttribute('aria-label', fileCount.innerText);
                     fileCount.innerHTML = "<span>1 image</span>"

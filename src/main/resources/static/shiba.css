@@ -669,6 +669,20 @@ input[type=number] {
     justify-content: center;
 }
 
+@media screen and (max-width: 600px) {
+    .preview-container .doc-rectangle {
+        max-width: 60px;
+    }
+
+    .preview-container .mobile-width-one-fourth {
+        width: 25%;
+    }
+
+    .preview-container .mobile-width-three-fourths {
+        width: 75%;
+    }
+}
+
 .margin-auto {
     margin: auto;
 }
@@ -701,18 +715,18 @@ input[type=number] {
     display: inline-block;
 }
 
-.dz-size {
-    margin-left: 16px;
-}
-
 .dz-remove {
     margin-left: 8px;
     text-decoration: underline;
 }
 
-.file-details-delimiter {
+.file-details-delimiter, .file-count-delimiter {
     margin-left: 8px;
     font-size: small;
+}
+
+.file-count-delimiter {
+    margin-right: 8px;
 }
 
 .file-details {
@@ -970,9 +984,10 @@ input[type=number] {
     border: none;
 }
 
-.dropzone .dz-preview .dz-details .dz-size , .file-count{
+.dropzone .dz-preview .dz-details .dz-size , .file-count {
     margin-bottom: 1em;
     font-size: 16px;
+    display: inline;
 }
 
 .dropzone .dz-preview .dz-details .dz-filename {
@@ -1057,4 +1072,8 @@ input[type=number] {
 
 .long-file-name {
     overflow-wrap: break-word;
+}
+
+.hidden {
+    display: none;
 }
