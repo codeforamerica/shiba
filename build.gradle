@@ -83,7 +83,7 @@ dependencies {
     }
 
     implementation 'io.awspring.cloud:spring-cloud-aws-context:2.3.0'
-    implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.3.0'
+    implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.3.1'
     implementation 'io.awspring.cloud:spring-cloud-aws-autoconfigure:2.3.0'
     implementation 'org.postgresql:postgresql'
     implementation 'org.glassfish.jaxb:jaxb-runtime'
