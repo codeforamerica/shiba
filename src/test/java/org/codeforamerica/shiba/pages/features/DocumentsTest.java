@@ -223,4 +223,25 @@ public class DocumentsTest extends FeatureTest {
         assertThat(driver.findElementsByClassName("success-icons")).hasSize(3);
     }
 
+    @Test
+    void shouldDisplayImageUploadInformation() {
+        getToDocumentUploadScreen();
+        uploadDefaultFile();
+        assertThat(driver.findElementsByClassName("filename-text").get(0).getAttribute("innerHTML").contains("shiba")).isTrue();
+        assertThat(driver.findElementsByClassName("filename-text").get(0).getAttribute("innerHTML").contains("jpg")).isTrue();
+        assertThat(driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML").contains("1 image")).isTrue();
+        assertThat(driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML").contains("51.7")).isTrue();
+        assertThat(driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML").contains("KB")).isTrue();
+    }
+
+    @Test
+    void shouldDisplayDocumentUploadInformation() {
+        getToDocumentUploadScreen();
+        uploadDefaultDocument();
+        assertThat(driver.findElementsByClassName("filename-text").get(0).getAttribute("innerHTML").contains("test-caf")).isTrue();
+        assertThat(driver.findElementsByClassName("filename-text").get(0).getAttribute("innerHTML").contains("pdf")).isTrue();
+        assertThat(driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML").contains("0.4")).isTrue();
+        assertThat(driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML").contains("MB")).isTrue();
+        assertThat(driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML").contains("1 image")).isFalse();
+    }
 }

@@ -10,5 +10,7 @@ import java.io.Serializable;
 public class UploadedDocument implements Serializable {
     private String filename;
     private String s3Filepath;
+    private String dataURL;
+    private String type;
     private long size;
 }

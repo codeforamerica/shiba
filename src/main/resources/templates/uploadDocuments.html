@@ -80,6 +80,9 @@
 <div th:replace="fragments/footer :: footer"></div>
 <script th:inline="javascript">
     Dropzone.autoDiscover = false;
+    var documentIcon = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEsAAABGCAYAAACE0Gk0AAAFK0lEQVR4Xu2caVcTSRSG314SyEJQPIAsMucoihDmzJE1BBhnEZ35xzPjmU9ABAR/AThnFBBQQciedLrn3Epaw6Z9OxsTqr7kQ25XVz31VtWt5baSTiYsyOSIgCJhOeIkjCQs56wkLAYrCasusFKpFF5vbmJ/7x1My4KmqZz3VmRr5A3oHh3DI6Po6e2tKC/Ow67GrJOTE7xaX8PB/gG8Xi8URYFl1XNStZDNZtF+4yamIzO42dHBqbNrWzasbDaDtZUV7GxvIxgMNgAUTUsALCCRSKCzsxMzc3Pw+wOuITh9kA3r9dYmNtZforW1FaqiflEUVaDWqUy8pGbTMpGIx3Fn4DtEorPQdb2mJWDDii0t4mB/Dx6Pt85dj8RkQRGyKiYCZhQMpJJJDN5/gPHJKahq7cZONqznf/6BZCLxuRXtAmfS6RK8WknMgq57hKLLk6KqyGbSSKfTGJuYxPBIuGbqqggWtbRlWtB0HT6fT7RqoVCAUgNeiqLCMPLIZDJFVdkKUyDeSw1Ik8zM7JzolrVIbFh/P/8L8ZMTMXWbBRPpdAq9fX2YikTR0tKCXC5X1lGqV2RN17C3t4dX6y9Fg2iq9iVzhbqkKsrl8/sQnZ1HZ1dX9V5ud3vu2vAsrFQqKVoyOjcvxpBapg8f3mM1FoNhGNC0Mlil8YuUTgN+e/sNROfnxW81U0XKskwTyWRRWSR/j8dTzbKdy+vd7i421tdQMArnYJX6JqhMx8fH6OnpxeyPj8+NcZUUsCqw+vr7EIleAVglheXzOcTjcTwYeojpmWglfE5PJpV0Q1tZVwmWGPxphsxmQDP0D4/GEB79virAmk5ZdncUM2QyiVw2i8npiFBZpak5YRV9C+FSHH/6JFyK+cc/487AQEW8mhdWGbCjw0PhB/70yxN03LrlGlhzwyqNX+TRHH78KECRwtra2lwBa3pYREXViisL6pL9dwYQmYmi1edjA7sWsGxg+XweiXgC94eG8GhsnO0XXhtYtkuRz+VAftjDkTBGwqMXO7eXaO5awRLAFEXAorXkcDjMcimuHSzbDyP/K9TejidPf3M8dv2vYO3u7mBjbRXGZWvDr1T77KYgLcYDwQAWnv3enLBo33/1xTILFjmk1PW8Xg9UVfu8u0uw2kIh/LrwtDlhHR0d4p+tLZimKdZ/ThJt5ZDb8P5gX6wVaaOSNg6bHlY5HKdHb+JgwyxgeXFRnEgFAn4Bms4em1pZTpR0kQ2paCW2jO23b8SRGTmpEtYlNMkZXYktYWd7RyrrW4qTsL5FqOx/CUvCYhBgmEplSVgMAgxTqSwJi0GAYSqVJWExCDBMpbIkLAYBhqlUloTFIMAwlcqSsBgEGKZSWRIWgwDDVCpLwmIQYJhKZUlYDAIMU6ksCYtBgGF6pZRVrwgLBp9TpgTrxfISdncaeMhKgU71jN1xC4vuRVCc5Ns3/zbu+L6eUWFuQFHgK8VwUzz12kpMKMvn89fvrkN5cGY94w1dwbIg7ozSFSUK3iwYBhSVLhwVrxwFgkEsPKvhzb/GRbK6wUXPFC+z0VVuXdNPXWarOaxGxki7xXX2OfsSblf3bREn6TSx75Q2NPreaa0usitF7ttR+xQ+PD4xibv3Bh3nyoZ1Jb7r4Lh6pw3tj3XQ9yD6+vsxFYmgpeV0gPrXsmbDoswa/8UQPi0bFMVwd3V3YWxiCqFQiJWRK1j0hkZ+i4ZVw5JxoWBCVRR03+7B3cFB+P1+djauYbHf1AQPSFiMRpSwJCwGAYbpf7oLq5uJEmkZAAAAAElFTkSuQmCC";
+    var dataURL = "";
+    var isUploadComplete = true;
 
     function addDragBorder() {
         var dragAndDropBox = document.getElementById("drag-and-drop-box");
@@ -92,7 +95,7 @@
     }
 
     function getFilenameComponents(element) {
-        var name = element.innerText
+        var name = element.innerText;
         var extIdx = name.lastIndexOf('.');
         if (extIdx === -1) {
             return [name, ""];
@@ -105,14 +108,12 @@
         return [name.slice(0, extIdx), extStr];
     }
 
-    var isUploadComplete = true;
-
     function onSubmit() {
         if (!isUploadComplete) {
             $('.form-group').addClass('form-group--error');
             $('.text--error').show();
         } else {
-            window.location = "/pages/" + [[${pageName}]] + "/navigation?option=0"
+            window.location = "/pages/" + [[${pageName}]] + "/navigation?option=0";
         }
     }
 
@@ -120,12 +121,10 @@
         var dragBox = document.getElementById("drag-and-drop-box");
         dragBox.style.display = "none";
         var maxFilesReached = document.getElementById("max-files");
-        maxFilesReached.style.display = "flex"
+        maxFilesReached.style.display = "flex";
     }
 
     $('.text--error').hide();
-
-    var myDropZone;
 
     function destroyerCreator(file) {
         return function () {
@@ -137,7 +136,10 @@
     $("#document-upload").dropzone({
         uploadMultiple: false,
         previewsContainer: ".preview-container",
-        autoProcessQueue: true,
+        autoProcessQueue: false,
+        thumbnailMethod: "crop",
+        thumbnailWidth: 75,
+        thumbnailHeight: 70,
         maxFiles: 20,
         maxFilesize: [[${uploadDocMaxFileSize}]],
         dictFileTooBig: fileTooBigMsg,
@@ -145,12 +147,17 @@
         previewTemplate: `
             <div class="dz-preview dz-file-preview spacing-below-15">
               <div class="dz-details grid">
-                <div class="grid__item width-one-sixth doc-rectangle">
+                <div class="grid__item width-one-sixth mobile-width-one-fourth doc-rectangle">
                     <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+                    <img class="dz-thumb" data-dz-thumbnail aria-hidden="true" />
                 </div>
-                <div class="grid__item width-five-sixths">
+                <div class="grid__item width-five-sixths mobile-width-three-fourths">
                     <div class="dz-filename"><div class="filename-text" data-dz-name></div></div>
                     <div class="display-flex body-gray file-details">
+                        <span class="document-info">
+                            <div class="file-count"></div>
+                            <span class="file-count-delimiter" aria-hidden="true">•</span>
+                        </span>
                         <div class="dz-size" data-dz-size></div>
                         <span class="file-details-delimiter" aria-hidden="true">•</span>
                         <a class="dz-remove" href="javascript:undefined;" ></a>
@@ -159,14 +166,9 @@
               </div>
               <p id='file-error-message' class='text--error spacing-above-0'></p>
             </div>`,
-        sending: function (file, xhr, formData) {
-            var csrfToken = [[${_csrf.token}]];
-            formData.append("_csrf", csrfToken)
-        },
         init: function () {
-            myDropZone = this;
+            var myDropZone = this;
             var documents = [[${uploadedDocs}]];
-
             if (documents.length >= this.options.maxFiles) {
                 showMaxFileMessage();
             }
@@ -175,17 +177,42 @@
                 if (myDropZone.files.length >= myDropZone.options.maxFiles) {
                     showMaxFileMessage();
                 }
-                var fileNameSpan = file.previewElement.getElementsByClassName('filename-text')[0]
-                fileNameSpan.setAttribute('aria-label', fileNameSpan.innerText)
+                var fileNameSpan = file.previewElement.getElementsByClassName('filename-text')[0];
+                fileNameSpan.setAttribute('aria-label', fileNameSpan.innerText);
                 var fileNameComponents = getFilenameComponents(fileNameSpan);
                 fileNameSpan.innerHTML = "<span class='filename-text-name' aria-hidden='true'>" + fileNameComponents[0] + "</span>" +
-                    "<span class='filename-text-ext' aria-hidden='true'>" + fileNameComponents[1] + "</span>"
+                    "<span class='filename-text-ext' aria-hidden='true'>" + fileNameComponents[1] + "</span>";
 
                 var removeLink = file.previewElement.getElementsByClassName("dz-remove")[0];
                 removeLink.onclick = destroyerCreator(file);
-                removeLink.innerText = [[#{general.cancel}]].toLowerCase()
+                removeLink.innerText = [[#{general.cancel}]].toLowerCase();
+
+                var fileCount = file.previewElement.getElementsByClassName('file-count')[0];
+                var documentInfo = file.previewElement.getElementsByClassName('document-info')[0];
+
+                if (!file.type.includes("image")) {
+                    file.dataURL = documentIcon;
+                    myDropZone.emit("thumbnail", file, documentIcon);
+                    // This hides delimiter for documents since we haven't implemented document count yet, will probably need to refactor when we implement document count
+                    documentInfo.classList.add("hidden");
+                } else if (file.type.includes("image")) {
+                    fileCount.setAttribute('aria-label', fileCount.innerText);
+                    fileCount.innerHTML = "<span>1 image</span>"
+                }
+
                 isUploadComplete = false;
             });
+
+            this.on("thumbnail", function(file, dataURL) {
+                setTimeout(function(){ myDropZone.processQueue(); }, 1)
+            });
+
+            this.on("sending", function (file, xhr, formData) {
+                var csrfToken = [[${_csrf.token}]];
+                formData.append("_csrf", csrfToken);
+                formData.append("dataURL", file.dataURL);
+                formData.append("type", file.type);
+            })
 
             this.on('queuecomplete', function () {
                 isUploadComplete = true;
@@ -205,7 +232,7 @@
 
             this.on('success', function (file) {
                 var removeLink = file.previewElement.getElementsByClassName("dz-remove")[0];
-                removeLink.innerText = [[#{general.delete}]].toLowerCase()
+                removeLink.innerText = [[#{general.delete}]].toLowerCase();
                 var fileName = file.name;
                 removeLink.onclick = undefined;
                 removeLink.setAttribute('href', '/pages/uploadDocumentsDeleteWarningPage?filename=' + fileName);
@@ -214,14 +241,14 @@
             // `destroy` is a custom event that we have defined, not something built into dropzone.
             // This event is emitted when the client clicks cancel on a file that has not finished uploading.
             this.on('destroy', function (file) {
-                myDropZone.removeFile(file)
+                myDropZone.removeFile(file);
             });
 
             $.each(documents, function (key, value) {
-                var mockFile = {name: value.filename, size: value.size};
+                var mockFile = { name: value.filename, size: value.size, type: value.type };
                 myDropZone.files.push(mockFile);
                 myDropZone.emit("addedfile", mockFile);
-                myDropZone.emit("thumbnail", mockFile, value.path);
+                myDropZone.emit("thumbnail", mockFile, value.dataURL);
                 myDropZone.emit("success", mockFile);
                 myDropZone.emit("complete", mockFile);
             });
@@ -229,17 +256,14 @@
         },
         error: function (file, errorMessage, xhr) {
             file.previewElement.getElementsByClassName("text--error")[0].innerText = errorMessage.error ? errorMessage.error : errorMessage;
-            file.previewElement.classList.add("form-group--error")
+            file.previewElement.classList.add("form-group--error");
 
-            var removeLink = file.previewElement.getElementsByClassName("dz-remove")[0]
+            var removeLink = file.previewElement.getElementsByClassName("dz-remove")[0];
             removeLink.innerText = "remove";
-            removeLink.classList.add("text--red")
+            removeLink.classList.add("text--red");
 
-            var filePreview = file.previewElement.getElementsByClassName("doc-rectangle")[0]
-            filePreview.innerHTML = "<svg class=\"margin-auto\" width=\"40\" height=\"47\" viewBox=\"0 0 40 47\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n" +
-                "<path d=\"M6.625 40.125H20.375L13.5 28.25L6.625 40.125ZM14.125 38.25H12.875V37H14.125V38.25ZM14.125 35.75H12.875V33.25H14.125V35.75Z\" fill=\"#D13F00\"/>\n" +
-                "<path d=\"M26.6667 0H4.44444C3.2657 0 2.13524 0.550197 1.30175 1.52955C0.468252 2.50891 0 3.8372 0 5.22222V41.7778C0 43.1628 0.468252 44.4911 1.30175 45.4704C2.13524 46.4498 3.2657 47 4.44444 47H35.5556C36.7343 47 37.8648 46.4498 38.6983 45.4704C39.5317 44.4911 40 43.1628 40 41.7778V15.6667L26.6667 0ZM35.5556 41.7778H4.44444V5.22222H24.4444V18.2778H35.5556V41.7778Z\" fill=\"#D13F00\" fill-opacity=\"0.5\"/>\n" +
-                "</svg>"
+            var filePreview = file.previewElement.getElementsByClassName("doc-rectangle")[0];
+            filePreview.innerHTML = documentIcon;
         }
     });
 </script>

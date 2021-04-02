@@ -130,8 +130,8 @@ public class ApplicationData implements Serializable {
         return applicantWith || householdWith;
     }
 
-    public void addUploadedDoc(MultipartFile file, String s3Filepath) {
-        UploadedDocument uploadedDocument = new UploadedDocument(file.getOriginalFilename(), s3Filepath, file.getSize());
+    public void addUploadedDoc(MultipartFile file, String s3Filepath, String dataURL, String type) {
+        UploadedDocument uploadedDocument = new UploadedDocument(file.getOriginalFilename(), s3Filepath, dataURL, type, file.getSize());
         uploadedDocs.add(uploadedDocument);
     }
 

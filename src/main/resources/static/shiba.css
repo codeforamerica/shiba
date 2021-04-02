@@ -262,7 +262,12 @@ html {
     }
 }
 
-.max-files{
+/* TEMPORARILY HIDING UNTIL WE ADD DOCUMENT PAGE COUNT */
+.document-info {
+    display: none
+}
+
+.max-files {
     height: 100%;
     background-color: #FFF2D1;
     border: 2px solid #FFAE00;
@@ -670,6 +675,20 @@ input[type=number] {
     justify-content: center;
 }
 
+@media screen and (max-width: 600px) {
+    .preview-container .doc-rectangle {
+        max-width: 60px;
+    }
+
+    .preview-container .mobile-width-one-fourth {
+        width: 25%;
+    }
+
+    .preview-container .mobile-width-three-fourths {
+        width: 75%;
+    }
+}
+
 .margin-auto {
     margin: auto;
 }
@@ -702,18 +721,22 @@ input[type=number] {
     display: inline-block;
 }
 
-.dz-size {
-    margin-left: 16px;
-}
-
 .dz-remove {
     margin-left: 8px;
     text-decoration: underline;
 }
 
-.file-details-delimiter {
+.file-details-delimiter, .file-count-delimiter {
     margin-left: 8px;
     font-size: small;
+}
+
+.file-count-delimiter {
+    margin-right: 8px;
+}
+
+.file-details {
+    margin-left: 16px;
 }
 
 /*
@@ -960,16 +983,17 @@ input[type=number] {
 }
 
 .dropzone .dz-preview .dz-remove {
-    font-size: 14px;
+    font-size: 16px;
     text-align: center;
     display: block;
     cursor: pointer;
     border: none;
 }
 
-.dropzone .dz-preview .dz-details .dz-size {
+.dropzone .dz-preview .dz-details .dz-size , .file-count {
     margin-bottom: 1em;
     font-size: 16px;
+    display: inline;
 }
 
 .dropzone .dz-preview .dz-details .dz-filename {
@@ -1033,6 +1057,10 @@ input[type=number] {
     overflow: hidden;
 }
 
+.dropzone .dz-thumb {
+    border-radius: 8px;
+}
+
 .dropzone .dz-preview .dz-progress .dz-upload {
     background: #333;
     background: linear-gradient(to bottom, #666, #003865);
@@ -1050,4 +1078,8 @@ input[type=number] {
 
 .long-file-name {
     overflow-wrap: break-word;
+}
+
+.hidden {
+    display: none;
 }

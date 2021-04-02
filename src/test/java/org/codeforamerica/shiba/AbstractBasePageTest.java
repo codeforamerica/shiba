@@ -51,6 +51,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @ExtendWith(SpringExtension.class)
 public abstract class AbstractBasePageTest {
     private static final String UPLOADED_FILE_NAME = "shiba.jpg";
+    private static final String UPLOADED_DOCUMENT_NAME = "test-caf.pdf";
     public static final String PROGRAM_SNAP = "Food (SNAP)";
     public static final String PROGRAM_CASH = "Cash programs";
     public static final String PROGRAM_GRH = "Housing Support (GRH)";
@@ -420,6 +421,11 @@ public abstract class AbstractBasePageTest {
     protected void uploadDefaultFile() {
         uploadFile(getAbsoluteFilepath(UPLOADED_FILE_NAME));
         assertThat(driver.findElement(By.id("document-upload")).getText()).contains(UPLOADED_FILE_NAME);
+    }
+
+    protected void uploadDefaultDocument() {
+        uploadFile(getAbsoluteFilepath(UPLOADED_DOCUMENT_NAME));
+        assertThat(driver.findElement(By.id("document-upload")).getText()).contains(UPLOADED_DOCUMENT_NAME);
     }
 
     private void getToDocumentRecommendationScreen() {
