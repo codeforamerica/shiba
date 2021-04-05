@@ -149,7 +149,9 @@ public class UserJourneyPageTest extends FeatureTest {
 
         List<WebElement> deleteLinks = driver.findElements(By.linkText("delete"));
         assertThat(deleteLinks.size()).isEqualTo(0);
-        assertThat(driver.findElementById("file-error-message").getText()).isEqualTo("Internal Server Error");
+        WebElement errorMessage = driver.findElementById("file-error-message");
+        await().until(() -> !errorMessage.getText().isEmpty());
+        assertThat(errorMessage.getText()).isEqualTo("Internal Server Error");
     }
 
     @Test
