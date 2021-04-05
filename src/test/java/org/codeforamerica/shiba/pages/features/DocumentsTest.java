@@ -303,4 +303,12 @@ public class DocumentsTest extends FeatureTest {
         int maxFileSize = uploadDocumentConfiguration.getMaxFilesize();
         assertThat(driver.findElementById("file-error-message").getText()).contains("This file is too large and cannot be uploaded (max size: " + maxFileSize + " MB)");
     }
+
+    @Test
+    void showFileTypeErrorMessageWhenClientHasUploadedInvalidFileType() {
+        getToDocumentUploadScreen();
+        driver.executeScript("$('#document-upload').get(0).dropzone.addFile({name: 'testFile.xyz', size: 1000, type: 'not-an-image'})");
+
+        assertThat(driver.findElementById("file-error-message").getText()).contains("You can't upload files of this type");
+    }
 }
