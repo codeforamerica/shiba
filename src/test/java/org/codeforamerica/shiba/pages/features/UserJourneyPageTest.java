@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,8 +18,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
 
 public class UserJourneyPageTest extends FeatureTest {
     @Test
@@ -137,58 +133,6 @@ public class UserJourneyPageTest extends FeatureTest {
                 .isEqualTo("ENGLISH");
         assertThat(acroForm.getField("NEED_INTERPRETER").getValueAsString())
                 .isEqualTo("Yes");
-    }
-
-    @Test
-    void whenDocumentUploadFailsThenThereShouldBeAnError() throws IOException, InterruptedException {
-        doThrow(new InterruptedException())
-                .when(documentUploadService).upload(any(String.class), any(MultipartFile.class));
-
-        getToDocumentUploadScreen();
-        uploadDefaultFile();
-
-        List<WebElement> deleteLinks = driver.findElements(By.linkText("delete"));
-        assertThat(deleteLinks.size()).isEqualTo(0);
-        WebElement errorMessage = driver.findElementById("file-error-message");
-        await().until(() -> !errorMessage.getText().isEmpty());
-        assertThat(errorMessage.getText()).isEqualTo("Internal Server Error");
-    }
-
-    @Test
-    void deletingUploadedFileShouldLoadDocumentUploadScreenUponConfirmDeletion() {
-        getToDocumentUploadScreen();
-        uploadDefaultFile();
-        waitForDocumentUploadToComplete();
-        List<WebElement> deleteLinks = driver.findElements(By.linkText("delete"));
-        assertThat(deleteLinks.size()).isEqualTo(1);
-        testPage.clickLink("delete");
-
-        assertThat(testPage.getTitle()).isEqualTo("Delete a file");
-        testPage.clickButton("Yes, delete the file");
-
-        assertThat(testPage.getTitle()).isEqualTo("Upload Documents");
-        deleteLinks = driver.findElements(By.linkText("delete"));
-        assertThat(deleteLinks.size()).isEqualTo(0);
-    }
-
-    @Test
-    void showMaxFileUploadMessageWhenClientHasUploaded20Documents() {
-        getToDocumentUploadScreen();
-        for (int c = 0; c < 20; c++) {
-            uploadDefaultFile();
-        }
-
-        assertThat(driver.findElementById("max-files").getText()).contains("You have uploaded the maximum number of files (20). You will have the opportunity to share more with a county worker later.");
-    }
-
-    @Test
-    void showMaxFilesizeErrorMessageWhenClientHasUploadedLargeDocument() {
-        getToDocumentUploadScreen();
-        long largeFilesize = 50000000000L;
-        driver.executeScript("$('#document-upload').get(0).dropzone.addFile({name: 'testFile.pdf', size: " + largeFilesize + ", type: 'not-an-image'})");
-
-        int maxFileSize = uploadDocumentConfiguration.getMaxFilesize();
-        assertThat(driver.findElementById("file-error-message").getText()).contains("This file is too large and cannot be uploaded (max size: " + maxFileSize + " MB)");
     }
 
     @Test
