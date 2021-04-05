@@ -237,7 +237,7 @@
                 removeLink.innerText = [[#{general.delete}]].toLowerCase();
                 var fileName = file.name;
                 removeLink.onclick = undefined;
-                removeLink.setAttribute('href', '/pages/uploadDocumentsDeleteWarningPage?filename=' + fileName);
+                removeLink.setAttribute('href', '/pages/uploadDocumentsDeleteWarningPage?filename=' + encodeURIComponent(fileName));
             });
 
             // `destroy` is a custom event that we have defined, not something built into dropzone.

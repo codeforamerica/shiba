@@ -50,7 +50,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 public abstract class AbstractBasePageTest {
-    private static final String UPLOADED_FILE_NAME = "shiba.jpg";
+    private static final String UPLOADED_FILE_NAME = "shiba+file.jpg";
     private static final String UPLOADED_DOCUMENT_NAME = "test-caf.pdf";
     public static final String PROGRAM_SNAP = "Food (SNAP)";
     public static final String PROGRAM_CASH = "Cash programs";

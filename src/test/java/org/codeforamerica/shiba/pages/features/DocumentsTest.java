@@ -285,6 +285,16 @@ public class DocumentsTest extends FeatureTest {
     }
 
     @Test
+    void deletingUploadedFileWithPlussesShouldPreservePlusses() {
+        getToDocumentUploadScreen();
+        uploadDefaultFile();
+        waitForDocumentUploadToComplete();
+        testPage.clickLink("delete");
+
+        assertThat(driver.findElement(By.tagName("h1")).getText()).contains("shiba+file.jpg");
+    }
+
+    @Test
     void showMaxFileUploadMessageWhenClientHasUploaded20Documents() {
         getToDocumentUploadScreen();
         for (int c = 0; c < 20; c++) {
