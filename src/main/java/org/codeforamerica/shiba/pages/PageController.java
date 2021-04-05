@@ -6,10 +6,9 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
-import org.codeforamerica.shiba.documents.DocumentRepositoryService;
+import org.codeforamerica.shiba.documents.DocumentUploadService;
 import org.codeforamerica.shiba.output.CompositeCondition;
 import org.codeforamerica.shiba.output.Document;
-import org.codeforamerica.shiba.output.MnitDocumentConsumer;
 import org.codeforamerica.shiba.pages.config.*;
 import org.codeforamerica.shiba.pages.data.*;
 import org.codeforamerica.shiba.pages.enrichment.ApplicationEnrichment;
@@ -42,6 +41,7 @@ import static java.util.Optional.ofNullable;
 @Slf4j
 public class PageController {
     private static final ZoneId CENTRAL_TIMEZONE = ZoneId.of("America/Chicago");
+    private final int MAX_FILES_UPLOADED = 20;
     private final ApplicationData applicationData;
     private final ApplicationConfiguration applicationConfiguration;
     private final Clock clock;
@@ -53,8 +53,7 @@ public class PageController {
     private final ApplicationDataParser<List<Document>> documentListParser;
     private final FeatureFlagConfiguration featureFlags;
     private final UploadDocumentConfiguration uploadDocumentConfiguration;
-
-    private final DocumentRepositoryService documentRepositoryService;
+    private final DocumentUploadService documentUploadService;
 
     public PageController(
             ApplicationConfiguration applicationConfiguration,
@@ -67,7 +66,8 @@ public class PageController {
             ApplicationEnrichment applicationEnrichment,
             ApplicationDataParser<List<Document>> documentListParser,
             FeatureFlagConfiguration featureFlags,
-            UploadDocumentConfiguration uploadDocumentConfiguration, DocumentRepositoryService documentRepositoryService) {
+            UploadDocumentConfiguration uploadDocumentConfiguration,
+            DocumentUploadService documentUploadService) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
@@ -79,7 +79,7 @@ public class PageController {
         this.documentListParser = documentListParser;
         this.featureFlags = featureFlags;
         this.uploadDocumentConfiguration = uploadDocumentConfiguration;
-        this.documentRepositoryService= documentRepositoryService;
+        this.documentUploadService = documentUploadService;
     }
 
     @GetMapping("/")
@@ -336,6 +336,32 @@ public class PageController {
         }
     }
 
+    @PostMapping("/file-upload")
+    @ResponseStatus(HttpStatus.OK)
+    public void upload(@RequestParam("file") MultipartFile file,
+                       @RequestParam("dataURL") String dataURL,
+                       @RequestParam("type") String type) throws IOException, InterruptedException {
+        if (this.applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
+                file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
+            String s3FilePath = String.format("%s/%s", applicationData.getId(), UUID.randomUUID());
+            documentUploadService.upload(s3FilePath, file);
+            this.applicationData.addUploadedDoc(file, s3FilePath, dataURL, type);
+        }
+    }
+
+    @SuppressWarnings("SpringMVCViewInspection")
+    @PostMapping("/remove-upload/{filename}")
+    ModelAndView removeUpload(@PathVariable String filename) {
+        applicationData.getUploadedDocs().stream()
+                .filter(uploadedDocument -> uploadedDocument.getFilename().equals(filename))
+                .map(UploadedDocument::getS3Filepath)
+                .findFirst()
+                .ifPresent(documentUploadService::delete);
+        this.applicationData.removeUploadedDoc(filename);
+
+        return new ModelAndView("redirect:/pages/uploadDocuments");
+    }
+
     @PostMapping("/submit")
     ModelAndView submitApplication(
             @RequestBody(required = false) MultiValueMap<String, String> model,
@@ -381,19 +407,6 @@ public class PageController {
         Application updatedApplication = application.addFeedback(feedback);
         applicationRepository.save(updatedApplication);
         return new RedirectView("/pages/" + terminalPage);
-    }
-
-    @PostMapping("/document-upload")
-    @ResponseStatus(HttpStatus.OK)
-    public void upload(@RequestParam("file") MultipartFile file,
-                       @RequestParam("dataURL") String dataURL,
-                       @RequestParam("type") String type) throws IOException, InterruptedException {
-        if (this.applicationData.getUploadedDocs().size() <= 20 &&
-                file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
-            String s3FilePath = String.format("%s/%s", applicationData.getId(), UUID.randomUUID());
-            documentRepositoryService.upload(s3FilePath, file);
-            this.applicationData.addUploadedDoc(file, s3FilePath, dataURL, type);
-        }
     }
 
 }

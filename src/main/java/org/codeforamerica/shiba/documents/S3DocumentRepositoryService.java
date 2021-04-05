@@ -4,44 +4,45 @@ import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.services.s3.transfer.TransferManager;
-import com.amazonaws.util.IOUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Profile;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 @Service
-@Profile({"demo", "staging", "production", "test"})
+//@Profile({"demo", "staging", "production", "test"})
 @Slf4j
-public class S3DocumentRepositoryService implements DocumentRepositoryService {
+public class S3DocumentUploadService implements DocumentUploadService {
     private final TransferManager transferManager;
     private final String bucketName;
     private final AmazonS3 s3Client;
+    private final ResourceLoader resourceLoader;
 
-    public S3DocumentRepositoryService(
+    public S3DocumentUploadService(
             TransferManager transferManager,
             @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") AmazonS3 s3Client, ResourceLoader resourceLoader) {
         this.s3Client = s3Client;
         this.bucketName = System.getenv("S3_BUCKET");
         this.transferManager = transferManager;
+        this.resourceLoader = resourceLoader;
     }
 
     @Override
     public byte[] get(String filepath) {
-        S3Object obj = s3Client.getObject(bucketName, filepath);
-        S3ObjectInputStream stream = obj.getObjectContent();
-        try {
-            byte[] content = IOUtils.toByteArray(stream);
-            obj.close();
-            return content;
+        String s3Url = "s3://" + filepath;
+        Resource resource = resourceLoader.getResource(s3Url);
+
+        try (InputStream inputStream = resource.getInputStream()) {
+            byte[] fileBytes = new byte[inputStream.available()];
+            inputStream.read(fileBytes);
+            return fileBytes;
         } catch (IOException e) {
-            return null;
+            return null; //todo optional?
         }
     }
 

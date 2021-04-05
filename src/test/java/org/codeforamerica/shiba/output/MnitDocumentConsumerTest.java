@@ -5,9 +5,8 @@ import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
-import org.codeforamerica.shiba.documents.DocumentRepositoryService;
+import org.codeforamerica.shiba.documents.DocumentUploadService;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
-import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -16,8 +15,6 @@ import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -35,17 +32,14 @@ class MnitDocumentConsumerTest {
     ApplicationDataParser<List<Document>> documentListParser = mock(DocumentListParser.class);
     ApplicationData appData = new ApplicationData();
     MonitoringService monitoringService = mock(MonitoringService.class);
-    DocumentRepositoryService documentRepositoryService = mock(DocumentRepositoryService.class);
-    FileNameGenerator fileNameGenerator = mock(FileNameGenerator.class);
+    DocumentUploadService documentUploadService = mock(DocumentUploadService.class);
     MnitDocumentConsumer documentConsumer = new MnitDocumentConsumer(
         mnitClient,
         xmlGenerator,
         pdfGenerator,
         documentListParser,
         monitoringService,
-            documentRepositoryService,
-        fileNameGenerator,
-            "test");
+        documentUploadService);
 
     @BeforeEach
     void setUp() {
@@ -144,33 +138,5 @@ class MnitDocumentConsumerTest {
         documentConsumer.process(application);
 
         verify(monitoringService).setApplicationId(application.getId());
-    }
-
-    @Test
-    void sendsBothImageAndDocumentUploadsSuccessfully() {
-        MockMultipartFile image = new MockMultipartFile("image", "someImage.jpg", MediaType.IMAGE_JPEG_VALUE, "test".getBytes());
-        MockMultipartFile pdf = new MockMultipartFile("pdf", "somePdf.pdf", MediaType.APPLICATION_PDF_VALUE, "thisIsAPdf".getBytes());
-        ApplicationFile imageApplicationFile = new ApplicationFile("test".getBytes(), "image");
-        ApplicationFile pdfApplicationFile = new ApplicationFile("thisIsAPdf".getBytes(), "pdf");
-        ApplicationData applicationData = new ApplicationData();
-        applicationData.addUploadedDoc(image, "someS3FilePath", "someDataUrl", "image/jpeg");
-        applicationData.addUploadedDoc(pdf, "coolS3FilePath", "documentDataUrl", "application/pdf");
-
-        Application application = Application.builder()
-                .id("someId")
-                .completedAt(ZonedDateTime.now())
-                .applicationData(applicationData)
-                .county(County.Olmsted)
-                .timeToComplete(null)
-                .build();
-
-        when(fileNameGenerator.generateUploadedDocumentName(application, 0, "someImage.jpg")).thenReturn("image");
-        when(fileNameGenerator.generateUploadedDocumentName(application, 1, "somePdf.pdf")).thenReturn("pdf");
-        when(documentRepositoryService.get("someS3FilePath")).thenReturn(imageApplicationFile.getFileBytes());
-        when(documentRepositoryService.get("coolS3FilePath")).thenReturn(pdfApplicationFile.getFileBytes());
-        documentConsumer.processUploadedDocuments(application);
-
-        verify(mnitClient).send(pdfApplicationFile, County.Olmsted, application.getId(), null);
-        verify(mnitClient).send(imageApplicationFile, County.Olmsted, application.getId(), null);
     }
 }
