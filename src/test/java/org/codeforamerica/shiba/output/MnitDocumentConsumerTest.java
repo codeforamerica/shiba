@@ -5,6 +5,7 @@ import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
+import org.codeforamerica.shiba.documents.DocumentUploadService;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
@@ -31,13 +32,14 @@ class MnitDocumentConsumerTest {
     ApplicationDataParser<List<Document>> documentListParser = mock(DocumentListParser.class);
     ApplicationData appData = new ApplicationData();
     MonitoringService monitoringService = mock(MonitoringService.class);
+    DocumentUploadService documentUploadService = mock(DocumentUploadService.class);
     MnitDocumentConsumer documentConsumer = new MnitDocumentConsumer(
         mnitClient,
         xmlGenerator,
         pdfGenerator,
         documentListParser,
-        monitoringService
-    );
+        monitoringService,
+        documentUploadService);
 
     @BeforeEach
     void setUp() {

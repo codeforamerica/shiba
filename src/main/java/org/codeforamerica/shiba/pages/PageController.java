@@ -1,12 +1,12 @@
 package org.codeforamerica.shiba.pages;
 
 import lombok.extern.slf4j.Slf4j;
-import org.codeforamerica.shiba.documents.DocumentUploadService;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
+import org.codeforamerica.shiba.documents.DocumentUploadService;
 import org.codeforamerica.shiba.output.CompositeCondition;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.config.*;
@@ -158,7 +158,7 @@ public class PageController {
             httpSession.invalidate();
         } else if (landmarkPagesConfiguration.isStartTimerPage(pageName)) {
             this.applicationData.setStartTimeOnce(clock.instant());
-            if(!utmSource.isEmpty()) {
+            if (!utmSource.isEmpty()) {
                 this.applicationData.setUtmSource(utmSource);
             }
         }
