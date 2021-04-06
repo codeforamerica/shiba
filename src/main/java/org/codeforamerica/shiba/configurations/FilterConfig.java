@@ -24,7 +24,10 @@ public class FilterConfig {
                 "/file-upload",
                 "/remove-upload/*",
                 "/submit",
-                "/submit-feedback"
+                "/submit-feedback",
+                "/download-caf/*",
+                "/download-ccap/*",
+                "/metrics"
         );
 
         return registrationBean;
