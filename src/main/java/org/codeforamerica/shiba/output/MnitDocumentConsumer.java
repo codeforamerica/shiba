@@ -61,7 +61,7 @@ public class MnitDocumentConsumer {
             byte[] fileBytes = documentUploadService.get(uploadedDocument.getS3Filepath());
             String filename = fileNameGenerator.generateUploadedDocumentName(application, i, uploadedDocument.getFilename());
             ApplicationFile fileToSend = new ApplicationFile(fileBytes, filename);
-            log.info("Now sending " + filename);
+            log.info("Now sending: " + filename + " original filename: " + uploadedDocument.getFilename());
             mnitClient.send(fileToSend, application.getCounty(), application.getId(), null);
             log.info("Finished sending document " + filename);
         }
