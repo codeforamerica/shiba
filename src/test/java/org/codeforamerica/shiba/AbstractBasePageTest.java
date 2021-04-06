@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import io.percy.selenium.Percy;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.output.Document;
@@ -58,6 +59,7 @@ public abstract class AbstractBasePageTest {
     public static final String PROGRAM_CCAP = "Child Care Assistance";
     public static final String PROGRAM_EA = "Emergency Assistance";
     static protected RemoteWebDriver driver;
+    private static Percy percy;
 
     protected Path path;
     protected String baseUrl;
@@ -87,7 +89,8 @@ public abstract class AbstractBasePageTest {
         options.addArguments("--window-size=1280,1600");
         options.addArguments("--headless");
         driver = new ChromeDriver(options);
-        testPage = new Page(driver);
+        percy = new Percy(driver);
+        testPage = new Page(driver, percy);
     }
 
     @AfterEach
