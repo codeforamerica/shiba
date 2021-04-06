@@ -62,11 +62,8 @@
                                 </a>
                             </div>
                         </form>
-                        <form th:action="@{/submit-documents}" method="post">
+                        <form th:action="@{/submit-documents}" method="post" onsubmit="return onSubmit()">
                             <div class="form-group">
-<!--                        TODO do file upload validation here?           -->
-<!--                                <a id="submit" class="button" onclick="onSubmit()"-->
-<!--                                   th:text="#{upload-documents.im-finished-uploading}"></a>-->
                                 <button type="submit" class="button button--primary" th:text="#{upload-documents.im-finished-uploading}"></button>
                                 <p class="text--error">
                                     <i class="icon-warning"></i>
@@ -112,13 +109,13 @@
     }
 
     function onSubmit() {
-        // TODO validation stuff should happen here
-        // if (!isUploadComplete) {
-        //     $('.form-group').addClass('form-group--error');
-        //     $('.text--error').show();
-        // } else {
-        //     window.location = "/pages/" + [[${pageName}]] + "/navigation?option=0";
-        // }
+        if (!isUploadComplete) {
+            $('.form-group').addClass('form-group--error');
+            $('.text--error').show();
+            return false;
+        } else {
+            return true;
+        }
     }
 
     function showMaxFileMessage() {
