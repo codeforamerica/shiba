@@ -357,14 +357,13 @@ function (_Emitter) {
          * [`accept`](https://developer.mozilla.org/en-US/docs/HTML/Element/input#attr-accept)
          * parameter on the hidden file input as well.
          */
-        acceptedFiles: ".jpeg,.jpg,.png,.tiff,.pdf,.bmp,.gif,.doc,.docx,.odt,.ods,.odp,.heic,.heif",
+        acceptedFiles: null,
 
         /**
          * **Deprecated!**
          * Use acceptedFiles instead.
          */
         acceptedMimeTypes: null,
-        
 
         /**
          * If false, files will be added to the queue but the queue will not be
