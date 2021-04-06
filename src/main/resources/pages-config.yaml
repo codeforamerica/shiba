@@ -2100,7 +2100,7 @@ pageDefinitions:
   - &500
     name: 500
     pageTitle:
-      value: error-404.title
+      value: error-500.title
 workflow:
   landing:
     pageConfiguration: *landing
