@@ -59,7 +59,7 @@ public abstract class AbstractBasePageTest {
     public static final String PROGRAM_CCAP = "Child Care Assistance";
     public static final String PROGRAM_EA = "Emergency Assistance";
     static protected RemoteWebDriver driver;
-    private static Percy percy;
+    protected static Percy percy;
 
     protected Path path;
     protected String baseUrl;
@@ -90,7 +90,7 @@ public abstract class AbstractBasePageTest {
         options.addArguments("--headless");
         driver = new ChromeDriver(options);
         percy = new Percy(driver);
-        testPage = new Page(driver, percy);
+        testPage = new Page(driver);
     }
 
     @AfterEach
@@ -203,11 +203,7 @@ public abstract class AbstractBasePageTest {
         testPage.enter("email", "some@email.com");
         testPage.enter("phoneOrEmail", "Text me");
         testPage.clickContinue();
-        testPage.enter("zipCode", "12345");
-        testPage.enter("city", "someCity");
-        testPage.enter("streetAddress", "someStreetAddress");
-        testPage.enter("apartmentNumber", "someApartmentNumber");
-        testPage.enter("isHomeless", "I don't have a permanent address");
+        fillOutAddress();
         testPage.enter("sameMailingAddress", "No, use a different address for mail");
         testPage.clickContinue();
 
@@ -225,6 +221,14 @@ public abstract class AbstractBasePageTest {
         testPage.clickElementById("enriched-address");
         testPage.clickContinue();
         assertThat(driver.findElementById("mailing-address_street").getText()).isEqualTo("smarty street");
+    }
+
+    protected void fillOutAddress() {
+        testPage.enter("zipCode", "12345");
+        testPage.enter("city", "someCity");
+        testPage.enter("streetAddress", "someStreetAddress");
+        testPage.enter("apartmentNumber", "someApartmentNumber");
+        testPage.enter("isHomeless", "I don't have a permanent address");
     }
 
     protected SuccessPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking, SmartyStreetClient mockSmartyStreetClient) {

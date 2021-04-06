@@ -1,6 +1,5 @@
 package org.codeforamerica.shiba.pages;
 
-import io.percy.selenium.Percy;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -12,15 +11,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class Page {
     protected final RemoteWebDriver driver;
-    protected Percy percy;
 
     public String getTitle() {
         return driver.getTitle();
-    }
-
-    public Page(RemoteWebDriver driver, Percy percy) {
-        this.driver = driver;
-        this.percy = percy;
     }
 
     public Page(RemoteWebDriver driver) {
@@ -60,7 +53,6 @@ public class Page {
     }
 
     public void clickContinue() {
-        percy.snapshot(driver.getTitle());
         clickButton("Continue");
     }
 
