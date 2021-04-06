@@ -7,11 +7,11 @@ spring:
       initialize-schema: always
   servlet:
     multipart:
-      max-file-size: 50MB
-      max-request-size: 50MB
+      max-file-size: 30MB
+      max-request-size: 30MB
 server:
   tomcat:
-    max-http-form-post-size: 50MB
+    max-http-form-post-size: 30MB
     use-relative-redirects: true
   servlet:
     session:
