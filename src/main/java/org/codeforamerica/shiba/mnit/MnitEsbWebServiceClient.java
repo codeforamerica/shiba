@@ -5,7 +5,6 @@ import com.sun.xml.messaging.saaj.soap.name.NameImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
-import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.esbwsdl.*;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
@@ -17,9 +16,7 @@ import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MimeTypeUtils;
-import org.springframework.ws.client.WebServiceTransportException;
 import org.springframework.ws.client.core.WebServiceTemplate;
-import org.springframework.ws.soap.client.SoapFaultClientException;
 import org.springframework.ws.soap.saaj.SaajSoapMessage;
 
 import javax.activation.DataHandler;
@@ -54,7 +51,7 @@ public class MnitEsbWebServiceClient {
     }
 
     @Retryable(
-            value = {SoapFaultClientException.class, SOAPException.class, WebServiceTransportException.class},
+            value = {Exception.class},
             maxAttemptsExpression = "#{${mnit-esb.max-attempts}}",
             backoff = @Backoff(
                     delayExpression = "#{${mnit-esb.delay}}",
