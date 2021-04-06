@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages.features;
 
+import io.percy.selenium.Percy;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.pages.SuccessPage;
@@ -8,19 +9,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
-import org.springframework.web.multipart.MultipartFile;
-import io.percy.selenium.Percy;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -30,6 +24,21 @@ import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 
 public class UserJourneyPageTest extends FeatureTest {
+
+    @Test
+    void percyTest() {
+//        navigateTo("prepareToApply");
+//        percy.snapshot(driver.getTitle());
+
+
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless");
+        WebDriver percyDriver = new ChromeDriver(options);
+        Percy percy = new Percy(percyDriver);
+
+        percyDriver.get(baseUrl);
+        percy.snapshot("testPage");
+    }
 
     @Test
     void intercomButtonIsPresent() {
