@@ -181,27 +181,18 @@
                     showMaxFileMessage();
                 }
                 var fileNameSpan = file.previewElement.getElementsByClassName('filename-text')[0];
-                fileNameSpan.setAttribute('aria-label', fileNameSpan.innerText);
                 var fileNameComponents = getFilenameComponents(fileNameSpan);
+                var removeLink = file.previewElement.getElementsByClassName("dz-remove")[0];
+                var thumbnail = file.previewElement.getElementsByClassName("dz-thumb")[0];
+
+                fileNameSpan.setAttribute('aria-label', fileNameSpan.innerText);
                 fileNameSpan.innerHTML = "<span class='filename-text-name' aria-hidden='true'>" + fileNameComponents[0] + "</span>" +
                     "<span class='filename-text-ext' aria-hidden='true'>" + fileNameComponents[1] + "</span>";
 
-                var removeLink = file.previewElement.getElementsByClassName("dz-remove")[0];
                 removeLink.onclick = destroyerCreator(file);
                 removeLink.innerText = [[#{general.cancel}]].toLowerCase();
 
-                var fileCount = file.previewElement.getElementsByClassName('file-count')[0];
-                var documentInfo = file.previewElement.getElementsByClassName('document-info')[0];
-
-                if (!file.type.includes("image")) {
-                    file.dataURL = documentIcon;
-                    myDropZone.emit("thumbnail", file, documentIcon);
-                    // This hides delimiter for documents since we haven't implemented document count yet, will probably need to refactor when we implement document count
-                    documentInfo.classList.add("hidden");
-                } else if (file.type.includes("image")) {
-                    fileCount.setAttribute('aria-label', fileCount.innerText);
-                    fileCount.innerHTML = "<span>1 image</span>"
-                }
+                thumbnail.classList.add("hidden");
 
                 isUploadComplete = false;
             });
@@ -219,7 +210,6 @@
 
             this.on('queuecomplete', function () {
                 isUploadComplete = true;
-
                 if (documents.length >= this.options.maxFiles) {
                     showMaxFileMessage();
                 }
@@ -235,10 +225,25 @@
 
             this.on('success', function (file) {
                 var removeLink = file.previewElement.getElementsByClassName("dz-remove")[0];
-                removeLink.innerText = [[#{general.delete}]].toLowerCase();
+                var fileCount = file.previewElement.getElementsByClassName('file-count')[0];
+                var documentInfo = file.previewElement.getElementsByClassName('document-info')[0];
+                var thumbnail = file.previewElement.getElementsByClassName("dz-thumb")[0];
                 var fileName = file.name;
+
                 removeLink.onclick = undefined;
                 removeLink.setAttribute('href', '/pages/uploadDocumentsDeleteWarningPage?filename=' + encodeURIComponent(fileName));
+                removeLink.innerText = [[#{general.delete}]].toLowerCase();
+                thumbnail.classList.remove("hidden");
+
+                if (!file.type.includes("image")) {
+                    file.dataURL = documentIcon;
+                    myDropZone.emit("thumbnail", file, documentIcon);
+                    // This hides delimiter for documents since we haven't implemented document count yet, will probably need to refactor when we implement document count
+                    documentInfo.classList.add("hidden");
+                } else if (file.type.includes("image")) {
+                    fileCount.setAttribute('aria-label', fileCount.innerText);
+                    fileCount.innerHTML = "<span>1 image</span>"
+                }
             });
 
             // `destroy` is a custom event that we have defined, not something built into dropzone.
