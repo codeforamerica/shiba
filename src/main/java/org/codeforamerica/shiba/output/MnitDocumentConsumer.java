@@ -6,15 +6,12 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.documents.DocumentUploadService;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
+import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.List;
 
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
@@ -28,49 +25,44 @@ public class MnitDocumentConsumer {
     private final ApplicationDataParser<List<Document>> documentListParser;
     private final MonitoringService monitoringService;
     private final DocumentUploadService documentUploadService;
+    private final FileNameGenerator fileNameGenerator;
 
     public MnitDocumentConsumer(MnitEsbWebServiceClient mnitClient,
                                 XmlGenerator xmlGenerator,
                                 PdfGenerator pdfGenerator,
                                 ApplicationDataParser<List<Document>> documentListParser,
                                 MonitoringService monitoringService,
-                                DocumentUploadService documentUploadService) {
+                                DocumentUploadService documentUploadService,
+                                FileNameGenerator fileNameGenerator) {
         this.mnitClient = mnitClient;
         this.xmlGenerator = xmlGenerator;
         this.pdfGenerator = pdfGenerator;
         this.documentListParser = documentListParser;
         this.monitoringService = monitoringService;
         this.documentUploadService = documentUploadService;
+        this.fileNameGenerator = fileNameGenerator;
     }
 
     public void process(Application application) {
         monitoringService.setApplicationId(application.getId());
-
         // Send the CAF and CCAP as PDFs
         documentListParser.parse(application.getApplicationData()).forEach(documentType -> mnitClient.send(
                 pdfGenerator.generate(application.getId(), documentType, CASEWORKER), application.getCounty(),
                 application.getId(), documentType)
         );
 
+        mnitClient.send(xmlGenerator.generate(application.getId(), Document.CAF, CASEWORKER), application.getCounty(), application.getId(), Document.CAF);
+    }
+
+    public void processUploadedDocuments(Application application) {
         List<UploadedDocument> uploadedDocs = application.getApplicationData().getUploadedDocs();
         for (int i = 0; i < uploadedDocs.size(); i++) {
             UploadedDocument uploadedDocument = uploadedDocs.get(i);
             byte[] fileBytes = documentUploadService.get(uploadedDocument.getS3Filepath());
-
-            File file = new File(String.format("test-%d.jpg", i));
-            try {
-                OutputStream os = new FileOutputStream(file);
-                os.write(fileBytes);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            log.info("we wrote the file");
-
-            // get filename
-
-            // Turn it into Application File
+            String filename = fileNameGenerator.generateUploadedDocumentName(application, i, uploadedDocument.getFilename());
+            ApplicationFile fileToSend = new ApplicationFile(fileBytes, filename);
+            mnitClient.send(fileToSend, application.getCounty(), application.getId(), null);
+            log.info("we did the thing");
         }
-
-        mnitClient.send(xmlGenerator.generate(application.getId(), Document.CAF, CASEWORKER), application.getCounty(), application.getId(), Document.CAF);
     }
 }

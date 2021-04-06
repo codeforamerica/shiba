@@ -9,6 +9,7 @@ import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.output.Document;
+import org.codeforamerica.shiba.output.MnitDocumentConsumer;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -62,6 +63,7 @@ class PageControllerTest {
     ApplicationDataParser<List<Document>> documentListParser = mock(DocumentListParser.class);
     FeatureFlagConfiguration featureFlags = mock(FeatureFlagConfiguration.class);
     UploadDocumentConfiguration uploadDocumentConfiguration = mock(UploadDocumentConfiguration.class);
+    MnitDocumentConsumer mnitDocumentConsumer = mock(MnitDocumentConsumer.class);
 
     @Autowired
     private ApplicationConfiguration applicationConfiguration;
@@ -83,7 +85,8 @@ class PageControllerTest {
                 documentListParser,
                 featureFlags,
                 uploadDocumentConfiguration,
-                documentUploadService);
+                documentUploadService,
+                mnitDocumentConsumer);
 
         mockMvc = MockMvcBuilders.standaloneSetup(pageController)
                 .build();

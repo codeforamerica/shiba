@@ -9,6 +9,7 @@ import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.documents.DocumentUploadService;
 import org.codeforamerica.shiba.output.CompositeCondition;
 import org.codeforamerica.shiba.output.Document;
+import org.codeforamerica.shiba.output.MnitDocumentConsumer;
 import org.codeforamerica.shiba.pages.config.*;
 import org.codeforamerica.shiba.pages.data.*;
 import org.codeforamerica.shiba.pages.enrichment.ApplicationEnrichment;
@@ -54,6 +55,7 @@ public class PageController {
     private final FeatureFlagConfiguration featureFlags;
     private final UploadDocumentConfiguration uploadDocumentConfiguration;
     private final DocumentUploadService documentUploadService;
+    private MnitDocumentConsumer mnitDocumentConsumer;
 
     public PageController(
             ApplicationConfiguration applicationConfiguration,
@@ -67,7 +69,7 @@ public class PageController {
             ApplicationDataParser<List<Document>> documentListParser,
             FeatureFlagConfiguration featureFlags,
             UploadDocumentConfiguration uploadDocumentConfiguration,
-            DocumentUploadService documentUploadService) {
+            DocumentUploadService documentUploadService, MnitDocumentConsumer mnitDocumentConsumer) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
@@ -80,6 +82,7 @@ public class PageController {
         this.featureFlags = featureFlags;
         this.uploadDocumentConfiguration = uploadDocumentConfiguration;
         this.documentUploadService = documentUploadService;
+        this.mnitDocumentConsumer = mnitDocumentConsumer;
     }
 
     @GetMapping("/")
@@ -387,6 +390,20 @@ public class PageController {
         } else {
             return new ModelAndView("redirect:/pages/" + submitPage);
         }
+    }
+
+    @PostMapping("/submit-documents")
+    ModelAndView submitDocuments() {
+        if (featureFlags.get("submit-via-api").isOn()) {
+            Application application = applicationRepository.find(applicationData.getId());
+            application.getApplicationData().setUploadedDocs(applicationData.getUploadedDocs());
+            applicationRepository.save(application);
+            mnitDocumentConsumer.processUploadedDocuments(application);
+        }
+        LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
+        String terminalPage = landmarkPagesConfiguration.getTerminalPage();
+
+        return new ModelAndView(String.format("redirect:/pages/%s", terminalPage));
     }
 
     @PostMapping("/submit-feedback")
