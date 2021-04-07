@@ -414,7 +414,7 @@ public abstract class AbstractBasePageTest {
 
     private void uploadFile(String filepath) {
         testPage.clickElementById("drag-and-drop-box"); // is this needed?
-        WebElement upload = driver.findElement(By.cssSelector("input"));
+        WebElement upload = driver.findElement(By.className("dz-hidden-input"));
         upload.sendKeys(filepath);
     }
 
