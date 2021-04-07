@@ -1,12 +1,10 @@
 name: Run tests on PRs
 
 on:
-  check_run:
-    types:
-      - completed
-  pull_request:
-    branches: [ main ]
-  status: { }
+  push:
+    branches-ignore:
+      - main
+      - staging
 
 jobs:
   test:
