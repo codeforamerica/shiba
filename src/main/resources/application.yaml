@@ -12,6 +12,7 @@ spring:
 server:
   tomcat:
     max-http-form-post-size: 50MB
+    use-relative-redirects: true
   servlet:
     session:
       cookie:
