@@ -6,6 +6,7 @@ import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,8 +16,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
-import static org.codeforamerica.shiba.output.Recipient.*;
-import static org.codeforamerica.shiba.output.Document.*;
+import static org.codeforamerica.shiba.output.Document.CAF;
+import static org.codeforamerica.shiba.output.Document.CCAP;
+import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
+import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 
 @Controller
 @Slf4j
@@ -83,6 +86,17 @@ public class FileDownLoadController {
         ApplicationFile applicationFile = pdfGenerator.generate(applicationId, CAF, CASEWORKER);
 
         return createResponse(applicationFile);
+    }
+
+    @GetMapping("/pdfs/{applicationId}")
+    ResponseEntity<byte[]> showPDF(
+            @PathVariable String applicationId
+    ) {
+        ApplicationFile applicationFile = pdfGenerator.generate(applicationId, CAF, CLIENT);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + applicationFile.getFileName());
+        return new ResponseEntity<>(applicationFile.getFileBytes(), headers, HttpStatus.OK);
     }
 
     private ResponseEntity<byte[]> createResponse(ApplicationFile applicationFile) {
