@@ -12,6 +12,10 @@ spring:
 server:
   tomcat:
     max-http-form-post-size: 50MB
+  servlet:
+    session:
+      cookie:
+        secure: true
 
 cloud:
   aws:
