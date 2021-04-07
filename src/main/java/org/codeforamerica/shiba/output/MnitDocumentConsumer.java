@@ -10,6 +10,7 @@ import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class MnitDocumentConsumer {
     private final MonitoringService monitoringService;
     private final DocumentUploadService documentUploadService;
     private final FileNameGenerator fileNameGenerator;
+    private final String activeProfile;
 
     public MnitDocumentConsumer(MnitEsbWebServiceClient mnitClient,
                                 XmlGenerator xmlGenerator,
@@ -33,7 +35,8 @@ public class MnitDocumentConsumer {
                                 ApplicationDataParser<List<Document>> documentListParser,
                                 MonitoringService monitoringService,
                                 DocumentUploadService documentUploadService,
-                                FileNameGenerator fileNameGenerator) {
+                                FileNameGenerator fileNameGenerator,
+                                @Value("${spring.profiles.active:dev}") String activeProfile) {
         this.mnitClient = mnitClient;
         this.xmlGenerator = xmlGenerator;
         this.pdfGenerator = pdfGenerator;
@@ -41,6 +44,7 @@ public class MnitDocumentConsumer {
         this.monitoringService = monitoringService;
         this.documentUploadService = documentUploadService;
         this.fileNameGenerator = fileNameGenerator;
+        this.activeProfile = activeProfile;
     }
 
     public void process(Application application) {
@@ -61,9 +65,16 @@ public class MnitDocumentConsumer {
             byte[] fileBytes = documentUploadService.get(uploadedDocument.getS3Filepath());
             String filename = fileNameGenerator.generateUploadedDocumentName(application, i, uploadedDocument.getFilename());
             ApplicationFile fileToSend = new ApplicationFile(fileBytes, filename);
-            log.info("Now sending: " + filename + " original filename: " + uploadedDocument.getFilename());
-            mnitClient.send(fileToSend, application.getCounty(), application.getId(), null);
-            log.info("Finished sending document " + filename);
+
+            if (fileBytes.length > 0) {
+                log.info("Now sending: " + filename + " original filename: " + uploadedDocument.getFilename());
+                mnitClient.send(fileToSend, application.getCounty(), application.getId(), null);
+                log.info("Finished sending document " + filename);
+            } else if (activeProfile.equals("demo") || activeProfile.equals("staging") || activeProfile.equals("production")) {
+                log.error("Skipped uploading file " + uploadedDocument.getFilename() + " because it was empty. This should only happen in a dev environment.");
+            } else {
+                log.info("Pretending to send file " + uploadedDocument.getFilename() + ".");
+            }
         }
     }
 }

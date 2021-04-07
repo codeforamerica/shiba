@@ -42,7 +42,8 @@ class MnitDocumentConsumerTest {
         documentListParser,
         monitoringService,
         documentUploadService,
-        fileNameGenerator);
+        fileNameGenerator,
+            "test");
 
     @BeforeEach
     void setUp() {
