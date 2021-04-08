@@ -41,8 +41,16 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Run journey test and send to Percy
-      run: PERCY_TOKEN=${{ secrets.PERCY_TOKEN }} percy exec -- ./gradlew clean test --tests org.codeforamerica.shiba.pages.features.UserJourneyPageTest.userCanCompleteTheNonExpeditedHouseholdFlow
+      run: percy exec -- ./gradlew clean test --tests org.codeforamerica.shiba.pages.features.UserJourneyPageTest.userCanCompleteTheNonExpeditedHouseholdFlow
       env:
-        S3_BUCKET: ${{ secrets.S3_TEST_BUCKET }}
-        AWS_ACCESS_KEY: ${{ secrets.CLOUD_AWS_CREDENTIALS_ACCESS_KEY }}
-        AWS_SECRET_KEY: ${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY }}
+        PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+    - name: Announce on Slack
+      if: ${{ always() }}
+      uses: innocarpe/actions-slack@v1
+      with:
+        status: ${{ job.status }}
+        success_text: ':eyes: Check out new the Percy build: https://percy.io/e1ec91a4/shiba'
+        failure_text: ':frowning: Percy build failed '
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
