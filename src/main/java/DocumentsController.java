@@ -1,3 +1,4 @@
+import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 @Controller
+@Slf4j
 public class DocumentsController {
     private final int MAX_FILES_UPLOADED;
     private final ApplicationData applicationData;
@@ -66,18 +68,7 @@ public class DocumentsController {
         return new ModelAndView(String.format("redirect:/pages/%s", terminalPage));
     }
 
-    @PostMapping("/file-upload")
-    @ResponseStatus(HttpStatus.OK)
-    public void upload(@RequestParam("file") MultipartFile file,
-                       @RequestParam("dataURL") String dataURL,
-                       @RequestParam("type") String type) throws IOException, InterruptedException {
-        if (this.applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
-                file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
-            String s3FilePath = String.format("%s/%s", applicationData.getId(), UUID.randomUUID());
-            documentRepositoryService.upload(s3FilePath, file);
-            this.applicationData.addUploadedDoc(file, s3FilePath, dataURL, type);
-        }
-    }
+
 
     @SuppressWarnings("SpringMVCViewInspection")
     @PostMapping("/remove-upload/{filename}")
