@@ -68,6 +68,8 @@ feature-flag:
   county-waseca: off
   county-wright: on
 
+document-upload:
+  max-files-uploaded: 20
 
 smarty-street-url: "https://us-street.api.smartystreets.com/street-address"
 

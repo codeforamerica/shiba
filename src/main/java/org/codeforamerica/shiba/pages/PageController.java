@@ -20,21 +20,21 @@ import org.codeforamerica.shiba.pages.events.SubworkflowIterationDeletedEvent;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
 import java.time.Clock;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import static java.util.Optional.ofNullable;
 
@@ -42,7 +42,6 @@ import static java.util.Optional.ofNullable;
 @Slf4j
 public class PageController {
     private static final ZoneId CENTRAL_TIMEZONE = ZoneId.of("America/Chicago");
-    private final int MAX_FILES_UPLOADED = 20;
     private final ApplicationData applicationData;
     private final ApplicationConfiguration applicationConfiguration;
     private final Clock clock;
@@ -339,32 +338,6 @@ public class PageController {
         }
     }
 
-    @PostMapping("/file-upload")
-    @ResponseStatus(HttpStatus.OK)
-    public void upload(@RequestParam("file") MultipartFile file,
-                       @RequestParam("dataURL") String dataURL,
-                       @RequestParam("type") String type) throws IOException, InterruptedException {
-        if (this.applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
-                file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
-            String s3FilePath = String.format("%s/%s", applicationData.getId(), UUID.randomUUID());
-            documentRepositoryService.upload(s3FilePath, file);
-            this.applicationData.addUploadedDoc(file, s3FilePath, dataURL, type);
-        }
-    }
-
-    @SuppressWarnings("SpringMVCViewInspection")
-    @PostMapping("/remove-upload/{filename}")
-    ModelAndView removeUpload(@PathVariable String filename) {
-        applicationData.getUploadedDocs().stream()
-                .filter(uploadedDocument -> uploadedDocument.getFilename().equals(filename))
-                .map(UploadedDocument::getS3Filepath)
-                .findFirst()
-                .ifPresent(documentRepositoryService::delete);
-        this.applicationData.removeUploadedDoc(filename);
-
-        return new ModelAndView("redirect:/pages/uploadDocuments");
-    }
-
     @PostMapping("/submit")
     ModelAndView submitApplication(
             @RequestBody(required = false) MultiValueMap<String, String> model,
@@ -390,20 +363,6 @@ public class PageController {
         } else {
             return new ModelAndView("redirect:/pages/" + submitPage);
         }
-    }
-
-    @PostMapping("/submit-documents")
-    ModelAndView submitDocuments() {
-        if (featureFlags.get("submit-via-api").isOn()) {
-            Application application = applicationRepository.find(applicationData.getId());
-            application.getApplicationData().setUploadedDocs(applicationData.getUploadedDocs());
-            applicationRepository.save(application);
-            mnitDocumentConsumer.processUploadedDocuments(application);
-        }
-        LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
-        String terminalPage = landmarkPagesConfiguration.getTerminalPage();
-
-        return new ModelAndView(String.format("redirect:/pages/%s", terminalPage));
     }
 
     @PostMapping("/submit-feedback")
