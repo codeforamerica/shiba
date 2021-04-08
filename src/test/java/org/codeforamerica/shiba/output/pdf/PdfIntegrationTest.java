@@ -168,10 +168,6 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
                     .isEmpty();
             assertThat(ccapPdf.getField("PARENT_NOT_LIVING_AT_HOME_2").getValueAsString())
                     .isEmpty();
-
-            driver.get(baseUrl + "/pdfs/" + ccapPdf.getField("APPLICATION_ID").getValueAsString());
-            percy.snapshot("Test PDF Snapshot");
-
         }
 
         @Test
