@@ -20,6 +20,7 @@ import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 
 public class UserJourneyPageTest extends FeatureTest {
+
     @Test
     void intercomButtonIsPresent() {
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);

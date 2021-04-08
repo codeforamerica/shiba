@@ -125,6 +125,7 @@ dependencies {
     testImplementation 'io.github.bonigarcia:webdrivermanager:4.4.0'
     testImplementation 'org.springframework.ws:spring-ws-test'
     testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'io.percy:percy-java-selenium:1.0.0'
 }
 
 compileJava.inputs.files(processResources)

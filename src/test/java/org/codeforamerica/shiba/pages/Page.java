@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
+import io.percy.selenium.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -11,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class Page {
     protected final RemoteWebDriver driver;
+    protected final Percy percy;
 
     public String getTitle() {
         return driver.getTitle();
@@ -18,6 +20,7 @@ public class Page {
 
     public Page(RemoteWebDriver driver) {
         this.driver = driver;
+        this.percy = new Percy(driver);
     }
 
     private void checkForBadMessageKeys() {
@@ -30,11 +33,13 @@ public class Page {
     }
 
     public void clickLink(String linkText) {
+        percy.snapshot(driver.getTitle());
         checkForBadMessageKeys();
         driver.findElement(By.linkText(linkText)).click();
     }
 
     public void clickButton(String buttonText) {
+        percy.snapshot(driver.getTitle());
         checkForBadMessageKeys();
         WebElement buttonToClick = driver.findElements(By.className("button")).stream()
                 .filter(button -> button.getText().contains(buttonText))
@@ -44,6 +49,7 @@ public class Page {
     }
 
     public void clickButtonLink(String buttonLinkText) {
+        percy.snapshot(driver.getTitle());
         checkForBadMessageKeys();
         WebElement buttonToClick = driver.findElements(By.className("button--link")).stream()
                 .filter(button -> button.getText().contains(buttonLinkText))
