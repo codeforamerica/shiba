@@ -115,40 +115,6 @@ public class DocumentsTest extends FeatureTest {
     }
 
     @Test
-    void shouldSkipDocumentRecommendationsWhenNoEligibleProgram() {
-        // Skip because only CCAP
-        List<String> applicantPrograms = List.of(PROGRAM_CCAP);
-        completeFlowFromLandingPageThroughReviewInfo(applicantPrograms, smartyStreetClient);
-        completeFlowFromReviewInfoToDisability(applicantPrograms);
-
-        testPage.enter("hasWorkSituation", YES.getDisplayValue());
-        testPage.clickContinue();
-        testPage.enter("areYouWorking", YES.getDisplayValue());
-        testPage.clickButton("Add a job");
-        testPage.enter("employersName", "some employer");
-        testPage.clickContinue();
-        testPage.enter("selfEmployment", YES.getDisplayValue());
-        paidByTheHourOrSelectPayPeriod();
-        testPage.enter("currentlyLookingForJob", NO.getDisplayValue());
-        testPage.clickContinue();
-        testPage.enter("unearnedIncome", "None of the above");
-        testPage.clickContinue();
-        testPage.enter("unearnedIncomeCcap", "None of the above");
-        testPage.clickContinue();
-        testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
-        testPage.clickContinue();
-        testPage.clickContinue();
-        testPage.enter("homeExpenses", "Rent");
-        testPage.clickContinue();
-
-        navigateTo("signThisApplication");
-        testPage.enter("applicantSignature", "some name");
-        testPage.clickButton("Submit");
-
-        assertThat(driver.getTitle()).isEqualTo("Success");
-    }
-
-    @Test
     void shouldSkipDocumentRecommendationsIfChoseEligibleProgramsButNoOnEmploymentStatusNoOnHasWorkSituationAndNoneOfTheAboveOnHomeExpenses() {
         List<String> applicantPrograms = List.of(PROGRAM_GRH, PROGRAM_SNAP);
         completeFlowFromLandingPageThroughReviewInfo(applicantPrograms, smartyStreetClient);
@@ -256,7 +222,7 @@ public class DocumentsTest extends FeatureTest {
     @Test
     void whenDocumentUploadFailsThenThereShouldBeAnError() throws IOException, InterruptedException {
         doThrow(new InterruptedException())
-                .when(documentUploadService).upload(any(String.class), any(MultipartFile.class));
+                .when(documentRepositoryService).upload(any(String.class), any(MultipartFile.class));
 
         getToDocumentUploadScreen();
         uploadDefaultFile();
@@ -321,5 +287,15 @@ public class DocumentsTest extends FeatureTest {
         driver.executeScript("$('#document-upload').get(0).dropzone.addFile({name: 'testFile.xyz', size: 1000, type: 'not-an-image'})");
 
         assertThat(driver.findElementById("file-error-message").getText()).contains("You can't upload files of this type");
+    }
+
+    @Test
+    void shouldShowSuccessPageAfterClientHasUploadedDocuments() {
+        getToDocumentUploadScreen();
+        uploadDefaultDocument();
+        waitForDocumentUploadToComplete();
+
+        testPage.clickButton("I'm finished uploading");
+        assertThat(driver.getTitle()).isEqualTo("Success");
     }
 }

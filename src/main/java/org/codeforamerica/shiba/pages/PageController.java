@@ -6,7 +6,7 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
-import org.codeforamerica.shiba.documents.DocumentUploadService;
+import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.output.CompositeCondition;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
@@ -54,7 +54,7 @@ public class PageController {
     private final ApplicationDataParser<List<Document>> documentListParser;
     private final FeatureFlagConfiguration featureFlags;
     private final UploadDocumentConfiguration uploadDocumentConfiguration;
-    private final DocumentUploadService documentUploadService;
+    private final DocumentRepositoryService documentRepositoryService;
     private MnitDocumentConsumer mnitDocumentConsumer;
 
     public PageController(
@@ -69,7 +69,7 @@ public class PageController {
             ApplicationDataParser<List<Document>> documentListParser,
             FeatureFlagConfiguration featureFlags,
             UploadDocumentConfiguration uploadDocumentConfiguration,
-            DocumentUploadService documentUploadService, MnitDocumentConsumer mnitDocumentConsumer) {
+            DocumentRepositoryService documentRepositoryService, MnitDocumentConsumer mnitDocumentConsumer) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
@@ -81,7 +81,7 @@ public class PageController {
         this.documentListParser = documentListParser;
         this.featureFlags = featureFlags;
         this.uploadDocumentConfiguration = uploadDocumentConfiguration;
-        this.documentUploadService = documentUploadService;
+        this.documentRepositoryService = documentRepositoryService;
         this.mnitDocumentConsumer = mnitDocumentConsumer;
     }
 
@@ -347,7 +347,7 @@ public class PageController {
         if (this.applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
                 file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
             String s3FilePath = String.format("%s/%s", applicationData.getId(), UUID.randomUUID());
-            documentUploadService.upload(s3FilePath, file);
+            documentRepositoryService.upload(s3FilePath, file);
             this.applicationData.addUploadedDoc(file, s3FilePath, dataURL, type);
         }
     }
@@ -359,7 +359,7 @@ public class PageController {
                 .filter(uploadedDocument -> uploadedDocument.getFilename().equals(filename))
                 .map(UploadedDocument::getS3Filepath)
                 .findFirst()
-                .ifPresent(documentUploadService::delete);
+                .ifPresent(documentRepositoryService::delete);
         this.applicationData.removeUploadedDoc(filename);
 
         return new ModelAndView("redirect:/pages/uploadDocuments");

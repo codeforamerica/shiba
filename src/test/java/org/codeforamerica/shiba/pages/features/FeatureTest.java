@@ -2,7 +2,7 @@ package org.codeforamerica.shiba.pages.features;
 
 import org.codeforamerica.shiba.AbstractBasePageTest;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
-import org.codeforamerica.shiba.documents.DocumentUploadService;
+import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.emails.MailGunEmailClient;
@@ -27,7 +27,7 @@ public abstract class FeatureTest extends AbstractBasePageTest {
     @MockBean
     protected SmartyStreetClient smartyStreetClient;
     @SpyBean
-    protected DocumentUploadService documentUploadService;
+    protected DocumentRepositoryService documentRepositoryService;
     @MockBean PageEventPublisher pageEventPublisher;
     @MockBean MailGunEmailClient mailGunEmailClient;
     @MockBean FeatureFlagConfiguration featureFlagConfiguration;

@@ -5,7 +5,7 @@ import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
-import org.codeforamerica.shiba.documents.DocumentUploadService;
+import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
@@ -35,7 +35,7 @@ class MnitDocumentConsumerTest {
     ApplicationDataParser<List<Document>> documentListParser = mock(DocumentListParser.class);
     ApplicationData appData = new ApplicationData();
     MonitoringService monitoringService = mock(MonitoringService.class);
-    DocumentUploadService documentUploadService = mock(DocumentUploadService.class);
+    DocumentRepositoryService documentRepositoryService = mock(DocumentRepositoryService.class);
     FileNameGenerator fileNameGenerator = mock(FileNameGenerator.class);
     MnitDocumentConsumer documentConsumer = new MnitDocumentConsumer(
         mnitClient,
@@ -43,7 +43,7 @@ class MnitDocumentConsumerTest {
         pdfGenerator,
         documentListParser,
         monitoringService,
-        documentUploadService,
+            documentRepositoryService,
         fileNameGenerator,
             "test");
 
@@ -166,8 +166,8 @@ class MnitDocumentConsumerTest {
 
         when(fileNameGenerator.generateUploadedDocumentName(application, 0, "someImage.jpg")).thenReturn("image");
         when(fileNameGenerator.generateUploadedDocumentName(application, 1, "somePdf.pdf")).thenReturn("pdf");
-        when(documentUploadService.get("someS3FilePath")).thenReturn(imageApplicationFile.getFileBytes());
-        when(documentUploadService.get("coolS3FilePath")).thenReturn(pdfApplicationFile.getFileBytes());
+        when(documentRepositoryService.get("someS3FilePath")).thenReturn(imageApplicationFile.getFileBytes());
+        when(documentRepositoryService.get("coolS3FilePath")).thenReturn(pdfApplicationFile.getFileBytes());
         documentConsumer.processUploadedDocuments(application);
 
         verify(mnitClient).send(pdfApplicationFile, County.Olmsted, application.getId(), null);

@@ -19,12 +19,12 @@ import java.io.IOException;
 @Service
 @Profile({"demo", "staging", "production", "test"})
 @Slf4j
-public class S3DocumentUploadService implements DocumentUploadService {
+public class S3DocumentRepositoryService implements DocumentRepositoryService {
     private final TransferManager transferManager;
     private final String bucketName;
     private final AmazonS3 s3Client;
 
-    public S3DocumentUploadService(
+    public S3DocumentRepositoryService(
             TransferManager transferManager,
             @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") AmazonS3 s3Client, ResourceLoader resourceLoader) {
         this.s3Client = s3Client;

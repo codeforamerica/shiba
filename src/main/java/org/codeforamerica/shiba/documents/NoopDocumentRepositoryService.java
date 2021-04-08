@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @Profile("!demo & !staging & !production & !test")
 @Slf4j
-public class NoopDocumentUploadService implements DocumentUploadService {
+public class NoopDocumentRepositoryService implements DocumentRepositoryService {
     @Override
     public byte[] get(String filepath) {
         return new byte[]{};

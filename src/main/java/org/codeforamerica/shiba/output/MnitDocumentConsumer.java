@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
-import org.codeforamerica.shiba.documents.DocumentUploadService;
+import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
@@ -25,7 +25,7 @@ public class MnitDocumentConsumer {
     private final PdfGenerator pdfGenerator;
     private final ApplicationDataParser<List<Document>> documentListParser;
     private final MonitoringService monitoringService;
-    private final DocumentUploadService documentUploadService;
+    private final DocumentRepositoryService documentRepositoryService;
     private final FileNameGenerator fileNameGenerator;
     private final String activeProfile;
 
@@ -34,7 +34,7 @@ public class MnitDocumentConsumer {
                                 PdfGenerator pdfGenerator,
                                 ApplicationDataParser<List<Document>> documentListParser,
                                 MonitoringService monitoringService,
-                                DocumentUploadService documentUploadService,
+                                DocumentRepositoryService documentRepositoryService,
                                 FileNameGenerator fileNameGenerator,
                                 @Value("${spring.profiles.active:dev}") String activeProfile) {
         this.mnitClient = mnitClient;
@@ -42,7 +42,7 @@ public class MnitDocumentConsumer {
         this.pdfGenerator = pdfGenerator;
         this.documentListParser = documentListParser;
         this.monitoringService = monitoringService;
-        this.documentUploadService = documentUploadService;
+        this.documentRepositoryService = documentRepositoryService;
         this.fileNameGenerator = fileNameGenerator;
         this.activeProfile = activeProfile;
     }
@@ -62,7 +62,7 @@ public class MnitDocumentConsumer {
         List<UploadedDocument> uploadedDocs = application.getApplicationData().getUploadedDocs();
         for (int i = 0; i < uploadedDocs.size(); i++) {
             UploadedDocument uploadedDocument = uploadedDocs.get(i);
-            byte[] fileBytes = documentUploadService.get(uploadedDocument.getS3Filepath());
+            byte[] fileBytes = documentRepositoryService.get(uploadedDocument.getS3Filepath());
             String filename = fileNameGenerator.generateUploadedDocumentName(application, i, uploadedDocument.getFilename());
             ApplicationFile fileToSend = new ApplicationFile(fileBytes, filename);
 
