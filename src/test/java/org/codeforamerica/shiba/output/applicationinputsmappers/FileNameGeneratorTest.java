@@ -6,9 +6,14 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.mnit.MnitCountyInformation;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
-import org.codeforamerica.shiba.pages.data.*;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.InputData;
+import org.codeforamerica.shiba.pages.data.PageData;
+import org.codeforamerica.shiba.pages.data.PagesData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -174,5 +179,32 @@ class FileNameGeneratorTest {
 
         assertThat(fileName).isEqualTo(String.format("%s_MNB_%s_%s_%s_%s",
                 countyNPI, "20070909", "235959", applicationId, "F"));
+    }
+
+    @Test
+    void shouldFormatNameCorrectlyForFileUploads() {
+        MockMultipartFile image = new MockMultipartFile("image", "someImage.jpg", MediaType.IMAGE_JPEG_VALUE, "test".getBytes());
+        MockMultipartFile pdf = new MockMultipartFile("pdf", "somePdf.pdf", MediaType.APPLICATION_PDF_VALUE, "thisIsAPdf".getBytes());
+        ApplicationData applicationData = new ApplicationData();
+        applicationData.addUploadedDoc(image, "someS3FilePath", "someDataUrl", "image/jpeg");
+        applicationData.addUploadedDoc(pdf, "coolS3FilePath", "documentDataUrl", "application/pdf");
+
+        String countyNPI = "someNPI";
+        County county = Hennepin;
+        countyMap.getCounties().put(county, MnitCountyInformation.builder().dhsProviderId(countyNPI).build());
+        String applicationId = "someId";
+
+        Application application = defaultApplicationBuilder
+                .id("someId")
+                .county(county)
+                .completedAt(ZonedDateTime.ofInstant(Instant.parse("2007-09-10T04:59:59.00Z"), ZoneOffset.UTC))
+                .applicationData(applicationData)
+                .build();
+
+        String imageName = fileNameGenerator.generateUploadedDocumentName(application, 0, image.getOriginalFilename());
+        String pdfName = fileNameGenerator.generateUploadedDocumentName(application, 1, pdf.getOriginalFilename());
+
+        assertThat(imageName).isEqualTo(String.format("%s_MNB_%s_%s_%s_doc1of2.jpg", countyNPI, "20070909", "235959", applicationId));
+        assertThat(pdfName).isEqualTo(String.format("%s_MNB_%s_%s_%s_doc2of2.pdf", countyNPI, "20070909", "235959", applicationId));
     }
 }

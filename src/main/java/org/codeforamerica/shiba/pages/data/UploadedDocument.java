@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 @AllArgsConstructor
 @Data
-@ToString(exclude = {"dataUrl"})
+@ToString(exclude = {"dataURL"})
 public class UploadedDocument implements Serializable {
     private String filename;
     private String s3Filepath;
