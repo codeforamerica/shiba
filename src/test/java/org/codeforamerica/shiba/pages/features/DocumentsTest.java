@@ -200,7 +200,7 @@ public class DocumentsTest extends FeatureTest {
     void shouldDisplayImageUploadInformation() {
         getToDocumentUploadScreen();
         uploadDefaultFile();
-        await().until(() -> !driver.findElementsByClassName("filename-text").get(0).getAttribute("innerHTML").isBlank());
+        await().until(() -> !driver.findElementsByClassName("file-count").get(0).getAttribute("innerHTML").isBlank());
         assertThat(driver.findElementsByClassName("filename-text").get(0).getAttribute("innerHTML").contains("shiba")).isTrue();
         assertThat(driver.findElementsByClassName("filename-text").get(0).getAttribute("innerHTML").contains("jpg")).isTrue();
         assertThat(driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML").contains("1 image")).isTrue();
