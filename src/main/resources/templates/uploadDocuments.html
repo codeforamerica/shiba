@@ -243,7 +243,8 @@
                     documentInfo.classList.add("hidden");
                 } else if (file.type.includes("image")) {
                     fileCount.setAttribute('aria-label', fileCount.innerText);
-                    fileCount.innerHTML = "<span>1 image</span>"
+                    fileCount.innerHTML = "<span>1 image</span>";
+                    documentInfo.style.display = "unset";
                 }
             });
 
