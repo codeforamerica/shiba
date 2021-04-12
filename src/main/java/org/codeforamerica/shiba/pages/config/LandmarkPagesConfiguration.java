@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 public class LandmarkPagesConfiguration {
-    private String startTimerPage;
+    private List<String> startTimerPage = new ArrayList<>();
     private List<String> landingPages = new ArrayList<>();
     private List<String> postSubmitPages = new ArrayList<>();
     private String terminalPage;
@@ -27,7 +27,7 @@ public class LandmarkPagesConfiguration {
     }
 
     public boolean isStartTimerPage(String pageName) {
-        return pageName.equals(this.getStartTimerPage());
+        return this.getStartTimerPage().contains(pageName);
     }
 
     public boolean isSubmitPage(String pageName) {
