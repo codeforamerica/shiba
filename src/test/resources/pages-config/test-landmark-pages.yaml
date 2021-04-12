@@ -32,7 +32,8 @@ workflow:
   fourthPage:
     pageConfiguration: *fourthPage
 landmarkPages:
-  startTimerPage: thirdPage
+  startTimerPage:
+    - thirdPage
   landingPages:
     - firstPage
   postSubmitPages:

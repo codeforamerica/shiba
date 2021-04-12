@@ -20,4 +20,4 @@ workflow:
     datasources:
       - pageName: yesNoQuestionPage
 landmarkPages:
-  startTimerPage:
+  terminalPage:

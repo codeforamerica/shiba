@@ -161,4 +161,4 @@ pageGroups:
     completePages:
       - subworkflowPage
 landmarkPages:
-  startTimerPage:
+  terminalPage:

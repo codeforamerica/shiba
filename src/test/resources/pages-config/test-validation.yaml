@@ -242,4 +242,4 @@ workflow:
   lastPage:
     pageConfiguration: *lastPage
 landmarkPages:
-  startTimerPage:
+  terminalPage:
