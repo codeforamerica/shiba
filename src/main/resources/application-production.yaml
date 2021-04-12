@@ -19,6 +19,7 @@ feature-flag:
   submit-via-email: off
   submit-via-api: on
   document-upload-feature: off
+  later-docs-feature: off
   county-anoka: off
   county-carver: off
   county-clay: off
