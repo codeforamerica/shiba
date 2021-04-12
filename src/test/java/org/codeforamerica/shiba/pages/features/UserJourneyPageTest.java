@@ -26,6 +26,12 @@ public class UserJourneyPageTest extends FeatureTest {
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         assertThat(driver.findElementById("intercom-frame")).isNotNull();
     }
+    
+    @Test
+    void laterDocsUploadButtonIsPresent() {
+    	testPage.clickButton("Upload documents");
+        assertThat(driver.getTitle()).isEqualTo("Identify County");
+    }
 
     @Test
     void userCanCompleteTheNonExpeditedHouseholdFlow() {

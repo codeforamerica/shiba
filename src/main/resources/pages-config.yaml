@@ -1080,6 +1080,190 @@ pageDefinitions:
       value: upload-documents-delete-warning.you-are-about-to-delete
     pageTitle:
       value: upload-documents-delete-warning.title
+  - &identifyCounty
+    name: identifyCounty
+    headerKey:
+      value: identify-county.select-your-county
+    pageTitle:
+      value: identify-county.title
+    contextFragment: countyContextFragment
+    inputs:
+      - name: county
+        type: SELECT
+        options:
+          selectableOptions:
+            - value: AIKIN
+              messageKey: identify-county-aikin
+            - value: ANOKA
+              messageKey: identify-county-anoka
+            - value: BECKER
+              messageKey: identify-county-becker
+            - value: BELTRAMI
+              messageKey: identify-county-beltrami
+            - value: BENTON
+              messageKey: identify-county-benton
+            - value: BIG STONE
+              messageKey: identify-county-big-stone
+            - value: BLUE EARTH
+              messageKey: identify-county-blue-earth
+            - value: BROWN
+              messageKey: identify-county-brown
+            - value: CARLTON
+              messageKey: identify-county-carlton
+            - value: CARVER
+              messageKey: identify-county-carver
+            - value: CASS
+              messageKey: identify-county-cass
+            - value: CHIPPEWA
+              messageKey: identify-county-chippewa
+            - value: CHISAGO
+              messageKey: identify-county-chisago
+            - value: CLAY
+              messageKey: identify-county-clay
+            - value: CLEARWATER
+              messageKey: identify-county-clearwater
+            - value: COOK
+              messageKey: identify-county-cook
+            - value: COTTONWOOD
+              messageKey: identify-county-cottonwood
+            - value: CROW WING
+              messageKey: identify-county-crow-wing
+            - value: DAKOTA
+              messageKey: identify-county-dakota
+            - value: DODGE
+              messageKey: identify-county-dodge
+            - value: DOUGLAS
+              messageKey: identify-county-douglas
+            - value: FARIBAULT
+              messageKey: identify-county-faribault
+            - value: FILLMORE
+              messageKey: identify-county-fillmore
+            - value: FREEBORN
+              messageKey: identify-county-freeborn
+            - value: GOODHUE
+              messageKey: identify-county-goodhue
+            - value: GRANT
+              messageKey: identify-county-grant
+            - value: HENNEPIN
+              messageKey: identify-county-hennepin
+            - value: HOUSTON
+              messageKey: identify-county-houston
+            - value: HUBBARD
+              messageKey: identify-county-hubbard
+            - value: ISANTI
+              messageKey: identify-county-isanti
+            - value: ITASCA
+              messageKey: identify-county-itasca
+            - value: JACKSON
+              messageKey: identify-county-jackson
+            - value: KANABEC
+              messageKey: identify-county-kanabec
+            - value: KANDIYOHI
+              messageKey: identify-county-kandiyohi
+            - value: KITTSON
+              messageKey: identify-county-kittson
+            - value: KOOCHICHING
+              messageKey: identify-county-koochiching
+            - value: LAC QUI PARLE
+              messageKey: identify-county-lac-qui-parle
+            - value: LAKE
+              messageKey: identify-county-lake
+            - value: LAKE OF THE WOODS
+              messageKey: identify-county-lake-of-the-woods
+            - value: LE SUEUR
+              messageKey: identify-county-le-sueur
+            - value: LINCOLN
+              messageKey: identify-county-lincoln
+            - value: LYON
+              messageKey: identify-county-lyon
+            - value: MCLEOD
+              messageKey: identify-county-mcleod
+            - value: MAHNOMEN
+              messageKey: identify-county-mahnomen
+            - value: MARSHALL
+              messageKey: identify-county-marshall
+            - value: MEEKER
+              messageKey: identify-county-meeker
+            - value: MARTIN LACS
+              messageKey: identify-county-martin-lacs
+            - value: MORRISON
+              messageKey: identify-county-morrison
+            - value: MOWER
+              messageKey: identify-county-mower
+            - value: MURRAY
+              messageKey: identify-county-murray
+            - value: NICOLLET
+              messageKey: identify-county-nicollet
+            - value: NOBLES
+              messageKey: identify-county-nobles
+            - value: NORMAN
+              messageKey: identify-county-norman
+            - value: OLMSTED
+              messageKey: identify-county-olmsted
+            - value: OTTER TAIL
+              messageKey: identify-county-otter-tail
+            - value: PENNINGTON
+              messageKey: identify-county-pennington
+            - value: PINE COUNTY
+              messageKey: identify-county-pine-county
+            - value: PIPESTONE
+              messageKey: identify-county-pipestone
+            - value: POLK
+              messageKey: identify-county-polk
+            - value: POPE
+              messageKey: identify-county-pope
+            - value: RAMSEY
+              messageKey: identify-county-ramsey
+            - value: RED LAKE
+              messageKey: identify-county-red-lake
+            - value: REDWOOD
+              messageKey: identify-county-redwood
+            - value: RENVILLE
+              messageKey: identify-county-renville
+            - value: RICE
+              messageKey: identify-county-rice
+            - value: ROCK
+              messageKey: identify-county-rock
+            - value: ROSEAU
+              messageKey: identify-county-roseau
+            - value: SAINT LOUIS
+              messageKey: identify-county-saint-louis
+            - value: SCOTT
+              messageKey: identify-county-scott
+            - value: SHERBURNE
+              messageKey: identify-county-sherburne
+            - value: SIBLEY
+              messageKey: identify-county-sibley
+            - value: STEARNS
+              messageKey: identify-county-stearns
+            - value: STEELE
+              messageKey: identify-county-steele
+            - value: STEVENS
+              messageKey: identify-county-stevens
+            - value: SWIFT
+              messageKey: identify-county-swift
+            - value: TODD
+              messageKey: identify-county-todd
+            - value: TRAVERSE
+              messageKey: identify-county-traverse
+            - value: WABASHA
+              messageKey: identify-county-wabasha
+            - value: WADENA
+              messageKey: identify-county-wadena
+            - value: WASECA
+              messageKey: identify-county-waseca
+            - value: WASHINGTON
+              messageKey: identify-county-washington
+            - value: WATONWAN
+              messageKey: identify-county-watonwan
+            - value: WILKIN
+              messageKey: identify-county-wilkin
+            - value: WINONA
+              messageKey: identify-county-winona
+            - value: WRIGHT
+              messageKey: identify-county-wright
+            - value: YELLOW MEDICINE
+              messageKey: identify-county-yellow-medicine
   - &success
     name: success
     pageTitle:
@@ -3006,6 +3190,8 @@ workflow:
     pageConfiguration: *uploadDocumentsDeleteWarningPage
     nextPages:
       - pageName: uploadDocuments
+  identifyCounty:
+    pageConfiguration: *identifyCounty
   success:
     pageConfiguration: *success
   404:
@@ -3044,7 +3230,9 @@ pageGroups:
     restartPage: addHouseholdMembers
     startingCount: 1
 landmarkPages:
-  startTimerPage: languagePreferences
+  startTimerPage:
+    - languagePreferences
+    - identifyCounty
   landingPages:
     - landing
     - prepareToApply
