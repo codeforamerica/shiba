@@ -14,6 +14,14 @@
     max-width: 960px;
 }
 
+.max-width-446 {
+	max-width: 446px;
+}
+
+.max-width-500 {
+	max-width: 500px;
+}
+
 .intro-section {
     max-width: 35rem;
 }
@@ -691,6 +699,11 @@ input[type=number] {
 
 .margin-auto {
     margin: auto;
+}
+
+.margin-left-right-auto {
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .filename-text {
