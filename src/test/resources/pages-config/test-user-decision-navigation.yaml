@@ -65,4 +65,4 @@ workflow:
   noAnswerPage:
     pageConfiguration: *noAnswerPage
 landmarkPages:
-  startTimerPage:
+  terminalPage:

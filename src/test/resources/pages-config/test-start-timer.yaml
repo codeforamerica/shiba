@@ -19,4 +19,5 @@ workflow:
   pageThatDoesStartTimer:
     pageConfiguration: *pageThatDoesStartTimer
 landmarkPages:
-  startTimerPage: pageThatDoesStartTimer
+  startTimerPage:
+    - pageThatDoesStartTimer

@@ -16,7 +16,7 @@ pageDefinitions:
     subtleLinkTextKey:
       value: subtle-link-text
 landmarkPages:
-  startTimerPage: null
+  terminalPage:
 workflow:
   firstPage:
     pageConfiguration: *firstPage

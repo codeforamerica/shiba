@@ -54,4 +54,4 @@ workflow:
     - pageName: firstPage
 pageGroups:
 landmarkPages:
-  startTimerPage:
+  terminalPage:

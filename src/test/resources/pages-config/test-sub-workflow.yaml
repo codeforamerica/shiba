@@ -151,4 +151,5 @@ pageGroups:
     completePages:
       - soloPage
 landmarkPages:
-  startTimerPage: earlierPage
+  startTimerPage:
+    - earlierPage
