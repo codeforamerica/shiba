@@ -42,7 +42,7 @@ import static java.util.Optional.ofNullable;
 @Slf4j
 public class PageController {
     private static final ZoneId CENTRAL_TIMEZONE = ZoneId.of("America/Chicago");
-    private final int MAX_FILES_UPLOADED=20;
+    private final int MAX_FILES_UPLOADED = 20;
     private final ApplicationData applicationData;
     private final ApplicationConfiguration applicationConfiguration;
     private final Clock clock;
