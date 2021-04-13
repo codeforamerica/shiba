@@ -141,6 +141,7 @@
         if (allUploadsHaveThumbnails) {
             myDropZone.processQueue();
         }
+        console.log("in processDZQueueAfterThumbnailGeneration");
     }
 
     var fileTooBigMsg = [[#{upload-documents.this-file-is-too-large(${uploadDocMaxFileSize})}]]
@@ -209,9 +210,11 @@
             });
 
             this.on("thumbnail", function (file, dataURL) {
+                console.log("in thumbnail");
                 setTimeout(function () {
                     processDZQueueAfterThumbnailGeneration()
-                }, 1)
+                }, 1);
+
             });
 
             this.on("sending", function (file, xhr, formData) {
@@ -261,7 +264,16 @@
             });
 
             this.on('complete', function (file) {
-                processDZQueueAfterThumbnailGeneration()
+                console.log("in complete");
+                processDZQueueAfterThumbnailGeneration();
+
+                // if (file.type.includes("image")) {
+                //     processDZQueueAfterThumbnailGeneration();
+                // } else {
+                //     myDropZone.processQueue();
+                // }
+
+
             })
 
             // `destroy` is a custom event that we have defined, not something built into dropzone.

@@ -84,7 +84,9 @@ class PageControllerTest {
                 applicationEnrichment,
                 documentListParser,
                 featureFlags,
-                uploadDocumentConfiguration);
+                uploadDocumentConfiguration,
+                documentRepositoryService,
+                mnitDocumentConsumer);
 
         mockMvc = MockMvcBuilders.standaloneSetup(pageController)
                 .build();

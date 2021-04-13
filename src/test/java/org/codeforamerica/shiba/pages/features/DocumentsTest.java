@@ -292,7 +292,7 @@ public class DocumentsTest extends FeatureTest {
     @Test
     void shouldShowSuccessPageAfterClientHasUploadedDocuments() {
         getToDocumentUploadScreen();
-        uploadDefaultFile();
+        uploadDefaultDocument();
         await().until(() -> !driver.findElementsByClassName("dz-remove").get(0).getAttribute("innerHTML").isBlank());
 
         testPage.clickButton("I'm finished uploading");
