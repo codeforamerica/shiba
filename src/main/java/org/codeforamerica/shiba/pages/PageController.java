@@ -381,9 +381,12 @@ public class PageController {
             return new RedirectView("/pages/" + terminalPage);
         }
         redirectAttributes.addFlashAttribute("feedbackSuccess", message);
+
         Application application = applicationRepository.find(applicationData.getId());
-        Application updatedApplication = application.addFeedback(feedback);
-        applicationRepository.save(updatedApplication);
+        if (application != null) {
+            Application updatedApplication = application.addFeedback(feedback);
+            applicationRepository.save(updatedApplication);
+        }
         return new RedirectView("/pages/" + terminalPage);
     }
 

@@ -1,16 +1,12 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
-import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
-import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
-import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
@@ -23,7 +19,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.support.StaticMessageSource;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
@@ -32,7 +31,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.*;
-import java.util.List;
 import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,44 +48,45 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "pagesConfig=pages-config/test-pages-controller.yaml"
 })
 class PageControllerTest {
+    @TestConfiguration
+    static class NonSessionScopedApplicationData {
+        @Bean
+        public ApplicationData applicationData() {
+            return new ApplicationData();
+        }
+    }
 
-    private final StaticMessageSource messageSource = new StaticMessageSource();
-    private final ApplicationEnrichment applicationEnrichment = mock(ApplicationEnrichment.class);
+    @MockBean
+    private MessageSource messageSource;
+    private MockMvc mockMvc;
 
-    ApplicationData applicationData = new ApplicationData();
-    MockMvc mockMvc;
-    Clock clock = mock(Clock.class);
-    ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
-    ApplicationFactory applicationFactory = mock(ApplicationFactory.class);
-    PageEventPublisher pageEventPublisher = mock(PageEventPublisher.class);
-    ApplicationDataParser<List<Document>> documentListParser = mock(DocumentListParser.class);
-    FeatureFlagConfiguration featureFlags = mock(FeatureFlagConfiguration.class);
-    UploadDocumentConfiguration uploadDocumentConfiguration = mock(UploadDocumentConfiguration.class);
-    MnitDocumentConsumer mnitDocumentConsumer = mock(MnitDocumentConsumer.class);
+    @MockBean
+    private ApplicationEnrichment applicationEnrichment;
+    @MockBean
+    private Clock clock;
+    @MockBean
+    private ApplicationRepository applicationRepository;
+    @MockBean
+    private ApplicationFactory applicationFactory;
+    @MockBean
+    private PageEventPublisher pageEventPublisher;
+    @MockBean
+    private DocumentListParser documentListParser;
+    @MockBean
+    private FeatureFlagConfiguration featureFlags;
+    @MockBean
+    private UploadDocumentConfiguration uploadDocumentConfiguration;
+    @MockBean
+    private MnitDocumentConsumer mnitDocumentConsumer;
 
     @Autowired
-    private ApplicationConfiguration applicationConfiguration;
+    private PageController pageController;
 
     @Autowired
-    private DocumentRepositoryService documentRepositoryService;
+    private ApplicationData applicationData;
 
     @BeforeEach
     void setUp() {
-        PageController pageController = new PageController(
-                applicationConfiguration,
-                applicationData,
-                clock,
-                applicationRepository,
-                applicationFactory,
-                messageSource,
-                pageEventPublisher,
-                applicationEnrichment,
-                documentListParser,
-                featureFlags,
-                uploadDocumentConfiguration,
-                documentRepositoryService,
-                mnitDocumentConsumer);
-
         mockMvc = MockMvcBuilders.standaloneSetup(pageController)
                 .build();
         when(clock.instant()).thenReturn(Instant.now());
@@ -98,8 +97,8 @@ class PageControllerTest {
                 .county(null)
                 .timeToComplete(null)
                 .build());
-        messageSource.addMessage("success.feedback-success", Locale.ENGLISH, "default success message");
-        messageSource.addMessage("success.feedback-failure", Locale.ENGLISH, "default failure message");
+        when(messageSource.getMessage(eq("success.feedback-success"), any(), eq(Locale.ENGLISH))).thenReturn("default success message");
+        when(messageSource.getMessage(eq("success.feedback-failure"), any(), eq(Locale.ENGLISH))).thenReturn("default failure message");
     }
 
     @Test
@@ -171,7 +170,7 @@ class PageControllerTest {
     void shouldUpdateApplicationWithAllFeedbackIndicatorsAndIncludeSuccessMessage() throws Exception {
         String successMessage = "yay thanks for the feedback!";
         Locale locale = Locale.JAPANESE;
-        messageSource.addMessage("success.feedback-success", locale, successMessage);
+        when(messageSource.getMessage(eq("success.feedback-success"), any(), eq(locale))).thenReturn(successMessage);
 
         String applicationId = "14356236";
         applicationData.setId(applicationId);
@@ -200,7 +199,7 @@ class PageControllerTest {
     void shouldUpdateApplicationWithFeedback() throws Exception {
         String successMessage = "yay thanks for the feedback!";
         Locale locale = Locale.GERMAN;
-        messageSource.addMessage("success.feedback-success", locale, successMessage);
+        when(messageSource.getMessage(eq("success.feedback-success"), any(), eq(locale))).thenReturn(successMessage);
 
         String applicationId = "14356236";
         applicationData.setId(applicationId);
@@ -228,8 +227,8 @@ class PageControllerTest {
         String successMessage = "yay thanks for the feedback!";
         String ratingSuccessMessage = "yay thanks for the rating!";
         Locale locale = Locale.GERMAN;
-        messageSource.addMessage("success.feedback-success", locale, successMessage);
-        messageSource.addMessage("success.feedback-rating-success", locale, ratingSuccessMessage);
+        when(messageSource.getMessage(eq("success.feedback-success"), any(), eq(locale))).thenReturn(successMessage);
+        when(messageSource.getMessage(eq("success.feedback-rating-success"), any(), eq(locale))).thenReturn(ratingSuccessMessage);
 
         String applicationId = "14356236";
         applicationData.setId(applicationId);
@@ -252,21 +251,21 @@ class PageControllerTest {
     }
 
     @Test
-    void shouldFailToSubmitFeedbackIfjIdIsNotSet() throws Exception {
+    void shouldFailToSubmitFeedbackIfIdIsNotSet() throws Exception {
         mockMvc.perform(post("/submit-feedback")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("sentiment", "HAPPY")
                 .param("feedback", "this was awesome!"))
                 .andExpect(redirectedUrl("/pages/terminalPage"));
 
-        verifyNoInteractions(applicationRepository);
+        verify(applicationRepository, never()).save(any());
     }
 
     @Test
     void shouldFailToSubmitFeedbackAndIncludeFailureMessageIfNeitherSentimentNorFeedbackIsSupplied() throws Exception {
         String failureMessage = "bummer, that didn't work";
         Locale locale = Locale.ITALIAN;
-        messageSource.addMessage("success.feedback-failure", locale, failureMessage);
+        when(messageSource.getMessage(eq("success.feedback-failure"), any(), eq(locale))).thenReturn(failureMessage);
 
         String applicationId = "14356236";
         applicationData.setId(applicationId);
