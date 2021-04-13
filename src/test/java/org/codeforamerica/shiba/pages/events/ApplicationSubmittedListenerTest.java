@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.pages.events;
 
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
+import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
@@ -47,6 +48,7 @@ class ApplicationSubmittedListenerTest {
     CountyMap<MnitCountyInformation> countyMap = new CountyMap<>();
     DocumentListParser documentListParser = mock(DocumentListParser.class);
     FeatureFlagConfiguration featureFlagConfiguration = mock(FeatureFlagConfiguration.class);
+    MonitoringService monitoringService = mock(MonitoringService.class);
     ApplicationSubmittedListener applicationSubmittedListener;
 
     @BeforeEach
@@ -62,8 +64,8 @@ class ApplicationSubmittedListenerTest {
                 countyMap,
                 featureFlagConfiguration,
                 emailParser,
-                documentListParser
-        );
+                documentListParser,
+                monitoringService);
     }
 
     @Nested
@@ -84,15 +86,6 @@ class ApplicationSubmittedListenerTest {
         @Test
         void shouldNotSendViaApiIfSendViaApiIsFalse() {
             when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.OFF);
-            applicationSubmittedListener = new ApplicationSubmittedListener(
-                    mnitDocumentConsumer,
-                    applicationRepository,
-                    emailClient,
-                    expeditedEligibilityDecider,
-                    pdfGenerator,
-                    countyMap,
-                    featureFlagConfiguration,
-                    emailParser, documentListParser);
 
             ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("", "", null, Locale.ENGLISH);
 
@@ -248,15 +241,6 @@ class ApplicationSubmittedListenerTest {
         @Test
         void shouldNotSendEmailIfSendCaseWorkerEmailIsFalse() {
             when(featureFlagConfiguration.get("submit-via-email")).thenReturn(FeatureFlag.OFF);
-            applicationSubmittedListener = new ApplicationSubmittedListener(
-                    mnitDocumentConsumer,
-                    applicationRepository,
-                    emailClient,
-                    expeditedEligibilityDecider,
-                    pdfGenerator,
-                    countyMap,
-                    featureFlagConfiguration,
-                    emailParser, documentListParser);
 
             ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("", "", null, Locale.ENGLISH);
 
@@ -314,15 +298,6 @@ class ApplicationSubmittedListenerTest {
         @Test
         void shouldNotSendNonPartnerCountyAlertWhenFeatureIsTurnedOff() {
             when(featureFlagConfiguration.get("send-non-partner-county-alert")).thenReturn(FeatureFlag.OFF);
-            applicationSubmittedListener = new ApplicationSubmittedListener(
-                    mnitDocumentConsumer,
-                    applicationRepository,
-                    emailClient,
-                    expeditedEligibilityDecider,
-                    pdfGenerator,
-                    countyMap,
-                    featureFlagConfiguration,
-                    emailParser, documentListParser);
             when(applicationRepository.find(any())).thenReturn(
                     Application.builder()
                             .id("appId")

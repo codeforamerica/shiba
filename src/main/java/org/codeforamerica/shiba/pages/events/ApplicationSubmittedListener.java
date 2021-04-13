@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.pages.events;
 
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
+import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
@@ -17,6 +18,7 @@ import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -39,6 +41,7 @@ public class ApplicationSubmittedListener {
     private final EmailParser emailParser;
     private final DocumentListParser documentListParser;
     private final FeatureFlagConfiguration featureFlags;
+    private final MonitoringService monitoringService;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public ApplicationSubmittedListener(MnitDocumentConsumer mnitDocumentConsumer,
@@ -49,7 +52,8 @@ public class ApplicationSubmittedListener {
                                         CountyMap<MnitCountyInformation> countyMap,
                                         FeatureFlagConfiguration featureFlagConfiguration,
                                         EmailParser emailParser,
-                                        DocumentListParser documentListParser) {
+                                        DocumentListParser documentListParser,
+                                        MonitoringService monitoringService) {
         this.mnitDocumentConsumer = mnitDocumentConsumer;
         this.applicationRepository = applicationRepository;
         this.emailClient = emailClient;
@@ -59,20 +63,22 @@ public class ApplicationSubmittedListener {
         this.featureFlags = featureFlagConfiguration;
         this.emailParser = emailParser;
         this.documentListParser = documentListParser;
+        this.monitoringService = monitoringService;
     }
 
     @Async
     @EventListener
-    public void sendViaApi(ApplicationSubmittedEvent applicationSubmittedEvent) {
+    public void sendViaApi(ApplicationSubmittedEvent event) {
         if (featureFlags.get("submit-via-api").isOn()) {
-            this.mnitDocumentConsumer.process(this.applicationRepository.find(applicationSubmittedEvent.getApplicationId()));
+            Application application = getApplicationFromEvent(event);
+            mnitDocumentConsumer.process(application);
         }
     }
 
     @Async
     @EventListener
     public void sendConfirmationEmail(ApplicationSubmittedEvent event) {
-        Application application = applicationRepository.find(event.getApplicationId());
+        Application application = getApplicationFromEvent(event);
         ApplicationData applicationData = application.getApplicationData();
 
         emailParser.parse(applicationData)
@@ -92,7 +98,8 @@ public class ApplicationSubmittedListener {
             return;
         }
 
-        Application application = applicationRepository.find(event.getApplicationId());
+        Application application = getApplicationFromEvent(event);
+
         PageData personalInfo = application.getApplicationData().getPageData("personalInfo");
         String applicationId = application.getId();
         ApplicationFile pdf = pdfGenerator.generate(applicationId, CAF, CASEWORKER);
@@ -108,10 +115,17 @@ public class ApplicationSubmittedListener {
             return;
         }
 
-        Application application = applicationRepository.find(event.getApplicationId());
+        Application application = getApplicationFromEvent(event);
 
         if (application.getCounty() == County.Other) {
             emailClient.sendNonPartnerCountyAlert(application.getId(), application.getCompletedAt());
         }
+    }
+
+    @NotNull
+    private Application getApplicationFromEvent(ApplicationSubmittedEvent event) {
+        Application application = applicationRepository.find(event.getApplicationId());
+        monitoringService.setApplicationId(application.getId());
+        return application;
     }
 }
