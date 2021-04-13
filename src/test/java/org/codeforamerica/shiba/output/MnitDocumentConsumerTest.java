@@ -1,11 +1,12 @@
 package org.codeforamerica.shiba.output;
-
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
+import org.codeforamerica.shiba.documents.*;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
+import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -14,11 +15,11 @@ import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
-
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
@@ -31,13 +32,17 @@ class MnitDocumentConsumerTest {
     ApplicationDataParser<List<Document>> documentListParser = mock(DocumentListParser.class);
     ApplicationData appData = new ApplicationData();
     MonitoringService monitoringService = mock(MonitoringService.class);
+    DocumentRepositoryService documentRepositoryService = mock(DocumentRepositoryService.class);
+    FileNameGenerator fileNameGenerator = mock(FileNameGenerator.class);
     MnitDocumentConsumer documentConsumer = new MnitDocumentConsumer(
-        mnitClient,
-        xmlGenerator,
-        pdfGenerator,
-        documentListParser,
-        monitoringService
-    );
+            mnitClient,
+            xmlGenerator,
+            pdfGenerator,
+            documentListParser,
+            monitoringService,
+            documentRepositoryService,
+            fileNameGenerator,
+            "test");
 
     @BeforeEach
     void setUp() {
@@ -54,9 +59,7 @@ class MnitDocumentConsumerTest {
                 .county(County.Olmsted)
                 .timeToComplete(null)
                 .build();
-
         documentConsumer.process(application);
-
         verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
     }
 
@@ -70,7 +73,6 @@ class MnitDocumentConsumerTest {
                 .county(County.Olmsted)
                 .timeToComplete(null)
                 .build();
-
         documentConsumer.process(application);
         verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
     }
@@ -82,7 +84,6 @@ class MnitDocumentConsumerTest {
         ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
         when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
         when(documentListParser.parse(any())).thenReturn(List.of(CAF));
-
         Application application = Application.builder()
                 .id("someId")
                 .completedAt(ZonedDateTime.now())
@@ -91,7 +92,6 @@ class MnitDocumentConsumerTest {
                 .timeToComplete(null)
                 .build();
         documentConsumer.process(application);
-
         verify(mnitClient).send(pdfApplicationFile, County.Olmsted, application.getId(), Document.CAF);
         verify(mnitClient).send(xmlApplicationFile, County.Olmsted, application.getId(), Document.CAF);
     }
@@ -103,15 +103,12 @@ class MnitDocumentConsumerTest {
         ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
         when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
         when(documentListParser.parse(any())).thenReturn(List.of(CCAP, CAF));
-
         ApplicationData applicationData = new ApplicationData();
         PagesData pagesData = new PagesData();
         PageData chooseProgramsPage = new PageData();
-
         chooseProgramsPage.put("programs", InputData.builder().value(List.of("CCAP")).build());
         pagesData.put("choosePrograms", chooseProgramsPage);
         applicationData.setPagesData(pagesData);
-
         Application application = Application.builder()
                 .id("someId")
                 .completedAt(ZonedDateTime.now())
@@ -120,7 +117,6 @@ class MnitDocumentConsumerTest {
                 .timeToComplete(null)
                 .build();
         documentConsumer.process(application);
-
         verify(mnitClient).send(pdfApplicationFile, County.Olmsted, application.getId(), Document.CCAP);
     }
 
@@ -134,7 +130,31 @@ class MnitDocumentConsumerTest {
                 .timeToComplete(null)
                 .build();
         documentConsumer.process(application);
-
         verify(monitoringService).setApplicationId(application.getId());
+    }
+
+    @Test
+    void sendsBothImageAndDocumentUploadsSuccessfully() {
+        MockMultipartFile image = new MockMultipartFile("image", "someImage.jpg", MediaType.IMAGE_JPEG_VALUE, "test".getBytes());
+        MockMultipartFile pdf = new MockMultipartFile("pdf", "somePdf.pdf", MediaType.APPLICATION_PDF_VALUE, "thisIsAPdf".getBytes());
+        ApplicationFile imageApplicationFile = new ApplicationFile("test".getBytes(), "image");
+        ApplicationFile pdfApplicationFile = new ApplicationFile("thisIsAPdf".getBytes(), "pdf");
+        ApplicationData applicationData = new ApplicationData();
+        applicationData.addUploadedDoc(image, "someS3FilePath", "someDataUrl", "image/jpeg");
+        applicationData.addUploadedDoc(pdf, "coolS3FilePath", "documentDataUrl", "application/pdf");
+        Application application = Application.builder()
+                .id("someId")
+                .completedAt(ZonedDateTime.now())
+                .applicationData(applicationData)
+                .county(County.Olmsted)
+                .timeToComplete(null)
+                .build();
+        when(fileNameGenerator.generateUploadedDocumentName(application, 0, "someImage.jpg")).thenReturn("image");
+        when(fileNameGenerator.generateUploadedDocumentName(application, 1, "somePdf.pdf")).thenReturn("pdf");
+        when(documentRepositoryService.get("someS3FilePath")).thenReturn(imageApplicationFile.getFileBytes());
+        when(documentRepositoryService.get("coolS3FilePath")).thenReturn(pdfApplicationFile.getFileBytes());
+        documentConsumer.processUploadedDocuments(application);
+        verify(mnitClient).send(pdfApplicationFile, County.Olmsted, application.getId(), null);
+        verify(mnitClient).send(imageApplicationFile, County.Olmsted, application.getId(), null);
     }
 }

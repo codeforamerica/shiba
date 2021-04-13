@@ -12,7 +12,7 @@
                 <h1 class="h2 text--centered" th:text="#{upload-documents.title}"></h1>
                 <div class="spacing-below-60">
                     <div id="dropzone">
-                        <form action="/file-upload" class="dropzone needsclick" id="document-upload" method="post"
+                        <form action="/document-upload" class="dropzone needsclick" id="document-upload" method="post"
                               enctype="multipart/form-data">
                             <div id="max-files-reached">
                                 <div class='max-files spacing-below-35' id="max-files"
@@ -61,10 +61,11 @@
                                     </div>
                                 </a>
                             </div>
-                            <!-- This is temporarily incorrect, but implemented to allow for navigation to the next page for acceptance -->
+                        </form>
+                        <form th:action="@{/submit-documents}" method="post" onsubmit="return onSubmit()">
                             <div class="form-group">
-                                <a id="submit" class="button" onclick="onSubmit()"
-                                   th:text="#{upload-documents.im-finished-uploading}"></a>
+                                <button type="submit" class="button button--primary"
+                                        th:text="#{upload-documents.im-finished-uploading}"></button>
                                 <p class="text--error">
                                     <i class="icon-warning"></i>
                                     <span th:text="#{upload-documents.wait-for-upload-warning}"></span>
@@ -112,8 +113,9 @@
         if (!isUploadComplete) {
             $('.form-group').addClass('form-group--error');
             $('.text--error').show();
+            return false;
         } else {
-            window.location = "/pages/" + [[${pageName}]] + "/navigation?option=0";
+            return true;
         }
     }
 
@@ -125,12 +127,19 @@
     }
 
     $('.text--error').hide();
-    
+
     var myDropZone;
 
     function destroyerCreator(file) {
         return function () {
             myDropZone.emit('destroy', file);
+        }
+    }
+
+    function processDZQueueAfterThumbnailGeneration() {
+        var allUploadsHaveThumbnails = myDropZone.getQueuedFiles().every(f => f.dataURL && f.dataURL.length > 0);
+        if (allUploadsHaveThumbnails) {
+            myDropZone.processQueue();
         }
     }
 
@@ -140,9 +149,10 @@
         previewsContainer: ".preview-container",
         autoProcessQueue: false,
         thumbnailMethod: "crop",
-        thumbnailWidth: 75,
-        thumbnailHeight: 70,
+        thumbnailWidth: 64,
+        thumbnailHeight: 60,
         maxFiles: 20,
+        parallelUploads: 1,
         timeout: 0,
         maxFilesize: [[${uploadDocMaxFileSize}]],
         dictFileTooBig: fileTooBigMsg,
@@ -185,6 +195,7 @@
                 var fileNameComponents = getFilenameComponents(fileNameSpan);
                 var removeLink = file.previewElement.getElementsByClassName("dz-remove")[0];
                 var thumbnail = file.previewElement.getElementsByClassName("dz-thumb")[0];
+                var documentInfo = file.previewElement.getElementsByClassName('document-info')[0];
 
                 fileNameSpan.setAttribute('aria-label', fileNameSpan.innerText);
                 fileNameSpan.innerHTML = "<span class='filename-text-name' aria-hidden='true'>" + fileNameComponents[0] + "</span>" +
@@ -198,12 +209,18 @@
                 isUploadComplete = false;
 
                 if (!file.type.includes("image")) {
-                    setTimeout(function(){ myDropZone.processQueue(); }, 1)
+                    file.dataURL = documentIcon;
+                    myDropZone.emit("thumbnail", file, documentIcon);
+                    // This hides delimiter for documents since we haven't implemented document count yet, will probably need to refactor when we implement document count
+                    documentInfo.classList.add("hidden");
                 }
             });
 
-            this.on("thumbnail", function(file, dataURL) {
-                setTimeout(function(){ myDropZone.processQueue(); }, 1)
+            this.on("thumbnail", function (file, dataURL) {
+                setTimeout(function () {
+                   processDZQueueAfterThumbnailGeneration()
+                }, 1);
+
             });
 
             this.on("sending", function (file, xhr, formData) {
@@ -240,12 +257,7 @@
                 removeLink.innerText = [[#{general.delete}]].toLowerCase();
                 thumbnail.classList.remove("hidden");
 
-                if (!file.type.includes("image")) {
-                    file.dataURL = documentIcon;
-                    myDropZone.emit("thumbnail", file, documentIcon);
-                    // This hides delimiter for documents since we haven't implemented document count yet, will probably need to refactor when we implement document count
-                    documentInfo.classList.add("hidden");
-                } else if (file.type.includes("image")) {
+                if (file.type.includes("image")) {
                     fileCount.setAttribute('aria-label', fileCount.innerText);
                     fileCount.innerHTML = "<span>1 image</span>";
                     documentInfo.style.display = "unset";
@@ -259,7 +271,7 @@
             });
 
             $.each(documents, function (key, value) {
-                var mockFile = { name: value.filename, size: value.size, type: value.type };
+                var mockFile = {name: value.filename, size: value.size, type: value.type};
                 myDropZone.files.push(mockFile);
                 myDropZone.emit("addedfile", mockFile);
                 myDropZone.emit("thumbnail", mockFile, value.dataURL);
@@ -279,9 +291,9 @@
 
             var filePreview = file.previewElement.getElementsByClassName("doc-rectangle")[0]
             filePreview.innerHTML = "<svg class=\"margin-auto\" width=\"40\" height=\"47\" viewBox=\"0 0 40 47\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n" +
-	            "<path d=\"M6.625 40.125H20.375L13.5 28.25L6.625 40.125ZM14.125 38.25H12.875V37H14.125V38.25ZM14.125 35.75H12.875V33.25H14.125V35.75Z\" fill=\"#D13F00\"/>\n" +
-	            "<path d=\"M26.6667 0H4.44444C3.2657 0 2.13524 0.550197 1.30175 1.52955C0.468252 2.50891 0 3.8372 0 5.22222V41.7778C0 43.1628 0.468252 44.4911 1.30175 45.4704C2.13524 46.4498 3.2657 47 4.44444 47H35.5556C36.7343 47 37.8648 46.4498 38.6983 45.4704C39.5317 44.4911 40 43.1628 40 41.7778V15.6667L26.6667 0ZM35.5556 41.7778H4.44444V5.22222H24.4444V18.2778H35.5556V41.7778Z\" fill=\"#D13F00\" fill-opacity=\"0.5\"/>\n" +
-	            "</svg>";
+                "<path d=\"M6.625 40.125H20.375L13.5 28.25L6.625 40.125ZM14.125 38.25H12.875V37H14.125V38.25ZM14.125 35.75H12.875V33.25H14.125V35.75Z\" fill=\"#D13F00\"/>\n" +
+                "<path d=\"M26.6667 0H4.44444C3.2657 0 2.13524 0.550197 1.30175 1.52955C0.468252 2.50891 0 3.8372 0 5.22222V41.7778C0 43.1628 0.468252 44.4911 1.30175 45.4704C2.13524 46.4498 3.2657 47 4.44444 47H35.5556C36.7343 47 37.8648 46.4498 38.6983 45.4704C39.5317 44.4911 40 43.1628 40 41.7778V15.6667L26.6667 0ZM35.5556 41.7778H4.44444V5.22222H24.4444V18.2778H35.5556V41.7778Z\" fill=\"#D13F00\" fill-opacity=\"0.5\"/>\n" +
+                "</svg>";
         }
     });
 </script>

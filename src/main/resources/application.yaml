@@ -7,11 +7,11 @@ spring:
       initialize-schema: always
   servlet:
     multipart:
-      max-file-size: 50MB
-      max-request-size: 50MB
+      max-file-size: 30MB
+      max-request-size: 30MB
 server:
   tomcat:
-    max-http-form-post-size: 50MB
+    max-http-form-post-size: 30MB
     use-relative-redirects: true
   servlet:
     session:
@@ -28,7 +28,7 @@ client:
   truststore: src/main/resources/shiba-truststore.jks
 
 mnit-esb:
-  url: https://test-svcs.dhs.mn.gov/WebServices/Alfresco/CreateDocument
+  url: https://uat-svcs.dhs.mn.gov/WebServices/Alfresco/CreateDocument
   jaxb-context-path: org.codeforamerica.shiba.esbwsdl
   max-attempts: 4
   delay: 5400000 # 1.5 hours
@@ -48,7 +48,7 @@ mail-gun:
 
 feature-flag:
   submit-via-email: off
-  submit-via-api: off
+  submit-via-api: on
   send-non-partner-county-alert: off
   document-upload-feature: on
   later-docs-feature: on
@@ -69,6 +69,8 @@ feature-flag:
   county-waseca: off
   county-wright: on
 
+document-upload:
+  max-files-uploaded: 20
 
 smarty-street-url: "https://us-street.api.smartystreets.com/street-address"
 
