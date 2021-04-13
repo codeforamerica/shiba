@@ -141,7 +141,6 @@
         if (allUploadsHaveThumbnails) {
             myDropZone.processQueue();
         }
-        console.log("in processDZQueueAfterThumbnailGeneration");
     }
 
     var fileTooBigMsg = [[#{upload-documents.this-file-is-too-large(${uploadDocMaxFileSize})}]]
@@ -196,6 +195,7 @@
                 var fileNameComponents = getFilenameComponents(fileNameSpan);
                 var removeLink = file.previewElement.getElementsByClassName("dz-remove")[0];
                 var thumbnail = file.previewElement.getElementsByClassName("dz-thumb")[0];
+                var documentInfo = file.previewElement.getElementsByClassName('document-info')[0];
 
                 fileNameSpan.setAttribute('aria-label', fileNameSpan.innerText);
                 fileNameSpan.innerHTML = "<span class='filename-text-name' aria-hidden='true'>" + fileNameComponents[0] + "</span>" +
@@ -207,12 +207,18 @@
                 thumbnail.classList.add("hidden");
 
                 isUploadComplete = false;
+
+                if (!file.type.includes("image")) {
+                    file.dataURL = documentIcon;
+                    myDropZone.emit("thumbnail", file, documentIcon);
+                    // This hides delimiter for documents since we haven't implemented document count yet, will probably need to refactor when we implement document count
+                    documentInfo.classList.add("hidden");
+                }
             });
 
             this.on("thumbnail", function (file, dataURL) {
-                console.log("in thumbnail");
                 setTimeout(function () {
-                    processDZQueueAfterThumbnailGeneration()
+                   processDZQueueAfterThumbnailGeneration()
                 }, 1);
 
             });
@@ -251,30 +257,12 @@
                 removeLink.innerText = [[#{general.delete}]].toLowerCase();
                 thumbnail.classList.remove("hidden");
 
-                if (!file.type.includes("image")) {
-                    file.dataURL = documentIcon;
-                    myDropZone.emit("thumbnail", file, documentIcon);
-                    // This hides delimiter for documents since we haven't implemented document count yet, will probably need to refactor when we implement document count
-                    documentInfo.classList.add("hidden");
-                } else if (file.type.includes("image")) {
+                if (file.type.includes("image")) {
                     fileCount.setAttribute('aria-label', fileCount.innerText);
                     fileCount.innerHTML = "<span>1 image</span>";
                     documentInfo.style.display = "unset";
                 }
             });
-
-            this.on('complete', function (file) {
-                console.log("in complete");
-                processDZQueueAfterThumbnailGeneration();
-
-                // if (file.type.includes("image")) {
-                //     processDZQueueAfterThumbnailGeneration();
-                // } else {
-                //     myDropZone.processQueue();
-                // }
-
-
-            })
 
             // `destroy` is a custom event that we have defined, not something built into dropzone.
             // This event is emitted when the client clicks cancel on a file that has not finished uploading.
