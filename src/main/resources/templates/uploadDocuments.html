@@ -196,6 +196,10 @@
                 thumbnail.classList.add("hidden");
 
                 isUploadComplete = false;
+
+                if (!file.type.includes("image")) {
+                    setTimeout(function(){ myDropZone.processQueue(); }, 1)
+                }
             });
 
             this.on("thumbnail", function(file, dataURL) {
