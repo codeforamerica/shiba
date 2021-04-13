@@ -101,4 +101,3 @@ The client certificate can then be shared with external servers who can register
 
 `keytool -importcert -keystore server-truststore.jks -alias client -file client.crt -storepass <password>`
 
-

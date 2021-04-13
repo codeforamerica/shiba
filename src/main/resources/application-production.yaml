@@ -15,7 +15,7 @@ mail-gun:
 
 feature-flag:
   send-download-alert: on
-  send-non-partner-county-alert: on
+  send-non-partner-county-alert: off
   submit-via-email: off
   submit-via-api: on
   document-upload-feature: off
