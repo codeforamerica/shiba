@@ -100,9 +100,13 @@ jobs:
           'S3_BUCKET=${{ secrets.S3_STAGING_BUCKET }}' \
           'AWS_ACCESS_KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_ACCESS_KEY }}' \
           'AWS_SECRET_KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY }}'
-          git checkout staging
-          git merge main
-          git push -u origin staging
+      - name: Merge main -> staging
+        uses: MaximeHeckel/github-action-merge-fast-forward@v1.1.0
+        with:
+          branchtomerge: main
+          branch: staging
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Sentry release
         uses: getsentry/action-release@v1
         env:
