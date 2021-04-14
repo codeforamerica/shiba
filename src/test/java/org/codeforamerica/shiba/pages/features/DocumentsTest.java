@@ -197,40 +197,51 @@ public class DocumentsTest extends FeatureTest {
     }
 
     @Test
-    void shouldDisplayImageUploadInformation() {
-        getToDocumentUploadScreen();
-        uploadJpgFile();
-
-        assertThat(driver.findElementsByClassName("filename-text").get(0).getAttribute("innerHTML").contains("shiba")).isTrue();
-        assertThat(driver.findElementsByClassName("filename-text").get(0).getAttribute("innerHTML").contains("jpg")).isTrue();
-        assertThat(driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML").contains("1 image")).isTrue();
-        assertThat(driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML").contains("51.7")).isTrue();
-        assertThat(driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML").contains("KB")).isTrue();
-        assertThat(driver.findElementByClassName("dz-thumb").getAttribute("src")).contains(SHIBA_IMAGE_THUMBNAIL);
-    }
-
-    @Test
     void shouldDisplayDocumentUploadInformation() {
         getToDocumentUploadScreen();
+        uploadJpgFile();
         uploadPdfFile();
-        assertThat(driver.findElementsByClassName("filename-text").get(0).getAttribute("innerHTML").contains("test-caf")).isTrue();
-        assertThat(driver.findElementsByClassName("filename-text").get(0).getAttribute("innerHTML").contains("pdf")).isTrue();
-        assertThat(driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML").contains("0.4")).isTrue();
-        assertThat(driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML").contains("MB")).isTrue();
-        assertThat(driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML").contains("1 image")).isFalse();
-        assertThat(driver.findElementByClassName("dz-thumb").getAttribute("src").contains(DEFAULT_DOCUMENT_THUMBNAIL)).isTrue();
-    }
-
-    @Test
-    void shouldDisplayHeicUploadInformation() {
-        getToDocumentUploadScreen();
         uploadHeicFile();
-        assertThat(driver.findElementsByClassName("filename-text").get(0).getAttribute("innerHTML").contains("sample")).isTrue();
-        assertThat(driver.findElementsByClassName("filename-text").get(0).getAttribute("innerHTML").contains("heic")).isTrue();
-        assertThat(driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML").contains("0.3")).isTrue();
-        assertThat(driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML").contains("MB")).isTrue();
-        assertThat(driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML").contains("1 image")).isTrue();
-        assertThat(driver.findElementByClassName("dz-thumb").getAttribute("src").contains(DEFAULT_DOCUMENT_THUMBNAIL)).isTrue();
+
+        var filenameTextElements = driver.findElementsByClassName("filename-text");
+        var fileDetailsElements = driver.findElementsByClassName("file-details");
+        var thumbnailElements = driver.findElementsByClassName("dz-thumb");
+
+        // shiba+test.jpg
+        var filename = getAttributeForElementAtIndex(filenameTextElements, 0, "innerHTML");
+        var fileDetails = getAttributeForElementAtIndex(fileDetailsElements, 0, "innerHTML");
+        var thumbnail = getAttributeForElementAtIndex(thumbnailElements, 0, "src");
+
+        assertThat(filename).contains("shiba");
+        assertThat(filename).contains("jpg");
+        assertThat(fileDetails).contains("1 image");
+        assertThat(fileDetails).contains("51.7");
+        assertThat(fileDetails).contains("KB");
+        assertThat(thumbnail).contains(SHIBA_IMAGE_THUMBNAIL);
+
+        // test-caf.pdf
+        filename = getAttributeForElementAtIndex(filenameTextElements, 1, "innerHTML");
+        fileDetails = getAttributeForElementAtIndex(fileDetailsElements, 1, "innerHTML");
+        thumbnail = getAttributeForElementAtIndex(thumbnailElements, 1, "src");
+
+        assertThat(filename).contains("test-caf");
+        assertThat(filename).contains("pdf");
+        assertThat(fileDetails).contains("0.4");
+        assertThat(fileDetails).contains("MB");
+        assertThat(fileDetails).doesNotContain("1 image");
+        assertThat(thumbnail).contains(DEFAULT_DOCUMENT_THUMBNAIL);
+
+        // sample.heic
+        filename = getAttributeForElementAtIndex(filenameTextElements, 2, "innerHTML");
+        fileDetails = getAttributeForElementAtIndex(fileDetailsElements, 2, "innerHTML");
+        thumbnail = getAttributeForElementAtIndex(thumbnailElements, 2, "src");
+
+        assertThat(filename).contains("sample");
+        assertThat(filename).contains("heic");
+        assertThat(fileDetails).contains("0.3");
+        assertThat(fileDetails).contains("MB");
+        assertThat(fileDetails).contains("1 image");
+        assertThat(thumbnail).contains(DEFAULT_DOCUMENT_THUMBNAIL);
     }
 
     @Test
@@ -307,7 +318,7 @@ public class DocumentsTest extends FeatureTest {
     void shouldShowSuccessPageAfterClientHasUploadedDocuments() {
         getToDocumentUploadScreen();
         uploadPdfFile();
-        await().until(() -> !driver.findElementsByClassName("dz-remove").get(0).getAttribute("innerHTML").isBlank());
+        await().until(() -> !getAttributeForElementAtIndex(driver.findElementsByClassName("dz-remove"), 0, "innerHTML").isBlank());
 
         testPage.clickButton("I'm finished uploading");
         assertThat(driver.getTitle()).isEqualTo("Success");

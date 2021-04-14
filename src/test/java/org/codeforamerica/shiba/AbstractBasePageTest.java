@@ -464,4 +464,8 @@ public abstract class AbstractBasePageTest {
         getToDocumentRecommendationScreen();
         testPage.clickButton("Upload documents now");
     }
+
+    protected String getAttributeForElementAtIndex(List<WebElement> elementList, int index, String attributeName) {
+        return elementList.get(index).getAttribute(attributeName);
+    }
 }
