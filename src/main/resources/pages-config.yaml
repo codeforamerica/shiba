@@ -1196,6 +1196,72 @@ pageDefinitions:
               messageKey: identify-county-wright
             - value: YELLOW MEDICINE
               messageKey: identify-county-yellow-medicine
+  - &matchInfo
+    name: matchInfo
+    headerKey:
+      value: match-info.match-docs-to-app
+    headerHelpMessageKey:
+      value: match-info.fill-in-as-much-as-you-can
+    pageTitle:
+      value: match-info.title
+    contextFragment: matchInfoContextFragment
+    inputs:
+      - name: firstName
+        type: TEXT
+        promptMessage:
+          promptMessageKey: match-info.whats-your-first-name
+        helpMessageKey: match-info.legally-as-it-appears-on-your-id
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-provide-a-first-name
+      - name: lastName
+        type: TEXT
+        promptMessage:
+          promptMessageKey: match-info.whats-your-last-name
+        helpMessageKey: match-info.legally-as-it-appears-on-your-id
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-provide-a-last-name
+      - name: dateOfBirth
+        type: DATE
+        validators:
+          - validation: DATE
+            errorMessageKey: general.validation.please-enter-your-birthday-in-this-format
+            condition:
+              input: dateOfBirth
+              matcher: NOT_EMPTY
+        promptMessage:
+          promptMessageKey: match-info.when-were-you-born
+      - name: ssn
+        type: SSN
+        promptMessage:
+          promptMessageKey: match-info.whats-your-social-security-number
+        helpMessageKey: match-info.recommended-but-not-required
+      - name: phoneNumber
+        type: PHONE
+        promptMessage:
+          promptMessageKey: match-info.whats-your-phone-number
+        helpMessageKey: match-info.county-can-contact-you-if-questions
+      - name: email
+        type: TEXT
+        promptMessage:
+          promptMessageKey: contact-info.whats-your-email-address
+        helpMessageKey: match-info.county-can-contact-you-if-questions
+      - name: caseNumber
+        type: TEXT
+        promptMessage:
+          promptMessageKey: match-info.case-number-if-you-have-it
+        helpMessageKey: match-info.recommended-but-not-required
+  - &emailDocsToYourCounty
+    name: emailDocsToYourCounty
+    headerKey:
+      value: email-docs-to-your-county.not-serving-your-county
+    pageTitle:
+      value: email-docs-to-your-county.title
+    contextFragment: emailDocsToYourCountyContextFragment
+    inputs:
+      - name: firstName
+        type: TEXT
   - &success
     name: success
     pageTitle: success.title
@@ -3054,6 +3120,24 @@ workflow:
       - pageName: uploadDocuments
   identifyCounty:
     pageConfiguration: *identifyCounty
+    nextPages:
+      - pageName: emailDocsToYourCounty
+      - pageName: matchInfo
+  matchInfo:
+    pageConfiguration: *matchInfo
+    nextPages:
+      - pageName: uploadDocuments
+  emailDocsToYourCounty:
+    pageConfiguration: *emailDocsToYourCounty
+    nextPages:
+      - pageName: matchInfo
+    skipCondition:
+      conditions:
+        - pageName: identifyCounty
+          input: county
+          value: "HENNEPIN"
+    datasources:
+      - pageName: identifyCounty
   success:
     pageConfiguration: *success
   404:
