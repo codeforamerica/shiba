@@ -1,15 +1,13 @@
 pageDefinitions:
   - &firstPage
     name: firstPage
-    pageTitle:
-      value: first-page-title
+    pageTitle: first-page-title
     inputs:
       - name: someInput
         type: TEXT
   - &subtleLinkPage
     name: subtleLinkPage
-    pageTitle:
-      value: subtle-link-page-title
+    pageTitle: subtle-link-page-title
     inputs:
       - name: subtleLinkInput
         type: YES_NO

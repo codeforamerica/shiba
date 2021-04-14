@@ -1,8 +1,7 @@
 pageDefinitions:
   - &testEnrichmentPage
     name: testEnrichmentPage
-    pageTitle:
-      value: dummy-page-title
+    pageTitle: dummy-page-title
     inputs:
       - name: someTextInput
         type: TEXT

@@ -1,16 +1,14 @@
 pageDefinitions:
   - &firstPage
     name: firstPage
-    pageTitle:
-      value: dummy-page-title
+    pageTitle: dummy-page-title
     inputs:
       - name: foo
         type: TEXT
         validators:
           - validation: NOT_BLANK
   - &terminalPage
-    pageTitle:
-      value: dummy-page-title
+    pageTitle: dummy-page-title
 workflow:
   firstPage:
     pageConfiguration: *firstPage

@@ -3,8 +3,7 @@ workflow:
   firstPage:
     pageConfiguration:
       name: firstPage
-      pageTitle:
-        value: first-page-title
+      pageTitle: first-page-title
       inputs:
         - name: foo
           type: TEXT
@@ -13,12 +12,10 @@ workflow:
   terminalPage:
     pageConfiguration:
       name: terminalPage
-      pageTitle:
-        value: terminal-page-title
+      pageTitle: terminal-page-title
   landingPage:
     pageConfiguration:
-      pageTitle:
-        value: landing-page-title
+      pageTitle: landing-page-title
       inputs:
         - name: foo
           type: TEXT

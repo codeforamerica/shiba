@@ -1,8 +1,7 @@
 pageDefinitions:
   - &firstPage
       name: firstPage
-      pageTitle:
-        value: first-page-title
+      pageTitle: first-page-title
       inputs:
         - name: someRadioInputName
           type: RADIO
@@ -22,64 +21,55 @@ pageDefinitions:
                 messageKey: not-skip-message-key
   - &secondPage
       name: secondPage
-      pageTitle:
-        value: second-page-title
+      pageTitle: second-page-title
       inputs:
         - name: foo
           type: TEXT
   - &thirdPage
       name: thirdPage
-      pageTitle:
-        value: third-page-title
+      pageTitle: third-page-title
       inputs:
         - name: foo
           type: TEXT
   - &fourthPage
     name: fourthPage
-    pageTitle:
-      value: fourth-page-title
+    pageTitle: fourth-page-title
     inputs:
       - name: foo
         type: TEXT
   - &fifthPage
     name: fifthPage
-    pageTitle:
-      value: dummy-page-title
+    pageTitle: dummy-page-title
     inputs:
       - name: foo
         type: TEXT
   - &sixthPage
     name: sixthPage
-    pageTitle:
-      value: dummy-page-title
+    pageTitle: dummy-page-title
     inputs:
       - name: foo
         type: TEXT
   - &seventhPage
     name: seventhPage
-    pageTitle:
-      value: dummy-page-title
+    pageTitle: dummy-page-title
     inputs:
       - name: foo
         type: TEXT
   - &eighthPage
     name: eighthPage
-    pageTitle:
-      value: eighth-page-title
+    pageTitle: eighth-page-title
     inputs:
       - name: foo
         type: TEXT
   - &ninthPage
     name: ninthPage
-    pageTitle:
-      value: ninth-page-title
+    pageTitle: ninth-page-title
     inputs:
       - name: foo
         type: TEXT
   - &startingPage
     name: startingPage
-    pageTitle:
-      value: starting-page-title
+    pageTitle: starting-page-title
     inputs:
       - name: randomInput
         type: TEXT
@@ -87,15 +77,13 @@ pageDefinitions:
         type: TEXT
   - &pageToSkip
     name: pageToSkip
-    pageTitle:
-      value: page-to-skip-title
+    pageTitle: page-to-skip-title
     inputs:
       - name: yetAnotherInput
         type: TEXT
   - &lastPage
     name: lastPage
-    pageTitle:
-      value: last-page-title
+    pageTitle: last-page-title
     inputs:
       - name: weirdInput
         type: YES_NO

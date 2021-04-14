@@ -1,29 +1,25 @@
 pageDefinitions:
   - &firstPage
     name: firstPage
-    pageTitle:
-      value: first-page-title
+    pageTitle: first-page-title
     inputs:
       - name: foo
         type: TEXT
   - &secondPage
     name: secondPage
-    pageTitle:
-      value: second-page-title
+    pageTitle: second-page-title
     inputs:
       - name: foo
         type: TEXT
   - &firstFeaturePage
     name: featurePage
-    pageTitle:
-      value: first-feature-page-title
+    pageTitle: first-feature-page-title
     inputs:
       - name: foo
         type: TEXT
   - &secondFeaturePage
     name: secondFeaturePage
-    pageTitle:
-      value: second-feature-page-title
+    pageTitle: second-feature-page-title
     inputs:
       - name: foo
         type: TEXT

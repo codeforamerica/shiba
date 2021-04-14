@@ -1,7 +1,6 @@
 pageDefinitions:
   - &firstPage
-    pageTitle:
-      value: dummy-page-title
+    pageTitle: dummy-page-title
     name: firstPage
     inputs:
       - name: options
@@ -15,8 +14,7 @@ pageDefinitions:
             - value: option3
               messageKey: option3
   - &secondPage
-    pageTitle:
-      value: dummy-page-title
+    pageTitle: dummy-page-title
     name: secondPage
     inputs:
       - name: option1Text

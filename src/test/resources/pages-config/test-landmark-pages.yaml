@@ -1,22 +1,19 @@
 pageDefinitions:
   - &firstPage
     name: firstPage
-    pageTitle:
-      value: first-page-title
+    pageTitle: first-page-title
     inputs:
     - name: foo
       type: TEXT
   - &thirdPage
     name: thirdPage
-    pageTitle:
-      value: third-page-title
+    pageTitle: third-page-title
     inputs:
     - name: foo
       type: TEXT
   - &fourthPage
     name: fourthPage
-    pageTitle:
-      value: fourth-page-title
+    pageTitle: fourth-page-title
     inputs:
     - name: foo
       type: TEXT

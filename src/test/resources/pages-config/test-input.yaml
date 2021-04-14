@@ -1,8 +1,7 @@
 pageDefinitions:
   - &firstPage
       name: firstPage
-      pageTitle:
-        value: first-page-title
+      pageTitle: first-page-title
       inputs:
         - name: editableTextInput
           type: TEXT
@@ -91,8 +90,7 @@ pageDefinitions:
           helpMessageKey: help-message-key
   - &inputWithPromptFragmentPage
       name: inputWithPromptFragmentPage
-      pageTitle:
-        value: prompt-fragment-page-title
+      pageTitle: prompt-fragment-page-title
       inputs:
         - name: promptFragmentInput
           type: MONEY
@@ -100,24 +98,21 @@ pageDefinitions:
             promptMessageFragmentName: promptFragment
   - &doNotHavePrimaryButtonPage
     name: doNotHavePrimaryButtonPage
-    pageTitle:
-      value: dummy-page-title
+    pageTitle: dummy-page-title
     inputs:
       - name: foo
         type: TEXT
     hasPrimaryButton: false
   - &pageWithContextFragment
     name: pageWithContextFragment
-    pageTitle:
-      value: dummy-page-title
+    pageTitle: dummy-page-title
     inputs:
       - name: foo
         type: TEXT
     contextFragment: pageContextFragment
   - &pageWithReferenceCheckboxes
     name: pageWithReferenceCheckboxes
-    pageTitle:
-      value: dummy-page-title
+    pageTitle: dummy-page-title
     inputs:
       - name: referenceCheckboxes
         type: CUSTOM
@@ -147,8 +142,7 @@ workflow:
     groupName: subworkflow1
     pageConfiguration:
       name: subworkflowPage
-      pageTitle:
-        value: dummy-page-title
+      pageTitle: dummy-page-title
       inputs:
         - name: value1
           type: TEXT

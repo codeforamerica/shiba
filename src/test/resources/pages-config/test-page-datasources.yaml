@@ -1,10 +1,8 @@
 pageDefinitions:
   - &firstPage
       name: firstPage
-      pageTitle:
-        value: first-page-title
-      headerKey:
-        value: first-page-title
+      pageTitle: first-page-title
+      headerKey: first-page-title
       inputs:
       - name: someInputName
         type: TEXT
@@ -18,8 +16,7 @@ pageDefinitions:
               messageKey: radio-value-key-2
   - &yesNoQuestionPage
       name: yesNoQuestionPage
-      pageTitle:
-        value: foo
+      pageTitle: foo
       inputs:
       - name: yesNoQuestion
         type: YES_NO
@@ -56,34 +53,29 @@ pageDefinitions:
         type: TEXT
   - &testStaticPage
     name: testStaticPage
-    pageTitle:
-      value: dummy-page-title
+    pageTitle: dummy-page-title
   - &testFormPage
     name: testFormPage
-    pageTitle:
-      value: dummy-page-title
+    pageTitle: dummy-page-title
     inputs:
       - name: foo
         type: TEXT
     contextFragment: testFormPageFragment
   - &yesNoQuestionPage2
     name: yesNoQuestionPage2
-    pageTitle:
-      value: foo
+    pageTitle: foo
     inputs:
       - name: yesNoQuestion2
         type: YES_NO
   - &yesNoQuestionPage3
     name: yesNoQuestionPage3
-    pageTitle:
-      value: foo
+    pageTitle: foo
     inputs:
       - name: yesNoQuestion3
         type: YES_NO
   - &yesNoCompositeAnswerPage
     name: yesNoCompositeAnswerPage
-    pageTitle:
-      value: foo
+    pageTitle: foo
     headerKey:
       conditionalValues:
         - value: yes-header-text
@@ -110,15 +102,13 @@ pageDefinitions:
         type: TEXT
   - &outsideSubworkflowPage
     name: outsideSubworkflowPage
-    pageTitle:
-      value: outside-subworkflow-page-title
+    pageTitle: outside-subworkflow-page-title
     inputs:
       - name: outside-subworkflow-input
         type: YES_NO
   - &pageThatGetsSkipped
     name: pageThatGetsSkipped
-    pageTitle:
-      value: page-that-gets-skipped
+    pageTitle: page-that-gets-skipped
     inputs:
       - name: skipped-input
         type: YES_NO
