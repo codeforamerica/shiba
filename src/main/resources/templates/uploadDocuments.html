@@ -144,6 +144,12 @@
     }
 
     var fileTooBigMsg = [[#{upload-documents.this-file-is-too-large(${uploadDocMaxFileSize})}]]
+
+    function setDefaultThumbnail(file) {
+        file.dataURL = documentIcon;
+        myDropZone.emit("thumbnail", file, documentIcon);
+    }
+
     $("#document-upload").dropzone({
         uploadMultiple: false,
         previewsContainer: ".preview-container",
@@ -209,8 +215,7 @@
                 isUploadComplete = false;
 
                 if (!file.type.includes("image")) {
-                    file.dataURL = documentIcon;
-                    myDropZone.emit("thumbnail", file, documentIcon);
+                    setDefaultThumbnail(file);
                     // This hides delimiter for documents since we haven't implemented document count yet, will probably need to refactor when we implement document count
                     documentInfo.classList.add("hidden");
                 }
@@ -220,7 +225,6 @@
                 setTimeout(function () {
                    processDZQueueAfterThumbnailGeneration()
                 }, 1);
-
             });
 
             this.on("sending", function (file, xhr, formData) {
@@ -261,6 +265,9 @@
                     fileCount.setAttribute('aria-label', fileCount.innerText);
                     fileCount.innerHTML = "<span>1 image</span>";
                     documentInfo.style.display = "unset";
+                    if (file.type.includes("heic")) {
+                        setDefaultThumbnail(file)
+                    }
                 }
             });
 

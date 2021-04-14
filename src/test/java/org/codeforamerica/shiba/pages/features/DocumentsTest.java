@@ -199,24 +199,38 @@ public class DocumentsTest extends FeatureTest {
     @Test
     void shouldDisplayImageUploadInformation() {
         getToDocumentUploadScreen();
-        uploadDefaultFile();
+        uploadJpgFile();
         await().until(() -> !driver.findElementsByClassName("file-count").get(0).getAttribute("innerHTML").isBlank());
         assertThat(driver.findElementsByClassName("filename-text").get(0).getAttribute("innerHTML").contains("shiba")).isTrue();
         assertThat(driver.findElementsByClassName("filename-text").get(0).getAttribute("innerHTML").contains("jpg")).isTrue();
         assertThat(driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML").contains("1 image")).isTrue();
         assertThat(driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML").contains("51.7")).isTrue();
         assertThat(driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML").contains("KB")).isTrue();
+        assertThat(driver.findElementByClassName("dz-thumb").getAttribute("src")).contains(SHIBA_IMAGE_THUMBNAIL);
     }
 
     @Test
     void shouldDisplayDocumentUploadInformation() {
         getToDocumentUploadScreen();
-        uploadDefaultDocument();
+        uploadPdfFile();
         assertThat(driver.findElementsByClassName("filename-text").get(0).getAttribute("innerHTML").contains("test-caf")).isTrue();
         assertThat(driver.findElementsByClassName("filename-text").get(0).getAttribute("innerHTML").contains("pdf")).isTrue();
         assertThat(driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML").contains("0.4")).isTrue();
         assertThat(driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML").contains("MB")).isTrue();
         assertThat(driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML").contains("1 image")).isFalse();
+        assertThat(driver.findElementByClassName("dz-thumb").getAttribute("src").contains(DEFAULT_DOCUMENT_THUMBNAIL)).isTrue();
+    }
+
+    @Test
+    void shouldDisplayHeicUploadInformation() {
+        getToDocumentUploadScreen();
+        uploadHeicFile();
+        assertThat(driver.findElementsByClassName("filename-text").get(0).getAttribute("innerHTML").contains("sample")).isTrue();
+        assertThat(driver.findElementsByClassName("filename-text").get(0).getAttribute("innerHTML").contains("heic")).isTrue();
+        assertThat(driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML").contains("0.3")).isTrue();
+        assertThat(driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML").contains("MB")).isTrue();
+        assertThat(driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML").contains("1 image")).isTrue();
+        assertThat(driver.findElementByClassName("dz-thumb").getAttribute("src").contains(DEFAULT_DOCUMENT_THUMBNAIL)).isTrue();
     }
 
     @Test
@@ -225,7 +239,7 @@ public class DocumentsTest extends FeatureTest {
                 .when(documentRepositoryService).upload(any(String.class), any(MultipartFile.class));
 
         getToDocumentUploadScreen();
-        uploadDefaultFile();
+        uploadJpgFile();
 
         List<WebElement> deleteLinks = driver.findElements(By.linkText("delete"));
         assertThat(deleteLinks.size()).isEqualTo(0);
@@ -237,7 +251,7 @@ public class DocumentsTest extends FeatureTest {
     @Test
     void deletingUploadedFileShouldLoadDocumentUploadScreenUponConfirmDeletion() {
         getToDocumentUploadScreen();
-        uploadDefaultFile();
+        uploadJpgFile();
         waitForDocumentUploadToComplete();
         List<WebElement> deleteLinks = driver.findElements(By.linkText("delete"));
         assertThat(deleteLinks.size()).isEqualTo(1);
@@ -254,7 +268,7 @@ public class DocumentsTest extends FeatureTest {
     @Test
     void deletingUploadedFileWithPlussesShouldPreservePlusses() {
         getToDocumentUploadScreen();
-        uploadDefaultFile();
+        uploadJpgFile();
         waitForDocumentUploadToComplete();
         testPage.clickLink("delete");
 
@@ -265,7 +279,7 @@ public class DocumentsTest extends FeatureTest {
     void showMaxFileUploadMessageWhenClientHasUploaded20Documents() {
         getToDocumentUploadScreen();
         for (int c = 0; c < 20; c++) {
-            uploadDefaultFile();
+            uploadJpgFile();
         }
 
         assertThat(driver.findElementById("max-files").getText()).contains("You have uploaded the maximum number of files (20). You will have the opportunity to share more with a county worker later.");
@@ -292,7 +306,7 @@ public class DocumentsTest extends FeatureTest {
     @Test
     void shouldShowSuccessPageAfterClientHasUploadedDocuments() {
         getToDocumentUploadScreen();
-        uploadDefaultDocument();
+        uploadPdfFile();
         await().until(() -> !driver.findElementsByClassName("dz-remove").get(0).getAttribute("innerHTML").isBlank());
 
         testPage.clickButton("I'm finished uploading");
