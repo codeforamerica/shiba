@@ -28,7 +28,7 @@ client:
   truststore: src/main/resources/shiba-truststore.jks
 
 mnit-esb:
-  url: https://uat-svcs.dhs.mn.gov/WebServices/Alfresco/CreateDocument
+  url: https://test-svcs.dhs.mn.gov/WebServices/Alfresco/CreateDocument
   jaxb-context-path: org.codeforamerica.shiba.esbwsdl
   max-attempts: 4
   delay: 5400000 # 1.5 hours
@@ -48,7 +48,7 @@ mail-gun:
 
 feature-flag:
   submit-via-email: off
-  submit-via-api: on
+  submit-via-api: off
   send-non-partner-county-alert: off
   document-upload-feature: on
   later-docs-feature: on
