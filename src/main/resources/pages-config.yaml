@@ -1198,12 +1198,9 @@ pageDefinitions:
               messageKey: identify-county-yellow-medicine
   - &matchInfo
     name: matchInfo
-    headerKey:
-      value: match-info.match-docs-to-app
-    headerHelpMessageKey:
-      value: match-info.fill-in-as-much-as-you-can
-    pageTitle:
-      value: match-info.title
+    headerKey: match-info.match-docs-to-app
+    headerHelpMessageKey: match-info.fill-in-as-much-as-you-can
+    pageTitle: match-info.title
     contextFragment: matchInfoContextFragment
     inputs:
       - name: firstName
@@ -1254,10 +1251,8 @@ pageDefinitions:
         helpMessageKey: match-info.recommended-but-not-required
   - &emailDocsToYourCounty
     name: emailDocsToYourCounty
-    headerKey:
-      value: email-docs-to-your-county.not-serving-your-county
-    pageTitle:
-      value: email-docs-to-your-county.title
+    headerKey: email-docs-to-your-county.not-serving-your-county
+    pageTitle: email-docs-to-your-county.title
     contextFragment: emailDocsToYourCountyContextFragment
     inputs:
       - name: firstName
