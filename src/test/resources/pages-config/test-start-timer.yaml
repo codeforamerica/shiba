@@ -1,15 +1,13 @@
 pageDefinitions:
   - &pageThatDoesNotStartTimer
       name: pageThatDoesNotStartTimer
-      pageTitle:
-        value: not-start-timer-title
+      pageTitle: not-start-timer-title
       inputs:
         - name: foo
           type: TEXT
   - &pageThatDoesStartTimer
       name: pageThatDoesStartTimer
-      pageTitle:
-        value: start-timer-title
+      pageTitle: start-timer-title
       inputs:
         - name: foo
           type: TEXT
