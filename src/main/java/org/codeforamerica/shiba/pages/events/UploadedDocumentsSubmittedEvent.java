@@ -9,6 +9,6 @@ public class UploadedDocumentsSubmittedEvent implements PageEvent {
 
     @Override
     public InteractionType getInteraction() {
-        return InteractionType.APPLICATION_SUBMITTED;
+        return InteractionType.UPLOADED_DOCUMENTS;
     }
 }
