@@ -4,15 +4,16 @@ import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
+import org.codeforamerica.shiba.pages.config.FeatureFlag;
+import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UploadedDocumentsSubmittedListenerTest {
@@ -22,27 +23,43 @@ class UploadedDocumentsSubmittedListenerTest {
     private ApplicationRepository applicationRepository;
     @Mock
     private MonitoringService monitoringService;
+    @Mock
+    private FeatureFlagConfiguration featureFlags;
 
     private UploadedDocumentsSubmittedListener uploadedDocumentsSubmittedListener;
+    private String applicationId;
+    private Application application;
+    private UploadedDocumentsSubmittedEvent event;
 
     @BeforeEach
     void setUp() {
+        String sessionId = "some-session-id";
+        applicationId = "some-application-id";
+        event = new UploadedDocumentsSubmittedEvent(sessionId, applicationId);
+
+        application = Application.builder().id(applicationId).build();
         uploadedDocumentsSubmittedListener = new UploadedDocumentsSubmittedListener(
                 mnitDocumentConsumer,
                 applicationRepository,
-                monitoringService);
+                monitoringService, featureFlags);
     }
 
     @Test
-    void sendViaApi() {
-        String sessionId = "some-session-id";
-        String applicationId = "some-application-id";
-        Application application = Application.builder().id(applicationId).build();
-        Mockito.when(applicationRepository.find(eq(applicationId))).thenReturn(application);
+    void shouldSendViaApiWhenFeatureFlagIsEnabled() {
+        when(applicationRepository.find(eq(applicationId))).thenReturn(application);
+        when(featureFlags.get("document-upload-feature")).thenReturn(FeatureFlag.ON);
 
-        UploadedDocumentsSubmittedEvent event = new UploadedDocumentsSubmittedEvent(sessionId, applicationId);
         uploadedDocumentsSubmittedListener.sendViaApi(event);
 
         verify(mnitDocumentConsumer).processUploadedDocuments(application);
+    }
+
+    @Test
+    void shouldNotSendViaApiWhenFeatureFlagIsDisabled() {
+        when(featureFlags.get("document-upload-feature")).thenReturn(FeatureFlag.OFF);
+
+        uploadedDocumentsSubmittedListener.sendViaApi(event);
+
+        verifyNoInteractions(mnitDocumentConsumer);
     }
 }
