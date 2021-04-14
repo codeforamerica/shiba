@@ -7,7 +7,7 @@ feature-flag:
   submit-via-email: off
   submit-via-api: off
   send-non-partner-county-alert: off
-  document-upload-feature: off
+  document-upload-feature: on
   later-docs-feature: off
   county-anoka: off
   county-carver: off
