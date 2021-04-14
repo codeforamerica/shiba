@@ -102,7 +102,7 @@ public class PagesData extends HashMap<String, PageData> {
                 })
                 .findFirst()
                 .map(ConditionalValue::getValue)
-                .orElse(value.getValue());
+                .orElse(value.getDefaultValue());
     }
 
     public PageTemplate evaluate(PageWorkflowConfiguration pageWorkflowConfiguration, ApplicationData applicationData) {

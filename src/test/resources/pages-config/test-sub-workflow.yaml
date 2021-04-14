@@ -1,55 +1,46 @@
 pageDefinitions:
   - &startPage
     name: startPage
-    pageTitle:
-      value: start-page-title
+    pageTitle: start-page-title
     inputs:
       - name: foo
         type: TEXT
   - &skippableFirstPage
     name: skippableFirstPage
-    pageTitle:
-      value: dummy-page-title
+    pageTitle: dummy-page-title
     inputs:
       - name: inputSkippable
         type: TEXT
   - &firstPage
     name: firstPage
-    pageTitle:
-      value: dummy-page-title
+    pageTitle: dummy-page-title
     inputs:
       - name: input1
         type: TEXT
   - &secondPage
     name: secondPage
-    pageTitle:
-      value: dummy-page-title
+    pageTitle: dummy-page-title
     inputs:
       - name: input2
         type: TEXT
   - &thirdPage
     name: thirdPage
-    pageTitle:
-      value: dummy-page-title
+    pageTitle: dummy-page-title
     inputs:
       - name: input3
         type: TEXT
   - &endPage
     name: endPage
-    pageTitle:
-      value: end-page-title
+    pageTitle: end-page-title
   - &deleteWarningPage
     name: deleteWarningPage
-    pageTitle:
-      value: some-warning-title
+    pageTitle: some-warning-title
   - &redirectPage
     name: redirectPage
-    pageTitle:
-      value: some-redirect-title
+    pageTitle: some-redirect-title
   - &soloPage
     name: soloPage
-    pageTitle:
-      value: solo-page-title
+    pageTitle: solo-page-title
     inputs:
       - name: input-solo
         type: TEXT
@@ -57,8 +48,7 @@ workflow:
   earlierPage:
     pageConfiguration:
       name: earlierPage
-      pageTitle:
-        value: earlier-page-title
+      pageTitle: earlier-page-title
       inputs:
         - name: input
           type: TEXT
