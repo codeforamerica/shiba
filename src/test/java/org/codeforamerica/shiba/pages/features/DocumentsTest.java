@@ -197,6 +197,27 @@ public class DocumentsTest extends FeatureTest {
     }
 
     @Test
+    void shouldNotDisplayDocumentListAccordionIfNotApplicable() {
+        testPage.clickButton("Apply now");
+        testPage.clickContinue();
+        testPage.enter("writtenLanguage", "English");
+        testPage.enter("spokenLanguage", "English");
+        testPage.enter("needInterpreter", "Yes");
+        testPage.clickContinue();
+        testPage.enter("programs", PROGRAM_CCAP);
+        testPage.clickContinue();
+        testPage.clickContinue();
+        fillOutPersonalInfo();
+        testPage.clickContinue();
+        navigateTo("signThisApplication");
+        testPage.enter("applicantSignature", "some name");
+        testPage.clickButton("Submit");
+        testPage.clickButton("Upload documents now");
+
+        assertThat(driver.findElements(By.className("reveal")).size()).isEqualTo(0);
+    }
+
+    @Test
     void shouldDisplayDocumentUploadInformation() {
         getToDocumentUploadScreen();
         uploadJpgFile();
