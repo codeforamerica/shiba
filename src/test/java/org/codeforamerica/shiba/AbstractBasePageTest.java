@@ -38,6 +38,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
@@ -108,7 +109,7 @@ public abstract class AbstractBasePageTest {
     }
 
     protected Map<Document, PDAcroForm> getAllFiles() {
-        return Arrays.stream(path.toFile().listFiles())
+        return Arrays.stream(Objects.requireNonNull(path.toFile().listFiles()))
                 .filter(file -> file.getName().endsWith(".pdf"))
                 .collect(Collectors.toMap(this::getDocumentType, pdfFile -> {
                     try {
@@ -172,7 +173,7 @@ public abstract class AbstractBasePageTest {
 
     protected Boolean allPdfsHaveBeenDownloaded() {
         File[] listFiles = path.toFile().listFiles();
-        List<String> documentNames = Arrays.stream(listFiles).map(File::getName).collect(Collectors.toList());
+        List<String> documentNames = Arrays.stream(Objects.requireNonNull(listFiles)).map(File::getName).collect(Collectors.toList());
 
         Function<Document, Boolean> expectedPdfExists = expectedPdfName -> documentNames.stream().anyMatch(documentName ->
                 documentName.contains("_MNB_") && documentName.endsWith(".pdf") &&
@@ -424,6 +425,7 @@ public abstract class AbstractBasePageTest {
         testPage.clickElementById("drag-and-drop-box"); // is this needed?
         WebElement upload = driver.findElement(By.className("dz-hidden-input"));
         upload.sendKeys(filepath);
+        await().until(() -> !driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML").isBlank());
     }
 
     protected void uploadJpgFile() {
