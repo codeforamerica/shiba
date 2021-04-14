@@ -13,10 +13,7 @@ import org.codeforamerica.shiba.output.MnitDocumentConsumer;
 import org.codeforamerica.shiba.pages.config.*;
 import org.codeforamerica.shiba.pages.data.*;
 import org.codeforamerica.shiba.pages.enrichment.ApplicationEnrichment;
-import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
-import org.codeforamerica.shiba.pages.events.PageEventPublisher;
-import org.codeforamerica.shiba.pages.events.SubworkflowCompletedEvent;
-import org.codeforamerica.shiba.pages.events.SubworkflowIterationDeletedEvent;
+import org.codeforamerica.shiba.pages.events.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -54,7 +51,6 @@ public class PageController {
     private final ApplicationDataParser<List<Document>> documentListParser;
     private final FeatureFlagConfiguration featureFlags;
     private final UploadDocumentConfiguration uploadDocumentConfiguration;
-    private final MnitDocumentConsumer mnitDocumentConsumer;
 
     private final DocumentRepositoryService documentRepositoryService;
 
@@ -83,7 +79,6 @@ public class PageController {
         this.featureFlags = featureFlags;
         this.uploadDocumentConfiguration = uploadDocumentConfiguration;
         this.documentRepositoryService= documentRepositoryService;
-        this.mnitDocumentConsumer=mnitDocumentConsumer;
     }
 
     @GetMapping("/")
@@ -404,12 +399,12 @@ public class PageController {
     }
 
     @PostMapping("/submit-documents")
-    ModelAndView submitDocuments() {
+    ModelAndView submitDocuments(HttpSession httpSession) {
         if (featureFlags.get("submit-via-api").isOn()) {
             Application application = applicationRepository.find(applicationData.getId());
             application.getApplicationData().setUploadedDocs(applicationData.getUploadedDocs());
             applicationRepository.save(application);
-            mnitDocumentConsumer.processUploadedDocuments(application);
+            pageEventPublisher.publish(new UploadedDocumentsSubmittedEvent(httpSession.getId(), application.getId()));
         }
         LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
         String terminalPage = landmarkPagesConfiguration.getTerminalPage();

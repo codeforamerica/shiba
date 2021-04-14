@@ -7,12 +7,14 @@ import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
+import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.enrichment.ApplicationEnrichment;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
+import org.codeforamerica.shiba.pages.events.UploadedDocumentsSubmittedEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +27,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -140,6 +143,37 @@ class PageControllerTest {
         InOrder inOrder = inOrder(applicationRepository, pageEventPublisher);
         inOrder.verify(applicationRepository).save(application);
         inOrder.verify(pageEventPublisher).publish(new ApplicationSubmittedEvent(sessionId, applicationId, FlowType.FULL, Locale.ENGLISH));
+    }
+
+
+    @Test
+    void shouldPublishUploadedDocumentsSubmittedEvent() throws Exception {
+        String applicationId = "someId";
+        applicationData.setId(applicationId);
+
+        MockMultipartFile image = new MockMultipartFile("image", "someImage.jpg", MediaType.IMAGE_JPEG_VALUE, "test".getBytes());
+        applicationData.addUploadedDoc(image, "someS3FilePath", "someDataUrl", "image/jpeg");
+
+        Application application = Application.builder()
+                .id(applicationId)
+                .completedAt(ZonedDateTime.now())
+                .applicationData(applicationData)
+                .county(null)
+                .timeToComplete(null)
+                .flow(FlowType.FULL)
+                .build();
+        when(applicationRepository.find(eq(applicationId))).thenReturn(application);
+        when(featureFlags.get("submit-via-api")).thenReturn(FeatureFlag.ON);
+
+        String sessionId = "someSessionId";
+        MockHttpSession session = new MockHttpSession(null, sessionId);
+        mockMvc.perform(post("/submit-documents")
+                .session(session)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+
+        InOrder inOrder = inOrder(applicationRepository, pageEventPublisher);
+        inOrder.verify(applicationRepository).save(application);
+        inOrder.verify(pageEventPublisher).publish(new UploadedDocumentsSubmittedEvent(sessionId, applicationId));
     }
 
     @Test
