@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.pages.features;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.pages.SuccessPage;
+import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -18,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
+import static org.mockito.Mockito.when;
 
 public class UserJourneyPageTest extends FeatureTest {
 
@@ -29,8 +31,20 @@ public class UserJourneyPageTest extends FeatureTest {
     
     @Test
     void laterDocsUploadButtonIsPresent() {
+        when(featureFlagConfiguration.get("county-hennepin")).thenReturn(FeatureFlag.ON);
+        when(featureFlagConfiguration.get("county-morrison")).thenReturn(FeatureFlag.OFF);
+
     	testPage.clickButton("Upload documents");
         assertThat(driver.getTitle()).isEqualTo("Identify County");
+
+        testPage.enter("county", "Hennepin");
+        testPage.clickContinue();
+        assertThat(driver.getTitle()).isEqualTo("Match Info");
+
+        testPage.clickLink("< Go Back");
+        testPage.enter("county", "Morrison");
+        testPage.clickContinue();
+        assertThat(driver.getTitle()).isEqualTo("Email Docs To Your County");
     }
 
     @Test

@@ -23,6 +23,18 @@ pageDefinitions:
     inputs:
       - name: foo
         type: TEXT
+  - &thirdPage
+    name: thirdPage
+    pageTitle: third-page-title
+    inputs:
+      - name: foo
+        type: TEXT
+  - &conditionalFeaturePage
+    name: conditionalFeaturePage
+    pageTitle: conditional-feature-page-title
+    inputs:
+      - name: foo
+        type: TEXT
 workflow:
   firstPage:
     pageConfiguration: *firstPage
@@ -48,6 +60,17 @@ workflow:
     - pageName: secondFeaturePage
       flag: fake-feature
     - pageName: firstPage
+  thirdPage:
+    pageConfiguration: *thirdPage
+    nextPages:
+      - pageName: conditionalFeaturePage
+        flag: first-feature
+        condition:
+          input: foo
+          value: "yes"
+      - pageName: firstPage
+  conditionalFeaturePage:
+    pageConfiguration: *conditionalFeaturePage
 pageGroups:
 landmarkPages:
   terminalPage:

@@ -75,14 +75,15 @@ public class ApplicationData implements Serializable {
 
         return pageWorkflowConfiguration.getNextPages().stream()
                 .filter(nextPage -> {
+                    boolean isNextPage = true;
                     Condition condition = nextPage.getCondition();
                     if (condition != null) {
-                        return condition.matches(pageData, pagesData);
+                        isNextPage = condition.matches(pageData, pagesData);
                     }
                     if (nextPage.getFlag() != null) {
-                        return featureFlags.get(nextPage.getFlag()) == FeatureFlag.ON;
+                        isNextPage &= featureFlags.get(nextPage.getFlag()) == FeatureFlag.ON;
                     }
-                    return true;
+                    return isNextPage;
                 }).findFirst()
                 .orElseThrow(() -> new RuntimeException("Cannot find suitable next page."));
     }

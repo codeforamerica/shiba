@@ -3116,8 +3116,82 @@ workflow:
   identifyCounty:
     pageConfiguration: *identifyCounty
     nextPages:
-      - pageName: emailDocsToYourCounty
       - pageName: matchInfo
+        flag: county-anoka
+        condition:
+          input: county
+          value: "ANOKA"
+      - pageName: matchInfo
+        flag: county-carver
+        condition:
+          input: county
+          value: "CARVER"
+      - pageName: matchInfo
+        flag: county-clay
+        condition:
+          input: county
+          value: "CLAY"
+      - pageName: matchInfo
+        flag: county-cook
+        condition:
+          input: county
+          value: "COOK"
+      - pageName: matchInfo
+        flag: county-dodge
+        condition:
+          input: county
+          value: "DODGE"
+      - pageName: matchInfo
+        flag: county-hennepin
+        condition:
+          input: county
+          value: "HENNEPIN"
+      - pageName: matchInfo
+        flag: county-morrison
+        condition:
+          input: county
+          value: "MORRISON"
+      - pageName: matchInfo
+        flag: county-olmsted
+        condition:
+          input: county
+          value: "OLMSTED"
+      - pageName: matchInfo
+        flag: county-ottertail
+        condition:
+          input: county
+          value: "OTTERTAIL"
+      - pageName: matchInfo
+        flag: county-sherburne
+        condition:
+          input: county
+          value: "SHERBURNE"
+      - pageName: matchInfo
+        flag: county-steele
+        condition:
+          input: county
+          value: "STEELE"
+      - pageName: matchInfo
+        flag: county-stlouis
+        condition:
+          input: county
+          value: "STLOUIS"
+      - pageName: matchInfo
+        flag: county-wabasha
+        condition:
+          input: county
+          value: "WABASHA"
+      - pageName: matchInfo
+        flag: county-waseca
+        condition:
+          input: county
+          value: "WASECA"
+      - pageName: matchInfo
+        flag: county-wright
+        condition:
+          input: county
+          value: "WRIGHT"
+      - pageName: emailDocsToYourCounty
   matchInfo:
     pageConfiguration: *matchInfo
     nextPages:
@@ -3126,11 +3200,6 @@ workflow:
     pageConfiguration: *emailDocsToYourCounty
     nextPages:
       - pageName: matchInfo
-    skipCondition:
-      conditions:
-        - pageName: identifyCounty
-          input: county
-          value: "HENNEPIN"
     datasources:
       - pageName: identifyCounty
   success:
