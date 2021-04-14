@@ -23,7 +23,7 @@ pageDefinitions:
   - &yesNoAnswerPage
       name: yesNoAnswerPage
       pageTitle:
-        value: foo
+        defaultValue: foo
         conditionalValues:
           - value: yes-answer-title
             condition:
@@ -36,7 +36,7 @@ pageDefinitions:
               input: yesNoQuestion
               value: "false"
       headerKey:
-        value: bar
+        defaultValue: bar
         conditionalValues:
           - value: yes-header-text
             condition:
@@ -115,7 +115,7 @@ pageDefinitions:
   - &subworkflowPage
     name: subworkflowPage
     pageTitle:
-      value: no-answer-title
+      defaultValue: no-answer-title
       conditionalValues:
         - value: yes-answer-title
           condition:
@@ -123,7 +123,7 @@ pageDefinitions:
             input: skipped-input
             value: "true"
     headerKey:
-      value: foo
+      defaultValue: foo
       conditionalValues:
         - value: yes-header-text
           condition:

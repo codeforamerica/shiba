@@ -11,8 +11,7 @@ pageDefinitions:
     inputs:
       - name: subtleLinkInput
         type: YES_NO
-    subtleLinkTextKey:
-      value: subtle-link-text
+    subtleLinkTextKey: subtle-link-text
 landmarkPages:
   terminalPage:
 workflow:

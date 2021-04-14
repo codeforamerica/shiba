@@ -1,8 +1,7 @@
 pageDefinitions:
   - &firstPage
       name: firstPage
-      pageTitle:
-        value: first-page-title
+      pageTitle: first-page-title
       inputs:
         - name: someInputName
           type: TEXT
@@ -19,8 +18,7 @@ pageDefinitions:
               errorMessageKey: error-message-key
   - &nextPage
       name: nextPage
-      pageTitle:
-        value: next-page-title
+      pageTitle: next-page-title
       inputs:
         - name: someCheckbox
           type: CHECKBOX
@@ -38,8 +36,7 @@ pageDefinitions:
               errorMessageKey: error-message-key
   - &notBlankPage
       name: notBlankPage
-      pageTitle:
-        value: not-blank-page-title
+      pageTitle: not-blank-page-title
       inputs:
         - name: notBlankInput
           type: TEXT
@@ -48,8 +45,7 @@ pageDefinitions:
               errorMessageKey: error-message-key
   - &zipcodePage
       name: zipcodePage
-      pageTitle:
-        value: zip-code-page-title
+      pageTitle: zip-code-page-title
       inputs:
         - name: zipCodeInput
           type: TEXT
@@ -58,8 +54,7 @@ pageDefinitions:
               errorMessageKey: error-message-key
   - &statePage
       name: statePage
-      pageTitle:
-        value: state-page-title
+      pageTitle: state-page-title
       inputs:
         - name: stateInput
           type: TEXT
@@ -68,8 +63,7 @@ pageDefinitions:
               errorMessageKey: error-message-key
   - &phonePage
       name: phonePage
-      pageTitle:
-        value: phone-page-title
+      pageTitle: phone-page-title
       inputs:
         - name: phoneInput
           type: TEXT
@@ -78,8 +72,7 @@ pageDefinitions:
               errorMessageKey: error-message-key
   - &moneyPage
       name: moneyPage
-      pageTitle:
-        value: money-page-title
+      pageTitle: money-page-title
       inputs:
         - name: moneyInput
           type: TEXT
@@ -88,8 +81,7 @@ pageDefinitions:
               errorMessageKey: error-message-key
   - &ssnPage
       name: ssnPage
-      pageTitle:
-        value: ssn-page-title
+      pageTitle: ssn-page-title
       inputs:
         - name: ssnInput
           type: TEXT
@@ -98,8 +90,7 @@ pageDefinitions:
               errorMessageKey: error-message-key
   - &datePage
       name: datePage
-      pageTitle:
-        value: date-page-title
+      pageTitle: date-page-title
       inputs:
         - name: dateInput
           type: DATE
@@ -108,8 +99,7 @@ pageDefinitions:
               errorMessageKey: error-message-key
   - &checkboxPage
       name: checkboxPage
-      pageTitle:
-        value: checkbox-page-title
+      pageTitle: checkbox-page-title
       inputs:
         - name: checkboxInput
           type: CHECKBOX
@@ -124,8 +114,7 @@ pageDefinitions:
               errorMessageKey: error-message-key
   - &doesNotContainConditionPage
       name: doesNotContainConditionPage
-      pageTitle:
-        value: dummy-page-title
+      pageTitle: dummy-page-title
       inputs:
         - name: triggerInput
           type: TEXT
@@ -140,8 +129,7 @@ pageDefinitions:
                 value: triggerValue
   - &emptyInputConditionPage
     name: emptyInputConditionPage
-    pageTitle:
-      value: dummy-page-title
+    pageTitle: dummy-page-title
     inputs:
       - name: triggerInput
         type: TEXT
@@ -155,8 +143,7 @@ pageDefinitions:
               matcher: EMPTY
   - &pageWithInputWithMultipleValidations
     name: pageWithInputWithMultipleValidations
-    pageTitle:
-      value: page-with-input-with-multiple-validations
+    pageTitle: page-with-input-with-multiple-validations
     inputs:
       - name: multipleValidations
         type: TEXT
@@ -167,8 +154,7 @@ pageDefinitions:
             errorMessageKey: money-error-message-key
   - &pageWithEmail
     name: pageWithEmail
-    pageTitle:
-      value: email-page-title
+    pageTitle: email-page-title
     inputs:
       - name: emailInput
         type: TEXT
@@ -177,8 +163,7 @@ pageDefinitions:
             errorMessageKey: error-message-key
   - &lastPage
       name: lastPage
-      pageTitle:
-        value: last-page-title
+      pageTitle: last-page-title
       inputs:
         - name: foo
           type: TEXT

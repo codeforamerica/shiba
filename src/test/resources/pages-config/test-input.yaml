@@ -82,8 +82,7 @@ pageDefinitions:
               type: TEXT
   - &nextPage
       name: nextPage
-      pageTitle:
-        value: next-page-title
+      pageTitle: next-page-title
       inputs:
         - name: someInputName
           type: TEXT
