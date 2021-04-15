@@ -18,12 +18,6 @@ public class PageUtils {
         return name + WEB_INPUT_ARRAY_TOKEN;
     }
 
-    public static String joinNonEmpty(String... strings) {
-        return Arrays.stream(strings)
-                .filter(Predicate.not(String::isEmpty))
-                .collect(Collectors.joining(", "));
-    }
-
     public static String getTitleString(List<String> strings) {
         if (strings.size() == 1) {
             return strings.iterator().next();

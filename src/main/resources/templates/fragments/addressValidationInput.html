@@ -18,7 +18,7 @@
             <div th:text="${addressData.get('enrichedStreetAddress').value[0]}"></div>
             <div th:if="${!addressData.get('enrichedApartmentNumber').value[0].isEmpty()}"
                th:text="${addressData.get('enrichedApartmentNumber').value[0]}"></div>
-            <div th:text="${T(org.codeforamerica.shiba.pages.PageUtils).joinNonEmpty(addressData.get('enrichedCity').value[0], addressData.get('enrichedState').value[0])}"></div>
+            <div th:text="${T(org.codeforamerica.shiba.Utils).joinNonEmpty(addressData.get('enrichedCity').value[0], addressData.get('enrichedState').value[0])}"></div>
             <div th:text="${addressData.get('enrichedZipCode').value[0]}"></div>
             <input type="radio" th:name="${formInputName}" id="enriched-address"
                    th:value="true"
@@ -29,7 +29,7 @@
             <div th:text="${addressData.get('streetAddress').value[0]}"></div>
             <div th:if="${!addressData.get('apartmentNumber').value[0].isEmpty()}"
                th:text="${addressData.get('apartmentNumber').value[0]}"></div>
-            <div th:text="${T(org.codeforamerica.shiba.pages.PageUtils).joinNonEmpty(addressData.get('city').value[0], addressData.get('state').value[0])}"></div>
+            <div th:text="${T(org.codeforamerica.shiba.Utils).joinNonEmpty(addressData.get('city').value[0], addressData.get('state').value[0])}"></div>
             <div th:text="${addressData.get('zipCode').value[0]}"></div>
             <input type="radio" th:classappend="${foundEnrichedAddress} ? '' : 'hide-radio-circle'" th:name="${formInputName}" id="original-address"
                    th:value="false"

@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.output.caf;
 
 import org.codeforamerica.shiba.CountyMap;
+import org.codeforamerica.shiba.Utils;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.mnit.MnitCountyInformation;
 import org.codeforamerica.shiba.output.Document;
@@ -37,8 +38,7 @@ public class FileNameGenerator {
 
     public String generateUploadedDocumentName(Application application, int index, String filename) {
         int size = application.getApplicationData().getUploadedDocs().size();
-        String[] fileNameParts = filename.split("\\.");
-        String extension = fileNameParts.length > 1 ? fileNameParts[fileNameParts.length - 1] : "";
+        String extension = Utils.getFileType(filename);
         index = index + 1;
         return getSharedApplicationPrefix(application) +
                 "doc" + index + "of" +
