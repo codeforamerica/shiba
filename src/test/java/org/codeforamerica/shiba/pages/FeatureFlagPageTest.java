@@ -26,6 +26,8 @@ public class FeatureFlagPageTest extends AbstractExistingStartTimePageTest {
         staticMessageSource.addMessage("second-page-title", Locale.ENGLISH, "secondPage");
         staticMessageSource.addMessage("first-feature-page-title", Locale.ENGLISH, "firstFeature");
         staticMessageSource.addMessage("second-feature-page-title", Locale.ENGLISH, "secondFeature");
+        staticMessageSource.addMessage("third-page-title", Locale.ENGLISH, "thirdPage");
+        staticMessageSource.addMessage("conditional-feature-page-title", Locale.ENGLISH, "conditionalFeature");
     }
 
     @DynamicPropertySource
@@ -68,6 +70,24 @@ public class FeatureFlagPageTest extends AbstractExistingStartTimePageTest {
         testPage.clickContinue();
 
         assertThat(driver.getTitle()).isEqualTo("secondPage");
+    }
+
+    @Test
+    void shouldGoToSpecificPageIfFeatureFlagIsEnabledAndConditionIsSatisfied() {
+        navigateTo("thirdPage");
+        testPage.enter("foo", "yes");
+        testPage.clickContinue();
+
+        assertThat(driver.getTitle()).isEqualTo("conditionalFeature");
+    }
+
+    @Test
+    void shouldNotGoToSpecificPageIfFeatureFlagIsEnabledAndConditionIsNotSatisfied() {
+        navigateTo("thirdPage");
+        testPage.enter("foo", "no");
+        testPage.clickContinue();
+
+        assertThat(driver.getTitle()).isEqualTo("firstPage");
     }
 }
 
