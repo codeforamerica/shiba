@@ -197,6 +197,27 @@ public class DocumentsTest extends FeatureTest {
     }
 
     @Test
+    void shouldNotDisplayDocumentListAccordionIfNotApplicable() {
+        testPage.clickButton("Apply now");
+        testPage.clickContinue();
+        testPage.enter("writtenLanguage", "English");
+        testPage.enter("spokenLanguage", "English");
+        testPage.enter("needInterpreter", "Yes");
+        testPage.clickContinue();
+        testPage.enter("programs", PROGRAM_CCAP);
+        testPage.clickContinue();
+        testPage.clickContinue();
+        fillOutPersonalInfo();
+        testPage.clickContinue();
+        navigateTo("signThisApplication");
+        testPage.enter("applicantSignature", "some name");
+        testPage.clickButton("Submit");
+        testPage.clickButton("Upload documents now");
+
+        assertThat(driver.findElements(By.className("reveal")).size()).isEqualTo(0);
+    }
+
+    @Test
     void shouldDisplayDocumentUploadInformation() {
         getToDocumentUploadScreen();
         uploadJpgFile();
@@ -205,43 +226,37 @@ public class DocumentsTest extends FeatureTest {
 
         var filenameTextElements = driver.findElementsByClassName("filename-text");
         var fileDetailsElements = driver.findElementsByClassName("file-details");
-        var thumbnailElements = driver.findElementsByClassName("dz-thumb");
 
         // shiba+test.jpg
         var filename = getAttributeForElementAtIndex(filenameTextElements, 0, "innerHTML");
         var fileDetails = getAttributeForElementAtIndex(fileDetailsElements, 0, "innerHTML");
-        var thumbnail = getAttributeForElementAtIndex(thumbnailElements, 0, "src");
 
         assertThat(filename).contains("shiba");
         assertThat(filename).contains("jpg");
         assertThat(fileDetails).contains("1 image");
         assertThat(fileDetails).contains("51.7");
         assertThat(fileDetails).contains("KB");
-        assertThat(thumbnail).contains(SHIBA_IMAGE_THUMBNAIL);
-
-        // test-caf.pdf
-        filename = getAttributeForElementAtIndex(filenameTextElements, 1, "innerHTML");
-        fileDetails = getAttributeForElementAtIndex(fileDetailsElements, 1, "innerHTML");
-        thumbnail = getAttributeForElementAtIndex(thumbnailElements, 1, "src");
-
-        assertThat(filename).contains("test-caf");
-        assertThat(filename).contains("pdf");
-        assertThat(fileDetails).contains("0.4");
-        assertThat(fileDetails).contains("MB");
-        assertThat(fileDetails).doesNotContain("1 image");
-        assertThat(thumbnail).contains(DEFAULT_DOCUMENT_THUMBNAIL);
 
         // sample.heic
         filename = getAttributeForElementAtIndex(filenameTextElements, 2, "innerHTML");
         fileDetails = getAttributeForElementAtIndex(fileDetailsElements, 2, "innerHTML");
-        thumbnail = getAttributeForElementAtIndex(thumbnailElements, 2, "src");
 
         assertThat(filename).contains("sample");
         assertThat(filename).contains("heic");
         assertThat(fileDetails).contains("0.3");
         assertThat(fileDetails).contains("MB");
         assertThat(fileDetails).contains("1 image");
-        assertThat(thumbnail).contains(DEFAULT_DOCUMENT_THUMBNAIL);
+
+
+        // test-caf.pdf
+        filename = getAttributeForElementAtIndex(filenameTextElements, 1, "innerHTML");
+        fileDetails = getAttributeForElementAtIndex(fileDetailsElements, 1, "innerHTML");
+
+        assertThat(filename).contains("test-caf");
+        assertThat(filename).contains("pdf");
+        assertThat(fileDetails).contains("0.4");
+        assertThat(fileDetails).contains("MB");
+        assertThat(fileDetails).doesNotContain("1 image");
     }
 
     @Test

@@ -36,31 +36,38 @@
                             <div id="file-preview-template">
                                 <div class="preview-container"></div>
                             </div>
-                            <div class="reveal reveal-adjacent spacing-above-60">
-                                <a href="#" class="reveal__link reveal__link-adjacent">
+
+                            <th:block th:with="isEmployed=${data.get('employmentStatus').inputDataValueContainsAny('areYouWorking', T(java.util.List).of('true')) && applicationData.isApplicationWith(T(java.util.List).of('SNAP', 'CASH', 'EA', 'GRH'))},
+                                          hasHousingExpenses=${!data.get('homeExpenses').inputDataValueContainsAny('homeExpenses', T(java.util.List).of('NONE_OF_THE_ABOVE')) && applicationData.isApplicationWith(T(java.util.List).of('SNAP', 'CASH', 'EA'))},
+                                          hasChangedWorkSituation=${data.get('workSituation').inputDataValueContainsAny('hasWorkSituation', T(java.util.List).of('true')) && applicationData.isApplicationWith(T(java.util.List).of('SNAP', 'CASH', 'GRH'))}">
+                                <div class="reveal reveal-adjacent spacing-above-60"
+                                     th:if="${isEmployed || hasHousingExpenses || hasChangedWorkSituation}">
+                                    <a href="#" class="reveal__link reveal__link-adjacent">
                                     <span class="reveal-icon">
                                         <div th:replace="fragments/icons/icon-multiple-documents  :: icon-multiple-documents"></div>
                                     </span>
-                                    <div class="reveal__link__header-adjacent"
-                                         th:text="#{upload-documents.view-document-list}"></div>
-                                    <div class="reveal__content reveal__content-adjacent">
-                                        <div th:if="${data.get('employmentStatus').inputDataValueContainsAny('areYouWorking', T(java.util.List).of('true')) && applicationData.isApplicationWith(T(java.util.List).of('SNAP', 'CASH', 'EA', 'GRH'))}">
-                                            <h3 class="h4" th:text="#{upload-documents.proof-of-income}"></h3>
-                                            <div th:text="#{upload-documents.a-document-with-employer-and-employee-names}"></div>
+                                        <div class="reveal__link__header-adjacent"
+                                             th:text="#{upload-documents.view-document-list}"></div>
+                                        <div class="reveal__content reveal__content-adjacent">
+                                            <div th:if="${isEmployed}">
+                                                <h3 class="h4" th:text="#{upload-documents.proof-of-income}"></h3>
+                                                <div th:text="#{upload-documents.a-document-with-employer-and-employee-names}"></div>
+                                            </div>
+                                            <div th:if="${hasHousingExpenses}">
+                                                <h3 class="h4 spacing-above-15"
+                                                    th:text="#{upload-documents.proof-of-housing-costs}"></h3>
+                                                <div th:text="#{upload-documents.a-document-showing-total-amount-payed-for-housing}"></div>
+                                            </div>
+                                            <div th:if="${hasChangedWorkSituation}">
+                                                <h3 class="h4 spacing-above-15"
+                                                    th:text="#{upload-documents.proof-of-job-loss}"></h3>
+                                                <div th:text="#{upload-documents.a-document-with-your-former-employers-name-and-signature}"></div>
+                                            </div>
                                         </div>
-                                        <div th:if="${!data.get('homeExpenses').inputDataValueContainsAny('homeExpenses', T(java.util.List).of('NONE_OF_THE_ABOVE')) && applicationData.isApplicationWith(T(java.util.List).of('SNAP', 'CASH', 'EA'))}">
-                                            <h3 class="h4 spacing-above-15"
-                                                th:text="#{upload-documents.proof-of-housing-costs}"></h3>
-                                            <div th:text="#{upload-documents.a-document-showing-total-amount-payed-for-housing}"></div>
-                                        </div>
-                                        <div th:if="${data.get('workSituation').inputDataValueContainsAny('hasWorkSituation', T(java.util.List).of('true')) && applicationData.isApplicationWith(T(java.util.List).of('SNAP', 'CASH', 'GRH'))}">
-                                            <h3 class="h4 spacing-above-15"
-                                                th:text="#{upload-documents.proof-of-job-loss}"></h3>
-                                            <div th:text="#{upload-documents.a-document-with-your-former-employers-name-and-signature}"></div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
+                                    </a>
+
+                                </div>
+                            </th:block>
                         </form>
                         <form th:action="@{/submit-documents}" method="post" onsubmit="return onSubmit()">
                             <div class="form-group">
@@ -223,7 +230,7 @@
 
             this.on("thumbnail", function (file, dataURL) {
                 setTimeout(function () {
-                   processDZQueueAfterThumbnailGeneration()
+                    processDZQueueAfterThumbnailGeneration()
                 }, 1);
             });
 
