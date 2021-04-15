@@ -2,7 +2,7 @@ staging:
   defaultValue:
     email: help+staging@mnbenefits.org
     phoneNumber: 612-596-1300
-    folderId: 45ed1eea-d045-48fe-9970-383e1b889ec5
+    folderId: 45ed1eea-d045-48fe-9970-383e1b889ec5 # Hennepin folder on uat-svcs.dhs.mn.gov
     dhsProviderId: A000027200
   counties:
     Anoka:
@@ -269,7 +269,7 @@ other:
   defaultValue:
     email: help+dev@mnbenefits.org
     phoneNumber: 612-596-1300
-    folderId: 5195b061-9bdc-4d31-9840-90a99902d329
+    folderId: 5195b061-9bdc-4d31-9840-90a99902d329 # Hennepin folder on test-svcs.dhs.mn.gov
     dhsProviderId: A000027200
   counties:
     Anoka:
