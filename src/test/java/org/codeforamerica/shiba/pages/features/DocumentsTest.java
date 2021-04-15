@@ -232,7 +232,7 @@ public class DocumentsTest extends FeatureTest {
         var filename = getAttributeForElementAtIndex(filenameTextElements, 0, "innerHTML");
         var fileDetails = getAttributeForElementAtIndex(fileDetailsElements, 0, "innerHTML");
         var thumbnail = getAttributeForElementAtIndex(thumbnailElements, 0, "src");
-        await().until(() -> !getAttributeForElementAtIndex(thumbnailElements, 0, "src").isBlank());
+        await().until(() -> !getAttributeForElementAtIndex(thumbnailElements, 0, "src").contains("<\"http://localhost:41811/pages/[object%20Event]\">"));
 
         assertThat(filename).contains("shiba");
         assertThat(filename).contains("jpg");
@@ -245,7 +245,7 @@ public class DocumentsTest extends FeatureTest {
         filename = getAttributeForElementAtIndex(filenameTextElements, 1, "innerHTML");
         fileDetails = getAttributeForElementAtIndex(fileDetailsElements, 1, "innerHTML");
         thumbnail = getAttributeForElementAtIndex(thumbnailElements, 1, "src");
-        await().until(() -> !getAttributeForElementAtIndex(thumbnailElements, 1, "src").isBlank());
+        await().until(() -> !getAttributeForElementAtIndex(thumbnailElements, 1, "src").contains("<\"http://localhost:41811/pages/[object%20Event]\">"));
 
         assertThat(filename).contains("test-caf");
         assertThat(filename).contains("pdf");
@@ -258,7 +258,7 @@ public class DocumentsTest extends FeatureTest {
         filename = getAttributeForElementAtIndex(filenameTextElements, 2, "innerHTML");
         fileDetails = getAttributeForElementAtIndex(fileDetailsElements, 2, "innerHTML");
         thumbnail = getAttributeForElementAtIndex(thumbnailElements, 2, "src");
-        await().until(() -> !getAttributeForElementAtIndex(thumbnailElements, 2, "src").isBlank());
+        await().until(() -> !getAttributeForElementAtIndex(thumbnailElements, 2, "src").contains("<\"http://localhost:41811/pages/[object%20Event]\">"));
 
         assertThat(filename).contains("sample");
         assertThat(filename).contains("heic");
