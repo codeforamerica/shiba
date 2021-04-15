@@ -64,7 +64,7 @@ task genJaxb {
 
 dependencyManagement {
     imports {
-        mavenBom 'org.springframework.session:spring-session-bom:2020.0.3'
+        mavenBom 'org.springframework.session:spring-session-bom:2020.0.4'
     }
 }
 
