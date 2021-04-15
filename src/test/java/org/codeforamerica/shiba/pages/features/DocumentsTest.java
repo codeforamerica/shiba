@@ -241,6 +241,19 @@ public class DocumentsTest extends FeatureTest {
         assertThat(fileDetails).contains("KB");
         assertThat(thumbnail).contains(SHIBA_IMAGE_THUMBNAIL);
 
+        // sample.heic
+        filename = getAttributeForElementAtIndex(filenameTextElements, 2, "innerHTML");
+        fileDetails = getAttributeForElementAtIndex(fileDetailsElements, 2, "innerHTML");
+        thumbnail = getAttributeForElementAtIndex(thumbnailElements, 2, "src");
+        await().until(() -> !getAttributeForElementAtIndex(thumbnailElements, 2, "src").contains("<\"http://localhost:41811/pages/[object%20Event]\">"));
+
+        assertThat(filename).contains("sample");
+        assertThat(filename).contains("heic");
+        assertThat(fileDetails).contains("0.3");
+        assertThat(fileDetails).contains("MB");
+        assertThat(fileDetails).contains("1 image");
+        assertThat(thumbnail).contains(DEFAULT_DOCUMENT_THUMBNAIL);
+
         // test-caf.pdf
         filename = getAttributeForElementAtIndex(filenameTextElements, 1, "innerHTML");
         fileDetails = getAttributeForElementAtIndex(fileDetailsElements, 1, "innerHTML");
@@ -253,19 +266,6 @@ public class DocumentsTest extends FeatureTest {
         assertThat(fileDetails).contains("MB");
         assertThat(fileDetails).doesNotContain("1 image");
         assertThat(thumbnail).contains(DEFAULT_DOCUMENT_THUMBNAIL);
-
-        // sample.heic
-//        filename = getAttributeForElementAtIndex(filenameTextElements, 2, "innerHTML");
-//        fileDetails = getAttributeForElementAtIndex(fileDetailsElements, 2, "innerHTML");
-//        thumbnail = getAttributeForElementAtIndex(thumbnailElements, 2, "src");
-//        await().until(() -> !getAttributeForElementAtIndex(thumbnailElements, 2, "src").contains("<\"http://localhost:41811/pages/[object%20Event]\">"));
-//
-//        assertThat(filename).contains("sample");
-//        assertThat(filename).contains("heic");
-//        assertThat(fileDetails).contains("0.3");
-//        assertThat(fileDetails).contains("MB");
-//        assertThat(fileDetails).contains("1 image");
-//        assertThat(thumbnail).contains(DEFAULT_DOCUMENT_THUMBNAIL);
     }
 
     @Test
