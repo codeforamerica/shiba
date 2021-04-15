@@ -226,46 +226,37 @@ public class DocumentsTest extends FeatureTest {
 
         var filenameTextElements = driver.findElementsByClassName("filename-text");
         var fileDetailsElements = driver.findElementsByClassName("file-details");
-        var thumbnailElements = driver.findElementsByClassName("dz-thumb");
 
         // shiba+test.jpg
         var filename = getAttributeForElementAtIndex(filenameTextElements, 0, "innerHTML");
         var fileDetails = getAttributeForElementAtIndex(fileDetailsElements, 0, "innerHTML");
-        var thumbnail = getAttributeForElementAtIndex(thumbnailElements, 0, "src");
-        await().until(() -> !getAttributeForElementAtIndex(thumbnailElements, 0, "src").contains("<\"http://localhost:41811/pages/[object%20Event]\">"));
 
         assertThat(filename).contains("shiba");
         assertThat(filename).contains("jpg");
         assertThat(fileDetails).contains("1 image");
         assertThat(fileDetails).contains("51.7");
         assertThat(fileDetails).contains("KB");
-        assertThat(thumbnail).contains(SHIBA_IMAGE_THUMBNAIL);
 
         // sample.heic
         filename = getAttributeForElementAtIndex(filenameTextElements, 2, "innerHTML");
         fileDetails = getAttributeForElementAtIndex(fileDetailsElements, 2, "innerHTML");
-        thumbnail = getAttributeForElementAtIndex(thumbnailElements, 2, "src");
-        await().until(() -> !getAttributeForElementAtIndex(thumbnailElements, 2, "src").contains("<\"http://localhost:41811/pages/[object%20Event]\">"));
 
         assertThat(filename).contains("sample");
         assertThat(filename).contains("heic");
         assertThat(fileDetails).contains("0.3");
         assertThat(fileDetails).contains("MB");
         assertThat(fileDetails).contains("1 image");
-        assertThat(thumbnail).contains(DEFAULT_DOCUMENT_THUMBNAIL);
+
 
         // test-caf.pdf
         filename = getAttributeForElementAtIndex(filenameTextElements, 1, "innerHTML");
         fileDetails = getAttributeForElementAtIndex(fileDetailsElements, 1, "innerHTML");
-        thumbnail = getAttributeForElementAtIndex(thumbnailElements, 1, "src");
-        await().until(() -> !getAttributeForElementAtIndex(thumbnailElements, 1, "src").contains("<\"http://localhost:41811/pages/[object%20Event]\">"));
 
         assertThat(filename).contains("test-caf");
         assertThat(filename).contains("pdf");
         assertThat(fileDetails).contains("0.4");
         assertThat(fileDetails).contains("MB");
         assertThat(fileDetails).doesNotContain("1 image");
-        assertThat(thumbnail).contains(DEFAULT_DOCUMENT_THUMBNAIL);
     }
 
     @Test
