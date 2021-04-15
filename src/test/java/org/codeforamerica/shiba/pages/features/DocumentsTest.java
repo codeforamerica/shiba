@@ -232,6 +232,7 @@ public class DocumentsTest extends FeatureTest {
         var filename = getAttributeForElementAtIndex(filenameTextElements, 0, "innerHTML");
         var fileDetails = getAttributeForElementAtIndex(fileDetailsElements, 0, "innerHTML");
         var thumbnail = getAttributeForElementAtIndex(thumbnailElements, 0, "src");
+        takeSnapShot("test.jpg");
         await().until(() -> !getAttributeForElementAtIndex(thumbnailElements, 0, "src").contains("<\"http://localhost:41811/pages/[object%20Event]\">"));
 
         assertThat(filename).contains("shiba");
