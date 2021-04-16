@@ -64,25 +64,27 @@ public class Page {
 
     public void enter(String inputName, String value) {
         checkForBadMessageKeys();
-        WebElement formInputElement = driver.findElement(By.cssSelector(String.format("[name^='%s']", inputName)));
-        FormInputHtmlTag formInputHtmlTag = FormInputHtmlTag.valueOf(formInputElement.getTagName());
+        List<WebElement> formInputElements = driver.findElements(By.name(inputName + "[]"));
+        WebElement firstElement = formInputElements.get(0);
+        FormInputHtmlTag formInputHtmlTag = FormInputHtmlTag.valueOf(firstElement.getTagName());
         switch (formInputHtmlTag) {
-            case select -> selectFromDropdown(inputName, value);
-            case button -> choose(value);
-            case textarea -> enterInput(inputName, value);
+            case select -> selectFromDropdown(firstElement, value);
+            case button -> choose(formInputElements, value);
+            case textarea -> enterInput(firstElement, value);
             case input -> {
-                switch (InputTypeHtmlAttribute.valueOf(formInputElement.getAttribute("type"))) {
+                switch (InputTypeHtmlAttribute.valueOf(firstElement.getAttribute("type"))) {
                     case text -> {
-                        if (formInputElement.getAttribute("class").contains("dob-input")) {
+                        if (firstElement.getAttribute("class").contains("dob-input")) {
                             enterDateInput(inputName, value);
                         } else {
-                            enterInput(inputName, value);
+                            enterInput(firstElement, value);
                         }
                     }
-                    case number, tel -> enterInput(inputName, value);
-                    case radio, checkbox -> selectEnumeratedInput(inputName, value);
+                    case number, tel -> enterInput(firstElement, value);
+                    case radio, checkbox -> selectEnumeratedInput(formInputElements, value);
                 }
             }
+            default -> throw new IllegalArgumentException("Cannot find element");
         }
     }
 
@@ -101,8 +103,7 @@ public class Page {
         tel
     }
 
-    private void enterInput(String inputName, String input) {
-        WebElement webElement = driver.findElement(By.cssSelector(String.format("input[name^='%s']", inputName)));
+    private void enterInput(WebElement webElement, String input) {
         webElement.clear();
         webElement.sendKeys(input);
     }
@@ -120,17 +121,16 @@ public class Page {
         input.sendKeys(value);
     }
 
-    private void selectEnumeratedInput(String inputName, String optionText) {
-        WebElement inputToSelect = driver.findElements(By.cssSelector(String.format("input[name^='%s']", inputName))).stream()
+    private void selectEnumeratedInput(List<WebElement> webElements, String optionText) {
+        WebElement inputToSelect = webElements.stream()
                 .map(input -> input.findElement(By.xpath("./..")))
                 .filter(label -> label.getText().contains(optionText))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException(String.format("Cannot find value \"%s\" or input \"%s\"", optionText, inputName)));
+                .orElseThrow(() -> new RuntimeException(String.format("Cannot find value \"%s\"", optionText)));
         inputToSelect.click();
     }
 
-    private void choose(String value) {
-        List<WebElement> yesNoButtons = driver.findElements(By.className("button"));
+    private void choose(List<WebElement> yesNoButtons, String value) {
         WebElement buttonToClick = yesNoButtons.stream()
                 .filter(button -> button.getText().contains(value))
                 .findFirst()
@@ -138,8 +138,8 @@ public class Page {
         buttonToClick.click();
     }
 
-    private void selectFromDropdown(String inputName, String optionText) {
-        WebElement optionToSelect = driver.findElement(By.cssSelector(String.format("select[name^='%s']", inputName)))
+    private void selectFromDropdown(WebElement element, String optionText) {
+        WebElement optionToSelect = element
                 .findElements(By.tagName("option")).stream()
                 .filter(option -> option.getText().equals(optionText))
                 .findFirst()

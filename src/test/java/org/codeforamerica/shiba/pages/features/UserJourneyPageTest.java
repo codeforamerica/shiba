@@ -13,8 +13,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
@@ -25,7 +25,7 @@ public class UserJourneyPageTest extends FeatureTest {
 
     @Test
     void intercomButtonIsPresent() {
-        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        await().atMost(5, SECONDS).until(() -> !driver.findElementsById("intercom-frame").isEmpty());
         assertThat(driver.findElementById("intercom-frame")).isNotNull();
     }
     
