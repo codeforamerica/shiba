@@ -54,7 +54,7 @@ public class MnitEsbWebServiceClient {
     }
 
     @Retryable(
-            value = {SoapFaultClientException.class, SOAPException.class, WebServiceTransportException.class},
+            value = {Exception.class},
             maxAttemptsExpression = "#{${mnit-esb.max-attempts}}",
             backoff = @Backoff(
                     delayExpression = "#{${mnit-esb.delay}}",
