@@ -76,8 +76,12 @@ public class MnitDocumentConsumer {
             var fileBytes = documentRepositoryService.get(uploadedDocument.getS3Filepath());
             var extension = Utils.getFileType(uploadedDocument.getFilename());
             if (imageTypesToConvertToPdf.contains(extension)) {
-                fileBytes = convertImageToPdf(uploadedDocument, fileBytes);
-                extension = "pdf";
+                try {
+                    fileBytes = convertImageToPdf(uploadedDocument, fileBytes);
+                    extension = "pdf";
+                } catch (IOException e) {
+                    log.error("failed to convert document " + uploadedDocument.getFilename() + " to pdf. Maintaining original type");
+                }
             }
             String filename = fileNameGenerator.generateUploadedDocumentName(application, i, extension);
             ApplicationFile fileToSend = new ApplicationFile(fileBytes, filename);
@@ -97,15 +101,15 @@ public class MnitDocumentConsumer {
     }
 
     private void writeByteArrayToFile(byte[] fileBytes, String filename) {
-        try (var fos = new FileOutputStream(filename)) {
+        try (FileOutputStream fos = new FileOutputStream(filename)) {
             fos.write(fileBytes);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Failed to close FileOutputStream");
         }
     }
 
-    private byte[] convertImageToPdf(UploadedDocument uploadedDocument, byte[] imageFileBytes) {
-        try (var doc = new PDDocument()) {
+    private byte[] convertImageToPdf(UploadedDocument uploadedDocument, byte[] imageFileBytes) throws IOException {
+        try (PDDocument doc = new PDDocument(); ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             var image = PDImageXObject.createFromByteArray(doc, imageFileBytes, uploadedDocument.getFilename());
             var pageSize = PDRectangle.LETTER;
             var originalWidth = image.getWidth();
@@ -120,17 +124,12 @@ public class MnitDocumentConsumer {
             var page = new PDPage(pageSize);
             doc.addPage(page);
 
-            try (var contents = new PDPageContentStream(doc, page)) {
-                contents.drawImage(image, x, y, scaledWidth, scaledHeight);
+            try (PDPageContentStream pdfContents = new PDPageContentStream(doc, page)) {
+                pdfContents.drawImage(image, x, y, scaledWidth, scaledHeight);
             }
 
-            try (var byteArrayOutputStream = new ByteArrayOutputStream()) {
-                doc.save(byteArrayOutputStream);
-                return byteArrayOutputStream.toByteArray();
-            }
-        } catch (Exception e) {
-
+            doc.save(outputStream);
+            return outputStream.toByteArray();
         }
-        return new byte[]{}; //todo something else
     }
 }
