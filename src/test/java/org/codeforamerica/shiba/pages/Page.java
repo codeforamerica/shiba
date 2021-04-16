@@ -63,7 +63,7 @@ public class Page {
     }
 
     public void enter(String inputName, String value) {
-        checkForBadMessageKeys();
+//        checkForBadMessageKeys();
         List<WebElement> formInputElements = driver.findElements(By.name(inputName + "[]"));
         WebElement firstElement = formInputElements.get(0);
         FormInputHtmlTag formInputHtmlTag = FormInputHtmlTag.valueOf(firstElement.getTagName());
@@ -138,7 +138,7 @@ public class Page {
         buttonToClick.click();
     }
 
-    private void selectFromDropdown(WebElement element, String optionText) {
+    public void selectFromDropdown(WebElement element, String optionText) {
         WebElement optionToSelect = element
                 .findElements(By.tagName("option")).stream()
                 .filter(option -> option.getText().equals(optionText))

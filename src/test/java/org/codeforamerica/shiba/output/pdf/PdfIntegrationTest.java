@@ -58,7 +58,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         testPage.clickContinue();
         testPage.clickContinue();
         navigateTo("addHouseholdMembers");
-        testPage.clickButton("No");
+        testPage.enter("addHouseholdMembers", NO.getDisplayValue());
 
         when(featureFlagConfiguration.get("document-upload-feature")).thenReturn(FeatureFlag.ON);
         when(featureFlagConfiguration.get("submit-via-email")).thenReturn(FeatureFlag.OFF);
