@@ -278,6 +278,8 @@
                 }
             });
 
+            // This lets dropzone know to process the queue after each file has completed
+            // Important for uploading multiple files at once
             this.on("complete", function() {
                 processDZQueueAfterThumbnailGeneration();
             })
