@@ -15,7 +15,6 @@ public class Utils {
 
     public static String getFileType(String filename) {
         String[] fileNameParts = filename.split("\\.");
-        String extension = fileNameParts.length > 1 ? fileNameParts[fileNameParts.length - 1] : "";
-        return extension;
+        return fileNameParts.length > 1 ? fileNameParts[fileNameParts.length - 1] : "";
     }
 }

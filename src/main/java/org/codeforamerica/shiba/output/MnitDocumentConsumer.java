@@ -1,4 +1,5 @@
 package org.codeforamerica.shiba.output;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -9,7 +10,7 @@ import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.Utils;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
-import org.codeforamerica.shiba.documents.*;
+import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
@@ -17,7 +18,12 @@ import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
+
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
 @Component
@@ -31,6 +37,7 @@ public class MnitDocumentConsumer {
     private final DocumentRepositoryService documentRepositoryService;
     private final FileNameGenerator fileNameGenerator;
     private final String activeProfile;
+
     public MnitDocumentConsumer(MnitEsbWebServiceClient mnitClient,
                                 XmlGenerator xmlGenerator,
                                 PdfGenerator pdfGenerator,
@@ -61,43 +68,21 @@ public class MnitDocumentConsumer {
 
     public void processUploadedDocuments(Application application) {
         List<UploadedDocument> uploadedDocs = application.getApplicationData().getUploadedDocs();
-        List<String> acceptedImageTypes = List.of("jpg","jpeg");
+        List<String> imageTypesToConvertToPdf = List.of("jpg", "jpeg", "png", "gif");
 
         for (int i = 0; i < uploadedDocs.size(); i++) {
             UploadedDocument uploadedDocument = uploadedDocs.get(i);
-            byte[] fileBytes = documentRepositoryService.get(uploadedDocument.getS3Filepath());
-            String extension = Utils.getFileType(uploadedDocument.getFilename());
 
-            if(acceptedImageTypes.contains(extension)){
-                try {
-                    PDDocument doc = new PDDocument();
-                    PDImageXObject image = PDImageXObject.createFromByteArray(doc,fileBytes,uploadedDocument.getFilename());
-                    PDRectangle pageSize = PDRectangle.LETTER;
-                    int originalWidth = image.getWidth();
-                    int originalHeight = image.getHeight();
-                    float pageWidth = pageSize.getWidth();
-                    float pageHeight = pageSize.getHeight();
-                    float ratio = Math.min(pageWidth / originalWidth, pageHeight / originalHeight);
-                    float scaledWidth = originalWidth * ratio;
-                    float scaledHeight = originalHeight * ratio;
-                    float x = (pageWidth - scaledWidth) / 2;
-                    float y = (pageHeight - scaledHeight) / 2;
-                    PDPage page = new PDPage(pageSize);
-                    doc.addPage(page);
-
-                    try (PDPageContentStream contents = new PDPageContentStream(doc, page)) {
-                        contents.drawImage(image, x, y, scaledWidth, scaledHeight);
-                    }
-                    doc.save("shiba.pdf");
-                } catch (Exception e) {
-
-                }
+            var fileBytes = documentRepositoryService.get(uploadedDocument.getS3Filepath());
+            var extension = Utils.getFileType(uploadedDocument.getFilename());
+            if (imageTypesToConvertToPdf.contains(extension)) {
+                fileBytes = convertImageToPdf(uploadedDocument, fileBytes);
+                extension = "pdf";
             }
-
-            /*//String filename = fileNameGenerator.generateUploadedDocumentName(application, i, uploadedDocument.getFilename());
-            String filename = "shiba_testing.pdf";
+            String filename = fileNameGenerator.generateUploadedDocumentName(application, i, extension);
             ApplicationFile fileToSend = new ApplicationFile(fileBytes, filename);
 
+            writeByteArrayToFile(fileBytes, filename); //todo remove
 
             if (fileBytes.length > 0) {
                 log.info("Now sending: " + filename + " original filename: " + uploadedDocument.getFilename());
@@ -107,7 +92,45 @@ public class MnitDocumentConsumer {
                 log.error("Skipped uploading file " + uploadedDocument.getFilename() + " because it was empty. This should only happen in a dev environment.");
             } else {
                 log.info("Pretending to send file " + uploadedDocument.getFilename() + ".");
-            }*/
+            }
         }
+    }
+
+    private void writeByteArrayToFile(byte[] fileBytes, String filename) {
+        try (var fos = new FileOutputStream(filename)) {
+            fos.write(fileBytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private byte[] convertImageToPdf(UploadedDocument uploadedDocument, byte[] imageFileBytes) {
+        try (var doc = new PDDocument()) {
+            var image = PDImageXObject.createFromByteArray(doc, imageFileBytes, uploadedDocument.getFilename());
+            var pageSize = PDRectangle.LETTER;
+            var originalWidth = image.getWidth();
+            var originalHeight = image.getHeight();
+            var pageWidth = pageSize.getWidth();
+            var pageHeight = pageSize.getHeight();
+            var ratio = Math.min(pageWidth / originalWidth, pageHeight / originalHeight);
+            var scaledWidth = originalWidth * ratio;
+            var scaledHeight = originalHeight * ratio;
+            var x = (pageWidth - scaledWidth) / 2;
+            var y = (pageHeight - scaledHeight) / 2;
+            var page = new PDPage(pageSize);
+            doc.addPage(page);
+
+            try (var contents = new PDPageContentStream(doc, page)) {
+                contents.drawImage(image, x, y, scaledWidth, scaledHeight);
+            }
+
+            try (var byteArrayOutputStream = new ByteArrayOutputStream()) {
+                doc.save(byteArrayOutputStream);
+                return byteArrayOutputStream.toByteArray();
+            }
+        } catch (Exception e) {
+
+        }
+        return new byte[]{}; //todo something else
     }
 }

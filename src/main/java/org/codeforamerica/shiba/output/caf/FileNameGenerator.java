@@ -1,7 +1,6 @@
 package org.codeforamerica.shiba.output.caf;
 
 import org.codeforamerica.shiba.CountyMap;
-import org.codeforamerica.shiba.Utils;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.mnit.MnitCountyInformation;
 import org.codeforamerica.shiba.output.Document;
@@ -11,7 +10,10 @@ import org.springframework.stereotype.Component;
 
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Component
 public class FileNameGenerator {
@@ -36,9 +38,8 @@ public class FileNameGenerator {
                 document.toString();
     }
 
-    public String generateUploadedDocumentName(Application application, int index, String filename) {
+    public String generateUploadedDocumentName(Application application, int index, String extension) {
         int size = application.getApplicationData().getUploadedDocs().size();
-        String extension = Utils.getFileType(filename);
         index = index + 1;
         return getSharedApplicationPrefix(application) +
                 "doc" + index + "of" +
