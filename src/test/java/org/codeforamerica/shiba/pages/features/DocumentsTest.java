@@ -222,7 +222,6 @@ public class DocumentsTest extends FeatureTest {
         getToDocumentUploadScreen();
         uploadJpgFile();
         uploadPdfFile();
-        uploadHeicFile();
 
         var filenameTextElements = driver.findElementsByClassName("filename-text");
         var fileDetailsElements = driver.findElementsByClassName("file-details");
@@ -236,17 +235,6 @@ public class DocumentsTest extends FeatureTest {
         assertThat(fileDetails).contains("1 image");
         assertThat(fileDetails).contains("51.7");
         assertThat(fileDetails).contains("KB");
-
-        // sample.heic
-        filename = getAttributeForElementAtIndex(filenameTextElements, 2, "innerHTML");
-        fileDetails = getAttributeForElementAtIndex(fileDetailsElements, 2, "innerHTML");
-
-        assertThat(filename).contains("sample");
-        assertThat(filename).contains("heic");
-        assertThat(fileDetails).contains("0.3");
-        assertThat(fileDetails).contains("MB");
-        assertThat(fileDetails).contains("1 image");
-
 
         // test-caf.pdf
         filename = getAttributeForElementAtIndex(filenameTextElements, 1, "innerHTML");

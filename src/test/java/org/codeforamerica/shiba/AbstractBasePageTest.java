@@ -58,7 +58,6 @@ public abstract class AbstractBasePageTest {
     public static final String PROGRAM_EA = "Emergency Assistance";
 
     private static final String UPLOADED_JPG_FILE_NAME = "shiba+file.jpg";
-    private static final String UPLOADED_HEIC_FILE_NAME = "sample.heic";
     private static final String UPLOADED_PDF_NAME = "test-caf.pdf";
 
     static protected RemoteWebDriver driver;
@@ -429,11 +428,6 @@ public abstract class AbstractBasePageTest {
     protected void uploadJpgFile() {
         uploadFile(getAbsoluteFilepath(UPLOADED_JPG_FILE_NAME));
         assertThat(driver.findElement(By.id("document-upload")).getText()).contains(UPLOADED_JPG_FILE_NAME);
-    }
-
-    protected void uploadHeicFile() {
-        uploadFile(getAbsoluteFilepath(UPLOADED_HEIC_FILE_NAME));
-        assertThat(driver.findElement(By.id("document-upload")).getText()).contains(UPLOADED_HEIC_FILE_NAME);
     }
 
     protected void uploadPdfFile() {
