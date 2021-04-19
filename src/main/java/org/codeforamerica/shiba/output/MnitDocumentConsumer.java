@@ -86,7 +86,7 @@ public class MnitDocumentConsumer {
             String filename = fileNameGenerator.generateUploadedDocumentName(application, i, extension);
             ApplicationFile fileToSend = new ApplicationFile(fileBytes, filename);
 
-            writeByteArrayToFile(fileBytes, filename); //todo remove
+            //writeByteArrayToFile(fileBytes, filename); //todo remove
 
             if (fileBytes.length > 0) {
                 log.info("Now sending: " + filename + " original filename: " + uploadedDocument.getFilename());

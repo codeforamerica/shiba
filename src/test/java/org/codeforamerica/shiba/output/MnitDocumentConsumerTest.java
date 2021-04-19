@@ -17,6 +17,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.*;
+import org.springframework.web.multipart.commons.*;
+
+import java.io.*;
+import java.net.*;
+import java.nio.file.*;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
@@ -134,12 +140,15 @@ class MnitDocumentConsumerTest {
     }
 
     @Test
-    void sendsBothImageAndDocumentUploadsSuccessfully() {
-        MockMultipartFile image = new MockMultipartFile("image", "someImage.jpg", MediaType.IMAGE_JPEG_VALUE, "test".getBytes());
-        MockMultipartFile pdf = new MockMultipartFile("pdf", "somePdf.pdf", MediaType.APPLICATION_PDF_VALUE, "thisIsAPdf".getBytes());
-        ApplicationFile imageApplicationFile = new ApplicationFile("test".getBytes(), "image");
-        ApplicationFile pdfApplicationFile = new ApplicationFile("thisIsAPdf".getBytes(), "pdf");
+    void sendsBothImageAndDocumentUploadsSuccessfully() throws IOException {
+        MockMultipartFile image = new MockMultipartFile("image", "someImage.jpg", MediaType.IMAGE_JPEG_VALUE, Files.readAllBytes(getAbsoluteFilepath("shiba+file.jpg")));
+        MockMultipartFile pdf = new MockMultipartFile("pdf", "somePdf.pdf", MediaType.APPLICATION_PDF_VALUE, Files.readAllBytes(getAbsoluteFilepath("test-caf.pdf")));
+        ApplicationFile imageApplicationFile = new ApplicationFile(Files.readAllBytes(getAbsoluteFilepath("shiba+file.jpg")), "jpg");
+
+        ApplicationFile imageAsPDFApplicationFile = new ApplicationFile(Files.readAllBytes(getAbsoluteFilepath("shiba+file.pdf")), "pdf");
+        ApplicationFile pdfApplicationFile = new ApplicationFile(Files.readAllBytes(getAbsoluteFilepath("test-caf.pdf")), "pdf");
         ApplicationData applicationData = new ApplicationData();
+
         applicationData.addUploadedDoc(image, "someS3FilePath", "someDataUrl", "image/jpeg");
         applicationData.addUploadedDoc(pdf, "coolS3FilePath", "documentDataUrl", "application/pdf");
         Application application = Application.builder()
@@ -149,12 +158,21 @@ class MnitDocumentConsumerTest {
                 .county(County.Olmsted)
                 .timeToComplete(null)
                 .build();
-        when(fileNameGenerator.generateUploadedDocumentName(application, 0, "someImage.jpg")).thenReturn("image");
-        when(fileNameGenerator.generateUploadedDocumentName(application, 1, "somePdf.pdf")).thenReturn("pdf");
+        when(fileNameGenerator.generateUploadedDocumentName(application, 0, "pdf")).thenReturn("pdf1");
+        when(fileNameGenerator.generateUploadedDocumentName(application, 1, "pdf")).thenReturn("pdf2");
         when(documentRepositoryService.get("someS3FilePath")).thenReturn(imageApplicationFile.getFileBytes());
         when(documentRepositoryService.get("coolS3FilePath")).thenReturn(pdfApplicationFile.getFileBytes());
         documentConsumer.processUploadedDocuments(application);
+        verify(mnitClient).send(imageAsPDFApplicationFile, County.Olmsted, application.getId(), null);
         verify(mnitClient).send(pdfApplicationFile, County.Olmsted, application.getId(), null);
-        verify(mnitClient).send(imageApplicationFile, County.Olmsted, application.getId(), null);
+
+    }
+
+    private Path getAbsoluteFilepath(String resourceFilename) {
+        URL resource = this.getClass().getClassLoader().getResource(resourceFilename);
+        if (resource != null) {
+            return Paths.get((new File(resource.getFile())).getAbsolutePath());
+        }
+        return Paths.get("");
     }
 }
