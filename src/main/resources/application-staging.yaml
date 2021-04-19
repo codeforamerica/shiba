@@ -8,19 +8,19 @@ mnit-esb:
 
 feature-flag:
   submit-via-api: on
-  county-anoka: on
-  county-carver: on
-  county-clay: on
-  county-cook: on
-  county-dodge: on
+  county-anoka: off
+  county-carver: off
+  county-clay: off
+  county-cook: off
+  county-dodge: off
   county-hennepin: on
-  county-morrison: on
+  county-morrison: off
   county-olmsted: on
-  county-ottertail: on
-  county-sherburne: on
-  county-steele: on
-  county-stlouis: on
+  county-ottertail: off
+  county-sherburne: off
+  county-steele: off
+  county-stlouis: off
   county-wabasha: on
-  county-wadena: on
-  county-waseca: on
+  county-wadena: off
+  county-waseca: off
   county-wright: on
