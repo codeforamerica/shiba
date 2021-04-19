@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -86,7 +87,7 @@ public class MnitDocumentConsumer {
             String filename = fileNameGenerator.generateUploadedDocumentName(application, i, extension);
             ApplicationFile fileToSend = new ApplicationFile(fileBytes, filename);
 
-            //writeByteArrayToFile(fileBytes, filename); //todo remove
+            writeByteArrayToFile(fileBytes, filename); //todo remove
 
             if (fileBytes.length > 0) {
                 log.info("Now sending: " + filename + " original filename: " + uploadedDocument.getFilename());
@@ -101,7 +102,8 @@ public class MnitDocumentConsumer {
     }
 
     private void writeByteArrayToFile(byte[] fileBytes, String filename) {
-        try (FileOutputStream fos = new FileOutputStream(filename)) {
+        File f = new File("src/test/resources/output_" + filename);
+        try (FileOutputStream fos = new FileOutputStream(f)) {
             fos.write(fileBytes);
         } catch (IOException e) {
             log.error("Failed to close FileOutputStream");
