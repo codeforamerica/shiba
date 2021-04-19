@@ -23,7 +23,7 @@ mail-gun:
   url: mailgun-url
 
 feature-flag:
-  submit-via-email: on
+  submit-docs-via-email-for-hennepin: on
   county-ottertail: on
 
 mnit-esb:

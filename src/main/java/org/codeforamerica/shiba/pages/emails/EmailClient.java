@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages.emails;
 
+import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 
@@ -22,4 +23,6 @@ public interface EmailClient {
     void sendDownloadCafAlertEmail(String confirmationId, String ip, Locale locale);
 
     void sendNonPartnerCountyAlert(String applicationId, ZonedDateTime submissionTime);
+    
+    void sendHennepinDocUploadsEmail(Application application);  
 }

@@ -40,6 +40,7 @@ sender-email: help@mnbenefits.org
 security-email: security@mnbenefits.org
 audit-email: help+audit@mnbenefits.org
 support-email: mnbenefits@codeforamerica.org
+hennepin-email: mnbenefits@codeforamerica.org
 
 mail-gun:
   url: "https://api.mailgun.net/v3/mail.mnbenefits.org/messages"
@@ -48,7 +49,8 @@ mail-gun:
 
 feature-flag:
   submit-via-email: off
-  submit-via-api: off
+  submit-via-api: on
+  submit-docs-via-email-for-hennepin: on
   send-non-partner-county-alert: off
   document-upload-feature: on
   later-docs-feature: on

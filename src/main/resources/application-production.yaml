@@ -10,6 +10,8 @@ client:
 mnit-esb:
   url: https://svcs.dhs.mn.gov/WebServices/Alfresco/CreateDocument
 
+hennepin-email: hhsews@hennepin.us
+
 mail-gun:
   shouldCC: true
 
@@ -18,6 +20,7 @@ feature-flag:
   send-non-partner-county-alert: off
   submit-via-email: off
   submit-via-api: on
+  submit-docs-via-email-for-hennepin: on
   document-upload-feature: off
   later-docs-feature: off
   county-anoka: off

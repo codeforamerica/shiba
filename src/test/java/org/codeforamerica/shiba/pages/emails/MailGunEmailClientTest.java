@@ -4,8 +4,9 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.BasicCredentials;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import org.codeforamerica.shiba.documents.*;
 import org.codeforamerica.shiba.output.ApplicationFile;
-import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,8 @@ class MailGunEmailClientTest {
     MailGunEmailClient mailGunEmailClient;
 
     EmailContentCreator emailContentCreator = mock(EmailContentCreator.class);
+    DocumentRepositoryService documentRepositoryService = mock(DocumentRepositoryService.class);
+    FileNameGenerator fileNameGenerator = mock(FileNameGenerator.class);
 
     WireMockServer wireMockServer;
 
@@ -45,6 +48,7 @@ class MailGunEmailClientTest {
     String securityEmail = "someSecurityEmail";
     String auditEmail = "someAuditEmail";
     String supportEmail = "someSupportEmail";
+    String hennepinEmail = "someHennepinEmail";
 
     @BeforeEach
     void setUp() {
@@ -59,10 +63,13 @@ class MailGunEmailClientTest {
                 securityEmail,
                 auditEmail,
                 supportEmail,
+                hennepinEmail,
                 "http://localhost:" + port,
                 mailGunApiKey,
                 emailContentCreator,
-                false);
+                false,
+                documentRepositoryService,
+                fileNameGenerator);
     }
 
     @AfterEach
@@ -209,10 +216,12 @@ class MailGunEmailClientTest {
 
         mailGunEmailClient = new MailGunEmailClient(
                 senderEmail,
-                "", "", "", "http://localhost:" + port,
+                "", "", "", "", "http://localhost:" + port,
                 mailGunApiKey,
                 emailContentCreator,
-                true);
+                true,
+                documentRepositoryService,
+                fileNameGenerator);
 
         wireMockServer.stubFor(post(anyUrl())
                 .willReturn(aResponse().withStatus(200)));
