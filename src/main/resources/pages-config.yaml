@@ -1679,8 +1679,10 @@ pageDefinitions:
               messageKey: living-situation.paying-for-my-own-housing-with-rent-lease-or-mortgage-payments
             - value: LIVING_IN_A_PLACE_NOT_MEANT_FOR_HOUSING
               messageKey: living-situation.living-outside-in-a-vehicle-or-another-place-not-meant-for-housing
-            - value: TEMPORARILY_WITH_FRIENDS_OR_FAMILY
-              messageKey: living-situation.temporarily-staying-with-friends-or-family
+            - value: TEMPORARILY_WITH_FRIENDS_OR_FAMILY_DUE_TO_ECONOMIC_HARDSHIP
+              messageKey: living-situation.temporarily-staying-with-friends-or-family-due-to-economic-hardship
+            - value: TEMPORARILY_WITH_FRIENDS_OR_FAMILY_OTHER_REASONS
+              messageKey: living-situation.temporarily-staying-with-friends-or-family-for-other-reasons
             - value: HOTEL_OR_MOTEL
               messageKey: living-situation.staying-in-a-hotel-or-motel
             - value: EMERGENCY_SHELTER

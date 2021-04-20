@@ -1164,4 +1164,22 @@ derived-values:
             - pageName: homeAddressValidation
               input: useEnrichedAddress
               value: "false"
+#  - groupName: livingSituation
+#    fieldName: livingWithFamilyOrFriends
+#    values:
+#      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+#          literal: TEMPORARILY_WITH_FRIENDS_OR_FAMILY
+#        type: ENUMERATED_MULTI_VALUE
+#        condition:
+#          logicalOperator: OR
+#          conditions:
+#            - pageName: livingSituation
+#              input: livingSituation
+#              matcher: CONTAINS
+#              value: TEMPORARILY_WITH_FRIENDS_OR_FAMILY_DUE_TO_ECONOMIC_HARDSHIP
+#            - pageName: livingSituation
+#              input: livingSituation
+#              matcher: CONTAINS
+#              value: TEMPORARILY_WITH_FRIENDS_OR_FAMILY_OTHER_REASONS
+
 
