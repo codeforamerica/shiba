@@ -145,8 +145,8 @@ class MnitDocumentConsumerTest {
     void sendsBothImageAndDocumentUploadsSuccessfully() throws IOException {
         MockMultipartFile image = new MockMultipartFile("image", "someImage.jpg", MediaType.IMAGE_JPEG_VALUE, Files.readAllBytes(getAbsoluteFilepath("shiba+file.jpg")));
         MockMultipartFile pdf = new MockMultipartFile("pdf", "somePdf.pdf", MediaType.APPLICATION_PDF_VALUE, Files.readAllBytes(getAbsoluteFilepath("test-caf.pdf")));
-        ApplicationFile imageApplicationFile = new ApplicationFile(Files.readAllBytes(getAbsoluteFilepath("shiba+file.jpg")), "jpg");
 
+        ApplicationFile imageApplicationFile = new ApplicationFile(Files.readAllBytes(getAbsoluteFilepath("shiba+file.jpg")), "jpg");
         ApplicationFile imageAsPDFApplicationFile = new ApplicationFile(Files.readAllBytes(getAbsoluteFilepath("shiba+file.pdf")), "pdf1of2.pdf");
         ApplicationFile pdfApplicationFile = new ApplicationFile(Files.readAllBytes(getAbsoluteFilepath("test-caf.pdf")), "pdf2of2.pdf");
         ApplicationData applicationData = new ApplicationData();
