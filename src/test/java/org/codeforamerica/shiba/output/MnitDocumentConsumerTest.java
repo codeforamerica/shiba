@@ -1,4 +1,6 @@
 package org.codeforamerica.shiba.output;
+
+import de.redsix.pdfcompare.PdfComparator;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
@@ -15,9 +17,11 @@ import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -28,6 +32,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
@@ -143,16 +148,27 @@ class MnitDocumentConsumerTest {
 
     @Test
     void sendsBothImageAndDocumentUploadsSuccessfully() throws IOException {
-        MockMultipartFile image = new MockMultipartFile("image", "someImage.jpg", MediaType.IMAGE_JPEG_VALUE, Files.readAllBytes(getAbsoluteFilepath("shiba+file.jpg")));
-        MockMultipartFile pdf = new MockMultipartFile("pdf", "somePdf.pdf", MediaType.APPLICATION_PDF_VALUE, Files.readAllBytes(getAbsoluteFilepath("test-caf.pdf")));
+        var applicationData = new ApplicationData();
 
-        ApplicationFile imageApplicationFile = new ApplicationFile(Files.readAllBytes(getAbsoluteFilepath("shiba+file.jpg")), "jpg");
-        ApplicationFile imageAsPDFApplicationFile = new ApplicationFile(Files.readAllBytes(getAbsoluteFilepath("shiba+file.pdf")), "pdf1of2.pdf");
-        ApplicationFile pdfApplicationFile = new ApplicationFile(Files.readAllBytes(getAbsoluteFilepath("test-caf.pdf")), "pdf2of2.pdf");
-        ApplicationData applicationData = new ApplicationData();
+        var shibaJpgContents = Files.readAllBytes(getAbsoluteFilepath("shiba+file.jpg"));
+        var shibaImageS3Filepath = "someS3FilePath";
+        when(documentRepositoryService.get(shibaImageS3Filepath)).thenReturn(shibaJpgContents);
+        applicationData.addUploadedDoc(
+                new MockMultipartFile("image", "someImage.jpg", MediaType.IMAGE_JPEG_VALUE, shibaJpgContents),
+                shibaImageS3Filepath,
+                "someDataUrl",
+                "image/jpeg");
 
-        applicationData.addUploadedDoc(image, "someS3FilePath", "someDataUrl", "image/jpeg");
-        applicationData.addUploadedDoc(pdf, "coolS3FilePath", "documentDataUrl", "application/pdf");
+        var testCafPdfContents = Files.readAllBytes(getAbsoluteFilepath("test-caf.pdf"));
+        var pdfApplicationFile = new ApplicationFile(testCafPdfContents, "pdf2of2.pdf");
+        var testCafPdfS3Filepath = "coolS3FilePath";
+        applicationData.addUploadedDoc(
+                new MockMultipartFile("pdf", "somePdf.pdf", MediaType.APPLICATION_PDF_VALUE, testCafPdfContents),
+                testCafPdfS3Filepath,
+                "documentDataUrl",
+                "application/pdf");
+        when(documentRepositoryService.get(testCafPdfS3Filepath)).thenReturn(pdfApplicationFile.getFileBytes());
+
         Application application = Application.builder()
                 .id("someId")
                 .completedAt(ZonedDateTime.now())
@@ -162,12 +178,17 @@ class MnitDocumentConsumerTest {
                 .build();
         when(fileNameGenerator.generateUploadedDocumentName(application, 0, "pdf")).thenReturn("pdf1of2.pdf");
         when(fileNameGenerator.generateUploadedDocumentName(application, 1, "pdf")).thenReturn("pdf2of2.pdf");
-        when(documentRepositoryService.get("someS3FilePath")).thenReturn(imageApplicationFile.getFileBytes());
-        when(documentRepositoryService.get("coolS3FilePath")).thenReturn(pdfApplicationFile.getFileBytes());
-        documentConsumer.processUploadedDocuments(application);
-        verify(mnitClient).send(imageAsPDFApplicationFile, County.Olmsted, application.getId(), null);
-        verify(mnitClient).send(pdfApplicationFile, County.Olmsted, application.getId(), null);
 
+        documentConsumer.processUploadedDocuments(application);
+
+        ArgumentCaptor<ApplicationFile> captor = ArgumentCaptor.forClass(ApplicationFile.class);
+        verify(mnitClient, times(2)).send(captor.capture(), eq(County.Olmsted), eq(application.getId()), nullable(Document.class));
+
+        // Assert that converted file contents are as expected
+        try (var actual = new ByteArrayInputStream(captor.getAllValues().get(0).getFileBytes());
+             var expected = Files.newInputStream(getAbsoluteFilepath("shiba+file.pdf"))) {
+            assertThatCode(() -> new PdfComparator<>(expected, actual).compare()).doesNotThrowAnyException();
+        }
     }
 
     private Path getAbsoluteFilepath(String resourceFilename) {
