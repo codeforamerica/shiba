@@ -36,6 +36,7 @@ public class MnitDocumentConsumer {
     private final DocumentRepositoryService documentRepositoryService;
     private final FileNameGenerator fileNameGenerator;
     private final String activeProfile;
+    private final List<String> IMAGE_TYPES_TO_CONVERT_TO_PDF = List.of("jpg", "jpeg", "png", "gif");
 
     public MnitDocumentConsumer(MnitEsbWebServiceClient mnitClient,
                                 XmlGenerator xmlGenerator,
@@ -67,14 +68,14 @@ public class MnitDocumentConsumer {
 
     public void processUploadedDocuments(Application application) {
         List<UploadedDocument> uploadedDocs = application.getApplicationData().getUploadedDocs();
-        List<String> imageTypesToConvertToPdf = List.of("jpg", "jpeg", "png", "gif");
+
 
         for (int i = 0; i < uploadedDocs.size(); i++) {
             UploadedDocument uploadedDocument = uploadedDocs.get(i);
 
             var fileBytes = documentRepositoryService.get(uploadedDocument.getS3Filepath());
             var extension = Utils.getFileType(uploadedDocument.getFilename());
-            if (imageTypesToConvertToPdf.contains(extension)) {
+            if (IMAGE_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
                 try {
                     fileBytes = convertImageToPdf(uploadedDocument, fileBytes);
                     extension = "pdf";
