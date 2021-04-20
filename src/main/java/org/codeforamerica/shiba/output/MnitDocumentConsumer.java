@@ -69,7 +69,6 @@ public class MnitDocumentConsumer {
     public void processUploadedDocuments(Application application) {
         List<UploadedDocument> uploadedDocs = application.getApplicationData().getUploadedDocs();
 
-
         for (int i = 0; i < uploadedDocs.size(); i++) {
             UploadedDocument uploadedDocument = uploadedDocs.get(i);
 
