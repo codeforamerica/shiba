@@ -954,6 +954,19 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         }
 
         @Test
+        void shouldMapLivingWithFamilyAndFriendsDueToEconomicHardship() {
+            fillInRequiredPages();
+            navigateTo("livingSituation");
+            testPage.enter("livingSituation", "Temporarily staying with friends or family because I lost my housing or can no longer afford my own housing");
+            testPage.clickContinue();
+
+            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "LIVING_SITUATION")).isEqualTo("TEMPORARILY_WITH_FRIENDS_OR_FAMILY");
+//            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "LIVING_WITH_FAMILY_OR_FRIENDS")).isEqualTo("Yes");
+        }
+
+        @Test
         void shouldMapCcapExpeditedEligibility() {
             fillInRequiredPages();
 
