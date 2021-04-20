@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.pages.config;
 
 import lombok.Value;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -19,16 +20,16 @@ public class PageTemplate {
 
     @SuppressWarnings("unused")
     public boolean hasHeader() {
-        return !this.headerKey.isBlank();
+        return StringUtils.isNotBlank(headerKey);
     }
 
     @SuppressWarnings("unused")
     public boolean hasHeaderHelpMessageKey() {
-        return !this.headerHelpMessageKey.isBlank();
+        return StringUtils.isNotBlank(headerHelpMessageKey);
     }
 
     @SuppressWarnings("unused")
     public boolean hasSubtleLinkTextKey() {
-        return !this.subtleLinkTextKey.isBlank();
+        return StringUtils.isNotBlank(subtleLinkTextKey);
     }
 }
