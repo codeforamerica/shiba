@@ -270,10 +270,10 @@
 
                 if (file.type.includes("image")) {
                     fileCount.setAttribute('aria-label', fileCount.innerText);
-                    // The below lines are commented out to hide the '1 Image' on images until the page count on PDF
-                    // story is completed. At that time uncomment the below lines along with removing shiba.css
+                    fileCount.innerHTML = "<span>1 image</span>";
+                    // The below line is commented out to hide the ' . ' spacer on image upload info until the page count on PDF
+                    // story is completed. At that time uncomment the below line along with removing shiba.css
                     // document-info display none rule
-                    // fileCount.innerHTML = "<span>1 image</span>";
                     // documentInfo.style.display = "unset";
                 }
             });
