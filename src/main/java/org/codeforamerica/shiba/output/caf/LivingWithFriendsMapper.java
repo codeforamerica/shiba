@@ -28,13 +28,6 @@ public class LivingWithFriendsMapper implements ApplicationInputsMapper {
                             List.of("Yes"),
                             ApplicationInputType.SINGLE_VALUE,
                             null
-                    ),
-                    new ApplicationInput(
-                            "livingSituation",
-                            "livingSituation",
-                            List.of("TEMPORARILY_WITH_FRIENDS_OR_FAMILY"),
-                            ApplicationInputType.ENUMERATED_MULTI_VALUE,
-                            null
                     )
             );
         } else if (livingWithFamilyOrFriendsDueToOtherReasons) {
@@ -45,13 +38,6 @@ public class LivingWithFriendsMapper implements ApplicationInputsMapper {
                             List.of("No"),
                             ApplicationInputType.SINGLE_VALUE,
                             null
-                    ),
-                    new ApplicationInput(
-                            "livingSituation",
-                            "livingSituation",
-                            List.of("TEMPORARILY_WITH_FRIENDS_OR_FAMILY"),
-                            ApplicationInputType.ENUMERATED_MULTI_VALUE,
-                            null
                     )
             );
         } else {
@@ -59,7 +45,7 @@ public class LivingWithFriendsMapper implements ApplicationInputsMapper {
                     new ApplicationInput(
                             "livingWithFamilyOrFriends",
                             "livingWithFamilyOrFriends",
-                            List.of(""),
+                            List.of("Off"),
                             ApplicationInputType.SINGLE_VALUE,
                             null
                     )
