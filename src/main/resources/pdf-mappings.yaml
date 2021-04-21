@@ -166,8 +166,6 @@ mappings:
     otherSourcesFrequency: OTHER_SOURCES_FREQUENCY
   livingSituation:
     livingSituation: LIVING_SITUATION
-#    livingWithFamilyOrFriends:
-#      TEMPORARILY_WITH_FRIENDS_OR_FAMILY: TEMPORARILY_WITH_FRIENDS_OR_FAMILY
   livingWithFamilyOrFriends:
     livingWithFamilyOrFriends: LIVING_WITH_FAMILY_OR_FRIENDS
   futureIncome:
