@@ -9,7 +9,6 @@ import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.output.CompositeCondition;
 import org.codeforamerica.shiba.output.Document;
-import org.codeforamerica.shiba.output.MnitDocumentConsumer;
 import org.codeforamerica.shiba.pages.config.*;
 import org.codeforamerica.shiba.pages.data.*;
 import org.codeforamerica.shiba.pages.enrichment.ApplicationEnrichment;
@@ -65,8 +64,7 @@ public class PageController {
             ApplicationEnrichment applicationEnrichment,
             ApplicationDataParser<List<Document>> documentListParser,
             FeatureFlagConfiguration featureFlags,
-            UploadDocumentConfiguration uploadDocumentConfiguration, DocumentRepositoryService documentRepositoryService,
-            MnitDocumentConsumer mnitDocumentConsumer) {
+            UploadDocumentConfiguration uploadDocumentConfiguration, DocumentRepositoryService documentRepositoryService) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;

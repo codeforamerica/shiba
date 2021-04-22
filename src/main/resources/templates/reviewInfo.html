@@ -40,13 +40,13 @@
                             <p class="spacing-below-0"
                                th:text="${data.get('homeAddress').get('streetAddress').value[0]}"></p>
                             <p class="spacing-below-0" th:text="${data.get('homeAddress').get('apartmentNumber').value[0]}"></p>
-                            <p class="spacing-below-0" th:text="${T(org.codeforamerica.shiba.pages.PageUtils).joinNonEmpty(data.get('homeAddress').get('city').value[0], data.get('homeAddress').get('state').value[0])}"></p>
+                            <p class="spacing-below-0" th:text="${T(org.codeforamerica.shiba.Utils).joinNonEmpty(data.get('homeAddress').get('city').value[0], data.get('homeAddress').get('state').value[0])}"></p>
                         </th:block>
                         <th:block th:if="${useEnriched}">
                             <p class="spacing-below-0"
                                th:text="${data.get('homeAddress').get('enrichedStreetAddress').value[0]}"></p>
                             <p class="spacing-below-0" th:text="${data.get('homeAddress').get('enrichedApartmentNumber').value[0]}"></p>
-                            <p class="spacing-below-0" th:text="${T(org.codeforamerica.shiba.pages.PageUtils).joinNonEmpty(data.get('homeAddress').get('enrichedCity').value[0], data.get('homeAddress').get('enrichedState').value[0])}"></p>
+                            <p class="spacing-below-0" th:text="${T(org.codeforamerica.shiba.Utils).joinNonEmpty(data.get('homeAddress').get('enrichedCity').value[0], data.get('homeAddress').get('enrichedState').value[0])}"></p>
                         </th:block>
                     </th:block>
                     <p class="spacing-below-0 spacing-above-10 italic"
@@ -70,13 +70,13 @@
                             <p id="mailing-address_street" class="spacing-below-0"
                                th:text="${data.get('mailingAddress').get('streetAddress').value[0]}"></p>
                             <p class="spacing-below-0" th:text="${data.get('mailingAddress').get('apartmentNumber').value[0]}"></p>
-                            <p class="spacing-below-0" th:text="${T(org.codeforamerica.shiba.pages.PageUtils).joinNonEmpty(data.get('mailingAddress').get('city').value[0], data.get('mailingAddress').get('state').value[0])}"></p>
+                            <p class="spacing-below-0" th:text="${T(org.codeforamerica.shiba.Utils).joinNonEmpty(data.get('mailingAddress').get('city').value[0], data.get('mailingAddress').get('state').value[0])}"></p>
                         </th:block>
                         <th:block th:if="${useEnriched}">
                             <p id="mailing-address_street" class="spacing-below-0"
                                th:text="${data.get('mailingAddress').get('enrichedStreetAddress').value[0]}"></p>
                             <p class="spacing-below-0" th:text="${data.get('mailingAddress').get('enrichedApartmentNumber').value[0]}"></p>
-                            <p class="spacing-below-0" th:text="${T(org.codeforamerica.shiba.pages.PageUtils).joinNonEmpty(data.get('mailingAddress').get('enrichedCity').value[0], data.get('mailingAddress').get('enrichedState').value[0])}"></p>
+                            <p class="spacing-below-0" th:text="${T(org.codeforamerica.shiba.Utils).joinNonEmpty(data.get('mailingAddress').get('enrichedCity').value[0], data.get('mailingAddress').get('enrichedState').value[0])}"></p>
                         </th:block>
                     </th:block>
                 </div>

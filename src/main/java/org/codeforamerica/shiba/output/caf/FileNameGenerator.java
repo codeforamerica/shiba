@@ -10,7 +10,10 @@ import org.springframework.stereotype.Component;
 
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Component
 public class FileNameGenerator {
@@ -35,10 +38,8 @@ public class FileNameGenerator {
                 document.toString();
     }
 
-    public String generateUploadedDocumentName(Application application, int index, String filename) {
+    public String generateUploadedDocumentName(Application application, int index, String extension) {
         int size = application.getApplicationData().getUploadedDocs().size();
-        String[] fileNameParts = filename.split("\\.");
-        String extension = fileNameParts.length > 1 ? fileNameParts[fileNameParts.length - 1] : "";
         index = index + 1;
         return getSharedApplicationPrefix(application) +
                 "doc" + index + "of" +
