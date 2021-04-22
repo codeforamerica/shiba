@@ -177,12 +177,10 @@ public class MailGunEmailClient implements EmailClient {
         List<ApplicationFile> applicationFiles = new ArrayList<>();
         for (int i = 0; i < uploadedDocs.size(); i++) {
             UploadedDocument uploadedDocument = uploadedDocs.get(i);
-            byte[] fileBytes = documentRepositoryService.get(uploadedDocument.getS3Filepath());
-            String filename = fileNameGenerator.generateUploadedDocumentName(application, i, uploadedDocument.getFilename());
-            ApplicationFile fileToSend = new ApplicationFile(fileBytes, filename);
+            ApplicationFile fileToSend = uploadedDocument.fileToSend(application, i, documentRepositoryService, fileNameGenerator);
 
-            if (fileBytes.length > 0) {
-                log.info("Now emailing: " + filename + " original filename: " + uploadedDocument.getFilename());
+            if (fileToSend.getFileBytes().length > 0) {
+                log.info("Now attaching: " + fileToSend.getFileName() + " original filename: " + uploadedDocument.getFilename());
                 applicationFiles.add(fileToSend);
             }
         }

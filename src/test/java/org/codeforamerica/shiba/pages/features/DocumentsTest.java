@@ -222,6 +222,7 @@ public class DocumentsTest extends FeatureTest {
         getToDocumentUploadScreen();
         uploadJpgFile();
         uploadPdfFile();
+        waitForDocumentUploadToComplete();
 
         var filenameTextElements = driver.findElementsByClassName("filename-text");
         var fileDetailsElements = driver.findElementsByClassName("file-details");

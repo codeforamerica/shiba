@@ -201,8 +201,8 @@ class FileNameGeneratorTest {
                 .applicationData(applicationData)
                 .build();
 
-        String imageName = fileNameGenerator.generateUploadedDocumentName(application, 0, image.getOriginalFilename());
-        String pdfName = fileNameGenerator.generateUploadedDocumentName(application, 1, pdf.getOriginalFilename());
+        String imageName = fileNameGenerator.generateUploadedDocumentName(application, 0, "jpg");
+        String pdfName = fileNameGenerator.generateUploadedDocumentName(application, 1, "pdf");
 
         assertThat(imageName).isEqualTo(String.format("%s_MNB_%s_%s_%s_doc1of2.jpg", countyNPI, "20070909", "235959", applicationId));
         assertThat(pdfName).isEqualTo(String.format("%s_MNB_%s_%s_%s_doc2of2.pdf", countyNPI, "20070909", "235959", applicationId));
