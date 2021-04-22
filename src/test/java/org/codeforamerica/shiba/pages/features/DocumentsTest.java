@@ -31,7 +31,7 @@ public class DocumentsTest extends FeatureTest {
         testPage.enter("employersName", "some employer");
         testPage.clickContinue();
         testPage.enter("selfEmployment", YES.getDisplayValue());
-        paidByTheHourOrSelectPayPeriod();
+        paidByTheHourOrSelectPayPeriod(true);
         testPage.enter("currentlyLookingForJob", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.enter("unearnedIncome", "None of the above");
@@ -95,7 +95,7 @@ public class DocumentsTest extends FeatureTest {
         testPage.enter("employersName", "some employer");
         testPage.clickContinue();
         testPage.enter("selfEmployment", YES.getDisplayValue());
-        paidByTheHourOrSelectPayPeriod();
+        paidByTheHourOrSelectPayPeriod(false);
         testPage.clickContinue();
         testPage.enter("unearnedIncome", "None of the above");
         testPage.clickContinue();

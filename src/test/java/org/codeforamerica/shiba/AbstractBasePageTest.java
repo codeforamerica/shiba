@@ -231,6 +231,10 @@ public abstract class AbstractBasePageTest {
     }
 
     protected SuccessPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking, SmartyStreetClient mockSmartyStreetClient) {
+    	return nonExpeditedFlowToSuccessPage(hasHousehold, isWorking, mockSmartyStreetClient, false);
+    }
+
+    protected SuccessPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking, SmartyStreetClient mockSmartyStreetClient, boolean helpWithBenefits) {
         completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_CCAP, PROGRAM_CASH), mockSmartyStreetClient);
         testPage.clickLink("This looks correct");
 
@@ -282,7 +286,7 @@ public abstract class AbstractBasePageTest {
             testPage.enter("employersName", "some employer");
             testPage.clickContinue();
             testPage.enter("selfEmployment", YES.getDisplayValue());
-            paidByTheHourOrSelectPayPeriod();
+            paidByTheHourOrSelectPayPeriod(true);
             testPage.enter("currentlyLookingForJob", NO.getDisplayValue());
         } else {
             testPage.enter("areYouWorking", NO.getDisplayValue());
@@ -325,7 +329,7 @@ public abstract class AbstractBasePageTest {
         testPage.enter("haveSoldAssets", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.enter("registerToVote", "Yes, send me more info");
-        completeHelperWorkflow();
+        completeHelperWorkflow(helpWithBenefits);
         driver.findElement(By.id("additionalInfo")).sendKeys("Some additional information about my application");
         testPage.clickContinue();
         testPage.enter("agreeToTerms", "I agree");
@@ -349,8 +353,8 @@ public abstract class AbstractBasePageTest {
         testPage.enter("moveToMnPreviousState", "Illinois");
     }
 
-    protected void paidByTheHourOrSelectPayPeriod() {
-        if (new Random().nextBoolean()) {
+    protected void paidByTheHourOrSelectPayPeriod(boolean paidByTheHour) {
+        if (paidByTheHour) {
             testPage.enter("paidByTheHour", YES.getDisplayValue());
             testPage.enter("hourlyWage", "1");
             testPage.clickContinue();
@@ -376,8 +380,8 @@ public abstract class AbstractBasePageTest {
         testPage.clickContinue();
     }
 
-    private void completeHelperWorkflow() {
-        if (new Random().nextBoolean()) {
+    private void completeHelperWorkflow(boolean helpWithBenefits) {
+        if (helpWithBenefits) {
             testPage.enter("helpWithBenefits", YES.getDisplayValue());
             testPage.enter("communicateOnYourBehalf", YES.getDisplayValue());
             testPage.enter("getMailNotices", YES.getDisplayValue());

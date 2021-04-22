@@ -69,7 +69,7 @@ public class UserJourneyPageTest extends FeatureTest {
 
     @Test
     void userCanCompleteTheNonExpeditedHouseholdFlow() {
-        nonExpeditedFlowToSuccessPage(true, true, smartyStreetClient);
+        nonExpeditedFlowToSuccessPage(true, true, smartyStreetClient, true);
     }
 
     @Test
