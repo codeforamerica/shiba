@@ -165,9 +165,9 @@ mappings:
     interestDividendsFrequency: INTEREST_DIVIDENDS_FREQUENCY
     otherSourcesFrequency: OTHER_SOURCES_FREQUENCY
   livingSituation:
-    livingSituation: LIVING_SITUATION
-  livingWithFamilyOrFriends:
-    livingWithFamilyOrFriends: LIVING_WITH_FAMILY_OR_FRIENDS
+    derivedLivingSituation: LIVING_SITUATION
+  livingWithFamilyOrFriendsYesNo:
+    livingWithFamilyOrFriendsYesNo: LIVING_WITH_FAMILY_OR_FRIENDS
   futureIncome:
     earnLessMoneyThisMonth: EARN_LESS_MONEY_THIS_MONTH
     additionalIncomeInfo: ADDITIONAL_INCOME_INFO

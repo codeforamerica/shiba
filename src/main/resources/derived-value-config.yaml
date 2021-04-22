@@ -1164,22 +1164,48 @@ derived-values:
             - pageName: homeAddressValidation
               input: useEnrichedAddress
               value: "false"
-#  - groupName: livingSituation
-#    fieldName: livingWithFamilyOrFriends
-#    values:
-#      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-#          literal: TEMPORARILY_WITH_FRIENDS_OR_FAMILY
-#        type: ENUMERATED_MULTI_VALUE
-#        condition:
-#          logicalOperator: OR
-#          conditions:
-#            - pageName: livingSituation
-#              input: livingSituation
-#              matcher: CONTAINS
-#              value: TEMPORARILY_WITH_FRIENDS_OR_FAMILY_DUE_TO_ECONOMIC_HARDSHIP
-#            - pageName: livingSituation
-#              input: livingSituation
-#              matcher: CONTAINS
-#              value: TEMPORARILY_WITH_FRIENDS_OR_FAMILY_OTHER_REASONS
+  - groupName: livingSituation
+    fieldName: derivedLivingSituation
+    values:
+      - type: ENUMERATED_SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
+          pageName: livingSituation
+          inputName: livingSituation
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: livingSituation
+              input: livingSituation
+              matcher: DOES_NOT_CONTAIN
+              value: TEMPORARILY_WITH_FRIENDS_OR_FAMILY_DUE_TO_ECONOMIC_HARDSHIP
+            - pageName: livingSituation
+              input: livingSituation
+              matcher: DOES_NOT_CONTAIN
+              value: TEMPORARILY_WITH_FRIENDS_OR_FAMILY_OTHER_REASONS
+      - type: ENUMERATED_SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: TEMPORARILY_WITH_FRIENDS_OR_FAMILY
+        condition:
+          logicalOperator: OR
+          conditions:
+            - pageName: livingSituation
+              input: livingSituation
+              matcher: CONTAINS
+              value: TEMPORARILY_WITH_FRIENDS_OR_FAMILY_DUE_TO_ECONOMIC_HARDSHIP
+            - pageName: livingSituation
+              input: livingSituation
+              matcher: CONTAINS
+              value: TEMPORARILY_WITH_FRIENDS_OR_FAMILY_OTHER_REASONS
+      - type: ENUMERATED_SINGLE_VALUE
+        value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: "Off"
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: livingSituation
+              input: livingSituation
+              matcher: EMPTY
+
+
 
 
