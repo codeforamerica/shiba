@@ -16,15 +16,20 @@ public class LivingWithFriendsMapper implements ApplicationInputsMapper {
 
     @Override
     public List<ApplicationInput> map(Application application, Document document, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
-        String livingSituation = application.getApplicationData().getPagesData().safeGetPageInputValue("livingSituation", "livingSituation").get(0);
+        List<String> pageInputValue = application.getApplicationData().getPagesData().safeGetPageInputValue("livingSituation", "livingSituation");
+        if (pageInputValue.size() == 0) {
+            return List.of();
+        }
+        String livingSituation = pageInputValue.get(0);
+
         boolean livingWithFamilyOrFriendsDueToEconomicHardship = livingSituation.contains("TEMPORARILY_WITH_FRIENDS_OR_FAMILY_DUE_TO_ECONOMIC_HARDSHIP");
         boolean livingWithFamilyOrFriendsDueToOtherReasons = livingSituation.contains("TEMPORARILY_WITH_FRIENDS_OR_FAMILY_OTHER_REASONS");
 
         if (livingWithFamilyOrFriendsDueToEconomicHardship) {
             return List.of(
                     new ApplicationInput(
-                            "livingWithFamilyOrFriends",
-                            "livingWithFamilyOrFriends",
+                            "livingWithFamilyOrFriendsYesNo",
+                            "livingWithFamilyOrFriendsYesNo",
                             List.of("Yes"),
                             ApplicationInputType.SINGLE_VALUE,
                             null
@@ -33,8 +38,8 @@ public class LivingWithFriendsMapper implements ApplicationInputsMapper {
         } else if (livingWithFamilyOrFriendsDueToOtherReasons) {
             return List.of(
                     new ApplicationInput(
-                            "livingWithFamilyOrFriends",
-                            "livingWithFamilyOrFriends",
+                            "livingWithFamilyOrFriendsYesNo",
+                            "livingWithFamilyOrFriendsYesNo",
                             List.of("No"),
                             ApplicationInputType.SINGLE_VALUE,
                             null
@@ -43,8 +48,8 @@ public class LivingWithFriendsMapper implements ApplicationInputsMapper {
         } else {
             return List.of(
                     new ApplicationInput(
-                            "livingWithFamilyOrFriends",
-                            "livingWithFamilyOrFriends",
+                            "livingWithFamilyOrFriendsYesNo",
+                            "livingWithFamilyOrFriendsYesNo",
                             List.of("Off"),
                             ApplicationInputType.SINGLE_VALUE,
                             null

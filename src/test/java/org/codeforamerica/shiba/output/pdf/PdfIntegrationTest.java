@@ -850,6 +850,9 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
                 PDAcroForm pdAcroForm = pdAcroForms.get(type);
                 assertThat(getPdfFieldText(pdAcroForm, "ADDITIONAL_INCOME_INFO")).isEqualTo("abc");
             });
+
+            PDAcroForm pdAcroForm = pdAcroForms.get(CCAP);
+            assertThat(getPdfFieldText(pdAcroForm, "EARN_LESS_MONEY_THIS_MONTH")).isEqualTo("Yes");
         }
 
         @Test
@@ -928,7 +931,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         }
 
         @Test
-        void shouldMapLivingSituationToUnknownIfNoneOfTheseIsSelected() {
+        void shouldMapLivingSituationToUnknownIfNoneOfTheseIsSelectedAndShouldNotMapTemporarilyWithFriendsOrFamilyYesNo() {
             fillInRequiredPages();
 
             navigateTo("livingSituation");
@@ -939,6 +942,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
 
             assertThat(getPdfFieldText(pdAcroForms.get(CAF), "LIVING_SITUATION")).isEqualTo("UNKNOWN");
             assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "LIVING_SITUATION")).isEqualTo("UNKNOWN");
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "LIVING_WITH_FAMILY_OR_FRIENDS")).isEqualTo("Off");
         }
 
         @Test
@@ -963,7 +967,22 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
 
             assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "LIVING_SITUATION")).isEqualTo("TEMPORARILY_WITH_FRIENDS_OR_FAMILY");
-//            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "LIVING_WITH_FAMILY_OR_FRIENDS")).isEqualTo("Yes");
+            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "LIVING_SITUATION")).isEqualTo("TEMPORARILY_WITH_FRIENDS_OR_FAMILY");
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "LIVING_WITH_FAMILY_OR_FRIENDS")).isEqualTo("Yes");
+        }
+
+        @Test
+        void ShouldMapNoforTemporarilyWithFriendsOrFamilyDueToEconomicHardship() {
+            fillInRequiredPages();
+            navigateTo("livingSituation");
+            testPage.enter("livingSituation", "Temporarily staying with friends or family for other reasons");
+            testPage.clickContinue();
+
+            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "LIVING_SITUATION")).isEqualTo("TEMPORARILY_WITH_FRIENDS_OR_FAMILY");
+            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "LIVING_SITUATION")).isEqualTo("TEMPORARILY_WITH_FRIENDS_OR_FAMILY");
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "LIVING_WITH_FAMILY_OR_FRIENDS")).isEqualTo("No");
         }
 
         @Test
