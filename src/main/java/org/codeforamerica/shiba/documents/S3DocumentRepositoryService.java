@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @Service
-//@Profile({"demo", "staging", "production"})
+@Profile({"demo", "staging", "production"})
 @Slf4j
 public class S3DocumentRepositoryService implements DocumentRepositoryService {
     private final TransferManager transferManager;
