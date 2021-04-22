@@ -30,7 +30,7 @@ public class UserJourneyPageTest extends FeatureTest {
     }
     
     @Test
-    void laterDocsUploadButtonIsPresent() {
+    void laterDocsEmailYourCountyFlow() {
         when(featureFlagConfiguration.get("county-hennepin")).thenReturn(FeatureFlag.ON);
         when(featureFlagConfiguration.get("county-morrison")).thenReturn(FeatureFlag.OFF);
 
@@ -45,6 +45,26 @@ public class UserJourneyPageTest extends FeatureTest {
         testPage.enter("county", "Morrison");
         testPage.clickContinue();
         assertThat(driver.getTitle()).isEqualTo("Email Docs To Your County");
+    }
+
+    @Test
+    void laterDocsSubmissionFlow() {
+        when(featureFlagConfiguration.get("county-hennepin")).thenReturn(FeatureFlag.ON);
+
+        testPage.clickButton("Upload documents");
+        assertThat(driver.getTitle()).isEqualTo("Identify County");
+
+        testPage.enter("county", "Hennepin");
+        testPage.clickContinue();
+
+        assertThat(driver.getTitle()).isEqualTo("Match Info");
+        testPage.enter("firstName", "defaultFirstName");
+        testPage.enter("lastName", "defaultLastName");
+        testPage.enter("dateOfBirth", "01/12/1928");
+        testPage.enter("ssn", "123456789");
+        testPage.clickContinue();
+
+        assertThat(driver.getTitle()).isEqualTo("Documents Sent");
     }
 
     @Test

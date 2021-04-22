@@ -1260,6 +1260,9 @@ pageDefinitions:
   - &success
     name: success
     pageTitle: success.title
+  - &documentsSent
+    name: documentsSent
+    pageTitle: documentsSent.title
   - &disability
     name: disability
     pageTitle: disability.title
@@ -3195,7 +3198,7 @@ workflow:
   matchInfo:
     pageConfiguration: *matchInfo
     nextPages:
-      - pageName: uploadDocuments
+      - pageName: documentsSent
   emailDocsToYourCounty:
     pageConfiguration: *emailDocsToYourCounty
     nextPages:
@@ -3204,6 +3207,8 @@ workflow:
       - pageName: identifyCounty
   success:
     pageConfiguration: *success
+  documentsSent:
+    pageConfiguration: *documentsSent
   404:
     pageConfiguration: *404
   500:
