@@ -97,10 +97,9 @@ workflow:
     nextPages:
       - pageName: thirdPage
     skipCondition:
-      conditions:
-        - pageName: firstPage
-          input: someRadioInputName
-          value: SKIP
+      pageName: firstPage
+      input: someRadioInputName
+      value: SKIP
     datasources:
       - pageName: firstPage
   thirdPage:
@@ -108,10 +107,9 @@ workflow:
     nextPages:
       - pageName: fourthPage
     skipCondition:
-      conditions:
-       - pageName: firstPage
-         input: radioInputToSkipThirdPage
-         value: SKIP
+      pageName: firstPage
+      input: radioInputToSkipThirdPage
+      value: SKIP
     datasources:
       - pageName: firstPage
   fourthPage:
@@ -157,10 +155,9 @@ workflow:
       - pageName: seventhPage
         groupName: group1
     skipCondition:
-      conditions:
-        - pageName: seventhPage
-          input: foo
-          value: SKIP
+      pageName: seventhPage
+      input: foo
+      value: SKIP
   startingPage:
     pageConfiguration: *startingPage
     nextPages:

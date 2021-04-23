@@ -9,7 +9,7 @@ import java.util.Optional;
 public class DerivedValue {
     private DerivedValueConfiguration value;
     private ApplicationInputType type;
-    private CompositeCondition condition;
+    private Condition condition;
 
     public boolean shouldDeriveValue(ApplicationData applicationData) {
         return Optional.ofNullable(condition)

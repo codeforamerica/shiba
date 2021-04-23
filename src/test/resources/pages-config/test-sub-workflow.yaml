@@ -63,10 +63,9 @@ workflow:
     nextPages:
       - pageName: firstPage
     skipCondition:
-      conditions:
-        - pageName: startPage
-          input: foo
-          matcher: EMPTY
+      pageName: startPage
+      input: foo
+      matcher: EMPTY
     datasources:
       - pageName: startPage
   firstPage:

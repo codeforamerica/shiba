@@ -2,7 +2,7 @@ package org.codeforamerica.shiba.pages.config;
 
 import lombok.Data;
 import org.codeforamerica.shiba.application.FlowType;
-import org.codeforamerica.shiba.inputconditions.Condition;
+import org.codeforamerica.shiba.output.Condition;
 
 @Data
 public class NextPage {

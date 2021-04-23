@@ -79,7 +79,7 @@ pageDefinitions:
     headerKey:
       conditionalValues:
         - value: yes-header-text
-          compositeCondition:
+          condition:
             logicalOperator: OR
             conditions:
             - pageName: yesNoQuestionPage2
@@ -89,7 +89,7 @@ pageDefinitions:
               input: yesNoQuestion3
               value: "false"
         - value: no-header-text
-          compositeCondition:
+          condition:
             conditions:
             - pageName: yesNoQuestionPage2
               input: yesNoQuestion2
@@ -179,10 +179,9 @@ workflow:
   pageThatGetsSkipped:
     pageConfiguration: *pageThatGetsSkipped
     skipCondition:
-      conditions:
-        - pageName: outsideSubworkflowPage
-          input: outside-subworkflow-input
-          value: "true"
+      pageName: outsideSubworkflowPage
+      input: outside-subworkflow-input
+      value: "true"
     datasources:
       - pageName: outsideSubworkflowPage
     nextPages:

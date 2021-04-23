@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.output.applicationinputsmappers;
 
 import lombok.Value;
-import org.codeforamerica.shiba.inputconditions.Condition;
+import org.codeforamerica.shiba.output.Condition;
 import org.codeforamerica.shiba.pages.config.PageGroupConfiguration;
 import org.codeforamerica.shiba.pages.data.Iteration;
 
