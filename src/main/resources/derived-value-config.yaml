@@ -1182,6 +1182,9 @@ derived-values:
               input: livingSituation
               matcher: DOES_NOT_CONTAIN
               value: TEMPORARILY_WITH_FRIENDS_OR_FAMILY_OTHER_REASONS
+            - pageName: livingSituation
+              input: livingSituation
+              matcher: NOT_EMPTY
       - type: ENUMERATED_SINGLE_VALUE
         value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: TEMPORARILY_WITH_FRIENDS_OR_FAMILY
@@ -1190,11 +1193,9 @@ derived-values:
           conditions:
             - pageName: livingSituation
               input: livingSituation
-              matcher: CONTAINS
               value: TEMPORARILY_WITH_FRIENDS_OR_FAMILY_DUE_TO_ECONOMIC_HARDSHIP
             - pageName: livingSituation
               input: livingSituation
-              matcher: CONTAINS
               value: TEMPORARILY_WITH_FRIENDS_OR_FAMILY_OTHER_REASONS
       - type: ENUMERATED_SINGLE_VALUE
         value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
@@ -1204,7 +1205,7 @@ derived-values:
           conditions:
             - pageName: livingSituation
               input: livingSituation
-              matcher: EMPTY
+              matcher: NONE_SELECTED
 
 
 
