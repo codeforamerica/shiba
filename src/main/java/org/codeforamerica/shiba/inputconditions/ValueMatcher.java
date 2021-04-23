@@ -19,7 +19,7 @@ public enum ValueMatcher {
         this.matcher = matcher;
     }
 
-    Boolean matches(List<String> testValue, String targetValue) {
+    public Boolean matches(List<String> testValue, String targetValue) {
         return this.matcher.apply(testValue, targetValue);
     }
 }

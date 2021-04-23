@@ -7,7 +7,7 @@ import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.documents.DocumentRepositoryService;
-import org.codeforamerica.shiba.output.CompositeCondition;
+import org.codeforamerica.shiba.output.Condition;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.config.*;
 import org.codeforamerica.shiba.pages.data.*;
@@ -114,7 +114,7 @@ public class PageController {
     }
 
     private boolean shouldSkip(PageWorkflowConfiguration nextPageWorkflow) {
-        CompositeCondition skipCondition = nextPageWorkflow.getSkipCondition();
+        Condition skipCondition = nextPageWorkflow.getSkipCondition();
         if (skipCondition != null) {
             PagesData pagesData = this.applicationData.getPagesData();
             Subworkflows subworkflows = this.applicationData.getSubworkflows();

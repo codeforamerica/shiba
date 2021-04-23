@@ -75,49 +75,43 @@ conditionDefinitions:
     value: EA
     input: programs
     matcher: DOES_NOT_CONTAIN
-compositeConditionDefinitions:
   - &noOneChoseCCAP?
     logicalOperator: AND
-    compositeConditions:
-      - conditions:
-          - *applicantDidNotChooseCCAP?
+    conditions:
+      - *applicantDidNotChooseCCAP?
       - logicalOperator: OR
         conditions:
           - *householdMemberDidNotChooseCCAP?
           - *livesAlone?
   - &noOneChoseSNAP?
     logicalOperator: AND
-    compositeConditions:
-      - conditions:
-          - *applicantDidNotChooseSNAP?
+    conditions:
+      - *applicantDidNotChooseSNAP?
       - logicalOperator: OR
         conditions:
           - *householdMemberDidNotChooseSNAP?
           - *livesAlone?
   - &noOneChoseCASH?
     logicalOperator: AND
-    compositeConditions:
-      - conditions:
-          - *applicantDidNotChooseCASH?
+    conditions:
+      - *applicantDidNotChooseCASH?
       - logicalOperator: OR
         conditions:
           - *householdMemberDidNotChooseCASH?
           - *livesAlone?
   - &noOneChoseEA?
     logicalOperator: AND
-    compositeConditions:
-      - conditions:
-          - *applicantDidNotChooseEA?
+    conditions:
+      - *applicantDidNotChooseEA?
       - logicalOperator: OR
         conditions:
           - *householdMemberDidNotChooseEA?
           - *livesAlone?
   - &noOneChoseGRH?
     logicalOperator: AND
-    compositeConditions:
-      - conditions:
-          - *applicantDidNotChooseGRH?
-  - &livesAloneOrisApplicantsJob?
+    conditions:
+      - *applicantDidNotChooseGRH?
+  - &livesAloneOrIsApplicantsJob?
     logicalOperator: OR
     conditions:
       - *isApplicantsJob?
@@ -773,7 +767,7 @@ pageDefinitions:
       defaultValue: thirty-day-income.how-much-money-has-your-household-made-in-the-last-30-days
       conditionalValues:
         - value: thirty-day-income.how-much-money-have-you-made-in-the-last-30-days
-          compositeCondition: *livesAloneOrisApplicantsJob?
+          condition: *livesAloneOrIsApplicantsJob?
     headerHelpMessageKey: thirty-day-income.if-you-dont-know-the-exact-amount
     name: thirtyDayIncome
     pageTitle:
@@ -794,7 +788,7 @@ pageDefinitions:
     headerKey:
       conditionalValues:
         - value: thirty-day-job-income.how-much-money-have-you-made-at-this-job-in-the-last-30-days
-          compositeCondition: *livesAloneOrisApplicantsJob?
+          condition: *livesAloneOrIsApplicantsJob?
         - value: thirty-day-job-income.how-much-money-have-they-made-at-this-job-in-the-last-30-days
           condition:
             pageName: householdSelectionForIncome
@@ -1727,7 +1721,7 @@ pageDefinitions:
       defaultValue: employers-name.add-a-job-they-have
       conditionalValues:
         - value: employers-name.add-a-job-you-have
-          compositeCondition: *livesAloneOrisApplicantsJob?
+          condition: *livesAloneOrIsApplicantsJob?
     inputs:
       - name: employersName
         type: LONG_TEXT
@@ -1743,7 +1737,7 @@ pageDefinitions:
       defaultValue: self-employment.is-their-work-here
       conditionalValues:
         - value: self-employment.is-your-work-here
-          compositeCondition: *livesAloneOrisApplicantsJob?
+          condition: *livesAloneOrIsApplicantsJob?
     hasPrimaryButton: false
     inputs:
       - name: selfEmployment
@@ -1758,7 +1752,7 @@ pageDefinitions:
       defaultValue: paid-by-the-hour.do-they-get-paid-by-the-hour
       conditionalValues:
         - value: paid-by-the-hour.do-you-get-paid-by-the-hour
-          compositeCondition: *livesAloneOrisApplicantsJob?
+          condition: *livesAloneOrIsApplicantsJob?
     hasPrimaryButton: false
     inputs:
       - name: paidByTheHour
@@ -1772,7 +1766,7 @@ pageDefinitions:
       defaultValue: hourly-wage.what-is-their-hourly-wage
       conditionalValues:
         - value: hourly-wage.what-is-your-hourly-wage
-          compositeCondition: *livesAloneOrisApplicantsJob?
+          condition: *livesAloneOrIsApplicantsJob?
     inputs:
       - name: hourlyWage
         type: HOURLY_WAGE
@@ -1790,12 +1784,12 @@ pageDefinitions:
       defaultValue: hours-a-week.how-many-hours-a-week-do-they-work
       conditionalValues:
         - value: hours-a-week.how-many-hours-a-week-do-you-work
-          compositeCondition: *livesAloneOrisApplicantsJob?
+          condition: *livesAloneOrIsApplicantsJob?
     headerHelpMessageKey:
       defaultValue: hours-a-week.we-know-this-can-be-hard-to-answer-so-just-estimate-based-on-their
       conditionalValues:
         - value: hours-a-week.we-know-this-can-be-hard-to-answer-so-just-estimate-based-on
-          compositeCondition: *livesAloneOrisApplicantsJob?
+          condition: *livesAloneOrIsApplicantsJob?
     inputs:
       - name: hoursAWeek
         type: NUMBER
@@ -1807,7 +1801,7 @@ pageDefinitions:
       defaultValue: pay-period.how-often-do-they-get-paid
       conditionalValues:
         - value: pay-period.how-often-do-you-get-paid
-          compositeCondition: *livesAloneOrisApplicantsJob?
+          condition: *livesAloneOrIsApplicantsJob?
     inputs:
       - name: payPeriod
         type: RADIO
@@ -1882,7 +1876,7 @@ pageDefinitions:
     headerKey:
       conditionalValues:
         - value: warning-page.you-are-about-to-delete-your-job
-          compositeCondition: *livesAloneOrisApplicantsJob?
+          condition: *livesAloneOrIsApplicantsJob?
         - value: warning-page.you-are-about-to-delete-member-job
           condition:
             pageName: householdSelectionForIncome
@@ -1931,38 +1925,38 @@ pageDefinitions:
     headerKey:
       conditionalValues:
         - value: home-expenses-amount.how-much-do-you-pay-for-rent-every-month
-          compositeCondition:
+          condition:
             logicalOperator: AND
             conditions:
               - *doesNotHaveMortgage?
               - *livesAlone?
         - value: home-expenses-amount.how-much-do-you-pay-for-mortgage-every-month
-          compositeCondition:
+          condition:
             logicalOperator: AND
             conditions:
               - *doesNotHaveRent?
               - *livesAlone?
         - value: home-expenses-amount.how-much-do-you-pay-for-rent-and-mortgage-every-month
-          compositeCondition:
+          condition:
             logicalOperator: AND
             conditions:
               - *livesAlone?
               - *hasRent?
               - *hasMortgage?
         - value: home-expenses-amount.household-pay-rent-every-month
-          compositeCondition:
+          condition:
             logicalOperator: AND
             conditions:
               - *doesNotHaveMortgage?
               - *doesNotLiveAlone?
         - value: home-expenses-amount.household-pay-mortgage-every-month
-          compositeCondition:
+          condition:
             logicalOperator: AND
             conditions:
               - *doesNotHaveRent?
               - *doesNotLiveAlone?
         - value: home-expenses-amount.how-much-does-household-pay-for-rent-and-mortgage-every-month
-          compositeCondition:
+          condition:
             logicalOperator: AND
             conditions:
               - *doesNotLiveAlone?
@@ -2215,10 +2209,9 @@ workflow:
   verifyHomeAddress:
     pageConfiguration: *homeAddressValidation
     skipCondition:
-      conditions:
-        - pageName: homeAddress
-          input: streetAddress
-          matcher: EMPTY
+      pageName: homeAddress
+      input: streetAddress
+      matcher: EMPTY
     datasources:
       - pageName: homeAddress
     nextPages:
@@ -2228,10 +2221,9 @@ workflow:
     pageConfiguration: *mailingAddress
     enrichment: mailingAddressEnrichment
     skipCondition:
-      conditions:
-        - pageName: homeAddress
-          input: sameMailingAddress
-          value: "true"
+      pageName: homeAddress
+      input: sameMailingAddress
+      value: "true"
     nextPages:
       - pageName: verifyMailingAddress
     datasources:
@@ -2239,10 +2231,9 @@ workflow:
   verifyMailingAddress:
     pageConfiguration: *mailingAddressValidation
     skipCondition:
-      conditions:
-        - pageName: homeAddress
-          input: sameMailingAddress
-          value: "true"
+      pageName: homeAddress
+      input: sameMailingAddress
+      value: "true"
     datasources:
       - pageName: mailingAddress
       - pageName: homeAddress
@@ -2299,9 +2290,7 @@ workflow:
       - pageName: choosePrograms
       - groupName: household
         pageName: householdMemberInfo
-    skipCondition:
-      compositeConditions:
-        - *noOneChoseCCAP?
+    skipCondition: *noOneChoseCCAP?
   whoHasParentNotAtHome:
     pageConfiguration: *whoHasParentNotAtHome
     nextPages:
@@ -2313,12 +2302,11 @@ workflow:
         pageName: householdMemberInfo
     skipCondition:
       logicalOperator: OR
-      compositeConditions:
+      conditions:
         - *noOneChoseCCAP?
-        - conditions:
-          - pageName: childrenInNeedOfCare
-            input: whoNeedsChildCare
-            matcher: NONE_SELECTED
+        - pageName: childrenInNeedOfCare
+          input: whoNeedsChildCare
+          matcher: NONE_SELECTED
   parentNotAtHomeNames:
     pageConfiguration: *parentNotAtHomeNames
     nextPages:
@@ -2331,16 +2319,14 @@ workflow:
       - pageName: whoHasParentNotAtHome
     skipCondition:
       logicalOperator: OR
-      compositeConditions:
+      conditions:
         - *noOneChoseCCAP?
-        - conditions:
-            - pageName: childrenInNeedOfCare
-              input: whoNeedsChildCare
-              matcher: NONE_SELECTED
-        - conditions:
-            - pageName: whoHasParentNotAtHome
-              input: whoHasAParentNotLivingAtHome
-              matcher: NONE_SELECTED
+        - pageName: childrenInNeedOfCare
+          input: whoNeedsChildCare
+          matcher: NONE_SELECTED
+        - pageName: whoHasParentNotAtHome
+          input: whoHasAParentNotLivingAtHome
+          matcher: NONE_SELECTED
   householdDeleteWarningPage:
     pageConfiguration: *householdDeleteWarningPage
     appliesToGroup: household
@@ -2355,9 +2341,7 @@ workflow:
       - pageName: livingSituation
   preparingMealsTogether:
     pageConfiguration: *preparingMealsTogether
-    skipCondition:
-      conditions:
-        - *applicantDidNotChooseSNAP?
+    skipCondition: *applicantDidNotChooseSNAP?
     nextPages:
       - pageName: livingSituation
     datasources:
@@ -2367,18 +2351,14 @@ workflow:
     nextPages:
       - pageName: goingToSchool
     skipCondition:
-      compositeConditions:
-        - logicalOperator: AND
-          compositeConditions:
-            - conditions:
-                - *applicantDidNotChooseCCAP?
-                - *applicantDidNotChooseGRH?
-            - logicalOperator: OR
-              compositeConditions:
-                - conditions:
-                    - *householdMemberDidNotChooseCCAP?
-                - conditions:
-                    - *livesAlone?
+      logicalOperator: AND
+      conditions:
+        - *applicantDidNotChooseCCAP?
+        - *applicantDidNotChooseGRH?
+        - logicalOperator: OR
+          conditions:
+            - *householdMemberDidNotChooseCCAP?
+            - *livesAlone?
     datasources:
       - pageName: choosePrograms
       - pageName: addHouseholdMembers
@@ -2402,16 +2382,13 @@ workflow:
         pageName: householdMemberInfo
     skipCondition:
       logicalOperator: OR
-      compositeConditions:
-        - compositeConditions:
-            - conditions:
-                - *applicantDidNotChooseCCAP?
-                - *householdMemberDidNotChooseCCAP?
-        - compositeConditions:
-            - conditions:
-                - pageName: goingToSchool
-                  value: "false"
-                  input: goingToSchool
+      conditions:
+        - conditions:
+            - *applicantDidNotChooseCCAP?
+            - *householdMemberDidNotChooseCCAP?
+        - pageName: goingToSchool
+          value: "false"
+          input: goingToSchool
     nextPages:
       - pageName: pregnant
   pregnant:
@@ -2500,9 +2477,7 @@ workflow:
       - pageName: addHouseholdMembers
     nextPages:
       - pageName: employersName
-    skipCondition:
-      conditions:
-        - *livesAlone?
+    skipCondition: *livesAlone?
   employersName:
     pageConfiguration: *employersName
     groupName: jobs
@@ -2638,9 +2613,7 @@ workflow:
       - pageName: addHouseholdMembers
   unearnedIncomeCcap:
     pageConfiguration: *unearnedIncomeCcap
-    skipCondition:
-      compositeConditions:
-        - *noOneChoseCCAP?
+    skipCondition: *noOneChoseCCAP?
     nextPages:
       - pageName: unearnedIncomeSourcesCcap
     datasources:
@@ -2653,21 +2626,18 @@ workflow:
     nextPages:
       - pageName: futureIncome
     skipCondition:
-      compositeConditions:
-        - logicalOperator: OR
-          compositeConditions:
-            - logicalOperator: AND
-              compositeConditions:
-                - conditions:
-                  - *applicantDidNotChooseCCAP?
-                - logicalOperator: OR
-                  conditions:
-                    - *householdMemberDidNotChooseCCAP?
-                    - *livesAlone?
-            - conditions:
-                - pageName: unearnedIncomeCcap
-                  input: unearnedIncomeCcap
-                  value: NO_UNEARNED_INCOME_CCAP_SELECTED
+      logicalOperator: OR
+      conditions:
+        - logicalOperator: AND
+          conditions:
+            - *applicantDidNotChooseCCAP?
+            - logicalOperator: OR
+              conditions:
+                - *householdMemberDidNotChooseCCAP?
+                - *livesAlone?
+        - pageName: unearnedIncomeCcap
+          input: unearnedIncomeCcap
+          value: NO_UNEARNED_INCOME_CCAP_SELECTED
     datasources:
       - pageName: unearnedIncomeCcap
       - pageName: addHouseholdMembers
@@ -2727,10 +2697,9 @@ workflow:
   energyAssistanceMoreThan20:
     pageConfiguration: *energyAssistanceMoreThan20
     skipCondition:
-      conditions:
-        - pageName: energyAssistance
-          input: energyAssistance
-          value: "false"
+      pageName: energyAssistance
+      input: energyAssistance
+      value: "false"
     nextPages:
       - pageName: supportAndCare
     datasources:
@@ -2751,10 +2720,9 @@ workflow:
   savingsAmount:
     pageConfiguration: *liquidAssets
     skipCondition:
-      conditions:
-        - pageName: savings
-          input: haveSavings
-          value: "false"
+      pageName: savings
+      input: haveSavings
+      value: "false"
     datasources:
       - pageName: savings
       - pageName: addHouseholdMembers
@@ -2775,15 +2743,13 @@ workflow:
   realEstate:
     pageConfiguration: *realEstate
     skipCondition:
-      compositeConditions:
-        - logicalOperator: AND
-          compositeConditions:
-            - conditions:
-                - *applicantDidNotChooseCCAP?
-            - logicalOperator: OR
-              conditions:
-                - *householdMemberDidNotChooseCCAP?
-                - *livesAlone?
+      logicalOperator: AND
+      conditions:
+        - *applicantDidNotChooseCCAP?
+        - logicalOperator: OR
+          conditions:
+            - *householdMemberDidNotChooseCCAP?
+            - *livesAlone?
     nextPages:
       - pageName: investments
     datasources:
@@ -2794,30 +2760,28 @@ workflow:
   millionDollar:
     pageConfiguration: *millionDollar
     skipCondition:
-      compositeConditions:
-        - logicalOperator: OR
-          compositeConditions:
-            - logicalOperator: AND
-              compositeConditions:
-                - conditions:
-                    - *applicantDidNotChooseCCAP?
-                - logicalOperator: OR
-                  conditions:
-                    - *householdMemberDidNotChooseCCAP?
-                    - *livesAlone?
-            - conditions:
-                - pageName: vehicle
-                  input: haveVehicle
-                  value: "false"
-                - pageName: investments
-                  input: haveInvestments
-                  value: "false"
-                - pageName: savings
-                  input: haveSavings
-                  value: "false"
-                - pageName: realEstate
-                  input: ownRealEstate
-                  value: "false"
+      logicalOperator: OR
+      conditions:
+        - logicalOperator: AND
+          conditions:
+            - *applicantDidNotChooseCCAP?
+            - logicalOperator: OR
+              conditions:
+                - *householdMemberDidNotChooseCCAP?
+                - *livesAlone?
+        - conditions:
+          - pageName: vehicle
+            input: haveVehicle
+            value: "false"
+          - pageName: investments
+            input: haveInvestments
+            value: "false"
+          - pageName: savings
+            input: haveSavings
+            value: "false"
+          - pageName: realEstate
+            input: ownRealEstate
+            value: "false"
     nextPages:
       - pageName: soldAssets
     datasources:
@@ -2885,15 +2849,13 @@ workflow:
   jobSearch:
     pageConfiguration: *jobSearch
     skipCondition:
-      compositeConditions:
-        - logicalOperator: AND
-          compositeConditions:
-            - conditions:
-              - *applicantDidNotChooseCCAP?
-            - logicalOperator: OR
-              conditions:
-                - *householdMemberDidNotChooseCCAP?
-                - *livesAlone?
+      logicalOperator: AND
+      conditions:
+        - *applicantDidNotChooseCCAP?
+        - logicalOperator: OR
+          conditions:
+            - *householdMemberDidNotChooseCCAP?
+            - *livesAlone?
     nextPages:
       - pageName: whoIsLookingForAJob
     datasources:
@@ -2913,18 +2875,17 @@ workflow:
         groupName: household
     skipCondition:
       logicalOperator: OR
-      compositeConditions:
-        - compositeConditions:
-          - conditions:
-              - *applicantDidNotChooseCCAP?
-              - *householdMemberDidNotChooseCCAP?
-        - compositeConditions:
-          - conditions:
+      conditions:
+        - logicalOperator: AND
+          conditions:
+            - *applicantDidNotChooseCCAP?
+            - *householdMemberDidNotChooseCCAP?
+        - logicalOperator: OR
+          conditions:
             - *livesAlone?
             - pageName: jobSearch
               input: currentlyLookingForJob
               value: "false"
-            logicalOperator: OR
   doYouNeedHelpImmediately:
     pageConfiguration: *doYouNeedHelpImmediately
     nextPages:
@@ -2951,10 +2912,9 @@ workflow:
   liquidAssets:
     pageConfiguration: *liquidAssets
     skipCondition:
-      conditions:
-        - pageName: savings
-          input: haveSavings
-          value: "false"
+      pageName: savings
+      input: haveSavings
+      value: "false"
     nextPages:
       - pageName: expeditedExpenses
     datasources:
@@ -2969,10 +2929,9 @@ workflow:
   expeditedExpensesAmount:
     pageConfiguration: *expeditedExpensesAmount
     skipCondition:
-      conditions:
-        - pageName: expeditedExpenses
-          input: payRentOrMortgage
-          value: "false"
+      pageName: expeditedExpenses
+      input: payRentOrMortgage
+      value: "false"
     nextPages:
       - pageName: expeditedUtilityPayments
     datasources:
@@ -3028,24 +2987,23 @@ workflow:
         optional: "true"
     skipCondition:
       logicalOperator: OR
-      compositeConditions:
-        - compositeConditions:
+      conditions:
+        - conditions:
           - *noOneChoseGRH?
           - *noOneChoseSNAP?
           - *noOneChoseCASH?
           - *noOneChoseEA?
-        - compositeConditions:
-          - conditions:
-            - pageName: employmentStatus
-              input: areYouWorking
-              value: "false"
-            - pageName: homeExpenses
-              input: homeExpenses
-              value: NONE_OF_THE_ABOVE
-              matcher: CONTAINS
-            - pageName: workSituation
-              input: hasWorkSituation
-              value: "false"
+        - conditions:
+          - pageName: employmentStatus
+            input: areYouWorking
+            value: "false"
+          - pageName: homeExpenses
+            input: homeExpenses
+            value: NONE_OF_THE_ABOVE
+            matcher: CONTAINS
+          - pageName: workSituation
+            input: hasWorkSituation
+            value: "false"
   uploadDocuments:
     pageConfiguration: *uploadDocuments
     nextPages:
@@ -3061,24 +3019,23 @@ workflow:
         optional: "true"
     skipCondition:
       logicalOperator: OR
-      compositeConditions:
-        - compositeConditions:
-            - *noOneChoseGRH?
-            - *noOneChoseSNAP?
-            - *noOneChoseCASH?
-            - *noOneChoseEA?
-        - compositeConditions:
-            - conditions:
-                - pageName: employmentStatus
-                  input: areYouWorking
-                  value: "false"
-                - pageName: homeExpenses
-                  input: homeExpenses
-                  value: NONE_OF_THE_ABOVE
-                  matcher: CONTAINS
-                - pageName: workSituation
-                  input: hasWorkSituation
-                  value: "false"
+      conditions:
+        - conditions:
+          - *noOneChoseGRH?
+          - *noOneChoseSNAP?
+          - *noOneChoseCASH?
+          - *noOneChoseEA?
+        - conditions:
+          - pageName: employmentStatus
+            input: areYouWorking
+            value: "false"
+          - pageName: homeExpenses
+            input: homeExpenses
+            value: NONE_OF_THE_ABOVE
+            matcher: CONTAINS
+          - pageName: workSituation
+            input: hasWorkSituation
+            value: "false"
   uploadDocumentsDeleteWarningPage:
     pageConfiguration: *uploadDocumentsDeleteWarningPage
     nextPages:
