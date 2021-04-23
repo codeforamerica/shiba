@@ -3,6 +3,8 @@ package org.codeforamerica.shiba.output;
 import de.redsix.pdfcompare.PdfComparator;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
+import org.codeforamerica.shiba.PageDataBuilder;
+import org.codeforamerica.shiba.PagesDataBuilder;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
@@ -39,15 +41,15 @@ import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.mockito.Mockito.*;
 
 class MnitDocumentConsumerTest {
-    MnitEsbWebServiceClient mnitClient = mock(MnitEsbWebServiceClient.class);
-    XmlGenerator xmlGenerator = mock(XmlGenerator.class);
-    PdfGenerator pdfGenerator = mock(PdfGenerator.class);
-    ApplicationDataParser<List<Document>> documentListParser = mock(DocumentListParser.class);
-    ApplicationData appData = new ApplicationData();
-    MonitoringService monitoringService = mock(MonitoringService.class);
-    DocumentRepositoryService documentRepositoryService = mock(DocumentRepositoryService.class);
-    FileNameGenerator fileNameGenerator = mock(FileNameGenerator.class);
-    MnitDocumentConsumer documentConsumer = new MnitDocumentConsumer(
+    private final MnitEsbWebServiceClient mnitClient = mock(MnitEsbWebServiceClient.class);
+    private final XmlGenerator xmlGenerator = mock(XmlGenerator.class);
+    private final PdfGenerator pdfGenerator = mock(PdfGenerator.class);
+    private final ApplicationDataParser<List<Document>> documentListParser = mock(DocumentListParser.class);
+    private final ApplicationData appData = new ApplicationData();
+    private final MonitoringService monitoringService = mock(MonitoringService.class);
+    private final DocumentRepositoryService documentRepositoryService = mock(DocumentRepositoryService.class);
+    private final FileNameGenerator fileNameGenerator = mock(FileNameGenerator.class);
+    private final MnitDocumentConsumer documentConsumer = new MnitDocumentConsumer(
             mnitClient,
             xmlGenerator,
             pdfGenerator,
@@ -56,10 +58,25 @@ class MnitDocumentConsumerTest {
             documentRepositoryService,
             fileNameGenerator,
             "test");
+    private final PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
 
     @BeforeEach
     void setUp() {
-        appData.setPagesData(new PagesData(Map.of("somePage", new PageData())));
+        PagesData pagesData = pagesDataBuilder.build(List.of(
+                new PageDataBuilder("personalInfo", Map.of(
+                        "firstName", List.of("Jane"),
+                        "lastName", List.of("Doe"),
+                        "dateOfBirth", List.of("10", "04", "2020"),
+                        "ssn", List.of("123-45-6789")
+                )),
+                new PageDataBuilder("contactInfo", Map.of(
+                        "phoneNumber", List.of("6038791111"),
+                        "email", List.of("jane@example.com")
+                ))
+        ));
+
+
+        appData.setPagesData(pagesData);
     }
 
     @Test
@@ -68,7 +85,7 @@ class MnitDocumentConsumerTest {
         Application application = Application.builder()
                 .id("someId")
                 .completedAt(ZonedDateTime.now())
-                .applicationData(new ApplicationData())
+                .applicationData(appData)
                 .county(County.Olmsted)
                 .timeToComplete(null)
                 .build();
@@ -82,7 +99,7 @@ class MnitDocumentConsumerTest {
         Application application = Application.builder()
                 .id("someId")
                 .completedAt(ZonedDateTime.now())
-                .applicationData(new ApplicationData())
+                .applicationData(appData)
                 .county(County.Olmsted)
                 .timeToComplete(null)
                 .build();
@@ -100,7 +117,7 @@ class MnitDocumentConsumerTest {
         Application application = Application.builder()
                 .id("someId")
                 .completedAt(ZonedDateTime.now())
-                .applicationData(new ApplicationData())
+                .applicationData(appData)
                 .county(County.Olmsted)
                 .timeToComplete(null)
                 .build();
@@ -116,16 +133,15 @@ class MnitDocumentConsumerTest {
         ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
         when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
         when(documentListParser.parse(any())).thenReturn(List.of(CCAP, CAF));
-        ApplicationData applicationData = new ApplicationData();
         PagesData pagesData = new PagesData();
         PageData chooseProgramsPage = new PageData();
         chooseProgramsPage.put("programs", InputData.builder().value(List.of("CCAP")).build());
         pagesData.put("choosePrograms", chooseProgramsPage);
-        applicationData.setPagesData(pagesData);
+        appData.setPagesData(pagesData);
         Application application = Application.builder()
                 .id("someId")
                 .completedAt(ZonedDateTime.now())
-                .applicationData(applicationData)
+                .applicationData(appData)
                 .county(County.Olmsted)
                 .timeToComplete(null)
                 .build();
@@ -138,7 +154,7 @@ class MnitDocumentConsumerTest {
         Application application = Application.builder()
                 .id("someId")
                 .completedAt(ZonedDateTime.now())
-                .applicationData(new ApplicationData())
+                .applicationData(appData)
                 .county(County.Olmsted)
                 .timeToComplete(null)
                 .build();
@@ -148,12 +164,10 @@ class MnitDocumentConsumerTest {
 
     @Test
     void sendsBothImageAndDocumentUploadsSuccessfully() throws IOException {
-        var applicationData = new ApplicationData();
-
         var shibaJpgContents = Files.readAllBytes(getAbsoluteFilepath("shiba+file.jpg"));
         var shibaImageS3Filepath = "someS3FilePath";
         when(documentRepositoryService.get(shibaImageS3Filepath)).thenReturn(shibaJpgContents);
-        applicationData.addUploadedDoc(
+        appData.addUploadedDoc(
                 new MockMultipartFile("image", "someImage.jpg", MediaType.IMAGE_JPEG_VALUE, shibaJpgContents),
                 shibaImageS3Filepath,
                 "someDataUrl",
@@ -162,7 +176,7 @@ class MnitDocumentConsumerTest {
         var testCafPdfContents = Files.readAllBytes(getAbsoluteFilepath("test-caf.pdf"));
         var pdfApplicationFile = new ApplicationFile(testCafPdfContents, "pdf2of2.pdf");
         var testCafPdfS3Filepath = "coolS3FilePath";
-        applicationData.addUploadedDoc(
+        appData.addUploadedDoc(
                 new MockMultipartFile("pdf", "somePdf.pdf", MediaType.APPLICATION_PDF_VALUE, testCafPdfContents),
                 testCafPdfS3Filepath,
                 "documentDataUrl",
@@ -172,7 +186,7 @@ class MnitDocumentConsumerTest {
         Application application = Application.builder()
                 .id("someId")
                 .completedAt(ZonedDateTime.now())
-                .applicationData(applicationData)
+                .applicationData(appData)
                 .county(County.Olmsted)
                 .timeToComplete(null)
                 .build();
@@ -186,9 +200,11 @@ class MnitDocumentConsumerTest {
 
         // Assert that converted file contents are as expected
         try (var actual = new ByteArrayInputStream(captor.getAllValues().get(0).getFileBytes());
-             var expected = Files.newInputStream(getAbsoluteFilepath("shiba+file.pdf"))) {
+             var expected = Files.newInputStream(getAbsoluteFilepath("shiba-with-cover-page.pdf"))) {
             assertThatCode(() -> new PdfComparator<>(expected, actual).compare()).doesNotThrowAnyException();
         }
+
+        // Todo make assertions about the actual PDF
     }
 
     private Path getAbsoluteFilepath(String resourceFilename) {

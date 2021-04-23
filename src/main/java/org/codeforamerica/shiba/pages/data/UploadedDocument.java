@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -14,11 +15,15 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
+import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
+
+import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
+import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
 @AllArgsConstructor
 @Data
@@ -33,24 +38,51 @@ public class UploadedDocument implements Serializable {
     private String type;
     private long size;
 
-    public ApplicationFile fileToSend(Application application, Integer index, DocumentRepositoryService documentRepositoryService, FileNameGenerator fileNameGenerator) {
-        var fileBytes = documentRepositoryService.get(this.getS3Filepath());
-        var extension = Utils.getFileType(this.getFilename());
+    // TODO move this out of the data class
+    public ApplicationFile fileToSend(Application application,
+                                      Integer index,
+                                      DocumentRepositoryService documentRepositoryService,
+                                      FileNameGenerator fileNameGenerator,
+                                      PdfGenerator pdfGenerator) {
+        var fileBytes = documentRepositoryService.get(getS3Filepath());
+        var extension = Utils.getFileType(getFilename());
         if (IMAGE_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
             try {
                 fileBytes = convertImageToPdf(fileBytes);
                 extension = "pdf";
             } catch (IOException e) {
-                log.error("failed to convert document " + this.getFilename() + " to pdf. Maintaining original type");
+                log.error("failed to convert document " + getFilename() + " to pdf. Maintaining original type");
             }
         }
+
+        ApplicationFile coverPageApplicationFile = pdfGenerator.generate(application.getId(), UPLOADED_DOC, CASEWORKER);
+        if (extension.equals("pdf")) {
+            fileBytes = addCoverPageToPdf(fileBytes, coverPageApplicationFile);
+        }
+
         String filename = fileNameGenerator.generateUploadedDocumentName(application, index, extension);
         return new ApplicationFile(fileBytes, filename);
+    }
+
+    private byte[] addCoverPageToPdf(byte[] fileBytes, ApplicationFile coverPageApplicationFile) {
+        PDFMergerUtility merger = new PDFMergerUtility();
+        try (PDDocument coverPageDoc = PDDocument.load(coverPageApplicationFile.getFileBytes());
+             PDDocument uploadedDoc = PDDocument.load(fileBytes);
+             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+
+            merger.appendDocument(coverPageDoc, uploadedDoc);
+            coverPageDoc.save(outputStream);
+            fileBytes = outputStream.toByteArray(); // we did it! close everything
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return fileBytes;
     }
 
     private byte[] convertImageToPdf(byte[] imageFileBytes) throws IOException {
         try (PDDocument doc = new PDDocument(); ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             var image = PDImageXObject.createFromByteArray(doc, imageFileBytes, this.getFilename());
+            // Figure out page size
             var pageSize = PDRectangle.LETTER;
             var originalWidth = image.getWidth();
             var originalHeight = image.getHeight();
@@ -61,13 +93,19 @@ public class UploadedDocument implements Serializable {
             var scaledHeight = originalHeight * ratio;
             var x = (pageWidth - scaledWidth) / 2;
             var y = (pageHeight - scaledHeight) / 2;
-            var page = new PDPage(pageSize);
-            doc.addPage(page);
 
-            try (PDPageContentStream pdfContents = new PDPageContentStream(doc, page)) {
+            var imagePage = new PDPage(pageSize);
+            // Add a page of the right size to the PDF
+            doc.addPage(imagePage);
+
+            // Write the image into the PDF
+            try (PDPageContentStream pdfContents = new PDPageContentStream(doc, imagePage)) {
                 pdfContents.drawImage(image, x, y, scaledWidth, scaledHeight);
             }
 
+            // Add the cover page
+
+            // put the doc in a byte array
             doc.save(outputStream);
             return outputStream.toByteArray();
         }

@@ -4,13 +4,16 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.BasicCredentials;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import org.codeforamerica.shiba.documents.*;
+import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.output.ApplicationFile;
-import org.codeforamerica.shiba.output.caf.*;
+import org.codeforamerica.shiba.output.caf.FileNameGenerator;
+import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
+import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -37,6 +40,8 @@ class MailGunEmailClientTest {
     EmailContentCreator emailContentCreator = mock(EmailContentCreator.class);
     DocumentRepositoryService documentRepositoryService = mock(DocumentRepositoryService.class);
     FileNameGenerator fileNameGenerator = mock(FileNameGenerator.class);
+    @Autowired
+    PdfGenerator pdfGenerator;
 
     WireMockServer wireMockServer;
 
@@ -69,7 +74,8 @@ class MailGunEmailClientTest {
                 emailContentCreator,
                 false,
                 documentRepositoryService,
-                fileNameGenerator);
+                fileNameGenerator,
+                pdfGenerator);
     }
 
     @AfterEach
@@ -221,7 +227,8 @@ class MailGunEmailClientTest {
                 emailContentCreator,
                 true,
                 documentRepositoryService,
-                fileNameGenerator);
+                fileNameGenerator,
+                pdfGenerator);
 
         wireMockServer.stubFor(post(anyUrl())
                 .willReturn(aResponse().withStatus(200)));

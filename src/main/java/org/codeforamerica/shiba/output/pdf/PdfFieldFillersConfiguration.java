@@ -10,8 +10,7 @@ import org.springframework.core.io.Resource;
 import java.util.List;
 import java.util.Map;
 
-import static org.codeforamerica.shiba.output.Document.CAF;
-import static org.codeforamerica.shiba.output.Document.CCAP;
+import static org.codeforamerica.shiba.output.Document.*;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 
@@ -71,16 +70,26 @@ public class PdfFieldFillersConfiguration {
     }
 
     @Bean
+    public PdfFieldFiller uploadedDocCoverPageFilter(
+            @Value("classpath:uploaded-document-cover-page.pdf") Resource coverPage,
+            @Value("classpath:LiberationSans-Regular.ttf") Resource font
+    ) {
+        return new PDFBoxFieldFiller(List.of(coverPage), font);
+    }
+
+    @Bean
     public Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers(
             PdfFieldFiller caseworkerCafFiller,
             PdfFieldFiller clientCafFiller,
             PdfFieldFiller caseworkerCcapFiller,
-            PdfFieldFiller clientCcapFiller
-    ) {
+            PdfFieldFiller clientCcapFiller,
+            PdfFieldFiller uploadedDocCoverPageFilter) {
         return Map.of(
                 CASEWORKER, Map.of(
                         CAF, caseworkerCafFiller,
-                        CCAP, caseworkerCcapFiller),
+                        CCAP, caseworkerCcapFiller,
+                        UPLOADED_DOC, uploadedDocCoverPageFilter
+                ),
                 CLIENT, Map.of(
                         CAF, clientCafFiller,
                         CCAP, clientCcapFiller)

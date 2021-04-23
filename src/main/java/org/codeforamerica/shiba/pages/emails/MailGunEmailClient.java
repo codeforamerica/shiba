@@ -1,12 +1,15 @@
 package org.codeforamerica.shiba.pages.emails;
 
+import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.output.ApplicationFile;
-import org.codeforamerica.shiba.output.MnitDocumentConsumer;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
-import org.codeforamerica.shiba.pages.data.*;
+import org.codeforamerica.shiba.output.pdf.PdfGenerator;
+import org.codeforamerica.shiba.pages.data.InputData;
+import org.codeforamerica.shiba.pages.data.PageData;
+import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,10 +20,11 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
@@ -40,6 +44,7 @@ public class MailGunEmailClient implements EmailClient {
     private final WebClient webClient;
     private final DocumentRepositoryService documentRepositoryService;
     private final FileNameGenerator fileNameGenerator;
+    private final PdfGenerator pdfGenerator;
 
     public MailGunEmailClient(@Value("${sender-email}") String senderEmail,
                               @Value("${security-email}") String securityEmail,
@@ -51,7 +56,8 @@ public class MailGunEmailClient implements EmailClient {
                               EmailContentCreator emailContentCreator,
                               @Value("${mail-gun.shouldCC}") boolean shouldCC,
                               DocumentRepositoryService documentRepositoryService,
-                              FileNameGenerator fileNameGenerator) {
+                              FileNameGenerator fileNameGenerator,
+                              PdfGenerator pdfGenerator) {
         this.senderEmail = senderEmail;
         this.securityEmail = securityEmail;
         this.auditEmail = auditEmail;
@@ -63,6 +69,7 @@ public class MailGunEmailClient implements EmailClient {
         this.webClient = WebClient.builder().baseUrl(mailGunUrl).build();
         this.documentRepositoryService = documentRepositoryService;
         this.fileNameGenerator = fileNameGenerator;
+        this.pdfGenerator = pdfGenerator;
     }
 
     @Override
@@ -177,7 +184,8 @@ public class MailGunEmailClient implements EmailClient {
         List<ApplicationFile> applicationFiles = new ArrayList<>();
         for (int i = 0; i < uploadedDocs.size(); i++) {
             UploadedDocument uploadedDocument = uploadedDocs.get(i);
-            ApplicationFile fileToSend = uploadedDocument.fileToSend(application, i, documentRepositoryService, fileNameGenerator);
+            // generate cover page
+            ApplicationFile fileToSend = uploadedDocument.fileToSend(application, i, documentRepositoryService, fileNameGenerator, pdfGenerator);
 
             if (fileToSend.getFileBytes().length > 0) {
                 log.info("Now attaching: " + fileToSend.getFileName() + " original filename: " + uploadedDocument.getFilename());
