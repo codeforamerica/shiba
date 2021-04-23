@@ -22,39 +22,21 @@ public class LivingWithFriendsMapper implements ApplicationInputsMapper {
         }
         String livingSituation = pageInputValue.get(0);
 
-        boolean livingWithFamilyOrFriendsDueToEconomicHardship = livingSituation.contains("TEMPORARILY_WITH_FRIENDS_OR_FAMILY_DUE_TO_ECONOMIC_HARDSHIP");
-        boolean livingWithFamilyOrFriendsDueToOtherReasons = livingSituation.contains("TEMPORARILY_WITH_FRIENDS_OR_FAMILY_OTHER_REASONS");
-
-        if (livingWithFamilyOrFriendsDueToEconomicHardship) {
-            return List.of(
-                    new ApplicationInput(
-                            "livingWithFamilyOrFriendsYesNo",
-                            "livingWithFamilyOrFriendsYesNo",
-                            List.of("Yes"),
-                            ApplicationInputType.SINGLE_VALUE,
-                            null
-                    )
-            );
-        } else if (livingWithFamilyOrFriendsDueToOtherReasons) {
-            return List.of(
-                    new ApplicationInput(
-                            "livingWithFamilyOrFriendsYesNo",
-                            "livingWithFamilyOrFriendsYesNo",
-                            List.of("No"),
-                            ApplicationInputType.SINGLE_VALUE,
-                            null
-                    )
-            );
-        } else {
-            return List.of(
-                    new ApplicationInput(
-                            "livingWithFamilyOrFriendsYesNo",
-                            "livingWithFamilyOrFriendsYesNo",
-                            List.of("Off"),
-                            ApplicationInputType.SINGLE_VALUE,
-                            null
-                    )
-            );
+        var inputValue = "Off";
+        if (livingSituation.contains("TEMPORARILY_WITH_FRIENDS_OR_FAMILY_DUE_TO_ECONOMIC_HARDSHIP")) {
+            inputValue = "Yes";
+        } else if (livingSituation.contains("TEMPORARILY_WITH_FRIENDS_OR_FAMILY_OTHER_REASONS")) {
+            inputValue = "No";
         }
+
+        return List.of(
+                new ApplicationInput(
+                        "livingWithFamilyOrFriendsYesNo",
+                        "livingWithFamilyOrFriendsYesNo",
+                        List.of(inputValue),
+                        ApplicationInputType.SINGLE_VALUE,
+                        null
+                )
+        );
     }
 }
