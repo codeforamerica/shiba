@@ -24,7 +24,8 @@ class CcapExpeditedEligibilityDeciderTest {
     @ParameterizedTest
     @CsvSource(value = {
             "HOTEL_OR_MOTEL,ELIGIBLE",
-            "TEMPORARILY_WITH_FRIENDS_OR_FAMILY,ELIGIBLE",
+            "TEMPORARILY_WITH_FRIENDS_OR_FAMILY_DUE_TO_ECONOMIC_HARDSHIP,ELIGIBLE",
+            "TEMPORARILY_WITH_FRIENDS_OR_FAMILY_OTHER_REASONS,NOT_ELIGIBLE",
             "EMERGENCY_SHELTER,ELIGIBLE",
             "LIVING_IN_A_PLACE_NOT_MEANT_FOR_HOUSING,ELIGIBLE",
             "PAYING_FOR_HOUSING_WITH_RENT_LEASE_OR_MORTGAGE,NOT_ELIGIBLE",
@@ -52,6 +53,12 @@ class CcapExpeditedEligibilityDeciderTest {
     void shouldBeUndeterminedWhenNotCcapApplication() {
         when(ccapExpeditedEligibilityParser.parse(applicationData)).thenReturn(Optional.of(new CcapExpeditedEligibilityParameters("HOTEL_OR_MOTEL", false)));
         assertThat(ccapExpeditedEligibilityDecider.decide(applicationData)).isEqualTo(CcapExpeditedEligibility.UNDETERMINED);
+    }
+
+    @Test
+    void shouldBeNotEligibleWhenLivingWithFamilyFriendsDueToOtherReasons() {
+        when(ccapExpeditedEligibilityParser.parse(applicationData)).thenReturn(Optional.of(new CcapExpeditedEligibilityParameters("TEMPORARILY_WITH_FRIENDS_OR_FAMILY_OTHER_REASONS", true)));
+        assertThat(ccapExpeditedEligibilityDecider.decide(applicationData)).isEqualTo(CcapExpeditedEligibility.NOT_ELIGIBLE);
     }
 
 }
