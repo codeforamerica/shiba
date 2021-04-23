@@ -946,15 +946,15 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         }
 
         @Test
-        void shouldNotMapLivingSituationIfNotAnswered() {
+        void shouldMapLivingSituationToUnknownIfNotAnswered() {
             fillInRequiredPages();
             navigateTo("livingSituation");
             testPage.clickContinue();
 
             Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
 
-            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "LIVING_SITUATION")).isEqualTo("Off");
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "LIVING_SITUATION")).isEqualTo("Off");
+            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "LIVING_SITUATION")).isEqualTo("UNKNOWN");
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "LIVING_SITUATION")).isEqualTo("UNKNOWN");
         }
 
         @Test
