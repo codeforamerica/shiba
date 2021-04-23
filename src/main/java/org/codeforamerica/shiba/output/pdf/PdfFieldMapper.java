@@ -29,17 +29,17 @@ public class PdfFieldMapper {
     @NotNull
     private Stream<? extends PdfField> makePdfFieldsForInput(ApplicationInput input) {
         return switch (input.getType()) {
-            case DATE_VALUE -> simplePdfFields(input, dateFormattedFieldCreator(input));
+            case DATE_VALUE -> simplePdfFields(input, this::getDateFormattedValue);
             case ENUMERATED_MULTI_VALUE -> binaryPdfFields(input);
             case UNUSED -> Stream.of();
-            default -> simplePdfFields(input, defaultFieldCreator(input));
+            default -> simplePdfFields(input, this::getOrDefaultInputValue);
         };
     }
 
     @NotNull
-    private Stream<SimplePdfField> simplePdfFields(ApplicationInput input, @NotNull Function<String, SimplePdfField> simplePdfFieldCreator) {
+    private Stream<SimplePdfField> simplePdfFields(ApplicationInput input, Function<ApplicationInput, String> valueMapper) {
         // Why does this map over the pdf field map whereas binaryPdfFields maps over the input values?
-        return input.getPdfName(pdfFieldMap).stream().map(simplePdfFieldCreator);
+        return input.getPdfName(pdfFieldMap).stream().map(pdfName -> new SimplePdfField(pdfName, valueMapper.apply(input)));
     }
 
     @NotNull
@@ -48,12 +48,12 @@ public class PdfFieldMapper {
     }
 
     @NotNull
-    private Function<String, SimplePdfField> dateFormattedFieldCreator(ApplicationInput input) {
-        return pdfName -> new SimplePdfField(pdfName, String.join("/", input.getValue()));
+    private String getDateFormattedValue(ApplicationInput input) {
+        return String.join("/", input.getValue());
     }
 
     @NotNull
-    private Function<String, SimplePdfField> defaultFieldCreator(ApplicationInput input) {
-        return pdfName -> new SimplePdfField(pdfName, enumMap.getOrDefault(input.getValue(0), input.getValue(0)));
+    private String getOrDefaultInputValue(ApplicationInput input) {
+        return enumMap.getOrDefault(input.getValue(0), input.getValue(0));
     }
 }
