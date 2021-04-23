@@ -17,6 +17,8 @@ server:
     session:
       cookie:
         secure: true
+sentry:
+  enable-tracing: true
 
 cloud:
   aws:
