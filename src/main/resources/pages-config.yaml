@@ -117,6 +117,11 @@ compositeConditionDefinitions:
     compositeConditions:
       - conditions:
           - *applicantDidNotChooseGRH?
+  - &livesAloneOrisApplicantsJob?
+    logicalOperator: OR
+    conditions:
+      - *isApplicantsJob?
+      - *livesAlone?
 pageDefinitions:
   - &landing
     name: landing
@@ -768,11 +773,7 @@ pageDefinitions:
       defaultValue: thirty-day-income.how-much-money-has-your-household-made-in-the-last-30-days
       conditionalValues:
         - value: thirty-day-income.how-much-money-have-you-made-in-the-last-30-days
-          compositeCondition:
-            logicalOperator: OR
-            conditions:
-              - *isApplicantsJob?
-              - *livesAlone?
+          compositeCondition: *livesAloneOrisApplicantsJob?
     headerHelpMessageKey: thirty-day-income.if-you-dont-know-the-exact-amount
     name: thirtyDayIncome
     pageTitle:
@@ -793,11 +794,7 @@ pageDefinitions:
     headerKey:
       conditionalValues:
         - value: thirty-day-job-income.how-much-money-have-you-made-at-this-job-in-the-last-30-days
-          compositeCondition:
-            logicalOperator: OR
-            conditions:
-              - *isApplicantsJob?
-              - *livesAlone?
+          compositeCondition: *livesAloneOrisApplicantsJob?
         - value: thirty-day-job-income.how-much-money-have-they-made-at-this-job-in-the-last-30-days
           condition:
             pageName: householdSelectionForIncome
@@ -1728,11 +1725,7 @@ pageDefinitions:
       defaultValue: employers-name.add-a-job-they-have
       conditionalValues:
         - value: employers-name.add-a-job-you-have
-          compositeCondition:
-            logicalOperator: OR
-            conditions:
-              - *isApplicantsJob?
-              - *livesAlone?
+          compositeCondition: *livesAloneOrisApplicantsJob?
     inputs:
       - name: employersName
         type: LONG_TEXT
@@ -1748,11 +1741,7 @@ pageDefinitions:
       defaultValue: self-employment.is-their-work-here
       conditionalValues:
         - value: self-employment.is-your-work-here
-          compositeCondition:
-            logicalOperator: OR
-            conditions:
-              - *isApplicantsJob?
-              - *livesAlone?
+          compositeCondition: *livesAloneOrisApplicantsJob?
     hasPrimaryButton: false
     inputs:
       - name: selfEmployment
@@ -1767,11 +1756,7 @@ pageDefinitions:
       defaultValue: paid-by-the-hour.do-they-get-paid-by-the-hour
       conditionalValues:
         - value: paid-by-the-hour.do-you-get-paid-by-the-hour
-          compositeCondition:
-            logicalOperator: OR
-            conditions:
-              - *isApplicantsJob?
-              - *livesAlone?
+          compositeCondition: *livesAloneOrisApplicantsJob?
     hasPrimaryButton: false
     inputs:
       - name: paidByTheHour
@@ -1785,11 +1770,7 @@ pageDefinitions:
       defaultValue: hourly-wage.what-is-their-hourly-wage
       conditionalValues:
         - value: hourly-wage.what-is-your-hourly-wage
-          compositeCondition:
-            logicalOperator: OR
-            conditions:
-              - *isApplicantsJob?
-              - *livesAlone?
+          compositeCondition: *livesAloneOrisApplicantsJob?
     inputs:
       - name: hourlyWage
         type: HOURLY_WAGE
@@ -1807,20 +1788,12 @@ pageDefinitions:
       defaultValue: hours-a-week.how-many-hours-a-week-do-they-work
       conditionalValues:
         - value: hours-a-week.how-many-hours-a-week-do-you-work
-          compositeCondition:
-            logicalOperator: OR
-            conditions:
-              - *isApplicantsJob?
-              - *livesAlone?
+          compositeCondition: *livesAloneOrisApplicantsJob?
     headerHelpMessageKey:
       defaultValue: hours-a-week.we-know-this-can-be-hard-to-answer-so-just-estimate-based-on-their
       conditionalValues:
         - value: hours-a-week.we-know-this-can-be-hard-to-answer-so-just-estimate-based-on
-          compositeCondition:
-            logicalOperator: OR
-            conditions:
-              - *isApplicantsJob?
-              - *livesAlone?
+          compositeCondition: *livesAloneOrisApplicantsJob?
     inputs:
       - name: hoursAWeek
         type: NUMBER
@@ -1832,11 +1805,7 @@ pageDefinitions:
       defaultValue: pay-period.how-often-do-they-get-paid
       conditionalValues:
         - value: pay-period.how-often-do-you-get-paid
-          compositeCondition:
-            logicalOperator: OR
-            conditions:
-              - *isApplicantsJob?
-              - *livesAlone?
+          compositeCondition: *livesAloneOrisApplicantsJob?
     inputs:
       - name: payPeriod
         type: RADIO
@@ -1911,11 +1880,7 @@ pageDefinitions:
     headerKey:
       conditionalValues:
         - value: warning-page.you-are-about-to-delete-your-job
-          compositeCondition:
-            logicalOperator: OR
-            conditions:
-              - *isApplicantsJob?
-              - *livesAlone?
+          compositeCondition: *livesAloneOrisApplicantsJob?
         - value: warning-page.you-are-about-to-delete-member-job
           condition:
             pageName: householdSelectionForIncome
