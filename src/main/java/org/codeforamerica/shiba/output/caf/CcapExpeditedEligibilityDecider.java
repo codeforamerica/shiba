@@ -11,7 +11,7 @@ import static org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility.*;
 public class CcapExpeditedEligibilityDecider {
     private final CcapExpeditedEligibilityParser ccapExpeditedEligibilityParser;
     private static final Set<String> expeditedLivingSituations
-            = Set.of("HOTEL_OR_MOTEL", "TEMPORARILY_WITH_FRIENDS_OR_FAMILY", "EMERGENCY_SHELTER", "LIVING_IN_A_PLACE_NOT_MEANT_FOR_HOUSING");
+            = Set.of("HOTEL_OR_MOTEL", "TEMPORARILY_WITH_FRIENDS_OR_FAMILY_DUE_TO_ECONOMIC_HARDSHIP", "EMERGENCY_SHELTER", "LIVING_IN_A_PLACE_NOT_MEANT_FOR_HOUSING");
 
     public CcapExpeditedEligibilityDecider(CcapExpeditedEligibilityParser ccapExpeditedEligibilityParser) {
         this.ccapExpeditedEligibilityParser = ccapExpeditedEligibilityParser;
