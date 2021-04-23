@@ -1199,7 +1199,7 @@ derived-values:
               value: TEMPORARILY_WITH_FRIENDS_OR_FAMILY_OTHER_REASONS
       - type: ENUMERATED_SINGLE_VALUE
         value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-          literal: "Off"
+          literal: UNKNOWN
         condition:
           logicalOperator: AND
           conditions:

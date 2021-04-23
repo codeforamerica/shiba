@@ -38,7 +38,6 @@ public class PdfFieldMapper {
 
     @NotNull
     private Stream<SimplePdfField> simplePdfFields(ApplicationInput input, Function<ApplicationInput, String> valueMapper) {
-        // Why does this map over the pdf field map whereas binaryPdfFields maps over the input values?
         return input.getPdfName(pdfFieldMap).stream().map(pdfName -> new SimplePdfField(pdfName, valueMapper.apply(input)));
     }
 
