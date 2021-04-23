@@ -1222,16 +1222,39 @@ pageDefinitions:
           promptMessageKey: match-info.when-were-you-born
       - name: ssn
         type: SSN
+        validators:
+          - validation: SSN
+            errorMessageKey: general.validation.make-sure-your-SSN-has-9-digits
+            condition:
+              input: ssn
+              matcher: NOT_EMPTY
         promptMessage:
           promptMessageKey: match-info.whats-your-social-security-number
         helpMessageKey: match-info.recommended-but-not-required
       - name: phoneNumber
         type: PHONE
         promptMessage:
-          promptMessageKey: match-info.whats-your-phone-number
+          promptMessageKey: contact-info.whats-your-phone-number
+        validators:
+          - validation: PHONE_STARTS_WITH_ONE
+            errorMessageKey: general.validation.area-codes-can-not-begin-with-1
+            condition:
+              input: phoneNumber
+              matcher: NOT_EMPTY
+          - validation: PHONE
+            errorMessageKey: general.validation.make-sure-to-enter-a-phone-number-with-10-digits
+            condition:
+              input: phoneNumber
+              matcher: NOT_EMPTY
         helpMessageKey: match-info.county-can-contact-you-if-questions
       - name: email
         type: TEXT
+        validators:
+          - validation: EMAIL
+            errorMessageKey: general.validation.email
+            condition:
+              input: email
+              matcher: NOT_EMPTY
         promptMessage:
           promptMessageKey: contact-info.whats-your-email-address
         helpMessageKey: match-info.county-can-contact-you-if-questions
@@ -3122,7 +3145,7 @@ workflow:
   matchInfo:
     pageConfiguration: *matchInfo
     nextPages:
-      - pageName: documentsSent
+      - pageName: uploadDocuments
   emailDocsToYourCounty:
     pageConfiguration: *emailDocsToYourCounty
     nextPages:

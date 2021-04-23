@@ -64,7 +64,7 @@ public class UserJourneyPageTest extends FeatureTest {
         testPage.enter("ssn", "123456789");
         testPage.clickContinue();
 
-        assertThat(driver.getTitle()).isEqualTo("Documents Sent");
+        assertThat(driver.getTitle()).isEqualTo("Upload Documents");
     }
 
     @Test
