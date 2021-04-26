@@ -187,7 +187,7 @@ public class MailGunEmailClient implements EmailClient {
         for (int i = 0; i < uploadedDocs.size(); i++) {
             UploadedDocument uploadedDocument = uploadedDocs.get(i);
             // generate cover page
-            ApplicationFile fileToSend = pdfGenerator.generate(application, Document.UPLOADED_DOC, CASEWORKER,uploadedDocument, i);
+            ApplicationFile fileToSend = pdfGenerator.generateForUploadedDocument(uploadedDocument, i, application, Document.UPLOADED_DOC, CASEWORKER);
 
             if (fileToSend.getFileBytes().length > 0) {
                 log.info("Now attaching: " + fileToSend.getFileName() + " original filename: " + uploadedDocument.getFilename());

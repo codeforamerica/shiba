@@ -56,16 +56,16 @@ public class PdfGenerator implements FileGenerator {
     @Override
     public ApplicationFile generate(String applicationId, Document document, Recipient recipient) {
         Application application = applicationRepository.find(applicationId);
-        return generate(application, document, recipient);
+        return generateForUploadedDocument(application, document, recipient);
     }
 
-    public ApplicationFile generate(Application application, Document document, Recipient recipient) {
+    public ApplicationFile generateForUploadedDocument(Application application, Document document, Recipient recipient) {
         List<ApplicationInput> applicationInputs = mappers.map(application, document, recipient);
         PdfFieldFiller pdfFiller = pdfFieldFillerMap.get(recipient).get(document);
         return pdfFiller.fill(pdfFieldMapper.map(applicationInputs), application.getId(), fileNameGenerator.generatePdfFileName(application, document));
     }
 
-    public ApplicationFile generate(Application application, Document document, Recipient recipient, UploadedDocument uploadedDocument, int index) {
+    public ApplicationFile generateForUploadedDocument(UploadedDocument uploadedDocument, int documentIndex, Application application, Document document, Recipient recipient) {
         var fileBytes = documentRepositoryService.get(uploadedDocument.getS3Filepath());
         var extension = Utils.getFileType(uploadedDocument.getFilename());
         if (IMAGE_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
@@ -77,12 +77,12 @@ public class PdfGenerator implements FileGenerator {
             }
         }
 
-        ApplicationFile coverPageApplicationFile = generate(application, document, recipient);
+        ApplicationFile coverPageApplicationFile = generateForUploadedDocument(application, document, recipient);
         if (extension.equals("pdf")) {
             fileBytes = addCoverPageToPdf(fileBytes, coverPageApplicationFile);
         }
 
-        String filename = fileNameGenerator.generateUploadedDocumentName(application, index, extension);
+        String filename = fileNameGenerator.generateUploadedDocumentName(application, documentIndex, extension);
         return new ApplicationFile(fileBytes, filename);
     }
 
