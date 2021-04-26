@@ -38,6 +38,8 @@ public class UploadedDocumentsSubmittedListener {
     @Async
     @EventListener
     public void send(UploadedDocumentsSubmittedEvent event) {
+        // add cover pages to the pdfs and write them to temp files!
+
         if (featureFlags.get("document-upload-feature").isOn()) {
             Application application = getApplicationFromEvent(event);
             if (featureFlags.get("submit-docs-via-email-for-hennepin").isOn()
@@ -47,6 +49,7 @@ public class UploadedDocumentsSubmittedListener {
             	emailClient.sendHennepinDocUploadsEmail(application);
             } else {
                 log.info("Processing uploaded documents");
+                //All of the pdfs are now in memory until all retries are complete
             	mnitDocumentConsumer.processUploadedDocuments(application);
             }
         }

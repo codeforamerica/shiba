@@ -151,7 +151,7 @@ class MnitDocumentConsumerTest {
     @Test
     void sendsTheGeneratedXmlAndPdf() {
         ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
-        doReturn(pdfApplicationFile).when(pdfGenerator).generate(any(), any(), any());
+        doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), any(), any());
         ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
         when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
         when(documentListParser.parse(any())).thenReturn(List.of(CAF));
@@ -163,7 +163,7 @@ class MnitDocumentConsumerTest {
     @Test
     void sendsTheCcapPdfIfTheApplicationHasCCAP() {
         ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
-        doReturn(pdfApplicationFile).when(pdfGenerator).generate(any(), eq(CCAP), any());
+        doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), eq(CCAP), any());
 
         ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
         when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);

@@ -63,7 +63,7 @@ public class MnitDocumentConsumer {
             UploadedDocument uploadedDocument = uploadedDocs.get(i);
 
             // generate cover page here?
-            ApplicationFile fileToSend = uploadedDocument.fileToSend(application, i, documentRepositoryService, fileNameGenerator, pdfGenerator);
+            ApplicationFile fileToSend = pdfGenerator.generate(application, Document.UPLOADED_DOC, CASEWORKER, uploadedDocument, i);
 
             if (fileToSend.getFileBytes().length > 0) {
                 log.info("Now sending: " + fileToSend.getFileName() + " original filename: " + uploadedDocument.getFilename());

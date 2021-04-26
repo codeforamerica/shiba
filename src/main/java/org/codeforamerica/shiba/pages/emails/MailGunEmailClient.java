@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.output.ApplicationFile;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 import static org.springframework.web.reactive.function.BodyInserters.fromMultipartData;
 
@@ -185,7 +187,7 @@ public class MailGunEmailClient implements EmailClient {
         for (int i = 0; i < uploadedDocs.size(); i++) {
             UploadedDocument uploadedDocument = uploadedDocs.get(i);
             // generate cover page
-            ApplicationFile fileToSend = uploadedDocument.fileToSend(application, i, documentRepositoryService, fileNameGenerator, pdfGenerator);
+            ApplicationFile fileToSend = pdfGenerator.generate(application, Document.UPLOADED_DOC, CASEWORKER,uploadedDocument, i);
 
             if (fileToSend.getFileBytes().length > 0) {
                 log.info("Now attaching: " + fileToSend.getFileName() + " original filename: " + uploadedDocument.getFilename());
