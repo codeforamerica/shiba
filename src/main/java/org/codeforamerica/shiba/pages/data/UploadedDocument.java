@@ -18,7 +18,6 @@ import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
@@ -80,14 +79,6 @@ public class UploadedDocument implements Serializable {
             throw new RuntimeException(e);
         }
         return fileBytes;
-    }
-
-    private void writeByteArrayToFile(byte[] fileBytes, String filename) {
-        try (FileOutputStream fos = new FileOutputStream(filename)) {
-            fos.write(fileBytes);
-        } catch (IOException e) {
-            log.error("Failed to close FileOutputStream");
-        }
     }
 
     private byte[] convertImageToPdf(byte[] imageFileBytes) throws IOException {
