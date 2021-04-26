@@ -1,9 +1,11 @@
 package org.codeforamerica.shiba.application;
 
+import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -20,6 +22,7 @@ import java.util.Optional;
 import static java.util.stream.Collectors.toMap;
 
 @Repository
+@Slf4j
 public class ApplicationRepository {
     private final JdbcTemplate jdbcTemplate;
     private final Encryptor<ApplicationData> encryptor;
@@ -73,22 +76,28 @@ public class ApplicationRepository {
     }
 
     public Application find(String id) {
-        return jdbcTemplate.queryForObject("SELECT * FROM applications WHERE id = ?",
-                (resultSet, rowNum) ->
-                        Application.builder()
-                                .id(id)
-                                .completedAt(ZonedDateTime.ofInstant(resultSet.getTimestamp("completed_at").toInstant(), ZoneOffset.UTC))
-                                .applicationData(encryptor.decrypt(resultSet.getString("application_data")))
-                                .county(County.valueFor(resultSet.getString("county")))
-                                .timeToComplete(Duration.ofSeconds(resultSet.getLong("time_to_complete")))
-                                .sentiment(Optional.ofNullable(resultSet.getString("sentiment"))
-                                        .map(Sentiment::valueOf)
-                                        .orElse(null))
-                                .feedback(resultSet.getString("feedback"))
-                                .flow(Optional.ofNullable(resultSet.getString("flow"))
-                                        .map(FlowType::valueOf)
-                                        .orElse(null))
-                                .build(), id);
+        try {
+            return jdbcTemplate.queryForObject("SELECT * FROM applications WHERE id = ?",
+                    (resultSet, rowNum) ->
+                            Application.builder()
+                                    .id(id)
+                                    .completedAt(ZonedDateTime.ofInstant(resultSet.getTimestamp("completed_at").toInstant(), ZoneOffset.UTC))
+                                    .applicationData(encryptor.decrypt(resultSet.getString("application_data")))
+                                    .county(County.valueFor(resultSet.getString("county")))
+                                    .timeToComplete(Duration.ofSeconds(resultSet.getLong("time_to_complete")))
+                                    .sentiment(Optional.ofNullable(resultSet.getString("sentiment"))
+                                            .map(Sentiment::valueOf)
+                                            .orElse(null))
+                                    .feedback(resultSet.getString("feedback"))
+                                    .flow(Optional.ofNullable(resultSet.getString("flow"))
+                                            .map(FlowType::valueOf)
+                                            .orElse(null))
+                                    .build(), id);
+
+        } catch (EmptyResultDataAccessException e) {
+            log.error("Unable to locate application with ID " + id);
+            throw e;
+        }
     }
 
     public Duration getMedianTimeToComplete() {
