@@ -11,7 +11,7 @@ import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +24,9 @@ import java.util.stream.Stream;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Condition implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     @JsonIgnore
     private List<Condition> conditions;
     @JsonIgnore
