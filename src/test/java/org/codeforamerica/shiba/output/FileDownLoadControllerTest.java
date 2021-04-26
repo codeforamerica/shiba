@@ -30,12 +30,14 @@ class FileDownLoadControllerTest {
     MockMvc mockMvc;
 
     XmlGenerator xmlGenerator = mock(XmlGenerator.class);
-    ApplicationData applicationData = new ApplicationData();
+    ApplicationData applicationData;
     PdfGenerator pdfGenerator = mock(PdfGenerator.class);
     ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
 
     @BeforeEach
     void setUp() {
+        applicationData = new ApplicationData();
+        applicationData.setId("some-app-id");
         mockMvc = MockMvcBuilders.standaloneSetup(
                 new FileDownLoadController(
                         xmlGenerator,
@@ -44,6 +46,7 @@ class FileDownLoadControllerTest {
                         applicationData))
                 .setViewResolvers(new InternalResourceViewResolver("", "suffix"))
                 .build();
+
     }
 
     @Test
