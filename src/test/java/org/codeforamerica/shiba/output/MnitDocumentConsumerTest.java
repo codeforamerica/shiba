@@ -194,7 +194,7 @@ class MnitDocumentConsumerTest {
                 "someDataUrl",
                 "image/jpeg");
 
-        var testCafPdfContents = Files.readAllBytes(getAbsoluteFilepath("test-caf.pdf"));
+        var testCafPdfContents = Files.readAllBytes(getAbsoluteFilepath("test-uploaded-pdf.pdf"));
         var pdfApplicationFile = new ApplicationFile(testCafPdfContents, "pdf2of2.pdf");
         var testCafPdfS3Filepath = "coolS3FilePath";
         applicationData.addUploadedDoc(
@@ -213,16 +213,19 @@ class MnitDocumentConsumerTest {
         verify(mnitClient, times(2)).send(captor.capture(), eq(County.Olmsted), eq(application.getId()), nullable(Document.class));
 
         // Assert that converted file contents are as expected
-        try (var actual = new ByteArrayInputStream(captor.getAllValues().get(0).getFileBytes());
-             var expected = Files.newInputStream(getAbsoluteFilepath("shiba+file.pdf"))) {
+        verifyGeneratedPdf(captor.getAllValues().get(0).getFileBytes(), "shiba+file.pdf");
+        verifyGeneratedPdf(captor.getAllValues().get(1).getFileBytes(), "test-uploaded-pdf-with-coverpage.pdf");
+    }
+
+    private void verifyGeneratedPdf(byte[] actualFileBytes, String expectedFile) throws IOException {
+        try (var actual = new ByteArrayInputStream(actualFileBytes);
+             var expected = Files.newInputStream(getAbsoluteFilepath(expectedFile))) {
             assertThatCode(() -> {
                 var compareResult = new PdfComparator<>(expected, actual).compare();
 //                compareResult.writeTo("diffOutput");
                 assertThat(compareResult.isEqual()).isTrue();
             }).doesNotThrowAnyException();
         }
-
-        // Todo make assertions about the actual PDF
     }
 
     private Path getAbsoluteFilepath(String resourceFilename) {
