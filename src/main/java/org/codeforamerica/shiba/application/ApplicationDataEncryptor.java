@@ -40,7 +40,7 @@ public class ApplicationDataEncryptor implements Encryptor<ApplicationData> {
             runCryptographicFunctionOnData(stringEncryptor::decrypt, applicationData);
             return applicationData;
         } catch (IOException e) {
-            log.error("Unable to decrypt application data");
+            log.error("Error while deserializing application data");
             throw new RuntimeException(e);
         }
     }
