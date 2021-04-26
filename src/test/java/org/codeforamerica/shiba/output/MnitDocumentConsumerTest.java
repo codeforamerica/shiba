@@ -18,6 +18,7 @@ import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -45,7 +46,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
@@ -57,6 +57,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
         "spring.main.allow-bean-definition-overriding=true"
 })
+@Tag("db")
 class MnitDocumentConsumerTest {
     // Todo maybe generalize this into a @WithNonSessionScopedApplicationData class or something
     @TestConfiguration
@@ -129,7 +130,7 @@ class MnitDocumentConsumerTest {
 
         when(messageSource.getMessage(any(), any(), any())).thenReturn("default success message");
 
-        when(fileNameGenerator.generatePdfFileName(any(),any())).thenReturn("some-file.pdf");
+        when(fileNameGenerator.generatePdfFileName(any(), any())).thenReturn("some-file.pdf");
 
         when(applicationRepository.find(any())).thenReturn(application);
     }
@@ -220,11 +221,9 @@ class MnitDocumentConsumerTest {
     private void verifyGeneratedPdf(byte[] actualFileBytes, String expectedFile) throws IOException {
         try (var actual = new ByteArrayInputStream(actualFileBytes);
              var expected = Files.newInputStream(getAbsoluteFilepath(expectedFile))) {
-            assertThatCode(() -> {
-                var compareResult = new PdfComparator<>(expected, actual).compare();
+            var compareResult = new PdfComparator<>(expected, actual).compare();
 //                compareResult.writeTo("diffOutput");
-                assertThat(compareResult.isEqual()).isTrue();
-            }).doesNotThrowAnyException();
+            assertThat(compareResult.isEqual()).isTrue();
         }
     }
 
