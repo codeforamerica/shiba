@@ -2,9 +2,7 @@ package org.codeforamerica.shiba.pages.emails;
 
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.output.ApplicationFile;
-import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.data.InputData;
@@ -44,8 +42,6 @@ public class MailGunEmailClient implements EmailClient {
     private final EmailContentCreator emailContentCreator;
     private final boolean shouldCC;
     private final WebClient webClient;
-    private final DocumentRepositoryService documentRepositoryService;
-    private final FileNameGenerator fileNameGenerator;
     private final PdfGenerator pdfGenerator;
 
     public MailGunEmailClient(@Value("${sender-email}") String senderEmail,
@@ -57,8 +53,6 @@ public class MailGunEmailClient implements EmailClient {
                               @Value("${mail-gun.api-key}") String mailGunApiKey,
                               EmailContentCreator emailContentCreator,
                               @Value("${mail-gun.shouldCC}") boolean shouldCC,
-                              DocumentRepositoryService documentRepositoryService,
-                              FileNameGenerator fileNameGenerator,
                               PdfGenerator pdfGenerator) {
         this.senderEmail = senderEmail;
         this.securityEmail = securityEmail;
@@ -69,8 +63,6 @@ public class MailGunEmailClient implements EmailClient {
         this.emailContentCreator = emailContentCreator;
         this.shouldCC = shouldCC;
         this.webClient = WebClient.builder().baseUrl(mailGunUrl).build();
-        this.documentRepositoryService = documentRepositoryService;
-        this.fileNameGenerator = fileNameGenerator;
         this.pdfGenerator = pdfGenerator;
     }
 

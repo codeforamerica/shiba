@@ -4,9 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.BasicCredentials;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.output.ApplicationFile;
-import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.junit.jupiter.api.AfterEach;
@@ -38,8 +36,7 @@ class MailGunEmailClientTest {
     MailGunEmailClient mailGunEmailClient;
 
     EmailContentCreator emailContentCreator = mock(EmailContentCreator.class);
-    DocumentRepositoryService documentRepositoryService = mock(DocumentRepositoryService.class);
-    FileNameGenerator fileNameGenerator = mock(FileNameGenerator.class);
+
     @Autowired
     PdfGenerator pdfGenerator;
 
@@ -72,8 +69,6 @@ class MailGunEmailClientTest {
                 mailGunApiKey,
                 emailContentCreator,
                 false,
-                documentRepositoryService,
-                fileNameGenerator,
                 pdfGenerator);
     }
 
@@ -225,8 +220,6 @@ class MailGunEmailClientTest {
                 mailGunApiKey,
                 emailContentCreator,
                 true,
-                documentRepositoryService,
-                fileNameGenerator,
                 pdfGenerator);
 
         wireMockServer.stubFor(post(anyUrl())
