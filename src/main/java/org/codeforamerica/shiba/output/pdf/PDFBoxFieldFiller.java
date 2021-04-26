@@ -58,7 +58,7 @@ public class PDFBoxFieldFiller implements PdfFieldFiller {
     }
 
     @NotNull
-    public static BinaryOperator<@NotNull PDDocument> mergePdfs(PDFMergerUtility mergerer) {
+    private BinaryOperator<@NotNull PDDocument> mergePdfs(PDFMergerUtility mergerer) {
         return (pdDocument1, pdDocument2) -> {
             try {
                 mergerer.appendDocument(pdDocument1, pdDocument2);

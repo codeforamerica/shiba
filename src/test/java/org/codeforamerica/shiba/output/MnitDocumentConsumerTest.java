@@ -59,7 +59,6 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 })
 @Tag("db")
 class MnitDocumentConsumerTest {
-    // Todo maybe generalize this into a @WithNonSessionScopedApplicationData class or something
     @TestConfiguration
     static class NonSessionScopedApplicationData {
         @Bean
