@@ -52,6 +52,15 @@ pageDefinitions:
           validators:
             - validation: ZIPCODE
               errorMessageKey: error-message-key
+  - &caseNumberPage
+      name: caseNumberPage
+      pageTitle: case-number-page-title
+      inputs:
+        - name: caseNumberInput
+          type: TEXT
+          validators:
+            - validation: CASE_NUMBER
+              errorMessageKey: error-message-key
   - &statePage
       name: statePage
       pageTitle: state-page-title
@@ -182,6 +191,10 @@ workflow:
       - pageName: lastPage
   zipcodePage:
     pageConfiguration: *zipcodePage
+    nextPages:
+      - pageName: lastPage
+  caseNumberPage:
+    pageConfiguration: *caseNumberPage
     nextPages:
       - pageName: lastPage
   statePage:

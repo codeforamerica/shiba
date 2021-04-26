@@ -1260,6 +1260,12 @@ pageDefinitions:
         helpMessageKey: match-info.county-can-contact-you-if-questions
       - name: caseNumber
         type: TEXT
+        validators:
+          - validation: CASE_NUMBER
+            errorMessageKey: general.validation.make-sure-your-case-number-has-7-digits
+            condition:
+              input: caseNumber
+              matcher: NOT_EMPTY
         promptMessage:
           promptMessageKey: match-info.case-number-if-you-have-it
         helpMessageKey: match-info.recommended-but-not-required

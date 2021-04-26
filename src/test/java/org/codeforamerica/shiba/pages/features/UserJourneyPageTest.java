@@ -62,6 +62,7 @@ public class UserJourneyPageTest extends FeatureTest {
         testPage.enter("lastName", "defaultLastName");
         testPage.enter("dateOfBirth", "01/12/1928");
         testPage.enter("ssn", "123456789");
+        testPage.enter("caseNumber", "1234567");
         testPage.clickContinue();
 
         assertThat(driver.getTitle()).isEqualTo("Upload Documents");
