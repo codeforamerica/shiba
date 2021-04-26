@@ -46,8 +46,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.output.Document.CAF;
-import static org.codeforamerica.shiba.output.Document.CCAP;
+import static org.codeforamerica.shiba.output.Document.*;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -206,7 +205,7 @@ class MnitDocumentConsumerTest {
         documentConsumer.processUploadedDocuments(application);
 
         ArgumentCaptor<ApplicationFile> captor = ArgumentCaptor.forClass(ApplicationFile.class);
-        verify(mnitClient, times(2)).send(captor.capture(), eq(County.Olmsted), eq(application.getId()), nullable(Document.class));
+        verify(mnitClient, times(2)).send(captor.capture(), eq(County.Olmsted), eq(application.getId()), eq(UPLOADED_DOC));
 
         // Assert that converted file contents are as expected
         verifyGeneratedPdf(captor.getAllValues().get(0).getFileBytes(), "shiba+file.pdf");
