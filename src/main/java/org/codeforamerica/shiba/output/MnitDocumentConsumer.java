@@ -60,11 +60,12 @@ public class MnitDocumentConsumer {
 
     public void processUploadedDocuments(Application application) {
         List<UploadedDocument> uploadedDocs = application.getApplicationData().getUploadedDocs();
+        byte[] coverPage = pdfGenerator.generate(application, UPLOADED_DOC, CASEWORKER).getFileBytes();
         for (int i = 0; i < uploadedDocs.size(); i++) {
             UploadedDocument uploadedDocument = uploadedDocs.get(i);
 
             // generate cover page here?
-            ApplicationFile fileToSend = pdfGenerator.generateForUploadedDocument(uploadedDocument, i, application, UPLOADED_DOC, CASEWORKER);
+            ApplicationFile fileToSend = pdfGenerator.generateForUploadedDocument(uploadedDocument, i, application, coverPage);
 
             if (fileToSend.getFileBytes().length > 0) {
                 log.info("Now sending: " + fileToSend.getFileName() + " original filename: " + uploadedDocument.getFilename());

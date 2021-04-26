@@ -119,7 +119,6 @@ class MnitDocumentConsumerTest {
         ));
 
         applicationData.setPagesData(pagesData);
-
         application = Application.builder()
                 .id("someId")
                 .completedAt(ZonedDateTime.now())
@@ -127,11 +126,8 @@ class MnitDocumentConsumerTest {
                 .county(County.Olmsted)
                 .timeToComplete(null)
                 .build();
-
         when(messageSource.getMessage(any(), any(), any())).thenReturn("default success message");
-
         when(fileNameGenerator.generatePdfFileName(any(), any())).thenReturn("some-file.pdf");
-
         when(applicationRepository.find(any())).thenReturn(application);
     }
 
@@ -222,7 +218,7 @@ class MnitDocumentConsumerTest {
         try (var actual = new ByteArrayInputStream(actualFileBytes);
              var expected = Files.newInputStream(getAbsoluteFilepath(expectedFile))) {
             var compareResult = new PdfComparator<>(expected, actual).compare();
-//                compareResult.writeTo("diffOutput");
+//            compareResult.writeTo("diffOutput"); // uncomment this line to print the diff between the two pdfs
             assertThat(compareResult.isEqual()).isTrue();
         }
     }

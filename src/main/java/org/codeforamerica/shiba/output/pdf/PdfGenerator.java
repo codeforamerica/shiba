@@ -56,16 +56,16 @@ public class PdfGenerator implements FileGenerator {
     @Override
     public ApplicationFile generate(String applicationId, Document document, Recipient recipient) {
         Application application = applicationRepository.find(applicationId);
-        return generateForUploadedDocument(application, document, recipient);
+        return generate(application, document, recipient);
     }
 
-    public ApplicationFile generateForUploadedDocument(Application application, Document document, Recipient recipient) {
+    public ApplicationFile generate(Application application, Document document, Recipient recipient) {
         List<ApplicationInput> applicationInputs = mappers.map(application, document, recipient);
         PdfFieldFiller pdfFiller = pdfFieldFillerMap.get(recipient).get(document);
         return pdfFiller.fill(pdfFieldMapper.map(applicationInputs), application.getId(), fileNameGenerator.generatePdfFileName(application, document));
     }
 
-    public ApplicationFile generateForUploadedDocument(UploadedDocument uploadedDocument, int documentIndex, Application application, Document document, Recipient recipient) {
+    public ApplicationFile generateForUploadedDocument(UploadedDocument uploadedDocument, int documentIndex, Application application, byte[] coverPage) {
         var fileBytes = documentRepositoryService.get(uploadedDocument.getS3Filepath());
         var extension = Utils.getFileType(uploadedDocument.getFilename());
         if (IMAGE_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
@@ -77,19 +77,17 @@ public class PdfGenerator implements FileGenerator {
             }
         }
 
-        ApplicationFile coverPageApplicationFile = generateForUploadedDocument(application, document, recipient);
         if (extension.equals("pdf")) {
-            fileBytes = addCoverPageToPdf(fileBytes, coverPageApplicationFile);
+            fileBytes = addCoverPageToPdf(coverPage, fileBytes);
         }
 
         String filename = fileNameGenerator.generateUploadedDocumentName(application, documentIndex, extension);
         return new ApplicationFile(fileBytes, filename);
     }
 
-
-    private byte[] addCoverPageToPdf(byte[] fileBytes, ApplicationFile coverPageApplicationFile) {
+    private byte[] addCoverPageToPdf(byte[] coverPage, byte[] fileBytes) {
         PDFMergerUtility merger = new PDFMergerUtility();
-        try (PDDocument coverPageDoc = PDDocument.load(coverPageApplicationFile.getFileBytes());
+        try (PDDocument coverPageDoc = PDDocument.load(coverPage);
              PDDocument uploadedDoc = PDDocument.load(fileBytes);
              ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
 
