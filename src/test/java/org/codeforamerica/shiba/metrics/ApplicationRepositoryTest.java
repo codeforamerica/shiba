@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -90,6 +91,9 @@ class ApplicationRepositoryTest {
         subflowIteration.put("someGroupedPage", groupedPage);
         subworkflows.addIteration("someGroup", subflowIteration);
         applicationData.setSubworkflows(subworkflows);
+
+        MockMultipartFile image = new MockMultipartFile("image", "test".getBytes());
+        applicationData.addUploadedDoc(image, "someS3FilePath", "someDataUrl", "image/jpeg");
 
         Application application = Application.builder()
                 .id("someid")
