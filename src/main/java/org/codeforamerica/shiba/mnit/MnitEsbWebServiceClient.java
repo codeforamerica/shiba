@@ -71,7 +71,7 @@ public class MnitEsbWebServiceClient {
         List<CmisProperty> propertyUris = properties.getPropertyUriOrPropertyIdOrPropertyString();
         CmisPropertyString fileNameProperty = createCmisPropertyString("Name", applicationFile.getFileName());
         CmisPropertyString subject = createCmisPropertyString("subject", "MN Benefits Application");
-        CmisPropertyString description = createCmisPropertyString("description", generateDocumentDescription(applicationFile, applicationDocument, applicationNumber ));
+        CmisPropertyString description = createCmisPropertyString("description", generateDocumentDescription(applicationFile, applicationDocument, applicationNumber));
         CmisPropertyString dhsProviderId = createCmisPropertyString("dhsProviderId", countyMap.get(county).getDhsProviderId());
         propertyUris.addAll(List.of(fileNameProperty, subject, description, description, dhsProviderId));
         createDocument.setProperties(properties);
@@ -120,17 +120,16 @@ public class MnitEsbWebServiceClient {
         fileNameProperty.setValue(value);
         return fileNameProperty;
     }
-    
+
     @NotNull
     private String generateDocumentDescription(ApplicationFile applicationFile, Document applicationDocument, String applicationNumber) {
         String docDescription = String.format("Associated with MNBenefits Application #%s", applicationNumber);
-        if (applicationDocument== Document.CAF || applicationDocument==Document.CCAP) {
-        	if (applicationFile.getFileName().toLowerCase().endsWith(".xml")) {
-            	docDescription = String.format("XML of MNBenefits Application #%s", applicationNumber);
-        	}
-        	else if (applicationFile.getFileName().toLowerCase().endsWith(".pdf")) {
-            	docDescription = String.format("PDF of MNBenefits %s Application #%s", applicationDocument.toString(), applicationNumber);
-        	}
+        if (applicationDocument == Document.CAF || applicationDocument == Document.CCAP) {
+            if (applicationFile.getFileName().toLowerCase().endsWith(".xml")) {
+                docDescription = String.format("XML of MNBenefits Application #%s", applicationNumber);
+            } else if (applicationFile.getFileName().toLowerCase().endsWith(".pdf")) {
+                docDescription = String.format("PDF of MNBenefits %s Application #%s", applicationDocument.toString(), applicationNumber);
+            }
         }
         return docDescription;
     }

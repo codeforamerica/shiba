@@ -4,13 +4,14 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.BasicCredentials;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import org.codeforamerica.shiba.documents.*;
 import org.codeforamerica.shiba.output.ApplicationFile;
-import org.codeforamerica.shiba.output.caf.*;
+import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
+import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -35,8 +36,9 @@ class MailGunEmailClientTest {
     MailGunEmailClient mailGunEmailClient;
 
     EmailContentCreator emailContentCreator = mock(EmailContentCreator.class);
-    DocumentRepositoryService documentRepositoryService = mock(DocumentRepositoryService.class);
-    FileNameGenerator fileNameGenerator = mock(FileNameGenerator.class);
+
+    @Autowired
+    PdfGenerator pdfGenerator;
 
     WireMockServer wireMockServer;
 
@@ -52,8 +54,7 @@ class MailGunEmailClientTest {
 
     @BeforeEach
     void setUp() {
-        WireMockConfiguration options = WireMockConfiguration.wireMockConfig()
-                .dynamicPort();
+        WireMockConfiguration options = WireMockConfiguration.wireMockConfig().dynamicPort();
         wireMockServer = new WireMockServer(options);
         wireMockServer.start();
         port = wireMockServer.port();
@@ -68,8 +69,7 @@ class MailGunEmailClientTest {
                 mailGunApiKey,
                 emailContentCreator,
                 false,
-                documentRepositoryService,
-                fileNameGenerator);
+                pdfGenerator);
     }
 
     @AfterEach
@@ -220,8 +220,7 @@ class MailGunEmailClientTest {
                 mailGunApiKey,
                 emailContentCreator,
                 true,
-                documentRepositoryService,
-                fileNameGenerator);
+                pdfGenerator);
 
         wireMockServer.stubFor(post(anyUrl())
                 .willReturn(aResponse().withStatus(200)));

@@ -3,8 +3,10 @@ package org.codeforamerica.shiba.output;
 import de.redsix.pdfcompare.PdfComparator;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
+import org.codeforamerica.shiba.PageDataBuilder;
+import org.codeforamerica.shiba.PagesDataBuilder;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
+import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
@@ -16,10 +18,21 @@ import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -32,46 +45,93 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.codeforamerica.shiba.output.Document.CAF;
-import static org.codeforamerica.shiba.output.Document.CCAP;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.output.Document.*;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.mockito.Mockito.*;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
+@ActiveProfiles("test")
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
+        "spring.main.allow-bean-definition-overriding=true"
+})
+@Tag("db")
 class MnitDocumentConsumerTest {
-    MnitEsbWebServiceClient mnitClient = mock(MnitEsbWebServiceClient.class);
-    XmlGenerator xmlGenerator = mock(XmlGenerator.class);
-    PdfGenerator pdfGenerator = mock(PdfGenerator.class);
-    ApplicationDataParser<List<Document>> documentListParser = mock(DocumentListParser.class);
-    ApplicationData appData = new ApplicationData();
-    MonitoringService monitoringService = mock(MonitoringService.class);
-    DocumentRepositoryService documentRepositoryService = mock(DocumentRepositoryService.class);
-    FileNameGenerator fileNameGenerator = mock(FileNameGenerator.class);
-    MnitDocumentConsumer documentConsumer = new MnitDocumentConsumer(
-            mnitClient,
-            xmlGenerator,
-            pdfGenerator,
-            documentListParser,
-            monitoringService,
-            documentRepositoryService,
-            fileNameGenerator,
-            "test");
+    @TestConfiguration
+    static class NonSessionScopedApplicationData {
+        @Bean
+        public ApplicationData applicationData() {
+            return new ApplicationData();
+        }
+    }
+
+    @MockBean
+    private MnitEsbWebServiceClient mnitClient;
+    @MockBean
+    private XmlGenerator xmlGenerator;
+    @MockBean
+    private DocumentListParser documentListParser;
+    @MockBean
+    private MonitoringService monitoringService;
+    @MockBean
+    private DocumentRepositoryService documentRepositoryService;
+    @MockBean
+    private FileNameGenerator fileNameGenerator;
+    @MockBean
+    private ApplicationRepository applicationRepository;
+
+    @SpyBean
+    private PdfGenerator pdfGenerator;
+
+    @MockBean
+    private MessageSource messageSource;
+
+    @Autowired
+    private ApplicationData applicationData;
+    @Autowired
+    private MnitDocumentConsumer documentConsumer;
+
+    private Application application;
 
     @BeforeEach
     void setUp() {
-        appData.setPagesData(new PagesData(Map.of("somePage", new PageData())));
+        PagesData pagesData = new PagesDataBuilder().build(List.of(
+                new PageDataBuilder("personalInfo", Map.of(
+                        "firstName", List.of("Jane"),
+                        "lastName", List.of("Doe"),
+                        "otherName", List.of(""),
+                        "dateOfBirth", List.of("10", "04", "2020"),
+                        "ssn", List.of("123-45-6789"),
+                        "sex", List.of("FEMALE"),
+                        "maritalStatus", List.of("NEVER_MARRIED"),
+                        "livedInMnWholeLife", List.of("false"),
+                        "moveToMnDate", List.of("11", "03", "2020"),
+                        "moveToMnPreviousCity", List.of("")
+                )),
+                new PageDataBuilder("contactInfo", Map.of(
+                        "phoneNumber", List.of("(603) 879-1111"),
+                        "email", List.of("jane@example.com"),
+                        "phoneOrEmail", List.of("PHONE")
+                ))
+        ));
+
+        applicationData.setPagesData(pagesData);
+        application = Application.builder()
+                .id("someId")
+                .completedAt(ZonedDateTime.now())
+                .applicationData(applicationData)
+                .county(County.Olmsted)
+                .timeToComplete(null)
+                .build();
+        when(messageSource.getMessage(any(), any(), any())).thenReturn("default success message");
+        when(fileNameGenerator.generatePdfFileName(any(), any())).thenReturn("some-file.pdf");
+        when(applicationRepository.find(any())).thenReturn(application);
     }
 
     @Test
     void generatesThePDFFromTheApplicationData() {
         when(documentListParser.parse(any())).thenReturn(List.of(CAF));
-        Application application = Application.builder()
-                .id("someId")
-                .completedAt(ZonedDateTime.now())
-                .applicationData(new ApplicationData())
-                .county(County.Olmsted)
-                .timeToComplete(null)
-                .build();
         documentConsumer.process(application);
         verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
     }
@@ -79,13 +139,6 @@ class MnitDocumentConsumerTest {
     @Test
     void generatesTheXmlFromTheApplicationData() {
         when(documentListParser.parse(any())).thenReturn(List.of(CAF));
-        Application application = Application.builder()
-                .id("someId")
-                .completedAt(ZonedDateTime.now())
-                .applicationData(new ApplicationData())
-                .county(County.Olmsted)
-                .timeToComplete(null)
-                .build();
         documentConsumer.process(application);
         verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
     }
@@ -93,17 +146,10 @@ class MnitDocumentConsumerTest {
     @Test
     void sendsTheGeneratedXmlAndPdf() {
         ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
-        when(pdfGenerator.generate(any(), any(), any())).thenReturn(pdfApplicationFile);
+        doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), any(), any());
         ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
         when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
         when(documentListParser.parse(any())).thenReturn(List.of(CAF));
-        Application application = Application.builder()
-                .id("someId")
-                .completedAt(ZonedDateTime.now())
-                .applicationData(new ApplicationData())
-                .county(County.Olmsted)
-                .timeToComplete(null)
-                .build();
         documentConsumer.process(application);
         verify(mnitClient).send(pdfApplicationFile, County.Olmsted, application.getId(), Document.CAF);
         verify(mnitClient).send(xmlApplicationFile, County.Olmsted, application.getId(), Document.CAF);
@@ -112,44 +158,28 @@ class MnitDocumentConsumerTest {
     @Test
     void sendsTheCcapPdfIfTheApplicationHasCCAP() {
         ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
-        when(pdfGenerator.generate(any(), eq(CCAP), any())).thenReturn(pdfApplicationFile);
+        doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), eq(CCAP), any());
+
         ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
         when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
         when(documentListParser.parse(any())).thenReturn(List.of(CCAP, CAF));
-        ApplicationData applicationData = new ApplicationData();
         PagesData pagesData = new PagesData();
         PageData chooseProgramsPage = new PageData();
         chooseProgramsPage.put("programs", InputData.builder().value(List.of("CCAP")).build());
         pagesData.put("choosePrograms", chooseProgramsPage);
         applicationData.setPagesData(pagesData);
-        Application application = Application.builder()
-                .id("someId")
-                .completedAt(ZonedDateTime.now())
-                .applicationData(applicationData)
-                .county(County.Olmsted)
-                .timeToComplete(null)
-                .build();
         documentConsumer.process(application);
         verify(mnitClient).send(pdfApplicationFile, County.Olmsted, application.getId(), Document.CCAP);
     }
 
     @Test
     void sendsApplicationIdToMonitoringService() {
-        Application application = Application.builder()
-                .id("someId")
-                .completedAt(ZonedDateTime.now())
-                .applicationData(new ApplicationData())
-                .county(County.Olmsted)
-                .timeToComplete(null)
-                .build();
         documentConsumer.process(application);
         verify(monitoringService).setApplicationId(application.getId());
     }
 
     @Test
     void sendsBothImageAndDocumentUploadsSuccessfully() throws IOException {
-        var applicationData = new ApplicationData();
-
         var shibaJpgContents = Files.readAllBytes(getAbsoluteFilepath("shiba+file.jpg"));
         var shibaImageS3Filepath = "someS3FilePath";
         when(documentRepositoryService.get(shibaImageS3Filepath)).thenReturn(shibaJpgContents);
@@ -159,7 +189,7 @@ class MnitDocumentConsumerTest {
                 "someDataUrl",
                 "image/jpeg");
 
-        var testCafPdfContents = Files.readAllBytes(getAbsoluteFilepath("test-caf.pdf"));
+        var testCafPdfContents = Files.readAllBytes(getAbsoluteFilepath("test-uploaded-pdf.pdf"));
         var pdfApplicationFile = new ApplicationFile(testCafPdfContents, "pdf2of2.pdf");
         var testCafPdfS3Filepath = "coolS3FilePath";
         applicationData.addUploadedDoc(
@@ -169,25 +199,25 @@ class MnitDocumentConsumerTest {
                 "application/pdf");
         when(documentRepositoryService.get(testCafPdfS3Filepath)).thenReturn(pdfApplicationFile.getFileBytes());
 
-        Application application = Application.builder()
-                .id("someId")
-                .completedAt(ZonedDateTime.now())
-                .applicationData(applicationData)
-                .county(County.Olmsted)
-                .timeToComplete(null)
-                .build();
         when(fileNameGenerator.generateUploadedDocumentName(application, 0, "pdf")).thenReturn("pdf1of2.pdf");
         when(fileNameGenerator.generateUploadedDocumentName(application, 1, "pdf")).thenReturn("pdf2of2.pdf");
 
         documentConsumer.processUploadedDocuments(application);
 
         ArgumentCaptor<ApplicationFile> captor = ArgumentCaptor.forClass(ApplicationFile.class);
-        verify(mnitClient, times(2)).send(captor.capture(), eq(County.Olmsted), eq(application.getId()), nullable(Document.class));
+        verify(mnitClient, times(2)).send(captor.capture(), eq(County.Olmsted), eq(application.getId()), eq(UPLOADED_DOC));
 
         // Assert that converted file contents are as expected
-        try (var actual = new ByteArrayInputStream(captor.getAllValues().get(0).getFileBytes());
-             var expected = Files.newInputStream(getAbsoluteFilepath("shiba+file.pdf"))) {
-            assertThatCode(() -> new PdfComparator<>(expected, actual).compare()).doesNotThrowAnyException();
+        verifyGeneratedPdf(captor.getAllValues().get(0).getFileBytes(), "shiba+file.pdf");
+        verifyGeneratedPdf(captor.getAllValues().get(1).getFileBytes(), "test-uploaded-pdf-with-coverpage.pdf");
+    }
+
+    private void verifyGeneratedPdf(byte[] actualFileBytes, String expectedFile) throws IOException {
+        try (var actual = new ByteArrayInputStream(actualFileBytes);
+             var expected = Files.newInputStream(getAbsoluteFilepath(expectedFile))) {
+            var compareResult = new PdfComparator<>(expected, actual).compare();
+//            compareResult.writeTo("diffOutput"); // uncomment this line to print the diff between the two pdfs
+            assertThat(compareResult.isEqual()).isTrue();
         }
     }
 

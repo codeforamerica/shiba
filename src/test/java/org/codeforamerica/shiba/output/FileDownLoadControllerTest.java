@@ -30,12 +30,14 @@ class FileDownLoadControllerTest {
     MockMvc mockMvc;
 
     XmlGenerator xmlGenerator = mock(XmlGenerator.class);
-    ApplicationData applicationData = new ApplicationData();
+    ApplicationData applicationData;
     PdfGenerator pdfGenerator = mock(PdfGenerator.class);
     ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
 
     @BeforeEach
     void setUp() {
+        applicationData = new ApplicationData();
+        applicationData.setId("some-app-id");
         mockMvc = MockMvcBuilders.standaloneSetup(
                 new FileDownLoadController(
                         xmlGenerator,
@@ -44,11 +46,12 @@ class FileDownLoadControllerTest {
                         applicationData))
                 .setViewResolvers(new InternalResourceViewResolver("", "suffix"))
                 .build();
+
     }
 
     @Test
     void shouldPassScreensToServiceToGeneratePdfFile() throws Exception {
-        when(pdfGenerator.generate(any(), any(), any())).thenReturn(new ApplicationFile("".getBytes(), ""));
+        when(pdfGenerator.generate(anyString(), any(), any())).thenReturn(new ApplicationFile("".getBytes(), ""));
 
         mockMvc.perform(
                 get("/download"))
@@ -59,7 +62,7 @@ class FileDownLoadControllerTest {
 
     @Test
     void shouldAcceptApplicationIdToGeneratePdfFile() throws Exception {
-        when(pdfGenerator.generate(any(), any(), any())).thenReturn(new ApplicationFile("".getBytes(), ""));
+        when(pdfGenerator.generate(anyString(), any(), any())).thenReturn(new ApplicationFile("".getBytes(), ""));
 
         mockMvc.perform(
                 get("/download-caf/9870000123"))
@@ -70,7 +73,7 @@ class FileDownLoadControllerTest {
 
     @Test
     void shouldAcceptApplicationIdToGenerateCCAPPdfFile() throws Exception {
-        when(pdfGenerator.generate(any(), any(), any())).thenReturn(new ApplicationFile("".getBytes(), ""));
+        when(pdfGenerator.generate(anyString(), any(), any())).thenReturn(new ApplicationFile("".getBytes(), ""));
 
         mockMvc.perform(
                 get("/download-ccap/9870000123"))
@@ -84,7 +87,7 @@ class FileDownLoadControllerTest {
     void shouldPublishEventWhenDownloadCafIsInvoked(
             String expectedIp, String requestHeader
     ) throws Exception {
-        when(pdfGenerator.generate(any(), any(), any())).thenReturn(new ApplicationFile("".getBytes(), ""));
+        when(pdfGenerator.generate(anyString(), any(), any())).thenReturn(new ApplicationFile("".getBytes(), ""));
 
         String confirmationNumber = "9870000123";
         mockMvc.perform(
@@ -109,7 +112,7 @@ class FileDownLoadControllerTest {
 
     @Test
     void shouldReturnBlankIpWhenRequestHeaderIsNull() throws Exception {
-        when(pdfGenerator.generate(any(), any(), any())).thenReturn(new ApplicationFile("".getBytes(), ""));
+        when(pdfGenerator.generate(anyString(), any(), any())).thenReturn(new ApplicationFile("".getBytes(), ""));
 
         String confirmationNumber = "9870000123";
         mockMvc.perform(
@@ -125,7 +128,7 @@ class FileDownLoadControllerTest {
         byte[] pdfBytes = "here is the pdf".getBytes();
         String fileName = "filename.pdf";
         ApplicationFile applicationFile = new ApplicationFile(pdfBytes, fileName);
-        when(pdfGenerator.generate(any(), any(), any())).thenReturn(applicationFile);
+        when(pdfGenerator.generate(anyString(), any(), any())).thenReturn(applicationFile);
 
         MvcResult result = mockMvc.perform(
                 get("/download"))
@@ -141,7 +144,7 @@ class FileDownLoadControllerTest {
     void shouldGenerateXMLForTheApplication() throws Exception {
         byte[] fileBytes = "some file content".getBytes();
         String fileName = "some.xml";
-        when(xmlGenerator.generate(any(), any(), any())).thenReturn(new ApplicationFile(fileBytes, fileName));
+        when(xmlGenerator.generate(anyString(), any(), any())).thenReturn(new ApplicationFile(fileBytes, fileName));
 
         MvcResult result = mockMvc.perform(
                 get("/download-xml"))

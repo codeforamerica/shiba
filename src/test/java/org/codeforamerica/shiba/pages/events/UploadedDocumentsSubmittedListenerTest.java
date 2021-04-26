@@ -81,5 +81,4 @@ class UploadedDocumentsSubmittedListenerTest {
 
         verifyNoInteractions(mnitDocumentConsumer);
     }
-
 }

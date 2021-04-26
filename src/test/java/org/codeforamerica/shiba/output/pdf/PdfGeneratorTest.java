@@ -48,6 +48,7 @@ class PdfGeneratorTest {
                 pdfFieldMapper,
                 pdfFieldFillers,
                 applicationRepository,
+                null,
                 mappers,
                 fileNameGenerator);
         when(applicationRepository.find(applicationId)).thenReturn(application);

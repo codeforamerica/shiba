@@ -1,12 +1,13 @@
 package org.codeforamerica.shiba.pages.emails;
 
+import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.output.ApplicationFile;
-import org.codeforamerica.shiba.output.MnitDocumentConsumer;
-import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
-import org.codeforamerica.shiba.pages.data.*;
+import org.codeforamerica.shiba.output.pdf.PdfGenerator;
+import org.codeforamerica.shiba.pages.data.InputData;
+import org.codeforamerica.shiba.pages.data.PageData;
+import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,12 +18,15 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
+import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
+import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 import static org.springframework.web.reactive.function.BodyInserters.fromMultipartData;
 
@@ -38,20 +42,18 @@ public class MailGunEmailClient implements EmailClient {
     private final EmailContentCreator emailContentCreator;
     private final boolean shouldCC;
     private final WebClient webClient;
-    private final DocumentRepositoryService documentRepositoryService;
-    private final FileNameGenerator fileNameGenerator;
+    private final PdfGenerator pdfGenerator;
 
     public MailGunEmailClient(@Value("${sender-email}") String senderEmail,
                               @Value("${security-email}") String securityEmail,
                               @Value("${audit-email}") String auditEmail,
                               @Value("${support-email}") String supportEmail,
-                              @Value("${hennepin-email}")  String hennepinEmail,
+                              @Value("${hennepin-email}") String hennepinEmail,
                               @Value("${mail-gun.url}") String mailGunUrl,
                               @Value("${mail-gun.api-key}") String mailGunApiKey,
                               EmailContentCreator emailContentCreator,
                               @Value("${mail-gun.shouldCC}") boolean shouldCC,
-                              DocumentRepositoryService documentRepositoryService,
-                              FileNameGenerator fileNameGenerator) {
+                              PdfGenerator pdfGenerator) {
         this.senderEmail = senderEmail;
         this.securityEmail = securityEmail;
         this.auditEmail = auditEmail;
@@ -61,15 +63,14 @@ public class MailGunEmailClient implements EmailClient {
         this.emailContentCreator = emailContentCreator;
         this.shouldCC = shouldCC;
         this.webClient = WebClient.builder().baseUrl(mailGunUrl).build();
-        this.documentRepositoryService = documentRepositoryService;
-        this.fileNameGenerator = fileNameGenerator;
+        this.pdfGenerator = pdfGenerator;
     }
 
     @Override
     public void sendConfirmationEmail(String recipientEmail,
                                       String confirmationId,
                                       SnapExpeditedEligibility snapExpeditedEligibility,
-                                      List <ApplicationFile> applicationFiles,
+                                      List<ApplicationFile> applicationFiles,
                                       Locale locale) {
         MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
         form.put("from", List.of(senderEmail));
@@ -155,13 +156,13 @@ public class MailGunEmailClient implements EmailClient {
         PageData contactInfo = application.getApplicationData().getPageData("contactInfo");
         String fullName = String.join(" ", personalInfo.get("firstName").getValue(0), personalInfo.get("lastName").getValue(0));
         form.put("subject", List.of("Verification docs for " + fullName));
-        HashMap<String,String> args = new HashMap<>();
+        HashMap<String, String> args = new HashMap<>();
         args.put("name", fullName);
         InputData dob = personalInfo.get("dateOfBirth");
         if (dob.getValue(0).isBlank()) {
             args.put("dob", "");
         } else {
-            args.put("dob", dob.getValue(0) + "/" + dob.getValue(1) + "/" +  dob.getValue(2));
+            args.put("dob", dob.getValue(0) + "/" + dob.getValue(1) + "/" + dob.getValue(2));
         }
         if (personalInfo.get("ssn").getValue(0).isBlank()) {
             args.put("last4SSN", "");
@@ -171,20 +172,21 @@ public class MailGunEmailClient implements EmailClient {
         args.put("phoneNumber", contactInfo.get("phoneNumber").getValue(0));
         args.put("email", contactInfo.get("email").getValue(0));
         form.put("html", List.of(emailContentCreator.createHennepinDocUploadsHTML(args)));
-        
+
         List<UploadedDocument> uploadedDocs = application.getApplicationData().getUploadedDocs();
 
         List<ApplicationFile> applicationFiles = new ArrayList<>();
+        byte[] coverPage = pdfGenerator.generate(application, UPLOADED_DOC, CASEWORKER).getFileBytes();
         for (int i = 0; i < uploadedDocs.size(); i++) {
             UploadedDocument uploadedDocument = uploadedDocs.get(i);
-            ApplicationFile fileToSend = uploadedDocument.fileToSend(application, i, documentRepositoryService, fileNameGenerator);
+            ApplicationFile fileToSend = pdfGenerator.generateForUploadedDocument(uploadedDocument, i, application, coverPage);
 
             if (fileToSend.getFileBytes().length > 0) {
                 log.info("Now attaching: " + fileToSend.getFileName() + " original filename: " + uploadedDocument.getFilename());
                 applicationFiles.add(fileToSend);
             }
         }
-        
+
         form.put("attachment", applicationFiles.stream().map(this::asResource).collect(Collectors.toList()));
 
         webClient.post()
