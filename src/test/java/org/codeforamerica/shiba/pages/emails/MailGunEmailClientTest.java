@@ -57,8 +57,7 @@ class MailGunEmailClientTest {
 
     @BeforeEach
     void setUp() {
-        WireMockConfiguration options = WireMockConfiguration.wireMockConfig()
-                .dynamicPort();
+        WireMockConfiguration options = WireMockConfiguration.wireMockConfig().dynamicPort();
         wireMockServer = new WireMockServer(options);
         wireMockServer.start();
         port = wireMockServer.port();

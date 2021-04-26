@@ -111,7 +111,7 @@ class MnitDocumentConsumerTest {
                         "moveToMnPreviousCity", List.of("")
                 )),
                 new PageDataBuilder("contactInfo", Map.of(
-                        "phoneNumber", List.of("6038791111"), // TODO why isn't this formatted?
+                        "phoneNumber", List.of("(603) 879-1111"),
                         "email", List.of("jane@example.com"),
                         "phoneOrEmail", List.of("PHONE")
                 ))
@@ -217,6 +217,7 @@ class MnitDocumentConsumerTest {
              var expected = Files.newInputStream(getAbsoluteFilepath("shiba+file.pdf"))) {
             assertThatCode(() -> {
                 var compareResult = new PdfComparator<>(expected, actual).compare();
+//                compareResult.writeTo("diffOutput");
                 assertThat(compareResult.isEqual()).isTrue();
             }).doesNotThrowAnyException();
         }
