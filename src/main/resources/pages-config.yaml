@@ -2762,6 +2762,7 @@ workflow:
   realEstate:
     pageConfiguration: *realEstate
     skipCondition: *noOneChoseCCAP?
+    nextPages:
       - pageName: investments
     datasources:
       - pageName: addHouseholdMembers
