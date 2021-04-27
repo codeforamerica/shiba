@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Data
 public class ApplicationData implements Serializable {
     @Serial
-    private static final long serialVersionUID = 6838668373528692735L;
+    private static final long serialVersionUID = 5573310526258484730L;
 
     private String id;
     private Instant startTime;
