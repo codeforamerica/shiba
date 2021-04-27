@@ -8,13 +8,16 @@ import org.codeforamerica.shiba.pages.config.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.Serializable;
+import java.io.*;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Data
 public class ApplicationData implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 6838668373528692735L;
+
     private String id;
     private Instant startTime;
     private String utmSource;
