@@ -2379,12 +2379,8 @@ workflow:
     skipCondition:
       logicalOperator: AND
       conditions:
-        - *applicantDidNotChooseCCAP?
         - *applicantDidNotChooseGRH?
-        - logicalOperator: OR
-          conditions:
-            - *householdMemberDidNotChooseCCAP?
-            - *livesAlone?
+        - *noOneChoseCCAP?
     datasources:
       - pageName: choosePrograms
       - pageName: addHouseholdMembers
@@ -2654,13 +2650,7 @@ workflow:
     skipCondition:
       logicalOperator: OR
       conditions:
-        - logicalOperator: AND
-          conditions:
-            - *applicantDidNotChooseCCAP?
-            - logicalOperator: OR
-              conditions:
-                - *householdMemberDidNotChooseCCAP?
-                - *livesAlone?
+        - *noOneChoseCCAP?
         - pageName: unearnedIncomeCcap
           input: unearnedIncomeCcap
           value: NO_UNEARNED_INCOME_CCAP_SELECTED
@@ -2768,14 +2758,7 @@ workflow:
       - pageName: addHouseholdMembers
   realEstate:
     pageConfiguration: *realEstate
-    skipCondition:
-      logicalOperator: AND
-      conditions:
-        - *applicantDidNotChooseCCAP?
-        - logicalOperator: OR
-          conditions:
-            - *householdMemberDidNotChooseCCAP?
-            - *livesAlone?
+    skipCondition: *noOneChoseCCAP?
     nextPages:
       - pageName: investments
     datasources:
@@ -2788,13 +2771,7 @@ workflow:
     skipCondition:
       logicalOperator: OR
       conditions:
-        - logicalOperator: AND
-          conditions:
-            - *applicantDidNotChooseCCAP?
-            - logicalOperator: OR
-              conditions:
-                - *householdMemberDidNotChooseCCAP?
-                - *livesAlone?
+        - *noOneChoseCCAP?
         - conditions:
           - pageName: vehicle
             input: haveVehicle
@@ -2874,14 +2851,7 @@ workflow:
           value: "false"
   jobSearch:
     pageConfiguration: *jobSearch
-    skipCondition:
-      logicalOperator: AND
-      conditions:
-        - *applicantDidNotChooseCCAP?
-        - logicalOperator: OR
-          conditions:
-            - *householdMemberDidNotChooseCCAP?
-            - *livesAlone?
+    skipCondition: *noOneChoseCCAP?
     nextPages:
       - pageName: whoIsLookingForAJob
     datasources:
