@@ -7,7 +7,7 @@ import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.documents.DocumentRepositoryService;
-import org.codeforamerica.shiba.output.Condition;
+import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.config.*;
 import org.codeforamerica.shiba.pages.data.*;

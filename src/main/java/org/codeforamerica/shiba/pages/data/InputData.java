@@ -6,7 +6,7 @@ import lombok.Value;
 import org.codeforamerica.shiba.pages.config.Validator;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -15,6 +15,9 @@ import java.util.Optional;
 @Value
 @Builder
 public class InputData implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 8511070147741948268L;
+
     @NotNull List<String> value;
     @NotNull @JsonIgnore
     List<Validator> validators;

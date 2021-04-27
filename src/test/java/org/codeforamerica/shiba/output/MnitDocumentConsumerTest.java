@@ -35,17 +35,14 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.TestUtils.getAbsoluteFilepath;
 import static org.codeforamerica.shiba.output.Document.*;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.mockito.Mockito.*;
@@ -221,11 +218,5 @@ class MnitDocumentConsumerTest {
         }
     }
 
-    private Path getAbsoluteFilepath(String resourceFilename) {
-        URL resource = this.getClass().getClassLoader().getResource(resourceFilename);
-        if (resource != null) {
-            return Paths.get((new File(resource.getFile())).getAbsolutePath());
-        }
-        return Paths.get("");
-    }
+
 }

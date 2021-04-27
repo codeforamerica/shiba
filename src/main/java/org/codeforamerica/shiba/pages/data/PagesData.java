@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.codeforamerica.shiba.pages.config.*;
 
+import java.io.Serial;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -13,6 +14,9 @@ import static org.codeforamerica.shiba.pages.config.OptionsWithDataSourceTemplat
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class PagesData extends HashMap<String, PageData> {
+    @Serial
+    private static final long serialVersionUID = 5350174349257543992L;
+
     public PagesData() {
         super();
     }

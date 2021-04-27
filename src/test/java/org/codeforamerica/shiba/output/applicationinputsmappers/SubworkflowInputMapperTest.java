@@ -7,7 +7,7 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.inputconditions.ValueMatcher;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
-import org.codeforamerica.shiba.output.Condition;
+import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.config.*;
 import org.codeforamerica.shiba.pages.data.ApplicationData;

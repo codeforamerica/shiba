@@ -29,7 +29,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -414,14 +413,6 @@ public abstract class AbstractBasePageTest {
         testPage.clickButton("I'm finished uploading");
     }
 
-    private String getAbsoluteFilepath(String resourceFilename) {
-        URL resource = this.getClass().getClassLoader().getResource(resourceFilename);
-        if (resource != null) {
-        	return (new File(resource.getFile())).getAbsolutePath();
-        }
-        return "";
-    }
-
     private void uploadFile(String filepath) {
         testPage.clickElementById("drag-and-drop-box"); // is this needed?
         WebElement upload = driver.findElement(By.className("dz-hidden-input"));
@@ -430,12 +421,12 @@ public abstract class AbstractBasePageTest {
     }
 
     protected void uploadJpgFile() {
-        uploadFile(getAbsoluteFilepath(UPLOADED_JPG_FILE_NAME));
+        uploadFile(TestUtils.getAbsoluteFilepathString(UPLOADED_JPG_FILE_NAME));
         assertThat(driver.findElement(By.id("document-upload")).getText()).contains(UPLOADED_JPG_FILE_NAME);
     }
 
     protected void uploadPdfFile() {
-        uploadFile(getAbsoluteFilepath(UPLOADED_PDF_NAME));
+        uploadFile(TestUtils.getAbsoluteFilepathString(UPLOADED_PDF_NAME));
         assertThat(driver.findElement(By.id("document-upload")).getText()).contains(UPLOADED_PDF_NAME);
     }
 
