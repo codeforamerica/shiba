@@ -2,10 +2,14 @@ package org.codeforamerica.shiba.pages.data;
 
 import org.codeforamerica.shiba.inputconditions.Condition;
 
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.stream.Stream;
 
 public class DatasourcePages extends HashMap<String, PageData> {
+    @Serial
+    private static final long serialVersionUID = 6366043143114427707L;
+
     public DatasourcePages(PagesData pagesData) {
         super(pagesData);
     }
