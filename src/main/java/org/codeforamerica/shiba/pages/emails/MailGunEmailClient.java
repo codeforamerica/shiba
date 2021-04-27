@@ -5,7 +5,6 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
-import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.jetbrains.annotations.NotNull;
@@ -150,31 +149,37 @@ public class MailGunEmailClient implements EmailClient {
     public void sendHennepinDocUploadsEmail(Application application) {
         MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
         form.put("o:require-tls", List.of("true"));
+
+        // from, to, and sender
         form.put("from", List.of(senderEmail));
         form.put("to", List.of(hennepinEmail));
+
         PageData personalInfo = application.getApplicationData().getPageData("personalInfo");
         PageData contactInfo = application.getApplicationData().getPageData("contactInfo");
         String fullName = String.join(" ", personalInfo.get("firstName").getValue(0), personalInfo.get("lastName").getValue(0));
         form.put("subject", List.of("Verification docs for " + fullName));
-        HashMap<String, String> args = new HashMap<>();
-        args.put("name", fullName);
-        InputData dob = personalInfo.get("dateOfBirth");
+
+        // Generate email content
+        var emailContentArgs = new HashMap<String, String>();
+        emailContentArgs.put("name", fullName);
+        var dob = personalInfo.get("dateOfBirth");
         if (dob.getValue(0).isBlank()) {
-            args.put("dob", "");
+            emailContentArgs.put("dob", "");
         } else {
-            args.put("dob", dob.getValue(0) + "/" + dob.getValue(1) + "/" + dob.getValue(2));
+            emailContentArgs.put("dob", dob.getValue(0) + "/" + dob.getValue(1) + "/" + dob.getValue(2));
         }
         if (personalInfo.get("ssn").getValue(0).isBlank()) {
-            args.put("last4SSN", "");
+            emailContentArgs.put("last4SSN", "");
         } else {
-            args.put("last4SSN", personalInfo.get("ssn").getValue(0).substring(7));
+            emailContentArgs.put("last4SSN", personalInfo.get("ssn").getValue(0).substring(7));
         }
-        args.put("phoneNumber", contactInfo.get("phoneNumber").getValue(0));
-        args.put("email", contactInfo.get("email").getValue(0));
-        form.put("html", List.of(emailContentCreator.createHennepinDocUploadsHTML(args)));
+        emailContentArgs.put("phoneNumber", contactInfo.get("phoneNumber").getValue(0));
+        emailContentArgs.put("email", contactInfo.get("email").getValue(0));
+        List<Object> emailContent = List.of(emailContentCreator.createHennepinDocUploadsHTML(emailContentArgs));
+        form.put("html", emailContent);
 
+        // Generate Uploaded Doc PDFs
         List<UploadedDocument> uploadedDocs = application.getApplicationData().getUploadedDocs();
-
         List<ApplicationFile> applicationFiles = new ArrayList<>();
         byte[] coverPage = pdfGenerator.generate(application, UPLOADED_DOC, CASEWORKER).getFileBytes();
         for (int i = 0; i < uploadedDocs.size(); i++) {
@@ -186,7 +191,6 @@ public class MailGunEmailClient implements EmailClient {
                 applicationFiles.add(fileToSend);
             }
         }
-
         form.put("attachment", applicationFiles.stream().map(this::asResource).collect(Collectors.toList()));
 
         webClient.post()
