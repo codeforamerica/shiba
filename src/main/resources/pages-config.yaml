@@ -1271,12 +1271,9 @@ pageDefinitions:
         helpMessageKey: match-info.recommended-but-not-required
   - &emailDocsToYourCounty
     name: emailDocsToYourCounty
-    headerKey: email-docs-to-your-county.not-serving-your-county
     pageTitle: email-docs-to-your-county.title
     contextFragment: emailDocsToYourCountyContextFragment
-    inputs:
-      - name: firstName
-        type: TEXT
+    hasPrimaryButton: false
   - &success
     name: success
     pageTitle: success.title

@@ -33,6 +33,31 @@
     border-radius: 3px;
 }
 
+.email-box {
+    padding: 2.5rem 1rem 2.5rem 1rem;
+    border-radius: 3px;
+    border: 2px solid #741078;
+    box-shadow: 10px 10px 0px 0px #FFE2FF;
+    font-family: 'PT Serif', serif;
+}
+
+.email-box-header {
+	padding-bottom: 1.5rem;
+}
+
+.email-box svg {
+	margin-right: 0.5rem;
+}
+
+.left-justified-list {
+	list-style: disc;
+    padding-left: 2.2rem;
+}
+
+.left-justified-list li {
+    padding-bottom: 1rem;
+}
+
 .builder-list {
     padding-right: 2.5rem;
 }
