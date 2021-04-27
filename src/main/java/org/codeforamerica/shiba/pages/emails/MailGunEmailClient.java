@@ -160,22 +160,22 @@ public class MailGunEmailClient implements EmailClient {
         form.put("subject", List.of("Verification docs for " + fullName));
 
         // Generate email content
-        var emailContentAgs = new HashMap<String, String>();
-        emailContentAgs.put("name", fullName);
+        var emailContentArgs = new HashMap<String, String>();
+        emailContentArgs.put("name", fullName);
         var dob = personalInfo.get("dateOfBirth");
         if (dob.getValue(0).isBlank()) {
-            emailContentAgs.put("dob", "");
+            emailContentArgs.put("dob", "");
         } else {
-            emailContentAgs.put("dob", dob.getValue(0) + "/" + dob.getValue(1) + "/" + dob.getValue(2));
+            emailContentArgs.put("dob", dob.getValue(0) + "/" + dob.getValue(1) + "/" + dob.getValue(2));
         }
         if (personalInfo.get("ssn").getValue(0).isBlank()) {
-            emailContentAgs.put("last4SSN", "");
+            emailContentArgs.put("last4SSN", "");
         } else {
-            emailContentAgs.put("last4SSN", personalInfo.get("ssn").getValue(0).substring(7));
+            emailContentArgs.put("last4SSN", personalInfo.get("ssn").getValue(0).substring(7));
         }
-        emailContentAgs.put("phoneNumber", contactInfo.get("phoneNumber").getValue(0));
-        emailContentAgs.put("email", contactInfo.get("email").getValue(0));
-        List<Object> emailContent = List.of(emailContentCreator.createHennepinDocUploadsHTML(emailContentAgs));
+        emailContentArgs.put("phoneNumber", contactInfo.get("phoneNumber").getValue(0));
+        emailContentArgs.put("email", contactInfo.get("email").getValue(0));
+        List<Object> emailContent = List.of(emailContentCreator.createHennepinDocUploadsHTML(emailContentArgs));
         form.put("html", emailContent);
 
         // Generate Uploaded Doc PDFs
