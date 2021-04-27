@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import static java.util.Optional.ofNullable;
 import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.ELIGIBLE;
@@ -51,7 +51,7 @@ public class EmailContentCreator {
         return getMessage(nonCountyPartnerAlert, List.of(confirmationId, formattedTime), locale);
     }
     
-    public String createHennepinDocUploadsHTML(HashMap<String, String> args) {
+    public String createHennepinDocUploadsHTML(Map<String, String> args) {
         return wrapHtml("<p>These are documents that a client uploaded to MNbenefits.org.</p>" +
         		"<p><b>Name:</b> " + args.get("name") + "</p>" + 
         		"<p><b>DOB:</b> " + args.get("dob") + "</p>" +
