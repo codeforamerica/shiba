@@ -13,7 +13,7 @@ import static org.codeforamerica.shiba.TestUtils.getAbsoluteFilepath;
 class ApplicationDataSerializationTest {
     @Test
     void canBeDeserialized() throws IOException, ClassNotFoundException {
-        var sessionBytes = Files.readAllBytes(getAbsoluteFilepath("applicationDataBytes.txt"));
+        var sessionBytes = Files.readAllBytes(getAbsoluteFilepath("sessionApplicationDataFixture.txt"));
         var applicationData = deserializeObjectFromByteArray(sessionBytes);
 
         assertThat(applicationData).isInstanceOf(ApplicationData.class);

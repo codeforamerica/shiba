@@ -3,7 +3,7 @@ package org.codeforamerica.shiba.pages.data;
 import lombok.Data;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.parsers.PageInputCoordinates;
-import org.codeforamerica.shiba.output.Condition;
+import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.pages.config.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.multipart.MultipartFile;

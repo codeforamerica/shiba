@@ -1,11 +1,11 @@
-package org.codeforamerica.shiba.output;
+package org.codeforamerica.shiba.inputconditions;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
-import org.codeforamerica.shiba.inputconditions.ValueMatcher;
+import org.codeforamerica.shiba.output.LogicalOperator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 @NoArgsConstructor
 public class Condition implements Serializable {
     @Serial
-    private static final long serialVersionUID = 1038666026644050350L;
+    private static final long serialVersionUID = -7300484979833484734L;
 
     @JsonIgnore
     private List<Condition> conditions;
@@ -55,7 +55,7 @@ public class Condition implements Serializable {
         this.iteration = iteration;
     }
 
-    boolean appliesTo(ApplicationData applicationData) {
+    public boolean appliesTo(ApplicationData applicationData) {
         Stream<Condition> conditionStream = addIterationConditionsForSubworkflows(applicationData);
         Predicate<Condition> conditionPredicate = getConditionPredicate(applicationData);
         return switch (logicalOperator) {

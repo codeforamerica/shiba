@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.output;
 
 import lombok.Data;
+import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 
 import java.util.Optional;

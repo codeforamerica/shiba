@@ -10,7 +10,7 @@ import java.util.UUID;
 @Data
 public class Iteration implements Serializable {
     @Serial
-    private static final long serialVersionUID = 2733336135243567297L;
+    private static final long serialVersionUID = -2727197075398274841L;
 
     UUID id;
     PagesData pagesData;

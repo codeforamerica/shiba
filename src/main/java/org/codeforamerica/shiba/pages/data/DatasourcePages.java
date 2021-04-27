@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.pages.data;
 
-import org.codeforamerica.shiba.output.Condition;
+import org.codeforamerica.shiba.inputconditions.Condition;
 
 import java.util.HashMap;
 import java.util.stream.Stream;

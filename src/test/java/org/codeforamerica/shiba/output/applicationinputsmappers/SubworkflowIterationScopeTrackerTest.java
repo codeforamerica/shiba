@@ -3,7 +3,7 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 import org.codeforamerica.shiba.PageDataBuilder;
 import org.codeforamerica.shiba.PagesDataBuilder;
 import org.codeforamerica.shiba.inputconditions.ValueMatcher;
-import org.codeforamerica.shiba.output.Condition;
+import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.output.applicationinputsmappers.SubworkflowIterationScopeTracker.IterationScopeInfo;
 import org.codeforamerica.shiba.pages.config.PageGroupConfiguration;
 import org.codeforamerica.shiba.pages.data.Iteration;

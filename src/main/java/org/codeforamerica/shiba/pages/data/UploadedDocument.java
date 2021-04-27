@@ -12,7 +12,7 @@ import java.io.Serializable;
 @ToString(exclude = {"dataURL"})
 public class UploadedDocument implements Serializable {
     @Serial
-    private static final long serialVersionUID = 7823305843282915735L;
+    private static final long serialVersionUID = 6488007316203523563L;
 
     private String filename;
     private String s3Filepath;
