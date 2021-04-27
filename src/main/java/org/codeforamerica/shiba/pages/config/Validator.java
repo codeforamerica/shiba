@@ -8,7 +8,7 @@ import java.io.*;
 @Data
 public class Validator implements Serializable {
     @Serial
-    private static final long serialVersionUID = 6259489785310814820L;
+    private static final long serialVersionUID = 6670512506564832396L;
 
     private Validation validation = Validation.NONE;
     private String errorMessageKey;
