@@ -8,6 +8,7 @@ import org.codeforamerica.shiba.pages.config.PageConfiguration;
 import org.codeforamerica.shiba.pages.config.Validator;
 import org.springframework.util.MultiValueMap;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +24,9 @@ import static org.codeforamerica.shiba.pages.PageUtils.getFormInputName;
 @Value
 @NoArgsConstructor
 public class PageData extends HashMap<String, InputData> {
+    @Serial
+    private static final long serialVersionUID = -1930835377533297692L;
+
     public PageData(Map<String, InputData> inputDataMap) {
         super(inputDataMap);
     }
