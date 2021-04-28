@@ -2,7 +2,7 @@ CREATE DOMAIN IF NOT EXISTS "JSONB" AS text;
 
 CREATE SEQUENCE IF NOT EXISTS application_id START WITH 1 MAXVALUE 9999999;
 
-create table applications
+create table if not exists applications
 (
     id               varchar           not null
         constraint applications_pkey
@@ -16,7 +16,7 @@ create table applications
     application_data JSONB
 );
 
-create table research
+create table if not exists research
 (
     spoken_language          varchar,
     written_language         varchar,
@@ -55,7 +55,7 @@ create table research
     childcare                boolean
 );
 
-create table spring_session
+create table if not exists spring_session
 (
     primary_id            char(36) not null
         constraint spring_session_pk
@@ -68,16 +68,16 @@ create table spring_session
     principal_name        varchar(100)
 );
 
-create unique index spring_session_ix1
+create unique index if not exists spring_session_ix1
     on spring_session (session_id);
 
-create index spring_session_ix2
+create index if not exists spring_session_ix2
     on spring_session (expiry_time);
 
-create index spring_session_ix3
+create index if not exists spring_session_ix3
     on spring_session (principal_name);
 
-create table spring_session_attributes
+create table if not exists spring_session_attributes
 (
     session_primary_id char(36)     not null
         constraint spring_session_attributes_fk

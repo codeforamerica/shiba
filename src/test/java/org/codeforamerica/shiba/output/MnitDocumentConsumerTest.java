@@ -48,8 +48,8 @@ import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-@ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
+@ActiveProfiles("test")
 @SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
         "spring.main.allow-bean-definition-overriding=true"
 })
@@ -75,7 +75,7 @@ class MnitDocumentConsumerTest {
     private DocumentRepositoryService documentRepositoryService;
     @MockBean
     private FileNameGenerator fileNameGenerator;
-    @MockBean
+    @SpyBean
     private ApplicationRepository applicationRepository;
 
     @SpyBean
@@ -123,7 +123,7 @@ class MnitDocumentConsumerTest {
                 .build();
         when(messageSource.getMessage(any(), any(), any())).thenReturn("default success message");
         when(fileNameGenerator.generatePdfFileName(any(), any())).thenReturn("some-file.pdf");
-        when(applicationRepository.find(any())).thenReturn(application);
+        doReturn(application).when(applicationRepository).find(any());
     }
 
     @Test
@@ -217,6 +217,4 @@ class MnitDocumentConsumerTest {
             assertThat(compareResult.isEqual()).isTrue();
         }
     }
-
-
 }
