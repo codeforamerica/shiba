@@ -1,3 +1,44 @@
+conditionAnchors:
+  - &paysForUtility?
+    pageName: utilityPayments
+    input: payForUtilities
+  - &doesntPayForUtility?
+    <<: *paysForUtility?
+    matcher: DOES_NOT_CONTAIN
+  - &homeAddressSameAsMailing?
+    pageName: homeAddress
+    input: sameMailingAddress
+    value: "true"
+  - &useEnrichedHomeAddress?
+    pageName: homeAddressValidation
+    input: useEnrichedAddress
+    value: "true"
+  - &useEnrichedMailingAddress?
+    pageName: mailingAddressValidation
+    input: useEnrichedAddress
+    value: "true"
+  - &unearnedIncomeDoesntInclude?
+    pageName: unearnedIncome
+    input: unearnedIncome
+    matcher: DOES_NOT_CONTAIN
+  - &unearnedIncomeCcapDoesntInclude?
+    pageName: unearnedIncomeCcap
+    input: unearnedIncomeCcap
+    matcher: DOES_NOT_CONTAIN    
+  - &homeExpensesDoesntInclude?
+    pageName: homeExpenses
+    input: homeExpenses
+    matcher: DOES_NOT_CONTAIN
+  - &employerIterationExists?
+    subworkflow: jobs
+    pageName: employersName
+    input: employersName
+    matcher: NOT_EMPTY
+  - &paidByTheHourIterationExists?
+    pageName: paidByTheHour
+    input: paidByTheHour
+    value: "true"
+    subworkflow: jobs
 derived-values:
   - groupName: utilityPayments
     fieldName: noExpeditedUtilitiesSelected
@@ -8,21 +49,13 @@ derived-values:
         condition:
           logicalOperator: AND
           conditions:
-            - pageName: utilityPayments
-              input: payForUtilities
-              matcher: DOES_NOT_CONTAIN
+            - <<: *doesntPayForUtility?
               value: HEATING
-            - pageName: utilityPayments
-              input: payForUtilities
-              matcher: DOES_NOT_CONTAIN
+            - <<: *doesntPayForUtility?
               value: COOLING
-            - pageName: utilityPayments
-              input: payForUtilities
-              matcher: DOES_NOT_CONTAIN
+            - <<: *doesntPayForUtility?
               value: ELECTRICITY
-            - pageName: utilityPayments
-              input: payForUtilities
-              matcher: DOES_NOT_CONTAIN
+            - <<: *doesntPayForUtility?
               value: PHONE
   - groupName: utilityPayments
     fieldName: heatingOrCoolingSelection
@@ -33,13 +66,9 @@ derived-values:
         condition:
           logicalOperator: OR
           conditions:
-            - pageName: utilityPayments
-              input: payForUtilities
-              matcher: CONTAINS
+            - <<: *paysForUtility?
               value: HEATING
-            - pageName: utilityPayments
-              input: payForUtilities
-              matcher: CONTAINS
+            - <<: *paysForUtility?
               value: COOLING
   - groupName: utilityPayments
     fieldName: heatingOrCooling
@@ -50,13 +79,9 @@ derived-values:
         condition:
           logicalOperator: OR
           conditions:
-            - pageName: utilityPayments
-              input: payForUtilities
-              matcher: CONTAINS
+            - <<: *paysForUtility?
               value: HEATING
-            - pageName: utilityPayments
-              input: payForUtilities
-              matcher: CONTAINS
+            - <<: *paysForUtility?
               value: COOLING
   - groupName: utilityPayments
     fieldName: noHeatingOrCoolingSelection
@@ -67,13 +92,9 @@ derived-values:
         condition:
           logicalOperator: AND
           conditions:
-            - pageName: utilityPayments
-              input: payForUtilities
-              matcher: DOES_NOT_CONTAIN
+            - <<: *doesntPayForUtility?
               value: HEATING
-            - pageName: utilityPayments
-              input: payForUtilities
-              matcher: DOES_NOT_CONTAIN
+            - <<: *doesntPayForUtility?
               value: COOLING
   - groupName: utilityPayments
     fieldName: waterOrSewerSelection
@@ -84,13 +105,9 @@ derived-values:
         condition:
           logicalOperator: OR
           conditions:
-            - pageName: utilityPayments
-              input: payForUtilities
-              matcher: CONTAINS
+            - <<: *paysForUtility?
               value: WATER
-            - pageName: utilityPayments
-              input: payForUtilities
-              matcher: CONTAINS
+            - <<: *paysForUtility?
               value: SEWER
   - groupName: utilityPayments
     fieldName: waterOrSewer
@@ -101,13 +118,9 @@ derived-values:
         condition:
           logicalOperator: OR
           conditions:
-            - pageName: utilityPayments
-              input: payForUtilities
-              matcher: CONTAINS
+            - <<: *paysForUtility?
               value: WATER
-            - pageName: utilityPayments
-              input: payForUtilities
-              matcher: CONTAINS
+            - <<: *paysForUtility?
               value: SEWER
   - groupName: utilityPayments
     fieldName: noWaterOrsewerSelection
@@ -118,13 +131,9 @@ derived-values:
         condition:
           logicalOperator: AND
           conditions:
-            - pageName: utilityPayments
-              input: payForUtilities
-              matcher: DOES_NOT_CONTAIN
+            - <<: *doesntPayForUtility?
               value: WATER
-            - pageName: utilityPayments
-              input: payForUtilities
-              matcher: DOES_NOT_CONTAIN
+            - <<: *doesntPayForUtility?
               value: SEWER
   - groupName: utilityPayments
     fieldName: noElectricitySelection
@@ -133,11 +142,8 @@ derived-values:
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
         condition:
-          logicalOperator: OR
           conditions:
-            - pageName: utilityPayments
-              input: payForUtilities
-              matcher: DOES_NOT_CONTAIN
+            - <<: *doesntPayForUtility?
               value: ELECTRICITY
   - groupName: utilityPayments
     fieldName: noGarbageRemovalSelection
@@ -146,11 +152,8 @@ derived-values:
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
         condition:
-          logicalOperator: OR
           conditions:
-            - pageName: utilityPayments
-              input: payForUtilities
-              matcher: DOES_NOT_CONTAIN
+            - <<: *doesntPayForUtility?
               value: GARBAGE_REMOVAL
   - groupName: utilityPayments
     fieldName: noCookingFuelSelection
@@ -159,11 +162,8 @@ derived-values:
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
         condition:
-          logicalOperator: OR
           conditions:
-            - pageName: utilityPayments
-              input: payForUtilities
-              matcher: DOES_NOT_CONTAIN
+            - <<: *doesntPayForUtility?
               value: COOKING_FUEL
   - groupName: utilityPayments
     fieldName: noPhoneSelection
@@ -172,11 +172,8 @@ derived-values:
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
         condition:
-          logicalOperator: OR
           conditions:
-            - pageName: utilityPayments
-              input: payForUtilities
-              matcher: DOES_NOT_CONTAIN
+            - <<: *doesntPayForUtility?
               value: PHONE
   - groupName: utilityPayments
     fieldName: phoneCellPhone
@@ -185,11 +182,8 @@ derived-values:
           literal: PHONE_CELL_PHONE
         type: ENUMERATED_MULTI_VALUE
         condition:
-          logicalOperator: OR
           conditions:
-            - pageName: utilityPayments
-              input: payForUtilities
-              matcher: CONTAINS
+            - <<: *paysForUtility?
               value: PHONE
   - groupName: ccapHasCostsForChildCare
     fieldName: ccapHasCostsForChildCare
@@ -228,12 +222,8 @@ derived-values:
         condition:
           logicalOperator: AND
           conditions:
-            - pageName: homeAddress
-              input: sameMailingAddress
-              value: "true"
-            - pageName: homeAddressValidation
-              input: useEnrichedAddress
-              value: "true"
+            - *homeAddressSameAsMailing?
+            - *useEnrichedHomeAddress?
       - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: homeAddress
           inputName: zipCode
@@ -241,11 +231,8 @@ derived-values:
         condition:
           logicalOperator: AND
           conditions:
-            - pageName: homeAddress
-              input: sameMailingAddress
-              value: "true"
-            - pageName: homeAddressValidation
-              input: useEnrichedAddress
+            - *homeAddressSameAsMailing?
+            - <<: *useEnrichedHomeAddress?
               value: "false"
       - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: mailingAddress
@@ -254,11 +241,9 @@ derived-values:
         condition:
           logicalOperator: AND
           conditions:
-            - pageName: homeAddress
-              input: sameMailingAddress
+            - <<: *homeAddressSameAsMailing?
               value: "false"
-            - pageName: mailingAddressValidation
-              input: useEnrichedAddress
+            - <<: *useEnrichedMailingAddress?
               value: "false"
       - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: mailingAddress
@@ -267,12 +252,9 @@ derived-values:
         condition:
           logicalOperator: AND
           conditions:
-            - pageName: homeAddress
-              input: sameMailingAddress
+            - <<: *homeAddressSameAsMailing?
               value: "false"
-            - pageName: mailingAddressValidation
-              input: useEnrichedAddress
-              value: "true"
+            - *useEnrichedMailingAddress?
   - groupName: mailingAddress
     fieldName: selectedCity
     values:
@@ -283,12 +265,8 @@ derived-values:
         condition:
           logicalOperator: AND
           conditions:
-            - pageName: homeAddress
-              input: sameMailingAddress
-              value: "true"
-            - pageName: homeAddressValidation
-              input: useEnrichedAddress
-              value: "true"
+            - *homeAddressSameAsMailing?
+            - *useEnrichedHomeAddress?
       - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: homeAddress
           inputName: city
@@ -296,11 +274,8 @@ derived-values:
         condition:
           logicalOperator: AND
           conditions:
-            - pageName: homeAddress
-              input: sameMailingAddress
-              value: "true"
-            - pageName: homeAddressValidation
-              input: useEnrichedAddress
+            - *homeAddressSameAsMailing?
+            - <<: *useEnrichedHomeAddress?
               value: "false"
       - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: mailingAddress
@@ -309,11 +284,9 @@ derived-values:
         condition:
           logicalOperator: AND
           conditions:
-            - pageName: homeAddress
-              input: sameMailingAddress
+            - <<: *homeAddressSameAsMailing?
               value: "false"
-            - pageName: mailingAddressValidation
-              input: useEnrichedAddress
+            - <<: *useEnrichedMailingAddress?
               value: "false"
       - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: mailingAddress
@@ -322,12 +295,9 @@ derived-values:
         condition:
           logicalOperator: AND
           conditions:
-            - pageName: homeAddress
-              input: sameMailingAddress
+            - <<: *homeAddressSameAsMailing?
               value: "false"
-            - pageName: mailingAddressValidation
-              input: useEnrichedAddress
-              value: "true"
+            - *useEnrichedMailingAddress?
   - groupName: mailingAddress
     fieldName: selectedState
     values:
@@ -338,12 +308,8 @@ derived-values:
         condition:
           logicalOperator: AND
           conditions:
-            - pageName: homeAddress
-              input: sameMailingAddress
-              value: "true"
-            - pageName: homeAddressValidation
-              input: useEnrichedAddress
-              value: "true"
+            - *homeAddressSameAsMailing?
+            - *useEnrichedHomeAddress?
       - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: homeAddress
           inputName: state
@@ -351,11 +317,8 @@ derived-values:
         condition:
           logicalOperator: AND
           conditions:
-            - pageName: homeAddress
-              input: sameMailingAddress
-              value: "true"
-            - pageName: homeAddressValidation
-              input: useEnrichedAddress
+            - *homeAddressSameAsMailing?
+            - <<: *useEnrichedHomeAddress?
               value: "false"
       - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: mailingAddress
@@ -364,11 +327,9 @@ derived-values:
         condition:
           logicalOperator: AND
           conditions:
-            - pageName: homeAddress
-              input: sameMailingAddress
+            - <<: *homeAddressSameAsMailing?
               value: "false"
-            - pageName: mailingAddressValidation
-              input: useEnrichedAddress
+            - <<: *useEnrichedMailingAddress?
               value: "false"
       - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: mailingAddress
@@ -377,12 +338,9 @@ derived-values:
         condition:
           logicalOperator: AND
           conditions:
-            - pageName: homeAddress
-              input: sameMailingAddress
+            - <<: *homeAddressSameAsMailing?
               value: "false"
-            - pageName: mailingAddressValidation
-              input: useEnrichedAddress
-              value: "true"
+            - *useEnrichedMailingAddress?
   - groupName: mailingAddress
     fieldName: selectedStreetAddress
     values:
@@ -393,12 +351,8 @@ derived-values:
         condition:
           logicalOperator: AND
           conditions:
-            - pageName: homeAddress
-              input: sameMailingAddress
-              value: "true"
-            - pageName: homeAddressValidation
-              input: useEnrichedAddress
-              value: "true"
+            - *homeAddressSameAsMailing?
+            - *useEnrichedHomeAddress?
       - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: homeAddress
           inputName: streetAddress
@@ -406,11 +360,8 @@ derived-values:
         condition:
           logicalOperator: AND
           conditions:
-            - pageName: homeAddress
-              input: sameMailingAddress
-              value: "true"
-            - pageName: homeAddressValidation
-              input: useEnrichedAddress
+            - *homeAddressSameAsMailing?
+            - <<: *useEnrichedHomeAddress?
               value: "false"
       - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: mailingAddress
@@ -419,11 +370,9 @@ derived-values:
         condition:
           logicalOperator: AND
           conditions:
-            - pageName: homeAddress
-              input: sameMailingAddress
+            - <<: *homeAddressSameAsMailing?
               value: "false"
-            - pageName: mailingAddressValidation
-              input: useEnrichedAddress
+            - <<: *useEnrichedMailingAddress?
               value: "false"
       - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: mailingAddress
@@ -432,12 +381,9 @@ derived-values:
         condition:
           logicalOperator: AND
           conditions:
-            - pageName: homeAddress
-              input: sameMailingAddress
+            - <<: *homeAddressSameAsMailing?
               value: "false"
-            - pageName: mailingAddressValidation
-              input: useEnrichedAddress
-              value: "true"
+            - *useEnrichedMailingAddress?
   - groupName: mailingAddress
     fieldName: selectedApartmentNumber
     values:
@@ -448,12 +394,8 @@ derived-values:
         condition:
           logicalOperator: AND
           conditions:
-            - pageName: homeAddress
-              input: sameMailingAddress
-              value: "true"
-            - pageName: homeAddressValidation
-              input: useEnrichedAddress
-              value: "true"
+            - *homeAddressSameAsMailing?
+            - *useEnrichedHomeAddress?
       - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: homeAddress
           inputName: apartmentNumber
@@ -461,11 +403,8 @@ derived-values:
         condition:
           logicalOperator: AND
           conditions:
-            - pageName: homeAddress
-              input: sameMailingAddress
-              value: "true"
-            - pageName: homeAddressValidation
-              input: useEnrichedAddress
+            - *homeAddressSameAsMailing?
+            - <<: *useEnrichedHomeAddress?
               value: "false"
       - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: mailingAddress
@@ -474,11 +413,9 @@ derived-values:
         condition:
           logicalOperator: AND
           conditions:
-            - pageName: homeAddress
-              input: sameMailingAddress
+            - <<: *homeAddressSameAsMailing?
               value: "false"
-            - pageName: mailingAddressValidation
-              input: useEnrichedAddress
+            - <<: *useEnrichedMailingAddress?
               value: "false"
       - value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: mailingAddress
@@ -487,12 +424,9 @@ derived-values:
         condition:
           logicalOperator: AND
           conditions:
-            - pageName: homeAddress
-              input: sameMailingAddress
+            - <<: *homeAddressSameAsMailing?
               value: "false"
-            - pageName: mailingAddressValidation
-              input: useEnrichedAddress
-              value: "true"
+            - *useEnrichedMailingAddress?
   - fieldName: noSocialSecurity
     groupName: unearnedIncome
     values:
@@ -500,11 +434,8 @@ derived-values:
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
         condition:
-          logicalOperator: AND
           conditions:
-            - pageName: unearnedIncome
-              input: unearnedIncome
-              matcher: DOES_NOT_CONTAIN
+            - <<: *unearnedIncomeDoesntInclude?
               value: SOCIAL_SECURITY
   - fieldName: noSSI
     groupName: unearnedIncome
@@ -513,11 +444,8 @@ derived-values:
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
         condition:
-          logicalOperator: AND
           conditions:
-            - pageName: unearnedIncome
-              input: unearnedIncome
-              matcher: DOES_NOT_CONTAIN
+            - <<: *unearnedIncomeDoesntInclude?
               value: SSI
   - fieldName: noVeteransBenefits
     groupName: unearnedIncome
@@ -526,11 +454,8 @@ derived-values:
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
         condition:
-          logicalOperator: AND
           conditions:
-            - pageName: unearnedIncome
-              input: unearnedIncome
-              matcher: DOES_NOT_CONTAIN
+            - <<: *unearnedIncomeDoesntInclude?
               value: VETERANS_BENEFITS
   - fieldName: noUnemployment
     groupName: unearnedIncome
@@ -539,11 +464,8 @@ derived-values:
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
         condition:
-          logicalOperator: AND
           conditions:
-            - pageName: unearnedIncome
-              input: unearnedIncome
-              matcher: DOES_NOT_CONTAIN
+            - <<: *unearnedIncomeDoesntInclude?
               value: UNEMPLOYMENT
   - fieldName: noWorkersCompensation
     groupName: unearnedIncome
@@ -552,11 +474,8 @@ derived-values:
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
         condition:
-          logicalOperator: AND
           conditions:
-            - pageName: unearnedIncome
-              input: unearnedIncome
-              matcher: DOES_NOT_CONTAIN
+            - <<: *unearnedIncomeDoesntInclude?
               value: WORKERS_COMPENSATION
   - fieldName: noRetirement
     groupName: unearnedIncome
@@ -565,11 +484,8 @@ derived-values:
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
         condition:
-          logicalOperator: AND
           conditions:
-            - pageName: unearnedIncome
-              input: unearnedIncome
-              matcher: DOES_NOT_CONTAIN
+            - <<: *unearnedIncomeDoesntInclude?
               value: RETIREMENT
   - fieldName: noChildOrSpousalSupport
     groupName: unearnedIncome
@@ -578,11 +494,8 @@ derived-values:
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
         condition:
-          logicalOperator: AND
           conditions:
-            - pageName: unearnedIncome
-              input: unearnedIncome
-              matcher: DOES_NOT_CONTAIN
+            - <<: *unearnedIncomeDoesntInclude?
               value: CHILD_OR_SPOUSAL_SUPPORT
   - fieldName: noTribalPayments
     groupName: unearnedIncome
@@ -591,11 +504,8 @@ derived-values:
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
         condition:
-          logicalOperator: AND
           conditions:
-            - pageName: unearnedIncome
-              input: unearnedIncome
-              matcher: DOES_NOT_CONTAIN
+            - <<: *unearnedIncomeDoesntInclude?
               value: TRIBAL_PAYMENTS
   - fieldName: noBenefits
     groupName: unearnedIncomeCcap
@@ -604,11 +514,8 @@ derived-values:
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
         condition:
-          logicalOperator: AND
           conditions:
-            - pageName: unearnedIncomeCcap
-              input: unearnedIncomeCcap
-              matcher: DOES_NOT_CONTAIN
+            - <<: *unearnedIncomeCcapDoesntInclude?
               value: BENEFITS
   - fieldName: noInsurancePayments
     groupName: unearnedIncomeCcap
@@ -617,11 +524,8 @@ derived-values:
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
         condition:
-          logicalOperator: AND
           conditions:
-            - pageName: unearnedIncomeCcap
-              input: unearnedIncomeCcap
-              matcher: DOES_NOT_CONTAIN
+            - <<: *unearnedIncomeCcapDoesntInclude?
               value: INSURANCE_PAYMENTS
   - fieldName: noContractForDeed
     groupName: unearnedIncomeCcap
@@ -630,11 +534,8 @@ derived-values:
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
         condition:
-          logicalOperator: AND
           conditions:
-            - pageName: unearnedIncomeCcap
-              input: unearnedIncomeCcap
-              matcher: DOES_NOT_CONTAIN
+            - <<: *unearnedIncomeCcapDoesntInclude?
               value: CONTRACT_FOR_DEED
   - fieldName: noTrustMoney
     groupName: unearnedIncomeCcap
@@ -643,11 +544,8 @@ derived-values:
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
         condition:
-          logicalOperator: AND
           conditions:
-            - pageName: unearnedIncomeCcap
-              input: unearnedIncomeCcap
-              matcher: DOES_NOT_CONTAIN
+            - <<: *unearnedIncomeCcapDoesntInclude?
               value: TRUST_MONEY
   - fieldName: noHealthCareReimbursement
     groupName: unearnedIncomeCcap
@@ -656,11 +554,8 @@ derived-values:
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
         condition:
-          logicalOperator: AND
           conditions:
-            - pageName: unearnedIncomeCcap
-              input: unearnedIncomeCcap
-              matcher: DOES_NOT_CONTAIN
+            - <<: *unearnedIncomeCcapDoesntInclude?
               value: HEALTH_CARE_REIMBURSEMENT
   - fieldName: noInterestDividends
     groupName: unearnedIncomeCcap
@@ -669,11 +564,8 @@ derived-values:
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
         condition:
-          logicalOperator: AND
           conditions:
-            - pageName: unearnedIncomeCcap
-              input: unearnedIncomeCcap
-              matcher: DOES_NOT_CONTAIN
+            - <<: *unearnedIncomeCcapDoesntInclude?
               value: INTEREST_DIVIDENDS
   - fieldName: noOtherSources
     groupName: unearnedIncomeCcap
@@ -682,11 +574,8 @@ derived-values:
           literal: "No"
         type: ENUMERATED_SINGLE_VALUE
         condition:
-          logicalOperator: AND
           conditions:
-            - pageName: unearnedIncomeCcap
-              input: unearnedIncomeCcap
-              matcher: DOES_NOT_CONTAIN
+            - <<: *unearnedIncomeCcapDoesntInclude?
               value: OTHER_SOURCES
   - fieldName: noRentSelection
     groupName: homeExpenses
@@ -697,9 +586,7 @@ derived-values:
         condition:
           logicalOperator: AND
           conditions:
-            - pageName: homeExpenses
-              input: homeExpenses
-              matcher: DOES_NOT_CONTAIN
+            - <<: *homeExpensesDoesntInclude?
               value: RENT
   - fieldName: noMortgageSelection
     groupName: homeExpenses
@@ -710,9 +597,7 @@ derived-values:
         condition:
           logicalOperator: AND
           conditions:
-            - pageName: homeExpenses
-              input: homeExpenses
-              matcher: DOES_NOT_CONTAIN
+            - <<: *homeExpensesDoesntInclude?
               value: MORTGAGE
   - fieldName: noHomeownersInsuranceSelection
     groupName: homeExpenses
@@ -723,9 +608,7 @@ derived-values:
         condition:
           logicalOperator: AND
           conditions:
-            - pageName: homeExpenses
-              input: homeExpenses
-              matcher: DOES_NOT_CONTAIN
+            - <<: *homeExpensesDoesntInclude?
               value: HOMEOWNERS_INSURANCE
   - fieldName: noRealEstateTaxesSelection
     groupName: homeExpenses
@@ -736,9 +619,7 @@ derived-values:
         condition:
           logicalOperator: AND
           conditions:
-            - pageName: homeExpenses
-              input: homeExpenses
-              matcher: DOES_NOT_CONTAIN
+            - <<: *homeExpensesDoesntInclude?
               value: REAL_ESTATE_TAXES
   - fieldName: noAssociationFeesSelection
     groupName: homeExpenses
@@ -749,9 +630,7 @@ derived-values:
         condition:
           logicalOperator: AND
           conditions:
-            - pageName: homeExpenses
-              input: homeExpenses
-              matcher: DOES_NOT_CONTAIN
+            - <<: *homeExpensesDoesntInclude?
               value: ASSOCIATION_FEES
   - fieldName: noRoomAndBoardSelection
     groupName: homeExpenses
@@ -762,9 +641,7 @@ derived-values:
         condition:
           logicalOperator: AND
           conditions:
-            - pageName: homeExpenses
-              input: homeExpenses
-              matcher: DOES_NOT_CONTAIN
+            - <<: *homeExpensesDoesntInclude?
               value: ROOM_AND_BOARD
   - groupName: energyAssistanceGroup
     fieldName: energyAssistanceInput
@@ -827,13 +704,9 @@ derived-values:
           pageName: personalInfo
           inputName: firstName
         condition:
-          logicalOperator: OR
           conditions:
-            - subworkflow: jobs
+            - <<: *employerIterationExists?
               iteration: 0
-              pageName: employersName
-              input: employersName
-              matcher: NOT_EMPTY
   - groupName: employee
     fieldName: lastName
     iteration: 0
@@ -843,13 +716,9 @@ derived-values:
           pageName: personalInfo
           inputName: lastName
         condition:
-          logicalOperator: OR
           conditions:
-            - subworkflow: jobs
+            - <<: *employerIterationExists?
               iteration: 0
-              pageName: employersName
-              input: employersName
-              matcher: NOT_EMPTY
   - groupName: employee
     fieldName: firstName
     iteration: 1
@@ -861,11 +730,8 @@ derived-values:
         condition:
           logicalOperator: OR
           conditions:
-            - subworkflow: jobs
+            - <<: *employerIterationExists?
               iteration: 1
-              pageName: employersName
-              input: employersName
-              matcher: NOT_EMPTY
   - groupName: employee
     fieldName: lastName
     iteration: 1
@@ -877,11 +743,8 @@ derived-values:
         condition:
           logicalOperator: OR
           conditions:
-            - subworkflow: jobs
+            - <<: *employerIterationExists?
               iteration: 1
-              pageName: employersName
-              input: employersName
-              matcher: NOT_EMPTY
   - groupName: employee
     fieldName: selfEmployed
     values:
@@ -889,7 +752,6 @@ derived-values:
         value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "true"
         condition:
-          logicalOperator: OR
           conditions:
             - subworkflow: jobs
               pageName: selfEmployment
@@ -902,7 +764,6 @@ derived-values:
         value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "false"
         condition:
-          logicalOperator: AND
           conditions:
             - subworkflow: jobs
               pageName: selfEmployment
@@ -915,7 +776,6 @@ derived-values:
         value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "see question 9"
         condition:
-          logicalOperator: OR
           conditions:
             - subworkflow: jobs
               pageName: selfEmployment
@@ -928,7 +788,6 @@ derived-values:
         value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: Female
         condition:
-          logicalOperator: OR
           conditions:
             - pageName: personalInfo
               input: sex
@@ -937,7 +796,6 @@ derived-values:
         value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: Male
         condition:
-          logicalOperator: OR
           conditions:
             - pageName: personalInfo
               input: sex
@@ -946,7 +804,6 @@ derived-values:
         value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: Rather Not Say
         condition:
-          logicalOperator: OR
           conditions:
             - pageName: personalInfo
               input: sex
@@ -972,7 +829,6 @@ derived-values:
         value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: Email
         condition:
-          logicalOperator: AND
           conditions:
             - pageName: contactInfo
               input: phoneOrEmail
@@ -982,7 +838,6 @@ derived-values:
         value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: Text
         condition:
-          logicalOperator: AND
           conditions:
             - pageName: contactInfo
               input: phoneOrEmail
@@ -995,7 +850,6 @@ derived-values:
           literal: "0"
         type: SINGLE_VALUE
         condition:
-          logicalOperator: AND
           conditions:
             - pageName: employmentStatus
               input: areYouWorking
@@ -1008,12 +862,8 @@ derived-values:
           literal: "Hourly"
         type: SINGLE_VALUE
         condition:
-          logicalOperator: AND
           conditions:
-            - pageName: paidByTheHour
-              input: paidByTheHour
-              value: "true"
-              subworkflow: jobs
+            - <<: *paidByTheHourIterationExists?
               iteration: 0
   - groupName: payPeriod
     fieldName: payPeriod
@@ -1023,12 +873,8 @@ derived-values:
           literal: "Hourly"
         type: SINGLE_VALUE
         condition:
-          logicalOperator: AND
           conditions:
-            - pageName: paidByTheHour
-              input: paidByTheHour
-              value: "true"
-              subworkflow: jobs
+            - <<: *paidByTheHourIterationExists?
               iteration: 1
   - groupName: payPeriod
     fieldName: payPeriod
@@ -1038,12 +884,8 @@ derived-values:
           literal: "Hourly"
         type: SINGLE_VALUE
         condition:
-          logicalOperator: AND
           conditions:
-            - pageName: paidByTheHour
-              input: paidByTheHour
-              value: "true"
-              subworkflow: jobs
+            - <<: *paidByTheHourIterationExists?
               iteration: 2
   - groupName: payPeriod
     fieldName: payPeriod
@@ -1053,12 +895,8 @@ derived-values:
           literal: "Hourly"
         type: SINGLE_VALUE
         condition:
-          logicalOperator: AND
           conditions:
-            - pageName: paidByTheHour
-              input: paidByTheHour
-              value: "true"
-              subworkflow: jobs
+            - <<: *paidByTheHourIterationExists?
               iteration: 3
   - groupName: homeAddress
     fieldName: isHomelessIndicator
@@ -1067,7 +905,6 @@ derived-values:
         value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: "homeless"
         condition:
-          logicalOperator: OR
           conditions:
             - pageName: homeAddress
               input: isHomeless
@@ -1080,20 +917,15 @@ derived-values:
           inputName: enrichedApartmentNumber
         type: SINGLE_VALUE
         condition:
-          logicalOperator: OR
           conditions:
-            - pageName: homeAddressValidation
-              input: useEnrichedAddress
-              value: "true"
+            - *useEnrichedHomeAddress?
       - type: SINGLE_VALUE
         value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: homeAddress
           inputName: apartmentNumber
         condition:
-          logicalOperator: OR
           conditions:
-            - pageName: homeAddressValidation
-              input: useEnrichedAddress
+            - <<: *useEnrichedHomeAddress?
               value: "false"
   - groupName: homeAddress
     fieldName: selectedCity
@@ -1103,20 +935,15 @@ derived-values:
           pageName: homeAddress
           inputName: enrichedCity
         condition:
-          logicalOperator: OR
           conditions:
-            - pageName: homeAddressValidation
-              input: useEnrichedAddress
-              value: "true"
+            - *useEnrichedHomeAddress?
       - type: SINGLE_VALUE
         value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: homeAddress
           inputName: city
         condition:
-          logicalOperator: OR
           conditions:
-            - pageName: homeAddressValidation
-              input: useEnrichedAddress
+            - <<: *useEnrichedHomeAddress?
               value: "false"
   - groupName: homeAddress
     fieldName: selectedState
@@ -1126,20 +953,15 @@ derived-values:
           pageName: homeAddress
           inputName: enrichedState
         condition:
-          logicalOperator: OR
           conditions:
-            - pageName: homeAddressValidation
-              input: useEnrichedAddress
-              value: "true"
+            - *useEnrichedHomeAddress?
       - type: SINGLE_VALUE
         value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: homeAddress
           inputName: state
         condition:
-          logicalOperator: OR
           conditions:
-            - pageName: homeAddressValidation
-              input: useEnrichedAddress
+            - <<: *useEnrichedHomeAddress?
               value: "false"
   - groupName: homeAddress
     fieldName: selectedZipCode
@@ -1149,20 +971,15 @@ derived-values:
           pageName: homeAddress
           inputName: enrichedZipCode
         condition:
-          logicalOperator: OR
           conditions:
-            - pageName: homeAddressValidation
-              input: useEnrichedAddress
-              value: "true"
+            - *useEnrichedHomeAddress?
       - type: SINGLE_VALUE
         value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
           pageName: homeAddress
           inputName: zipCode
         condition:
-          logicalOperator: OR
           conditions:
-            - pageName: homeAddressValidation
-              input: useEnrichedAddress
+            - <<: *useEnrichedHomeAddress?
               value: "false"
   - groupName: livingSituation
     fieldName: derivedLivingSituation
@@ -1201,12 +1018,7 @@ derived-values:
         value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: UNKNOWN
         condition:
-          logicalOperator: AND
           conditions:
             - pageName: livingSituation
               input: livingSituation
               matcher: NONE_SELECTED
-
-
-
-

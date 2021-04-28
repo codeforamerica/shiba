@@ -24,6 +24,7 @@
     }
   },
   "properties": {
+    "conditionAnchors": {},
     "derived-values": {
       "type": "array",
       "items": {
@@ -88,7 +89,7 @@
                       "enum": ["OR", "AND"]
                     }
                   },
-                  "required": ["logicalOperator", "conditions"]
+                  "required": ["conditions"]
                 }
               }
             },
