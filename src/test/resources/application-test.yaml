@@ -3,6 +3,8 @@ spring:
     url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM 'classpath:test.sql'
     username: sa
     password: sa
+  flyway:
+    enabled: false
 
 client:
   keystore: src/test/resources/test-keystore.jks
