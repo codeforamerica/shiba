@@ -35,7 +35,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "shiba.password=somePassword"
 })
 @ActiveProfiles("test")
-@ExtendWith(SpringExtension.class)
 class SecurityConfigurationTest {
     MockMvc mockMvc;
 

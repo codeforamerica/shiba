@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -16,7 +15,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.*;
 import java.time.temporal.ChronoUnit;
@@ -31,7 +29,6 @@ import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 @SpringBootTest(webEnvironment = NONE)
-@ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @Sql(statements = {"ALTER SEQUENCE application_id RESTART WITH 12", "TRUNCATE TABLE applications"})
 @Tag("db")
@@ -183,7 +180,6 @@ class ApplicationRepositoryTest {
 
     @Nested
     @SpringBootTest(webEnvironment = NONE)
-    @ExtendWith(SpringExtension.class)
     @ActiveProfiles("test")
     @Sql(statements = {"TRUNCATE TABLE applications"})
     class EncryptionAndDecryption {
@@ -282,7 +278,6 @@ class ApplicationRepositoryTest {
 
     @Nested
     @SpringBootTest(webEnvironment = NONE)
-    @ExtendWith(SpringExtension.class)
     @ActiveProfiles("test")
     @Sql(statements = {"TRUNCATE TABLE applications"})
     class MetricsQueries {
