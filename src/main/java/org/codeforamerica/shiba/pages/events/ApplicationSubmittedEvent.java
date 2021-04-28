@@ -7,7 +7,7 @@ import java.util.Locale;
 import java.util.Map;
 
 @Value
-public class ApplicationSubmittedEvent implements PageEvent {
+public class ApplicationSubmittedEvent implements ApplicationEvent {
     String sessionId;
     String applicationId;
     FlowType flow;
