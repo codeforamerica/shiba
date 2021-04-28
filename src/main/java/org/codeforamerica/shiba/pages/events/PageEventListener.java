@@ -16,6 +16,10 @@ public class PageEventListener {
     @Async
     @EventListener
     public void captureInteraction(PageEvent pageEvent) {
-        interactionTracker.track(pageEvent.getSessionId(), pageEvent.getInteraction().name(), pageEvent.getProperties());
+        if (pageEvent.getInteraction() == InteractionType.APPLICATION_SUBMITTED) {
+            interactionTracker.trackWithProfile(pageEvent.getSessionId(), pageEvent.getInteraction().name(), pageEvent.getProperties());
+        } else {
+            interactionTracker.track(pageEvent.getSessionId(), pageEvent.getInteraction().name(), pageEvent.getProperties());
+        }
     }
 }

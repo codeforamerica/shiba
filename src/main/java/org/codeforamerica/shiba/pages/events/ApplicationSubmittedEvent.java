@@ -20,6 +20,6 @@ public class ApplicationSubmittedEvent implements PageEvent {
 
     @Override
     public Map<String, Object> getProperties() {
-        return Map.of("flow", flow);
+        return Map.of("flow", flow, "confirmation #", applicationId);
     }
 }

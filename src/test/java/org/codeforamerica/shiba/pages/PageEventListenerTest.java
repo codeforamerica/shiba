@@ -51,10 +51,10 @@ class PageEventListenerTest {
         );
 
         pageEventListener.captureInteraction(applicationSubmittedEvent);
-        verify(interactionTracker).track(
+        verify(interactionTracker).trackWithProfile(
                 "sessionId",
                 APPLICATION_SUBMITTED.name(),
-                Map.of("flow", FlowType.FULL)
+                Map.of("flow", FlowType.FULL, "confirmation #", "applicationId")
         );
     }
 }
