@@ -16,8 +16,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = NONE)
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @Sql(statements = {"TRUNCATE TABLE research"})

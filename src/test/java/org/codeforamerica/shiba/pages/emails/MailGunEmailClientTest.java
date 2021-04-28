@@ -36,8 +36,9 @@ import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.ELIGI
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.*;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = NONE)
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 class MailGunEmailClientTest {

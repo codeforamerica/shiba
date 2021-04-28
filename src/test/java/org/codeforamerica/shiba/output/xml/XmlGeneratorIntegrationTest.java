@@ -43,8 +43,9 @@ import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = NONE)
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 public class XmlGeneratorIntegrationTest {

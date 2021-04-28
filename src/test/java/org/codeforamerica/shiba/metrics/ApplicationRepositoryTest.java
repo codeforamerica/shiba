@@ -28,8 +28,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = NONE)
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @Sql(statements = {"ALTER SEQUENCE application_id RESTART WITH 12", "TRUNCATE TABLE applications"})
@@ -181,7 +182,7 @@ class ApplicationRepositoryTest {
     }
 
     @Nested
-    @SpringBootTest
+    @SpringBootTest(webEnvironment = NONE)
     @ExtendWith(SpringExtension.class)
     @ActiveProfiles("test")
     @Sql(statements = {"TRUNCATE TABLE applications"})
@@ -280,7 +281,7 @@ class ApplicationRepositoryTest {
     }
 
     @Nested
-    @SpringBootTest
+    @SpringBootTest(webEnvironment = NONE)
     @ExtendWith(SpringExtension.class)
     @ActiveProfiles("test")
     @Sql(statements = {"TRUNCATE TABLE applications"})
