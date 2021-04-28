@@ -38,17 +38,15 @@ public class UploadedDocumentsSubmittedListener {
     @Async
     @EventListener
     public void send(UploadedDocumentsSubmittedEvent event) {
-        if (featureFlags.get("document-upload-feature").isOn()) {
-            Application application = getApplicationFromEvent(event);
-            if (featureFlags.get("submit-docs-via-email-for-hennepin").isOn()
-                    && (application.getCounty().equals(County.Hennepin)
-                        || application.getCounty().equals(County.Other)) ) {
-                log.info("Processing Hennepin uploaded documents");
-            	emailClient.sendHennepinDocUploadsEmail(application);
-            } else {
-                log.info("Processing uploaded documents");
-            	mnitDocumentConsumer.processUploadedDocuments(application);
-            }
+        Application application = getApplicationFromEvent(event);
+        if (featureFlags.get("submit-docs-via-email-for-hennepin").isOn()
+                && (application.getCounty().equals(County.Hennepin)
+                || application.getCounty().equals(County.Other))) {
+            log.info("Processing Hennepin uploaded documents");
+            emailClient.sendHennepinDocUploadsEmail(application);
+        } else {
+            log.info("Processing uploaded documents");
+            mnitDocumentConsumer.processUploadedDocuments(application);
         }
     }
 
