@@ -1,10 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/shiba-test
-    username: shiba
-    password: shiba
-    hikari:
-      maximum-pool-size: 2
+    url: jdbc:h2:mem:testdb;INIT=create domain if not exists jsonb as text;MODE=PostgreSQL
 
 client:
   keystore: src/test/resources/test-keystore.jks

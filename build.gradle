@@ -121,6 +121,8 @@ dependencies {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
         exclude group: 'com.vaadin.external.google', module: 'android-json'
     }
+
+    testImplementation 'com.h2database:h2'
     testImplementation 'org.awaitility:awaitility:4.0.3'
     testImplementation 'com.github.tomakehurst:wiremock-standalone:2.27.1'
     testImplementation 'io.github.bonigarcia:webdrivermanager:4.4.1'
