@@ -75,7 +75,7 @@ class MnitDocumentConsumerTest {
     private DocumentRepositoryService documentRepositoryService;
     @MockBean
     private FileNameGenerator fileNameGenerator;
-    @SpyBean
+    @MockBean
     private ApplicationRepository applicationRepository;
 
     @SpyBean
