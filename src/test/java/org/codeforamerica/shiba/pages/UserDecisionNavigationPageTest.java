@@ -19,10 +19,7 @@ import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @Import(UserDecisionNavigationPageTest.TestController.class)
-@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
-        "spring.main.allow-bean-definition-overriding=true",
-        "pagesConfig=pages-config/test-user-decision-navigation.yaml"
-})
+@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"pagesConfig=pages-config/test-user-decision-navigation.yaml"})
 public class UserDecisionNavigationPageTest extends AbstractExistingStartTimePageTest {
 
     private final String optionZeroPageTitle = "page zero title";

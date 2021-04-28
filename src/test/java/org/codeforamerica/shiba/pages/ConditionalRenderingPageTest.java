@@ -13,10 +13,7 @@ import java.util.Locale;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
-        "spring.main.allow-bean-definition-overriding=true",
-        "pagesConfig=pages-config/test-conditional-rendering.yaml"
-})
+@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"pagesConfig=pages-config/test-conditional-rendering.yaml"})
 public class ConditionalRenderingPageTest extends AbstractExistingStartTimePageTest {
 
     private final String fourthPageTitle = "fourthPageTitle";

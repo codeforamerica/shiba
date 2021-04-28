@@ -50,9 +50,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
-        "spring.main.allow-bean-definition-overriding=true"
-})
+@SpringBootTest(webEnvironment = RANDOM_PORT)
 @Tag("db")
 class MnitDocumentConsumerTest {
     @TestConfiguration

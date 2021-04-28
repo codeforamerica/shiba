@@ -19,10 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @Import(StartTimerPageTest.TestController.class)
-@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
-        "spring.main.allow-bean-definition-overriding=true",
-        "pagesConfig=pages-config/test-start-timer.yaml"
-})
+@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"pagesConfig=pages-config/test-start-timer.yaml"})
 public class StartTimerPageTest extends AbstractStaticMessageSourcePageTest {
     @Controller
     static class TestController {

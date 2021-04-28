@@ -12,10 +12,7 @@ import java.util.Locale;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
-        "spring.main.allow-bean-definition-overriding=true",
-        "pagesConfig=pages-config/test-feature-flag.yaml"
-})
+@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"pagesConfig=pages-config/test-feature-flag.yaml"})
 public class FeatureFlagPageTest extends AbstractExistingStartTimePageTest {
 
     @Override

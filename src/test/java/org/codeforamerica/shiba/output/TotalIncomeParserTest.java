@@ -28,7 +28,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(properties = {"spring.main.allow-bean-definition-overriding=true"})
+@SpringBootTest
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 class TotalIncomeParserTest {

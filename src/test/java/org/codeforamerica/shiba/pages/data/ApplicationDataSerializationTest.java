@@ -34,9 +34,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = NONE, properties = {
-        "spring.main.allow-bean-definition-overriding=true"
-})
+@SpringBootTest(webEnvironment = NONE)
 @ActiveProfiles("test")
 class ApplicationDataSerializationTest {
 

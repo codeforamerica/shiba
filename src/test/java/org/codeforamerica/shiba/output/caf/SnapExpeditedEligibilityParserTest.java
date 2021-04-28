@@ -30,7 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(properties = {"spring.main.allow-bean-definition-overriding=true"})
+@SpringBootTest
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 class SnapExpeditedEligibilityParserTest {

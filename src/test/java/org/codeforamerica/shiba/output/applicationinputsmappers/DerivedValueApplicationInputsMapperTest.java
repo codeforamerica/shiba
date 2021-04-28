@@ -25,7 +25,7 @@ import java.util.Map;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(properties = {"spring.main.allow-bean-definition-overriding=true"})
+@SpringBootTest
 @ActiveProfiles("test")
 class DerivedValueApplicationInputsMapperTest {
 

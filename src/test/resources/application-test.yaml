@@ -5,6 +5,8 @@ spring:
     password: sa
   flyway:
     enabled: false
+  main:
+    allow-bean-definition-overriding: true
 
 client:
   keystore: src/test/resources/test-keystore.jks

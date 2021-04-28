@@ -46,10 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
-        "spring.main.allow-bean-definition-overriding=true",
-        "pagesConfig=pages-config/test-pages-controller.yaml"
-})
+@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"pagesConfig=pages-config/test-pages-controller.yaml"})
 class PageControllerTest {
     @TestConfiguration
     static class NonSessionScopedApplicationData {

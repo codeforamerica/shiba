@@ -19,10 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @Import(LandmarkPageTest.TestController.class)
-@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
-        "spring.main.allow-bean-definition-overriding=true",
-        "pagesConfig=pages-config/test-landmark-pages.yaml"
-})
+@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"pagesConfig=pages-config/test-landmark-pages.yaml"})
 public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
     String firstPageTitle = "first page title";
     String fourthPageTitle = "fourth page title";

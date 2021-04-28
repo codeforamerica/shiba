@@ -28,10 +28,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @Sql(statements = {"TRUNCATE TABLE applications"})
-@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
-        "spring.main.allow-bean-definition-overriding=true",
-        "pagesConfig=pages-config/test-submit-page.yaml"
-})
+@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"pagesConfig=pages-config/test-submit-page.yaml"})
 @Tag("db")
 public class SubmitPageTest extends AbstractStaticMessageSourcePageTest {
 
