@@ -1,4 +1,4 @@
-CREATE DOMAIN IF NOT EXISTS "JSONB" AS json;
+CREATE DOMAIN IF NOT EXISTS "JSONB" AS text;
 
 CREATE SEQUENCE IF NOT EXISTS application_id START WITH 1 MAXVALUE 9999999;
 
@@ -13,7 +13,7 @@ create table applications
     sentiment        varchar,
     feedback         text,
     flow             varchar,
-    application_data jsonb
+    application_data JSONB
 );
 
 create table research
