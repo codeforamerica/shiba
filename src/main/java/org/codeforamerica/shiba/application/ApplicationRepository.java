@@ -40,7 +40,7 @@ public class ApplicationRepository {
     public String getNextId() {
         int random3DigitNumber = new SecureRandom().nextInt(900) + 100;
 
-        String id = jdbcTemplate.queryForObject("SELECT nextval('application_id');", String.class);
+        String id = jdbcTemplate.queryForObject("SELECT NEXTVAL('application_id');", String.class);
         int numberOfZeros = 10 - id.length();
         StringBuilder idBuilder = new StringBuilder();
         idBuilder.append(random3DigitNumber);
@@ -62,17 +62,20 @@ public class ApplicationRepository {
         parameters.put("flow", Optional.ofNullable(application.getFlow()).map(FlowType::name).orElse(null));
         parameters.put("sentiment", Optional.ofNullable(application.getSentiment()).map(Sentiment::name).orElse(null));
         parameters.put("feedback", application.getFeedback());
-        new NamedParameterJdbcTemplate(jdbcTemplate)
-                .update("INSERT INTO applications (id, completed_at, application_data, county, time_to_complete, sentiment, feedback, flow) " +
+
+        var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+        namedParameterJdbcTemplate.update("UPDATE applications SET " +
+                "completed_at = :completedAt, " +
+                "application_data = :applicationData ::jsonb, " +
+                "county = :county, " +
+                "time_to_complete = :timeToComplete, " +
+                "sentiment = :sentiment, " +
+                "feedback = :feedback, " +
+                "flow = :flow WHERE id = :id", parameters);
+        namedParameterJdbcTemplate.update(
+                "INSERT INTO applications (id, completed_at, application_data, county, time_to_complete, sentiment, feedback, flow) " +
                         "VALUES (:id, :completedAt, :applicationData ::jsonb, :county, :timeToComplete, :sentiment, :feedback, :flow) " +
-                        "ON CONFLICT (id) DO UPDATE SET " +
-                        "completed_at = :completedAt, " +
-                        "application_data = :applicationData ::jsonb, " +
-                        "county = :county, " +
-                        "time_to_complete = :timeToComplete, " +
-                        "sentiment = :sentiment, " +
-                        "feedback = :feedback, " +
-                        "flow = :flow", parameters);
+                        "ON CONFLICT DO NOTHING", parameters);
     }
 
     public Application find(String id) {
@@ -101,17 +104,17 @@ public class ApplicationRepository {
     }
 
     public Duration getMedianTimeToComplete() {
-        Long medianTimeToComplete = jdbcTemplate.queryForObject("SELECT COALESCE(percentile_cont(0.5) WITHIN GROUP (ORDER BY time_to_complete), 0) FROM applications", Long.class);
+        Long medianTimeToComplete = jdbcTemplate.queryForObject("SELECT COALESCE(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY time_to_complete), 0) FROM applications", Long.class);
         return Duration.ofSeconds(Objects.requireNonNull(medianTimeToComplete));
     }
 
     public Integer count() {
-        return jdbcTemplate.queryForObject("SELECT count(*) FROM applications;", Integer.class);
+        return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM applications;", Integer.class);
     }
 
     public Map<County, Integer> countByCounty() {
         return jdbcTemplate.query(
-                "SELECT county, count(*) AS count " +
+                "SELECT county, COUNT(*) AS count " +
                         "FROM applications " +
                         "GROUP BY county", (resultSet, rowNumber) ->
                         Map.entry(
@@ -123,7 +126,7 @@ public class ApplicationRepository {
     public Map<County, Integer> countByCountyWeekToDate(ZoneId zoneId) {
         ZonedDateTime lowerBound = getBeginningOfWeekForTimeZone(zoneId);
         return jdbcTemplate.query(
-                "SELECT county, count(*) AS count " +
+                "SELECT county, COUNT(*) AS count " +
                         "FROM applications " +
                         "WHERE completed_at >= ? " +
                         "GROUP BY county",
@@ -137,7 +140,7 @@ public class ApplicationRepository {
     public Duration getAverageTimeToCompleteWeekToDate(ZoneId zoneId) {
         ZonedDateTime lowerBound = getBeginningOfWeekForTimeZone(zoneId);
         Double averageTimeToComplete = jdbcTemplate.queryForObject(
-                "SELECT COALESCE(AVG(time_to_complete), 0) as averageTime " +
+                "SELECT COALESCE(AVG(time_to_complete), 0) AS averagetime " +
                         "FROM applications " +
                         "WHERE completed_at >= ?",
                 Double.class,
@@ -150,7 +153,7 @@ public class ApplicationRepository {
     public Duration getMedianTimeToCompleteWeekToDate(ZoneId zoneId) {
         ZonedDateTime lowerBound = getBeginningOfWeekForTimeZone(zoneId);
         Long medianTimeToComplete = jdbcTemplate.queryForObject(
-                "SELECT COALESCE(percentile_cont(0.5) WITHIN GROUP (ORDER BY time_to_complete), 0) " +
+                "SELECT COALESCE(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY time_to_complete), 0) " +
                         "FROM applications " +
                         "WHERE completed_at >= ?",
                 Long.class,
@@ -167,13 +170,13 @@ public class ApplicationRepository {
 
     public Map<Sentiment, Double> getSentimentDistribution() {
         return jdbcTemplate.query(
-                "SELECT sentiment, count, sum(count) over () as total_count " +
+                "SELECT sentiment, count, SUM(count) OVER () AS total_count " +
                         "FROM (" +
-                        "         SELECT sentiment, count(id) as count " +
+                        "         SELECT sentiment, COUNT(id) AS count " +
                         "         FROM applications " +
                         "         WHERE sentiment IS NOT NULL " +
                         "         GROUP BY sentiment " +
-                        "     ) as subquery",
+                        "     ) AS subquery",
                 (resultSet, rowNumber) -> Map.entry(
                         Sentiment.valueOf(resultSet.getString("sentiment")),
                         resultSet.getDouble("count") / resultSet.getDouble("total_count"))).stream()

@@ -5,7 +5,6 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
-import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.FormInput;
 import org.codeforamerica.shiba.pages.config.Option;
@@ -51,9 +50,6 @@ import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 public class XmlGeneratorIntegrationTest {
     @Autowired
     private FileGenerator xmlGenerator;
-
-    @Autowired
-    private ApplicationInputsMappers applicationInputsMappers;
 
     @Value("classpath:OnlineApplication.xsd")
     private Resource onlineApplicationSchema;
