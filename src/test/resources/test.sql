@@ -2,21 +2,21 @@ CREATE DOMAIN IF NOT EXISTS "JSONB" AS text;
 
 CREATE SEQUENCE IF NOT EXISTS application_id START WITH 1 MAXVALUE 9999999;
 
-create table if not exists applications
+CREATE TABLE IF NOT EXISTS applications
 (
-    id               varchar           not null
-        constraint applications_pkey
-            primary key,
-    completed_at     timestamp         not null,
-    county           varchar default 'OTHER':: character varying not null,
-    time_to_complete integer default 0 not null,
+    id               varchar           NOT NULL
+        CONSTRAINT applications_pkey
+            PRIMARY KEY,
+    completed_at     timestamp         NOT NULL,
+    county           varchar DEFAULT 'OTHER':: CHARACTER varying NOT NULL,
+    time_to_complete integer DEFAULT 0 NOT NULL,
     sentiment        varchar,
     feedback         text,
     flow             varchar,
-    application_data JSONB
+    application_data jsonb
 );
 
-create table if not exists research
+CREATE TABLE IF NOT EXISTS research
 (
     spoken_language          varchar,
     written_language         varchar,
@@ -55,36 +55,36 @@ create table if not exists research
     childcare                boolean
 );
 
-create table if not exists spring_session
+CREATE TABLE IF NOT EXISTS spring_session
 (
-    primary_id            char(36) not null
-        constraint spring_session_pk
-            primary key,
-    session_id            char(36) not null,
-    creation_time         bigint   not null,
-    last_access_time      bigint   not null,
-    max_inactive_interval integer  not null,
-    expiry_time           bigint   not null,
+    primary_id            char(36) NOT NULL
+        CONSTRAINT spring_session_pk
+            PRIMARY KEY,
+    session_id            char(36) NOT NULL,
+    creation_time         bigint   NOT NULL,
+    last_access_time      bigint   NOT NULL,
+    max_inactive_interval integer  NOT NULL,
+    expiry_time           bigint   NOT NULL,
     principal_name        varchar(100)
 );
 
-create unique index if not exists spring_session_ix1
-    on spring_session (session_id);
+CREATE UNIQUE INDEX IF NOT EXISTS spring_session_ix1
+    ON spring_session (session_id);
 
-create index if not exists spring_session_ix2
-    on spring_session (expiry_time);
+CREATE INDEX IF NOT EXISTS spring_session_ix2
+    ON spring_session (expiry_time);
 
-create index if not exists spring_session_ix3
-    on spring_session (principal_name);
+CREATE INDEX IF NOT EXISTS spring_session_ix3
+    ON spring_session (principal_name);
 
-create table if not exists spring_session_attributes
+CREATE TABLE IF NOT EXISTS spring_session_attributes
 (
-    session_primary_id char(36)     not null
-        constraint spring_session_attributes_fk
-            references spring_session
-            on delete cascade,
-    attribute_name     varchar(200) not null,
-    attribute_bytes    bytea        not null,
-    constraint spring_session_attributes_pk
-        primary key (session_primary_id, attribute_name)
+    session_primary_id char(36)     NOT NULL
+        CONSTRAINT spring_session_attributes_fk
+            REFERENCES spring_session
+            ON DELETE CASCADE,
+    attribute_name     varchar(200) NOT NULL,
+    attribute_bytes    bytea        NOT NULL,
+    CONSTRAINT spring_session_attributes_pk
+        PRIMARY KEY (session_primary_id, attribute_name)
 );

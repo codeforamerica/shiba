@@ -20,7 +20,7 @@ bin/**
 .temp*
 
 ### IntelliJ IDEA ###
-.idea/*.xml
+.idea/**/*.xml
 !.idea/jsonSchemas.xml
 .idea/inspectionProfiles/
 .idea/dataSources/
