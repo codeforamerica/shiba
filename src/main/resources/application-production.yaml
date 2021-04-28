@@ -21,7 +21,6 @@ feature-flag:
   submit-via-email: off
   submit-via-api: on
   submit-docs-via-email-for-hennepin: on
-  document-upload-feature: on
   later-docs-feature: off
   county-anoka: off
   county-carver: off
