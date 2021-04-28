@@ -62,17 +62,21 @@ public class ApplicationRepository {
         parameters.put("flow", Optional.ofNullable(application.getFlow()).map(FlowType::name).orElse(null));
         parameters.put("sentiment", Optional.ofNullable(application.getSentiment()).map(Sentiment::name).orElse(null));
         parameters.put("feedback", application.getFeedback());
-        new NamedParameterJdbcTemplate(jdbcTemplate)
-                .update("INSERT INTO applications (id, completed_at, application_data, county, time_to_complete, sentiment, feedback, flow) " +
-                        "VALUES (:id, :completedAt, :applicationData ::jsonb, :county, :timeToComplete, :sentiment, :feedback, :flow) " +
-                        "ON CONFLICT (id) DO UPDATE SET " +
-                        "completed_at = :completedAt, " +
-                        "application_data = :applicationData ::jsonb, " +
-                        "county = :county, " +
-                        "time_to_complete = :timeToComplete, " +
-                        "sentiment = :sentiment, " +
-                        "feedback = :feedback, " +
-                        "flow = :flow", parameters);
+
+        var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+        int numRowsAffected = namedParameterJdbcTemplate.update("UPDATE applications SET " +
+                "completed_at = :completedAt, " +
+                "application_data = :applicationData ::jsonb, " +
+                "county = :county, " +
+                "time_to_complete = :timeToComplete, " +
+                "sentiment = :sentiment, " +
+                "feedback = :feedback, " +
+                "flow = :flow WHERE id = :id", parameters);
+        if (numRowsAffected == 0) {
+            namedParameterJdbcTemplate.update(
+                    "INSERT INTO applications (id, completed_at, application_data, county, time_to_complete, sentiment, feedback, flow) " +
+                    "VALUES (:id, :completedAt, :applicationData ::jsonb, :county, :timeToComplete, :sentiment, :feedback, :flow)", parameters);
+        }
     }
 
     public Application find(String id) {
