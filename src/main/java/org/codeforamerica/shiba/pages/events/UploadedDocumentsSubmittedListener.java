@@ -1,25 +1,21 @@
 package org.codeforamerica.shiba.pages.events;
 
 import lombok.extern.slf4j.Slf4j;
-
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
-import org.codeforamerica.shiba.pages.emails.*;
-import org.jetbrains.annotations.NotNull;
+import org.codeforamerica.shiba.pages.emails.EmailClient;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class UploadedDocumentsSubmittedListener {
+public class UploadedDocumentsSubmittedListener extends ApplicationEventListener {
     private final MnitDocumentConsumer mnitDocumentConsumer;
-    private final ApplicationRepository applicationRepository;
-    private final MonitoringService monitoringService;
     private final FeatureFlagConfiguration featureFlags;
     private final EmailClient emailClient;
 
@@ -28,9 +24,8 @@ public class UploadedDocumentsSubmittedListener {
                                               MonitoringService monitoringService,
                                               FeatureFlagConfiguration featureFlags,
                                               EmailClient emailClient) {
+        super(applicationRepository, monitoringService);
         this.mnitDocumentConsumer = mnitDocumentConsumer;
-        this.applicationRepository = applicationRepository;
-        this.monitoringService = monitoringService;
         this.featureFlags = featureFlags;
         this.emailClient = emailClient;
     }
@@ -50,12 +45,5 @@ public class UploadedDocumentsSubmittedListener {
             	mnitDocumentConsumer.processUploadedDocuments(application);
             }
         }
-    }
-
-    @NotNull
-    private Application getApplicationFromEvent(UploadedDocumentsSubmittedEvent event) {
-        Application application = applicationRepository.find(event.getApplicationId());
-        monitoringService.setApplicationId(application.getId());
-        return application;
     }
 }

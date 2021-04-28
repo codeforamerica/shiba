@@ -18,7 +18,6 @@ import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -31,9 +30,8 @@ import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 
 @Component
-public class ApplicationSubmittedListener {
+public class ApplicationSubmittedListener extends ApplicationEventListener {
     private final MnitDocumentConsumer mnitDocumentConsumer;
-    private final ApplicationRepository applicationRepository;
     private final EmailClient emailClient;
     private final SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider;
     private final PdfGenerator pdfGenerator;
@@ -41,7 +39,6 @@ public class ApplicationSubmittedListener {
     private final EmailParser emailParser;
     private final DocumentListParser documentListParser;
     private final FeatureFlagConfiguration featureFlags;
-    private final MonitoringService monitoringService;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public ApplicationSubmittedListener(MnitDocumentConsumer mnitDocumentConsumer,
@@ -54,8 +51,8 @@ public class ApplicationSubmittedListener {
                                         EmailParser emailParser,
                                         DocumentListParser documentListParser,
                                         MonitoringService monitoringService) {
+        super(applicationRepository, monitoringService);
         this.mnitDocumentConsumer = mnitDocumentConsumer;
-        this.applicationRepository = applicationRepository;
         this.emailClient = emailClient;
         this.snapExpeditedEligibilityDecider = snapExpeditedEligibilityDecider;
         this.pdfGenerator = pdfGenerator;
@@ -63,7 +60,6 @@ public class ApplicationSubmittedListener {
         this.featureFlags = featureFlagConfiguration;
         this.emailParser = emailParser;
         this.documentListParser = documentListParser;
-        this.monitoringService = monitoringService;
     }
 
     @Async
@@ -120,12 +116,5 @@ public class ApplicationSubmittedListener {
         if (application.getCounty() == County.Other) {
             emailClient.sendNonPartnerCountyAlert(application.getId(), application.getCompletedAt());
         }
-    }
-
-    @NotNull
-    private Application getApplicationFromEvent(ApplicationSubmittedEvent event) {
-        Application application = applicationRepository.find(event.getApplicationId());
-        monitoringService.setApplicationId(application.getId());
-        return application;
     }
 }

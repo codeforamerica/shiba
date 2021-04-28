@@ -3,7 +3,7 @@ package org.codeforamerica.shiba.pages.events;
 import lombok.Value;
 
 @Value
-public class UploadedDocumentsSubmittedEvent implements PageEvent {
+public class UploadedDocumentsSubmittedEvent implements ApplicationEvent {
     String sessionId;
     String applicationId;
 
