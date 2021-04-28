@@ -53,7 +53,6 @@ class UploadedDocumentsSubmittedListenerTest {
     @Test
     void shouldSendViaApiWhenFeatureFlagIsEnabled() {
         when(applicationRepository.find(eq(applicationId))).thenReturn(application);
-        when(featureFlags.get("document-upload-feature")).thenReturn(FeatureFlag.ON);
         when(featureFlags.get("submit-docs-via-email-for-hennepin")).thenReturn(FeatureFlag.ON);
         uploadedDocumentsSubmittedListener.send(event);
 
@@ -65,20 +64,10 @@ class UploadedDocumentsSubmittedListenerTest {
     void shouldSendViaEmailWhenCountyIsHennepinAndFeatureFlagIsEnabled() {
     	Application hennepinApplication = Application.builder().id(applicationId).county(County.Hennepin).build();
         when(applicationRepository.find(eq(applicationId))).thenReturn(hennepinApplication);
-        when(featureFlags.get("document-upload-feature")).thenReturn(FeatureFlag.ON);
         when(featureFlags.get("submit-docs-via-email-for-hennepin")).thenReturn(FeatureFlag.ON);
 
         uploadedDocumentsSubmittedListener.send(event);
 
         verify(emailClient).sendHennepinDocUploadsEmail(hennepinApplication);
-    }
-
-    @Test
-    void shouldNotSendViaApiWhenFeatureFlagIsDisabled() {
-        when(featureFlags.get("document-upload-feature")).thenReturn(FeatureFlag.OFF);
-
-        uploadedDocumentsSubmittedListener.send(event);
-
-        verifyNoInteractions(mnitDocumentConsumer);
     }
 }

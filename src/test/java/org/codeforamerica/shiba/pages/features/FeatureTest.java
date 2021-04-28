@@ -42,7 +42,6 @@ public abstract class FeatureTest extends AbstractBasePageTest {
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         when(smartyStreetClient.validateAddress(any())).thenReturn(Optional.empty());
 
-        when(featureFlagConfiguration.get("document-upload-feature")).thenReturn(FeatureFlag.ON);
         when(featureFlagConfiguration.get("later-docs-feature")).thenReturn(FeatureFlag.ON);
         when(featureFlagConfiguration.get("submit-via-email")).thenReturn(FeatureFlag.OFF);
         when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.OFF);
