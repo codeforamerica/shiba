@@ -1,6 +1,8 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb;INIT=create domain if not exists jsonb as text;MODE=PostgreSQL
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM 'classpath:test.sql'
+    username: sa
+    password: sa
 
 client:
   keystore: src/test/resources/test-keystore.jks
