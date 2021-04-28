@@ -12,7 +12,6 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"pagesConfig=pages-config/test-page-model.yaml"})
 public class PageModelPageTest extends AbstractExistingStartTimePageTest {
-
     String title;
     String subtleLink;
     String subtleLinkTitle;
