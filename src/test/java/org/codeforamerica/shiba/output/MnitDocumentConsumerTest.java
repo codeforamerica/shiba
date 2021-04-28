@@ -46,11 +46,11 @@ import static org.codeforamerica.shiba.TestUtils.getAbsoluteFilepath;
 import static org.codeforamerica.shiba.output.Document.*;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.mockito.Mockito.*;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = RANDOM_PORT)
+@SpringBootTest(webEnvironment = NONE)
 @Tag("db")
 class MnitDocumentConsumerTest {
     @TestConfiguration
