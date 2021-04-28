@@ -48,7 +48,6 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ActiveProfiles("test")
-@ExtendWith(SpringExtension.class)
 public abstract class AbstractBasePageTest {
     public static final String PROGRAM_SNAP = "Food (SNAP)";
     public static final String PROGRAM_CASH = "Cash programs";
