@@ -3118,7 +3118,7 @@ workflow:
   matchInfo:
     pageConfiguration: *matchInfo
     nextPages:
-      - pageName: uploadDocuments
+      - pageName: documentsSent
   emailDocsToYourCounty:
     pageConfiguration: *emailDocsToYourCounty
     nextPages:
