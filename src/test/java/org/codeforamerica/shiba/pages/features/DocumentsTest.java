@@ -221,7 +221,9 @@ public class DocumentsTest extends FeatureTest {
     void shouldDisplayDocumentUploadInformation() {
         getToDocumentUploadScreen();
         uploadJpgFile();
+        assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("1 file added");
         uploadPdfFile();
+        assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("2 files added");
         waitForDocumentUploadToComplete();
 
         var filenameTextElements = driver.findElementsByClassName("filename-text");
@@ -246,6 +248,14 @@ public class DocumentsTest extends FeatureTest {
         assertThat(fileDetails).contains("0.4");
         assertThat(fileDetails).contains("MB");
         assertThat(fileDetails).doesNotContain("1 image");
+
+
+        // Delete a file to check added file count goes back down
+        List<WebElement> deleteLinks = driver.findElements(By.linkText("delete"));
+        testPage.clickLink("delete");
+        testPage.clickButton("Yes, delete the file");
+
+        assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("1 file added");
     }
 
     @Test
@@ -258,7 +268,7 @@ public class DocumentsTest extends FeatureTest {
 
         List<WebElement> deleteLinks = driver.findElements(By.linkText("delete"));
         assertThat(deleteLinks.size()).isEqualTo(0);
-        WebElement errorMessage = driver.findElementById("file-error-message");
+        WebElement errorMessage = driver.findElementByClassName("text--error");
         await().until(() -> !errorMessage.getText().isEmpty());
         assertThat(errorMessage.getText()).isEqualTo("Internal Server Error");
     }
@@ -307,7 +317,7 @@ public class DocumentsTest extends FeatureTest {
         driver.executeScript("$('#document-upload').get(0).dropzone.addFile({name: 'testFile.pdf', size: " + largeFilesize + ", type: 'not-an-image'})");
 
         int maxFileSize = uploadDocumentConfiguration.getMaxFilesize();
-        assertThat(driver.findElementById("file-error-message").getText()).contains("This file is too large and cannot be uploaded (max size: " + maxFileSize + " MB)");
+        assertThat(driver.findElementByClassName("text--error").getText()).contains("This file is too large and cannot be uploaded (max size: " + maxFileSize + " MB)");
     }
 
     @Test
@@ -315,7 +325,17 @@ public class DocumentsTest extends FeatureTest {
         getToDocumentUploadScreen();
         driver.executeScript("$('#document-upload').get(0).dropzone.addFile({name: 'testFile.xyz', size: 1000, type: 'not-an-image'})");
 
-        assertThat(driver.findElementById("file-error-message").getText()).contains("You can't upload files of this type");
+        assertThat(driver.findElementByClassName("text--error").getText()).contains("You can't upload files of this type");
+    }
+
+    @Test
+    void shouldUpdateFileCountWhenRemoveIsClickedIfAnUploadHasAnError() {
+        getToDocumentUploadScreen();
+        uploadJpgFile();
+        driver.executeScript("$('#document-upload').get(0).dropzone.addFile({name: 'testFile.xyz', size: 1000, type: 'not-an-image'})");
+        assertThat(driver.findElementsByClassName("text--error").get(1).getText()).contains("You can't upload files of this type");
+        testPage.clickLink("remove");
+        assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("1 file added");
     }
 
     @Test

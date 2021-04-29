@@ -29,6 +29,8 @@
                                     <button th:aria-label="#{upload-documents.add-your-files}" type="button"
                                             class="button dz-button icon-add"></button>
                                 </div>
+                                <div id="number-of-uploaded-files" class="text--centered body-gray">
+                                </div>
                             </div>
                             <div class="spacing-below-25">
                                 <p class="upload-doc-text">Uploaded documents</p>
@@ -150,6 +152,13 @@
         }
     }
 
+    function showNumberOfAddedFiles() {
+        var numberOfAddedFiles = myDropZone.files.length;
+        var numberOfAddedFilesDiv = document.getElementById("number-of-uploaded-files");
+        var numberOfUploadsString = numberOfAddedFiles > 1 ? `${numberOfAddedFiles} files added` : `${numberOfAddedFiles} file added`;
+        numberOfAddedFilesDiv.innerHTML = numberOfUploadsString;
+    }
+
     var fileTooBigMsg = [[#{upload-documents.this-file-is-too-large(${uploadDocMaxFileSize})}]]
 
     function setDefaultThumbnail(file) {
@@ -191,7 +200,7 @@
                     </div>
                 </div>
               </div>
-              <p id='file-error-message' class='text--error spacing-above-0'></p>
+              <p class='text--error spacing-above-0'></p>
             </div>`,
         init: function () {
             myDropZone = this;
@@ -226,6 +235,7 @@
                     // This hides delimiter for documents since we haven't implemented document count yet, will probably need to refactor when we implement document count
                     documentInfo.classList.add("hidden");
                 }
+                showNumberOfAddedFiles();
             });
 
             this.on("thumbnail", function (file, dataURL) {
@@ -288,6 +298,7 @@
             // This event is emitted when the client clicks cancel on a file that has not finished uploading.
             this.on('destroy', function (file) {
                 myDropZone.removeFile(file);
+                showNumberOfAddedFiles()
             });
 
             $.each(documents, function (key, value) {
