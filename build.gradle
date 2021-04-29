@@ -163,11 +163,7 @@ def testAll = tasks.register("testAll", Test) {
 test {
     useJUnitPlatform()
     testLogging {
-        events 'FAILED'
-        showExceptions true
-        exceptionFormat "full"
-        showCauses true
-        showStackTraces true
+        exceptionFormat = 'full'
     }
 }
 
