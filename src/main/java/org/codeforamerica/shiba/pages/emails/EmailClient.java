@@ -4,7 +4,6 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Locale;
 
@@ -21,8 +20,6 @@ public interface EmailClient {
                              ApplicationFile applicationFile);
 
     void sendDownloadCafAlertEmail(String confirmationId, String ip, Locale locale);
-
-    void sendNonPartnerCountyAlert(String applicationId, ZonedDateTime submissionTime);
     
     void sendHennepinDocUploadsEmail(Application application);  
 }

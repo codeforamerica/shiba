@@ -42,7 +42,6 @@ mnit-esb:
 sender-email: help@mnbenefits.org
 security-email: security@mnbenefits.org
 audit-email: help+audit@mnbenefits.org
-support-email: mnbenefits@codeforamerica.org
 hennepin-email: mnbenefits@codeforamerica.org
 
 mail-gun:

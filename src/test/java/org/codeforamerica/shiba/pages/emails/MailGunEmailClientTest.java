@@ -71,7 +71,6 @@ class MailGunEmailClientTest {
                 senderEmail,
                 securityEmail,
                 auditEmail,
-                supportEmail,
                 hennepinEmail,
                 "http://localhost:" + port,
                 mailGunApiKey,
@@ -301,7 +300,7 @@ class MailGunEmailClientTest {
 
         mailGunEmailClient = new MailGunEmailClient(
                 senderEmail,
-                "", "", "", "", "http://localhost:" + port,
+                "", "", "", "http://localhost:" + port,
                 mailGunApiKey,
                 emailContentCreator,
                 true,
@@ -327,25 +326,5 @@ class MailGunEmailClientTest {
                         .withBody(equalTo(senderEmail))
                         .matchingType(ANY)
                         .build()));
-    }
-
-    @Test
-    void shouldNonPartnerCountyAlert() {
-        String emailContent = "content";
-        String confirmationId = "confirmation id";
-        ZonedDateTime submissionTime = ZonedDateTime.now();
-        when(emailContentCreator.createNonCountyPartnerAlert(confirmationId, submissionTime, Locale.ENGLISH)).thenReturn(emailContent);
-
-        wireMockServer.stubFor(post(anyUrl()).willReturn(aResponse().withStatus(200)));
-
-        mailGunEmailClient.sendNonPartnerCountyAlert(confirmationId, submissionTime);
-
-        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
-                .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
-                .withRequestBody(containing(String.format("from=%s", senderEmail)))
-                .withRequestBody(containing(String.format("to=%s", supportEmail)))
-                .withRequestBody(containing(String.format("subject=%s", "ALERT+new+non-partner+application+submitted")))
-                .withRequestBody(containing(String.format("html=%s", emailContent)))
-        );
     }
 }
