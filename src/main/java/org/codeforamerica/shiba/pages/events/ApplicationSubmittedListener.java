@@ -1,6 +1,5 @@
 package org.codeforamerica.shiba.pages.events;
 
-import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
@@ -102,19 +101,5 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
 
         String fullName = String.join(" ", personalInfo.get("firstName").getValue(0), personalInfo.get("lastName").getValue(0));
         emailClient.sendCaseWorkerEmail(countyMap.get(application.getCounty()).getEmail(), fullName, applicationId, pdf);
-    }
-
-    @Async
-    @EventListener
-    public void sendNonPartnerCountyAlert(ApplicationSubmittedEvent event) {
-        if (featureFlags.get("send-non-partner-county-alert").isOff()) {
-            return;
-        }
-
-        Application application = getApplicationFromEvent(event);
-
-        if (application.getCounty() == County.Other) {
-            emailClient.sendNonPartnerCountyAlert(application.getId(), application.getCompletedAt());
-        }
     }
 }

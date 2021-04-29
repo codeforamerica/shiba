@@ -62,7 +62,6 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
 
         when(featureFlagConfiguration.get("submit-via-email")).thenReturn(FeatureFlag.OFF);
         when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.OFF);
-        when(featureFlagConfiguration.get("send-non-partner-county-alert")).thenReturn(FeatureFlag.OFF);
         when(featureFlagConfiguration.get("county-anoka")).thenReturn(FeatureFlag.OFF);
     }
 

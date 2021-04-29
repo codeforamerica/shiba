@@ -33,7 +33,6 @@ import java.util.Optional;
 
 import static java.util.Optional.empty;
 import static org.codeforamerica.shiba.County.Hennepin;
-import static org.codeforamerica.shiba.County.Other;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 import static org.mockito.Mockito.*;
@@ -245,68 +244,6 @@ class ApplicationSubmittedListenerTest {
             ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("", "", null, Locale.ENGLISH);
 
             applicationSubmittedListener.sendCaseWorkerEmail(event);
-
-            verifyNoInteractions(emailClient);
-        }
-    }
-
-    @Nested
-    class sendNonPartnerCountyAlert {
-        @Nested
-        class featureFlagOn {
-            @BeforeEach
-            void setUp() {
-                when(featureFlagConfiguration.get("send-non-partner-county-alert")).thenReturn(FeatureFlag.ON);
-            }
-
-            @Test
-            void shouldSendNonPartnerCountyAlertWhenApplicationSubmittedIsForOTHERCounty() {
-                String applicationId = "appId";
-                ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null, Locale.ENGLISH);
-                ZonedDateTime submissionTime = ZonedDateTime.now();
-                when(applicationRepository.find(applicationId)).thenReturn(
-                        Application.builder()
-                                .id(applicationId)
-                                .county(Other)
-                                .completedAt(submissionTime)
-                                .build()
-                );
-
-                applicationSubmittedListener.sendNonPartnerCountyAlert(event);
-
-                verify(emailClient).sendNonPartnerCountyAlert(applicationId, submissionTime);
-            }
-
-            @Test
-            void shouldNotSendNonPartnerCountyAlertWhenApplicationSubmittedIsNotForOTHERCounty() {
-                String applicationId = "appId";
-                ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null, Locale.ENGLISH);
-                ZonedDateTime submissionTime = ZonedDateTime.now();
-                when(applicationRepository.find(applicationId)).thenReturn(
-                        Application.builder()
-                                .county(Hennepin)
-                                .completedAt(submissionTime)
-                                .build()
-                );
-
-                applicationSubmittedListener.sendNonPartnerCountyAlert(event);
-
-                verifyNoInteractions(emailClient);
-            }
-        }
-
-        @Test
-        void shouldNotSendNonPartnerCountyAlertWhenFeatureIsTurnedOff() {
-            when(featureFlagConfiguration.get("send-non-partner-county-alert")).thenReturn(FeatureFlag.OFF);
-            when(applicationRepository.find(any())).thenReturn(
-                    Application.builder()
-                            .id("appId")
-                            .county(Other)
-                            .completedAt(ZonedDateTime.now())
-                            .build()
-            );
-
-            applicationSubmittedListener.sendNonPartnerCountyAlert(new ApplicationSubmittedEvent("someSessionId", "appId", null, Locale.ENGLISH));
 
             verifyNoInteractions(emailClient);
         }
