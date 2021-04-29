@@ -16,6 +16,9 @@ CREATE TABLE IF NOT EXISTS applications
     application_data jsonb
 );
 
+CREATE INDEX IF NOT EXISTS idx_application_id
+    ON applications (id);
+
 CREATE TABLE IF NOT EXISTS research
 (
     spoken_language          varchar,
