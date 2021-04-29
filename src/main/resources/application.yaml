@@ -17,6 +17,10 @@ server:
     session:
       cookie:
         secure: true
+  ssl:
+    enabled-protocols: TLSv1.2
+    key-store: src/main/resources/shiba-keystore.jks
+    key-store-password: ${CLIENT_KEYSTORE-PASSWORD}
 sentry:
   enable-tracing: true
   traces-sample-rate: 0.3
