@@ -3041,77 +3041,77 @@ workflow:
         flag: county-anoka
         condition:
           input: county
-          value: "ANOKA"
+          value: Anoka
       - pageName: matchInfo
         flag: county-carver
         condition:
           input: county
-          value: "CARVER"
+          value: Carver
       - pageName: matchInfo
         flag: county-clay
         condition:
           input: county
-          value: "CLAY"
+          value: Clay
       - pageName: matchInfo
         flag: county-cook
         condition:
           input: county
-          value: "COOK"
+          value: Cook
       - pageName: matchInfo
         flag: county-dodge
         condition:
           input: county
-          value: "DODGE"
+          value: Dodge
       - pageName: matchInfo
         flag: county-hennepin
         condition:
           input: county
-          value: "HENNEPIN"
+          value: Hennepin
       - pageName: matchInfo
         flag: county-morrison
         condition:
           input: county
-          value: "MORRISON"
+          value: Morrison
       - pageName: matchInfo
         flag: county-olmsted
         condition:
           input: county
-          value: "OLMSTED"
+          value: Olmsted
       - pageName: matchInfo
         flag: county-ottertail
         condition:
           input: county
-          value: "OTTERTAIL"
+          value: OtterTail
       - pageName: matchInfo
         flag: county-sherburne
         condition:
           input: county
-          value: "SHERBURNE"
+          value: Sherburne
       - pageName: matchInfo
         flag: county-steele
         condition:
           input: county
-          value: "STEELE"
+          value: Steele
       - pageName: matchInfo
         flag: county-stlouis
         condition:
           input: county
-          value: "STLOUIS"
+          value: StLouis
       - pageName: matchInfo
         flag: county-wabasha
         condition:
           input: county
-          value: "WABASHA"
+          value: Wabasha
       - pageName: matchInfo
         flag: county-waseca
         condition:
           input: county
-          value: "WASECA"
+          value: Waseca
       - pageName: matchInfo
         flag: county-wright
         condition:
           input: county
-          value: "WRIGHT"
+          value: Wright
       - pageName: emailDocsToYourCounty
   matchInfo:
     pageConfiguration: *matchInfo
