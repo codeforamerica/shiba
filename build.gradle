@@ -135,6 +135,13 @@ compileJava.inputs.files(processResources)
 
 def unitTest = tasks.register("unitTest", Test) {
     Test task ->
+        task.testLogging {
+            exceptionFormat = 'full'
+            events "failed", "passed", "skipped"
+            showStackTraces true
+            showCauses true
+            showExceptions true
+        }
         task.useJUnitPlatform {
             JUnitPlatformOptions options ->
                 options.excludeTags("db", "externalService")
@@ -144,6 +151,13 @@ def unitTest = tasks.register("unitTest", Test) {
 
 def dbTest = tasks.register("dbTest", Test) {
     Test task ->
+        task.testLogging {
+            exceptionFormat = 'full'
+            events "failed", "passed", "skipped"
+            showStackTraces true
+            showCauses true
+            showExceptions true
+        }
         task.useJUnitPlatform {
             JUnitPlatformOptions options ->
                 options.includeTags 'db'
@@ -156,23 +170,17 @@ def testAll = tasks.register("testAll", Test) {
     Test task ->
         task.dependsOn(unitTest)
         task.dependsOn(dbTest)
-
 }
 
 test {
-    useJUnitPlatform()
     testLogging {
-        events "passed", "skipped", "failed"
-
-        showExceptions true
-        exceptionFormat "full"
-        showCauses true
+        exceptionFormat = 'full'
+        events "failed", "passed", "skipped"
         showStackTraces true
-
-        // remove standard output/error logging from --info builds
-        // by assigning only 'failed' and 'skipped' events
-        info.events = ["failed", "skipped"]
+        showCauses true
+        showExceptions true
     }
+    useJUnitPlatform()
 }
 
 tasks.withType(Test).configureEach {
