@@ -89,7 +89,7 @@
         </div>
 
     </th:block>
-    <p class="text--error" th:if="${!inputData.valid()}">
+    <p class="text--error" th:if="${!data.isValid() && !inputData.valid()}">
         <i class="icon-warning"></i>
         <span th:text="#{${input.validationErrorMessageKey}}"></span>
     </p>

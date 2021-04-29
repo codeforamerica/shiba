@@ -39,14 +39,13 @@ public class InputData implements Serializable {
 
     public Boolean valid() {
         return validators.stream()
-                .filter(validator -> validator.getCondition() != null && validator.getCondition().satisfies(this))
                 .map(Validator::getValidation)
                 .allMatch(validation -> validation.apply(value));
     }
 
     public Optional<String> errorMessageKey() {
-        return this.validators.stream()
-                .filter(validator -> !validator.getValidation().apply(this.value))
+        return validators.stream()
+                .filter(validator -> !validator.getValidation().apply(value))
                 .findFirst()
                 .map(Validator::getErrorMessageKey);
     }
