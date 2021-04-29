@@ -111,7 +111,7 @@ dependencies {
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
 
     implementation(files(genJaxb.classesDir).builtBy(genJaxb))
-    jaxb "com.sun.xml.bind:jaxb-xjc:2.3.3"
+    jaxb "com.sun.xml.bind:jaxb-xjc:2.3.4"
 
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
