@@ -3,31 +3,25 @@ package org.codeforamerica.shiba;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.research.ResearchData;
 import org.codeforamerica.shiba.research.ResearchDataRepository;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.Clock;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
-@SpringBootTest(webEnvironment = NONE)
-@ActiveProfiles("test")
-@Sql(statements = {"TRUNCATE TABLE research"})
-@Tag("db")
-class ResearchDataRepositoryTest {
+class ResearchDataRepositoryTest extends AbstractRepositoryTest {
     @Autowired
-    ResearchDataRepository researchDataRepository;
+    private ResearchDataRepository researchDataRepository;
+
+    @MockBean
+    private Clock clock;
 
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
     @Test
     void savesResearchData() {

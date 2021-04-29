@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
+import org.codeforamerica.shiba.NonSessionScopedApplicationData;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
@@ -20,14 +21,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -44,15 +44,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = MOCK, properties = {"pagesConfig=pages-config/test-pages-controller.yaml"})
+@ContextConfiguration(classes = {NonSessionScopedApplicationData.class})
 class PageControllerTest {
-    @TestConfiguration
-    static class NonSessionScopedApplicationData {
-        @Bean
-        public ApplicationData applicationData() {
-            return new ApplicationData();
-        }
-    }
-
     @MockBean
     private MessageSource messageSource;
     private MockMvc mockMvc;

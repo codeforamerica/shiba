@@ -1,10 +1,7 @@
 package org.codeforamerica.shiba.output;
 
 import de.redsix.pdfcompare.PdfComparator;
-import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.MonitoringService;
-import org.codeforamerica.shiba.PageDataBuilder;
-import org.codeforamerica.shiba.PagesDataBuilder;
+import org.codeforamerica.shiba.*;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
@@ -23,14 +20,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -48,16 +44,9 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = NONE)
+@ContextConfiguration(classes = {NonSessionScopedApplicationData.class})
 @Tag("db")
 class MnitDocumentConsumerTest {
-    @TestConfiguration
-    static class NonSessionScopedApplicationData {
-        @Bean
-        public ApplicationData applicationData() {
-            return new ApplicationData();
-        }
-    }
-
     @MockBean
     private MnitEsbWebServiceClient mnitClient;
     @MockBean
