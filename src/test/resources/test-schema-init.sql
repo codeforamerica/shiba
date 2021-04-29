@@ -19,45 +19,6 @@ CREATE TABLE IF NOT EXISTS applications
 CREATE INDEX IF NOT EXISTS idx_application_id
     ON applications (id);
 
-CREATE TABLE IF NOT EXISTS research
-(
-    spoken_language          varchar,
-    written_language         varchar,
-    first_name               varchar,
-    last_name                varchar,
-    date_of_birth            date,
-    sex                      varchar,
-    phone_number             varchar,
-    email                    varchar,
-    phone_opt_in             boolean,
-    email_opt_in             boolean,
-    zip_code                 varchar,
-    snap                     boolean,
-    cash                     boolean,
-    housing                  boolean,
-    emergency                boolean,
-    has_household            boolean,
-    money_made_last30_days   numeric,
-    pay_rent_or_mortgage     boolean,
-    home_expenses_amount     numeric,
-    are_you_working          boolean,
-    self_employment          boolean,
-    social_security          boolean,
-    ssi                      boolean,
-    veterans_benefits        boolean,
-    unemployment             boolean,
-    workers_compensation     boolean,
-    retirement               boolean,
-    child_or_spousal_support boolean,
-    tribal_payments          boolean,
-    household_size           integer,
-    entered_ssn              boolean,
-    flow                     varchar,
-    application_id           varchar,
-    county                   varchar,
-    childcare                boolean
-);
-
 CREATE TABLE IF NOT EXISTS spring_session
 (
     primary_id            char(36) NOT NULL
