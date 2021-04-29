@@ -227,7 +227,7 @@ public class PageController {
 
         String pageToRender;
         if (pageConfiguration.isStaticPage()) {
-            pageToRender = pageConfiguration.getName();
+            pageToRender = pageName;
             model.put("data", pagesData.getDatasourcePagesBy(pageWorkflow.getDatasources()));
             model.put("applicationData", applicationData);
 
@@ -424,8 +424,6 @@ public class PageController {
 
         return new ModelAndView(String.format("redirect:/pages/%s", nextPage));
     }
-
-
 
     @SuppressWarnings("SpringMVCViewInspection")
     @PostMapping("/remove-upload/{filename}")
