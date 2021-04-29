@@ -13,7 +13,6 @@ public class LandmarkPagesConfiguration {
     private String terminalPage;
     private String submitPage;
     private String uploadDocumentsPage;
-    private String uploadLaterDocsPage;
     private String laterDocsIdPage;
     private String laterDocsTerminalPage;
 
@@ -42,6 +41,6 @@ public class LandmarkPagesConfiguration {
     }
 
     public boolean isUploadDocumentsPage(String pageName) {
-        return pageName.equals(uploadDocumentsPage) || pageName.equals(uploadLaterDocsPage);
+        return pageName.equals(uploadDocumentsPage);
     }
 }

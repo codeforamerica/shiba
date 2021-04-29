@@ -3116,11 +3116,7 @@ workflow:
   matchInfo:
     pageConfiguration: *matchInfo
     nextPages:
-      - pageName: uploadLaterDocs
-  uploadLaterDocs:
-    pageConfiguration: *uploadDocuments
-    nextPages:
-      - pageName: documentsSent
+      - pageName: uploadDocuments
   emailDocsToYourCounty:
     pageConfiguration: *emailDocsToYourCounty
     nextPages:
@@ -3177,7 +3173,6 @@ landmarkPages:
     - documentRecommendation
     - uploadDocuments
     - uploadDocumentsDeleteWarningPage
-    - uploadLaterDocs
     - success
     - matchInfo
     - documentsSent
@@ -3187,4 +3182,3 @@ landmarkPages:
   submitPage: signThisApplication
   laterDocsIdPage: matchInfo # Page where confirmation number is generated for later docs (happens before submit)
   uploadDocumentsPage: uploadDocuments
-  uploadLaterDocsPage: uploadLaterDocs
