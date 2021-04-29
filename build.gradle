@@ -154,7 +154,6 @@ def dbTest = tasks.register("dbTest", Test) {
 
 def testAll = tasks.register("testAll", Test) {
     Test task ->
-        task.testLogging { exceptionFormat = 'full' }
         task.dependsOn(unitTest)
         task.dependsOn(dbTest)
 
@@ -163,7 +162,14 @@ def testAll = tasks.register("testAll", Test) {
 test {
     useJUnitPlatform()
     testLogging {
-        exceptionFormat = 'full'
+        events "passed", "skipped", "failed"
+
+        showExceptions true
+        exceptionFormat "full"
+        showCauses true
+        showStackTraces true
+
+        showStandardStreams = false
     }
 }
 
