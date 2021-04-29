@@ -4,5 +4,6 @@ public enum FlowType {
     EXPEDITED,
     FULL,
     MINIMUM,
-    UNDETERMINED
+    UNDETERMINED,
+    LATER_DOCS
 }
