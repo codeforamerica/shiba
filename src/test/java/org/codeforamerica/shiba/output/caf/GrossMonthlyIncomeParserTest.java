@@ -144,4 +144,20 @@ class GrossMonthlyIncomeParserTest {
                 new NonHourlyJobIncomeInformation("EVERY_WEEK", "1.1", 0, subworkflow.get(0))
         );
     }
+
+    @Test
+    void shouldReturnNonHourlyJobInformationIfHourlyJobPageIsNotAvailable() {
+        Subworkflow subworkflow = new Subworkflow();
+        subworkflow.add(pagesDataBuilder.build(List.of(
+            new PageDataBuilder("payPeriodPage", Map.of("payPeriodInput", List.of("EVERY_WEEK"))),
+            new PageDataBuilder("incomePerPayPeriodPage", Map.of("incomePerPayPeriodInput", List.of("1.1")))
+        )));
+        applicationData.setSubworkflows(new Subworkflows(Map.of("jobsGroup", subworkflow)));
+
+        List<JobIncomeInformation> jobIncomeInformation = grossMonthlyIncomeParser.parse(applicationData);
+
+        assertThat(jobIncomeInformation).contains(
+                new NonHourlyJobIncomeInformation("EVERY_WEEK", "1.1", 0, subworkflow.get(0))
+        );
+    }
 }

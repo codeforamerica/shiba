@@ -36,7 +36,7 @@ public class GrossMonthlyIncomeParser extends ApplicationDataParser<List<JobInco
                         String lastThirtyDaysIncome = pagesData.getPage(lastThirtyDaysIncomeCoordinates.getPageName()).get(lastThirtyDaysIncomeCoordinates.getInputName()).getValue(0);
                         return new LastThirtyDaysJobIncomeInformation(lastThirtyDaysIncome, jobsGroup.indexOf(pagesData), iteration);
                     } else {
-                        boolean isHourlyJob = Boolean.parseBoolean(pagesData.getPage(isHourlyJobCoordinates.getPageName()).get(isHourlyJobCoordinates.getInputName()).getValue(0));
+                        boolean isHourlyJob = Boolean.parseBoolean(pagesData.getPageInputFirstValue(isHourlyJobCoordinates.getPageName(), isHourlyJobCoordinates.getInputName()));
                         if (isHourlyJob) {
                             PageInputCoordinates hourlyWageCoordinates = grossMonthlyIncomeConfiguration.getPageInputs().get("hourlyWage");
                             String hourlyWageInputValue = pagesData.getPage(hourlyWageCoordinates.getPageName())
