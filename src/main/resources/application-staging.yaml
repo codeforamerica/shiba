@@ -2,7 +2,11 @@ spring:
   datasource:
     url: ${DATABASE_URL}
     driverClassName: org.postgresql.Driver
-
+server:
+  ssl:
+    enabled-protocols: TLSv1.2
+    key-store: src/main/resources/shiba-keystore.jks
+    key-store-password: ${CLIENT_KEYSTORE-PASSWORD}
 mnit-esb:
   url: https://uat-svcs.dhs.mn.gov/WebServices/Alfresco/CreateDocument
 

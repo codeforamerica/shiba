@@ -2,6 +2,11 @@ spring:
   datasource:
     url: ${DATABASE_URL}
     driverClassName: org.postgresql.Driver
+server:
+  ssl:
+    enabled-protocols: TLSv1.2
+    key-store: src/main/resources/shiba-keystore.jks
+    key-store-password: ${CLIENT_KEYSTORE-PASSWORD}
 
 client:
   keystore: src/main/resources/shiba-production.jks
