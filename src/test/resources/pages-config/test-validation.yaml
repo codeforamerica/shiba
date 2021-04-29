@@ -1,141 +1,132 @@
 pageDefinitions:
   - &firstPage
-      name: firstPage
-      pageTitle: first-page-title
-      inputs:
-        - name: someInputName
-          type: TEXT
-          validators:
-            - validation: NOT_BLANK
-              errorMessageKey: error-message-key
-        - name: conditionalValidationWhenValueEquals
-          type: TEXT
-          validators:
-            - validation: NOT_BLANK
-              condition:
-                input: someInputName
-                value: valueToTriggerCondition
-              errorMessageKey: error-message-key
+    name: firstPage
+    pageTitle: first-page-title
+    inputs:
+      - name: someInputName
+        type: TEXT
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: error-message-key
+      - name: conditionalValidationWhenValueEquals
+        type: TEXT
+        validators:
+          - validation: NOT_BLANK
+            condition:
+              input: someInputName
+              value: valueToTriggerCondition
+            errorMessageKey: error-message-key
   - &nextPage
-      name: nextPage
-      pageTitle: next-page-title
-      inputs:
-        - name: someCheckbox
-          type: CHECKBOX
-          options:
-            selectableOptions:
-              - value: VALUE_1
-                messageKey: checkbox-value-key-1
-        - name: conditionalValidationWhenValueIsNoneSelected
-          type: TEXT
-          validators:
-            - validation: NOT_BLANK
-              condition:
-                input: someCheckbox
-                matcher: NONE_SELECTED
-              errorMessageKey: error-message-key
+    name: nextPage
+    pageTitle: next-page-title
+    inputs:
+      - name: someCheckbox
+        type: CHECKBOX
+        options:
+          selectableOptions:
+            - value: VALUE_1
+              messageKey: checkbox-value-key-1
+      - name: conditionalValidationWhenValueIsNoneSelected
+        type: TEXT
+        validators:
+          - validation: NOT_BLANK
+            condition:
+              input: someCheckbox
+              matcher: NONE_SELECTED
+            errorMessageKey: error-message-key
   - &notBlankPage
-      name: notBlankPage
-      pageTitle: not-blank-page-title
-      inputs:
-        - name: notBlankInput
-          type: TEXT
-          validators:
-            - validation: NOT_BLANK
-              errorMessageKey: error-message-key
+    name: notBlankPage
+    pageTitle: not-blank-page-title
+    inputs:
+      - name: notBlankInput
+        type: TEXT
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: error-message-key
   - &zipcodePage
-      name: zipcodePage
-      pageTitle: zip-code-page-title
-      inputs:
-        - name: zipCodeInput
-          type: TEXT
-          validators:
-            - validation: ZIPCODE
-              errorMessageKey: error-message-key
-  - &caseNumberPage
-      name: caseNumberPage
-      pageTitle: case-number-page-title
-      inputs:
-        - name: caseNumberInput
-          type: TEXT
-          validators:
-            - validation: CASE_NUMBER
-              errorMessageKey: error-message-key
+    name: zipcodePage
+    pageTitle: zip-code-page-title
+    inputs:
+      - name: zipCodeInput
+        type: TEXT
+        validators:
+          - validation: ZIPCODE
+            errorMessageKey: error-message-key
   - &statePage
-      name: statePage
-      pageTitle: state-page-title
-      inputs:
-        - name: stateInput
-          type: TEXT
-          validators:
-            - validation: STATE
-              errorMessageKey: error-message-key
+    name: statePage
+    pageTitle: state-page-title
+    inputs:
+      - name: stateInput
+        type: TEXT
+        validators:
+          - validation: STATE
+            errorMessageKey: error-message-key
   - &phonePage
-      name: phonePage
-      pageTitle: phone-page-title
-      inputs:
-        - name: phoneInput
-          type: TEXT
-          validators:
-            - validation: PHONE
-              errorMessageKey: error-message-key
+    name: phonePage
+    pageTitle: phone-page-title
+    inputs:
+      - name: phoneInput
+        type: TEXT
+        validators:
+          - validation: PHONE
+            errorMessageKey: error-message-key
   - &moneyPage
-      name: moneyPage
-      pageTitle: money-page-title
-      inputs:
-        - name: moneyInput
-          type: TEXT
-          validators:
-            - validation: MONEY
-              errorMessageKey: error-message-key
+    name: moneyPage
+    pageTitle: money-page-title
+    inputs:
+      - name: moneyInput
+        type: TEXT
+        validators:
+          - validation: MONEY
+            errorMessageKey: error-message-key
   - &ssnPage
-      name: ssnPage
-      pageTitle: ssn-page-title
-      inputs:
-        - name: ssnInput
-          type: TEXT
-          validators:
-            - validation: SSN
-              errorMessageKey: error-message-key
+    name: ssnPage
+    pageTitle: ssn-page-title
+    inputs:
+      - name: ssnInput
+        type: TEXT
+        validators:
+          - validation: SSN
+            errorMessageKey: error-message-key
   - &datePage
-      name: datePage
-      pageTitle: date-page-title
-      inputs:
-        - name: dateInput
-          type: DATE
-          validators:
-            - validation: DATE
-              errorMessageKey: error-message-key
+    name: datePage
+    pageTitle: date-page-title
+    inputs:
+      - name: dateInput
+        type: DATE
+        validators:
+          - validation: DATE
+            errorMessageKey: error-message-key
   - &checkboxPage
-      name: checkboxPage
-      pageTitle: checkbox-page-title
-      inputs:
-        - name: checkboxInput
-          type: CHECKBOX
-          options:
-            selectableOptions:
-              - value: "1"
-                messageKey: option-1
-              - value: "2"
-                messageKey: option-2
-          validators:
-            - validation: SELECT_AT_LEAST_ONE
-              errorMessageKey: error-message-key
+    name: checkboxPage
+    pageTitle: checkbox-page-title
+    inputs:
+      - name: checkboxInput
+        type: CHECKBOX
+        options:
+          selectableOptions:
+            - value: "1"
+              messageKey: option-1
+            - value: "2"
+              messageKey: option-2
+        validators:
+          - validation: SELECT_AT_LEAST_ONE
+            errorMessageKey: error-message-key
   - &doesNotContainConditionPage
-      name: doesNotContainConditionPage
-      pageTitle: dummy-page-title
-      inputs:
-        - name: triggerInput
-          type: TEXT
-        - name: conditionTest
-          type: TEXT
-          validators:
-            - validation: NOT_BLANK
-              errorMessageKey: error-message-key
-              condition:
-                input: triggerInput
-                matcher: DOES_NOT_CONTAIN
-                value: triggerValue
+    name: doesNotContainConditionPage
+    pageTitle: dummy-page-title
+    inputs:
+      - name: triggerInput
+        type: TEXT
+      - name: conditionTest
+        type: TEXT
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: error-message-key
+            condition:
+              input: triggerInput
+              matcher: DOES_NOT_CONTAIN
+              value: triggerValue
   - &emptyInputConditionPage
     name: emptyInputConditionPage
     pageTitle: dummy-page-title
@@ -170,12 +161,24 @@ pageDefinitions:
         validators:
           - validation: EMAIL
             errorMessageKey: error-message-key
+  - &caseNumberPage
+    name: caseNumberPage
+    pageTitle: case-number-page-title
+    inputs:
+      - name: caseNumberInput
+        type: TEXT
+        validators:
+          - validation: CASE_NUMBER
+            errorMessageKey: error-message-key
+            condition:
+              input: caseNumberInput
+              matcher: NOT_EMPTY
   - &lastPage
-      name: lastPage
-      pageTitle: last-page-title
-      inputs:
-        - name: foo
-          type: TEXT
+    name: lastPage
+    pageTitle: last-page-title
+    inputs:
+      - name: foo
+        type: TEXT
 workflow:
   firstPage:
     pageConfiguration: *firstPage
