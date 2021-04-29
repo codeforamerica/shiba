@@ -6,12 +6,10 @@ import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
 
@@ -29,9 +27,13 @@ public class CountyParser extends ApplicationDataParser<County> {
         String countyName = parseCountyNameFromFullApplication(applicationData);
 
         if (applicationData.getFlow() == FlowType.LATER_DOCS) {
-            Optional<String> countyNameOptional = parseCountyNameForLaterDocs(applicationData);
-            if (countyNameOptional.isPresent()) {
-                countyName = countyNameOptional.get();
+            List<String> inputValue = ofNullable(applicationData.getPagesData().getPage("identifyCounty"))
+                    .map(pageData -> pageData.get("county"))
+                    .map(InputData::getValue)
+                    .orElse(List.of());
+
+            if (inputValue.size() > 0) {
+                countyName = inputValue.get(0);
             } else {
                 return County.Other;
             }
@@ -41,19 +43,6 @@ public class CountyParser extends ApplicationDataParser<County> {
             return County.Other;
         }
         return County.valueFor(countyName);
-    }
-
-    @NotNull
-    private Optional<String> parseCountyNameForLaterDocs(ApplicationData applicationData) {
-        List<String> inputValue = ofNullable(applicationData.getPagesData().getPage("identifyCounty"))
-                .map(pageData -> pageData.get("county"))
-                .map(InputData::getValue)
-                .orElse(List.of());
-
-        if (inputValue.size() > 0) {
-            return Optional.of(inputValue.get(0));
-        }
-        return Optional.empty();
     }
 
     private String parseCountyNameFromFullApplication(ApplicationData applicationData) {
