@@ -169,7 +169,9 @@ test {
         showCauses true
         showStackTraces true
 
-        showStandardStreams = false
+        // remove standard output/error logging from --info builds
+        // by assigning only 'failed' and 'skipped' events
+        info.events = ["failed", "skipped"]
     }
 }
 
