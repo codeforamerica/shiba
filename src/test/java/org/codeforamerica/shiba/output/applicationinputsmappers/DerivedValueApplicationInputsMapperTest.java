@@ -24,8 +24,9 @@ import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
-@SpringBootTest(properties = {"spring.main.allow-bean-definition-overriding=true"})
+@SpringBootTest(webEnvironment = NONE)
 @ActiveProfiles("test")
 class DerivedValueApplicationInputsMapperTest {
 

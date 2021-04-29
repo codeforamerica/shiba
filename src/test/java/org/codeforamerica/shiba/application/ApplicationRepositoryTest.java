@@ -1,22 +1,16 @@
-package org.codeforamerica.shiba.metrics;
+package org.codeforamerica.shiba.application;
 
+import org.codeforamerica.shiba.AbstractRepositoryTest;
 import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.application.*;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.*;
 import java.time.temporal.ChronoUnit;
@@ -29,24 +23,15 @@ import static org.codeforamerica.shiba.County.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
-@ExtendWith(SpringExtension.class)
-@ActiveProfiles("test")
-@Sql(statements = {"ALTER SEQUENCE application_id RESTART WITH 12", "TRUNCATE TABLE applications"})
-@Tag("db")
-class ApplicationRepositoryTest {
+class ApplicationRepositoryTest extends AbstractRepositoryTest {
+    @Autowired
+    private ApplicationRepository applicationRepository;
 
     @Autowired
-    ApplicationRepository applicationRepository;
-
-    @Autowired
-    JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    ApplicationFactory applicationFactory;
+    private JdbcTemplate jdbcTemplate;
 
     @MockBean
-    Clock clock;
+    private Clock clock;
 
     @Test
     void shouldGenerateIdForNextApplication() {
@@ -181,11 +166,7 @@ class ApplicationRepositoryTest {
     }
 
     @Nested
-    @SpringBootTest
-    @ExtendWith(SpringExtension.class)
-    @ActiveProfiles("test")
-    @Sql(statements = {"TRUNCATE TABLE applications"})
-    class EncryptionAndDecryption {
+    class EncryptionAndDecryption extends AbstractRepositoryTest {
         ApplicationRepository applicationRepositoryWithMockEncryptor;
         @SuppressWarnings("unchecked")
         Encryptor<ApplicationData> mockEncryptor = mock(Encryptor.class);
@@ -280,11 +261,7 @@ class ApplicationRepositoryTest {
     }
 
     @Nested
-    @SpringBootTest
-    @ExtendWith(SpringExtension.class)
-    @ActiveProfiles("test")
-    @Sql(statements = {"TRUNCATE TABLE applications"})
-    class MetricsQueries {
+    class MetricsQueries extends AbstractRepositoryTest {
         County defaultCounty = County.Other;
 
         ZonedDateTime defaultCompletedAt = ZonedDateTime.now(ZoneOffset.UTC);

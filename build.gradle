@@ -135,6 +135,13 @@ compileJava.inputs.files(processResources)
 
 def unitTest = tasks.register("unitTest", Test) {
     Test task ->
+        task.testLogging {
+            exceptionFormat = 'full'
+            events "failed", "passed", "skipped"
+            showStackTraces true
+            showCauses true
+            showExceptions true
+        }
         task.useJUnitPlatform {
             JUnitPlatformOptions options ->
                 options.excludeTags("db", "externalService")
@@ -144,6 +151,13 @@ def unitTest = tasks.register("unitTest", Test) {
 
 def dbTest = tasks.register("dbTest", Test) {
     Test task ->
+        task.testLogging {
+            exceptionFormat = 'full'
+            events "failed", "passed", "skipped"
+            showStackTraces true
+            showCauses true
+            showExceptions true
+        }
         task.useJUnitPlatform {
             JUnitPlatformOptions options ->
                 options.includeTags 'db'
@@ -154,17 +168,19 @@ def dbTest = tasks.register("dbTest", Test) {
 
 def testAll = tasks.register("testAll", Test) {
     Test task ->
-        task.testLogging { exceptionFormat = 'full' }
         task.dependsOn(unitTest)
         task.dependsOn(dbTest)
-
 }
 
 test {
-    useJUnitPlatform()
     testLogging {
         exceptionFormat = 'full'
+        events "failed", "passed", "skipped"
+        showStackTraces true
+        showCauses true
+        showExceptions true
     }
+    useJUnitPlatform()
 }
 
 tasks.withType(Test).configureEach {

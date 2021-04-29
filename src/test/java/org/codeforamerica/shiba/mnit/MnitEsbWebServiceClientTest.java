@@ -7,13 +7,11 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.ws.client.WebServiceTransportException;
 import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.ws.soap.client.SoapFaultClientException;
@@ -28,9 +26,7 @@ import javax.xml.transform.dom.DOMResult;
 import java.time.*;
 import java.util.Base64;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.ws.test.client.RequestMatchers.connectionTo;
@@ -48,7 +44,6 @@ import static org.springframework.ws.test.client.ResponseCreators.withSoapEnvelo
         "test.counties.Olmsted.dhsProviderId=olmsted-dhs-provider-id"
 })
 @ActiveProfiles("test")
-@ExtendWith(SpringExtension.class)
 class MnitEsbWebServiceClientTest {
     @Autowired
     private WebServiceTemplate webServiceTemplate;
@@ -75,9 +70,9 @@ class MnitEsbWebServiceClientTest {
     String fileName = "fileName";
     StringSource successResponse = new StringSource("" +
             "<SOAP-ENV:Envelope xmlns:SOAP-ENV='http://schemas.xmlsoap.org/soap/envelope/'>" +
-                "<SOAP-ENV:Body xmlns='http://www.cmis.org/2008/05'>" +
-                    "<createDocumentResponse></createDocumentResponse>" +
-                "</SOAP-ENV:Body>" +
+            "<SOAP-ENV:Body xmlns='http://www.cmis.org/2008/05'>" +
+            "<createDocumentResponse></createDocumentResponse>" +
+            "</SOAP-ENV:Body>" +
             "</SOAP-ENV:Envelope>"
     );
 

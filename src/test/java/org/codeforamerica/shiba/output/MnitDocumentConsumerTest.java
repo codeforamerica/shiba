@@ -1,10 +1,7 @@
 package org.codeforamerica.shiba.output;
 
 import de.redsix.pdfcompare.PdfComparator;
-import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.MonitoringService;
-import org.codeforamerica.shiba.PageDataBuilder;
-import org.codeforamerica.shiba.PagesDataBuilder;
+import org.codeforamerica.shiba.*;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
@@ -20,19 +17,16 @@ import org.codeforamerica.shiba.pages.data.PagesData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -46,23 +40,13 @@ import static org.codeforamerica.shiba.TestUtils.getAbsoluteFilepath;
 import static org.codeforamerica.shiba.output.Document.*;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.mockito.Mockito.*;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
-@ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
-        "spring.main.allow-bean-definition-overriding=true"
-})
+@SpringBootTest(webEnvironment = NONE)
+@ContextConfiguration(classes = {NonSessionScopedApplicationData.class})
 @Tag("db")
 class MnitDocumentConsumerTest {
-    @TestConfiguration
-    static class NonSessionScopedApplicationData {
-        @Bean
-        public ApplicationData applicationData() {
-            return new ApplicationData();
-        }
-    }
-
     @MockBean
     private MnitEsbWebServiceClient mnitClient;
     @MockBean
