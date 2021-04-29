@@ -2,11 +2,11 @@ package org.codeforamerica.shiba;
 
 public enum County {
     Anoka("Anoka"), Carver("Carver"), Clay("Clay"), Cook("Cook"), Dodge("Dodge"),
-    Hennepin("Hennepin"), Morrison("Morrisoin"), Olmsted("Olmsted"), OtterTail("Otter Tail"),
+    Hennepin("Hennepin"), Morrison("Morrison"), Olmsted("Olmsted"), OtterTail("Otter Tail"),
     Sherburne("Sherburne"), Steele("Steele"), StLouis("St. Louis"), Wabasha("Wabasha"),
     Wadena("Wadena"), Waseca("Waseca"), Wright("Wright"), Other("Other");
 
-    private String displayName;
+    private final String displayName;
 
     public static County valueFor(String county) {
         return switch (county) {
