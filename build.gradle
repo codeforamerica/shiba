@@ -162,9 +162,8 @@ def dbTest = tasks.register("dbTest", Test) {
             JUnitPlatformOptions options ->
                 options.includeTags 'db'
         }
-        task.shouldRunAfter test
+        task.maxParallelForks(Runtime.runtime.availableProcessors().intdiv(2) ?: 1)
 }
-
 
 def testAll = tasks.register("testAll", Test) {
     Test task ->
