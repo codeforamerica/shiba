@@ -7,12 +7,12 @@ import lombok.NoArgsConstructor;
 import lombok.With;
 import org.codeforamerica.shiba.output.LogicalOperator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -106,10 +106,6 @@ public class Condition implements Serializable {
 
     public boolean satisfies(PageData pageData) {
         return matcher.matches(pageData.get(getInput()).getValue(), value);
-    }
-
-    public boolean satisfies(InputData inputData) {
-        return matcher.matches(inputData.getValue(), value);
     }
 
     public void setConditions(List<Condition> conditions) {
