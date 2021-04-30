@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.pages.emails;
 
 import lombok.extern.slf4j.Slf4j;
-import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.application.*;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
@@ -136,6 +136,12 @@ public class MailGunEmailClient implements EmailClient {
 
         PageData personalInfo = application.getApplicationData().getPageData("personalInfo");
         PageData contactInfo = application.getApplicationData().getPageData("contactInfo");
+
+        if (application.getFlow() == FlowType.LATER_DOCS) {
+            personalInfo = application.getApplicationData().getPageData("matchInfo");
+            contactInfo = application.getApplicationData().getPageData("matchInfo");
+        }
+
         String fullName = String.join(" ", personalInfo.get("firstName").getValue(0), personalInfo.get("lastName").getValue(0));
         form.put("subject", List.of("Verification docs for " + fullName));
 
