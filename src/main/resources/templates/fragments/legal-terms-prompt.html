@@ -143,10 +143,19 @@
                     <span th:text="#{legal-stuff.and}"></span>
                     <a th:text="#{legal-stuff.the-child-care-assistance-program-and-fraud}" href="https://edocs.dhs.state.mn.us/lfserver/Public/DHS-3943B-ENG" target="_blank"></a>
                     <span th:text="#{legal-stuff.i-have-read-and-understand-this-information}" />
-
                 </div>
+                <div th:text="|• #{legal-stuff.i-understand-that-if-someone}|" />
                 <div th:text="|• #{legal-stuff.i-agree-to-continue-to-assign-my-child-care-support-to-the-state-of-minnesota}|" />
                 <div th:text="|• #{legal-stuff.i-agree-to-the-sharing-of-information-as-stated-in-the-provider-release-and-fraud-investigation-authorization-information-above}|" />
+                <div th:text="|• #{legal-stuff.i-have-received-and-reviewed}|" />
+                <ul class="list--bulleted">
+                    <li th:utext="#{legal-stuff.authorization-of-sharing}"></li>
+                    <li th:utext="#{legal-stuff.notice-about-ies}"></li>
+                    <li th:utext="#{legal-stuff.important-information}"></li>
+                    <li th:utext="#{legal-stuff.additional-important-information}"></li>
+                    <li th:utext="#{legal-stuff.penalty-warnings}"></li>
+                    <li th:utext="#{legal-stuff.civil-rights-notice}"></li>
+                </ul>
             </div>
         </div>
     </div>
