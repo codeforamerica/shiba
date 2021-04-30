@@ -5,8 +5,10 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.parsers.EmailParser;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -18,16 +20,19 @@ public class UploadedDocumentsSubmittedListener extends ApplicationEventListener
     private final MnitDocumentConsumer mnitDocumentConsumer;
     private final FeatureFlagConfiguration featureFlags;
     private final EmailClient emailClient;
+    private final EmailParser emailParser;
 
     public UploadedDocumentsSubmittedListener(MnitDocumentConsumer mnitDocumentConsumer,
                                               ApplicationRepository applicationRepository,
                                               MonitoringService monitoringService,
                                               FeatureFlagConfiguration featureFlags,
-                                              EmailClient emailClient) {
+                                              EmailClient emailClient,
+                                              EmailParser emailParser) {
         super(applicationRepository, monitoringService);
         this.mnitDocumentConsumer = mnitDocumentConsumer;
         this.featureFlags = featureFlags;
         this.emailClient = emailClient;
+        this.emailParser = emailParser;
     }
 
     @Async
@@ -43,5 +48,20 @@ public class UploadedDocumentsSubmittedListener extends ApplicationEventListener
             log.info("Processing uploaded documents");
             mnitDocumentConsumer.processUploadedDocuments(application);
         }
+    }
+
+
+    @Async
+    @EventListener
+    public void sendLaterDocsConfirmationEmail(UploadedDocumentsSubmittedEvent event) {
+        if (featureFlags.get("later-docs-feature").isOff() || featureFlags.get("document-upload-feature").isOff()) {
+            return;
+        }
+
+        Application application = getApplicationFromEvent(event);
+        ApplicationData applicationData = application.getApplicationData();
+
+        emailParser.parse(applicationData)
+                .ifPresent(email -> emailClient.sendLaterDocsConfirmationEmail(email, event.getLocale()));
     }
 }

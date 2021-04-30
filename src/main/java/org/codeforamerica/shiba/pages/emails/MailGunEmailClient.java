@@ -187,6 +187,22 @@ public class MailGunEmailClient implements EmailClient {
                 .block();
     }
 
+    @Override
+    public void sendLaterDocsConfirmationEmail(String recipientEmail, Locale locale) {
+        MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
+        form.put("from", List.of(senderEmail));
+        form.put("to", List.of(recipientEmail));
+        form.put("subject", List.of(emailContentCreator.createClientLaterDocsConfirmationEmailSubject(locale)));
+        form.put("html", List.of(emailContentCreator.createClientLaterDocsConfirmationEmailBody(locale)));
+
+        webClient.post()
+                .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
+                .body(fromMultipartData(form))
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
+    }
+
     @NotNull
     private Resource asResource(ApplicationFile applicationFile) {
         return new InMemoryResource(applicationFile.getFileBytes()) {

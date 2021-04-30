@@ -414,7 +414,7 @@ public class PageController {
             Application application = applicationRepository.find(applicationData.getId());
             application.getApplicationData().setUploadedDocs(applicationData.getUploadedDocs());
             applicationRepository.save(application);
-            pageEventPublisher.publish(new UploadedDocumentsSubmittedEvent(httpSession.getId(), application.getId()));
+            pageEventPublisher.publish(new UploadedDocumentsSubmittedEvent(httpSession.getId(), application.getId(), LocaleContextHolder.getLocale()));
         }
         LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
         String nextPage = landmarkPagesConfiguration.getTerminalPage();

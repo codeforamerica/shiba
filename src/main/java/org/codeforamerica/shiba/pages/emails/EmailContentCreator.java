@@ -23,6 +23,9 @@ public class EmailContentCreator {
     private final String clientBody = "email.client-body";
     private final String downloadCafAlert = "email.download-caf-alert";
     private final String nonCountyPartnerAlert = "email.non-county-partner-alert";
+    private final String laterDocsConfirmationEmailSubject = "later-docs.confirmation-email-subject";
+    private final String laterDocsConfirmationEmailBody = "later-docs.confirmation-email-body";
+    private final String laterDocsConfirmationEmailLink = "later-docs.confirmation-email-body-link";
 
     public EmailContentCreator(MessageSource messageSource) {
         this.messageSource = messageSource;
@@ -36,6 +39,19 @@ public class EmailContentCreator {
             eligibilitySpecificVerbiage = getMessage(snapNonExpeditedWaitTime, null, locale);
         }
         return wrapHtml(getMessage(clientBody, List.of(eligibilitySpecificVerbiage, confirmationId), locale));
+    }
+
+    public String createClientLaterDocsConfirmationEmailBody(Locale locale) {
+        String clientConfirmationEmailBody = getMessage(laterDocsConfirmationEmailBody, null, locale);
+        String clientConfirmationEmailLink = getMessage(laterDocsConfirmationEmailLink, null, locale);
+
+        return wrapHtml(clientConfirmationEmailBody + clientConfirmationEmailLink);
+    }
+
+    public String createClientLaterDocsConfirmationEmailSubject(Locale locale) {
+        String clientConfirmationEmailMessageSubject = getMessage(laterDocsConfirmationEmailSubject, null, locale);
+
+        return wrapHtml(clientConfirmationEmailMessageSubject);
     }
 
     public String createCaseworkerHTML(Locale locale) {

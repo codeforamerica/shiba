@@ -4,6 +4,7 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.parsers.EmailParser;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
@@ -13,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Locale;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -29,17 +32,20 @@ class UploadedDocumentsSubmittedListenerTest {
     private FeatureFlagConfiguration featureFlags;
     @Mock
     private EmailClient emailClient;
+    @Mock
+    private EmailParser emailParser;
 
     private UploadedDocumentsSubmittedListener uploadedDocumentsSubmittedListener;
     private String applicationId;
     private Application application;
     private UploadedDocumentsSubmittedEvent event;
+    private Locale locale = new Locale("en");
 
     @BeforeEach
     void setUp() {
         String sessionId = "some-session-id";
         applicationId = "some-application-id";
-        event = new UploadedDocumentsSubmittedEvent(sessionId, applicationId);
+        event = new UploadedDocumentsSubmittedEvent(sessionId, applicationId, locale);
 
         application = Application.builder().id(applicationId).county(County.Olmsted).build();
         uploadedDocumentsSubmittedListener = new UploadedDocumentsSubmittedListener(
@@ -47,7 +53,8 @@ class UploadedDocumentsSubmittedListenerTest {
                 applicationRepository,
                 monitoringService,
                 featureFlags,
-                emailClient);
+                emailClient,
+                emailParser);
     }
 
     @Test

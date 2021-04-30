@@ -15,11 +15,18 @@ public class EmailParser extends ApplicationDataParser<Optional<String>> {
     public Optional<String> parse(ApplicationData applicationData) {
         ParsingCoordinates contactInfoCoordinates = this.parsingConfiguration.get("contactInfo");
         PageInputCoordinates emailCoordinates = contactInfoCoordinates.getPageInputs().get("email");
-        String email = applicationData.getValue(emailCoordinates);
-        if (null == email || email.isEmpty()) {
+
+        ParsingCoordinates laterDocsEmailCoordinates = this.parsingConfiguration.get("matchInfo");
+        PageInputCoordinates matchInfoEmailCoordinates = laterDocsEmailCoordinates.getPageInputs().get("email");
+
+        String regularFlowEmail = applicationData.getValue(emailCoordinates);
+        String laterDocsEmail = applicationData.getValue(matchInfoEmailCoordinates);
+        if ((null == regularFlowEmail || regularFlowEmail.isEmpty()) && (null == laterDocsEmail || laterDocsEmail.isEmpty())) {
             return Optional.empty();
+        } else if (!(null == laterDocsEmail) && !laterDocsEmail.isEmpty()) {
+            return Optional.of(laterDocsEmail);
         }
 
-        return Optional.of(email);
+        return Optional.of(regularFlowEmail);
     }
 }

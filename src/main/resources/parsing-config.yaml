@@ -101,3 +101,8 @@ parsing:
       email:
         pageName: contactInfo
         inputName: email
+  matchInfo:
+    pageInputs:
+      email:
+        pageName: matchInfo
+        inputName: email
