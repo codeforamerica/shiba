@@ -13,6 +13,12 @@ mappings:
     sex: APPLICANT_SEX
     moveToMnDate: DATE_OF_MOVING_TO_MN
     moveToMnPreviousCity: APPLICANT_PREVIOUS_STATE
+  matchInfo:
+    dateOfBirth: DATE_OF_BIRTH
+    ssn: APPLICANT_SSN
+    phoneNumber: APPLICANT_PHONE_NUMBER
+    email: APPLICANT_EMAIL
+    caseNumber: CASE_NUMBER
   choosePrograms:
     programs:
       CCAP: CCAP

@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.output.caf;
 
 import org.codeforamerica.shiba.CountyMap;
-import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.application.*;
 import org.codeforamerica.shiba.mnit.MnitCountyInformation;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.Document;
@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
+import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
 
 @Component
@@ -60,7 +61,11 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
                         SINGLE_VALUE))
                 .orElse(null);
 
-        ApplicationInput fullNameInput = ofNullable(application.getApplicationData().getPagesData().getPage("personalInfo"))
+        String pageName = "personalInfo";
+        if (application.getFlow() == LATER_DOCS) {
+            pageName = "matchInfo";
+        }
+        ApplicationInput fullNameInput = ofNullable(application.getApplicationData().getPagesData().getPage(pageName))
                 .map(pageData ->
                         Stream.concat(Stream.ofNullable(pageData.get("firstName")), Stream.ofNullable(pageData.get("lastName")))
                                 .map(nameInput -> String.join("", nameInput.getValue()))

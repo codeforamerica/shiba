@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.output.applicationinputsmappers;
 
 import org.codeforamerica.shiba.*;
-import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.application.*;
 import org.codeforamerica.shiba.mnit.MnitCountyInformation;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
@@ -215,6 +215,29 @@ class CoverPageInputsMapperTest extends AbstractBasePageTest {
                 .applicationData(applicationData)
                 .county(County.Other)
                 .timeToComplete(null)
+                .build();
+
+        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, null, Recipient.CLIENT, null);
+
+        assertThat(applicationInputs).contains(
+                new ApplicationInput("coverPage", "fullName", List.of("someFirstName someLastName"), ApplicationInputType.SINGLE_VALUE)
+        );
+    }
+
+    @Test
+    void shouldIncludeCombinedFirstNameAndLastNameInputForLaterDocs() {
+        pagesData.put(
+                "matchInfo", new PageData(Map.of(
+                        "firstName", InputData.builder().value(List.of("someFirstName")).build(),
+                        "lastName", InputData.builder().value(List.of("someLastName")).build()))
+        );
+        Application application = Application.builder()
+                .id("someId")
+                .completedAt(ZonedDateTime.now())
+                .applicationData(applicationData)
+                .county(County.Other)
+                .timeToComplete(null)
+                .flow(FlowType.LATER_DOCS)
                 .build();
 
         List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, null, Recipient.CLIENT, null);
