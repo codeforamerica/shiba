@@ -92,7 +92,7 @@ public class UserJourneyPageTest extends FeatureTest {
     @ParameterizedTest
     @CsvSource(value = {
             "123, 1233, A caseworker will contact you within 5-7 days to review your application.",
-            "1, 1, A caseworker will contact you within 3 days to review your application."
+            "1, 1, Your county should reach out to you for your interview within 24 hours."
     })
     void userCanCompleteTheExpeditedFlow(String moneyMadeLast30Days, String liquidAssets, String expeditedServiceDetermination) {
         completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_SNAP, PROGRAM_CCAP), smartyStreetClient);
@@ -128,7 +128,7 @@ public class UserJourneyPageTest extends FeatureTest {
     @ParameterizedTest
     @CsvSource(value = {
             "123, 1233, A caseworker will contact you within 5-7 days to review your application.",
-            "1, 1, A caseworker will contact you within 3 days to review your application."
+            "1, 1, Your county should reach out to you for your interview within 24 hours."
     })
     void userCanCompleteTheExpeditedFlowWithHousehold(String moneyMadeLast30Days, String liquidAssets, String expeditedServiceDetermination) {
         completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_SNAP, PROGRAM_CCAP), smartyStreetClient);
