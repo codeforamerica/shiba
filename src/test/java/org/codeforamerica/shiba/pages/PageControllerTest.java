@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockMultipartFile;
@@ -160,7 +161,7 @@ class PageControllerTest {
 
         InOrder inOrder = inOrder(applicationRepository, pageEventPublisher);
         inOrder.verify(applicationRepository).save(application);
-        inOrder.verify(pageEventPublisher).publish(new UploadedDocumentsSubmittedEvent(sessionId, applicationId));
+        inOrder.verify(pageEventPublisher).publish(new UploadedDocumentsSubmittedEvent(sessionId, applicationId,  LocaleContextHolder.getLocale()));
     }
 
     @Test
