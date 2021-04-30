@@ -54,7 +54,7 @@ public class UploadedDocumentsSubmittedListener extends ApplicationEventListener
     @Async
     @EventListener
     public void sendLaterDocsConfirmationEmail(UploadedDocumentsSubmittedEvent event) {
-        if (featureFlags.get("later-docs-feature").isOff() || featureFlags.get("document-upload-feature").isOff()) {
+        if (featureFlags.get("later-docs-feature").isOff()) {
             return;
         }
 

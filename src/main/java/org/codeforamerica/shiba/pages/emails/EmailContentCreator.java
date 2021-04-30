@@ -45,16 +45,14 @@ public class EmailContentCreator {
         String clientConfirmationEmailBody = getMessage(laterDocsConfirmationEmailBody, null, locale);
         String clientConfirmationEmailLink = getMessage(laterDocsConfirmationEmailLink, null, locale);
 
-        return wrapHtml(clientConfirmationEmailBody + clientConfirmationEmailLink);
+        return wrapHtml(clientConfirmationEmailBody + "\n" + clientConfirmationEmailLink);
     }
 
     public String createClientLaterDocsConfirmationEmailSubject(Locale locale) {
-        String clientConfirmationEmailMessageSubject = getMessage(laterDocsConfirmationEmailSubject, null, locale);
-
-        return wrapHtml(clientConfirmationEmailMessageSubject);
+        return getMessage(laterDocsConfirmationEmailSubject, null, locale);
     }
 
-    public String createCaseworkerHTML(Locale locale) {
+    public String createCaseworkerHTML() {
         return wrapHtml("<p>This application was submitted on behalf of a client.</p><p>Please keep the file pages in the order they appear in the file; intake workers will be looking for the cover page in front of the CAF.</p>");
     }
 

@@ -39,7 +39,7 @@ class EmailContentCreatorTest {
 
     @Test
     void includesCaseworkerInstructions() {
-        String emailContent = emailContentCreator.createCaseworkerHTML(Locale.ENGLISH);
+        String emailContent = emailContentCreator.createCaseworkerHTML();
 
         assertThat(emailContent).contains("This application was submitted on behalf of a client.");
     }
@@ -75,5 +75,13 @@ class EmailContentCreatorTest {
         assertThat(nonCountyPartnerAlertEmailContent).isEqualTo(
                 "Application confirm Id was submitted at 01/01/2020 05:10."
         );
+    }
+
+    @Test
+    void shouldCreateLaterDocsConfirmationEmail() {
+        String laterDocsConfirmationEmailSubject = emailContentCreator.createClientLaterDocsConfirmationEmailSubject(Locale.ENGLISH);
+        String laterDocsConfirmationEmailBody = emailContentCreator.createClientLaterDocsConfirmationEmailBody(Locale.ENGLISH);
+        assertThat(laterDocsConfirmationEmailSubject).isEqualTo("We received your documents");
+        assertThat(laterDocsConfirmationEmailBody).isEqualTo("We received your documents for your Minnesota Benefits application. Look out for mail about your case. You may need to complete additional steps. To ask about your application status, find your county's contact information here.");
     }
 }

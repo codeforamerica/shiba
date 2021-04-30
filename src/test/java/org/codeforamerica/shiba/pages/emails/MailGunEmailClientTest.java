@@ -143,7 +143,7 @@ class MailGunEmailClientTest {
         String recipientEmail = "someRecipient";
         String emailContent = "content";
         String recipientName = "test recipient";
-        when(emailContentCreator.createCaseworkerHTML(Locale.ENGLISH)).thenReturn(emailContent);
+        when(emailContentCreator.createCaseworkerHTML()).thenReturn(emailContent);
 
         wireMockServer.stubFor(post(anyUrl())
                 .willReturn(aResponse().withStatus(200)));
@@ -366,7 +366,7 @@ class MailGunEmailClientTest {
         String recipientEmail = "someRecipient";
         String emailContent = "content";
         String recipientName = "test recipient";
-        when(emailContentCreator.createCaseworkerHTML(Locale.ENGLISH)).thenReturn(emailContent);
+        when(emailContentCreator.createCaseworkerHTML()).thenReturn(emailContent);
 
         mailGunEmailClient = new MailGunEmailClient(
                 senderEmail,
