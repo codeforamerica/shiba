@@ -6,7 +6,6 @@ import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.PageData;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -58,22 +57,20 @@ public class CountyParser extends ApplicationDataParser<County> {
     }
 
     private boolean shouldUseMailingAddress(ApplicationData applicationData) {
-        Map<String, PageInputCoordinates> homeAddressConfig = parsingConfiguration.get("homeAddress").getPageInputs();
-        PageInputCoordinates homeAddressCoordinates = homeAddressConfig.get("county");
-        String isHomelessPageName = homeAddressConfig.get("isHomeless").getInputName();
-        String sameMailingAddressInputName = homeAddressConfig.get("sameMailingAddress").getInputName();
+        var homeAddressConfig = parsingConfiguration.get("homeAddress").getPageInputs();
+        var homeAddressCoordinates = homeAddressConfig.get("county");
+        var isHomelessPageName = homeAddressConfig.get("isHomeless").getInputName();
+        var sameMailingAddressInputName = homeAddressConfig.get("sameMailingAddress").getInputName();
 
-        PageData homeAddressCoordinatesPage = applicationData.getPagesData().getPage(homeAddressCoordinates.getPageName());
-        return ofNullable(homeAddressCoordinatesPage).stream().allMatch(pageData ->
-                {
-                    boolean isHomeless = ofNullable(pageData.get(isHomelessPageName))
-                            .map(inputData -> inputData.getValue().equals(List.of("true")))
-                            .orElse(false);
-                    boolean useDifferentAddress = ofNullable(pageData.get(sameMailingAddressInputName))
-                            .map(inputData -> inputData.getValue().equals(List.of("false")))
-                            .orElse(true);
-                    return isHomeless && useDifferentAddress;
-                }
-        );
+        var homeAddressCoordinatesPage = applicationData.getPagesData().getPage(homeAddressCoordinates.getPageName());
+        return ofNullable(homeAddressCoordinatesPage).stream().allMatch(pageData -> {
+            boolean isHomeless = ofNullable(pageData.get(isHomelessPageName))
+                    .map(inputData -> inputData.getValue().equals(List.of("true")))
+                    .orElse(false);
+            boolean useDifferentAddress = ofNullable(pageData.get(sameMailingAddressInputName))
+                    .map(inputData -> inputData.getValue().equals(List.of("false")))
+                    .orElse(true);
+            return isHomeless && useDifferentAddress;
+        });
     }
 }
