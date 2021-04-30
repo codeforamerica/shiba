@@ -470,6 +470,24 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             navigateTo("languagePreferences?utm_source=" + CHILDCARE_WAITING_LIST_UTM_SOURCE);
             assertThat(getPdfFieldText(submitAndDownloadCaf(), "UTM_SOURCE")).isEmpty();
         }
+
+        @Test
+        void shouldMapDrugFelonyYesIfAnsweredYes(){
+            navigateTo("legalStuff");
+            testPage.enter("agreeToTerms", "I agree");
+            testPage.enter("drugFelony", YES.getDisplayValue());
+            testPage.clickContinue();
+            assertThat(getPdfFieldText(submitAndDownloadCaf(), "DRUG_FELONY")).isEqualTo("Yes");
+        }
+
+        @Test
+        void shouldMapDrugFelonyNoIfAnsweredNo(){
+            navigateTo("legalStuff");
+            testPage.enter("agreeToTerms", "I agree");
+            testPage.enter("drugFelony", NO.getDisplayValue());
+            testPage.clickContinue();
+            assertThat(getPdfFieldText(submitAndDownloadCaf(), "DRUG_FELONY")).isEqualTo("No");
+        }
     }
 
     @Nested

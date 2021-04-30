@@ -331,6 +331,7 @@ public abstract class AbstractBasePageTest {
         driver.findElement(By.id("additionalInfo")).sendKeys("Some additional information about my application");
         testPage.clickContinue();
         testPage.enter("agreeToTerms", "I agree");
+        testPage.enter("drugFelony", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.enter("applicantSignature", "some name");
         testPage.clickButton("Submit");

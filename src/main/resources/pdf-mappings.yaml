@@ -285,6 +285,8 @@ mappings:
     employersName: ADULT_REQUESTING_CHILDCARE_WORKING_EMPLOYERS_NAME
   additionalInfo:
     additionalInfo: ADDITIONAL_APPLICATION_INFO
+  legalStuff:
+    drugFelony: DRUG_FELONY
 enums:
   EVERY_WEEK: Every week
   EVERY_TWO_WEEKS: Every two weeks
