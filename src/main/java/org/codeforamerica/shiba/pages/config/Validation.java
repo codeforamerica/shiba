@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 
-@SuppressWarnings("unused")
+/* Validation on an input field */
 public enum Validation {
     NONE(strings -> true),
     NOT_BLANK(strings -> !String.join("", strings).isBlank()),

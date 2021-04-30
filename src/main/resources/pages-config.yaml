@@ -1015,177 +1015,177 @@ pageDefinitions:
         type: SELECT
         options:
           selectableOptions:
-            - value: AIKIN
+            - value: Aikin
               messageKey: identify-county-aikin
-            - value: ANOKA
+            - value: Anoka
               messageKey: identify-county-anoka
-            - value: BECKER
+            - value: Becker
               messageKey: identify-county-becker
-            - value: BELTRAMI
+            - value: Beltrami
               messageKey: identify-county-beltrami
-            - value: BENTON
+            - value: Benton
               messageKey: identify-county-benton
-            - value: BIG STONE
+            - value: BigStone
               messageKey: identify-county-big-stone
-            - value: BLUE EARTH
+            - value: BlueEarth
               messageKey: identify-county-blue-earth
-            - value: BROWN
+            - value: Brown
               messageKey: identify-county-brown
-            - value: CARLTON
+            - value: Carlton
               messageKey: identify-county-carlton
-            - value: CARVER
+            - value: Carver
               messageKey: identify-county-carver
-            - value: CASS
+            - value: Cass
               messageKey: identify-county-cass
-            - value: CHIPPEWA
+            - value: Chippewa
               messageKey: identify-county-chippewa
-            - value: CHISAGO
+            - value: Chisago
               messageKey: identify-county-chisago
-            - value: CLAY
+            - value: Clay
               messageKey: identify-county-clay
-            - value: CLEARWATER
+            - value: Clearwater
               messageKey: identify-county-clearwater
-            - value: COOK
+            - value: Cook
               messageKey: identify-county-cook
-            - value: COTTONWOOD
+            - value: Cottonwood
               messageKey: identify-county-cottonwood
-            - value: CROW WING
+            - value: CrowWing
               messageKey: identify-county-crow-wing
-            - value: DAKOTA
+            - value: Dakota
               messageKey: identify-county-dakota
-            - value: DODGE
+            - value: Dodge
               messageKey: identify-county-dodge
-            - value: DOUGLAS
+            - value: Douglas
               messageKey: identify-county-douglas
-            - value: FARIBAULT
+            - value: Faribault
               messageKey: identify-county-faribault
-            - value: FILLMORE
+            - value: Fillmore
               messageKey: identify-county-fillmore
-            - value: FREEBORN
+            - value: Freeborn
               messageKey: identify-county-freeborn
-            - value: GOODHUE
+            - value: Goodhue
               messageKey: identify-county-goodhue
-            - value: GRANT
+            - value: Grant
               messageKey: identify-county-grant
-            - value: HENNEPIN
+            - value: Hennepin
               messageKey: identify-county-hennepin
-            - value: HOUSTON
+            - value: Houston
               messageKey: identify-county-houston
-            - value: HUBBARD
+            - value: Hubbard
               messageKey: identify-county-hubbard
-            - value: ISANTI
+            - value: Isanti
               messageKey: identify-county-isanti
-            - value: ITASCA
+            - value: Itasca
               messageKey: identify-county-itasca
-            - value: JACKSON
+            - value: Jackson
               messageKey: identify-county-jackson
-            - value: KANABEC
+            - value: Kanabec
               messageKey: identify-county-kanabec
-            - value: KANDIYOHI
+            - value: Kandiyohi
               messageKey: identify-county-kandiyohi
-            - value: KITTSON
+            - value: Kittson
               messageKey: identify-county-kittson
-            - value: KOOCHICHING
+            - value: Koochiching
               messageKey: identify-county-koochiching
-            - value: LAC QUI PARLE
+            - value: LacQuiParle
               messageKey: identify-county-lac-qui-parle
-            - value: LAKE
+            - value: Lake
               messageKey: identify-county-lake
-            - value: LAKE OF THE WOODS
+            - value: LakeOfTheWoods
               messageKey: identify-county-lake-of-the-woods
-            - value: LE SUEUR
+            - value: LeSueur
               messageKey: identify-county-le-sueur
-            - value: LINCOLN
+            - value: Lincoln
               messageKey: identify-county-lincoln
-            - value: LYON
+            - value: Lyon
               messageKey: identify-county-lyon
-            - value: MCLEOD
+            - value: Mcleod
               messageKey: identify-county-mcleod
-            - value: MAHNOMEN
+            - value: Mahnomen
               messageKey: identify-county-mahnomen
-            - value: MARSHALL
+            - value: Marshall
               messageKey: identify-county-marshall
-            - value: MEEKER
+            - value: Meeker
               messageKey: identify-county-meeker
-            - value: MARTIN LACS
+            - value: MartinLacs
               messageKey: identify-county-martin-lacs
-            - value: MORRISON
+            - value: Morrison
               messageKey: identify-county-morrison
-            - value: MOWER
+            - value: Mower
               messageKey: identify-county-mower
-            - value: MURRAY
+            - value: Murray
               messageKey: identify-county-murray
-            - value: NICOLLET
+            - value: Nicollet
               messageKey: identify-county-nicollet
-            - value: NOBLES
+            - value: Nobles
               messageKey: identify-county-nobles
-            - value: NORMAN
+            - value: Norman
               messageKey: identify-county-norman
-            - value: OLMSTED
+            - value: Olmsted
               messageKey: identify-county-olmsted
-            - value: OTTER TAIL
+            - value: OtterTail
               messageKey: identify-county-otter-tail
-            - value: PENNINGTON
+            - value: Pennington
               messageKey: identify-county-pennington
-            - value: PINE COUNTY
+            - value: PineCounty
               messageKey: identify-county-pine-county
-            - value: PIPESTONE
+            - value: Pipestone
               messageKey: identify-county-pipestone
-            - value: POLK
+            - value: Polk
               messageKey: identify-county-polk
-            - value: POPE
+            - value: Pope
               messageKey: identify-county-pope
-            - value: RAMSEY
+            - value: Ramsey
               messageKey: identify-county-ramsey
-            - value: RED LAKE
+            - value: RedLake
               messageKey: identify-county-red-lake
-            - value: REDWOOD
+            - value: Redwood
               messageKey: identify-county-redwood
-            - value: RENVILLE
+            - value: Renville
               messageKey: identify-county-renville
-            - value: RICE
+            - value: Rice
               messageKey: identify-county-rice
-            - value: ROCK
+            - value: Rock
               messageKey: identify-county-rock
-            - value: ROSEAU
+            - value: Roseau
               messageKey: identify-county-roseau
-            - value: SAINT LOUIS
+            - value: StLouis
               messageKey: identify-county-saint-louis
-            - value: SCOTT
+            - value: Scott
               messageKey: identify-county-scott
-            - value: SHERBURNE
+            - value: Sherburne
               messageKey: identify-county-sherburne
-            - value: SIBLEY
+            - value: Sibley
               messageKey: identify-county-sibley
-            - value: STEARNS
+            - value: Stearns
               messageKey: identify-county-stearns
-            - value: STEELE
+            - value: Steele
               messageKey: identify-county-steele
-            - value: STEVENS
+            - value: Stevens
               messageKey: identify-county-stevens
-            - value: SWIFT
+            - value: Swift
               messageKey: identify-county-swift
-            - value: TODD
+            - value: Todd
               messageKey: identify-county-todd
-            - value: TRAVERSE
+            - value: Traverse
               messageKey: identify-county-traverse
-            - value: WABASHA
+            - value: Wabasha
               messageKey: identify-county-wabasha
-            - value: WADENA
+            - value: Wadena
               messageKey: identify-county-wadena
-            - value: WASECA
+            - value: Waseca
               messageKey: identify-county-waseca
-            - value: WASHINGTON
+            - value: Washington
               messageKey: identify-county-washington
-            - value: WATONWAN
+            - value: Watonwan
               messageKey: identify-county-watonwan
-            - value: WILKIN
+            - value: Wilkin
               messageKey: identify-county-wilkin
-            - value: WINONA
+            - value: Winona
               messageKey: identify-county-winona
-            - value: WRIGHT
+            - value: Wright
               messageKey: identify-county-wright
-            - value: YELLOW MEDICINE
+            - value: YellowMedicine
               messageKey: identify-county-yellow-medicine
   - &matchInfo
     name: matchInfo
@@ -3041,82 +3041,82 @@ workflow:
         flag: county-anoka
         condition:
           input: county
-          value: "ANOKA"
+          value: Anoka
       - pageName: matchInfo
         flag: county-carver
         condition:
           input: county
-          value: "CARVER"
+          value: Carver
       - pageName: matchInfo
         flag: county-clay
         condition:
           input: county
-          value: "CLAY"
+          value: Clay
       - pageName: matchInfo
         flag: county-cook
         condition:
           input: county
-          value: "COOK"
+          value: Cook
       - pageName: matchInfo
         flag: county-dodge
         condition:
           input: county
-          value: "DODGE"
+          value: Dodge
       - pageName: matchInfo
         flag: county-hennepin
         condition:
           input: county
-          value: "HENNEPIN"
+          value: Hennepin
       - pageName: matchInfo
         flag: county-morrison
         condition:
           input: county
-          value: "MORRISON"
+          value: Morrison
       - pageName: matchInfo
         flag: county-olmsted
         condition:
           input: county
-          value: "OLMSTED"
+          value: Olmsted
       - pageName: matchInfo
         flag: county-ottertail
         condition:
           input: county
-          value: "OTTERTAIL"
+          value: OtterTail
       - pageName: matchInfo
         flag: county-sherburne
         condition:
           input: county
-          value: "SHERBURNE"
+          value: Sherburne
       - pageName: matchInfo
         flag: county-steele
         condition:
           input: county
-          value: "STEELE"
+          value: Steele
       - pageName: matchInfo
         flag: county-stlouis
         condition:
           input: county
-          value: "STLOUIS"
+          value: StLouis
       - pageName: matchInfo
         flag: county-wabasha
         condition:
           input: county
-          value: "WABASHA"
+          value: Wabasha
       - pageName: matchInfo
         flag: county-waseca
         condition:
           input: county
-          value: "WASECA"
+          value: Waseca
       - pageName: matchInfo
         flag: county-wright
         condition:
           input: county
-          value: "WRIGHT"
+          value: Wright
       - pageName: emailDocsToYourCounty
   matchInfo:
     pageConfiguration: *matchInfo
     nextPages:
-      - pageName: documentsSent
+      - pageName: uploadDocuments
   emailDocsToYourCounty:
     pageConfiguration: *emailDocsToYourCounty
     nextPages:
@@ -3174,6 +3174,11 @@ landmarkPages:
     - uploadDocuments
     - uploadDocumentsDeleteWarningPage
     - success
+    - matchInfo
+    - documentsSent
+    - identifyCounty
   terminalPage: success
+  laterDocsTerminalPage: documentsSent
   submitPage: signThisApplication
+  laterDocsIdPage: matchInfo # Page where confirmation number is generated for later docs (happens before submit)
   uploadDocumentsPage: uploadDocuments

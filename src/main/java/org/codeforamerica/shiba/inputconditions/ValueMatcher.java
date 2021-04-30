@@ -3,7 +3,7 @@ package org.codeforamerica.shiba.inputconditions;
 import java.util.List;
 import java.util.function.BiFunction;
 
-@SuppressWarnings("unused")
+/* Matcher used for Condition */
 public enum ValueMatcher {
     EMPTY((testValue, ignoredTargetValue) -> testValue.stream().allMatch(String::isEmpty)),
     NONE_SELECTED((testValue, ignoredTargetValue) -> testValue.isEmpty()),

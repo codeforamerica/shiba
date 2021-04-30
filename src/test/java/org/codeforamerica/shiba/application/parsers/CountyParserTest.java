@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 
 class CountyParserTest extends AbstractParserTest {
     CountyParser countyParser;
@@ -80,6 +81,28 @@ class CountyParserTest extends AbstractParserTest {
                 new PageDataBuilder("homeAddressPageName", Map.of(
                         "addressLine6", List.of("not a county"))
                 )
+        )));
+
+        assertThat(countyParser.parse(applicationData)).isEqualTo(County.Other);
+    }
+
+    @Test
+    void shouldParseCountyForLaterDocs() {
+        applicationData.setFlow(LATER_DOCS);
+        applicationData.setPagesData(new PagesDataBuilder().build(List.of(
+                new PageDataBuilder("identifyCounty", Map.of(
+                        "county", List.of("Olmsted"))
+                )
+        )));
+
+        assertThat(countyParser.parse(applicationData)).isEqualTo(County.Olmsted);
+    }
+
+    @Test
+    void shouldParseCountyForLaterDocsWhenCountyIsInvalid() {
+        applicationData.setFlow(LATER_DOCS);
+        applicationData.setPagesData(new PagesDataBuilder().build(List.of(
+                new PageDataBuilder("identifyCounty", Map.of())
         )));
 
         assertThat(countyParser.parse(applicationData)).isEqualTo(County.Other);

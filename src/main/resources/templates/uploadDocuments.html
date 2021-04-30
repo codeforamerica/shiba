@@ -39,9 +39,9 @@
                                 <div class="preview-container"></div>
                             </div>
 
-                            <th:block th:with="isEmployed=${data.get('employmentStatus').inputDataValueContainsAny('areYouWorking', T(java.util.List).of('true')) && applicationData.isApplicationWith(T(java.util.List).of('SNAP', 'CASH', 'EA', 'GRH'))},
-                                          hasHousingExpenses=${!data.get('homeExpenses').inputDataValueContainsAny('homeExpenses', T(java.util.List).of('NONE_OF_THE_ABOVE')) && applicationData.isApplicationWith(T(java.util.List).of('SNAP', 'CASH', 'EA'))},
-                                          hasChangedWorkSituation=${data.get('workSituation').inputDataValueContainsAny('hasWorkSituation', T(java.util.List).of('true')) && applicationData.isApplicationWith(T(java.util.List).of('SNAP', 'CASH', 'GRH'))}">
+                            <th:block th:with="isEmployed=${data.get('employmentStatus') != null && data.get('employmentStatus').inputDataValueContainsAny('areYouWorking', T(java.util.List).of('true')) && applicationData.isApplicationWith(T(java.util.List).of('SNAP', 'CASH', 'EA', 'GRH'))},
+                                          hasHousingExpenses=${data.get('homeExpenses') != null && !data.get('homeExpenses').inputDataValueContainsAny('homeExpenses', T(java.util.List).of('NONE_OF_THE_ABOVE')) && applicationData.isApplicationWith(T(java.util.List).of('SNAP', 'CASH', 'EA'))},
+                                          hasChangedWorkSituation=${data.get('workSituation') != null && data.get('workSituation').inputDataValueContainsAny('hasWorkSituation', T(java.util.List).of('true')) && applicationData.isApplicationWith(T(java.util.List).of('SNAP', 'CASH', 'GRH'))}">
                                 <div class="reveal reveal-adjacent spacing-above-60"
                                      th:if="${isEmployed || hasHousingExpenses || hasChangedWorkSituation}">
                                     <a href="#" class="reveal__link reveal__link-adjacent">

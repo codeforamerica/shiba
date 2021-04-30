@@ -6,7 +6,8 @@ import lombok.Value;
 import org.codeforamerica.shiba.pages.config.Validator;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -37,14 +38,14 @@ public class InputData implements Serializable {
     }
 
     public Boolean valid() {
-        return this.validators.stream()
+        return validators.stream()
                 .map(Validator::getValidation)
-                .allMatch(validation -> validation.apply(this.value));
+                .allMatch(validation -> validation.apply(value));
     }
 
     public Optional<String> errorMessageKey() {
-        return this.validators.stream()
-                .filter(validator -> !validator.getValidation().apply(this.value))
+        return validators.stream()
+                .filter(validator -> !validator.getValidation().apply(value))
                 .findFirst()
                 .map(Validator::getErrorMessageKey);
     }

@@ -33,6 +33,7 @@ import java.time.ZoneId;
 import java.util.*;
 
 import static java.util.Optional.ofNullable;
+import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 
 @Controller
 @Slf4j
@@ -160,9 +161,11 @@ public class PageController {
             }
         }
 
-        if (!landmarkPagesConfiguration.isPostSubmitPage(pageName) && applicationData.getId() != null) {
+        boolean hasCompletedApplicationAndIsGoingtoPreSubmitPage = !landmarkPagesConfiguration.isPostSubmitPage(pageName) && applicationData.getId() != null;
+        boolean applicationIsUnstarted = !landmarkPagesConfiguration.isLandingPage(pageName) && applicationData.getStartTime() == null;
+        if (hasCompletedApplicationAndIsGoingtoPreSubmitPage) {
             return new ModelAndView(String.format("redirect:/pages/%s", landmarkPagesConfiguration.getTerminalPage()));
-        } else if (!landmarkPagesConfiguration.isLandingPage(pageName) && applicationData.getStartTime() == null) {
+        } else if (applicationIsUnstarted) {
             return new ModelAndView(String.format("redirect:/pages/%s", landmarkPagesConfiguration.getLandingPages().get(0)));
         }
 
@@ -322,6 +325,15 @@ public class PageController {
             pageEventPublisher.publish(new SubworkflowCompletedEvent(httpSession.getId(), groupName));
         }
 
+        if (applicationConfiguration.getLandmarkPages().isLaterDocsIdPage(pageName)) {
+            applicationData.setFlow(LATER_DOCS);
+            if (applicationData.getId() == null) {
+                applicationData.setId(applicationRepository.getNextId());
+            }
+            Application application = applicationFactory.newApplication(applicationData);
+            applicationRepository.save(application); //upsert already
+        }
+
         if (pageData.isValid()) {
             ofNullable(pageWorkflow.getEnrichment())
                     .map(applicationEnrichment::getEnrichment)
@@ -388,11 +400,11 @@ public class PageController {
     public void upload(@RequestParam("file") MultipartFile file,
                        @RequestParam("dataURL") String dataURL,
                        @RequestParam("type") String type) throws IOException, InterruptedException {
-        if (this.applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
+        if (applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
                 file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
             String s3FilePath = String.format("%s/%s", applicationData.getId(), UUID.randomUUID());
             documentRepositoryService.upload(s3FilePath, file);
-            this.applicationData.addUploadedDoc(file, s3FilePath, dataURL, type);
+            applicationData.addUploadedDoc(file, s3FilePath, dataURL, type);
         }
     }
 
@@ -405,12 +417,13 @@ public class PageController {
             pageEventPublisher.publish(new UploadedDocumentsSubmittedEvent(httpSession.getId(), application.getId()));
         }
         LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
-        String terminalPage = landmarkPagesConfiguration.getTerminalPage();
+        String nextPage = landmarkPagesConfiguration.getTerminalPage();
+        if (applicationData.getFlow() == LATER_DOCS) {
+            nextPage = landmarkPagesConfiguration.getLaterDocsTerminalPage();
+        }
 
-        return new ModelAndView(String.format("redirect:/pages/%s", terminalPage));
+        return new ModelAndView(String.format("redirect:/pages/%s", nextPage));
     }
-
-
 
     @SuppressWarnings("SpringMVCViewInspection")
     @PostMapping("/remove-upload/{filename}")
@@ -424,5 +437,4 @@ public class PageController {
 
         return new ModelAndView("redirect:/pages/uploadDocuments");
     }
-
 }

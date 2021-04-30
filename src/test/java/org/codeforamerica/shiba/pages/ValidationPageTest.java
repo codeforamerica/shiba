@@ -272,6 +272,14 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         }
 
         @Test
+        void shouldNotFailValidationForCaseNumberWhenValueIsEmptyWhenReturningToPage() {
+            driver.navigate().to(baseUrl + "/pages/caseNumberPage");
+            driver.findElement(By.cssSelector("button")).click();
+            driver.navigate().back();
+            assertThat(testPage.hasInputError("caseNumberInput")).isFalse();
+        }
+
+        @Test
         void shouldPassValidationForCaseNumberWhenValueIsExactlySevenDigits() {
             driver.navigate().to(baseUrl + "/pages/caseNumberPage");
 
