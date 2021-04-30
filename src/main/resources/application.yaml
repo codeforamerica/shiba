@@ -79,7 +79,6 @@ smarty-street-url: "https://us-street.api.smartystreets.com/street-address"
 encryption-key: ${ENCRYPTION_KEY}
 logging:
   level:
-    org.apache.hc.client5.http.wire: INFO
     org.apache.pdfbox.multipdf: off
     org.apache.pdfbox.cos: ERROR
     org.apache.pdfbox.pdmodel.font: ERROR
