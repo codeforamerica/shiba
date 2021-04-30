@@ -146,12 +146,7 @@ def unitTest = tasks.register("unitTest", Test) {
             JUnitPlatformOptions options ->
                 options.excludeTags("db", "externalService")
         }
-
-        def maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
-        maxParallelForks = Math.max(maxParallelForks, 2);
-        project.logger.lifecycle('maxParallelForks set to ' + maxParallelForks)
-
-        task.maxParallelForks(maxParallelForks)
+        task.maxParallelForks(Runtime.runtime.availableProcessors().intdiv(2) ?: 1)
 }
 
 def dbTest = tasks.register("dbTest", Test) {
