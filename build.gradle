@@ -131,7 +131,10 @@ dependencies {
     testImplementation 'io.percy:percy-java-selenium:1.0.0'
 }
 
-compileJava.inputs.files(processResources)
+compileJava{
+    dependsOn(generateGitProperties)
+    inputs.files(processResources)
+}
 
 def unitTest = tasks.register("unitTest", Test) {
     Test task ->
@@ -146,7 +149,6 @@ def unitTest = tasks.register("unitTest", Test) {
             JUnitPlatformOptions options ->
                 options.excludeTags("db", "externalService")
         }
-        task.maxParallelForks(Runtime.runtime.availableProcessors().intdiv(2) ?: 1)
 }
 
 def dbTest = tasks.register("dbTest", Test) {
@@ -162,7 +164,6 @@ def dbTest = tasks.register("dbTest", Test) {
             JUnitPlatformOptions options ->
                 options.includeTags 'db'
         }
-        task.maxParallelForks(Runtime.runtime.availableProcessors().intdiv(2) ?: 1)
 }
 
 def testAll = tasks.register("testAll", Test) {
@@ -197,6 +198,9 @@ tasks.withType(Test).configureEach {
                 environment(key, value)
             }
         }
+        task.jvmArgs '-XX:+ShowCodeDetailsInExceptionMessages'
+        task.maxParallelForks(Runtime.runtime.availableProcessors().intdiv(2) ?: 1)
+
 }
 
 licenseReport {
