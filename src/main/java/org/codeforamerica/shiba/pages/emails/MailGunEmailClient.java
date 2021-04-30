@@ -96,7 +96,7 @@ public class MailGunEmailClient implements EmailClient {
             form.put("cc", List.of(senderEmail));
         }
         form.put("subject", List.of("MNBenefits.org Application for " + recipientName));
-        form.put("html", List.of(emailContentCreator.createCaseworkerHTML(Locale.ENGLISH)));
+        form.put("html", List.of(emailContentCreator.createCaseworkerHTML()));
         form.put("attachment", List.of(asResource(applicationFile)));
 
         MDC.put("confirmationId", confirmationId);

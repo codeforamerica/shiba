@@ -5,6 +5,7 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.parsers.EmailParser;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
@@ -39,6 +40,9 @@ public class UploadedDocumentsSubmittedListener extends ApplicationEventListener
     @EventListener
     public void send(UploadedDocumentsSubmittedEvent event) {
         Application application = getApplicationFromEvent(event);
+        if (application.getFlow() == FlowType.LATER_DOCS) {
+            sendLaterDocsConfirmationEmail(event);
+        }
         if (featureFlags.get("submit-docs-via-email-for-hennepin").isOn()
                 && (application.getCounty().equals(County.Hennepin)
                 || application.getCounty().equals(County.Other))) {
@@ -50,10 +54,7 @@ public class UploadedDocumentsSubmittedListener extends ApplicationEventListener
         }
     }
 
-
-    @Async
-    @EventListener
-    public void sendLaterDocsConfirmationEmail(UploadedDocumentsSubmittedEvent event) {
+    private void sendLaterDocsConfirmationEmail(UploadedDocumentsSubmittedEvent event) {
         if (featureFlags.get("later-docs-feature").isOff()) {
             return;
         }

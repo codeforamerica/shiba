@@ -1,18 +1,14 @@
 package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.NonSessionScopedApplicationData;
-import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
-import org.codeforamerica.shiba.application.parsers.DocumentListParser;
-import org.codeforamerica.shiba.output.MnitDocumentConsumer;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
-import org.codeforamerica.shiba.pages.enrichment.ApplicationEnrichment;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.codeforamerica.shiba.pages.events.UploadedDocumentsSubmittedEvent;
@@ -52,8 +48,6 @@ class PageControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private ApplicationEnrichment applicationEnrichment;
-    @MockBean
     private Clock clock;
     @MockBean
     private ApplicationRepository applicationRepository;
@@ -62,13 +56,7 @@ class PageControllerTest {
     @MockBean
     private PageEventPublisher pageEventPublisher;
     @MockBean
-    private DocumentListParser documentListParser;
-    @MockBean
     private FeatureFlagConfiguration featureFlags;
-    @MockBean
-    private UploadDocumentConfiguration uploadDocumentConfiguration;
-    @MockBean
-    private MnitDocumentConsumer mnitDocumentConsumer;
 
     @Autowired
     private PageController pageController;
@@ -133,7 +121,6 @@ class PageControllerTest {
         inOrder.verify(pageEventPublisher).publish(new ApplicationSubmittedEvent(sessionId, applicationId, FlowType.FULL, Locale.ENGLISH));
     }
 
-
     @Test
     void shouldPublishUploadedDocumentsSubmittedEvent() throws Exception {
         String applicationId = "someId";
@@ -161,7 +148,7 @@ class PageControllerTest {
 
         InOrder inOrder = inOrder(applicationRepository, pageEventPublisher);
         inOrder.verify(applicationRepository).save(application);
-        inOrder.verify(pageEventPublisher).publish(new UploadedDocumentsSubmittedEvent(sessionId, applicationId,  LocaleContextHolder.getLocale()));
+        inOrder.verify(pageEventPublisher).publish(new UploadedDocumentsSubmittedEvent(sessionId, applicationId, LocaleContextHolder.getLocale()));
     }
 
     @Test

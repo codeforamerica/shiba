@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 @Component
 public class EmailParser extends ApplicationDataParser<Optional<String>> {
     public EmailParser(ParsingConfiguration parsingConfiguration) {
@@ -13,20 +15,22 @@ public class EmailParser extends ApplicationDataParser<Optional<String>> {
 
     @Override
     public Optional<String> parse(ApplicationData applicationData) {
-        ParsingCoordinates contactInfoCoordinates = this.parsingConfiguration.get("contactInfo");
-        PageInputCoordinates emailCoordinates = contactInfoCoordinates.getPageInputs().get("email");
-
-        ParsingCoordinates laterDocsEmailCoordinates = this.parsingConfiguration.get("matchInfo");
-        PageInputCoordinates matchInfoEmailCoordinates = laterDocsEmailCoordinates.getPageInputs().get("email");
-
-        String regularFlowEmail = applicationData.getValue(emailCoordinates);
-        String laterDocsEmail = applicationData.getValue(matchInfoEmailCoordinates);
-        if ((null == regularFlowEmail || regularFlowEmail.isEmpty()) && (null == laterDocsEmail || laterDocsEmail.isEmpty())) {
-            return Optional.empty();
-        } else if (!(null == laterDocsEmail) && !laterDocsEmail.isEmpty()) {
+        String laterDocsEmail = getEmail(applicationData, "matchInfo");
+        if (isNotBlank(laterDocsEmail)) {
             return Optional.of(laterDocsEmail);
         }
 
-        return Optional.of(regularFlowEmail);
+        String regularFlowEmail = getEmail(applicationData, "contactInfo");
+        if (isNotBlank(regularFlowEmail)) {
+            return Optional.of(regularFlowEmail);
+        }
+
+        return Optional.empty();
+    }
+
+    private String getEmail(ApplicationData applicationData, String configName) {
+        ParsingCoordinates contactInfoCoordinates = this.parsingConfiguration.get(configName);
+        PageInputCoordinates emailCoordinates = contactInfoCoordinates.getPageInputs().get("email");
+        return applicationData.getValue(emailCoordinates);
     }
 }

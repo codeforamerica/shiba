@@ -50,7 +50,7 @@ mail-gun:
   shouldCC: false
 
 feature-flag:
-  submit-via-email: on
+  submit-via-email: off
   submit-via-api: on
   submit-docs-via-email-for-hennepin: on
   later-docs-feature: on

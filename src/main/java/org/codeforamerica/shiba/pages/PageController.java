@@ -77,7 +77,7 @@ public class PageController {
         this.documentListParser = documentListParser;
         this.featureFlags = featureFlags;
         this.uploadDocumentConfiguration = uploadDocumentConfiguration;
-        this.documentRepositoryService= documentRepositoryService;
+        this.documentRepositoryService = documentRepositoryService;
     }
 
     @GetMapping("/")
