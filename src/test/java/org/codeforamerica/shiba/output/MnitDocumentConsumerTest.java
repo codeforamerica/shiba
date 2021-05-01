@@ -45,7 +45,6 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = NONE)
 @ContextConfiguration(classes = {NonSessionScopedApplicationData.class})
-@Tag("db")
 class MnitDocumentConsumerTest {
     @MockBean
     private MnitEsbWebServiceClient mnitClient;
