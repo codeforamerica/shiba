@@ -13,7 +13,9 @@
       </ENTRIES>
     </extension>
     <option name="SPRING_BOOT_MAIN_CLASS" value="org.codeforamerica.shiba.ShibaApplication" />
+    <option name="VM_PARAMETERS" value="-XX:+ShowCodeDetailsInExceptionMessages" />
     <option name="ALTERNATIVE_JRE_PATH" />
+    <option name="SHORTEN_COMMAND_LINE" value="NONE" />
     <option name="UPDATE_ACTION_UPDATE_POLICY" value="UpdateTriggerFile" />
     <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateResources" />
     <method v="2">
