@@ -140,7 +140,7 @@ def unitTest = tasks.register("unitTest", Test) {
     Test task ->
         task.useJUnitPlatform {
             JUnitPlatformOptions options ->
-                options.excludeTags("db", "externalService")
+                options.excludeTags("db")
         }
 }
 
@@ -190,6 +190,10 @@ tasks.withType(Test).configureEach {
 
 licenseReport {
     allowedLicensesFile = new File("$projectDir/allowed-licenses.json")
+}
+
+bootRun {
+    jvmArgs = ["-XX:+ShowCodeDetailsInExceptionMessages"]
 }
 
 build {
