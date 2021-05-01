@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages.journeys;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -15,6 +16,7 @@ import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 
+@Tag("journey")
 public class DocumentsTest extends JourneyTest {
     @Test
     void shouldSkipDocumentUploadFlowIfNoApplicablePrograms() {
