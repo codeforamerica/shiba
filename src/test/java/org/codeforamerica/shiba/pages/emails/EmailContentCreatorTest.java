@@ -28,6 +28,9 @@ class EmailContentCreatorTest {
         staticMessageSource.addMessage("email.client-body", Locale.ENGLISH, "confirmation email! {0} confirmation number: {1}");
         staticMessageSource.addMessage("email.download-caf-alert", Locale.ENGLISH, "confirmation number: {0} ip address: {1}.");
         staticMessageSource.addMessage("email.non-county-partner-alert", Locale.ENGLISH, "Application {0} was submitted at {1}.");
+        staticMessageSource.addMessage("later-docs.confirmation-email-subject", Locale.ENGLISH, "We received your documents");
+        staticMessageSource.addMessage("later-docs.confirmation-email-body", Locale.ENGLISH, "We received your documents for your Minnesota Benefits application. Look out for mail about your case. You may need to complete additional steps.");
+        staticMessageSource.addMessage("later-docs.confirmation-email-body-link", Locale.ENGLISH, "To ask about your application status, find your county's contact information <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">here</a>.");
     }
 
     @Test
@@ -39,7 +42,7 @@ class EmailContentCreatorTest {
 
     @Test
     void includesCaseworkerInstructions() {
-        String emailContent = emailContentCreator.createCaseworkerHTML(Locale.ENGLISH);
+        String emailContent = emailContentCreator.createCaseworkerHTML();
 
         assertThat(emailContent).contains("This application was submitted on behalf of a client.");
     }
@@ -75,5 +78,16 @@ class EmailContentCreatorTest {
         assertThat(nonCountyPartnerAlertEmailContent).isEqualTo(
                 "Application confirm Id was submitted at 01/01/2020 05:10."
         );
+    }
+
+    @Test
+    void shouldCreateLaterDocsConfirmationEmail() {
+        String laterDocsConfirmationEmailSubject = emailContentCreator.createClientLaterDocsConfirmationEmailSubject(Locale.ENGLISH);
+        String laterDocsConfirmationEmailBody = emailContentCreator.createClientLaterDocsConfirmationEmailBody(Locale.ENGLISH);
+        assertThat(laterDocsConfirmationEmailSubject).isEqualTo("We received your documents");
+        assertThat(laterDocsConfirmationEmailBody).isEqualTo("<html><body>" +
+                "<p>We received your documents for your Minnesota Benefits application. Look out for mail about your case. You may need to complete additional steps.</p>" +
+                "<p>To ask about your application status, find your county's contact information <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">here</a>.</p>" +
+                "</body><html>");
     }
 }

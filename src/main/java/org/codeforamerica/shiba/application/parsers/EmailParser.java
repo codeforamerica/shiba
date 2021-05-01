@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 @Component
 public class EmailParser extends ApplicationDataParser<Optional<String>> {
     public EmailParser(ParsingConfiguration parsingConfiguration) {
@@ -13,13 +15,22 @@ public class EmailParser extends ApplicationDataParser<Optional<String>> {
 
     @Override
     public Optional<String> parse(ApplicationData applicationData) {
-        ParsingCoordinates contactInfoCoordinates = this.parsingConfiguration.get("contactInfo");
-        PageInputCoordinates emailCoordinates = contactInfoCoordinates.getPageInputs().get("email");
-        String email = applicationData.getValue(emailCoordinates);
-        if (null == email || email.isEmpty()) {
-            return Optional.empty();
+        String laterDocsEmail = getEmail(applicationData, "matchInfo");
+        if (isNotBlank(laterDocsEmail)) {
+            return Optional.of(laterDocsEmail);
         }
 
-        return Optional.of(email);
+        String regularFlowEmail = getEmail(applicationData, "contactInfo");
+        if (isNotBlank(regularFlowEmail)) {
+            return Optional.of(regularFlowEmail);
+        }
+
+        return Optional.empty();
+    }
+
+    private String getEmail(ApplicationData applicationData, String configName) {
+        ParsingCoordinates contactInfoCoordinates = this.parsingConfiguration.get(configName);
+        PageInputCoordinates emailCoordinates = contactInfoCoordinates.getPageInputs().get("email");
+        return applicationData.getValue(emailCoordinates);
     }
 }

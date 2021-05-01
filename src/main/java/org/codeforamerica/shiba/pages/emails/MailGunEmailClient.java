@@ -96,7 +96,7 @@ public class MailGunEmailClient implements EmailClient {
             form.put("cc", List.of(senderEmail));
         }
         form.put("subject", List.of("MNBenefits.org Application for " + recipientName));
-        form.put("html", List.of(emailContentCreator.createCaseworkerHTML(Locale.ENGLISH)));
+        form.put("html", List.of(emailContentCreator.createCaseworkerHTML()));
         form.put("attachment", List.of(asResource(applicationFile)));
 
         MDC.put("confirmationId", confirmationId);
@@ -178,6 +178,22 @@ public class MailGunEmailClient implements EmailClient {
             }
         }
         form.put("attachment", applicationFiles.stream().map(this::asResource).collect(Collectors.toList()));
+
+        webClient.post()
+                .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
+                .body(fromMultipartData(form))
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
+    }
+
+    @Override
+    public void sendLaterDocsConfirmationEmail(String recipientEmail, Locale locale) {
+        MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
+        form.put("from", List.of(senderEmail));
+        form.put("to", List.of(recipientEmail));
+        form.put("subject", List.of(emailContentCreator.createClientLaterDocsConfirmationEmailSubject(locale)));
+        form.put("html", List.of(emailContentCreator.createClientLaterDocsConfirmationEmailBody(locale)));
 
         webClient.post()
                 .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))

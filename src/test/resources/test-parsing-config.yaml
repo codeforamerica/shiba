@@ -100,3 +100,8 @@ test-parsing:
       email:
         pageName: contactInfoPageName
         inputName: contactEmail
+  matchInfo:
+    pageInputs:
+      email:
+        pageName: matchInfo
+        inputName: email

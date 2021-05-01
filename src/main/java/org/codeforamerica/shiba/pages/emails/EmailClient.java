@@ -21,5 +21,7 @@ public interface EmailClient {
 
     void sendDownloadCafAlertEmail(String confirmationId, String ip, Locale locale);
     
-    void sendHennepinDocUploadsEmail(Application application);  
+    void sendHennepinDocUploadsEmail(Application application);
+
+    void sendLaterDocsConfirmationEmail(String recipientEmail, Locale locale);
 }
