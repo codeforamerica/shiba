@@ -140,7 +140,23 @@ def unitTest = tasks.register("unitTest", Test) {
     Test task ->
         task.useJUnitPlatform {
             JUnitPlatformOptions options ->
-                options.excludeTags("db")
+                options.excludeTags 'db', 'journey', 'pdf'
+        }
+}
+
+def journeyTest = tasks.register("journeyTest", Test) {
+    Test task ->
+        task.useJUnitPlatform {
+            JUnitPlatformOptions options ->
+                options.includeTags 'journey'
+        }
+}
+
+def pdfTest = tasks.register("pdfTest", Test) {
+    Test task ->
+        task.useJUnitPlatform {
+            JUnitPlatformOptions options ->
+                options.includeTags 'pdf'
         }
 }
 
@@ -154,8 +170,11 @@ def dbTest = tasks.register("dbTest", Test) {
 
 def testAll = tasks.register("testAll", Test) {
     Test task ->
+        project.logger.lifecycle("Consider using the :test task instead of :testAll!")
         task.dependsOn(unitTest)
+        task.dependsOn(journeyTest)
         task.dependsOn(dbTest)
+        task.dependsOn(pdfTest)
 }
 
 test {

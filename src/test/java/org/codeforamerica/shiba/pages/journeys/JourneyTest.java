@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba.pages.features;
+package org.codeforamerica.shiba.pages.journeys;
 
 import org.codeforamerica.shiba.AbstractBasePageTest;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
@@ -21,7 +21,7 @@ import java.util.Optional;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-public abstract class FeatureTest extends AbstractBasePageTest {
+public abstract class JourneyTest extends AbstractBasePageTest {
     @MockBean
     protected Clock clock;
     @MockBean

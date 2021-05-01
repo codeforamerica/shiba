@@ -1,9 +1,10 @@
-package org.codeforamerica.shiba.pages.features;
+package org.codeforamerica.shiba.pages.journeys;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.pages.SuccessPage;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -21,7 +22,8 @@ import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 import static org.mockito.Mockito.when;
 
-public class UserJourneyPageTest extends FeatureTest {
+@Tag("journey")
+public class UserJourneyPageTest extends JourneyTest {
 
     @Test
     void intercomButtonIsPresent() {
