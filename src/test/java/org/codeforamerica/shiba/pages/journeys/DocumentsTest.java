@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba.pages.features;
+package org.codeforamerica.shiba.pages.journeys;
 
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -15,7 +15,7 @@ import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 
-public class DocumentsTest extends FeatureTest {
+public class DocumentsTest extends JourneyTest {
     @Test
     void shouldSkipDocumentUploadFlowIfNoApplicablePrograms() {
         List<String> applicantPrograms = List.of(PROGRAM_CCAP);

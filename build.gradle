@@ -140,7 +140,15 @@ def unitTest = tasks.register("unitTest", Test) {
     Test task ->
         task.useJUnitPlatform {
             JUnitPlatformOptions options ->
-                options.excludeTags("db")
+                options.excludeTags 'db', 'journey'
+        }
+}
+
+def journeyTest = tasks.register("journeyTest", Test) {
+    Test task ->
+        task.useJUnitPlatform {
+            JUnitPlatformOptions options ->
+                options.includeTags 'journey'
         }
 }
 
@@ -155,6 +163,7 @@ def dbTest = tasks.register("dbTest", Test) {
 def testAll = tasks.register("testAll", Test) {
     Test task ->
         task.dependsOn(unitTest)
+        task.dependsOn(journeyTest)
         task.dependsOn(dbTest)
 }
 

@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba.pages.features;
+package org.codeforamerica.shiba.pages.journeys;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
@@ -21,7 +21,7 @@ import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 import static org.mockito.Mockito.when;
 
-public class UserJourneyPageTest extends FeatureTest {
+public class UserJourneyPageTest extends JourneyTest {
 
     @Test
     void intercomButtonIsPresent() {

@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba.pages.features;
+package org.codeforamerica.shiba.pages.journeys;
 
 import org.junit.jupiter.api.Test;
 
@@ -8,7 +8,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 
-public class LivingSituationTest extends FeatureTest {
+public class LivingSituationTest extends JourneyTest {
 
     @Test
     void shouldAskLivingSituationIfCCAPApplicant() {
