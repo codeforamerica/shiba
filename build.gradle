@@ -138,13 +138,6 @@ compileJava{
 
 def unitTest = tasks.register("unitTest", Test) {
     Test task ->
-        task.testLogging {
-            exceptionFormat = 'full'
-            events "failed", "passed", "skipped"
-            showStackTraces true
-            showCauses true
-            showExceptions true
-        }
         task.useJUnitPlatform {
             JUnitPlatformOptions options ->
                 options.excludeTags("db", "externalService")
@@ -153,13 +146,6 @@ def unitTest = tasks.register("unitTest", Test) {
 
 def dbTest = tasks.register("dbTest", Test) {
     Test task ->
-        task.testLogging {
-            exceptionFormat = 'full'
-            events "failed", "passed", "skipped"
-            showStackTraces true
-            showCauses true
-            showExceptions true
-        }
         task.useJUnitPlatform {
             JUnitPlatformOptions options ->
                 options.includeTags 'db'
@@ -173,13 +159,6 @@ def testAll = tasks.register("testAll", Test) {
 }
 
 test {
-    testLogging {
-        exceptionFormat = 'full'
-        events "failed", "passed", "skipped"
-        showStackTraces true
-        showCauses true
-        showExceptions true
-    }
     useJUnitPlatform()
 }
 
@@ -200,7 +179,13 @@ tasks.withType(Test).configureEach {
         }
         task.jvmArgs '-XX:+ShowCodeDetailsInExceptionMessages'
         task.maxParallelForks(Runtime.runtime.availableProcessors().intdiv(2) ?: 1)
-
+        task.testLogging {
+            exceptionFormat = 'full'
+            events "failed", "passed", "skipped"
+            showStackTraces true
+            showCauses true
+            showExceptions true
+        }
 }
 
 licenseReport {
