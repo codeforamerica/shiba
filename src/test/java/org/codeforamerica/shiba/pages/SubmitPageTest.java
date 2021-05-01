@@ -29,6 +29,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @Sql(statements = {"TRUNCATE TABLE applications"})
 @SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"pagesConfig=pages-config/test-submit-page.yaml"})
+@Tag("db")
 public class SubmitPageTest extends AbstractStaticMessageSourcePageTest {
 
     @MockBean ApplicationSubmittedListener applicationSubmittedListener;

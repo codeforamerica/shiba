@@ -45,6 +45,40 @@ jobs:
         run: |
           rm -f ~/.gradle/caches/modules-2/modules-2.lock
           rm -f ~/.gradle/caches/modules-2/gc.properties
+  db-test:
+    name: Run db tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up ChromeDriver
+        uses: nanasess/setup-chromedriver@v1.0.1
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: '14'
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Test with Gradle
+        run: ./gradlew dbTest
+        env:
+          S3_BUCKET: ${{ secrets.S3_TEST_BUCKET }}
+          AWS_ACCESS_KEY: ${{ secrets.CLOUD_AWS_CREDENTIALS_ACCESS_KEY }}
+          AWS_SECRET_KEY: ${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY }}
+      - name: Cleanup Gradle Cache
+        # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
+        # Restoring these files from a GitHub Actions cache might cause problems for future builds.
+        run: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f ~/.gradle/caches/modules-2/gc.properties
   journey-test:
     name: Run journey tests
     runs-on: ubuntu-latest
@@ -116,7 +150,7 @@ jobs:
   deploy:
     name: Deploy to Aptible staging
     runs-on: ubuntu-latest
-    needs: [unit-test, journey-test, pdf-test]
+    needs: [unit-test, db-test, journey-test, pdf-test]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
