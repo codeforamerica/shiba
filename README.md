@@ -34,14 +34,13 @@
 - Run the following command to generate an encryption key and copy it to your clipboard: `tinkey create-keyset --key-template AES256_GCM | awk '{printf("%s",$0)}' | pbcopy`
 - Add the encryption key to the `.env` file as a new environment variable: `ENCRYPTION_KEY=<value from clipboard>`
 
-### Start the local and test databases:
+### Start the local databases:
 
 - Install PostgreSQL via an [official download](https://www.postgresql.org/download/)
     - Or on macOS, through homebrew: `brew install postgres`
-- Create the databases using the command line:
+- Create the database using the command line:
     - `$ createuser -s shiba`
     - `$ createdb shiba`
-    - `$ createdb shiba-test`
     
 ### Inspecting hosted databases
 - To generate an access string to our hosted dbs, run:`aptible db:tunnel <name of db>`
