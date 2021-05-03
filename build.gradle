@@ -140,7 +140,7 @@ def unitTest = tasks.register("unitTest", Test) {
     Test task ->
         task.useJUnitPlatform {
             JUnitPlatformOptions options ->
-                options.excludeTags 'db', 'journey', 'pdf', 'ccap', 'validation'
+                options.excludeTags 'db', 'journey', 'pdf', 'ccap', 'validation', 'document'
         }
 }
 
@@ -184,6 +184,15 @@ def validationTest = tasks.register("validationTest", Test) {
         }
 }
 
+
+def documentTest = tasks.register("documentTest", Test) {
+    Test task ->
+        task.useJUnitPlatform {
+            JUnitPlatformOptions options ->
+                options.includeTags 'document'
+        }
+}
+
 def testAll = tasks.register("testAll", Test) {
     Test task ->
         project.logger.lifecycle("Please use the :test task instead of :testAll!")
@@ -192,7 +201,8 @@ def testAll = tasks.register("testAll", Test) {
         task.dependsOn(dbTest)
         task.dependsOn(pdfTest)
         task.dependsOn(ccapTest)
-        task.dependsOn(validation)
+        task.dependsOn(validationTest)
+        task.dependsOn(documentTest)
 }
 
 test {
