@@ -19,8 +19,7 @@ import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 class ApplicationInputsMappersTest {
     private final ApplicationInputsMappers mappers = new ApplicationInputsMappers(List.of());
@@ -109,5 +108,28 @@ class ApplicationInputsMappersTest {
         applicationInputsMappers.map(application, Document.CAF, CASEWORKER);
 
         verify(mapper).map(eq(application), eq(Document.CAF), eq(CASEWORKER), any());
+    }
+
+    @Test
+    void shouldStillSuccessfullyMapEvenWithExceptionsInIndividualMappers() {
+        ApplicationInputsMapper successfulMapper = mock(ApplicationInputsMapper.class);
+        ApplicationInputsMapper failingMapper = mock(ApplicationInputsMapper.class);
+        ApplicationInputsMappers applicationInputsMappers = new ApplicationInputsMappers(List.of(failingMapper, successfulMapper));
+        Application application = Application.builder()
+                .id("someId")
+                .completedAt(ZonedDateTime.now())
+                .applicationData(new ApplicationData())
+                .county(County.Olmsted)
+                .timeToComplete(null)
+                .build();
+
+        List<ApplicationInput> mockOutput = List.of(new ApplicationInput("group", "name", List.of("value"), null));
+        when(successfulMapper.map(eq(application), eq(Document.CAF), eq(CASEWORKER), any())).thenReturn(mockOutput);
+        when(failingMapper.map(eq(application), eq(Document.CAF), eq(CASEWORKER), any())).thenThrow(IllegalArgumentException.class);
+
+        List<ApplicationInput> actualOutput = applicationInputsMappers.map(application, Document.CAF, CASEWORKER);
+        assertThat(actualOutput).isNotEmpty();
+        verify(successfulMapper).map(eq(application), eq(Document.CAF), eq(CASEWORKER), any());
+        verify(failingMapper).map(eq(application), eq(Document.CAF), eq(CASEWORKER), any());
     }
 }

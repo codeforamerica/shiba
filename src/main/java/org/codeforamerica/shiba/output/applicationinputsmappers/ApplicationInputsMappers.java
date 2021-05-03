@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output.applicationinputsmappers;
 
+import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.Document;
@@ -14,6 +15,7 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toList;
 import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
 
+@Slf4j
 @Component
 public class ApplicationInputsMappers {
     private final List<ApplicationInputsMapper> mappers;
@@ -27,7 +29,14 @@ public class ApplicationInputsMappers {
         SubworkflowIterationScopeTracker scopeTracker = new SubworkflowIterationScopeTracker();
 
         Stream<ApplicationInput> inputs = this.mappers.stream()
-                .flatMap(mapper -> mapper.map(application, document, recipient, scopeTracker).stream());
+                .flatMap(mapper -> {
+                    try {
+                        return mapper.map(application, document, recipient, scopeTracker).stream();
+                    } catch (Exception e) {
+                        log.error("There was an issue mapping application data", e);
+                        return Stream.empty();
+                    }
+                });
 
         Stream<ApplicationInput> defaultInputs = Stream.of(
                 new ApplicationInput("nonPagesData", "applicationId", List.of(application.getId()), SINGLE_VALUE),
