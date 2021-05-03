@@ -114,24 +114,25 @@ class SmartyStreetClientTest {
         String apartmentNumber = "apt 1104";
         Address address = new Address(street, city, state, zipcode, apartmentNumber, null);
         wireMockServer.stubFor(get(anyUrl())
-                .willReturn(okJson("[\n" +
-                        "  {\n" +
-                        "    \"metadata\": {\"county_name\": \"Cook\"},\n" +
-                        "    \"components\": {\n" +
-                        "      \"primary_number\": \"222\",\n" +
-                        "      \"street_name\": \"Merchandise Mart\",\n" +
-                        "      \"street_suffix\": \"Plz\",\n" +
-                        "      \"city_name\": \"Chicago\",\n" +
-                        "      \"default_city_name\": \"Chicago\",\n" +
-                        "      \"state_abbreviation\": \"IL\",\n" +
-                        "      \"zipcode\": \"60654\",\n" +
-                        "      \"plus4_code\": \"1103\",\n" +
-                        "      \"secondary_number\": \"1104\",\n" +
-                        "      \"secondary_designator\": \"apt\"\n" +
-                        "    },\n" +
-                        "   \"delivery_line_1\": \"222 Merchandise Mart Plz\"\n" +
-                        "  }\n" +
-                        "]")));
+                .willReturn(okJson("""
+                        [
+                          {
+                            "metadata": {"county_name": "Cook"},
+                            "components": {
+                              "primary_number": "222",
+                              "street_name": "Merchandise Mart",
+                              "street_suffix": "Plz",
+                              "city_name": "Chicago",
+                              "default_city_name": "Chicago",
+                              "state_abbreviation": "IL",
+                              "zipcode": "60654",
+                              "plus4_code": "1103",
+                              "secondary_number": "1104",
+                              "secondary_designator": "apt"
+                            },
+                           "delivery_line_1": "222 Merchandise Mart Plz"
+                          }
+                        ]""")));
 
         Address resultAddress = smartyStreetClient.validateAddress(address).get();
 
@@ -166,22 +167,23 @@ class SmartyStreetClientTest {
         String zipcode = "91402";
         Address address = new Address(street, city, state, zipcode, null, null);
         wireMockServer.stubFor(get(anyUrl())
-                .willReturn(okJson("[\n" +
-                        "  {\n" +
-                        "    \"metadata\": {\"county_name\": \"Cook\"},\n" +
-                        "    \"components\": {\n" +
-                        "      \"primary_number\": \"222\",\n" +
-                        "      \"street_name\": \"Merchandise Mart\",\n" +
-                        "      \"street_suffix\": \"Plz\",\n" +
-                        "      \"city_name\": \"Chicago\",\n" +
-                        "      \"default_city_name\": \"Chicago\",\n" +
-                        "      \"state_abbreviation\": \"IL\",\n" +
-                        "      \"zipcode\": \"60654\",\n" +
-                        "      \"plus4_code\": \"1103\"\n" +
-                        "    },\n" +
-                        "   \"delivery_line_1\": \"222 Merchandise Mart Plz\"\n" +
-                        "  }\n" +
-                        "]")));
+                .willReturn(okJson("""
+                        [
+                          {
+                            "metadata": {"county_name": "Cook"},
+                            "components": {
+                              "primary_number": "222",
+                              "street_name": "Merchandise Mart",
+                              "street_suffix": "Plz",
+                              "city_name": "Chicago",
+                              "default_city_name": "Chicago",
+                              "state_abbreviation": "IL",
+                              "zipcode": "60654",
+                              "plus4_code": "1103"
+                            },
+                           "delivery_line_1": "222 Merchandise Mart Plz"
+                          }
+                        ]""")));
 
         Address resultAddress = smartyStreetClient.validateAddress(address).get();
 
