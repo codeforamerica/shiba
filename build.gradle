@@ -140,7 +140,7 @@ def unitTest = tasks.register("unitTest", Test) {
     Test task ->
         task.useJUnitPlatform {
             JUnitPlatformOptions options ->
-                options.excludeTags 'db', 'journey', 'pdf', 'ccap', 'validation', 'document'
+                options.excludeTags 'db', 'journey', 'pdf', 'ccap', 'validation', 'document', 'cafAndCcapPdf'
         }
 }
 
@@ -184,12 +184,19 @@ def validationTest = tasks.register("validationTest", Test) {
         }
 }
 
-
 def documentTest = tasks.register("documentTest", Test) {
     Test task ->
         task.useJUnitPlatform {
             JUnitPlatformOptions options ->
                 options.includeTags 'document'
+        }
+}
+
+def cafAndCcapPdfTest = tasks.register("cafAndCcapPdfTest", Test) {
+    Test task ->
+        task.useJUnitPlatform {
+            JUnitPlatformOptions options ->
+                options.includeTags 'cafAndCcapPdf'
         }
 }
 
@@ -203,6 +210,7 @@ def testAll = tasks.register("testAll", Test) {
         task.dependsOn(ccapTest)
         task.dependsOn(validationTest)
         task.dependsOn(documentTest)
+        task.dependsOn(cafAndCcapPdfTest)
 }
 
 test {
