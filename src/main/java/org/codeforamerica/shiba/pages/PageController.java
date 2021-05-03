@@ -10,6 +10,8 @@ import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.output.Document;
+import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
+import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.pages.config.*;
 import org.codeforamerica.shiba.pages.data.*;
 import org.codeforamerica.shiba.pages.enrichment.ApplicationEnrichment;
@@ -53,6 +55,8 @@ public class PageController {
     private final FeatureFlagConfiguration featureFlags;
     private final UploadDocumentConfiguration uploadDocumentConfiguration;
     private final CountyParser countyParser;
+    private final SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider;
+    private final CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
 
     private final DocumentRepositoryService documentRepositoryService;
 
@@ -69,7 +73,9 @@ public class PageController {
             FeatureFlagConfiguration featureFlags,
             UploadDocumentConfiguration uploadDocumentConfiguration,
             DocumentRepositoryService documentRepositoryService,
-            CountyParser countyParser) {
+            CountyParser countyParser,
+            SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider,
+            CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
@@ -83,6 +89,8 @@ public class PageController {
         this.uploadDocumentConfiguration = uploadDocumentConfiguration;
         this.documentRepositoryService = documentRepositoryService;
         this.countyParser = countyParser;
+        this.snapExpeditedEligibilityDecider = snapExpeditedEligibilityDecider;
+        this.ccapExpeditedEligibilityDecider = ccapExpeditedEligibilityDecider;
     }
 
     @GetMapping("/")
@@ -220,6 +228,29 @@ public class PageController {
         ));
 
         model.put("county", countyParser.parse(applicationData));
+
+        List<String> zipCode = applicationData.getPagesData().safeGetPageInputValue("homeAddress", "zipCode");
+        if (!zipCode.isEmpty()) {
+            model.put("zipCode", zipCode.get(0));
+        }
+
+        List<String> applicantPrograms = applicationData.getPagesData().safeGetPageInputValue("choosePrograms", "programs");
+        Set<String> householdPrograms = new HashSet<>(applicantPrograms);
+        boolean hasHousehold = applicationData.getSubworkflows().containsKey("household");
+        if (hasHousehold) {
+            Subworkflow household = applicationData.getSubworkflows().get("household");
+            household.stream().forEach(iteration -> {
+               householdPrograms.addAll(iteration.getPagesData().safeGetPageInputValue("householdMemberInfo", "programs"));
+            });
+        }
+
+        if (!householdPrograms.isEmpty()) {
+            model.put("programs", String.join(", ", householdPrograms));
+        }
+
+        model.put("expeditedSnap", snapExpeditedEligibilityDecider.decide(applicationData));
+        model.put("expeditedCcap", ccapExpeditedEligibilityDecider.decide(applicationData));
+
 
         if (landmarkPagesConfiguration.isTerminalPage(pageName)) {
             Application application = applicationRepository.find(applicationData.getId());
