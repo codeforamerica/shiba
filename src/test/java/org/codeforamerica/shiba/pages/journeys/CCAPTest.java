@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages.journeys;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -10,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 
+@Tag("ccap")
 public class CCAPTest extends JourneyTest {
     @Test
     void shouldSkipChildcareAssistancePageIfCCAPNotSelected() {

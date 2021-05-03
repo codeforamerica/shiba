@@ -4,6 +4,7 @@ import org.codeforamerica.shiba.pages.MetricsPage;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.SuccessPage;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.springframework.test.context.jdbc.Sql;
@@ -16,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.when;
 
+@Tag("ccap")
 @Sql(statements = "TRUNCATE TABLE applications;")
 public class MetricsJourneyTest extends JourneyTest {
 

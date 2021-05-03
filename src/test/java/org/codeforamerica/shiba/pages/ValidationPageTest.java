@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.pages;
 import org.codeforamerica.shiba.AbstractExistingStartTimePageTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -17,6 +18,7 @@ import java.util.Locale;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
+@Tag("validation")
 @SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"pagesConfig=pages-config/test-validation.yaml"})
 public class ValidationPageTest extends AbstractExistingStartTimePageTest {
 
@@ -136,6 +138,7 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
     }
 
     @Nested
+    @Tag("validation")
     class Condition {
         @Test
         void shouldTriggerValidation_whenConditionInputValueIsNoneSelected() {
@@ -206,6 +209,7 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
     }
 
     @Nested
+    @Tag("validation")
     class SpecificValidations {
         @ParameterizedTest
         @ValueSource(strings = {
@@ -476,5 +480,4 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
             assertThat(testPage.getTitle()).isEqualTo(lastPageTitle);
         }
     }
-
 }

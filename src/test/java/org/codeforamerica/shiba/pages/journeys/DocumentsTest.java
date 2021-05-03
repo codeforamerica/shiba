@@ -16,7 +16,7 @@ import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 
-@Tag("journey")
+@Tag("document")
 public class DocumentsTest extends JourneyTest {
     @Test
     void shouldSkipDocumentUploadFlowIfNoApplicablePrograms() {
