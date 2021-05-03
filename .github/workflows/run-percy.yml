@@ -31,7 +31,7 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@v1
       with:
-        java-version: '14'
+        java-version: '16'
     - name: Use Node.js 14.x
       uses: actions/setup-node@v1
       with:
