@@ -148,7 +148,7 @@ class PageControllerTest {
 
         InOrder inOrder = inOrder(applicationRepository, pageEventPublisher);
         inOrder.verify(applicationRepository).save(application);
-        inOrder.verify(pageEventPublisher).publish(new UploadedDocumentsSubmittedEvent(sessionId, applicationId, LocaleContextHolder.getLocale()));
+        inOrder.verify(pageEventPublisher).publish(new UploadedDocumentsSubmittedEvent(sessionId, applicationId, Locale.ENGLISH));
     }
 
     @Test
