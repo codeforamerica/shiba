@@ -497,7 +497,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
     }
 
     @Nested
-    @Tag("cafAndCcapPdf")
+    @Tag("pdf")
     class CAFandCCAP {
         @BeforeEach
         void setUp() {
@@ -654,7 +654,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         }
 
         @Nested
-        @Tag("cafAndCcapPdf")
+        @Tag("pdf")
         class WithPersonalAndContactInfo {
             @BeforeEach
             void setUp() {
