@@ -6,6 +6,7 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
+import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.output.Document;
@@ -51,6 +52,7 @@ public class PageController {
     private final ApplicationDataParser<List<Document>> documentListParser;
     private final FeatureFlagConfiguration featureFlags;
     private final UploadDocumentConfiguration uploadDocumentConfiguration;
+    private final CountyParser countyParser;
 
     private final DocumentRepositoryService documentRepositoryService;
 
@@ -65,7 +67,9 @@ public class PageController {
             ApplicationEnrichment applicationEnrichment,
             ApplicationDataParser<List<Document>> documentListParser,
             FeatureFlagConfiguration featureFlags,
-            UploadDocumentConfiguration uploadDocumentConfiguration, DocumentRepositoryService documentRepositoryService) {
+            UploadDocumentConfiguration uploadDocumentConfiguration,
+            DocumentRepositoryService documentRepositoryService,
+            CountyParser countyParser) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
@@ -78,6 +82,7 @@ public class PageController {
         this.featureFlags = featureFlags;
         this.uploadDocumentConfiguration = uploadDocumentConfiguration;
         this.documentRepositoryService = documentRepositoryService;
+        this.countyParser = countyParser;
     }
 
     @GetMapping("/")
@@ -213,6 +218,8 @@ public class PageController {
                 "pageName", pageName,
                 "postTo", landmarkPagesConfiguration.isSubmitPage(pageName) ? "/submit" : "/pages/" + pageName
         ));
+
+        model.put("county", countyParser.parse(applicationData));
 
         if (landmarkPagesConfiguration.isTerminalPage(pageName)) {
             Application application = applicationRepository.find(applicationData.getId());
