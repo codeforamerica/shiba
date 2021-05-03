@@ -195,6 +195,7 @@ def documentTest = tasks.register("documentTest", Test) {
 
 test {
     useJUnitPlatform()
+    dependsOn(checkLicense)
 }
 
 tasks.withType(Test).configureEach {
@@ -229,8 +230,4 @@ licenseReport {
 
 bootRun {
     jvmArgs = ["-XX:+ShowCodeDetailsInExceptionMessages"]
-}
-
-build {
-    dependsOn(checkLicense)
 }

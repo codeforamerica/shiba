@@ -10,6 +10,12 @@
       "moduleLicense": "Apache License 2.0"
     },
     {
+      "moduleLicense": "Apache 2.0"
+    },
+    {
+      "moduleLicense": "The Apache License, Version 2.0"
+    },
+    {
       "moduleLicense": "The Apache Software License, Version 2.0"
     },
     {
@@ -25,7 +31,13 @@
       "moduleLicense": "BSD New"
     },
     {
+      "moduleLicense": "3-Clause BSD License"
+    },
+    {
       "moduleLicense": "Common Development and Distribution License"
+    },
+    {
+      "moduleLicense": "CC0"
     },
     {
       "moduleLicense": "Creative Commons Attribution 4.0 International"
@@ -58,7 +70,16 @@
       "moduleLicense": "The PostgreSQL License"
     },
     {
+      "moduleLicense": "MIT"
+    },
+    {
       "moduleLicense": "MIT License"
+    },
+    {
+      "moduleLicense": "The MIT License"
+    },
+    {
+      "moduleLicense": "The JSON License"
     }
   ]
 }
