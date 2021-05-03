@@ -14,6 +14,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class FileNameGenerator {
@@ -31,8 +33,8 @@ public class FileNameGenerator {
     }
 
     public String generatePdfFileName(Application application, Document document) {
-        StringBuilder programs = programs(application);
         var prefix = getSharedApplicationPrefix(application);
+        var programs = getProgramCodes(application);
         var pdfType = document.toString();
         return "%s%s_%s".formatted(prefix, programs, pdfType);
     }
@@ -45,8 +47,7 @@ public class FileNameGenerator {
     }
 
     public String generateXmlFileName(Application application) {
-        StringBuilder programs = programs(application);
-        return getSharedApplicationPrefix(application) + programs;
+        return getSharedApplicationPrefix(application) + getProgramCodes(application);
     }
 
     @NotNull
@@ -58,29 +59,21 @@ public class FileNameGenerator {
         return "%s_MNB_%s_%s_%s_".formatted(dhsProviderId, date, time, id);
     }
 
-    private StringBuilder programs(Application application) {
-        Set<String> programsList = programList(application);
-        final StringBuilder programs = new StringBuilder();
-        List.of("E", "K", "F", "C").forEach(letter -> {
-                    if (programsList.stream()
-                            .anyMatch(program -> LETTER_TO_PROGRAMS.get(letter).contains(program))) {
-                        programs.append(letter);
-                    }
-                }
-        );
-
-        return programs;
+    private String getProgramCodes(Application application) {
+        Set<String> programSet = programSet(application);
+        return Stream.of("E", "K", "F", "C")
+                .filter(letter -> programSet.stream().anyMatch(program -> LETTER_TO_PROGRAMS.get(letter).contains(program)))
+                .collect(Collectors.joining());
     }
 
-    private Set<String> programList(Application application) {
+    private Set<String> programSet(Application application) {
         List<String> applicantProgramsList = application.getApplicationData().getPagesData().safeGetPageInputValue("choosePrograms", "programs");
-        Set<String> programList = new HashSet<>(applicantProgramsList);
+        Set<String> programs = new HashSet<>(applicantProgramsList);
         boolean hasHousehold = application.getApplicationData().getSubworkflows().containsKey("household");
         if (hasHousehold) {
             List<Iteration> householdIteration = application.getApplicationData().getSubworkflows().get("household");
-            householdIteration.stream().map(household -> household.getPagesData().safeGetPageInputValue("householdMemberInfo", "programs")).forEach(programList::addAll);
+            householdIteration.stream().map(household -> household.getPagesData().safeGetPageInputValue("householdMemberInfo", "programs")).forEach(programs::addAll);
         }
-
-        return programList;
+        return programs;
     }
 }
