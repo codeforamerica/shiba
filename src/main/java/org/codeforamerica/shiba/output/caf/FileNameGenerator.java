@@ -32,35 +32,30 @@ public class FileNameGenerator {
 
     public String generatePdfFileName(Application application, Document document) {
         StringBuilder programs = programs(application);
-
-        return getSharedApplicationPrefix(application) +
-                programs.toString() + "_" +
-                document.toString();
+        var prefix = getSharedApplicationPrefix(application);
+        var pdfType = document.toString();
+        return "%s%s_%s".formatted(prefix, programs, pdfType);
     }
 
     public String generateUploadedDocumentName(Application application, int index, String extension) {
         int size = application.getApplicationData().getUploadedDocs().size();
         index = index + 1;
-        return getSharedApplicationPrefix(application) +
-                "doc" + index + "of" +
-                size + "." +
-                extension;
+        var prefix = getSharedApplicationPrefix(application);
+        return "%sdoc%dof%d.%s".formatted(prefix, index, size, extension);
     }
 
     public String generateXmlFileName(Application application) {
         StringBuilder programs = programs(application);
-
-        return getSharedApplicationPrefix(application) +
-                programs.toString();
+        return getSharedApplicationPrefix(application) + programs;
     }
 
     @NotNull
     private String getSharedApplicationPrefix(Application application) {
-        return countyMap.get(application.getCounty()).getDhsProviderId() + "_" +
-                "MNB_" +
-                DateTimeFormatter.ofPattern("yyyyMMdd").format(application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago"))) + "_" +
-                DateTimeFormatter.ofPattern("HHmmss").format(application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago"))) + "_" +
-                application.getId() + "_";
+        var dhsProviderId = countyMap.get(application.getCounty()).getDhsProviderId();
+        var date = DateTimeFormatter.ofPattern("yyyyMMdd").format(application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago")));
+        var time = DateTimeFormatter.ofPattern("HHmmss").format(application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago")));
+        var id = application.getId();
+        return "%s_MNB_%s_%s_%s_".formatted(dhsProviderId, date, time, id);
     }
 
     private StringBuilder programs(Application application) {
@@ -68,8 +63,7 @@ public class FileNameGenerator {
         final StringBuilder programs = new StringBuilder();
         List.of("E", "K", "F", "C").forEach(letter -> {
                     if (programsList.stream()
-                            .anyMatch(program -> LETTER_TO_PROGRAMS.get(letter)
-                                    .contains(program))) {
+                            .anyMatch(program -> LETTER_TO_PROGRAMS.get(letter).contains(program))) {
                         programs.append(letter);
                     }
                 }
@@ -78,8 +72,7 @@ public class FileNameGenerator {
         return programs;
     }
 
-
-    private Set<String> programList( Application application){
+    private Set<String> programList(Application application) {
         List<String> applicantProgramsList = application.getApplicationData().getPagesData().safeGetPageInputValue("choosePrograms", "programs");
         Set<String> programList = new HashSet<>(applicantProgramsList);
         boolean hasHousehold = application.getApplicationData().getSubworkflows().containsKey("household");
@@ -89,7 +82,5 @@ public class FileNameGenerator {
         }
 
         return programList;
-
     }
-
 }
