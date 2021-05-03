@@ -74,6 +74,7 @@
             <div th:text="|• #{legal-stuff.financial-and-insurance-agencies}|"></div>
             <div th:text="|• #{legal-stuff.other-government-offices}|"></div>
             <div th:text="#{legal-stuff.i-understand-this-consent-is-good-for-six-months-after-my-benefits-stop}"></div>
+
             <h3 class="h4" th:text="#{legal-stuff.by-signing}"></h3>
             <div th:text="|• #{legal-stuff.i-understand-cash-assistance-is-provided-to-help-eligible-families-meet-their-basic-needs}|"></div>
             <div th:text="|• #{legal-stuff.i-understand-if-i-give-incorrect-information-or-misuse-an-electronic-benefit}|"></div>
@@ -92,6 +93,16 @@
                 <span th:text="|• #{legal-stuff.i-agree-to-the-sharing-of-information-as-stated-in-the-social-security-numbers-section}|"></span>
                 <a th:text="#{legal-stuff.combined-application-form}" href="https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5223-ENG-pform" target="_blank"></a>
             </div>
+            <div th:text="|• #{legal-stuff.i-understand-that-if-someone}|" />
+            <div th:text="|• #{legal-stuff.i-have-received-and-reviewed}|" />
+            <ul class="list--bulleted">
+                <li th:utext="#{legal-stuff.authorization-of-sharing}"></li>
+                <li th:utext="#{legal-stuff.notice-about-ies}"></li>
+                <li th:utext="#{legal-stuff.important-information}"></li>
+                <li th:utext="#{legal-stuff.additional-important-information}"></li>
+                <li th:utext="#{legal-stuff.penalty-warnings}"></li>
+                <li th:utext="#{legal-stuff.civil-rights-notice}"></li>
+            </ul>
         </div>
         <div id="ccap-legal" th:if="${T(org.codeforamerica.shiba.pages.PageUtils).isCCAPEligible(pageDatasources)}">
             <h2 class="h3" th:text="#{legal-stuff.child-care-application}"></h2>
@@ -144,18 +155,8 @@
                     <a th:text="#{legal-stuff.the-child-care-assistance-program-and-fraud}" href="https://edocs.dhs.state.mn.us/lfserver/Public/DHS-3943B-ENG" target="_blank"></a>
                     <span th:text="#{legal-stuff.i-have-read-and-understand-this-information}" />
                 </div>
-                <div th:text="|• #{legal-stuff.i-understand-that-if-someone}|" />
                 <div th:text="|• #{legal-stuff.i-agree-to-continue-to-assign-my-child-care-support-to-the-state-of-minnesota}|" />
                 <div th:text="|• #{legal-stuff.i-agree-to-the-sharing-of-information-as-stated-in-the-provider-release-and-fraud-investigation-authorization-information-above}|" />
-                <div th:text="|• #{legal-stuff.i-have-received-and-reviewed}|" />
-                <ul class="list--bulleted">
-                    <li th:utext="#{legal-stuff.authorization-of-sharing}"></li>
-                    <li th:utext="#{legal-stuff.notice-about-ies}"></li>
-                    <li th:utext="#{legal-stuff.important-information}"></li>
-                    <li th:utext="#{legal-stuff.additional-important-information}"></li>
-                    <li th:utext="#{legal-stuff.penalty-warnings}"></li>
-                    <li th:utext="#{legal-stuff.civil-rights-notice}"></li>
-                </ul>
             </div>
         </div>
     </div>
