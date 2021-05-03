@@ -20,7 +20,14 @@ updates:
     - 2.3.0
   - dependency-name: ch.qos.logback:logback-core
     versions:
+    - 1.2.1
+    - 1.2.2
     - 1.2.3
+  - dependency-name: ch.qos.logback:logback-classic
+    versions:
+      - 1.2.1
+      - 1.2.2
+      - 1.2.3
   - dependency-name: org.apache.pdfbox:pdfbox
     versions:
     - 2.0.22
