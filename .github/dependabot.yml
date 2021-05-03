@@ -1,33 +1,33 @@
 version: 2
 updates:
-- package-ecosystem: gradle
-  directory: "/"
-  schedule:
-    interval: daily
-    time: "02:00"
-    timezone: America/New_York
-  open-pull-requests-limit: 10
-  ignore:
-  - dependency-name: com.sun.activation:jakarta.activation
-    versions:
-    - ">= 2.a, < 3"
-  - dependency-name: com.sun.xml.bind:jaxb-xjc
-    versions:
-    - 3.0.0
-    - 3.0.1
-  - dependency-name: com.gorylenko.gradle-git-properties
-    versions:
-    - 2.3.0
-  - dependency-name: ch.qos.logback:logback-core
-    versions:
-    - 1.2.1
-    - 1.2.2
-    - 1.2.3
-  - dependency-name: ch.qos.logback:logback-classic
-    versions:
-      - 1.2.1
-      - 1.2.2
-      - 1.2.3
-  - dependency-name: org.apache.pdfbox:pdfbox
-    versions:
-    - 2.0.22
+  - package-ecosystem: gradle
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "02:00"
+      timezone: America/New_York
+    open-pull-requests-limit: 10
+    ignore:
+      - dependency-name: com.sun.activation:jakarta.activation
+        versions:
+          - ">= 2.a, < 3"
+      - dependency-name: com.sun.xml.bind:jaxb-xjc
+        versions:
+          - 3.0.0
+          - 3.0.1
+      - dependency-name: com.gorylenko.gradle-git-properties
+        versions:
+          - 2.3.0
+      - dependency-name: ch.qos.logback:logback-core
+        versions:
+          - 1.2.1
+          - 1.2.2
+          - 1.2.3
+      - dependency-name: ch.qos.logback:logback-classic
+        versions:
+          - 1.2.1
+          - 1.2.2
+          - 1.2.3
+      - dependency-name: org.apache.pdfbox:pdfbox
+        versions:
+          - 2.0.22
