@@ -20,6 +20,9 @@ import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.output.xml.FileGenerator;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.springframework.stereotype.Component;
+import org.apache.poi.xwpf.converter.pdf.PdfConverter;
+import org.apache.poi.xwpf.converter.pdf.PdfOptions;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -37,6 +40,7 @@ public class PdfGenerator implements FileGenerator {
     private final FileNameGenerator fileNameGenerator;
 
     private static final List<String> IMAGE_TYPES_TO_CONVERT_TO_PDF = List.of("jpg", "jpeg", "png", "gif");
+    private static final List<String> DOC_TYPES_TO_CONVERT_TO_PDF = List.of("doc","docx","odt");
 
     public PdfGenerator(PdfFieldMapper pdfFieldMapper,
                         Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers,
@@ -75,6 +79,8 @@ public class PdfGenerator implements FileGenerator {
             } catch (IOException e) {
                 log.error("failed to convert document " + uploadedDocument.getFilename() + " to pdf. Maintaining original type");
             }
+        } else if(DOC_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
+            //convertImageToPdf()
         }
 
         if (extension.equals("pdf")) {
@@ -128,5 +134,9 @@ public class PdfGenerator implements FileGenerator {
             doc.save(outputStream);
             return outputStream.toByteArray();
         }
+    }
+
+    private byte[] convertDocsToPdf(byte[] docFileBytes, String filename) throws Exception {
+        return null;
     }
 }
