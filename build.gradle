@@ -193,18 +193,6 @@ def documentTest = tasks.register("documentTest", Test) {
         }
 }
 
-def testAll = tasks.register("testAll", Test) {
-    Test task ->
-        project.logger.lifecycle("Please use the :test task instead of :testAll!")
-        task.dependsOn(unitTest)
-        task.dependsOn(journeyTest)
-        task.dependsOn(dbTest)
-        task.dependsOn(pdfTest)
-        task.dependsOn(ccapTest)
-        task.dependsOn(validationTest)
-        task.dependsOn(documentTest)
-}
-
 test {
     useJUnitPlatform()
 }
