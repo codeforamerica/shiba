@@ -2206,12 +2206,6 @@ pageDefinitions:
       - name: additionalInfo
         type: TEXTAREA
     pageTitle: additional-info.title
-  - &404
-    name: 404
-    pageTitle: error-404.title
-  - &500
-    name: 500
-    pageTitle: error-500.title
 workflow:
   landing:
     pageConfiguration: *landing
@@ -3141,10 +3135,6 @@ workflow:
     pageConfiguration: *success
   documentsSent:
     pageConfiguration: *documentsSent
-  404:
-    pageConfiguration: *404
-  500:
-    pageConfiguration: *500
 pageGroups:
   jobs:
     startPages:
