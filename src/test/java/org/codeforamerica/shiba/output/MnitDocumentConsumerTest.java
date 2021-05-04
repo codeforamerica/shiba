@@ -162,26 +162,17 @@ class MnitDocumentConsumerTest {
     @Test
     void sendsBothImageAndDocumentUploadsSuccessfully() throws IOException {
         mockDocUpload("shiba+file.jpg", "someS3FilePath", MediaType.IMAGE_JPEG_VALUE, "jpg");
-
         mockDocUpload("test-uploaded-pdf.pdf", "pdfS3FilePath", MediaType.APPLICATION_PDF_VALUE, "pdf");
-        var shibaDocXContents = Files.readAllBytes(getAbsoluteFilepath("shiba+testing+doc.docx"));
-        var shibaDocFilepath = "docS3FilePath";
-        when(documentRepositoryService.get(shibaDocFilepath)).thenReturn(shibaDocXContents);
-        applicationData.addUploadedDoc(
-                new MockMultipartFile("docx", "someDoc.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", shibaDocXContents),
-                shibaDocFilepath,
-                "docxDataUrl",
-                "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+        mockDocUpload("shiba+testing+doc.docx", "docS3FilePath", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "docx");
 
         when(fileNameGenerator.generateUploadedDocumentName(application, 0, "pdf")).thenReturn("pdf1of3.pdf");
         when(fileNameGenerator.generateUploadedDocumentName(application, 1, "pdf")).thenReturn("pdf2of3.pdf");
         when(fileNameGenerator.generateUploadedDocumentName(application, 2, "pdf")).thenReturn("pdf3of3.pdf");
 
-
         documentConsumer.processUploadedDocuments(application);
 
         ArgumentCaptor<ApplicationFile> captor = ArgumentCaptor.forClass(ApplicationFile.class);
-        verify(mnitClient, times(2)).send(captor.capture(), eq(County.Olmsted), eq(application.getId()), eq(UPLOADED_DOC));
+        verify(mnitClient, times(3)).send(captor.capture(), eq(County.Olmsted), eq(application.getId()), eq(UPLOADED_DOC));
 
         // Assert that converted file contents are as expected
         verifyGeneratedPdf(captor.getAllValues().get(0).getFileBytes(), "shiba+file.pdf");

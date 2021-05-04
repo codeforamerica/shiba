@@ -80,6 +80,12 @@
     },
     {
       "moduleLicense": "The JSON License"
+    },
+    {
+      "moduleLicense": "The MIT License (MIT)"
+    },
+    {
+      "moduleLicense": "Mozilla Public License"
     }
   ]
 }
