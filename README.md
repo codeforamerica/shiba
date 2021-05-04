@@ -3,9 +3,30 @@
 ## Development setup
 
 ### Install the following system dependencies:
+_Note: these instructions are specific to macOS, but the same dependencies do need to be installed on Windows as well._
 
-- Java Development Kit: `brew tap AdoptOpenJDK/openjdk && brew install --cask adoptopenjdk16`
-- Gradle build tool version 6.3: `brew install gradle`
+#### Java Development Kit:
+```
+brew tap AdoptOpenJDK/openjdk
+brew install --cask adoptopenjdk16`
+```
+#### Set up jenv to manage your jdk versions
+
+First run `brew install jenv`.
+
+Add the following to your ~/.bashrc or ~/.zshrc
+```
+export PATH="$HOME/.jenv/bin:$PATH"
+eval "$(jenv init -)"
+```
+
+Reload your terminal, then finally run this from the SHIBA repo's directory
+```
+jenv add /Library/Java/JavaVirtualMachines/adoptopenjdk-16.jdk/Contents/Home
+```
+
+#### Gradle
+`brew install gradle`
 
 ### Setup live reload:
 
