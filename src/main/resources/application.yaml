@@ -50,8 +50,8 @@ mail-gun:
   shouldCC: false
 
 feature-flag:
-  submit-via-email: off
-  submit-via-api: off
+  submit-via-email: on
+  submit-via-api: on
   submit-docs-via-email-for-hennepin: on
   later-docs-feature: on
   county-anoka: on

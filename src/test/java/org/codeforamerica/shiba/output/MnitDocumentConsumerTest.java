@@ -164,9 +164,19 @@ class MnitDocumentConsumerTest {
         mockDocUpload("shiba+file.jpg", "someS3FilePath", MediaType.IMAGE_JPEG_VALUE, "jpg");
 
         mockDocUpload("test-uploaded-pdf.pdf", "pdfS3FilePath", MediaType.APPLICATION_PDF_VALUE, "pdf");
+        var shibaDocXContents = Files.readAllBytes(getAbsoluteFilepath("shiba+testing+doc.docx"));
+        var shibaDocFilepath = "docS3FilePath";
+        when(documentRepositoryService.get(shibaDocFilepath)).thenReturn(shibaDocXContents);
+        applicationData.addUploadedDoc(
+                new MockMultipartFile("docx", "someDoc.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", shibaDocXContents),
+                shibaDocFilepath,
+                "docxDataUrl",
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
 
-        when(fileNameGenerator.generateUploadedDocumentName(application, 0, "pdf")).thenReturn("pdf1of2.pdf");
-        when(fileNameGenerator.generateUploadedDocumentName(application, 1, "pdf")).thenReturn("pdf2of2.pdf");
+        when(fileNameGenerator.generateUploadedDocumentName(application, 0, "pdf")).thenReturn("pdf1of3.pdf");
+        when(fileNameGenerator.generateUploadedDocumentName(application, 1, "pdf")).thenReturn("pdf2of3.pdf");
+        when(fileNameGenerator.generateUploadedDocumentName(application, 2, "pdf")).thenReturn("pdf3of3.pdf");
+
 
         documentConsumer.processUploadedDocuments(application);
 
@@ -176,6 +186,7 @@ class MnitDocumentConsumerTest {
         // Assert that converted file contents are as expected
         verifyGeneratedPdf(captor.getAllValues().get(0).getFileBytes(), "shiba+file.pdf");
         verifyGeneratedPdf(captor.getAllValues().get(1).getFileBytes(), "test-uploaded-pdf-with-coverpage.pdf");
+        verifyGeneratedPdf(captor.getAllValues().get(2).getFileBytes(), "shiba+testing+doc.pdf");
     }
 
     private void mockDocUpload(String uploadedDocFilename, String s3filepath, String contentType, String extension) throws IOException {

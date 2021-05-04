@@ -24,8 +24,7 @@ import org.apache.poi.xwpf.converter.pdf.PdfConverter;
 import org.apache.poi.xwpf.converter.pdf.PdfOptions;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 import java.util.Map;
 
@@ -80,7 +79,12 @@ public class PdfGenerator implements FileGenerator {
                 log.error("failed to convert document " + uploadedDocument.getFilename() + " to pdf. Maintaining original type");
             }
         } else if(DOC_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
-            //convertImageToPdf()
+            try {
+                fileBytes = convertDocsToPdf(fileBytes);
+                extension = "pdf";
+            } catch (Exception e){
+                log.error("failed to convert document " + uploadedDocument.getFilename() + " to pdf. Maintaining original type");
+            }
         }
 
         if (extension.equals("pdf")) {
@@ -136,7 +140,14 @@ public class PdfGenerator implements FileGenerator {
         }
     }
 
-    private byte[] convertDocsToPdf(byte[] docFileBytes, String filename) throws Exception {
-        return null;
+    private byte[] convertDocsToPdf(byte[] docFileBytes) throws Exception {
+        log.info("Now converting the pdf");
+        InputStream is = new ByteArrayInputStream(docFileBytes);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        XWPFDocument document = new XWPFDocument(is);
+        PdfOptions options = PdfOptions.create();
+        PdfConverter.getInstance().convert(document, out, options);
+        Utils.writeByteArrayToFile(out.toByteArray(), "test_output.pdf");
+        return out.toByteArray();
     }
 }
