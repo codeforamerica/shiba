@@ -11,7 +11,6 @@ import org.codeforamerica.shiba.pages.enrichment.smartystreets.SmartyStreetClien
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -25,7 +24,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.File;
 import java.io.IOException;
@@ -413,7 +411,7 @@ public abstract class AbstractBasePageTest {
         testPage.clickButton("I'm finished uploading");
     }
 
-    private void uploadFile(String filepath) {
+    protected void uploadFile(String filepath) {
         testPage.clickElementById("drag-and-drop-box"); // is this needed?
         WebElement upload = driver.findElement(By.className("dz-hidden-input"));
         upload.sendKeys(filepath);

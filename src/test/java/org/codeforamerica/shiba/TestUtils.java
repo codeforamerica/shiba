@@ -12,7 +12,7 @@ public class TestUtils {
         return Paths.get(getAbsoluteFilepathString(resourceFilename));
     }
 
-    static String getAbsoluteFilepathString(String resourceFilename) {
+    public static String getAbsoluteFilepathString(String resourceFilename) {
         URL resource = TestUtils.class.getClassLoader().getResource(resourceFilename);
         if (resource != null) {
         	return (new File(resource.getFile())).getAbsolutePath();

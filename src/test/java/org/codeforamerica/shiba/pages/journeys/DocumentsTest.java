@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages.journeys;
 
+import org.codeforamerica.shiba.TestUtils;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -231,19 +232,9 @@ public class DocumentsTest extends JourneyTest {
         var filenameTextElements = driver.findElementsByClassName("filename-text");
         var fileDetailsElements = driver.findElementsByClassName("file-details");
 
-        // shiba+test.jpg
+        // test-caf.pdf
         var filename = getAttributeForElementAtIndex(filenameTextElements, 0, "innerHTML");
         var fileDetails = getAttributeForElementAtIndex(fileDetailsElements, 0, "innerHTML");
-
-        assertThat(filename).contains("shiba");
-        assertThat(filename).contains("jpg");
-        assertThat(fileDetails).contains("1 image");
-        assertThat(fileDetails).contains("51.7");
-        assertThat(fileDetails).contains("KB");
-
-        // test-caf.pdf
-        filename = getAttributeForElementAtIndex(filenameTextElements, 1, "innerHTML");
-        fileDetails = getAttributeForElementAtIndex(fileDetailsElements, 1, "innerHTML");
 
         assertThat(filename).contains("test-caf");
         assertThat(filename).contains("pdf");
@@ -251,6 +242,15 @@ public class DocumentsTest extends JourneyTest {
         assertThat(fileDetails).contains("MB");
         assertThat(fileDetails).doesNotContain("1 image");
 
+        // shiba+test.jpg
+        filename = getAttributeForElementAtIndex(filenameTextElements, 1, "innerHTML");
+        fileDetails = getAttributeForElementAtIndex(fileDetailsElements, 1, "innerHTML");
+
+        assertThat(filename).contains("shiba");
+        assertThat(filename).contains("jpg");
+        assertThat(fileDetails).contains("1 image");
+        assertThat(fileDetails).contains("51.7");
+        assertThat(fileDetails).contains("KB");
 
         // Delete a file to check added file count goes back down
         List<WebElement> deleteLinks = driver.findElements(By.linkText("delete"));
@@ -290,6 +290,50 @@ public class DocumentsTest extends JourneyTest {
         assertThat(testPage.getTitle()).isEqualTo("Upload Documents");
         deleteLinks = driver.findElements(By.linkText("delete"));
         assertThat(deleteLinks.size()).isEqualTo(0);
+    }
+
+    @Test
+    void shouldMaintainCorrectOrderingAfterDeletion() {
+        getToDocumentUploadScreen();
+        uploadJpgFile();
+        assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("1 file added");
+        uploadPdfFile();
+        assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("2 files added");
+        uploadFile(TestUtils.getAbsoluteFilepathString("test-cover-pages.pdf"));
+        assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("3 files added");
+        waitForDocumentUploadToComplete();
+
+        List<WebElement> deleteLinks = driver.findElements(By.linkText("delete"));
+        assertThat(deleteLinks.size()).isEqualTo(3);
+        testPage.clickLink("delete");
+
+        assertThat(testPage.getTitle()).isEqualTo("Delete a file");
+        testPage.clickButton("Yes, delete the file");
+
+        var filenameTextElements = driver.findElementsByClassName("filename-text");
+        var fileDetailsElements = driver.findElementsByClassName("file-details");
+
+        // test-caf.pdf
+        var filename = getAttributeForElementAtIndex(filenameTextElements, 0, "innerHTML");
+        var fileDetails = getAttributeForElementAtIndex(fileDetailsElements, 0, "innerHTML");
+
+        assertThat(filename).contains("test-caf");
+        assertThat(filename).contains("pdf");
+        assertThat(fileDetails).contains("0.4");
+        assertThat(fileDetails).contains("MB");
+        assertThat(fileDetails).doesNotContain("1 image");
+
+        // shiba+test.jpg
+        filename = getAttributeForElementAtIndex(filenameTextElements, 1, "innerHTML");
+        fileDetails = getAttributeForElementAtIndex(fileDetailsElements, 1, "innerHTML");
+
+        assertThat(filename).contains("shiba");
+        assertThat(filename).contains("jpg");
+        assertThat(fileDetails).contains("1 image");
+        assertThat(fileDetails).contains("51.7");
+        assertThat(fileDetails).contains("KB");
+
+        assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("2 files added");
     }
 
     @Test
@@ -335,7 +379,7 @@ public class DocumentsTest extends JourneyTest {
         getToDocumentUploadScreen();
         uploadJpgFile();
         driver.executeScript("$('#document-upload').get(0).dropzone.addFile({name: 'testFile.xyz', size: 1000, type: 'not-an-image'})");
-        assertThat(driver.findElementsByClassName("text--error").get(1).getText()).contains("You can't upload files of this type");
+        assertThat(driver.findElementsByClassName("text--error").get(0).getText()).contains("You can't upload files of this type");
         testPage.clickLink("remove");
         assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("1 file added");
     }

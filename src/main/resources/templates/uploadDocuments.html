@@ -167,6 +167,13 @@
         myDropZone.emit("thumbnail", file, documentIcon);
     }
 
+    function prependAddedFile() {
+        var $previewsContainer = $('.preview-container')[0];
+        var $previews = $('.dz-preview');
+        var $lastPreviewInList = $previews[$previews.length - 1];
+        $previewsContainer.prepend($lastPreviewInList);
+    }
+
     $("#document-upload").dropzone({
         uploadMultiple: false,
         previewsContainer: ".preview-container",
@@ -237,6 +244,7 @@
                     documentInfo.classList.add("hidden");
                 }
                 showNumberOfAddedFiles();
+                prependAddedFile();
             });
 
             this.on("thumbnail", function (file, dataURL) {
