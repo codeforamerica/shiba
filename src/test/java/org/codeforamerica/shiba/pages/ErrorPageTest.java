@@ -20,12 +20,12 @@ public class ErrorPageTest extends AbstractBasePageTest {
     @Test
     void shouldShow404PageIfPageDoesNotExist() {
         driver.navigate().to(baseUrl + "/foo");
-        assertThat(driver.getTitle()).isEqualTo("404 Error");
+        assertThat(driver.getTitle()).isEqualTo("Error");
     }
 
     @Test
     void shouldShow500PageIfErrorOtherThan404() {
         driver.navigate().to(baseUrl + "/;");
-        assertThat(driver.getTitle()).isEqualTo("500 Error");
+        assertThat(driver.getTitle()).isEqualTo("Error");
     }
 }
