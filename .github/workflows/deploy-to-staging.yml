@@ -281,7 +281,8 @@ jobs:
           'MIXPANEL_API-KEY=${{ secrets.MIXPANEL_API_KEY_STAGING }}' \
           'S3_BUCKET=${{ secrets.S3_STAGING_BUCKET }}' \
           'AWS_ACCESS_KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_ACCESS_KEY }}' \
-          'AWS_SECRET_KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY }}'
+          'AWS_SECRET_KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY }}' \
+          'SSL_PROTOCOLS_OVERRIDE=TLSv1.2'
       - name: Merge main -> staging
         uses: MaximeHeckel/github-action-merge-fast-forward@v1.1.0
         with:
