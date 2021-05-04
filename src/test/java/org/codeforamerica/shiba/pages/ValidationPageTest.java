@@ -71,7 +71,7 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
     @Test
     void shouldStayOnThePage_whenValidationFails() {
         driver.navigate().to(baseUrl + "/pages/firstPage");
-        driver.findElement(By.cssSelector("button")).click();
+        driver.findElement(By.tagName("button")).click();
 
         assertThat(driver.getTitle()).isEqualTo(firstPageTitle);
     }
@@ -79,8 +79,8 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
     @Test
     void shouldGoOnToNextPage_whenValidationPasses() {
         driver.navigate().to(baseUrl + "/pages/firstPage");
-        driver.findElement(By.cssSelector("input[name^='someInputName']")).sendKeys("something");
-        driver.findElement(By.cssSelector("button")).click();
+        driver.findElement(By.cssSelector("input[name='someInputName[]']")).sendKeys("something");
+        driver.findElement(By.tagName("button")).click();
 
         assertThat(driver.getTitle()).isEqualTo(nextPageTitle);
     }
@@ -102,7 +102,7 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
     @Test
     void shouldDisplayErrorMessageWhenValidationFailed() {
         driver.navigate().to(baseUrl + "/pages/firstPage");
-        driver.findElement(By.cssSelector("button")).click();
+        driver.findElement(By.tagName("button")).click();
 
         assertThat(testPage.getInputError("someInputName").getText()).isEqualTo(errorMessage);
     }
@@ -110,8 +110,8 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
     @Test
     void shouldNotTriggerValidation_whenConditionIsFalse() {
         driver.navigate().to(baseUrl + "/pages/firstPage");
-        driver.findElement(By.cssSelector("input[name^='someInputName']")).sendKeys("do not trigger validation");
-        driver.findElement(By.cssSelector("button")).click();
+        driver.findElement(By.cssSelector("input[name='someInputName[]']")).sendKeys("do not trigger validation");
+        driver.findElement(By.tagName("button")).click();
 
         assertThat(driver.getTitle()).isEqualTo(nextPageTitle);
     }
@@ -119,8 +119,8 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
     @Test
     void shouldTriggerValidation_whenConditionIsTrue() {
         driver.navigate().to(baseUrl + "/pages/firstPage");
-        driver.findElement(By.cssSelector("input[name^='someInputName']")).sendKeys("valueToTriggerCondition");
-        driver.findElement(By.cssSelector("button")).click();
+        driver.findElement(By.cssSelector("input[name='someInputName[]']")).sendKeys("valueToTriggerCondition");
+        driver.findElement(By.tagName("button")).click();
 
         assertThat(driver.getTitle()).isEqualTo(firstPageTitle);
         assertThat(testPage.getInputError("conditionalValidationWhenValueEquals")).isNotNull();
@@ -143,12 +143,12 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         @Test
         void shouldTriggerValidation_whenConditionInputValueIsNoneSelected() {
             driver.navigate().to(baseUrl + "/pages/firstPage");
-            driver.findElement(By.cssSelector("input[name^='someInputName']")).sendKeys("do not trigger validation");
-            driver.findElement(By.cssSelector("button")).click();
+            driver.findElement(By.cssSelector("input[name='someInputName[]']")).sendKeys("do not trigger validation");
+            driver.findElement(By.tagName("button")).click();
 
             assertThat(driver.getTitle()).isEqualTo(nextPageTitle);
 
-            driver.findElement(By.cssSelector("button")).click();
+            driver.findElement(By.tagName("button")).click();
 
             assertThat(testPage.getInputError("conditionalValidationWhenValueIsNoneSelected")).isNotNull();
         }
@@ -156,12 +156,12 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         @Test
         void shouldNotTriggerValidation_whenConditionInputValueIsSelected() {
             driver.navigate().to(baseUrl + "/pages/firstPage");
-            driver.findElement(By.cssSelector("input[name^='someInputName']")).sendKeys("do not trigger validation");
-            driver.findElement(By.cssSelector("button")).click();
+            driver.findElement(By.cssSelector("input[name='someInputName[]']")).sendKeys("do not trigger validation");
+            driver.findElement(By.tagName("button")).click();
 
             assertThat(driver.getTitle()).isEqualTo(nextPageTitle);
-            driver.findElement(By.cssSelector("input[name^='someCheckbox']")).click();
-            driver.findElement(By.cssSelector("button")).click();
+            driver.findElement(By.cssSelector("input[name='someCheckbox[]']")).click();
+            driver.findElement(By.tagName("button")).click();
 
             assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
         }
@@ -241,8 +241,8 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         })
         void shouldFailValidationForZipCodeWhenValueIsNotExactlyFiveDigits(String input) {
             driver.navigate().to(baseUrl + "/pages/zipcodePage");
-            driver.findElement(By.cssSelector("input[name^='zipCodeInput']")).sendKeys(input);
-            driver.findElement(By.cssSelector("button")).click();
+            driver.findElement(By.cssSelector("input[name='zipCodeInput[]']")).sendKeys(input);
+            driver.findElement(By.tagName("button")).click();
 
             assertThat(driver.getTitle()).isEqualTo(zipcodePageTitle);
             assertThat(testPage.getInputError("zipCodeInput")).isNotNull();
@@ -252,9 +252,9 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         void shouldPassValidationForZipCodeWhenValueIsExactlyFiveDigits() {
             driver.navigate().to(baseUrl + "/pages/zipcodePage");
 
-            driver.findElement(By.cssSelector("input[name^='zipCodeInput']")).clear();
-            driver.findElement(By.cssSelector("input[name^='zipCodeInput']")).sendKeys("12345");
-            driver.findElement(By.cssSelector("button")).click();
+            driver.findElement(By.cssSelector("input[name='zipCodeInput[]']")).clear();
+            driver.findElement(By.cssSelector("input[name='zipCodeInput[]']")).sendKeys("12345");
+            driver.findElement(By.tagName("button")).click();
 
             assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
         }
@@ -268,8 +268,8 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         })
         void shouldFailValidationForCaseNumberWhenValueIsNotExactlySevenDigits(String input) {
             driver.navigate().to(baseUrl + "/pages/caseNumberPage");
-            driver.findElement(By.cssSelector("input[name^='caseNumberInput']")).sendKeys(input);
-            driver.findElement(By.cssSelector("button")).click();
+            driver.findElement(By.cssSelector("input[name='caseNumberInput[]']")).sendKeys(input);
+            driver.findElement(By.tagName("button")).click();
 
             assertThat(driver.getTitle()).isEqualTo(caseNumberPageTitle);
             assertThat(testPage.getInputError("caseNumberInput")).isNotNull();
@@ -278,7 +278,7 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         @Test
         void shouldNotFailValidationForCaseNumberWhenValueIsEmptyWhenReturningToPage() {
             driver.navigate().to(baseUrl + "/pages/caseNumberPage");
-            driver.findElement(By.cssSelector("button")).click();
+            driver.findElement(By.tagName("button")).click();
             driver.navigate().back();
             assertThat(testPage.hasInputError("caseNumberInput")).isFalse();
         }
@@ -287,9 +287,9 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         void shouldPassValidationForCaseNumberWhenValueIsExactlySevenDigits() {
             driver.navigate().to(baseUrl + "/pages/caseNumberPage");
 
-            driver.findElement(By.cssSelector("input[name^='caseNumberInput']")).clear();
-            driver.findElement(By.cssSelector("input[name^='caseNumberInput']")).sendKeys("1234567");
-            driver.findElement(By.cssSelector("button")).click();
+            driver.findElement(By.cssSelector("input[name='caseNumberInput[]']")).clear();
+            driver.findElement(By.cssSelector("input[name='caseNumberInput[]']")).sendKeys("1234567");
+            driver.findElement(By.tagName("button")).click();
 
             assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
         }
@@ -297,15 +297,15 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         @Test
         void shouldPassValidationForStateWhenValueIsAKnownStateCode_caseInsensitive() {
             driver.navigate().to(baseUrl + "/pages/statePage");
-            driver.findElement(By.cssSelector("input[name^='stateInput']")).sendKeys("XY");
-            driver.findElement(By.cssSelector("button")).click();
+            driver.findElement(By.cssSelector("input[name='stateInput[]']")).sendKeys("XY");
+            driver.findElement(By.tagName("button")).click();
 
             assertThat(driver.getTitle()).isEqualTo(statePageTitle);
             assertThat(testPage.getInputError("stateInput")).isNotNull();
 
-            driver.findElement(By.cssSelector("input[name^='stateInput']")).clear();
-            driver.findElement(By.cssSelector("input[name^='stateInput']")).sendKeys("mn");
-            driver.findElement(By.cssSelector("button")).click();
+            driver.findElement(By.cssSelector("input[name='stateInput[]']")).clear();
+            driver.findElement(By.cssSelector("input[name='stateInput[]']")).sendKeys("mn");
+            driver.findElement(By.tagName("button")).click();
 
             assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
         }
@@ -321,8 +321,8 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         })
         void shouldFailValidationForPhoneIfValueIsNotExactly10DigitsOrStartsWithAZeroOrOne(String input) {
             driver.navigate().to(baseUrl + "/pages/phonePage");
-            driver.findElement(By.cssSelector("input[name^='phoneInput']")).sendKeys(input);
-            driver.findElement(By.cssSelector("button")).click();
+            driver.findElement(By.cssSelector("input[name='phoneInput[]']")).sendKeys(input);
+            driver.findElement(By.tagName("button")).click();
 
             assertThat(driver.getTitle()).isEqualTo(phonePageTitle);
             assertThat(testPage.getInputError("phoneInput")).isNotNull();
@@ -331,9 +331,9 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         @Test
         void shouldPassValidationForPhoneIfAndOnlyIfValueIsExactly10Digits() {
             driver.navigate().to(baseUrl + "/pages/phonePage");
-            driver.findElement(By.cssSelector("input[name^='phoneInput']")).sendKeys("7234567890");
+            driver.findElement(By.cssSelector("input[name='phoneInput[]']")).sendKeys("7234567890");
 
-            driver.findElement(By.cssSelector("button")).click();
+            driver.findElement(By.tagName("button")).click();
 
             assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
         }
@@ -348,8 +348,8 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         })
         void shouldFailValidationForMoneyWhenValueIsNotAWholeDollarAmount(String value) {
             driver.navigate().to(baseUrl + "/pages/moneyPage");
-            driver.findElement(By.cssSelector("input[name^='moneyInput']")).sendKeys(value);
-            driver.findElement(By.cssSelector("button")).click();
+            driver.findElement(By.cssSelector("input[name='moneyInput[]']")).sendKeys(value);
+            driver.findElement(By.tagName("button")).click();
 
             assertThat(driver.getTitle()).isEqualTo(moneyPageTitle);
             assertThat(testPage.getInputError("moneyInput")).isNotNull();
@@ -365,8 +365,8 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         })
         void shouldPassValidationForMoneyWhenValueIsAPositiveWholeDollarAmount(String value) {
             driver.navigate().to(baseUrl + "/pages/moneyPage");
-            driver.findElement(By.cssSelector("input[name^='moneyInput']")).sendKeys(value);
-            driver.findElement(By.cssSelector("button")).click();
+            driver.findElement(By.cssSelector("input[name='moneyInput[]']")).sendKeys(value);
+            driver.findElement(By.tagName("button")).click();
 
             assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
         }
@@ -379,8 +379,8 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         })
         void shouldFailValidationForSSNWhenValueIsNotExactlyNineDigits(String input) {
             driver.navigate().to(baseUrl + "/pages/ssnPage");
-            driver.findElement(By.cssSelector("input[name^='ssnInput']")).sendKeys(input);
-            driver.findElement(By.cssSelector("button")).click();
+            driver.findElement(By.cssSelector("input[name='ssnInput[]']")).sendKeys(input);
+            driver.findElement(By.tagName("button")).click();
 
             assertThat(driver.getTitle()).isEqualTo(ssnPageTitle);
             assertThat(testPage.getInputError("ssnInput")).isNotNull();
@@ -390,9 +390,9 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         void shouldPassValidationForSSNWhenValueIsExactlyNineDigits() {
             driver.navigate().to(baseUrl + "/pages/ssnPage");
 
-            driver.findElement(By.cssSelector("input[name^='ssnInput']")).clear();
-            driver.findElement(By.cssSelector("input[name^='ssnInput']")).sendKeys("123456789");
-            driver.findElement(By.cssSelector("button")).click();
+            driver.findElement(By.cssSelector("input[name='ssnInput[]']")).clear();
+            driver.findElement(By.cssSelector("input[name='ssnInput[]']")).sendKeys("123456789");
+            driver.findElement(By.tagName("button")).click();
 
             assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
         }
@@ -407,12 +407,12 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
                                                                  String day,
                                                                  String year) {
             driver.navigate().to(baseUrl + "/pages/datePage");
-            driver.findElements(By.cssSelector("input[name^='dateInput']")).forEach(WebElement::clear);
+            driver.findElements(By.cssSelector("input[name='dateInput[]']")).forEach(WebElement::clear);
 
             driver.findElement(By.id("dateInput-month")).sendKeys(month);
             driver.findElement(By.id("dateInput-day")).sendKeys(day);
             driver.findElement(By.id("dateInput-year")).sendKeys(year);
-            driver.findElement(By.cssSelector("button")).click();
+            driver.findElement(By.tagName("button")).click();
 
             assertThat(driver.getTitle()).isEqualTo(datePageTitle);
             assertThat(testPage.getInputError("dateInput")).isNotNull();
@@ -428,12 +428,12 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
                                                               String year) {
             driver.navigate().to(baseUrl + "/pages/datePage");
 
-            driver.findElements(By.cssSelector("input[name^='dateInput']")).forEach(WebElement::clear);
+            driver.findElements(By.cssSelector("input[name='dateInput[]']")).forEach(WebElement::clear);
 
             driver.findElement(By.id("dateInput-month")).sendKeys(month);
             driver.findElement(By.id("dateInput-day")).sendKeys(day);
             driver.findElement(By.id("dateInput-year")).sendKeys(year);
-            driver.findElement(By.cssSelector("button")).click();
+            driver.findElement(By.tagName("button")).click();
 
             assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
         }

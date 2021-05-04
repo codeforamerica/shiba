@@ -27,7 +27,7 @@ public class UserJourneyPageTest extends JourneyTest {
 
     @Test
     void intercomButtonIsPresent() {
-        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        await().atMost(5, TimeUnit.SECONDS).until(() -> !driver.findElementsById("intercom-frame").isEmpty());
         assertThat(driver.findElementById("intercom-frame")).isNotNull();
     }
     

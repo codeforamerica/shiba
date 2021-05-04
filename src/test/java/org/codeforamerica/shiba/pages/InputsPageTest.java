@@ -90,7 +90,7 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
         String hourlyWageValue = "some wage";
         testPage.enter("hourlyWageInput", hourlyWageValue);
 
-        driver.findElement(By.cssSelector("button")).click();
+        driver.findElement(By.tagName("button")).click();
         assertThat(driver.getTitle()).isEqualTo("nextPageTitle");
         driver.findElement(By.partialLinkText("Go Back")).click();
         assertThat(driver.getTitle()).isEqualTo("firstPageTitle");
@@ -118,7 +118,7 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
             driver.navigate().to(baseUrl + "/pages/firstPage");
             testPage.enter(inputName, followUpTrue);
 
-            assertThat(driver.findElement(By.cssSelector(String.format("input[name^='%s-followUpTextInput']", inputName))).isDisplayed()).isFalse();
+            assertThat(driver.findElement(By.cssSelector(String.format("input[name='%s-followUpTextInput[]']", inputName))).isDisplayed()).isFalse();
         }
 
         @ParameterizedTest
@@ -130,7 +130,7 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
             driver.navigate().to(baseUrl + "/pages/firstPage");
             testPage.enter(inputName, followUpFalse);
 
-            assertThat(driver.findElement(By.cssSelector(String.format("input[name^='%s-followUpTextInput']", inputName))).isDisplayed()).isTrue();
+            assertThat(driver.findElement(By.cssSelector(String.format("input[name='%s-followUpTextInput[]']", inputName))).isDisplayed()).isTrue();
         }
 
         @ParameterizedTest
@@ -148,7 +148,7 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
             testPage.clickContinue();
             testPage.goBack();
 
-            assertThat(driver.findElement(By.cssSelector(String.format("input[name^='%s-followUpTextInput']", inputName))).isDisplayed()).isTrue();
+            assertThat(driver.findElement(By.cssSelector(String.format("input[name='%s-followUpTextInput[]']", inputName))).isDisplayed()).isTrue();
             assertThat(testPage.getInputValue(followUpInputName)).isEqualTo(followUpTextInputValue);
         }
 
@@ -161,7 +161,7 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
             driver.navigate().to(baseUrl + "/pages/firstPage");
             testPage.enter(inputName, followUpUncertain);
 
-            assertThat(driver.findElement(By.cssSelector(String.format("input[name^='%s-followUpTextInput']", inputName))).isDisplayed()).isTrue();
+            assertThat(driver.findElement(By.cssSelector(String.format("input[name='%s-followUpTextInput[]']", inputName))).isDisplayed()).isTrue();
         }
 
         @Test
@@ -171,14 +171,14 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
             testPage.enter("checkboxInputWithFollowUps", followUpUncertain);
             testPage.enter("checkboxInputWithFollowUps", followUpUncertain);
 
-            assertThat(driver.findElement(By.cssSelector("input[name^='checkboxInputWithFollowUps-followUpTextInput']")).isDisplayed()).isTrue();
+            assertThat(driver.findElement(By.cssSelector("input[name='checkboxInputWithFollowUps-followUpTextInput[]']")).isDisplayed()).isTrue();
         }
     }
 
     @Test
     void shouldNotBeAbleToChangeValueInUneditableInputs() {
         driver.navigate().to(baseUrl + "/pages/firstPage");
-        WebElement uneditableInput = driver.findElement(By.cssSelector(String.format("input[name^='%s']", "uneditableInput")));
+        WebElement uneditableInput = driver.findElement(By.cssSelector(String.format("input[name='%s[]']", "uneditableInput")));
 
         uneditableInput.sendKeys("new value");
 
@@ -188,21 +188,21 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
     @Test
     void shouldKeepUneditableInputsAfterNavigation() {
         driver.navigate().to(baseUrl + "/pages/firstPage");
-        driver.findElement(By.cssSelector("button")).click();
+        driver.findElement(By.tagName("button")).click();
 
         assertThat(driver.getTitle()).isEqualTo("nextPageTitle");
 
         driver.findElement(By.partialLinkText("Go Back")).click();
 
         assertThat(driver.getTitle()).isEqualTo("firstPageTitle");
-        assertThat(driver.findElement(By.cssSelector(String.format("input[name^='%s']", "uneditableInput"))).getAttribute("value")).contains("default value");
+        assertThat(driver.findElement(By.cssSelector(String.format("input[name='%s[]']", "uneditableInput"))).getAttribute("value")).contains("default value");
     }
 
     @Test
     void shouldDisplayPromptMessageFragment() {
         driver.navigate().to(baseUrl + "/pages/inputWithPromptFragmentPage");
 
-        assertThat(driver.findElementByPartialLinkText("test message"));
+        assertThat(driver.findElementByPartialLinkText("test message")).isNotNull();
     }
 
     @Test

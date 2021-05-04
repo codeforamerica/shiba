@@ -44,7 +44,7 @@ public class ConditionalRenderingPageTest extends AbstractExistingStartTimePageT
     void shouldNotRenderPageAndNavigateToTheNextPageIfTheSkipConditionIsTrue() {
         driver.navigate().to(baseUrl + "/pages/firstPage");
         testPage.enter("someRadioInputName", "SKIP PAGE");
-        driver.findElement(By.cssSelector("button")).click();
+        driver.findElement(By.tagName("button")).click();
 
         assertThat(driver.getTitle()).isEqualTo(thirdPageTitle);
     }
@@ -55,7 +55,7 @@ public class ConditionalRenderingPageTest extends AbstractExistingStartTimePageT
         testPage.enter("someRadioInputName", "SKIP PAGE");
         testPage.enter("radioInputToSkipThirdPage", "SKIP PAGE");
 
-        driver.findElement(By.cssSelector("button")).click();
+        driver.findElement(By.tagName("button")).click();
         assertThat(driver.getTitle()).isEqualTo(fourthPageTitle);
     }
 
@@ -68,7 +68,7 @@ public class ConditionalRenderingPageTest extends AbstractExistingStartTimePageT
                 .orElseThrow();
         radioToClick.click();
 
-        driver.findElement(By.cssSelector("button")).click();
+        driver.findElement(By.tagName("button")).click();
 
         assertThat(driver.getTitle()).isEqualTo(secondPageTitle);
     }
@@ -91,7 +91,7 @@ public class ConditionalRenderingPageTest extends AbstractExistingStartTimePageT
         driver.navigate().to(baseUrl + "/pages/firstPage");
         testPage.enter("someRadioInputName", "SKIP PAGE");
 
-        driver.findElement(By.cssSelector("button")).click();
+        driver.findElement(By.tagName("button")).click();
 
         assertThat(driver.getTitle()).isEqualTo(thirdPageTitle);
         driver.findElement(By.partialLinkText("Back")).click();
@@ -102,10 +102,10 @@ public class ConditionalRenderingPageTest extends AbstractExistingStartTimePageT
     @Test
     void shouldBeAbleToNavigateBackMoreThanOnePage() {
         driver.navigate().to(baseUrl + "/pages/firstPage");
-        driver.findElement(By.cssSelector("button")).click();
+        driver.findElement(By.tagName("button")).click();
         assertThat(driver.getTitle()).isEqualTo(secondPageTitle);
 
-        driver.findElement(By.cssSelector("button")).click();
+        driver.findElement(By.tagName("button")).click();
         assertThat(driver.getTitle()).isEqualTo(thirdPageTitle);
 
         driver.findElement(By.partialLinkText("Back")).click();

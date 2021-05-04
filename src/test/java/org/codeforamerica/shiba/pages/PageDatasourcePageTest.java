@@ -56,7 +56,7 @@ public class PageDatasourcePageTest extends AbstractExistingStartTimePageTest {
 
         driver.navigate().to(baseUrl + "/pages/yesNoQuestionPage");
 
-        List<WebElement> yesNoRadios = driver.findElements(By.cssSelector(".button"));
+        List<WebElement> yesNoRadios = driver.findElements(By.tagName("button"));
         WebElement radioToSelect = yesNoRadios.stream()
                 .filter(label -> label.getText().equals(YesNoAnswer.NO.getDisplayValue()))
                 .findFirst()
@@ -70,7 +70,7 @@ public class PageDatasourcePageTest extends AbstractExistingStartTimePageTest {
     void shouldDisplayPageHeaderBasedOnCondition() {
         driver.navigate().to(baseUrl + "/pages/yesNoQuestionPage");
 
-        List<WebElement> yesNoRadios = driver.findElements(By.cssSelector(".button"));
+        List<WebElement> yesNoRadios = driver.findElements(By.tagName("button"));
         WebElement radioToSelect = yesNoRadios.stream()
                 .filter(label -> label.getText().equals(YesNoAnswer.YES.getDisplayValue()))
                 .findFirst()
@@ -84,14 +84,14 @@ public class PageDatasourcePageTest extends AbstractExistingStartTimePageTest {
     void shouldDisplayPageHeaderBasedOnCompositeCondition() {
         driver.navigate().to(baseUrl + "/pages/yesNoQuestionPage2");
 
-        List<WebElement> yesNoRadios = driver.findElements(By.cssSelector(".button"));
+        List<WebElement> yesNoRadios = driver.findElements(By.tagName("button"));
         WebElement radioToSelect = yesNoRadios.stream()
                 .filter(label -> label.getText().equals(YesNoAnswer.YES.getDisplayValue()))
                 .findFirst()
                 .orElseThrow();
         radioToSelect.click();
 
-        List<WebElement> yesNoRadios2 = driver.findElements(By.cssSelector(".button"));
+        List<WebElement> yesNoRadios2 = driver.findElements(By.tagName("button"));
         WebElement radioToSelect2 = yesNoRadios2.stream()
                 .filter(label -> label.getText().equals(YesNoAnswer.NO.getDisplayValue()))
                 .findFirst()
@@ -105,14 +105,14 @@ public class PageDatasourcePageTest extends AbstractExistingStartTimePageTest {
     void shouldDisplayPageHeaderBasedOnCompositeConditionOtherPath() {
         driver.navigate().to(baseUrl + "/pages/yesNoQuestionPage2");
 
-        List<WebElement> yesNoRadios = driver.findElements(By.cssSelector(".button"));
+        List<WebElement> yesNoRadios = driver.findElements(By.tagName("button"));
         WebElement radioToSelect = yesNoRadios.stream()
                 .filter(label -> label.getText().equals(YesNoAnswer.NO.getDisplayValue()))
                 .findFirst()
                 .orElseThrow();
         radioToSelect.click();
 
-        List<WebElement> yesNoRadios2 = driver.findElements(By.cssSelector(".button"));
+        List<WebElement> yesNoRadios2 = driver.findElements(By.tagName("button"));
         WebElement radioToSelect2 = yesNoRadios2.stream()
                 .filter(label -> label.getText().equals(YesNoAnswer.YES.getDisplayValue()))
                 .findFirst()
@@ -138,7 +138,7 @@ public class PageDatasourcePageTest extends AbstractExistingStartTimePageTest {
     void shouldGetDataFromDatasourcesOutsideOfSubworkflow() {
         driver.navigate().to(baseUrl + "/pages/outsideSubworkflowPage");
 
-        List<WebElement> yesNoRadios = driver.findElements(By.cssSelector(".button"));
+        List<WebElement> yesNoRadios = driver.findElements(By.tagName("button"));
         WebElement radioToSelect = yesNoRadios.stream()
                 .filter(label -> label.getText().equals(YesNoAnswer.YES.getDisplayValue()))
                 .findFirst()
@@ -152,7 +152,7 @@ public class PageDatasourcePageTest extends AbstractExistingStartTimePageTest {
     void shouldHandleMissingDatasourcePagesWhenDatasourcePageWasSkipped() {
         driver.navigate().to(baseUrl + "/pages/outsideSubworkflowPage");
 
-        List<WebElement> yesNoRadios = driver.findElements(By.cssSelector(".button"));
+        List<WebElement> yesNoRadios = driver.findElements(By.tagName("button"));
         WebElement radioToSelect = yesNoRadios.stream()
                 .filter(label -> label.getText().equals(YesNoAnswer.YES.getDisplayValue()))
                 .findFirst()

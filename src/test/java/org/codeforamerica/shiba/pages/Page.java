@@ -64,25 +64,27 @@ public class Page {
 
     public void enter(String inputName, String value) {
         checkForBadMessageKeys();
-        WebElement formInputElement = driver.findElement(By.cssSelector(String.format("[name^='%s']", inputName)));
-        FormInputHtmlTag formInputHtmlTag = FormInputHtmlTag.valueOf(formInputElement.getTagName());
+        List<WebElement> formInputElements = driver.findElements(By.name(inputName + "[]"));
+        WebElement firstElement = formInputElements.get(0);
+        FormInputHtmlTag formInputHtmlTag = FormInputHtmlTag.valueOf(firstElement.getTagName());
         switch (formInputHtmlTag) {
-            case select -> selectFromDropdown(inputName, value);
-            case button -> choose(value);
-            case textarea -> enterInput(inputName, value);
+            case select -> selectFromDropdown(firstElement, value);
+            case button -> choose(formInputElements, value);
+            case textarea -> enterInput(firstElement, value);
             case input -> {
-                switch (InputTypeHtmlAttribute.valueOf(formInputElement.getAttribute("type"))) {
+                switch (InputTypeHtmlAttribute.valueOf(firstElement.getAttribute("type"))) {
                     case text -> {
-                        if (formInputElement.getAttribute("class").contains("dob-input")) {
+                        if (firstElement.getAttribute("class").contains("dob-input")) {
                             enterDateInput(inputName, value);
                         } else {
-                            enterInput(inputName, value);
+                            enterInput(firstElement, value);
                         }
                     }
-                    case number, tel -> enterInput(inputName, value);
-                    case radio, checkbox -> selectEnumeratedInput(inputName, value);
+                    case number, tel -> enterInput(firstElement, value);
+                    case radio, checkbox -> selectEnumeratedInput(formInputElements, value);
                 }
             }
+            default -> throw new IllegalArgumentException("Cannot find element");
         }
     }
 
@@ -101,8 +103,7 @@ public class Page {
         tel
     }
 
-    private void enterInput(String inputName, String input) {
-        WebElement webElement = driver.findElement(By.cssSelector(String.format("input[name^='%s']", inputName)));
+    private void enterInput(WebElement webElement, String input) {
         webElement.clear();
         webElement.sendKeys(input);
     }
@@ -115,22 +116,21 @@ public class Page {
     }
 
     public void enterDateInput(String inputName, DatePart datePart, String value) {
-        WebElement input = driver.findElement(By.cssSelector(String.format("input[name^='%s']:nth-of-type(%s)", inputName, datePart.getPosition())));
+        WebElement input = driver.findElement(By.cssSelector(String.format("input[name='%s[]']:nth-of-type(%s)", inputName, datePart.getPosition())));
         input.clear();
         input.sendKeys(value);
     }
 
-    private void selectEnumeratedInput(String inputName, String optionText) {
-        WebElement inputToSelect = driver.findElements(By.cssSelector(String.format("input[name^='%s']", inputName))).stream()
+    private void selectEnumeratedInput(List<WebElement> webElements, String optionText) {
+        WebElement inputToSelect = webElements.stream()
                 .map(input -> input.findElement(By.xpath("./..")))
                 .filter(label -> label.getText().contains(optionText))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException(String.format("Cannot find value \"%s\" or input \"%s\"", optionText, inputName)));
+                .orElseThrow(() -> new RuntimeException(String.format("Cannot find value \"%s\"", optionText)));
         inputToSelect.click();
     }
 
-    private void choose(String value) {
-        List<WebElement> yesNoButtons = driver.findElements(By.className("button"));
+    private void choose(List<WebElement> yesNoButtons, String value) {
         WebElement buttonToClick = yesNoButtons.stream()
                 .filter(button -> button.getText().contains(value))
                 .findFirst()
@@ -138,8 +138,12 @@ public class Page {
         buttonToClick.click();
     }
 
-    private void selectFromDropdown(String inputName, String optionText) {
-        WebElement optionToSelect = driver.findElement(By.cssSelector(String.format("select[name^='%s']", inputName)))
+    public void selectFromDropdown(String inputName, String optionText) {
+        selectFromDropdown(driver.findElement(By.cssSelector(String.format("select[name='%s']", inputName))), optionText);
+    }
+
+    private void selectFromDropdown(WebElement webElement, String optionText) {
+        WebElement optionToSelect = webElement
                 .findElements(By.tagName("option")).stream()
                 .filter(option -> option.getText().equals(optionText))
                 .findFirst()
@@ -156,16 +160,16 @@ public class Page {
     }
 
     public String getInputValue(String inputName) {
-        return driver.findElement(By.cssSelector(String.format("input[name^='%s']", inputName))).getAttribute("value");
+        return driver.findElement(By.cssSelector(String.format("input[name='%s[]']", inputName))).getAttribute("value");
     }
 
     public String getBirthDateValue(String inputName, DatePart datePart) {
         return driver.findElement(
-                By.cssSelector(String.format("input[name^='%s']:nth-of-type(%s)", inputName, datePart.getPosition()))).getAttribute("value");
+                By.cssSelector(String.format("input[name='%s[]']:nth-of-type(%s)", inputName, datePart.getPosition()))).getAttribute("value");
     }
 
     public String getRadioValue(String inputName) {
-        return driver.findElements(By.cssSelector(String.format("input[name^='%s']", inputName))).stream()
+        return driver.findElements(By.cssSelector(String.format("input[name='%s[]']", inputName))).stream()
                 .filter(WebElement::isSelected)
                 .map(input -> input.findElement(By.xpath("./..")).getText())
                 .findFirst()
@@ -173,14 +177,14 @@ public class Page {
     }
 
     public List<String> getCheckboxValues(String inputName) {
-        return driver.findElements(By.cssSelector(String.format("input[name^='%s']", inputName))).stream()
+        return driver.findElements(By.cssSelector(String.format("input[name='%s[]']", inputName))).stream()
                 .filter(WebElement::isSelected)
                 .map(input -> input.findElement(By.xpath("./..")).getText().split("\n")[0])
                 .collect(Collectors.toList());
     }
 
     public String getSelectValue(String inputName) {
-        return driver.findElement(By.cssSelector(String.format("select[name^='%s']", inputName)))
+        return driver.findElement(By.cssSelector(String.format("select[name='%s[]']", inputName)))
                 .findElements(By.tagName("option")).stream()
                 .filter(WebElement::isSelected)
                 .findFirst()
@@ -189,11 +193,11 @@ public class Page {
     }
 
     public WebElement getInputError(String inputName) {
-        return driver.findElement(By.cssSelector(String.format("input[name^='%s'] ~ p.text--error", inputName)));
+        return driver.findElement(By.cssSelector(String.format("input[name='%s[]'] ~ p.text--error", inputName)));
     }
 
     public boolean hasInputError(String inputName) {
-        return !driver.findElements(By.cssSelector(String.format("input[name^='%s'] ~ p.text--error", inputName))).isEmpty();
+        return !driver.findElements(By.cssSelector(String.format("input[name='%s[]'] ~ p.text--error", inputName))).isEmpty();
     }
 
     public String findElementTextByName(String name) {

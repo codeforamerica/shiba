@@ -26,7 +26,7 @@ public class YesNoAnswerPageTest extends AbstractExistingStartTimePageTest {
     @Test
     void shouldDisplaySelectedAnswer() {
         driver.navigate().to(baseUrl + "/pages/yesNoQuestionPage");
-        driver.findElement(By.cssSelector("button")).click();
+        driver.findElement(By.tagName("button")).click();
 
         assertThat(driver.getTitle()).isEqualTo(answerPage);
         assertThat(testPage.findElementTextByName("yesOrNo")).isEqualTo("true");

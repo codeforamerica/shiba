@@ -22,7 +22,7 @@ public class LocalePreferenceSelectionTest extends AbstractBasePageTest {
     @Test
     void userCanSeeTextInSpanishWhenSpanishIsLanguageSelected() {
         testPage.clickButton("Apply now");
-        testPage.enter("locales", "Español");
+        testPage.selectFromDropdown("locales", "Español");
         assertThat(driver.findElements(By.tagName("h1")).get(0).getText()).isEqualTo("Como funciona");
 
         testPage.clickButton("Continuar");
