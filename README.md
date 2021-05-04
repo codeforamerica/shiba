@@ -8,7 +8,7 @@ _Note: these instructions are specific to macOS, but the same dependencies do ne
 #### Java Development Kit:
 ```
 brew tap AdoptOpenJDK/openjdk
-brew install --cask adoptopenjdk16`
+brew install --cask adoptopenjdk16
 ```
 #### Set up jenv to manage your jdk versions
 
