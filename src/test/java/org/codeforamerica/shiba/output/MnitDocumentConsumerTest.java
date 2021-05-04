@@ -161,24 +161,9 @@ class MnitDocumentConsumerTest {
 
     @Test
     void sendsBothImageAndDocumentUploadsSuccessfully() throws IOException {
-        var shibaJpgContents = Files.readAllBytes(getAbsoluteFilepath("shiba+file.jpg"));
-        var shibaImageS3Filepath = "someS3FilePath";
-        when(documentRepositoryService.get(shibaImageS3Filepath)).thenReturn(shibaJpgContents);
-        applicationData.addUploadedDoc(
-                new MockMultipartFile("image", "someImage.jpg", MediaType.IMAGE_JPEG_VALUE, shibaJpgContents),
-                shibaImageS3Filepath,
-                "someDataUrl",
-                "image/jpeg");
+        mockDocUpload("shiba+file.jpg", "someS3FilePath", MediaType.IMAGE_JPEG_VALUE, "jpg");
 
-        var testCafPdfContents = Files.readAllBytes(getAbsoluteFilepath("test-uploaded-pdf.pdf"));
-        var pdfApplicationFile = new ApplicationFile(testCafPdfContents, "pdf2of2.pdf");
-        var testCafPdfS3Filepath = "coolS3FilePath";
-        applicationData.addUploadedDoc(
-                new MockMultipartFile("pdf", "somePdf.pdf", MediaType.APPLICATION_PDF_VALUE, testCafPdfContents),
-                testCafPdfS3Filepath,
-                "documentDataUrl",
-                "application/pdf");
-        when(documentRepositoryService.get(testCafPdfS3Filepath)).thenReturn(pdfApplicationFile.getFileBytes());
+        mockDocUpload("test-uploaded-pdf.pdf", "pdfS3FilePath", MediaType.APPLICATION_PDF_VALUE, "pdf");
 
         when(fileNameGenerator.generateUploadedDocumentName(application, 0, "pdf")).thenReturn("pdf1of2.pdf");
         when(fileNameGenerator.generateUploadedDocumentName(application, 1, "pdf")).thenReturn("pdf2of2.pdf");
@@ -191,6 +176,16 @@ class MnitDocumentConsumerTest {
         // Assert that converted file contents are as expected
         verifyGeneratedPdf(captor.getAllValues().get(0).getFileBytes(), "shiba+file.pdf");
         verifyGeneratedPdf(captor.getAllValues().get(1).getFileBytes(), "test-uploaded-pdf-with-coverpage.pdf");
+    }
+
+    private void mockDocUpload(String uploadedDocFilename, String s3filepath, String contentType, String extension) throws IOException {
+        var fileBytes = Files.readAllBytes(getAbsoluteFilepath(uploadedDocFilename));
+        when(documentRepositoryService.get(s3filepath)).thenReturn(fileBytes);
+        applicationData.addUploadedDoc(
+                new MockMultipartFile("someName", "originalName." + extension, contentType, fileBytes),
+                s3filepath,
+                "someDataUrl",
+                contentType);
     }
 
     private void verifyGeneratedPdf(byte[] actualFileBytes, String expectedFile) throws IOException {
