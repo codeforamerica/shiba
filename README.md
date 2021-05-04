@@ -3,9 +3,30 @@
 ## Development setup
 
 ### Install the following system dependencies:
+_Note: these instructions are specific to macOS, but the same dependencies do need to be installed on Windows as well._
 
-- Java 14 Development Kit: `brew install java`
-- Gradle build tool version 6.3: `brew install gradle`
+#### Java Development Kit:
+```
+brew tap AdoptOpenJDK/openjdk
+brew install --cask adoptopenjdk16`
+```
+#### Set up jenv to manage your jdk versions
+
+First run `brew install jenv`.
+
+Add the following to your ~/.bashrc or ~/.zshrc
+```
+export PATH="$HOME/.jenv/bin:$PATH"
+eval "$(jenv init -)"
+```
+
+Reload your terminal, then finally run this from the SHIBA repo's directory
+```
+jenv add /Library/Java/JavaVirtualMachines/adoptopenjdk-16.jdk/Contents/Home
+```
+
+#### Gradle
+`brew install gradle`
 
 ### Setup live reload:
 
@@ -17,8 +38,8 @@
 - Install the Lombok plugin
 - Install the EnvFile plugin
 - Enable annotation processing
-- Set the Project SDK to Java 14 in `File > Project Structure`
-- Set the Gradle JVM version to 14 in `Preferences -> Build, Execution, Deployment -> Build Tools -> Gradle`
+- Set the Project SDK to Java 16 in `File > Project Structure`
+- Set the Gradle JVM version to 16 in `Preferences -> Build, Execution, Deployment -> Build Tools -> Gradle`
 - Create `.env` file in the root of the project directory
 - Paste in values from `SHIBA application-secrets.yaml` in LastPass with the format `ENV_VAR_NAME=ENV_VAR_VALUE`, translating the property notation to environment variable notation as follows:
     - `shiba.username: someUsername` --> `SHIBA_USERNAME=someUsername`
