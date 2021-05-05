@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output.caf;
 
+import org.codeforamerica.shiba.application.parsers.CcapExpeditedEligibilityParser;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.stereotype.Component;
 

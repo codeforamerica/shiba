@@ -1,8 +1,6 @@
-package org.codeforamerica.shiba.output.caf;
+package org.codeforamerica.shiba.application.parsers;
 
-import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
-import org.codeforamerica.shiba.application.parsers.PageInputCoordinates;
-import org.codeforamerica.shiba.application.parsers.ParsingConfiguration;
+import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityParameters;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.springframework.stereotype.Component;

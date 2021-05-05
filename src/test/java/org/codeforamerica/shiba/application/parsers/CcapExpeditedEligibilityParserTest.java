@@ -1,50 +1,27 @@
-package org.codeforamerica.shiba.output.caf;
+package org.codeforamerica.shiba.application.parsers;
 
-import org.codeforamerica.shiba.YamlPropertySourceFactory;
-import org.codeforamerica.shiba.application.parsers.ParsingConfiguration;
+import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityParameters;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
-@SpringBootTest(webEnvironment = NONE)
-@ActiveProfiles("test")
-class CcapExpeditedEligibilityParserTest {
-    @Autowired
-    CcapExpeditedEligibilityParser ccapExpeditedEligibilityParser;
-
+class CcapExpeditedEligibilityParserTest extends AbstractParserTest {
+    private CcapExpeditedEligibilityParser ccapExpeditedEligibilityParser;
     private final ApplicationData applicationData = new ApplicationData();
     private final PagesData pagesData = new PagesData();
-
-    @TestConfiguration
-    @PropertySource(value = "classpath:test-parsing-config.yaml", factory = YamlPropertySourceFactory.class)
-    static class TestPageConfiguration {
-        @SuppressWarnings("ConfigurationProperties")
-        @Bean
-        @ConfigurationProperties(prefix = "test-parsing")
-        public ParsingConfiguration parsingConfiguration() {
-            return new ParsingConfiguration();
-        }
-    }
 
     @BeforeEach
     void setUp() {
         applicationData.setPagesData(pagesData);
+        ccapExpeditedEligibilityParser = new CcapExpeditedEligibilityParser(parsingConfiguration);
     }
 
     @Test
