@@ -18,22 +18,28 @@
                                 <div class='max-files spacing-below-35' id="max-files"
                                      th:text='#{upload-documents.maximum-number-of-files}'></div>
                             </div>
-                            <div id="drag-and-drop-box" class="drag-and-drop-box spacing-below-35 spacing-above-35"
+                            <div id="drag-and-drop-box" class="drag-and-drop-box spacing-below-35 spacing-above-35 grid"
                                  ondragenter="addDragBorder()" ondrop="removeDragBorder()"
                                  ondragleave="removeDragBorder()">
-                                <h2 class="blue-label text--centered hide-on-mobile narrow-centered-text"
+                                <h2 id="vertical-header-desktop" class="blue-label text--centered hide-on-mobile narrow-centered-text"
                                     th:text="#{upload-documents.drag-and-drop-or-add-your-files}"></h2>
-                                <h2 class="blue-label text--centered hide-on-desktop"
+                                <h2 id="vertical-header-mobile" class="blue-label text--centered hide-on-desktop"
                                     th:text="#{upload-documents.add-your-files}"></h2>
-                                <div class="dz-message text--centered">
+                                <div id="upload-button" class="dz-message text--centered">
                                     <button th:aria-label="#{upload-documents.add-your-files}" type="button"
                                             class="button dz-button icon-add"></button>
                                 </div>
-                                <div id="number-of-uploaded-files" class="text--centered body-gray">
+                                <div class="grid--item width-two-thirds">
+                                    <h2 id="horizontal-header-desktop" class="blue-label hide-on-mobile hidden spacing-below-5"
+                                        th:text="#{upload-documents.drag-and-drop-or-add-your-files}"></h2>
+                                    <h2 id="horizontal-header-mobile" class="blue-label hide-on-desktop hidden spacing-below-5 spacing-above-15"
+                                        th:text="#{upload-documents.add-your-files}"></h2>
+                                    <div id="number-of-uploaded-files" class="body-gray">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="spacing-below-25">
-                                <p class="upload-doc-text">Uploaded documents</p>
+                            <div id="upload-doc-div" class="spacing-below-25 hidden">
+                                <p id="upload-doc-text">Uploaded documents</p>
                             </div>
                             <div id="file-preview-template">
                                 <div class="preview-container"></div>
@@ -73,7 +79,7 @@
                         </form>
                         <form th:action="@{/submit-documents}" method="post" onsubmit="return onSubmit()">
                             <div class="form-group">
-                                <button type="submit" class="button button--primary"
+                                <button type="submit" class="button button--secondary"
                                         th:text="#{upload-documents.im-finished-uploading}"></button>
                                 <p class="text--error">
                                     <i class="icon-warning"></i>
@@ -94,6 +100,8 @@
     var documentIcon = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEsAAABGCAYAAACE0Gk0AAAFK0lEQVR4Xu2caVcTSRSG314SyEJQPIAsMucoihDmzJE1BBhnEZ35xzPjmU9ABAR/AThnFBBQQciedLrn3Epaw6Z9OxsTqr7kQ25XVz31VtWt5baSTiYsyOSIgCJhOeIkjCQs56wkLAYrCasusFKpFF5vbmJ/7x1My4KmqZz3VmRr5A3oHh3DI6Po6e2tKC/Ow67GrJOTE7xaX8PB/gG8Xi8URYFl1XNStZDNZtF+4yamIzO42dHBqbNrWzasbDaDtZUV7GxvIxgMNgAUTUsALCCRSKCzsxMzc3Pw+wOuITh9kA3r9dYmNtZforW1FaqiflEUVaDWqUy8pGbTMpGIx3Fn4DtEorPQdb2mJWDDii0t4mB/Dx6Pt85dj8RkQRGyKiYCZhQMpJJJDN5/gPHJKahq7cZONqznf/6BZCLxuRXtAmfS6RK8WknMgq57hKLLk6KqyGbSSKfTGJuYxPBIuGbqqggWtbRlWtB0HT6fT7RqoVCAUgNeiqLCMPLIZDJFVdkKUyDeSw1Ik8zM7JzolrVIbFh/P/8L8ZMTMXWbBRPpdAq9fX2YikTR0tKCXC5X1lGqV2RN17C3t4dX6y9Fg2iq9iVzhbqkKsrl8/sQnZ1HZ1dX9V5ud3vu2vAsrFQqKVoyOjcvxpBapg8f3mM1FoNhGNC0Mlil8YuUTgN+e/sNROfnxW81U0XKskwTyWRRWSR/j8dTzbKdy+vd7i421tdQMArnYJX6JqhMx8fH6OnpxeyPj8+NcZUUsCqw+vr7EIleAVglheXzOcTjcTwYeojpmWglfE5PJpV0Q1tZVwmWGPxphsxmQDP0D4/GEB79virAmk5ZdncUM2QyiVw2i8npiFBZpak5YRV9C+FSHH/6JFyK+cc/487AQEW8mhdWGbCjw0PhB/70yxN03LrlGlhzwyqNX+TRHH78KECRwtra2lwBa3pYREXViisL6pL9dwYQmYmi1edjA7sWsGxg+XweiXgC94eG8GhsnO0XXhtYtkuRz+VAftjDkTBGwqMXO7eXaO5awRLAFEXAorXkcDjMcimuHSzbDyP/K9TejidPf3M8dv2vYO3u7mBjbRXGZWvDr1T77KYgLcYDwQAWnv3enLBo33/1xTILFjmk1PW8Xg9UVfu8u0uw2kIh/LrwtDlhHR0d4p+tLZimKdZ/ThJt5ZDb8P5gX6wVaaOSNg6bHlY5HKdHb+JgwyxgeXFRnEgFAn4Bms4em1pZTpR0kQ2paCW2jO23b8SRGTmpEtYlNMkZXYktYWd7RyrrW4qTsL5FqOx/CUvCYhBgmEplSVgMAgxTqSwJi0GAYSqVJWExCDBMpbIkLAYBhqlUloTFIMAwlcqSsBgEGKZSWRIWgwDDVCpLwmIQYJhKZUlYDAIMU6ksCYtBgGF6pZRVrwgLBp9TpgTrxfISdncaeMhKgU71jN1xC4vuRVCc5Ns3/zbu+L6eUWFuQFHgK8VwUzz12kpMKMvn89fvrkN5cGY94w1dwbIg7ozSFSUK3iwYBhSVLhwVrxwFgkEsPKvhzb/GRbK6wUXPFC+z0VVuXdNPXWarOaxGxki7xXX2OfsSblf3bREn6TSx75Q2NPreaa0usitF7ttR+xQ+PD4xibv3Bh3nyoZ1Jb7r4Lh6pw3tj3XQ9yD6+vsxFYmgpeV0gPrXsmbDoswa/8UQPi0bFMVwd3V3YWxiCqFQiJWRK1j0hkZ+i4ZVw5JxoWBCVRR03+7B3cFB+P1+djauYbHf1AQPSFiMRpSwJCwGAYbpf7oLq5uJEmkZAAAAAElFTkSuQmCC";
     var dataURL = "";
     var isUploadComplete = true;
+    var fileTooBigMsg = [[#{upload-documents.this-file-is-too-large(${uploadDocMaxFileSize})}]];
+    var myDropZone;
 
     function addDragBorder() {
         var dragAndDropBox = document.getElementById("drag-and-drop-box");
@@ -138,8 +146,6 @@
 
     $('.text--error').hide();
 
-    var myDropZone;
-
     function destroyerCreator(file) {
         return function () {
             myDropZone.emit('destroy', file);
@@ -160,8 +166,6 @@
         numberOfAddedFilesDiv.innerHTML = numberOfUploadsString;
     }
 
-    var fileTooBigMsg = [[#{upload-documents.this-file-is-too-large(${uploadDocMaxFileSize})}]]
-
     function setDefaultThumbnail(file) {
         file.dataURL = documentIcon;
         myDropZone.emit("thumbnail", file, documentIcon);
@@ -172,6 +176,27 @@
         var $previews = $('.dz-preview');
         var $lastPreviewInList = $previews[$previews.length - 1];
         $previewsContainer.prepend($lastPreviewInList);
+    }
+
+    function updateUploadBoxLayout() {
+        var $dragAndDropBox = $('#drag-and-drop-box');
+        var $horizontalHeaderDesktop = $('#horizontal-header-desktop');
+        var $horizontalHeaderMobile = $('#horizontal-header-mobile');
+        var $verticalHeaderDesktop = $('#vertical-header-desktop');
+        var $verticalHeaderMobile = $('#vertical-header-mobile');
+        var $uploadButton = $('#upload-button');
+
+        $horizontalHeaderDesktop.removeClass('hidden');
+        $horizontalHeaderMobile.removeClass('hidden');
+        $verticalHeaderDesktop.addClass('hidden');
+        $verticalHeaderMobile.addClass('hidden');
+        $uploadButton.addClass('grid--item width-one-third');
+        $dragAndDropBox.addClass('drag-and-drop-box-compact');
+    }
+
+    function showUploadListHeaderOnUpload() {
+        var $uploadDocHeaderDiv = $('#upload-doc-div');
+        $uploadDocHeaderDiv.removeClass("hidden");
     }
 
     $("#document-upload").dropzone({
@@ -245,6 +270,8 @@
                 }
                 showNumberOfAddedFiles();
                 prependAddedFile();
+                updateUploadBoxLayout();
+                showUploadListHeaderOnUpload();
             });
 
             this.on("thumbnail", function (file, dataURL) {
