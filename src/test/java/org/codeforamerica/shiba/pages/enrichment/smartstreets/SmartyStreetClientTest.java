@@ -3,16 +3,12 @@ package org.codeforamerica.shiba.pages.enrichment.smartstreets;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.PageData;
-import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.pages.enrichment.smartystreets.SmartyStreetClient;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
 import java.util.Optional;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -24,6 +20,10 @@ class SmartyStreetClientTest {
     private WireMockServer wireMockServer;
     private final String authId = "someAuthId";
     private final String authToken = "someAuthToken";
+    private final String street = "1725 Slough Avenue";
+    private final String city = "Scranton";
+    private final String state = "PA";
+    private final String zipcode = "91402";
 
     @BeforeEach
     void setUp() {
@@ -33,11 +33,7 @@ class SmartyStreetClientTest {
         int port = wireMockServer.port();
         WireMock.configureFor(port);
 
-        smartyStreetClient = new SmartyStreetClient(
-                authId,
-                authToken,
-                "http://localhost:" + port
-        );
+        smartyStreetClient = new SmartyStreetClient(authId, authToken, "http://localhost:" + port);
     }
 
     @AfterEach
@@ -47,13 +43,6 @@ class SmartyStreetClientTest {
 
     @Test
     void shouldReturnEmptyOptional_whenNoAddressIsReturned() {
-        ApplicationData applicationData = new ApplicationData();
-        applicationData.setPagesData(new PagesData(Map.of("something", new PageData())));
-
-        String street = "1725 Slough Avenue";
-        String city = "Scranton";
-        String state = "PA";
-        String zipcode = "91402";
         Address address = new Address(street, city, state, zipcode, null, null);
         wireMockServer.stubFor(get(anyUrl()).willReturn(okJson("[]")));
 
@@ -64,13 +53,6 @@ class SmartyStreetClientTest {
 
     @Test
     void returnEmptyOptional_whenWeGetAnEmptyResponse() {
-        ApplicationData applicationData = new ApplicationData();
-        applicationData.setPagesData(new PagesData(Map.of("something", new PageData())));
-
-        String street = "1725 Slough Avenue";
-        String city = "Scranton";
-        String state = "PA";
-        String zipcode = "91402";
         Address address = new Address(street, city, state, zipcode, null, null);
         wireMockServer.stubFor(get(anyUrl()).willReturn(status(200)));
 
@@ -81,10 +63,6 @@ class SmartyStreetClientTest {
 
     @Test
     void returnEmptyOptional_whenResponseCodeIsNot2XX() {
-        String street = "1725 Slough Avenue";
-        String city = "Scranton";
-        String state = "PA";
-        String zipcode = "91402";
         Address address = new Address(street, city, state, zipcode, null, null);
         wireMockServer.stubFor(get(anyUrl()).willReturn(status(400)));
 
@@ -95,13 +73,6 @@ class SmartyStreetClientTest {
 
     @Test
     void returnAddress_whenVerifyAddressFindsCandidate() {
-        ApplicationData applicationData = new ApplicationData();
-        applicationData.setPagesData(new PagesData(Map.of("something", new PageData())));
-
-        String street = "1725 Slough Avenue";
-        String city = "Scranton";
-        String state = "PA";
-        String zipcode = "91402";
         String apartmentNumber = "apt 1104";
         Address address = new Address(street, city, state, zipcode, apartmentNumber, null);
         wireMockServer.stubFor(get(anyUrl())
@@ -149,13 +120,6 @@ class SmartyStreetClientTest {
 
     @Test
     void returnAddressWithoutSecondary_whenVerifyAddressFindsCandidate() {
-        ApplicationData applicationData = new ApplicationData();
-        applicationData.setPagesData(new PagesData(Map.of("something", new PageData())));
-
-        String street = "1725 Slough Avenue";
-        String city = "Scranton";
-        String state = "PA";
-        String zipcode = "91402";
         Address address = new Address(street, city, state, zipcode, null, null);
         wireMockServer.stubFor(get(anyUrl())
                 .willReturn(okJson("""
