@@ -47,20 +47,20 @@ public class ApplicationDataEncryptor implements Encryptor<ApplicationData> {
 
     private void runCryptographicFunctionOnData(Function<String, String> encryptFunc, ApplicationData applicationData) {
         String applicantSSN = applicationData.getPagesData().getPageInputFirstValue("personalInfo", "ssn");
-        if (applicantSSN != null) {
+        if (applicantSSN != null && !applicantSSN.isBlank()) {
             String encryptedApplicantSSN = encryptFunc.apply(applicantSSN);
             applicationData.getPagesData().getPage("personalInfo").get("ssn").setValue(encryptedApplicantSSN, 0);
+        }
 
-            boolean hasHousehold = applicationData.getSubworkflows().containsKey("household");
-            if (hasHousehold) {
-                applicationData.getSubworkflows().get("household").forEach(iteration -> {
-                    String houseHoldMemberSSN = iteration.getPagesData().getPageInputFirstValue("householdMemberInfo", "ssn");
-                    if (houseHoldMemberSSN != null) {
-                        String encryptedHouseholdMemberSSN = encryptFunc.apply(houseHoldMemberSSN);
-                        iteration.getPagesData().getPage("householdMemberInfo").get("ssn").setValue(encryptedHouseholdMemberSSN, 0);
-                    }
-                });
-            }
+        boolean hasHousehold = applicationData.getSubworkflows().containsKey("household");
+        if (hasHousehold) {
+            applicationData.getSubworkflows().get("household").forEach(iteration -> {
+                String houseHoldMemberSSN = iteration.getPagesData().getPageInputFirstValue("householdMemberInfo", "ssn");
+                if (houseHoldMemberSSN != null && !houseHoldMemberSSN.isBlank()) {
+                    String encryptedHouseholdMemberSSN = encryptFunc.apply(houseHoldMemberSSN);
+                    iteration.getPagesData().getPage("householdMemberInfo").get("ssn").setValue(encryptedHouseholdMemberSSN, 0);
+                }
+            });
         }
     }
 
