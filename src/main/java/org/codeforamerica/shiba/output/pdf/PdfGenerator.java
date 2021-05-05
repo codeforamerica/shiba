@@ -1,5 +1,7 @@
 package org.codeforamerica.shiba.output.pdf;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -7,6 +9,11 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.apache.poi.hwpf.HWPFDocument;
+import org.apache.poi.hwpf.extractor.WordExtractor;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.codeforamerica.shiba.Utils;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
@@ -20,9 +27,6 @@ import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.output.xml.FileGenerator;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.springframework.stereotype.Component;
-import org.apache.poi.xwpf.converter.pdf.PdfConverter;
-import org.apache.poi.xwpf.converter.pdf.PdfOptions;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
 import java.io.*;
 import java.util.List;
@@ -82,8 +86,9 @@ public class PdfGenerator implements FileGenerator {
             try {
                 fileBytes = convertDocsToPdf(fileBytes);
                 extension = "pdf";
-            } catch (Exception e){
+            } catch (IOException | DocumentException e){
                 log.error("failed to convert document " + uploadedDocument.getFilename() + " to pdf. Maintaining original type");
+                log.error(e.toString());
             }
         }
 
@@ -140,14 +145,46 @@ public class PdfGenerator implements FileGenerator {
         }
     }
 
-    private byte[] convertDocsToPdf(byte[] docFileBytes) throws Exception {
+    private byte[] convertDocsToPdf(byte[] docFileBytes) throws IOException, DocumentException {
         log.info("Now converting the pdf");
-        InputStream is = new ByteArrayInputStream(docFileBytes);
+
+        //Uses Apache POI but has a dependency with no license
+        /*com.itextpdf.text.Document pdfDoc = new com.itextpdf.text.Document(PageSize.LETTER);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        XWPFDocument document = new XWPFDocument(is);
-        PdfOptions options = PdfOptions.create();
-        PdfConverter.getInstance().convert(document, out, options);
+        PdfWriter.getInstance(pdfDoc, out)
+                .setPdfVersion(PdfWriter.PDF_VERSION_1_7);
+        pdfDoc.open();
+        Font myfont = new Font();
+        myfont.setStyle(Font.NORMAL);
+        myfont.setSize(11);
+        pdfDoc.add(new Paragraph("\n"));
+
+        //this uses pdf2Dom + iText
+        InputStream is = new ByteArrayInputStream(docFileBytes);
+        BufferedReader br = new BufferedReader (new InputStreamReader(is));
+        String strLine;
+        while ((strLine = br.readLine()) != null) {
+            Paragraph para = new Paragraph(strLine + "\n", myfont);
+            para.setAlignment(Element.ALIGN_JUSTIFIED);
+            pdfDoc.add(para);
+        }
+        pdfDoc.close();
+        br.close();
         Utils.writeByteArrayToFile(out.toByteArray(), "test_output.pdf");
-        return out.toByteArray();
+        return out.toByteArray();*/
+
+        // This is the way using Apache POI
+        /*InputStream is = new ByteArrayInputStream(docFileBytes);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        XWPFDocument doc = new XWPFDocument(is);
+        XWPFParagraph p = doc.createParagraph();
+        XWPFRun r = p.createRun();
+
+
+        *//*PdfOptions options = PdfOptions.create();
+        PdfConverter.getInstance().convert(document, out, options);*//*
+        Utils.writeByteArrayToFile(out.toByteArray(), "test_output.pdf");*/
+        //return out.toByteArray();
+        return null;
     }
 }

@@ -109,7 +109,10 @@ dependencies {
     implementation 'ch.qos.logback:logback-core:1.2.0'
     implementation 'ch.qos.logback:logback-classic:1.2.0'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
-    implementation 'fr.opensagres.xdocreport:org.apache.poi.xwpf.converter.pdf:1.0.6'
+    implementation 'org.apache.pdfbox:pdfbox-tools:2.0.23'
+    implementation 'com.itextpdf:itextpdf:5.5.10'
+    implementation 'org.apache.poi:poi-ooxml:3.9'
+    implementation 'org.apache.poi:poi-scratchpad:3.15'
 
     implementation(files(genJaxb.classesDir).builtBy(genJaxb))
     jaxb "com.sun.xml.bind:jaxb-xjc:2.3.4"
