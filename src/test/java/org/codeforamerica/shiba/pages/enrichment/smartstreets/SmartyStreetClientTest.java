@@ -11,8 +11,6 @@ import org.codeforamerica.shiba.pages.enrichment.smartystreets.SmartyStreetClien
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Map;
 import java.util.Optional;
@@ -20,17 +18,10 @@ import java.util.Optional;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
-@SpringBootTest(webEnvironment = NONE)
-@ActiveProfiles("test")
 class SmartyStreetClientTest {
-    SmartyStreetClient smartyStreetClient;
-
-    WireMockServer wireMockServer;
-
-    int port;
-
+    private SmartyStreetClient smartyStreetClient;
+    private WireMockServer wireMockServer;
     private final String authId = "someAuthId";
     private final String authToken = "someAuthToken";
 
@@ -39,7 +30,7 @@ class SmartyStreetClientTest {
         WireMockConfiguration options = wireMockConfig().dynamicPort();
         wireMockServer = new WireMockServer(options);
         wireMockServer.start();
-        port = wireMockServer.port();
+        int port = wireMockServer.port();
         WireMock.configureFor(port);
 
         smartyStreetClient = new SmartyStreetClient(
