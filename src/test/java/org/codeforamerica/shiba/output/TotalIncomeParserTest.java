@@ -1,22 +1,13 @@
 package org.codeforamerica.shiba.output;
 
-import org.codeforamerica.shiba.YamlPropertySourceFactory;
-import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
-import org.codeforamerica.shiba.application.parsers.ParsingConfiguration;
+import org.codeforamerica.shiba.application.parsers.AbstractParserTest;
+import org.codeforamerica.shiba.application.parsers.GrossMonthlyIncomeParser;
 import org.codeforamerica.shiba.application.parsers.TotalIncomeParser;
 import org.codeforamerica.shiba.output.caf.JobIncomeInformation;
 import org.codeforamerica.shiba.output.caf.TotalIncome;
 import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 import java.util.Map;
@@ -25,36 +16,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
-@SpringBootTest(webEnvironment = NONE)
-@ActiveProfiles("test")
-class TotalIncomeParserTest {
+class TotalIncomeParserTest extends AbstractParserTest {
     private final ApplicationData applicationData = new ApplicationData();
     private final PagesData pagesData = new PagesData();
     private final Subworkflows subworkflows = new Subworkflows();
 
-    @Autowired
-    TotalIncomeParser totalIncomeParser;
-
-    @MockBean
-    ApplicationDataParser<List<JobIncomeInformation>> grossIncomeParser;
-
-    @TestConfiguration
-    @PropertySource(value = "classpath:test-parsing-config.yaml", factory = YamlPropertySourceFactory.class)
-    static class TestPageConfiguration {
-        @SuppressWarnings("ConfigurationProperties")
-        @Bean
-        @ConfigurationProperties(prefix = "test-parsing")
-        public ParsingConfiguration parsingConfiguration() {
-            return new ParsingConfiguration();
-        }
-    }
+    private TotalIncomeParser totalIncomeParser;
+    private GrossMonthlyIncomeParser grossIncomeParser;
 
     @BeforeEach
     void setUp() {
         applicationData.setPagesData(pagesData);
         applicationData.setSubworkflows(subworkflows);
+
+        grossIncomeParser = mock(GrossMonthlyIncomeParser.class);
+        totalIncomeParser = new TotalIncomeParser(parsingConfiguration, grossIncomeParser);
     }
 
     @Test
