@@ -2,7 +2,9 @@ package org.codeforamerica.shiba.application;
 
 import org.codeforamerica.shiba.pages.Feedback;
 import org.codeforamerica.shiba.pages.Sentiment;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.MockMultipartFile;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -53,5 +55,18 @@ class ApplicationTest {
         Application updatedApplication = application.addFeedback(new Feedback(null, ""));
 
         assertThat(updatedApplication.getFeedback()).isEqualTo(originalFeedbackText);
+    }
+
+    @Test
+    void shouldReturnApplicationDataWithoutDataURLs() {
+        ApplicationData applicationData = new ApplicationData();
+        MockMultipartFile image = new MockMultipartFile("image", "test".getBytes());
+        applicationData.addUploadedDoc(image, "someS3FilePath", "someDataUrl", "image/jpeg");
+
+        Application application = Application.builder()
+                .applicationData(applicationData)
+                .build();
+
+        assertThat(application.getApplicationDataWithoutDataUrls().getUploadedDocs().get(0).getDataURL()).isEqualTo("");
     }
 }

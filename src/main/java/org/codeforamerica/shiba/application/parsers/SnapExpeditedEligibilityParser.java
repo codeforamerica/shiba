@@ -15,12 +15,12 @@ import java.util.stream.Collectors;
 
 @Component
 public class SnapExpeditedEligibilityParser extends ApplicationDataParser<Optional<SnapExpeditedEligibilityParameters>> {
-    private final ApplicationDataParser<List<JobIncomeInformation>> jobIncomeInformationParser;
+    private final ApplicationDataParser<List<JobIncomeInformation>> grossMonthlyIncomeParser;
 
     public SnapExpeditedEligibilityParser(ParsingConfiguration parsingConfiguration,
-                                          ApplicationDataParser<List<JobIncomeInformation>> jobIncomeInformationParser) {
+                                          ApplicationDataParser<List<JobIncomeInformation>> grossMonthlyIncomeParser) {
         super(parsingConfiguration);
-        this.jobIncomeInformationParser = jobIncomeInformationParser;
+        this.grossMonthlyIncomeParser = grossMonthlyIncomeParser;
     }
 
     public Optional<SnapExpeditedEligibilityParameters> parse(ApplicationData applicationData) {
@@ -57,6 +57,6 @@ public class SnapExpeditedEligibilityParser extends ApplicationDataParser<Option
                 .get(coordinatesMap.get("utilityExpensesSelections").getInputName()).getValue();
 
         boolean applyingForSnap = pagesData.getPage("choosePrograms").get("programs").getValue(0).contains("SNAP");
-        return Optional.of(new SnapExpeditedEligibilityParameters(assets, last30DaysIncome, jobIncomeInformationParser.parse(applicationData), isMigrantWorker, housingCosts, utilityExpensesSelections, applyingForSnap));
+        return Optional.of(new SnapExpeditedEligibilityParameters(assets, last30DaysIncome, grossMonthlyIncomeParser.parse(applicationData), isMigrantWorker, housingCosts, utilityExpensesSelections, applyingForSnap));
     }
 }

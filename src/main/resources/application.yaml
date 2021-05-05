@@ -17,6 +17,9 @@ server:
     session:
       cookie:
         secure: true
+  error:
+    whitelabel:
+      enabled: true
 sentry:
   enable-tracing: true
   traces-sample-rate: 0.3
