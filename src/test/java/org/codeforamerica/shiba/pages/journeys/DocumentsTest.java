@@ -393,4 +393,39 @@ public class DocumentsTest extends JourneyTest {
         testPage.clickButton("I'm finished uploading");
         assertThat(driver.getTitle()).isEqualTo("Success");
     }
+
+    @Test
+    void shouldUpdatePageLayoutOnUploadingAFileOrWhenDeletingAllUploadedFiles() {
+        getToDocumentUploadScreen();
+
+        assertThat(driver.findElementById("drag-and-drop-box").getAttribute("class")).doesNotContain("drag-and-drop-box-compact");
+        assertThat(driver.findElementById("upload-button").getAttribute("class")).doesNotContain("grid--item width-one-third");
+        assertThat(driver.findElementById("vertical-header-desktop").getAttribute("class")).doesNotContain("hidden");
+        assertThat(driver.findElementById("vertical-header-mobile").getAttribute("class")).doesNotContain("hidden");
+        assertThat(driver.findElementById("horizontal-header-desktop").getAttribute("class")).contains("hidden");
+        assertThat(driver.findElementById("horizontal-header-mobile").getAttribute("class")).contains("hidden");
+        assertThat(driver.findElementById("upload-doc-div").getAttribute("class")).contains("hidden");
+
+        uploadJpgFile();
+        waitForDocumentUploadToComplete();
+
+        assertThat(driver.findElementById("drag-and-drop-box").getAttribute("class")).contains("drag-and-drop-box-compact");
+        assertThat(driver.findElementById("upload-button").getAttribute("class")).contains("grid--item width-one-third");
+        assertThat(driver.findElementById("vertical-header-desktop").getAttribute("class")).contains("hidden");
+        assertThat(driver.findElementById("vertical-header-mobile").getAttribute("class")).contains("hidden");
+        assertThat(driver.findElementById("horizontal-header-desktop").getAttribute("class")).doesNotContain("hidden");
+        assertThat(driver.findElementById("horizontal-header-mobile").getAttribute("class")).doesNotContain("hidden");
+        assertThat(driver.findElementById("upload-doc-div").getAttribute("class")).doesNotContain("hidden");
+
+        testPage.clickLink("delete");
+        testPage.clickButton("Yes, delete the file");
+
+        assertThat(driver.findElementById("drag-and-drop-box").getAttribute("class")).doesNotContain("drag-and-drop-box-compact");
+        assertThat(driver.findElementById("upload-button").getAttribute("class")).doesNotContain("grid--item width-one-third");
+        assertThat(driver.findElementById("vertical-header-desktop").getAttribute("class")).doesNotContain("hidden");
+        assertThat(driver.findElementById("vertical-header-mobile").getAttribute("class")).doesNotContain("hidden");
+        assertThat(driver.findElementById("horizontal-header-desktop").getAttribute("class")).contains("hidden");
+        assertThat(driver.findElementById("horizontal-header-mobile").getAttribute("class")).contains("hidden");
+        assertThat(driver.findElementById("upload-doc-div").getAttribute("class")).contains("hidden");
+    }
 }

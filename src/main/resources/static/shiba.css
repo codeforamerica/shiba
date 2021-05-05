@@ -254,6 +254,11 @@ html {
 
 /* Upload Documents Page Styles */
 
+form .drag-and-drop-box-compact {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
+
 @media screen and (min-width: 601px) {
     .hide-on-desktop {
         display: none;
@@ -402,7 +407,7 @@ html {
     font-weight: bold;
 }
 
-.upload-doc-text {
+#upload-doc-text {
     color: #5F5854;
     border-bottom: 2px solid #AAAAAA;
     padding-bottom: 0.5rem;
@@ -1119,5 +1124,5 @@ input[type=number] {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
