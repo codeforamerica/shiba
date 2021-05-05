@@ -259,7 +259,7 @@ class MailGunEmailClientTest {
                         .build())
         );
 
-        ArgumentCaptor<Map<String, String>> captor = ArgumentCaptor.forClass(Map.class);
+        @SuppressWarnings("unchecked") ArgumentCaptor<Map<String, String>> captor = ArgumentCaptor.forClass(Map.class);
         verify(emailContentCreator).createHennepinDocUploadsHTML(captor.capture());
         Map<String, String> actual = captor.getValue();
         assertThat(actual).containsAllEntriesOf(Map.of(
