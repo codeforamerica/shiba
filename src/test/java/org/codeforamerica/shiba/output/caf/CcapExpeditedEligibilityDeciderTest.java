@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.output.caf;
 
 import org.codeforamerica.shiba.PagesDataBuilder;
+import org.codeforamerica.shiba.application.parsers.CcapExpeditedEligibilityParser;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.junit.jupiter.api.Test;
