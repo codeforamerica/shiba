@@ -1,9 +1,8 @@
 package org.codeforamerica.shiba.output.caf;
 
-import org.codeforamerica.shiba.PagesDataBuilder;
 import org.codeforamerica.shiba.application.parsers.CcapExpeditedEligibilityParser;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.PagesData;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -15,12 +14,16 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class CcapExpeditedEligibilityDeciderTest {
-    private final PagesData pagesData = new PagesData();
-    private final ApplicationData applicationData = new ApplicationData();
+    private ApplicationData applicationData;
+    private CcapExpeditedEligibilityParser ccapExpeditedEligibilityParser;
+    private CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
 
-    private final PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
-    CcapExpeditedEligibilityParser ccapExpeditedEligibilityParser = mock(CcapExpeditedEligibilityParser.class);
-    CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider = new CcapExpeditedEligibilityDecider(ccapExpeditedEligibilityParser);
+    @BeforeEach
+    void setUp() {
+        applicationData = new ApplicationData();
+        ccapExpeditedEligibilityParser = mock(CcapExpeditedEligibilityParser.class);
+        ccapExpeditedEligibilityDecider = new CcapExpeditedEligibilityDecider(ccapExpeditedEligibilityParser);
+    }
 
     @ParameterizedTest
     @CsvSource(value = {
@@ -61,5 +64,4 @@ class CcapExpeditedEligibilityDeciderTest {
         when(ccapExpeditedEligibilityParser.parse(applicationData)).thenReturn(Optional.of(new CcapExpeditedEligibilityParameters("TEMPORARILY_WITH_FRIENDS_OR_FAMILY_OTHER_REASONS", true)));
         assertThat(ccapExpeditedEligibilityDecider.decide(applicationData)).isEqualTo(CcapExpeditedEligibility.NOT_ELIGIBLE);
     }
-
 }
