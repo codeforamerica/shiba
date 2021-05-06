@@ -1,9 +1,8 @@
-name: Run tests on PRs
+name: Run tests
 
 on:
   push:
     branches-ignore:
-      - main
       - staging
 
 jobs:
