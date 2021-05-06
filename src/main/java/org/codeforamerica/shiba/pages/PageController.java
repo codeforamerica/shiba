@@ -219,7 +219,7 @@ public class PageController {
             pagesData.putAll(iterationData);
         }
 
-        PageTemplate pageTemplate = pagesData.evaluate(pageWorkflow, applicationData);
+        PageTemplate pageTemplate = pagesData.evaluate(featureFlags, pageWorkflow, applicationData);
 
         HashMap<String, Object> model = new HashMap<>(Map.of(
                 "page", pageTemplate,

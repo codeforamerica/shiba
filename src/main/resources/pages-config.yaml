@@ -1201,6 +1201,23 @@ pageDefinitions:
               messageKey: identify-county-wright
             - value: YellowMedicine
               messageKey: identify-county-yellow-medicine
+    subtleLinkTextKey:
+      defaultValue:
+      conditionalValues:
+        - value: identify-county.enter-my-zip-code-instead
+          flag: later-docs-v2-feature
+  - &identifyZipcode
+    name: identifyZipcode
+    headerKey: identify-zipcode.what-is-your-zip-code
+    pageTitle: identify-zipcode.title
+    contextFragment: countyContextFragment
+    inputs:
+      - name: zipCode
+        type: TEXT
+        validators:
+          - validation: ZIPCODE
+            errorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
+    subtleLinkTextKey: identify-zipcode.select-my-county-instead
   - &matchInfo
     name: matchInfo
     headerKey: match-info.match-docs-to-app
@@ -3121,6 +3138,12 @@ workflow:
           input: county
           value: Wright
       - pageName: emailDocsToYourCounty
+    subtleLinkTargetPage: identifyZipcode
+  identifyZipcode:
+    pageConfiguration: *identifyZipcode
+    nextPages:
+      - pageName: emailDocsToYourCounty
+    subtleLinkTargetPage: identifyCounty
   matchInfo:
     pageConfiguration: *matchInfo
     nextPages:

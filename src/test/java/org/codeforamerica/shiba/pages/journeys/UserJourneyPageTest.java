@@ -77,6 +77,23 @@ public class UserJourneyPageTest extends JourneyTest {
     }
 
     @Test
+    void laterDocsEnterZipcode() {
+        when(featureFlagConfiguration.get("later-docs-v2-feature")).thenReturn(FeatureFlag.ON);
+        testPage.clickButton("Upload documents");
+        assertThat(driver.getTitle()).isEqualTo("Identify County");
+
+        testPage.clickLink("Enter my zip code instead.");
+        assertThat(driver.getTitle()).isEqualTo("Identify zip");
+
+        testPage.clickLink("Select my county instead.");
+        assertThat(driver.getTitle()).isEqualTo("Identify County");
+
+        when(featureFlagConfiguration.get("later-docs-v2-feature")).thenReturn(FeatureFlag.OFF);
+        navigateTo("identifyCounty");
+        assertThat(driver.findElementsByLinkText("Enter my zip code instead.")).isEmpty();
+    }
+
+    @Test
     void userCanCompleteTheNonExpeditedHouseholdFlow() {
         nonExpeditedFlowToSuccessPage(true, true, smartyStreetClient, true);
     }

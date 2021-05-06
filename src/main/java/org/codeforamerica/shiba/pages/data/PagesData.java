@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.pages.data;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.pages.config.*;
 
 import java.io.Serial;
@@ -88,25 +89,36 @@ public class PagesData extends HashMap<String, PageData> {
     }
 
     /**
-     * Defaults to {@code value.getValue()} if all {@code value.getConditionalValues()} evaluate to "false".
+     * Defaults to {@code value.getDefaultValue()} if all {@code value.getConditionalValues()} and flags evaluate to "false".
      */
-    private String resolve(PageWorkflowConfiguration pageWorkflowConfiguration, Value value) {
+    private String resolve(FeatureFlagConfiguration featureFlags, PageWorkflowConfiguration pageWorkflowConfiguration, Value value) {
         if (value == null) {
             return "";
         }
         return value.getConditionalValues().stream()
                 .filter(conditionalValue -> {
+                    // Check flag
+                    String flag = conditionalValue.getFlag();
+                    if (flag != null && featureFlags.get(flag).isOff()) {
+                        return false;
+                    }
+
+                    // Check condition
+                    Condition condition = conditionalValue.getCondition();
+                    if(condition == null) {
+                        return true;
+                    }
                     Objects.requireNonNull(pageWorkflowConfiguration.getDatasources(),
                             "Configuration mismatch! Conditional value cannot be evaluated without a datasource.");
                     DatasourcePages datasourcePages = this.getDatasourcePagesBy(pageWorkflowConfiguration.getDatasources());
-                    return datasourcePages.satisfies(conditionalValue.getCondition());
+                    return datasourcePages.satisfies(condition);
                 })
                 .findFirst()
                 .map(ConditionalValue::getValue)
                 .orElse(value.getDefaultValue());
     }
 
-    public PageTemplate evaluate(PageWorkflowConfiguration pageWorkflowConfiguration, ApplicationData applicationData) {
+    public PageTemplate evaluate(FeatureFlagConfiguration featureFlags, PageWorkflowConfiguration pageWorkflowConfiguration, ApplicationData applicationData) {
         PageConfiguration pageConfiguration = pageWorkflowConfiguration.getPageConfiguration();
         DatasourcePages datasourcePages = this.getDatasourcePagesBy(pageWorkflowConfiguration.getDatasources());
 
@@ -118,11 +130,11 @@ public class PagesData extends HashMap<String, PageData> {
                         .map(formInput -> convert(pageConfiguration.getName(), formInput, applicationData))
                         .collect(Collectors.toList()),
                 pageConfiguration.getName(),
-                resolve(pageWorkflowConfiguration, pageConfiguration.getPageTitle()),
-                resolve(pageWorkflowConfiguration, pageConfiguration.getHeaderKey()),
-                resolve(pageWorkflowConfiguration, pageConfiguration.getHeaderHelpMessageKey()),
+                resolve(featureFlags, pageWorkflowConfiguration, pageConfiguration.getPageTitle()),
+                resolve(featureFlags, pageWorkflowConfiguration, pageConfiguration.getHeaderKey()),
+                resolve(featureFlags, pageWorkflowConfiguration, pageConfiguration.getHeaderHelpMessageKey()),
                 pageConfiguration.getPrimaryButtonTextKey(),
-                resolve(pageWorkflowConfiguration, pageConfiguration.getSubtleLinkTextKey()),
+                resolve(featureFlags, pageWorkflowConfiguration, pageConfiguration.getSubtleLinkTextKey()),
                 pageWorkflowConfiguration.getSubtleLinkTargetPage(),
                 pageConfiguration.getHasPrimaryButton(),
                 pageConfiguration.getContextFragment()
