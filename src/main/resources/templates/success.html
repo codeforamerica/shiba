@@ -41,9 +41,8 @@
                         <div class="success-icons grid__item width-one-sixth spacing-below-15">
                             <div th:replace="fragments/icons/icon-communications :: icon-communications"></div>
                         </div>
-                        <div class="grid__item width-five-sixths"
-                            th:with="message=${#messages.msg(T(org.codeforamerica.shiba.pages.PageUtils).programSpecificSuccessMessage(pageDatasources,expeditedSnap, expeditedCcap))}">
-                            <div th:utext="${message}" class="width-five-sixths"></div>
+                        <div class="grid__item width-five-sixths">
+                            <div th:utext="${successMessage}" class="width-five-sixths"></div>
                         </div>
                     </div>
 

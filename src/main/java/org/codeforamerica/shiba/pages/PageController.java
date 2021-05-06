@@ -57,7 +57,7 @@ public class PageController {
     private final CountyParser countyParser;
     private final SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider;
     private final CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
-
+    private final SuccessMessageService successMessageService;
     private final DocumentRepositoryService documentRepositoryService;
 
     public PageController(
@@ -75,7 +75,7 @@ public class PageController {
             DocumentRepositoryService documentRepositoryService,
             CountyParser countyParser,
             SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider,
-            CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider) {
+            CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider, SuccessMessageService successMessageService) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
@@ -91,6 +91,7 @@ public class PageController {
         this.countyParser = countyParser;
         this.snapExpeditedEligibilityDecider = snapExpeditedEligibilityDecider;
         this.ccapExpeditedEligibilityDecider = ccapExpeditedEligibilityDecider;
+        this.successMessageService = successMessageService;
     }
 
     @GetMapping("/")
@@ -161,7 +162,8 @@ public class PageController {
             @RequestParam(required = false, defaultValue = "") String iterationIndex,
             @RequestParam(name = "utm_source", defaultValue = "", required = false) String utmSource,
             HttpServletResponse response,
-            HttpSession httpSession
+            HttpSession httpSession,
+            Locale locale
     ) {
         LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
 
@@ -248,8 +250,10 @@ public class PageController {
             model.put("programs", String.join(", ", householdPrograms));
         }
 
-        model.put("expeditedSnap", snapExpeditedEligibilityDecider.decide(applicationData));
-        model.put("expeditedCcap", ccapExpeditedEligibilityDecider.decide(applicationData));
+        var snapExpeditedEligibility = snapExpeditedEligibilityDecider.decide(applicationData);
+        model.put("expeditedSnap", snapExpeditedEligibility);
+        var ccapExpeditedEligibility = ccapExpeditedEligibilityDecider.decide(applicationData);
+        model.put("expeditedCcap", ccapExpeditedEligibility);
 
 
         if (landmarkPagesConfiguration.isTerminalPage(pageName)) {
@@ -260,11 +264,11 @@ public class PageController {
             model.put("county", application.getCounty());
             model.put("sentiment", application.getSentiment());
             model.put("feedbackText", application.getFeedback());
+            List<String> programs = applicationData.getPagesData().get("choosePrograms").get("programs").getValue();
+            model.put("successMessage", successMessageService.getSuccessMessage(programs, snapExpeditedEligibility, ccapExpeditedEligibility, locale));
         }
 
-
         String pageToRender;
-        model.put("pageDatasources", pagesData.getDatasourcePagesBy(pageWorkflow.getDatasources()).mergeDatasourcePages(pagesData.getDatasourceGroupBy(pageWorkflow.getDatasources(), applicationData.getSubworkflows())));
         if (pageConfiguration.isStaticPage()) {
             pageToRender = pageName;
             model.put("data", pagesData.getDatasourcePagesBy(pageWorkflow.getDatasources()));

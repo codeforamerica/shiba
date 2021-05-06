@@ -1,7 +1,5 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
-import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.pages.data.DatasourcePages;
 
 import java.util.Collection;
@@ -13,8 +11,6 @@ import java.util.stream.Stream;
 
 public class PageUtils {
     private static final String WEB_INPUT_ARRAY_TOKEN = "[]";
-    private static final String PROGRAM_CCAP = "CCAP";
-    private static final String PROGRAM_SNAP = "SNAP";
 
     public static String getFormInputName(String name) {
         return name + WEB_INPUT_ARRAY_TOKEN;
@@ -56,29 +52,5 @@ public class PageUtils {
                     iteration.contains("CCAP"));
         }
         return applicantHasCCAP || householdHasCCAP;
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    public static String programSpecificSuccessMessage(DatasourcePages datasourcePages, SnapExpeditedEligibility snapExpeditedEligibility, CcapExpeditedEligibility ccapExpeditedEligibility) {
-        List<String> applicantPrograms = datasourcePages.get("choosePrograms").get("programs").getValue();
-        boolean onlyCcap = applicantPrograms.stream().allMatch(p -> p.equals(PROGRAM_CCAP));
-        boolean onlySnap = applicantPrograms.stream().allMatch(p -> p.equals(PROGRAM_SNAP));
-        boolean isSnapAndCcapOnly = applicantPrograms.stream().allMatch(p -> p.equals(PROGRAM_CCAP) || p.equals(PROGRAM_SNAP)) && !onlyCcap && !onlySnap;
-        boolean isSnapExpeditedEligible = snapExpeditedEligibility.equals(SnapExpeditedEligibility.ELIGIBLE);
-        boolean isCcapExpeditedEligible = ccapExpeditedEligibility.equals(CcapExpeditedEligibility.ELIGIBLE);
-        if (onlySnap && isSnapExpeditedEligible) {
-            return "success.expedited-snap-only";
-        } else if (onlySnap && !isSnapExpeditedEligible) {
-            return "success.non-expedited-snap-only";
-        } else if (isSnapAndCcapOnly && isSnapExpeditedEligible && isCcapExpeditedEligible) { // todo is it isSnapAndCcapOnly? or can there be other programs
-            return "success.expedited-snap-expedited-ccap";
-        } else if (isSnapAndCcapOnly && isSnapExpeditedEligible && !isCcapExpeditedEligible) {
-            return "success.expedited-snap-nonexpedited-ccap";
-        } else if (isSnapAndCcapOnly && !isSnapExpeditedEligible && isCcapExpeditedEligible) {
-            return "success.expedited-ccap-nonexpedited-snap";
-        } else if(onlyCcap && isCcapExpeditedEligible && !isSnapExpeditedEligible) {
-            return "success.expedited-ccap-only";
-        }
-        return "success.your-county-will-contact-within-one-week";
     }
 }

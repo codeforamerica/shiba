@@ -120,10 +120,13 @@ public class SuccessPageTest extends AbstractPageControllerTest {
     private ResultActions assertCorrectSuccessMessage(List<String> programs, SnapExpeditedEligibility snapExpeditedEligibility, CcapExpeditedEligibility ccapExpeditedEligibility, String expectedMessage) throws Exception {
         when(snapExpeditedEligibilityDecider.decide(any())).thenReturn(snapExpeditedEligibility);
         when(ccapExpeditedEligibilityDecider.decide(any())).thenReturn(ccapExpeditedEligibility);
-        applicationData.setPagesData(new PagesDataBuilder().build(List.of(new PageDataBuilder("choosePrograms", Map.of("programs", programs)))));
+
+        applicationData.setPagesData(new PagesDataBuilder().build(
+                List.of(new PageDataBuilder("choosePrograms", Map.of("programs", programs))))
+        );
+
         return mockMvc.perform(get("/pages/success").session(new MockHttpSession()))
                 .andExpect(status().isOk())
-                .andExpect(content().string(
-                        containsString(expectedMessage)));
+                .andExpect(content().string(containsString(expectedMessage)));
     }
 }

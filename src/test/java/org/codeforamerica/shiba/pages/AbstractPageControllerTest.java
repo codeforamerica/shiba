@@ -28,7 +28,8 @@ import org.springframework.test.context.ActiveProfiles;
 @Import({NonSessionScopedApplicationData.class,
         ApplicationConfigurationFactoryAppConfig.class,
         ClockConfiguration.class,
-        ApplicationFactory.class
+        ApplicationFactory.class,
+        SuccessMessageService.class
 })
 @EnableConfigurationProperties
 public class AbstractPageControllerTest {
