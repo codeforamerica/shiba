@@ -1029,8 +1029,8 @@ pageDefinitions:
         type: SELECT
         options:
           selectableOptions:
-            - value: Aikin
-              messageKey: identify-county-aikin
+            - value: Aitkin
+              messageKey: identify-county-aitkin
             - value: Anoka
               messageKey: identify-county-anoka
             - value: Becker
