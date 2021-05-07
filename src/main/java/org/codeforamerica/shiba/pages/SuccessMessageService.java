@@ -39,13 +39,13 @@ public class SuccessMessageService {
         boolean hasNonExpeditedSnap = hasSnap && !isSnapExpeditedEligible;
 
         List<String> messageKeys = new ArrayList<>();
+
         // Snap timing
         if (isSnapExpeditedEligible) {
             messageKeys.add(getMessage("success.expedited-snap-timing", locale));
         }
 
         // Ccap timing
-
         if (isCcapExpeditedEligible) {
             messageKeys.add(getMessage("success.expedited-ccap-timing", locale));
         }
@@ -65,8 +65,7 @@ public class SuccessMessageService {
             messageKeys.add(messageSource.getMessage("success.contact-promise", arg, locale));
         }
 
-        // TODO interview expectation
-
+        // Interview expectation
         if (!onlyCcap) {
             messageKeys.add(getMessage("success.you-will-need-to-complete-an-interview", locale));
         }
