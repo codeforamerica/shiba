@@ -13,7 +13,6 @@ import java.util.Locale;
 
 @Service
 public class SuccessMessageService {
-    // TODO where should these constants live
     private final MessageSource messageSource;
 
     public SuccessMessageService(MessageSource messageSource) {
