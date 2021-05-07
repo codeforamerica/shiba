@@ -169,18 +169,22 @@ public class PageController {
 
         if (landmarkPagesConfiguration.isLandingPage(pageName)) {
             httpSession.invalidate();
-        } else if (landmarkPagesConfiguration.isStartTimerPage(pageName)) {
+        }
+
+        if (landmarkPagesConfiguration.isStartTimerPage(pageName)) {
             applicationData.setStartTimeOnce(clock.instant());
             if (!utmSource.isEmpty()) {
                 applicationData.setUtmSource(utmSource);
             }
         }
 
-        boolean hasCompletedApplicationAndIsGoingtoPreSubmitPage = !landmarkPagesConfiguration.isPostSubmitPage(pageName) && applicationData.getId() != null;
-        boolean applicationIsUnstarted = !landmarkPagesConfiguration.isLandingPage(pageName) && applicationData.getStartTime() == null;
-        if (hasCompletedApplicationAndIsGoingtoPreSubmitPage) {
+        boolean hasCompletedApplicationButRequestedPreSubmitPage = !landmarkPagesConfiguration.isPostSubmitPage(pageName) && applicationData.getId() != null;
+        if (hasCompletedApplicationButRequestedPreSubmitPage) {
             return new ModelAndView(String.format("redirect:/pages/%s", landmarkPagesConfiguration.getTerminalPage()));
-        } else if (applicationIsUnstarted) {
+        }
+
+        boolean applicationIsUnstarted = !landmarkPagesConfiguration.isLandingPage(pageName) && applicationData.getStartTime() == null;
+        if (applicationIsUnstarted) {
             return new ModelAndView(String.format("redirect:/pages/%s", landmarkPagesConfiguration.getLandingPages().get(0)));
         }
 
