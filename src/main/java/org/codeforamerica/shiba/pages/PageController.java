@@ -178,13 +178,11 @@ public class PageController {
             }
         }
 
-        boolean hasCompletedApplicationButRequestedPreSubmitPage = !landmarkPagesConfiguration.isPostSubmitPage(pageName) && applicationData.getId() != null;
-        if (hasCompletedApplicationButRequestedPreSubmitPage) {
+        if (shouldRedirectToTerminalPage(pageName)) {
             return new ModelAndView(String.format("redirect:/pages/%s", landmarkPagesConfiguration.getTerminalPage()));
         }
 
-        boolean applicationIsUnstarted = !landmarkPagesConfiguration.isLandingPage(pageName) && applicationData.getStartTime() == null;
-        if (applicationIsUnstarted) {
+        if (shouldRedirectToLandingPage(pageName)) {
             return new ModelAndView(String.format("redirect:/pages/%s", landmarkPagesConfiguration.getLandingPages().get(0)));
         }
 
@@ -296,6 +294,18 @@ public class PageController {
             model.put("data", pagesData.getPageDataOrDefault(pageTemplate.getName(), pageConfiguration));
         }
         return new ModelAndView(pageToRender, model);
+    }
+
+    private boolean shouldRedirectToLandingPage(@PathVariable String pageName) {
+        LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
+        // If they requested landing page or application is unstarted
+        return !landmarkPagesConfiguration.isLandingPage(pageName) && applicationData.getStartTime() == null;
+    }
+
+    private boolean shouldRedirectToTerminalPage(@PathVariable String pageName) {
+        LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
+        // If they requested a page that was not a postSubmitPage and their application has an Id
+        return !landmarkPagesConfiguration.isPostSubmitPage(pageName) && applicationData.getId() != null;
     }
 
     @PostMapping("/groups/{groupName}/delete")
