@@ -10,6 +10,7 @@ import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.Subworkflow;
 import org.codeforamerica.shiba.pages.data.Subworkflows;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -21,8 +22,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -157,7 +156,7 @@ public class SuccessPageTest extends AbstractPageControllerTest {
                         CcapExpeditedEligibility.ELIGIBLE,
                         "Your county will decide on your childcare case within the next 5 working days.<br><br>" +
                                 "You will receive a letter in the mail with next steps for your application for housing in 7-10 days.<br><br>" +
-                                "You will need to complete an interview with a caseworker.<br><br>"+
+                                "You will need to complete an interview with a caseworker.<br><br>" +
                                 "If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
                 ),
                 Arguments.of(
@@ -166,7 +165,7 @@ public class SuccessPageTest extends AbstractPageControllerTest {
                         SnapExpeditedEligibility.UNDETERMINED,
                         CcapExpeditedEligibility.NOT_ELIGIBLE,
                         "You will receive a letter in the mail with next steps for your application for childcare/housing in 7-10 days.<br><br>" +
-                                "You will need to complete an interview with a caseworker.<br><br>"+
+                                "You will need to complete an interview with a caseworker.<br><br>" +
                                 "If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
                 ),
                 Arguments.of(
@@ -175,7 +174,7 @@ public class SuccessPageTest extends AbstractPageControllerTest {
                         SnapExpeditedEligibility.UNDETERMINED,
                         CcapExpeditedEligibility.UNDETERMINED,
                         "You will receive a letter in the mail with next steps for your application for housing/cash support in 7-10 days.<br><br>" +
-                                "You will need to complete an interview with a caseworker.<br><br>"+
+                                "You will need to complete an interview with a caseworker.<br><br>" +
                                 "If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
                 )
 
@@ -184,9 +183,8 @@ public class SuccessPageTest extends AbstractPageControllerTest {
 
     @SuppressWarnings("unused")
     @ParameterizedTest(name = "{0}")
-    @MethodSource("successMessageTestCases")
+    @MethodSource("org.codeforamerica.shiba.pages.SuccessPageTest#successMessageTestCases")
     void displaysCorrectSuccessMessage(String testName, List<String> programs, SnapExpeditedEligibility snapExpeditedEligibility, CcapExpeditedEligibility ccapExpeditedEligibility, String expectedMessage) throws Exception {
-
         applicationData.setPagesData(new PagesDataBuilder().build(
                 List.of(new PageDataBuilder("choosePrograms", Map.of("programs", programs))))
         );
@@ -194,14 +192,21 @@ public class SuccessPageTest extends AbstractPageControllerTest {
         assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessage);
     }
 
-    @SuppressWarnings("unused")
-    @ParameterizedTest(name = "{0}")
-    @MethodSource("successMessageTestCases")
-    void displaysCorrectSuccessMessageForHouseholdMemberPrograms(String testName, List<String> programs, SnapExpeditedEligibility snapExpeditedEligibility, CcapExpeditedEligibility ccapExpeditedEligibility, String expectedMessage) throws Exception {
-        applicationData.setSubworkflows(new Subworkflows(Map.of("household", new Subworkflow(List.of(
-                new PagesDataBuilder().build(List.of(new PageDataBuilder("householdMemberInfo", Map.of("programs", programs))))
-        )))));
+    @Test
+    void displaysCorrectSuccessMessageForHouseholdMemberPrograms() throws Exception {
+        applicationData.setPagesData(new PagesDataBuilder().build(
+                List.of(new PageDataBuilder("choosePrograms", Map.of("programs", List.of("SNAP"))))
+        ));
 
+        applicationData.setSubworkflows(new Subworkflows(Map.of("household", new Subworkflow(List.of(
+                new PagesDataBuilder().build(List.of(new PageDataBuilder("householdMemberInfo", Map.of("programs", List.of("GRH", "EA")))))
+        )))));
+        var snapExpeditedEligibility = SnapExpeditedEligibility.ELIGIBLE;
+        var ccapExpeditedEligibility = CcapExpeditedEligibility.UNDETERMINED;
+        var expectedMessage = "You will receive a call from your county within 24 hours about your application for food support. The call may come from an unknown number.<br><br>" +
+                "You will receive a letter in the mail with next steps for your application for housing/emergency assistance in 7-10 days.<br><br>" +
+                "You will need to complete an interview with a caseworker.<br><br>" +
+                "If you don't hear from your county within 3 days or want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>";
         assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessage);
     }
 
