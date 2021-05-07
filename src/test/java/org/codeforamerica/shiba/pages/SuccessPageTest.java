@@ -22,12 +22,10 @@ import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.not;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class SuccessPageTest extends AbstractPageControllerTest {
     @Autowired
@@ -52,21 +50,12 @@ public class SuccessPageTest extends AbstractPageControllerTest {
     }
 
     @Test
-    void itShowsTheDefaultMessage() throws Exception {
-        assertCorrectSuccessMessage(
-                List.of("GRH", "EA"),
-                SnapExpeditedEligibility.UNDETERMINED,
-                CcapExpeditedEligibility.UNDETERMINED,
-                "Your county will contact you within one week. They will send a mail notice and may also call you directly. The call may come from an unknown number!");
-    }
-
-    @Test
     void itShowsTheRightSuccessMessageForExpeditedSnapOnly() throws Exception {
         assertCorrectSuccessMessage(
                 List.of("SNAP"),
                 SnapExpeditedEligibility.ELIGIBLE,
                 CcapExpeditedEligibility.UNDETERMINED,
-                "You will receive a call from your county within 24 hours about your application for food support. The call may come from an unknown number.<br><br>If you don't hear from your county within 3 days or want an update on your case, please");
+                "You will receive a call from your county within 24 hours about your application for food support. The call may come from an unknown number.<br><br>You will need to complete an interview with a caseworker.<br><br>If you don't hear from your county within 3 days or want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>");
     }
 
     @Test
@@ -75,7 +64,7 @@ public class SuccessPageTest extends AbstractPageControllerTest {
                 List.of("SNAP"),
                 SnapExpeditedEligibility.NOT_ELIGIBLE,
                 CcapExpeditedEligibility.UNDETERMINED,
-                "You will receive a letter in the mail with next steps within 7-10 days about your application for food support. You will need to complete an interview with a caseworker.<br><br>If you don't hear from your county within 3 days or want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county</a>");
+                "You will receive a letter in the mail with next steps for your application for food support in 7-10 days.<br><br>You will need to complete an interview with a caseworker.<br><br>If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>");
     }
 
     @Test
@@ -84,7 +73,7 @@ public class SuccessPageTest extends AbstractPageControllerTest {
                 List.of("SNAP", "CCAP"),
                 SnapExpeditedEligibility.ELIGIBLE,
                 CcapExpeditedEligibility.ELIGIBLE,
-                "You will receive a call from your county within 24 hours about your application for food support. The call may come from an unknown number.<br><br>Your county will decide on your childcare case within the next 5 working days.<br><br>If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county</a>");
+                "You will receive a call from your county within 24 hours about your application for food support. The call may come from an unknown number.<br><br>Your county will decide on your childcare case within the next 5 working days.<br><br>You will need to complete an interview with a caseworker.<br><br>If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>");
     }
 
     @Test
@@ -93,7 +82,7 @@ public class SuccessPageTest extends AbstractPageControllerTest {
                 List.of("SNAP", "CCAP"),
                 SnapExpeditedEligibility.ELIGIBLE,
                 CcapExpeditedEligibility.NOT_ELIGIBLE,
-                "You will receive a call from your county within 24 hours about your application for food support. The call may come from an unknown number.<br><br>You will receive a letter in the mail with next steps for your childcare application within 7-10 days.<br><br>If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county</a>");
+                "You will receive a call from your county within 24 hours about your application for food support. The call may come from an unknown number.<br><br>You will receive a letter in the mail with next steps for your application for childcare in 7-10 days.<br><br>You will need to complete an interview with a caseworker.<br><br>If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>");
     }
 
     @Test
@@ -102,19 +91,17 @@ public class SuccessPageTest extends AbstractPageControllerTest {
                 List.of("SNAP", "CCAP"),
                 SnapExpeditedEligibility.NOT_ELIGIBLE,
                 CcapExpeditedEligibility.ELIGIBLE,
-                "You will receive a letter in the mail with next steps within 7-10 days about your application for food support. You will need to complete an interview with a caseworker.<br><br>Your county will decide on your childcare case within the next 5 working days.<br><br>If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county</a>");
+                "Your county will decide on your childcare case within the next 5 working days.<br><br>You will receive a letter in the mail with next steps for your application for food support in 7-10 days.<br><br>You will need to complete an interview with a caseworker.<br><br>If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>");
     }
 
     @Test
-    void itShowsTheRightSuccessMessageForExpeditedCCAPOnly() throws Exception { // TODO is this ONLY?
+    void itShowsTheRightSuccessMessageForExpeditedCCAPOnly() throws Exception {
         assertCorrectSuccessMessage(
                 List.of("CCAP"),
                 SnapExpeditedEligibility.UNDETERMINED,
                 CcapExpeditedEligibility.ELIGIBLE,
-                "Your county will decide on your childcare case within the next 5 working days.<br><br>If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county</a>"
-        ).andExpect(
-                content().string(
-                        not(containsString("You will receive a letter in the mail with next steps within 7-10 days about your application for food support. You will need to complete an interview with a caseworker."))));
+                "Your county will decide on your childcare case within the next 5 working days.<br><br>If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
+        );
     }
 
     private ResultActions assertCorrectSuccessMessage(List<String> programs, SnapExpeditedEligibility snapExpeditedEligibility, CcapExpeditedEligibility ccapExpeditedEligibility, String expectedMessage) throws Exception {
@@ -127,6 +114,7 @@ public class SuccessPageTest extends AbstractPageControllerTest {
 
         return mockMvc.perform(get("/pages/success").session(new MockHttpSession()))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString(expectedMessage)));
+                .andExpect(model().attribute("successMessage", expectedMessage)) // assert the message is right
+                .andExpect(content().string(containsString(expectedMessage))); // assert the message actually was put in the html
     }
 }
