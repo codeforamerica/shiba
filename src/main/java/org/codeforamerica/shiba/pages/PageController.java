@@ -230,41 +230,7 @@ public class PageController {
 
         // Build model for thymeleaf
         PageTemplate pageTemplate = pagesData.evaluate(featureFlags, pageWorkflow, applicationData);
-        HashMap<String, Object> model = new HashMap<>(Map.of(
-                "page", pageTemplate,
-                "pageName", pageName,
-                "postTo", landmarkPagesConfiguration.isSubmitPage(pageName) ? "/submit" : "/pages/" + pageName
-        ));
-
-        model.put("county", countyParser.parse(applicationData));
-
-        List<String> zipCode = applicationData.getPagesData().safeGetPageInputValue("homeAddress", "zipCode");
-        if (!zipCode.isEmpty()) {
-            model.put("zipCode", zipCode.get(0));
-        }
-
-        // Figure out list of programs
-        Set<String> programs = getApplicantAndHouseholdMemberPrograms();
-        if (!programs.isEmpty()) {
-            model.put("programs", String.join(", ", programs));
-        }
-
-        var snapExpeditedEligibility = snapExpeditedEligibilityDecider.decide(applicationData);
-        model.put("expeditedSnap", snapExpeditedEligibility);
-        var ccapExpeditedEligibility = ccapExpeditedEligibilityDecider.decide(applicationData);
-        model.put("expeditedCcap", ccapExpeditedEligibility);
-
-
-        if (landmarkPagesConfiguration.isTerminalPage(pageName)) {
-            Application application = applicationRepository.find(applicationData.getId());
-            model.put("applicationId", application.getId());
-            model.put("documents", documentListParser.parse(applicationData));
-            model.put("submissionTime", application.getCompletedAt().withZoneSameInstant(CENTRAL_TIMEZONE));
-            model.put("county", application.getCounty());
-            model.put("sentiment", application.getSentiment());
-            model.put("feedbackText", application.getFeedback());
-            model.put("successMessage", successMessageService.getSuccessMessage(new ArrayList<>(programs), snapExpeditedEligibility, ccapExpeditedEligibility, locale));
-        }
+        HashMap<String, Object> model = buildModelForThymeleaf(pageName, locale, landmarkPagesConfiguration, pageTemplate);
 
         String pageToRender;
         if (pageConfiguration.isStaticPage()) {
@@ -292,6 +258,44 @@ public class PageController {
             model.put("data", pagesData.getPageDataOrDefault(pageTemplate.getName(), pageConfiguration));
         }
         return new ModelAndView(pageToRender, model);
+    }
+
+    @NotNull
+    private HashMap<String, Object> buildModelForThymeleaf(String pageName, Locale locale, LandmarkPagesConfiguration landmarkPagesConfiguration, PageTemplate pageTemplate) {
+        HashMap<String, Object> model = new HashMap<>(Map.of(
+                "page", pageTemplate,
+                "pageName", pageName,
+                "postTo", landmarkPagesConfiguration.isSubmitPage(pageName) ? "/submit" : "/pages/" + pageName
+        ));
+
+        model.put("county", countyParser.parse(applicationData));
+
+        List<String> zipCode = applicationData.getPagesData().safeGetPageInputValue("homeAddress", "zipCode");
+        if (!zipCode.isEmpty()) {
+            model.put("zipCode", zipCode.get(0));
+        }
+
+        Set<String> programs = getApplicantAndHouseholdMemberPrograms();
+        if (!programs.isEmpty()) {
+            model.put("programs", String.join(", ", programs));
+        }
+
+        var snapExpeditedEligibility = snapExpeditedEligibilityDecider.decide(applicationData);
+        model.put("expeditedSnap", snapExpeditedEligibility);
+        var ccapExpeditedEligibility = ccapExpeditedEligibilityDecider.decide(applicationData);
+        model.put("expeditedCcap", ccapExpeditedEligibility);
+
+        if (landmarkPagesConfiguration.isTerminalPage(pageName)) {
+            Application application = applicationRepository.find(applicationData.getId());
+            model.put("applicationId", application.getId());
+            model.put("documents", documentListParser.parse(applicationData));
+            model.put("submissionTime", application.getCompletedAt().withZoneSameInstant(CENTRAL_TIMEZONE));
+            model.put("county", application.getCounty());
+            model.put("sentiment", application.getSentiment());
+            model.put("feedbackText", application.getFeedback());
+            model.put("successMessage", successMessageService.getSuccessMessage(new ArrayList<>(programs), snapExpeditedEligibility, ccapExpeditedEligibility, locale));
+        }
+        return model;
     }
 
     @NotNull
