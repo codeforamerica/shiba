@@ -290,7 +290,7 @@ public class PageController {
             } else {
                 return new ModelAndView("redirect:/pages/" + pageWorkflow.getDataMissingRedirect());
             }
-        } else {
+        } else { // Not a static page
             pageToRender = "formPage";
             model.put("pageDatasources", pagesData.getDatasourcePagesBy(pageWorkflow.getDatasources()).mergeDatasourcePages(pagesData.getDatasourceGroupBy(pageWorkflow.getDatasources(), applicationData.getSubworkflows())));
             model.put("data", pagesData.getPageDataOrDefault(pageTemplate.getName(), pageConfiguration));
