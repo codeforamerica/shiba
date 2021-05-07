@@ -231,20 +231,16 @@ public class PageController {
 
         Map<String, Object> model = buildModelForThymeleaf(pageName, locale, landmarkPagesConfiguration, pageTemplate, pageWorkflow, pagesData, iterationIndex);
 
-        String view;
-        if (pageWorkflow.getPageConfiguration().isStaticPage()) {
-            view = pageName;
-            if (missingRequiredSubworkflows(pageWorkflow)) {
-                return new ModelAndView("redirect:/pages/" + pageWorkflow.getDataMissingRedirect());
-            }
-        } else { // Not a static page
-            view = "formPage";
+        if (missingRequiredSubworkflows(pageWorkflow)) {
+            return new ModelAndView("redirect:/pages/" + pageWorkflow.getDataMissingRedirect());
         }
+
+        String view = pageWorkflow.getPageConfiguration().isStaticPage() ? pageName : "formPage";
         return new ModelAndView(view, model);
     }
 
     private boolean missingRequiredSubworkflows(PageWorkflowConfiguration pageWorkflow) {
-        return !applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources());
+        return pageWorkflow.getPageConfiguration().isStaticPage() && !applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources());
     }
 
     private boolean isStartPageForGroup(@PathVariable String pageName, String groupName) {
