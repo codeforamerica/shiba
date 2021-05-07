@@ -200,17 +200,10 @@ public class PageController {
             return new ModelAndView("redirect:/pages/" + pageWorkflow.getDataMissingRedirect());
         }
 
-        // Update pagesData for incomplete subworkflows
+        // Update pagesData with data for incomplete subworkflows
         var pagesData = applicationData.getPagesData();
         if (pageWorkflow.getGroupName() != null) { // If page is part of a subworkflow
-            PagesData currentIterationPagesData;
-            String groupName = pageWorkflow.getGroupName();
-            if (isStartPageForGroup(pageName, groupName)) {
-                currentIterationPagesData = applicationData.getIncompleteIterations().getOrDefault(groupName, new PagesData());
-            } else {
-                currentIterationPagesData = applicationData.getIncompleteIterations().get(groupName);
-            }
-
+            PagesData currentIterationPagesData = getCurrentIterationPagesData(pageName, pageWorkflow);
             if (currentIterationPagesData == null) {
                 // Redirect to default page for group
                 String redirectPage = applicationConfiguration.getPageGroups().get(pageWorkflow.getGroupName()).getRedirectPage();
@@ -236,6 +229,17 @@ public class PageController {
         var model = buildModelForThymeleaf(pageName, locale, landmarkPagesConfiguration, pageTemplate, pageWorkflow, pagesData, iterationIndex);
         var view = pageWorkflow.getPageConfiguration().isStaticPage() ? pageName : "formPage";
         return new ModelAndView(view, model);
+    }
+
+    private PagesData getCurrentIterationPagesData(String pageName, PageWorkflowConfiguration pageWorkflow) {
+        PagesData currentIterationPagesData;
+        String groupName = pageWorkflow.getGroupName();
+        if (isStartPageForGroup(pageName, groupName)) {
+            currentIterationPagesData = applicationData.getIncompleteIterations().getOrDefault(groupName, new PagesData());
+        } else {
+            currentIterationPagesData = applicationData.getIncompleteIterations().get(groupName);
+        }
+        return currentIterationPagesData;
     }
 
     private boolean missingRequiredSubworkflows(PageWorkflowConfiguration pageWorkflow) {
