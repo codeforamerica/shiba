@@ -36,6 +36,7 @@ import java.time.ZoneId;
 import java.util.*;
 
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 
 @Controller
@@ -75,7 +76,8 @@ public class PageController {
             DocumentRepositoryService documentRepositoryService,
             CountyParser countyParser,
             SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider,
-            CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider, SuccessMessageService successMessageService) {
+            CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider,
+            SuccessMessageService successMessageService) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
@@ -114,11 +116,11 @@ public class PageController {
             @PathVariable String pageName,
             @RequestParam(required = false, defaultValue = "0") Integer option
     ) {
-        PageWorkflowConfiguration pageWorkflow = this.applicationConfiguration.getPageWorkflow(pageName);
-        PagesData pagesData = this.applicationData.getPagesData();
+        PageWorkflowConfiguration pageWorkflow = applicationConfiguration.getPageWorkflow(pageName);
+        PagesData pagesData = applicationData.getPagesData();
         NextPage nextPage = applicationData.getNextPageName(featureFlags, pageWorkflow, option);
         ofNullable(nextPage.getFlow()).ifPresent(applicationData::setFlow);
-        PageWorkflowConfiguration nextPageWorkflow = this.applicationConfiguration.getPageWorkflow(nextPage.getPageName());
+        PageWorkflowConfiguration nextPageWorkflow = applicationConfiguration.getPageWorkflow(nextPage.getPageName());
 
         if (shouldSkip(nextPageWorkflow)) {
             pagesData.remove(nextPageWorkflow.getPageConfiguration().getName());
@@ -131,8 +133,8 @@ public class PageController {
     private boolean shouldSkip(PageWorkflowConfiguration nextPageWorkflow) {
         Condition skipCondition = nextPageWorkflow.getSkipCondition();
         if (skipCondition != null) {
-            PagesData pagesData = this.applicationData.getPagesData();
-            Subworkflows subworkflows = this.applicationData.getSubworkflows();
+            PagesData pagesData = applicationData.getPagesData();
+            Subworkflows subworkflows = applicationData.getSubworkflows();
             Map<String, PageData> pages = new HashMap<>();
             nextPageWorkflow.getDatasources().stream()
                     .filter(datasource -> datasource.getPageName() != null)
@@ -165,64 +167,96 @@ public class PageController {
             HttpSession httpSession,
             Locale locale
     ) {
-        LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
+        var landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
 
+        // Validations and special case redirects
         if (landmarkPagesConfiguration.isLandingPage(pageName)) {
             httpSession.invalidate();
-        } else if (landmarkPagesConfiguration.isStartTimerPage(pageName)) {
-            this.applicationData.setStartTimeOnce(clock.instant());
+        }
+
+        if (landmarkPagesConfiguration.isStartTimerPage(pageName)) {
+            applicationData.setStartTimeOnce(clock.instant());
             if (!utmSource.isEmpty()) {
-                this.applicationData.setUtmSource(utmSource);
+                applicationData.setUtmSource(utmSource);
             }
         }
 
-        boolean hasCompletedApplicationAndIsGoingtoPreSubmitPage = !landmarkPagesConfiguration.isPostSubmitPage(pageName) && applicationData.getId() != null;
-        boolean applicationIsUnstarted = !landmarkPagesConfiguration.isLandingPage(pageName) && applicationData.getStartTime() == null;
-        if (hasCompletedApplicationAndIsGoingtoPreSubmitPage) {
+        if (shouldRedirectToTerminalPage(pageName)) {
             return new ModelAndView(String.format("redirect:/pages/%s", landmarkPagesConfiguration.getTerminalPage()));
-        } else if (applicationIsUnstarted) {
+        }
+
+        if (shouldRedirectToLandingPage(pageName)) {
             return new ModelAndView(String.format("redirect:/pages/%s", landmarkPagesConfiguration.getLandingPages().get(0)));
         }
 
         response.addHeader("Cache-Control", "no-store");
 
-        if (this.applicationConfiguration.getPageWorkflow(pageName) == null) {
+        if (notFound(pageName)) {
             return new ModelAndView("error/404");
         }
-        PageWorkflowConfiguration pageWorkflow = this.applicationConfiguration.getPageWorkflow(pageName);
 
-        PageConfiguration pageConfiguration = pageWorkflow.getPageConfiguration();
-
-        PagesData pagesData = applicationData.getPagesData();
-        if (pageWorkflow.getGroupName() != null) {
-            PagesData currentIterationPagesData;
-            String groupName = pageWorkflow.getGroupName();
-            if (applicationConfiguration.getPageGroups().get(groupName).getStartPages().contains(pageName)) {
-                currentIterationPagesData = applicationData.getIncompleteIterations().getOrDefault(groupName, new PagesData());
-            } else {
-                currentIterationPagesData = applicationData.getIncompleteIterations().get(groupName);
-            }
-
-            if (currentIterationPagesData == null) {
-                String redirectPage = applicationConfiguration.getPageGroups().get(pageWorkflow.getGroupName()).getRedirectPage();
-                return new ModelAndView(String.format("redirect:/pages/%s", redirectPage));
-            }
-            // Avoid changing the original applicationData PagesData by cloning the object
-            pagesData = (PagesData) pagesData.clone();
-            pagesData.putAll(currentIterationPagesData);
+        var pageWorkflowConfig = applicationConfiguration.getPageWorkflow(pageName);
+        if (missingRequiredSubworkflows(pageWorkflowConfig)) {
+            return new ModelAndView("redirect:/pages/" + pageWorkflowConfig.getDataMissingRedirect());
         }
 
-        if (iterationIndex != null && !iterationIndex.isBlank() && applicationData.getSubworkflows().containsKey(pageWorkflow.getAppliesToGroup())) {
+        // Update pagesData with data for incomplete subworkflows
+        var pagesData = applicationData.getPagesData();
+        if (pageWorkflowConfig.getGroupName() != null) { // If page is part of a group
+            var dataForIncompleteIteration = getIncompleteIterationPagesData(pageName, pageWorkflowConfig);
 
-            PagesData iterationData = pageWorkflow.getSubworkflows(applicationData)
-                    .get(pageWorkflow.getAppliesToGroup()).get(Integer.parseInt(iterationIndex)).getPagesData();
-
-            pagesData = (PagesData) pagesData.clone();
-            pagesData.putAll(iterationData);
+            if (dataForIncompleteIteration == null) {
+                String redirectPageForGroup = applicationConfiguration.getPageGroups().get(pageWorkflowConfig.getGroupName()).getRedirectPage();
+                return new ModelAndView("redirect:/pages/" + redirectPageForGroup);
+            }
+            pagesData = (PagesData) pagesData.clone(); // Avoid changing the original applicationData PagesData by cloning the object
+            pagesData.putAll(dataForIncompleteIteration);
         }
 
-        PageTemplate pageTemplate = pagesData.evaluate(featureFlags, pageWorkflow, applicationData);
+        // Add extra pagesData if this page workflow specifies that it applies to a group
+        if (requestedPageAppliesToGroup(iterationIndex, pageWorkflowConfig)) {
+            String groupName = pageWorkflowConfig.getAppliesToGroup();
+            var dataForGroup = getPagesDataForGroupAndIteration(iterationIndex, pageWorkflowConfig, groupName);
 
+            pagesData = (PagesData) pagesData.clone();
+            pagesData.putAll(dataForGroup);
+        }
+
+        var pageTemplate = pagesData.evaluate(featureFlags, pageWorkflowConfig, applicationData);
+
+        var model = buildModelForThymeleaf(pageName, locale, landmarkPagesConfiguration, pageTemplate, pageWorkflowConfig, pagesData, iterationIndex);
+        var view = pageWorkflowConfig.getPageConfiguration().isStaticPage() ? pageName : "formPage";
+        return new ModelAndView(view, model);
+    }
+
+    private PagesData getPagesDataForGroupAndIteration(String iterationIndex, PageWorkflowConfiguration pageWorkflowConfig, String groupName) {
+        return pageWorkflowConfig.getSubworkflows(applicationData)
+                .get(groupName)
+                .get(Integer.parseInt(iterationIndex))
+                .getPagesData();
+    }
+
+    private PagesData getIncompleteIterationPagesData(String pageName, PageWorkflowConfiguration pageWorkflow) {
+        PagesData currentIterationPagesData;
+        String groupName = pageWorkflow.getGroupName();
+        if (isStartPageForGroup(pageName, groupName)) {
+            currentIterationPagesData = applicationData.getIncompleteIterations().getOrDefault(groupName, new PagesData());
+        } else {
+            currentIterationPagesData = applicationData.getIncompleteIterations().get(groupName);
+        }
+        return currentIterationPagesData;
+    }
+
+    private boolean missingRequiredSubworkflows(PageWorkflowConfiguration pageWorkflow) {
+        return pageWorkflow.getPageConfiguration().isStaticPage() && !applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources());
+    }
+
+    private boolean isStartPageForGroup(@PathVariable String pageName, String groupName) {
+        return applicationConfiguration.getPageGroups().get(groupName).getStartPages().contains(pageName);
+    }
+
+    @NotNull
+    private Map<String, Object> buildModelForThymeleaf(String pageName, Locale locale, LandmarkPagesConfiguration landmarkPagesConfiguration, PageTemplate pageTemplate, PageWorkflowConfiguration pageWorkflow, PagesData pagesData, String iterationIndex) {
         HashMap<String, Object> model = new HashMap<>(Map.of(
                 "page", pageTemplate,
                 "pageName", pageName,
@@ -236,24 +270,15 @@ public class PageController {
             model.put("zipCode", zipCode.get(0));
         }
 
-        List<String> applicantPrograms = applicationData.getPagesData().safeGetPageInputValue("choosePrograms", "programs");
-        Set<String> applicantAndHouseholdMemberPrograms = new HashSet<>(applicantPrograms);
-        boolean hasHousehold = applicationData.getSubworkflows().containsKey("household");
-        if (hasHousehold) {
-            Subworkflow household = applicationData.getSubworkflows().get("household");
-            household.forEach(iteration ->
-                    applicantAndHouseholdMemberPrograms.addAll(iteration.getPagesData().safeGetPageInputValue("householdMemberInfo", "programs")));
-        }
-
-        if (!applicantAndHouseholdMemberPrograms.isEmpty()) {
-            model.put("programs", String.join(", ", applicantAndHouseholdMemberPrograms));
+        Set<String> programs = getApplicantAndHouseholdMemberPrograms();
+        if (!programs.isEmpty()) {
+            model.put("programs", String.join(", ", programs));
         }
 
         var snapExpeditedEligibility = snapExpeditedEligibilityDecider.decide(applicationData);
         model.put("expeditedSnap", snapExpeditedEligibility);
         var ccapExpeditedEligibility = ccapExpeditedEligibilityDecider.decide(applicationData);
         model.put("expeditedCcap", ccapExpeditedEligibility);
-
 
         if (landmarkPagesConfiguration.isTerminalPage(pageName)) {
             Application application = applicationRepository.find(applicationData.getId());
@@ -263,40 +288,69 @@ public class PageController {
             model.put("county", application.getCounty());
             model.put("sentiment", application.getSentiment());
             model.put("feedbackText", application.getFeedback());
-            model.put("successMessage", successMessageService.getSuccessMessage(new ArrayList<>(applicantAndHouseholdMemberPrograms), snapExpeditedEligibility, ccapExpeditedEligibility, locale));
+            model.put("successMessage", successMessageService.getSuccessMessage(new ArrayList<>(programs), snapExpeditedEligibility, ccapExpeditedEligibility, locale));
         }
 
-        String pageToRender;
-        if (pageConfiguration.isStaticPage()) {
-            pageToRender = pageName;
+        if (landmarkPagesConfiguration.isUploadDocumentsPage(pageName)) {
+            model.put("uploadedDocs", applicationData.getUploadedDocs());
+            model.put("uploadDocMaxFileSize", uploadDocumentConfiguration.getMaxFilesize());
+        }
+
+        if (pageWorkflow.getPageConfiguration().isStaticPage()) {
             model.put("data", pagesData.getDatasourcePagesBy(pageWorkflow.getDatasources()));
             model.put("applicationData", applicationData);
 
-            if (landmarkPagesConfiguration.isUploadDocumentsPage(pageName)) {
-                model.put("uploadedDocs", applicationData.getUploadedDocs());
-                model.put("uploadDocMaxFileSize", uploadDocumentConfiguration.getMaxFilesize());
-            }
-
             if (applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources())) {
                 model.put("subworkflows", pageWorkflow.getSubworkflows(applicationData));
-                if (iterationIndex != null && !iterationIndex.isBlank()) {
-                    model.put("iterationData", pageWorkflow.getSubworkflows(applicationData)
-                            .get(pageWorkflow.getAppliesToGroup()).get(Integer.parseInt(iterationIndex)));
+                if (isNotBlank(iterationIndex)) {
+                    var iterationData = pageWorkflow.getSubworkflows(applicationData).get(pageWorkflow.getAppliesToGroup()).get(Integer.parseInt(iterationIndex));
+                    model.put("iterationData", iterationData);
                 }
-            } else {
-                return new ModelAndView("redirect:/pages/" + pageWorkflow.getDataMissingRedirect());
             }
         } else {
-            pageToRender = "formPage";
             model.put("pageDatasources", pagesData.getDatasourcePagesBy(pageWorkflow.getDatasources()).mergeDatasourcePages(pagesData.getDatasourceGroupBy(pageWorkflow.getDatasources(), applicationData.getSubworkflows())));
-            model.put("data", pagesData.getPageDataOrDefault(pageTemplate.getName(), pageConfiguration));
+            model.put("data", pagesData.getPageDataOrDefault(pageTemplate.getName(), pageWorkflow.getPageConfiguration()));
         }
-        return new ModelAndView(pageToRender, model);
+
+        return model;
+    }
+
+    @NotNull
+    private Set<String> getApplicantAndHouseholdMemberPrograms() {
+        List<String> applicantPrograms = applicationData.getPagesData().safeGetPageInputValue("choosePrograms", "programs");
+        Set<String> applicantAndHouseholdMemberPrograms = new HashSet<>(applicantPrograms);
+        boolean hasHousehold = applicationData.getSubworkflows().containsKey("household");
+        if (hasHousehold) {
+            Subworkflow householdSubworkflow = applicationData.getSubworkflows().get("household");
+            householdSubworkflow.forEach(iteration ->
+                    applicantAndHouseholdMemberPrograms.addAll(iteration.getPagesData().safeGetPageInputValue("householdMemberInfo", "programs")));
+        }
+        return applicantAndHouseholdMemberPrograms;
+    }
+
+    private boolean requestedPageAppliesToGroup(String iterationIndex, PageWorkflowConfiguration pageWorkflow) {
+        return isNotBlank(iterationIndex) && applicationData.getSubworkflows().containsKey(pageWorkflow.getAppliesToGroup());
+    }
+
+    private boolean notFound(String pageName) {
+        return applicationConfiguration.getPageWorkflow(pageName) == null;
+    }
+
+    private boolean shouldRedirectToLandingPage(@PathVariable String pageName) {
+        LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
+        // If they requested landing page or application is unstarted
+        return !landmarkPagesConfiguration.isLandingPage(pageName) && applicationData.getStartTime() == null;
+    }
+
+    private boolean shouldRedirectToTerminalPage(@PathVariable String pageName) {
+        LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
+        // If they requested a page that was not a postSubmitPage and their application has an Id
+        return !landmarkPagesConfiguration.isPostSubmitPage(pageName) && applicationData.getId() != null;
     }
 
     @PostMapping("/groups/{groupName}/delete")
     RedirectView deleteGroup(@PathVariable String groupName, HttpSession httpSession) {
-        this.applicationData.getSubworkflows().remove(groupName);
+        applicationData.getSubworkflows().remove(groupName);
         pageEventPublisher.publish(new SubworkflowIterationDeletedEvent(httpSession.getId(), groupName));
         String startPage = applicationConfiguration.getPageGroups().get(groupName).getRestartPage();
         return new RedirectView("/pages/" + startPage);
@@ -309,11 +363,11 @@ public class PageController {
             HttpSession httpSession
     ) {
         String nextPage;
-        this.applicationData.getSubworkflows().get(groupName).remove(iteration);
+        applicationData.getSubworkflows().get(groupName).remove(iteration);
         pageEventPublisher.publish(new SubworkflowIterationDeletedEvent(httpSession.getId(), groupName));
 
-        if (this.applicationData.getSubworkflows().get(groupName).size() == 0) {
-            this.applicationData.getSubworkflows().remove(groupName);
+        if (applicationData.getSubworkflows().get(groupName).isEmpty()) {
+            applicationData.getSubworkflows().remove(groupName);
             nextPage = applicationConfiguration.getPageGroups().get(groupName).getRestartPage();
         } else {
             nextPage = applicationConfiguration.getPageGroups().get(groupName).getReviewPage();
@@ -346,7 +400,7 @@ public class PageController {
         Map<String, PagesData> incompleteIterations = applicationData.getIncompleteIterations();
         if (pageWorkflow.getGroupName() != null) {
             String groupName = pageWorkflow.getGroupName();
-            if (applicationConfiguration.getPageGroups().get(groupName).getStartPages().contains(page.getName())) {
+            if (isStartPageForGroup(page.getName(), groupName)) {
                 incompleteIterations.putIfAbsent(groupName, new PagesData());
             }
             pagesData = incompleteIterations.get(groupName);
@@ -391,7 +445,7 @@ public class PageController {
             @RequestBody(required = false) MultiValueMap<String, String> model,
             HttpSession httpSession
     ) {
-        LandmarkPagesConfiguration landmarkPagesConfiguration = this.applicationConfiguration.getLandmarkPages();
+        LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
         String submitPage = landmarkPagesConfiguration.getSubmitPage();
         PageConfiguration page = applicationConfiguration.getPageWorkflow(submitPage).getPageConfiguration();
 
@@ -474,7 +528,7 @@ public class PageController {
                 .map(UploadedDocument::getS3Filepath)
                 .findFirst()
                 .ifPresent(documentRepositoryService::delete);
-        this.applicationData.removeUploadedDoc(filename);
+        applicationData.removeUploadedDoc(filename);
 
         return new ModelAndView("redirect:/pages/uploadDocuments");
     }
