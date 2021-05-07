@@ -55,7 +55,7 @@ public class SuccessPageTest extends AbstractPageControllerTest {
     private static Stream<Arguments> successMessageTestCases() {
         return Stream.of(
                 Arguments.of(
-                        "expeditedSnapOnly",
+                        "Only Expedited SNAP",
                         List.of("SNAP"),
                         SnapExpeditedEligibility.ELIGIBLE,
                         CcapExpeditedEligibility.UNDETERMINED,
@@ -64,33 +64,36 @@ public class SuccessPageTest extends AbstractPageControllerTest {
                                 "If you don't hear from your county within 3 days or want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
                 ),
                 Arguments.of(
-                        "nonExpeditedSnapOnly",
+                        "Only Non-expedited SNAP",
                         List.of("SNAP"),
                         SnapExpeditedEligibility.NOT_ELIGIBLE,
                         CcapExpeditedEligibility.UNDETERMINED,
                         "You will receive a letter in the mail with next steps for your application for food support in 7-10 days.<br><br>" +
-                                "You will need to complete an interview with a caseworker.<br><br>If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
+                                "You will need to complete an interview with a caseworker.<br><br>" +
+                                "If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
                 ),
                 Arguments.of(
-                        "expeditedSnapAndExpeditedCCAP",
+                        "Expedited SNAP + Expedited CCAP",
                         List.of("SNAP", "CCAP"),
                         SnapExpeditedEligibility.ELIGIBLE,
                         CcapExpeditedEligibility.ELIGIBLE,
                         "You will receive a call from your county within 24 hours about your application for food support. The call may come from an unknown number.<br><br>" +
-                                "Your county will decide on your childcare case within the next 5 working days.<br><br>You will need to complete an interview with a caseworker.<br><br>" +
+                                "Your county will decide on your childcare case within the next 5 working days.<br><br>" +
+                                "You will need to complete an interview with a caseworker.<br><br>" +
                                 "If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
                 ),
                 Arguments.of(
-                        "expeditedSnapAndNonExpeditedCCAP",
+                        "Expedited SNAP + non-expedited CCAP",
                         List.of("SNAP", "CCAP"),
                         SnapExpeditedEligibility.ELIGIBLE,
                         CcapExpeditedEligibility.NOT_ELIGIBLE,
                         "You will receive a call from your county within 24 hours about your application for food support. The call may come from an unknown number.<br><br>" +
-                                "You will receive a letter in the mail with next steps for your application for childcare in 7-10 days.<br><br>You will need to complete an interview with a caseworker.<br><br>" +
+                                "You will receive a letter in the mail with next steps for your application for childcare in 7-10 days.<br><br>" +
+                                "You will need to complete an interview with a caseworker.<br><br>" +
                                 "If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
                 ),
                 Arguments.of(
-                        "nonExpeditedSnapAndExpeditedCCAP",
+                        "Expedited CCAP + non-expedited SNAP",
                         List.of("SNAP", "CCAP"),
                         SnapExpeditedEligibility.NOT_ELIGIBLE,
                         CcapExpeditedEligibility.ELIGIBLE,
@@ -99,7 +102,7 @@ public class SuccessPageTest extends AbstractPageControllerTest {
                                 "You will need to complete an interview with a caseworker.<br><br>If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
                 ),
                 Arguments.of(
-                        "expeditedCCAPOnly",
+                        "Only Expedited CCAP",
                         List.of("CCAP"),
                         SnapExpeditedEligibility.UNDETERMINED,
                         CcapExpeditedEligibility.ELIGIBLE,
@@ -107,7 +110,7 @@ public class SuccessPageTest extends AbstractPageControllerTest {
                                 "If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
                 ),
                 Arguments.of(
-                        "nonExpeditedCcapOnly",
+                        "Only Non-expedited CCAP",
                         List.of("CCAP"),
                         SnapExpeditedEligibility.UNDETERMINED,
                         CcapExpeditedEligibility.NOT_ELIGIBLE,
