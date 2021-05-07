@@ -36,6 +36,7 @@ import java.time.ZoneId;
 import java.util.*;
 
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 
 @Controller
@@ -215,7 +216,7 @@ public class PageController {
             pagesData.putAll(currentIterationPagesData);
         }
 
-        if (iterationIndex != null && !iterationIndex.isBlank() && applicationData.getSubworkflows().containsKey(pageWorkflow.getAppliesToGroup())) {
+        if (isNotBlank(iterationIndex) && applicationData.getSubworkflows().containsKey(pageWorkflow.getAppliesToGroup())) {
             PagesData iterationData = pageWorkflow.getSubworkflows(applicationData)
                     .get(pageWorkflow.getAppliesToGroup()).get(Integer.parseInt(iterationIndex)).getPagesData();
 
