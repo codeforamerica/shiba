@@ -195,7 +195,6 @@ public class PageController {
         }
 
         PageWorkflowConfiguration pageWorkflow = applicationConfiguration.getPageWorkflow(pageName);
-        PageConfiguration pageConfiguration = pageWorkflow.getPageConfiguration();
 
         // Handle PageData for incomplete subworkflows
         PagesData pagesData = applicationData.getPagesData();
@@ -233,7 +232,7 @@ public class PageController {
         HashMap<String, Object> model = buildModelForThymeleaf(pageName, locale, landmarkPagesConfiguration, pageTemplate, pageWorkflow, pagesData, iterationIndex);
 
         String pageToRender;
-        if (pageConfiguration.isStaticPage()) {
+        if (pageWorkflow.getPageConfiguration().isStaticPage()) {
             pageToRender = pageName;
 
             if (!applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources())) {
@@ -242,7 +241,7 @@ public class PageController {
         } else { // Not a static page
             pageToRender = "formPage";
             model.put("pageDatasources", pagesData.getDatasourcePagesBy(pageWorkflow.getDatasources()).mergeDatasourcePages(pagesData.getDatasourceGroupBy(pageWorkflow.getDatasources(), applicationData.getSubworkflows())));
-            model.put("data", pagesData.getPageDataOrDefault(pageTemplate.getName(), pageConfiguration));
+            model.put("data", pagesData.getPageDataOrDefault(pageTemplate.getName(), pageWorkflow.getPageConfiguration()));
         }
         return new ModelAndView(pageToRender, model);
     }
