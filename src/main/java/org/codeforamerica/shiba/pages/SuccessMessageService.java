@@ -56,11 +56,20 @@ public class SuccessMessageService {
         if (hasNonExpeditedCcap) { //If they have housing, cash support, or emergency assistance, or non-expedited snap, or non-expedited ccap
             nextStepLetterProgramNames.add(getMessage("success.childcare", locale));
         }
+        if(hasGrh) {
+            nextStepLetterProgramNames.add(getMessage("success.housing", locale));
+        }
+        if (hasEa) {
+            nextStepLetterProgramNames.add((getMessage("success.emergency-assistance", locale)));
+        }
+        if (hasCash) {
+            nextStepLetterProgramNames.add((getMessage("success.cash-support", locale)));
+        }
         if (hasNonExpeditedSnap) {
             nextStepLetterProgramNames.add(getMessage("success.food-support", locale));
         }
         if (nextStepLetterProgramNames.size() > 0) {
-            String programNamesForLetter = String.join(" / ", nextStepLetterProgramNames);
+            String programNamesForLetter = String.join("/", nextStepLetterProgramNames);
             String[] arg = new String[]{programNamesForLetter};
             messageKeys.add(messageSource.getMessage("success.contact-promise", arg, locale));
         }

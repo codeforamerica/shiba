@@ -116,7 +116,65 @@ public class SuccessPageTest extends AbstractPageControllerTest {
                         CcapExpeditedEligibility.NOT_ELIGIBLE,
                         "You will receive a letter in the mail with next steps for your application for childcare in 7-10 days.<br><br>" +
                                 "If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
+                ),
+                Arguments.of(
+                        "Expedited SNAP + any other program",
+                        List.of("SNAP", "GRH"),
+                        SnapExpeditedEligibility.ELIGIBLE,
+                        CcapExpeditedEligibility.UNDETERMINED,
+                        "You will receive a call from your county within 24 hours about your application for food support. The call may come from an unknown number.<br><br>" +
+                                "You will receive a letter in the mail with next steps for your application for housing in 7-10 days.<br><br>" +
+                                "You will need to complete an interview with a caseworker.<br><br>" +
+                                "If you don't hear from your county within 3 days or want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
+                ),
+                Arguments.of(
+                        "Expedited SNAP + multiple other programs",
+                        List.of("SNAP", "GRH", "EA"),
+                        SnapExpeditedEligibility.ELIGIBLE,
+                        CcapExpeditedEligibility.UNDETERMINED,
+                        "You will receive a call from your county within 24 hours about your application for food support. The call may come from an unknown number.<br><br>" +
+                                "You will receive a letter in the mail with next steps for your application for housing/emergency assistance in 7-10 days.<br><br>" +
+                                "You will need to complete an interview with a caseworker.<br><br>" +
+                                "If you don't hear from your county within 3 days or want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
+                ),
+                Arguments.of(
+                        "Non-Expedited SNAP + any other programs",
+                        List.of("SNAP", "GRH", "EA", "CASH"),
+                        SnapExpeditedEligibility.NOT_ELIGIBLE,
+                        CcapExpeditedEligibility.UNDETERMINED,
+                        "You will receive a letter in the mail with next steps for your application for housing/emergency assistance/cash support/food support in 7-10 days.<br><br>" +
+                                "You will need to complete an interview with a caseworker.<br><br>" +
+                                "If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
+                ),
+                Arguments.of(
+                        "Expedited CCAP + any other program besides SNAP",
+                        List.of("CCAP", "GRH"),
+                        SnapExpeditedEligibility.UNDETERMINED,
+                        CcapExpeditedEligibility.ELIGIBLE,
+                        "Your county will decide on your childcare case within the next 5 working days.<br><br>" +
+                                "You will receive a letter in the mail with next steps for your application for housing in 7-10 days.<br><br>" +
+                                "You will need to complete an interview with a caseworker.<br><br>"+
+                                "If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
+                ),
+                Arguments.of(
+                        "Non-expedited CCAP + any other program besides SNAP",
+                        List.of("CCAP", "GRH"),
+                        SnapExpeditedEligibility.UNDETERMINED,
+                        CcapExpeditedEligibility.NOT_ELIGIBLE,
+                        "You will receive a letter in the mail with next steps for your application for childcare/housing in 7-10 days.<br><br>" +
+                                "You will need to complete an interview with a caseworker.<br><br>"+
+                                "If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
+                ),
+                Arguments.of(
+                        "Any other program or permutation of programs that does not include SNAP or CCAP",
+                        List.of("CASH", "GRH"),
+                        SnapExpeditedEligibility.UNDETERMINED,
+                        CcapExpeditedEligibility.UNDETERMINED,
+                        "You will receive a letter in the mail with next steps for your application for housing/cash support in 7-10 days.<br><br>" +
+                                "You will need to complete an interview with a caseworker.<br><br>"+
+                                "If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
                 )
+
         );
     }
 
