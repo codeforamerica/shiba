@@ -3156,8 +3156,6 @@ workflow:
       - pageName: identifyCounty
   success:
     pageConfiguration: *success
-    datasources:
-      - pageName: choosePrograms
   documentsSent:
     pageConfiguration: *documentsSent
 pageGroups:
