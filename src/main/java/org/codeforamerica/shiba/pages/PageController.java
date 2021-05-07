@@ -241,9 +241,8 @@ public class PageController {
         boolean hasHousehold = applicationData.getSubworkflows().containsKey("household");
         if (hasHousehold) {
             Subworkflow household = applicationData.getSubworkflows().get("household");
-            household.stream().forEach(iteration -> {
-               householdPrograms.addAll(iteration.getPagesData().safeGetPageInputValue("householdMemberInfo", "programs"));
-            });
+            household.forEach(iteration ->
+                    householdPrograms.addAll(iteration.getPagesData().safeGetPageInputValue("householdMemberInfo", "programs")));
         }
 
         if (!householdPrograms.isEmpty()) {
@@ -264,8 +263,7 @@ public class PageController {
             model.put("county", application.getCounty());
             model.put("sentiment", application.getSentiment());
             model.put("feedbackText", application.getFeedback());
-            List<String> programs = applicationData.getPagesData().get("choosePrograms").get("programs").getValue();
-            model.put("successMessage", successMessageService.getSuccessMessage(programs, snapExpeditedEligibility, ccapExpeditedEligibility, locale));
+            model.put("successMessage", successMessageService.getSuccessMessage(new ArrayList<>(householdPrograms), snapExpeditedEligibility, ccapExpeditedEligibility, locale));
         }
 
         String pageToRender;
