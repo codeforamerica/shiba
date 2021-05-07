@@ -114,11 +114,11 @@ public class PageController {
             @PathVariable String pageName,
             @RequestParam(required = false, defaultValue = "0") Integer option
     ) {
-        PageWorkflowConfiguration pageWorkflow = this.applicationConfiguration.getPageWorkflow(pageName);
-        PagesData pagesData = this.applicationData.getPagesData();
+        PageWorkflowConfiguration pageWorkflow = applicationConfiguration.getPageWorkflow(pageName);
+        PagesData pagesData = applicationData.getPagesData();
         NextPage nextPage = applicationData.getNextPageName(featureFlags, pageWorkflow, option);
         ofNullable(nextPage.getFlow()).ifPresent(applicationData::setFlow);
-        PageWorkflowConfiguration nextPageWorkflow = this.applicationConfiguration.getPageWorkflow(nextPage.getPageName());
+        PageWorkflowConfiguration nextPageWorkflow = applicationConfiguration.getPageWorkflow(nextPage.getPageName());
 
         if (shouldSkip(nextPageWorkflow)) {
             pagesData.remove(nextPageWorkflow.getPageConfiguration().getName());
@@ -131,8 +131,8 @@ public class PageController {
     private boolean shouldSkip(PageWorkflowConfiguration nextPageWorkflow) {
         Condition skipCondition = nextPageWorkflow.getSkipCondition();
         if (skipCondition != null) {
-            PagesData pagesData = this.applicationData.getPagesData();
-            Subworkflows subworkflows = this.applicationData.getSubworkflows();
+            PagesData pagesData = applicationData.getPagesData();
+            Subworkflows subworkflows = applicationData.getSubworkflows();
             Map<String, PageData> pages = new HashMap<>();
             nextPageWorkflow.getDatasources().stream()
                     .filter(datasource -> datasource.getPageName() != null)
@@ -170,9 +170,9 @@ public class PageController {
         if (landmarkPagesConfiguration.isLandingPage(pageName)) {
             httpSession.invalidate();
         } else if (landmarkPagesConfiguration.isStartTimerPage(pageName)) {
-            this.applicationData.setStartTimeOnce(clock.instant());
+            applicationData.setStartTimeOnce(clock.instant());
             if (!utmSource.isEmpty()) {
-                this.applicationData.setUtmSource(utmSource);
+                applicationData.setUtmSource(utmSource);
             }
         }
 
@@ -186,10 +186,10 @@ public class PageController {
 
         response.addHeader("Cache-Control", "no-store");
 
-        if (this.applicationConfiguration.getPageWorkflow(pageName) == null) {
+        if (applicationConfiguration.getPageWorkflow(pageName) == null) {
             return new ModelAndView("error/404");
         }
-        PageWorkflowConfiguration pageWorkflow = this.applicationConfiguration.getPageWorkflow(pageName);
+        PageWorkflowConfiguration pageWorkflow = applicationConfiguration.getPageWorkflow(pageName);
 
         PageConfiguration pageConfiguration = pageWorkflow.getPageConfiguration();
 
@@ -296,7 +296,7 @@ public class PageController {
 
     @PostMapping("/groups/{groupName}/delete")
     RedirectView deleteGroup(@PathVariable String groupName, HttpSession httpSession) {
-        this.applicationData.getSubworkflows().remove(groupName);
+        applicationData.getSubworkflows().remove(groupName);
         pageEventPublisher.publish(new SubworkflowIterationDeletedEvent(httpSession.getId(), groupName));
         String startPage = applicationConfiguration.getPageGroups().get(groupName).getRestartPage();
         return new RedirectView("/pages/" + startPage);
@@ -309,11 +309,11 @@ public class PageController {
             HttpSession httpSession
     ) {
         String nextPage;
-        this.applicationData.getSubworkflows().get(groupName).remove(iteration);
+        applicationData.getSubworkflows().get(groupName).remove(iteration);
         pageEventPublisher.publish(new SubworkflowIterationDeletedEvent(httpSession.getId(), groupName));
 
-        if (this.applicationData.getSubworkflows().get(groupName).size() == 0) {
-            this.applicationData.getSubworkflows().remove(groupName);
+        if (applicationData.getSubworkflows().get(groupName).size() == 0) {
+            applicationData.getSubworkflows().remove(groupName);
             nextPage = applicationConfiguration.getPageGroups().get(groupName).getRestartPage();
         } else {
             nextPage = applicationConfiguration.getPageGroups().get(groupName).getReviewPage();
@@ -391,7 +391,7 @@ public class PageController {
             @RequestBody(required = false) MultiValueMap<String, String> model,
             HttpSession httpSession
     ) {
-        LandmarkPagesConfiguration landmarkPagesConfiguration = this.applicationConfiguration.getLandmarkPages();
+        LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
         String submitPage = landmarkPagesConfiguration.getSubmitPage();
         PageConfiguration page = applicationConfiguration.getPageWorkflow(submitPage).getPageConfiguration();
 
@@ -474,7 +474,7 @@ public class PageController {
                 .map(UploadedDocument::getS3Filepath)
                 .findFirst()
                 .ifPresent(documentRepositoryService::delete);
-        this.applicationData.removeUploadedDoc(filename);
+        applicationData.removeUploadedDoc(filename);
 
         return new ModelAndView("redirect:/pages/uploadDocuments");
     }
