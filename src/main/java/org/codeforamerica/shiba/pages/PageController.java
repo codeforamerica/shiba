@@ -230,26 +230,13 @@ public class PageController {
 
         // Build model for thymeleaf
         PageTemplate pageTemplate = pagesData.evaluate(featureFlags, pageWorkflow, applicationData);
-        HashMap<String, Object> model = buildModelForThymeleaf(pageName, locale, landmarkPagesConfiguration, pageTemplate);
+        HashMap<String, Object> model = buildModelForThymeleaf(pageName, locale, landmarkPagesConfiguration, pageTemplate, pageWorkflow, pagesData, iterationIndex);
 
         String pageToRender;
         if (pageConfiguration.isStaticPage()) {
             pageToRender = pageName;
-            model.put("data", pagesData.getDatasourcePagesBy(pageWorkflow.getDatasources()));
-            model.put("applicationData", applicationData);
 
-            if (landmarkPagesConfiguration.isUploadDocumentsPage(pageName)) {
-                model.put("uploadedDocs", applicationData.getUploadedDocs());
-                model.put("uploadDocMaxFileSize", uploadDocumentConfiguration.getMaxFilesize());
-            }
-
-            if (applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources())) {
-                model.put("subworkflows", pageWorkflow.getSubworkflows(applicationData));
-                if (iterationIndex != null && !iterationIndex.isBlank()) {
-                    model.put("iterationData", pageWorkflow.getSubworkflows(applicationData)
-                            .get(pageWorkflow.getAppliesToGroup()).get(Integer.parseInt(iterationIndex)));
-                }
-            } else {
+            if (!applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources())) {
                 return new ModelAndView("redirect:/pages/" + pageWorkflow.getDataMissingRedirect());
             }
         } else { // Not a static page
@@ -261,7 +248,7 @@ public class PageController {
     }
 
     @NotNull
-    private HashMap<String, Object> buildModelForThymeleaf(String pageName, Locale locale, LandmarkPagesConfiguration landmarkPagesConfiguration, PageTemplate pageTemplate) {
+    private HashMap<String, Object> buildModelForThymeleaf(String pageName, Locale locale, LandmarkPagesConfiguration landmarkPagesConfiguration, PageTemplate pageTemplate, PageWorkflowConfiguration pageWorkflow, PagesData pagesData, String iterationIndex) {
         HashMap<String, Object> model = new HashMap<>(Map.of(
                 "page", pageTemplate,
                 "pageName", pageName,
@@ -295,6 +282,25 @@ public class PageController {
             model.put("feedbackText", application.getFeedback());
             model.put("successMessage", successMessageService.getSuccessMessage(new ArrayList<>(programs), snapExpeditedEligibility, ccapExpeditedEligibility, locale));
         }
+
+        if (pageWorkflow.getPageConfiguration().isStaticPage()) {
+            model.put("data", pagesData.getDatasourcePagesBy(pageWorkflow.getDatasources()));
+            model.put("applicationData", applicationData);
+
+            if (landmarkPagesConfiguration.isUploadDocumentsPage(pageName)) {
+                model.put("uploadedDocs", applicationData.getUploadedDocs());
+                model.put("uploadDocMaxFileSize", uploadDocumentConfiguration.getMaxFilesize());
+            }
+
+            if (applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources())) {
+                model.put("subworkflows", pageWorkflow.getSubworkflows(applicationData));
+                if (iterationIndex != null && !iterationIndex.isBlank()) {
+                    model.put("iterationData", pageWorkflow.getSubworkflows(applicationData)
+                            .get(pageWorkflow.getAppliesToGroup()).get(Integer.parseInt(iterationIndex)));
+                }
+            }
+        }
+
         return model;
     }
 
