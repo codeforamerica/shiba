@@ -76,7 +76,8 @@ public class PageController {
             DocumentRepositoryService documentRepositoryService,
             CountyParser countyParser,
             SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider,
-            CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider, SuccessMessageService successMessageService) {
+            CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider,
+            SuccessMessageService successMessageService) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
