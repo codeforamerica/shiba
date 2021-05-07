@@ -298,7 +298,7 @@ public class PageController {
 
             if (applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources())) {
                 model.put("subworkflows", pageWorkflow.getSubworkflows(applicationData));
-                if (iterationIndex != null && !iterationIndex.isBlank()) {
+                if (isNotBlank(iterationIndex)) {
                     model.put("iterationData", pageWorkflow.getSubworkflows(applicationData)
                             .get(pageWorkflow.getAppliesToGroup()).get(Integer.parseInt(iterationIndex)));
                 }
