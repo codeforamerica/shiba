@@ -366,7 +366,7 @@ public class PageController {
         applicationData.getSubworkflows().get(groupName).remove(iteration);
         pageEventPublisher.publish(new SubworkflowIterationDeletedEvent(httpSession.getId(), groupName));
 
-        if (applicationData.getSubworkflows().get(groupName).size() == 0) {
+        if (applicationData.getSubworkflows().get(groupName).isEmpty()) {
             applicationData.getSubworkflows().remove(groupName);
             nextPage = applicationConfiguration.getPageGroups().get(groupName).getRestartPage();
         } else {
