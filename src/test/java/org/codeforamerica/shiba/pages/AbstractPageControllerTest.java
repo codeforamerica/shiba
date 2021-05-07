@@ -15,7 +15,6 @@ import org.codeforamerica.shiba.pages.config.ApplicationConfigurationFactoryAppC
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.enrichment.ApplicationEnrichment;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -31,7 +30,6 @@ import org.springframework.test.context.ActiveProfiles;
         ApplicationFactory.class,
         SuccessMessageService.class
 })
-@EnableConfigurationProperties
 public class AbstractPageControllerTest {
     @MockBean
     protected ApplicationRepository applicationRepository;

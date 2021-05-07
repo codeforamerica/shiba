@@ -103,6 +103,16 @@ public class SuccessPageTest extends AbstractPageControllerTest {
         );
     }
 
+    @Test
+    void itShowsTheRightSuccessMessageForNonExpeditedCCAPOnly() throws Exception {
+        assertCorrectSuccessMessage(
+                List.of("CCAP"),
+                SnapExpeditedEligibility.UNDETERMINED,
+                CcapExpeditedEligibility.NOT_ELIGIBLE,
+                "You will receive a letter in the mail with next steps for your application for childcare in 7-10 days.<br><br>If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
+        );
+    }
+
     private void assertCorrectSuccessMessage(List<String> programs, SnapExpeditedEligibility snapExpeditedEligibility, CcapExpeditedEligibility ccapExpeditedEligibility, String expectedMessage) throws Exception {
         when(snapExpeditedEligibilityDecider.decide(any())).thenReturn(snapExpeditedEligibility);
         when(ccapExpeditedEligibilityDecider.decide(any())).thenReturn(ccapExpeditedEligibility);
