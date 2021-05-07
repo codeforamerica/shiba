@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -104,7 +103,7 @@ public class SuccessPageTest extends AbstractPageControllerTest {
         );
     }
 
-    private ResultActions assertCorrectSuccessMessage(List<String> programs, SnapExpeditedEligibility snapExpeditedEligibility, CcapExpeditedEligibility ccapExpeditedEligibility, String expectedMessage) throws Exception {
+    private void assertCorrectSuccessMessage(List<String> programs, SnapExpeditedEligibility snapExpeditedEligibility, CcapExpeditedEligibility ccapExpeditedEligibility, String expectedMessage) throws Exception {
         when(snapExpeditedEligibilityDecider.decide(any())).thenReturn(snapExpeditedEligibility);
         when(ccapExpeditedEligibilityDecider.decide(any())).thenReturn(ccapExpeditedEligibility);
 
@@ -112,9 +111,9 @@ public class SuccessPageTest extends AbstractPageControllerTest {
                 List.of(new PageDataBuilder("choosePrograms", Map.of("programs", programs))))
         );
 
-        return mockMvc.perform(get("/pages/success").session(new MockHttpSession()))
+        mockMvc.perform(get("/pages/success").session(new MockHttpSession()))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("successMessage", expectedMessage)) // assert the message is right
-                .andExpect(content().string(containsString(expectedMessage))); // assert the message actually was put in the html
+                .andExpect(content().string(containsString(expectedMessage)));
     }
 }
