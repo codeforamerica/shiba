@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockMultipartFile;
@@ -66,8 +65,7 @@ class PageControllerTest {
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(pageController)
-                .build();
+        mockMvc = MockMvcBuilders.standaloneSetup(pageController).build();
         when(clock.instant()).thenReturn(Instant.now());
         when(applicationFactory.newApplication(any())).thenReturn(Application.builder()
                 .id("defaultId")

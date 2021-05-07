@@ -57,7 +57,7 @@ public class PageController {
     private final CountyParser countyParser;
     private final SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider;
     private final CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
-
+    private final SuccessMessageService successMessageService;
     private final DocumentRepositoryService documentRepositoryService;
 
     public PageController(
@@ -75,7 +75,7 @@ public class PageController {
             DocumentRepositoryService documentRepositoryService,
             CountyParser countyParser,
             SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider,
-            CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider) {
+            CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider, SuccessMessageService successMessageService) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
@@ -91,6 +91,7 @@ public class PageController {
         this.countyParser = countyParser;
         this.snapExpeditedEligibilityDecider = snapExpeditedEligibilityDecider;
         this.ccapExpeditedEligibilityDecider = ccapExpeditedEligibilityDecider;
+        this.successMessageService = successMessageService;
     }
 
     @GetMapping("/")
@@ -161,7 +162,8 @@ public class PageController {
             @RequestParam(required = false, defaultValue = "") String iterationIndex,
             @RequestParam(name = "utm_source", defaultValue = "", required = false) String utmSource,
             HttpServletResponse response,
-            HttpSession httpSession
+            HttpSession httpSession,
+            Locale locale
     ) {
         LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
 
@@ -235,21 +237,22 @@ public class PageController {
         }
 
         List<String> applicantPrograms = applicationData.getPagesData().safeGetPageInputValue("choosePrograms", "programs");
-        Set<String> householdPrograms = new HashSet<>(applicantPrograms);
+        Set<String> applicantAndHouseholdMemberPrograms = new HashSet<>(applicantPrograms);
         boolean hasHousehold = applicationData.getSubworkflows().containsKey("household");
         if (hasHousehold) {
             Subworkflow household = applicationData.getSubworkflows().get("household");
-            household.stream().forEach(iteration -> {
-               householdPrograms.addAll(iteration.getPagesData().safeGetPageInputValue("householdMemberInfo", "programs"));
-            });
+            household.forEach(iteration ->
+                    applicantAndHouseholdMemberPrograms.addAll(iteration.getPagesData().safeGetPageInputValue("householdMemberInfo", "programs")));
         }
 
-        if (!householdPrograms.isEmpty()) {
-            model.put("programs", String.join(", ", householdPrograms));
+        if (!applicantAndHouseholdMemberPrograms.isEmpty()) {
+            model.put("programs", String.join(", ", applicantAndHouseholdMemberPrograms));
         }
 
-        model.put("expeditedSnap", snapExpeditedEligibilityDecider.decide(applicationData));
-        model.put("expeditedCcap", ccapExpeditedEligibilityDecider.decide(applicationData));
+        var snapExpeditedEligibility = snapExpeditedEligibilityDecider.decide(applicationData);
+        model.put("expeditedSnap", snapExpeditedEligibility);
+        var ccapExpeditedEligibility = ccapExpeditedEligibilityDecider.decide(applicationData);
+        model.put("expeditedCcap", ccapExpeditedEligibility);
 
 
         if (landmarkPagesConfiguration.isTerminalPage(pageName)) {
@@ -260,8 +263,8 @@ public class PageController {
             model.put("county", application.getCounty());
             model.put("sentiment", application.getSentiment());
             model.put("feedbackText", application.getFeedback());
+            model.put("successMessage", successMessageService.getSuccessMessage(new ArrayList<>(applicantAndHouseholdMemberPrograms), snapExpeditedEligibility, ccapExpeditedEligibility, locale));
         }
-
 
         String pageToRender;
         if (pageConfiguration.isStaticPage()) {

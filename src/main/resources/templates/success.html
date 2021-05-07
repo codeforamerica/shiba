@@ -42,7 +42,7 @@
                             <div th:replace="fragments/icons/icon-communications :: icon-communications"></div>
                         </div>
                         <div class="grid__item width-five-sixths">
-                            <div th:text="#{success.your-county-will-contact-within-one-week}" class="width-five-sixths"></div>
+                            <div th:utext="${successMessage}" class="width-five-sixths"></div>
                         </div>
                     </div>
 

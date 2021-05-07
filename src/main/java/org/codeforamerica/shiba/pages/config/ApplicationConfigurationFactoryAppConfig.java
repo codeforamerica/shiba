@@ -8,8 +8,7 @@ public class ApplicationConfigurationFactoryAppConfig {
 
     @Bean
     public ApplicationConfigurationFactory applicationConfigurationFactory() {
-        ApplicationConfigurationFactory factory = new ApplicationConfigurationFactory();
-        return factory;
+        return new ApplicationConfigurationFactory();
     }
 
     @Bean
