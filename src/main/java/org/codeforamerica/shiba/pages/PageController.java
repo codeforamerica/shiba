@@ -202,7 +202,7 @@ public class PageController {
         // Update pagesData with data for incomplete subworkflows
         var pagesData = applicationData.getPagesData();
         if (pageWorkflowConfig.getGroupName() != null) { // If page is part of a group
-            PagesData dataForIncompleteIteration = getIncompleteIterationPagesData(pageName, pageWorkflowConfig);
+            var dataForIncompleteIteration = getIncompleteIterationPagesData(pageName, pageWorkflowConfig);
 
             if (dataForIncompleteIteration == null) {
                 String redirectPageForGroup = applicationConfiguration.getPageGroups().get(pageWorkflowConfig.getGroupName()).getRedirectPage();
@@ -215,7 +215,7 @@ public class PageController {
         // Add extra pagesData if this page workflow specifies that it applies to a group
         if (requestedPageAppliesToGroup(iterationIndex, pageWorkflowConfig)) {
             String groupName = pageWorkflowConfig.getAppliesToGroup();
-            PagesData dataForGroup = getPagesDataForGroupAndIteration(iterationIndex, pageWorkflowConfig, groupName);
+            var dataForGroup = getPagesDataForGroupAndIteration(iterationIndex, pageWorkflowConfig, groupName);
 
             pagesData = (PagesData) pagesData.clone();
             pagesData.putAll(dataForGroup);
@@ -290,20 +290,20 @@ public class PageController {
             model.put("successMessage", successMessageService.getSuccessMessage(new ArrayList<>(programs), snapExpeditedEligibility, ccapExpeditedEligibility, locale));
         }
 
+        if (landmarkPagesConfiguration.isUploadDocumentsPage(pageName)) {
+            model.put("uploadedDocs", applicationData.getUploadedDocs());
+            model.put("uploadDocMaxFileSize", uploadDocumentConfiguration.getMaxFilesize());
+        }
+
         if (pageWorkflow.getPageConfiguration().isStaticPage()) {
             model.put("data", pagesData.getDatasourcePagesBy(pageWorkflow.getDatasources()));
             model.put("applicationData", applicationData);
 
-            if (landmarkPagesConfiguration.isUploadDocumentsPage(pageName)) {
-                model.put("uploadedDocs", applicationData.getUploadedDocs());
-                model.put("uploadDocMaxFileSize", uploadDocumentConfiguration.getMaxFilesize());
-            }
-
             if (applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources())) {
                 model.put("subworkflows", pageWorkflow.getSubworkflows(applicationData));
                 if (isNotBlank(iterationIndex)) {
-                    model.put("iterationData", pageWorkflow.getSubworkflows(applicationData)
-                            .get(pageWorkflow.getAppliesToGroup()).get(Integer.parseInt(iterationIndex)));
+                    var iterationData = pageWorkflow.getSubworkflows(applicationData).get(pageWorkflow.getAppliesToGroup()).get(Integer.parseInt(iterationIndex));
+                    model.put("iterationData", iterationData);
                 }
             }
         } else {
