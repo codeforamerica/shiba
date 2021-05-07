@@ -227,20 +227,20 @@ public class PageController {
             pagesData.putAll(iterationData);
         }
 
-        // Build model for thymeleaf
         PageTemplate pageTemplate = pagesData.evaluate(featureFlags, pageWorkflow, applicationData);
+
         Map<String, Object> model = buildModelForThymeleaf(pageName, locale, landmarkPagesConfiguration, pageTemplate, pageWorkflow, pagesData, iterationIndex);
 
-        String pageToRender;
+        String view;
         if (pageWorkflow.getPageConfiguration().isStaticPage()) {
-            pageToRender = pageName;
+            view = pageName;
             if (missingRequiredSubworkflows(pageWorkflow)) {
                 return new ModelAndView("redirect:/pages/" + pageWorkflow.getDataMissingRedirect());
             }
         } else { // Not a static page
-            pageToRender = "formPage";
+            view = "formPage";
         }
-        return new ModelAndView(pageToRender, model);
+        return new ModelAndView(view, model);
     }
 
     private boolean missingRequiredSubworkflows(PageWorkflowConfiguration pageWorkflow) {
