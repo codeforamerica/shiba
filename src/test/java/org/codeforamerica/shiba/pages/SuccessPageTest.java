@@ -7,6 +7,8 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.Subworkflow;
+import org.codeforamerica.shiba.pages.data.Subworkflows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -19,6 +21,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -182,13 +186,28 @@ public class SuccessPageTest extends AbstractPageControllerTest {
     @ParameterizedTest(name = "{0}")
     @MethodSource("successMessageTestCases")
     void displaysCorrectSuccessMessage(String testName, List<String> programs, SnapExpeditedEligibility snapExpeditedEligibility, CcapExpeditedEligibility ccapExpeditedEligibility, String expectedMessage) throws Exception {
-        when(snapExpeditedEligibilityDecider.decide(any())).thenReturn(snapExpeditedEligibility);
-        when(ccapExpeditedEligibilityDecider.decide(any())).thenReturn(ccapExpeditedEligibility);
 
         applicationData.setPagesData(new PagesDataBuilder().build(
                 List.of(new PageDataBuilder("choosePrograms", Map.of("programs", programs))))
         );
 
+        assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessage);
+    }
+
+    @SuppressWarnings("unused")
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("successMessageTestCases")
+    void displaysCorrectSuccessMessageForHouseholdMemberPrograms(String testName, List<String> programs, SnapExpeditedEligibility snapExpeditedEligibility, CcapExpeditedEligibility ccapExpeditedEligibility, String expectedMessage) throws Exception {
+        applicationData.setSubworkflows(new Subworkflows(Map.of("household", new Subworkflow(List.of(
+                new PagesDataBuilder().build(List.of(new PageDataBuilder("householdMemberInfo", Map.of("programs", programs))))
+        )))));
+
+        assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessage);
+    }
+
+    private void assertCorrectMessage(SnapExpeditedEligibility snapExpeditedEligibility, CcapExpeditedEligibility ccapExpeditedEligibility, String expectedMessage) throws Exception {
+        when(snapExpeditedEligibilityDecider.decide(any())).thenReturn(snapExpeditedEligibility);
+        when(ccapExpeditedEligibilityDecider.decide(any())).thenReturn(ccapExpeditedEligibility);
         mockMvc.perform(get("/pages/success").session(new MockHttpSession()))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("successMessage", expectedMessage)) // assert the message is right
