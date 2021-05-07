@@ -197,9 +197,9 @@ public class PageController {
         PageWorkflowConfiguration pageWorkflow = applicationConfiguration.getPageWorkflow(pageName);
         PageConfiguration pageConfiguration = pageWorkflow.getPageConfiguration();
 
-        // Handling PageData for incomplete subworkflows
+        // Handle PageData for incomplete subworkflows
         PagesData pagesData = applicationData.getPagesData();
-        if (pageWorkflow.getGroupName() != null) {
+        if (pageWorkflow.getGroupName() != null) { // If page is part of a subworkflow
             PagesData currentIterationPagesData;
             String groupName = pageWorkflow.getGroupName();
             if (applicationConfiguration.getPageGroups().get(groupName).getStartPages().contains(pageName)) {
@@ -209,6 +209,7 @@ public class PageController {
             }
 
             if (currentIterationPagesData == null) {
+                // Redirect to default page for group
                 String redirectPage = applicationConfiguration.getPageGroups().get(pageWorkflow.getGroupName()).getRedirectPage();
                 return new ModelAndView(String.format("redirect:/pages/%s", redirectPage));
             }
@@ -216,9 +217,12 @@ public class PageController {
             pagesData.putAll(currentIterationPagesData);
         }
 
-        if (isNotBlank(iterationIndex) && applicationData.getSubworkflows().containsKey(pageWorkflow.getAppliesToGroup())) {
+        // Add extra pagesData if this page workflow specifies that it applies to a group
+        if (requestedPageAppliesToGroup(iterationIndex, pageWorkflow)) {
             PagesData iterationData = pageWorkflow.getSubworkflows(applicationData)
-                    .get(pageWorkflow.getAppliesToGroup()).get(Integer.parseInt(iterationIndex)).getPagesData();
+                    .get(pageWorkflow.getAppliesToGroup())
+                    .get(Integer.parseInt(iterationIndex))
+                    .getPagesData();
 
             pagesData = (PagesData) pagesData.clone();
             pagesData.putAll(iterationData);
@@ -293,6 +297,10 @@ public class PageController {
             model.put("data", pagesData.getPageDataOrDefault(pageTemplate.getName(), pageConfiguration));
         }
         return new ModelAndView(pageToRender, model);
+    }
+
+    private boolean requestedPageAppliesToGroup(String iterationIndex, PageWorkflowConfiguration pageWorkflow) {
+        return isNotBlank(iterationIndex) && applicationData.getSubworkflows().containsKey(pageWorkflow.getAppliesToGroup());
     }
 
     private boolean notFound(String pageName) {
