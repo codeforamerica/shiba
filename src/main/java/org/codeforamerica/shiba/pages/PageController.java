@@ -196,12 +196,12 @@ public class PageController {
 
         PageWorkflowConfiguration pageWorkflow = applicationConfiguration.getPageWorkflow(pageName);
 
-        // Handle PageData for incomplete subworkflows
+        // Update pagesData for incomplete subworkflows
         PagesData pagesData = applicationData.getPagesData();
         if (pageWorkflow.getGroupName() != null) { // If page is part of a subworkflow
             PagesData currentIterationPagesData;
             String groupName = pageWorkflow.getGroupName();
-            if (applicationConfiguration.getPageGroups().get(groupName).getStartPages().contains(pageName)) {
+            if (isStartPageForGroup(pageName, groupName)) {
                 currentIterationPagesData = applicationData.getIncompleteIterations().getOrDefault(groupName, new PagesData());
             } else {
                 currentIterationPagesData = applicationData.getIncompleteIterations().get(groupName);
@@ -241,6 +241,10 @@ public class PageController {
             pageToRender = "formPage";
         }
         return new ModelAndView(pageToRender, model);
+    }
+
+    private boolean isStartPageForGroup(@PathVariable String pageName, String groupName) {
+        return applicationConfiguration.getPageGroups().get(groupName).getStartPages().contains(pageName);
     }
 
     @NotNull
@@ -388,7 +392,7 @@ public class PageController {
         Map<String, PagesData> incompleteIterations = applicationData.getIncompleteIterations();
         if (pageWorkflow.getGroupName() != null) {
             String groupName = pageWorkflow.getGroupName();
-            if (applicationConfiguration.getPageGroups().get(groupName).getStartPages().contains(page.getName())) {
+            if (isStartPageForGroup(page.getName(), groupName)) {
                 incompleteIterations.putIfAbsent(groupName, new PagesData());
             }
             pagesData = incompleteIterations.get(groupName);
