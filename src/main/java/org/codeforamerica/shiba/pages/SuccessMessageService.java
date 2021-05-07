@@ -25,17 +25,12 @@ public class SuccessMessageService {
     }
 
     public String getSuccessMessage(List<String> applicantPrograms, SnapExpeditedEligibility snapExpeditedEligibility, CcapExpeditedEligibility ccapExpeditedEligibility, Locale locale) {
-        boolean hasCcap = applicantPrograms.stream().anyMatch(p -> p.equals(PROGRAM_CCAP));
         boolean hasSnap = applicantPrograms.stream().anyMatch(p -> p.equals(PROGRAM_SNAP));
-        boolean hasGrh = applicantPrograms.stream().anyMatch(p -> p.equals(PROGRAM_GRH));
-        boolean hasCash = applicantPrograms.stream().anyMatch(p -> p.equals(PROGRAM_CASH));
-        boolean hasEa = applicantPrograms.stream().anyMatch(p -> p.equals(PROGRAM_EA));
         boolean onlyCcap = applicantPrograms.stream().allMatch(p -> p.equals(PROGRAM_CCAP));
-//        boolean isSnapAndCcapOnly = applicantPrograms.stream().allMatch(p -> p.equals(PROGRAM_CCAP) || p.equals(PROGRAM_SNAP)) && !onlyCcap && !onlySnap;
         boolean isSnapExpeditedEligible = snapExpeditedEligibility.equals(SnapExpeditedEligibility.ELIGIBLE);
         boolean isCcapExpeditedEligible = ccapExpeditedEligibility.equals(CcapExpeditedEligibility.ELIGIBLE);
         boolean notCcap = applicantPrograms.stream().noneMatch(p -> p.equals(PROGRAM_CCAP));
-        boolean hasNonExpeditedCcap = hasCcap && !isCcapExpeditedEligible;
+
         boolean hasNonExpeditedSnap = hasSnap && !isSnapExpeditedEligible;
 
         List<String> messageKeys = new ArrayList<>();
@@ -52,6 +47,35 @@ public class SuccessMessageService {
 
 
         // Contact Promise
+        List<String> nextStepLetterProgramNames = getProgramNames(locale, applicantPrograms, hasNonExpeditedSnap, isCcapExpeditedEligible);
+        if (nextStepLetterProgramNames.size() > 0) {
+            String programNamesForLetter = String.join("/", nextStepLetterProgramNames);
+            String[] arg = new String[]{programNamesForLetter};
+            messageKeys.add(messageSource.getMessage("success.contact-promise", arg, locale));
+        }
+
+        // Interview expectation
+        if (!onlyCcap) {
+            messageKeys.add(getMessage("success.you-will-need-to-complete-an-interview", locale));
+        }
+
+        // Suggested Action
+        if (isSnapExpeditedEligible && notCcap) {
+            messageKeys.add(getMessage("success.expedited-snap-suggested-action", locale));
+        } else {
+            messageKeys.add(getMessage("success.standard-suggested-action", locale));
+        }
+
+
+        return String.join("<br><br>", messageKeys);
+    }
+
+    private List<String> getProgramNames(Locale locale, List<String> applicantPrograms , Boolean hasNonExpeditedSnap, Boolean isCcapExpeditedEligible) {
+        boolean hasCcap = applicantPrograms.stream().anyMatch(p -> p.equals(PROGRAM_CCAP));
+        boolean hasNonExpeditedCcap = hasCcap && !isCcapExpeditedEligible;
+        boolean hasGrh = applicantPrograms.stream().anyMatch(p -> p.equals(PROGRAM_GRH));
+        boolean hasCash = applicantPrograms.stream().anyMatch(p -> p.equals(PROGRAM_CASH));
+        boolean hasEa = applicantPrograms.stream().anyMatch(p -> p.equals(PROGRAM_EA));
         List<String> nextStepLetterProgramNames = new ArrayList<>();
         if (hasNonExpeditedCcap) { //If they have housing, cash support, or emergency assistance, or non-expedited snap, or non-expedited ccap
             nextStepLetterProgramNames.add(getMessage("success.childcare", locale));
@@ -68,27 +92,8 @@ public class SuccessMessageService {
         if (hasNonExpeditedSnap) {
             nextStepLetterProgramNames.add(getMessage("success.food-support", locale));
         }
-        if (nextStepLetterProgramNames.size() > 0) {
-            String programNamesForLetter = String.join("/", nextStepLetterProgramNames);
-            String[] arg = new String[]{programNamesForLetter};
-            messageKeys.add(messageSource.getMessage("success.contact-promise", arg, locale));
-        }
 
-
-        // Interview expectation
-        if (!onlyCcap) {
-            messageKeys.add(getMessage("success.you-will-need-to-complete-an-interview", locale));
-        }
-
-        // Suggested Action
-        if (isSnapExpeditedEligible && notCcap) {
-            messageKeys.add(getMessage("success.expedited-snap-suggested-action", locale));
-        } else {
-            messageKeys.add(getMessage("success.standard-suggested-action", locale));
-        }
-
-
-        return String.join("<br><br>", messageKeys);
+        return nextStepLetterProgramNames;
     }
 
     @NotNull
