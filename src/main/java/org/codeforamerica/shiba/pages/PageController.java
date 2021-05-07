@@ -234,14 +234,11 @@ public class PageController {
         String pageToRender;
         if (pageWorkflow.getPageConfiguration().isStaticPage()) {
             pageToRender = pageName;
-
             if (!applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources())) {
                 return new ModelAndView("redirect:/pages/" + pageWorkflow.getDataMissingRedirect());
             }
         } else { // Not a static page
             pageToRender = "formPage";
-            model.put("pageDatasources", pagesData.getDatasourcePagesBy(pageWorkflow.getDatasources()).mergeDatasourcePages(pagesData.getDatasourceGroupBy(pageWorkflow.getDatasources(), applicationData.getSubworkflows())));
-            model.put("data", pagesData.getPageDataOrDefault(pageTemplate.getName(), pageWorkflow.getPageConfiguration()));
         }
         return new ModelAndView(pageToRender, model);
     }
@@ -298,6 +295,9 @@ public class PageController {
                             .get(pageWorkflow.getAppliesToGroup()).get(Integer.parseInt(iterationIndex)));
                 }
             }
+        } else {
+            model.put("pageDatasources", pagesData.getDatasourcePagesBy(pageWorkflow.getDatasources()).mergeDatasourcePages(pagesData.getDatasourceGroupBy(pageWorkflow.getDatasources(), applicationData.getSubworkflows())));
+            model.put("data", pagesData.getPageDataOrDefault(pageTemplate.getName(), pageWorkflow.getPageConfiguration()));
         }
 
         return model;
