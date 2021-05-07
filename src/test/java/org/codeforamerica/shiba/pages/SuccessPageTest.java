@@ -189,6 +189,8 @@ public class SuccessPageTest extends AbstractPageControllerTest {
                 List.of(new PageDataBuilder("choosePrograms", Map.of("programs", programs))))
         );
 
+        applicationData.setSubworkflows(new Subworkflows());
+
         assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessage);
     }
 

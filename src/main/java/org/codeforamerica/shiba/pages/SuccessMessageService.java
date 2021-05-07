@@ -65,17 +65,17 @@ public class SuccessMessageService {
         return String.join("<br><br>", messageKeys);
     }
 
-    private List<String> getProgramNames(Locale locale, List<String> applicantPrograms , Boolean hasNonExpeditedSnap, Boolean isCcapExpeditedEligible) {
+    private List<String> getProgramNames(Locale locale, List<String> applicantPrograms, boolean hasNonExpeditedSnap, boolean isCcapExpeditedEligible) {
         boolean hasCcap = applicantPrograms.stream().anyMatch(p -> p.equals(Program.CCAP));
         boolean hasNonExpeditedCcap = hasCcap && !isCcapExpeditedEligible;
         boolean hasGrh = applicantPrograms.stream().anyMatch(p -> p.equals(Program.GRH));
         boolean hasCash = applicantPrograms.stream().anyMatch(p -> p.equals(Program.CASH));
         boolean hasEa = applicantPrograms.stream().anyMatch(p -> p.equals(Program.EA));
         List<String> nextStepLetterProgramNames = new ArrayList<>();
-        if (hasNonExpeditedCcap) { //If they have housing, cash support, or emergency assistance, or non-expedited snap, or non-expedited ccap
+        if (hasNonExpeditedCcap) {
             nextStepLetterProgramNames.add(getMessage("success.childcare", locale));
         }
-        if(hasGrh) {
+        if (hasGrh) {
             nextStepLetterProgramNames.add(getMessage("success.housing", locale));
         }
         if (hasEa) {
