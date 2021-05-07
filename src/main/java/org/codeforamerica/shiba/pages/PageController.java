@@ -202,26 +202,23 @@ public class PageController {
         // Update pagesData with data for incomplete subworkflows
         var pagesData = applicationData.getPagesData();
         if (pageWorkflowConfig.getGroupName() != null) { // If page is part of a group
-            PagesData currentIterationPagesData = getCurrentIterationPagesData(pageName, pageWorkflowConfig);
+            PagesData dataForIncompleteIteration = getIncompleteIterationPagesData(pageName, pageWorkflowConfig);
 
-            if (currentIterationPagesData == null) {
-                // Redirect to default page for group
-                var redirectPageForGroup = applicationConfiguration.getPageGroups().get(pageWorkflowConfig.getGroupName()).getRedirectPage();
+            if (dataForIncompleteIteration == null) {
+                String redirectPageForGroup = applicationConfiguration.getPageGroups().get(pageWorkflowConfig.getGroupName()).getRedirectPage();
                 return new ModelAndView("redirect:/pages/" + redirectPageForGroup);
             }
             pagesData = (PagesData) pagesData.clone(); // Avoid changing the original applicationData PagesData by cloning the object
-            pagesData.putAll(currentIterationPagesData);
+            pagesData.putAll(dataForIncompleteIteration);
         }
 
         // Add extra pagesData if this page workflow specifies that it applies to a group
         if (requestedPageAppliesToGroup(iterationIndex, pageWorkflowConfig)) {
-            PagesData iterationData = pageWorkflowConfig.getSubworkflows(applicationData)
-                    .get(pageWorkflowConfig.getAppliesToGroup())
-                    .get(Integer.parseInt(iterationIndex))
-                    .getPagesData();
+            String groupName = pageWorkflowConfig.getAppliesToGroup();
+            PagesData dataForGroup = getPagesDataForGroupAndIteration(iterationIndex, pageWorkflowConfig, groupName);
 
             pagesData = (PagesData) pagesData.clone();
-            pagesData.putAll(iterationData);
+            pagesData.putAll(dataForGroup);
         }
 
         var pageTemplate = pagesData.evaluate(featureFlags, pageWorkflowConfig, applicationData);
@@ -231,7 +228,14 @@ public class PageController {
         return new ModelAndView(view, model);
     }
 
-    private PagesData getCurrentIterationPagesData(String pageName, PageWorkflowConfiguration pageWorkflow) {
+    private PagesData getPagesDataForGroupAndIteration(String iterationIndex, PageWorkflowConfiguration pageWorkflowConfig, String groupName) {
+        return pageWorkflowConfig.getSubworkflows(applicationData)
+                .get(groupName)
+                .get(Integer.parseInt(iterationIndex))
+                .getPagesData();
+    }
+
+    private PagesData getIncompleteIterationPagesData(String pageName, PageWorkflowConfiguration pageWorkflow) {
         PagesData currentIterationPagesData;
         String groupName = pageWorkflow.getGroupName();
         if (isStartPageForGroup(pageName, groupName)) {
