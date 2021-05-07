@@ -167,7 +167,7 @@ public class PageController {
     ) {
         LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
 
-        // Validations and special cases
+        // Validations and special case redirects
         if (landmarkPagesConfiguration.isLandingPage(pageName)) {
             httpSession.invalidate();
         }
@@ -192,9 +192,11 @@ public class PageController {
         if (notFound(pageName)) {
             return new ModelAndView("error/404");
         }
+
         PageWorkflowConfiguration pageWorkflow = applicationConfiguration.getPageWorkflow(pageName);
         PageConfiguration pageConfiguration = pageWorkflow.getPageConfiguration();
 
+        // Handling PageData for incomplete subworkflows
         PagesData pagesData = applicationData.getPagesData();
         if (pageWorkflow.getGroupName() != null) {
             PagesData currentIterationPagesData;
@@ -209,13 +211,11 @@ public class PageController {
                 String redirectPage = applicationConfiguration.getPageGroups().get(pageWorkflow.getGroupName()).getRedirectPage();
                 return new ModelAndView(String.format("redirect:/pages/%s", redirectPage));
             }
-            // Avoid changing the original applicationData PagesData by cloning the object
-            pagesData = (PagesData) pagesData.clone();
+            pagesData = (PagesData) pagesData.clone(); // Avoid changing the original applicationData PagesData by cloning the object
             pagesData.putAll(currentIterationPagesData);
         }
 
         if (iterationIndex != null && !iterationIndex.isBlank() && applicationData.getSubworkflows().containsKey(pageWorkflow.getAppliesToGroup())) {
-
             PagesData iterationData = pageWorkflow.getSubworkflows(applicationData)
                     .get(pageWorkflow.getAppliesToGroup()).get(Integer.parseInt(iterationIndex)).getPagesData();
 
