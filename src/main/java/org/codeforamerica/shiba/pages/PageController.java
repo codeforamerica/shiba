@@ -228,6 +228,7 @@ public class PageController {
             pagesData.putAll(iterationData);
         }
 
+        // Build model for thymeleaf
         PageTemplate pageTemplate = pagesData.evaluate(featureFlags, pageWorkflow, applicationData);
         HashMap<String, Object> model = new HashMap<>(Map.of(
                 "page", pageTemplate,
@@ -242,17 +243,10 @@ public class PageController {
             model.put("zipCode", zipCode.get(0));
         }
 
-        List<String> applicantPrograms = applicationData.getPagesData().safeGetPageInputValue("choosePrograms", "programs");
-        Set<String> applicantAndHouseholdMemberPrograms = new HashSet<>(applicantPrograms);
-        boolean hasHousehold = applicationData.getSubworkflows().containsKey("household");
-        if (hasHousehold) {
-            Subworkflow household = applicationData.getSubworkflows().get("household");
-            household.forEach(iteration ->
-                    applicantAndHouseholdMemberPrograms.addAll(iteration.getPagesData().safeGetPageInputValue("householdMemberInfo", "programs")));
-        }
-
-        if (!applicantAndHouseholdMemberPrograms.isEmpty()) {
-            model.put("programs", String.join(", ", applicantAndHouseholdMemberPrograms));
+        // Figure out list of programs
+        Set<String> programs = getApplicantAndHouseholdMemberPrograms();
+        if (!programs.isEmpty()) {
+            model.put("programs", String.join(", ", programs));
         }
 
         var snapExpeditedEligibility = snapExpeditedEligibilityDecider.decide(applicationData);
@@ -269,7 +263,7 @@ public class PageController {
             model.put("county", application.getCounty());
             model.put("sentiment", application.getSentiment());
             model.put("feedbackText", application.getFeedback());
-            model.put("successMessage", successMessageService.getSuccessMessage(new ArrayList<>(applicantAndHouseholdMemberPrograms), snapExpeditedEligibility, ccapExpeditedEligibility, locale));
+            model.put("successMessage", successMessageService.getSuccessMessage(new ArrayList<>(programs), snapExpeditedEligibility, ccapExpeditedEligibility, locale));
         }
 
         String pageToRender;
@@ -298,6 +292,19 @@ public class PageController {
             model.put("data", pagesData.getPageDataOrDefault(pageTemplate.getName(), pageConfiguration));
         }
         return new ModelAndView(pageToRender, model);
+    }
+
+    @NotNull
+    private Set<String> getApplicantAndHouseholdMemberPrograms() {
+        List<String> applicantPrograms = applicationData.getPagesData().safeGetPageInputValue("choosePrograms", "programs");
+        Set<String> applicantAndHouseholdMemberPrograms = new HashSet<>(applicantPrograms);
+        boolean hasHousehold = applicationData.getSubworkflows().containsKey("household");
+        if (hasHousehold) {
+            Subworkflow householdSubworkflow = applicationData.getSubworkflows().get("household");
+            householdSubworkflow.forEach(iteration ->
+                    applicantAndHouseholdMemberPrograms.addAll(iteration.getPagesData().safeGetPageInputValue("householdMemberInfo", "programs")));
+        }
+        return applicantAndHouseholdMemberPrograms;
     }
 
     private boolean requestedPageAppliesToGroup(String iterationIndex, PageWorkflowConfiguration pageWorkflow) {
