@@ -232,9 +232,10 @@ public class PageController {
         HashMap<String, Object> model = new HashMap<>(Map.of(
                 "page", pageTemplate,
                 "pageName", pageName,
-                "postTo", landmarkPagesConfiguration.isSubmitPage(pageName) ? "/submit" : "/pages/" + pageName,
-                "county", countyParser.parse(applicationData)
+                "postTo", landmarkPagesConfiguration.isSubmitPage(pageName) ? "/submit" : "/pages/" + pageName
         ));
+
+        model.put("county", countyParser.parse(applicationData));
 
         List<String> zipCode = applicationData.getPagesData().safeGetPageInputValue("homeAddress", "zipCode");
         if (!zipCode.isEmpty()) {
