@@ -225,14 +225,12 @@ public class PageController {
         }
 
         PageTemplate pageTemplate = pagesData.evaluate(featureFlags, pageWorkflow, applicationData);
-
         HashMap<String, Object> model = new HashMap<>(Map.of(
                 "page", pageTemplate,
                 "pageName", pageName,
-                "postTo", landmarkPagesConfiguration.isSubmitPage(pageName) ? "/submit" : "/pages/" + pageName
+                "postTo", landmarkPagesConfiguration.isSubmitPage(pageName) ? "/submit" : "/pages/" + pageName,
+                "county", countyParser.parse(applicationData)
         ));
-
-        model.put("county", countyParser.parse(applicationData));
 
         List<String> zipCode = applicationData.getPagesData().safeGetPageInputValue("homeAddress", "zipCode");
         if (!zipCode.isEmpty()) {
