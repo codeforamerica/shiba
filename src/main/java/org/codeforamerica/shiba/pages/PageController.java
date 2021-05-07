@@ -229,7 +229,7 @@ public class PageController {
 
         // Build model for thymeleaf
         PageTemplate pageTemplate = pagesData.evaluate(featureFlags, pageWorkflow, applicationData);
-        HashMap<String, Object> model = buildModelForThymeleaf(pageName, locale, landmarkPagesConfiguration, pageTemplate, pageWorkflow, pagesData, iterationIndex);
+        Map<String, Object> model = buildModelForThymeleaf(pageName, locale, landmarkPagesConfiguration, pageTemplate, pageWorkflow, pagesData, iterationIndex);
 
         String pageToRender;
         if (pageWorkflow.getPageConfiguration().isStaticPage()) {
@@ -252,7 +252,7 @@ public class PageController {
     }
 
     @NotNull
-    private HashMap<String, Object> buildModelForThymeleaf(String pageName, Locale locale, LandmarkPagesConfiguration landmarkPagesConfiguration, PageTemplate pageTemplate, PageWorkflowConfiguration pageWorkflow, PagesData pagesData, String iterationIndex) {
+    private Map<String, Object> buildModelForThymeleaf(String pageName, Locale locale, LandmarkPagesConfiguration landmarkPagesConfiguration, PageTemplate pageTemplate, PageWorkflowConfiguration pageWorkflow, PagesData pagesData, String iterationIndex) {
         HashMap<String, Object> model = new HashMap<>(Map.of(
                 "page", pageTemplate,
                 "pageName", pageName,
