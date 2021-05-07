@@ -50,6 +50,7 @@ public class SuccessMessageService {
             messageKeys.add(getMessage("success.expedited-ccap-timing", locale));
         }
 
+
         // Contact Promise
         List<String> nextStepLetterProgramNames = new ArrayList<>();
         if (hasNonExpeditedCcap) { //If they have housing, cash support, or emergency assistance, or non-expedited snap, or non-expedited ccap
@@ -58,12 +59,12 @@ public class SuccessMessageService {
         if (hasNonExpeditedSnap) {
             nextStepLetterProgramNames.add(getMessage("success.food-support", locale));
         }
-
         if (nextStepLetterProgramNames.size() > 0) {
             String programNamesForLetter = String.join(" / ", nextStepLetterProgramNames);
             String[] arg = new String[]{programNamesForLetter};
             messageKeys.add(messageSource.getMessage("success.contact-promise", arg, locale));
         }
+
 
         // Interview expectation
         if (!onlyCcap) {

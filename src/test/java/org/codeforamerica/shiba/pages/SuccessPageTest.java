@@ -8,7 +8,9 @@ import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
@@ -19,6 +21,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
@@ -48,72 +51,76 @@ public class SuccessPageTest extends AbstractPageControllerTest {
         when(applicationRepository.find(any())).thenReturn(application);
     }
 
-    @Test
-    void itShowsTheRightSuccessMessageForExpeditedSnapOnly() throws Exception {
-        assertCorrectSuccessMessage(
-                List.of("SNAP"),
-                SnapExpeditedEligibility.ELIGIBLE,
-                CcapExpeditedEligibility.UNDETERMINED,
-                "You will receive a call from your county within 24 hours about your application for food support. The call may come from an unknown number.<br><br>You will need to complete an interview with a caseworker.<br><br>If you don't hear from your county within 3 days or want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>");
-    }
-
-    @Test
-    void itShowsTheRightSuccessMessageForNonExpeditedSnapOnly() throws Exception {
-        assertCorrectSuccessMessage(
-                List.of("SNAP"),
-                SnapExpeditedEligibility.NOT_ELIGIBLE,
-                CcapExpeditedEligibility.UNDETERMINED,
-                "You will receive a letter in the mail with next steps for your application for food support in 7-10 days.<br><br>You will need to complete an interview with a caseworker.<br><br>If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>");
-    }
-
-    @Test
-    void itShowsTheRightSuccessMessageForExpeditedSnapAndExpeditedCCAP() throws Exception {
-        assertCorrectSuccessMessage(
-                List.of("SNAP", "CCAP"),
-                SnapExpeditedEligibility.ELIGIBLE,
-                CcapExpeditedEligibility.ELIGIBLE,
-                "You will receive a call from your county within 24 hours about your application for food support. The call may come from an unknown number.<br><br>Your county will decide on your childcare case within the next 5 working days.<br><br>You will need to complete an interview with a caseworker.<br><br>If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>");
-    }
-
-    @Test
-    void itShowsTheRightSuccessMessageForExpeditedSnapAndNonExpeditedCCAP() throws Exception {
-        assertCorrectSuccessMessage(
-                List.of("SNAP", "CCAP"),
-                SnapExpeditedEligibility.ELIGIBLE,
-                CcapExpeditedEligibility.NOT_ELIGIBLE,
-                "You will receive a call from your county within 24 hours about your application for food support. The call may come from an unknown number.<br><br>You will receive a letter in the mail with next steps for your application for childcare in 7-10 days.<br><br>You will need to complete an interview with a caseworker.<br><br>If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>");
-    }
-
-    @Test
-    void itShowsTheRightSuccessMessageForNonExpeditedSnapAndExpeditedCCAP() throws Exception {
-        assertCorrectSuccessMessage(
-                List.of("SNAP", "CCAP"),
-                SnapExpeditedEligibility.NOT_ELIGIBLE,
-                CcapExpeditedEligibility.ELIGIBLE,
-                "Your county will decide on your childcare case within the next 5 working days.<br><br>You will receive a letter in the mail with next steps for your application for food support in 7-10 days.<br><br>You will need to complete an interview with a caseworker.<br><br>If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>");
-    }
-
-    @Test
-    void itShowsTheRightSuccessMessageForExpeditedCCAPOnly() throws Exception {
-        assertCorrectSuccessMessage(
-                List.of("CCAP"),
-                SnapExpeditedEligibility.UNDETERMINED,
-                CcapExpeditedEligibility.ELIGIBLE,
-                "Your county will decide on your childcare case within the next 5 working days.<br><br>If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
+    @SuppressWarnings("unused")
+    private static Stream<Arguments> successMessageTestCases() {
+        return Stream.of(
+                Arguments.of(
+                        "expeditedSnapOnly",
+                        List.of("SNAP"),
+                        SnapExpeditedEligibility.ELIGIBLE,
+                        CcapExpeditedEligibility.UNDETERMINED,
+                        "You will receive a call from your county within 24 hours about your application for food support. The call may come from an unknown number.<br><br>" +
+                                "You will need to complete an interview with a caseworker.<br><br>" +
+                                "If you don't hear from your county within 3 days or want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
+                ),
+                Arguments.of(
+                        "nonExpeditedSnapOnly",
+                        List.of("SNAP"),
+                        SnapExpeditedEligibility.NOT_ELIGIBLE,
+                        CcapExpeditedEligibility.UNDETERMINED,
+                        "You will receive a letter in the mail with next steps for your application for food support in 7-10 days.<br><br>" +
+                                "You will need to complete an interview with a caseworker.<br><br>If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
+                ),
+                Arguments.of(
+                        "expeditedSnapAndExpeditedCCAP",
+                        List.of("SNAP", "CCAP"),
+                        SnapExpeditedEligibility.ELIGIBLE,
+                        CcapExpeditedEligibility.ELIGIBLE,
+                        "You will receive a call from your county within 24 hours about your application for food support. The call may come from an unknown number.<br><br>" +
+                                "Your county will decide on your childcare case within the next 5 working days.<br><br>You will need to complete an interview with a caseworker.<br><br>" +
+                                "If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
+                ),
+                Arguments.of(
+                        "expeditedSnapAndNonExpeditedCCAP",
+                        List.of("SNAP", "CCAP"),
+                        SnapExpeditedEligibility.ELIGIBLE,
+                        CcapExpeditedEligibility.NOT_ELIGIBLE,
+                        "You will receive a call from your county within 24 hours about your application for food support. The call may come from an unknown number.<br><br>" +
+                                "You will receive a letter in the mail with next steps for your application for childcare in 7-10 days.<br><br>You will need to complete an interview with a caseworker.<br><br>" +
+                                "If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
+                ),
+                Arguments.of(
+                        "nonExpeditedSnapAndExpeditedCCAP",
+                        List.of("SNAP", "CCAP"),
+                        SnapExpeditedEligibility.NOT_ELIGIBLE,
+                        CcapExpeditedEligibility.ELIGIBLE,
+                        "Your county will decide on your childcare case within the next 5 working days.<br><br>" +
+                                "You will receive a letter in the mail with next steps for your application for food support in 7-10 days.<br><br>" +
+                                "You will need to complete an interview with a caseworker.<br><br>If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
+                ),
+                Arguments.of(
+                        "expeditedCCAPOnly",
+                        List.of("CCAP"),
+                        SnapExpeditedEligibility.UNDETERMINED,
+                        CcapExpeditedEligibility.ELIGIBLE,
+                        "Your county will decide on your childcare case within the next 5 working days.<br><br>" +
+                                "If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
+                ),
+                Arguments.of(
+                        "nonExpeditedCcapOnly",
+                        List.of("CCAP"),
+                        SnapExpeditedEligibility.UNDETERMINED,
+                        CcapExpeditedEligibility.NOT_ELIGIBLE,
+                        "You will receive a letter in the mail with next steps for your application for childcare in 7-10 days.<br><br>" +
+                                "If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
+                )
         );
     }
 
-    @Test
-    void itShowsTheRightSuccessMessageForNonExpeditedCCAPOnly() throws Exception {
-        assertCorrectSuccessMessage(
-                List.of("CCAP"),
-                SnapExpeditedEligibility.UNDETERMINED,
-                CcapExpeditedEligibility.NOT_ELIGIBLE,
-                "You will receive a letter in the mail with next steps for your application for childcare in 7-10 days.<br><br>If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
-        );
-    }
-
-    private void assertCorrectSuccessMessage(List<String> programs, SnapExpeditedEligibility snapExpeditedEligibility, CcapExpeditedEligibility ccapExpeditedEligibility, String expectedMessage) throws Exception {
+    @SuppressWarnings("unused")
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("successMessageTestCases")
+    void displaysCorrectSuccessMessage(String testName, List<String> programs, SnapExpeditedEligibility snapExpeditedEligibility, CcapExpeditedEligibility ccapExpeditedEligibility, String expectedMessage) throws Exception {
         when(snapExpeditedEligibilityDecider.decide(any())).thenReturn(snapExpeditedEligibility);
         when(ccapExpeditedEligibilityDecider.decide(any())).thenReturn(ccapExpeditedEligibility);
 
