@@ -194,29 +194,29 @@ public class PageController {
             return new ModelAndView("error/404");
         }
 
-        var pageWorkflow = applicationConfiguration.getPageWorkflow(pageName);
-
-        if (missingRequiredSubworkflows(pageWorkflow)) {
-            return new ModelAndView("redirect:/pages/" + pageWorkflow.getDataMissingRedirect());
+        var pageWorkflowConfig = applicationConfiguration.getPageWorkflow(pageName);
+        if (missingRequiredSubworkflows(pageWorkflowConfig)) {
+            return new ModelAndView("redirect:/pages/" + pageWorkflowConfig.getDataMissingRedirect());
         }
 
         // Update pagesData with data for incomplete subworkflows
         var pagesData = applicationData.getPagesData();
-        if (pageWorkflow.getGroupName() != null) { // If page is part of a subworkflow
-            PagesData currentIterationPagesData = getCurrentIterationPagesData(pageName, pageWorkflow);
+        if (pageWorkflowConfig.getGroupName() != null) { // If page is part of a group
+            PagesData currentIterationPagesData = getCurrentIterationPagesData(pageName, pageWorkflowConfig);
+
             if (currentIterationPagesData == null) {
                 // Redirect to default page for group
-                String redirectPage = applicationConfiguration.getPageGroups().get(pageWorkflow.getGroupName()).getRedirectPage();
-                return new ModelAndView(String.format("redirect:/pages/%s", redirectPage));
+                var redirectPageForGroup = applicationConfiguration.getPageGroups().get(pageWorkflowConfig.getGroupName()).getRedirectPage();
+                return new ModelAndView("redirect:/pages/" + redirectPageForGroup);
             }
             pagesData = (PagesData) pagesData.clone(); // Avoid changing the original applicationData PagesData by cloning the object
             pagesData.putAll(currentIterationPagesData);
         }
 
         // Add extra pagesData if this page workflow specifies that it applies to a group
-        if (requestedPageAppliesToGroup(iterationIndex, pageWorkflow)) {
-            PagesData iterationData = pageWorkflow.getSubworkflows(applicationData)
-                    .get(pageWorkflow.getAppliesToGroup())
+        if (requestedPageAppliesToGroup(iterationIndex, pageWorkflowConfig)) {
+            PagesData iterationData = pageWorkflowConfig.getSubworkflows(applicationData)
+                    .get(pageWorkflowConfig.getAppliesToGroup())
                     .get(Integer.parseInt(iterationIndex))
                     .getPagesData();
 
@@ -224,10 +224,10 @@ public class PageController {
             pagesData.putAll(iterationData);
         }
 
-        var pageTemplate = pagesData.evaluate(featureFlags, pageWorkflow, applicationData);
+        var pageTemplate = pagesData.evaluate(featureFlags, pageWorkflowConfig, applicationData);
 
-        var model = buildModelForThymeleaf(pageName, locale, landmarkPagesConfiguration, pageTemplate, pageWorkflow, pagesData, iterationIndex);
-        var view = pageWorkflow.getPageConfiguration().isStaticPage() ? pageName : "formPage";
+        var model = buildModelForThymeleaf(pageName, locale, landmarkPagesConfiguration, pageTemplate, pageWorkflowConfig, pagesData, iterationIndex);
+        var view = pageWorkflowConfig.getPageConfiguration().isStaticPage() ? pageName : "formPage";
         return new ModelAndView(view, model);
     }
 
