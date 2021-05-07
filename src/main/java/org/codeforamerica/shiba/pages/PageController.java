@@ -166,7 +166,7 @@ public class PageController {
             HttpSession httpSession,
             Locale locale
     ) {
-        LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
+        var landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
 
         // Validations and special case redirects
         if (landmarkPagesConfiguration.isLandingPage(pageName)) {
@@ -194,14 +194,14 @@ public class PageController {
             return new ModelAndView("error/404");
         }
 
-        PageWorkflowConfiguration pageWorkflow = applicationConfiguration.getPageWorkflow(pageName);
+        var pageWorkflow = applicationConfiguration.getPageWorkflow(pageName);
 
         if (missingRequiredSubworkflows(pageWorkflow)) {
             return new ModelAndView("redirect:/pages/" + pageWorkflow.getDataMissingRedirect());
         }
 
         // Update pagesData for incomplete subworkflows
-        PagesData pagesData = applicationData.getPagesData();
+        var pagesData = applicationData.getPagesData();
         if (pageWorkflow.getGroupName() != null) { // If page is part of a subworkflow
             PagesData currentIterationPagesData;
             String groupName = pageWorkflow.getGroupName();
@@ -231,11 +231,10 @@ public class PageController {
             pagesData.putAll(iterationData);
         }
 
-        PageTemplate pageTemplate = pagesData.evaluate(featureFlags, pageWorkflow, applicationData);
+        var pageTemplate = pagesData.evaluate(featureFlags, pageWorkflow, applicationData);
 
-        Map<String, Object> model = buildModelForThymeleaf(pageName, locale, landmarkPagesConfiguration, pageTemplate, pageWorkflow, pagesData, iterationIndex);
-
-        String view = pageWorkflow.getPageConfiguration().isStaticPage() ? pageName : "formPage";
+        var model = buildModelForThymeleaf(pageName, locale, landmarkPagesConfiguration, pageTemplate, pageWorkflow, pagesData, iterationIndex);
+        var view = pageWorkflow.getPageConfiguration().isStaticPage() ? pageName : "formPage";
         return new ModelAndView(view, model);
     }
 
