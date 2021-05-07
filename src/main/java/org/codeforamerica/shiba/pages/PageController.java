@@ -167,6 +167,7 @@ public class PageController {
     ) {
         LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
 
+        // Validations and special cases
         if (landmarkPagesConfiguration.isLandingPage(pageName)) {
             httpSession.invalidate();
         }
@@ -188,11 +189,10 @@ public class PageController {
 
         response.addHeader("Cache-Control", "no-store");
 
-        if (applicationConfiguration.getPageWorkflow(pageName) == null) {
+        if (notFound(pageName)) {
             return new ModelAndView("error/404");
         }
         PageWorkflowConfiguration pageWorkflow = applicationConfiguration.getPageWorkflow(pageName);
-
         PageConfiguration pageConfiguration = pageWorkflow.getPageConfiguration();
 
         PagesData pagesData = applicationData.getPagesData();
@@ -294,6 +294,10 @@ public class PageController {
             model.put("data", pagesData.getPageDataOrDefault(pageTemplate.getName(), pageConfiguration));
         }
         return new ModelAndView(pageToRender, model);
+    }
+
+    private boolean notFound(String pageName) {
+        return applicationConfiguration.getPageWorkflow(pageName) == null;
     }
 
     private boolean shouldRedirectToLandingPage(@PathVariable String pageName) {
