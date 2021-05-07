@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
+import org.codeforamerica.shiba.Program;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.jetbrains.annotations.NotNull;
@@ -13,11 +14,6 @@ import java.util.Locale;
 @Service
 public class SuccessMessageService {
     // TODO where should these constants live
-    private static final String PROGRAM_CCAP = "CCAP";
-    private static final String PROGRAM_SNAP = "SNAP";
-    private static final String PROGRAM_GRH = "GRH";
-    private static final String PROGRAM_CASH = "CASH";
-    private static final String PROGRAM_EA = "EA";
     private final MessageSource messageSource;
 
     public SuccessMessageService(MessageSource messageSource) {
@@ -25,11 +21,11 @@ public class SuccessMessageService {
     }
 
     public String getSuccessMessage(List<String> applicantPrograms, SnapExpeditedEligibility snapExpeditedEligibility, CcapExpeditedEligibility ccapExpeditedEligibility, Locale locale) {
-        boolean hasSnap = applicantPrograms.stream().anyMatch(p -> p.equals(PROGRAM_SNAP));
-        boolean onlyCcap = applicantPrograms.stream().allMatch(p -> p.equals(PROGRAM_CCAP));
+        boolean hasSnap = applicantPrograms.stream().anyMatch(p -> p.equals(Program.SNAP));
+        boolean onlyCcap = applicantPrograms.stream().allMatch(p -> p.equals(Program.CCAP));
         boolean isSnapExpeditedEligible = snapExpeditedEligibility.equals(SnapExpeditedEligibility.ELIGIBLE);
         boolean isCcapExpeditedEligible = ccapExpeditedEligibility.equals(CcapExpeditedEligibility.ELIGIBLE);
-        boolean notCcap = applicantPrograms.stream().noneMatch(p -> p.equals(PROGRAM_CCAP));
+        boolean notCcap = applicantPrograms.stream().noneMatch(p -> p.equals(Program.CCAP));
 
         boolean hasNonExpeditedSnap = hasSnap && !isSnapExpeditedEligible;
 
@@ -71,11 +67,11 @@ public class SuccessMessageService {
     }
 
     private List<String> getProgramNames(Locale locale, List<String> applicantPrograms , Boolean hasNonExpeditedSnap, Boolean isCcapExpeditedEligible) {
-        boolean hasCcap = applicantPrograms.stream().anyMatch(p -> p.equals(PROGRAM_CCAP));
+        boolean hasCcap = applicantPrograms.stream().anyMatch(p -> p.equals(Program.CCAP));
         boolean hasNonExpeditedCcap = hasCcap && !isCcapExpeditedEligible;
-        boolean hasGrh = applicantPrograms.stream().anyMatch(p -> p.equals(PROGRAM_GRH));
-        boolean hasCash = applicantPrograms.stream().anyMatch(p -> p.equals(PROGRAM_CASH));
-        boolean hasEa = applicantPrograms.stream().anyMatch(p -> p.equals(PROGRAM_EA));
+        boolean hasGrh = applicantPrograms.stream().anyMatch(p -> p.equals(Program.GRH));
+        boolean hasCash = applicantPrograms.stream().anyMatch(p -> p.equals(Program.CASH));
+        boolean hasEa = applicantPrograms.stream().anyMatch(p -> p.equals(Program.EA));
         List<String> nextStepLetterProgramNames = new ArrayList<>();
         if (hasNonExpeditedCcap) { //If they have housing, cash support, or emergency assistance, or non-expedited snap, or non-expedited ccap
             nextStepLetterProgramNames.add(getMessage("success.childcare", locale));

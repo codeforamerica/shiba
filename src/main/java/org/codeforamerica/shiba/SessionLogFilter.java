@@ -41,7 +41,7 @@ public class SessionLogFilter implements Filter {
         HttpServletRequest httpReq = (HttpServletRequest) request;
         MDC.put("url", String.valueOf(httpReq.getRequestURL()));
         MDC.put("sessionId", httpReq.getSession().getId());
-        if (applicationData != null) { // TODO can we avoid this by making the it work with the new test?
+        if (applicationData != null) {
             MDC.put("pagesData", objectMapper.writeValueAsString(applicationData.getPagesData()));
             if (applicationData.getId() != null) {
                 monitoringService.setApplicationId(applicationData.getId());
