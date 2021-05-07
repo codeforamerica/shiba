@@ -234,13 +234,17 @@ public class PageController {
         String pageToRender;
         if (pageWorkflow.getPageConfiguration().isStaticPage()) {
             pageToRender = pageName;
-            if (!applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources())) {
+            if (missingRequiredSubworkflows(pageWorkflow)) {
                 return new ModelAndView("redirect:/pages/" + pageWorkflow.getDataMissingRedirect());
             }
         } else { // Not a static page
             pageToRender = "formPage";
         }
         return new ModelAndView(pageToRender, model);
+    }
+
+    private boolean missingRequiredSubworkflows(PageWorkflowConfiguration pageWorkflow) {
+        return !applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources());
     }
 
     private boolean isStartPageForGroup(@PathVariable String pageName, String groupName) {
