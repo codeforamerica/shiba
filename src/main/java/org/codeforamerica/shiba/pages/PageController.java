@@ -196,6 +196,10 @@ public class PageController {
 
         PageWorkflowConfiguration pageWorkflow = applicationConfiguration.getPageWorkflow(pageName);
 
+        if (missingRequiredSubworkflows(pageWorkflow)) {
+            return new ModelAndView("redirect:/pages/" + pageWorkflow.getDataMissingRedirect());
+        }
+
         // Update pagesData for incomplete subworkflows
         PagesData pagesData = applicationData.getPagesData();
         if (pageWorkflow.getGroupName() != null) { // If page is part of a subworkflow
@@ -230,10 +234,6 @@ public class PageController {
         PageTemplate pageTemplate = pagesData.evaluate(featureFlags, pageWorkflow, applicationData);
 
         Map<String, Object> model = buildModelForThymeleaf(pageName, locale, landmarkPagesConfiguration, pageTemplate, pageWorkflow, pagesData, iterationIndex);
-
-        if (missingRequiredSubworkflows(pageWorkflow)) {
-            return new ModelAndView("redirect:/pages/" + pageWorkflow.getDataMissingRedirect());
-        }
 
         String view = pageWorkflow.getPageConfiguration().isStaticPage() ? pageName : "formPage";
         return new ModelAndView(view, model);
