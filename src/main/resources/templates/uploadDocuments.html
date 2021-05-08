@@ -223,10 +223,6 @@
                 <div class="grid__item width-five-sixths mobile-width-three-fourths">
                     <div class="dz-filename"><div class="filename-text" data-dz-name></div></div>
                     <div class="display-flex body-gray file-details">
-                        <span class="document-info">
-                            <div class="file-count"></div>
-                            <span class="file-count-delimiter" aria-hidden="true">•</span>
-                        </span>
                         <div class="dz-size" data-dz-size></div>
                         <span class="file-details-delimiter" aria-hidden="true">•</span>
                         <a class="dz-remove" href="javascript:undefined;" ></a>
@@ -250,7 +246,6 @@
                 var fileNameComponents = getFilenameComponents(fileNameSpan);
                 var removeLink = file.previewElement.getElementsByClassName("dz-remove")[0];
                 var thumbnail = file.previewElement.getElementsByClassName("dz-thumb")[0];
-                var documentInfo = file.previewElement.getElementsByClassName('document-info')[0];
 
                 fileNameSpan.setAttribute('aria-label', fileNameSpan.innerText);
                 fileNameSpan.innerHTML = "<span class='filename-text-name' aria-hidden='true'>" + fileNameComponents[0] + "</span>" +
@@ -265,8 +260,6 @@
 
                 if (!file.type.includes("image")) {
                     setDefaultThumbnail(file);
-                    // This hides delimiter for documents since we haven't implemented document count yet, will probably need to refactor when we implement document count
-                    documentInfo.classList.add("hidden");
                 }
                 showNumberOfAddedFiles();
                 prependAddedFile();
@@ -304,8 +297,6 @@
 
             this.on('success', function (file) {
                 var removeLink = file.previewElement.getElementsByClassName("dz-remove")[0];
-                var fileCount = file.previewElement.getElementsByClassName('file-count')[0];
-                var documentInfo = file.previewElement.getElementsByClassName('document-info')[0];
                 var thumbnail = file.previewElement.getElementsByClassName("dz-thumb")[0];
                 var fileName = file.name;
 
@@ -313,15 +304,6 @@
                 removeLink.setAttribute('href', '/pages/uploadDocumentsDeleteWarningPage?filename=' + encodeURIComponent(fileName));
                 removeLink.innerText = [[#{general.delete}]].toLowerCase();
                 thumbnail.classList.remove("hidden");
-
-                if (file.type.includes("image")) {
-                    fileCount.setAttribute('aria-label', fileCount.innerText);
-                    fileCount.innerHTML = "<span>1 image</span>";
-                    // The below line is commented out to hide the ' . ' spacer on image upload info until the page count on PDF
-                    // story is completed. At that time uncomment the below line along with removing shiba.css
-                    // document-info display none rule
-                    // documentInfo.style.display = "unset";
-                }
             });
 
             // This lets dropzone know to process the queue after each file has completed

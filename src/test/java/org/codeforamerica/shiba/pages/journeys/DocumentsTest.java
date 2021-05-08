@@ -240,7 +240,6 @@ public class DocumentsTest extends JourneyTest {
         assertThat(filename).contains("pdf");
         assertThat(fileDetails).contains("0.4");
         assertThat(fileDetails).contains("MB");
-        assertThat(fileDetails).doesNotContain("1 image");
 
         // shiba+test.jpg
         filename = getAttributeForElementAtIndex(filenameTextElements, 1, "innerHTML");
@@ -248,7 +247,6 @@ public class DocumentsTest extends JourneyTest {
 
         assertThat(filename).contains("shiba");
         assertThat(filename).contains("jpg");
-        assertThat(fileDetails).contains("1 image");
         assertThat(fileDetails).contains("51.7");
         assertThat(fileDetails).contains("KB");
 
@@ -321,7 +319,6 @@ public class DocumentsTest extends JourneyTest {
         assertThat(filename).contains("pdf");
         assertThat(fileDetails).contains("0.4");
         assertThat(fileDetails).contains("MB");
-        assertThat(fileDetails).doesNotContain("1 image");
 
         // shiba+test.jpg
         filename = getAttributeForElementAtIndex(filenameTextElements, 1, "innerHTML");
@@ -329,7 +326,6 @@ public class DocumentsTest extends JourneyTest {
 
         assertThat(filename).contains("shiba");
         assertThat(filename).contains("jpg");
-        assertThat(fileDetails).contains("1 image");
         assertThat(fileDetails).contains("51.7");
         assertThat(fileDetails).contains("KB");
 
