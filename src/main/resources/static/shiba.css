@@ -300,11 +300,6 @@ form .drag-and-drop-box-compact {
     }
 }
 
-/* TEMPORARILY HIDING UNTIL WE ADD DOCUMENT PAGE COUNT */
-.document-info {
-    display: none
-}
-
 .max-files {
     height: 100%;
     background-color: #FFF2D1;
@@ -1002,20 +997,6 @@ input[type=number] {
     position: relative;
     vertical-align: top;
 }
-
-/*.dropzone .dz-preview.dz-file-preview .dz-image {*/
-/*    border-radius: 20px;*/
-/*    background: #999;*/
-/*    background: linear-gradient(to bottom, #eee, #ddd);*/
-/*}*/
-
-/*.dropzone .dz-preview.dz-file-preview .dz-details {*/
-/*    opacity: 1;*/
-/*}*/
-
-/*.dropzone .dz-preview.dz-image-preview {*/
-/*    background: white;*/
-/*}*/
 
 .dropzone .dz-preview.dz-image-preview .dz-details {
     -webkit-transition: opacity 0.2s linear;
