@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output.caf;
 
+import org.codeforamerica.shiba.Money;
 import org.codeforamerica.shiba.application.parsers.SnapExpeditedEligibilityParser;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.stereotype.Component;
@@ -11,8 +12,8 @@ public class SnapExpeditedEligibilityDecider {
     private final UtilityDeductionCalculator utilityDeductionCalculator;
     private final TotalIncomeCalculator totalIncomeCalculator;
     private final SnapExpeditedEligibilityParser snapExpeditedEligibilityParser;
-    public static final int ASSET_THRESHOLD = 100;
-    public static final int INCOME_THRESHOLD = 150;
+    public static final Money ASSET_THRESHOLD = new Money(100);
+    public static final Money INCOME_THRESHOLD = new Money(150);
 
     public SnapExpeditedEligibilityDecider(UtilityDeductionCalculator utilityDeductionCalculator,
                                            TotalIncomeCalculator totalIncomeCalculator,
@@ -25,16 +26,18 @@ public class SnapExpeditedEligibilityDecider {
     public SnapExpeditedEligibility decide(ApplicationData applicationData) {
         return snapExpeditedEligibilityParser.parse(applicationData)
                 .map(parameters -> {
-                            double assets = parameters.getAssets();
-                            double income = totalIncomeCalculator.calculate(new TotalIncome(parameters.getLast30DaysIncome(), parameters.getJobIncomeInformation()));
-                            double housingCosts = parameters.getHousingCosts();
+                            Money assets = parameters.getAssets();
+                            Money income = totalIncomeCalculator.calculate(new TotalIncome(parameters.getLast30DaysIncome(), parameters.getJobIncomeInformation()));
+                            Money housingCosts = parameters.getHousingCosts();
 
-                            boolean assetsAndIncomeBelowThreshold = assets <= ASSET_THRESHOLD && income < INCOME_THRESHOLD;
-                            boolean migrantWorkerAndAssetsBelowThreshold = parameters.isMigrantWorker() && assets <= ASSET_THRESHOLD;
-                            int standardDeduction = utilityDeductionCalculator.calculate(parameters.getUtilityExpenses());
+                            boolean assetsAndIncomeBelowThreshold =
+                                    assets.lessOrEqualTo(ASSET_THRESHOLD) &&
+                                    income.lessThan(INCOME_THRESHOLD);
+                            boolean migrantWorkerAndAssetsBelowThreshold = parameters.isMigrantWorker() && assets.lessOrEqualTo(new Money(ASSET_THRESHOLD));
+                            Money standardDeduction = utilityDeductionCalculator.calculate(parameters.getUtilityExpenses());
 
-                            boolean passesAssetTest = (assets + income) < (housingCosts + standardDeduction);
-                            
+                            boolean passesAssetTest = assets.add(income).lessThan(housingCosts.add(standardDeduction));
+
                             boolean applyingForSnap = parameters.isApplyingForSnap();
 
                             return (applyingForSnap &&

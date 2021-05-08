@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output.caf;
 
+import org.codeforamerica.shiba.Money;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -20,9 +21,9 @@ class UtilityDeductionCalculatorTest {
     @ParameterizedTest
     @MethodSource
     void deductionShouldBe490WhenIncludesEitherHeatingOrCooling(List<String> utilityOptions) {
-        Integer deduction = utilityDeductionCalculator.calculate(utilityOptions);
+        Money deduction = utilityDeductionCalculator.calculate(utilityOptions);
 
-        assertThat(deduction).isEqualTo(490);
+        assertThat(deduction).isEqualTo(new Money(490));
     }
 
     @SuppressWarnings("unused")
@@ -47,11 +48,11 @@ class UtilityDeductionCalculatorTest {
     @MethodSource
     void shouldCalculateDeductionWhenIncludesNoneOfHeatingOrCooling(
             List<String> utilityOptions,
-            Integer expectedDeduction
+            double expectedDeduction
     ) {
-        Integer deduction = utilityDeductionCalculator.calculate(utilityOptions);
+        Money deduction = utilityDeductionCalculator.calculate(utilityOptions);
 
-        assertThat(deduction).isEqualTo(expectedDeduction);
+        assertThat(deduction).isEqualTo(new Money(expectedDeduction));
     }
 
     @SuppressWarnings("unused")

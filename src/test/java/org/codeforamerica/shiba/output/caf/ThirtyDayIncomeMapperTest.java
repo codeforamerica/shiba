@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output.caf;
 
+import org.codeforamerica.shiba.Money;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.TotalIncomeParser;
 import org.codeforamerica.shiba.output.ApplicationInput;
@@ -25,15 +26,15 @@ class ThirtyDayIncomeMapperTest {
         Application application = Application.builder().applicationData(appData).build();
 
         List<JobIncomeInformation> jobIncomeInformationList = List.of();
-        Double thirtyDayIncome = 1.0;
+        Money thirtyDayIncome = new Money(1);
         when(totalIncomeParser.parse(appData)).thenReturn(new TotalIncome(thirtyDayIncome, jobIncomeInformationList));
-        when(totalIncomeCalculator.calculate(new TotalIncome(thirtyDayIncome, jobIncomeInformationList))).thenReturn(111.0);
+        when(totalIncomeCalculator.calculate(new TotalIncome(thirtyDayIncome, jobIncomeInformationList))).thenReturn(new Money(111));
 
         assertThat(thirtyDayIncomeMapper.map(application, null, Recipient.CLIENT, null)).isEqualTo(List.of(
                 new ApplicationInput(
                         "totalIncome",
                         "thirtyDayIncome",
-                        List.of("111.0"),
+                        List.of("111"),
                         ApplicationInputType.SINGLE_VALUE
                 )
         ));

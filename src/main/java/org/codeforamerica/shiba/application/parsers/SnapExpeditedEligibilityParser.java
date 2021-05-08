@@ -1,7 +1,8 @@
 package org.codeforamerica.shiba.application.parsers;
 
-import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityParameters;
+import org.codeforamerica.shiba.Money;
 import org.codeforamerica.shiba.output.caf.JobIncomeInformation;
+import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityParameters;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.pages.data.Subworkflow;
@@ -47,10 +48,10 @@ public class SnapExpeditedEligibilityParser extends ApplicationDataParser<Option
             }
         }
 
-        double assets = getDouble(applicationData, coordinatesMap.get("assets"));
-        double last30DaysIncome = getDouble(applicationData, coordinatesMap.get("income"));
+        Money assets = getMoney(applicationData, coordinatesMap.get("assets"));
+        Money last30DaysIncome = getMoney(applicationData, coordinatesMap.get("income"));
 
-        double housingCosts = getDouble(applicationData, coordinatesMap.get("housingCosts"));
+        Money housingCosts = getMoney(applicationData, coordinatesMap.get("housingCosts"));
         boolean isMigrantWorker = Boolean.parseBoolean(pagesData.getPage(coordinatesMap.get("migrantWorker").getPageName())
                 .get(coordinatesMap.get("migrantWorker").getInputName()).getValue(0));
         @NotNull List<String> utilityExpensesSelections = pagesData.getPage(coordinatesMap.get("utilityExpensesSelections").getPageName())

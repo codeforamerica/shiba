@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output;
 
+import org.codeforamerica.shiba.Money;
 import org.codeforamerica.shiba.application.parsers.AbstractParserTest;
 import org.codeforamerica.shiba.application.parsers.GrossMonthlyIncomeParser;
 import org.codeforamerica.shiba.application.parsers.TotalIncomeParser;
@@ -36,7 +37,7 @@ class TotalIncomeParserTest extends AbstractParserTest {
 
     @Test
     void shouldParseTotalIncomeFromLastThirtyDaysAndJobIncomeInformation() {
-        pagesData.putPage("incomePage", new PageData(Map.of("incomeInput", InputData.builder().value(List.of("1.0")).build())));
+        pagesData.putPage("incomePage", new PageData(Map.of("incomeInput", InputData.builder().value(List.of("1")).build())));
         JobIncomeInformation mockJobInfo1 = mock(JobIncomeInformation.class);
         JobIncomeInformation mockJobInfo2 = mock(JobIncomeInformation.class);
         List<JobIncomeInformation> jobInfo = List.of(mockJobInfo1, mockJobInfo2);
@@ -44,6 +45,6 @@ class TotalIncomeParserTest extends AbstractParserTest {
 
         TotalIncome totalIncome = totalIncomeParser.parse(applicationData);
 
-        assertThat(totalIncome).isEqualTo(new TotalIncome(1.0, jobInfo));
+        assertThat(totalIncome).isEqualTo(new TotalIncome(new Money(1), jobInfo));
     }
 }
