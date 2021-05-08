@@ -41,21 +41,16 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 class MailGunEmailClientTest {
 
     MailGunEmailClient mailGunEmailClient;
-
     EmailContentCreator emailContentCreator;
+    WireMockServer wireMockServer;
     @Autowired
     PdfGenerator pdfGenerator;
-
-    WireMockServer wireMockServer;
-
     int port;
 
     String mailGunApiKey = "someMailGunApiKey";
-
     String senderEmail = "someSenderEmail";
     String securityEmail = "someSecurityEmail";
     String auditEmail = "someAuditEmail";
-    String supportEmail = "someSupportEmail";
     String hennepinEmail = "someHennepinEmail";
 
     @BeforeEach
