@@ -236,7 +236,8 @@ jobs:
     needs: [unit-test, db-test, journey-test, pdf-test, ccap-test, validation-test, document-test]
     if: ${{ github.actor == 'dependabot[bot]' }}
     steps:
-      - uses: marocchino/sticky-pull-request-comment@v2
+      - uses: marocchino/sticky-pull-request-comment@v2.1
         with:
           recreate: true
-          message: @dependabot merge
+          message: |
+            @dependabot merge
