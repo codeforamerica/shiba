@@ -3,7 +3,6 @@ package org.codeforamerica.shiba.pages.enrichment;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.PageDataBuilder;
 import org.codeforamerica.shiba.PagesDataBuilder;
-import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PagesData;
@@ -14,15 +13,11 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
 class ZipcodeToCountyEnrichmentTest {
     private final HashMap<String, County> countyZipCodeMap = new HashMap<>();
 
-    private final ZipcodeToCountyEnrichment zipcodeToCountyEnrichment =
-            new ZipcodeToCountyEnrichment(
-                    mock(FeatureFlagConfiguration.class),
-                    countyZipCodeMap);
+    private final ZipcodeToCountyEnrichment zipcodeToCountyEnrichment = new ZipcodeToCountyEnrichment(countyZipCodeMap);
 
     @Test
     void shouldMapRecognizedZipcodeToCounty() {

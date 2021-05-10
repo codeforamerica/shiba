@@ -1,7 +1,6 @@
 package org.codeforamerica.shiba.pages.enrichment;
 
 import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.springframework.stereotype.Component;
@@ -10,13 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class ZipcodeToCountyEnrichment extends AddressEnrichment {
-    FeatureFlagConfiguration featureFlagConfiguration;
+public class ZipcodeToCountyEnrichment implements Enrichment {
+    private final Map<String, County> countyZipCodeMap;
 
-    public ZipcodeToCountyEnrichment(
-            FeatureFlagConfiguration featureFlagConfiguration,
-            Map<String, County> countyZipCodeMap) {
-        this.featureFlagConfiguration = featureFlagConfiguration;
+    public ZipcodeToCountyEnrichment(Map<String, County> countyZipCodeMap) {
         this.countyZipCodeMap = countyZipCodeMap;
     }
 
