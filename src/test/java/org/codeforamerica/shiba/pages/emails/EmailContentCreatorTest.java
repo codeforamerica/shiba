@@ -2,9 +2,13 @@ package org.codeforamerica.shiba.pages.emails;
 
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.StaticMessageSource;
 
@@ -15,14 +19,21 @@ import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SpringBootTest(properties = {
+        "spring.profiles.active=test"
+})
 class EmailContentCreatorTest {
     private final StaticMessageSource staticMessageSource = new StaticMessageSource();
     private EmailContentCreator emailContentCreator;
 
+    @Value("${spring.profiles.active}")
+    private String activeProfile;
+
+
     @BeforeEach
     void setUp() {
         LocaleContextHolder.setLocale(Locale.ENGLISH);
-        emailContentCreator = new EmailContentCreator(staticMessageSource);
+        emailContentCreator = new EmailContentCreator(staticMessageSource, activeProfile);
         staticMessageSource.addMessage("email.snap-expedited-wait-time", Locale.ENGLISH, "you've been expedited!");
         staticMessageSource.addMessage("email.snap-nonexpedited-wait-time", Locale.ENGLISH, "not expedited :(");
         staticMessageSource.addMessage("email.client-body", Locale.ENGLISH, "confirmation email! {0} confirmation number: {1}");
@@ -31,6 +42,8 @@ class EmailContentCreatorTest {
         staticMessageSource.addMessage("later-docs.confirmation-email-subject", Locale.ENGLISH, "We received your documents");
         staticMessageSource.addMessage("later-docs.confirmation-email-body", Locale.ENGLISH, "We received your documents for your Minnesota Benefits application. Look out for mail about your case. You may need to complete additional steps.");
         staticMessageSource.addMessage("later-docs.confirmation-email-body-link", Locale.ENGLISH, "To ask about your application status, find your county's contact information <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">here</a>.");
+        staticMessageSource.addMessage("email.demo-purposes-only", Locale.ENGLISH, "This e-mail is for demo purposes only. No application for benefits was submitted on your behalf.");
+        staticMessageSource.addMessage("email.share-feedback", Locale.ENGLISH, "To share feedback, please get in touch with the Code for America Team, or fill out <a href=\"https://airtable.com/shrwudOXtR9q6WCXD\" target=\"_blank\">this form</a>.");
     }
 
     @Test
@@ -89,5 +102,26 @@ class EmailContentCreatorTest {
                 "<p>We received your documents for your Minnesota Benefits application. Look out for mail about your case. You may need to complete additional steps.</p>" +
                 "<p>To ask about your application status, find your county's contact information <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">here</a>.</p>" +
                 "</body><html>");
+    }
+
+    @Nested
+    @Tag("demo-testing")
+    class EmailContentCreatorDemoTest {
+        @BeforeEach
+        void setUp() {
+            LocaleContextHolder.setLocale(Locale.ENGLISH);
+            emailContentCreator = new EmailContentCreator(staticMessageSource, "demo");
+            staticMessageSource.addMessage("email.snap-expedited-wait-time", Locale.ENGLISH, "you've been expedited!");
+            staticMessageSource.addMessage("email.snap-nonexpedited-wait-time", Locale.ENGLISH, "not expedited :(");
+            staticMessageSource.addMessage("email.client-body", Locale.ENGLISH, "confirmation email! {0} confirmation number: {1}");
+            staticMessageSource.addMessage("email.demo-purposes-only", Locale.ENGLISH, "This e-mail is for demo purposes only. No application for benefits was submitted on your behalf.");
+            staticMessageSource.addMessage("email.share-feedback", Locale.ENGLISH, "To share feedback, please get in touch with the Code for America Team, or fill out <a href=\"https://airtable.com/shrwudOXtR9q6WCXD\" target=\"_blank\">this form</a>.");
+        }
+
+        @Test
+        void shouldCreateConfirmationEmailFromDemo() {
+            String emailContent = emailContentCreator.createClientHTML("someNumber", SnapExpeditedEligibility.UNDETERMINED, Locale.ENGLISH);
+            assertThat(emailContent).contains("This e-mail is for demo purposes only");
+        }
     }
 }

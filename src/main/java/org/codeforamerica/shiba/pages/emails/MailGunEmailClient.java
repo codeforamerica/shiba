@@ -40,6 +40,7 @@ public class MailGunEmailClient implements EmailClient {
     private final boolean shouldCC;
     private final WebClient webClient;
     private final PdfGenerator pdfGenerator;
+    private final String activeProfile;
 
     public MailGunEmailClient(@Value("${sender-email}") String senderEmail,
                               @Value("${security-email}") String securityEmail,
@@ -49,7 +50,8 @@ public class MailGunEmailClient implements EmailClient {
                               @Value("${mail-gun.api-key}") String mailGunApiKey,
                               EmailContentCreator emailContentCreator,
                               @Value("${mail-gun.shouldCC}") boolean shouldCC,
-                              PdfGenerator pdfGenerator) {
+                              PdfGenerator pdfGenerator,
+                              @Value("${spring.profiles.active:Unknown}") String activeProfile) {
         this.senderEmail = senderEmail;
         this.securityEmail = securityEmail;
         this.auditEmail = auditEmail;
@@ -59,6 +61,7 @@ public class MailGunEmailClient implements EmailClient {
         this.shouldCC = shouldCC;
         this.webClient = WebClient.builder().baseUrl(mailGunUrl).build();
         this.pdfGenerator = pdfGenerator;
+        this.activeProfile=activeProfile;
     }
 
     @Override
@@ -67,10 +70,15 @@ public class MailGunEmailClient implements EmailClient {
                                       SnapExpeditedEligibility snapExpeditedEligibility,
                                       List<ApplicationFile> applicationFiles,
                                       Locale locale) {
+
+        String sub1 = "[DEMO] We received your application";
+        String sub2 = "We received your application";
+        String subject = activeProfile.equals("demo") ? sub1 : sub2;
+
         MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
         form.put("from", List.of(senderEmail));
         form.put("to", List.of(recipientEmail));
-        form.put("subject", List.of("We received your application"));
+        form.put("subject", List.of(subject));
         form.put("html", List.of(emailContentCreator.createClientHTML(confirmationId, snapExpeditedEligibility, locale)));
         form.put("attachment", applicationFiles.stream().map(this::asResource).collect(Collectors.toList()));
 
@@ -212,4 +220,6 @@ public class MailGunEmailClient implements EmailClient {
             }
         };
     }
+
+
 }

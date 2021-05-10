@@ -12,12 +12,12 @@ import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -36,7 +36,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
-@SpringBootTest(webEnvironment = NONE)
+@SpringBootTest(webEnvironment = NONE, properties = {
+        "spring.profiles.active=test"
+})
 @ActiveProfiles("test")
 class MailGunEmailClientTest {
 
@@ -46,6 +48,9 @@ class MailGunEmailClientTest {
     @Autowired
     PdfGenerator pdfGenerator;
     int port;
+
+    @Value("${spring.profiles.active}")
+    private String activeProfile;
 
     String mailGunApiKey = "someMailGunApiKey";
     String senderEmail = "someSenderEmail";
@@ -71,7 +76,8 @@ class MailGunEmailClientTest {
                 mailGunApiKey,
                 emailContentCreator,
                 false,
-                pdfGenerator);
+                pdfGenerator,
+                activeProfile);
     }
 
     @AfterEach
@@ -369,7 +375,8 @@ class MailGunEmailClientTest {
                 mailGunApiKey,
                 emailContentCreator,
                 true,
-                pdfGenerator);
+                pdfGenerator,
+                activeProfile);
 
         wireMockServer.stubFor(post(anyUrl())
                 .willReturn(aResponse().withStatus(200)));
@@ -391,5 +398,85 @@ class MailGunEmailClientTest {
                         .withBody(equalTo(senderEmail))
                         .matchingType(ANY)
                         .build()));
+    }
+
+    @Nested
+    @Tag("demo-testing")
+    class EmailContentCreatorDemoTest {
+        @BeforeEach
+        void setUp() {
+            emailContentCreator = mock(EmailContentCreator.class);
+
+            WireMockConfiguration options = WireMockConfiguration.wireMockConfig().dynamicPort();
+            wireMockServer = new WireMockServer(options);
+            wireMockServer.start();
+            port = wireMockServer.port();
+            WireMock.configureFor(port);
+            mailGunEmailClient = new MailGunEmailClient(
+                    senderEmail,
+                    securityEmail,
+                    auditEmail,
+                    hennepinEmail,
+                    "http://localhost:" + port,
+                    mailGunApiKey,
+                    emailContentCreator,
+                    false,
+                    pdfGenerator,
+                    "demo");
+        }
+
+        @Test
+        void sendEmailToTheApplicantFromDemo() {
+            String recipientEmail = "someRecipient";
+            String emailContent = "content";
+            SnapExpeditedEligibility snapExpeditedEligibility = ELIGIBLE;
+            String confirmationId = "someConfirmationId";
+            when(emailContentCreator.createClientHTML(confirmationId, snapExpeditedEligibility, Locale.ENGLISH)).thenReturn(emailContent);
+
+            wireMockServer.stubFor(post(anyUrl())
+                    .willReturn(aResponse().withStatus(200)));
+
+            String fileContent = "someContent";
+            String fileName = "someFileName";
+            mailGunEmailClient.sendConfirmationEmail(
+                    recipientEmail,
+                    confirmationId,
+                    snapExpeditedEligibility,
+                    List.of(new ApplicationFile(fileContent.getBytes(), fileName)), Locale.ENGLISH);
+
+            wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
+                    .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
+                    .withRequestBodyPart(aMultipart()
+                            .withName("from")
+                            .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                            .withBody(equalTo(senderEmail))
+                            .matchingType(ANY)
+                            .build())
+                    .withRequestBodyPart(aMultipart()
+                            .withName("to")
+                            .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                            .withBody(equalTo(recipientEmail))
+                            .matchingType(ANY)
+                            .build())
+                    .withRequestBodyPart(aMultipart()
+                            .withName("subject")
+                            .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                            .withBody(equalTo("[DEMO] We received your application"))
+                            .matchingType(ANY)
+                            .build())
+                    .withRequestBodyPart(aMultipart()
+                            .withName("html")
+                            .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                            .withBody(equalTo(emailContent))
+                            .matchingType(ANY)
+                            .build())
+                    .withRequestBodyPart(aMultipart()
+                            .withName("attachment")
+                            .withHeader(HttpHeaders.CONTENT_DISPOSITION, containing(String.format("filename=\"%s\"", fileName)))
+                            .withHeader(HttpHeaders.CONTENT_TYPE, equalTo(MediaType.APPLICATION_OCTET_STREAM_VALUE))
+                            .withBody(equalTo(fileContent))
+                            .matchingType(ANY)
+                            .build()));
+        }
     }
 }
