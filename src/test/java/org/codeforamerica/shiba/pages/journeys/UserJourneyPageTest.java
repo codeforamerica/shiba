@@ -94,6 +94,25 @@ public class UserJourneyPageTest extends JourneyTest {
     }
 
     @Test
+    void laterDocsZipcodeNavigation() {
+        when(featureFlagConfiguration.get("county-hennepin")).thenReturn(FeatureFlag.ON);
+        when(featureFlagConfiguration.get("later-docs-v2-feature")).thenReturn(FeatureFlag.ON);
+
+        // Unrecognized or inactive county zipcode
+        testPage.clickButton("Upload documents");
+        navigateTo("identifyZipcode");
+        testPage.enter("zipCode", "11111");
+        testPage.clickContinue();
+        assertThat(driver.getTitle()).isEqualTo("Email Docs To Your County");
+
+        // Active county
+        testPage.clickLink("< Go Back");
+        testPage.enter("zipCode", "55444");
+        testPage.clickContinue();
+        assertThat(driver.getTitle()).isEqualTo("Match Info");
+    }
+
+    @Test
     void userCanCompleteTheNonExpeditedHouseholdFlow() {
         nonExpeditedFlowToSuccessPage(true, true, smartyStreetClient, true);
     }

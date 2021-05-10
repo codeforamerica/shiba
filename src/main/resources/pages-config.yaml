@@ -3141,7 +3141,83 @@ workflow:
     subtleLinkTargetPage: identifyZipcode
   identifyZipcode:
     pageConfiguration: *identifyZipcode
+    enrichment: zipcodeToCountyEnrichment
     nextPages:
+      - pageName: matchInfo
+        flag: county-anoka
+        condition:
+          input: mappedCounty
+          value: Anoka
+      - pageName: matchInfo
+        flag: county-carver
+        condition:
+          input: mappedCounty
+          value: Carver
+      - pageName: matchInfo
+        flag: county-clay
+        condition:
+          input: mappedCounty
+          value: Clay
+      - pageName: matchInfo
+        flag: county-cook
+        condition:
+          input: mappedCounty
+          value: Cook
+      - pageName: matchInfo
+        flag: county-dodge
+        condition:
+          input: mappedCounty
+          value: Dodge
+      - pageName: matchInfo
+        flag: county-hennepin
+        condition:
+          input: mappedCounty
+          value: Hennepin
+      - pageName: matchInfo
+        flag: county-morrison
+        condition:
+          input: mappedCounty
+          value: Morrison
+      - pageName: matchInfo
+        flag: county-olmsted
+        condition:
+          input: mappedCounty
+          value: Olmsted
+      - pageName: matchInfo
+        flag: county-ottertail
+        condition:
+          input: mappedCounty
+          value: OtterTail
+      - pageName: matchInfo
+        flag: county-sherburne
+        condition:
+          input: mappedCounty
+          value: Sherburne
+      - pageName: matchInfo
+        flag: county-steele
+        condition:
+          input: mappedCounty
+          value: Steele
+      - pageName: matchInfo
+        flag: county-stlouis
+        condition:
+          input: mappedCounty
+          value: StLouis
+      - pageName: matchInfo
+        flag: county-wabasha
+        condition:
+          input: mappedCounty
+          value: Wabasha
+      - pageName: matchInfo
+        flag: county-waseca
+        condition:
+          input: mappedCounty
+          value: Waseca
+      - pageName: matchInfo
+        flag: county-wright
+        condition:
+          input: mappedCounty
+          value: Wright
       - pageName: emailDocsToYourCounty
     subtleLinkTargetPage: identifyCounty
   matchInfo:
