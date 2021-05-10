@@ -22,4 +22,4 @@ jobs:
       - name: Dependabot Auto Merge
         uses: ahmadnassri/action-dependabot-auto-merge@v2.3.1
         with:
-          github_token: ${{ secrets.BOT_GITHUB_KEY   }}
+          github-token: ${{ secrets.BOT_GITHUB_KEY   }}
