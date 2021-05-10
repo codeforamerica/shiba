@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.pages.emails;
 
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
@@ -26,9 +27,14 @@ public class EmailContentCreator {
     private final static String LATER_DOCS_CONFIRMATION_EMAIL_SUBJECT = "later-docs.confirmation-email-subject";
     private final static String LATER_DOCS_CONFIRMATION_EMAIL_BODY = "later-docs.confirmation-email-body";
     private final static String LATER_DOCS_CONFIRMATION_EMAIL_LINK = "later-docs.confirmation-email-body-link";
+    private final static String DEMO_PURPOSES_ONLY = "email.demo-purposes-only";
+    private final static String SHARE_FEEDBACK = "email.share-feedback";
+    private final String activeProfile;
 
-    public EmailContentCreator(MessageSource messageSource) {
+
+    public EmailContentCreator(MessageSource messageSource,@Value("${spring.profiles.active:Unknown}")String activeProfile ) {
         this.messageSource = messageSource;
+        this.activeProfile=activeProfile;
     }
 
     public String createClientHTML(String confirmationId, SnapExpeditedEligibility snapExpeditedEligibility, Locale locale) {
@@ -37,6 +43,10 @@ public class EmailContentCreator {
             eligibilitySpecificVerbiage = getMessage(SNAP_EXPEDITED_WAIT_TIME, null, locale);
         } else {
             eligibilitySpecificVerbiage = getMessage(SNAP_NONEXPEDITED_WAIT_TIME, null, locale);
+        }
+
+        if(activeProfile.equals("demo")) {
+            return wrapHtml(getMessage(CLIENT_BODY, List.of(eligibilitySpecificVerbiage, confirmationId), locale) + "<p>" + getMessage(DEMO_PURPOSES_ONLY,null, locale) + "</p><p>" + getMessage(SHARE_FEEDBACK, null, locale) + "</p>");
         }
         return wrapHtml(getMessage(CLIENT_BODY, List.of(eligibilitySpecificVerbiage, confirmationId), locale));
     }
