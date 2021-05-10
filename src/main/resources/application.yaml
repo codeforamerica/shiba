@@ -61,18 +61,18 @@ feature-flag:
   county-anoka: on
   county-carver: on
   county-clay: on
-  county-cook: off
-  county-dodge: off
+  county-cook: on
+  county-dodge: on
   county-hennepin: on
-  county-morrison: off
+  county-morrison: on
   county-olmsted: on
-  county-ottertail: off
-  county-sherburne: off
-  county-steele: off
-  county-stlouis: off
+  county-ottertail: on
+  county-sherburne: on
+  county-steele: on
+  county-stlouis: on
   county-wabasha: on
-  county-wadena: off
-  county-waseca: off
+  county-wadena: on
+  county-waseca: on
   county-wright: on
 
 document-upload:
