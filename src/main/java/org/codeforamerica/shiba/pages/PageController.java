@@ -38,6 +38,8 @@ import java.util.*;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
+import static org.codeforamerica.shiba.application.FlowType.UNDETERMINED;
+import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
 
 @Controller
 @Slf4j
@@ -340,7 +342,7 @@ public class PageController {
     private boolean shouldRedirectToTerminalPage(@PathVariable String pageName) {
         LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
         // If they requested a page that was not a postSubmitPage and their application has an Id
-        return !landmarkPagesConfiguration.isPostSubmitPage(pageName) && applicationData.getId() != null;
+        return !landmarkPagesConfiguration.isPostSubmitPage(pageName) && applicationData.getStatus() != IN_PROGRESS;
     }
 
     @PostMapping("/groups/{groupName}/delete")
@@ -426,6 +428,13 @@ public class PageController {
         }
 
         if (pageDataIsValid) {
+            applicationData.setStatus(IN_PROGRESS);
+            if (applicationData.getId() == null) {
+                applicationData.setId(applicationRepository.getNextId());
+            }
+            Application application = applicationFactory.newApplication(applicationData);
+            applicationRepository.save(application); //upsert already
+
             ofNullable(pageWorkflow.getEnrichment())
                     .map(applicationEnrichment::getEnrichment)
                     .map(enrichment -> enrichment.process(applicationData))
@@ -450,7 +459,6 @@ public class PageController {
         pagesData.putPage(submitPage, pageData);
 
         if (pageData.isValid()) {
-            applicationData.setId(applicationRepository.getNextId());
             Application application = applicationFactory.newApplication(applicationData);
             applicationRepository.save(application);
             pageEventPublisher.publish(

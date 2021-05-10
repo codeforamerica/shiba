@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.pages.data;
 
 import lombok.Data;
-import org.codeforamerica.shiba.application.FlowType;
+import org.codeforamerica.shiba.application.*;
 import org.codeforamerica.shiba.application.parsers.PageInputCoordinates;
 import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.pages.config.*;
@@ -22,6 +22,7 @@ public class ApplicationData implements Serializable {
     private Instant startTime;
     private String utmSource;
     private FlowType flow = FlowType.UNDETERMINED;
+    private Status status = Status.IN_PROGRESS;
     private PagesData pagesData = new PagesData();
     private Subworkflows subworkflows = new Subworkflows();
     private Map<String, PagesData> incompleteIterations = new HashMap<>();

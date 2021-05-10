@@ -2,7 +2,7 @@ package org.codeforamerica.shiba.output;
 
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.MonitoringService;
-import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.application.*;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
@@ -25,19 +25,22 @@ public class MnitDocumentConsumer {
     private final ApplicationDataParser<List<Document>> documentListParser;
     private final MonitoringService monitoringService;
     private final String activeProfile;
+    private final ApplicationRepository applicationRepository;
 
     public MnitDocumentConsumer(MnitEsbWebServiceClient mnitClient,
                                 XmlGenerator xmlGenerator,
                                 PdfGenerator pdfGenerator,
                                 ApplicationDataParser<List<Document>> documentListParser,
                                 MonitoringService monitoringService,
-                                @Value("${spring.profiles.active:dev}") String activeProfile) {
+                                @Value("${spring.profiles.active:dev}") String activeProfile,
+                                ApplicationRepository applicationRepository) {
         this.mnitClient = mnitClient;
         this.xmlGenerator = xmlGenerator;
         this.pdfGenerator = pdfGenerator;
         this.documentListParser = documentListParser;
         this.monitoringService = monitoringService;
         this.activeProfile = activeProfile;
+        this.applicationRepository = applicationRepository;
     }
 
     public void process(Application application) {
@@ -47,7 +50,14 @@ public class MnitDocumentConsumer {
                 pdfGenerator.generate(application.getId(), documentType, CASEWORKER), application.getCounty(),
                 application.getId(), documentType)
         );
+        application.getApplicationData().setStatus(Status.SENDING_APPLICATION);
+        applicationRepository.save(application);
+
         mnitClient.send(xmlGenerator.generate(application.getId(), Document.CAF, CASEWORKER), application.getCounty(), application.getId(), Document.CAF);
+
+        application.getApplicationData().setStatus(Status.SUBMITTED_APPLICATION);
+        applicationRepository.save(application);
+
     }
 
     public void processUploadedDocuments(Application application) {

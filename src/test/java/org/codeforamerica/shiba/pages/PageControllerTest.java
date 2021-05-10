@@ -150,7 +150,27 @@ class PageControllerTest {
     }
 
     @Test
-    void shouldSaveApplication() throws Exception {
+    void shouldSaveApplicationOnEveryFormSubmission() throws Exception {
+        applicationData.setStartTimeOnce(Instant.now());
+
+        String applicationId = "someId";
+        Application application = Application.builder()
+                .id(applicationId)
+                .applicationData(applicationData)
+                .build();
+        when(applicationRepository.getNextId()).thenReturn(applicationId);
+        when(applicationFactory.newApplication(applicationData)).thenReturn(application);
+
+        mockMvc.perform(post("/pages/firstPage")
+                .param("foo[]", "some value")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+
+        verify(applicationRepository).save(application);
+        assertThat(applicationData.getId()).isEqualTo(applicationId);
+    }
+
+    @Test
+    void shouldSaveApplicationOnSignaturePage() throws Exception {
         applicationData.setStartTimeOnce(Instant.now());
 
         ZonedDateTime completedAt = ZonedDateTime.now();

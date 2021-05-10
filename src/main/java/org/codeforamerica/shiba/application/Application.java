@@ -1,7 +1,6 @@
 package org.codeforamerica.shiba.application;
 
-import lombok.Builder;
-import lombok.Value;
+import lombok.*;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.pages.Feedback;
 import org.codeforamerica.shiba.pages.Sentiment;
@@ -23,6 +22,7 @@ public class Application {
     County county;
     Duration timeToComplete;
     FlowType flow;
+    Status status;
     Sentiment sentiment;
     String feedback;
 
@@ -37,6 +37,7 @@ public class Application {
                 this.county,
                 this.timeToComplete,
                 this.flow,
+                this.status,
                 sentiment,
                 feedbackText
         );
