@@ -230,3 +230,20 @@ jobs:
         run: |
           rm -f ~/.gradle/caches/modules-2/modules-2.lock
           rm -f ~/.gradle/caches/modules-2/gc.properties
+  upload-pr-number-for-dependabot-merge:
+    name: Upload PR Number for Dependabot Automerge
+    runs-on: ubuntu-latest
+    needs: [unit-test, db-test, journey-test, pdf-test, ccap-test, validation-test, document-test]
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    steps:
+      - name: Save PR Info for Merge Action
+        run: |
+          echo "PR_HEADSHA=${{ github.event.pull_request.head.sha }}" >> pr.env
+          echo "PR_NUMBER=${{ github.event.pull_request.number }}"    >> pr.env
+          echo "PR_TITLE=${{ github.event.pull_request.title }}"      >> pr.env
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: pr-metadata
+          path: pr.env
+          retention-days: 1
