@@ -1,0 +1,23 @@
+name: Merge Dependabot PR
+
+on:
+  pull_request:
+
+jobs:
+  merge-dependabot-pr:
+    name: Merge Dependabot PR
+    runs-on: ubuntu-latest
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    steps:
+      - name: Wait on tests
+        uses: lewagon/wait-on-check-action@v0.2
+        with:
+          ref: ${{ github.ref }}
+          running-workflow-name: "Run tests"
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 60
+      - uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          recreate: true
+          message: |
+            @dependabot merge
