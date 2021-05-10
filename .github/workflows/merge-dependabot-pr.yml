@@ -21,7 +21,7 @@ jobs:
         run: cat pr.env >> "${GITHUB_ENV}"
       - uses: marocchino/sticky-pull-request-comment@v2
         with:
-          number: ${{ env.PR_NUMBER }
+          number: ${{ env.PR_NUMBER }}
           recreate: true
           message: |
             @dependabot merge
