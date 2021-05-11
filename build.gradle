@@ -123,7 +123,7 @@ dependencies {
     }
 
     testImplementation 'com.h2database:h2'
-    testImplementation 'org.awaitility:awaitility:4.0.3'
+    testImplementation 'org.awaitility:awaitility:4.1.0'
     testImplementation 'com.github.tomakehurst:wiremock-standalone:2.27.2'
     testImplementation 'io.github.bonigarcia:webdrivermanager:4.4.3'
     testImplementation 'org.springframework.ws:spring-ws-test'
