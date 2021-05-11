@@ -5,6 +5,7 @@ on:
     workflows: ["Run tests"]
     branches-ignore: ["main"]
     types: ["completed"]
+  workflow_dispatch: {}
 
 jobs:
   merge-dependabot-pr:
@@ -20,7 +21,9 @@ jobs:
           workflow: pr-comment.yml
           name: pr-metadata
       - name: Restore preserved ENV
-        run: cat pr.env >> "${GITHUB_ENV}"
+        run: |
+          cat pr.env >> "${GITHUB_ENV}"
+          cat pr.env
       - uses: marocchino/sticky-pull-request-comment@v2
         with:
           number: ${{ env.PR_NUMBER }}
