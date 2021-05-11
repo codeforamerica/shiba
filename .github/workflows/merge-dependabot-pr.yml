@@ -7,6 +7,7 @@ on:
     types: ["completed"]
   workflow_dispatch: {}
 
+
 jobs:
   merge-dependabot-pr:
     name: Merge Dependabot PR
