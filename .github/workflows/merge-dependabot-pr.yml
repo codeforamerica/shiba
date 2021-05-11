@@ -12,7 +12,7 @@ jobs:
   merge-dependabot-pr:
     name: Merge Dependabot PR
     runs-on: ubuntu-latest
-    if: ${{ github.actor == 'dependabot[bot]' && github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ (github.actor == 'bencalegari' && github.event.workflow_run.conclusion == 'success') ||  }}
     steps:
       - name: Download Artifact from Dependabot Test PR
         uses: dawidd6/action-download-artifact@v2
