@@ -1,9 +1,10 @@
 package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.Program;
+import org.codeforamerica.shiba.internationalization.InternationalizationUtils;
+import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
@@ -27,41 +28,42 @@ public class SuccessMessageService {
         boolean notCcap = applicantPrograms.stream().noneMatch(p -> p.equals(Program.CCAP));
         boolean hasNonExpeditedSnap = hasSnap && !isSnapExpeditedEligible;
 
+        LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
         List<String> messageKeys = new ArrayList<>();
 
         // Snap timing
         if (isSnapExpeditedEligible) {
-            messageKeys.add(getMessage("success.expedited-snap-timing", locale));
+            messageKeys.add(lms.getMessage("success.expedited-snap-timing"));
         }
 
         // Ccap timing
         if (isCcapExpeditedEligible) {
-            messageKeys.add(getMessage("success.expedited-ccap-timing", locale));
+            messageKeys.add(lms.getMessage("success.expedited-ccap-timing"));
         }
 
         // Contact Promise
-        List<String> nextStepLetterProgramNames = getProgramNames(applicantPrograms, hasNonExpeditedSnap, isCcapExpeditedEligible, locale);
-        if (!nextStepLetterProgramNames.isEmpty()) {
-            String programNamesForLetter = listToString(nextStepLetterProgramNames, locale);
-            messageKeys.add(messageSource.getMessage("success.contact-promise", new String[]{programNamesForLetter}, locale));
+        List<String> programNamesForNextStepLetter = getProgramNames(applicantPrograms, hasNonExpeditedSnap, isCcapExpeditedEligible, lms);
+        if (!programNamesForNextStepLetter.isEmpty()) {
+            String programsInNextStepLetter = InternationalizationUtils.listToString(programNamesForNextStepLetter, lms);
+            messageKeys.add(lms.getMessage("success.contact-promise", new String[]{programsInNextStepLetter}));
         }
 
         // Interview expectation
         if (!onlyCcap) {
-            messageKeys.add(getMessage("success.you-will-need-to-complete-an-interview", locale));
+            messageKeys.add(lms.getMessage("success.you-will-need-to-complete-an-interview"));
         }
 
         // Suggested Action
         if (isSnapExpeditedEligible && notCcap) {
-            messageKeys.add(getMessage("success.expedited-snap-suggested-action", locale));
+            messageKeys.add(lms.getMessage("success.expedited-snap-suggested-action"));
         } else {
-            messageKeys.add(getMessage("success.standard-suggested-action", locale));
+            messageKeys.add(lms.getMessage("success.standard-suggested-action"));
         }
 
         return String.join("<br><br>", messageKeys);
     }
 
-    private List<String> getProgramNames(List<String> applicantPrograms, boolean hasNonExpeditedSnap, boolean isCcapExpeditedEligible, Locale locale) {
+    private List<String> getProgramNames(List<String> applicantPrograms, boolean hasNonExpeditedSnap, boolean isCcapExpeditedEligible, LocaleSpecificMessageSource ms) {
         boolean hasCcap = applicantPrograms.stream().anyMatch(p -> p.equals(Program.CCAP));
         boolean hasNonExpeditedCcap = hasCcap && !isCcapExpeditedEligible;
         boolean hasGrh = applicantPrograms.stream().anyMatch(p -> p.equals(Program.GRH));
@@ -69,47 +71,22 @@ public class SuccessMessageService {
         boolean hasEa = applicantPrograms.stream().anyMatch(p -> p.equals(Program.EA));
         List<String> nextStepLetterProgramNames = new ArrayList<>();
         if (hasNonExpeditedCcap) {
-            nextStepLetterProgramNames.add(getMessage("success.childcare", locale));
+            nextStepLetterProgramNames.add(ms.getMessage("success.childcare"));
         }
         if (hasGrh) {
-            nextStepLetterProgramNames.add(getMessage("success.housing", locale));
+            nextStepLetterProgramNames.add(ms.getMessage("success.housing"));
         }
         if (hasEa) {
-            nextStepLetterProgramNames.add((getMessage("success.emergency-assistance", locale)));
+            nextStepLetterProgramNames.add((ms.getMessage("success.emergency-assistance")));
         }
         if (hasCash) {
-            nextStepLetterProgramNames.add((getMessage("success.cash-support", locale)));
+            nextStepLetterProgramNames.add((ms.getMessage("success.cash-support")));
         }
         if (hasNonExpeditedSnap) {
-            nextStepLetterProgramNames.add(getMessage("success.food-support", locale));
+            nextStepLetterProgramNames.add(ms.getMessage("success.food-support"));
         }
 
         return nextStepLetterProgramNames;
     }
 
-    /**
-     * Takes a list of strings and returns an English- or Spanish-language string representation of that list
-     * e.g. ["a", "b", "c"] -> "a, b and c"
-     *
-     * The Oxford comma is omitted for Spanish-language compatibility. Spanish does not use the Oxford comma.
-     *
-     * If we ever add a language which represents lists differently, this method will need to be updated.
-     */
-    private String listToString(List<String> list, Locale locale) {
-        if (list.isEmpty()) return "";
-
-        int lastIdx = list.size() - 1;
-        String lastElement = list.get(lastIdx);
-        if (list.size() == 1) return lastElement;
-
-        String firstPart = String.join(", ", list.subList(0, lastIdx));
-        String and = getMessage("general.and", locale);
-
-        return String.join(" %s ".formatted(and), firstPart, lastElement);
-    }
-
-    @NotNull
-    private String getMessage(String messageKey, Locale locale) {
-        return messageSource.getMessage(messageKey, null, locale);
-    }
 }
