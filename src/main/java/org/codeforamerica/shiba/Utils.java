@@ -10,6 +10,10 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class Utils {
+    private Utils() {
+        throw new AssertionError("Cannot instantiate utility class");
+    }
+
     public static String joinNonEmpty(String... strings) {
         return Arrays.stream(strings)
                 .filter(Predicate.not(String::isEmpty))

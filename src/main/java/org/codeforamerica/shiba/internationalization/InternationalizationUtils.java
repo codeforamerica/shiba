@@ -3,6 +3,10 @@ package org.codeforamerica.shiba.internationalization;
 import java.util.List;
 
 public class InternationalizationUtils {
+    private InternationalizationUtils() {
+        throw new AssertionError("Cannot instantiate utility class");
+    }
+
     /**
      * Takes a list of strings and returns an English- or Spanish-language string representation of that list
      * e.g. ["a", "b", "c"] -> "a, b and c"
