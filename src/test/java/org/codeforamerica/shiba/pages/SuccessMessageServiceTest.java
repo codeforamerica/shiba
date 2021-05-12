@@ -136,16 +136,16 @@ public class SuccessMessageServiceTest extends AbstractPageControllerTest {
                         SnapExpeditedEligibility.ELIGIBLE,
                         CcapExpeditedEligibility.UNDETERMINED,
                         "You will receive a call from your county within 24 hours about your application for food support. The call may come from an unknown number.<br><br>" +
-                                "You will receive a letter in the mail with next steps for your application for housing/emergency assistance in 7-10 days.<br><br>" +
+                                "You will receive a letter in the mail with next steps for your application for housing and emergency assistance in 7-10 days.<br><br>" +
                                 "You will need to complete an interview with a caseworker.<br><br>" +
                                 "If you don't hear from your county within 3 days or want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
                 ),
                 Arguments.of(
-                        "Non-Expedited SNAP + any other programs",
+                        "Non-Expedited SNAP + at least 3 other programs",
                         List.of("SNAP", "GRH", "EA", "CASH"),
                         SnapExpeditedEligibility.NOT_ELIGIBLE,
                         CcapExpeditedEligibility.UNDETERMINED,
-                        "You will receive a letter in the mail with next steps for your application for housing/emergency assistance/cash support/food support in 7-10 days.<br><br>" +
+                        "You will receive a letter in the mail with next steps for your application for housing, emergency assistance, cash support and food support in 7-10 days.<br><br>" +
                                 "You will need to complete an interview with a caseworker.<br><br>" +
                                 "If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
                 ),
@@ -164,7 +164,7 @@ public class SuccessMessageServiceTest extends AbstractPageControllerTest {
                         List.of("CCAP", "GRH"),
                         SnapExpeditedEligibility.UNDETERMINED,
                         CcapExpeditedEligibility.NOT_ELIGIBLE,
-                        "You will receive a letter in the mail with next steps for your application for childcare/housing in 7-10 days.<br><br>" +
+                        "You will receive a letter in the mail with next steps for your application for childcare and housing in 7-10 days.<br><br>" +
                                 "You will need to complete an interview with a caseworker.<br><br>" +
                                 "If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
                 ),
@@ -173,7 +173,7 @@ public class SuccessMessageServiceTest extends AbstractPageControllerTest {
                         List.of("CASH", "GRH"),
                         SnapExpeditedEligibility.UNDETERMINED,
                         CcapExpeditedEligibility.UNDETERMINED,
-                        "You will receive a letter in the mail with next steps for your application for housing/cash support in 7-10 days.<br><br>" +
+                        "You will receive a letter in the mail with next steps for your application for housing and cash support in 7-10 days.<br><br>" +
                                 "You will need to complete an interview with a caseworker.<br><br>" +
                                 "If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>"
                 )
@@ -203,7 +203,7 @@ public class SuccessMessageServiceTest extends AbstractPageControllerTest {
         var snapExpeditedEligibility = SnapExpeditedEligibility.ELIGIBLE;
         var ccapExpeditedEligibility = CcapExpeditedEligibility.UNDETERMINED;
         var expectedMessage = "You will receive a call from your county within 24 hours about your application for food support. The call may come from an unknown number.<br><br>" +
-                "You will receive a letter in the mail with next steps for your application for housing/emergency assistance in 7-10 days.<br><br>" +
+                "You will receive a letter in the mail with next steps for your application for housing and emergency assistance in 7-10 days.<br><br>" +
                 "You will need to complete an interview with a caseworker.<br><br>" +
                 "If you don't hear from your county within 3 days or want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>";
         assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessage);
