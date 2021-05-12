@@ -27,8 +27,7 @@ public class SuccessMessageService {
                                     Locale locale) {
         boolean isSnapExpeditedEligible = snapExpeditedEligibility.equals(SnapExpeditedEligibility.ELIGIBLE);
         boolean isCcapExpeditedEligible = ccapExpeditedEligibility.equals(CcapExpeditedEligibility.ELIGIBLE);
-        boolean onlyCcap = programs.stream().allMatch(p -> p.equals(CCAP));
-        boolean notCcap = programs.stream().noneMatch(p -> p.equals(CCAP));
+
         LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
 
         List<String> paragraphs = new ArrayList<>();
@@ -51,12 +50,13 @@ public class SuccessMessageService {
         }
 
         // Interview expectation
+        boolean onlyCcap = programs.stream().allMatch(p -> p.equals(CCAP));
         if (!onlyCcap) {
             paragraphs.add(lms.getMessage("success.you-will-need-to-complete-an-interview"));
         }
 
         // Suggested Action
-        if (isSnapExpeditedEligible && notCcap) {
+        if (isSnapExpeditedEligible && !programs.contains(CCAP)) {
             paragraphs.add(lms.getMessage("success.expedited-snap-suggested-action"));
         } else {
             paragraphs.add(lms.getMessage("success.standard-suggested-action"));
@@ -69,30 +69,30 @@ public class SuccessMessageService {
                                                    boolean isSnapExpeditedEligible,
                                                    boolean isCcapExpeditedEligible,
                                                    LocaleSpecificMessageSource ms) {
-        boolean hasNonExpeditedSnap = hasProgram(SNAP, allPrograms) && !isSnapExpeditedEligible;
-        boolean hasNonExpeditedCcap = hasProgram(CCAP, allPrograms) && !isCcapExpeditedEligible;
-
         List<String> nextStepLetterPrograms = new ArrayList<>();
+
+        boolean hasNonExpeditedCcap = allPrograms.contains(CCAP) && !isCcapExpeditedEligible;
         if (hasNonExpeditedCcap) {
             nextStepLetterPrograms.add(ms.getMessage("success.childcare"));
         }
-        if (hasProgram(GRH, allPrograms)) {
+
+        if (allPrograms.contains(GRH)) {
             nextStepLetterPrograms.add(ms.getMessage("success.housing"));
         }
-        if (hasProgram(EA, allPrograms)) {
+
+        if (allPrograms.contains(EA)) {
             nextStepLetterPrograms.add((ms.getMessage("success.emergency-assistance")));
         }
-        if (hasProgram(CASH, allPrograms)) {
+
+        if (allPrograms.contains(CASH)) {
             nextStepLetterPrograms.add((ms.getMessage("success.cash-support")));
         }
+
+        boolean hasNonExpeditedSnap = allPrograms.contains(SNAP) && !isSnapExpeditedEligible;
         if (hasNonExpeditedSnap) {
             nextStepLetterPrograms.add(ms.getMessage("success.food-support"));
         }
 
         return nextStepLetterPrograms;
-    }
-
-    private boolean hasProgram(String program, List<String> programs) {
-        return programs.stream().anyMatch(p -> p.equals(program));
     }
 }
