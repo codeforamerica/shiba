@@ -25,7 +25,6 @@ public class SuccessMessageService {
         boolean isSnapExpeditedEligible = snapExpeditedEligibility.equals(SnapExpeditedEligibility.ELIGIBLE);
         boolean isCcapExpeditedEligible = ccapExpeditedEligibility.equals(CcapExpeditedEligibility.ELIGIBLE);
         boolean notCcap = applicantPrograms.stream().noneMatch(p -> p.equals(Program.CCAP));
-
         boolean hasNonExpeditedSnap = hasSnap && !isSnapExpeditedEligible;
 
         List<String> messageKeys = new ArrayList<>();
@@ -40,13 +39,11 @@ public class SuccessMessageService {
             messageKeys.add(getMessage("success.expedited-ccap-timing", locale));
         }
 
-
         // Contact Promise
-        List<String> nextStepLetterProgramNames = getProgramNames(locale, applicantPrograms, hasNonExpeditedSnap, isCcapExpeditedEligible);
-        if (nextStepLetterProgramNames.size() > 0) {
-            String programNamesForLetter = String.join("/", nextStepLetterProgramNames);
-            String[] arg = new String[]{programNamesForLetter};
-            messageKeys.add(messageSource.getMessage("success.contact-promise", arg, locale));
+        List<String> nextStepLetterProgramNames = getProgramNames(applicantPrograms, hasNonExpeditedSnap, isCcapExpeditedEligible, locale);
+        if (!nextStepLetterProgramNames.isEmpty()) {
+            String programNamesForLetter = listToString(nextStepLetterProgramNames, locale);
+            messageKeys.add(messageSource.getMessage("success.contact-promise", new String[]{programNamesForLetter}, locale));
         }
 
         // Interview expectation
@@ -61,11 +58,10 @@ public class SuccessMessageService {
             messageKeys.add(getMessage("success.standard-suggested-action", locale));
         }
 
-
         return String.join("<br><br>", messageKeys);
     }
 
-    private List<String> getProgramNames(Locale locale, List<String> applicantPrograms, boolean hasNonExpeditedSnap, boolean isCcapExpeditedEligible) {
+    private List<String> getProgramNames(List<String> applicantPrograms, boolean hasNonExpeditedSnap, boolean isCcapExpeditedEligible, Locale locale) {
         boolean hasCcap = applicantPrograms.stream().anyMatch(p -> p.equals(Program.CCAP));
         boolean hasNonExpeditedCcap = hasCcap && !isCcapExpeditedEligible;
         boolean hasGrh = applicantPrograms.stream().anyMatch(p -> p.equals(Program.GRH));
@@ -89,6 +85,27 @@ public class SuccessMessageService {
         }
 
         return nextStepLetterProgramNames;
+    }
+
+    /**
+     * Takes a list of strings and returns an English- or Spanish-language string representation of that list
+     * e.g. ["a", "b", "c"] -> "a, b and c"
+     *
+     * The Oxford comma is omitted for Spanish-language compatibility. Spanish does not use the Oxford comma.
+     *
+     * If we ever add a language which represents lists differently, this method will need to be updated.
+     */
+    private String listToString(List<String> list, Locale locale) {
+        if (list.isEmpty()) return "";
+
+        int lastIdx = list.size() - 1;
+        String lastElement = list.get(lastIdx);
+        if (list.size() == 1) return lastElement;
+
+        String firstPart = String.join(", ", list.subList(0, lastIdx));
+        String and = getMessage("general.and", locale);
+
+        return String.join(" %s ".formatted(and), firstPart, lastElement);
     }
 
     @NotNull
