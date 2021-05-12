@@ -12,7 +12,7 @@ public interface JobIncomeInformation {
 
     Iteration getIteration();
 
-    default Double parseDouble(String s) {
+    default Double parseWithCommasRemoved(String s) {
         try {
             return Double.parseDouble(s.replace(",", ""));
         } catch (Exception e) {
