@@ -8,8 +8,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-
 public class PageUtils {
+    private PageUtils() {
+        throw new AssertionError("Cannot instantiate utility class");
+    }
+
     private static final String WEB_INPUT_ARRAY_TOKEN = "[]";
 
     public static String getFormInputName(String name) {
