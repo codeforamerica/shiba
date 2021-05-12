@@ -25,13 +25,10 @@ public class SuccessMessageService {
                                     SnapExpeditedEligibility snapExpeditedEligibility,
                                     CcapExpeditedEligibility ccapExpeditedEligibility,
                                     Locale locale) {
-        boolean hasSnap = hasProgram(SNAP, programs);
-        boolean onlyCcap = programs.stream().allMatch(p -> p.equals(CCAP));
         boolean isSnapExpeditedEligible = snapExpeditedEligibility.equals(SnapExpeditedEligibility.ELIGIBLE);
         boolean isCcapExpeditedEligible = ccapExpeditedEligibility.equals(CcapExpeditedEligibility.ELIGIBLE);
+        boolean onlyCcap = programs.stream().allMatch(p -> p.equals(CCAP));
         boolean notCcap = programs.stream().noneMatch(p -> p.equals(CCAP));
-        boolean hasNonExpeditedSnap = hasSnap && !isSnapExpeditedEligible;
-
         LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
 
         List<String> messages = new ArrayList<>();
@@ -47,7 +44,7 @@ public class SuccessMessageService {
         }
 
         // Contact Promise
-        List<String> programNamesForNextStepLetter = getNextStepLetterPrograms(programs, hasNonExpeditedSnap, isCcapExpeditedEligible, lms);
+        List<String> programNamesForNextStepLetter = getNextStepLetterPrograms(programs, isSnapExpeditedEligible, isCcapExpeditedEligible, lms);
         if (!programNamesForNextStepLetter.isEmpty()) {
             String programsInNextStepLetter = listToString(programNamesForNextStepLetter, lms);
             messages.add(lms.getMessage("success.contact-promise", new String[]{programsInNextStepLetter}));
@@ -69,25 +66,22 @@ public class SuccessMessageService {
     }
 
     private List<String> getNextStepLetterPrograms(List<String> allPrograms,
-                                                   boolean hasNonExpeditedSnap,
+                                                   boolean isSnapExpeditedEligible,
                                                    boolean isCcapExpeditedEligible,
                                                    LocaleSpecificMessageSource ms) {
-        boolean hasCcap = hasProgram(CCAP, allPrograms);
-        boolean hasNonExpeditedCcap = hasCcap && !isCcapExpeditedEligible;
-        boolean hasGrh = hasProgram(GRH, allPrograms);
-        boolean hasCash = hasProgram(CASH, allPrograms);
-        boolean hasEa = hasProgram(EA, allPrograms);
+        boolean hasNonExpeditedSnap = hasProgram(SNAP, allPrograms) && !isSnapExpeditedEligible;
+        boolean hasNonExpeditedCcap = hasProgram(CCAP, allPrograms) && !isCcapExpeditedEligible;
         List<String> nextStepLetterPrograms = new ArrayList<>();
         if (hasNonExpeditedCcap) {
             nextStepLetterPrograms.add(ms.getMessage("success.childcare"));
         }
-        if (hasGrh) {
+        if (hasProgram(GRH, allPrograms)) {
             nextStepLetterPrograms.add(ms.getMessage("success.housing"));
         }
-        if (hasEa) {
+        if (hasProgram(EA, allPrograms)) {
             nextStepLetterPrograms.add((ms.getMessage("success.emergency-assistance")));
         }
-        if (hasCash) {
+        if (hasProgram(CASH, allPrograms)) {
             nextStepLetterPrograms.add((ms.getMessage("success.cash-support")));
         }
         if (hasNonExpeditedSnap) {
