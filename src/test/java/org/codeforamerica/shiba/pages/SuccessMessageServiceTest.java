@@ -184,25 +184,22 @@ public class SuccessMessageServiceTest extends AbstractPageControllerTest {
     @SuppressWarnings("unused")
     @ParameterizedTest(name = "{0}")
     @MethodSource("org.codeforamerica.shiba.pages.SuccessMessageServiceTest#successMessageTestCases")
-    void displaysCorrectSuccessMessage(String testName, List<String> programs, SnapExpeditedEligibility snapExpeditedEligibility, CcapExpeditedEligibility ccapExpeditedEligibility, String expectedMessage) throws Exception {
-        applicationData.setPagesData(new PagesDataBuilder().build(
-                List.of(new PageDataBuilder("choosePrograms", Map.of("programs", programs))))
-        );
+    void displaysCorrectSuccessMessageForApplicantPrograms(String testName, List<String> programs, SnapExpeditedEligibility snapExpeditedEligibility, CcapExpeditedEligibility ccapExpeditedEligibility, String expectedMessage) throws Exception {
+        setPrograms(programs);
 
-        applicationData.setSubworkflows(new Subworkflows());
+        setSubworkflows(new Subworkflows());
 
         assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessage);
     }
 
     @Test
     void displaysCorrectSuccessMessageForHouseholdMemberPrograms() throws Exception {
-        applicationData.setPagesData(new PagesDataBuilder().build(
-                List.of(new PageDataBuilder("choosePrograms", Map.of("programs", List.of("SNAP"))))
-        ));
+        setPrograms(List.of("SNAP"));
 
-        applicationData.setSubworkflows(new Subworkflows(Map.of("household", new Subworkflow(List.of(
+        setSubworkflows(new Subworkflows(Map.of("household", new Subworkflow(List.of(
                 new PagesDataBuilder().build(List.of(new PageDataBuilder("householdMemberInfo", Map.of("programs", List.of("GRH", "EA")))))
         )))));
+
         var snapExpeditedEligibility = SnapExpeditedEligibility.ELIGIBLE;
         var ccapExpeditedEligibility = CcapExpeditedEligibility.UNDETERMINED;
         var expectedMessage = "You will receive a call from your county within 24 hours about your application for food support. The call may come from an unknown number.<br><br>" +
@@ -210,6 +207,16 @@ public class SuccessMessageServiceTest extends AbstractPageControllerTest {
                 "You will need to complete an interview with a caseworker.<br><br>" +
                 "If you don't hear from your county within 3 days or want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a>";
         assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessage);
+    }
+
+    private void setSubworkflows(Subworkflows subworkflows) {
+        applicationData.setSubworkflows(subworkflows);
+    }
+
+    private void setPrograms(List<String> programs) {
+        applicationData.setPagesData(new PagesDataBuilder().build(
+                List.of(new PageDataBuilder("choosePrograms", Map.of("programs", programs))))
+        );
     }
 
     private void assertCorrectMessage(SnapExpeditedEligibility snapExpeditedEligibility, CcapExpeditedEligibility ccapExpeditedEligibility, String expectedMessage) throws Exception {
