@@ -101,9 +101,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'com.mixpanel:mixpanel-java:1.5.0'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'com.sun.activation:jakarta.activation:1.2.2'
-    implementation 'org.springframework:spring-aspects:5.3.7'
-    implementation 'org.springframework.retry:spring-retry:1.3.1'
+    implementation 'com.sun.activation:jakarta.activation'
+    implementation 'org.springframework:spring-aspects'
+    implementation 'org.springframework.retry:spring-retry'
     implementation 'ch.qos.logback.contrib:logback-json-classic:0.1.5'
     implementation 'ch.qos.logback.contrib:logback-jackson:0.1.5'
     implementation 'ch.qos.logback:logback-core:1.2.0'
@@ -123,7 +123,7 @@ dependencies {
     }
 
     testImplementation 'com.h2database:h2'
-    testImplementation 'org.awaitility:awaitility:4.1.0'
+    testImplementation 'org.awaitility:awaitility'
     testImplementation 'com.github.tomakehurst:wiremock-standalone:2.27.2'
     testImplementation 'io.github.bonigarcia:webdrivermanager:4.4.3'
     testImplementation 'org.springframework.ws:spring-ws-test'
