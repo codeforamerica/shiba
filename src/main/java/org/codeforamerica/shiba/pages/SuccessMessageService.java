@@ -31,38 +31,38 @@ public class SuccessMessageService {
         boolean notCcap = programs.stream().noneMatch(p -> p.equals(CCAP));
         LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
 
-        List<String> messages = new ArrayList<>();
+        List<String> paragraphs = new ArrayList<>();
 
         // Snap timing
         if (isSnapExpeditedEligible) {
-            messages.add(lms.getMessage("success.expedited-snap-timing"));
+            paragraphs.add(lms.getMessage("success.expedited-snap-timing"));
         }
 
         // Ccap timing
         if (isCcapExpeditedEligible) {
-            messages.add(lms.getMessage("success.expedited-ccap-timing"));
+            paragraphs.add(lms.getMessage("success.expedited-ccap-timing"));
         }
 
         // Contact Promise
-        List<String> programNamesForNextStepLetter = getNextStepLetterPrograms(programs, isSnapExpeditedEligible, isCcapExpeditedEligible, lms);
-        if (!programNamesForNextStepLetter.isEmpty()) {
-            String programsInNextStepLetter = listToString(programNamesForNextStepLetter, lms);
-            messages.add(lms.getMessage("success.contact-promise", new String[]{programsInNextStepLetter}));
+        List<String> nextStepLetterPrograms = getNextStepLetterPrograms(programs, isSnapExpeditedEligible, isCcapExpeditedEligible, lms);
+        if (!nextStepLetterPrograms.isEmpty()) {
+            String programsInNextStepLetter = listToString(nextStepLetterPrograms, lms);
+            paragraphs.add(lms.getMessage("success.contact-promise", new String[]{programsInNextStepLetter}));
         }
 
         // Interview expectation
         if (!onlyCcap) {
-            messages.add(lms.getMessage("success.you-will-need-to-complete-an-interview"));
+            paragraphs.add(lms.getMessage("success.you-will-need-to-complete-an-interview"));
         }
 
         // Suggested Action
         if (isSnapExpeditedEligible && notCcap) {
-            messages.add(lms.getMessage("success.expedited-snap-suggested-action"));
+            paragraphs.add(lms.getMessage("success.expedited-snap-suggested-action"));
         } else {
-            messages.add(lms.getMessage("success.standard-suggested-action"));
+            paragraphs.add(lms.getMessage("success.standard-suggested-action"));
         }
 
-        return String.join("<br><br>", messages);
+        return String.join("<br><br>", paragraphs);
     }
 
     private List<String> getNextStepLetterPrograms(List<String> allPrograms,
@@ -71,6 +71,7 @@ public class SuccessMessageService {
                                                    LocaleSpecificMessageSource ms) {
         boolean hasNonExpeditedSnap = hasProgram(SNAP, allPrograms) && !isSnapExpeditedEligible;
         boolean hasNonExpeditedCcap = hasProgram(CCAP, allPrograms) && !isCcapExpeditedEligible;
+
         List<String> nextStepLetterPrograms = new ArrayList<>();
         if (hasNonExpeditedCcap) {
             nextStepLetterPrograms.add(ms.getMessage("success.childcare"));
