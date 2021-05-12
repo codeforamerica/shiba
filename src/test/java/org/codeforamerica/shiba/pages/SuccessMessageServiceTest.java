@@ -183,7 +183,7 @@ public class SuccessMessageServiceTest extends AbstractPageControllerTest {
 
     @SuppressWarnings("unused")
     @ParameterizedTest(name = "{0}")
-    @MethodSource("org.codeforamerica.shiba.pages.SuccessPageTest#successMessageTestCases")
+    @MethodSource("org.codeforamerica.shiba.pages.SuccessMessageServiceTest#successMessageTestCases")
     void displaysCorrectSuccessMessage(String testName, List<String> programs, SnapExpeditedEligibility snapExpeditedEligibility, CcapExpeditedEligibility ccapExpeditedEligibility, String expectedMessage) throws Exception {
         applicationData.setPagesData(new PagesDataBuilder().build(
                 List.of(new PageDataBuilder("choosePrograms", Map.of("programs", programs))))
