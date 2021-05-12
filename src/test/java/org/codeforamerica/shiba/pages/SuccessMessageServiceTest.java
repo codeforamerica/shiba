@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-public class SuccessPageTest extends AbstractPageControllerTest {
+public class SuccessMessageServiceTest extends AbstractPageControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
