@@ -2126,7 +2126,7 @@ pageDefinitions:
         options:
           selectableOptions:
             - value: "true"
-              messageKey: address-validation.suggested-addressm
+              messageKey: address-validation.suggested-address
             - value: "false"
               messageKey: address-validation.address-you-entered
   - &registerToVote
