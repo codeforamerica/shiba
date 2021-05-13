@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,8 +46,8 @@ class SnapExpeditedEligibilityDeciderTest {
             "150,101,NOT_ELIGIBLE",
     })
     void shouldQualify_whenMeetingIncomeAndAssetsThresholds(
-            double incomeString,
-            double assetString,
+            BigDecimal incomeString,
+            BigDecimal assetString,
             SnapExpeditedEligibility expectedDecision
     ) {
         Money income = new Money(incomeString);
@@ -65,7 +66,7 @@ class SnapExpeditedEligibilityDeciderTest {
             "101,false,NOT_ELIGIBLE"
     })
     void shouldQualify_whenApplicantIsMigrantWorkerAndMeetAssetThreshold(
-            double assets,
+            BigDecimal assets,
             Boolean isMigrantWorker,
             SnapExpeditedEligibility expectedDecision
     ) {

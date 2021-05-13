@@ -3,6 +3,8 @@ package org.codeforamerica.shiba.output.caf;
 import org.codeforamerica.shiba.Money;
 import org.codeforamerica.shiba.pages.data.Iteration;
 
+import java.math.BigDecimal;
+
 public interface JobIncomeInformation {
     boolean isComplete();
 
@@ -12,9 +14,9 @@ public interface JobIncomeInformation {
 
     Iteration getIteration();
 
-    default Double parseWithCommasRemoved(String s) {
+    default BigDecimal parseWithCommasRemoved(String s) {
         try {
-            return Double.parseDouble(s.replace(",", ""));
+            return new BigDecimal(s.replace(",", ""));
         } catch (Exception e) {
             return null;
         }
