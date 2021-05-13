@@ -2126,7 +2126,7 @@ pageDefinitions:
         options:
           selectableOptions:
             - value: "true"
-              messageKey: address-validation.suggested-address
+              messageKey: address-validation.suggested-addressm
             - value: "false"
               messageKey: address-validation.address-you-entered
   - &registerToVote
@@ -2146,6 +2146,21 @@ pageDefinitions:
               messageKey: register-to-vote.no-thanks
     pageTitle: register-to-vote.title
     hasPrimaryButton: false
+  - &healthcareCoverage
+    name: healthcareCoverage
+    headerKey: healthcareCoverage.do-you-currently-have-healthcare-coverage
+    inputs:
+      - name: healthcareCoverage
+        type: RADIO
+        options:
+          selectableOptions:
+          - value: "YES"
+            messageKey: general.inputs.yes
+          - value: "NO"
+            messageKey: general.inputs.no
+          - value: "NOT_SURE"
+            messageKey: general.inputs.not-sure
+    pageTitle: healthcareCoverage.title
   - &helper
     name: helper
     headerKey: helper.do-you-want-to-designate-someone-to-help-with-your-benefits
@@ -2835,6 +2850,10 @@ workflow:
       - pageName: registerToVote
   registerToVote:
     pageConfiguration: *registerToVote
+    nextPages:
+      - pageName: healthcareCoverage
+  healthcareCoverage:
+    pageConfiguration: *healthcareCoverage
     nextPages:
       - pageName: helper
   helper:
