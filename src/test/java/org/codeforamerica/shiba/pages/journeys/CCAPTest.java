@@ -208,8 +208,8 @@ public class CCAPTest extends JourneyTest {
         testPage.clickContinue();
         testPage.clickButton("Yes, that's everyone");
         assertThat(driver.findElementByClassName("h2").getText()).isEqualTo("Does everyone in your household buy and prepare food with you?");
-        testPage.clickButton(NO.getDisplayValue());
-        testPage.clickButton(YES.getDisplayValue());
+        testPage.enter("isPreparingMealsTogether", NO.getDisplayValue());
+        testPage.enter("goingToSchool", YES.getDisplayValue());
         assertThat(driver.findElementByClassName("h2").getText()).isEqualTo("Is anyone in your household pregnant?");
     }
 
@@ -225,17 +225,17 @@ public class CCAPTest extends JourneyTest {
         assertThat(driver.getTitle()).isEqualTo("Who are the children in need of care?");
         testPage.clickContinue();
         testPage.clickContinue();
-        testPage.clickButton(YES.getDisplayValue());
+        testPage.enter("goingToSchool", YES.getDisplayValue());
         assertThat(driver.getTitle()).isEqualTo("Who is going to school?");
         testPage.clickContinue();
-        testPage.clickButton(NO.getDisplayValue());
-        testPage.clickButton(YES.getDisplayValue());
-        testPage.clickButton(YES.getDisplayValue());
-        testPage.clickButton(NO.getDisplayValue());
-        testPage.clickButton(NO.getDisplayValue());
+        testPage.enter("isPregnant", NO.getDisplayValue());
+        testPage.enter("migrantOrSeasonalFarmWorker", YES.getDisplayValue());
+        testPage.enter("isUsCitizen", YES.getDisplayValue());
+        testPage.enter("hasDisability", NO.getDisplayValue());
+        testPage.enter("hasWorkSituation", NO.getDisplayValue());
         testPage.clickContinue();
-        testPage.clickButton(NO.getDisplayValue());
-        testPage.clickButton(YES.getDisplayValue());
+        testPage.enter("areYouWorking", NO.getDisplayValue());
+        testPage.enter("currentlyLookingForJob", YES.getDisplayValue());
         assertThat(driver.getTitle()).isEqualTo("Who is looking for a job");
     }
 
@@ -261,20 +261,20 @@ public class CCAPTest extends JourneyTest {
         whatAreParentNames.get(0).sendKeys("My Parent");
         whatAreParentNames.get(1).sendKeys("Default's Parent");
         testPage.clickContinue();
-        testPage.clickButton(YES.getDisplayValue());
+        testPage.enter("isPreparingMealsTogether", YES.getDisplayValue());
         testPage.enter("livingSituation", "None of these");
         testPage.clickContinue();
-        testPage.clickButton(YES.getDisplayValue());
+        testPage.enter("goingToSchool", YES.getDisplayValue());
         assertThat(driver.getTitle()).isEqualTo("Who is going to school?");
         testPage.clickContinue();
-        testPage.clickButton(NO.getDisplayValue());
-        testPage.clickButton(YES.getDisplayValue());
-        testPage.clickButton(YES.getDisplayValue());
-        testPage.clickButton(NO.getDisplayValue());
-        testPage.clickButton(NO.getDisplayValue());
+        testPage.enter("isPregnant", NO.getDisplayValue());
+        testPage.enter("migrantOrSeasonalFarmWorker", YES.getDisplayValue());
+        testPage.enter("isUsCitizen", YES.getDisplayValue());
+        testPage.enter("hasDisability", NO.getDisplayValue());
+        testPage.enter("hasWorkSituation", NO.getDisplayValue());
         testPage.clickContinue();
-        testPage.clickButton(NO.getDisplayValue());
-        testPage.clickButton(YES.getDisplayValue());
+        testPage.enter("areYouWorking", NO.getDisplayValue());
+        testPage.enter("currentlyLookingForJob", YES.getDisplayValue());
         assertThat(driver.getTitle()).isEqualTo("Who is looking for a job");
     }
 
@@ -285,16 +285,15 @@ public class CCAPTest extends JourneyTest {
         testPage.enter("addHouseholdMembers", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.clickContinue();
-        testPage.clickButton(YES.getDisplayValue());
-        assertThat(driver.getTitle()).isEqualTo("Pregnant");
-        testPage.clickButton(YES.getDisplayValue());
-        testPage.clickButton(YES.getDisplayValue());
-        testPage.clickButton(YES.getDisplayValue());
-        testPage.clickButton(YES.getDisplayValue());
-        testPage.clickButton(YES.getDisplayValue());
+        testPage.enter("goingToSchool", YES.getDisplayValue());
+        testPage.enter("isPregnant", YES.getDisplayValue());
+        testPage.enter("migrantOrSeasonalFarmWorker", YES.getDisplayValue());
+        testPage.enter("isUsCitizen", YES.getDisplayValue());
+        testPage.enter("hasDisability", YES.getDisplayValue());
+        testPage.enter("hasWorkSituation", YES.getDisplayValue());
         testPage.clickContinue();
-        testPage.clickButton(NO.getDisplayValue());
-        testPage.clickButton(YES.getDisplayValue());
+        testPage.enter("areYouWorking", NO.getDisplayValue());
+        testPage.enter("currentlyLookingForJob", YES.getDisplayValue());
         assertThat(driver.getTitle()).isEqualTo("Income Up Next");
     }
 
@@ -307,15 +306,15 @@ public class CCAPTest extends JourneyTest {
         fillOutHousemateInfo(PROGRAM_EA);
         testPage.clickContinue();
         testPage.clickButton("Yes, that's everyone");
-        testPage.clickButton(YES.getDisplayValue());
-        testPage.clickButton(NO.getDisplayValue());
-        testPage.clickButton(NO.getDisplayValue());
-        testPage.clickButton(NO.getDisplayValue());
-        testPage.clickButton(YES.getDisplayValue());
-        testPage.clickButton(NO.getDisplayValue());
-        testPage.clickButton(NO.getDisplayValue());
+        testPage.enter("isPreparingMealsTogether", YES.getDisplayValue());
+        testPage.enter("goingToSchool", NO.getDisplayValue());
+        testPage.enter("isPregnant", NO.getDisplayValue());
+        testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
+        testPage.enter("isUsCitizen", YES.getDisplayValue());
+        testPage.enter("hasDisability", NO.getDisplayValue());
+        testPage.enter("hasWorkSituation", NO.getDisplayValue());
         testPage.clickContinue();
-        testPage.clickButton(NO.getDisplayValue());
+        testPage.enter("areYouWorking", NO.getDisplayValue());
         assertThat(driver.getTitle()).isEqualTo("Income Up Next");
     }
 
