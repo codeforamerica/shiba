@@ -2392,11 +2392,13 @@ workflow:
       - pageName: livingSituation
   preparingMealsTogether:
     pageConfiguration: *preparingMealsTogether
-    skipCondition: *applicantDidNotChooseSNAP?
+    skipCondition: *noOneChoseSNAP?
     nextPages:
       - pageName: livingSituation
     datasources:
       - pageName: choosePrograms
+      - groupName: household
+        pageName: householdMemberInfo
   livingSituation:
     pageConfiguration: *livingSituation
     nextPages:
