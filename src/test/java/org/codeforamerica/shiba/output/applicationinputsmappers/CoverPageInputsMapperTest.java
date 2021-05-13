@@ -1,7 +1,11 @@
 package org.codeforamerica.shiba.output.applicationinputsmappers;
 
-import org.codeforamerica.shiba.*;
-import org.codeforamerica.shiba.application.*;
+import org.codeforamerica.shiba.County;
+import org.codeforamerica.shiba.CountyMap;
+import org.codeforamerica.shiba.PageDataBuilder;
+import org.codeforamerica.shiba.PagesDataBuilder;
+import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.mnit.MnitCountyInformation;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
@@ -23,7 +27,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.output.caf.CoverPageInputsMapper.CHILDCARE_WAITING_LIST_UTM_SOURCE;
 
-class CoverPageInputsMapperTest extends AbstractBasePageTest {
+class CoverPageInputsMapperTest {
     private final CountyMap<Map<Recipient, String>> countyInstructionsMapping = new CountyMap<>();
     private final CountyMap<MnitCountyInformation> countyInformationMapping = new CountyMap<>();
     private CoverPageInputsMapper coverPageInputsMapper;
@@ -33,10 +37,8 @@ class CoverPageInputsMapperTest extends AbstractBasePageTest {
     PagesData pagesData = new PagesData();
     ApplicationData applicationData = new ApplicationData();
 
-    @Override
     @BeforeEach
     public void setUp() throws IOException {
-        super.setUp();
         applicationData.setPagesData(pagesData);
         coverPageInputsMapper = new CoverPageInputsMapper(countyInstructionsMapping, countyInformationMapping, staticMessageSource);
         countyInstructionsMapping.getCounties().put(County.Other, Map.of(
