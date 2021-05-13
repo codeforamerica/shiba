@@ -10,7 +10,7 @@ public class TotalIncomeCalculator {
             return totalIncome.getLast30DaysIncome();
         } else {
             return totalIncome.getJobIncomeInformationList().stream().reduce(
-                    new Money(0),
+                    Money.ZERO,
                     (total, jobIncomeInfo) -> total.add(jobIncomeInfo.grossMonthlyIncome()),
                     Money::add
             );

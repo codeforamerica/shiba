@@ -7,7 +7,7 @@ import java.math.RoundingMode;
 public class Money extends BigDecimal {
     @Serial
     private static final long serialVersionUID = -5167780381776339011L;
-
+    public static final Money ZERO = new Money(0);
     public Money(double val) {
         this(new BigDecimal(Double.toString(val)).setScale(0, RoundingMode.DOWN));
     }
