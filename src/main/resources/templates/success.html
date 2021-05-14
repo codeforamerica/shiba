@@ -54,17 +54,15 @@
                             <div th:text="#{success.additional-documents}" class="width-five-sixths"></div>
                         </div>
                     </div>
-                </div>
-                    <div class="grid-ignore-mobile spacing-below-35 spacing-above-35 bottom-horizontal-line-dark-grey">
-                        <div class="success-icons grid__item width-one-sixth spacing-below-15">
-                            <div th:replace="fragments/icons/icon-healthcare :: icon-healthcare"></div>
-                        </div>
-                        <div class="grid__item width-five-sixths">
-                            <div th:utext="#{success.healthcare}" class="width-five-sixths"></div>
-                        </div>
-                    </div>
-                <div>
-                </div>
+				</div>
+				<div class="grid-ignore-mobile spacing-below-35 spacing-above-35 bottom-horizontal-line-dark-grey" th:if="${doesNotHaveHealthcare}">
+                       <div class="success-icons grid__item width-one-sixth spacing-below-15">
+                           <div th:replace="fragments/icons/icon-healthcare :: icon-healthcare"></div>
+                       </div>
+                       <div class="grid__item width-five-sixths">
+                           <div th:utext="#{success.healthcare}" class="width-five-sixths"></div>
+                       </div>
+                   </div>
                 <div class="form-group " th:if="${sentiment == null || feedbackText == null}">
                     <h2 class="h3 spacing-above-35">
                         <label th:text="#{success.how-was-your-experience-filling-out-the-combined-benefits-application}"
