@@ -288,7 +288,12 @@ public class PageController {
             model.put("county", application.getCounty());
             model.put("sentiment", application.getSentiment());
             model.put("feedbackText", application.getFeedback());
-            model.put("doesNotHaveHealthcare", pagesData.getPage("healthcareCoverage").get("healthcareCoverage").getValue(0).equalsIgnoreCase("YES") ? false : true);
+            boolean doesNotHaveHealthcare = true;
+            InputData inputData = pagesData.getPage("healthcareCoverage").get("healthcareCoverage");
+            if ( !inputData.getValue().isEmpty() && inputData.getValue(0).equalsIgnoreCase("YES")) {
+            	doesNotHaveHealthcare = false;
+            }
+            model.put("doesNotHaveHealthcare", doesNotHaveHealthcare );
             model.put("successMessage", successMessageService.getSuccessMessage(new ArrayList<>(programs), snapExpeditedEligibility, ccapExpeditedEligibility, locale));
         }
 

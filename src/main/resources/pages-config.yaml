@@ -2149,6 +2149,7 @@ pageDefinitions:
   - &healthcareCoverage
     name: healthcareCoverage
     headerKey: healthcareCoverage.do-you-currently-have-healthcare-coverage
+    contextFragment: healthcareCoverageFragment
     inputs:
       - name: healthcareCoverage
         type: RADIO
