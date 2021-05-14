@@ -5,7 +5,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,7 +23,7 @@ class UtilityDeductionCalculatorTest {
     void deductionShouldBe490WhenIncludesEitherHeatingOrCooling(List<String> utilityOptions) {
         Money deduction = utilityDeductionCalculator.calculate(utilityOptions);
 
-        assertThat(deduction).isEqualTo(new Money(490));
+        assertThat(deduction).isEqualTo(Money.parse("490"));
     }
 
     @SuppressWarnings("unused")
@@ -49,20 +48,20 @@ class UtilityDeductionCalculatorTest {
     @MethodSource
     void shouldCalculateDeductionWhenIncludesNoneOfHeatingOrCooling(
             List<String> utilityOptions,
-            BigDecimal expectedDeduction
+            String expectedDeduction
     ) {
         Money deduction = utilityDeductionCalculator.calculate(utilityOptions);
 
-        assertThat(deduction).isEqualTo(new Money(expectedDeduction));
+        assertThat(deduction).isEqualTo(Money.parse(expectedDeduction));
     }
 
     @SuppressWarnings("unused")
     static List<Arguments> shouldCalculateDeductionWhenIncludesNoneOfHeatingOrCooling() {
         return List.of(
-                Arguments.of(List.of(noneOfTheAbove), new Money(0)),
-                Arguments.of(List.of(electricity), new Money(143)),
-                Arguments.of(List.of(phone), new Money(49)),
-                Arguments.of(List.of(electricity, phone), new Money(192))
+                Arguments.of(List.of(noneOfTheAbove), "0"),
+                Arguments.of(List.of(electricity), "143"),
+                Arguments.of(List.of(phone), "49"),
+                Arguments.of(List.of(electricity, phone), "192")
         );
     }
 }

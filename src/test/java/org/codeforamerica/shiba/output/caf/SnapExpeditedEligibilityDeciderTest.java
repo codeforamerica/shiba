@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,12 +45,12 @@ class SnapExpeditedEligibilityDeciderTest {
             "150,101,NOT_ELIGIBLE",
     })
     void shouldQualify_whenMeetingIncomeAndAssetsThresholds(
-            BigDecimal incomeString,
-            BigDecimal assetString,
+            String incomeString,
+            String assetString,
             SnapExpeditedEligibility expectedDecision
     ) {
-        Money income = new Money(incomeString);
-        Money assets = new Money(assetString);
+        Money income = Money.parse(incomeString);
+        Money assets = Money.parse(assetString);
         when(totalIncomeCalculator.calculate(new TotalIncome(income, emptyList()))).thenReturn(income);
         when(snapExpeditedEligibilityParser.parse(applicationData)).thenReturn(Optional.of(new SnapExpeditedEligibilityParameters(assets, income, emptyList(), false, Money.ZERO, emptyList(), true)));
 
@@ -66,13 +65,13 @@ class SnapExpeditedEligibilityDeciderTest {
             "101,false,NOT_ELIGIBLE"
     })
     void shouldQualify_whenApplicantIsMigrantWorkerAndMeetAssetThreshold(
-            BigDecimal assets,
+            String assets,
             Boolean isMigrantWorker,
             SnapExpeditedEligibility expectedDecision
     ) {
-        when(totalIncomeCalculator.calculate(any())).thenReturn(new Money(9999));
+        when(totalIncomeCalculator.calculate(any())).thenReturn(Money.parse("9999"));
         when(snapExpeditedEligibilityParser.parse(applicationData)).thenReturn(Optional.of(
-                new SnapExpeditedEligibilityParameters(new Money(assets), new Money(9999), emptyList(), isMigrantWorker, Money.ZERO, emptyList(), true)));
+                new SnapExpeditedEligibilityParameters(Money.parse(assets), Money.parse("9999"), emptyList(), isMigrantWorker, Money.ZERO, emptyList(), true)));
 
         assertThat(decider.decide(applicationData)).isEqualTo(expectedDecision);
     }
@@ -80,20 +79,20 @@ class SnapExpeditedEligibilityDeciderTest {
     @Test
     void shouldQualify_whenIncomeAndAssetsAreLessThanExpenses() {
         List<String> utilitySelections = List.of("utility");
-        when(mockUtilityDeductionCalculator.calculate(utilitySelections)).thenReturn(new Money(1001));
-        when(totalIncomeCalculator.calculate(any())).thenReturn(new Money(500));
+        when(mockUtilityDeductionCalculator.calculate(utilitySelections)).thenReturn(Money.parse("1001"));
+        when(totalIncomeCalculator.calculate(any())).thenReturn(Money.parse("500"));
         when(snapExpeditedEligibilityParser.parse(applicationData)).thenReturn(Optional.of(
-                new SnapExpeditedEligibilityParameters(new Money(1000), new Money(500), emptyList(),false, new Money(500), utilitySelections, true)));
+                new SnapExpeditedEligibilityParameters(Money.parse("1000"), Money.parse("500"), emptyList(),false, Money.parse("500"), utilitySelections, true)));
 
         assertThat(decider.decide(applicationData)).isEqualTo(ELIGIBLE);
     }
 
     @Test
     void shouldNotQualify_whenIncomeAndAssetsAreGreaterThanOrEqualToExpenses_andNotMeetingOtherCriteria() {
-        when(mockUtilityDeductionCalculator.calculate(any())).thenReturn(new Money(1000));
-        when(totalIncomeCalculator.calculate(any())).thenReturn(new Money(500));
+        when(mockUtilityDeductionCalculator.calculate(any())).thenReturn(Money.parse("1000"));
+        when(totalIncomeCalculator.calculate(any())).thenReturn(Money.parse("500"));
         when(snapExpeditedEligibilityParser.parse(applicationData)).thenReturn(Optional.of(
-                new SnapExpeditedEligibilityParameters(new Money(1000), new Money(500), emptyList(),false, new Money(500), emptyList(), true)));
+                new SnapExpeditedEligibilityParameters(Money.parse("1000"), Money.parse("500"), emptyList(),false, Money.parse("500"), emptyList(), true)));
 
         assertThat(decider.decide(applicationData)).isEqualTo(NOT_ELIGIBLE);
     }
@@ -109,7 +108,7 @@ class SnapExpeditedEligibilityDeciderTest {
         List<String> utilitySelections = List.of("utility");
         when(totalIncomeCalculator.calculate(any())).thenReturn(Money.ZERO);
         when(snapExpeditedEligibilityParser.parse(applicationData)).thenReturn(Optional.of(
-                new SnapExpeditedEligibilityParameters(new Money(1), new Money(1), emptyList(),false, new Money(500), utilitySelections, false)));
+                new SnapExpeditedEligibilityParameters(Money.ONE, Money.ONE, emptyList(),false, Money.parse("500"), utilitySelections, false)));
         assertThat(decider.decide(applicationData)).isEqualTo(NOT_ELIGIBLE);
     }
 }

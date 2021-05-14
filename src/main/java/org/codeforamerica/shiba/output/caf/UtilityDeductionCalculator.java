@@ -27,6 +27,6 @@ public class UtilityDeductionCalculator {
             }
         }
 
-        return new Money(deduction);
+        return Money.parse(String.valueOf(deduction));
     }
 }

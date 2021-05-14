@@ -45,6 +45,6 @@ class TotalIncomeParserTest extends AbstractParserTest {
 
         TotalIncome totalIncome = totalIncomeParser.parse(applicationData);
 
-        assertThat(totalIncome).isEqualTo(new TotalIncome(new Money(1), jobInfo));
+        assertThat(totalIncome).isEqualTo(new TotalIncome(Money.ONE, jobInfo));
     }
 }

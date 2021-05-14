@@ -13,7 +13,7 @@ public class NonHourlyJobIncomeInformation implements JobIncomeInformation {
 
     public NonHourlyJobIncomeInformation(String payPeriod, String incomePerPayPeriod, int indexInJobsSubworkflow, Iteration iteration) {
         this.payPeriod = payPeriod.isEmpty() ? null : PayPeriod.valueOf(payPeriod);
-        this.incomePerPayPeriod = incomePerPayPeriod.isEmpty() ? null : new Money(parseWithCommasRemoved(incomePerPayPeriod));
+        this.incomePerPayPeriod = incomePerPayPeriod.isEmpty() ? null : Money.parse(incomePerPayPeriod);
         this.indexInJobsSubworkflow = indexInJobsSubworkflow;
         this.iteration = iteration;
     }
@@ -26,8 +26,8 @@ public class NonHourlyJobIncomeInformation implements JobIncomeInformation {
     @Override
     public Money grossMonthlyIncome() {
         return switch (payPeriod) {
-            case EVERY_WEEK -> incomePerPayPeriod.multiply(new Money(4));
-            case EVERY_TWO_WEEKS, TWICE_A_MONTH -> incomePerPayPeriod.multiply(new Money(2));
+            case EVERY_WEEK -> incomePerPayPeriod.multiply(Money.parse("4"));
+            case EVERY_TWO_WEEKS, TWICE_A_MONTH -> incomePerPayPeriod.multiply(Money.parse("2"));
             case EVERY_MONTH, IT_VARIES -> incomePerPayPeriod;
         };
     }

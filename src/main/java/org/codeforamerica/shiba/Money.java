@@ -2,18 +2,23 @@ package org.codeforamerica.shiba;
 
 import java.io.Serial;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 public class Money extends BigDecimal {
     @Serial
     private static final long serialVersionUID = -5167780381776339011L;
-    public static final Money ZERO = new Money(0);
-    public Money(double val) {
-        this(new BigDecimal(Double.toString(val)).setScale(0, RoundingMode.DOWN));
+    public static final Money ZERO = new Money(BigDecimal.ZERO);
+    public static final Money ONE = new Money(BigDecimal.ONE);
+
+    private Money(BigDecimal val) {
+        super(val.unscaledValue(), 0);
     }
 
-    public Money(BigDecimal val) {
-        super(val.unscaledValue(), val.scale());
+    public static Money parse(String s) {
+        try {
+            return new Money(new BigDecimal(s.replace(",","")));
+        } catch (NumberFormatException exception) {
+            throw new NumberFormatException("Money can't be parsed from string: " + s);
+        }
     }
 
     @Override

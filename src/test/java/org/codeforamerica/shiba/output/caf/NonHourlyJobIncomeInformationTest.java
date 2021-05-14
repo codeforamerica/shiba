@@ -4,8 +4,6 @@ import org.codeforamerica.shiba.Money;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.math.BigDecimal;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 class NonHourlyJobIncomeInformationTest {
@@ -17,8 +15,8 @@ class NonHourlyJobIncomeInformationTest {
             "EVERY_MONTH,1",
             "IT_VARIES,1"
     })
-    void shouldCalculateGrossMonthlyIncome(String payPeriod, BigDecimal income) {
+    void shouldCalculateGrossMonthlyIncome(String payPeriod, String income) {
         assertThat(new NonHourlyJobIncomeInformation(payPeriod, "1", 0, null).grossMonthlyIncome())
-                .isEqualTo(new Money(income));
+                .isEqualTo(Money.parse(income));
     }
 }

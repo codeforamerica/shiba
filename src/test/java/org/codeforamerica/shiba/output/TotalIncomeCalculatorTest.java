@@ -17,19 +17,19 @@ class TotalIncomeCalculatorTest {
 
     @Test
     void calculateReturnsIncomeWhenNoJobInfoProvided() {
-        assertThat(totalIncomeCalculator.calculate(new TotalIncome(new Money(1), emptyList()))).isEqualTo(new Money(1));
+        assertThat(totalIncomeCalculator.calculate(new TotalIncome(Money.ONE, emptyList()))).isEqualTo(Money.ONE);
     }
 
     @Test
     void calculateReturnsTheSumOfAllJobIncomeWhenProvided() {
         assertThat(totalIncomeCalculator.calculate(
                 new TotalIncome(
-                        new Money(9999),
+                        Money.parse("9999"),
                         List.of(
                                 new NonHourlyJobIncomeInformation("EVERY_MONTH", "10", 0, null),
                                 new HourlyJobIncomeInformation("25", "1", 0, null)
                         )
                 )
-        )).isEqualTo(new Money(110));
+        )).isEqualTo(Money.parse("110"));
     }
 }

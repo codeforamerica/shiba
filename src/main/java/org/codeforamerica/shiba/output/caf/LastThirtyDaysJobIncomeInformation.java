@@ -11,7 +11,7 @@ public class LastThirtyDaysJobIncomeInformation implements JobIncomeInformation 
     Iteration iteration;
 
     public LastThirtyDaysJobIncomeInformation(String lastThirtyDaysIncome, int indexInJobsSubworkflow, Iteration iteration) {
-        this.lastThirtyDaysIncome = lastThirtyDaysIncome.isBlank() ? Money.ZERO : new Money(parseWithCommasRemoved(lastThirtyDaysIncome));
+        this.lastThirtyDaysIncome = lastThirtyDaysIncome.isBlank() ? Money.ZERO : Money.parse(lastThirtyDaysIncome);
         this.indexInJobsSubworkflow = indexInJobsSubworkflow;
         this.iteration = iteration;
     }

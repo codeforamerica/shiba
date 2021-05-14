@@ -9,6 +9,6 @@ class HourlyJobIncomeInformationTest {
     @Test
     void shouldCalculateGrossMonthlyIncome() {
         HourlyJobIncomeInformation hourlyJobIncomeInformation = new HourlyJobIncomeInformation("2", "5", 0, null);
-        assertThat(hourlyJobIncomeInformation.grossMonthlyIncome()).isEqualTo(new Money(40));
+        assertThat(hourlyJobIncomeInformation.grossMonthlyIncome()).isEqualTo(Money.parse("40"));
     }
 }

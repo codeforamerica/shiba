@@ -3,8 +3,6 @@ package org.codeforamerica.shiba.application.parsers;
 import org.codeforamerica.shiba.Money;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 
-import java.math.BigDecimal;
-
 public abstract class ApplicationDataParser<T> {
     protected ParsingConfiguration parsingConfiguration;
 
@@ -16,9 +14,9 @@ public abstract class ApplicationDataParser<T> {
 
     protected static Money getMoney(ApplicationData applicationData, PageInputCoordinates pageInputCoordinates) {
         try {
-            return new Money(new BigDecimal(applicationData.getValue(pageInputCoordinates).replace(",","")));
+            return Money.parse(applicationData.getValue(pageInputCoordinates));
         } catch (NumberFormatException e) {
-            return new Money(new BigDecimal(pageInputCoordinates.getDefaultValue().replace(",","")));
+            return Money.parse(pageInputCoordinates.getDefaultValue());
         }
     }
 }

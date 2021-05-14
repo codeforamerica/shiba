@@ -50,7 +50,7 @@ class SnapExpeditedEligibilityParserTest extends AbstractParserTest {
 
         SnapExpeditedEligibilityParameters parameters = snapExpeditedEligibilityParser.parse(applicationData).get();
 
-        assertThat(parameters).isEqualTo(new SnapExpeditedEligibilityParameters(new Money(2), new Money(1), jobIncomeInformation, false, new Money(3), List.of(utilitySelection), true));
+        assertThat(parameters).isEqualTo(new SnapExpeditedEligibilityParameters(Money.parse("2"), Money.ONE, jobIncomeInformation, false, Money.parse("3"), List.of(utilitySelection), true));
     }
 
     @Test
@@ -64,7 +64,7 @@ class SnapExpeditedEligibilityParserTest extends AbstractParserTest {
 
         SnapExpeditedEligibilityParameters parameters = snapExpeditedEligibilityParser.parse(applicationData).get();
 
-        assertThat(parameters).isEqualTo(new SnapExpeditedEligibilityParameters(new Money(100), new Money(1), jobIncomeInformation, false, new Money(3), List.of(utilitySelection), true));
+        assertThat(parameters).isEqualTo(new SnapExpeditedEligibilityParameters(Money.parse("100"), Money.ONE, jobIncomeInformation, false, Money.parse("3"), List.of(utilitySelection), true));
     }
 
     @Test
@@ -79,7 +79,7 @@ class SnapExpeditedEligibilityParserTest extends AbstractParserTest {
 
         SnapExpeditedEligibilityParameters parameters = snapExpeditedEligibilityParser.parse(applicationData).get();
 
-        assertThat(parameters).isEqualTo(new SnapExpeditedEligibilityParameters(new Money(2), new Money(200), jobIncomeInformation, false, new Money(3), List.of(utilitySelection), true));
+        assertThat(parameters).isEqualTo(new SnapExpeditedEligibilityParameters(Money.parse("2"), Money.parse("200"), jobIncomeInformation, false, Money.parse("3"), List.of(utilitySelection), true));
     }
 
     @Test
