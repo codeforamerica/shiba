@@ -6,6 +6,6 @@ import java.util.List;
 
 @Value
 public class TotalIncome {
-    Double last30DaysIncome;
+    int last30DaysIncome;
     List<JobIncomeInformation> jobIncomeInformationList;
 }

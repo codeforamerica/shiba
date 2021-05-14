@@ -25,9 +25,9 @@ public class SnapExpeditedEligibilityDecider {
     public SnapExpeditedEligibility decide(ApplicationData applicationData) {
         return snapExpeditedEligibilityParser.parse(applicationData)
                 .map(parameters -> {
-                            double assets = parameters.getAssets();
-                            double income = totalIncomeCalculator.calculate(new TotalIncome(parameters.getLast30DaysIncome(), parameters.getJobIncomeInformation()));
-                            double housingCosts = parameters.getHousingCosts();
+                            int assets = parameters.getAssets();
+                            int income = totalIncomeCalculator.calculate(new TotalIncome(parameters.getLast30DaysIncome(), parameters.getJobIncomeInformation()));
+                            int housingCosts = parameters.getHousingCosts();
 
                             boolean assetsAndIncomeBelowThreshold = assets <= ASSET_THRESHOLD && income < INCOME_THRESHOLD;
                             boolean migrantWorkerAndAssetsBelowThreshold = parameters.isMigrantWorker() && assets <= ASSET_THRESHOLD;

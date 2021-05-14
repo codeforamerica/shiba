@@ -1,18 +1,22 @@
 package org.codeforamerica.shiba.output.caf;
 
 import lombok.Value;
+import org.codeforamerica.shiba.Money;
 import org.codeforamerica.shiba.pages.data.Iteration;
 
 @Value
 public class HourlyJobIncomeInformation implements JobIncomeInformation {
-    Double hourlyWage;
-    Double hoursAWeek;
+    Integer hourlyWage; // could be optionalint! but IDE insprection said that's bad
+    Integer hoursAWeek;
     int indexInJobsSubworkflow;
     Iteration iteration;
 
+    // NaN
+
     public HourlyJobIncomeInformation(String hourlyWage, String hoursAWeek, int indexInJobsSubworkflow, Iteration iteration) {
-        this.hourlyWage = hourlyWage.isEmpty() ? null : Double.valueOf(hourlyWage.replace(",",""));
-        this.hoursAWeek = hoursAWeek.isEmpty() ? null : Double.valueOf(hoursAWeek);
+        int parsedWage = Money.parse(hourlyWage).orElse(-1);
+        this.hourlyWage = parsedWage < 0 ? null : parsedWage;
+        this.hoursAWeek = hoursAWeek.isEmpty() ? null : Integer.parseInt(hoursAWeek);
         this.indexInJobsSubworkflow = indexInJobsSubworkflow;
         this.iteration = iteration;
     }
@@ -23,7 +27,7 @@ public class HourlyJobIncomeInformation implements JobIncomeInformation {
     }
 
     @Override
-    public Double grossMonthlyIncome() {
+    public Integer grossMonthlyIncome() {
         return hourlyWage * hoursAWeek * 4;
     }
 }

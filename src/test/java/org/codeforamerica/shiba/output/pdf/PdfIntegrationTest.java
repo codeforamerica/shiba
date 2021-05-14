@@ -565,7 +565,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
 
             assertThat(pdAcroForms.get(CCAP).getField("NON_SELF_EMPLOYMENT_EMPLOYERS_NAME_0").getValueAsString()).isEqualTo("someEmployerName");
             assertThat(pdAcroForms.get(CCAP).getField("NON_SELF_EMPLOYMENT_PAY_FREQUENCY_0").getValueAsString()).isEqualTo("Every week");
-            assertThat(pdAcroForms.get(CCAP).getField("NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0").getValueAsString()).isEqualTo("4.0");
+            assertThat(pdAcroForms.get(CCAP).getField("NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0").getValueAsString()).isEqualTo("4");
         }
 
         @Test
@@ -898,11 +898,11 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             testPage.clickContinue();
 
             Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "GROSS_MONTHLY_INCOME_0")).isEqualTo("123.0");
-            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "MONEY_MADE_LAST_MONTH")).isEqualTo("123.0");
+            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "GROSS_MONTHLY_INCOME_0")).isEqualTo("123");
+            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "MONEY_MADE_LAST_MONTH")).isEqualTo("123");
             assertThat(getPdfFieldText(pdAcroForms.get(CAF), "SNAP_EXPEDITED_ELIGIBILITY")).isEqualTo("SNAP");
 
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0")).isEqualTo("123.0");
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0")).isEqualTo("123");
         }
 
         @Test
@@ -937,11 +937,11 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             testPage.clickContinue();
 
             Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "GROSS_MONTHLY_INCOME_0")).isEqualTo("123.0");
-            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "MONEY_MADE_LAST_MONTH")).isEqualTo("123.0");
+            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "GROSS_MONTHLY_INCOME_0")).isEqualTo("123");
+            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "MONEY_MADE_LAST_MONTH")).isEqualTo("123");
             assertThat(getPdfFieldText(pdAcroForms.get(CAF), "SNAP_EXPEDITED_ELIGIBILITY")).isEqualTo("SNAP");
 
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0")).isEqualTo("123.0");
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0")).isEqualTo("123");
         }
 
         @Test

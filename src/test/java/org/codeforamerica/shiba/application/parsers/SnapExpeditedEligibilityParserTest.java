@@ -49,12 +49,12 @@ class SnapExpeditedEligibilityParserTest extends AbstractParserTest {
 
         SnapExpeditedEligibilityParameters parameters = snapExpeditedEligibilityParser.parse(applicationData).get();
 
-        assertThat(parameters).isEqualTo(new SnapExpeditedEligibilityParameters(2.0, 1.0, jobIncomeInformation, false, 3.0, List.of(utilitySelection), true));
+        assertThat(parameters).isEqualTo(new SnapExpeditedEligibilityParameters(2, 1, jobIncomeInformation, false, 3, List.of(utilitySelection), true));
     }
 
     @Test
     void shouldUseDefaultValueWhenPageDataIsNotAvailable() {
-        pagesData.putPage("incomePage", new PageData(Map.of("incomeInput", InputData.builder().value(List.of("1.0")).build())));
+        pagesData.putPage("incomePage", new PageData(Map.of("incomeInput", InputData.builder().value(List.of("1")).build())));
         pagesData.putPage("migrantWorkerPage", new PageData(Map.of("migrantWorkerInput", InputData.builder().value(List.of("false")).build())));
         pagesData.putPage("housingCostsPage", new PageData(Map.of("housingCostsInput", InputData.builder().value(List.of("3")).build())));
         String utilitySelection = "some utility";
@@ -63,7 +63,7 @@ class SnapExpeditedEligibilityParserTest extends AbstractParserTest {
 
         SnapExpeditedEligibilityParameters parameters = snapExpeditedEligibilityParser.parse(applicationData).get();
 
-        assertThat(parameters).isEqualTo(new SnapExpeditedEligibilityParameters(100.0, 1.0, jobIncomeInformation, false, 3.0, List.of(utilitySelection), true));
+        assertThat(parameters).isEqualTo(new SnapExpeditedEligibilityParameters(100, 1, jobIncomeInformation, false, 3, List.of(utilitySelection), true));
     }
 
     @Test
@@ -78,7 +78,7 @@ class SnapExpeditedEligibilityParserTest extends AbstractParserTest {
 
         SnapExpeditedEligibilityParameters parameters = snapExpeditedEligibilityParser.parse(applicationData).get();
 
-        assertThat(parameters).isEqualTo(new SnapExpeditedEligibilityParameters(2.0, 200.0, jobIncomeInformation, false, 3.0, List.of(utilitySelection), true));
+        assertThat(parameters).isEqualTo(new SnapExpeditedEligibilityParameters(2, 200, jobIncomeInformation, false, 3, List.of(utilitySelection), true));
     }
 
     @Test

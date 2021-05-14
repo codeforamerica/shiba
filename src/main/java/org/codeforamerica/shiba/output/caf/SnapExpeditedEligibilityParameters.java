@@ -6,11 +6,11 @@ import java.util.List;
 
 @Value
 public class SnapExpeditedEligibilityParameters {
-    double assets;
-    double last30DaysIncome;
+    int assets;
+    int last30DaysIncome;
     List<JobIncomeInformation> jobIncomeInformation;
     boolean isMigrantWorker;
-    double housingCosts;
+    int housingCosts;
     List<String> utilityExpenses;
     boolean applyingForSnap;
 }

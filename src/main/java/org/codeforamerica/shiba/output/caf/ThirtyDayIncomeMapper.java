@@ -32,7 +32,7 @@ public class ThirtyDayIncomeMapper implements ApplicationInputsMapper {
                 new ApplicationInput(
                         "totalIncome",
                         "thirtyDayIncome",
-                        List.of(totalIncomeCalculator.calculate(totalIncome).toString()),
+                        List.of(String.valueOf(totalIncomeCalculator.calculate(totalIncome))),
                         ApplicationInputType.SINGLE_VALUE
                 )
         );

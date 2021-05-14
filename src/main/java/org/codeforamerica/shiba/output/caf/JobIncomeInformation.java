@@ -5,7 +5,7 @@ import org.codeforamerica.shiba.pages.data.Iteration;
 public interface JobIncomeInformation {
     boolean isComplete();
 
-    Double grossMonthlyIncome();
+    Integer grossMonthlyIncome();
 
     int getIndexInJobsSubworkflow();
 

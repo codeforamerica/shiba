@@ -47,10 +47,10 @@ public class SnapExpeditedEligibilityParser extends ApplicationDataParser<Option
             }
         }
 
-        double assets = getDouble(applicationData, coordinatesMap.get("assets"));
-        double last30DaysIncome = getDouble(applicationData, coordinatesMap.get("income"));
+        int assets = getMoneyOrDefault(applicationData, coordinatesMap.get("assets"));
+        int last30DaysIncome = getMoneyOrDefault(applicationData, coordinatesMap.get("income"));
 
-        double housingCosts = getDouble(applicationData, coordinatesMap.get("housingCosts"));
+        int housingCosts = getMoneyOrDefault(applicationData, coordinatesMap.get("housingCosts"));
         boolean isMigrantWorker = Boolean.parseBoolean(pagesData.getPage(coordinatesMap.get("migrantWorker").getPageName())
                 .get(coordinatesMap.get("migrantWorker").getInputName()).getValue(0));
         @NotNull List<String> utilityExpensesSelections = pagesData.getPage(coordinatesMap.get("utilityExpensesSelections").getPageName())
