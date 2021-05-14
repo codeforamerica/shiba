@@ -22,7 +22,7 @@ public class Application {
     County county;
     Duration timeToComplete;
     FlowType flow;
-    Status status;
+//    Status status;
     Sentiment sentiment;
     String feedback;
 
@@ -37,7 +37,7 @@ public class Application {
                 this.county,
                 this.timeToComplete,
                 this.flow,
-                this.status,
+//                this.status,
                 sentiment,
                 feedbackText
         );
