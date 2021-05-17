@@ -47,7 +47,7 @@ public class EmailContentCreator {
             eligibilitySpecificVerbiage = getMessage(SNAP_NONEXPEDITED_WAIT_TIME, null, locale);
         }
 
-        if (activeProfile.equals("demo")) {
+        if ("demo".equals(activeProfile)) {
             return wrapHtml(getMessage(CLIENT_BODY, List.of(eligibilitySpecificVerbiage, confirmationId), locale) + "<p>" + getMessage(DEMO_PURPOSES_ONLY, null, locale) + "</p><p>" + getMessage(SHARE_FEEDBACK, null, locale) + "</p>");
         }
         return wrapHtml(getMessage(CLIENT_BODY, List.of(confirmationId, successMessageService.getSuccessMessage(programs, snapExpeditedEligibility, ccapExpeditedEligibility, locale)), locale));
