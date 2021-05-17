@@ -4,10 +4,15 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.BasicCredentials;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import org.codeforamerica.shiba.*;
-import org.codeforamerica.shiba.application.*;
+import org.codeforamerica.shiba.County;
+import org.codeforamerica.shiba.PageDataBuilder;
+import org.codeforamerica.shiba.PagesDataBuilder;
+import org.codeforamerica.shiba.Program;
+import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.output.ApplicationFile;
-import org.codeforamerica.shiba.output.caf.*;
+import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.*;
@@ -95,10 +100,10 @@ class MailGunEmailClientTest {
         CcapExpeditedEligibility ccapExpeditedEligibility = CcapExpeditedEligibility.ELIGIBLE;
         String confirmationId = "someConfirmationId";
         when(emailContentCreator.createClientHTML(confirmationId,
-                                                  programs,
-                                                  snapExpeditedEligibility,
-                                                  ccapExpeditedEligibility,
-                                                  Locale.ENGLISH)).thenReturn(emailContent);
+                programs,
+                snapExpeditedEligibility,
+                ccapExpeditedEligibility,
+                Locale.ENGLISH)).thenReturn(emailContent);
 
         wireMockServer.stubFor(post(anyUrl())
                 .willReturn(aResponse().withStatus(200)));
@@ -441,10 +446,10 @@ class MailGunEmailClientTest {
             SnapExpeditedEligibility snapExpeditedEligibility = ELIGIBLE;
             String confirmationId = "someConfirmationId";
             when(emailContentCreator.createClientHTML(confirmationId,
-                                                      programs,
-                                                      snapExpeditedEligibility,
-                                                      ccapExpeditedEligibility,
-                                                      Locale.ENGLISH)).thenReturn(emailContent);
+                    programs,
+                    snapExpeditedEligibility,
+                    ccapExpeditedEligibility,
+                    Locale.ENGLISH)).thenReturn(emailContent);
 
             wireMockServer.stubFor(post(anyUrl())
                     .willReturn(aResponse().withStatus(200)));

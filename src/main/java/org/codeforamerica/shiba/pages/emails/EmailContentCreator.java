@@ -1,7 +1,8 @@
 package org.codeforamerica.shiba.pages.emails;
 
-import org.codeforamerica.shiba.output.caf.*;
-import org.codeforamerica.shiba.pages.*;
+import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
+import org.codeforamerica.shiba.pages.SuccessMessageService;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
