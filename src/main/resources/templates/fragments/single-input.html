@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="single-input (input, data)" class="form-group"
-     th:classappend="${!inputData.valid()} ? 'form-group--error' : ''" th:with="inputData=${data.get(input.name)}">
+     th:classappend="${!data.isValid() && !inputData.valid(data)} ? 'form-group--error' : ''" th:with="inputData=${data.get(input.name)}">
     <div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${input})"></div>
     <p class="text--help"
        th:if="${input.helpMessageKey != null}"
@@ -89,7 +89,7 @@
         </div>
 
     </th:block>
-    <p class="text--error" th:if="${!data.isValid() && !inputData.valid()}">
+    <p class="text--error" th:if="${!data.isValid() && !inputData.valid(data)}">
         <i class="icon-warning"></i>
         <span th:text="#{${input.validationErrorMessageKey}}"></span>
     </p>

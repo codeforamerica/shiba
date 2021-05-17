@@ -175,7 +175,7 @@ public abstract class AbstractBasePageTest {
         return List.of(CAF, CCAP).stream().allMatch(expectedPdfExists::apply);
     }
 
-    protected void completeFlowFromLandingPageThroughContactInfo(List<String> programSelections) {
+    protected void getToPersonalInfoScreen(List<String> programSelections) {
         testPage.clickButton("Apply now");
         testPage.clickContinue();
         testPage.enter("writtenLanguage", "English");
@@ -185,6 +185,10 @@ public abstract class AbstractBasePageTest {
         programSelections.forEach(program -> testPage.enter("programs", program));
         testPage.clickContinue();
         testPage.clickContinue();
+    }
+
+    protected void completeFlowFromLandingPageThroughContactInfo(List<String> programSelections) {
+        getToPersonalInfoScreen(programSelections);
 
         fillOutPersonalInfo();
 

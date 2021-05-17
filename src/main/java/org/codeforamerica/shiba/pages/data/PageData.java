@@ -64,7 +64,7 @@ public class PageData extends HashMap<String, InputData> {
                 inputData -> inputData.getValidators().stream().anyMatch(validatorForThisInputShouldRun)
         ).collect(Collectors.toList());
 
-        return inputDataToValidate.stream().allMatch(InputData::valid);
+        return inputDataToValidate.stream().allMatch(inputData -> inputData.valid(this));
     }
 
     /**

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="checkbox-input (input, data)" th:with="inputData=${data.get(input.name)}" class="form-group" >
-    <div class="spacing-above-35 form-group" th:classappend="${!inputData.valid()} ? 'form-group--error' : ''">
+    <div class="spacing-above-35 form-group" th:classappend="${!inputData.valid(data)} ? 'form-group--error' : ''">
         <div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${input})"></div>
         <p class="text--help"
            th:if="${input.helpMessageKey != null}"
@@ -25,7 +25,7 @@
                 </div>
             </label>
         </th:block>
-        <p class="text--error" th:if="${!inputData.valid()}">
+        <p class="text--error" th:if="${!inputData.valid(data)}">
             <i class="icon-warning"></i>
             <span th:text="#{${input.validationErrorMessageKey}}"></span>
         </p>

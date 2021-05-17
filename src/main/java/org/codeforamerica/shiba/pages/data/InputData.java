@@ -37,8 +37,9 @@ public class InputData implements Serializable {
         this(value, new ArrayList<>());
     }
 
-    public Boolean valid() {
+    public Boolean valid(PageData pageData) {
         return validators.stream()
+                .filter(validator -> validator.getCondition() == null || validator.getCondition().satisfies(pageData))
                 .map(Validator::getValidation)
                 .allMatch(validation -> validation.apply(value));
     }

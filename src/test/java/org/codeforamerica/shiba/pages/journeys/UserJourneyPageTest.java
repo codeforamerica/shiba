@@ -247,4 +247,17 @@ public class UserJourneyPageTest extends JourneyTest {
         assertThat(driver.getTitle()).isEqualTo("Contact Info");
     }
 
+    @Test
+    void shouldNotShowValidationWarningWhenPressingBackOnFormWithNotEmptyValidationCondition() {
+        getToPersonalInfoScreen(List.of(PROGRAM_CCAP));
+        testPage.enter("firstName", "defaultFirstName");
+        testPage.enter("lastName", "defaultLastName");
+        testPage.enter("dateOfBirth", "01/12/1928");
+        testPage.clickContinue();
+        testPage.goBack();
+
+        assertThat(driver.findElementsByClassName("form-group--error")).hasSize(0);
+        assertThat(driver.findElementsByClassName("text--error")).hasSize(0);
+    }
+
 }
