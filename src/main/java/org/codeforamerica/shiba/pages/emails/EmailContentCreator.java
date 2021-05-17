@@ -33,7 +33,6 @@ public class EmailContentCreator {
     private final String activeProfile;
     private final SuccessMessageService successMessageService;
 
-
     public EmailContentCreator(MessageSource messageSource, @Value("${spring.profiles.active:Unknown}") String activeProfile, SuccessMessageService successMessageService) {
         this.messageSource = messageSource;
         this.activeProfile = activeProfile;
@@ -48,8 +47,8 @@ public class EmailContentCreator {
             eligibilitySpecificVerbiage = getMessage(SNAP_NONEXPEDITED_WAIT_TIME, null, locale);
         }
 
-        if(activeProfile.equals("demo")) {
-            return wrapHtml(getMessage(CLIENT_BODY, List.of(eligibilitySpecificVerbiage, confirmationId), locale) + "<p>" + getMessage(DEMO_PURPOSES_ONLY,null, locale) + "</p><p>" + getMessage(SHARE_FEEDBACK, null, locale) + "</p>");
+        if (activeProfile.equals("demo")) {
+            return wrapHtml(getMessage(CLIENT_BODY, List.of(eligibilitySpecificVerbiage, confirmationId), locale) + "<p>" + getMessage(DEMO_PURPOSES_ONLY, null, locale) + "</p><p>" + getMessage(SHARE_FEEDBACK, null, locale) + "</p>");
         }
         return wrapHtml(getMessage(CLIENT_BODY, List.of(confirmationId, successMessageService.getSuccessMessage(programs, snapExpeditedEligibility, ccapExpeditedEligibility, locale)), locale));
     }
@@ -80,13 +79,13 @@ public class EmailContentCreator {
 
     public String createHennepinDocUploadsHTML(Map<String, String> args) {
         return wrapHtml("<p>These are documents that a client uploaded to MNbenefits.org.</p>" +
-        		"<p><b>Name:</b> " + args.get("name") + "</p>" + 
-        		"<p><b>DOB:</b> " + args.get("dob") + "</p>" +
-        		"<p><b>Last 4 digits of SSN:</b> " + args.get("last4SSN") + "</p>" +
-        		"<p><b>Phone Number:</b> " + args.get("phoneNumber") + "</p>" +
-        		"<p><b>E-mail:</b> " + args.get("email") + "</p>" +
-        		"<p>Fields that are blank were not shared by the client in their application.</p>" +
-        		"<p>Please reach out to help@mnbenefits.org for support.</p>");
+                "<p><b>Name:</b> " + args.get("name") + "</p>" +
+                "<p><b>DOB:</b> " + args.get("dob") + "</p>" +
+                "<p><b>Last 4 digits of SSN:</b> " + args.get("last4SSN") + "</p>" +
+                "<p><b>Phone Number:</b> " + args.get("phoneNumber") + "</p>" +
+                "<p><b>E-mail:</b> " + args.get("email") + "</p>" +
+                "<p>Fields that are blank were not shared by the client in their application.</p>" +
+                "<p>Please reach out to help@mnbenefits.org for support.</p>");
     }
 
     private String getMessage(String snapExpeditedWaitTime, @Nullable List<String> args, Locale locale) {

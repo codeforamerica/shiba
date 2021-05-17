@@ -27,6 +27,7 @@ import java.util.Map;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.matching.MultipartValuePattern.MatchingType.ANY;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility.UNDETERMINED;
 import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.ELIGIBLE;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.verify;
@@ -55,6 +56,9 @@ class MailGunEmailClientTest {
     String auditEmail = "someAuditEmail";
     String hennepinEmail = "someHennepinEmail";
 
+    List<String> programs;
+    CcapExpeditedEligibility ccapExpeditedEligibility = UNDETERMINED;
+
     @BeforeEach
     void setUp() {
         emailContentCreator = mock(EmailContentCreator.class);
@@ -75,6 +79,7 @@ class MailGunEmailClientTest {
                 false,
                 pdfGenerator,
                 activeProfile);
+        programs = List.of(Program.SNAP);
     }
 
     @AfterEach
@@ -451,7 +456,7 @@ class MailGunEmailClientTest {
                     confirmationId,
                     List.of(Program.SNAP),
                     snapExpeditedEligibility,
-                    CcapExpeditedEligibility.ELIGIBLE,
+                    ccapExpeditedEligibility,
                     List.of(new ApplicationFile(fileContent.getBytes(), fileName)), Locale.ENGLISH);
 
             wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
