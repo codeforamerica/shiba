@@ -40,6 +40,10 @@ public class LandmarkPagesConfiguration {
         return pageName.equals(laterDocsIdPage);
     }
 
+    public boolean isLaterDocsTerminalPage(String pageName) {
+        return pageName.equals(laterDocsTerminalPage);
+    }
+
     public boolean isUploadDocumentsPage(String pageName) {
         return pageName.equals(uploadDocumentsPage);
     }

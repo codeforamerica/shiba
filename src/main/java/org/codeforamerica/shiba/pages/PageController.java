@@ -294,6 +294,10 @@ public class PageController {
             model.put("successMessage", successMessageService.getSuccessMessage(new ArrayList<>(programs), snapExpeditedEligibility, ccapExpeditedEligibility, locale));
         }
 
+        if (landmarkPagesConfiguration.isLaterDocsTerminalPage(pageName)) {
+            model.put("applicationId", applicationData.getId());
+        }
+
         if (landmarkPagesConfiguration.isUploadDocumentsPage(pageName)) {
             model.put("uploadedDocs", applicationData.getUploadedDocs());
             model.put("uploadDocMaxFileSize", uploadDocumentConfiguration.getMaxFilesize());
