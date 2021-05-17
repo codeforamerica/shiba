@@ -72,9 +72,9 @@ class EmailContentCreatorTest {
 
     @ParameterizedTest
     @CsvSource(value = {
-            "ELIGIBLE,Your county will call you in the next 3 days for your phone interview.",
-            "NOT_ELIGIBLE,Your county will mail you a notice that will arrive in the next week.",
-            "UNDETERMINED,Your county will mail you a notice that will arrive in the next week.",
+            "ELIGIBLE,You will receive a call from your county within 24 hours about your application for food support. The call may come from an unknown number.<br><br>You will need to complete an interview with a caseworker.",
+            "NOT_ELIGIBLE,You will receive a letter in the mail with next steps for your application for food support in 7-10 days.<br><br>You will need to complete an interview with a caseworker.",
+            "UNDETERMINED,You will receive a letter in the mail with next steps for your application for food support in 7-10 days.<br><br>You will need to complete an interview with a caseworker.",
     })
     void createContentForExpedited(SnapExpeditedEligibility snapExpeditedEligibility, String expeditedEligibilityContent) {
         String emailContent = emailContentCreator.createClientHTML("someNumber",
