@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages.emails;
 
+import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.pages.SuccessMessageService;
@@ -38,10 +39,12 @@ public class EmailContentCreator {
     }
 
     public String createClientHTML(String confirmationId, List<String> programs, SnapExpeditedEligibility snapExpeditedEligibility, CcapExpeditedEligibility ccapExpeditedEligibility, Locale locale) {
+        LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
+
         String successMessage = successMessageService.getSuccessMessage(programs, snapExpeditedEligibility, ccapExpeditedEligibility, locale);
-        String content = getMessage(CLIENT_BODY, List.of(confirmationId, successMessage), locale);
+        String content = lms.getMessage(CLIENT_BODY, List.of(confirmationId, successMessage));
         if ("demo".equals(activeProfile)) {
-            return wrapHtml(content + "<p>" + getMessage(DEMO_PURPOSES_ONLY, null, locale) + "</p><p>" + getMessage(SHARE_FEEDBACK, null, locale) + "</p>");
+            content = "%s<p>%s</p><p>%s</p>".formatted(content, lms.getMessage(DEMO_PURPOSES_ONLY), lms.getMessage(SHARE_FEEDBACK));
         }
         return wrapHtml(content);
     }
