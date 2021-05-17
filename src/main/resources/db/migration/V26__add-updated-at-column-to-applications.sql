@@ -1,2 +1,2 @@
 ALTER TABLE applications
-ADD COLUMN application_data jsonb;
+ADD COLUMN updated_at timestamp;

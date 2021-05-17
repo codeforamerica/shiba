@@ -4,6 +4,7 @@ import de.redsix.pdfcompare.PdfComparator;
 import org.codeforamerica.shiba.*;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.Status;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
@@ -37,6 +38,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.TestUtils.getAbsoluteFilepath;
+import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.output.Document.*;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.mockito.Mockito.*;
@@ -74,6 +76,9 @@ class MnitDocumentConsumerTest {
     private MnitDocumentConsumer documentConsumer;
 
     private Application application;
+
+    @MockBean
+    private ApplicationStatusUpdater applicationStatusUpdater;
 
     @BeforeEach
     void setUp() {
@@ -154,6 +159,23 @@ class MnitDocumentConsumerTest {
     }
 
     @Test
+    void updatesStatusToSendingForCafAndCcapDocuments() {
+        ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
+        doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), eq(CCAP), any());
+
+        when(documentListParser.parse(any())).thenReturn(List.of(CCAP, CAF));
+        PagesData pagesData = new PagesData();
+        PageData chooseProgramsPage = new PageData();
+        chooseProgramsPage.put("programs", InputData.builder().value(List.of("CCAP", "SNAP")).build());
+        pagesData.put("choosePrograms", chooseProgramsPage);
+        applicationData.setPagesData(pagesData);
+        documentConsumer.process(application);
+        assertThat(applicationData.getCafApplicationStatus()).isEqualTo(SENDING);
+        assertThat(applicationData.getCcapApplicationStatus()).isEqualTo(SENDING);
+        assertThat(applicationData.getEntireApplicationStatus()).isEqualTo(SENDING);
+    }
+
+    @Test
     void sendsApplicationIdToMonitoringService() {
         documentConsumer.process(application);
         verify(monitoringService).setApplicationId(application.getId());
@@ -176,6 +198,20 @@ class MnitDocumentConsumerTest {
         // Assert that converted file contents are as expected
         verifyGeneratedPdf(captor.getAllValues().get(0).getFileBytes(), "shiba+file.pdf");
         verifyGeneratedPdf(captor.getAllValues().get(1).getFileBytes(), "test-uploaded-pdf-with-coverpage.pdf");
+    }
+
+    @Test
+    void setsUploadedDocumentStatusToSendingWhenProcessUploadedDocumentsIsCalled() throws IOException {
+        mockDocUpload("shiba+file.jpg", "someS3FilePath", MediaType.IMAGE_JPEG_VALUE, "jpg");
+
+        mockDocUpload("test-uploaded-pdf.pdf", "pdfS3FilePath", MediaType.APPLICATION_PDF_VALUE, "pdf");
+
+        when(fileNameGenerator.generateUploadedDocumentName(application, 0, "pdf")).thenReturn("pdf1of2.pdf");
+        when(fileNameGenerator.generateUploadedDocumentName(application, 1, "pdf")).thenReturn("pdf2of2.pdf");
+
+        documentConsumer.processUploadedDocuments(application);
+
+        verify(applicationStatusUpdater).updateUploadedDocumentsStatus(Status.SENDING);
     }
 
     private void mockDocUpload(String uploadedDocFilename, String s3filepath, String contentType, String extension) throws IOException {

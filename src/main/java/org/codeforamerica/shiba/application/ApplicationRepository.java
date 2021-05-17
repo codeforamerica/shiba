@@ -76,6 +76,7 @@ public class ApplicationRepository {
                 "INSERT INTO applications (id, completed_at, application_data, county, time_to_complete, sentiment, feedback, flow) " +
                         "VALUES (:id, :completedAt, :applicationData ::jsonb, :county, :timeToComplete, :sentiment, :feedback, :flow) " +
                         "ON CONFLICT DO NOTHING", parameters);
+        setUpdatedAtTime(application.getId());
     }
 
     public Application find(String id) {
@@ -181,5 +182,30 @@ public class ApplicationRepository {
                         Sentiment.valueOf(resultSet.getString("sentiment")),
                         resultSet.getDouble("count") / resultSet.getDouble("total_count"))).stream()
                 .collect(toMap(Entry::getKey, Entry::getValue));
+    }
+
+    private void setUpdatedAtTime(String id) {
+        HashMap<String, Object> parameters = new HashMap<>(Map.of(
+                "updatedAt", Timestamp.from(Instant.now()),
+                "id", id
+        ));
+
+        var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+        namedParameterJdbcTemplate.update("UPDATE applications SET " +
+                "updated_at = :updatedAt " +
+                "WHERE id = :id", parameters);
+    }
+    
+    public void updateStatus(String id, ApplicationStatusType applicationStatusType, Status status) {
+        HashMap<String, Object> parameters = new HashMap<>(Map.of(
+                "status", status,
+                "id", id
+        ));
+
+        var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+        namedParameterJdbcTemplate.update("UPDATE applications SET" +
+                applicationStatusType + "= :status " +
+                "WHERE id = :id", parameters);
+        this.setUpdatedAtTime(id);
     }
 }

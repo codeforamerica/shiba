@@ -19,8 +19,30 @@ workflow:
       inputs:
         - name: foo
           type: TEXT
+  uploadDocuments:
+    pageConfiguration:
+      name: uploadDocuments
+      pageTitle: upload-docs-title
+      inputs:
+        - name: foo
+          type: TEXT
+  choosePrograms:
+    pageConfiguration:
+      name: choosePrograms
+      pageTitle: choose-programs-title
+      inputs:
+        - name: programs
+          type: CHECKBOX
+          options:
+            selectableOptions:
+              - value: SNAP
+              - value: CASH
+              - value: CCAP
+              - value: EA
+              - value: GRH
 landmarkPages:
   landingPages:
     - landingPage
   terminalPage: terminalPage
   submitPage: firstPage
+  uploadDocumentsPage: uploadDocuments

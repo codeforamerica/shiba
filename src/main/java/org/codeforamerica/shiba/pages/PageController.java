@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.pages;
 
 import lombok.extern.slf4j.Slf4j;
+import org.codeforamerica.shiba.ApplicationStatusUpdater;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
@@ -38,7 +39,6 @@ import java.util.*;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
-import static org.codeforamerica.shiba.application.FlowType.UNDETERMINED;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
 
 @Controller
@@ -62,6 +62,7 @@ public class PageController {
     private final CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
     private final SuccessMessageService successMessageService;
     private final DocumentRepositoryService documentRepositoryService;
+    private final ApplicationStatusUpdater applicationStatusUpdater;
 
     public PageController(
             ApplicationConfiguration applicationConfiguration,
@@ -79,7 +80,7 @@ public class PageController {
             CountyParser countyParser,
             SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider,
             CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider,
-            SuccessMessageService successMessageService) {
+            SuccessMessageService successMessageService, ApplicationStatusUpdater applicationStatusUpdater) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
@@ -96,6 +97,7 @@ public class PageController {
         this.snapExpeditedEligibilityDecider = snapExpeditedEligibilityDecider;
         this.ccapExpeditedEligibilityDecider = ccapExpeditedEligibilityDecider;
         this.successMessageService = successMessageService;
+        this.applicationStatusUpdater = applicationStatusUpdater;
     }
 
     @GetMapping("/")
@@ -342,7 +344,7 @@ public class PageController {
     private boolean shouldRedirectToTerminalPage(@PathVariable String pageName) {
         LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
         // If they requested a page that was not a postSubmitPage and their application has an Id
-        return !landmarkPagesConfiguration.isPostSubmitPage(pageName) && applicationData.getStatus() != IN_PROGRESS;
+        return !landmarkPagesConfiguration.isPostSubmitPage(pageName) && applicationData.getEntireApplicationStatus() != IN_PROGRESS;
     }
 
     @PostMapping("/groups/{groupName}/delete")
@@ -428,7 +430,17 @@ public class PageController {
         }
 
         if (pageDataIsValid) {
-            applicationData.setStatus(IN_PROGRESS);
+            applicationData.setEntireApplicationStatus(IN_PROGRESS);
+            if (pagesData.containsKey("choosePrograms")) {
+                if (applicationData.isCAFApplication()) {
+                    applicationStatusUpdater.updateCafApplicationStatus(IN_PROGRESS);
+                } else if (applicationData.isCCAPApplication()) {
+                    applicationStatusUpdater.updateCcapApplicationStatus(IN_PROGRESS);
+                }
+            }
+            if (applicationConfiguration.getLandmarkPages().isUploadDocumentsPage(pageName)) {
+                applicationStatusUpdater.updateUploadedDocumentsStatus(IN_PROGRESS);
+            }
             if (applicationData.getId() == null) {
                 applicationData.setId(applicationRepository.getNextId());
             }

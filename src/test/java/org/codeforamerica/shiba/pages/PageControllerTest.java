@@ -1,10 +1,8 @@
 package org.codeforamerica.shiba.pages;
 
+import org.codeforamerica.shiba.ApplicationStatusUpdater;
 import org.codeforamerica.shiba.NonSessionScopedApplicationData;
-import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.application.ApplicationFactory;
-import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.application.FlowType;
+import org.codeforamerica.shiba.application.*;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -62,6 +60,9 @@ class PageControllerTest {
 
     @Autowired
     private ApplicationData applicationData;
+
+    @MockBean
+    private ApplicationStatusUpdater applicationStatusUpdater;
 
     @BeforeEach
     void setUp() {
@@ -154,6 +155,7 @@ class PageControllerTest {
         applicationData.setStartTimeOnce(Instant.now());
 
         String applicationId = "someId";
+        applicationData.setId(applicationId);
         Application application = Application.builder()
                 .id(applicationId)
                 .applicationData(applicationData)
@@ -167,6 +169,7 @@ class PageControllerTest {
 
         verify(applicationRepository).save(application);
         assertThat(applicationData.getId()).isEqualTo(applicationId);
+        assertThat(applicationData.getEntireApplicationStatus()).isEqualTo(Status.IN_PROGRESS);
     }
 
     @Test
@@ -175,6 +178,7 @@ class PageControllerTest {
 
         ZonedDateTime completedAt = ZonedDateTime.now();
         String applicationId = "someId";
+        applicationData.setId(applicationId);
         Application application = Application.builder()
                 .id(applicationId)
                 .completedAt(completedAt)
@@ -305,5 +309,63 @@ class PageControllerTest {
                 .andExpect(flash().attribute("feedbackFailure", equalTo(failureMessage)));
 
         verifyNoInteractions(applicationRepository);
+    }
+
+    @Test
+    void shouldUpdateUploadDocumentsStatusWhenSubmittingUploadedDocuments() throws Exception {
+        applicationData.setStartTimeOnce(Instant.now());
+
+        String applicationId = "someId";
+        applicationData.setId(applicationId);
+        Application application = Application.builder()
+                .id(applicationId)
+                .applicationData(applicationData)
+                .build();
+        when(applicationRepository.getNextId()).thenReturn(applicationId);
+        when(applicationFactory.newApplication(applicationData)).thenReturn(application);
+
+        mockMvc.perform(post("/pages/uploadDocuments")
+                .param("foo[]", "some value")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+
+        verify(applicationStatusUpdater).updateUploadedDocumentsStatus(Status.IN_PROGRESS);
+    }
+
+    @Test
+    void shouldUpdateCcapApplicationStatusWhenChoosingPrograms() throws Exception {
+        applicationData.setStartTimeOnce(Instant.now());
+        String applicationId = "someId";
+        applicationData.setId(applicationId);
+        Application application = Application.builder()
+                .id(applicationId)
+                .applicationData(applicationData)
+                .build();
+        when(applicationRepository.getNextId()).thenReturn(applicationId);
+        when(applicationFactory.newApplication(applicationData)).thenReturn(application);
+
+        mockMvc.perform(post("/pages/choosePrograms")
+                .param("programs[]", "CCAP")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+
+        verify(applicationStatusUpdater).updateCcapApplicationStatus(Status.IN_PROGRESS);
+    }
+
+    @Test
+    void shouldUpdateCafApplicationStatusWhenChoosingPrograms() throws Exception {
+        applicationData.setStartTimeOnce(Instant.now());
+        String applicationId = "someId";
+        applicationData.setId(applicationId);
+        Application application = Application.builder()
+                .id(applicationId)
+                .applicationData(applicationData)
+                .build();
+        when(applicationRepository.getNextId()).thenReturn(applicationId);
+        when(applicationFactory.newApplication(applicationData)).thenReturn(application);
+
+        mockMvc.perform(post("/pages/choosePrograms")
+                .param("programs[]", "SNAP")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+
+        verify(applicationStatusUpdater).updateCafApplicationStatus(Status.IN_PROGRESS);
     }
 }

@@ -22,7 +22,10 @@ public class ApplicationData implements Serializable {
     private Instant startTime;
     private String utmSource;
     private FlowType flow = FlowType.UNDETERMINED;
-    private Status status = Status.IN_PROGRESS;
+    private Status entireApplicationStatus = Status.IN_PROGRESS;
+    private Status cafApplicationStatus;
+    private Status ccapApplicationStatus;
+    private Status uploadedDocumentsStatus;
     private PagesData pagesData = new PagesData();
     private Subworkflows subworkflows = new Subworkflows();
     private Map<String, PagesData> incompleteIterations = new HashMap<>();
@@ -158,5 +161,9 @@ public class ApplicationData implements Serializable {
                     applicantAndHouseholdMemberPrograms.addAll(iteration.getPagesData().safeGetPageInputValue("householdMemberInfo", "programs")));
         }
         return applicantAndHouseholdMemberPrograms;
+    }
+
+    public boolean documentUploadInProgress() {
+        return getPagesData().containsKey("uploadDocuments") && uploadedDocs.size() >= 1;
     }
 }

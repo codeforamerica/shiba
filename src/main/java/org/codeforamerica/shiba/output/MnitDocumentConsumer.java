@@ -1,10 +1,11 @@
 package org.codeforamerica.shiba.output;
 
 import lombok.extern.slf4j.Slf4j;
+import org.codeforamerica.shiba.ApplicationStatusUpdater;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.application.Status;
+import org.codeforamerica.shiba.application.ApplicationStatusType;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
@@ -28,6 +30,7 @@ public class MnitDocumentConsumer {
     private final MonitoringService monitoringService;
     private final String activeProfile;
     private final ApplicationRepository applicationRepository;
+    private final ApplicationStatusUpdater applicationStatusUpdater;
 
     public MnitDocumentConsumer(MnitEsbWebServiceClient mnitClient,
                                 XmlGenerator xmlGenerator,
@@ -35,7 +38,8 @@ public class MnitDocumentConsumer {
                                 ApplicationDataParser<List<Document>> documentListParser,
                                 MonitoringService monitoringService,
                                 @Value("${spring.profiles.active:dev}") String activeProfile,
-                                ApplicationRepository applicationRepository) {
+                                ApplicationRepository applicationRepository,
+                                ApplicationStatusUpdater applicationStatusUpdater) {
         this.mnitClient = mnitClient;
         this.xmlGenerator = xmlGenerator;
         this.pdfGenerator = pdfGenerator;
@@ -43,28 +47,28 @@ public class MnitDocumentConsumer {
         this.monitoringService = monitoringService;
         this.activeProfile = activeProfile;
         this.applicationRepository = applicationRepository;
+        this.applicationStatusUpdater = applicationStatusUpdater;
     }
 
     public void process(Application application) {
         monitoringService.setApplicationId(application.getId());
         // Send the CAF and CCAP as PDFs
-        documentListParser.parse(application.getApplicationData()).forEach(documentType -> mnitClient.send(
-                pdfGenerator.generate(application.getId(), documentType, CASEWORKER), application.getCounty(),
-                application.getId(), documentType)
-        );
-        application.getApplicationData().setStatus(Status.SENDING_APPLICATION);
-        applicationRepository.save(application);
-
-        boolean sentSuccessfully = mnitClient.send(xmlGenerator.generate(application.getId(), Document.CAF, CASEWORKER), application.getCounty(), application.getId(), Document.CAF);
-        if (sentSuccessfully) {
-            application.getApplicationData().setStatus(Status.SUBMITTED_APPLICATION);
-            applicationRepository.save(application);
-        } else {
-            log.error("Failed to send application id={}", application.getId());
-        }
+        documentListParser.parse(application.getApplicationData()).forEach(documentType -> {
+            mnitClient.send(pdfGenerator.generate(application.getId(), documentType, CASEWORKER), application.getCounty(), application.getId(), documentType);
+            if (documentType == Document.CCAP) {
+                application.getApplicationData().setCcapApplicationStatus(SENDING);
+                applicationRepository.updateStatus(application.getId(), ApplicationStatusType.CCAP, SENDING);
+            } else if (documentType == Document.CAF) {
+                application.getApplicationData().setCafApplicationStatus(SENDING);
+                applicationRepository.updateStatus(application.getId(), ApplicationStatusType.CAF, SENDING);
+            }
+            application.getApplicationData().setEntireApplicationStatus(SENDING);
+        });
+        mnitClient.send(xmlGenerator.generate(application.getId(), Document.CAF, CASEWORKER), application.getCounty(), application.getId(), Document.CAF);
     }
 
     public void processUploadedDocuments(Application application) {
+        applicationStatusUpdater.updateUploadedDocumentsStatus(SENDING);
         List<UploadedDocument> uploadedDocs = application.getApplicationData().getUploadedDocs();
         byte[] coverPage = pdfGenerator.generate(application, UPLOADED_DOC, CASEWORKER).getFileBytes();
         for (int i = 0; i < uploadedDocs.size(); i++) {
@@ -73,23 +77,7 @@ public class MnitDocumentConsumer {
 
             if (fileToSend.getFileBytes().length > 0) {
                 log.info("Now sending: " + fileToSend.getFileName() + " original filename: " + uploadedDocument.getFilename());
-                if (application.getApplicationData().getStatus() != Status.SENDING_APPLICATION) {
-                    application.getApplicationData().setStatus(Status.SENDING_DOCS);
-                    applicationRepository.save(application);
-                } else {
-                    log.warn("Application has not yet successfully submitted id={}", application.getId());
-                }
-
-                boolean sentSuccessfully = mnitClient.send(fileToSend, application.getCounty(), application.getId(), UPLOADED_DOC);
-                if (sentSuccessfully && application.getApplicationData().getStatus() != Status.SENDING_APPLICATION) {
-                    application.getApplicationData().setStatus(Status.SUBMITTED_DOCS);
-                    applicationRepository.save(application);
-                } else {
-                    log.error("There was an error sending uploaded documents for application status={}, id={}",
-                            application.getApplicationData().getStatus(),
-                            application.getId());
-                }
-
+                mnitClient.send(fileToSend, application.getCounty(), application.getId(), UPLOADED_DOC);
                 log.info("Finished sending document " + fileToSend.getFileName());
             } else if (activeProfile.equals("demo") || activeProfile.equals("staging") || activeProfile.equals("production")) {
                 log.error("Skipped uploading file " + uploadedDocument.getFilename() + " because it was empty. This should only happen in a dev environment.");

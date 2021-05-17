@@ -38,6 +38,7 @@ public class ApplicationFactory {
         return Application.builder()
                 .id(applicationData.getId())
                 .completedAt(completedAt)
+                .updatedAt(completedAt)
                 .applicationData(copy)
                 .county(countyParser.parse(applicationData))
                 .timeToComplete(Duration.between(applicationData.getStartTime(), completedAt))

@@ -18,11 +18,12 @@ import java.util.Optional;
 public class Application {
     String id;
     ZonedDateTime completedAt;
+    ZonedDateTime updatedAt;
     ApplicationData applicationData;
     County county;
     Duration timeToComplete;
     FlowType flow;
-//    Status status;
+    Status status;
     Sentiment sentiment;
     String feedback;
 
@@ -33,11 +34,12 @@ public class Application {
         return new Application(
                 this.id,
                 this.completedAt,
+                this.updatedAt,
                 this.applicationData,
                 this.county,
                 this.timeToComplete,
                 this.flow,
-//                this.status,
+                this.status,
                 sentiment,
                 feedbackText
         );
