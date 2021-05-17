@@ -325,6 +325,8 @@ public abstract class AbstractBasePageTest {
         testPage.enter("haveSoldAssets", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.enter("registerToVote", "Yes, send me more info");
+        testPage.enter("healthcareCoverage", NO.getDisplayValue());
+        testPage.clickContinue();
         completeHelperWorkflow(helpWithBenefits);
         driver.findElement(By.id("additionalInfo")).sendKeys("Some additional information about my application");
         testPage.clickContinue();

@@ -151,6 +151,7 @@ public class DocumentsTest extends JourneyTest {
         testPage.clickContinue();
         testPage.clickButton("Yes, that's everyone");
         testPage.clickContinue();
+        testPage.enter("isPreparingMealsTogether", YES.getDisplayValue());
         testPage.enter("livingSituation", "None of these");
         testPage.clickContinue();
         testPage.enter("goingToSchool", NO.getDisplayValue());
