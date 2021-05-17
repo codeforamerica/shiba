@@ -227,10 +227,10 @@ public abstract class AbstractBasePageTest {
     }
 
     protected SuccessPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking, SmartyStreetClient mockSmartyStreetClient) {
-    	return nonExpeditedFlowToSuccessPage(hasHousehold, isWorking, mockSmartyStreetClient, false);
+    	return nonExpeditedFlowToSuccessPage(hasHousehold, isWorking, mockSmartyStreetClient, false, false);
     }
 
-    protected SuccessPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking, SmartyStreetClient mockSmartyStreetClient, boolean helpWithBenefits) {
+    protected SuccessPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking, SmartyStreetClient mockSmartyStreetClient, boolean helpWithBenefits, boolean hasHealthcareCoverage) {
         completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_CCAP, PROGRAM_CASH), mockSmartyStreetClient);
         testPage.clickLink("This looks correct");
 
@@ -325,7 +325,7 @@ public abstract class AbstractBasePageTest {
         testPage.enter("haveSoldAssets", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.enter("registerToVote", "Yes, send me more info");
-        testPage.enter("healthcareCoverage", NO.getDisplayValue());
+        testPage.enter("healthcareCoverage", hasHealthcareCoverage? YES.getDisplayValue() : NO.getDisplayValue());
         testPage.clickContinue();
         completeHelperWorkflow(helpWithBenefits);
         driver.findElement(By.id("additionalInfo")).sendKeys("Some additional information about my application");
