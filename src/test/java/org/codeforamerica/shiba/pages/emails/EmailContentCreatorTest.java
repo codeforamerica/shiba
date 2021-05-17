@@ -1,6 +1,8 @@
 package org.codeforamerica.shiba.pages.emails;
 
+import org.codeforamerica.shiba.*;
 import org.codeforamerica.shiba.output.caf.*;
+import org.codeforamerica.shiba.pages.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.*;
 import org.junit.jupiter.params.provider.*;
@@ -26,18 +28,40 @@ class EmailContentCreatorTest {
     @Autowired
     private MessageSource messageSource;
 
+    @Autowired
+    private SuccessMessageService successMessageService;
+
+    private List<String> programs;
+
     @BeforeEach
     void setUp() {
         LocaleContextHolder.setLocale(Locale.ENGLISH);
-        emailContentCreator = new EmailContentCreator(messageSource, "test");
+        emailContentCreator = new EmailContentCreator(messageSource, "test", successMessageService);
+        programs = List.of(Program.SNAP);
     }
 
     @Test
     void includesTheConfirmationNumber() {
-        String emailContent = emailContentCreator.createClientHTML("someNumber", SnapExpeditedEligibility.UNDETERMINED, Locale.ENGLISH);
+        String emailContent = emailContentCreator.createClientHTML("someNumber",
+                                                                   programs,
+                                                                   SnapExpeditedEligibility.UNDETERMINED,
+                                                                   CcapExpeditedEligibility.UNDETERMINED,
+                                                                   Locale.ENGLISH);
 
         assertThat(emailContent).contains("someNumber");
     }
+
+    @Test
+    void includesVerificationDocuments() {
+        String emailContent = emailContentCreator.createClientHTML("someNumber",
+                                                                   programs,
+                                                                   SnapExpeditedEligibility.UNDETERMINED,
+                                                                   CcapExpeditedEligibility.UNDETERMINED,
+                                                                   Locale.ENGLISH);
+
+        assertThat(emailContent).contains("someNumber");
+    }
+
 
     @Test
     void includesCaseworkerInstructions() {
@@ -53,7 +77,11 @@ class EmailContentCreatorTest {
             "UNDETERMINED,Your county will mail you a notice that will arrive in the next week.",
     })
     void createContentForExpedited(SnapExpeditedEligibility snapExpeditedEligibility, String expeditedEligibilityContent) {
-        String emailContent = emailContentCreator.createClientHTML("someNumber", snapExpeditedEligibility, Locale.ENGLISH);
+        String emailContent = emailContentCreator.createClientHTML("someNumber",
+                                                                   programs,
+                                                                   snapExpeditedEligibility,
+                                                                   CcapExpeditedEligibility.UNDETERMINED,
+                                                                   Locale.ENGLISH);
 
         assertThat(emailContent).contains(expeditedEligibilityContent);
     }
@@ -93,9 +121,13 @@ class EmailContentCreatorTest {
 
     @Test
     void shouldCreateConfirmationEmailFromDemo() {
-        emailContentCreator = new EmailContentCreator(messageSource, "demo");
+        emailContentCreator = new EmailContentCreator(messageSource, "demo", successMessageService);
 
-        String emailContent = emailContentCreator.createClientHTML("someNumber", SnapExpeditedEligibility.UNDETERMINED, Locale.ENGLISH);
+        String emailContent = emailContentCreator.createClientHTML("someNumber",
+                                                                   programs,
+                                                                   SnapExpeditedEligibility.UNDETERMINED,
+                                                                   CcapExpeditedEligibility.UNDETERMINED,
+                                                                   Locale.ENGLISH);
         assertThat(emailContent).contains("This e-mail is for demo purposes only");
     }
 }

@@ -10,8 +10,7 @@ import org.codeforamerica.shiba.mnit.MnitCountyInformation;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
-import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
-import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
+import org.codeforamerica.shiba.output.caf.*;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -21,7 +20,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.codeforamerica.shiba.output.Document.CAF;
@@ -33,6 +32,7 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
     private final MnitDocumentConsumer mnitDocumentConsumer;
     private final EmailClient emailClient;
     private final SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider;
+    private final CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
     private final PdfGenerator pdfGenerator;
     private final CountyMap<MnitCountyInformation> countyMap;
     private final EmailParser emailParser;
@@ -44,6 +44,7 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
                                         ApplicationRepository applicationRepository,
                                         EmailClient emailClient,
                                         SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider,
+                                        CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider,
                                         PdfGenerator pdfGenerator,
                                         CountyMap<MnitCountyInformation> countyMap,
                                         FeatureFlagConfiguration featureFlagConfiguration,
@@ -54,6 +55,7 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
         this.mnitDocumentConsumer = mnitDocumentConsumer;
         this.emailClient = emailClient;
         this.snapExpeditedEligibilityDecider = snapExpeditedEligibilityDecider;
+        this.ccapExpeditedEligibilityDecider = ccapExpeditedEligibilityDecider;
         this.pdfGenerator = pdfGenerator;
         this.countyMap = countyMap;
         this.featureFlags = featureFlagConfiguration;
@@ -80,9 +82,10 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
                 .ifPresent(email -> {
                     String applicationId = application.getId();
                     SnapExpeditedEligibility snapExpeditedEligibility = snapExpeditedEligibilityDecider.decide(application.getApplicationData());
+                    CcapExpeditedEligibility ccapExpeditedEligibility = ccapExpeditedEligibilityDecider.decide(application.getApplicationData());
                     List<Document> docs = documentListParser.parse(applicationData);
                     List<ApplicationFile> pdfs = docs.stream().map(doc -> pdfGenerator.generate(applicationId,doc,CLIENT)).collect(Collectors.toList());
-                    emailClient.sendConfirmationEmail(email, applicationId, snapExpeditedEligibility, pdfs, event.getLocale());
+                    emailClient.sendConfirmationEmail(email, applicationId, new ArrayList<>(applicationData.getApplicantAndHouseholdMemberPrograms()), snapExpeditedEligibility, ccapExpeditedEligibility, pdfs, event.getLocale());
                 });
     }
 

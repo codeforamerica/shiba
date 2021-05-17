@@ -270,7 +270,7 @@ public class PageController {
             model.put("zipCode", zipCode.get(0));
         }
 
-        Set<String> programs = getApplicantAndHouseholdMemberPrograms();
+        Set<String> programs = applicationData.getApplicantAndHouseholdMemberPrograms();
         if (!programs.isEmpty()) {
             model.put("programs", String.join(", ", programs));
         }
@@ -313,19 +313,6 @@ public class PageController {
         }
 
         return model;
-    }
-
-    @NotNull
-    private Set<String> getApplicantAndHouseholdMemberPrograms() {
-        List<String> applicantPrograms = applicationData.getPagesData().safeGetPageInputValue("choosePrograms", "programs");
-        Set<String> applicantAndHouseholdMemberPrograms = new HashSet<>(applicantPrograms);
-        boolean hasHousehold = applicationData.getSubworkflows().containsKey("household");
-        if (hasHousehold) {
-            Subworkflow householdSubworkflow = applicationData.getSubworkflows().get("household");
-            householdSubworkflow.forEach(iteration ->
-                    applicantAndHouseholdMemberPrograms.addAll(iteration.getPagesData().safeGetPageInputValue("householdMemberInfo", "programs")));
-        }
-        return applicantAndHouseholdMemberPrograms;
     }
 
     private boolean requestedPageAppliesToGroup(String iterationIndex, PageWorkflowConfiguration pageWorkflow) {

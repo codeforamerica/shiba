@@ -4,12 +4,10 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.BasicCredentials;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.PageDataBuilder;
-import org.codeforamerica.shiba.PagesDataBuilder;
+import org.codeforamerica.shiba.*;
 import org.codeforamerica.shiba.application.*;
 import org.codeforamerica.shiba.output.ApplicationFile;
-import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.*;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.*;
@@ -17,7 +15,6 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -90,8 +87,13 @@ class MailGunEmailClientTest {
         String recipientEmail = "someRecipient";
         String emailContent = "content";
         SnapExpeditedEligibility snapExpeditedEligibility = ELIGIBLE;
+        CcapExpeditedEligibility ccapExpeditedEligibility = CcapExpeditedEligibility.ELIGIBLE;
         String confirmationId = "someConfirmationId";
-        when(emailContentCreator.createClientHTML(confirmationId, snapExpeditedEligibility, Locale.ENGLISH)).thenReturn(emailContent);
+        when(emailContentCreator.createClientHTML(confirmationId,
+                                                  programs,
+                                                  snapExpeditedEligibility,
+                                                  ccapExpeditedEligibility,
+                                                  Locale.ENGLISH)).thenReturn(emailContent);
 
         wireMockServer.stubFor(post(anyUrl())
                 .willReturn(aResponse().withStatus(200)));
@@ -101,7 +103,9 @@ class MailGunEmailClientTest {
         mailGunEmailClient.sendConfirmationEmail(
                 recipientEmail,
                 confirmationId,
+                List.of(Program.SNAP),
                 snapExpeditedEligibility,
+                ccapExpeditedEligibility,
                 List.of(new ApplicationFile(fileContent.getBytes(), fileName)), Locale.ENGLISH);
 
         wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
@@ -431,7 +435,11 @@ class MailGunEmailClientTest {
             String emailContent = "content";
             SnapExpeditedEligibility snapExpeditedEligibility = ELIGIBLE;
             String confirmationId = "someConfirmationId";
-            when(emailContentCreator.createClientHTML(confirmationId, snapExpeditedEligibility, Locale.ENGLISH)).thenReturn(emailContent);
+            when(emailContentCreator.createClientHTML(confirmationId,
+                                                      programs,
+                                                      snapExpeditedEligibility,
+                                                      ccapExpeditedEligibility,
+                                                      Locale.ENGLISH)).thenReturn(emailContent);
 
             wireMockServer.stubFor(post(anyUrl())
                     .willReturn(aResponse().withStatus(200)));
@@ -441,7 +449,9 @@ class MailGunEmailClientTest {
             mailGunEmailClient.sendConfirmationEmail(
                     recipientEmail,
                     confirmationId,
+                    List.of(Program.SNAP),
                     snapExpeditedEligibility,
+                    CcapExpeditedEligibility.ELIGIBLE,
                     List.of(new ApplicationFile(fileContent.getBytes(), fileName)), Locale.ENGLISH);
 
             wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))

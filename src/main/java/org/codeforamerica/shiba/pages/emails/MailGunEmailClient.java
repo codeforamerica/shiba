@@ -3,7 +3,7 @@ package org.codeforamerica.shiba.pages.emails;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.application.*;
 import org.codeforamerica.shiba.output.ApplicationFile;
-import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.*;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
@@ -67,7 +67,9 @@ public class MailGunEmailClient implements EmailClient {
     @Override
     public void sendConfirmationEmail(String recipientEmail,
                                       String confirmationId,
+                                      List<String> programs,
                                       SnapExpeditedEligibility snapExpeditedEligibility,
+                                      CcapExpeditedEligibility ccapExpeditedEligibility,
                                       List<ApplicationFile> applicationFiles,
                                       Locale locale) {
 
@@ -79,7 +81,11 @@ public class MailGunEmailClient implements EmailClient {
         form.put("from", List.of(senderEmail));
         form.put("to", List.of(recipientEmail));
         form.put("subject", List.of(subject));
-        form.put("html", List.of(emailContentCreator.createClientHTML(confirmationId, snapExpeditedEligibility, locale)));
+        form.put("html", List.of(emailContentCreator.createClientHTML(confirmationId,
+                                                                      programs,
+                                                                      snapExpeditedEligibility,
+                                                                      ccapExpeditedEligibility,
+                                                                      locale)));
         form.put("attachment", applicationFiles.stream().map(this::asResource).collect(Collectors.toList()));
 
         MDC.put("confirmationId", confirmationId);
