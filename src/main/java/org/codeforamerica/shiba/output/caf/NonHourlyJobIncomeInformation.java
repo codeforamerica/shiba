@@ -1,18 +1,19 @@
 package org.codeforamerica.shiba.output.caf;
 
 import lombok.Value;
+import org.codeforamerica.shiba.Money;
 import org.codeforamerica.shiba.pages.data.Iteration;
 
 @Value
 public class NonHourlyJobIncomeInformation implements JobIncomeInformation {
     PayPeriod payPeriod;
-    Double incomePerPayPeriod;
+    Money incomePerPayPeriod;
     int indexInJobsSubworkflow;
     Iteration iteration;
 
     public NonHourlyJobIncomeInformation(String payPeriod, String incomePerPayPeriod, int indexInJobsSubworkflow, Iteration iteration) {
         this.payPeriod = payPeriod.isEmpty() ? null : PayPeriod.valueOf(payPeriod);
-        this.incomePerPayPeriod = incomePerPayPeriod.isEmpty() ? null : Double.valueOf(incomePerPayPeriod.replace(",",""));
+        this.incomePerPayPeriod = incomePerPayPeriod.isEmpty() ? null : Money.parse(incomePerPayPeriod);
         this.indexInJobsSubworkflow = indexInJobsSubworkflow;
         this.iteration = iteration;
     }
@@ -23,10 +24,10 @@ public class NonHourlyJobIncomeInformation implements JobIncomeInformation {
     }
 
     @Override
-    public Double grossMonthlyIncome() {
+    public Money grossMonthlyIncome() {
         return switch (payPeriod) {
-            case EVERY_WEEK -> incomePerPayPeriod * 4;
-            case EVERY_TWO_WEEKS, TWICE_A_MONTH -> incomePerPayPeriod * 2;
+            case EVERY_WEEK -> incomePerPayPeriod.multiply(Money.parse("4"));
+            case EVERY_TWO_WEEKS, TWICE_A_MONTH -> incomePerPayPeriod.multiply(Money.parse("2"));
             case EVERY_MONTH, IT_VARIES -> incomePerPayPeriod;
         };
     }
