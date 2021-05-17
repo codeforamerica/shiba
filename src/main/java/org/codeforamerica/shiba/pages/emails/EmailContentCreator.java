@@ -57,7 +57,7 @@ public class EmailContentCreator {
         String clientConfirmationEmailBody = getMessage(LATER_DOCS_CONFIRMATION_EMAIL_BODY, null, locale);
         String clientConfirmationEmailLink = getMessage(LATER_DOCS_CONFIRMATION_EMAIL_LINK, null, locale);
 
-        return wrapHtml("<p>" + clientConfirmationEmailBody + "</p><p>" + clientConfirmationEmailLink + "</p>");
+        return wrapHtml("<p>%s</p><p>%s</p>".formatted(clientConfirmationEmailBody, clientConfirmationEmailLink));
     }
 
     public String createClientLaterDocsConfirmationEmailSubject(Locale locale) {
@@ -97,7 +97,7 @@ public class EmailContentCreator {
     }
 
     private String wrapHtml(String message) {
-        return String.format("<html><body>%s</body><html>", message);
+        return "<html><body>%s</body><html>".formatted(message);
     }
 
 }
