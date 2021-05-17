@@ -16,13 +16,10 @@ import java.util.Locale;
 import java.util.Map;
 
 import static java.util.Optional.ofNullable;
-import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.ELIGIBLE;
 
 @Component
 public class EmailContentCreator {
     private final MessageSource messageSource;
-    private final static String SNAP_EXPEDITED_WAIT_TIME = "email.snap-expedited-wait-time";
-    private final static String SNAP_NONEXPEDITED_WAIT_TIME = "email.snap-nonexpedited-wait-time";
     private final static String CLIENT_BODY = "email.client-body";
     private final static String DOWNLOAD_CAF_ALERT = "email.download-caf-alert";
     private final static String NON_COUNTY_PARTNER_ALERT = "email.non-county-partner-alert";
@@ -41,17 +38,12 @@ public class EmailContentCreator {
     }
 
     public String createClientHTML(String confirmationId, List<String> programs, SnapExpeditedEligibility snapExpeditedEligibility, CcapExpeditedEligibility ccapExpeditedEligibility, Locale locale) {
-        String eligibilitySpecificVerbiage;
-        if (ELIGIBLE == snapExpeditedEligibility) {
-            eligibilitySpecificVerbiage = getMessage(SNAP_EXPEDITED_WAIT_TIME, null, locale);
-        } else {
-            eligibilitySpecificVerbiage = getMessage(SNAP_NONEXPEDITED_WAIT_TIME, null, locale);
-        }
-
+        String successMessage = successMessageService.getSuccessMessage(programs, snapExpeditedEligibility, ccapExpeditedEligibility, locale);
+        String content = getMessage(CLIENT_BODY, List.of(confirmationId, successMessage), locale);
         if ("demo".equals(activeProfile)) {
-            return wrapHtml(getMessage(CLIENT_BODY, List.of(eligibilitySpecificVerbiage, confirmationId), locale) + "<p>" + getMessage(DEMO_PURPOSES_ONLY, null, locale) + "</p><p>" + getMessage(SHARE_FEEDBACK, null, locale) + "</p>");
+            return wrapHtml(content + "<p>" + getMessage(DEMO_PURPOSES_ONLY, null, locale) + "</p><p>" + getMessage(SHARE_FEEDBACK, null, locale) + "</p>");
         }
-        return wrapHtml(getMessage(CLIENT_BODY, List.of(confirmationId, successMessageService.getSuccessMessage(programs, snapExpeditedEligibility, ccapExpeditedEligibility, locale)), locale));
+        return wrapHtml(content);
     }
 
     public String createClientLaterDocsConfirmationEmailBody(Locale locale) {
@@ -100,5 +92,4 @@ public class EmailContentCreator {
     private String wrapHtml(String message) {
         return "<html><body>%s</body><html>".formatted(message);
     }
-
 }
