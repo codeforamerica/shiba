@@ -80,6 +80,9 @@
     },
     {
       "moduleLicense": "The JSON License"
+    },
+    {
+      "moduleLicense": "provided without support or warranty"
     }
   ]
 }

@@ -13,11 +13,7 @@ public record LocaleSpecificMessageSource(Locale locale, MessageSource messageSo
         return getMessage(messageKey, null);
     }
 
-    public String getMessage(String snapExpeditedWaitTime, @Nullable List<String> args) {
-        return messageSource.getMessage(
-                snapExpeditedWaitTime,
-                ofNullable(args).map(List::toArray).orElse(null),
-                locale
-        );
+    public String getMessage(String messageKey, @Nullable List<String> args) {
+        return messageSource.getMessage(messageKey, ofNullable(args).map(List::toArray).orElse(null), locale);
     }
 }

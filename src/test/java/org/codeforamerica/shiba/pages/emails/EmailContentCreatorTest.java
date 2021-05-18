@@ -27,7 +27,6 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = NONE)
 class EmailContentCreatorTest {
-
     @Autowired
     private EmailContentCreator emailContentCreator;
 

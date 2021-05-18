@@ -16,8 +16,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static java.util.Optional.ofNullable;
-
 @Component
 public class EmailContentCreator {
     private final MessageSource messageSource;
@@ -40,18 +38,20 @@ public class EmailContentCreator {
 
     public String createClientHTML(String confirmationId, List<String> programs, SnapExpeditedEligibility snapExpeditedEligibility, CcapExpeditedEligibility ccapExpeditedEligibility, Locale locale) {
         LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
-
         String successMessage = successMessageService.getSuccessMessage(programs, snapExpeditedEligibility, ccapExpeditedEligibility, locale);
         String content = lms.getMessage(CLIENT_BODY, List.of(confirmationId, successMessage));
+
         if ("demo".equals(activeProfile)) {
             content = "%s<p>%s</p><p>%s</p>".formatted(content, lms.getMessage(DEMO_PURPOSES_ONLY), lms.getMessage(SHARE_FEEDBACK));
         }
+
         return wrapHtml(content);
     }
 
     public String createClientLaterDocsConfirmationEmailBody(Locale locale) {
-        String clientConfirmationEmailBody = getMessage(LATER_DOCS_CONFIRMATION_EMAIL_BODY, null, locale);
-        String clientConfirmationEmailLink = getMessage(LATER_DOCS_CONFIRMATION_EMAIL_LINK, null, locale);
+        LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
+        String clientConfirmationEmailBody = lms.getMessage(LATER_DOCS_CONFIRMATION_EMAIL_BODY);
+        String clientConfirmationEmailLink = lms.getMessage(LATER_DOCS_CONFIRMATION_EMAIL_LINK);
 
         return wrapHtml("<p>%s</p><p>%s</p>".formatted(clientConfirmationEmailBody, clientConfirmationEmailLink));
     }
@@ -85,11 +85,8 @@ public class EmailContentCreator {
     }
 
     private String getMessage(String snapExpeditedWaitTime, @Nullable List<String> args, Locale locale) {
-        return messageSource.getMessage(
-                snapExpeditedWaitTime,
-                ofNullable(args).map(List::toArray).orElse(null),
-                locale
-        );
+        LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
+        return lms.getMessage(snapExpeditedWaitTime, args);
     }
 
     private String wrapHtml(String message) {
