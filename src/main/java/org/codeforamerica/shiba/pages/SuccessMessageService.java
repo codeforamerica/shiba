@@ -46,7 +46,7 @@ public class SuccessMessageService {
         List<String> nextStepLetterPrograms = getNextStepLetterPrograms(programs, isSnapExpeditedEligible, isCcapExpeditedEligible, lms);
         if (!nextStepLetterPrograms.isEmpty()) {
             String programsInNextStepLetter = listToString(nextStepLetterPrograms, lms);
-            paragraphs.add(lms.getMessage("success.contact-promise", new String[]{programsInNextStepLetter}));
+            paragraphs.add(lms.getMessage("success.contact-promise", List.of(programsInNextStepLetter)));
         }
 
         // Interview expectation

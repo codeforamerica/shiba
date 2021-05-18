@@ -2,7 +2,7 @@ package org.codeforamerica.shiba.pages.emails;
 
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationFile;
-import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.*;
 
 import java.util.List;
 import java.util.Locale;
@@ -10,7 +10,9 @@ import java.util.Locale;
 public interface EmailClient {
     void sendConfirmationEmail(String recipientEmail,
                                String confirmationId,
+                               List<String> programs,
                                SnapExpeditedEligibility snapExpeditedEligibility,
+                               CcapExpeditedEligibility ccapExpeditedEligibility,
                                List<ApplicationFile> applicationFiles,
                                Locale locale);
 

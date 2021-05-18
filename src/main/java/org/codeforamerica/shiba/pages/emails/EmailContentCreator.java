@@ -1,6 +1,9 @@
 package org.codeforamerica.shiba.pages.emails;
 
+import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
+import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
+import org.codeforamerica.shiba.pages.SuccessMessageService;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -14,13 +17,10 @@ import java.util.Locale;
 import java.util.Map;
 
 import static java.util.Optional.ofNullable;
-import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.ELIGIBLE;
 
 @Component
 public class EmailContentCreator {
     private final MessageSource messageSource;
-    private final static String SNAP_EXPEDITED_WAIT_TIME = "email.snap-expedited-wait-time";
-    private final static String SNAP_NONEXPEDITED_WAIT_TIME = "email.snap-nonexpedited-wait-time";
     private final static String CLIENT_BODY = "email.client-body";
     private final static String DOWNLOAD_CAF_ALERT = "email.download-caf-alert";
     private final static String NON_COUNTY_PARTNER_ALERT = "email.non-county-partner-alert";
@@ -30,32 +30,30 @@ public class EmailContentCreator {
     private final static String DEMO_PURPOSES_ONLY = "email.demo-purposes-only";
     private final static String SHARE_FEEDBACK = "email.share-feedback";
     private final String activeProfile;
+    private final SuccessMessageService successMessageService;
 
-
-    public EmailContentCreator(MessageSource messageSource,@Value("${spring.profiles.active:Unknown}")String activeProfile ) {
+    public EmailContentCreator(MessageSource messageSource, @Value("${spring.profiles.active:Unknown}") String activeProfile, SuccessMessageService successMessageService) {
         this.messageSource = messageSource;
-        this.activeProfile=activeProfile;
+        this.activeProfile = activeProfile;
+        this.successMessageService = successMessageService;
     }
 
-    public String createClientHTML(String confirmationId, SnapExpeditedEligibility snapExpeditedEligibility, Locale locale) {
-        String eligibilitySpecificVerbiage;
-        if (ELIGIBLE == snapExpeditedEligibility) {
-            eligibilitySpecificVerbiage = getMessage(SNAP_EXPEDITED_WAIT_TIME, null, locale);
-        } else {
-            eligibilitySpecificVerbiage = getMessage(SNAP_NONEXPEDITED_WAIT_TIME, null, locale);
-        }
+    public String createClientHTML(String confirmationId, List<String> programs, SnapExpeditedEligibility snapExpeditedEligibility, CcapExpeditedEligibility ccapExpeditedEligibility, Locale locale) {
+        LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
 
-        if(activeProfile.equals("demo")) {
-            return wrapHtml(getMessage(CLIENT_BODY, List.of(eligibilitySpecificVerbiage, confirmationId), locale) + "<p>" + getMessage(DEMO_PURPOSES_ONLY,null, locale) + "</p><p>" + getMessage(SHARE_FEEDBACK, null, locale) + "</p>");
+        String successMessage = successMessageService.getSuccessMessage(programs, snapExpeditedEligibility, ccapExpeditedEligibility, locale);
+        String content = lms.getMessage(CLIENT_BODY, List.of(confirmationId, successMessage));
+        if ("demo".equals(activeProfile)) {
+            content = "%s<p>%s</p><p>%s</p>".formatted(content, lms.getMessage(DEMO_PURPOSES_ONLY), lms.getMessage(SHARE_FEEDBACK));
         }
-        return wrapHtml(getMessage(CLIENT_BODY, List.of(eligibilitySpecificVerbiage, confirmationId), locale));
+        return wrapHtml(content);
     }
 
     public String createClientLaterDocsConfirmationEmailBody(Locale locale) {
         String clientConfirmationEmailBody = getMessage(LATER_DOCS_CONFIRMATION_EMAIL_BODY, null, locale);
         String clientConfirmationEmailLink = getMessage(LATER_DOCS_CONFIRMATION_EMAIL_LINK, null, locale);
 
-        return wrapHtml("<p>" + clientConfirmationEmailBody + "</p><p>" + clientConfirmationEmailLink + "</p>");
+        return wrapHtml("<p>%s</p><p>%s</p>".formatted(clientConfirmationEmailBody, clientConfirmationEmailLink));
     }
 
     public String createClientLaterDocsConfirmationEmailSubject(Locale locale) {
@@ -77,13 +75,13 @@ public class EmailContentCreator {
 
     public String createHennepinDocUploadsHTML(Map<String, String> args) {
         return wrapHtml("<p>These are documents that a client uploaded to MNbenefits.org.</p>" +
-        		"<p><b>Name:</b> " + args.get("name") + "</p>" + 
-        		"<p><b>DOB:</b> " + args.get("dob") + "</p>" +
-        		"<p><b>Last 4 digits of SSN:</b> " + args.get("last4SSN") + "</p>" +
-        		"<p><b>Phone Number:</b> " + args.get("phoneNumber") + "</p>" +
-        		"<p><b>E-mail:</b> " + args.get("email") + "</p>" +
-        		"<p>Fields that are blank were not shared by the client in their application.</p>" +
-        		"<p>Please reach out to help@mnbenefits.org for support.</p>");
+                "<p><b>Name:</b> " + args.get("name") + "</p>" +
+                "<p><b>DOB:</b> " + args.get("dob") + "</p>" +
+                "<p><b>Last 4 digits of SSN:</b> " + args.get("last4SSN") + "</p>" +
+                "<p><b>Phone Number:</b> " + args.get("phoneNumber") + "</p>" +
+                "<p><b>E-mail:</b> " + args.get("email") + "</p>" +
+                "<p>Fields that are blank were not shared by the client in their application.</p>" +
+                "<p>Please reach out to help@mnbenefits.org for support.</p>");
     }
 
     private String getMessage(String snapExpeditedWaitTime, @Nullable List<String> args, Locale locale) {
@@ -95,7 +93,6 @@ public class EmailContentCreator {
     }
 
     private String wrapHtml(String message) {
-        return String.format("<html><body>%s</body><html>", message);
+        return "<html><body>%s</body><html>".formatted(message);
     }
-
 }

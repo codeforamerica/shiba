@@ -7,8 +7,11 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.PageDataBuilder;
 import org.codeforamerica.shiba.PagesDataBuilder;
-import org.codeforamerica.shiba.application.*;
+import org.codeforamerica.shiba.Program;
+import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.output.ApplicationFile;
+import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -17,7 +20,6 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -30,6 +32,7 @@ import java.util.Map;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.matching.MultipartValuePattern.MatchingType.ANY;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility.UNDETERMINED;
 import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.ELIGIBLE;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.verify;
@@ -58,6 +61,9 @@ class MailGunEmailClientTest {
     String auditEmail = "someAuditEmail";
     String hennepinEmail = "someHennepinEmail";
 
+    List<String> programs;
+    CcapExpeditedEligibility ccapExpeditedEligibility = UNDETERMINED;
+
     @BeforeEach
     void setUp() {
         emailContentCreator = mock(EmailContentCreator.class);
@@ -78,6 +84,7 @@ class MailGunEmailClientTest {
                 false,
                 pdfGenerator,
                 activeProfile);
+        programs = List.of(Program.SNAP);
     }
 
     @AfterEach
@@ -90,8 +97,13 @@ class MailGunEmailClientTest {
         String recipientEmail = "someRecipient";
         String emailContent = "content";
         SnapExpeditedEligibility snapExpeditedEligibility = ELIGIBLE;
+        CcapExpeditedEligibility ccapExpeditedEligibility = CcapExpeditedEligibility.ELIGIBLE;
         String confirmationId = "someConfirmationId";
-        when(emailContentCreator.createClientHTML(confirmationId, snapExpeditedEligibility, Locale.ENGLISH)).thenReturn(emailContent);
+        when(emailContentCreator.createClientHTML(confirmationId,
+                programs,
+                snapExpeditedEligibility,
+                ccapExpeditedEligibility,
+                Locale.ENGLISH)).thenReturn(emailContent);
 
         wireMockServer.stubFor(post(anyUrl())
                 .willReturn(aResponse().withStatus(200)));
@@ -101,7 +113,9 @@ class MailGunEmailClientTest {
         mailGunEmailClient.sendConfirmationEmail(
                 recipientEmail,
                 confirmationId,
+                List.of(Program.SNAP),
                 snapExpeditedEligibility,
+                ccapExpeditedEligibility,
                 List.of(new ApplicationFile(fileContent.getBytes(), fileName)), Locale.ENGLISH);
 
         wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
@@ -431,7 +445,11 @@ class MailGunEmailClientTest {
             String emailContent = "content";
             SnapExpeditedEligibility snapExpeditedEligibility = ELIGIBLE;
             String confirmationId = "someConfirmationId";
-            when(emailContentCreator.createClientHTML(confirmationId, snapExpeditedEligibility, Locale.ENGLISH)).thenReturn(emailContent);
+            when(emailContentCreator.createClientHTML(confirmationId,
+                    programs,
+                    snapExpeditedEligibility,
+                    ccapExpeditedEligibility,
+                    Locale.ENGLISH)).thenReturn(emailContent);
 
             wireMockServer.stubFor(post(anyUrl())
                     .willReturn(aResponse().withStatus(200)));
@@ -441,7 +459,9 @@ class MailGunEmailClientTest {
             mailGunEmailClient.sendConfirmationEmail(
                     recipientEmail,
                     confirmationId,
+                    List.of(Program.SNAP),
                     snapExpeditedEligibility,
+                    ccapExpeditedEligibility,
                     List.of(new ApplicationFile(fileContent.getBytes(), fileName)), Locale.ENGLISH);
 
             wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))

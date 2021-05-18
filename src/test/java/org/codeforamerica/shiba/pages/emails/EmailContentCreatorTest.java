@@ -1,20 +1,28 @@
 package org.codeforamerica.shiba.pages.emails;
 
-import org.codeforamerica.shiba.output.caf.*;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.params.*;
-import org.junit.jupiter.params.provider.*;
-import org.springframework.beans.factory.annotation.*;
-import org.springframework.boot.test.context.*;
-import org.springframework.context.*;
-import org.springframework.context.i18n.*;
-import org.springframework.test.context.*;
+import org.codeforamerica.shiba.Program;
+import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
+import org.codeforamerica.shiba.pages.SuccessMessageService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.test.context.ActiveProfiles;
 
-import java.time.*;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Locale;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.Program.CCAP;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = NONE)
@@ -26,43 +34,66 @@ class EmailContentCreatorTest {
     @Autowired
     private MessageSource messageSource;
 
+    @Autowired
+    private SuccessMessageService successMessageService;
+
+    private List<String> programs;
+
     @BeforeEach
     void setUp() {
         LocaleContextHolder.setLocale(Locale.ENGLISH);
-        emailContentCreator = new EmailContentCreator(messageSource, "test");
+        emailContentCreator = new EmailContentCreator(messageSource, "test", successMessageService);
+        programs = List.of(Program.SNAP);
     }
 
     @Test
     void includesTheConfirmationNumber() {
-        String emailContent = emailContentCreator.createClientHTML("someNumber", SnapExpeditedEligibility.UNDETERMINED, Locale.ENGLISH);
-
+        String emailContent = emailContentCreator.createClientHTML("someNumber",
+                programs,
+                SnapExpeditedEligibility.UNDETERMINED,
+                CcapExpeditedEligibility.UNDETERMINED,
+                Locale.ENGLISH);
         assertThat(emailContent).contains("someNumber");
     }
 
     @Test
+    void includesVerificationDocuments() {
+        String emailContent = emailContentCreator.createClientHTML("someNumber",
+                programs,
+                SnapExpeditedEligibility.UNDETERMINED,
+                CcapExpeditedEligibility.UNDETERMINED,
+                Locale.ENGLISH);
+        assertThat(emailContent).contains("someNumber");
+    }
+
+
+    @Test
     void includesCaseworkerInstructions() {
         String emailContent = emailContentCreator.createCaseworkerHTML();
-
         assertThat(emailContent).contains("This application was submitted on behalf of a client.");
     }
 
     @ParameterizedTest
     @CsvSource(value = {
-            "ELIGIBLE,Your county will call you in the next 3 days for your phone interview.",
-            "NOT_ELIGIBLE,Your county will mail you a notice that will arrive in the next week.",
-            "UNDETERMINED,Your county will mail you a notice that will arrive in the next week.",
+            "ELIGIBLE,<html><body>We received your Minnesota Benefits application.<br><br>Confirmation number: <strong>#someNumber</strong><br>Application status: <strong>In review</strong><br><br>You will receive a call from your county within 24 hours about your application for food support. The call may come from an unknown number.<br><br>You will need to complete an interview with a caseworker.<br><br>If you don't hear from your county within 3 days or want an update on your case",
+            "NOT_ELIGIBLE,<html><body>We received your Minnesota Benefits application.<br><br>Confirmation number: <strong>#someNumber</strong><br>Application status: <strong>In review</strong><br><br>You will receive a letter in the mail with next steps for your application for food support in 7-10 days.<br><br>You will need to complete an interview with a caseworker.<br><br>If you want an update on your case",
+            "UNDETERMINED,<html><body>We received your Minnesota Benefits application.<br><br>Confirmation number: <strong>#someNumber</strong><br>Application status: <strong>In review</strong><br><br>You will receive a letter in the mail with next steps for your application for food support in 7-10 days.<br><br>You will need to complete an interview with a caseworker.<br><br>If you want an update on your case",
     })
     void createContentForExpedited(SnapExpeditedEligibility snapExpeditedEligibility, String expeditedEligibilityContent) {
-        String emailContent = emailContentCreator.createClientHTML("someNumber", snapExpeditedEligibility, Locale.ENGLISH);
-
+        String emailContent = emailContentCreator.createClientHTML(
+                "someNumber",
+                programs,
+                snapExpeditedEligibility,
+                CcapExpeditedEligibility.UNDETERMINED,
+                Locale.ENGLISH);
         assertThat(emailContent).contains(expeditedEligibilityContent);
+        assertThat(emailContent).contains("please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a><br><br>**This is an automated message. Please do not reply to this message.**</body><html>");
     }
 
     @Test
     void shouldIncludeConfirmationIdAndIpWhenSendingDownloadAlert() {
         String confirmationId = "confirmation ID";
         String ip = "123.123.123.123";
-
         String content = emailContentCreator.createDownloadCafAlertContent(confirmationId, ip, Locale.ENGLISH);
 
         assertThat(content).isEqualTo("The CAF with confirmation number confirmation ID was downloaded from IP address 123.123.123.123.");
@@ -90,12 +121,16 @@ class EmailContentCreatorTest {
                 "</body><html>");
     }
 
-
     @Test
     void shouldCreateConfirmationEmailFromDemo() {
-        emailContentCreator = new EmailContentCreator(messageSource, "demo");
+        emailContentCreator = new EmailContentCreator(messageSource, "demo", successMessageService);
 
-        String emailContent = emailContentCreator.createClientHTML("someNumber", SnapExpeditedEligibility.UNDETERMINED, Locale.ENGLISH);
-        assertThat(emailContent).contains("This e-mail is for demo purposes only");
+        String emailContent = emailContentCreator.createClientHTML("someNumber",
+                List.of(CCAP),
+                SnapExpeditedEligibility.UNDETERMINED,
+                CcapExpeditedEligibility.ELIGIBLE,
+                Locale.ENGLISH);
+        assertThat(emailContent).contains("This e-mail is for demo purposes only. No application for benefits was submitted on your behalf.");
+        assertThat(emailContent).contains("Your county will decide on your childcare case within the next 5 working days.");
     }
 }

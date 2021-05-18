@@ -145,4 +145,17 @@ public class ApplicationData implements Serializable {
                 .findFirst().orElse(null);
         uploadedDocs.remove(toRemove);
     }
+
+    @NotNull
+    public Set<String> getApplicantAndHouseholdMemberPrograms() {
+        List<String> applicantPrograms = getPagesData().safeGetPageInputValue("choosePrograms", "programs");
+        Set<String> applicantAndHouseholdMemberPrograms = new HashSet<>(applicantPrograms);
+        boolean hasHousehold = getSubworkflows().containsKey("household");
+        if (hasHousehold) {
+            Subworkflow householdSubworkflow = getSubworkflows().get("household");
+            householdSubworkflow.forEach(iteration ->
+                    applicantAndHouseholdMemberPrograms.addAll(iteration.getPagesData().safeGetPageInputValue("householdMemberInfo", "programs")));
+        }
+        return applicantAndHouseholdMemberPrograms;
+    }
 }

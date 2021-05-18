@@ -1,8 +1,10 @@
 package org.codeforamerica.shiba.pages.emails;
 
 import lombok.extern.slf4j.Slf4j;
-import org.codeforamerica.shiba.application.*;
+import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.output.ApplicationFile;
+import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.data.PageData;
@@ -61,25 +63,31 @@ public class MailGunEmailClient implements EmailClient {
         this.shouldCC = shouldCC;
         this.webClient = WebClient.builder().baseUrl(mailGunUrl).build();
         this.pdfGenerator = pdfGenerator;
-        this.activeProfile=activeProfile;
+        this.activeProfile = activeProfile;
     }
 
     @Override
     public void sendConfirmationEmail(String recipientEmail,
                                       String confirmationId,
+                                      List<String> programs,
                                       SnapExpeditedEligibility snapExpeditedEligibility,
+                                      CcapExpeditedEligibility ccapExpeditedEligibility,
                                       List<ApplicationFile> applicationFiles,
                                       Locale locale) {
 
         String sub1 = "[DEMO] We received your application";
         String sub2 = "We received your application";
-        String subject = activeProfile.equals("demo") ? sub1 : sub2;
+        String subject = "demo".equals(activeProfile) ? sub1 : sub2;
 
         MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
         form.put("from", List.of(senderEmail));
         form.put("to", List.of(recipientEmail));
         form.put("subject", List.of(subject));
-        form.put("html", List.of(emailContentCreator.createClientHTML(confirmationId, snapExpeditedEligibility, locale)));
+        form.put("html", List.of(emailContentCreator.createClientHTML(confirmationId,
+                programs,
+                snapExpeditedEligibility,
+                ccapExpeditedEligibility,
+                locale)));
         form.put("attachment", applicationFiles.stream().map(this::asResource).collect(Collectors.toList()));
 
         MDC.put("confirmationId", confirmationId);
