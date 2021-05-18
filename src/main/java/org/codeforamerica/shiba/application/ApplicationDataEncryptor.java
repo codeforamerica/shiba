@@ -52,6 +52,12 @@ public class ApplicationDataEncryptor implements Encryptor<ApplicationData> {
             applicationData.getPagesData().getPage("personalInfo").get("ssn").setValue(encryptedApplicantSSN, 0);
         }
 
+        applicantSSN = applicationData.getPagesData().getPageInputFirstValue("matchInfo", "ssn");
+        if (applicantSSN != null && applicantSSN.matches("\\d{3}-\\d{2}-\\d{4}")) {
+            String encryptedApplicantSSN = encryptFunc.apply(applicantSSN);
+            applicationData.getPagesData().getPage("matchInfo").get("ssn").setValue(encryptedApplicantSSN, 0);
+        }
+
         boolean hasHousehold = applicationData.getSubworkflows().containsKey("household");
         if (hasHousehold) {
             applicationData.getSubworkflows().get("household").forEach(iteration -> {
