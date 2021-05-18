@@ -114,12 +114,14 @@ public class UserJourneyPageTest extends JourneyTest {
 
     @Test
     void userCanCompleteTheNonExpeditedHouseholdFlow() {
-        nonExpeditedFlowToSuccessPage(true, true, smartyStreetClient, true);
+        nonExpeditedFlowToSuccessPage(true, true, smartyStreetClient, true, true);
+        assertThat(driver.findElementsById("healthcareCoverage")).isEmpty();
     }
 
     @Test
     void userCanCompleteTheNonExpeditedFlowWithNoEmployment() {
         nonExpeditedFlowToSuccessPage(false, false, smartyStreetClient);
+        assertThat(driver.findElementsById("healthcareCoverage")).isNotEmpty();
     }
 
     @Test

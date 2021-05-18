@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output.caf;
 
+import org.codeforamerica.shiba.Money;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -20,9 +21,9 @@ class UtilityDeductionCalculatorTest {
     @ParameterizedTest
     @MethodSource
     void deductionShouldBe490WhenIncludesEitherHeatingOrCooling(List<String> utilityOptions) {
-        Integer deduction = utilityDeductionCalculator.calculate(utilityOptions);
+        Money deduction = utilityDeductionCalculator.calculate(utilityOptions);
 
-        assertThat(deduction).isEqualTo(490);
+        assertThat(deduction).isEqualTo(Money.parse("490"));
     }
 
     @SuppressWarnings("unused")
@@ -47,20 +48,20 @@ class UtilityDeductionCalculatorTest {
     @MethodSource
     void shouldCalculateDeductionWhenIncludesNoneOfHeatingOrCooling(
             List<String> utilityOptions,
-            Integer expectedDeduction
+            String expectedDeduction
     ) {
-        Integer deduction = utilityDeductionCalculator.calculate(utilityOptions);
+        Money deduction = utilityDeductionCalculator.calculate(utilityOptions);
 
-        assertThat(deduction).isEqualTo(expectedDeduction);
+        assertThat(deduction).isEqualTo(Money.parse(expectedDeduction));
     }
 
     @SuppressWarnings("unused")
     static List<Arguments> shouldCalculateDeductionWhenIncludesNoneOfHeatingOrCooling() {
         return List.of(
-                Arguments.of(List.of(noneOfTheAbove), 0),
-                Arguments.of(List.of(electricity), 143),
-                Arguments.of(List.of(phone), 49),
-                Arguments.of(List.of(electricity, phone), 192)
+                Arguments.of(List.of(noneOfTheAbove), "0"),
+                Arguments.of(List.of(electricity), "143"),
+                Arguments.of(List.of(phone), "49"),
+                Arguments.of(List.of(electricity, phone), "192")
         );
     }
 }

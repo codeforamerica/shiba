@@ -288,7 +288,14 @@ public class PageController {
             model.put("county", application.getCounty());
             model.put("sentiment", application.getSentiment());
             model.put("feedbackText", application.getFeedback());
+            String inputData = pagesData.getPageInputFirstValue("healthcareCoverage", "healthcareCoverage");
+            boolean hasHealthcare = inputData != null && inputData.equalsIgnoreCase("YES");
+            model.put("doesNotHaveHealthcare", !hasHealthcare );
             model.put("successMessage", successMessageService.getSuccessMessage(new ArrayList<>(programs), snapExpeditedEligibility, ccapExpeditedEligibility, locale));
+        }
+
+        if (landmarkPagesConfiguration.isLaterDocsTerminalPage(pageName)) {
+            model.put("applicationId", applicationData.getId());
         }
 
         if (landmarkPagesConfiguration.isUploadDocumentsPage(pageName)) {

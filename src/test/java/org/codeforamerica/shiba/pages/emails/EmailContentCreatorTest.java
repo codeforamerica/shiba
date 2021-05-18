@@ -27,6 +27,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = NONE)
 class EmailContentCreatorTest {
+
     @Autowired
     private EmailContentCreator emailContentCreator;
 
@@ -94,6 +95,7 @@ class EmailContentCreatorTest {
         String confirmationId = "confirmation ID";
         String ip = "123.123.123.123";
         String content = emailContentCreator.createDownloadCafAlertContent(confirmationId, ip, Locale.ENGLISH);
+
         assertThat(content).isEqualTo("The CAF with confirmation number confirmation ID was downloaded from IP address 123.123.123.123.");
     }
 

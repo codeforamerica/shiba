@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output;
 
+import org.codeforamerica.shiba.Money;
 import org.codeforamerica.shiba.output.caf.HourlyJobIncomeInformation;
 import org.codeforamerica.shiba.output.caf.NonHourlyJobIncomeInformation;
 import org.codeforamerica.shiba.output.caf.TotalIncome;
@@ -16,19 +17,19 @@ class TotalIncomeCalculatorTest {
 
     @Test
     void calculateReturnsIncomeWhenNoJobInfoProvided() {
-        assertThat(totalIncomeCalculator.calculate(new TotalIncome(1.0, emptyList()))).isEqualTo(1.0);
+        assertThat(totalIncomeCalculator.calculate(new TotalIncome(Money.ONE, emptyList()))).isEqualTo(Money.ONE);
     }
 
     @Test
     void calculateReturnsTheSumOfAllJobIncomeWhenProvided() {
         assertThat(totalIncomeCalculator.calculate(
                 new TotalIncome(
-                        9999.0,
+                        Money.parse("9999"),
                         List.of(
                                 new NonHourlyJobIncomeInformation("EVERY_MONTH", "10", 0, null),
                                 new HourlyJobIncomeInformation("25", "1", 0, null)
                         )
                 )
-        )).isEqualTo(110.0);
+        )).isEqualTo(Money.parse("110"));
     }
 }
