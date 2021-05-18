@@ -120,7 +120,7 @@ class ApplicationSubmittedListenerTest {
                                                                             null,
                                                                             Locale.ENGLISH);
             when(snapExpeditedEligibilityDecider.decide(applicationData)).thenReturn(SnapExpeditedEligibility.ELIGIBLE);
-            when(ccapExpeditedEligibilityDecider.decide(applicationData)).thenReturn(CcapExpeditedEligibility.ELIGIBLE);
+            when(ccapExpeditedEligibilityDecider.decide(applicationData)).thenReturn(CcapExpeditedEligibility.UNDETERMINED);
             ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
             when(documentListParser.parse(applicationData)).thenReturn(List.of(Document.CAF));
             when(pdfGenerator.generate(appIdFromDb, Document.CAF, CLIENT)).thenReturn(applicationFile);
@@ -131,7 +131,7 @@ class ApplicationSubmittedListenerTest {
                                                       appIdFromDb,
                                                       List.of(),
                                                       SnapExpeditedEligibility.ELIGIBLE,
-                                                      CcapExpeditedEligibility.ELIGIBLE,
+                                                      CcapExpeditedEligibility.UNDETERMINED,
                                                       List.of(applicationFile),
                                                       Locale.ENGLISH);
         }
@@ -152,7 +152,7 @@ class ApplicationSubmittedListenerTest {
                                                                             applicationId,
                                                                             null,
                                                                             Locale.ENGLISH);
-            when(snapExpeditedEligibilityDecider.decide(applicationData)).thenReturn(SnapExpeditedEligibility.ELIGIBLE);
+            when(snapExpeditedEligibilityDecider.decide(applicationData)).thenReturn(SnapExpeditedEligibility.UNDETERMINED);
             when(ccapExpeditedEligibilityDecider.decide(applicationData)).thenReturn(CcapExpeditedEligibility.ELIGIBLE);
             ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
             when(documentListParser.parse(applicationData)).thenReturn(List.of(Document.CCAP));
@@ -163,7 +163,7 @@ class ApplicationSubmittedListenerTest {
             verify(emailClient).sendConfirmationEmail(email,
                                                       appIdFromDb,
                                                       List.of(),
-                                                      SnapExpeditedEligibility.ELIGIBLE,
+                                                      SnapExpeditedEligibility.UNDETERMINED,
                                                       CcapExpeditedEligibility.ELIGIBLE,
                                                       List.of(applicationFile),
                                                       Locale.ENGLISH);
