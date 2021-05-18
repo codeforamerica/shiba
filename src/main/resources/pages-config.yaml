@@ -1027,8 +1027,13 @@ pageDefinitions:
     inputs:
       - name: county
         type: SELECT
+        validators:
+          - validation: COUNTY
+            errorMessageKey: general.validation.make-sure-to-select-a-county
         options:
           selectableOptions:
+            - value: SelectYourCounty
+              messageKey: identify-county.select-your-county
             - value: Aitkin
               messageKey: identify-county-aitkin
             - value: Anoka
