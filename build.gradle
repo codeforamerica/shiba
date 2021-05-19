@@ -103,6 +103,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'com.sun.activation:jakarta.activation'
     implementation 'org.springframework:spring-aspects'
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'org.springframework.retry:spring-retry'
     implementation 'ch.qos.logback.contrib:logback-json-classic:0.1.5'
     implementation 'ch.qos.logback.contrib:logback-jackson:0.1.5'
