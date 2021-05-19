@@ -4,6 +4,7 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.PagesData;
 import org.springframework.stereotype.Component;
 
 import java.time.Clock;
@@ -25,7 +26,7 @@ public class ApplicationFactory {
     public Application newApplication(ApplicationData applicationData) {
         ApplicationData copy = new ApplicationData();
         copy.setId(applicationData.getId());
-        copy.setPagesData(applicationData.getPagesData());
+        copy.setPagesData(new PagesData(applicationData.getPagesData()));
         copy.setSubworkflows(applicationData.getSubworkflows());
         copy.setIncompleteIterations(applicationData.getIncompleteIterations());
         copy.setFlow(applicationData.getFlow());

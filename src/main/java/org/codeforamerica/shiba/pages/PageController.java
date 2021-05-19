@@ -404,7 +404,8 @@ public class PageController {
 
         pagesData.putPage(page.getName(), pageData);
 
-        if (pageData.isValid() &&
+        Boolean pageDataIsValid = pageData.isValid();
+        if (pageDataIsValid &&
                 pageWorkflow.getGroupName() != null &&
                 applicationConfiguration.getPageGroups().get(pageWorkflow.getGroupName()).getCompletePages().contains(page.getName())
         ) {
@@ -423,7 +424,7 @@ public class PageController {
             applicationRepository.save(application); //upsert already
         }
 
-        if (pageData.isValid()) {
+        if (pageDataIsValid) {
             ofNullable(pageWorkflow.getEnrichment())
                     .map(applicationEnrichment::getEnrichment)
                     .map(enrichment -> enrichment.process(applicationData))
