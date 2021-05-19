@@ -39,6 +39,10 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
     private final String multipleValidationsPageTitle = "multiple validations page title";
     private final String moneyErrorMessageKey = "money is error";
     private final String emailPageTitle = "email page title";
+    private final String selectCountyPageTitle = "select county page title";
+    private final String selectCounty = "select your county";
+    private final String countyA = "Alpha";
+    private final String countyB = "Beta";
 
     Page testPage;
 
@@ -61,11 +65,15 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         staticMessageSource.addMessage("ssn-page-title", Locale.ENGLISH, ssnPageTitle);
         staticMessageSource.addMessage("date-page-title", Locale.ENGLISH, datePageTitle);
         staticMessageSource.addMessage("email-page-title", Locale.ENGLISH, emailPageTitle);
+        staticMessageSource.addMessage("select-county-page-title", Locale.ENGLISH, selectCountyPageTitle);
         staticMessageSource.addMessage("not-blank-page-title", Locale.ENGLISH, notBlankPageTitle);
         staticMessageSource.addMessage("checkbox-page-title", Locale.ENGLISH, checkboxPageTitle);
         staticMessageSource.addMessage("option-1", Locale.ENGLISH, option1);
         staticMessageSource.addMessage("option-2", Locale.ENGLISH, "option-2");
         staticMessageSource.addMessage("page-with-input-with-multiple-validations", Locale.ENGLISH, multipleValidationsPageTitle);
+        staticMessageSource.addMessage("select-county-key", Locale.ENGLISH, selectCounty);
+        staticMessageSource.addMessage("county-a-key", Locale.ENGLISH, countyA);
+        staticMessageSource.addMessage("county-b-key", Locale.ENGLISH, countyB);
     }
 
     @Test
@@ -478,6 +486,25 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
 
             testPage.clickContinue();
             assertThat(testPage.getTitle()).isEqualTo(lastPageTitle);
+        }
+
+        @Test
+        void shouldPassValidationForCOUNTYWhenValidCountyIsChosen() {
+            driver.navigate().to(baseUrl + "/pages/selectCountyPage");
+            testPage.selectFromDropdown("countyInput[]", countyB);
+
+            testPage.clickContinue();
+            assertThat(testPage.getTitle()).isEqualTo(lastPageTitle);
+        }
+
+        @Test
+        void shouldFailValidationForCOUNTYWhenCountyIsNotChosen() {
+            driver.navigate().to(baseUrl + "/pages/selectCountyPage");
+
+            testPage.clickContinue();
+            assertThat(testPage.getTitle()).isEqualTo(selectCountyPageTitle);
+            assertThat(driver.findElement(By.cssSelector("p.text--error")).getText()).contains(errorMessage);
+
         }
     }
 }

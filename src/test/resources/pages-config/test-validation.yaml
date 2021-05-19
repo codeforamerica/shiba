@@ -173,6 +173,23 @@ pageDefinitions:
             condition:
               input: caseNumberInput
               matcher: NOT_EMPTY
+  - &selectCountyPage
+    name: selectCountyPage
+    pageTitle: select-county-page-title
+    inputs:
+      - name: countyInput
+        type: SELECT
+        validators:
+          - validation: COUNTY
+            errorMessageKey: error-message-key
+        options:
+          selectableOptions:
+            - value: SelectYourCounty
+              messageKey: select-county-key
+            - value: Alpha
+              messageKey: county-a-key
+            - value: Beta
+              messageKey: county-b-key
   - &lastPage
     name: lastPage
     pageTitle: last-page-title
@@ -238,6 +255,10 @@ workflow:
       - pageName: lastPage
   pageWithEmail:
     pageConfiguration: *pageWithEmail
+    nextPages:
+      - pageName: lastPage
+  selectCountyPage:
+    pageConfiguration: *selectCountyPage
     nextPages:
       - pageName: lastPage
   lastPage:
