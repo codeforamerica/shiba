@@ -8,9 +8,7 @@ import com.google.crypto.tink.Aead;
 import com.google.crypto.tink.CleartextKeysetHandle;
 import com.google.crypto.tink.JsonKeysetReader;
 import com.google.crypto.tink.aead.AeadConfig;
-
 import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.codeforamerica.shiba.application.Encryptor;
@@ -18,12 +16,12 @@ import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.flywaydb.core.api.migration.BaseJavaMigration;
 import org.flywaydb.core.api.migration.Context;
 import org.postgresql.util.PGobject;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.sql.ResultSet;
@@ -130,7 +128,7 @@ public class V26__UnencryptBlankSSN extends BaseJavaMigration {
 	public class StringEncryptor implements Encryptor<String> {
 	    private final Aead aead;
 
-	    public StringEncryptor(@Value("${encryption-key}") String encryptionKey) throws GeneralSecurityException, IOException {
+	    public StringEncryptor(String encryptionKey) throws GeneralSecurityException, IOException {
 	        AeadConfig.register();
 	        aead = CleartextKeysetHandle.read(
 	                JsonKeysetReader.withString(encryptionKey)).getPrimitive(Aead.class);
