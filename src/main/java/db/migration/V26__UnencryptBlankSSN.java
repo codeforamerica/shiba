@@ -104,12 +104,11 @@ public class V26__UnencryptBlankSSN extends BaseJavaMigration {
 		private void runCryptographicFunctionOnData(Function<String, String> encryptFunc,
 				ApplicationData applicationData) {
 			String applicantSSN = applicationData.getPagesData().getPageInputFirstValue("personalInfo", "ssn");
-			if (applicantSSN.isBlank()) {
-				log.info("SSN is blank, applicationID=" + applicationData.getId());
-			}
 			if (applicantSSN != null && !applicantSSN.isBlank()) {
 				String encryptedApplicantSSN = encryptFunc.apply(applicantSSN);
 				applicationData.getPagesData().getPage("personalInfo").get("ssn").setValue(encryptedApplicantSSN, 0);
+			} else {
+				log.info("SSN is blank, applicationID=" + applicationData.getId());
 			}
 
 			boolean hasHousehold = applicationData.getSubworkflows().containsKey("household");
