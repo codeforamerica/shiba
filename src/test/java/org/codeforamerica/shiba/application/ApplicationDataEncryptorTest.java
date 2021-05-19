@@ -63,6 +63,16 @@ class ApplicationDataEncryptorTest {
     }
 
     @Test
+    void encryptsApplicantSsnInLaterDocs() {
+        ApplicationData applicationData = new ApplicationData();
+        applicationData.setPagesData(new PagesDataBuilder().build(List.of(
+                new PageDataBuilder("matchInfo", Map.of("ssn", new ArrayList<>(Collections.singleton("123-45-6789"))))
+        )));
+        String encryptedApp = applicationDataEncryptor.encrypt(applicationData);
+        assertThat(encryptedApp).contains("\"pagesData\":{\"matchInfo\":{\"ssn\":{\"value\":[\"encryptedSsn\"]}}}");
+    }
+
+    @Test
     void doNotEncryptApplicantSsnWhenBlank() {
         ApplicationData applicationData = new ApplicationData();
         applicationData.setPagesData(new PagesDataBuilder().build(List.of(
