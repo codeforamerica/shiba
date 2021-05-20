@@ -134,6 +134,7 @@ dependencies {
 
 compileJava{
     dependsOn(generateGitProperties)
+    dependsOn(genJaxb)
     inputs.files(processResources)
 }
 
