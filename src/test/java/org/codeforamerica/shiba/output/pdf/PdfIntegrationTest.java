@@ -196,6 +196,8 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         void shouldDefaultToNoForMillionDollarQuestionWhenQuestionPageIsNotShown() {
             navigateTo("energyAssistance");
             testPage.enter("energyAssistance", NO.getDisplayValue());
+            testPage.enter("medicalExpenses", "None of the above");
+            testPage.clickContinue();
             testPage.enter("supportAndCare", NO.getDisplayValue());
             testPage.enter("haveVehicle", NO.getDisplayValue());
             testPage.enter("ownRealEstate", NO.getDisplayValue());
@@ -211,6 +213,8 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         void shouldMarkYesForMillionDollarQuestionWhenChoiceIsYes() {
             navigateTo("energyAssistance");
             testPage.enter("energyAssistance", NO.getDisplayValue());
+            testPage.enter("medicalExpenses", "None of the above");
+            testPage.clickContinue();
             testPage.enter("supportAndCare", NO.getDisplayValue());
             testPage.enter("haveVehicle", NO.getDisplayValue());
             testPage.enter("ownRealEstate", NO.getDisplayValue());
@@ -1021,6 +1025,43 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
 
             assertThat(getPdfFieldText(pdAcroForms.get(CAF), "CCAP_EXPEDITED_ELIGIBILITY")).isEqualTo("CCAP");
             assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "CCAP_EXPEDITED_ELIGIBILITY")).isEqualTo("CCAP");
+        }
+
+        @Test
+        void shouldMapNoMedicalExpensesWhenNoneSelected(){
+            fillInRequiredPages();
+            navigateTo("medicalExpenses");
+            testPage.enter("medicalExpenses", "None of the above");
+            testPage.clickContinue();
+
+            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "MEDICAL_EXPENSES_SELECTION")).isEqualTo("NONE_SELECTED");
+        }
+
+        @Test
+        void shouldMapYesMedicalExpensesWhenOneSelected(){
+            fillInRequiredPages();
+            navigateTo("medicalExpenses");
+            testPage.enter("medicalExpenses", "Medical bills or copays");
+            testPage.clickContinue();
+
+            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "MEDICAL_EXPENSES_SELECTION")).isEqualTo("ONE_SELECTED");
+        }
+
+        @Test
+        void shouldMapYesMedicalExpensesWhenOneSelectedAndEnterAmount(){
+            fillInRequiredPages();
+            navigateTo("medicalExpenses");
+            testPage.enter("medicalExpenses", "Medical insurance premiums");
+            testPage.clickContinue();
+            testPage.enter("medicalInsurancePremiumAmount", "10");
+            testPage.clickContinue();
+
+            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "MEDICAL_EXPENSES_SELECTION")).isEqualTo("ONE_SELECTED");
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "MEDICAL_INSURANCE_PREMIUM_AMOUNT")).isEqualTo("10");
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "MEDICAL_INSURANCE_PREMIUM_FREQUENCY")).isEqualTo("Monthly");
         }
     }
 

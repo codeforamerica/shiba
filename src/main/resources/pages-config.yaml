@@ -936,6 +936,86 @@ pageDefinitions:
     inputs:
       - name: energyAssistanceMoreThan20
         type: YES_NO
+  - &medicalExpenses
+    name: medicalExpenses
+    pageTitle: medical-expenses.title
+    headerKey:
+      defaultValue: medical-expenses.do-you-pay-for-medical-expenses
+      conditionalValues:
+        - value: medical-expenses.does-anyone-in-your-household-pay-for-medical-expenses
+          condition: *doesNotLiveAlone?
+    headerHelpMessageKey: medical-expenses.let-us-know
+    inputs:
+      - name: medicalExpenses
+        type: CHECKBOX
+        validators:
+          - validation: SELECT_AT_LEAST_ONE
+            errorMessageKey: general.validation.make-sure-you-choose-none-of-the-above-or-another-option
+        options:
+          selectableOptions:
+            - value: MEDICAL_INSURANCE_PREMIUMS
+              messageKey: medical-expenses.medical-insurance-premiums
+            - value: DENTAL_INSURANCE_PREMIUMS
+              messageKey: medical-expenses.dental-insurance-premiums
+            - value: VISION_INSURANCE_PREMIUMS
+              messageKey: medical-expenses.vision-insurance-premiums
+            - value: MEDICAL_BILLS_OR_COPAYS
+              messageKey: medical-expenses.medical-bills-or-copays
+            - value: NONE_OF_THE_ABOVE
+              messageKey: general.inputs.none-of-the-above
+              isNone: true
+  - &medicalExpensesSources
+    name: medicalExpensesSources
+    pageTitle: medical-expenses-sources.title
+    headerKey:
+      defaultValue: medical-expenses-sources.tell-us-how-much-money-is-paid
+    headerHelpMessageKey: medical-expenses-source.if-you-dont-have-all-this-information-by-hand-skip
+    inputs:
+      - name: medicalInsurancePremiumAmount
+        type: MONEY
+        promptMessage:
+          promptMessageKey: medical-expenses.medical-insurance-premiums
+        helpMessageKey: general.monthly-amount
+        validators:
+          - validation: MONEY
+            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+            condition:
+              input: medicalInsurancePremiumAmount
+              matcher: NOT_EMPTY
+        condition:
+          pageName: medicalExpenses
+          input: medicalExpenses
+          value: MEDICAL_INSURANCE_PREMIUMS
+      - name: dentalInsurancePremiumAmount
+        type: MONEY
+        promptMessage:
+          promptMessageKey: medical-expenses.dental-insurance-premiums
+        helpMessageKey: general.monthly-amount
+        validators:
+          - validation: MONEY
+            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+            condition:
+              input: dentalInsurancePremiumAmount
+              matcher: NOT_EMPTY
+        condition:
+          pageName: medicalExpenses
+          input: medicalExpenses
+          value: DENTAL_INSURANCE_PREMIUMS
+      - name: visionInsurancePremiumAmount
+        type: MONEY
+        promptMessage:
+          promptMessageKey: medical-expenses.vision-insurance-premiums
+        helpMessageKey: general.monthly-amount
+        validators:
+          - validation: MONEY
+            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+            condition:
+              input: visionInsurancePremiumAmount
+              matcher: NOT_EMPTY
+        condition:
+          pageName: medicalExpenses
+          input: medicalExpenses
+          value: VISION_INSURANCE_PREMIUMS
   - &supportAndCare
     name: supportAndCare
     pageTitle: support-and-care.title
@@ -1457,7 +1537,7 @@ pageDefinitions:
         type: MONEY
         promptMessage:
           promptMessageKey: unearned-income.social-security
-        helpMessageKey: unearned-income-sources.monthly-amount
+        helpMessageKey: general.monthly-amount
         validators:
           - validation: MONEY
             errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
@@ -1472,7 +1552,7 @@ pageDefinitions:
         type: MONEY
         promptMessage:
           promptMessageKey: unearned-income.ssi
-        helpMessageKey: unearned-income-sources.monthly-amount
+        helpMessageKey: general.monthly-amount
         validators:
           - validation: MONEY
             errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
@@ -1487,7 +1567,7 @@ pageDefinitions:
         type: MONEY
         promptMessage:
           promptMessageKey: unearned-income.veterans-benefits
-        helpMessageKey: unearned-income-sources.monthly-amount
+        helpMessageKey: general.monthly-amount
         validators:
           - validation: MONEY
             errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
@@ -1502,7 +1582,7 @@ pageDefinitions:
         type: MONEY
         promptMessage:
           promptMessageKey: unearned-income.unemployment
-        helpMessageKey: unearned-income-sources.monthly-amount
+        helpMessageKey: general.monthly-amount
         validators:
           - validation: MONEY
             errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
@@ -1517,7 +1597,7 @@ pageDefinitions:
         type: MONEY
         promptMessage:
           promptMessageKey: unearned-income.workers-compensation
-        helpMessageKey: unearned-income-sources.monthly-amount
+        helpMessageKey: general.monthly-amount
         validators:
           - validation: MONEY
             errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
@@ -1532,7 +1612,7 @@ pageDefinitions:
         type: MONEY
         promptMessage:
           promptMessageKey: unearned-income.retirement
-        helpMessageKey: unearned-income-sources.monthly-amount
+        helpMessageKey: general.monthly-amount
         validators:
           - validation: MONEY
             errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
@@ -1547,7 +1627,7 @@ pageDefinitions:
         type: MONEY
         promptMessage:
           promptMessageKey: unearned-income.child-or-spousal-support
-        helpMessageKey: unearned-income-sources.monthly-amount
+        helpMessageKey: general.monthly-amount
         validators:
           - validation: MONEY
             errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
@@ -1562,7 +1642,7 @@ pageDefinitions:
         type: MONEY
         promptMessage:
           promptMessageKey: unearned-income.tribal-payments
-        helpMessageKey: unearned-income-sources.monthly-amount
+        helpMessageKey: general.monthly-amount
         validators:
           - validation: MONEY
             errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
@@ -1621,7 +1701,7 @@ pageDefinitions:
         type: MONEY
         promptMessage:
           promptMessageKey: unearned-income-ccap.benefits-programs
-        helpMessageKey: unearned-income-sources.monthly-amount
+        helpMessageKey: general.monthly-amount
         validators:
           - validation: MONEY
             errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
@@ -1636,7 +1716,7 @@ pageDefinitions:
         type: MONEY
         promptMessage:
           promptMessageKey: unearned-income-ccap.insurance-payments
-        helpMessageKey: unearned-income-sources.monthly-amount
+        helpMessageKey: general.monthly-amount
         validators:
           - validation: MONEY
             errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
@@ -1651,7 +1731,7 @@ pageDefinitions:
         type: MONEY
         promptMessage:
           promptMessageKey: unearned-income-ccap.contract-for-deed
-        helpMessageKey: unearned-income-sources.monthly-amount
+        helpMessageKey: general.monthly-amount
         validators:
           - validation: MONEY
             errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
@@ -1666,7 +1746,7 @@ pageDefinitions:
         type: MONEY
         promptMessage:
           promptMessageKey: unearned-income-ccap.money-from-a-trust
-        helpMessageKey: unearned-income-sources.monthly-amount
+        helpMessageKey: general.monthly-amount
         validators:
           - validation: MONEY
             errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
@@ -1681,7 +1761,7 @@ pageDefinitions:
         type: MONEY
         promptMessage:
           promptMessageKey: unearned-income-ccap.health-care-reimbursement
-        helpMessageKey: unearned-income-sources.monthly-amount
+        helpMessageKey: general.monthly-amount
         validators:
           - validation: MONEY
             errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
@@ -1696,7 +1776,7 @@ pageDefinitions:
         type: MONEY
         promptMessage:
           promptMessageKey: unearned-income-ccap.interest-dividends
-        helpMessageKey: unearned-income-sources.monthly-amount
+        helpMessageKey: general.monthly-amount
         validators:
           - validation: MONEY
             errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
@@ -1711,7 +1791,7 @@ pageDefinitions:
         type: MONEY
         promptMessage:
           promptMessageKey: unearned-income-ccap.other-sources
-        helpMessageKey: unearned-income-sources.monthly-amount
+        helpMessageKey: general.monthly-amount
         validators:
           - validation: MONEY
             errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
@@ -2748,7 +2828,7 @@ workflow:
   energyAssistance:
     pageConfiguration: *energyAssistance
     nextPages:
-      - pageName: supportAndCare
+      - pageName: medicalExpenses
         condition:
           input: energyAssistance
           value: "false"
@@ -2765,9 +2845,52 @@ workflow:
       input: energyAssistance
       value: "false"
     nextPages:
-      - pageName: supportAndCare
+      - pageName: medicalExpenses
     datasources:
       - pageName: energyAssistance
+      - pageName: addHouseholdMembers
+  medicalExpenses:
+    pageConfiguration: *medicalExpenses
+    skipCondition:
+      logicalOperator: AND
+      conditions:
+        - *noOneChoseCCAP?
+        - *noOneChoseSNAP?
+    nextPages:
+      - pageName: medicalExpensesSources
+    datasources:
+      - pageName: choosePrograms
+      - pageName: addHouseholdMembers
+      - pageName: householdMemberInfo
+        groupName: household
+  medicalExpensesSources:
+    pageConfiguration: *medicalExpensesSources
+    nextPages:
+      - pageName: supportAndCare
+    skipCondition:
+      logicalOperator: OR
+      conditions:
+        - pageName: medicalExpenses
+          input: medicalExpenses
+          value: NONE_OF_THE_ABOVE
+        - conditions:
+          - pageName: medicalExpenses
+            input: medicalExpenses
+            value: MEDICAL_BILLS_OR_COPAYS
+          - pageName: medicalExpenses
+            input: medicalExpenses
+            value: MEDICAL_INSURANCE_PREMIUMS
+            matcher: DOES_NOT_CONTAIN
+          - pageName: medicalExpenses
+            input: medicalExpenses
+            value: DENTAL_INSURANCE_PREMIUMS
+            matcher: DOES_NOT_CONTAIN
+          - pageName: medicalExpenses
+            input: medicalExpenses
+            value: VISION_INSURANCE_PREMIUMS
+            matcher: DOES_NOT_CONTAIN
+    datasources:
+      - pageName: medicalExpenses
       - pageName: addHouseholdMembers
   supportAndCare:
     pageConfiguration: *supportAndCare

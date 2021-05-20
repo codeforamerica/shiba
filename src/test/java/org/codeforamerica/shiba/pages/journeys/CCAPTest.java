@@ -194,6 +194,8 @@ public class CCAPTest extends JourneyTest {
         testPage.enter("payForUtilities", "None of the above");
         testPage.clickContinue();
         testPage.enter("energyAssistance", NO.getDisplayValue());
+        testPage.enter("medicalExpenses", "None of the above");
+        testPage.clickContinue();
         testPage.enter("supportAndCare", NO.getDisplayValue());
         testPage.enter("haveVehicle", NO.getDisplayValue());
     }
