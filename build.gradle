@@ -97,7 +97,7 @@ dependencies {
     implementation 'io.sentry:sentry-logback:4.3.0'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'com.google.crypto.tink:tink:1.6.0'
-    implementation 'org.flywaydb:flyway-core:7.9.0'
+    implementation 'org.flywaydb:flyway-core:7.9.1'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'com.mixpanel:mixpanel-java:1.5.0'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
