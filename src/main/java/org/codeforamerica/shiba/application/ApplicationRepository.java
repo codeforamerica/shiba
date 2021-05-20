@@ -185,10 +185,10 @@ public class ApplicationRepository {
     }
 
     private void setUpdatedAtTime(String id) {
-        HashMap<String, Object> parameters = new HashMap<>(Map.of(
+        Map<String, Object> parameters = Map.of(
                 "updatedAt", Timestamp.from(Instant.now()),
                 "id", id
-        ));
+        );
 
         var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
         namedParameterJdbcTemplate.update("UPDATE applications SET " +
@@ -197,15 +197,15 @@ public class ApplicationRepository {
     }
     
     public void updateStatus(String id, ApplicationStatusType applicationStatusType, Status status) {
-        HashMap<String, Object> parameters = new HashMap<>(Map.of(
-                "status", status,
+        Map<String, Object> parameters = Map.of(
+                "status", status.toString(),
                 "id", id
-        ));
+        );
 
         var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
-        namedParameterJdbcTemplate.update("UPDATE applications SET" +
-                applicationStatusType + "= :status " +
+        namedParameterJdbcTemplate.update("UPDATE applications SET " +
+                applicationStatusType + " = :status " +
                 "WHERE id = :id", parameters);
-        this.setUpdatedAtTime(id);
+        setUpdatedAtTime(id);
     }
 }

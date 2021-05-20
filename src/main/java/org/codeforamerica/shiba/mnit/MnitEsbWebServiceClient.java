@@ -27,7 +27,6 @@ import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 @Component
 @Slf4j
@@ -81,43 +80,41 @@ public class MnitEsbWebServiceClient {
         contentStream.setLength(BigInteger.ZERO);
         contentStream.setStream(new DataHandler(new ByteArrayDataSource(applicationFile.getFileBytes(), MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE)));
         createDocument.setContentStream(contentStream);
-        AtomicBoolean sentSuccessfully = new AtomicBoolean(true);
-        try {
-            webServiceTemplate.marshalSendAndReceive(createDocument, message -> {
-                SOAPMessage soapMessage = ((SaajSoapMessage) message).getSaajMessage();
-                try {
-                    SOAPHeader soapHeader = soapMessage.getSOAPHeader();
-                    QName securityQName = new QName("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd", "Security", "wsse");
-                    QName timestampQName = new QName("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd", "Timestamp", "wsu");
-                    SOAPHeaderElement securityElement = soapHeader.addHeaderElement(securityQName);
+        webServiceTemplate.marshalSendAndReceive(createDocument, message -> {
+            SOAPMessage soapMessage = ((SaajSoapMessage) message).getSaajMessage();
+            try {
+                SOAPHeader soapHeader = soapMessage.getSOAPHeader();
+                QName securityQName = new QName("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd", "Security", "wsse");
+                QName timestampQName = new QName("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd", "Timestamp", "wsu");
+                SOAPHeaderElement securityElement = soapHeader.addHeaderElement(securityQName);
 
-                    SOAPElement timestampElement = securityElement.addChildElement(timestampQName);
-                    SOAPElement createdElement = timestampElement.addChildElement("Created", "wsu");
-                    ZonedDateTime createdTimestamp = ZonedDateTime.now(clock);
-                    createdElement.setTextContent(createdTimestamp.format(DateTimeFormatter.ISO_INSTANT));
-                    SOAPElement expiresElement = timestampElement.addChildElement("Expires", "wsu");
-                    expiresElement.setTextContent(createdTimestamp.plusMinutes(5).format(DateTimeFormatter.ISO_INSTANT));
+                SOAPElement timestampElement = securityElement.addChildElement(timestampQName);
+                SOAPElement createdElement = timestampElement.addChildElement("Created", "wsu");
+                ZonedDateTime createdTimestamp = ZonedDateTime.now(clock);
+                createdElement.setTextContent(createdTimestamp.format(DateTimeFormatter.ISO_INSTANT));
+                SOAPElement expiresElement = timestampElement.addChildElement("Expires", "wsu");
+                expiresElement.setTextContent(createdTimestamp.plusMinutes(5).format(DateTimeFormatter.ISO_INSTANT));
 
-                    SOAPElement usernameTokenElement = securityElement.addChildElement("UsernameToken", "wsse");
-                    SOAPElement usernameElement = usernameTokenElement.addChildElement("Username", "wsse");
-                    usernameElement.setTextContent(username);
-                    SOAPElement passwordElement = usernameTokenElement.addChildElement("Password", "wsse");
-                    passwordElement.addAttribute(NameImpl.createFromUnqualifiedName("Type"), "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText");
-                    passwordElement.setTextContent(password);
-                } catch (SOAPException e) {
-                    throw new IllegalStateException(e);
-                }
-            });
-        } catch (Exception e) {
-            logErrorToSentry(e, applicationFile);
-            sentSuccessfully.set(false);
-        }
-        return sentSuccessfully.get();
+                SOAPElement usernameTokenElement = securityElement.addChildElement("UsernameToken", "wsse");
+                SOAPElement usernameElement = usernameTokenElement.addChildElement("Username", "wsse");
+                usernameElement.setTextContent(username);
+                SOAPElement passwordElement = usernameTokenElement.addChildElement("Password", "wsse");
+                passwordElement.addAttribute(NameImpl.createFromUnqualifiedName("Type"), "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText");
+                passwordElement.setTextContent(password);
+            } catch (SOAPException e) {
+                logErrorToSentry(e, applicationFile);
+            }
+        });
+
+        // Update status
+        return true;
     }
 
     @Recover
-    public void logErrorToSentry(Exception e, ApplicationFile applicationFile) {
+    public boolean logErrorToSentry(Exception e, ApplicationFile applicationFile) {
         log.error("Application failed to send: " + applicationFile.getFileName(), e);
+        // Update status for this file
+        return false; //TODO actually test that this works
     }
 
     @NotNull

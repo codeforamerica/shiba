@@ -47,19 +47,19 @@ class ApplicationStatusUpdaterTest {
 
         applicationStatusUpdater.updateCafApplicationStatus(IN_PROGRESS);
         assertThat(applicationData.getCafApplicationStatus()).isEqualTo(IN_PROGRESS);
-        verify(applicationRepository).updateStatus("testId", ApplicationStatusType.UPLOADED_DOCUMENTS, IN_PROGRESS);
+        verify(applicationRepository).updateStatus("testId", ApplicationStatusType.CAF, IN_PROGRESS);
 
         applicationStatusUpdater.updateCafApplicationStatus(SENDING);
         assertThat(applicationData.getCafApplicationStatus()).isEqualTo(SENDING);
-        verify(applicationRepository).updateStatus("testId", ApplicationStatusType.UPLOADED_DOCUMENTS, SENDING);
+        verify(applicationRepository).updateStatus("testId", ApplicationStatusType.CAF, SENDING);
 
         applicationStatusUpdater.updateCafApplicationStatus(DELIVERED);
         assertThat(applicationData.getCafApplicationStatus()).isEqualTo(DELIVERED);
-        verify(applicationRepository).updateStatus("testId", ApplicationStatusType.UPLOADED_DOCUMENTS, DELIVERED);
+        verify(applicationRepository).updateStatus("testId", ApplicationStatusType.CAF, DELIVERED);
 
         applicationStatusUpdater.updateCafApplicationStatus(DELIVERY_FAILED);
         assertThat(applicationData.getCafApplicationStatus()).isEqualTo(DELIVERY_FAILED);
-        verify(applicationRepository).updateStatus("testId", ApplicationStatusType.UPLOADED_DOCUMENTS, DELIVERY_FAILED);
+        verify(applicationRepository).updateStatus("testId", ApplicationStatusType.CAF, DELIVERY_FAILED);
     }
 
     @Test
@@ -68,18 +68,18 @@ class ApplicationStatusUpdaterTest {
 
         applicationStatusUpdater.updateCcapApplicationStatus(IN_PROGRESS);
         assertThat(applicationData.getCcapApplicationStatus()).isEqualTo(IN_PROGRESS);
-        verify(applicationRepository).updateStatus("testId", ApplicationStatusType.UPLOADED_DOCUMENTS, IN_PROGRESS);
+        verify(applicationRepository).updateStatus("testId", ApplicationStatusType.CCAP, IN_PROGRESS);
 
         applicationStatusUpdater.updateCcapApplicationStatus(SENDING);
         assertThat(applicationData.getCcapApplicationStatus()).isEqualTo(SENDING);
-        verify(applicationRepository).updateStatus("testId", ApplicationStatusType.UPLOADED_DOCUMENTS, SENDING);
+        verify(applicationRepository).updateStatus("testId", ApplicationStatusType.CCAP, SENDING);
 
         applicationStatusUpdater.updateCcapApplicationStatus(DELIVERED);
         assertThat(applicationData.getCcapApplicationStatus()).isEqualTo(DELIVERED);
-        verify(applicationRepository).updateStatus("testId", ApplicationStatusType.UPLOADED_DOCUMENTS, DELIVERED);
+        verify(applicationRepository).updateStatus("testId", ApplicationStatusType.CCAP, DELIVERED);
 
         applicationStatusUpdater.updateCcapApplicationStatus(DELIVERY_FAILED);
         assertThat(applicationData.getCcapApplicationStatus()).isEqualTo(DELIVERY_FAILED);
-        verify(applicationRepository).updateStatus("testId", ApplicationStatusType.UPLOADED_DOCUMENTS, DELIVERY_FAILED);
+        verify(applicationRepository).updateStatus("testId", ApplicationStatusType.CCAP, DELIVERY_FAILED);
     }
 }

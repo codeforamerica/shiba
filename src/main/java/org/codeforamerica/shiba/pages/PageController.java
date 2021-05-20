@@ -294,7 +294,7 @@ public class PageController {
             model.put("sentiment", application.getSentiment());
             model.put("feedbackText", application.getFeedback());
             String inputData = pagesData.getPageInputFirstValue("healthcareCoverage", "healthcareCoverage");
-            boolean hasHealthcare = inputData != null && inputData.equalsIgnoreCase("YES");
+            boolean hasHealthcare = "YES".equalsIgnoreCase(inputData);
             model.put("doesNotHaveHealthcare", !hasHealthcare );
             model.put("successMessage", successMessageService.getSuccessMessage(new ArrayList<>(programs), snapExpeditedEligibility, ccapExpeditedEligibility, locale));
         }
@@ -390,6 +390,10 @@ public class PageController {
             @PathVariable String pageName,
             HttpSession httpSession
     ) {
+        // go get applicationdata from the db
+        // if it's there, use that as application data
+        // if not use the one in the session
+        // add a big TODO ^^^^^ Delete after next deploy
         PageWorkflowConfiguration pageWorkflow = applicationConfiguration.getPageWorkflow(pageName);
 
         PageConfiguration page = pageWorkflow.getPageConfiguration();
@@ -434,7 +438,8 @@ public class PageController {
             if (pagesData.containsKey("choosePrograms")) {
                 if (applicationData.isCAFApplication()) {
                     applicationStatusUpdater.updateCafApplicationStatus(IN_PROGRESS);
-                } else if (applicationData.isCCAPApplication()) {
+                }
+                if (applicationData.isCCAPApplication()) {
                     applicationStatusUpdater.updateCcapApplicationStatus(IN_PROGRESS);
                 }
             }
@@ -471,6 +476,10 @@ public class PageController {
         pagesData.putPage(submitPage, pageData);
 
         if (pageData.isValid()) {
+            if (applicationData.getId() == null) {
+                // only happens in framework tests now we think, left in out of an abundance of caution
+                applicationData.setId(applicationRepository.getNextId());
+            }
             Application application = applicationFactory.newApplication(applicationData);
             applicationRepository.save(application);
             pageEventPublisher.publish(

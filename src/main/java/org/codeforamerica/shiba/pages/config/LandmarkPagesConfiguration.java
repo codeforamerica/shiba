@@ -17,23 +17,23 @@ public class LandmarkPagesConfiguration {
     private String laterDocsTerminalPage;
 
     public boolean isLandingPage(String pageName) {
-        return this.getLandingPages().contains(pageName);
+        return getLandingPages().contains(pageName);
     }
 
     public boolean isTerminalPage(String pageName) {
-        return pageName.equals(this.getTerminalPage());
+        return pageName.equals(getTerminalPage());
     }
 
     public boolean isPostSubmitPage(String pageName) {
-        return this.getPostSubmitPages().contains(pageName);
+        return getPostSubmitPages().contains(pageName);
     }
 
     public boolean isStartTimerPage(String pageName) {
-        return this.getStartTimerPage().contains(pageName);
+        return getStartTimerPage().contains(pageName);
     }
 
     public boolean isSubmitPage(String pageName) {
-        return pageName.equals(this.getSubmitPage());
+        return pageName.equals(getSubmitPage());
     }
 
     public boolean isLaterDocsIdPage(String pageName) {

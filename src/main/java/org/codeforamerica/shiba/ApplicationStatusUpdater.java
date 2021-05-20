@@ -5,7 +5,7 @@ import org.codeforamerica.shiba.application.Status;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.stereotype.Component;
 
-import static org.codeforamerica.shiba.application.ApplicationStatusType.UPLOADED_DOCUMENTS;
+import static org.codeforamerica.shiba.application.ApplicationStatusType.*;
 
 @Component
 public class ApplicationStatusUpdater {
@@ -26,11 +26,11 @@ public class ApplicationStatusUpdater {
 
     public void updateCafApplicationStatus(Status status) {
         applicationData.setCafApplicationStatus(status);
-        applicationRepository.updateStatus(applicationData.getId(), UPLOADED_DOCUMENTS, status);
+        applicationRepository.updateStatus(applicationData.getId(), CAF, status);
     }
 
     public void updateCcapApplicationStatus(Status status) {
         applicationData.setCcapApplicationStatus(status);
-        applicationRepository.updateStatus(applicationData.getId(), UPLOADED_DOCUMENTS, status);
+        applicationRepository.updateStatus(applicationData.getId(), CCAP, status);
     }
 }

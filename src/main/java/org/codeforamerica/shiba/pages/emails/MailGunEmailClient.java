@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
+import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 import static org.springframework.web.reactive.function.BodyInserters.fromMultipartData;
 
 @Component
@@ -90,13 +91,13 @@ public class MailGunEmailClient implements EmailClient {
         form.put("attachment", applicationFiles.stream().map(this::asResource).collect(Collectors.toList()));
 
         MDC.put("confirmationId", confirmationId);
-//
-//        webClient.post()
-//                .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
-//                .body(fromMultipartData(form))
-//                .retrieve()
-//                .bodyToMono(Void.class)
-//                .block();
+
+        webClient.post()
+                .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
+                .body(fromMultipartData(form))
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
     }
 
     @Override
@@ -115,13 +116,13 @@ public class MailGunEmailClient implements EmailClient {
         form.put("attachment", List.of(asResource(applicationFile)));
 
         MDC.put("confirmationId", confirmationId);
-//
-//        webClient.post()
-//                .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
-//                .body(fromMultipartData(form))
-//                .retrieve()
-//                .bodyToMono(Void.class)
-//                .block();
+
+        webClient.post()
+                .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
+                .body(fromMultipartData(form))
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
     }
 
     @Override
@@ -131,13 +132,13 @@ public class MailGunEmailClient implements EmailClient {
         form.put("to", List.of(auditEmail));
         form.put("subject", List.of("Caseworker CAF downloaded"));
         form.put("html", List.of(emailContentCreator.createDownloadCafAlertContent(confirmationId, ip, locale)));
-//
-//        webClient.post()
-//                .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
-//                .body(fromFormData(form))
-//                .retrieve()
-//                .bodyToMono(Void.class)
-//                .block();
+
+        webClient.post()
+                .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
+                .body(fromFormData(form))
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
     }
 
     @Override

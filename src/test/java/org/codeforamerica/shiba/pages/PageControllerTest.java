@@ -332,7 +332,7 @@ class PageControllerTest {
     }
 
     @Test
-    void shouldUpdateCcapApplicationStatusWhenChoosingPrograms() throws Exception {
+    void shouldMultipleApplicationStatusesWhenChoosingPrograms() throws Exception {
         applicationData.setStartTimeOnce(Instant.now());
         String applicationId = "someId";
         applicationData.setId(applicationId);
@@ -344,10 +344,11 @@ class PageControllerTest {
         when(applicationFactory.newApplication(applicationData)).thenReturn(application);
 
         mockMvc.perform(post("/pages/choosePrograms")
-                .param("programs[]", "CCAP")
+                .param("programs[]", "CCAP", "SNAP")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
         verify(applicationStatusUpdater).updateCcapApplicationStatus(Status.IN_PROGRESS);
+        verify(applicationStatusUpdater).updateCafApplicationStatus(Status.IN_PROGRESS);
     }
 
     @Test
@@ -366,6 +367,27 @@ class PageControllerTest {
                 .param("programs[]", "SNAP")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
+        verify(applicationStatusUpdater, never()).updateCcapApplicationStatus(Status.IN_PROGRESS);
         verify(applicationStatusUpdater).updateCafApplicationStatus(Status.IN_PROGRESS);
+    }
+
+    @Test
+    void shouldUpdateCcapApplicationStatusWhenChoosingPrograms() throws Exception {
+        applicationData.setStartTimeOnce(Instant.now());
+        String applicationId = "someId";
+        applicationData.setId(applicationId);
+        Application application = Application.builder()
+                .id(applicationId)
+                .applicationData(applicationData)
+                .build();
+        when(applicationRepository.getNextId()).thenReturn(applicationId);
+        when(applicationFactory.newApplication(applicationData)).thenReturn(application);
+
+        mockMvc.perform(post("/pages/choosePrograms")
+                .param("programs[]", "CCAP")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+
+        verify(applicationStatusUpdater).updateCcapApplicationStatus(Status.IN_PROGRESS);
+        verify(applicationStatusUpdater, never()).updateCafApplicationStatus(Status.IN_PROGRESS);
     }
 }

@@ -15,9 +15,7 @@ import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,6 +31,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -80,6 +79,7 @@ class MnitDocumentConsumerTest {
     @MockBean
     private ApplicationStatusUpdater applicationStatusUpdater;
 
+
     @BeforeEach
     void setUp() {
         PagesData pagesData = new PagesDataBuilder().build(List.of(
@@ -113,6 +113,11 @@ class MnitDocumentConsumerTest {
         when(messageSource.getMessage(any(), any(), any())).thenReturn("default success message");
         when(fileNameGenerator.generatePdfFileName(any(), any())).thenReturn("some-file.pdf");
         doReturn(application).when(applicationRepository).find(any());
+    }
+
+    @AfterEach
+    void afterEach() {
+        applicationData.setUploadedDocs(new ArrayList<>());
     }
 
     @Test

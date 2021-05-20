@@ -18,7 +18,11 @@ import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTest
 @JdbcTest
 @AutoConfigureTestDatabase(replace = NONE)
 @Sql(statements = {"ALTER SEQUENCE application_id RESTART WITH 12", "TRUNCATE TABLE applications"})
-@ContextConfiguration(classes = {NonSessionScopedApplicationData.class, ApplicationDataEncryptor.class, StringEncryptor.class, ApplicationRepository.class})
+@ContextConfiguration(classes = {
+        NonSessionScopedApplicationData.class,
+        ApplicationDataEncryptor.class,
+        StringEncryptor.class,
+        ApplicationRepository.class})
 @AutoConfigureJson
 public class AbstractRepositoryTest {
 }

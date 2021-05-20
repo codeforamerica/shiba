@@ -162,8 +162,4 @@ public class ApplicationData implements Serializable {
         }
         return applicantAndHouseholdMemberPrograms;
     }
-
-    public boolean documentUploadInProgress() {
-        return getPagesData().containsKey("uploadDocuments") && uploadedDocs.size() >= 1;
-    }
 }

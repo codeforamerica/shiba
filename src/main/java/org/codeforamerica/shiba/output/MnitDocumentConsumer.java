@@ -79,7 +79,7 @@ public class MnitDocumentConsumer {
                 log.info("Now sending: " + fileToSend.getFileName() + " original filename: " + uploadedDocument.getFilename());
                 mnitClient.send(fileToSend, application.getCounty(), application.getId(), UPLOADED_DOC);
                 log.info("Finished sending document " + fileToSend.getFileName());
-            } else if (activeProfile.equals("demo") || activeProfile.equals("staging") || activeProfile.equals("production")) {
+            } else if ("demo".equals(activeProfile) || "staging".equals(activeProfile) || "production".equals(activeProfile)) {
                 log.error("Skipped uploading file " + uploadedDocument.getFilename() + " because it was empty. This should only happen in a dev environment.");
             } else {
                 log.info("Pretending to send file " + uploadedDocument.getFilename() + ".");
