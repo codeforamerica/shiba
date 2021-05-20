@@ -79,6 +79,15 @@ pageDefinitions:
         validators:
           - validation: MONEY
             errorMessageKey: error-message-key
+  - &numberPage
+    name: numberPage
+    pageTitle: number-title
+    inputs:
+      - name: numberInput
+        type: TEXT
+        validators:
+          - validation: NUMBER
+            errorMessageKey: error-message-key
   - &ssnPage
     name: ssnPage
     pageTitle: ssn-page-title
@@ -227,6 +236,10 @@ workflow:
       - pageName: lastPage
   moneyPage:
     pageConfiguration: *moneyPage
+    nextPages:
+      - pageName: lastPage
+  numberPage:
+    pageConfiguration: *numberPage
     nextPages:
       - pageName: lastPage
   ssnPage:
