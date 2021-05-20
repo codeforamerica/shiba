@@ -974,7 +974,7 @@ pageDefinitions:
       - name: medicalInsurancePremiumAmount
         type: MONEY
         promptMessage:
-          promptMessageKey: medical-expenses.medical-insurance-premiums
+          promptMessageKey: medical-expenses-sources.medical-insurance-premiums
         helpMessageKey: general.monthly-amount
         validators:
           - validation: MONEY
@@ -989,7 +989,7 @@ pageDefinitions:
       - name: dentalInsurancePremiumAmount
         type: MONEY
         promptMessage:
-          promptMessageKey: medical-expenses.dental-insurance-premiums
+          promptMessageKey: medical-expenses-sources.dental-insurance-premiums
         helpMessageKey: general.monthly-amount
         validators:
           - validation: MONEY
@@ -1004,7 +1004,7 @@ pageDefinitions:
       - name: visionInsurancePremiumAmount
         type: MONEY
         promptMessage:
-          promptMessageKey: medical-expenses.vision-insurance-premiums
+          promptMessageKey: medical-expenses-sources.vision-insurance-premiums
         helpMessageKey: general.monthly-amount
         validators:
           - validation: MONEY
