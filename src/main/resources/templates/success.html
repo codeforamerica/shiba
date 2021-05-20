@@ -10,7 +10,8 @@
             <div class="card spacing-above-35">
                 <div class="grid__item bottom-horizontal-line-dark-grey">
                     <div th:replace="fragments/icons/icon-submission-success :: icon-submission-success"></div>
-                    <h1 class="h2 spacing-below-0" th:text="|#{success.done-your-application-has-been-submitted}|"></h1>
+                    <h1 th:if="${!hasUploadDocuments}" class="h2 spacing-below-0" th:text="|#{success.done-your-application-has-been-submitted}|"></h1>
+                    <h1 th:if="${hasUploadDocuments}" class="h2 spacing-below-0" th:text="|#{success.done-your-application-and-docs-have-been-submitted}|"></h1>
                     <h2 id="application-id" class="spacing-below-10 h3"
                         th:text="|#{success.confirmation-number}: ${applicationId}|"></h2>
                     <p th:if="${county != T(org.codeforamerica.shiba.County).Other}" class="spacing-below-35 text--help"

@@ -284,6 +284,7 @@ public class PageController {
             Application application = applicationRepository.find(applicationData.getId());
             model.put("applicationId", application.getId());
             model.put("documents", documentListParser.parse(applicationData));
+            model.put("hasUploadDocuments", !applicationData.getUploadedDocs().isEmpty());
             model.put("submissionTime", application.getCompletedAt().withZoneSameInstant(CENTRAL_TIMEZONE));
             model.put("county", application.getCounty());
             model.put("sentiment", application.getSentiment());
