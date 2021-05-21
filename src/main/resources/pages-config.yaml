@@ -1935,6 +1935,9 @@ pageDefinitions:
     inputs:
       - name: hoursAWeek
         type: NUMBER
+        validators:
+          - validation: NUMBER
+            errorMessageKey: general.validation.make-sure-you-enter-a-number
     contextFragment: jobContextFragment
   - &payPeriod
     name: payPeriod

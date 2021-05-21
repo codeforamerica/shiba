@@ -31,6 +31,7 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
     private final String statePageTitle = "state page title";
     private final String phonePageTitle = "phone page title";
     private final String moneyPageTitle = "money page title";
+    private final String numberPageTitle = "hours per week page title";
     private final String ssnPageTitle = "ssn page title";
     private final String datePageTitle = "date page title";
     private final String notBlankPageTitle = "not blank page title";
@@ -62,6 +63,7 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         staticMessageSource.addMessage("state-page-title", Locale.ENGLISH, statePageTitle);
         staticMessageSource.addMessage("phone-page-title", Locale.ENGLISH, phonePageTitle);
         staticMessageSource.addMessage("money-page-title", Locale.ENGLISH, moneyPageTitle);
+        staticMessageSource.addMessage("number-title", Locale.ENGLISH, numberPageTitle);
         staticMessageSource.addMessage("ssn-page-title", Locale.ENGLISH, ssnPageTitle);
         staticMessageSource.addMessage("date-page-title", Locale.ENGLISH, datePageTitle);
         staticMessageSource.addMessage("email-page-title", Locale.ENGLISH, emailPageTitle);
@@ -377,6 +379,32 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
             driver.findElement(By.tagName("button")).click();
 
             assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
+        }
+
+        @Test
+        void shouldPassValidationForValidNumber() {
+            String validValue = "30";
+            driver.navigate().to(baseUrl + "/pages/numberPage");
+            driver.findElement(By.cssSelector("input[name='numberInput[]']")).sendKeys(validValue);
+            driver.findElement(By.tagName("button")).click();
+
+            assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {
+                "a123",
+                "1.",
+                "20-30",
+                "-152"
+        })
+        void shouldFailValidationForInvalidNumber(String value) {
+            driver.navigate().to(baseUrl + "/pages/numberPage");
+            driver.findElement(By.name("numberInput[]")).sendKeys(value);
+            driver.findElement(By.tagName("button")).click();
+
+            assertThat(driver.getTitle()).isEqualTo(numberPageTitle);
+            assertThat(testPage.getInputError("numberInput")).isNotNull();
         }
 
         @ParameterizedTest
