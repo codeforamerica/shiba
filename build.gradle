@@ -233,3 +233,7 @@ licenseReport {
 bootRun {
     jvmArgs = ["-XX:+ShowCodeDetailsInExceptionMessages"]
 }
+
+jar {
+    enabled = false
+}
