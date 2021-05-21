@@ -1,8 +1,11 @@
 package org.codeforamerica.shiba.output;
 
+import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,11 +18,11 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.output.Document.CAF;
-import static org.codeforamerica.shiba.output.Document.CCAP;
+import static org.codeforamerica.shiba.output.Document.*;
 import static org.codeforamerica.shiba.output.Recipient.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
@@ -33,6 +36,7 @@ class FileDownLoadControllerTest {
     ApplicationData applicationData;
     PdfGenerator pdfGenerator = mock(PdfGenerator.class);
     ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
+    ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
 
     @BeforeEach
     void setUp() {
@@ -43,7 +47,8 @@ class FileDownLoadControllerTest {
                         xmlGenerator,
                         pdfGenerator,
                         applicationEventPublisher,
-                        applicationData))
+                        applicationData,
+                        applicationRepository))
                 .setViewResolvers(new InternalResourceViewResolver("", "suffix"))
                 .build();
 
@@ -155,5 +160,16 @@ class FileDownLoadControllerTest {
 
         verify(xmlGenerator).generate(applicationData.getId(), CAF, CLIENT);
         assertThat(result.getResponse().getContentAsByteArray()).isEqualTo(fileBytes);
+    }
+
+    @Test
+    void shouldReturnDocumentsForApplicationId() throws Exception {
+        when(pdfGenerator.generateForUploadedDocument(new UploadedDocument(anyString(), anyString(), anyString(), anyString(), 0), 0,Application.builder().build(),"".getBytes())).thenReturn(new ApplicationFile("".getBytes(), ""));
+        mockMvc.perform(
+                get("/download-docs/9870000123"))
+                .andExpect(status().is2xxSuccessful());
+
+        verify(pdfGenerator).generateForUploadedDocument(new UploadedDocument("somefile","","","",0), 0, Application.builder().build(), "".getBytes());
+
     }
 }

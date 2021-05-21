@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba.documents;
+/*package org.codeforamerica.shiba.documents;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -25,5 +25,5 @@ public class NoopDocumentRepositoryService implements DocumentRepositoryService 
     public void delete(String filepath) {
         log.info("Pretending to delete file from s3: {}", filepath);
     }
-}
+}*/
 
