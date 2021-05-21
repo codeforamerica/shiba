@@ -39,6 +39,12 @@ conditionAnchors:
     input: paidByTheHour
     value: "true"
     subworkflow: jobs
+  - &paysForMedicalExpenses?
+    pageName: medicalExpenses
+    input: medicalExpenses
+  - &doesntPayForMedicalExpenses?
+    <<: *paysForMedicalExpenses?
+    matcher: DOES_NOT_CONTAIN
 derived-values:
   - groupName: utilityPayments
     fieldName: noExpeditedUtilitiesSelected
@@ -1022,3 +1028,39 @@ derived-values:
             - pageName: livingSituation
               input: livingSituation
               matcher: NONE_SELECTED
+  - groupName: medicalExpenses
+    fieldName: medicalExpensesSelection
+    values:
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: ONE_SELECTED
+        type: ENUMERATED_SINGLE_VALUE
+        condition:
+          logicalOperator: OR
+          conditions:
+            - <<: *paysForMedicalExpenses?
+              value: MEDICAL_INSURANCE_PREMIUMS
+            - <<: *paysForMedicalExpenses?
+              value: DENTAL_INSURANCE_PREMIUMS
+            - <<: *paysForMedicalExpenses?
+              value: VISION_INSURANCE_PREMIUMS
+            - <<: *paysForMedicalExpenses?
+              value: MEDICAL_BILLS_OR_COPAYS
+  - groupName: medicalExpenses
+    fieldName: noMedicalExpensesSelection
+    values:
+      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
+          literal: NONE_SELECTED
+        type: ENUMERATED_SINGLE_VALUE
+        condition:
+          logicalOperator: AND
+          conditions:
+            - <<: *doesntPayForMedicalExpenses?
+              value: MEDICAL_INSURANCE_PREMIUMS
+            - <<: *doesntPayForMedicalExpenses?
+              value: DENTAL_INSURANCE_PREMIUMS
+            - <<: *doesntPayForMedicalExpenses?
+              value: VISION_INSURANCE_PREMIUMS
+            - <<: *doesntPayForMedicalExpenses?
+              value: MEDICAL_BILLS_OR_COPAYS
+
+

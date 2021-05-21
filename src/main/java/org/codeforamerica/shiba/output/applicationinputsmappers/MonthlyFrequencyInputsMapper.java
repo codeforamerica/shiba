@@ -13,11 +13,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component
-public class UnearnedIncomeFrequencyInputsMapper implements ApplicationInputsMapper {
+public class MonthlyFrequencyInputsMapper implements ApplicationInputsMapper {
 
     @Override
     public List<ApplicationInput> map(Application application, Document document, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
-        return List.of("unearnedIncomeSources", "unearnedIncomeSourcesCcap")
+        return List.of("unearnedIncomeSources", "unearnedIncomeSourcesCcap", "medicalExpensesSources")
                 .stream()
                 .flatMap(pageName ->
                         Optional.ofNullable(application.getApplicationData().getPageData(pageName))

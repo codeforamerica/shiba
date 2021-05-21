@@ -207,6 +207,17 @@ mappings:
     homeExpensesAmount: HOUSING_EXPENSES
   energyAssistanceGroup:
     energyAssistanceInput: RECEIVED_LIHEAP
+  medicalExpenses:
+    medicalExpenses:
+    medicalExpensesSelection: MEDICAL_EXPENSES_SELECTION
+    noMedicalExpensesSelection: MEDICAL_EXPENSES_SELECTION
+  medicalExpensesSources:
+    medicalInsurancePremiumAmount: MEDICAL_INSURANCE_PREMIUM_AMOUNT
+    dentalInsurancePremiumAmount: DENTAL_INSURANCE_PREMIUM_AMOUNT
+    visionInsurancePremiumAmount: VISION_INSURANCE_PREMIUM_AMOUNT
+    medicalInsurancePremiumFrequency: MEDICAL_INSURANCE_PREMIUM_FREQUENCY
+    dentalInsurancePremiumFrequency: DENTAL_INSURANCE_PREMIUM_FREQUENCY
+    visionInsurancePremiumFrequency: VISION_INSURANCE_PREMIUM_FREQUENCY
   supportAndCare:
     supportAndCare: SUPPORT_AND_CARE
   savings:

@@ -318,6 +318,8 @@ public abstract class AbstractBasePageTest {
         testPage.clickContinue();
         testPage.enter("energyAssistance", YES.getDisplayValue());
         testPage.enter("energyAssistanceMoreThan20", YES.getDisplayValue());
+        testPage.enter("medicalExpenses", "None of the above");
+        testPage.clickContinue();
         testPage.enter("supportAndCare", YES.getDisplayValue());
         testPage.enter("haveVehicle", YES.getDisplayValue());
         testPage.enter("ownRealEstate", YES.getDisplayValue());
