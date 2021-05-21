@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.output;
 
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -18,12 +19,14 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
-import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.TestUtils.getAbsoluteFilepath;
 import static org.codeforamerica.shiba.output.Document.*;
-import static org.codeforamerica.shiba.output.Recipient.*;
+import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
+import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -164,12 +167,31 @@ class FileDownLoadControllerTest {
 
     @Test
     void shouldReturnDocumentsForApplicationId() throws Exception {
-        when(pdfGenerator.generateForUploadedDocument(new UploadedDocument(anyString(), anyString(), anyString(), anyString(), 0), 0,Application.builder().build(),"".getBytes())).thenReturn(new ApplicationFile("".getBytes(), ""));
-        mockMvc.perform(
+        ApplicationFile emptyFile = new ApplicationFile("".getBytes(), "");
+        UploadedDocument uploadedDoc = new UploadedDocument("somefile", "", "", "", 0);
+        ApplicationData applicationData = new ApplicationData();
+        applicationData.setId("9870000123");
+        applicationData.setUploadedDocs(List.of(uploadedDoc));
+        applicationData.setFlow(FlowType.LATER_DOCS);
+        Application application = Application.builder()
+                .applicationData(applicationData)
+                .flow(FlowType.LATER_DOCS)
+                .build();
+
+        when(applicationRepository.find("9870000123")).thenReturn(
+                application
+        );
+        when(pdfGenerator.generate(any(Application.class), eq(UPLOADED_DOC), eq(CASEWORKER))).thenReturn(emptyFile);
+        when(pdfGenerator.generateForUploadedDocument(any(UploadedDocument.class), eq(0), any(Application.class), any())).thenReturn(emptyFile);
+        MvcResult result = mockMvc.perform(
                 get("/download-docs/9870000123"))
-                .andExpect(status().is2xxSuccessful());
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
 
-        verify(pdfGenerator).generateForUploadedDocument(new UploadedDocument("somefile","","","",0), 0, Application.builder().build(), "".getBytes());
+        verify(pdfGenerator).generate(application, UPLOADED_DOC, CASEWORKER);
+        verify(pdfGenerator).generateForUploadedDocument(uploadedDoc, 0, application, emptyFile.getFileBytes());
 
+        byte[] expectedBytes = Files.readAllBytes(getAbsoluteFilepath("emptyzip.zip"));
+        assertThat(result.getResponse().getContentAsByteArray()).isEqualTo(expectedBytes);
     }
 }

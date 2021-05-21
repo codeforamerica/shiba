@@ -7,6 +7,7 @@ import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -20,13 +21,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import static org.codeforamerica.shiba.output.Recipient.*;
 import static org.codeforamerica.shiba.output.Document.*;
+import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
+import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 
 @Controller
 @Slf4j
@@ -47,7 +48,7 @@ public class FileDownLoadController {
         this.pdfGenerator = pdfGenerator;
         this.applicationEventPublisher = applicationEventPublisher;
         this.applicationData = applicationData;
-        this.applicationRepository=applicationRepository;
+        this.applicationRepository = applicationRepository;
     }
 
     @GetMapping("/download")
@@ -67,9 +68,7 @@ public class FileDownLoadController {
             @PathVariable String applicationId,
             HttpServletRequest request
     ) {
-        String requestIpHeader = Optional.ofNullable(request.getHeader("X-FORWARDED-FOR")).orElse("");
-        String[] ipAddresses = requestIpHeader.split(",");
-        String requestIp = ipAddresses.length > 1 ? ipAddresses[ipAddresses.length - 2].trim() : "<blank>";
+        String requestIp = createRequestIp(request);
         // TODO: Change this to a CCAP PDF Download Notification
         applicationEventPublisher.publishEvent(new DownloadCafEvent(applicationId, requestIp));
         ApplicationFile applicationFile = pdfGenerator.generate(applicationId, CCAP, CASEWORKER);
@@ -88,9 +87,7 @@ public class FileDownLoadController {
             @PathVariable String applicationId,
             HttpServletRequest request
     ) {
-        String requestIpHeader = Optional.ofNullable(request.getHeader("X-FORWARDED-FOR")).orElse("");
-        String[] ipAddresses = requestIpHeader.split(",");
-        String requestIp = ipAddresses.length > 1 ? ipAddresses[ipAddresses.length - 2].trim() : "<blank>";
+        String requestIp = createRequestIp(request);
 
         applicationEventPublisher.publishEvent(new DownloadCafEvent(applicationId, requestIp));
         ApplicationFile applicationFile = pdfGenerator.generate(applicationId, CAF, CASEWORKER);
@@ -103,13 +100,10 @@ public class FileDownLoadController {
             @PathVariable String applicationId,
             HttpServletRequest request
     ) throws IOException {
-        String requestIpHeader = Optional.ofNullable(request.getHeader("X-FORWARDED-FOR")).orElse("");
-        String[] ipAddresses = requestIpHeader.split(",");
-        String requestIp = ipAddresses.length > 1 ? ipAddresses[ipAddresses.length - 2].trim() : "<blank>";
+        String requestIp = createRequestIp(request);
 
         // TODO: Change this to a Doc download event
         applicationEventPublisher.publishEvent(new DownloadCafEvent(applicationId, requestIp));
-
 
         Application application = applicationRepository.find(applicationId);
         List<UploadedDocument> uploadedDocs = application.getApplicationData().getUploadedDocs();
@@ -127,7 +121,7 @@ public class FileDownLoadController {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ZipOutputStream zos = new ZipOutputStream(baos);
 
-        applicationFiles.forEach( file -> {
+        applicationFiles.forEach(file -> {
             ZipEntry entry = new ZipEntry(file.getFileName());
             entry.setSize(file.getFileBytes().length);
             try {
@@ -135,25 +129,29 @@ public class FileDownLoadController {
                 zos.write(file.getFileBytes());
                 zos.closeEntry();
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("Unable to write file, " + file.getFileName(), e);
             }
         });
 
         zos.close();
-        return createResponse(baos.toByteArray());
+        return createResponse(baos.toByteArray(), "files.zip");
     }
 
     private ResponseEntity<byte[]> createResponse(ApplicationFile applicationFile) {
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", applicationFile.getFileName()))
-                .body(applicationFile.getFileBytes());
-    }
-    private ResponseEntity<byte[]> createResponse(byte[] files) {
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .header(HttpHeaders.CONTENT_DISPOSITION, "filename=files.zip")
-                .body(files);
+        return createResponse(applicationFile.getFileBytes(), applicationFile.getFileName());
     }
 
+    private ResponseEntity<byte[]> createResponse(byte[] fileBytes, String fileName) {
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", fileName))
+                .body(fileBytes);
+    }
+
+    @NotNull
+    private String createRequestIp(HttpServletRequest request) {
+        String requestIpHeader = Optional.ofNullable(request.getHeader("X-FORWARDED-FOR")).orElse("");
+        String[] ipAddresses = requestIpHeader.split(",");
+        return ipAddresses.length > 1 ? ipAddresses[ipAddresses.length - 2].trim() : "<blank>";
+    }
 }
