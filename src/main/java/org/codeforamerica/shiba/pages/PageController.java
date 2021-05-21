@@ -452,6 +452,7 @@ public class PageController {
             Application application = applicationFactory.newApplication(applicationData);
             applicationRepository.save(application); //upsert already
 
+            // TODO this should happen before we save the thing maybe
             ofNullable(pageWorkflow.getEnrichment())
                     .map(applicationEnrichment::getEnrichment)
                     .map(enrichment -> enrichment.process(applicationData))

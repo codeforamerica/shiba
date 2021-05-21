@@ -32,14 +32,14 @@ public class Application {
         String feedbackText = !StringUtils.isEmpty(feedback.getFeedback()) ? feedback.getFeedback() : this.feedback;
 
         return new Application(
-                this.id,
-                this.completedAt,
-                this.updatedAt,
-                this.applicationData,
-                this.county,
-                this.timeToComplete,
-                this.flow,
-                this.status,
+                id,
+                completedAt,
+                updatedAt,
+                applicationData,
+                county,
+                timeToComplete,
+                flow,
+                status,
                 sentiment,
                 feedbackText
         );

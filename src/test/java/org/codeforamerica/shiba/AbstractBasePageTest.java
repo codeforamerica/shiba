@@ -159,6 +159,18 @@ public abstract class AbstractBasePageTest {
         testPage.enter("moveToMnDate", "02/18/1776");
     }
 
+    protected void fillOutHousemateInfo() {
+        testPage.enter("firstName", "defaultFirstName");
+        testPage.enter("lastName", "defaultLastName");
+        testPage.enter("otherName", "defaultOtherName");
+        testPage.enter("dateOfBirth", "01/12/1928");
+        testPage.enter("ssn", "987654321");
+        testPage.enter("maritalStatus", "Never married");
+        testPage.enter("sex", "Female");
+        testPage.enter("livedInMnWholeLife", "Yes");
+        testPage.enter("moveToMnDate", "02/18/1776");
+    }
+
     protected void fillOutContactInfo() {
         testPage.enter("phoneNumber", "7234567890");
         testPage.enter("phoneOrEmail", "Text me");
@@ -354,7 +366,7 @@ public abstract class AbstractBasePageTest {
     protected void fillOutHousemateInfo(String programSelection) {
         testPage.enter("relationship", "housemate");
         testPage.enter("programs", programSelection);
-        fillOutPersonInfo(); // need to fill out programs checkbox set above first
+        fillOutHousemateInfo(); // need to fill out programs checkbox set above first
         testPage.enter("moveToMnPreviousState", "Illinois");
     }
 

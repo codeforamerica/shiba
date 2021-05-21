@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.application;
 
+import org.apache.commons.lang3.SerializationUtils;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
@@ -27,7 +28,7 @@ public class ApplicationFactory {
         ApplicationData copy = new ApplicationData();
         copy.setId(applicationData.getId());
         copy.setPagesData(new PagesData(applicationData.getPagesData()));
-        copy.setSubworkflows(applicationData.getSubworkflows());
+        copy.setSubworkflows(SerializationUtils.clone(applicationData.getSubworkflows()));
         copy.setIncompleteIterations(applicationData.getIncompleteIterations());
         copy.setFlow(applicationData.getFlow());
         copy.setStartTime(applicationData.getStartTime());
