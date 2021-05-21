@@ -83,6 +83,9 @@
     },
     {
       "moduleLicense": "provided without support or warranty"
+    },
+    {
+      "moduleLicense": null
     }
   ]
 }
