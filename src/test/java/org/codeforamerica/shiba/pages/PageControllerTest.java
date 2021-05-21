@@ -32,6 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -169,7 +170,6 @@ class PageControllerTest {
 
         verify(applicationRepository).save(application);
         assertThat(applicationData.getId()).isEqualTo(applicationId);
-        assertThat(applicationData.getEntireApplicationStatus()).isEqualTo(Status.IN_PROGRESS);
     }
 
     @Test
@@ -312,7 +312,7 @@ class PageControllerTest {
     }
 
     @Test
-    void shouldUpdateUploadDocumentsStatusWhenSubmittingUploadedDocuments() throws Exception {
+    void shouldUpdateUploadDocumentsStatusWhenUploadDocumentsPageIsReached() throws Exception {
         applicationData.setStartTimeOnce(Instant.now());
 
         String applicationId = "someId";
@@ -324,15 +324,13 @@ class PageControllerTest {
         when(applicationRepository.getNextId()).thenReturn(applicationId);
         when(applicationFactory.newApplication(applicationData)).thenReturn(application);
 
-        mockMvc.perform(post("/pages/uploadDocuments")
-                .param("foo[]", "some value")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+        mockMvc.perform(get("/pages/uploadDocuments"));
 
-        verify(applicationStatusUpdater).updateUploadedDocumentsStatus(Status.IN_PROGRESS);
+        verify(applicationStatusUpdater).updateUploadedDocumentsStatus(application.getId(), Status.IN_PROGRESS);
     }
 
     @Test
-    void shouldMultipleApplicationStatusesWhenChoosingPrograms() throws Exception {
+    void shouldUpdateMultipleApplicationStatusesWhenChoosingPrograms() throws Exception {
         applicationData.setStartTimeOnce(Instant.now());
         String applicationId = "someId";
         applicationData.setId(applicationId);
@@ -347,8 +345,8 @@ class PageControllerTest {
                 .param("programs[]", "CCAP", "SNAP")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
-        verify(applicationStatusUpdater).updateCcapApplicationStatus(Status.IN_PROGRESS);
-        verify(applicationStatusUpdater).updateCafApplicationStatus(Status.IN_PROGRESS);
+        verify(applicationStatusUpdater).updateCcapApplicationStatus(application.getId(), Status.IN_PROGRESS);
+        verify(applicationStatusUpdater).updateCafApplicationStatus(application.getId(), Status.IN_PROGRESS);
     }
 
     @Test
@@ -367,8 +365,8 @@ class PageControllerTest {
                 .param("programs[]", "SNAP")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
-        verify(applicationStatusUpdater, never()).updateCcapApplicationStatus(Status.IN_PROGRESS);
-        verify(applicationStatusUpdater).updateCafApplicationStatus(Status.IN_PROGRESS);
+        verify(applicationStatusUpdater, never()).updateCcapApplicationStatus(application.getId(), Status.IN_PROGRESS);
+        verify(applicationStatusUpdater).updateCafApplicationStatus(application.getId(), Status.IN_PROGRESS);
     }
 
     @Test
@@ -387,7 +385,7 @@ class PageControllerTest {
                 .param("programs[]", "CCAP")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
-        verify(applicationStatusUpdater).updateCcapApplicationStatus(Status.IN_PROGRESS);
-        verify(applicationStatusUpdater, never()).updateCafApplicationStatus(Status.IN_PROGRESS);
+        verify(applicationStatusUpdater).updateCcapApplicationStatus(application.getId(), Status.IN_PROGRESS);
+        verify(applicationStatusUpdater, never()).updateCafApplicationStatus(application.getId(), Status.IN_PROGRESS);
     }
 }

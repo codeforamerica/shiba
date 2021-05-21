@@ -4,8 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.ApplicationStatusUpdater;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.application.ApplicationStatusType;
+import org.codeforamerica.shiba.application.Status;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
@@ -16,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
@@ -29,7 +29,6 @@ public class MnitDocumentConsumer {
     private final ApplicationDataParser<List<Document>> documentListParser;
     private final MonitoringService monitoringService;
     private final String activeProfile;
-    private final ApplicationRepository applicationRepository;
     private final ApplicationStatusUpdater applicationStatusUpdater;
 
     public MnitDocumentConsumer(MnitEsbWebServiceClient mnitClient,
@@ -38,7 +37,6 @@ public class MnitDocumentConsumer {
                                 ApplicationDataParser<List<Document>> documentListParser,
                                 MonitoringService monitoringService,
                                 @Value("${spring.profiles.active:dev}") String activeProfile,
-                                ApplicationRepository applicationRepository,
                                 ApplicationStatusUpdater applicationStatusUpdater) {
         this.mnitClient = mnitClient;
         this.xmlGenerator = xmlGenerator;
@@ -46,7 +44,6 @@ public class MnitDocumentConsumer {
         this.documentListParser = documentListParser;
         this.monitoringService = monitoringService;
         this.activeProfile = activeProfile;
-        this.applicationRepository = applicationRepository;
         this.applicationStatusUpdater = applicationStatusUpdater;
     }
 
@@ -54,21 +51,19 @@ public class MnitDocumentConsumer {
         monitoringService.setApplicationId(application.getId());
         // Send the CAF and CCAP as PDFs
         documentListParser.parse(application.getApplicationData()).forEach(documentType -> {
-            mnitClient.send(pdfGenerator.generate(application.getId(), documentType, CASEWORKER), application.getCounty(), application.getId(), documentType);
-            if (documentType == Document.CCAP) {
-                application.getApplicationData().setCcapApplicationStatus(SENDING);
-                applicationRepository.updateStatus(application.getId(), ApplicationStatusType.CCAP, SENDING);
-            } else if (documentType == Document.CAF) {
-                application.getApplicationData().setCafApplicationStatus(SENDING);
-                applicationRepository.updateStatus(application.getId(), ApplicationStatusType.CAF, SENDING);
+            try {
+                updateDocumentStatus(documentType, application.getId(), SENDING);
+                mnitClient.send(pdfGenerator.generate(application.getId(), documentType, CASEWORKER), application.getCounty(), application.getId(), documentType);
+            } catch (Exception e) {
+                updateDocumentStatus(documentType, application.getId(), DELIVERY_FAILED);
+                log.error("Failed to send with error, ", e);
             }
-            application.getApplicationData().setEntireApplicationStatus(SENDING);
         });
         mnitClient.send(xmlGenerator.generate(application.getId(), Document.CAF, CASEWORKER), application.getCounty(), application.getId(), Document.CAF);
     }
 
     public void processUploadedDocuments(Application application) {
-        applicationStatusUpdater.updateUploadedDocumentsStatus(SENDING);
+        applicationStatusUpdater.updateUploadedDocumentsStatus(application.getId(), SENDING);
         List<UploadedDocument> uploadedDocs = application.getApplicationData().getUploadedDocs();
         byte[] coverPage = pdfGenerator.generate(application, UPLOADED_DOC, CASEWORKER).getFileBytes();
         for (int i = 0; i < uploadedDocs.size(); i++) {
@@ -84,6 +79,15 @@ public class MnitDocumentConsumer {
             } else {
                 log.info("Pretending to send file " + uploadedDocument.getFilename() + ".");
             }
+        }
+    }
+
+    public void updateDocumentStatus(Document documentType, String id, Status status) {
+        if (documentType == Document.CCAP) {
+            applicationStatusUpdater.updateCcapApplicationStatus(id, status);
+        }
+        if (documentType == Document.CAF) {
+            applicationStatusUpdater.updateCafApplicationStatus(id, status);
         }
     }
 }

@@ -1,10 +1,13 @@
 pageDefinitions:
-  - &firstPage
-    name: firstPage
+  - &testStaticLandingPage
+    name: testStaticLandingPage
     pageTitle: first-page-title
+  - &secondPage
+    name: secondPage
+    pageTitle: second-page-title
     inputs:
-    - name: foo
-      type: TEXT
+      - name: foo
+        type: TEXT
   - &thirdPage
     name: thirdPage
     pageTitle: third-page-title
@@ -18,10 +21,14 @@ pageDefinitions:
     - name: foo
       type: TEXT
 workflow:
-  firstPage:
-    pageConfiguration: *firstPage
+  testStaticLandingPage:
+    pageConfiguration: *testStaticLandingPage
     nextPages:
-      - pageName: firstPage
+      - pageName: secondPage
+  secondPage:
+    pageConfiguration: *secondPage
+    nextPages:
+      - pageName: thirdPage
   thirdPage:
     pageConfiguration: *thirdPage
     nextPages:
@@ -31,8 +38,9 @@ workflow:
 landmarkPages:
   startTimerPage:
     - thirdPage
+    - secondPage
   landingPages:
-    - firstPage
+    - testStaticLandingPage
   postSubmitPages:
     - fourthPage
   terminalPage: fourthPage

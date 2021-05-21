@@ -22,10 +22,7 @@ public class ApplicationData implements Serializable {
     private Instant startTime;
     private String utmSource;
     private FlowType flow = FlowType.UNDETERMINED;
-    private Status entireApplicationStatus = Status.IN_PROGRESS;
-    private Status cafApplicationStatus;
-    private Status ccapApplicationStatus;
-    private Status uploadedDocumentsStatus;
+    private boolean isSubmitted = false;
     private PagesData pagesData = new PagesData();
     private Subworkflows subworkflows = new Subworkflows();
     private Map<String, PagesData> incompleteIterations = new HashMap<>();

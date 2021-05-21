@@ -4,7 +4,6 @@ import de.redsix.pdfcompare.PdfComparator;
 import org.codeforamerica.shiba.*;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.application.Status;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
@@ -15,7 +14,10 @@ import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,6 +39,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.TestUtils.getAbsoluteFilepath;
+import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.output.Document.*;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
@@ -175,9 +178,24 @@ class MnitDocumentConsumerTest {
         pagesData.put("choosePrograms", chooseProgramsPage);
         applicationData.setPagesData(pagesData);
         documentConsumer.process(application);
-        assertThat(applicationData.getCafApplicationStatus()).isEqualTo(SENDING);
-        assertThat(applicationData.getCcapApplicationStatus()).isEqualTo(SENDING);
-        assertThat(applicationData.getEntireApplicationStatus()).isEqualTo(SENDING);
+        verify(applicationStatusUpdater).updateCafApplicationStatus(application.getId(), SENDING);
+        verify(applicationStatusUpdater).updateCcapApplicationStatus(application.getId(), SENDING);
+    }
+
+    @Test
+    void updatesStatusToDeliveryFailedForDocuments() {
+        ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
+        doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), eq(CCAP), any());
+
+        when(documentListParser.parse(any())).thenReturn(List.of(CCAP));
+        doThrow(new RuntimeException()).doNothing().when(mnitClient).send(any(),any(),any(),any());
+        PagesData pagesData = new PagesData();
+        PageData chooseProgramsPage = new PageData();
+        chooseProgramsPage.put("programs", InputData.builder().value(List.of("CCAP", "SNAP")).build());
+        pagesData.put("choosePrograms", chooseProgramsPage);
+        applicationData.setPagesData(pagesData);
+        documentConsumer.process(application);
+        verify(applicationStatusUpdater).updateCcapApplicationStatus(application.getId(), DELIVERY_FAILED);
     }
 
     @Test
@@ -216,7 +234,7 @@ class MnitDocumentConsumerTest {
 
         documentConsumer.processUploadedDocuments(application);
 
-        verify(applicationStatusUpdater).updateUploadedDocumentsStatus(Status.SENDING);
+        verify(applicationStatusUpdater).updateUploadedDocumentsStatus(application.getId(), SENDING);
     }
 
     private void mockDocUpload(String uploadedDocFilename, String s3filepath, String contentType, String extension) throws IOException {

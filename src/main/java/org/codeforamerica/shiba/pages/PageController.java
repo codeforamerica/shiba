@@ -185,6 +185,10 @@ public class PageController {
             }
         }
 
+        if (applicationConfiguration.getLandmarkPages().isUploadDocumentsPage(pageName)) {
+            applicationStatusUpdater.updateUploadedDocumentsStatus(applicationData.getId(), IN_PROGRESS);
+        }
+
         if (shouldRedirectToTerminalPage(pageName)) {
             return new ModelAndView(String.format("redirect:/pages/%s", landmarkPagesConfiguration.getTerminalPage()));
         }
@@ -343,8 +347,8 @@ public class PageController {
 
     private boolean shouldRedirectToTerminalPage(@PathVariable String pageName) {
         LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
-        // If they requested a page that was not a postSubmitPage and their application has an Id
-        return !landmarkPagesConfiguration.isPostSubmitPage(pageName) && applicationData.getEntireApplicationStatus() != IN_PROGRESS;
+        // If not on post-submit page and application is already submitted
+        return !landmarkPagesConfiguration.isPostSubmitPage(pageName) && applicationData.isSubmitted();
     }
 
     @PostMapping("/groups/{groupName}/delete")
@@ -434,17 +438,13 @@ public class PageController {
         }
 
         if (pageDataIsValid) {
-            applicationData.setEntireApplicationStatus(IN_PROGRESS);
             if (pagesData.containsKey("choosePrograms")) {
                 if (applicationData.isCAFApplication()) {
-                    applicationStatusUpdater.updateCafApplicationStatus(IN_PROGRESS);
+                    applicationStatusUpdater.updateCafApplicationStatus(applicationData.getId(), IN_PROGRESS);
                 }
                 if (applicationData.isCCAPApplication()) {
-                    applicationStatusUpdater.updateCcapApplicationStatus(IN_PROGRESS);
+                    applicationStatusUpdater.updateCcapApplicationStatus(applicationData.getId(), IN_PROGRESS);
                 }
-            }
-            if (applicationConfiguration.getLandmarkPages().isUploadDocumentsPage(pageName)) {
-                applicationStatusUpdater.updateUploadedDocumentsStatus(IN_PROGRESS);
             }
             if (applicationData.getId() == null) {
                 applicationData.setId(applicationRepository.getNextId());
@@ -486,7 +486,7 @@ public class PageController {
             pageEventPublisher.publish(
                     new ApplicationSubmittedEvent(httpSession.getId(), application.getId(), application.getFlow(), LocaleContextHolder.getLocale())
             );
-
+            applicationData.setSubmitted(true);
             return new ModelAndView(String.format("redirect:/pages/%s/navigation", submitPage));
         } else {
             return new ModelAndView("redirect:/pages/" + submitPage);

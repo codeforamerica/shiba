@@ -219,6 +219,7 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
 
         navigateTo("startPage");
         testPage.clickContinue();
+        takeSnapShot("test.png");
         testPage.enter("input1", "goToSecondPage");
         testPage.clickContinue();
         testPage.enter("input2", "text 2");
