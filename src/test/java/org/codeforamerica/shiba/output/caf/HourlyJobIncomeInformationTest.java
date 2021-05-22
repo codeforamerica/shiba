@@ -11,4 +11,10 @@ class HourlyJobIncomeInformationTest {
         HourlyJobIncomeInformation hourlyJobIncomeInformation = new HourlyJobIncomeInformation("2", "5", 0, null);
         assertThat(hourlyJobIncomeInformation.grossMonthlyIncome()).isEqualTo(Money.parse("40"));
     }
+
+    @Test
+    void shouldCalculateGrossMonthlyIncomeWithNonWholeNumberWages() {
+        HourlyJobIncomeInformation hourlyJobIncomeInformation = new HourlyJobIncomeInformation("2.5", "5", 0, null);
+        assertThat(hourlyJobIncomeInformation.grossMonthlyIncome()).isEqualTo(Money.parse("50"));
+    }
 }

@@ -39,10 +39,10 @@ class GrossMonthlyIncomeMapperTest {
         List<ApplicationInput> applicationInputs = grossMonthlyIncomeMapper.map(application, null, null, scopeTracker);
 
         assertThat(applicationInputs).contains(
-                new ApplicationInput("employee", "grossMonthlyIncome", List.of("1440"), SINGLE_VALUE, 0),
-                new ApplicationInput("prefix_employee", "grossMonthlyIncome", List.of("1440"), SINGLE_VALUE, 0),
-                new ApplicationInput("employee", "grossMonthlyIncome", List.of("1080"), SINGLE_VALUE, 1),
-                new ApplicationInput("prefix_employee", "grossMonthlyIncome", List.of("1080"), SINGLE_VALUE, 1)
+                new ApplicationInput("employee", "grossMonthlyIncome", List.of("1440.00"), SINGLE_VALUE, 0),
+                new ApplicationInput("prefix_employee", "grossMonthlyIncome", List.of("1440.00"), SINGLE_VALUE, 0),
+                new ApplicationInput("employee", "grossMonthlyIncome", List.of("1080.00"), SINGLE_VALUE, 1),
+                new ApplicationInput("prefix_employee", "grossMonthlyIncome", List.of("1080.00"), SINGLE_VALUE, 1)
         );
     }
 }
