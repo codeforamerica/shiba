@@ -2,6 +2,7 @@ package org.codeforamerica.shiba;
 
 import java.io.Serial;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class Money extends BigDecimal {
     @Serial
@@ -10,7 +11,7 @@ public class Money extends BigDecimal {
     public static final Money ONE = new Money(BigDecimal.ONE);
 
     private Money(BigDecimal val) {
-        super(val.unscaledValue(), 0);
+        super(String.valueOf(new BigDecimal(String.valueOf(val)).setScale(2, RoundingMode.DOWN)));
     }
 
     public static Money parse(String s) {

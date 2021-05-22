@@ -34,7 +34,7 @@ class ThirtyDayIncomeMapperTest {
                 new ApplicationInput(
                         "totalIncome",
                         "thirtyDayIncome",
-                        List.of("111"),
+                        List.of("111.00"),
                         ApplicationInputType.SINGLE_VALUE
                 )
         ));
