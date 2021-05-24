@@ -118,23 +118,26 @@ public class FileDownLoadController {
                 applicationFiles.add(fileToSend);
             }
         }
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ZipOutputStream zos = new ZipOutputStream(baos);
 
-        applicationFiles.forEach(file -> {
-            ZipEntry entry = new ZipEntry(file.getFileName());
-            entry.setSize(file.getFileBytes().length);
-            try {
-                zos.putNextEntry(entry);
-                zos.write(file.getFileBytes());
-                zos.closeEntry();
-            } catch (IOException e) {
-                log.error("Unable to write file, " + file.getFileName(), e);
-            }
-        });
+        try(ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ZipOutputStream zos = new ZipOutputStream(baos);) {
 
-        zos.close();
-        return createResponse(baos.toByteArray(), "files.zip");
+            applicationFiles.forEach(file -> {
+                ZipEntry entry = new ZipEntry(file.getFileName());
+                entry.setSize(file.getFileBytes().length);
+                try {
+                    zos.putNextEntry(entry);
+                    zos.write(file.getFileBytes());
+                    zos.closeEntry();
+                } catch (IOException e) {
+                    log.error("Unable to write file, " + file.getFileName(), e);
+                }
+            });
+
+            zos.close();
+            baos.close();
+            return createResponse(baos.toByteArray(), "files.zip");
+        }
     }
 
     private ResponseEntity<byte[]> createResponse(ApplicationFile applicationFile) {
