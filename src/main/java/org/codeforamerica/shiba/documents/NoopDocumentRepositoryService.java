@@ -26,4 +26,3 @@ public class NoopDocumentRepositoryService implements DocumentRepositoryService 
         log.info("Pretending to delete file from s3: {}", filepath);
     }
 }
-
