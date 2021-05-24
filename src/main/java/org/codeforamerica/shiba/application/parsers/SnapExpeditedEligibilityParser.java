@@ -4,6 +4,7 @@ import org.codeforamerica.shiba.Money;
 import org.codeforamerica.shiba.output.caf.JobIncomeInformation;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityParameters;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.pages.data.Subworkflow;
 import org.jetbrains.annotations.NotNull;
@@ -58,7 +59,11 @@ public class SnapExpeditedEligibilityParser extends ApplicationDataParser<Option
                 .get(coordinatesMap.get("utilityExpensesSelections").getInputName()).getValue();
         boolean applicantApplyingForSnap = pagesData.getPage("choosePrograms").get("programs").getValue(0).contains("SNAP");
         boolean householdMemberApplyingForSnap = applicationData.getApplicantAndHouseholdMemberPrograms().contains("SNAP");
-        boolean isPreparingMealsTogether = Boolean.parseBoolean(pagesData.getPage("preparingMealsTogether").get("isPreparingMealsTogether").getValue(0));
+        boolean isPreparingMealsTogether = false;
+        PageData preparingMealsTogetherPage = pagesData.getPage("preparingMealsTogether");
+        if (preparingMealsTogetherPage != null) {
+        	isPreparingMealsTogether = Boolean.parseBoolean(preparingMealsTogetherPage.get("isPreparingMealsTogether").getValue(0));
+        }
         boolean applyingForSnap = applicantApplyingForSnap || (householdMemberApplyingForSnap && isPreparingMealsTogether);
         return Optional.of(new SnapExpeditedEligibilityParameters(assets, last30DaysIncome, grossMonthlyIncomeParser.parse(applicationData), isMigrantWorker, housingCosts, utilityExpensesSelections, applyingForSnap));
     }
