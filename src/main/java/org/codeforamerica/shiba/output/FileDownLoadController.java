@@ -134,6 +134,8 @@ public class FileDownLoadController {
                 }
             });
 
+            zos.close();
+            baos.close();
             return createResponse(baos.toByteArray(), "files.zip");
         }
     }
