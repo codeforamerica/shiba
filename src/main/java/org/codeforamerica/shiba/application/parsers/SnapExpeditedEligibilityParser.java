@@ -56,8 +56,10 @@ public class SnapExpeditedEligibilityParser extends ApplicationDataParser<Option
                 .get(coordinatesMap.get("migrantWorker").getInputName()).getValue(0));
         @NotNull List<String> utilityExpensesSelections = pagesData.getPage(coordinatesMap.get("utilityExpensesSelections").getPageName())
                 .get(coordinatesMap.get("utilityExpensesSelections").getInputName()).getValue();
-
-        boolean applyingForSnap = applicationData.getApplicantAndHouseholdMemberPrograms().contains("SNAP");
+        boolean applicantApplyingForSnap = pagesData.getPage("choosePrograms").get("programs").getValue(0).contains("SNAP");
+        boolean householdMemberApplyingForSnap = applicationData.getApplicantAndHouseholdMemberPrograms().contains("SNAP");
+        boolean isPreparingMealsTogether = Boolean.parseBoolean(pagesData.getPage("preparingMealsTogether").get("isPreparingMealsTogether").getValue(0));
+        boolean applyingForSnap = applicantApplyingForSnap || (householdMemberApplyingForSnap && isPreparingMealsTogether);
         return Optional.of(new SnapExpeditedEligibilityParameters(assets, last30DaysIncome, grossMonthlyIncomeParser.parse(applicationData), isMigrantWorker, housingCosts, utilityExpensesSelections, applyingForSnap));
     }
 }
