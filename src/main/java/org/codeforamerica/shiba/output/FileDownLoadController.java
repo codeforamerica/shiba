@@ -119,8 +119,8 @@ public class FileDownLoadController {
             }
         }
 
-        try(ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ZipOutputStream zos = new ZipOutputStream(baos);) {
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+             ZipOutputStream zos = new ZipOutputStream(baos)) {
 
             applicationFiles.forEach(file -> {
                 ZipEntry entry = new ZipEntry(file.getFileName());
@@ -134,8 +134,6 @@ public class FileDownLoadController {
                 }
             });
 
-            zos.close();
-            baos.close();
             return createResponse(baos.toByteArray(), "files.zip");
         }
     }
