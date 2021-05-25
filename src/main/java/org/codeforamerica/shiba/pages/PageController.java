@@ -221,10 +221,15 @@ public class PageController {
         // Add extra pagesData if this page workflow specifies that it applies to a group
         if (requestedPageAppliesToGroup(iterationIndex, pageWorkflowConfig)) {
             String groupName = pageWorkflowConfig.getAppliesToGroup();
-            var dataForGroup = getPagesDataForGroupAndIteration(iterationIndex, pageWorkflowConfig, groupName);
+            if (Integer.parseInt(iterationIndex) < applicationData.getSubworkflows().get(groupName).size()) {
+                var dataForGroup = getPagesDataForGroupAndIteration(iterationIndex, pageWorkflowConfig, groupName);
 
-            pagesData = (PagesData) pagesData.clone();
-            pagesData.putAll(dataForGroup);
+                pagesData = (PagesData) pagesData.clone();
+                pagesData.putAll(dataForGroup);
+            } else {
+                return new ModelAndView("redirect:/pages/" +applicationConfiguration.getPageGroups().get(groupName).getReviewPage());
+            }
+
         }
 
         var pageTemplate = pagesData.evaluate(featureFlags, pageWorkflowConfig, applicationData);
@@ -296,7 +301,7 @@ public class PageController {
             model.put("feedbackText", application.getFeedback());
             String inputData = pagesData.getPageInputFirstValue("healthcareCoverage", "healthcareCoverage");
             boolean hasHealthcare = "YES".equalsIgnoreCase(inputData);
-            model.put("doesNotHaveHealthcare", !hasHealthcare );
+            model.put("doesNotHaveHealthcare", !hasHealthcare);
             model.put("successMessage", successMessageService.getSuccessMessage(new ArrayList<>(programs), snapExpeditedEligibility, ccapExpeditedEligibility, locale));
         }
 
