@@ -16,7 +16,7 @@ public class HourlyJobIncomeInformation implements JobIncomeInformation {
 
     public HourlyJobIncomeInformation(String hourlyWage, String hoursAWeek, int indexInJobsSubworkflow, Iteration iteration) {
         this.hourlyWage = hourlyWage.isEmpty() ? null : Money.parse(hourlyWage);
-        this.hoursAWeek = hoursAWeek.isEmpty() ? null : new BigDecimal(hoursAWeek);
+        this.hoursAWeek = hoursAWeek.isEmpty() ? null : new BigDecimal(hoursAWeek.trim());
         this.indexInJobsSubworkflow = indexInJobsSubworkflow;
         this.iteration = iteration;
     }
