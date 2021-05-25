@@ -173,9 +173,6 @@ public class PageController {
     ) {
         var landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
 
-        applicationData.setLastPage(pageName);
-        log.info("Last page visited is, ", applicationData.getLastPage());
-
         // Validations and special case redirects
         if (landmarkPagesConfiguration.isLandingPage(pageName)) {
             httpSession.invalidate();

@@ -388,21 +388,4 @@ class PageControllerTest {
         verify(applicationStatusUpdater).updateCcapApplicationStatus(application.getId(), Status.IN_PROGRESS);
         verify(applicationStatusUpdater, never()).updateCafApplicationStatus(application.getId(), Status.IN_PROGRESS);
     }
-
-    @Test
-    void shouldUpdateLastPageWhenVisitingANewPage() throws Exception {
-        applicationData.setStartTimeOnce(Instant.now());
-        String applicationId = "someId";
-        applicationData.setId(applicationId);
-        Application application = Application.builder()
-                .id(applicationId)
-                .applicationData(applicationData)
-                .build();
-        when(applicationRepository.getNextId()).thenReturn(applicationId);
-        when(applicationFactory.newApplication(applicationData)).thenReturn(application);
-
-        mockMvc.perform(get("/pages/choosePrograms"));
-
-        assertThat(applicationData.getLastPage()).isEqualTo("choosePrograms");
-    }
 }
