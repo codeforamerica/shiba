@@ -40,9 +40,6 @@ public class UploadedDocumentsSubmittedListener extends ApplicationEventListener
     @EventListener
     public void send(UploadedDocumentsSubmittedEvent event) {
         Application application = getApplicationFromEvent(event);
-        if (application.getFlow() == FlowType.LATER_DOCS) {
-            sendLaterDocsConfirmationEmail(event);
-        }
         if (featureFlags.get("submit-docs-via-email-for-hennepin").isOn()
                 && (application.getCounty().equals(County.Hennepin)
                 || application.getCounty().equals(County.Other))) {
@@ -51,6 +48,10 @@ public class UploadedDocumentsSubmittedListener extends ApplicationEventListener
         } else {
             log.info("Processing uploaded documents");
             mnitDocumentConsumer.processUploadedDocuments(application);
+        }
+
+        if (application.getFlow() == FlowType.LATER_DOCS) {
+            sendLaterDocsConfirmationEmail(event);
         }
     }
 
