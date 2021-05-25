@@ -2,7 +2,10 @@ package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.ApplicationStatusUpdater;
 import org.codeforamerica.shiba.NonSessionScopedApplicationData;
-import org.codeforamerica.shiba.application.*;
+import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.application.ApplicationFactory;
+import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -29,6 +32,8 @@ import java.time.*;
 import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
+import static org.codeforamerica.shiba.output.Document.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
@@ -326,7 +331,7 @@ class PageControllerTest {
 
         mockMvc.perform(get("/pages/uploadDocuments"));
 
-        verify(applicationStatusUpdater).updateUploadedDocumentsStatus(application.getId(), Status.IN_PROGRESS);
+        verify(applicationStatusUpdater).updateUploadedDocumentsStatus(application.getId(), UPLOADED_DOC, IN_PROGRESS);
     }
 
     @Test
@@ -345,8 +350,8 @@ class PageControllerTest {
                 .param("programs[]", "CCAP", "SNAP")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
-        verify(applicationStatusUpdater).updateCcapApplicationStatus(application.getId(), Status.IN_PROGRESS);
-        verify(applicationStatusUpdater).updateCafApplicationStatus(application.getId(), Status.IN_PROGRESS);
+        verify(applicationStatusUpdater).updateCcapApplicationStatus(application.getId(), CCAP, IN_PROGRESS);
+        verify(applicationStatusUpdater).updateCafApplicationStatus(application.getId(), CAF, IN_PROGRESS);
     }
 
     @Test
@@ -365,8 +370,8 @@ class PageControllerTest {
                 .param("programs[]", "SNAP")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
-        verify(applicationStatusUpdater, never()).updateCcapApplicationStatus(application.getId(), Status.IN_PROGRESS);
-        verify(applicationStatusUpdater).updateCafApplicationStatus(application.getId(), Status.IN_PROGRESS);
+        verify(applicationStatusUpdater, never()).updateCcapApplicationStatus(application.getId(), CCAP, IN_PROGRESS);
+        verify(applicationStatusUpdater).updateCafApplicationStatus(application.getId(), CAF, IN_PROGRESS);
     }
 
     @Test
@@ -385,7 +390,7 @@ class PageControllerTest {
                 .param("programs[]", "CCAP")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
-        verify(applicationStatusUpdater).updateCcapApplicationStatus(application.getId(), Status.IN_PROGRESS);
-        verify(applicationStatusUpdater, never()).updateCafApplicationStatus(application.getId(), Status.IN_PROGRESS);
+        verify(applicationStatusUpdater).updateCcapApplicationStatus(application.getId(), CCAP, IN_PROGRESS);
+        verify(applicationStatusUpdater, never()).updateCafApplicationStatus(application.getId(), CAF, IN_PROGRESS);
     }
 }

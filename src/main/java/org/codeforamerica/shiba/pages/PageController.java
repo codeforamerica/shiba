@@ -40,6 +40,7 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
+import static org.codeforamerica.shiba.output.Document.*;
 
 @Controller
 @Slf4j
@@ -186,7 +187,7 @@ public class PageController {
         }
 
         if (applicationConfiguration.getLandmarkPages().isUploadDocumentsPage(pageName)) {
-            applicationStatusUpdater.updateUploadedDocumentsStatus(applicationData.getId(), IN_PROGRESS);
+            applicationStatusUpdater.updateUploadedDocumentsStatus(applicationData.getId(), UPLOADED_DOC, IN_PROGRESS);
         }
 
         if (shouldRedirectToTerminalPage(pageName)) {
@@ -440,10 +441,10 @@ public class PageController {
         if (pageDataIsValid) {
             if (pagesData.containsKey("choosePrograms")) {
                 if (applicationData.isCAFApplication()) {
-                    applicationStatusUpdater.updateCafApplicationStatus(applicationData.getId(), IN_PROGRESS);
+                    applicationStatusUpdater.updateCafApplicationStatus(applicationData.getId(), CAF, IN_PROGRESS);
                 }
                 if (applicationData.isCCAPApplication()) {
-                    applicationStatusUpdater.updateCcapApplicationStatus(applicationData.getId(), IN_PROGRESS);
+                    applicationStatusUpdater.updateCcapApplicationStatus(applicationData.getId(), CCAP, IN_PROGRESS);
                 }
             }
             if (applicationData.getId() == null) {

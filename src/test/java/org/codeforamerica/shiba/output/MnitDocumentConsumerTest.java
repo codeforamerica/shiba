@@ -178,8 +178,8 @@ class MnitDocumentConsumerTest {
         pagesData.put("choosePrograms", chooseProgramsPage);
         applicationData.setPagesData(pagesData);
         documentConsumer.process(application);
-        verify(applicationStatusUpdater).updateCafApplicationStatus(application.getId(), SENDING);
-        verify(applicationStatusUpdater).updateCcapApplicationStatus(application.getId(), SENDING);
+        verify(applicationStatusUpdater).updateCafApplicationStatus(application.getId(), CAF, SENDING);
+        verify(applicationStatusUpdater).updateCcapApplicationStatus(application.getId(), CCAP, SENDING);
     }
 
     @Test
@@ -195,7 +195,7 @@ class MnitDocumentConsumerTest {
         pagesData.put("choosePrograms", chooseProgramsPage);
         applicationData.setPagesData(pagesData);
         documentConsumer.process(application);
-        verify(applicationStatusUpdater).updateCcapApplicationStatus(application.getId(), DELIVERY_FAILED);
+        verify(applicationStatusUpdater).updateCcapApplicationStatus(application.getId(), CCAP, DELIVERY_FAILED);
     }
 
     @Test
@@ -234,7 +234,7 @@ class MnitDocumentConsumerTest {
 
         documentConsumer.processUploadedDocuments(application);
 
-        verify(applicationStatusUpdater).updateUploadedDocumentsStatus(application.getId(), SENDING);
+        verify(applicationStatusUpdater).updateUploadedDocumentsStatus(application.getId(), UPLOADED_DOC, SENDING);
     }
 
     private void mockDocUpload(String uploadedDocFilename, String s3filepath, String contentType, String extension) throws IOException {

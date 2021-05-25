@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.application;
 
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.County;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.jetbrains.annotations.NotNull;
@@ -196,16 +197,24 @@ public class ApplicationRepository {
                 "WHERE id = :id", parameters);
     }
     
-    public void updateStatus(String id, ApplicationStatusType applicationStatusType, Status status) {
+    public void updateStatus(String id, Document document, Status status) {
+
         Map<String, Object> parameters = Map.of(
                 "status", status.toString(),
                 "id", id
         );
 
         var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
-        namedParameterJdbcTemplate.update("UPDATE applications SET " +
-                applicationStatusType + " = :status " +
-                "WHERE id = :id", parameters);
+        namedParameterJdbcTemplate.update(selectStatusColumn(document), parameters);
         setUpdatedAtTime(id);
+    }
+
+    private String selectStatusColumn(Document document) {
+        return switch (document) {
+            case CAF -> "UPDATE applications SET caf_application_status = :status WHERE id = :id";
+            case CCAP -> "UPDATE applications SET ccap_application_status = :status WHERE id = :id";
+            case UPLOADED_DOC -> "UPDATE applications SET uploaded_documents_status = :status WHERE id = :id";
+            default -> null;
+        };
     }
 }

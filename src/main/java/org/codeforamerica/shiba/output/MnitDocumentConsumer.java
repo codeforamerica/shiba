@@ -17,7 +17,7 @@ import java.util.List;
 
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
-import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
+import static org.codeforamerica.shiba.output.Document.*;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
 @Component
@@ -59,11 +59,11 @@ public class MnitDocumentConsumer {
                 log.error("Failed to send with error, ", e);
             }
         });
-        mnitClient.send(xmlGenerator.generate(application.getId(), Document.CAF, CASEWORKER), application.getCounty(), application.getId(), Document.CAF);
+        mnitClient.send(xmlGenerator.generate(application.getId(), CAF, CASEWORKER), application.getCounty(), application.getId(), CAF);
     }
 
     public void processUploadedDocuments(Application application) {
-        applicationStatusUpdater.updateUploadedDocumentsStatus(application.getId(), SENDING);
+        applicationStatusUpdater.updateUploadedDocumentsStatus(application.getId(), UPLOADED_DOC, SENDING);
         List<UploadedDocument> uploadedDocs = application.getApplicationData().getUploadedDocs();
         byte[] coverPage = pdfGenerator.generate(application, UPLOADED_DOC, CASEWORKER).getFileBytes();
         for (int i = 0; i < uploadedDocs.size(); i++) {
@@ -83,11 +83,11 @@ public class MnitDocumentConsumer {
     }
 
     public void updateDocumentStatus(Document documentType, String id, Status status) {
-        if (documentType == Document.CCAP) {
-            applicationStatusUpdater.updateCcapApplicationStatus(id, status);
+        if (documentType == CCAP) {
+            applicationStatusUpdater.updateCcapApplicationStatus(id, CCAP, status);
         }
-        if (documentType == Document.CAF) {
-            applicationStatusUpdater.updateCafApplicationStatus(id, status);
+        if (documentType == CAF) {
+            applicationStatusUpdater.updateCafApplicationStatus(id, CAF, status);
         }
     }
 }

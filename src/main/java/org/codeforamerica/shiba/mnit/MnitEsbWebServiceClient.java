@@ -147,9 +147,9 @@ public class MnitEsbWebServiceClient {
 
     private void updateMnitEsbDocumentStatus(Document applicationDocument, String applicationNumber, Status status) {
         switch (applicationDocument) {
-            case CCAP -> applicationStatusUpdater.updateCcapApplicationStatus(applicationNumber, status);
-            case CAF -> applicationStatusUpdater.updateCafApplicationStatus(applicationNumber, status);
-            default -> applicationStatusUpdater.updateUploadedDocumentsStatus(applicationNumber, status);
+            case CCAP -> applicationStatusUpdater.updateCcapApplicationStatus(applicationNumber, applicationDocument, status);
+            case CAF -> applicationStatusUpdater.updateCafApplicationStatus(applicationNumber, applicationDocument, status);
+            default -> applicationStatusUpdater.updateUploadedDocumentsStatus(applicationNumber, applicationDocument, status);
         }
     }
 }

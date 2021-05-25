@@ -2,9 +2,8 @@ package org.codeforamerica.shiba;
 
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.Status;
+import org.codeforamerica.shiba.output.Document;
 import org.springframework.stereotype.Component;
-
-import static org.codeforamerica.shiba.application.ApplicationStatusType.*;
 
 @Component
 public class ApplicationStatusUpdater {
@@ -15,15 +14,15 @@ public class ApplicationStatusUpdater {
         this.applicationRepository = applicationRepository;
     }
 
-    public void updateUploadedDocumentsStatus(String id, Status status) {
-        applicationRepository.updateStatus(id, UPLOADED_DOCUMENTS, status);
+    public void updateUploadedDocumentsStatus(String id, Document document, Status status) {
+        applicationRepository.updateStatus(id, document, status);
     }
 
-    public void updateCafApplicationStatus(String id, Status status) {
-        applicationRepository.updateStatus(id, CAF, status);
+    public void updateCafApplicationStatus(String id, Document document, Status status) {
+        applicationRepository.updateStatus(id, document, status);
     }
 
-    public void updateCcapApplicationStatus(String id, Status status) {
-        applicationRepository.updateStatus(id, CCAP, status);
+    public void updateCcapApplicationStatus(String id, Document document, Status status) {
+        applicationRepository.updateStatus(id, document, status);
     }
 }
