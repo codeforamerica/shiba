@@ -98,7 +98,7 @@
                     <a class="button button--primary" th:href="'/pages/'+${pageName}+'/navigation?option=0'"
                        th:text="#{review-info.this-looks-correct}"></a>
                 </div>
-                <div>
+                <div th:if="${applicationData.isApplicationWith(T(java.util.List).of('SNAP'))}">
                     <a class="link--subtle" th:href="'/pages/'+${pageName}+'/navigation?option=1'"
                        th:text="#{review-info.submit-application-now-with-only-the-above-information}"></a>
                 </div>

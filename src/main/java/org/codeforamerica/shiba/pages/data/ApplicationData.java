@@ -92,31 +92,11 @@ public class ApplicationData implements Serializable {
     }
 
     public boolean isCCAPApplication() {
-        List<String> applicantPrograms = this.getPagesData().safeGetPageInputValue("choosePrograms", "programs");
-        boolean applicantHasCCAP = applicantPrograms.contains("CCAP");
-        boolean hasHousehold = this.getSubworkflows().containsKey("household");
-        boolean householdHasCCAP = false;
-        if (hasHousehold) {
-            householdHasCCAP = this.getSubworkflows().get("household").stream().anyMatch(iteration ->
-                    iteration.getPagesData().safeGetPageInputValue("householdMemberInfo", "programs").contains("CCAP"));
-        }
-        return applicantHasCCAP || householdHasCCAP;
+        return isApplicationWith(List.of("CCAP"));
     }
 
     public boolean isCAFApplication() {
-        List<String> applicantPrograms = this.getPagesData().safeGetPageInputValue("choosePrograms", "programs");
-        List<String> availablePrograms = List.of("SNAP", "CASH", "GRH", "EA");
-        boolean applicantIsCAF = availablePrograms.stream().anyMatch(applicantPrograms::contains);
-        boolean hasHousehold = this.getSubworkflows().containsKey("household");
-        boolean householdIsCAF = false;
-        if (hasHousehold) {
-            householdIsCAF = this.getSubworkflows().get("household").stream().anyMatch(iteration -> {
-                List<String> iterationsPrograms = iteration.getPagesData().safeGetPageInputValue("householdMemberInfo", "programs");
-                return availablePrograms.stream().anyMatch(iterationsPrograms::contains);
-            });
-        }
-
-        return applicantIsCAF || householdIsCAF;
+        return isApplicationWith(List.of("SNAP", "CASH", "GRH", "EA"));
     }
 
     public boolean isApplicationWith(List<String> programs) {
