@@ -214,7 +214,6 @@ public class ApplicationRepository {
             case CAF -> "UPDATE applications SET caf_application_status = :status WHERE id = :id";
             case CCAP -> "UPDATE applications SET ccap_application_status = :status WHERE id = :id";
             case UPLOADED_DOC -> "UPDATE applications SET uploaded_documents_status = :status WHERE id = :id";
-            default -> null;
         };
     }
 }

@@ -54,7 +54,7 @@ mail-gun:
 
 feature-flag:
   submit-via-email: off
-  submit-via-api: on
+  submit-via-api: off
   submit-docs-via-email-for-hennepin: on
   later-docs-feature: on
   later-docs-v2-feature: on

@@ -395,10 +395,6 @@ public class PageController {
             @PathVariable String pageName,
             HttpSession httpSession
     ) {
-        // go get applicationdata from the db
-        // if it's there, use that as application data
-        // if not use the one in the session
-        // add a big TODO ^^^^^ Delete after next deploy
         PageWorkflowConfiguration pageWorkflow = applicationConfiguration.getPageWorkflow(pageName);
 
         PageConfiguration page = pageWorkflow.getPageConfiguration();
@@ -450,14 +446,14 @@ public class PageController {
             if (applicationData.getId() == null) {
                 applicationData.setId(applicationRepository.getNextId());
             }
-            Application application = applicationFactory.newApplication(applicationData);
-            applicationRepository.save(application); //upsert already
 
-            // TODO this should happen before we save the thing maybe
             ofNullable(pageWorkflow.getEnrichment())
                     .map(applicationEnrichment::getEnrichment)
                     .map(enrichment -> enrichment.process(applicationData))
                     .ifPresent(pageData::putAll);
+
+            Application application = applicationFactory.newApplication(applicationData);
+            applicationRepository.save(application); //upsert already
             return new ModelAndView(String.format("redirect:/pages/%s/navigation", pageName));
         } else {
             return new ModelAndView("redirect:/pages/" + pageName);

@@ -160,15 +160,15 @@ public abstract class AbstractBasePageTest {
     }
 
     protected void fillOutHousemateInfo() {
-        testPage.enter("firstName", "defaultFirstName");
-        testPage.enter("lastName", "defaultLastName");
-        testPage.enter("otherName", "defaultOtherName");
-        testPage.enter("dateOfBirth", "01/12/1928");
+        testPage.enter("firstName", "householdMemberFirstName");
+        testPage.enter("lastName", "householdMemberLastName");
+        testPage.enter("otherName", "houseHoldyMcMemberson");
+        testPage.enter("dateOfBirth", "09/14/1950");
         testPage.enter("ssn", "987654321");
         testPage.enter("maritalStatus", "Never married");
-        testPage.enter("sex", "Female");
+        testPage.enter("sex", "Male");
         testPage.enter("livedInMnWholeLife", "Yes");
-        testPage.enter("moveToMnDate", "02/18/1776");
+        testPage.enter("moveToMnDate", "02/18/1950");
     }
 
     protected void fillOutContactInfo() {
