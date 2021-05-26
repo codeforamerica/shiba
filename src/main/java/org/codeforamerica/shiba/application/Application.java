@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.application;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.pages.Feedback;
 import org.codeforamerica.shiba.pages.Sentiment;
@@ -8,12 +9,13 @@ import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.springframework.util.StringUtils;
 
+import java.time.Clock;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
-@Value
+@Data
 @Builder
 public class Application {
     String id;
@@ -49,5 +51,10 @@ public class Application {
         uploadedDocuments.forEach(uploadedDocument -> uploadedDocument.setDataURL(""));
         applicationData.setUploadedDocs(uploadedDocuments);
         return applicationData;
+    }
+
+    public void setCompletedAtTime(Clock clock) {
+        completedAt = ZonedDateTime.now(clock);
+        setTimeToComplete(Duration.between(applicationData.getStartTime(), completedAt));
     }
 }
