@@ -43,7 +43,6 @@ class ApplicationSubmittedListenerTest {
     PdfGenerator pdfGenerator = mock(PdfGenerator.class);
     EmailParser emailParser = mock(EmailParser.class);
     CountyMap<MnitCountyInformation> countyMap = new CountyMap<>();
-    DocumentListParser documentListParser = mock(DocumentListParser.class);
     FeatureFlagConfiguration featureFlagConfiguration = mock(FeatureFlagConfiguration.class);
     MonitoringService monitoringService = mock(MonitoringService.class);
     ApplicationSubmittedListener applicationSubmittedListener;
@@ -62,7 +61,6 @@ class ApplicationSubmittedListenerTest {
                 countyMap,
                 featureFlagConfiguration,
                 emailParser,
-                documentListParser,
                 monitoringService);
     }
 
@@ -122,7 +120,6 @@ class ApplicationSubmittedListenerTest {
             when(snapExpeditedEligibilityDecider.decide(applicationData)).thenReturn(SnapExpeditedEligibility.ELIGIBLE);
             when(ccapExpeditedEligibilityDecider.decide(applicationData)).thenReturn(CcapExpeditedEligibility.UNDETERMINED);
             ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
-            when(documentListParser.parse(applicationData)).thenReturn(List.of(Document.CAF));
             when(pdfGenerator.generate(appIdFromDb, Document.CAF, CLIENT)).thenReturn(applicationFile);
             when(emailParser.parse(applicationData)).thenReturn(Optional.of(email));
             applicationSubmittedListener.sendConfirmationEmail(event);
@@ -155,7 +152,6 @@ class ApplicationSubmittedListenerTest {
             when(snapExpeditedEligibilityDecider.decide(applicationData)).thenReturn(SnapExpeditedEligibility.UNDETERMINED);
             when(ccapExpeditedEligibilityDecider.decide(applicationData)).thenReturn(CcapExpeditedEligibility.ELIGIBLE);
             ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
-            when(documentListParser.parse(applicationData)).thenReturn(List.of(Document.CCAP));
             when(pdfGenerator.generate(appIdFromDb, Document.CCAP, CLIENT)).thenReturn(applicationFile);
             when(emailParser.parse(applicationData)).thenReturn(Optional.of(email));
             applicationSubmittedListener.sendConfirmationEmail(event);
@@ -188,7 +184,6 @@ class ApplicationSubmittedListenerTest {
             when(snapExpeditedEligibilityDecider.decide(applicationData)).thenReturn(SnapExpeditedEligibility.ELIGIBLE);
             when(ccapExpeditedEligibilityDecider.decide(applicationData)).thenReturn(CcapExpeditedEligibility.ELIGIBLE);
             ApplicationFile applicationFileCAF = new ApplicationFile("someContent".getBytes(), "someFileName");
-            when(documentListParser.parse(applicationData)).thenReturn(List.of(Document.CAF, Document.CCAP));
             when(pdfGenerator.generate(appIdFromDb, Document.CAF, CLIENT)).thenReturn(applicationFileCAF);
             ApplicationFile applicationFileCCAP = new ApplicationFile("someContent".getBytes(), "someFileName");
             when(pdfGenerator.generate(appIdFromDb, Document.CCAP, CLIENT)).thenReturn(applicationFileCCAP);

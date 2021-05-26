@@ -4,7 +4,6 @@ import org.codeforamerica.shiba.AbstractStaticMessageSourcePageTest;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedListener;
 import org.junit.jupiter.api.Tag;
@@ -18,12 +17,10 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.output.Document.CAF;
-import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
@@ -34,13 +31,14 @@ public class SubmitPageTest extends AbstractStaticMessageSourcePageTest {
 
     @MockBean ApplicationSubmittedListener applicationSubmittedListener;
     @MockBean ApplicationRepository applicationRepository;
-    @MockBean DocumentListParser documentListParser;
 
     @Test
     void shouldProvideApplicationDataToTerminalPageWhenApplicationIsSigned() {
         String applicationId = "someId";
         County county = County.Hennepin;
-        ApplicationData applicationData = new ApplicationData();
+        ApplicationData applicationData = mock(ApplicationData.class);
+        when(applicationData.isCAFApplication()).thenReturn(true);
+        when(applicationData.isCCAPApplication()).thenReturn(true);
         Sentiment sentiment = Sentiment.HAPPY;
         String feedbackText = "someFeedback";
         Application application = Application.builder()
@@ -53,7 +51,6 @@ public class SubmitPageTest extends AbstractStaticMessageSourcePageTest {
                 .feedback(feedbackText)
                 .build();
         when(applicationRepository.find(any())).thenReturn(application);
-        when(documentListParser.parse(any())).thenReturn(List.of(CAF, CCAP));
 
         navigateTo("firstPage");
 

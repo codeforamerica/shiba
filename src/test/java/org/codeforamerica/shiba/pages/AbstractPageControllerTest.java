@@ -7,7 +7,6 @@ import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
-import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.configurations.ClockConfiguration;
 import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
@@ -49,8 +48,6 @@ public class AbstractPageControllerTest {
     protected CountyParser countyParser;
     @MockBean
     protected FeatureFlagConfiguration featureFlagConfiguration;
-    @MockBean
-    protected DocumentListParser documentListParser;
     @MockBean
     protected UploadDocumentConfiguration uploadDocumentConfiguration;
     @MockBean

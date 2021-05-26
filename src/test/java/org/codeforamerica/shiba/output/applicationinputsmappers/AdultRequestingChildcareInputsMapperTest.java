@@ -3,7 +3,6 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 import org.codeforamerica.shiba.PageDataBuilder;
 import org.codeforamerica.shiba.PagesDataBuilder;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -17,14 +16,9 @@ import java.util.Map;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
-import static org.codeforamerica.shiba.output.Document.CAF;
-import static org.codeforamerica.shiba.output.Document.CCAP;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class AdultRequestingChildcareInputsMapperTest {
-    DocumentListParser documentListParser = mock(DocumentListParser.class);
-    AdultRequestingChildcareInputsMapper adultRequestingChildcareInputsMapper = new AdultRequestingChildcareInputsMapper(documentListParser);
+    AdultRequestingChildcareInputsMapper adultRequestingChildcareInputsMapper = new AdultRequestingChildcareInputsMapper();
     PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
 
 
@@ -36,14 +30,12 @@ class AdultRequestingChildcareInputsMapperTest {
         )));
 
         Application application = Application.builder().applicationData(appData).build();
-        assertThat(new AdultRequestingChildcareInputsMapper(documentListParser).map(application, null, Recipient.CLIENT, new SubworkflowIterationScopeTracker())).isEqualTo(emptyList());
+        assertThat(new AdultRequestingChildcareInputsMapper().map(application, null, Recipient.CLIENT, new SubworkflowIterationScopeTracker())).isEqualTo(emptyList());
     }
 
     @Test
     void shouldReturnEmptyListWithoutCCAP() {
         ApplicationData appData = new ApplicationData();
-
-        when(documentListParser.parse(appData)).thenReturn(List.of(CAF));
 
         Application application = Application.builder().applicationData(appData).build();
         assertThat(adultRequestingChildcareInputsMapper.map(application, null, Recipient.CLIENT, new SubworkflowIterationScopeTracker())).isEqualTo(emptyList());
@@ -52,7 +44,6 @@ class AdultRequestingChildcareInputsMapperTest {
     @Test
     void shouldReturnListOfAdultsRequestingChildcareWhoAreWorking() {
         ApplicationData applicationData = new ApplicationData();
-        when(documentListParser.parse(applicationData)).thenReturn(List.of(CAF, CCAP));
         Subworkflows subworkflows = applicationData.getSubworkflows();
         subworkflows.addIteration("household", pagesDataBuilder.build(List.of(
                 new PageDataBuilder("householdMemberInfo", Map.of(
@@ -116,7 +107,6 @@ class AdultRequestingChildcareInputsMapperTest {
     @Test
     void shouldReturnListOfAdultsRequestingChildcareWhoAreLookingForWork() {
         ApplicationData applicationData = new ApplicationData();
-        when(documentListParser.parse(applicationData)).thenReturn(List.of(CAF, CCAP));
         Subworkflows subworkflows = applicationData.getSubworkflows();
         subworkflows.addIteration("household", pagesDataBuilder.build(List.of(
                 new PageDataBuilder("householdMemberInfo", Map.of(
@@ -166,7 +156,6 @@ class AdultRequestingChildcareInputsMapperTest {
     @Test
     void shouldReturnListOfAdultsRequestingChildcareWhoAreGoingToSchool() {
         ApplicationData applicationData = new ApplicationData();
-        when(documentListParser.parse(applicationData)).thenReturn(List.of(CAF, CCAP));
         Subworkflows subworkflows = applicationData.getSubworkflows();
         subworkflows.addIteration("household", pagesDataBuilder.build(List.of(
                 new PageDataBuilder("householdMemberInfo", Map.of(
