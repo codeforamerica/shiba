@@ -43,7 +43,6 @@ class ApplicationSubmittedListenerTest {
     PdfGenerator pdfGenerator = mock(PdfGenerator.class);
     EmailParser emailParser = mock(EmailParser.class);
     CountyMap<MnitCountyInformation> countyMap = new CountyMap<>();
-    DocumentListParser documentListParser = mock(DocumentListParser.class);
     FeatureFlagConfiguration featureFlagConfiguration = mock(FeatureFlagConfiguration.class);
     MonitoringService monitoringService = mock(MonitoringService.class);
     ApplicationSubmittedListener applicationSubmittedListener;
@@ -62,7 +61,6 @@ class ApplicationSubmittedListenerTest {
                 countyMap,
                 featureFlagConfiguration,
                 emailParser,
-                documentListParser,
                 monitoringService);
     }
 
@@ -106,7 +104,7 @@ class ApplicationSubmittedListenerTest {
         @Test
         void shouldSendConfirmationMailForSubmittedApplicationWithCAF() {
             String applicationId = "applicationId";
-            ApplicationData applicationData = new ApplicationData();
+            ApplicationData applicationData = mock(ApplicationData.class);
             String email = "abc@123.com";
             String appIdFromDb = "id";
             Application application = Application.builder()
@@ -119,10 +117,10 @@ class ApplicationSubmittedListenerTest {
                                                                             applicationId,
                                                                             null,
                                                                             Locale.ENGLISH);
+            when(applicationData.isCAFApplication()).thenReturn(true);
             when(snapExpeditedEligibilityDecider.decide(applicationData)).thenReturn(SnapExpeditedEligibility.ELIGIBLE);
             when(ccapExpeditedEligibilityDecider.decide(applicationData)).thenReturn(CcapExpeditedEligibility.UNDETERMINED);
             ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
-            when(documentListParser.parse(applicationData)).thenReturn(List.of(Document.CAF));
             when(pdfGenerator.generate(appIdFromDb, Document.CAF, CLIENT)).thenReturn(applicationFile);
             when(emailParser.parse(applicationData)).thenReturn(Optional.of(email));
             applicationSubmittedListener.sendConfirmationEmail(event);
@@ -139,7 +137,7 @@ class ApplicationSubmittedListenerTest {
         @Test
         void shouldSendConfirmationMailForSubmittedApplicationWithCCAP() {
             String applicationId = "applicationId";
-            ApplicationData applicationData = new ApplicationData();
+            ApplicationData applicationData = mock(ApplicationData.class);
             String email = "abc@123.com";
             String appIdFromDb = "id";
             Application application = Application.builder()
@@ -155,7 +153,7 @@ class ApplicationSubmittedListenerTest {
             when(snapExpeditedEligibilityDecider.decide(applicationData)).thenReturn(SnapExpeditedEligibility.UNDETERMINED);
             when(ccapExpeditedEligibilityDecider.decide(applicationData)).thenReturn(CcapExpeditedEligibility.ELIGIBLE);
             ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
-            when(documentListParser.parse(applicationData)).thenReturn(List.of(Document.CCAP));
+            when(applicationData.isCCAPApplication()).thenReturn(true);
             when(pdfGenerator.generate(appIdFromDb, Document.CCAP, CLIENT)).thenReturn(applicationFile);
             when(emailParser.parse(applicationData)).thenReturn(Optional.of(email));
             applicationSubmittedListener.sendConfirmationEmail(event);
@@ -172,7 +170,7 @@ class ApplicationSubmittedListenerTest {
         @Test
         void shouldSendConfirmationMailForSubmittedApplicationWithCAFAndCCAP() {
             String applicationId = "applicationId";
-            ApplicationData applicationData = new ApplicationData();
+            ApplicationData applicationData = mock(ApplicationData.class);
             String email = "abc@123.com";
             String appIdFromDb = "id";
             Application application = Application.builder()
@@ -188,7 +186,8 @@ class ApplicationSubmittedListenerTest {
             when(snapExpeditedEligibilityDecider.decide(applicationData)).thenReturn(SnapExpeditedEligibility.ELIGIBLE);
             when(ccapExpeditedEligibilityDecider.decide(applicationData)).thenReturn(CcapExpeditedEligibility.ELIGIBLE);
             ApplicationFile applicationFileCAF = new ApplicationFile("someContent".getBytes(), "someFileName");
-            when(documentListParser.parse(applicationData)).thenReturn(List.of(Document.CAF, Document.CCAP));
+            when(applicationData.isCAFApplication()).thenReturn(true);
+            when(applicationData.isCCAPApplication()).thenReturn(true);
             when(pdfGenerator.generate(appIdFromDb, Document.CAF, CLIENT)).thenReturn(applicationFileCAF);
             ApplicationFile applicationFileCCAP = new ApplicationFile("someContent".getBytes(), "someFileName");
             when(pdfGenerator.generate(appIdFromDb, Document.CCAP, CLIENT)).thenReturn(applicationFileCCAP);

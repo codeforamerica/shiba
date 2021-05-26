@@ -6,11 +6,10 @@ import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
+import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.inputconditions.Condition;
-import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.pages.config.*;
@@ -55,7 +54,6 @@ public class PageController {
     private final MessageSource messageSource;
     private final PageEventPublisher pageEventPublisher;
     private final ApplicationEnrichment applicationEnrichment;
-    private final ApplicationDataParser<List<Document>> documentListParser;
     private final FeatureFlagConfiguration featureFlags;
     private final UploadDocumentConfiguration uploadDocumentConfiguration;
     private final CountyParser countyParser;
@@ -74,7 +72,6 @@ public class PageController {
             MessageSource messageSource,
             PageEventPublisher pageEventPublisher,
             ApplicationEnrichment applicationEnrichment,
-            ApplicationDataParser<List<Document>> documentListParser,
             FeatureFlagConfiguration featureFlags,
             UploadDocumentConfiguration uploadDocumentConfiguration,
             DocumentRepositoryService documentRepositoryService,
@@ -90,7 +87,6 @@ public class PageController {
         this.messageSource = messageSource;
         this.pageEventPublisher = pageEventPublisher;
         this.applicationEnrichment = applicationEnrichment;
-        this.documentListParser = documentListParser;
         this.featureFlags = featureFlags;
         this.uploadDocumentConfiguration = uploadDocumentConfiguration;
         this.documentRepositoryService = documentRepositoryService;
@@ -292,7 +288,7 @@ public class PageController {
         if (landmarkPagesConfiguration.isTerminalPage(pageName)) {
             Application application = applicationRepository.find(applicationData.getId());
             model.put("applicationId", application.getId());
-            model.put("documents", documentListParser.parse(applicationData));
+            model.put("documents", DocumentListParser.parse(application.getApplicationData()));
             model.put("hasUploadDocuments", !applicationData.getUploadedDocs().isEmpty());
             model.put("submissionTime", application.getCompletedAt().withZoneSameInstant(CENTRAL_TIMEZONE));
             model.put("county", application.getCounty());

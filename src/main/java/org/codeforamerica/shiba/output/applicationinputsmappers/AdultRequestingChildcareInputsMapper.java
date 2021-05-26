@@ -17,27 +17,21 @@ import static org.codeforamerica.shiba.output.FullNameFormatter.getListOfSelecte
 
 @Component
 public class AdultRequestingChildcareInputsMapper implements ApplicationInputsMapper {
-    private final DocumentListParser documentListParser;
-
-    public AdultRequestingChildcareInputsMapper(DocumentListParser documentListParser) {
-        this.documentListParser = documentListParser;
-    }
-
     @Override
     public List<ApplicationInput> map(Application application, Document document, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
         Stream<ApplicationInput> lookingForAJob = getAdultsForSection(application, "whoIsLookingForAJob", "whoIsLookingForAJob", "adultRequestingChildcareLookingForJob");
         Stream<ApplicationInput> goingToSchool = getAdultsForSection(application, "whoIsGoingToSchool", "whoIsGoingToSchool", "adultRequestingChildcareGoingToSchool");
-        Stream<ApplicationInput> working = getAdultsForWorkingSection(application, documentListParser);
+        Stream<ApplicationInput> working = getAdultsForWorkingSection(application);
 
         return Stream.of(lookingForAJob, goingToSchool, working)
                 .flatMap(Function.identity())
                 .collect(Collectors.toList());
     }
 
-    private static Stream<ApplicationInput> getAdultsForWorkingSection(Application application, DocumentListParser documentListParser) {
+    private static Stream<ApplicationInput> getAdultsForWorkingSection(Application application) {
         AtomicInteger i = new AtomicInteger(0);
         List<String> exceptNameStrings = getListOfSelectedNameStrings(application, "childrenInNeedOfCare", "whoNeedsChildCare");
-        if (!documentListParser.parse(application.getApplicationData()).contains(Document.CCAP) ||
+        if (!DocumentListParser.parse(application.getApplicationData()).contains(Document.CCAP) ||
                 !application.getApplicationData().getSubworkflows().containsKey("jobs")) {
             return Stream.of();
         } else {

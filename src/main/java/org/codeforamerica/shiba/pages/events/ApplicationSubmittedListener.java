@@ -36,7 +36,6 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
     private final PdfGenerator pdfGenerator;
     private final CountyMap<MnitCountyInformation> countyMap;
     private final EmailParser emailParser;
-    private final DocumentListParser documentListParser;
     private final FeatureFlagConfiguration featureFlags;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
@@ -49,7 +48,6 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
                                         CountyMap<MnitCountyInformation> countyMap,
                                         FeatureFlagConfiguration featureFlagConfiguration,
                                         EmailParser emailParser,
-                                        DocumentListParser documentListParser,
                                         MonitoringService monitoringService) {
         super(applicationRepository, monitoringService);
         this.mnitDocumentConsumer = mnitDocumentConsumer;
@@ -60,7 +58,6 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
         this.countyMap = countyMap;
         this.featureFlags = featureFlagConfiguration;
         this.emailParser = emailParser;
-        this.documentListParser = documentListParser;
     }
 
     @Async
@@ -83,7 +80,7 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
                     String applicationId = application.getId();
                     SnapExpeditedEligibility snapExpeditedEligibility = snapExpeditedEligibilityDecider.decide(application.getApplicationData());
                     CcapExpeditedEligibility ccapExpeditedEligibility = ccapExpeditedEligibilityDecider.decide(application.getApplicationData());
-                    List<Document> docs = documentListParser.parse(applicationData);
+                    List<Document> docs = DocumentListParser.parse(applicationData);
                     List<ApplicationFile> pdfs = docs.stream().map(doc -> pdfGenerator.generate(applicationId,doc,CLIENT)).collect(Collectors.toList());
                     emailClient.sendConfirmationEmail(email, applicationId, new ArrayList<>(applicationData.getApplicantAndHouseholdMemberPrograms()), snapExpeditedEligibility, ccapExpeditedEligibility, pdfs, event.getLocale());
                 });

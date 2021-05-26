@@ -5,7 +5,7 @@ import org.codeforamerica.shiba.ApplicationStatusUpdater;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.Status;
-import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
+import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
@@ -26,7 +26,6 @@ public class MnitDocumentConsumer {
     private final MnitEsbWebServiceClient mnitClient;
     private final XmlGenerator xmlGenerator;
     private final PdfGenerator pdfGenerator;
-    private final ApplicationDataParser<List<Document>> documentListParser;
     private final MonitoringService monitoringService;
     private final String activeProfile;
     private final ApplicationStatusUpdater applicationStatusUpdater;
@@ -34,14 +33,12 @@ public class MnitDocumentConsumer {
     public MnitDocumentConsumer(MnitEsbWebServiceClient mnitClient,
                                 XmlGenerator xmlGenerator,
                                 PdfGenerator pdfGenerator,
-                                ApplicationDataParser<List<Document>> documentListParser,
                                 MonitoringService monitoringService,
                                 @Value("${spring.profiles.active:dev}") String activeProfile,
                                 ApplicationStatusUpdater applicationStatusUpdater) {
         this.mnitClient = mnitClient;
         this.xmlGenerator = xmlGenerator;
         this.pdfGenerator = pdfGenerator;
-        this.documentListParser = documentListParser;
         this.monitoringService = monitoringService;
         this.activeProfile = activeProfile;
         this.applicationStatusUpdater = applicationStatusUpdater;
@@ -50,7 +47,7 @@ public class MnitDocumentConsumer {
     public void process(Application application) {
         monitoringService.setApplicationId(application.getId());
         // Send the CAF and CCAP as PDFs
-        documentListParser.parse(application.getApplicationData()).forEach(documentType -> {
+        DocumentListParser.parse(application.getApplicationData()).forEach(documentType -> {
             try {
                 updateDocumentStatus(documentType, application.getId(), SENDING);
                 mnitClient.send(pdfGenerator.generate(application.getId(), documentType, CASEWORKER), application.getCounty(), application.getId(), documentType);

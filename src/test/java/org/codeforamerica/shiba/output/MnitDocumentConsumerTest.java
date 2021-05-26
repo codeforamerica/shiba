@@ -4,7 +4,6 @@ import de.redsix.pdfcompare.PdfComparator;
 import org.codeforamerica.shiba.*;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
@@ -55,8 +54,7 @@ class MnitDocumentConsumerTest {
     private MnitEsbWebServiceClient mnitClient;
     @MockBean
     private XmlGenerator xmlGenerator;
-    @MockBean
-    private DocumentListParser documentListParser;
+
     @MockBean
     private MonitoringService monitoringService;
     @MockBean
@@ -102,6 +100,9 @@ class MnitDocumentConsumerTest {
                         "phoneNumber", List.of("(603) 879-1111"),
                         "email", List.of("jane@example.com"),
                         "phoneOrEmail", List.of("PHONE")
+                )),
+                new PageDataBuilder("choosePrograms", Map.of(
+                        "programs", List.of("SNAP")
                 ))
         ));
 
@@ -125,14 +126,12 @@ class MnitDocumentConsumerTest {
 
     @Test
     void generatesThePDFFromTheApplicationData() {
-        when(documentListParser.parse(any())).thenReturn(List.of(CAF));
         documentConsumer.process(application);
         verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
     }
 
     @Test
     void generatesTheXmlFromTheApplicationData() {
-        when(documentListParser.parse(any())).thenReturn(List.of(CAF));
         documentConsumer.process(application);
         verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
     }
@@ -143,7 +142,6 @@ class MnitDocumentConsumerTest {
         doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), any(), any());
         ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
         when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
-        when(documentListParser.parse(any())).thenReturn(List.of(CAF));
         documentConsumer.process(application);
         verify(mnitClient).send(pdfApplicationFile, County.Olmsted, application.getId(), Document.CAF);
         verify(mnitClient).send(xmlApplicationFile, County.Olmsted, application.getId(), Document.CAF);
@@ -156,7 +154,6 @@ class MnitDocumentConsumerTest {
 
         ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
         when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
-        when(documentListParser.parse(any())).thenReturn(List.of(CCAP, CAF));
         PagesData pagesData = new PagesData();
         PageData chooseProgramsPage = new PageData();
         chooseProgramsPage.put("programs", InputData.builder().value(List.of("CCAP")).build());
@@ -171,7 +168,6 @@ class MnitDocumentConsumerTest {
         ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
         doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), eq(CCAP), any());
 
-        when(documentListParser.parse(any())).thenReturn(List.of(CCAP, CAF));
         PagesData pagesData = new PagesData();
         PageData chooseProgramsPage = new PageData();
         chooseProgramsPage.put("programs", InputData.builder().value(List.of("CCAP", "SNAP")).build());
@@ -187,7 +183,6 @@ class MnitDocumentConsumerTest {
         ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
         doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), eq(CCAP), any());
 
-        when(documentListParser.parse(any())).thenReturn(List.of(CCAP));
         doThrow(new RuntimeException()).doNothing().when(mnitClient).send(any(),any(),any(),any());
         PagesData pagesData = new PagesData();
         PageData chooseProgramsPage = new PageData();

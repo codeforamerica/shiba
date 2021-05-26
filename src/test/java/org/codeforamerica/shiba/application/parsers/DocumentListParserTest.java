@@ -16,7 +16,6 @@ import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 
 class DocumentListParserTest {
-    DocumentListParser documentListParser = new DocumentListParser(new ParsingConfiguration());
     PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
 
     @Test
@@ -28,7 +27,7 @@ class DocumentListParserTest {
         ));
         applicationData.setPagesData(pagesData);
 
-        assertThat(documentListParser.parse(applicationData)).containsExactlyInAnyOrder(CAF, CCAP);
+        assertThat(DocumentListParser.parse(applicationData)).containsExactlyInAnyOrder(CAF, CCAP);
     }
 
     @Test
@@ -44,7 +43,7 @@ class DocumentListParserTest {
         subworkflows.addIteration("household", pagesData);
         applicationData.setSubworkflows(subworkflows);
 
-        assertThat(documentListParser.parse(applicationData)).containsExactlyInAnyOrder(CAF, CCAP);
+        assertThat(DocumentListParser.parse(applicationData)).containsExactlyInAnyOrder(CAF, CCAP);
     }
 
     @Test
@@ -60,7 +59,7 @@ class DocumentListParserTest {
         subworkflows.addIteration("household", pagesData);
         applicationData.setSubworkflows(subworkflows);
 
-        assertThat(documentListParser.parse(applicationData)).containsExactlyInAnyOrder(CCAP);
+        assertThat(DocumentListParser.parse(applicationData)).containsExactlyInAnyOrder(CCAP);
 
     }
     @Test
@@ -76,8 +75,6 @@ class DocumentListParserTest {
         subworkflows.addIteration("household", pagesData);
         applicationData.setSubworkflows(subworkflows);
 
-        assertThat(documentListParser.parse(applicationData)).containsExactlyInAnyOrder(CAF);
+        assertThat(DocumentListParser.parse(applicationData)).containsExactlyInAnyOrder(CAF);
     }
-
-
 }
