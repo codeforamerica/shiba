@@ -256,7 +256,7 @@ public abstract class AbstractBasePageTest {
             fillOutHousemateInfo(PROGRAM_CCAP);
             testPage.clickContinue();
             testPage.clickButton("Yes, that's everyone");
-            testPage.enter("whoNeedsChildCare", "defaultFirstName defaultLastName");
+            testPage.enter("whoNeedsChildCare", "householdMemberFirstName householdMemberLastName");
             testPage.clickContinue();
             testPage.clickContinue();
             testPage.enter("livingSituation", "None of these");
@@ -291,7 +291,7 @@ public abstract class AbstractBasePageTest {
             testPage.clickButton("Add a job");
 
             if (hasHousehold) {
-                testPage.enter("whoseJobIsIt", "defaultFirstName defaultLastName");
+                testPage.enter("whoseJobIsIt", "householdMemberFirstName householdMemberLastName");
                 testPage.clickContinue();
             }
 
