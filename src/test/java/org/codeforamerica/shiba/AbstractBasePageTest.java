@@ -305,7 +305,7 @@ public abstract class AbstractBasePageTest {
             testPage.enter("currentlyLookingForJob", YES.getDisplayValue());
 
             if (hasHousehold) {
-                testPage.enter("whoIsLookingForAJob", "defaultFirstName defaultLastName");
+                testPage.enter("whoIsLookingForAJob", "householdMemberFirstName householdMemberLastName");
                 testPage.clickContinue();
             }
         }
