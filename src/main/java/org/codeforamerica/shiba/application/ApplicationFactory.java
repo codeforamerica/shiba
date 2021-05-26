@@ -1,10 +1,10 @@
 package org.codeforamerica.shiba.application;
 
+import org.apache.commons.lang3.SerializationUtils;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.PagesData;
 import org.springframework.stereotype.Component;
 
 import java.time.Clock;
@@ -26,8 +26,8 @@ public class ApplicationFactory {
     public Application newApplication(ApplicationData applicationData) {
         ApplicationData copy = new ApplicationData();
         copy.setId(applicationData.getId());
-        copy.setPagesData(new PagesData(applicationData.getPagesData()));
-        copy.setSubworkflows(applicationData.getSubworkflows());
+        copy.setPagesData(SerializationUtils.clone(applicationData.getPagesData()));
+        copy.setSubworkflows(SerializationUtils.clone(applicationData.getSubworkflows()));
         copy.setIncompleteIterations(applicationData.getIncompleteIterations());
         copy.setFlow(applicationData.getFlow());
         copy.setStartTime(applicationData.getStartTime());
@@ -38,6 +38,7 @@ public class ApplicationFactory {
         return Application.builder()
                 .id(applicationData.getId())
                 .completedAt(completedAt)
+                .updatedAt(completedAt)
                 .applicationData(copy)
                 .county(countyParser.parse(applicationData))
                 .timeToComplete(Duration.between(applicationData.getStartTime(), completedAt))

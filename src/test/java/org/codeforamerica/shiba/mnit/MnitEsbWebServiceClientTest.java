@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.mnit;
 
+import org.codeforamerica.shiba.ApplicationStatusUpdater;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
@@ -27,8 +28,8 @@ import java.time.*;
 import java.util.Base64;
 import java.util.Map;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.codeforamerica.shiba.application.Status.DELIVERED;
+import static org.mockito.Mockito.*;
 import static org.springframework.ws.test.client.RequestMatchers.connectionTo;
 import static org.springframework.ws.test.client.RequestMatchers.xpath;
 import static org.springframework.ws.test.client.ResponseCreators.withException;
@@ -64,6 +65,9 @@ class MnitEsbWebServiceClientTest {
     private String password;
 
     private MockWebServiceServer mockWebServiceServer;
+
+    @MockBean
+    private ApplicationStatusUpdater applicationStatusUpdater;
 
     private final Map<String, String> namespaceMapping = Map.of("ns2", "http://www.cmis.org/2008/05");
     String fileContent = "fileContent";
@@ -107,6 +111,8 @@ class MnitEsbWebServiceClientTest {
                 County.Olmsted, "someId", Document.CAF
         );
 
+        verify(applicationStatusUpdater).updateCafApplicationStatus("someId", Document.CAF, DELIVERED);
+
         mockWebServiceServer.verify();
     }
 
@@ -138,7 +144,9 @@ class MnitEsbWebServiceClientTest {
         mockWebServiceServer.expect(connectionTo(url))
                 .andRespond(withException(exceptionToSend));
 
-        mnitEsbWebServiceClient.send(new ApplicationFile(fileContent.getBytes(), fileName), County.Olmsted, "someId", Document.CAF);
+        ApplicationFile applicationFile = new ApplicationFile(fileContent.getBytes(), "someFile");
+
+        mnitEsbWebServiceClient.send(applicationFile, County.Olmsted, "someId", Document.CAF);
 
         mockWebServiceServer.verify();
     }

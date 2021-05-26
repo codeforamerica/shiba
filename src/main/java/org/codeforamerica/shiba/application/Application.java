@@ -1,7 +1,6 @@
 package org.codeforamerica.shiba.application;
 
-import lombok.Builder;
-import lombok.Value;
+import lombok.*;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.pages.Feedback;
 import org.codeforamerica.shiba.pages.Sentiment;
@@ -19,6 +18,7 @@ import java.util.Optional;
 public class Application {
     String id;
     ZonedDateTime completedAt;
+    ZonedDateTime updatedAt;
     ApplicationData applicationData;
     County county;
     Duration timeToComplete;
@@ -31,12 +31,13 @@ public class Application {
         String feedbackText = !StringUtils.isEmpty(feedback.getFeedback()) ? feedback.getFeedback() : this.feedback;
 
         return new Application(
-                this.id,
-                this.completedAt,
-                this.applicationData,
-                this.county,
-                this.timeToComplete,
-                this.flow,
+                id,
+                completedAt,
+                updatedAt,
+                applicationData,
+                county,
+                timeToComplete,
+                flow,
                 sentiment,
                 feedbackText
         );

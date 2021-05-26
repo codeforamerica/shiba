@@ -22,6 +22,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"pagesConfig=pages-config/test-landmark-pages.yaml"})
 public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
     String firstPageTitle = "first page title";
+    String secondPageTitle = "second page title";
     String fourthPageTitle = "fourth page title";
 
     @MockBean
@@ -58,6 +59,7 @@ public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
     protected void setUp() throws IOException {
         super.setUp();
         staticMessageSource.addMessage("first-page-title", Locale.ENGLISH, firstPageTitle);
+        staticMessageSource.addMessage("second-page-title", Locale.ENGLISH, secondPageTitle);
         staticMessageSource.addMessage("third-page-title", Locale.ENGLISH, "third page title");
         staticMessageSource.addMessage("fourth-page-title", Locale.ENGLISH, fourthPageTitle);
     }
@@ -107,21 +109,20 @@ public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
     void shouldNotRedirectWhenUserNavigateToALandingPage() {
         navigateTo("thirdPage");
         testPage.clickContinue();
-        navigateTo("firstPage");
+        navigateTo("testStaticLandingPage");
 
         assertThat(testPage.getTitle()).isEqualTo(firstPageTitle);
     }
 
     @Test
     void shouldClearTheSessionWhenUserNavigatesToALandingPage() {
-        navigateTo("firstPage");
+        navigateTo("testStaticLandingPage");
 
+        testPage.clickContinue();
         testPage.enter("foo", "someInput");
         testPage.clickContinue();
 
-        testPage.clickContinue();
-
-        navigateTo("firstPage");
+        navigateTo("testStaticLandingPage");
         driver.navigate().to(baseUrl + "/testPath");
         assertThat(LandmarkPageTest.applicationData).isEqualTo(new ApplicationData());
     }

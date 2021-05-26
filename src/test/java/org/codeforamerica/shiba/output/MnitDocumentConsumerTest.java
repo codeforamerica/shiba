@@ -14,6 +14,7 @@ import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -32,11 +33,14 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.TestUtils.getAbsoluteFilepath;
+import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
+import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.output.Document.*;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.mockito.Mockito.*;
@@ -75,6 +79,10 @@ class MnitDocumentConsumerTest {
 
     private Application application;
 
+    @MockBean
+    private ApplicationStatusUpdater applicationStatusUpdater;
+
+
     @BeforeEach
     void setUp() {
         PagesData pagesData = new PagesDataBuilder().build(List.of(
@@ -108,6 +116,11 @@ class MnitDocumentConsumerTest {
         when(messageSource.getMessage(any(), any(), any())).thenReturn("default success message");
         when(fileNameGenerator.generatePdfFileName(any(), any())).thenReturn("some-file.pdf");
         doReturn(application).when(applicationRepository).find(any());
+    }
+
+    @AfterEach
+    void afterEach() {
+        applicationData.setUploadedDocs(new ArrayList<>());
     }
 
     @Test
@@ -154,6 +167,38 @@ class MnitDocumentConsumerTest {
     }
 
     @Test
+    void updatesStatusToSendingForCafAndCcapDocuments() {
+        ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
+        doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), eq(CCAP), any());
+
+        when(documentListParser.parse(any())).thenReturn(List.of(CCAP, CAF));
+        PagesData pagesData = new PagesData();
+        PageData chooseProgramsPage = new PageData();
+        chooseProgramsPage.put("programs", InputData.builder().value(List.of("CCAP", "SNAP")).build());
+        pagesData.put("choosePrograms", chooseProgramsPage);
+        applicationData.setPagesData(pagesData);
+        documentConsumer.process(application);
+        verify(applicationStatusUpdater).updateCafApplicationStatus(application.getId(), CAF, SENDING);
+        verify(applicationStatusUpdater).updateCcapApplicationStatus(application.getId(), CCAP, SENDING);
+    }
+
+    @Test
+    void updatesStatusToDeliveryFailedForDocuments() {
+        ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
+        doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), eq(CCAP), any());
+
+        when(documentListParser.parse(any())).thenReturn(List.of(CCAP));
+        doThrow(new RuntimeException()).doNothing().when(mnitClient).send(any(),any(),any(),any());
+        PagesData pagesData = new PagesData();
+        PageData chooseProgramsPage = new PageData();
+        chooseProgramsPage.put("programs", InputData.builder().value(List.of("CCAP", "SNAP")).build());
+        pagesData.put("choosePrograms", chooseProgramsPage);
+        applicationData.setPagesData(pagesData);
+        documentConsumer.process(application);
+        verify(applicationStatusUpdater).updateCcapApplicationStatus(application.getId(), CCAP, DELIVERY_FAILED);
+    }
+
+    @Test
     void sendsApplicationIdToMonitoringService() {
         documentConsumer.process(application);
         verify(monitoringService).setApplicationId(application.getId());
@@ -176,6 +221,20 @@ class MnitDocumentConsumerTest {
         // Assert that converted file contents are as expected
         verifyGeneratedPdf(captor.getAllValues().get(0).getFileBytes(), "shiba+file.pdf");
         verifyGeneratedPdf(captor.getAllValues().get(1).getFileBytes(), "test-uploaded-pdf-with-coverpage.pdf");
+    }
+
+    @Test
+    void setsUploadedDocumentStatusToSendingWhenProcessUploadedDocumentsIsCalled() throws IOException {
+        mockDocUpload("shiba+file.jpg", "someS3FilePath", MediaType.IMAGE_JPEG_VALUE, "jpg");
+
+        mockDocUpload("test-uploaded-pdf.pdf", "pdfS3FilePath", MediaType.APPLICATION_PDF_VALUE, "pdf");
+
+        when(fileNameGenerator.generateUploadedDocumentName(application, 0, "pdf")).thenReturn("pdf1of2.pdf");
+        when(fileNameGenerator.generateUploadedDocumentName(application, 1, "pdf")).thenReturn("pdf2of2.pdf");
+
+        documentConsumer.processUploadedDocuments(application);
+
+        verify(applicationStatusUpdater).updateUploadedDocumentsStatus(application.getId(), UPLOADED_DOC, SENDING);
     }
 
     private void mockDocUpload(String uploadedDocFilename, String s3filepath, String contentType, String extension) throws IOException {

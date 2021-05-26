@@ -159,6 +159,18 @@ public abstract class AbstractBasePageTest {
         testPage.enter("moveToMnDate", "02/18/1776");
     }
 
+    protected void fillOutHousemateInfo() {
+        testPage.enter("firstName", "householdMemberFirstName");
+        testPage.enter("lastName", "householdMemberLastName");
+        testPage.enter("otherName", "houseHoldyMcMemberson");
+        testPage.enter("dateOfBirth", "09/14/1950");
+        testPage.enter("ssn", "987654321");
+        testPage.enter("maritalStatus", "Never married");
+        testPage.enter("sex", "Male");
+        testPage.enter("livedInMnWholeLife", "Yes");
+        testPage.enter("moveToMnDate", "02/18/1950");
+    }
+
     protected void fillOutContactInfo() {
         testPage.enter("phoneNumber", "7234567890");
         testPage.enter("phoneOrEmail", "Text me");
@@ -244,7 +256,7 @@ public abstract class AbstractBasePageTest {
             fillOutHousemateInfo(PROGRAM_CCAP);
             testPage.clickContinue();
             testPage.clickButton("Yes, that's everyone");
-            testPage.enter("whoNeedsChildCare", "defaultFirstName defaultLastName");
+            testPage.enter("whoNeedsChildCare", "householdMemberFirstName householdMemberLastName");
             testPage.clickContinue();
             testPage.clickContinue();
             testPage.enter("livingSituation", "None of these");
@@ -279,7 +291,7 @@ public abstract class AbstractBasePageTest {
             testPage.clickButton("Add a job");
 
             if (hasHousehold) {
-                testPage.enter("whoseJobIsIt", "defaultFirstName defaultLastName");
+                testPage.enter("whoseJobIsIt", "householdMemberFirstName householdMemberLastName");
                 testPage.clickContinue();
             }
 
@@ -293,7 +305,7 @@ public abstract class AbstractBasePageTest {
             testPage.enter("currentlyLookingForJob", YES.getDisplayValue());
 
             if (hasHousehold) {
-                testPage.enter("whoIsLookingForAJob", "defaultFirstName defaultLastName");
+                testPage.enter("whoIsLookingForAJob", "householdMemberFirstName householdMemberLastName");
                 testPage.clickContinue();
             }
         }
@@ -354,7 +366,7 @@ public abstract class AbstractBasePageTest {
     protected void fillOutHousemateInfo(String programSelection) {
         testPage.enter("relationship", "housemate");
         testPage.enter("programs", programSelection);
-        fillOutPersonInfo(); // need to fill out programs checkbox set above first
+        fillOutHousemateInfo(); // need to fill out programs checkbox set above first
         testPage.enter("moveToMnPreviousState", "Illinois");
     }
 

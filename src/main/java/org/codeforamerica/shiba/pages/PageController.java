@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.pages;
 
 import lombok.extern.slf4j.Slf4j;
+import org.codeforamerica.shiba.ApplicationStatusUpdater;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
@@ -38,6 +39,8 @@ import java.util.*;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
+import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
+import static org.codeforamerica.shiba.output.Document.*;
 
 @Controller
 @Slf4j
@@ -60,6 +63,7 @@ public class PageController {
     private final CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
     private final SuccessMessageService successMessageService;
     private final DocumentRepositoryService documentRepositoryService;
+    private final ApplicationStatusUpdater applicationStatusUpdater;
 
     public PageController(
             ApplicationConfiguration applicationConfiguration,
@@ -77,7 +81,7 @@ public class PageController {
             CountyParser countyParser,
             SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider,
             CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider,
-            SuccessMessageService successMessageService) {
+            SuccessMessageService successMessageService, ApplicationStatusUpdater applicationStatusUpdater) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
@@ -94,6 +98,7 @@ public class PageController {
         this.snapExpeditedEligibilityDecider = snapExpeditedEligibilityDecider;
         this.ccapExpeditedEligibilityDecider = ccapExpeditedEligibilityDecider;
         this.successMessageService = successMessageService;
+        this.applicationStatusUpdater = applicationStatusUpdater;
     }
 
     @GetMapping("/")
@@ -179,6 +184,10 @@ public class PageController {
             if (!utmSource.isEmpty()) {
                 applicationData.setUtmSource(utmSource);
             }
+        }
+
+        if (applicationConfiguration.getLandmarkPages().isUploadDocumentsPage(pageName)) {
+            applicationStatusUpdater.updateUploadedDocumentsStatus(applicationData.getId(), UPLOADED_DOC, IN_PROGRESS);
         }
 
         if (shouldRedirectToTerminalPage(pageName)) {
@@ -290,7 +299,7 @@ public class PageController {
             model.put("sentiment", application.getSentiment());
             model.put("feedbackText", application.getFeedback());
             String inputData = pagesData.getPageInputFirstValue("healthcareCoverage", "healthcareCoverage");
-            boolean hasHealthcare = inputData != null && inputData.equalsIgnoreCase("YES");
+            boolean hasHealthcare = "YES".equalsIgnoreCase(inputData);
             model.put("doesNotHaveHealthcare", !hasHealthcare );
             model.put("successMessage", successMessageService.getSuccessMessage(new ArrayList<>(programs), snapExpeditedEligibility, ccapExpeditedEligibility, locale));
         }
@@ -339,8 +348,8 @@ public class PageController {
 
     private boolean shouldRedirectToTerminalPage(@PathVariable String pageName) {
         LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
-        // If they requested a page that was not a postSubmitPage and their application has an Id
-        return !landmarkPagesConfiguration.isPostSubmitPage(pageName) && applicationData.getId() != null;
+        // If not on post-submit page and application is already submitted
+        return !landmarkPagesConfiguration.isPostSubmitPage(pageName) && applicationData.isSubmitted();
     }
 
     @PostMapping("/groups/{groupName}/delete")
@@ -426,10 +435,25 @@ public class PageController {
         }
 
         if (pageDataIsValid) {
+            if (pagesData.containsKey("choosePrograms")) {
+                if (applicationData.isCAFApplication()) {
+                    applicationStatusUpdater.updateCafApplicationStatus(applicationData.getId(), CAF, IN_PROGRESS);
+                }
+                if (applicationData.isCCAPApplication()) {
+                    applicationStatusUpdater.updateCcapApplicationStatus(applicationData.getId(), CCAP, IN_PROGRESS);
+                }
+            }
+            if (applicationData.getId() == null) {
+                applicationData.setId(applicationRepository.getNextId());
+            }
+
             ofNullable(pageWorkflow.getEnrichment())
                     .map(applicationEnrichment::getEnrichment)
                     .map(enrichment -> enrichment.process(applicationData))
                     .ifPresent(pageData::putAll);
+
+            Application application = applicationFactory.newApplication(applicationData);
+            applicationRepository.save(application); //upsert already
             return new ModelAndView(String.format("redirect:/pages/%s/navigation", pageName));
         } else {
             return new ModelAndView("redirect:/pages/" + pageName);
@@ -450,13 +474,16 @@ public class PageController {
         pagesData.putPage(submitPage, pageData);
 
         if (pageData.isValid()) {
-            applicationData.setId(applicationRepository.getNextId());
+            if (applicationData.getId() == null) {
+                // only happens in framework tests now we think, left in out of an abundance of caution
+                applicationData.setId(applicationRepository.getNextId());
+            }
             Application application = applicationFactory.newApplication(applicationData);
             applicationRepository.save(application);
             pageEventPublisher.publish(
                     new ApplicationSubmittedEvent(httpSession.getId(), application.getId(), application.getFlow(), LocaleContextHolder.getLocale())
             );
-
+            applicationData.setSubmitted(true);
             return new ModelAndView(String.format("redirect:/pages/%s/navigation", submitPage));
         } else {
             return new ModelAndView("redirect:/pages/" + submitPage);

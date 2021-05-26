@@ -1,19 +1,23 @@
-CREATE DOMAIN IF NOT EXISTS "JSONB" AS text;
+CREATE DOMAIN if NOT EXISTS "JSONB" AS TEXT;
 
 CREATE SEQUENCE IF NOT EXISTS application_id START WITH 1 MAXVALUE 9999999;
 
 CREATE TABLE IF NOT EXISTS applications
 (
-    id               varchar           NOT NULL
+    id                        varchar                                     NOT NULL
         CONSTRAINT applications_pkey
             PRIMARY KEY,
-    completed_at     timestamp         NOT NULL,
-    county           varchar DEFAULT 'OTHER':: CHARACTER varying NOT NULL,
-    time_to_complete integer DEFAULT 0 NOT NULL,
-    sentiment        varchar,
-    feedback         text,
-    flow             varchar,
-    application_data jsonb
+    completed_at              timestamp                                   NOT NULL,
+    county                    varchar DEFAULT 'OTHER':: CHARACTER varying NOT NULL,
+    time_to_complete          integer DEFAULT 0                           NOT NULL,
+    sentiment                 varchar,
+    feedback                  text,
+    flow                      varchar,
+    application_data          jsonb,
+    updated_at                varchar,
+    caf_application_status    varchar,
+    ccap_application_status   varchar,
+    uploaded_documents_status varchar
 );
 
 CREATE INDEX IF NOT EXISTS idx_application_id

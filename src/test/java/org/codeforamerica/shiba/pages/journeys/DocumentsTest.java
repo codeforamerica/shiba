@@ -166,7 +166,7 @@ public class DocumentsTest extends JourneyTest {
         // Recommend proof of income
         testPage.enter("areYouWorking", YES.getDisplayValue());
         testPage.clickButton("Add a job");
-        testPage.enter("whoseJobIsIt", "defaultFirstName defaultLastName");
+        testPage.enter("whoseJobIsIt", "householdMemberFirstName householdMemberLastName");
         testPage.clickContinue();
         testPage.enter("employersName", "some employer");
         testPage.clickContinue();

@@ -3,8 +3,10 @@ package org.codeforamerica.shiba.mnit;
 import com.sun.istack.ByteArrayDataSource;
 import com.sun.xml.messaging.saaj.soap.name.NameImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.codeforamerica.shiba.ApplicationStatusUpdater;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
+import org.codeforamerica.shiba.application.Status;
 import org.codeforamerica.shiba.esbwsdl.*;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
@@ -28,6 +30,11 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import static org.codeforamerica.shiba.application.Status.DELIVERED;
+import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
+import static org.codeforamerica.shiba.output.Document.CAF;
+import static org.codeforamerica.shiba.output.Document.CCAP;
+
 @Component
 @Slf4j
 public class MnitEsbWebServiceClient {
@@ -36,18 +43,21 @@ public class MnitEsbWebServiceClient {
     private final String username;
     private final String password;
     private final CountyMap<MnitCountyInformation> countyMap;
+    private final ApplicationStatusUpdater applicationStatusUpdater;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public MnitEsbWebServiceClient(WebServiceTemplate webServiceTemplate,
                                    Clock clock,
                                    @Value("${mnit-esb.username}") String username,
                                    @Value("${mnit-esb.password}") String password,
-                                   CountyMap<MnitCountyInformation> countyMap) {
+                                   CountyMap<MnitCountyInformation> countyMap,
+                                   ApplicationStatusUpdater applicationStatusUpdater) {
         this.webServiceTemplate = webServiceTemplate;
         this.clock = clock;
         this.username = username;
         this.password = password;
         this.countyMap = countyMap;
+        this.applicationStatusUpdater = applicationStatusUpdater;
     }
 
     @Retryable(
@@ -80,7 +90,6 @@ public class MnitEsbWebServiceClient {
         contentStream.setLength(BigInteger.ZERO);
         contentStream.setStream(new DataHandler(new ByteArrayDataSource(applicationFile.getFileBytes(), MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE)));
         createDocument.setContentStream(contentStream);
-
         webServiceTemplate.marshalSendAndReceive(createDocument, message -> {
             SOAPMessage soapMessage = ((SaajSoapMessage) message).getSaajMessage();
             try {
@@ -103,13 +112,15 @@ public class MnitEsbWebServiceClient {
                 passwordElement.addAttribute(NameImpl.createFromUnqualifiedName("Type"), "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText");
                 passwordElement.setTextContent(password);
             } catch (SOAPException e) {
-                logErrorToSentry(e, applicationFile);
+                logErrorToSentry(e, applicationFile, county, applicationNumber, applicationDocument);
             }
         });
+        updateMnitEsbDocumentStatus(applicationDocument, applicationNumber, DELIVERED);
     }
 
     @Recover
-    public void logErrorToSentry(Exception e, ApplicationFile applicationFile) {
+    public void logErrorToSentry(Exception e, ApplicationFile applicationFile, County county, String applicationNumber, Document applicationDocument) {
+        updateMnitEsbDocumentStatus(applicationDocument, applicationNumber, DELIVERY_FAILED);
         log.error("Application failed to send: " + applicationFile.getFileName(), e);
     }
 
@@ -124,7 +135,7 @@ public class MnitEsbWebServiceClient {
     @NotNull
     private String generateDocumentDescription(ApplicationFile applicationFile, Document applicationDocument, String applicationNumber) {
         String docDescription = String.format("Associated with MNBenefits Application #%s", applicationNumber);
-        if (applicationDocument == Document.CAF || applicationDocument == Document.CCAP) {
+        if (applicationDocument == CAF || applicationDocument == CCAP) {
             if (applicationFile.getFileName().toLowerCase().endsWith(".xml")) {
                 docDescription = String.format("XML of MNBenefits Application #%s", applicationNumber);
             } else if (applicationFile.getFileName().toLowerCase().endsWith(".pdf")) {
@@ -134,4 +145,11 @@ public class MnitEsbWebServiceClient {
         return docDescription;
     }
 
+    private void updateMnitEsbDocumentStatus(Document applicationDocument, String applicationNumber, Status status) {
+        switch (applicationDocument) {
+            case CCAP -> applicationStatusUpdater.updateCcapApplicationStatus(applicationNumber, applicationDocument, status);
+            case CAF -> applicationStatusUpdater.updateCafApplicationStatus(applicationNumber, applicationDocument, status);
+            default -> applicationStatusUpdater.updateUploadedDocumentsStatus(applicationNumber, applicationDocument, status);
+        }
+    }
 }

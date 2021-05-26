@@ -81,7 +81,7 @@ public class CCAPTest extends JourneyTest {
         assertThat(driver.getTitle()).isEqualTo("Preparing meals together");
         testPage.goBack();
 
-        testPage.enter("whoNeedsChildCare", "defaultFirstName defaultLastName");
+        testPage.enter("whoNeedsChildCare", "householdMemberFirstName householdMemberLastName");
         testPage.enter("whoNeedsChildCare", "Me");
         testPage.clickContinue();
         assertThat(driver.getTitle()).isEqualTo("Who are the children that have a parent not living in the home?");
@@ -91,7 +91,7 @@ public class CCAPTest extends JourneyTest {
         assertThat(driver.getTitle()).isEqualTo("Preparing meals together");
         testPage.goBack();
 
-        testPage.enter("whoHasAParentNotLivingAtHome", "defaultFirstName defaultLastName");
+        testPage.enter("whoHasAParentNotLivingAtHome", "householdMemberFirstName householdMemberLastName");
         testPage.enter("whoHasAParentNotLivingAtHome", "Me");
         testPage.clickContinue();
         assertThat(driver.getTitle()).isEqualTo("Name of parent outside home");

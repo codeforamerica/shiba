@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
+import org.codeforamerica.shiba.ApplicationStatusUpdater;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.NonSessionScopedApplicationData;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
@@ -24,7 +25,8 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")
 @WebMvcTest(PageController.class)
 @WithMockUser(authorities = "admin")
-@Import({NonSessionScopedApplicationData.class,
+@Import({
+        NonSessionScopedApplicationData.class,
         ApplicationConfigurationFactoryAppConfig.class,
         ClockConfiguration.class,
         ApplicationFactory.class,
@@ -53,4 +55,6 @@ public class AbstractPageControllerTest {
     protected UploadDocumentConfiguration uploadDocumentConfiguration;
     @MockBean
     protected DocumentRepositoryService documentRepositoryService;
+    @MockBean
+    protected ApplicationStatusUpdater applicationStatusUpdater;
 }
