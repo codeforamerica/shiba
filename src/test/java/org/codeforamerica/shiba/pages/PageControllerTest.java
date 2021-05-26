@@ -74,10 +74,11 @@ class PageControllerTest {
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(pageController).build();
         when(clock.instant()).thenReturn(Instant.now());
+        when(clock.getZone()).thenReturn(ZoneId.of("UTC"));
         when(applicationFactory.newApplication(any())).thenReturn(Application.builder()
                 .id("defaultId")
                 .completedAt(ZonedDateTime.now())
-                .applicationData(null)
+                .applicationData(applicationData)
                 .county(null)
                 .timeToComplete(null)
                 .build());
