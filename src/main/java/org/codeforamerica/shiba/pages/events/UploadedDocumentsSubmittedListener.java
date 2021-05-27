@@ -21,19 +21,16 @@ public class UploadedDocumentsSubmittedListener extends ApplicationEventListener
     private final MnitDocumentConsumer mnitDocumentConsumer;
     private final FeatureFlagConfiguration featureFlags;
     private final EmailClient emailClient;
-    private final EmailParser emailParser;
 
     public UploadedDocumentsSubmittedListener(MnitDocumentConsumer mnitDocumentConsumer,
                                               ApplicationRepository applicationRepository,
                                               MonitoringService monitoringService,
                                               FeatureFlagConfiguration featureFlags,
-                                              EmailClient emailClient,
-                                              EmailParser emailParser) {
+                                              EmailClient emailClient) {
         super(applicationRepository, monitoringService);
         this.mnitDocumentConsumer = mnitDocumentConsumer;
         this.featureFlags = featureFlags;
         this.emailClient = emailClient;
-        this.emailParser = emailParser;
     }
 
     @Async
@@ -63,7 +60,7 @@ public class UploadedDocumentsSubmittedListener extends ApplicationEventListener
         Application application = getApplicationFromEvent(event);
         ApplicationData applicationData = application.getApplicationData();
 
-        emailParser.parse(applicationData)
+        EmailParser.parse(applicationData)
                 .ifPresent(email -> emailClient.sendLaterDocsConfirmationEmail(email, event.getLocale()));
     }
 }

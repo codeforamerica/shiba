@@ -35,7 +35,6 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
     private final CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
     private final PdfGenerator pdfGenerator;
     private final CountyMap<MnitCountyInformation> countyMap;
-    private final EmailParser emailParser;
     private final FeatureFlagConfiguration featureFlags;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
@@ -47,7 +46,6 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
                                         PdfGenerator pdfGenerator,
                                         CountyMap<MnitCountyInformation> countyMap,
                                         FeatureFlagConfiguration featureFlagConfiguration,
-                                        EmailParser emailParser,
                                         MonitoringService monitoringService) {
         super(applicationRepository, monitoringService);
         this.mnitDocumentConsumer = mnitDocumentConsumer;
@@ -57,7 +55,6 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
         this.pdfGenerator = pdfGenerator;
         this.countyMap = countyMap;
         this.featureFlags = featureFlagConfiguration;
-        this.emailParser = emailParser;
     }
 
     @Async
@@ -75,7 +72,7 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
         Application application = getApplicationFromEvent(event);
         ApplicationData applicationData = application.getApplicationData();
 
-        emailParser.parse(applicationData)
+        EmailParser.parse(applicationData)
                 .ifPresent(email -> {
                     String applicationId = application.getId();
                     SnapExpeditedEligibility snapExpeditedEligibility = snapExpeditedEligibilityDecider.decide(application.getApplicationData());

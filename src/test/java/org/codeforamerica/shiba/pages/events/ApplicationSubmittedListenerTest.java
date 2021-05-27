@@ -1,15 +1,19 @@
 package org.codeforamerica.shiba.pages.events;
 
-import org.codeforamerica.shiba.*;
+import org.codeforamerica.shiba.County;
+import org.codeforamerica.shiba.CountyMap;
+import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.application.parsers.EmailParser;
 import org.codeforamerica.shiba.mnit.MnitCountyInformation;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
-import org.codeforamerica.shiba.output.caf.*;
+import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
+import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
@@ -21,6 +25,8 @@ import org.codeforamerica.shiba.pages.emails.EmailClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.springframework.context.i18n.LocaleContextHolder;
 
 import java.time.ZonedDateTime;
@@ -28,7 +34,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
-import static java.util.Optional.empty;
 import static org.codeforamerica.shiba.County.Hennepin;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
@@ -41,7 +46,6 @@ class ApplicationSubmittedListenerTest {
     SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider = mock(SnapExpeditedEligibilityDecider.class);
     CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider = mock(CcapExpeditedEligibilityDecider.class);
     PdfGenerator pdfGenerator = mock(PdfGenerator.class);
-    EmailParser emailParser = mock(EmailParser.class);
     CountyMap<MnitCountyInformation> countyMap = new CountyMap<>();
     FeatureFlagConfiguration featureFlagConfiguration = mock(FeatureFlagConfiguration.class);
     MonitoringService monitoringService = mock(MonitoringService.class);
@@ -60,7 +64,6 @@ class ApplicationSubmittedListenerTest {
                 pdfGenerator,
                 countyMap,
                 featureFlagConfiguration,
-                emailParser,
                 monitoringService);
     }
 
@@ -96,10 +99,6 @@ class ApplicationSubmittedListenerTest {
 
     @Nested
     class sendClientConfirmationEmail {
-        @BeforeEach
-        void setUp() {
-            when(emailParser.parse(any())).thenReturn(Optional.of("email@address"));
-        }
 
         @Test
         void shouldSendConfirmationMailForSubmittedApplicationWithCAF() {
@@ -122,8 +121,11 @@ class ApplicationSubmittedListenerTest {
             when(ccapExpeditedEligibilityDecider.decide(applicationData)).thenReturn(CcapExpeditedEligibility.UNDETERMINED);
             ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
             when(pdfGenerator.generate(appIdFromDb, Document.CAF, CLIENT)).thenReturn(applicationFile);
-            when(emailParser.parse(applicationData)).thenReturn(Optional.of(email));
-            applicationSubmittedListener.sendConfirmationEmail(event);
+
+            try (MockedStatic<EmailParser> mockEmailParser = Mockito.mockStatic(EmailParser.class)) {
+                mockEmailParser.when(() -> EmailParser.parse(any())).thenReturn(Optional.of(email));
+                applicationSubmittedListener.sendConfirmationEmail(event);
+            }
 
             verify(emailClient).sendConfirmationEmail(email,
                                                       appIdFromDb,
@@ -155,8 +157,10 @@ class ApplicationSubmittedListenerTest {
             ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(), "someFileName");
             when(applicationData.isCCAPApplication()).thenReturn(true);
             when(pdfGenerator.generate(appIdFromDb, Document.CCAP, CLIENT)).thenReturn(applicationFile);
-            when(emailParser.parse(applicationData)).thenReturn(Optional.of(email));
-            applicationSubmittedListener.sendConfirmationEmail(event);
+            try (MockedStatic<EmailParser> mockEmailParser = Mockito.mockStatic(EmailParser.class)) {
+                mockEmailParser.when(() -> EmailParser.parse(any())).thenReturn(Optional.of(email));
+                applicationSubmittedListener.sendConfirmationEmail(event);
+            }
 
             verify(emailClient).sendConfirmationEmail(email,
                                                       appIdFromDb,
@@ -193,8 +197,10 @@ class ApplicationSubmittedListenerTest {
             when(pdfGenerator.generate(appIdFromDb, Document.CCAP, CLIENT)).thenReturn(applicationFileCCAP);
             List<ApplicationFile> applicationFiles = List.of(applicationFileCAF, applicationFileCCAP);
 
-            when(emailParser.parse(applicationData)).thenReturn(Optional.of(email));
-            applicationSubmittedListener.sendConfirmationEmail(event);
+            try (MockedStatic<EmailParser> mockEmailParser = Mockito.mockStatic(EmailParser.class)) {
+                mockEmailParser.when(() -> EmailParser.parse(any())).thenReturn(Optional.of(email));
+                applicationSubmittedListener.sendConfirmationEmail(event);
+            }
 
             verify(emailClient).sendConfirmationEmail(email,
                                                       appIdFromDb,
@@ -214,13 +220,15 @@ class ApplicationSubmittedListenerTest {
                                                                        .completedAt(ZonedDateTime.now())
                                                                        .applicationData(applicationData)
                                                                        .build());
-            when(emailParser.parse(applicationData)).thenReturn(empty());
             ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId",
                                                                             "appId",
                                                                             null,
                                                                             Locale.ENGLISH);
 
-            applicationSubmittedListener.sendConfirmationEmail(event);
+            try (MockedStatic<EmailParser> mockEmailParser = Mockito.mockStatic(EmailParser.class)) {
+                mockEmailParser.when(() -> EmailParser.parse(any())).thenReturn(Optional.empty());
+                applicationSubmittedListener.sendConfirmationEmail(event);
+            }
 
             verifyNoInteractions(pdfGenerator);
             verifyNoInteractions(snapExpeditedEligibilityDecider);
