@@ -4,13 +4,10 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.PageDataBuilder;
 import org.codeforamerica.shiba.PagesDataBuilder;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -28,12 +25,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class HouseholdTest extends AbstractPageControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ApplicationData applicationData;
-
     @Test
     void shouldRedirectToHouseholdListWhenDeletingNonExistantHouseholdMember() throws Exception {
         makeApplicationWithTwoHouseholdMembers();
