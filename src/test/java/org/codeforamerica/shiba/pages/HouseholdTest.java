@@ -39,6 +39,7 @@ public class HouseholdTest extends AbstractPageControllerTest {
         makeApplicationWithTwoHouseholdMembers();
 
         MockHttpSession session = new MockHttpSession();
+
         //Delete the second household member
         String iterationIndex = "1";
         mockMvc.perform(get("/pages/householdDeleteWarningPage").param("iterationIndex", iterationIndex).session(session))
