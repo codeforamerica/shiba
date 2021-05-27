@@ -1,36 +1,26 @@
 package org.codeforamerica.shiba.application.parsers;
 
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.springframework.stereotype.Component;
+import org.codeforamerica.shiba.pages.data.PagesData;
 
 import java.util.Optional;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-@Component
-public class EmailParser extends ApplicationDataParser<Optional<String>> {
-    public EmailParser(ParsingConfiguration parsingConfiguration) {
-        super(parsingConfiguration);
-    }
+public class EmailParser {
 
-    @Override
-    public Optional<String> parse(ApplicationData applicationData) {
-        String laterDocsEmail = getEmail(applicationData, "matchInfo");
+    public static Optional<String> parse(ApplicationData applicationData) {
+        PagesData pagesData = applicationData.getPagesData();
+        String laterDocsEmail = pagesData.getPageInputFirstValue("matchInfo", "email");
         if (isNotBlank(laterDocsEmail)) {
             return Optional.of(laterDocsEmail);
         }
 
-        String regularFlowEmail = getEmail(applicationData, "contactInfo");
+        String regularFlowEmail = pagesData.getPageInputFirstValue("contactInfo", "email");
         if (isNotBlank(regularFlowEmail)) {
             return Optional.of(regularFlowEmail);
         }
 
         return Optional.empty();
-    }
-
-    private String getEmail(ApplicationData applicationData, String configName) {
-        ParsingCoordinates contactInfoCoordinates = this.parsingConfiguration.get(configName);
-        PageInputCoordinates emailCoordinates = contactInfoCoordinates.getPageInputs().get("email");
-        return applicationData.getValue(emailCoordinates);
     }
 }

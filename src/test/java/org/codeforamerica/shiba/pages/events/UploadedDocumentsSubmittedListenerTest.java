@@ -4,11 +4,10 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.application.parsers.EmailParser;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
-import org.codeforamerica.shiba.pages.emails.*;
+import org.codeforamerica.shiba.pages.emails.EmailClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Locale;
 
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UploadedDocumentsSubmittedListenerTest {
@@ -32,8 +32,6 @@ class UploadedDocumentsSubmittedListenerTest {
     private FeatureFlagConfiguration featureFlags;
     @Mock
     private EmailClient emailClient;
-    @Mock
-    private EmailParser emailParser;
 
     private UploadedDocumentsSubmittedListener uploadedDocumentsSubmittedListener;
     private String applicationId;
@@ -53,8 +51,7 @@ class UploadedDocumentsSubmittedListenerTest {
                 applicationRepository,
                 monitoringService,
                 featureFlags,
-                emailClient,
-                emailParser);
+                emailClient);
     }
 
     @Test

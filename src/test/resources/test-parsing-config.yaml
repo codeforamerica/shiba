@@ -95,13 +95,3 @@ test-parsing:
         pageName: mailingAddressPageName
         inputName: addressLine6
         defaultValue: Hennepin
-  contactInfo:
-    pageInputs:
-      email:
-        pageName: contactInfoPageName
-        inputName: contactEmail
-  matchInfo:
-    pageInputs:
-      email:
-        pageName: matchInfo
-        inputName: email
