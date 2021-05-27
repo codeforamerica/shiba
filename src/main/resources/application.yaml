@@ -17,6 +17,7 @@ server:
     session:
       cookie:
         secure: true
+      timeout: 60m
   error:
     whitelabel:
       enabled: true
