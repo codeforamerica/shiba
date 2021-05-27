@@ -2326,6 +2326,11 @@ pageDefinitions:
     inputs:
       - name: additionalInfo
         type: TEXTAREA
+      - name: caseNumber
+        type: TEXT
+      - name: caseNumberImages
+        type: CUSTOM
+        customInputFragment: caseNumberImages
     pageTitle: additional-info.title
 workflow:
   landing:
