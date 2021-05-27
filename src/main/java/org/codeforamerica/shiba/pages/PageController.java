@@ -229,7 +229,6 @@ public class PageController {
             } else {
                 return new ModelAndView("redirect:/pages/" +applicationConfiguration.getPageGroups().get(groupName).getReviewPage());
             }
-
         }
 
         var pageTemplate = pagesData.evaluate(featureFlags, pageWorkflowConfig, applicationData);
