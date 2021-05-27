@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class HouseholdTest extends AbstractPageControllerTest {
     @Test
-    void shouldRedirectToHouseholdListWhenDeletingNonExistantHouseholdMember() throws Exception {
+    void shouldRedirectToHouseholdListWhenDeletingNonExistentHouseholdMember() throws Exception {
         makeApplicationWithTwoHouseholdMembers();
 
         MockHttpSession session = new MockHttpSession();
