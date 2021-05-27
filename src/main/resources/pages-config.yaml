@@ -2328,6 +2328,9 @@ pageDefinitions:
         type: TEXTAREA
       - name: caseNumber
         type: TEXT
+        promptMessage:
+          promptMessageKey: additional-info.whats-your-case-number
+        helpMessageKey: additional-info.case-number-is-optional
       - name: caseNumberImages
         type: CUSTOM
         customInputFragment: caseNumberImages
