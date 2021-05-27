@@ -142,11 +142,9 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
 
             testPage.clickButton("Yes, that's everyone");
             navigateTo("childrenInNeedOfCare");
-            testPage.enter("whoNeedsChildCare", "Me");
-            testPage.enter("whoNeedsChildCare", "Jim Halpert");
+            testPage.enter("whoNeedsChildCare", List.of("Me", "Jim Halpert"));
             testPage.clickContinue();
-            testPage.enter("whoHasAParentNotLivingAtHome", "Me");
-            testPage.enter("whoHasAParentNotLivingAtHome", "Jim Halpert");
+            testPage.enter("whoHasAParentNotLivingAtHome", List.of("Me", "Jim Halpert"));
             testPage.clickContinue();
             List<WebElement> whatAreParentNames = driver.findElementsByName("whatAreTheParentsNames[]");
             whatAreParentNames.get(0).sendKeys(""); // blank should still get added to the PDF
@@ -180,8 +178,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             testPage.clickButton("Yes, that's everyone");
             navigateTo("goingToSchool");
             testPage.clickButton(YES.getDisplayValue());
-            testPage.enter("whoIsGoingToSchool", "Me");
-            testPage.enter("whoIsGoingToSchool", "Jim Halpert");
+            testPage.enter("whoIsGoingToSchool", List.of("Me", "Jim Halpert"));
             testPage.clickContinue();
             navigateTo("childrenInNeedOfCare");
             testPage.enter("whoNeedsChildCare", "Jim Halpert");
@@ -386,8 +383,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             testPage.clickButton("Yes, that's everyone");
             navigateTo("pregnant");
             testPage.enter("isPregnant", YesNoAnswer.YES.getDisplayValue());
-            testPage.enter("whoIsPregnant", "Me");
-            testPage.enter("whoIsPregnant", "Jim Halpert");
+            testPage.enter("whoIsPregnant", List.of("Me", "Jim Halpert"));
             testPage.clickContinue();
 
             PDAcroForm pdAcroForm = submitAndDownloadCaf();
@@ -399,9 +395,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         @Test
         void shouldMapPrograms() {
             navigateTo("choosePrograms");
-            testPage.enter("programs", PROGRAM_SNAP);
-            testPage.enter("programs", "Housing Support");
-            testPage.enter("programs", PROGRAM_EA);
+            testPage.enter("programs", List.of(PROGRAM_SNAP, PROGRAM_GRH, PROGRAM_EA));
             testPage.clickContinue();
 
             PDAcroForm pdAcroForm = submitAndDownloadCaf();
@@ -1124,7 +1118,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
 
     private void selectPrograms(List<String> programs) {
         navigateTo("choosePrograms");
-        programs.forEach(program -> testPage.enter("programs", program));
+        testPage.enter("programs", programs);
         testPage.clickContinue();
     }
 }

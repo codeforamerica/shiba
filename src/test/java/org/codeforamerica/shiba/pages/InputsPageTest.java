@@ -11,6 +11,7 @@ import org.openqa.selenium.WebElement;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -82,8 +83,7 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
         testPage.enter("numberInput", numberInputValue);
 
         testPage.enter("radioInput", radioOption1);
-        testPage.enter("checkboxInput", checkboxOption1);
-        testPage.enter("checkboxInput", checkboxOption2);
+        testPage.enter("checkboxInput", List.of(checkboxOption1, checkboxOption2));
         testPage.enter("selectInput", selectOption1);
         String moneyInputValue = "some money";
         testPage.enter("moneyInput", moneyInputValue);
@@ -167,8 +167,7 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
         @Test
         void shouldContinueDisplayingFollowUpQuestionsWhenAFollowUpValueIsStillSelected() {
             driver.navigate().to(baseUrl + "/pages/firstPage");
-            testPage.enter("checkboxInputWithFollowUps", followUpFalse);
-            testPage.enter("checkboxInputWithFollowUps", followUpUncertain);
+            testPage.enter("checkboxInputWithFollowUps", List.of(followUpFalse, followUpUncertain));
             testPage.enter("checkboxInputWithFollowUps", followUpUncertain);
 
             assertThat(driver.findElement(By.cssSelector("input[name='checkboxInputWithFollowUps-followUpTextInput[]']")).isDisplayed()).isTrue();
@@ -209,8 +208,7 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
     void shouldUncheckAnyOtherCheckedBoxesWhenNoneCheckboxIsSelected() {
         driver.navigate().to(baseUrl + "/pages/firstPage");
 
-        testPage.enter("checkboxInput", checkboxOption1);
-        testPage.enter("checkboxInput", checkboxOption2);
+        testPage.enter("checkboxInput", List.of(checkboxOption1, checkboxOption2));
         testPage.enter("checkboxInput", noneCheckboxOption);
 
         assertThat(testPage.getCheckboxValues("checkboxInput")).containsOnly(noneCheckboxOption);

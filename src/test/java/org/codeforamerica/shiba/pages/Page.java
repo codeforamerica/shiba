@@ -88,6 +88,22 @@ public class Page {
         }
     }
 
+    public void enter(String inputName, List<String> value) {
+        checkForBadMessageKeys();
+        List<WebElement> formInputElements = driver.findElements(By.name(inputName + "[]"));
+        WebElement firstElement = formInputElements.get(0);
+        FormInputHtmlTag formInputHtmlTag = FormInputHtmlTag.valueOf(firstElement.getTagName());
+        if (formInputHtmlTag == FormInputHtmlTag.input) {
+            if (InputTypeHtmlAttribute.valueOf(firstElement.getAttribute("type")) == InputTypeHtmlAttribute.checkbox) {
+                selectEnumeratedInput(formInputElements, value);
+            } else {
+                throw new IllegalArgumentException("Can't select multiple options for non-checkbox inputs");
+            }
+        } else {
+            throw new IllegalArgumentException("Cannot find element");
+        }
+    }
+
     enum FormInputHtmlTag {
         input,
         textarea,
@@ -128,6 +144,10 @@ public class Page {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException(String.format("Cannot find value \"%s\"", optionText)));
         inputToSelect.click();
+    }
+
+    private void selectEnumeratedInput(List<WebElement> webElements, List<String> options) {
+        options.forEach(option -> selectEnumeratedInput(webElements, option));
     }
 
     private void choose(List<WebElement> yesNoButtons, String value) {

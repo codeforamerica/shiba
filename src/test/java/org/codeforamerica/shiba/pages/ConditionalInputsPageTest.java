@@ -7,6 +7,7 @@ import org.openqa.selenium.By;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,11 +29,11 @@ public class ConditionalInputsPageTest extends AbstractExistingStartTimePageTest
     void shouldOnlyRenderInputsBasedOnCondition() {
         navigateTo("firstPage");
 
-        testPage.enter("options", "option 1");
+        testPage.enter("options", List.of("option 1", "option 2"));
         testPage.clickContinue();
 
         assertThat(driver.findElement(By.name("option1Text[]")).isDisplayed()).isTrue();
-        assertThat(driver.findElements(By.name("option2Text[]"))).isEmpty();
+        assertThat(driver.findElement(By.name("option2Text[]")).isDisplayed()).isTrue();
         assertThat(driver.findElements(By.name("option3Text[]"))).isEmpty();
     }
 }
