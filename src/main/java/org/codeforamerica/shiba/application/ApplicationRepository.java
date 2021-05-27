@@ -55,11 +55,12 @@ public class ApplicationRepository {
     public void save(Application application) {
         HashMap<String, Object> parameters = new HashMap<>(Map.of(
                 "id", application.getId(),
-                "completedAt", Timestamp.from(application.getCompletedAt().toInstant()),
                 "applicationData", encryptor.encrypt(application.getApplicationDataWithoutDataUrls()),
-                "county", application.getCounty().name(),
-                "timeToComplete", application.getTimeToComplete().getSeconds()
+                "county", application.getCounty().name()
         ));
+        parameters.put("completedAt", Optional.ofNullable(application.getCompletedAt()).map(completedAtTime ->
+                Timestamp.from(completedAtTime.toInstant())).orElse(null));
+        parameters.put("timeToComplete", Optional.ofNullable(application.getTimeToComplete()).map(Duration::getSeconds).orElse(null));
         parameters.put("flow", Optional.ofNullable(application.getFlow()).map(FlowType::name).orElse(null));
         parameters.put("sentiment", Optional.ofNullable(application.getSentiment()).map(Sentiment::name).orElse(null));
         parameters.put("feedback", application.getFeedback());

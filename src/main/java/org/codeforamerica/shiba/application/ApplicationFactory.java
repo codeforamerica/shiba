@@ -8,7 +8,6 @@ import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.stereotype.Component;
 
 import java.time.Clock;
-import java.time.Duration;
 import java.time.ZonedDateTime;
 
 @Component
@@ -32,16 +31,13 @@ public class ApplicationFactory {
         copy.setFlow(applicationData.getFlow());
         copy.setStartTime(applicationData.getStartTime());
         copy.setUtmSource(applicationData.getUtmSource());
-        ZonedDateTime completedAt = ZonedDateTime.now(clock);
         monitoringService.setApplicationId(applicationData.getId());
 
         return Application.builder()
                 .id(applicationData.getId())
-                .completedAt(completedAt)
-                .updatedAt(completedAt)
+                .updatedAt(ZonedDateTime.now(clock))
                 .applicationData(copy)
                 .county(countyParser.parse(applicationData))
-                .timeToComplete(Duration.between(applicationData.getStartTime(), completedAt))
                 .flow(applicationData.getFlow())
                 .build();
     }

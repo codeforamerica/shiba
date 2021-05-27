@@ -53,27 +53,6 @@ class ApplicationFactoryTest {
     }
 
     @Test
-    void shouldProvideCompletedAtTimestamp() {
-        Instant instant = Instant.ofEpochSecond(125423L);
-        when(clock.instant()).thenReturn(instant);
-
-        Application application = applicationFactory.newApplication(applicationData);
-
-        assertThat(application.getCompletedAt()).isEqualTo(ZonedDateTime.ofInstant(instant, zoneOffset));
-    }
-
-    @Test
-    void shouldProvideTimeToComplete() {
-        Instant now = Instant.now();
-        when(clock.instant()).thenReturn(now);
-        applicationData.setStartTime(now.minusSeconds(142));
-
-        Application application = applicationFactory.newApplication(applicationData);
-
-        assertThat(application.getTimeToComplete()).isEqualTo(Duration.ofSeconds(142));
-    }
-
-    @Test
     void shouldProvideApplicationFlow() {
         FlowType flow = FlowType.FULL;
         applicationData.setFlow(flow);

@@ -475,6 +475,7 @@ public class PageController {
                 applicationData.setId(applicationRepository.getNextId());
             }
             Application application = applicationFactory.newApplication(applicationData);
+            application.setCompletedAtTime(clock);
             applicationRepository.save(application);
             pageEventPublisher.publish(
                     new ApplicationSubmittedEvent(httpSession.getId(), application.getId(), application.getFlow(), LocaleContextHolder.getLocale())

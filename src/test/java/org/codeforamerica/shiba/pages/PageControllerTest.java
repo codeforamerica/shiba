@@ -74,10 +74,11 @@ class PageControllerTest {
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(pageController).build();
         when(clock.instant()).thenReturn(Instant.now());
+        when(clock.getZone()).thenReturn(ZoneId.of("UTC"));
         when(applicationFactory.newApplication(any())).thenReturn(Application.builder()
                 .id("defaultId")
                 .completedAt(ZonedDateTime.now())
-                .applicationData(null)
+                .applicationData(applicationData)
                 .county(null)
                 .timeToComplete(null)
                 .build());
@@ -181,24 +182,26 @@ class PageControllerTest {
     void shouldSaveApplicationOnSignaturePage() throws Exception {
         applicationData.setStartTimeOnce(Instant.now());
 
-        ZonedDateTime completedAt = ZonedDateTime.now();
         String applicationId = "someId";
         applicationData.setId(applicationId);
         Application application = Application.builder()
                 .id(applicationId)
-                .completedAt(completedAt)
                 .applicationData(applicationData)
                 .county(null)
-                .timeToComplete(null)
                 .build();
+
         when(applicationRepository.getNextId()).thenReturn(applicationId);
         when(applicationFactory.newApplication(applicationData)).thenReturn(application);
+
+        assertThat(application.getTimeToComplete()).isEqualTo(null);
 
         mockMvc.perform(post("/submit")
                 .param("foo[]", "some value")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
         verify(applicationRepository).save(application);
+        assertThat(application.getTimeToComplete()).isNotNull();
+        assertThat(application.getCompletedAt()).isNotNull();
         assertThat(applicationData.getId()).isEqualTo(applicationId);
     }
 
