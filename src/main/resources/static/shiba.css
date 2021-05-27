@@ -600,6 +600,10 @@ input[type=number] {
         padding-left: 3.5rem;
         padding-right: 3.5rem;
     }
+
+    .sample-case-number-images {
+        display: flex;
+    }
 }
 
 .toolbar {
