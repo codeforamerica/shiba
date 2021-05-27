@@ -44,7 +44,7 @@ public class UploadedDocumentsSubmittedListener extends ApplicationEventListener
                 && (application.getCounty().equals(County.Hennepin)
                 || application.getCounty().equals(County.Other))) {
             log.info("Processing Hennepin uploaded documents");
-            emailClient.sendHennepinDocUploadsEmail(application);
+            emailClient.sendHennepinDocUploadsEmails(application);
         } else {
             log.info("Processing uploaded documents");
             mnitDocumentConsumer.processUploadedDocuments(application);

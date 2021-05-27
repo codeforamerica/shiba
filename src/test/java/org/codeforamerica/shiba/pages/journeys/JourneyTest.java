@@ -46,7 +46,5 @@ public abstract class JourneyTest extends AbstractBasePageTest {
         when(featureFlagConfiguration.get("later-docs-v2-feature")).thenReturn(FeatureFlag.OFF);
         when(featureFlagConfiguration.get("submit-via-email")).thenReturn(FeatureFlag.OFF);
         when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.OFF);
-
-        when(uploadDocumentConfiguration.getMaxFilesize()).thenReturn(50);
     }
 }

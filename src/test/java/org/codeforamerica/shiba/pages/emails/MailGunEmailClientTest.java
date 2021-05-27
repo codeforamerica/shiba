@@ -14,12 +14,13 @@ import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
-import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.*;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -32,6 +33,8 @@ import java.util.Map;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.matching.MultipartValuePattern.MatchingType.ANY;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
+import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility.UNDETERMINED;
 import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.ELIGIBLE;
 import static org.mockito.ArgumentMatchers.anyMap;
@@ -48,8 +51,8 @@ class MailGunEmailClientTest {
     MailGunEmailClient mailGunEmailClient;
     EmailContentCreator emailContentCreator;
     WireMockServer wireMockServer;
-    @Autowired
-    PdfGenerator pdfGenerator;
+    PdfGenerator pdfGenerator = mock(PdfGenerator.class);
+
     int port;
 
     @Value("${spring.profiles.active}")
@@ -234,6 +237,10 @@ class MailGunEmailClientTest {
                 ))
         ));
         applicationData.setPagesData(pagesData);
+        ApplicationFile testFile = new ApplicationFile("testfile".getBytes(), "");
+        UploadedDocument doc1 = new UploadedDocument("somefile1", "", "", "", 1000);
+        UploadedDocument doc2 = new UploadedDocument("somefile2", "", "", "", 1000);
+        applicationData.setUploadedDocs(List.of(doc1, doc2));
         Application application = Application.builder()
                 .id("someId")
                 .completedAt(ZonedDateTime.now())
@@ -243,10 +250,12 @@ class MailGunEmailClientTest {
                 .build();
         var emailContent = "content";
         when(emailContentCreator.createHennepinDocUploadsHTML(anyMap())).thenReturn(emailContent);
+        when(pdfGenerator.generate(any(Application.class), eq(UPLOADED_DOC), eq(CASEWORKER))).thenReturn(testFile);
+        when(pdfGenerator.generateForUploadedDocument(any(UploadedDocument.class), anyInt(), any(Application.class), any())).thenReturn(testFile);
 
-        mailGunEmailClient.sendHennepinDocUploadsEmail(application);
+        mailGunEmailClient.sendHennepinDocUploadsEmails(application);
 
-        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
+        wireMockServer.verify(2, postRequestedFor(urlPathEqualTo("/"))
                 .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
                 .withRequestBodyPart(aMultipart()
                         .withName("from")
@@ -302,6 +311,10 @@ class MailGunEmailClientTest {
                 ))
         ));
         applicationData.setPagesData(pagesData);
+        ApplicationFile testFile = new ApplicationFile("testfile".getBytes(), "");
+        UploadedDocument doc1 = new UploadedDocument("somefile1", "", "", "", 1000);
+        UploadedDocument doc2 = new UploadedDocument("somefile2", "", "", "", 1000);
+        applicationData.setUploadedDocs(List.of(doc1, doc2));
         Application application = Application.builder()
                 .id("someId")
                 .completedAt(ZonedDateTime.now())
@@ -312,10 +325,13 @@ class MailGunEmailClientTest {
                 .build();
         var emailContent = "content";
         when(emailContentCreator.createHennepinDocUploadsHTML(anyMap())).thenReturn(emailContent);
+        when(pdfGenerator.generate(any(Application.class), eq(UPLOADED_DOC), eq(CASEWORKER))).thenReturn(testFile);
+        when(pdfGenerator.generateForUploadedDocument(any(UploadedDocument.class), anyInt(), any(Application.class), any())).thenReturn(testFile);
 
-        mailGunEmailClient.sendHennepinDocUploadsEmail(application);
 
-        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
+        mailGunEmailClient.sendHennepinDocUploadsEmails(application);
+
+        wireMockServer.verify(2, postRequestedFor(urlPathEqualTo("/"))
                 .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
                 .withRequestBodyPart(aMultipart()
                         .withName("from")

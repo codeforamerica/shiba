@@ -75,6 +75,6 @@ class UploadedDocumentsSubmittedListenerTest {
 
         uploadedDocumentsSubmittedListener.send(event);
 
-        verify(emailClient).sendHennepinDocUploadsEmail(hennepinApplication);
+        verify(emailClient).sendHennepinDocUploadsEmails(hennepinApplication);
     }
 }

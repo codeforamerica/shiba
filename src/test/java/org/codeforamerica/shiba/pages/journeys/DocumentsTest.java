@@ -356,7 +356,7 @@ public class DocumentsTest extends JourneyTest {
     @Test
     void showMaxFilesizeErrorMessageWhenClientHasUploadedLargeDocument() {
         getToDocumentUploadScreen();
-        long largeFilesize = 30000000000L;
+        long largeFilesize = 21000000L;
         driver.executeScript("$('#document-upload').get(0).dropzone.addFile({name: 'testFile.pdf', size: " + largeFilesize + ", type: 'not-an-image'})");
 
         int maxFileSize = uploadDocumentConfiguration.getMaxFilesize();

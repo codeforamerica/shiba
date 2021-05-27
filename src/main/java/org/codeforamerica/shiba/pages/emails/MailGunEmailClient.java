@@ -142,7 +142,7 @@ public class MailGunEmailClient implements EmailClient {
     }
 
     @Override
-    public void sendHennepinDocUploadsEmail(Application application) {
+    public void sendHennepinDocUploadsEmails(Application application) {
         MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
         form.put("o:require-tls", List.of("true"));
 
@@ -182,7 +182,6 @@ public class MailGunEmailClient implements EmailClient {
 
         // Generate Uploaded Doc PDFs
         List<UploadedDocument> uploadedDocs = application.getApplicationData().getUploadedDocs();
-        List<ApplicationFile> applicationFiles = new ArrayList<>();
         byte[] coverPage = pdfGenerator.generate(application, UPLOADED_DOC, CASEWORKER).getFileBytes();
         for (int i = 0; i < uploadedDocs.size(); i++) {
             UploadedDocument uploadedDocument = uploadedDocs.get(i);
@@ -190,17 +189,17 @@ public class MailGunEmailClient implements EmailClient {
 
             if (fileToSend.getFileBytes().length > 0) {
                 log.info("Now attaching: " + fileToSend.getFileName() + " original filename: " + uploadedDocument.getFilename());
-                applicationFiles.add(fileToSend);
+
+                form.put("attachment", List.of(asResource(fileToSend)));
+
+                webClient.post()
+                        .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
+                        .body(fromMultipartData(form))
+                        .retrieve()
+                        .bodyToMono(Void.class)
+                        .block();
             }
         }
-        form.put("attachment", applicationFiles.stream().map(this::asResource).collect(Collectors.toList()));
-
-        webClient.post()
-                .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
-                .body(fromMultipartData(form))
-                .retrieve()
-                .bodyToMono(Void.class)
-                .block();
     }
 
     @Override
