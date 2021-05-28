@@ -578,6 +578,10 @@ input[type=number] {
     color: #E9F6FF;
 }
 
+.language-selector-option {
+	color: #003865;
+}
+
 .toolbar__wrapper {
     background: #003865;
     margin-left: -1.5rem;
