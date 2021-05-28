@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
-<div class="form-group" th:fragment="caseNumberImages (input, data)">
-    <div th:replace="fragments/icons/sample-letter-1 :: sample-letter-1"></div>
-    <div th:replace="fragments/icons/sample-letter-2 :: sample-letter-2"></div>
+<div th:fragment="caseNumberImages (input, data)">
+    <div class="form-group">
+        <p class="form-question spacing-below-0" th:text="#{additional-info.you-can-find-your-case-number}"></p>
+        <div class="sample-case-number-images">
+            <div th:replace="fragments/icons/sample-letter-1 :: sample-letter-1"></div>
+            <div th:replace="fragments/icons/sample-letter-2 :: sample-letter-2"></div>
+        </div>
+    </div>
 </div>
 </html>
