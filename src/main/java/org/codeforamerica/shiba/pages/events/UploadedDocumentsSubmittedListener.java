@@ -46,7 +46,12 @@ public class UploadedDocumentsSubmittedListener extends ApplicationEventListener
             log.info("Processing uploaded documents");
             mnitDocumentConsumer.processUploadedDocuments(application);
         }
+    }
 
+    @Async
+    @EventListener
+    public void sendConfirmationEmail(UploadedDocumentsSubmittedEvent event) {
+        Application application = getApplicationFromEvent(event);
         if (application.getFlow() == FlowType.LATER_DOCS) {
             sendLaterDocsConfirmationEmail(event);
         }
