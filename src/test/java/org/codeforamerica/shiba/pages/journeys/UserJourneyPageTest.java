@@ -202,6 +202,17 @@ public class UserJourneyPageTest extends JourneyTest {
     }
 
     @Test
+    void minimumFlowForSnapOnly() {
+        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_SNAP), smartyStreetClient);
+        testPage.clickLink("Submit application now with only the above information.");
+        testPage.clickLink("Finish application now");
+
+        assertThat(testPage.getTitle()).isEqualTo("Additional Info");
+        testPage.clickContinue();
+        assertThat(testPage.getTitle()).isEqualTo("Legal Stuff");
+    }
+
+    @Test
     void partialFlow() throws IOException {
         getToDocumentUploadScreen();
         completeDocumentUploadFlow();
