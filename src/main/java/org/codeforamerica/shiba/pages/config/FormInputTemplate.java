@@ -11,6 +11,7 @@ public class FormInputTemplate {
     String customInputFragment;
     PromptMessage promptMessage;
     String helpMessageKey;
+    String placeholder;
     String validationErrorMessageKey;
     OptionsWithDataSourceTemplate options;
     List<FormInputTemplate> followUps;
