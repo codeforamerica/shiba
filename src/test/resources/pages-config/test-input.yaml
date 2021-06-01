@@ -8,6 +8,7 @@ pageDefinitions:
           promptMessage:
             promptMessageKey: prompt-message-key
           helpMessageKey: help-message-key
+          placeholder: general.optional
         - name: uneditableInput
           type: TEXT
           readOnly: true
