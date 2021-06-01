@@ -58,8 +58,7 @@ public class ApplicationRepository {
                 "applicationData", encryptor.encrypt(application.getApplicationDataWithoutDataUrls()),
                 "county", application.getCounty().name()
         ));
-        parameters.put("completedAt", Optional.ofNullable(application.getCompletedAt()).map(completedAtTime ->
-                Timestamp.from(completedAtTime.toInstant())).orElse(null));
+        parameters.put("completedAt", convertToTimestamp(application.getCompletedAt()));
         parameters.put("timeToComplete", Optional.ofNullable(application.getTimeToComplete()).map(Duration::getSeconds).orElse(null));
         parameters.put("flow", Optional.ofNullable(application.getFlow()).map(FlowType::name).orElse(null));
         parameters.put("sentiment", Optional.ofNullable(application.getSentiment()).map(Sentiment::name).orElse(null));
@@ -87,7 +86,8 @@ public class ApplicationRepository {
                     (resultSet, rowNum) ->
                             Application.builder()
                                     .id(id)
-                                    .completedAt(ZonedDateTime.ofInstant(resultSet.getTimestamp("completed_at").toInstant(), ZoneOffset.UTC))
+                                    .completedAt(convertToZonedDateTime(resultSet.getTimestamp("completed_at")))
+                                    .updatedAt(convertToZonedDateTime(resultSet.getTimestamp("updated_at")))
                                     .applicationData(encryptor.decrypt(resultSet.getString("application_data")))
                                     .county(County.valueFor(resultSet.getString("county")))
                                     .timeToComplete(Duration.ofSeconds(resultSet.getLong("time_to_complete")))
@@ -104,6 +104,18 @@ public class ApplicationRepository {
             log.error("Unable to locate application with ID " + id);
             throw e;
         }
+    }
+
+    private ZonedDateTime convertToZonedDateTime(Timestamp timestamp) {
+        return Optional.ofNullable(timestamp)
+                .map(time -> ZonedDateTime.ofInstant(time.toInstant(), ZoneOffset.UTC))
+                .orElse(null);
+    }
+
+    private Timestamp convertToTimestamp(ZonedDateTime dateTime) {
+        return Optional.ofNullable(dateTime)
+                .map(time -> Timestamp.from(time.toInstant()))
+                .orElse(null);
     }
 
     public Duration getMedianTimeToComplete() {

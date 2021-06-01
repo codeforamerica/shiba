@@ -132,7 +132,6 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
         String applicationId = "someid";
         Application application = Application.builder()
                 .id(applicationId)
-                .completedAt(ZonedDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS))
                 .applicationData(applicationData)
                 .county(Olmsted)
                 .timeToComplete(Duration.ofSeconds(12415))
@@ -147,9 +146,10 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
         updatedApplicationData.setPagesData(new PagesData(Map.of(
                 "someUpdatedPage", new PageData(Map.of("someUpdatedInput", InputData.builder().value(emptyList()).build()))
         )));
+        ZonedDateTime completedAt = ZonedDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS);
         Application updatedApplication = Application.builder()
                 .id(application.getId())
-                .completedAt(ZonedDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS))
+                .completedAt(completedAt)
                 .applicationData(updatedApplicationData)
                 .county(Hennepin)
                 .timeToComplete(Duration.ofSeconds(421))
@@ -159,10 +159,12 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
                 .build();
 
         applicationRepository.save(updatedApplication);
+        ZonedDateTime expectedUpdatedAt = ZonedDateTime.now(ZoneOffset.UTC);
 
         Application retrievedApplication = applicationRepository.find(applicationId);
 
-        assertThat(retrievedApplication).usingRecursiveComparison().ignoringFields("fileName").isEqualTo(updatedApplication);
+        assertThat(retrievedApplication).usingRecursiveComparison().ignoringFields("fileName", "updatedAt").isEqualTo(updatedApplication);
+        assertThat(retrievedApplication.getUpdatedAt()).isBetween(completedAt, expectedUpdatedAt);
     }
 
     @Nested
