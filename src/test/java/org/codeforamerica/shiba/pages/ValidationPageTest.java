@@ -271,12 +271,13 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
 
         @ParameterizedTest
         @ValueSource(strings = {
-                "123456",
+                "123",
+                "12345678",
                 "abcdefg",
                 "1234-56",
                 "1234e67"
         })
-        void shouldFailValidationForCaseNumberWhenValueIsNotExactlySevenDigits(String input) {
+        void shouldFailValidationForCaseNumberWhenValueIsNotFourToSevenDigits(String input) {
             driver.navigate().to(baseUrl + "/pages/caseNumberPage");
             driver.findElement(By.cssSelector("input[name='caseNumberInput[]']")).sendKeys(input);
             driver.findElement(By.tagName("button")).click();
@@ -293,12 +294,18 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
             assertThat(testPage.hasInputError("caseNumberInput")).isFalse();
         }
 
-        @Test
-        void shouldPassValidationForCaseNumberWhenValueIsExactlySevenDigits() {
+        @ParameterizedTest
+        @ValueSource(strings = {
+                "1234",
+                "12345",
+                "123456",
+                "1234567"
+        })
+        void shouldPassValidationForCaseNumberWhenValueIsFourToSevenDigits(String input) {
             driver.navigate().to(baseUrl + "/pages/caseNumberPage");
 
             driver.findElement(By.cssSelector("input[name='caseNumberInput[]']")).clear();
-            driver.findElement(By.cssSelector("input[name='caseNumberInput[]']")).sendKeys("1234567");
+            driver.findElement(By.cssSelector("input[name='caseNumberInput[]']")).sendKeys(input);
             driver.findElement(By.tagName("button")).click();
 
             assertThat(driver.getTitle()).isEqualTo(lastPageTitle);

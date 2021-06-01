@@ -1378,7 +1378,7 @@ pageDefinitions:
         type: TEXT
         validators:
           - validation: CASE_NUMBER
-            errorMessageKey: general.validation.make-sure-your-case-number-has-7-digits
+            errorMessageKey: general.validation.make-sure-your-case-number-has-4-to-7-digits
             condition:
               input: caseNumber
               matcher: NOT_EMPTY
@@ -2328,6 +2328,12 @@ pageDefinitions:
         type: TEXTAREA
       - name: caseNumber
         type: TEXT
+        validators:
+          - validation: CASE_NUMBER
+            errorMessageKey: general.validation.make-sure-your-case-number-has-4-to-7-digits
+            condition:
+              input: caseNumber
+              matcher: NOT_EMPTY
         promptMessage:
           promptMessageKey: additional-info.whats-your-case-number
         helpMessageKey: additional-info.case-number-is-optional
