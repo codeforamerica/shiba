@@ -3080,7 +3080,7 @@ workflow:
     nextPages:
       - pageName: addHouseholdMembersExpedited
         flow: EXPEDITED
-      - pageName: legalStuff
+      - pageName: additionalInfo
         flow: MINIMUM
   addHouseholdMembersExpedited:
     pageConfiguration: *addHouseholdMembers
