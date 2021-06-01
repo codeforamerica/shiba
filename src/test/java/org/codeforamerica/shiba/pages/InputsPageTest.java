@@ -20,19 +20,20 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"pagesConfig=pages-config/test-input.yaml"})
 public class InputsPageTest extends AbstractExistingStartTimePageTest {
 
-    String radioOption1 = "radio option 1";
-    String radioOption2 = "option-2";
-    String checkboxOption1 = "checkbox option 1";
-    String checkboxOption2 = "checkbox option 2";
-    String noneCheckboxOption = "none checkbox option";
-    String selectOption1 = "select option 1";
-    String selectOption2 = "select option 2";
-    String followUpTrue = "YEP";
-    String followUpFalse = "NOPE";
-    String followUpUncertain = "UNSURE";
-    String promptMessage = "prompt message";
-    String helpMessage = "help message";
-    String optionHelpMessage = "option help message";
+    final String radioOption1 = "radio option 1";
+    final String radioOption2 = "option-2";
+    final String checkboxOption1 = "checkbox option 1";
+    final String checkboxOption2 = "checkbox option 2";
+    final String noneCheckboxOption = "none checkbox option";
+    final String selectOption1 = "select option 1";
+    final String selectOption2 = "select option 2";
+    final String followUpTrue = "YEP";
+    final String followUpFalse = "NOPE";
+    final String followUpUncertain = "UNSURE";
+    final String promptMessage = "prompt message";
+    final String helpMessage = "help message";
+    final String optionHelpMessage = "option help message";
+    final String placeholder = "optional input";
 
     @Override
     @BeforeEach
@@ -53,13 +54,14 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
         staticMessageSource.addMessage("prompt-message-key", Locale.ENGLISH, promptMessage);
         staticMessageSource.addMessage("help-message-key", Locale.ENGLISH, helpMessage);
         staticMessageSource.addMessage("option-help-key", Locale.ENGLISH, optionHelpMessage);
+        staticMessageSource.addMessage("general.optional", Locale.ENGLISH, placeholder);
         staticMessageSource.addMessage("general.month", Locale.ENGLISH, "month");
         staticMessageSource.addMessage("general.day", Locale.ENGLISH, "day");
         staticMessageSource.addMessage("general.year", Locale.ENGLISH, "year");
     }
 
     @Test
-    void shouldShowPromptAndHelpMessagesForInput() {
+    void shouldShowPromptAndHelpMessagesForInputWithPlaceholder() {
         driver.navigate().to(baseUrl + "/pages/firstPage");
         assertThat(driver.getTitle()).isEqualTo("firstPageTitle");
 
@@ -267,5 +269,17 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
         assertThat(testPage.findElementTextByName("iteration1")).isEqualTo("b");
         assertThat(testPage.findElementTextByName("iteration2")).isEqualTo("c");
         assertThat(testPage.findElementTextByName("datasourceText")).isEqualTo(datasourceText);
+    }
+
+    @Test
+    void shouldDisplayPlaceholderIfPresent() {
+        navigateTo("firstPage");
+        assertThat(driver.getTitle()).isEqualTo("firstPageTitle");
+        takeSnapShot("test.png");
+        assertThat(driver.findElement(By.name("editableTextInput[]")).getAttribute("placeholder")).isEqualTo(placeholder);
+
+        navigateTo("nextPage");
+        assertThat(driver.getTitle()).isEqualTo("nextPageTitle");
+        assertThat(driver.findElement(By.name("someInputName[]")).getAttribute("placeholder")).isEmpty();
     }
 }

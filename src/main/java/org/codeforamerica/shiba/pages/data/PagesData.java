@@ -153,6 +153,7 @@ public class PagesData extends HashMap<String, PageData> {
                 formInput.getCustomInputFragment(),
                 formInput.getPromptMessage(),
                 formInput.getHelpMessageKey(),
+                formInput.getPlaceholder(),
                 errorMessageKey,
                 createOptionsWithDataSourceTemplate(formInput, applicationData),
                 formInput.getFollowUps().stream().map(followup -> convert(pageName, followup, applicationData)).collect(Collectors.toList()),
