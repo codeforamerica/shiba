@@ -27,6 +27,7 @@ public class FormInputTemplate {
             case DATE -> "date-input";
             case RADIO -> "radio-input";
             case CHECKBOX -> "checkbox-input";
+            case PEOPLE_CHECKBOX -> "people-checkbox-input";
             case YES_NO -> "yes-no-input";
             case HIDDEN -> "hidden-input";
             case CUSTOM -> customInputFragment;

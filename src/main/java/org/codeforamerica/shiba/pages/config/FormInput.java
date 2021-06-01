@@ -23,4 +23,5 @@ public class FormInput {
     private Integer max;
     private Integer min;
     private Condition condition;
+    private List<PageDatasource> datasources;
 }
