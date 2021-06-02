@@ -20,6 +20,7 @@ public class FormInputTemplate {
     String defaultValue;
     Integer max;
     Integer min;
+    List<PageDatasource> datasources;
 
     public String fragment() {
         return switch (type) {

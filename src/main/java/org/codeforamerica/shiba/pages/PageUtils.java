@@ -1,7 +1,11 @@
 package org.codeforamerica.shiba.pages;
 
+import io.netty.util.internal.StringUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.util.Strings;
 import org.codeforamerica.shiba.pages.data.DatasourcePages;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -55,5 +59,11 @@ public class PageUtils {
                     iteration.contains("CCAP"));
         }
         return applicantHasCCAP || householdHasCCAP;
+    }
+
+    public static String householdMemberName(String householdMemberNameAndId) {
+        String[] householdMemberInfo = householdMemberNameAndId.split(" ");
+        String[] houseName = Arrays.copyOfRange(householdMemberInfo, 0, householdMemberInfo.length - 1);
+        return StringUtils.join(houseName," ");
     }
 }

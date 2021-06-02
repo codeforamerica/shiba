@@ -25,7 +25,7 @@ pageDefinitions:
         options:
           selectableOptions:
             - value: NONE
-              messageKey: general.inputs.none-of-the-above
+              messageKey: none-of-the-above
               isNone: true
 workflow:
   firstPage:
