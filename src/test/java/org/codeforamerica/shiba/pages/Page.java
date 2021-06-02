@@ -1,18 +1,26 @@
 package org.codeforamerica.shiba.pages;
 
-import io.percy.selenium.*;
+import com.deque.html.axecore.results.Results;
+import com.deque.html.axecore.results.Rule;
+import com.deque.html.axecore.selenium.AxeBuilder;
+import com.deque.html.axecore.selenium.AxeReporter;
+import io.percy.selenium.Percy;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Slf4j
 public class Page {
     protected final RemoteWebDriver driver;
     protected final Percy percy;
+    protected List<Rule> resultsList;
 
     public String getTitle() {
         return driver.getTitle();
@@ -50,6 +58,7 @@ public class Page {
 
     public void clickButtonLink(String buttonLinkText) {
         percy.snapshot(driver.getTitle());
+        testAccessibility();
         checkForBadMessageKeys();
         WebElement buttonToClick = driver.findElements(By.className("button--link")).stream()
                 .filter(button -> button.getText().contains(buttonLinkText))
@@ -60,6 +69,7 @@ public class Page {
 
     public void clickContinue() {
         clickButton("Continue");
+        testAccessibility();
     }
 
     public void enter(String inputName, String value) {
@@ -227,5 +237,27 @@ public class Page {
     public void clickElementById(String id) {
         WebElement inputToSelect = driver.findElementById(id);
         inputToSelect.click();
+    }
+
+    public void testAccessibility() {
+        Results results = new AxeBuilder().analyze(driver);
+        List<Rule> violations = results.getViolations();
+        resultsList.addAll(violations);
+    }
+
+    // TODO this needs to happen on the userJourneyPageTest
+    public void generateAccessibilityReport() {
+        AxeBuilder builder = new AxeBuilder();
+        builder.setOptions("{ \"resultTypes\": violations }");
+        Results results = builder.analyze(driver);
+        results.setViolations(resultsList);
+        if (results.getViolations().size() > 0) {
+            log.info("Accessibility testing found the following issues: " + results);
+        }
+        AxeReporter.writeResultsToJsonFile("src/test/resources/accessibility-test-results/testAccessibility", results);
+//        assertFalse(getReadableAxeResults(ResultType.Violations.getKey(), driver, violations));
+        AxeReporter.writeResultsToTextFile("src/test/resources/accessibility-test-results/testAccessibility", AxeReporter.getAxeResultString());
+
+        File jsonFile = new File("src/test/resources/accessibility-test-results/testAccessibility.json");
     }
 }
