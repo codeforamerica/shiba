@@ -23,7 +23,7 @@
              th:value="NONE_OF_THE_ABOVE"
              th:name="${formInputName}"
              th:checked="${inputData.value.contains('NONE_OF_THE_ABOVE')}">
-      <span th:text="#{general.inputs.none-of-the-above}"></span>
+      <span th:text="#{parent-not-at-home.none-of-the-children-have-parents-living-outside-the-home}"></span>
     </label>
     <p class="text--error" th:if="${!inputData.valid(data)}">
       <i class="icon-warning"></i>

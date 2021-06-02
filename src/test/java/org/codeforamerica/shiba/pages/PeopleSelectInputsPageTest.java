@@ -23,7 +23,7 @@ public class PeopleSelectInputsPageTest extends AbstractExistingStartTimePageTes
         staticMessageSource.addMessage("option1", Locale.ENGLISH, "option 1");
         staticMessageSource.addMessage("option2", Locale.ENGLISH, "option 2");
         staticMessageSource.addMessage("option3", Locale.ENGLISH, "option 3");
-        staticMessageSource.addMessage("general.inputs.none-of-the-above", Locale.ENGLISH, "None of the above");
+        staticMessageSource.addMessage("parent-not-at-home.none-of-the-children-have-parents-living-outside-the-home", Locale.ENGLISH, "None of the children have parents living outside the home");
     }
 
     @Test
@@ -36,6 +36,6 @@ public class PeopleSelectInputsPageTest extends AbstractExistingStartTimePageTes
         assertThat(driver.findElement(By.id("Fake Person1 c6624883")).isDisplayed()).isTrue();
         assertThat(driver.findElement(By.id("Fake Person2 jre55443")).isDisplayed()).isTrue();
         assertThat(driver.findElements(By.id("Fake Person3 fafd2345"))).isEmpty();
-        assertThat(driver.findElement(By.id("none")).isDisplayed()).isTrue();
+        assertThat(driver.findElement(By.id("none__checkbox")).isDisplayed()).isTrue();
     }
 }
