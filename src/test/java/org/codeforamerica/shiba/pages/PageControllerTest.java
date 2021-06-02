@@ -32,6 +32,7 @@ import java.time.*;
 import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
 import static org.codeforamerica.shiba.output.Document.*;
 import static org.hamcrest.Matchers.equalTo;
@@ -152,6 +153,45 @@ class PageControllerTest {
                 .session(session)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
+        InOrder inOrder = inOrder(applicationRepository, pageEventPublisher);
+        inOrder.verify(applicationRepository).save(application);
+        inOrder.verify(pageEventPublisher).publish(new UploadedDocumentsSubmittedEvent(sessionId, applicationId, Locale.ENGLISH));
+    }
+
+    @Test
+    void shouldSetCompletedAtAndTimeToCompleteForLaterDocsFlow() throws Exception {
+        String applicationId = "someId";
+        applicationData.setId(applicationId);
+        applicationData.setStartTimeOnce(Instant.now());
+
+        MockMultipartFile image = new MockMultipartFile("image", "someImage.jpg", MediaType.IMAGE_JPEG_VALUE, "test".getBytes());
+        applicationData.addUploadedDoc(image, "someS3FilePath", "someDataUrl", "image/jpeg");
+
+        Application application = Application.builder()
+                .id(applicationId)
+                .completedAt(ZonedDateTime.now())
+                .applicationData(applicationData)
+                .county(null)
+                .timeToComplete(null)
+                .flow(LATER_DOCS)
+                .build();
+
+        applicationData.setFlow(LATER_DOCS);
+
+        when(applicationRepository.find(eq(applicationId))).thenReturn(application);
+        when(featureFlags.get("submit-via-api")).thenReturn(FeatureFlag.ON);
+
+        String sessionId = "someSessionId";
+
+        assertThat(application.getTimeToComplete()).isEqualTo(null);
+
+        MockHttpSession session = new MockHttpSession(null, sessionId);
+        mockMvc.perform(post("/submit-documents")
+                .session(session)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+
+        assertThat(application.getCompletedAt()).isNotNull();
+        assertThat(application.getTimeToComplete()).isNotNull();
         InOrder inOrder = inOrder(applicationRepository, pageEventPublisher);
         inOrder.verify(applicationRepository).save(application);
         inOrder.verify(pageEventPublisher).publish(new UploadedDocumentsSubmittedEvent(sessionId, applicationId, Locale.ENGLISH));
