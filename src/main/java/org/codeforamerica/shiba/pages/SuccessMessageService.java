@@ -25,8 +25,8 @@ public class SuccessMessageService {
                                     SnapExpeditedEligibility snapExpeditedEligibility,
                                     CcapExpeditedEligibility ccapExpeditedEligibility,
                                     Locale locale) {
-        boolean isSnapExpeditedEligible = snapExpeditedEligibility.equals(SnapExpeditedEligibility.ELIGIBLE);
-        boolean isCcapExpeditedEligible = ccapExpeditedEligibility.equals(CcapExpeditedEligibility.ELIGIBLE);
+        boolean isSnapExpeditedEligible = snapExpeditedEligibility == SnapExpeditedEligibility.ELIGIBLE;
+        boolean isCcapExpeditedEligible = ccapExpeditedEligibility == CcapExpeditedEligibility.ELIGIBLE;
 
         LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
 
@@ -81,11 +81,11 @@ public class SuccessMessageService {
         }
 
         if (allPrograms.contains(EA)) {
-            nextStepLetterPrograms.add((ms.getMessage("success.emergency-assistance")));
+            nextStepLetterPrograms.add(ms.getMessage("success.emergency-assistance"));
         }
 
         if (allPrograms.contains(CASH)) {
-            nextStepLetterPrograms.add((ms.getMessage("success.cash-support")));
+            nextStepLetterPrograms.add(ms.getMessage("success.cash-support"));
         }
 
         boolean hasNonExpeditedSnap = allPrograms.contains(SNAP) && !isSnapExpeditedEligible;
