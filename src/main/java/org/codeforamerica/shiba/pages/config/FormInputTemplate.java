@@ -20,6 +20,7 @@ public class FormInputTemplate {
     String defaultValue;
     Integer max;
     Integer min;
+    List<PageDatasource> datasources;
 
     public String fragment() {
         return switch (type) {
@@ -27,6 +28,7 @@ public class FormInputTemplate {
             case DATE -> "date-input";
             case RADIO -> "radio-input";
             case CHECKBOX -> "checkbox-input";
+            case PEOPLE_CHECKBOX -> "people-checkbox-input";
             case YES_NO -> "yes-no-input";
             case HIDDEN -> "hidden-input";
             case CUSTOM -> customInputFragment;

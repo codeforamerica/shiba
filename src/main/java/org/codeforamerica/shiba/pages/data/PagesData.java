@@ -161,7 +161,8 @@ public class PagesData extends HashMap<String, PageData> {
                 formInput.getReadOnly(),
                 formInput.getDefaultValue(),
                 formInput.getMax(),
-                formInput.getMin()
+                formInput.getMin(),
+                formInput.getDatasources()
         );
     }
 }

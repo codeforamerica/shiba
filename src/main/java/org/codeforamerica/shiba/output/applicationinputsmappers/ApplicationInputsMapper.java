@@ -14,7 +14,7 @@ public interface ApplicationInputsMapper {
 
     static ApplicationInputType formInputTypeToApplicationInputType(FormInputType type) {
         return switch (type) {
-            case CHECKBOX -> ApplicationInputType.ENUMERATED_MULTI_VALUE;
+            case CHECKBOX, PEOPLE_CHECKBOX -> ApplicationInputType.ENUMERATED_MULTI_VALUE;
             case RADIO, SELECT -> ApplicationInputType.ENUMERATED_SINGLE_VALUE;
             case DATE -> ApplicationInputType.DATE_VALUE;
             case TEXT, LONG_TEXT, HOURLY_WAGE, NUMBER, YES_NO, MONEY, TEXTAREA, PHONE, SSN, CUSTOM -> ApplicationInputType.SINGLE_VALUE;

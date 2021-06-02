@@ -258,6 +258,7 @@ public abstract class AbstractBasePageTest {
             testPage.clickButton("Yes, that's everyone");
             testPage.enter("whoNeedsChildCare", "householdMemberFirstName householdMemberLastName");
             testPage.clickContinue();
+            testPage.enter("whoHasAParentNotLivingAtHome", "None of the children have parents living outside the home");
             testPage.clickContinue();
             testPage.enter("livingSituation", "None of these");
             testPage.clickContinue();

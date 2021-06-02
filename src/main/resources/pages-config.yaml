@@ -648,12 +648,14 @@ pageDefinitions:
     pageTitle: parent-not-at-home.title
     headerKey: parent-not-at-home.who-are-the-children-that-have-a-parent-not-living-at-home
     inputs:
-      - type: CUSTOM
+      - type: PEOPLE_CHECKBOX
         name: whoHasAParentNotLivingAtHome
-        customInputFragment: parentNotAtHomeCheckboxes
-        options:
-          datasources:
-            - pageName: childrenInNeedOfCare
+        validators:
+          - validation: SELECT_AT_LEAST_ONE
+            errorMessageKey: general.validation.make-sure-you-choose-none-of-the-above-or-another-option
+        datasources:
+          - pageName: childrenInNeedOfCare
+            inputName: whoNeedsChildCare
   - &parentNotAtHomeNames
     name: parentNotAtHomeNames
     pageTitle: parent-not-at-home-names.title
@@ -2496,7 +2498,7 @@ workflow:
           matcher: NONE_SELECTED
         - pageName: whoHasParentNotAtHome
           input: whoHasAParentNotLivingAtHome
-          matcher: NONE_SELECTED
+          value: NONE_OF_THE_ABOVE
   householdDeleteWarningPage:
     pageConfiguration: *householdDeleteWarningPage
     appliesToGroup: household

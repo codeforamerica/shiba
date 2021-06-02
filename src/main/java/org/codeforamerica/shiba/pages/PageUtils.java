@@ -1,7 +1,9 @@
 package org.codeforamerica.shiba.pages;
 
+import org.apache.commons.lang3.StringUtils;
 import org.codeforamerica.shiba.pages.data.DatasourcePages;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -55,5 +57,21 @@ public class PageUtils {
                     iteration.contains("CCAP"));
         }
         return applicantHasCCAP || householdHasCCAP;
+    }
+
+    /**
+     * @param householdMemberNameAndId a string in the form "firstname lastname id".
+     * @param me                       the string "me" in whatever language the client is using
+     * @return the full name without an id, or "Me" if the id is the string "applicant"
+     */
+    public static String householdMemberName(String householdMemberNameAndId, String me) {
+        String[] householdMemberInfo = householdMemberNameAndId.split(" ");
+        String childId = householdMemberInfo[householdMemberInfo.length - 1];
+        if ("applicant".equals(childId)) {
+            return me;
+        }
+
+        String[] fullNameParts = Arrays.copyOfRange(householdMemberInfo, 0, householdMemberInfo.length - 1);
+        return StringUtils.join(fullNameParts, " ");
     }
 }

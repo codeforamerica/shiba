@@ -6,5 +6,6 @@ import lombok.Data;
 public class PageDatasource {
     private String pageName;
     private String groupName;
+    private String inputName;
     private boolean optional = false;
 }

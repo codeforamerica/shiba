@@ -172,6 +172,37 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         }
 
         @Test
+        void shouldNotMapParentsLivingOutsideOfHomeIfNoneSelected() {
+            addHouseholdMembers();
+
+            testPage.clickButton("Yes, that's everyone");
+            navigateTo("childrenInNeedOfCare");
+            testPage.enter("whoNeedsChildCare", List.of("Me", "Jim Halpert"));
+            testPage.clickContinue();
+            testPage.enter("whoHasAParentNotLivingAtHome", "None of the children have parents living outside the home");
+            testPage.clickContinue();
+
+            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
+            PDAcroForm ccapPdf = pdAcroForms.get(CCAP);
+            assertThat(ccapPdf.getField("CHILD_NEEDS_CHILDCARE_FULL_NAME_0").getValueAsString())
+                    .isEqualTo("Dwight Schrute");
+            assertThat(ccapPdf.getField("CHILD_NEEDS_CHILDCARE_FULL_NAME_1").getValueAsString())
+                    .isEqualTo("Jim Halpert");
+            assertThat(ccapPdf.getField("CHILD_FULL_NAME_0").getValueAsString())
+                    .isEqualTo("");
+            assertThat(ccapPdf.getField("PARENT_NOT_LIVING_AT_HOME_0").getValueAsString())
+                    .isEqualTo("");
+            assertThat(ccapPdf.getField("CHILD_FULL_NAME_1").getValueAsString())
+                    .isEqualTo("");
+            assertThat(ccapPdf.getField("PARENT_NOT_LIVING_AT_HOME_1").getValueAsString())
+                    .isEqualTo("");
+            assertThat(ccapPdf.getField("CHILD_FULL_NAME_2").getValueAsString())
+                    .isEmpty();
+            assertThat(ccapPdf.getField("PARENT_NOT_LIVING_AT_HOME_2").getValueAsString())
+                    .isEmpty();
+        }
+
+        @Test
         void shouldMapStudentFullNames() {
             addHouseholdMembers();
 

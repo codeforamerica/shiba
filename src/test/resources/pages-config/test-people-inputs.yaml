@@ -1,0 +1,35 @@
+pageDefinitions:
+  - &firstPage
+    pageTitle: dummy-page-title
+    name: firstPage
+    inputs:
+      - name: peopleSelect
+        type: CHECKBOX
+        options:
+          selectableOptions:
+            - value: "Fake Person1 c6624883"
+              messageKey: option1
+            - value: "Fake Person2 jre55443"
+              messageKey: option2
+            - value: "Fake Person3 fafd2345"
+              messageKey: option3
+  - &secondPage
+    pageTitle: dummy-page-title
+    name: secondPage
+    inputs:
+      - name: option1Text
+        type: PEOPLE_CHECKBOX
+        datasources:
+          - pageName: firstPage
+            inputName: peopleSelect
+workflow:
+  firstPage:
+    pageConfiguration: *firstPage
+    nextPages:
+      - pageName: secondPage
+  secondPage:
+    pageConfiguration: *secondPage
+    datasources:
+      - pageName: firstPage
+landmarkPages:
+  landingPages: [ ]
