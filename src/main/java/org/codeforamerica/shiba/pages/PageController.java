@@ -532,6 +532,9 @@ public class PageController {
         if (featureFlags.get("submit-via-api").isOn()) {
             Application application = applicationRepository.find(applicationData.getId());
             application.getApplicationData().setUploadedDocs(applicationData.getUploadedDocs());
+            if (applicationData.getFlow() == LATER_DOCS) {
+                application.setCompletedAtTime(clock);
+            }
             applicationRepository.save(application);
             pageEventPublisher.publish(new UploadedDocumentsSubmittedEvent(httpSession.getId(), application.getId(), LocaleContextHolder.getLocale()));
         }
