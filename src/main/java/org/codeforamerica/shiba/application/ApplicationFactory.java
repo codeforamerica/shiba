@@ -29,7 +29,7 @@ public class ApplicationFactory {
         copy.setSubworkflows(SerializationUtils.clone(applicationData.getSubworkflows()));
         copy.setIncompleteIterations(applicationData.getIncompleteIterations());
         copy.setFlow(applicationData.getFlow());
-        copy.setStartTime(applicationData.getStartTime());
+        copy.setStartTimeOnce(applicationData.getStartTime());
         copy.setUtmSource(applicationData.getUtmSource());
         monitoringService.setApplicationId(applicationData.getId());
 

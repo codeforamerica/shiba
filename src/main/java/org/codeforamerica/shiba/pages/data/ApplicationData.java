@@ -1,14 +1,17 @@
 package org.codeforamerica.shiba.pages.data;
 
+import lombok.AccessLevel;
 import lombok.Data;
-import org.codeforamerica.shiba.application.*;
+import lombok.Setter;
+import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.parsers.PageInputCoordinates;
 import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.pages.config.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,6 +22,7 @@ public class ApplicationData implements Serializable {
     private static final long serialVersionUID = 5573310526258484730L;
 
     private String id;
+    @Setter(AccessLevel.NONE)
     private Instant startTime;
     private String utmSource;
     private FlowType flow = FlowType.UNDETERMINED;

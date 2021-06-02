@@ -48,7 +48,7 @@ public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
             applicationDataClone.setSubworkflows(this.applicationData.getSubworkflows());
             applicationDataClone.setIncompleteIterations(this.applicationData.getIncompleteIterations());
             applicationDataClone.setId(this.applicationData.getId());
-            applicationDataClone.setStartTime(this.applicationData.getStartTime());
+            applicationDataClone.setStartTimeOnce(this.applicationData.getStartTime());
             LandmarkPageTest.applicationData = applicationDataClone;
             return "testTerminalPage";
         }

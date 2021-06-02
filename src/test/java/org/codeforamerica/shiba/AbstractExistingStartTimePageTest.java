@@ -28,7 +28,7 @@ public class AbstractExistingStartTimePageTest extends AbstractStaticMessageSour
 
         @GetMapping("/setStartTimeForTest")
         String setStartTimeForTest() {
-            applicationData.setStartTime(Instant.now());
+            applicationData.setStartTimeOnce(Instant.now());
             return "startTimeIsSet";
         }
     }

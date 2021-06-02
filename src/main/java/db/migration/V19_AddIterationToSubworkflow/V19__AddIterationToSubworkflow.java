@@ -72,7 +72,7 @@ public class V19__AddIterationToSubworkflow extends BaseJavaMigration {
             migratedApplicationData.setPagesData(oldApplicationData.getPagesData());
             migratedApplicationData.setFlow(oldApplicationData.getFlow());
             migratedApplicationData.setId(oldApplicationData.getId());
-            migratedApplicationData.setStartTime(oldApplicationData.getStartTime());
+            migratedApplicationData.setStartTimeOnce(oldApplicationData.getStartTime());
             migratedApplicationData.setIncompleteIterations(oldApplicationData.getIncompleteIterations());
 
             oldApplicationData.getSubworkflows().forEach((groupName, subworkflow) -> {
