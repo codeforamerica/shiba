@@ -6,17 +6,14 @@
     <div class="spacing-below-60">
         <th:block
                 th:each="fullNameAndId, iterationStat: ${input.options.datasources.get('childrenInNeedOfCare').get('whoNeedsChildCare').value}"
-                th:with="childArray=${#strings.arraySplit(fullNameAndId, ' ')},
-                         childId=${childArray[#arrays.length(childArray)-1]},
-                         childName=${#strings.substringBefore(fullNameAndId, ' ' + childId)},
-                         me=#{general.me}">
+                th:with="me=#{general.me}">
             <label th:for="|householdMember${iterationStat.index}|" class="checkbox">
                 <input type="checkbox"
                        th:id="|householdMember${iterationStat.index}|"
                        th:value="${fullNameAndId}"
                        th:name="${formInputName}"
                        th:checked="${inputData.value.contains(fullNameAndId)}">
-                <span th:text="|${childId.contains('applicant') ? me : childName}|"></span>
+                <span th:text="T(org.codeforamerica.shiba.pages.PageUtils).householdMemberName(fullNameAndId, me)}"></span>
             </label>
         </th:block>
     </div>
