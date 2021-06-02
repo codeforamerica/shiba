@@ -1,2 +1,2 @@
 ALTER TABLE applications
-ADD COLUMN application_data jsonb;
+ADD application_data clob;

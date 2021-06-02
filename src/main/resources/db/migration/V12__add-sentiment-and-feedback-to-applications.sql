@@ -1,5 +1,5 @@
 ALTER TABLE applications
-    ADD COLUMN sentiment VARCHAR;
+    ADD sentiment VARCHAR2(255);
 
 ALTER TABLE applications
-    ADD COLUMN feedback TEXT;
+    ADD feedback varchar2(4000);

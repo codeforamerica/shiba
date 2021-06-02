@@ -1,2 +1,2 @@
-CREATE INDEX idx_application_id
-ON applications(id);
+--CREATE INDEX idx_application_id
+--ON applications(id);

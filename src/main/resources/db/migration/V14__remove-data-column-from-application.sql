@@ -1,2 +1,2 @@
-ALTER TABLE applications
-DROP COLUMN data;
+--ALTER TABLE applications
+--DROP COLUMN data;

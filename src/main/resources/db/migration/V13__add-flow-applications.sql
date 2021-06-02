@@ -1,2 +1,2 @@
 ALTER TABLE applications
-    ADD COLUMN flow VARCHAR;
+    ADD flow VARCHAR2(255);

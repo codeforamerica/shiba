@@ -67,7 +67,7 @@ public class ApplicationRepository {
         var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
         namedParameterJdbcTemplate.update("UPDATE applications SET " +
                 "completed_at = :completedAt, " +
-                "application_data = :applicationData ::jsonb, " +
+                "application_data = :applicationData, " +
                 "county = :county, " +
                 "time_to_complete = :timeToComplete, " +
                 "sentiment = :sentiment, " +
@@ -75,9 +75,8 @@ public class ApplicationRepository {
                 "flow = :flow WHERE id = :id", parameters);
         namedParameterJdbcTemplate.update(
                 "INSERT INTO applications (id, completed_at, application_data, county, time_to_complete, sentiment, feedback, flow) " +
-                        "VALUES (:id, :completedAt, :applicationData ::jsonb, :county, :timeToComplete, :sentiment, :feedback, :flow) " +
-                        "ON CONFLICT DO NOTHING", parameters);
-        setUpdatedAtTime(application.getId());
+                        "VALUES (:id, :completedAt, :applicationData, :county, :timeToComplete, :sentiment, :feedback, :flow) ", parameters);
+        setUpdatedAtTime(application.getId()); // TODO: Missing Oracle equivalent of ON CONFLICT DO NOTHING
     }
 
     public Application find(String id) {
@@ -209,7 +208,7 @@ public class ApplicationRepository {
                 "updated_at = :updatedAt " +
                 "WHERE id = :id", parameters);
     }
-    
+
     public void updateStatus(String id, Document document, Status status) {
 
         Map<String, Object> parameters = Map.of(

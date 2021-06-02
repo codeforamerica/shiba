@@ -1,5 +1,5 @@
 ALTER TABLE applications
-ADD COLUMN encrypted_data BYTEA;
+ADD encrypted_data CLOB;
 
 ALTER TABLE applications
-ALTER COLUMN data DROP NOT NULL;
+DROP COLUMN data;
