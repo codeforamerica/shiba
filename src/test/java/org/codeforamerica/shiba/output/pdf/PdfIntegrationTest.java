@@ -189,11 +189,11 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             assertThat(ccapPdf.getField("CHILD_NEEDS_CHILDCARE_FULL_NAME_1").getValueAsString())
                     .isEqualTo("Jim Halpert");
             assertThat(ccapPdf.getField("CHILD_FULL_NAME_0").getValueAsString())
-                    .isEqualTo("Dwight Schrute");
+                    .isEqualTo("");
             assertThat(ccapPdf.getField("PARENT_NOT_LIVING_AT_HOME_0").getValueAsString())
                     .isEqualTo("");
             assertThat(ccapPdf.getField("CHILD_FULL_NAME_1").getValueAsString())
-                    .isEqualTo("Jim Halpert");
+                    .isEqualTo("");
             assertThat(ccapPdf.getField("PARENT_NOT_LIVING_AT_HOME_1").getValueAsString())
                     .isEqualTo("");
             assertThat(ccapPdf.getField("CHILD_FULL_NAME_2").getValueAsString())
