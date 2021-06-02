@@ -1,8 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
-import io.netty.util.internal.StringUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.util.Strings;
 import org.codeforamerica.shiba.pages.data.DatasourcePages;
 
 import java.util.Arrays;
@@ -61,9 +59,19 @@ public class PageUtils {
         return applicantHasCCAP || householdHasCCAP;
     }
 
-    public static String householdMemberName(String householdMemberNameAndId) {
+    /**
+     * @param householdMemberNameAndId a string in the form "firstname lastname id".
+     * @param me                       the string "me" in whatever language the client is using
+     * @return the full name without an id, or "Me" if the id is the string "applicant"
+     */
+    public static String householdMemberName(String householdMemberNameAndId, String me) {
         String[] householdMemberInfo = householdMemberNameAndId.split(" ");
-        String[] houseName = Arrays.copyOfRange(householdMemberInfo, 0, householdMemberInfo.length - 1);
-        return StringUtils.join(houseName," ");
+        String childId = householdMemberInfo[householdMemberInfo.length - 1];
+        if ("applicant".equals(childId)) {
+            return me;
+        }
+
+        String[] fullNameParts = Arrays.copyOfRange(householdMemberInfo, 0, householdMemberInfo.length - 1);
+        return StringUtils.join(fullNameParts, " ");
     }
 }

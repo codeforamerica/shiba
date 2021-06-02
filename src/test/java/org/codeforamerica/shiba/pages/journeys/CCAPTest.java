@@ -85,6 +85,7 @@ public class CCAPTest extends JourneyTest {
         testPage.enter("whoNeedsChildCare", "Me");
         testPage.clickContinue();
         assertThat(driver.getTitle()).isEqualTo("Who are the children that have a parent not living in the home?");
+        testPage.enter("whoHasAParentNotLivingAtHome", "None of the children have parents living outside the home");
 
         // Should jump to preparing meals question
         testPage.clickContinue();
