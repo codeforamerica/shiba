@@ -23,7 +23,7 @@ public class PeopleSelectInputsPageTest extends AbstractExistingStartTimePageTes
         staticMessageSource.addMessage("option1", Locale.ENGLISH, "option 1");
         staticMessageSource.addMessage("option2", Locale.ENGLISH, "option 2");
         staticMessageSource.addMessage("option3", Locale.ENGLISH, "option 3");
-        staticMessageSource.addMessage("general.inputs.none-of-the-above",Locale.ENGLISH, "None of the above");
+        staticMessageSource.addMessage("general.inputs.none-of-the-above", Locale.ENGLISH, "None of the above");
     }
 
     @Test
@@ -32,7 +32,7 @@ public class PeopleSelectInputsPageTest extends AbstractExistingStartTimePageTes
         testPage.enter("peopleSelect", List.of("option 1", "option 2"));
         testPage.clickContinue();
 
-
+        takeSnapShot("test.png");
         assertThat(driver.findElement(By.id("Fake Person1 c6624883")).isDisplayed()).isTrue();
         assertThat(driver.findElement(By.id("Fake Person2 jre55443")).isDisplayed()).isTrue();
         assertThat(driver.findElements(By.id("Fake Person3 fafd2345"))).isEmpty();

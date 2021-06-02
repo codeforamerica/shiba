@@ -1,13 +1,12 @@
 <!DOCTYPE>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
-<div th:fragment="people-checkbox-input (input, data)" th:with="inputData=${data.get(input.name)}" class="form-group" >
+<div th:fragment="people-checkbox-input (input, data)" th:with="inputData=${data.get(input.name)},formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)}" class="form-group" >
   <div class="spacing-above-35 form-group" th:classappend="${!inputData.valid(data)} ? 'form-group--error' : ''">
     <div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${input})"></div>
     <p class="text--help"
        th:if="${input.helpMessageKey != null}"
        th:text="#{${input.helpMessageKey}}"></p>
-    <th:block th:each="option: ${pageDatasources.get('firstPage').get('peopleSelect').value}"
-              th:with="formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)}">
+    <th:block th:each="option: ${pageDatasources.get(input.datasources[0].pageName).get(input.datasources[0].inputName).value}">
 
       <label th:for="${option}" class="checkbox display-flex">
         <input type="checkbox"
@@ -18,11 +17,12 @@
         <span th:text="${T(org.codeforamerica.shiba.pages.PageUtils).householdMemberName(option)}"></span>
       </label>
     </th:block>
-    <label th:for="none" class="checkbox">
+    <label th:for="none__checkbox" class="checkbox">
       <input type="checkbox"
-             th:id="none"
+             th:id="none__checkbox"
              th:value="NONE_OF_THE_ABOVE"
-             th:name="${formInputName}">
+             th:name="${formInputName}"
+             th:checked="${inputData.value.contains('NONE_OF_THE_ABOVE')}">
       <span th:text="#{general.inputs.none-of-the-above}"></span>
     </label>
     <p class="text--error" th:if="${!inputData.valid(data)}">

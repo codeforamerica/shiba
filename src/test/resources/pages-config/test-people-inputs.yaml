@@ -22,11 +22,6 @@ pageDefinitions:
         datasources:
           - pageName: firstPage
             inputName: peopleSelect
-        options:
-          selectableOptions:
-            - value: NONE
-              messageKey: none-of-the-above
-              isNone: true
 workflow:
   firstPage:
     pageConfiguration: *firstPage
