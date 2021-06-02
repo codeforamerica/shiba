@@ -2498,7 +2498,7 @@ workflow:
           matcher: NONE_SELECTED
         - pageName: whoHasParentNotAtHome
           input: whoHasAParentNotLivingAtHome
-          value: "NONE_OF_THE_ABOVE"
+          value: NONE_OF_THE_ABOVE
   householdDeleteWarningPage:
     pageConfiguration: *householdDeleteWarningPage
     appliesToGroup: household

@@ -83,7 +83,7 @@ public abstract class AbstractBasePageTest {
         chromePrefs.put("download.default_directory", path.toString());
         options.setExperimentalOption("prefs", chromePrefs);
         options.addArguments("--window-size=1280,1600");
-        options.addArguments("--headless");
+//        options.addArguments("--headless");
         driver = new ChromeDriver(options);
         testPage = new Page(driver);
     }
@@ -258,6 +258,7 @@ public abstract class AbstractBasePageTest {
             testPage.clickButton("Yes, that's everyone");
             testPage.enter("whoNeedsChildCare", "householdMemberFirstName householdMemberLastName");
             testPage.clickContinue();
+            testPage.enter("whoHasAParentNotLivingAtHome", "None of the children have parents living outside the home");
             testPage.clickContinue();
             testPage.enter("livingSituation", "None of these");
             testPage.clickContinue();
