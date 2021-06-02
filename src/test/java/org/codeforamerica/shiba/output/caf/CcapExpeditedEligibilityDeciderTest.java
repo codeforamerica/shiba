@@ -1,29 +1,18 @@
 package org.codeforamerica.shiba.output.caf;
 
-import org.codeforamerica.shiba.application.parsers.CcapExpeditedEligibilityParser;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.junit.jupiter.api.BeforeEach;
+import org.codeforamerica.shiba.pages.data.TestApplicationDataBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.util.Optional;
+import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class CcapExpeditedEligibilityDeciderTest {
-    private ApplicationData applicationData;
-    private CcapExpeditedEligibilityParser ccapExpeditedEligibilityParser;
-    private CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
-
-    @BeforeEach
-    void setUp() {
-        applicationData = new ApplicationData();
-        ccapExpeditedEligibilityParser = mock(CcapExpeditedEligibilityParser.class);
-        ccapExpeditedEligibilityDecider = new CcapExpeditedEligibilityDecider(ccapExpeditedEligibilityParser);
-    }
+    private final CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider = new CcapExpeditedEligibilityDecider();
 
     @ParameterizedTest
     @CsvSource(value = {
@@ -43,25 +32,32 @@ class CcapExpeditedEligibilityDeciderTest {
             String livingSituation,
             CcapExpeditedEligibility expectedDecision
     ) {
-        when(ccapExpeditedEligibilityParser.parse(applicationData)).thenReturn(Optional.of(new CcapExpeditedEligibilityParameters(livingSituation, true)));
+        ApplicationData applicationData = createApplicationData(List.of(livingSituation), "CCAP");
         assertThat(ccapExpeditedEligibilityDecider.decide(applicationData)).isEqualTo(expectedDecision);
     }
 
     @Test
     void shouldBeUndeterminedWhenLivingSituationIsNotAvailable() {
-        when(ccapExpeditedEligibilityParser.parse(applicationData)).thenReturn(Optional.of(new CcapExpeditedEligibilityParameters(null, true)));
+        ApplicationData applicationData = createApplicationData(Collections.emptyList(), "CCAP");
         assertThat(ccapExpeditedEligibilityDecider.decide(applicationData)).isEqualTo(CcapExpeditedEligibility.UNDETERMINED);
     }
 
     @Test
     void shouldBeUndeterminedWhenNotCcapApplication() {
-        when(ccapExpeditedEligibilityParser.parse(applicationData)).thenReturn(Optional.of(new CcapExpeditedEligibilityParameters("HOTEL_OR_MOTEL", false)));
+        ApplicationData applicationData = createApplicationData(List.of("HOTEL_OR_MOTEL"), "EA");
         assertThat(ccapExpeditedEligibilityDecider.decide(applicationData)).isEqualTo(CcapExpeditedEligibility.UNDETERMINED);
     }
 
     @Test
     void shouldBeNotEligibleWhenLivingWithFamilyFriendsDueToOtherReasons() {
-        when(ccapExpeditedEligibilityParser.parse(applicationData)).thenReturn(Optional.of(new CcapExpeditedEligibilityParameters("TEMPORARILY_WITH_FRIENDS_OR_FAMILY_OTHER_REASONS", true)));
+        ApplicationData applicationData = createApplicationData(List.of("TEMPORARILY_WITH_FRIENDS_OR_FAMILY_OTHER_REASONS"), "CCAP");
         assertThat(ccapExpeditedEligibilityDecider.decide(applicationData)).isEqualTo(CcapExpeditedEligibility.NOT_ELIGIBLE);
+    }
+
+    private ApplicationData createApplicationData(List<String> livingSituation, String program) {
+        return new TestApplicationDataBuilder()
+                .withApplicantPrograms(List.of(program))
+                .withPageData("livingSituation", "livingSituation", livingSituation)
+                .build();
     }
 }
