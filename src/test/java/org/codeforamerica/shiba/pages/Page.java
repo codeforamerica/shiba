@@ -4,6 +4,7 @@ import com.deque.html.axecore.results.Results;
 import com.deque.html.axecore.results.Rule;
 import com.deque.html.axecore.selenium.AxeBuilder;
 import io.percy.selenium.Percy;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Slf4j
 public class Page {
     protected final RemoteWebDriver driver;
     protected final Percy percy;
@@ -239,17 +241,17 @@ public class Page {
 
     public void testAccessibility() {
         AxeBuilder builder = new AxeBuilder();
-//        builder.setOptions("{ runOnly: { values: ['wcag21a', 'wcag21aa'] } }");
         builder.setOptions("""
                 { 
-                    "rules": { 
-                        "region": { "enabled": false } 
-                     } 
+                    "runOnly": { 
+                        "type": "tag", 
+                        "values": ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "section508"]
+                    } 
                 }
                 """);
-
         Results results = builder.analyze(driver);
         List<Rule> violations = results.getViolations();
         resultsList.addAll(violations);
+        log.info("Testing a11y on page " + this.getTitle());
     }
 }
