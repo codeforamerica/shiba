@@ -3,7 +3,6 @@ package org.codeforamerica.shiba.pages.journeys;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.pages.SuccessPage;
-import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,96 +19,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
-import static org.mockito.Mockito.when;
 
 @Tag("journey")
 public class UserJourneyPageTest extends JourneyTest {
-
     @Test
     void intercomButtonIsPresent() {
         await().atMost(5, TimeUnit.SECONDS).until(() -> !driver.findElementsById("intercom-frame").isEmpty());
         assertThat(driver.findElementById("intercom-frame")).isNotNull();
-    }
-    
-    @Test
-    void laterDocsEmailYourCountyFlow() {
-        when(featureFlagConfiguration.get("county-hennepin")).thenReturn(FeatureFlag.ON);
-        when(featureFlagConfiguration.get("county-morrison")).thenReturn(FeatureFlag.OFF);
-
-    	testPage.clickButton("Upload documents");
-        assertThat(driver.getTitle()).isEqualTo("Identify County");
-
-        testPage.enter("county", "Hennepin");
-        testPage.clickContinue();
-        assertThat(driver.getTitle()).isEqualTo("Match Info");
-
-        testPage.clickLink("< Go Back");
-        testPage.enter("county", "Morrison");
-        testPage.clickContinue();
-        assertThat(driver.getTitle()).isEqualTo("Email Docs To Your County");
-    }
-
-    @Test
-    void laterDocsSubmissionFlow() {
-        when(featureFlagConfiguration.get("county-hennepin")).thenReturn(FeatureFlag.ON);
-
-        testPage.clickButton("Upload documents");
-        assertThat(driver.getTitle()).isEqualTo("Identify County");
-
-        testPage.enter("county", "Hennepin");
-        testPage.clickContinue();
-
-        assertThat(driver.getTitle()).isEqualTo("Match Info");
-        testPage.enter("firstName", "defaultFirstName");
-        testPage.enter("lastName", "defaultLastName");
-        testPage.enter("dateOfBirth", "01/12/1928");
-        testPage.enter("ssn", "123456789");
-        testPage.enter("caseNumber", "1234567");
-        testPage.clickContinue();
-
-        assertThat(driver.getTitle()).isEqualTo("Upload Documents");
-
-        uploadPdfFile();
-        await().until(() -> !getAttributeForElementAtIndex(driver.findElementsByClassName("dz-remove"), 0, "innerHTML").isBlank());
-
-        testPage.clickButton("I'm finished uploading");
-        assertThat(driver.getTitle()).isEqualTo("Documents Sent");
-    }
-
-    @Test
-    void laterDocsEnterZipcode() {
-        when(featureFlagConfiguration.get("later-docs-v2-feature")).thenReturn(FeatureFlag.ON);
-        testPage.clickButton("Upload documents");
-        assertThat(driver.getTitle()).isEqualTo("Identify County");
-
-        testPage.clickLink("Enter my zip code instead.");
-        assertThat(driver.getTitle()).isEqualTo("Identify zip");
-
-        testPage.clickLink("Select my county instead.");
-        assertThat(driver.getTitle()).isEqualTo("Identify County");
-
-        when(featureFlagConfiguration.get("later-docs-v2-feature")).thenReturn(FeatureFlag.OFF);
-        navigateTo("identifyCounty");
-        assertThat(driver.findElementsByLinkText("Enter my zip code instead.")).isEmpty();
-    }
-
-    @Test
-    void laterDocsZipcodeNavigation() {
-        when(featureFlagConfiguration.get("county-hennepin")).thenReturn(FeatureFlag.ON);
-        when(featureFlagConfiguration.get("later-docs-v2-feature")).thenReturn(FeatureFlag.ON);
-
-        // Unrecognized or inactive county zipcode
-        testPage.clickButton("Upload documents");
-        navigateTo("identifyZipcode");
-        testPage.enter("zipCode", "11111");
-        testPage.clickContinue();
-        assertThat(driver.getTitle()).isEqualTo("Email Docs To Your County");
-
-        // Active county
-        testPage.clickLink("< Go Back");
-        testPage.enter("zipCode", "55444");
-        testPage.clickContinue();
-        assertThat(driver.getTitle()).isEqualTo("Match Info");
     }
 
     @Test

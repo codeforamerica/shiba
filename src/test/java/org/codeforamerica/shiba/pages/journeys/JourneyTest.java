@@ -28,10 +28,14 @@ public abstract class JourneyTest extends AbstractBasePageTest {
     protected SmartyStreetClient smartyStreetClient;
     @SpyBean
     protected DocumentRepositoryService documentRepositoryService;
-    @MockBean PageEventPublisher pageEventPublisher;
-    @MockBean MailGunEmailClient mailGunEmailClient;
-    @MockBean FeatureFlagConfiguration featureFlagConfiguration;
-    @SpyBean UploadDocumentConfiguration uploadDocumentConfiguration;
+    @MockBean
+    protected PageEventPublisher pageEventPublisher;
+    @MockBean
+    protected MailGunEmailClient mailGunEmailClient;
+    @MockBean
+    protected FeatureFlagConfiguration featureFlagConfiguration;
+    @SpyBean
+    protected UploadDocumentConfiguration uploadDocumentConfiguration;
 
     @Override
     @BeforeEach
