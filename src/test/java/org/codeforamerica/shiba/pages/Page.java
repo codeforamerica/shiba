@@ -238,7 +238,17 @@ public class Page {
     }
 
     public void testAccessibility() {
-        Results results = new AxeBuilder().analyze(driver);
+        AxeBuilder builder = new AxeBuilder();
+//        builder.setOptions("{ runOnly: { values: ['wcag21a', 'wcag21aa'] } }");
+        builder.setOptions("""
+                { 
+                    "rules": { 
+                        "region": { "enabled": false } 
+                     } 
+                }
+                """);
+
+        Results results = builder.analyze(driver);
         List<Rule> violations = results.getViolations();
         resultsList.addAll(violations);
     }
