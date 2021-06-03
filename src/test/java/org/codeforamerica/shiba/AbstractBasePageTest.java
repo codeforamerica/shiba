@@ -8,6 +8,7 @@ import org.codeforamerica.shiba.pages.Page;
 import org.codeforamerica.shiba.pages.SuccessPage;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.pages.enrichment.smartystreets.SmartyStreetClient;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +32,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -473,5 +475,10 @@ public abstract class AbstractBasePageTest {
 
     protected String getAttributeForElementAtIndex(List<WebElement> elementList, int index, String attributeName) {
         return elementList.get(index).getAttribute(attributeName);
+    }
+
+    @NotNull
+    protected Callable<Boolean> uploadCompletes() {
+        return () -> !getAttributeForElementAtIndex(driver.findElementsByClassName("dz-remove"), 0, "innerHTML").isBlank();
     }
 }
