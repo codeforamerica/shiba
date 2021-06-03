@@ -13,15 +13,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParserV2.Field.*;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParserV2.getFirstValue;
+
 @Component
-public class GrossMonthlyIncomeParser extends ApplicationDataParser<List<JobIncomeInformation>> {
-    public GrossMonthlyIncomeParser(ParsingConfiguration parsingConfiguration) {
-        super(parsingConfiguration);
-    }
+public class GrossMonthlyIncomeParser {
 
     public List<JobIncomeInformation> parse(ApplicationData data) {
-        ParsingCoordinates grossMonthlyIncomeConfiguration = parsingConfiguration.get("grossMonthlyIncome");
-        Subworkflow jobsGroup = data.getSubworkflows().get(grossMonthlyIncomeConfiguration.getGroupName());
+        Subworkflow jobsGroup = data.getSubworkflows().get("jobs");
         if (jobsGroup == null) {
             return Collections.emptyList();
         }
@@ -29,20 +28,18 @@ public class GrossMonthlyIncomeParser extends ApplicationDataParser<List<JobInco
         return jobsGroup.stream()
                 .map(iteration -> {
                     PagesData pagesData = iteration.getPagesData();
-                    PageInputCoordinates lastThirtyDaysIncomeCoordinates = grossMonthlyIncomeConfiguration.getPageInputs().get("lastThirtyDaysJobIncome");
-                    boolean hasLastThirtyDaysIncome = pagesData.containsKey(lastThirtyDaysIncomeCoordinates.getPageName());
-                    if (hasLastThirtyDaysIncome) {
-                        String lastThirtyDaysIncome = parseValue("lastThirtyDaysJobIncome", pagesData);
+                    String lastThirtyDaysIncome = getFirstValue(pagesData, LAST_THIRTY_DAYS_JOB_INCOME);
+                    if (lastThirtyDaysIncome != null) {
                         return new LastThirtyDaysJobIncomeInformation(lastThirtyDaysIncome, jobsGroup.indexOf(pagesData), iteration);
                     } else {
-                        boolean isHourlyJob = Boolean.parseBoolean(parseValue("paidByTheHour", pagesData));
+                        boolean isHourlyJob = Boolean.parseBoolean(getFirstValue(pagesData, PAID_BY_THE_HOUR));
                         if (isHourlyJob) {
-                            String hourlyWageInputValue = parseValue("hourlyWage", pagesData);
-                            String hoursAWeekInputValue = parseValue("hoursAWeek", pagesData);
+                            String hourlyWageInputValue = getFirstValue(pagesData, HOURLY_WAGE);
+                            String hoursAWeekInputValue = getFirstValue(pagesData, HOURS_A_WEEK);
                             return new HourlyJobIncomeInformation(hourlyWageInputValue, hoursAWeekInputValue, jobsGroup.indexOf(pagesData), iteration);
                         } else {
-                            String payPeriodInputValue = parseValue("payPeriod", pagesData);
-                            String incomePerPayPeriodInputValue = parseValue("incomePerPayPeriod", pagesData);
+                            String payPeriodInputValue = getFirstValue(pagesData, PAY_PERIOD);
+                            String incomePerPayPeriodInputValue = getFirstValue(pagesData, INCOME_PER_PAY_PERIOD);
                             return new NonHourlyJobIncomeInformation(payPeriodInputValue, incomePerPayPeriodInputValue, jobsGroup.indexOf(pagesData), iteration);
                         }
                     }

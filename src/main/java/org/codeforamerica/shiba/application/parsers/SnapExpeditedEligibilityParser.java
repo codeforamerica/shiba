@@ -1,7 +1,6 @@
 package org.codeforamerica.shiba.application.parsers;
 
 import org.codeforamerica.shiba.Money;
-import org.codeforamerica.shiba.output.caf.JobIncomeInformation;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityParameters;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.Iteration;
@@ -16,10 +15,10 @@ import java.util.Optional;
 
 @Component
 public class SnapExpeditedEligibilityParser extends ApplicationDataParser<Optional<SnapExpeditedEligibilityParameters>> {
-    private final ApplicationDataParser<List<JobIncomeInformation>> grossMonthlyIncomeParser;
+    private final GrossMonthlyIncomeParser grossMonthlyIncomeParser;
 
     public SnapExpeditedEligibilityParser(ParsingConfiguration parsingConfiguration,
-                                          ApplicationDataParser<List<JobIncomeInformation>> grossMonthlyIncomeParser) {
+                                          GrossMonthlyIncomeParser grossMonthlyIncomeParser) {
         super(parsingConfiguration);
         this.grossMonthlyIncomeParser = grossMonthlyIncomeParser;
     }

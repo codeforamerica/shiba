@@ -1,19 +1,16 @@
 package org.codeforamerica.shiba.application.parsers;
 
 import org.codeforamerica.shiba.Money;
-import org.codeforamerica.shiba.output.caf.JobIncomeInformation;
 import org.codeforamerica.shiba.output.caf.TotalIncome;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
 public class TotalIncomeParser extends ApplicationDataParser<TotalIncome> {
-    private final ApplicationDataParser<List<JobIncomeInformation>> grossIncomeParser;
+    private final GrossMonthlyIncomeParser grossIncomeParser;
 
     public TotalIncomeParser(ParsingConfiguration parsingConfiguration,
-                             ApplicationDataParser<List<JobIncomeInformation>> grossIncomeParser) {
+                             GrossMonthlyIncomeParser grossIncomeParser) {
         super(parsingConfiguration);
         this.grossIncomeParser = grossIncomeParser;
     }
