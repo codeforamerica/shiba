@@ -1,15 +1,11 @@
 package org.codeforamerica.shiba.pages;
 
-import com.deque.html.axecore.results.Results;
-import com.deque.html.axecore.results.Rule;
-import com.deque.html.axecore.selenium.AxeBuilder;
 import io.percy.selenium.Percy;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class Page {
     protected final RemoteWebDriver driver;
     protected final Percy percy;
-    public List<Rule> resultsList = new ArrayList<>();
+
 
     public String getTitle() {
         return driver.getTitle();
@@ -47,7 +43,6 @@ public class Page {
 
     public void clickButton(String buttonText) {
         percy.snapshot(driver.getTitle());
-        testAccessibility();
         checkForBadMessageKeys();
         WebElement buttonToClick = driver.findElements(By.className("button")).stream()
                 .filter(button -> button.getText().contains(buttonText))
@@ -58,7 +53,6 @@ public class Page {
 
     public void clickButtonLink(String buttonLinkText) {
         percy.snapshot(driver.getTitle());
-        testAccessibility();
         checkForBadMessageKeys();
         WebElement buttonToClick = driver.findElements(By.className("button--link")).stream()
                 .filter(button -> button.getText().contains(buttonLinkText))
@@ -69,7 +63,6 @@ public class Page {
 
     public void clickContinue() {
         clickButton("Continue");
-        testAccessibility();
     }
 
     public void enter(String inputName, String value) {
@@ -237,21 +230,5 @@ public class Page {
     public void clickElementById(String id) {
         WebElement inputToSelect = driver.findElementById(id);
         inputToSelect.click();
-    }
-
-    public void testAccessibility() {
-        AxeBuilder builder = new AxeBuilder();
-        builder.setOptions("""
-                { 
-                    "runOnly": { 
-                        "type": "tag", 
-                        "values": ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "section508"]
-                    } 
-                }
-                """);
-        Results results = builder.analyze(driver);
-        List<Rule> violations = results.getViolations();
-        resultsList.addAll(violations);
-        log.info("Testing a11y on page " + this.getTitle());
     }
 }
