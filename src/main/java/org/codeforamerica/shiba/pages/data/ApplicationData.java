@@ -110,6 +110,12 @@ public class ApplicationData implements Serializable {
         return applicantWith || householdWith;
     }
 
+    public boolean isMedicalExpensesApplication() {
+        List<String> medicalExpenses = this.getPagesData().safeGetPageInputValue("medicalExpenses", "medicalExpenses");
+        List<String> selectedExpenses = List.of("MEDICAL_INSURANCE_PREMIUMS", "DENTAL_INSURANCE_PREMIUMS", "VISION_INSURANCE_PREMIUMS");
+        return selectedExpenses.stream().anyMatch(medicalExpenses::contains);
+    }
+
     public void addUploadedDoc(MultipartFile file, String s3Filepath, String dataURL, String type) {
         UploadedDocument uploadedDocument = new UploadedDocument(file.getOriginalFilename(), s3Filepath, dataURL, type, file.getSize());
         uploadedDocs.add(uploadedDocument);
