@@ -31,8 +31,18 @@ public class DocRecommendationMessageService {
     private final String proofOfJobLossTextShort = "upload-documents.a-document-with-your-former-employers-name-and-signature";
 
     //TODO: Add string variables to hold the message resource keys for long
-    
-
+    private final String proofOfIncomeIconLong = "fragments/icons/icon-income :: icon-income";
+    private final String proofOfIncomeTitleLong = "document-recommendation.proof-of-income";
+    private final String proofOfIncomeExplanationLong = "document-recommendation.proof-of-income-explanation";
+    private final String proofOfIncomeExampleLong = "document-recommendation.proof-of-income-example";
+    private final String proofOfHousingCostIconLong = "fragments/icons/icon-home :: icon-home";
+    private final String proofOfHousingCostTitleLong = "document-recommendation.proof-of-housing-costs";
+    private final String proofOfHousingCostExplanationLong = "document-recommendation.proof-of-housing-costs-explanation";
+    private final String proofOfHousingCostExampleLong = "document-recommendation.proof-of-housing-costs-example";
+    private final String proofOfJobLossIconLong = "fragments/icons/icon-job-loss :: icon-job-loss";
+    private final String proofOfJobLossTitleLong = "document-recommendation.proof-of-job-loss";
+    private final String proofOfJobLossExplanationLong = "document-recommendation.proof-of-job-loss-explanation";
+    private final String proofOfJobLossExampleLong = "document-recommendation.proof-of-job-loss-example";
 
 
     public DocRecommendationMessageService(MessageSource messageSource) {
@@ -59,16 +69,16 @@ public class DocRecommendationMessageService {
         }
 
         if(pageName.equals("uploadDocuments")){
-            return getUploadDocumentsRecommendations(recommendationsToShow,lms);
+            return getShortDocumentRecommendations(recommendationsToShow,lms);
         } else if (pageName.equals("documentRecommendation")){
-
+            return getLongDocumentRecommendations(recommendationsToShow, lms);
         }
 
         return null;
 
     }
 
-    private List<DocumentRecommendation> getUploadDocumentsRecommendations (List<String> recommendations, LocaleSpecificMessageSource lms){
+    private List<DocumentRecommendation> getShortDocumentRecommendations (List<String> recommendations, LocaleSpecificMessageSource lms){
 
         List<DocumentRecommendation> recommendationMessages = new ArrayList<>();
         recommendations.stream().forEach(recommendation -> {
@@ -88,6 +98,27 @@ public class DocRecommendationMessageService {
             }
         });
 
+        return recommendationMessages;
+    }
+
+    private List<DocumentRecommendation> getLongDocumentRecommendations(List<String> recommendations, LocaleSpecificMessageSource lms){
+        List<DocumentRecommendation> recommendationMessages = new ArrayList<>();
+        recommendations.stream().forEach(recommendation -> {
+            DocumentRecommendation docRec;
+            if(recommendation.equals(proofOfIncome)){
+                docRec = new DocumentRecommendation(proofOfIncomeIconLong, lms.getMessage(proofOfIncomeTitleLong), lms.getMessage(proofOfIncomeExplanationLong), lms.getMessage(proofOfIncomeExampleLong));
+                recommendationMessages.add(docRec);
+            }
+            if(recommendation.equals(proofOfHousingCost)){
+                docRec = new DocumentRecommendation(proofOfHousingCostIconLong, lms.getMessage(proofOfHousingCostTitleLong), lms.getMessage(proofOfHousingCostExplanationLong), lms.getMessage(proofOfHousingCostExampleLong));
+                recommendationMessages.add(docRec);
+            }
+            if(recommendation.equals(proofOfJobLoss)){
+                docRec = new DocumentRecommendation(proofOfJobLossIconLong, lms.getMessage(proofOfJobLossTitleLong), lms.getMessage(proofOfJobLossExplanationLong), lms.getMessage(proofOfJobLossExampleLong));
+                recommendationMessages.add(docRec);
+            }
+
+        });
         return recommendationMessages;
     }
 
