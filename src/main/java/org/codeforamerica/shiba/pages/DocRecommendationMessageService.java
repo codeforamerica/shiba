@@ -19,37 +19,76 @@ import static org.codeforamerica.shiba.internationalization.Internationalization
 public class DocRecommendationMessageService {
     private final MessageSource messageSource;
 
-    private final String showProofOfIncomeTitleShort = "upload-documents.proof-of-income";
-    private final String showProofOfIncomeTextShort = "upload-documents.a-document-with-employer-and-employee-names";
-    private final String showProofOfHousingCostTitleShort = "upload-documents.proof-of-housing-costs";
-    private final String showProofOfHousingCostTextShort = "upload-documents.a-document-showing-total-amount-paid-for-housing";
-    private final String showProofOfJobLossTitleShort = "upload-documents.proof-of-job-loss";
-    private final String showProofOfJobLossTextShort = "upload-documents.a-document-with-your-former-employers-name-and-signature";
+    private final String proofOfIncome = "proofOfIncome";
+    private final String proofOfHousingCost = "proofOfHousingCost";
+    private final String proofOfJobLoss = "proofOfJobLoss";
+
+    private final String proofOfIncomeTitleShort = "upload-documents.proof-of-income";
+    private final String proofOfIncomeTextShort = "upload-documents.a-document-with-employer-and-employee-names";
+    private final String proofOfHousingCostTitleShort = "upload-documents.proof-of-housing-costs";
+    private final String proofOfHousingCostTextShort = "upload-documents.a-document-showing-total-amount-paid-for-housing";
+    private final String proofOfJobLossTitleShort = "upload-documents.proof-of-job-loss";
+    private final String proofOfJobLossTextShort = "upload-documents.a-document-with-your-former-employers-name-and-signature";
 
     //TODO: Add string variables to hold the message resource keys for long
     
 
-    //TODO: Create objects for recommendations for both short and long version
-    private ShortDocumentRecommendation proofOfIncomeShort = new ShortDocumentRecommendation(showProofOfIncomeTitleShort, showProofOfIncomeTextShort);
-    private ShortDocumentRecommendation proofOfHousingCostShort = new ShortDocumentRecommendation(showProofOfHousingCostTitleShort, showProofOfHousingCostTextShort);
-    private ShortDocumentRecommendation proofOfJobLossShort = new ShortDocumentRecommendation(showProofOfJobLossTitleShort, showProofOfJobLossTextShort);
 
 
     public DocRecommendationMessageService(MessageSource messageSource) {
         this.messageSource = messageSource;
     }
 
-    public List<Object> getSuccessMessage(ApplicationData applicationData, boolean medicalExpenses, Locale locale, String pageName) {
+    public List<DocumentRecommendation> getShortRecommendationsMessage(ApplicationData applicationData, Locale locale, String pageName) {
         LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
         boolean showProofOfIncomeRecommendation = proofOfIncomeRecommendation(applicationData);
         boolean showProofOfHousingCostRecommendation = proofOfHousingCostRecommendation(applicationData);
         boolean showProofOfJobLossRecommendation = proofOfJobLossPrograms(applicationData);
 
-        //TODO: Add booleans and keys to map
-        Map<String, Boolean> recommendationsToShow = new HashMap<>();
+        List<String> recommendationsToShow = new ArrayList<>();
+        if(showProofOfIncomeRecommendation){
+            recommendationsToShow.add(proofOfIncome);
+        }
 
+        if(showProofOfHousingCostRecommendation){
+            recommendationsToShow.add(proofOfHousingCost);
+        }
+
+        if(showProofOfJobLossRecommendation){
+            recommendationsToShow.add(proofOfJobLoss);
+        }
+
+        if(pageName.equals("uploadDocuments")){
+            return getUploadDocumentsRecommendations(recommendationsToShow,lms);
+        } else if (pageName.equals("documentRecommendation")){
+
+        }
 
         return null;
+
+    }
+
+    private List<DocumentRecommendation> getUploadDocumentsRecommendations (List<String> recommendations, LocaleSpecificMessageSource lms){
+
+        List<DocumentRecommendation> recommendationMessages = new ArrayList<>();
+        recommendations.stream().forEach(recommendation -> {
+            DocumentRecommendation docRec;
+
+            if(recommendation.equals(proofOfIncome)){
+                docRec = new DocumentRecommendation(lms.getMessage(proofOfIncomeTitleShort), lms.getMessage(proofOfIncomeTextShort));
+                recommendationMessages.add(docRec);
+            }
+            if(recommendation.equals(proofOfHousingCost)){
+                docRec = new DocumentRecommendation(lms.getMessage(proofOfHousingCostTitleShort), lms.getMessage(proofOfHousingCostTextShort));
+                recommendationMessages.add(docRec);
+            }
+            if(recommendation.equals(proofOfJobLoss)){
+                docRec = new DocumentRecommendation(lms.getMessage(proofOfJobLossTitleShort), lms.getMessage(proofOfJobLossTextShort));
+                recommendationMessages.add(docRec);
+            }
+        });
+
+        return recommendationMessages;
     }
 
     private boolean proofOfIncomeRecommendation(ApplicationData applicationData){
@@ -73,28 +112,23 @@ public class DocRecommendationMessageService {
         return hasChangedWorkSituation && applicationData.isApplicationWith(proofOfJobLossPrograms);
     }
 
-    public class ShortDocumentRecommendation{
-        String title;
-        String text;
 
-        public ShortDocumentRecommendation(String title, String text){
-            this.title= title;
-            this.text=text;
-        }
-
-    }
-
-    public class LongDocumentRecommendation {
+    public class DocumentRecommendation {
         String icon;
         String title;
         String explanation;
         String example;
 
-        public LongDocumentRecommendation(String icon, String title, String explanation, String example){
+        public DocumentRecommendation(String icon, String title, String explanation, String example){
             this.icon=icon;
             this.title=title;
             this.explanation=explanation;
             this.example=example;
+        }
+
+        public DocumentRecommendation(String title, String explanation){
+            this.title = title;
+            this.explanation = explanation;
         }
     }
 }
