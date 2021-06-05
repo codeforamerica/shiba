@@ -38,6 +38,11 @@ public class AccessibilityTestPage extends Page {
         testAccessibility();
     }
 
+    public void goBack() {
+        super.goBack();
+        testAccessibility();
+    }
+
     public void testAccessibility() {
         AxeBuilder builder = new AxeBuilder();
         builder.setOptions("""

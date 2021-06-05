@@ -198,6 +198,14 @@ def documentTest = tasks.register("documentTest", Test) {
         }
 }
 
+def axeCoreTest = tasks.register("a11yTest", Test) {
+    Test task ->
+        task.useJUnitPlatform {
+            JUnitPlatformOptions options ->
+                options.includeTags 'a11y'
+        }
+}
+
 test {
     useJUnitPlatform()
     dependsOn(checkLicense)
