@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
@@ -255,8 +256,9 @@ public class AccessibilityJourneyPageTest extends JourneyTest {
 
     private static void generateAccessibilityReport(Results results) {
         results.setViolations(resultsList);
+        log.info("Found " + results.getViolations().size() + " accessibility related issues.");
+        assertThat(results.getViolations().size()).isEqualTo(0);
         AxeReporter.writeResultsToJsonFile("src/test/resources/accessibility-test-results/testAccessibility", results);
         File jsonFile = new File("src/test/resources/accessibility-test-results/testAccessibility2.json");
-        log.info("Found " + results.getViolations().size() + " accessibility related issues.");
     }
 }
