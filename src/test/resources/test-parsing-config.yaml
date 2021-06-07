@@ -20,12 +20,6 @@ test-parsing:
         pageName: utilityExpensesSelectionsPage
         inputName: utilityExpensesSelectionsInput
         required: true
-  ccapExpeditedEligibility:
-    pageInputs:
-      livingSituation:
-        pageName: livingSituation
-        inputName: livingSituation
-        defaultValue: UNKNOWN
   grossMonthlyIncome:
     groupName: jobsGroup
     pageInputs:

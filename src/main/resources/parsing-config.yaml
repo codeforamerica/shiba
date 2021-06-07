@@ -21,12 +21,6 @@ parsing:
         pageName: utilityPayments
         inputName: payForUtilities
         required: true
-  ccapExpeditedEligibility:
-    pageInputs:
-      livingSituation:
-        pageName: livingSituation
-        inputName: livingSituation
-        defaultValue: UNKNOWN
   grossMonthlyIncome:
     groupName: jobs
     pageInputs:

@@ -53,10 +53,8 @@ public class SnapExpeditedEligibilityParser extends ApplicationDataParser<Option
         Money last30DaysIncome = getMoney(applicationData, coordinatesMap.get("income"));
 
         Money housingCosts = getMoney(applicationData, coordinatesMap.get("housingCosts"));
-        boolean isMigrantWorker = Boolean.parseBoolean(pagesData.getPage(coordinatesMap.get("migrantWorker").getPageName())
-                .get(coordinatesMap.get("migrantWorker").getInputName()).getValue(0));
-        @NotNull List<String> utilityExpensesSelections = pagesData.getPage(coordinatesMap.get("utilityExpensesSelections").getPageName())
-                .get(coordinatesMap.get("utilityExpensesSelections").getInputName()).getValue();
+        boolean isMigrantWorker = Boolean.parseBoolean(parseValue("migrantWorker", pagesData));
+        @NotNull List<String> utilityExpensesSelections = parseValues("utilityExpensesSelections", pagesData);
         boolean applicantApplyingForSnap = pagesData.getPage("choosePrograms").get("programs").getValue(0).contains("SNAP");
         boolean householdMemberApplyingForSnap = applicationData.getApplicantAndHouseholdMemberPrograms().contains("SNAP");
         boolean isPreparingMealsTogether = false;
@@ -66,5 +64,14 @@ public class SnapExpeditedEligibilityParser extends ApplicationDataParser<Option
         }
         boolean applyingForSnap = applicantApplyingForSnap || (householdMemberApplyingForSnap && isPreparingMealsTogether);
         return Optional.of(new SnapExpeditedEligibilityParameters(assets, last30DaysIncome, grossMonthlyIncomeParser.parse(applicationData), isMigrantWorker, housingCosts, utilityExpensesSelections, applyingForSnap));
+    }
+
+    private List<String> parseValues(String pageInput, PagesData pagesData) {
+        PageInputCoordinates coordinates = parsingConfiguration.get("snapExpeditedEligibility").getPageInputs().get(pageInput);
+        return pagesData.safeGetPageInputValue(coordinates.getPageName(), coordinates.getInputName());
+    }
+
+    private String parseValue(String pageInput, PagesData pagesData) {
+        return super.parseValue(parsingConfiguration.get("snapExpeditedEligibility").getPageInputs().get(pageInput), pagesData);
     }
 }

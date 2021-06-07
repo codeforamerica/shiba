@@ -2,6 +2,9 @@ package org.codeforamerica.shiba.application.parsers;
 
 import org.codeforamerica.shiba.Money;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.PagesData;
+
+import java.util.Optional;
 
 public abstract class ApplicationDataParser<T> {
     protected ParsingConfiguration parsingConfiguration;
@@ -18,5 +21,10 @@ public abstract class ApplicationDataParser<T> {
         } catch (NumberFormatException e) {
             return Money.parse(pageInputCoordinates.getDefaultValue());
         }
+    }
+
+    public final String parseValue(PageInputCoordinates coordinates, PagesData pagesData) {
+        return Optional.ofNullable(pagesData.getPageInputFirstValue(coordinates.getPageName(), coordinates.getInputName()))
+                .orElse(coordinates.getDefaultValue());
     }
 }
