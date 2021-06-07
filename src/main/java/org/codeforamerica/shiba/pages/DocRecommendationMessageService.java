@@ -131,7 +131,7 @@ public class DocRecommendationMessageService {
 
     private boolean proofOfHousingCostRecommendation(ApplicationData applicationData) {
         List<String> proofOfHousingCostPrograms = List.of("SNAP", "CASH", "EA");
-        boolean hasHousingExpenses = applicationData.getPagesData().safeGetPageInputValue("homeExpenses", "homeExpenses").containsAll(List.of("NONE_OF_THE_ABOVE"));
+        boolean hasHousingExpenses = !applicationData.getPagesData().safeGetPageInputValue("homeExpenses", "homeExpenses").contains("NONE_OF_THE_ABOVE");
 
         return hasHousingExpenses && applicationData.isApplicationWith(proofOfHousingCostPrograms);
     }
@@ -144,11 +144,11 @@ public class DocRecommendationMessageService {
     }
 
 
-    public class DocumentRecommendation {
-        String icon;
-        String title;
-        String explanation;
-        String example;
+    public static class DocumentRecommendation {
+        public String icon;
+        public String title;
+        public String explanation;
+        public String example;
 
         public DocumentRecommendation(String icon, String title, String explanation, String example){
             this.icon=icon;
