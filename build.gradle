@@ -145,7 +145,7 @@ def unitTest = tasks.register("unitTest", Test) {
     Test task ->
         task.useJUnitPlatform {
             JUnitPlatformOptions options ->
-                options.excludeTags 'db', 'journey', 'pdf', 'ccap', 'validation', 'document'
+                options.excludeTags 'db', 'journey', 'pdf', 'ccap', 'validation', 'document', 'a11y'
         }
 }
 
@@ -208,7 +208,7 @@ def axeAccessibilityTest = tasks.register("accessibilityTest", Test) {
 
 test {
     useJUnitPlatform()
-    exclude '/src/test/java/journeys/AccessibilityJourneyPageTest'
+    exclude '**/Accessibility**'
     dependsOn(checkLicense)
 }
 
