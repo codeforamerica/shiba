@@ -3,7 +3,6 @@ package org.codeforamerica.shiba.pages.journeys;
 import com.deque.html.axecore.results.Results;
 import com.deque.html.axecore.results.Rule;
 import com.deque.html.axecore.selenium.AxeBuilder;
-import com.deque.html.axecore.selenium.AxeReporter;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.pages.AccessibilityTestPage;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
@@ -11,7 +10,6 @@ import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -256,9 +254,19 @@ public class AccessibilityJourneyPageTest extends JourneyTest {
 
     private static void generateAccessibilityReport(Results results) {
         results.setViolations(resultsList);
-        log.info("Found " + results.getViolations().size() + " accessibility related issues.");
-        assertThat(results.getViolations().size()).isEqualTo(0);
-        AxeReporter.writeResultsToJsonFile("src/test/resources/accessibility-test-results/testAccessibility", results);
-        File jsonFile = new File("src/test/resources/accessibility-test-results/testAccessibility2.json");
+        List<Rule> violations = results.getViolations();
+        log.info("Found " + violations.size() + " accessibility related issues.");
+        if (results.getViolations().size() > 0) {
+            violations.stream().forEach(violation -> {
+                log.info("Rule at issue: " + violation.getId());
+                log.info("Rule description: " + violation.getDescription());
+                log.info("Rule help text: " + violation.getHelp());
+                log.info("Rule help page: " + violation.getHelpUrl());
+                log.info("Accessibility impact: " + violation.getImpact());
+                log.info("Page at issue: " + violation.getUrl());
+                log.info("HTML with issue: " + violation.getNodes().get(0).getHtml());
+            });
+        }
+        assertThat(violations.size()).isEqualTo(0);
     }
 }

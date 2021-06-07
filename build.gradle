@@ -208,7 +208,6 @@ def axeAccessibilityTest = tasks.register("accessibilityTest", Test) {
 
 test {
     useJUnitPlatform()
-    exclude '**/Accessibility**'
     dependsOn(checkLicense)
 }
 
