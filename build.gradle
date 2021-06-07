@@ -198,7 +198,7 @@ def documentTest = tasks.register("documentTest", Test) {
         }
 }
 
-def axeCoreTest = tasks.register("a11yTest", Test) {
+def axeAccessibilityTest = tasks.register("accessibilityTest", Test) {
     Test task ->
         task.useJUnitPlatform {
             JUnitPlatformOptions options ->
@@ -208,6 +208,7 @@ def axeCoreTest = tasks.register("a11yTest", Test) {
 
 test {
     useJUnitPlatform()
+    exclude '**/Accessibility**'
     dependsOn(checkLicense)
 }
 

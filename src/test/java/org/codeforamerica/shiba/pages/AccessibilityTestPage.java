@@ -46,7 +46,7 @@ public class AccessibilityTestPage extends Page {
     public void testAccessibility() {
         AxeBuilder builder = new AxeBuilder();
         builder.setOptions("""
-                { 
+                {   "resultTypes": ["violations"],
                     "runOnly": { 
                         "type": "tag", 
                         "values": ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "section508"]
