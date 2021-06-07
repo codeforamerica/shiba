@@ -7,8 +7,8 @@ on:
     inputs: { }
 
 jobs:
-  journey-test:
-    name: Run journey tests
+  accessibility-test:
+    name: Run accessibility tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -39,3 +39,13 @@ jobs:
         run: |
           rm -f ~/.gradle/caches/modules-2/modules-2.lock
           rm -f ~/.gradle/caches/modules-2/gc.properties
+      - name: Announce on Slack
+        if: ${{ always() }}
+        uses: innocarpe/actions-slack@v1
+        with:
+          status: ${{ job.status }}
+          success_text: ':accessible_parrot: No accessibility issues here!'
+          failure_text: ':wheelchair: Accessibility check found issues!'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
