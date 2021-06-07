@@ -16,11 +16,11 @@ public class MailingAddressParser extends ApplicationDataParser<Address> {
     public Address parse(ApplicationData applicationData) {
         Map<String, PageInputCoordinates> coordinates = parsingConfiguration.get("mailingAddress").getPageInputs();
         return new Address(
-                applicationData.getValue(coordinates.get("street")),
-                applicationData.getValue(coordinates.get("city")),
-                applicationData.getValue(coordinates.get("state")),
-                applicationData.getValue(coordinates.get("zipcode")),
-                applicationData.getValue(coordinates.get("apartmentNumber")),
+                parseValue(coordinates.get("street"), applicationData.getPagesData()),
+                parseValue(coordinates.get("city"), applicationData.getPagesData()),
+                parseValue(coordinates.get("state"), applicationData.getPagesData()),
+                parseValue(coordinates.get("zipcode"), applicationData.getPagesData()),
+                parseValue(coordinates.get("apartmentNumber"), applicationData.getPagesData()),
                 null);
     }
 }

@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
 import org.codeforamerica.shiba.application.FlowType;
-import org.codeforamerica.shiba.application.parsers.PageInputCoordinates;
 import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.pages.config.*;
 import org.jetbrains.annotations.NotNull;
@@ -40,14 +39,6 @@ public class ApplicationData implements Serializable {
 
     public PageData getPageData(String pageName) {
         return this.pagesData.getPage(pageName);
-    }
-
-    public String getValue(PageInputCoordinates pageInputCoordinates) {
-        return Optional.ofNullable(this.getPageData(pageInputCoordinates.getPageName()))
-                .map(pageData -> pageData.get(pageInputCoordinates.getInputName()))
-                .filter(inputData -> !inputData.getValue().isEmpty())
-                .map(inputData -> inputData.getValue(0))
-                .orElse(pageInputCoordinates.getDefaultValue());
     }
 
     public Subworkflows getSubworkflowsForPageDatasources(List<PageDatasource> pageDatasources) {

@@ -5,13 +5,15 @@ import org.codeforamerica.shiba.PageDataBuilder;
 import org.codeforamerica.shiba.PagesDataBuilder;
 import org.codeforamerica.shiba.output.caf.JobIncomeInformation;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityParameters;
-import org.codeforamerica.shiba.pages.data.*;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.pages.data.Subworkflows;
+import org.codeforamerica.shiba.pages.data.TestApplicationDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -46,7 +48,7 @@ class SnapExpeditedEligibilityParserTest extends AbstractParserTest {
         ApplicationData applicationData = applicationDataBuilder.build();
         SnapExpeditedEligibilityParameters parameters = snapExpeditedEligibilityParser.parse(applicationData).get();
 
-        assertThat(parameters).isEqualTo(new SnapExpeditedEligibilityParameters(Money.parse("2"), Money.ONE, jobIncomeInformation, false, Money.parse("3"), List.of(UTILITY_SELECTION), true));
+        assertThat(parameters).isEqualTo(new SnapExpeditedEligibilityParameters(Money.parse("2"), Money.ONE, jobIncomeInformation, "false", Money.parse("3"), List.of(UTILITY_SELECTION), null, true, false, false));
     }
 
     @Test
@@ -55,19 +57,21 @@ class SnapExpeditedEligibilityParserTest extends AbstractParserTest {
                 .withApplicantPrograms(List.of("GRH"))
                 .withPageData("preparingMealsTogether", "isPreparingMealsTogether", List.of("true"))
                 .build();
-        
+
         Subworkflows subworkflows = new Subworkflows();
         PagesData pagesData = pagesDataBuilder.build(List.of(
-                new PageDataBuilder("householdMemberInfo", Map.of(
-                        "programs", List.of("SNAP")
+                new PageDataBuilder("householdPrograms", Map.of(
+                        "householdPrograms", List.of("SNAP")
                 ))
         ));
-        subworkflows.addIteration("household", pagesData);
+        subworkflows.addIteration("householdGroup", pagesData);
         applicationData.setSubworkflows(subworkflows);
-        
+
         SnapExpeditedEligibilityParameters parameters = snapExpeditedEligibilityParser.parse(applicationData).get();
 
-        assertThat(parameters).isEqualTo(new SnapExpeditedEligibilityParameters(Money.parse("2"), Money.ONE, jobIncomeInformation, false, Money.parse("3"), List.of(UTILITY_SELECTION), true));
+        assertThat(parameters).isEqualTo(new SnapExpeditedEligibilityParameters(
+                Money.parse("2"), Money.ONE, jobIncomeInformation,
+                "false", Money.parse("3"), List.of(UTILITY_SELECTION), null, false, true, true));
     }
 
     @Test
@@ -77,7 +81,7 @@ class SnapExpeditedEligibilityParserTest extends AbstractParserTest {
 
         SnapExpeditedEligibilityParameters parameters = snapExpeditedEligibilityParser.parse(applicationData).get();
 
-        assertThat(parameters).isEqualTo(new SnapExpeditedEligibilityParameters(Money.parse("100"), Money.ONE, jobIncomeInformation, false, Money.parse("3"), List.of(UTILITY_SELECTION), true));
+        assertThat(parameters).isEqualTo(new SnapExpeditedEligibilityParameters(Money.parse("100"), Money.ONE, jobIncomeInformation, "false", Money.parse("3"), List.of(UTILITY_SELECTION), null, true, false, false));
     }
 
     @Test
@@ -88,16 +92,16 @@ class SnapExpeditedEligibilityParserTest extends AbstractParserTest {
 
         SnapExpeditedEligibilityParameters parameters = snapExpeditedEligibilityParser.parse(applicationData).get();
 
-        assertThat(parameters).isEqualTo(new SnapExpeditedEligibilityParameters(Money.parse("2"), Money.parse("200"), jobIncomeInformation, false, Money.parse("3"), List.of(UTILITY_SELECTION), true));
+        assertThat(parameters).isEqualTo(new SnapExpeditedEligibilityParameters(Money.parse("2"), Money.parse("200"), jobIncomeInformation, "false", Money.parse("3"), List.of(UTILITY_SELECTION), null, true, false, false));
     }
 
     @Test
-    void shouldReturnEmptyOptionalWhenAnyRequiredPageIsMissing() {
+    void shouldReturnNullParameterWhenMigrantWorkerIsMissing() {
         ApplicationData applicationData = applicationDataBuilder.build();
         applicationData.getPagesData().remove("migrantWorkerPage");
 
-        Optional<SnapExpeditedEligibilityParameters> parameters = snapExpeditedEligibilityParser.parse(applicationData);
+        SnapExpeditedEligibilityParameters parameters = snapExpeditedEligibilityParser.parse(applicationData).get();
 
-        assertThat(parameters).isEmpty();
+        assertThat(parameters).isEqualTo(new SnapExpeditedEligibilityParameters(Money.parse("2"), Money.ONE, jobIncomeInformation, null, Money.parse("3"), List.of(UTILITY_SELECTION), null, true, false, false));
     }
 }

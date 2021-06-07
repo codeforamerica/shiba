@@ -7,5 +7,6 @@ public class PageInputCoordinates {
     private String pageName;
     private String inputName;
     private String defaultValue;
+    private String groupName;
     private Boolean required = false;
 }

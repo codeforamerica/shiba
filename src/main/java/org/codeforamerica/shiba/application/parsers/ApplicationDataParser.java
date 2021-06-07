@@ -17,13 +17,13 @@ public abstract class ApplicationDataParser<T> {
 
     protected static Money getMoney(ApplicationData applicationData, PageInputCoordinates pageInputCoordinates) {
         try {
-            return Money.parse(applicationData.getValue(pageInputCoordinates));
+            return Money.parse(parseValue(pageInputCoordinates, applicationData.getPagesData()));
         } catch (NumberFormatException e) {
             return Money.parse(pageInputCoordinates.getDefaultValue());
         }
     }
 
-    public final String parseValue(PageInputCoordinates coordinates, PagesData pagesData) {
+    public static String parseValue(PageInputCoordinates coordinates, PagesData pagesData) {
         return Optional.ofNullable(pagesData.getPageInputFirstValue(coordinates.getPageName(), coordinates.getInputName()))
                 .orElse(coordinates.getDefaultValue());
     }

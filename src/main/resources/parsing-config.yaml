@@ -21,6 +21,16 @@ parsing:
         pageName: utilityPayments
         inputName: payForUtilities
         required: true
+      applicantPrograms:
+        pageName: choosePrograms
+        inputName: programs
+      householdPrograms:
+        pageName: householdMemberInfo
+        inputName: programs
+        groupName: household
+      preparingMealsTogether:
+        pageName: preparingMealsTogether
+        inputName: isPreparingMealsTogether
   grossMonthlyIncome:
     groupName: jobs
     pageInputs:
@@ -42,6 +52,7 @@ parsing:
       lastThirtyDaysJobIncome:
         pageName: lastThirtyDaysJobIncome
         inputName: lastThirtyDaysJobIncome
+        groupName: jobs
   homeAddress:
     pageInputs:
       street:
@@ -90,13 +101,9 @@ parsing:
         pageName: mailingAddress
         inputName: enrichedCounty
         defaultValue: Other
-  contactInfo:
+  identifyCounty:
     pageInputs:
-      email:
-        pageName: contactInfo
-        inputName: email
-  matchInfo:
-    pageInputs:
-      email:
-        pageName: matchInfo
-        inputName: email
+      county:
+        pageName: identifyCounty
+        inputName: county
+        defaultValue: Other

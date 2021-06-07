@@ -20,6 +20,16 @@ test-parsing:
         pageName: utilityExpensesSelectionsPage
         inputName: utilityExpensesSelectionsInput
         required: true
+      applicantPrograms:
+        pageName: choosePrograms
+        inputName: programs
+      householdPrograms:
+        pageName: householdPrograms
+        inputName: householdPrograms
+        groupName: householdGroup
+      preparingMealsTogether:
+        pageName: preparingMealsTogether
+        inputName: isPreparingMealsTogether
   grossMonthlyIncome:
     groupName: jobsGroup
     pageInputs:
@@ -41,6 +51,7 @@ test-parsing:
       lastThirtyDaysJobIncome:
         pageName: lastThirtyDaysJobIncome
         inputName: lastThirtyDaysJobIncomeInput
+        groupName: jobGroup
   homeAddress:
     pageInputs:
       street:
@@ -89,3 +100,9 @@ test-parsing:
         pageName: mailingAddressPageName
         inputName: addressLine6
         defaultValue: Hennepin
+  identifyCounty:
+    pageInputs:
+      county:
+        pageName: identifyCounty
+        inputName: county
+        defaultValue: Other

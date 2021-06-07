@@ -5,10 +5,7 @@ import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.InputData;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 import static java.util.Optional.ofNullable;
 
@@ -26,16 +23,8 @@ public class CountyParser extends ApplicationDataParser<County> {
         String countyName = parseCountyNameFromFullApplication(applicationData);
 
         if (applicationData.getFlow() == FlowType.LATER_DOCS) {
-            List<String> inputValue = ofNullable(applicationData.getPagesData().getPage("identifyCounty"))
-                    .map(pageData -> pageData.get("county"))
-                    .map(InputData::getValue)
-                    .orElse(List.of());
-
-            if (inputValue.size() > 0) {
-                countyName = inputValue.get(0);
-            } else {
-                return County.Other;
-            }
+            PageInputCoordinates coordinates = parsingConfiguration.get("identifyCounty").getPageInputs().get("county");
+            countyName = parseValue(coordinates, applicationData.getPagesData());
         }
 
         if (featureFlagConfiguration.get("county-" + County.valueFor(countyName).name().toLowerCase()) == FeatureFlag.OFF) {
