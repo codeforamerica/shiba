@@ -1,109 +1,107 @@
 parsing:
-  snapExpeditedEligibility:
-    pageInputs:
-      assets:
-        pageName: liquidAssets
-        inputName: liquidAssets
-        defaultValue: 0
-      income:
-        pageName: thirtyDayIncome
-        inputName: moneyMadeLast30Days
-        defaultValue: 0
-      migrantWorker:
-        pageName: migrantFarmWorker
-        inputName: migrantOrSeasonalFarmWorker
-        required: true
-      housingCosts:
-        pageName: homeExpensesAmount
-        inputName: homeExpensesAmount
-        defaultValue: 0
-      utilityExpensesSelections:
-        pageName: utilityPayments
-        inputName: payForUtilities
-        required: true
-      applicantPrograms:
-        pageName: choosePrograms
-        inputName: programs
-      householdPrograms:
-        pageName: householdMemberInfo
-        inputName: programs
-        groupName: household
-      preparingMealsTogether:
-        pageName: preparingMealsTogether
-        inputName: isPreparingMealsTogether
-  grossMonthlyIncome:
+  assets:
+    pageName: liquidAssets
+    inputName: liquidAssets
+    defaultValue: 0
+  income:
+    pageName: thirtyDayIncome
+    inputName: moneyMadeLast30Days
+    defaultValue: 0
+  migrantWorker:
+    pageName: migrantFarmWorker
+    inputName: migrantOrSeasonalFarmWorker
+    required: true
+  housingCosts:
+    pageName: homeExpensesAmount
+    inputName: homeExpensesAmount
+    defaultValue: 0
+  utilityExpensesSelections:
+    pageName: utilityPayments
+    inputName: payForUtilities
+    required: true
+  applicantPrograms:
+    pageName: choosePrograms
+    inputName: programs
+  householdPrograms:
+    pageName: householdMemberInfo
+    inputName: programs
+    groupName: household
+  preparingMealsTogether:
+    pageName: preparingMealsTogether
+    inputName: isPreparingMealsTogether
+  livingSituation:
+    pageName: livingSituation
+    inputName: livingSituation
+    defaultValue: UNKNOWN
+  paidByTheHour:
+    pageName: paidByTheHour
+    inputName: paidByTheHour
     groupName: jobs
-    pageInputs:
-      paidByTheHour:
-        pageName: paidByTheHour
-        inputName: paidByTheHour
-      hourlyWage:
-        pageName: hourlyWage
-        inputName: hourlyWage
-      hoursAWeek:
-        pageName: hoursAWeek
-        inputName: hoursAWeek
-      payPeriod:
-        pageName: payPeriod
-        inputName: payPeriod
-      incomePerPayPeriod:
-        pageName: incomePerPayPeriod
-        inputName: incomePerPayPeriod
-      lastThirtyDaysJobIncome:
-        pageName: lastThirtyDaysJobIncome
-        inputName: lastThirtyDaysJobIncome
-        groupName: jobs
-  homeAddress:
-    pageInputs:
-      street:
-        pageName: homeAddress
-        inputName: streetAddress
-      city:
-        pageName: homeAddress
-        inputName: city
-      state:
-        pageName: homeAddress
-        inputName: state
-      zipcode:
-        pageName: homeAddress
-        inputName: zipCode
-      apartmentNumber:
-        pageName: homeAddress
-        inputName: apartmentNumber
-      county:
-        pageName: homeAddress
-        inputName: enrichedCounty
-        defaultValue: Other
-      isHomeless:
-        pageName: homeAddress
-        inputName: isHomeless
-      sameMailingAddress:
-        pageName: homeAddress
-        inputName: sameMailingAddress
-  mailingAddress:
-    pageInputs:
-      street:
-        pageName: mailingAddress
-        inputName: streetAddress
-      city:
-        pageName: mailingAddress
-        inputName: city
-      state:
-        pageName: mailingAddress
-        inputName: state
-      zipcode:
-        pageName: mailingAddress
-        inputName: zipCode
-      apartmentNumber:
-        pageName: mailingAddress
-        inputName: apartmentNumber
-      county:
-        pageName: mailingAddress
-        inputName: enrichedCounty
-        defaultValue: Other
+  hourlyWage:
+    pageName: hourlyWage
+    inputName: hourlyWage
+    groupName: jobs
+  hoursAWeek:
+    pageName: hoursAWeek
+    inputName: hoursAWeek
+    groupName: jobs
+  payPeriod:
+    pageName: payPeriod
+    inputName: payPeriod
+    groupName: jobs
+  incomePerPayPeriod:
+    pageName: incomePerPayPeriod
+    inputName: incomePerPayPeriod
+    groupName: jobs
+  lastThirtyDaysJobIncome:
+    pageName: lastThirtyDaysJobIncome
+    inputName: lastThirtyDaysJobIncome
+    groupName: jobs
+  homeStreet:
+    pageName: homeAddress
+    inputName: streetAddress
+  homeCity:
+    pageName: homeAddress
+    inputName: city
+  homeState:
+    pageName: homeAddress
+    inputName: state
+  homeZipcode:
+    pageName: homeAddress
+    inputName: zipCode
+  homeApartmentNumber:
+    pageName: homeAddress
+    inputName: apartmentNumber
+  homeCounty:
+    pageName: homeAddress
+    inputName: enrichedCounty
+    defaultValue: Other
+  isHomeless:
+    pageName: homeAddress
+    inputName: isHomeless
+  sameMailingAddress:
+    pageName: homeAddress
+    inputName: sameMailingAddress
+  mailingStreet:
+    pageName: mailingAddress
+    inputName: streetAddress
+  mailingCity:
+    pageName: mailingAddress
+    inputName: city
+  mailingState:
+    pageName: mailingAddress
+    inputName: state
+  mailingZipcode:
+    pageName: mailingAddress
+    inputName: zipCode
+  mailingApartmentNumber:
+    pageName: mailingAddress
+    inputName: apartmentNumber
+  mailingCounty:
+    pageName: mailingAddress
+    inputName: enrichedCounty
+    defaultValue: Other
   identifyCounty:
-    pageInputs:
-      county:
-        pageName: identifyCounty
-        inputName: county
-        defaultValue: Other
+    pageName: identifyCounty
+    inputName: county
+    defaultValue: Other

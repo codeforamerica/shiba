@@ -1,108 +1,101 @@
 test-parsing:
-  snapExpeditedEligibility:
-    pageInputs:
-      assets:
-        pageName: assetsPage
-        inputName: assetsInput
-        defaultValue: 100
-      income:
-        pageName: incomePage
-        inputName: incomeInput
-        defaultValue: 200
-      migrantWorker:
-        pageName: migrantWorkerPage
-        inputName: migrantWorkerInput
-        required: true
-      housingCosts:
-        pageName: housingCostsPage
-        inputName: housingCostsInput
-      utilityExpensesSelections:
-        pageName: utilityExpensesSelectionsPage
-        inputName: utilityExpensesSelectionsInput
-        required: true
-      applicantPrograms:
-        pageName: choosePrograms
-        inputName: programs
-      householdPrograms:
-        pageName: householdPrograms
-        inputName: householdPrograms
-        groupName: householdGroup
-      preparingMealsTogether:
-        pageName: preparingMealsTogether
-        inputName: isPreparingMealsTogether
-  grossMonthlyIncome:
+  assets:
+    pageName: assetsPage
+    inputName: assetsInput
+    defaultValue: 100
+  income:
+    pageName: incomePage
+    inputName: incomeInput
+    defaultValue: 200
+  migrantWorker:
+    pageName: migrantWorkerPage
+    inputName: migrantWorkerInput
+    required: true
+  housingCosts:
+    pageName: housingCostsPage
+    inputName: housingCostsInput
+  utilityExpensesSelections:
+    pageName: utilityExpensesSelectionsPage
+    inputName: utilityExpensesSelectionsInput
+    required: true
+  applicantPrograms:
+    pageName: choosePrograms
+    inputName: programs
+  householdPrograms:
+    pageName: householdPrograms
+    inputName: householdPrograms
+    groupName: householdGroup
+  preparingMealsTogether:
+    pageName: preparingMealsTogether
+    inputName: isPreparingMealsTogether
+  livingSituation:
+    pageName: livingSituation
+    inputName: livingSituation
+    defaultValue: UNKNOWN
+  paidByTheHour:
+    pageName: paidByTheHourPage
+    inputName: paidByTheHourInput
+  hourlyWage:
+    pageName: hourlyWagePage
+    inputName: hourlyWageInput
+  hoursAWeek:
+    pageName: hoursAWeekPage
+    inputName: hoursAWeekInput
+  payPeriod:
+    pageName: payPeriodPage
+    inputName: payPeriodInput
+  incomePerPayPeriod:
+    pageName: incomePerPayPeriodPage
+    inputName: incomePerPayPeriodInput
+  lastThirtyDaysJobIncome:
+    pageName: lastThirtyDaysJobIncome
+    inputName: lastThirtyDaysJobIncomeInput
     groupName: jobsGroup
-    pageInputs:
-      paidByTheHour:
-        pageName: paidByTheHourPage
-        inputName: paidByTheHourInput
-      hourlyWage:
-        pageName: hourlyWagePage
-        inputName: hourlyWageInput
-      hoursAWeek:
-        pageName: hoursAWeekPage
-        inputName: hoursAWeekInput
-      payPeriod:
-        pageName: payPeriodPage
-        inputName: payPeriodInput
-      incomePerPayPeriod:
-        pageName: incomePerPayPeriodPage
-        inputName: incomePerPayPeriodInput
-      lastThirtyDaysJobIncome:
-        pageName: lastThirtyDaysJobIncome
-        inputName: lastThirtyDaysJobIncomeInput
-        groupName: jobGroup
-  homeAddress:
-    pageInputs:
-      street:
-        pageName: homeAddressPageName
-        inputName: addressLine1
-      city:
-        pageName: homeAddressPageName
-        inputName: addressLine2
-      state:
-        pageName: homeAddressPageName
-        inputName: addressLine3
-      zipcode:
-        pageName: homeAddressPageName
-        inputName: addressLine4
-      apartmentNumber:
-        pageName: homeAddressPageName
-        inputName: addressLine5
-      county:
-        pageName: homeAddressPageName
-        inputName: addressLine6
-        defaultValue: Hennepin
-      isHomeless:
-        pageName: homeAddressPageName
-        inputName: addressLine7
-      sameMailingAddress:
-        pageName: homeAddressPageName
-        inputName: addressLine8
-  mailingAddress:
-    pageInputs:
-      street:
-        pageName: mailingAddressPageName
-        inputName: addressLine1
-      city:
-        pageName: mailingAddressPageName
-        inputName: addressLine2
-      state:
-        pageName: mailingAddressPageName
-        inputName: addressLine3
-      zipcode:
-        pageName: mailingAddressPageName
-        inputName: addressLine4
-      apartmentNumber:
-        pageName: mailingAddressPageName
-        inputName: addressLine5
-      county:
-        pageName: mailingAddressPageName
-        inputName: addressLine6
-        defaultValue: Hennepin
+  homeStreet:
+    pageName: homeAddressPageName
+    inputName: addressLine1
+  homeCity:
+    pageName: homeAddressPageName
+    inputName: addressLine2
+  homeState:
+    pageName: homeAddressPageName
+    inputName: addressLine3
+  homeZipcode:
+    pageName: homeAddressPageName
+    inputName: addressLine4
+  homeApartmentNumber:
+    pageName: homeAddressPageName
+    inputName: addressLine5
+  homeCounty:
+    pageName: homeAddressPageName
+    inputName: addressLine6
+    defaultValue: Hennepin
+  isHomeless:
+    pageName: homeAddressPageName
+    inputName: addressLine7
+  sameMailingAddress:
+    pageName: homeAddressPageName
+    inputName: addressLine8
+  mailingStreet:
+    pageName: mailingAddressPageName
+    inputName: addressLine1
+  mailingCity:
+    pageName: mailingAddressPageName
+    inputName: addressLine2
+  mailingState:
+    pageName: mailingAddressPageName
+    inputName: addressLine3
+  mailingZipcode:
+    pageName: mailingAddressPageName
+    inputName: addressLine4
+  mailingApartmentNumber:
+    pageName: mailingAddressPageName
+    inputName: addressLine5
+  mailingCounty:
+    pageName: mailingAddressPageName
+    inputName: addressLine6
+    defaultValue: Hennepin
   identifyCounty:
-    pageInputs:
-      county:
-        pageName: identifyCounty
-        inputName: county
-        defaultValue: Other
+    pageName: identifyCounty
+    inputName: county
+    defaultValue: Other

@@ -23,7 +23,7 @@ public class CountyParser extends ApplicationDataParser<County> {
         String countyName = parseCountyNameFromFullApplication(applicationData);
 
         if (applicationData.getFlow() == FlowType.LATER_DOCS) {
-            PageInputCoordinates coordinates = parsingConfiguration.get("identifyCounty").getPageInputs().get("county");
+            PageInputCoordinates coordinates = parsingConfiguration.get("identifyCounty");
             countyName = parseValue(coordinates, applicationData.getPagesData());
         }
 
@@ -35,15 +35,14 @@ public class CountyParser extends ApplicationDataParser<County> {
 
     private String parseCountyNameFromFullApplication(ApplicationData applicationData) {
         boolean useMailingAddress = shouldUseMailingAddress(applicationData);
-        String addressSource = useMailingAddress ? "mailingAddress" : "homeAddress";
-        PageInputCoordinates coordinates = parsingConfiguration.get(addressSource).getPageInputs().get("county");
+        String addressSource = useMailingAddress ? "mailingCounty" : "homeCounty";
+        PageInputCoordinates coordinates = parsingConfiguration.get(addressSource);
         return parseValue(coordinates, applicationData.getPagesData());
     }
 
     private boolean shouldUseMailingAddress(ApplicationData applicationData) {
-        var homeAddressConfig = parsingConfiguration.get("homeAddress").getPageInputs();
-        var isHomelessPageName = homeAddressConfig.get("isHomeless");
-        var sameMailingAddressInputName = homeAddressConfig.get("sameMailingAddress");
+        var isHomelessPageName = parsingConfiguration.get("isHomeless");
+        var sameMailingAddressInputName = parsingConfiguration.get("sameMailingAddress");
 
         boolean isHomeless = ofNullable(parseValue(isHomelessPageName, applicationData.getPagesData()))
                 .map(Boolean::parseBoolean)

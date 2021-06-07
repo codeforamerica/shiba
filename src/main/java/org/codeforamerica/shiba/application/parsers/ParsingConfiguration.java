@@ -11,7 +11,7 @@ import java.util.HashMap;
 @Configuration
 @PropertySource(value = "classpath:parsing-config.yaml", factory = YamlPropertySourceFactory.class)
 @ConfigurationProperties(prefix = "parsing")
-public class ParsingConfiguration extends HashMap<String, ParsingCoordinates> {
+public class ParsingConfiguration extends HashMap<String, PageInputCoordinates> {
     @Serial
     private static final long serialVersionUID = 2536065463771955192L;
 }

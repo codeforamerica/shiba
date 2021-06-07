@@ -20,8 +20,8 @@ public class GrossMonthlyIncomeParser extends ApplicationDataParser<List<JobInco
     }
 
     public List<JobIncomeInformation> parse(ApplicationData data) {
-        ParsingCoordinates grossMonthlyIncomeConfiguration = parsingConfiguration.get("grossMonthlyIncome");
-        Subworkflow jobsGroup = data.getSubworkflows().get(grossMonthlyIncomeConfiguration.getGroupName());
+        PageInputCoordinates lastThirtyDaysIncomeCoordinates = parsingConfiguration.get("lastThirtyDaysJobIncome");
+        Subworkflow jobsGroup = data.getSubworkflows().get(lastThirtyDaysIncomeCoordinates.getGroupName());
         if (jobsGroup == null) {
             return Collections.emptyList();
         }
@@ -29,7 +29,6 @@ public class GrossMonthlyIncomeParser extends ApplicationDataParser<List<JobInco
         return jobsGroup.stream()
                 .map(iteration -> {
                     PagesData pagesData = iteration.getPagesData();
-                    PageInputCoordinates lastThirtyDaysIncomeCoordinates = grossMonthlyIncomeConfiguration.getPageInputs().get("lastThirtyDaysJobIncome");
                     boolean hasLastThirtyDaysIncome = pagesData.containsKey(lastThirtyDaysIncomeCoordinates.getPageName());
                     if (hasLastThirtyDaysIncome) {
                         String lastThirtyDaysIncome = parseValue("lastThirtyDaysJobIncome", pagesData);
@@ -49,9 +48,5 @@ public class GrossMonthlyIncomeParser extends ApplicationDataParser<List<JobInco
                 })
                 .filter(JobIncomeInformation::isComplete)
                 .collect(Collectors.toList());
-    }
-
-    private String parseValue(String pageInput, PagesData pagesData) {
-        return super.parseValue(parsingConfiguration.get("grossMonthlyIncome").getPageInputs().get(pageInput), pagesData);
     }
 }
