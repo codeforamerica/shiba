@@ -22,6 +22,7 @@ public class DocRecommendationMessageService {
     private final String proofOfIncome = "proofOfIncome";
     private final String proofOfHousingCost = "proofOfHousingCost";
     private final String proofOfJobLoss = "proofOfJobLoss";
+    private final String proofOfMedicalExpenses = "proofOfMedicalExpenses";
 
     private final String proofOfIncomeTitleShort = "upload-documents.proof-of-income";
     private final String proofOfIncomeTextShort = "upload-documents.a-document-with-employer-and-employee-names";
@@ -29,6 +30,9 @@ public class DocRecommendationMessageService {
     private final String proofOfHousingCostTextShort = "upload-documents.a-document-showing-total-amount-paid-for-housing";
     private final String proofOfJobLossTitleShort = "upload-documents.proof-of-job-loss";
     private final String proofOfJobLossTextShort = "upload-documents.a-document-with-your-former-employers-name-and-signature";
+    private final String proofOfMedicalExpensesTitleShort = "upload-documents.proof-of-medical-expenses";
+    private final String proofOfMedicalExpensesTextShort = "upload-documents.documents-showing-medical-expenses-that-you-paid-for";
+
 
     private final String proofOfIncomeIconLong = "fragments/icons/icon-income :: icon-income";
     private final String proofOfIncomeTitleLong = "document-recommendation.proof-of-income";
@@ -42,6 +46,10 @@ public class DocRecommendationMessageService {
     private final String proofOfJobLossTitleLong = "document-recommendation.proof-of-job-loss";
     private final String proofOfJobLossExplanationLong = "document-recommendation.proof-of-job-loss-explanation";
     private final String proofOfJobLossExampleLong = "document-recommendation.proof-of-job-loss-example";
+    private final String proofOfMedicalExpensesIconLong = "fragments/icons/icon-medical-expenses :: icon-medical-expenses";
+    private final String proofOfMedicalExpensesTitleLong = "document-recommendation.proof-of-medical-expenses";
+    private final String proofOfMedicalExpensesExplanationLong = "document-recommendation.proof-of-medical-expenses-explanation";
+    private final String proofOfMedicalExpensesExampleLong = "document-recommendation.proof-of-medical-expenses-example";
 
 
     public DocRecommendationMessageService(MessageSource messageSource) {
@@ -53,23 +61,28 @@ public class DocRecommendationMessageService {
         boolean showProofOfIncomeRecommendation = proofOfIncomeRecommendation(applicationData);
         boolean showProofOfHousingCostRecommendation = proofOfHousingCostRecommendation(applicationData);
         boolean showProofOfJobLossRecommendation = proofOfJobLossPrograms(applicationData);
+        boolean showMedicalExpensesRecommendation = proofOfMedicalExpenses(applicationData);
 
         List<String> recommendationsToShow = new ArrayList<>();
-        if(showProofOfIncomeRecommendation){
+        if (showProofOfIncomeRecommendation) {
             recommendationsToShow.add(proofOfIncome);
         }
 
-        if(showProofOfHousingCostRecommendation){
+        if (showProofOfHousingCostRecommendation) {
             recommendationsToShow.add(proofOfHousingCost);
         }
 
-        if(showProofOfJobLossRecommendation){
+        if (showProofOfJobLossRecommendation) {
             recommendationsToShow.add(proofOfJobLoss);
         }
 
-        if(pageName.equals("uploadDocuments")){
-            return getShortDocumentRecommendations(recommendationsToShow,lms);
-        } else if (pageName.equals("documentRecommendation")){
+        if (showMedicalExpensesRecommendation) {
+            recommendationsToShow.add(proofOfMedicalExpenses);
+        }
+
+        if (pageName.equals("uploadDocuments")) {
+            return getShortDocumentRecommendations(recommendationsToShow, lms);
+        } else if (pageName.equals("documentRecommendation")) {
             return getLongDocumentRecommendations(recommendationsToShow, lms);
         }
 
@@ -77,51 +90,64 @@ public class DocRecommendationMessageService {
 
     }
 
-    private List<DocumentRecommendation> getShortDocumentRecommendations (List<String> recommendations, LocaleSpecificMessageSource lms){
+    private List<DocumentRecommendation> getShortDocumentRecommendations(List<String> recommendations, LocaleSpecificMessageSource lms) {
 
         List<DocumentRecommendation> recommendationMessages = new ArrayList<>();
         recommendations.stream().forEach(recommendation -> {
             DocumentRecommendation docRec;
 
-            if(recommendation.equals(proofOfIncome)){
-                docRec = new DocumentRecommendation(lms.getMessage(proofOfIncomeTitleShort), lms.getMessage(proofOfIncomeTextShort));
-                recommendationMessages.add(docRec);
-            }
-            if(recommendation.equals(proofOfHousingCost)){
-                docRec = new DocumentRecommendation(lms.getMessage(proofOfHousingCostTitleShort), lms.getMessage(proofOfHousingCostTextShort));
-                recommendationMessages.add(docRec);
-            }
-            if(recommendation.equals(proofOfJobLoss)){
-                docRec = new DocumentRecommendation(lms.getMessage(proofOfJobLossTitleShort), lms.getMessage(proofOfJobLossTextShort));
-                recommendationMessages.add(docRec);
+            switch (recommendation) {
+                case proofOfIncome:
+                    docRec = new DocumentRecommendation(lms.getMessage(proofOfIncomeTitleShort), lms.getMessage(proofOfIncomeTextShort));
+                    recommendationMessages.add(docRec);
+                    break;
+                case proofOfHousingCost:
+                    docRec = new DocumentRecommendation(lms.getMessage(proofOfHousingCostTitleShort), lms.getMessage(proofOfHousingCostTextShort));
+                    recommendationMessages.add(docRec);
+                    break;
+                case proofOfJobLoss:
+                    docRec = new DocumentRecommendation(lms.getMessage(proofOfJobLossTitleShort), lms.getMessage(proofOfJobLossTextShort));
+                    recommendationMessages.add(docRec);
+                    break;
+                case proofOfMedicalExpenses:
+                    docRec = new DocumentRecommendation(lms.getMessage(proofOfMedicalExpensesTitleShort), lms.getMessage(proofOfMedicalExpensesTextShort));
+                    recommendationMessages.add(docRec);
+                    break;
             }
         });
 
         return recommendationMessages;
     }
 
-    private List<DocumentRecommendation> getLongDocumentRecommendations(List<String> recommendations, LocaleSpecificMessageSource lms){
+    private List<DocumentRecommendation> getLongDocumentRecommendations(List<String> recommendations, LocaleSpecificMessageSource lms) {
         List<DocumentRecommendation> recommendationMessages = new ArrayList<>();
         recommendations.stream().forEach(recommendation -> {
             DocumentRecommendation docRec;
-            if(recommendation.equals(proofOfIncome)){
-                docRec = new DocumentRecommendation(proofOfIncomeIconLong, lms.getMessage(proofOfIncomeTitleLong), lms.getMessage(proofOfIncomeExplanationLong), lms.getMessage(proofOfIncomeExampleLong));
-                recommendationMessages.add(docRec);
-            }
-            if(recommendation.equals(proofOfHousingCost)){
-                docRec = new DocumentRecommendation(proofOfHousingCostIconLong, lms.getMessage(proofOfHousingCostTitleLong), lms.getMessage(proofOfHousingCostExplanationLong), lms.getMessage(proofOfHousingCostExampleLong));
-                recommendationMessages.add(docRec);
-            }
-            if(recommendation.equals(proofOfJobLoss)){
-                docRec = new DocumentRecommendation(proofOfJobLossIconLong, lms.getMessage(proofOfJobLossTitleLong), lms.getMessage(proofOfJobLossExplanationLong), lms.getMessage(proofOfJobLossExampleLong));
-                recommendationMessages.add(docRec);
+
+            switch (recommendation) {
+                case proofOfIncome:
+                    docRec = new DocumentRecommendation(proofOfIncomeIconLong, lms.getMessage(proofOfIncomeTitleLong), lms.getMessage(proofOfIncomeExplanationLong), lms.getMessage(proofOfIncomeExampleLong));
+                    recommendationMessages.add(docRec);
+                    break;
+                case proofOfHousingCost:
+                    docRec = new DocumentRecommendation(proofOfHousingCostIconLong, lms.getMessage(proofOfHousingCostTitleLong), lms.getMessage(proofOfHousingCostExplanationLong), lms.getMessage(proofOfHousingCostExampleLong));
+                    recommendationMessages.add(docRec);
+                    break;
+                case proofOfJobLoss:
+                    docRec = new DocumentRecommendation(proofOfJobLossIconLong, lms.getMessage(proofOfJobLossTitleLong), lms.getMessage(proofOfJobLossExplanationLong), lms.getMessage(proofOfJobLossExampleLong));
+                    recommendationMessages.add(docRec);
+                    break;
+                case proofOfMedicalExpenses:
+                    docRec = new DocumentRecommendation(proofOfMedicalExpensesIconLong, lms.getMessage(proofOfMedicalExpensesTitleLong), lms.getMessage(proofOfMedicalExpensesExplanationLong), lms.getMessage(proofOfMedicalExpensesExampleLong));
+                    recommendationMessages.add(docRec);
+                    break;
             }
 
         });
         return recommendationMessages;
     }
 
-    private boolean proofOfIncomeRecommendation(ApplicationData applicationData){
+    private boolean proofOfIncomeRecommendation(ApplicationData applicationData) {
         List<String> proofOfIncomePrograms = List.of("SNAP", "CASH", "EA", "GRH");
         boolean employmentStatus = applicationData.getPagesData().safeGetPageInputValue("employmentStatus", "areYouWorking").containsAll(List.of("true"));
 
@@ -142,6 +168,10 @@ public class DocRecommendationMessageService {
         return hasChangedWorkSituation && applicationData.isApplicationWith(proofOfJobLossPrograms);
     }
 
+    private boolean proofOfMedicalExpenses(ApplicationData applicationData) {
+        return applicationData.isCCAPApplication() && applicationData.isMedicalExpensesApplication();
+    }
+
 
     public static class DocumentRecommendation {
         public String icon;
@@ -149,14 +179,14 @@ public class DocRecommendationMessageService {
         public String explanation;
         public String example;
 
-        public DocumentRecommendation(String icon, String title, String explanation, String example){
-            this.icon=icon;
-            this.title=title;
-            this.explanation=explanation;
-            this.example=example;
+        public DocumentRecommendation(String icon, String title, String explanation, String example) {
+            this.icon = icon;
+            this.title = title;
+            this.explanation = explanation;
+            this.example = example;
         }
 
-        public DocumentRecommendation(String title, String explanation){
+        public DocumentRecommendation(String title, String explanation) {
             this.title = title;
             this.explanation = explanation;
         }
