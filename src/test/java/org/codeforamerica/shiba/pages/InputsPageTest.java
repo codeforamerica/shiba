@@ -275,7 +275,6 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
     void shouldDisplayPlaceholderIfPresent() {
         navigateTo("firstPage");
         assertThat(driver.getTitle()).isEqualTo("firstPageTitle");
-        takeSnapShot("test.png");
         assertThat(driver.findElement(By.name("editableTextInput[]")).getAttribute("placeholder")).isEqualTo(placeholder);
 
         navigateTo("nextPage");

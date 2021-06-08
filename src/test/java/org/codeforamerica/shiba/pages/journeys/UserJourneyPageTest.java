@@ -188,5 +188,4 @@ public class UserJourneyPageTest extends JourneyTest {
         assertThat(driver.findElementsByClassName("form-group--error")).hasSize(0);
         assertThat(driver.findElementsByClassName("text--error")).hasSize(0);
     }
-
 }

@@ -1,18 +1,17 @@
 package org.codeforamerica.shiba.pages;
 
-import io.percy.selenium.*;
+import io.percy.selenium.Percy;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
-
 import java.util.List;
 import java.util.stream.Collectors;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class Page {
     protected final RemoteWebDriver driver;
     protected final Percy percy;
+
 
     public String getTitle() {
         return driver.getTitle();

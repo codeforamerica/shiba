@@ -32,7 +32,6 @@ public class PeopleSelectInputsPageTest extends AbstractExistingStartTimePageTes
         testPage.enter("peopleSelect", List.of("option 1", "option 2"));
         testPage.clickContinue();
 
-        takeSnapShot("test.png");
         assertThat(driver.findElement(By.id("Fake Person1 c6624883")).isDisplayed()).isTrue();
         assertThat(driver.findElement(By.id("Fake Person2 jre55443")).isDisplayed()).isTrue();
         assertThat(driver.findElements(By.id("Fake Person3 fafd2345"))).isEmpty();
