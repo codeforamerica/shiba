@@ -182,10 +182,6 @@ public class PageController {
             }
         }
 
-        if (applicationConfiguration.getLandmarkPages().isUploadDocumentsPage(pageName)) {
-            applicationStatusUpdater.updateUploadedDocumentsStatus(applicationData.getId(), UPLOADED_DOC, IN_PROGRESS);
-        }
-
         if (shouldRedirectToTerminalPage(pageName)) {
             return new ModelAndView(String.format("redirect:/pages/%s", landmarkPagesConfiguration.getTerminalPage()));
         }
@@ -203,6 +199,10 @@ public class PageController {
         var pageWorkflowConfig = applicationConfiguration.getPageWorkflow(pageName);
         if (missingRequiredSubworkflows(pageWorkflowConfig)) {
             return new ModelAndView("redirect:/pages/" + pageWorkflowConfig.getDataMissingRedirect());
+        }
+
+        if (applicationConfiguration.getLandmarkPages().isUploadDocumentsPage(pageName)) {
+            applicationStatusUpdater.updateUploadedDocumentsStatus(applicationData.getId(), UPLOADED_DOC, IN_PROGRESS);
         }
 
         // Update pagesData with data for incomplete subworkflows
