@@ -14,12 +14,11 @@ on:
 
 jobs:
   announce_failure:
-    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
     name: Announce test failure on Slack
     runs-on: ubuntu-latest
     steps:
       - name: Announce on Slack
-        if: ${{ always() }}
+        if: ${{ github.event.workflow_run.conclusion == 'failure' }}
         uses: innocarpe/actions-slack@v1
         with:
           status: ${{ github.event.workflow_run.conclusion }}
