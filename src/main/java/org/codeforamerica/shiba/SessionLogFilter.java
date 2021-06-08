@@ -41,15 +41,11 @@ public class SessionLogFilter implements Filter {
         HttpServletRequest httpReq = (HttpServletRequest) request;
         MDC.put("url", String.valueOf(httpReq.getRequestURL()));
         MDC.put("sessionId", httpReq.getSession().getId());
-        if (applicationData != null) {
-            MDC.put("pagesData", objectMapper.writeValueAsString(applicationData.getPagesData()));
-            if (applicationData.getId() != null) {
+        if (applicationData != null && applicationData.getId() != null) {
                 monitoringService.setApplicationId(applicationData.getId());
-            }
         }
         log.info(httpReq.getMethod() + " " + httpReq.getRequestURI());
         monitoringService.setSessionId(httpReq.getSession().getId());
-        monitoringService.setPagesData(MDC.get("pagesData"));
 
         chain.doFilter(request, response);
     }

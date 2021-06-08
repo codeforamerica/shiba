@@ -17,9 +17,4 @@ public class SentryClient implements MonitoringService {
         user.setId(sessionId);
         Sentry.setUser(user);
     }
-
-    @Override
-    public void setPagesData(String pagesData) {
-        Sentry.setExtra("pagesData", pagesData);
-    }
 }
