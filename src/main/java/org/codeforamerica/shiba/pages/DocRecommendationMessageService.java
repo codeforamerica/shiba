@@ -30,7 +30,6 @@ public class DocRecommendationMessageService {
     private final String proofOfJobLossTitleShort = "upload-documents.proof-of-job-loss";
     private final String proofOfJobLossTextShort = "upload-documents.a-document-with-your-former-employers-name-and-signature";
 
-    //TODO: Add string variables to hold the message resource keys for long
     private final String proofOfIncomeIconLong = "fragments/icons/icon-income :: icon-income";
     private final String proofOfIncomeTitleLong = "document-recommendation.proof-of-income";
     private final String proofOfIncomeExplanationLong = "document-recommendation.proof-of-income-explanation";
@@ -49,7 +48,7 @@ public class DocRecommendationMessageService {
         this.messageSource = messageSource;
     }
 
-    public List<DocumentRecommendation> getShortRecommendationsMessage(ApplicationData applicationData, Locale locale, String pageName) {
+    public List<DocumentRecommendation> getRecommendationsMessage(ApplicationData applicationData, Locale locale, String pageName) {
         LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
         boolean showProofOfIncomeRecommendation = proofOfIncomeRecommendation(applicationData);
         boolean showProofOfHousingCostRecommendation = proofOfHousingCostRecommendation(applicationData);

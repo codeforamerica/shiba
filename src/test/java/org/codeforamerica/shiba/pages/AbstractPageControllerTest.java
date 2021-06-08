@@ -38,7 +38,8 @@ import java.util.HashMap;
         ApplicationConfigurationFactoryAppConfig.class,
         ClockConfiguration.class,
         ApplicationFactory.class,
-        SuccessMessageService.class
+        SuccessMessageService.class,
+        DocRecommendationMessageService.class
 })
 public class AbstractPageControllerTest {
     @MockBean

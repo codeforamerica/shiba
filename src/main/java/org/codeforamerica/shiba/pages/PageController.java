@@ -294,7 +294,7 @@ public class PageController {
         model.put("expeditedCcap", ccapExpeditedEligibility);
 
         if (landmarkPagesConfiguration.isPostSubmitPage(pageName)) {
-            model.put("docRecommendations", docRecommendationMessageService.getShortRecommendationsMessage(applicationData, locale, pageName));
+            model.put("docRecommendations", docRecommendationMessageService.getRecommendationsMessage(applicationData, locale, pageName));
         }
 
         if (landmarkPagesConfiguration.isTerminalPage(pageName)) {
@@ -310,7 +310,6 @@ public class PageController {
             boolean hasHealthcare = "YES".equalsIgnoreCase(inputData);
             model.put("doesNotHaveHealthcare", !hasHealthcare);
             model.put("successMessage", successMessageService.getSuccessMessage(new ArrayList<>(programs), snapExpeditedEligibility, ccapExpeditedEligibility, locale));
-            //TODO: add docRecommendation to model , will need to know which page its for
         }
 
         if (landmarkPagesConfiguration.isLaterDocsTerminalPage(pageName)) {

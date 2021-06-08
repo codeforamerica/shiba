@@ -15,7 +15,7 @@
 
                 <div class="grid__item spacing-above-35">
                 <th:block th:each="docRec: ${docRecommendations}">
-                    <div th:replace="fragments/documentRecommendationFragment :: documentRecommendationFragment(${docRec.icon},
+                    <div th:replace="fragments/docRecommendationLongFragment :: docRecommendationLongFragment(${docRec.icon},
                         ${docRec.title},
                         ${docRec.explanation},
                         ${docRec.example})"></div>
