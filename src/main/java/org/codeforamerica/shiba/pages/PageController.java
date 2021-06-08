@@ -192,10 +192,6 @@ public class PageController {
 
         response.addHeader("Cache-Control", "no-store");
 
-        if (notFound(pageName)) {
-            return new ModelAndView("error/404");
-        }
-
         var pageWorkflowConfig = applicationConfiguration.getPageWorkflow(pageName);
         if (missingRequiredSubworkflows(pageWorkflowConfig)) {
             return new ModelAndView("redirect:/pages/" + pageWorkflowConfig.getDataMissingRedirect());
