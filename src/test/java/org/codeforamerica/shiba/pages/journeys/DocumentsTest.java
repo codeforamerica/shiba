@@ -26,20 +26,24 @@ public class DocumentsTest extends JourneyTest {
         completeFlowFromLandingPageThroughReviewInfo(applicantPrograms, smartyStreetClient);
         completeFlowFromReviewInfoToDisability(applicantPrograms);
 
-        // Recommend proof of job loss (if programs were applicable)
+        // Won't recommend proof of job loss
         testPage.enter("hasWorkSituation", NO.getDisplayValue());
         testPage.clickContinue();
-        // Recommend proof of income (if programs were applicable)
+        // Won't recommend proof of income
         testPage.enter("areYouWorking", NO.getDisplayValue());
+        testPage.enter("currentlyLookingForJob", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.enter("unearnedIncome", "None of the above");
+        testPage.clickContinue();
+        testPage.enter("unearnedIncomeCcap", "None of the above");
         testPage.clickContinue();
         testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.clickContinue();
-        // Recommend proof of shelter (if programs were applicable)
+        // Won't recommend proof of shelter
         testPage.enter("homeExpenses", "None of the above");
         testPage.clickContinue();
+        // Won't recommend proof of medical expenses
         navigateTo("medicalExpenses");
         testPage.enter("medicalExpenses", "None of the above");
         testPage.clickContinue();
