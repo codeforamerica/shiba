@@ -60,25 +60,60 @@ public class DocRecommendationMessageServiceTest extends AbstractPageControllerT
         //send over: test name, list of programs, list of doc recs to show, string pagename
         return Stream.of(
                 Arguments.of(
-                        "Only Show Proof Of Income - Short",
+                        "Show Proof Of Income - Short",
                         List.of("CASH", "SNAP"),
                         List.of(proofOfIncome),
                         "/pages/uploadDocuments",
                         "Proof of Income"
                 ),
                 Arguments.of(
-                        "Only Show Proof Of Income - Long",
+                        "Show Proof Of Income - Long",
                         List.of("CASH", "SNAP"),
                         List.of(proofOfIncome),
                         "/pages/documentRecommendation",
                         "Proof of Income"
                 ),
                 Arguments.of(
-                        "Only Show Proof of Job Loss - Short",
+                        "Show Proof of Job Loss - Short",
                         List.of("SNAP", "CASH", "GRH"),
                         List.of(proofOfJobLoss),
                         "/pages/uploadDocuments",
                         "Proof of Job Loss"
+                ),
+                Arguments.of(
+                        "Show Proof of Job Loss - Long",
+                        List.of("SNAP", "CASH", "GRH"),
+                        List.of(proofOfJobLoss),
+                        "/pages/documentRecommendation",
+                        "Proof of Job Loss"
+                ),
+                Arguments.of(
+                        "Show Proof of Housing Cost - Short",
+                        List.of("EA"),
+                        List.of(proofOfHousingCost),
+                        "/pages/uploadDocuments",
+                        "Proof of Housing Cost"
+                ),
+                Arguments.of(
+                        "Show Proof of Housing Cost - Long",
+                        List.of("EA"),
+                        List.of(proofOfHousingCost),
+                        "/pages/documentRecommendation",
+                        "Proof of Housing Cost"
+                ),
+                Arguments.of(
+                        "Show Proof of Medical Expenses - Short",
+                        List.of("CCAP"),
+                        List.of(proofOfMedicalExpenses),
+                        "/pages/uploadDocuments",
+                        "Proof of Medical Expenses"
+                ),
+                Arguments.of(
+                        "Show Proof of Housing Cost - Long",
+                        List.of("CCAP"),
+                        List.of(proofOfMedicalExpenses),
+                        "/pages/documentRecommendation",
+                        "Proof of Medical Expenses"
                 )
         );
     }
@@ -99,7 +134,6 @@ public class DocRecommendationMessageServiceTest extends AbstractPageControllerT
     private void setPageInformation(List<String> programs, List<String> recommendations){
         PageDataBuilder programPageData = new PageDataBuilder("choosePrograms", Map.of("programs", programs));
 
-        //create a list of PageDataBuilder based off of list of recommendations
         List<PageDataBuilder> pagesData = new ArrayList<>();
         recommendations.stream().forEach(recommendation -> {
             PageDataBuilder pageDataBuilder;
