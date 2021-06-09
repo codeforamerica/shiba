@@ -50,7 +50,7 @@
 
                             <th:block>
                                 <div class="reveal reveal-adjacent spacing-above-60"
-                                     th:if="${docRecommendations != null}">
+                                     th:if="${docRecommendations.size() > 0}">
                                     <a href="#" class="reveal__link reveal__link-adjacent">
                                     <span class="reveal-icon">
                                         <div th:replace="fragments/icons/icon-multiple-documents  :: icon-multiple-documents"></div>
