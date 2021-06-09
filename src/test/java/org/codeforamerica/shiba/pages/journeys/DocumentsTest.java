@@ -19,9 +19,10 @@ import static org.mockito.Mockito.doThrow;
 
 @Tag("document")
 public class DocumentsTest extends JourneyTest {
+
     @Test
-    void shouldSkipDocumentUploadFlowIfNoApplicablePrograms() {
-        List<String> applicantPrograms = List.of(PROGRAM_GRH);
+    void shouldSkipDocumentUploadFlowIfNotApplicableRegardlessOfPrograms() {
+        List<String> applicantPrograms = List.of(PROGRAM_SNAP, PROGRAM_CASH, PROGRAM_EA, PROGRAM_GRH, PROGRAM_CCAP);
         completeFlowFromLandingPageThroughReviewInfo(applicantPrograms, smartyStreetClient);
         completeFlowFromReviewInfoToDisability(applicantPrograms);
 
@@ -31,53 +32,17 @@ public class DocumentsTest extends JourneyTest {
         // Recommend proof of income (if programs were applicable)
         testPage.enter("areYouWorking", NO.getDisplayValue());
         testPage.clickContinue();
-        /*testPage.clickButton("Add a job");
-        testPage.enter("employersName", "some employer");
-        testPage.clickContinue();
-        testPage.enter("selfEmployment", YES.getDisplayValue());
-        paidByTheHourOrSelectPayPeriod(true);*/
-
-        /*testPage.enter("currentlyLookingForJob", NO.getDisplayValue());
-        testPage.clickContinue();*/
         testPage.enter("unearnedIncome", "None of the above");
         testPage.clickContinue();
-        /*testPage.enter("unearnedIncomeCcap", "None of the above");
-        testPage.clickContinue();*/
         testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.clickContinue();
         // Recommend proof of shelter (if programs were applicable)
-        testPage.enter("homeExpenses", "Rent");
-        testPage.clickContinue();
-
-        navigateTo("signThisApplication");
-        testPage.enter("applicantSignature", "some name");
-        testPage.clickButton("Submit");
-
-        assertThat(driver.getTitle()).isEqualTo("Success");
-    }
-
-    @Test
-    void shouldSkipDocumentUploadFlowIfNotApplicableRegardlessOfPrograms() {
-        List<String> applicantPrograms = List.of(PROGRAM_SNAP, PROGRAM_CASH, PROGRAM_EA, PROGRAM_GRH);
-        completeFlowFromLandingPageThroughReviewInfo(applicantPrograms, smartyStreetClient);
-        completeFlowFromReviewInfoToDisability(applicantPrograms);
-
-        // Do not recommend proof of job loss
-        testPage.enter("hasWorkSituation", NO.getDisplayValue());
-        testPage.clickContinue();
-        // Do not recommend proof of income
-        testPage.enter("areYouWorking", NO.getDisplayValue());
-        testPage.clickContinue();
-        testPage.enter("unearnedIncome", "None of the above");
-        testPage.clickContinue();
-        testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
-        testPage.clickContinue();
-        testPage.clickContinue();
-        // Do not recommend proof of shelter
         testPage.enter("homeExpenses", "None of the above");
         testPage.clickContinue();
-
+        navigateTo("medicalExpenses");
+        testPage.enter("medicalExpenses", "None of the above");
+        testPage.clickContinue();
         navigateTo("signThisApplication");
         testPage.enter("applicantSignature", "some name");
         testPage.clickButton("Submit");
@@ -117,30 +82,6 @@ public class DocumentsTest extends JourneyTest {
 
         assertThat(driver.getTitle()).isEqualTo("Document Recommendation");
         assertThat(driver.findElementsByClassName("success-icons")).hasSize(3);
-    }
-
-    @Test
-    void shouldSkipDocumentRecommendationsIfChoseEligibleProgramsButNoOnEmploymentStatusNoOnHasWorkSituationAndNoneOfTheAboveOnHomeExpenses() {
-        List<String> applicantPrograms = List.of(PROGRAM_GRH, PROGRAM_SNAP);
-        completeFlowFromLandingPageThroughReviewInfo(applicantPrograms, smartyStreetClient);
-        completeFlowFromReviewInfoToDisability(applicantPrograms);
-
-        testPage.enter("hasWorkSituation", NO.getDisplayValue());
-        testPage.clickContinue();
-        testPage.enter("areYouWorking", NO.getDisplayValue());
-        testPage.clickContinue();
-        testPage.enter("unearnedIncome", "None of the above");
-        testPage.clickContinue();
-        testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
-        testPage.clickContinue();
-        testPage.clickContinue();
-        testPage.enter("homeExpenses", "None of the above");
-        testPage.clickContinue();
-
-        navigateTo("signThisApplication");
-        testPage.enter("applicantSignature", "some name");
-        testPage.clickButton("Submit");
-        assertThat(driver.getTitle()).isEqualTo("Success");
     }
 
     @Test

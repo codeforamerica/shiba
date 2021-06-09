@@ -3178,41 +3178,33 @@ workflow:
     skipCondition:
       logicalOperator: AND
       conditions:
-        - conditions:
-            - *noOneChoseGRH?
-            - *noOneChoseSNAP?
-            - *noOneChoseCASH?
-            - *noOneChoseEA?
+          - logicalOperator: OR
+            conditions:
+              - logicalOperator: AND
+                conditions:
+                  - *noOneChoseCCAP?
+                  - *noOneChoseSNAP?
+              - logicalOperator: OR
+                conditions:
+                  - pageName: medicalExpenses
+                    input: medicalExpenses
+                    value: MEDICAL_BILLS_OR_COPAYS
+                    matcher: CONTAINS
+                  - pageName: medicalExpenses
+                    input: medicalExpenses
+                    value: NONE_OF_THE_ABOVE
+                    matcher: CONTAINS
+          - conditions:
             - pageName: employmentStatus
               input: areYouWorking
               value: "false"
-        - conditions:
-            - *noOneChoseEA?
-            - *noOneChoseSNAP?
-            - *noOneChoseCASH?
             - pageName: homeExpenses
               input: homeExpenses
               value: NONE_OF_THE_ABOVE
               matcher: CONTAINS
-        - conditions:
-            - *noOneChoseSNAP?
-            - *noOneChoseCASH?
-            - *noOneChoseGRH?
             - pageName: workSituation
               input: hasWorkSituation
               value: "false"
-        - conditions:
-            - *noOneChoseCCAP?
-            - pageName: medicalExpenses
-              input: medicalExpenses
-              value: MEDICAL_BILLS_OR_COPAYS
-              matcher: CONTAINS
-        - conditions:
-            - *noOneChoseCCAP?
-            - pageName: medicalExpenses
-              input: medicalExpenses
-              value: NONE_OF_THE_ABOVE
-              matcher: CONTAINS
   uploadDocuments:
     pageConfiguration: *uploadDocuments
     nextPages:
@@ -3226,9 +3218,26 @@ workflow:
       - groupName: household
         pageName: householdMemberInfo
         optional: "true"
+      - pageName: medicalExpenses
     skipCondition:
-      logicalOperator: OR
+      logicalOperator: AND
       conditions:
+        - logicalOperator: OR
+          conditions:
+            - logicalOperator: AND
+              conditions:
+                - *noOneChoseCCAP?
+                - *noOneChoseSNAP?
+            - logicalOperator: OR
+              conditions:
+                - pageName: medicalExpenses
+                  input: medicalExpenses
+                  value: MEDICAL_BILLS_OR_COPAYS
+                  matcher: CONTAINS
+                - pageName: medicalExpenses
+                  input: medicalExpenses
+                  value: NONE_OF_THE_ABOVE
+                  matcher: CONTAINS
         - conditions:
             - pageName: employmentStatus
               input: areYouWorking
@@ -3240,14 +3249,6 @@ workflow:
             - pageName: workSituation
               input: hasWorkSituation
               value: "false"
-            - pageName: medicalExpenses
-              input: medicalExpenses
-              value: MEDICAL_BILLS_OR_COPAYS
-              matcher: CONTAINS
-            - pageName: medicalExpenses
-              input: medicalExpenses
-              value: NONE_OF_THE_ABOVE
-              matcher: CONTAINS
   uploadDocumentsDeleteWarningPage:
     pageConfiguration: *uploadDocumentsDeleteWarningPage
     nextPages:
