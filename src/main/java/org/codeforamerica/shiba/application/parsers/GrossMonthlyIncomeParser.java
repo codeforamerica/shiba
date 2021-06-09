@@ -47,8 +47,4 @@ public class GrossMonthlyIncomeParser {
                 .filter(JobIncomeInformation::isComplete)
                 .collect(Collectors.toList());
     }
-
-    private String parseValue(String pageInput, PagesData pagesData) {
-        return super.parseValue(parsingConfiguration.get("grossMonthlyIncome").getPageInputs().get(pageInput), pagesData);
-    }
 }

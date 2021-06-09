@@ -1,59 +1,66 @@
 package org.codeforamerica.shiba.application.parsers;
 
 import lombok.Getter;
-import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ApplicationDataParserV2 {
-    private final ApplicationData applicationData;
 
-    enum Field {
-        PAID_BY_THE_HOUR("paidByTheHour", "paidByTheHour"),
-        HOURLY_WAGE("hourlyWage", "hourlyWage"),
-        HOURS_A_WEEK("hoursAWeek", "hoursAWeek"),
-        PAY_PERIOD("payPeriod", "payPeriod"),
-        INCOME_PER_PAY_PERIOD("incomePerPayPeriod", "incomePerPayPeriod"),
-        LAST_THIRTY_DAYS_JOB_INCOME("lastThirtyDaysJobIncome", "lastThirtyDaysJobIncome");
+    /**
+     * Retrievable fields
+     */
+    public enum Field {
+        PAID_BY_THE_HOUR,
+        HOURLY_WAGE,
+        HOURS_A_WEEK,
+        PAY_PERIOD,
+        INCOME_PER_PAY_PERIOD,
+        LAST_THIRTY_DAYS_JOB_INCOME;
+    }
 
-        @Getter
+    /**
+     * Mapping configuration
+     */
+    private static final Map<Field, ParsingCoordinate> coordinatesMap = new HashMap<>();
+    static {
+        coordinatesMap.put(Field.PAID_BY_THE_HOUR, new ParsingCoordinate("paidByTheHour", "paidByTheHour"));
+        coordinatesMap.put(Field.HOURLY_WAGE, new ParsingCoordinate("hourlyWage", "hourlyWage"));
+        coordinatesMap.put(Field.HOURS_A_WEEK, new ParsingCoordinate("hoursAWeek", "hoursAWeek"));
+        coordinatesMap.put(Field.PAY_PERIOD, new ParsingCoordinate("payPeriod", "payPeriod"));
+        coordinatesMap.put(Field.INCOME_PER_PAY_PERIOD, new ParsingCoordinate("incomePerPayPeriod", "incomePerPayPeriod"));
+        coordinatesMap.put(Field.LAST_THIRTY_DAYS_JOB_INCOME, new ParsingCoordinate("lastThirtyDaysJobIncome", "lastThirtyDaysJobIncome"));
+
+    }
+
+    @Getter
+    private static class ParsingCoordinate {
         private final String pageName;
-        @Getter
         private final String inputName;
         private String defaultValue = null;
 
-        Field(String pageName, String inputName) {
+        ParsingCoordinate(String pageName, String inputName) {
             this.pageName = pageName;
             this.inputName = inputName;
         }
 
-        Field(String pageName, String inputName, String defaultValue) {
+        ParsingCoordinate(String pageName, String inputName, String defaultValue) {
             this.pageName = pageName;
             this.inputName = inputName;
             this.defaultValue = defaultValue;
         }
     }
 
-    public ApplicationDataParserV2(ApplicationData applicationData) {
-        this.applicationData = applicationData;
-    }
-
-    public List<String> getValues(Field field) {
-        return applicationData.getPagesData().safeGetPageInputValue(field.getPageName(), field.getInputName());
-    }
-
-    public String getFirstValue(Field field) {
-        String pageInputValue = applicationData.getPagesData().getPageInputFirstValue(field.getPageName(), field.getInputName());
-        return pageInputValue == null ? field.defaultValue : pageInputValue;
-    }
-
     public static List<String> getValues(PagesData pagesData, Field field) {
-        return pagesData.safeGetPageInputValue(field.getPageName(), field.getInputName());
+        ParsingCoordinate coordinate = coordinatesMap.get(field);
+        return pagesData.safeGetPageInputValue(coordinate.getPageName(), coordinate.getInputName());
     }
 
     public static String getFirstValue(PagesData pagesData, Field field) {
-        String pageInputValue = pagesData.getPageInputFirstValue(field.getPageName(), field.getInputName());
-        return pageInputValue == null ? field.defaultValue : pageInputValue;
+        ParsingCoordinate coordinate = coordinatesMap.get(field);
+        String pageInputValue = pagesData.getPageInputFirstValue(coordinate.getPageName(), coordinate.getInputName());
+        return pageInputValue == null ? coordinate.getDefaultValue() : pageInputValue;
     }
 }
