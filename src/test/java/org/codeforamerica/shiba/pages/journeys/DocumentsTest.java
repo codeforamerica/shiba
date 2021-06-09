@@ -21,26 +21,28 @@ import static org.mockito.Mockito.doThrow;
 public class DocumentsTest extends JourneyTest {
     @Test
     void shouldSkipDocumentUploadFlowIfNoApplicablePrograms() {
-        List<String> applicantPrograms = List.of(PROGRAM_CCAP);
+        List<String> applicantPrograms = List.of(PROGRAM_GRH);
         completeFlowFromLandingPageThroughReviewInfo(applicantPrograms, smartyStreetClient);
         completeFlowFromReviewInfoToDisability(applicantPrograms);
 
         // Recommend proof of job loss (if programs were applicable)
-        testPage.enter("hasWorkSituation", YES.getDisplayValue());
+        testPage.enter("hasWorkSituation", NO.getDisplayValue());
         testPage.clickContinue();
         // Recommend proof of income (if programs were applicable)
-        testPage.enter("areYouWorking", YES.getDisplayValue());
-        testPage.clickButton("Add a job");
+        testPage.enter("areYouWorking", NO.getDisplayValue());
+        testPage.clickContinue();
+        /*testPage.clickButton("Add a job");
         testPage.enter("employersName", "some employer");
         testPage.clickContinue();
         testPage.enter("selfEmployment", YES.getDisplayValue());
-        paidByTheHourOrSelectPayPeriod(true);
-        testPage.enter("currentlyLookingForJob", NO.getDisplayValue());
-        testPage.clickContinue();
+        paidByTheHourOrSelectPayPeriod(true);*/
+
+        /*testPage.enter("currentlyLookingForJob", NO.getDisplayValue());
+        testPage.clickContinue();*/
         testPage.enter("unearnedIncome", "None of the above");
         testPage.clickContinue();
-        testPage.enter("unearnedIncomeCcap", "None of the above");
-        testPage.clickContinue();
+        /*testPage.enter("unearnedIncomeCcap", "None of the above");
+        testPage.clickContinue();*/
         testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.clickContinue();

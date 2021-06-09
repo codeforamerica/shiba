@@ -35,14 +35,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class DocRecommendationMessageServiceTest extends AbstractPageControllerTest {
 
-    private static final String proofOfIncome ="proofOfIncome";
-    private static final String proofOfJobLoss ="proofOfJobLoss";
-    private static final String proofOfHousingCost ="proofOfHousingCost";
-    private static final String proofOfMedicalExpenses ="proofOfMedicalExpenses";
+    private static final String proofOfIncome = "proofOfIncome";
+    private static final String proofOfJobLoss = "proofOfJobLoss";
+    private static final String proofOfHousingCost = "proofOfHousingCost";
+    private static final String proofOfMedicalExpenses = "proofOfMedicalExpenses";
 
     @BeforeEach
     void setUp() {
-       //what needs to happen before getting to the docRecommendation page
+        //what needs to happen before getting to the docRecommendation page
         applicationData.setStartTimeOnce(Instant.now());
         var id = "some-id";
         applicationData.setId(id);
@@ -56,7 +56,7 @@ public class DocRecommendationMessageServiceTest extends AbstractPageControllerT
         when(applicationRepository.find(any())).thenReturn(application);
     }
 
-    private static Stream<Arguments> docRecommendationMessageTestCases(){
+    private static Stream<Arguments> docRecommendationMessageTestCases() {
         //send over: test name, list of programs, list of doc recs to show, string pagename
         return Stream.of(
                 Arguments.of(
@@ -109,7 +109,7 @@ public class DocRecommendationMessageServiceTest extends AbstractPageControllerT
                         "Proof of Medical Expenses"
                 ),
                 Arguments.of(
-                        "Show Proof of Housing Cost - Long",
+                        "Show Proof of Medical Expenses - Long",
                         List.of("CCAP"),
                         List.of(proofOfMedicalExpenses),
                         "/pages/documentRecommendation",
@@ -120,9 +120,8 @@ public class DocRecommendationMessageServiceTest extends AbstractPageControllerT
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("org.codeforamerica.shiba.pages.DocRecommendationMessageServiceTest#docRecommendationMessageTestCases")
-    void displaysCorrectSuccessMessageForApplicantPrograms(String testName, List<String> programs, List<String> recommendations, String pageName, String expectedMessage) throws Exception {
-        setPageInformation(programs,recommendations);
-
+    void displaysCorrectDocumentRecommendationForApplicantPrograms(String testName, List<String> programs, List<String> recommendations, String pageName, String expectedMessage) throws Exception {
+        setPageInformation(programs, recommendations);
 
 
         mockMvc.perform(get(pageName).session(new MockHttpSession()))
@@ -131,19 +130,31 @@ public class DocRecommendationMessageServiceTest extends AbstractPageControllerT
 
     }
 
-    private void setPageInformation(List<String> programs, List<String> recommendations){
+    @Test
+    void displayCorrectDocumentRecommednationsForJobLossAndIncomeApplicantPrograms() throws Exception {
+        setPageInformation(List.of("CASH", "EA", "CCAP"), List.of(proofOfIncome, proofOfJobLoss, proofOfHousingCost, proofOfMedicalExpenses));
+
+        mockMvc.perform(get("/pages/uploadDocuments").session(new MockHttpSession()))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Proof of Income")))
+                .andExpect(content().string(containsString("Proof of Job Loss")))
+                .andExpect(content().string(containsString("Proof of Housing Cost")))
+                .andExpect(content().string(containsString("Proof of Medical Expenses")));
+    }
+
+    private void setPageInformation(List<String> programs, List<String> recommendations) {
         PageDataBuilder programPageData = new PageDataBuilder("choosePrograms", Map.of("programs", programs));
 
         List<PageDataBuilder> pagesData = new ArrayList<>();
         recommendations.stream().forEach(recommendation -> {
             PageDataBuilder pageDataBuilder;
-            switch(recommendation) {
+            switch (recommendation) {
                 case proofOfIncome:
                     pageDataBuilder = new PageDataBuilder("employmentStatus", Map.of("areYouWorking", List.of("true")));
                     pagesData.add(pageDataBuilder);
                     break;
                 case proofOfHousingCost:
-                    pageDataBuilder = new PageDataBuilder("homeExpenses", Map.of("homeExpenses",List.of("RENT")));
+                    pageDataBuilder = new PageDataBuilder("homeExpenses", Map.of("homeExpenses", List.of("RENT")));
                     pagesData.add(pageDataBuilder);
                     break;
                 case proofOfJobLoss:
