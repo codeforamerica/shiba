@@ -13,14 +13,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParserV2.*;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParserV2.Field.*;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParserV2.getFirstValue;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParserV2.getGroup;
 
 @Component
 public class GrossMonthlyIncomeParser {
 
     public List<JobIncomeInformation> parse(ApplicationData data) {
-        Subworkflow jobsGroup = data.getSubworkflows().get("jobs");
+        Subworkflow jobsGroup = getGroup(data, Group.JOBS);
         if (jobsGroup == null) {
             return Collections.emptyList();
         }

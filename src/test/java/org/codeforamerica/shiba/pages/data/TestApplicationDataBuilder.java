@@ -1,14 +1,19 @@
 package org.codeforamerica.shiba.pages.data;
 
 
+import org.codeforamerica.shiba.PageDataBuilder;
+import org.codeforamerica.shiba.PagesDataBuilder;
+
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Helper class for building test application data
  */
 public class TestApplicationDataBuilder {
     private final ApplicationData applicationData = new ApplicationData();
+    private final PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
 
     public ApplicationData build() {
         return applicationData;
@@ -45,6 +50,14 @@ public class TestApplicationDataBuilder {
         PageData pageData = new PageData();
         pageData.put(input, InputData.builder().value(values).build());
         applicationData.getPagesData().put(pageName, pageData);
+        return this;
+    }
+
+    public TestApplicationDataBuilder withJobs() {
+        applicationData.setSubworkflows(new Subworkflows(Map.of("jobs", new Subworkflow(List.of(pagesDataBuilder.build(List.of(
+                new PageDataBuilder("payPeriod", Map.of("payPeriod", List.of("EVERY_WEEK"))),
+                new PageDataBuilder("incomePerPayPeriod", Map.of("incomePerPayPeriod", List.of("1.1")))
+        )))))));
         return this;
     }
 }

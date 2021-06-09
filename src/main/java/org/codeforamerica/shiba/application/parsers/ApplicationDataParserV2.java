@@ -1,7 +1,9 @@
 package org.codeforamerica.shiba.application.parsers;
 
 import lombok.Getter;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.pages.data.Subworkflow;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +20,12 @@ public class ApplicationDataParserV2 {
         HOURS_A_WEEK,
         PAY_PERIOD,
         INCOME_PER_PAY_PERIOD,
-        LAST_THIRTY_DAYS_JOB_INCOME;
+        LAST_THIRTY_DAYS_JOB_INCOME
+    }
+
+    public enum Group {
+        JOBS,
+        HOUSEHOLD
     }
 
     /**
@@ -32,7 +39,12 @@ public class ApplicationDataParserV2 {
         coordinatesMap.put(Field.PAY_PERIOD, new ParsingCoordinate("payPeriod", "payPeriod"));
         coordinatesMap.put(Field.INCOME_PER_PAY_PERIOD, new ParsingCoordinate("incomePerPayPeriod", "incomePerPayPeriod"));
         coordinatesMap.put(Field.LAST_THIRTY_DAYS_JOB_INCOME, new ParsingCoordinate("lastThirtyDaysJobIncome", "lastThirtyDaysJobIncome"));
+    }
 
+    private static final Map<Group, String> groupCoordinatesMap = new HashMap<>();
+    static {
+        groupCoordinatesMap.put(Group.JOBS, "jobs");
+        groupCoordinatesMap.put(Group.HOUSEHOLD, "household");
     }
 
     @Getter
@@ -62,5 +74,9 @@ public class ApplicationDataParserV2 {
         ParsingCoordinate coordinate = coordinatesMap.get(field);
         String pageInputValue = pagesData.getPageInputFirstValue(coordinate.getPageName(), coordinate.getInputName());
         return pageInputValue == null ? coordinate.getDefaultValue() : pageInputValue;
+    }
+
+    public static Subworkflow getGroup(ApplicationData applicationData, Group group) {
+        return applicationData.getSubworkflows().get(groupCoordinatesMap.get(group));
     }
 }

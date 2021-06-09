@@ -9,8 +9,9 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParserV2.Field.PAID_BY_THE_HOUR;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParserV2.Group.JOBS;
 
-class ApplicationDataParser2Test {
+class ApplicationDataParserV2Test {
     private TestApplicationDataBuilder builder;
 
     @BeforeEach
@@ -44,5 +45,12 @@ class ApplicationDataParser2Test {
                 .build();
         value = ApplicationDataParserV2.getFirstValue(applicationData.getPagesData(), PAID_BY_THE_HOUR);
         assertThat(value).isNull();
+    }
+
+    @Test
+    void shouldReturnSubworkflowForExistingGroup() {
+        ApplicationData applicationData = builder.withJobs().build();
+
+        assertThat(ApplicationDataParserV2.getGroup(applicationData, JOBS)).isNotNull();
     }
 }
