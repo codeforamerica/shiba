@@ -1,19 +1,31 @@
 package org.codeforamerica.shiba.pages.enrichment;
 
 import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.application.parsers.HomeAddressParser;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParserV2.Field.*;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParserV2.getFirstValue;
+
 @Component
 public class HomeAddressEnrichment extends AddressEnrichment {
     public HomeAddressEnrichment(
-            HomeAddressParser homeAddressParser,
             LocationClient locationClient,
             Map<String, County> countyZipCodeMap) {
-        this.parser = homeAddressParser;
         this.locationClient = locationClient;
         this.countyZipCodeMap = countyZipCodeMap;
+    }
+
+    @Override
+    protected Address parseAddress(ApplicationData applicationData) {
+        return new Address(
+                getFirstValue(applicationData.getPagesData(), HOME_STREET),
+                getFirstValue(applicationData.getPagesData(), HOME_CITY),
+                getFirstValue(applicationData.getPagesData(), HOME_STATE),
+                getFirstValue(applicationData.getPagesData(), HOME_ZIPCODE),
+                getFirstValue(applicationData.getPagesData(), HOME_APARTMENT_NUMBER),
+                null);
     }
 }

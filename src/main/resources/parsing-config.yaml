@@ -34,42 +34,12 @@ parsing:
   grossMonthlyIncome:
     groupName: jobs
     pageInputs:
-      paidByTheHour:
-        pageName: paidByTheHour
-        inputName: paidByTheHour
-      hourlyWage:
-        pageName: hourlyWage
-        inputName: hourlyWage
-      hoursAWeek:
-        pageName: hoursAWeek
-        inputName: hoursAWeek
-      payPeriod:
-        pageName: payPeriod
-        inputName: payPeriod
-      incomePerPayPeriod:
-        pageName: incomePerPayPeriod
-        inputName: incomePerPayPeriod
       lastThirtyDaysJobIncome:
         pageName: lastThirtyDaysJobIncome
         inputName: lastThirtyDaysJobIncome
         groupName: jobs
   homeAddress:
     pageInputs:
-      street:
-        pageName: homeAddress
-        inputName: streetAddress
-      city:
-        pageName: homeAddress
-        inputName: city
-      state:
-        pageName: homeAddress
-        inputName: state
-      zipcode:
-        pageName: homeAddress
-        inputName: zipCode
-      apartmentNumber:
-        pageName: homeAddress
-        inputName: apartmentNumber
       county:
         pageName: homeAddress
         inputName: enrichedCounty
@@ -82,21 +52,6 @@ parsing:
         inputName: sameMailingAddress
   mailingAddress:
     pageInputs:
-      street:
-        pageName: mailingAddress
-        inputName: streetAddress
-      city:
-        pageName: mailingAddress
-        inputName: city
-      state:
-        pageName: mailingAddress
-        inputName: state
-      zipcode:
-        pageName: mailingAddress
-        inputName: zipCode
-      apartmentNumber:
-        pageName: mailingAddress
-        inputName: apartmentNumber
       county:
         pageName: mailingAddress
         inputName: enrichedCounty

@@ -1,7 +1,6 @@
 package org.codeforamerica.shiba.pages.enrichment;
 
 import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
 
@@ -10,13 +9,14 @@ import java.util.Map;
 import java.util.Optional;
 
 public abstract class AddressEnrichment implements Enrichment {
-    ApplicationDataParser<Address> parser;
     LocationClient locationClient;
     Map<String, County> countyZipCodeMap;
 
+    protected abstract Address parseAddress(ApplicationData applicationData);
+
     @Override
     public EnrichmentResult process(ApplicationData applicationData) {
-        Address address = parser.parse(applicationData);
+        Address address = parseAddress(applicationData);
         return locationClient.validateAddress(address)
                 .map(validatedAddress -> Map.of(
                         "enrichedStreetAddress", new InputData(List.of(validatedAddress.getStreet())),

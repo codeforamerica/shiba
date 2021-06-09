@@ -46,6 +46,17 @@ public class TestApplicationDataBuilder {
         return this;
     }
 
+    public TestApplicationDataBuilder withHomeAddress() {
+        PageData pageData = new PageData();
+        pageData.put("streetAddress", InputData.builder().value(List.of("street")).build());
+        pageData.put("city", InputData.builder().value(List.of("city")).build());
+        pageData.put("state", InputData.builder().value(List.of("CA")).build());
+        pageData.put("zipCode", InputData.builder().value(List.of("02103")).build());
+        pageData.put("apartmentNumber", InputData.builder().value(List.of("ste 123")).build());
+        applicationData.getPagesData().put("homeAddress", pageData);
+        return this;
+    }
+
     public TestApplicationDataBuilder withPageData(String pageName, String input, List<String> values) {
         PageData pageData = new PageData();
         pageData.put(input, InputData.builder().value(values).build());

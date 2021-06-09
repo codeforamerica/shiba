@@ -33,42 +33,12 @@ test-parsing:
   grossMonthlyIncome:
     groupName: jobsGroup
     pageInputs:
-      paidByTheHour:
-        pageName: paidByTheHourPage
-        inputName: paidByTheHourInput
-      hourlyWage:
-        pageName: hourlyWagePage
-        inputName: hourlyWageInput
-      hoursAWeek:
-        pageName: hoursAWeekPage
-        inputName: hoursAWeekInput
-      payPeriod:
-        pageName: payPeriodPage
-        inputName: payPeriodInput
-      incomePerPayPeriod:
-        pageName: incomePerPayPeriodPage
-        inputName: incomePerPayPeriodInput
       lastThirtyDaysJobIncome:
         pageName: lastThirtyDaysJobIncome
         inputName: lastThirtyDaysJobIncomeInput
         groupName: jobGroup
   homeAddress:
     pageInputs:
-      street:
-        pageName: homeAddressPageName
-        inputName: addressLine1
-      city:
-        pageName: homeAddressPageName
-        inputName: addressLine2
-      state:
-        pageName: homeAddressPageName
-        inputName: addressLine3
-      zipcode:
-        pageName: homeAddressPageName
-        inputName: addressLine4
-      apartmentNumber:
-        pageName: homeAddressPageName
-        inputName: addressLine5
       county:
         pageName: homeAddressPageName
         inputName: addressLine6
@@ -81,21 +51,6 @@ test-parsing:
         inputName: addressLine8
   mailingAddress:
     pageInputs:
-      street:
-        pageName: mailingAddressPageName
-        inputName: addressLine1
-      city:
-        pageName: mailingAddressPageName
-        inputName: addressLine2
-      state:
-        pageName: mailingAddressPageName
-        inputName: addressLine3
-      zipcode:
-        pageName: mailingAddressPageName
-        inputName: addressLine4
-      apartmentNumber:
-        pageName: mailingAddressPageName
-        inputName: addressLine5
       county:
         pageName: mailingAddressPageName
         inputName: addressLine6

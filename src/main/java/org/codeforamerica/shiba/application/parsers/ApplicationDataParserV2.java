@@ -20,7 +20,24 @@ public class ApplicationDataParserV2 {
         HOURS_A_WEEK,
         PAY_PERIOD,
         INCOME_PER_PAY_PERIOD,
-        LAST_THIRTY_DAYS_JOB_INCOME
+        LAST_THIRTY_DAYS_JOB_INCOME,
+
+        MAILING_STREET,
+        MAILING_CITY,
+        MAILING_STATE,
+        MAILING_ZIPCODE,
+        MAILING_APARTMENT_NUMBER,
+        MAILING_COUNTY,
+
+        HOME_STREET,
+        HOME_CITY,
+        HOME_STATE,
+        HOME_ZIPCODE,
+        HOME_APARTMENT_NUMBER,
+        HOME_COUNTY,
+
+        IS_HOMELESS,
+        SAME_MAILING_ADDRESS
     }
 
     public enum Group {
@@ -39,6 +56,23 @@ public class ApplicationDataParserV2 {
         coordinatesMap.put(Field.PAY_PERIOD, new ParsingCoordinate("payPeriod", "payPeriod"));
         coordinatesMap.put(Field.INCOME_PER_PAY_PERIOD, new ParsingCoordinate("incomePerPayPeriod", "incomePerPayPeriod"));
         coordinatesMap.put(Field.LAST_THIRTY_DAYS_JOB_INCOME, new ParsingCoordinate("lastThirtyDaysJobIncome", "lastThirtyDaysJobIncome"));
+
+        coordinatesMap.put(Field.MAILING_STREET, new ParsingCoordinate("mailingAddress", "streetAddress"));
+        coordinatesMap.put(Field.MAILING_CITY, new ParsingCoordinate("mailingAddress", "city"));
+        coordinatesMap.put(Field.MAILING_STATE, new ParsingCoordinate("mailingAddress", "state"));
+        coordinatesMap.put(Field.MAILING_ZIPCODE, new ParsingCoordinate("mailingAddress", "zipCode"));
+        coordinatesMap.put(Field.MAILING_APARTMENT_NUMBER, new ParsingCoordinate("mailingAddress", "apartmentNumber"));
+        coordinatesMap.put(Field.MAILING_COUNTY, new ParsingCoordinate("mailingAddress", "enrichedCounty", "Other"));
+
+        coordinatesMap.put(Field.HOME_STREET, new ParsingCoordinate("homeAddress", "streetAddress"));
+        coordinatesMap.put(Field.HOME_CITY, new ParsingCoordinate("homeAddress", "city"));
+        coordinatesMap.put(Field.HOME_STATE, new ParsingCoordinate("homeAddress", "state"));
+        coordinatesMap.put(Field.HOME_ZIPCODE, new ParsingCoordinate("homeAddress", "zipCode"));
+        coordinatesMap.put(Field.HOME_APARTMENT_NUMBER, new ParsingCoordinate("homeAddress", "apartmentNumber"));
+        coordinatesMap.put(Field.HOME_COUNTY, new ParsingCoordinate("homeAddress", "enrichedCounty", "Other"));
+
+        coordinatesMap.put(Field.IS_HOMELESS, new ParsingCoordinate("homeAddress", "isHomeless"));
+        coordinatesMap.put(Field.SAME_MAILING_ADDRESS, new ParsingCoordinate("homeAddress", "sameMailingAddress"));
     }
 
     private static final Map<Group, String> groupCoordinatesMap = new HashMap<>();
