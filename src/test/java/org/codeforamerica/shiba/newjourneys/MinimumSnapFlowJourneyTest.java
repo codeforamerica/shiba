@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.newjourneys;
 
+import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.pages.SuccessPage;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.pages.journeys.JourneyTest;
@@ -11,6 +12,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
+import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -98,11 +100,21 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         // No document upload
         testPage.clickButton("Skip this for now");
 
+        // Download CAF
         SuccessPage successPage = new SuccessPage(driver);
         assertThat(successPage.CAFdownloadPresent()).isTrue();
         assertThat(successPage.CCAPdownloadPresent()).isFalse();
         successPage.downloadPdfs();
         await().until(() -> getAllFiles().size() == successPage.pdfDownloadLinks());
-        // assertThat(getPdfFieldText(pdAcroForms.get(CAF), "ADDITIONAL_APPLICATION_INFO")).isEqualTo("Some additional information about my application");
+        PDAcroForm caf = getAllFiles().get(CAF);
+
+        String applicationId = successPage.getConfirmationNumber();
+
+        // assert that CAF contains expected values
+
+
+
+        assertThat(getPdfFieldText(caf, "ADDITIONAL_APPLICATION_INFO")).isEqualTo("Some additional information about my application");
+
     }
 }
