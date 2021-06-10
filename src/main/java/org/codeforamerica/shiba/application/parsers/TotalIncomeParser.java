@@ -5,20 +5,19 @@ import org.codeforamerica.shiba.output.caf.TotalIncome;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.stereotype.Component;
 
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParserV2.Field.INCOME;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParserV2.getFirstValue;
+
 @Component
-public class TotalIncomeParser extends ApplicationDataParser<TotalIncome> {
+public class TotalIncomeParser {
     private final GrossMonthlyIncomeParser grossIncomeParser;
 
-    public TotalIncomeParser(ParsingConfiguration parsingConfiguration,
-                             GrossMonthlyIncomeParser grossIncomeParser) {
-        super(parsingConfiguration);
+    public TotalIncomeParser(GrossMonthlyIncomeParser grossIncomeParser) {
         this.grossIncomeParser = grossIncomeParser;
     }
 
-    @Override
     public TotalIncome parse(ApplicationData applicationData) {
-        ParsingCoordinates expeditedEligibilityConfiguration = parsingConfiguration.get("snapExpeditedEligibility");
-        Money last30DaysIncome = getMoney(applicationData, expeditedEligibilityConfiguration.getPageInputs().get("income"));
+        Money last30DaysIncome = Money.parse(getFirstValue(applicationData.getPagesData(), INCOME), INCOME.getDefaultValue());
         return new TotalIncome(last30DaysIncome, grossIncomeParser.parse(applicationData));
     }
 }

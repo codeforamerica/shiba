@@ -71,4 +71,10 @@ public class TestApplicationDataBuilder {
         )))))));
         return this;
     }
+    public TestApplicationDataBuilder withHouseholdMemberPrograms(List<String> programs) {
+        applicationData.setSubworkflows(new Subworkflows(Map.of("household", new Subworkflow(List.of(pagesDataBuilder.build(List.of(
+                new PageDataBuilder("householdMemberInfo", Map.of("programs", programs)))
+        ))))));
+        return this;
+    }
 }
