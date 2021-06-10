@@ -22,6 +22,14 @@ public class Money extends BigDecimal {
         }
     }
 
+    public static Money parse(String moneyValue, String defaultValue) {
+        try {
+            return parse(moneyValue);
+        } catch (NumberFormatException e) {
+            return parse(defaultValue);
+        }
+    }
+
     @Override
     public Money add(BigDecimal bd) {
         return new Money(super.add(bd));

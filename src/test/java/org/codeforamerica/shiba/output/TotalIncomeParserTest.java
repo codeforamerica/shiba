@@ -1,7 +1,6 @@
 package org.codeforamerica.shiba.output;
 
 import org.codeforamerica.shiba.Money;
-import org.codeforamerica.shiba.application.parsers.AbstractParserTest;
 import org.codeforamerica.shiba.application.parsers.GrossMonthlyIncomeParser;
 import org.codeforamerica.shiba.application.parsers.TotalIncomeParser;
 import org.codeforamerica.shiba.output.caf.JobIncomeInformation;
@@ -18,7 +17,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class TotalIncomeParserTest extends AbstractParserTest {
+class TotalIncomeParserTest {
     private final ApplicationData applicationData = new ApplicationData();
     private final PagesData pagesData = new PagesData();
     private final Subworkflows subworkflows = new Subworkflows();
@@ -32,12 +31,12 @@ class TotalIncomeParserTest extends AbstractParserTest {
         applicationData.setSubworkflows(subworkflows);
 
         grossIncomeParser = mock(GrossMonthlyIncomeParser.class);
-        totalIncomeParser = new TotalIncomeParser(parsingConfiguration, grossIncomeParser);
+        totalIncomeParser = new TotalIncomeParser(grossIncomeParser);
     }
 
     @Test
     void shouldParseTotalIncomeFromLastThirtyDaysAndJobIncomeInformation() {
-        pagesData.putPage("incomePage", new PageData(Map.of("incomeInput", InputData.builder().value(List.of("1")).build())));
+        pagesData.putPage("thirtyDayIncome", new PageData(Map.of("moneyMadeLast30Days", InputData.builder().value(List.of("1")).build())));
         JobIncomeInformation mockJobInfo1 = mock(JobIncomeInformation.class);
         JobIncomeInformation mockJobInfo2 = mock(JobIncomeInformation.class);
         List<JobIncomeInformation> jobInfo = List.of(mockJobInfo1, mockJobInfo2);

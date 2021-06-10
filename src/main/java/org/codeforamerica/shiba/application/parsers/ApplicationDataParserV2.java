@@ -2,9 +2,11 @@ package org.codeforamerica.shiba.application.parsers;
 
 import lombok.Getter;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.Iteration;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.pages.data.Subworkflow;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,19 +29,39 @@ public class ApplicationDataParserV2 {
         MAILING_STATE,
         MAILING_ZIPCODE,
         MAILING_APARTMENT_NUMBER,
-        MAILING_COUNTY,
+        MAILING_COUNTY("Other"),
 
         HOME_STREET,
         HOME_CITY,
         HOME_STATE,
         HOME_ZIPCODE,
         HOME_APARTMENT_NUMBER,
-        HOME_COUNTY,
+        HOME_COUNTY("Other"),
 
         IS_HOMELESS,
         SAME_MAILING_ADDRESS,
 
-        IDENTIFY_COUNTY
+        IDENTIFY_COUNTY("Other"),
+
+        ASSETS("0"),
+        INCOME("0"),
+        MIGRANT_WORKER,
+        HOUSING_COSTS("0"),
+        UTILITY_EXPENSES_SELECTIONS,
+        APPLICANT_PROGRAMS,
+        HOUSEHOLD_PROGRAMS,
+        PREPARING_MEALS_TOGETHER;
+
+        @Getter
+        private final String defaultValue;
+
+        Field(String defaultValue) {
+            this.defaultValue = defaultValue;
+        }
+
+        Field() {
+            defaultValue = null;
+        }
     }
 
     public enum Group {
@@ -48,9 +70,11 @@ public class ApplicationDataParserV2 {
     }
 
     /**
-     * Mapping configuration
+     * Mapping configurations
      */
     private static final Map<Field, ParsingCoordinate> coordinatesMap = new HashMap<>();
+    private static final Map<Group, String> groupCoordinatesMap = new HashMap<>();
+
     static {
         coordinatesMap.put(Field.PAID_BY_THE_HOUR, new ParsingCoordinate("paidByTheHour", "paidByTheHour"));
         coordinatesMap.put(Field.HOURLY_WAGE, new ParsingCoordinate("hourlyWage", "hourlyWage"));
@@ -64,23 +88,29 @@ public class ApplicationDataParserV2 {
         coordinatesMap.put(Field.MAILING_STATE, new ParsingCoordinate("mailingAddress", "state"));
         coordinatesMap.put(Field.MAILING_ZIPCODE, new ParsingCoordinate("mailingAddress", "zipCode"));
         coordinatesMap.put(Field.MAILING_APARTMENT_NUMBER, new ParsingCoordinate("mailingAddress", "apartmentNumber"));
-        coordinatesMap.put(Field.MAILING_COUNTY, new ParsingCoordinate("mailingAddress", "enrichedCounty", "Other"));
+        coordinatesMap.put(Field.MAILING_COUNTY, new ParsingCoordinate("mailingAddress", "enrichedCounty"));
 
         coordinatesMap.put(Field.HOME_STREET, new ParsingCoordinate("homeAddress", "streetAddress"));
         coordinatesMap.put(Field.HOME_CITY, new ParsingCoordinate("homeAddress", "city"));
         coordinatesMap.put(Field.HOME_STATE, new ParsingCoordinate("homeAddress", "state"));
         coordinatesMap.put(Field.HOME_ZIPCODE, new ParsingCoordinate("homeAddress", "zipCode"));
         coordinatesMap.put(Field.HOME_APARTMENT_NUMBER, new ParsingCoordinate("homeAddress", "apartmentNumber"));
-        coordinatesMap.put(Field.HOME_COUNTY, new ParsingCoordinate("homeAddress", "enrichedCounty", "Other"));
+        coordinatesMap.put(Field.HOME_COUNTY, new ParsingCoordinate("homeAddress", "enrichedCounty"));
 
         coordinatesMap.put(Field.IS_HOMELESS, new ParsingCoordinate("homeAddress", "isHomeless"));
         coordinatesMap.put(Field.SAME_MAILING_ADDRESS, new ParsingCoordinate("homeAddress", "sameMailingAddress"));
 
-        coordinatesMap.put(Field.IDENTIFY_COUNTY, new ParsingCoordinate("identifyCounty", "county", "Other"));
-    }
+        coordinatesMap.put(Field.IDENTIFY_COUNTY, new ParsingCoordinate("identifyCounty", "county"));
 
-    private static final Map<Group, String> groupCoordinatesMap = new HashMap<>();
-    static {
+        coordinatesMap.put(Field.ASSETS, new ParsingCoordinate("liquidAssets", "liquidAssets"));
+        coordinatesMap.put(Field.INCOME, new ParsingCoordinate("thirtyDayIncome", "moneyMadeLast30Days"));
+        coordinatesMap.put(Field.MIGRANT_WORKER, new ParsingCoordinate("migrantFarmWorker", "migrantOrSeasonalFarmWorker"));
+        coordinatesMap.put(Field.HOUSING_COSTS, new ParsingCoordinate("homeExpensesAmount", "homeExpensesAmount"));
+        coordinatesMap.put(Field.UTILITY_EXPENSES_SELECTIONS, new ParsingCoordinate("utilityPayments", "payForUtilities"));
+        coordinatesMap.put(Field.APPLICANT_PROGRAMS, new ParsingCoordinate("choosePrograms", "programs"));
+        coordinatesMap.put(Field.HOUSEHOLD_PROGRAMS, new ParsingCoordinate("householdMemberInfo", "programs"));
+        coordinatesMap.put(Field.PREPARING_MEALS_TOGETHER, new ParsingCoordinate("preparingMealsTogether", "isPreparingMealsTogether"));
+
         groupCoordinatesMap.put(Group.JOBS, "jobs");
         groupCoordinatesMap.put(Group.HOUSEHOLD, "household");
     }
@@ -89,17 +119,10 @@ public class ApplicationDataParserV2 {
     private static class ParsingCoordinate {
         private final String pageName;
         private final String inputName;
-        private String defaultValue = null;
 
         ParsingCoordinate(String pageName, String inputName) {
             this.pageName = pageName;
             this.inputName = inputName;
-        }
-
-        ParsingCoordinate(String pageName, String inputName, String defaultValue) {
-            this.pageName = pageName;
-            this.inputName = inputName;
-            this.defaultValue = defaultValue;
         }
     }
 
@@ -111,7 +134,20 @@ public class ApplicationDataParserV2 {
     public static String getFirstValue(PagesData pagesData, Field field) {
         ParsingCoordinate coordinate = coordinatesMap.get(field);
         String pageInputValue = pagesData.getPageInputFirstValue(coordinate.getPageName(), coordinate.getInputName());
-        return pageInputValue == null ? coordinate.getDefaultValue() : pageInputValue;
+        return pageInputValue == null ? field.getDefaultValue() : pageInputValue;
+    }
+
+    public static List<String> parseValues(Group group, Field field, ApplicationData applicationData) {
+        Subworkflow iterations = getGroup(applicationData, group);
+        if (iterations == null) {
+            return null;
+        }
+
+        List<String> result = new ArrayList<>();
+        for (Iteration iteration : iterations) {
+            result.addAll(getValues(iteration.getPagesData(), field));
+        }
+        return result;
     }
 
     public static Subworkflow getGroup(ApplicationData applicationData, Group group) {
