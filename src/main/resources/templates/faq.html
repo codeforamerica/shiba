@@ -134,6 +134,12 @@
     mixpanel.track_links('#create-account', 'LINK_CLICKED', {link_name: "create-account"});
     mixpanel.track_links('#existing-account', 'LINK_CLICKED', {link_name: "existing-account"});
     mixpanel.track_links('#paper-application', 'LINK_CLICKED', {link_name: "paper-application"});
+
+    if([[${sessionId}]]){
+        mixpanel.identify([[${sessionId}]]);
+    }
+    mixpanel.track('PAGE_VIEW');
+
 </script>
 <div th:replace="fragments/footer :: footer"></div>
 </body>
