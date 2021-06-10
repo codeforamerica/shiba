@@ -38,27 +38,3 @@ parsing:
         pageName: lastThirtyDaysJobIncome
         inputName: lastThirtyDaysJobIncome
         groupName: jobs
-  homeAddress:
-    pageInputs:
-      county:
-        pageName: homeAddress
-        inputName: enrichedCounty
-        defaultValue: Other
-      isHomeless:
-        pageName: homeAddress
-        inputName: isHomeless
-      sameMailingAddress:
-        pageName: homeAddress
-        inputName: sameMailingAddress
-  mailingAddress:
-    pageInputs:
-      county:
-        pageName: mailingAddress
-        inputName: enrichedCounty
-        defaultValue: Other
-  identifyCounty:
-    pageInputs:
-      county:
-        pageName: identifyCounty
-        inputName: county
-        defaultValue: Other

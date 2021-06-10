@@ -1,9 +1,8 @@
 package org.codeforamerica.shiba.application;
 
 import org.apache.commons.lang3.SerializationUtils;
-import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
-import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
+import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.stereotype.Component;
 
@@ -13,10 +12,10 @@ import java.time.ZonedDateTime;
 @Component
 public class ApplicationFactory {
     private final Clock clock;
-    private final ApplicationDataParser<County> countyParser;
+    private final CountyParser countyParser;
     private final MonitoringService monitoringService;
 
-    public ApplicationFactory(Clock clock, ApplicationDataParser<County> countyParser, MonitoringService monitoringService) {
+    public ApplicationFactory(Clock clock, CountyParser countyParser, MonitoringService monitoringService) {
         this.clock = clock;
         this.countyParser = countyParser;
         this.monitoringService = monitoringService;

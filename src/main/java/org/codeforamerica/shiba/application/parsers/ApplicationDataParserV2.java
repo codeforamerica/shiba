@@ -37,7 +37,9 @@ public class ApplicationDataParserV2 {
         HOME_COUNTY,
 
         IS_HOMELESS,
-        SAME_MAILING_ADDRESS
+        SAME_MAILING_ADDRESS,
+
+        IDENTIFY_COUNTY
     }
 
     public enum Group {
@@ -73,6 +75,8 @@ public class ApplicationDataParserV2 {
 
         coordinatesMap.put(Field.IS_HOMELESS, new ParsingCoordinate("homeAddress", "isHomeless"));
         coordinatesMap.put(Field.SAME_MAILING_ADDRESS, new ParsingCoordinate("homeAddress", "sameMailingAddress"));
+
+        coordinatesMap.put(Field.IDENTIFY_COUNTY, new ParsingCoordinate("identifyCounty", "county", "Other"));
     }
 
     private static final Map<Group, String> groupCoordinatesMap = new HashMap<>();
