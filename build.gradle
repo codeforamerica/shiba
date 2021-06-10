@@ -207,7 +207,10 @@ def axeAccessibilityTest = tasks.register("accessibilityTest", Test) {
 }
 
 test {
-    useJUnitPlatform()
+    useJUnitPlatform {
+        JUnitPlatformOptions options ->
+            options.excludeTags 'a11y'
+    }
     dependsOn(checkLicense)
 }
 
