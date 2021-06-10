@@ -60,6 +60,7 @@ public class PageController {
     private final SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider;
     private final CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
     private final SuccessMessageService successMessageService;
+    private final DocRecommendationMessageService docRecommendationMessageService;
     private final DocumentRepositoryService documentRepositoryService;
     private final ApplicationStatusUpdater applicationStatusUpdater;
 
@@ -78,7 +79,9 @@ public class PageController {
             CountyParser countyParser,
             SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider,
             CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider,
-            SuccessMessageService successMessageService, ApplicationStatusUpdater applicationStatusUpdater) {
+            SuccessMessageService successMessageService,
+            DocRecommendationMessageService docRecommendationMessageService,
+            ApplicationStatusUpdater applicationStatusUpdater) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
@@ -94,6 +97,7 @@ public class PageController {
         this.snapExpeditedEligibilityDecider = snapExpeditedEligibilityDecider;
         this.ccapExpeditedEligibilityDecider = ccapExpeditedEligibilityDecider;
         this.successMessageService = successMessageService;
+        this.docRecommendationMessageService = docRecommendationMessageService;
         this.applicationStatusUpdater = applicationStatusUpdater;
     }
 
@@ -284,6 +288,10 @@ public class PageController {
         model.put("expeditedSnap", snapExpeditedEligibility);
         var ccapExpeditedEligibility = ccapExpeditedEligibilityDecider.decide(applicationData);
         model.put("expeditedCcap", ccapExpeditedEligibility);
+
+        if (landmarkPagesConfiguration.isPostSubmitPage(pageName)) {
+            model.put("docRecommendations", docRecommendationMessageService.getRecommendationsMessage(applicationData, locale, pageName));
+        }
 
         if (landmarkPagesConfiguration.isTerminalPage(pageName)) {
             Application application = applicationRepository.find(applicationData.getId());

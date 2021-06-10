@@ -21,7 +21,8 @@
                             <div id="drag-and-drop-box" class="drag-and-drop-box spacing-below-35 spacing-above-35 grid"
                                  ondragenter="addDragBorder()" ondrop="removeDragBorder()"
                                  ondragleave="removeDragBorder()">
-                                <h2 id="vertical-header-desktop" class="blue-label text--centered hide-on-mobile narrow-centered-text"
+                                <h2 id="vertical-header-desktop"
+                                    class="blue-label text--centered hide-on-mobile narrow-centered-text"
                                     th:text="#{upload-documents.drag-and-drop-or-add-your-files}"></h2>
                                 <h2 id="vertical-header-mobile" class="blue-label text--centered hide-on-desktop"
                                     th:text="#{upload-documents.add-your-files}"></h2>
@@ -30,9 +31,11 @@
                                             class="button dz-button icon-add"></button>
                                 </div>
                                 <div class="grid--item width-two-thirds">
-                                    <h2 id="horizontal-header-desktop" class="blue-label hide-on-mobile hidden spacing-below-5"
+                                    <h2 id="horizontal-header-desktop"
+                                        class="blue-label hide-on-mobile hidden spacing-below-5"
                                         th:text="#{upload-documents.drag-and-drop-or-add-your-files}"></h2>
-                                    <h2 id="horizontal-header-mobile" class="blue-label hide-on-desktop hidden spacing-below-5 spacing-above-15"
+                                    <h2 id="horizontal-header-mobile"
+                                        class="blue-label hide-on-desktop hidden spacing-below-5 spacing-above-15"
                                         th:text="#{upload-documents.add-your-files}"></h2>
                                     <div id="number-of-uploaded-files" class="body-gray">
                                     </div>
@@ -45,11 +48,9 @@
                                 <div class="preview-container"></div>
                             </div>
 
-                            <th:block th:with="isEmployed=${data.get('employmentStatus') != null && data.get('employmentStatus').inputDataValueContainsAny('areYouWorking', T(java.util.List).of('true')) && applicationData.isApplicationWith(T(java.util.List).of('SNAP', 'CASH', 'EA', 'GRH'))},
-                                          hasHousingExpenses=${data.get('homeExpenses') != null && !data.get('homeExpenses').inputDataValueContainsAny('homeExpenses', T(java.util.List).of('NONE_OF_THE_ABOVE')) && applicationData.isApplicationWith(T(java.util.List).of('SNAP', 'CASH', 'EA'))},
-                                          hasChangedWorkSituation=${data.get('workSituation') != null && data.get('workSituation').inputDataValueContainsAny('hasWorkSituation', T(java.util.List).of('true')) && applicationData.isApplicationWith(T(java.util.List).of('SNAP', 'CASH', 'GRH'))}">
+                            <th:block>
                                 <div class="reveal reveal-adjacent spacing-above-60"
-                                     th:if="${isEmployed || hasHousingExpenses || hasChangedWorkSituation}">
+                                     th:if="${docRecommendations.size() > 0}">
                                     <a href="#" class="reveal__link reveal__link-adjacent">
                                     <span class="reveal-icon">
                                         <div th:replace="fragments/icons/icon-multiple-documents  :: icon-multiple-documents"></div>
@@ -57,20 +58,10 @@
                                         <div class="reveal__link__header-adjacent"
                                              th:text="#{upload-documents.view-document-list}"></div>
                                         <div class="reveal__content reveal__content-adjacent">
-                                            <div th:if="${isEmployed}">
-                                                <h3 class="h4" th:text="#{upload-documents.proof-of-income}"></h3>
-                                                <div th:text="#{upload-documents.a-document-with-employer-and-employee-names}"></div>
-                                            </div>
-                                            <div th:if="${hasHousingExpenses}">
-                                                <h3 class="h4 spacing-above-15"
-                                                    th:text="#{upload-documents.proof-of-housing-costs}"></h3>
-                                                <div th:text="#{upload-documents.a-document-showing-total-amount-paid-for-housing}"></div>
-                                            </div>
-                                            <div th:if="${hasChangedWorkSituation}">
-                                                <h3 class="h4 spacing-above-15"
-                                                    th:text="#{upload-documents.proof-of-job-loss}"></h3>
-                                                <div th:text="#{upload-documents.a-document-with-your-former-employers-name-and-signature}"></div>
-                                            </div>
+                                            <th:block th:each="docRec: ${docRecommendations}">
+                                                <div th:replace="fragments/docRecommendationShortFragment :: docRecommendationShortFragment(${docRec.title},
+                                                    ${docRec.explanation})"></div>
+                                            </th:block>
                                         </div>
                                     </a>
 
@@ -100,7 +91,9 @@
     var documentIcon = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEsAAABGCAYAAACE0Gk0AAAFK0lEQVR4Xu2caVcTSRSG314SyEJQPIAsMucoihDmzJE1BBhnEZ35xzPjmU9ABAR/AThnFBBQQciedLrn3Epaw6Z9OxsTqr7kQ25XVz31VtWt5baSTiYsyOSIgCJhOeIkjCQs56wkLAYrCasusFKpFF5vbmJ/7x1My4KmqZz3VmRr5A3oHh3DI6Po6e2tKC/Ow67GrJOTE7xaX8PB/gG8Xi8URYFl1XNStZDNZtF+4yamIzO42dHBqbNrWzasbDaDtZUV7GxvIxgMNgAUTUsALCCRSKCzsxMzc3Pw+wOuITh9kA3r9dYmNtZforW1FaqiflEUVaDWqUy8pGbTMpGIx3Fn4DtEorPQdb2mJWDDii0t4mB/Dx6Pt85dj8RkQRGyKiYCZhQMpJJJDN5/gPHJKahq7cZONqznf/6BZCLxuRXtAmfS6RK8WknMgq57hKLLk6KqyGbSSKfTGJuYxPBIuGbqqggWtbRlWtB0HT6fT7RqoVCAUgNeiqLCMPLIZDJFVdkKUyDeSw1Ik8zM7JzolrVIbFh/P/8L8ZMTMXWbBRPpdAq9fX2YikTR0tKCXC5X1lGqV2RN17C3t4dX6y9Fg2iq9iVzhbqkKsrl8/sQnZ1HZ1dX9V5ud3vu2vAsrFQqKVoyOjcvxpBapg8f3mM1FoNhGNC0Mlil8YuUTgN+e/sNROfnxW81U0XKskwTyWRRWSR/j8dTzbKdy+vd7i421tdQMArnYJX6JqhMx8fH6OnpxeyPj8+NcZUUsCqw+vr7EIleAVglheXzOcTjcTwYeojpmWglfE5PJpV0Q1tZVwmWGPxphsxmQDP0D4/GEB79virAmk5ZdncUM2QyiVw2i8npiFBZpak5YRV9C+FSHH/6JFyK+cc/487AQEW8mhdWGbCjw0PhB/70yxN03LrlGlhzwyqNX+TRHH78KECRwtra2lwBa3pYREXViisL6pL9dwYQmYmi1edjA7sWsGxg+XweiXgC94eG8GhsnO0XXhtYtkuRz+VAftjDkTBGwqMXO7eXaO5awRLAFEXAorXkcDjMcimuHSzbDyP/K9TejidPf3M8dv2vYO3u7mBjbRXGZWvDr1T77KYgLcYDwQAWnv3enLBo33/1xTILFjmk1PW8Xg9UVfu8u0uw2kIh/LrwtDlhHR0d4p+tLZimKdZ/ThJt5ZDb8P5gX6wVaaOSNg6bHlY5HKdHb+JgwyxgeXFRnEgFAn4Bms4em1pZTpR0kQ2paCW2jO23b8SRGTmpEtYlNMkZXYktYWd7RyrrW4qTsL5FqOx/CUvCYhBgmEplSVgMAgxTqSwJi0GAYSqVJWExCDBMpbIkLAYBhqlUloTFIMAwlcqSsBgEGKZSWRIWgwDDVCpLwmIQYJhKZUlYDAIMU6ksCYtBgGF6pZRVrwgLBp9TpgTrxfISdncaeMhKgU71jN1xC4vuRVCc5Ns3/zbu+L6eUWFuQFHgK8VwUzz12kpMKMvn89fvrkN5cGY94w1dwbIg7ozSFSUK3iwYBhSVLhwVrxwFgkEsPKvhzb/GRbK6wUXPFC+z0VVuXdNPXWarOaxGxki7xXX2OfsSblf3bREn6TSx75Q2NPreaa0usitF7ttR+xQ+PD4xibv3Bh3nyoZ1Jb7r4Lh6pw3tj3XQ9yD6+vsxFYmgpeV0gPrXsmbDoswa/8UQPi0bFMVwd3V3YWxiCqFQiJWRK1j0hkZ+i4ZVw5JxoWBCVRR03+7B3cFB+P1+djauYbHf1AQPSFiMRpSwJCwGAYbpf7oLq5uJEmkZAAAAAElFTkSuQmCC";
     var dataURL = "";
     var isUploadComplete = true;
-    var fileTooBigMsg = [[#{upload-documents.this-file-is-too-large(${uploadDocMaxFileSize})}]];
+    var fileTooBigMsg = [[#{upload-documents.this-file-is-too-large(${uploadDocMaxFileSize})
+    }]]
+    ;
     var myDropZone;
 
     function addDragBorder() {
@@ -308,7 +301,7 @@
 
             // This lets dropzone know to process the queue after each file has completed
             // Important for uploading multiple files at once
-            this.on("complete", function() {
+            this.on("complete", function () {
                 processDZQueueAfterThumbnailGeneration();
             })
 

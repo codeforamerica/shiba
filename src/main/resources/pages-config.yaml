@@ -2245,12 +2245,12 @@ pageDefinitions:
         type: RADIO
         options:
           selectableOptions:
-          - value: "YES"
-            messageKey: general.inputs.yes
-          - value: "NO"
-            messageKey: general.inputs.no
-          - value: "NOT_SURE"
-            messageKey: general.inputs.not-sure
+            - value: "YES"
+              messageKey: general.inputs.yes
+            - value: "NO"
+              messageKey: general.inputs.no
+            - value: "NOT_SURE"
+              messageKey: general.inputs.not-sure
     pageTitle: healthcareCoverage.title
   - &helper
     name: helper
@@ -2894,21 +2894,21 @@ workflow:
           input: medicalExpenses
           value: NONE_OF_THE_ABOVE
         - conditions:
-          - pageName: medicalExpenses
-            input: medicalExpenses
-            value: MEDICAL_BILLS_OR_COPAYS
-          - pageName: medicalExpenses
-            input: medicalExpenses
-            value: MEDICAL_INSURANCE_PREMIUMS
-            matcher: DOES_NOT_CONTAIN
-          - pageName: medicalExpenses
-            input: medicalExpenses
-            value: DENTAL_INSURANCE_PREMIUMS
-            matcher: DOES_NOT_CONTAIN
-          - pageName: medicalExpenses
-            input: medicalExpenses
-            value: VISION_INSURANCE_PREMIUMS
-            matcher: DOES_NOT_CONTAIN
+            - pageName: medicalExpenses
+              input: medicalExpenses
+              value: MEDICAL_BILLS_OR_COPAYS
+            - pageName: medicalExpenses
+              input: medicalExpenses
+              value: MEDICAL_INSURANCE_PREMIUMS
+              matcher: DOES_NOT_CONTAIN
+            - pageName: medicalExpenses
+              input: medicalExpenses
+              value: DENTAL_INSURANCE_PREMIUMS
+              matcher: DOES_NOT_CONTAIN
+            - pageName: medicalExpenses
+              input: medicalExpenses
+              value: VISION_INSURANCE_PREMIUMS
+              matcher: DOES_NOT_CONTAIN
     datasources:
       - pageName: medicalExpenses
       - pageName: addHouseholdMembers
@@ -2964,18 +2964,18 @@ workflow:
       conditions:
         - *noOneChoseCCAP?
         - conditions:
-          - pageName: vehicle
-            input: haveVehicle
-            value: "false"
-          - pageName: investments
-            input: haveInvestments
-            value: "false"
-          - pageName: savings
-            input: haveSavings
-            value: "false"
-          - pageName: realEstate
-            input: ownRealEstate
-            value: "false"
+            - pageName: vehicle
+              input: haveVehicle
+              value: "false"
+            - pageName: investments
+              input: haveInvestments
+              value: "false"
+            - pageName: savings
+              input: haveSavings
+              value: "false"
+            - pageName: realEstate
+              input: ownRealEstate
+              value: "false"
     nextPages:
       - pageName: soldAssets
     datasources:
@@ -3174,25 +3174,37 @@ workflow:
       - groupName: household
         pageName: householdMemberInfo
         optional: "true"
+      - pageName: medicalExpenses
     skipCondition:
-      logicalOperator: OR
+      logicalOperator: AND
       conditions:
-        - conditions:
-          - *noOneChoseGRH?
-          - *noOneChoseSNAP?
-          - *noOneChoseCASH?
-          - *noOneChoseEA?
-        - conditions:
-          - pageName: employmentStatus
-            input: areYouWorking
-            value: "false"
-          - pageName: homeExpenses
-            input: homeExpenses
-            value: NONE_OF_THE_ABOVE
-            matcher: CONTAINS
-          - pageName: workSituation
-            input: hasWorkSituation
-            value: "false"
+          - logicalOperator: OR
+            conditions:
+              - logicalOperator: AND
+                conditions:
+                  - *noOneChoseCCAP?
+                  - *noOneChoseSNAP?
+              - logicalOperator: OR
+                conditions:
+                  - pageName: medicalExpenses
+                    input: medicalExpenses
+                    value: MEDICAL_BILLS_OR_COPAYS
+                    matcher: CONTAINS
+                  - pageName: medicalExpenses
+                    input: medicalExpenses
+                    value: NONE_OF_THE_ABOVE
+                    matcher: CONTAINS
+          - conditions:
+            - pageName: employmentStatus
+              input: areYouWorking
+              value: "false"
+            - pageName: homeExpenses
+              input: homeExpenses
+              value: NONE_OF_THE_ABOVE
+              matcher: CONTAINS
+            - pageName: workSituation
+              input: hasWorkSituation
+              value: "false"
   uploadDocuments:
     pageConfiguration: *uploadDocuments
     nextPages:
@@ -3206,25 +3218,37 @@ workflow:
       - groupName: household
         pageName: householdMemberInfo
         optional: "true"
+      - pageName: medicalExpenses
     skipCondition:
-      logicalOperator: OR
+      logicalOperator: AND
       conditions:
+        - logicalOperator: OR
+          conditions:
+            - logicalOperator: AND
+              conditions:
+                - *noOneChoseCCAP?
+                - *noOneChoseSNAP?
+            - logicalOperator: OR
+              conditions:
+                - pageName: medicalExpenses
+                  input: medicalExpenses
+                  value: MEDICAL_BILLS_OR_COPAYS
+                  matcher: CONTAINS
+                - pageName: medicalExpenses
+                  input: medicalExpenses
+                  value: NONE_OF_THE_ABOVE
+                  matcher: CONTAINS
         - conditions:
-          - *noOneChoseGRH?
-          - *noOneChoseSNAP?
-          - *noOneChoseCASH?
-          - *noOneChoseEA?
-        - conditions:
-          - pageName: employmentStatus
-            input: areYouWorking
-            value: "false"
-          - pageName: homeExpenses
-            input: homeExpenses
-            value: NONE_OF_THE_ABOVE
-            matcher: CONTAINS
-          - pageName: workSituation
-            input: hasWorkSituation
-            value: "false"
+            - pageName: employmentStatus
+              input: areYouWorking
+              value: "false"
+            - pageName: homeExpenses
+              input: homeExpenses
+              value: NONE_OF_THE_ABOVE
+              matcher: CONTAINS
+            - pageName: workSituation
+              input: hasWorkSituation
+              value: "false"
   uploadDocumentsDeleteWarningPage:
     pageConfiguration: *uploadDocumentsDeleteWarningPage
     nextPages:
