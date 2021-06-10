@@ -31,8 +31,14 @@ import org.springframework.test.context.ContextConfiguration;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Clock;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -78,11 +84,14 @@ class MnitDocumentConsumerTest {
     private Application application;
 
     @MockBean
+    private Clock clock;
+
+    @MockBean
     private ApplicationStatusUpdater applicationStatusUpdater;
 
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws ParseException {
         PagesData pagesData = new PagesDataBuilder().build(List.of(
                 new PageDataBuilder("personalInfo", Map.of(
                         "firstName", List.of("Jane"),
@@ -106,10 +115,14 @@ class MnitDocumentConsumerTest {
                 ))
         ));
 
+        DateFormat format = new SimpleDateFormat("M/dd/yyy 'at' HH:mm aaa");
+        Date date = format.parse("06/10/2021 at 01:28 PM");
+        ZonedDateTime completedAt = ZonedDateTime.ofInstant(date.toInstant(), ZoneOffset.UTC);
+
         applicationData.setPagesData(pagesData);
         application = Application.builder()
                 .id("someId")
-                .completedAt(ZonedDateTime.now())
+                .completedAt(completedAt)
                 .applicationData(applicationData)
                 .county(County.Olmsted)
                 .timeToComplete(null)
@@ -204,7 +217,6 @@ class MnitDocumentConsumerTest {
         mockDocUpload("shiba+file.jpg", "someS3FilePath", MediaType.IMAGE_JPEG_VALUE, "jpg");
 
         mockDocUpload("test-uploaded-pdf.pdf", "pdfS3FilePath", MediaType.APPLICATION_PDF_VALUE, "pdf");
-
         when(fileNameGenerator.generateUploadedDocumentName(application, 0, "pdf")).thenReturn("pdf1of2.pdf");
         when(fileNameGenerator.generateUploadedDocumentName(application, 1, "pdf")).thenReturn("pdf2of2.pdf");
 
@@ -213,6 +225,9 @@ class MnitDocumentConsumerTest {
         ArgumentCaptor<ApplicationFile> captor = ArgumentCaptor.forClass(ApplicationFile.class);
         verify(mnitClient, times(2)).send(captor.capture(), eq(County.Olmsted), eq(application.getId()), eq(UPLOADED_DOC));
 
+        // Uncomment the following line to regenereate the test fixtures
+        // writeByteArrayToFile(captor.getAllValues().get(0).getFileBytes(), "src/test/resources/shiba+file.pdf");
+        // writeByteArrayToFile(captor.getAllValues().get(1).getFileBytes(), "src/test/resources/test-uploaded-pdf-with-coverpage.pdf");
         // Assert that converted file contents are as expected
         verifyGeneratedPdf(captor.getAllValues().get(0).getFileBytes(), "shiba+file.pdf");
         verifyGeneratedPdf(captor.getAllValues().get(1).getFileBytes(), "test-uploaded-pdf-with-coverpage.pdf");
