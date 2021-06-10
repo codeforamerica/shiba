@@ -34,9 +34,7 @@ import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Clock;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -129,6 +127,8 @@ class MnitDocumentConsumerTest {
                 .build();
         when(messageSource.getMessage(any(), any(), any())).thenReturn("default success message");
         when(fileNameGenerator.generatePdfFileName(any(), any())).thenReturn("some-file.pdf");
+        when(clock.instant()).thenReturn(Instant.from(completedAt));
+        when(clock.getZone()).thenReturn(ZoneId.of("UTC"));
         doReturn(application).when(applicationRepository).find(any());
     }
 
