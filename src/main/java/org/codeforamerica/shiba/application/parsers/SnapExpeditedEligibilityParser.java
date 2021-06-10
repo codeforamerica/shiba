@@ -31,7 +31,8 @@ public class SnapExpeditedEligibilityParser {
 
         Money housingCosts = parseMoney(pagesData, HOUSING_COSTS);
         String isMigrantWorker = getFirstValue(pagesData, MIGRANT_WORKER);
-        List<String> utilityExpensesSelections = getValues(pagesData, UTILITY_EXPENSES_SELECTIONS);
+        boolean missingUtilities = getFirstValue(pagesData, UTILITY_EXPENSES_SELECTIONS) == null;
+        List<String> utilityExpensesSelections = missingUtilities ? null : getValues(pagesData, UTILITY_EXPENSES_SELECTIONS);
         boolean applicantApplyingForSnap = getValues(pagesData, APPLICANT_PROGRAMS).contains("SNAP");
         List<String> householdPrograms = parseValues(HOUSEHOLD, HOUSEHOLD_PROGRAMS, applicationData);
         boolean householdMemberApplyingForSnap = householdPrograms != null && householdPrograms.contains("SNAP");
