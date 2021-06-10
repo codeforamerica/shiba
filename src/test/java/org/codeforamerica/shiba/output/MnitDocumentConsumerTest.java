@@ -31,12 +31,10 @@ import org.springframework.test.context.ContextConfiguration;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.*;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -82,14 +80,11 @@ class MnitDocumentConsumerTest {
     private Application application;
 
     @MockBean
-    private Clock clock;
-
-    @MockBean
     private ApplicationStatusUpdater applicationStatusUpdater;
 
 
     @BeforeEach
-    void setUp() throws ParseException {
+    void setUp() {
         PagesData pagesData = new PagesDataBuilder().build(List.of(
                 new PageDataBuilder("personalInfo", Map.of(
                         "firstName", List.of("Jane"),
@@ -113,9 +108,9 @@ class MnitDocumentConsumerTest {
                 ))
         ));
 
-        DateFormat format = new SimpleDateFormat("M/dd/yyy 'at' HH:mm aaa");
-        Date date = format.parse("06/10/2021 at 01:28 PM");
-        ZonedDateTime completedAt = ZonedDateTime.ofInstant(date.toInstant(), ZoneOffset.UTC);
+        ZonedDateTime completedAt = ZonedDateTime.of(
+                LocalDateTime.of(2021, 6, 10, 1, 28),
+                ZoneOffset.UTC);
 
         applicationData.setPagesData(pagesData);
         application = Application.builder()
@@ -127,8 +122,6 @@ class MnitDocumentConsumerTest {
                 .build();
         when(messageSource.getMessage(any(), any(), any())).thenReturn("default success message");
         when(fileNameGenerator.generatePdfFileName(any(), any())).thenReturn("some-file.pdf");
-        when(clock.instant()).thenReturn(Instant.from(completedAt));
-        when(clock.getZone()).thenReturn(ZoneId.of("UTC"));
         doReturn(application).when(applicationRepository).find(any());
     }
 
@@ -225,9 +218,9 @@ class MnitDocumentConsumerTest {
         ArgumentCaptor<ApplicationFile> captor = ArgumentCaptor.forClass(ApplicationFile.class);
         verify(mnitClient, times(2)).send(captor.capture(), eq(County.Olmsted), eq(application.getId()), eq(UPLOADED_DOC));
 
-        // Uncomment the following line to regenereate the test fixtures
-        // writeByteArrayToFile(captor.getAllValues().get(0).getFileBytes(), "src/test/resources/shiba+file.pdf");
-        // writeByteArrayToFile(captor.getAllValues().get(1).getFileBytes(), "src/test/resources/test-uploaded-pdf-with-coverpage.pdf");
+        // Uncomment the following line to regenerate the test files (useful if the files or cover page have changed)
+//         writeByteArrayToFile(captor.getAllValues().get(0).getFileBytes(), "src/test/resources/shiba+file.pdf");
+//         writeByteArrayToFile(captor.getAllValues().get(1).getFileBytes(), "src/test/resources/test-uploaded-pdf-with-coverpage.pdf");
         // Assert that converted file contents are as expected
         verifyGeneratedPdf(captor.getAllValues().get(0).getFileBytes(), "shiba+file.pdf");
         verifyGeneratedPdf(captor.getAllValues().get(1).getFileBytes(), "test-uploaded-pdf-with-coverpage.pdf");
