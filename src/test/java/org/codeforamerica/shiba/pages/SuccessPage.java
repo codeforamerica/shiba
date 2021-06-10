@@ -24,12 +24,12 @@ public class SuccessPage extends Page {
         if (CCAPdownloadPresent()) downloadCCAPApplicationLink.click();
     }
 
-    private boolean CAFdownloadPresent() {
+    public boolean CAFdownloadPresent() {
         try { return downloadCafLink.isDisplayed(); }
         catch (NoSuchElementException e) { return false; }
     }
 
-    private boolean CCAPdownloadPresent() {
+    public boolean CCAPdownloadPresent() {
         try { return downloadCCAPApplicationLink.isDisplayed(); }
         catch (NoSuchElementException e) { return false; }
     }
