@@ -1,13 +1,14 @@
 package org.codeforamerica.shiba.application;
 
-import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
-import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
+import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.*;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +21,7 @@ class ApplicationFactoryTest {
     Clock clock = mock(Clock.class);
 
     @SuppressWarnings("unchecked")
-    ApplicationDataParser<County> countyParser = mock(ApplicationDataParser.class);
+    CountyParser countyParser = mock(CountyParser.class);
     MonitoringService monitoringService = mock(MonitoringService.class);
     ApplicationFactory applicationFactory = new ApplicationFactory(clock, countyParser, monitoringService);
     ApplicationData applicationData = new ApplicationData();

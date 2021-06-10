@@ -37,27 +37,3 @@ test-parsing:
         pageName: lastThirtyDaysJobIncome
         inputName: lastThirtyDaysJobIncomeInput
         groupName: jobGroup
-  homeAddress:
-    pageInputs:
-      county:
-        pageName: homeAddressPageName
-        inputName: addressLine6
-        defaultValue: Hennepin
-      isHomeless:
-        pageName: homeAddressPageName
-        inputName: addressLine7
-      sameMailingAddress:
-        pageName: homeAddressPageName
-        inputName: addressLine8
-  mailingAddress:
-    pageInputs:
-      county:
-        pageName: mailingAddressPageName
-        inputName: addressLine6
-        defaultValue: Hennepin
-  identifyCounty:
-    pageInputs:
-      county:
-        pageName: identifyCounty
-        inputName: county
-        defaultValue: Other

@@ -18,7 +18,7 @@ public class TestApplicationDataBuilder {
     public ApplicationData build() {
         return applicationData;
     }
-    
+
     public TestApplicationDataBuilder base() {
         applicationData.setId("12345");
         applicationData.setStartTimeOnce(Instant.now());
@@ -58,9 +58,9 @@ public class TestApplicationDataBuilder {
     }
 
     public TestApplicationDataBuilder withPageData(String pageName, String input, List<String> values) {
-        PageData pageData = new PageData();
-        pageData.put(input, InputData.builder().value(values).build());
-        applicationData.getPagesData().put(pageName, pageData);
+        PagesData pagesData = applicationData.getPagesData();
+        pagesData.putIfAbsent(pageName, new PageData());
+        pagesData.get(pageName).put(input, InputData.builder().value(values).build());
         return this;
     }
 
