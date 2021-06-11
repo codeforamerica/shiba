@@ -105,31 +105,6 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
 
     @Nested
     @Tag("pdf")
-    class GRH {
-        @BeforeEach
-        void setUp() {
-            selectPrograms(List.of(PROGRAM_GRH));
-        }
-
-        @Test
-        void shouldMapPrograms() {
-            PDAcroForm pdAcroForm = submitAndDownloadCaf();
-            assertThat(pdAcroForm.getField("GRH").getValueAsString()).isEqualTo("Yes");
-        }
-
-        @Test
-        void shouldNotListExpeditedCcapIfNotApplyingForCcap() {
-            navigateTo("livingSituation");
-            testPage.enter("livingSituation", "Staying in a hotel or motel");
-            testPage.clickContinue();
-
-            PDAcroForm pdAcroForm = submitAndDownloadCaf();
-            assertThat(getPdfFieldText(pdAcroForm, "CCAP_EXPEDITED_ELIGIBILITY")).isBlank();
-        }
-    }
-
-    @Nested
-    @Tag("pdf")
     class CCAP {
         @BeforeEach
         void setUp() {
@@ -507,21 +482,12 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         }
 
         @Test
-        void shouldMapDrugFelonyYesIfAnsweredYes(){
+        void shouldMapDrugFelonyYesIfAnsweredYes() {
             navigateTo("legalStuff");
             testPage.enter("agreeToTerms", "I agree");
             testPage.enter("drugFelony", YES.getDisplayValue());
             testPage.clickContinue();
             assertThat(getPdfFieldText(submitAndDownloadCaf(), "DRUG_FELONY")).isEqualTo("Yes");
-        }
-
-        @Test
-        void shouldMapDrugFelonyNoIfAnsweredNo(){
-            navigateTo("legalStuff");
-            testPage.enter("agreeToTerms", "I agree");
-            testPage.enter("drugFelony", NO.getDisplayValue());
-            testPage.clickContinue();
-            assertThat(getPdfFieldText(submitAndDownloadCaf(), "DRUG_FELONY")).isEqualTo("No");
         }
     }
 
@@ -557,20 +523,15 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             testPage.clickButton("Use this address");
 
             Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-            List.of(CAF, CCAP).forEach(type -> {
-                PDAcroForm pdAcroForm = pdAcroForms.get(type);
-                assertThat(pdAcroForm.getField("APPLICANT_HOME_STREET_ADDRESS").getValueAsString())
-                        .isEqualTo(originalStreetAddress);
-                assertThat(pdAcroForm.getField("APPLICANT_HOME_CITY").getValueAsString())
-                        .isEqualTo(originalCity);
-                assertThat(pdAcroForm.getField("APPLICANT_HOME_STATE").getValueAsString())
-                        .isEqualTo("MN");
-                assertThat(pdAcroForm.getField("APPLICANT_HOME_ZIPCODE").getValueAsString())
-                        .isEqualTo(originalZipCode);
-            });
-
-            assertThat(pdAcroForms.get(CAF).getField("APPLICANT_HOME_APT_NUMBER").getValueAsString())
-                    .isEqualTo(originalApt);
+            PDAcroForm pdAcroForm = pdAcroForms.get(CCAP);
+            assertThat(pdAcroForm.getField("APPLICANT_HOME_STREET_ADDRESS").getValueAsString())
+                    .isEqualTo(originalStreetAddress);
+            assertThat(pdAcroForm.getField("APPLICANT_HOME_CITY").getValueAsString())
+                    .isEqualTo(originalCity);
+            assertThat(pdAcroForm.getField("APPLICANT_HOME_STATE").getValueAsString())
+                    .isEqualTo("MN");
+            assertThat(pdAcroForm.getField("APPLICANT_HOME_ZIPCODE").getValueAsString())
+                    .isEqualTo(originalZipCode);
         }
 
         @Test
@@ -708,19 +669,15 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
                 testPage.clickContinue();
                 testPage.clickButton("Use this address");
                 Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-                List.of(CAF, CCAP).forEach(type -> {
-                    PDAcroForm pdAcroForm = pdAcroForms.get(type);
-                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
-                            .isEqualTo(originalStreetAddress);
-                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_CITY").getValueAsString())
-                            .isEqualTo(originalCity);
-                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_STATE").getValueAsString())
-                            .isEqualTo("MN");
-                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
-                            .isEqualTo(originalZipCode);
-                });
-                assertThat(pdAcroForms.get(CAF).getField("APPLICANT_MAILING_APT_NUMBER").getValueAsString())
-                        .isEqualTo(originalApt);
+                PDAcroForm pdAcroForm = pdAcroForms.get(CCAP);
+                assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
+                        .isEqualTo(originalStreetAddress);
+                assertThat(pdAcroForm.getField("APPLICANT_MAILING_CITY").getValueAsString())
+                        .isEqualTo(originalCity);
+                assertThat(pdAcroForm.getField("APPLICANT_MAILING_STATE").getValueAsString())
+                        .isEqualTo("MN");
+                assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
+                        .isEqualTo(originalZipCode);
             }
 
             @Test
@@ -736,11 +693,9 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
                 testPage.clickContinue();
                 testPage.clickButton("Use this address");
                 Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-                List.of(CAF, CCAP).forEach(type -> {
-                    PDAcroForm pdAcroForm = pdAcroForms.get(type);
-                    assertThat(pdAcroForm.getField("COUNTY_INSTRUCTIONS").getValueAsString())
-                            .isEqualTo("This application was submitted. A caseworker at Hennepin County will help route your application to your county. For more support with your application, you can call Hennepin County at 612-596-1300.");
-                });
+                PDAcroForm pdAcroForm = pdAcroForms.get(CCAP);
+                assertThat(pdAcroForm.getField("COUNTY_INSTRUCTIONS").getValueAsString())
+                        .isEqualTo("This application was submitted. A caseworker at Hennepin County will help route your application to your county. For more support with your application, you can call Hennepin County at 612-596-1300.");
             }
 
             @Test
@@ -848,17 +803,15 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
                 testPage.clickContinue();
 
                 Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-                List.of(CAF, CCAP).forEach(type -> {
-                    PDAcroForm pdAcroForm = pdAcroForms.get(type);
-                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
-                            .isEqualTo(enrichedStreetValue);
-                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_CITY").getValueAsString())
-                            .isEqualTo(enrichedCityValue);
-                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_STATE").getValueAsString())
-                            .isEqualTo(enrichedState);
-                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
-                            .isEqualTo(enrichedZipCodeValue);
-                });
+                PDAcroForm pdAcroForm = pdAcroForms.get(CCAP);
+                assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
+                        .isEqualTo(enrichedStreetValue);
+                assertThat(pdAcroForm.getField("APPLICANT_MAILING_CITY").getValueAsString())
+                        .isEqualTo(enrichedCityValue);
+                assertThat(pdAcroForm.getField("APPLICANT_MAILING_STATE").getValueAsString())
+                        .isEqualTo(enrichedState);
+                assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
+                        .isEqualTo(enrichedZipCodeValue);
 
                 assertThat(pdAcroForms.get(CAF).getField("APPLICANT_MAILING_APT_NUMBER").getValueAsString())
                         .isEqualTo(enrichedApartmentNumber);
@@ -979,7 +932,6 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             driver.findElement(By.id("additionalInfo")).sendKeys("Some additional information about my application");
             testPage.clickContinue();
             Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "ADDITIONAL_APPLICATION_INFO")).isEqualTo("Some additional information about my application");
             assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADDITIONAL_APPLICATION_INFO")).isEqualTo("Some additional information about my application");
         }
 
@@ -1053,7 +1005,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         }
 
         @Test
-        void shouldMapNoMedicalExpensesWhenNoneSelected(){
+        void shouldMapNoMedicalExpensesWhenNoneSelected() {
             fillInRequiredPages();
             navigateTo("medicalExpenses");
             testPage.enter("medicalExpenses", "None of the above");
@@ -1064,7 +1016,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         }
 
         @Test
-        void shouldMapYesMedicalExpensesWhenOneSelected(){
+        void shouldMapYesMedicalExpensesWhenOneSelected() {
             fillInRequiredPages();
             navigateTo("medicalExpenses");
             testPage.enter("medicalExpenses", "Medical bills or copays");
@@ -1075,7 +1027,7 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         }
 
         @Test
-        void shouldMapYesMedicalExpensesWhenOneSelectedAndEnterAmount(){
+        void shouldMapYesMedicalExpensesWhenOneSelectedAndEnterAmount() {
             fillInRequiredPages();
             navigateTo("medicalExpenses");
             testPage.enter("medicalExpenses", "Medical insurance premiums");

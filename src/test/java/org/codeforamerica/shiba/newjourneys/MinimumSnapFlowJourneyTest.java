@@ -141,6 +141,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
 
         // Page 1
         assertPdfFieldEquals("APPLICATION_ID", applicationId);
+        assertPdfFieldEquals("COUNTY_INSTRUCTIONS", "This application was submitted. A caseworker at Hennepin County will help route your application to your county. For more support with your application, you can call Hennepin County at 612-596-1300.");
         assertPdfFieldEquals("FULL_NAME", firstName + " " + lastName);
         assertPdfFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "");
         assertPdfFieldEquals("CCAP_EXPEDITED_ELIGIBILITY", "");
