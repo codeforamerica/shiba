@@ -56,8 +56,10 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         testPage.clickContinue();
 
         // How can we get in touch with you?
-        testPage.enter("phoneNumber", "7234567890");
-        testPage.enter("email", "some@email.com");
+        String phoneNumber = "7234567890";
+        testPage.enter("phoneNumber", phoneNumber);
+        String email = "some@email.com";
+        testPage.enter("email", email);
         testPage.enter("phoneOrEmail", "Text me");
         testPage.clickContinue();
 
@@ -94,7 +96,8 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
 
         assertThat(testPage.getTitle()).isEqualTo("Additional Info");
         driver.findElement(By.id("additionalInfo")).sendKeys("Some additional information about my application");
-        testPage.enter("caseNumber", "654321");
+        String caseNumber = "654321";
+        testPage.enter("caseNumber", caseNumber);
         testPage.clickContinue();
 
         assertThat(testPage.getTitle()).isEqualTo("Legal Stuff");
@@ -114,20 +117,25 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         successPage.downloadPdfs();
         await().until(() -> getAllFiles().size() == successPage.pdfDownloadLinks());
         caf = getAllFiles().get(CAF);
-
         String applicationId = successPage.getConfirmationNumber();
 
         // assert that CAF contains expected values
 
+        assertFieldEquals("APPLICATION_ID", applicationId);
+        assertFieldEquals("FULL_NAME", firstName + " " + lastName);
+        //TODO SUBMISSION_DATETIME?
+        assertFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "");
+        assertFieldEquals("CCAP_EXPEDITED_ELIGIBILITY", "");
+        assertFieldEquals("ADDITIONAL_APPLICATION_INFO", "Some additional information about my application");
+        assertFieldEquals("APPLICANT_EMAIL", email);
+        assertFieldEquals("APPLICANT_PHONE_NUMBER", "(723) 456-7890");
+        assertFieldEquals("ADDITIONAL_INFO_CASE_NUMBER", caseNumber);
+        assertFieldEquals("EMAIL_OPTIN", "Off");
+        assertFieldEquals("PHONE_OPTIN", "Yes");
 
-        assertFieldEquals("APPLICATION_ID", applicationId, caf);
-        assertFieldEquals("FULL_NAME", firstName + " " + lastName, caf);
-
-
-        assertThat(getPdfFieldText(caf, "ADDITIONAL_APPLICATION_INFO")).isEqualTo("Some additional information about my application");
     }
 
-    private void assertFieldEquals(String fieldName, String expectedVal, PDAcroForm pdf) {
-        assertThat(getPdfFieldText(caf  , fieldName)).isEqualTo(expectedVal);
+    private void assertFieldEquals(String fieldName, String expectedVal) {
+        assertThat(getPdfFieldText(caf, fieldName)).isEqualTo(expectedVal);
     }
 }
