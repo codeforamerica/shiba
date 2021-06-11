@@ -111,7 +111,8 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         testPage.clickLink("Finish application now");
 
         assertThat(testPage.getTitle()).isEqualTo("Additional Info");
-        driver.findElement(By.id("additionalInfo")).sendKeys("Some additional information about my application");
+        String additionalInfo = "Some additional information about my application";
+        driver.findElement(By.id("additionalInfo")).sendKeys(additionalInfo);
         String caseNumber = "654321";
         testPage.enter("caseNumber", caseNumber);
         testPage.clickContinue();
@@ -143,7 +144,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         assertFieldEquals("FULL_NAME", firstName + " " + lastName);
         assertFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "");
         assertFieldEquals("CCAP_EXPEDITED_ELIGIBILITY", "");
-        assertFieldEquals("ADDITIONAL_APPLICATION_INFO", "Some additional information about my application");
+        assertFieldEquals("ADDITIONAL_APPLICATION_INFO", additionalInfo);
         assertFieldEquals("APPLICANT_EMAIL", email);
         assertFieldEquals("APPLICANT_PHONE_NUMBER", "(723) 456-7890");
         assertFieldEquals("ADDITIONAL_INFO_CASE_NUMBER", caseNumber);
