@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 
+import java.util.Locale;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,7 +30,8 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         // Language Preferences
         testPage.enter("writtenLanguage", "English");
         testPage.enter("spokenLanguage", "English");
-        testPage.enter("needInterpreter", "Yes");
+        String needsInterpreter = "Yes";
+        testPage.enter("needInterpreter", needsInterpreter);
         testPage.clickContinue();
 
         // Program Selection
@@ -49,10 +51,13 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         String ssn = "123456789";
         testPage.enter("ssn", ssn);
         testPage.enter("maritalStatus", "Never married");
-        testPage.enter("sex", "Female");
+        String sex = "Female";
+        testPage.enter("sex", sex);
         testPage.enter("livedInMnWholeLife", "Yes");
-        testPage.enter("moveToMnDate", "02/18/1776");
-        testPage.enter("moveToMnPreviousCity", "Chicago");
+        String moveDate = "10/20/1993";
+        testPage.enter("moveToMnDate", moveDate);
+        String previousCity = "Chicago";
+        testPage.enter("moveToMnPreviousCity", previousCity);
         testPage.clickContinue();
 
         // How can we get in touch with you?
@@ -64,31 +69,40 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         testPage.clickContinue();
 
         // Where are you currently Living?
-        testPage.enter("zipCode", "12345");
-        testPage.enter("city", "someCity");
-        testPage.enter("streetAddress", "someStreetAddress");
-        testPage.enter("apartmentNumber", "someApartmentNumber");
+        String homeZip = "12345";
+        testPage.enter("zipCode", homeZip);
+        String homeCity = "someCity";
+        testPage.enter("city", homeCity);
+        String homeStreetAddress = "someStreetAddress";
+        testPage.enter("streetAddress", homeStreetAddress);
+        String homeApartmentNumber = "someApartmentNumber";
+        testPage.enter("apartmentNumber", homeApartmentNumber);
         testPage.enter("isHomeless", "I don't have a permanent address");
         testPage.enter("sameMailingAddress", "No, use a different address for mail");
         testPage.clickContinue();
         testPage.clickButton("Use this address");
 
         // Where can the county send your mail?
-        testPage.enter("zipCode", "12345");
+        testPage.enter("zipCode", "23456");
         testPage.enter("city", "someCity");
         testPage.enter("streetAddress", "someStreetAddress");
         testPage.enter("state", "IL");
         testPage.enter("apartmentNumber", "someApartmentNumber");
-        String mailingAddressStreet = "smarty street";
+        String mailingStreetAddress = "smarty street";
+        String mailingCity = "Cooltown";
+        String mailingState = "CA";
+        String mailingZip = "03104";
+        String mailingApartmentNumber = "";
+        String mailingCounty = "someCounty";
         when(smartyStreetClient.validateAddress(any())).thenReturn(
-                Optional.of(new Address(mailingAddressStreet, "City", "CA", "03104", "", "someCounty"))
+                Optional.of(new Address(mailingStreetAddress, mailingCity, mailingState, mailingZip, mailingApartmentNumber, mailingCounty))
         );
         testPage.clickContinue();
         testPage.clickElementById("enriched-address");
         testPage.clickContinue();
 
         // Let's review your info
-        assertThat(driver.findElementById("mailing-address_street").getText()).isEqualTo(mailingAddressStreet);
+        assertThat(driver.findElementById("mailing-address_street").getText()).isEqualTo(mailingStreetAddress);
 
         // Minimum flow, don't answer expedited questions
         testPage.clickLink("Submit application now with only the above information.");
@@ -104,7 +118,8 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         testPage.enter("agreeToTerms", "I agree");
         testPage.enter("drugFelony", NO.getDisplayValue());
         testPage.clickContinue();
-        testPage.enter("applicantSignature", "some name");
+        String signature = "some signature";
+        testPage.enter("applicantSignature", signature);
         testPage.clickButton("Submit");
 
         // No document upload
@@ -121,6 +136,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
 
         // assert that CAF contains expected values
 
+        // Page 1
         assertFieldEquals("APPLICATION_ID", applicationId);
         assertFieldEquals("FULL_NAME", firstName + " " + lastName);
         //TODO SUBMISSION_DATETIME?
@@ -132,7 +148,41 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         assertFieldEquals("ADDITIONAL_INFO_CASE_NUMBER", caseNumber);
         assertFieldEquals("EMAIL_OPTIN", "Off");
         assertFieldEquals("PHONE_OPTIN", "Yes");
+        assertFieldEquals("DATE_OF_BIRTH", dateOfBirth);
+        assertFieldEquals("APPLICANT_SSN", "XXX-XX-XXXX");
+        assertFieldEquals("PROGRAMS", "SNAP");
 
+
+        // Page 5
+        assertFieldEquals("APPLICANT_LAST_NAME", lastName);
+        assertFieldEquals("APPLICANT_FIRST_NAME", firstName);
+        assertFieldEquals("APPLICANT_OTHER_NAME", otherName);
+        assertFieldEquals("APPLICANT_SEX", sex.toUpperCase(Locale.ENGLISH));
+        assertFieldEquals("MARITAL_STATUS", "NEVER_MARRIED");
+        assertFieldEquals("APPLICANT_HOME_STREET_ADDRESS", homeStreetAddress + " (not permanent)");
+        assertFieldEquals("APPLICANT_HOME_APT_NUMBER", homeApartmentNumber);
+        assertFieldEquals("APPLICANT_HOME_CITY", homeCity);
+        assertFieldEquals("APPLICANT_HOME_STATE", "MN");
+        assertFieldEquals("APPLICANT_MAILING_STREET_ADDRESS", mailingStreetAddress);
+        assertFieldEquals("APPLICANT_MAILING_APT_NUMBER", mailingApartmentNumber);
+        assertFieldEquals("APPLICANT_MAILING_CITY", mailingCity);
+        assertFieldEquals("APPLICANT_MAILING_STATE", mailingState);
+        assertFieldEquals("APPLICANT_MAILING_ZIPCODE", mailingZip);
+        assertFieldEquals("NEED_INTERPRETER", needsInterpreter);
+        assertFieldEquals("APPLICANT_SPOKEN_LANGUAGE_PREFERENCE", "ENGLISH");
+        assertFieldEquals("APPLICANT_WRITTEN_LANGUAGE_PREFERENCE", "ENGLISH");
+        assertFieldEquals("IS_US_CITIZEN", "Yes");
+        assertFieldEquals("DATE_OF_MOVING_TO_MN", moveDate);
+        assertFieldEquals("APPLICANT_PREVIOUS_STATE", previousCity);
+        assertFieldEquals("FOOD", "Yes");
+        assertFieldEquals("CASH", "Off");
+        assertFieldEquals("EMERGENCY", "Off");
+        assertFieldEquals("CCAP", "Off");
+        assertFieldEquals("GRH", "Off");
+        assertFieldEquals("APPLICANT_SIGNATURE", signature);
+        //TODO CREATED_DATE
+        //TODO dummy field names?
+        assertFieldEquals("DRUG_FELONY", "No");
     }
 
     private void assertFieldEquals(String fieldName, String expectedVal) {
