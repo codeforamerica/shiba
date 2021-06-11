@@ -19,6 +19,8 @@ import static org.mockito.Mockito.when;
 
 @Tag("journey")
 public class MinimumSnapFlowJourneyTest extends JourneyTest {
+    private PDAcroForm caf;
+
     @Test
     void minimumFlowForSnapOnly() {
         testPage.clickButton("Apply now");
@@ -36,11 +38,16 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         testPage.clickContinue();
 
         // Personal Info
-        testPage.enter("firstName", "Ahmed");
-        testPage.enter("lastName", "St. George");
-        testPage.enter("otherName", "defaultOtherName");
-        testPage.enter("dateOfBirth", "01/12/1928");
-        testPage.enter("ssn", "123456789");
+        String firstName = "Ahmed";
+        testPage.enter("firstName", firstName);
+        String lastName = "St. George";
+        testPage.enter("lastName", lastName);
+        String otherName = "defaultOtherName";
+        testPage.enter("otherName", otherName);
+        String dateOfBirth = "01/12/1928";
+        testPage.enter("dateOfBirth", dateOfBirth);
+        String ssn = "123456789";
+        testPage.enter("ssn", ssn);
         testPage.enter("maritalStatus", "Never married");
         testPage.enter("sex", "Female");
         testPage.enter("livedInMnWholeLife", "Yes");
@@ -106,15 +113,21 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         assertThat(successPage.CCAPdownloadPresent()).isFalse();
         successPage.downloadPdfs();
         await().until(() -> getAllFiles().size() == successPage.pdfDownloadLinks());
-        PDAcroForm caf = getAllFiles().get(CAF);
+        caf = getAllFiles().get(CAF);
 
         String applicationId = successPage.getConfirmationNumber();
 
         // assert that CAF contains expected values
 
 
+        assertFieldEquals("APPLICATION_ID", applicationId, caf);
+        assertFieldEquals("FULL_NAME", firstName + " " + lastName, caf);
+
 
         assertThat(getPdfFieldText(caf, "ADDITIONAL_APPLICATION_INFO")).isEqualTo("Some additional information about my application");
+    }
 
+    private void assertFieldEquals(String fieldName, String expectedVal, PDAcroForm pdf) {
+        assertThat(getPdfFieldText(caf  , fieldName)).isEqualTo(expectedVal);
     }
 }
