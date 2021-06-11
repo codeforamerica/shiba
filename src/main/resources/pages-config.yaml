@@ -438,23 +438,64 @@ pageDefinitions:
             - value: "false"
               messageKey: home-address.no-use-a-different-address-for-mail
   - &homeAddress2
-    name: homeAddress2
+    name: homeAddress
     headerKey: home-address.where-are-you-currently-living
     pageTitle: home-address.title
+    contextFragment: addressContextFragment
     inputs:
+      - name: sameMailingAddress
+        type: HIDDEN
       - name: isHomeless
-        type: CHECKBOX
+        type: CUSTOM
+        customInputFragment: addressInputFragment
         options:
           selectableOptions:
             - value: "true"
               messageKey: home-address.i-dont-have-a-permanent-address
-        followUpValues:
-          - value: "false"
         followUps:
-          - name: moveToMnPreviousState
+          - name: streetAddress
             type: TEXT
             promptMessage:
-              promptMessageKey: household-member-info.what-state-did-they-move-from
+              promptMessageKey: home-address.what-is-the-street-address
+            validators:
+              - validation: NOT_BLANK
+                errorMessageKey: general.validation.make-sure-you-answer-this-question
+                condition:
+                  input: isHomeless
+                  matcher: DOES_NOT_CONTAIN
+                  value: "true"
+          - name: apartmentNumber
+            type: TEXT
+            promptMessage:
+              promptMessageKey: home-address.apartment-number
+          - name: city
+            type: TEXT
+            promptMessage:
+              promptMessageKey: home-address.what-is-the-city
+            validators:
+              - validation: NOT_BLANK
+                errorMessageKey: general.validation.make-sure-you-answer-this-question
+                condition:
+                  input: isHomeless
+                  matcher: DOES_NOT_CONTAIN
+                  value: "true"
+          - name: state
+            type: TEXT
+            promptMessage:
+              promptMessageKey: home-address.what-is-the-state
+            readOnly: true
+            defaultValue: MN
+          - name: zipCode
+            type: TEXT
+            promptMessage:
+              promptMessageKey: home-address.what-is-the-zip-code
+            validators:
+              - validation: ZIPCODE
+                errorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
+                condition:
+                  input: isHomeless
+                  matcher: DOES_NOT_CONTAIN
+                  value: "true"
   - &mailingAddress
     name: mailingAddress
     pageTitle: mailing-address.title
@@ -2398,7 +2439,7 @@ workflow:
     pageConfiguration: *homeAddress2
     enrichment: homeAddressEnrichment
     nextPages:
-      - pageName: verifyHomeAddress
+      - pageName: verifyHomeAddress2
   verifyHomeAddress:
     pageConfiguration: *homeAddressValidation
     skipCondition:
@@ -2410,6 +2451,17 @@ workflow:
     nextPages:
       - pageName: mailingAddress
       - pageName: homeAddress
+  verifyHomeAddress2:
+    pageConfiguration: *homeAddressValidation
+    skipCondition:
+      pageName: homeAddress
+      input: streetAddress
+      matcher: EMPTY
+    datasources:
+      - pageName: homeAddress
+    nextPages:
+      - pageName: mailingAddress
+      - pageName: homeAddress2
   mailingAddress:
     pageConfiguration: *mailingAddress
     enrichment: mailingAddressEnrichment
@@ -3199,23 +3251,23 @@ workflow:
     skipCondition:
       logicalOperator: AND
       conditions:
-          - logicalOperator: OR
-            conditions:
-              - logicalOperator: AND
-                conditions:
-                  - *noOneChoseCCAP?
-                  - *noOneChoseSNAP?
-              - logicalOperator: OR
-                conditions:
-                  - pageName: medicalExpenses
-                    input: medicalExpenses
-                    value: MEDICAL_BILLS_OR_COPAYS
-                    matcher: CONTAINS
-                  - pageName: medicalExpenses
-                    input: medicalExpenses
-                    value: NONE_OF_THE_ABOVE
-                    matcher: CONTAINS
-          - conditions:
+        - logicalOperator: OR
+          conditions:
+            - logicalOperator: AND
+              conditions:
+                - *noOneChoseCCAP?
+                - *noOneChoseSNAP?
+            - logicalOperator: OR
+              conditions:
+                - pageName: medicalExpenses
+                  input: medicalExpenses
+                  value: MEDICAL_BILLS_OR_COPAYS
+                  matcher: CONTAINS
+                - pageName: medicalExpenses
+                  input: medicalExpenses
+                  value: NONE_OF_THE_ABOVE
+                  matcher: CONTAINS
+        - conditions:
             - pageName: employmentStatus
               input: areYouWorking
               value: "false"

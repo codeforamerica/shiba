@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.pages.journeys;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.pages.SuccessPage;
+import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -17,6 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
+import static org.mockito.Mockito.when;
 
 @Tag("journey")
 public class UserJourneyPageTest extends JourneyTest {
@@ -24,6 +26,36 @@ public class UserJourneyPageTest extends JourneyTest {
     void intercomButtonIsPresent() {
         await().atMost(5, TimeUnit.SECONDS).until(() -> !driver.findElementsById("intercom-frame").isEmpty());
         assertThat(driver.findElementById("intercom-frame")).isNotNull();
+    }
+
+    @Test
+    void checkNoPermanentAddressWorkflow() {
+        when(featureFlagConfiguration.get("apply-without-address")).thenReturn(FeatureFlag.ON);
+
+        // Cannot continue without entering an address
+        completeFlowFromLandingPageThroughContactInfo(List.of(PROGRAM_SNAP));
+        navigateTo("homeAddress2");
+        testPage.clickContinue();
+
+        assertThat(testPage.hasInputError("streetAddress")).isTrue();
+
+        fillOutAddress();
+        testPage.clickContinue();
+
+        assertThat(testPage.getTitle()).isEqualTo("Address Validation");
+
+        // "No permanent address" checkbox clears the form
+        testPage.goBack();
+        testPage.enter("isHomeless", "I don't have a permanent address");
+        testPage.clickContinue();
+
+        assertThat(testPage.getTitle()).isEqualTo("Mailing address");
+
+        testPage.goBack();
+        testPage.enter("isHomeless", "I don't have a permanent address");
+
+        testPage.clickContinue();
+        assertThat(testPage.hasInputError("streetAddress")).isTrue();
     }
 
     @Test
