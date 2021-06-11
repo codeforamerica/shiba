@@ -4,6 +4,7 @@ spring:
     driverClassName: org.postgresql.Driver
 
 feature-flag:
+  apply-without-address: off
   submit-via-email: off
   submit-via-api: off
   submit-docs-via-email-for-hennepin: off

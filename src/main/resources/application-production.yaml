@@ -16,6 +16,7 @@ mail-gun:
   shouldCC: true
 
 feature-flag:
+  apply-without-address: off
   send-download-alert: on
   submit-via-email: off
   submit-via-api: on

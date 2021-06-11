@@ -437,6 +437,24 @@ pageDefinitions:
               messageKey: home-address.yes-send-mail-here
             - value: "false"
               messageKey: home-address.no-use-a-different-address-for-mail
+  - &homeAddress2
+    name: homeAddress2
+    headerKey: home-address.where-are-you-currently-living
+    pageTitle: home-address.title
+    inputs:
+      - name: isHomeless
+        type: CHECKBOX
+        options:
+          selectableOptions:
+            - value: "true"
+              messageKey: home-address.i-dont-have-a-permanent-address
+        followUpValues:
+          - value: "false"
+        followUps:
+          - name: moveToMnPreviousState
+            type: TEXT
+            promptMessage:
+              promptMessageKey: household-member-info.what-state-did-they-move-from
   - &mailingAddress
     name: mailingAddress
     pageTitle: mailing-address.title
@@ -2368,9 +2386,16 @@ workflow:
   contactInfo:
     pageConfiguration: *contactInfo
     nextPages:
+      - pageName: homeAddress2
+        flag: apply-without-address
       - pageName: homeAddress
   homeAddress:
     pageConfiguration: *homeAddress
+    enrichment: homeAddressEnrichment
+    nextPages:
+      - pageName: verifyHomeAddress
+  homeAddress2:
+    pageConfiguration: *homeAddress2
     enrichment: homeAddressEnrichment
     nextPages:
       - pageName: verifyHomeAddress
