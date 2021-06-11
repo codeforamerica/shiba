@@ -85,7 +85,6 @@ class UploadedDocumentsSubmittedListenerTest {
     void shouldSendConfirmationEmail() {
         application = Application.builder().id(applicationId).flow(FlowType.LATER_DOCS).build();
         when(applicationRepository.find(eq(applicationId))).thenReturn(application);
-        when(featureFlags.get("later-docs-feature")).thenReturn(FeatureFlag.ON);
         String email = "confirmation email";
         try (MockedStatic<EmailParser> mockEmailParser = Mockito.mockStatic(EmailParser.class)) {
             mockEmailParser.when(() -> EmailParser.parse(any())).thenReturn(Optional.of(email));

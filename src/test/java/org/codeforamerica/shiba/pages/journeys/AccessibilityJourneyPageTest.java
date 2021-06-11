@@ -54,11 +54,6 @@ public class AccessibilityJourneyPageTest extends JourneyTest {
         when(featureFlagConfiguration.get("county-morrison")).thenReturn(FeatureFlag.OFF);
         when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.ON);
 
-
-        // WHEN V2 IS ENABLED IT...
-        // should give the option to enter zip instead of county
-        when(featureFlagConfiguration.get("later-docs-v2-feature")).thenReturn(FeatureFlag.ON);
-
         testPage.clickButton("Upload documents");
 
         testPage.clickLink("Enter my zip code instead.");
@@ -72,13 +67,8 @@ public class AccessibilityJourneyPageTest extends JourneyTest {
         testPage.enter("zipCode", "55444");
         testPage.clickContinue();
 
-
-        // WHEN V2 IS DISABLED IT...
-        // should not allow me to enter my zip code
-        when(featureFlagConfiguration.get("later-docs-v2-feature")).thenReturn(FeatureFlag.OFF);
-        navigateTo("identifyCounty");
-
         // should direct me to email docs to my county if my county is not supported
+        navigateTo("identifyCounty");
         testPage.enter("county", "Morrison");
         testPage.clickContinue();
 

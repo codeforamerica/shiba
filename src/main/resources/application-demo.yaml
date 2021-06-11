@@ -7,8 +7,6 @@ feature-flag:
   submit-via-email: off
   submit-via-api: off
   submit-docs-via-email-for-hennepin: off
-  later-docs-feature: on
-  later-docs-v2-feature: on
   county-anoka: on
   county-carver: on
   county-clay: on

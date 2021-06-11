@@ -1288,11 +1288,7 @@ pageDefinitions:
               messageKey: identify-county-wright
             - value: YellowMedicine
               messageKey: identify-county-yellow-medicine
-    subtleLinkTextKey:
-      defaultValue:
-      conditionalValues:
-        - value: identify-county.enter-my-zip-code-instead
-          flag: later-docs-v2-feature
+    subtleLinkTextKey: identify-county.enter-my-zip-code-instead
   - &identifyZipcode
     name: identifyZipcode
     headerKey: identify-zipcode.what-is-your-zip-code

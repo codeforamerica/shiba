@@ -17,7 +17,7 @@
                     <span th:text="#{landing.apply-now}"></span>
                     <div th:replace="fragments/icons/icon-arrow :: icon-arrow"></div>
                 </a>
-                <div class="spacing-above-25 spacing-below-0" th:if="${@environment.getProperty('feature-flag.later-docs-feature')}">
+                <div class="spacing-above-25 spacing-below-0">
 	                <a  href="#later-docs-upload">
 	                    <span th:text="#{landing.alread-applied}"></span>
 	                </a>
@@ -69,7 +69,7 @@
             </div>
         </div>
     </section>
-    <section id= "later-docs-upload" class="slab text--centered" th:if="${@environment.getProperty('feature-flag.later-docs-feature')}">
+    <section id= "later-docs-upload" class="slab text--centered">
 		<div th:replace="fragments/icons/icon-upload-documents :: icon-upload-documents"></div>
 		<h1 class="max-width-446 h2 spacing-below-25 margin-left-right-auto" th:text="#{landing.submit-documents-to-county}"></h1>
 		<p class="max-width-500 margin-left-right-auto" th:text="#{landing.submit-documents-for-counties}" />

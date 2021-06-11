@@ -20,10 +20,6 @@ public class LaterDocsJourneyTest extends JourneyTest {
         when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.ON);
 
 
-        // WHEN V2 IS ENABLED IT...
-        // should give the option to enter zip instead of county
-        when(featureFlagConfiguration.get("later-docs-v2-feature")).thenReturn(FeatureFlag.ON);
-
         testPage.clickButton("Upload documents");
 
         assertThat(driver.getTitle()).isEqualTo("Identify County");
@@ -41,14 +37,8 @@ public class LaterDocsJourneyTest extends JourneyTest {
         testPage.clickContinue();
         assertThat(driver.getTitle()).isEqualTo("Match Info");
 
-
-        // WHEN V2 IS DISABLED IT...
-        // should not allow me to enter my zip code
-        when(featureFlagConfiguration.get("later-docs-v2-feature")).thenReturn(FeatureFlag.OFF);
-        navigateTo("identifyCounty");
-        assertThat(driver.findElementsByLinkText("Enter my zip code instead.")).isEmpty();
-
         // should direct me to email docs to my county if my county is not supported
+        navigateTo("identifyCounty");
         testPage.enter("county", "Morrison");
         testPage.clickContinue();
         assertThat(driver.getTitle()).isEqualTo("Email Docs To Your County");

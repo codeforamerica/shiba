@@ -58,10 +58,6 @@ public class UploadedDocumentsSubmittedListener extends ApplicationEventListener
     }
 
     private void sendLaterDocsConfirmationEmail(UploadedDocumentsSubmittedEvent event) {
-        if (featureFlags.get("later-docs-feature").isOff()) {
-            return;
-        }
-
         Application application = getApplicationFromEvent(event);
         ApplicationData applicationData = application.getApplicationData();
 
