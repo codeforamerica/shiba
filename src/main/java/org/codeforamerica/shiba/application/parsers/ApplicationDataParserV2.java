@@ -137,7 +137,7 @@ public class ApplicationDataParserV2 {
         return pageInputValue == null ? field.getDefaultValue() : pageInputValue;
     }
 
-    public static List<String> parseValues(Group group, Field field, ApplicationData applicationData) {
+    public static List<String> getValues(Group group, Field field, ApplicationData applicationData) {
         Subworkflow iterations = getGroup(applicationData, group);
         if (iterations == null) {
             return null;
