@@ -3,21 +3,25 @@ package org.codeforamerica.shiba.newjourneys;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.pages.SuccessPage;
 import org.codeforamerica.shiba.pages.enrichment.Address;
+import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
 import org.codeforamerica.shiba.pages.journeys.JourneyTest;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.openqa.selenium.By;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Optional;
 
+import static java.util.Locale.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
+import static org.codeforamerica.shiba.application.FlowType.MINIMUM;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @Tag("journey")
@@ -160,7 +164,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         assertPdfFieldEquals("APPLICANT_LAST_NAME", lastName);
         assertPdfFieldEquals("APPLICANT_FIRST_NAME", firstName);
         assertPdfFieldEquals("APPLICANT_OTHER_NAME", otherName);
-        assertPdfFieldEquals("APPLICANT_SEX", sex.toUpperCase(Locale.ENGLISH));
+        assertPdfFieldEquals("APPLICANT_SEX", sex.toUpperCase(ENGLISH));
         assertPdfFieldEquals("MARITAL_STATUS", "NEVER_MARRIED");
         assertPdfFieldEquals("APPLICANT_HOME_STREET_ADDRESS", homeStreetAddress + " (not permanent)");
         assertPdfFieldEquals("APPLICANT_HOME_APT_NUMBER", homeApartmentNumber);
@@ -185,6 +189,14 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         assertPdfFieldEquals("DRUG_FELONY", "No");
         assertPdfFieldEquals("APPLICANT_SIGNATURE", signature);
         assertPdfFieldIsTodayWithFormat("CREATED_DATE", "yyyy-MM-dd");
+
+        // Assert we actually publish the proper event
+        ArgumentCaptor<ApplicationSubmittedEvent> captor = ArgumentCaptor.forClass(ApplicationSubmittedEvent.class);
+        verify(pageEventPublisher).publish(captor.capture());
+        ApplicationSubmittedEvent applicationSubmittedEvent = captor.getValue();
+        assertThat(applicationSubmittedEvent.getFlow()).isEqualTo(MINIMUM);
+        assertThat(applicationSubmittedEvent.getApplicationId()).isEqualTo(applicationId);
+        assertThat(applicationSubmittedEvent.getLocale()).isEqualTo(ENGLISH);
     }
 
     private void assertPdfFieldEquals(String fieldName, String expectedVal) {
@@ -192,6 +204,6 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     }
 
     private void assertPdfFieldIsTodayWithFormat(String fieldName, String dateFormat) {
-        assertThat(getPdfFieldText(caf, fieldName)).contains(new SimpleDateFormat(dateFormat, Locale.ENGLISH).format(new Date()));
+        assertThat(getPdfFieldText(caf, fieldName)).contains(new SimpleDateFormat(dateFormat, ENGLISH).format(new Date()));
     }
 }
