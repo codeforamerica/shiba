@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -41,48 +43,48 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
 
         // Personal Info
         String firstName = "Ahmed";
-        testPage.enter("firstName", firstName);
         String lastName = "St. George";
-        testPage.enter("lastName", lastName);
         String otherName = "defaultOtherName";
-        testPage.enter("otherName", otherName);
         String dateOfBirth = "01/12/1928";
-        testPage.enter("dateOfBirth", dateOfBirth);
         String ssn = "123456789";
+        String sex = "Female";
+        String moveDate = "10/20/1993";
+        String previousCity = "Chicago";
+        testPage.enter("firstName", firstName);
+        testPage.enter("lastName", lastName);
+        testPage.enter("otherName", otherName);
+        testPage.enter("dateOfBirth", dateOfBirth);
         testPage.enter("ssn", ssn);
         testPage.enter("maritalStatus", "Never married");
-        String sex = "Female";
         testPage.enter("sex", sex);
         testPage.enter("livedInMnWholeLife", "Yes");
-        String moveDate = "10/20/1993";
         testPage.enter("moveToMnDate", moveDate);
-        String previousCity = "Chicago";
         testPage.enter("moveToMnPreviousCity", previousCity);
         testPage.clickContinue();
 
         // How can we get in touch with you?
         String phoneNumber = "7234567890";
-        testPage.enter("phoneNumber", phoneNumber);
         String email = "some@email.com";
+        testPage.enter("phoneNumber", phoneNumber);
         testPage.enter("email", email);
         testPage.enter("phoneOrEmail", "Text me");
         testPage.clickContinue();
 
         // Where are you currently Living?
         String homeZip = "12345";
-        testPage.enter("zipCode", homeZip);
         String homeCity = "someCity";
-        testPage.enter("city", homeCity);
         String homeStreetAddress = "someStreetAddress";
-        testPage.enter("streetAddress", homeStreetAddress);
         String homeApartmentNumber = "someApartmentNumber";
+        testPage.enter("zipCode", homeZip);
+        testPage.enter("city", homeCity);
+        testPage.enter("streetAddress", homeStreetAddress);
         testPage.enter("apartmentNumber", homeApartmentNumber);
         testPage.enter("isHomeless", "I don't have a permanent address");
         testPage.enter("sameMailingAddress", "No, use a different address for mail");
         testPage.clickContinue();
         testPage.clickButton("Use this address");
 
-        // Where can the county send your mail?
+        // Where can the county send your mail? (accept the smarty streets enriched address)
         testPage.enter("zipCode", "23456");
         testPage.enter("city", "someCity");
         testPage.enter("streetAddress", "someStreetAddress");
@@ -134,12 +136,11 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         caf = getAllFiles().get(CAF);
         String applicationId = successPage.getConfirmationNumber();
 
-        // assert that CAF contains expected values
+        // ASSERT THAT CAF CONTAINS EXPECTED VALUES
 
         // Page 1
         assertFieldEquals("APPLICATION_ID", applicationId);
         assertFieldEquals("FULL_NAME", firstName + " " + lastName);
-        //TODO SUBMISSION_DATETIME?
         assertFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "");
         assertFieldEquals("CCAP_EXPEDITED_ELIGIBILITY", "");
         assertFieldEquals("ADDITIONAL_APPLICATION_INFO", "Some additional information about my application");
@@ -151,9 +152,9 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         assertFieldEquals("DATE_OF_BIRTH", dateOfBirth);
         assertFieldEquals("APPLICANT_SSN", "XXX-XX-XXXX");
         assertFieldEquals("PROGRAMS", "SNAP");
+        assertDateFieldIsTodayWithFormat("SUBMISSION_DATETIME", "MM/dd/yyyy");
 
-
-        // Page 5
+        // Page 5 and beyond
         assertFieldEquals("APPLICANT_LAST_NAME", lastName);
         assertFieldEquals("APPLICANT_FIRST_NAME", firstName);
         assertFieldEquals("APPLICANT_OTHER_NAME", otherName);
@@ -179,13 +180,16 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         assertFieldEquals("EMERGENCY", "Off");
         assertFieldEquals("CCAP", "Off");
         assertFieldEquals("GRH", "Off");
-        assertFieldEquals("APPLICANT_SIGNATURE", signature);
-        //TODO CREATED_DATE
-        //TODO dummy field names?
         assertFieldEquals("DRUG_FELONY", "No");
+        assertFieldEquals("APPLICANT_SIGNATURE", signature);
+        assertDateFieldIsTodayWithFormat("CREATED_DATE", "yyyy-MM-dd");
     }
 
     private void assertFieldEquals(String fieldName, String expectedVal) {
         assertThat(getPdfFieldText(caf, fieldName)).isEqualTo(expectedVal);
+    }
+
+    private void assertDateFieldIsTodayWithFormat(String submission_datetime, String s) {
+        assertThat(getPdfFieldText(caf, submission_datetime)).contains(new SimpleDateFormat(s, Locale.ENGLISH).format(new Date()));
     }
 }
