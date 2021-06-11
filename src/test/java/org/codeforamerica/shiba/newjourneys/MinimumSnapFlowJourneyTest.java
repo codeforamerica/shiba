@@ -190,7 +190,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         assertThat(getPdfFieldText(caf, fieldName)).isEqualTo(expectedVal);
     }
 
-    private void assertDateFieldIsTodayWithFormat(String submission_datetime, String s) {
-        assertThat(getPdfFieldText(caf, submission_datetime)).contains(new SimpleDateFormat(s, Locale.ENGLISH).format(new Date()));
+    private void assertDateFieldIsTodayWithFormat(String fieldName, String dateFormat) {
+        assertThat(getPdfFieldText(caf, fieldName)).contains(new SimpleDateFormat(dateFormat, Locale.ENGLISH).format(new Date()));
     }
 }
