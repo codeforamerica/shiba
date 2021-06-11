@@ -14,6 +14,9 @@ public class SuccessPage extends Page {
     @FindBy(linkText = "Child Care Application")
     WebElement downloadCCAPApplicationLink;
 
+    @FindBy(id = "application-id")
+    WebElement confirmationNumber;
+
     public SuccessPage(RemoteWebDriver driver) {
         super(driver);
         PageFactory.initElements(driver, this);
@@ -24,14 +27,26 @@ public class SuccessPage extends Page {
         if (CCAPdownloadPresent()) downloadCCAPApplicationLink.click();
     }
 
-    private boolean CAFdownloadPresent() {
-        try { return downloadCafLink.isDisplayed(); }
-        catch (NoSuchElementException e) { return false; }
+    public boolean CAFdownloadPresent() {
+        try {
+            return downloadCafLink.isDisplayed();
+        } catch (NoSuchElementException e) {
+            return false;
+        }
     }
 
-    private boolean CCAPdownloadPresent() {
-        try { return downloadCCAPApplicationLink.isDisplayed(); }
-        catch (NoSuchElementException e) { return false; }
+    public boolean CCAPdownloadPresent() {
+        try {
+            return downloadCCAPApplicationLink.isDisplayed();
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+    }
+
+    public String getConfirmationNumber() {
+        confirmationNumber.getText(); // "Confirmation #: 3830000507"
+        String[] confirmationNumParts = confirmationNumber.getText().split(" "); // ["Confirmation", "#:", "3830000507"]
+        return confirmationNumParts[confirmationNumParts.length - 1];
     }
 
     public void chooseSentiment(Sentiment sentiment) {
