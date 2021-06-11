@@ -140,57 +140,57 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         // ASSERT THAT CAF CONTAINS EXPECTED VALUES
 
         // Page 1
-        assertFieldEquals("APPLICATION_ID", applicationId);
-        assertFieldEquals("FULL_NAME", firstName + " " + lastName);
-        assertFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "");
-        assertFieldEquals("CCAP_EXPEDITED_ELIGIBILITY", "");
-        assertFieldEquals("ADDITIONAL_APPLICATION_INFO", additionalInfo);
-        assertFieldEquals("APPLICANT_EMAIL", email);
-        assertFieldEquals("APPLICANT_PHONE_NUMBER", "(723) 456-7890");
-        assertFieldEquals("ADDITIONAL_INFO_CASE_NUMBER", caseNumber);
-        assertFieldEquals("EMAIL_OPTIN", "Off");
-        assertFieldEquals("PHONE_OPTIN", "Yes");
-        assertFieldEquals("DATE_OF_BIRTH", dateOfBirth);
-        assertFieldEquals("APPLICANT_SSN", "XXX-XX-XXXX");
-        assertFieldEquals("PROGRAMS", "SNAP");
-        assertDateFieldIsTodayWithFormat("SUBMISSION_DATETIME", "MM/dd/yyyy");
+        assertPdfFieldEquals("APPLICATION_ID", applicationId);
+        assertPdfFieldEquals("FULL_NAME", firstName + " " + lastName);
+        assertPdfFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "");
+        assertPdfFieldEquals("CCAP_EXPEDITED_ELIGIBILITY", "");
+        assertPdfFieldEquals("ADDITIONAL_APPLICATION_INFO", additionalInfo);
+        assertPdfFieldEquals("APPLICANT_EMAIL", email);
+        assertPdfFieldEquals("APPLICANT_PHONE_NUMBER", "(723) 456-7890");
+        assertPdfFieldEquals("ADDITIONAL_INFO_CASE_NUMBER", caseNumber);
+        assertPdfFieldEquals("EMAIL_OPTIN", "Off");
+        assertPdfFieldEquals("PHONE_OPTIN", "Yes");
+        assertPdfFieldEquals("DATE_OF_BIRTH", dateOfBirth);
+        assertPdfFieldEquals("APPLICANT_SSN", "XXX-XX-XXXX");
+        assertPdfFieldEquals("PROGRAMS", "SNAP");
+        assertPdfFieldIsTodayWithFormat("SUBMISSION_DATETIME", "MM/dd/yyyy");
 
         // Page 5 and beyond
-        assertFieldEquals("APPLICANT_LAST_NAME", lastName);
-        assertFieldEquals("APPLICANT_FIRST_NAME", firstName);
-        assertFieldEquals("APPLICANT_OTHER_NAME", otherName);
-        assertFieldEquals("APPLICANT_SEX", sex.toUpperCase(Locale.ENGLISH));
-        assertFieldEquals("MARITAL_STATUS", "NEVER_MARRIED");
-        assertFieldEquals("APPLICANT_HOME_STREET_ADDRESS", homeStreetAddress + " (not permanent)");
-        assertFieldEquals("APPLICANT_HOME_APT_NUMBER", homeApartmentNumber);
-        assertFieldEquals("APPLICANT_HOME_CITY", homeCity);
-        assertFieldEquals("APPLICANT_HOME_STATE", "MN");
-        assertFieldEquals("APPLICANT_MAILING_STREET_ADDRESS", mailingStreetAddress);
-        assertFieldEquals("APPLICANT_MAILING_APT_NUMBER", mailingApartmentNumber);
-        assertFieldEquals("APPLICANT_MAILING_CITY", mailingCity);
-        assertFieldEquals("APPLICANT_MAILING_STATE", mailingState);
-        assertFieldEquals("APPLICANT_MAILING_ZIPCODE", mailingZip);
-        assertFieldEquals("NEED_INTERPRETER", needsInterpreter);
-        assertFieldEquals("APPLICANT_SPOKEN_LANGUAGE_PREFERENCE", "ENGLISH");
-        assertFieldEquals("APPLICANT_WRITTEN_LANGUAGE_PREFERENCE", "ENGLISH");
-        assertFieldEquals("IS_US_CITIZEN", "Yes");
-        assertFieldEquals("DATE_OF_MOVING_TO_MN", moveDate);
-        assertFieldEquals("APPLICANT_PREVIOUS_STATE", previousCity);
-        assertFieldEquals("FOOD", "Yes");
-        assertFieldEquals("CASH", "Off");
-        assertFieldEquals("EMERGENCY", "Off");
-        assertFieldEquals("CCAP", "Off");
-        assertFieldEquals("GRH", "Off");
-        assertFieldEquals("DRUG_FELONY", "No");
-        assertFieldEquals("APPLICANT_SIGNATURE", signature);
-        assertDateFieldIsTodayWithFormat("CREATED_DATE", "yyyy-MM-dd");
+        assertPdfFieldEquals("APPLICANT_LAST_NAME", lastName);
+        assertPdfFieldEquals("APPLICANT_FIRST_NAME", firstName);
+        assertPdfFieldEquals("APPLICANT_OTHER_NAME", otherName);
+        assertPdfFieldEquals("APPLICANT_SEX", sex.toUpperCase(Locale.ENGLISH));
+        assertPdfFieldEquals("MARITAL_STATUS", "NEVER_MARRIED");
+        assertPdfFieldEquals("APPLICANT_HOME_STREET_ADDRESS", homeStreetAddress + " (not permanent)");
+        assertPdfFieldEquals("APPLICANT_HOME_APT_NUMBER", homeApartmentNumber);
+        assertPdfFieldEquals("APPLICANT_HOME_CITY", homeCity);
+        assertPdfFieldEquals("APPLICANT_HOME_STATE", "MN");
+        assertPdfFieldEquals("APPLICANT_MAILING_STREET_ADDRESS", mailingStreetAddress);
+        assertPdfFieldEquals("APPLICANT_MAILING_APT_NUMBER", mailingApartmentNumber);
+        assertPdfFieldEquals("APPLICANT_MAILING_CITY", mailingCity);
+        assertPdfFieldEquals("APPLICANT_MAILING_STATE", mailingState);
+        assertPdfFieldEquals("APPLICANT_MAILING_ZIPCODE", mailingZip);
+        assertPdfFieldEquals("NEED_INTERPRETER", needsInterpreter);
+        assertPdfFieldEquals("APPLICANT_SPOKEN_LANGUAGE_PREFERENCE", "ENGLISH");
+        assertPdfFieldEquals("APPLICANT_WRITTEN_LANGUAGE_PREFERENCE", "ENGLISH");
+        assertPdfFieldEquals("IS_US_CITIZEN", "Yes");
+        assertPdfFieldEquals("DATE_OF_MOVING_TO_MN", moveDate);
+        assertPdfFieldEquals("APPLICANT_PREVIOUS_STATE", previousCity);
+        assertPdfFieldEquals("FOOD", "Yes");
+        assertPdfFieldEquals("CASH", "Off");
+        assertPdfFieldEquals("EMERGENCY", "Off");
+        assertPdfFieldEquals("CCAP", "Off");
+        assertPdfFieldEquals("GRH", "Off");
+        assertPdfFieldEquals("DRUG_FELONY", "No");
+        assertPdfFieldEquals("APPLICANT_SIGNATURE", signature);
+        assertPdfFieldIsTodayWithFormat("CREATED_DATE", "yyyy-MM-dd");
     }
 
-    private void assertFieldEquals(String fieldName, String expectedVal) {
+    private void assertPdfFieldEquals(String fieldName, String expectedVal) {
         assertThat(getPdfFieldText(caf, fieldName)).isEqualTo(expectedVal);
     }
 
-    private void assertDateFieldIsTodayWithFormat(String fieldName, String dateFormat) {
+    private void assertPdfFieldIsTodayWithFormat(String fieldName, String dateFormat) {
         assertThat(getPdfFieldText(caf, fieldName)).contains(new SimpleDateFormat(dateFormat, Locale.ENGLISH).format(new Date()));
     }
 }
