@@ -175,7 +175,6 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         assertPdfFieldEquals("DATE_OF_BIRTH", dateOfBirth);
         assertPdfFieldEquals("APPLICANT_SSN", "XXX-XX-XXXX");
         assertPdfFieldEquals("PROGRAMS", "SNAP");
-        assertPdfFieldIsTodayWithFormat("SUBMISSION_DATETIME", "MM/dd/yyyy");
 
         // Page 5 and beyond
         assertPdfFieldEquals("APPLICANT_LAST_NAME", lastName);
@@ -205,7 +204,6 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         assertPdfFieldEquals("CCAP", "Off");
         assertPdfFieldEquals("GRH", "Off");
         assertPdfFieldEquals("APPLICANT_SIGNATURE", signature);
-        assertPdfFieldIsTodayWithFormat("CREATED_DATE", "yyyy-MM-dd");
     }
 
     private void getToMinimumFlow() {
@@ -290,9 +288,5 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
 
     private void assertPdfFieldEquals(String fieldName, String expectedVal) {
         assertThat(getPdfFieldText(caf, fieldName)).isEqualTo(expectedVal);
-    }
-
-    private void assertPdfFieldIsTodayWithFormat(String fieldName, String dateFormat) {
-        assertThat(getPdfFieldText(caf, fieldName)).contains(new SimpleDateFormat(dateFormat, ENGLISH).format(new Date()));
     }
 }
