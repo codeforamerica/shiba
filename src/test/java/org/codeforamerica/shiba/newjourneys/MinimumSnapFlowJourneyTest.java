@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.newjourneys;
 
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
+import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.pages.SuccessPage;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
@@ -17,9 +18,11 @@ import java.util.Optional;
 import static java.util.Locale.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
+import static org.codeforamerica.shiba.application.FlowType.EXPEDITED;
 import static org.codeforamerica.shiba.application.FlowType.MINIMUM;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
+import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -46,27 +49,115 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     private final String mailingState = "CA";
     private final String mailingZip = "03104";
     private final String mailingApartmentNumber = "";
-    private final String additionalInfo = "Some additional information about my application";
-    private final String caseNumber = "654321";
     private final String signature = "some signature";
 
     @Test
     void nonExpeditedFlow() {
         getToMinimumFlow();
 
-        // Minimum flow, don't answer expedited questions
+        // Opt not to answer expedited questions
         testPage.clickLink("Finish application now");
 
-        String applicationId = finishApplicationAndDownloadCaf();
+        // Additional Info
+        assertThat(testPage.getTitle()).isEqualTo("Additional Info");
+        String additionalInfo = "Some additional information about my application";
+        String caseNumber = "654321";
+        driver.findElement(By.id("additionalInfo")).sendKeys(additionalInfo);
+        testPage.enter("caseNumber", caseNumber);
+        testPage.clickContinue();
+
+        // Legal Stuff
+        assertThat(testPage.getTitle()).isEqualTo("Legal Stuff");
+        testPage.enter("agreeToTerms", "I agree");
+        testPage.enter("drugFelony", NO.getDisplayValue());
+        testPage.clickContinue();
+
+        // Finish Application
+        String applicationId = signApplicationAndDownloadCaf();
+        assertApplicationSubmittedEventWasPublished(applicationId, MINIMUM);
+
+        // PDF assertions
         assertCafContainsAllFieldsForMinimumSnapFlow(applicationId);
-        assertApplicationSubmittedEventWasPublished(applicationId);
+        assertPdfFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "");
+        assertPdfFieldEquals("DRUG_FELONY", "No");
+        assertPdfFieldEquals("ADDITIONAL_APPLICATION_INFO", additionalInfo);
+        assertPdfFieldEquals("ADDITIONAL_INFO_CASE_NUMBER", caseNumber);
     }
 
-    private void assertApplicationSubmittedEventWasPublished(String applicationId) {
+    @Test
+    void expeditedFlow() {
+        getToMinimumFlow();
+
+        // Answer expedited questions such that we will be expedited
+        testPage.clickLink("Yes, I want to see if I qualify");
+
+        // Add Household Members
+        testPage.enter("addHouseholdMembers", YES.getDisplayValue());
+
+        // How much money has your household made in the last 30 days?
+        assertThat(driver.findElement(By.cssSelector("h1")).getText()).isEqualTo("How much money has your household made in the last 30 days?");
+        String moneyMadeLast30Days = "1";
+        testPage.enter("moneyMadeLast30Days", moneyMadeLast30Days);
+        testPage.clickContinue();
+
+        // Do you have savings?
+        testPage.enter("haveSavings", YES.getDisplayValue());
+        String liquidAssets = "1";
+        testPage.enter("liquidAssets", liquidAssets);
+        testPage.clickContinue();
+
+        // Home expenses
+        testPage.enter("payRentOrMortgage", YES.getDisplayValue());
+        String homeExpensesAmount = "333";
+        testPage.enter("homeExpensesAmount", homeExpensesAmount);
+        testPage.clickContinue();
+
+        // Utilities
+        testPage.enter("payForUtilities", "Cooling");
+        testPage.clickContinue();
+
+        // Migrant or Seasonal worker
+        String migrantOrSeasonalFarmWorker = NO.getDisplayValue();
+        testPage.enter("migrantOrSeasonalFarmWorker", migrantOrSeasonalFarmWorker);
+
+        // You are expedited!
+        assertThat(driver.findElement(By.tagName("p")).getText()).contains("Your county should reach out to you for your interview within 24 hours.");
+        testPage.clickButton("Finish application");
+
+        // Legal Stuff
+        assertThat(testPage.getTitle()).isEqualTo("Legal Stuff");
+        testPage.enter("agreeToTerms", "I agree");
+        testPage.enter("drugFelony", YES.getDisplayValue());
+        testPage.clickContinue();
+
+        // Finish Application
+        String applicationId = signApplicationAndDownloadCaf();
+        assertApplicationSubmittedEventWasPublished(applicationId, EXPEDITED);
+
+        // PDF assertions
+        assertCafContainsAllFieldsForMinimumSnapFlow(applicationId);
+        assertPdfFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "SNAP");
+        assertPdfFieldEquals("DRUG_FELONY", "Yes");
+        assertPdfFieldEquals("MONEY_MADE_LAST_MONTH", moneyMadeLast30Days + ".00");
+        assertPdfFieldEquals("EXPEDITED_QUESTION_2", liquidAssets);
+        assertPdfFieldEquals("HOUSING_EXPENSES", homeExpensesAmount);
+        assertPdfFieldEquals("HEAT", "No");
+        assertPdfFieldEquals("AIR_CONDITIONING", "Yes");
+        assertPdfFieldEquals("ELECTRICITY", "No");
+        assertPdfFieldEquals("PHONE", "No");
+        assertPdfFieldEquals("NO_EXPEDITED_UTILITIES_SELECTED", "Off");
+        assertPdfFieldEquals("MIGRANT_SEASONAL_FARM_WORKER", migrantOrSeasonalFarmWorker);
+        assertPdfFieldEquals("HEATING_COOLING_SELECTION", "ONE_SELECTED");
+        assertPdfFieldEquals("WATER_SEWER_SELECTION", "NEITHER_SELECTED");
+        assertPdfFieldEquals("COOKING_FUEL", "No");
+        assertPdfFieldEquals("HAVE_SAVINGS", "Yes");
+    }
+
+    private void assertApplicationSubmittedEventWasPublished(String applicationId, FlowType flowType) {
         ArgumentCaptor<ApplicationSubmittedEvent> captor = ArgumentCaptor.forClass(ApplicationSubmittedEvent.class);
         verify(pageEventPublisher).publish(captor.capture());
         ApplicationSubmittedEvent applicationSubmittedEvent = captor.getValue();
-        assertThat(applicationSubmittedEvent.getFlow()).isEqualTo(MINIMUM);
+        assertThat(applicationSubmittedEvent.getFlow()).isEqualTo(flowType);
         assertThat(applicationSubmittedEvent.getApplicationId()).isEqualTo(applicationId);
         assertThat(applicationSubmittedEvent.getLocale()).isEqualTo(ENGLISH);
     }
@@ -76,12 +167,9 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         assertPdfFieldEquals("APPLICATION_ID", applicationId);
         assertPdfFieldEquals("COUNTY_INSTRUCTIONS", "This application was submitted. A caseworker at Hennepin County will help route your application to your county. For more support with your application, you can call Hennepin County at 612-596-1300.");
         assertPdfFieldEquals("FULL_NAME", firstName + " " + lastName);
-        assertPdfFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "");
         assertPdfFieldEquals("CCAP_EXPEDITED_ELIGIBILITY", "");
-        assertPdfFieldEquals("ADDITIONAL_APPLICATION_INFO", additionalInfo);
         assertPdfFieldEquals("APPLICANT_EMAIL", email);
         assertPdfFieldEquals("APPLICANT_PHONE_NUMBER", "(723) 456-7890");
-        assertPdfFieldEquals("ADDITIONAL_INFO_CASE_NUMBER", caseNumber);
         assertPdfFieldEquals("EMAIL_OPTIN", "Off");
         assertPdfFieldEquals("PHONE_OPTIN", "Yes");
         assertPdfFieldEquals("DATE_OF_BIRTH", dateOfBirth);
@@ -116,7 +204,6 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         assertPdfFieldEquals("EMERGENCY", "Off");
         assertPdfFieldEquals("CCAP", "Off");
         assertPdfFieldEquals("GRH", "Off");
-        assertPdfFieldEquals("DRUG_FELONY", "No");
         assertPdfFieldEquals("APPLICANT_SIGNATURE", signature);
         assertPdfFieldIsTodayWithFormat("CREATED_DATE", "yyyy-MM-dd");
     }
@@ -184,17 +271,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         testPage.clickLink("Submit application now with only the above information.");
     }
 
-    private String finishApplicationAndDownloadCaf() {
-        assertThat(testPage.getTitle()).isEqualTo("Additional Info");
-
-        driver.findElement(By.id("additionalInfo")).sendKeys(additionalInfo);
-        testPage.enter("caseNumber", caseNumber);
-        testPage.clickContinue();
-
-        assertThat(testPage.getTitle()).isEqualTo("Legal Stuff");
-        testPage.enter("agreeToTerms", "I agree");
-        testPage.enter("drugFelony", NO.getDisplayValue());
-        testPage.clickContinue();
+    private String signApplicationAndDownloadCaf() {
         testPage.enter("applicantSignature", signature);
         testPage.clickButton("Submit");
 

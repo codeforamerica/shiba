@@ -5,8 +5,6 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.pages.SuccessPage;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.openqa.selenium.By;
 
 import java.io.File;
@@ -45,23 +43,18 @@ public class UserJourneyPageTest extends JourneyTest {
         nonExpeditedFlowToSuccessPage(true, false, smartyStreetClient);
     }
 
-    @ParameterizedTest
-    @CsvSource(value = {
-            "123, 1233, A caseworker will contact you within 5-7 days to review your application.",
-            "1, 1, Your county should reach out to you for your interview within 24 hours."
-    })
-    void userCanCompleteTheExpeditedFlow(String moneyMadeLast30Days, String liquidAssets, String expeditedServiceDetermination) {
+    @Test
+    void userCanCompleteTheExpeditedFlowWithoutBeingExpedited() {
         completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_SNAP, PROGRAM_CCAP), smartyStreetClient);
         testPage.clickLink("Submit application now with only the above information.");
         testPage.clickLink("Yes, I want to see if I qualify");
 
         testPage.enter("addHouseholdMembers", NO.getDisplayValue());
-        testPage.enter("moneyMadeLast30Days", moneyMadeLast30Days);
+        testPage.enter("moneyMadeLast30Days", "123");
 
         testPage.clickContinue();
         testPage.enter("haveSavings", YES.getDisplayValue());
-
-        testPage.enter("liquidAssets", liquidAssets);
+        testPage.enter("liquidAssets", "1233");
 
         testPage.clickContinue();
         testPage.enter("payRentOrMortgage", YES.getDisplayValue());
@@ -74,43 +67,7 @@ public class UserJourneyPageTest extends JourneyTest {
 
         testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
 
-        assertThat(driver.findElement(By.tagName("p")).getText()).contains(expeditedServiceDetermination);
-
-        testPage.clickButton("Finish application");
-        assertThat(testPage.getTitle()).isEqualTo("Legal Stuff");
-        assertThat(driver.findElement(By.id("ccap-legal"))).isNotNull();
-    }
-
-    @ParameterizedTest
-    @CsvSource(value = {
-            "123, 1233, A caseworker will contact you within 5-7 days to review your application.",
-            "1, 1, Your county should reach out to you for your interview within 24 hours."
-    })
-    void userCanCompleteTheExpeditedFlowWithHousehold(String moneyMadeLast30Days, String liquidAssets, String expeditedServiceDetermination) {
-        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_SNAP, PROGRAM_CCAP), smartyStreetClient);
-        testPage.clickLink("Submit application now with only the above information.");
-        testPage.clickLink("Yes, I want to see if I qualify");
-
-        testPage.enter("addHouseholdMembers", YES.getDisplayValue());
-        testPage.enter("moneyMadeLast30Days", moneyMadeLast30Days);
-
-        testPage.clickContinue();
-        testPage.enter("haveSavings", YES.getDisplayValue());
-
-        testPage.enter("liquidAssets", liquidAssets);
-
-        testPage.clickContinue();
-        testPage.enter("payRentOrMortgage", YES.getDisplayValue());
-
-        testPage.enter("homeExpensesAmount", "333");
-        testPage.clickContinue();
-
-        testPage.enter("payForUtilities", "Cooling");
-        testPage.clickContinue();
-
-        testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
-
-        assertThat(driver.findElement(By.tagName("p")).getText()).contains(expeditedServiceDetermination);
+        assertThat(driver.findElement(By.tagName("p")).getText()).contains("A caseworker will contact you within 5-7 days to review your application.");
 
         testPage.clickButton("Finish application");
         assertThat(testPage.getTitle()).isEqualTo("Legal Stuff");
