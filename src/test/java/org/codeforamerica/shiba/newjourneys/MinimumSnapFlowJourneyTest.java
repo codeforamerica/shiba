@@ -60,6 +60,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         testPage.enter("isHomeless", "I don't have a permanent address"); // check
         testPage.enter("isHomeless", "I don't have a permanent address"); // uncheck
         testPage.clickContinue();
+        assertThat(driver.findElementById("state").getAttribute("value")).isEqualTo("MN");
         assertThat(testPage.hasInputError("streetAddress")).isTrue(); // verify cleared previous inputs
         testPage.enter("isHomeless", "I don't have a permanent address"); // check
         testPage.clickContinue();

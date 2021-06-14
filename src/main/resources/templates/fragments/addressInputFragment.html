@@ -14,7 +14,7 @@
             var checkbox = document.getElementsByName([[${name}]])[0];
             checkbox.addEventListener('change', function () {
                 if (this.checked) {
-                    $("input:text").val("");
+                    $("input:not('#state'):text").val("");
                     $("#address-questions").hide();
                 } else {
                     $("#address-questions").show();
