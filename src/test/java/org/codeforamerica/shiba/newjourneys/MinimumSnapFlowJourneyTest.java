@@ -1,8 +1,6 @@
 package org.codeforamerica.shiba.newjourneys;
 
-import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.application.FlowType;
-import org.codeforamerica.shiba.pages.SuccessPage;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
@@ -16,10 +14,8 @@ import java.util.Optional;
 
 import static java.util.Locale.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.application.FlowType.EXPEDITED;
 import static org.codeforamerica.shiba.application.FlowType.MINIMUM;
-import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 import static org.mockito.ArgumentMatchers.any;
@@ -28,8 +24,6 @@ import static org.mockito.Mockito.when;
 
 @Tag("journey")
 public class MinimumSnapFlowJourneyTest extends JourneyTest {
-    private PDAcroForm caf;
-
     private final String firstName = "Ahmed";
     private final String lastName = "St. George";
     private final String otherName = "defaultOtherName";
@@ -106,20 +100,20 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         testPage.clickContinue();
 
         // Finish Application
-        String applicationId = signApplicationAndDownloadCaf();
+        String applicationId = signApplicationAndDownloadCaf(signature);
         assertApplicationSubmittedEventWasPublished(applicationId, MINIMUM);
 
         // PDF assertions
         assertCafContainsAllFieldsForMinimumSnapFlow(applicationId);
-        assertPdfFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "");
-        assertPdfFieldEquals("DRUG_FELONY", "No");
-        assertPdfFieldEquals("ADDITIONAL_APPLICATION_INFO", additionalInfo);
-        assertPdfFieldEquals("ADDITIONAL_INFO_CASE_NUMBER", caseNumber);
-        assertPdfFieldEquals("APPLICANT_HOME_STREET_ADDRESS", "No permanent address");
-        assertPdfFieldEquals("APPLICANT_HOME_APT_NUMBER", "");
-        assertPdfFieldEquals("APPLICANT_HOME_CITY", "");
-        assertPdfFieldEquals("APPLICANT_HOME_STATE", "");
-        assertPdfFieldEquals("APPLICANT_HOME_ZIPCODE", "");
+        assertCafFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "");
+        assertCafFieldEquals("DRUG_FELONY", "No");
+        assertCafFieldEquals("ADDITIONAL_APPLICATION_INFO", additionalInfo);
+        assertCafFieldEquals("ADDITIONAL_INFO_CASE_NUMBER", caseNumber);
+        assertCafFieldEquals("APPLICANT_HOME_STREET_ADDRESS", "No permanent address");
+        assertCafFieldEquals("APPLICANT_HOME_APT_NUMBER", "");
+        assertCafFieldEquals("APPLICANT_HOME_CITY", "");
+        assertCafFieldEquals("APPLICANT_HOME_STATE", "");
+        assertCafFieldEquals("APPLICANT_HOME_ZIPCODE", "");
         // mailing address is currently not being filled in when the feature flag is on
         //        assertPdfFieldEquals("APPLICANT_MAILING_STREET_ADDRESS", mailingStreetAddress);
         //        assertPdfFieldEquals("APPLICANT_MAILING_APT_NUMBER", mailingApartmentNumber);
@@ -207,36 +201,36 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         testPage.clickContinue();
 
         // Finish Application
-        String applicationId = signApplicationAndDownloadCaf();
+        String applicationId = signApplicationAndDownloadCaf(signature);
         assertApplicationSubmittedEventWasPublished(applicationId, EXPEDITED);
 
         // PDF assertions
         assertCafContainsAllFieldsForMinimumSnapFlow(applicationId);
-        assertPdfFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "SNAP");
-        assertPdfFieldEquals("DRUG_FELONY", "Yes");
-        assertPdfFieldEquals("MONEY_MADE_LAST_MONTH", moneyMadeLast30Days + ".00");
-        assertPdfFieldEquals("EXPEDITED_QUESTION_2", liquidAssets);
-        assertPdfFieldEquals("HOUSING_EXPENSES", homeExpensesAmount);
-        assertPdfFieldEquals("HEAT", "No");
-        assertPdfFieldEquals("AIR_CONDITIONING", "Yes");
-        assertPdfFieldEquals("ELECTRICITY", "No");
-        assertPdfFieldEquals("PHONE", "No");
-        assertPdfFieldEquals("NO_EXPEDITED_UTILITIES_SELECTED", "Off");
-        assertPdfFieldEquals("MIGRANT_SEASONAL_FARM_WORKER", migrantOrSeasonalFarmWorker);
-        assertPdfFieldEquals("HEATING_COOLING_SELECTION", "ONE_SELECTED");
-        assertPdfFieldEquals("WATER_SEWER_SELECTION", "NEITHER_SELECTED");
-        assertPdfFieldEquals("COOKING_FUEL", "No");
-        assertPdfFieldEquals("HAVE_SAVINGS", "Yes");
-        assertPdfFieldEquals("APPLICANT_HOME_STREET_ADDRESS", homeStreetAddress + " (not permanent)");
-        assertPdfFieldEquals("APPLICANT_HOME_APT_NUMBER", homeApartmentNumber);
-        assertPdfFieldEquals("APPLICANT_HOME_CITY", homeCity);
-        assertPdfFieldEquals("APPLICANT_HOME_STATE", "MN");
-        assertPdfFieldEquals("APPLICANT_HOME_ZIPCODE", homeZip);
-        assertPdfFieldEquals("APPLICANT_MAILING_STREET_ADDRESS", mailingStreetAddress);
-        assertPdfFieldEquals("APPLICANT_MAILING_APT_NUMBER", mailingApartmentNumber);
-        assertPdfFieldEquals("APPLICANT_MAILING_CITY", mailingCity);
-        assertPdfFieldEquals("APPLICANT_MAILING_STATE", mailingState);
-        assertPdfFieldEquals("APPLICANT_MAILING_ZIPCODE", mailingZip);
+        assertCafFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "SNAP");
+        assertCafFieldEquals("DRUG_FELONY", "Yes");
+        assertCafFieldEquals("MONEY_MADE_LAST_MONTH", moneyMadeLast30Days + ".00");
+        assertCafFieldEquals("EXPEDITED_QUESTION_2", liquidAssets);
+        assertCafFieldEquals("HOUSING_EXPENSES", homeExpensesAmount);
+        assertCafFieldEquals("HEAT", "No");
+        assertCafFieldEquals("AIR_CONDITIONING", "Yes");
+        assertCafFieldEquals("ELECTRICITY", "No");
+        assertCafFieldEquals("PHONE", "No");
+        assertCafFieldEquals("NO_EXPEDITED_UTILITIES_SELECTED", "Off");
+        assertCafFieldEquals("MIGRANT_SEASONAL_FARM_WORKER", migrantOrSeasonalFarmWorker);
+        assertCafFieldEquals("HEATING_COOLING_SELECTION", "ONE_SELECTED");
+        assertCafFieldEquals("WATER_SEWER_SELECTION", "NEITHER_SELECTED");
+        assertCafFieldEquals("COOKING_FUEL", "No");
+        assertCafFieldEquals("HAVE_SAVINGS", "Yes");
+        assertCafFieldEquals("APPLICANT_HOME_STREET_ADDRESS", homeStreetAddress + " (not permanent)");
+        assertCafFieldEquals("APPLICANT_HOME_APT_NUMBER", homeApartmentNumber);
+        assertCafFieldEquals("APPLICANT_HOME_CITY", homeCity);
+        assertCafFieldEquals("APPLICANT_HOME_STATE", "MN");
+        assertCafFieldEquals("APPLICANT_HOME_ZIPCODE", homeZip);
+        assertCafFieldEquals("APPLICANT_MAILING_STREET_ADDRESS", mailingStreetAddress);
+        assertCafFieldEquals("APPLICANT_MAILING_APT_NUMBER", mailingApartmentNumber);
+        assertCafFieldEquals("APPLICANT_MAILING_CITY", mailingCity);
+        assertCafFieldEquals("APPLICANT_MAILING_STATE", mailingState);
+        assertCafFieldEquals("APPLICANT_MAILING_ZIPCODE", mailingZip);
     }
 
     private void getToHomeAddress() {
@@ -285,56 +279,35 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
 
     private void assertCafContainsAllFieldsForMinimumSnapFlow(String applicationId) {
         // Page 1
-        assertPdfFieldEquals("APPLICATION_ID", applicationId);
-        assertPdfFieldEquals("COUNTY_INSTRUCTIONS", "This application was submitted. A caseworker at Hennepin County will help route your application to your county. For more support with your application, you can call Hennepin County at 612-596-1300.");
-        assertPdfFieldEquals("FULL_NAME", firstName + " " + lastName);
-        assertPdfFieldEquals("CCAP_EXPEDITED_ELIGIBILITY", "");
-        assertPdfFieldEquals("APPLICANT_EMAIL", email);
-        assertPdfFieldEquals("APPLICANT_PHONE_NUMBER", "(723) 456-7890");
-        assertPdfFieldEquals("EMAIL_OPTIN", "Off");
-        assertPdfFieldEquals("PHONE_OPTIN", "Yes");
-        assertPdfFieldEquals("DATE_OF_BIRTH", dateOfBirth);
-        assertPdfFieldEquals("APPLICANT_SSN", "XXX-XX-XXXX");
-        assertPdfFieldEquals("PROGRAMS", "SNAP");
+        assertCafFieldEquals("APPLICATION_ID", applicationId);
+        assertCafFieldEquals("COUNTY_INSTRUCTIONS", "This application was submitted. A caseworker at Hennepin County will help route your application to your county. For more support with your application, you can call Hennepin County at 612-596-1300.");
+        assertCafFieldEquals("FULL_NAME", firstName + " " + lastName);
+        assertCafFieldEquals("CCAP_EXPEDITED_ELIGIBILITY", "");
+        assertCafFieldEquals("APPLICANT_EMAIL", email);
+        assertCafFieldEquals("APPLICANT_PHONE_NUMBER", "(723) 456-7890");
+        assertCafFieldEquals("EMAIL_OPTIN", "Off");
+        assertCafFieldEquals("PHONE_OPTIN", "Yes");
+        assertCafFieldEquals("DATE_OF_BIRTH", dateOfBirth);
+        assertCafFieldEquals("APPLICANT_SSN", "XXX-XX-XXXX");
+        assertCafFieldEquals("PROGRAMS", "SNAP");
 
         // Page 5 and beyond
-        assertPdfFieldEquals("APPLICANT_LAST_NAME", lastName);
-        assertPdfFieldEquals("APPLICANT_FIRST_NAME", firstName);
-        assertPdfFieldEquals("APPLICANT_OTHER_NAME", otherName);
-        assertPdfFieldEquals("APPLICANT_SEX", sex.toUpperCase(ENGLISH));
-        assertPdfFieldEquals("MARITAL_STATUS", "NEVER_MARRIED");
-        assertPdfFieldEquals("NEED_INTERPRETER", needsInterpreter);
-        assertPdfFieldEquals("APPLICANT_SPOKEN_LANGUAGE_PREFERENCE", "ENGLISH");
-        assertPdfFieldEquals("APPLICANT_WRITTEN_LANGUAGE_PREFERENCE", "ENGLISH");
-        assertPdfFieldEquals("IS_US_CITIZEN", "Yes");
-        assertPdfFieldEquals("DATE_OF_MOVING_TO_MN", moveDate);
-        assertPdfFieldEquals("APPLICANT_PREVIOUS_STATE", previousCity);
-        assertPdfFieldEquals("FOOD", "Yes");
-        assertPdfFieldEquals("CASH", "Off");
-        assertPdfFieldEquals("EMERGENCY", "Off");
-        assertPdfFieldEquals("CCAP", "Off");
-        assertPdfFieldEquals("GRH", "Off");
-        assertPdfFieldEquals("APPLICANT_SIGNATURE", signature);
-    }
-
-    private String signApplicationAndDownloadCaf() {
-        testPage.enter("applicantSignature", signature);
-        testPage.clickButton("Submit");
-
-        // No document upload
-        testPage.clickButton("Skip this for now");
-
-        // Download CAF
-        SuccessPage successPage = new SuccessPage(driver);
-        assertThat(successPage.CAFdownloadPresent()).isTrue();
-        assertThat(successPage.CCAPdownloadPresent()).isFalse();
-        successPage.downloadPdfs();
-        await().until(() -> getAllFiles().size() == successPage.pdfDownloadLinks());
-        caf = getAllFiles().get(CAF);
-        return successPage.getConfirmationNumber(); // Application ID
-    }
-
-    private void assertPdfFieldEquals(String fieldName, String expectedVal) {
-        assertThat(getPdfFieldText(caf, fieldName)).isEqualTo(expectedVal);
+        assertCafFieldEquals("APPLICANT_LAST_NAME", lastName);
+        assertCafFieldEquals("APPLICANT_FIRST_NAME", firstName);
+        assertCafFieldEquals("APPLICANT_OTHER_NAME", otherName);
+        assertCafFieldEquals("APPLICANT_SEX", sex.toUpperCase(ENGLISH));
+        assertCafFieldEquals("MARITAL_STATUS", "NEVER_MARRIED");
+        assertCafFieldEquals("NEED_INTERPRETER", needsInterpreter);
+        assertCafFieldEquals("APPLICANT_SPOKEN_LANGUAGE_PREFERENCE", "ENGLISH");
+        assertCafFieldEquals("APPLICANT_WRITTEN_LANGUAGE_PREFERENCE", "ENGLISH");
+        assertCafFieldEquals("IS_US_CITIZEN", "Yes");
+        assertCafFieldEquals("DATE_OF_MOVING_TO_MN", moveDate);
+        assertCafFieldEquals("APPLICANT_PREVIOUS_STATE", previousCity);
+        assertCafFieldEquals("FOOD", "Yes");
+        assertCafFieldEquals("CASH", "Off");
+        assertCafFieldEquals("EMERGENCY", "Off");
+        assertCafFieldEquals("CCAP", "Off");
+        assertCafFieldEquals("GRH", "Off");
+        assertCafFieldEquals("APPLICANT_SIGNATURE", signature);
     }
 }
