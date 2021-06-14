@@ -51,38 +51,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         // No permanent address for this test
         when(featureFlagConfiguration.get("apply-without-address")).thenReturn(FeatureFlag.ON);
 
-        testPage.clickButton("Apply now");
-        testPage.clickContinue();
-
-        // Language Preferences
-        testPage.enter("writtenLanguage", "English");
-        testPage.enter("spokenLanguage", "English");
-        testPage.enter("needInterpreter", needsInterpreter);
-        testPage.clickContinue();
-
-        // Program Selection
-        testPage.enter("programs", PROGRAM_SNAP);
-        testPage.clickContinue();
-        testPage.clickContinue();
-
-        // Personal Info
-        testPage.enter("firstName", firstName);
-        testPage.enter("lastName", lastName);
-        testPage.enter("otherName", otherName);
-        testPage.enter("dateOfBirth", dateOfBirth);
-        testPage.enter("ssn", "123456789");
-        testPage.enter("maritalStatus", "Never married");
-        testPage.enter("sex", sex);
-        testPage.enter("livedInMnWholeLife", "Yes");
-        testPage.enter("moveToMnDate", moveDate);
-        testPage.enter("moveToMnPreviousCity", previousCity);
-        testPage.clickContinue();
-
-        // How can we get in touch with you?
-        testPage.enter("phoneNumber", "7234567890");
-        testPage.enter("email", email);
-        testPage.enter("phoneOrEmail", "Text me");
-        testPage.clickContinue();
+        getToHomeAddress();
 
         // Where are you currently Living? (with home address)
         testPage.enter("zipCode", "23456");
@@ -159,8 +128,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         //        assertPdfFieldEquals("APPLICANT_MAILING_ZIPCODE", mailingZip);
     }
 
-    @Test
-    void expeditedFlow() {
+    private void getToHomeAddress() {
         testPage.clickButton("Apply now");
         testPage.clickContinue();
 
@@ -193,6 +161,11 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         testPage.enter("email", email);
         testPage.enter("phoneOrEmail", "Text me");
         testPage.clickContinue();
+    }
+
+    @Test
+    void expeditedFlow() {
+        getToHomeAddress();
 
         // Where are you currently Living?
         String homeZip = "12345";
