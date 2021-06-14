@@ -1,8 +1,10 @@
 package org.codeforamerica.shiba.newjourneys;
 
+import org.codeforamerica.shiba.TestUtils;
 import org.codeforamerica.shiba.pages.journeys.JourneyTest;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -245,11 +247,43 @@ public class FullFlowJourneyTest extends JourneyTest {
         testPage.enter("applicantSignature", "this is my signature");
         testPage.clickButton("Submit");
         testPage.clickButton("Upload documents now");
+
+        assertStylingOfEmptyDocumentUploadPage();
+
+        // Deleting the only uploaded document should keep you on the upload document screen
+        uploadJpgFile();
+        waitForDocumentUploadToComplete();
+
+        assertStylingOfNonEmptyDocumentUploadPage();
+
+        List<WebElement> deleteLinks = driver.findElements(By.linkText("delete"));
+        assertThat(deleteLinks.size()).isEqualTo(1);
+        testPage.clickLink("delete");
+
+        assertThat(testPage.getTitle()).isEqualTo("Delete a file");
+        testPage.clickButton("Yes, delete the file");
+
+        assertThat(testPage.getTitle()).isEqualTo("Upload Documents");
+        deleteLinks = driver.findElements(By.linkText("delete"));
+        assertThat(deleteLinks.size()).isEqualTo(0);
+
+        assertStylingOfEmptyDocumentUploadPage();
+
+        // Uploading multiple docs should work
         uploadJpgFile();
         assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("1 file added");
         uploadPdfFile();
         assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("2 files added");
+        uploadFile(TestUtils.getAbsoluteFilepathString("test-cover-pages.pdf"));
+        assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("3 files added");
         waitForDocumentUploadToComplete();
+
+        deleteLinks = driver.findElements(By.linkText("delete"));
+        assertThat(deleteLinks.size()).isEqualTo(3);
+        testPage.clickLink("delete");
+
+        assertThat(testPage.getTitle()).isEqualTo("Delete a file");
+        testPage.clickButton("Yes, delete the file");
 
         var filenameTextElements = driver.findElementsByClassName("filename-text");
         var fileDetailsElements = driver.findElementsByClassName("file-details");
@@ -272,13 +306,10 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertThat(fileDetails).contains("51.7");
         assertThat(fileDetails).contains("KB");
 
-        // Delete a file to check added file count goes back down
-        testPage.clickLink("delete");
-        testPage.clickButton("Yes, delete the file");
+        assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("2 files added");
 
-        assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("1 file added");
+        // Finish uploading docs and download PDFS
         testPage.clickButton("I'm finished uploading");
-
         String applicationId = downloadPdfs( true, true);
 
         // CCAP fields
@@ -508,5 +539,25 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCafFieldEquals("MONEY_MADE_LAST_MONTH", "120.00");
 
         assertApplicationSubmittedEventWasPublished(applicationId, FULL, 3);
+    }
+
+    private void assertStylingOfNonEmptyDocumentUploadPage() {
+        assertThat(driver.findElementById("drag-and-drop-box").getAttribute("class")).contains("drag-and-drop-box-compact");
+        assertThat(driver.findElementById("upload-button").getAttribute("class")).contains("grid--item width-one-third");
+        assertThat(driver.findElementById("vertical-header-desktop").getAttribute("class")).contains("hidden");
+        assertThat(driver.findElementById("vertical-header-mobile").getAttribute("class")).contains("hidden");
+        assertThat(driver.findElementById("horizontal-header-desktop").getAttribute("class")).doesNotContain("hidden");
+        assertThat(driver.findElementById("horizontal-header-mobile").getAttribute("class")).doesNotContain("hidden");
+        assertThat(driver.findElementById("upload-doc-div").getAttribute("class")).doesNotContain("hidden");
+    }
+
+    private void assertStylingOfEmptyDocumentUploadPage() {
+        assertThat(driver.findElementById("drag-and-drop-box").getAttribute("class")).doesNotContain("drag-and-drop-box-compact");
+        assertThat(driver.findElementById("upload-button").getAttribute("class")).doesNotContain("grid--item width-one-third");
+        assertThat(driver.findElementById("vertical-header-desktop").getAttribute("class")).doesNotContain("hidden");
+        assertThat(driver.findElementById("vertical-header-mobile").getAttribute("class")).doesNotContain("hidden");
+        assertThat(driver.findElementById("horizontal-header-desktop").getAttribute("class")).contains("hidden");
+        assertThat(driver.findElementById("horizontal-header-mobile").getAttribute("class")).contains("hidden");
+        assertThat(driver.findElementById("upload-doc-div").getAttribute("class")).contains("hidden");
     }
 }

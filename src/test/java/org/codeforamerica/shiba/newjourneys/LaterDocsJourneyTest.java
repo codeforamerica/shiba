@@ -4,6 +4,7 @@ import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.journeys.JourneyTest;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
@@ -58,6 +59,8 @@ public class LaterDocsJourneyTest extends JourneyTest {
 
         // should allow me to upload documents and those documents should be sent to the ESB
         assertThat(driver.getTitle()).isEqualTo("Upload Documents");
+        assertThat(driver.findElements(By.className("reveal")).size()).isEqualTo(0);
+
         uploadPdfFile();
         await().until(uploadCompletes());
         testPage.clickButton("I'm finished uploading");
