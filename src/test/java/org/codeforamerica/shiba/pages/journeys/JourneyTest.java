@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.pages.journeys;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.AbstractBasePageTest;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
+import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.pages.SuccessPage;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
@@ -10,9 +11,11 @@ import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.emails.MailGunEmailClient;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.pages.enrichment.smartystreets.SmartyStreetClient;
+import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
+import org.mockito.ArgumentCaptor;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
@@ -24,12 +27,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
+import static java.util.Locale.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public abstract class JourneyTest extends AbstractBasePageTest {
     protected PDAcroForm caf;
@@ -77,7 +81,8 @@ public abstract class JourneyTest extends AbstractBasePageTest {
         assertThat(getPdfFieldText(pdf, fieldName)).isEqualTo(expectedVal);
     }
 
-    protected String signApplicationAndDownloadPdfs(String signature, boolean shouldHaveCafDownloadLink, boolean shouldHaveCcapDownloadLink) {
+    protected String signApplicationAndDownloadPdfs(String signature, boolean shouldHaveCafDownloadLink,
+                                                    boolean shouldHaveCcapDownloadLink) {
         testPage.enter("applicantSignature", signature);
         testPage.clickButton("Submit");
 
@@ -168,4 +173,14 @@ public abstract class JourneyTest extends AbstractBasePageTest {
         assertThat(driver.findElementById("mailing-address_street").getText()).isEqualTo("smarty street");
     }
 
+    protected void assertApplicationSubmittedEventWasPublished(String applicationId, FlowType flowType,
+                                                               int expectedNumberOfEvents) {
+        ArgumentCaptor<ApplicationSubmittedEvent> captor = ArgumentCaptor.forClass(ApplicationSubmittedEvent.class);
+        verify(pageEventPublisher, times(expectedNumberOfEvents)).publish(captor.capture());
+        List<ApplicationSubmittedEvent> allValues = captor.getAllValues();
+        ApplicationSubmittedEvent applicationSubmittedEvent = allValues.get(allValues.size() - 1);
+        assertThat(applicationSubmittedEvent.getFlow()).isEqualTo(flowType);
+        assertThat(applicationSubmittedEvent.getApplicationId()).isEqualTo(applicationId);
+        assertThat(applicationSubmittedEvent.getLocale()).isEqualTo(ENGLISH);
+    }
 }

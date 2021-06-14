@@ -9,6 +9,7 @@ import java.time.ZoneOffset;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.application.FlowType.FULL;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 import static org.mockito.Mockito.when;
@@ -505,5 +506,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCafFieldEquals("GROSS_MONTHLY_INCOME_0", "120.00");
         assertCafFieldEquals("APPLICANT_HOME_STREET_ADDRESS", "someStreetAddress (not permanent)");
         assertCafFieldEquals("MONEY_MADE_LAST_MONTH", "120.00");
+
+        assertApplicationSubmittedEventWasPublished(applicationId, FULL, 3);
     }
 }

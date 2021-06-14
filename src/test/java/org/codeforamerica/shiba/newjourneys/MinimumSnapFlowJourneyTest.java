@@ -1,13 +1,10 @@
 package org.codeforamerica.shiba.newjourneys;
 
-import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.enrichment.Address;
-import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
 import org.codeforamerica.shiba.pages.journeys.JourneyTest;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.openqa.selenium.By;
 
 import java.util.List;
@@ -20,7 +17,6 @@ import static org.codeforamerica.shiba.application.FlowType.MINIMUM;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @Tag("journey")
@@ -99,7 +95,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
 
         // Finish Application
         String applicationId = signApplicationAndDownloadPdfs(signature, true, false);
-        assertApplicationSubmittedEventWasPublished(applicationId, MINIMUM);
+        assertApplicationSubmittedEventWasPublished(applicationId, MINIMUM, 1);
 
         // PDF assertions
         assertCafContainsAllFieldsForMinimumSnapFlow(applicationId);
@@ -179,7 +175,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
 
         // Finish Application
         String applicationId = signApplicationAndDownloadPdfs(signature, true, false);
-        assertApplicationSubmittedEventWasPublished(applicationId, EXPEDITED);
+        assertApplicationSubmittedEventWasPublished(applicationId, EXPEDITED, 1);
 
         // PDF assertions
         assertCafContainsAllFieldsForMinimumSnapFlow(applicationId);
@@ -210,14 +206,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         assertCafFieldEquals("APPLICANT_MAILING_ZIPCODE", mailingZip);
     }
 
-    private void assertApplicationSubmittedEventWasPublished(String applicationId, FlowType flowType) {
-        ArgumentCaptor<ApplicationSubmittedEvent> captor = ArgumentCaptor.forClass(ApplicationSubmittedEvent.class);
-        verify(pageEventPublisher).publish(captor.capture());
-        ApplicationSubmittedEvent applicationSubmittedEvent = captor.getValue();
-        assertThat(applicationSubmittedEvent.getFlow()).isEqualTo(flowType);
-        assertThat(applicationSubmittedEvent.getApplicationId()).isEqualTo(applicationId);
-        assertThat(applicationSubmittedEvent.getLocale()).isEqualTo(ENGLISH);
-    }
+
 
     private void assertCafContainsAllFieldsForMinimumSnapFlow(String applicationId) {
         // Page 1
