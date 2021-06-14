@@ -25,15 +25,6 @@ import static org.mockito.Mockito.when;
 
 @Tag("journey")
 public class MinimumSnapFlowJourneyTest extends JourneyTest {
-    private final String firstName = "Ahmed";
-    private final String lastName = "St. George";
-    private final String otherName = "defaultOtherName";
-    private final String dateOfBirth = "01/12/1928";
-    private final String sex = "Female";
-    private final String moveDate = "10/20/1993";
-    private final String previousCity = "Chicago";
-    private final String needsInterpreter = "Yes";
-    private final String email = "some@email.com";
     private final String mailingStreetAddress = "smarty street";
     private final String mailingCity = "Cooltown";
     private final String mailingState = "CA";
@@ -46,7 +37,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         // No permanent address for this test
         when(featureFlagConfiguration.get("apply-without-address")).thenReturn(FeatureFlag.ON);
 
-        getToHomeAddress(dateOfBirth, email, firstName, lastName, moveDate, needsInterpreter, otherName, previousCity, sex, testPage, List.of(PROGRAM_SNAP));
+        getToHomeAddress(List.of(PROGRAM_SNAP));
 
         // Where are you currently Living? (with home address)
         testPage.enter("zipCode", "23456");
@@ -73,7 +64,12 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         testPage.enter("state", "IL");
         testPage.enter("apartmentNumber", "someApartmentNumber");
         when(smartyStreetClient.validateAddress(any())).thenReturn(
-                Optional.of(new Address(mailingStreetAddress, mailingCity, mailingState, mailingZip, mailingApartmentNumber, "someCounty"))
+                Optional.of(new Address(mailingStreetAddress,
+                                        mailingCity,
+                                        mailingState,
+                                        mailingZip,
+                                        mailingApartmentNumber,
+                                        "someCounty"))
         );
         testPage.clickContinue();
         testPage.clickElementById("enriched-address");
@@ -126,37 +122,14 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
 
     @Test
     void expeditedFlow() {
-        getToHomeAddress(dateOfBirth, email, firstName, lastName, moveDate, needsInterpreter, otherName, previousCity, sex, testPage, List.of(PROGRAM_SNAP));
+        getToHomeAddress(List.of(PROGRAM_SNAP));
 
         // Where are you currently Living?
         String homeZip = "12345";
         String homeCity = "someCity";
         String homeStreetAddress = "someStreetAddress";
         String homeApartmentNumber = "someApartmentNumber";
-        testPage.enter("zipCode", homeZip);
-        testPage.enter("city", homeCity);
-        testPage.enter("streetAddress", homeStreetAddress);
-        testPage.enter("apartmentNumber", homeApartmentNumber);
-        testPage.enter("isHomeless", "I don't have a permanent address");
-        testPage.enter("sameMailingAddress", "No, use a different address for mail");
-        testPage.clickContinue();
-        testPage.clickButton("Use this address");
-
-        // Where can the county send your mail? (accept the smarty streets enriched address)
-        testPage.enter("zipCode", "23456");
-        testPage.enter("city", "someCity");
-        testPage.enter("streetAddress", "someStreetAddress");
-        testPage.enter("state", "IL");
-        testPage.enter("apartmentNumber", "someApartmentNumber");
-        when(smartyStreetClient.validateAddress(any())).thenReturn(
-                Optional.of(new Address(mailingStreetAddress, mailingCity, mailingState, mailingZip, mailingApartmentNumber, "someCounty"))
-        );
-        testPage.clickContinue();
-        testPage.clickElementById("enriched-address");
-        testPage.clickContinue();
-
-        // Let's review your info
-        assertThat(driver.findElementById("mailing-address_street").getText()).isEqualTo(mailingStreetAddress);
+        fillOutHomeAndMailingAddress(homeZip, homeCity, homeStreetAddress, homeApartmentNumber);
 
         testPage.clickLink("Submit application now with only the above information.");
 
@@ -167,7 +140,8 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         testPage.enter("addHouseholdMembers", YES.getDisplayValue());
 
         // How much money has your household made in the last 30 days?
-        assertThat(driver.findElement(By.cssSelector("h1")).getText()).isEqualTo("How much money has your household made in the last 30 days?");
+        assertThat(driver.findElement(By.cssSelector("h1")).getText())
+                .isEqualTo("How much money has your household made in the last 30 days?");
         String moneyMadeLast30Days = "1";
         testPage.enter("moneyMadeLast30Days", moneyMadeLast30Days);
         testPage.clickContinue();
@@ -193,7 +167,8 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         testPage.enter("migrantOrSeasonalFarmWorker", migrantOrSeasonalFarmWorker);
 
         // You are expedited!
-        assertThat(driver.findElement(By.tagName("p")).getText()).contains("Your county should reach out to you for your interview within 24 hours.");
+        assertThat(driver.findElement(By.tagName("p")).getText()).contains(
+                "Your county should reach out to you for your interview within 24 hours.");
         testPage.clickButton("Finish application");
 
         // Legal Stuff
@@ -247,28 +222,34 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     private void assertCafContainsAllFieldsForMinimumSnapFlow(String applicationId) {
         // Page 1
         assertCafFieldEquals("APPLICATION_ID", applicationId);
-        assertCafFieldEquals("COUNTY_INSTRUCTIONS", "This application was submitted. A caseworker at Hennepin County will help route your application to your county. For more support with your application, you can call Hennepin County at 612-596-1300.");
-        assertCafFieldEquals("FULL_NAME", firstName + " " + lastName);
+        assertCafFieldEquals("COUNTY_INSTRUCTIONS",
+                             "This application was submitted. A caseworker at Hennepin County will help route your application to your county. For more support with your application, you can call Hennepin County at 612-596-1300.");
+        assertCafFieldEquals("FULL_NAME", "Ahmed St. George");
         assertCafFieldEquals("CCAP_EXPEDITED_ELIGIBILITY", "");
-        assertCafFieldEquals("APPLICANT_EMAIL", email);
+        assertCafFieldEquals("APPLICANT_EMAIL", "some@email.com");
         assertCafFieldEquals("APPLICANT_PHONE_NUMBER", "(723) 456-7890");
         assertCafFieldEquals("EMAIL_OPTIN", "Off");
         assertCafFieldEquals("PHONE_OPTIN", "Yes");
-        assertCafFieldEquals("DATE_OF_BIRTH", dateOfBirth);
+        assertCafFieldEquals("DATE_OF_BIRTH", "01/12/1928");
         assertCafFieldEquals("APPLICANT_SSN", "XXX-XX-XXXX");
         assertCafFieldEquals("PROGRAMS", "SNAP");
 
         // Page 5 and beyond
-        assertCafFieldEquals("APPLICANT_LAST_NAME", lastName);
-        assertCafFieldEquals("APPLICANT_FIRST_NAME", firstName);
+        assertCafFieldEquals("APPLICANT_LAST_NAME", "St. George");
+        assertCafFieldEquals("APPLICANT_FIRST_NAME", "Ahmed");
+        String otherName = "defaultOtherName";
         assertCafFieldEquals("APPLICANT_OTHER_NAME", otherName);
+        String sex = "Female";
         assertCafFieldEquals("APPLICANT_SEX", sex.toUpperCase(ENGLISH));
         assertCafFieldEquals("MARITAL_STATUS", "NEVER_MARRIED");
+        String needsInterpreter = "Yes";
         assertCafFieldEquals("NEED_INTERPRETER", needsInterpreter);
         assertCafFieldEquals("APPLICANT_SPOKEN_LANGUAGE_PREFERENCE", "ENGLISH");
         assertCafFieldEquals("APPLICANT_WRITTEN_LANGUAGE_PREFERENCE", "ENGLISH");
         assertCafFieldEquals("IS_US_CITIZEN", "Yes");
+        String moveDate = "10/20/1993";
         assertCafFieldEquals("DATE_OF_MOVING_TO_MN", moveDate);
+        String previousCity = "Chicago";
         assertCafFieldEquals("APPLICANT_PREVIOUS_STATE", previousCity);
         assertCafFieldEquals("FOOD", "Yes");
         assertCafFieldEquals("CASH", "Off");
