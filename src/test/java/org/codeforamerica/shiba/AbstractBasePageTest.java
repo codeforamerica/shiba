@@ -216,7 +216,7 @@ public abstract class AbstractBasePageTest {
         testPage.enter("email", "some@email.com");
         testPage.enter("phoneOrEmail", "Text me");
         testPage.clickContinue();
-        fillOutNoPermanentAddress();
+        fillOutAddress();
         testPage.enter("sameMailingAddress", "No, use a different address for mail");
         testPage.clickContinue();
 
@@ -236,16 +236,12 @@ public abstract class AbstractBasePageTest {
         assertThat(driver.findElementById("mailing-address_street").getText()).isEqualTo("smarty street");
     }
 
-    protected void fillOutNoPermanentAddress() {
-        fillOutAddress();
-        testPage.enter("isHomeless", "I don't have a permanent address");
-    }
-
     protected void fillOutAddress() {
         testPage.enter("zipCode", "12345");
         testPage.enter("city", "someCity");
         testPage.enter("streetAddress", "someStreetAddress");
         testPage.enter("apartmentNumber", "someApartmentNumber");
+        testPage.enter("isHomeless", "I don't have a permanent address");
     }
 
     protected SuccessPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking, SmartyStreetClient mockSmartyStreetClient) {
