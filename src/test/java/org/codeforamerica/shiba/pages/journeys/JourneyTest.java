@@ -4,6 +4,7 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.AbstractBasePageTest;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.documents.DocumentRepositoryService;
+import org.codeforamerica.shiba.pages.Page;
 import org.codeforamerica.shiba.pages.SuccessPage;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -82,4 +84,41 @@ public abstract class JourneyTest extends AbstractBasePageTest {
         caf = getAllFiles().get(CAF);
         return successPage.getConfirmationNumber(); // Application ID
     }
+
+    protected static void getToHomeAddress(String dateOfBirth, String email, String firstName, String lastName, String moveDate, String needsInterpreter, String otherName, String previousCity, String sex, Page testPage, List<String> programSelectinos) {
+        testPage.clickButton("Apply now");
+        testPage.clickContinue();
+
+        // Language Preferences
+        testPage.enter("writtenLanguage", "English");
+        testPage.enter("spokenLanguage", "English");
+        testPage.enter("needInterpreter", needsInterpreter);
+        testPage.clickContinue();
+
+        // Program Selection
+
+        programSelectinos.forEach(program -> testPage.enter("programs", program));
+        testPage.clickContinue();
+        testPage.clickContinue();
+
+        // Personal Info
+        testPage.enter("firstName", firstName);
+        testPage.enter("lastName", lastName);
+        testPage.enter("otherName", otherName);
+        testPage.enter("dateOfBirth", dateOfBirth);
+        testPage.enter("ssn", "123456789");
+        testPage.enter("maritalStatus", "Never married");
+        testPage.enter("sex", sex);
+        testPage.enter("livedInMnWholeLife", "Yes");
+        testPage.enter("moveToMnDate", moveDate);
+        testPage.enter("moveToMnPreviousCity", previousCity);
+        testPage.clickContinue();
+
+        // How can we get in touch with you?
+        testPage.enter("phoneNumber", "7234567890");
+        testPage.enter("email", email);
+        testPage.enter("phoneOrEmail", "Text me");
+        testPage.clickContinue();
+    }
+
 }

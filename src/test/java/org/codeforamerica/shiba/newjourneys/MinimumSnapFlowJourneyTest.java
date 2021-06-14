@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.openqa.selenium.By;
 
+import java.util.List;
 import java.util.Optional;
 
 import static java.util.Locale.ENGLISH;
@@ -45,7 +46,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         // No permanent address for this test
         when(featureFlagConfiguration.get("apply-without-address")).thenReturn(FeatureFlag.ON);
 
-        getToHomeAddress();
+        getToHomeAddress(dateOfBirth, email, firstName, lastName, moveDate, needsInterpreter, otherName, previousCity, sex, testPage, List.of(PROGRAM_SNAP));
 
         // Where are you currently Living? (with home address)
         testPage.enter("zipCode", "23456");
@@ -125,7 +126,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
 
     @Test
     void expeditedFlow() {
-        getToHomeAddress();
+        getToHomeAddress(dateOfBirth, email, firstName, lastName, moveDate, needsInterpreter, otherName, previousCity, sex, testPage, List.of(PROGRAM_SNAP));
 
         // Where are you currently Living?
         String homeZip = "12345";
@@ -232,41 +233,6 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         assertCafFieldEquals("APPLICANT_MAILING_CITY", mailingCity);
         assertCafFieldEquals("APPLICANT_MAILING_STATE", mailingState);
         assertCafFieldEquals("APPLICANT_MAILING_ZIPCODE", mailingZip);
-    }
-
-    private void getToHomeAddress() {
-        testPage.clickButton("Apply now");
-        testPage.clickContinue();
-
-        // Language Preferences
-        testPage.enter("writtenLanguage", "English");
-        testPage.enter("spokenLanguage", "English");
-        testPage.enter("needInterpreter", needsInterpreter);
-        testPage.clickContinue();
-
-        // Program Selection
-        testPage.enter("programs", PROGRAM_SNAP);
-        testPage.clickContinue();
-        testPage.clickContinue();
-
-        // Personal Info
-        testPage.enter("firstName", firstName);
-        testPage.enter("lastName", lastName);
-        testPage.enter("otherName", otherName);
-        testPage.enter("dateOfBirth", dateOfBirth);
-        testPage.enter("ssn", "123456789");
-        testPage.enter("maritalStatus", "Never married");
-        testPage.enter("sex", sex);
-        testPage.enter("livedInMnWholeLife", "Yes");
-        testPage.enter("moveToMnDate", moveDate);
-        testPage.enter("moveToMnPreviousCity", previousCity);
-        testPage.clickContinue();
-
-        // How can we get in touch with you?
-        testPage.enter("phoneNumber", "7234567890");
-        testPage.enter("email", email);
-        testPage.enter("phoneOrEmail", "Text me");
-        testPage.clickContinue();
     }
 
     private void assertApplicationSubmittedEventWasPublished(String applicationId, FlowType flowType) {
