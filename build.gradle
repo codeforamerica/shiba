@@ -119,7 +119,7 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.seleniumhq.selenium:selenium-java'
-    testImplementation 'de.redsix:pdfcompare:1.1.58'
+    testImplementation 'de.redsix:pdfcompare:1.1.59'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
         exclude group: 'com.vaadin.external.google', module: 'android-json'
