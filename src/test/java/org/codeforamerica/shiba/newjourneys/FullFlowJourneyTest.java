@@ -4,15 +4,22 @@ import org.codeforamerica.shiba.pages.journeys.JourneyTest;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
+import static org.mockito.Mockito.when;
 
 public class FullFlowJourneyTest extends JourneyTest {
 
     @Test
     void fullApplicationFlow() {
+        when(clock.instant()).thenReturn(
+                LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant(),
+                LocalDateTime.of(2020, 1, 1, 10, 15, 30).atOffset(ZoneOffset.UTC).toInstant()
+        );
         List<String> programSelections = List.of(PROGRAM_SNAP, PROGRAM_CCAP, PROGRAM_EA, PROGRAM_CASH, PROGRAM_GRH);
 
         getToHomeAddress(programSelections);
@@ -236,7 +243,7 @@ public class FullFlowJourneyTest extends JourneyTest {
 
         // CCAP fields
         assertCcapFieldEquals("APPLICATION_ID", applicationId);
-//        assertCcapFieldEquals("SUBMISSION_DATETIME", "06/14/2021 at 04:21 PM");
+        assertCcapFieldEquals("SUBMISSION_DATETIME", "01/01/2020 at 04:15 AM");
         assertCcapFieldEquals("PAY_FREQUENCY_0", "Hourly");
         assertCcapFieldEquals("EMPLOYEE_FULL_NAME_0", householdMemberFullName);
         assertCcapFieldEquals("DATE_OF_BIRTH", "01/12/1928");
@@ -324,13 +331,13 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCcapFieldEquals("RELATIONSHIP_0", "my child");
         assertCcapFieldEquals("SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0", "120.00");
         assertCcapFieldEquals("LIVING_WITH_FAMILY_OR_FRIENDS", "Off");
-        assertCcapFieldEquals("CREATED_DATE", "2021-06-14");
+        assertCcapFieldEquals("CREATED_DATE", "2020-01-01");
         assertCcapFieldEquals("APPLICANT_SIGNATURE", "this is my signature");
         assertCcapFieldEquals("ADDITIONAL_APPLICATION_INFO", "I need you to contact my work for proof of termination");
 
         // CAF
         assertCafFieldEquals("APPLICATION_ID", applicationId);
-//        assertCafFieldEquals("SUBMISSION_DATETIME","06/14/2021 at 04:24 PM");
+        assertCafFieldEquals("SUBMISSION_DATETIME", "01/01/2020 at 04:15 AM");
         assertCafFieldEquals("PAY_FREQUENCY_0", "Hourly");
         assertCafFieldEquals("EMPLOYEE_FULL_NAME_0", householdMemberFullName);
         assertCafFieldEquals("DATE_OF_BIRTH", "01/12/1928");
@@ -353,7 +360,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCafFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "");
         assertCafFieldEquals("CCAP_EXPEDITED_ELIGIBILITY", "");
         assertCafFieldEquals("GROSS_MONTHLY_INCOME_0", "120.00");
-        assertCafFieldEquals("CREATED_DATE", "2021-06-14");
+        assertCafFieldEquals("CREATED_DATE", "2020-01-01");
         assertCafFieldEquals("HEATING_COOLING_SELECTION", "ONE_SELECTED");
         assertCafFieldEquals("WATER_SEWER_SELECTION", "NEITHER_SELECTED");
         assertCafFieldEquals("ELECTRICITY", "No");
