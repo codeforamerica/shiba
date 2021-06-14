@@ -128,41 +128,6 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         //        assertPdfFieldEquals("APPLICANT_MAILING_ZIPCODE", mailingZip);
     }
 
-    private void getToHomeAddress() {
-        testPage.clickButton("Apply now");
-        testPage.clickContinue();
-
-        // Language Preferences
-        testPage.enter("writtenLanguage", "English");
-        testPage.enter("spokenLanguage", "English");
-        testPage.enter("needInterpreter", needsInterpreter);
-        testPage.clickContinue();
-
-        // Program Selection
-        testPage.enter("programs", PROGRAM_SNAP);
-        testPage.clickContinue();
-        testPage.clickContinue();
-
-        // Personal Info
-        testPage.enter("firstName", firstName);
-        testPage.enter("lastName", lastName);
-        testPage.enter("otherName", otherName);
-        testPage.enter("dateOfBirth", dateOfBirth);
-        testPage.enter("ssn", "123456789");
-        testPage.enter("maritalStatus", "Never married");
-        testPage.enter("sex", sex);
-        testPage.enter("livedInMnWholeLife", "Yes");
-        testPage.enter("moveToMnDate", moveDate);
-        testPage.enter("moveToMnPreviousCity", previousCity);
-        testPage.clickContinue();
-
-        // How can we get in touch with you?
-        testPage.enter("phoneNumber", "7234567890");
-        testPage.enter("email", email);
-        testPage.enter("phoneOrEmail", "Text me");
-        testPage.clickContinue();
-    }
-
     @Test
     void expeditedFlow() {
         getToHomeAddress();
@@ -272,6 +237,41 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         assertPdfFieldEquals("APPLICANT_MAILING_CITY", mailingCity);
         assertPdfFieldEquals("APPLICANT_MAILING_STATE", mailingState);
         assertPdfFieldEquals("APPLICANT_MAILING_ZIPCODE", mailingZip);
+    }
+
+    private void getToHomeAddress() {
+        testPage.clickButton("Apply now");
+        testPage.clickContinue();
+
+        // Language Preferences
+        testPage.enter("writtenLanguage", "English");
+        testPage.enter("spokenLanguage", "English");
+        testPage.enter("needInterpreter", needsInterpreter);
+        testPage.clickContinue();
+
+        // Program Selection
+        testPage.enter("programs", PROGRAM_SNAP);
+        testPage.clickContinue();
+        testPage.clickContinue();
+
+        // Personal Info
+        testPage.enter("firstName", firstName);
+        testPage.enter("lastName", lastName);
+        testPage.enter("otherName", otherName);
+        testPage.enter("dateOfBirth", dateOfBirth);
+        testPage.enter("ssn", "123456789");
+        testPage.enter("maritalStatus", "Never married");
+        testPage.enter("sex", sex);
+        testPage.enter("livedInMnWholeLife", "Yes");
+        testPage.enter("moveToMnDate", moveDate);
+        testPage.enter("moveToMnPreviousCity", previousCity);
+        testPage.clickContinue();
+
+        // How can we get in touch with you?
+        testPage.enter("phoneNumber", "7234567890");
+        testPage.enter("email", email);
+        testPage.enter("phoneOrEmail", "Text me");
+        testPage.clickContinue();
     }
 
     private void assertApplicationSubmittedEventWasPublished(String applicationId, FlowType flowType) {
