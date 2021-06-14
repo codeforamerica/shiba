@@ -238,7 +238,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCcapFieldEquals("APPLICATION_ID", applicationId);
 //        assertCcapFieldEquals("SUBMISSION_DATETIME", "06/14/2021 at 04:21 PM");
         assertCcapFieldEquals("PAY_FREQUENCY_0", "Hourly");
-        assertCcapFieldEquals("EMPLOYEE_FULL_NAME_0", "householdMemberFirstName householdMemberLastName");
+        assertCcapFieldEquals("EMPLOYEE_FULL_NAME_0", householdMemberFullName);
         assertCcapFieldEquals("DATE_OF_BIRTH", "01/12/1928");
         assertCcapFieldEquals("APPLICANT_SSN", "XXX-XX-XXXX");
         assertCcapFieldEquals("APPLICANT_PHONE_NUMBER", "(723) 456-7890");
@@ -255,7 +255,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCcapFieldEquals("PROGRAMS", "SNAP, CASH, CCAP, EA, GRH");
         assertCcapFieldEquals("FULL_NAME", "Ahmed St. George");
         assertCcapFieldEquals("UTM_SOURCE", "");
-        assertCcapFieldEquals("FULL_NAME_0", "householdMemberFirstName householdMemberLastName");
+        assertCcapFieldEquals("FULL_NAME_0", householdMemberFullName);
         assertCcapFieldEquals("PROGRAMS_0", "CCAP");
         assertCcapFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "");
         assertCcapFieldEquals("CCAP_EXPEDITED_ELIGIBILITY", "");
@@ -283,7 +283,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCcapFieldEquals("APPLICANT_HOME_STREET_ADDRESS", "someStreetAddress (not permanent)");
         assertCcapFieldEquals("ADULT_REQUESTING_CHILDCARE_LOOKING_FOR_JOB_FULL_NAME_0", "");
         assertCcapFieldEquals("ADULT_REQUESTING_CHILDCARE_GOING_TO_SCHOOL_FULL_NAME_0", "");
-        assertCcapFieldEquals("CHILD_NEEDS_CHILDCARE_FULL_NAME_0", "householdMemberFirstName householdMemberLastName");
+        assertCcapFieldEquals("CHILD_NEEDS_CHILDCARE_FULL_NAME_0", householdMemberFullName);
         assertCcapFieldEquals("SSI", "No");
         assertCcapFieldEquals("VETERANS_BENEFITS", "No");
         assertCcapFieldEquals("UNEMPLOYMENT", "No");
@@ -297,8 +297,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCcapFieldEquals("HEALTH_CARE_REIMBURSEMENT", "No");
         assertCcapFieldEquals("INTEREST_DIVIDENDS", "No");
         assertCcapFieldEquals("OTHER_SOURCES", "No");
-        assertCcapFieldEquals("SELF_EMPLOYMENT_EMPLOYEE_FULL_NAME_0",
-                              "householdMemberFirstName householdMemberLastName");
+        assertCcapFieldEquals("SELF_EMPLOYMENT_EMPLOYEE_FULL_NAME_0", householdMemberFullName);
         assertCcapFieldEquals("IS_US_CITIZEN_0", "Yes");
         assertCcapFieldEquals("SOCIAL_SECURITY_FREQUENCY", "Monthly");
         assertCcapFieldEquals("TRUST_MONEY_FREQUENCY", "Monthly");
@@ -315,7 +314,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCcapFieldEquals("ADDITIONAL_INCOME_INFO", "I also make a small amount of money from my lemonade stand.");
         assertCcapFieldEquals("HAVE_MILLION_DOLLARS", "No");
         assertCcapFieldEquals("PARENT_NOT_LIVING_AT_HOME_0", "My child's parent");
-        assertCcapFieldEquals("CHILD_FULL_NAME_0", "householdMemberFirstName householdMemberLastName");
+        assertCcapFieldEquals("CHILD_FULL_NAME_0", householdMemberFullName);
         assertCcapFieldEquals("SELF_EMPLOYMENT_HOURS_A_WEEK_0", "30");
         assertCcapFieldEquals("LAST_NAME_0", "householdMemberLastName");
         assertCcapFieldEquals("SEX_0", "MALE");
@@ -333,7 +332,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCafFieldEquals("APPLICATION_ID", applicationId);
 //        assertCafFieldEquals("SUBMISSION_DATETIME","06/14/2021 at 04:24 PM");
         assertCafFieldEquals("PAY_FREQUENCY_0", "Hourly");
-        assertCafFieldEquals("EMPLOYEE_FULL_NAME_0", "householdMemberFirstName householdMemberLastName");
+        assertCafFieldEquals("EMPLOYEE_FULL_NAME_0", householdMemberFullName);
         assertCafFieldEquals("DATE_OF_BIRTH", "01/12/1928");
         assertCafFieldEquals("APPLICANT_SSN", "XXX-XX-XXXX");
         assertCafFieldEquals("APPLICANT_PHONE_NUMBER", "(723) 456-7890");
@@ -349,7 +348,7 @@ public class FullFlowJourneyTest extends JourneyTest {
                              "This application was submitted. A caseworker at Hennepin County will help route your application to your county. For more support with your application, you can call Hennepin County at 612-596-1300.");
         assertCafFieldEquals("PROGRAMS", "SNAP, CASH, CCAP, EA, GRH");
         assertCafFieldEquals("FULL_NAME", "Ahmed St. George");
-        assertCafFieldEquals("FULL_NAME_0", "householdMemberFirstName householdMemberLastName");
+        assertCafFieldEquals("FULL_NAME_0", householdMemberFullName);
         assertCafFieldEquals("PROGRAMS_0", "CCAP");
         assertCafFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "");
         assertCafFieldEquals("CCAP_EXPEDITED_ELIGIBILITY", "");
@@ -388,7 +387,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCafFieldEquals("APPLICANT_HOME_ZIPCODE", "12345");
         assertCafFieldEquals("LIVING_SITUATION", "UNKNOWN");
         assertCafFieldEquals("MEDICAL_EXPENSES_SELECTION", "ONE_SELECTED");
-        assertCafFieldEquals("EMPLOYEE_FULL_NAME_0", "householdMemberFirstName householdMemberLastName");
+        assertCafFieldEquals("EMPLOYEE_FULL_NAME_0", householdMemberFullName);
         assertCafFieldEquals("WHO_IS_PREGNANT", "Ahmed St. George");
         assertCafFieldEquals("IS_US_CITIZEN", "No");
         assertCafFieldEquals("IS_US_CITIZEN_0", "Yes");
