@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.newjourneys;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.pages.SuccessPage;
+import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
 import org.codeforamerica.shiba.pages.journeys.JourneyTest;
@@ -11,8 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.openqa.selenium.By;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Optional;
 
 import static java.util.Locale.ENGLISH;
@@ -40,10 +39,6 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     private final String previousCity = "Chicago";
     private final String needsInterpreter = "Yes";
     private final String email = "some@email.com";
-    private final String homeZip = "12345";
-    private final String homeCity = "someCity";
-    private final String homeStreetAddress = "someStreetAddress";
-    private final String homeApartmentNumber = "someApartmentNumber";
     private final String mailingStreetAddress = "smarty street";
     private final String mailingCity = "Cooltown";
     private final String mailingState = "CA";
@@ -53,7 +48,45 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
 
     @Test
     void nonExpeditedFlow() {
-        getToMinimumFlow();
+        // No permanent address for this test
+        when(featureFlagConfiguration.get("apply-without-address")).thenReturn(FeatureFlag.ON);
+
+        getToHomeAddress();
+
+        // Where are you currently Living? (with home address)
+        testPage.enter("zipCode", "23456");
+        testPage.enter("city", "someCity");
+        testPage.enter("streetAddress", "someStreetAddress");
+        testPage.enter("apartmentNumber", "someApartmentNumber");
+        testPage.clickContinue();
+        assertThat(testPage.getTitle()).isEqualTo("Address Validation");
+        testPage.goBack();
+
+        // Where are you currently Living? (without address)
+        testPage.enter("isHomeless", "I don't have a permanent address"); // check
+        testPage.enter("isHomeless", "I don't have a permanent address"); // uncheck
+        testPage.clickContinue();
+        assertThat(testPage.hasInputError("streetAddress")).isTrue(); // verify cleared previous inputs
+        testPage.enter("isHomeless", "I don't have a permanent address"); // check
+        testPage.clickContinue();
+
+        // Where can the county send your mail? (accept the smarty streets enriched address)
+        testPage.enter("zipCode", "23456");
+        testPage.enter("city", "someCity");
+        testPage.enter("streetAddress", "someStreetAddress");
+        testPage.enter("state", "IL");
+        testPage.enter("apartmentNumber", "someApartmentNumber");
+        when(smartyStreetClient.validateAddress(any())).thenReturn(
+                Optional.of(new Address(mailingStreetAddress, mailingCity, mailingState, mailingZip, mailingApartmentNumber, "someCounty"))
+        );
+        testPage.clickContinue();
+        testPage.clickElementById("enriched-address");
+        testPage.clickContinue();
+
+        // Let's review your info
+        assertThat(driver.findElementById("mailing-address_street").getText()).isEqualTo(mailingStreetAddress);
+
+        testPage.clickLink("Submit application now with only the above information.");
 
         // Opt not to answer expedited questions
         testPage.clickLink("Finish application now");
@@ -82,11 +115,89 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         assertPdfFieldEquals("DRUG_FELONY", "No");
         assertPdfFieldEquals("ADDITIONAL_APPLICATION_INFO", additionalInfo);
         assertPdfFieldEquals("ADDITIONAL_INFO_CASE_NUMBER", caseNumber);
+        assertPdfFieldEquals("APPLICANT_HOME_STREET_ADDRESS", "No permanent address");
+        assertPdfFieldEquals("APPLICANT_HOME_APT_NUMBER", "");
+        assertPdfFieldEquals("APPLICANT_HOME_CITY", "");
+        assertPdfFieldEquals("APPLICANT_HOME_STATE", "");
+        assertPdfFieldEquals("APPLICANT_HOME_ZIPCODE", "");
+        // mailing address is currently not being filled in when the feature flag is on
+        //        assertPdfFieldEquals("APPLICANT_MAILING_STREET_ADDRESS", mailingStreetAddress);
+        //        assertPdfFieldEquals("APPLICANT_MAILING_APT_NUMBER", mailingApartmentNumber);
+        //        assertPdfFieldEquals("APPLICANT_MAILING_CITY", mailingCity);
+        //        assertPdfFieldEquals("APPLICANT_MAILING_STATE", mailingState);
+        //        assertPdfFieldEquals("APPLICANT_MAILING_ZIPCODE", mailingZip);
+    }
+
+    private void getToHomeAddress() {
+        testPage.clickButton("Apply now");
+        testPage.clickContinue();
+
+        // Language Preferences
+        testPage.enter("writtenLanguage", "English");
+        testPage.enter("spokenLanguage", "English");
+        testPage.enter("needInterpreter", needsInterpreter);
+        testPage.clickContinue();
+
+        // Program Selection
+        testPage.enter("programs", PROGRAM_SNAP);
+        testPage.clickContinue();
+        testPage.clickContinue();
+
+        // Personal Info
+        testPage.enter("firstName", firstName);
+        testPage.enter("lastName", lastName);
+        testPage.enter("otherName", otherName);
+        testPage.enter("dateOfBirth", dateOfBirth);
+        testPage.enter("ssn", "123456789");
+        testPage.enter("maritalStatus", "Never married");
+        testPage.enter("sex", sex);
+        testPage.enter("livedInMnWholeLife", "Yes");
+        testPage.enter("moveToMnDate", moveDate);
+        testPage.enter("moveToMnPreviousCity", previousCity);
+        testPage.clickContinue();
+
+        // How can we get in touch with you?
+        testPage.enter("phoneNumber", "7234567890");
+        testPage.enter("email", email);
+        testPage.enter("phoneOrEmail", "Text me");
+        testPage.clickContinue();
     }
 
     @Test
     void expeditedFlow() {
-        getToMinimumFlow();
+        getToHomeAddress();
+
+        // Where are you currently Living?
+        String homeZip = "12345";
+        String homeCity = "someCity";
+        String homeStreetAddress = "someStreetAddress";
+        String homeApartmentNumber = "someApartmentNumber";
+        testPage.enter("zipCode", homeZip);
+        testPage.enter("city", homeCity);
+        testPage.enter("streetAddress", homeStreetAddress);
+        testPage.enter("apartmentNumber", homeApartmentNumber);
+        testPage.enter("isHomeless", "I don't have a permanent address");
+        testPage.enter("sameMailingAddress", "No, use a different address for mail");
+        testPage.clickContinue();
+        testPage.clickButton("Use this address");
+
+        // Where can the county send your mail? (accept the smarty streets enriched address)
+        testPage.enter("zipCode", "23456");
+        testPage.enter("city", "someCity");
+        testPage.enter("streetAddress", "someStreetAddress");
+        testPage.enter("state", "IL");
+        testPage.enter("apartmentNumber", "someApartmentNumber");
+        when(smartyStreetClient.validateAddress(any())).thenReturn(
+                Optional.of(new Address(mailingStreetAddress, mailingCity, mailingState, mailingZip, mailingApartmentNumber, "someCounty"))
+        );
+        testPage.clickContinue();
+        testPage.clickElementById("enriched-address");
+        testPage.clickContinue();
+
+        // Let's review your info
+        assertThat(driver.findElementById("mailing-address_street").getText()).isEqualTo(mailingStreetAddress);
+
+        testPage.clickLink("Submit application now with only the above information.");
 
         // Answer expedited questions such that we will be expedited
         testPage.clickLink("Yes, I want to see if I qualify");
@@ -151,6 +262,16 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         assertPdfFieldEquals("WATER_SEWER_SELECTION", "NEITHER_SELECTED");
         assertPdfFieldEquals("COOKING_FUEL", "No");
         assertPdfFieldEquals("HAVE_SAVINGS", "Yes");
+        assertPdfFieldEquals("APPLICANT_HOME_STREET_ADDRESS", homeStreetAddress + " (not permanent)");
+        assertPdfFieldEquals("APPLICANT_HOME_APT_NUMBER", homeApartmentNumber);
+        assertPdfFieldEquals("APPLICANT_HOME_CITY", homeCity);
+        assertPdfFieldEquals("APPLICANT_HOME_STATE", "MN");
+        assertPdfFieldEquals("APPLICANT_HOME_ZIPCODE", homeZip);
+        assertPdfFieldEquals("APPLICANT_MAILING_STREET_ADDRESS", mailingStreetAddress);
+        assertPdfFieldEquals("APPLICANT_MAILING_APT_NUMBER", mailingApartmentNumber);
+        assertPdfFieldEquals("APPLICANT_MAILING_CITY", mailingCity);
+        assertPdfFieldEquals("APPLICANT_MAILING_STATE", mailingState);
+        assertPdfFieldEquals("APPLICANT_MAILING_ZIPCODE", mailingZip);
     }
 
     private void assertApplicationSubmittedEventWasPublished(String applicationId, FlowType flowType) {
@@ -182,16 +303,6 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         assertPdfFieldEquals("APPLICANT_OTHER_NAME", otherName);
         assertPdfFieldEquals("APPLICANT_SEX", sex.toUpperCase(ENGLISH));
         assertPdfFieldEquals("MARITAL_STATUS", "NEVER_MARRIED");
-        assertPdfFieldEquals("APPLICANT_HOME_STREET_ADDRESS", homeStreetAddress + " (not permanent)");
-        assertPdfFieldEquals("APPLICANT_HOME_APT_NUMBER", homeApartmentNumber);
-        assertPdfFieldEquals("APPLICANT_HOME_CITY", homeCity);
-        assertPdfFieldEquals("APPLICANT_HOME_STATE", "MN");
-        assertPdfFieldEquals("APPLICANT_HOME_ZIPCODE", homeZip);
-        assertPdfFieldEquals("APPLICANT_MAILING_STREET_ADDRESS", mailingStreetAddress);
-        assertPdfFieldEquals("APPLICANT_MAILING_APT_NUMBER", mailingApartmentNumber);
-        assertPdfFieldEquals("APPLICANT_MAILING_CITY", mailingCity);
-        assertPdfFieldEquals("APPLICANT_MAILING_STATE", mailingState);
-        assertPdfFieldEquals("APPLICANT_MAILING_ZIPCODE", mailingZip);
         assertPdfFieldEquals("NEED_INTERPRETER", needsInterpreter);
         assertPdfFieldEquals("APPLICANT_SPOKEN_LANGUAGE_PREFERENCE", "ENGLISH");
         assertPdfFieldEquals("APPLICANT_WRITTEN_LANGUAGE_PREFERENCE", "ENGLISH");
@@ -204,69 +315,6 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         assertPdfFieldEquals("CCAP", "Off");
         assertPdfFieldEquals("GRH", "Off");
         assertPdfFieldEquals("APPLICANT_SIGNATURE", signature);
-    }
-
-    private void getToMinimumFlow() {
-        testPage.clickButton("Apply now");
-        testPage.clickContinue();
-
-        // Language Preferences
-        testPage.enter("writtenLanguage", "English");
-        testPage.enter("spokenLanguage", "English");
-        testPage.enter("needInterpreter", needsInterpreter);
-        testPage.clickContinue();
-
-        // Program Selection
-        testPage.enter("programs", PROGRAM_SNAP);
-        testPage.clickContinue();
-        testPage.clickContinue();
-
-        // Personal Info
-        testPage.enter("firstName", firstName);
-        testPage.enter("lastName", lastName);
-        testPage.enter("otherName", otherName);
-        testPage.enter("dateOfBirth", dateOfBirth);
-        testPage.enter("ssn", "123456789");
-        testPage.enter("maritalStatus", "Never married");
-        testPage.enter("sex", sex);
-        testPage.enter("livedInMnWholeLife", "Yes");
-        testPage.enter("moveToMnDate", moveDate);
-        testPage.enter("moveToMnPreviousCity", previousCity);
-        testPage.clickContinue();
-
-        // How can we get in touch with you?
-        testPage.enter("phoneNumber", "7234567890");
-        testPage.enter("email", email);
-        testPage.enter("phoneOrEmail", "Text me");
-        testPage.clickContinue();
-
-        // Where are you currently Living?
-        testPage.enter("zipCode", homeZip);
-        testPage.enter("city", homeCity);
-        testPage.enter("streetAddress", homeStreetAddress);
-        testPage.enter("apartmentNumber", homeApartmentNumber);
-        testPage.enter("isHomeless", "I don't have a permanent address");
-        testPage.enter("sameMailingAddress", "No, use a different address for mail");
-        testPage.clickContinue();
-        testPage.clickButton("Use this address");
-
-        // Where can the county send your mail? (accept the smarty streets enriched address)
-        testPage.enter("zipCode", "23456");
-        testPage.enter("city", "someCity");
-        testPage.enter("streetAddress", "someStreetAddress");
-        testPage.enter("state", "IL");
-        testPage.enter("apartmentNumber", "someApartmentNumber");
-        when(smartyStreetClient.validateAddress(any())).thenReturn(
-                Optional.of(new Address(mailingStreetAddress, mailingCity, mailingState, mailingZip, mailingApartmentNumber, "someCounty"))
-        );
-        testPage.clickContinue();
-        testPage.clickElementById("enriched-address");
-        testPage.clickContinue();
-
-        // Let's review your info
-        assertThat(driver.findElementById("mailing-address_street").getText()).isEqualTo(mailingStreetAddress);
-
-        testPage.clickLink("Submit application now with only the above information.");
     }
 
     private String signApplicationAndDownloadCaf() {

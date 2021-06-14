@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="addressInputFragment(input, data)" th:with="name=|${input.name}[]|">
+    <div th:replace="'fragments/checkbox-input' :: checkbox-input(${input}, ${data})"></div>
+    <div th:if="${input.hasFollowUps()}" id="address-questions">
+        <th:block th:each="followUp: ${input.followUps}">
+            <div class="spacing-above-60">
+                <div th:replace="'fragments/'+__${followUp.fragment()}__ :: __${followUp.fragment()}__(${followUp}, ${data})"></div>
+            </div>
+        </th:block>
+    </div>
+    <script th:inline="javascript">
+        $(document).ready(function () {
+            var checkbox = document.getElementsByName([[${name}]])[0];
+            checkbox.addEventListener('change', function () {
+                if (this.checked) {
+                    $("input:text").val("");
+                    $("#address-questions").hide();
+                } else {
+                    $("#address-questions").show();
+                }
+            });
+        });
+    </script>
+</div>
+</html>

@@ -245,7 +245,7 @@ public abstract class AbstractBasePageTest {
     }
 
     protected SuccessPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking, SmartyStreetClient mockSmartyStreetClient) {
-    	return nonExpeditedFlowToSuccessPage(hasHousehold, isWorking, mockSmartyStreetClient, false, false);
+        return nonExpeditedFlowToSuccessPage(hasHousehold, isWorking, mockSmartyStreetClient, false, false);
     }
 
     protected SuccessPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking, SmartyStreetClient mockSmartyStreetClient, boolean helpWithBenefits, boolean hasHealthcareCoverage) {
