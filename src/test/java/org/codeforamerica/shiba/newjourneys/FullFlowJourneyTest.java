@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 import static org.mockito.Mockito.when;
@@ -239,7 +240,45 @@ public class FullFlowJourneyTest extends JourneyTest {
         testPage.enter("drugFelony", NO.getDisplayValue());
         testPage.clickContinue();
 
-        String applicationId = signApplicationAndDownloadPdfs("this is my signature", true, true);
+        // Upload documents
+        testPage.enter("applicantSignature", "this is my signature");
+        testPage.clickButton("Submit");
+        testPage.clickButton("Upload documents now");
+        uploadJpgFile();
+        assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("1 file added");
+        uploadPdfFile();
+        assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("2 files added");
+        waitForDocumentUploadToComplete();
+
+        var filenameTextElements = driver.findElementsByClassName("filename-text");
+        var fileDetailsElements = driver.findElementsByClassName("file-details");
+
+        // test-caf.pdf
+        var filename = getAttributeForElementAtIndex(filenameTextElements, 0, "innerHTML");
+        var fileDetails = getAttributeForElementAtIndex(fileDetailsElements, 0, "innerHTML");
+
+        assertThat(filename).contains("test-caf");
+        assertThat(filename).contains("pdf");
+        assertThat(fileDetails).contains("0.4");
+        assertThat(fileDetails).contains("MB");
+
+        // shiba+test.jpg
+        filename = getAttributeForElementAtIndex(filenameTextElements, 1, "innerHTML");
+        fileDetails = getAttributeForElementAtIndex(fileDetailsElements, 1, "innerHTML");
+
+        assertThat(filename).contains("shiba");
+        assertThat(filename).contains("jpg");
+        assertThat(fileDetails).contains("51.7");
+        assertThat(fileDetails).contains("KB");
+
+        // Delete a file to check added file count goes back down
+        testPage.clickLink("delete");
+        testPage.clickButton("Yes, delete the file");
+
+        assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("1 file added");
+        testPage.clickButton("I'm finished uploading");
+
+        String applicationId = downloadPdfs( true, true);
 
         // CCAP fields
         assertCcapFieldEquals("APPLICATION_ID", applicationId);

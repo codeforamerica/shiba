@@ -84,6 +84,10 @@ public abstract class JourneyTest extends AbstractBasePageTest {
         // No document upload
         testPage.clickButton("Skip this for now");
 
+        return downloadPdfs(shouldHaveCafDownloadLink, shouldHaveCcapDownloadLink);
+    }
+
+    protected String downloadPdfs(boolean shouldHaveCafDownloadLink, boolean shouldHaveCcapDownloadLink) {
         // Download CAF
         SuccessPage successPage = new SuccessPage(driver);
         assertThat(successPage.CAFdownloadPresent()).isEqualTo(shouldHaveCafDownloadLink);
