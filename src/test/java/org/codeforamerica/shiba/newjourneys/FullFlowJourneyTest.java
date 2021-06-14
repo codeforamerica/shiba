@@ -232,7 +232,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         testPage.enter("drugFelony", NO.getDisplayValue());
         testPage.clickContinue();
 
-        String applicationId = signApplicationAndDownloadCafAndCcap("this is my signature");
+        String applicationId = signApplicationAndDownloadPdfs("this is my signature", true, true);
 
         // CCAP fields
         assertCcapFieldEquals("APPLICATION_ID", applicationId);

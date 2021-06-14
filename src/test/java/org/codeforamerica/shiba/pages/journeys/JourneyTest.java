@@ -77,7 +77,7 @@ public abstract class JourneyTest extends AbstractBasePageTest {
         assertThat(getPdfFieldText(pdf, fieldName)).isEqualTo(expectedVal);
     }
 
-    protected String signApplicationAndDownloadCaf(String signature) {
+    protected String signApplicationAndDownloadPdfs(String signature, boolean shouldHaveCafDownloadLink, boolean shouldHaveCcapDownloadLink) {
         testPage.enter("applicantSignature", signature);
         testPage.clickButton("Submit");
 
@@ -86,29 +86,12 @@ public abstract class JourneyTest extends AbstractBasePageTest {
 
         // Download CAF
         SuccessPage successPage = new SuccessPage(driver);
-        assertThat(successPage.CAFdownloadPresent()).isTrue();
-        assertThat(successPage.CCAPdownloadPresent()).isFalse();
+        assertThat(successPage.CAFdownloadPresent()).isEqualTo(shouldHaveCafDownloadLink);
+        assertThat(successPage.CCAPdownloadPresent()).isEqualTo(shouldHaveCcapDownloadLink);
         successPage.downloadPdfs();
         await().until(pdfDownloadCompletes(successPage));
-        caf = getAllFiles().get(CAF);
-        return successPage.getConfirmationNumber(); // Application ID
-    }
-
-    protected String signApplicationAndDownloadCafAndCcap(String signature) {
-        testPage.enter("applicantSignature", signature);
-        testPage.clickButton("Submit");
-
-        // No document upload
-        testPage.clickButton("Skip this for now");
-
-        // Download CAF
-        SuccessPage successPage = new SuccessPage(driver);
-        assertThat(successPage.CAFdownloadPresent()).isTrue();
-        assertThat(successPage.CCAPdownloadPresent()).isTrue();
-        successPage.downloadPdfs();
-        await().until(pdfDownloadCompletes(successPage));
-        caf = getAllFiles().get(CAF);
-        ccap = getAllFiles().get(CCAP);
+        caf = getAllFiles().getOrDefault(CAF, null);
+        ccap = getAllFiles().getOrDefault(CCAP, null);
         return successPage.getConfirmationNumber(); // Application ID
     }
 
