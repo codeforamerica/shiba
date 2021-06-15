@@ -72,7 +72,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         testPage.clickContinue();
 
         // Let's review your info
-        assertThat(driver.findElementById("mailing-address_street").getText()).isEqualTo(mailingStreetAddress);
+        assertThat(driver.findElementById("mailingAddress-address_street").getText()).isEqualTo(mailingStreetAddress);
 
         testPage.clickLink("Submit application now with only the above information.");
 

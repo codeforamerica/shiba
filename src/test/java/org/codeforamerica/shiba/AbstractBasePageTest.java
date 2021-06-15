@@ -233,7 +233,7 @@ public abstract class AbstractBasePageTest {
 
         testPage.clickElementById("enriched-address");
         testPage.clickContinue();
-        assertThat(driver.findElementById("mailing-address_street").getText()).isEqualTo("smarty street");
+        assertThat(driver.findElementById("mailingAddress-address_street").getText()).isEqualTo("smarty street");
     }
 
     protected void fillOutAddress() {

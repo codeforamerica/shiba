@@ -1,0 +1,18 @@
+<div th:fragment="reviewAddressFragment(data, useEnriched, dataPageName)">
+    <th:block th:unless="${useEnriched}">
+        <p th:id="|${dataPageName}-address_street|" class="spacing-below-0"
+           th:text="${data.get(dataPageName).get('streetAddress').value[0]}"></p>
+        <p class="spacing-below-0"
+           th:text="${data.get(dataPageName).get('apartmentNumber').value[0]}"></p>
+        <p class="spacing-below-0"
+           th:text="${T(org.codeforamerica.shiba.Utils).joinNonEmpty(data.get(dataPageName).get('city').value[0], data.get(dataPageName).get('state').value[0])}"></p>
+    </th:block>
+    <th:block th:if="${useEnriched}">
+        <p th:id="|${dataPageName}-address_street|" class="spacing-below-0"
+           th:text="${data.get(dataPageName).get('enrichedStreetAddress').value[0]}"></p>
+        <p class="spacing-below-0"
+           th:text="${data.get(dataPageName).get('enrichedApartmentNumber').value[0]}"></p>
+        <p class="spacing-below-0"
+           th:text="${T(org.codeforamerica.shiba.Utils).joinNonEmpty(data.get(dataPageName).get('enrichedCity').value[0], data.get(dataPageName).get('enrichedState').value[0])}"></p>
+    </th:block>
+</div>

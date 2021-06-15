@@ -37,6 +37,6 @@ public class FormInputTemplate {
 
     @SuppressWarnings("unused")
     public boolean hasFollowUps() {
-        return !this.followUps.isEmpty();
+        return !followUps.isEmpty() && !followUpValues.isEmpty();
     }
 }
