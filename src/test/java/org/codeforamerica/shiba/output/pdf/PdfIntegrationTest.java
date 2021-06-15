@@ -351,7 +351,6 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             selectPrograms(List.of(PROGRAM_SNAP, PROGRAM_CCAP, PROGRAM_CASH));
         }
 
-
         @Test
         void shouldMapOriginalAddressIfHomeAddressDoesNotUseEnrichedAddress() {
             navigateTo("homeAddress");
