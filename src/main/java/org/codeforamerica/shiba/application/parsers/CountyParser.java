@@ -2,15 +2,15 @@ package org.codeforamerica.shiba.application.parsers;
 
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.FlowType;
-import org.codeforamerica.shiba.application.parsers.ApplicationDataParserV2.Field;
+import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.stereotype.Component;
 
 import static java.util.Optional.ofNullable;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParserV2.Field.*;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParserV2.getFirstValue;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.*;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 
 @Component
 public class CountyParser {

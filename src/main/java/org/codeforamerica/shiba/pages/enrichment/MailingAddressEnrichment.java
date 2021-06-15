@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParserV2.Field.*;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParserV2.getFirstValue;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.*;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 
 @Component
 public class MailingAddressEnrichment extends AddressEnrichment {
