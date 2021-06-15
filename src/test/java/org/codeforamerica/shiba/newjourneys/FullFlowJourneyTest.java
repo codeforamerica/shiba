@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 public class FullFlowJourneyTest extends JourneyTest {
 
     @Test
-    void fullApplicationFlow() {
+    void fullApplicationWithDocumentUploads() {
         when(clock.instant()).thenReturn(
                 LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant(),
                 LocalDateTime.of(2020, 1, 1, 10, 15, 30).atOffset(ZoneOffset.UTC).toInstant()
@@ -264,65 +264,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         testPage.clickButton("Submit");
         testPage.clickButton("Upload documents now");
 
-        assertStylingOfEmptyDocumentUploadPage();
-
-        // Deleting the only uploaded document should keep you on the upload document screen
-        uploadJpgFile();
-        waitForDocumentUploadToComplete();
-
-        assertStylingOfNonEmptyDocumentUploadPage();
-
-        List<WebElement> deleteLinks = driver.findElements(By.linkText("delete"));
-        assertThat(deleteLinks.size()).isEqualTo(1);
-        testPage.clickLink("delete");
-
-        assertThat(testPage.getTitle()).isEqualTo("Delete a file");
-        testPage.clickButton("Yes, delete the file");
-
-        assertThat(testPage.getTitle()).isEqualTo("Upload Documents");
-        deleteLinks = driver.findElements(By.linkText("delete"));
-        assertThat(deleteLinks.size()).isEqualTo(0);
-
-        assertStylingOfEmptyDocumentUploadPage();
-
-        // Uploading multiple docs should work
-        uploadJpgFile();
-        assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("1 file added");
-        uploadPdfFile();
-        assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("2 files added");
-        uploadFile(TestUtils.getAbsoluteFilepathString("test-cover-pages.pdf"));
-        assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("3 files added");
-        waitForDocumentUploadToComplete();
-
-        deleteLinks = driver.findElements(By.linkText("delete"));
-        assertThat(deleteLinks.size()).isEqualTo(3);
-        testPage.clickLink("delete");
-
-        assertThat(testPage.getTitle()).isEqualTo("Delete a file");
-        testPage.clickButton("Yes, delete the file");
-
-        var filenameTextElements = driver.findElementsByClassName("filename-text");
-        var fileDetailsElements = driver.findElementsByClassName("file-details");
-
-        // test-caf.pdf
-        var filename = getAttributeForElementAtIndex(filenameTextElements, 0, "innerHTML");
-        var fileDetails = getAttributeForElementAtIndex(fileDetailsElements, 0, "innerHTML");
-
-        assertThat(filename).contains("test-caf");
-        assertThat(filename).contains("pdf");
-        assertThat(fileDetails).contains("0.4");
-        assertThat(fileDetails).contains("MB");
-
-        // shiba+test.jpg
-        filename = getAttributeForElementAtIndex(filenameTextElements, 1, "innerHTML");
-        fileDetails = getAttributeForElementAtIndex(fileDetailsElements, 1, "innerHTML");
-
-        assertThat(filename).contains("shiba");
-        assertThat(filename).contains("jpg");
-        assertThat(fileDetails).contains("51.7");
-        assertThat(fileDetails).contains("KB");
-
-        assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("2 files added");
+        testDocumentUploads();
 
         // Finish uploading docs and download PDFS
         testPage.clickButton("I'm finished uploading");
@@ -579,6 +521,62 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCafFieldEquals("MONEY_MADE_LAST_MONTH", "120.00");
 
         assertApplicationSubmittedEventWasPublished(applicationId, FULL, 3);
+    }
+
+    private void testDocumentUploads() {
+        // Uploading a file should change the page styling
+        assertStylingOfEmptyDocumentUploadPage();
+        uploadJpgFile();
+        waitForDocumentUploadToComplete();
+        assertStylingOfNonEmptyDocumentUploadPage();
+
+        // Deleting the only uploaded document should keep you on the upload document screen
+        assertThat(driver.findElements(By.linkText("delete")).size()).isEqualTo(1);
+        deleteAFile();
+
+        assertThat(testPage.getTitle()).isEqualTo("Upload Documents");
+        assertThat(driver.findElements(By.linkText("delete")).size()).isEqualTo(0);
+
+        assertStylingOfEmptyDocumentUploadPage();
+
+        // Uploading multiple docs should work
+        uploadJpgFile();
+        assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("1 file added");
+        uploadPdfFile();
+        assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("2 files added");
+        uploadFile(TestUtils.getAbsoluteFilepathString("test-cover-pages.pdf"));
+        assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("3 files added");
+        waitForDocumentUploadToComplete();
+        assertThat(driver.findElements(By.linkText("delete")).size()).isEqualTo(3);
+
+        // After deleting a file, the order of the remaining files should be maintained
+        deleteAFile();
+        assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("2 files added");
+        var filenameTextElements = driver.findElementsByClassName("filename-text");
+        var fileDetailsElements = driver.findElementsByClassName("file-details");
+        assertFileDetailsAreCorrect(filenameTextElements, fileDetailsElements, 0, "test-caf", "pdf", "0.4", "MB");
+        assertFileDetailsAreCorrect(filenameTextElements, fileDetailsElements, 1, "shiba", "jpg", "51.7", "KB");
+    }
+
+    private void assertFileDetailsAreCorrect(List<WebElement> filenameTextElements,
+                                             List<WebElement> fileDetailsElements, int index,
+                                             String filenameWithoutExtension, String extension, String size,
+                                             String sizeUnit) {
+        // test-caf.pdf
+        var filename = getAttributeForElementAtIndex(filenameTextElements, index, "innerHTML");
+        var fileDetails = getAttributeForElementAtIndex(fileDetailsElements, index, "innerHTML");
+
+        assertThat(filename).contains(filenameWithoutExtension);
+        assertThat(filename).contains(extension);
+        assertThat(fileDetails).contains(size);
+        assertThat(fileDetails).contains(sizeUnit);
+    }
+
+    private void deleteAFile() {
+        testPage.clickLink("delete");
+
+        assertThat(testPage.getTitle()).isEqualTo("Delete a file");
+        testPage.clickButton("Yes, delete the file");
     }
 
     private void assertStylingOfNonEmptyDocumentUploadPage() {
