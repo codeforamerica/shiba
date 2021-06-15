@@ -72,11 +72,15 @@ public class FullFlowJourneyTest extends JourneyTest {
         testPage.enter("isPreparingMealsTogether", YES.getDisplayValue());
 
         // What is your current living situation?
-        testPage.enter("livingSituation", "None of these");
+        testPage.enter("livingSituation", "Staying in a hotel or motel");
         testPage.clickContinue();
 
         // Is anyone in your household going to school right now, either full or part-time?
-        testPage.enter("goingToSchool", NO.getDisplayValue());
+        testPage.enter("goingToSchool", YES.getDisplayValue());
+
+        // Who is going to school?
+        testPage.enter("whoIsGoingToSchool", List.of(householdMemberFullName));
+        testPage.clickContinue();
 
         // Is anyone in your household pregnant?
         testPage.enter("isPregnant", YES.getDisplayValue());
@@ -138,11 +142,20 @@ public class FullFlowJourneyTest extends JourneyTest {
         testPage.clickContinue();
 
         // Does anyone in your household get income from these other sources?
+        testPage.enter("unearnedIncomeCcap", "Benefits programs like MFIP, DWP, GA, or Tribal TANF");
+        testPage.enter("unearnedIncomeCcap", "Insurance Payments");
+        testPage.enter("unearnedIncomeCcap", "Contract for Deed");
         testPage.enter("unearnedIncomeCcap", "Money from a Trust");
+        testPage.enter("unearnedIncomeCcap", "Health Care Reimbursement");
+        testPage.enter("unearnedIncomeCcap", "Interest/Dividends");
+        testPage.enter("unearnedIncomeCcap", "Income from Other Sources");
         testPage.clickContinue();
 
         // Tell us how much money is received.
-        testPage.enter("trustMoneyAmount", "200.15");
+        testPage.enter("benefitsAmount", "10");
+        testPage.enter("contractForDeedAmount", "20");
+        testPage.enter("interestDividendsAmount", "30");
+        testPage.enter("otherSourcesAmount", "40");
         testPage.clickContinue();
 
         // Do you think the household will earn less money this month than last month?
@@ -310,7 +323,7 @@ public class FullFlowJourneyTest extends JourneyTest {
 
         // Finish uploading docs and download PDFS
         testPage.clickButton("I'm finished uploading");
-        String applicationId = downloadPdfs( true, true);
+        String applicationId = downloadPdfs(true, true);
 
         // CCAP fields
         assertCcapFieldEquals("APPLICATION_ID", applicationId);
@@ -336,7 +349,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCcapFieldEquals("FULL_NAME_0", householdMemberFullName);
         assertCcapFieldEquals("PROGRAMS_0", "CCAP");
         assertCcapFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "");
-        assertCcapFieldEquals("CCAP_EXPEDITED_ELIGIBILITY", "");
+        assertCcapFieldEquals("CCAP_EXPEDITED_ELIGIBILITY", "CCAP");
         assertCcapFieldEquals("GROSS_MONTHLY_INCOME_0", "120.00");
         assertCcapFieldEquals("APPLICANT_MAILING_ZIPCODE", "03104");
         assertCcapFieldEquals("APPLICANT_MAILING_CITY", "Cooltown");
@@ -345,7 +358,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCcapFieldEquals("APPLICANT_HOME_CITY", "someCity");
         assertCcapFieldEquals("APPLICANT_HOME_STATE", "MN");
         assertCcapFieldEquals("APPLICANT_HOME_ZIPCODE", "12345");
-        assertCcapFieldEquals("LIVING_SITUATION", "UNKNOWN");
+        assertCcapFieldEquals("LIVING_SITUATION", "HOTEL_OR_MOTEL");
         assertCcapFieldEquals("APPLICANT_WRITTEN_LANGUAGE_PREFERENCE", "ENGLISH");
         assertCcapFieldEquals("APPLICANT_SPOKEN_LANGUAGE_PREFERENCE", "ENGLISH");
         assertCcapFieldEquals("NEED_INTERPRETER", "Yes");
@@ -361,6 +374,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCcapFieldEquals("APPLICANT_HOME_STREET_ADDRESS", "someStreetAddress (not permanent)");
         assertCcapFieldEquals("ADULT_REQUESTING_CHILDCARE_LOOKING_FOR_JOB_FULL_NAME_0", "");
         assertCcapFieldEquals("ADULT_REQUESTING_CHILDCARE_GOING_TO_SCHOOL_FULL_NAME_0", "");
+        assertCcapFieldEquals("STUDENT_FULL_NAME_0", householdMemberFullName);
         assertCcapFieldEquals("CHILD_NEEDS_CHILDCARE_FULL_NAME_0", householdMemberFullName);
         assertCcapFieldEquals("SSI", "No");
         assertCcapFieldEquals("VETERANS_BENEFITS", "No");
@@ -369,12 +383,12 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCcapFieldEquals("RETIREMENT", "No");
         assertCcapFieldEquals("CHILD_OR_SPOUSAL_SUPPORT", "No");
         assertCcapFieldEquals("TRIBAL_PAYMENTS", "No");
-        assertCcapFieldEquals("BENEFITS", "No");
-        assertCcapFieldEquals("INSURANCE_PAYMENTS", "No");
-        assertCcapFieldEquals("CONTRACT_FOR_DEED", "No");
-        assertCcapFieldEquals("HEALTH_CARE_REIMBURSEMENT", "No");
-        assertCcapFieldEquals("INTEREST_DIVIDENDS", "No");
-        assertCcapFieldEquals("OTHER_SOURCES", "No");
+        assertCcapFieldEquals("BENEFITS", "Yes");
+        assertCcapFieldEquals("INSURANCE_PAYMENTS", "Yes");
+        assertCcapFieldEquals("CONTRACT_FOR_DEED", "Yes");
+        assertCcapFieldEquals("HEALTH_CARE_REIMBURSEMENT", "Yes");
+        assertCcapFieldEquals("INTEREST_DIVIDENDS", "Yes");
+        assertCcapFieldEquals("OTHER_SOURCES", "Yes");
         assertCcapFieldEquals("SELF_EMPLOYMENT_EMPLOYEE_FULL_NAME_0", householdMemberFullName);
         assertCcapFieldEquals("IS_US_CITIZEN_0", "Yes");
         assertCcapFieldEquals("SOCIAL_SECURITY_FREQUENCY", "Monthly");
@@ -387,7 +401,28 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCcapFieldEquals("SOCIAL_SECURITY", "Yes");
         assertCcapFieldEquals("SOCIAL_SECURITY_AMOUNT", "200.30");
         assertCcapFieldEquals("TRUST_MONEY", "Yes");
-        assertCcapFieldEquals("TRUST_MONEY_AMOUNT", "200.15");
+        assertCcapFieldEquals("TRUST_MONEY_AMOUNT", "");
+        assertCcapFieldEquals("BENEFITS", "Yes");
+        assertCcapFieldEquals("INSURANCE_PAYMENTS", "Yes");
+        assertCcapFieldEquals("CONTRACT_FOR_DEED", "Yes");
+        assertCcapFieldEquals("TRUST_MONEY", "Yes");
+        assertCcapFieldEquals("HEALTH_CARE_REIMBURSEMENT", "Yes");
+        assertCcapFieldEquals("INTEREST_DIVIDENDS", "Yes");
+        assertCcapFieldEquals("OTHER_SOURCES", "Yes");
+        assertCcapFieldEquals("BENEFITS_AMOUNT", "10");
+        assertCcapFieldEquals("INSURANCE_PAYMENTS_AMOUNT", "");
+        assertCcapFieldEquals("CONTRACT_FOR_DEED_AMOUNT", "20");
+        assertCcapFieldEquals("TRUST_MONEY_AMOUNT", "");
+        assertCcapFieldEquals("HEALTH_CARE_REIMBURSEMENT_AMOUNT", "");
+        assertCcapFieldEquals("INTEREST_DIVIDENDS_AMOUNT", "30");
+        assertCcapFieldEquals("OTHER_SOURCES_AMOUNT", "40");
+        assertCcapFieldEquals("BENEFITS_FREQUENCY", "Monthly");
+        assertCcapFieldEquals("INSURANCE_PAYMENTS_FREQUENCY", "Monthly");
+        assertCcapFieldEquals("CONTRACT_FOR_DEED_FREQUENCY", "Monthly");
+        assertCcapFieldEquals("TRUST_MONEY_FREQUENCY", "Monthly");
+        assertCcapFieldEquals("HEALTH_CARE_REIMBURSEMENT_FREQUENCY", "Monthly");
+        assertCcapFieldEquals("INTEREST_DIVIDENDS_FREQUENCY", "Monthly");
+        assertCcapFieldEquals("OTHER_SOURCES_FREQUENCY", "Monthly");
         assertCcapFieldEquals("EARN_LESS_MONEY_THIS_MONTH", "Yes");
         assertCcapFieldEquals("ADDITIONAL_INCOME_INFO", "I also make a small amount of money from my lemonade stand.");
         assertCcapFieldEquals("HAVE_MILLION_DOLLARS", "No");
@@ -429,7 +464,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCafFieldEquals("FULL_NAME_0", householdMemberFullName);
         assertCafFieldEquals("PROGRAMS_0", "CCAP");
         assertCafFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "");
-        assertCafFieldEquals("CCAP_EXPEDITED_ELIGIBILITY", "");
+        assertCafFieldEquals("CCAP_EXPEDITED_ELIGIBILITY", "CCAP");
         assertCafFieldEquals("GROSS_MONTHLY_INCOME_0", "120.00");
         assertCafFieldEquals("CREATED_DATE", "2020-01-01");
         assertCafFieldEquals("HEATING_COOLING_SELECTION", "ONE_SELECTED");
@@ -463,7 +498,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCafFieldEquals("APPLICANT_HOME_CITY", "someCity");
         assertCafFieldEquals("APPLICANT_HOME_STATE", "MN");
         assertCafFieldEquals("APPLICANT_HOME_ZIPCODE", "12345");
-        assertCafFieldEquals("LIVING_SITUATION", "UNKNOWN");
+        assertCafFieldEquals("LIVING_SITUATION", "HOTEL_OR_MOTEL");
         assertCafFieldEquals("MEDICAL_EXPENSES_SELECTION", "ONE_SELECTED");
         assertCafFieldEquals("EMPLOYEE_FULL_NAME_0", householdMemberFullName);
         assertCafFieldEquals("WHO_IS_PREGNANT", "Ahmed St. George");
@@ -488,7 +523,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCafFieldEquals("APPLICANT_PREVIOUS_STATE", "Chicago");
         assertCafFieldEquals("APPLICANT_PHONE_NUMBER", "(723) 456-7890");
         assertCafFieldEquals("PREPARING_MEALS_TOGETHER", "Yes");
-        assertCafFieldEquals("GOING_TO_SCHOOL", "No");
+        assertCafFieldEquals("GOING_TO_SCHOOL", "Yes");
         assertCafFieldEquals("IS_PREGNANT", "Yes");
         assertCafFieldEquals("IS_US_CITIZEN", "No");
         assertCafFieldEquals("EXPEDITED_QUESTION_2", "1234");
@@ -542,8 +577,10 @@ public class FullFlowJourneyTest extends JourneyTest {
     }
 
     private void assertStylingOfNonEmptyDocumentUploadPage() {
-        assertThat(driver.findElementById("drag-and-drop-box").getAttribute("class")).contains("drag-and-drop-box-compact");
-        assertThat(driver.findElementById("upload-button").getAttribute("class")).contains("grid--item width-one-third");
+        assertThat(driver.findElementById("drag-and-drop-box").getAttribute("class")).contains(
+                "drag-and-drop-box-compact");
+        assertThat(driver.findElementById("upload-button")
+                           .getAttribute("class")).contains("grid--item width-one-third");
         assertThat(driver.findElementById("vertical-header-desktop").getAttribute("class")).contains("hidden");
         assertThat(driver.findElementById("vertical-header-mobile").getAttribute("class")).contains("hidden");
         assertThat(driver.findElementById("horizontal-header-desktop").getAttribute("class")).doesNotContain("hidden");
@@ -552,8 +589,10 @@ public class FullFlowJourneyTest extends JourneyTest {
     }
 
     private void assertStylingOfEmptyDocumentUploadPage() {
-        assertThat(driver.findElementById("drag-and-drop-box").getAttribute("class")).doesNotContain("drag-and-drop-box-compact");
-        assertThat(driver.findElementById("upload-button").getAttribute("class")).doesNotContain("grid--item width-one-third");
+        assertThat(driver.findElementById("drag-and-drop-box").getAttribute("class")).doesNotContain(
+                "drag-and-drop-box-compact");
+        assertThat(driver.findElementById("upload-button").getAttribute("class")).doesNotContain(
+                "grid--item width-one-third");
         assertThat(driver.findElementById("vertical-header-desktop").getAttribute("class")).doesNotContain("hidden");
         assertThat(driver.findElementById("vertical-header-mobile").getAttribute("class")).doesNotContain("hidden");
         assertThat(driver.findElementById("horizontal-header-desktop").getAttribute("class")).contains("hidden");
