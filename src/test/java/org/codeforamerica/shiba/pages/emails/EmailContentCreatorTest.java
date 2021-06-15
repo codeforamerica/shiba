@@ -86,7 +86,7 @@ class EmailContentCreatorTest {
                 CcapExpeditedEligibility.UNDETERMINED,
                 Locale.ENGLISH);
         assertThat(emailContent).contains(expeditedEligibilityContent);
-        assertThat(emailContent).contains("please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a><br><br>**This is an automated message. Please do not reply to this message.**</body><html>");
+        assertThat(emailContent).contains("please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a><br><br>You may be able to receive more support. See “What benefits programs do I qualify for” at <a href=\"mnbenefits.org/faq\" target=\"_blank\">mnbenefits.org/faq</a>.<br><br>**This is an automated message. Please do not reply to this message.**</body><html>");
     }
 
     @Test
