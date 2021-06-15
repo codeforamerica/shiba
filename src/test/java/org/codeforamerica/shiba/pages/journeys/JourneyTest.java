@@ -163,7 +163,7 @@ public abstract class JourneyTest extends AbstractBasePageTest {
         testPage.enter("state", "IL");
         testPage.enter("apartmentNumber", "someApartmentNumber");
         when(smartyStreetClient.validateAddress(any())).thenReturn(
-                Optional.of(new Address("smarty street", "Cooltown", "CA", "03104", "", "someCounty"))
+                Optional.of(new Address("smarty street", "Cooltown", "CA", "03104", "1b", "someCounty"))
         );
         testPage.clickContinue();
         testPage.clickElementById("enriched-address");

@@ -25,7 +25,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     private final String mailingCity = "Cooltown";
     private final String mailingState = "CA";
     private final String mailingZip = "03104";
-    private final String mailingApartmentNumber = "";
+    private final String mailingApartmentNumber = "1b";
     private final String signature = "some signature";
 
     @Test

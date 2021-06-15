@@ -187,11 +187,14 @@ public class FullFlowJourneyTest extends JourneyTest {
         testPage.enter("energyAssistanceMoreThan20", YES.getDisplayValue());
         testPage.enter("medicalExpenses", "Dental insurance premiums");
         testPage.enter("medicalExpenses", "Vision insurance premiums");
+        testPage.enter("medicalExpenses", "Medical insurance premiums");
         testPage.clickContinue();
 
         // Tell us how much money is paid.
         testPage.enter("dentalInsurancePremiumAmount", "12.34");
         testPage.enter("visionInsurancePremiumAmount", "56.35");
+        testPage.enter("medicalInsurancePremiumAmount", "10.90");
+
         testPage.clickContinue();
 
         // Does anyone in the household pay for court-ordered child support, spousal support, child care support or medical care?
@@ -393,8 +396,10 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCcapFieldEquals("IS_US_CITIZEN_0", "Yes");
         assertCcapFieldEquals("SOCIAL_SECURITY_FREQUENCY", "Monthly");
         assertCcapFieldEquals("TRUST_MONEY_FREQUENCY", "Monthly");
+        assertCcapFieldEquals("MEDICAL_INSURANCE_PREMIUM_FREQUENCY", "Monthly");
         assertCcapFieldEquals("VISION_INSURANCE_PREMIUM_FREQUENCY", "Monthly");
         assertCcapFieldEquals("DENTAL_INSURANCE_PREMIUM_FREQUENCY", "Monthly");
+        assertCcapFieldEquals("MEDICAL_INSURANCE_PREMIUM_AMOUNT", "10.90");
         assertCcapFieldEquals("DENTAL_INSURANCE_PREMIUM_AMOUNT", "12.34");
         assertCcapFieldEquals("VISION_INSURANCE_PREMIUM_AMOUNT", "56.35");
         assertCcapFieldEquals("IS_WORKING", "Yes");
@@ -477,7 +482,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCafFieldEquals("APPLICANT_MAILING_CITY", "Cooltown");
         assertCafFieldEquals("APPLICANT_MAILING_STATE", "CA");
         assertCafFieldEquals("APPLICANT_MAILING_STREET_ADDRESS", "smarty street");
-        assertCafFieldEquals("APPLICANT_MAILING_APT_NUMBER", "");
+        assertCafFieldEquals("APPLICANT_MAILING_APT_NUMBER", "1b");
         assertCafFieldEquals("SSI", "No");
         assertCafFieldEquals("VETERANS_BENEFITS", "No");
         assertCafFieldEquals("UNEMPLOYMENT", "No");

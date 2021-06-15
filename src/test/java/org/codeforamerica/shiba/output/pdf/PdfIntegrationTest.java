@@ -4,7 +4,6 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.AbstractBasePageTest;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.SuccessPage;
-import org.codeforamerica.shiba.pages.YesNoAnswer;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.enrichment.Address;
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -403,51 +401,6 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         }
 
         @Test
-        void shouldMapUnearnedIncome() {
-            navigateTo("unearnedIncome");
-            testPage.enter("unearnedIncome", "Social Security");
-            testPage.enter("unearnedIncome", "Child or Spousal Support");
-            testPage.clickContinue();
-
-            testPage.enter("socialSecurityAmount", "10");
-            testPage.enter("childOrSpousalSupportAmount", "20");
-            testPage.clickContinue();
-
-            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-
-            List.of(CAF, CCAP).forEach(type -> {
-                        PDAcroForm pdAcroForm = pdAcroForms.get(type);
-                        assertThat(pdAcroForm.getField("SOCIAL_SECURITY").getValueAsString()).isEqualTo("Yes");
-                        assertThat(pdAcroForm.getField("CHILD_OR_SPOUSAL_SUPPORT").getValueAsString()).isEqualTo("Yes");
-                        assertThat(pdAcroForm.getField("SSI").getValueAsString()).isEqualTo("No");
-                        assertThat(pdAcroForm.getField("VETERANS_BENEFITS").getValueAsString()).isEqualTo("No");
-                        assertThat(pdAcroForm.getField("UNEMPLOYMENT").getValueAsString()).isEqualTo("No");
-                        assertThat(pdAcroForm.getField("WORKERS_COMPENSATION").getValueAsString()).isEqualTo("No");
-                        assertThat(pdAcroForm.getField("RETIREMENT").getValueAsString()).isEqualTo("No");
-                        assertThat(pdAcroForm.getField("TRIBAL_PAYMENTS").getValueAsString()).isEqualTo("No");
-                    }
-            );
-            PDAcroForm ccap = pdAcroForms.get(CCAP);
-            assertThat(ccap.getField("SOCIAL_SECURITY_AMOUNT").getValueAsString()).isEqualTo("10");
-            assertThat(ccap.getField("CHILD_OR_SPOUSAL_SUPPORT_AMOUNT").getValueAsString()).isEqualTo("20");
-            assertThat(ccap.getField("SUPPLEMENTAL_SECURITY_INCOME_AMOUNT").getValueAsString()).isEqualTo("");
-            assertThat(ccap.getField("VETERANS_BENEFITS_AMOUNT").getValueAsString()).isEqualTo("");
-            assertThat(ccap.getField("UNEMPLOYMENT_INSURANCE_AMOUNT").getValueAsString()).isEqualTo("");
-            assertThat(ccap.getField("WORKERS_COMPENSATION_AMOUNT").getValueAsString()).isEqualTo("");
-            assertThat(ccap.getField("RETIREMENT_BENEFITS_AMOUNT").getValueAsString()).isEqualTo("");
-            assertThat(ccap.getField("TRIBAL_PAYMENTS_AMOUNT").getValueAsString()).isEqualTo("");
-
-            assertThat(ccap.getField("SOCIAL_SECURITY_FREQUENCY").getValueAsString()).isEqualTo("Monthly");
-            assertThat(ccap.getField("CHILD_OR_SPOUSAL_SUPPORT_FREQUENCY").getValueAsString()).isEqualTo("Monthly");
-            assertThat(ccap.getField("SUPPLEMENTAL_SECURITY_INCOME_FREQUENCY").getValueAsString()).isEqualTo("");
-            assertThat(ccap.getField("VETERANS_BENEFITS_FREQUENCY").getValueAsString()).isEqualTo("");
-            assertThat(ccap.getField("UNEMPLOYMENT_INSURANCE_FREQUENCY").getValueAsString()).isEqualTo("");
-            assertThat(ccap.getField("WORKERS_COMPENSATION_FREQUENCY").getValueAsString()).isEqualTo("");
-            assertThat(ccap.getField("RETIREMENT_BENEFITS_FREQUENCY").getValueAsString()).isEqualTo("");
-            assertThat(ccap.getField("TRIBAL_PAYMENTS_FREQUENCY").getValueAsString()).isEqualTo("");
-        }
-
-        @Test
         void shouldMapEnrichedAddressIfHomeAddressUsesEnrichedAddress() {
             navigateTo("homeAddress");
             testPage.enter("streetAddress", "originalStreetAddress");
@@ -617,49 +570,6 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
                 assertThat(pdAcroForms.get(CAF).getField("APPLICANT_MAILING_APT_NUMBER").getValueAsString())
                         .isEqualTo(originalApt);
             }
-
-            @Test
-            void shouldMapToEnrichedMailingAddressIfSameMailingAddressIsFalseAndUseEnrichedAddressIsTrue() {
-                navigateTo("homeAddress");
-                fillInAddress();
-                testPage.enter("sameMailingAddress", "No, use a different address for mail");
-                testPage.clickContinue();
-                testPage.clickButton("Use this address");
-                testPage.enter("streetAddress", "originalStreetAddress");
-                testPage.enter("apartmentNumber", "originalApt");
-                testPage.enter("city", "originalCity");
-                testPage.enter("state", "IL");
-                testPage.enter("zipCode", "54321");
-                String enrichedStreetValue = "testStreet";
-                String enrichedCityValue = "testCity";
-                String enrichedZipCodeValue = "testZipCode";
-                String enrichedApartmentNumber = "someApt";
-                String enrichedState = "someState";
-                when(locationClient.validateAddress(any()))
-                        .thenReturn(Optional.of(new Address(
-                                enrichedStreetValue,
-                                enrichedCityValue,
-                                enrichedState,
-                                enrichedZipCodeValue,
-                                enrichedApartmentNumber,
-                                "Hennepin")));
-                testPage.clickContinue();
-                testPage.clickContinue();
-
-                Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-                PDAcroForm pdAcroForm = pdAcroForms.get(CCAP);
-                assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
-                        .isEqualTo(enrichedStreetValue);
-                assertThat(pdAcroForm.getField("APPLICANT_MAILING_CITY").getValueAsString())
-                        .isEqualTo(enrichedCityValue);
-                assertThat(pdAcroForm.getField("APPLICANT_MAILING_STATE").getValueAsString())
-                        .isEqualTo(enrichedState);
-                assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
-                        .isEqualTo(enrichedZipCodeValue);
-
-                assertThat(pdAcroForms.get(CAF).getField("APPLICANT_MAILING_APT_NUMBER").getValueAsString())
-                        .isEqualTo(enrichedApartmentNumber);
-            }
         }
 
         @Test
@@ -686,23 +596,6 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             assertThat(pdAcroForms.get(CCAP).getField("NON_SELF_EMPLOYMENT_EMPLOYEE_FULL_NAME_0").getValueAsString())
                     .isEqualTo("Jim Halpert");
 
-        }
-
-        @Test
-        void shouldMapAdditionalIncomeInfo() {
-            navigateTo("futureIncome");
-            testPage.enter("earnLessMoneyThisMonth", YesNoAnswer.YES.getDisplayValue());
-            driver.findElement(By.id("additionalIncomeInfo")).sendKeys("abc");
-            testPage.clickContinue();
-
-            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-            List.of(CAF, CCAP).forEach(type -> {
-                PDAcroForm pdAcroForm = pdAcroForms.get(type);
-                assertThat(getPdfFieldText(pdAcroForm, "ADDITIONAL_INCOME_INFO")).isEqualTo("abc");
-            });
-
-            PDAcroForm pdAcroForm = pdAcroForms.get(CCAP);
-            assertThat(getPdfFieldText(pdAcroForm, "EARN_LESS_MONEY_THIS_MONTH")).isEqualTo("Yes");
         }
 
         @Test
@@ -771,15 +664,6 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         }
 
         @Test
-        void shouldMapAdditionalApplicationInformationTextToCAFAndCCAP() {
-            navigateTo("additionalInfo");
-            driver.findElement(By.id("additionalInfo")).sendKeys("Some additional information about my application");
-            testPage.clickContinue();
-            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADDITIONAL_APPLICATION_INFO")).isEqualTo("Some additional information about my application");
-        }
-
-        @Test
         void shouldMapLivingSituationToUnknownIfNoneOfTheseIsSelectedAndShouldNotMapTemporarilyWithFriendsOrFamilyYesNo() {
             fillInRequiredPages();
 
@@ -835,20 +719,6 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         }
 
         @Test
-        void shouldMapCcapExpeditedEligibility() {
-            fillInRequiredPages();
-
-            navigateTo("livingSituation");
-            testPage.enter("livingSituation", "Staying in a hotel or motel");
-            testPage.clickContinue();
-
-            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-
-            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "CCAP_EXPEDITED_ELIGIBILITY")).isEqualTo("CCAP");
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "CCAP_EXPEDITED_ELIGIBILITY")).isEqualTo("CCAP");
-        }
-
-        @Test
         void shouldMapNoMedicalExpensesWhenNoneSelected() {
             fillInRequiredPages();
             navigateTo("medicalExpenses");
@@ -868,21 +738,6 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
 
             Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
             assertThat(getPdfFieldText(pdAcroForms.get(CAF), "MEDICAL_EXPENSES_SELECTION")).isEqualTo("ONE_SELECTED");
-        }
-
-        @Test
-        void shouldMapYesMedicalExpensesWhenOneSelectedAndEnterAmount() {
-            fillInRequiredPages();
-            navigateTo("medicalExpenses");
-            testPage.enter("medicalExpenses", "Medical insurance premiums");
-            testPage.clickContinue();
-            testPage.enter("medicalInsurancePremiumAmount", "10");
-            testPage.clickContinue();
-
-            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "MEDICAL_EXPENSES_SELECTION")).isEqualTo("ONE_SELECTED");
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "MEDICAL_INSURANCE_PREMIUM_AMOUNT")).isEqualTo("10");
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "MEDICAL_INSURANCE_PREMIUM_FREQUENCY")).isEqualTo("Monthly");
         }
     }
 
