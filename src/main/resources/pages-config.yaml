@@ -7,6 +7,11 @@ conditionDefinitions:
     pageName: addHouseholdMembers
     input: addHouseholdMembers
     value: "true"
+  - &isHomeless?
+    pageName: homeAddress
+    input: isHomeless
+    matcher: DOES_NOT_CONTAIN
+    value: "true"
   - &isApplicantsJob?
     pageName: householdSelectionForIncome
     input: whoseJobIsIt
@@ -443,8 +448,6 @@ pageDefinitions:
     pageTitle: home-address.title
     contextFragment: addressContextFragment
     inputs:
-      - name: sameMailingAddress
-        type: HIDDEN
       - name: isHomeless
         type: CUSTOM
         customInputFragment: addressInputFragment
@@ -460,10 +463,7 @@ pageDefinitions:
             validators:
               - validation: NOT_BLANK
                 errorMessageKey: general.validation.make-sure-you-answer-this-question
-                condition:
-                  input: isHomeless
-                  matcher: DOES_NOT_CONTAIN
-                  value: "true"
+                condition: *isHomeless?
           - name: apartmentNumber
             type: TEXT
             promptMessage:
@@ -475,10 +475,7 @@ pageDefinitions:
             validators:
               - validation: NOT_BLANK
                 errorMessageKey: general.validation.make-sure-you-answer-this-question
-                condition:
-                  input: isHomeless
-                  matcher: DOES_NOT_CONTAIN
-                  value: "true"
+                condition: *isHomeless?
           - name: state
             type: TEXT
             promptMessage:
@@ -492,8 +489,76 @@ pageDefinitions:
             validators:
               - validation: ZIPCODE
                 errorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
+                condition: *isHomeless?
+  - &whereToSendMail
+    name: whereToSendMail
+    headerKey: where-to-send-mail.the-county-will-need-a-place-to-send-you-mail
+    headerHelpMessageKey: where-to-send-mail.this-could-be-a-friend-or-family-address
+    pageTitle: where-to-send-mail.title
+    contextFragment: mailContextFragment
+    primaryButtonTextKey: where-to-send-mail.I-have-a-place-to-get-mail
+    subtleLinkTextKey: where-to-send-mail.I-will-pick-up-my-mail-at-a-post-office
+  - &mailingAddress2
+    name: mailingAddress
+    headerKey: mailing-address.where-can-the-county-send-your-mail
+    pageTitle: mailing-address.title
+    contextFragment: mailContextFragment
+    inputs:
+      - name: sameMailingAddress
+        type: CUSTOM
+        customInputFragment: addressInputFragment
+        options:
+          selectableOptions:
+            - value: "true"
+              messageKey: mailing-address.same-as-my-current-living-address
+        followUps:
+          - name: streetAddress
+            type: TEXT
+            promptMessage:
+              promptMessageKey: mailing-address.what-is-the-street-address
+            validators:
+              - validation: NOT_BLANK
+                errorMessageKey: general.validation.make-sure-you-answer-this-question
                 condition:
-                  input: isHomeless
+                  input: sameMailingAddress
+                  matcher: DOES_NOT_CONTAIN
+                  value: "true"
+          - name: apartmentNumber
+            type: TEXT
+            promptMessage:
+              promptMessageKey: mailing-address.apartment-number
+          - name: city
+            type: TEXT
+            promptMessage:
+              promptMessageKey: mailing-address.what-is-the-city
+            validators:
+              - validation: NOT_BLANK
+                errorMessageKey: general.validation.make-sure-you-answer-this-question
+                condition:
+                  input: sameMailingAddress
+                  matcher: DOES_NOT_CONTAIN
+                  value: "true"
+          - name: state
+            type: TEXT
+            promptMessage:
+              promptMessageKey: mailing-address.what-is-the-state
+            validators:
+              - validation: STATE
+                errorMessageKey: general.validation.make-sure-to-provide-a-valid-2-letter-state-code
+                condition:
+                  input: sameMailingAddress
+                  matcher: DOES_NOT_CONTAIN
+                  value: "true"
+            defaultValue: MN
+          - name: zipCode
+            type: TEXT
+            promptMessage:
+              promptMessageKey: mailing-address.what-is-the-zip-code
+            validators:
+              - validation: ZIPCODE
+                errorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
+                condition:
+                  input: sameMailingAddress
                   matcher: DOES_NOT_CONTAIN
                   value: "true"
   - &mailingAddress
@@ -538,6 +603,7 @@ pageDefinitions:
     name: reviewInfo
     pageTitle: review-info.title
     headerKey: review-info.lets-review-your-info
+    contextFragment: docWithMagnifyingGlassContextFragment
   - &addHouseholdMembers
     name: addHouseholdMembers
     headerKey: add-household-members.do-you-want-to-add-household-members
@@ -2430,16 +2496,52 @@ workflow:
       - pageName: homeAddress2
         flag: apply-without-address
       - pageName: homeAddress
+  homeAddress2:
+    pageConfiguration: *homeAddress2
+    enrichment: homeAddressEnrichment
+    nextPages:
+      - pageName: whereToSendMail
+        condition:
+          input: isHomeless
+          value: "true"
+      - pageName: verifyHomeAddress2
+  verifyHomeAddress2:
+    pageConfiguration: *homeAddressValidation
+    skipCondition: *isHomeless?
+    datasources:
+      - pageName: homeAddress
+    nextPages:
+      - pageName: mailingAddress2
+      - pageName: homeAddress2
+  whereToSendMail:
+    pageConfiguration: *whereToSendMail
+    nextPages:
+      - pageName: mailingAddress2
+      - pageName: mailingAddress2 # TODO change to "City and zip"
+  mailingAddress2:
+    pageConfiguration: *mailingAddress2
+    enrichment: mailingAddressEnrichment
+    nextPages:
+      - pageName: verifyMailingAddress2
+    datasources:
+      - pageName: homeAddress
+  verifyMailingAddress2:
+    pageConfiguration: *mailingAddressValidation
+    skipCondition:
+      pageName: mailingAddress
+      input: sameMailingAddress
+      value: "true"
+    datasources:
+      - pageName: mailingAddress
+      - pageName: homeAddress
+    nextPages:
+      - pageName: reviewInfo
+      - pageName: mailingAddress2
   homeAddress:
     pageConfiguration: *homeAddress
     enrichment: homeAddressEnrichment
     nextPages:
       - pageName: verifyHomeAddress
-  homeAddress2:
-    pageConfiguration: *homeAddress2
-    enrichment: homeAddressEnrichment
-    nextPages:
-      - pageName: verifyHomeAddress2
   verifyHomeAddress:
     pageConfiguration: *homeAddressValidation
     skipCondition:
@@ -2451,17 +2553,6 @@ workflow:
     nextPages:
       - pageName: mailingAddress
       - pageName: homeAddress
-  verifyHomeAddress2:
-    pageConfiguration: *homeAddressValidation
-    skipCondition:
-      pageName: homeAddress
-      input: streetAddress
-      matcher: EMPTY
-    datasources:
-      - pageName: homeAddress
-    nextPages:
-      - pageName: mailingAddress
-      - pageName: homeAddress2
   mailingAddress:
     pageConfiguration: *mailingAddress
     enrichment: mailingAddressEnrichment
