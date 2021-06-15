@@ -277,6 +277,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
                     .applicationData(new ApplicationData())
                     .timeToComplete(Duration.ofDays(1))
                     .county(defaultCounty)
+                    .flow(FlowType.FULL)
                     .completedAt(defaultCompletedAt)
                     .build();
             Application application2 = Application.builder()
@@ -284,6 +285,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
                     .applicationData(new ApplicationData())
                     .timeToComplete(Duration.ofDays(2))
                     .county(defaultCounty)
+                    .flow(FlowType.FULL)
                     .completedAt(defaultCompletedAt)
                     .build();
             Application application3 = Application.builder()
@@ -291,6 +293,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
                     .applicationData(new ApplicationData())
                     .timeToComplete(Duration.ofDays(3))
                     .county(defaultCounty)
+                    .flow(FlowType.FULL)
                     .completedAt(defaultCompletedAt)
                     .build();
             Application application4 = Application.builder()
@@ -298,6 +301,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
                     .applicationData(new ApplicationData())
                     .timeToComplete(Duration.ofDays(4))
                     .county(defaultCounty)
+                    .flow(FlowType.FULL)
                     .completedAt(defaultCompletedAt)
                     .build();
 
@@ -315,12 +319,13 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
         }
 
         @Test
-        void shouldGetCount() {
+        void shouldGetCountOfNonLaterDocsSubmissions() {
             Application application1 = Application.builder()
                     .id("someId1")
                     .applicationData(new ApplicationData())
                     .timeToComplete(defaultDuration)
                     .county(defaultCounty)
+                    .flow(FlowType.FULL)
                     .completedAt(defaultCompletedAt)
                     .build();
             Application application2 = Application.builder()
@@ -328,6 +333,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
                     .applicationData(new ApplicationData())
                     .timeToComplete(defaultDuration)
                     .county(defaultCounty)
+                    .flow(FlowType.FULL)
                     .completedAt(defaultCompletedAt)
                     .build();
             Application application3 = Application.builder()
@@ -335,6 +341,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
                     .applicationData(new ApplicationData())
                     .timeToComplete(defaultDuration)
                     .county(defaultCounty)
+                    .flow(FlowType.FULL)
                     .completedAt(defaultCompletedAt)
                     .build();
             Application application4 = Application.builder()
@@ -342,6 +349,15 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
                     .applicationData(new ApplicationData())
                     .timeToComplete(defaultDuration)
                     .county(defaultCounty)
+                    .flow(FlowType.FULL)
+                    .completedAt(defaultCompletedAt)
+                    .build();
+            Application application5 = Application.builder()
+                    .id("someId5")
+                    .applicationData(new ApplicationData())
+                    .timeToComplete(defaultDuration)
+                    .county(defaultCounty)
+                    .flow(FlowType.LATER_DOCS)
                     .completedAt(defaultCompletedAt)
                     .build();
 
@@ -349,6 +365,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
             applicationRepository.save(application2);
             applicationRepository.save(application3);
             applicationRepository.save(application4);
+            applicationRepository.save(application5);
 
             assertThat(applicationRepository.count()).isEqualTo(4);
         }
@@ -360,6 +377,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
                     .applicationData(new ApplicationData())
                     .timeToComplete(defaultDuration)
                     .county(Olmsted)
+                    .flow(FlowType.FULL)
                     .completedAt(defaultCompletedAt)
                     .build();
             Application application2 = Application.builder()
@@ -367,6 +385,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
                     .applicationData(new ApplicationData())
                     .timeToComplete(defaultDuration)
                     .county(defaultCounty)
+                    .flow(FlowType.FULL)
                     .completedAt(defaultCompletedAt)
                     .build();
             Application application3 = Application.builder()
@@ -374,6 +393,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
                     .applicationData(new ApplicationData())
                     .timeToComplete(defaultDuration)
                     .county(Hennepin)
+                    .flow(FlowType.FULL)
                     .completedAt(defaultCompletedAt)
                     .build();
             Application application4 = Application.builder()
@@ -381,6 +401,15 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
                     .applicationData(new ApplicationData())
                     .timeToComplete(defaultDuration)
                     .county(Hennepin)
+                    .flow(FlowType.FULL)
+                    .completedAt(defaultCompletedAt)
+                    .build();
+            Application application5 = Application.builder()
+                    .id("someId5")
+                    .applicationData(new ApplicationData())
+                    .timeToComplete(defaultDuration)
+                    .county(Hennepin)
+                    .flow(FlowType.LATER_DOCS)
                     .completedAt(defaultCompletedAt)
                     .build();
 
@@ -388,6 +417,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
             applicationRepository.save(application2);
             applicationRepository.save(application3);
             applicationRepository.save(application4);
+            applicationRepository.save(application5);
 
             assertThat(applicationRepository.countByCounty()).isEqualTo(
                     Map.of(
@@ -411,6 +441,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
                     .applicationData(new ApplicationData())
                     .timeToComplete(defaultDuration)
                     .county(Olmsted)
+                    .flow(FlowType.FULL)
                     .completedAt(ZonedDateTime.of(2019, 12, 29, 5, 59, 59, 0, ZoneId.of("UTC")))
                     .build();
             Application application2 = Application.builder()
@@ -418,6 +449,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
                     .applicationData(new ApplicationData())
                     .timeToComplete(defaultDuration)
                     .county(Olmsted)
+                    .flow(FlowType.FULL)
                     .completedAt(ZonedDateTime.of(2019, 12, 29, 6, 0, 0, 0, ZoneId.of("UTC")))
                     .build();
             Application application3 = Application.builder()
@@ -425,6 +457,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
                     .applicationData(new ApplicationData())
                     .timeToComplete(defaultDuration)
                     .county(Hennepin)
+                    .flow(FlowType.FULL)
                     .completedAt(ZonedDateTime.of(2019, 12, 31, 17, 59, 59, 0, ZoneId.of("UTC")))
                     .build();
 
@@ -448,6 +481,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
                     .applicationData(new ApplicationData())
                     .timeToComplete(Duration.ofDays(1))
                     .county(defaultCounty)
+                    .flow(FlowType.FULL)
                     .completedAt(ZonedDateTime.of(2019, 12, 29, 5, 59, 59, 0, ZoneId.of("UTC")))
                     .build();
             Application application2 = Application.builder()
@@ -455,6 +489,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
                     .applicationData(new ApplicationData())
                     .timeToComplete(Duration.ofDays(2))
                     .county(defaultCounty)
+                    .flow(FlowType.FULL)
                     .completedAt(ZonedDateTime.of(2019, 12, 29, 6, 0, 0, 0, ZoneId.of("UTC")))
                     .build();
             Application application3 = Application.builder()
@@ -462,6 +497,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
                     .applicationData(new ApplicationData())
                     .timeToComplete(Duration.ofDays(3))
                     .county(defaultCounty)
+                    .flow(FlowType.FULL)
                     .completedAt(ZonedDateTime.of(2019, 12, 31, 17, 59, 59, 0, ZoneId.of("UTC")))
                     .build();
 
@@ -488,6 +524,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
                     .applicationData(new ApplicationData())
                     .timeToComplete(Duration.ofDays(1))
                     .county(defaultCounty)
+                    .flow(FlowType.FULL)
                     .completedAt(ZonedDateTime.of(2019, 12, 29, 5, 59, 59, 0, ZoneId.of("UTC")))
                     .build();
             Application application2 = Application.builder()
@@ -495,6 +532,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
                     .applicationData(new ApplicationData())
                     .timeToComplete(Duration.ofDays(2))
                     .county(defaultCounty)
+                    .flow(FlowType.FULL)
                     .completedAt(ZonedDateTime.of(2019, 12, 29, 6, 0, 0, 0, ZoneId.of("UTC")))
                     .build();
             Application application3 = Application.builder()
@@ -502,6 +540,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
                     .applicationData(new ApplicationData())
                     .timeToComplete(Duration.ofDays(4))
                     .county(defaultCounty)
+                    .flow(FlowType.FULL)
                     .completedAt(ZonedDateTime.of(2019, 12, 31, 17, 59, 59, 0, ZoneId.of("UTC")))
                     .build();
             Application application4 = Application.builder()
@@ -509,6 +548,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
                     .applicationData(new ApplicationData())
                     .timeToComplete(Duration.ofDays(10))
                     .county(defaultCounty)
+                    .flow(FlowType.FULL)
                     .completedAt(ZonedDateTime.of(2019, 12, 31, 17, 59, 59, 0, ZoneId.of("UTC")))
                     .build();
             Application application5 = Application.builder()
@@ -516,6 +556,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
                     .applicationData(new ApplicationData())
                     .timeToComplete(Duration.ofDays(20))
                     .county(defaultCounty)
+                    .flow(FlowType.FULL)
                     .completedAt(ZonedDateTime.of(2019, 12, 31, 17, 59, 59, 0, ZoneId.of("UTC")))
                     .build();
 

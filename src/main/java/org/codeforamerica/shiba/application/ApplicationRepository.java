@@ -119,18 +119,18 @@ public class ApplicationRepository {
     }
 
     public Duration getMedianTimeToComplete() {
-        Long medianTimeToComplete = jdbcTemplate.queryForObject("SELECT COALESCE(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY time_to_complete), 0) FROM applications", Long.class);
+        Long medianTimeToComplete = jdbcTemplate.queryForObject("SELECT COALESCE(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY time_to_complete), 0) FROM applications  WHERE flow <> 'LATER_DOCS' AND completed_at IS NOT NULL;", Long.class);
         return Duration.ofSeconds(Objects.requireNonNull(medianTimeToComplete));
     }
 
     public Integer count() {
-        return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM applications;", Integer.class);
+        return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM applications WHERE flow <> 'LATER_DOCS' AND completed_at IS NOT NULL;", Integer.class);
     }
 
     public Map<County, Integer> countByCounty() {
         return jdbcTemplate.query(
                 "SELECT county, COUNT(*) AS count " +
-                        "FROM applications " +
+                        "FROM applications  WHERE flow <> 'LATER_DOCS' AND completed_at IS NOT NULL " +
                         "GROUP BY county", (resultSet, rowNumber) ->
                         Map.entry(
                                 County.valueFor(resultSet.getString("county")),
@@ -143,7 +143,7 @@ public class ApplicationRepository {
         return jdbcTemplate.query(
                 "SELECT county, COUNT(*) AS count " +
                         "FROM applications " +
-                        "WHERE completed_at >= ? " +
+                        "WHERE flow <> 'LATER_DOCS' AND completed_at >= ? " +
                         "GROUP BY county",
                 (resultSet, rowNumber) -> Map.entry(
                         County.valueFor(resultSet.getString("county")),
@@ -157,7 +157,7 @@ public class ApplicationRepository {
         Double averageTimeToComplete = jdbcTemplate.queryForObject(
                 "SELECT COALESCE(AVG(time_to_complete), 0) AS averagetime " +
                         "FROM applications " +
-                        "WHERE completed_at >= ?",
+                        "WHERE flow <> 'LATER_DOCS' AND completed_at >= ?",
                 Double.class,
                 Timestamp.from(lowerBound.toInstant())
         );
@@ -170,7 +170,7 @@ public class ApplicationRepository {
         Long medianTimeToComplete = jdbcTemplate.queryForObject(
                 "SELECT COALESCE(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY time_to_complete), 0) " +
                         "FROM applications " +
-                        "WHERE completed_at >= ?",
+                        "WHERE flow <> 'LATER_DOCS' AND completed_at >= ? ",
                 Long.class,
                 Timestamp.from(lowerBound.toInstant()));
         return Duration.ofSeconds(Objects.requireNonNull(medianTimeToComplete));
