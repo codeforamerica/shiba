@@ -14,13 +14,12 @@ import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
-import org.codeforamerica.shiba.pages.data.*;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.junit.jupiter.api.*;
 import org.mockito.ArgumentCaptor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -38,6 +37,7 @@ import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility.UNDETERMINED;
 import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.ELIGIBLE;
 import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
@@ -97,12 +97,14 @@ class MailGunEmailClientTest {
 
     @Test
     void sendsEmailToTheRecipient() {
+        var applicationData = new ApplicationData();
         String recipientEmail = "someRecipient";
         String emailContent = "content";
         SnapExpeditedEligibility snapExpeditedEligibility = ELIGIBLE;
         CcapExpeditedEligibility ccapExpeditedEligibility = CcapExpeditedEligibility.ELIGIBLE;
         String confirmationId = "someConfirmationId";
-        when(emailContentCreator.createClientHTML(confirmationId,
+        when(emailContentCreator.createClientHTML(applicationData,
+                confirmationId,
                 programs,
                 snapExpeditedEligibility,
                 ccapExpeditedEligibility,
@@ -113,7 +115,7 @@ class MailGunEmailClientTest {
 
         String fileContent = "someContent";
         String fileName = "someFileName";
-        mailGunEmailClient.sendConfirmationEmail(
+        mailGunEmailClient.sendConfirmationEmail(applicationData,
                 recipientEmail,
                 confirmationId,
                 List.of(Program.SNAP),
@@ -457,11 +459,13 @@ class MailGunEmailClientTest {
 
         @Test
         void sendEmailToTheApplicantFromDemo() {
+            var applicationData = new ApplicationData();
             String recipientEmail = "someRecipient";
             String emailContent = "content";
             SnapExpeditedEligibility snapExpeditedEligibility = ELIGIBLE;
             String confirmationId = "someConfirmationId";
-            when(emailContentCreator.createClientHTML(confirmationId,
+            when(emailContentCreator.createClientHTML(applicationData,
+                    confirmationId,
                     programs,
                     snapExpeditedEligibility,
                     ccapExpeditedEligibility,
@@ -472,7 +476,7 @@ class MailGunEmailClientTest {
 
             String fileContent = "someContent";
             String fileName = "someFileName";
-            mailGunEmailClient.sendConfirmationEmail(
+            mailGunEmailClient.sendConfirmationEmail(applicationData,
                     recipientEmail,
                     confirmationId,
                     List.of(Program.SNAP),

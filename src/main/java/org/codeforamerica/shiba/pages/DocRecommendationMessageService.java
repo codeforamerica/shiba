@@ -1,19 +1,13 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.application.parsers.PageInputCoordinates;
 import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
-import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
-import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-
-import static org.codeforamerica.shiba.Program.*;
-import static org.codeforamerica.shiba.internationalization.InternationalizationUtils.listToString;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 @Service
 public class DocRecommendationMessageService {
@@ -56,8 +50,27 @@ public class DocRecommendationMessageService {
         this.messageSource = messageSource;
     }
 
-    public List<DocumentRecommendation> getRecommendationsMessage(ApplicationData applicationData, Locale locale, String pageName) {
+    public List<DocumentRecommendation> getPageSpecificRecommendationsMessage(ApplicationData applicationData, Locale locale, String pageName) {
         LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
+        List<String> recommendationsToShow = getRecommendationsToShow(applicationData);
+
+        if ("uploadDocuments".equals(pageName)) {
+            return getShortDocumentRecommendations(recommendationsToShow, lms);
+        } else if ("documentRecommendation".equals(pageName)) {
+            return getLongDocumentRecommendations(recommendationsToShow, lms);
+        }
+
+        return null;
+
+    }
+
+    public List<DocumentRecommendation> getConfirmationEmailDocumentRecommendations(ApplicationData applicationData, Locale locale) {
+        LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
+        List<String> recommendationsToShow = getRecommendationsToShow(applicationData);
+        return getShortDocumentRecommendations(recommendationsToShow, lms);
+    }
+
+    private List<String> getRecommendationsToShow(ApplicationData applicationData) {
         boolean showProofOfIncomeRecommendation = proofOfIncomeRecommendation(applicationData);
         boolean showProofOfHousingCostRecommendation = proofOfHousingCostRecommendation(applicationData);
         boolean showProofOfJobLossRecommendation = proofOfJobLossPrograms(applicationData);
@@ -80,39 +93,32 @@ public class DocRecommendationMessageService {
             recommendationsToShow.add(proofOfMedicalExpenses);
         }
 
-        if (pageName.equals("uploadDocuments")) {
-            return getShortDocumentRecommendations(recommendationsToShow, lms);
-        } else if (pageName.equals("documentRecommendation")) {
-            return getLongDocumentRecommendations(recommendationsToShow, lms);
-        }
-
-        return null;
-
+        return recommendationsToShow;
     }
 
     private List<DocumentRecommendation> getShortDocumentRecommendations(List<String> recommendations, LocaleSpecificMessageSource lms) {
 
         List<DocumentRecommendation> recommendationMessages = new ArrayList<>();
-        recommendations.stream().forEach(recommendation -> {
+        recommendations.forEach(recommendation -> {
             DocumentRecommendation docRec;
 
             switch (recommendation) {
-                case proofOfIncome:
+                case proofOfIncome -> {
                     docRec = new DocumentRecommendation(lms.getMessage(proofOfIncomeTitleShort), lms.getMessage(proofOfIncomeTextShort));
                     recommendationMessages.add(docRec);
-                    break;
-                case proofOfHousingCost:
+                }
+                case proofOfHousingCost -> {
                     docRec = new DocumentRecommendation(lms.getMessage(proofOfHousingCostTitleShort), lms.getMessage(proofOfHousingCostTextShort));
                     recommendationMessages.add(docRec);
-                    break;
-                case proofOfJobLoss:
+                }
+                case proofOfJobLoss -> {
                     docRec = new DocumentRecommendation(lms.getMessage(proofOfJobLossTitleShort), lms.getMessage(proofOfJobLossTextShort));
                     recommendationMessages.add(docRec);
-                    break;
-                case proofOfMedicalExpenses:
+                }
+                case proofOfMedicalExpenses -> {
                     docRec = new DocumentRecommendation(lms.getMessage(proofOfMedicalExpensesTitleShort), lms.getMessage(proofOfMedicalExpensesTextShort));
                     recommendationMessages.add(docRec);
-                    break;
+                }
             }
         });
 
@@ -121,26 +127,26 @@ public class DocRecommendationMessageService {
 
     private List<DocumentRecommendation> getLongDocumentRecommendations(List<String> recommendations, LocaleSpecificMessageSource lms) {
         List<DocumentRecommendation> recommendationMessages = new ArrayList<>();
-        recommendations.stream().forEach(recommendation -> {
+        recommendations.forEach(recommendation -> {
             DocumentRecommendation docRec;
 
             switch (recommendation) {
-                case proofOfIncome:
+                case proofOfIncome -> {
                     docRec = new DocumentRecommendation(proofOfIncomeIconLong, lms.getMessage(proofOfIncomeTitleLong), lms.getMessage(proofOfIncomeExplanationLong), lms.getMessage(proofOfIncomeExampleLong));
                     recommendationMessages.add(docRec);
-                    break;
-                case proofOfHousingCost:
+                }
+                case proofOfHousingCost -> {
                     docRec = new DocumentRecommendation(proofOfHousingCostIconLong, lms.getMessage(proofOfHousingCostTitleLong), lms.getMessage(proofOfHousingCostExplanationLong), lms.getMessage(proofOfHousingCostExampleLong));
                     recommendationMessages.add(docRec);
-                    break;
-                case proofOfJobLoss:
+                }
+                case proofOfJobLoss -> {
                     docRec = new DocumentRecommendation(proofOfJobLossIconLong, lms.getMessage(proofOfJobLossTitleLong), lms.getMessage(proofOfJobLossExplanationLong), lms.getMessage(proofOfJobLossExampleLong));
                     recommendationMessages.add(docRec);
-                    break;
-                case proofOfMedicalExpenses:
+                }
+                case proofOfMedicalExpenses -> {
                     docRec = new DocumentRecommendation(proofOfMedicalExpensesIconLong, lms.getMessage(proofOfMedicalExpensesTitleLong), lms.getMessage(proofOfMedicalExpensesExplanationLong), lms.getMessage(proofOfMedicalExpensesExampleLong));
                     recommendationMessages.add(docRec);
-                    break;
+                }
             }
 
         });
@@ -149,7 +155,7 @@ public class DocRecommendationMessageService {
 
     private boolean proofOfIncomeRecommendation(ApplicationData applicationData) {
         List<String> proofOfIncomePrograms = List.of("SNAP", "CASH", "EA", "GRH");
-        boolean employmentStatus = applicationData.getPagesData().safeGetPageInputValue("employmentStatus", "areYouWorking").containsAll(List.of("true"));
+        boolean employmentStatus = applicationData.getPagesData().safeGetPageInputValue("employmentStatus", "areYouWorking").contains("true");
 
         return employmentStatus && applicationData.isApplicationWith(proofOfIncomePrograms);
     }
@@ -163,7 +169,7 @@ public class DocRecommendationMessageService {
 
     private boolean proofOfJobLossPrograms(ApplicationData applicationData) {
         List<String> proofOfJobLossPrograms = List.of("SNAP", "CASH", "GRH");
-        boolean hasChangedWorkSituation = applicationData.getPagesData().safeGetPageInputValue("workSituation", "hasWorkSituation").containsAll(List.of("true"));
+        boolean hasChangedWorkSituation = applicationData.getPagesData().safeGetPageInputValue("workSituation", "hasWorkSituation").contains("true");
 
         return hasChangedWorkSituation && applicationData.isApplicationWith(proofOfJobLossPrograms);
     }

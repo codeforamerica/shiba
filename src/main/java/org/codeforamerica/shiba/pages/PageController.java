@@ -290,7 +290,7 @@ public class PageController {
         model.put("expeditedCcap", ccapExpeditedEligibility);
 
         if (landmarkPagesConfiguration.isPostSubmitPage(pageName)) {
-            model.put("docRecommendations", docRecommendationMessageService.getRecommendationsMessage(applicationData, locale, pageName));
+            model.put("docRecommendations", docRecommendationMessageService.getPageSpecificRecommendationsMessage(applicationData, locale, pageName));
         }
 
         if (landmarkPagesConfiguration.isTerminalPage(pageName)) {
