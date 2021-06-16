@@ -24,7 +24,7 @@ conditionAnchors:
   - &unearnedIncomeCcapDoesntInclude?
     pageName: unearnedIncomeCcap
     input: unearnedIncomeCcap
-    matcher: DOES_NOT_CONTAIN    
+    matcher: DOES_NOT_CONTAIN
   - &homeExpensesDoesntInclude?
     pageName: homeExpenses
     input: homeExpenses
@@ -1062,5 +1062,3 @@ derived-values:
               value: VISION_INSURANCE_PREMIUMS
             - <<: *doesntPayForMedicalExpenses?
               value: MEDICAL_BILLS_OR_COPAYS
-
-
