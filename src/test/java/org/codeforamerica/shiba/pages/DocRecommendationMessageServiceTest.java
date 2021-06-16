@@ -137,7 +137,7 @@ public class DocRecommendationMessageServiceTest extends AbstractPageControllerT
     }
 
     @Test
-    void displayNoDocumentRecommednationsForMinimumFlowSnapApplication() throws Exception {
+    void displayNoDocumentRecommendationsForMinimumFlowSnapApplication() throws Exception {
         // passing no recommendations emulates minimum flow
     	setPageInformation(List.of("SNAP"), List.of());
 
