@@ -5,6 +5,7 @@ import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.PagesData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.context.MessageSource;
@@ -156,7 +157,9 @@ public class DocRecommendationMessageService {
 
     private boolean proofOfHousingCostRecommendation(ApplicationData applicationData) {
         List<String> proofOfHousingCostPrograms = List.of("SNAP", "CASH", "EA");
-        boolean hasHousingExpenses = !applicationData.getPagesData().safeGetPageInputValue("homeExpenses", "homeExpenses").contains("NONE_OF_THE_ABOVE");
+        
+        List<String> pageInputValues = applicationData.getPagesData().safeGetPageInputValue("homeExpenses", "homeExpenses");
+        boolean hasHousingExpenses = pageInputValues.isEmpty() ? false : !pageInputValues.contains("NONE_OF_THE_ABOVE");
 
         return hasHousingExpenses && applicationData.isApplicationWith(proofOfHousingCostPrograms);
     }
