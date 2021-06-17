@@ -498,6 +498,30 @@ pageDefinitions:
     contextFragment: mailContextFragment
     primaryButtonTextKey: where-to-send-mail.I-have-a-place-to-get-mail
     subtleLinkTextKey: where-to-send-mail.I-will-pick-up-my-mail-at-a-post-office
+  - &cityAndZip
+    name: cityAndZip
+    headerKey: city-and-zip.help-us-find-a-post-office-near-you
+    pageTitle: city-and-zip.title
+    contextFragment: mailContextFragment
+    inputs:
+      - name: whatIsTheCity
+        type: TEXT
+        promptMessage:
+          promptMessageKey: city-and-zip.what-is-the-city
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: city-and-zip.make-sure-to-provide-a-city
+      - name: whatIsTheZipCode
+        type: TEXT
+        promptMessage:
+          promptMessageKey: city-and-zip.what-is-the-zip-code
+        helpMessageKey: city-and-zip.we-recommend-including-it-here-to-help-us-find-a-post-office-near-you
+        validators:
+          - validation: ZIPCODE
+            errorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
+            condition:
+              input: whatIsTheZipCode
+              matcher: NOT_EMPTY
   - &mailingAddress2
     name: mailingAddress
     headerKey: mailing-address.where-can-the-county-send-your-mail
@@ -2515,9 +2539,14 @@ workflow:
       - pageName: homeAddress2
   whereToSendMail:
     pageConfiguration: *whereToSendMail
+    subtleLinkTargetPage: cityAndZip
     nextPages:
       - pageName: mailingAddress2
-      - pageName: mailingAddress2 # TODO change to "City and zip"
+      - pageName: cityAndZip
+  cityAndZip:
+    pageConfiguration: *cityAndZip
+    nextPages:
+      - pageName: generalDeliveryAddress #TODO
   mailingAddress2:
     pageConfiguration: *mailingAddress2
     enrichment: mailingAddressEnrichment

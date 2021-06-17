@@ -52,6 +52,10 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         assertThat(testPage.hasInputError("streetAddress")).isTrue(); // verify cleared previous inputs
         testPage.enter("isHomeless", "I don't have a permanent address"); // check
         testPage.clickContinue();
+        
+        testPage.clickLink("I will pick up my mail at a post office near me.");
+        assertThat(testPage.getTitle()).isEqualTo("City and zip");
+        testPage.goBack();
 
         // The county will need a place to send you mail over the next 3 months.
         testPage.clickButton("I have a place to get mail");
