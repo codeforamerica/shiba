@@ -1,100 +1,68 @@
-<!DOCTYPE html>
-<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
-<div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
-<body>
-<div class="page-wrapper">
-    <div th:replace="fragments/toolbar :: toolbar"></div>
-    <div th:replace="fragments/demoBanner :: demoBanner"></div>
-    <section class="slab slab--shiba">
-        <div class="grid">
-            <div th:replace="fragments/cardHeader :: cardHeader"></div>
-            <div class="card spacing-above-35">
-                <th:block th:if="${page.contextFragment != null}">
-                    <div th:replace="'fragments/'+__${page.contextFragment}__ :: ${page.contextFragment}"></div>
-                </th:block>
-                <div class="grid__item spacing-above-35 spacing-below-35">
-                    <h1 class="h2" th:text="#{${page.headerKey}}"></h1>
-                </div>
-                <div class="bottom-horizontal-line spacing-below-25 review-info-section">
-                    <div class="spacing-below-10">
-                        <div class="inline">
-                            <strong th:text="#{review-info.name}"></strong>
-                        </div>
-                        <div class="inline right">
-                            <a href="#" style="display: none" th:text="#{review-info.edit}"></a>
-                        </div>
-                    </div>
-                    <p class="spacing-below-0"
-                       th:text="|${data.get('personalInfo').get('firstName').value[0]} ${data.get('personalInfo').get('lastName').value[0]}|"></p>
-                </div>
-                <div class="bottom-horizontal-line spacing-below-25 review-info-section">
-                    <div class="spacing-below-10">
-                        <div class="inline">
-                            <strong th:text="#{review-info.home-address}"></strong>
-                        </div>
-                        <div class="inline right">
-                            <a href="#" style="display: none" th:text="#{review-info.edit}"></a>
-                        </div>
-                    </div>
-                    <th:block
-                            th:unless="${featureFlags.get('apply-without-address').isOn() && data.get('homeAddress').get('isHomeless').value.contains('true')}"
-                            th:with="
-                            useEnrichedInput=${data.get('homeAddressValidation').get('useEnrichedAddress')},
-                            useEnriched=${useEnrichedInput != null && useEnrichedInput.value.contains('true')}">
-                        <div th:replace="fragments/reviewAddressFragment :: reviewAddressFragment(${data}, ${useEnriched}, 'homeAddress')"></div>
-                    </th:block>
-                    <p class="spacing-below-0 spacing-above-10 italic"
-                       th:if="${!data.get('homeAddress').get('isHomeless').value.isEmpty()}"
-                       th:id="homeAddress-address_message"
-                       th:text="#{review-info.no-permanent-address}"></p>
-                </div>
-                <div class="bottom-horizontal-line spacing-below-25 review-info-section">
-                    <div class="spacing-below-10">
-                        <div class="inline">
-                            <strong th:text="#{review-info.mailing-address}"></strong>
-                        </div>
-                        <div class="inline right">
-                            <a href="#" style="display: none" th:text="#{review-info.edit}"></a>
-                        </div>
-                    </div>
-                    <th:block th:with="
-                            sameMailingAddress=${featureFlags.get('apply-without-address').isOn()} ? ${data.get('mailingAddress').get('sameMailingAddress').value} : ${data.get('homeAddress').get('sameMailingAddress').value},
-                            useEnrichedInput=${data.get('mailingAddressValidation').get('useEnrichedAddress')},
-                            useEnriched=${useEnrichedInput != null && useEnrichedInput.value.contains('true')}">
-                        <div th:if="${sameMailingAddress != null && sameMailingAddress.contains('true')}"
-                             th:id="mailingAddress-address_message"
-                             th:text="#{review-info.same-as-home-address}" class="italic"></div>
-                        <th:block th:unless="${sameMailingAddress != null && sameMailingAddress.contains('true')}">
-                            <div th:replace="fragments/reviewAddressFragment :: reviewAddressFragment(${data}, ${useEnriched}, 'mailingAddress')"></div>
-                        </th:block>
-                    </th:block>
-                </div>
-                <div class="bottom-horizontal-line spacing-below-25 review-info-section">
-                    <div class="spacing-below-10">
-                        <div class="inline">
-                            <strong th:text="#{review-info.contact-info}"></strong>
-                        </div>
-                        <div class="inline right">
-                            <a href="#" style="display: none" th:text="#{review-info.edit}"></a>
-                        </div>
-                    </div>
-                    <p class="spacing-below-0"
-                       th:text="${data.get('contactInfo').get('phoneNumber').value[0]}"></p>
-                    <p class="spacing-below-0" th:if="${!data.get('contactInfo').get('email').value[0].isEmpty()}"
-                       th:text="${data.get('contactInfo').get('email').value[0]}"></p>
-                </div>
-                <div class="spacing-below-15 spacing-above-60">
-                    <a class="button button--primary" th:href="'/pages/'+${pageName}+'/navigation?option=0'"
-                       th:text="#{review-info.this-looks-correct}"></a>
-                </div>
-                <div th:if="${applicationData.isApplicationWith(T(java.util.List).of('SNAP'))}">
-                    <a class="link--subtle" th:href="'/pages/'+${pageName}+'/navigation?option=1'"
-                       th:text="#{review-info.submit-application-now-with-only-the-above-information}"></a>
-                </div>
+<div th:fragment="reviewInfo">
+    <div class="bottom-horizontal-line spacing-below-25 review-info-section">
+        <div class="spacing-below-10">
+            <div class="inline">
+                <strong th:text="#{review-info.name}"></strong>
+            </div>
+            <div class="inline right">
+                <a href="#" style="display: none" th:text="#{review-info.edit}"></a>
             </div>
         </div>
-    </section>
+        <p class="spacing-below-0"
+           th:text="|${data.get('personalInfo').get('firstName').value[0]} ${data.get('personalInfo').get('lastName').value[0]}|"></p>
+    </div>
+    <div class="bottom-horizontal-line spacing-below-25 review-info-section">
+        <div class="spacing-below-10">
+            <div class="inline">
+                <strong th:text="#{review-info.home-address}"></strong>
+            </div>
+            <div class="inline right">
+                <a href="#" style="display: none" th:text="#{review-info.edit}"></a>
+            </div>
+        </div>
+        <th:block
+                th:unless="${featureFlags.get('apply-without-address').isOn() && data.get('homeAddress').get('isHomeless').value.contains('true')}"
+                th:with="useEnrichedInput=${data.get('homeAddressValidation').get('useEnrichedAddress')},
+                         useEnriched=${useEnrichedInput != null && useEnrichedInput.value.contains('true')}">
+            <div th:replace="fragments/reviewAddressFragment :: reviewAddressFragment(${data}, ${useEnriched}, 'homeAddress')"></div>
+        </th:block>
+        <p class="spacing-below-0 spacing-above-10 italic"
+           th:if="${!data.get('homeAddress').get('isHomeless').value.isEmpty()}"
+           th:id="homeAddress-address_message"
+           th:text="#{review-info.no-permanent-address}"></p>
+    </div>
+    <div class="bottom-horizontal-line spacing-below-25 review-info-section">
+        <div class="spacing-below-10">
+            <div class="inline">
+                <strong th:text="#{review-info.mailing-address}"></strong>
+            </div>
+            <div class="inline right">
+                <a href="#" style="display: none" th:text="#{review-info.edit}"></a>
+            </div>
+        </div>
+        <th:block th:with="sameMailingAddress=${featureFlags.get('apply-without-address').isOn()} ? ${data.get('mailingAddress').get('sameMailingAddress').value} : ${data.get('homeAddress').get('sameMailingAddress').value},
+                           useEnrichedInput=${data.get('mailingAddressValidation').get('useEnrichedAddress')},
+                           useEnriched=${useEnrichedInput != null && useEnrichedInput.value.contains('true')}">
+            <div th:if="${sameMailingAddress != null && sameMailingAddress.contains('true')}"
+                 th:id="mailingAddress-address_message"
+                 th:text="#{review-info.same-as-home-address}" class="italic"></div>
+            <th:block th:unless="${sameMailingAddress != null && sameMailingAddress.contains('true')}">
+                <div th:replace="fragments/reviewAddressFragment :: reviewAddressFragment(${data}, ${useEnriched}, 'mailingAddress')"></div>
+            </th:block>
+        </th:block>
+    </div>
+    <div class="bottom-horizontal-line spacing-below-60 review-info-section">
+        <div class="spacing-below-10">
+            <div class="inline">
+                <strong th:text="#{review-info.contact-info}"></strong>
+            </div>
+            <div class="inline right">
+                <a href="#" style="display: none" th:text="#{review-info.edit}"></a>
+            </div>
+        </div>
+        <p class="spacing-below-0"
+           th:text="${data.get('contactInfo').get('phoneNumber').value[0]}"></p>
+        <p class="spacing-below-0" th:if="${!data.get('contactInfo').get('email').value[0].isEmpty()}"
+           th:text="${data.get('contactInfo').get('email').value[0]}"></p>
+    </div>
 </div>
-<div th:replace="fragments/footer :: footer"></div>
-</body>
-</html>

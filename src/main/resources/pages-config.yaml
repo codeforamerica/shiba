@@ -35,6 +35,10 @@ conditionDefinitions:
     pageName: homeExpenses
     input: homeExpenses
     value: RENT
+  - &applicantChoseSNAP?
+    pageName: choosePrograms
+    value: SNAP
+    input: programs
   - &applicantDidNotChooseCCAP?
     pageName: choosePrograms
     value: CCAP
@@ -125,9 +129,12 @@ pageDefinitions:
   - &landing
     name: landing
     pageTitle: landing.title
+    customPage: true
   - &prepareToApply
     name: prepareToApply
     pageTitle: prepare-to-apply.title
+    headerKey: prepare-to-apply.how-this-works
+    hasPrimaryButton: false
   - &languagePreferences
     name: languagePreferences
     pageTitle: language-preferences.title
@@ -217,6 +224,7 @@ pageDefinitions:
   - &introBasicInfo
     name: introBasicInfo
     pageTitle: intro-basic-info.title
+    hasPrimaryButton: false
   - &personalInfo
     name: personalInfo
     pageTitle: personal-info.title
@@ -633,6 +641,11 @@ pageDefinitions:
     pageTitle: review-info.title
     headerKey: review-info.lets-review-your-info
     contextFragment: docWithMagnifyingGlassContextFragment
+    primaryButtonTextKey: review-info.this-looks-correct
+    subtleLinkTextKey:
+      conditionalValues:
+        - value: review-info.submit-application-now-with-only-the-above-information
+          condition: *applicantChoseSNAP?
   - &addHouseholdMembers
     name: addHouseholdMembers
     headerKey: add-household-members.do-you-want-to-add-household-members
@@ -645,6 +658,7 @@ pageDefinitions:
   - &startHousehold
     name: startHousehold
     pageTitle: start-household.title
+    hasPrimaryButton: false
   - &householdMemberInfo
     name: householdMemberInfo
     pageTitle: household-member-info.title
@@ -789,6 +803,7 @@ pageDefinitions:
   - &householdList
     name: householdList
     pageTitle: household-list.title
+    primaryButtonTextKey: household-list.yes-thats-everyone
   - &childrenInNeedOfCare
     name: childrenInNeedOfCare
     pageTitle: children-in-need-of-care.title
@@ -834,9 +849,11 @@ pageDefinitions:
     name: householdDeleteWarningPage
     headerKey: warning-page.you-are-about-to-delete-household-member
     pageTitle: warning-page.delete-household-member-warning
+    primaryButtonTextKey: warning-page.nevermind-lets-keep-them
   - &introPersonalDetails
     name: introPersonalDetails
     pageTitle: intro-personal-details.title
+    hasPrimaryButton: false
   - &preparingMealsTogether
     name: preparingMealsTogether
     pageTitle: preparing-meals-together.title
@@ -1207,6 +1224,7 @@ pageDefinitions:
         type: YES_NO
   - &snapExpeditedDetermination
     name: snapExpeditedDetermination
+    customPage: true
   - &legalStuff
     name: legalStuff
     pageTitle: legal-stuff.title
@@ -1253,13 +1271,16 @@ pageDefinitions:
   - &documentRecommendation
     name: documentRecommendation
     pageTitle: document-recommendation.title
+    customPage: true
   - &uploadDocuments
     name: uploadDocuments
     pageTitle: upload-documents.title
+    customPage: true
   - &uploadDocumentsDeleteWarningPage
     name: uploadDocumentsDeleteWarningPage
     headerKey: upload-documents-delete-warning.you-are-about-to-delete
     pageTitle: upload-documents-delete-warning.title
+    customPage: true
   - &identifyCounty
     name: identifyCounty
     headerKey: identify-county.select-your-county
@@ -1550,14 +1571,19 @@ pageDefinitions:
   - &emailDocsToYourCounty
     name: emailDocsToYourCounty
     pageTitle: email-docs-to-your-county.title
-    contextFragment: emailDocsToYourCountyContextFragment
+    contextFragment: email-docs-to-your-county-context-fragment
+    headerKey: email-docs-to-your-county.header
     hasPrimaryButton: false
   - &success
     name: success
     pageTitle: success.title
+    customPage: true
   - &documentsSent
     name: documentsSent
     pageTitle: documentsSent.title
+    contextFragment: icon-documents-sent
+    headerKey: documentsSent.great-your-documents-are-being-sent
+    hasPrimaryButton: false
   - &disability
     name: disability
     pageTitle: disability.title
@@ -1587,6 +1613,7 @@ pageDefinitions:
   - &introIncome
     name: introIncome
     pageTitle: intro-income.title
+    hasPrimaryButton: false
   - &employmentStatus
     name: employmentStatus
     pageTitle: employment-status.title
@@ -1607,6 +1634,8 @@ pageDefinitions:
       conditionalValues:
         - value: income-by-job.lets-add-all-the-jobs-in-your-household
           condition: *doesNotLiveAlone?
+    subtleLinkTextKey: income-by-job.id-rather-give-an-estimate
+    hasPrimaryButton: false
   - &householdSelectionForIncome
     name: householdSelectionForIncome
     pageTitle: household-selection-for-income.title
@@ -1625,6 +1654,7 @@ pageDefinitions:
   - &incomeUpNext
     name: incomeUpNext
     pageTitle: income-up-next.title
+    hasPrimaryButton: false
   - &jobSearch
     name: jobSearch
     pageTitle: ccap-job-search.title
@@ -2174,10 +2204,12 @@ pageDefinitions:
       conditionalValues:
         - value: job-builder.your-household-jobs
           condition: *doesNotLiveAlone?
+    customPage: true
   - &jobRedirectPage
     name: jobRedirectPage
     headerKey: warning-page.going-back-will-take-you-to-the-beginning-of-the-jobs-section-where-you-will-start-over
     pageTitle: warning-page.go-back-title
+    customPage: true
   - &jobDeleteWarningPage
     name: jobDeleteWarningPage
     headerKey:
@@ -2191,9 +2223,11 @@ pageDefinitions:
             value: "applicant"
             matcher: DOES_NOT_CONTAIN_SUBSTRING
     pageTitle: warning-page.no-data-title
+    customPage: true
   - &startExpenses
     name: startExpenses
     pageTitle: start-expenses.title
+    hasPrimaryButton: false
   - &homeExpenses
     name: homeExpenses
     pageTitle: home-expenses.title
@@ -2351,6 +2385,8 @@ pageDefinitions:
   - &submittingApplication
     name: submittingApplication
     pageTitle: submitting-application.title
+    hasPrimaryButton: false
+    customPage: true
   - &homeAddressValidation
     name: homeAddressValidation
     pageTitle: address-validation.title
@@ -2622,11 +2658,11 @@ workflow:
       - pageName: reviewInfo
       - pageName: mailingAddress
   reviewInfo:
+    subtleLinkTargetPage: doYouNeedHelpImmediately
     pageConfiguration: *reviewInfo
     nextPages:
       - pageName: addHouseholdMembers
         flow: FULL
-      - pageName: doYouNeedHelpImmediately
     datasources:
       - pageName: personalInfo
       - pageName: homeAddress
@@ -2634,6 +2670,7 @@ workflow:
       - pageName: mailingAddress
       - pageName: mailingAddressValidation
       - pageName: contactInfo
+      - pageName: choosePrograms
   addHouseholdMembers:
     pageConfiguration: *addHouseholdMembers
     nextPages:
@@ -2658,8 +2695,8 @@ workflow:
     pageConfiguration: *householdList
     dataMissingRedirect: reviewInfo
     nextPages:
-      - pageName: householdMemberInfo
       - pageName: childrenInNeedOfCare
+      - pageName: householdMemberInfo
     datasources:
       - groupName: household
       - pageName: personalInfo
@@ -2844,11 +2881,11 @@ workflow:
       - pageName: incomeByJob
   incomeByJob:
     pageConfiguration: *incomeByJob
+    subtleLinkTargetPage: thirtyDayIncome
     datasources:
       - pageName: addHouseholdMembers
     nextPages:
       - pageName: householdSelectionForIncome
-      - pageName: thirtyDayIncome
   householdSelectionForIncome:
     pageConfiguration: *householdSelectionForIncome
     groupName: jobs

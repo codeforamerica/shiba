@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
-<div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
-<body>
-<th:block th:each="pageData: ${#ctx.getVariable('data').values()}">
-    <th:block th:each="inputData: ${pageData}">
-        <div th:if="${!inputData.value.value.isEmpty()}" th:text="${inputData.value.value.get(0)}"
-             th:id="${inputData.key}"></div>
+<div th:fragment="testStaticPage">
+    <th:block th:each="pageData: ${#ctx.getVariable('data').values()}">
+        <th:block th:each="inputData: ${pageData}">
+            <div th:if="${!inputData.value.value.isEmpty()}" th:text="${inputData.value.value.get(0)}"
+                 th:id="${inputData.key}"></div>
+        </th:block>
     </th:block>
-</th:block>
-</body>
-</html>
+</div>

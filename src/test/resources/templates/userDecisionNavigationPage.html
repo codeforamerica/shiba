@@ -1,8 +1,4 @@
-<!DOCTYPE html>
-<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
-<div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
-<body>
-<a th:href="'/pages/'+${pageName}+'/navigation?option=0'">option 0</a>
-<a th:href="'/pages/'+${pageName}+'/navigation?option=1'">option 1</a>
-</body>
-</html>
+<div th:fragment="userDecisionNavigationPage">
+    <a th:href="'/pages/'+${pageName}+'/navigation?option=0'">option 0</a>
+    <a th:href="'/pages/'+${pageName}+'/navigation?option=1'">option 1</a>
+</div>>

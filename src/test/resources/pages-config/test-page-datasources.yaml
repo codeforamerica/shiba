@@ -54,6 +54,10 @@ pageDefinitions:
   - &testStaticPage
     name: testStaticPage
     pageTitle: dummy-page-title
+  - &testCustomPage
+    name: testCustomPage
+    pageTitle: dummy-page-title
+    customPage: true
   - &testFormPage
     name: testFormPage
     pageTitle: dummy-page-title
@@ -155,6 +159,8 @@ workflow:
     pageConfiguration: *testStaticPage
     datasources:
       - pageName: firstPage
+  testCustomPage:
+    pageConfiguration: *testCustomPage
   testFormPage:
     pageConfiguration: *testFormPage
     datasources:

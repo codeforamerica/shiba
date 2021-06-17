@@ -1,4 +1,4 @@
-<body th:fragment="formPageFragment(page)">
+<body th:fragment="pageTemplateFragment(page, additionalContext)">
 <div class="page-wrapper">
     <div th:replace="fragments/toolbar :: toolbar"></div>
     <div th:replace="fragments/demoBanner :: demoBanner"></div>
@@ -14,14 +14,28 @@
                     <p th:if="${page.hasHeaderHelpMessageKey()}"
                        th:text="#{${page.headerHelpMessageKey}}"></p>
                 </div>
-                <div class="grid__item">
-                    <form autocomplete="off" method="post" th:action="@{${postTo}}">
+
+                <th:block th:if="${additionalContext != null}">
+                    <div th:replace="${additionalContext} :: ${additionalContext}"></div>
+                </th:block>
+
+                <div class="grid__item spacing-below-60">
+                    <!--Form page-->
+                    <form th:if="${page.inputs != null && !page.inputs.isEmpty()}" autocomplete="off" method="post" th:action="@{${postTo}}">
                         <div th:each="input: ${page.inputs}">
                             <div th:replace="'fragments/input-with-followups' :: input-with-followups(${input}, ${data})"></div>
                         </div>
                         <button th:if="${page.hasPrimaryButton}" class="button button--primary" type="submit"
                                 th:text="#{${page.primaryButtonTextKey}}"></button>
                     </form>
+
+                    <!--Static page-->
+                    <div th:if="${page.inputs == null || page.inputs.isEmpty()}">
+                        <a th:if="${page.hasPrimaryButton}" class="button button--primary"
+                           th:href="'/pages/'+${pageName}+'/navigation?option=0'"
+                           th:text="#{${page.primaryButtonTextKey}}"></a>
+                    </div>
+
                     <a th:if="${page.hasSubtleLinkTextKey()}" class="link--subtle" id="subtle-link"
                        th:href="|/pages/${page.subtleLinkTargetPage}|"
                        th:text="#{${page.subtleLinkTextKey}}"></a>

@@ -1,24 +1,8 @@
-<!DOCTYPE html>
-<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
-<div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
-<body>
-<div class="page-wrapper">
-    <div th:replace="fragments/toolbar :: toolbar" ></div>
-    <div th:replace="fragments/demoBanner :: demoBanner"></div>
-    <section class="slab slab--shiba">
-        <div class="grid-ignore-mobile">
-            <div th:replace="fragments/cardHeader :: cardHeader"></div>
-            <div class="card spacing-above-35">
-                <div th:replace="fragments/icons/icon-documents-sent :: icon-documents-sent"></div>
-                <h1 class="h2 spacing-above-15" th:text="#{documentsSent.great-your-documents-are-being-sent}"></h1>
-                <h2 id="application-id" class="spacing-below-15 h3" th:text="|#{success.confirmation-number}: ${applicationId}|"></h2>
-                <p th:text="#{documentsSent.it-may-take-up-to}"></p>
-                <p th:text="#{documentsSent.call-your-county}"></p>
-                <p class="spacing-below-35"><a href="https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG" target="_blank" rel="noopener noreferrer" th:text="#{documentsSent.find-your-countys-phone}"></a></p>
-            </div>
-        </div>
-    </section>
+<div th:fragment="documentsSent">
+    <h2 id="application-id" class="spacing-below-15 h3"
+        th:text="|#{success.confirmation-number}: ${applicationId}|"></h2>
+    <p th:text="#{documentsSent.it-may-take-up-to}"></p>
+    <p th:text="#{documentsSent.call-your-county}"></p>
+    <p class="spacing-below-35"><a href="https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG" target="_blank"
+                                   rel="noopener noreferrer" th:text="#{documentsSent.find-your-countys-phone}"></a></p>
 </div>
-<div th:replace="fragments/footer :: footer"></div>
-</body>
-</html>

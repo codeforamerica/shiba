@@ -234,7 +234,7 @@ public class PageController {
         var pageTemplate = pagesData.evaluate(featureFlags, pageWorkflowConfig, applicationData);
 
         var model = buildModelForThymeleaf(pageName, locale, landmarkPagesConfiguration, pageTemplate, pageWorkflowConfig, pagesData, iterationIndex);
-        var view = pageWorkflowConfig.getPageConfiguration().isStaticPage() ? pageName : "formPage";
+        var view = pageWorkflowConfig.getPageConfiguration().isCustomPage() ? pageName : "formPage";
         return new ModelAndView(view, model);
     }
 
@@ -257,7 +257,7 @@ public class PageController {
     }
 
     private boolean missingRequiredSubworkflows(PageWorkflowConfiguration pageWorkflow) {
-        return pageWorkflow.getPageConfiguration().isStaticPage() && !applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources());
+        return pageWorkflow.getPageConfiguration().getInputs().isEmpty() && !applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources());
     }
 
     private boolean isStartPageForGroup(@PathVariable String pageName, String groupName) {
@@ -271,6 +271,10 @@ public class PageController {
                 "pageName", pageName,
                 "postTo", landmarkPagesConfiguration.isSubmitPage(pageName) ? "/submit" : "/pages/" + pageName
         ));
+
+        if (pageWorkflow.getPageConfiguration().isStaticPage()) {
+            model.put("additionalContext", pageName);
+        }
 
         model.put("county", countyParser.parse(applicationData));
 
@@ -317,7 +321,7 @@ public class PageController {
             model.put("uploadDocMaxFileSize", uploadDocumentConfiguration.getMaxFilesize());
         }
 
-        if (pageWorkflow.getPageConfiguration().isStaticPage()) {
+        if (pageWorkflow.getPageConfiguration().isStaticPage() || pageWorkflow.getPageConfiguration().isCustomPage()) {
             model.put("data", pagesData.getDatasourcePagesBy(pageWorkflow.getDatasources()));
             model.put("applicationData", applicationData);
 
