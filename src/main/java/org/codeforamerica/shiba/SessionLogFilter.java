@@ -43,6 +43,7 @@ public class SessionLogFilter implements Filter {
         MDC.put("sessionId", httpReq.getSession().getId());
         if (applicationData != null && applicationData.getId() != null) {
                 monitoringService.setApplicationId(applicationData.getId());
+                MDC.put("applicationId", applicationData.getId());
         }
         log.info(httpReq.getMethod() + " " + httpReq.getRequestURI());
         monitoringService.setSessionId(httpReq.getSession().getId());
