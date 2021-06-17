@@ -65,6 +65,7 @@ public abstract class JourneyTest extends AbstractBasePageTest {
 
         when(featureFlagConfiguration.get("submit-via-email")).thenReturn(FeatureFlag.OFF);
         when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.OFF);
+        when(featureFlagConfiguration.get("apply-without-address")).thenReturn(FeatureFlag.OFF);
         caf = null;
         ccap = null;
     }
@@ -170,7 +171,7 @@ public abstract class JourneyTest extends AbstractBasePageTest {
         testPage.clickContinue();
 
         // Let's review your info
-        assertThat(driver.findElementById("mailing-address_street").getText()).isEqualTo("smarty street");
+        assertThat(driver.findElementById("mailingAddress-address_street").getText()).isEqualTo("smarty street");
     }
 
     protected void assertApplicationSubmittedEventWasPublished(String applicationId, FlowType flowType,

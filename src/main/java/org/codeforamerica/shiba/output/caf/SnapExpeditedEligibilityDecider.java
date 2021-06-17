@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParserV2.*;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParserV2.Field.*;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParserV2.Group.HOUSEHOLD;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParserV2.Group.JOBS;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.*;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.*;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group.HOUSEHOLD;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group.JOBS;
 import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.*;
 
 @Component

@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
-<div th:fragment="addressInputFragment(input, data)" th:with="name=|${input.name}[]|">
-    <div th:replace="'fragments/checkbox-input' :: checkbox-input(${input}, ${data})"></div>
-    <div th:if="${input.hasFollowUps()}" id="address-questions">
+<div th:fragment="addressInputFragment(input, data)"
+     th:with="
+     name=|${input.name}[]|,
+     showCheckbox=${!input.name.equals('sameMailingAddress') || pageDatasources.get('homeAddress').get('isHomeless') == null || pageDatasources.get('homeAddress').get('isHomeless').value.isEmpty()},
+     isChecked=${!showCheckbox && !data.get(input.name).value.isEmpty()}">
+    <div th:if="${showCheckbox}">
+        <div th:replace="'fragments/checkbox-input' :: checkbox-input(${input}, ${data})"></div>
+    </div>
+    <div th:class="${isChecked} ? 'hide' : ''" id="address-questions">
         <th:block th:each="followUp: ${input.followUps}">
             <div class="spacing-above-60">
                 <div th:replace="'fragments/'+__${followUp.fragment()}__ :: __${followUp.fragment()}__(${followUp}, ${data})"></div>
@@ -14,7 +20,7 @@
             var checkbox = document.getElementsByName([[${name}]])[0];
             checkbox.addEventListener('change', function () {
                 if (this.checked) {
-                    $("input:not('#state'):text").val("");
+                    $($(":input:text:not([readonly='readonly'])")).val("");
                     $("#address-questions").hide();
                 } else {
                     $("#address-questions").show();

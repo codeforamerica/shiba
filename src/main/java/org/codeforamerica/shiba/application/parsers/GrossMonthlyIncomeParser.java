@@ -13,10 +13,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParserV2.*;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParserV2.Field.*;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParserV2.getFirstValue;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParserV2.getGroup;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.*;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.*;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getGroup;
 
 @Component
 public class GrossMonthlyIncomeParser {

@@ -300,6 +300,10 @@ form .drag-and-drop-box-compact {
     }
 }
 
+.hide {
+    display: none;
+}
+
 .max-files {
     height: 100%;
     background-color: #FFF2D1;

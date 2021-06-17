@@ -1,0 +1,34 @@
+<body th:fragment="formPageFragment(page)">
+<div class="page-wrapper">
+    <div th:replace="fragments/toolbar :: toolbar"></div>
+    <div th:replace="fragments/demoBanner :: demoBanner"></div>
+    <section class="slab slab--shiba">
+        <div class="grid">
+            <div th:replace="fragments/cardHeader :: cardHeader"></div>
+            <div class="card spacing-above-35">
+                <th:block th:if="${page.contextFragment != null}">
+                    <div th:replace="'fragments/'+__${page.contextFragment}__ :: ${page.contextFragment}"></div>
+                </th:block>
+                <div th:if="${page.hasHeader()}" class="grid__item spacing-above-35 spacing-below-35">
+                    <h1 class="h2" th:text="#{${page.headerKey}}"></h1>
+                    <p th:if="${page.hasHeaderHelpMessageKey()}"
+                       th:text="#{${page.headerHelpMessageKey}}"></p>
+                </div>
+                <div class="grid__item">
+                    <form autocomplete="off" method="post" th:action="@{${postTo}}">
+                        <div th:each="input: ${page.inputs}">
+                            <div th:replace="'fragments/input-with-followups' :: input-with-followups(${input}, ${data})"></div>
+                        </div>
+                        <button th:if="${page.hasPrimaryButton}" class="button button--primary" type="submit"
+                                th:text="#{${page.primaryButtonTextKey}}"></button>
+                    </form>
+                    <a th:if="${page.hasSubtleLinkTextKey()}" class="link--subtle" id="subtle-link"
+                       th:href="|/pages/${page.subtleLinkTargetPage}|"
+                       th:text="#{${page.subtleLinkTextKey}}"></a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<div th:replace="fragments/footer :: footer"></div>
+</body>

@@ -3,12 +3,15 @@
 <div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
 <body>
 <div class="page-wrapper">
-    <div th:replace="fragments/toolbar :: toolbar" ></div>
+    <div th:replace="fragments/toolbar :: toolbar"></div>
     <div th:replace="fragments/demoBanner :: demoBanner"></div>
     <section class="slab slab--shiba">
         <div class="grid">
             <div th:replace="fragments/cardHeader :: cardHeader"></div>
             <div class="card spacing-above-35">
+                <th:block th:if="${page.contextFragment != null}">
+                    <div th:replace="'fragments/'+__${page.contextFragment}__ :: ${page.contextFragment}"></div>
+                </th:block>
                 <div class="grid__item spacing-above-35 spacing-below-35">
                     <h1 class="h2" th:text="#{${page.headerKey}}"></h1>
                 </div>
@@ -33,28 +36,19 @@
                             <a href="#" style="display: none" th:text="#{review-info.edit}"></a>
                         </div>
                     </div>
-                    <th:block th:with="
+                    <th:block
+                            th:unless="${featureFlags.get('apply-without-address').isOn() && data.get('homeAddress').get('isHomeless').value.contains('true')}"
+                            th:with="
                             useEnrichedInput=${data.get('homeAddressValidation').get('useEnrichedAddress')},
                             useEnriched=${useEnrichedInput != null && useEnrichedInput.value.contains('true')}">
-                        <th:block th:unless="${useEnriched}">
-                            <p class="spacing-below-0"
-                               th:text="${data.get('homeAddress').get('streetAddress').value[0]}"></p>
-                            <p class="spacing-below-0" th:text="${data.get('homeAddress').get('apartmentNumber').value[0]}"></p>
-                            <p class="spacing-below-0" th:text="${T(org.codeforamerica.shiba.Utils).joinNonEmpty(data.get('homeAddress').get('city').value[0], data.get('homeAddress').get('state').value[0])}"></p>
-                        </th:block>
-                        <th:block th:if="${useEnriched}">
-                            <p class="spacing-below-0"
-                               th:text="${data.get('homeAddress').get('enrichedStreetAddress').value[0]}"></p>
-                            <p class="spacing-below-0" th:text="${data.get('homeAddress').get('enrichedApartmentNumber').value[0]}"></p>
-                            <p class="spacing-below-0" th:text="${T(org.codeforamerica.shiba.Utils).joinNonEmpty(data.get('homeAddress').get('enrichedCity').value[0], data.get('homeAddress').get('enrichedState').value[0])}"></p>
-                        </th:block>
+                        <div th:replace="fragments/reviewAddressFragment :: reviewAddressFragment(${data}, ${useEnriched}, 'homeAddress')"></div>
                     </th:block>
                     <p class="spacing-below-0 spacing-above-10 italic"
                        th:if="${!data.get('homeAddress').get('isHomeless').value.isEmpty()}"
+                       th:id="homeAddress-address_message"
                        th:text="#{review-info.no-permanent-address}"></p>
                 </div>
-                <div th:if="${data.get('homeAddress').get('sameMailingAddress').value.isEmpty() || data.get('homeAddress').get('sameMailingAddress').value[0] == 'false'}"
-                     class="bottom-horizontal-line spacing-below-25 review-info-section">
+                <div class="bottom-horizontal-line spacing-below-25 review-info-section">
                     <div class="spacing-below-10">
                         <div class="inline">
                             <strong th:text="#{review-info.mailing-address}"></strong>
@@ -64,19 +58,14 @@
                         </div>
                     </div>
                     <th:block th:with="
+                            sameMailingAddress=${featureFlags.get('apply-without-address').isOn()} ? ${data.get('mailingAddress').get('sameMailingAddress').value} : ${data.get('homeAddress').get('sameMailingAddress').value},
                             useEnrichedInput=${data.get('mailingAddressValidation').get('useEnrichedAddress')},
                             useEnriched=${useEnrichedInput != null && useEnrichedInput.value.contains('true')}">
-                        <th:block th:unless="${useEnriched}">
-                            <p id="mailing-address_street" class="spacing-below-0"
-                               th:text="${data.get('mailingAddress').get('streetAddress').value[0]}"></p>
-                            <p class="spacing-below-0" th:text="${data.get('mailingAddress').get('apartmentNumber').value[0]}"></p>
-                            <p class="spacing-below-0" th:text="${T(org.codeforamerica.shiba.Utils).joinNonEmpty(data.get('mailingAddress').get('city').value[0], data.get('mailingAddress').get('state').value[0])}"></p>
-                        </th:block>
-                        <th:block th:if="${useEnriched}">
-                            <p id="mailing-address_street" class="spacing-below-0"
-                               th:text="${data.get('mailingAddress').get('enrichedStreetAddress').value[0]}"></p>
-                            <p class="spacing-below-0" th:text="${data.get('mailingAddress').get('enrichedApartmentNumber').value[0]}"></p>
-                            <p class="spacing-below-0" th:text="${T(org.codeforamerica.shiba.Utils).joinNonEmpty(data.get('mailingAddress').get('enrichedCity').value[0], data.get('mailingAddress').get('enrichedState').value[0])}"></p>
+                        <div th:if="${sameMailingAddress != null && sameMailingAddress.contains('true')}"
+                             th:id="mailingAddress-address_message"
+                             th:text="#{review-info.same-as-home-address}" class="italic"></div>
+                        <th:block th:unless="${sameMailingAddress != null && sameMailingAddress.contains('true')}">
+                            <div th:replace="fragments/reviewAddressFragment :: reviewAddressFragment(${data}, ${useEnriched}, 'mailingAddress')"></div>
                         </th:block>
                     </th:block>
                 </div>

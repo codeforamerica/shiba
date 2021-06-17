@@ -5,8 +5,8 @@ import org.codeforamerica.shiba.output.caf.TotalIncome;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.stereotype.Component;
 
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParserV2.Field.INCOME;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParserV2.getFirstValue;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.INCOME;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 
 @Component
 public class TotalIncomeParser {

@@ -41,7 +41,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         testPage.enter("streetAddress", "someStreetAddress");
         testPage.enter("apartmentNumber", "someApartmentNumber");
         testPage.clickContinue();
-        assertThat(testPage.getTitle()).isEqualTo("Address Validation");
+        assertThat(testPage.getTitle()).isEqualTo("Mailing address");
         testPage.goBack();
 
         // Where are you currently Living? (without address)
@@ -53,6 +53,9 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         testPage.enter("isHomeless", "I don't have a permanent address"); // check
         testPage.clickContinue();
 
+        // The county will need a place to send you mail over the next 3 months.
+        testPage.clickButton("I have a place to get mail");
+
         // Where can the county send your mail? (accept the smarty streets enriched address)
         testPage.enter("zipCode", "23456");
         testPage.enter("city", "someCity");
@@ -61,18 +64,19 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         testPage.enter("apartmentNumber", "someApartmentNumber");
         when(smartyStreetClient.validateAddress(any())).thenReturn(
                 Optional.of(new Address(mailingStreetAddress,
-                                        mailingCity,
-                                        mailingState,
-                                        mailingZip,
-                                        mailingApartmentNumber,
-                                        "someCounty"))
+                        mailingCity,
+                        mailingState,
+                        mailingZip,
+                        mailingApartmentNumber,
+                        "someCounty"))
         );
         testPage.clickContinue();
         testPage.clickElementById("enriched-address");
         testPage.clickContinue();
 
         // Let's review your info
-        assertThat(driver.findElementById("mailing-address_street").getText()).isEqualTo(mailingStreetAddress);
+        assertThat(driver.findElementById("homeAddress-address_message").getText()).isEqualTo("No permanent address");
+        assertThat(driver.findElementById("mailingAddress-address_street").getText()).isEqualTo(mailingStreetAddress);
 
         testPage.clickLink("Submit application now with only the above information.");
 

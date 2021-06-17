@@ -162,7 +162,9 @@ public class DocRecommendationMessageService {
 
     private boolean proofOfHousingCostRecommendation(ApplicationData applicationData) {
         List<String> proofOfHousingCostPrograms = List.of("SNAP", "CASH", "EA");
-        boolean hasHousingExpenses = !applicationData.getPagesData().safeGetPageInputValue("homeExpenses", "homeExpenses").contains("NONE_OF_THE_ABOVE");
+        
+        List<String> pageInputValues = applicationData.getPagesData().safeGetPageInputValue("homeExpenses", "homeExpenses");
+        boolean hasHousingExpenses = pageInputValues.isEmpty() ? false : !pageInputValues.contains("NONE_OF_THE_ABOVE");
 
         return hasHousingExpenses && applicationData.isApplicationWith(proofOfHousingCostPrograms);
     }

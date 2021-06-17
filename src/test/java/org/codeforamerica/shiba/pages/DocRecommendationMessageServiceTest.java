@@ -4,12 +4,6 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.PageDataBuilder;
 import org.codeforamerica.shiba.PagesDataBuilder;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
-import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
-import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.PageData;
-import org.codeforamerica.shiba.pages.data.Subworkflow;
-import org.codeforamerica.shiba.pages.data.Subworkflows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,12 +16,12 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -140,6 +134,16 @@ public class DocRecommendationMessageServiceTest extends AbstractPageControllerT
                 .andExpect(content().string(containsString("Proof of Job Loss")))
                 .andExpect(content().string(containsString("Proof of Housing Cost")))
                 .andExpect(content().string(containsString("Proof of Medical Expenses")));
+    }
+
+    @Test
+    void displayNoDocumentRecommendationsForMinimumFlowSnapApplication() throws Exception {
+        // passing no recommendations emulates minimum flow
+    	setPageInformation(List.of("SNAP"), List.of());
+
+        ArrayList<?> recommendations = (ArrayList<?>) mockMvc.perform(get("/pages/uploadDocuments").session(new MockHttpSession()))
+        		.andReturn().getModelAndView().getModel().get("docRecommendations");
+        assertTrue(recommendations.size()==0);
     }
 
     private void setPageInformation(List<String> programs, List<String> recommendations) {
