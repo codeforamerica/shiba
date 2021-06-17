@@ -98,7 +98,7 @@ class EmailContentCreatorTest {
                 CcapExpeditedEligibility.UNDETERMINED,
                 Locale.ENGLISH);
         assertThat(emailContent).contains(expeditedEligibilityContent);
-        assertThat(emailContent).contains("please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a><br><br>You may be able to receive more support. See “What benefits programs do I qualify for” at <a href=\"https://www.mnbenefits.org/faq#what-benefits-programs\" target=\"_blank\">mnbenefits.org/faq</a>.<br><br>**This is an automated message. Please do not reply to this message.**</body><html>");
+        assertThat(emailContent).contains("please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">call your county.</a><br><br>You may be able to receive more support. See “What benefits programs do I qualify for” at <a href=\"https://www.mnbenefits.org/faq#what-benefits-programs\" target=\"_blank\">mnbenefits.org/faq</a>.<br><br>**This is an automated message. Please do not reply to this message.**</body></html>");
     }
 
     @Test
@@ -129,7 +129,7 @@ class EmailContentCreatorTest {
         assertThat(laterDocsConfirmationEmailBody).isEqualTo("<html><body>" +
                 "<p>We received your documents for your Minnesota Benefits application. Look out for mail about your case. You may need to complete additional steps.</p>" +
                 "<p>To ask about your application status, find your county's contact information <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\">here</a>.</p>" +
-                "</body><html>");
+                "</body></html>");
     }
 
     @Test
