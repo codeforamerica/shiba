@@ -127,7 +127,8 @@ class ApplicationSubmittedListenerTest {
                 applicationSubmittedListener.sendConfirmationEmail(event);
             }
 
-            verify(emailClient).sendConfirmationEmail(email,
+            verify(emailClient).sendConfirmationEmail(applicationData,
+                                                      email,
                                                       appIdFromDb,
                                                       List.of(),
                                                       SnapExpeditedEligibility.ELIGIBLE,
@@ -162,7 +163,8 @@ class ApplicationSubmittedListenerTest {
                 applicationSubmittedListener.sendConfirmationEmail(event);
             }
 
-            verify(emailClient).sendConfirmationEmail(email,
+            verify(emailClient).sendConfirmationEmail(applicationData,
+                                                      email,
                                                       appIdFromDb,
                                                       List.of(),
                                                       SnapExpeditedEligibility.UNDETERMINED,
@@ -202,7 +204,8 @@ class ApplicationSubmittedListenerTest {
                 applicationSubmittedListener.sendConfirmationEmail(event);
             }
 
-            verify(emailClient).sendConfirmationEmail(email,
+            verify(emailClient).sendConfirmationEmail(applicationData,
+                                                      email,
                                                       appIdFromDb,
                                                       List.of(),
                                                       SnapExpeditedEligibility.ELIGIBLE,

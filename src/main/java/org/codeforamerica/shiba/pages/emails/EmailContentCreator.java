@@ -3,7 +3,10 @@ package org.codeforamerica.shiba.pages.emails;
 import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
+import org.codeforamerica.shiba.pages.DocRecommendationMessageService;
+import org.codeforamerica.shiba.pages.DocRecommendationMessageService.DocumentRecommendation;
 import org.codeforamerica.shiba.pages.SuccessMessageService;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -20,6 +23,8 @@ import java.util.Map;
 public class EmailContentCreator {
     private final MessageSource messageSource;
     private final static String CLIENT_BODY = "email.client-body";
+    private final static String CLIENT_WARNING = "email.warning";
+    private final static String CLIENT_DOC_RECS = "email.doc-recs";
     private final static String DOWNLOAD_CAF_ALERT = "email.download-caf-alert";
     private final static String NON_COUNTY_PARTNER_ALERT = "email.non-county-partner-alert";
     private final static String LATER_DOCS_CONFIRMATION_EMAIL_SUBJECT = "later-docs.confirmation-email-subject";
@@ -29,23 +34,41 @@ public class EmailContentCreator {
     private final static String SHARE_FEEDBACK = "email.share-feedback";
     private final String activeProfile;
     private final SuccessMessageService successMessageService;
+    private final DocRecommendationMessageService docRecommendationMessageService;
 
-    public EmailContentCreator(MessageSource messageSource, @Value("${spring.profiles.active:Unknown}") String activeProfile, SuccessMessageService successMessageService) {
+    public EmailContentCreator(MessageSource messageSource,
+                               @Value("${spring.profiles.active:Unknown}") String activeProfile,
+                               SuccessMessageService successMessageService,
+                               DocRecommendationMessageService docRecommendationMessageService)
+    {
         this.messageSource = messageSource;
         this.activeProfile = activeProfile;
         this.successMessageService = successMessageService;
+        this.docRecommendationMessageService = docRecommendationMessageService;
     }
 
-    public String createClientHTML(String confirmationId, List<String> programs, SnapExpeditedEligibility snapExpeditedEligibility, CcapExpeditedEligibility ccapExpeditedEligibility, Locale locale) {
+    public String createClientHTML(ApplicationData applicationData, String confirmationId, List<String> programs, SnapExpeditedEligibility snapExpeditedEligibility, CcapExpeditedEligibility ccapExpeditedEligibility, Locale locale) {
         LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
         String successMessage = successMessageService.getSuccessMessage(programs, snapExpeditedEligibility, ccapExpeditedEligibility, locale);
         String content = lms.getMessage(CLIENT_BODY, List.of(confirmationId, successMessage));
+        String warning = lms.getMessage(CLIENT_WARNING);
+
+        List<DocumentRecommendation> documentRecommendations = docRecommendationMessageService.getConfirmationEmailDocumentRecommendations(applicationData, locale);
+
+        if (documentRecommendations.size() > 0) {
+            final StringBuilder builder = new StringBuilder();
+            documentRecommendations.forEach(docRec -> {
+                String listElement = "<li>" + docRec.title + ": " + docRec.explanation + "</li>";
+                builder.append(listElement);
+            });
+            content = "%s<p>%s</p>".formatted(content, lms.getMessage(CLIENT_DOC_RECS, List.of(builder.toString())));
+        }
 
         if ("demo".equals(activeProfile)) {
             content = "%s<p>%s</p><p>%s</p>".formatted(content, lms.getMessage(DEMO_PURPOSES_ONLY), lms.getMessage(SHARE_FEEDBACK));
         }
 
-        return wrapHtml(content);
+        return wrapHtml(content + warning);
     }
 
     public String createClientLaterDocsConfirmationEmailBody(Locale locale) {
@@ -90,6 +113,6 @@ public class EmailContentCreator {
     }
 
     private String wrapHtml(String message) {
-        return "<html><body>%s</body><html>".formatted(message);
+        return "<html><body>%s</body></html>".formatted(message);
     }
 }

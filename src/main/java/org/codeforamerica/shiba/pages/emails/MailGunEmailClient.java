@@ -7,6 +7,7 @@ import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +20,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -67,7 +67,8 @@ public class MailGunEmailClient implements EmailClient {
     }
 
     @Override
-    public void sendConfirmationEmail(String recipientEmail,
+    public void sendConfirmationEmail(ApplicationData applicationData,
+                                      String recipientEmail,
                                       String confirmationId,
                                       List<String> programs,
                                       SnapExpeditedEligibility snapExpeditedEligibility,
@@ -83,7 +84,9 @@ public class MailGunEmailClient implements EmailClient {
         form.put("from", List.of(senderEmail));
         form.put("to", List.of(recipientEmail));
         form.put("subject", List.of(subject));
-        form.put("html", List.of(emailContentCreator.createClientHTML(confirmationId,
+        form.put("html", List.of(emailContentCreator.createClientHTML(
+                applicationData,
+                confirmationId,
                 programs,
                 snapExpeditedEligibility,
                 ccapExpeditedEligibility,

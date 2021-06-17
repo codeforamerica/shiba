@@ -3,12 +3,14 @@ package org.codeforamerica.shiba.pages.emails;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.caf.*;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
 
 import java.util.List;
 import java.util.Locale;
 
 public interface EmailClient {
-    void sendConfirmationEmail(String recipientEmail,
+    void sendConfirmationEmail(ApplicationData applicationData,
+                               String recipientEmail,
                                String confirmationId,
                                List<String> programs,
                                SnapExpeditedEligibility snapExpeditedEligibility,

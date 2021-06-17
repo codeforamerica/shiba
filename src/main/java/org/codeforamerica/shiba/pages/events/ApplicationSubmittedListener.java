@@ -79,7 +79,7 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
                     CcapExpeditedEligibility ccapExpeditedEligibility = ccapExpeditedEligibilityDecider.decide(application.getApplicationData());
                     List<Document> docs = DocumentListParser.parse(applicationData);
                     List<ApplicationFile> pdfs = docs.stream().map(doc -> pdfGenerator.generate(applicationId,doc,CLIENT)).collect(Collectors.toList());
-                    emailClient.sendConfirmationEmail(email, applicationId, new ArrayList<>(applicationData.getApplicantAndHouseholdMemberPrograms()), snapExpeditedEligibility, ccapExpeditedEligibility, pdfs, event.getLocale());
+                    emailClient.sendConfirmationEmail(applicationData, email, applicationId, new ArrayList<>(applicationData.getApplicantAndHouseholdMemberPrograms()), snapExpeditedEligibility, ccapExpeditedEligibility, pdfs, event.getLocale());
                 });
     }
 
