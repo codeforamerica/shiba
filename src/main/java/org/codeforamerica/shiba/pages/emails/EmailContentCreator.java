@@ -113,6 +113,6 @@ public class EmailContentCreator {
     }
 
     private String wrapHtml(String message) {
-        return "<html><body>%s</body><html>".formatted(message);
+        return "<html><body>%s</body></html>".formatted(message);
     }
 }
