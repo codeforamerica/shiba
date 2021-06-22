@@ -251,6 +251,11 @@ pageDefinitions:
             condition:
               input: dateOfBirth
               matcher: NOT_EMPTY
+          - validation: DOB_VALID
+            condition:
+              input: dateOfBirth
+              matcher: NOT_EMPTY
+            errorMessageKey: general.validation.make-sure-to-provide-a-dob-between-1900-and-present
         promptMessage:
           promptMessageKey: personal-info.when-were-you-born
       - name: ssn
@@ -676,6 +681,11 @@ pageDefinitions:
               input: dateOfBirth
               matcher: NOT_EMPTY
             errorMessageKey: general.validation.please-enter-your-birthday-in-this-format
+          - validation: DOB_VALID
+            condition:
+              input: dateOfBirth
+              matcher: NOT_EMPTY
+            errorMessageKey: general.validation.make-sure-to-provide-a-dob-between-1900-and-present
       - name: maritalStatus
         type: RADIO
         promptMessage:
@@ -1481,6 +1491,11 @@ pageDefinitions:
             condition:
               input: dateOfBirth
               matcher: NOT_EMPTY
+          - validation: DOB_VALID
+            condition:
+              input: dateOfBirth
+              matcher: NOT_EMPTY
+            errorMessageKey: general.validation.make-sure-to-provide-a-dob-between-1900-and-present
         promptMessage:
           promptMessageKey: match-info.when-were-you-born
       - name: ssn
@@ -2512,6 +2527,7 @@ workflow:
       - pageName: personalInfo
   personalInfo:
     pageConfiguration: *personalInfo
+    enrichment: personalInfoDateOfBirthEnrichment
     nextPages:
       - pageName: contactInfo
   contactInfo:

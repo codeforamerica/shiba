@@ -3,6 +3,8 @@ package org.codeforamerica.shiba.pages.config;
 
 import org.apache.commons.validator.GenericValidator;
 
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -19,6 +21,18 @@ public enum Validation {
                 || GenericValidator.isDate(String.join("/", strings), "M/dd/yyyy", true)
                 || GenericValidator.isDate(String.join("/", strings), "M/d/yyyy", true)
                 || GenericValidator.isDate(String.join("/", strings), "MM/d/yyyy", true);
+    }),
+    DOB_VALID(strings -> {
+    	String dobString = String.join("/", strings);
+    	SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+    	try {
+    		Date dobDate = sdf.parse(dobString);
+	    	boolean dateAfterToday = dobDate.getTime() < new Date().getTime();
+	    	boolean dateBefore1900 = Integer.parseInt(strings.get(2)) > 1900; 
+	    	return dateAfterToday && dateBefore1900;
+    	} catch(Exception e) {
+    		return false;
+    	}
     }),
     ZIPCODE(strings -> String.join("", strings).matches("\\d{5}")),
     CASE_NUMBER(strings -> String.join("", strings).matches("\\d{4,7}")),
