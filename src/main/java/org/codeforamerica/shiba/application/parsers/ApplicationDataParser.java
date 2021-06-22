@@ -50,7 +50,10 @@ public class ApplicationDataParser {
         UTILITY_EXPENSES_SELECTIONS,
         APPLICANT_PROGRAMS,
         HOUSEHOLD_PROGRAMS,
-        PREPARING_MEALS_TOGETHER;
+        PREPARING_MEALS_TOGETHER,
+        PERSONAL_INFO_DOB,
+        HOUSEHOLD_INFO_DOB,
+        MATCH_INFO_DOB;
 
         @Getter
         private final String defaultValue;
@@ -110,6 +113,10 @@ public class ApplicationDataParser {
         coordinatesMap.put(Field.APPLICANT_PROGRAMS, new ParsingCoordinate("choosePrograms", "programs"));
         coordinatesMap.put(Field.HOUSEHOLD_PROGRAMS, new ParsingCoordinate("householdMemberInfo", "programs"));
         coordinatesMap.put(Field.PREPARING_MEALS_TOGETHER, new ParsingCoordinate("preparingMealsTogether", "isPreparingMealsTogether"));
+
+        coordinatesMap.put(Field.PERSONAL_INFO_DOB, new ParsingCoordinate("personalInfo", "dateOfBirth"));
+        coordinatesMap.put(Field.HOUSEHOLD_INFO_DOB, new ParsingCoordinate("householdMemberInfo", "dateOfBirth"));
+        coordinatesMap.put(Field.MATCH_INFO_DOB, new ParsingCoordinate("matchInfo", "dateOfBirth"));
 
         groupCoordinatesMap.put(Group.JOBS, "jobs");
         groupCoordinatesMap.put(Group.HOUSEHOLD, "household");
