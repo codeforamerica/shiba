@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.ApplicationStatusUpdater;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
+import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.Status;
 import org.codeforamerica.shiba.esbwsdl.*;
 import org.codeforamerica.shiba.output.ApplicationFile;
@@ -30,10 +31,10 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
-import static org.codeforamerica.shiba.output.Document.CAF;
-import static org.codeforamerica.shiba.output.Document.CCAP;
+import static org.codeforamerica.shiba.output.Document.*;
 
 @Component
 @Slf4j
@@ -70,7 +71,7 @@ public class MnitEsbWebServiceClient {
             ),
             listeners = {"esbRetryListener"}
     )
-    public void send(ApplicationFile applicationFile, County county, String applicationNumber, Document applicationDocument) {
+    public void send(ApplicationFile applicationFile, County county, String applicationNumber, Document applicationDocument, FlowType flowType) {
         MDC.put("applicationFile", applicationFile.getFileName());
         CreateDocument createDocument = new CreateDocument();
         createDocument.setFolderId("workspace://SpacesStore/" + countyMap.get(county).getFolderId());
@@ -81,7 +82,7 @@ public class MnitEsbWebServiceClient {
         List<CmisProperty> propertyUris = properties.getPropertyUriOrPropertyIdOrPropertyString();
         CmisPropertyString fileNameProperty = createCmisPropertyString("Name", applicationFile.getFileName());
         CmisPropertyString subject = createCmisPropertyString("subject", "MN Benefits Application");
-        CmisPropertyString description = createCmisPropertyString("description", generateDocumentDescription(applicationFile, applicationDocument, applicationNumber));
+        CmisPropertyString description = createCmisPropertyString("description", generateDocumentDescription(applicationFile, applicationDocument, applicationNumber, flowType));
         CmisPropertyString dhsProviderId = createCmisPropertyString("dhsProviderId", countyMap.get(county).getDhsProviderId());
         propertyUris.addAll(List.of(fileNameProperty, subject, description, description, dhsProviderId));
         createDocument.setProperties(properties);
@@ -133,13 +134,19 @@ public class MnitEsbWebServiceClient {
     }
 
     @NotNull
-    private String generateDocumentDescription(ApplicationFile applicationFile, Document applicationDocument, String applicationNumber) {
+    private String generateDocumentDescription(ApplicationFile applicationFile, Document applicationDocument, String applicationNumber, FlowType flowType) {
         String docDescription = String.format("Associated with MNBenefits Application #%s", applicationNumber);
         if (applicationDocument == CAF || applicationDocument == CCAP) {
             if (applicationFile.getFileName().toLowerCase().endsWith(".xml")) {
                 docDescription = String.format("XML of MNBenefits Application #%s", applicationNumber);
             } else if (applicationFile.getFileName().toLowerCase().endsWith(".pdf")) {
                 docDescription = String.format("PDF of MNBenefits %s Application #%s", applicationDocument.toString(), applicationNumber);
+            }
+        } else if (applicationDocument == UPLOADED_DOC) {
+            if (flowType == LATER_DOCS) {
+                docDescription = String.format("PDF of Later Docs of MNbenefits Application #%s", applicationNumber);
+            } else {
+                docDescription = String.format("PDF of Documents of MNbenefits Application #%s", applicationNumber);
             }
         }
         return docDescription;
