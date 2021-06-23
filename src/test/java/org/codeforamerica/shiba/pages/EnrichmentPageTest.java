@@ -1,8 +1,8 @@
 package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.AbstractExistingStartTimePageTest;
-import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
+import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.pages.enrichment.ApplicationEnrichment;
 import org.codeforamerica.shiba.pages.enrichment.Enrichment;
 import org.codeforamerica.shiba.pages.enrichment.EnrichmentResult;
@@ -34,9 +34,9 @@ public class EnrichmentPageTest extends AbstractExistingStartTimePageTest {
 
     static class TestEnrichment implements Enrichment {
         @Override
-        public EnrichmentResult process(ApplicationData applicationData) {
-            String pageInputValue = applicationData
-                    .getPageData("testEnrichmentPage")
+        public EnrichmentResult process(PagesData pagesData) {
+            String pageInputValue = pagesData
+                    .get("testEnrichmentPage")
                     .get("someTextInput")
                     .getValue().get(0);
             return new EnrichmentResult(Map.of(

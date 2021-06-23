@@ -227,7 +227,7 @@ public class PageController {
                 pagesData = (PagesData) pagesData.clone();
                 pagesData.putAll(dataForGroup);
             } else {
-                return new ModelAndView("redirect:/pages/" +applicationConfiguration.getPageGroups().get(groupName).getReviewPage());
+                return new ModelAndView("redirect:/pages/" + applicationConfiguration.getPageGroups().get(groupName).getReviewPage());
             }
         }
 
@@ -455,7 +455,7 @@ public class PageController {
 
             ofNullable(pageWorkflow.getEnrichment())
                     .map(applicationEnrichment::getEnrichment)
-                    .map(enrichment -> enrichment.process(applicationData))
+                    .map(enrichment -> enrichment.process(pagesData))
                     .ifPresent(pageData::putAll);
 
             Application application = applicationFactory.newApplication(applicationData);

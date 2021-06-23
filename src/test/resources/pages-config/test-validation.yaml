@@ -106,6 +106,15 @@ pageDefinitions:
         validators:
           - validation: DATE
             errorMessageKey: error-message-key
+  - &dobValidPage
+    name: dobValidPage
+    pageTitle: dob-valid-page-title
+    inputs:
+      - name: dobValidInput
+        type: DATE
+        validators:
+          - validation: DOB_VALID
+            errorMessageKey: error-message-key
   - &checkboxPage
     name: checkboxPage
     pageTitle: checkbox-page-title
@@ -248,6 +257,10 @@ workflow:
       - pageName: lastPage
   datePage:
     pageConfiguration: *datePage
+    nextPages:
+      - pageName: lastPage
+  dobValidPage:
+    pageConfiguration: *dobValidPage
     nextPages:
       - pageName: lastPage
   checkboxPage:

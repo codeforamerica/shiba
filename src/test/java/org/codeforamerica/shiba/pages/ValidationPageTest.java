@@ -34,6 +34,7 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
     private final String numberPageTitle = "hours per week page title";
     private final String ssnPageTitle = "ssn page title";
     private final String datePageTitle = "date page title";
+    private final String dobValidPageTitle = "dob valid page title";
     private final String notBlankPageTitle = "not blank page title";
     private final String checkboxPageTitle = "checkbox page title";
     private final String option1 = "option 1";
@@ -66,6 +67,7 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         staticMessageSource.addMessage("number-title", Locale.ENGLISH, numberPageTitle);
         staticMessageSource.addMessage("ssn-page-title", Locale.ENGLISH, ssnPageTitle);
         staticMessageSource.addMessage("date-page-title", Locale.ENGLISH, datePageTitle);
+        staticMessageSource.addMessage("dob-valid-page-title", Locale.ENGLISH, dobValidPageTitle);
         staticMessageSource.addMessage("email-page-title", Locale.ENGLISH, emailPageTitle);
         staticMessageSource.addMessage("select-county-page-title", Locale.ENGLISH, selectCountyPageTitle);
         staticMessageSource.addMessage("not-blank-page-title", Locale.ENGLISH, notBlankPageTitle);
@@ -476,6 +478,46 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
             driver.findElement(By.id("dateInput-month")).sendKeys(month);
             driver.findElement(By.id("dateInput-day")).sendKeys(day);
             driver.findElement(By.id("dateInput-year")).sendKeys(year);
+            driver.findElement(By.tagName("button")).click();
+
+            assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
+        }
+
+        @ParameterizedTest
+        @CsvSource(value = {
+                "12,31,1899",
+                "1,1,3000"
+        })
+        void shouldFailValidationForDobValidWhenValueIsAnInvalidDate(String month,
+                                                              String day,
+                                                              String year) {
+            driver.navigate().to(baseUrl + "/pages/dobValidPage");
+
+            driver.findElements(By.cssSelector("input[name='dobValidInput[]']")).forEach(WebElement::clear);
+
+            driver.findElement(By.id("dobValidInput-month")).sendKeys(month);
+            driver.findElement(By.id("dobValidInput-day")).sendKeys(day);
+            driver.findElement(By.id("dobValidInput-year")).sendKeys(year);
+            driver.findElement(By.tagName("button")).click();
+
+            assertThat(driver.getTitle()).isEqualTo(dobValidPageTitle);
+        }
+
+        @ParameterizedTest
+        @CsvSource(value = {
+                "01,02,1900",
+                "9,9,2020",
+        })
+        void shouldPassValidationForDobValidWhenValueIsAValidDate(String month,
+                                                              String day,
+                                                              String year) {
+            driver.navigate().to(baseUrl + "/pages/dobValidPage");
+
+            driver.findElements(By.cssSelector("input[name='dobValidInput[]']")).forEach(WebElement::clear);
+
+            driver.findElement(By.id("dobValidInput-month")).sendKeys(month);
+            driver.findElement(By.id("dobValidInput-day")).sendKeys(day);
+            driver.findElement(By.id("dobValidInput-year")).sendKeys(year);
             driver.findElement(By.tagName("button")).click();
 
             assertThat(driver.getTitle()).isEqualTo(lastPageTitle);

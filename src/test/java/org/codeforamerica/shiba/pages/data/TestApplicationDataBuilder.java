@@ -77,4 +77,20 @@ public class TestApplicationDataBuilder {
         ))))));
         return this;
     }
+
+    public TestApplicationDataBuilder withHouseholdMember() {
+        applicationData.setSubworkflows(new Subworkflows(Map.of("household", new Subworkflow(List.of(pagesDataBuilder.build(List.of(
+                new PageDataBuilder("householdMemberInfo",
+                        Map.of("firstName", List.of("Daria"),
+                                "lastName", List.of("Agàta"),
+                                "dateOfBirth", List.of("5", "6", "1978"),
+                                "maritalStatus", List.of("Never married"),
+                                "sex", List.of("Female"),
+                                "livedInMnWholeLife", List.of("Yes"),
+                                "relationship", List.of("housemate"),
+                                "programs", List.of("SNAP"),
+                                "ssn", List.of("123121234"))))
+        ))))));
+        return this;
+    }
 }

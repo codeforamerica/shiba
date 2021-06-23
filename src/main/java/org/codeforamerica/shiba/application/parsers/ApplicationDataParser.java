@@ -41,6 +41,7 @@ public class ApplicationDataParser {
         IS_HOMELESS,
         SAME_MAILING_ADDRESS,
 
+        IDENTIFY_ZIPCODE,
         IDENTIFY_COUNTY("Other"),
 
         ASSETS("0"),
@@ -50,7 +51,11 @@ public class ApplicationDataParser {
         UTILITY_EXPENSES_SELECTIONS,
         APPLICANT_PROGRAMS,
         HOUSEHOLD_PROGRAMS,
-        PREPARING_MEALS_TOGETHER;
+        PREPARING_MEALS_TOGETHER,
+
+        PERSONAL_INFO_DOB,
+        HOUSEHOLD_INFO_DOB,
+        MATCH_INFO_DOB;
 
         @Getter
         private final String defaultValue;
@@ -100,6 +105,7 @@ public class ApplicationDataParser {
         coordinatesMap.put(Field.IS_HOMELESS, new ParsingCoordinate("homeAddress", "isHomeless"));
         coordinatesMap.put(Field.SAME_MAILING_ADDRESS, new ParsingCoordinate("homeAddress", "sameMailingAddress"));
 
+        coordinatesMap.put(Field.IDENTIFY_ZIPCODE, new ParsingCoordinate("identifyZipcode", "zipCode"));
         coordinatesMap.put(Field.IDENTIFY_COUNTY, new ParsingCoordinate("identifyCounty", "county"));
 
         coordinatesMap.put(Field.ASSETS, new ParsingCoordinate("liquidAssets", "liquidAssets"));
@@ -110,6 +116,10 @@ public class ApplicationDataParser {
         coordinatesMap.put(Field.APPLICANT_PROGRAMS, new ParsingCoordinate("choosePrograms", "programs"));
         coordinatesMap.put(Field.HOUSEHOLD_PROGRAMS, new ParsingCoordinate("householdMemberInfo", "programs"));
         coordinatesMap.put(Field.PREPARING_MEALS_TOGETHER, new ParsingCoordinate("preparingMealsTogether", "isPreparingMealsTogether"));
+
+        coordinatesMap.put(Field.PERSONAL_INFO_DOB, new ParsingCoordinate("personalInfo", "dateOfBirth"));
+        coordinatesMap.put(Field.HOUSEHOLD_INFO_DOB, new ParsingCoordinate("householdMemberInfo", "dateOfBirth"));
+        coordinatesMap.put(Field.MATCH_INFO_DOB, new ParsingCoordinate("matchInfo", "dateOfBirth"));
 
         groupCoordinatesMap.put(Group.JOBS, "jobs");
         groupCoordinatesMap.put(Group.HOUSEHOLD, "household");
