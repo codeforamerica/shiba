@@ -4,34 +4,31 @@ import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
-import com.azure.storage.blob.models.BlobProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 @Service
 //@Profile({"demo", "staging", "production"})
 @Slf4j
 public class AzureDocumentRepositoryService implements DocumentRepositoryService {
-    private final String containerName;
-    private final BlobServiceClient blobServiceClient;
     private final BlobContainerClient containerClient;
 
     public AzureDocumentRepositoryService() {
-        this.blobServiceClient = new BlobServiceClientBuilder().connectionString(System.getenv("AZURE_CONNECTION_STRING")).buildClient();
+        BlobServiceClient blobServiceClient = new BlobServiceClientBuilder().connectionString(System.getenv("AZURE_CONNECTION_STRING")).buildClient();
         this.containerClient = blobServiceClient.getBlobContainerClient(System.getenv("AZURE_CONTAINER_NAME"));
-        this.containerName = System.getenv("AZURE_CONTAINER_NAME");
     }
 
     @Override
     public byte[] get(String filepath) {
-
         BlobClient blobClient = containerClient.getBlobClient(filepath);
-        BlobProperties blobProperties = blobClient.downloadToFile(filepath);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        blobClient.download(byteArrayOutputStream);
 
-        return blobProperties.getContentMd5();
+        return byteArrayOutputStream.toByteArray();
     }
 
     @Override
@@ -47,6 +44,7 @@ public class AzureDocumentRepositoryService implements DocumentRepositoryService
 
     @Override
     public void delete(String filepath) {
-
+        BlobClient blobClient = containerClient.getBlobClient(filepath);
+        blobClient.delete();
     }
 }
