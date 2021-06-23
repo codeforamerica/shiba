@@ -4,6 +4,7 @@ import de.redsix.pdfcompare.PdfComparator;
 import org.codeforamerica.shiba.*;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
@@ -119,6 +120,7 @@ class MnitDocumentConsumerTest {
                 .applicationData(applicationData)
                 .county(County.Olmsted)
                 .timeToComplete(null)
+                .flow(FlowType.FULL)
                 .build();
         when(messageSource.getMessage(any(), any(), any())).thenReturn("default success message");
         when(fileNameGenerator.generatePdfFileName(any(), any())).thenReturn("some-file.pdf");
@@ -149,8 +151,8 @@ class MnitDocumentConsumerTest {
         ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
         when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
         documentConsumer.process(application);
-        verify(mnitClient).send(pdfApplicationFile, County.Olmsted, application.getId(), Document.CAF, any());
-        verify(mnitClient).send(xmlApplicationFile, County.Olmsted, application.getId(), Document.CAF, any());
+        verify(mnitClient).send(pdfApplicationFile, County.Olmsted, application.getId(), Document.CAF, FlowType.FULL);
+        verify(mnitClient).send(xmlApplicationFile, County.Olmsted, application.getId(), Document.CAF, FlowType.FULL);
     }
 
     @Test
@@ -166,7 +168,7 @@ class MnitDocumentConsumerTest {
         pagesData.put("choosePrograms", chooseProgramsPage);
         applicationData.setPagesData(pagesData);
         documentConsumer.process(application);
-        verify(mnitClient).send(pdfApplicationFile, County.Olmsted, application.getId(), Document.CCAP, any());
+        verify(mnitClient).send(pdfApplicationFile, County.Olmsted, application.getId(), Document.CCAP, FlowType.FULL);
     }
 
     @Test

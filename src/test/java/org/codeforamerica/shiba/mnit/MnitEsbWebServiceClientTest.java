@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.mnit;
 
 import org.codeforamerica.shiba.ApplicationStatusUpdater;
 import org.codeforamerica.shiba.County;
+import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.hamcrest.MatcherAssert;
@@ -108,7 +109,7 @@ class MnitEsbWebServiceClientTest {
 
         mnitEsbWebServiceClient.send(
                 new ApplicationFile(fileContent.getBytes(), fileName),
-                County.Olmsted, "someId", Document.CAF
+                County.Olmsted, "someId", Document.CAF, FlowType.FULL
         );
 
         verify(applicationStatusUpdater).updateCafApplicationStatus("someId", Document.CAF, DELIVERED);
@@ -124,7 +125,7 @@ class MnitEsbWebServiceClientTest {
         mockWebServiceServer.expect(connectionTo(url))
                 .andRespond(withSoapEnvelope(successResponse));
 
-        mnitEsbWebServiceClient.send(new ApplicationFile(fileContent.getBytes(), fileName), County.Olmsted, "someId", Document.CAF);
+        mnitEsbWebServiceClient.send(new ApplicationFile(fileContent.getBytes(), fileName), County.Olmsted, "someId", Document.CAF, any());
 
         mockWebServiceServer.verify();
     }
@@ -146,7 +147,7 @@ class MnitEsbWebServiceClientTest {
 
         ApplicationFile applicationFile = new ApplicationFile(fileContent.getBytes(), "someFile");
 
-        mnitEsbWebServiceClient.send(applicationFile, County.Olmsted, "someId", Document.CAF);
+        mnitEsbWebServiceClient.send(applicationFile, County.Olmsted, "someId", Document.CAF, any());
 
         mockWebServiceServer.verify();
     }
@@ -169,7 +170,7 @@ class MnitEsbWebServiceClientTest {
 
         mnitEsbWebServiceClient.send(new ApplicationFile(
                 "whatever".getBytes(),
-                "someFileName"), County.Hennepin, "someId", Document.CAF);
+                "someFileName"), County.Hennepin, "someId", Document.CAF, FlowType.FULL);
 
         mockWebServiceServer.verify();
     }

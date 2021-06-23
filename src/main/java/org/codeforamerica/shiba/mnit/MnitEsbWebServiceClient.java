@@ -113,14 +113,14 @@ public class MnitEsbWebServiceClient {
                 passwordElement.addAttribute(NameImpl.createFromUnqualifiedName("Type"), "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText");
                 passwordElement.setTextContent(password);
             } catch (SOAPException e) {
-                logErrorToSentry(e, applicationFile, county, applicationNumber, applicationDocument);
+                logErrorToSentry(e, applicationFile, county, applicationNumber, applicationDocument, flowType);
             }
         });
         updateMnitEsbDocumentStatus(applicationDocument, applicationNumber, DELIVERED);
     }
 
     @Recover
-    public void logErrorToSentry(Exception e, ApplicationFile applicationFile, County county, String applicationNumber, Document applicationDocument) {
+    public void logErrorToSentry(Exception e, ApplicationFile applicationFile, County county, String applicationNumber, Document applicationDocument, FlowType flowType) {
         updateMnitEsbDocumentStatus(applicationDocument, applicationNumber, DELIVERY_FAILED);
         log.error("Application failed to send: " + applicationFile.getFileName(), e);
     }
