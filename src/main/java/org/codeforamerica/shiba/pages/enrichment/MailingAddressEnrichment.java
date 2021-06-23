@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.pages.enrichment;
 
 import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.PagesData;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -19,13 +19,13 @@ public class MailingAddressEnrichment extends AddressEnrichment {
     }
 
     @Override
-    protected Address parseAddress(ApplicationData applicationData) {
+    protected Address parseAddress(PagesData pagesData) {
         return new Address(
-                getFirstValue(applicationData.getPagesData(), MAILING_STREET),
-                getFirstValue(applicationData.getPagesData(), MAILING_CITY),
-                getFirstValue(applicationData.getPagesData(), MAILING_STATE),
-                getFirstValue(applicationData.getPagesData(), MAILING_ZIPCODE),
-                getFirstValue(applicationData.getPagesData(), MAILING_APARTMENT_NUMBER),
+                getFirstValue(pagesData, MAILING_STREET),
+                getFirstValue(pagesData, MAILING_CITY),
+                getFirstValue(pagesData, MAILING_STATE),
+                getFirstValue(pagesData, MAILING_ZIPCODE),
+                getFirstValue(pagesData, MAILING_APARTMENT_NUMBER),
                 null);
     }
 }

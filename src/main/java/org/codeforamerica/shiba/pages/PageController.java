@@ -227,7 +227,7 @@ public class PageController {
                 pagesData = (PagesData) pagesData.clone();
                 pagesData.putAll(dataForGroup);
             } else {
-                return new ModelAndView("redirect:/pages/" +applicationConfiguration.getPageGroups().get(groupName).getReviewPage());
+                return new ModelAndView("redirect:/pages/" + applicationConfiguration.getPageGroups().get(groupName).getReviewPage());
             }
         }
 
@@ -406,18 +406,6 @@ public class PageController {
         PageConfiguration page = pageWorkflow.getPageConfiguration();
         PageData pageData = PageData.fillOut(page, model);
 
-        if (pageData.containsKey("dateOfBirth")) {
-        	// Desired DOB format: MM/dd/year, prefix single-digit month and/or day with 0
-        	InputData dobInputData = pageData.get("dateOfBirth");
-        	String month = dobInputData.getValue(0);
-        	if (month.length()<2) month = "0" + month;
-        	dobInputData.setValue(month, 0);
-        	String day = dobInputData.getValue(1);
-        	if (day.length()<2) day = "0" + day;
-        	dobInputData.setValue(day, 1);
-        	pageData.replace("dateOfBirth", dobInputData);
-        }
-        
         PagesData pagesData;
         Map<String, PagesData> incompleteIterations = applicationData.getIncompleteIterations();
         if (pageWorkflow.getGroupName() != null) {
@@ -467,7 +455,7 @@ public class PageController {
 
             ofNullable(pageWorkflow.getEnrichment())
                     .map(applicationEnrichment::getEnrichment)
-                    .map(enrichment -> enrichment.process(applicationData))
+                    .map(enrichment -> enrichment.process(pagesData))
                     .ifPresent(pageData::putAll);
 
             Application application = applicationFactory.newApplication(applicationData);

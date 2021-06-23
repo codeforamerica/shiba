@@ -43,7 +43,7 @@ class AddressEnrichmentTest {
                 null);
         when(locationClient.validateAddress(address)).thenReturn(Optional.of(expectedAddress));
 
-        EnrichmentResult enrichmentResult = homeAddressValidationQuery.process(applicationData);
+        EnrichmentResult enrichmentResult = homeAddressValidationQuery.process(applicationData.getPagesData());
 
         assertThat(enrichmentResult).containsEntry("enrichedStreetAddress", new InputData(List.of(expectedAddress.getStreet())));
         assertThat(enrichmentResult).containsEntry("enrichedCity", new InputData(List.of(expectedAddress.getCity())));
@@ -61,7 +61,7 @@ class AddressEnrichmentTest {
         Address address = new Address("street", "city", "CA", zipCode, "", null);
         when(locationClient.validateAddress(address)).thenReturn(empty());
 
-        EnrichmentResult enrichmentResult = homeAddressValidationQuery.process(applicationData);
+        EnrichmentResult enrichmentResult = homeAddressValidationQuery.process(applicationData.getPagesData());
 
         assertThat(enrichmentResult).containsOnly(Map.entry("enrichedCounty", new InputData(List.of("Olmsted"))));
     }
@@ -72,7 +72,7 @@ class AddressEnrichmentTest {
         Address address = new Address("street", "city", "CA", "02103", "", null);
         when(locationClient.validateAddress(address)).thenReturn(empty());
 
-        EnrichmentResult enrichmentResult = homeAddressValidationQuery.process(applicationData);
+        EnrichmentResult enrichmentResult = homeAddressValidationQuery.process(applicationData.getPagesData());
 
         assertThat(enrichmentResult).isEmpty();
     }

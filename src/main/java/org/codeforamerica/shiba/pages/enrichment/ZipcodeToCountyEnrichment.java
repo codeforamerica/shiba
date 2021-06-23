@@ -1,12 +1,15 @@
 package org.codeforamerica.shiba.pages.enrichment;
 
 import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
+import org.codeforamerica.shiba.pages.data.PagesData;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.IDENTIFY_ZIPCODE;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 
 @Component
 public class ZipcodeToCountyEnrichment implements Enrichment {
@@ -17,8 +20,8 @@ public class ZipcodeToCountyEnrichment implements Enrichment {
     }
 
     @Override
-    public EnrichmentResult process(ApplicationData applicationData) {
-        String zipcode = applicationData.getPagesData().getPageInputFirstValue("identifyZipcode", "zipCode");
+    public EnrichmentResult process(PagesData pagesData) {
+        String zipcode = getFirstValue(pagesData, IDENTIFY_ZIPCODE);
         County county = countyZipCodeMap.get(zipcode);
         if (county == null) {
             county = County.Other;
