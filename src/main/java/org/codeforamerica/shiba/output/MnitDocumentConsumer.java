@@ -50,13 +50,13 @@ public class MnitDocumentConsumer {
         DocumentListParser.parse(application.getApplicationData()).forEach(documentType -> {
             try {
                 updateDocumentStatus(documentType, application.getId(), SENDING);
-                mnitClient.send(pdfGenerator.generate(application.getId(), documentType, CASEWORKER), application.getCounty(), application.getId(), documentType);
+                mnitClient.send(pdfGenerator.generate(application.getId(), documentType, CASEWORKER), application.getCounty(), application.getId(), documentType, application.getFlow());
             } catch (Exception e) {
                 updateDocumentStatus(documentType, application.getId(), DELIVERY_FAILED);
                 log.error("Failed to send with error, ", e);
             }
         });
-        mnitClient.send(xmlGenerator.generate(application.getId(), CAF, CASEWORKER), application.getCounty(), application.getId(), CAF);
+        mnitClient.send(xmlGenerator.generate(application.getId(), CAF, CASEWORKER), application.getCounty(), application.getId(), CAF, application.getFlow());
     }
 
     public void processUploadedDocuments(Application application) {
@@ -69,7 +69,7 @@ public class MnitDocumentConsumer {
 
             if (fileToSend.getFileBytes().length > 0) {
                 log.info("Now sending: " + fileToSend.getFileName() + " original filename: " + uploadedDocument.getFilename());
-                mnitClient.send(fileToSend, application.getCounty(), application.getId(), UPLOADED_DOC);
+                mnitClient.send(fileToSend, application.getCounty(), application.getId(), UPLOADED_DOC, application.getFlow());
                 log.info("Finished sending document " + fileToSend.getFileName());
             } else if ("demo".equals(activeProfile) || "staging".equals(activeProfile) || "production".equals(activeProfile)) {
                 log.error("Skipped uploading file " + uploadedDocument.getFilename() + " because it was empty. This should only happen in a dev environment.");
