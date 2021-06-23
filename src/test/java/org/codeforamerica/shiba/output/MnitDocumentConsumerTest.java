@@ -149,8 +149,8 @@ class MnitDocumentConsumerTest {
         ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
         when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
         documentConsumer.process(application);
-        verify(mnitClient).send(pdfApplicationFile, County.Olmsted, application.getId(), Document.CAF);
-        verify(mnitClient).send(xmlApplicationFile, County.Olmsted, application.getId(), Document.CAF);
+        verify(mnitClient).send(pdfApplicationFile, County.Olmsted, application.getId(), Document.CAF, any());
+        verify(mnitClient).send(xmlApplicationFile, County.Olmsted, application.getId(), Document.CAF, any());
     }
 
     @Test
@@ -166,7 +166,7 @@ class MnitDocumentConsumerTest {
         pagesData.put("choosePrograms", chooseProgramsPage);
         applicationData.setPagesData(pagesData);
         documentConsumer.process(application);
-        verify(mnitClient).send(pdfApplicationFile, County.Olmsted, application.getId(), Document.CCAP);
+        verify(mnitClient).send(pdfApplicationFile, County.Olmsted, application.getId(), Document.CCAP, any());
     }
 
     @Test
@@ -189,7 +189,7 @@ class MnitDocumentConsumerTest {
         ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
         doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), eq(CCAP), any());
 
-        doThrow(new RuntimeException()).doNothing().when(mnitClient).send(any(),any(),any(),any());
+        doThrow(new RuntimeException()).doNothing().when(mnitClient).send(any(),any(),any(),any(), any());
         PagesData pagesData = new PagesData();
         PageData chooseProgramsPage = new PageData();
         chooseProgramsPage.put("programs", InputData.builder().value(List.of("CCAP", "SNAP")).build());
@@ -216,7 +216,7 @@ class MnitDocumentConsumerTest {
         documentConsumer.processUploadedDocuments(application);
 
         ArgumentCaptor<ApplicationFile> captor = ArgumentCaptor.forClass(ApplicationFile.class);
-        verify(mnitClient, times(2)).send(captor.capture(), eq(County.Olmsted), eq(application.getId()), eq(UPLOADED_DOC));
+        verify(mnitClient, times(2)).send(captor.capture(), eq(County.Olmsted), eq(application.getId()), eq(UPLOADED_DOC), any());
 
         // Uncomment the following line to regenerate the test files (useful if the files or cover page have changed)
 //         writeByteArrayToFile(captor.getAllValues().get(0).getFileBytes(), "src/test/resources/shiba+file.pdf");
