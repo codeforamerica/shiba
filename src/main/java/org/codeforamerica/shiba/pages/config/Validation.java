@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.pages.config;
 
 import org.apache.commons.validator.GenericValidator;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -27,10 +28,10 @@ public enum Validation {
     	SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
     	try {
     		Date dobDate = sdf.parse(dobString);
-	    	boolean dateAfterToday = dobDate.getTime() < new Date().getTime();
-	    	boolean dateBefore1900 = Integer.parseInt(strings.get(2)) > 1900; 
-	    	return dateAfterToday && dateBefore1900;
-    	} catch(Exception e) {
+	    	boolean notFutureDate = dobDate.getTime() < new Date().getTime();
+	    	boolean notBefore1900 = Integer.parseInt(strings.get(2)) >= 1900;
+	    	return notFutureDate && notBefore1900;
+    	} catch(ParseException e) {
     		return false;
     	}
     }),

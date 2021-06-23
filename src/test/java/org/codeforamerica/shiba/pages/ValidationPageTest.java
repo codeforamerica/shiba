@@ -486,7 +486,7 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         @ParameterizedTest
         @CsvSource(value = {
                 "12,31,1899",
-                "01,01,3000",
+                "1,1,3000"
         })
         void shouldFailValidationForDobValidWhenValueIsAnInvalidDate(String month,
                                                               String day,
@@ -506,7 +506,7 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         @ParameterizedTest
         @CsvSource(value = {
                 "01,02,1900",
-                "01,01,2021",
+                "9,9,2020",
         })
         void shouldPassValidationForDobValidWhenValueIsAValidDate(String month,
                                                               String day,
