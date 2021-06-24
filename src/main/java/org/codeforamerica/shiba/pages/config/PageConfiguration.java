@@ -17,6 +17,7 @@ public class PageConfiguration {
     private String primaryButtonTextKey = "general.continue";
     private Boolean hasPrimaryButton = true;
     private String contextFragment;
+    private boolean isCustomPage = false;
 
     public List<FormInput> getFlattenedInputs() {
         return this.inputs.stream()
@@ -25,7 +26,7 @@ public class PageConfiguration {
     }
 
     public boolean isStaticPage() {
-        return this.inputs.isEmpty();
+        return !isCustomPage && this.inputs.isEmpty();
     }
 
 }

@@ -32,12 +32,15 @@ pageDefinitions:
   - &endPage
     name: endPage
     pageTitle: end-page-title
+    customPage: true
   - &deleteWarningPage
     name: deleteWarningPage
     pageTitle: some-warning-title
+    customPage: true
   - &redirectPage
     name: redirectPage
     pageTitle: some-redirect-title
+    customPage: true
   - &soloPage
     name: soloPage
     pageTitle: solo-page-title

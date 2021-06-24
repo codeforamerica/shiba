@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <th:block
-        th:with="qualified=${@snapExpeditedEligibilityDecider.decide(@applicationData).equals(T(org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility).ELIGIBLE)}">
+        th:with="qualified=${expeditedSnap.equals(T(org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility).ELIGIBLE)}">
     <div th:replace="fragments/head :: head(#{${qualified} ? 'snap-expedited-determination.qualified-title' : 'snap-expedited-determination.denied-title'})"></div>
     <body>
     <div class="page-wrapper">
-        <div th:replace="fragments/toolbar :: toolbar" ></div>
+        <div th:replace="fragments/toolbar :: toolbar"></div>
         <div th:replace="fragments/demoBanner :: demoBanner"></div>
         <section class="slab slab--shiba">
             <div class="grid">
                 <div th:replace="fragments/cardHeader :: cardHeader"></div>
                 <div class="card spacing-above-35">
-                    <h1 class="h2" th:text="#{${qualified} ? 'snap-expedited-determination.qualified-header':'snap-expedited-determination.denied-header'}"></h1>
+                    <h1 class="h2"
+                        th:text="#{${qualified} ? 'snap-expedited-determination.qualified-header':'snap-expedited-determination.denied-header'}"></h1>
                     <p th:if="${qualified}" th:text="#{snap-expedited-determination.your-county-should-reach-out}"></p>
                     <p class="spacing-below-60" th:if="${qualified}" th:utext="#{snap-expedited-determination.if-you-do-not-hear}"></p>
                     <p class="spacing-below-60" th:if="${!qualified}" th:text="#{snap-expedited-determination.denied-detail}"></p>

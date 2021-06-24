@@ -1,52 +1,34 @@
-<!DOCTYPE html>
-<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
-<div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
-<body>
-<div class="page-wrapper">
-    <div th:replace="fragments/toolbar :: toolbar" ></div>
-    <div th:replace="fragments/demoBanner :: demoBanner"></div>
-    <section class="slab slab--shiba">
-        <div class="grid">
-            <div th:replace="fragments/cardHeader :: cardHeader"></div>
-            <div class="card spacing-above-35">
-                <div class="grid__item spacing-above-35">
-                    <h1 class="h2 spacing-above-0"
-                        th:text="#{household-list.is-this-everyone-that-lives-with-you}"></h1>
-                    <p class="text--help spacing-below-10"
-                       th:text="#{household-list.include-children-and-everyone-who-lives-with-you}"></p>
-                </div>
-                <div class="grid__item boxed-content spacing-below-60">
-                    <h2 class="h3 text--centered intro-box__title" th:text="#{household-list.your-household}"></h2>
-                    <ul class="list--bulleted spacing-above-10 spacing-below-60 builder-list">
-                        <li th:text="|${data.get('personalInfo').get('firstName').value[0]}&nbsp;${data.get('personalInfo').get('lastName').value[0]} #{household-list.thats-you}|"></li>
-                        <th:block th:each="subworkflow: ${subworkflows}">
-                            <th:block th:each="iteration, iterationStat: ${subworkflow.value}">
-                                <li th:id="|iteration${iterationStat.index}|">
-                                    <form method="post"
-                                          th:action="@{|/groups/${subworkflow.key}/${iterationStat.index}/deleteWarning|}">
-                                        <span th:text="|${iteration.getPagesData().get('householdMemberInfo').get('firstName').value[0]}&nbsp;${iteration.getPagesData().get('householdMemberInfo').get('lastName').value[0]}|"></span>
-                                        <button class="button--link right"
-                                                th:id="|iteration${iterationStat.index}-delete|"
-                                                type="submit"
-                                                th:text="#{job-builder.delete}"></button>
-                                    </form>
-                                </li>
-                            </th:block>
-                        </th:block>
-                    </ul>
-                    <div class="text--centered">
-                        <a class="button button--secondary" th:href="'/pages/'+${pageName}+'/navigation?option=0'">
-                            <i class="icon-add"></i>
-                            <span th:text="#{household-list.add-a-person}"></span>
-                        </a>
-                    </div>
-                </div>
-                <a class="button button--primary" th:href="'/pages/'+${pageName}+'/navigation?option=1'"
-                   th:text="#{household-list.yes-thats-everyone}"></a>
-            </div>
+<div th:fragment="householdList">
+    <div class="grid__item spacing-above-35">
+        <h1 class="h2 spacing-above-0"
+            th:text="#{household-list.is-this-everyone-that-lives-with-you}"></h1>
+        <p class="text--help spacing-below-10"
+           th:text="#{household-list.include-children-and-everyone-who-lives-with-you}"></p>
+    </div>
+    <div class="grid__item boxed-content spacing-below-60">
+        <h2 class="h3 text--centered intro-box__title" th:text="#{household-list.your-household}"></h2>
+        <ul class="list--bulleted spacing-above-10 spacing-below-60 builder-list">
+            <li th:text="|${data.get('personalInfo').get('firstName').value[0]}&nbsp;${data.get('personalInfo').get('lastName').value[0]} #{household-list.thats-you}|"></li>
+            <th:block th:each="subworkflow: ${subworkflows}">
+                <th:block th:each="iteration, iterationStat: ${subworkflow.value}">
+                    <li th:id="|iteration${iterationStat.index}|">
+                        <form method="post"
+                              th:action="@{|/groups/${subworkflow.key}/${iterationStat.index}/deleteWarning|}">
+                            <span th:text="|${iteration.getPagesData().get('householdMemberInfo').get('firstName').value[0]}&nbsp;${iteration.getPagesData().get('householdMemberInfo').get('lastName').value[0]}|"></span>
+                            <button class="button--link right"
+                                    th:id="|iteration${iterationStat.index}-delete|"
+                                    type="submit"
+                                    th:text="#{job-builder.delete}"></button>
+                        </form>
+                    </li>
+                </th:block>
+            </th:block>
+        </ul>
+        <div class="text--centered">
+            <a class="button button--secondary" th:href="'/pages/'+${pageName}+'/navigation?option=1'">
+                <i class="icon-add"></i>
+                <span th:text="#{household-list.add-a-person}"></span>
+            </a>
         </div>
-    </section>
+    </div>
 </div>
-<div th:replace="fragments/footer :: footer"></div>
-</body>
-</html>

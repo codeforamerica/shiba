@@ -1,36 +1,20 @@
-<!DOCTYPE html>
-<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
-<div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
-<body>
-<div class="page-wrapper">
-    <div th:replace="fragments/toolbar :: toolbar" ></div>
-    <div th:replace="fragments/demoBanner :: demoBanner"></div>
-    <section class="slab slab--shiba">
-        <div class="grid">
-            <div th:replace="fragments/cardHeader :: cardHeader"></div>
-            <div class="card spacing-above-35">
-                <div class="grid__item text--centered spacing-above-35">
-                    <div th:replace="fragments/icons/milestone-income :: milestone-income"></div>
-                    <p class="text--help spacing-below-10"
-                       th:text="#{general.step-three-of-five}"></p>
-                    <h1 class="h2 spacing-below-35 spacing-above-0"
-                        th:text="#{intro-income.income-and-employment}"></h1>
-                </div>
-                <div class="grid__item intro-section boxed-content spacing-below-60">
-                    <h2 class="h3 text--centered intro-box__title" th:text="#{general.well-ask-about}"></h2>
-                    <ol class="list--numbered spacing-above-10">
-                        <li th:text="#{intro-income.current-jobs}"></li>
-                        <li th:text="#{intro-income.unearned-income}"></li>
-                        <li th:text="#{intro-income.recent-income-changes}"></li>
-                    </ol>
-                </div>
-                <div class="text--centered">
-                    <div th:replace="fragments/continue :: continue"></div>
-                </div>
-            </div>
-        </div>
-    </section>
+<div th:fragment="introIncome">
+    <div class="grid__item text--centered spacing-above-35">
+        <div th:replace="fragments/icons/milestone-income :: milestone-income"></div>
+        <p class="text--help spacing-below-10"
+           th:text="#{general.step-three-of-five}"></p>
+        <h1 class="h2 spacing-below-35 spacing-above-0"
+            th:text="#{intro-income.income-and-employment}"></h1>
+    </div>
+    <div class="grid__item intro-section boxed-content spacing-below-60">
+        <h2 class="h3 text--centered intro-box__title" th:text="#{general.well-ask-about}"></h2>
+        <ol class="list--numbered spacing-above-10">
+            <li th:text="#{intro-income.current-jobs}"></li>
+            <li th:text="#{intro-income.unearned-income}"></li>
+            <li th:text="#{intro-income.recent-income-changes}"></li>
+        </ol>
+    </div>
+    <div class="text--centered">
+        <div th:replace="fragments/continue :: continue"></div>
+    </div>
 </div>
-<div th:replace="fragments/footer :: footer"></div>
-</body>
-</html>
