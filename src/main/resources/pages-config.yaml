@@ -940,6 +940,7 @@ pageDefinitions:
   - &doYouNeedHelpImmediately
     name: doYouNeedHelpImmediately
     pageTitle: do-you-need-help-immediately.title
+    hasPrimaryButton: false
   - &thirtyDayIncome
     headerKey:
       defaultValue: thirty-day-income.how-much-money-has-your-household-made-in-the-last-30-days

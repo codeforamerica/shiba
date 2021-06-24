@@ -234,7 +234,7 @@ public class PageController {
         var pageTemplate = pagesData.evaluate(featureFlags, pageWorkflowConfig, applicationData);
 
         var model = buildModelForThymeleaf(pageName, locale, landmarkPagesConfiguration, pageTemplate, pageWorkflowConfig, pagesData, iterationIndex);
-        var view = pageWorkflowConfig.getPageConfiguration().isCustomPage() ? pageName : "formPage";
+        var view = pageWorkflowConfig.getPageConfiguration().isCustomPage() ? pageName : "pageTemplate";
         return new ModelAndView(view, model);
     }
 
