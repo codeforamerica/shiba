@@ -3169,11 +3169,20 @@ workflow:
     nextPages:
       - pageName: supportAndCare
     skipCondition:
-      logicalOperator: OR
+      logicalOperator: AND
       conditions:
         - pageName: medicalExpenses
           input: medicalExpenses
-          value: NONE_OF_THE_ABOVE
+          value: MEDICAL_INSURANCE_PREMIUMS
+          matcher: DOES_NOT_CONTAIN
+        - pageName: medicalExpenses
+          input: medicalExpenses
+          value: DENTAL_INSURANCE_PREMIUMS
+          matcher: DOES_NOT_CONTAIN
+        - pageName: medicalExpenses
+          input: medicalExpenses
+          value: VISION_INSURANCE_PREMIUMS
+          matcher: DOES_NOT_CONTAIN
     datasources:
       - pageName: medicalExpenses
       - pageName: addHouseholdMembers
