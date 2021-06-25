@@ -8,7 +8,7 @@ import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
-import org.codeforamerica.shiba.documents.DocumentRepositoryService;
+import org.codeforamerica.shiba.documents.CombinedAzureS3DocumentRepositoryService;
 import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
@@ -61,7 +61,8 @@ public class PageController {
     private final CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
     private final SuccessMessageService successMessageService;
     private final DocRecommendationMessageService docRecommendationMessageService;
-    private final DocumentRepositoryService documentRepositoryService;
+    private final CombinedAzureS3DocumentRepositoryService combinedAzureS3DocumentRepositoryService;
+//    private final DocumentRepositoryService documentRepositoryService;
     private final ApplicationStatusUpdater applicationStatusUpdater;
 
     public PageController(
@@ -75,12 +76,13 @@ public class PageController {
             ApplicationEnrichment applicationEnrichment,
             FeatureFlagConfiguration featureFlags,
             UploadDocumentConfiguration uploadDocumentConfiguration,
-            DocumentRepositoryService documentRepositoryService,
+//            DocumentRepositoryService documentRepositoryService,
             CountyParser countyParser,
             SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider,
             CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider,
             SuccessMessageService successMessageService,
             DocRecommendationMessageService docRecommendationMessageService,
+            CombinedAzureS3DocumentRepositoryService combinedAzureS3DocumentRepositoryService,
             ApplicationStatusUpdater applicationStatusUpdater) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
@@ -92,12 +94,13 @@ public class PageController {
         this.applicationEnrichment = applicationEnrichment;
         this.featureFlags = featureFlags;
         this.uploadDocumentConfiguration = uploadDocumentConfiguration;
-        this.documentRepositoryService = documentRepositoryService;
+//        this.documentRepositoryService = documentRepositoryService;
         this.countyParser = countyParser;
         this.snapExpeditedEligibilityDecider = snapExpeditedEligibilityDecider;
         this.ccapExpeditedEligibilityDecider = ccapExpeditedEligibilityDecider;
         this.successMessageService = successMessageService;
         this.docRecommendationMessageService = docRecommendationMessageService;
+        this.combinedAzureS3DocumentRepositoryService = combinedAzureS3DocumentRepositoryService;
         this.applicationStatusUpdater = applicationStatusUpdater;
     }
 
@@ -532,7 +535,8 @@ public class PageController {
         if (applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
                 file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
             String s3FilePath = String.format("%s/%s", applicationData.getId(), UUID.randomUUID());
-            documentRepositoryService.upload(s3FilePath, file);
+//            documentRepositoryService.upload(s3FilePath, file);
+            combinedAzureS3DocumentRepositoryService.uploadConcurrently(s3FilePath, file);
             applicationData.addUploadedDoc(file, s3FilePath, dataURL, type);
         }
     }
@@ -564,7 +568,7 @@ public class PageController {
                 .filter(uploadedDocument -> uploadedDocument.getFilename().equals(filename))
                 .map(UploadedDocument::getS3Filepath)
                 .findFirst()
-                .ifPresent(documentRepositoryService::delete);
+                .ifPresent(combinedAzureS3DocumentRepositoryService::deleteConcurrently);
         applicationData.removeUploadedDoc(filename);
 
         return new ModelAndView("redirect:/pages/uploadDocuments");

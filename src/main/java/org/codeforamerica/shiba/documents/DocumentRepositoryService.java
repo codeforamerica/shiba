@@ -8,7 +8,7 @@ public interface DocumentRepositoryService {
 
     byte[] get(String filepath);
 
-    void upload(String filepath, MultipartFile file) throws IOException, InterruptedException;
+    Runnable upload(String filepath, MultipartFile file) throws IOException, InterruptedException;
 
-    void delete(String filepath);
+    Runnable delete(String filepath);
 }

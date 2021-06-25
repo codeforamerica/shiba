@@ -32,7 +32,7 @@ public class AzureDocumentRepositoryService implements DocumentRepositoryService
     }
 
     @Override
-    public void upload(String filepath, MultipartFile file) throws IOException, InterruptedException {
+    public Runnable upload(String filepath, MultipartFile file) throws IOException, InterruptedException {
         log.info("Uploading file {} to Azure at filepath {}", file.getOriginalFilename(), filepath);
         // Get a reference to a blob
         BlobClient blobClient = containerClient.getBlobClient(filepath);
@@ -40,11 +40,13 @@ public class AzureDocumentRepositoryService implements DocumentRepositoryService
         // Upload the blob
         blobClient.upload(file.getInputStream(), file.getSize());
         log.info("finished uploading");
+        return null;
     }
 
     @Override
-    public void delete(String filepath) {
+    public Runnable delete(String filepath) {
         BlobClient blobClient = containerClient.getBlobClient(filepath);
         blobClient.delete();
+        return null;
     }
 }
