@@ -2,10 +2,7 @@ package org.codeforamerica.shiba.documents;
 
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.amazonaws.services.s3.model.*;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.util.IOUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -33,13 +30,13 @@ public class S3DocumentRepositoryService implements DocumentRepositoryService {
 
     @Override
     public byte[] get(String filepath) {
-        S3Object obj = s3Client.getObject(bucketName, filepath);
-        S3ObjectInputStream stream = obj.getObjectContent();
         try {
+            S3Object obj = s3Client.getObject(bucketName, filepath);
+            S3ObjectInputStream stream = obj.getObjectContent();
             byte[] content = IOUtils.toByteArray(stream);
             obj.close();
             return content;
-        } catch (IOException e) {
+        } catch (Exception e) {
             return null;
         }
     }

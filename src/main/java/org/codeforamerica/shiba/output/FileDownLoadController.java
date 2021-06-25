@@ -8,13 +8,16 @@ import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayOutputStream;
@@ -114,9 +117,11 @@ public class FileDownLoadController {
             UploadedDocument uploadedDocument = uploadedDocs.get(i);
             ApplicationFile fileToSend = pdfGenerator.generateForUploadedDocument(uploadedDocument, i, application, coverPage);
 
-            if (fileToSend.getFileBytes().length > 0) {
+            if (null != fileToSend && fileToSend.getFileBytes().length > 0) {
                 applicationFiles.add(fileToSend);
             }
+
+
         }
 
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -136,7 +141,16 @@ public class FileDownLoadController {
 
             zos.close();
             baos.close();
-            return createResponse(baos.toByteArray(), "files.zip");
+
+            // The minimum size of a .ZIP file is 22 bytes even when empty because of metadata
+            if (baos.size() > 22){
+                return createResponse(baos.toByteArray(), "files.zip");
+            } else {
+                throw new ResponseStatusException(
+                        HttpStatus.NOT_FOUND);
+            }
+
+
         }
     }
 

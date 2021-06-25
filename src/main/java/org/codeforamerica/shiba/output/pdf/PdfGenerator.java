@@ -70,22 +70,25 @@ public class PdfGenerator implements FileGenerator {
 
     public ApplicationFile generateForUploadedDocument(UploadedDocument uploadedDocument, int documentIndex, Application application, byte[] coverPage) {
         var fileBytes = combinedAzureS3DocumentRepositoryService.getFromAzureWithFallbackToS3(uploadedDocument.getS3Filepath());
-        var extension = Utils.getFileType(uploadedDocument.getFilename());
-        if (IMAGE_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
-            try {
-                fileBytes = convertImageToPdf(fileBytes, uploadedDocument.getFilename());
-                extension = "pdf";
-            } catch (IOException e) {
-                log.error("failed to convert document " + uploadedDocument.getFilename() + " to pdf. Maintaining original type");
+        if(fileBytes != null) {
+            var extension = Utils.getFileType(uploadedDocument.getFilename());
+            if (IMAGE_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
+                try {
+                    fileBytes = convertImageToPdf(fileBytes, uploadedDocument.getFilename());
+                    extension = "pdf";
+                } catch (IOException e) {
+                    log.error("failed to convert document " + uploadedDocument.getFilename() + " to pdf. Maintaining original type");
+                }
             }
-        }
 
-        if (extension.equals("pdf")) {
-            fileBytes = addCoverPageToPdf(coverPage, fileBytes);
-        }
+            if (extension.equals("pdf")) {
+                fileBytes = addCoverPageToPdf(coverPage, fileBytes);
+            }
 
-        String filename = fileNameGenerator.generateUploadedDocumentName(application, documentIndex, extension);
-        return new ApplicationFile(fileBytes, filename);
+            String filename = fileNameGenerator.generateUploadedDocumentName(application, documentIndex, extension);
+            return new ApplicationFile(fileBytes, filename);
+        }
+         return null;
     }
 
     private byte[] addCoverPageToPdf(byte[] coverPage, byte[] fileBytes) {

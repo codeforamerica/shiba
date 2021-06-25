@@ -26,9 +26,13 @@ public class AzureDocumentRepositoryService implements DocumentRepositoryService
     public byte[] get(String filepath) {
         BlobClient blobClient = containerClient.getBlobClient(filepath);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        blobClient.download(byteArrayOutputStream);
 
-        return byteArrayOutputStream.toByteArray();
+        try {
+            blobClient.download(byteArrayOutputStream);
+            return byteArrayOutputStream.toByteArray();
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     @Override

@@ -1,11 +1,13 @@
 package org.codeforamerica.shiba.documents;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
 @Service
+@Slf4j
 public class CombinedAzureS3DocumentRepositoryService {
     private final S3DocumentRepositoryService s3DocumentRepositoryService;
     private final AzureDocumentRepositoryService azureDocumentRepositoryService;
@@ -17,11 +19,15 @@ public class CombinedAzureS3DocumentRepositoryService {
     }
 
     public byte[] getFromAzureWithFallbackToS3(String filepath) {
+        log.info("Checking for filepath " + filepath + " in Azure");
         byte[] content = azureDocumentRepositoryService.get(filepath);
         if (null == content) {
+            log.info("File at filepath " + filepath + " cannot be found in Azure. Now checking S3");
             content = s3DocumentRepositoryService.get(filepath);
+            if( null == content) {
+                log.error("File at filepath " + filepath + " cannot be found in Azure or S3");
+            }
         }
-
         return content;
     }
 
