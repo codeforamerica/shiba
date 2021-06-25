@@ -32,7 +32,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.toMap;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.TestUtils.assertPdfFieldEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -74,8 +73,10 @@ public class PdfIntegrationMockMvcTest {
         when(featureFlagConfiguration.get("county-anoka")).thenReturn(FeatureFlag.OFF);
 
         mockMvc.perform(get("/pages/languagePreferences").session(session)); // start timer
-        postWithData("/pages/languagePreferences",
-                     Map.of("writtenLanguage", List.of("ENGLISH"), "spokenLanguage", List.of("ENGLISH")));
+        postWithData("/pages/languagePreferences", Map.of(
+                "writtenLanguage", List.of("ENGLISH"),
+                "spokenLanguage", List.of("ENGLISH"))
+        );
 
         postWithData("/pages/addHouseholdMembers", Map.of("addHouseholdMembers", List.of("false")));
     }
@@ -135,15 +136,15 @@ public class PdfIntegrationMockMvcTest {
                 "childIdMap", List.of("applicant", jimHalpertId)
         ));
 
-        var ccapPdf = submitAndDownloadCcap();
-        assertPdfFieldEquals("CHILD_NEEDS_CHILDCARE_FULL_NAME_0", "Dwight Schrute", ccapPdf);
-        assertPdfFieldEquals("CHILD_NEEDS_CHILDCARE_FULL_NAME_1", "Jim Halpert", ccapPdf);
-        assertPdfFieldEquals("CHILD_FULL_NAME_0", "Dwight Schrute", ccapPdf);
-        assertPdfFieldEquals("PARENT_NOT_LIVING_AT_HOME_0", "", ccapPdf);
-        assertPdfFieldEquals("CHILD_FULL_NAME_1", "Jim Halpert", ccapPdf);
-        assertPdfFieldEquals("PARENT_NOT_LIVING_AT_HOME_1", "Jim's Parent", ccapPdf);
-        assertPdfFieldEquals("CHILD_FULL_NAME_2", "", ccapPdf);
-        assertPdfFieldEquals("PARENT_NOT_LIVING_AT_HOME_2", "", ccapPdf);
+        var ccap = submitAndDownloadCcap();
+        assertPdfFieldEquals("CHILD_NEEDS_CHILDCARE_FULL_NAME_0", "Dwight Schrute", ccap);
+        assertPdfFieldEquals("CHILD_NEEDS_CHILDCARE_FULL_NAME_1", "Jim Halpert", ccap);
+        assertPdfFieldEquals("CHILD_FULL_NAME_0", "Dwight Schrute", ccap);
+        assertPdfFieldEquals("PARENT_NOT_LIVING_AT_HOME_0", "", ccap);
+        assertPdfFieldEquals("CHILD_FULL_NAME_1", "Jim Halpert", ccap);
+        assertPdfFieldEquals("PARENT_NOT_LIVING_AT_HOME_1", "Jim's Parent", ccap);
+        assertPdfFieldEquals("CHILD_FULL_NAME_2", "", ccap);
+        assertPdfFieldEquals("PARENT_NOT_LIVING_AT_HOME_2", "", ccap);
     }
 
     private String getFirstHouseholdMemberId() throws Exception {
