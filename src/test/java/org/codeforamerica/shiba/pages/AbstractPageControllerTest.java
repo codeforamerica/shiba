@@ -6,6 +6,7 @@ import org.codeforamerica.shiba.NonSessionScopedApplicationData;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.configurations.ClockConfiguration;
 import org.codeforamerica.shiba.documents.DocumentRepositoryService;
@@ -73,9 +74,13 @@ public class AbstractPageControllerTest {
 
     @AfterEach
     void cleanup() {
-        applicationData.setSubworkflows(new Subworkflows());
+        applicationData.setId(null);
+        applicationData.setUtmSource(null);
         applicationData.setPagesData(new PagesData());
+        applicationData.setSubworkflows(new Subworkflows());
         applicationData.setIncompleteIterations(new HashMap<>());
         applicationData.setUploadedDocs(new ArrayList<>());
+        applicationData.setFlow(FlowType.UNDETERMINED);
+        applicationData.setSubmitted(false);
     }
 }

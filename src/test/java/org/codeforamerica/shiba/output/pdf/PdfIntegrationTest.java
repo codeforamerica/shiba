@@ -65,34 +65,6 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
 
     @Nested
     @Tag("pdf")
-    class EnergyAssistanceLIHEAP {
-        @BeforeEach
-        void setUp() {
-            selectPrograms(List.of(PROGRAM_CASH));
-        }
-
-        @Test
-        void shouldAnswerEnergyAssistanceQuestion() {
-            navigateTo("energyAssistance");
-            testPage.enter("energyAssistance", "Yes");
-            testPage.enter("energyAssistanceMoreThan20", "No");
-
-            PDAcroForm pdAcroForm = submitAndDownloadCaf();
-            assertThat(pdAcroForm.getField("RECEIVED_LIHEAP").getValueAsString()).isEqualTo("No");
-        }
-
-        @Test
-        void shouldMapEnergyAssistanceWhenUserReceivedNoAssistance() {
-            navigateTo("energyAssistance");
-            testPage.enter("energyAssistance", "No");
-
-            PDAcroForm pdAcroForm = submitAndDownloadCaf();
-            assertThat(pdAcroForm.getField("RECEIVED_LIHEAP").getValueAsString()).isEqualTo("No");
-        }
-    }
-
-    @Nested
-    @Tag("pdf")
     class CCAP {
         @BeforeEach
         void setUp() {
