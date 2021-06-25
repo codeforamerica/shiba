@@ -210,7 +210,6 @@ mappings:
   medicalExpenses:
     medicalExpenses:
     medicalExpensesSelection: MEDICAL_EXPENSES_SELECTION
-    noMedicalExpensesSelection: MEDICAL_EXPENSES_SELECTION
   medicalExpensesSources:
     medicalInsurancePremiumAmount: MEDICAL_INSURANCE_PREMIUM_AMOUNT
     dentalInsurancePremiumAmount: DENTAL_INSURANCE_PREMIUM_AMOUNT

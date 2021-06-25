@@ -1045,9 +1045,6 @@ derived-values:
               value: VISION_INSURANCE_PREMIUMS
             - <<: *paysForMedicalExpenses?
               value: MEDICAL_BILLS_OR_COPAYS
-  - groupName: medicalExpenses
-    fieldName: noMedicalExpensesSelection
-    values:
       - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
           literal: NONE_SELECTED
         type: ENUMERATED_SINGLE_VALUE
