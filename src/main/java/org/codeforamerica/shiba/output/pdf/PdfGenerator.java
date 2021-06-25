@@ -10,7 +10,7 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.codeforamerica.shiba.Utils;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.documents.CombinedAzureS3DocumentRepositoryService;
+import org.codeforamerica.shiba.documents.CombinedDocumentRepositoryService;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.Document;
@@ -32,8 +32,7 @@ public class PdfGenerator implements FileGenerator {
     private final PdfFieldMapper pdfFieldMapper;
     private final Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillerMap;
     private final ApplicationRepository applicationRepository;
-    private final CombinedAzureS3DocumentRepositoryService combinedAzureS3DocumentRepositoryService;
-//    private final DocumentRepositoryService documentRepositoryService;
+    private final CombinedDocumentRepositoryService combinedDocumentRepositoryService;
     private final ApplicationInputsMappers mappers;
     private final FileNameGenerator fileNameGenerator;
 
@@ -42,16 +41,14 @@ public class PdfGenerator implements FileGenerator {
     public PdfGenerator(PdfFieldMapper pdfFieldMapper,
                         Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers,
                         ApplicationRepository applicationRepository,
-//                        DocumentRepositoryService documentRepositoryService,
-                        CombinedAzureS3DocumentRepositoryService combinedAzureS3DocumentRepositoryService,
+                        CombinedDocumentRepositoryService combinedDocumentRepositoryService,
                         ApplicationInputsMappers mappers,
                         FileNameGenerator fileNameGenerator
     ) {
         this.pdfFieldMapper = pdfFieldMapper;
         this.pdfFieldFillerMap = pdfFieldFillers;
-//        this.documentRepositoryService = documentRepositoryService;
         this.applicationRepository = applicationRepository;
-        this.combinedAzureS3DocumentRepositoryService = combinedAzureS3DocumentRepositoryService;
+        this.combinedDocumentRepositoryService = combinedDocumentRepositoryService;
         this.mappers = mappers;
         this.fileNameGenerator = fileNameGenerator;
     }
@@ -69,7 +66,7 @@ public class PdfGenerator implements FileGenerator {
     }
 
     public ApplicationFile generateForUploadedDocument(UploadedDocument uploadedDocument, int documentIndex, Application application, byte[] coverPage) {
-        var fileBytes = combinedAzureS3DocumentRepositoryService.getFromAzureWithFallbackToS3(uploadedDocument.getS3Filepath());
+        var fileBytes = combinedDocumentRepositoryService.getFromAzureWithFallbackToS3(uploadedDocument.getS3Filepath());
         if(fileBytes != null) {
             var extension = Utils.getFileType(uploadedDocument.getFilename());
             if (IMAGE_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {

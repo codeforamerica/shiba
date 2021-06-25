@@ -8,24 +8,24 @@ import java.io.IOException;
 
 @Service
 @Slf4j
-public class CombinedAzureS3DocumentRepositoryService {
+public class CombinedDocumentRepositoryService {
     private final S3DocumentRepositoryService s3DocumentRepositoryService;
     private final AzureDocumentRepositoryService azureDocumentRepositoryService;
 
-    public CombinedAzureS3DocumentRepositoryService(S3DocumentRepositoryService s3DocumentRepositoryService,
-                                                    AzureDocumentRepositoryService azureDocumentRepositoryService) {
+    public CombinedDocumentRepositoryService(S3DocumentRepositoryService s3DocumentRepositoryService,
+                                             AzureDocumentRepositoryService azureDocumentRepositoryService) {
         this.s3DocumentRepositoryService = s3DocumentRepositoryService;
         this.azureDocumentRepositoryService = azureDocumentRepositoryService;
     }
 
     public byte[] getFromAzureWithFallbackToS3(String filepath) {
-        log.info("Checking for filepath " + filepath + " in Azure");
+        log.info("Checking for filepath " + filepath + " in Azure.");
         byte[] content = azureDocumentRepositoryService.get(filepath);
         if (null == content) {
-            log.info("File at filepath " + filepath + " cannot be found in Azure. Now checking S3");
+            log.info("File at filepath " + filepath + " cannot be found in Azure. Now checking S3.");
             content = s3DocumentRepositoryService.get(filepath);
             if( null == content) {
-                log.error("File at filepath " + filepath + " cannot be found in Azure or S3");
+                log.error("File at filepath " + filepath + " cannot be found in Azure or S3.");
             }
         }
         return content;
