@@ -2,9 +2,8 @@ package org.codeforamerica.shiba.output.pdf;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
-import org.codeforamerica.shiba.SessionScopedBeanTestConfiguration;
-import org.codeforamerica.shiba.pages.config.FeatureFlag;
-import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
+import org.codeforamerica.shiba.SessionScopedApplicationDataTestConfiguration;
+import org.codeforamerica.shiba.pages.config.*;
 import org.codeforamerica.shiba.pages.enrichment.LocationClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -29,7 +28,7 @@ import java.util.Optional;
 
 import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.AbstractBasePageTest.PROGRAM_CASH;
+import static org.codeforamerica.shiba.TestUtils.assertPdfFieldEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
@@ -42,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = MOCK)
 @Tag("pdf")
 @AutoConfigureMockMvc
-@Import({SessionScopedBeanTestConfiguration.class})
+@Import({SessionScopedApplicationDataTestConfiguration.class})
 public class PdfIntegrationMockMvcTest {
     @Autowired
     private MockMvc mockMvc;
@@ -78,7 +77,7 @@ public class PdfIntegrationMockMvcTest {
 
     @Test
     void shouldAnswerEnergyAssistanceQuestion() throws Exception {
-        selectPrograms(List.of(PROGRAM_CASH));
+        selectPrograms(List.of("CASH"));
 
         postWithData("/pages/energyAssistance", Map.of("energyAssistance", List.of("true")));
         postWithData("/pages/energyAssistanceMoreThan20", Map.of("energyAssistanceMoreThan20", List.of("false")));
@@ -89,23 +88,98 @@ public class PdfIntegrationMockMvcTest {
 
     @Test
     void shouldMapEnergyAssistanceWhenUserReceivedNoAssistance() throws Exception {
-        selectPrograms(List.of(PROGRAM_CASH));
+        selectPrograms(List.of("CASH"));
         postWithData("/pages/energyAssistance", Map.of("energyAssistance", List.of("false")));
 
         var caf = submitAndDownloadCaf();
         assertThat(caf.getField("RECEIVED_LIHEAP").getValueAsString()).isEqualTo("No");
     }
 
-    private PDAcroForm submitAndDownloadCaf() throws Exception {
-        postWithData("/submit",
-                     "/pages/signThisApplication/navigation",
-                     Map.of("applicantSignature", List.of("Human McPerson")));
+    @Test
+    void shouldMapChildrenNeedingChildcareFullNames() throws Exception {
+        selectPrograms(List.of("CCAP"));
 
+        postWithData("/pages/personalInfo", Map.of(
+                "firstName", List.of("Dwight"),
+                "lastName", List.of("Schrute"),
+                "dateOfBirth", List.of("01", "12", "1928")
+        ));
+        postWithData("/pages/addHouseholdMembers", Map.of("addHouseholdMembers", List.of("true")));
+        postWithData("/pages/householdMemberInfo", Map.of(
+                "firstName", List.of("Jim"),
+                "lastName", List.of("Halpert"),
+                "programs", List.of("CCAP")
+        ));
+        postWithData("/pages/householdMemberInfo", Map.of(
+                "firstName", List.of("Pam"),
+                "lastName", List.of("Beesly"),
+                "programs", List.of("CCAP")
+        ));
+
+        Object pageTemplate = mockMvc.perform(get("/pages/childrenInNeedOfCare").session(session))
+                .andReturn()
+                .getModelAndView()
+                .getModel()
+                .get("page");
+        OptionsWithDataSourceTemplate options = ((PageTemplate) pageTemplate).getInputs().get(0).getOptions();
+        String jimHalpertId = ((ReferenceOptionsTemplate) options).getSubworkflows()
+                .get("household")
+                .get(0)
+                .getId()
+                .toString();
+        postWithData("/pages/childrenInNeedOfCare", Map.of(
+                "whoNeedsChildCare", List.of("Dwight Schrute applicant", "Jim Halpert " + jimHalpertId)
+        ));
+
+        postWithData("/pages/whoHasParentNotAtHome", Map.of(
+                "whoHasAParentNotLivingAtHome", List.of("Dwight Schrute applicant", "Jim Halpert " + jimHalpertId)
+        ));
+        postWithData("/pages/parentNotAtHomeNames", Map.of(
+                "whatAreTheParentsNames", List.of("", "Jim's Parent"),
+                "childIdMap", List.of("applicant", jimHalpertId)
+        ));
+
+        var ccapPdf = submitAndDownloadCcap();
+        assertPdfFieldEquals("CHILD_NEEDS_CHILDCARE_FULL_NAME_0", "Dwight Schrute", ccapPdf);
+        assertPdfFieldEquals("CHILD_NEEDS_CHILDCARE_FULL_NAME_1", "Jim Halpert", ccapPdf);
+        assertPdfFieldEquals("CHILD_FULL_NAME_0", "Dwight Schrute", ccapPdf);
+        assertPdfFieldEquals("PARENT_NOT_LIVING_AT_HOME_0", "", ccapPdf);
+        assertPdfFieldEquals("CHILD_FULL_NAME_1", "Jim Halpert", ccapPdf);
+        assertPdfFieldEquals("PARENT_NOT_LIVING_AT_HOME_1", "Jim's Parent", ccapPdf);
+        assertPdfFieldEquals("CHILD_FULL_NAME_2", "", ccapPdf);
+        assertPdfFieldEquals("PARENT_NOT_LIVING_AT_HOME_2", "", ccapPdf);
+    }
+
+    private PDAcroForm submitAndDownloadCaf() throws Exception {
+        submitApplication();
+        return downloadCaf();
+    }
+
+    private PDAcroForm submitAndDownloadCcap() throws Exception {
+        submitApplication();
+        return downloadCcap();
+    }
+
+    private PDAcroForm downloadCaf() throws Exception {
         var cafBytes = mockMvc.perform(get("/download").session(session))
                 .andReturn()
                 .getResponse()
                 .getContentAsByteArray();
         return PDDocument.load(cafBytes).getDocumentCatalog().getAcroForm();
+    }
+
+    private PDAcroForm downloadCcap() throws Exception {
+        var ccapBytes = mockMvc.perform(get("/download-ccap").session(session))
+                .andReturn()
+                .getResponse()
+                .getContentAsByteArray();
+        return PDDocument.load(ccapBytes).getDocumentCatalog().getAcroForm();
+    }
+
+    private void submitApplication() throws Exception {
+        postWithData("/submit",
+                     "/pages/signThisApplication/navigation",
+                     Map.of("applicantSignature", List.of("Human McPerson")));
     }
 
     private void selectPrograms(List<String> programs) throws Exception {

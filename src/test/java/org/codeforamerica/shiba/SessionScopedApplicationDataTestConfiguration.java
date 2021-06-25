@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.SimpleThreadScope;
 
 @TestConfiguration
-public class SessionScopedBeanTestConfiguration {
+public class SessionScopedApplicationDataTestConfiguration {
     @Bean
     public CustomScopeConfigurer customScopeConfigurer() {
         CustomScopeConfigurer configurer = new CustomScopeConfigurer();
