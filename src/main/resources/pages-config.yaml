@@ -39,51 +39,23 @@ conditionDefinitions:
     pageName: choosePrograms
     value: SNAP
     input: programs
+  - &applicantDidNotChooseProgram?
+    pageName: choosePrograms
+    input: programs
+    matcher: DOES_NOT_CONTAIN
   - &applicantDidNotChooseCCAP?
-    pageName: choosePrograms
+    <<: *applicantDidNotChooseProgram?
     value: CCAP
-    input: programs
-    matcher: DOES_NOT_CONTAIN
-  - &applicantDidNotChooseSNAP?
-    pageName: choosePrograms
-    value: SNAP
-    input: programs
-    matcher: DOES_NOT_CONTAIN
-  - &applicantDidNotChooseCASH?
-    pageName: choosePrograms
-    value: CASH
-    input: programs
-    matcher: DOES_NOT_CONTAIN
-  - &applicantDidNotChooseEA?
-    pageName: choosePrograms
-    value: EA
-    input: programs
-    matcher: DOES_NOT_CONTAIN
   - &applicantDidNotChooseGRH?
-    pageName: choosePrograms
+    <<: *applicantDidNotChooseProgram?
     value: GRH
+  - &householdMemberDidNotChooseProgram?
+    pageName: householdMemberInfo
     input: programs
     matcher: DOES_NOT_CONTAIN
   - &householdMemberDidNotChooseCCAP?
-    pageName: householdMemberInfo
+    <<: *householdMemberDidNotChooseProgram?
     value: CCAP
-    input: programs
-    matcher: DOES_NOT_CONTAIN
-  - &householdMemberDidNotChooseSNAP?
-    pageName: householdMemberInfo
-    value: SNAP
-    input: programs
-    matcher: DOES_NOT_CONTAIN
-  - &householdMemberDidNotChooseCASH?
-    pageName: householdMemberInfo
-    value: CASH
-    input: programs
-    matcher: DOES_NOT_CONTAIN
-  - &householdMemberDidNotChooseEA?
-    pageName: householdMemberInfo
-    value: EA
-    input: programs
-    matcher: DOES_NOT_CONTAIN
   - &noOneChoseCCAP?
     logicalOperator: AND
     conditions:
@@ -95,31 +67,94 @@ conditionDefinitions:
   - &noOneChoseSNAP?
     logicalOperator: AND
     conditions:
-      - *applicantDidNotChooseSNAP?
+      - <<: *applicantDidNotChooseProgram?
+        value: SNAP
       - logicalOperator: OR
         conditions:
-          - *householdMemberDidNotChooseSNAP?
+          - <<: *householdMemberDidNotChooseProgram?
+            value: SNAP
           - *livesAlone?
   - &noOneChoseCASH?
     logicalOperator: AND
     conditions:
-      - *applicantDidNotChooseCASH?
+      - <<: *applicantDidNotChooseProgram?
+        value: CASH
       - logicalOperator: OR
         conditions:
-          - *householdMemberDidNotChooseCASH?
+          - <<: *householdMemberDidNotChooseProgram?
+            value: CASH
           - *livesAlone?
   - &noOneChoseEA?
     logicalOperator: AND
     conditions:
-      - *applicantDidNotChooseEA?
+      - <<: *applicantDidNotChooseProgram?
+        value: EA
       - logicalOperator: OR
         conditions:
-          - *householdMemberDidNotChooseEA?
+          - <<: *householdMemberDidNotChooseProgram?
+            value: EA
           - *livesAlone?
   - &noOneChoseGRH?
     logicalOperator: AND
     conditions:
-      - *applicantDidNotChooseGRH?
+      - <<: *applicantDidNotChooseProgram?
+        value: GRH
+      - logicalOperator: OR
+        conditions:
+          - <<: *householdMemberDidNotChooseProgram?
+            value: GRH
+          - *livesAlone?
+  - &skipRecommendationForProofOfIncome?
+    logicalOperator: OR
+    conditions:
+      - pageName: employmentStatus
+        input: areYouWorking
+        value: "false"
+      - logicalOperator: AND
+        conditions:
+          - *noOneChoseSNAP?
+          - *noOneChoseCASH?
+          - *noOneChoseEA?
+          - *noOneChoseGRH?
+  - &skipRecommendationForProofOfHousingCosts?
+    logicalOperator: OR
+    conditions:
+      - pageName: homeExpenses
+        input: homeExpenses
+        value: NONE_OF_THE_ABOVE
+      - logicalOperator: AND
+        conditions:
+          - *noOneChoseSNAP?
+          - *noOneChoseCASH?
+          - *noOneChoseEA?
+  - &skipRecommendationForProofOfJobLoss?
+    logicalOperator: OR
+    conditions:
+      - pageName: workSituation
+        input: hasWorkSituation
+        value: "false"
+      - logicalOperator: AND
+        conditions:
+          - *noOneChoseSNAP?
+          - *noOneChoseCASH?
+          - *noOneChoseGRH?
+  - &skipRecommendationForProofOfMedicalExpenses?
+    logicalOperator: OR
+    conditions:
+      - conditions:
+          - pageName: medicalExpenses
+            input: medicalExpenses
+            value: MEDICAL_INSURANCE_PREMIUMS
+            matcher: DOES_NOT_CONTAIN
+          - pageName: medicalExpenses
+            input: medicalExpenses
+            value: DENTAL_INSURANCE_PREMIUMS
+            matcher: DOES_NOT_CONTAIN
+          - pageName: medicalExpenses
+            input: medicalExpenses
+            value: VISION_INSURANCE_PREMIUMS
+            matcher: DOES_NOT_CONTAIN
+      - *noOneChoseCCAP?
   - &livesAloneOrIsApplicantsJob?
     logicalOperator: OR
     conditions:
@@ -3139,22 +3174,6 @@ workflow:
         - pageName: medicalExpenses
           input: medicalExpenses
           value: NONE_OF_THE_ABOVE
-        - conditions:
-            - pageName: medicalExpenses
-              input: medicalExpenses
-              value: MEDICAL_BILLS_OR_COPAYS
-            - pageName: medicalExpenses
-              input: medicalExpenses
-              value: MEDICAL_INSURANCE_PREMIUMS
-              matcher: DOES_NOT_CONTAIN
-            - pageName: medicalExpenses
-              input: medicalExpenses
-              value: DENTAL_INSURANCE_PREMIUMS
-              matcher: DOES_NOT_CONTAIN
-            - pageName: medicalExpenses
-              input: medicalExpenses
-              value: VISION_INSURANCE_PREMIUMS
-              matcher: DOES_NOT_CONTAIN
     datasources:
       - pageName: medicalExpenses
       - pageName: addHouseholdMembers
@@ -3422,35 +3441,11 @@ workflow:
         optional: "true"
       - pageName: medicalExpenses
     skipCondition:
-      logicalOperator: AND
       conditions:
-        - logicalOperator: OR
-          conditions:
-            - logicalOperator: AND
-              conditions:
-                - *noOneChoseCCAP?
-                - *noOneChoseSNAP?
-            - logicalOperator: OR
-              conditions:
-                - pageName: medicalExpenses
-                  input: medicalExpenses
-                  value: MEDICAL_BILLS_OR_COPAYS
-                  matcher: CONTAINS
-                - pageName: medicalExpenses
-                  input: medicalExpenses
-                  value: NONE_OF_THE_ABOVE
-                  matcher: CONTAINS
-        - conditions:
-            - pageName: employmentStatus
-              input: areYouWorking
-              value: "false"
-            - pageName: homeExpenses
-              input: homeExpenses
-              value: NONE_OF_THE_ABOVE
-              matcher: CONTAINS
-            - pageName: workSituation
-              input: hasWorkSituation
-              value: "false"
+        - *skipRecommendationForProofOfIncome?
+        - *skipRecommendationForProofOfHousingCosts?
+        - *skipRecommendationForProofOfJobLoss?
+        - *skipRecommendationForProofOfMedicalExpenses?
   uploadDocuments:
     pageConfiguration: *uploadDocuments
     nextPages:
@@ -3466,35 +3461,11 @@ workflow:
         optional: "true"
       - pageName: medicalExpenses
     skipCondition:
-      logicalOperator: AND
       conditions:
-        - logicalOperator: OR
-          conditions:
-            - logicalOperator: AND
-              conditions:
-                - *noOneChoseCCAP?
-                - *noOneChoseSNAP?
-            - logicalOperator: OR
-              conditions:
-                - pageName: medicalExpenses
-                  input: medicalExpenses
-                  value: MEDICAL_BILLS_OR_COPAYS
-                  matcher: CONTAINS
-                - pageName: medicalExpenses
-                  input: medicalExpenses
-                  value: NONE_OF_THE_ABOVE
-                  matcher: CONTAINS
-        - conditions:
-            - pageName: employmentStatus
-              input: areYouWorking
-              value: "false"
-            - pageName: homeExpenses
-              input: homeExpenses
-              value: NONE_OF_THE_ABOVE
-              matcher: CONTAINS
-            - pageName: workSituation
-              input: hasWorkSituation
-              value: "false"
+        - *skipRecommendationForProofOfIncome?
+        - *skipRecommendationForProofOfHousingCosts?
+        - *skipRecommendationForProofOfJobLoss?
+        - *skipRecommendationForProofOfMedicalExpenses?
   uploadDocumentsDeleteWarningPage:
     pageConfiguration: *uploadDocumentsDeleteWarningPage
     nextPages:
