@@ -2387,7 +2387,6 @@ pageDefinitions:
     name: submittingApplication
     pageTitle: submitting-application.title
     hasPrimaryButton: false
-    customPage: true
   - &homeAddressValidation
     name: homeAddressValidation
     pageTitle: address-validation.title
