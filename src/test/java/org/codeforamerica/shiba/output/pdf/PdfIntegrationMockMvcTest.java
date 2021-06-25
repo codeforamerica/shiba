@@ -3,7 +3,10 @@ package org.codeforamerica.shiba.output.pdf;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.SessionScopedApplicationDataTestConfiguration;
-import org.codeforamerica.shiba.pages.config.*;
+import org.codeforamerica.shiba.pages.config.FeatureFlag;
+import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
+import org.codeforamerica.shiba.pages.config.PageTemplate;
+import org.codeforamerica.shiba.pages.config.ReferenceOptionsTemplate;
 import org.codeforamerica.shiba.pages.enrichment.LocationClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -18,12 +21,14 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.toMap;
@@ -83,16 +88,17 @@ public class PdfIntegrationMockMvcTest {
         postWithData("/pages/energyAssistanceMoreThan20", Map.of("energyAssistanceMoreThan20", List.of("false")));
 
         var caf = submitAndDownloadCaf();
-        assertThat(caf.getField("RECEIVED_LIHEAP").getValueAsString()).isEqualTo("No");
+        assertPdfFieldEquals("RECEIVED_LIHEAP", "No", caf);
     }
 
     @Test
     void shouldMapEnergyAssistanceWhenUserReceivedNoAssistance() throws Exception {
         selectPrograms(List.of("CASH"));
+
         postWithData("/pages/energyAssistance", Map.of("energyAssistance", List.of("false")));
 
         var caf = submitAndDownloadCaf();
-        assertThat(caf.getField("RECEIVED_LIHEAP").getValueAsString()).isEqualTo("No");
+        assertPdfFieldEquals("RECEIVED_LIHEAP", "No", caf);
     }
 
     @Test
@@ -116,17 +122,7 @@ public class PdfIntegrationMockMvcTest {
                 "programs", List.of("CCAP")
         ));
 
-        Object pageTemplate = mockMvc.perform(get("/pages/childrenInNeedOfCare").session(session))
-                .andReturn()
-                .getModelAndView()
-                .getModel()
-                .get("page");
-        OptionsWithDataSourceTemplate options = ((PageTemplate) pageTemplate).getInputs().get(0).getOptions();
-        String jimHalpertId = ((ReferenceOptionsTemplate) options).getSubworkflows()
-                .get("household")
-                .get(0)
-                .getId()
-                .toString();
+        String jimHalpertId = getFirstHouseholdMemberId();
         postWithData("/pages/childrenInNeedOfCare", Map.of(
                 "whoNeedsChildCare", List.of("Dwight Schrute applicant", "Jim Halpert " + jimHalpertId)
         ));
@@ -148,6 +144,14 @@ public class PdfIntegrationMockMvcTest {
         assertPdfFieldEquals("PARENT_NOT_LIVING_AT_HOME_1", "Jim's Parent", ccapPdf);
         assertPdfFieldEquals("CHILD_FULL_NAME_2", "", ccapPdf);
         assertPdfFieldEquals("PARENT_NOT_LIVING_AT_HOME_2", "", ccapPdf);
+    }
+
+    private String getFirstHouseholdMemberId() throws Exception {
+        ModelAndView modelAndView = Objects.requireNonNull(
+                mockMvc.perform(get("/pages/childrenInNeedOfCare").session(session)).andReturn().getModelAndView());
+        PageTemplate pageTemplate = (PageTemplate) modelAndView.getModel().get("page");
+        ReferenceOptionsTemplate options = (ReferenceOptionsTemplate) pageTemplate.getInputs().get(0).getOptions();
+        return options.getSubworkflows().get("household").get(0).getId().toString();
     }
 
     private PDAcroForm submitAndDownloadCaf() throws Exception {
