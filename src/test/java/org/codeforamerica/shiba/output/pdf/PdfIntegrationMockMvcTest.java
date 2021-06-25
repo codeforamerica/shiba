@@ -90,7 +90,7 @@ public class PdfIntegrationMockMvcTest {
     @Test
     void shouldMapEnergyAssistanceWhenUserReceivedNoAssistance() throws Exception {
         selectPrograms(List.of(PROGRAM_CASH));
-        postWithData("/pages/energyAssistance", Map.of("energyAssistance", List.of("No")));
+        postWithData("/pages/energyAssistance", Map.of("energyAssistance", List.of("false")));
 
         var caf = submitAndDownloadCaf();
         assertThat(caf.getField("RECEIVED_LIHEAP").getValueAsString()).isEqualTo("No");
