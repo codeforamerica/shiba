@@ -105,23 +105,7 @@ public class PdfIntegrationMockMvcTest {
     @Test
     void shouldMapChildrenNeedingChildcareFullNames() throws Exception {
         selectPrograms(List.of("CCAP"));
-
-        postWithData("/pages/personalInfo", Map.of(
-                "firstName", List.of("Dwight"),
-                "lastName", List.of("Schrute"),
-                "dateOfBirth", List.of("01", "12", "1928")
-        ));
-        postWithData("/pages/addHouseholdMembers", Map.of("addHouseholdMembers", List.of("true")));
-        postWithData("/pages/householdMemberInfo", Map.of(
-                "firstName", List.of("Jim"),
-                "lastName", List.of("Halpert"),
-                "programs", List.of("CCAP")
-        ));
-        postWithData("/pages/householdMemberInfo", Map.of(
-                "firstName", List.of("Pam"),
-                "lastName", List.of("Beesly"),
-                "programs", List.of("CCAP")
-        ));
+        addHouseholdMembers();
 
         String jimHalpertId = getFirstHouseholdMemberId();
         postWithData("/pages/childrenInNeedOfCare", Map.of(
@@ -145,6 +129,25 @@ public class PdfIntegrationMockMvcTest {
         assertPdfFieldEquals("PARENT_NOT_LIVING_AT_HOME_1", "Jim's Parent", ccap);
         assertPdfFieldEquals("CHILD_FULL_NAME_2", "", ccap);
         assertPdfFieldEquals("PARENT_NOT_LIVING_AT_HOME_2", "", ccap);
+    }
+
+    private void addHouseholdMembers() throws Exception {
+        postWithData("/pages/personalInfo", Map.of(
+                "firstName", List.of("Dwight"),
+                "lastName", List.of("Schrute"),
+                "dateOfBirth", List.of("01", "12", "1928")
+        ));
+        postWithData("/pages/addHouseholdMembers", Map.of("addHouseholdMembers", List.of("true")));
+        postWithData("/pages/householdMemberInfo", Map.of(
+                "firstName", List.of("Jim"),
+                "lastName", List.of("Halpert"),
+                "programs", List.of("CCAP")
+        ));
+        postWithData("/pages/householdMemberInfo", Map.of(
+                "firstName", List.of("Pam"),
+                "lastName", List.of("Beesly"),
+                "programs", List.of("CCAP")
+        ));
     }
 
     private String getFirstHouseholdMemberId() throws Exception {
