@@ -83,7 +83,7 @@ public class PdfIntegrationMockMvcTest {
                 "spokenLanguage", List.of("ENGLISH"))
         );
 
-        postWithData("/pages/addHouseholdMembers", Map.of("addHouseholdMembers", List.of("false")));
+        postWithData("/pages/addHouseholdMembers", "addHouseholdMembers", "false");
     }
 
     @AfterEach
@@ -95,8 +95,8 @@ public class PdfIntegrationMockMvcTest {
     void shouldAnswerEnergyAssistanceQuestion() throws Exception {
         selectPrograms(List.of("CASH"));
 
-        postWithData("/pages/energyAssistance", Map.of("energyAssistance", List.of("true")));
-        postWithData("/pages/energyAssistanceMoreThan20", Map.of("energyAssistanceMoreThan20", List.of("false")));
+        postWithData("/pages/energyAssistance", "energyAssistance", "true");
+        postWithData("/pages/energyAssistanceMoreThan20", "energyAssistanceMoreThan20", "false");
 
         var caf = submitAndDownloadCaf();
         assertPdfFieldEquals("RECEIVED_LIHEAP", "No", caf);
@@ -106,7 +106,7 @@ public class PdfIntegrationMockMvcTest {
     void shouldMapEnergyAssistanceWhenUserReceivedNoAssistance() throws Exception {
         selectPrograms(List.of("CASH"));
 
-        postWithData("/pages/energyAssistance", Map.of("energyAssistance", List.of("false")));
+        postWithData("/pages/energyAssistance", "energyAssistance", "false");
 
         var caf = submitAndDownloadCaf();
         assertPdfFieldEquals("RECEIVED_LIHEAP", "No", caf);
@@ -118,13 +118,15 @@ public class PdfIntegrationMockMvcTest {
         addHouseholdMembers();
 
         String jimHalpertId = getFirstHouseholdMemberId();
-        postWithData("/pages/childrenInNeedOfCare", Map.of(
-                "whoNeedsChildCare", List.of("Dwight Schrute applicant", "Jim Halpert " + jimHalpertId)
-        ));
+        postWithData("/pages/childrenInNeedOfCare",
+                     "whoNeedsChildCare",
+                     List.of("Dwight Schrute applicant", "Jim Halpert " + jimHalpertId)
+        );
 
-        postWithData("/pages/whoHasParentNotAtHome", Map.of(
-                "whoHasAParentNotLivingAtHome", List.of("Dwight Schrute applicant", "Jim Halpert " + jimHalpertId)
-        ));
+        postWithData("/pages/whoHasParentNotAtHome",
+                     "whoHasAParentNotLivingAtHome",
+                     List.of("Dwight Schrute applicant", "Jim Halpert " + jimHalpertId)
+        );
         postWithData("/pages/parentNotAtHomeNames", Map.of(
                 "whatAreTheParentsNames", List.of("", "Jim's Parent"),
                 "childIdMap", List.of("applicant", jimHalpertId)
@@ -147,13 +149,12 @@ public class PdfIntegrationMockMvcTest {
 
         addHouseholdMembers();
 
-        postWithData("/pages/childrenInNeedOfCare", Map.of(
-                "whoNeedsChildCare", List.of("Dwight Schrute applicant", "Jim Halpert " + getFirstHouseholdMemberId())
-        ));
+        postWithData("/pages/childrenInNeedOfCare",
+                     "whoNeedsChildCare",
+                     List.of("Dwight Schrute applicant", "Jim Halpert " + getFirstHouseholdMemberId())
+        );
 
-        postWithData("/pages/whoHasParentNotAtHome", Map.of(
-                "whoHasAParentNotLivingAtHome", List.of("NONE_OF_THE_ABOVE")
-        ));
+        postWithData("/pages/whoHasParentNotAtHome", "whoHasAParentNotLivingAtHome", "NONE_OF_THE_ABOVE");
 
         var ccap = submitAndDownloadCcap();
         assertPdfFieldEquals("CHILD_NEEDS_CHILDCARE_FULL_NAME_0", "Dwight Schrute", ccap);
@@ -170,13 +171,13 @@ public class PdfIntegrationMockMvcTest {
     void shouldDefaultToNoForMillionDollarQuestionWhenQuestionPageIsNotShown() throws Exception {
         selectPrograms(List.of("CCAP"));
 
-        postWithData("/pages/energyAssistance", Map.of("energyAssistance", List.of("false")));
-        postWithData("/pages/medicalExpenses", Map.of("medicalExpenses", List.of("NONE_OF_THE_ABOVE")));
-        postWithData("/pages/supportAndCare", Map.of("supportAndCare", List.of("false")));
-        postWithData("/pages/vehicle", Map.of("haveVehicle", List.of("false")));
-        postWithData("/pages/realEstate", Map.of("ownRealEstate", List.of("false")));
-        postWithData("/pages/investments", Map.of("haveInvestments", List.of("false")));
-        postWithData("/pages/savings", Map.of("haveSavings", List.of("false")));
+        postWithData("/pages/energyAssistance", "energyAssistance", "false");
+        postWithData("/pages/medicalExpenses", "medicalExpenses", "NONE_OF_THE_ABOVE");
+        postWithData("/pages/supportAndCare", "supportAndCare", "false");
+        postWithData("/pages/vehicle", "haveVehicle", "false");
+        postWithData("/pages/realEstate", "ownRealEstate", "false");
+        postWithData("/pages/investments", "haveInvestments", "false");
+        postWithData("/pages/savings", "haveSavings", "false");
 
         var ccap = submitAndDownloadCcap();
         assertPdfFieldEquals("HAVE_MILLION_DOLLARS", "No", ccap);
@@ -186,14 +187,14 @@ public class PdfIntegrationMockMvcTest {
     void shouldMarkYesForMillionDollarQuestionWhenChoiceIsYes() throws Exception {
         selectPrograms(List.of("CCAP"));
 
-        postWithData("/pages/energyAssistance", Map.of("energyAssistance", List.of("false")));
-        postWithData("/pages/medicalExpenses", Map.of("medicalExpenses", List.of("NONE_OF_THE_ABOVE")));
-        postWithData("/pages/supportAndCare", Map.of("supportAndCare", List.of("false")));
-        postWithData("/pages/vehicle", Map.of("haveVehicle", List.of("false")));
-        postWithData("/pages/realEstate", Map.of("ownRealEstate", List.of("false")));
-        postWithData("/pages/investments", Map.of("haveInvestments", List.of("true")));
-        postWithData("/pages/savings", Map.of("haveSavings", List.of("false")));
-        postWithData("/pages/millionDollar", Map.of("haveMillionDollars", List.of("true")));
+        postWithData("/pages/energyAssistance", "energyAssistance", "false");
+        postWithData("/pages/medicalExpenses", "medicalExpenses", "NONE_OF_THE_ABOVE");
+        postWithData("/pages/supportAndCare", "supportAndCare", "false");
+        postWithData("/pages/vehicle", "haveVehicle", "false");
+        postWithData("/pages/realEstate", "ownRealEstate", "false");
+        postWithData("/pages/investments", "haveInvestments", "true");
+        postWithData("/pages/savings", "haveSavings", "false");
+        postWithData("/pages/millionDollar", "haveMillionDollars", "true");
 
         var ccap = submitAndDownloadCcap();
         assertPdfFieldEquals("HAVE_MILLION_DOLLARS", "Yes", ccap);
@@ -205,7 +206,7 @@ public class PdfIntegrationMockMvcTest {
                 "lastName", List.of("Schrute"),
                 "dateOfBirth", List.of("01", "12", "1928")
         ));
-        postWithData("/pages/addHouseholdMembers", Map.of("addHouseholdMembers", List.of("true")));
+        postWithData("/pages/addHouseholdMembers", "addHouseholdMembers", "true");
         postWithData("/pages/householdMemberInfo", Map.of(
                 "firstName", List.of("Jim"),
                 "lastName", List.of("Halpert"),
@@ -259,11 +260,23 @@ public class PdfIntegrationMockMvcTest {
     }
 
     private void selectPrograms(List<String> programs) throws Exception {
-        postWithData("/pages/choosePrograms", Map.of("programs", programs));
+        postWithData("/pages/choosePrograms", "programs", programs);
     }
 
+    // Post to a page with an arbitrary number of multi-value inputs
     private void postWithData(String postUrl, Map<String, List<String>> params) throws Exception {
         postWithData(postUrl, postUrl + "/navigation", params);
+    }
+
+    // Post to a page with a single input that only accepts a single value
+    private void postWithData(String postUrl, String inputName, String value) throws Exception {
+        var params = Map.of(inputName, List.of(value));
+        postWithData(postUrl, postUrl + "/navigation", params);
+    }
+
+    // Post to a page with a single input that accepts multiple values
+    private void postWithData(String postUrl, String inputName, List<String> values) throws Exception {
+        postWithData(postUrl, postUrl + "/navigation", Map.of(inputName, values));
     }
 
     private void postWithData(String postUrl, String redirectUrl, Map<String, List<String>> params) throws Exception {
