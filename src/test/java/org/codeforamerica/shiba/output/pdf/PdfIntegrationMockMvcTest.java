@@ -53,6 +53,9 @@ public class PdfIntegrationMockMvcTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private ApplicationData applicationData;
+
     @MockBean
     private Clock clock;
 
@@ -63,14 +66,6 @@ public class PdfIntegrationMockMvcTest {
     private FeatureFlagConfiguration featureFlagConfiguration;
 
     private MockHttpSession session;
-
-    @Autowired
-    private ApplicationData applicationData;
-
-    @AfterEach
-    void cleanup() {
-        resetApplicationData(applicationData);
-    }
 
     @BeforeEach
     void setUp() throws Exception {
@@ -90,6 +85,11 @@ public class PdfIntegrationMockMvcTest {
         );
 
         postWithData("/pages/addHouseholdMembers", Map.of("addHouseholdMembers", List.of("false")));
+    }
+
+    @AfterEach
+    void cleanup() {
+        resetApplicationData(applicationData);
     }
 
     @Test
