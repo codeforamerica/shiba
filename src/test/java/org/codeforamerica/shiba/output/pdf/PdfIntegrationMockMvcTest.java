@@ -3,7 +3,6 @@ package org.codeforamerica.shiba.output.pdf;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.SessionScopedApplicationDataTestConfiguration;
-import org.codeforamerica.shiba.TestUtils;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.config.PageTemplate;
@@ -165,6 +164,22 @@ public class PdfIntegrationMockMvcTest {
         assertPdfFieldIsEmpty("PARENT_NOT_LIVING_AT_HOME_1", ccap);
         assertPdfFieldIsEmpty("CHILD_FULL_NAME_2", ccap);
         assertPdfFieldIsEmpty("PARENT_NOT_LIVING_AT_HOME_2", ccap);
+    }
+
+    @Test
+    void shouldDefaultToNoForMillionDollarQuestionWhenQuestionPageIsNotShown() throws Exception {
+        selectPrograms(List.of("CCAP"));
+
+        postWithData("/pages/energyAssistance", Map.of("energyAssistance", List.of("false")));
+        postWithData("/pages/medicalExpenses", Map.of("medicalExpenses", List.of("NONE_OF_THE_ABOVE")));
+        postWithData("/pages/supportAndCare", Map.of("supportAndCare", List.of("false")));
+        postWithData("/pages/vehicle", Map.of("haveVehicle", List.of("false")));
+        postWithData("/pages/realEstate", Map.of("ownRealEstate", List.of("false")));
+        postWithData("/pages/investments", Map.of("haveInvestments", List.of("false")));
+        postWithData("/pages/savings", Map.of("haveSavings", List.of("false")));
+
+        var ccap = submitAndDownloadCcap();
+        assertPdfFieldEquals("HAVE_MILLION_DOLLARS", "No", ccap);
     }
 
     private void addHouseholdMembers() throws Exception {
