@@ -149,6 +149,31 @@ public class PdfIntegrationMockMvcTest {
         assertPdfFieldIsEmpty("PARENT_NOT_LIVING_AT_HOME_2", ccap);
     }
 
+    @Test
+    void shouldNotMapParentsLivingOutsideOfHomeIfNoneSelected() throws Exception {
+        selectPrograms(List.of("CCAP"));
+
+        addHouseholdMembers();
+
+        postWithData("/pages/childrenInNeedOfCare", Map.of(
+                "whoNeedsChildCare", List.of("Dwight Schrute applicant", "Jim Halpert " + getFirstHouseholdMemberId())
+        ));
+
+        postWithData("/pages/whoHasParentNotAtHome", Map.of(
+                "whoHasAParentNotLivingAtHome", List.of("NONE_OF_THE_ABOVE")
+        ));
+
+        var ccap = submitAndDownloadCcap();
+        assertPdfFieldEquals("CHILD_NEEDS_CHILDCARE_FULL_NAME_0", "Dwight Schrute", ccap);
+        assertPdfFieldEquals("CHILD_NEEDS_CHILDCARE_FULL_NAME_1", "Jim Halpert", ccap);
+        assertPdfFieldIsEmpty("CHILD_FULL_NAME_0", ccap);
+        assertPdfFieldIsEmpty("PARENT_NOT_LIVING_AT_HOME_0", ccap);
+        assertPdfFieldIsEmpty("CHILD_FULL_NAME_1", ccap);
+        assertPdfFieldIsEmpty("PARENT_NOT_LIVING_AT_HOME_1", ccap);
+        assertPdfFieldIsEmpty("CHILD_FULL_NAME_2", ccap);
+        assertPdfFieldIsEmpty("PARENT_NOT_LIVING_AT_HOME_2", ccap);
+    }
+
     private void addHouseholdMembers() throws Exception {
         postWithData("/pages/personalInfo", Map.of(
                 "firstName", List.of("Dwight"),
