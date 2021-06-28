@@ -1,10 +1,12 @@
 package org.codeforamerica.shiba.output;
 
 import lombok.extern.slf4j.Slf4j;
+import org.codeforamerica.shiba.Utils;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
+import org.codeforamerica.shiba.pages.PageUtils;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.jetbrains.annotations.NotNull;
@@ -141,6 +143,8 @@ public class FileDownLoadController {
 
             zos.close();
             baos.close();
+
+            Utils.writeByteArrayToFile(baos.toByteArray(), "expected.zip");
 
             // The minimum size of a .ZIP file is 22 bytes even when empty because of metadata
             if (baos.size() > 22){

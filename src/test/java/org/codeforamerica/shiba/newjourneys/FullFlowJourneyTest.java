@@ -547,7 +547,6 @@ public class FullFlowJourneyTest extends JourneyTest {
         uploadFile(TestUtils.getAbsoluteFilepathString("test-cover-pages.pdf"));
         assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("3 files added");
         waitForDocumentUploadToComplete();
-        takeSnapShot("image.png");
         assertThat(driver.findElements(By.linkText("delete")).size()).isEqualTo(3);
 
         // After deleting a file, the order of the remaining files should be maintained

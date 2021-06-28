@@ -8,6 +8,7 @@ import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.configurations.ClockConfiguration;
+import org.codeforamerica.shiba.documents.CombinedDocumentRepositoryService;
 import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
@@ -58,7 +59,7 @@ public class AbstractPageControllerTest {
     @MockBean
     protected UploadDocumentConfiguration uploadDocumentConfiguration;
     @MockBean
-    protected DocumentRepositoryService documentRepositoryService;
+    protected CombinedDocumentRepositoryService documentRepositoryService;
     @MockBean
     protected ApplicationStatusUpdater applicationStatusUpdater;
 

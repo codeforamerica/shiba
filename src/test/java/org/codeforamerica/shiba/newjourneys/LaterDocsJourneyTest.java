@@ -64,6 +64,7 @@ public class LaterDocsJourneyTest extends JourneyTest {
         uploadPdfFile();
         await().until(uploadCompletes());
         testPage.clickButton("I'm finished uploading");
+        takeSnapShot("test.png");
         assertThat(driver.getTitle()).isEqualTo("Documents Sent");
         verify(pageEventPublisher).publish(any());
     }

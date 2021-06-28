@@ -127,7 +127,7 @@ public abstract class AbstractBasePageTest {
     }
 
     protected void waitForDocumentUploadToComplete() {
-        WebDriverWait wait = new WebDriverWait(driver, 30);
+        WebDriverWait wait = new WebDriverWait(driver, 15);
         wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText("delete")));
     }
 

@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.pages.data;
 
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.documents.AzureDocumentRepositoryService;
 import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
@@ -42,7 +43,7 @@ class ApplicationDataSerializationTest {
     private FileNameGenerator fileNameGenerator;
 
     @MockBean
-    private DocumentRepositoryService documentRepositoryService;
+    private AzureDocumentRepositoryService documentRepositoryService;
 
     @Autowired
     private PdfGenerator pdfGenerator;
