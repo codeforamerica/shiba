@@ -49,11 +49,11 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ActiveProfiles("test")
 public abstract class AbstractBasePageTest {
-    public static final String PROGRAM_SNAP = "Food (SNAP)";
-    public static final String PROGRAM_CASH = "Cash programs";
-    public static final String PROGRAM_GRH = "Housing Support (GRH)";
-    public static final String PROGRAM_CCAP = "Child Care Assistance";
-    public static final String PROGRAM_EA = "Emergency Assistance";
+    protected static final String PROGRAM_SNAP = "Food (SNAP)";
+    protected static final String PROGRAM_CASH = "Cash programs";
+    protected static final String PROGRAM_GRH = "Housing Support (GRH)";
+    protected static final String PROGRAM_CCAP = "Child Care Assistance";
+    protected static final String PROGRAM_EA = "Emergency Assistance";
 
     private static final String UPLOADED_JPG_FILE_NAME = "shiba+file.jpg";
     private static final String UPLOADED_PDF_NAME = "test-caf.pdf";

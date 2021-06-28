@@ -12,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.WebElement;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.io.IOException;
@@ -65,537 +64,10 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
 
     @Nested
     @Tag("pdf")
-    class EnergyAssistanceLIHEAP {
-        @BeforeEach
-        void setUp() {
-            selectPrograms(List.of(PROGRAM_CASH));
-        }
-
-        @Test
-        void shouldAnswerEnergyAssistanceQuestion() {
-            navigateTo("energyAssistance");
-            testPage.enter("energyAssistance", "Yes");
-            testPage.enter("energyAssistanceMoreThan20", "No");
-
-            PDAcroForm pdAcroForm = submitAndDownloadCaf();
-            assertThat(pdAcroForm.getField("RECEIVED_LIHEAP").getValueAsString()).isEqualTo("No");
-        }
-
-        @Test
-        void shouldMapEnergyAssistanceWhenUserReceivedNoAssistance() {
-            navigateTo("energyAssistance");
-            testPage.enter("energyAssistance", "No");
-
-            PDAcroForm pdAcroForm = submitAndDownloadCaf();
-            assertThat(pdAcroForm.getField("RECEIVED_LIHEAP").getValueAsString()).isEqualTo("No");
-        }
-    }
-
-    @Nested
-    @Tag("pdf")
-    class CCAP {
-        @BeforeEach
-        void setUp() {
-            selectPrograms(List.of(PROGRAM_CCAP));
-        }
-
-        @Test
-        void shouldMapChildrenNeedingChildcareFullNames() {
-            addHouseholdMembers();
-
-            testPage.clickButton("Yes, that's everyone");
-            navigateTo("childrenInNeedOfCare");
-            testPage.enter("whoNeedsChildCare", List.of("Me", "Jim Halpert"));
-            testPage.clickContinue();
-            testPage.enter("whoHasAParentNotLivingAtHome", List.of("Me", "Jim Halpert"));
-            testPage.clickContinue();
-            List<WebElement> whatAreParentNames = driver.findElementsByName("whatAreTheParentsNames[]");
-            whatAreParentNames.get(0).sendKeys(""); // blank should still get added to the PDF
-            whatAreParentNames.get(1).sendKeys("Jim's Parent");
-            testPage.clickContinue();
-
-            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-            PDAcroForm ccapPdf = pdAcroForms.get(CCAP);
-            assertThat(ccapPdf.getField("CHILD_NEEDS_CHILDCARE_FULL_NAME_0").getValueAsString())
-                    .isEqualTo("Dwight Schrute");
-            assertThat(ccapPdf.getField("CHILD_NEEDS_CHILDCARE_FULL_NAME_1").getValueAsString())
-                    .isEqualTo("Jim Halpert");
-            assertThat(ccapPdf.getField("CHILD_FULL_NAME_0").getValueAsString())
-                    .isEqualTo("Dwight Schrute");
-            assertThat(ccapPdf.getField("PARENT_NOT_LIVING_AT_HOME_0").getValueAsString())
-                    .isEqualTo("");
-            assertThat(ccapPdf.getField("CHILD_FULL_NAME_1").getValueAsString())
-                    .isEqualTo("Jim Halpert");
-            assertThat(ccapPdf.getField("PARENT_NOT_LIVING_AT_HOME_1").getValueAsString())
-                    .isEqualTo("Jim's Parent");
-            assertThat(ccapPdf.getField("CHILD_FULL_NAME_2").getValueAsString())
-                    .isEmpty();
-            assertThat(ccapPdf.getField("PARENT_NOT_LIVING_AT_HOME_2").getValueAsString())
-                    .isEmpty();
-        }
-
-        @Test
-        void shouldNotMapParentsLivingOutsideOfHomeIfNoneSelected() {
-            addHouseholdMembers();
-
-            testPage.clickButton("Yes, that's everyone");
-            navigateTo("childrenInNeedOfCare");
-            testPage.enter("whoNeedsChildCare", List.of("Me", "Jim Halpert"));
-            testPage.clickContinue();
-            testPage.enter("whoHasAParentNotLivingAtHome", "None of the children have parents living outside the home");
-            testPage.clickContinue();
-
-            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-            PDAcroForm ccapPdf = pdAcroForms.get(CCAP);
-            assertThat(ccapPdf.getField("CHILD_NEEDS_CHILDCARE_FULL_NAME_0").getValueAsString())
-                    .isEqualTo("Dwight Schrute");
-            assertThat(ccapPdf.getField("CHILD_NEEDS_CHILDCARE_FULL_NAME_1").getValueAsString())
-                    .isEqualTo("Jim Halpert");
-            assertThat(ccapPdf.getField("CHILD_FULL_NAME_0").getValueAsString())
-                    .isEqualTo("");
-            assertThat(ccapPdf.getField("PARENT_NOT_LIVING_AT_HOME_0").getValueAsString())
-                    .isEqualTo("");
-            assertThat(ccapPdf.getField("CHILD_FULL_NAME_1").getValueAsString())
-                    .isEqualTo("");
-            assertThat(ccapPdf.getField("PARENT_NOT_LIVING_AT_HOME_1").getValueAsString())
-                    .isEqualTo("");
-            assertThat(ccapPdf.getField("CHILD_FULL_NAME_2").getValueAsString())
-                    .isEmpty();
-            assertThat(ccapPdf.getField("PARENT_NOT_LIVING_AT_HOME_2").getValueAsString())
-                    .isEmpty();
-        }
-
-        @Test
-        void shouldDefaultToNoForMillionDollarQuestionWhenQuestionPageIsNotShown() {
-            navigateTo("energyAssistance");
-            testPage.enter("energyAssistance", NO.getDisplayValue());
-            testPage.enter("medicalExpenses", "None of the above");
-            testPage.clickContinue();
-            testPage.enter("supportAndCare", NO.getDisplayValue());
-            testPage.enter("haveVehicle", NO.getDisplayValue());
-            testPage.enter("ownRealEstate", NO.getDisplayValue());
-            testPage.enter("haveInvestments", NO.getDisplayValue());
-            testPage.enter("haveSavings", NO.getDisplayValue());
-
-            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-            assertThat(pdAcroForms.get(CCAP).getField("HAVE_MILLION_DOLLARS").getValueAsString())
-                    .isEqualTo("No");
-        }
-
-        @Test
-        void shouldMarkYesForMillionDollarQuestionWhenChoiceIsYes() {
-            navigateTo("energyAssistance");
-            testPage.enter("energyAssistance", NO.getDisplayValue());
-            testPage.enter("medicalExpenses", "None of the above");
-            testPage.clickContinue();
-            testPage.enter("supportAndCare", NO.getDisplayValue());
-            testPage.enter("haveVehicle", NO.getDisplayValue());
-            testPage.enter("ownRealEstate", NO.getDisplayValue());
-            testPage.enter("haveInvestments", YES.getDisplayValue());
-            testPage.enter("haveSavings", NO.getDisplayValue());
-            testPage.enter("haveMillionDollars", YES.getDisplayValue());
-            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-            assertThat(pdAcroForms.get(CCAP).getField("HAVE_MILLION_DOLLARS").getValueAsString())
-                    .isEqualTo("Yes");
-        }
-
-        @Test
-        void shouldMapAdultsInHouseholdRequestingChildcareAssistance() {
-            addHouseholdMembers();
-
-            navigateTo("childrenInNeedOfCare");
-            testPage.enter("whoNeedsChildCare", "Jim Halpert");
-            testPage.clickContinue();
-
-            navigateTo("jobSearch");
-            testPage.enter("currentlyLookingForJob", "Yes");
-            testPage.enter("whoIsLookingForAJob", "Jim Halpert");
-            testPage.enter("whoIsLookingForAJob", "Pam Beesly");
-            testPage.clickContinue();
-
-            navigateTo("whoIsGoingToSchool");
-            testPage.enter("whoIsGoingToSchool", "Me");
-            testPage.enter("whoIsGoingToSchool", "Jim Halpert");
-            testPage.clickContinue();
-
-            navigateTo("incomeByJob");
-            testPage.clickButton("Add a job");
-            testPage.enter("whoseJobIsIt", "Jim Halpert");
-            testPage.clickContinue();
-            testPage.enter("employersName", "Jim's Employer");
-            testPage.clickContinue();
-            testPage.enter("selfEmployment", "No");
-            testPage.enter("paidByTheHour", "No");
-            testPage.enter("payPeriod", "Every week");
-            testPage.clickContinue();
-            testPage.enter("incomePerPayPeriod", "1");
-            testPage.clickContinue();
-
-            testPage.clickButton("Add a job");
-            testPage.enter("whoseJobIsIt", "Pam Beesly");
-            testPage.clickContinue();
-            testPage.enter("employersName", "Pam's Employer");
-            testPage.clickContinue();
-            testPage.enter("selfEmployment", "No");
-            testPage.enter("paidByTheHour", "No");
-            testPage.enter("payPeriod", "Every week");
-            testPage.clickContinue();
-            testPage.enter("incomePerPayPeriod", "1");
-            testPage.clickContinue();
-
-            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_LOOKING_FOR_JOB_FULL_NAME_0")).isEqualTo("Pam Beesly");
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_GOING_TO_SCHOOL_FULL_NAME_0")).isEqualTo("Dwight Schrute");
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_WORKING_FULL_NAME_0")).isEqualTo("Pam Beesly");
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_WORKING_EMPLOYERS_NAME_0")).isEqualTo("Pam's Employer");
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_LOOKING_FOR_JOB_FULL_NAME_1")).isEmpty();
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_GOING_TO_SCHOOL_FULL_NAME_1")).isEmpty();
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_WORKING_FULL_NAME_1")).isEmpty();
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_WORKING_EMPLOYERS_NAME_1")).isEmpty();
-        }
-
-        @Test
-        void shouldNotMapUnearnedIncomeCcapWhenNoneOfTheAboveIsSelected() {
-            fillInRequiredPages();
-            navigateTo("unearnedIncomeCcap");
-            testPage.enter("unearnedIncomeCcap", "None of the above");
-            testPage.clickContinue();
-
-            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-            PDAcroForm ccap = pdAcroForms.get(CCAP);
-            assertThat(getPdfFieldText(ccap, "BENEFITS")).isEqualTo("No");
-            assertThat(getPdfFieldText(ccap, "INSURANCE_PAYMENTS")).isEqualTo("No");
-            assertThat(getPdfFieldText(ccap, "CONTRACT_FOR_DEED")).isEqualTo("No");
-            assertThat(getPdfFieldText(ccap, "TRUST_MONEY")).isEqualTo("No");
-            assertThat(getPdfFieldText(ccap, "HEALTH_CARE_REIMBURSEMENT")).isEqualTo("No");
-            assertThat(getPdfFieldText(ccap, "INTEREST_DIVIDENDS")).isEqualTo("No");
-            assertThat(getPdfFieldText(ccap, "OTHER_SOURCES")).isEqualTo("No");
-        }
-
-        @Test
-        void shouldMapRecognizedUtmSource() {
-            navigateTo("languagePreferences?utm_source=" + CHILDCARE_WAITING_LIST_UTM_SOURCE);
-            fillInRequiredPages();
-
-            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "UTM_SOURCE")).isEqualTo("FROM BSF WAITING LIST");
-        }
-    }
-
-    @Nested
-    @Tag("pdf")
-    class CAF {
-        @BeforeEach
-        void setUp() {
-            selectPrograms(List.of(PROGRAM_CASH));
-        }
-
-        @Test
-        void shouldMapJobLastThirtyDayIncomeAllBlankIsUndetermined() {
-            addHouseholdMembers();
-            fillInRequiredPages();
-
-            navigateTo("incomeByJob");
-            testPage.clickButton("Add a job");
-            testPage.enter("whoseJobIsIt", "Jim Halpert");
-            testPage.clickContinue();
-            testPage.enter("employersName", "someEmployerName");
-            testPage.clickContinue();
-            testPage.enter("selfEmployment", "No");
-
-            testPage.clickElementById("subtle-link");
-            testPage.enter("lastThirtyDaysJobIncome", "");
-            testPage.clickContinue();
-
-            testPage.clickButton("Add a job");
-            testPage.enter("whoseJobIsIt", "Me");
-            testPage.clickContinue();
-            testPage.enter("employersName", "someEmployerName");
-            testPage.clickContinue();
-            testPage.enter("selfEmployment", "No");
-
-            testPage.clickElementById("subtle-link");
-            testPage.enter("lastThirtyDaysJobIncome", "");
-            testPage.clickContinue();
-
-            PDAcroForm pdAcroForm = submitAndDownloadCaf();
-            assertThat(getPdfFieldText(pdAcroForm, "SNAP_EXPEDITED_ELIGIBILITY")).isBlank();
-        }
-
-        @Test
-        void shouldNotAddAuthorizedRepFieldsIfNo() {
-            navigateTo("authorizedRep");
-            testPage.enter("communicateOnYourBehalf", NO.getDisplayValue());
-
-            PDAcroForm pdAcroForm = submitAndDownloadCaf();
-            assertThat(getPdfFieldText(pdAcroForm, "AUTHORIZED_REP_FILL_OUT_FORM")).isEqualTo("Off");
-            assertThat(getPdfFieldText(pdAcroForm, "AUTHORIZED_REP_GET_NOTICES")).isEqualTo("Off");
-            assertThat(getPdfFieldText(pdAcroForm, "AUTHORIZED_REP_SPEND_ON_YOUR_BEHALF")).isEqualTo("Off");
-        }
-
-        @Test
-        void shouldNotMapRecognizedUtmSource() {
-            navigateTo("languagePreferences?utm_source=" + CHILDCARE_WAITING_LIST_UTM_SOURCE);
-            assertThat(getPdfFieldText(submitAndDownloadCaf(), "UTM_SOURCE")).isEmpty();
-        }
-    }
-
-    @Nested
-    @Tag("pdf")
     class CAFandCCAP {
         @BeforeEach
         void setUp() {
             selectPrograms(List.of(PROGRAM_SNAP, PROGRAM_CCAP, PROGRAM_CASH));
-        }
-
-        @Test
-        void shouldMapOriginalAddressIfHomeAddressDoesNotUseEnrichedAddress() {
-            navigateTo("homeAddress");
-            String originalStreetAddress = "originalStreetAddress";
-            String originalApt = "originalApt";
-            String originalCity = "originalCity";
-            String originalZipCode = "54321";
-            testPage.enter("streetAddress", originalStreetAddress);
-            testPage.enter("apartmentNumber", originalApt);
-            testPage.enter("city", originalCity);
-            testPage.enter("zipCode", originalZipCode);
-            testPage.enter("sameMailingAddress", "No, use a different address for mail");
-            testPage.clickContinue();
-            testPage.clickButton("Use this address");
-
-            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-            PDAcroForm pdAcroForm = pdAcroForms.get(CCAP);
-            assertThat(pdAcroForm.getField("APPLICANT_HOME_STREET_ADDRESS").getValueAsString())
-                    .isEqualTo(originalStreetAddress);
-            assertThat(pdAcroForm.getField("APPLICANT_HOME_CITY").getValueAsString())
-                    .isEqualTo(originalCity);
-            assertThat(pdAcroForm.getField("APPLICANT_HOME_STATE").getValueAsString())
-                    .isEqualTo("MN");
-            assertThat(pdAcroForm.getField("APPLICANT_HOME_ZIPCODE").getValueAsString())
-                    .isEqualTo(originalZipCode);
-        }
-
-        @Test
-        void shouldMapNoForSelfEmployment() {
-            navigateTo("addHouseholdMembers");
-            testPage.enter("addHouseholdMembers", NO.getDisplayValue());
-            testPage.clickContinue();
-            navigateTo("incomeByJob");
-            testPage.clickButton("Add a job");
-            testPage.enter("employersName", "someEmployerName");
-            testPage.clickContinue();
-            testPage.enter("selfEmployment", "No");
-            testPage.enter("paidByTheHour", "No");
-            testPage.enter("payPeriod", "Every week");
-            testPage.clickContinue();
-            testPage.enter("incomePerPayPeriod", "1");
-            testPage.clickContinue();
-
-            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-            assertThat(pdAcroForms.get(CAF).getField("SELF_EMPLOYED").getValueAsString()).isEqualTo("No");
-
-            assertThat(pdAcroForms.get(CCAP).getField("NON_SELF_EMPLOYMENT_EMPLOYERS_NAME_0").getValueAsString()).isEqualTo("someEmployerName");
-            assertThat(pdAcroForms.get(CCAP).getField("NON_SELF_EMPLOYMENT_PAY_FREQUENCY_0").getValueAsString()).isEqualTo("Every week");
-            assertThat(pdAcroForms.get(CCAP).getField("NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0").getValueAsString()).isEqualTo("4.00");
-        }
-
-        @Test
-        void shouldMapEnrichedAddressIfHomeAddressUsesEnrichedAddress() {
-            navigateTo("homeAddress");
-            testPage.enter("streetAddress", "originalStreetAddress");
-            testPage.enter("apartmentNumber", "originalApt");
-            testPage.enter("city", "originalCity");
-            testPage.enter("zipCode", "54321");
-            testPage.enter("sameMailingAddress", "No, use a different address for mail");
-            String enrichedStreetValue = "testStreet";
-            String enrichedCityValue = "testCity";
-            String enrichedZipCodeValue = "testZipCode";
-            String enrichedApartmentNumber = "someApt";
-            String enrichedState = "someState";
-            when(locationClient.validateAddress(any()))
-                    .thenReturn(Optional.of(new Address(
-                            enrichedStreetValue,
-                            enrichedCityValue,
-                            enrichedState,
-                            enrichedZipCodeValue,
-                            enrichedApartmentNumber,
-                            "Hennepin")));
-            testPage.clickContinue();
-            testPage.clickContinue();
-            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-            List.of(CAF, CCAP).forEach(type -> {
-                PDAcroForm pdAcroForm = pdAcroForms.get(type);
-                assertThat(pdAcroForm.getField("APPLICANT_HOME_STREET_ADDRESS").getValueAsString())
-                        .isEqualTo(enrichedStreetValue);
-                assertThat(pdAcroForm.getField("APPLICANT_HOME_CITY").getValueAsString())
-                        .isEqualTo(enrichedCityValue);
-                assertThat(pdAcroForm.getField("APPLICANT_HOME_STATE").getValueAsString())
-                        .isEqualTo(enrichedState);
-                assertThat(pdAcroForm.getField("APPLICANT_HOME_ZIPCODE").getValueAsString())
-                        .isEqualTo(enrichedZipCodeValue);
-            });
-
-            assertThat(pdAcroForms.get(CAF).getField("APPLICANT_HOME_APT_NUMBER").getValueAsString())
-                    .isEqualTo(enrichedApartmentNumber);
-        }
-
-        @Nested
-        @Tag("pdf")
-        class WithPersonalAndContactInfo {
-            @BeforeEach
-            void setUp() {
-                fillOutPersonalInfo();
-                testPage.clickContinue();
-                fillOutContactInfo();
-                testPage.clickContinue();
-            }
-
-            @Test
-            void shouldMapOriginalHomeAddressToMailingAddressIfSameMailingAddressIsTrueAndUseEnrichedAddressIsFalse() {
-                navigateTo("homeAddress");
-                String originalStreetAddress = "originalStreetAddress";
-                String originalApt = "originalApt";
-                String originalCity = "originalCity";
-                String originalZipCode = "54321";
-                testPage.enter("streetAddress", originalStreetAddress);
-                testPage.enter("apartmentNumber", originalApt);
-                testPage.enter("city", originalCity);
-                testPage.enter("zipCode", originalZipCode);
-                testPage.enter("sameMailingAddress", "Yes, send mail here");
-                testPage.clickContinue();
-                testPage.clickButton("Use this address");
-                Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-                PDAcroForm pdAcroForm = pdAcroForms.get(CCAP);
-                assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
-                        .isEqualTo(originalStreetAddress);
-                assertThat(pdAcroForm.getField("APPLICANT_MAILING_CITY").getValueAsString())
-                        .isEqualTo(originalCity);
-                assertThat(pdAcroForm.getField("APPLICANT_MAILING_STATE").getValueAsString())
-                        .isEqualTo("MN");
-                assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
-                        .isEqualTo(originalZipCode);
-            }
-
-            @Test
-            void shouldMapDefaultCoverPageCountyInstructionsIfCountyIsFlaggedOff() {
-                navigateTo("homeAddress");
-                String originalStreetAddress = "2168 7th Ave";
-                String originalCity = "Anoka";
-                String originalZipCode = "55303";
-                testPage.enter("streetAddress", originalStreetAddress);
-                testPage.enter("city", originalCity);
-                testPage.enter("zipCode", originalZipCode);
-                testPage.enter("sameMailingAddress", "Yes, send mail here");
-                testPage.clickContinue();
-                testPage.clickButton("Use this address");
-                Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-                PDAcroForm pdAcroForm = pdAcroForms.get(CCAP);
-                assertThat(pdAcroForm.getField("COUNTY_INSTRUCTIONS").getValueAsString())
-                        .isEqualTo("This application was submitted. A caseworker at Hennepin County will help route your application to your county. For more support with your application, you can call Hennepin County at 612-596-1300.");
-            }
-
-            @Test
-            void shouldMapEnrichedHomeAddressToMailingAddressIfSameMailingAddressIsTrueAndUseEnrichedAddressIsTrue() {
-                navigateTo("homeAddress");
-                testPage.enter("streetAddress", "originalStreetAddress");
-                testPage.enter("apartmentNumber", "originalApt");
-                testPage.enter("city", "originalCity");
-                testPage.enter("zipCode", "54321");
-                testPage.enter("sameMailingAddress", "Yes, send mail here");
-                String enrichedStreetValue = "testStreet";
-                String enrichedCityValue = "testCity";
-                String enrichedZipCodeValue = "testZipCode";
-                String enrichedApartmentNumber = "someApt";
-                String enrichedState = "someState";
-                when(locationClient.validateAddress(any()))
-                        .thenReturn(Optional.of(new Address(
-                                enrichedStreetValue,
-                                enrichedCityValue,
-                                enrichedState,
-                                enrichedZipCodeValue,
-                                enrichedApartmentNumber,
-                                "Hennepin")));
-                testPage.clickContinue();
-                testPage.clickContinue();
-                Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-                List.of(CAF, CCAP).forEach(type -> {
-                    PDAcroForm pdAcroForm = pdAcroForms.get(type);
-                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
-                            .isEqualTo(enrichedStreetValue);
-                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_CITY").getValueAsString())
-                            .isEqualTo(enrichedCityValue);
-                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_STATE").getValueAsString())
-                            .isEqualTo(enrichedState);
-                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
-                            .isEqualTo(enrichedZipCodeValue);
-                });
-                assertThat(pdAcroForms.get(CAF).getField("APPLICANT_MAILING_APT_NUMBER").getValueAsString())
-                        .isEqualTo(enrichedApartmentNumber);
-            }
-
-            @Test
-            void shouldMapToOriginalMailingAddressIfSameMailingAddressIsFalseAndUseEnrichedAddressIsFalse() {
-                navigateTo("homeAddress");
-                fillInAddress();
-                testPage.enter("sameMailingAddress", "No, use a different address for mail");
-                testPage.clickContinue();
-                testPage.clickButton("Use this address");
-                String originalStreetAddress = "originalStreetAddress";
-                String originalApt = "originalApt";
-                String originalCity = "originalCity";
-                String originalState = "IL";
-                String originalZipCode = "54321";
-                testPage.enter("streetAddress", originalStreetAddress);
-                testPage.enter("apartmentNumber", originalApt);
-                testPage.enter("city", originalCity);
-                testPage.enter("state", originalState);
-                testPage.enter("zipCode", originalZipCode);
-                testPage.clickContinue();
-                testPage.clickButton("Use this address");
-
-                Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-                List.of(CAF, CCAP).forEach(type -> {
-                    PDAcroForm pdAcroForm = pdAcroForms.get(type);
-                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
-                            .isEqualTo(originalStreetAddress);
-                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_CITY").getValueAsString())
-                            .isEqualTo(originalCity);
-                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_STATE").getValueAsString())
-                            .isEqualTo(originalState);
-                    assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
-                            .isEqualTo(originalZipCode);
-                });
-
-                assertThat(pdAcroForms.get(CAF).getField("APPLICANT_MAILING_APT_NUMBER").getValueAsString())
-                        .isEqualTo(originalApt);
-            }
-        }
-
-        @Test
-        void shouldMapFullEmployeeNames() {
-            addHouseholdMembers();
-
-            navigateTo("incomeByJob");
-            testPage.clickButton("Add a job");
-            testPage.enter("whoseJobIsIt", "Jim Halpert");
-            testPage.clickContinue();
-            testPage.enter("employersName", "someEmployerName");
-            testPage.clickContinue();
-            testPage.enter("selfEmployment", "No");
-            testPage.enter("paidByTheHour", "No");
-            testPage.enter("payPeriod", "Every week");
-            testPage.clickContinue();
-            testPage.enter("incomePerPayPeriod", "1");
-            testPage.clickContinue();
-
-            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "EMPLOYEE_FULL_NAME_0"))
-                    .isEqualTo("Jim Halpert");
-
-            assertThat(pdAcroForms.get(CCAP).getField("NON_SELF_EMPLOYMENT_EMPLOYEE_FULL_NAME_0").getValueAsString())
-                    .isEqualTo("Jim Halpert");
-
         }
 
         @Test
@@ -621,7 +93,8 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             assertThat(getPdfFieldText(pdAcroForms.get(CAF), "MONEY_MADE_LAST_MONTH")).isEqualTo("123.00");
             assertThat(getPdfFieldText(pdAcroForms.get(CAF), "SNAP_EXPEDITED_ELIGIBILITY")).isEqualTo("SNAP");
 
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0")).isEqualTo("123.00");
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0")).isEqualTo(
+                    "123.00");
         }
 
         @Test
@@ -660,7 +133,8 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             assertThat(getPdfFieldText(pdAcroForms.get(CAF), "MONEY_MADE_LAST_MONTH")).isEqualTo("123.00");
             assertThat(getPdfFieldText(pdAcroForms.get(CAF), "SNAP_EXPEDITED_ELIGIBILITY")).isEqualTo("SNAP");
 
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0")).isEqualTo("123.00");
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0")).isEqualTo(
+                    "123.00");
         }
 
         @Test
@@ -694,13 +168,16 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         void shouldMapLivingWithFamilyAndFriendsDueToEconomicHardship() {
             fillInRequiredPages();
             navigateTo("livingSituation");
-            testPage.enter("livingSituation", "Temporarily staying with friends or family because I lost my housing or can no longer afford my own housing");
+            testPage.enter("livingSituation",
+                           "Temporarily staying with friends or family because I lost my housing or can no longer afford my own housing");
             testPage.clickContinue();
 
             Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
 
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "LIVING_SITUATION")).isEqualTo("TEMPORARILY_WITH_FRIENDS_OR_FAMILY");
-            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "LIVING_SITUATION")).isEqualTo("TEMPORARILY_WITH_FRIENDS_OR_FAMILY");
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "LIVING_SITUATION")).isEqualTo(
+                    "TEMPORARILY_WITH_FRIENDS_OR_FAMILY");
+            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "LIVING_SITUATION")).isEqualTo(
+                    "TEMPORARILY_WITH_FRIENDS_OR_FAMILY");
             assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "LIVING_WITH_FAMILY_OR_FRIENDS")).isEqualTo("Yes");
         }
 
@@ -713,8 +190,10 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
 
             Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
 
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "LIVING_SITUATION")).isEqualTo("TEMPORARILY_WITH_FRIENDS_OR_FAMILY");
-            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "LIVING_SITUATION")).isEqualTo("TEMPORARILY_WITH_FRIENDS_OR_FAMILY");
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "LIVING_SITUATION")).isEqualTo(
+                    "TEMPORARILY_WITH_FRIENDS_OR_FAMILY");
+            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "LIVING_SITUATION")).isEqualTo(
+                    "TEMPORARILY_WITH_FRIENDS_OR_FAMILY");
             assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "LIVING_WITH_FAMILY_OR_FRIENDS")).isEqualTo("No");
         }
 

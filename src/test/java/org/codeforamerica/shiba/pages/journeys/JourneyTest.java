@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.pages.journeys;
 
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.AbstractBasePageTest;
+import org.codeforamerica.shiba.TestUtils;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.documents.DocumentRepositoryService;
@@ -71,15 +72,11 @@ public abstract class JourneyTest extends AbstractBasePageTest {
     }
 
     protected void assertCafFieldEquals(String fieldName, String expectedVal) {
-        assertPdfFieldEquals(fieldName, expectedVal, caf);
+        TestUtils.assertPdfFieldEquals(fieldName, expectedVal, caf);
     }
 
     protected void assertCcapFieldEquals(String fieldName, String expectedVal) {
-        assertPdfFieldEquals(fieldName, expectedVal, ccap);
-    }
-
-    private void assertPdfFieldEquals(String fieldName, String expectedVal, PDAcroForm pdf) {
-        assertThat(getPdfFieldText(pdf, fieldName)).isEqualTo(expectedVal);
+        TestUtils.assertPdfFieldEquals(fieldName, expectedVal, ccap);
     }
 
     protected String signApplicationAndDownloadPdfs(String signature, boolean shouldHaveCafDownloadLink,
