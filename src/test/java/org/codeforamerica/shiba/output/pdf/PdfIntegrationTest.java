@@ -71,23 +71,6 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         }
 
         @Test
-        void shouldMarkYesForMillionDollarQuestionWhenChoiceIsYes() {
-            navigateTo("energyAssistance");
-            testPage.enter("energyAssistance", NO.getDisplayValue());
-            testPage.enter("medicalExpenses", "None of the above");
-            testPage.clickContinue();
-            testPage.enter("supportAndCare", NO.getDisplayValue());
-            testPage.enter("haveVehicle", NO.getDisplayValue());
-            testPage.enter("ownRealEstate", NO.getDisplayValue());
-            testPage.enter("haveInvestments", YES.getDisplayValue());
-            testPage.enter("haveSavings", NO.getDisplayValue());
-            testPage.enter("haveMillionDollars", YES.getDisplayValue());
-            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-            assertThat(pdAcroForms.get(CCAP).getField("HAVE_MILLION_DOLLARS").getValueAsString())
-                    .isEqualTo("Yes");
-        }
-
-        @Test
         void shouldMapAdultsInHouseholdRequestingChildcareAssistance() {
             addHouseholdMembers();
 

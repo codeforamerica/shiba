@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.output.pdf;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.SessionScopedApplicationDataTestConfiguration;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.config.PageTemplate;
@@ -34,7 +35,11 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.toMap;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.TestUtils.*;
+import static org.codeforamerica.shiba.output.Document.CCAP;
+import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
+import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
@@ -180,6 +185,23 @@ public class PdfIntegrationMockMvcTest {
 
         var ccap = submitAndDownloadCcap();
         assertPdfFieldEquals("HAVE_MILLION_DOLLARS", "No", ccap);
+    }
+
+    @Test
+    void shouldMarkYesForMillionDollarQuestionWhenChoiceIsYes() throws Exception {
+        selectPrograms(List.of("CCAP"));
+
+        postWithData("/pages/energyAssistance", Map.of("energyAssistance", List.of("false")));
+        postWithData("/pages/medicalExpenses", Map.of("medicalExpenses", List.of("NONE_OF_THE_ABOVE")));
+        postWithData("/pages/supportAndCare", Map.of("supportAndCare", List.of("false")));
+        postWithData("/pages/vehicle", Map.of("haveVehicle", List.of("false")));
+        postWithData("/pages/realEstate", Map.of("ownRealEstate", List.of("false")));
+        postWithData("/pages/investments", Map.of("haveInvestments", List.of("true")));
+        postWithData("/pages/savings", Map.of("haveSavings", List.of("false")));
+        postWithData("/pages/millionDollar", Map.of("haveMillionDollars", List.of("true")));
+
+        var ccap = submitAndDownloadCcap();
+        assertPdfFieldEquals("HAVE_MILLION_DOLLARS", "Yes", ccap);
     }
 
     private void addHouseholdMembers() throws Exception {
