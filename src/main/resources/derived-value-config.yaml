@@ -42,9 +42,6 @@ conditionAnchors:
   - &paysForMedicalExpenses?
     pageName: medicalExpenses
     input: medicalExpenses
-  - &doesntPayForMedicalExpenses?
-    <<: *paysForMedicalExpenses?
-    matcher: DOES_NOT_CONTAIN
 derived-values:
   - groupName: utilityPayments
     fieldName: noExpeditedUtilitiesSelected
@@ -1049,13 +1046,6 @@ derived-values:
           literal: NONE_SELECTED
         type: ENUMERATED_SINGLE_VALUE
         condition:
-          logicalOperator: AND
           conditions:
-            - <<: *doesntPayForMedicalExpenses?
-              value: MEDICAL_INSURANCE_PREMIUMS
-            - <<: *doesntPayForMedicalExpenses?
-              value: DENTAL_INSURANCE_PREMIUMS
-            - <<: *doesntPayForMedicalExpenses?
-              value: VISION_INSURANCE_PREMIUMS
-            - <<: *doesntPayForMedicalExpenses?
-              value: MEDICAL_BILLS_OR_COPAYS
+            - <<: *paysForMedicalExpenses?
+              value: NONE_OF_THE_ABOVE

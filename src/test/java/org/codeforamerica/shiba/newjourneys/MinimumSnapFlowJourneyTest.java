@@ -107,6 +107,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
 
         // PDF assertions
         assertCafContainsAllFieldsForMinimumSnapFlow(applicationId);
+        assertCafFieldEquals("MEDICAL_EXPENSES_SELECTION", "Off");
         assertCafFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "");
         assertCafFieldEquals("DRUG_FELONY", "No");
         assertCafFieldEquals("ADDITIONAL_APPLICATION_INFO", additionalInfo);
@@ -187,6 +188,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
 
         // PDF assertions
         assertCafContainsAllFieldsForMinimumSnapFlow(applicationId);
+        assertCafFieldEquals("MEDICAL_EXPENSES_SELECTION", "Off");
         assertCafFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "SNAP");
         assertCafFieldEquals("DRUG_FELONY", "Yes");
         assertCafFieldEquals("MONEY_MADE_LAST_MONTH", moneyMadeLast30Days + ".00");
