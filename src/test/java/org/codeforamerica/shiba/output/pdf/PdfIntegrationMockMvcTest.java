@@ -3,11 +3,16 @@ package org.codeforamerica.shiba.output.pdf;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.SessionScopedApplicationDataTestConfiguration;
+import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.config.PageTemplate;
 import org.codeforamerica.shiba.pages.config.ReferenceOptionsTemplate;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.pages.data.Subworkflows;
 import org.codeforamerica.shiba.pages.enrichment.LocationClient;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -26,10 +31,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import static java.util.stream.Collectors.toMap;
 import static org.codeforamerica.shiba.TestUtils.assertPdfFieldEquals;
@@ -60,6 +62,21 @@ public class PdfIntegrationMockMvcTest {
     private FeatureFlagConfiguration featureFlagConfiguration;
 
     private MockHttpSession session;
+
+    @Autowired
+    private ApplicationData applicationData;
+
+    @AfterEach
+    void cleanup() {
+        applicationData.setId(null);
+        applicationData.setUtmSource(null);
+        applicationData.setPagesData(new PagesData());
+        applicationData.setSubworkflows(new Subworkflows());
+        applicationData.setIncompleteIterations(new HashMap<>());
+        applicationData.setUploadedDocs(new ArrayList<>());
+        applicationData.setFlow(FlowType.UNDETERMINED);
+        applicationData.setSubmitted(false);
+    }
 
     @BeforeEach
     void setUp() throws Exception {
