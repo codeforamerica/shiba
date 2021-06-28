@@ -33,7 +33,6 @@ import java.util.*;
 
 import static java.util.stream.Collectors.toMap;
 import static org.codeforamerica.shiba.TestUtils.*;
-import static org.codeforamerica.shiba.Utils.writeByteArrayToFile;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
@@ -251,8 +250,7 @@ public class PdfIntegrationMockMvcTest {
 
     @NotNull
     private String getPamFullNameAndId() throws Exception {
-        String pam = "Pam Beesly " + getSecondHouseholdMemberId();
-        return pam;
+        return "Pam Beesly " + getSecondHouseholdMemberId();
     }
 
     @NotNull
