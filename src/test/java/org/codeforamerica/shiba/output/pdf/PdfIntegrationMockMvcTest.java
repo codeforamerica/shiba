@@ -2,65 +2,42 @@ package org.codeforamerica.shiba.output.pdf;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
-import org.codeforamerica.shiba.SessionScopedApplicationDataTestConfiguration;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
-import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.config.PageTemplate;
 import org.codeforamerica.shiba.pages.config.ReferenceOptionsTemplate;
-import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.enrichment.Address;
-import org.codeforamerica.shiba.pages.enrichment.LocationClient;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.*;
 
 import static java.util.stream.Collectors.toMap;
-import static org.codeforamerica.shiba.TestUtils.*;
+import static org.codeforamerica.shiba.TestUtils.assertPdfFieldEquals;
+import static org.codeforamerica.shiba.TestUtils.assertPdfFieldIsEmpty;
 import static org.codeforamerica.shiba.output.caf.CoverPageInputsMapper.CHILDCARE_WAITING_LIST_UTM_SOURCE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ActiveProfiles("test")
-@SpringBootTest(webEnvironment = MOCK)
-@Tag("pdf")
-@AutoConfigureMockMvc
-@Import({SessionScopedApplicationDataTestConfiguration.class})
-public class PdfIntegrationMockMvcTest {
+
+public class PdfIntegrationMockMvcTest extends AbstractPdfIntegrationMockMvcTest {
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private ApplicationData applicationData;
-
-    @MockBean
-    private Clock clock;
-
-    @MockBean
-    private LocationClient locationClient;
-
-    @MockBean
-    private FeatureFlagConfiguration featureFlagConfiguration;
 
     private MockHttpSession session;
 
@@ -82,11 +59,6 @@ public class PdfIntegrationMockMvcTest {
         );
 
         postWithData("addHouseholdMembers", "addHouseholdMembers", "false");
-    }
-
-    @AfterEach
-    void cleanup() {
-        resetApplicationData(applicationData);
     }
 
     @Test
