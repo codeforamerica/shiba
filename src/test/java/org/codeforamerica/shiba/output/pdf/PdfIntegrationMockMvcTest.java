@@ -10,10 +10,7 @@ import org.codeforamerica.shiba.pages.config.ReferenceOptionsTemplate;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.enrichment.LocationClient;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,6 +30,7 @@ import java.util.*;
 
 import static java.util.stream.Collectors.toMap;
 import static org.codeforamerica.shiba.TestUtils.*;
+import static org.codeforamerica.shiba.output.caf.CoverPageInputsMapper.CHILDCARE_WAITING_LIST_UTM_SOURCE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
@@ -40,6 +38,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = MOCK)
@@ -226,7 +225,7 @@ public class PdfIntegrationMockMvcTest {
         String pam = getPamFullNameAndId();
         postWithData("whoIsLookingForAJob", "whoIsLookingForAJob", List.of(jim, pam));
 
-        String me = "Dwight Schrute applicant";
+        String me = getApplicantFullNameAndId();
         postWithData("whoIsGoingToSchool", "whoIsGoingToSchool", List.of(me, jim));
 
         // Add a job for Jim
@@ -246,6 +245,98 @@ public class PdfIntegrationMockMvcTest {
         assertPdfFieldIsEmpty("ADULT_REQUESTING_CHILDCARE_GOING_TO_SCHOOL_FULL_NAME_1", ccap);
         assertPdfFieldIsEmpty("ADULT_REQUESTING_CHILDCARE_WORKING_FULL_NAME_1", ccap);
         assertPdfFieldIsEmpty("ADULT_REQUESTING_CHILDCARE_WORKING_EMPLOYERS_NAME_1", ccap);
+    }
+
+    @Test
+    void shouldMapJobLastThirtyDayIncomeAllBlankIsUndetermined() throws Exception {
+        selectPrograms("CASH");
+        addHouseholdMembers();
+        fillInRequiredPages();
+
+        // Add a job for Jim
+        postWithQueryParam("incomeByJob", "option", "0");
+        String jim = getJimFullNameAndId();
+        postWithData("householdSelectionForIncome", "whoseJobIsIt", jim);
+        postWithData("employersName", "employersName", "someEmployerName");
+        postWithData("selfEmployment", "selfEmployment", "false");
+        postWithData("lastThirtyDaysJobIncome", "lastThirtyDaysJobIncome", "");
+
+        // Add a job for Dwight
+        postWithQueryParam("incomeByJob", "option", "0");
+        String me = getApplicantFullNameAndId();
+        postWithData("householdSelectionForIncome", "whoseJobIsIt", me);
+        postWithData("employersName", "employersName", "someEmployerName");
+        postWithData("selfEmployment", "selfEmployment", "false");
+        postWithData("lastThirtyDaysJobIncome", "lastThirtyDaysJobIncome", "");
+
+        var caf = submitAndDownloadCaf();
+        assertPdfFieldIsEmpty("SNAP_EXPEDITED_ELIGIBILITY", caf);
+    }
+
+    @Test
+    void shouldNotAddAuthorizedRepFieldsIfNo() throws Exception {
+        selectPrograms("CASH");
+        postWithData("authorizedRep", "communicateOnYourBehalf", "false");
+
+        var caf = submitAndDownloadCaf();
+        assertPdfFieldEquals("AUTHORIZED_REP_FILL_OUT_FORM", "Off", caf);
+        assertPdfFieldEquals("AUTHORIZED_REP_GET_NOTICES", "Off", caf);
+        assertPdfFieldEquals("AUTHORIZED_REP_SPEND_ON_YOUR_BEHALF", "Off", caf);
+    }
+
+    @Test
+    void shouldMapRecognizedUtmSourceCCAP() throws Exception {
+        selectPrograms("CCAP");
+        getWithQueryParam("languagePreferences", "utm_source", CHILDCARE_WAITING_LIST_UTM_SOURCE);
+        fillInRequiredPages();
+
+        var ccap = submitAndDownloadCcap();
+        assertPdfFieldEquals("UTM_SOURCE", "FROM BSF WAITING LIST", ccap);
+    }
+
+    @Test
+    void shouldNotMapRecognizedUtmSourceCAF() throws Exception {
+        selectPrograms("CASH");
+        getWithQueryParam("languagePreferences", "utm_source", CHILDCARE_WAITING_LIST_UTM_SOURCE);
+        var caf = submitAndDownloadCaf();
+        assertPdfFieldIsEmpty("UTM_SOURCE", caf);
+    }
+
+    @Nested
+    @Tag("pdf")
+    class CAFandCCAP {
+        @BeforeEach
+        void setUp() throws Exception {
+            selectPrograms("SNAP", "CCAP", "CASH");
+        }
+
+        @Test
+        void shouldMapOriginalAddressIfHomeAddressDoesNotUseEnrichedAddress() throws Exception {
+            String originalStreetAddress = "originalStreetAddress";
+            String originalApt = "originalApt";
+            String originalCity = "originalCity";
+            String originalZipCode = "54321";
+            postWithData("homeAddress", Map.of(
+                    "streetAddress", List.of(originalStreetAddress),
+                    "apartmentNumber", List.of(originalApt),
+                    "city", List.of(originalCity),
+                    "zipCode", List.of(originalZipCode),
+                    "state", List.of("MN"),
+                    "sameMailingAddress", List.of("false")
+            ));
+            postWithData("verifyHomeAddress", "useEnrichedAddress", "false");
+
+            var ccap = submitAndDownloadCcap();
+            assertPdfFieldEquals("APPLICANT_HOME_STREET_ADDRESS", originalStreetAddress, ccap);
+            assertPdfFieldEquals("APPLICANT_HOME_CITY", originalCity, ccap);
+            assertPdfFieldEquals("APPLICANT_HOME_STATE", "MN", ccap);
+            assertPdfFieldEquals("APPLICANT_HOME_ZIPCODE", originalZipCode, ccap);
+        }
+    }
+
+    @NotNull
+    private String getApplicantFullNameAndId() {
+        return "Dwight Schrute applicant";
     }
 
     @NotNull
@@ -273,6 +364,11 @@ public class PdfIntegrationMockMvcTest {
         ).andExpect(redirectedUrl("/pages/" + pageName + "/navigation"));
     }
 
+    private void getWithQueryParam(String pageName, String queryParam, String value) throws Exception {
+        mockMvc.perform(
+                get("/pages/" + pageName).session(session).queryParam(queryParam, value)
+        ).andExpect(status().isOk());
+    }
 
     private void addHouseholdMembers() throws Exception {
         postWithData("personalInfo", Map.of(
