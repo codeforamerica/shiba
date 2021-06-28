@@ -230,8 +230,7 @@ public class PdfIntegrationMockMvcTest {
         postWithData("whoIsGoingToSchool", "whoIsGoingToSchool", List.of(me, jim));
 
         // Add a job for Jim
-        postWithQueryParam("incomeByJob", "option", "0");
-        addJob(jim, "Jim's Employer");
+        addFirstJob(jim, "Jim's Employer");
 
         // Add a job for Pam
         postWithQueryParam("jobBuilder", "option", "0");
@@ -246,6 +245,11 @@ public class PdfIntegrationMockMvcTest {
         assertPdfFieldIsEmpty("ADULT_REQUESTING_CHILDCARE_GOING_TO_SCHOOL_FULL_NAME_1", ccap);
         assertPdfFieldIsEmpty("ADULT_REQUESTING_CHILDCARE_WORKING_FULL_NAME_1", ccap);
         assertPdfFieldIsEmpty("ADULT_REQUESTING_CHILDCARE_WORKING_EMPLOYERS_NAME_1", ccap);
+    }
+
+    private void addFirstJob(String householdMemberNameAndId, String employersName) throws Exception {
+        postWithQueryParam("incomeByJob", "option", "0");
+        addJob(householdMemberNameAndId, employersName);
     }
 
     @Test
@@ -336,8 +340,7 @@ public class PdfIntegrationMockMvcTest {
 
         @Test
         void shouldMapNoForSelfEmployment() throws Exception {
-            postWithQueryParam("incomeByJob", "option", "0");
-            addJob(getApplicantFullNameAndId(), "someEmployerName");
+            addFirstJob(getApplicantFullNameAndId(), "someEmployerName");
 
             var caf = submitAndDownloadCaf();
             assertPdfFieldEquals("SELF_EMPLOYED", "No", caf);
@@ -388,6 +391,20 @@ public class PdfIntegrationMockMvcTest {
             assertPdfFieldEquals("APPLICANT_HOME_APT_NUMBER", enrichedApartmentNumber, caf);
         }
 
+        @Test
+        void shouldMapFullEmployeeNames() throws Exception {
+            addHouseholdMembers();
+            String jim = getJimFullNameAndId();
+            addFirstJob(jim, "someEmployerName");
+
+            var caf = submitAndDownloadCaf();
+            var ccap = downloadCcap();
+
+            assertPdfFieldEquals("EMPLOYEE_FULL_NAME_0", "Jim Halpert", caf);
+            assertPdfFieldEquals("NON_SELF_EMPLOYMENT_EMPLOYEE_FULL_NAME_0", "Jim Halpert", ccap);
+        }
+
+
         @Nested
         @Tag("pdf")
         class WithPersonalAndContactInfo {
@@ -419,6 +436,101 @@ public class PdfIntegrationMockMvcTest {
                 assertPdfFieldEquals("APPLICANT_MAILING_CITY", originalCity, ccap);
                 assertPdfFieldEquals("APPLICANT_MAILING_STATE", "MN", ccap);
                 assertPdfFieldEquals("APPLICANT_MAILING_ZIPCODE", originalZipCode, ccap);
+            }
+
+            @Test
+            void shouldMapDefaultCoverPageCountyInstructionsIfCountyIsFlaggedOff() throws Exception {
+                String originalStreetAddress = "2168 7th Ave";
+                String originalCity = "Anoka";
+                String originalZipCode = "55303";
+                postWithData("homeAddress", Map.of(
+                        "streetAddress", List.of(originalStreetAddress),
+                        "city", List.of(originalCity),
+                        "zipCode", List.of(originalZipCode),
+                        "state", List.of("MN"),
+                        "sameMailingAddress", List.of("true") // THE KEY DIFFERENCE
+                ));
+                postWithData("verifyHomeAddress", "useEnrichedAddress", "false");
+
+                var ccap = submitAndDownloadCcap();
+                assertPdfFieldEquals("COUNTY_INSTRUCTIONS",
+                                     "This application was submitted. A caseworker at Hennepin County will help route your application to your county. For more support with your application, you can call Hennepin County at 612-596-1300.",
+                                     ccap);
+            }
+
+            @Test
+            void shouldMapEnrichedHomeAddressToMailingAddressIfSameMailingAddressIsTrueAndUseEnrichedAddressIsTrue() throws
+                    Exception {
+
+                String enrichedStreetValue = "testStreet";
+                String enrichedCityValue = "testCity";
+                String enrichedZipCodeValue = "testZipCode";
+                String enrichedApartmentNumber = "someApt";
+                String enrichedState = "someState";
+                when(locationClient.validateAddress(any()))
+                        .thenReturn(Optional.of(new Address(
+                                enrichedStreetValue,
+                                enrichedCityValue,
+                                enrichedState,
+                                enrichedZipCodeValue,
+                                enrichedApartmentNumber,
+                                "Hennepin")));
+                postWithData("homeAddress", Map.of(
+                        "streetAddress", List.of("originalStreetAddress"),
+                        "apartmentNumber", List.of("originalApt"),
+                        "city", List.of("originalCity"),
+                        "zipCode", List.of("54321"),
+                        "state", List.of("MN"),
+                        "sameMailingAddress", List.of("true") // THE KEY DIFFERENCE
+                ));
+                postWithData("verifyHomeAddress", "useEnrichedAddress", "true");
+
+                var caf = submitAndDownloadCaf();
+                var ccap = downloadCcap();
+                List.of(caf, ccap).forEach(pdf -> {
+                    assertPdfFieldEquals("APPLICANT_MAILING_STREET_ADDRESS", enrichedStreetValue, pdf);
+                    assertPdfFieldEquals("APPLICANT_MAILING_CITY", enrichedCityValue, pdf);
+                    assertPdfFieldEquals("APPLICANT_MAILING_STATE", enrichedState, pdf);
+                    assertPdfFieldEquals("APPLICANT_MAILING_ZIPCODE", enrichedZipCodeValue, pdf);
+                });
+                assertPdfFieldEquals("APPLICANT_MAILING_APT_NUMBER", enrichedApartmentNumber, caf);
+            }
+
+            @Test
+            void shouldMapToOriginalMailingAddressIfSameMailingAddressIsFalseAndUseEnrichedAddressIsFalse() throws
+                    Exception {
+                postWithData("homeAddress", Map.of(
+                        "streetAddress", List.of("originalHomeStreetAddress"),
+                        "apartmentNumber", List.of("originalHomeApt"),
+                        "city", List.of("originalHomeCity"),
+                        "zipCode", List.of("54321"),
+                        "state", List.of("MN"),
+                        "sameMailingAddress", List.of("false") // THE KEY DIFFERENCE
+                ));
+                postWithData("verifyHomeAddress", "useEnrichedAddress", "false");
+                String originalStreetAddress = "originalStreetAddress";
+                String originalApt = "originalApt";
+                String originalCity = "originalCity";
+                String originalState = "IL";
+                postWithData("mailingAddress", Map.of(
+                        "streetAddress", List.of(originalStreetAddress),
+                        "apartmentNumber", List.of(originalApt),
+                        "city", List.of(originalCity),
+                        "zipCode", List.of("54321"),
+                        "state", List.of(originalState)
+                ));
+                postWithData("verifyMailingAddress", "useEnrichedAddress", "false");
+
+                var caf = submitAndDownloadCaf();
+                var ccap = downloadCcap();
+                List.of(caf, ccap).forEach(pdf -> {
+                    assertPdfFieldEquals("APPLICANT_MAILING_STREET_ADDRESS", originalStreetAddress, pdf);
+                    assertPdfFieldEquals("APPLICANT_MAILING_CITY", originalCity, pdf);
+                    assertPdfFieldEquals("APPLICANT_MAILING_STATE", originalState, pdf);
+                    assertPdfFieldEquals("APPLICANT_MAILING_ZIPCODE", "54321", pdf);
+                });
+
+                assertPdfFieldEquals("APPLICANT_MAILING_APT_NUMBER", originalApt, caf);
             }
         }
     }
