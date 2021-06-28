@@ -70,76 +70,6 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             selectPrograms(List.of(PROGRAM_SNAP, PROGRAM_CCAP, PROGRAM_CASH));
         }
 
-        @Test
-        void shouldMapNoForSelfEmployment() {
-            navigateTo("addHouseholdMembers");
-            testPage.enter("addHouseholdMembers", NO.getDisplayValue());
-            testPage.clickContinue();
-            navigateTo("incomeByJob");
-            testPage.clickButton("Add a job");
-            testPage.enter("employersName", "someEmployerName");
-            testPage.clickContinue();
-            testPage.enter("selfEmployment", "No");
-            testPage.enter("paidByTheHour", "No");
-            testPage.enter("payPeriod", "Every week");
-            testPage.clickContinue();
-            testPage.enter("incomePerPayPeriod", "1");
-            testPage.clickContinue();
-
-            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-            assertThat(pdAcroForms.get(CAF).getField("SELF_EMPLOYED").getValueAsString()).isEqualTo("No");
-
-            assertThat(pdAcroForms.get(CCAP)
-                               .getField("NON_SELF_EMPLOYMENT_EMPLOYERS_NAME_0")
-                               .getValueAsString()).isEqualTo("someEmployerName");
-            assertThat(pdAcroForms.get(CCAP)
-                               .getField("NON_SELF_EMPLOYMENT_PAY_FREQUENCY_0")
-                               .getValueAsString()).isEqualTo("Every week");
-            assertThat(pdAcroForms.get(CCAP)
-                               .getField("NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0")
-                               .getValueAsString()).isEqualTo("4.00");
-        }
-
-        @Test
-        void shouldMapEnrichedAddressIfHomeAddressUsesEnrichedAddress() {
-            navigateTo("homeAddress");
-            testPage.enter("streetAddress", "originalStreetAddress");
-            testPage.enter("apartmentNumber", "originalApt");
-            testPage.enter("city", "originalCity");
-            testPage.enter("zipCode", "54321");
-            testPage.enter("sameMailingAddress", "No, use a different address for mail");
-            String enrichedStreetValue = "testStreet";
-            String enrichedCityValue = "testCity";
-            String enrichedZipCodeValue = "testZipCode";
-            String enrichedApartmentNumber = "someApt";
-            String enrichedState = "someState";
-            when(locationClient.validateAddress(any()))
-                    .thenReturn(Optional.of(new Address(
-                            enrichedStreetValue,
-                            enrichedCityValue,
-                            enrichedState,
-                            enrichedZipCodeValue,
-                            enrichedApartmentNumber,
-                            "Hennepin")));
-            testPage.clickContinue();
-            testPage.clickContinue();
-            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-            List.of(CAF, CCAP).forEach(type -> {
-                PDAcroForm pdAcroForm = pdAcroForms.get(type);
-                assertThat(pdAcroForm.getField("APPLICANT_HOME_STREET_ADDRESS").getValueAsString())
-                        .isEqualTo(enrichedStreetValue);
-                assertThat(pdAcroForm.getField("APPLICANT_HOME_CITY").getValueAsString())
-                        .isEqualTo(enrichedCityValue);
-                assertThat(pdAcroForm.getField("APPLICANT_HOME_STATE").getValueAsString())
-                        .isEqualTo(enrichedState);
-                assertThat(pdAcroForm.getField("APPLICANT_HOME_ZIPCODE").getValueAsString())
-                        .isEqualTo(enrichedZipCodeValue);
-            });
-
-            assertThat(pdAcroForms.get(CAF).getField("APPLICANT_HOME_APT_NUMBER").getValueAsString())
-                    .isEqualTo(enrichedApartmentNumber);
-        }
-
         @Nested
         @Tag("pdf")
         class WithPersonalAndContactInfo {
@@ -149,32 +79,6 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
                 testPage.clickContinue();
                 fillOutContactInfo();
                 testPage.clickContinue();
-            }
-
-            @Test
-            void shouldMapOriginalHomeAddressToMailingAddressIfSameMailingAddressIsTrueAndUseEnrichedAddressIsFalse() {
-                navigateTo("homeAddress");
-                String originalStreetAddress = "originalStreetAddress";
-                String originalApt = "originalApt";
-                String originalCity = "originalCity";
-                String originalZipCode = "54321";
-                testPage.enter("streetAddress", originalStreetAddress);
-                testPage.enter("apartmentNumber", originalApt);
-                testPage.enter("city", originalCity);
-                testPage.enter("zipCode", originalZipCode);
-                testPage.enter("sameMailingAddress", "Yes, send mail here");
-                testPage.clickContinue();
-                testPage.clickButton("Use this address");
-                Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-                PDAcroForm pdAcroForm = pdAcroForms.get(CCAP);
-                assertThat(pdAcroForm.getField("APPLICANT_MAILING_STREET_ADDRESS").getValueAsString())
-                        .isEqualTo(originalStreetAddress);
-                assertThat(pdAcroForm.getField("APPLICANT_MAILING_CITY").getValueAsString())
-                        .isEqualTo(originalCity);
-                assertThat(pdAcroForm.getField("APPLICANT_MAILING_STATE").getValueAsString())
-                        .isEqualTo("MN");
-                assertThat(pdAcroForm.getField("APPLICANT_MAILING_ZIPCODE").getValueAsString())
-                        .isEqualTo(originalZipCode);
             }
 
             @Test

@@ -8,6 +8,7 @@ import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.config.PageTemplate;
 import org.codeforamerica.shiba.pages.config.ReferenceOptionsTemplate;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.pages.enrichment.LocationClient;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.*;
@@ -332,6 +333,94 @@ public class PdfIntegrationMockMvcTest {
             assertPdfFieldEquals("APPLICANT_HOME_STATE", "MN", ccap);
             assertPdfFieldEquals("APPLICANT_HOME_ZIPCODE", originalZipCode, ccap);
         }
+
+        @Test
+        void shouldMapNoForSelfEmployment() throws Exception {
+            postWithQueryParam("incomeByJob", "option", "0");
+            addJob(getApplicantFullNameAndId(), "someEmployerName");
+
+            var caf = submitAndDownloadCaf();
+            assertPdfFieldEquals("SELF_EMPLOYED", "No", caf);
+
+            var ccap = downloadCcap();
+            assertPdfFieldEquals("NON_SELF_EMPLOYMENT_EMPLOYERS_NAME_0", "someEmployerName", ccap);
+            assertPdfFieldEquals("NON_SELF_EMPLOYMENT_PAY_FREQUENCY_0", "Every week", ccap);
+            assertPdfFieldEquals("NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0", "4.00", ccap);
+        }
+
+        @Test
+        void shouldMapEnrichedAddressIfHomeAddressUsesEnrichedAddress() throws Exception {
+            String enrichedStreetValue = "testStreet";
+            String enrichedCityValue = "testCity";
+            String enrichedZipCodeValue = "testZipCode";
+            String enrichedApartmentNumber = "someApt";
+            String enrichedState = "someState";
+            when(locationClient.validateAddress(any()))
+                    .thenReturn(Optional.of(new Address(
+                            enrichedStreetValue,
+                            enrichedCityValue,
+                            enrichedState,
+                            enrichedZipCodeValue,
+                            enrichedApartmentNumber,
+                            "Hennepin")));
+
+            postWithData("homeAddress", Map.of(
+                    "streetAddress", List.of("originalStreetAddress"),
+                    "apartmentNumber", List.of("originalApt"),
+                    "city", List.of("originalCity"),
+                    "zipCode", List.of("54321"),
+                    "state", List.of("MN"),
+                    "sameMailingAddress", List.of("false")
+            ));
+
+            postWithData("verifyHomeAddress", "useEnrichedAddress", "true");
+
+            var caf = submitAndDownloadCaf();
+            var ccap = downloadCcap();
+
+            List.of(caf, ccap).forEach(pdf -> {
+                assertPdfFieldEquals("APPLICANT_HOME_STREET_ADDRESS", enrichedStreetValue, pdf);
+                assertPdfFieldEquals("APPLICANT_HOME_CITY", enrichedCityValue, pdf);
+                assertPdfFieldEquals("APPLICANT_HOME_STATE", enrichedState, pdf);
+                assertPdfFieldEquals("APPLICANT_HOME_ZIPCODE", enrichedZipCodeValue, pdf);
+            });
+
+            assertPdfFieldEquals("APPLICANT_HOME_APT_NUMBER", enrichedApartmentNumber, caf);
+        }
+
+        @Nested
+        @Tag("pdf")
+        class WithPersonalAndContactInfo {
+            @BeforeEach
+            void setUp() throws Exception {
+                fillOutPersonalInfo();
+                fillOutContactInfo();
+            }
+
+            @Test
+            void shouldMapOriginalHomeAddressToMailingAddressIfSameMailingAddressIsTrueAndUseEnrichedAddressIsFalse() throws
+                    Exception {
+                String originalStreetAddress = "originalStreetAddress";
+                String originalApt = "originalApt";
+                String originalCity = "originalCity";
+                String originalZipCode = "54321";
+                postWithData("homeAddress", Map.of(
+                        "streetAddress", List.of(originalStreetAddress),
+                        "apartmentNumber", List.of(originalApt),
+                        "city", List.of(originalCity),
+                        "zipCode", List.of(originalZipCode),
+                        "state", List.of("MN"),
+                        "sameMailingAddress", List.of("true") // THE KEY DIFFERENCE
+                ));
+                postWithData("verifyHomeAddress", "useEnrichedAddress", "false");
+
+                var ccap = submitAndDownloadCcap();
+                assertPdfFieldEquals("APPLICANT_MAILING_STREET_ADDRESS", originalStreetAddress, ccap);
+                assertPdfFieldEquals("APPLICANT_MAILING_CITY", originalCity, ccap);
+                assertPdfFieldEquals("APPLICANT_MAILING_STATE", "MN", ccap);
+                assertPdfFieldEquals("APPLICANT_MAILING_ZIPCODE", originalZipCode, ccap);
+            }
+        }
     }
 
     @NotNull
@@ -434,6 +523,28 @@ public class PdfIntegrationMockMvcTest {
     private void fillInRequiredPages() throws Exception {
         postWithData("migrantFarmWorker", "migrantOrSeasonalFarmWorker", "false");
         postWithData("utilities", "payForUtilities", "COOLING");
+    }
+
+    private void fillOutPersonalInfo() throws Exception {
+        postWithData("personalInfo", Map.of(
+                "firstName", List.of("defaultFirstName"),
+                "lastName", List.of("defaultLastName"),
+                "otherName", List.of("defaultOtherName"),
+                "dateOfBirth", List.of("01", "12", "1928"),
+                "ssn", List.of("123456789"),
+                "maritalStatus", List.of("NEVER_MARRIED"),
+                "sex", List.of("FEMALE"),
+                "livedInMnWholeLife", List.of("true"),
+                "moveToMnDate", List.of("02", "18", "1776"),
+                "moveToMnPreviousCity", List.of("Chicago")
+        ));
+    }
+
+    private void fillOutContactInfo() throws Exception {
+        postWithData("contactInfo", Map.of(
+                "phoneNumber", List.of("7234567890"),
+                "phoneOrEmail", List.of("TEXT")
+        ));
     }
 
     private void submitApplication() throws Exception {
