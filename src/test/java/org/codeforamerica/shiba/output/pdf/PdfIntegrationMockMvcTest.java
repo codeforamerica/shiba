@@ -28,10 +28,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import static java.util.stream.Collectors.toMap;
 import static org.codeforamerica.shiba.TestUtils.*;
@@ -93,7 +90,7 @@ public class PdfIntegrationMockMvcTest {
 
     @Test
     void shouldAnswerEnergyAssistanceQuestion() throws Exception {
-        selectPrograms(List.of("CASH"));
+        selectPrograms("CASH");
 
         postWithData("energyAssistance", "energyAssistance", "true");
         postWithData("energyAssistanceMoreThan20", "energyAssistanceMoreThan20", "false");
@@ -104,7 +101,7 @@ public class PdfIntegrationMockMvcTest {
 
     @Test
     void shouldMapEnergyAssistanceWhenUserReceivedNoAssistance() throws Exception {
-        selectPrograms(List.of("CASH"));
+        selectPrograms("CASH");
 
         postWithData("energyAssistance", "energyAssistance", "false");
 
@@ -114,7 +111,7 @@ public class PdfIntegrationMockMvcTest {
 
     @Test
     void shouldMapChildrenNeedingChildcareFullNames() throws Exception {
-        selectPrograms(List.of("CCAP"));
+        selectPrograms("CCAP");
         addHouseholdMembers();
 
         String jimHalpertId = getFirstHouseholdMemberId();
@@ -145,7 +142,7 @@ public class PdfIntegrationMockMvcTest {
 
     @Test
     void shouldNotMapParentsLivingOutsideOfHomeIfNoneSelected() throws Exception {
-        selectPrograms(List.of("CCAP"));
+        selectPrograms("CCAP");
 
         addHouseholdMembers();
 
@@ -169,7 +166,7 @@ public class PdfIntegrationMockMvcTest {
 
     @Test
     void shouldDefaultToNoForMillionDollarQuestionWhenQuestionPageIsNotShown() throws Exception {
-        selectPrograms(List.of("CCAP"));
+        selectPrograms("CCAP");
 
         postWithData("energyAssistance", "energyAssistance", "false");
         postWithData("medicalExpenses", "medicalExpenses", "NONE_OF_THE_ABOVE");
@@ -185,7 +182,7 @@ public class PdfIntegrationMockMvcTest {
 
     @Test
     void shouldMarkYesForMillionDollarQuestionWhenChoiceIsYes() throws Exception {
-        selectPrograms(List.of("CCAP"));
+        selectPrograms("CCAP");
 
         postWithData("energyAssistance", "energyAssistance", "false");
         postWithData("medicalExpenses", "medicalExpenses", "NONE_OF_THE_ABOVE");
@@ -279,8 +276,8 @@ public class PdfIntegrationMockMvcTest {
                      Map.of("applicantSignature", List.of("Human McPerson")));
     }
 
-    private void selectPrograms(List<String> programs) throws Exception {
-        postWithData("choosePrograms", "programs", programs);
+    private void selectPrograms(String... programs) throws Exception {
+        postWithData("choosePrograms", "programs", Arrays.stream(programs).toList());
     }
 
     // Post to a page with an arbitrary number of multi-value inputs
