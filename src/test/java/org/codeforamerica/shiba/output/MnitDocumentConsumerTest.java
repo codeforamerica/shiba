@@ -5,6 +5,7 @@ import org.codeforamerica.shiba.*;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
+import org.codeforamerica.shiba.documents.AzureDocumentRepositoryService;
 import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
@@ -57,11 +58,10 @@ class MnitDocumentConsumerTest {
     private MnitEsbWebServiceClient mnitClient;
     @MockBean
     private XmlGenerator xmlGenerator;
-
     @MockBean
     private MonitoringService monitoringService;
     @MockBean
-    private DocumentRepositoryService documentRepositoryService;
+    private AzureDocumentRepositoryService documentRepositoryService;
     @MockBean
     private FileNameGenerator fileNameGenerator;
     @MockBean

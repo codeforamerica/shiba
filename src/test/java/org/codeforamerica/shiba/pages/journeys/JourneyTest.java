@@ -5,7 +5,9 @@ import org.codeforamerica.shiba.AbstractBasePageTest;
 import org.codeforamerica.shiba.TestUtils;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.FlowType;
+import org.codeforamerica.shiba.documents.AzureDocumentRepositoryService;
 import org.codeforamerica.shiba.documents.DocumentRepositoryService;
+import org.codeforamerica.shiba.documents.S3DocumentRepositoryService;
 import org.codeforamerica.shiba.pages.SuccessPage;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
@@ -45,7 +47,7 @@ public abstract class JourneyTest extends AbstractBasePageTest {
     @MockBean
     protected SmartyStreetClient smartyStreetClient;
     @SpyBean
-    protected DocumentRepositoryService documentRepositoryService;
+    protected AzureDocumentRepositoryService documentRepositoryService;
     @MockBean
     protected PageEventPublisher pageEventPublisher;
     @MockBean
