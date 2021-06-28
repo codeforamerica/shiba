@@ -9,6 +9,7 @@ import org.codeforamerica.shiba.pages.config.PageTemplate;
 import org.codeforamerica.shiba.pages.config.ReferenceOptionsTemplate;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.enrichment.LocationClient;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -149,7 +150,7 @@ public class PdfIntegrationMockMvcTest {
 
         postWithData("childrenInNeedOfCare",
                      "whoNeedsChildCare",
-                     List.of("Dwight Schrute applicant", "Jim Halpert " + getFirstHouseholdMemberId())
+                     List.of("Dwight Schrute applicant", getJimFullNameAndId())
         );
 
         postWithData("whoHasParentNotAtHome", "whoHasAParentNotLivingAtHome", "NONE_OF_THE_ABOVE");
@@ -219,11 +220,11 @@ public class PdfIntegrationMockMvcTest {
 
         addHouseholdMembers();
 
-        String jim = "Jim Halpert " + getFirstHouseholdMemberId();
+        String jim = getJimFullNameAndId();
         postWithData("childrenInNeedOfCare", "whoNeedsChildCare", jim);
 
         postWithData("jobSearch", "currentlyLookingForJob", "true");
-        String pam = "Pam Beesly " + getSecondHouseholdMemberId();
+        String pam = getPamFullNameAndId();
         postWithData("whoIsLookingForAJob", "whoIsLookingForAJob", List.of(jim, pam));
 
         String me = "Dwight Schrute applicant";
@@ -238,11 +239,6 @@ public class PdfIntegrationMockMvcTest {
         addJob(pam, "Pam's Employer");
 
         var ccap = submitAndDownloadCcap();
-        var ccapByteArray = mockMvc.perform(get("/download-ccap").session(session))
-                .andReturn()
-                .getResponse()
-                .getContentAsByteArray();
-        writeByteArrayToFile(ccapByteArray, "ccap.pdf");
         assertPdfFieldEquals("ADULT_REQUESTING_CHILDCARE_LOOKING_FOR_JOB_FULL_NAME_0", "Pam Beesly", ccap);
         assertPdfFieldEquals("ADULT_REQUESTING_CHILDCARE_GOING_TO_SCHOOL_FULL_NAME_0", "Dwight Schrute", ccap);
         assertPdfFieldEquals("ADULT_REQUESTING_CHILDCARE_WORKING_FULL_NAME_0", "Pam Beesly", ccap);
@@ -251,6 +247,17 @@ public class PdfIntegrationMockMvcTest {
         assertPdfFieldIsEmpty("ADULT_REQUESTING_CHILDCARE_GOING_TO_SCHOOL_FULL_NAME_1", ccap);
         assertPdfFieldIsEmpty("ADULT_REQUESTING_CHILDCARE_WORKING_FULL_NAME_1", ccap);
         assertPdfFieldIsEmpty("ADULT_REQUESTING_CHILDCARE_WORKING_EMPLOYERS_NAME_1", ccap);
+    }
+
+    @NotNull
+    private String getPamFullNameAndId() throws Exception {
+        String pam = "Pam Beesly " + getSecondHouseholdMemberId();
+        return pam;
+    }
+
+    @NotNull
+    private String getJimFullNameAndId() throws Exception {
+        return "Jim Halpert " + getFirstHouseholdMemberId();
     }
 
     private void addJob(String householdMemberFullNameAndId, String employersName) throws Exception {
