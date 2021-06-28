@@ -32,6 +32,7 @@ import java.util.*;
 
 import static java.util.stream.Collectors.toMap;
 import static org.codeforamerica.shiba.TestUtils.*;
+import static org.codeforamerica.shiba.Utils.writeByteArrayToFile;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
@@ -212,6 +213,62 @@ public class PdfIntegrationMockMvcTest {
         assertPdfFieldEquals("OTHER_SOURCES", "No", ccap);
     }
 
+    @Test
+    void shouldMapAdultsInHouseholdRequestingChildcareAssistance() throws Exception {
+        selectPrograms("CCAP");
+
+        addHouseholdMembers();
+
+        String jim = "Jim Halpert " + getFirstHouseholdMemberId();
+        postWithData("childrenInNeedOfCare", "whoNeedsChildCare", jim);
+
+        postWithData("jobSearch", "currentlyLookingForJob", "true");
+        String pam = "Pam Beesly " + getSecondHouseholdMemberId();
+        postWithData("whoIsLookingForAJob", "whoIsLookingForAJob", List.of(jim, pam));
+
+        String me = "Dwight Schrute applicant";
+        postWithData("whoIsGoingToSchool", "whoIsGoingToSchool", List.of(me, jim));
+
+        // Add a job for Jim
+        postWithQueryParam("incomeByJob", "option", "0");
+        addJob(jim, "Jim's Employer");
+
+        // Add a job for Pam
+        postWithQueryParam("jobBuilder", "option", "0");
+        addJob(pam, "Pam's Employer");
+
+        var ccap = submitAndDownloadCcap();
+        var ccapByteArray = mockMvc.perform(get("/download-ccap").session(session))
+                .andReturn()
+                .getResponse()
+                .getContentAsByteArray();
+        writeByteArrayToFile(ccapByteArray, "ccap.pdf");
+        assertPdfFieldEquals("ADULT_REQUESTING_CHILDCARE_LOOKING_FOR_JOB_FULL_NAME_0", "Pam Beesly", ccap);
+        assertPdfFieldEquals("ADULT_REQUESTING_CHILDCARE_GOING_TO_SCHOOL_FULL_NAME_0", "Dwight Schrute", ccap);
+        assertPdfFieldEquals("ADULT_REQUESTING_CHILDCARE_WORKING_FULL_NAME_0", "Pam Beesly", ccap);
+        assertPdfFieldEquals("ADULT_REQUESTING_CHILDCARE_WORKING_EMPLOYERS_NAME_0", "Pam's Employer", ccap);
+        assertPdfFieldIsEmpty("ADULT_REQUESTING_CHILDCARE_LOOKING_FOR_JOB_FULL_NAME_1", ccap);
+        assertPdfFieldIsEmpty("ADULT_REQUESTING_CHILDCARE_GOING_TO_SCHOOL_FULL_NAME_1", ccap);
+        assertPdfFieldIsEmpty("ADULT_REQUESTING_CHILDCARE_WORKING_FULL_NAME_1", ccap);
+        assertPdfFieldIsEmpty("ADULT_REQUESTING_CHILDCARE_WORKING_EMPLOYERS_NAME_1", ccap);
+    }
+
+    private void addJob(String householdMemberFullNameAndId, String employersName) throws Exception {
+        postWithData("householdSelectionForIncome", "whoseJobIsIt", householdMemberFullNameAndId);
+        postWithData("employersName", "employersName", employersName);
+        postWithData("selfEmployment", "selfEmployment", "false");
+        postWithData("paidByTheHour", "paidByTheHour", "false");
+        postWithData("payPeriod", "payPeriod", "EVERY_WEEK");
+        postWithData("incomePerPayPeriod", "incomePerPayPeriod", "1");
+    }
+
+    private void postWithQueryParam(String pageName, String queryParam, String value) throws Exception {
+        mockMvc.perform(
+                post("/pages/" + pageName).session(session).with(csrf()).queryParam(queryParam, value)
+        ).andExpect(redirectedUrl("/pages/" + pageName + "/navigation"));
+    }
+
+
     private void addHouseholdMembers() throws Exception {
         postWithData("personalInfo", Map.of(
                 "firstName", List.of("Dwight"),
@@ -232,11 +289,19 @@ public class PdfIntegrationMockMvcTest {
     }
 
     private String getFirstHouseholdMemberId() throws Exception {
+        return getHouseholdMemberIdAtIndex(0);
+    }
+
+    private String getSecondHouseholdMemberId() throws Exception {
+        return getHouseholdMemberIdAtIndex(1);
+    }
+
+    private String getHouseholdMemberIdAtIndex(int index) throws Exception {
         ModelAndView modelAndView = Objects.requireNonNull(
                 mockMvc.perform(get("/pages/childrenInNeedOfCare").session(session)).andReturn().getModelAndView());
         PageTemplate pageTemplate = (PageTemplate) modelAndView.getModel().get("page");
         ReferenceOptionsTemplate options = (ReferenceOptionsTemplate) pageTemplate.getInputs().get(0).getOptions();
-        return options.getSubworkflows().get("household").get(0).getId().toString();
+        return options.getSubworkflows().get("household").get(index).getId().toString();
     }
 
     private PDAcroForm submitAndDownloadCaf() throws Exception {
