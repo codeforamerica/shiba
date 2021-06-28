@@ -200,6 +200,21 @@ public class PdfIntegrationMockMvcTest {
         assertPdfFieldEquals("HAVE_MILLION_DOLLARS", "Yes", ccap);
     }
 
+    @Test
+    void shouldNotMapUnearnedIncomeCcapWhenNoneOfTheAboveIsSelected() throws Exception {
+        fillInRequiredPages();
+        postWithData("/pages/unearnedIncomeCcap", "unearnedIncomeCcap", "NO_UNEARNED_INCOME_CCAP_SELECTED");
+
+        var ccap = submitAndDownloadCcap();
+        assertPdfFieldEquals("BENEFITS", "No", ccap);
+        assertPdfFieldEquals("INSURANCE_PAYMENTS", "No", ccap);
+        assertPdfFieldEquals("CONTRACT_FOR_DEED", "No", ccap);
+        assertPdfFieldEquals("TRUST_MONEY", "No", ccap);
+        assertPdfFieldEquals("HEALTH_CARE_REIMBURSEMENT", "No", ccap);
+        assertPdfFieldEquals("INTEREST_DIVIDENDS", "No", ccap);
+        assertPdfFieldEquals("OTHER_SOURCES", "No", ccap);
+    }
+
     private void addHouseholdMembers() throws Exception {
         postWithData("/pages/personalInfo", Map.of(
                 "firstName", List.of("Dwight"),
@@ -251,6 +266,11 @@ public class PdfIntegrationMockMvcTest {
                 .getResponse()
                 .getContentAsByteArray();
         return PDDocument.load(ccapBytes).getDocumentCatalog().getAcroForm();
+    }
+
+    private void fillInRequiredPages() throws Exception {
+        postWithData("/pages/migrantFarmWorker", "migrantOrSeasonalFarmWorker", "false");
+        postWithData("/pages/utilities", "payForUtilities", "COOLING");
     }
 
     private void submitApplication() throws Exception {

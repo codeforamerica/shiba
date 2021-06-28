@@ -136,24 +136,6 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         }
 
         @Test
-        void shouldNotMapUnearnedIncomeCcapWhenNoneOfTheAboveIsSelected() {
-            fillInRequiredPages();
-            navigateTo("unearnedIncomeCcap");
-            testPage.enter("unearnedIncomeCcap", "None of the above");
-            testPage.clickContinue();
-
-            Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
-            PDAcroForm ccap = pdAcroForms.get(CCAP);
-            assertThat(getPdfFieldText(ccap, "BENEFITS")).isEqualTo("No");
-            assertThat(getPdfFieldText(ccap, "INSURANCE_PAYMENTS")).isEqualTo("No");
-            assertThat(getPdfFieldText(ccap, "CONTRACT_FOR_DEED")).isEqualTo("No");
-            assertThat(getPdfFieldText(ccap, "TRUST_MONEY")).isEqualTo("No");
-            assertThat(getPdfFieldText(ccap, "HEALTH_CARE_REIMBURSEMENT")).isEqualTo("No");
-            assertThat(getPdfFieldText(ccap, "INTEREST_DIVIDENDS")).isEqualTo("No");
-            assertThat(getPdfFieldText(ccap, "OTHER_SOURCES")).isEqualTo("No");
-        }
-
-        @Test
         void shouldMapRecognizedUtmSource() {
             navigateTo("languagePreferences?utm_source=" + CHILDCARE_WAITING_LIST_UTM_SOURCE);
             fillInRequiredPages();
