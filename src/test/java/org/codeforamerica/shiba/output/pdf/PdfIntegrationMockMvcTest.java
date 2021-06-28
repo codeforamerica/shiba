@@ -404,7 +404,6 @@ public class PdfIntegrationMockMvcTest {
             assertPdfFieldEquals("NON_SELF_EMPLOYMENT_EMPLOYEE_FULL_NAME_0", "Jim Halpert", ccap);
         }
 
-
         @Nested
         @Tag("pdf")
         class WithPersonalAndContactInfo {
