@@ -150,14 +150,23 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
 
             Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
 
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_LOOKING_FOR_JOB_FULL_NAME_0")).isEqualTo("Pam Beesly");
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_GOING_TO_SCHOOL_FULL_NAME_0")).isEqualTo("Dwight Schrute");
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_WORKING_FULL_NAME_0")).isEqualTo("Pam Beesly");
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_WORKING_EMPLOYERS_NAME_0")).isEqualTo("Pam's Employer");
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_LOOKING_FOR_JOB_FULL_NAME_1")).isEmpty();
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_GOING_TO_SCHOOL_FULL_NAME_1")).isEmpty();
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_WORKING_FULL_NAME_1")).isEmpty();
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_WORKING_EMPLOYERS_NAME_1")).isEmpty();
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_LOOKING_FOR_JOB_FULL_NAME_0"))
+                    .isEqualTo("Pam Beesly");
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_GOING_TO_SCHOOL_FULL_NAME_0"))
+                    .isEqualTo("Dwight Schrute");
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP),
+                                       "ADULT_REQUESTING_CHILDCARE_WORKING_FULL_NAME_0")).isEqualTo("Pam Beesly");
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP),
+                                       "ADULT_REQUESTING_CHILDCARE_WORKING_EMPLOYERS_NAME_0")).isEqualTo(
+                    "Pam's Employer");
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_LOOKING_FOR_JOB_FULL_NAME_1"))
+                    .isEmpty();
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "ADULT_REQUESTING_CHILDCARE_GOING_TO_SCHOOL_FULL_NAME_1"))
+                    .isEmpty();
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP),
+                                       "ADULT_REQUESTING_CHILDCARE_WORKING_FULL_NAME_1")).isEmpty();
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP),
+                                       "ADULT_REQUESTING_CHILDCARE_WORKING_EMPLOYERS_NAME_1")).isEmpty();
         }
 
         @Test
@@ -300,9 +309,15 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
             assertThat(pdAcroForms.get(CAF).getField("SELF_EMPLOYED").getValueAsString()).isEqualTo("No");
 
-            assertThat(pdAcroForms.get(CCAP).getField("NON_SELF_EMPLOYMENT_EMPLOYERS_NAME_0").getValueAsString()).isEqualTo("someEmployerName");
-            assertThat(pdAcroForms.get(CCAP).getField("NON_SELF_EMPLOYMENT_PAY_FREQUENCY_0").getValueAsString()).isEqualTo("Every week");
-            assertThat(pdAcroForms.get(CCAP).getField("NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0").getValueAsString()).isEqualTo("4.00");
+            assertThat(pdAcroForms.get(CCAP)
+                               .getField("NON_SELF_EMPLOYMENT_EMPLOYERS_NAME_0")
+                               .getValueAsString()).isEqualTo("someEmployerName");
+            assertThat(pdAcroForms.get(CCAP)
+                               .getField("NON_SELF_EMPLOYMENT_PAY_FREQUENCY_0")
+                               .getValueAsString()).isEqualTo("Every week");
+            assertThat(pdAcroForms.get(CCAP)
+                               .getField("NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0")
+                               .getValueAsString()).isEqualTo("4.00");
         }
 
         @Test
@@ -397,7 +412,8 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
                 Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
                 PDAcroForm pdAcroForm = pdAcroForms.get(CCAP);
                 assertThat(pdAcroForm.getField("COUNTY_INSTRUCTIONS").getValueAsString())
-                        .isEqualTo("This application was submitted. A caseworker at Hennepin County will help route your application to your county. For more support with your application, you can call Hennepin County at 612-596-1300.");
+                        .isEqualTo(
+                                "This application was submitted. A caseworker at Hennepin County will help route your application to your county. For more support with your application, you can call Hennepin County at 612-596-1300.");
             }
 
             @Test
@@ -526,7 +542,8 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             assertThat(getPdfFieldText(pdAcroForms.get(CAF), "MONEY_MADE_LAST_MONTH")).isEqualTo("123.00");
             assertThat(getPdfFieldText(pdAcroForms.get(CAF), "SNAP_EXPEDITED_ELIGIBILITY")).isEqualTo("SNAP");
 
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0")).isEqualTo("123.00");
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0")).isEqualTo(
+                    "123.00");
         }
 
         @Test
@@ -565,7 +582,8 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
             assertThat(getPdfFieldText(pdAcroForms.get(CAF), "MONEY_MADE_LAST_MONTH")).isEqualTo("123.00");
             assertThat(getPdfFieldText(pdAcroForms.get(CAF), "SNAP_EXPEDITED_ELIGIBILITY")).isEqualTo("SNAP");
 
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0")).isEqualTo("123.00");
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0")).isEqualTo(
+                    "123.00");
         }
 
         @Test
@@ -599,13 +617,16 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
         void shouldMapLivingWithFamilyAndFriendsDueToEconomicHardship() {
             fillInRequiredPages();
             navigateTo("livingSituation");
-            testPage.enter("livingSituation", "Temporarily staying with friends or family because I lost my housing or can no longer afford my own housing");
+            testPage.enter("livingSituation",
+                           "Temporarily staying with friends or family because I lost my housing or can no longer afford my own housing");
             testPage.clickContinue();
 
             Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
 
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "LIVING_SITUATION")).isEqualTo("TEMPORARILY_WITH_FRIENDS_OR_FAMILY");
-            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "LIVING_SITUATION")).isEqualTo("TEMPORARILY_WITH_FRIENDS_OR_FAMILY");
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "LIVING_SITUATION")).isEqualTo(
+                    "TEMPORARILY_WITH_FRIENDS_OR_FAMILY");
+            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "LIVING_SITUATION")).isEqualTo(
+                    "TEMPORARILY_WITH_FRIENDS_OR_FAMILY");
             assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "LIVING_WITH_FAMILY_OR_FRIENDS")).isEqualTo("Yes");
         }
 
@@ -618,8 +639,10 @@ public class PdfIntegrationTest extends AbstractBasePageTest {
 
             Map<Document, PDAcroForm> pdAcroForms = submitAndDownloadReceipt();
 
-            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "LIVING_SITUATION")).isEqualTo("TEMPORARILY_WITH_FRIENDS_OR_FAMILY");
-            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "LIVING_SITUATION")).isEqualTo("TEMPORARILY_WITH_FRIENDS_OR_FAMILY");
+            assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "LIVING_SITUATION")).isEqualTo(
+                    "TEMPORARILY_WITH_FRIENDS_OR_FAMILY");
+            assertThat(getPdfFieldText(pdAcroForms.get(CAF), "LIVING_SITUATION")).isEqualTo(
+                    "TEMPORARILY_WITH_FRIENDS_OR_FAMILY");
             assertThat(getPdfFieldText(pdAcroForms.get(CCAP), "LIVING_WITH_FAMILY_OR_FRIENDS")).isEqualTo("No");
         }
 
