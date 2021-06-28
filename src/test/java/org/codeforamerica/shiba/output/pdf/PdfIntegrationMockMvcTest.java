@@ -9,7 +9,6 @@ import org.codeforamerica.shiba.pages.config.PageTemplate;
 import org.codeforamerica.shiba.pages.config.ReferenceOptionsTemplate;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.enrichment.LocationClient;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -303,10 +302,6 @@ public class PdfIntegrationMockMvcTest {
         postWithData(postUrl, postUrl + "/navigation", Map.of(inputName, values));
     }
 
-    private String getUrlForPageName(String pageName) {
-        return "/pages/" + pageName;
-    }
-
     private void postWithData(String postUrl, String redirectUrl, Map<String, List<String>> params) throws Exception {
         Map<String, List<String>> paramsWithProperInputNames = params.entrySet().stream()
                 .collect(toMap(e -> e.getKey() + "[]", Map.Entry::getValue));
@@ -317,5 +312,9 @@ public class PdfIntegrationMockMvcTest {
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                         .params(new LinkedMultiValueMap<>(paramsWithProperInputNames))
         ).andExpect(redirectedUrl(redirectUrl));
+    }
+
+    private String getUrlForPageName(String pageName) {
+        return "/pages/" + pageName;
     }
 }
