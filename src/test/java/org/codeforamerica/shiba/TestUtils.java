@@ -19,7 +19,7 @@ public class TestUtils {
     public static String getAbsoluteFilepathString(String resourceFilename) {
         URL resource = TestUtils.class.getClassLoader().getResource(resourceFilename);
         if (resource != null) {
-        	return (new File(resource.getFile())).getAbsolutePath();
+            return (new File(resource.getFile())).getAbsolutePath();
         }
         return "";
     }
@@ -31,5 +31,10 @@ public class TestUtils {
     public static void assertPdfFieldEquals(String fieldName, String expectedVal, PDAcroForm pdf) {
         var pdfFieldText = pdf.getField(fieldName).getValueAsString();
         assertThat(pdfFieldText).isEqualTo(expectedVal);
+    }
+
+    public static void assertPdfFieldIsEmpty(String fieldName, PDAcroForm pdf) {
+        var pdfFieldText = pdf.getField(fieldName).getValueAsString();
+        assertThat(pdfFieldText).isEmpty();
     }
 }

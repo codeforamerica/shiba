@@ -35,6 +35,7 @@ import java.util.*;
 
 import static java.util.stream.Collectors.toMap;
 import static org.codeforamerica.shiba.TestUtils.assertPdfFieldEquals;
+import static org.codeforamerica.shiba.TestUtils.assertPdfFieldIsEmpty;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
@@ -141,11 +142,11 @@ public class PdfIntegrationMockMvcTest {
         assertPdfFieldEquals("CHILD_NEEDS_CHILDCARE_FULL_NAME_0", "Dwight Schrute", ccap);
         assertPdfFieldEquals("CHILD_NEEDS_CHILDCARE_FULL_NAME_1", "Jim Halpert", ccap);
         assertPdfFieldEquals("CHILD_FULL_NAME_0", "Dwight Schrute", ccap);
-        assertPdfFieldEquals("PARENT_NOT_LIVING_AT_HOME_0", "", ccap);
+        assertPdfFieldIsEmpty("PARENT_NOT_LIVING_AT_HOME_0", ccap);
         assertPdfFieldEquals("CHILD_FULL_NAME_1", "Jim Halpert", ccap);
         assertPdfFieldEquals("PARENT_NOT_LIVING_AT_HOME_1", "Jim's Parent", ccap);
-        assertPdfFieldEquals("CHILD_FULL_NAME_2", "", ccap);
-        assertPdfFieldEquals("PARENT_NOT_LIVING_AT_HOME_2", "", ccap);
+        assertPdfFieldIsEmpty("CHILD_FULL_NAME_2", ccap);
+        assertPdfFieldIsEmpty("PARENT_NOT_LIVING_AT_HOME_2", ccap);
     }
 
     private void addHouseholdMembers() throws Exception {
