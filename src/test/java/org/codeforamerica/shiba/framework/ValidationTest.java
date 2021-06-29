@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.openqa.selenium.By;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static java.util.Locale.ENGLISH;
@@ -157,6 +156,22 @@ public class ValidationTest extends AbstractFrameworkTest {
                                                                  "someCheckbox",
                                                                  "VALUE_1");
             assertThat(lastPage.getTitle()).isEqualTo(lastPageTitle);
+        }
+
+        @Test
+        void shouldNotTriggerValidation_whenConditionInputContainsValue() throws Exception {
+            var lastPage = postExpectingSuccessAndFollowRedirect("doesNotContainConditionPage",
+                                                                 "triggerInput",
+                                                                 "triggerValue");
+            assertThat(lastPage.getTitle()).isEqualTo(lastPageTitle);
+        }
+
+        @Test
+        void shouldTriggerValidation_whenConditionInputDoesNotContainValue() throws Exception {
+            postExpectingFailure("doesNotContainConditionPage",
+                                 "triggerInput",
+                                 "not trigger");
+            assertPageHasInputError("doesNotContainConditionPage", "conditionTest");
         }
     }
 

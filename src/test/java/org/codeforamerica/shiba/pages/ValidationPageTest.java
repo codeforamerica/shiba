@@ -83,39 +83,6 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
     @Tag("validation")
     class Condition {
         @Test
-        void shouldNotTriggerValidation_whenConditionInputValueIsSelected() {
-            driver.navigate().to(baseUrl + "/pages/firstPage");
-            driver.findElement(By.cssSelector("input[name='someInputName[]']")).sendKeys("do not trigger validation");
-            driver.findElement(By.tagName("button")).click();
-
-            assertThat(driver.getTitle()).isEqualTo(nextPageTitle);
-            driver.findElement(By.cssSelector("input[name='someCheckbox[]']")).click();
-            driver.findElement(By.tagName("button")).click();
-
-            assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
-        }
-
-        @Test
-        void shouldNotTriggerValidation_whenConditionInputContainsValue() {
-            navigateTo("doesNotContainConditionPage");
-
-            testPage.enter("triggerInput", "triggerValue");
-            testPage.clickContinue();
-
-            assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
-        }
-
-        @Test
-        void shouldTriggerValidation_whenConditionInputDoesNotContainValue() {
-            navigateTo("doesNotContainConditionPage");
-
-            testPage.enter("triggerInput", "not trigger");
-            testPage.clickContinue();
-
-            assertThat(testPage.hasInputError("conditionTest")).isTrue();
-        }
-
-        @Test
         void shouldTriggerValidation_whenConditionInputIsEmptyOrBlank() {
             navigateTo("emptyInputConditionPage");
 
