@@ -81,14 +81,6 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
     }
 
     @Test
-    void shouldStayOnThePage_whenValidationFails() {
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-        driver.findElement(By.tagName("button")).click();
-
-        assertThat(driver.getTitle()).isEqualTo(firstPageTitle);
-    }
-
-    @Test
     void shouldGoOnToNextPage_whenValidationPasses() {
         driver.navigate().to(baseUrl + "/pages/firstPage");
         driver.findElement(By.cssSelector("input[name='someInputName[]']")).sendKeys("something");
