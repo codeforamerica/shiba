@@ -1,20 +1,15 @@
 package org.codeforamerica.shiba.framework;
 
-import org.codeforamerica.shiba.AbstractShibaMockMvcTest;
-import org.codeforamerica.shiba.SessionScopedApplicationDataTestConfiguration;
-import org.codeforamerica.shiba.StaticMessageSourceConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.support.StaticMessageSource;
 import org.springframework.stereotype.Controller;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.time.Instant;
 
-import static java.util.Locale.ENGLISH;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -42,7 +37,6 @@ public class AbstractFrameworkTest extends AbstractStaticMessageSourceFrameworkT
     @BeforeEach
     protected void setUp() throws Exception {
         super.setUp();
-
         mockMvc.perform(get("/startTimerForTest").session(session)).andExpect(status().isOk()); // start timer
     }
 }
