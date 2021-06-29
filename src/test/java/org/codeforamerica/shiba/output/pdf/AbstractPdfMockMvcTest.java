@@ -46,7 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Tag("pdf")
 @AutoConfigureMockMvc
 @Import({SessionScopedApplicationDataTestConfiguration.class})
-public class AbstractPdfIntegrationMockMvcTest {
+public class AbstractPdfMockMvcTest {
     @MockBean
     protected Clock clock;
 
@@ -89,15 +89,18 @@ public class AbstractPdfIntegrationMockMvcTest {
         resetApplicationData(applicationData);
     }
 
-    @NotNull protected String getApplicantFullNameAndId() {
+    @NotNull
+    protected String getApplicantFullNameAndId() {
         return "Dwight Schrute applicant";
     }
 
-    @NotNull protected String getPamFullNameAndId() throws Exception {
+    @NotNull
+    protected String getPamFullNameAndId() throws Exception {
         return "Pam Beesly " + getSecondHouseholdMemberId();
     }
 
-    @NotNull protected String getJimFullNameAndId() throws Exception {
+    @NotNull
+    protected String getJimFullNameAndId() throws Exception {
         return "Jim Halpert " + getFirstHouseholdMemberId();
     }
 
@@ -212,8 +215,8 @@ public class AbstractPdfIntegrationMockMvcTest {
 
     protected void submitApplication() throws Exception {
         postWithData("/submit",
-                "/pages/signThisApplication/navigation",
-                Map.of("applicantSignature", List.of("Human McPerson")));
+                     "/pages/signThisApplication/navigation",
+                     Map.of("applicantSignature", List.of("Human McPerson")));
     }
 
     protected void selectPrograms(String... programs) throws Exception {

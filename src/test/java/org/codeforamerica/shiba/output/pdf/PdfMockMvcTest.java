@@ -17,7 +17,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 
-public class PdfIntegrationMockMvcTest extends AbstractPdfIntegrationMockMvcTest {
+public class PdfMockMvcTest extends AbstractPdfMockMvcTest {
 
     @Test
     void shouldAnswerEnergyAssistanceQuestion() throws Exception {
@@ -367,7 +367,8 @@ public class PdfIntegrationMockMvcTest extends AbstractPdfIntegrationMockMvcTest
         }
 
         @Test
-        void shouldMapLivingSituationToUnknownIfNoneOfTheseIsSelectedAndShouldNotMapTemporarilyWithFriendsOrFamilyYesNo() throws Exception {
+        void shouldMapLivingSituationToUnknownIfNoneOfTheseIsSelectedAndShouldNotMapTemporarilyWithFriendsOrFamilyYesNo() throws
+                Exception {
             fillInRequiredPages();
 
             postWithData("livingSituation", "livingSituation", "UNKNOWN");
@@ -396,18 +397,20 @@ public class PdfIntegrationMockMvcTest extends AbstractPdfIntegrationMockMvcTest
         @Test
         void shouldMapLivingWithFamilyAndFriendsDueToEconomicHardship() throws Exception {
             fillInRequiredPages();
-            postWithData("livingSituation", "livingSituation", "TEMPORARILY_WITH_FRIENDS_OR_FAMILY_DUE_TO_ECONOMIC_HARDSHIP");
+            postWithData("livingSituation",
+                         "livingSituation",
+                         "TEMPORARILY_WITH_FRIENDS_OR_FAMILY_DUE_TO_ECONOMIC_HARDSHIP");
 
             var caf = submitAndDownloadCaf();
             var ccap = downloadCcap();
 
             assertPdfFieldEquals("LIVING_SITUATION", "TEMPORARILY_WITH_FRIENDS_OR_FAMILY", ccap);
-            assertPdfFieldEquals("LIVING_SITUATION","TEMPORARILY_WITH_FRIENDS_OR_FAMILY", caf);
+            assertPdfFieldEquals("LIVING_SITUATION", "TEMPORARILY_WITH_FRIENDS_OR_FAMILY", caf);
             assertPdfFieldEquals("LIVING_WITH_FAMILY_OR_FRIENDS", "Yes", ccap);
         }
 
         @Test
-        void ShouldMapNoforTemporarilyWithFriendsOrFamilyDueToEconomicHardship() throws Exception {
+        void shouldMapNoforTemporarilyWithFriendsOrFamilyDueToEconomicHardship() throws Exception {
             fillInRequiredPages();
             postWithData("livingSituation", "livingSituation", "TEMPORARILY_WITH_FRIENDS_OR_FAMILY_OTHER_REASONS");
 
@@ -415,7 +418,7 @@ public class PdfIntegrationMockMvcTest extends AbstractPdfIntegrationMockMvcTest
             var ccap = downloadCcap();
 
             assertPdfFieldEquals("LIVING_SITUATION", "TEMPORARILY_WITH_FRIENDS_OR_FAMILY", ccap);
-            assertPdfFieldEquals("LIVING_SITUATION","TEMPORARILY_WITH_FRIENDS_OR_FAMILY", caf);
+            assertPdfFieldEquals("LIVING_SITUATION", "TEMPORARILY_WITH_FRIENDS_OR_FAMILY", caf);
             assertPdfFieldEquals("LIVING_WITH_FAMILY_OR_FRIENDS", "No", ccap);
         }
 
@@ -493,7 +496,6 @@ public class PdfIntegrationMockMvcTest extends AbstractPdfIntegrationMockMvcTest
             @Test
             void shouldMapEnrichedHomeAddressToMailingAddressIfSameMailingAddressIsTrueAndUseEnrichedAddressIsTrue() throws
                     Exception {
-
                 String enrichedStreetValue = "testStreet";
                 String enrichedCityValue = "testCity";
                 String enrichedZipCodeValue = "testZipCode";
