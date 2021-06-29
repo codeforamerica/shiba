@@ -79,17 +79,6 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         staticMessageSource.addMessage("county-b-key", Locale.ENGLISH, countyB);
     }
 
-    @Test
-    void shouldStayOnPage_whenAnyValidationHasFailed() {
-        navigateTo("pageWithInputWithMultipleValidations");
-
-        testPage.enter("multipleValidations", "not money");
-        testPage.clickContinue();
-
-        assertThat(driver.getTitle()).isEqualTo(multipleValidationsPageTitle);
-        assertThat(testPage.getInputError("multipleValidations").getText()).isEqualTo(moneyErrorMessageKey);
-    }
-
     @Nested
     @Tag("validation")
     class Condition {
@@ -164,19 +153,6 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
     @Nested
     @Tag("validation")
     class SpecificValidations {
-        @ParameterizedTest
-        @ValueSource(strings = {
-                "",
-                "   "
-        })
-        void shouldFailValidationForNOT_BLANKWhenThereIsEmptyOrBlankInput(String textInputValue) {
-            driver.navigate().to(baseUrl + "/pages/notBlankPage");
-            testPage.enter("notBlankInput", textInputValue);
-
-            testPage.clickContinue();
-            assertThat(testPage.getTitle()).isEqualTo(notBlankPageTitle);
-        }
-
         @Test
         void shouldPassValidationForNOT_BLANKWhenThereIsAtLeast1CharacterInput() {
             driver.navigate().to(baseUrl + "/pages/notBlankPage");
