@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static java.util.Locale.ENGLISH;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -98,5 +99,13 @@ public class ValidationTest extends AbstractFrameworkTest {
         getPage("firstPage").andExpect(pageDoesNotHaveInputError());
         postWithoutData("firstPage").andExpect(redirectedUrl("/pages/firstPage"));
         getPage("firstPage").andExpect(responseHtmlContainsString(errorMessage));
+    }
+
+    @Test
+    void shouldNotTriggerValidation_whenConditionIsFalse() throws Exception {
+        getPage("firstPage").andExpect(pageDoesNotHaveInputError());
+        postWithData("firstPage", "someInputName", "do not trigger validation");
+        getNavigationPageAndExpectRedirect("firstPage", "nextPage");
+        getPage("nextPage").andExpect(responseHtmlContainsString(nextPageTitle));
     }
 }

@@ -280,4 +280,8 @@ public class AbstractShibaMockMvcTest {
     protected ResultActions getPage(String pageName) throws Exception {
         return mockMvc.perform(get("/pages/" + pageName));
     }
+
+    protected void getNavigationPageAndExpectRedirect(String sourcePageName, String redirectPageName) throws Exception {
+        getPage(sourcePageName + "/navigation").andExpect(redirectedUrl("/pages/" + redirectPageName));
+    }
 }

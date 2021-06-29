@@ -80,15 +80,6 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
     }
 
     @Test
-    void shouldNotTriggerValidation_whenConditionIsFalse() {
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-        driver.findElement(By.cssSelector("input[name='someInputName[]']")).sendKeys("do not trigger validation");
-        driver.findElement(By.tagName("button")).click();
-
-        assertThat(driver.getTitle()).isEqualTo(nextPageTitle);
-    }
-
-    @Test
     void shouldTriggerValidation_whenConditionIsTrue() {
         driver.navigate().to(baseUrl + "/pages/firstPage");
         driver.findElement(By.cssSelector("input[name='someInputName[]']")).sendKeys("valueToTriggerCondition");
