@@ -8,12 +8,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
-import java.util.Map;
-
 import static java.util.Locale.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -84,8 +80,7 @@ public class ValidationTest extends AbstractFrameworkTest {
 
     @Test
     void shouldGoOnToNextPage_whenValidationPasses() throws Exception {
-        postExpectingSuccess("firstPage", "someInputName", "something").andExpect(status().is3xxRedirection());
-        var page = getNextPage("firstPage");
+        var page = postExpectingSuccessAndFollowRedirect("firstPage", "someInputName", "something");
         assertThat(page.getTitle()).isEqualTo(nextPageTitle);
     }
 
@@ -117,22 +112,15 @@ public class ValidationTest extends AbstractFrameworkTest {
 
     @Test
     void shouldNotTriggerValidation_whenConditionIsFalse() throws Exception {
-        assertPageDoesNotHaveInputError("firstPage", "someInputName");
-
-        postExpectingSuccess("firstPage", "someInputName", "do not trigger validation");
-        var page = getNextPage("firstPage");
+        var page = postExpectingSuccessAndFollowRedirect("firstPage", "someInputName", "do not trigger validation");
         assertThat(page.getTitle()).isEqualTo(nextPageTitle);
     }
 
     @Test
     void shouldTriggerValidation_whenConditionIsTrue() throws Exception {
         assertPageDoesNotHaveInputError("firstPage", "someInputName");
-        postExpectingSuccess("/pages/firstPage",
-                             "/pages/firstPage",
-                             Map.of("someInputName", List.of("valueToTriggerCondition")));
-
-        var page = new FormPage(getPage("firstPage").andReturn());
-        assertTrue(page.hasInputError("conditionalValidationWhenValueEquals"));
+        postExpectingFailure("firstPage", "someInputName", "valueToTriggerCondition");
+        assertPageHasInputError("firstPage", "conditionalValidationWhenValueEquals");
     }
 
     @Test
