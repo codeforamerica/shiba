@@ -24,8 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(properties = {"pagesConfig=pages-config/test-validation.yaml"}, classes = {StaticMessageSourceConfiguration.class})
 public class ValidationTest extends AbstractShibaMockMvcTest {
     @Autowired
-    private MessageSource messageSource;
-
     protected StaticMessageSource staticMessageSource;
 
     private final String errorMessage = "error message";
@@ -71,7 +69,6 @@ public class ValidationTest extends AbstractShibaMockMvcTest {
     @BeforeEach
     protected void setUp() throws Exception {
         super.setUp();
-        staticMessageSource = (StaticMessageSource) messageSource;
         staticMessageSource.addMessage("general.go-back", ENGLISH, "Go Back");
         staticMessageSource.addMessage("general.continue", ENGLISH, "Continue");
         staticMessageSource.addMessage("general.inputs.yes", ENGLISH, "Yes");
