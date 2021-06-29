@@ -41,7 +41,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = MOCK)
@@ -235,9 +234,9 @@ public class AbstractShibaMockMvcTest {
         return postWithData(postUrl, postUrl + "/navigation", Map.of(inputName, values));
     }
 
-    protected ResultActions postWithData(String postUrl, String redirectUrl, Map<String, List<String>> params) throws Exception {
-        Map<String, List<String>> paramsWithProperInputNames = params.entrySet().stream()
-                .collect(toMap(e -> e.getKey() + "[]", Map.Entry::getValue));
+    protected ResultActions postWithData(String postUrl, String redirectUrl, Map<String, List<String>> params) throws
+            Exception {
+        Map<String, List<String>> paramsWithProperInputNames = fixInputNamesForParams(params);
         return mockMvc.perform(
                 post(postUrl)
                         .session(session)
@@ -245,6 +244,28 @@ public class AbstractShibaMockMvcTest {
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                         .params(new LinkedMultiValueMap<>(paramsWithProperInputNames))
         ).andExpect(redirectedUrl(redirectUrl));
+    }
+
+    protected ResultActions postExpectingFailure(String pageName, String inputName, String value) throws Exception {
+        return postExpectingFailure(pageName, Map.of(inputName, List.of(value)));
+    }
+
+    protected ResultActions postExpectingFailure(String pageName, Map<String, List<String>> params) throws Exception {
+        Map<String, List<String>> paramsWithProperInputNames = fixInputNamesForParams(params);
+        String postUrl = getUrlForPageName(pageName);
+        return mockMvc.perform(
+                post(postUrl)
+                        .session(session)
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                        .params(new LinkedMultiValueMap<>(paramsWithProperInputNames))
+        ).andExpect(redirectedUrl(postUrl));
+    }
+
+    @NotNull
+    private Map<String, List<String>> fixInputNamesForParams(Map<String, List<String>> params) {
+        return params.entrySet().stream()
+                .collect(toMap(e -> e.getKey() + "[]", Map.Entry::getValue));
     }
 
     protected ResultActions postWithoutData(String pageName) throws Exception {
@@ -261,6 +282,7 @@ public class AbstractShibaMockMvcTest {
         return "/pages/" + pageName;
     }
 
+    // TODO remove
     @NotNull
     protected ResultMatcher pageHasInputError() {
         return content().string(containsString("text--error"));
@@ -269,11 +291,6 @@ public class AbstractShibaMockMvcTest {
     @NotNull
     protected ResultMatcher pageDoesNotHaveInputError() {
         return content().string(not(containsString("text--error")));
-    }
-
-    @NotNull
-    protected ResultMatcher responseHtmlContainsString(String s) {
-        return content().string(containsString(s));
     }
 
     @NotNull

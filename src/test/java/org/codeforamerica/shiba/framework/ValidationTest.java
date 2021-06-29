@@ -3,16 +3,13 @@ package org.codeforamerica.shiba.framework;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.List;
 import java.util.Map;
 
 import static java.util.Locale.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -124,9 +121,20 @@ public class ValidationTest extends AbstractFrameworkTest {
     @Test
     void shouldTriggerValidation_whenConditionIsTrue() throws Exception {
         getPage("firstPage").andExpect(pageDoesNotHaveInputError());
-        postWithData("/pages/firstPage", "/pages/firstPage", Map.of("someInputName", List.of("valueToTriggerCondition")));
+        postWithData("/pages/firstPage",
+                     "/pages/firstPage",
+                     Map.of("someInputName", List.of("valueToTriggerCondition")));
 
         var page = new FormPage(getPage("firstPage").andReturn());
         assertTrue(page.hasInputError("conditionalValidationWhenValueEquals"));
+    }
+
+    @Test
+    void shouldStayOnPage_whenAnyValidationHasFailed() throws Exception {
+        postExpectingFailure("pageWithInputWithMultipleValidations", "multipleValidations", "not money");
+
+        var page = new FormPage(getPage("pageWithInputWithMultipleValidations"));
+        assertThat(page.getTitle()).isEqualTo(multipleValidationsPageTitle);
+        assertThat(page.getInputError("multipleValidations").text()).isEqualTo(moneyErrorMessageKey);
     }
 }
