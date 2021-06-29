@@ -2618,15 +2618,7 @@ workflow:
         condition:
           input: isHomeless
           value: "true"
-      - pageName: verifyHomeAddress2
-  verifyHomeAddress2:
-    pageConfiguration: *homeAddressValidation
-    skipCondition: *isHomeless?
-    datasources:
-      - pageName: homeAddress
-    nextPages:
       - pageName: mailingAddress2
-      - pageName: homeAddress2
   whereToSendMail:
     pageConfiguration: *whereToSendMail
     subtleLinkTargetPage: cityAndZip
@@ -2641,14 +2633,33 @@ workflow:
     pageConfiguration: *mailingAddress2
     enrichment: mailingAddressEnrichment
     nextPages:
-      - pageName: verifyMailingAddress2
+      - pageName: verifyHomeAddress2
     datasources:
       - pageName: homeAddress
+      - pageName: mailingAddress
+  verifyHomeAddress2:
+    pageConfiguration: *homeAddressValidation
+    skipCondition:
+      logicalOperator: OR
+      conditions:
+        - <<: *isHomeless?
+          matcher: CONTAINS
+        - pageName: mailingAddress
+          input: sameMailingAddress
+          matcher: DOES_NOT_CONTAIN
+          value: "true"
+    datasources:
+      - pageName: homeAddress
+      - pageName: mailingAddress
+    nextPages:
+      - pageName: verifyMailingAddress2
+      - pageName: homeAddress2
   verifyMailingAddress2:
     pageConfiguration: *mailingAddressValidation
     skipCondition:
       pageName: mailingAddress
       input: sameMailingAddress
+      matcher: CONTAINS
       value: "true"
     datasources:
       - pageName: mailingAddress

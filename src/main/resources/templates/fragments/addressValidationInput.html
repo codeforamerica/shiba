@@ -2,7 +2,7 @@
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="addressValidationInput (input, data)"
           th:with="formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)},
-                   addressData=${pageDatasources.values()[0]},
+                   addressData=${page.name.contains('home') ? pageDatasources.get('homeAddress') : pageDatasources.get('mailingAddress')},
                    foundEnrichedAddress=${addressData.containsKey('enrichedStreetAddress')}"
 >
     <div class="grid__item spacing-above-35 spacing-below-35">
