@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba.output.pdf;
+package org.codeforamerica.shiba;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
@@ -43,10 +43,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = MOCK)
-@Tag("pdf")
 @AutoConfigureMockMvc
 @Import({SessionScopedApplicationDataTestConfiguration.class})
-public class AbstractPdfMockMvcTest {
+public class AbstractShibaMockMvcTest {
     @MockBean
     protected Clock clock;
 

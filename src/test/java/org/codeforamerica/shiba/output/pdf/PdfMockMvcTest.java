@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output.pdf;
 
+import org.codeforamerica.shiba.AbstractShibaMockMvcTest;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -16,8 +17,8 @@ import static org.codeforamerica.shiba.output.caf.CoverPageInputsMapper.CHILDCAR
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-
-public class PdfMockMvcTest extends AbstractPdfMockMvcTest {
+@Tag("pdf")
+public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
     @Test
     void shouldAnswerEnergyAssistanceQuestion() throws Exception {
