@@ -35,6 +35,8 @@ import static java.util.stream.Collectors.toMap;
 import static org.codeforamerica.shiba.TestUtils.resetApplicationData;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
@@ -283,15 +285,14 @@ public class AbstractShibaMockMvcTest {
         return "/pages/" + pageName;
     }
 
-    // TODO remove
-    @NotNull
-    protected ResultMatcher pageHasInputError() {
-        return content().string(containsString("text--error"));
+    protected void assertPageHasInputError(String pageName, String inputName) throws Exception {
+        var page = new FormPage(getPage(pageName));
+        assertTrue(page.hasInputError(inputName));
     }
 
-    @NotNull
-    protected ResultMatcher pageDoesNotHaveInputError() {
-        return content().string(not(containsString("text--error")));
+    protected void assertPageDoesNotHaveInputError(String pageName, String inputName) throws Exception {
+        var page = new FormPage(getPage(pageName));
+        assertFalse(page.hasInputError(inputName));
     }
 
     @NotNull

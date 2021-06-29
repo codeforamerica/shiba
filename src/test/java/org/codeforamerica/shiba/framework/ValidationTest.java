@@ -13,6 +13,7 @@ import java.util.Map;
 
 import static java.util.Locale.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -91,21 +92,24 @@ public class ValidationTest extends AbstractFrameworkTest {
 
     @Test
     void shouldClearValidationError_afterErrorHasBeenFixed() throws Exception {
-        // Submit the page without required fields filled out
-        getPage("firstPage").andExpect(pageDoesNotHaveInputError());
-        postWithoutData("firstPage").andExpect(redirectedUrl("/pages/firstPage"));
+        var pageName = "firstPage";
+        var inputName = "someInputName";
+
+        // Submit the page without required fields filled out, should be kept on current page
+        assertPageDoesNotHaveInputError(pageName, inputName);
+        postWithoutData(pageName).andExpect(redirectedUrl("/pages/" + pageName));
 
         // Submit with required fields filled out this time
-        getPage("firstPage").andExpect(pageHasInputError());
-        postExpectingSuccess("firstPage", "someInputName", "not blank");
+        assertPageHasInputError(pageName, inputName);
+        postExpectingSuccess(pageName, inputName, "not blank");
 
         // When I hit the back button, no input error should be displayed
-        getPage("firstPage").andExpect(pageDoesNotHaveInputError());
+        assertPageDoesNotHaveInputError(pageName, inputName);
     }
 
     @Test
     void shouldDisplayErrorMessageWhenValidationFailed() throws Exception {
-        getPage("firstPage").andExpect(pageDoesNotHaveInputError());
+        assertPageDoesNotHaveInputError("firstPage", "someInputName");
         postWithoutData("firstPage").andExpect(redirectedUrl("/pages/firstPage"));
 
         var page = new FormPage(getPage("firstPage"));
@@ -114,7 +118,8 @@ public class ValidationTest extends AbstractFrameworkTest {
 
     @Test
     void shouldNotTriggerValidation_whenConditionIsFalse() throws Exception {
-        getPage("firstPage").andExpect(pageDoesNotHaveInputError());
+        assertPageDoesNotHaveInputError("firstPage", "someInputName");
+
         postExpectingSuccess("firstPage", "someInputName", "do not trigger validation");
         var page = getNextPage("firstPage");
         assertThat(page.getTitle()).isEqualTo(nextPageTitle);
@@ -122,7 +127,7 @@ public class ValidationTest extends AbstractFrameworkTest {
 
     @Test
     void shouldTriggerValidation_whenConditionIsTrue() throws Exception {
-        getPage("firstPage").andExpect(pageDoesNotHaveInputError());
+        assertPageDoesNotHaveInputError("firstPage", "someInputName");
         postExpectingSuccess("/pages/firstPage",
                              "/pages/firstPage",
                              Map.of("someInputName", List.of("valueToTriggerCondition")));
