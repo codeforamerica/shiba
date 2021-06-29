@@ -146,6 +146,18 @@ public class ValidationTest extends AbstractFrameworkTest {
             postWithoutData("nextPage").andExpect(redirectedUrl("/pages/nextPage"));
             assertPageHasInputError("nextPage", "conditionalValidationWhenValueIsNoneSelected");
         }
+
+        @Test
+        void shouldNotTriggerValidation_whenConditionInputValueIsSelected() throws Exception {
+            var nextPage = postExpectingSuccessAndFollowRedirect("firstPage",
+                                                                 "someInputName",
+                                                                 "do not trigger validation");
+            assertThat(nextPage.getTitle()).isEqualTo(nextPageTitle);
+            var lastPage = postExpectingSuccessAndFollowRedirect("nextPage",
+                                                                 "someCheckbox",
+                                                                 "VALUE_1");
+            assertThat(lastPage.getTitle()).isEqualTo(lastPageTitle);
+        }
     }
 
     @Nested
