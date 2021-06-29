@@ -496,6 +496,9 @@ pageDefinitions:
     pageTitle: home-address.title
     contextFragment: addressContextFragment
     inputs:
+      - name: sameMailingAddress
+        type: HIDDEN
+        defaultValue: placeholder
       - name: isHomeless
         type: CUSTOM
         customInputFragment: addressInputFragment
