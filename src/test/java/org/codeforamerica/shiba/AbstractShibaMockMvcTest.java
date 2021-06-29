@@ -59,12 +59,12 @@ public class AbstractShibaMockMvcTest {
     protected ApplicationData applicationData;
 
     @Autowired
-    private MockMvc mockMvc;
+    protected MockMvc mockMvc;
 
-    private MockHttpSession session;
+    protected MockHttpSession session;
 
     @BeforeEach
-    void setUp() throws Exception {
+    protected void setUp() throws Exception {
         session = new MockHttpSession();
 
         when(clock.instant()).thenReturn(Instant.now());
@@ -73,14 +73,6 @@ public class AbstractShibaMockMvcTest {
         when(featureFlagConfiguration.get("submit-via-email")).thenReturn(FeatureFlag.OFF);
         when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.OFF);
         when(featureFlagConfiguration.get("county-anoka")).thenReturn(FeatureFlag.OFF);
-
-        mockMvc.perform(get("/pages/languagePreferences").session(session)); // start timer
-        postWithData("languagePreferences", Map.of(
-                "writtenLanguage", List.of("ENGLISH"),
-                "spokenLanguage", List.of("ENGLISH"))
-        );
-
-        postWithData("addHouseholdMembers", "addHouseholdMembers", "false");
     }
 
     @AfterEach

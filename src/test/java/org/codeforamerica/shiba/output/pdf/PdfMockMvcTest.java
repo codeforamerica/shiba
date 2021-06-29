@@ -16,9 +16,22 @@ import static org.codeforamerica.shiba.TestUtils.assertPdfFieldIsEmpty;
 import static org.codeforamerica.shiba.output.caf.CoverPageInputsMapper.CHILDCARE_WAITING_LIST_UTM_SOURCE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @Tag("pdf")
 public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
+    @Override
+    @BeforeEach
+    protected void setUp() throws Exception {
+        super.setUp();
+        mockMvc.perform(get("/pages/languagePreferences").session(session)); // start timer
+        postWithData("languagePreferences", Map.of(
+                "writtenLanguage", List.of("ENGLISH"),
+                "spokenLanguage", List.of("ENGLISH"))
+        );
+
+        postWithData("addHouseholdMembers", "addHouseholdMembers", "false");
+    }
 
     @Test
     void shouldAnswerEnergyAssistanceQuestion() throws Exception {
