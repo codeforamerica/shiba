@@ -122,4 +122,9 @@ public class ValidationTest extends AbstractShibaMockMvcTest {
     void shouldStayOnThePage_whenValidationFails() throws Exception {
         postWithoutData("firstPage").andExpect(redirectedUrl("/pages/firstPage"));
     }
+
+    @Test
+    void shouldGoOnToNextPage_whenValidationPasses() throws Exception {
+        postWithData("firstPage", "someInputName", "something").andExpect(status().is3xxRedirection());
+    }
 }

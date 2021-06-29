@@ -214,28 +214,28 @@ public class AbstractShibaMockMvcTest {
     }
 
     // Post to a page with an arbitrary number of multi-value inputs
-    protected void postWithData(String pageName, Map<String, List<String>> params) throws Exception {
+    protected ResultActions postWithData(String pageName, Map<String, List<String>> params) throws Exception {
         String postUrl = getUrlForPageName(pageName);
-        postWithData(postUrl, postUrl + "/navigation", params);
+        return postWithData(postUrl, postUrl + "/navigation", params);
     }
 
     // Post to a page with a single input that only accepts a single value
-    protected void postWithData(String pageName, String inputName, String value) throws Exception {
+    protected ResultActions postWithData(String pageName, String inputName, String value) throws Exception {
         String postUrl = getUrlForPageName(pageName);
         var params = Map.of(inputName, List.of(value));
-        postWithData(postUrl, postUrl + "/navigation", params);
+        return postWithData(postUrl, postUrl + "/navigation", params);
     }
 
     // Post to a page with a single input that accepts multiple values
-    protected void postWithData(String pageName, String inputName, List<String> values) throws Exception {
+    protected ResultActions postWithData(String pageName, String inputName, List<String> values) throws Exception {
         String postUrl = getUrlForPageName(pageName);
-        postWithData(postUrl, postUrl + "/navigation", Map.of(inputName, values));
+        return postWithData(postUrl, postUrl + "/navigation", Map.of(inputName, values));
     }
 
-    protected void postWithData(String postUrl, String redirectUrl, Map<String, List<String>> params) throws Exception {
+    protected ResultActions postWithData(String postUrl, String redirectUrl, Map<String, List<String>> params) throws Exception {
         Map<String, List<String>> paramsWithProperInputNames = params.entrySet().stream()
                 .collect(toMap(e -> e.getKey() + "[]", Map.Entry::getValue));
-        mockMvc.perform(
+        return mockMvc.perform(
                 post(postUrl)
                         .session(session)
                         .with(csrf())
