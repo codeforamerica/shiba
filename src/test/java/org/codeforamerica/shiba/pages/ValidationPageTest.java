@@ -83,19 +83,6 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
     @Tag("validation")
     class Condition {
         @Test
-        void shouldTriggerValidation_whenConditionInputValueIsNoneSelected() {
-            driver.navigate().to(baseUrl + "/pages/firstPage");
-            driver.findElement(By.cssSelector("input[name='someInputName[]']")).sendKeys("do not trigger validation");
-            driver.findElement(By.tagName("button")).click();
-
-            assertThat(driver.getTitle()).isEqualTo(nextPageTitle);
-
-            driver.findElement(By.tagName("button")).click();
-
-            assertThat(testPage.getInputError("conditionalValidationWhenValueIsNoneSelected")).isNotNull();
-        }
-
-        @Test
         void shouldNotTriggerValidation_whenConditionInputValueIsSelected() {
             driver.navigate().to(baseUrl + "/pages/firstPage");
             driver.findElement(By.cssSelector("input[name='someInputName[]']")).sendKeys("do not trigger validation");

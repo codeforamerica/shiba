@@ -12,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static java.util.Locale.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Tag("validation")
 @SpringBootTest(properties = {"pagesConfig=pages-config/test-validation.yaml"})
@@ -131,6 +130,22 @@ public class ValidationTest extends AbstractFrameworkTest {
         var page = new FormPage(getPage("pageWithInputWithMultipleValidations"));
         assertThat(page.getTitle()).isEqualTo(multipleValidationsPageTitle);
         assertThat(page.getInputError("multipleValidations").text()).isEqualTo(moneyErrorMessageKey);
+    }
+
+
+    @Nested
+    @Tag("validation")
+    class Condition {
+        @Test
+        void shouldTriggerValidation_whenConditionInputValueIsNoneSelected() throws Exception {
+            var nextPage = postExpectingSuccessAndFollowRedirect("firstPage",
+                                                                 "someInputName",
+                                                                 "do not trigger validation");
+            assertThat(nextPage.getTitle()).isEqualTo(nextPageTitle);
+
+            postWithoutData("nextPage").andExpect(redirectedUrl("/pages/nextPage"));
+            assertPageHasInputError("nextPage", "conditionalValidationWhenValueIsNoneSelected");
+        }
     }
 
     @Nested
