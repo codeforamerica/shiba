@@ -85,7 +85,8 @@ public class ValidationTest extends AbstractFrameworkTest {
     @Test
     void shouldGoOnToNextPage_whenValidationPasses() throws Exception {
         postWithData("firstPage", "someInputName", "something").andExpect(status().is3xxRedirection());
-        getNavigationPageAndExpectRedirect("firstPage", "nextPage");
+        var page = getNextPage("firstPage");
+        assertThat(page.getTitle()).isEqualTo(nextPageTitle);
     }
 
     @Test
@@ -115,9 +116,7 @@ public class ValidationTest extends AbstractFrameworkTest {
     void shouldNotTriggerValidation_whenConditionIsFalse() throws Exception {
         getPage("firstPage").andExpect(pageDoesNotHaveInputError());
         postWithData("firstPage", "someInputName", "do not trigger validation");
-        getNavigationPageAndExpectRedirect("firstPage", "nextPage");
-
-        var page = new FormPage(getPage("nextPage"));
+        var page = getNextPage("firstPage");
         assertThat(page.getTitle()).isEqualTo(nextPageTitle);
     }
 
@@ -153,6 +152,13 @@ public class ValidationTest extends AbstractFrameworkTest {
             postExpectingFailure("notBlankPage", "notBlankInput", textInputValue);
             var page = new FormPage(getPage("notBlankPage"));
             assertTrue(page.hasInputError("notBlankInput"));
+        }
+
+        @Test
+        void shouldPassValidationForNOT_BLANKWhenThereIsAtLeast1CharacterInput() throws Exception {
+            postWithData("notBlankPage", "notBlankInput", "something");
+            var page = getNextPage("notBlankPage");
+            assertThat(page.getTitle()).isEqualTo(lastPageTitle);
         }
     }
 }

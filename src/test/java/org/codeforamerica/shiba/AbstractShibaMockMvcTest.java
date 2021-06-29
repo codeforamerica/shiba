@@ -2,6 +2,7 @@ package org.codeforamerica.shiba;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
+import org.codeforamerica.shiba.framework.FormPage;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.config.PageTemplate;
@@ -295,10 +296,22 @@ public class AbstractShibaMockMvcTest {
 
     @NotNull
     protected ResultActions getPage(String pageName) throws Exception {
-        return mockMvc.perform(get("/pages/" + pageName));
+        return mockMvc.perform(get("/pages/" + pageName).session(session));
     }
 
-    protected void getNavigationPageAndExpectRedirect(String sourcePageName, String redirectPageName) throws Exception {
-        getPage(sourcePageName + "/navigation").andExpect(redirectedUrl("/pages/" + redirectPageName));
+    /**
+     * Accepts the page you are on and follows the redirects to get the next page
+     *
+     * @param currentPageName the page
+     * @return a form page that can be asserted against
+     */
+    protected FormPage getNextPage(String currentPageName) throws Exception {
+        String redirectedUrl = Objects.requireNonNull(getPage(currentPageName + "/navigation").andExpect(status().is3xxRedirection())
+                .andReturn()
+                .getResponse()
+                .getRedirectedUrl());
+
+        ResultActions nextPage = mockMvc.perform(get((redirectedUrl)).session(session));
+        return new FormPage(nextPage);
     }
 }

@@ -153,15 +153,6 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
     @Nested
     @Tag("validation")
     class SpecificValidations {
-        @Test
-        void shouldPassValidationForNOT_BLANKWhenThereIsAtLeast1CharacterInput() {
-            driver.navigate().to(baseUrl + "/pages/notBlankPage");
-            testPage.enter("notBlankInput", "something");
-
-            testPage.clickContinue();
-            assertThat(testPage.getTitle()).isEqualTo(lastPageTitle);
-        }
-
         @ParameterizedTest
         @ValueSource(strings = {
                 "123456",
