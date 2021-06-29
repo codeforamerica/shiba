@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -62,7 +61,7 @@ public class LaterDocsJourneyTest extends JourneyTest {
         assertThat(driver.findElements(By.className("reveal")).size()).isEqualTo(0);
 
         uploadPdfFile();
-        await().until(uploadCompletes());
+        waitForDocumentUploadToComplete();
         testPage.clickButton("I'm finished uploading");
         takeSnapShot("test.png");
         assertThat(driver.getTitle()).isEqualTo("Documents Sent");
