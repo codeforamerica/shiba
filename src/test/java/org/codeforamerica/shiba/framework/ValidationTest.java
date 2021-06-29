@@ -1,5 +1,6 @@
-package org.codeforamerica.shiba.pages;
+package org.codeforamerica.shiba.framework;
 
+import org.codeforamerica.shiba.AbstractFrameworkTest;
 import org.codeforamerica.shiba.AbstractShibaMockMvcTest;
 import org.codeforamerica.shiba.StaticMessageSourceConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -21,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Tag("validation")
 @SpringBootTest(properties = {"pagesConfig=pages-config/test-validation.yaml"}, classes = {StaticMessageSourceConfiguration.class})
-public class ValidationTest extends AbstractShibaMockMvcTest {
+public class ValidationTest extends AbstractFrameworkTest {
     @Autowired
     protected StaticMessageSource staticMessageSource;
 
