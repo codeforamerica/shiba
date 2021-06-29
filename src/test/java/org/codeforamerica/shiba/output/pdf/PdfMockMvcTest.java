@@ -1,65 +1,23 @@
 package org.codeforamerica.shiba.output.pdf;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
-import org.codeforamerica.shiba.pages.config.FeatureFlag;
-import org.codeforamerica.shiba.pages.config.PageTemplate;
-import org.codeforamerica.shiba.pages.config.ReferenceOptionsTemplate;
 import org.codeforamerica.shiba.pages.enrichment.Address;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.web.servlet.ModelAndView;
 
-import java.time.Instant;
-import java.time.ZoneOffset;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-import static java.util.stream.Collectors.toMap;
 import static org.codeforamerica.shiba.TestUtils.assertPdfFieldEquals;
 import static org.codeforamerica.shiba.TestUtils.assertPdfFieldIsEmpty;
 import static org.codeforamerica.shiba.output.caf.CoverPageInputsMapper.CHILDCARE_WAITING_LIST_UTM_SOURCE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-public class PdfIntegrationMockMvcTest extends AbstractPdfIntegrationMockMvcTest {
-    @Autowired
-    private MockMvc mockMvc;
-
-    private MockHttpSession session;
-
-    @BeforeEach
-    void setUp() throws Exception {
-        session = new MockHttpSession();
-
-        when(clock.instant()).thenReturn(Instant.now());
-        when(clock.getZone()).thenReturn(ZoneOffset.UTC);
-        when(locationClient.validateAddress(any())).thenReturn(Optional.empty());
-        when(featureFlagConfiguration.get("submit-via-email")).thenReturn(FeatureFlag.OFF);
-        when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.OFF);
-        when(featureFlagConfiguration.get("county-anoka")).thenReturn(FeatureFlag.OFF);
-
-        mockMvc.perform(get("/pages/languagePreferences").session(session)); // start timer
-        postWithData("languagePreferences", Map.of(
-                "writtenLanguage", List.of("ENGLISH"),
-                "spokenLanguage", List.of("ENGLISH"))
-        );
-
-        postWithData("addHouseholdMembers", "addHouseholdMembers", "false");
-    }
+public class PdfMockMvcTest extends AbstractPdfMockMvcTest {
 
     @Test
     void shouldAnswerEnergyAssistanceQuestion() throws Exception {
@@ -376,6 +334,112 @@ public class PdfIntegrationMockMvcTest extends AbstractPdfIntegrationMockMvcTest
             assertPdfFieldEquals("NON_SELF_EMPLOYMENT_EMPLOYEE_FULL_NAME_0", "Jim Halpert", ccap);
         }
 
+        @Test
+        void shouldMapJobLastThirtyDayIncomeSomeBlankIsDetermined() throws Exception {
+            addHouseholdMembers();
+
+            fillInRequiredPages();
+
+            // Add a job for Jim
+            postWithQueryParam("incomeByJob", "option", "0");
+            String jim = getJimFullNameAndId();
+            postWithData("householdSelectionForIncome", "whoseJobIsIt", jim);
+            postWithData("employersName", "employersName", "someEmployerName");
+            postWithData("selfEmployment", "selfEmployment", "false");
+            postWithData("lastThirtyDaysJobIncome", "lastThirtyDaysJobIncome", "123");
+
+            // Add a job for Dwight
+            postWithQueryParam("incomeByJob", "option", "0");
+            String me = getApplicantFullNameAndId();
+            postWithData("householdSelectionForIncome", "whoseJobIsIt", me);
+            postWithData("employersName", "employersName", "someEmployerName");
+            postWithData("selfEmployment", "selfEmployment", "false");
+            postWithData("lastThirtyDaysJobIncome", "lastThirtyDaysJobIncome", "");
+
+            var caf = submitAndDownloadCaf();
+            var ccap = downloadCcap();
+
+            assertPdfFieldEquals("GROSS_MONTHLY_INCOME_0", "123.00", caf);
+            assertPdfFieldEquals("MONEY_MADE_LAST_MONTH", "123.00", caf);
+            assertPdfFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "SNAP", caf);
+
+            assertPdfFieldEquals("NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0", "123.00", ccap);
+        }
+
+        @Test
+        void shouldMapLivingSituationToUnknownIfNoneOfTheseIsSelectedAndShouldNotMapTemporarilyWithFriendsOrFamilyYesNo() throws
+                Exception {
+            fillInRequiredPages();
+
+            postWithData("livingSituation", "livingSituation", "UNKNOWN");
+
+
+            var caf = submitAndDownloadCaf();
+            var ccap = downloadCcap();
+
+            assertPdfFieldEquals("LIVING_SITUATION", "UNKNOWN", caf);
+            assertPdfFieldEquals("LIVING_SITUATION", "UNKNOWN", ccap);
+            assertPdfFieldEquals("LIVING_WITH_FAMILY_OR_FRIENDS", "Off", ccap);
+        }
+
+        @Test
+        void shouldMapLivingSituationToUnknownIfNotAnswered() throws Exception {
+            fillInRequiredPages();
+            postWithoutData("livingSituation");
+
+            var caf = submitAndDownloadCaf();
+            var ccap = downloadCcap();
+
+            assertPdfFieldEquals("LIVING_SITUATION", "UNKNOWN", caf);
+            assertPdfFieldEquals("LIVING_SITUATION", "UNKNOWN", ccap);
+        }
+
+        @Test
+        void shouldMapLivingWithFamilyAndFriendsDueToEconomicHardship() throws Exception {
+            fillInRequiredPages();
+            postWithData("livingSituation",
+                         "livingSituation",
+                         "TEMPORARILY_WITH_FRIENDS_OR_FAMILY_DUE_TO_ECONOMIC_HARDSHIP");
+
+            var caf = submitAndDownloadCaf();
+            var ccap = downloadCcap();
+
+            assertPdfFieldEquals("LIVING_SITUATION", "TEMPORARILY_WITH_FRIENDS_OR_FAMILY", ccap);
+            assertPdfFieldEquals("LIVING_SITUATION", "TEMPORARILY_WITH_FRIENDS_OR_FAMILY", caf);
+            assertPdfFieldEquals("LIVING_WITH_FAMILY_OR_FRIENDS", "Yes", ccap);
+        }
+
+        @Test
+        void shouldMapNoforTemporarilyWithFriendsOrFamilyDueToEconomicHardship() throws Exception {
+            fillInRequiredPages();
+            postWithData("livingSituation", "livingSituation", "TEMPORARILY_WITH_FRIENDS_OR_FAMILY_OTHER_REASONS");
+
+            var caf = submitAndDownloadCaf();
+            var ccap = downloadCcap();
+
+            assertPdfFieldEquals("LIVING_SITUATION", "TEMPORARILY_WITH_FRIENDS_OR_FAMILY", ccap);
+            assertPdfFieldEquals("LIVING_SITUATION", "TEMPORARILY_WITH_FRIENDS_OR_FAMILY", caf);
+            assertPdfFieldEquals("LIVING_WITH_FAMILY_OR_FRIENDS", "No", ccap);
+        }
+
+        @Test
+        void shouldMapNoMedicalExpensesWhenNoneSelected() throws Exception {
+            fillInRequiredPages();
+            postWithData("medicalExpenses", "medicalExpenses", List.of("NONE_OF_THE_ABOVE"));
+
+            var caf = submitAndDownloadCaf();
+            assertPdfFieldEquals("MEDICAL_EXPENSES_SELECTION", "NONE_SELECTED", caf);
+        }
+
+        @Test
+        void shouldMapYesMedicalExpensesWhenOneSelected() throws Exception {
+            fillInRequiredPages();
+            postWithData("medicalExpenses", "medicalExpenses", List.of("MEDICAL_INSURANCE_PREMIUMS"));
+
+            var caf = submitAndDownloadCaf();
+            assertPdfFieldEquals("MEDICAL_EXPENSES_SELECTION", "ONE_SELECTED", caf);
+        }
+
         @Nested
         @Tag("pdf")
         class WithPersonalAndContactInfo {
@@ -432,7 +496,6 @@ public class PdfIntegrationMockMvcTest extends AbstractPdfIntegrationMockMvcTest
             @Test
             void shouldMapEnrichedHomeAddressToMailingAddressIfSameMailingAddressIsTrueAndUseEnrichedAddressIsTrue() throws
                     Exception {
-
                 String enrichedStreetValue = "testStreet";
                 String enrichedCityValue = "testCity";
                 String enrichedZipCodeValue = "testZipCode";
@@ -504,174 +567,5 @@ public class PdfIntegrationMockMvcTest extends AbstractPdfIntegrationMockMvcTest
                 assertPdfFieldEquals("APPLICANT_MAILING_APT_NUMBER", originalApt, caf);
             }
         }
-    }
-
-    @NotNull
-    private String getApplicantFullNameAndId() {
-        return "Dwight Schrute applicant";
-    }
-
-    @NotNull
-    private String getPamFullNameAndId() throws Exception {
-        return "Pam Beesly " + getSecondHouseholdMemberId();
-    }
-
-    @NotNull
-    private String getJimFullNameAndId() throws Exception {
-        return "Jim Halpert " + getFirstHouseholdMemberId();
-    }
-
-    private void addJob(String householdMemberFullNameAndId, String employersName) throws Exception {
-        postWithData("householdSelectionForIncome", "whoseJobIsIt", householdMemberFullNameAndId);
-        postWithData("employersName", "employersName", employersName);
-        postWithData("selfEmployment", "selfEmployment", "false");
-        postWithData("paidByTheHour", "paidByTheHour", "false");
-        postWithData("payPeriod", "payPeriod", "EVERY_WEEK");
-        postWithData("incomePerPayPeriod", "incomePerPayPeriod", "1");
-    }
-
-    private void postWithQueryParam(String pageName, String queryParam, String value) throws Exception {
-        mockMvc.perform(
-                post("/pages/" + pageName).session(session).with(csrf()).queryParam(queryParam, value)
-        ).andExpect(redirectedUrl("/pages/" + pageName + "/navigation"));
-    }
-
-    private void getWithQueryParam(String pageName, String queryParam, String value) throws Exception {
-        mockMvc.perform(
-                get("/pages/" + pageName).session(session).queryParam(queryParam, value)
-        ).andExpect(status().isOk());
-    }
-
-    private void addHouseholdMembers() throws Exception {
-        postWithData("personalInfo", Map.of(
-                "firstName", List.of("Dwight"),
-                "lastName", List.of("Schrute"),
-                "dateOfBirth", List.of("01", "12", "1928")
-        ));
-        postWithData("addHouseholdMembers", "addHouseholdMembers", "true");
-        postWithData("householdMemberInfo", Map.of(
-                "firstName", List.of("Jim"),
-                "lastName", List.of("Halpert"),
-                "programs", List.of("CCAP")
-        ));
-        postWithData("householdMemberInfo", Map.of(
-                "firstName", List.of("Pam"),
-                "lastName", List.of("Beesly"),
-                "programs", List.of("CCAP")
-        ));
-    }
-
-    private String getFirstHouseholdMemberId() throws Exception {
-        return getHouseholdMemberIdAtIndex(0);
-    }
-
-    private String getSecondHouseholdMemberId() throws Exception {
-        return getHouseholdMemberIdAtIndex(1);
-    }
-
-    private String getHouseholdMemberIdAtIndex(int index) throws Exception {
-        ModelAndView modelAndView = Objects.requireNonNull(
-                mockMvc.perform(get("/pages/childrenInNeedOfCare").session(session)).andReturn().getModelAndView());
-        PageTemplate pageTemplate = (PageTemplate) modelAndView.getModel().get("page");
-        ReferenceOptionsTemplate options = (ReferenceOptionsTemplate) pageTemplate.getInputs().get(0).getOptions();
-        return options.getSubworkflows().get("household").get(index).getId().toString();
-    }
-
-    private PDAcroForm submitAndDownloadCaf() throws Exception {
-        submitApplication();
-        return downloadCaf();
-    }
-
-    private PDAcroForm submitAndDownloadCcap() throws Exception {
-        submitApplication();
-        return downloadCcap();
-    }
-
-    private PDAcroForm downloadCaf() throws Exception {
-        var cafBytes = mockMvc.perform(get("/download").session(session))
-                .andReturn()
-                .getResponse()
-                .getContentAsByteArray();
-        return PDDocument.load(cafBytes).getDocumentCatalog().getAcroForm();
-    }
-
-    private PDAcroForm downloadCcap() throws Exception {
-        var ccapBytes = mockMvc.perform(get("/download-ccap").session(session))
-                .andReturn()
-                .getResponse()
-                .getContentAsByteArray();
-        return PDDocument.load(ccapBytes).getDocumentCatalog().getAcroForm();
-    }
-
-    private void fillInRequiredPages() throws Exception {
-        postWithData("migrantFarmWorker", "migrantOrSeasonalFarmWorker", "false");
-        postWithData("utilities", "payForUtilities", "COOLING");
-    }
-
-    private void fillOutPersonalInfo() throws Exception {
-        postWithData("personalInfo", Map.of(
-                "firstName", List.of("defaultFirstName"),
-                "lastName", List.of("defaultLastName"),
-                "otherName", List.of("defaultOtherName"),
-                "dateOfBirth", List.of("01", "12", "1928"),
-                "ssn", List.of("123456789"),
-                "maritalStatus", List.of("NEVER_MARRIED"),
-                "sex", List.of("FEMALE"),
-                "livedInMnWholeLife", List.of("true"),
-                "moveToMnDate", List.of("02", "18", "1776"),
-                "moveToMnPreviousCity", List.of("Chicago")
-        ));
-    }
-
-    private void fillOutContactInfo() throws Exception {
-        postWithData("contactInfo", Map.of(
-                "phoneNumber", List.of("7234567890"),
-                "phoneOrEmail", List.of("TEXT")
-        ));
-    }
-
-    private void submitApplication() throws Exception {
-        postWithData("/submit",
-                     "/pages/signThisApplication/navigation",
-                     Map.of("applicantSignature", List.of("Human McPerson")));
-    }
-
-    private void selectPrograms(String... programs) throws Exception {
-        postWithData("choosePrograms", "programs", Arrays.stream(programs).toList());
-    }
-
-    // Post to a page with an arbitrary number of multi-value inputs
-    private void postWithData(String pageName, Map<String, List<String>> params) throws Exception {
-        String postUrl = getUrlForPageName(pageName);
-        postWithData(postUrl, postUrl + "/navigation", params);
-    }
-
-    // Post to a page with a single input that only accepts a single value
-    private void postWithData(String pageName, String inputName, String value) throws Exception {
-        String postUrl = getUrlForPageName(pageName);
-        var params = Map.of(inputName, List.of(value));
-        postWithData(postUrl, postUrl + "/navigation", params);
-    }
-
-    // Post to a page with a single input that accepts multiple values
-    private void postWithData(String pageName, String inputName, List<String> values) throws Exception {
-        String postUrl = getUrlForPageName(pageName);
-        postWithData(postUrl, postUrl + "/navigation", Map.of(inputName, values));
-    }
-
-    private void postWithData(String postUrl, String redirectUrl, Map<String, List<String>> params) throws Exception {
-        Map<String, List<String>> paramsWithProperInputNames = params.entrySet().stream()
-                .collect(toMap(e -> e.getKey() + "[]", Map.Entry::getValue));
-        mockMvc.perform(
-                post(postUrl)
-                        .session(session)
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                        .params(new LinkedMultiValueMap<>(paramsWithProperInputNames))
-        ).andExpect(redirectedUrl(redirectUrl));
-    }
-
-    private String getUrlForPageName(String pageName) {
-        return "/pages/" + pageName;
     }
 }
