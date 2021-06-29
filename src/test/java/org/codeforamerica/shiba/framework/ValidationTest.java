@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.openqa.selenium.By;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
@@ -14,7 +13,6 @@ import java.util.Map;
 
 import static java.util.Locale.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -161,9 +159,8 @@ public class ValidationTest extends AbstractFrameworkTest {
 
         @Test
         void shouldPassValidationForNOT_BLANKWhenThereIsAtLeast1CharacterInput() throws Exception {
-            postExpectingSuccess("notBlankPage", "notBlankInput", "something");
-            var page = getNextPage("notBlankPage");
-            assertThat(page.getTitle()).isEqualTo(lastPageTitle);
+            var nextPage = postExpectingSuccessAndFollowRedirect("notBlankPage", "notBlankInput", "something");
+            assertThat(nextPage.getTitle()).isEqualTo(lastPageTitle);
         }
 
         @ParameterizedTest
@@ -175,6 +172,12 @@ public class ValidationTest extends AbstractFrameworkTest {
         void shouldFailValidationForZipCodeWhenValueIsNotExactlyFiveDigits(String input) throws Exception {
             postExpectingFailure("zipcodePage", "zipCodeInput", input);
             assertPageHasInputError("zipcodePage", "zipCodeInput");
+        }
+
+        @Test
+        void shouldPassValidationForZipCodeWhenValueIsExactlyFiveDigits() throws Exception {
+            var nextPage = postExpectingSuccessAndFollowRedirect("zipcodePage", "zipCodeInput", "12345");
+            assertThat(nextPage.getTitle()).isEqualTo(lastPageTitle);
         }
     }
 }

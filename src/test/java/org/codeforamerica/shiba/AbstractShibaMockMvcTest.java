@@ -315,4 +315,10 @@ public class AbstractShibaMockMvcTest {
         ResultActions nextPage = mockMvc.perform(get((redirectedUrl)).session(session));
         return new FormPage(nextPage);
     }
+
+    protected FormPage postExpectingSuccessAndFollowRedirect(String pageName, String inputName, String value) throws
+            Exception {
+        postExpectingSuccess(pageName, inputName, value);
+        return getNextPage(pageName);
+    }
 }

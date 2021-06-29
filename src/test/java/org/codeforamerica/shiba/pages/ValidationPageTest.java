@@ -153,19 +153,6 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
     @Nested
     @Tag("validation")
     class SpecificValidations {
-
-
-        @Test
-        void shouldPassValidationForZipCodeWhenValueIsExactlyFiveDigits() {
-            driver.navigate().to(baseUrl + "/pages/zipcodePage");
-
-            driver.findElement(By.cssSelector("input[name='zipCodeInput[]']")).clear();
-            driver.findElement(By.cssSelector("input[name='zipCodeInput[]']")).sendKeys("12345");
-            driver.findElement(By.tagName("button")).click();
-
-            assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
-        }
-
         @ParameterizedTest
         @ValueSource(strings = {
                 "123",
