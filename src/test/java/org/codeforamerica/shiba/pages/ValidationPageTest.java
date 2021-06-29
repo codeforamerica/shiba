@@ -21,7 +21,6 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @Tag("validation")
 @SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"pagesConfig=pages-config/test-validation.yaml"})
 public class ValidationPageTest extends AbstractExistingStartTimePageTest {
-
     private final String errorMessage = "error message";
     private final String nextPageTitle = "next Page Title";
     private final String lastPageTitle = "last page title";
@@ -78,23 +77,6 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
         staticMessageSource.addMessage("select-county-key", Locale.ENGLISH, selectCounty);
         staticMessageSource.addMessage("county-a-key", Locale.ENGLISH, countyA);
         staticMessageSource.addMessage("county-b-key", Locale.ENGLISH, countyB);
-    }
-
-    @Test
-    void shouldStayOnThePage_whenValidationFails() {
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-        driver.findElement(By.tagName("button")).click();
-
-        assertThat(driver.getTitle()).isEqualTo(firstPageTitle);
-    }
-
-    @Test
-    void shouldGoOnToNextPage_whenValidationPasses() {
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-        driver.findElement(By.cssSelector("input[name='someInputName[]']")).sendKeys("something");
-        driver.findElement(By.tagName("button")).click();
-
-        assertThat(driver.getTitle()).isEqualTo(nextPageTitle);
     }
 
     @Test

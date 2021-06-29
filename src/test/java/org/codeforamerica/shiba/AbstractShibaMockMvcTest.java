@@ -2,7 +2,6 @@ package org.codeforamerica.shiba;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
-import org.codeforamerica.shiba.SessionScopedApplicationDataTestConfiguration;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.config.PageTemplate;
@@ -12,7 +11,6 @@ import org.codeforamerica.shiba.pages.enrichment.LocationClient;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -215,28 +214,28 @@ public class AbstractShibaMockMvcTest {
     }
 
     // Post to a page with an arbitrary number of multi-value inputs
-    protected void postWithData(String pageName, Map<String, List<String>> params) throws Exception {
+    protected ResultActions postWithData(String pageName, Map<String, List<String>> params) throws Exception {
         String postUrl = getUrlForPageName(pageName);
-        postWithData(postUrl, postUrl + "/navigation", params);
+        return postWithData(postUrl, postUrl + "/navigation", params);
     }
 
     // Post to a page with a single input that only accepts a single value
-    protected void postWithData(String pageName, String inputName, String value) throws Exception {
+    protected ResultActions postWithData(String pageName, String inputName, String value) throws Exception {
         String postUrl = getUrlForPageName(pageName);
         var params = Map.of(inputName, List.of(value));
-        postWithData(postUrl, postUrl + "/navigation", params);
+        return postWithData(postUrl, postUrl + "/navigation", params);
     }
 
     // Post to a page with a single input that accepts multiple values
-    protected void postWithData(String pageName, String inputName, List<String> values) throws Exception {
+    protected ResultActions postWithData(String pageName, String inputName, List<String> values) throws Exception {
         String postUrl = getUrlForPageName(pageName);
-        postWithData(postUrl, postUrl + "/navigation", Map.of(inputName, values));
+        return postWithData(postUrl, postUrl + "/navigation", Map.of(inputName, values));
     }
 
-    protected void postWithData(String postUrl, String redirectUrl, Map<String, List<String>> params) throws Exception {
+    protected ResultActions postWithData(String postUrl, String redirectUrl, Map<String, List<String>> params) throws Exception {
         Map<String, List<String>> paramsWithProperInputNames = params.entrySet().stream()
                 .collect(toMap(e -> e.getKey() + "[]", Map.Entry::getValue));
-        mockMvc.perform(
+        return mockMvc.perform(
                 post(postUrl)
                         .session(session)
                         .with(csrf())
@@ -245,9 +244,9 @@ public class AbstractShibaMockMvcTest {
         ).andExpect(redirectedUrl(redirectUrl));
     }
 
-    protected void postWithoutData(String pageName) throws Exception {
+    protected ResultActions postWithoutData(String pageName) throws Exception {
         String postUrl = getUrlForPageName(pageName);
-        mockMvc.perform(
+        return mockMvc.perform(
                 post(postUrl)
                         .session(session)
                         .with(csrf())
