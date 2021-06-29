@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.openqa.selenium.By;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
@@ -155,8 +156,7 @@ public class ValidationTest extends AbstractFrameworkTest {
         })
         void shouldFailValidationForNOT_BLANKWhenThereIsEmptyOrBlankInput(String textInputValue) throws Exception {
             postExpectingFailure("notBlankPage", "notBlankInput", textInputValue);
-            var page = new FormPage(getPage("notBlankPage"));
-            assertTrue(page.hasInputError("notBlankInput"));
+            assertPageHasInputError("notBlankPage", "notBlankInput");
         }
 
         @Test
@@ -164,6 +164,17 @@ public class ValidationTest extends AbstractFrameworkTest {
             postExpectingSuccess("notBlankPage", "notBlankInput", "something");
             var page = getNextPage("notBlankPage");
             assertThat(page.getTitle()).isEqualTo(lastPageTitle);
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {
+                "123456",
+                "1234",
+                "1234e"
+        })
+        void shouldFailValidationForZipCodeWhenValueIsNotExactlyFiveDigits(String input) throws Exception {
+            postExpectingFailure("zipcodePage", "zipCodeInput", input);
+            assertPageHasInputError("zipcodePage", "zipCodeInput");
         }
     }
 }

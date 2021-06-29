@@ -153,20 +153,7 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
     @Nested
     @Tag("validation")
     class SpecificValidations {
-        @ParameterizedTest
-        @ValueSource(strings = {
-                "123456",
-                "1234",
-                "1234e"
-        })
-        void shouldFailValidationForZipCodeWhenValueIsNotExactlyFiveDigits(String input) {
-            driver.navigate().to(baseUrl + "/pages/zipcodePage");
-            driver.findElement(By.cssSelector("input[name='zipCodeInput[]']")).sendKeys(input);
-            driver.findElement(By.tagName("button")).click();
 
-            assertThat(driver.getTitle()).isEqualTo(zipcodePageTitle);
-            assertThat(testPage.getInputError("zipCodeInput")).isNotNull();
-        }
 
         @Test
         void shouldPassValidationForZipCodeWhenValueIsExactlyFiveDigits() {
