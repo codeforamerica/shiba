@@ -1,19 +1,9 @@
 package org.codeforamerica.shiba.framework;
 
-import org.codeforamerica.shiba.AbstractFrameworkTest;
-import org.codeforamerica.shiba.AbstractShibaMockMvcTest;
-import org.codeforamerica.shiba.StaticMessageSourceConfiguration;
-import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.support.StaticMessageSource;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-
-import java.time.Instant;
 
 import static java.util.Locale.ENGLISH;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -47,21 +37,6 @@ public class ValidationTest extends AbstractFrameworkTest {
     private final String countyA = "Alpha";
     private final String countyB = "Beta";
 
-    @Controller
-    static class TestController {
-        private final ApplicationData applicationData;
-
-        public TestController(ApplicationData applicationData) {
-            this.applicationData = applicationData;
-        }
-
-        @GetMapping("/setStartTimeForTest")
-        String setStartTimeForTest() {
-            applicationData.setStartTimeOnce(Instant.now());
-            return "startTimeIsSet";
-        }
-    }
-
     @Override
     @BeforeEach
     protected void setUp() throws Exception {
@@ -93,8 +68,6 @@ public class ValidationTest extends AbstractFrameworkTest {
         staticMessageSource.addMessage("select-county-key", ENGLISH, selectCounty);
         staticMessageSource.addMessage("county-a-key", ENGLISH, countyA);
         staticMessageSource.addMessage("county-b-key", ENGLISH, countyB);
-
-        mockMvc.perform(get("/setStartTimeForTest").session(session)).andExpect(status().isOk()); // start timer
     }
 
     @Test
