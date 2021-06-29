@@ -153,23 +153,6 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
     @Nested
     @Tag("validation")
     class SpecificValidations {
-        @ParameterizedTest
-        @ValueSource(strings = {
-                "123",
-                "12345678",
-                "abcdefg",
-                "1234-56",
-                "1234e67"
-        })
-        void shouldFailValidationForCaseNumberWhenValueIsNotFourToSevenDigits(String input) {
-            driver.navigate().to(baseUrl + "/pages/caseNumberPage");
-            driver.findElement(By.cssSelector("input[name='caseNumberInput[]']")).sendKeys(input);
-            driver.findElement(By.tagName("button")).click();
-
-            assertThat(driver.getTitle()).isEqualTo(caseNumberPageTitle);
-            assertThat(testPage.getInputError("caseNumberInput")).isNotNull();
-        }
-
         @Test
         void shouldNotFailValidationForCaseNumberWhenValueIsEmptyWhenReturningToPage() {
             driver.navigate().to(baseUrl + "/pages/caseNumberPage");

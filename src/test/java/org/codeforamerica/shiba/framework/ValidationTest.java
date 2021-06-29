@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.openqa.selenium.By;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static java.util.Locale.ENGLISH;
@@ -166,6 +167,19 @@ public class ValidationTest extends AbstractFrameworkTest {
         void shouldPassValidationForZipCodeWhenValueIsExactlyFiveDigits() throws Exception {
             var nextPage = postExpectingSuccessAndFollowRedirect("zipcodePage", "zipCodeInput", "12345");
             assertThat(nextPage.getTitle()).isEqualTo(lastPageTitle);
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {
+                "123",
+                "12345678",
+                "abcdefg",
+                "1234-56",
+                "1234e67"
+        })
+        void shouldFailValidationForCaseNumberWhenValueIsNotFourToSevenDigits(String input) throws Exception {
+            postExpectingFailure("caseNumberPage", "caseNumberInput", input);
+            assertPageHasInputError("caseNumberPage", "caseNumberInput");
         }
     }
 }
