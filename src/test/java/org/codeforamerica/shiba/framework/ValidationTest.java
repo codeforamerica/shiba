@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Locale.ENGLISH;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -84,6 +85,7 @@ public class ValidationTest extends AbstractFrameworkTest {
     @Test
     void shouldGoOnToNextPage_whenValidationPasses() throws Exception {
         postWithData("firstPage", "someInputName", "something").andExpect(status().is3xxRedirection());
+        getNavigationPageAndExpectRedirect("firstPage", "nextPage");
     }
 
     @Test
@@ -104,7 +106,9 @@ public class ValidationTest extends AbstractFrameworkTest {
     void shouldDisplayErrorMessageWhenValidationFailed() throws Exception {
         getPage("firstPage").andExpect(pageDoesNotHaveInputError());
         postWithoutData("firstPage").andExpect(redirectedUrl("/pages/firstPage"));
-        getPage("firstPage").andExpect(responseHtmlContainsString(errorMessage));
+
+        var page = new FormPage(getPage("firstPage"));
+        assertThat(page.getInputError("someInputName").text()).isEqualTo(errorMessage);
     }
 
     @Test
@@ -112,10 +116,11 @@ public class ValidationTest extends AbstractFrameworkTest {
         getPage("firstPage").andExpect(pageDoesNotHaveInputError());
         postWithData("firstPage", "someInputName", "do not trigger validation");
         getNavigationPageAndExpectRedirect("firstPage", "nextPage");
-        getPage("nextPage").andExpect(responseHtmlContainsString(nextPageTitle));
+
+        var page = new FormPage(getPage("nextPage"));
+        assertThat(page.getTitle()).isEqualTo(nextPageTitle);
     }
 
-    // TODO use FormPage above this line
     @Test
     void shouldTriggerValidation_whenConditionIsTrue() throws Exception {
         getPage("firstPage").andExpect(pageDoesNotHaveInputError());
