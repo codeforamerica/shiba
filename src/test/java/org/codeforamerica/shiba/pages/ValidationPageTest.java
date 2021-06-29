@@ -81,31 +81,6 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
 
     @Nested
     @Tag("validation")
-    class Condition {
-        @Test
-        void shouldTriggerValidation_whenConditionInputIsEmptyOrBlank() {
-            navigateTo("emptyInputConditionPage");
-
-            testPage.enter("triggerInput", "");
-            testPage.clickContinue();
-
-            assertThat(driver.getTitle()).isNotEqualTo(lastPageTitle);
-            assertThat(testPage.hasInputError("conditionTest")).isTrue();
-        }
-
-        @Test
-        void shouldNotTriggerValidation_whenConditionInputIsNotEmptyOrBlank() {
-            navigateTo("emptyInputConditionPage");
-
-            testPage.enter("triggerInput", "something");
-            testPage.clickContinue();
-
-            assertThat(driver.getTitle()).isEqualTo(lastPageTitle);
-        }
-    }
-
-    @Nested
-    @Tag("validation")
     class SpecificValidations {
         @Test
         void shouldNotFailValidationForCaseNumberWhenValueIsEmptyWhenReturningToPage() {

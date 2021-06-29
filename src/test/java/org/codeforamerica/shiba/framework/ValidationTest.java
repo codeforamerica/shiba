@@ -173,6 +173,23 @@ public class ValidationTest extends AbstractFrameworkTest {
                                  "not trigger");
             assertPageHasInputError("doesNotContainConditionPage", "conditionTest");
         }
+
+        @Test
+        void shouldTriggerValidation_whenConditionInputIsEmptyOrBlank() throws Exception {
+            postExpectingFailure("emptyInputConditionPage",
+                                 "triggerInput",
+                                 "");
+
+            assertPageHasInputError("emptyInputConditionPage", "conditionTest");
+        }
+
+        @Test
+        void shouldNotTriggerValidation_whenConditionInputIsNotEmptyOrBlank() throws Exception {
+            var page = postExpectingSuccessAndFollowRedirect("emptyInputConditionPage",
+                                 "triggerInput",
+                                 "something");
+            assertThat(page.getTitle()).isEqualTo(lastPageTitle);
+        }
     }
 
     @Nested
