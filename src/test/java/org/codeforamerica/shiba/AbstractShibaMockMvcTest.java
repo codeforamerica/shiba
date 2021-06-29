@@ -98,12 +98,12 @@ public class AbstractShibaMockMvcTest {
     }
 
     protected void addJob(String householdMemberFullNameAndId, String employersName) throws Exception {
-        postWithData("householdSelectionForIncome", "whoseJobIsIt", householdMemberFullNameAndId);
-        postWithData("employersName", "employersName", employersName);
-        postWithData("selfEmployment", "selfEmployment", "false");
-        postWithData("paidByTheHour", "paidByTheHour", "false");
-        postWithData("payPeriod", "payPeriod", "EVERY_WEEK");
-        postWithData("incomePerPayPeriod", "incomePerPayPeriod", "1");
+        postExpectingSuccess("householdSelectionForIncome", "whoseJobIsIt", householdMemberFullNameAndId);
+        postExpectingSuccess("employersName", "employersName", employersName);
+        postExpectingSuccess("selfEmployment", "selfEmployment", "false");
+        postExpectingSuccess("paidByTheHour", "paidByTheHour", "false");
+        postExpectingSuccess("payPeriod", "payPeriod", "EVERY_WEEK");
+        postExpectingSuccess("incomePerPayPeriod", "incomePerPayPeriod", "1");
     }
 
     protected void postWithQueryParam(String pageName, String queryParam, String value) throws Exception {
@@ -119,18 +119,18 @@ public class AbstractShibaMockMvcTest {
     }
 
     protected void addHouseholdMembers() throws Exception {
-        postWithData("personalInfo", Map.of(
+        postExpectingSuccess("personalInfo", Map.of(
                 "firstName", List.of("Dwight"),
                 "lastName", List.of("Schrute"),
                 "dateOfBirth", List.of("01", "12", "1928")
         ));
-        postWithData("addHouseholdMembers", "addHouseholdMembers", "true");
-        postWithData("householdMemberInfo", Map.of(
+        postExpectingSuccess("addHouseholdMembers", "addHouseholdMembers", "true");
+        postExpectingSuccess("householdMemberInfo", Map.of(
                 "firstName", List.of("Jim"),
                 "lastName", List.of("Halpert"),
                 "programs", List.of("CCAP")
         ));
-        postWithData("householdMemberInfo", Map.of(
+        postExpectingSuccess("householdMemberInfo", Map.of(
                 "firstName", List.of("Pam"),
                 "lastName", List.of("Beesly"),
                 "programs", List.of("CCAP")
@@ -180,12 +180,12 @@ public class AbstractShibaMockMvcTest {
     }
 
     protected void fillInRequiredPages() throws Exception {
-        postWithData("migrantFarmWorker", "migrantOrSeasonalFarmWorker", "false");
-        postWithData("utilities", "payForUtilities", "COOLING");
+        postExpectingSuccess("migrantFarmWorker", "migrantOrSeasonalFarmWorker", "false");
+        postExpectingSuccess("utilities", "payForUtilities", "COOLING");
     }
 
     protected void fillOutPersonalInfo() throws Exception {
-        postWithData("personalInfo", Map.of(
+        postExpectingSuccess("personalInfo", Map.of(
                 "firstName", List.of("defaultFirstName"),
                 "lastName", List.of("defaultLastName"),
                 "otherName", List.of("defaultOtherName"),
@@ -200,42 +200,42 @@ public class AbstractShibaMockMvcTest {
     }
 
     protected void fillOutContactInfo() throws Exception {
-        postWithData("contactInfo", Map.of(
+        postExpectingSuccess("contactInfo", Map.of(
                 "phoneNumber", List.of("7234567890"),
                 "phoneOrEmail", List.of("TEXT")
         ));
     }
 
     protected void submitApplication() throws Exception {
-        postWithData("/submit",
-                     "/pages/signThisApplication/navigation",
-                     Map.of("applicantSignature", List.of("Human McPerson")));
+        postExpectingSuccess("/submit",
+                             "/pages/signThisApplication/navigation",
+                             Map.of("applicantSignature", List.of("Human McPerson")));
     }
 
     protected void selectPrograms(String... programs) throws Exception {
-        postWithData("choosePrograms", "programs", Arrays.stream(programs).toList());
+        postExpectingSuccess("choosePrograms", "programs", Arrays.stream(programs).toList());
     }
 
     // Post to a page with an arbitrary number of multi-value inputs
-    protected ResultActions postWithData(String pageName, Map<String, List<String>> params) throws Exception {
+    protected ResultActions postExpectingSuccess(String pageName, Map<String, List<String>> params) throws Exception {
         String postUrl = getUrlForPageName(pageName);
-        return postWithData(postUrl, postUrl + "/navigation", params);
+        return postExpectingSuccess(postUrl, postUrl + "/navigation", params);
     }
 
     // Post to a page with a single input that only accepts a single value
-    protected ResultActions postWithData(String pageName, String inputName, String value) throws Exception {
+    protected ResultActions postExpectingSuccess(String pageName, String inputName, String value) throws Exception {
         String postUrl = getUrlForPageName(pageName);
         var params = Map.of(inputName, List.of(value));
-        return postWithData(postUrl, postUrl + "/navigation", params);
+        return postExpectingSuccess(postUrl, postUrl + "/navigation", params);
     }
 
     // Post to a page with a single input that accepts multiple values
-    protected ResultActions postWithData(String pageName, String inputName, List<String> values) throws Exception {
+    protected ResultActions postExpectingSuccess(String pageName, String inputName, List<String> values) throws Exception {
         String postUrl = getUrlForPageName(pageName);
-        return postWithData(postUrl, postUrl + "/navigation", Map.of(inputName, values));
+        return postExpectingSuccess(postUrl, postUrl + "/navigation", Map.of(inputName, values));
     }
 
-    protected ResultActions postWithData(String postUrl, String redirectUrl, Map<String, List<String>> params) throws
+    protected ResultActions postExpectingSuccess(String postUrl, String redirectUrl, Map<String, List<String>> params) throws
             Exception {
         Map<String, List<String>> paramsWithProperInputNames = fixInputNamesForParams(params);
         return mockMvc.perform(

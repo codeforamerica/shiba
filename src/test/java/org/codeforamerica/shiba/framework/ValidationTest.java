@@ -84,7 +84,7 @@ public class ValidationTest extends AbstractFrameworkTest {
 
     @Test
     void shouldGoOnToNextPage_whenValidationPasses() throws Exception {
-        postWithData("firstPage", "someInputName", "something").andExpect(status().is3xxRedirection());
+        postExpectingSuccess("firstPage", "someInputName", "something").andExpect(status().is3xxRedirection());
         var page = getNextPage("firstPage");
         assertThat(page.getTitle()).isEqualTo(nextPageTitle);
     }
@@ -97,7 +97,7 @@ public class ValidationTest extends AbstractFrameworkTest {
 
         // Submit with required fields filled out this time
         getPage("firstPage").andExpect(pageHasInputError());
-        postWithData("firstPage", "someInputName", "not blank");
+        postExpectingSuccess("firstPage", "someInputName", "not blank");
 
         // When I hit the back button, no input error should be displayed
         getPage("firstPage").andExpect(pageDoesNotHaveInputError());
@@ -115,7 +115,7 @@ public class ValidationTest extends AbstractFrameworkTest {
     @Test
     void shouldNotTriggerValidation_whenConditionIsFalse() throws Exception {
         getPage("firstPage").andExpect(pageDoesNotHaveInputError());
-        postWithData("firstPage", "someInputName", "do not trigger validation");
+        postExpectingSuccess("firstPage", "someInputName", "do not trigger validation");
         var page = getNextPage("firstPage");
         assertThat(page.getTitle()).isEqualTo(nextPageTitle);
     }
@@ -123,9 +123,9 @@ public class ValidationTest extends AbstractFrameworkTest {
     @Test
     void shouldTriggerValidation_whenConditionIsTrue() throws Exception {
         getPage("firstPage").andExpect(pageDoesNotHaveInputError());
-        postWithData("/pages/firstPage",
-                     "/pages/firstPage",
-                     Map.of("someInputName", List.of("valueToTriggerCondition")));
+        postExpectingSuccess("/pages/firstPage",
+                             "/pages/firstPage",
+                             Map.of("someInputName", List.of("valueToTriggerCondition")));
 
         var page = new FormPage(getPage("firstPage").andReturn());
         assertTrue(page.hasInputError("conditionalValidationWhenValueEquals"));
@@ -156,7 +156,7 @@ public class ValidationTest extends AbstractFrameworkTest {
 
         @Test
         void shouldPassValidationForNOT_BLANKWhenThereIsAtLeast1CharacterInput() throws Exception {
-            postWithData("notBlankPage", "notBlankInput", "something");
+            postExpectingSuccess("notBlankPage", "notBlankInput", "something");
             var page = getNextPage("notBlankPage");
             assertThat(page.getTitle()).isEqualTo(lastPageTitle);
         }
