@@ -270,4 +270,14 @@ public class AbstractShibaMockMvcTest {
     protected ResultMatcher pageDoesNotHaveInputError() {
         return content().string(not(containsString("text--error")));
     }
+
+    @NotNull
+    protected ResultMatcher responseHtmlContainsString(String s) {
+        return content().string(containsString(s));
+    }
+
+    @NotNull
+    protected ResultActions getPage(String pageName) throws Exception {
+        return mockMvc.perform(get("/pages/" + pageName));
+    }
 }

@@ -80,14 +80,6 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
     }
 
     @Test
-    void shouldDisplayErrorMessageWhenValidationFailed() {
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-        driver.findElement(By.tagName("button")).click();
-
-        assertThat(testPage.getInputError("someInputName").getText()).isEqualTo(errorMessage);
-    }
-
-    @Test
     void shouldNotTriggerValidation_whenConditionIsFalse() {
         driver.navigate().to(baseUrl + "/pages/firstPage");
         driver.findElement(By.cssSelector("input[name='someInputName[]']")).sendKeys("do not trigger validation");

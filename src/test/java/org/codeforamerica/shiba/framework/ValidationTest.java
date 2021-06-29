@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static java.util.Locale.ENGLISH;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -83,14 +82,21 @@ public class ValidationTest extends AbstractFrameworkTest {
     @Test
     void shouldClearValidationError_afterErrorHasBeenFixed() throws Exception {
         // Submit the page without required fields filled out
-        mockMvc.perform(get("/pages/firstPage")).andExpect(pageDoesNotHaveInputError());
+        getPage("firstPage").andExpect(pageDoesNotHaveInputError());
         postWithoutData("firstPage").andExpect(redirectedUrl("/pages/firstPage"));
 
         // Submit with required fields filled out this time
-        mockMvc.perform(get("/pages/firstPage")).andExpect(pageHasInputError());
+        getPage("firstPage").andExpect(pageHasInputError());
         postWithData("firstPage", "someInputName", "not blank");
 
         // When I hit the back button, no input error should be displayed
-        mockMvc.perform(get("/pages/firstPage")).andExpect(pageDoesNotHaveInputError());
+        getPage("firstPage").andExpect(pageDoesNotHaveInputError());
+    }
+
+    @Test
+    void shouldDisplayErrorMessageWhenValidationFailed() throws Exception {
+        getPage("firstPage").andExpect(pageDoesNotHaveInputError());
+        postWithoutData("firstPage").andExpect(redirectedUrl("/pages/firstPage"));
+        getPage("firstPage").andExpect(responseHtmlContainsString(errorMessage));
     }
 }
