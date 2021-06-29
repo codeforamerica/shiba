@@ -80,20 +80,6 @@ public class ValidationPageTest extends AbstractExistingStartTimePageTest {
     }
 
     @Test
-    void shouldClearValidationError_afterErrorHasBeenFixed() {
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-        testPage.clickContinue();
-
-        assertThat(testPage.hasInputError("someInputName")).isTrue();
-
-        testPage.enter("someInputName", "not blank");
-        testPage.clickContinue();
-        testPage.goBack();
-
-        assertThat(testPage.hasInputError("someInputName")).isFalse();
-    }
-
-    @Test
     void shouldDisplayErrorMessageWhenValidationFailed() {
         driver.navigate().to(baseUrl + "/pages/firstPage");
         driver.findElement(By.tagName("button")).click();

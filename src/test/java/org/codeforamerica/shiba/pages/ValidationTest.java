@@ -123,4 +123,18 @@ public class ValidationTest extends AbstractShibaMockMvcTest {
     void shouldGoOnToNextPage_whenValidationPasses() throws Exception {
         postWithData("firstPage", "someInputName", "something").andExpect(status().is3xxRedirection());
     }
+
+    @Test
+    void shouldClearValidationError_afterErrorHasBeenFixed() throws Exception {
+        // Submit the page without required fields filled out
+        mockMvc.perform(get("/pages/firstPage")).andExpect(pageDoesNotHaveInputError());
+        postWithoutData("firstPage").andExpect(redirectedUrl("/pages/firstPage"));
+
+        // Submit with required fields filled out this time
+        mockMvc.perform(get("/pages/firstPage")).andExpect(pageHasInputError());
+        postWithData("firstPage", "someInputName", "not blank");
+
+        // When I hit the back button, no input error should be displayed
+        mockMvc.perform(get("/pages/firstPage")).andExpect(pageDoesNotHaveInputError());
+    }
 }
