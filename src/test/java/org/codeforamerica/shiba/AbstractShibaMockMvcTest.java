@@ -217,13 +217,6 @@ public class AbstractShibaMockMvcTest {
         postExpectingSuccess("choosePrograms", "programs", Arrays.stream(programs).toList());
     }
 
-    // POST /pages/mypage
-    // get redirected to /pages/mypage/navigation
-    //
-    // GET /pages/mypage/navigation
-    // get redirected to /pages/nextpage
-    //
-    // GET /pages/nextpage
     protected ResultActions postExpectingSuccess(String pageName) throws Exception {
         return postWithoutData(pageName).andExpect(redirectedUrl(getUrlForPageName(pageName) + "/navigation"));
     }
