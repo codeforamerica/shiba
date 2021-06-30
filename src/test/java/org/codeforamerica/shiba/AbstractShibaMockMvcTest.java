@@ -113,8 +113,8 @@ public class AbstractShibaMockMvcTest {
         ).andExpect(redirectedUrl("/pages/" + pageName + "/navigation"));
     }
 
-    protected void getWithQueryParam(String pageName, String queryParam, String value) throws Exception {
-        mockMvc.perform(
+    protected ResultActions getWithQueryParam(String pageName, String queryParam, String value) throws Exception {
+        return mockMvc.perform(
                 get("/pages/" + pageName).session(session).queryParam(queryParam, value)
         ).andExpect(status().isOk());
     }

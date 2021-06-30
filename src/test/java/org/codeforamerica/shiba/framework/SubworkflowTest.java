@@ -12,6 +12,9 @@ import java.util.Locale;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
 @SpringBootTest(properties = {"pagesConfig=pages-config/test-sub-workflow.yaml"})
 public class SubworkflowTest extends AbstractFrameworkTest {
@@ -113,6 +116,45 @@ public class SubworkflowTest extends AbstractFrameworkTest {
         assertReviewPageDisplaysCorrectInfoForIteration("0","goToSecondPage");
         assertReviewPageDisplaysCorrectInfoForIteration("1","goToThirdPage");
     }
+
+    @Test
+    void shouldShowDeleteWarningPage() throws Exception {
+        String warningPageTitle = "warning page title";
+        staticMessageSource.addMessage("some-warning-title", Locale.ENGLISH, warningPageTitle);
+
+        String firstIterationInput1Value = "goToSecondPage";
+        String secondIterationInput1Value = "goToThirdPage";
+
+        completeAnIterationGoingThroughSecondPage("0");
+        completeAnIterationGoingThroughThirdPage("1");
+
+        var endPage = new FormPage(getPage("endPage"));
+        assertThat(endPage.getElementById("iteration0-delete")).isNotNull();
+        assertThat(endPage.getElementById("iteration1-delete")).isNotNull();
+        assertThat(endPage.getElementById("iteration2-delete")).isNull();
+
+        deleteIteration("1", warningPageTitle, secondIterationInput1Value, "endPage");
+        endPage = new FormPage(getPage("endPage"));
+        assertThat(endPage.getElementById("iteration0-delete")).isNotNull();
+        assertThat(endPage.getElementById("iteration1-delete")).isNull();
+        assertThat(endPage.getElementById("iteration2-delete")).isNull();
+
+        deleteIteration("0", warningPageTitle, firstIterationInput1Value, "startPage");
+        endPage = new FormPage(getPage("endPage"));
+        assertThat(endPage.getElementById("iteration0-delete")).isNull();
+        assertThat(endPage.getElementById("iteration1-delete")).isNull();
+        assertThat(endPage.getElementById("iteration2-delete")).isNull();
+    }
+
+    private void deleteIteration(String iterationIndex, String warningPageTitle, String iterationInput1Value,
+                                 String expectedRedirectPageName) throws Exception {
+        var deleteWarningPage = new FormPage(getWithQueryParam("deleteWarningPage", "iterationIndex", iterationIndex));
+        assertThat(deleteWarningPage.getTitle()).isEqualTo(warningPageTitle);
+        assertThat(deleteWarningPage.findElementTextById("warning-message")).isEqualTo("This is a warning for: " + iterationInput1Value);
+        mockMvc.perform(post("/groups/group1/" + iterationIndex + "/delete").with(csrf()).session(session))
+                .andExpect(redirectedUrl("/pages/" + expectedRedirectPageName));
+    }
+
 
     private void completeAnIterationGoingThroughSecondPage(String iteration) throws Exception {
         postExpectingSuccess("startPage");

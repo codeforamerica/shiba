@@ -37,50 +37,6 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
     }
 
     @Test
-    void shouldShowDeleteWarningPage() {
-        String warningPageTitle = "warning page title";
-        staticMessageSource.addMessage("some-warning-title", Locale.ENGLISH, warningPageTitle);
-
-        String firstIterationInput1Value = "goToSecondPage";
-        String secondIterationInput1Value = "goToThirdPage";
-
-        navigateTo("startPage");
-        testPage.clickContinue();
-        testPage.enter("input1", firstIterationInput1Value);
-        testPage.clickContinue();
-        testPage.enter("input2", "text 2");
-        testPage.clickContinue();
-
-        testPage.clickContinue();
-        testPage.enter("input1", secondIterationInput1Value);
-        testPage.clickContinue();
-        testPage.enter("input3", "text 4");
-        testPage.clickContinue();
-
-        assertThat(driver.findElement(By.id("iteration0-delete"))).isNotNull();
-        assertThat(driver.findElement(By.id("iteration1-delete"))).isNotNull();
-        assertThat(driver.findElements(By.id("iteration2-delete"))).isEmpty();
-
-        driver.findElement(By.id("iteration1-delete")).click();
-
-        assertThat(testPage.getTitle()).isEqualTo(warningPageTitle);
-        assertThat(testPage.findElementTextByName("warning-message")).isEqualTo("This is a warning for: " + secondIterationInput1Value);
-        testPage.clickButton("Yes, remove it");
-
-        assertThat(driver.findElement(By.id("iteration0-delete"))).isNotNull();
-        assertThat(driver.findElements(By.id("iteration1-delete"))).isEmpty();
-
-        driver.findElement(By.id("iteration0-delete")).click();
-
-        assertThat(testPage.getTitle()).isEqualTo(warningPageTitle);
-        assertThat(testPage.findElementTextByName("warning-message")).isEqualTo("This is a warning for: " + firstIterationInput1Value);
-        testPage.clickButton("Yes, remove it");
-
-        assertThat(driver.findElements(By.id("iteration0-delete"))).isEmpty();
-    }
-
-
-    @Test
     void shouldPublishSubflowIterationDeleted() {
         String warningPageTitle = "warning page title";
         staticMessageSource.addMessage("some-warning-title", Locale.ENGLISH, warningPageTitle);

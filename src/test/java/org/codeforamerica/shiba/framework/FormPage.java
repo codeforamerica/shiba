@@ -34,6 +34,10 @@ public class FormPage {
         return html.select("input[name='%s[]'] ~ p.text--error".formatted(inputName)).first();
     }
 
+    public String findElementTextById(String id) {
+        return html.getElementById(id).text();
+    }
+
     public String getTitle() {
         return html.title();
     }
