@@ -10,7 +10,7 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.codeforamerica.shiba.Utils;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.documents.DocumentRepositoryService;
+import org.codeforamerica.shiba.documents.CombinedDocumentRepositoryService;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.Document;
@@ -32,7 +32,7 @@ public class PdfGenerator implements FileGenerator {
     private final PdfFieldMapper pdfFieldMapper;
     private final Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillerMap;
     private final ApplicationRepository applicationRepository;
-    private final DocumentRepositoryService documentRepositoryService;
+    private final CombinedDocumentRepositoryService combinedDocumentRepositoryService;
     private final ApplicationInputsMappers mappers;
     private final FileNameGenerator fileNameGenerator;
 
@@ -41,14 +41,14 @@ public class PdfGenerator implements FileGenerator {
     public PdfGenerator(PdfFieldMapper pdfFieldMapper,
                         Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers,
                         ApplicationRepository applicationRepository,
-                        DocumentRepositoryService documentRepositoryService,
+                        CombinedDocumentRepositoryService combinedDocumentRepositoryService,
                         ApplicationInputsMappers mappers,
                         FileNameGenerator fileNameGenerator
     ) {
         this.pdfFieldMapper = pdfFieldMapper;
         this.pdfFieldFillerMap = pdfFieldFillers;
-        this.documentRepositoryService = documentRepositoryService;
         this.applicationRepository = applicationRepository;
+        this.combinedDocumentRepositoryService = combinedDocumentRepositoryService;
         this.mappers = mappers;
         this.fileNameGenerator = fileNameGenerator;
     }
@@ -66,23 +66,26 @@ public class PdfGenerator implements FileGenerator {
     }
 
     public ApplicationFile generateForUploadedDocument(UploadedDocument uploadedDocument, int documentIndex, Application application, byte[] coverPage) {
-        var fileBytes = documentRepositoryService.get(uploadedDocument.getS3Filepath());
-        var extension = Utils.getFileType(uploadedDocument.getFilename());
-        if (IMAGE_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
-            try {
-                fileBytes = convertImageToPdf(fileBytes, uploadedDocument.getFilename());
-                extension = "pdf";
-            } catch (IOException e) {
-                log.error("failed to convert document " + uploadedDocument.getFilename() + " to pdf. Maintaining original type");
+        var fileBytes = combinedDocumentRepositoryService.getFromAzureWithFallbackToS3(uploadedDocument.getS3Filepath());
+        if(fileBytes != null) {
+            var extension = Utils.getFileType(uploadedDocument.getFilename());
+            if (IMAGE_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
+                try {
+                    fileBytes = convertImageToPdf(fileBytes, uploadedDocument.getFilename());
+                    extension = "pdf";
+                } catch (IOException e) {
+                    log.error("failed to convert document " + uploadedDocument.getFilename() + " to pdf. Maintaining original type");
+                }
             }
-        }
 
-        if (extension.equals("pdf")) {
-            fileBytes = addCoverPageToPdf(coverPage, fileBytes);
-        }
+            if (extension.equals("pdf")) {
+                fileBytes = addCoverPageToPdf(coverPage, fileBytes);
+            }
 
-        String filename = fileNameGenerator.generateUploadedDocumentName(application, documentIndex, extension);
-        return new ApplicationFile(fileBytes, filename);
+            String filename = fileNameGenerator.generateUploadedDocumentName(application, documentIndex, extension);
+            return new ApplicationFile(fileBytes, filename);
+        }
+         return null;
     }
 
     private byte[] addCoverPageToPdf(byte[] coverPage, byte[] fileBytes) {

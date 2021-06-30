@@ -1,6 +1,5 @@
 package org.codeforamerica.shiba.documents;
 
-import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -9,7 +8,6 @@ import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.util.IOUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @Service
-@Profile({"demo", "staging", "production"})
 @Slf4j
 public class S3DocumentRepositoryService implements DocumentRepositoryService {
     private final TransferManager transferManager;
@@ -34,30 +31,34 @@ public class S3DocumentRepositoryService implements DocumentRepositoryService {
 
     @Override
     public byte[] get(String filepath) {
-        S3Object obj = s3Client.getObject(bucketName, filepath);
-        S3ObjectInputStream stream = obj.getObjectContent();
         try {
+            S3Object obj = s3Client.getObject(bucketName, filepath);
+            S3ObjectInputStream stream = obj.getObjectContent();
             byte[] content = IOUtils.toByteArray(stream);
             obj.close();
             return content;
-        } catch (IOException e) {
+        } catch (Exception e) {
             return null;
         }
     }
 
     @Override
-    public void upload(String filepath, MultipartFile file) throws IOException, InterruptedException {
+    public void upload(String filepath, MultipartFile file) {
         log.info("Uploading file {} to S3 at filepath {}", file.getOriginalFilename(), filepath);
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(file.getSize());
-        transferManager
-                .upload(bucketName, filepath, file.getInputStream(), metadata)
-                .waitForCompletion();
+        try {
+            transferManager
+                    .upload(bucketName, filepath, file.getInputStream(), metadata)
+                    .waitForCompletion();
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         log.info("finished uploading");
     }
 
     @Override
-    public void delete(String filepath) throws SdkClientException {
+    public void delete(String filepath) {
         log.info("Deleting file at filepath {} from S3", filepath);
         s3Client.deleteObject(new DeleteObjectRequest(bucketName, filepath));
     }

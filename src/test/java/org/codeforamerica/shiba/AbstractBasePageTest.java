@@ -33,6 +33,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -127,8 +128,7 @@ public abstract class AbstractBasePageTest {
     }
 
     protected void waitForDocumentUploadToComplete() {
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText("delete")));
+        await().atMost(15, TimeUnit.SECONDS).until(() -> driver.findElementsByLinkText("cancel").isEmpty());
     }
 
     @SuppressWarnings("unused")
