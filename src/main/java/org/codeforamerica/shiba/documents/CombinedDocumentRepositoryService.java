@@ -30,12 +30,12 @@ public class CombinedDocumentRepositoryService {
     }
 
     public void uploadConcurrently(String filepath, MultipartFile file) {
-        new Thread(() -> s3DocumentRepositoryService.upload(filepath, file)).start();
-        new Thread(() -> azureDocumentRepositoryService.upload(filepath, file)).start();
+        new Thread(s3DocumentRepositoryService.upload(filepath, file)).start();
+        new Thread(azureDocumentRepositoryService.upload(filepath, file)).start();
     }
 
     public void deleteConcurrently(String filepath) {
-        new Thread(() -> s3DocumentRepositoryService.delete(filepath)).start();
-        new Thread(() -> azureDocumentRepositoryService.delete(filepath)).start();
+        new Thread(s3DocumentRepositoryService.delete(filepath)).start();
+        new Thread(azureDocumentRepositoryService.delete(filepath)).start();
     }
 }

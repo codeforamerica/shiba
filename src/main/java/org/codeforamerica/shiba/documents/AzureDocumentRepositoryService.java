@@ -35,7 +35,7 @@ public class AzureDocumentRepositoryService implements DocumentRepositoryService
     }
 
     @Override
-    public void upload(String filepath, MultipartFile file) {
+    public Runnable upload(String filepath, MultipartFile file) {
         log.info("Uploading file {} to Azure at filepath {}", file.getOriginalFilename(), filepath);
         // Get a reference to a blob
         BlobClient blobClient = containerClient.getBlobClient(filepath);
@@ -47,11 +47,13 @@ public class AzureDocumentRepositoryService implements DocumentRepositoryService
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        return null;
     }
 
     @Override
-    public void delete(String filepath) {
+    public Runnable delete(String filepath) {
         BlobClient blobClient = containerClient.getBlobClient(filepath);
         blobClient.delete();
+        return null;
     }
 }

@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.documents;
 
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -43,7 +44,7 @@ public class S3DocumentRepositoryService implements DocumentRepositoryService {
     }
 
     @Override
-    public void upload(String filepath, MultipartFile file) {
+    public Runnable upload(String filepath, MultipartFile file) {
         log.info("Uploading file {} to S3 at filepath {}", file.getOriginalFilename(), filepath);
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(file.getSize());
@@ -51,15 +52,17 @@ public class S3DocumentRepositoryService implements DocumentRepositoryService {
             transferManager
                     .upload(bucketName, filepath, file.getInputStream(), metadata)
                     .waitForCompletion();
+            log.info("finished uploading");
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
-        log.info("finished uploading");
+        return null;
     }
 
     @Override
-    public void delete(String filepath) {
+    public Runnable delete(String filepath) throws SdkClientException {
         log.info("Deleting file at filepath {} from S3", filepath);
         s3Client.deleteObject(new DeleteObjectRequest(bucketName, filepath));
+        return null;
     }
 }
