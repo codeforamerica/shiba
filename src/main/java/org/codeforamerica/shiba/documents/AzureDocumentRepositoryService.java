@@ -5,7 +5,6 @@ import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,21 +35,23 @@ public class AzureDocumentRepositoryService implements DocumentRepositoryService
     }
 
     @Override
-    public Runnable upload(String filepath, MultipartFile file) throws IOException, InterruptedException {
+    public void upload(String filepath, MultipartFile file) {
         log.info("Uploading file {} to Azure at filepath {}", file.getOriginalFilename(), filepath);
         // Get a reference to a blob
         BlobClient blobClient = containerClient.getBlobClient(filepath);
         log.info("Uploading to Azure Blob storage as blob:" + blobClient.getBlobUrl());
-        // Upload the blob
-        blobClient.upload(file.getInputStream(), file.getSize());
-        log.info("finished uploading");
-        return null;
+        try {
+            // Upload the blob
+            blobClient.upload(file.getInputStream(), file.getSize());
+            log.info("finished uploading");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public Runnable delete(String filepath) {
+    public void delete(String filepath) {
         BlobClient blobClient = containerClient.getBlobClient(filepath);
         blobClient.delete();
-        return null;
     }
 }

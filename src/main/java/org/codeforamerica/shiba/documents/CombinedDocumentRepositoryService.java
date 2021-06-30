@@ -4,8 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-
 @Service
 @Slf4j
 public class CombinedDocumentRepositoryService {
@@ -24,20 +22,20 @@ public class CombinedDocumentRepositoryService {
         if (null == content) {
             log.info("File at filepath " + filepath + " cannot be found in Azure. Now checking S3.");
             content = s3DocumentRepositoryService.get(filepath);
-            if( null == content) {
+            if (null == content) {
                 log.error("File at filepath " + filepath + " cannot be found in Azure or S3.");
             }
         }
         return content;
     }
 
-    public void uploadConcurrently(String filepath, MultipartFile file) throws IOException, InterruptedException {
-        new Thread(s3DocumentRepositoryService.upload(filepath, file)).start();
-        new Thread(azureDocumentRepositoryService.upload(filepath, file)).start();
+    public void uploadConcurrently(String filepath, MultipartFile file) {
+        new Thread(() -> s3DocumentRepositoryService.upload(filepath, file)).start();
+        new Thread(() -> azureDocumentRepositoryService.upload(filepath, file)).start();
     }
 
     public void deleteConcurrently(String filepath) {
-        new Thread(s3DocumentRepositoryService.delete(filepath)).start();
-        new Thread(azureDocumentRepositoryService.delete(filepath)).start();
+        new Thread(() -> s3DocumentRepositoryService.delete(filepath)).start();
+        new Thread(() -> azureDocumentRepositoryService.delete(filepath)).start();
     }
 }
