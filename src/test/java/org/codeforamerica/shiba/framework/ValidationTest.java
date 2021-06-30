@@ -118,8 +118,8 @@ public class ValidationTest extends AbstractFrameworkTest {
     @Test
     void shouldTriggerValidation_whenConditionIsTrue() throws Exception {
         assertPageDoesNotHaveInputError("firstPage", "someInputName");
-        postExpectingFailure("firstPage", "someInputName", "valueToTriggerCondition");
-        assertPageHasInputError("firstPage", "conditionalValidationWhenValueEquals");
+        postAndAssertErrorDisplaysOnAnotherInput("firstPage", "someInputName", "valueToTriggerCondition",
+                                                 "conditionalValidationWhenValueEquals");
     }
 
     @Test
@@ -168,26 +168,20 @@ public class ValidationTest extends AbstractFrameworkTest {
 
         @Test
         void shouldTriggerValidation_whenConditionInputDoesNotContainValue() throws Exception {
-            postExpectingFailure("doesNotContainConditionPage",
-                                 "triggerInput",
-                                 "not trigger");
-            assertPageHasInputError("doesNotContainConditionPage", "conditionTest");
+            postAndAssertErrorDisplaysOnAnotherInput("doesNotContainConditionPage", "triggerInput", "not trigger",
+                                                     "conditionTest");
         }
 
         @Test
         void shouldTriggerValidation_whenConditionInputIsEmptyOrBlank() throws Exception {
-            postExpectingFailure("emptyInputConditionPage",
-                                 "triggerInput",
-                                 "");
-
-            assertPageHasInputError("emptyInputConditionPage", "conditionTest");
+            postAndAssertErrorDisplaysOnAnotherInput("emptyInputConditionPage", "triggerInput", "", "conditionTest");
         }
 
         @Test
         void shouldNotTriggerValidation_whenConditionInputIsNotEmptyOrBlank() throws Exception {
             var page = postExpectingSuccessAndFollowRedirect("emptyInputConditionPage",
-                                 "triggerInput",
-                                 "something");
+                                                             "triggerInput",
+                                                             "something");
             assertThat(page.getTitle()).isEqualTo(lastPageTitle);
         }
     }
@@ -201,8 +195,7 @@ public class ValidationTest extends AbstractFrameworkTest {
                 "   "
         })
         void shouldFailValidationForNOT_BLANKWhenThereIsEmptyOrBlankInput(String textInputValue) throws Exception {
-            postExpectingFailure("notBlankPage", "notBlankInput", textInputValue);
-            assertPageHasInputError("notBlankPage", "notBlankInput");
+            postAndAssertInputErrorDisplays("notBlankPage", "notBlankInput", textInputValue);
         }
 
         @Test
@@ -218,8 +211,7 @@ public class ValidationTest extends AbstractFrameworkTest {
                 "1234e"
         })
         void shouldFailValidationForZipCodeWhenValueIsNotExactlyFiveDigits(String input) throws Exception {
-            postExpectingFailure("zipcodePage", "zipCodeInput", input);
-            assertPageHasInputError("zipcodePage", "zipCodeInput");
+            postAndAssertInputErrorDisplays("zipcodePage", "zipCodeInput", input);
         }
 
         @Test
@@ -237,8 +229,65 @@ public class ValidationTest extends AbstractFrameworkTest {
                 "1234e67"
         })
         void shouldFailValidationForCaseNumberWhenValueIsNotFourToSevenDigits(String input) throws Exception {
-            postExpectingFailure("caseNumberPage", "caseNumberInput", input);
-            assertPageHasInputError("caseNumberPage", "caseNumberInput");
+            postAndAssertInputErrorDisplays("caseNumberPage", "caseNumberInput", input);
+        }
+
+        @Test
+        void shouldNotFailValidationForCaseNumberWhenValueIsEmptyWhenReturningToPage() throws Exception {
+            postWithoutData("caseNumberPage").andExpect(redirectedUrl("/pages/caseNumberPage/navigation"));
+            assertPageDoesNotHaveInputError("caseNumberPage", "caseNumberInput");
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {
+                "1234",
+                "12345",
+                "123456",
+                "1234567"
+        })
+        void shouldPassValidationForCaseNumberWhenValueIsFourToSevenDigits(String input) throws Exception {
+            var nextPage = postExpectingSuccessAndFollowRedirect("caseNumberPage", "caseNumberInput", input);
+            assertThat(nextPage.getTitle()).isEqualTo(lastPageTitle);
+        }
+
+        @Test
+        void shouldPassValidationForStateWhenValueIsAKnownStateCode_caseInsensitive() throws Exception {
+            postAndAssertInputErrorDisplays("statePage", "stateInput", "XY");
+
+            var nextPage = postExpectingSuccessAndFollowRedirect("statePage", "stateInput", "mn");
+            assertThat(nextPage.getTitle()).isEqualTo(lastPageTitle);
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {
+                "723456789",
+                "72345678901",
+                "723456789e",
+                "723-456789",
+                "1234567890",
+                "0234567890",
+        })
+        void shouldFailValidationForPhoneIfValueIsNotExactly10DigitsOrStartsWithAZeroOrOne(String input)
+                throws Exception {
+            postAndAssertInputErrorDisplays("phonePage", "phoneInput", input);
+        }
+
+        @Test
+        void shouldPassValidationForPhoneIfAndOnlyIfValueIsExactly10Digits() throws Exception {
+            var page = postExpectingSuccessAndFollowRedirect("phonePage", "phoneInput", "7234567890");
+            assertThat(page.getTitle()).isEqualTo(lastPageTitle);
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {
+                "a123",
+                "1.",
+                "51.787",
+                "1.000",
+                "-152"
+        })
+        void shouldFailValidationForMoneyWhenValueIsNotAWholeDollarAmount(String value) throws Exception {
+            postAndAssertInputErrorDisplays("moneyPage", "moneyInput", value);
         }
     }
 }

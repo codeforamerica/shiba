@@ -265,6 +265,17 @@ public class AbstractShibaMockMvcTest {
         ).andExpect(redirectedUrl(postUrl));
     }
 
+    protected void postAndAssertInputErrorDisplays(String pageName, String inputName, String value) throws Exception {
+        postExpectingFailure(pageName, inputName, value);
+        assertPageHasInputError(pageName, inputName);
+    }
+
+    protected void postAndAssertErrorDisplaysOnAnotherInput(String pageName, String inputName, String value,
+                                                            String inputNameWithError) throws Exception {
+        postExpectingFailure(pageName, inputName, value);
+        assertPageHasInputError(pageName, inputNameWithError);
+    }
+
     @NotNull
     private Map<String, List<String>> fixInputNamesForParams(Map<String, List<String>> params) {
         return params.entrySet().stream()
