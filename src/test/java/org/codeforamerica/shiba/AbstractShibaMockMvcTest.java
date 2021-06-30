@@ -2,6 +2,7 @@ package org.codeforamerica.shiba;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
+import org.codeforamerica.shiba.framework.FormPage;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.config.PageTemplate;
@@ -21,7 +22,6 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -31,17 +31,18 @@ import java.time.ZoneOffset;
 import java.util.*;
 
 import static java.util.stream.Collectors.toMap;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.TestUtils.resetApplicationData;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.not;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = MOCK)
@@ -98,12 +99,12 @@ public class AbstractShibaMockMvcTest {
     }
 
     protected void addJob(String householdMemberFullNameAndId, String employersName) throws Exception {
-        postWithData("householdSelectionForIncome", "whoseJobIsIt", householdMemberFullNameAndId);
-        postWithData("employersName", "employersName", employersName);
-        postWithData("selfEmployment", "selfEmployment", "false");
-        postWithData("paidByTheHour", "paidByTheHour", "false");
-        postWithData("payPeriod", "payPeriod", "EVERY_WEEK");
-        postWithData("incomePerPayPeriod", "incomePerPayPeriod", "1");
+        postExpectingSuccess("householdSelectionForIncome", "whoseJobIsIt", householdMemberFullNameAndId);
+        postExpectingSuccess("employersName", "employersName", employersName);
+        postExpectingSuccess("selfEmployment", "selfEmployment", "false");
+        postExpectingSuccess("paidByTheHour", "paidByTheHour", "false");
+        postExpectingSuccess("payPeriod", "payPeriod", "EVERY_WEEK");
+        postExpectingSuccess("incomePerPayPeriod", "incomePerPayPeriod", "1");
     }
 
     protected void postWithQueryParam(String pageName, String queryParam, String value) throws Exception {
@@ -119,18 +120,18 @@ public class AbstractShibaMockMvcTest {
     }
 
     protected void addHouseholdMembers() throws Exception {
-        postWithData("personalInfo", Map.of(
+        postExpectingSuccess("personalInfo", Map.of(
                 "firstName", List.of("Dwight"),
                 "lastName", List.of("Schrute"),
                 "dateOfBirth", List.of("01", "12", "1928")
         ));
-        postWithData("addHouseholdMembers", "addHouseholdMembers", "true");
-        postWithData("householdMemberInfo", Map.of(
+        postExpectingSuccess("addHouseholdMembers", "addHouseholdMembers", "true");
+        postExpectingSuccess("householdMemberInfo", Map.of(
                 "firstName", List.of("Jim"),
                 "lastName", List.of("Halpert"),
                 "programs", List.of("CCAP")
         ));
-        postWithData("householdMemberInfo", Map.of(
+        postExpectingSuccess("householdMemberInfo", Map.of(
                 "firstName", List.of("Pam"),
                 "lastName", List.of("Beesly"),
                 "programs", List.of("CCAP")
@@ -180,12 +181,12 @@ public class AbstractShibaMockMvcTest {
     }
 
     protected void fillInRequiredPages() throws Exception {
-        postWithData("migrantFarmWorker", "migrantOrSeasonalFarmWorker", "false");
-        postWithData("utilities", "payForUtilities", "COOLING");
+        postExpectingSuccess("migrantFarmWorker", "migrantOrSeasonalFarmWorker", "false");
+        postExpectingSuccess("utilities", "payForUtilities", "COOLING");
     }
 
     protected void fillOutPersonalInfo() throws Exception {
-        postWithData("personalInfo", Map.of(
+        postExpectingSuccess("personalInfo", Map.of(
                 "firstName", List.of("defaultFirstName"),
                 "lastName", List.of("defaultLastName"),
                 "otherName", List.of("defaultOtherName"),
@@ -200,44 +201,46 @@ public class AbstractShibaMockMvcTest {
     }
 
     protected void fillOutContactInfo() throws Exception {
-        postWithData("contactInfo", Map.of(
+        postExpectingSuccess("contactInfo", Map.of(
                 "phoneNumber", List.of("7234567890"),
                 "phoneOrEmail", List.of("TEXT")
         ));
     }
 
     protected void submitApplication() throws Exception {
-        postWithData("/submit",
-                     "/pages/signThisApplication/navigation",
-                     Map.of("applicantSignature", List.of("Human McPerson")));
+        postExpectingSuccess("/submit",
+                             "/pages/signThisApplication/navigation",
+                             Map.of("applicantSignature", List.of("Human McPerson")));
     }
 
     protected void selectPrograms(String... programs) throws Exception {
-        postWithData("choosePrograms", "programs", Arrays.stream(programs).toList());
+        postExpectingSuccess("choosePrograms", "programs", Arrays.stream(programs).toList());
     }
 
     // Post to a page with an arbitrary number of multi-value inputs
-    protected ResultActions postWithData(String pageName, Map<String, List<String>> params) throws Exception {
+    protected ResultActions postExpectingSuccess(String pageName, Map<String, List<String>> params) throws Exception {
         String postUrl = getUrlForPageName(pageName);
-        return postWithData(postUrl, postUrl + "/navigation", params);
+        return postExpectingSuccess(postUrl, postUrl + "/navigation", params);
     }
 
     // Post to a page with a single input that only accepts a single value
-    protected ResultActions postWithData(String pageName, String inputName, String value) throws Exception {
+    protected ResultActions postExpectingSuccess(String pageName, String inputName, String value) throws Exception {
         String postUrl = getUrlForPageName(pageName);
         var params = Map.of(inputName, List.of(value));
-        return postWithData(postUrl, postUrl + "/navigation", params);
+        return postExpectingSuccess(postUrl, postUrl + "/navigation", params);
     }
 
     // Post to a page with a single input that accepts multiple values
-    protected ResultActions postWithData(String pageName, String inputName, List<String> values) throws Exception {
+    protected ResultActions postExpectingSuccess(String pageName, String inputName,
+                                                 List<String> values) throws Exception {
         String postUrl = getUrlForPageName(pageName);
-        return postWithData(postUrl, postUrl + "/navigation", Map.of(inputName, values));
+        return postExpectingSuccess(postUrl, postUrl + "/navigation", Map.of(inputName, values));
     }
 
-    protected ResultActions postWithData(String postUrl, String redirectUrl, Map<String, List<String>> params) throws Exception {
-        Map<String, List<String>> paramsWithProperInputNames = params.entrySet().stream()
-                .collect(toMap(e -> e.getKey() + "[]", Map.Entry::getValue));
+    protected ResultActions postExpectingSuccess(String postUrl, String redirectUrl,
+                                                 Map<String, List<String>> params) throws
+            Exception {
+        Map<String, List<String>> paramsWithProperInputNames = fixInputNamesForParams(params);
         return mockMvc.perform(
                 post(postUrl)
                         .session(session)
@@ -245,6 +248,69 @@ public class AbstractShibaMockMvcTest {
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                         .params(new LinkedMultiValueMap<>(paramsWithProperInputNames))
         ).andExpect(redirectedUrl(redirectUrl));
+    }
+
+    protected void postExpectingSuccessAndAssertRedirectIsCorrect(String pageName,
+                                                                  String inputName,
+                                                                  String value,
+                                                                  String nextPageTitle) throws Exception {
+        var nextPage = postExpectingSuccessAndFollowRedirect(pageName, inputName, value);
+        assertThat(nextPage.getTitle()).isEqualTo(nextPageTitle);
+    }
+
+    protected void postExpectingSuccessAndAssertRedirectIsCorrect(String pageName,
+                                                                  String inputName,
+                                                                  List<String> values,
+                                                                  String nextPageTitle) throws Exception {
+        var nextPage = postExpectingSuccessAndFollowRedirect(pageName, inputName, values);
+        assertThat(nextPage.getTitle()).isEqualTo(nextPageTitle);
+    }
+
+    protected ResultActions postExpectingFailure(String pageName, String inputName, String value) throws Exception {
+        return postExpectingFailure(pageName, Map.of(inputName, List.of(value)));
+    }
+
+    protected ResultActions postExpectingFailure(String pageName, String inputName,
+                                                 List<String> values) throws Exception {
+        return postExpectingFailure(pageName, Map.of(inputName, values));
+    }
+
+    protected ResultActions postExpectingFailure(String pageName, Map<String, List<String>> params) throws Exception {
+        Map<String, List<String>> paramsWithProperInputNames = fixInputNamesForParams(params);
+        String postUrl = getUrlForPageName(pageName);
+        return mockMvc.perform(
+                post(postUrl)
+                        .session(session)
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                        .params(new LinkedMultiValueMap<>(paramsWithProperInputNames))
+        ).andExpect(redirectedUrl(postUrl));
+    }
+
+    protected void postExpectingFailureAndAssertErrorDisplaysForThatInput(String pageName, String inputName,
+                                                                          String value) throws Exception {
+        postExpectingFailure(pageName, inputName, value);
+        assertPageHasInputError(pageName, inputName);
+    }
+
+    protected void postExpectingFailureAndAssertErrorDisplaysForThatInput(String pageName, String inputName,
+                                                                          List<String> values) throws Exception {
+        postExpectingFailure(pageName, inputName, values);
+        assertPageHasInputError(pageName, inputName);
+    }
+
+
+    protected void postExpectingFailureAndAssertErrorDisplaysOnDifferentInput(String pageName, String inputName,
+                                                                              String value,
+                                                                              String inputNameWithError) throws Exception {
+        postExpectingFailure(pageName, inputName, value);
+        assertPageHasInputError(pageName, inputNameWithError);
+    }
+
+    @NotNull
+    private Map<String, List<String>> fixInputNamesForParams(Map<String, List<String>> params) {
+        return params.entrySet().stream()
+                .collect(toMap(e -> e.getKey() + "[]", Map.Entry::getValue));
     }
 
     protected ResultActions postWithoutData(String pageName) throws Exception {
@@ -261,13 +327,47 @@ public class AbstractShibaMockMvcTest {
         return "/pages/" + pageName;
     }
 
-    @NotNull
-    protected ResultMatcher pageHasInputError() {
-        return content().string(containsString("text--error"));
+    protected void assertPageHasInputError(String pageName, String inputName) throws Exception {
+        var page = new FormPage(getPage(pageName));
+        assertTrue(page.hasInputError(inputName));
+    }
+
+    protected void assertPageDoesNotHaveInputError(String pageName, String inputName) throws Exception {
+        var page = new FormPage(getPage(pageName));
+        assertFalse(page.hasInputError(inputName));
     }
 
     @NotNull
-    protected ResultMatcher pageDoesNotHaveInputError() {
-        return content().string(not(containsString("text--error")));
+    protected ResultActions getPage(String pageName) throws Exception {
+        return mockMvc.perform(get("/pages/" + pageName).session(session));
+    }
+
+    /**
+     * Accepts the page you are on and follows the redirects to get the next page
+     *
+     * @param currentPageName the page
+     * @return a form page that can be asserted against
+     */
+    protected FormPage getNextPage(String currentPageName) throws Exception {
+        String redirectedUrl = Objects.requireNonNull(getPage(currentPageName + "/navigation").andExpect(status().is3xxRedirection())
+                                                              .andReturn()
+                                                              .getResponse()
+                                                              .getRedirectedUrl());
+
+        ResultActions nextPage = mockMvc.perform(get((redirectedUrl)).session(session));
+        return new FormPage(nextPage);
+    }
+
+    protected FormPage postExpectingSuccessAndFollowRedirect(String pageName, String inputName, String value) throws
+            Exception {
+        postExpectingSuccess(pageName, inputName, value);
+        return getNextPage(pageName);
+    }
+
+    protected FormPage postExpectingSuccessAndFollowRedirect(String pageName, String inputName,
+                                                             List<String> values) throws
+            Exception {
+        postExpectingSuccess(pageName, inputName, values);
+        return getNextPage(pageName);
     }
 }

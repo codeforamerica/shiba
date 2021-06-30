@@ -25,20 +25,20 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
     protected void setUp() throws Exception {
         super.setUp();
         mockMvc.perform(get("/pages/languagePreferences").session(session)); // start timer
-        postWithData("languagePreferences", Map.of(
+        postExpectingSuccess("languagePreferences", Map.of(
                 "writtenLanguage", List.of("ENGLISH"),
                 "spokenLanguage", List.of("ENGLISH"))
         );
 
-        postWithData("addHouseholdMembers", "addHouseholdMembers", "false");
+        postExpectingSuccess("addHouseholdMembers", "addHouseholdMembers", "false");
     }
 
     @Test
     void shouldAnswerEnergyAssistanceQuestion() throws Exception {
         selectPrograms("CASH");
 
-        postWithData("energyAssistance", "energyAssistance", "true");
-        postWithData("energyAssistanceMoreThan20", "energyAssistanceMoreThan20", "false");
+        postExpectingSuccess("energyAssistance", "energyAssistance", "true");
+        postExpectingSuccess("energyAssistanceMoreThan20", "energyAssistanceMoreThan20", "false");
 
         var caf = submitAndDownloadCaf();
         assertPdfFieldEquals("RECEIVED_LIHEAP", "No", caf);
@@ -48,7 +48,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
     void shouldMapEnergyAssistanceWhenUserReceivedNoAssistance() throws Exception {
         selectPrograms("CASH");
 
-        postWithData("energyAssistance", "energyAssistance", "false");
+        postExpectingSuccess("energyAssistance", "energyAssistance", "false");
 
         var caf = submitAndDownloadCaf();
         assertPdfFieldEquals("RECEIVED_LIHEAP", "No", caf);
@@ -60,16 +60,16 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
         addHouseholdMembers();
 
         String jimHalpertId = getFirstHouseholdMemberId();
-        postWithData("childrenInNeedOfCare",
-                     "whoNeedsChildCare",
-                     List.of("Dwight Schrute applicant", "Jim Halpert " + jimHalpertId)
+        postExpectingSuccess("childrenInNeedOfCare",
+                             "whoNeedsChildCare",
+                             List.of("Dwight Schrute applicant", "Jim Halpert " + jimHalpertId)
         );
 
-        postWithData("whoHasParentNotAtHome",
-                     "whoHasAParentNotLivingAtHome",
-                     List.of("Dwight Schrute applicant", "Jim Halpert " + jimHalpertId)
+        postExpectingSuccess("whoHasParentNotAtHome",
+                             "whoHasAParentNotLivingAtHome",
+                             List.of("Dwight Schrute applicant", "Jim Halpert " + jimHalpertId)
         );
-        postWithData("parentNotAtHomeNames", Map.of(
+        postExpectingSuccess("parentNotAtHomeNames", Map.of(
                 "whatAreTheParentsNames", List.of("", "Jim's Parent"),
                 "childIdMap", List.of("applicant", jimHalpertId)
         ));
@@ -91,12 +91,12 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
         addHouseholdMembers();
 
-        postWithData("childrenInNeedOfCare",
-                     "whoNeedsChildCare",
-                     List.of("Dwight Schrute applicant", getJimFullNameAndId())
+        postExpectingSuccess("childrenInNeedOfCare",
+                             "whoNeedsChildCare",
+                             List.of("Dwight Schrute applicant", getJimFullNameAndId())
         );
 
-        postWithData("whoHasParentNotAtHome", "whoHasAParentNotLivingAtHome", "NONE_OF_THE_ABOVE");
+        postExpectingSuccess("whoHasParentNotAtHome", "whoHasAParentNotLivingAtHome", "NONE_OF_THE_ABOVE");
 
         var ccap = submitAndDownloadCcap();
         assertPdfFieldEquals("CHILD_NEEDS_CHILDCARE_FULL_NAME_0", "Dwight Schrute", ccap);
@@ -113,13 +113,13 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
     void shouldDefaultToNoForMillionDollarQuestionWhenQuestionPageIsNotShown() throws Exception {
         selectPrograms("CCAP");
 
-        postWithData("energyAssistance", "energyAssistance", "false");
-        postWithData("medicalExpenses", "medicalExpenses", "NONE_OF_THE_ABOVE");
-        postWithData("supportAndCare", "supportAndCare", "false");
-        postWithData("vehicle", "haveVehicle", "false");
-        postWithData("realEstate", "ownRealEstate", "false");
-        postWithData("investments", "haveInvestments", "false");
-        postWithData("savings", "haveSavings", "false");
+        postExpectingSuccess("energyAssistance", "energyAssistance", "false");
+        postExpectingSuccess("medicalExpenses", "medicalExpenses", "NONE_OF_THE_ABOVE");
+        postExpectingSuccess("supportAndCare", "supportAndCare", "false");
+        postExpectingSuccess("vehicle", "haveVehicle", "false");
+        postExpectingSuccess("realEstate", "ownRealEstate", "false");
+        postExpectingSuccess("investments", "haveInvestments", "false");
+        postExpectingSuccess("savings", "haveSavings", "false");
 
         var ccap = submitAndDownloadCcap();
         assertPdfFieldEquals("HAVE_MILLION_DOLLARS", "No", ccap);
@@ -129,14 +129,14 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
     void shouldMarkYesForMillionDollarQuestionWhenChoiceIsYes() throws Exception {
         selectPrograms("CCAP");
 
-        postWithData("energyAssistance", "energyAssistance", "false");
-        postWithData("medicalExpenses", "medicalExpenses", "NONE_OF_THE_ABOVE");
-        postWithData("supportAndCare", "supportAndCare", "false");
-        postWithData("vehicle", "haveVehicle", "false");
-        postWithData("realEstate", "ownRealEstate", "false");
-        postWithData("investments", "haveInvestments", "true");
-        postWithData("savings", "haveSavings", "false");
-        postWithData("millionDollar", "haveMillionDollars", "true");
+        postExpectingSuccess("energyAssistance", "energyAssistance", "false");
+        postExpectingSuccess("medicalExpenses", "medicalExpenses", "NONE_OF_THE_ABOVE");
+        postExpectingSuccess("supportAndCare", "supportAndCare", "false");
+        postExpectingSuccess("vehicle", "haveVehicle", "false");
+        postExpectingSuccess("realEstate", "ownRealEstate", "false");
+        postExpectingSuccess("investments", "haveInvestments", "true");
+        postExpectingSuccess("savings", "haveSavings", "false");
+        postExpectingSuccess("millionDollar", "haveMillionDollars", "true");
 
         var ccap = submitAndDownloadCcap();
         assertPdfFieldEquals("HAVE_MILLION_DOLLARS", "Yes", ccap);
@@ -145,7 +145,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
     @Test
     void shouldNotMapUnearnedIncomeCcapWhenNoneOfTheAboveIsSelected() throws Exception {
         fillInRequiredPages();
-        postWithData("unearnedIncomeCcap", "unearnedIncomeCcap", "NO_UNEARNED_INCOME_CCAP_SELECTED");
+        postExpectingSuccess("unearnedIncomeCcap", "unearnedIncomeCcap", "NO_UNEARNED_INCOME_CCAP_SELECTED");
 
         var ccap = submitAndDownloadCcap();
         assertPdfFieldEquals("BENEFITS", "No", ccap);
@@ -164,14 +164,14 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
         addHouseholdMembers();
 
         String jim = getJimFullNameAndId();
-        postWithData("childrenInNeedOfCare", "whoNeedsChildCare", jim);
+        postExpectingSuccess("childrenInNeedOfCare", "whoNeedsChildCare", jim);
 
-        postWithData("jobSearch", "currentlyLookingForJob", "true");
+        postExpectingSuccess("jobSearch", "currentlyLookingForJob", "true");
         String pam = getPamFullNameAndId();
-        postWithData("whoIsLookingForAJob", "whoIsLookingForAJob", List.of(jim, pam));
+        postExpectingSuccess("whoIsLookingForAJob", "whoIsLookingForAJob", List.of(jim, pam));
 
         String me = getApplicantFullNameAndId();
-        postWithData("whoIsGoingToSchool", "whoIsGoingToSchool", List.of(me, jim));
+        postExpectingSuccess("whoIsGoingToSchool", "whoIsGoingToSchool", List.of(me, jim));
 
         // Add a job for Jim
         addFirstJob(jim, "Jim's Employer");
@@ -205,18 +205,18 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
         // Add a job for Jim
         postWithQueryParam("incomeByJob", "option", "0");
         String jim = getJimFullNameAndId();
-        postWithData("householdSelectionForIncome", "whoseJobIsIt", jim);
-        postWithData("employersName", "employersName", "someEmployerName");
-        postWithData("selfEmployment", "selfEmployment", "false");
-        postWithData("lastThirtyDaysJobIncome", "lastThirtyDaysJobIncome", "");
+        postExpectingSuccess("householdSelectionForIncome", "whoseJobIsIt", jim);
+        postExpectingSuccess("employersName", "employersName", "someEmployerName");
+        postExpectingSuccess("selfEmployment", "selfEmployment", "false");
+        postExpectingSuccess("lastThirtyDaysJobIncome", "lastThirtyDaysJobIncome", "");
 
         // Add a job for Dwight
         postWithQueryParam("incomeByJob", "option", "0");
         String me = getApplicantFullNameAndId();
-        postWithData("householdSelectionForIncome", "whoseJobIsIt", me);
-        postWithData("employersName", "employersName", "someEmployerName");
-        postWithData("selfEmployment", "selfEmployment", "false");
-        postWithData("lastThirtyDaysJobIncome", "lastThirtyDaysJobIncome", "");
+        postExpectingSuccess("householdSelectionForIncome", "whoseJobIsIt", me);
+        postExpectingSuccess("employersName", "employersName", "someEmployerName");
+        postExpectingSuccess("selfEmployment", "selfEmployment", "false");
+        postExpectingSuccess("lastThirtyDaysJobIncome", "lastThirtyDaysJobIncome", "");
 
         var caf = submitAndDownloadCaf();
         assertPdfFieldIsEmpty("SNAP_EXPEDITED_ELIGIBILITY", caf);
@@ -225,7 +225,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
     @Test
     void shouldNotAddAuthorizedRepFieldsIfNo() throws Exception {
         selectPrograms("CASH");
-        postWithData("authorizedRep", "communicateOnYourBehalf", "false");
+        postExpectingSuccess("authorizedRep", "communicateOnYourBehalf", "false");
 
         var caf = submitAndDownloadCaf();
         assertPdfFieldEquals("AUTHORIZED_REP_FILL_OUT_FORM", "Off", caf);
@@ -265,7 +265,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
             String originalApt = "originalApt";
             String originalCity = "originalCity";
             String originalZipCode = "54321";
-            postWithData("homeAddress", Map.of(
+            postExpectingSuccess("homeAddress", Map.of(
                     "streetAddress", List.of(originalStreetAddress),
                     "apartmentNumber", List.of(originalApt),
                     "city", List.of(originalCity),
@@ -273,7 +273,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
                     "state", List.of("MN"),
                     "sameMailingAddress", List.of("false")
             ));
-            postWithData("verifyHomeAddress", "useEnrichedAddress", "false");
+            postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "false");
 
             var ccap = submitAndDownloadCcap();
             assertPdfFieldEquals("APPLICANT_HOME_STREET_ADDRESS", originalStreetAddress, ccap);
@@ -311,7 +311,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
                             enrichedApartmentNumber,
                             "Hennepin")));
 
-            postWithData("homeAddress", Map.of(
+            postExpectingSuccess("homeAddress", Map.of(
                     "streetAddress", List.of("originalStreetAddress"),
                     "apartmentNumber", List.of("originalApt"),
                     "city", List.of("originalCity"),
@@ -320,7 +320,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
                     "sameMailingAddress", List.of("false")
             ));
 
-            postWithData("verifyHomeAddress", "useEnrichedAddress", "true");
+            postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "true");
 
             var caf = submitAndDownloadCaf();
             var ccap = downloadCcap();
@@ -357,18 +357,18 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
             // Add a job for Jim
             postWithQueryParam("incomeByJob", "option", "0");
             String jim = getJimFullNameAndId();
-            postWithData("householdSelectionForIncome", "whoseJobIsIt", jim);
-            postWithData("employersName", "employersName", "someEmployerName");
-            postWithData("selfEmployment", "selfEmployment", "false");
-            postWithData("lastThirtyDaysJobIncome", "lastThirtyDaysJobIncome", "123");
+            postExpectingSuccess("householdSelectionForIncome", "whoseJobIsIt", jim);
+            postExpectingSuccess("employersName", "employersName", "someEmployerName");
+            postExpectingSuccess("selfEmployment", "selfEmployment", "false");
+            postExpectingSuccess("lastThirtyDaysJobIncome", "lastThirtyDaysJobIncome", "123");
 
             // Add a job for Dwight
             postWithQueryParam("incomeByJob", "option", "0");
             String me = getApplicantFullNameAndId();
-            postWithData("householdSelectionForIncome", "whoseJobIsIt", me);
-            postWithData("employersName", "employersName", "someEmployerName");
-            postWithData("selfEmployment", "selfEmployment", "false");
-            postWithData("lastThirtyDaysJobIncome", "lastThirtyDaysJobIncome", "");
+            postExpectingSuccess("householdSelectionForIncome", "whoseJobIsIt", me);
+            postExpectingSuccess("employersName", "employersName", "someEmployerName");
+            postExpectingSuccess("selfEmployment", "selfEmployment", "false");
+            postExpectingSuccess("lastThirtyDaysJobIncome", "lastThirtyDaysJobIncome", "");
 
             var caf = submitAndDownloadCaf();
             var ccap = downloadCcap();
@@ -385,7 +385,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
                 Exception {
             fillInRequiredPages();
 
-            postWithData("livingSituation", "livingSituation", "UNKNOWN");
+            postExpectingSuccess("livingSituation", "livingSituation", "UNKNOWN");
 
 
             var caf = submitAndDownloadCaf();
@@ -411,9 +411,9 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
         @Test
         void shouldMapLivingWithFamilyAndFriendsDueToEconomicHardship() throws Exception {
             fillInRequiredPages();
-            postWithData("livingSituation",
-                         "livingSituation",
-                         "TEMPORARILY_WITH_FRIENDS_OR_FAMILY_DUE_TO_ECONOMIC_HARDSHIP");
+            postExpectingSuccess("livingSituation",
+                                 "livingSituation",
+                                 "TEMPORARILY_WITH_FRIENDS_OR_FAMILY_DUE_TO_ECONOMIC_HARDSHIP");
 
             var caf = submitAndDownloadCaf();
             var ccap = downloadCcap();
@@ -426,7 +426,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
         @Test
         void shouldMapNoforTemporarilyWithFriendsOrFamilyDueToEconomicHardship() throws Exception {
             fillInRequiredPages();
-            postWithData("livingSituation", "livingSituation", "TEMPORARILY_WITH_FRIENDS_OR_FAMILY_OTHER_REASONS");
+            postExpectingSuccess("livingSituation", "livingSituation", "TEMPORARILY_WITH_FRIENDS_OR_FAMILY_OTHER_REASONS");
 
             var caf = submitAndDownloadCaf();
             var ccap = downloadCcap();
@@ -439,7 +439,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
         @Test
         void shouldMapNoMedicalExpensesWhenNoneSelected() throws Exception {
             fillInRequiredPages();
-            postWithData("medicalExpenses", "medicalExpenses", List.of("NONE_OF_THE_ABOVE"));
+            postExpectingSuccess("medicalExpenses", "medicalExpenses", List.of("NONE_OF_THE_ABOVE"));
 
             var caf = submitAndDownloadCaf();
             assertPdfFieldEquals("MEDICAL_EXPENSES_SELECTION", "NONE_SELECTED", caf);
@@ -448,7 +448,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
         @Test
         void shouldMapYesMedicalExpensesWhenOneSelected() throws Exception {
             fillInRequiredPages();
-            postWithData("medicalExpenses", "medicalExpenses", List.of("MEDICAL_INSURANCE_PREMIUMS"));
+            postExpectingSuccess("medicalExpenses", "medicalExpenses", List.of("MEDICAL_INSURANCE_PREMIUMS"));
 
             var caf = submitAndDownloadCaf();
             assertPdfFieldEquals("MEDICAL_EXPENSES_SELECTION", "ONE_SELECTED", caf);
@@ -470,7 +470,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
                 String originalApt = "originalApt";
                 String originalCity = "originalCity";
                 String originalZipCode = "54321";
-                postWithData("homeAddress", Map.of(
+                postExpectingSuccess("homeAddress", Map.of(
                         "streetAddress", List.of(originalStreetAddress),
                         "apartmentNumber", List.of(originalApt),
                         "city", List.of(originalCity),
@@ -478,7 +478,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
                         "state", List.of("MN"),
                         "sameMailingAddress", List.of("true") // THE KEY DIFFERENCE
                 ));
-                postWithData("verifyHomeAddress", "useEnrichedAddress", "false");
+                postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "false");
 
                 var ccap = submitAndDownloadCcap();
                 assertPdfFieldEquals("APPLICANT_MAILING_STREET_ADDRESS", originalStreetAddress, ccap);
@@ -492,14 +492,14 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
                 String originalStreetAddress = "2168 7th Ave";
                 String originalCity = "Anoka";
                 String originalZipCode = "55303";
-                postWithData("homeAddress", Map.of(
+                postExpectingSuccess("homeAddress", Map.of(
                         "streetAddress", List.of(originalStreetAddress),
                         "city", List.of(originalCity),
                         "zipCode", List.of(originalZipCode),
                         "state", List.of("MN"),
                         "sameMailingAddress", List.of("true") // THE KEY DIFFERENCE
                 ));
-                postWithData("verifyHomeAddress", "useEnrichedAddress", "false");
+                postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "false");
 
                 var ccap = submitAndDownloadCcap();
                 assertPdfFieldEquals("COUNTY_INSTRUCTIONS",
@@ -523,7 +523,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
                                 enrichedZipCodeValue,
                                 enrichedApartmentNumber,
                                 "Hennepin")));
-                postWithData("homeAddress", Map.of(
+                postExpectingSuccess("homeAddress", Map.of(
                         "streetAddress", List.of("originalStreetAddress"),
                         "apartmentNumber", List.of("originalApt"),
                         "city", List.of("originalCity"),
@@ -531,7 +531,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
                         "state", List.of("MN"),
                         "sameMailingAddress", List.of("true") // THE KEY DIFFERENCE
                 ));
-                postWithData("verifyHomeAddress", "useEnrichedAddress", "true");
+                postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "true");
 
                 var caf = submitAndDownloadCaf();
                 var ccap = downloadCcap();
@@ -547,7 +547,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
             @Test
             void shouldMapToOriginalMailingAddressIfSameMailingAddressIsFalseAndUseEnrichedAddressIsFalse() throws
                     Exception {
-                postWithData("homeAddress", Map.of(
+                postExpectingSuccess("homeAddress", Map.of(
                         "streetAddress", List.of("originalHomeStreetAddress"),
                         "apartmentNumber", List.of("originalHomeApt"),
                         "city", List.of("originalHomeCity"),
@@ -555,19 +555,19 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
                         "state", List.of("MN"),
                         "sameMailingAddress", List.of("false") // THE KEY DIFFERENCE
                 ));
-                postWithData("verifyHomeAddress", "useEnrichedAddress", "false");
+                postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "false");
                 String originalStreetAddress = "originalStreetAddress";
                 String originalApt = "originalApt";
                 String originalCity = "originalCity";
                 String originalState = "IL";
-                postWithData("mailingAddress", Map.of(
+                postExpectingSuccess("mailingAddress", Map.of(
                         "streetAddress", List.of(originalStreetAddress),
                         "apartmentNumber", List.of(originalApt),
                         "city", List.of(originalCity),
                         "zipCode", List.of("54321"),
                         "state", List.of(originalState)
                 ));
-                postWithData("verifyMailingAddress", "useEnrichedAddress", "false");
+                postExpectingSuccess("verifyMailingAddress", "useEnrichedAddress", "false");
 
                 var caf = submitAndDownloadCaf();
                 var ccap = downloadCcap();
