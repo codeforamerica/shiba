@@ -6,7 +6,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -114,8 +113,8 @@ public class DocumentsTest extends JourneyTest {
     }
 
     @Test
-    void whenDocumentUploadFailsThenThereShouldBeAnError() throws IOException, InterruptedException {
-        doThrow(new InterruptedException())
+    void whenDocumentUploadFailsThenThereShouldBeAnError() {
+        doThrow(new RuntimeException())
                 .when(documentRepositoryService).uploadConcurrently(any(String.class), any(MultipartFile.class));
 
         getToDocumentUploadScreen();

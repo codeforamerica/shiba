@@ -3,9 +3,6 @@ package org.codeforamerica.shiba.mnit;
 import org.codeforamerica.shiba.ApplicationStatusUpdater;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.FlowType;
-import org.codeforamerica.shiba.documents.AzureDocumentRepositoryService;
-import org.codeforamerica.shiba.documents.CombinedDocumentRepositoryService;
-import org.codeforamerica.shiba.documents.S3DocumentRepositoryService;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.hamcrest.MatcherAssert;
@@ -72,9 +69,6 @@ class MnitEsbWebServiceClientTest {
 
     @MockBean
     private ApplicationStatusUpdater applicationStatusUpdater;
-
-    @MockBean
-    protected CombinedDocumentRepositoryService documentRepositoryService;
 
     private final Map<String, String> namespaceMapping = Map.of("ns2", "http://www.cmis.org/2008/05");
     String fileContent = "fileContent";

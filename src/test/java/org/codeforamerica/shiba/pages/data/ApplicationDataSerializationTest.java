@@ -2,8 +2,7 @@ package org.codeforamerica.shiba.pages.data;
 
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.documents.AzureDocumentRepositoryService;
-import org.codeforamerica.shiba.documents.DocumentRepositoryService;
+import org.codeforamerica.shiba.documents.CombinedDocumentRepositoryService;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,7 +42,7 @@ class ApplicationDataSerializationTest {
     private FileNameGenerator fileNameGenerator;
 
     @MockBean
-    private AzureDocumentRepositoryService documentRepositoryService;
+    private CombinedDocumentRepositoryService documentRepositoryService;
 
     @Autowired
     private PdfGenerator pdfGenerator;
@@ -66,7 +65,7 @@ class ApplicationDataSerializationTest {
         when(fileNameGenerator.generatePdfFileName(any(), any())).thenReturn("some-file.pdf");
 
         var image = getFileContentsAsByteArray("shiba+file.jpg");
-        when(documentRepositoryService.get(anyString())).thenReturn(image);
+        when(documentRepositoryService.getFromAzureWithFallbackToS3(anyString())).thenReturn(image);
         coverPage = getFileContentsAsByteArray("shiba+file.pdf");
     }
 
