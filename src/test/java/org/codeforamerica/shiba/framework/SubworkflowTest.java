@@ -11,6 +11,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.Locale;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -158,6 +159,18 @@ public class SubworkflowTest extends AbstractFrameworkTest {
         completeAnIterationGoingThroughSecondPage("0");
         // go back to the last page of the subworkflow, we should get redirected to the redirect page
         getPage("secondPage").andExpect(redirectedUrl("/pages/redirectPage"));
+    }
+
+    @Test
+    void shouldClearOutSubworkflowsWhenChoosingToRestartSubworkflow() throws Exception {
+        completeAnIterationGoingThroughSecondPage("0");
+
+        // click "Go Back" and confirm you want to start the entire subworkflow over
+        getPage("secondPage").andExpect(redirectedUrl("/pages/redirectPage"));
+        postExpectingSuccess("/groups/group1/delete", "/pages/startPage", Map.of());
+
+        // The next iteration should be considered "iteration0"
+        completeAnIterationGoingThroughThirdPage("0");
     }
 
     private void deleteIteration(String iterationIndex, String warningPageTitle, String iterationInput1Value,

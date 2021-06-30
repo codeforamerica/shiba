@@ -36,26 +36,7 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
         staticMessageSource.addMessage("warning-page-header", Locale.ENGLISH, "This is a warning for: {0}");
     }
 
-    @Test
-    void shouldClearOutSubworkflowsWhenChoosingToRestartSubworkflow() {
-        navigateTo("startPage");
-        testPage.clickContinue();
-        testPage.enter("input1", "goToSecondPage");
-        testPage.clickContinue();
-        testPage.enter("input2", "text 2");
-        testPage.clickContinue();
-        testPage.goBack();
 
-        driver.findElement(By.tagName("button")).click();
-
-        testPage.clickContinue();
-        testPage.enter("input1", "goToThirdPage");
-        testPage.clickContinue();
-        testPage.enter("input3", "new text 2");
-        testPage.clickContinue();
-
-        assertThat(driver.findElement(By.id("iteration0")).getText()).isEqualTo("goToThirdPage");
-    }
 
     @Test
     void shouldRedirectWhenPageDoesntHaveNecessaryDatasources() {
