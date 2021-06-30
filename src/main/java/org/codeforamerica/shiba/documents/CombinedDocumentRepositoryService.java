@@ -29,13 +29,27 @@ public class CombinedDocumentRepositoryService {
         return content;
     }
 
-    public void uploadConcurrently(String filepath, MultipartFile file) {
-        new Thread(s3DocumentRepositoryService.upload(filepath, file)).start();
-        new Thread(azureDocumentRepositoryService.upload(filepath, file)).start();
+    public void uploadConcurrently(String filepath, MultipartFile file) throws InterruptedException {
+        Thread thread1 = new Thread(() -> s3DocumentRepositoryService.upload(filepath, file));
+        thread1.start();
+        Thread thread2 = new Thread(() -> azureDocumentRepositoryService.upload(filepath, file));
+        thread2.start();
+
+        thread1.join();
+        thread2.join();
     }
 
     public void deleteConcurrently(String filepath) {
-        new Thread(s3DocumentRepositoryService.delete(filepath)).start();
-        new Thread(azureDocumentRepositoryService.delete(filepath)).start();
+        Thread thread1 = new Thread(() -> s3DocumentRepositoryService.delete(filepath));
+        thread1.start();
+        Thread thread2 = new Thread(() -> azureDocumentRepositoryService.delete(filepath));
+        thread2.start();
+
+        try {
+            thread1.join();
+            thread2.join();
+        } catch (InterruptedException e) {
+            log.error("Error deleting doc uploads", e);
+        }
     }
 }

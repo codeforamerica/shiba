@@ -113,8 +113,8 @@ public class DocumentsTest extends JourneyTest {
     }
 
     @Test
-    void whenDocumentUploadFailsThenThereShouldBeAnError() {
-        doThrow(new RuntimeException())
+    void whenDocumentUploadFailsThenThereShouldBeAnError() throws InterruptedException {
+        doThrow(new InterruptedException())
                 .when(documentRepositoryService).uploadConcurrently(any(String.class), any(MultipartFile.class));
 
         getToDocumentUploadScreen();
