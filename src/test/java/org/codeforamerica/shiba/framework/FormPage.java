@@ -22,10 +22,6 @@ public class FormPage {
         html = Jsoup.parse(resultActions.andReturn().getResponse().getContentAsString());
     }
 
-//    public String getGoBackLink() {
-//
-//    }
-
     public boolean hasInputError() {
         // It seems like we need to use this one on inputs of type SELECT, not sure why
         Element element = html.select("p.text--error").first();
