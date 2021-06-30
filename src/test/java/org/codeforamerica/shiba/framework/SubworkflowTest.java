@@ -79,21 +79,7 @@ public class SubworkflowTest extends AbstractFrameworkTest {
 
     @Test
     void shouldCompleteSubflowInAnyOfTheConfiguredCompletePages() throws Exception {
-        postExpectingSuccess("startPage");
-        assertNavigationRedirectsToCorrectNextPage("startPage", "skippableFirstPage/navigation");
-
-        var firstPage = getNextPageAsFormPage("skippableFirstPage");
-        assertThat(firstPage.getTitle()).isEqualTo(dummyPageTitle);
-
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("firstPage",
-                                                               "input1",
-                                                               "goToThirdPage",
-                                                               "thirdPage");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("thirdPage",
-                                                               "input3",
-                                                               "text 3",
-                                                               "endPage");
-        assertReviewPageDisplaysCorrectInfoForIteration("0", "goToThirdPage");
+        completeAnIterationGoingThroughThirdPage("0");
         verify(pageEventPublisher).publish(any(SubworkflowCompletedEvent.class));
     }
 
