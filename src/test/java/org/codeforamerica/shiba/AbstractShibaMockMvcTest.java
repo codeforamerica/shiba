@@ -32,6 +32,7 @@ import java.time.ZoneOffset;
 import java.util.*;
 
 import static java.util.stream.Collectors.toMap;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.TestUtils.resetApplicationData;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
@@ -247,6 +248,14 @@ public class AbstractShibaMockMvcTest {
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                         .params(new LinkedMultiValueMap<>(paramsWithProperInputNames))
         ).andExpect(redirectedUrl(redirectUrl));
+    }
+
+    protected void postAndFollowRedirectAndAssertNextPageTitleIsCorrect(String pageName,
+                                                                        String inputName,
+                                                                        String value,
+                                                                        String lastPageTitle) throws Exception {
+        var nextPage = postExpectingSuccessAndFollowRedirect(pageName, inputName, value);
+        assertThat(nextPage.getTitle()).isEqualTo(lastPageTitle);
     }
 
     protected ResultActions postExpectingFailure(String pageName, String inputName, String value) throws Exception {

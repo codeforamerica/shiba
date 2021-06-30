@@ -79,8 +79,10 @@ public class ValidationTest extends AbstractFrameworkTest {
 
     @Test
     void shouldGoOnToNextPage_whenValidationPasses() throws Exception {
-        var page = postExpectingSuccessAndFollowRedirect("firstPage", "someInputName", "something");
-        assertThat(page.getTitle()).isEqualTo(nextPageTitle);
+        postAndFollowRedirectAndAssertNextPageTitleIsCorrect("firstPage",
+                                                             "someInputName",
+                                                             "something",
+                                                             nextPageTitle);
     }
 
     @Test
@@ -111,8 +113,10 @@ public class ValidationTest extends AbstractFrameworkTest {
 
     @Test
     void shouldNotTriggerValidation_whenConditionIsFalse() throws Exception {
-        var page = postExpectingSuccessAndFollowRedirect("firstPage", "someInputName", "do not trigger validation");
-        assertThat(page.getTitle()).isEqualTo(nextPageTitle);
+        postAndFollowRedirectAndAssertNextPageTitleIsCorrect("firstPage",
+                                                             "someInputName",
+                                                             "do not trigger validation",
+                                                             nextPageTitle);
     }
 
     @Test
@@ -137,10 +141,10 @@ public class ValidationTest extends AbstractFrameworkTest {
     class Condition {
         @Test
         void shouldTriggerValidation_whenConditionInputValueIsNoneSelected() throws Exception {
-            var nextPage = postExpectingSuccessAndFollowRedirect("firstPage",
+            postAndFollowRedirectAndAssertNextPageTitleIsCorrect("firstPage",
                                                                  "someInputName",
-                                                                 "do not trigger validation");
-            assertThat(nextPage.getTitle()).isEqualTo(nextPageTitle);
+                                                                 "do not trigger validation",
+                                                                 nextPageTitle);
 
             postWithoutData("nextPage").andExpect(redirectedUrl("/pages/nextPage"));
             assertPageHasInputError("nextPage", "conditionalValidationWhenValueIsNoneSelected");
@@ -148,22 +152,22 @@ public class ValidationTest extends AbstractFrameworkTest {
 
         @Test
         void shouldNotTriggerValidation_whenConditionInputValueIsSelected() throws Exception {
-            var nextPage = postExpectingSuccessAndFollowRedirect("firstPage",
+            postAndFollowRedirectAndAssertNextPageTitleIsCorrect("firstPage",
                                                                  "someInputName",
-                                                                 "do not trigger validation");
-            assertThat(nextPage.getTitle()).isEqualTo(nextPageTitle);
-            var lastPage = postExpectingSuccessAndFollowRedirect("nextPage",
+                                                                 "do not trigger validation",
+                                                                 nextPageTitle);
+            postAndFollowRedirectAndAssertNextPageTitleIsCorrect("nextPage",
                                                                  "someCheckbox",
-                                                                 "VALUE_1");
-            assertThat(lastPage.getTitle()).isEqualTo(lastPageTitle);
+                                                                 "VALUE_1",
+                                                                 lastPageTitle);
         }
 
         @Test
         void shouldNotTriggerValidation_whenConditionInputContainsValue() throws Exception {
-            var lastPage = postExpectingSuccessAndFollowRedirect("doesNotContainConditionPage",
+            postAndFollowRedirectAndAssertNextPageTitleIsCorrect("doesNotContainConditionPage",
                                                                  "triggerInput",
-                                                                 "triggerValue");
-            assertThat(lastPage.getTitle()).isEqualTo(lastPageTitle);
+                                                                 "triggerValue",
+                                                                 lastPageTitle);
         }
 
         @Test
@@ -179,10 +183,10 @@ public class ValidationTest extends AbstractFrameworkTest {
 
         @Test
         void shouldNotTriggerValidation_whenConditionInputIsNotEmptyOrBlank() throws Exception {
-            var page = postExpectingSuccessAndFollowRedirect("emptyInputConditionPage",
-                                                             "triggerInput",
-                                                             "something");
-            assertThat(page.getTitle()).isEqualTo(lastPageTitle);
+            postAndFollowRedirectAndAssertNextPageTitleIsCorrect("emptyInputConditionPage",
+                                                                 "triggerInput",
+                                                                 "something",
+                                                                 lastPageTitle);
         }
     }
 
@@ -200,8 +204,10 @@ public class ValidationTest extends AbstractFrameworkTest {
 
         @Test
         void shouldPassValidationForNOT_BLANKWhenThereIsAtLeast1CharacterInput() throws Exception {
-            var nextPage = postExpectingSuccessAndFollowRedirect("notBlankPage", "notBlankInput", "something");
-            assertThat(nextPage.getTitle()).isEqualTo(lastPageTitle);
+            postAndFollowRedirectAndAssertNextPageTitleIsCorrect("notBlankPage",
+                                                                 "notBlankInput",
+                                                                 "something",
+                                                                 lastPageTitle);
         }
 
         @ParameterizedTest
@@ -216,8 +222,10 @@ public class ValidationTest extends AbstractFrameworkTest {
 
         @Test
         void shouldPassValidationForZipCodeWhenValueIsExactlyFiveDigits() throws Exception {
-            var nextPage = postExpectingSuccessAndFollowRedirect("zipcodePage", "zipCodeInput", "12345");
-            assertThat(nextPage.getTitle()).isEqualTo(lastPageTitle);
+            postAndFollowRedirectAndAssertNextPageTitleIsCorrect("zipcodePage",
+                                                                 "zipCodeInput",
+                                                                 "12345",
+                                                                 lastPageTitle);
         }
 
         @ParameterizedTest
@@ -246,16 +254,20 @@ public class ValidationTest extends AbstractFrameworkTest {
                 "1234567"
         })
         void shouldPassValidationForCaseNumberWhenValueIsFourToSevenDigits(String input) throws Exception {
-            var nextPage = postExpectingSuccessAndFollowRedirect("caseNumberPage", "caseNumberInput", input);
-            assertThat(nextPage.getTitle()).isEqualTo(lastPageTitle);
+            postAndFollowRedirectAndAssertNextPageTitleIsCorrect("caseNumberPage",
+                                                                 "caseNumberInput",
+                                                                 input,
+                                                                 lastPageTitle);
         }
 
         @Test
         void shouldPassValidationForStateWhenValueIsAKnownStateCode_caseInsensitive() throws Exception {
             postAndAssertInputErrorDisplays("statePage", "stateInput", "XY");
 
-            var nextPage = postExpectingSuccessAndFollowRedirect("statePage", "stateInput", "mn");
-            assertThat(nextPage.getTitle()).isEqualTo(lastPageTitle);
+            postAndFollowRedirectAndAssertNextPageTitleIsCorrect("statePage",
+                                                                 "stateInput",
+                                                                 "mn",
+                                                                 lastPageTitle);
         }
 
         @ParameterizedTest
@@ -274,8 +286,10 @@ public class ValidationTest extends AbstractFrameworkTest {
 
         @Test
         void shouldPassValidationForPhoneIfAndOnlyIfValueIsExactly10Digits() throws Exception {
-            var page = postExpectingSuccessAndFollowRedirect("phonePage", "phoneInput", "7234567890");
-            assertThat(page.getTitle()).isEqualTo(lastPageTitle);
+            postAndFollowRedirectAndAssertNextPageTitleIsCorrect("phonePage",
+                                                                 "phoneInput",
+                                                                 "7234567890",
+                                                                 lastPageTitle);
         }
 
         @ParameterizedTest
