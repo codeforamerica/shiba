@@ -209,8 +209,8 @@ public class AbstractShibaMockMvcTest {
 
     protected void submitApplication() throws Exception {
         postExpectingSuccess("/submit",
-                             "/pages/signThisApplication/navigation",
-                             Map.of("applicantSignature", List.of("Human McPerson")));
+                "/pages/signThisApplication/navigation",
+                Map.of("applicantSignature", List.of("Human McPerson")));
     }
 
     protected void selectPrograms(String... programs) throws Exception {
@@ -277,7 +277,17 @@ public class AbstractShibaMockMvcTest {
     }
 
     protected void assertNavigationRedirectsToCorrectNextPage(String pageName, String expectedNextPageName) throws Exception {
-        getPage(pageName + "/navigation").andExpect(redirectedUrl("/pages/" + expectedNextPageName));
+        var nextPage = "/pages/" + pageName + "/navigation";
+
+        while (nextPage.contains("/navigation")) {
+            // follow redirects
+            nextPage = mockMvc.perform(get(nextPage).session(session))
+                    .andExpect(status().is3xxRedirection()).andReturn()
+                    .getResponse()
+                    .getRedirectedUrl();
+        }
+
+        assertThat(nextPage).isEqualTo("/pages/" + expectedNextPageName);
     }
 
     protected ResultActions postExpectingFailure(String pageName, String inputName, String value) throws Exception {
@@ -364,9 +374,9 @@ public class AbstractShibaMockMvcTest {
      */
     protected FormPage getNextPageAsFormPage(String currentPageName) throws Exception {
         String redirectedUrl = Objects.requireNonNull(getPage(currentPageName + "/navigation").andExpect(status().is3xxRedirection())
-                                                              .andReturn()
-                                                              .getResponse()
-                                                              .getRedirectedUrl());
+                .andReturn()
+                .getResponse()
+                .getRedirectedUrl());
 
         ResultActions nextPage = mockMvc.perform(get((redirectedUrl)).session(session));
         return new FormPage(nextPage);

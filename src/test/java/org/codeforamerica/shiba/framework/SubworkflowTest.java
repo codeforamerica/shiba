@@ -38,11 +38,7 @@ public class SubworkflowTest extends AbstractFrameworkTest {
     @Test
     void shouldDisplayInputFromSubflowInFinalPage() throws Exception {
         postExpectingSuccess("startPage");
-        // skippableFirstPage should be skipped due to skip condition
-        assertNavigationRedirectsToCorrectNextPage("startPage", "skippableFirstPage/navigation");
-
-        var firstPage = getNextPageAsFormPage("skippableFirstPage");
-        assertThat(firstPage.getTitle()).isEqualTo(dummyPageTitle);
+        assertNavigationRedirectsToCorrectNextPage("startPage", "firstPage");
 
         postExpectingSuccessAndAssertRedirectPageNameIsCorrect("firstPage",
                                                                "input1",
@@ -188,9 +184,7 @@ public class SubworkflowTest extends AbstractFrameworkTest {
 
     private void completeAnIterationGoingThroughSecondPage(String iteration) throws Exception {
         postExpectingSuccess("startPage");
-        assertNavigationRedirectsToCorrectNextPage("startPage",
-                                                   "skippableFirstPage/navigation"); //TODO helper for following redirect when page is skipped. Can it handle arbitrary skips?
-        assertNavigationRedirectsToCorrectNextPage("skippableFirstPage", "firstPage");
+        assertNavigationRedirectsToCorrectNextPage("startPage", "firstPage");
 
         postExpectingSuccessAndAssertRedirectPageNameIsCorrect("firstPage",
                                                                "input1",
@@ -206,11 +200,7 @@ public class SubworkflowTest extends AbstractFrameworkTest {
 
     private void completeAnIterationGoingThroughThirdPage(String iteration) throws Exception {
         postExpectingSuccess("startPage");
-        assertNavigationRedirectsToCorrectNextPage("startPage", "skippableFirstPage/navigation");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("skippableFirstPage",
-                                                               "inputSkippable",
-                                                               "bar",
-                                                               "firstPage");
+        assertNavigationRedirectsToCorrectNextPage("startPage", "firstPage");
         postExpectingSuccessAndAssertRedirectPageNameIsCorrect("firstPage",
                                                                "input1",
                                                                "goToThirdPage",
@@ -234,12 +224,3 @@ public class SubworkflowTest extends AbstractFrameworkTest {
         assertThat(endPage.getElementById("iteration" + iteration).text()).isEqualTo(expectedFirstPageInput1Value);
     }
 }
-
-// POST /pages/startPage
-// get redirected to /pages/startPage/navigation
-//
-// GET /pages/startPage/navigation
-// get redirected to /pages/skippableFirstPage/navigation
-//
-// GET /pages/skippableFirstPage/navigation
-// get redirected to /pages/firstPage
