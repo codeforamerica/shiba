@@ -17,6 +17,8 @@ public class AbstractStaticMessageSourceFrameworkTest extends AbstractShibaMockM
 
     protected StaticMessageSource staticMessageSource;
 
+    protected final String dummyPageTitle = "Dummy page title";
+
     @Override
     @BeforeEach
     protected void setUp() throws Exception {
@@ -26,7 +28,7 @@ public class AbstractStaticMessageSourceFrameworkTest extends AbstractShibaMockM
         staticMessageSource.addMessage("general.continue", Locale.ENGLISH, "Continue");
         staticMessageSource.addMessage("general.inputs.yes", Locale.ENGLISH, "Yes");
         staticMessageSource.addMessage("general.inputs.no", Locale.ENGLISH, "No");
-        staticMessageSource.addMessage("dummy-page-title", Locale.ENGLISH, "Dummy page title");
+        staticMessageSource.addMessage("dummy-page-title", Locale.ENGLISH, dummyPageTitle);
         staticMessageSource.addMessage("generic.footer", Locale.ENGLISH, "footer");
         staticMessageSource.addMessage("general.privacy", Locale.ENGLISH, "privacy");
         staticMessageSource.addMessage("general.code-for-america", Locale.ENGLISH, "cfa");

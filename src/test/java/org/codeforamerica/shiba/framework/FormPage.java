@@ -37,4 +37,8 @@ public class FormPage {
     public String getTitle() {
         return html.title();
     }
+
+    public Element getElementById(String id) {
+        return html.getElementById(id);
+    }
 }
