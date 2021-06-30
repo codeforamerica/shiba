@@ -8,6 +8,9 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.io.UnsupportedEncodingException;
 
+/**
+ * Helps parse mockmvc result html
+ */
 public class FormPage {
     private final Document html;
 
@@ -34,7 +37,19 @@ public class FormPage {
         return html.select("input[name='%s[]'] ~ p.text--error".formatted(inputName)).first();
     }
 
+    public String findElementTextById(String id) {
+        return html.getElementById(id).text();
+    }
+
     public String getTitle() {
         return html.title();
+    }
+
+    public Element getElementById(String id) {
+        return html.getElementById(id);
+    }
+
+    public String getInputValue(String inputName) {
+        return html.select("input[name='%s[]']".formatted(inputName)).attr("value");
     }
 }

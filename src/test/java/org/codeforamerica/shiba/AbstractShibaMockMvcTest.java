@@ -113,8 +113,8 @@ public class AbstractShibaMockMvcTest {
         ).andExpect(redirectedUrl("/pages/" + pageName + "/navigation"));
     }
 
-    protected void getWithQueryParam(String pageName, String queryParam, String value) throws Exception {
-        mockMvc.perform(
+    protected ResultActions getWithQueryParam(String pageName, String queryParam, String value) throws Exception {
+        return mockMvc.perform(
                 get("/pages/" + pageName).session(session).queryParam(queryParam, value)
         ).andExpect(status().isOk());
     }
@@ -209,12 +209,16 @@ public class AbstractShibaMockMvcTest {
 
     protected void submitApplication() throws Exception {
         postExpectingSuccess("/submit",
-                             "/pages/signThisApplication/navigation",
-                             Map.of("applicantSignature", List.of("Human McPerson")));
+                "/pages/signThisApplication/navigation",
+                Map.of("applicantSignature", List.of("Human McPerson")));
     }
 
     protected void selectPrograms(String... programs) throws Exception {
         postExpectingSuccess("choosePrograms", "programs", Arrays.stream(programs).toList());
+    }
+
+    protected ResultActions postExpectingSuccess(String pageName) throws Exception {
+        return postWithoutData(pageName).andExpect(redirectedUrl(getUrlForPageName(pageName) + "/navigation"));
     }
 
     // Post to a page with an arbitrary number of multi-value inputs
@@ -250,20 +254,40 @@ public class AbstractShibaMockMvcTest {
         ).andExpect(redirectedUrl(redirectUrl));
     }
 
-    protected void postExpectingSuccessAndAssertRedirectIsCorrect(String pageName,
-                                                                  String inputName,
-                                                                  String value,
-                                                                  String nextPageTitle) throws Exception {
+    protected void postExpectingSuccessAndAssertRedirectPageTitleIsCorrect(String pageName,
+                                                                           String inputName,
+                                                                           String value,
+                                                                           String nextPageTitle) throws Exception {
         var nextPage = postExpectingSuccessAndFollowRedirect(pageName, inputName, value);
         assertThat(nextPage.getTitle()).isEqualTo(nextPageTitle);
     }
 
-    protected void postExpectingSuccessAndAssertRedirectIsCorrect(String pageName,
-                                                                  String inputName,
-                                                                  List<String> values,
-                                                                  String nextPageTitle) throws Exception {
+    protected void postExpectingSuccessAndAssertRedirectPageTitleIsCorrect(String pageName,
+                                                                           String inputName,
+                                                                           List<String> values,
+                                                                           String nextPageTitle) throws Exception {
         var nextPage = postExpectingSuccessAndFollowRedirect(pageName, inputName, values);
         assertThat(nextPage.getTitle()).isEqualTo(nextPageTitle);
+    }
+
+    protected void postExpectingSuccessAndAssertRedirectPageNameIsCorrect(String pageName, String inputName,
+                                                                          String value, String expectedNextPageName) throws Exception {
+        postExpectingSuccess(pageName, inputName, value);
+        assertNavigationRedirectsToCorrectNextPage(pageName, expectedNextPageName);
+    }
+
+    protected void assertNavigationRedirectsToCorrectNextPage(String pageName, String expectedNextPageName) throws Exception {
+        var nextPage = "/pages/" + pageName + "/navigation";
+
+        while (nextPage.contains("/navigation")) {
+            // follow redirects
+            nextPage = mockMvc.perform(get(nextPage).session(session))
+                    .andExpect(status().is3xxRedirection()).andReturn()
+                    .getResponse()
+                    .getRedirectedUrl();
+        }
+
+        assertThat(nextPage).isEqualTo("/pages/" + expectedNextPageName);
     }
 
     protected ResultActions postExpectingFailure(String pageName, String inputName, String value) throws Exception {
@@ -348,11 +372,11 @@ public class AbstractShibaMockMvcTest {
      * @param currentPageName the page
      * @return a form page that can be asserted against
      */
-    protected FormPage getNextPage(String currentPageName) throws Exception {
+    protected FormPage getNextPageAsFormPage(String currentPageName) throws Exception {
         String redirectedUrl = Objects.requireNonNull(getPage(currentPageName + "/navigation").andExpect(status().is3xxRedirection())
-                                                              .andReturn()
-                                                              .getResponse()
-                                                              .getRedirectedUrl());
+                .andReturn()
+                .getResponse()
+                .getRedirectedUrl());
 
         ResultActions nextPage = mockMvc.perform(get((redirectedUrl)).session(session));
         return new FormPage(nextPage);
@@ -361,13 +385,17 @@ public class AbstractShibaMockMvcTest {
     protected FormPage postExpectingSuccessAndFollowRedirect(String pageName, String inputName, String value) throws
             Exception {
         postExpectingSuccess(pageName, inputName, value);
-        return getNextPage(pageName);
+        return getNextPageAsFormPage(pageName);
     }
 
     protected FormPage postExpectingSuccessAndFollowRedirect(String pageName, String inputName,
                                                              List<String> values) throws
             Exception {
         postExpectingSuccess(pageName, inputName, values);
-        return getNextPage(pageName);
+        return getNextPageAsFormPage(pageName);
+    }
+
+    protected void getPageAndExpectRedirect(String getPageName, String redirectPageName) throws Exception {
+        getPage(getPageName).andExpect(redirectedUrl("/pages/" + redirectPageName));
     }
 }

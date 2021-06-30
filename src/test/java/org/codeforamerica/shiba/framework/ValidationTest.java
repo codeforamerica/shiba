@@ -68,10 +68,10 @@ public class ValidationTest extends AbstractFrameworkTest {
 
     @Test
     void shouldGoOnToNextPage_whenValidationPasses() throws Exception {
-        postExpectingSuccessAndAssertRedirectIsCorrect("firstPage",
-                                                       "someInputName",
-                                                       "something",
-                                                       nextPageTitle);
+        postExpectingSuccessAndAssertRedirectPageTitleIsCorrect("firstPage",
+                                                                "someInputName",
+                                                                "something",
+                                                                nextPageTitle);
     }
 
     @Test
@@ -102,10 +102,10 @@ public class ValidationTest extends AbstractFrameworkTest {
 
     @Test
     void shouldNotTriggerValidation_whenConditionIsFalse() throws Exception {
-        postExpectingSuccessAndAssertRedirectIsCorrect("firstPage",
-                                                       "someInputName",
-                                                       "do not trigger validation",
-                                                       nextPageTitle);
+        postExpectingSuccessAndAssertRedirectPageTitleIsCorrect("firstPage",
+                                                                "someInputName",
+                                                                "do not trigger validation",
+                                                                nextPageTitle);
     }
 
     @Test
@@ -132,10 +132,10 @@ public class ValidationTest extends AbstractFrameworkTest {
     class Condition {
         @Test
         void shouldTriggerValidation_whenConditionInputValueIsNoneSelected() throws Exception {
-            postExpectingSuccessAndAssertRedirectIsCorrect("firstPage",
-                                                           "someInputName",
-                                                           "do not trigger validation",
-                                                           nextPageTitle);
+            postExpectingSuccessAndAssertRedirectPageTitleIsCorrect("firstPage",
+                                                                    "someInputName",
+                                                                    "do not trigger validation",
+                                                                    nextPageTitle);
 
             postWithoutData("nextPage").andExpect(redirectedUrl("/pages/nextPage"));
             assertPageHasInputError("nextPage", "conditionalValidationWhenValueIsNoneSelected");
@@ -143,22 +143,22 @@ public class ValidationTest extends AbstractFrameworkTest {
 
         @Test
         void shouldNotTriggerValidation_whenConditionInputValueIsSelected() throws Exception {
-            postExpectingSuccessAndAssertRedirectIsCorrect("firstPage",
-                                                           "someInputName",
-                                                           "do not trigger validation",
-                                                           nextPageTitle);
-            postExpectingSuccessAndAssertRedirectIsCorrect("nextPage",
-                                                           "someCheckbox",
-                                                           "VALUE_1",
-                                                           lastPageTitle);
+            postExpectingSuccessAndAssertRedirectPageTitleIsCorrect("firstPage",
+                                                                    "someInputName",
+                                                                    "do not trigger validation",
+                                                                    nextPageTitle);
+            postExpectingSuccessAndAssertRedirectPageTitleIsCorrect("nextPage",
+                                                                    "someCheckbox",
+                                                                    "VALUE_1",
+                                                                    lastPageTitle);
         }
 
         @Test
         void shouldNotTriggerValidation_whenConditionInputContainsValue() throws Exception {
-            postExpectingSuccessAndAssertRedirectIsCorrect("doesNotContainConditionPage",
-                                                           "triggerInput",
-                                                           "triggerValue",
-                                                           lastPageTitle);
+            postExpectingSuccessAndAssertRedirectPageTitleIsCorrect("doesNotContainConditionPage",
+                                                                    "triggerInput",
+                                                                    "triggerValue",
+                                                                    lastPageTitle);
         }
 
         @Test
@@ -179,10 +179,10 @@ public class ValidationTest extends AbstractFrameworkTest {
 
         @Test
         void shouldNotTriggerValidation_whenConditionInputIsNotEmptyOrBlank() throws Exception {
-            postExpectingSuccessAndAssertRedirectIsCorrect("emptyInputConditionPage",
-                                                           "triggerInput",
-                                                           "something",
-                                                           lastPageTitle);
+            postExpectingSuccessAndAssertRedirectPageTitleIsCorrect("emptyInputConditionPage",
+                                                                    "triggerInput",
+                                                                    "something",
+                                                                    lastPageTitle);
         }
     }
 
@@ -200,10 +200,10 @@ public class ValidationTest extends AbstractFrameworkTest {
 
         @Test
         void shouldPassValidationForNOT_BLANKWhenThereIsAtLeast1CharacterInput() throws Exception {
-            postExpectingSuccessAndAssertRedirectIsCorrect("notBlankPage",
-                                                           "notBlankInput",
-                                                           "something",
-                                                           lastPageTitle);
+            postExpectingSuccessAndAssertRedirectPageTitleIsCorrect("notBlankPage",
+                                                                    "notBlankInput",
+                                                                    "something",
+                                                                    lastPageTitle);
         }
 
         @ParameterizedTest
@@ -218,10 +218,10 @@ public class ValidationTest extends AbstractFrameworkTest {
 
         @Test
         void shouldPassValidationForZipCodeWhenValueIsExactlyFiveDigits() throws Exception {
-            postExpectingSuccessAndAssertRedirectIsCorrect("zipcodePage",
-                                                           "zipCodeInput",
-                                                           "12345",
-                                                           lastPageTitle);
+            postExpectingSuccessAndAssertRedirectPageTitleIsCorrect("zipcodePage",
+                                                                    "zipCodeInput",
+                                                                    "12345",
+                                                                    lastPageTitle);
         }
 
         @ParameterizedTest
@@ -250,20 +250,20 @@ public class ValidationTest extends AbstractFrameworkTest {
                 "1234567"
         })
         void shouldPassValidationForCaseNumberWhenValueIsFourToSevenDigits(String input) throws Exception {
-            postExpectingSuccessAndAssertRedirectIsCorrect("caseNumberPage",
-                                                           "caseNumberInput",
-                                                           input,
-                                                           lastPageTitle);
+            postExpectingSuccessAndAssertRedirectPageTitleIsCorrect("caseNumberPage",
+                                                                    "caseNumberInput",
+                                                                    input,
+                                                                    lastPageTitle);
         }
 
         @Test
         void shouldPassValidationForStateWhenValueIsAKnownStateCode_caseInsensitive() throws Exception {
             postExpectingFailureAndAssertErrorDisplaysForThatInput("statePage", "stateInput", "XY");
 
-            postExpectingSuccessAndAssertRedirectIsCorrect("statePage",
-                                                           "stateInput",
-                                                           "mn",
-                                                           lastPageTitle);
+            postExpectingSuccessAndAssertRedirectPageTitleIsCorrect("statePage",
+                                                                    "stateInput",
+                                                                    "mn",
+                                                                    lastPageTitle);
         }
 
         @ParameterizedTest
@@ -282,10 +282,10 @@ public class ValidationTest extends AbstractFrameworkTest {
 
         @Test
         void shouldPassValidationForPhoneIfAndOnlyIfValueIsExactly10Digits() throws Exception {
-            postExpectingSuccessAndAssertRedirectIsCorrect("phonePage",
-                                                           "phoneInput",
-                                                           "7234567890",
-                                                           lastPageTitle);
+            postExpectingSuccessAndAssertRedirectPageTitleIsCorrect("phonePage",
+                                                                    "phoneInput",
+                                                                    "7234567890",
+                                                                    lastPageTitle);
         }
 
         @ParameterizedTest
@@ -309,13 +309,13 @@ public class ValidationTest extends AbstractFrameworkTest {
                 "11,000.15"
         })
         void shouldPassValidationForMoneyWhenValueIsAPositiveWholeDollarAmount(String value) throws Exception {
-            postExpectingSuccessAndAssertRedirectIsCorrect("moneyPage", "moneyInput", value, lastPageTitle);
+            postExpectingSuccessAndAssertRedirectPageTitleIsCorrect("moneyPage", "moneyInput", value, lastPageTitle);
         }
 
 
         @Test
         void shouldPassValidationForValidNumber() throws Exception {
-            postExpectingSuccessAndAssertRedirectIsCorrect("numberPage", "numberInput", "30", lastPageTitle);
+            postExpectingSuccessAndAssertRedirectPageTitleIsCorrect("numberPage", "numberInput", "30", lastPageTitle);
         }
 
         @ParameterizedTest
@@ -341,7 +341,7 @@ public class ValidationTest extends AbstractFrameworkTest {
 
         @Test
         void shouldPassValidationForSSNWhenValueIsExactlyNineDigits() throws Exception {
-            postExpectingSuccessAndAssertRedirectIsCorrect("ssnPage", "ssnInput", "123456789", lastPageTitle);
+            postExpectingSuccessAndAssertRedirectPageTitleIsCorrect("ssnPage", "ssnInput", "123456789", lastPageTitle);
         }
 
         @ParameterizedTest
@@ -361,10 +361,10 @@ public class ValidationTest extends AbstractFrameworkTest {
                 "1,2,1929",
         })
         void shouldPassValidationForDateWhenValueIsAValidDate(String month, String day, String year) throws Exception {
-            postExpectingSuccessAndAssertRedirectIsCorrect("datePage",
-                                                           "dateInput",
-                                                           List.of(month, day, year),
-                                                           lastPageTitle);
+            postExpectingSuccessAndAssertRedirectPageTitleIsCorrect("datePage",
+                                                                    "dateInput",
+                                                                    List.of(month, day, year),
+                                                                    lastPageTitle);
         }
 
         @ParameterizedTest
@@ -386,10 +386,10 @@ public class ValidationTest extends AbstractFrameworkTest {
         })
         void shouldPassValidationForDobValidWhenValueIsAValidDate(String month, String day,
                                                                   String year) throws Exception {
-            postExpectingSuccessAndAssertRedirectIsCorrect("dobValidPage",
-                                                           "dobValidInput",
-                                                           List.of(month, day, year),
-                                                           lastPageTitle);
+            postExpectingSuccessAndAssertRedirectPageTitleIsCorrect("dobValidPage",
+                                                                    "dobValidInput",
+                                                                    List.of(month, day, year),
+                                                                    lastPageTitle);
         }
 
         @Test
@@ -400,7 +400,7 @@ public class ValidationTest extends AbstractFrameworkTest {
 
         @Test
         void shouldPassValidationForSELECT_AT_LEAST_ONEWhenAtLeastOneValueIsSelected() throws Exception {
-            postExpectingSuccessAndAssertRedirectIsCorrect("checkboxPage", "checkboxInput", option1, lastPageTitle);
+            postExpectingSuccessAndAssertRedirectPageTitleIsCorrect("checkboxPage", "checkboxInput", option1, lastPageTitle);
         }
 
         @ParameterizedTest
@@ -412,20 +412,20 @@ public class ValidationTest extends AbstractFrameworkTest {
         @ParameterizedTest
         @ValueSource(strings = {"fake@test.com", "FAKE@TEST.COM"})
         void shouldPassValidationForEMAILWhenThereIsAValidEmail(String email) throws Exception {
-            postExpectingSuccessAndAssertRedirectIsCorrect("pageWithEmail", "emailInput", email, lastPageTitle);
+            postExpectingSuccessAndAssertRedirectPageTitleIsCorrect("pageWithEmail", "emailInput", email, lastPageTitle);
         }
 
         @Test
         void shouldPassValidationForEMAILWhenValidEmailHasTrailingWhitespace() throws Exception {
-            postExpectingSuccessAndAssertRedirectIsCorrect("pageWithEmail",
-                                                           "emailInput",
-                                                           "fake@test.com ",
-                                                           lastPageTitle);
+            postExpectingSuccessAndAssertRedirectPageTitleIsCorrect("pageWithEmail",
+                                                                    "emailInput",
+                                                                    "fake@test.com ",
+                                                                    lastPageTitle);
         }
 
         @Test
         void shouldPassValidationForCOUNTYWhenValidCountyIsChosen() throws Exception {
-            postExpectingSuccessAndAssertRedirectIsCorrect("selectCountyPage", "countyInput", countyB, lastPageTitle);
+            postExpectingSuccessAndAssertRedirectPageTitleIsCorrect("selectCountyPage", "countyInput", countyB, lastPageTitle);
         }
 
         @Test
