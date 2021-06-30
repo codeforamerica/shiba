@@ -22,7 +22,6 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -34,8 +33,6 @@ import java.util.*;
 import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.TestUtils.resetApplicationData;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -44,7 +41,8 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = MOCK)
@@ -233,12 +231,14 @@ public class AbstractShibaMockMvcTest {
     }
 
     // Post to a page with a single input that accepts multiple values
-    protected ResultActions postExpectingSuccess(String pageName, String inputName, List<String> values) throws Exception {
+    protected ResultActions postExpectingSuccess(String pageName, String inputName,
+                                                 List<String> values) throws Exception {
         String postUrl = getUrlForPageName(pageName);
         return postExpectingSuccess(postUrl, postUrl + "/navigation", Map.of(inputName, values));
     }
 
-    protected ResultActions postExpectingSuccess(String postUrl, String redirectUrl, Map<String, List<String>> params) throws
+    protected ResultActions postExpectingSuccess(String postUrl, String redirectUrl,
+                                                 Map<String, List<String>> params) throws
             Exception {
         Map<String, List<String>> paramsWithProperInputNames = fixInputNamesForParams(params);
         return mockMvc.perform(
@@ -250,16 +250,29 @@ public class AbstractShibaMockMvcTest {
         ).andExpect(redirectedUrl(redirectUrl));
     }
 
-    protected void postAndFollowRedirectAndAssertNextPageTitleIsCorrect(String pageName,
-                                                                        String inputName,
-                                                                        String value,
-                                                                        String lastPageTitle) throws Exception {
+    protected void postExpectingSuccessAndAssertRedirectIsCorrect(String pageName,
+                                                                  String inputName,
+                                                                  String value,
+                                                                  String nextPageTitle) throws Exception {
         var nextPage = postExpectingSuccessAndFollowRedirect(pageName, inputName, value);
-        assertThat(nextPage.getTitle()).isEqualTo(lastPageTitle);
+        assertThat(nextPage.getTitle()).isEqualTo(nextPageTitle);
+    }
+
+    protected void postExpectingSuccessAndAssertRedirectIsCorrect(String pageName,
+                                                                  String inputName,
+                                                                  List<String> values,
+                                                                  String nextPageTitle) throws Exception {
+        var nextPage = postExpectingSuccessAndFollowRedirect(pageName, inputName, values);
+        assertThat(nextPage.getTitle()).isEqualTo(nextPageTitle);
     }
 
     protected ResultActions postExpectingFailure(String pageName, String inputName, String value) throws Exception {
         return postExpectingFailure(pageName, Map.of(inputName, List.of(value)));
+    }
+
+    protected ResultActions postExpectingFailure(String pageName, String inputName,
+                                                 List<String> values) throws Exception {
+        return postExpectingFailure(pageName, Map.of(inputName, values));
     }
 
     protected ResultActions postExpectingFailure(String pageName, Map<String, List<String>> params) throws Exception {
@@ -274,13 +287,22 @@ public class AbstractShibaMockMvcTest {
         ).andExpect(redirectedUrl(postUrl));
     }
 
-    protected void postAndAssertInputErrorDisplays(String pageName, String inputName, String value) throws Exception {
+    protected void postExpectingFailureAndAssertErrorDisplaysForThatInput(String pageName, String inputName,
+                                                                          String value) throws Exception {
         postExpectingFailure(pageName, inputName, value);
         assertPageHasInputError(pageName, inputName);
     }
 
-    protected void postAndAssertErrorDisplaysOnAnotherInput(String pageName, String inputName, String value,
-                                                            String inputNameWithError) throws Exception {
+    protected void postExpectingFailureAndAssertErrorDisplaysForThatInput(String pageName, String inputName,
+                                                                          List<String> values) throws Exception {
+        postExpectingFailure(pageName, inputName, values);
+        assertPageHasInputError(pageName, inputName);
+    }
+
+
+    protected void postExpectingFailureAndAssertErrorDisplaysOnDifferentInput(String pageName, String inputName,
+                                                                              String value,
+                                                                              String inputNameWithError) throws Exception {
         postExpectingFailure(pageName, inputName, value);
         assertPageHasInputError(pageName, inputNameWithError);
     }
@@ -328,9 +350,9 @@ public class AbstractShibaMockMvcTest {
      */
     protected FormPage getNextPage(String currentPageName) throws Exception {
         String redirectedUrl = Objects.requireNonNull(getPage(currentPageName + "/navigation").andExpect(status().is3xxRedirection())
-                .andReturn()
-                .getResponse()
-                .getRedirectedUrl());
+                                                              .andReturn()
+                                                              .getResponse()
+                                                              .getRedirectedUrl());
 
         ResultActions nextPage = mockMvc.perform(get((redirectedUrl)).session(session));
         return new FormPage(nextPage);
@@ -339,6 +361,13 @@ public class AbstractShibaMockMvcTest {
     protected FormPage postExpectingSuccessAndFollowRedirect(String pageName, String inputName, String value) throws
             Exception {
         postExpectingSuccess(pageName, inputName, value);
+        return getNextPage(pageName);
+    }
+
+    protected FormPage postExpectingSuccessAndFollowRedirect(String pageName, String inputName,
+                                                             List<String> values) throws
+            Exception {
+        postExpectingSuccess(pageName, inputName, values);
         return getNextPage(pageName);
     }
 }

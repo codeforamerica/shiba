@@ -7,7 +7,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Optional;
 
 public class FormPage {
     private final Document html;
@@ -18,6 +17,12 @@ public class FormPage {
 
     public FormPage(ResultActions resultActions) throws UnsupportedEncodingException {
         html = Jsoup.parse(resultActions.andReturn().getResponse().getContentAsString());
+    }
+
+    public boolean hasInputError() {
+        // It seems like we need to use this one on inputs of type SELECT, not sure why
+        Element element = html.select("p.text--error").first();
+        return element != null;
     }
 
     public boolean hasInputError(String inputName) {
