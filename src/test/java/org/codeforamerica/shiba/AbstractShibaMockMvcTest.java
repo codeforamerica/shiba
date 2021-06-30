@@ -41,6 +41,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = MOCK)
@@ -183,14 +184,6 @@ public class AbstractShibaMockMvcTest {
         postWithData("utilities", "payForUtilities", "COOLING");
     }
 
-    protected void completeFlowFromLandingPageThroughReviewInfo(String... programSelections) throws Exception {
-        selectPrograms(programSelections);
-        fillOutPersonalInfo();
-        fillOutContactInfo();
-        fillOutAddress();
-        postWithData("verifyHomeAddress", "useEnrichedAddress", "false");
-    }
-
     protected void fillOutPersonalInfo() throws Exception {
         postWithData("personalInfo", Map.of(
                 "firstName", List.of("defaultFirstName"),
@@ -203,17 +196,6 @@ public class AbstractShibaMockMvcTest {
                 "livedInMnWholeLife", List.of("true"),
                 "moveToMnDate", List.of("02", "18", "1776"),
                 "moveToMnPreviousCity", List.of("Chicago")
-        ));
-    }
-
-    protected void fillOutAddress() throws Exception {
-        postWithData("homeAddress", Map.of(
-                "zipCode", List.of("12345"),
-                "city", List.of("someCity"),
-                "streetAddress", List.of("someStreetAddress"),
-                "apartmentNumber", List.of("someApartmentNumber"),
-                "isHomeless", List.of("false"),
-                "sameMailingAddress", List.of("false")
         ));
     }
 
@@ -231,9 +213,7 @@ public class AbstractShibaMockMvcTest {
     }
 
     protected void selectPrograms(String... programs) throws Exception {
-        postWithData("choosePrograms", "programs", Arrays.stream(programs).toList())
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/pages/introBasicInfo"));
+        postWithData("choosePrograms", "programs", Arrays.stream(programs).toList());
     }
 
     // Post to a page with an arbitrary number of multi-value inputs
