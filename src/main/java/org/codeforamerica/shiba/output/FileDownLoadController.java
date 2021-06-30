@@ -122,8 +122,6 @@ public class FileDownLoadController {
             if (null != fileToSend && fileToSend.getFileBytes().length > 0) {
                 applicationFiles.add(fileToSend);
             }
-
-
         }
 
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -144,11 +142,9 @@ public class FileDownLoadController {
             zos.close();
             baos.close();
 
-            Utils.writeByteArrayToFile(baos.toByteArray(), "expected.zip");
-
             // The minimum size of a .ZIP file is 22 bytes even when empty because of metadata
             if (baos.size() > 22){
-                return createResponse(baos.toByteArray(), "files.zip");
+                return createResponse(baos.toByteArray(), applicationId + ".zip");
             } else {
                 throw new ResponseStatusException(
                         HttpStatus.NOT_FOUND);

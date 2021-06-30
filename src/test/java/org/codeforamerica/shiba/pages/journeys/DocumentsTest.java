@@ -116,7 +116,7 @@ public class DocumentsTest extends JourneyTest {
     @Test
     void whenDocumentUploadFailsThenThereShouldBeAnError() throws IOException, InterruptedException {
         doThrow(new InterruptedException())
-                .when(documentRepositoryService).upload(any(String.class), any(MultipartFile.class));
+                .when(documentRepositoryService).uploadConcurrently(any(String.class), any(MultipartFile.class));
 
         getToDocumentUploadScreen();
         uploadJpgFile();

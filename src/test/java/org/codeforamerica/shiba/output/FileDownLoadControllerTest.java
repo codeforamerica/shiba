@@ -170,10 +170,11 @@ class FileDownLoadControllerTest {
     @Test
     void shouldReturnDocumentsForApplicationId() throws Exception {
         var image = getFileContentsAsByteArray("shiba+file.jpg");
+        var applicationId = "9870000123";
         ApplicationFile imageFile = new ApplicationFile(image, "");
         UploadedDocument uploadedDoc = new UploadedDocument("shiba+file.jpg", "", "", "", image.length);
         ApplicationData applicationData = new ApplicationData();
-        applicationData.setId("9870000123");
+        applicationData.setId(applicationId);
         applicationData.setUploadedDocs(List.of(uploadedDoc));
         applicationData.setFlow(FlowType.LATER_DOCS);
         Application application = Application.builder()
@@ -181,24 +182,52 @@ class FileDownLoadControllerTest {
                 .flow(FlowType.LATER_DOCS)
                 .build();
 
-        when(applicationRepository.find("9870000123")).thenReturn(
+        when(applicationRepository.find(applicationId)).thenReturn(
                 application
         );
         when(pdfGenerator.generate(any(Application.class), eq(UPLOADED_DOC), eq(CASEWORKER))).thenReturn(imageFile);
         when(pdfGenerator.generateForUploadedDocument(any(UploadedDocument.class), eq(0), any(Application.class), any())).thenReturn(imageFile);
         MvcResult result = mockMvc.perform(
                 get("/download-docs/9870000123"))
+                .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"",applicationId+".zip" )))
                 .andExpect(status().is2xxSuccessful())
                 .andReturn();
 
         verify(pdfGenerator).generate(application, UPLOADED_DOC, CASEWORKER);
         verify(pdfGenerator).generateForUploadedDocument(uploadedDoc, 0, application, imageFile.getFileBytes());
 
-        byte[] expectedBytes = Files.readAllBytes(getAbsoluteFilepath("expected.zip"));
+
         byte[] actualBytes = result.getResponse().getContentAsByteArray();
 
-        Utils.writeByteArrayToFile(actualBytes, "actual.zip");
+        assertThat(actualBytes).hasSizeGreaterThan(22);
+    }
 
-        assertThat(actualBytes).isEqualTo(expectedBytes);
+    @Test
+    void shouldReturn404StatusForApplicationIdWithoutDocuments() throws Exception {
+        var applicationId = "9870000123";
+        ApplicationData applicationData = new ApplicationData();
+        applicationData.setId(applicationId);
+        applicationData.setFlow(FlowType.LATER_DOCS);
+        Application application = Application.builder()
+                .applicationData(applicationData)
+                .flow(FlowType.LATER_DOCS)
+                .build();
+
+        when(applicationRepository.find(applicationId)).thenReturn(
+                application
+        );
+
+        when(pdfGenerator.generate(any(Application.class), eq(UPLOADED_DOC), eq(CASEWORKER))).thenReturn(new ApplicationFile(null, null));
+
+        MvcResult result = mockMvc.perform(
+                get("/download-docs/9870000123"))
+                .andExpect(status().is4xxClientError())
+                .andReturn();
+
+
+
+        byte[] actualBytes = result.getResponse().getContentAsByteArray();
+
+        assertThat(actualBytes).hasSizeLessThanOrEqualTo(22);
     }
 }

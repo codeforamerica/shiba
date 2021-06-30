@@ -53,9 +53,9 @@ mail-gun:
   shouldCC: false
 
 feature-flag:
-  apply-without-address: off
+  apply-without-address: on
   submit-via-email: off
-  submit-via-api: on
+  submit-via-api: off
   submit-docs-via-email-for-hennepin: on
   county-anoka: on
   county-carver: on

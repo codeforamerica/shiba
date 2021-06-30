@@ -71,7 +71,9 @@ jobs:
           'S3_BUCKET=${{ secrets.S3_DEMO_BUCKET }}' \
           'AWS_ACCESS_KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_ACCESS_KEY }}' \
           'AWS_SECRET_KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY }}' \
-          'SSL_PROTOCOLS_OVERRIDE=TLSv1.2'
+          'SSL_PROTOCOLS_OVERRIDE=TLSv1.2' \
+          'AZURE_CONNECTION_STRING=${{ secrets.AZURE_CONNECTION_STRING_STAGING }}' \
+          'AZURE_CONTAINER_NAME=${{ secrets.AZURE_CONTAINER_NAME_DEMO }}'
       - name: Create Sentry release
         uses: getsentry/action-release@v1
         env:

@@ -5,8 +5,7 @@ import org.codeforamerica.shiba.*;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
-import org.codeforamerica.shiba.documents.AzureDocumentRepositoryService;
-import org.codeforamerica.shiba.documents.DocumentRepositoryService;
+import org.codeforamerica.shiba.documents.CombinedDocumentRepositoryService;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
@@ -61,7 +60,7 @@ class MnitDocumentConsumerTest {
     @MockBean
     private MonitoringService monitoringService;
     @MockBean
-    private AzureDocumentRepositoryService documentRepositoryService;
+    private CombinedDocumentRepositoryService documentRepositoryService;
     @MockBean
     private FileNameGenerator fileNameGenerator;
     @MockBean
@@ -244,7 +243,7 @@ class MnitDocumentConsumerTest {
 
     private void mockDocUpload(String uploadedDocFilename, String s3filepath, String contentType, String extension) throws IOException {
         var fileBytes = Files.readAllBytes(getAbsoluteFilepath(uploadedDocFilename));
-        when(documentRepositoryService.get(s3filepath)).thenReturn(fileBytes);
+        when(documentRepositoryService.getFromAzureWithFallbackToS3(s3filepath)).thenReturn(fileBytes);
         applicationData.addUploadedDoc(
                 new MockMultipartFile("someName", "originalName." + extension, contentType, fileBytes),
                 s3filepath,

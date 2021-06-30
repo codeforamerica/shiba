@@ -6,6 +6,7 @@ import org.codeforamerica.shiba.TestUtils;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.documents.AzureDocumentRepositoryService;
+import org.codeforamerica.shiba.documents.CombinedDocumentRepositoryService;
 import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.documents.S3DocumentRepositoryService;
 import org.codeforamerica.shiba.pages.SuccessPage;
@@ -46,8 +47,8 @@ public abstract class JourneyTest extends AbstractBasePageTest {
     protected Clock clock;
     @MockBean
     protected SmartyStreetClient smartyStreetClient;
-    @SpyBean
-    protected AzureDocumentRepositoryService documentRepositoryService;
+    @MockBean
+    protected CombinedDocumentRepositoryService documentRepositoryService;
     @MockBean
     protected PageEventPublisher pageEventPublisher;
     @MockBean
