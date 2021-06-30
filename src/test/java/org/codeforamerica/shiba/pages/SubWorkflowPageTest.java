@@ -37,38 +37,6 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
     }
 
     @Test
-    void shouldNotDisplayDataFromPastIterationsWhenStartingANewSubworkflow() {
-        navigateTo("startPage");
-        testPage.clickContinue();
-        testPage.enter("input1", "goToSecondPage");
-        testPage.clickContinue();
-        testPage.enter("input2", "text 2");
-        testPage.clickContinue();
-        testPage.clickContinue();
-
-        assertThat(testPage.getInputValue("input1")).isEmpty();
-    }
-
-    @Test
-    void shouldDisplayInputFromAllCompletedIterations() {
-        navigateTo("startPage");
-        testPage.clickContinue();
-        testPage.enter("input1", "goToSecondPage");
-        testPage.clickContinue();
-        testPage.enter("input2", "text 2");
-        testPage.clickContinue();
-
-        testPage.clickContinue();
-        testPage.enter("input1", "goToThirdPage");
-        testPage.clickContinue();
-        testPage.enter("input3", "text 3");
-        testPage.clickContinue();
-
-        assertThat(driver.findElement(By.id("iteration0")).getText()).isEqualTo("goToSecondPage");
-        assertThat(driver.findElement(By.id("iteration1")).getText()).isEqualTo("goToThirdPage");
-    }
-
-    @Test
     void shouldShowDeleteWarningPage() {
         String warningPageTitle = "warning page title";
         staticMessageSource.addMessage("some-warning-title", Locale.ENGLISH, warningPageTitle);

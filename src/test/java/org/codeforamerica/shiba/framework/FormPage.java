@@ -41,4 +41,8 @@ public class FormPage {
     public Element getElementById(String id) {
         return html.getElementById(id);
     }
+
+    public String getInputValue(String inputName) {
+        return html.select("input[name='%s[]']".formatted(inputName)).attr("value");
+    }
 }

@@ -46,7 +46,7 @@ public class SubworkflowTest extends AbstractFrameworkTest {
                                                                "text2",
                                                                "endPage");
 
-        assertReviewPageDisplaysCorrectInputValueForFirstIteration("goToSecondPage");
+        assertReviewPageDisplaysCorrectInfoForIteration("0", "goToSecondPage");
     }
 
     @Test
@@ -68,7 +68,7 @@ public class SubworkflowTest extends AbstractFrameworkTest {
                                                                "text 2",
                                                                "endPage");
 
-        assertReviewPageDisplaysCorrectInputValueForFirstIteration("goToSecondPage");
+        assertReviewPageDisplaysCorrectInfoForIteration("0", "goToSecondPage");
     }
 
     @Test
@@ -93,13 +93,42 @@ public class SubworkflowTest extends AbstractFrameworkTest {
                                                                "input3",
                                                                "text 3",
                                                                "endPage");
-        assertReviewPageDisplaysCorrectInputValueForFirstIteration("goToThirdPage");
+        assertReviewPageDisplaysCorrectInfoForIteration("0", "goToThirdPage");
         verify(pageEventPublisher).publish(any(SubworkflowCompletedEvent.class));
     }
 
     @Test
     void shouldNotDisplayIterationInEndPageIfIterationWasNotCompleted() throws Exception {
-        // Complete an iteration
+        completeAnIterationGoingThroughSecondPage("0");
+
+        // Start another iteration but don't finish it
+        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("firstPage",
+                                                               "input1",
+                                                               "goToThirdPage",
+                                                               "thirdPage");
+
+        var endPage = new FormPage(getPage("endPage"));
+        assertThat(endPage.getElementById("iteration0")).isNotNull();
+        assertThat(endPage.getElementById("iteration0").text()).isEqualTo("goToSecondPage");
+        assertThat(endPage.getElementById("iteration1")).isNull();
+    }
+
+    @Test
+    void shouldNotDisplayDataFromPastIterationsWhenStartingANewSubworkflow() throws Exception {
+        completeAnIterationGoingThroughSecondPage("0");
+        var firstPage = new FormPage(getPage("firstPage"));
+        assertThat(firstPage.getInputValue("input1")).isEmpty();
+    }
+
+    @Test
+    void shouldDisplayInputFromAllCompletedIterations() throws Exception {
+        completeAnIterationGoingThroughSecondPage("0");
+        completeAnIterationGoingThroughThirdPage("1");
+        assertReviewPageDisplaysCorrectInfoForIteration("0","goToSecondPage");
+        assertReviewPageDisplaysCorrectInfoForIteration("1","goToThirdPage");
+    }
+
+    private void completeAnIterationGoingThroughSecondPage(String iteration) throws Exception {
         postExpectingSuccess("startPage");
         assertNavigationRedirectsToCorrectNextPage("startPage", "skippableFirstPage/navigation");
         postExpectingSuccessAndAssertRedirectPageNameIsCorrect("skippableFirstPage",
@@ -114,29 +143,36 @@ public class SubworkflowTest extends AbstractFrameworkTest {
                                                                "input2",
                                                                "text 2",
                                                                "endPage");
-        assertReviewPageDisplaysCorrectInputValueForFirstIteration("goToSecondPage");
+        assertReviewPageDisplaysCorrectInfoForIteration(iteration, "goToSecondPage");
+    }
 
-
-        // Start another iteration but don't finish it
+    private void completeAnIterationGoingThroughThirdPage(String iteration) throws Exception {
+        postExpectingSuccess("startPage");
+        assertNavigationRedirectsToCorrectNextPage("startPage", "skippableFirstPage/navigation");
+        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("skippableFirstPage",
+                                                               "inputSkippable",
+                                                               "bar",
+                                                               "firstPage");
         postExpectingSuccessAndAssertRedirectPageNameIsCorrect("firstPage",
                                                                "input1",
                                                                "goToThirdPage",
                                                                "thirdPage");
-
-        var endPage = new FormPage(getPage("endPage"));
-        assertThat(endPage.getElementById("iteration0")).isNotNull();
-        assertThat(endPage.getElementById("iteration0").text()).isEqualTo("goToSecondPage");
-        assertThat(endPage.getElementById("iteration1")).isNull();
+        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("thirdPage",
+                                                               "input3",
+                                                               "text 3",
+                                                               "endPage");
+        assertReviewPageDisplaysCorrectInfoForIteration(iteration, "goToThirdPage");
     }
+
 
     /**
      * endPage is a custom review page which displays the the value that was entered for input1 on firstPage
      * <p>
      * This method asserts that the expected input value is shown on the review page
      */
-    private void assertReviewPageDisplaysCorrectInputValueForFirstIteration(
-            String expectedFirstPageInput1Value) throws Exception {
+    private void assertReviewPageDisplaysCorrectInfoForIteration(
+            String iteration, String expectedFirstPageInput1Value) throws Exception {
         var endPage = new FormPage(getPage("endPage"));
-        assertThat(endPage.getElementById("iteration0").text()).isEqualTo(expectedFirstPageInput1Value);
+        assertThat(endPage.getElementById("iteration" + iteration).text()).isEqualTo(expectedFirstPageInput1Value);
     }
 }
