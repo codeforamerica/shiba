@@ -37,62 +37,6 @@ public class SubWorkflowPageTest extends AbstractExistingStartTimePageTest {
     }
 
     @Test
-    void shouldPublishSubflowIterationDeleted() {
-        String warningPageTitle = "warning page title";
-        staticMessageSource.addMessage("some-warning-title", Locale.ENGLISH, warningPageTitle);
-
-        navigateTo("startPage");
-        testPage.clickContinue();
-        testPage.enter("input1", "goToSecondPage");
-        testPage.clickContinue();
-        testPage.enter("input2", "text 2");
-        testPage.clickContinue();
-
-        testPage.clickContinue();
-        testPage.enter("input1", "goToThirdPage");
-        testPage.clickContinue();
-        testPage.enter("input3", "text 4");
-        testPage.clickContinue();
-
-        driver.findElement(By.id("iteration0-delete")).click();
-        testPage.clickButton("Yes, remove it");
-        verify(pageEventPublisher).publish(any(SubworkflowIterationDeletedEvent.class));
-    }
-
-    @Test
-    void shouldGoToSpecifiedPageWhenGoBackFromEndOfTheWorkflow() {
-        String redirectPageTitle = "some title";
-        staticMessageSource.addMessage("some-redirect-title", Locale.ENGLISH, redirectPageTitle);
-
-        navigateTo("startPage");
-        testPage.clickContinue();
-        testPage.enter("input1", "goToSecondPage");
-        testPage.clickContinue();
-        testPage.enter("input2", "text 2");
-        testPage.clickContinue();
-        testPage.goBack();
-
-        assertThat(testPage.getTitle()).isEqualTo(redirectPageTitle);
-    }
-
-    @Test
-    void shouldGoToSpecifiedPageWhenAttemptToDeleteAnyDataEntry() {
-        String warningPageTitle = "some title";
-        staticMessageSource.addMessage("some-warning-title", Locale.ENGLISH, warningPageTitle);
-        String endPageTitle = "some other title";
-        staticMessageSource.addMessage("some-other-title", Locale.ENGLISH, endPageTitle);
-        navigateTo("startPage");
-        testPage.clickContinue();
-        testPage.enter("input1", "goToSecondPage");
-        testPage.clickContinue();
-        testPage.enter("input2", "text 2");
-        testPage.clickContinue();
-
-        driver.findElement(By.id("iteration0-delete")).click();
-        assertThat(driver.getTitle()).isEqualTo(warningPageTitle);
-    }
-
-    @Test
     void shouldClearOutSubworkflowsWhenChoosingToRestartSubworkflow() {
         navigateTo("startPage");
         testPage.clickContinue();

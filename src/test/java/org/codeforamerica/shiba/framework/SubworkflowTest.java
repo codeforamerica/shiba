@@ -2,10 +2,13 @@ package org.codeforamerica.shiba.framework;
 
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.codeforamerica.shiba.pages.events.SubworkflowCompletedEvent;
+import org.codeforamerica.shiba.pages.events.SubworkflowIterationDeletedEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.Locale;
 
@@ -113,8 +116,8 @@ public class SubworkflowTest extends AbstractFrameworkTest {
     void shouldDisplayInputFromAllCompletedIterations() throws Exception {
         completeAnIterationGoingThroughSecondPage("0");
         completeAnIterationGoingThroughThirdPage("1");
-        assertReviewPageDisplaysCorrectInfoForIteration("0","goToSecondPage");
-        assertReviewPageDisplaysCorrectInfoForIteration("1","goToThirdPage");
+        assertReviewPageDisplaysCorrectInfoForIteration("0", "goToSecondPage");
+        assertReviewPageDisplaysCorrectInfoForIteration("1", "goToThirdPage");
     }
 
     @Test
@@ -134,6 +137,7 @@ public class SubworkflowTest extends AbstractFrameworkTest {
         assertThat(endPage.getElementById("iteration2-delete")).isNull();
 
         deleteIteration("1", warningPageTitle, secondIterationInput1Value, "endPage");
+        verify(pageEventPublisher).publish(any(SubworkflowIterationDeletedEvent.class));
         endPage = new FormPage(getPage("endPage"));
         assertThat(endPage.getElementById("iteration0-delete")).isNotNull();
         assertThat(endPage.getElementById("iteration1-delete")).isNull();
@@ -146,6 +150,16 @@ public class SubworkflowTest extends AbstractFrameworkTest {
         assertThat(endPage.getElementById("iteration2-delete")).isNull();
     }
 
+    @Test
+    void shouldGoToSpecifiedPageWhenGoBackFromEndOfTheWorkflow() throws Exception {
+        String redirectPageTitle = "some title";
+        staticMessageSource.addMessage("some-redirect-title", Locale.ENGLISH, redirectPageTitle);
+
+        completeAnIterationGoingThroughSecondPage("0");
+        // go back to the last page of the subworkflow, we should get redirected to the redirect page
+        getPage("secondPage").andExpect(redirectedUrl("/pages/redirectPage"));
+    }
+
     private void deleteIteration(String iterationIndex, String warningPageTitle, String iterationInput1Value,
                                  String expectedRedirectPageName) throws Exception {
         var deleteWarningPage = new FormPage(getWithQueryParam("deleteWarningPage", "iterationIndex", iterationIndex));
@@ -155,14 +169,12 @@ public class SubworkflowTest extends AbstractFrameworkTest {
                 .andExpect(redirectedUrl("/pages/" + expectedRedirectPageName));
     }
 
-
     private void completeAnIterationGoingThroughSecondPage(String iteration) throws Exception {
         postExpectingSuccess("startPage");
-        assertNavigationRedirectsToCorrectNextPage("startPage", "skippableFirstPage/navigation");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("skippableFirstPage",
-                                                               "inputSkippable",
-                                                               "bar",
-                                                               "firstPage");
+        assertNavigationRedirectsToCorrectNextPage("startPage",
+                                                   "skippableFirstPage/navigation"); //TODO helper for following redirect when page is skipped. Can it handle arbitrary skips?
+        assertNavigationRedirectsToCorrectNextPage("skippableFirstPage", "firstPage");
+
         postExpectingSuccessAndAssertRedirectPageNameIsCorrect("firstPage",
                                                                "input1",
                                                                "goToSecondPage",
@@ -171,6 +183,7 @@ public class SubworkflowTest extends AbstractFrameworkTest {
                                                                "input2",
                                                                "text 2",
                                                                "endPage");
+
         assertReviewPageDisplaysCorrectInfoForIteration(iteration, "goToSecondPage");
     }
 
@@ -198,9 +211,18 @@ public class SubworkflowTest extends AbstractFrameworkTest {
      * <p>
      * This method asserts that the expected input value is shown on the review page
      */
-    private void assertReviewPageDisplaysCorrectInfoForIteration(
-            String iteration, String expectedFirstPageInput1Value) throws Exception {
+    private void assertReviewPageDisplaysCorrectInfoForIteration(String iteration,
+                                                                 String expectedFirstPageInput1Value) throws Exception {
         var endPage = new FormPage(getPage("endPage"));
         assertThat(endPage.getElementById("iteration" + iteration).text()).isEqualTo(expectedFirstPageInput1Value);
     }
 }
+
+// POST /pages/startPage
+// get redirected to /pages/startPage/navigation
+//
+// GET /pages/startPage/navigation
+// get redirected to /pages/skippableFirstPage/navigation
+//
+// GET /pages/skippableFirstPage/navigation
+// get redirected to /pages/firstPage

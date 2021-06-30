@@ -8,6 +8,9 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.io.UnsupportedEncodingException;
 
+/**
+ * Helps parse mockmvc result html
+ */
 public class FormPage {
     private final Document html;
 
@@ -18,6 +21,10 @@ public class FormPage {
     public FormPage(ResultActions resultActions) throws UnsupportedEncodingException {
         html = Jsoup.parse(resultActions.andReturn().getResponse().getContentAsString());
     }
+
+//    public String getGoBackLink() {
+//
+//    }
 
     public boolean hasInputError() {
         // It seems like we need to use this one on inputs of type SELECT, not sure why
