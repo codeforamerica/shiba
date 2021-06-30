@@ -391,4 +391,8 @@ public class AbstractShibaMockMvcTest {
         postExpectingSuccess(pageName, inputName, values);
         return getNextPageAsFormPage(pageName);
     }
+
+    protected void getPageAndExpectRedirect(String getPageName, String redirectPageName) throws Exception {
+        getPage(getPageName).andExpect(redirectedUrl("/pages/" + redirectPageName));
+    }
 }
