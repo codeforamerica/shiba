@@ -22,57 +22,42 @@ public class ValidationTest extends AbstractFrameworkTest {
     private final String errorMessage = "error message";
     private final String nextPageTitle = "next Page Title";
     private final String lastPageTitle = "last page title";
-    private final String firstPageTitle = "first Page Title";
-    private final String zipcodePageTitle = "zip code Page Title";
-    private final String caseNumberPageTitle = "case number Page Title";
-    private final String statePageTitle = "state page title";
-    private final String phonePageTitle = "phone page title";
-    private final String moneyPageTitle = "money page title";
-    private final String numberPageTitle = "hours per week page title";
-    private final String ssnPageTitle = "ssn page title";
-    private final String datePageTitle = "date page title";
-    private final String dobValidPageTitle = "dob valid page title";
-    private final String notBlankPageTitle = "not blank page title";
-    private final String checkboxPageTitle = "checkbox page title";
     private final String option1 = "option 1";
     private final String multipleValidationsPageTitle = "multiple validations page title";
     private final String moneyErrorMessageKey = "money is error";
-    private final String emailPageTitle = "email page title";
     private final String selectCountyPageTitle = "select county page title";
-    private final String selectCounty = "select your county";
-    private final String countyA = "Alpha";
     private final String countyB = "Beta";
 
     @Override
     @BeforeEach
     protected void setUp() throws Exception {
         super.setUp();
-        staticMessageSource.addMessage("first-page-title", ENGLISH, firstPageTitle);
+        staticMessageSource.addMessage("first-page-title", ENGLISH, "first Page Title");
         staticMessageSource.addMessage("next-page-title", ENGLISH, nextPageTitle);
         staticMessageSource.addMessage("last-page-title", ENGLISH, lastPageTitle);
         staticMessageSource.addMessage("error-message-key", ENGLISH, errorMessage);
         staticMessageSource.addMessage("money-error-message-key", ENGLISH, moneyErrorMessageKey);
         staticMessageSource.addMessage("not-blank-error-message-key ", ENGLISH, "not blank is error");
-        staticMessageSource.addMessage("zip-code-page-title", ENGLISH, zipcodePageTitle);
-        staticMessageSource.addMessage("case-number-page-title", ENGLISH, caseNumberPageTitle);
-        staticMessageSource.addMessage("state-page-title", ENGLISH, statePageTitle);
-        staticMessageSource.addMessage("phone-page-title", ENGLISH, phonePageTitle);
-        staticMessageSource.addMessage("money-page-title", ENGLISH, moneyPageTitle);
-        staticMessageSource.addMessage("number-title", ENGLISH, numberPageTitle);
-        staticMessageSource.addMessage("ssn-page-title", ENGLISH, ssnPageTitle);
-        staticMessageSource.addMessage("date-page-title", ENGLISH, datePageTitle);
-        staticMessageSource.addMessage("dob-valid-page-title", ENGLISH, dobValidPageTitle);
-        staticMessageSource.addMessage("email-page-title", ENGLISH, emailPageTitle);
+        staticMessageSource.addMessage("zip-code-page-title", ENGLISH, "zip code Page Title");
+        staticMessageSource.addMessage("case-number-page-title", ENGLISH, "case number Page Title");
+        staticMessageSource.addMessage("state-page-title", ENGLISH, "state page title");
+        staticMessageSource.addMessage("phone-page-title", ENGLISH, "phone page title");
+        staticMessageSource.addMessage("money-page-title", ENGLISH, "money page title");
+        staticMessageSource.addMessage("number-title", ENGLISH, "hours per week page title");
+        staticMessageSource.addMessage("ssn-page-title", ENGLISH, "ssn page title");
+        staticMessageSource.addMessage("date-page-title", ENGLISH, "date page title");
+        staticMessageSource.addMessage("dob-valid-page-title", ENGLISH, "dob valid page title");
+        staticMessageSource.addMessage("email-page-title", ENGLISH, "email page title");
         staticMessageSource.addMessage("select-county-page-title", ENGLISH, selectCountyPageTitle);
-        staticMessageSource.addMessage("not-blank-page-title", ENGLISH, notBlankPageTitle);
-        staticMessageSource.addMessage("checkbox-page-title", ENGLISH, checkboxPageTitle);
+        staticMessageSource.addMessage("not-blank-page-title", ENGLISH, "not blank page title");
+        staticMessageSource.addMessage("checkbox-page-title", ENGLISH, "checkbox page title");
         staticMessageSource.addMessage("option-1", ENGLISH, option1);
         staticMessageSource.addMessage("option-2", ENGLISH, "option-2");
         staticMessageSource.addMessage("page-with-input-with-multiple-validations",
                                        ENGLISH,
                                        multipleValidationsPageTitle);
-        staticMessageSource.addMessage("select-county-key", ENGLISH, selectCounty);
-        staticMessageSource.addMessage("county-a-key", ENGLISH, countyA);
+        staticMessageSource.addMessage("select-county-key", ENGLISH, "select your county");
+        staticMessageSource.addMessage("county-a-key", ENGLISH, "Alpha");
         staticMessageSource.addMessage("county-b-key", ENGLISH, countyB);
     }
 
