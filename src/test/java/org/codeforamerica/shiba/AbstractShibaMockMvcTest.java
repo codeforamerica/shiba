@@ -9,6 +9,7 @@ import org.codeforamerica.shiba.pages.config.PageTemplate;
 import org.codeforamerica.shiba.pages.config.ReferenceOptionsTemplate;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.enrichment.LocationClient;
+import org.codeforamerica.shiba.pages.enrichment.smartystreets.SmartyStreetClient;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,6 +59,9 @@ public class AbstractShibaMockMvcTest {
     @MockBean
     protected FeatureFlagConfiguration featureFlagConfiguration;
 
+    @MockBean
+    protected SmartyStreetClient smartyStreetClient;
+
     @Autowired
     protected ApplicationData applicationData;
 
@@ -76,6 +80,7 @@ public class AbstractShibaMockMvcTest {
         when(featureFlagConfiguration.get("submit-via-email")).thenReturn(FeatureFlag.OFF);
         when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.OFF);
         when(featureFlagConfiguration.get("county-anoka")).thenReturn(FeatureFlag.OFF);
+        when(smartyStreetClient.validateAddress(any())).thenReturn(Optional.empty());
     }
 
     @AfterEach
@@ -203,6 +208,7 @@ public class AbstractShibaMockMvcTest {
     protected void fillOutContactInfo() throws Exception {
         postExpectingSuccess("contactInfo", Map.of(
                 "phoneNumber", List.of("7234567890"),
+                "email", List.of("some@email.com"),
                 "phoneOrEmail", List.of("TEXT")
         ));
     }
@@ -260,6 +266,24 @@ public class AbstractShibaMockMvcTest {
                                                                            String nextPageTitle) throws Exception {
         var nextPage = postExpectingSuccessAndFollowRedirect(pageName, inputName, value);
         assertThat(nextPage.getTitle()).isEqualTo(nextPageTitle);
+    }
+
+    protected void postExpectingSuccessAndAssertRedirectPageElementHasText(String pageName,
+                                                                            String inputName,
+                                                                            String value,
+                                                                            String elementId,
+                                                                            String expectedText) throws Exception {
+        var nextPage = postExpectingSuccessAndFollowRedirect(pageName, inputName, value);
+        assertThat(nextPage.findElementTextById(elementId)).isEqualTo(expectedText);
+    }
+
+    protected void postExpectingSuccessAndAssertRedirectPageElementHasText(String pageName,
+                                                                           String inputName,
+                                                                           List<String> value,
+                                                                           String elementId,
+                                                                           String expectedText) throws Exception {
+        var nextPage = postExpectingSuccessAndFollowRedirect(pageName, inputName, value);
+        assertThat(nextPage.findElementTextById(elementId)).isEqualTo(expectedText);
     }
 
     protected void postExpectingSuccessAndAssertRedirectPageTitleIsCorrect(String pageName,
