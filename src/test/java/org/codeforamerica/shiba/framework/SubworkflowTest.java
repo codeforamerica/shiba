@@ -40,36 +40,18 @@ public class SubworkflowTest extends AbstractFrameworkTest {
         postExpectingSuccess("startPage");
         assertNavigationRedirectsToCorrectNextPage("startPage", "firstPage");
 
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("firstPage",
-                                                               "input1",
-                                                               "goToSecondPage",
-                                                               "secondPage");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("secondPage",
-                                                               "input2",
-                                                               "text2",
-                                                               "endPage");
+        postExpectingRedirect("firstPage", "input1", "goToSecondPage", "secondPage");
+        postExpectingRedirect("secondPage", "input2", "text2", "endPage");
 
         assertReviewPageDisplaysCorrectInfoForIteration("0", "goToSecondPage");
     }
 
     @Test
     void shouldSupportSkippableFirstPage() throws Exception {
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("startPage",
-                                                               "foo",
-                                                               "someinput",
-                                                               "skippableFirstPage");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("skippableFirstPage",
-                                                               "inputSkippable",
-                                                               "bar",
-                                                               "firstPage");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("firstPage",
-                                                               "input1",
-                                                               "goToSecondPage",
-                                                               "secondPage");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("secondPage",
-                                                               "input2",
-                                                               "text 2",
-                                                               "endPage");
+        postExpectingRedirect("startPage", "foo", "someinput", "skippableFirstPage");
+        postExpectingRedirect("skippableFirstPage", "inputSkippable", "bar", "firstPage");
+        postExpectingRedirect("firstPage", "input1", "goToSecondPage", "secondPage");
+        postExpectingRedirect("secondPage", "input2", "text 2", "endPage");
 
         assertReviewPageDisplaysCorrectInfoForIteration("0", "goToSecondPage");
     }
@@ -91,10 +73,7 @@ public class SubworkflowTest extends AbstractFrameworkTest {
         completeAnIterationGoingThroughSecondPage("0");
 
         // Start another iteration but don't finish it
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("firstPage",
-                                                               "input1",
-                                                               "goToThirdPage",
-                                                               "thirdPage");
+        postExpectingRedirect("firstPage", "input1", "goToThirdPage", "thirdPage");
 
         var endPage = new FormPage(getPage("endPage"));
         assertThat(endPage.getElementById("iteration0")).isNotNull();
@@ -173,8 +152,7 @@ public class SubworkflowTest extends AbstractFrameworkTest {
         getPageAndExpectRedirect("deleteWarningPage", "earlierPage");
     }
 
-    private void deleteIteration(String iterationIndex, String iterationInput1Value,
-                                 String expectedRedirectPageName) throws Exception {
+    private void deleteIteration(String iterationIndex, String iterationInput1Value, String expectedRedirectPageName) throws Exception {
         var deleteWarningPage = new FormPage(getWithQueryParam("deleteWarningPage", "iterationIndex", iterationIndex));
         assertThat(deleteWarningPage.getTitle()).isEqualTo("warningPageTitle");
         assertThat(deleteWarningPage.findElementTextById("warning-message")).isEqualTo("This is a warning for: " + iterationInput1Value);
@@ -186,14 +164,8 @@ public class SubworkflowTest extends AbstractFrameworkTest {
         postExpectingSuccess("startPage");
         assertNavigationRedirectsToCorrectNextPage("startPage", "firstPage");
 
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("firstPage",
-                                                               "input1",
-                                                               "goToSecondPage",
-                                                               "secondPage");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("secondPage",
-                                                               "input2",
-                                                               "text 2",
-                                                               "endPage");
+        postExpectingRedirect("firstPage", "input1", "goToSecondPage", "secondPage");
+        postExpectingRedirect("secondPage", "input2", "text 2", "endPage");
 
         assertReviewPageDisplaysCorrectInfoForIteration(iteration, "goToSecondPage");
     }
@@ -201,14 +173,8 @@ public class SubworkflowTest extends AbstractFrameworkTest {
     private void completeAnIterationGoingThroughThirdPage(String iteration) throws Exception {
         postExpectingSuccess("startPage");
         assertNavigationRedirectsToCorrectNextPage("startPage", "firstPage");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("firstPage",
-                                                               "input1",
-                                                               "goToThirdPage",
-                                                               "thirdPage");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("thirdPage",
-                                                               "input3",
-                                                               "text 3",
-                                                               "endPage");
+        postExpectingRedirect("firstPage", "input1", "goToThirdPage", "thirdPage");
+        postExpectingRedirect("thirdPage", "input3", "text 3", "endPage");
         assertReviewPageDisplaysCorrectInfoForIteration(iteration, "goToThirdPage");
     }
 

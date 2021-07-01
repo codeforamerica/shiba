@@ -9,7 +9,6 @@ import org.codeforamerica.shiba.pages.config.PageTemplate;
 import org.codeforamerica.shiba.pages.config.ReferenceOptionsTemplate;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.enrichment.LocationClient;
-import org.codeforamerica.shiba.pages.enrichment.smartystreets.SmartyStreetClient;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -256,47 +255,38 @@ public class AbstractShibaMockMvcTest {
         ).andExpect(redirectedUrl(redirectUrl));
     }
 
-    protected void postExpectingSuccessAndAssertRedirectPageTitleIsCorrect(String pageName,
-                                                                           String inputName,
-                                                                           String value,
-                                                                           String nextPageTitle) throws Exception {
-        var nextPage = postExpectingSuccessAndFollowRedirect(pageName, inputName, value);
-        assertThat(nextPage.getTitle()).isEqualTo(nextPageTitle);
-    }
-
-    protected void postExpectingSuccessAndAssertRedirectPageElementHasText(String pageName,
-                                                                            String inputName,
-                                                                            String value,
-                                                                            String elementId,
-                                                                            String expectedText) throws Exception {
-        var nextPage = postExpectingSuccessAndFollowRedirect(pageName, inputName, value);
+    protected void postExpectingNextPageElementText(String pageName,
+                                                    String inputName,
+                                                    String value,
+                                                    String elementId,
+                                                    String expectedText) throws Exception {
+        var nextPage = postAndFollowRedirect(pageName, inputName, value);
         assertThat(nextPage.findElementTextById(elementId)).isEqualTo(expectedText);
     }
 
-    protected void postExpectingSuccessAndAssertRedirectPageElementHasText(String pageName,
-                                                                           String inputName,
-                                                                           List<String> value,
-                                                                           String elementId,
-                                                                           String expectedText) throws Exception {
-        var nextPage = postExpectingSuccessAndFollowRedirect(pageName, inputName, value);
-        assertThat(nextPage.findElementTextById(elementId)).isEqualTo(expectedText);
-    }
-
-    protected void postExpectingSuccessAndAssertRedirectPageTitleIsCorrect(String pageName,
-                                                                           String inputName,
-                                                                           List<String> values,
-                                                                           String nextPageTitle) throws Exception {
-        var nextPage = postExpectingSuccessAndFollowRedirect(pageName, inputName, values);
+    protected void postExpectingNextPageTitle(String pageName,
+                                              String inputName,
+                                              String value,
+                                              String nextPageTitle) throws Exception {
+        var nextPage = postAndFollowRedirect(pageName, inputName, value);
         assertThat(nextPage.getTitle()).isEqualTo(nextPageTitle);
     }
 
-    protected void postExpectingSuccessAndAssertRedirectPageNameIsCorrect(String pageName, String inputName,
-                                                                          String value, String expectedNextPageName) throws Exception {
+    protected void postExpectingNextPageTitle(String pageName,
+                                              String inputName,
+                                              List<String> values,
+                                              String nextPageTitle) throws Exception {
+        var nextPage = postAndFollowRedirect(pageName, inputName, values);
+        assertThat(nextPage.getTitle()).isEqualTo(nextPageTitle);
+    }
+
+    protected void postExpectingRedirect(String pageName, String inputName,
+                                         String value, String expectedNextPageName) throws Exception {
         postExpectingSuccess(pageName, inputName, value);
         assertNavigationRedirectsToCorrectNextPage(pageName, expectedNextPageName);
     }
 
-    protected void postExpectingSuccessAndAssertRedirectPageNameIsCorrect(String pageName, String expectedNextPageName) throws Exception {
+    protected void postExpectingRedirect(String pageName, String expectedNextPageName) throws Exception {
         postExpectingSuccess(pageName);
         assertNavigationRedirectsToCorrectNextPage(pageName, expectedNextPageName);
     }
@@ -407,14 +397,14 @@ public class AbstractShibaMockMvcTest {
         return new FormPage(nextPage);
     }
 
-    protected FormPage postExpectingSuccessAndFollowRedirect(String pageName, String inputName, String value) throws
+    protected FormPage postAndFollowRedirect(String pageName, String inputName, String value) throws
             Exception {
         postExpectingSuccess(pageName, inputName, value);
         return getNextPageAsFormPage(pageName);
     }
 
-    protected FormPage postExpectingSuccessAndFollowRedirect(String pageName, String inputName,
-                                                             List<String> values) throws
+    protected FormPage postAndFollowRedirect(String pageName, String inputName,
+                                             List<String> values) throws
             Exception {
         postExpectingSuccess(pageName, inputName, values);
         return getNextPageAsFormPage(pageName);

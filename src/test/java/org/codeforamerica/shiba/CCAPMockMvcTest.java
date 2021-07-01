@@ -18,7 +18,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @Tag("ccap")
 public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
-
     @BeforeEach
     protected void setUp() throws Exception {
         super.setUp();
@@ -34,96 +33,45 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
     void verifyFlowWhenLiveAloneApplicantSelectedCCAP() throws Exception {
         // Applicant lives alone and choose CCAP
         completeFlowFromLandingPageThroughReviewInfo("CCAP");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("addHouseholdMembers",
-                                                               "addHouseholdMembers",
-                                                               "false",
-                                                               "introPersonalDetails");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("livingSituation", "goingToSchool");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("goingToSchool",
-                                                               "goingToSchool",
-                                                               "true",
-                                                               "pregnant");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("pregnant",
-                                                               "isPregnant",
-                                                               "true",
-                                                               "migrantFarmWorker");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("migrantFarmWorker",
-                                                               "migrantOrSeasonalFarmWorker",
-                                                               "true",
-                                                               "usCitizen");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("disability",
-                                                               "hasDisability",
-                                                               "true",
-                                                               "workSituation");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("workSituation",
-                                                               "hasWorkSituation",
-                                                               "true",
-                                                               "introIncome");
+        postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "false", "introPersonalDetails");
+        postExpectingRedirect("livingSituation", "goingToSchool");
+        postExpectingRedirect("goingToSchool", "goingToSchool", "true", "pregnant");
+        postExpectingRedirect("pregnant", "isPregnant", "true", "migrantFarmWorker");
+        postExpectingRedirect("migrantFarmWorker", "migrantOrSeasonalFarmWorker", "true", "usCitizen");
+        postExpectingRedirect("disability", "hasDisability", "true", "workSituation");
+        postExpectingRedirect("workSituation", "hasWorkSituation", "true", "introIncome");
         assertNavigationRedirectsToCorrectNextPage("introIncome", "employmentStatus");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("employmentStatus",
-                                                               "areYouWorking",
-                                                               "false",
-                                                               "jobSearch");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("jobSearch",
-                                                               "currentlyLookingForJob",
-                                                               "true",
-                                                               "incomeUpNext");
+        postExpectingRedirect("employmentStatus", "areYouWorking", "false", "jobSearch");
+        postExpectingRedirect("jobSearch", "currentlyLookingForJob", "true", "incomeUpNext");
         fillUnearnedIncomeToLegalStuffCCAP();
     }
 
     private void fillUnearnedIncomeToLegalStuffCCAP() throws Exception {
         assertNavigationRedirectsToCorrectNextPage("incomeUpNext", "unearnedIncome");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("unearnedIncome",
-                                                               "unearnedIncome",
-                                                               "NO_UNEARNED_INCOME_SELECTED",
-                                                               "unearnedIncomeCcap");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("unearnedIncomeCcap",
-                                                               "unearnedIncomeCcap",
-                                                               "NO_UNEARNED_INCOME_CCAP_SELECTED",
-                                                               "futureIncome");
+        postExpectingRedirect("unearnedIncome", "unearnedIncome", "NO_UNEARNED_INCOME_SELECTED", "unearnedIncomeCcap");
+        postExpectingRedirect("unearnedIncomeCcap", "unearnedIncomeCcap", "NO_UNEARNED_INCOME_CCAP_SELECTED", "futureIncome");
         fillFutureIncomeToHaveVehicle();
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("realEstate", "ownRealEstate", "false", "investments");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("investments", "haveInvestments", "false", "savings");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("savings", "haveSavings", "false", "soldAssets");
+        postExpectingRedirect("realEstate", "ownRealEstate", "false", "investments");
+        postExpectingRedirect("investments", "haveInvestments", "false", "savings");
+        postExpectingRedirect("savings", "haveSavings", "false", "soldAssets");
         // Go back and enter true for savings
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("savings", "haveSavings", "true", "savingsAmount");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("savingsAmount", "liquidAssets", "1234", "millionDollar");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("millionDollar", "haveMillionDollars", "false", "soldAssets");
+        postExpectingRedirect("savings", "haveSavings", "true", "savingsAmount");
+        postExpectingRedirect("savingsAmount", "liquidAssets", "1234", "millionDollar");
+        postExpectingRedirect("millionDollar", "haveMillionDollars", "false", "soldAssets");
 
         var legalStuff = new FormPage(getPage("legalStuff"));
         assertThat(legalStuff.getElementById("ccap-legal")).isNotNull();
     }
 
     private void fillFutureIncomeToHaveVehicle() throws Exception {
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("futureIncome",
-                                                               "earnLessMoneyThisMonth",
-                                                               "false",
-                                                               "startExpenses");
+        postExpectingRedirect("futureIncome", "earnLessMoneyThisMonth", "false", "startExpenses");
         assertNavigationRedirectsToCorrectNextPage("startExpenses", "homeExpenses");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("homeExpenses",
-                                                               "homeExpenses",
-                                                               "NONE_OF_THE_ABOVE",
-                                                               "utilities");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("utilities",
-                                                               "payForUtilities",
-                                                               "NONE_OF_THE_ABOVE",
-                                                               "energyAssistance");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("energyAssistance",
-                                                               "energyAssistance",
-                                                               "false",
-                                                               "medicalExpenses");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("medicalExpenses",
-                                                               "medicalExpenses",
-                                                               "NONE_OF_THE_ABOVE",
-                                                               "supportAndCare");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("supportAndCare",
-                                                               "supportAndCare",
-                                                               "false",
-                                                               "vehicle");
-        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("vehicle",
-                                                               "haveVehicle",
-                                                               "false",
-                                                               "realEstate");
+        postExpectingRedirect("homeExpenses", "homeExpenses", "NONE_OF_THE_ABOVE", "utilities");
+        postExpectingRedirect("utilities", "payForUtilities", "NONE_OF_THE_ABOVE", "energyAssistance");
+        postExpectingRedirect("energyAssistance", "energyAssistance", "false", "medicalExpenses");
+        postExpectingRedirect("medicalExpenses", "medicalExpenses", "NONE_OF_THE_ABOVE", "supportAndCare");
+        postExpectingRedirect("supportAndCare", "supportAndCare", "false", "vehicle");
+        postExpectingRedirect("vehicle", "haveVehicle", "false", "realEstate");
     }
 
     protected void completeFlowFromLandingPageThroughReviewInfo(String... programSelections) throws Exception {
@@ -137,11 +85,7 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
         fillOutHomeAddress();
         postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "false");
         fillOutMailingAddress();
-        postExpectingSuccessAndAssertRedirectPageElementHasText("verifyMailingAddress",
-                                                                "useEnrichedAddress",
-                                                                "true",
-                                                                "mailingAddress-address_street",
-                                                                "smarty street");
+        postExpectingNextPageElementText("verifyMailingAddress", "useEnrichedAddress", "true", "mailingAddress-address_street", "smarty street");
     }
 
     protected void getToPersonalInfoScreen(String... programSelections) throws Exception {

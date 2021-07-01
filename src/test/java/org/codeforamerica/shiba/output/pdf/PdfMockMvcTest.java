@@ -61,13 +61,13 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
         String jimHalpertId = getFirstHouseholdMemberId();
         postExpectingSuccess("childrenInNeedOfCare",
-                             "whoNeedsChildCare",
-                             List.of("Dwight Schrute applicant", "Jim Halpert " + jimHalpertId)
+                "whoNeedsChildCare",
+                List.of("Dwight Schrute applicant", "Jim Halpert " + jimHalpertId)
         );
 
         postExpectingSuccess("whoHasParentNotAtHome",
-                             "whoHasAParentNotLivingAtHome",
-                             List.of("Dwight Schrute applicant", "Jim Halpert " + jimHalpertId)
+                "whoHasAParentNotLivingAtHome",
+                List.of("Dwight Schrute applicant", "Jim Halpert " + jimHalpertId)
         );
         postExpectingSuccess("parentNotAtHomeNames", Map.of(
                 "whatAreTheParentsNames", List.of("", "Jim's Parent"),
@@ -92,8 +92,8 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
         addHouseholdMembers();
 
         postExpectingSuccess("childrenInNeedOfCare",
-                             "whoNeedsChildCare",
-                             List.of("Dwight Schrute applicant", getJimFullNameAndId())
+                "whoNeedsChildCare",
+                List.of("Dwight Schrute applicant", getJimFullNameAndId())
         );
 
         postExpectingSuccess("whoHasParentNotAtHome", "whoHasAParentNotLivingAtHome", "NONE_OF_THE_ABOVE");
@@ -412,8 +412,8 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
         void shouldMapLivingWithFamilyAndFriendsDueToEconomicHardship() throws Exception {
             fillInRequiredPages();
             postExpectingSuccess("livingSituation",
-                                 "livingSituation",
-                                 "TEMPORARILY_WITH_FRIENDS_OR_FAMILY_DUE_TO_ECONOMIC_HARDSHIP");
+                    "livingSituation",
+                    "TEMPORARILY_WITH_FRIENDS_OR_FAMILY_DUE_TO_ECONOMIC_HARDSHIP");
 
             var caf = submitAndDownloadCaf();
             var ccap = downloadCcap();
@@ -503,8 +503,8 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
                 var ccap = submitAndDownloadCcap();
                 assertPdfFieldEquals("COUNTY_INSTRUCTIONS",
-                                     "This application was submitted. A caseworker at Hennepin County will help route your application to your county. For more support with your application, you can call Hennepin County at 612-596-1300.",
-                                     ccap);
+                        "This application was submitted. A caseworker at Hennepin County will help route your application to your county. For more support with your application, you can call Hennepin County at 612-596-1300.",
+                        ccap);
             }
 
             @Test
