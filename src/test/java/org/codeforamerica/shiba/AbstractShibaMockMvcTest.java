@@ -296,6 +296,11 @@ public class AbstractShibaMockMvcTest {
         assertNavigationRedirectsToCorrectNextPage(pageName, expectedNextPageName);
     }
 
+    protected void postExpectingSuccessAndAssertRedirectPageNameIsCorrect(String pageName, String expectedNextPageName) throws Exception {
+        postExpectingSuccess(pageName);
+        assertNavigationRedirectsToCorrectNextPage(pageName, expectedNextPageName);
+    }
+
     protected void assertNavigationRedirectsToCorrectNextPage(String pageName, String expectedNextPageName) throws Exception {
         var nextPage = "/pages/" + pageName + "/navigation";
 

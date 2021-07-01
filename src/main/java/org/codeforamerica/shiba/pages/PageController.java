@@ -534,6 +534,7 @@ public class PageController {
             String s3FilePath = String.format("%s/%s", applicationData.getId(), UUID.randomUUID());
             documentRepositoryService.upload(s3FilePath, file);
             applicationData.addUploadedDoc(file, s3FilePath, dataURL, type);
+            //TODO it would be so much better to write to the database here.
         }
     }
 
