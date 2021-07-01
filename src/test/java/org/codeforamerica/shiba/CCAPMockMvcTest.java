@@ -1,6 +1,8 @@
 package org.codeforamerica.shiba;
 
+import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.enrichment.Address;
+import org.codeforamerica.shiba.pages.enrichment.LocationClient;
 import org.codeforamerica.shiba.pages.enrichment.smartystreets.SmartyStreetClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -15,11 +17,12 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @Tag("ccap")
-public class CCAPTest extends AbstractShibaMockMvcTest {
+public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
 
     @BeforeEach
     protected void setUp() throws Exception {
         super.setUp();
+        when(featureFlagConfiguration.get("apply-without-address")).thenReturn(FeatureFlag.OFF);
         mockMvc.perform(get("/pages/languagePreferences").session(session)); // start timer
         postExpectingSuccess("languagePreferences", Map.of(
                 "writtenLanguage", List.of("ENGLISH"),
@@ -59,7 +62,7 @@ public class CCAPTest extends AbstractShibaMockMvcTest {
         fillOutContactInfo();
         fillOutHomeAddress();
         postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "false");
-        fillOutMailingAddress(smartyStreetClient);
+        fillOutMailingAddress(locationClient);
         postExpectingSuccessAndAssertRedirectPageElementHasText("verifyMailingAddress", "useEnrichedAddress", "true",
                                                                 "mailingAddress-address_street", "smarty street");
     }
@@ -79,8 +82,8 @@ public class CCAPTest extends AbstractShibaMockMvcTest {
         ));
     }
 
-    protected void fillOutMailingAddress(SmartyStreetClient smartyStreetClient) throws Exception {
-        when(smartyStreetClient.validateAddress(any())).thenReturn(
+    protected void fillOutMailingAddress(LocationClient locationClient) throws Exception {
+        when(locationClient.validateAddress(any())).thenReturn(
                 Optional.of(new Address("smarty street", "City", "CA", "03104", "", "someCounty"))
         );
         postExpectingSuccess("mailingAddress", Map.of(

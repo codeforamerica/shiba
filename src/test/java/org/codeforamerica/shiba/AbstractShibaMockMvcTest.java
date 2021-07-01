@@ -59,9 +59,6 @@ public class AbstractShibaMockMvcTest {
     @MockBean
     protected FeatureFlagConfiguration featureFlagConfiguration;
 
-    @MockBean
-    protected SmartyStreetClient smartyStreetClient;
-
     @Autowired
     protected ApplicationData applicationData;
 
@@ -80,7 +77,6 @@ public class AbstractShibaMockMvcTest {
         when(featureFlagConfiguration.get("submit-via-email")).thenReturn(FeatureFlag.OFF);
         when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.OFF);
         when(featureFlagConfiguration.get("county-anoka")).thenReturn(FeatureFlag.OFF);
-        when(smartyStreetClient.validateAddress(any())).thenReturn(Optional.empty());
     }
 
     @AfterEach
