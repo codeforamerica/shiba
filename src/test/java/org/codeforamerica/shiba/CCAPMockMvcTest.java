@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba;
 
+import org.codeforamerica.shiba.framework.FormPage;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -80,24 +82,16 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
                                                                "NO_UNEARNED_INCOME_CCAP_SELECTED",
                                                                "futureIncome");
         fillFutureIncomeToHaveVehicle();
+        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("realEstate", "ownRealEstate", "false", "investments");
+        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("investments", "haveInvestments", "false", "savings");
+        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("savings", "haveSavings", "false", "soldAssets");
+        // Go back and enter true for savings
+        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("savings", "haveSavings", "true", "savingsAmount");
+        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("savingsAmount", "liquidAssets", "1234", "millionDollar");
+        postExpectingSuccessAndAssertRedirectPageNameIsCorrect("millionDollar", "haveMillionDollars", "false", "soldAssets");
 
-
-
-        /*
-        assertThat(testPage.getTitle()).isEqualTo("Real Estate");
-        testPage.enter("ownRealEstate", NO.getDisplayValue());
-        testPage.enter("haveInvestments", NO.getDisplayValue());
-        testPage.enter("haveSavings", NO.getDisplayValue());
-        assertThat(testPage.getTitle()).isEqualTo("Sold assets");
-        testPage.goBack();
-        testPage.enter("haveSavings", YES.getDisplayValue());
-        testPage.enter("liquidAssets", "1234");
-        testPage.clickContinue();
-        assertThat(testPage.getTitle()).isEqualTo("$1M assets");
-        testPage.enter("haveMillionDollars", NO.getDisplayValue());
-        navigateTo("legalStuff");
-        assertThat(driver.findElement(By.id("ccap-legal"))).isNotNull();
-         */
+        var legalStuff = new FormPage(getPage("legalStuff"));
+        assertThat(legalStuff.getElementById("ccap-legal")).isNotNull();
     }
 
     private void fillFutureIncomeToHaveVehicle() throws Exception {

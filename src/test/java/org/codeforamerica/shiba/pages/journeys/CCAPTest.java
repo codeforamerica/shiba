@@ -14,28 +14,6 @@ import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 @Tag("ccap")
 public class CCAPTest extends JourneyTest {
     @Test
-    void verifyFlowWhenLiveAloneApplicantSelectedCCAP() {
-        // Applicant lives alone and choose CCAP
-        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_CCAP), smartyStreetClient);
-        testPage.clickLink("This looks correct");
-        testPage.enter("addHouseholdMembers", NO.getDisplayValue());
-        testPage.clickContinue();
-        testPage.clickContinue();
-        testPage.enter("goingToSchool", YES.getDisplayValue());
-        testPage.enter("isPregnant", YES.getDisplayValue());
-        testPage.enter("migrantOrSeasonalFarmWorker", YES.getDisplayValue());
-        testPage.enter("isUsCitizen", YES.getDisplayValue());
-        testPage.enter("hasDisability", YES.getDisplayValue());
-        testPage.enter("hasWorkSituation", YES.getDisplayValue());
-        testPage.clickContinue();
-        testPage.enter("areYouWorking", NO.getDisplayValue());
-        assertThat(driver.getTitle()).isEqualTo("Job Search");
-        testPage.enter("currentlyLookingForJob", YES.getDisplayValue());
-        assertThat(driver.getTitle()).isEqualTo("Income Up Next");
-        fillUnearnedIncomeToLegalStuffCCAP();
-    }
-
-    @Test
     void verifyFlowWhenApplicantSelectedCCAPAndHouseholdMemberDidNot() {
         // Applicant selected CCAP for themselves and did not choose CCAP for household member
         completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_CCAP), smartyStreetClient);
