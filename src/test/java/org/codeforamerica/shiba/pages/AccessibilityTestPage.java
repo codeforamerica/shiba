@@ -3,14 +3,12 @@ package org.codeforamerica.shiba.pages;
 import com.deque.html.axecore.results.Results;
 import com.deque.html.axecore.results.Rule;
 import com.deque.html.axecore.selenium.AxeBuilder;
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-@Slf4j
 public class AccessibilityTestPage extends Page {
     public List<Rule> resultsList = new ArrayList<>();
 
@@ -52,6 +50,5 @@ public class AccessibilityTestPage extends Page {
         List<Rule> violations = results.getViolations();
         violations.forEach(rule -> rule.setUrl(getTitle()));
         resultsList.addAll(violations);
-        log.info("Testing a11y on page " + getTitle());
     }
 }

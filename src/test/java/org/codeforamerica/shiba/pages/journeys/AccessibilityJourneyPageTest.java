@@ -3,7 +3,6 @@ package org.codeforamerica.shiba.pages.journeys;
 import com.deque.html.axecore.results.Results;
 import com.deque.html.axecore.results.Rule;
 import com.deque.html.axecore.selenium.AxeBuilder;
-import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.pages.AccessibilityTestPage;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.enrichment.Address;
@@ -22,7 +21,6 @@ import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@Slf4j
 @Tag("a11y")
 public class AccessibilityJourneyPageTest extends JourneyTest {
     protected static List<Rule> resultsList = new ArrayList<>();
@@ -245,16 +243,16 @@ public class AccessibilityJourneyPageTest extends JourneyTest {
     private static void generateAccessibilityReport(Results results) {
         results.setViolations(resultsList);
         List<Rule> violations = results.getViolations();
-        log.info("Found " + violations.size() + " accessibility related issues.");
+        System.out.println("Found " + violations.size() + " accessibility related issues.");
         if (results.getViolations().size() > 0) {
             violations.stream().forEach(violation -> {
-                log.info("Rule at issue: " + violation.getId());
-                log.info("Rule description: " + violation.getDescription());
-                log.info("Rule help text: " + violation.getHelp());
-                log.info("Rule help page: " + violation.getHelpUrl());
-                log.info("Accessibility impact: " + violation.getImpact());
-                log.info("Page at issue: " + violation.getUrl());
-                log.info("HTML with issue: " + violation.getNodes().get(0).getHtml());
+                System.out.println("Rule at issue: " + violation.getId());
+                System.out.println("Rule description: " + violation.getDescription());
+                System.out.println("Rule help text: " + violation.getHelp());
+                System.out.println("Rule help page: " + violation.getHelpUrl());
+                System.out.println("Accessibility impact: " + violation.getImpact());
+                System.out.println("Page at issue: " + violation.getUrl());
+                System.out.println("HTML with issue: " + violation.getNodes().get(0).getHtml());
             });
         }
         assertThat(violations.size()).isEqualTo(0);
