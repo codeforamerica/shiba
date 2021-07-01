@@ -230,7 +230,8 @@ pageDefinitions:
     headerHelpMessageKey: general.check-all-that-apply
     inputs:
       - name: programs
-        type: CHECKBOX
+        type: CUSTOM
+        customInputFragment: chooseProgramsCheckboxes
         validators:
           - validation: SELECT_AT_LEAST_ONE
             errorMessageKey: general.validation.make-sure-you-answer-this-question
@@ -256,6 +257,10 @@ pageDefinitions:
               messageKey: choose-programs.housing-support-group-residential-housing
               helpMessageKey: choose-programs.housing-grh-help
               helpIcon: icon-apartment
+            - value: NONE
+              messageKey: choose-programs.none-of-the-above
+              helpIcon: icon-people
+              isNone: true
   - &introBasicInfo
     name: introBasicInfo
     pageTitle: intro-basic-info.title
@@ -2722,6 +2727,11 @@ workflow:
   addHouseholdMembers:
     pageConfiguration: *addHouseholdMembers
     nextPages:
+      - pageName: startHousehold
+        condition:
+          pageName: choosePrograms
+          input: programs
+          value: NONE
       - pageName: introPersonalDetails
         condition:
           input: addHouseholdMembers
@@ -2730,6 +2740,13 @@ workflow:
         condition:
           input: addHouseholdMembers
           value: "true"
+    skipCondition:
+      conditions:
+        - pageName: choosePrograms
+          input: programs
+          value: NONE
+    datasources:
+      - pageName: choosePrograms
   startHousehold:
     pageConfiguration: *startHousehold
     nextPages:
