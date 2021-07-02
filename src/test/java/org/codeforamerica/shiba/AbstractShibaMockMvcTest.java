@@ -552,4 +552,149 @@ public class AbstractShibaMockMvcTest {
                 "state", List.of("IL")
         ));
     }
+
+
+    protected FormPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking) throws Exception {
+        return nonExpeditedFlowToSuccessPage(hasHousehold, isWorking, false, false);
+    }
+
+    private FormPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking, boolean helpWithBenefits,
+                                                   boolean hasHealthcareCoverage) throws Exception {
+        completeFlowFromLandingPageThroughReviewInfo("CCAP", "CASH");
+        var me = "defaultFirstName defaultLastName applicant";
+        if (hasHousehold) {
+            postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "true", "startHousehold");
+
+            fillOutHousemateInfo("CCAP");
+
+            postExpectingNextPageTitle("childrenInNeedOfCare",
+                                       "whoNeedsChildCare",
+                                       "householdMemberFirstName householdMemberLastName" + getFirstHouseholdMemberId(),
+                                       "Who are the children that have a parent not living in the home?"
+            );
+            postExpectingRedirect("whoHasParentNotAtHome",
+                                  "whoHasAParentNotLivingAtHome",
+                                  "NONE_OF_THE_ABOVE",
+                                  "livingSituation");
+
+            postExpectingRedirect("livingSituation", "livingSituation", "UNKNOWN", "goingToSchool");
+            postExpectingRedirect("goingToSchool", "goingToSchool", "false", "pregnant");
+            postExpectingRedirect("pregnant", "isPregnant", "true", "whoIsPregnant");
+            postExpectingRedirect("whoIsPregnant", "whoIsPregnant", me, "migrantFarmWorker");
+
+        } else {
+            postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "false", "introPersonalDetails");
+            assertNavigationRedirectsToCorrectNextPage("introPersonalDetails", "livingSituation");
+            postExpectingRedirect("livingSituation", "livingSituation", "UNKNOWN", "goingToSchool");
+            postExpectingRedirect("goingToSchool", "goingToSchool", "false", "pregnant");
+            postExpectingRedirect("pregnant", "isPregnant", "false", "migrantFarmWorker");
+        }
+
+        postExpectingRedirect("migrantFarmWorker", "migrantOrSeasonalFarmWorker", "false", "usCitizen");
+
+        if (hasHousehold) {
+            postExpectingRedirect("usCitizen", "isUsCitizen", "false", "whoIsNonCitizen");
+            postExpectingRedirect("whoIsNonCitizen", "whoIsNonCitizen", me, "disability");
+        } else {
+            postExpectingRedirect("usCitizen", "isUsCitizen", "true", "disability");
+        }
+
+        postExpectingRedirect("disability", "hasDisability", "false", "workSituation");
+        postExpectingRedirect("workSituation", "hasWorkSituation", "false", "introIncome");
+        assertNavigationRedirectsToCorrectNextPage("introIncome", "employmentStatus");
+        if (isWorking) {
+            postExpectingRedirect("employmentStatus", "areYouWorking", "true", "incomeByJob");
+
+            postWithQueryParam("incomeByJob", "option", "0");
+            if (hasHousehold) {
+                postExpectingRedirect("householdSelectionForIncome",
+                                      "whoseJobIsIt",
+                                      "householdMemberFirstName householdMemberLastName" + getFirstHouseholdMemberId(),
+                                      "employersName");
+            }
+            postExpectingRedirect("employersName", "employersName", "some employer", "selfEmployment");
+            postExpectingRedirect("selfEmployment", "selfEmployment", "", "paidByTheHour");
+            postExpectingRedirect("paidByTheHour", "paidByTheHour", "true", "hourlyWage");
+            postExpectingRedirect("hourlyWage", "hourlyWage", "1", "hoursAWeek");
+            postExpectingRedirect("hoursAWeek", "hoursAWeek", "30", "jobBuilder");
+
+            postExpectingSuccess("jobSearch", "currentlyLookingForJob", "false");
+
+        } else {
+            postExpectingRedirect("employmentStatus", "areYouWorking", "false", "incomeByJob");
+            postExpectingSuccess("jobSearch", "currentlyLookingForJob", "true");
+
+            if (hasHousehold) {
+                assertNavigationRedirectsToCorrectNextPage("jobSearch", "whoIsLookingForAJob");
+                String householdMemberId = getHouseholdMemberIdAtIndex(0);
+
+                postExpectingRedirect("whoIsLookingForAJob",
+                                      "whoIsLookingForAJob",
+                                      "householdMemberFirstName householdMemberLastName" + householdMemberId,
+                                      "incomeUpNext");
+            } else {
+                assertNavigationRedirectsToCorrectNextPage("jobSearch", "incomeUpNext");
+            }
+        }
+        assertNavigationRedirectsToCorrectNextPage("incomeUpNext", "unearnedIncome");
+        postExpectingRedirect("unearnedIncome", "unearnedIncome", "SOCIAL_SECURITY", "unearnedIncomeSources");
+        postExpectingRedirect("unearnedIncomeSources", "socialSecurityAmount", "200", "unearnedIncomeCcap");
+        postExpectingRedirect("unearnedIncomeCcap", "unearnedIncomeCcap", "TRUST_MONEY", "unearnedIncomeSourcesCcap");
+        postExpectingRedirect("unearnedIncomeSourcesCcap", "trustMoneyAmount", "200", "futureIncome");
+        postExpectingRedirect("futureIncome", "earnLessMoneyThisMonth", "true", "startExpenses");
+        assertNavigationRedirectsToCorrectNextPage("startExpenses", "homeExpenses");
+        postExpectingRedirect("homeExpenses", "homeExpenses", "RENT", "homeExpensesAmount");
+        postExpectingRedirect("homeExpensesAmount", "homeExpensesAmount", "123321", "utilities");
+        postExpectingRedirect("utilities", "payForUtilities", "HEATING", "energyAssistance");
+        postExpectingRedirect("energyAssistance", "energyAssistance", "true", "energyAssistanceMoreThan20");
+        postExpectingRedirect("energyAssistanceMoreThan20", "energyAssistanceMoreThan20", "true", "medicalExpenses");
+        postExpectingRedirect("medicalExpenses", "medicalExpenses", "NONE_OF_THE_ABOVE", "supportAndCare");
+        postExpectingRedirect("supportAndCare", "supportAndCare", "true", "vehicle");
+        postExpectingRedirect("vehicle", "haveVehicle", "false", "realEstate");
+        postExpectingRedirect("realEstate", "ownRealEstate", "true", "investments");
+        postExpectingRedirect("investments", "haveInvestments", "false", "savings");
+
+        postExpectingRedirect("savings", "haveSavings", "true", "savingsAmount");
+        postExpectingRedirect("savingsAmount", "liquidAssets", "1234", "millionDollar");
+        postExpectingRedirect("millionDollar", "haveMillionDollars", "false", "soldAssets");
+        postExpectingRedirect("soldAssets", "haveSoldAssets", "false", "submittingApplication");
+        assertNavigationRedirectsToCorrectNextPage("submittingApplication", "registerToVote");
+        postExpectingRedirect("registerToVote", "registerToVote", "YES", "healthcareCoverage");
+        postExpectingRedirect("healthcareCoverage", "healthcareCoverage",
+                              hasHealthcareCoverage ? "YES" : "NO", "helper");
+
+        completeHelperWorkflow(helpWithBenefits);
+        postExpectingRedirect("additionalInfo",
+                              "additionalInfo",
+                              "Some additional information about my application",
+                              "legalStuff");
+        postExpectingRedirect("legalStuff",
+                              Map.of("agreeToTerms", List.of("true"), "drugFelony", List.of("false")),
+                              "signThisApplication");
+        submitApplication();
+        return new FormPage(getPage("success"));
+    }
+
+    protected void completeHelperWorkflow(boolean helpWithBenefits) throws Exception {
+        if (helpWithBenefits) {
+            postExpectingRedirect("helper", "helpWithBenefits", "true", "authorizedRep");
+            postExpectingRedirect("authorizedRep", "communicateOnYourBehalf", "true", "speakToCounty");
+            postExpectingRedirect("speakToCounty", "getMailNotices", "true", "spendOnYourBehalf");
+            postExpectingRedirect("spendOnYourBehalf", "spendOnYourBehalf", "true", "helperContactInfo");
+
+            fillOutHelperInfo();
+        } else {
+            postExpectingRedirect("helper", "helpWithBenefits", "false", "additionalInfo");
+        }
+    }
+
+    protected void fillOutHelperInfo() throws Exception {
+        postExpectingRedirect("helperContactInfo", Map.of(
+                "helpersFullName", List.of("defaultFirstName defaultLastName"),
+                "helpersStreetAddress", List.of("someStreetAddress"),
+                "helpersCity", List.of("someCity"),
+                "helpersZipCode", List.of("12345"),
+                "helpersPhoneNumber", List.of("7234567890")
+        ), "additionalInfo");
+    }
 }
