@@ -10,8 +10,6 @@ import java.io.UnsupportedEncodingException;
 
 /**
  * Helps parse mockmvc result html
- *
- * TODO come up with a better name
  */
 public class FormPage {
     private final Document html;
