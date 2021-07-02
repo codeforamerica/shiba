@@ -54,7 +54,7 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
         postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "true", "startHousehold");
         assertNavigationRedirectsToCorrectNextPage("startHousehold", "householdMemberInfo");
         fillOutHousemateInfo("EA");
-        getWithQueryParamAndExpectRedirect("householdList/navigation", "option","0", "childrenInNeedOfCare");
+        getWithQueryParamAndExpectRedirect("householdList/navigation", "option", "0", "childrenInNeedOfCare");
         assertCorrectPageTitle("childrenInNeedOfCare", "Who are the children in need of care?");
         postExpectingRedirect("childrenInNeedOfCare", "livingSituation");
         postExpectingRedirect("livingSituation", "goingToSchool");
@@ -70,10 +70,65 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
         fillUnearnedIncomeToLegalStuffCCAP();
     }
 
+    @Test
+    void verifyFlowWhenOnlyHouseholdMemberSelectedCCAP() throws Exception {
+        completeFlowFromLandingPageThroughReviewInfo("SNAP");
+        postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "true", "startHousehold");
+        assertNavigationRedirectsToCorrectNextPage("startHousehold", "householdMemberInfo");
+        fillOutHousemateInfo("CCAP");
+
+        // Don't select any children in need of care, should get redirected to preparing meals together
+        assertCorrectPageTitle("childrenInNeedOfCare", "Who are the children in need of care?");
+        postExpectingNextPageTitle("childrenInNeedOfCare", "Preparing meals together");
+
+        // Go back to childrenInNeedOfCare and select someone this time, but don't select anyone having a parent not at home
+        String householdMemberId = getFirstHouseholdMemberId();
+        postExpectingNextPageTitle("childrenInNeedOfCare",
+                                   "whoNeedsChildCare",
+                                   List.of("defaultFirstName defaultLastName applicant",
+                                           "householdMemberFirstName householdMemberLastName" + householdMemberId),
+                                   "Who are the children that have a parent not living in the home?"
+        );
+        postExpectingNextPageTitle("whoHasParentNotAtHome",
+                                   "whoHasAParentNotLivingAtHome",
+                                   List.of("NONE_OF_THE_ABOVE"),
+                                   "Preparing meals together");
+
+        // Go back and select someone having a parent not at home
+        postExpectingNextPageTitle("whoHasParentNotAtHome",
+                                   "whoHasAParentNotLivingAtHome",
+                                   List.of("defaultFirstName defaultLastName applicant"),
+                                   "Name of parent outside home");
+        postExpectingNextPageTitle("parentNotAtHomeNames",
+                                   Map.of("whatAreTheParentsNames",
+                                          List.of("My Parent", "Default's Parent"),
+                                          "childIdMap",
+                                          List.of("applicant", householdMemberId)
+                                   ),
+                                   "Preparing meals together");
+
+        postExpectingRedirect("preparingMealsTogether", "isPreparingMealsTogether", "false", "livingSituation");
+        postExpectingRedirect("livingSituation", "livingSituation", "UNKNOWN", "goingToSchool");
+        postExpectingNextPageTitle("goingToSchool", "goingToSchool", "true", "Who is going to school?");
+        postExpectingRedirect("whoIsGoingToSchool", "pregnant"); // no one is going to school
+        postExpectingRedirect("pregnant", "isPregnant", "false", "migrantFarmWorker");
+        postExpectingRedirect("migrantFarmWorker", "migrantOrSeasonalFarmWorker", "false", "usCitizen");
+        postExpectingRedirect("usCitizen", "isUsCitizen", "true", "disability");
+        postExpectingRedirect("disability", "hasDisability", "false", "workSituation");
+        postExpectingRedirect("workSituation", "hasWorkSituation", "false", "introIncome");
+        assertNavigationRedirectsToCorrectNextPage("introIncome", "employmentStatus");
+        postExpectingNextPageTitle("employmentStatus", "areYouWorking", "false", "Job Search");
+        postExpectingNextPageTitle("jobSearch", "currentlyLookingForJob", "true", "Who is looking for a job");
+        fillUnearnedIncomeToLegalStuffCCAP();
+    }
+
     private void fillUnearnedIncomeToLegalStuffCCAP() throws Exception {
         assertNavigationRedirectsToCorrectNextPage("incomeUpNext", "unearnedIncome");
         postExpectingRedirect("unearnedIncome", "unearnedIncome", "NO_UNEARNED_INCOME_SELECTED", "unearnedIncomeCcap");
-        postExpectingRedirect("unearnedIncomeCcap", "unearnedIncomeCcap", "NO_UNEARNED_INCOME_CCAP_SELECTED", "futureIncome");
+        postExpectingRedirect("unearnedIncomeCcap",
+                              "unearnedIncomeCcap",
+                              "NO_UNEARNED_INCOME_CCAP_SELECTED",
+                              "futureIncome");
         fillFutureIncomeToHaveVehicle();
         postExpectingRedirect("realEstate", "ownRealEstate", "false", "investments");
         postExpectingRedirect("investments", "haveInvestments", "false", "savings");
@@ -109,7 +164,11 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
         fillOutHomeAddress();
         postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "false");
         fillOutMailingAddress();
-        postExpectingNextPageElementText("verifyMailingAddress", "useEnrichedAddress", "true", "mailingAddress-address_street", "smarty street");
+        postExpectingNextPageElementText("verifyMailingAddress",
+                                         "useEnrichedAddress",
+                                         "true",
+                                         "mailingAddress-address_street",
+                                         "smarty street");
     }
 
     protected void getToPersonalInfoScreen(String... programSelections) throws Exception {

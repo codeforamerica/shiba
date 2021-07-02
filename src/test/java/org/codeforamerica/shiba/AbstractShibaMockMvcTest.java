@@ -288,6 +288,16 @@ public class AbstractShibaMockMvcTest {
     }
 
     protected void postExpectingNextPageTitle(String pageName,
+                                              String nextPageTitle) throws Exception {
+        // do a post
+        // follow the redirect
+        // when redirect is done, then get form page and assert page title
+
+        var nextPage = postAndFollowRedirect(pageName);
+        assertThat(nextPage.getTitle()).isEqualTo(nextPageTitle);
+    }
+
+    protected void postExpectingNextPageTitle(String pageName,
                                               String inputName,
                                               String value,
                                               String nextPageTitle) throws Exception {
@@ -300,6 +310,13 @@ public class AbstractShibaMockMvcTest {
                                               List<String> values,
                                               String nextPageTitle) throws Exception {
         var nextPage = postAndFollowRedirect(pageName, inputName, values);
+        assertThat(nextPage.getTitle()).isEqualTo(nextPageTitle);
+    }
+
+    protected void postExpectingNextPageTitle(String pageName,
+                                              Map<String, List<String>> params,
+                                              String nextPageTitle) throws Exception {
+        var nextPage = postAndFollowRedirect(pageName, params);
         assertThat(nextPage.getTitle()).isEqualTo(nextPageTitle);
     }
 
@@ -320,16 +337,7 @@ public class AbstractShibaMockMvcTest {
     }
 
     protected void assertNavigationRedirectsToCorrectNextPage(String pageName, String expectedNextPageName) throws Exception {
-        var nextPage = "/pages/" + pageName + "/navigation";
-
-        while (nextPage.contains("/navigation")) {
-            // follow redirects
-            nextPage = mockMvc.perform(get(nextPage).session(session))
-                    .andExpect(status().is3xxRedirection()).andReturn()
-                    .getResponse()
-                    .getRedirectedUrl();
-        }
-
+        String nextPage = followRedirects(pageName);
         assertThat(nextPage).isEqualTo("/pages/" + expectedNextPageName);
     }
 
@@ -416,18 +424,38 @@ public class AbstractShibaMockMvcTest {
      * @return a form page that can be asserted against
      */
     protected FormPage getNextPageAsFormPage(String currentPageName) throws Exception {
-        String redirectedUrl = Objects.requireNonNull(getPage(currentPageName + "/navigation").andExpect(status().is3xxRedirection())
-                .andReturn()
-                .getResponse()
-                .getRedirectedUrl());
+        String nextPage = followRedirects(currentPageName);
+        return new FormPage(mockMvc.perform(get((nextPage)).session(session)));
+    }
 
-        ResultActions nextPage = mockMvc.perform(get((redirectedUrl)).session(session));
-        return new FormPage(nextPage);
+    @NotNull
+    private String followRedirects(String currentPageName) throws Exception {
+        var nextPage = "/pages/" + currentPageName + "/navigation";
+        while (nextPage.contains("/navigation")) {
+            // follow redirects
+            nextPage = mockMvc.perform(get(nextPage).session(session))
+                    .andExpect(status().is3xxRedirection()).andReturn()
+                    .getResponse()
+                    .getRedirectedUrl();
+        }
+        return nextPage;
     }
 
     protected FormPage postAndFollowRedirect(String pageName, String inputName, String value) throws
             Exception {
         postExpectingSuccess(pageName, inputName, value);
+        return getNextPageAsFormPage(pageName);
+    }
+
+    protected FormPage postAndFollowRedirect(String pageName, Map<String, List<String>> params) throws
+            Exception {
+        postExpectingSuccess(pageName, params);
+        return getNextPageAsFormPage(pageName);
+    }
+
+    protected FormPage postAndFollowRedirect(String pageName) throws
+            Exception {
+        postExpectingSuccess(pageName);
         return getNextPageAsFormPage(pageName);
     }
 

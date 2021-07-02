@@ -15,63 +15,6 @@ import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 public class CCAPTest extends JourneyTest {
 
     @Test
-    void verifyFlowWhenOnlyHouseholdMemberSelectedCCAP() {
-        // Applicant did not choose CCAP for themselves and selected CCAP for a household member
-        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_SNAP), smartyStreetClient);
-        testPage.clickLink("This looks correct");
-        testPage.enter("addHouseholdMembers", YES.getDisplayValue());
-        testPage.clickContinue();
-        fillOutHousemateInfo(PROGRAM_CCAP);
-        testPage.clickContinue();
-        testPage.clickButton("Yes, that's everyone");
-        assertThat(driver.getTitle()).isEqualTo("Who are the children in need of care?");
-
-        // Should jump to preparing meals question
-        testPage.clickContinue();
-        assertThat(driver.getTitle()).isEqualTo("Preparing meals together");
-        testPage.goBack();
-
-        testPage.enter("whoNeedsChildCare", "householdMemberFirstName householdMemberLastName");
-        testPage.enter("whoNeedsChildCare", "Me");
-        testPage.clickContinue();
-        assertThat(driver.getTitle()).isEqualTo("Who are the children that have a parent not living in the home?");
-        testPage.enter("whoHasAParentNotLivingAtHome", "None of the children have parents living outside the home");
-
-        // Should jump to preparing meals question
-        testPage.clickContinue();
-        assertThat(driver.getTitle()).isEqualTo("Preparing meals together");
-        testPage.goBack();
-
-        testPage.enter("whoHasAParentNotLivingAtHome", "householdMemberFirstName householdMemberLastName");
-        testPage.enter("whoHasAParentNotLivingAtHome", "Me");
-        testPage.clickContinue();
-        assertThat(driver.getTitle()).isEqualTo("Name of parent outside home");
-
-        List<WebElement> whatAreParentNames = driver.findElementsByName("whatAreTheParentsNames[]");
-        whatAreParentNames.get(0).sendKeys("My Parent");
-        whatAreParentNames.get(1).sendKeys("Default's Parent");
-
-        testPage.clickContinue();
-        testPage.enter("isPreparingMealsTogether", NO.getDisplayValue());
-        testPage.enter("livingSituation", "None of these");
-        testPage.clickContinue();
-        testPage.enter("goingToSchool", YES.getDisplayValue());
-        assertThat(driver.getTitle()).isEqualTo("Who is going to school?");
-        testPage.clickContinue();
-        testPage.enter("isPregnant", NO.getDisplayValue());
-        testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
-        testPage.enter("isUsCitizen", YES.getDisplayValue());
-        testPage.enter("hasDisability", NO.getDisplayValue());
-        testPage.enter("hasWorkSituation", NO.getDisplayValue());
-        testPage.clickContinue();
-        testPage.enter("areYouWorking", NO.getDisplayValue());
-        assertThat(driver.getTitle()).isEqualTo("Job Search");
-        testPage.enter("currentlyLookingForJob", YES.getDisplayValue());
-        assertThat(driver.getTitle()).isEqualTo("Who is looking for a job");
-        fillUnearnedIncomeToLegalStuffCCAP();
-    }
-
-    @Test
     void verifyFlowWhenLiveAloneApplicantHasNotSelectedCCAP() {
         List<String> applicantPrograms = List.of(PROGRAM_SNAP);
         completeFlowFromLandingPageThroughReviewInfo(applicantPrograms, smartyStreetClient);
