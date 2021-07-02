@@ -119,11 +119,12 @@ public class AbstractShibaMockMvcTest {
         ).andExpect(status().isOk());
     }
 
-    protected ResultActions getWithQueryParamAndExpectRedirect(String pageName, String queryParam, String value,
-                                                               String expectedPageName) throws Exception {
-        return mockMvc.perform(
-                get("/pages/" + pageName).session(session).queryParam(queryParam, value)
-        ).andExpect(redirectedUrl("/pages/" + expectedPageName));
+    protected void getWithQueryParamAndExpectRedirect(String pageName, String queryParam, String value, String expectedPageName) throws Exception {
+        var navigationPageUrl = mockMvc.perform(get("/pages/" + pageName + "/navigation").session(session).queryParam(queryParam, value)).andExpect(status().is3xxRedirection()).andReturn()
+                .getResponse()
+                .getRedirectedUrl();
+        String nextPage = followRedirectsForUrl(navigationPageUrl);
+        assertThat(nextPage).isEqualTo("/pages/" + expectedPageName);
     }
 
     protected void addHouseholdMembers() throws Exception {
@@ -234,8 +235,8 @@ public class AbstractShibaMockMvcTest {
 
     protected void submitApplication() throws Exception {
         postExpectingSuccess("/submit",
-                             "/pages/signThisApplication/navigation",
-                             Map.of("applicantSignature", List.of("Human McPerson")));
+                "/pages/signThisApplication/navigation",
+                Map.of("applicantSignature", List.of("Human McPerson")));
     }
 
     protected void selectPrograms(String... programs) throws Exception {
@@ -288,6 +289,16 @@ public class AbstractShibaMockMvcTest {
         assertThat(nextPage.findElementTextById(elementId)).isEqualTo(expectedText);
     }
 
+    protected void assertPageHasElementWithId(String pageName, String elementId) throws Exception {
+        var page = new FormPage(getPage(pageName));
+        assertThat(page.getElementById(elementId)).isNotNull();
+    }
+
+    protected void assertPageDoesNotHaveElementWithId(String pageName, String elementId) throws Exception {
+        var page = new FormPage(getPage(pageName));
+        assertThat(page.getElementById(elementId)).isNull();
+    }
+
     protected void postExpectingNextPageTitle(String pageName, String nextPageTitle) throws Exception {
         var nextPage = postAndFollowRedirect(pageName);
         assertThat(nextPage.getTitle()).isEqualTo(nextPageTitle);
@@ -335,7 +346,7 @@ public class AbstractShibaMockMvcTest {
 
     protected void assertNavigationRedirectsToCorrectNextPage(String pageName,
                                                               String expectedNextPageName) throws Exception {
-        String nextPage = followRedirects(pageName);
+        String nextPage = followRedirectsForPageName(pageName);
         assertThat(nextPage).isEqualTo("/pages/" + expectedNextPageName);
     }
 
@@ -422,13 +433,25 @@ public class AbstractShibaMockMvcTest {
      * @return a form page that can be asserted against
      */
     protected FormPage getNextPageAsFormPage(String currentPageName) throws Exception {
-        String nextPage = followRedirects(currentPageName);
+        String nextPage = followRedirectsForPageName(currentPageName);
         return new FormPage(mockMvc.perform(get((nextPage)).session(session)));
     }
 
     @NotNull
-    private String followRedirects(String currentPageName) throws Exception {
+    private String followRedirectsForPageName(String currentPageName) throws Exception {
         var nextPage = "/pages/" + currentPageName + "/navigation";
+        while (nextPage.contains("/navigation")) {
+            // follow redirects
+            nextPage = mockMvc.perform(get(nextPage).session(session))
+                    .andExpect(status().is3xxRedirection()).andReturn()
+                    .getResponse()
+                    .getRedirectedUrl();
+        }
+        return nextPage;
+    }
+
+    private String followRedirectsForUrl(String currentPageUrl) throws Exception {
+        var nextPage = currentPageUrl;
         while (nextPage.contains("/navigation")) {
             // follow redirects
             nextPage = mockMvc.perform(get(nextPage).session(session))
