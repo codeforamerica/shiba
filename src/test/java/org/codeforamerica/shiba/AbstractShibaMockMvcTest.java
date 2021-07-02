@@ -119,6 +119,14 @@ public class AbstractShibaMockMvcTest {
         ).andExpect(status().isOk());
     }
 
+    protected void getWithQueryParamAndExpectRedirect(String pageName, String queryParam, String value, String expectedPageName) throws Exception {
+        var navigationPageUrl = mockMvc.perform(get("/pages/" + pageName + "/navigation").session(session).queryParam(queryParam, value)).andExpect(status().is3xxRedirection()).andReturn()
+                .getResponse()
+                .getRedirectedUrl();
+        String nextPage = followRedirectsForUrl(navigationPageUrl);
+        assertThat(nextPage).isEqualTo("/pages/" + expectedPageName);
+    }
+
     protected void addHouseholdMembers() throws Exception {
         postExpectingSuccess("personalInfo", Map.of(
                 "firstName", List.of("Dwight"),
@@ -136,6 +144,23 @@ public class AbstractShibaMockMvcTest {
                 "lastName", List.of("Beesly"),
                 "programs", List.of("CCAP")
         ));
+    }
+
+    protected void fillOutHousemateInfo(String programSelection) throws Exception {
+        Map<String, List<String>> householdMemberInfo = new HashMap<>();
+        householdMemberInfo.put("firstName", List.of("householdMemberFirstName"));
+        householdMemberInfo.put("lastName", List.of("householdMemberLastName"));
+        householdMemberInfo.put("otherName", List.of("houseHoldyMcMemberson"));
+        householdMemberInfo.put("programs", List.of(programSelection));
+        householdMemberInfo.put("relationship", List.of("housemate"));
+        householdMemberInfo.put("dateOfBirth", List.of("09", "14", "1950"));
+        householdMemberInfo.put("ssn", List.of("987654321"));
+        householdMemberInfo.put("maritalStatus", List.of("Never married"));
+        householdMemberInfo.put("sex", List.of("Male"));
+        householdMemberInfo.put("livedInMnWholeLife", List.of("Yes"));
+        householdMemberInfo.put("moveToMnDate", List.of("02/18/1950"));
+        householdMemberInfo.put("moveToMnPreviousState", List.of("Illinois"));
+        postExpectingRedirect("householdMemberInfo", householdMemberInfo, "householdList");
     }
 
     protected String getFirstHouseholdMemberId() throws Exception {
@@ -203,6 +228,7 @@ public class AbstractShibaMockMvcTest {
     protected void fillOutContactInfo() throws Exception {
         postExpectingSuccess("contactInfo", Map.of(
                 "phoneNumber", List.of("7234567890"),
+                "email", List.of("some@email.com"),
                 "phoneOrEmail", List.of("TEXT")
         ));
     }
@@ -254,39 +280,73 @@ public class AbstractShibaMockMvcTest {
         ).andExpect(redirectedUrl(redirectUrl));
     }
 
-    protected void postExpectingSuccessAndAssertRedirectPageTitleIsCorrect(String pageName,
-                                                                           String inputName,
-                                                                           String value,
-                                                                           String nextPageTitle) throws Exception {
-        var nextPage = postExpectingSuccessAndFollowRedirect(pageName, inputName, value);
+    protected void postExpectingNextPageElementText(String pageName,
+                                                    String inputName,
+                                                    String value,
+                                                    String elementId,
+                                                    String expectedText) throws Exception {
+        var nextPage = postAndFollowRedirect(pageName, inputName, value);
+        assertThat(nextPage.findElementTextById(elementId)).isEqualTo(expectedText);
+    }
+
+    protected void assertPageHasElementWithId(String pageName, String elementId) throws Exception {
+        var page = new FormPage(getPage(pageName));
+        assertThat(page.getElementById(elementId)).isNotNull();
+    }
+
+    protected void assertPageDoesNotHaveElementWithId(String pageName, String elementId) throws Exception {
+        var page = new FormPage(getPage(pageName));
+        assertThat(page.getElementById(elementId)).isNull();
+    }
+
+    protected void postExpectingNextPageTitle(String pageName, String nextPageTitle) throws Exception {
+        var nextPage = postAndFollowRedirect(pageName);
         assertThat(nextPage.getTitle()).isEqualTo(nextPageTitle);
     }
 
-    protected void postExpectingSuccessAndAssertRedirectPageTitleIsCorrect(String pageName,
-                                                                           String inputName,
-                                                                           List<String> values,
-                                                                           String nextPageTitle) throws Exception {
-        var nextPage = postExpectingSuccessAndFollowRedirect(pageName, inputName, values);
+    protected void postExpectingNextPageTitle(String pageName,
+                                              String inputName,
+                                              String value,
+                                              String nextPageTitle) throws Exception {
+        var nextPage = postAndFollowRedirect(pageName, inputName, value);
         assertThat(nextPage.getTitle()).isEqualTo(nextPageTitle);
     }
 
-    protected void postExpectingSuccessAndAssertRedirectPageNameIsCorrect(String pageName, String inputName,
-                                                                          String value, String expectedNextPageName) throws Exception {
+    protected void postExpectingNextPageTitle(String pageName,
+                                              String inputName,
+                                              List<String> values,
+                                              String nextPageTitle) throws Exception {
+        var nextPage = postAndFollowRedirect(pageName, inputName, values);
+        assertThat(nextPage.getTitle()).isEqualTo(nextPageTitle);
+    }
+
+    protected void postExpectingNextPageTitle(String pageName,
+                                              Map<String, List<String>> params,
+                                              String nextPageTitle) throws Exception {
+        var nextPage = postAndFollowRedirect(pageName, params);
+        assertThat(nextPage.getTitle()).isEqualTo(nextPageTitle);
+    }
+
+    protected void postExpectingRedirect(String pageName, String inputName,
+                                         String value, String expectedNextPageName) throws Exception {
         postExpectingSuccess(pageName, inputName, value);
         assertNavigationRedirectsToCorrectNextPage(pageName, expectedNextPageName);
     }
 
-    protected void assertNavigationRedirectsToCorrectNextPage(String pageName, String expectedNextPageName) throws Exception {
-        var nextPage = "/pages/" + pageName + "/navigation";
+    protected void postExpectingRedirect(String pageName, String expectedNextPageName) throws Exception {
+        postExpectingSuccess(pageName);
+        assertNavigationRedirectsToCorrectNextPage(pageName, expectedNextPageName);
+    }
 
-        while (nextPage.contains("/navigation")) {
-            // follow redirects
-            nextPage = mockMvc.perform(get(nextPage).session(session))
-                    .andExpect(status().is3xxRedirection()).andReturn()
-                    .getResponse()
-                    .getRedirectedUrl();
-        }
+    protected void postExpectingRedirect(String pageName, Map<String, List<String>> params,
+                                         String expectedNextPageName) throws Exception {
+        postExpectingSuccess(pageName, params);
+        assertNavigationRedirectsToCorrectNextPage(pageName, expectedNextPageName);
+    }
 
+    protected void assertNavigationRedirectsToCorrectNextPage(String pageName,
+                                                              String expectedNextPageName) throws Exception {
+        String nextPage = followRedirectsForPageName(pageName);
         assertThat(nextPage).isEqualTo("/pages/" + expectedNextPageName);
     }
 
@@ -373,23 +433,55 @@ public class AbstractShibaMockMvcTest {
      * @return a form page that can be asserted against
      */
     protected FormPage getNextPageAsFormPage(String currentPageName) throws Exception {
-        String redirectedUrl = Objects.requireNonNull(getPage(currentPageName + "/navigation").andExpect(status().is3xxRedirection())
-                .andReturn()
-                .getResponse()
-                .getRedirectedUrl());
-
-        ResultActions nextPage = mockMvc.perform(get((redirectedUrl)).session(session));
-        return new FormPage(nextPage);
+        String nextPage = followRedirectsForPageName(currentPageName);
+        return new FormPage(mockMvc.perform(get((nextPage)).session(session)));
     }
 
-    protected FormPage postExpectingSuccessAndFollowRedirect(String pageName, String inputName, String value) throws
+    @NotNull
+    private String followRedirectsForPageName(String currentPageName) throws Exception {
+        var nextPage = "/pages/" + currentPageName + "/navigation";
+        while (nextPage.contains("/navigation")) {
+            // follow redirects
+            nextPage = mockMvc.perform(get(nextPage).session(session))
+                    .andExpect(status().is3xxRedirection()).andReturn()
+                    .getResponse()
+                    .getRedirectedUrl();
+        }
+        return nextPage;
+    }
+
+    private String followRedirectsForUrl(String currentPageUrl) throws Exception {
+        var nextPage = currentPageUrl;
+        while (nextPage.contains("/navigation")) {
+            // follow redirects
+            nextPage = mockMvc.perform(get(nextPage).session(session))
+                    .andExpect(status().is3xxRedirection()).andReturn()
+                    .getResponse()
+                    .getRedirectedUrl();
+        }
+        return nextPage;
+    }
+
+    protected FormPage postAndFollowRedirect(String pageName, String inputName, String value) throws
             Exception {
         postExpectingSuccess(pageName, inputName, value);
         return getNextPageAsFormPage(pageName);
     }
 
-    protected FormPage postExpectingSuccessAndFollowRedirect(String pageName, String inputName,
-                                                             List<String> values) throws
+    protected FormPage postAndFollowRedirect(String pageName, Map<String, List<String>> params) throws
+            Exception {
+        postExpectingSuccess(pageName, params);
+        return getNextPageAsFormPage(pageName);
+    }
+
+    protected FormPage postAndFollowRedirect(String pageName) throws
+            Exception {
+        postExpectingSuccess(pageName);
+        return getNextPageAsFormPage(pageName);
+    }
+
+    protected FormPage postAndFollowRedirect(String pageName, String inputName,
+                                             List<String> values) throws
             Exception {
         postExpectingSuccess(pageName, inputName, values);
         return getNextPageAsFormPage(pageName);
@@ -397,5 +489,9 @@ public class AbstractShibaMockMvcTest {
 
     protected void getPageAndExpectRedirect(String getPageName, String redirectPageName) throws Exception {
         getPage(getPageName).andExpect(redirectedUrl("/pages/" + redirectPageName));
+    }
+
+    protected void assertCorrectPageTitle(String pageName, String pageTitle) throws Exception {
+        assertThat(new FormPage(getPage(pageName)).getTitle()).isEqualTo(pageTitle);
     }
 }

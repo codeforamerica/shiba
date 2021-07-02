@@ -161,18 +161,6 @@ public abstract class AbstractBasePageTest {
         testPage.enter("moveToMnDate", "02/18/1776");
     }
 
-    protected void fillOutHousemateInfo() {
-        testPage.enter("firstName", "householdMemberFirstName");
-        testPage.enter("lastName", "householdMemberLastName");
-        testPage.enter("otherName", "houseHoldyMcMemberson");
-        testPage.enter("dateOfBirth", "09/14/1950");
-        testPage.enter("ssn", "987654321");
-        testPage.enter("maritalStatus", "Never married");
-        testPage.enter("sex", "Male");
-        testPage.enter("livedInMnWholeLife", "Yes");
-        testPage.enter("moveToMnDate", "02/18/1950");
-    }
-
     protected void fillOutContactInfo() {
         testPage.enter("phoneNumber", "7234567890");
         testPage.enter("phoneOrEmail", "Text me");
@@ -369,7 +357,15 @@ public abstract class AbstractBasePageTest {
     protected void fillOutHousemateInfo(String programSelection) {
         testPage.enter("relationship", "housemate");
         testPage.enter("programs", programSelection);
-        fillOutHousemateInfo(); // need to fill out programs checkbox set above first
+        testPage.enter("firstName", "householdMemberFirstName");
+        testPage.enter("lastName", "householdMemberLastName");
+        testPage.enter("otherName", "houseHoldyMcMemberson");
+        testPage.enter("dateOfBirth", "09/14/1950");
+        testPage.enter("ssn", "987654321");
+        testPage.enter("maritalStatus", "Never married");
+        testPage.enter("sex", "Male");
+        testPage.enter("livedInMnWholeLife", "Yes");
+        testPage.enter("moveToMnDate", "02/18/1950");
         testPage.enter("moveToMnPreviousState", "Illinois");
     }
 
