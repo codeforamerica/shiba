@@ -13,34 +13,6 @@ import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 
 @Tag("ccap")
 public class CCAPTest extends JourneyTest {
-    @Test
-    void verifyFlowWhenApplicantSelectedCCAPAndHouseholdMemberDidNot() {
-        // Applicant selected CCAP for themselves and did not choose CCAP for household member
-        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_CCAP), smartyStreetClient);
-        testPage.clickLink("This looks correct");
-        testPage.enter("addHouseholdMembers", YES.getDisplayValue());
-        testPage.clickContinue();
-        fillOutHousemateInfo(PROGRAM_EA);
-        testPage.clickContinue();
-        testPage.clickButton("Yes, that's everyone");
-        assertThat(driver.getTitle()).isEqualTo("Who are the children in need of care?");
-        testPage.clickContinue();
-        testPage.clickContinue();
-        testPage.enter("goingToSchool", YES.getDisplayValue());
-        assertThat(driver.getTitle()).isEqualTo("Who is going to school?");
-        testPage.clickContinue();
-        testPage.enter("isPregnant", NO.getDisplayValue());
-        testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
-        testPage.enter("isUsCitizen", YES.getDisplayValue());
-        testPage.enter("hasDisability", NO.getDisplayValue());
-        testPage.enter("hasWorkSituation", NO.getDisplayValue());
-        testPage.clickContinue();
-        testPage.enter("areYouWorking", NO.getDisplayValue());
-        assertThat(driver.getTitle()).isEqualTo("Job Search");
-        testPage.enter("currentlyLookingForJob", YES.getDisplayValue());
-        assertThat(driver.getTitle()).isEqualTo("Who is looking for a job");
-        fillUnearnedIncomeToLegalStuffCCAP();
-    }
 
     @Test
     void verifyFlowWhenOnlyHouseholdMemberSelectedCCAP() {
