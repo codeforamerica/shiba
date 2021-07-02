@@ -8,6 +8,7 @@ import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.config.PageTemplate;
 import org.codeforamerica.shiba.pages.config.ReferenceOptionsTemplate;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.pages.enrichment.LocationClient;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
@@ -493,5 +494,62 @@ public class AbstractShibaMockMvcTest {
 
     protected void assertCorrectPageTitle(String pageName, String pageTitle) throws Exception {
         assertThat(new FormPage(getPage(pageName)).getTitle()).isEqualTo(pageTitle);
+    }
+
+    protected void fillFutureIncomeToHaveVehicle() throws Exception {
+        postExpectingRedirect("futureIncome", "earnLessMoneyThisMonth", "false", "startExpenses");
+        assertNavigationRedirectsToCorrectNextPage("startExpenses", "homeExpenses");
+        postExpectingRedirect("homeExpenses", "homeExpenses", "NONE_OF_THE_ABOVE", "utilities");
+        postExpectingRedirect("utilities", "payForUtilities", "NONE_OF_THE_ABOVE", "energyAssistance");
+        postExpectingRedirect("energyAssistance", "energyAssistance", "false", "medicalExpenses");
+        postExpectingRedirect("medicalExpenses", "medicalExpenses", "NONE_OF_THE_ABOVE", "supportAndCare");
+        postExpectingRedirect("supportAndCare", "supportAndCare", "false", "vehicle");
+        postExpectingSuccess("vehicle", "haveVehicle", "false");
+    }
+
+    protected void completeFlowFromLandingPageThroughReviewInfo(String... programSelections) throws Exception {
+        completeFlowFromLandingPageThroughContactInfo(programSelections);
+    }
+
+    protected void completeFlowFromLandingPageThroughContactInfo(String... programSelections) throws Exception {
+        getToPersonalInfoScreen(programSelections);
+        fillOutPersonalInfo();
+        fillOutContactInfo();
+        fillOutHomeAddress();
+        postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "false");
+        fillOutMailingAddress();
+        postExpectingNextPageElementText("verifyMailingAddress",
+                                         "useEnrichedAddress",
+                                         "true",
+                                         "mailingAddress-address_street",
+                                         "smarty street");
+    }
+
+    protected void getToPersonalInfoScreen(String... programSelections) throws Exception {
+        selectPrograms(programSelections);
+    }
+
+    protected void fillOutHomeAddress() throws Exception {
+        postExpectingSuccess("homeAddress", Map.of(
+                "streetAddress", List.of("someStreetAddress"),
+                "apartmentNumber", List.of("someApartmentNumber"),
+                "city", List.of("someCity"),
+                "zipCode", List.of("12345"),
+                "state", List.of("MN"),
+                "sameMailingAddress", List.of("false")
+        ));
+    }
+
+    protected void fillOutMailingAddress() throws Exception {
+        when(locationClient.validateAddress(any())).thenReturn(
+                Optional.of(new Address("smarty street", "City", "CA", "03104", "", "someCounty"))
+        );
+        postExpectingSuccess("mailingAddress", Map.of(
+                "streetAddress", List.of("someStreetAddress"),
+                "apartmentNumber", List.of("someApartmentNumber"),
+                "city", List.of("someCity"),
+                "zipCode", List.of("12345"),
+                "state", List.of("IL")
+        ));
     }
 }
