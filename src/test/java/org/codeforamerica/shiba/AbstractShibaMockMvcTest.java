@@ -119,7 +119,8 @@ public class AbstractShibaMockMvcTest {
         ).andExpect(status().isOk());
     }
 
-    protected ResultActions getWithQueryParamAndExpectRedirect(String pageName, String queryParam, String value, String expectedPageName) throws Exception {
+    protected ResultActions getWithQueryParamAndExpectRedirect(String pageName, String queryParam, String value,
+                                                               String expectedPageName) throws Exception {
         return mockMvc.perform(
                 get("/pages/" + pageName).session(session).queryParam(queryParam, value)
         ).andExpect(redirectedUrl("/pages/" + expectedPageName));
@@ -233,8 +234,8 @@ public class AbstractShibaMockMvcTest {
 
     protected void submitApplication() throws Exception {
         postExpectingSuccess("/submit",
-                "/pages/signThisApplication/navigation",
-                Map.of("applicantSignature", List.of("Human McPerson")));
+                             "/pages/signThisApplication/navigation",
+                             Map.of("applicantSignature", List.of("Human McPerson")));
     }
 
     protected void selectPrograms(String... programs) throws Exception {
@@ -287,12 +288,7 @@ public class AbstractShibaMockMvcTest {
         assertThat(nextPage.findElementTextById(elementId)).isEqualTo(expectedText);
     }
 
-    protected void postExpectingNextPageTitle(String pageName,
-                                              String nextPageTitle) throws Exception {
-        // do a post
-        // follow the redirect
-        // when redirect is done, then get form page and assert page title
-
+    protected void postExpectingNextPageTitle(String pageName, String nextPageTitle) throws Exception {
         var nextPage = postAndFollowRedirect(pageName);
         assertThat(nextPage.getTitle()).isEqualTo(nextPageTitle);
     }
@@ -331,12 +327,14 @@ public class AbstractShibaMockMvcTest {
         assertNavigationRedirectsToCorrectNextPage(pageName, expectedNextPageName);
     }
 
-    protected void postExpectingRedirect(String pageName, Map<String,List<String>> params, String expectedNextPageName) throws Exception {
+    protected void postExpectingRedirect(String pageName, Map<String, List<String>> params,
+                                         String expectedNextPageName) throws Exception {
         postExpectingSuccess(pageName, params);
         assertNavigationRedirectsToCorrectNextPage(pageName, expectedNextPageName);
     }
 
-    protected void assertNavigationRedirectsToCorrectNextPage(String pageName, String expectedNextPageName) throws Exception {
+    protected void assertNavigationRedirectsToCorrectNextPage(String pageName,
+                                                              String expectedNextPageName) throws Exception {
         String nextPage = followRedirects(pageName);
         assertThat(nextPage).isEqualTo("/pages/" + expectedNextPageName);
     }

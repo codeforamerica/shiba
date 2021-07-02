@@ -13,7 +13,6 @@ import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 
 @Tag("ccap")
 public class CCAPTest extends JourneyTest {
-
     @Test
     void verifyFlowWhenLiveAloneApplicantHasNotSelectedCCAP() {
         List<String> applicantPrograms = List.of(PROGRAM_SNAP);
