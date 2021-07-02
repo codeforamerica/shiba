@@ -38,11 +38,35 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
         postExpectingRedirect("goingToSchool", "goingToSchool", "true", "pregnant");
         postExpectingRedirect("pregnant", "isPregnant", "true", "migrantFarmWorker");
         postExpectingRedirect("migrantFarmWorker", "migrantOrSeasonalFarmWorker", "true", "usCitizen");
+        postExpectingRedirect("usCitizen", "isUsCitizen", "true", "disability");
         postExpectingRedirect("disability", "hasDisability", "true", "workSituation");
         postExpectingRedirect("workSituation", "hasWorkSituation", "true", "introIncome");
         assertNavigationRedirectsToCorrectNextPage("introIncome", "employmentStatus");
         postExpectingRedirect("employmentStatus", "areYouWorking", "false", "jobSearch");
         postExpectingRedirect("jobSearch", "currentlyLookingForJob", "true", "incomeUpNext");
+        fillUnearnedIncomeToLegalStuffCCAP();
+    }
+
+    @Test
+    void verifyFlowWhenApplicantSelectedCCAPAndHouseholdMemberDidNot() throws Exception {
+        // Applicant selected CCAP for themselves and did not choose CCAP for household member
+        completeFlowFromLandingPageThroughReviewInfo("CCAP");
+        postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "true", "startHousehold");
+        assertNavigationRedirectsToCorrectNextPage("startHousehold", "householdMemberInfo");
+        fillOutHousemateInfo("EA");
+        getWithQueryParamAndExpectRedirect("householdList/navigation", "option","0", "childrenInNeedOfCare");
+        assertCorrectPageTitle("childrenInNeedOfCare", "Who are the children in need of care?");
+        postExpectingRedirect("childrenInNeedOfCare", "livingSituation");
+        postExpectingRedirect("livingSituation", "goingToSchool");
+        postExpectingNextPageTitle("goingToSchool", "goingToSchool", "true", "Who is going to school?");
+        postExpectingRedirect("pregnant", "isPregnant", "false", "migrantFarmWorker");
+        postExpectingRedirect("migrantFarmWorker", "migrantOrSeasonalFarmWorker", "false", "usCitizen");
+        postExpectingRedirect("usCitizen", "isUsCitizen", "true", "disability");
+        postExpectingRedirect("disability", "hasDisability", "false", "workSituation");
+        postExpectingRedirect("workSituation", "hasWorkSituation", "false", "introIncome");
+        assertNavigationRedirectsToCorrectNextPage("introIncome", "employmentStatus");
+        postExpectingNextPageTitle("employmentStatus", "areYouWorking", "false", "Job Search");
+        postExpectingNextPageTitle("jobSearch", "currentlyLookingForJob", "true", "Who is looking for a job");
         fillUnearnedIncomeToLegalStuffCCAP();
     }
 
