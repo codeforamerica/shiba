@@ -885,7 +885,6 @@ pageDefinitions:
         name: childIdMap # This input is controlled by whatAreTheParentsNames
   - &householdDeleteWarningPage
     name: householdDeleteWarningPage
-    headerKey: warning-page.you-are-about-to-delete-household-member
     pageTitle: warning-page.delete-household-member-warning
     primaryButtonTextKey: warning-page.nevermind-lets-keep-them
   - &introPersonalDetails

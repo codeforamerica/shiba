@@ -53,6 +53,23 @@ public class FullFlowJourneyTest extends JourneyTest {
         testPage.enter("ssn", "987654321");
         testPage.clickContinue();
 
+        // Add second Household Member and delete
+        testPage.clickLink("Add a person");
+        testPage.clickContinue();
+        testPage.enter("firstName", "householdMember2");
+        testPage.enter("lastName", householdMemberLastName);
+        testPage.enter("dateOfBirth", "10/15/1950");
+        testPage.enter("maritalStatus", "Divorced");
+        testPage.enter("sex", "Female");
+        testPage.enter("livedInMnWholeLife", "No");
+        testPage.enter("relationship", "my child's parent");
+        testPage.enter("programs", "None");
+        testPage.clickContinue();
+
+        // You are about to delete householdMember2 as a household member.
+        driver.findElementById("iteration1-delete").click();
+        testPage.clickButton("Yes, remove them");
+
         testPage.clickButton("Yes, that's everyone");
 
         // Who are the children in need of childcare
@@ -520,7 +537,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCafFieldEquals("APPLICANT_HOME_STREET_ADDRESS", "someStreetAddress (not permanent)");
         assertCafFieldEquals("MONEY_MADE_LAST_MONTH", "120.00");
 
-        assertApplicationSubmittedEventWasPublished(applicationId, FULL, 3);
+        assertApplicationSubmittedEventWasPublished(applicationId, FULL, 5);
     }
 
     private void testDocumentUploads() {
