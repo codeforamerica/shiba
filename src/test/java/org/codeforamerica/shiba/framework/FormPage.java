@@ -58,4 +58,10 @@ public class FormPage {
     public String getInputValue(String inputName) {
         return html.select("input[name='%s[]']".formatted(inputName)).attr("value");
     }
+
+    public String getCardValue(String title) {
+        return html.getElementsByClass("statistic-card").stream()
+                .filter(card -> card.getElementsByClass("statistic-card__label").get(0).ownText().contains(title))
+                .findFirst().get().getElementsByClass("statistic-card__number").get(0).ownText();
+    }
 }

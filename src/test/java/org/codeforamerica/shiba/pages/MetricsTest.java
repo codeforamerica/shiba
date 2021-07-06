@@ -7,17 +7,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @Tag("ccap")
-//@Sql(statements = "TRUNCATE TABLE applications;")
+@Sql(statements = "TRUNCATE TABLE applications;")
 public class MetricsTest extends AbstractShibaMockMvcTest {
 
     @BeforeEach
@@ -34,7 +36,6 @@ public class MetricsTest extends AbstractShibaMockMvcTest {
     @Test
     @WithMockUser(username="admin",roles={"USER","ADMIN"})
     void userCanCompleteTheNonExpeditedFlowAndCanDownloadPdfsAndShibaShouldCaptureMetricsAfterApplicationIsCompleted() throws Exception {
-
         when(clock.instant()).thenReturn(
                 LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant(),
                 LocalDateTime.of(2020, 1, 1, 10, 15, 30).atOffset(ZoneOffset.UTC).toInstant()
@@ -46,9 +47,14 @@ public class MetricsTest extends AbstractShibaMockMvcTest {
 
         postExpectingSuccess("success", "sentiment", "HAPPY");
 
-        var metricsPage = new FormPage(getPageWithAuth("metrics"));
-
-        assert(metricsPage.findElementTextById("totals")).contains("Totals");
+        FormPage metricsPage = new FormPage(getPageWithAuth("metrics"));
+//
+//        assert(metricsPage.findElementTextById("totals")).contains("Totals");
+//        assertThat(metricsPage.getCardValue("Happy")).contains("100%");
+        assertThat(metricsPage.getCardValue("Applications Submitted")).isEqualTo("1");
+//        assertThat(metricsPage.getCardValue("Median All Time")).contains("05m 30s");
+//        assertThat(metricsPage.getCardValue("Median Week to Date")).contains("05m 30s");
+//        assertThat(metricsPage.getCardValue("Average Week to Date")).contains("05m 30s");
 
         /*
 
@@ -56,10 +62,7 @@ public class MetricsTest extends AbstractShibaMockMvcTest {
 
         driver.navigate().to(baseUrlWithAuth + "/metrics");
         MetricsPage metricsPage = new MetricsPage(driver);
-        assertThat(metricsPage.getCardValue("Applications Submitted")).isEqualTo("1");
-        assertThat(metricsPage.getCardValue("Median All Time")).contains("05m 30s");
-        assertThat(metricsPage.getCardValue("Median Week to Date")).contains("05m 30s");
-        assertThat(metricsPage.getCardValue("Average Week to Date")).contains("05m 30s");
+
         // When adding new counties, this TD will be equal to the first county in the list
         assertThat(driver.findElements(By.tagName("td")).get(0).getText()).isEqualTo("Anoka");
         assertThat(driver.findElements(By.tagName("td")).get(1).getText()).isEqualTo("0");
