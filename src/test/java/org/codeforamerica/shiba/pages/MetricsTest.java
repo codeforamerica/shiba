@@ -6,6 +6,7 @@ import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -31,6 +32,7 @@ public class MetricsTest extends AbstractShibaMockMvcTest {
     }
 
     @Test
+    @WithMockUser(username="admin",roles={"USER","ADMIN"})
     void userCanCompleteTheNonExpeditedFlowAndCanDownloadPdfsAndShibaShouldCaptureMetricsAfterApplicationIsCompleted() throws Exception {
 
         when(clock.instant()).thenReturn(
@@ -39,14 +41,19 @@ public class MetricsTest extends AbstractShibaMockMvcTest {
         );
         FormPage successPage = nonExpeditedFlowToSuccessPage(false, true);
 
+        assert(successPage.findLinksByText("Combined Application").size() == 1);
+        assert(successPage.findLinksByText("Child Care Application").size() == 1);
+
+        postExpectingSuccess("success", "sentiment", "HAPPY");
+
+        var metricsPage = new FormPage(getPageWithAuth("metrics"));
+
+        assert(metricsPage.findElementTextById("totals")).contains("Totals");
+
         /*
-        // Downloading PDfs
-        successPage.downloadPdfs();
-        await().until(this::allPdfsHaveBeenDownloaded);
 
         // Submitting Feedback
-        successPage.chooseSentiment(Sentiment.HAPPY);
-        successPage.submitFeedback();
+
         driver.navigate().to(baseUrlWithAuth + "/metrics");
         MetricsPage metricsPage = new MetricsPage(driver);
         assertThat(metricsPage.getCardValue("Applications Submitted")).isEqualTo("1");

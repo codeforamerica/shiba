@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.framework;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -39,6 +40,11 @@ public class FormPage {
 
     public String findElementTextById(String id) {
         return html.getElementById(id).text();
+    }
+
+    public Elements findLinksByText(String text) {
+        String cssSelector = String.format("a:contains(%s)", text);
+        return html.select(cssSelector);
     }
 
     public String getTitle() {

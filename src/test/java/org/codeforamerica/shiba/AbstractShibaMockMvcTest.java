@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -67,10 +68,12 @@ public class AbstractShibaMockMvcTest {
 
     protected MockHttpSession session;
 
+    @Value("${shiba-username}:${shiba-password}")
+    protected String authParams;
+
     @BeforeEach
     protected void setUp() throws Exception {
         session = new MockHttpSession();
-
         when(clock.instant()).thenReturn(Instant.now());
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         when(locationClient.validateAddress(any())).thenReturn(Optional.empty());
@@ -118,6 +121,12 @@ public class AbstractShibaMockMvcTest {
         return mockMvc.perform(
                 get("/pages/" + pageName).session(session).queryParam(queryParam, value)
         ).andExpect(status().isOk());
+    }
+
+    protected ResultActions getPageWithAuth(String pageName) throws Exception {
+        return mockMvc.perform(
+                get(String.format("http://%s@localhost/%s", authParams, pageName)).session(session)
+                ).andExpect(status().isOk());
     }
 
     protected void getWithQueryParamAndExpectRedirect(String pageName, String queryParam, String value, String expectedPageName) throws Exception {
