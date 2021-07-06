@@ -4,9 +4,14 @@ conditionDefinitions:
     input: addHouseholdMembers
     value: "false"
   - &doesNotLiveAlone?
-    pageName: addHouseholdMembers
-    input: addHouseholdMembers
-    value: "true"
+    logicalOperator: OR
+    conditions:
+      - pageName: choosePrograms
+        input: programs
+        value: "NONE"
+      - pageName: addHouseholdMembers
+        input: addHouseholdMembers
+        value: "true"
   - &isHomeless?
     pageName: homeAddress
     input: isHomeless
@@ -2731,7 +2736,7 @@ workflow:
         condition:
           pageName: choosePrograms
           input: programs
-          value: NONE
+          value: "NONE"
       - pageName: introPersonalDetails
         condition:
           input: addHouseholdMembers
@@ -2744,7 +2749,7 @@ workflow:
       conditions:
         - pageName: choosePrograms
           input: programs
-          value: NONE
+          value: "NONE"
     datasources:
       - pageName: choosePrograms
   startHousehold:
@@ -2849,11 +2854,11 @@ workflow:
     pageConfiguration: *goingToSchool
     datasources:
       - pageName: addHouseholdMembers
+      - pageName: choosePrograms
     nextPages:
       - pageName: whoIsGoingToSchool
         condition: *doesNotLiveAlone?
       - pageName: pregnant
-        condition: *livesAlone?
   whoIsGoingToSchool:
     pageConfiguration: *whoIsGoingToSchool
     datasources:
