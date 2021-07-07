@@ -8,6 +8,7 @@ import org.codeforamerica.shiba.pages.config.*;
 import java.io.Serial;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toMap;
 import static org.codeforamerica.shiba.pages.config.OptionsWithDataSourceTemplate.createOptionsWithDataSourceTemplate;
@@ -38,6 +39,19 @@ public class PagesData extends HashMap<String, PageData> {
 
     public void putPage(String pageName, PageData pageData) {
         this.put(pageName, pageData);
+    }
+
+    public boolean satisfies(Condition condition) {
+        if (condition.getConditions() != null) {
+            Stream<Condition> conditionStream = condition.getConditions().stream();
+            return switch (condition.getLogicalOperator()) {
+                case AND -> conditionStream.allMatch(this::satisfies);
+                case OR -> conditionStream.anyMatch(this::satisfies);
+            };
+        }
+
+        PageData pageData = get(condition.getPageName());
+        return condition.matches(pageData, this);
     }
 
     public DatasourcePages getDatasourcePagesBy(List<PageDatasource> datasources) {

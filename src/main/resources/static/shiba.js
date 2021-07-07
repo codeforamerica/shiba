@@ -61,7 +61,10 @@ var noneOfTheAbove = (function() {
             $noneCheckbox.click(function(e) {
                 $otherCheckboxes.prop('checked', false);
                 $otherCheckboxes.parent().removeClass('is-selected');
-                $('#choose-none-warning').removeClass("hidden");
+                if (this.checked)
+                    $('#choose-none-warning').removeClass("hidden");
+                else
+                    $('#choose-none-warning').addClass("hidden");
             });
         }
     };
@@ -69,8 +72,3 @@ var noneOfTheAbove = (function() {
         init: noneOf.init
     }
 })();
-
-$(document).ready(function () {
-    followUpQuestion.init();
-    noneOf.init();
-});

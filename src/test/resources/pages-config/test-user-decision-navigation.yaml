@@ -48,10 +48,12 @@ workflow:
     nextPages:
       - pageName: yesAnswerPage
         condition:
+          pageName: formPageBranchingNavigationPage
           input: yesNoQuestion
           value: "true"
       - pageName: noAnswerPage
         condition:
+          pageName: formPageBranchingNavigationPage
           input: yesNoQuestion
           value: "false"
   yesAnswerPage:

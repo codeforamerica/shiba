@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="chooseProgramsCheckboxes (input, data)" th:with="inputData=${data.get(input.name)}" class="form-group" >
     <div class="spacing-above-35 form-group" th:classappend="${!inputData.valid(data)} ? 'form-group--error' : ''">
         <div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${input})"></div>
@@ -32,4 +30,3 @@
         <p th:text="#{choose-programs.you-will-be-asked}" id="choose-none-warning" class="notice--warning hidden spacing-above-35"></p>
     </div>
 </div>
-</html>

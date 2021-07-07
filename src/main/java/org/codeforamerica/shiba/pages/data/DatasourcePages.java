@@ -28,7 +28,7 @@ public class DatasourcePages extends HashMap<String, PageData> {
             // This page's skipCondition was satisfied, so the client didn't provide an answer, so this condition can't be satisfied
             return false;
         } else {
-            return condition.matches(pageData, new PagesData(this));
+            return condition.matches(pageData, this);
         }
     }
 

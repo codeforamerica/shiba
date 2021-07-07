@@ -79,11 +79,12 @@ public class ApplicationData implements Serializable {
                     boolean isNextPage = true;
                     Condition condition = nextPage.getCondition();
                     if (condition != null) {
-                        if(pageData == null) {
-                            PageData pd = pagesData.getPage(nextPage.getCondition().getPageName());
-                            isNextPage = condition.matches(pd, pagesData);
+                        if (pageWorkflowConfiguration.isInAGroup()) {
+                            isNextPage = condition.matches(
+                                    incompleteIterations.get(pageWorkflowConfiguration.getGroupName()).get(pageWorkflowConfiguration.getPageConfiguration().getName()),
+                                    pagesData);
                         } else {
-                            isNextPage = condition.matches(pageData, pagesData);
+                            isNextPage = pagesData.satisfies(condition);
                         }
                     }
                     if (nextPage.getFlag() != null) {

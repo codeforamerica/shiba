@@ -1,4 +1,8 @@
 conditionDefinitions:
+  - &onlyApplyingForOthers?
+    pageName: choosePrograms
+    input: programs
+    value: "NONE"
   - &livesAlone?
     pageName: addHouseholdMembers
     input: addHouseholdMembers
@@ -6,9 +10,7 @@ conditionDefinitions:
   - &doesNotLiveAlone?
     logicalOperator: OR
     conditions:
-      - pageName: choosePrograms
-        input: programs
-        value: "NONE"
+      - *onlyApplyingForOthers?
       - pageName: addHouseholdMembers
         input: addHouseholdMembers
         value: "true"
@@ -913,10 +915,10 @@ pageDefinitions:
     name: goingToSchool
     pageTitle: going-to-school.title
     headerKey:
-      defaultValue: going-to-school.header
+      defaultValue: going-to-school.header-household
       conditionalValues:
-        - value: going-to-school.header-household
-          condition: *doesNotLiveAlone?
+        - value: going-to-school.header
+          condition: *livesAlone?
     hasPrimaryButton: false
     inputs:
       - name: goingToSchool
@@ -1060,15 +1062,15 @@ pageDefinitions:
   - &expeditedExpenses
     name: expeditedExpenses
     pageTitle:
-      defaultValue: expedited-expenses.title-one-person
+      defaultValue: expedited-expenses.title-household
       conditionalValues:
-        - value: expedited-expenses.title-household
-          condition: *doesNotLiveAlone?
+        - value: expedited-expenses.title-one-person
+          condition: *livesAlone?
     headerKey:
-      defaultValue: expedited-expenses.header-one-person
+      defaultValue: expedited-expenses.header-household
       conditionalValues:
-        - value: expedited-expenses.header-household
-          condition: *doesNotLiveAlone?
+        - value: expedited-expenses.header-one-person
+          condition: *livesAlone?
     hasPrimaryButton: false
     inputs:
       - name: payRentOrMortgage
@@ -1076,15 +1078,15 @@ pageDefinitions:
   - &expeditedExpensesAmount
     name: homeExpensesAmount
     pageTitle:
-      defaultValue: expedited-expenses-amount.title-one-person
+      defaultValue: expedited-expenses-amount.title-household
       conditionalValues:
-        - value: expedited-expenses-amount.title-household
-          condition: *doesNotLiveAlone?
+        - value: expedited-expenses-amount.title-one-person
+          condition: *livesAlone?
     headerKey:
-      defaultValue: expedited-expenses-amount.how-much-do-you-pay-for-rent-or-mortgage-every-month
+      defaultValue: expedited-expenses-amount.how-much-is-paid-for-rent-or-mortgage-every-month
       conditionalValues:
-        - value: expedited-expenses-amount.how-much-is-paid-for-rent-or-mortgage-every-month
-          condition: *doesNotLiveAlone?
+        - value: expedited-expenses-amount.how-much-do-you-pay-for-rent-or-mortgage-every-month
+          condition: *livesAlone?
     inputs:
       - name: homeExpensesAmount
         type: MONEY
@@ -1097,20 +1099,20 @@ pageDefinitions:
   - &utilityPayments
     name: utilityPayments
     pageTitle:
-      defaultValue: utility-payments.title-one-person
+      defaultValue: utility-payments.title-household
       conditionalValues:
-        - value: utility-payments.title-household
-          condition: *doesNotLiveAlone?
+        - value: utility-payments.title-one-person
+          condition: *livesAlone?
     headerKey:
-      defaultValue: utility-payments.do-you-pay-for-any-utilities
+      defaultValue: utility-payments.does-anyone-in-your-household-pay-for-these-utilities
       conditionalValues:
-        - value: utility-payments.does-anyone-in-your-household-pay-for-these-utilities
-          condition: *doesNotLiveAlone?
+        - value: utility-payments.do-you-pay-for-any-utilities
+          condition: *livesAlone?
     headerHelpMessageKey:
-      defaultValue: utility-payments.select-all-that-you-are-billed-for-even-if-you-havent-paid-it-this-month
+      defaultValue: utility-payments.household-billed
       conditionalValues:
-        - value: utility-payments.household-billed
-          condition: *doesNotLiveAlone?
+        - value: utility-payments.select-all-that-you-are-billed-for-even-if-you-havent-paid-it-this-month
+          condition: *livesAlone?
     inputs:
       - name: payForUtilities
         type: CHECKBOX
@@ -1142,10 +1144,10 @@ pageDefinitions:
     name: energyAssistance
     pageTitle: energy-assistance.title
     headerKey:
-      defaultValue: energy-assistance.have-you-received-money-for-energy-assistance
+      defaultValue: energy-assistance.household-received-money
       conditionalValues:
-        - value: energy-assistance.household-received-money
-          condition: *doesNotLiveAlone?
+        - value: energy-assistance.have-you-received-money-for-energy-assistance
+          condition: *livesAlone?
     hasPrimaryButton: false
     inputs:
       - name: energyAssistance
@@ -1154,10 +1156,10 @@ pageDefinitions:
     name: energyAssistanceMoreThan20
     pageTitle: energy-assistance-more-than-20.title
     headerKey:
-      defaultValue: energy-assistance-more-than-20.have-you-received-more-than-20-in-energy-assistance
+      defaultValue: energy-assistance-more-than-20.household-received
       conditionalValues:
-        - value: energy-assistance-more-than-20.household-received
-          condition: *doesNotLiveAlone?
+        - value: energy-assistance-more-than-20.have-you-received-more-than-20-in-energy-assistance
+          condition: *livesAlone?
     hasPrimaryButton: false
     inputs:
       - name: energyAssistanceMoreThan20
@@ -1166,10 +1168,10 @@ pageDefinitions:
     name: medicalExpenses
     pageTitle: medical-expenses.title
     headerKey:
-      defaultValue: medical-expenses.do-you-pay-for-medical-expenses
+      defaultValue: medical-expenses.does-anyone-in-your-household-pay-for-medical-expenses
       conditionalValues:
-        - value: medical-expenses.does-anyone-in-your-household-pay-for-medical-expenses
-          condition: *doesNotLiveAlone?
+        - value: medical-expenses.do-you-pay-for-medical-expenses
+          condition: *livesAlone?
     headerHelpMessageKey: medical-expenses.let-us-know
     inputs:
       - name: medicalExpenses
@@ -1246,10 +1248,10 @@ pageDefinitions:
     name: supportAndCare
     pageTitle: support-and-care.title
     headerKey:
-      defaultValue: support-and-care.do-you-pay-for-court-ordered-child-support-spousal-support
+      defaultValue: support-and-care.household-support
       conditionalValues:
-        - value: support-and-care.household-support
-          condition: *doesNotLiveAlone?
+        - value: support-and-care.do-you-pay-for-court-ordered-child-support-spousal-support
+          condition: *livesAlone?
     hasPrimaryButton: false
     inputs:
       - name: supportAndCare
@@ -1257,15 +1259,15 @@ pageDefinitions:
   - &migrantFarmWorker
     name: migrantFarmWorker
     pageTitle:
-      defaultValue: expedited-migrant-farm-worker.title-one-person
+      defaultValue: expedited-migrant-farm-worker.title-household
       conditionalValues:
-        - value: expedited-migrant-farm-worker.title-household
-          condition: *doesNotLiveAlone?
+        - value: expedited-migrant-farm-worker.title-one-person
+          condition: *livesAlone?
     headerKey:
-      defaultValue: expedited-migrant-farm-worker.header-one-person
+      defaultValue: expedited-migrant-farm-worker.header-household
       conditionalValues:
-        - value: expedited-migrant-farm-worker.header-household
-          condition: *doesNotLiveAlone?
+        - value: expedited-migrant-farm-worker.header-one-person
+          condition: *livesAlone?
     hasPrimaryButton: false
     inputs:
       - name: migrantOrSeasonalFarmWorker
@@ -1648,10 +1650,10 @@ pageDefinitions:
     name: workSituation
     pageTitle: work-situation.title
     headerKey:
-      defaultValue: work-situation.in-the-last-2-months-did-you-do-any-of-these-things
+      defaultValue: work-situation.in-the-last-2-months-did-anyone-in-your-household-do-any-of-these-things
       conditionalValues:
-        - value: work-situation.in-the-last-2-months-did-anyone-in-your-household-do-any-of-these-things
-          condition: *doesNotLiveAlone?
+        - value: work-situation.in-the-last-2-months-did-you-do-any-of-these-things
+          condition: *livesAlone?
     hasPrimaryButton: false
     inputs:
       - name: hasWorkSituation
@@ -1666,10 +1668,10 @@ pageDefinitions:
     name: employmentStatus
     pageTitle: employment-status.title
     headerKey:
-      defaultValue: employment-status.are-you-currently-working-or-making-an-income
+      defaultValue: employment-status.is-anyone-in-your-household-making-money-from-a-job
       conditionalValues:
-        - value: employment-status.is-anyone-in-your-household-making-money-from-a-job
-          condition: *doesNotLiveAlone?
+        - value: employment-status.are-you-currently-working-or-making-an-income
+          condition: *livesAlone?
     hasPrimaryButton: false
     inputs:
       - name: areYouWorking
@@ -1678,10 +1680,10 @@ pageDefinitions:
     name: incomeByJob
     pageTitle: income-by-job.title
     headerKey:
-      defaultValue: income-by-job.lets-add-your-job-information
+      defaultValue: income-by-job.lets-add-all-the-jobs-in-your-household
       conditionalValues:
-        - value: income-by-job.lets-add-all-the-jobs-in-your-household
-          condition: *doesNotLiveAlone?
+        - value: income-by-job.lets-add-your-job-information
+          condition: *livesAlone?
     subtleLinkTextKey: income-by-job.id-rather-give-an-estimate
     hasPrimaryButton: false
   - &householdSelectionForIncome
@@ -1707,10 +1709,10 @@ pageDefinitions:
     name: jobSearch
     pageTitle: ccap-job-search.title
     headerKey:
-      defaultValue: ccap-job-search.are-you-currently-looking-for-a-job
+      defaultValue: ccap-job-search.is-household-currently-looking-for-a-job
       conditionalValues:
-        - value: ccap-job-search.is-household-currently-looking-for-a-job
-          condition: *doesNotLiveAlone?
+        - value: ccap-job-search.are-you-currently-looking-for-a-job
+          condition: *livesAlone?
     hasPrimaryButton: false
     inputs:
       - name: currentlyLookingForJob
@@ -1731,10 +1733,10 @@ pageDefinitions:
     name: unearnedIncome
     pageTitle: unearned-income.title
     headerKey:
-      defaultValue: unearned-income.do-you-get-income-from-any-of-these-sources
+      defaultValue: unearned-income.household-get-income-from-any-of-these-sources
       conditionalValues:
-        - value: unearned-income.household-get-income-from-any-of-these-sources
-          condition: *doesNotLiveAlone?
+        - value: unearned-income.do-you-get-income-from-any-of-these-sources
+          condition: *livesAlone?
     headerHelpMessageKey: unearned-income.check-all-that-apply-you-do-not-need-to-report-income-you-havent-received-yet
     inputs:
       - name: unearnedIncome
@@ -1767,10 +1769,10 @@ pageDefinitions:
     name: unearnedIncomeSources
     pageTitle: unearned-income-sources.title
     headerKey:
-      defaultValue: unearned-income-sources.tell-us-how-much-money-you-receive
+      defaultValue: unearned-income-sources.tell-us-how-much-money-is-received
       conditionalValues:
-        - value: unearned-income-sources.tell-us-how-much-money-is-received
-          condition: *doesNotLiveAlone?
+        - value: unearned-income-sources.tell-us-how-much-money-you-receive
+          condition: *livesAlone?
     headerHelpMessageKey: unearned-income-sources.if-you-dont-have-all-this-information-on-hand-skip
     inputs:
       - name: socialSecurityAmount
@@ -1897,10 +1899,10 @@ pageDefinitions:
     name: unearnedIncomeCcap
     pageTitle: unearned-income.title
     headerKey:
-      defaultValue: unearned-income-ccap.do-you-get-income-from-any-of-these-sources
+      defaultValue: unearned-income-ccap.household-get-income-from-any-of-these-sources
       conditionalValues:
-        - value: unearned-income-ccap.household-get-income-from-any-of-these-sources
-          condition: *doesNotLiveAlone?
+        - value: unearned-income-ccap.do-you-get-income-from-any-of-these-sources
+          condition: *livesAlone?
     headerHelpMessageKey: unearned-income.check-all-that-apply-you-do-not-need-to-report-income-you-havent-received-yet
     inputs:
       - name: unearnedIncomeCcap
@@ -1931,10 +1933,10 @@ pageDefinitions:
     name: unearnedIncomeSourcesCcap
     pageTitle: unearned-income-sources.title
     headerKey:
-      defaultValue: unearned-income-sources.tell-us-how-much-money-you-receive
+      defaultValue: unearned-income-sources.tell-us-how-much-money-is-received
       conditionalValues:
-        - value: unearned-income-sources.tell-us-how-much-money-is-received
-          condition: *doesNotLiveAlone?
+        - value: unearned-income-sources.tell-us-how-much-money-you-receive
+          condition: *livesAlone?
     headerHelpMessageKey: unearned-income-sources.if-you-dont-have-all-this-information-on-hand-skip
     inputs:
       - name: benefitsAmount
@@ -2077,10 +2079,10 @@ pageDefinitions:
     name: futureIncome
     pageTitle: future-income.title
     headerKey:
-      defaultValue: future-income.do-you-think-youll-earn-less-money-this-month-than-last-month
+      defaultValue: future-income.do-you-think-household-will-earn-less-money-this-month-than-last-month
       conditionalValues:
-        - value: future-income.do-you-think-household-will-earn-less-money-this-month-than-last-month
-          condition: *doesNotLiveAlone?
+        - value: future-income.do-you-think-youll-earn-less-money-this-month-than-last-month
+          condition: *livesAlone?
     headerHelpMessageKey: future-income.if-youre-not-sure-you-can-guess
     inputs:
       - name: earnLessMoneyThisMonth
@@ -2248,10 +2250,10 @@ pageDefinitions:
     name: jobBuilder
     pageTitle: job-builder.title
     headerKey:
-      defaultValue: job-builder.your-jobs
+      defaultValue: job-builder.your-household-jobs
       conditionalValues:
-        - value: job-builder.your-household-jobs
-          condition: *doesNotLiveAlone?
+        - value: job-builder.your-jobs
+          condition: *livesAlone?
     customPage: true
   - &jobRedirectPage
     name: jobRedirectPage
@@ -2280,10 +2282,10 @@ pageDefinitions:
     name: homeExpenses
     pageTitle: home-expenses.title
     headerKey:
-      defaultValue: home-expenses.do-you-pay-for-any-of-these
+      defaultValue: home-expenses.household-pay-for-these
       conditionalValues:
-        - value: home-expenses.household-pay-for-these
-          condition: *doesNotLiveAlone?
+        - value: home-expenses.do-you-pay-for-any-of-these
+          condition: *livesAlone?
     headerHelpMessageKey: general.check-all-that-apply
     inputs:
       - name: homeExpenses
@@ -2363,10 +2365,10 @@ pageDefinitions:
     name: savings
     pageTitle: savings.title
     headerKey:
-      defaultValue: savings.do-you-have-money-in-a-bank-account-or-debit-card
+      defaultValue: savings.household-bank-account
       conditionalValues:
-        - value: savings.household-bank-account
-          condition: *doesNotLiveAlone?
+        - value: savings.do-you-have-money-in-a-bank-account-or-debit-card
+          condition: *livesAlone?
     hasPrimaryButton: false
     inputs:
       - name: haveSavings
@@ -2375,10 +2377,10 @@ pageDefinitions:
     name: investments
     pageTitle: investments.title
     headerKey:
-      defaultValue: investments.do-you-have-any-stocks-bonds-or-a-401k
+      defaultValue: investments.household-stocks
       conditionalValues:
-        - value: investments.household-stocks
-          condition: *doesNotLiveAlone?
+        - value: investments.do-you-have-any-stocks-bonds-or-a-401k
+          condition: *livesAlone?
     hasPrimaryButton: false
     inputs:
       - name: haveInvestments
@@ -2387,10 +2389,10 @@ pageDefinitions:
     name: vehicle
     pageTitle: vehicle.title
     headerKey:
-      defaultValue: vehicle.do-you-own-a-vehicle
+      defaultValue: vehicle.household-own-vehicle
       conditionalValues:
-        - value: vehicle.household-own-vehicle
-          condition: *doesNotLiveAlone?
+        - value: vehicle.do-you-own-a-vehicle
+          condition: *livesAlone?
     hasPrimaryButton: false
     inputs:
       - name: haveVehicle
@@ -2399,10 +2401,10 @@ pageDefinitions:
     name: realEstate
     pageTitle: real-estate.title
     headerKey:
-      defaultValue: real-estate.do-you-own-any-real-estate
+      defaultValue: real-estate.household-own-real-estate
       conditionalValues:
-        - value: real-estate.household-own-real-estate
-          condition: *doesNotLiveAlone?
+        - value: real-estate.do-you-own-any-real-estate
+          condition: *livesAlone?
     hasPrimaryButton: false
     inputs:
       - name: ownRealEstate
@@ -2420,10 +2422,10 @@ pageDefinitions:
     name: soldAssets
     pageTitle: sold-assets.title
     headerKey:
-      defaultValue: sold-assets.in-the-last-12-months-have-you-given-away-or-sold-any-assets
+      defaultValue: sold-assets.households-given-or-sold
       conditionalValues:
-        - value: sold-assets.households-given-or-sold
-          condition: *doesNotLiveAlone?
+        - value: sold-assets.in-the-last-12-months-have-you-given-away-or-sold-any-assets
+          condition: *livesAlone?
     hasPrimaryButton: false
     inputs:
       - name: haveSoldAssets
@@ -2625,6 +2627,7 @@ workflow:
     nextPages:
       - pageName: whereToSendMail
         condition:
+          pageName: homeAddress
           input: isHomeless
           value: "true"
       - pageName: mailingAddress2
@@ -2733,23 +2736,18 @@ workflow:
     pageConfiguration: *addHouseholdMembers
     nextPages:
       - pageName: startHousehold
-        condition:
-          pageName: choosePrograms
-          input: programs
-          value: "NONE"
+        condition: *onlyApplyingForOthers?
       - pageName: introPersonalDetails
         condition:
+          pageName: addHouseholdMembers
           input: addHouseholdMembers
           value: "false"
       - pageName: startHousehold
         condition:
+          pageName: addHouseholdMembers
           input: addHouseholdMembers
           value: "true"
-    skipCondition:
-      conditions:
-        - pageName: choosePrograms
-          input: programs
-          value: "NONE"
+    skipCondition: *onlyApplyingForOthers?
     datasources:
       - pageName: choosePrograms
   startHousehold:
@@ -2854,7 +2852,6 @@ workflow:
     pageConfiguration: *goingToSchool
     datasources:
       - pageName: addHouseholdMembers
-      - pageName: choosePrograms
     nextPages:
       - pageName: whoIsGoingToSchool
         condition: *doesNotLiveAlone?
@@ -2946,6 +2943,7 @@ workflow:
     nextPages:
       - pageName: jobSearch
         condition:
+          pageName: employmentStatus
           input: areYouWorking
           value: "false"
       - pageName: incomeByJob
@@ -3139,12 +3137,14 @@ workflow:
     nextPages:
       - pageName: homeExpensesAmount
         condition:
-          input: homeExpenses
-          value: RENT
-      - pageName: homeExpensesAmount
-        condition:
-          input: homeExpenses
-          value: MORTGAGE
+          logicalOperator: OR
+          conditions:
+            - pageName: homeExpenses
+              input: homeExpenses
+              value: RENT
+            - pageName: homeExpenses
+              input: homeExpenses
+              value: MORTGAGE
       - pageName: utilities
     datasources:
       - pageName: addHouseholdMembers
@@ -3155,6 +3155,7 @@ workflow:
     datasources:
       - pageName: homeExpenses
       - pageName: addHouseholdMembers
+      - pageName: choosePrograms
   utilities:
     pageConfiguration: *utilityPayments
     nextPages:
@@ -3166,10 +3167,12 @@ workflow:
     nextPages:
       - pageName: medicalExpenses
         condition:
+          pageName: energyAssistance
           input: energyAssistance
           value: "false"
       - pageName: energyAssistanceMoreThan20
         condition:
+          pageName: energyAssistance
           input: energyAssistance
           value: "true"
     datasources:
@@ -3319,10 +3322,12 @@ workflow:
     nextPages:
       - pageName: additionalInfo
         condition:
+          pageName: helper
           input: helpWithBenefits
           value: "false"
       - pageName: authorizedRep
         condition:
+          pageName: helper
           input: helpWithBenefits
           value: "true"
   authorizedRep:
@@ -3426,6 +3431,7 @@ workflow:
       - pageName: expeditedExpensesAmount
     datasources:
       - pageName: addHouseholdMembers
+      - pageName: choosePrograms
   expeditedExpensesAmount:
     pageConfiguration: *expeditedExpensesAmount
     skipCondition:
@@ -3436,6 +3442,7 @@ workflow:
       - pageName: expeditedUtilityPayments
     datasources:
       - pageName: addHouseholdMembers
+      - pageName: choosePrograms
       - pageName: expeditedExpenses
   expeditedUtilityPayments:
     pageConfiguration: *utilityPayments
@@ -3520,76 +3527,91 @@ workflow:
       - pageName: matchInfo
         flag: county-anoka
         condition:
+          pageName: identifyCounty
           input: county
           value: Anoka
       - pageName: matchInfo
         flag: county-carver
         condition:
+          pageName: identifyCounty
           input: county
           value: Carver
       - pageName: matchInfo
         flag: county-clay
         condition:
+          pageName: identifyCounty
           input: county
           value: Clay
       - pageName: matchInfo
         flag: county-cook
         condition:
+          pageName: identifyCounty
           input: county
           value: Cook
       - pageName: matchInfo
         flag: county-dodge
         condition:
+          pageName: identifyCounty
           input: county
           value: Dodge
       - pageName: matchInfo
         flag: county-hennepin
         condition:
+          pageName: identifyCounty
           input: county
           value: Hennepin
       - pageName: matchInfo
         flag: county-morrison
         condition:
+          pageName: identifyCounty
           input: county
           value: Morrison
       - pageName: matchInfo
         flag: county-olmsted
         condition:
+          pageName: identifyCounty
           input: county
           value: Olmsted
       - pageName: matchInfo
         flag: county-ottertail
         condition:
+          pageName: identifyCounty
           input: county
           value: OtterTail
       - pageName: matchInfo
         flag: county-sherburne
         condition:
+          pageName: identifyCounty
           input: county
           value: Sherburne
       - pageName: matchInfo
         flag: county-steele
         condition:
+          pageName: identifyCounty
           input: county
           value: Steele
       - pageName: matchInfo
         flag: county-stlouis
         condition:
+          pageName: identifyCounty
           input: county
           value: StLouis
       - pageName: matchInfo
         flag: county-wabasha
         condition:
+          pageName: identifyCounty
           input: county
           value: Wabasha
       - pageName: matchInfo
         flag: county-waseca
         condition:
+          pageName: identifyCounty
           input: county
           value: Waseca
       - pageName: matchInfo
         flag: county-wright
         condition:
+          pageName: identifyCounty
           input: county
           value: Wright
       - pageName: emailDocsToYourCounty
@@ -3601,76 +3623,91 @@ workflow:
       - pageName: matchInfo
         flag: county-anoka
         condition:
+          pageName: identifyZipcode
           input: mappedCounty
           value: Anoka
       - pageName: matchInfo
         flag: county-carver
         condition:
+          pageName: identifyZipcode
           input: mappedCounty
           value: Carver
       - pageName: matchInfo
         flag: county-clay
         condition:
+          pageName: identifyZipcode
           input: mappedCounty
           value: Clay
       - pageName: matchInfo
         flag: county-cook
         condition:
+          pageName: identifyZipcode
           input: mappedCounty
           value: Cook
       - pageName: matchInfo
         flag: county-dodge
         condition:
+          pageName: identifyZipcode
           input: mappedCounty
           value: Dodge
       - pageName: matchInfo
         flag: county-hennepin
         condition:
+          pageName: identifyZipcode
           input: mappedCounty
           value: Hennepin
       - pageName: matchInfo
         flag: county-morrison
         condition:
+          pageName: identifyZipcode
           input: mappedCounty
           value: Morrison
       - pageName: matchInfo
         flag: county-olmsted
         condition:
+          pageName: identifyZipcode
           input: mappedCounty
           value: Olmsted
       - pageName: matchInfo
         flag: county-ottertail
         condition:
+          pageName: identifyZipcode
           input: mappedCounty
           value: OtterTail
       - pageName: matchInfo
         flag: county-sherburne
         condition:
+          pageName: identifyZipcode
           input: mappedCounty
           value: Sherburne
       - pageName: matchInfo
         flag: county-steele
         condition:
+          pageName: identifyZipcode
           input: mappedCounty
           value: Steele
       - pageName: matchInfo
         flag: county-stlouis
         condition:
+          pageName: identifyZipcode
           input: mappedCounty
           value: StLouis
       - pageName: matchInfo
         flag: county-wabasha
         condition:
+          pageName: identifyZipcode
           input: mappedCounty
           value: Wabasha
       - pageName: matchInfo
         flag: county-waseca
         condition:
+          pageName: identifyZipcode
           input: mappedCounty
           value: Waseca
       - pageName: matchInfo
         flag: county-wright
         condition:
+          pageName: identifyZipcode
           input: mappedCounty
           value: Wright
       - pageName: emailDocsToYourCounty
