@@ -1,7 +1,7 @@
 <div th:fragment="householdDeleteWarningPage" th:with="householdMemberName=${iterationData.getPagesData().get('householdMemberInfo').get('firstName').value[0] + ' ' + iterationData.getPagesData().get('householdMemberInfo').get('lastName').value[0]}">
     <div class="grid__item spacing-above-35 spacing-below-35">
         <div th:replace="fragments/icons/icon-delete-document :: icon-delete-document"></div>
-        <h1 class="h2" th:text="#{${page.headerKey}(${householdMemberName})}"></h1>
+        <h1 class="h2" th:text="#{warning-page.you-are-about-to-delete-household-member(${householdMemberName})}"></h1>
         <h2 th:text="#{warning-page.is-that-ok}"></h2>
     </div>
     <form method="post"
