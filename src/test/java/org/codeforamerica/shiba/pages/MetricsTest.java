@@ -52,28 +52,18 @@ public class MetricsTest extends AbstractShibaMockMvcTest {
                         .param("sentiment", "HAPPY"));
 
         FormPage metricsPage = new FormPage(getPageWithAuth("metrics"));
-//
+
         assertThat(metricsPage.findElementTextById("totals")).contains("Totals");
         assertThat(metricsPage.getCardValue("Happy")).contains("100%");
         assertThat(metricsPage.getCardValue("Applications Submitted")).isEqualTo("1");
         assertThat(metricsPage.getCardValue("Median All Time")).contains("05m 30s");
         assertThat(metricsPage.getCardValue("Median Week to Date")).contains("05m 30s");
         assertThat(metricsPage.getCardValue("Average Week to Date")).contains("05m 30s");
-
-        /*
-
-        // Submitting Feedback
-
-        driver.navigate().to(baseUrlWithAuth + "/metrics");
-        MetricsPage metricsPage = new MetricsPage(driver);
-
         // When adding new counties, this TD will be equal to the first county in the list
-        assertThat(driver.findElements(By.tagName("td")).get(0).getText()).isEqualTo("Anoka");
-        assertThat(driver.findElements(By.tagName("td")).get(1).getText()).isEqualTo("0");
-        assertThat(driver.findElements(By.tagName("td")).get(2).getText()).isEqualTo("0");
+        assertThat(metricsPage.findElementsByTag("td").get(0).ownText()).contains("Anoka");
+        assertThat(metricsPage.findElementsByTag("td").get(1).ownText()).contains("0");
+        assertThat(metricsPage.findElementsByTag("td").get(2).ownText()).contains("0");
         assertThat(metricsPage.getCardValue("Happy")).contains("100%");
-
-         */
     }
 }
 
