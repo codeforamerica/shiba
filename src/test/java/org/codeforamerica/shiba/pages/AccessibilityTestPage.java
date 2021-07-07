@@ -31,11 +31,6 @@ public class AccessibilityTestPage extends Page {
         testAccessibility();
     }
 
-    public void clickContinue() {
-        super.clickContinue();
-        testAccessibility();
-    }
-
     public void testAccessibility() {
         AxeBuilder builder = new AxeBuilder();
         builder.setOptions("""
