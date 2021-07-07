@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.newjourneys;
 
 import org.codeforamerica.shiba.TestUtils;
 import org.codeforamerica.shiba.pages.journeys.JourneyTest;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -16,6 +17,7 @@ import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 import static org.mockito.Mockito.when;
 
+@Tag("journey")
 public class FullFlowJourneyTest extends JourneyTest {
 
     @Test
