@@ -3,7 +3,7 @@
 <th:block th:fragment="householdOptionsCheckboxes (input, data)"
           th:with="formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)},
                     inputData=${data.get(input.name)}">
-    <div class="spacing-below-60">
+    <div class="spacing-below-60 word-wrap-break-word">
         <label th:for="householdMember-me" class="checkbox"
                th:with="fullName=${input.options.datasources.get('personalInfo').get('firstName').value[0] + ' ' + input.options.datasources.get('personalInfo').get('lastName').value[0]}">
             <input type="checkbox"

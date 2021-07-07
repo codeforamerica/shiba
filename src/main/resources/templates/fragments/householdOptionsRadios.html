@@ -3,7 +3,7 @@
 <th:block th:fragment="householdOptionsRadios (input, data)"
           th:with="formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)},
                     inputData=${data.get(input.name)}">
-    <div class="form-group spacing-below-60"
+    <div class="form-group spacing-below-60 word-wrap-break-word"
          th:classappend="${!inputData.valid(data)} ? 'form-group--error' : ''">
         <label th:for="householdMember-me" class="radio-button"
                th:with="fullName=${input.options.datasources.get('personalInfo').get('firstName').value[0] + ' ' + input.options.datasources.get('personalInfo').get('lastName').value[0]}">
