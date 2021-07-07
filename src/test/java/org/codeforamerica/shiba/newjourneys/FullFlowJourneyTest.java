@@ -142,6 +142,24 @@ public class FullFlowJourneyTest extends JourneyTest {
         testPage.clickContinue();
         testPage.goBack();
         testPage.clickButton("No, I'd rather keep going");
+
+        // Add a second job and delete
+        testPage.clickButton("Add a job");
+        testPage.enter("whoseJobIsIt", householdMemberFullName);
+        testPage.clickContinue();
+        testPage.enter("employersName", "some employer");
+        testPage.clickContinue();
+        testPage.enter("selfEmployment", YES.getDisplayValue());
+        testPage.enter("paidByTheHour", YES.getDisplayValue());
+        testPage.enter("hourlyWage", "1.00");
+        testPage.clickContinue();
+        testPage.enter("hoursAWeek", "30");
+        testPage.clickContinue();
+
+        // You are about to delete your job
+        driver.findElementById("iteration1-delete").click();
+        testPage.clickButton("Yes, remove the job");
+
         testPage.clickButton("No, that's it.");
 
         // Is anyone in the household currently looking for a job?
@@ -537,7 +555,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCafFieldEquals("APPLICANT_HOME_STREET_ADDRESS", "someStreetAddress (not permanent)");
         assertCafFieldEquals("MONEY_MADE_LAST_MONTH", "120.00");
 
-        assertApplicationSubmittedEventWasPublished(applicationId, FULL, 5);
+        assertApplicationSubmittedEventWasPublished(applicationId, FULL, 7);
     }
 
     private void testDocumentUploads() {
