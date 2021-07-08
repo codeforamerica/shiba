@@ -50,8 +50,6 @@ public class MetricsTest extends AbstractShibaMockMvcTest {
         assertThat(successPage.findLinksByText("Child Care Application")).hasSize(1);
         mockMvc.perform(post("/submit-feedback").session(session).with(csrf()).param("sentiment", "HAPPY"));
 
-        log.info("test123");
-        System.out.println("can I see this???");
         FormPage metricsPage = new FormPage(getPageWithAuth("metrics"));
 
         assertThat(metricsPage.findElementTextById("totals")).contains("Totals");
