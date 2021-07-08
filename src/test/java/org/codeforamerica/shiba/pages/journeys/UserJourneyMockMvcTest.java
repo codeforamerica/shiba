@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.pages.journeys;
 
 import org.codeforamerica.shiba.AbstractShibaMockMvcTest;
+import org.codeforamerica.shiba.framework.FormPage;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -48,36 +49,25 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
     @Test
     void userCanCompleteTheExpeditedFlowWithoutBeingExpedited() throws Exception {
         completeFlowFromLandingPageThroughReviewInfo("SNAP", "CCAP");
-
- /*
-        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_SNAP, PROGRAM_CCAP), smartyStreetClient);
-        testPage.clickLink("Submit application now with only the above information.");
-        testPage.clickLink("Yes, I want to see if I qualify");
-
-        testPage.enter("addHouseholdMembers", NO.getDisplayValue());
-        testPage.enter("moneyMadeLast30Days", "123");
-
-        testPage.clickContinue();
-        testPage.enter("haveSavings", YES.getDisplayValue());
-        testPage.enter("liquidAssets", "1233");
-
-        testPage.clickContinue();
-        testPage.enter("payRentOrMortgage", YES.getDisplayValue());
-
-        testPage.enter("homeExpensesAmount", "333");
-        testPage.clickContinue();
-
-        testPage.enter("payForUtilities", "Cooling");
-        testPage.clickContinue();
-
-        testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
-
-        assertThat(driver.findElement(By.tagName("p")).getText()).contains("A caseworker will contact you within 5-7 days to review your application.");
-
-        testPage.clickButton("Finish application");
-        assertThat(testPage.getTitle()).isEqualTo("Legal Stuff");
-        assertThat(driver.findElement(By.id("ccap-legal"))).isNotNull();
-    */
-    }
+        FormPage reviewInfoPage = new FormPage(getPage("reviewInfo"));
+        assertThat(reviewInfoPage.findLinksByText("Submit application now with only the above information.")).hasSize(1);
+        String url = reviewInfoPage.findLinksByText("Submit application now with only the above information.").get(0).attr("href");
+        assertThat(url).isEqualTo("/pages/doYouNeedHelpImmediately");
+        this.getWithQueryParamAndExpectRedirect("doYouNeedHelpImmediately", "option", "0", "addHouseholdMembersExpedited");
+        postExpectingRedirect("addHouseholdMembersExpedited", "addHouseholdMembers", "false", "expeditedIncome");
+        postExpectingRedirect("expeditedIncome", "moneyMadeLast30Days", "123", "expeditedHasSavings");
+        postExpectingRedirect("expeditedHasSavings", "haveSavings", "true", "liquidAssets");
+        postExpectingRedirect("liquidAssets", "liquidAssets", "1233", "expeditedExpenses");
+        postExpectingRedirect("expeditedExpenses", "payRentOrMortgage", "true", "expeditedExpensesAmount");
+        postExpectingRedirect("expeditedExpensesAmount", "homeExpensesAmount", "333", "expeditedUtilityPayments");
+        postExpectingRedirect("expeditedUtilityPayments", "payForUtilities", "COOLING", "expeditedMigrantFarmWorker");
+        postExpectingRedirect("expeditedMigrantFarmWorker", "migrantOrSeasonalFarmWorker", "false", "snapExpeditedDetermination");
+        FormPage page = new FormPage(getPage("snapExpeditedDetermination"));
+        assertThat(page.findElementsByTag("p").get(0).text()).isEqualTo("A caseworker will contact you within 5-7 days to review your application.");
+        this.assertNavigationRedirectsToCorrectNextPage("snapExpeditedDetermination", "legalStuff");
+        page = new FormPage(getPage("legalStuff"));
+        assertThat(page.getTitle()).isEqualTo("Legal Stuff");
+        assertThat(page.findElementById("ccap-legal")).isNotNull();
+   }
 
 }
