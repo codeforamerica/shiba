@@ -578,7 +578,7 @@ public class AbstractShibaMockMvcTest {
         return nonExpeditedFlowToSuccessPage(hasHousehold, isWorking, false, false);
     }
 
-    private FormPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking, boolean helpWithBenefits,
+    protected FormPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking, boolean helpWithBenefits,
                                                    boolean hasHealthcareCoverage) throws Exception {
         completeFlowFromLandingPageThroughReviewInfo("CCAP", "CASH");
         var me = "defaultFirstName defaultLastName applicant";
@@ -641,7 +641,7 @@ public class AbstractShibaMockMvcTest {
             postExpectingSuccess("jobSearch", "currentlyLookingForJob", "false");
 
         } else {
-            postExpectingRedirect("employmentStatus", "areYouWorking", "false", "incomeByJob");
+            postExpectingRedirect("employmentStatus", "areYouWorking", "false", "jobSearch");
             postExpectingSuccess("jobSearch", "currentlyLookingForJob", "true");
 
             if (hasHousehold) {

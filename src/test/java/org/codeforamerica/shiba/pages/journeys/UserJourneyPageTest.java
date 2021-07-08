@@ -20,53 +20,6 @@ import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 
 @Tag("journey")
 public class UserJourneyPageTest extends JourneyTest {
-    @Test
-    void userCanCompleteTheNonExpeditedHouseholdFlow() {
-        nonExpeditedFlowToSuccessPage(true, true, smartyStreetClient, true, true);
-        assertThat(driver.findElementsById("healthcareCoverage")).isEmpty();
-    }
-
-    @Test
-    void userCanCompleteTheNonExpeditedFlowWithNoEmployment() {
-        nonExpeditedFlowToSuccessPage(false, false, smartyStreetClient);
-        assertThat(driver.findElementsById("healthcareCoverage")).isNotEmpty();
-    }
-
-    @Test
-    void userCanCompleteTheNonExpeditedHouseholdFlowWithNoEmployment() {
-        nonExpeditedFlowToSuccessPage(true, false, smartyStreetClient);
-    }
-
-    @Test
-    void userCanCompleteTheExpeditedFlowWithoutBeingExpedited() {
-        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_SNAP, PROGRAM_CCAP), smartyStreetClient);
-        testPage.clickLink("Submit application now with only the above information.");
-        testPage.clickLink("Yes, I want to see if I qualify");
-
-        testPage.enter("addHouseholdMembers", NO.getDisplayValue());
-        testPage.enter("moneyMadeLast30Days", "123");
-
-        testPage.clickContinue();
-        testPage.enter("haveSavings", YES.getDisplayValue());
-        testPage.enter("liquidAssets", "1233");
-
-        testPage.clickContinue();
-        testPage.enter("payRentOrMortgage", YES.getDisplayValue());
-
-        testPage.enter("homeExpensesAmount", "333");
-        testPage.clickContinue();
-
-        testPage.enter("payForUtilities", "Cooling");
-        testPage.clickContinue();
-
-        testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
-
-        assertThat(driver.findElement(By.tagName("p")).getText()).contains("A caseworker will contact you within 5-7 days to review your application.");
-
-        testPage.clickButton("Finish application");
-        assertThat(testPage.getTitle()).isEqualTo("Legal Stuff");
-        assertThat(driver.findElement(By.id("ccap-legal"))).isNotNull();
-    }
 
     @Test
     void partialFlow() throws IOException {
