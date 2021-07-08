@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
+import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.AbstractShibaMockMvcTest;
 import org.codeforamerica.shiba.framework.FormPage;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
@@ -22,6 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @Tag("ccap")
 @Sql(statements = "TRUNCATE TABLE applications;")
+@Slf4j
 public class MetricsTest extends AbstractShibaMockMvcTest {
 
     @BeforeEach
@@ -40,17 +42,15 @@ public class MetricsTest extends AbstractShibaMockMvcTest {
     }
 
     @Test
-    @WithMockUser(username="admin",roles={"USER","ADMIN"})
+    @WithMockUser(username = "admin", roles = {"USER", "ADMIN"})
     void userCanCompleteTheNonExpeditedFlowAndCanDownloadPdfsAndShibaShouldCaptureMetricsAfterApplicationIsCompleted() throws Exception {
         FormPage successPage = nonExpeditedFlowToSuccessPage(false, true);
 
         assertThat(successPage.findLinksByText("Combined Application")).hasSize(1);
         assertThat(successPage.findLinksByText("Child Care Application")).hasSize(1);
-        mockMvc.perform(post("/submit-feedback")
-                        .session(session)
-                        .with(csrf())
-                        .param("sentiment", "HAPPY"));
+        mockMvc.perform(post("/submit-feedback").session(session).with(csrf()).param("sentiment", "HAPPY"));
 
+        log.info("test123");
         FormPage metricsPage = new FormPage(getPageWithAuth("metrics"));
 
         assertThat(metricsPage.findElementTextById("totals")).contains("Totals");
