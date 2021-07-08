@@ -75,24 +75,26 @@ public class ApplicationData implements Serializable {
         }
 
         return pageWorkflowConfiguration.getNextPages().stream()
-                .filter(nextPage -> {
-                    boolean isNextPage = true;
-                    Condition condition = nextPage.getCondition();
-                    if (condition != null) {
-                        if (pageWorkflowConfiguration.isInAGroup()) {
-                            isNextPage = condition.matches(
-                                    incompleteIterations.get(pageWorkflowConfiguration.getGroupName()).get(pageWorkflowConfiguration.getPageConfiguration().getName()),
-                                    pagesData);
-                        } else {
-                            isNextPage = pagesData.satisfies(condition);
-                        }
-                    }
-                    if (nextPage.getFlag() != null) {
-                        isNextPage &= featureFlags.get(nextPage.getFlag()) == FeatureFlag.ON;
-                    }
-                    return isNextPage;
-                }).findFirst()
+                .filter(page -> nextPage(featureFlags, pageWorkflowConfiguration, page)).findFirst()
                 .orElseThrow(() -> new RuntimeException("Cannot find suitable next page."));
+    }
+
+    private boolean nextPage(FeatureFlagConfiguration featureFlags, @NotNull PageWorkflowConfiguration pageWorkflowConfiguration, NextPage nextPage) {
+        boolean isNextPage = true;
+        Condition condition = nextPage.getCondition();
+        if (condition != null) {
+            if (pageWorkflowConfiguration.isInAGroup()) {
+                isNextPage = condition.matches(
+                        incompleteIterations.get(pageWorkflowConfiguration.getGroupName()).get(pageWorkflowConfiguration.getPageConfiguration().getName()),
+                        pagesData);
+            } else {
+                isNextPage = pagesData.satisfies(condition);
+            }
+        }
+        if (nextPage.getFlag() != null) {
+            isNextPage &= featureFlags.get(nextPage.getFlag()) == FeatureFlag.ON;
+        }
+        return isNextPage;
     }
 
     public boolean isCCAPApplication() {
