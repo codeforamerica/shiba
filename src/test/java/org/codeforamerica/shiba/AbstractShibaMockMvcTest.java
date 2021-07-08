@@ -29,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.time.Clock;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
 
@@ -74,7 +75,10 @@ public class AbstractShibaMockMvcTest {
     @BeforeEach
     protected void setUp() throws Exception {
         session = new MockHttpSession();
-        when(clock.instant()).thenReturn(Instant.now());
+        when(clock.instant()).thenReturn(
+                LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant(),
+                LocalDateTime.of(2020, 1, 1, 10, 15, 30).atOffset(ZoneOffset.UTC).toInstant()
+        );
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         when(locationClient.validateAddress(any())).thenReturn(Optional.empty());
         when(featureFlagConfiguration.get("submit-via-email")).thenReturn(FeatureFlag.OFF);

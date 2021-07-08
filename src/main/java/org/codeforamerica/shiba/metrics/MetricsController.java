@@ -29,7 +29,7 @@ public class MetricsController {
     ModelAndView metrics() {
         int applicationsSubmitted = applicationRepository.count();
         Duration medianTimeToComplete = applicationRepository.getMedianTimeToComplete();
-        log.info("******MEDIAN TIME TO COMPLETE: " + medianTimeToComplete);
+        log.info("******MEDIAN TIME TO COMPLETE_SECONDS: " + medianTimeToComplete.getSeconds());
         Duration averageTimeToCompleteForWeek = applicationRepository.getAverageTimeToCompleteWeekToDate(CENTRAL_ZONE_ID);
         Duration medianTimeToCompleteForWeek = applicationRepository.getMedianTimeToCompleteWeekToDate(CENTRAL_ZONE_ID);
 

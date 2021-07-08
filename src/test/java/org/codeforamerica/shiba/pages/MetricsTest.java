@@ -30,10 +30,6 @@ public class MetricsTest extends AbstractShibaMockMvcTest {
     protected void setUp() throws Exception {
         super.setUp();
         when(featureFlagConfiguration.get("apply-without-address")).thenReturn(FeatureFlag.OFF);
-        when(clock.instant()).thenReturn(
-                LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant(),
-                LocalDateTime.of(2020, 1, 1, 10, 15, 30).atOffset(ZoneOffset.UTC).toInstant()
-        );
         mockMvc.perform(get("/pages/languagePreferences").session(session)); // start timer
         postExpectingSuccess("languagePreferences", Map.of(
                 "writtenLanguage", List.of("ENGLISH"),

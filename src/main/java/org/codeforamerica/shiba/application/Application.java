@@ -60,7 +60,7 @@ public class Application {
         log.info("******COMPLETED_AT: " + completedAt);
         setTimeToComplete(Duration.between(applicationData.getStartTime(), completedAt));
         log.info("******START_TIME: " + applicationData.getStartTime());
-        log.info("******DURATION_BETWEEN: " + Duration.between(applicationData.getStartTime(), completedAt));
+        log.info("******DURATION_BETWEEN_SECONDS: " + Duration.between(applicationData.getStartTime(), completedAt).getSeconds());
 
     }
 }

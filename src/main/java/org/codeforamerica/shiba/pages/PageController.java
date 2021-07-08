@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.Clock;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.util.*;
 
@@ -180,7 +181,9 @@ public class PageController {
         }
 
         if (landmarkPagesConfiguration.isStartTimerPage(pageName)) {
-            applicationData.setStartTimeOnce(clock.instant());
+            var now = clock.instant();
+            log.info("******CLOCK_INSTANT_START_TIME" + now);
+            applicationData.setStartTimeOnce(now);
             if (!utmSource.isEmpty()) {
                 applicationData.setUtmSource(utmSource);
             }
