@@ -2,7 +2,7 @@ conditionDefinitions:
   - &onlyApplyingForOthers?
     pageName: choosePrograms
     input: programs
-    value: "NONE"
+    value: NONE
   - &livesAlone?
     pageName: addHouseholdMembers
     input: addHouseholdMembers
