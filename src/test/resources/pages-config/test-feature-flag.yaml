@@ -66,6 +66,7 @@ workflow:
       - pageName: conditionalFeaturePage
         flag: first-feature
         condition:
+          pageName: thirdPage
           input: foo
           value: "yes"
       - pageName: firstPage

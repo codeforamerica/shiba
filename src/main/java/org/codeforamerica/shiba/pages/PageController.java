@@ -371,7 +371,7 @@ public class PageController {
     }
 
     @PostMapping("/groups/{groupName}/{iteration}/delete")
-    ModelAndView deleteIteration(
+    RedirectView deleteIteration(
             @PathVariable String groupName,
             @PathVariable int iteration,
             HttpSession httpSession
@@ -387,7 +387,12 @@ public class PageController {
             nextPage = applicationConfiguration.getPageGroups().get(groupName).getReviewPage();
         }
 
-        return new ModelAndView(String.format("redirect:/pages/%s", nextPage));
+        PageWorkflowConfiguration nextPageWorkflow = applicationConfiguration.getPageWorkflow(nextPage);
+        if (shouldSkip(nextPageWorkflow)) {
+            return new RedirectView(String.format("/pages/%s/navigation", nextPage));
+        } else {
+            return new RedirectView(String.format("/pages/%s", nextPage));
+        }
     }
 
     @PostMapping("/groups/{groupName}/{iteration}/deleteWarning")

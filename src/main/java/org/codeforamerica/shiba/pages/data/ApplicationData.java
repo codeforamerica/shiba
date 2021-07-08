@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.pages.data;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.pages.config.*;
@@ -16,6 +17,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Data
+@Slf4j
 public class ApplicationData implements Serializable {
     @Serial
     private static final long serialVersionUID = 5573310526258484730L;
@@ -69,22 +71,30 @@ public class ApplicationData implements Serializable {
         }
 
         if (pageData == null) {
-            throw new RuntimeException(String.format("Conditional navigation for %s requires page to have data/inputs.", pageWorkflowConfiguration.getPageConfiguration().getName()));
+            log.error(String.format("Conditional navigation for %s requires page to have data/inputs.", pageWorkflowConfiguration.getPageConfiguration().getName()));
         }
 
         return pageWorkflowConfiguration.getNextPages().stream()
-                .filter(nextPage -> {
-                    boolean isNextPage = true;
-                    Condition condition = nextPage.getCondition();
-                    if (condition != null) {
-                        isNextPage = condition.matches(pageData, pagesData);
-                    }
-                    if (nextPage.getFlag() != null) {
-                        isNextPage &= featureFlags.get(nextPage.getFlag()) == FeatureFlag.ON;
-                    }
-                    return isNextPage;
-                }).findFirst()
+                .filter(page -> nextPage(featureFlags, pageWorkflowConfiguration, page)).findFirst()
                 .orElseThrow(() -> new RuntimeException("Cannot find suitable next page."));
+    }
+
+    private boolean nextPage(FeatureFlagConfiguration featureFlags, @NotNull PageWorkflowConfiguration pageWorkflowConfiguration, NextPage nextPage) {
+        boolean isNextPage = true;
+        Condition condition = nextPage.getCondition();
+        if (condition != null) {
+            if (pageWorkflowConfiguration.isInAGroup()) {
+                isNextPage = condition.matches(
+                        incompleteIterations.get(pageWorkflowConfiguration.getGroupName()).get(pageWorkflowConfiguration.getPageConfiguration().getName()),
+                        pagesData);
+            } else {
+                isNextPage = pagesData.satisfies(condition);
+            }
+        }
+        if (nextPage.getFlag() != null) {
+            isNextPage &= featureFlags.get(nextPage.getFlag()) == FeatureFlag.ON;
+        }
+        return isNextPage;
     }
 
     public boolean isCCAPApplication() {

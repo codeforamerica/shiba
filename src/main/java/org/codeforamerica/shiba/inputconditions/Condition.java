@@ -15,6 +15,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
@@ -96,9 +97,9 @@ public class Condition implements Serializable {
         return getSubworkflow() != null && getIteration() == null;
     }
 
-    public boolean matches(PageData pageData, PagesData pagesData) {
+    public boolean matches(PageData pageData, Map<String, PageData> pagesData) {
         if (getPageName() != null) {
-            return satisfies(pagesData.getPage(getPageName()));
+            return satisfies(pagesData.get(getPageName()));
         } else {
             return satisfies(pageData);
         }

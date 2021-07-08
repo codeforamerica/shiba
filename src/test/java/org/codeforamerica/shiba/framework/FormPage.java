@@ -37,6 +37,10 @@ public class FormPage {
         return html.select("input[name='%s[]'] ~ p.text--error".formatted(inputName)).first();
     }
 
+    public String getWarningMessage() {
+        return html.select("p.notice--warning").first().text();
+    }
+
     public String findElementTextById(String id) {
         return html.getElementById(id).text();
     }

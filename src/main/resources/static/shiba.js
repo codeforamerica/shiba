@@ -40,6 +40,35 @@ var followUpQuestion = (function() {
     }
 })();
 
-$(document).ready(function () {
-    followUpQuestion.init();
-});
+var noneOfTheAbove = (function() {
+    var noneOf = {
+        init: function () {
+            var $noneCheckbox = $('#none__checkbox');
+            var $otherCheckboxes = $('input[type=checkbox]').not('#none__checkbox');
+
+            // Uncheck None if another checkbox is checked
+            $otherCheckboxes.click(function(e) {
+                $noneCheckbox.prop('checked', false);
+                $noneCheckbox.parent().removeClass('is-selected');
+                $('#choose-none-warning').addClass("hidden");
+            });
+
+            if ($noneCheckbox.prop('checked')) {
+                $('#choose-none-warning').removeClass("hidden");
+            }
+
+            // Uncheck all others if None is checked
+            $noneCheckbox.click(function(e) {
+                $otherCheckboxes.prop('checked', false);
+                $otherCheckboxes.parent().removeClass('is-selected');
+                if (this.checked)
+                    $('#choose-none-warning').removeClass("hidden");
+                else
+                    $('#choose-none-warning').addClass("hidden");
+            });
+        }
+    };
+    return {
+        init: noneOf.init
+    }
+})();

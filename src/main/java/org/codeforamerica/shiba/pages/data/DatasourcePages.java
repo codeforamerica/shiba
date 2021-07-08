@@ -28,16 +28,20 @@ public class DatasourcePages extends HashMap<String, PageData> {
             // This page's skipCondition was satisfied, so the client didn't provide an answer, so this condition can't be satisfied
             return false;
         } else {
-            return condition.matches(pageData, new PagesData(this));
+            return condition.matches(pageData, this);
         }
     }
 
     public DatasourcePages mergeDatasourcePages(DatasourcePages datasourcePages) {
         datasourcePages.forEach((key, value) -> {
             PageData current = this.get(key);
-            if(current != null)
+            if (current != null)
                 current.mergeInputDataValues(value);
         });
         return this;
+    }
+
+    public String getPageInputFirstValue(String pageName, String inputName) {
+        return new PagesData(this).getPageInputFirstValue(pageName, inputName);
     }
 }
