@@ -3,10 +3,12 @@ package org.codeforamerica.shiba.framework;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 /**
  * Helps parse mockmvc result html
@@ -45,6 +47,11 @@ public class FormPage {
         return html.getElementById(id).text();
     }
 
+    public Elements findLinksByText(String text) {
+        String cssSelector = String.format("a:contains(%s)", text);
+        return html.select(cssSelector);
+    }
+
     public String getTitle() {
         return html.title();
     }
@@ -55,5 +62,15 @@ public class FormPage {
 
     public String getInputValue(String inputName) {
         return html.select("input[name='%s[]']".formatted(inputName)).attr("value");
+    }
+
+    public String getCardValue(String title) {
+        return html.getElementsByClass("statistic-card").stream()
+                .filter(card -> card.getElementsByClass("statistic-card__label").get(0).ownText().contains(title))
+                .findFirst().get().getElementsByClass("statistic-card__number").get(0).ownText();
+    }
+
+    public List<Element> findElementsByTag(String tag) {
+        return html.getElementsByTag(tag);
     }
 }
