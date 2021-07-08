@@ -1,6 +1,5 @@
 package org.codeforamerica.shiba.metrics;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.ApplicationRepository;

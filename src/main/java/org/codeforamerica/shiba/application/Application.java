@@ -2,7 +2,6 @@ package org.codeforamerica.shiba.application;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.pages.Feedback;
 import org.codeforamerica.shiba.pages.Sentiment;
@@ -57,6 +56,5 @@ public class Application {
     public void setCompletedAtTime(Clock clock) {
         completedAt = ZonedDateTime.now(clock);
         setTimeToComplete(Duration.between(applicationData.getStartTime(), completedAt));
-
     }
 }

@@ -28,7 +28,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.Clock;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
@@ -130,11 +129,15 @@ public class AbstractShibaMockMvcTest {
     protected ResultActions getPageWithAuth(String pageName) throws Exception {
         return mockMvc.perform(
                 get(String.format("http://%s@localhost/%s", authParams, pageName)).session(session)
-                ).andExpect(status().isOk());
+        ).andExpect(status().isOk());
     }
 
-    protected void getWithQueryParamAndExpectRedirect(String pageName, String queryParam, String value, String expectedPageName) throws Exception {
-        var navigationPageUrl = mockMvc.perform(get("/pages/" + pageName + "/navigation").session(session).queryParam(queryParam, value)).andExpect(status().is3xxRedirection()).andReturn()
+    protected void getWithQueryParamAndExpectRedirect(String pageName, String queryParam, String value,
+                                                      String expectedPageName) throws Exception {
+        var navigationPageUrl = mockMvc.perform(get("/pages/" + pageName + "/navigation").session(session)
+                                                        .queryParam(queryParam, value))
+                .andExpect(status().is3xxRedirection())
+                .andReturn()
                 .getResponse()
                 .getRedirectedUrl();
         String nextPage = followRedirectsForUrl(navigationPageUrl);
@@ -249,8 +252,8 @@ public class AbstractShibaMockMvcTest {
 
     protected void submitApplication() throws Exception {
         postExpectingSuccess("/submit",
-                "/pages/signThisApplication/navigation",
-                Map.of("applicantSignature", List.of("Human McPerson")));
+                             "/pages/signThisApplication/navigation",
+                             Map.of("applicantSignature", List.of("Human McPerson")));
     }
 
     protected void selectPrograms(String... programs) throws Exception {
