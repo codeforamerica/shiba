@@ -181,9 +181,7 @@ public class PageController {
         }
 
         if (landmarkPagesConfiguration.isStartTimerPage(pageName)) {
-            var now = clock.instant();
-            log.info("******CLOCK_INSTANT_START_TIME" + now);
-            applicationData.setStartTimeOnce(now);
+            applicationData.setStartTimeOnce(clock.instant());
             if (!utmSource.isEmpty()) {
                 applicationData.setUtmSource(utmSource);
             }

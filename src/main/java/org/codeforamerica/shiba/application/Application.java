@@ -18,7 +18,6 @@ import java.util.Optional;
 
 @Data
 @Builder
-@Slf4j
 public class Application {
     String id;
     ZonedDateTime completedAt;
@@ -57,10 +56,7 @@ public class Application {
 
     public void setCompletedAtTime(Clock clock) {
         completedAt = ZonedDateTime.now(clock);
-        log.info("******COMPLETED_AT: " + completedAt);
         setTimeToComplete(Duration.between(applicationData.getStartTime(), completedAt));
-        log.info("******START_TIME: " + applicationData.getStartTime());
-        log.info("******DURATION_BETWEEN_SECONDS: " + Duration.between(applicationData.getStartTime(), completedAt).getSeconds());
 
     }
 }
