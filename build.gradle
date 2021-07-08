@@ -239,6 +239,7 @@ tasks.withType(Test).configureEach {
             showStackTraces true
             showCauses true
             showExceptions true
+            showStandardStreams true
         }
 }
 
