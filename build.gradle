@@ -239,7 +239,8 @@ tasks.withType(Test).configureEach {
             showStackTraces true
             showCauses true
             showExceptions true
-            showStandardStreams true
+            // uncomment the following line to print stdout and stderr for every test
+            // showStandardStreams true
         }
 }
 
