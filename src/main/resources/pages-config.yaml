@@ -269,7 +269,7 @@ pageDefinitions:
               isNone: true
       - name: noProgramsMessage
         type: CUSTOM
-        customInputFragment: chooseProgramsCheckboxes
+        customInputFragment: chooseProgramsAlertBox
   - &introBasicInfo
     name: introBasicInfo
     pageTitle: intro-basic-info.title
