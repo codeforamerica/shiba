@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.output;
 
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.application.parsers.EmailParser;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
@@ -53,11 +54,15 @@ public class ResendFailedEmailController {
 
         EmailParser.parse(applicationData)
                 .ifPresent(email -> {
-                    SnapExpeditedEligibility snapExpeditedEligibility = snapExpeditedEligibilityDecider.decide(application.getApplicationData());
-                    CcapExpeditedEligibility ccapExpeditedEligibility = ccapExpeditedEligibilityDecider.decide(application.getApplicationData());
-                    List<Document> docs = DocumentListParser.parse(applicationData);
-                    List<ApplicationFile> pdfs = docs.stream().map(doc -> pdfGenerator.generate(applicationId, doc, CLIENT)).collect(Collectors.toList());
-                    emailClient.sendConfirmationEmail(applicationData, email, applicationId, new ArrayList<>(applicationData.getApplicantAndHouseholdMemberPrograms()), snapExpeditedEligibility, ccapExpeditedEligibility, pdfs, LocaleContextHolder.getLocale());
+                    if (application.getFlow() == FlowType.LATER_DOCS) {
+                        emailClient.sendLaterDocsConfirmationEmail(email, LocaleContextHolder.getLocale());
+                    } else {
+                        SnapExpeditedEligibility snapExpeditedEligibility = snapExpeditedEligibilityDecider.decide(application.getApplicationData());
+                        CcapExpeditedEligibility ccapExpeditedEligibility = ccapExpeditedEligibilityDecider.decide(application.getApplicationData());
+                        List<Document> docs = DocumentListParser.parse(applicationData);
+                        List<ApplicationFile> pdfs = docs.stream().map(doc -> pdfGenerator.generate(applicationId, doc, CLIENT)).collect(Collectors.toList());
+                        emailClient.sendConfirmationEmail(applicationData, email, applicationId, new ArrayList<>(applicationData.getApplicantAndHouseholdMemberPrograms()), snapExpeditedEligibility, ccapExpeditedEligibility, pdfs, LocaleContextHolder.getLocale());
+                    }
                 });
 
         return "Successfully resent confirmation email for application: " + applicationId;
