@@ -35,9 +35,13 @@ public class DatasourcePages extends HashMap<String, PageData> {
     public DatasourcePages mergeDatasourcePages(DatasourcePages datasourcePages) {
         datasourcePages.forEach((key, value) -> {
             PageData current = this.get(key);
-            if(current != null)
+            if (current != null)
                 current.mergeInputDataValues(value);
         });
         return this;
+    }
+
+    public String getPageInputFirstValue(String pageName, String inputName) {
+        return new PagesData(this).getPageInputFirstValue(pageName, inputName);
     }
 }

@@ -237,8 +237,7 @@ pageDefinitions:
     headerHelpMessageKey: general.check-all-that-apply
     inputs:
       - name: programs
-        type: CUSTOM
-        customInputFragment: chooseProgramsCheckboxes
+        type: CHECKBOX
         validators:
           - validation: SELECT_AT_LEAST_ONE
             errorMessageKey: general.validation.make-sure-you-answer-this-question
@@ -268,6 +267,9 @@ pageDefinitions:
               messageKey: choose-programs.none-of-the-above
               helpIcon: icon-people
               isNone: true
+      - name: noProgramsMessage
+        type: CUSTOM
+        customInputFragment: chooseProgramsCheckboxes
   - &introBasicInfo
     name: introBasicInfo
     pageTitle: intro-basic-info.title

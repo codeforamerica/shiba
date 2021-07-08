@@ -1,16 +1,13 @@
 package org.codeforamerica.shiba;
 
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
-import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
@@ -119,40 +116,41 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
 
     @Test
     void verifyFlowWhenOnlyHouseholdMemberSelectedCCAP() throws Exception {
-        completeFlowFromLandingPageThroughReviewInfo("SNAP");
+        selectPrograms("NONE");
+        assertPageHasWarningMessage("choosePrograms", "You will be asked to share some information about yourself even though you’re only applying for others.");
+
+        completeFlowFromLandingPageThroughReviewInfo("NONE");
         postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "true", "startHousehold");
         assertNavigationRedirectsToCorrectNextPage("startHousehold", "householdMemberInfo");
         fillOutHousemateInfo("CCAP");
 
         // Don't select any children in need of care, should get redirected to preparing meals together
         assertCorrectPageTitle("childrenInNeedOfCare", "Who are the children in need of care?");
-        postExpectingNextPageTitle("childrenInNeedOfCare", "Preparing meals together");
+        postExpectingNextPageTitle("childrenInNeedOfCare", "Living situation");
 
         // Go back to childrenInNeedOfCare and select someone this time, but don't select anyone having a parent not at home
         String householdMemberId = getFirstHouseholdMemberId();
         postExpectingNextPageTitle("childrenInNeedOfCare",
-                                   "whoNeedsChildCare",
-                                   List.of("defaultFirstName defaultLastName applicant",
-                                           "householdMemberFirstName householdMemberLastName" + householdMemberId),
-                                   "Who are the children that have a parent not living in the home?"
+                "whoNeedsChildCare",
+                List.of("defaultFirstName defaultLastName applicant",
+                        "householdMemberFirstName householdMemberLastName" + householdMemberId),
+                "Who are the children that have a parent not living in the home?"
         );
         postExpectingNextPageTitle("whoHasParentNotAtHome",
-                                   "whoHasAParentNotLivingAtHome",
-                                   List.of("NONE_OF_THE_ABOVE"),
-                                   "Preparing meals together");
+                "whoHasAParentNotLivingAtHome",
+                List.of("NONE_OF_THE_ABOVE"),
+                "Living situation");
 
         // Go back and select someone having a parent not at home
         postExpectingNextPageTitle("whoHasParentNotAtHome",
-                                   "whoHasAParentNotLivingAtHome",
-                                   List.of("defaultFirstName defaultLastName applicant"),
-                                   "Name of parent outside home");
+                "whoHasAParentNotLivingAtHome",
+                List.of("defaultFirstName defaultLastName applicant"),
+                "Name of parent outside home");
         postExpectingNextPageTitle("parentNotAtHomeNames",
-                                   Map.of("whatAreTheParentsNames",
-                                          List.of("My Parent", "Default's Parent"),
-                                          "childIdMap",
-                                          List.of("applicant", householdMemberId)
-                                   ),
-                                   "Preparing meals together");
+                Map.of("whatAreTheParentsNames", List.of("My Parent", "Default's Parent"),
+                        "childIdMap", List.of("applicant", householdMemberId)
+                ),
+                "Living situation");
 
         postExpectingRedirect("preparingMealsTogether", "isPreparingMealsTogether", "false", "livingSituation");
         postExpectingRedirect("livingSituation", "livingSituation", "UNKNOWN", "goingToSchool");
@@ -173,9 +171,9 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
         assertNavigationRedirectsToCorrectNextPage("incomeUpNext", "unearnedIncome");
         postExpectingRedirect("unearnedIncome", "unearnedIncome", "NO_UNEARNED_INCOME_SELECTED", "unearnedIncomeCcap");
         postExpectingRedirect("unearnedIncomeCcap",
-                              "unearnedIncomeCcap",
-                              "NO_UNEARNED_INCOME_CCAP_SELECTED",
-                              "futureIncome");
+                "unearnedIncomeCcap",
+                "NO_UNEARNED_INCOME_CCAP_SELECTED",
+                "futureIncome");
         fillFutureIncomeToHaveVehicle();
         assertNavigationRedirectsToCorrectNextPage("vehicle", "realEstate");
         postExpectingRedirect("realEstate", "ownRealEstate", "false", "investments");

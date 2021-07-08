@@ -34,8 +34,7 @@ import java.util.*;
 import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.TestUtils.resetApplicationData;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
@@ -422,6 +421,11 @@ public class AbstractShibaMockMvcTest {
         assertFalse(page.hasInputError(inputName));
     }
 
+    protected void assertPageHasWarningMessage(String pageName, String warningMessage) throws Exception {
+        var page = new FormPage(getPage(pageName));
+        assertEquals(page.getWarningMessage(), warningMessage);
+    }
+
     @NotNull
     protected ResultActions getPage(String pageName) throws Exception {
         return mockMvc.perform(get("/pages/" + pageName).session(session));
@@ -519,10 +523,10 @@ public class AbstractShibaMockMvcTest {
         postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "false");
         fillOutMailingAddress();
         postExpectingNextPageElementText("verifyMailingAddress",
-                                         "useEnrichedAddress",
-                                         "true",
-                                         "mailingAddress-address_street",
-                                         "smarty street");
+                "useEnrichedAddress",
+                "true",
+                "mailingAddress-address_street",
+                "smarty street");
     }
 
     protected void getToPersonalInfoScreen(String... programSelections) throws Exception {
