@@ -10,8 +10,11 @@ import org.openqa.selenium.WebElement;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.application.FlowType.FULL;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
@@ -26,8 +29,12 @@ public class FullFlowJourneyTest extends JourneyTest {
                 LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant(),
                 LocalDateTime.of(2020, 1, 1, 10, 15, 30).atOffset(ZoneOffset.UTC).toInstant()
         );
-        List<String> programSelections = List.of(PROGRAM_SNAP, PROGRAM_CCAP, PROGRAM_EA, PROGRAM_CASH, PROGRAM_GRH);
 
+        // Assert intercom button is present on landing page
+        await().atMost(5, SECONDS).until(() -> !driver.findElementsById("intercom-frame").isEmpty());
+        assertThat(driver.findElementById("intercom-frame")).isNotNull();
+
+        List<String> programSelections = List.of(PROGRAM_SNAP, PROGRAM_CCAP, PROGRAM_EA, PROGRAM_CASH, PROGRAM_GRH);
         getToHomeAddress(programSelections);
 
         // Where are you currently Living?

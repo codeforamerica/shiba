@@ -21,12 +21,6 @@ import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 @Tag("journey")
 public class UserJourneyPageTest extends JourneyTest {
     @Test
-    void intercomButtonIsPresent() {
-        await().atMost(5, TimeUnit.SECONDS).until(() -> !driver.findElementsById("intercom-frame").isEmpty());
-        assertThat(driver.findElementById("intercom-frame")).isNotNull();
-    }
-
-    @Test
     void userCanCompleteTheNonExpeditedHouseholdFlow() {
         nonExpeditedFlowToSuccessPage(true, true, smartyStreetClient, true, true);
         assertThat(driver.findElementsById("healthcareCoverage")).isEmpty();
