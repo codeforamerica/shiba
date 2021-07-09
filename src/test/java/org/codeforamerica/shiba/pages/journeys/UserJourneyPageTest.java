@@ -22,28 +22,6 @@ import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 public class UserJourneyPageTest extends JourneyTest {
 
     @Test
-    void partialFlow() throws IOException {
-        getToDocumentUploadScreen();
-        completeDocumentUploadFlow();
-
-        SuccessPage successPage = new SuccessPage(driver);
-        successPage.downloadPdfs();
-        await().until(() -> {
-            File[] listFiles = path.toFile().listFiles();
-            return Arrays.stream(listFiles).anyMatch(file -> file.getName().contains("_MNB_") && file.getName().endsWith(".pdf"));
-        });
-
-        File pdfFile = Arrays.stream(path.toFile().listFiles()).findFirst().orElseThrow();
-        PDAcroForm acroForm = PDDocument.load(pdfFile).getDocumentCatalog().getAcroForm();
-        assertThat(acroForm.getField("APPLICANT_WRITTEN_LANGUAGE_PREFERENCE").getValueAsString())
-                .isEqualTo("ENGLISH");
-        assertThat(acroForm.getField("APPLICANT_WRITTEN_LANGUAGE_PREFERENCE").getValueAsString())
-                .isEqualTo("ENGLISH");
-        assertThat(acroForm.getField("NEED_INTERPRETER").getValueAsString())
-                .isEqualTo("Yes");
-    }
-
-    @Test
     void shouldHandleDeletionOfLastHouseholdMember() {
         completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_CCAP), smartyStreetClient);
         testPage.clickLink("This looks correct");

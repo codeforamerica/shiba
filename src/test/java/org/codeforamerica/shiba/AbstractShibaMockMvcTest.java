@@ -21,12 +21,15 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.FileInputStream;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -50,6 +53,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Import({SessionScopedApplicationDataTestConfiguration.class})
 public class AbstractShibaMockMvcTest {
+    private static final String UPLOADED_JPG_FILE_NAME = "shiba+file.jpg";
+    private static final String UPLOADED_PDF_NAME = "test-caf.pdf";
+
     @MockBean
     protected Clock clock;
 
@@ -717,4 +723,37 @@ public class AbstractShibaMockMvcTest {
                 "helpersPhoneNumber", List.of("7234567890")
         ), "additionalInfo");
     }
+    protected void getToDocumentUploadScreen() throws Exception {
+        getToDocumentRecommendationScreen();
+        this.clickContinueOnInfoPage("documentRecommendation", "Upload documents now", "uploadDocuments", "option", "0");
+    }
+    
+    protected void clickContinueOnInfoPage(String pageName, String continueButtonText, String expectedNextPageName) throws Exception {
+    	FormPage page = new FormPage(getPage(pageName));
+        page.assertLinkWithTextHasCorrectUrl(continueButtonText, "/pages/" + pageName + "/navigation");
+        assertNavigationRedirectsToCorrectNextPage(pageName, expectedNextPageName);
+    }
+
+    protected void clickContinueOnInfoPage(String pageName, String continueButtonText, String expectedNextPageName, String expectedQueryParamName, String expectedQueryParamValue) throws Exception {
+    	FormPage page = new FormPage(getPage(pageName));
+        page.assertLinkWithTextHasCorrectUrl(continueButtonText, "/pages/" + pageName + "/navigation?" + expectedQueryParamName + "=" + expectedQueryParamValue);
+        assertNavigationRedirectsToCorrectNextPage(pageName, expectedNextPageName);
+    }
+
+    protected void getToDocumentRecommendationScreen() throws Exception {
+    	this.completeFlowFromLandingPageThroughReviewInfo("EA");
+        this.submitApplication();
+    }
+    
+    protected void completeDocumentUploadFlow() throws Exception {
+    	MockMultipartFile jpgFile = new MockMultipartFile(UPLOADED_JPG_FILE_NAME, new FileInputStream(TestUtils.getAbsoluteFilepathString(UPLOADED_JPG_FILE_NAME)));
+    	mockMvc.perform(MockMvcRequestBuilders.multipart("/submit-documents").file(jpgFile)
+    			.session(session)
+    			.with(csrf())
+                 )
+    			.andExpect(redirectedUrl("/pages/success"));
+
+    	this.postExpectingSuccess("/submit-documents", "/pages/success", Map.of());
+    }
+    
 }
