@@ -98,10 +98,6 @@ public abstract class AbstractBasePageTest {
         driver.navigate().to(baseUrl + "/pages/" + pageName);
     }
 
-    protected String getPdfFieldText(PDAcroForm pdAcroForm, String fieldName) {
-        return pdAcroForm.getField(fieldName).getValueAsString();
-    }
-
     protected Map<Document, PDAcroForm> getAllFiles() {
         return Arrays.stream(Objects.requireNonNull(path.toFile().listFiles()))
                 .filter(file -> file.getName().endsWith(".pdf"))
@@ -166,12 +162,15 @@ public abstract class AbstractBasePageTest {
 
     protected Boolean allPdfsHaveBeenDownloaded() {
         File[] listFiles = path.toFile().listFiles();
-        List<String> documentNames = Arrays.stream(Objects.requireNonNull(listFiles)).map(File::getName).collect(Collectors.toList());
+        List<String> documentNames = Arrays.stream(Objects.requireNonNull(listFiles))
+                .map(File::getName)
+                .collect(Collectors.toList());
 
-        Function<Document, Boolean> expectedPdfExists = expectedPdfName -> documentNames.stream().anyMatch(documentName ->
-                documentName.contains("_MNB_") && documentName.endsWith(".pdf") &&
-                        documentName.contains(expectedPdfName.toString())
-        );
+        Function<Document, Boolean> expectedPdfExists = expectedPdfName -> documentNames.stream()
+                .anyMatch(documentName ->
+                                  documentName.contains("_MNB_") && documentName.endsWith(".pdf") &&
+                                          documentName.contains(expectedPdfName.toString())
+                );
         return List.of(CAF, CCAP).stream().allMatch(expectedPdfExists::apply);
     }
 
@@ -195,7 +194,8 @@ public abstract class AbstractBasePageTest {
         testPage.clickContinue();
     }
 
-    protected void completeFlowFromLandingPageThroughReviewInfo(List<String> programSelections, SmartyStreetClient mockSmartyStreetClient) {
+    protected void completeFlowFromLandingPageThroughReviewInfo(List<String> programSelections,
+                                                                SmartyStreetClient mockSmartyStreetClient) {
         completeFlowFromLandingPageThroughContactInfo(programSelections);
 
         testPage.enter("phoneNumber", "7234567890");
@@ -230,11 +230,14 @@ public abstract class AbstractBasePageTest {
         testPage.enter("isHomeless", "I don't have a permanent address");
     }
 
-    protected SuccessPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking, SmartyStreetClient mockSmartyStreetClient) {
+    protected SuccessPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking,
+                                                        SmartyStreetClient mockSmartyStreetClient) {
         return nonExpeditedFlowToSuccessPage(hasHousehold, isWorking, mockSmartyStreetClient, false, false);
     }
 
-    protected SuccessPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking, SmartyStreetClient mockSmartyStreetClient, boolean helpWithBenefits, boolean hasHealthcareCoverage) {
+    protected SuccessPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking,
+                                                        SmartyStreetClient mockSmartyStreetClient,
+                                                        boolean helpWithBenefits, boolean hasHealthcareCoverage) {
         completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_CCAP, PROGRAM_CASH), mockSmartyStreetClient);
         testPage.clickLink("This looks correct");
 
@@ -332,7 +335,7 @@ public abstract class AbstractBasePageTest {
         testPage.enter("haveSoldAssets", NO.getDisplayValue());
         testPage.clickContinue();
         testPage.enter("registerToVote", "Yes, send me more info");
-        testPage.enter("healthcareCoverage", hasHealthcareCoverage? YES.getDisplayValue() : NO.getDisplayValue());
+        testPage.enter("healthcareCoverage", hasHealthcareCoverage ? YES.getDisplayValue() : NO.getDisplayValue());
         testPage.clickContinue();
         completeHelperWorkflow(helpWithBenefits);
         driver.findElement(By.id("additionalInfo")).sendKeys("Some additional information about my application");
@@ -473,6 +476,8 @@ public abstract class AbstractBasePageTest {
 
     @NotNull
     protected Callable<Boolean> uploadCompletes() {
-        return () -> !getAttributeForElementAtIndex(driver.findElementsByClassName("dz-remove"), 0, "innerHTML").isBlank();
+        return () -> !getAttributeForElementAtIndex(driver.findElementsByClassName("dz-remove"),
+                                                    0,
+                                                    "innerHTML").isBlank();
     }
 }

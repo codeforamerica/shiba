@@ -25,7 +25,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -37,14 +36,14 @@ import java.util.*;
 
 import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.TestUtils.getAbsoluteFilepathString;
 import static org.codeforamerica.shiba.TestUtils.resetApplicationData;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -120,27 +119,24 @@ public class AbstractShibaMockMvcTest {
     }
 
     protected void postWithQueryParam(String pageName, String queryParam, String value) throws Exception {
-        mockMvc.perform(
-                post("/pages/" + pageName).session(session).with(csrf()).queryParam(queryParam, value)
-        ).andExpect(redirectedUrl("/pages/" + pageName + "/navigation"));
+        mockMvc.perform(post("/pages/" + pageName).session(session).with(csrf()).queryParam(queryParam, value))
+                .andExpect(redirectedUrl("/pages/" + pageName + "/navigation"));
     }
 
     protected ResultActions getWithQueryParam(String pageName, String queryParam, String value) throws Exception {
-        return mockMvc.perform(
-                get("/pages/" + pageName).session(session).queryParam(queryParam, value)
-        ).andExpect(status().isOk());
+        return mockMvc.perform(get("/pages/" + pageName).session(session).queryParam(queryParam, value))
+                .andExpect(status().isOk());
     }
 
     protected ResultActions getPageWithAuth(String pageName) throws Exception {
-        return mockMvc.perform(
-                get(String.format("http://%s@localhost/%s", authParams, pageName)).session(session)
-        ).andExpect(status().isOk());
+        return mockMvc.perform(get(String.format("http://%s@localhost/%s", authParams, pageName)).session(session))
+                .andExpect(status().isOk());
     }
 
     protected void getWithQueryParamAndExpectRedirect(String pageName, String queryParam, String value,
                                                       String expectedPageName) throws Exception {
-        var navigationPageUrl = mockMvc.perform(get("/pages/" + pageName + "/navigation").session(session)
-                                                        .queryParam(queryParam, value))
+        var request = get("/pages/" + pageName + "/navigation").session(session).queryParam(queryParam, value);
+        var navigationPageUrl = mockMvc.perform(request)
                 .andExpect(status().is3xxRedirection())
                 .andReturn()
                 .getResponse()
@@ -545,10 +541,10 @@ public class AbstractShibaMockMvcTest {
         postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "false");
         fillOutMailingAddress();
         postExpectingNextPageElementText("verifyMailingAddress",
-                "useEnrichedAddress",
-                "true",
-                "mailingAddress-address_street",
-                "smarty street");
+                                         "useEnrichedAddress",
+                                         "true",
+                                         "mailingAddress-address_street",
+                                         "smarty street");
     }
 
     protected void getToPersonalInfoScreen(String... programSelections) throws Exception {
@@ -585,7 +581,7 @@ public class AbstractShibaMockMvcTest {
     }
 
     protected FormPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking, boolean helpWithBenefits,
-                                                   boolean hasHealthcareCoverage) throws Exception {
+                                                     boolean hasHealthcareCoverage) throws Exception {
         completeFlowFromLandingPageThroughReviewInfo("CCAP", "CASH");
         var me = "defaultFirstName defaultLastName applicant";
         if (hasHousehold) {
@@ -707,7 +703,6 @@ public class AbstractShibaMockMvcTest {
             postExpectingRedirect("authorizedRep", "communicateOnYourBehalf", "true", "speakToCounty");
             postExpectingRedirect("speakToCounty", "getMailNotices", "true", "spendOnYourBehalf");
             postExpectingRedirect("spendOnYourBehalf", "spendOnYourBehalf", "true", "helperContactInfo");
-
             fillOutHelperInfo();
         } else {
             postExpectingRedirect("helper", "helpWithBenefits", "false", "additionalInfo");
@@ -723,37 +718,29 @@ public class AbstractShibaMockMvcTest {
                 "helpersPhoneNumber", List.of("7234567890")
         ), "additionalInfo");
     }
+
     protected void getToDocumentUploadScreen() throws Exception {
         getToDocumentRecommendationScreen();
-        this.clickContinueOnInfoPage("documentRecommendation", "Upload documents now", "uploadDocuments", "option", "0");
-    }
-    
-    protected void clickContinueOnInfoPage(String pageName, String continueButtonText, String expectedNextPageName) throws Exception {
-    	FormPage page = new FormPage(getPage(pageName));
-        page.assertLinkWithTextHasCorrectUrl(continueButtonText, "/pages/" + pageName + "/navigation");
-        assertNavigationRedirectsToCorrectNextPage(pageName, expectedNextPageName);
+        clickContinueOnInfoPage("documentRecommendation", "Upload documents now", "uploadDocuments");
     }
 
-    protected void clickContinueOnInfoPage(String pageName, String continueButtonText, String expectedNextPageName, String expectedQueryParamName, String expectedQueryParamValue) throws Exception {
-    	FormPage page = new FormPage(getPage(pageName));
-        page.assertLinkWithTextHasCorrectUrl(continueButtonText, "/pages/" + pageName + "/navigation?" + expectedQueryParamName + "=" + expectedQueryParamValue);
+    protected void clickContinueOnInfoPage(String pageName, String continueButtonText,
+                                           String expectedNextPageName) throws Exception {
+        FormPage page = new FormPage(getPage(pageName));
+        page.assertLinkWithTextHasCorrectUrl(continueButtonText, "/pages/%s/navigation?option=0".formatted(pageName));
         assertNavigationRedirectsToCorrectNextPage(pageName, expectedNextPageName);
     }
 
     protected void getToDocumentRecommendationScreen() throws Exception {
-    	this.completeFlowFromLandingPageThroughReviewInfo("EA");
-        this.submitApplication();
+        completeFlowFromLandingPageThroughReviewInfo("EA");
+        submitApplication();
     }
-    
-    protected void completeDocumentUploadFlow() throws Exception {
-    	MockMultipartFile jpgFile = new MockMultipartFile(UPLOADED_JPG_FILE_NAME, new FileInputStream(TestUtils.getAbsoluteFilepathString(UPLOADED_JPG_FILE_NAME)));
-    	mockMvc.perform(MockMvcRequestBuilders.multipart("/submit-documents").file(jpgFile)
-    			.session(session)
-    			.with(csrf())
-                 )
-    			.andExpect(redirectedUrl("/pages/success"));
 
-    	this.postExpectingSuccess("/submit-documents", "/pages/success", Map.of());
+    protected void completeDocumentUploadFlow() throws Exception {
+        var jpgFile = new MockMultipartFile(UPLOADED_JPG_FILE_NAME,
+                                            new FileInputStream(getAbsoluteFilepathString(UPLOADED_JPG_FILE_NAME)));
+        mockMvc.perform(multipart("/submit-documents").file(jpgFile).session(session).with(csrf()))
+                .andExpect(redirectedUrl("/pages/success"));
+        postExpectingSuccess("/submit-documents", "/pages/success", Map.of());
     }
-    
 }
