@@ -128,13 +128,19 @@ public class AbstractShibaMockMvcTest {
                 .andExpect(status().isOk());
     }
 
+    protected ResultActions getWithQueryParamAndExpectRedirect(String pageName, String queryParam, String value,
+                                                               String expectedRedirectPageName) throws Exception {
+        return mockMvc.perform(get("/pages/" + pageName).session(session).queryParam(queryParam, value))
+                .andExpect(redirectedUrl("/pages/" + expectedRedirectPageName));
+    }
+
     protected ResultActions getPageWithAuth(String pageName) throws Exception {
         return mockMvc.perform(get(String.format("http://%s@localhost/%s", authParams, pageName)).session(session))
                 .andExpect(status().isOk());
     }
 
-    protected void getWithQueryParamAndExpectRedirect(String pageName, String queryParam, String value,
-                                                      String expectedPageName) throws Exception {
+    protected void getNavigationPageWithQueryParamAndExpectRedirect(String pageName, String queryParam, String value,
+                                                                    String expectedPageName) throws Exception {
         var request = get("/pages/" + pageName + "/navigation").session(session).queryParam(queryParam, value);
         var navigationPageUrl = mockMvc.perform(request)
                 .andExpect(status().is3xxRedirection())
@@ -742,5 +748,11 @@ public class AbstractShibaMockMvcTest {
         mockMvc.perform(multipart("/submit-documents").file(jpgFile).session(session).with(csrf()))
                 .andExpect(redirectedUrl("/pages/success"));
         postExpectingSuccess("/submit-documents", "/pages/success", Map.of());
+    }
+
+    protected void deleteOnlyHouseholdMember() throws Exception {
+        getWithQueryParam("householdDeleteWarningPage", "iterationIndex", "0");
+        mockMvc.perform(post("/groups/household/0/delete").with(csrf()).session(session))
+                .andExpect(redirectedUrl("/pages/addHouseholdMembers"));
     }
 }

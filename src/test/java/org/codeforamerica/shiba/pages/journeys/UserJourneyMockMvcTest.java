@@ -53,7 +53,10 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
         reviewInfoPage.assertLinkWithTextHasCorrectUrl("Submit application now with only the above information.",
                                                        "/pages/doYouNeedHelpImmediately");
 
-        getWithQueryParamAndExpectRedirect("doYouNeedHelpImmediately", "option", "0", "addHouseholdMembersExpedited");
+        getNavigationPageWithQueryParamAndExpectRedirect("doYouNeedHelpImmediately",
+                                                         "option",
+                                                         "0",
+                                                         "addHouseholdMembersExpedited");
         postExpectingRedirect("addHouseholdMembersExpedited", "addHouseholdMembers", "false", "expeditedIncome");
         postExpectingRedirect("expeditedIncome", "moneyMadeLast30Days", "123", "expeditedHasSavings");
         postExpectingRedirect("expeditedHasSavings", "haveSavings", "true", "liquidAssets");
@@ -89,4 +92,16 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
         assertPdfFieldEquals("NEED_INTERPRETER", "Off", caf);
     }
 
+    @Test
+    void shouldHandleDeletionOfLastHouseholdMember() throws Exception {
+        completeFlowFromLandingPageThroughReviewInfo("CCAP");
+
+        // Add and delete one household member
+        postExpectingSuccess("addHouseholdMembers", "addHouseholdMembers", "true");
+        fillOutHousemateInfo("EA");
+        deleteOnlyHouseholdMember();
+
+        // When we "hit back", we should be redirected to reviewInfo
+        getWithQueryParamAndExpectRedirect("householdDeleteWarningPage", "iterationIndex", "0", "reviewInfo");
+    }
 }
