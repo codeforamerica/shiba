@@ -62,13 +62,6 @@ public class FormPage {
         return html.getElementById(id);
     }
 
-    /**
-     * Alias for getElementById(String id)
-     */
-    public Element findElementById(String id) {
-        return getElementById(id);
-    }
-
     public String getInputValue(String inputName) {
         return html.select("input[name='%s[]']".formatted(inputName)).attr("value");
     }

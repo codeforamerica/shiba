@@ -30,13 +30,13 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
     @Test
     void healthcareCoverageDoesNotDisplayOnSuccessPageWhenClientAlreadyHasHealthcare() throws Exception {
         var successPage = nonExpeditedFlowToSuccessPage(true, true, true, true);
-        assertThat(successPage.findElementById("healthcareCoverage")).isNull();
+        assertThat(successPage.getElementById("healthcareCoverage")).isNull();
     }
 
     @Test
     void healthcareCoverageDisplaysOnSuccessPageWhenClientDoesNotHaveHealthcare() throws Exception {
         var successPage = nonExpeditedFlowToSuccessPage(false, false, false, false);
-        assertThat(successPage.findElementById("healthcareCoverage")).isNotNull();
+        assertThat(successPage.getElementById("healthcareCoverage")).isNotNull();
     }
 
     @Test
@@ -65,7 +65,7 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
         assertNavigationRedirectsToCorrectNextPage("snapExpeditedDetermination", "legalStuff");
         page = new FormPage(getPage("legalStuff"));
         assertThat(page.getTitle()).isEqualTo("Legal Stuff");
-        assertThat(page.findElementById("ccap-legal")).isNotNull();
+        assertThat(page.getElementById("ccap-legal")).isNotNull();
    }
 
     @Test
