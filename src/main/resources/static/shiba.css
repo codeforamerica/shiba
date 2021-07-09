@@ -820,6 +820,10 @@ input[type=number] {
     margin-right: auto;
 }
 
+.margin-right-auto {
+    margin-right: auto;
+}
+
 .filename-text {
     margin-left: 16px;
     font-style: normal;

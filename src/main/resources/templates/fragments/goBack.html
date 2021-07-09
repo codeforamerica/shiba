@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
-<body>
 <a id="back-link"
-   class="toolbar__left"
+   class="toolbar__left margin-right-auto"
    th:fragment="goBackLink"
    href="#"
    onclick="window.history.back(); return false;"
    th:text="'&lt; '+#{general.go-back}"></a>
-</body>
-</html>
