@@ -7,6 +7,7 @@ import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+
 import java.util.List;
 import java.util.Map;
 
@@ -47,10 +48,11 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
     @Test
     void userCanCompleteTheExpeditedFlowWithoutBeingExpedited() throws Exception {
         completeFlowFromLandingPageThroughReviewInfo("SNAP", "CCAP");
+
         FormPage reviewInfoPage = new FormPage(getPage("reviewInfo"));
-        assertThat(reviewInfoPage.findLinksByText("Submit application now with only the above information.")).hasSize(1);
-        String url = reviewInfoPage.findLinksByText("Submit application now with only the above information.").get(0).attr("href");
-        assertThat(url).isEqualTo("/pages/doYouNeedHelpImmediately");
+        reviewInfoPage.assertLinkWithTextHasCorrectUrl("Submit application now with only the above information.",
+                                                       "/pages/doYouNeedHelpImmediately");
+
         getWithQueryParamAndExpectRedirect("doYouNeedHelpImmediately", "option", "0", "addHouseholdMembersExpedited");
         postExpectingRedirect("addHouseholdMembersExpedited", "addHouseholdMembers", "false", "expeditedIncome");
         postExpectingRedirect("expeditedIncome", "moneyMadeLast30Days", "123", "expeditedHasSavings");
@@ -59,28 +61,32 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
         postExpectingRedirect("expeditedExpenses", "payRentOrMortgage", "true", "expeditedExpensesAmount");
         postExpectingRedirect("expeditedExpensesAmount", "homeExpensesAmount", "333", "expeditedUtilityPayments");
         postExpectingRedirect("expeditedUtilityPayments", "payForUtilities", "COOLING", "expeditedMigrantFarmWorker");
-        postExpectingRedirect("expeditedMigrantFarmWorker", "migrantOrSeasonalFarmWorker", "false", "snapExpeditedDetermination");
+        postExpectingRedirect("expeditedMigrantFarmWorker",
+                              "migrantOrSeasonalFarmWorker",
+                              "false",
+                              "snapExpeditedDetermination");
         FormPage page = new FormPage(getPage("snapExpeditedDetermination"));
-        assertThat(page.findElementsByTag("p").get(0).text()).isEqualTo("A caseworker will contact you within 5-7 days to review your application.");
+        assertThat(page.findElementsByTag("p").get(0).text()).isEqualTo(
+                "A caseworker will contact you within 5-7 days to review your application.");
         assertNavigationRedirectsToCorrectNextPage("snapExpeditedDetermination", "legalStuff");
         page = new FormPage(getPage("legalStuff"));
         assertThat(page.getTitle()).isEqualTo("Legal Stuff");
         assertThat(page.getElementById("ccap-legal")).isNotNull();
-   }
+    }
 
     @Test
     void partialFlow() throws Exception {
-    	getToDocumentUploadScreen();
-    	completeDocumentUploadFlow();
-    	
-    	FormPage page = new FormPage(getPage("success"));
-    	assertThat(page.findLinksByText("Combined Application")).hasSizeGreaterThan(0);
-    	assertThat(page.findLinksByText("Combined Application").get(0).attr("href")).isEqualTo("/download");
-    	
-    	PDAcroForm caf = this.downloadCaf();
-    	assertPdfFieldEquals("APPLICANT_WRITTEN_LANGUAGE_PREFERENCE", "ENGLISH", caf);
-    	assertPdfFieldEquals("APPLICANT_SPOKEN_LANGUAGE_PREFERENCE", "ENGLISH", caf);
-    	assertPdfFieldEquals("NEED_INTERPRETER", "Off", caf);
+        getToDocumentUploadScreen();
+        completeDocumentUploadFlow();
+
+        FormPage page = new FormPage(getPage("success"));
+        assertThat(page.findLinksByText("Combined Application")).hasSizeGreaterThan(0);
+        assertThat(page.findLinksByText("Combined Application").get(0).attr("href")).isEqualTo("/download");
+
+        PDAcroForm caf = this.downloadCaf();
+        assertPdfFieldEquals("APPLICANT_WRITTEN_LANGUAGE_PREFERENCE", "ENGLISH", caf);
+        assertPdfFieldEquals("APPLICANT_SPOKEN_LANGUAGE_PREFERENCE", "ENGLISH", caf);
+        assertPdfFieldEquals("NEED_INTERPRETER", "Off", caf);
     }
 
 }
