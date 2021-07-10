@@ -113,7 +113,7 @@ public class AccessibilityJourneyPageTest extends JourneyTest {
         testPage.enter("moveToMnPreviousCity", "Chicago");
         testPage.clickContinue();
         testPage.enter("phoneNumber", "7234567890");
-        testPage.enter("email", "some@email.com");
+        testPage.enter("email", "some@example.com");
         testPage.enter("phoneOrEmail", "Text me");
         testPage.clickContinue();
         testPage.enter("zipCode", "12345");

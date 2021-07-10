@@ -17,7 +17,6 @@ import static org.mockito.Mockito.doThrow;
 
 @Tag("document")
 public class DocumentsTest extends JourneyTest {
-
     @Test
     void shouldSkipDocumentUploadFlowIfNotApplicableRegardlessOfPrograms() {
         List<String> applicantPrograms = List.of(PROGRAM_SNAP, PROGRAM_CASH, PROGRAM_EA, PROGRAM_GRH, PROGRAM_CCAP);

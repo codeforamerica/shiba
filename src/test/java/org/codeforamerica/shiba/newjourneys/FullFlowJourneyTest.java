@@ -10,8 +10,11 @@ import org.openqa.selenium.WebElement;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.application.FlowType.FULL;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
@@ -26,8 +29,12 @@ public class FullFlowJourneyTest extends JourneyTest {
                 LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant(),
                 LocalDateTime.of(2020, 1, 1, 10, 15, 30).atOffset(ZoneOffset.UTC).toInstant()
         );
-        List<String> programSelections = List.of(PROGRAM_SNAP, PROGRAM_CCAP, PROGRAM_EA, PROGRAM_CASH, PROGRAM_GRH);
 
+        // Assert intercom button is present on landing page
+        await().atMost(5, SECONDS).until(() -> !driver.findElementsById("intercom-frame").isEmpty());
+        assertThat(driver.findElementById("intercom-frame")).isNotNull();
+
+        List<String> programSelections = List.of(PROGRAM_SNAP, PROGRAM_CCAP, PROGRAM_EA, PROGRAM_CASH, PROGRAM_GRH);
         getToHomeAddress(programSelections);
 
         // Where are you currently Living?
@@ -315,7 +322,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCcapFieldEquals("DATE_OF_BIRTH", "01/12/1928");
         assertCcapFieldEquals("APPLICANT_SSN", "XXX-XX-XXXX");
         assertCcapFieldEquals("APPLICANT_PHONE_NUMBER", "(723) 456-7890");
-        assertCcapFieldEquals("APPLICANT_EMAIL", "some@email.com");
+        assertCcapFieldEquals("APPLICANT_EMAIL", "some@example.com");
         assertCcapFieldEquals("PHONE_OPTIN", "Yes");
         assertCcapFieldEquals("ADDITIONAL_INFO_CASE_NUMBER", "");
         assertCcapFieldEquals("EMPLOYERS_NAME_0", "some employer");
@@ -352,7 +359,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCcapFieldEquals("MARITAL_STATUS", "NEVER_MARRIED");
         assertCcapFieldEquals("APPLICANT_SEX", "FEMALE");
         assertCcapFieldEquals("APPLICANT_PHONE_NUMBER", "(723) 456-7890");
-        assertCcapFieldEquals("APPLICANT_EMAIL", "some@email.com");
+        assertCcapFieldEquals("APPLICANT_EMAIL", "some@example.com");
         assertCcapFieldEquals("APPLICANT_HOME_STREET_ADDRESS", "someStreetAddress (not permanent)");
         assertCcapFieldEquals("ADULT_REQUESTING_CHILDCARE_LOOKING_FOR_JOB_FULL_NAME_0", "");
         assertCcapFieldEquals("ADULT_REQUESTING_CHILDCARE_GOING_TO_SCHOOL_FULL_NAME_0", "");
@@ -433,7 +440,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCafFieldEquals("DATE_OF_BIRTH", "01/12/1928");
         assertCafFieldEquals("APPLICANT_SSN", "XXX-XX-XXXX");
         assertCafFieldEquals("APPLICANT_PHONE_NUMBER", "(723) 456-7890");
-        assertCafFieldEquals("APPLICANT_EMAIL", "some@email.com");
+        assertCafFieldEquals("APPLICANT_EMAIL", "some@example.com");
         assertCafFieldEquals("PHONE_OPTIN", "Yes");
         assertCafFieldEquals("ADDITIONAL_INFO_CASE_NUMBER", "");
         assertCafFieldEquals("EMPLOYERS_NAME_0", "some employer");

@@ -7,6 +7,8 @@ import org.jsoup.select.Elements;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
@@ -73,4 +75,10 @@ public class FormPage {
     public List<Element> findElementsByTag(String tag) {
         return html.getElementsByTag(tag);
     }
+
+	public void assertLinkWithTextHasCorrectUrl(String linkText, String expectedUrl) {
+		assertThat(findLinksByText(linkText)).hasSize(1);
+        var url = findLinksByText(linkText).get(0).attr("href");
+        assertThat(url).isEqualTo(expectedUrl);
+	}
 }

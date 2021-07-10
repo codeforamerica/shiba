@@ -21,12 +21,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.FileInputStream;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -34,14 +36,14 @@ import java.util.*;
 
 import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.TestUtils.getAbsoluteFilepathString;
 import static org.codeforamerica.shiba.TestUtils.resetApplicationData;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -50,6 +52,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Import({SessionScopedApplicationDataTestConfiguration.class})
 public class AbstractShibaMockMvcTest {
+    private static final String UPLOADED_JPG_FILE_NAME = "shiba+file.jpg";
+    private static final String UPLOADED_PDF_NAME = "test-caf.pdf";
+
     @MockBean
     protected Clock clock;
 
@@ -114,27 +119,30 @@ public class AbstractShibaMockMvcTest {
     }
 
     protected void postWithQueryParam(String pageName, String queryParam, String value) throws Exception {
-        mockMvc.perform(
-                post("/pages/" + pageName).session(session).with(csrf()).queryParam(queryParam, value)
-        ).andExpect(redirectedUrl("/pages/" + pageName + "/navigation"));
+        mockMvc.perform(post("/pages/" + pageName).session(session).with(csrf()).queryParam(queryParam, value))
+                .andExpect(redirectedUrl("/pages/" + pageName + "/navigation"));
     }
 
     protected ResultActions getWithQueryParam(String pageName, String queryParam, String value) throws Exception {
-        return mockMvc.perform(
-                get("/pages/" + pageName).session(session).queryParam(queryParam, value)
-        ).andExpect(status().isOk());
+        return mockMvc.perform(get("/pages/" + pageName).session(session).queryParam(queryParam, value))
+                .andExpect(status().isOk());
+    }
+
+    protected ResultActions getWithQueryParamAndExpectRedirect(String pageName, String queryParam, String value,
+                                                               String expectedRedirectPageName) throws Exception {
+        return mockMvc.perform(get("/pages/" + pageName).session(session).queryParam(queryParam, value))
+                .andExpect(redirectedUrl("/pages/" + expectedRedirectPageName));
     }
 
     protected ResultActions getPageWithAuth(String pageName) throws Exception {
-        return mockMvc.perform(
-                get(String.format("http://%s@localhost/%s", authParams, pageName)).session(session)
-        ).andExpect(status().isOk());
+        return mockMvc.perform(get(String.format("http://%s@localhost/%s", authParams, pageName)).session(session))
+                .andExpect(status().isOk());
     }
 
-    protected void getWithQueryParamAndExpectRedirect(String pageName, String queryParam, String value,
-                                                      String expectedPageName) throws Exception {
-        var navigationPageUrl = mockMvc.perform(get("/pages/" + pageName + "/navigation").session(session)
-                                                        .queryParam(queryParam, value))
+    protected void getNavigationPageWithQueryParamAndExpectRedirect(String pageName, String queryParam, String value,
+                                                                    String expectedPageName) throws Exception {
+        var request = get("/pages/" + pageName + "/navigation").session(session).queryParam(queryParam, value);
+        var navigationPageUrl = mockMvc.perform(request)
                 .andExpect(status().is3xxRedirection())
                 .andReturn()
                 .getResponse()
@@ -244,7 +252,7 @@ public class AbstractShibaMockMvcTest {
     protected void fillOutContactInfo() throws Exception {
         postExpectingSuccess("contactInfo", Map.of(
                 "phoneNumber", List.of("7234567890"),
-                "email", List.of("some@email.com"),
+                "email", List.of("some@example.com"),
                 "phoneOrEmail", List.of("TEXT")
         ));
     }
@@ -539,10 +547,10 @@ public class AbstractShibaMockMvcTest {
         postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "false");
         fillOutMailingAddress();
         postExpectingNextPageElementText("verifyMailingAddress",
-                "useEnrichedAddress",
-                "true",
-                "mailingAddress-address_street",
-                "smarty street");
+                                         "useEnrichedAddress",
+                                         "true",
+                                         "mailingAddress-address_street",
+                                         "smarty street");
     }
 
     protected void getToPersonalInfoScreen(String... programSelections) throws Exception {
@@ -578,8 +586,8 @@ public class AbstractShibaMockMvcTest {
         return nonExpeditedFlowToSuccessPage(hasHousehold, isWorking, false, false);
     }
 
-    private FormPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking, boolean helpWithBenefits,
-                                                   boolean hasHealthcareCoverage) throws Exception {
+    protected FormPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking, boolean helpWithBenefits,
+                                                     boolean hasHealthcareCoverage) throws Exception {
         completeFlowFromLandingPageThroughReviewInfo("CCAP", "CASH");
         var me = "defaultFirstName defaultLastName applicant";
         if (hasHousehold) {
@@ -641,7 +649,7 @@ public class AbstractShibaMockMvcTest {
             postExpectingSuccess("jobSearch", "currentlyLookingForJob", "false");
 
         } else {
-            postExpectingRedirect("employmentStatus", "areYouWorking", "false", "incomeByJob");
+            postExpectingRedirect("employmentStatus", "areYouWorking", "false", "jobSearch");
             postExpectingSuccess("jobSearch", "currentlyLookingForJob", "true");
 
             if (hasHousehold) {
@@ -701,7 +709,6 @@ public class AbstractShibaMockMvcTest {
             postExpectingRedirect("authorizedRep", "communicateOnYourBehalf", "true", "speakToCounty");
             postExpectingRedirect("speakToCounty", "getMailNotices", "true", "spendOnYourBehalf");
             postExpectingRedirect("spendOnYourBehalf", "spendOnYourBehalf", "true", "helperContactInfo");
-
             fillOutHelperInfo();
         } else {
             postExpectingRedirect("helper", "helpWithBenefits", "false", "additionalInfo");
@@ -716,5 +723,36 @@ public class AbstractShibaMockMvcTest {
                 "helpersZipCode", List.of("12345"),
                 "helpersPhoneNumber", List.of("7234567890")
         ), "additionalInfo");
+    }
+
+    protected void getToDocumentUploadScreen() throws Exception {
+        getToDocumentRecommendationScreen();
+        clickContinueOnInfoPage("documentRecommendation", "Upload documents now", "uploadDocuments");
+    }
+
+    protected void clickContinueOnInfoPage(String pageName, String continueButtonText,
+                                           String expectedNextPageName) throws Exception {
+        FormPage page = new FormPage(getPage(pageName));
+        page.assertLinkWithTextHasCorrectUrl(continueButtonText, "/pages/%s/navigation?option=0".formatted(pageName));
+        assertNavigationRedirectsToCorrectNextPage(pageName, expectedNextPageName);
+    }
+
+    protected void getToDocumentRecommendationScreen() throws Exception {
+        completeFlowFromLandingPageThroughReviewInfo("EA");
+        submitApplication();
+    }
+
+    protected void completeDocumentUploadFlow() throws Exception {
+        var jpgFile = new MockMultipartFile(UPLOADED_JPG_FILE_NAME,
+                                            new FileInputStream(getAbsoluteFilepathString(UPLOADED_JPG_FILE_NAME)));
+        mockMvc.perform(multipart("/submit-documents").file(jpgFile).session(session).with(csrf()))
+                .andExpect(redirectedUrl("/pages/success"));
+        postExpectingSuccess("/submit-documents", "/pages/success", Map.of());
+    }
+
+    protected void deleteOnlyHouseholdMember() throws Exception {
+        getWithQueryParam("householdDeleteWarningPage", "iterationIndex", "0");
+        mockMvc.perform(post("/groups/household/0/delete").with(csrf()).session(session))
+                .andExpect(redirectedUrl("/pages/addHouseholdMembers"));
     }
 }
