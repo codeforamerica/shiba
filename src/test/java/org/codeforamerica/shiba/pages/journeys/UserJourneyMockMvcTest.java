@@ -13,10 +13,10 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.TestUtils.assertPdfFieldEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
-@Tag("journey")
 public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
     @BeforeEach
     protected void setUp() throws Exception {
@@ -103,5 +103,27 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
 
         // When we "hit back", we should be redirected to reviewInfo
         getWithQueryParamAndExpectRedirect("householdDeleteWarningPage", "iterationIndex", "0", "reviewInfo");
+    }
+
+    @Test
+    void shouldValidateContactInfoEmailEvenIfEmailNotSelected() throws Exception {
+        completeFlowFromLandingPageThroughContactInfo("CCAP");
+        // Submitting an invalid email address should keep you on the same page
+        postExpectingFailure("contactInfo", Map.of(
+                "phoneNumber", List.of("7234567890"),
+                "email", List.of("example.com"),
+                "phoneOrEmail", List.of("TEXT")
+        ));
+    }
+
+    @Test
+    void shouldNotShowValidationWarningWhenPressingBackOnFormWithNotEmptyValidationCondition() throws Exception {
+        getToPersonalInfoScreen("CCAP");
+        postExpectingSuccess("personalInfo", Map.of(
+                "firstName", List.of("defaultFirstName"),
+                "lastName", List.of("defaultLastName"),
+                "dateOfBirth", List.of("01", "12", "1928")
+        ));
+        assertFalse(new FormPage(getPage("personalInfo")).hasInputError());
     }
 }

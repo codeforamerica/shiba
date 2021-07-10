@@ -252,7 +252,7 @@ public class AbstractShibaMockMvcTest {
     protected void fillOutContactInfo() throws Exception {
         postExpectingSuccess("contactInfo", Map.of(
                 "phoneNumber", List.of("7234567890"),
-                "email", List.of("some@email.com"),
+                "email", List.of("some@example.com"),
                 "phoneOrEmail", List.of("TEXT")
         ));
     }

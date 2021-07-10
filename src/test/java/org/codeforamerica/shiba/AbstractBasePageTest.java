@@ -199,7 +199,7 @@ public abstract class AbstractBasePageTest {
         completeFlowFromLandingPageThroughContactInfo(programSelections);
 
         testPage.enter("phoneNumber", "7234567890");
-        testPage.enter("email", "some@email.com");
+        testPage.enter("email", "some@example.com");
         testPage.enter("phoneOrEmail", "Text me");
         testPage.clickContinue();
         fillOutAddress();

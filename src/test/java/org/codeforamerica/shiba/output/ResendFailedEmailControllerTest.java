@@ -61,7 +61,7 @@ class ResendFailedEmailControllerTest {
     void shouldResendConfirmationEmail() throws Exception {
 
         var programs = List.of(Program.SNAP);
-        String recipientEmail = "test@email.com";
+        String recipientEmail = "test@example.com";
         String emailContent = "content";
         SnapExpeditedEligibility snapExpeditedEligibility = SnapExpeditedEligibility.ELIGIBLE;
         CcapExpeditedEligibility ccapExpeditedEligibility = CcapExpeditedEligibility.ELIGIBLE;

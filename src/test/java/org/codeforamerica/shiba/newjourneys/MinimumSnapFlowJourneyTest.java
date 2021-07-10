@@ -225,7 +225,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
                              "This application was submitted. A caseworker at Hennepin County will help route your application to your county. For more support with your application, you can call Hennepin County at 612-596-1300.");
         assertCafFieldEquals("FULL_NAME", "Ahmed St. George");
         assertCafFieldEquals("CCAP_EXPEDITED_ELIGIBILITY", "");
-        assertCafFieldEquals("APPLICANT_EMAIL", "some@email.com");
+        assertCafFieldEquals("APPLICANT_EMAIL", "some@example.com");
         assertCafFieldEquals("APPLICANT_PHONE_NUMBER", "(723) 456-7890");
         assertCafFieldEquals("EMAIL_OPTIN", "Off");
         assertCafFieldEquals("PHONE_OPTIN", "Yes");
