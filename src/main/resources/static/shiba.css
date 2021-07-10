@@ -680,7 +680,7 @@ input[type=number] {
     margin-top: 0.1rem;
 }
 
-.logo {
+.logo, .logo:hover {
     color: #E9F6FF;
     text-decoration: none;
     font-weight: bold;
