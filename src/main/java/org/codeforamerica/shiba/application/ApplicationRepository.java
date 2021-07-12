@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.Sentiment;
+import org.codeforamerica.shiba.pages.config.*;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -13,7 +14,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.security.SecureRandom;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.*;
 import java.util.*;
 import java.util.Map.Entry;
@@ -28,20 +29,23 @@ public class ApplicationRepository {
     private final JdbcTemplate jdbcTemplate;
     private final Encryptor<ApplicationData> encryptor;
     private final Clock clock;
+    private final FeatureFlagConfiguration featureFlags;
 
     public ApplicationRepository(JdbcTemplate jdbcTemplate,
                                  Encryptor<ApplicationData> encryptor,
-                                 Clock clock) {
+                                 Clock clock,
+                                 FeatureFlagConfiguration featureFlags) {
         this.jdbcTemplate = jdbcTemplate;
         this.encryptor = encryptor;
         this.clock = clock;
+        this.featureFlags = featureFlags;
     }
 
     @SuppressWarnings("ConstantConditions")
     public String getNextId() {
         int random3DigitNumber = new SecureRandom().nextInt(900) + 100;
-
-        String id = jdbcTemplate.queryForObject("SELECT NEXTVAL('application_id');", String.class);
+        String statement = featureFlags.get("oracle").isOn() ? "SELECT application_id.nextval from dual" : "SELECT NEXTVAL('application_id');";
+        String id = jdbcTemplate.queryForObject(statement, String.class);
         int numberOfZeros = 10 - id.length();
         StringBuilder idBuilder = new StringBuilder();
         idBuilder.append(random3DigitNumber);
@@ -65,18 +69,34 @@ public class ApplicationRepository {
         parameters.put("feedback", application.getFeedback());
 
         var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
-        namedParameterJdbcTemplate.update("UPDATE applications SET " +
-                "completed_at = :completedAt, " +
-                "application_data = :applicationData ::jsonb, " +
-                "county = :county, " +
-                "time_to_complete = :timeToComplete, " +
-                "sentiment = :sentiment, " +
-                "feedback = :feedback, " +
-                "flow = :flow WHERE id = :id", parameters);
-        namedParameterJdbcTemplate.update(
-                "INSERT INTO applications (id, completed_at, application_data, county, time_to_complete, sentiment, feedback, flow) " +
-                        "VALUES (:id, :completedAt, :applicationData ::jsonb, :county, :timeToComplete, :sentiment, :feedback, :flow) " +
-                        "ON CONFLICT DO NOTHING", parameters);
+        if (featureFlags.get("oracle").isOn()) {
+            if (namedParameterJdbcTemplate.update("UPDATE applications SET " +
+                                                          "completed_at = :completedAt, " +
+                                                          "application_data = :applicationData, " +
+                                                          "county = :county, " +
+                                                          "time_to_complete = :timeToComplete, " +
+                                                          "sentiment = :sentiment, " +
+                                                          "feedback = :feedback, " +
+                                                          "flow = :flow WHERE id = :id", parameters) == 0) {
+
+                namedParameterJdbcTemplate.update(
+                        "INSERT INTO applications (id, completed_at, application_data, county, time_to_complete, sentiment, feedback, flow) " +
+                                "VALUES (:id, :completedAt, :applicationData, :county, :timeToComplete, :sentiment, :feedback, :flow)", parameters);
+            }
+        } else { // postgres
+            namedParameterJdbcTemplate.update("UPDATE applications SET " +
+                                                      "completed_at = :completedAt, " +
+                                                      "application_data = :applicationData ::jsonb, " +
+                                                      "county = :county, " +
+                                                      "time_to_complete = :timeToComplete, " +
+                                                      "sentiment = :sentiment, " +
+                                                      "feedback = :feedback, " +
+                                                      "flow = :flow WHERE id = :id", parameters);
+            namedParameterJdbcTemplate.update(
+                    "INSERT INTO applications (id, completed_at, application_data, county, time_to_complete, sentiment, feedback, flow) " +
+                            "VALUES (:id, :completedAt, :applicationData ::jsonb, :county, :timeToComplete, :sentiment, :feedback, :flow) " +
+                            "ON CONFLICT DO NOTHING", parameters);
+        }
         setUpdatedAtTime(application.getId());
     }
 
@@ -256,31 +276,39 @@ public class ApplicationRepository {
 
     @NotNull
     private RowMapper<Application> applicationRowMapper() {
-        return (resultSet, rowNum) ->
-                Application.builder()
-                        .id(resultSet.getString("id"))
-                        .completedAt(convertToZonedDateTime(resultSet.getTimestamp("completed_at")))
-                        .updatedAt(convertToZonedDateTime(resultSet.getTimestamp("updated_at")))
-                        .applicationData(encryptor.decrypt(resultSet.getString("application_data")))
-                        .county(County.valueFor(resultSet.getString("county")))
-                        .timeToComplete(Duration.ofSeconds(resultSet.getLong("time_to_complete")))
-                        .sentiment(Optional.ofNullable(resultSet.getString("sentiment"))
-                                .map(Sentiment::valueOf)
-                                .orElse(null))
-                        .feedback(resultSet.getString("feedback"))
-                        .flow(Optional.ofNullable(resultSet.getString("flow"))
-                                .map(FlowType::valueOf)
-                                .orElse(null))
-                        .cafApplicationStatus(Optional.ofNullable(resultSet.getString("caf_application_status"))
-                                .map(Status::valueFor)
-                                .orElse(null))
-                        .ccapApplicationStatus(Optional.ofNullable(resultSet.getString("ccap_application_status"))
-                                .map(Status::valueFor)
-                                .orElse(null))
-                        .uploadedDocumentApplicationStatus(Optional.ofNullable(resultSet.getString("uploaded_documents_status"))
-                                .map(Status::valueFor)
-                                .orElse(null))
-                        .build();
+        return (resultSet, rowNum) -> {
+            String applicationDataString;
+            if (featureFlags.get("oracle").isOn()) {
+                Blob blob = resultSet.getBlob("application_data");
+                applicationDataString = new String(blob.getBytes(1, (int) blob.length()));
+            } else {
+                applicationDataString = resultSet.getString("application_data");
+            }
+            return Application.builder()
+                    .id(resultSet.getString("id"))
+                    .completedAt(convertToZonedDateTime(resultSet.getTimestamp("completed_at")))
+                    .updatedAt(convertToZonedDateTime(resultSet.getTimestamp("updated_at")))
+                    .applicationData(encryptor.decrypt(applicationDataString))
+                    .county(County.valueFor(resultSet.getString("county")))
+                    .timeToComplete(Duration.ofSeconds(resultSet.getLong("time_to_complete")))
+                    .sentiment(Optional.ofNullable(resultSet.getString("sentiment"))
+                            .map(Sentiment::valueOf)
+                            .orElse(null))
+                    .feedback(resultSet.getString("feedback"))
+                    .flow(Optional.ofNullable(resultSet.getString("flow"))
+                            .map(FlowType::valueOf)
+                            .orElse(null))
+                    .cafApplicationStatus(Optional.ofNullable(resultSet.getString("caf_application_status"))
+                            .map(Status::valueFor)
+                            .orElse(null))
+                    .ccapApplicationStatus(Optional.ofNullable(resultSet.getString("ccap_application_status"))
+                            .map(Status::valueFor)
+                            .orElse(null))
+                    .uploadedDocumentApplicationStatus(Optional.ofNullable(resultSet.getString("uploaded_documents_status"))
+                            .map(Status::valueFor)
+                            .orElse(null))
+                    .build();
+        }
     }
 
 }

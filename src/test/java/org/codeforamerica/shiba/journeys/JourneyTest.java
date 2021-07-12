@@ -73,6 +73,7 @@ abstract class JourneyTest extends AbstractBasePageTest {
         when(featureFlagConfiguration.get("submit-via-email")).thenReturn(FeatureFlag.OFF);
         when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.OFF);
         when(featureFlagConfiguration.get("apply-without-address")).thenReturn(FeatureFlag.OFF);
+        when(featureFlagConfiguration.get("oracle")).thenReturn(FeatureFlag.OFF);
         caf = null;
         ccap = null;
     }
