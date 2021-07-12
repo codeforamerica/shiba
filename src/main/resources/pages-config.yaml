@@ -67,9 +67,9 @@ conditionDefinitions:
     matcher: DOES_NOT_CONTAIN
   - &householdMemberChoseAtLeastOneProgram?
     pageName: householdMemberInfo
-    value: NONE
     input: programs
-    matcher: DOES_NOT_CONTAIN
+    matcher: CONTAINS_STRING_OTHER_THAN
+    value: NONE
   - &householdMemberDidNotChooseCCAP?
     <<: *householdMemberDidNotChooseProgram?
     value: CCAP

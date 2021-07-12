@@ -424,6 +424,13 @@ public class AbstractShibaMockMvcTest {
         assertPageHasInputError(pageName, inputNameWithError);
     }
 
+    protected void postExpectingFailureAndAssertErrorDisplaysOnDifferentInput(String pageName, String inputName,
+                                                                              List<String> values,
+                                                                              String inputNameWithError) throws Exception {
+        postExpectingFailure(pageName, inputName, values);
+        assertPageHasInputError(pageName, inputNameWithError);
+    }
+
     @NotNull
     private Map<String, List<String>> fixInputNamesForParams(Map<String, List<String>> params) {
         return params.entrySet().stream()
@@ -556,10 +563,10 @@ public class AbstractShibaMockMvcTest {
         postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "false");
         fillOutMailingAddress();
         postExpectingNextPageElementText("verifyMailingAddress",
-                "useEnrichedAddress",
-                "true",
-                "mailingAddress-address_street",
-                "smarty street");
+                                         "useEnrichedAddress",
+                                         "true",
+                                         "mailingAddress-address_street",
+                                         "smarty street");
     }
 
     protected void getToPersonalInfoScreen(String... programSelections) throws Exception {

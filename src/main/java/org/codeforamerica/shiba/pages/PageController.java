@@ -146,9 +146,9 @@ public class PageController {
                     .forEach(datasource -> {
                         String key = datasource.getPageName();
                         PageData value = new PageData();
-                        if (datasource.getGroupName() == null) {
+                        if (datasource.getGroupName() == null) { // if datasource is not a subworkflow
                             value.mergeInputDataValues(pagesData.get(datasource.getPageName()));
-                        } else if (subworkflows.containsKey(datasource.getGroupName())) {
+                        } else if (subworkflows.containsKey(datasource.getGroupName())) { // if datasource is a subworkflow
                             subworkflows.get(datasource.getGroupName()).stream()
                                     .map(iteration -> iteration.getPagesData().getPage(datasource.getPageName()))
                                     .forEach(value::mergeInputDataValues);

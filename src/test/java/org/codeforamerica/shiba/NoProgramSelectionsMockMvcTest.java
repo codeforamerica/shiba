@@ -45,4 +45,13 @@ public class NoProgramSelectionsMockMvcTest extends AbstractShibaMockMvcTest {
         fillOutHousemateInfo("SNAP");
         getWithQueryParamAndExpectRedirect("householdList", "option", "0", "preparingMealsTogether");
     }
+
+    @Test
+    void shouldSkipNoProgramsSelectedPageIfSecondHouseholdMemberChoseProgram() throws Exception {
+        completeFlowFromLandingPageThroughReviewInfo("NONE");
+        assertNavigationRedirectsToCorrectNextPage("startHousehold", "householdMemberInfo");
+        fillOutHousemateInfoWithNoProgramsSelected();
+        fillOutHousemateInfo("SNAP");
+        getWithQueryParamAndExpectRedirect("householdList", "option", "0", "preparingMealsTogether");
+    }
 }

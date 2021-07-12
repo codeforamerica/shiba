@@ -9,6 +9,7 @@ public enum ValueMatcher {
     NONE_SELECTED((testValue, ignoredTargetValue) -> testValue.isEmpty()),
     CONTAINS(List::contains),
     NOT_EMPTY((testValue, ignoredTargetValue) -> !String.join("", testValue).isBlank()),
+    CONTAINS_STRING_OTHER_THAN((testValue, targetValue) -> testValue.stream().anyMatch(string -> !string.equals(targetValue))),
     DOES_NOT_CONTAIN((testValue, targetValue) -> !testValue.contains(targetValue)),
     CONTAINS_SUBSTRING((testValue, targetValue) -> testValue.stream().anyMatch(string -> string.contains(targetValue))),
     DOES_NOT_CONTAIN_SUBSTRING((testValue, targetValue) -> testValue.stream().noneMatch(string -> string.contains(targetValue)));
