@@ -1,1 +1,0 @@
-DROP TABLE application_id_counter;

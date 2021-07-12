@@ -8,6 +8,7 @@ spring:
         cachecontrol:
           max-age: 10m
 feature-flag:
+  oracle: off
   apply-without-address: off
   submit-via-email: off
   submit-via-api: off

@@ -1,2 +1,0 @@
-ALTER TABLE research
-ADD COLUMN childcare BOOLEAN;

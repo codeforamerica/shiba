@@ -27,6 +27,7 @@ feature-flag:
   apply-without-address: off
   submit-docs-via-email-for-hennepin: on
   county-ottertail: on
+  oracle: off
 
 mnit-esb:
   max-attempts: 4
