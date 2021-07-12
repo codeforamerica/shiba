@@ -177,7 +177,6 @@ public class AbstractShibaMockMvcTest {
         householdMemberInfo.put("moveToMnDate", List.of("02/18/1950"));
         householdMemberInfo.put("moveToMnPreviousState", List.of("Illinois"));
         postExpectingRedirect("householdMemberInfo", householdMemberInfo, "householdList");
-        getWithQueryParamAndExpectRedirect("householdList", "option", "0", "preparingMealsTogether");
     }
 
     protected void fillOutHousemateInfoWithNoProgramsSelected() throws Exception {

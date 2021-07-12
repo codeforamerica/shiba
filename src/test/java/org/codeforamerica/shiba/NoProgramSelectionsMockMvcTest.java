@@ -43,5 +43,6 @@ public class NoProgramSelectionsMockMvcTest extends AbstractShibaMockMvcTest {
         completeFlowFromLandingPageThroughReviewInfo("NONE");
         assertNavigationRedirectsToCorrectNextPage("startHousehold", "householdMemberInfo");
         fillOutHousemateInfo("SNAP");
+        getWithQueryParamAndExpectRedirect("householdList", "option", "0", "preparingMealsTogether");
     }
 }
