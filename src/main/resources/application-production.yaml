@@ -2,7 +2,11 @@ spring:
   datasource:
     url: ${DATABASE_URL}
     driverClassName: org.postgresql.Driver
-
+  web:
+    resources:
+      cache:
+        cachecontrol:
+          max-age: 2h
 client:
   keystore: src/main/resources/shiba-production.jks
   truststore: src/main/resources/shiba-truststore-production.jks

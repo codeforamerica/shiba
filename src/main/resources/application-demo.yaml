@@ -2,7 +2,11 @@ spring:
   datasource:
     url: ${DATABASE_URL}
     driverClassName: org.postgresql.Driver
-
+  web:
+    resources:
+      cache:
+        cachecontrol:
+          max-age: 10m
 feature-flag:
   apply-without-address: off
   submit-via-email: off
