@@ -11,6 +11,7 @@ import org.codeforamerica.shiba.Program;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.output.ApplicationFile;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
@@ -94,6 +95,8 @@ class MailGunEmailClientTest {
     void tearDown() {
         wireMockServer.stop();
     }
+
+
 
     @Test
     void sendsEmailToTheRecipient() {
@@ -392,6 +395,93 @@ class MailGunEmailClientTest {
                 .withRequestBody(containing(String.format("subject=%s", "Caseworker+CAF+downloaded")))
                 .withRequestBody(containing(String.format("html=%s", emailContent)))
         );
+    }
+
+    @Test
+    void sendResubmitEmailForUploadedDocs(){
+        wireMockServer.stubFor(post(anyUrl()).willReturn(aResponse().withStatus(200)));
+        var applicationData = new ApplicationData();
+        var phoneNumber = "(603) 879-1111";
+        var email = "jane@example.com";
+        var pagesData = new PagesDataBuilder().build(List.of(
+                new PageDataBuilder("matchInfo", Map.of(
+                        "firstName", List.of("Jane"),
+                        "lastName", List.of("Doe"),
+                        "dateOfBirth", List.of("10", "04", "2020"),
+                        "ssn", List.of("123-45-6789"),
+                        "phoneNumber", List.of(phoneNumber),
+                        "email", List.of(email)
+                ))
+        ));
+        applicationData.setPagesData(pagesData);
+
+        ApplicationFile testFile = new ApplicationFile("testfile".getBytes(), "");
+        UploadedDocument doc1 = new UploadedDocument("somefile1", "", "", "", 1000);
+        applicationData.setUploadedDocs(List.of(doc1));
+        Application application = Application.builder()
+                .id("someId")
+                .completedAt(ZonedDateTime.now())
+                .applicationData(applicationData)
+                .county(County.Hennepin)
+                .timeToComplete(null)
+                .flow(FlowType.LATER_DOCS)
+                .build();
+        var emailContent = "content";
+        when(emailContentCreator.createResubmitEmailContent(UPLOADED_DOC, Locale.ENGLISH)).thenReturn(emailContent);
+        when(pdfGenerator.generateForUploadedDocument(any(UploadedDocument.class), anyInt(), any(Application.class), any())).thenReturn(testFile);
+
+        mailGunEmailClient.resubmitFailedEmail("someRecipient", UPLOADED_DOC, application, Locale.ENGLISH);
+
+        wireMockServer.verify(1, postRequestedFor(urlPathEqualTo("/"))
+                .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
+                .withRequestBodyPart(aMultipart()
+                        .withName("from")
+                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withBody(equalTo(senderEmail))
+                        .matchingType(ANY)
+                        .build())
+                .withRequestBodyPart(aMultipart()
+                        .withName("to")
+                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withBody(equalTo(hennepinEmail))
+                        .matchingType(ANY)
+                        .build())
+                .withRequestBodyPart(aMultipart()
+                        .withName("html")
+                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withBody(equalTo(emailContent))
+                        .matchingType(ANY)
+                        .build())
+                .withRequestBodyPart(aMultipart()
+                        .withName("subject")
+                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withBody(containing("Verification docs for Jane Doe"))
+                        .matchingType(ANY)
+                        .build())
+                .withRequestBodyPart(aMultipart()
+                        .withName("attachment")
+                        .withHeader(HttpHeaders.CONTENT_DISPOSITION, containing(String.format("filename=\"%s\"", "someFile1")))
+                        .withHeader(HttpHeaders.CONTENT_TYPE, equalTo(MediaType.APPLICATION_OCTET_STREAM_VALUE))
+                        //.withBody(equalTo())
+                        .matchingType(ANY)
+                        .build()));
+        )
+
+        ArgumentCaptor<Map<String, String>> captor = ArgumentCaptor.forClass(Map.class);
+        verify(emailContentCreator).createHennepinDocUploadsHTML(captor.capture());
+        Map<String, String> actual = captor.getValue();
+        assertThat(actual).containsAllEntriesOf(Map.of(
+                "name", "Jane Doe",
+                "dob", "10/04/2020",
+                "last4SSN", "6789",
+                "phoneNumber", phoneNumber,
+                "email", email));
+
+    }
+
+    @Test
+    void sendResubmitEmailForCAFAndCCAP() {
+
     }
 
     @Test

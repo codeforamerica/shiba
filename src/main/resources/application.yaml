@@ -92,3 +92,7 @@ logging:
     org.springframework.ws.server.MessageTracing.received: DEBUG
 
 pagesConfig: pages-config.yaml
+
+resubmission:
+  interval:
+    milliseconds: 43200000

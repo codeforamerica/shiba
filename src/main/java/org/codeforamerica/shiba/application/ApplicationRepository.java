@@ -14,11 +14,8 @@ import org.springframework.stereotype.Repository;
 import java.security.SecureRandom;
 import java.sql.Timestamp;
 import java.time.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Optional;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -228,5 +225,26 @@ public class ApplicationRepository {
             case CCAP -> "UPDATE applications SET ccap_application_status = :status WHERE id = :id";
             case UPLOADED_DOC -> "UPDATE applications SET uploaded_documents_status = :status WHERE id = :id";
         };
+    }
+
+    public Map<Document,List<String>> getFailedSubmissions() {
+        Map<Document, List<String>> failedSubmissions = new HashMap<>();
+        failedSubmissions.put(Document.CCAP, getFailedCCAPSubmissions());
+        failedSubmissions.put(Document.CAF, getFailedCAFSubmissions());
+        failedSubmissions.put(Document.UPLOADED_DOC, getFailedUploadedDocSubmissions());
+
+        return failedSubmissions;
+    }
+
+    private List<String> getFailedCCAPSubmissions() {
+        return jdbcTemplate.queryForList("SELECT id FROM applications WHERE ccap_application_status = 'delivery_failed' ", String.class);
+    }
+
+    private List<String> getFailedCAFSubmissions(){
+        return jdbcTemplate.queryForList("SELECT id FROM applications WHERE caf_application_status = 'delivery_failed'", String.class);
+    }
+
+    private List<String> getFailedUploadedDocSubmissions(){
+        return jdbcTemplate.queryForList("SELECT id FROM applications WHERE uploaded_documents_status = 'delivery_failed'", String.class);
     }
 }

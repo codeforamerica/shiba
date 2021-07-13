@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.pages.emails;
 
 import org.codeforamerica.shiba.testutilities.PageDataBuilder;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.pages.DocRecommendationMessageService;
@@ -129,6 +130,16 @@ class EmailContentCreatorTest {
         assertThat(laterDocsConfirmationEmailBody).isEqualTo("<html><body>" +
                 "<p>We received your documents for your Minnesota Benefits application. Look out for mail about your case. You may need to complete additional steps.</p>" +
                 "<p>To ask about your application status, find your county's contact information <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\" rel=\"noopener noreferrer\">here</a>.</p>" +
+                "</body></html>");
+    }
+
+    @Test
+    void shouldCreateResubmitEmail(){
+        String resubmitEmailBody = emailContentCreator.createResubmitEmailContent(Document.UPLOADED_DOC, Locale.ENGLISH);
+        assertThat(resubmitEmailBody).isEqualTo("<html><body>" +
+                "<p>Hello</p>" +
+                "<p>Attached is an MNBenefits application due to an error in ESB Submission. It is a(n) uploaded document.</p>" +
+                "<p>The description of the application being sent should correspond to the type of failed document.</p>" +
                 "</body></html>");
     }
 
