@@ -318,7 +318,7 @@ class MailGunEmailClientTest {
     }
 
     @Test
-    void sendResubmitEmailForUploadedDocs() {
+    void sendResubmitEmail() {
         wireMockServer.stubFor(post(anyUrl()).willReturn(aResponse().withStatus(200)));
 
         var fileContent = "testfile";
@@ -344,11 +344,6 @@ class MailGunEmailClientTest {
                 .withRequestBodyPart(attachment("filename=\"" + fileName + "\"", fileContent))
         );
     }
-
-//    @Test
-//    void sendResubmitEmailForCAFAndCCAP() {
-//
-//    }
 
     @Test
     void shouldCCSenderEmail_whenSendingCaseworkerEmail_ifCCFlagIsTrue() {
