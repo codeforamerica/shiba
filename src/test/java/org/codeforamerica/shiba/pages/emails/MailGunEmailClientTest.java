@@ -4,34 +4,32 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.BasicCredentials;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.testutilities.PageDataBuilder;
-import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.codeforamerica.shiba.Program;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
+import org.codeforamerica.shiba.testutilities.PageDataBuilder;
+import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.junit.jupiter.api.*;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.matching.MultipartValuePattern.MatchingType.ANY;
+import static java.util.Locale.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.County.Hennepin;
+import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility.UNDETERMINED;
@@ -41,7 +39,12 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
+import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
+import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 
+@SuppressWarnings("unchecked")
 @SpringBootTest(webEnvironment = NONE, properties = {
         "spring.profiles.active=test"
 })
@@ -109,7 +112,7 @@ class MailGunEmailClientTest {
                 programs,
                 snapExpeditedEligibility,
                 ccapExpeditedEligibility,
-                Locale.ENGLISH)).thenReturn(emailContent);
+                ENGLISH)).thenReturn(emailContent);
 
         wireMockServer.stubFor(post(anyUrl())
                 .willReturn(aResponse().withStatus(200)));
@@ -122,41 +125,42 @@ class MailGunEmailClientTest {
                 List.of(Program.SNAP),
                 snapExpeditedEligibility,
                 ccapExpeditedEligibility,
-                List.of(new ApplicationFile(fileContent.getBytes(), fileName)), Locale.ENGLISH);
+                List.of(new ApplicationFile(fileContent.getBytes(), fileName)), ENGLISH);
 
         wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
                 .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
                 .withRequestBodyPart(aMultipart()
                         .withName("from")
-                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withHeader(CONTENT_TYPE, containing(TEXT_PLAIN_VALUE))
                         .withBody(equalTo(senderEmail))
                         .matchingType(ANY)
                         .build())
                 .withRequestBodyPart(aMultipart()
                         .withName("to")
-                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withHeader(CONTENT_TYPE, containing(TEXT_PLAIN_VALUE))
                         .withBody(equalTo(recipientEmail))
                         .matchingType(ANY)
                         .build())
                 .withRequestBodyPart(aMultipart()
                         .withName("subject")
-                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withHeader(CONTENT_TYPE, containing(TEXT_PLAIN_VALUE))
                         .withBody(equalTo("We received your application"))
                         .matchingType(ANY)
                         .build())
                 .withRequestBodyPart(aMultipart()
                         .withName("html")
-                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withHeader(CONTENT_TYPE, containing(TEXT_PLAIN_VALUE))
                         .withBody(equalTo(emailContent))
                         .matchingType(ANY)
                         .build())
                 .withRequestBodyPart(aMultipart()
                         .withName("attachment")
-                        .withHeader(HttpHeaders.CONTENT_DISPOSITION, containing(String.format("filename=\"%s\"", fileName)))
-                        .withHeader(HttpHeaders.CONTENT_TYPE, equalTo(MediaType.APPLICATION_OCTET_STREAM_VALUE))
+                        .withHeader(CONTENT_DISPOSITION, containing(String.format("filename=\"%s\"", fileName)))
+                        .withHeader(CONTENT_TYPE, equalTo(APPLICATION_OCTET_STREAM_VALUE))
                         .withBody(equalTo(fileContent))
                         .matchingType(ANY)
-                        .build()));
+                        .build())
+        );
     }
 
     @Test
@@ -183,32 +187,32 @@ class MailGunEmailClientTest {
                 .withRequestBody(notMatching(".*name=\"cc\".*"))
                 .withRequestBodyPart(aMultipart()
                         .withName("from")
-                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withHeader(CONTENT_TYPE, containing(TEXT_PLAIN_VALUE))
                         .withBody(equalTo(senderEmail))
                         .matchingType(ANY)
                         .build())
                 .withRequestBodyPart(aMultipart()
                         .withName("to")
-                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withHeader(CONTENT_TYPE, containing(TEXT_PLAIN_VALUE))
                         .withBody(equalTo(recipientEmail))
                         .matchingType(ANY)
                         .build())
                 .withRequestBodyPart(aMultipart()
                         .withName("subject")
-                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withHeader(CONTENT_TYPE, containing(TEXT_PLAIN_VALUE))
                         .withBody(equalTo("MNBenefits.org Application for " + recipientName))
                         .matchingType(ANY)
                         .build())
                 .withRequestBodyPart(aMultipart()
                         .withName("html")
-                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withHeader(CONTENT_TYPE, containing(TEXT_PLAIN_VALUE))
                         .withBody(equalTo(emailContent))
                         .matchingType(ANY)
                         .build())
                 .withRequestBodyPart(aMultipart()
                         .withName("attachment")
-                        .withHeader(HttpHeaders.CONTENT_DISPOSITION, containing(String.format("filename=\"%s\"", fileName)))
-                        .withHeader(HttpHeaders.CONTENT_TYPE, equalTo(MediaType.APPLICATION_OCTET_STREAM_VALUE))
+                        .withHeader(CONTENT_DISPOSITION, containing(String.format("filename=\"%s\"", fileName)))
+                        .withHeader(CONTENT_TYPE, equalTo(APPLICATION_OCTET_STREAM_VALUE))
                         .withBody(equalTo(fileContent))
                         .matchingType(ANY)
                         .build()));
@@ -248,7 +252,7 @@ class MailGunEmailClientTest {
                 .id("someId")
                 .completedAt(ZonedDateTime.now())
                 .applicationData(applicationData)
-                .county(County.Hennepin)
+                .county(Hennepin)
                 .timeToComplete(null)
                 .build();
         var emailContent = "content";
@@ -262,25 +266,25 @@ class MailGunEmailClientTest {
                 .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
                 .withRequestBodyPart(aMultipart()
                         .withName("from")
-                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withHeader(CONTENT_TYPE, containing(TEXT_PLAIN_VALUE))
                         .withBody(equalTo(senderEmail))
                         .matchingType(ANY)
                         .build())
                 .withRequestBodyPart(aMultipart()
                         .withName("to")
-                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withHeader(CONTENT_TYPE, containing(TEXT_PLAIN_VALUE))
                         .withBody(equalTo(hennepinEmail))
                         .matchingType(ANY)
                         .build())
                 .withRequestBodyPart(aMultipart()
                         .withName("html")
-                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withHeader(CONTENT_TYPE, containing(TEXT_PLAIN_VALUE))
                         .withBody(equalTo(emailContent))
                         .matchingType(ANY)
                         .build())
                 .withRequestBodyPart(aMultipart()
                         .withName("subject")
-                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withHeader(CONTENT_TYPE, containing(TEXT_PLAIN_VALUE))
                         .withBody(containing("Verification docs for Jane Doe"))
                         .matchingType(ANY)
                         .build())
@@ -322,9 +326,9 @@ class MailGunEmailClientTest {
                 .id("someId")
                 .completedAt(ZonedDateTime.now())
                 .applicationData(applicationData)
-                .county(County.Hennepin)
+                .county(Hennepin)
                 .timeToComplete(null)
-                .flow(FlowType.LATER_DOCS)
+                .flow(LATER_DOCS)
                 .build();
         var emailContent = "content";
         when(emailContentCreator.createHennepinDocUploadsHTML(anyMap())).thenReturn(emailContent);
@@ -338,25 +342,25 @@ class MailGunEmailClientTest {
                 .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
                 .withRequestBodyPart(aMultipart()
                         .withName("from")
-                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withHeader(CONTENT_TYPE, containing(TEXT_PLAIN_VALUE))
                         .withBody(equalTo(senderEmail))
                         .matchingType(ANY)
                         .build())
                 .withRequestBodyPart(aMultipart()
                         .withName("to")
-                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withHeader(CONTENT_TYPE, containing(TEXT_PLAIN_VALUE))
                         .withBody(equalTo(hennepinEmail))
                         .matchingType(ANY)
                         .build())
                 .withRequestBodyPart(aMultipart()
                         .withName("html")
-                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withHeader(CONTENT_TYPE, containing(TEXT_PLAIN_VALUE))
                         .withBody(equalTo(emailContent))
                         .matchingType(ANY)
                         .build())
                 .withRequestBodyPart(aMultipart()
                         .withName("subject")
-                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withHeader(CONTENT_TYPE, containing(TEXT_PLAIN_VALUE))
                         .withBody(containing("Verification docs for Jane Doe"))
                         .matchingType(ANY)
                         .build())
@@ -380,11 +384,11 @@ class MailGunEmailClientTest {
         String confirmationId = "confirmation id";
         String ip = "some ip";
 
-        when(emailContentCreator.createDownloadCafAlertContent(confirmationId, ip, Locale.ENGLISH)).thenReturn(emailContent);
+        when(emailContentCreator.createDownloadCafAlertContent(confirmationId, ip, ENGLISH)).thenReturn(emailContent);
 
         wireMockServer.stubFor(post(anyUrl()).willReturn(aResponse().withStatus(200)));
 
-        mailGunEmailClient.sendDownloadCafAlertEmail(confirmationId, ip, Locale.ENGLISH);
+        mailGunEmailClient.sendDownloadCafAlertEmail(confirmationId, ip, ENGLISH);
 
         wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
                 .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
@@ -413,73 +417,67 @@ class MailGunEmailClientTest {
         ));
         applicationData.setPagesData(pagesData);
 
-        ApplicationFile testFile = new ApplicationFile("testfile".getBytes(), "");
+        var fileContent = "testfile";
+        ApplicationFile testFile = new ApplicationFile(fileContent.getBytes(), "somefile1");
         UploadedDocument doc1 = new UploadedDocument("somefile1", "", "", "", 1000);
         applicationData.setUploadedDocs(List.of(doc1));
+        var applicationId = "someId";
         Application application = Application.builder()
-                .id("someId")
+                .id(applicationId)
                 .completedAt(ZonedDateTime.now())
                 .applicationData(applicationData)
-                .county(County.Hennepin)
+                .county(Hennepin)
                 .timeToComplete(null)
-                .flow(FlowType.LATER_DOCS)
+                .flow(LATER_DOCS)
                 .build();
         var emailContent = "content";
-        when(emailContentCreator.createResubmitEmailContent(UPLOADED_DOC, Locale.ENGLISH)).thenReturn(emailContent);
+        when(emailContentCreator.createResubmitEmailContent(UPLOADED_DOC, ENGLISH)).thenReturn(emailContent);
         when(pdfGenerator.generateForUploadedDocument(any(UploadedDocument.class), anyInt(), any(Application.class), any())).thenReturn(testFile);
 
-        mailGunEmailClient.resubmitFailedEmail("someRecipient", UPLOADED_DOC, application, Locale.ENGLISH);
+        mailGunEmailClient.resubmitFailedEmail(hennepinEmail, UPLOADED_DOC, testFile, application, ENGLISH);
 
-        wireMockServer.verify(1, postRequestedFor(urlPathEqualTo("/"))
+        verify(emailContentCreator).createResubmitEmailContent(UPLOADED_DOC, ENGLISH);
+
+        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
                 .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
                 .withRequestBodyPart(aMultipart()
                         .withName("from")
-                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withHeader(CONTENT_TYPE, containing(TEXT_PLAIN_VALUE))
                         .withBody(equalTo(senderEmail))
                         .matchingType(ANY)
                         .build())
                 .withRequestBodyPart(aMultipart()
                         .withName("to")
-                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withHeader(CONTENT_TYPE, containing(TEXT_PLAIN_VALUE))
                         .withBody(equalTo(hennepinEmail))
                         .matchingType(ANY)
                         .build())
                 .withRequestBodyPart(aMultipart()
                         .withName("html")
-                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withHeader(CONTENT_TYPE, containing(TEXT_PLAIN_VALUE))
                         .withBody(equalTo(emailContent))
                         .matchingType(ANY)
                         .build())
                 .withRequestBodyPart(aMultipart()
                         .withName("subject")
-                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
-                        .withBody(containing("Verification docs for Jane Doe"))
+                        .withHeader(CONTENT_TYPE, containing(TEXT_PLAIN_VALUE))
+                        .withBody(containing("MN Benefits Application " + applicationId + " Resubmission"))
                         .matchingType(ANY)
                         .build())
                 .withRequestBodyPart(aMultipart()
                         .withName("attachment")
-                        .withHeader(HttpHeaders.CONTENT_DISPOSITION, containing(String.format("filename=\"%s\"", "someFile1")))
-                        .withHeader(HttpHeaders.CONTENT_TYPE, equalTo(MediaType.APPLICATION_OCTET_STREAM_VALUE))
-                        //.withBody(equalTo())
+                        .withHeader(CONTENT_DISPOSITION, containing("filename=\"somefile1\""))
+                        .withHeader(CONTENT_TYPE, equalTo(APPLICATION_OCTET_STREAM_VALUE))
+                        .withBody(equalTo(fileContent))
                         .matchingType(ANY)
-                        .build()));
-
-        ArgumentCaptor<Map<String, String>> captor = ArgumentCaptor.forClass(Map.class);
-        verify(emailContentCreator).createHennepinDocUploadsHTML(captor.capture());
-        Map<String, String> actual = captor.getValue();
-        assertThat(actual).containsAllEntriesOf(Map.of(
-                "name", "Jane Doe",
-                "dob", "10/04/2020",
-                "last4SSN", "6789",
-                "phoneNumber", phoneNumber,
-                "email", email));
-
+                        .build())
+        );
     }
 
-    @Test
-    void sendResubmitEmailForCAFAndCCAP() {
-
-    }
+//    @Test
+//    void sendResubmitEmailForCAFAndCCAP() {
+//
+//    }
 
     @Test
     void shouldCCSenderEmail_whenSendingCaseworkerEmail_ifCCFlagIsTrue() {
@@ -513,7 +511,7 @@ class MailGunEmailClientTest {
                 .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
                 .withRequestBodyPart(aMultipart()
                         .withName("cc")
-                        .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                        .withHeader(CONTENT_TYPE, containing(TEXT_PLAIN_VALUE))
                         .withBody(equalTo(senderEmail))
                         .matchingType(ANY)
                         .build()));
@@ -556,7 +554,7 @@ class MailGunEmailClientTest {
                     programs,
                     snapExpeditedEligibility,
                     ccapExpeditedEligibility,
-                    Locale.ENGLISH)).thenReturn(emailContent);
+                    ENGLISH)).thenReturn(emailContent);
 
             wireMockServer.stubFor(post(anyUrl())
                     .willReturn(aResponse().withStatus(200)));
@@ -569,38 +567,38 @@ class MailGunEmailClientTest {
                     List.of(Program.SNAP),
                     snapExpeditedEligibility,
                     ccapExpeditedEligibility,
-                    List.of(new ApplicationFile(fileContent.getBytes(), fileName)), Locale.ENGLISH);
+                    List.of(new ApplicationFile(fileContent.getBytes(), fileName)), ENGLISH);
 
             wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
                     .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
                     .withRequestBodyPart(aMultipart()
                             .withName("from")
-                            .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                            .withHeader(CONTENT_TYPE, containing(TEXT_PLAIN_VALUE))
                             .withBody(equalTo(senderEmail))
                             .matchingType(ANY)
                             .build())
                     .withRequestBodyPart(aMultipart()
                             .withName("to")
-                            .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                            .withHeader(CONTENT_TYPE, containing(TEXT_PLAIN_VALUE))
                             .withBody(equalTo(recipientEmail))
                             .matchingType(ANY)
                             .build())
                     .withRequestBodyPart(aMultipart()
                             .withName("subject")
-                            .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                            .withHeader(CONTENT_TYPE, containing(TEXT_PLAIN_VALUE))
                             .withBody(equalTo("[DEMO] We received your application"))
                             .matchingType(ANY)
                             .build())
                     .withRequestBodyPart(aMultipart()
                             .withName("html")
-                            .withHeader(HttpHeaders.CONTENT_TYPE, containing(MediaType.TEXT_PLAIN_VALUE))
+                            .withHeader(CONTENT_TYPE, containing(TEXT_PLAIN_VALUE))
                             .withBody(equalTo(emailContent))
                             .matchingType(ANY)
                             .build())
                     .withRequestBodyPart(aMultipart()
                             .withName("attachment")
-                            .withHeader(HttpHeaders.CONTENT_DISPOSITION, containing(String.format("filename=\"%s\"", fileName)))
-                            .withHeader(HttpHeaders.CONTENT_TYPE, equalTo(MediaType.APPLICATION_OCTET_STREAM_VALUE))
+                            .withHeader(CONTENT_DISPOSITION, containing(String.format("filename=\"%s\"", fileName)))
+                            .withHeader(CONTENT_TYPE, equalTo(APPLICATION_OCTET_STREAM_VALUE))
                             .withBody(equalTo(fileContent))
                             .matchingType(ANY)
                             .build()));

@@ -16,26 +16,26 @@ import java.util.Map;
 @Service
 @Slf4j
 public class ResubmissionService {
-
     private final ApplicationRepository applicationRepository;
     private final MailGunEmailClient emailClient;
     private final CountyMap<MnitCountyInformation> countyMap;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public ResubmissionService(ApplicationRepository applicationRepository, MailGunEmailClient emailClient, CountyMap<MnitCountyInformation> countyMap){
-        this.applicationRepository=applicationRepository;
-        this.emailClient=emailClient;
-        this.countyMap=countyMap;
+    public ResubmissionService(ApplicationRepository applicationRepository, MailGunEmailClient emailClient, CountyMap<MnitCountyInformation> countyMap) {
+        this.applicationRepository = applicationRepository;
+        this.emailClient = emailClient;
+        this.countyMap = countyMap;
     }
 
-    @Scheduled(fixedDelayString = "${resubmission.interval.milliseconds}")
-    public void resubmitFailedApplications(){
-        log.info("Now running resubmitted failed application scheduler");
-        Map<Document, List<String>> failedApplications = applicationRepository.getApplicationIdsToResubmit();
-        failedApplications.forEach((k,v) -> v.forEach( id -> {
-            log.info("Now resubmitting failed application id " + id);
-            Application a = applicationRepository.find(id);
-            emailClient.resubmitFailedEmail(countyMap.get(a.getCounty()).getEmail(), k,a, Locale.ENGLISH);
-        }));
-    }
+//    @Scheduled(fixedDelayString = "${resubmission.interval.milliseconds}")
+//    public void resubmitFailedApplications() {
+//        log.info("Now running resubmitted failed application scheduler");
+//        Map<Document, List<String>> failedApplications = applicationRepository.getApplicationIdsToResubmit();
+//        failedApplications.forEach((k, v) -> v.forEach(id -> {
+//            log.info("Now resubmitting failed application id " + id);
+//            Application a = applicationRepository.find(id);
+//
+//            emailClient.resubmitFailedEmail(countyMap.get(a.getCounty()).getEmail(), k, a, Locale.ENGLISH);
+//        }));
+//    }
 }
