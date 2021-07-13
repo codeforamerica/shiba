@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.output.ApplicationFile;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
@@ -13,6 +14,7 @@ import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.util.InMemoryResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -22,6 +24,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
@@ -218,6 +221,27 @@ public class MailGunEmailClient implements EmailClient {
                 .block();
     }
 
+    //@Scheduled(***)
+    @Override
+    public void resubmitFailedEmail(String recipientEmail, Document document, Application application, Locale locale) {
+        MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
+        form.put("from", List.of(senderEmail));
+        form.put("to", List.of(recipientEmail));
+        //form.put("subject", List.of(emailContentCreator.createClientLaterDocsConfirmationEmailSubject(locale)));
+
+        form.put("html", List.of(emailContentCreator.createResubmitEmailContent(document,locale)));
+
+        //TODO: add necessary document to email as attachment
+
+        webClient.post()
+                .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
+                .body(fromMultipartData(form))
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
+
+    }
+
     @NotNull
     private Resource asResource(ApplicationFile applicationFile) {
         return new InMemoryResource(applicationFile.getFileBytes()) {
@@ -227,6 +251,4 @@ public class MailGunEmailClient implements EmailClient {
             }
         };
     }
-
-
 }
