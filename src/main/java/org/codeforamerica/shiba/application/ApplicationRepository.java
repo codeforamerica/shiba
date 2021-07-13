@@ -85,24 +85,14 @@ public class ApplicationRepository {
                     (resultSet, rowNum) ->
                             Application.builder()
                                     .id(id)
-                                    .completedAt(convertToZonedDateTime(resultSet.getTimestamp(
-                                            "completed_at")))
-                                    .updatedAt(convertToZonedDateTime(resultSet.getTimestamp(
-                                            "updated_at")))
-                                    .applicationData(encryptor.decrypt(resultSet.getString(
-                                            "application_data")))
+                                    .completedAt(convertToZonedDateTime(resultSet.getTimestamp("completed_at")))
+                                    .updatedAt(convertToZonedDateTime(resultSet.getTimestamp("updated_at")))
+                                    .applicationData(encryptor.decrypt(resultSet.getString("application_data")))
                                     .county(County.valueFor(resultSet.getString("county")))
-                                    .timeToComplete(Duration.ofSeconds(resultSet.getLong(
-                                            "time_to_complete")))
-                                    .sentiment(Optional.ofNullable(resultSet.getString(
-                                            "sentiment"))
-                                            .map(Sentiment::valueOf)
-                                            .orElse(null))
+                                    .timeToComplete(Duration.ofSeconds(resultSet.getLong("time_to_complete")))
+                                    .sentiment(Optional.ofNullable(resultSet.getString("sentiment")).map(Sentiment::valueOf).orElse(null))
                                     .feedback(resultSet.getString("feedback"))
-                                    .flow(Optional.ofNullable(resultSet.getString("flow"))
-                                            .map(FlowType::valueOf)
-                                            .orElse(null))
-                                    .build(), id);
+                                    .flow(Optional.ofNullable(resultSet.getString("flow")).map(FlowType::valueOf).orElse(null)).build(), id);
 
         } catch (EmptyResultDataAccessException e) {
             log.error("Unable to locate application with ID " + id);
