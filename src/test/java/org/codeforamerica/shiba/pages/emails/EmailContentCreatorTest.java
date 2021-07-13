@@ -133,12 +133,17 @@ class EmailContentCreatorTest {
                 "</body></html>");
     }
 
-    @Test
-    void shouldCreateResubmitEmail(){
-        String resubmitEmailBody = emailContentCreator.createResubmitEmailContent(Document.UPLOADED_DOC, Locale.ENGLISH);
+    @ParameterizedTest
+    @CsvSource(value = {
+            "UPLOADED_DOC,uploaded document",
+            "CAF,CAF application",
+            "CCAP,CCAP application"
+    })
+    void shouldCreateResubmitEmail(Document document, String name) {
+        String resubmitEmailBody = emailContentCreator.createResubmitEmailContent(document, Locale.ENGLISH);
         assertThat(resubmitEmailBody).isEqualTo("<html><body>" +
                 "<p>Hello</p>" +
-                "<p>Attached is an MNBenefits application due to an error in ESB Submission. It is a(n) uploaded document.</p>" +
+                "<p>Attached is an MNBenefits application due to an error in ESB Submission. It is a(n) " + name + ".</p>" +
                 "<p>The description of the application being sent should correspond to the type of failed document.</p>" +
                 "</body></html>");
     }
