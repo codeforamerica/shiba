@@ -186,11 +186,13 @@ pageDefinitions:
     name: prepareToApply
     pageTitle: prepare-to-apply.title
     headerKey: prepare-to-apply.how-this-works
+    contextFragment: prepareToApplyContextFragment
     hasPrimaryButton: false
   - &languagePreferences
     name: languagePreferences
     pageTitle: language-preferences.title
     headerKey: language-preferences.language-preferences
+    contextFragment: languagePreferencesContextFragment
     inputs:
       - name: writtenLanguage
         type: SELECT
@@ -245,6 +247,7 @@ pageDefinitions:
     pageTitle: choose-programs.title
     headerKey: choose-programs.what-do-you-need-help-with-today
     headerHelpMessageKey: general.check-all-that-apply
+    contextFragment: chooseProgramsContextFragment
     inputs:
       - name: programs
         type: CHECKBOX
@@ -288,6 +291,7 @@ pageDefinitions:
     name: personalInfo
     pageTitle: personal-info.title
     headerKey: personal-info.tell-us-about-yourself
+    contextFragment: personalInfoContextFragment
     inputs:
       - name: firstName
         type: TEXT
@@ -399,6 +403,7 @@ pageDefinitions:
     pageTitle: contact-info.title
     headerKey: contact-info.how-can-we-stay-in-touch-with-you
     headerHelpMessageKey: contact-info.most-of-our-communication-will-be-through-mail
+    contextFragment: contactInfoContextFragment
     inputs:
       - name: phoneNumber
         type: PHONE
