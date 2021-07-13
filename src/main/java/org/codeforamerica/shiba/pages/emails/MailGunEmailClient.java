@@ -11,7 +11,6 @@ import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.security.util.InMemoryResource;
@@ -69,7 +68,7 @@ public class MailGunEmailClient implements EmailClient {
     @Override
     public void sendConfirmationEmail(ApplicationData applicationData,
                                       String recipientEmail,
-                                      String confirmationId,
+                                      String applicationId,
                                       List<String> programs,
                                       SnapExpeditedEligibility snapExpeditedEligibility,
                                       CcapExpeditedEligibility ccapExpeditedEligibility,
@@ -86,14 +85,12 @@ public class MailGunEmailClient implements EmailClient {
         form.put("subject", List.of(subject));
         form.put("html", List.of(emailContentCreator.createClientHTML(
                 applicationData,
-                confirmationId,
+                applicationId,
                 programs,
                 snapExpeditedEligibility,
                 ccapExpeditedEligibility,
                 locale)));
         form.put("attachment", applicationFiles.stream().map(this::asResource).collect(Collectors.toList()));
-
-        MDC.put("confirmationId", confirmationId);
 
         webClient.post()
                 .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
@@ -101,12 +98,13 @@ public class MailGunEmailClient implements EmailClient {
                 .retrieve()
                 .bodyToMono(Void.class)
                 .block();
+        log.info("Confirmation email sent for " + applicationId);
     }
 
     @Override
     public void sendCaseWorkerEmail(String recipientEmail,
                                     String recipientName,
-                                    String confirmationId,
+                                    String applicationId,
                                     ApplicationFile applicationFile) {
         MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
         form.put("from", List.of(senderEmail));
@@ -118,14 +116,13 @@ public class MailGunEmailClient implements EmailClient {
         form.put("html", List.of(emailContentCreator.createCaseworkerHTML()));
         form.put("attachment", List.of(asResource(applicationFile)));
 
-        MDC.put("confirmationId", confirmationId);
-
         webClient.post()
                 .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
                 .body(fromMultipartData(form))
                 .retrieve()
                 .bodyToMono(Void.class)
                 .block();
+        log.info("Caseworker email sent for " + applicationFile.getFileName());
     }
 
     @Override
