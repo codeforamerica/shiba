@@ -56,7 +56,8 @@ public class ApplicationRepository {
                 "county", application.getCounty().name()
         ));
         parameters.put("completedAt", convertToTimestamp(application.getCompletedAt()));
-        parameters.put("timeToComplete", Optional.ofNullable(application.getTimeToComplete()).map(Duration::getSeconds).orElse(null));
+        parameters.put("timeToComplete",
+                Optional.ofNullable(application.getTimeToComplete()).map(Duration::getSeconds).orElse(null));
         parameters.put("flow", Optional.ofNullable(application.getFlow()).map(FlowType::name).orElse(null));
         parameters.put("sentiment", Optional.ofNullable(application.getSentiment()).map(Sentiment::name).orElse(null));
         parameters.put("feedback", application.getFeedback());
@@ -73,7 +74,8 @@ public class ApplicationRepository {
         namedParameterJdbcTemplate.update(
                 "INSERT INTO applications (id, completed_at, application_data, county, time_to_complete, sentiment, feedback, flow) " +
                         "VALUES (:id, :completedAt, :applicationData ::jsonb, :county, :timeToComplete, :sentiment, :feedback, :flow) " +
-                        "ON CONFLICT DO NOTHING", parameters);
+                        "ON CONFLICT DO NOTHING",
+                parameters);
         setUpdatedAtTime(application.getId());
     }
 
@@ -83,12 +85,17 @@ public class ApplicationRepository {
                     (resultSet, rowNum) ->
                             Application.builder()
                                     .id(id)
-                                    .completedAt(convertToZonedDateTime(resultSet.getTimestamp("completed_at")))
-                                    .updatedAt(convertToZonedDateTime(resultSet.getTimestamp("updated_at")))
-                                    .applicationData(encryptor.decrypt(resultSet.getString("application_data")))
+                                    .completedAt(convertToZonedDateTime(resultSet.getTimestamp(
+                                            "completed_at")))
+                                    .updatedAt(convertToZonedDateTime(resultSet.getTimestamp(
+                                            "updated_at")))
+                                    .applicationData(encryptor.decrypt(resultSet.getString(
+                                            "application_data")))
                                     .county(County.valueFor(resultSet.getString("county")))
-                                    .timeToComplete(Duration.ofSeconds(resultSet.getLong("time_to_complete")))
-                                    .sentiment(Optional.ofNullable(resultSet.getString("sentiment"))
+                                    .timeToComplete(Duration.ofSeconds(resultSet.getLong(
+                                            "time_to_complete")))
+                                    .sentiment(Optional.ofNullable(resultSet.getString(
+                                            "sentiment"))
                                             .map(Sentiment::valueOf)
                                             .orElse(null))
                                     .feedback(resultSet.getString("feedback"))
@@ -116,12 +123,16 @@ public class ApplicationRepository {
     }
 
     public Duration getMedianTimeToComplete() {
-        Long medianTimeToComplete = jdbcTemplate.queryForObject("SELECT COALESCE(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY time_to_complete), 0) FROM applications  WHERE flow <> 'LATER_DOCS' AND completed_at IS NOT NULL;", Long.class);
+        Long medianTimeToComplete = jdbcTemplate.queryForObject(
+                "SELECT COALESCE(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY time_to_complete), 0) FROM applications  WHERE flow <> 'LATER_DOCS' AND completed_at IS NOT NULL;",
+                Long.class);
         return Duration.ofSeconds(Objects.requireNonNull(medianTimeToComplete));
     }
 
     public Integer count() {
-        return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM applications WHERE flow <> 'LATER_DOCS' AND completed_at IS NOT NULL;", Integer.class);
+        return jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM applications WHERE flow <> 'LATER_DOCS' AND completed_at IS NOT NULL;",
+                Integer.class);
     }
 
     public Map<County, Integer> countByCounty() {
@@ -206,7 +217,7 @@ public class ApplicationRepository {
                 "updated_at = :updatedAt " +
                 "WHERE id = :id", parameters);
     }
-    
+
     public void updateStatus(String id, Document document, Status status) {
 
         Map<String, Object> parameters = Map.of(
@@ -227,7 +238,7 @@ public class ApplicationRepository {
         };
     }
 
-    public Map<Document,List<String>> getFailedSubmissions() {
+    public Map<Document, List<String>> getApplicationIdsToResubmit() {
         Map<Document, List<String>> failedSubmissions = new HashMap<>();
         failedSubmissions.put(Document.CCAP, getFailedCCAPSubmissions());
         failedSubmissions.put(Document.CAF, getFailedCAFSubmissions());
@@ -237,14 +248,19 @@ public class ApplicationRepository {
     }
 
     private List<String> getFailedCCAPSubmissions() {
-        return jdbcTemplate.queryForList("SELECT id FROM applications WHERE ccap_application_status = 'delivery_failed' ", String.class);
+        return jdbcTemplate.queryForList(
+                "SELECT id FROM applications WHERE ccap_application_status = 'delivery_failed' ",
+                String.class);
     }
 
-    private List<String> getFailedCAFSubmissions(){
-        return jdbcTemplate.queryForList("SELECT id FROM applications WHERE caf_application_status = 'delivery_failed'", String.class);
+    private List<String> getFailedCAFSubmissions() {
+        return jdbcTemplate.queryForList("SELECT id FROM applications WHERE caf_application_status = 'delivery_failed'",
+                String.class);
     }
 
-    private List<String> getFailedUploadedDocSubmissions(){
-        return jdbcTemplate.queryForList("SELECT id FROM applications WHERE uploaded_documents_status = 'delivery_failed'", String.class);
+    private List<String> getFailedUploadedDocSubmissions() {
+        return jdbcTemplate.queryForList(
+                "SELECT id FROM applications WHERE uploaded_documents_status = 'delivery_failed'",
+                String.class);
     }
 }
