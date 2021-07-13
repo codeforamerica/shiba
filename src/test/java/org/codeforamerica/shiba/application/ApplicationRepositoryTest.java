@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.application;
 
 import org.codeforamerica.shiba.testutilities.AbstractRepositoryTest;
 import org.codeforamerica.shiba.County;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -165,6 +166,40 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
 
         assertThat(retrievedApplication).usingRecursiveComparison().ignoringFields("fileName", "updatedAt").isEqualTo(updatedApplication);
         assertThat(retrievedApplication.getUpdatedAt()).isBetween(completedAt, expectedUpdatedAt);
+    }
+
+    @Test
+    void shouldReturnApplicationIdsOfFailedSubmissions(){
+        Application application1 = Application.builder()
+                .id("someId1")
+                .applicationData(new ApplicationData())
+                .timeToComplete(Duration.ofSeconds(1))
+                .county(Olmsted)
+                .flow(FlowType.FULL)
+                .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
+                .build();
+        Application application2 = Application.builder()
+                .id("someId2")
+                .applicationData(new ApplicationData())
+                .timeToComplete(Duration.ofSeconds(1))
+                .county(Hennepin)
+                .flow(FlowType.FULL)
+                .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
+                .build();
+
+        applicationRepository.save(application1);
+        applicationRepository.save(application2);
+
+        Document doc1 = Document.CAF;
+        Document doc2 = Document.UPLOADED_DOC;
+
+        applicationRepository.updateStatus("someId1", doc1, Status.DELIVERY_FAILED);
+        applicationRepository.updateStatus("someId2", doc2, Status.DELIVERY_FAILED);
+
+        Map<Document,List<String>> failedApplications = applicationRepository.getFailedSubmissions();
+        assertThat(failedApplications.get(Document.CAF)).isEqualTo(List.of("someId1"));
+        assertThat(failedApplications.get(Document.UPLOADED_DOC)).isEqualTo(List.of("someId2"));
+
     }
 
     @Nested
