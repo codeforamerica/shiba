@@ -11,7 +11,6 @@ import org.codeforamerica.shiba.Program;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.output.ApplicationFile;
-import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
@@ -95,7 +94,6 @@ class MailGunEmailClientTest {
     void tearDown() {
         wireMockServer.stop();
     }
-
 
 
     @Test
@@ -398,7 +396,7 @@ class MailGunEmailClientTest {
     }
 
     @Test
-    void sendResubmitEmailForUploadedDocs(){
+    void sendResubmitEmailForUploadedDocs() {
         wireMockServer.stubFor(post(anyUrl()).willReturn(aResponse().withStatus(200)));
         var applicationData = new ApplicationData();
         var phoneNumber = "(603) 879-1111";
@@ -465,7 +463,6 @@ class MailGunEmailClientTest {
                         //.withBody(equalTo())
                         .matchingType(ANY)
                         .build()));
-        )
 
         ArgumentCaptor<Map<String, String>> captor = ArgumentCaptor.forClass(Map.class);
         verify(emailContentCreator).createHennepinDocUploadsHTML(captor.capture());
