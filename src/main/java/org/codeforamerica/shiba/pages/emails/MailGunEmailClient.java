@@ -14,7 +14,6 @@ import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.util.InMemoryResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -24,7 +23,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
@@ -221,17 +219,14 @@ public class MailGunEmailClient implements EmailClient {
                 .block();
     }
 
-    //@Scheduled(***)
     @Override
-    public void resubmitFailedEmail(String recipientEmail, Document document, Application application, Locale locale) {
+    public void resubmitFailedEmail(String recipientEmail, Document document, ApplicationFile applicationFile, Application application, Locale locale) {
         MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
         form.put("from", List.of(senderEmail));
         form.put("to", List.of(recipientEmail));
-        //form.put("subject", List.of(emailContentCreator.createClientLaterDocsConfirmationEmailSubject(locale)));
-
-        form.put("html", List.of(emailContentCreator.createResubmitEmailContent(document,locale)));
-
-        //TODO: add necessary document to email as attachment
+        form.put("subject", List.of("MN Benefits Application %s Resubmission".formatted(application.getId())));
+        form.put("html", List.of(emailContentCreator.createResubmitEmailContent(document, locale)));
+        form.put("attachment", List.of(asResource(applicationFile)));
 
         webClient.post()
                 .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
@@ -239,7 +234,6 @@ public class MailGunEmailClient implements EmailClient {
                 .retrieve()
                 .bodyToMono(Void.class)
                 .block();
-
     }
 
     @NotNull
