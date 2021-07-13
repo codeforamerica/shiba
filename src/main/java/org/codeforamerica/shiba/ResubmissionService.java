@@ -6,7 +6,6 @@ import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.mnit.MnitCountyInformation;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.emails.MailGunEmailClient;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +31,7 @@ public class ResubmissionService {
     @Scheduled(fixedDelayString = "${resubmission.interval.milliseconds}")
     public void resubmitFailedApplications(){
         log.info("Now running resubmitted failed application scheduler");
-        Map<Document, List<String>> failedApplications = applicationRepository.getFailedSubmissions();
+        Map<Document, List<String>> failedApplications = applicationRepository.getApplicationIdsToResubmit();
         failedApplications.forEach((k,v) -> v.forEach( id -> {
             log.info("Now resubmitting failed application id " + id);
             Application a = applicationRepository.find(id);
