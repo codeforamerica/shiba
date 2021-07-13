@@ -147,10 +147,10 @@ public class ValidationTest extends AbstractFrameworkTest {
 
         @Test
         void shouldTriggerValidation_whenConditionInputOnlyContainsValue() throws Exception {
-            postExpectingFailureAndAssertErrorDisplaysOnDifferentInput("containsStringOtherThanConditionPage",
-                                                                       "triggerInput",
-                                                                       "triggerValue",
-                                                                       "conditionTest");
+            postExpectingNextPageTitle("containsStringOtherThanConditionPage",
+                                       "triggerInput",
+                                       "triggerValue",
+                                       lastPageTitle);
         }
 
         @Test
