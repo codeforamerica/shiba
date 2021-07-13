@@ -204,7 +204,45 @@ class FileNameGeneratorTest {
         String imageName = fileNameGenerator.generateUploadedDocumentName(application, 0, "jpg");
         String pdfName = fileNameGenerator.generateUploadedDocumentName(application, 1, "pdf");
 
-        assertThat(imageName).isEqualTo(String.format("%s_MNB_%s_%s_%s_doc1of2.jpg", countyNPI, "20070909", "235959", applicationId));
-        assertThat(pdfName).isEqualTo(String.format("%s_MNB_%s_%s_%s_doc2of2.pdf", countyNPI, "20070909", "235959", applicationId));
+        assertThat(imageName).isEqualTo(String.format("%s_DOC_%s_%s_%s_doc1of2.jpg", countyNPI, "20070909", "235959", applicationId));
+        assertThat(pdfName).isEqualTo(String.format("%s_DOC_%s_%s_%s_doc2of2.pdf", countyNPI, "20070909", "235959", applicationId));
+    }
+
+    @Test
+    void shouldBeDocInsteadOfMnbIfCountyIsHennepin() {
+        PageData chooseProgramsData = new PageData(Map.of("programs", InputData.builder().value(List.of("SNAP")).build()));
+        ApplicationData applicationData = new ApplicationData();
+        applicationData.setPagesData(new PagesData(Map.of("choosePrograms", chooseProgramsData)));
+
+        String hennepinCountyNPI = "hennepinNPI";
+        County hennepinCounty = Hennepin;
+        String olmstedCountyNPI = "olmstedNPI";
+        County olmstedCounty = County.Olmsted;
+        countyMap.getCounties().put(hennepinCounty, MnitCountyInformation.builder().dhsProviderId(hennepinCountyNPI).build());
+        countyMap.getCounties().put(olmstedCounty, MnitCountyInformation.builder().dhsProviderId(olmstedCountyNPI).build());
+        String applicationId = "someId";
+
+        Application hennepinApplication = defaultApplicationBuilder
+                .id(applicationId)
+                .county(hennepinCounty)
+                .completedAt(ZonedDateTime.ofInstant(Instant.parse("2007-09-10T04:59:59.00Z"), ZoneOffset.UTC))
+                .applicationData(applicationData)
+                .build();
+
+        Application olmstedApplication = defaultApplicationBuilder
+                .id(applicationId)
+                .county(olmstedCounty)
+                .completedAt(ZonedDateTime.ofInstant(Instant.parse("2007-09-10T04:59:59.00Z"), ZoneOffset.UTC))
+                .applicationData(applicationData)
+                .build();
+
+
+        String fileName = fileNameGenerator.generateUploadedDocumentName(hennepinApplication, 0, "pdf");
+        String notHennepinFileName = fileNameGenerator.generateUploadedDocumentName(olmstedApplication, 1, "jpg");
+
+        assertThat(fileName).contains("hennepinNPI_DOC");
+        assertThat(fileName).doesNotContain("hennepinNPI_MNB");
+        assertThat(notHennepinFileName).doesNotContain("olmstedNPI_DOC");
+        assertThat(notHennepinFileName).contains("olmstedNPI_MNB");
     }
 }
