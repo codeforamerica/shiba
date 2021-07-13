@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output.caf;
 
+import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.mnit.MnitCountyInformation;
@@ -42,7 +43,7 @@ public class FileNameGenerator {
     public String generateUploadedDocumentName(Application application, int index, String extension) {
         int size = application.getApplicationData().getUploadedDocs().size();
         index = index + 1;
-        var prefix = getSharedApplicationPrefix(application);
+        var prefix = getUploadedDocumentPrefix(application);
         return "%sdoc%dof%d.%s".formatted(prefix, index, size, extension);
     }
 
@@ -57,6 +58,17 @@ public class FileNameGenerator {
         var time = DateTimeFormatter.ofPattern("HHmmss").format(application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago")));
         var id = application.getId();
         return "%s_MNB_%s_%s_%s_".formatted(dhsProviderId, date, time, id);
+    }
+
+    @NotNull
+    private String getUploadedDocumentPrefix(Application application) {
+        var dhsProviderId = countyMap.get(application.getCounty()).getDhsProviderId();
+        County county = application.getCounty();
+        String fileSource = county == County.Hennepin ? "DOC" : "MNB";
+        var date = DateTimeFormatter.ofPattern("yyyyMMdd").format(application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago")));
+        var time = DateTimeFormatter.ofPattern("HHmmss").format(application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago")));
+        var id = application.getId();
+        return "%s_%s_%s_%s_%s_".formatted(dhsProviderId, fileSource, date, time, id);
     }
 
     private String getProgramCodes(Application application) {
