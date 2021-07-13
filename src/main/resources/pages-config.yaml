@@ -50,6 +50,11 @@ conditionDefinitions:
     pageName: choosePrograms
     input: programs
     matcher: DOES_NOT_CONTAIN
+  - &applicantChoseAtLeastOneProgram?
+    pageName: choosePrograms
+    value: NONE
+    input: programs
+    matcher: DOES_NOT_CONTAIN
   - &applicantDidNotChooseCCAP?
     <<: *applicantDidNotChooseProgram?
     value: CCAP
@@ -60,6 +65,11 @@ conditionDefinitions:
     pageName: householdMemberInfo
     input: programs
     matcher: DOES_NOT_CONTAIN
+  - &householdMemberChoseAtLeastOneProgram?
+    pageName: householdMemberInfo
+    input: programs
+    matcher: CONTAINS_STRING_OTHER_THAN
+    value: NONE
   - &householdMemberDidNotChooseCCAP?
     <<: *householdMemberDidNotChooseProgram?
     value: CCAP
@@ -856,6 +866,10 @@ pageDefinitions:
     name: householdList
     pageTitle: household-list.title
     primaryButtonTextKey: household-list.yes-thats-everyone
+  - &noProgramsSelected
+    name: noProgramsSelected
+    pageTitle: no-programs-selected.title
+    customPage: true
   - &childrenInNeedOfCare
     name: childrenInNeedOfCare
     pageTitle: children-in-need-of-care.title
@@ -2765,11 +2779,24 @@ workflow:
     pageConfiguration: *householdList
     dataMissingRedirect: reviewInfo
     nextPages:
-      - pageName: childrenInNeedOfCare
+      - pageName: noProgramsSelected
       - pageName: householdMemberInfo
     datasources:
       - groupName: household
       - pageName: personalInfo
+  noProgramsSelected:
+    pageConfiguration: *noProgramsSelected
+    nextPages:
+      - pageName: childrenInNeedOfCare
+    skipCondition:
+      logicalOperator: OR
+      conditions:
+        - *applicantChoseAtLeastOneProgram?
+        - *householdMemberChoseAtLeastOneProgram?
+    datasources:
+      - groupName: household
+        pageName: householdMemberInfo
+      - pageName: choosePrograms
   childrenInNeedOfCare:
     pageConfiguration: *childrenInNeedOfCare
     nextPages:

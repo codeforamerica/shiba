@@ -187,6 +187,23 @@ public class AbstractShibaMockMvcTest {
         postExpectingRedirect("householdMemberInfo", householdMemberInfo, "householdList");
     }
 
+    protected void fillOutHousemateInfoWithNoProgramsSelected() throws Exception {
+        Map<String, List<String>> householdMemberInfo = new HashMap<>();
+        householdMemberInfo.put("firstName", List.of("householdMemberFirstName"));
+        householdMemberInfo.put("lastName", List.of("householdMemberLastName"));
+        householdMemberInfo.put("otherName", List.of("houseHoldyMcMemberson"));
+        householdMemberInfo.put("programs", List.of("NONE"));
+        householdMemberInfo.put("relationship", List.of("housemate"));
+        householdMemberInfo.put("dateOfBirth", List.of("09", "14", "1950"));
+        householdMemberInfo.put("ssn", List.of("987654321"));
+        householdMemberInfo.put("maritalStatus", List.of("Never married"));
+        householdMemberInfo.put("sex", List.of("Male"));
+        householdMemberInfo.put("livedInMnWholeLife", List.of("Yes"));
+        householdMemberInfo.put("moveToMnDate", List.of("02/18/1950"));
+        householdMemberInfo.put("moveToMnPreviousState", List.of("Illinois"));
+        postExpectingRedirect("householdMemberInfo", householdMemberInfo, "householdList");
+    }
+
     protected String getFirstHouseholdMemberId() throws Exception {
         return getHouseholdMemberIdAtIndex(0);
     }
@@ -412,6 +429,13 @@ public class AbstractShibaMockMvcTest {
                                                                               String value,
                                                                               String inputNameWithError) throws Exception {
         postExpectingFailure(pageName, inputName, value);
+        assertPageHasInputError(pageName, inputNameWithError);
+    }
+
+    protected void postExpectingFailureAndAssertErrorDisplaysOnDifferentInput(String pageName, String inputName,
+                                                                              List<String> values,
+                                                                              String inputNameWithError) throws Exception {
+        postExpectingFailure(pageName, inputName, values);
         assertPageHasInputError(pageName, inputNameWithError);
     }
 

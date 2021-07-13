@@ -145,6 +145,21 @@ pageDefinitions:
               input: triggerInput
               matcher: DOES_NOT_CONTAIN
               value: triggerValue
+  - &containsStringOtherThanConditionPage
+    name: containsStringOtherThanConditionPage
+    pageTitle: dummy-page-title
+    inputs:
+      - name: triggerInput
+        type: TEXT
+      - name: conditionTest
+        type: TEXT
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: error-message-key
+            condition:
+              input: triggerInput
+              matcher: CONTAINS_STRING_OTHER_THAN
+              value: triggerValue
   - &emptyInputConditionPage
     name: emptyInputConditionPage
     pageTitle: dummy-page-title
@@ -269,6 +284,10 @@ workflow:
       - pageName: lastPage
   doesNotContainConditionPage:
     pageConfiguration: *doesNotContainConditionPage
+    nextPages:
+      - pageName: lastPage
+  containsStringOtherThanConditionPage:
+    pageConfiguration: *containsStringOtherThanConditionPage
     nextPages:
       - pageName: lastPage
   pageWithInputWithMultipleValidations:
