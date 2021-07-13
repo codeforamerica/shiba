@@ -5,6 +5,7 @@ import com.github.tomakehurst.wiremock.client.BasicCredentials;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.github.tomakehurst.wiremock.matching.MultipartValuePattern;
+import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
 import org.codeforamerica.shiba.Program;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationFile;
@@ -15,6 +16,7 @@ import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.codeforamerica.shiba.testutilities.PageDataBuilder;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.*;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,11 +64,12 @@ class MailGunEmailClientTest {
     @Value("${spring.profiles.active}")
     private String activeProfile;
 
-    String mailGunApiKey = "someMailGunApiKey";
-    String senderEmail = "someSenderEmail";
-    String securityEmail = "someSecurityEmail";
-    String auditEmail = "someAuditEmail";
-    String hennepinEmail = "someHennepinEmail";
+    final String mailGunApiKey = "someMailGunApiKey";
+    final String senderEmail = "someSenderEmail";
+    final String securityEmail = "someSecurityEmail";
+    final String auditEmail = "someAuditEmail";
+    final String hennepinEmail = "someHennepinEmail";
+    BasicCredentials credentials;
 
     List<String> programs;
     CcapExpeditedEligibility ccapExpeditedEligibility = UNDETERMINED;
@@ -92,6 +95,7 @@ class MailGunEmailClientTest {
                 pdfGenerator,
                 activeProfile);
         programs = List.of(Program.SNAP);
+        credentials = new BasicCredentials("api", mailGunApiKey);
     }
 
     @AfterEach
@@ -128,8 +132,9 @@ class MailGunEmailClientTest {
                 ccapExpeditedEligibility,
                 List.of(new ApplicationFile(fileContent.getBytes(), fileName)), ENGLISH);
 
-        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
-                .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
+
+        wireMockServer.verify(postToMailgun()
+                .withBasicAuth(credentials)
                 .withRequestBodyPart(requestBodyPart("from", senderEmail))
                 .withRequestBodyPart(requestBodyPart("to", recipientEmail))
                 .withRequestBodyPart(requestBodyPart("subject", "We received your application"))
@@ -145,8 +150,7 @@ class MailGunEmailClientTest {
         String recipientName = "test recipient";
         when(emailContentCreator.createCaseworkerHTML()).thenReturn(emailContent);
 
-        wireMockServer.stubFor(post(anyUrl())
-                .willReturn(aResponse().withStatus(200)));
+        wireMockServer.stubFor(post(anyUrl()).willReturn(aResponse().withStatus(200)));
 
         String fileContent = "someContent";
         String fileName = "someFileName";
@@ -157,8 +161,8 @@ class MailGunEmailClientTest {
                 new ApplicationFile(fileContent.getBytes(), fileName)
         );
 
-        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
-                .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
+        wireMockServer.verify(postToMailgun()
+                .withBasicAuth(credentials)
                 .withRequestBody(notMatching(".*name=\"cc\".*"))
                 .withRequestBodyPart(requestBodyPart("from", senderEmail))
                 .withRequestBodyPart(requestBodyPart("to", recipientEmail))
@@ -211,7 +215,7 @@ class MailGunEmailClientTest {
 
         mailGunEmailClient.sendHennepinDocUploadsEmails(application);
 
-        wireMockServer.verify(2, postRequestedFor(urlPathEqualTo("/"))
+        wireMockServer.verify(2, postToMailgun()
                 .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
                 .withRequestBodyPart(requestBodyPart("from", senderEmail))
                 .withRequestBodyPart(requestBodyPart("to", hennepinEmail))
@@ -272,8 +276,8 @@ class MailGunEmailClientTest {
 
         mailGunEmailClient.sendHennepinDocUploadsEmails(application);
 
-        wireMockServer.verify(2, postRequestedFor(urlPathEqualTo("/"))
-                .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
+        wireMockServer.verify(2, postToMailgun()
+                .withBasicAuth(credentials)
                 .withRequestBodyPart(requestBodyPart("from", senderEmail))
                 .withRequestBodyPart(requestBodyPart("to", hennepinEmail))
                 .withRequestBodyPart(requestBodyPart("html", emailContent))
@@ -309,8 +313,8 @@ class MailGunEmailClientTest {
 
         mailGunEmailClient.sendDownloadCafAlertEmail(confirmationId, ip, ENGLISH);
 
-        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
-                .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
+        wireMockServer.verify(postToMailgun()
+                .withBasicAuth(credentials)
                 .withRequestBody(containing(String.format("from=%s", securityEmail)))
                 .withRequestBody(containing(String.format("to=%s", auditEmail)))
                 .withRequestBody(containing(String.format("subject=%s", "Caseworker+CAF+downloaded")))
@@ -357,8 +361,8 @@ class MailGunEmailClientTest {
 
         verify(emailContentCreator).createResubmitEmailContent(UPLOADED_DOC, ENGLISH);
 
-        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
-                .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
+        wireMockServer.verify(postToMailgun()
+                .withBasicAuth(credentials)
                 .withRequestBodyPart(requestBodyPart("from", senderEmail))
                 .withRequestBodyPart(requestBodyPart("to", hennepinEmail))
                 .withRequestBodyPart(requestBodyPart("html", emailContent))
@@ -367,12 +371,10 @@ class MailGunEmailClientTest {
         );
     }
 
-
 //    @Test
 //    void sendResubmitEmailForCAFAndCCAP() {
 //
 //    }
-
 
     @Test
     void shouldCCSenderEmail_whenSendingCaseworkerEmail_ifCCFlagIsTrue() {
@@ -402,8 +404,8 @@ class MailGunEmailClientTest {
                 new ApplicationFile(fileContent.getBytes(), fileName)
         );
 
-        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
-                .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
+        wireMockServer.verify(postToMailgun()
+                .withBasicAuth(credentials)
                 .withRequestBodyPart(requestBodyPart("cc", senderEmail)));
     }
 
@@ -460,8 +462,8 @@ class MailGunEmailClientTest {
                     ccapExpeditedEligibility,
                     List.of(new ApplicationFile(fileContent.getBytes(), fileName)), ENGLISH);
 
-            wireMockServer.verify(postRequestedFor(urlPathEqualTo("/"))
-                    .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
+            wireMockServer.verify(postToMailgun()
+                    .withBasicAuth(credentials)
                     .withRequestBodyPart(requestBodyPart("from", senderEmail))
                     .withRequestBodyPart(requestBodyPart("to", recipientEmail))
                     .withRequestBodyPart(requestBodyPart("subject", "[DEMO] We received your application"))
@@ -480,12 +482,16 @@ class MailGunEmailClientTest {
     }
 
     private MultipartValuePattern attachment(String contentDisposition, String fileContent) {
-        return aMultipart()
-                .withName("attachment")
+        return aMultipart("attachment")
                 .withHeader(CONTENT_DISPOSITION, containing(contentDisposition))
                 .withHeader(CONTENT_TYPE, equalTo(APPLICATION_OCTET_STREAM_VALUE))
                 .withBody(equalTo(fileContent))
                 .matchingType(ANY)
                 .build();
+    }
+
+    @NotNull
+    private RequestPatternBuilder postToMailgun() {
+        return postRequestedFor(urlPathEqualTo("/"));
     }
 }
