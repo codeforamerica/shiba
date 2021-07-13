@@ -27,7 +27,7 @@ public class NoProgramSelectionsMockMvcTest extends AbstractShibaMockMvcTest {
         completeFlowFromLandingPageThroughReviewInfo("NONE");
         assertNavigationRedirectsToCorrectNextPage("startHousehold", "householdMemberInfo");
         fillOutHousemateInfoWithNoProgramsSelected();
-        getWithQueryParamAndExpectRedirect("householdList", "option", "0", "noProgramsSelected");
+        getNavigationPageWithQueryParamAndExpectRedirect("householdList", "option", "0", "noProgramsSelected");
     }
 
     @Test
@@ -35,7 +35,7 @@ public class NoProgramSelectionsMockMvcTest extends AbstractShibaMockMvcTest {
         completeFlowFromLandingPageThroughReviewInfo("CCAP");
         assertNavigationRedirectsToCorrectNextPage("startHousehold", "householdMemberInfo");
         fillOutHousemateInfoWithNoProgramsSelected();
-        getWithQueryParamAndExpectRedirect("householdList", "option", "0", "childrenInNeedOfCare");
+        getNavigationPageWithQueryParamAndExpectRedirect("householdList", "option", "0", "childrenInNeedOfCare");
     }
 
     @Test
@@ -43,7 +43,7 @@ public class NoProgramSelectionsMockMvcTest extends AbstractShibaMockMvcTest {
         completeFlowFromLandingPageThroughReviewInfo("NONE");
         assertNavigationRedirectsToCorrectNextPage("startHousehold", "householdMemberInfo");
         fillOutHousemateInfo("SNAP");
-        getWithQueryParamAndExpectRedirect("householdList", "option", "0", "preparingMealsTogether");
+        getNavigationPageWithQueryParamAndExpectRedirect("householdList", "option", "0", "preparingMealsTogether");
     }
 
     @Test
@@ -52,6 +52,6 @@ public class NoProgramSelectionsMockMvcTest extends AbstractShibaMockMvcTest {
         assertNavigationRedirectsToCorrectNextPage("startHousehold", "householdMemberInfo");
         fillOutHousemateInfoWithNoProgramsSelected();
         fillOutHousemateInfo("SNAP");
-        getWithQueryParamAndExpectRedirect("householdList", "option", "0", "preparingMealsTogether");
+        getNavigationPageWithQueryParamAndExpectRedirect("householdList", "option", "0", "preparingMealsTogether");
     }
 }
