@@ -53,6 +53,7 @@ public abstract class AbstractBasePageTest {
     protected static final String PROGRAM_GRH = "Housing Support (GRH)";
     protected static final String PROGRAM_CCAP = "Child Care Assistance";
     protected static final String PROGRAM_EA = "Emergency Assistance";
+    protected static final String PROGRAM_NONE = "None of the above";
 
     private static final String UPLOADED_JPG_FILE_NAME = "shiba+file.jpg";
     private static final String UPLOADED_PDF_NAME = "test-caf.pdf";

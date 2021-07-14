@@ -223,6 +223,8 @@ public class Page {
         return driver.findElement(By.id(name)).getText();
     }
 
+    public WebElement findElementById(String id) { return driver.findElementById(id); }
+
     public void clickElementById(String id) {
         WebElement inputToSelect = driver.findElementById(id);
         inputToSelect.click();
