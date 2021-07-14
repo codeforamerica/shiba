@@ -56,8 +56,7 @@ public class ApplicationRepository {
                 "county", application.getCounty().name()
         ));
         parameters.put("completedAt", convertToTimestamp(application.getCompletedAt()));
-        parameters.put("timeToComplete",
-                Optional.ofNullable(application.getTimeToComplete()).map(Duration::getSeconds).orElse(null));
+        parameters.put("timeToComplete", Optional.ofNullable(application.getTimeToComplete()).map(Duration::getSeconds).orElse(null));
         parameters.put("flow", Optional.ofNullable(application.getFlow()).map(FlowType::name).orElse(null));
         parameters.put("sentiment", Optional.ofNullable(application.getSentiment()).map(Sentiment::name).orElse(null));
         parameters.put("feedback", application.getFeedback());
@@ -74,8 +73,7 @@ public class ApplicationRepository {
         namedParameterJdbcTemplate.update(
                 "INSERT INTO applications (id, completed_at, application_data, county, time_to_complete, sentiment, feedback, flow) " +
                         "VALUES (:id, :completedAt, :applicationData ::jsonb, :county, :timeToComplete, :sentiment, :feedback, :flow) " +
-                        "ON CONFLICT DO NOTHING",
-                parameters);
+                        "ON CONFLICT DO NOTHING", parameters);
         setUpdatedAtTime(application.getId());
     }
 
@@ -90,10 +88,14 @@ public class ApplicationRepository {
                                     .applicationData(encryptor.decrypt(resultSet.getString("application_data")))
                                     .county(County.valueFor(resultSet.getString("county")))
                                     .timeToComplete(Duration.ofSeconds(resultSet.getLong("time_to_complete")))
-                                    .sentiment(Optional.ofNullable(resultSet.getString("sentiment")).map(Sentiment::valueOf).orElse(null))
+                                    .sentiment(Optional.ofNullable(resultSet.getString("sentiment"))
+                                            .map(Sentiment::valueOf)
+                                            .orElse(null))
                                     .feedback(resultSet.getString("feedback"))
-                                    .flow(Optional.ofNullable(resultSet.getString("flow")).map(FlowType::valueOf).orElse(null)).build(), id);
-
+                                    .flow(Optional.ofNullable(resultSet.getString("flow"))
+                                            .map(FlowType::valueOf)
+                                            .orElse(null))
+                                    .build(), id);
         } catch (EmptyResultDataAccessException e) {
             log.error("Unable to locate application with ID " + id);
             throw e;
@@ -113,16 +115,12 @@ public class ApplicationRepository {
     }
 
     public Duration getMedianTimeToComplete() {
-        Long medianTimeToComplete = jdbcTemplate.queryForObject(
-                "SELECT COALESCE(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY time_to_complete), 0) FROM applications  WHERE flow <> 'LATER_DOCS' AND completed_at IS NOT NULL;",
-                Long.class);
+        Long medianTimeToComplete = jdbcTemplate.queryForObject("SELECT COALESCE(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY time_to_complete), 0) FROM applications  WHERE flow <> 'LATER_DOCS' AND completed_at IS NOT NULL;", Long.class);
         return Duration.ofSeconds(Objects.requireNonNull(medianTimeToComplete));
     }
 
     public Integer count() {
-        return jdbcTemplate.queryForObject(
-                "SELECT COUNT(*) FROM applications WHERE flow <> 'LATER_DOCS' AND completed_at IS NOT NULL;",
-                Integer.class);
+        return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM applications WHERE flow <> 'LATER_DOCS' AND completed_at IS NOT NULL;", Integer.class);
     }
 
     public Map<County, Integer> countByCounty() {
