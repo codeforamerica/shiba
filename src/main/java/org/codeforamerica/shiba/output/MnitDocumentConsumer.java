@@ -13,6 +13,7 @@ import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;

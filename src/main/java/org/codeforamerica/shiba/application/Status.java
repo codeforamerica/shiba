@@ -4,7 +4,8 @@ public enum Status {
     IN_PROGRESS("in_progress"),
     SENDING("sending"),
     DELIVERED("delivered"),
-    DELIVERY_FAILED("delivery_failed");
+    DELIVERY_FAILED("delivery_failed"),
+    RESUBMISSION_FAILED("resubmission_failed");
 
     private final String displayName;
 
