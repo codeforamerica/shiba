@@ -232,6 +232,7 @@ public class ApplicationRepository {
         failedSubmissions.put(Document.CAF, getFailedCAFSubmissions());
         failedSubmissions.put(Document.UPLOADED_DOC, getFailedUploadedDocSubmissions());
 
+        // TODO also get in_progress submissions that have been in progress too long
         return failedSubmissions;
     }
 

@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
@@ -44,11 +45,20 @@ public class ResubmissionService {
             log.info("Resubmitting " + document.name() + "(s) for application id " + id);
             Application application = applicationRepository.find(id);
             var countyEmail = countyMap.get(application.getCounty()).getEmail();
-            if (document.equals(UPLOADED_DOC)) {
-                resubmitUploadedDocumentsForApplication(document, application, countyEmail);
-            } else {
-                var applicationFile = pdfGenerator.generate(application, document, CASEWORKER);
-                emailClient.resubmitFailedEmail(countyEmail, document, applicationFile, application, Locale.ENGLISH);
+            try {
+
+                if (document.equals(UPLOADED_DOC)) {
+                    resubmitUploadedDocumentsForApplication(document, application, countyEmail);
+                } else {
+                    var applicationFile = pdfGenerator.generate(application, document, CASEWORKER);
+                    emailClient.resubmitFailedEmail(countyEmail, document, applicationFile, application, Locale.ENGLISH);
+                }
+
+                applicationRepository.updateStatus(id, document, DELIVERED);
+            } catch (Exception e ) {
+                log.error("Failed to resubmit application " + id + " via email");
+                // status is probably still failed here????
+                // this should trigger an alert to the shiba devs that manual intervention is required
             }
         }));
     }
