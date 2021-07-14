@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
@@ -91,7 +92,7 @@ public class MailGunEmailClient implements EmailClient {
                 snapExpeditedEligibility,
                 ccapExpeditedEligibility,
                 locale)));
-        form.put("attachment", applicationFiles.stream().map(this::asResource).collect(Collectors.toList()));
+        form.put("attachment", applicationFiles.stream().map(this::asResource).collect(toList()));
 
         webClient.post()
                 .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
@@ -224,6 +225,7 @@ public class MailGunEmailClient implements EmailClient {
         MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
         form.put("from", List.of(senderEmail));
         form.put("to", List.of(recipientEmail));
+        form.put("cc", List.of("mnbenefits+resubmission@codeforamerica.org"));
         form.put("subject", List.of("MN Benefits Application %s Resubmission".formatted(application.getId())));
         form.put("html", List.of(emailContentCreator.createResubmitEmailContent(document, locale)));
         form.put("attachment", List.of(asResource(applicationFile)));
