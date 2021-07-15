@@ -44,6 +44,7 @@ public class MailGunEmailClient implements EmailClient {
     private final WebClient webClient;
     private final PdfGenerator pdfGenerator;
     private final String activeProfile;
+    private final String resubmissionEmail;
 
     public MailGunEmailClient(@Value("${sender-email}") String senderEmail,
                               @Value("${security-email}") String securityEmail,
@@ -53,6 +54,7 @@ public class MailGunEmailClient implements EmailClient {
                               @Value("${mail-gun.api-key}") String mailGunApiKey,
                               EmailContentCreator emailContentCreator,
                               @Value("${mail-gun.shouldCC}") boolean shouldCC,
+                              @Value("${resubmission-email}") String resubmissionEmail,
                               PdfGenerator pdfGenerator,
                               @Value("${spring.profiles.active:Unknown}") String activeProfile) {
         this.senderEmail = senderEmail;
@@ -65,6 +67,7 @@ public class MailGunEmailClient implements EmailClient {
         this.webClient = WebClient.builder().baseUrl(mailGunUrl).build();
         this.pdfGenerator = pdfGenerator;
         this.activeProfile = activeProfile;
+        this.resubmissionEmail = resubmissionEmail;
     }
 
     @Override
@@ -226,7 +229,7 @@ public class MailGunEmailClient implements EmailClient {
         form.put("from", List.of(senderEmail));
         form.put("to", List.of(recipientEmail));
         if (shouldCC) {
-            form.put("cc", List.of(senderEmail));
+            form.put("cc", List.of(resubmissionEmail));
         }
         form.put("subject", List.of("MN Benefits Application %s Resubmission".formatted(application.getId())));
         form.put("html", List.of(emailContentCreator.createResubmitEmailContent(document, locale)));
