@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.application;
 import org.codeforamerica.shiba.AbstractRepositoryTest;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.pages.Sentiment;
+import org.codeforamerica.shiba.pages.config.*;
 import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -32,6 +33,14 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
 
     @MockBean
     private Clock clock;
+
+    @MockBean
+    private FeatureFlagConfiguration featureFlags;
+
+    @BeforeEach
+    void setUp() {
+        when(featureFlags.get("oracle")).thenReturn(FeatureFlag.OFF);
+    }
 
     @Test
     void shouldGenerateIdForNextApplication() {
@@ -173,11 +182,13 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
         @SuppressWarnings("unchecked")
         Encryptor<ApplicationData> mockEncryptor = mock(Encryptor.class);
         String jsonData = "\"{here: 'is the encrypted data'}\"";
+        FeatureFlagConfiguration featureFlags = mock(FeatureFlagConfiguration.class);
 
         @BeforeEach
         void setUp() {
-            applicationRepositoryWithMockEncryptor = new ApplicationRepository(jdbcTemplate, mockEncryptor, clock);
+            applicationRepositoryWithMockEncryptor = new ApplicationRepository(jdbcTemplate, mockEncryptor, clock, featureFlags);
             when(mockEncryptor.encrypt(any())).thenReturn(jsonData);
+            when(featureFlags.get("oracle")).thenReturn(FeatureFlag.OFF);
         }
 
         @Test

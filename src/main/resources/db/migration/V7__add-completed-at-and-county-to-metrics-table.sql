@@ -1,5 +1,0 @@
-ALTER TABLE application_metrics
-ADD COLUMN county VARCHAR NOT NULL DEFAULT 'OTHER';
-
-ALTER TABLE application_metrics
-ADD COLUMN completed_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now();
