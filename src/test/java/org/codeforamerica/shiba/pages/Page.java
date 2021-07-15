@@ -4,8 +4,10 @@ import io.percy.selenium.Percy;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
+
 import java.util.List;
 import java.util.stream.Collectors;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class Page {
@@ -211,19 +213,22 @@ public class Page {
                 .orElseThrow();
     }
 
-    public WebElement getInputError(String inputName) {
-        return driver.findElement(By.cssSelector(String.format("input[name='%s[]'] ~ p.text--error", inputName)));
-    }
-
     public boolean hasInputError(String inputName) {
         return !driver.findElements(By.cssSelector(String.format("input[name='%s[]'] ~ p.text--error", inputName))).isEmpty();
+    }
+
+    public boolean hasErrorText(String errorMessage) {
+        return driver.findElements(By.cssSelector("p.text--error > span"))
+                .stream().anyMatch(webElement -> webElement.getText().equals(errorMessage));
     }
 
     public String findElementTextByName(String name) {
         return driver.findElement(By.id(name)).getText();
     }
 
-    public WebElement findElementById(String id) { return driver.findElementById(id); }
+    public WebElement findElementById(String id) {
+        return driver.findElementById(id);
+    }
 
     public void clickElementById(String id) {
         WebElement inputToSelect = driver.findElementById(id);

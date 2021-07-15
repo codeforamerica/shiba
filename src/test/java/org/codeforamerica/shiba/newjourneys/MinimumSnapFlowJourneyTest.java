@@ -52,12 +52,18 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         assertThat(testPage.hasInputError("streetAddress")).isTrue(); // verify cleared previous inputs
         testPage.enter("isHomeless", "I don't have a permanent address"); // check
         testPage.clickContinue();
-        
-        testPage.clickLink("I will pick up my mail at a post office near me.");
-        assertThat(testPage.getTitle()).isEqualTo("City and zip");
-        testPage.goBack();
+
+        // General Delivery
+        testPage.clickLink("I will pick up mail at a General Delivery post office near me.");
+        assertThat(testPage.getTitle()).isEqualTo("City for General Delivery");
+        testPage.clickContinue(); // Error on "Continue" without selecting a city
+        assertThat(testPage.hasErrorText("Make sure to provide a city")).isTrue();
+        testPage.selectFromDropdown("whatIsTheCity[]", "Ada");
+        testPage.clickContinue();
+        assertThat(testPage.getTitle()).isEqualTo("Mailing address"); // TODO update to general delivery review page
 
         // The county will need a place to send you mail over the next 3 months.
+        navigateTo("whereToSendMail");
         testPage.clickButton("I have a place to get mail");
 
         // Where can the county send your mail? (accept the smarty streets enriched address)

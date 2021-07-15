@@ -7,9 +7,9 @@ import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
+import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
 import org.codeforamerica.shiba.configurations.ClockConfiguration;
 import org.codeforamerica.shiba.documents.CombinedDocumentRepositoryService;
-import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.pages.config.ApplicationConfigurationFactoryAppConfig;
@@ -54,6 +54,8 @@ public class AbstractPageControllerTest {
     protected ApplicationEnrichment applicationEnrichment;
     @MockBean
     protected CountyParser countyParser;
+    @MockBean
+    protected CityInfoConfiguration cityInfoConfiguration;
     @MockBean
     protected FeatureFlagConfiguration featureFlagConfiguration;
     @MockBean

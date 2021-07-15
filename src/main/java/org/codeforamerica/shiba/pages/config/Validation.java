@@ -44,7 +44,10 @@ public enum Validation {
     MONEY(strings -> String.join("", strings).matches("^(\\d{1,3},(\\d{3},)*\\d{3}|\\d+)(\\.\\d{1,2})?")),
     NUMBER(strings -> strings.get(0).trim().matches("\\d*")),
     EMAIL(strings -> String.join("", strings).trim().matches("[a-zA-Z0-9!#$%&'*+=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?")),
-    COUNTY(strings -> !String.join("", strings).equals("SelectYourCounty"));
+    COUNTY(strings -> !String.join("", strings).equals("SelectYourCounty")),
+    CITY(strings -> {
+        return !String.join("", strings).equals("SelectYourCity");
+    });
 
     private final Predicate<List<String>> rule;
 
