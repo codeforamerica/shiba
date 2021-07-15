@@ -57,6 +57,7 @@ public class ResubmissionService {
                     emailClient.resubmitFailedEmail(countyEmail, document, applicationFile, application, Locale.ENGLISH);
                 }
                 applicationRepository.updateStatus(id, document, DELIVERED);
+                log.info("Resubmitted " + document.name() + "(s) for application id " + id);
             } catch (Exception e) {
                 log.error("Failed to resubmit application " + id + " via email");
                 applicationRepository.updateStatus(id, document, RESUBMISSION_FAILED);
