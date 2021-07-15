@@ -10,7 +10,6 @@ import org.openqa.selenium.WebElement;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,6 +58,15 @@ public class FullFlowJourneyTest extends JourneyTest {
         testPage.enter("moveToMnPreviousState", "Illinois");
         testPage.enter("relationship", "my child");
         testPage.enter("programs", PROGRAM_CCAP);
+        // Assert that the programs follow up questions are shown when a program is selected
+        WebElement programsFollowUp = testPage.findElementById("programs-follow-up");
+        assertThat(programsFollowUp.getCssValue("display")).isEqualTo("block");
+        // Assert that the programs follow up is hidden when none is selected
+        testPage.enter("programs", PROGRAM_NONE);
+        assertThat(programsFollowUp.getCssValue("display")).isEqualTo("none");
+        testPage.enter("programs", PROGRAM_CCAP);
+        // Assert that the programs follow up shows again when a program is selected after having selected none
+        assertThat(programsFollowUp.getCssValue("display")).isEqualTo("block");
         testPage.enter("ssn", "987654321");
         testPage.clickContinue();
 

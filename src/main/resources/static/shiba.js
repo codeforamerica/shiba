@@ -61,10 +61,14 @@ var noneOfTheAbove = (function() {
             $noneCheckbox.click(function(e) {
                 $otherCheckboxes.prop('checked', false);
                 $otherCheckboxes.parent().removeClass('is-selected');
-                if (this.checked)
+                if (this.checked) {
                     $('#choose-none-warning').removeClass("hidden");
-                else
+                    // Hide the follow up question elements when None of the above is checked
+                    $('.question-with-follow-up__follow-up').hide();
+                }
+                else {
                     $('#choose-none-warning').addClass("hidden");
+                }
             });
         }
     };
