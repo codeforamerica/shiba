@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.pages.emails;
 
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationFile;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.caf.*;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 
@@ -28,4 +29,6 @@ public interface EmailClient {
     void sendHennepinDocUploadsEmails(Application application);
 
     void sendLaterDocsConfirmationEmail(String recipientEmail, Locale locale);
+
+    void resubmitFailedEmail(String recipientEmail, Document document, ApplicationFile applicationFile, Application application, Locale locale);
 }
