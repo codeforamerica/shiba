@@ -69,10 +69,18 @@ cityToZipAndCountyMapping:
     displayName: Anoka
     zipcode: 55303
     county: Anoka
+  Apple-Valley:
+    displayName: Apple Valley
+    zipcode: 55124
+    county: Dakota
   Appleton:
     displayName: Appleton
     zipcode: 56208
     county: Swift
+  Arden-Hills:
+    displayName: Arden Hills
+    zipcode: 55112
+    county: Ramsey
   Argyle:
     displayName: Argyle
     zipcode: 56713
@@ -217,6 +225,10 @@ cityToZipAndCountyMapping:
     displayName: Bigfork
     zipcode: 56628
     county: Itasca
+  Birchwood:
+    displayName: Birchwood
+    zipcode: 55110
+    county: Ramsey
   Bird-Island:
     displayName: Bird Island
     zipcode: 55310
@@ -229,6 +241,26 @@ cityToZipAndCountyMapping:
     displayName: Blackduck
     zipcode: 56630
     county: Beltrami
+  Blaine:
+    displayName: Blaine
+    zipcode: 55014
+    county: Anoka
+  Bloomington:
+    displayName: Bloomington
+    zipcode: 55420
+    county: Hennepin
+  Breezy-Point:
+    displayName: Breezy Point
+    zipcode: 56472
+    county: Crow Wing
+  Brooklyn-Center:
+    displayName: Brooklyn Center
+    zipcode: 55428
+    county: Hennepin
+  Brooklyn-Park:
+    displayName: Brooklyn Park
+    zipcode: 55428
+    county: Hennepin
   Blooming-Prairie:
     displayName: Blooming Prairie
     zipcode: 55917
@@ -533,6 +565,38 @@ cityToZipAndCountyMapping:
     displayName: Cyrus
     zipcode: 56323
     county: Pope
+  Centerville:
+    displayName: Centerville
+    zipcode: 55038
+    county: Washington
+    Columbia-Heights:
+      displayName: Columbia Heights
+      zipcode: 55421
+      county: Anoka
+    Columbus:
+      displayName: Columbus
+      zipcode: 55014
+      county: Anoka
+    Coon-Rapids:
+      displayName: Coon Rapids
+      zipcode: 55433
+      county: Anoka
+    Corcoran:
+      displayName: Corcoran
+      zipcode: 55311
+      county: Hennepin
+    Cromwell:
+      displayName: Cromwell
+      zipcode: 55726
+      county: Carlton
+    Crystal:
+      displayName: Crystal
+      zipcode: 55422
+      county: Hennepin
+    Cuyuna:
+      displayName: Cuyuna
+      zipcode: 56444
+      county: Crow Wing
   Dakota:
     displayName: Dakota
     zipcode: 55925
@@ -613,6 +677,14 @@ cityToZipAndCountyMapping:
     displayName: Dundas
     zipcode: 55019
     county: Rice
+  Deephaven:
+    displayName: Deephaven
+    zipcode: 55331
+    county: Hennepin
+  Dellwood:
+    displayName: Dellwood
+    zipcode: 55110
+    county: Ramsey
   Eagle-Bend:
     displayName: Eagle Bend
     zipcode: 56446
@@ -713,6 +785,26 @@ cityToZipAndCountyMapping:
     displayName: Eyota
     zipcode: 55934
     county: Olmsted
+  Eagan:
+    displayName: Eagan
+    zipcode: 55120
+    county: Dakota
+  East-Bethel:
+    displayName: East Bethel
+    zipcode: 55005
+    county: Anoka
+  East-Gull-Lake:
+    displayName: East Gull Lake
+    zipcode: 56401
+    county: Crow Wing
+  Edina:
+    displayName: Edina
+    zipcode: 55410
+    county: Hennepin
+  Embarrass:
+    displayName: Embarrass
+    zipcode: 55732
+    county: Saint Louis
   Fairfax:
     displayName: Fairfax
     zipcode: 55332
@@ -805,6 +897,18 @@ cityToZipAndCountyMapping:
     displayName: Fulda
     zipcode: 56131
     county: Murray
+  Falcon-Heights:
+    displayName: Falcon Heights
+    zipcode: 55108
+    county: Ramsey
+  Federal-Dam:
+    displayName: Federal Dam
+    zipcode: 56641
+    county: Cass
+  Fridley:
+    displayName: Fridley
+    zipcode: 55421
+    county: Anoka
   Garfield:
     displayName: Garfield
     zipcode: 56332
@@ -917,6 +1021,26 @@ cityToZipAndCountyMapping:
     displayName: Grygla
     zipcode: 56727
     county: Marshall
+  Gem-Lake:
+    displayName: Gem Lake
+    zipcode: 55110
+    county: Ramsey
+  Golden-Valley:
+    displayName: Golden Valley
+    zipcode: 55416
+    county: Hennepin
+  Grant:
+    displayName: Grant
+    zipcode: 55110
+    county: Ramsey
+  Greenfield:
+    displayName: Greenfield
+    zipcode: 55357
+    county: Hennepin
+  Greenwood:
+    displayName: Greenwood
+    zipcode: 55331
+    county: Hennepin
   Hackensack:
     displayName: Hackensack
     zipcode: 56452
@@ -1081,6 +1205,26 @@ cityToZipAndCountyMapping:
     displayName: Hutchinson
     zipcode: 55350
     county: McLeod
+  Hadley:
+    displayName: Hadley
+    zipcode: 56151
+    county: Murray
+  Ham-Lake:
+    displayName: Ham Lake
+    zipcode: 55304
+    county: Anoka
+  Hermantown:
+    displayName: Hermantown
+    zipcode: 55810
+    county: Saint Louis
+  Hilltop:
+    displayName: Hilltop
+    zipcode: 55421
+    county: Anoka
+  Independence:
+    displayName: Independence
+    zipcode: 55328
+    county: Wright
   International-Falls:
     displayName: International Falls
     zipcode: 56649
@@ -1181,6 +1325,46 @@ cityToZipAndCountyMapping:
     displayName: Kimball
     zipcode: 55353
     county: Stearns
+  Kettle-River:
+    displayName: Kettle River
+    zipcode: 55757
+    county: Carlton
+  Lake-Shore:
+    displayName: Lake Shore
+    zipcode: 56468
+    county: Crow Wing
+  Lake-Saint-Croix-Beach:
+    displayName: Lake Saint Croix Beach
+    zipcode: 55043
+    county: Washington
+  Lakeland-Shores:
+    displayName: Lakeland Shores
+    zipcode: 55043
+    county: Washington
+  Lauderdale:
+    displayName: Lauderdale
+    zipcode: 55108
+    county: Ramsey
+  Le-roy:
+    displayName: Le roy
+    zipcode: 55951
+    county: Mower
+  Lilydale:
+    displayName: Lilydale
+    zipcode: 55118
+    county: Dakota
+  Lino-Lakes:
+    displayName: Lino Lakes
+    zipcode: 55014
+    county: Anoka
+  Little-Canada:
+    displayName: Little Canada
+    zipcode: 55109
+    county: Ramsey
+  Longville:
+    displayName: Longville
+    zipcode: 56655
+    county: Cass
   La-Crescent:
     displayName: La Crescent
     zipcode: 55947
@@ -1529,6 +1713,62 @@ cityToZipAndCountyMapping:
     displayName: Murdock
     zipcode: 56271
     county: Swift
+  Mahtomedi:
+    displayName: Mahtomedi
+    zipcode: 55115
+    county: Washington
+  Maple-Grove:
+    displayName: Maple Grove
+    zipcode: 55311
+    county: Hennepin
+  Maplewood:
+    displayName: Maplewood
+    zipcode: 55106
+    county: Ramsey
+  Medicine-Lake:
+    displayName: Medicine Lake
+    zipcode: 55441
+    county: Hennepin
+  Medina:
+    displayName: Medina
+    zipcode: 55340
+    county: Hennepin
+  Mendota-Heights:
+    displayName: Mendota Heights
+    zipcode: 55118
+    county: Dakota
+  Minnetrista:
+    displayName: Minnetrista
+    zipcode: 55331
+    county: Hennepin
+  Mounds-View:
+    displayName: Mounds View
+    zipcode: 55112
+    county: Ramsey
+  New-Brighton:
+    displayName: New Brighton
+    zipcode: 55112
+    county: Ramsey
+  New-Hope:
+    displayName: New Hope
+    zipcode: 55427
+    county: Hennepin
+  North-Mankato:
+    displayName: North Mankato
+    zipcode: 56002
+    county: Blue Earth
+  North-Oaks:
+    displayName: North Oaks
+    zipcode: 55127
+    county: Ramsey
+  North-Saint-Paul:
+    displayName: North Saint Paul
+    zipcode: 55109
+    county: Ramsey
+  Norwood-Young America:
+    displayName: Norwood Young America
+    zipcode: 55368
+    county: Carver
   Nashwauk:
     displayName: Nashwauk
     zipcode: 55769
@@ -1673,6 +1913,34 @@ cityToZipAndCountyMapping:
     displayName: Owatonna
     zipcode: 55060
     county: Steele
+  Oak-Grove:
+    displayName: Oak Grove
+    zipcode: 55005
+    county: Anoka
+  Oak-Park-Heights:
+    displayName: Oak Park Heights
+    zipcode: 55082
+    county: Washington
+  Oakdale:
+    displayName: Oakdale
+    zipcode: 55042
+    county: Washington
+  Orono:
+    displayName: Orono
+    zipcode: 55323
+    county: Hennepin
+  Otsego:
+    displayName: Otsego
+    zipcode: 55301
+    county: Wright
+  Plymouth:
+    displayName: Plymouth
+    zipcode: 55441
+    county: Hennepin
+  Proctor:
+    displayName: Proctor
+    zipcode: 55810
+    county: Saint Louis
   Park-Rapids:
     displayName: Park Rapids
     zipcode: 56470
@@ -1885,6 +2153,62 @@ cityToZipAndCountyMapping:
     displayName: Ruthton
     zipcode: 56170
     county: Pipestone
+  Ramsey:
+    displayName: Ramsey
+    zipcode: 55303
+    county: Anoka
+  Richfield:
+    displayName: Richfield
+    zipcode: 55423
+    county: Hennepin
+  Robbinsdale:
+    displayName: Robbinsdale
+    zipcode: 55422
+    county: Hennepin
+  Roseville:
+    displayName: Roseville
+    zipcode: 55113
+    county: Ramsey
+  Rushford-Village:
+    displayName: Rushford Village
+    zipcode: 55962
+    county: Fillmore
+  Saint-Anthony:
+    displayName: Saint Anthony
+    zipcode: 55418
+    county: Hennepin
+  Saint-Augusta:
+    displayName: Saint Augusta
+    zipcode: 55320
+    county: Wright
+  Saint-Louis Park:
+    displayName: Saint Louis Park
+    zipcode: 55416
+    county: Hennepin
+  Saint-Mary's-Point:
+    displayName: Saint Mary's Point
+    zipcode: 55043
+    county: Washington
+  Scandia:
+    displayName: Scandia
+    zipcode: 55073
+    county: Washington
+  Shoreview:
+    displayName: Shoreview
+    zipcode: 55126
+    county: Ramsey
+  Shorewood:
+    displayName: Shorewood
+    zipcode: 55331
+    county: Hennepin
+  Spring-Lake-Park:
+    displayName: Spring Lake Park
+    zipcode: 55432
+    county: Anoka
+  Sunfish-Lake:
+    displayName: Sunfish Lake
+    zipcode: 55077
+    county: Dakota
   Sabin:
     displayName: Sabin
     zipcode: 56580
@@ -2129,6 +2453,10 @@ cityToZipAndCountyMapping:
     displayName: Tyler
     zipcode: 56178
     county: Lincoln
+  Tonka-Bay:
+    displayName: Tonka Bay
+    zipcode: 55331
+    county: Hennepin
   Ulen:
     displayName: Ulen
     zipcode: 56585
@@ -2145,6 +2473,10 @@ cityToZipAndCountyMapping:
     displayName: Utica
     zipcode: 55979
     county: Winona
+  Vadnais-Heights:
+    displayName: Vadnais Heights
+    zipcode: 55109
+    county: Ramsey
   Vergas:
     displayName: Vergas
     zipcode: 56587
@@ -2345,6 +2677,22 @@ cityToZipAndCountyMapping:
     displayName: Wyoming
     zipcode: 55092
     county: Chisago
+  West-Saint Paul:
+    displayName: West Saint Paul
+    zipcode: 55107
+    county: Ramsey
+  White-Bear Lake:
+    displayName: White Bear Lake
+    zipcode: 55110
+    county: Ramsey
+  Woodbury:
+    displayName: Woodbury
+    zipcode: 55125
+    county: Washington
+  Woodland:
+    displayName: Woodland
+    zipcode: 55391
+    county: Hennepin
   Zimmerman:
     displayName: Zimmerman
     zipcode: 55398
