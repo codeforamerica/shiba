@@ -18,6 +18,8 @@ import org.codeforamerica.shiba.testutilities.PageDataBuilder;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -317,8 +319,12 @@ class MailGunEmailClientTest {
         );
     }
 
-    @Test
-    void sendResubmitEmail() {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void sendResubmitEmail(boolean shouldCC) {
+        if (shouldCC) {
+            mailGunEmailClient = new MailGunEmailClient(senderEmail, securityEmail, auditEmail, hennepinEmail, "http://localhost:" + port, mailGunApiKey, emailContentCreator, true, pdfGenerator, activeProfile);
+        }
         wireMockServer.stubFor(post(anyUrl()).willReturn(aResponse().withStatus(200)));
 
         var fileContent = "testfile";
@@ -335,14 +341,16 @@ class MailGunEmailClientTest {
 
         verify(emailContentCreator).createResubmitEmailContent(UPLOADED_DOC, ENGLISH);
 
-        wireMockServer.verify(postToMailgun()
-                .withBasicAuth(credentials)
+        var expectedEmailRequest = postToMailgun().withBasicAuth(credentials)
                 .withRequestBodyPart(requestBodyPart("from", senderEmail))
                 .withRequestBodyPart(requestBodyPart("to", hennepinEmail))
                 .withRequestBodyPart(requestBodyPart("html", emailContent))
                 .withRequestBodyPart(requestBodyPart("subject", "MN Benefits Application " + applicationId + " Resubmission"))
-                .withRequestBodyPart(attachment("filename=\"" + fileName + "\"", fileContent))
-        );
+                .withRequestBodyPart(attachment("filename=\"" + fileName + "\"", fileContent));
+        if (shouldCC) {
+            expectedEmailRequest.withRequestBodyPart(requestBodyPart("cc", senderEmail));
+        }
+        wireMockServer.verify(expectedEmailRequest);
     }
 
     @Test
