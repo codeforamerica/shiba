@@ -144,7 +144,6 @@ class EmailContentCreatorTest {
         assertThat(resubmitEmailBody).isEqualTo("<html><body>" +
                 "<p>Hello</p>" +
                 "<p>Attached is an MNBenefits application due to an error in ESB Submission. It is a(n) " + name + ".</p>" +
-                "<p>The description of the application being sent should correspond to the type of failed document.</p>" +
                 "</body></html>");
     }
 
