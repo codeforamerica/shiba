@@ -71,6 +71,7 @@ class MailGunEmailClientTest {
     final String securityEmail = "someSecurityEmail";
     final String auditEmail = "someAuditEmail";
     final String hennepinEmail = "someHennepinEmail";
+    final String resubmissionEmail = "someResubmissionEmail";
     BasicCredentials credentials;
 
     List<String> programs;
@@ -94,6 +95,7 @@ class MailGunEmailClientTest {
                 mailGunApiKey,
                 emailContentCreator,
                 false,
+                resubmissionEmail,
                 pdfGenerator,
                 activeProfile);
         programs = List.of(Program.SNAP);
@@ -323,7 +325,7 @@ class MailGunEmailClientTest {
     @ValueSource(booleans = {true, false})
     void sendResubmitEmail(boolean shouldCC) {
         if (shouldCC) {
-            mailGunEmailClient = new MailGunEmailClient(senderEmail, securityEmail, auditEmail, hennepinEmail, "http://localhost:" + port, mailGunApiKey, emailContentCreator, true, pdfGenerator, activeProfile);
+            mailGunEmailClient = new MailGunEmailClient(senderEmail, securityEmail, auditEmail, hennepinEmail, "http://localhost:" + port, mailGunApiKey, emailContentCreator, true, resubmissionEmail, pdfGenerator, activeProfile);
         }
         wireMockServer.stubFor(post(anyUrl()).willReturn(aResponse().withStatus(200)));
 
@@ -366,6 +368,7 @@ class MailGunEmailClientTest {
                 mailGunApiKey,
                 emailContentCreator,
                 true,
+                resubmissionEmail,
                 pdfGenerator,
                 activeProfile);
 
@@ -408,6 +411,7 @@ class MailGunEmailClientTest {
                     mailGunApiKey,
                     emailContentCreator,
                     false,
+                    resubmissionEmail,
                     pdfGenerator,
                     "demo");
         }
