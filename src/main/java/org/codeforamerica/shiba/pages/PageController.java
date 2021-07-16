@@ -8,6 +8,7 @@ import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
+import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
 import org.codeforamerica.shiba.documents.CombinedDocumentRepositoryService;
 import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
@@ -57,6 +58,7 @@ public class PageController {
     private final FeatureFlagConfiguration featureFlags;
     private final UploadDocumentConfiguration uploadDocumentConfiguration;
     private final CountyParser countyParser;
+    private final CityInfoConfiguration cityInfoMap;
     private final SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider;
     private final CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
     private final SuccessMessageService successMessageService;
@@ -76,6 +78,7 @@ public class PageController {
             FeatureFlagConfiguration featureFlags,
             UploadDocumentConfiguration uploadDocumentConfiguration,
             CountyParser countyParser,
+            CityInfoConfiguration cityInfoMap,
             SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider,
             CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider,
             SuccessMessageService successMessageService,
@@ -93,6 +96,7 @@ public class PageController {
         this.featureFlags = featureFlags;
         this.uploadDocumentConfiguration = uploadDocumentConfiguration;
         this.countyParser = countyParser;
+        this.cityInfoMap = cityInfoMap;
         this.snapExpeditedEligibilityDecider = snapExpeditedEligibilityDecider;
         this.ccapExpeditedEligibilityDecider = ccapExpeditedEligibilityDecider;
         this.successMessageService = successMessageService;
@@ -277,6 +281,7 @@ public class PageController {
         }
 
         model.put("county", countyParser.parse(applicationData));
+        model.put("cityInfo", cityInfoMap.getCityToZipAndCountyMapping());
 
         List<String> zipCode = applicationData.getPagesData().safeGetPageInputValue("homeAddress", "zipCode");
         if (!zipCode.isEmpty()) {

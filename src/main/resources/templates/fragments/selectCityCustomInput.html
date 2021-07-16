@@ -1,0 +1,25 @@
+<div th:fragment="selectCityCustomInput(input, data)"
+     th:classappend="${!data.isValid() && !inputData.valid(data)} ? 'form-group--error' : ''"
+     th:with="inputData=${data.get(input.name)},formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)}"
+     class="form-group">
+    <p class="text--help"
+       th:if="${input.helpMessageKey != null}"
+       th:text="#{${input.helpMessageKey}}"></p>
+    <div class="select">
+        <select th:id="${input.name}"
+                class="select__element"
+                th:name="${formInputName}"
+        >
+            <option th:value="SelectYourCity" th:text="#{city-for-general-delivery.select-your-city}"></option>
+            <th:block th:each="option: ${cityInfo.entrySet()}">
+                <option th:value="${option.getKey()}" th:text="${option.getValue().get('displayName')}"
+                        th:selected="${inputData.value.contains(option.getKey())}"></option>
+            </th:block>
+<!--            <option th:value="Other" th:text="Other" th:selected="${inputData.value.contains('Other')}></option>-->
+        </select>
+    </div>
+    <p class="text--error" th:if="${!data.isValid() && !inputData.valid(data)}">
+        <i class="icon-warning"></i>
+        <span th:text="#{${input.validationErrorMessageKey}}"></span>
+    </p>
+</div>
