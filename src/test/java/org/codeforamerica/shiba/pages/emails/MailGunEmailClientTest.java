@@ -350,7 +350,7 @@ class MailGunEmailClientTest {
                 .withRequestBodyPart(requestBodyPart("subject", "MN Benefits Application " + applicationId + " Resubmission"))
                 .withRequestBodyPart(attachment("filename=\"" + fileName + "\"", fileContent));
         if (shouldCC) {
-            expectedEmailRequest.withRequestBodyPart(requestBodyPart("cc", senderEmail));
+            expectedEmailRequest.withRequestBodyPart(requestBodyPart("cc", resubmissionEmail));
         }
         wireMockServer.verify(expectedEmailRequest);
     }
