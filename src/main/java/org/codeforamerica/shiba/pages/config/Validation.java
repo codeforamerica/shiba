@@ -45,9 +45,7 @@ public enum Validation {
     NUMBER(strings -> strings.get(0).trim().matches("\\d*")),
     EMAIL(strings -> String.join("", strings).trim().matches("[a-zA-Z0-9!#$%&'*+=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?")),
     COUNTY(strings -> !String.join("", strings).equals("SelectYourCounty")),
-    CITY(strings -> {
-        return !String.join("", strings).equals("SelectYourCity");
-    });
+    CITY(strings -> !String.join("", strings).equals("SelectYourCity"));
 
     private final Predicate<List<String>> rule;
 
