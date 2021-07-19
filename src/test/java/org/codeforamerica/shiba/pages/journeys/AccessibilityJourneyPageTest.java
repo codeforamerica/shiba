@@ -3,11 +3,13 @@ package org.codeforamerica.shiba.pages.journeys;
 import com.deque.html.axecore.results.Results;
 import com.deque.html.axecore.results.Rule;
 import com.deque.html.axecore.selenium.AxeBuilder;
+import org.codeforamerica.shiba.documents.CombinedDocumentRepositoryService;
 import org.codeforamerica.shiba.pages.AccessibilityTestPage;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,6 +28,9 @@ public class AccessibilityJourneyPageTest extends JourneyTest {
     protected static List<Rule> resultsList = new ArrayList<>();
     protected static Results results;
     protected AccessibilityTestPage testPage;
+
+    @MockBean
+    protected CombinedDocumentRepositoryService documentRepositoryService;
 
     @Override
     @BeforeEach
@@ -245,7 +250,7 @@ public class AccessibilityJourneyPageTest extends JourneyTest {
         List<Rule> violations = results.getViolations();
         System.out.println("Found " + violations.size() + " accessibility related issues.");
         if (results.getViolations().size() > 0) {
-            violations.stream().forEach(violation -> {
+            violations.forEach(violation -> {
                 System.out.println("Rule at issue: " + violation.getId());
                 System.out.println("Rule description: " + violation.getDescription());
                 System.out.println("Rule help text: " + violation.getHelp());
