@@ -97,7 +97,6 @@ public class DocRecommendationMessageService {
     }
 
     private List<DocumentRecommendation> getShortDocumentRecommendations(List<String> recommendations, LocaleSpecificMessageSource lms) {
-
         List<DocumentRecommendation> recommendationMessages = new ArrayList<>();
         recommendations.forEach(recommendation -> {
             DocumentRecommendation docRec;
