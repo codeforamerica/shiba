@@ -18,17 +18,18 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class DocRecommendationMessageServiceTest extends AbstractPageControllerTest {
-
     private static final String proofOfIncome = "proofOfIncome";
     private static final String proofOfJobLoss = "proofOfJobLoss";
     private static final String proofOfHousingCost = "proofOfHousingCost";
@@ -50,6 +51,7 @@ public class DocRecommendationMessageServiceTest extends AbstractPageControllerT
         when(applicationRepository.find(any())).thenReturn(application);
     }
 
+    @SuppressWarnings("unused")
     private static Stream<Arguments> docRecommendationMessageTestCases() {
         //send over: test name, list of programs, list of doc recs to show, string pagename
         return Stream.of(
@@ -114,9 +116,9 @@ public class DocRecommendationMessageServiceTest extends AbstractPageControllerT
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("org.codeforamerica.shiba.pages.DocRecommendationMessageServiceTest#docRecommendationMessageTestCases")
+    @SuppressWarnings("unused")
     void displaysCorrectDocumentRecommendationForApplicantPrograms(String testName, List<String> programs, List<String> recommendations, String pageName, String expectedMessage) throws Exception {
         setPageInformation(programs, recommendations);
-
 
         mockMvc.perform(get(pageName).session(new MockHttpSession()))
                 .andExpect(status().isOk())
@@ -139,43 +141,32 @@ public class DocRecommendationMessageServiceTest extends AbstractPageControllerT
     @Test
     void displayNoDocumentRecommendationsForMinimumFlowSnapApplication() throws Exception {
         // passing no recommendations emulates minimum flow
-    	setPageInformation(List.of("SNAP"), List.of());
+        setPageInformation(List.of("SNAP"), List.of());
 
-        ArrayList<?> recommendations = (ArrayList<?>) mockMvc.perform(get("/pages/uploadDocuments").session(new MockHttpSession()))
-        		.andReturn().getModelAndView().getModel().get("docRecommendations");
-        assertTrue(recommendations.size()==0);
+        var recommendations = (ArrayList<?>) Objects.requireNonNull(
+                mockMvc.perform(get("/pages/uploadDocuments").session(new MockHttpSession())).andReturn().getModelAndView()
+        ).getModel().get("docRecommendations");
+        assertThat(recommendations).isEmpty();
     }
 
     private void setPageInformation(List<String> programs, List<String> recommendations) {
-        PageDataBuilder programPageData = new PageDataBuilder("choosePrograms", Map.of("programs", programs));
-
         List<PageDataBuilder> pagesData = new ArrayList<>();
-        recommendations.stream().forEach(recommendation -> {
+        pagesData.add(new PageDataBuilder("choosePrograms", Map.of("programs", programs)));
+
+        recommendations.forEach(recommendation -> {
             PageDataBuilder pageDataBuilder;
             switch (recommendation) {
-                case proofOfIncome:
-                    pageDataBuilder = new PageDataBuilder("employmentStatus", Map.of("areYouWorking", List.of("true")));
-                    pagesData.add(pageDataBuilder);
-                    break;
-                case proofOfHousingCost:
-                    pageDataBuilder = new PageDataBuilder("homeExpenses", Map.of("homeExpenses", List.of("RENT")));
-                    pagesData.add(pageDataBuilder);
-                    break;
-                case proofOfJobLoss:
-                    pageDataBuilder = new PageDataBuilder("workSituation", Map.of("hasWorkSituation", List.of("true")));
-                    pagesData.add(pageDataBuilder);
-                    break;
-                case proofOfMedicalExpenses:
-                    pageDataBuilder = new PageDataBuilder("medicalExpenses", Map.of("medicalExpenses", List.of("MEDICAL_INSURANCE_PREMIUMS")));
-                    pagesData.add(pageDataBuilder);
+                case proofOfIncome -> pageDataBuilder = new PageDataBuilder("employmentStatus", Map.of("areYouWorking", List.of("true")));
+                case proofOfHousingCost -> pageDataBuilder = new PageDataBuilder("homeExpenses", Map.of("homeExpenses", List.of("RENT")));
+                case proofOfJobLoss -> pageDataBuilder = new PageDataBuilder("workSituation", Map.of("hasWorkSituation", List.of("true")));
+                case proofOfMedicalExpenses -> pageDataBuilder = new PageDataBuilder("medicalExpenses", Map.of("medicalExpenses", List.of("MEDICAL_INSURANCE_PREMIUMS")));
+                default -> pageDataBuilder = null;
+            }
+            if (pageDataBuilder != null) {
+                pagesData.add(pageDataBuilder);
             }
         });
 
-        pagesData.add(programPageData);
-        applicationData.setPagesData(new PagesDataBuilder().build(
-                pagesData
-        ));
+        applicationData.setPagesData(new PagesDataBuilder().build(pagesData));
     }
-
-
 }
