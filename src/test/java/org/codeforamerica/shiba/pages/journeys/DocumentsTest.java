@@ -10,47 +10,11 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
-import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 
 @Tag("document")
 public class DocumentsTest extends JourneyTest {
-    @Test
-    void shouldSkipDocumentUploadFlowIfNotApplicableRegardlessOfPrograms() {
-        List<String> applicantPrograms = List.of(PROGRAM_SNAP, PROGRAM_CASH, PROGRAM_EA, PROGRAM_GRH, PROGRAM_CCAP);
-        completeFlowFromLandingPageThroughReviewInfo(applicantPrograms, smartyStreetClient);
-        completeFlowFromReviewInfoToDisability(applicantPrograms);
-
-        // Won't recommend proof of job loss
-        testPage.enter("hasWorkSituation", NO.getDisplayValue());
-        testPage.clickContinue();
-        // Won't recommend proof of income
-        testPage.enter("areYouWorking", NO.getDisplayValue());
-        testPage.enter("currentlyLookingForJob", NO.getDisplayValue());
-        testPage.clickContinue();
-        testPage.enter("unearnedIncome", "None of the above");
-        testPage.clickContinue();
-        testPage.enter("unearnedIncomeCcap", "None of the above");
-        testPage.clickContinue();
-        testPage.enter("earnLessMoneyThisMonth", NO.getDisplayValue());
-        testPage.clickContinue();
-        testPage.clickContinue();
-        // Won't recommend proof of shelter
-        testPage.enter("homeExpenses", "None of the above");
-        testPage.clickContinue();
-        // Won't recommend proof of medical expenses
-        navigateTo("medicalExpenses");
-        testPage.enter("medicalExpenses", "None of the above");
-        testPage.clickContinue();
-        navigateTo("signThisApplication");
-        testPage.enter("applicantSignature", "some name");
-        testPage.clickButton("Submit");
-
-        assertThat(driver.getTitle()).isEqualTo("Success");
-    }
-
     @Test
     void whenDocumentUploadFailsThenThereShouldBeAnError() throws InterruptedException {
         doThrow(new InterruptedException())

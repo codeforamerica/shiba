@@ -5,9 +5,9 @@ import org.codeforamerica.shiba.AbstractShibaMockMvcTest;
 import org.codeforamerica.shiba.framework.FormPage;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -23,8 +23,7 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
         super.setUp();
         when(featureFlagConfiguration.get("apply-without-address")).thenReturn(FeatureFlag.OFF);
         mockMvc.perform(get("/pages/languagePreferences").session(session)); // start timer
-        postExpectingSuccess("languagePreferences",
-                             Map.of("writtenLanguage", List.of("ENGLISH"), "spokenLanguage", List.of("ENGLISH"))
+        postExpectingSuccess("languagePreferences", Map.of("writtenLanguage", List.of("ENGLISH"), "spokenLanguage", List.of("ENGLISH"))
         );
     }
 
@@ -51,12 +50,12 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
 
         FormPage reviewInfoPage = new FormPage(getPage("reviewInfo"));
         reviewInfoPage.assertLinkWithTextHasCorrectUrl("Submit application now with only the above information.",
-                                                       "/pages/doYouNeedHelpImmediately");
+                "/pages/doYouNeedHelpImmediately");
 
         getNavigationPageWithQueryParamAndExpectRedirect("doYouNeedHelpImmediately",
-                                                         "option",
-                                                         "0",
-                                                         "addHouseholdMembersExpedited");
+                "option",
+                "0",
+                "addHouseholdMembersExpedited");
         postExpectingRedirect("addHouseholdMembersExpedited", "addHouseholdMembers", "false", "expeditedIncome");
         postExpectingRedirect("expeditedIncome", "moneyMadeLast30Days", "123", "expeditedHasSavings");
         postExpectingRedirect("expeditedHasSavings", "haveSavings", "true", "liquidAssets");
@@ -65,9 +64,9 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
         postExpectingRedirect("expeditedExpensesAmount", "homeExpensesAmount", "333", "expeditedUtilityPayments");
         postExpectingRedirect("expeditedUtilityPayments", "payForUtilities", "COOLING", "expeditedMigrantFarmWorker");
         postExpectingRedirect("expeditedMigrantFarmWorker",
-                              "migrantOrSeasonalFarmWorker",
-                              "false",
-                              "snapExpeditedDetermination");
+                "migrantOrSeasonalFarmWorker",
+                "false",
+                "snapExpeditedDetermination");
         FormPage page = new FormPage(getPage("snapExpeditedDetermination"));
         assertThat(page.findElementsByTag("p").get(0).text()).isEqualTo(
                 "A caseworker will contact you within 5-7 days to review your application.");
@@ -125,5 +124,49 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
                 "dateOfBirth", List.of("01", "12", "1928")
         ));
         assertFalse(new FormPage(getPage("personalInfo")).hasInputError());
+    }
+
+    @Test
+    void shouldSkipDocumentUploadFlowIfNotApplicableRegardlessOfPrograms() throws Exception {
+        var applicantPrograms = new String[]{"SNAP", "CASH", "CCAP", "EA", "GRH"};
+        completeFlowFromLandingPageThroughReviewInfo(applicantPrograms);
+        completeFlowFromReviewInfoToDisability(applicantPrograms);
+
+        postExpectingRedirect("workSituation", "hasWorkSituation", "false", "introIncome");
+        assertNavigationRedirectsToCorrectNextPage("introIncome", "employmentStatus");
+        postExpectingNextPageTitle("employmentStatus", "areYouWorking", "false", "Job Search");
+        postExpectingRedirect("jobSearch", "currentlyLookingForJob", "false", "incomeUpNext");
+
+        assertNavigationRedirectsToCorrectNextPage("incomeUpNext", "unearnedIncome");
+        postExpectingRedirect("unearnedIncome", "unearnedIncome", "NO_UNEARNED_INCOME_SELECTED", "unearnedIncomeCcap");
+        postExpectingRedirect("unearnedIncomeCcap", "unearnedIncomeCcap", "NO_UNEARNED_INCOME_CCAP_SELECTED", "futureIncome");
+
+        postExpectingRedirect("futureIncome", "earnLessMoneyThisMonth", "false", "startExpenses");
+        assertNavigationRedirectsToCorrectNextPage("startExpenses", "homeExpenses");
+        postExpectingRedirect("homeExpenses", "homeExpenses", "NONE_OF_THE_ABOVE", "utilities");
+
+        // skipping ahead to medical expenses
+        postExpectingRedirect("medicalExpenses", "medicalExpenses", "NONE_OF_THE_ABOVE", "supportAndCare");
+
+        // skipping ahead to signing application
+        submitApplication();
+        assertNavigationRedirectsToCorrectNextPage("signThisApplication", "success");
+    }
+
+    protected void completeFlowFromReviewInfoToDisability(String... applicantPrograms) throws Exception {
+        postExpectingSuccess("addHouseholdMembers", "addHouseholdMembers", "false");
+        if (Arrays.stream(applicantPrograms).anyMatch(program -> program.equals("CCAP") || program.equals("GRH"))) {
+            assertNavigationRedirectsToCorrectNextPage("addHouseholdMembers", "introPersonalDetails");
+            assertNavigationRedirectsToCorrectNextPage("introPersonalDetails", "livingSituation");
+            postExpectingRedirect("livingSituation", "livingSituation", "UNKNOWN", "goingToSchool");
+        } else {
+            assertNavigationRedirectsToCorrectNextPage("addHouseholdMembers", "goingToSchool");
+        }
+
+        postExpectingRedirect("goingToSchool", "goingToSchool", "true", "pregnant");
+        postExpectingRedirect("pregnant", "isPregnant", "false", "migrantFarmWorker");
+        postExpectingRedirect("migrantFarmWorker", "migrantOrSeasonalFarmWorker", "false", "usCitizen");
+        postExpectingRedirect("usCitizen", "isUsCitizen", "true", "disability");
+        postExpectingRedirect("disability", "hasDisability", "false", "workSituation");
     }
 }
