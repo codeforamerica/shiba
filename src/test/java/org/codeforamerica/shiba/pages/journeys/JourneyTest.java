@@ -44,7 +44,7 @@ public abstract class JourneyTest extends AbstractBasePageTest {
     protected Clock clock;
     @MockBean
     protected SmartyStreetClient smartyStreetClient;
-    @MockBean
+    @SpyBean
     protected CombinedDocumentRepositoryService documentRepositoryService;
     @MockBean
     protected PageEventPublisher pageEventPublisher;
@@ -180,5 +180,12 @@ public abstract class JourneyTest extends AbstractBasePageTest {
         assertThat(applicationSubmittedEvent.getFlow()).isEqualTo(flowType);
         assertThat(applicationSubmittedEvent.getApplicationId()).isEqualTo(applicationId);
         assertThat(applicationSubmittedEvent.getLocale()).isEqualTo(ENGLISH);
+    }
+
+    protected void deleteAFile() {
+        testPage.clickLink("delete");
+
+        assertThat(testPage.getTitle()).isEqualTo("Delete a file");
+        testPage.clickButton("Yes, delete the file");
     }
 }

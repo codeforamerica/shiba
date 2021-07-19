@@ -624,13 +624,6 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertThat(fileDetails).contains(sizeUnit);
     }
 
-    private void deleteAFile() {
-        testPage.clickLink("delete");
-
-        assertThat(testPage.getTitle()).isEqualTo("Delete a file");
-        testPage.clickButton("Yes, delete the file");
-    }
-
     private void assertStylingOfNonEmptyDocumentUploadPage() {
         assertThat(driver.findElementById("drag-and-drop-box").getAttribute("class")).contains(
                 "drag-and-drop-box-compact");
