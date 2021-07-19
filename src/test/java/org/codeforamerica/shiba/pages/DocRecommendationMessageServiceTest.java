@@ -15,12 +15,10 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Stream;
 
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
@@ -123,7 +121,6 @@ public class DocRecommendationMessageServiceTest extends AbstractPageControllerT
         mockMvc.perform(get(pageName).session(new MockHttpSession()))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(expectedMessage)));
-
     }
 
     @Test
@@ -141,16 +138,15 @@ public class DocRecommendationMessageServiceTest extends AbstractPageControllerT
     @Test
     void displayNoDocumentRecommendationsForMinimumFlowSnapApplication() throws Exception {
         // passing no recommendations emulates minimum flow
-        setPageInformation(List.of("SNAP"), List.of());
+        setPageInformation(List.of("SNAP"), emptyList());
 
-        var recommendations = (ArrayList<?>) Objects.requireNonNull(
-                mockMvc.perform(get("/pages/uploadDocuments").session(new MockHttpSession())).andReturn().getModelAndView()
-        ).getModel().get("docRecommendations");
+        var modelAndView = mockMvc.perform(get("/pages/uploadDocuments").session(new MockHttpSession())).andReturn().getModelAndView();
+        var recommendations = (ArrayList<?>) Objects.requireNonNull(modelAndView).getModel().get("docRecommendations");
         assertThat(recommendations).isEmpty();
     }
 
     private void setPageInformation(List<String> programs, List<String> recommendations) {
-        List<PageDataBuilder> pagesData = new ArrayList<>();
+        var pagesData = new ArrayList<PageDataBuilder>();
         pagesData.add(new PageDataBuilder("choosePrograms", Map.of("programs", programs)));
 
         recommendations.forEach(recommendation -> {
