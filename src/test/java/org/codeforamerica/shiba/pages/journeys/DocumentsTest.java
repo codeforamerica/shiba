@@ -51,14 +51,6 @@ public class DocumentsTest extends JourneyTest {
     }
 
     @Test
-    void showFileTypeErrorMessageWhenClientHasUploadedInvalidFileType() {
-        getToDocumentUploadScreen();
-        driver.executeScript("$('#document-upload').get(0).dropzone.addFile({name: 'testFile.xyz', size: 1000, type: 'not-an-image'})");
-
-        assertThat(driver.findElementByClassName("text--error").getText()).contains("You can't upload files of this type");
-    }
-
-    @Test
     void shouldUpdateFileCountWhenRemoveIsClickedIfAnUploadHasAnError() {
         getToDocumentUploadScreen();
         uploadJpgFile();
