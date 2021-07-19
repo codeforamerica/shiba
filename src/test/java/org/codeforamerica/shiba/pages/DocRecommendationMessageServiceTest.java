@@ -4,6 +4,8 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.PageDataBuilder;
 import org.codeforamerica.shiba.PagesDataBuilder;
 import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.pages.data.Subworkflow;
+import org.codeforamerica.shiba.pages.data.Subworkflows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,7 +17,10 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
@@ -121,6 +126,23 @@ public class DocRecommendationMessageServiceTest extends AbstractPageControllerT
         mockMvc.perform(get(pageName).session(new MockHttpSession()))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(expectedMessage)));
+    }
+
+    @Test
+    void shouldDisplayDocumentRecommendationsForHouseholdMembers() throws Exception {
+        var applicantPrograms = List.of("CCAP");
+        setPageInformation(applicantPrograms, List.of(proofOfJobLoss, proofOfIncome, proofOfHousingCost));
+
+        // Proof of Income is only recommended for snap applications. Add SNAP for household member so it shows
+        applicationData.setSubworkflows(new Subworkflows(Map.of("household", new Subworkflow(List.of(
+                new PagesDataBuilder().build(List.of(new PageDataBuilder("householdMemberInfo", Map.of("programs", List.of("SNAP")))))
+        )))));
+
+        mockMvc.perform(get("/pages/documentRecommendation").session(new MockHttpSession()))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Proof of Housing Cost")))
+                .andExpect(content().string(containsString("Proof of Job Loss")))
+                .andExpect(content().string(containsString("Proof of Income")));
     }
 
     @Test
