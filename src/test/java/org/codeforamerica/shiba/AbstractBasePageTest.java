@@ -85,7 +85,7 @@ public abstract class AbstractBasePageTest {
         chromePrefs.put("download.default_directory", path.toString());
         options.setExperimentalOption("prefs", chromePrefs);
         options.addArguments("--window-size=1280,1600");
-//        options.addArguments("--headless");
+        options.addArguments("--headless");
         driver = new ChromeDriver(options);
         testPage = new Page(driver);
     }
