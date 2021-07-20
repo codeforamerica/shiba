@@ -147,7 +147,7 @@ def unitTest = tasks.register("unitTest", Test) {
     Test task ->
         task.useJUnitPlatform {
             JUnitPlatformOptions options ->
-                options.excludeTags 'db', 'journey', 'pdf', 'ccap', 'validation', 'a11y'
+                options.excludeTags 'db', 'journey', 'framework', 'pdf', 'ccap', 'validation', 'a11y'
         }
 }
 
@@ -156,6 +156,14 @@ def journeyTest = tasks.register("journeyTest", Test) {
         task.useJUnitPlatform {
             JUnitPlatformOptions options ->
                 options.includeTags 'journey'
+        }
+}
+
+def frameworkTest = tasks.register("frameworkTest", Test) {
+    Test task ->
+        task.useJUnitPlatform {
+            JUnitPlatformOptions options ->
+                options.includeTags 'framework'
         }
 }
 
