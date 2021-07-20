@@ -41,43 +41,6 @@ public class ConditionalRenderingPageTest extends AbstractExistingStartTimePageT
     }
 
     @Test
-    void shouldSupportSkippingMoreThanOnePageInARow() {
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-        testPage.enter("someRadioInputName", "SKIP PAGE");
-        testPage.enter("radioInputToSkipThirdPage", "SKIP PAGE");
-
-        driver.findElement(By.tagName("button")).click();
-        assertThat(driver.getTitle()).isEqualTo(fourthPageTitle);
-    }
-
-    @Test
-    void shouldRenderPageIfTheSkipConditionIsFalse() {
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-        WebElement radioToClick = driver.findElements(By.cssSelector("span")).stream()
-                .filter(webElement -> webElement.getText().equals("NOT SKIP PAGE"))
-                .findFirst()
-                .orElseThrow();
-        radioToClick.click();
-
-        driver.findElement(By.tagName("button")).click();
-
-        assertThat(driver.getTitle()).isEqualTo(secondPageTitle);
-    }
-
-    @Test
-    void skipConditionBasedOnPageGroupData() {
-        navigateTo("sixthPage");
-
-        testPage.enter("foo", "goToSeventhPage");
-        testPage.clickContinue();
-        testPage.enter("foo", "SKIP");
-        testPage.clickContinue();
-        testPage.clickContinue();
-
-        assertThat(driver.getTitle()).isEqualTo(fourthPageTitle);
-    }
-
-    @Test
     void shouldSkipGoingBackwardsAsWell() {
         driver.navigate().to(baseUrl + "/pages/firstPage");
         testPage.enter("someRadioInputName", "SKIP PAGE");
