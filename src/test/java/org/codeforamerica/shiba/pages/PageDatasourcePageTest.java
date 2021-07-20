@@ -39,48 +39,6 @@ public class PageDatasourcePageTest extends AbstractExistingStartTimePageTest {
     }
 
     @Test
-    void shouldDisplayDataEnteredFromAPreviousPage() {
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-        String inputText = "some input";
-        testPage.enter("someInputName", inputText);
-        testPage.clickContinue();
-
-        assertThat(testPage.findElementTextById("someInputName")).isEqualTo(inputText);
-    }
-
-    @Test
-    void shouldDisplayPageTitleBasedOnCondition() {
-        String noAnswerTitle = "no answer title";
-        staticMessageSource.addMessage("foo", Locale.ENGLISH, "wrong title");
-        staticMessageSource.addMessage("no-answer-title", Locale.ENGLISH, noAnswerTitle);
-
-        driver.navigate().to(baseUrl + "/pages/yesNoQuestionPage");
-
-        List<WebElement> yesNoRadios = driver.findElements(By.tagName("button"));
-        WebElement radioToSelect = yesNoRadios.stream()
-                .filter(label -> label.getText().equals(YesNoAnswer.NO.getDisplayValue()))
-                .findFirst()
-                .orElseThrow();
-        radioToSelect.click();
-
-        assertThat(driver.getTitle()).isEqualTo(noAnswerTitle);
-    }
-
-    @Test
-    void shouldDisplayPageHeaderBasedOnCondition() {
-        driver.navigate().to(baseUrl + "/pages/yesNoQuestionPage");
-
-        List<WebElement> yesNoRadios = driver.findElements(By.tagName("button"));
-        WebElement radioToSelect = yesNoRadios.stream()
-                .filter(label -> label.getText().equals(YesNoAnswer.YES.getDisplayValue()))
-                .findFirst()
-                .orElseThrow();
-        radioToSelect.click();
-
-        assertThat(driver.findElement(By.cssSelector("h1")).getText()).isEqualTo(yesHeaderText);
-    }
-
-    @Test
     void shouldDisplayPageHeaderBasedOnCompositeCondition() {
         driver.navigate().to(baseUrl + "/pages/yesNoQuestionPage2");
 

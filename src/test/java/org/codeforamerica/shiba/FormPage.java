@@ -121,4 +121,8 @@ public class FormPage {
                 .map(element -> element.attr("value"))
                 .orElseThrow();
     }
+
+    public Element findElementByCssSelector(String selector) {
+        return html.select(selector).first();
+    }
 }
