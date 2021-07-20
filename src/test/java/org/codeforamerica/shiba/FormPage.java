@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba.framework;
+package org.codeforamerica.shiba;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -17,10 +17,6 @@ import java.util.List;
  */
 public class FormPage {
     private final Document html;
-
-    public FormPage(MvcResult response) throws UnsupportedEncodingException {
-        html = Jsoup.parse(response.getResponse().getContentAsString());
-    }
 
     public FormPage(ResultActions resultActions) throws UnsupportedEncodingException {
         html = Jsoup.parse(resultActions.andReturn().getResponse().getContentAsString());

@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.framework;
 
+import org.codeforamerica.shiba.FormPage;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.codeforamerica.shiba.pages.events.SubworkflowCompletedEvent;
 import org.codeforamerica.shiba.pages.events.SubworkflowIterationDeletedEvent;
