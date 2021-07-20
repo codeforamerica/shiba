@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba.pages.journeys;
+package org.codeforamerica.shiba.pages;
 
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.AbstractShibaMockMvcTest;

@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba.pages.journeys;
+package org.codeforamerica.shiba.journeys;
 
 import com.deque.html.axecore.results.Results;
 import com.deque.html.axecore.results.Rule;
@@ -24,7 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @Tag("a11y")
-public class AccessibilityJourneyPageTest extends JourneyTest {
+public class AccessibilityJourneyTest extends JourneyTest {
     protected static List<Rule> resultsList = new ArrayList<>();
     protected static Results results;
     protected AccessibilityTestPage testPage;

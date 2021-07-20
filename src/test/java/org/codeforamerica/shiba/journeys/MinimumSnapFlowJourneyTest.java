@@ -1,8 +1,7 @@
-package org.codeforamerica.shiba.newjourneys;
+package org.codeforamerica.shiba.journeys;
 
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.enrichment.Address;
-import org.codeforamerica.shiba.pages.journeys.JourneyTest;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
