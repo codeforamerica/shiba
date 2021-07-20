@@ -1,23 +1,18 @@
 package org.codeforamerica.shiba.framework;
 
-import org.codeforamerica.shiba.FormPage;
-import org.jetbrains.annotations.NotNull;
-import org.jsoup.nodes.Element;
+import org.codeforamerica.shiba.pages.DatePart;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Locale;
+import java.util.Map;
 
 import static java.util.Locale.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(properties = {"pagesConfig=pages-config/test-input.yaml"})
-public class InputsPageTest extends AbstractFrameworkTest {
+public class InputsPageMockMvcTest extends AbstractFrameworkTest {
     final String radioOption1 = "radio option 1";
     final String radioOption2 = "option-2";
     final String checkboxOption1 = "checkbox option 1";
@@ -111,4 +106,44 @@ public class InputsPageTest extends AbstractFrameworkTest {
         assertThat(nextPage.findInputByName("someInputName").attr("placeholder")).isEmpty();
     }
 
+    @Test
+    void shouldShowPromptAndHelpMessagesForInputWithPlaceholder() throws Exception {
+        var page = getFormPage("firstPage");
+        assertThat(page.getTitle()).isEqualTo("firstPageTitle");
+        assertThat(page.findElementByText(promptMessage)).isNotNull();
+        assertThat(page.findElementByText(helpMessage)).isNotNull();
+    }
+
+    @Test
+    void shouldKeepInputAfterNavigation() throws Exception {
+        String textInputValue = "some input";
+        String dateMonth = "10";
+        String dateDay = "02";
+        String dateYear = "1823";
+        String numberInputValue = "11";
+        String moneyInputValue = "some money";
+        String hourlyWageValue = "some wage";
+        postExpectingRedirect("firstPage", Map.of(
+                "editableTextInput", List.of(textInputValue),
+                "dateInput", List.of(dateMonth, dateDay, dateYear),
+                "numberInput", List.of(numberInputValue),
+                "radioInput", List.of("1"),
+                "checkboxInput", List.of("1", "2"),
+                "selectInput", List.of("2"),
+                "moneyInput", List.of(moneyInputValue),
+                "hourlyWageInput", List.of(hourlyWageValue)
+        ), "nextPage");
+
+        var testPage = getFormPage("firstPage");
+        assertThat(testPage.getInputValue("editableTextInput")).isEqualTo(textInputValue);
+        assertThat(testPage.getBirthDateValue("dateInput", DatePart.MONTH)).isEqualTo(dateMonth);
+        assertThat(testPage.getBirthDateValue("dateInput", DatePart.DAY)).isEqualTo(dateDay);
+        assertThat(testPage.getBirthDateValue("dateInput", DatePart.YEAR)).isEqualTo(dateYear);
+        assertThat(testPage.getInputValue("numberInput")).isEqualTo(numberInputValue);
+        assertThat(testPage.getRadioValue("radioInput")).isEqualTo("1");
+        assertThat(testPage.getCheckboxValues("checkboxInput")).containsOnly("1", "2");
+        assertThat(testPage.getSelectValue("selectInput")).isEqualTo("2");
+        assertThat(testPage.getInputValue("moneyInput")).isEqualTo(moneyInputValue);
+        assertThat(testPage.getInputValue("hourlyWageInput")).isEqualTo(hourlyWageValue);
+    }
 }

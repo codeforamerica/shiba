@@ -1,16 +1,16 @@
 package org.codeforamerica.shiba;
 
+import org.codeforamerica.shiba.pages.DatePart;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Helps parse mockmvc result html
@@ -80,9 +80,45 @@ public class FormPage {
         return html.select("input[name='%s[]']".formatted(name)).first();
     }
 
-	public void assertLinkWithTextHasCorrectUrl(String linkText, String expectedUrl) {
-		assertThat(findLinksByText(linkText)).hasSize(1);
+    public Element findElementByText(String text) {
+        return html.getElementsContainingText(text).first();
+    }
+
+    public String getBirthDateValue(String inputName, DatePart datePart) {
+        return html.select(
+                "input[name='%s[]']:nth-of-type(%d)".formatted(inputName, datePart.getPosition())
+        ).attr("value");
+    }
+
+    public String getRadioValue(String inputName) {
+        return html.select("input[name='%s[]']".formatted(inputName)).stream()
+                .filter(element -> element.hasAttr("checked"))
+                .findFirst()
+                .map(element -> element.attr("value"))
+                .orElse(null);
+    }
+
+    public void assertLinkWithTextHasCorrectUrl(String linkText, String expectedUrl) {
+        assertThat(findLinksByText(linkText)).hasSize(1);
         var url = findLinksByText(linkText).get(0).attr("href");
         assertThat(url).isEqualTo(expectedUrl);
-	}
+    }
+
+    public List<String> getCheckboxValues(String inputName) {
+        return html.select("input[name='%s[]']".formatted(inputName)).stream()
+                .filter(element -> element.hasAttr("checked"))
+                .map(element -> element.attr("value"))
+                .toList();
+
+    }
+
+    public String getSelectValue(String inputName) {
+        var optionElements = html.select("select[name='%s[]']".formatted(inputName)).select("option");
+
+        return optionElements.stream()
+                .filter(element -> element.hasAttr("selected"))
+                .findFirst()
+                .map(element -> element.attr("value"))
+                .orElseThrow();
+    }
 }

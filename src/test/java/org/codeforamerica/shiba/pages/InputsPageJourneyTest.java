@@ -60,55 +60,6 @@ public class InputsPageJourneyTest extends AbstractExistingStartTimePageTest {
     }
 
     @Test
-    void shouldShowPromptAndHelpMessagesForInputWithPlaceholder() {
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-        assertThat(driver.getTitle()).isEqualTo("firstPageTitle");
-
-        assertThat(driver.findElement(By.xpath(String.format("//*[text() = '%s']", promptMessage)))).isNotNull();
-        assertThat(driver.findElement(By.xpath(String.format("//*[text() = '%s']", helpMessage)))).isNotNull();
-    }
-
-    @Test
-    void shouldKeepInputAfterNavigation() {
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-
-        String textInputValue = "some input";
-        testPage.enter("editableTextInput", textInputValue);
-
-        String dateMonth = "10";
-        String dateDay = "02";
-        String dateYear = "1823";
-        testPage.enter("dateInput", String.join("/", dateMonth, dateDay, dateYear));
-
-        String numberInputValue = "11";
-        testPage.enter("numberInput", numberInputValue);
-
-        testPage.enter("radioInput", radioOption1);
-        testPage.enter("checkboxInput", List.of(checkboxOption1, checkboxOption2));
-        testPage.enter("selectInput", selectOption1);
-        String moneyInputValue = "some money";
-        testPage.enter("moneyInput", moneyInputValue);
-        String hourlyWageValue = "some wage";
-        testPage.enter("hourlyWageInput", hourlyWageValue);
-
-        driver.findElement(By.tagName("button")).click();
-        assertThat(driver.getTitle()).isEqualTo("nextPageTitle");
-        driver.findElement(By.partialLinkText("Go Back")).click();
-        assertThat(driver.getTitle()).isEqualTo("firstPageTitle");
-
-        assertThat(testPage.getInputValue("editableTextInput")).isEqualTo(textInputValue);
-        assertThat(testPage.getBirthDateValue("dateInput", DatePart.MONTH)).isEqualTo(dateMonth);
-        assertThat(testPage.getBirthDateValue("dateInput", DatePart.DAY)).isEqualTo(dateDay);
-        assertThat(testPage.getBirthDateValue("dateInput", DatePart.YEAR)).isEqualTo(dateYear);
-        assertThat(testPage.getInputValue("numberInput")).isEqualTo(numberInputValue);
-        assertThat(testPage.getRadioValue("radioInput")).isEqualTo(radioOption1);
-        assertThat(testPage.getCheckboxValues("checkboxInput")).containsOnly(checkboxOption1, checkboxOption2);
-        assertThat(testPage.getSelectValue("selectInput")).isEqualTo(selectOption1);
-        assertThat(testPage.getInputValue("moneyInput")).isEqualTo(moneyInputValue);
-        assertThat(testPage.getInputValue("hourlyWageInput")).isEqualTo(hourlyWageValue);
-    }
-
-    @Test
     void shouldNotBeAbleToChangeValueInUneditableInputs() {
         // TODO can we move this assertion into another test?
         driver.navigate().to(baseUrl + "/pages/firstPage");
