@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba.pages;
+package org.codeforamerica.shiba.testutilities;
 
 import io.percy.selenium.Percy;
 import org.openqa.selenium.By;
@@ -172,7 +172,7 @@ public class Page {
         optionToSelect.click();
     }
 
-    protected WebElement getSelectedOption(String elementId) {
+    public WebElement getSelectedOption(String elementId) {
         return driver.findElementById(elementId)
                 .findElements(By.tagName("option")).stream()
                 .filter(WebElement::isSelected)

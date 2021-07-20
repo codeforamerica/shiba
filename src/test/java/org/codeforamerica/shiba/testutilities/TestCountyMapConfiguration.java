@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba.pages;
+package org.codeforamerica.shiba.testutilities;
 
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.mnit.MnitCountyInformation;

@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba;
+package org.codeforamerica.shiba.testutilities;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.MessageSource;

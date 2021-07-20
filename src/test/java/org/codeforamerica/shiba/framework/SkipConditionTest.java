@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.framework;
 
-import org.codeforamerica.shiba.FormPage;
+import org.codeforamerica.shiba.testutilities.FormPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

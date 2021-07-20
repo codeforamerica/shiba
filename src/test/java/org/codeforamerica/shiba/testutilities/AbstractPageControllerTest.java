@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba.pages;
+package org.codeforamerica.shiba.testutilities;
 
 import org.codeforamerica.shiba.ApplicationStatusUpdater;
 import org.codeforamerica.shiba.MonitoringService;
@@ -12,6 +12,9 @@ import org.codeforamerica.shiba.configurations.ClockConfiguration;
 import org.codeforamerica.shiba.documents.CombinedDocumentRepositoryService;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
+import org.codeforamerica.shiba.pages.DocRecommendationMessageService;
+import org.codeforamerica.shiba.pages.PageController;
+import org.codeforamerica.shiba.pages.SuccessMessageService;
 import org.codeforamerica.shiba.pages.config.ApplicationConfigurationFactoryAppConfig;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -26,7 +29,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.codeforamerica.shiba.TestUtils.resetApplicationData;
+import static org.codeforamerica.shiba.testutilities.TestUtils.resetApplicationData;
 
 @ActiveProfiles("test")
 @WebMvcTest(PageController.class)

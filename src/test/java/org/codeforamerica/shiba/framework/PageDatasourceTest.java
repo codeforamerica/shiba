@@ -1,13 +1,9 @@
 package org.codeforamerica.shiba.framework;
 
-import org.codeforamerica.shiba.pages.YesNoAnswer;
+import org.codeforamerica.shiba.testutilities.YesNoAnswer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.List;
 
 import static java.util.Locale.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThat;
