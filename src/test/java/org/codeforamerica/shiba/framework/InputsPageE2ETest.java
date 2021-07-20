@@ -1,8 +1,9 @@
-package org.codeforamerica.shiba.pages;
+package org.codeforamerica.shiba.framework;
 
 import org.codeforamerica.shiba.AbstractExistingStartTimePageTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -18,7 +19,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"pagesConfig=pages-config/test-input.yaml"})
-public class InputsPageJourneyTest extends AbstractExistingStartTimePageTest {
+@Tag("framework")
+public class InputsPageE2ETest extends AbstractExistingStartTimePageTest {
     final String radioOption1 = "radio option 1";
     final String radioOption2 = "option-2";
     final String checkboxOption1 = "checkbox option 1";
@@ -169,5 +171,4 @@ public class InputsPageJourneyTest extends AbstractExistingStartTimePageTest {
             assertThat(driver.findElement(By.cssSelector("input[name='checkboxInputWithFollowUps-followUpTextInput[]']")).isDisplayed()).isTrue();
         }
     }
-
 }

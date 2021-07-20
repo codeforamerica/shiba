@@ -65,7 +65,8 @@ public class FormPage {
     public String getCardValue(String title) {
         return html.getElementsByClass("statistic-card").stream()
                 .filter(card -> card.getElementsByClass("statistic-card__label").get(0).ownText().contains(title))
-                .findFirst().get().getElementsByClass("statistic-card__number").get(0).ownText();
+                .findFirst().orElseThrow()
+                .getElementsByClass("statistic-card__number").get(0).ownText();
     }
 
     public List<Element> findElementsByTag(String tag) {
@@ -114,7 +115,6 @@ public class FormPage {
 
     public String getSelectValue(String inputName) {
         var optionElements = html.select("select[name='%s[]']".formatted(inputName)).select("option");
-
         return optionElements.stream()
                 .filter(element -> element.hasAttr("selected"))
                 .findFirst()
