@@ -1,8 +1,8 @@
 package org.codeforamerica.shiba.pages;
 
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
-import org.codeforamerica.shiba.AbstractShibaMockMvcTest;
-import org.codeforamerica.shiba.FormPage;
+import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
+import org.codeforamerica.shiba.testutilities.FormPage;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.TestUtils.assertPdfFieldEquals;
+import static org.codeforamerica.shiba.testutilities.TestUtils.assertPdfFieldEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

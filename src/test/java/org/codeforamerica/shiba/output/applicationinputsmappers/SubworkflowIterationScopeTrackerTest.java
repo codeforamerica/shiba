@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.output.applicationinputsmappers;
 
-import org.codeforamerica.shiba.PageDataBuilder;
-import org.codeforamerica.shiba.PagesDataBuilder;
+import org.codeforamerica.shiba.testutilities.PageDataBuilder;
+import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.codeforamerica.shiba.inputconditions.ValueMatcher;
 import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.output.applicationinputsmappers.SubworkflowIterationScopeTracker.IterationScopeInfo;

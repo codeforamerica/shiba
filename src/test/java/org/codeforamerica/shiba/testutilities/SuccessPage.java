@@ -1,5 +1,6 @@
-package org.codeforamerica.shiba.pages;
+package org.codeforamerica.shiba.testutilities;
 
+import org.codeforamerica.shiba.pages.Sentiment;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;

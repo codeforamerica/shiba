@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba;
+package org.codeforamerica.shiba.testutilities;
 
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;

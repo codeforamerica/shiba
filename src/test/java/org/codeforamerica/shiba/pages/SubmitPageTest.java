@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.AbstractStaticMessageSourcePageTest;
+import org.codeforamerica.shiba.testutilities.AbstractStaticMessageSourcePageTest;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;

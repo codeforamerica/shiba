@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.AbstractShibaMockMvcTest;
+import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

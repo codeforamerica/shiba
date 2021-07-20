@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.AbstractStaticMessageSourcePageTest;
+import org.codeforamerica.shiba.testutilities.AbstractStaticMessageSourcePageTest;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;

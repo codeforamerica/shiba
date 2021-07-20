@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.AbstractExistingStartTimePageTest;
+import org.codeforamerica.shiba.testutilities.AbstractExistingStartTimePageTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;

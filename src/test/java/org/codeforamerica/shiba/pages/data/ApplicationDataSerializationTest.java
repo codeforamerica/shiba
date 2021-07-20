@@ -21,7 +21,7 @@ import java.time.ZonedDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.codeforamerica.shiba.County.Hennepin;
-import static org.codeforamerica.shiba.TestUtils.getFileContentsAsByteArray;
+import static org.codeforamerica.shiba.testutilities.TestUtils.getFileContentsAsByteArray;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;

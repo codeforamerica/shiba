@@ -1,7 +1,8 @@
-package org.codeforamerica.shiba;
+package org.codeforamerica.shiba.testutilities;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
+import org.assertj.core.api.Assertions;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.config.PageTemplate;
@@ -35,8 +36,8 @@ import java.util.*;
 
 import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.TestUtils.getAbsoluteFilepathString;
-import static org.codeforamerica.shiba.TestUtils.resetApplicationData;
+import static org.codeforamerica.shiba.testutilities.TestUtils.getAbsoluteFilepathString;
+import static org.codeforamerica.shiba.testutilities.TestUtils.resetApplicationData;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -330,7 +331,7 @@ public class AbstractShibaMockMvcTest {
                                                     String elementId,
                                                     String expectedText) throws Exception {
         var nextPage = postAndFollowRedirect(pageName, inputName, value);
-        assertThat(nextPage.findElementTextById(elementId)).isEqualTo(expectedText);
+        Assertions.assertThat(nextPage.findElementTextById(elementId)).isEqualTo(expectedText);
     }
 
     protected void assertPageHasElementWithId(String pageName, String elementId) throws Exception {

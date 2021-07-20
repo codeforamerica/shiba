@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.AbstractExistingStartTimePageTest;
+import org.codeforamerica.shiba.testutilities.AbstractExistingStartTimePageTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -46,7 +46,7 @@ public class PageModelPageTest extends AbstractExistingStartTimePageTest {
     @Test
     void shouldRenderTheConfiguredSubtleLink() {
         navigateTo("subtleLinkPage");
-        assertThat(testPage.driver.findElementById("subtle-link").getText()).isEqualTo(subtleLink);
+        assertThat(driver.findElementById("subtle-link").getText()).isEqualTo(subtleLink);
     }
 
     @Test

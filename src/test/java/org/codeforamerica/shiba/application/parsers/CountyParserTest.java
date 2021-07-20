@@ -3,7 +3,7 @@ package org.codeforamerica.shiba.application.parsers;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.TestApplicationDataBuilder;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

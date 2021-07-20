@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.output.caf;
 
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.TestApplicationDataBuilder;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;

@@ -3,7 +3,7 @@ package org.codeforamerica.shiba.pages.enrichment;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.TestApplicationDataBuilder;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;

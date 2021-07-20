@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.output.pdf;
 
-import org.codeforamerica.shiba.AbstractShibaMockMvcTest;
+import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.codeforamerica.shiba.TestUtils.assertPdfFieldEquals;
-import static org.codeforamerica.shiba.TestUtils.assertPdfFieldIsEmpty;
+import static org.codeforamerica.shiba.testutilities.TestUtils.assertPdfFieldEquals;
+import static org.codeforamerica.shiba.testutilities.TestUtils.assertPdfFieldIsEmpty;
 import static org.codeforamerica.shiba.output.caf.CoverPageInputsMapper.CHILDCARE_WAITING_LIST_UTM_SOURCE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;

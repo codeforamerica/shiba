@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.framework;
 
-import org.codeforamerica.shiba.AbstractShibaMockMvcTest;
-import org.codeforamerica.shiba.StaticMessageSourceConfiguration;
+import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
+import org.codeforamerica.shiba.testutilities.StaticMessageSourceConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;

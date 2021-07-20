@@ -1,8 +1,8 @@
 package org.codeforamerica.shiba.application;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.codeforamerica.shiba.PageDataBuilder;
-import org.codeforamerica.shiba.PagesDataBuilder;
+import org.codeforamerica.shiba.testutilities.PageDataBuilder;
+import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.Subworkflow;
 import org.codeforamerica.shiba.pages.data.Subworkflows;

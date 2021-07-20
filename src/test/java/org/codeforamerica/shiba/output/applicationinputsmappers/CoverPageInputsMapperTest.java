@@ -2,8 +2,8 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
-import org.codeforamerica.shiba.PageDataBuilder;
-import org.codeforamerica.shiba.PagesDataBuilder;
+import org.codeforamerica.shiba.testutilities.PageDataBuilder;
+import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.mnit.MnitCountyInformation;

@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.codeforamerica.shiba.pages.data.MaskedSerializer;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.testutilities.PageDataBuilder;
+import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.application.parsers;
 
-import org.codeforamerica.shiba.PageDataBuilder;
-import org.codeforamerica.shiba.PagesDataBuilder;
+import org.codeforamerica.shiba.testutilities.PageDataBuilder;
+import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;

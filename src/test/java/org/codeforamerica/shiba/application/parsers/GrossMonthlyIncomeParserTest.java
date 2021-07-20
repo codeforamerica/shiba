@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.application.parsers;
 
-import org.codeforamerica.shiba.PageDataBuilder;
-import org.codeforamerica.shiba.PagesDataBuilder;
+import org.codeforamerica.shiba.testutilities.PageDataBuilder;
+import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.codeforamerica.shiba.output.caf.HourlyJobIncomeInformation;
 import org.codeforamerica.shiba.output.caf.JobIncomeInformation;
 import org.codeforamerica.shiba.output.caf.NonHourlyJobIncomeInformation;

@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.journeys;
 
-import org.codeforamerica.shiba.TestUtils;
+import org.codeforamerica.shiba.testutilities.TestUtils;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -14,8 +14,8 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.application.FlowType.FULL;
-import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
-import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
+import static org.codeforamerica.shiba.testutilities.YesNoAnswer.NO;
+import static org.codeforamerica.shiba.testutilities.YesNoAnswer.YES;
 import static org.mockito.Mockito.when;
 
 @Tag("journey")

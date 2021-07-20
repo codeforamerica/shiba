@@ -1,11 +1,9 @@
-package org.codeforamerica.shiba;
+package org.codeforamerica.shiba.testutilities;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.output.Document;
-import org.codeforamerica.shiba.pages.Page;
-import org.codeforamerica.shiba.pages.SuccessPage;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.pages.enrichment.smartystreets.SmartyStreetClient;
 import org.jetbrains.annotations.NotNull;
@@ -39,8 +37,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
-import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
-import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
+import static org.codeforamerica.shiba.testutilities.YesNoAnswer.NO;
+import static org.codeforamerica.shiba.testutilities.YesNoAnswer.YES;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;

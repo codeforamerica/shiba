@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.AbstractExistingStartTimePageTest;
+import org.codeforamerica.shiba.testutilities.AbstractExistingStartTimePageTest;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.pages.enrichment.ApplicationEnrichment;

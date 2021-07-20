@@ -13,8 +13,8 @@ import static java.util.Locale.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.application.FlowType.EXPEDITED;
 import static org.codeforamerica.shiba.application.FlowType.MINIMUM;
-import static org.codeforamerica.shiba.pages.YesNoAnswer.NO;
-import static org.codeforamerica.shiba.pages.YesNoAnswer.YES;
+import static org.codeforamerica.shiba.testutilities.YesNoAnswer.NO;
+import static org.codeforamerica.shiba.testutilities.YesNoAnswer.YES;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 

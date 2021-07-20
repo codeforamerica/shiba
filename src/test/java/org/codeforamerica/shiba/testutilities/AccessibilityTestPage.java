@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba.pages;
+package org.codeforamerica.shiba.testutilities;
 
 import com.deque.html.axecore.results.Results;
 import com.deque.html.axecore.results.Rule;

@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.application;
 
-import org.codeforamerica.shiba.AbstractRepositoryTest;
+import org.codeforamerica.shiba.testutilities.AbstractRepositoryTest;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.*;
