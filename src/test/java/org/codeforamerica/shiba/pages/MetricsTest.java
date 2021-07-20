@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.AbstractShibaMockMvcTest;
-import org.codeforamerica.shiba.framework.FormPage;
+import org.codeforamerica.shiba.FormPage;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
