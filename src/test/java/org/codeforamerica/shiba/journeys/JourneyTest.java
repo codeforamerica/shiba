@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba.pages.journeys;
+package org.codeforamerica.shiba.journeys;
 
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.AbstractBasePageTest;
@@ -36,7 +36,7 @@ import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public abstract class JourneyTest extends AbstractBasePageTest {
+abstract class JourneyTest extends AbstractBasePageTest {
     protected PDAcroForm caf;
     protected PDAcroForm ccap;
 
