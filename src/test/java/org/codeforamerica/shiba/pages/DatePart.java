@@ -9,7 +9,7 @@ public enum DatePart {
         this.position = position;
     }
 
-    Integer getPosition() {
+    public Integer getPosition() {
         return this.position;
     }
 }

@@ -1,8 +1,9 @@
-package org.codeforamerica.shiba.pages;
+package org.codeforamerica.shiba.framework;
 
 import org.codeforamerica.shiba.AbstractExistingStartTimePageTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -18,8 +19,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"pagesConfig=pages-config/test-input.yaml"})
-public class InputsPageTest extends AbstractExistingStartTimePageTest {
-
+@Tag("framework")
+public class InputsPageE2ETest extends AbstractExistingStartTimePageTest {
     final String radioOption1 = "radio option 1";
     final String radioOption2 = "option-2";
     final String checkboxOption1 = "checkbox option 1";
@@ -61,52 +62,47 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
     }
 
     @Test
-    void shouldShowPromptAndHelpMessagesForInputWithPlaceholder() {
+    void shouldNotBeAbleToChangeValueInUneditableInputs() {
+        // TODO can we move this assertion into another test?
         driver.navigate().to(baseUrl + "/pages/firstPage");
-        assertThat(driver.getTitle()).isEqualTo("firstPageTitle");
+        WebElement uneditableInput = driver.findElement(By.cssSelector("input[name='uneditableInput[]']"));
 
-        assertThat(driver.findElement(By.xpath(String.format("//*[text() = '%s']", promptMessage)))).isNotNull();
-        assertThat(driver.findElement(By.xpath(String.format("//*[text() = '%s']", helpMessage)))).isNotNull();
+        uneditableInput.sendKeys("new value");
+
+        assertThat(uneditableInput.getAttribute("value")).isEqualTo("default value");
     }
 
     @Test
-    void shouldKeepInputAfterNavigation() {
+    void shouldKeepUneditableInputsAfterNavigation() {
+        driver.navigate().to(baseUrl + "/pages/firstPage");
+        driver.findElement(By.tagName("button")).click();
+
+        assertThat(driver.getTitle()).isEqualTo("nextPageTitle");
+
+        driver.findElement(By.partialLinkText("Go Back")).click();
+
+        assertThat(driver.getTitle()).isEqualTo("firstPageTitle");
+        assertThat(driver.findElement(By.cssSelector(String.format("input[name='%s[]']", "uneditableInput"))).getAttribute("value")).contains("default value");
+    }
+
+    @Test
+    void shouldUncheckAnyOtherCheckedBoxesWhenNoneCheckboxIsSelected() {
         driver.navigate().to(baseUrl + "/pages/firstPage");
 
-        String textInputValue = "some input";
-        testPage.enter("editableTextInput", textInputValue);
-
-        String dateMonth = "10";
-        String dateDay = "02";
-        String dateYear = "1823";
-        testPage.enter("dateInput", String.join("/", dateMonth, dateDay, dateYear));
-
-        String numberInputValue = "11";
-        testPage.enter("numberInput", numberInputValue);
-
-        testPage.enter("radioInput", radioOption1);
         testPage.enter("checkboxInput", List.of(checkboxOption1, checkboxOption2));
-        testPage.enter("selectInput", selectOption1);
-        String moneyInputValue = "some money";
-        testPage.enter("moneyInput", moneyInputValue);
-        String hourlyWageValue = "some wage";
-        testPage.enter("hourlyWageInput", hourlyWageValue);
+        testPage.enter("checkboxInput", noneCheckboxOption);
 
-        driver.findElement(By.tagName("button")).click();
-        assertThat(driver.getTitle()).isEqualTo("nextPageTitle");
-        driver.findElement(By.partialLinkText("Go Back")).click();
-        assertThat(driver.getTitle()).isEqualTo("firstPageTitle");
+        assertThat(testPage.getCheckboxValues("checkboxInput")).containsOnly(noneCheckboxOption);
+    }
 
-        assertThat(testPage.getInputValue("editableTextInput")).isEqualTo(textInputValue);
-        assertThat(testPage.getBirthDateValue("dateInput", DatePart.MONTH)).isEqualTo(dateMonth);
-        assertThat(testPage.getBirthDateValue("dateInput", DatePart.DAY)).isEqualTo(dateDay);
-        assertThat(testPage.getBirthDateValue("dateInput", DatePart.YEAR)).isEqualTo(dateYear);
-        assertThat(testPage.getInputValue("numberInput")).isEqualTo(numberInputValue);
-        assertThat(testPage.getRadioValue("radioInput")).isEqualTo(radioOption1);
-        assertThat(testPage.getCheckboxValues("checkboxInput")).containsOnly(checkboxOption1, checkboxOption2);
-        assertThat(testPage.getSelectValue("selectInput")).isEqualTo(selectOption1);
-        assertThat(testPage.getInputValue("moneyInput")).isEqualTo(moneyInputValue);
-        assertThat(testPage.getInputValue("hourlyWageInput")).isEqualTo(hourlyWageValue);
+    @Test
+    void shouldUncheckNoneCheckboxWhenAnyOtherCheckboxIsSelected() {
+        driver.navigate().to(baseUrl + "/pages/firstPage");
+
+        testPage.enter("checkboxInput", noneCheckboxOption);
+        testPage.enter("checkboxInput", checkboxOption1);
+
+        assertThat(testPage.getCheckboxValues("checkboxInput")).containsOnly(checkboxOption1);
     }
 
     @Nested
@@ -174,111 +170,5 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
 
             assertThat(driver.findElement(By.cssSelector("input[name='checkboxInputWithFollowUps-followUpTextInput[]']")).isDisplayed()).isTrue();
         }
-    }
-
-    @Test
-    void shouldNotBeAbleToChangeValueInUneditableInputs() {
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-        WebElement uneditableInput = driver.findElement(By.cssSelector(String.format("input[name='%s[]']", "uneditableInput")));
-
-        uneditableInput.sendKeys("new value");
-
-        assertThat(uneditableInput.getAttribute("value")).isEqualTo("default value");
-    }
-
-    @Test
-    void shouldKeepUneditableInputsAfterNavigation() {
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-        driver.findElement(By.tagName("button")).click();
-
-        assertThat(driver.getTitle()).isEqualTo("nextPageTitle");
-
-        driver.findElement(By.partialLinkText("Go Back")).click();
-
-        assertThat(driver.getTitle()).isEqualTo("firstPageTitle");
-        assertThat(driver.findElement(By.cssSelector(String.format("input[name='%s[]']", "uneditableInput"))).getAttribute("value")).contains("default value");
-    }
-
-    @Test
-    void shouldDisplayPromptMessageFragment() {
-        driver.navigate().to(baseUrl + "/pages/inputWithPromptFragmentPage");
-
-        assertThat(driver.findElementByPartialLinkText("test message")).isNotNull();
-    }
-
-    @Test
-    void shouldUncheckAnyOtherCheckedBoxesWhenNoneCheckboxIsSelected() {
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-
-        testPage.enter("checkboxInput", List.of(checkboxOption1, checkboxOption2));
-        testPage.enter("checkboxInput", noneCheckboxOption);
-
-        assertThat(testPage.getCheckboxValues("checkboxInput")).containsOnly(noneCheckboxOption);
-    }
-
-    @Test
-    void shouldUncheckNoneCheckboxWhenAnyOtherCheckboxIsSelected() {
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-
-        testPage.enter("checkboxInput", noneCheckboxOption);
-        testPage.enter("checkboxInput", checkboxOption1);
-
-        assertThat(testPage.getCheckboxValues("checkboxInput")).containsOnly(checkboxOption1);
-    }
-
-    @Test
-    void shouldShowHelpMessageKeyOnCheckboxOptions() {
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-
-        assertThat(testPage.driver.findElementByClassName("checkbox").getText()).contains(optionHelpMessage);
-    }
-
-    @Test
-    void shouldNotDisplayPrimaryButtonWhenHasPrimaryButtonIsFalse() {
-        navigateTo("doNotHavePrimaryButtonPage");
-
-        assertThat(driver.findElements(By.className("button--primary"))).isEmpty();
-    }
-
-    @Test
-    void shouldDisplayFragmentForPage() {
-        navigateTo("pageWithContextFragment");
-
-        assertThat(driver.findElement(By.id("pageContext")).getText()).isEqualTo("this is context");
-    }
-
-    @Test
-    void shouldHaveAccessToDatasources() {
-        navigateTo("firstPage");
-        String datasourceText = "Datasource Text";
-        testPage.enter("editableTextInput", datasourceText);
-        testPage.clickContinue();
-
-        navigateTo("subworkflowPage");
-
-        testPage.enter("value1", "a");
-        testPage.clickContinue();
-        testPage.enter("value1", "b");
-        testPage.clickContinue();
-        testPage.enter("value1", "c");
-        testPage.clickContinue();
-
-        navigateTo("pageWithReferenceCheckboxes");
-
-        assertThat(testPage.findElementTextByName("iteration0")).isEqualTo("a");
-        assertThat(testPage.findElementTextByName("iteration1")).isEqualTo("b");
-        assertThat(testPage.findElementTextByName("iteration2")).isEqualTo("c");
-        assertThat(testPage.findElementTextByName("datasourceText")).isEqualTo(datasourceText);
-    }
-
-    @Test
-    void shouldDisplayPlaceholderIfPresent() {
-        navigateTo("firstPage");
-        assertThat(driver.getTitle()).isEqualTo("firstPageTitle");
-        assertThat(driver.findElement(By.name("editableTextInput[]")).getAttribute("placeholder")).isEqualTo(placeholder);
-
-        navigateTo("nextPage");
-        assertThat(driver.getTitle()).isEqualTo("nextPageTitle");
-        assertThat(driver.findElement(By.name("someInputName[]")).getAttribute("placeholder")).isEmpty();
     }
 }

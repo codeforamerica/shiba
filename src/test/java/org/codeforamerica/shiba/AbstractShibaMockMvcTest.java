@@ -782,4 +782,8 @@ public class AbstractShibaMockMvcTest {
         mockMvc.perform(post("/groups/household/0/delete").with(csrf()).session(session))
                 .andExpect(redirectedUrl("/pages/addHouseholdMembers"));
     }
+
+    protected FormPage getFormPage(String pageName) throws Exception {
+        return new FormPage(getPage(pageName));
+    }
 }

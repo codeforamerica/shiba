@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.framework;
 
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.support.StaticMessageSource;
@@ -14,6 +15,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Import({AbstractFrameworkTest.StartTimerController.class})
+@Tag("framework")
 public class AbstractFrameworkTest extends AbstractStaticMessageSourceFrameworkTest {
     @Controller
     public static class StartTimerController {

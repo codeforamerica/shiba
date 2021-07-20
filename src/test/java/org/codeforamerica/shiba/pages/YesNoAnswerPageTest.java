@@ -29,7 +29,7 @@ public class YesNoAnswerPageTest extends AbstractExistingStartTimePageTest {
         driver.findElement(By.tagName("button")).click();
 
         assertThat(driver.getTitle()).isEqualTo(answerPage);
-        assertThat(testPage.findElementTextByName("yesOrNo")).isEqualTo("true");
+        assertThat(testPage.findElementTextById("yesOrNo")).isEqualTo("true");
     }
 
 }

@@ -222,8 +222,8 @@ public class Page {
                 .stream().anyMatch(webElement -> webElement.getText().equals(errorMessage));
     }
 
-    public String findElementTextByName(String name) {
-        return driver.findElement(By.id(name)).getText();
+    public String findElementTextById(String id) {
+        return driver.findElement(By.id(id)).getText();
     }
 
     public WebElement findElementById(String id) {
