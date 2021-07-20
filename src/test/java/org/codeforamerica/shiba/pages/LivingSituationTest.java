@@ -28,4 +28,36 @@ public class LivingSituationTest extends AbstractShibaMockMvcTest {
         finishAddingHouseholdMembers("childrenInNeedOfCare");
         postExpectingNextPageTitle("childrenInNeedOfCare", "Living situation");
     }
+
+    @Test
+    void shouldAskLivingSituationIfGRHApplicant() throws Exception {
+        completeFlowFromLandingPageThroughReviewInfo("GRH");
+        postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "true", "startHousehold");
+        fillOutHousemateInfo("EA");
+        finishAddingHouseholdMembers("livingSituation");
+    }
+
+    @Test
+    void shouldAskLivingSituationIfGRHApplicantLivingAlone() throws Exception {
+        completeFlowFromLandingPageThroughReviewInfo("GRH");
+        postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "false", "introPersonalDetails");
+        assertNavigationRedirectsToCorrectNextPage("introPersonalDetails", "livingSituation");
+    }
+
+    @Test
+    void shouldAskLivingSituationIfCCAPHouseholdMember() throws Exception {
+        completeFlowFromLandingPageThroughReviewInfo("EA");
+        postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "true", "startHousehold");
+        fillOutHousemateInfo("CCAP");
+        finishAddingHouseholdMembers("childrenInNeedOfCare");
+        postExpectingNextPageTitle("childrenInNeedOfCare", "Living situation");
+    }
+
+    @Test
+    void shouldNotAskLivingSituationIfNotCCAPorGRH() throws Exception {
+        completeFlowFromLandingPageThroughReviewInfo("EA");
+        postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "true", "startHousehold");
+        fillOutHousemateInfo("EA");
+        finishAddingHouseholdMembers("goingToSchool");
+    }
 }
