@@ -82,7 +82,7 @@ public class SkipConditionTest extends AbstractFrameworkTest {
 
     @Test
     void shouldNavigateToTheFirstNextPageWhoseConditionIsTrue() throws Exception {
-        postExpectingNextPageTitle("fourthPage", "foo","goToFirstPage", firstPageTitle);
+        postExpectingNextPageTitle("fourthPage", "foo", "goToFirstPage", firstPageTitle);
     }
 
     @Test
