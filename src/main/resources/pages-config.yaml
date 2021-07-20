@@ -590,6 +590,11 @@ pageDefinitions:
         validators:
           - validation: CITY
             errorMessageKey: city-for-general-delivery.make-sure-to-provide-a-city
+  - &generalDeliveryAddress
+    name: generalDeliveryAddress
+    pageTitle: general-delivery-address.title
+    headerKey: general-delivery-address.the-county-will-send-all-mail-about-this-application-to
+    contextFragment: mailContextFragment
   - &mailingAddress2
     name: mailingAddress
     headerKey: mailing-address.where-can-the-county-send-your-mail
@@ -2648,8 +2653,15 @@ workflow:
       - pageName: cityForGeneralDelivery
   cityForGeneralDelivery:
     pageConfiguration: *cityForGeneralDelivery
+    enrichment: generalDeliveryAddressEnrichment
     nextPages:
-      - pageName: mailingAddress2 #TODO
+      - pageName: generalDeliveryAddress
+  generalDeliveryAddress:
+    pageConfiguration: *generalDeliveryAddress
+    nextPages:
+      - pageName: reviewInfo
+    datasources:
+      - pageName: cityForGeneralDelivery
   mailingAddress2:
     pageConfiguration: *mailingAddress2
     enrichment: mailingAddressEnrichment

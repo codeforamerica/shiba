@@ -1,0 +1,44 @@
+<div th:fragment="generalDeliveryAddress">
+    <div class="grid__item address-validation spacing-below-60">
+        <div class="radio-button is-selected left-aligned">
+            <div>General Delivery</div>
+            <div th:text="${data.getPageInputFirstValue('cityForGeneralDelivery','whatIsTheCity') + ', MN'}">, MN</div>
+            <div th:text="${data.getPageInputFirstValue('cityForGeneralDelivery','enrichedZipcode')}"></div>
+        </div>
+    </div>
+
+    <div class="grid-ignore-mobile spacing-below-35">
+        <div class="success-icons grid__item width-one-sixth spacing-below-15">
+            <div th:replace="fragments/icons/icon-phone :: icon-phone" class="success-icons width-one-sixth"></div>
+        </div>
+        <div class="grid__item width-five-sixths">
+            <div class="spacing-below-0"
+                 th:text="#{general-delivery-address.call-your-county-to-get-the-exact-street-address}"></div>
+        </div>
+    </div>
+
+    <div class="grid-ignore-mobile spacing-below-60">
+        <div class="success-icons grid__item width-one-sixth spacing-below-15">
+        </div>
+        <div class="grid__item width-five-sixths">
+            <div>
+                <strong th:text="${data.get('county')}"></strong>
+            </div>
+            <div>
+                <strong class="spacing-below-10"
+                        th:text="${data.getPageInputFirstValue('cityForGeneralDelivery','enrichedPhoneNumber')}"></strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-ignore-mobile spacing-below-60">
+        <div class="success-icons grid__item width-one-sixth spacing-below-15">
+            <div th:replace="fragments/icons/icon-communications :: icon-communications"
+                 class="success-icons width-one-sixth"></div>
+        </div>
+        <div class="grid__item width-five-sixths">
+            <div class="spacing-below-10"
+                 th:text="#{general-delivery-address.tell-the-county-worker-you-submitted-an-application-on-MNbenefits}"></div>
+        </div>
+    </div>
+</div>

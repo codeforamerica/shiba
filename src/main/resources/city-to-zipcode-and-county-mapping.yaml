@@ -3,2702 +3,2702 @@
 cityToZipAndCountyMapping:
   Ada:
     displayName: Ada
-    zipcode: 56510
+    zipcode: "56510"
     county: Norman
   Adams:
     displayName: Adams
-    zipcode: 55909
+    zipcode: "55909"
     county: Mower
   Adrian:
     displayName: Adrian
-    zipcode: 56110
+    zipcode: "56110"
     county: Nobles
   Afton:
     displayName: Afton
-    zipcode: 55001
+    zipcode: "55001"
     county: Washington
   Aitkin:
     displayName: Aitkin
-    zipcode: 56431
+    zipcode: "56431"
     county: Aitkin
   Akeley:
     displayName: Akeley
-    zipcode: 56433
+    zipcode: "56433"
     county: Hubbard
   Albany:
     displayName: Albany
-    zipcode: 56307
+    zipcode: "56307"
     county: Stearns
   Albert-Lea:
     displayName: Albert Lea
-    zipcode: 56007
+    zipcode: "56007"
     county: Freeborn
   Albertville:
     displayName: Albertville
-    zipcode: 55301
+    zipcode: "55301"
     county: Wright
   Alden:
     displayName: Alden
-    zipcode: 56009
+    zipcode: "56009"
     county: Freeborn
   Alexandria:
     displayName: Alexandria
-    zipcode: 56308
+    zipcode: "56308"
     county: Douglas
   Altura:
     displayName: Altura
-    zipcode: 55910
+    zipcode: "55910"
     county: Winona
   Alvarado:
     displayName: Alvarado
-    zipcode: 56710
+    zipcode: "56710"
     county: Marshall
   Amboy:
     displayName: Amboy
-    zipcode: 56010
+    zipcode: "56010"
     county: Blue Earth
   Andover:
     displayName: Andover
-    zipcode: 55304
+    zipcode: "55304"
     county: Anoka
   Annandale:
     displayName: Annandale
-    zipcode: 55302
+    zipcode: "55302"
     county: Wright
   Anoka:
     displayName: Anoka
-    zipcode: 55303
+    zipcode: "55303"
     county: Anoka
   Apple-Valley:
     displayName: Apple Valley
-    zipcode: 55124
+    zipcode: "55124"
     county: Dakota
   Appleton:
     displayName: Appleton
-    zipcode: 56208
+    zipcode: "56208"
     county: Swift
   Arden-Hills:
     displayName: Arden Hills
-    zipcode: 55112
+    zipcode: "55112"
     county: Ramsey
   Argyle:
     displayName: Argyle
-    zipcode: 56713
+    zipcode: "56713"
     county: Marshall
   Arlington:
     displayName: Arlington
-    zipcode: 55307
+    zipcode: "55307"
     county: Sibley
   Ashby:
     displayName: Ashby
-    zipcode: 56309
+    zipcode: "56309"
     county: Grant
   Askov:
     displayName: Askov
-    zipcode: 55704
+    zipcode: "55704"
     county: Pine
   Atwater:
     displayName: Atwater
-    zipcode: 56209
+    zipcode: "56209"
     county: Kandiyohi
   Audubon:
     displayName: Audubon
-    zipcode: 56511
+    zipcode: "56511"
     county: Becker
   Aurora:
     displayName: Aurora
-    zipcode: 55705
+    zipcode: "55705"
     county: Saint Louis
   Austin:
     displayName: Austin
-    zipcode: 55912
+    zipcode: "55912"
     county: Mower
   Avon:
     displayName: Avon
-    zipcode: 56310
+    zipcode: "56310"
     county: Stearns
   Babbitt:
     displayName: Babbitt
-    zipcode: 55706
+    zipcode: "55706"
     county: Saint Louis
   Backus:
     displayName: Backus
-    zipcode: 56435
+    zipcode: "56435"
     county: Cass
   Badger:
     displayName: Badger
-    zipcode: 56714
+    zipcode: "56714"
     county: Roseau
   Bagley:
     displayName: Bagley
-    zipcode: 56621
+    zipcode: "56621"
     county: Clearwater
   Balaton:
     displayName: Balaton
-    zipcode: 56115
+    zipcode: "56115"
     county: Lyon
   Barnesville:
     displayName: Barnesville
-    zipcode: 56514
+    zipcode: "56514"
     county: Clay
   Barnum:
     displayName: Barnum
-    zipcode: 55707
+    zipcode: "55707"
     county: Carlton
   Barrett:
     displayName: Barrett
-    zipcode: 56311
+    zipcode: "56311"
     county: Grant
   Battle-Lake:
     displayName: Battle Lake
-    zipcode: 56515
+    zipcode: "56515"
     county: Otter Tail
   Baudette:
     displayName: Baudette
-    zipcode: 56623
+    zipcode: "56623"
     county: Lake of the Woods
   Baxter:
     displayName: Baxter
-    zipcode: 56425
+    zipcode: "56425"
     county: Crow Wing
   Bayport:
     displayName: Bayport
-    zipcode: 55003
+    zipcode: "55003"
     county: Washington
   Beardsley:
     displayName: Beardsley
-    zipcode: 56211
+    zipcode: "56211"
     county: Big Stone
   Beaver-Creek:
     displayName: Beaver Creek
-    zipcode: 56116
+    zipcode: "56116"
     county: Rock
   Becker:
     displayName: Becker
-    zipcode: 55308
+    zipcode: "55308"
     county: Sherburne
   Belgrade:
     displayName: Belgrade
-    zipcode: 56312
+    zipcode: "56312"
     county: Stearns
   Belle-Plaine:
     displayName: Belle Plaine
-    zipcode: 56011
+    zipcode: "56011"
     county: Scott
   Bellingham:
     displayName: Bellingham
-    zipcode: 56212
+    zipcode: "56212"
     county: Lac Qui Parle
   Belview:
     displayName: Belview
-    zipcode: 56214
+    zipcode: "56214"
     county: Redwood
   Bemidji:
     displayName: Bemidji
-    zipcode: 56601
+    zipcode: "56601"
     county: Beltrami
   Benson:
     displayName: Benson
-    zipcode: 56215
+    zipcode: "56215"
     county: Swift
   Bertha:
     displayName: Bertha
-    zipcode: 56437
+    zipcode: "56437"
     county: Todd
   Bethel:
     displayName: Bethel
-    zipcode: 55005
+    zipcode: "55005"
     county: Anoka
   Big-Falls:
     displayName: Big Falls
-    zipcode: 56627
+    zipcode: "56627"
     county: Koochiching
   Big-Lake:
     displayName: Big Lake
-    zipcode: 55309
+    zipcode: "55309"
     county: Sherburne
   Bigelow:
     displayName: Bigelow
-    zipcode: 56117
+    zipcode: "56117"
     county: Nobles
   Bigfork:
     displayName: Bigfork
-    zipcode: 56628
+    zipcode: "56628"
     county: Itasca
   Birchwood:
     displayName: Birchwood
-    zipcode: 55110
+    zipcode: "55110"
     county: Ramsey
   Bird-Island:
     displayName: Bird Island
-    zipcode: 55310
+    zipcode: "55310"
     county: Renville
   Biwabik:
     displayName: Biwabik
-    zipcode: 55708
+    zipcode: "55708"
     county: Saint Louis
   Blackduck:
     displayName: Blackduck
-    zipcode: 56630
+    zipcode: "56630"
     county: Beltrami
   Blaine:
     displayName: Blaine
-    zipcode: 55014
+    zipcode: "55014"
     county: Anoka
   Bloomington:
     displayName: Bloomington
-    zipcode: 55420
+    zipcode: "55420"
     county: Hennepin
   Breezy-Point:
     displayName: Breezy Point
-    zipcode: 56472
+    zipcode: "56472"
     county: Crow Wing
   Brooklyn-Center:
     displayName: Brooklyn Center
-    zipcode: 55428
+    zipcode: "55428"
     county: Hennepin
   Brooklyn-Park:
     displayName: Brooklyn Park
-    zipcode: 55428
+    zipcode: "55428"
     county: Hennepin
   Blooming-Prairie:
     displayName: Blooming Prairie
-    zipcode: 55917
+    zipcode: "55917"
     county: Steele
   Blue-Earth:
     displayName: Blue Earth
-    zipcode: 56013
+    zipcode: "56013"
     county: Faribault
   Bluffton:
     displayName: Bluffton
-    zipcode: 56518
+    zipcode: "56518"
     county: Otter Tail
   Bovey:
     displayName: Bovey
-    zipcode: 55709
+    zipcode: "55709"
     county: Itasca
   Bowlus:
     displayName: Bowlus
-    zipcode: 56314
+    zipcode: "56314"
     county: Morrison
   Boyd:
     displayName: Boyd
-    zipcode: 56218
+    zipcode: "56218"
     county: Lac Qui Parle
   Braham:
     displayName: Braham
-    zipcode: 55006
+    zipcode: "55006"
     county: Isanti
   Brainerd:
     displayName: Brainerd
-    zipcode: 56401
+    zipcode: "56401"
     county: Crow Wing
   Brandon:
     displayName: Brandon
-    zipcode: 56315
+    zipcode: "56315"
     county: Douglas
   Breckenridge:
     displayName: Breckenridge
-    zipcode: 56520
+    zipcode: "56520"
     county: Wilkin
   Brewster:
     displayName: Brewster
-    zipcode: 56119
+    zipcode: "56119"
     county: Nobles
   Bricelyn:
     displayName: Bricelyn
-    zipcode: 56014
+    zipcode: "56014"
     county: Faribault
   Brooten:
     displayName: Brooten
-    zipcode: 56316
+    zipcode: "56316"
     county: Stearns
   Browerville:
     displayName: Browerville
-    zipcode: 56438
+    zipcode: "56438"
     county: Todd
   Browns-Valley:
     displayName: Browns Valley
-    zipcode: 56219
+    zipcode: "56219"
     county: Traverse
   Brownsdale:
     displayName: Brownsdale
-    zipcode: 55918
+    zipcode: "55918"
     county: Mower
   Brownsville:
     displayName: Brownsville
-    zipcode: 55919
+    zipcode: "55919"
     county: Houston
   Brownton:
     displayName: Brownton
-    zipcode: 55312
+    zipcode: "55312"
     county: McLeod
   Buckman:
     displayName: Buckman
-    zipcode: 56317
+    zipcode: "56317"
     county: Morrison
   Buffalo-Lake:
     displayName: Buffalo Lake
-    zipcode: 55314
+    zipcode: "55314"
     county: Renville
   Buffalo:
     displayName: Buffalo
-    zipcode: 55313
+    zipcode: "55313"
     county: Wright
   Buhl:
     displayName: Buhl
-    zipcode: 55713
+    zipcode: "55713"
     county: Saint Louis
   Burnsville:
     displayName: Burnsville
-    zipcode: 55306
+    zipcode: "55306"
     county: Dakota
   Butterfield:
     displayName: Butterfield
-    zipcode: 56120
+    zipcode: "56120"
     county: Watonwan
   Byron:
     displayName: Byron
-    zipcode: 55920
+    zipcode: "55920"
     county: Olmsted
   Caledonia:
     displayName: Caledonia
-    zipcode: 55921
+    zipcode: "55921"
     county: Houston
   Calumet:
     displayName: Calumet
-    zipcode: 55716
+    zipcode: "55716"
     county: Itasca
   Cambridge:
     displayName: Cambridge
-    zipcode: 55008
+    zipcode: "55008"
     county: Isanti
   Campbell:
     displayName: Campbell
-    zipcode: 56522
+    zipcode: "56522"
     county: Wilkin
   Canby:
     displayName: Canby
-    zipcode: 56220
+    zipcode: "56220"
     county: Yellow Medicine
   Cannon-Falls:
     displayName: Cannon Falls
-    zipcode: 55009
+    zipcode: "55009"
     county: Goodhue
   Canton:
     displayName: Canton
-    zipcode: 55922
+    zipcode: "55922"
     county: Fillmore
   Carlos:
     displayName: Carlos
-    zipcode: 56319
+    zipcode: "56319"
     county: Douglas
   Carlton:
     displayName: Carlton
-    zipcode: 55718
+    zipcode: "55718"
     county: Carlton
   Carver:
     displayName: Carver
-    zipcode: 55315
+    zipcode: "55315"
     county: Carver
   Cass-Lake:
     displayName: Cass Lake
-    zipcode: 56633
+    zipcode: "56633"
     county: Cass
   Center-City:
     displayName: Center City
-    zipcode: 55012
+    zipcode: "55012"
     county: Chisago
   Ceylon:
     displayName: Ceylon
-    zipcode: 56121
+    zipcode: "56121"
     county: Martin
   Champlin:
     displayName: Champlin
-    zipcode: 55316
+    zipcode: "55316"
     county: Hennepin
   Chandler:
     displayName: Chandler
-    zipcode: 56122
+    zipcode: "56122"
     county: Murray
   Chanhassen:
     displayName: Chanhassen
-    zipcode: 55317
+    zipcode: "55317"
     county: Carver
   Chaska:
     displayName: Chaska
-    zipcode: 55318
+    zipcode: "55318"
     county: Carver
   Chatfield:
     displayName: Chatfield
-    zipcode: 55923
+    zipcode: "55923"
     county: Fillmore
   Chisago-City:
     displayName: Chisago City
-    zipcode: 55013
+    zipcode: "55013"
     county: Chisago
   Chisholm:
     displayName: Chisholm
-    zipcode: 55719
+    zipcode: "55719"
     county: Saint Louis
   Chokio:
     displayName: Chokio
-    zipcode: 56221
+    zipcode: "56221"
     county: Stevens
   Circle-Pines:
     displayName: Circle Pines
-    zipcode: 55014
+    zipcode: "55014"
     county: Anoka
   Clara-City:
     displayName: Clara City
-    zipcode: 56222
+    zipcode: "56222"
     county: Chippewa
   Claremont:
     displayName: Claremont
-    zipcode: 55924
+    zipcode: "55924"
     county: Dodge
   Clarissa:
     displayName: Clarissa
-    zipcode: 56440
+    zipcode: "56440"
     county: Todd
   Clarkfield:
     displayName: Clarkfield
-    zipcode: 56223
+    zipcode: "56223"
     county: Yellow Medicine
   Clarks-Grove:
     displayName: Clarks Grove
-    zipcode: 56016
+    zipcode: "56016"
     county: Freeborn
   Clear-Lake:
     displayName: Clear Lake
-    zipcode: 55319
+    zipcode: "55319"
     county: Sherburne
   Clearbrook:
     displayName: Clearbrook
-    zipcode: 56634
+    zipcode: "56634"
     county: Clearwater
   Clearwater:
     displayName: Clearwater
-    zipcode: 55320
+    zipcode: "55320"
     county: Wright
   Cleveland:
     displayName: Cleveland
-    zipcode: 56017
+    zipcode: "56017"
     county: Le Sueur
   Climax:
     displayName: Climax
-    zipcode: 56523
+    zipcode: "56523"
     county: Polk
   Clinton:
     displayName: Clinton
-    zipcode: 56225
+    zipcode: "56225"
     county: Big Stone
   Cloquet:
     displayName: Cloquet
-    zipcode: 55720
+    zipcode: "55720"
     county: Carlton
   Cohasset:
     displayName: Cohasset
-    zipcode: 55721
+    zipcode: "55721"
     county: Itasca
   Cokato:
     displayName: Cokato
-    zipcode: 55321
+    zipcode: "55321"
     county: Wright
   Cold-Spring:
     displayName: Cold Spring
-    zipcode: 56320
+    zipcode: "56320"
     county: Stearns
   Coleraine:
     displayName: Coleraine
-    zipcode: 55722
+    zipcode: "55722"
     county: Itasca
   Cologne:
     displayName: Cologne
-    zipcode: 55322
+    zipcode: "55322"
     county: Carver
   Comfrey:
     displayName: Comfrey
-    zipcode: 56019
+    zipcode: "56019"
     county: Brown
   Cook:
     displayName: Cook
-    zipcode: 55723
+    zipcode: "55723"
     county: Saint Louis
   Cosmos:
     displayName: Cosmos
-    zipcode: 56228
+    zipcode: "56228"
     county: Meeker
   Cottage-Grove:
     displayName: Cottage Grove
-    zipcode: 55016
+    zipcode: "55016"
     county: Washington
   Cottonwood:
     displayName: Cottonwood
-    zipcode: 56229
+    zipcode: "56229"
     county: Lyon
   Courtland:
     displayName: Courtland
-    zipcode: 56021
+    zipcode: "56021"
     county: Nicollet
   Crookston:
     displayName: Crookston
-    zipcode: 56716
+    zipcode: "56716"
     county: Polk
   Crosby:
     displayName: Crosby
-    zipcode: 56441
+    zipcode: "56441"
     county: Crow Wing
   Crosslake:
     displayName: Crosslake
-    zipcode: 56442
+    zipcode: "56442"
     county: Crow Wing
   Crystal-Bay:
     displayName: Crystal Bay
-    zipcode: 55323
+    zipcode: "55323"
     county: Hennepin
   Currie:
     displayName: Currie
-    zipcode: 56123
+    zipcode: "56123"
     county: Murray
   Cyrus:
     displayName: Cyrus
-    zipcode: 56323
+    zipcode: "56323"
     county: Pope
   Centerville:
     displayName: Centerville
-    zipcode: 55038
+    zipcode: "55038"
     county: Washington
     Columbia-Heights:
       displayName: Columbia Heights
-      zipcode: 55421
+      zipcode: "55421"
       county: Anoka
     Columbus:
       displayName: Columbus
-      zipcode: 55014
+      zipcode: "55014"
       county: Anoka
     Coon-Rapids:
       displayName: Coon Rapids
-      zipcode: 55433
+      zipcode: "55433"
       county: Anoka
     Corcoran:
       displayName: Corcoran
-      zipcode: 55311
+      zipcode: "55311"
       county: Hennepin
     Cromwell:
       displayName: Cromwell
-      zipcode: 55726
+      zipcode: "55726"
       county: Carlton
     Crystal:
       displayName: Crystal
-      zipcode: 55422
+      zipcode: "55422"
       county: Hennepin
     Cuyuna:
       displayName: Cuyuna
-      zipcode: 56444
+      zipcode: "56444"
       county: Crow Wing
   Dakota:
     displayName: Dakota
-    zipcode: 55925
+    zipcode: "55925"
     county: Winona
   Dalton:
     displayName: Dalton
-    zipcode: 56324
+    zipcode: "56324"
     county: Otter Tail
   Danube:
     displayName: Danube
-    zipcode: 56230
+    zipcode: "56230"
     county: Renville
   Darwin:
     displayName: Darwin
-    zipcode: 55324
+    zipcode: "55324"
     county: Meeker
   Dassel:
     displayName: Dassel
-    zipcode: 55325
+    zipcode: "55325"
     county: Meeker
   Dawson:
     displayName: Dawson
-    zipcode: 56232
+    zipcode: "56232"
     county: Lac Qui Parle
   Dayton:
     displayName: Dayton
-    zipcode: 55327
+    zipcode: "55327"
     county: Hennepin
   Deer-Creek:
     displayName: Deer Creek
-    zipcode: 56527
+    zipcode: "56527"
     county: Otter Tail
   Deer-River:
     displayName: Deer River
-    zipcode: 56636
+    zipcode: "56636"
     county: Itasca
   Deerwood:
     displayName: Deerwood
-    zipcode: 56444
+    zipcode: "56444"
     county: Crow Wing
   Delano:
     displayName: Delano
-    zipcode: 55328
+    zipcode: "55328"
     county: Wright
   Delavan:
     displayName: Delavan
-    zipcode: 56023
+    zipcode: "56023"
     county: Faribault
   Detroit-Lakes:
     displayName: Detroit Lakes
-    zipcode: 56501
+    zipcode: "56501"
     county: Becker
   Dexter:
     displayName: Dexter
-    zipcode: 55926
+    zipcode: "55926"
     county: Mower
   Dilworth:
     displayName: Dilworth
-    zipcode: 56529
+    zipcode: "56529"
     county: Clay
   Dodge-Center:
     displayName: Dodge Center
-    zipcode: 55927
+    zipcode: "55927"
     county: Dodge
   Donnelly:
     displayName: Donnelly
-    zipcode: 56235
+    zipcode: "56235"
     county: Stevens
   Dover:
     displayName: Dover
-    zipcode: 55929
+    zipcode: "55929"
     county: Olmsted
   Duluth:
     displayName: Duluth
-    zipcode: 55801
+    zipcode: "55801"
     county: Saint Louis
   Dundas:
     displayName: Dundas
-    zipcode: 55019
+    zipcode: "55019"
     county: Rice
   Deephaven:
     displayName: Deephaven
-    zipcode: 55331
+    zipcode: "55331"
     county: Hennepin
   Dellwood:
     displayName: Dellwood
-    zipcode: 55110
+    zipcode: "55110"
     county: Ramsey
   Eagle-Bend:
     displayName: Eagle Bend
-    zipcode: 56446
+    zipcode: "56446"
     county: Todd
   Eagle-Lake:
     displayName: Eagle Lake
-    zipcode: 56024
+    zipcode: "56024"
     county: Blue Earth
   East-Grand-Forks:
     displayName: East Grand Forks
-    zipcode: 56721
+    zipcode: "56721"
     county: Polk
   Easton:
     displayName: Easton
-    zipcode: 56025
+    zipcode: "56025"
     county: Faribault
   Echo:
     displayName: Echo
-    zipcode: 56237
+    zipcode: "56237"
     county: Yellow Medicine
   Eden-Prairie:
     displayName: Eden Prairie
-    zipcode: 55344
+    zipcode: "55344"
     county: Hennepin
   Eden-Valley:
     displayName: Eden Valley
-    zipcode: 55329
+    zipcode: "55329"
     county: Meeker
   Edgerton:
     displayName: Edgerton
-    zipcode: 56128
+    zipcode: "56128"
     county: Pipestone
   Eitzen:
     displayName: Eitzen
-    zipcode: 55931
+    zipcode: "55931"
     county: Houston
   Elbow-Lake:
     displayName: Elbow Lake
-    zipcode: 56531
+    zipcode: "56531"
     county: Grant
   Elgin:
     displayName: Elgin
-    zipcode: 55932
+    zipcode: "55932"
     county: Wabasha
   Elk-River:
     displayName: Elk River
-    zipcode: 55330
+    zipcode: "55330"
     county: Sherburne
   Elko-New-Market:
     displayName: Elko New Market
-    zipcode: 55020
+    zipcode: "55020"
     county: Scott
   Ellendale:
     displayName: Ellendale
-    zipcode: 56026
+    zipcode: "56026"
     county: Steele
   Ellsworth:
     displayName: Ellsworth
-    zipcode: 56129
+    zipcode: "56129"
     county: Nobles
   Elmore:
     displayName: Elmore
-    zipcode: 56027
+    zipcode: "56027"
     county: Faribault
   Ely:
     displayName: Ely
-    zipcode: 55731
+    zipcode: "55731"
     county: Saint Louis
   Elysian:
     displayName: Elysian
-    zipcode: 56028
+    zipcode: "56028"
     county: Le Sueur
   Emily:
     displayName: Emily
-    zipcode: 56447
+    zipcode: "56447"
     county: Crow Wing
   Emmons:
     displayName: Emmons
-    zipcode: 56029
+    zipcode: "56029"
     county: Freeborn
   Erskine:
     displayName: Erskine
-    zipcode: 56535
+    zipcode: "56535"
     county: Polk
   Evansville:
     displayName: Evansville
-    zipcode: 56326
+    zipcode: "56326"
     county: Douglas
   Eveleth:
     displayName: Eveleth
-    zipcode: 55734
+    zipcode: "55734"
     county: Saint Louis
   Excelsior:
     displayName: Excelsior
-    zipcode: 55331
+    zipcode: "55331"
     county: Hennepin
   Eyota:
     displayName: Eyota
-    zipcode: 55934
+    zipcode: "55934"
     county: Olmsted
   Eagan:
     displayName: Eagan
-    zipcode: 55120
+    zipcode: "55120"
     county: Dakota
   East-Bethel:
     displayName: East Bethel
-    zipcode: 55005
+    zipcode: "55005"
     county: Anoka
   East-Gull-Lake:
     displayName: East Gull Lake
-    zipcode: 56401
+    zipcode: "56401"
     county: Crow Wing
   Edina:
     displayName: Edina
-    zipcode: 55410
+    zipcode: "55410"
     county: Hennepin
   Embarrass:
     displayName: Embarrass
-    zipcode: 55732
+    zipcode: "55732"
     county: Saint Louis
   Fairfax:
     displayName: Fairfax
-    zipcode: 55332
+    zipcode: "55332"
     county: Renville
   Fairmont:
     displayName: Fairmont
-    zipcode: 56031
+    zipcode: "56031"
     county: Martin
   Faribault:
     displayName: Faribault
-    zipcode: 55021
+    zipcode: "55021"
     county: Rice
   Farmington:
     displayName: Farmington
-    zipcode: 55024
+    zipcode: "55024"
     county: Dakota
   Felton:
     displayName: Felton
-    zipcode: 56536
+    zipcode: "56536"
     county: Clay
   Fergus-Falls:
     displayName: Fergus Falls
-    zipcode: 56537
+    zipcode: "56537"
     county: Otter Tail
   Fertile:
     displayName: Fertile
-    zipcode: 56540
+    zipcode: "56540"
     county: Polk
   Fifty-Lakes:
     displayName: Fifty Lakes
-    zipcode: 56448
+    zipcode: "56448"
     county: Crow Wing
   Finlayson:
     displayName: Finlayson
-    zipcode: 55735
+    zipcode: "55735"
     county: Pine
   Fisher:
     displayName: Fisher
-    zipcode: 56723
+    zipcode: "56723"
     county: Polk
   Flensburg:
     displayName: Flensburg
-    zipcode: 56328
+    zipcode: "56328"
     county: Morrison
   Floodwood:
     displayName: Floodwood
-    zipcode: 55736
+    zipcode: "55736"
     county: Saint Louis
   Foley:
     displayName: Foley
-    zipcode: 56329
+    zipcode: "56329"
     county: Benton
   Forest-Lake:
     displayName: Forest Lake
-    zipcode: 55025
+    zipcode: "55025"
     county: Washington
   Foreston:
     displayName: Foreston
-    zipcode: 56330
+    zipcode: "56330"
     county: Mille Lacs
   Fosston:
     displayName: Fosston
-    zipcode: 56542
+    zipcode: "56542"
     county: Polk
   Fountain:
     displayName: Fountain
-    zipcode: 55935
+    zipcode: "55935"
     county: Fillmore
   Franklin:
     displayName: Franklin
-    zipcode: 55333
+    zipcode: "55333"
     county: Renville
   Frazee:
     displayName: Frazee
-    zipcode: 56544
+    zipcode: "56544"
     county: Becker
   Freeborn:
     displayName: Freeborn
-    zipcode: 56032
+    zipcode: "56032"
     county: Freeborn
   Freeport:
     displayName: Freeport
-    zipcode: 56331
+    zipcode: "56331"
     county: Stearns
   Frost:
     displayName: Frost
-    zipcode: 56033
+    zipcode: "56033"
     county: Faribault
   Fulda:
     displayName: Fulda
-    zipcode: 56131
+    zipcode: "56131"
     county: Murray
   Falcon-Heights:
     displayName: Falcon Heights
-    zipcode: 55108
+    zipcode: "55108"
     county: Ramsey
   Federal-Dam:
     displayName: Federal Dam
-    zipcode: 56641
+    zipcode: "56641"
     county: Cass
   Fridley:
     displayName: Fridley
-    zipcode: 55421
+    zipcode: "55421"
     county: Anoka
   Garfield:
     displayName: Garfield
-    zipcode: 56332
+    zipcode: "56332"
     county: Douglas
   Garrison:
     displayName: Garrison
-    zipcode: 56450
+    zipcode: "56450"
     county: Crow Wing
   Gary:
     displayName: Gary
-    zipcode: 56545
+    zipcode: "56545"
     county: Norman
   Gaylord:
     displayName: Gaylord
-    zipcode: 55334
+    zipcode: "55334"
     county: Sibley
   Geneva:
     displayName: Geneva
-    zipcode: 56035
+    zipcode: "56035"
     county: Freeborn
   Ghent:
     displayName: Ghent
-    zipcode: 56239
+    zipcode: "56239"
     county: Lyon
   Gibbon:
     displayName: Gibbon
-    zipcode: 55335
+    zipcode: "55335"
     county: Sibley
   Gilbert:
     displayName: Gilbert
-    zipcode: 55741
+    zipcode: "55741"
     county: Saint Louis
   Gilman:
     displayName: Gilman
-    zipcode: 56333
+    zipcode: "56333"
     county: Benton
   Glencoe:
     displayName: Glencoe
-    zipcode: 55336
+    zipcode: "55336"
     county: McLeod
   Glenville:
     displayName: Glenville
-    zipcode: 56036
+    zipcode: "56036"
     county: Freeborn
   Glenwood:
     displayName: Glenwood
-    zipcode: 56334
+    zipcode: "56334"
     county: Pope
   Glyndon:
     displayName: Glyndon
-    zipcode: 56547
+    zipcode: "56547"
     county: Clay
   Gonvick:
     displayName: Gonvick
-    zipcode: 56644
+    zipcode: "56644"
     county: Clearwater
   Good-Thunder:
     displayName: Good Thunder
-    zipcode: 56037
+    zipcode: "56037"
     county: Blue Earth
   Goodhue:
     displayName: Goodhue
-    zipcode: 55027
+    zipcode: "55027"
     county: Goodhue
   Graceville:
     displayName: Graceville
-    zipcode: 56240
+    zipcode: "56240"
     county: Big Stone
   Granada:
     displayName: Granada
-    zipcode: 56039
+    zipcode: "56039"
     county: Martin
   Grand-Marais:
     displayName: Grand Marais
-    zipcode: 55604
+    zipcode: "55604"
     county: Cook
   Grand-Meadow:
     displayName: Grand Meadow
-    zipcode: 55936
+    zipcode: "55936"
     county: Mower
   Grand-Rapids:
     displayName: Grand Rapids
-    zipcode: 55730
+    zipcode: "55730"
     county: Itasca
   Granite-Falls:
     displayName: Granite Falls
-    zipcode: 56241
+    zipcode: "56241"
     county: Yellow Medicine
   Green-Isle:
     displayName: Green Isle
-    zipcode: 55338
+    zipcode: "55338"
     county: Sibley
   Greenbush:
     displayName: Greenbush
-    zipcode: 56726
+    zipcode: "56726"
     county: Roseau
   Greenwald:
     displayName: Greenwald
-    zipcode: 56335
+    zipcode: "56335"
     county: Stearns
   Grey-Eagle:
     displayName: Grey Eagle
-    zipcode: 56336
+    zipcode: "56336"
     county: Todd
   Grove-City:
     displayName: Grove City
-    zipcode: 56243
+    zipcode: "56243"
     county: Meeker
   Grygla:
     displayName: Grygla
-    zipcode: 56727
+    zipcode: "56727"
     county: Marshall
   Gem-Lake:
     displayName: Gem Lake
-    zipcode: 55110
+    zipcode: "55110"
     county: Ramsey
   Golden-Valley:
     displayName: Golden Valley
-    zipcode: 55416
+    zipcode: "55416"
     county: Hennepin
   Grant:
     displayName: Grant
-    zipcode: 55110
+    zipcode: "55110"
     county: Ramsey
   Greenfield:
     displayName: Greenfield
-    zipcode: 55357
+    zipcode: "55357"
     county: Hennepin
   Greenwood:
     displayName: Greenwood
-    zipcode: 55331
+    zipcode: "55331"
     county: Hennepin
   Hackensack:
     displayName: Hackensack
-    zipcode: 56452
+    zipcode: "56452"
     county: Cass
   Hallock:
     displayName: Hallock
-    zipcode: 56728
+    zipcode: "56728"
     county: Kittson
   Halstad:
     displayName: Halstad
-    zipcode: 56548
+    zipcode: "56548"
     county: Norman
   Hamburg:
     displayName: Hamburg
-    zipcode: 55339
+    zipcode: "55339"
     county: Carver
   Hampton:
     displayName: Hampton
-    zipcode: 55031
+    zipcode: "55031"
     county: Dakota
   Hancock:
     displayName: Hancock
-    zipcode: 56244
+    zipcode: "56244"
     county: Stevens
   Hanley-Falls:
     displayName: Hanley Falls
-    zipcode: 56245
+    zipcode: "56245"
     county: Yellow Medicine
   Hanover:
     displayName: Hanover
-    zipcode: 55341
+    zipcode: "55341"
     county: Wright
   Hanska:
     displayName: Hanska
-    zipcode: 56041
+    zipcode: "56041"
     county: Brown
   Hardwick:
     displayName: Hardwick
-    zipcode: 56134
+    zipcode: "56134"
     county: Rock
   Harmony:
     displayName: Harmony
-    zipcode: 55939
+    zipcode: "55939"
     county: Fillmore
   Harris:
     displayName: Harris
-    zipcode: 55032
+    zipcode: "55032"
     county: Chisago
   Hartland:
     displayName: Hartland
-    zipcode: 56042
+    zipcode: "56042"
     county: Freeborn
   Hastings:
     displayName: Hastings
-    zipcode: 55033
+    zipcode: "55033"
     county: Dakota
   Hawley:
     displayName: Hawley
-    zipcode: 56549
+    zipcode: "56549"
     county: Clay
   Hayfield:
     displayName: Hayfield
-    zipcode: 55940
+    zipcode: "55940"
     county: Dodge
   Hayward:
     displayName: Hayward
-    zipcode: 56043
+    zipcode: "56043"
     county: Freeborn
   Hector:
     displayName: Hector
-    zipcode: 55342
+    zipcode: "55342"
     county: Renville
   Henderson:
     displayName: Henderson
-    zipcode: 56044
+    zipcode: "56044"
     county: Sibley
   Hendricks:
     displayName: Hendricks
-    zipcode: 56136
+    zipcode: "56136"
     county: Lincoln
   Hendrum:
     displayName: Hendrum
-    zipcode: 56550
+    zipcode: "56550"
     county: Norman
   Henning:
     displayName: Henning
-    zipcode: 56551
+    zipcode: "56551"
     county: Otter Tail
   Herman:
     displayName: Herman
-    zipcode: 56248
+    zipcode: "56248"
     county: Grant
   Heron-Lake:
     displayName: Heron Lake
-    zipcode: 56137
+    zipcode: "56137"
     county: Jackson
   Hewitt:
     displayName: Hewitt
-    zipcode: 56453
+    zipcode: "56453"
     county: Todd
   Hibbing:
     displayName: Hibbing
-    zipcode: 55746
+    zipcode: "55746"
     county: Saint Louis
   Hill-City:
     displayName: Hill City
-    zipcode: 55748
+    zipcode: "55748"
     county: Aitkin
   Hills:
     displayName: Hills
-    zipcode: 56138
+    zipcode: "56138"
     county: Rock
   Hinckley:
     displayName: Hinckley
-    zipcode: 55037
+    zipcode: "55037"
     county: Pine
   Hitterdal:
     displayName: Hitterdal
-    zipcode: 56552
+    zipcode: "56552"
     county: Clay
   Hoffman:
     displayName: Hoffman
-    zipcode: 56339
+    zipcode: "56339"
     county: Grant
   Hokah:
     displayName: Hokah
-    zipcode: 55941
+    zipcode: "55941"
     county: Houston
   Holdingford:
     displayName: Holdingford
-    zipcode: 56340
+    zipcode: "56340"
     county: Stearns
   Holland:
     displayName: Holland
-    zipcode: 56139
+    zipcode: "56139"
     county: Pipestone
   Hollandale:
     displayName: Hollandale
-    zipcode: 56045
+    zipcode: "56045"
     county: Freeborn
   Hopkins:
     displayName: Hopkins
-    zipcode: 55305
+    zipcode: "55305"
     county: Hennepin
   Houston:
     displayName: Houston
-    zipcode: 55943
+    zipcode: "55943"
     county: Houston
   Howard-Lake:
     displayName: Howard Lake
-    zipcode: 55349
+    zipcode: "55349"
     county: Wright
   Hoyt-Lakes:
     displayName: Hoyt Lakes
-    zipcode: 55750
+    zipcode: "55750"
     county: Saint Louis
   Hugo:
     displayName: Hugo
-    zipcode: 55038
+    zipcode: "55038"
     county: Washington
   Hutchinson:
     displayName: Hutchinson
-    zipcode: 55350
+    zipcode: "55350"
     county: McLeod
   Hadley:
     displayName: Hadley
-    zipcode: 56151
+    zipcode: "56151"
     county: Murray
   Ham-Lake:
     displayName: Ham Lake
-    zipcode: 55304
+    zipcode: "55304"
     county: Anoka
   Hermantown:
     displayName: Hermantown
-    zipcode: 55810
+    zipcode: "55810"
     county: Saint Louis
   Hilltop:
     displayName: Hilltop
-    zipcode: 55421
+    zipcode: "55421"
     county: Anoka
   Independence:
     displayName: Independence
-    zipcode: 55328
+    zipcode: "55328"
     county: Wright
   International-Falls:
     displayName: International Falls
-    zipcode: 56649
+    zipcode: "56649"
     county: Koochiching
   Inver-Grove-Heights:
     displayName: Inver Grove Heights
-    zipcode: 55076
+    zipcode: "55076"
     county: Dakota
   Ironton:
     displayName: Ironton
-    zipcode: 56455
+    zipcode: "56455"
     county: Crow Wing
   Isanti:
     displayName: Isanti
-    zipcode: 55040
+    zipcode: "55040"
     county: Isanti
   Isle:
     displayName: Isle
-    zipcode: 56342
+    zipcode: "56342"
     county: Mille Lacs
   Ivanhoe:
     displayName: Ivanhoe
-    zipcode: 56142
+    zipcode: "56142"
     county: Lincoln
   Jackson:
     displayName: Jackson
-    zipcode: 56143
+    zipcode: "56143"
     county: Jackson
   Janesville:
     displayName: Janesville
-    zipcode: 56048
+    zipcode: "56048"
     county: Waseca
   Jasper:
     displayName: Jasper
-    zipcode: 56144
+    zipcode: "56144"
     county: Rock
   Jeffers:
     displayName: Jeffers
-    zipcode: 56145
+    zipcode: "56145"
     county: Cottonwood
   Jenkins:
     displayName: Jenkins
-    zipcode: 56456
+    zipcode: "56456"
     county: Crow Wing
   Jordan:
     displayName: Jordan
-    zipcode: 55352
+    zipcode: "55352"
     county: Scott
   Kandiyohi:
     displayName: Kandiyohi
-    zipcode: 56251
+    zipcode: "56251"
     county: Kandiyohi
   Karlstad:
     displayName: Karlstad
-    zipcode: 56732
+    zipcode: "56732"
     county: Kittson
   Kasota:
     displayName: Kasota
-    zipcode: 56050
+    zipcode: "56050"
     county: Le Sueur
   Kasson:
     displayName: Kasson
-    zipcode: 55944
+    zipcode: "55944"
     county: Dodge
   Keewatin:
     displayName: Keewatin
-    zipcode: 55753
+    zipcode: "55753"
     county: Itasca
   Kelliher:
     displayName: Kelliher
-    zipcode: 56650
+    zipcode: "56650"
     county: Beltrami
   Kellogg:
     displayName: Kellogg
-    zipcode: 55945
+    zipcode: "55945"
     county: Wabasha
   Kennedy:
     displayName: Kennedy
-    zipcode: 56733
+    zipcode: "56733"
     county: Kittson
   Kensington:
     displayName: Kensington
-    zipcode: 56343
+    zipcode: "56343"
     county: Douglas
   Kenyon:
     displayName: Kenyon
-    zipcode: 55946
+    zipcode: "55946"
     county: Goodhue
   Kerkhoven:
     displayName: Kerkhoven
-    zipcode: 56252
+    zipcode: "56252"
     county: Swift
   Kiester:
     displayName: Kiester
-    zipcode: 56051
+    zipcode: "56051"
     county: Faribault
   Kimball:
     displayName: Kimball
-    zipcode: 55353
+    zipcode: "55353"
     county: Stearns
   Kettle-River:
     displayName: Kettle River
-    zipcode: 55757
+    zipcode: "55757"
     county: Carlton
   Lake-Shore:
     displayName: Lake Shore
-    zipcode: 56468
+    zipcode: "56468"
     county: Crow Wing
   Lake-Saint-Croix-Beach:
     displayName: Lake Saint Croix Beach
-    zipcode: 55043
+    zipcode: "55043"
     county: Washington
   Lakeland-Shores:
     displayName: Lakeland Shores
-    zipcode: 55043
+    zipcode: "55043"
     county: Washington
   Lauderdale:
     displayName: Lauderdale
-    zipcode: 55108
+    zipcode: "55108"
     county: Ramsey
   Le-roy:
     displayName: Le roy
-    zipcode: 55951
+    zipcode: "55951"
     county: Mower
   Lilydale:
     displayName: Lilydale
-    zipcode: 55118
+    zipcode: "55118"
     county: Dakota
   Lino-Lakes:
     displayName: Lino Lakes
-    zipcode: 55014
+    zipcode: "55014"
     county: Anoka
   Little-Canada:
     displayName: Little Canada
-    zipcode: 55109
+    zipcode: "55109"
     county: Ramsey
   Longville:
     displayName: Longville
-    zipcode: 56655
+    zipcode: "56655"
     county: Cass
   La-Crescent:
     displayName: La Crescent
-    zipcode: 55947
+    zipcode: "55947"
     county: Houston
   Lafayette:
     displayName: Lafayette
-    zipcode: 56054
+    zipcode: "56054"
     county: Nicollet
   Lake-Benton:
     displayName: Lake Benton
-    zipcode: 56149
+    zipcode: "56149"
     county: Lincoln
   Lake-Bronson:
     displayName: Lake Bronson
-    zipcode: 56734
+    zipcode: "56734"
     county: Kittson
   Lake-City:
     displayName: Lake City
-    zipcode: 55041
+    zipcode: "55041"
     county: Wabasha
   Lake-Crystal:
     displayName: Lake Crystal
-    zipcode: 56055
+    zipcode: "56055"
     county: Blue Earth
   Lake-Elmo:
     displayName: Lake Elmo
-    zipcode: 55042
+    zipcode: "55042"
     county: Washington
   Lake-Lillian:
     displayName: Lake Lillian
-    zipcode: 56253
+    zipcode: "56253"
     county: Kandiyohi
   Lake-Park:
     displayName: Lake Park
-    zipcode: 56554
+    zipcode: "56554"
     county: Becker
   Lake-Wilson:
     displayName: Lake Wilson
-    zipcode: 56151
+    zipcode: "56151"
     county: Murray
   Lakefield:
     displayName: Lakefield
-    zipcode: 56150
+    zipcode: "56150"
     county: Jackson
   Lakeland:
     displayName: Lakeland
-    zipcode: 55043
+    zipcode: "55043"
     county: Washington
   Lakeville:
     displayName: Lakeville
-    zipcode: 55044
+    zipcode: "55044"
     county: Dakota
   Lamberton:
     displayName: Lamberton
-    zipcode: 56152
+    zipcode: "56152"
     county: Redwood
   Lancaster:
     displayName: Lancaster
-    zipcode: 56735
+    zipcode: "56735"
     county: Kittson
   Lanesboro:
     displayName: Lanesboro
-    zipcode: 55949
+    zipcode: "55949"
     county: Fillmore
   Le-Center:
     displayName: Le Center
-    zipcode: 56057
+    zipcode: "56057"
     county: Le Sueur
   Le-Roy:
     displayName: Le Roy
-    zipcode: 55951
+    zipcode: "55951"
     county: Mower
   Le-Sueur:
     displayName: Le Sueur
-    zipcode: 56058
+    zipcode: "56058"
     county: Le Sueur
   Leota:
     displayName: Leota
-    zipcode: 56153
+    zipcode: "56153"
     county: Nobles
   Lester-Prairie:
     displayName: Lester Prairie
-    zipcode: 55354
+    zipcode: "55354"
     county: McLeod
   Lewiston:
     displayName: Lewiston
-    zipcode: 55952
+    zipcode: "55952"
     county: Winona
   Lewisville:
     displayName: Lewisville
-    zipcode: 56060
+    zipcode: "56060"
     county: Watonwan
   Lindstrom:
     displayName: Lindstrom
-    zipcode: 55045
+    zipcode: "55045"
     county: Chisago
   Lismore:
     displayName: Lismore
-    zipcode: 56155
+    zipcode: "56155"
     county: Nobles
   Litchfield:
     displayName: Litchfield
-    zipcode: 55355
+    zipcode: "55355"
     county: Meeker
   Little-Falls:
     displayName: Little Falls
-    zipcode: 56345
+    zipcode: "56345"
     county: Morrison
   Littlefork:
     displayName: Littlefork
-    zipcode: 56653
+    zipcode: "56653"
     county: Koochiching
   Long-Lake:
     displayName: Long Lake
-    zipcode: 55356
+    zipcode: "55356"
     county: Hennepin
   Long-Prairie:
     displayName: Long Prairie
-    zipcode: 56347
+    zipcode: "56347"
     county: Todd
   Lonsdale:
     displayName: Lonsdale
-    zipcode: 55046
+    zipcode: "55046"
     county: Rice
   Loretto:
     displayName: Loretto
-    zipcode: 55357
+    zipcode: "55357"
     county: Hennepin
   Lowry:
     displayName: Lowry
-    zipcode: 56349
+    zipcode: "56349"
     county: Pope
   Lucan:
     displayName: Lucan
-    zipcode: 56255
+    zipcode: "56255"
     county: Redwood
   Luverne:
     displayName: Luverne
-    zipcode: 56156
+    zipcode: "56156"
     county: Rock
   Lyle:
     displayName: Lyle
-    zipcode: 55953
+    zipcode: "55953"
     county: Mower
   Lynd:
     displayName: Lynd
-    zipcode: 56157
+    zipcode: "56157"
     county: Lyon
   Mabel:
     displayName: Mabel
-    zipcode: 55954
+    zipcode: "55954"
     county: Fillmore
   Madelia:
     displayName: Madelia
-    zipcode: 56062
+    zipcode: "56062"
     county: Watonwan
   Madison-Lake:
     displayName: Madison Lake
-    zipcode: 56063
+    zipcode: "56063"
     county: Blue Earth
   Madison:
     displayName: Madison
-    zipcode: 56256
+    zipcode: "56256"
     county: Lac Qui Parle
   Magnolia:
     displayName: Magnolia
-    zipcode: 56158
+    zipcode: "56158"
     county: Rock
   Mahnomen:
     displayName: Mahnomen
-    zipcode: 56557
+    zipcode: "56557"
     county: Mahnomen
   Mankato:
     displayName: Mankato
-    zipcode: 56001
+    zipcode: "56001"
     county: Blue Earth
   Mantorville:
     displayName: Mantorville
-    zipcode: 55955
+    zipcode: "55955"
     county: Dodge
   Maple-Lake:
     displayName: Maple Lake
-    zipcode: 55358
+    zipcode: "55358"
     county: Wright
   Maple-Plain:
     displayName: Maple Plain
-    zipcode: 55359
+    zipcode: "55359"
     county: Hennepin
   Mapleton:
     displayName: Mapleton
-    zipcode: 56065
+    zipcode: "56065"
     county: Blue Earth
   Marble:
     displayName: Marble
-    zipcode: 55764
+    zipcode: "55764"
     county: Itasca
   Marine-on-Saint-Croix:
     displayName: Marine on Saint Croix
-    zipcode: 55047
+    zipcode: "55047"
     county: Washington
   Marshall:
     displayName: Marshall
-    zipcode: 56258
+    zipcode: "56258"
     county: Lyon
   Mayer:
     displayName: Mayer
-    zipcode: 55360
+    zipcode: "55360"
     county: Carver
   Maynard:
     displayName: Maynard
-    zipcode: 56260
+    zipcode: "56260"
     county: Chippewa
   Mazeppa:
     displayName: Mazeppa
-    zipcode: 55956
+    zipcode: "55956"
     county: Wabasha
   McGregor:
     displayName: McGregor
-    zipcode: 55760
+    zipcode: "55760"
     county: Aitkin
   McIntosh:
     displayName: McIntosh
-    zipcode: 56556
+    zipcode: "56556"
     county: Polk
   Medford:
     displayName: Medford
-    zipcode: 55049
+    zipcode: "55049"
     county: Steele
   Melrose:
     displayName: Melrose
-    zipcode: 56352
+    zipcode: "56352"
     county: Stearns
   Menahga:
     displayName: Menahga
-    zipcode: 56464
+    zipcode: "56464"
     county: Wadena
   Mendota:
     displayName: Mendota
-    zipcode: 55150
+    zipcode: "55150"
     county: Dakota
   Middle-River:
     displayName: Middle River
-    zipcode: 56737
+    zipcode: "56737"
     county: Marshall
   Milaca:
     displayName: Milaca
-    zipcode: 56353
+    zipcode: "56353"
     county: Mille Lacs
   Milan:
     displayName: Milan
-    zipcode: 56262
+    zipcode: "56262"
     county: Chippewa
   Milroy:
     displayName: Milroy
-    zipcode: 56263
+    zipcode: "56263"
     county: Redwood
   Miltona:
     displayName: Miltona
-    zipcode: 56354
+    zipcode: "56354"
     county: Douglas
   Minneapolis:
     displayName: Minneapolis
-    zipcode: 55401
+    zipcode: "55401"
     county: Hennepin
   Minneota:
     displayName: Minneota
-    zipcode: 56264
+    zipcode: "56264"
     county: Lyon
   Minnesota-City:
     displayName: Minnesota City
-    zipcode: 55959
+    zipcode: "55959"
     county: Winona
   Minnesota-Lake:
     displayName: Minnesota Lake
-    zipcode: 56068
+    zipcode: "56068"
     county: Faribault
   Minnetonka-Beach:
     displayName: Minnetonka Beach
-    zipcode: 55361
+    zipcode: "55361"
     county: Hennepin
   Minnetonka:
     displayName: Minnetonka
-    zipcode: 55345
+    zipcode: "55345"
     county: Hennepin
   Montevideo:
     displayName: Montevideo
-    zipcode: 56265
+    zipcode: "56265"
     county: Chippewa
   Montgomery:
     displayName: Montgomery
-    zipcode: 56069
+    zipcode: "56069"
     county: Le Sueur
   Monticello:
     displayName: Monticello
-    zipcode: 55362
+    zipcode: "55362"
     county: Wright
   Montrose:
     displayName: Montrose
-    zipcode: 55363
+    zipcode: "55363"
     county: Wright
   Moorhead:
     displayName: Moorhead
-    zipcode: 56567
+    zipcode: "56567"
     county: Clay
   Moose-Lake:
     displayName: Moose Lake
-    zipcode: 55767
+    zipcode: "55767"
     county: Carlton
   Mora:
     displayName: Mora
-    zipcode: 55051
+    zipcode: "55051"
     county: Kanabec
   Morgan:
     displayName: Morgan
-    zipcode: 56266
+    zipcode: "56266"
     county: Redwood
   Morris:
     displayName: Morris
-    zipcode: 56267
+    zipcode: "56267"
     county: Stevens
   Morristown:
     displayName: Morristown
-    zipcode: 55052
+    zipcode: "55052"
     county: Rice
   Morton:
     displayName: Morton
-    zipcode: 56270
+    zipcode: "56270"
     county: Renville
   Motley:
     displayName: Motley
-    zipcode: 56466
+    zipcode: "56466"
     county: Morrison
   Mound:
     displayName: Mound
-    zipcode: 55364
+    zipcode: "55364"
     county: Hennepin
   Mountain-Iron:
     displayName: Mountain Iron
-    zipcode: 55768
+    zipcode: "55768"
     county: Saint Louis
   Mountain-Lake:
     displayName: Mountain Lake
-    zipcode: 56159
+    zipcode: "56159"
     county: Cottonwood
   Murdock:
     displayName: Murdock
-    zipcode: 56271
+    zipcode: "56271"
     county: Swift
   Mahtomedi:
     displayName: Mahtomedi
-    zipcode: 55115
+    zipcode: "55115"
     county: Washington
   Maple-Grove:
     displayName: Maple Grove
-    zipcode: 55311
+    zipcode: "55311"
     county: Hennepin
   Maplewood:
     displayName: Maplewood
-    zipcode: 55106
+    zipcode: "55106"
     county: Ramsey
   Medicine-Lake:
     displayName: Medicine Lake
-    zipcode: 55441
+    zipcode: "55441"
     county: Hennepin
   Medina:
     displayName: Medina
-    zipcode: 55340
+    zipcode: "55340"
     county: Hennepin
   Mendota-Heights:
     displayName: Mendota Heights
-    zipcode: 55118
+    zipcode: "55118"
     county: Dakota
   Minnetrista:
     displayName: Minnetrista
-    zipcode: 55331
+    zipcode: "55331"
     county: Hennepin
   Mounds-View:
     displayName: Mounds View
-    zipcode: 55112
+    zipcode: "55112"
     county: Ramsey
   New-Brighton:
     displayName: New Brighton
-    zipcode: 55112
+    zipcode: "55112"
     county: Ramsey
   New-Hope:
     displayName: New Hope
-    zipcode: 55427
+    zipcode: "55427"
     county: Hennepin
   North-Mankato:
     displayName: North Mankato
-    zipcode: 56002
+    zipcode: "56002"
     county: Blue Earth
   North-Oaks:
     displayName: North Oaks
-    zipcode: 55127
+    zipcode: "55127"
     county: Ramsey
   North-Saint-Paul:
     displayName: North Saint Paul
-    zipcode: 55109
+    zipcode: "55109"
     county: Ramsey
   Norwood-Young America:
     displayName: Norwood Young America
-    zipcode: 55368
+    zipcode: "55368"
     county: Carver
   Nashwauk:
     displayName: Nashwauk
-    zipcode: 55769
+    zipcode: "55769"
     county: Itasca
   Naytahwaush:
     displayName: Naytahwaush
-    zipcode: 56566
+    zipcode: "56566"
     county: Mahnomen
   Nerstrand:
     displayName: Nerstrand
-    zipcode: 55053
+    zipcode: "55053"
     county: Rice
   Nevis:
     displayName: Nevis
-    zipcode: 56467
+    zipcode: "56467"
     county: Hubbard
   New-Auburn:
     displayName: New Auburn
-    zipcode: 55366
+    zipcode: "55366"
     county: Sibley
   New-Germany:
     displayName: New Germany
-    zipcode: 55367
+    zipcode: "55367"
     county: Carver
   New-London:
     displayName: New London
-    zipcode: 56273
+    zipcode: "56273"
     county: Kandiyohi
   New-Market:
     displayName: New Market
-    zipcode: 55054
+    zipcode: "55054"
     county: Scott
   New-Munich:
     displayName: New Munich
-    zipcode: 56356
+    zipcode: "56356"
     county: Stearns
   New-Prague:
     displayName: New Prague
-    zipcode: 56071
+    zipcode: "56071"
     county: Scott
   New-Richland:
     displayName: New Richland
-    zipcode: 56072
+    zipcode: "56072"
     county: Waseca
   New-Ulm:
     displayName: New Ulm
-    zipcode: 56073
+    zipcode: "56073"
     county: Brown
   New-York-Mills:
     displayName: New York Mills
-    zipcode: 56567
+    zipcode: "56567"
     county: Otter Tail
   Newfolden:
     displayName: Newfolden
-    zipcode: 56738
+    zipcode: "56738"
     county: Marshall
   Newport:
     displayName: Newport
-    zipcode: 55055
+    zipcode: "55055"
     county: Washington
   Nicollet:
     displayName: Nicollet
-    zipcode: 56074
+    zipcode: "56074"
     county: Nicollet
   Nisswa:
     displayName: Nisswa
-    zipcode: 56468
+    zipcode: "56468"
     county: Crow Wing
   North-Branch:
     displayName: North Branch
-    zipcode: 55056
+    zipcode: "55056"
     county: Chisago
   Northfield:
     displayName: Northfield
-    zipcode: 55057
+    zipcode: "55057"
     county: Rice
   Northome:
     displayName: Northome
-    zipcode: 56661
+    zipcode: "56661"
     county: Koochiching
   Northrop:
     displayName: Northrop
-    zipcode: 56075
+    zipcode: "56075"
     county: Martin
   Norwood:
     displayName: Norwood
-    zipcode: 55554
+    zipcode: "55554"
     county: Carver
   Oak-Park:
     displayName: Oak Park
-    zipcode: 56357
+    zipcode: "56357"
     county: Benton
   Ogilvie:
     displayName: Ogilvie
-    zipcode: 56358
+    zipcode: "56358"
     county: Kanabec
   Oklee:
     displayName: Oklee
-    zipcode: 56742
+    zipcode: "56742"
     county: Red Lake
   Olivia:
     displayName: Olivia
-    zipcode: 56277
+    zipcode: "56277"
     county: Renville
   Onamia:
     displayName: Onamia
-    zipcode: 56359
+    zipcode: "56359"
     county: Mille Lacs
   Oronoco:
     displayName: Oronoco
-    zipcode: 55960
+    zipcode: "55960"
     county: Olmsted
   Orr:
     displayName: Orr
-    zipcode: 55771
+    zipcode: "55771"
     county: Saint Louis
   Ortonville:
     displayName: Ortonville
-    zipcode: 56278
+    zipcode: "56278"
     county: Big Stone
   Osakis:
     displayName: Osakis
-    zipcode: 56360
+    zipcode: "56360"
     county: Douglas
   Oslo:
     displayName: Oslo
-    zipcode: 56744
+    zipcode: "56744"
     county: Marshall
   Osseo:
     displayName: Osseo
-    zipcode: 55369
+    zipcode: "55369"
     county: Hennepin
   Ostrander:
     displayName: Ostrander
-    zipcode: 55961
+    zipcode: "55961"
     county: Fillmore
   Ottertail:
     displayName: Ottertail
-    zipcode: 56571
+    zipcode: "56571"
     county: Otter Tail
   Owatonna:
     displayName: Owatonna
-    zipcode: 55060
+    zipcode: "55060"
     county: Steele
   Oak-Grove:
     displayName: Oak Grove
-    zipcode: 55005
+    zipcode: "55005"
     county: Anoka
   Oak-Park-Heights:
     displayName: Oak Park Heights
-    zipcode: 55082
+    zipcode: "55082"
     county: Washington
   Oakdale:
     displayName: Oakdale
-    zipcode: 55042
+    zipcode: "55042"
     county: Washington
   Orono:
     displayName: Orono
-    zipcode: 55323
+    zipcode: "55323"
     county: Hennepin
   Otsego:
     displayName: Otsego
-    zipcode: 55301
+    zipcode: "55301"
     county: Wright
   Plymouth:
     displayName: Plymouth
-    zipcode: 55441
+    zipcode: "55441"
     county: Hennepin
   Proctor:
     displayName: Proctor
-    zipcode: 55810
+    zipcode: "55810"
     county: Saint Louis
   Park-Rapids:
     displayName: Park Rapids
-    zipcode: 56470
+    zipcode: "56470"
     county: Hubbard
   Parkers-Prairie:
     displayName: Parkers Prairie
-    zipcode: 56361
+    zipcode: "56361"
     county: Otter Tail
   Paynesville:
     displayName: Paynesville
-    zipcode: 56362
+    zipcode: "56362"
     county: Stearns
   Pelican-Rapids:
     displayName: Pelican Rapids
-    zipcode: 56572
+    zipcode: "56572"
     county: Otter Tail
   Pemberton:
     displayName: Pemberton
-    zipcode: 56078
+    zipcode: "56078"
     county: Blue Earth
   Pennock:
     displayName: Pennock
-    zipcode: 56279
+    zipcode: "56279"
     county: Kandiyohi
   Pequot-Lakes:
     displayName: Pequot Lakes
-    zipcode: 56472
+    zipcode: "56472"
     county: Crow Wing
   Perham:
     displayName: Perham
-    zipcode: 56573
+    zipcode: "56573"
     county: Otter Tail
   Peterson:
     displayName: Peterson
-    zipcode: 55962
+    zipcode: "55962"
     county: Fillmore
   Pierz:
     displayName: Pierz
-    zipcode: 56364
+    zipcode: "56364"
     county: Morrison
   Pillager:
     displayName: Pillager
-    zipcode: 56473
+    zipcode: "56473"
     county: Cass
   Pine-City:
     displayName: Pine City
-    zipcode: 55063
+    zipcode: "55063"
     county: Pine
   Pine-Island:
     displayName: Pine Island
-    zipcode: 55963
+    zipcode: "55963"
     county: Goodhue
   Pine-River:
     displayName: Pine River
-    zipcode: 56474
+    zipcode: "56474"
     county: Cass
   Pipestone:
     displayName: Pipestone
-    zipcode: 56164
+    zipcode: "56164"
     county: Pipestone
   Plainview:
     displayName: Plainview
-    zipcode: 55964
+    zipcode: "55964"
     county: Wabasha
   Plato:
     displayName: Plato
-    zipcode: 55370
+    zipcode: "55370"
     county: McLeod
   Plummer:
     displayName: Plummer
-    zipcode: 56748
+    zipcode: "56748"
     county: Red Lake
   Ponemah:
     displayName: Ponemah
-    zipcode: 56666
+    zipcode: "56666"
     county: Beltrami
   Preston:
     displayName: Preston
-    zipcode: 55965
+    zipcode: "55965"
     county: Fillmore
   Princeton:
     displayName: Princeton
-    zipcode: 55371
+    zipcode: "55371"
     county: Mille Lacs
   Prinsburg:
     displayName: Prinsburg
-    zipcode: 56281
+    zipcode: "56281"
     county: Kandiyohi
   Prior-Lake:
     displayName: Prior Lake
-    zipcode: 55372
+    zipcode: "55372"
     county: Scott
   Racine:
     displayName: Racine
-    zipcode: 55967
+    zipcode: "55967"
     county: Mower
   Randall:
     displayName: Randall
-    zipcode: 56475
+    zipcode: "56475"
     county: Morrison
   Randolph:
     displayName: Randolph
-    zipcode: 55065
+    zipcode: "55065"
     county: Dakota
   Raymond:
     displayName: Raymond
-    zipcode: 56282
+    zipcode: "56282"
     county: Kandiyohi
   Red-Lake-Falls:
     displayName: Red Lake Falls
-    zipcode: 56750
+    zipcode: "56750"
     county: Red Lake
   Red-Wing:
     displayName: Red Wing
-    zipcode: 55066
+    zipcode: "55066"
     county: Goodhue
   Redby:
     displayName: Redby
-    zipcode: 56670
+    zipcode: "56670"
     county: Beltrami
   Redlake:
     displayName: Redlake
-    zipcode: 56671
+    zipcode: "56671"
     county: Beltrami
   Redwood-Falls:
     displayName: Redwood Falls
-    zipcode: 56283
+    zipcode: "56283"
     county: Redwood
   Remer:
     displayName: Remer
-    zipcode: 56672
+    zipcode: "56672"
     county: Cass
   Renville:
     displayName: Renville
-    zipcode: 56284
+    zipcode: "56284"
     county: Renville
   Rice:
     displayName: Rice
-    zipcode: 56367
+    zipcode: "56367"
     county: Benton
   Richmond:
     displayName: Richmond
-    zipcode: 56368
+    zipcode: "56368"
     county: Stearns
   Rochester:
     displayName: Rochester
-    zipcode: 55901
+    zipcode: "55901"
     county: Olmsted
   Rock-Creek:
     displayName: Rock Creek
-    zipcode: 55067
+    zipcode: "55067"
     county: Pine
   Rockford:
     displayName: Rockford
-    zipcode: 55373
+    zipcode: "55373"
     county: Wright
   Rockville:
     displayName: Rockville
-    zipcode: 56369
+    zipcode: "56369"
     county: Stearns
   Rogers:
     displayName: Rogers
-    zipcode: 55374
+    zipcode: "55374"
     county: Hennepin
   Rollingstone:
     displayName: Rollingstone
-    zipcode: 55969
+    zipcode: "55969"
     county: Winona
   Rose-Creek:
     displayName: Rose Creek
-    zipcode: 55970
+    zipcode: "55970"
     county: Mower
   Roseau:
     displayName: Roseau
-    zipcode: 56751
+    zipcode: "56751"
     county: Roseau
   Rosemount:
     displayName: Rosemount
-    zipcode: 55068
+    zipcode: "55068"
     county: Dakota
   Rothsay:
     displayName: Rothsay
-    zipcode: 56579
+    zipcode: "56579"
     county: Wilkin
   Round-Lake:
     displayName: Round Lake
-    zipcode: 56167
+    zipcode: "56167"
     county: Nobles
   Royalton:
     displayName: Royalton
-    zipcode: 56373
+    zipcode: "56373"
     county: Morrison
   Rush-City:
     displayName: Rush City
-    zipcode: 55069
+    zipcode: "55069"
     county: Chisago
   Rushford:
     displayName: Rushford
-    zipcode: 55971
+    zipcode: "55971"
     county: Fillmore
   Rushmore:
     displayName: Rushmore
-    zipcode: 56168
+    zipcode: "56168"
     county: Nobles
   Russell:
     displayName: Russell
-    zipcode: 56169
+    zipcode: "56169"
     county: Lyon
   Ruthton:
     displayName: Ruthton
-    zipcode: 56170
+    zipcode: "56170"
     county: Pipestone
   Ramsey:
     displayName: Ramsey
-    zipcode: 55303
+    zipcode: "55303"
     county: Anoka
   Richfield:
     displayName: Richfield
-    zipcode: 55423
+    zipcode: "55423"
     county: Hennepin
   Robbinsdale:
     displayName: Robbinsdale
-    zipcode: 55422
+    zipcode: "55422"
     county: Hennepin
   Roseville:
     displayName: Roseville
-    zipcode: 55113
+    zipcode: "55113"
     county: Ramsey
   Rushford-Village:
     displayName: Rushford Village
-    zipcode: 55962
+    zipcode: "55962"
     county: Fillmore
   Saint-Anthony:
     displayName: Saint Anthony
-    zipcode: 55418
+    zipcode: "55418"
     county: Hennepin
   Saint-Augusta:
     displayName: Saint Augusta
-    zipcode: 55320
+    zipcode: "55320"
     county: Wright
   Saint-Louis Park:
     displayName: Saint Louis Park
-    zipcode: 55416
+    zipcode: "55416"
     county: Hennepin
   Saint-Mary's-Point:
     displayName: Saint Mary's Point
-    zipcode: 55043
+    zipcode: "55043"
     county: Washington
   Scandia:
     displayName: Scandia
-    zipcode: 55073
+    zipcode: "55073"
     county: Washington
   Shoreview:
     displayName: Shoreview
-    zipcode: 55126
+    zipcode: "55126"
     county: Ramsey
   Shorewood:
     displayName: Shorewood
-    zipcode: 55331
+    zipcode: "55331"
     county: Hennepin
   Spring-Lake-Park:
     displayName: Spring Lake Park
-    zipcode: 55432
+    zipcode: "55432"
     county: Anoka
   Sunfish-Lake:
     displayName: Sunfish Lake
-    zipcode: 55077
+    zipcode: "55077"
     county: Dakota
   Sabin:
     displayName: Sabin
-    zipcode: 56580
+    zipcode: "56580"
     county: Clay
   Sacred-Heart:
     displayName: Sacred Heart
-    zipcode: 56285
+    zipcode: "56285"
     county: Renville
   Saint-Bonifacius:
     displayName: Saint Bonifacius
-    zipcode: 55375
+    zipcode: "55375"
     county: Hennepin
   Saint-Charles:
     displayName: Saint Charles
-    zipcode: 55972
+    zipcode: "55972"
     county: Winona
   Saint-Clair:
     displayName: Saint Clair
-    zipcode: 56080
+    zipcode: "56080"
     county: Blue Earth
   Saint-Cloud:
     displayName: Saint Cloud
-    zipcode: 56301
+    zipcode: "56301"
     county: Stearns
   Saint-Francis:
     displayName: Saint Francis
-    zipcode: 55070
+    zipcode: "55070"
     county: Anoka
   Saint-Hilaire:
     displayName: Saint Hilaire
-    zipcode: 56754
+    zipcode: "56754"
     county: Pennington
   Saint-James:
     displayName: Saint James
-    zipcode: 56081
+    zipcode: "56081"
     county: Watonwan
   Saint-Joseph:
     displayName: Saint Joseph
-    zipcode: 56374
+    zipcode: "56374"
     county: Stearns
   Saint-Martin:
     displayName: Saint Martin
-    zipcode: 56376
+    zipcode: "56376"
     county: Stearns
   Saint-Michael:
     displayName: Saint Michael
-    zipcode: 55376
+    zipcode: "55376"
     county: Wright
   Saint-Paul-Park:
     displayName: Saint Paul Park
-    zipcode: 55071
+    zipcode: "55071"
     county: Washington
   Saint-Paul:
     displayName: Saint Paul
-    zipcode: 55101
+    zipcode: "55101"
     county: Ramsey
   Saint-Peter:
     displayName: Saint Peter
-    zipcode: 56082
+    zipcode: "56082"
     county: Nicollet
   Saint-Stephen:
     displayName: Saint Stephen
-    zipcode: 56375
+    zipcode: "56375"
     county: Stearns
   Sanborn:
     displayName: Sanborn
-    zipcode: 56083
+    zipcode: "56083"
     county: Redwood
   Sandstone:
     displayName: Sandstone
-    zipcode: 55072
+    zipcode: "55072"
     county: Pine
   Sartell:
     displayName: Sartell
-    zipcode: 56377
+    zipcode: "56377"
     county: Stearns
   Sauk-Centre:
     displayName: Sauk Centre
-    zipcode: 56378
+    zipcode: "56378"
     county: Stearns
   Sauk-Rapids:
     displayName: Sauk Rapids
-    zipcode: 56379
+    zipcode: "56379"
     county: Benton
   Savage:
     displayName: Savage
-    zipcode: 55378
+    zipcode: "55378"
     county: Scott
   Sebeka:
     displayName: Sebeka
-    zipcode: 56477
+    zipcode: "56477"
     county: Wadena
   Shafer:
     displayName: Shafer
-    zipcode: 55074
+    zipcode: "55074"
     county: Chisago
   Shakopee:
     displayName: Shakopee
-    zipcode: 55379
+    zipcode: "55379"
     county: Scott
   Shelly:
     displayName: Shelly
-    zipcode: 56581
+    zipcode: "56581"
     county: Norman
   Sherburn:
     displayName: Sherburn
-    zipcode: 56171
+    zipcode: "56171"
     county: Martin
   Silver-Bay:
     displayName: Silver Bay
-    zipcode: 55614
+    zipcode: "55614"
     county: Lake
   Silver-Lake:
     displayName: Silver Lake
-    zipcode: 55381
+    zipcode: "55381"
     county: McLeod
   Slayton:
     displayName: Slayton
-    zipcode: 56172
+    zipcode: "56172"
     county: Murray
   Sleepy-Eye:
     displayName: Sleepy Eye
-    zipcode: 56085
+    zipcode: "56085"
     county: Brown
   South-Haven:
     displayName: South Haven
-    zipcode: 55382
+    zipcode: "55382"
     county: Wright
   South-Saint-Paul:
     displayName: South Saint Paul
-    zipcode: 55075
+    zipcode: "55075"
     county: Dakota
   Spicer:
     displayName: Spicer
-    zipcode: 56288
+    zipcode: "56288"
     county: Kandiyohi
   Spring-Grove:
     displayName: Spring Grove
-    zipcode: 55974
+    zipcode: "55974"
     county: Houston
   Spring-Lake:
     displayName: Spring Lake
-    zipcode: 56680
+    zipcode: "56680"
     county: Itasca
   Spring-Park:
     displayName: Spring Park
-    zipcode: 55384
+    zipcode: "55384"
     county: Hennepin
   Spring-Valley:
     displayName: Spring Valley
-    zipcode: 55975
+    zipcode: "55975"
     county: Fillmore
   Springfield:
     displayName: Springfield
-    zipcode: 56087
+    zipcode: "56087"
     county: Brown
   Stacy:
     displayName: Stacy
-    zipcode: 55078
+    zipcode: "55078"
     county: Chisago
   Staples:
     displayName: Staples
-    zipcode: 56479
+    zipcode: "56479"
     county: Wadena
   Starbuck:
     displayName: Starbuck
-    zipcode: 56381
+    zipcode: "56381"
     county: Pope
   Stephen:
     displayName: Stephen
-    zipcode: 56757
+    zipcode: "56757"
     county: Marshall
   Stewart:
     displayName: Stewart
-    zipcode: 55385
+    zipcode: "55385"
     county: McLeod
   Stewartville:
     displayName: Stewartville
-    zipcode: 55976
+    zipcode: "55976"
     county: Olmsted
   Stillwater:
     displayName: Stillwater
-    zipcode: 55082
+    zipcode: "55082"
     county: Washington
   Stockton:
     displayName: Stockton
-    zipcode: 55988
+    zipcode: "55988"
     county: Winona
   Storden:
     displayName: Storden
-    zipcode: 56174
+    zipcode: "56174"
     county: Cottonwood
   Sturgeon-Lake:
     displayName: Sturgeon Lake
-    zipcode: 55783
+    zipcode: "55783"
     county: Pine
   Swanville:
     displayName: Swanville
-    zipcode: 56382
+    zipcode: "56382"
     county: Morrison
   Taconite:
     displayName: Taconite
-    zipcode: 55786
+    zipcode: "55786"
     county: Itasca
   Taunton:
     displayName: Taunton
-    zipcode: 56291
+    zipcode: "56291"
     county: Lyon
   Taylors-Falls:
     displayName: Taylors Falls
-    zipcode: 55084
+    zipcode: "55084"
     county: Chisago
   Thief-River-Falls:
     displayName: Thief River Falls
-    zipcode: 56701
+    zipcode: "56701"
     county: Pennington
   Tower:
     displayName: Tower
-    zipcode: 55790
+    zipcode: "55790"
     county: Saint Louis
   Tracy:
     displayName: Tracy
-    zipcode: 56175
+    zipcode: "56175"
     county: Lyon
   Trimont:
     displayName: Trimont
-    zipcode: 56176
+    zipcode: "56176"
     county: Martin
   Truman:
     displayName: Truman
-    zipcode: 56088
+    zipcode: "56088"
     county: Martin
   Twin-Valley:
     displayName: Twin Valley
-    zipcode: 56584
+    zipcode: "56584"
     county: Norman
   Two-Harbors:
     displayName: Two Harbors
-    zipcode: 55616
+    zipcode: "55616"
     county: Lake
   Tyler:
     displayName: Tyler
-    zipcode: 56178
+    zipcode: "56178"
     county: Lincoln
   Tonka-Bay:
     displayName: Tonka Bay
-    zipcode: 55331
+    zipcode: "55331"
     county: Hennepin
   Ulen:
     displayName: Ulen
-    zipcode: 56585
+    zipcode: "56585"
     county: Clay
   Underwood:
     displayName: Underwood
-    zipcode: 56586
+    zipcode: "56586"
     county: Otter Tail
   Upsala:
     displayName: Upsala
-    zipcode: 56384
+    zipcode: "56384"
     county: Morrison
   Utica:
     displayName: Utica
-    zipcode: 55979
+    zipcode: "55979"
     county: Winona
   Vadnais-Heights:
     displayName: Vadnais Heights
-    zipcode: 55109
+    zipcode: "55109"
     county: Ramsey
   Vergas:
     displayName: Vergas
-    zipcode: 56587
+    zipcode: "56587"
     county: Otter Tail
   Vermillion:
     displayName: Vermillion
-    zipcode: 55085
+    zipcode: "55085"
     county: Dakota
   Verndale:
     displayName: Verndale
-    zipcode: 56481
+    zipcode: "56481"
     county: Wadena
   Vernon-Center:
     displayName: Vernon Center
-    zipcode: 56090
+    zipcode: "56090"
     county: Blue Earth
   Vesta:
     displayName: Vesta
-    zipcode: 56292
+    zipcode: "56292"
     county: Redwood
   Victoria:
     displayName: Victoria
-    zipcode: 55386
+    zipcode: "55386"
     county: Carver
   Villard:
     displayName: Villard
-    zipcode: 56385
+    zipcode: "56385"
     county: Pope
   Virginia:
     displayName: Virginia
-    zipcode: 55777
+    zipcode: "55777"
     county: Saint Louis
   Wabasha:
     displayName: Wabasha
-    zipcode: 55981
+    zipcode: "55981"
     county: Wabasha
   Wabasso:
     displayName: Wabasso
-    zipcode: 56293
+    zipcode: "56293"
     county: Redwood
   Waconia:
     displayName: Waconia
-    zipcode: 55387
+    zipcode: "55387"
     county: Carver
   Wadena:
     displayName: Wadena
-    zipcode: 56482
+    zipcode: "56482"
     county: Wadena
   Wahkon:
     displayName: Wahkon
-    zipcode: 56386
+    zipcode: "56386"
     county: Mille Lacs
   Waite-Park:
     displayName: Waite Park
-    zipcode: 56387
+    zipcode: "56387"
     county: Stearns
   Waldorf:
     displayName: Waldorf
-    zipcode: 56091
+    zipcode: "56091"
     county: Waseca
   Walker:
     displayName: Walker
-    zipcode: 56484
+    zipcode: "56484"
     county: Cass
   Walnut-Grove:
     displayName: Walnut Grove
-    zipcode: 56180
+    zipcode: "56180"
     county: Redwood
   Wanamingo:
     displayName: Wanamingo
-    zipcode: 55983
+    zipcode: "55983"
     county: Goodhue
   Warren:
     displayName: Warren
-    zipcode: 56762
+    zipcode: "56762"
     county: Marshall
   Warroad:
     displayName: Warroad
-    zipcode: 56763
+    zipcode: "56763"
     county: Roseau
   Waseca:
     displayName: Waseca
-    zipcode: 56093
+    zipcode: "56093"
     county: Waseca
   Watertown:
     displayName: Watertown
-    zipcode: 55388
+    zipcode: "55388"
     county: Carver
   Waterville:
     displayName: Waterville
-    zipcode: 56096
+    zipcode: "56096"
     county: Le Sueur
   Watkins:
     displayName: Watkins
-    zipcode: 55389
+    zipcode: "55389"
     county: Meeker
   Watson:
     displayName: Watson
-    zipcode: 56295
+    zipcode: "56295"
     county: Chippewa
   Waubun:
     displayName: Waubun
-    zipcode: 56589
+    zipcode: "56589"
     county: Becker
   Waverly:
     displayName: Waverly
-    zipcode: 55390
+    zipcode: "55390"
     county: Wright
   Wayzata:
     displayName: Wayzata
-    zipcode: 55391
+    zipcode: "55391"
     county: Hennepin
   Welcome:
     displayName: Welcome
-    zipcode: 56181
+    zipcode: "56181"
     county: Martin
   Wells:
     displayName: Wells
-    zipcode: 56097
+    zipcode: "56097"
     county: Faribault
   West-Concord:
     displayName: West Concord
-    zipcode: 55985
+    zipcode: "55985"
     county: Dodge
   Westbrook:
     displayName: Westbrook
-    zipcode: 56183
+    zipcode: "56183"
     county: Cottonwood
   Wheaton:
     displayName: Wheaton
-    zipcode: 56296
+    zipcode: "56296"
     county: Traverse
   White-Earth:
     displayName: White Earth
-    zipcode: 56591
+    zipcode: "56591"
     county: Becker
   Willernie:
     displayName: Willernie
-    zipcode: 55090
+    zipcode: "55090"
     county: Washington
   Williams:
     displayName: Williams
-    zipcode: 56686
+    zipcode: "56686"
     county: Lake of the Woods
   Willmar:
     displayName: Willmar
-    zipcode: 56201
+    zipcode: "56201"
     county: Kandiyohi
   Willow-River:
     displayName: Willow River
-    zipcode: 55795
+    zipcode: "55795"
     county: Pine
   Wilmont:
     displayName: Wilmont
-    zipcode: 56185
+    zipcode: "56185"
     county: Nobles
   Windom:
     displayName: Windom
-    zipcode: 56101
+    zipcode: "56101"
     county: Cottonwood
   Winger:
     displayName: Winger
-    zipcode: 56592
+    zipcode: "56592"
     county: Polk
   Winnebago:
     displayName: Winnebago
-    zipcode: 56098
+    zipcode: "56098"
     county: Faribault
   Winona:
     displayName: Winona
-    zipcode: 55987
+    zipcode: "55987"
     county: Winona
   Winsted:
     displayName: Winsted
-    zipcode: 55395
+    zipcode: "55395"
     county: McLeod
   Winthrop:
     displayName: Winthrop
-    zipcode: 55396
+    zipcode: "55396"
     county: Sibley
   Wood-Lake:
     displayName: Wood Lake
-    zipcode: 56297
+    zipcode: "56297"
     county: Yellow Medicine
   Worthington:
     displayName: Worthington
-    zipcode: 56187
+    zipcode: "56187"
     county: Nobles
   Wrenshall:
     displayName: Wrenshall
-    zipcode: 55797
+    zipcode: "55797"
     county: Carlton
   Wykoff:
     displayName: Wykoff
-    zipcode: 55990
+    zipcode: "55990"
     county: Fillmore
   Wyoming:
     displayName: Wyoming
-    zipcode: 55092
+    zipcode: "55092"
     county: Chisago
   West-Saint Paul:
     displayName: West Saint Paul
-    zipcode: 55107
+    zipcode: "55107"
     county: Ramsey
   White-Bear Lake:
     displayName: White Bear Lake
-    zipcode: 55110
+    zipcode: "55110"
     county: Ramsey
   Woodbury:
     displayName: Woodbury
-    zipcode: 55125
+    zipcode: "55125"
     county: Washington
   Woodland:
     displayName: Woodland
-    zipcode: 55391
+    zipcode: "55391"
     county: Hennepin
   Zimmerman:
     displayName: Zimmerman
-    zipcode: 55398
+    zipcode: "55398"
     county: Sherburne
   Zumbrota:
     displayName: Zumbrota
-    zipcode: 55992
+    zipcode: "55992"
     county: Goodhue
   
