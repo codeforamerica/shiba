@@ -15,7 +15,7 @@ import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 
-@Tag("document")
+@Tag("journey")
 public class DocumentUploadJourneyTest extends JourneyTest {
     @Test
     void whenDocumentUploadFailsThenThereShouldBeAnError() throws InterruptedException {
