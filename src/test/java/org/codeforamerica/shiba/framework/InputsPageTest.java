@@ -99,4 +99,16 @@ public class InputsPageTest extends AbstractFrameworkTest {
         assertThat(page.findElementTextById("datasourceText")).isEqualTo("Datasource Text");
     }
 
+    @Test
+    void shouldDisplayPlaceholderIfPresent() throws Exception {
+        var firstPage = getFormPage("firstPage");
+        assertThat(firstPage.getTitle()).isEqualTo("firstPageTitle");
+        var input = firstPage.findInputByName("editableTextInput");
+        assertThat(input.attr("placeholder")).isEqualTo(placeholder);
+
+        var nextPage = getFormPage("nextPage");
+        assertThat(nextPage.getTitle()).isEqualTo("nextPageTitle");
+        assertThat(nextPage.findInputByName("someInputName").attr("placeholder")).isEmpty();
+    }
+
 }

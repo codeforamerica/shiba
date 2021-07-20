@@ -76,6 +76,10 @@ public class FormPage {
         return html.getElementsByClass(classname);
     }
 
+    public Element findInputByName(String name) {
+        return html.select("input[name='%s[]']".formatted(name)).first();
+    }
+
 	public void assertLinkWithTextHasCorrectUrl(String linkText, String expectedUrl) {
 		assertThat(findLinksByText(linkText)).hasSize(1);
         var url = findLinksByText(linkText).get(0).attr("href");

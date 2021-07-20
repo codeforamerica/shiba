@@ -142,7 +142,15 @@ public class InputsPageJourneyTest extends AbstractExistingStartTimePageTest {
         assertThat(testPage.getCheckboxValues("checkboxInput")).containsOnly(noneCheckboxOption);
     }
 
-    // Convert below this.
+    @Test
+    void shouldUncheckNoneCheckboxWhenAnyOtherCheckboxIsSelected() {
+        driver.navigate().to(baseUrl + "/pages/firstPage");
+
+        testPage.enter("checkboxInput", noneCheckboxOption);
+        testPage.enter("checkboxInput", checkboxOption1);
+
+        assertThat(testPage.getCheckboxValues("checkboxInput")).containsOnly(checkboxOption1);
+    }
 
     @Nested
     class FollowUps {
@@ -211,24 +219,4 @@ public class InputsPageJourneyTest extends AbstractExistingStartTimePageTest {
         }
     }
 
-    @Test
-    void shouldUncheckNoneCheckboxWhenAnyOtherCheckboxIsSelected() {
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-
-        testPage.enter("checkboxInput", noneCheckboxOption);
-        testPage.enter("checkboxInput", checkboxOption1);
-
-        assertThat(testPage.getCheckboxValues("checkboxInput")).containsOnly(checkboxOption1);
-    }
-
-    @Test
-    void shouldDisplayPlaceholderIfPresent() {
-        navigateTo("firstPage");
-        assertThat(driver.getTitle()).isEqualTo("firstPageTitle");
-        assertThat(driver.findElement(By.name("editableTextInput[]")).getAttribute("placeholder")).isEqualTo(placeholder);
-
-        navigateTo("nextPage");
-        assertThat(driver.getTitle()).isEqualTo("nextPageTitle");
-        assertThat(driver.findElement(By.name("someInputName[]")).getAttribute("placeholder")).isEmpty();
-    }
 }
