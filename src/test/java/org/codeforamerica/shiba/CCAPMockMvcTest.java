@@ -30,7 +30,7 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
         postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "true", "startHousehold");
         assertNavigationRedirectsToCorrectNextPage("startHousehold", "householdMemberInfo");
         fillOutHousemateInfo("EA");
-        getNavigationPageWithQueryParamAndExpectRedirect("householdList", "option", "0", "preparingMealsTogether");
+        finishAddingHouseholdMembers("preparingMealsTogether");
         postExpectingNextPageTitle("preparingMealsTogether", "isPreparingMealsTogether", "false", "Going to school");
         postExpectingNextPageTitle("goingToSchool", "goingToSchool", "true", "Pregnant");
         postExpectingRedirect("pregnant", "isPregnant", "false", "migrantFarmWorker");
@@ -98,7 +98,7 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
         postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "true", "startHousehold");
         assertNavigationRedirectsToCorrectNextPage("startHousehold", "householdMemberInfo");
         fillOutHousemateInfo("EA");
-        getNavigationPageWithQueryParamAndExpectRedirect("householdList", "option", "0", "childrenInNeedOfCare");
+        finishAddingHouseholdMembers("childrenInNeedOfCare");
         assertCorrectPageTitle("childrenInNeedOfCare", "Who are the children in need of care?");
         postExpectingRedirect("childrenInNeedOfCare", "livingSituation");
         postExpectingRedirect("livingSituation", "goingToSchool");

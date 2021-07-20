@@ -27,7 +27,7 @@ public class NoProgramSelectionsMockMvcTest extends AbstractShibaMockMvcTest {
         completeFlowFromLandingPageThroughReviewInfo("NONE");
         assertNavigationRedirectsToCorrectNextPage("startHousehold", "householdMemberInfo");
         fillOutHousemateInfoWithNoProgramsSelected();
-        getNavigationPageWithQueryParamAndExpectRedirect("householdList", "option", "0", "noProgramsSelected");
+        finishAddingHouseholdMembers("noProgramsSelected");
     }
 
     @Test
@@ -35,7 +35,7 @@ public class NoProgramSelectionsMockMvcTest extends AbstractShibaMockMvcTest {
         completeFlowFromLandingPageThroughReviewInfo("CCAP");
         assertNavigationRedirectsToCorrectNextPage("startHousehold", "householdMemberInfo");
         fillOutHousemateInfoWithNoProgramsSelected();
-        getNavigationPageWithQueryParamAndExpectRedirect("householdList", "option", "0", "childrenInNeedOfCare");
+        finishAddingHouseholdMembers("childrenInNeedOfCare");
     }
 
     @Test
@@ -43,7 +43,7 @@ public class NoProgramSelectionsMockMvcTest extends AbstractShibaMockMvcTest {
         completeFlowFromLandingPageThroughReviewInfo("NONE");
         assertNavigationRedirectsToCorrectNextPage("startHousehold", "householdMemberInfo");
         fillOutHousemateInfo("SNAP");
-        getNavigationPageWithQueryParamAndExpectRedirect("householdList", "option", "0", "preparingMealsTogether");
+        finishAddingHouseholdMembers("preparingMealsTogether");
     }
 
     @Test
@@ -52,6 +52,6 @@ public class NoProgramSelectionsMockMvcTest extends AbstractShibaMockMvcTest {
         assertNavigationRedirectsToCorrectNextPage("startHousehold", "householdMemberInfo");
         fillOutHousemateInfoWithNoProgramsSelected();
         fillOutHousemateInfo("SNAP");
-        getNavigationPageWithQueryParamAndExpectRedirect("householdList", "option", "0", "preparingMealsTogether");
+        finishAddingHouseholdMembers("preparingMealsTogether");
     }
 }

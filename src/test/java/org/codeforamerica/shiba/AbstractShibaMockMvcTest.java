@@ -151,6 +151,10 @@ public class AbstractShibaMockMvcTest {
         assertThat(nextPage).isEqualTo("/pages/" + expectedPageName);
     }
 
+    protected void finishAddingHouseholdMembers(String expectedNextPageName) throws Exception {
+        getNavigationPageWithQueryParamAndExpectRedirect("householdList", "option", "0", expectedNextPageName);
+    }
+
     protected void addHouseholdMembers() throws Exception {
         postExpectingSuccess("personalInfo", Map.of(
                 "firstName", List.of("Dwight"),
