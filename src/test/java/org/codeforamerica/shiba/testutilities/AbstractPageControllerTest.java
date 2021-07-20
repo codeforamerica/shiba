@@ -2,7 +2,6 @@ package org.codeforamerica.shiba.testutilities;
 
 import org.codeforamerica.shiba.ApplicationStatusUpdater;
 import org.codeforamerica.shiba.MonitoringService;
-import org.codeforamerica.shiba.NonSessionScopedApplicationData;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;

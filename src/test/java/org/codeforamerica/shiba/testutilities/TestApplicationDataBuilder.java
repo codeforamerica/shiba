@@ -1,8 +1,7 @@
-package org.codeforamerica.shiba.pages.data;
+package org.codeforamerica.shiba.testutilities;
 
 
-import org.codeforamerica.shiba.testutilities.PageDataBuilder;
-import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
+import org.codeforamerica.shiba.pages.data.*;
 
 import java.time.Instant;
 import java.util.List;

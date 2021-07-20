@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba;
+package org.codeforamerica.shiba.testutilities;
 
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.boot.test.context.TestConfiguration;
