@@ -41,15 +41,6 @@ public class ConditionalRenderingPageTest extends AbstractExistingStartTimePageT
     }
 
     @Test
-    void shouldNotRenderPageAndNavigateToTheNextPageIfTheSkipConditionIsTrue() {
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-        testPage.enter("someRadioInputName", "SKIP PAGE");
-        driver.findElement(By.tagName("button")).click();
-
-        assertThat(driver.getTitle()).isEqualTo(thirdPageTitle);
-    }
-
-    @Test
     void shouldSupportSkippingMoreThanOnePageInARow() {
         driver.navigate().to(baseUrl + "/pages/firstPage");
         testPage.enter("someRadioInputName", "SKIP PAGE");
