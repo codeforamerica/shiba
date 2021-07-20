@@ -63,8 +63,6 @@ var noneOfTheAbove = (function() {
                 $otherCheckboxes.parent().removeClass('is-selected');
                 if (this.checked) {
                     $('#choose-none-warning').removeClass("hidden");
-                    // Hide the follow up question elements when None of the above is checked
-                    $('.question-with-follow-up__follow-up').hide();
                 }
                 else {
                     $('#choose-none-warning').addClass("hidden");
@@ -76,3 +74,8 @@ var noneOfTheAbove = (function() {
         init: noneOf.init
     }
 })();
+
+$(document).ready(function () {
+    followUpQuestion.init();
+    noneOfTheAbove.init();
+});
