@@ -51,7 +51,7 @@ public class MetricsTest extends AbstractShibaMockMvcTest {
         assertThat(metricsPage.getCardValue("Median Week to Date")).contains("05m 30s");
         assertThat(metricsPage.getCardValue("Average Week to Date")).contains("05m 30s");
         // When adding new counties, this TD will be equal to the first county in the list
-        assertThat(metricsPage.findElementsByTag("td").get(0).ownText()).contains("Anoka");
+        assertThat(metricsPage.findElementsByTag("td").get(0).ownText()).contains("Aitkin");
         assertThat(metricsPage.findElementsByTag("td").get(1).ownText()).contains("0");
         assertThat(metricsPage.findElementsByTag("td").get(2).ownText()).contains("0");
         assertThat(metricsPage.getCardValue("Happy")).contains("100%");

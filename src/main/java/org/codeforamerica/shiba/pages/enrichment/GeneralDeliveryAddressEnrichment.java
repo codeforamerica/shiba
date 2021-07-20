@@ -31,11 +31,12 @@ public class GeneralDeliveryAddressEnrichment implements Enrichment {
 
         String countyFromCity = cityInfo.get("county");
         String zipcodeFromCity = cityInfo.get("zipcode");
-        County county = County.valueFor(countyFromCity);
+        County county = County.valueOf(countyFromCity);
         String phoneNumber = countyMap.get(county).getPhoneNumber();
-        String displayCounty = county == County.Other ? County.Other.displayName() : county.displayName() + " County";
+        String displayCounty = county.displayName() + " County";
 
         return new EnrichmentResult(Map.of(
+                "enrichedCounty", new InputData(List.of(displayCounty)),
                 "enrichedPhoneNumber", new InputData(List.of(phoneNumber)),
                 "enrichedZipcode", new InputData(List.of(zipcodeFromCity))
         ));

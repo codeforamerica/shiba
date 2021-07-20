@@ -1,10 +1,35 @@
 package org.codeforamerica.shiba;
 
 public enum County {
-    Anoka("Anoka"), Carver("Carver"), Clay("Clay"), Cook("Cook"), Dodge("Dodge"),
-    Hennepin("Hennepin"), Morrison("Morrison"), Olmsted("Olmsted"), OtterTail("Otter Tail"),
-    Sherburne("Sherburne"), Steele("Steele"), StLouis("St. Louis"), Wabasha("Wabasha"),
-    Wadena("Wadena"), Waseca("Waseca"), Wright("Wright"), Other("Other");
+    Aitkin("Aitkin"), Anoka("Anoka"), Becker("Becker"),
+    Beltrami("Beltrami"), Benton("Benton"), BigStone("BigStone"),
+    BlueEarth("Blue Earth"), Brown("Brown"), Carlton("Carlton"),
+    Carver("Carver"), Cass("Cass"), Chippewa("Chippewa"),
+    Chisago("Chisago"), Clay("Clay"), Clearwater("Clearwater"),
+    Cook("Cook"), Cottonwood("Cottonwood"), CrowWing("CrowWing"),
+    Dakota("Dakota"), Dodge("Dodge"), Douglas("Douglas"),
+    Faribault("Faribault"), Fillmore("Fillmore"), Freeborn("Freeborn"),
+    Goodhue("Goodhue"), Grant("Grant"), Hennepin("Hennepin"),
+    Houston("Houston"), Hubbard("Hubbard"), Isanti("Isanti"),
+    Itasca("Itasca"), Jackson("Jackson"), Kanabec("Kanabec"),
+    Kandiyohi("Kandiyohi"), Kittson("Kittson"), Koochiching("Koochiching"),
+    LacQuiParle("Lac Qui Parle"), Lake("Lake"), LakeOfTheWoods("Lake of the Woods"),
+    LeSueur("Le Sueur"), Lincoln("Lincoln"), Lyon("Lyon"),
+    McLeod("McLeod"), Mahnomen("Mahnomen"), Marshall("Marshall"),
+    Martin("Martin"), Meeker("Meeker"), MilleLacs("Mille Lacs"),
+    Morrison("Morrison"), Mower("Mower"), Murray("Murray"),
+    Nicollet("Nicollet"), Nobles("Nobles"), Norman("Norman"),
+    Olmsted("Olmsted"), OtterTail("Otter Tail"), Pennington("Pennington"),
+    Pine("Pine"), Pipestone("Pipestone"), Polk("Polk"),
+    Pope("Pope"), Ramsey("Ramsey"), RedLake("Red Lake"),
+    Redwood("Redwood"), Renville("Renville"), Rice("Rice"),
+    Rock("Rock"), Roseau("Roseau"), Scott("Scott"),
+    Sherburne("Sherburne"), Sibley("Sibley"), Stearns("Stearns"),
+    Steele("Steele"), Stevens("Stevens"), StLouis("St. Louis"),
+    Swift("Swift"), Todd("Todd"), Traverse("Traverse"),
+    Wabasha("Wabasha"), Wadena("Wadena"), Waseca("Waseca"),
+    Washington("Washington"), Watonwan("Watonwan"), Wright("Wright"),
+    Other("Other");
 
     private final String displayName;
 
@@ -34,7 +59,7 @@ public enum County {
         this.displayName = displayName;
     }
 
-    public String displayName(){
+    public String displayName() {
         return displayName;
     }
 

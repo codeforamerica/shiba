@@ -2751,6 +2751,7 @@ workflow:
       - pageName: homeAddressValidation
       - pageName: mailingAddress
       - pageName: mailingAddressValidation
+      - pageName: cityForGeneralDelivery
       - pageName: contactInfo
       - pageName: choosePrograms
   addHouseholdMembers:
