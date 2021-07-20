@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.framework;
 
+import org.codeforamerica.shiba.FormPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,7 +18,7 @@ public class SkipConditionTest extends AbstractFrameworkTest {
     private final String secondPageTitle = "secondPageTitle";
     private final String firstPageTitle = "firstPageTitle";
     private final String eighthPageTitle = "eighthPageTitle";
-    private final String pageToSkip = "pageToSkip";
+    private final String pageToSkipTitle = "pageToSkip";
     private final String lastPageTitle = "lastPageTitle";
 
     @BeforeEach
@@ -32,7 +33,7 @@ public class SkipConditionTest extends AbstractFrameworkTest {
         staticMessageSource.addMessage("ninth-page-title", ENGLISH, "ninthPageTitle");
         staticMessageSource.addMessage("skip-message-key", ENGLISH, "SKIP PAGE");
         staticMessageSource.addMessage("not-skip-message-key", ENGLISH, "NOT SKIP PAGE");
-        staticMessageSource.addMessage("page-to-skip-title", ENGLISH, pageToSkip);
+        staticMessageSource.addMessage("page-to-skip-title", ENGLISH, pageToSkipTitle);
         staticMessageSource.addMessage("last-page-title", ENGLISH, lastPageTitle);
     }
 
@@ -60,5 +61,64 @@ public class SkipConditionTest extends AbstractFrameworkTest {
         postExpectingRedirect("sixthPage", "foo", "goToSeventhPage", "seventhPage");
         postExpectingRedirect("seventhPage", "foo", "SKIP", "eighthPage");
         postExpectingRedirect("eighthPage", "fourthPage");
+    }
+
+    @Test
+    void shouldRemoveDataForSkippedPage() throws Exception {
+        postExpectingRedirect("firstPage", "someRadioInputName", "NOT_SKIP", "secondPage");
+        postExpectingRedirect("secondPage", "foo", "something", "thirdPage");
+
+        // Go back to first page and enter value that will cause secondPage to be skipped
+        postExpectingRedirect("firstPage", "someRadioInputName", "SKIP", "thirdPage");
+
+        // Go back to first page and enter value that will cause secondPage NOT to be skipped.
+        postExpectingRedirect("firstPage", "someRadioInputName", "NOT_SKIP", "secondPage");
+        var secondPage = new FormPage(getPage("secondPage"));
+        assertThat(secondPage.getTitle()).isEqualTo(secondPageTitle);
+
+        // Assert that secondPage's previous input data has been cleared out
+        assertThat(secondPage.getInputValue("foo")).isEmpty();
+    }
+
+    @Test
+    void shouldNavigateToTheFirstNextPageWhoseConditionIsTrue() throws Exception {
+        postExpectingNextPageTitle("fourthPage", "foo","goToFirstPage", firstPageTitle);
+    }
+
+    @Test
+    void shouldGoToFirstNextPageWhoseConditionIsTrue_forSubworkflow() throws Exception {
+        postExpectingNextPageTitle("sixthPage", "foo", "goToEighthPage", eighthPageTitle);
+    }
+
+    @Test
+    void shouldSupportConditionalRenderingForMultipleConditions() throws Exception {
+        postExpectingNextPageTitle("startingPage", Map.of(
+                "randomInput", List.of("someTextInput"),
+                "anotherInput", List.of("AnotherTextInput")
+        ), lastPageTitle);
+    }
+
+    @Test
+    void shouldNotSkipIfMultipleConditionsAreNotMet() throws Exception {
+        postExpectingNextPageTitle("startingPage", Map.of(
+                "randomInput", List.of("someTextInput"),
+                "anotherInput", List.of("notCorrectInput")
+        ), pageToSkipTitle);
+    }
+
+    @Test
+    void shouldSupportConditionalRenderingForMultipleConditionsWithOrOperator() throws Exception {
+        postExpectingNextPageTitle("secondStartingPage", Map.of(
+                "randomInput", List.of("someTextInput"),
+                "anotherInput", List.of("notCorrectInput")
+        ), lastPageTitle);
+    }
+
+    @Test
+    void shouldNotSkipIfMultipleConditionsAreNotMetWithOrOperator() throws Exception {
+        postExpectingNextPageTitle("secondStartingPage", Map.of(
+                "randomInput", List.of("notCorrectInput"),
+                "anotherInput", List.of("alsoNotCorrectInput")
+        ), pageToSkipTitle);
     }
 }
