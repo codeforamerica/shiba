@@ -18,8 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"pagesConfig=pages-config/test-input.yaml"})
-public class InputsPageTest extends AbstractExistingStartTimePageTest {
-
+public class InputsPageJourneyTest extends AbstractExistingStartTimePageTest {
     final String radioOption1 = "radio option 1";
     final String radioOption2 = "option-2";
     final String checkboxOption1 = "checkbox option 1";
@@ -109,6 +108,42 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
         assertThat(testPage.getInputValue("hourlyWageInput")).isEqualTo(hourlyWageValue);
     }
 
+    @Test
+    void shouldNotBeAbleToChangeValueInUneditableInputs() {
+        // TODO can we move this assertion into another test?
+        driver.navigate().to(baseUrl + "/pages/firstPage");
+        WebElement uneditableInput = driver.findElement(By.cssSelector("input[name='uneditableInput[]']"));
+
+        uneditableInput.sendKeys("new value");
+
+        assertThat(uneditableInput.getAttribute("value")).isEqualTo("default value");
+    }
+
+    @Test
+    void shouldKeepUneditableInputsAfterNavigation() {
+        driver.navigate().to(baseUrl + "/pages/firstPage");
+        driver.findElement(By.tagName("button")).click();
+
+        assertThat(driver.getTitle()).isEqualTo("nextPageTitle");
+
+        driver.findElement(By.partialLinkText("Go Back")).click();
+
+        assertThat(driver.getTitle()).isEqualTo("firstPageTitle");
+        assertThat(driver.findElement(By.cssSelector(String.format("input[name='%s[]']", "uneditableInput"))).getAttribute("value")).contains("default value");
+    }
+
+    @Test
+    void shouldUncheckAnyOtherCheckedBoxesWhenNoneCheckboxIsSelected() {
+        driver.navigate().to(baseUrl + "/pages/firstPage");
+
+        testPage.enter("checkboxInput", List.of(checkboxOption1, checkboxOption2));
+        testPage.enter("checkboxInput", noneCheckboxOption);
+
+        assertThat(testPage.getCheckboxValues("checkboxInput")).containsOnly(noneCheckboxOption);
+    }
+
+    // Convert below this.
+
     @Nested
     class FollowUps {
         @ParameterizedTest
@@ -174,46 +209,6 @@ public class InputsPageTest extends AbstractExistingStartTimePageTest {
 
             assertThat(driver.findElement(By.cssSelector("input[name='checkboxInputWithFollowUps-followUpTextInput[]']")).isDisplayed()).isTrue();
         }
-    }
-
-    @Test
-    void shouldNotBeAbleToChangeValueInUneditableInputs() {
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-        WebElement uneditableInput = driver.findElement(By.cssSelector(String.format("input[name='%s[]']", "uneditableInput")));
-
-        uneditableInput.sendKeys("new value");
-
-        assertThat(uneditableInput.getAttribute("value")).isEqualTo("default value");
-    }
-
-    @Test
-    void shouldKeepUneditableInputsAfterNavigation() {
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-        driver.findElement(By.tagName("button")).click();
-
-        assertThat(driver.getTitle()).isEqualTo("nextPageTitle");
-
-        driver.findElement(By.partialLinkText("Go Back")).click();
-
-        assertThat(driver.getTitle()).isEqualTo("firstPageTitle");
-        assertThat(driver.findElement(By.cssSelector(String.format("input[name='%s[]']", "uneditableInput"))).getAttribute("value")).contains("default value");
-    }
-
-    @Test
-    void shouldDisplayPromptMessageFragment() {
-        driver.navigate().to(baseUrl + "/pages/inputWithPromptFragmentPage");
-
-        assertThat(driver.findElementByPartialLinkText("test message")).isNotNull();
-    }
-
-    @Test
-    void shouldUncheckAnyOtherCheckedBoxesWhenNoneCheckboxIsSelected() {
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-
-        testPage.enter("checkboxInput", List.of(checkboxOption1, checkboxOption2));
-        testPage.enter("checkboxInput", noneCheckboxOption);
-
-        assertThat(testPage.getCheckboxValues("checkboxInput")).containsOnly(noneCheckboxOption);
     }
 
     @Test
