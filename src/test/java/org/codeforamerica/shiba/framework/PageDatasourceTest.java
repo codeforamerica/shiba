@@ -1,6 +1,5 @@
 package org.codeforamerica.shiba.framework;
 
-import org.codeforamerica.shiba.FormPage;
 import org.codeforamerica.shiba.pages.YesNoAnswer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,5 +57,40 @@ public class PageDatasourceTest extends AbstractFrameworkTest {
         var page = postAndFollowRedirect("yesNoQuestionPage", "yesNoQuestion", "true");
         assertThat(page.getTitle()).isEqualTo(yesAnswerTitle);
         assertThat(page.findElementByCssSelector("h1").text()).isEqualTo(yesHeaderText);
+    }
+
+    @Test
+    void shouldDisplayPageHeaderBasedOnCompositeCondition() throws Exception {
+        postExpectingRedirect("yesNoQuestionPage2", "yesNoQuestion2", "true", "yesNoQuestionPage3");
+        var page = postAndFollowRedirect("yesNoQuestionPage3", "yesNoQuestion3", "false");
+        assertThat(page.findElementByCssSelector("h1").text()).isEqualTo(yesHeaderText);
+    }
+
+    @Test
+    void shouldDisplayPageHeaderBasedOnCompositeConditionOtherPath() throws Exception {
+        postExpectingRedirect("yesNoQuestionPage2", "yesNoQuestion2", "false", "yesNoQuestionPage3");
+        var page = postAndFollowRedirect("yesNoQuestionPage3", "yesNoQuestion3", "true");
+        assertThat(page.findElementByCssSelector("h1").text()).isEqualTo(noHeaderText);
+    }
+
+    @Test
+    void shouldDisplayDatasourceForFormPages() throws Exception {
+        var value = "some input value";
+        postExpectingSuccess("firstPage", "someInputName", value);
+        var page = getFormPage("testFormPage");
+        assertThat(page.findElementTextById("context-fragment")).isEqualTo(value);
+    }
+
+    @Test
+    void shouldGetDataFromDatasourcesOutsideOfSubworkflow() throws Exception {
+        var page = postAndFollowRedirect("outsideSubworkflowPage", "outside-subworkflow-input", "true");
+        assertThat(page.findElementByCssSelector("h1").text()).isEqualTo(yesHeaderText);
+    }
+
+    @Test
+    void shouldHandleMissingDatasourcePagesWhenDatasourcePageWasSkipped() throws Exception {
+        var page = postAndFollowRedirect("outsideSubworkflowPage", "outside-subworkflow-input", "true");
+        assertThat(page.findElementByCssSelector("h1").text()).isEqualTo(yesHeaderText);
+        assertThat(page.getTitle()).isEqualTo(noAnswerTitle);
     }
 }
