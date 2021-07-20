@@ -1,5 +1,6 @@
-package org.codeforamerica.shiba.pages.journeys;
+package org.codeforamerica.shiba.newjourneys;
 
+import org.codeforamerica.shiba.pages.journeys.JourneyTest;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -7,7 +8,6 @@ import org.openqa.selenium.WebElement;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
