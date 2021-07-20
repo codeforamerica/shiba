@@ -45,7 +45,7 @@ public class PageDatasourcePageTest extends AbstractExistingStartTimePageTest {
         testPage.enter("someInputName", inputText);
         testPage.clickContinue();
 
-        assertThat(testPage.findElementTextByName("someInputName")).isEqualTo(inputText);
+        assertThat(testPage.findElementTextById("someInputName")).isEqualTo(inputText);
     }
 
     @Test

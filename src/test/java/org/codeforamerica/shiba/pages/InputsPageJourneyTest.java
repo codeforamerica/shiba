@@ -222,51 +222,6 @@ public class InputsPageJourneyTest extends AbstractExistingStartTimePageTest {
     }
 
     @Test
-    void shouldShowHelpMessageKeyOnCheckboxOptions() {
-        driver.navigate().to(baseUrl + "/pages/firstPage");
-
-        assertThat(testPage.driver.findElementByClassName("checkbox").getText()).contains(optionHelpMessage);
-    }
-
-    @Test
-    void shouldNotDisplayPrimaryButtonWhenHasPrimaryButtonIsFalse() {
-        navigateTo("doNotHavePrimaryButtonPage");
-
-        assertThat(driver.findElements(By.className("button--primary"))).isEmpty();
-    }
-
-    @Test
-    void shouldDisplayFragmentForPage() {
-        navigateTo("pageWithContextFragment");
-
-        assertThat(driver.findElement(By.id("pageContext")).getText()).isEqualTo("this is context");
-    }
-
-    @Test
-    void shouldHaveAccessToDatasources() {
-        navigateTo("firstPage");
-        String datasourceText = "Datasource Text";
-        testPage.enter("editableTextInput", datasourceText);
-        testPage.clickContinue();
-
-        navigateTo("subworkflowPage");
-
-        testPage.enter("value1", "a");
-        testPage.clickContinue();
-        testPage.enter("value1", "b");
-        testPage.clickContinue();
-        testPage.enter("value1", "c");
-        testPage.clickContinue();
-
-        navigateTo("pageWithReferenceCheckboxes");
-
-        assertThat(testPage.findElementTextByName("iteration0")).isEqualTo("a");
-        assertThat(testPage.findElementTextByName("iteration1")).isEqualTo("b");
-        assertThat(testPage.findElementTextByName("iteration2")).isEqualTo("c");
-        assertThat(testPage.findElementTextByName("datasourceText")).isEqualTo(datasourceText);
-    }
-
-    @Test
     void shouldDisplayPlaceholderIfPresent() {
         navigateTo("firstPage");
         assertThat(driver.getTitle()).isEqualTo("firstPageTitle");

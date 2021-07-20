@@ -1,6 +1,8 @@
 package org.codeforamerica.shiba.framework;
 
 import org.codeforamerica.shiba.FormPage;
+import org.jetbrains.annotations.NotNull;
+import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -8,6 +10,7 @@ import org.openqa.selenium.WebElement;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 
 import static java.util.Locale.ENGLISH;
@@ -57,8 +60,43 @@ public class InputsPageTest extends AbstractFrameworkTest {
 
     @Test
     void shouldDisplayPromptMessageFragment() throws Exception {
-        var page = new FormPage(getPage("inputWithPromptFragmentPage"));
+        var page = getFormPage("inputWithPromptFragmentPage");
         assertThat(page.findLinksByText("test message")).isNotNull();
+    }
+
+    @Test
+    void shouldShowHelpMessageKeyOnCheckboxOptions() throws Exception {
+        var page = getFormPage("firstPage");
+        var checkboxElements = page.findElementsByClassName("checkbox");
+        assertThat(checkboxElements).hasSize(6);
+        assertThat(checkboxElements.get(0).text()).contains(optionHelpMessage);
+    }
+
+    @Test
+    void shouldNotDisplayPrimaryButtonWhenHasPrimaryButtonIsFalse() throws Exception {
+        var page = getFormPage("doNotHavePrimaryButtonPage");
+        assertThat(page.findElementsByClassName("button--primary")).isEmpty();
+    }
+
+    @Test
+    void shouldDisplayFragmentForPage() throws Exception {
+        var page = getFormPage("pageWithContextFragment");
+        assertThat(page.getElementById("pageContext").text()).isEqualTo("this is context");
+    }
+
+    @Test
+    void shouldHaveAccessToDatasources() throws Exception {
+        postExpectingRedirect("firstPage", "editableTextInput", "Datasource Text", "nextPage");
+
+        postExpectingRedirect("subworkflowPage", "value1", "a", "subworkflowPage");
+        postExpectingRedirect("subworkflowPage", "value1", "b", "subworkflowPage");
+        postExpectingRedirect("subworkflowPage", "value1", "c", "subworkflowPage");
+
+        var page = getFormPage("pageWithReferenceCheckboxes");
+        assertThat(page.findElementTextById("iteration0")).isEqualTo("a");
+        assertThat(page.findElementTextById("iteration1")).isEqualTo("b");
+        assertThat(page.findElementTextById("iteration2")).isEqualTo("c");
+        assertThat(page.findElementTextById("datasourceText")).isEqualTo("Datasource Text");
     }
 
 }

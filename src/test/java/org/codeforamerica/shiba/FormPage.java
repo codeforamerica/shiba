@@ -72,6 +72,10 @@ public class FormPage {
         return html.getElementsByTag(tag);
     }
 
+    public List<Element> findElementsByClassName(String classname) {
+        return html.getElementsByClass(classname);
+    }
+
 	public void assertLinkWithTextHasCorrectUrl(String linkText, String expectedUrl) {
 		assertThat(findLinksByText(linkText)).hasSize(1);
         var url = findLinksByText(linkText).get(0).attr("href");
