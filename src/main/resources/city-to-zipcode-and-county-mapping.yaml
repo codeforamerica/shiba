@@ -81,7 +81,7 @@ cityToZipAndCountyMapping:
     county: Becker
   Aurora:
     zipcode: "55705"
-    county: Saint Louis
+    county: St Louis
   Austin:
     zipcode: "55912"
     county: Mower
@@ -90,7 +90,7 @@ cityToZipAndCountyMapping:
     county: Stearns
   Babbitt:
     zipcode: "55706"
-    county: Saint Louis
+    county: St Louis
   Backus:
     zipcode: "56435"
     county: Cass
@@ -117,7 +117,7 @@ cityToZipAndCountyMapping:
     county: Otter Tail
   Baudette:
     zipcode: "56623"
-    county: Lake of the Woods
+    county: Lake Of The Woods
   Baxter:
     zipcode: "56425"
     county: Crow Wing
@@ -177,7 +177,7 @@ cityToZipAndCountyMapping:
     county: Renville
   Biwabik:
     zipcode: "55708"
-    county: Saint Louis
+    county: St Louis
   Blackduck:
     zipcode: "56630"
     county: Beltrami
@@ -261,7 +261,7 @@ cityToZipAndCountyMapping:
     county: Wright
   Buhl:
     zipcode: "55713"
-    county: Saint Louis
+    county: St Louis
   Burnsville:
     zipcode: "55306"
     county: Dakota
@@ -330,7 +330,7 @@ cityToZipAndCountyMapping:
     county: Chisago
   Chisholm:
     zipcode: "55719"
-    county: Saint Louis
+    county: St Louis
   Chokio:
     zipcode: "56221"
     county: Stevens
@@ -393,7 +393,7 @@ cityToZipAndCountyMapping:
     county: Brown
   Cook:
     zipcode: "55723"
-    county: Saint Louis
+    county: St Louis
   Cosmos:
     zipcode: "56228"
     county: Meeker
@@ -504,7 +504,7 @@ cityToZipAndCountyMapping:
     county: Olmsted
   Duluth:
     zipcode: "55801"
-    county: Saint Louis
+    county: St Louis
   Dundas:
     zipcode: "55019"
     county: Rice
@@ -564,7 +564,7 @@ cityToZipAndCountyMapping:
     county: Faribault
   Ely:
     zipcode: "55731"
-    county: Saint Louis
+    county: St Louis
   Elysian:
     zipcode: "56028"
     county: Le Sueur
@@ -582,7 +582,7 @@ cityToZipAndCountyMapping:
     county: Douglas
   Eveleth:
     zipcode: "55734"
-    county: Saint Louis
+    county: St Louis
   Excelsior:
     zipcode: "55331"
     county: Hennepin
@@ -603,7 +603,7 @@ cityToZipAndCountyMapping:
     county: Hennepin
   Embarrass:
     zipcode: "55732"
-    county: Saint Louis
+    county: St Louis
   Fairfax:
     zipcode: "55332"
     county: Renville
@@ -639,7 +639,7 @@ cityToZipAndCountyMapping:
     county: Morrison
   Floodwood:
     zipcode: "55736"
-    county: Saint Louis
+    county: St Louis
   Foley:
     zipcode: "56329"
     county: Benton
@@ -705,7 +705,7 @@ cityToZipAndCountyMapping:
     county: Sibley
   Gilbert:
     zipcode: "55741"
-    county: Saint Louis
+    county: St Louis
   Gilman:
     zipcode: "56333"
     county: Benton
@@ -858,7 +858,7 @@ cityToZipAndCountyMapping:
     county: Todd
   Hibbing:
     zipcode: "55746"
-    county: Saint Louis
+    county: St Louis
   Hill City:
     zipcode: "55748"
     county: Aitkin
@@ -897,7 +897,7 @@ cityToZipAndCountyMapping:
     county: Wright
   Hoyt Lakes:
     zipcode: "55750"
-    county: Saint Louis
+    county: St Louis
   Hugo:
     zipcode: "55038"
     county: Washington
@@ -912,7 +912,7 @@ cityToZipAndCountyMapping:
     county: Anoka
   Hermantown:
     zipcode: "55810"
-    county: Saint Louis
+    county: St Louis
   Hilltop:
     zipcode: "55421"
     county: Anoka
@@ -1278,7 +1278,7 @@ cityToZipAndCountyMapping:
     county: Hennepin
   Mountain Iron:
     zipcode: "55768"
-    county: Saint Louis
+    county: St Louis
   Mountain Lake:
     zipcode: "56159"
     county: Cottonwood
@@ -1413,7 +1413,7 @@ cityToZipAndCountyMapping:
     county: Olmsted
   Orr:
     zipcode: "55771"
-    county: Saint Louis
+    county: St Louis
   Ortonville:
     zipcode: "56278"
     county: Big Stone
@@ -1455,7 +1455,7 @@ cityToZipAndCountyMapping:
     county: Hennepin
   Proctor:
     zipcode: "55810"
-    county: Saint Louis
+    county: St Louis
   Park Rapids:
     zipcode: "56470"
     county: Hubbard
@@ -1821,7 +1821,7 @@ cityToZipAndCountyMapping:
     county: Pennington
   Tower:
     zipcode: "55790"
-    county: Saint Louis
+    county: St Louis
   Tracy:
     zipcode: "56175"
     county: Lyon
@@ -1881,7 +1881,7 @@ cityToZipAndCountyMapping:
     county: Pope
   Virginia:
     zipcode: "55777"
-    county: Saint Louis
+    county: St Louis
   Wabasha:
     zipcode: "55981"
     county: Wabasha
@@ -1965,7 +1965,7 @@ cityToZipAndCountyMapping:
     county: Washington
   Williams:
     zipcode: "56686"
-    county: Lake of the Woods
+    county: Lake Of The Woods
   Willmar:
     zipcode: "56201"
     county: Kandiyohi
