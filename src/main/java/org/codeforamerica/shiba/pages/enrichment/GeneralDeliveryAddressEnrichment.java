@@ -11,6 +11,9 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.GENERAL_DELIVERY_CITY;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
+
 @Component
 public class GeneralDeliveryAddressEnrichment implements Enrichment {
     private final CityInfoConfiguration cityInfoConfiguration;
@@ -24,12 +27,10 @@ public class GeneralDeliveryAddressEnrichment implements Enrichment {
 
     @Override
     public EnrichmentResult process(PagesData pagesData) {
-        String cityname = pagesData.getPageInputFirstValue("cityForGeneralDelivery", "whatIsTheCity");
-//        String cityName = getFirstValue(pagesData, GENERAL_DELIVERY_CITY); TODO replace when available
+        String cityName = getFirstValue(pagesData, GENERAL_DELIVERY_CITY);
+        Map<String, String> cityInfo = cityInfoConfiguration.getCityToZipAndCountyMapping().get(cityName);
 
-        Map<String, String> cityInfo = cityInfoConfiguration.getCityToZipAndCountyMapping().get(cityname);
-
-        String countyFromCity = cityInfo.get("county");
+        String countyFromCity = cityInfo.get("county").replace(" ", "");
         String zipcodeFromCity = cityInfo.get("zipcode");
         County county = County.valueOf(countyFromCity);
         String phoneNumber = countyMap.get(county).getPhoneNumber();

@@ -22,16 +22,16 @@ class GeneralDeliveryAddressEnrichmentTest {
 
     @Test
     void shouldMapCityInfoForKnownCounty() {
-        countyZipCodeMap.getCounties().put(County.Olmsted, new MnitCountyInformation(null, null, null, "123-4567"));
-        cityInfoConfiguration.getCityToZipAndCountyMapping().put("Rochester", Map.of("displayName", "Rochester", "zipcode", "55901", "county", "Olmsted"));
+        countyZipCodeMap.getCounties().put(County.OtterTail, new MnitCountyInformation(null, null, null, "123-4567"));
+        cityInfoConfiguration.getCityToZipAndCountyMapping().put("Battle Lake", Map.of("displayName", "Battle Lake", "zipcode", "56515", "county", "OtterTail"));
         ApplicationData applicationData = new TestApplicationDataBuilder()
-                .withPageData("cityForGeneralDelivery", "whatIsTheCity", List.of("Rochester"))
+                .withPageData("cityForGeneralDelivery", "whatIsTheCity", List.of("Battle Lake"))
                 .build();
 
         EnrichmentResult enrichmentResult = generalDeliveryAddressEnrichment.process(applicationData.getPagesData());
 
-        assertThat(enrichmentResult).containsEntry("enrichedCounty", new InputData(List.of(County.Olmsted.displayName() + " County")));
-        assertThat(enrichmentResult).containsEntry("enrichedZipcode", new InputData(List.of("55901")));
+        assertThat(enrichmentResult).containsEntry("enrichedCounty", new InputData(List.of(County.OtterTail.displayName() + " County")));
+        assertThat(enrichmentResult).containsEntry("enrichedZipcode", new InputData(List.of("56515")));
         assertThat(enrichmentResult).containsEntry("enrichedPhoneNumber", new InputData(List.of("123-4567")));
     }
 }
