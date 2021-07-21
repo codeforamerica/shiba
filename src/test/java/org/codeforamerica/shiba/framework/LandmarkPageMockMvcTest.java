@@ -11,11 +11,15 @@ import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.time.*;
+
 import static java.util.Locale.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Import(LandmarkPageMockMvcTest.LandmarkPageTestController.class)
 @SpringBootTest(properties = {"pagesConfig=pages-config/test-landmark-pages.yaml"})
@@ -76,7 +80,10 @@ public class LandmarkPageMockMvcTest extends AbstractStaticMessageSourceFramewor
 
     @Test
     void shouldNotRedirectToFirstLandingPageWhenNavigateToAMidFlowPageAfterStartTimerPage() throws Exception {
+        when(clock.instant()).thenReturn(Instant.now());
         getPage("thirdPage").andExpect(status().isOk()); // start timer page
-        postExpectingNextPageTitle("thirdPage", fourthPageTitle);
+//        postExpectingNextPageTitle("thirdPage", fourthPageTitle);
+        mockMvc.perform(post("/success").session(session).with(csrf()))
+                .andExpect(redirectedUrl("/pages/fourthPage"));
     }
 }
