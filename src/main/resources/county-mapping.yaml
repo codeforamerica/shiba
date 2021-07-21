@@ -272,41 +272,135 @@ other:
     folderId: 5195b061-9bdc-4d31-9840-90a99902d329 # Hennepin folder on test-svcs.dhs.mn.gov
     dhsProviderId: A000027200
   counties:
+    Aitkin:
+      phoneNumber: 218-927-7200
     Anoka:
       email: help+dev@mnbenefits.org
       phoneNumber: 763-422-7200
       folderId: 05042a59-cb59-4b52-8bd1-8dd73e4e7e3f
       dhsProviderId: 1023250115
+    Becker:
+      phoneNumber: 218-847-5628
+    Beltrami:
+      phoneNumber: 218-333-8300
+    Benton:
+      phoneNumber: 320-968-5087
+    BigStone:
+      phoneNumber: 320-839-2555
+    BlueEarth:
+      phoneNumber: 507-304-4335
+    Brown:
+      phoneNumber: 507-354-8246
+    Carlton:
+      phoneNumber: 218-879-4583
     Carver:
       email: help+dev@mnbenefits.org
       phoneNumber: 952-361-1660
       folderId: f2002ee6-5201-432c-970e-fc152569dc10
       dhsProviderId: A000010800
+    Cass:
+      phoneNumber: 218-547-1340
+    Chippewa:
+      phoneNumber: 320-269-6401
+    Chisago:
+      phoneNumber: 651-213-5640
     Clay:
       email: help+dev@mnbenefits.org
       phoneNumber: 218-299-5200
       folderId: a4a01aa6-2d9b-4510-9bbf-dc4c00442060
       dhsProviderId: A000014100
+    Clearwater:
+      phoneNumber: 218-694-6164
     Cook:
       email: help+dev@mnbenefits.org
       phoneNumber: 218-387-3620
       folderId: 057f1c2f-3a40-4e53-a208-ecfbe9a0022e
       dhsProviderId: A000016700
+    Cottonwood:
+      phoneNumber: 507-831-1891
+    CrowWing:
+      phoneNumber: 218-824-1250
+    Dakota:
+      phoneNumber: 651-554-5611
     Dodge:
       email: help+dev@mnbenefits.org
       phoneNumber: 507-431-5600
       folderId: aceeedc9-f094-4fa3-9665-8313674b61d0
       dhsProviderId: A000020500
+    Douglas:
+      phoneNumber: 320-762-2302
+    Faribault:
+      phoneNumber: 507-526-3265
+    Fillmore:
+      phoneNumber: 507-765-2175
+    Freeborn:
+      phoneNumber: 507-377-5400
+    Goodhue:
+      phoneNumber: 651-385-320
+    Grant:
+      phoneNumber: 218-685-8200
     Hennepin:
       email: help+dev@mnbenefits.org
       phoneNumber: 612-596-1300
       folderId: 5195b061-9bdc-4d31-9840-90a99902d329
       dhsProviderId: A000027200
+    Houston:
+      phoneNumber: 507-725-5811
+    Hubbard:
+      phoneNumber: 218-732-1451
+    Isanti:
+      phoneNumber: 763-689-1711
+    Itasca:
+      phoneNumber: 218-327-2941
+    Jackson:
+      phoneNumber: 507-847-4000
+    Kanabec:
+      phoneNumber: 320-679-6350
+    Kandiyohi:
+      phoneNumber: 320-231-7800
+    Kittson:
+      phoneNumber: 218-843-2689
+    Koochiching:
+      phoneNumber: 218-283-7000
+    LacQuiParle:
+      phoneNumber: 320-598-7594
+    Lake:
+      phoneNumber: 218-834-8400
+    LakeOfTheWoods:
+      phoneNumber: 218-634-2642
+    LeSueur:
+      phoneNumber: 507-357-8288
+    Lincoln:
+      phoneNumber: 507-694-1452
+    Lyon:
+      phoneNumber: 507-537-6747
+    McLeod:
+      phoneNumber: 320-864-3144
+    Mahnomen:
+      phoneNumber: 218-935-2568
+    Marshall:
+      phoneNumber: 218-745-5124
+    Martin:
+      phoneNumber: 507-238-4757
+    Meeker:
+      phoneNumber: 320-693-5300
+    MilleLacs:
+      phoneNumber: 320-983-8208
     Morrison:
       email: help+dev@mnbenefits.org
       phoneNumber: 320-631-3599
       folderId: d0408807-e6a0-48d6-9829-2b78ceb94654
       dhsProviderId: 1255406286
+    Mower:
+      phoneNumber: 507-437-9700
+    Murray:
+      phoneNumber: 507-836-6144
+    Nicollet:
+      phoneNumber: 507-934-8559
+    Nobles:
+      phoneNumber: 507-295-5213
+    Norman:
+      phoneNumber: 218-784-5400
     Olmsted:
       email: help+dev@mnbenefits.org
       phoneNumber: 507-328-6500
@@ -317,21 +411,59 @@ other:
       phoneNumber: 218-998-8281
       folderId: 4ceb43cf-e67a-4edb-9ff8-6ddff1911ff9
       dhsProviderId: A000056600
+    Pennington:
+      phoneNumber: 218-681-2880
+    Pine:
+      phoneNumber: 320-591-1570
+    Pipestone:
+      phoneNumber: 507-825-6720
+    Polk:
+      phoneNumber: 218-281-3127
+    Pope:
+      phoneNumber: 320-634-7755
+    Ramsey:
+      phoneNumber: 651-266-4444
+    RedLake:
+      phoneNumber: 218-253-4131
+    Redwood:
+      phoneNumber: 507-637-4050
+    Renville:
+      phoneNumber: 320-523-2202
+    Rice:
+      phoneNumber: 507-332-6115
+    Rock:
+      phoneNumber: 507-283-5070
+    Roseau:
+      phoneNumber: 218-463-2411
+    Scott:
+      phoneNumber: 952-496-8686
     Sherburne:
       email: help+dev@mnbenefits.org
       phoneNumber: 763-765-4000
       folderId: 2f430ec0-5113-447a-af8a-4c972ac29de4
       dhsProviderId: 1447381660
+    Sibley:
+      phoneNumber: 507-237-4000
+    Stearns:
+      phoneNumber: 320-656-6000
     Steele:
       email: help+dev@mnbenefits.org
       phoneNumber: 507-431-5600
       folderId: dbe6702b-fd3b-4e6f-847e-7d3a41f2941a
       dhsProviderId: A000074400
+    Stevens:
+      phoneNumber: 320-208-6600
     StLouis:
       email: help+dev@mnbenefits.org
       phoneNumber: 800-450-9777 or 218-726-2101
       folderId: e1be079d-99cf-4efb-b7c2-3f92911dc992
       dhsProviderId: A000069800
+    Swift:
+      phoneNumber: 320-843-3160
+    Todd:
+      phoneNumber: 320-732-4500
+    Traverse:
+      phoneNumber: 320-422-7777
     Wabasha:
       email: help+dev@mnbenefits.org
       phoneNumber: 651-565-3351
@@ -347,6 +479,10 @@ other:
       phoneNumber: 507-431-5600
       folderId: 94534f77-8f05-4e7e-8204-2e09bc6b873d
       dhsProviderId: A000081700
+    Washington:
+      phoneNumber: 651-430-6455
+    Watonwan:
+      phoneNumber: 507-375-3294
     Wright:
       email: help+dev@mnbenefits.org
       phoneNumber: 763-682-7414

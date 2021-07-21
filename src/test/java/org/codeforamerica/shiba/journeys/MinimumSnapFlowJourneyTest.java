@@ -59,7 +59,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         assertThat(testPage.hasErrorText("Make sure to provide a city")).isTrue();
         testPage.selectFromDropdown("whatIsTheCity[]", "Ada");
         testPage.clickContinue();
-        assertThat(testPage.getTitle()).isEqualTo("Mailing address"); // TODO update to general delivery review page
+        assertThat(testPage.getTitle()).isEqualTo("General Delivery address");
 
         // The county will need a place to send you mail over the next 3 months.
         navigateTo("whereToSendMail");
