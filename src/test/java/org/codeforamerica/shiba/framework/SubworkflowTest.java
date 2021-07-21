@@ -140,7 +140,7 @@ public class SubworkflowTest extends AbstractFrameworkTest {
 
         // click "Go Back" and confirm you want to start the entire subworkflow over
         getPageAndExpectRedirect("secondPage", "redirectPage");
-        postExpectingSuccess("/groups/group1/delete", "/pages/startPage", Map.of());
+        postToUrlExpectingSuccess("/groups/group1/delete", "/pages/startPage", Map.of());
 
         // The next iteration should be considered "iteration0"
         completeAnIterationGoingThroughThirdPage("0");

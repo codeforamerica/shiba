@@ -12,11 +12,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.time.*;
+import java.util.Map;
 
 import static java.util.Locale.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -82,8 +82,7 @@ public class LandmarkPageMockMvcTest extends AbstractStaticMessageSourceFramewor
     void shouldNotRedirectToFirstLandingPageWhenNavigateToAMidFlowPageAfterStartTimerPage() throws Exception {
         when(clock.instant()).thenReturn(Instant.now());
         getPage("thirdPage").andExpect(status().isOk()); // start timer page
-//        postExpectingNextPageTitle("thirdPage", fourthPageTitle);
-        mockMvc.perform(post("/success").session(session).with(csrf()))
-                .andExpect(redirectedUrl("/pages/fourthPage"));
+        postToUrlExpectingSuccess("/submit", "/pages/thirdPage/navigation", Map.of());
+        assertNavigationRedirectsToCorrectNextPage("thirdPage", "fourthPage");
     }
 }

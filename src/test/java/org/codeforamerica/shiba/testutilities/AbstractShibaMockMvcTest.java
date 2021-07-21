@@ -279,7 +279,7 @@ public class AbstractShibaMockMvcTest {
     }
 
     protected void submitApplication() throws Exception {
-        postExpectingSuccess("/submit",
+        postToUrlExpectingSuccess("/submit",
                              "/pages/signThisApplication/navigation",
                              Map.of("applicantSignature", List.of("Human McPerson")));
     }
@@ -295,25 +295,25 @@ public class AbstractShibaMockMvcTest {
     // Post to a page with an arbitrary number of multi-value inputs
     protected ResultActions postExpectingSuccess(String pageName, Map<String, List<String>> params) throws Exception {
         String postUrl = getUrlForPageName(pageName);
-        return postExpectingSuccess(postUrl, postUrl + "/navigation", params);
+        return postToUrlExpectingSuccess(postUrl, postUrl + "/navigation", params);
     }
 
     // Post to a page with a single input that only accepts a single value
     protected ResultActions postExpectingSuccess(String pageName, String inputName, String value) throws Exception {
         String postUrl = getUrlForPageName(pageName);
         var params = Map.of(inputName, List.of(value));
-        return postExpectingSuccess(postUrl, postUrl + "/navigation", params);
+        return postToUrlExpectingSuccess(postUrl, postUrl + "/navigation", params);
     }
 
     // Post to a page with a single input that accepts multiple values
     protected ResultActions postExpectingSuccess(String pageName, String inputName,
                                                  List<String> values) throws Exception {
         String postUrl = getUrlForPageName(pageName);
-        return postExpectingSuccess(postUrl, postUrl + "/navigation", Map.of(inputName, values));
+        return postToUrlExpectingSuccess(postUrl, postUrl + "/navigation", Map.of(inputName, values));
     }
 
-    protected ResultActions postExpectingSuccess(String postUrl, String redirectUrl,
-                                                 Map<String, List<String>> params) throws
+    protected ResultActions postToUrlExpectingSuccess(String postUrl, String redirectUrl,
+                                                      Map<String, List<String>> params) throws
             Exception {
         Map<String, List<String>> paramsWithProperInputNames = fixInputNamesForParams(params);
         return mockMvc.perform(
@@ -775,7 +775,7 @@ public class AbstractShibaMockMvcTest {
                                             new FileInputStream(getAbsoluteFilepathString(UPLOADED_JPG_FILE_NAME)));
         mockMvc.perform(multipart("/submit-documents").file(jpgFile).session(session).with(csrf()))
                 .andExpect(redirectedUrl("/pages/success"));
-        postExpectingSuccess("/submit-documents", "/pages/success", Map.of());
+        postToUrlExpectingSuccess("/submit-documents", "/pages/success", Map.of());
     }
 
     protected void deleteOnlyHouseholdMember() throws Exception {
