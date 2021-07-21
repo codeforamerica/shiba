@@ -46,7 +46,7 @@ sender-email: help@mnbenefits.org
 security-email: security@mnbenefits.org
 audit-email: help+audit@mnbenefits.org
 hennepin-email: mnbenefits@codeforamerica.org
-resubmission-email: mnbenefits+resubmission@codeforamerica.org
+resubmission-email: resubmission+mnbenefits@codeforamerica.org
 
 mail-gun:
   url: "https://api.mailgun.net/v3/mail.mnbenefits.org/messages"
