@@ -43,7 +43,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        when(featureFlags.get("oracle")).thenReturn(FeatureFlag.OFF);
+        when(featureFlags.get("oracle")).thenReturn(FeatureFlag.ON);
     }
 
     @Test
