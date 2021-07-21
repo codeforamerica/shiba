@@ -2,7 +2,9 @@ package org.codeforamerica.shiba.pages.emails;
 
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
+import org.codeforamerica.shiba.application.Status;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
@@ -45,6 +47,7 @@ public class MailGunEmailClient implements EmailClient {
     private final PdfGenerator pdfGenerator;
     private final String activeProfile;
     private final String resubmissionEmail;
+    private final ApplicationRepository applicationRepository;
 
     public MailGunEmailClient(@Value("${sender-email}") String senderEmail,
                               @Value("${security-email}") String securityEmail,
@@ -56,7 +59,8 @@ public class MailGunEmailClient implements EmailClient {
                               @Value("${mail-gun.shouldCC}") boolean shouldCC,
                               @Value("${resubmission-email}") String resubmissionEmail,
                               PdfGenerator pdfGenerator,
-                              @Value("${spring.profiles.active:Unknown}") String activeProfile) {
+                              @Value("${spring.profiles.active:Unknown}") String activeProfile,
+                              ApplicationRepository applicationRepository) {
         this.senderEmail = senderEmail;
         this.securityEmail = securityEmail;
         this.auditEmail = auditEmail;
@@ -68,6 +72,7 @@ public class MailGunEmailClient implements EmailClient {
         this.pdfGenerator = pdfGenerator;
         this.activeProfile = activeProfile;
         this.resubmissionEmail = resubmissionEmail;
+        this.applicationRepository=applicationRepository;
     }
 
     @Override
@@ -205,6 +210,7 @@ public class MailGunEmailClient implements EmailClient {
                         .block();
             }
         }
+        applicationRepository.updateStatus(application.getId(), UPLOADED_DOC, Status.DELIVERED);
     }
 
     @Override
