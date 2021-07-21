@@ -39,7 +39,10 @@ public class ApplicationDataParser {
         HOME_COUNTY("Other"),
 
         IS_HOMELESS,
+        IS_HOMELESS_2,
         SAME_MAILING_ADDRESS,
+
+        GENERAL_DELIVERY_CITY,
 
         IDENTIFY_ZIPCODE,
         IDENTIFY_COUNTY("Other"),
@@ -102,7 +105,10 @@ public class ApplicationDataParser {
         coordinatesMap.put(Field.HOME_APARTMENT_NUMBER, new ParsingCoordinate("homeAddress", "apartmentNumber"));
         coordinatesMap.put(Field.HOME_COUNTY, new ParsingCoordinate("homeAddress", "enrichedCounty"));
 
+        coordinatesMap.put(Field.GENERAL_DELIVERY_CITY, new ParsingCoordinate("cityForGeneralDelivery", "whatIsTheCity"));
+
         coordinatesMap.put(Field.IS_HOMELESS, new ParsingCoordinate("homeAddress", "isHomeless"));
+        coordinatesMap.put(Field.IS_HOMELESS_2, new ParsingCoordinate("homeAddress2", "isHomeless"));
         coordinatesMap.put(Field.SAME_MAILING_ADDRESS, new ParsingCoordinate("homeAddress", "sameMailingAddress"));
 
         coordinatesMap.put(Field.IDENTIFY_ZIPCODE, new ParsingCoordinate("identifyZipcode", "zipCode"));

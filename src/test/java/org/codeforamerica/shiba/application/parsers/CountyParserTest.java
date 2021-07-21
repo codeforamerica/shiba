@@ -1,20 +1,29 @@
 package org.codeforamerica.shiba.application.parsers;
 
-import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
+import org.codeforamerica.shiba.*;
+import org.codeforamerica.shiba.configurations.*;
+import org.codeforamerica.shiba.pages.config.*;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.boot.test.context.*;
+import org.springframework.boot.test.mock.mockito.*;
+import org.springframework.test.context.*;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
-import static org.mockito.Mockito.mock;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
+@SpringBootTest(webEnvironment = NONE, classes = {CityInfoConfigurationFactory.class, CountyParser.class})
+@ActiveProfiles("test")
 class CountyParserTest {
-    private final FeatureFlagConfiguration featureFlagConfiguration = mock(FeatureFlagConfiguration.class);
-    private final CountyParser countyParser = new CountyParser(featureFlagConfiguration);
+    @MockBean
+    private FeatureFlagConfiguration featureFlagConfiguration;
+    @Autowired
+    private CountyParser countyParser;
 
     @Test
     void shouldParseCounty() {
@@ -82,5 +91,14 @@ class CountyParserTest {
         applicationData.setFlow(LATER_DOCS);
 
         assertThat(countyParser.parse(applicationData)).isEqualTo(County.Other);
+    }
+
+    @Test
+    void shouldParseCountyForGeneralDelivery() {
+        ApplicationData applicationData = new TestApplicationDataBuilder()
+                .isHomeless()
+                .withPageData("cityForGeneralDelivery", "whatIsTheCity", List.of("Byron"))
+                .build();
+        assertThat(countyParser.parse(applicationData)).isEqualTo(County.Olmsted);
     }
 }

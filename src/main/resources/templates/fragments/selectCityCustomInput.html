@@ -12,10 +12,9 @@
         >
             <option th:value="SelectYourCity" th:text="#{city-for-general-delivery.select-your-city}"></option>
             <th:block th:each="option: ${cityInfo.entrySet()}">
-                <option th:value="${option.getKey()}" th:text="${option.getValue().get('displayName')}"
+                <option th:value="${option.getKey()}" th:text="${option.getKey()}"
                         th:selected="${inputData.value.contains(option.getKey())}"></option>
             </th:block>
-<!--            <option th:value="Other" th:text="Other" th:selected="${inputData.value.contains('Other')}></option>-->
         </select>
     </div>
     <p class="text--error" th:if="${!data.isValid() && !inputData.valid(data)}">

@@ -58,7 +58,7 @@ public class PageController {
     private final FeatureFlagConfiguration featureFlags;
     private final UploadDocumentConfiguration uploadDocumentConfiguration;
     private final CountyParser countyParser;
-    private final CityInfoConfiguration cityInfoMap;
+    private final CityInfoConfiguration cityInfoConfiguration;
     private final SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider;
     private final CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
     private final SuccessMessageService successMessageService;
@@ -78,7 +78,7 @@ public class PageController {
             FeatureFlagConfiguration featureFlags,
             UploadDocumentConfiguration uploadDocumentConfiguration,
             CountyParser countyParser,
-            CityInfoConfiguration cityInfoMap,
+            CityInfoConfiguration cityInfoConfiguration,
             SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider,
             CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider,
             SuccessMessageService successMessageService,
@@ -96,7 +96,7 @@ public class PageController {
         this.featureFlags = featureFlags;
         this.uploadDocumentConfiguration = uploadDocumentConfiguration;
         this.countyParser = countyParser;
-        this.cityInfoMap = cityInfoMap;
+        this.cityInfoConfiguration = cityInfoConfiguration;
         this.snapExpeditedEligibilityDecider = snapExpeditedEligibilityDecider;
         this.ccapExpeditedEligibilityDecider = ccapExpeditedEligibilityDecider;
         this.successMessageService = successMessageService;
@@ -281,7 +281,7 @@ public class PageController {
         }
 
         model.put("county", countyParser.parse(applicationData));
-        model.put("cityInfo", cityInfoMap.getCityToZipAndCountyMapping());
+        model.put("cityInfo", cityInfoConfiguration.getCityToZipAndCountyMapping());
 
         List<String> zipCode = applicationData.getPagesData().safeGetPageInputValue("homeAddress", "zipCode");
         if (!zipCode.isEmpty()) {
