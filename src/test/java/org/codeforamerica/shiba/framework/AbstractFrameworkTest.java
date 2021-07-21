@@ -15,7 +15,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Import({AbstractFrameworkTest.StartTimerController.class})
-@Tag("framework")
 public class AbstractFrameworkTest extends AbstractStaticMessageSourceFrameworkTest {
     @Controller
     public static class StartTimerController {

@@ -279,9 +279,9 @@ public class AbstractShibaMockMvcTest {
     }
 
     protected void submitApplication() throws Exception {
-        postExpectingSuccess("/submit",
-                             "/pages/signThisApplication/navigation",
-                             Map.of("applicantSignature", List.of("Human McPerson")));
+        postToUrlExpectingSuccess("/submit",
+                "/pages/signThisApplication/navigation",
+                Map.of("applicantSignature", List.of("Human McPerson")));
     }
 
     protected void selectPrograms(String... programs) throws Exception {
@@ -295,25 +295,25 @@ public class AbstractShibaMockMvcTest {
     // Post to a page with an arbitrary number of multi-value inputs
     protected ResultActions postExpectingSuccess(String pageName, Map<String, List<String>> params) throws Exception {
         String postUrl = getUrlForPageName(pageName);
-        return postExpectingSuccess(postUrl, postUrl + "/navigation", params);
+        return postToUrlExpectingSuccess(postUrl, postUrl + "/navigation", params);
     }
 
     // Post to a page with a single input that only accepts a single value
     protected ResultActions postExpectingSuccess(String pageName, String inputName, String value) throws Exception {
         String postUrl = getUrlForPageName(pageName);
         var params = Map.of(inputName, List.of(value));
-        return postExpectingSuccess(postUrl, postUrl + "/navigation", params);
+        return postToUrlExpectingSuccess(postUrl, postUrl + "/navigation", params);
     }
 
     // Post to a page with a single input that accepts multiple values
     protected ResultActions postExpectingSuccess(String pageName, String inputName,
                                                  List<String> values) throws Exception {
         String postUrl = getUrlForPageName(pageName);
-        return postExpectingSuccess(postUrl, postUrl + "/navigation", Map.of(inputName, values));
+        return postToUrlExpectingSuccess(postUrl, postUrl + "/navigation", Map.of(inputName, values));
     }
 
-    protected ResultActions postExpectingSuccess(String postUrl, String redirectUrl,
-                                                 Map<String, List<String>> params) throws
+    protected ResultActions postToUrlExpectingSuccess(String postUrl, String redirectUrl,
+                                                      Map<String, List<String>> params) throws
             Exception {
         Map<String, List<String>> paramsWithProperInputNames = fixInputNamesForParams(params);
         return mockMvc.perform(
@@ -483,6 +483,11 @@ public class AbstractShibaMockMvcTest {
         return mockMvc.perform(get("/pages/" + pageName).session(session));
     }
 
+    @NotNull
+    protected ResultActions getPageExpectingSuccess(String pageName) throws Exception {
+        return getPage(pageName).andExpect(status().isOk());
+    }
+
     /**
      * Accepts the page you are on and follows the redirects to get the next page
      *
@@ -491,7 +496,7 @@ public class AbstractShibaMockMvcTest {
      */
     protected FormPage getNextPageAsFormPage(String currentPageName) throws Exception {
         String nextPage = followRedirectsForPageName(currentPageName);
-        return new FormPage(mockMvc.perform(get((nextPage)).session(session)));
+        return new FormPage(mockMvc.perform(get(nextPage).session(session)));
     }
 
     @NotNull
@@ -575,10 +580,10 @@ public class AbstractShibaMockMvcTest {
         postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "false");
         fillOutMailingAddress();
         postExpectingNextPageElementText("verifyMailingAddress",
-                                         "useEnrichedAddress",
-                                         "true",
-                                         "mailingAddress-address_street",
-                                         "smarty street");
+                "useEnrichedAddress",
+                "true",
+                "mailingAddress-address_street",
+                "smarty street");
     }
 
     protected void getToPersonalInfoScreen(String... programSelections) throws Exception {
@@ -624,14 +629,14 @@ public class AbstractShibaMockMvcTest {
             fillOutHousemateInfo("CCAP");
 
             postExpectingNextPageTitle("childrenInNeedOfCare",
-                                       "whoNeedsChildCare",
-                                       "householdMemberFirstName householdMemberLastName" + getFirstHouseholdMemberId(),
-                                       "Who are the children that have a parent not living in the home?"
+                    "whoNeedsChildCare",
+                    "householdMemberFirstName householdMemberLastName" + getFirstHouseholdMemberId(),
+                    "Who are the children that have a parent not living in the home?"
             );
             postExpectingRedirect("whoHasParentNotAtHome",
-                                  "whoHasAParentNotLivingAtHome",
-                                  "NONE_OF_THE_ABOVE",
-                                  "livingSituation");
+                    "whoHasAParentNotLivingAtHome",
+                    "NONE_OF_THE_ABOVE",
+                    "livingSituation");
 
             postExpectingRedirect("livingSituation", "livingSituation", "UNKNOWN", "goingToSchool");
             postExpectingRedirect("goingToSchool", "goingToSchool", "false", "pregnant");
@@ -664,9 +669,9 @@ public class AbstractShibaMockMvcTest {
             postWithQueryParam("incomeByJob", "option", "0");
             if (hasHousehold) {
                 postExpectingRedirect("householdSelectionForIncome",
-                                      "whoseJobIsIt",
-                                      "householdMemberFirstName householdMemberLastName" + getFirstHouseholdMemberId(),
-                                      "employersName");
+                        "whoseJobIsIt",
+                        "householdMemberFirstName householdMemberLastName" + getFirstHouseholdMemberId(),
+                        "employersName");
             }
             postExpectingRedirect("employersName", "employersName", "some employer", "selfEmployment");
             postExpectingRedirect("selfEmployment", "selfEmployment", "", "paidByTheHour");
@@ -685,9 +690,9 @@ public class AbstractShibaMockMvcTest {
                 String householdMemberId = getHouseholdMemberIdAtIndex(0);
 
                 postExpectingRedirect("whoIsLookingForAJob",
-                                      "whoIsLookingForAJob",
-                                      "householdMemberFirstName householdMemberLastName" + householdMemberId,
-                                      "incomeUpNext");
+                        "whoIsLookingForAJob",
+                        "householdMemberFirstName householdMemberLastName" + householdMemberId,
+                        "incomeUpNext");
             } else {
                 assertNavigationRedirectsToCorrectNextPage("jobSearch", "incomeUpNext");
             }
@@ -717,16 +722,16 @@ public class AbstractShibaMockMvcTest {
         assertNavigationRedirectsToCorrectNextPage("submittingApplication", "registerToVote");
         postExpectingRedirect("registerToVote", "registerToVote", "YES", "healthcareCoverage");
         postExpectingRedirect("healthcareCoverage", "healthcareCoverage",
-                              hasHealthcareCoverage ? "YES" : "NO", "helper");
+                hasHealthcareCoverage ? "YES" : "NO", "helper");
 
         completeHelperWorkflow(helpWithBenefits);
         postExpectingRedirect("additionalInfo",
-                              "additionalInfo",
-                              "Some additional information about my application",
-                              "legalStuff");
+                "additionalInfo",
+                "Some additional information about my application",
+                "legalStuff");
         postExpectingRedirect("legalStuff",
-                              Map.of("agreeToTerms", List.of("true"), "drugFelony", List.of("false")),
-                              "signThisApplication");
+                Map.of("agreeToTerms", List.of("true"), "drugFelony", List.of("false")),
+                "signThisApplication");
         submitApplication();
         return new FormPage(getPage("success"));
     }
@@ -772,10 +777,10 @@ public class AbstractShibaMockMvcTest {
 
     protected void completeDocumentUploadFlow() throws Exception {
         var jpgFile = new MockMultipartFile(UPLOADED_JPG_FILE_NAME,
-                                            new FileInputStream(getAbsoluteFilepathString(UPLOADED_JPG_FILE_NAME)));
+                new FileInputStream(getAbsoluteFilepathString(UPLOADED_JPG_FILE_NAME)));
         mockMvc.perform(multipart("/submit-documents").file(jpgFile).session(session).with(csrf()))
                 .andExpect(redirectedUrl("/pages/success"));
-        postExpectingSuccess("/submit-documents", "/pages/success", Map.of());
+        postToUrlExpectingSuccess("/submit-documents", "/pages/success", Map.of());
     }
 
     protected void deleteOnlyHouseholdMember() throws Exception {
@@ -785,6 +790,6 @@ public class AbstractShibaMockMvcTest {
     }
 
     protected FormPage getFormPage(String pageName) throws Exception {
-        return new FormPage(getPage(pageName));
+        return new FormPage(getPage(pageName).andExpect(status().isOk()));
     }
 }

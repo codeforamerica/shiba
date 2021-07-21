@@ -364,7 +364,9 @@ public class PageController {
     private boolean shouldRedirectToTerminalPage(@PathVariable String pageName) {
         LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
         // If not on post-submit page and application is already submitted
-        return !landmarkPagesConfiguration.isPostSubmitPage(pageName) && applicationData.isSubmitted();
+        return !landmarkPagesConfiguration.isPostSubmitPage(pageName) &&
+                !landmarkPagesConfiguration.isLandingPage(pageName) &&
+                applicationData.isSubmitted();
     }
 
     @PostMapping("/groups/{groupName}/delete")
