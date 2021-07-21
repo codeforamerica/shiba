@@ -31,15 +31,17 @@ public class GeneralDeliveryAddressEnrichment implements Enrichment {
         Map<String, String> cityInfo = cityInfoConfiguration.getCityToZipAndCountyMapping().get(cityName);
 
         String countyFromCity = cityInfo.get("county").replace(" ", "");
-        String zipcodeFromCity = cityInfo.get("zipcode");
+        String zipcodeFromCity = cityInfo.get("zipcode") + "-9999";
         County county = County.valueOf(countyFromCity);
         String phoneNumber = countyMap.get(county).getPhoneNumber();
         String displayCounty = county.displayName() + " County";
+        String addressFromCity = cityName + ", MN";
 
         return new EnrichmentResult(Map.of(
                 "enrichedCounty", new InputData(List.of(displayCounty)),
                 "enrichedPhoneNumber", new InputData(List.of(phoneNumber)),
-                "enrichedZipcode", new InputData(List.of(zipcodeFromCity))
+                "enrichedZipcode", new InputData(List.of(zipcodeFromCity)),
+                "enrichedStreetAddress" , new InputData(List.of(addressFromCity))
         ));
     }
 }

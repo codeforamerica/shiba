@@ -31,7 +31,8 @@ class GeneralDeliveryAddressEnrichmentTest {
         EnrichmentResult enrichmentResult = generalDeliveryAddressEnrichment.process(applicationData.getPagesData());
 
         assertThat(enrichmentResult).containsEntry("enrichedCounty", new InputData(List.of(County.OtterTail.displayName() + " County")));
-        assertThat(enrichmentResult).containsEntry("enrichedZipcode", new InputData(List.of("56515")));
+        assertThat(enrichmentResult).containsEntry("enrichedZipcode", new InputData(List.of("56515-9999")));
         assertThat(enrichmentResult).containsEntry("enrichedPhoneNumber", new InputData(List.of("123-4567")));
+        assertThat(enrichmentResult).containsEntry("enrichedStreetAddress", new InputData(List.of("Battle Lake, MN")));
     }
 }

@@ -27,7 +27,7 @@ public enum County {
     Sherburne("Sherburne"), Sibley("Sibley"), Stearns("Stearns"),
     Steele("Steele"), Stevens("Stevens"), StLouis("St. Louis"),
     Swift("Swift"), Todd("Todd"), Traverse("Traverse"),
-    Wabasha("Wabasha"), Wadena("Wadena"), Waseca("Waseca"),
+    Wabasha("Wabasha"), Wadena("Wadena"), Waseca("Waseca"),Winona ("Winona"),
     Washington("Washington"), Watonwan("Watonwan"), Wright("Wright"),
     Other("Other");
 
