@@ -483,12 +483,17 @@ public class AbstractShibaMockMvcTest {
         return mockMvc.perform(get("/pages/" + pageName).session(session));
     }
 
-    /**
-     * Accepts the page you are on and follows the redirects to get the next page
-     *
-     * @param currentPageName the page
-     * @return a form page that can be asserted against
-     */
+    @NotNull
+    protected ResultActions getPageExpectingSuccess(String pageName) throws Exception {
+        return getPage(pageName).andExpect(status().isOk());
+    }
+
+        /**
+         * Accepts the page you are on and follows the redirects to get the next page
+         *
+         * @param currentPageName the page
+         * @return a form page that can be asserted against
+         */
     protected FormPage getNextPageAsFormPage(String currentPageName) throws Exception {
         String nextPage = followRedirectsForPageName(currentPageName);
         return new FormPage(mockMvc.perform(get(nextPage).session(session)));
@@ -785,6 +790,6 @@ public class AbstractShibaMockMvcTest {
     }
 
     protected FormPage getFormPage(String pageName) throws Exception {
-        return new FormPage(getPage(pageName));
+        return new FormPage(getPage(pageName).andExpect(status().isOk()));
     }
 }

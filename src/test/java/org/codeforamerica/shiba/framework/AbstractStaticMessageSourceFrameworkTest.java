@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.framework;
 import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
 import org.codeforamerica.shiba.testutilities.StaticMessageSourceConfiguration;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.StaticMessageSource;
@@ -11,6 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import java.util.Locale;
 
 @ContextConfiguration(classes = StaticMessageSourceConfiguration.class)
+@Tag("framework")
 public class AbstractStaticMessageSourceFrameworkTest extends AbstractShibaMockMvcTest {
     @Autowired
     private MessageSource messageSource;
