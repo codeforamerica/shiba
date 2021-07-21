@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.sql.*;
 import java.time.*;
@@ -59,7 +60,7 @@ public class ApplicationRepository {
     public void save(Application application) {
         HashMap<String, Object> parameters = new HashMap<>(Map.of(
                 "id", application.getId(),
-                "applicationData", encryptor.encrypt(application.getApplicationDataWithoutDataUrls()),
+                "applicationData", encryptor.encrypt(application.getApplicationDataWithoutDataUrls()).getBytes(StandardCharsets.UTF_8),
                 "county", application.getCounty().name()
         ));
         parameters.put("completedAt", convertToTimestamp(application.getCompletedAt()));
