@@ -206,7 +206,7 @@ public class PageController {
         }
 
         if (applicationConfiguration.getLandmarkPages().isUploadDocumentsPage(pageName)) {
-            applicationStatusUpdater.updateUploadedDocumentsStatus(applicationData.getId(), UPLOADED_DOC, IN_PROGRESS);
+            applicationStatusUpdater.updateStatus(applicationData.getId(), UPLOADED_DOC, IN_PROGRESS);
         }
 
         // Update pagesData with data for incomplete subworkflows
@@ -459,10 +459,10 @@ public class PageController {
         if (pageDataIsValid) {
             if (pagesData.containsKey("choosePrograms")) {
                 if (applicationData.isCAFApplication()) {
-                    applicationStatusUpdater.updateCafApplicationStatus(applicationData.getId(), CAF, IN_PROGRESS);
+                    applicationStatusUpdater.updateStatus(applicationData.getId(), CAF, IN_PROGRESS);
                 }
                 if (applicationData.isCCAPApplication()) {
-                    applicationStatusUpdater.updateCcapApplicationStatus(applicationData.getId(), CCAP, IN_PROGRESS);
+                    applicationStatusUpdater.updateStatus(applicationData.getId(), CCAP, IN_PROGRESS);
                 }
             }
             if (applicationData.getId() == null) {

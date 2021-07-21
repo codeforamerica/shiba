@@ -7,7 +7,6 @@ import org.codeforamerica.shiba.ApplicationStatusUpdater;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.application.FlowType;
-import org.codeforamerica.shiba.application.Status;
 import org.codeforamerica.shiba.esbwsdl.*;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
@@ -116,12 +115,12 @@ public class MnitEsbWebServiceClient {
                 logErrorToSentry(e, applicationFile, county, applicationNumber, applicationDocument, flowType);
             }
         });
-        updateMnitEsbDocumentStatus(applicationDocument, applicationNumber, DELIVERED);
+        applicationStatusUpdater.updateStatus(applicationNumber, applicationDocument, DELIVERED);
     }
 
     @Recover
     public void logErrorToSentry(Exception e, ApplicationFile applicationFile, County county, String applicationNumber, Document applicationDocument, FlowType flowType) {
-        updateMnitEsbDocumentStatus(applicationDocument, applicationNumber, DELIVERY_FAILED);
+        applicationStatusUpdater.updateStatus(applicationNumber, applicationDocument, DELIVERY_FAILED);
         log.error("Application failed to send: " + applicationFile.getFileName(), e);
     }
 
@@ -150,13 +149,5 @@ public class MnitEsbWebServiceClient {
             }
         }
         return docDescription;
-    }
-
-    private void updateMnitEsbDocumentStatus(Document applicationDocument, String applicationNumber, Status status) {
-        switch (applicationDocument) {
-            case CCAP -> applicationStatusUpdater.updateCcapApplicationStatus(applicationNumber, applicationDocument, status);
-            case CAF -> applicationStatusUpdater.updateCafApplicationStatus(applicationNumber, applicationDocument, status);
-            default -> applicationStatusUpdater.updateUploadedDocumentsStatus(applicationNumber, applicationDocument, status);
-        }
     }
 }

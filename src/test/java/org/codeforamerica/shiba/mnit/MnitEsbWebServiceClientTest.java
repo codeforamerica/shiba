@@ -112,7 +112,7 @@ class MnitEsbWebServiceClientTest {
                 County.Olmsted, "someId", Document.CAF, FlowType.FULL
         );
 
-        verify(applicationStatusUpdater).updateCafApplicationStatus("someId", Document.CAF, DELIVERED);
+        verify(applicationStatusUpdater).updateStatus("someId", Document.CAF, DELIVERED);
 
         mockWebServiceServer.verify();
     }

@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.ApplicationStatusUpdater;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.application.Status;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
@@ -50,10 +49,12 @@ public class MnitDocumentConsumer {
         // Send the CAF and CCAP as PDFs
         DocumentListParser.parse(application.getApplicationData()).forEach(documentType -> {
             try {
-                updateDocumentStatus(documentType, application.getId(), SENDING);
+                String id = application.getId();
+                applicationStatusUpdater.updateStatus(id, documentType, SENDING);
                 mnitClient.send(pdfGenerator.generate(application.getId(), documentType, CASEWORKER), application.getCounty(), application.getId(), documentType, application.getFlow());
             } catch (Exception e) {
-                updateDocumentStatus(documentType, application.getId(), DELIVERY_FAILED);
+                String id = application.getId();
+                applicationStatusUpdater.updateStatus(id, documentType, DELIVERY_FAILED);
                 log.error("Failed to send with error, ", e);
             }
         });
@@ -61,7 +62,7 @@ public class MnitDocumentConsumer {
     }
 
     public void processUploadedDocuments(Application application) {
-        applicationStatusUpdater.updateUploadedDocumentsStatus(application.getId(), UPLOADED_DOC, SENDING);
+        applicationStatusUpdater.updateStatus(application.getId(), UPLOADED_DOC, SENDING);
         List<UploadedDocument> uploadedDocs = application.getApplicationData().getUploadedDocs();
         byte[] coverPage = pdfGenerator.generate(application, UPLOADED_DOC, CASEWORKER).getFileBytes();
         for (int i = 0; i < uploadedDocs.size(); i++) {
@@ -80,12 +81,4 @@ public class MnitDocumentConsumer {
         }
     }
 
-    public void updateDocumentStatus(Document documentType, String id, Status status) {
-        if (documentType == CCAP) {
-            applicationStatusUpdater.updateCcapApplicationStatus(id, CCAP, status);
-        }
-        if (documentType == CAF) {
-            applicationStatusUpdater.updateCafApplicationStatus(id, CAF, status);
-        }
-    }
 }

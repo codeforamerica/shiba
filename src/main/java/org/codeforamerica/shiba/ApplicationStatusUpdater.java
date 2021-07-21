@@ -14,15 +14,7 @@ public class ApplicationStatusUpdater {
         this.applicationRepository = applicationRepository;
     }
 
-    public void updateUploadedDocumentsStatus(String id, Document document, Status status) {
-        applicationRepository.updateStatus(id, document, status);
-    }
-
-    public void updateCafApplicationStatus(String id, Document document, Status status) {
-        applicationRepository.updateStatus(id, document, status);
-    }
-
-    public void updateCcapApplicationStatus(String id, Document document, Status status) {
+    public void updateStatus(String id, Document document, Status status) {
         applicationRepository.updateStatus(id, document, status);
     }
 }

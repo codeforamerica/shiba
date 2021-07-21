@@ -374,7 +374,7 @@ class PageControllerTest {
 
         mockMvc.perform(get("/pages/uploadDocuments"));
 
-        verify(applicationStatusUpdater).updateUploadedDocumentsStatus(application.getId(), UPLOADED_DOC, IN_PROGRESS);
+        verify(applicationStatusUpdater).updateStatus(application.getId(), UPLOADED_DOC, IN_PROGRESS);
     }
 
     @Test
@@ -393,12 +393,12 @@ class PageControllerTest {
                 .param("programs[]", "CCAP", "SNAP")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
-        verify(applicationStatusUpdater).updateCcapApplicationStatus(application.getId(), CCAP, IN_PROGRESS);
-        verify(applicationStatusUpdater).updateCafApplicationStatus(application.getId(), CAF, IN_PROGRESS);
+        verify(applicationStatusUpdater).updateStatus(application.getId(), CCAP, IN_PROGRESS);
+        verify(applicationStatusUpdater).updateStatus(application.getId(), CAF, IN_PROGRESS);
     }
 
     @Test
-    void shouldUpdateCafApplicationStatusWhenChoosingPrograms() throws Exception {
+    void shouldUpdateCafStatusWhenChoosingPrograms() throws Exception {
         applicationData.setStartTimeOnce(Instant.now());
         String applicationId = "someId";
         applicationData.setId(applicationId);
@@ -413,12 +413,12 @@ class PageControllerTest {
                 .param("programs[]", "SNAP")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
-        verify(applicationStatusUpdater, never()).updateCcapApplicationStatus(application.getId(), CCAP, IN_PROGRESS);
-        verify(applicationStatusUpdater).updateCafApplicationStatus(application.getId(), CAF, IN_PROGRESS);
+        verify(applicationStatusUpdater, never()).updateStatus(application.getId(), CCAP, IN_PROGRESS);
+        verify(applicationStatusUpdater).updateStatus(application.getId(), CAF, IN_PROGRESS);
     }
 
     @Test
-    void shouldUpdateCcapApplicationStatusWhenChoosingPrograms() throws Exception {
+    void shouldUpdateCcapStatusWhenChoosingPrograms() throws Exception {
         applicationData.setStartTimeOnce(Instant.now());
         String applicationId = "someId";
         applicationData.setId(applicationId);
@@ -433,7 +433,7 @@ class PageControllerTest {
                 .param("programs[]", "CCAP")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
-        verify(applicationStatusUpdater).updateCcapApplicationStatus(application.getId(), CCAP, IN_PROGRESS);
-        verify(applicationStatusUpdater, never()).updateCafApplicationStatus(application.getId(), CAF, IN_PROGRESS);
+        verify(applicationStatusUpdater).updateStatus(application.getId(), CCAP, IN_PROGRESS);
+        verify(applicationStatusUpdater, never()).updateStatus(application.getId(), CAF, IN_PROGRESS);
     }
 }
