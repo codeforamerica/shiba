@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(properties = {"pagesConfig=pages-config/test-landmark-pages.yaml"})
-public class LandmarkPageMockMvcTest extends AbstractStaticMessageSourceFrameworkTest {
+public class LandmarkPageTest extends AbstractStaticMessageSourceFrameworkTest {
     private final String firstPageTitle = "first page title";
 
     @Override
