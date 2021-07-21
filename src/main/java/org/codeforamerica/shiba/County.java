@@ -2,11 +2,11 @@ package org.codeforamerica.shiba;
 
 public enum County {
     Aitkin("Aitkin"), Anoka("Anoka"), Becker("Becker"),
-    Beltrami("Beltrami"), Benton("Benton"), BigStone("BigStone"),
+    Beltrami("Beltrami"), Benton("Benton"), BigStone("Big Stone"),
     BlueEarth("Blue Earth"), Brown("Brown"), Carlton("Carlton"),
     Carver("Carver"), Cass("Cass"), Chippewa("Chippewa"),
     Chisago("Chisago"), Clay("Clay"), Clearwater("Clearwater"),
-    Cook("Cook"), Cottonwood("Cottonwood"), CrowWing("CrowWing"),
+    Cook("Cook"), Cottonwood("Cottonwood"), CrowWing("Crow Wing"),
     Dakota("Dakota"), Dodge("Dodge"), Douglas("Douglas"),
     Faribault("Faribault"), Fillmore("Fillmore"), Freeborn("Freeborn"),
     Goodhue("Goodhue"), Grant("Grant"), Hennepin("Hennepin"),
@@ -15,8 +15,8 @@ public enum County {
     Kandiyohi("Kandiyohi"), Kittson("Kittson"), Koochiching("Koochiching"),
     LacQuiParle("Lac Qui Parle"), Lake("Lake"), LakeOfTheWoods("Lake of the Woods"),
     LeSueur("Le Sueur"), Lincoln("Lincoln"), Lyon("Lyon"),
-    McLeod("McLeod"), Mahnomen("Mahnomen"), Marshall("Marshall"),
-    Martin("Martin"), Meeker("Meeker"), MilleLacs("Mille Lacs"),
+    Mahnomen("Mahnomen"), Marshall("Marshall"), Martin("Martin"),
+    McLeod("McLeod"), Meeker("Meeker"), MilleLacs("Mille Lacs"),
     Morrison("Morrison"), Mower("Mower"), Murray("Murray"),
     Nicollet("Nicollet"), Nobles("Nobles"), Norman("Norman"),
     Olmsted("Olmsted"), OtterTail("Otter Tail"), Pennington("Pennington"),
@@ -28,7 +28,8 @@ public enum County {
     Steele("Steele"), Stevens("Stevens"), StLouis("St. Louis"),
     Swift("Swift"), Todd("Todd"), Traverse("Traverse"),
     Wabasha("Wabasha"), Wadena("Wadena"), Waseca("Waseca"),
-    Washington("Washington"), Watonwan("Watonwan"), Wright("Wright"),
+    Washington("Washington"), Watonwan("Watonwan"), Wilkin("Wilkin"),
+    Winona("Winona"), Wright("Wright"), YellowMedicine("Yellow Medicine"),
     Other("Other");
 
     private final String displayName;
@@ -62,7 +63,6 @@ public enum County {
     public String displayName() {
         return displayName;
     }
-
 
     @Override
     public String toString() {

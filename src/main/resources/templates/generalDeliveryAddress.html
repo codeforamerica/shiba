@@ -2,7 +2,7 @@
     <div class="grid__item address-validation spacing-below-60">
         <div class="radio-button is-selected left-aligned">
             <div>General Delivery</div>
-            <div th:text="${data.getPageInputFirstValue('cityForGeneralDelivery','whatIsTheCity') + ', MN'}">, MN</div>
+            <div th:text="${data.getPageInputFirstValue('cityForGeneralDelivery','enrichedStreetAddress')}"></div>
             <div th:text="${data.getPageInputFirstValue('cityForGeneralDelivery','enrichedZipcode')}"></div>
         </div>
     </div>

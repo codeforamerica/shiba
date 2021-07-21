@@ -60,6 +60,8 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         testPage.selectFromDropdown("whatIsTheCity[]", "Ada");
         testPage.clickContinue();
         assertThat(testPage.getTitle()).isEqualTo("General Delivery address");
+        testPage.clickContinue();
+        assertThat(testPage.findElementById("generalDelivery_streetAddress").getText()).isEqualTo("Ada, MN");
 
         // The county will need a place to send you mail over the next 3 months.
         navigateTo("whereToSendMail");
