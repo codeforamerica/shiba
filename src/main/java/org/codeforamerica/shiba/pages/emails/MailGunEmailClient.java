@@ -2,8 +2,11 @@ package org.codeforamerica.shiba.pages.emails;
 
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
+import org.codeforamerica.shiba.application.Status;
 import org.codeforamerica.shiba.output.ApplicationFile;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
@@ -24,6 +27,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
@@ -42,6 +46,8 @@ public class MailGunEmailClient implements EmailClient {
     private final WebClient webClient;
     private final PdfGenerator pdfGenerator;
     private final String activeProfile;
+    private final String resubmissionEmail;
+    private final ApplicationRepository applicationRepository;
 
     public MailGunEmailClient(@Value("${sender-email}") String senderEmail,
                               @Value("${security-email}") String securityEmail,
@@ -51,8 +57,10 @@ public class MailGunEmailClient implements EmailClient {
                               @Value("${mail-gun.api-key}") String mailGunApiKey,
                               EmailContentCreator emailContentCreator,
                               @Value("${mail-gun.shouldCC}") boolean shouldCC,
+                              @Value("${resubmission-email}") String resubmissionEmail,
                               PdfGenerator pdfGenerator,
-                              @Value("${spring.profiles.active:Unknown}") String activeProfile) {
+                              @Value("${spring.profiles.active:Unknown}") String activeProfile,
+                              ApplicationRepository applicationRepository) {
         this.senderEmail = senderEmail;
         this.securityEmail = securityEmail;
         this.auditEmail = auditEmail;
@@ -63,6 +71,8 @@ public class MailGunEmailClient implements EmailClient {
         this.webClient = WebClient.builder().baseUrl(mailGunUrl).build();
         this.pdfGenerator = pdfGenerator;
         this.activeProfile = activeProfile;
+        this.resubmissionEmail = resubmissionEmail;
+        this.applicationRepository=applicationRepository;
     }
 
     @Override
@@ -90,7 +100,7 @@ public class MailGunEmailClient implements EmailClient {
                 snapExpeditedEligibility,
                 ccapExpeditedEligibility,
                 locale)));
-        form.put("attachment", applicationFiles.stream().map(this::asResource).collect(Collectors.toList()));
+        form.put("attachment", applicationFiles.stream().map(this::asResource).collect(toList()));
 
         webClient.post()
                 .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
@@ -200,6 +210,7 @@ public class MailGunEmailClient implements EmailClient {
                         .block();
             }
         }
+        applicationRepository.updateStatus(application.getId(), UPLOADED_DOC, Status.DELIVERED);
     }
 
     @Override
@@ -218,6 +229,26 @@ public class MailGunEmailClient implements EmailClient {
                 .block();
     }
 
+    @Override
+    public void resubmitFailedEmail(String recipientEmail, Document document, ApplicationFile applicationFile, Application application, Locale locale) {
+        MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
+        form.put("from", List.of(senderEmail));
+        form.put("to", List.of(recipientEmail));
+        if (shouldCC) {
+            form.put("cc", List.of(resubmissionEmail));
+        }
+        form.put("subject", List.of("MN Benefits Application %s Resubmission".formatted(application.getId())));
+        form.put("html", List.of(emailContentCreator.createResubmitEmailContent(document, locale)));
+        form.put("attachment", List.of(asResource(applicationFile)));
+
+        webClient.post()
+                .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
+                .body(fromMultipartData(form))
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
+    }
+
     @NotNull
     private Resource asResource(ApplicationFile applicationFile) {
         return new InMemoryResource(applicationFile.getFileBytes()) {
@@ -227,6 +258,4 @@ public class MailGunEmailClient implements EmailClient {
             }
         };
     }
-
-
 }

@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.pages.emails;
 
 import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.pages.DocRecommendationMessageService;
@@ -30,6 +31,7 @@ public class EmailContentCreator {
     private final static String LATER_DOCS_CONFIRMATION_EMAIL_SUBJECT = "later-docs.confirmation-email-subject";
     private final static String LATER_DOCS_CONFIRMATION_EMAIL_BODY = "later-docs.confirmation-email-body";
     private final static String LATER_DOCS_CONFIRMATION_EMAIL_LINK = "later-docs.confirmation-email-body-link";
+    private final static String RESUBMIT_EMAIL_BODY = "email.resubmit-email";
     private final static String DEMO_PURPOSES_ONLY = "email.demo-purposes-only";
     private final static String SHARE_FEEDBACK = "email.share-feedback";
     private final String activeProfile;
@@ -39,8 +41,7 @@ public class EmailContentCreator {
     public EmailContentCreator(MessageSource messageSource,
                                @Value("${spring.profiles.active:Unknown}") String activeProfile,
                                SuccessMessageService successMessageService,
-                               DocRecommendationMessageService docRecommendationMessageService)
-    {
+                               DocRecommendationMessageService docRecommendationMessageService) {
         this.messageSource = messageSource;
         this.activeProfile = activeProfile;
         this.successMessageService = successMessageService;
@@ -94,6 +95,15 @@ public class EmailContentCreator {
     public String createNonCountyPartnerAlert(String confirmationId, ZonedDateTime submissionTime, Locale locale) {
         String formattedTime = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm").format(submissionTime.withZoneSameInstant(ZoneId.of("America/Chicago")));
         return getMessage(NON_COUNTY_PARTNER_ALERT, List.of(confirmationId, formattedTime), locale);
+    }
+
+    public String createResubmitEmailContent(Document document, Locale locale) {
+        String documentSending = switch (document) {
+            case CAF -> "CAF application";
+            case CCAP -> "CCAP application";
+            case UPLOADED_DOC -> "uploaded document";
+        };
+        return wrapHtml(getMessage(RESUBMIT_EMAIL_BODY, List.of(documentSending), locale));
     }
 
     public String createHennepinDocUploadsHTML(Map<String, String> args) {

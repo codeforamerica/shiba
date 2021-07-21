@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.application;
 
 import org.codeforamerica.shiba.testutilities.AbstractRepositoryTest;
 import org.codeforamerica.shiba.County;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,9 +18,14 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 
+import static java.time.ZoneOffset.UTC;
+import static java.util.Collections.EMPTY_LIST;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.*;
+import static org.codeforamerica.shiba.application.Status.*;
+import static org.codeforamerica.shiba.output.Document.CAF;
+import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -82,7 +88,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
 
         Application application = Application.builder()
                 .id("someid")
-                .completedAt(ZonedDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS))
+                .completedAt(ZonedDateTime.now(UTC).truncatedTo(ChronoUnit.MILLIS))
                 .applicationData(applicationData)
                 .county(Olmsted)
                 .timeToComplete(Duration.ofSeconds(12415))
@@ -105,7 +111,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
 
         Application application = Application.builder()
                 .id("someid")
-                .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
+                .completedAt(ZonedDateTime.now(UTC))
                 .applicationData(applicationData)
                 .county(Olmsted)
                 .timeToComplete(Duration.ofSeconds(12415))
@@ -146,7 +152,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
         updatedApplicationData.setPagesData(new PagesData(Map.of(
                 "someUpdatedPage", new PageData(Map.of("someUpdatedInput", InputData.builder().value(emptyList()).build()))
         )));
-        ZonedDateTime completedAt = ZonedDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS);
+        ZonedDateTime completedAt = ZonedDateTime.now(UTC).truncatedTo(ChronoUnit.MILLIS);
         Application updatedApplication = Application.builder()
                 .id(application.getId())
                 .completedAt(completedAt)
@@ -159,12 +165,74 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
                 .build();
 
         applicationRepository.save(updatedApplication);
-        ZonedDateTime expectedUpdatedAt = ZonedDateTime.now(ZoneOffset.UTC);
+        ZonedDateTime expectedUpdatedAt = ZonedDateTime.now(UTC);
 
         Application retrievedApplication = applicationRepository.find(applicationId);
 
         assertThat(retrievedApplication).usingRecursiveComparison().ignoringFields("fileName", "updatedAt").isEqualTo(updatedApplication);
         assertThat(retrievedApplication.getUpdatedAt()).isBetween(completedAt, expectedUpdatedAt);
+    }
+
+    @Test
+    void shouldReturnApplicationIdsOfDocumentsToResubmit(){
+        Application application1 = Application.builder()
+                .id("someId1")
+                .applicationData(new ApplicationData())
+                .timeToComplete(Duration.ofSeconds(1))
+                .county(Olmsted)
+                .flow(FlowType.FULL)
+                .completedAt(ZonedDateTime.now(UTC))
+                .build();
+        Application application2 = Application.builder()
+                .id("someId2")
+                .applicationData(new ApplicationData())
+                .timeToComplete(Duration.ofSeconds(1))
+                .county(Hennepin)
+                .flow(FlowType.FULL)
+                .completedAt(ZonedDateTime.now(UTC))
+                .build();
+
+        applicationRepository.save(application1);
+        applicationRepository.save(application2);
+
+        applicationRepository.updateStatus("someId1", CAF, DELIVERY_FAILED);
+        applicationRepository.updateStatus("someId2", UPLOADED_DOC, DELIVERY_FAILED);
+
+        Map<Document,List<String>> failedApplications = applicationRepository.getApplicationIdsToResubmit();
+        assertThat(failedApplications.get(CAF)).isEqualTo(List.of("someId1"));
+        assertThat(failedApplications.get(UPLOADED_DOC)).isEqualTo(List.of("someId2"));
+    }
+
+    @Test
+    void shouldReturnNothingWhenTherAreNoDocumentsToResubmit(){
+        var deliveredCafApplicationId = "someId1";
+        Application application1 = Application.builder()
+                .id(deliveredCafApplicationId)
+                .applicationData(new ApplicationData())
+                .timeToComplete(Duration.ofSeconds(1))
+                .county(Olmsted)
+                .flow(FlowType.FULL)
+                .completedAt(ZonedDateTime.now(UTC))
+                .build();
+        var sendingUploadedDocApplicationId = "someId2";
+        Application application2 = Application.builder()
+                .id(sendingUploadedDocApplicationId)
+                .applicationData(new ApplicationData())
+                .timeToComplete(Duration.ofSeconds(1))
+                .county(Hennepin)
+                .flow(FlowType.FULL)
+                .completedAt(ZonedDateTime.now(UTC))
+                .build();
+
+        applicationRepository.save(application1);
+        applicationRepository.save(application2);
+
+        applicationRepository.updateStatus(deliveredCafApplicationId, CAF, DELIVERED);
+        applicationRepository.updateStatus(sendingUploadedDocApplicationId, UPLOADED_DOC, SENDING);
+
+        Map<Document,List<String>> failedApplications = applicationRepository.getApplicationIdsToResubmit();
+        assertThat(failedApplications.get(CAF)).isEmpty();
+        assertThat(failedApplications.get(UPLOADED_DOC)).isEmpty();
     }
 
     @Nested
@@ -185,7 +253,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
             ApplicationData applicationData = new ApplicationData();
             Application application = Application.builder()
                     .id("someid")
-                    .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
+                    .completedAt(ZonedDateTime.now(UTC))
                     .applicationData(applicationData)
                     .county(Olmsted)
                     .timeToComplete(Duration.ofSeconds(1))
@@ -201,7 +269,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
             ApplicationData applicationData = new ApplicationData();
             Application application = Application.builder()
                     .id("someid")
-                    .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
+                    .completedAt(ZonedDateTime.now(UTC))
                     .applicationData(applicationData)
                     .county(Olmsted)
                     .timeToComplete(Duration.ofSeconds(1))
@@ -222,7 +290,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
             String applicationId = "someid";
             Application application = Application.builder()
                     .id(applicationId)
-                    .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
+                    .completedAt(ZonedDateTime.now(UTC))
                     .applicationData(applicationData)
                     .county(Olmsted)
                     .timeToComplete(Duration.ofSeconds(1))
@@ -245,7 +313,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
             String applicationId = "someid";
             Application application = Application.builder()
                     .id(applicationId)
-                    .completedAt(ZonedDateTime.now(ZoneOffset.UTC))
+                    .completedAt(ZonedDateTime.now(UTC))
                     .applicationData(applicationData)
                     .county(Olmsted)
                     .timeToComplete(Duration.ofSeconds(1))
@@ -266,7 +334,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
     class MetricsQueries extends AbstractRepositoryTest {
         County defaultCounty = County.Other;
 
-        ZonedDateTime defaultCompletedAt = ZonedDateTime.now(ZoneOffset.UTC);
+        ZonedDateTime defaultCompletedAt = ZonedDateTime.now(UTC);
 
         Duration defaultDuration = Duration.ofMinutes(14);
 
