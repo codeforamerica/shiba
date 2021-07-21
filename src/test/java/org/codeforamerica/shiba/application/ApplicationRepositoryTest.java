@@ -297,7 +297,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
         void setUp() {
             applicationRepositoryWithMockEncryptor = new ApplicationRepository(jdbcTemplate, mockEncryptor, clock, featureFlags);
             when(mockEncryptor.encrypt(any())).thenReturn(jsonData);
-            when(featureFlags.get("oracle")).thenReturn(FeatureFlag.OFF);
+            when(featureFlags.get("oracle")).thenReturn(FeatureFlag.ON);
         }
 
         @Test
