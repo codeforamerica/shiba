@@ -64,19 +64,6 @@ public class LandmarkPageTest extends AbstractStaticMessageSourcePageTest {
         staticMessageSource.addMessage("fourth-page-title", Locale.ENGLISH, fourthPageTitle);
     }
 
-    @Test
-    void shouldRenderTheFirstLandingPageFromTheRoot() {
-        driver.navigate().to(baseUrl);
-
-        assertThat(testPage.getTitle()).isEqualTo(firstPageTitle);
-    }
-
-    @Test
-    void shouldRedirectToFirstLandingPageWhenNavigateToAMidFlowPageDirectly() {
-        navigateTo("fourthPage");
-
-        assertThat(testPage.getTitle()).isEqualTo(firstPageTitle);
-    }
 
     @Test
     void shouldNotRedirectToFirstLandingPageWhenNavigateToAMidFlowPageAfterStartTimerPage() {

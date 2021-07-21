@@ -491,7 +491,7 @@ public class AbstractShibaMockMvcTest {
      */
     protected FormPage getNextPageAsFormPage(String currentPageName) throws Exception {
         String nextPage = followRedirectsForPageName(currentPageName);
-        return new FormPage(mockMvc.perform(get((nextPage)).session(session)));
+        return new FormPage(mockMvc.perform(get(nextPage).session(session)));
     }
 
     @NotNull
