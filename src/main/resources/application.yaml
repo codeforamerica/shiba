@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/shiba
-#    url: ${ORACLE_URL}
-#    username: ${ORACLE_USERNAME}
-#    password: ${ORACLE_PASSWORD}
+#    url: jdbc:postgresql://localhost:5432/shiba
+    url: ${ORACLE_URL}
+    username: ${ORACLE_USERNAME}
+    password: ${ORACLE_PASSWORD}
   session:
     store-type: jdbc
     jdbc:
@@ -61,7 +61,7 @@ mail-gun:
   shouldCC: false
 
 feature-flag:
-  oracle: off
+  oracle: on
   apply-without-address: on
   submit-via-email: off
   submit-via-api: off
