@@ -1,13 +1,11 @@
 package org.codeforamerica.shiba.journeys;
 
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
-import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 
 import java.util.List;
-import java.util.Optional;
 
 import static java.util.Locale.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,7 +13,6 @@ import static org.codeforamerica.shiba.application.FlowType.EXPEDITED;
 import static org.codeforamerica.shiba.application.FlowType.MINIMUM;
 import static org.codeforamerica.shiba.testutilities.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.testutilities.YesNoAnswer.YES;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @Tag("journey")
@@ -60,34 +57,11 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         testPage.selectFromDropdown("whatIsTheCity[]", "Ada");
         testPage.clickContinue();
         assertThat(testPage.getTitle()).isEqualTo("General Delivery address");
-        testPage.clickContinue();
-        assertThat(testPage.findElementById("generalDelivery_streetAddress").getText()).isEqualTo("Ada, MN");
-
-        // The county will need a place to send you mail over the next 3 months.
-        navigateTo("whereToSendMail");
-        testPage.clickButton("I have a place to get mail");
-
-        // Where can the county send your mail? (accept the smarty streets enriched address)
-        testPage.enter("zipCode", "23456");
-        testPage.enter("city", "someCity");
-        testPage.enter("streetAddress", "someStreetAddress");
-        testPage.enter("state", "IL");
-        testPage.enter("apartmentNumber", "someApartmentNumber");
-        when(smartyStreetClient.validateAddress(any())).thenReturn(
-                Optional.of(new Address(mailingStreetAddress,
-                        mailingCity,
-                        mailingState,
-                        mailingZip,
-                        mailingApartmentNumber,
-                        "someCounty"))
-        );
-        testPage.clickContinue();
-        testPage.clickElementById("enriched-address");
-        testPage.clickContinue();
 
         // Let's review your info
+        testPage.clickContinue();
         assertThat(driver.findElementById("homeAddress-address_message").getText()).isEqualTo("No permanent address");
-        assertThat(driver.findElementById("mailingAddress-address_street").getText()).isEqualTo(mailingStreetAddress);
+        assertThat(testPage.findElementById("generalDelivery_streetAddress").getText()).isEqualTo("Ada, MN");
 
         testPage.clickLink("Submit application now with only the above information.");
 
@@ -122,14 +96,13 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         assertCafFieldEquals("APPLICANT_HOME_STREET_ADDRESS", "No permanent address");
         assertCafFieldEquals("APPLICANT_HOME_APT_NUMBER", "");
         assertCafFieldEquals("APPLICANT_HOME_CITY", "");
-        assertCafFieldEquals("APPLICANT_HOME_STATE", "");
+        assertCafFieldEquals("APPLICANT_HOME_STATE", "MN");
         assertCafFieldEquals("APPLICANT_HOME_ZIPCODE", "");
-        // mailing address is currently not being filled in when the feature flag is on
-        //        assertPdfFieldEquals("APPLICANT_MAILING_STREET_ADDRESS", mailingStreetAddress);
-        //        assertPdfFieldEquals("APPLICANT_MAILING_APT_NUMBER", mailingApartmentNumber);
-        //        assertPdfFieldEquals("APPLICANT_MAILING_CITY", mailingCity);
-        //        assertPdfFieldEquals("APPLICANT_MAILING_STATE", mailingState);
-        //        assertPdfFieldEquals("APPLICANT_MAILING_ZIPCODE", mailingZip);
+        assertCafFieldEquals("APPLICANT_MAILING_STREET_ADDRESS", "General Delivery");
+        assertCafFieldEquals("APPLICANT_MAILING_APT_NUMBER", "");
+        assertCafFieldEquals("APPLICANT_MAILING_CITY", "Ada");
+        assertCafFieldEquals("APPLICANT_MAILING_STATE", "MN");
+        assertCafFieldEquals("APPLICANT_MAILING_ZIPCODE", "56510-9999");
     }
 
     @Test
@@ -224,12 +197,11 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     }
 
 
-
     private void assertCafContainsAllFieldsForMinimumSnapFlow(String applicationId) {
         // Page 1
         assertCafFieldEquals("APPLICATION_ID", applicationId);
         assertCafFieldEquals("COUNTY_INSTRUCTIONS",
-                             "This application was submitted. A caseworker at Hennepin County will help route your application to your county. For more support with your application, you can call Hennepin County at 612-596-1300.");
+                "This application was submitted. A caseworker at Hennepin County will help route your application to your county. For more support with your application, you can call Hennepin County at 612-596-1300.");
         assertCafFieldEquals("FULL_NAME", "Ahmed St. George");
         assertCafFieldEquals("CCAP_EXPEDITED_ELIGIBILITY", "");
         assertCafFieldEquals("APPLICANT_EMAIL", "some@example.com");

@@ -98,15 +98,15 @@ public class Condition implements Serializable {
     }
 
     public boolean matches(PageData pageData, Map<String, PageData> pagesData) {
-        if (getPageName() != null) {
-            return satisfies(pagesData.get(getPageName()));
+        if (pageName != null) {
+            return satisfies(pagesData.get(pageName));
         } else {
             return satisfies(pageData);
         }
     }
 
     public boolean satisfies(PageData pageData) {
-        return matcher.matches(pageData.get(getInput()).getValue(), value);
+        return pageData != null && matcher.matches(pageData.get(input).getValue(), value);
     }
 
     public void setConditions(List<Condition> conditions) {

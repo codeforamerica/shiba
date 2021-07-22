@@ -30,6 +30,11 @@ public class ApplicationDataParser {
         MAILING_ZIPCODE,
         MAILING_APARTMENT_NUMBER,
         MAILING_COUNTY("Other"),
+        ENRICHED_MAILING_STREET,
+        ENRICHED_MAILING_CITY,
+        ENRICHED_MAILING_STATE,
+        ENRICHED_MAILING_ZIPCODE,
+        ENRICHED_MAILING_APARTMENT_NUMBER,
 
         HOME_STREET,
         HOME_CITY,
@@ -37,12 +42,19 @@ public class ApplicationDataParser {
         HOME_ZIPCODE,
         HOME_APARTMENT_NUMBER,
         HOME_COUNTY("Other"),
+        ENRICHED_HOME_STREET,
+        ENRICHED_HOME_CITY,
+        ENRICHED_HOME_STATE,
+        ENRICHED_HOME_ZIPCODE,
+        ENRICHED_HOME_APARTMENT_NUMBER,
 
         IS_HOMELESS,
         IS_HOMELESS_2,
         SAME_MAILING_ADDRESS,
+        SAME_MAILING_ADDRESS2,
 
         GENERAL_DELIVERY_CITY,
+        GENERAL_DELIVERY_ZIPCODE,
 
         IDENTIFY_ZIPCODE,
         IDENTIFY_COUNTY("Other"),
@@ -97,6 +109,11 @@ public class ApplicationDataParser {
         coordinatesMap.put(Field.MAILING_ZIPCODE, new ParsingCoordinate("mailingAddress", "zipCode"));
         coordinatesMap.put(Field.MAILING_APARTMENT_NUMBER, new ParsingCoordinate("mailingAddress", "apartmentNumber"));
         coordinatesMap.put(Field.MAILING_COUNTY, new ParsingCoordinate("mailingAddress", "enrichedCounty"));
+        coordinatesMap.put(Field.ENRICHED_MAILING_STREET, new ParsingCoordinate("mailingAddress", "enrichedStreetAddress"));
+        coordinatesMap.put(Field.ENRICHED_MAILING_CITY, new ParsingCoordinate("mailingAddress", "enrichedCity"));
+        coordinatesMap.put(Field.ENRICHED_MAILING_STATE, new ParsingCoordinate("mailingAddress", "enrichedState"));
+        coordinatesMap.put(Field.ENRICHED_MAILING_ZIPCODE, new ParsingCoordinate("mailingAddress", "enrichedZipCode"));
+        coordinatesMap.put(Field.ENRICHED_MAILING_APARTMENT_NUMBER, new ParsingCoordinate("mailingAddress", "enrichedApartmentNumber"));
 
         coordinatesMap.put(Field.HOME_STREET, new ParsingCoordinate("homeAddress", "streetAddress"));
         coordinatesMap.put(Field.HOME_CITY, new ParsingCoordinate("homeAddress", "city"));
@@ -104,12 +121,19 @@ public class ApplicationDataParser {
         coordinatesMap.put(Field.HOME_ZIPCODE, new ParsingCoordinate("homeAddress", "zipCode"));
         coordinatesMap.put(Field.HOME_APARTMENT_NUMBER, new ParsingCoordinate("homeAddress", "apartmentNumber"));
         coordinatesMap.put(Field.HOME_COUNTY, new ParsingCoordinate("homeAddress", "enrichedCounty"));
+        coordinatesMap.put(Field.ENRICHED_HOME_STREET, new ParsingCoordinate("homeAddress", "enrichedStreetAddress"));
+        coordinatesMap.put(Field.ENRICHED_HOME_CITY, new ParsingCoordinate("homeAddress", "enrichedCity"));
+        coordinatesMap.put(Field.ENRICHED_HOME_STATE, new ParsingCoordinate("homeAddress", "enrichedState"));
+        coordinatesMap.put(Field.ENRICHED_HOME_ZIPCODE, new ParsingCoordinate("homeAddress", "enrichedZipCode"));
+        coordinatesMap.put(Field.ENRICHED_HOME_APARTMENT_NUMBER, new ParsingCoordinate("homeAddress", "enrichedApartmentNumber"));
 
         coordinatesMap.put(Field.GENERAL_DELIVERY_CITY, new ParsingCoordinate("cityForGeneralDelivery", "whatIsTheCity"));
+        coordinatesMap.put(Field.GENERAL_DELIVERY_ZIPCODE, new ParsingCoordinate("cityForGeneralDelivery", "enrichedZipcode"));
 
         coordinatesMap.put(Field.IS_HOMELESS, new ParsingCoordinate("homeAddress", "isHomeless"));
         coordinatesMap.put(Field.IS_HOMELESS_2, new ParsingCoordinate("homeAddress2", "isHomeless"));
         coordinatesMap.put(Field.SAME_MAILING_ADDRESS, new ParsingCoordinate("homeAddress", "sameMailingAddress"));
+        coordinatesMap.put(Field.SAME_MAILING_ADDRESS2, new ParsingCoordinate("mailingAddress", "sameMailingAddress"));
 
         coordinatesMap.put(Field.IDENTIFY_ZIPCODE, new ParsingCoordinate("identifyZipcode", "zipCode"));
         coordinatesMap.put(Field.IDENTIFY_COUNTY, new ParsingCoordinate("identifyCounty", "county"));

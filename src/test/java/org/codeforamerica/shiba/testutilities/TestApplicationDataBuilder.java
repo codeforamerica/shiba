@@ -53,13 +53,46 @@ public class TestApplicationDataBuilder {
     }
 
     public TestApplicationDataBuilder withHomeAddress() {
-        PageData pageData = new PageData();
+        applicationData.getPagesData().putIfAbsent("homeAddress", new PageData());
+        PageData pageData = applicationData.getPagesData().get("homeAddress");
         pageData.put("streetAddress", InputData.builder().value(List.of("street")).build());
         pageData.put("city", InputData.builder().value(List.of("city")).build());
         pageData.put("state", InputData.builder().value(List.of("CA")).build());
         pageData.put("zipCode", InputData.builder().value(List.of("02103")).build());
         pageData.put("apartmentNumber", InputData.builder().value(List.of("ste 123")).build());
-        applicationData.getPagesData().put("homeAddress", pageData);
+        return this;
+    }
+
+    public TestApplicationDataBuilder withEnrichedHomeAddress() {
+        applicationData.getPagesData().putIfAbsent("homeAddress", new PageData());
+        PageData pageData = applicationData.getPagesData().get("homeAddress");
+        pageData.put("enrichedStreetAddress", InputData.builder().value(List.of("smarty street")).build());
+        pageData.put("enrichedCity", InputData.builder().value(List.of("smarty city")).build());
+        pageData.put("enrichedState", InputData.builder().value(List.of("CA")).build());
+        pageData.put("enrichedZipCode", InputData.builder().value(List.of("02103-9999")).build());
+        pageData.put("enrichedApartmentNumber", InputData.builder().value(List.of("apt 123")).build());
+        return this;
+    }
+
+    public TestApplicationDataBuilder withMailingAddress() {
+        applicationData.getPagesData().putIfAbsent("mailingAddress", new PageData());
+        PageData pageData = applicationData.getPagesData().get("mailingAddress");
+        pageData.put("streetAddress", InputData.builder().value(List.of("street")).build());
+        pageData.put("city", InputData.builder().value(List.of("city")).build());
+        pageData.put("state", InputData.builder().value(List.of("CA")).build());
+        pageData.put("zipCode", InputData.builder().value(List.of("02103")).build());
+        pageData.put("apartmentNumber", InputData.builder().value(List.of("ste 123")).build());
+        return this;
+    }
+
+    public TestApplicationDataBuilder withEnrichedMailingAddress() {
+        applicationData.getPagesData().putIfAbsent("mailingAddress", new PageData());
+        PageData pageData = applicationData.getPagesData().get("mailingAddress");
+        pageData.put("enrichedStreetAddress", InputData.builder().value(List.of("smarty street")).build());
+        pageData.put("enrichedCity", InputData.builder().value(List.of("smarty city")).build());
+        pageData.put("enrichedState", InputData.builder().value(List.of("CA")).build());
+        pageData.put("enrichedZipCode", InputData.builder().value(List.of("02103-9999")).build());
+        pageData.put("enrichedApartmentNumber", InputData.builder().value(List.of("apt 123")).build());
         return this;
     }
 
