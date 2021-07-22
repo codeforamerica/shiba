@@ -162,6 +162,19 @@ def journeyTest = tasks.register("journeyTest", Test) {
         }
 }
 
+def postgresJourneyTest = tasks.register("postgresJourneyTest", Test) {
+    Test task ->
+        task.doFirst {
+            environment("SPRING_FLYWAY_ENABLED", "false")
+            environment("SPRING_DATASOURCE_URL", "jdbc:h2:mem:testdb;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM 'classpath:test-schema-init.sql'")
+            environment("FEATURE-FLAG_ORACLE", "off")
+        }
+        task.useJUnitPlatform {
+            JUnitPlatformOptions options ->
+                options.includeTags 'journey'
+        }
+}
+
 def frameworkTest = tasks.register("frameworkTest", Test) {
     Test task ->
         task.useJUnitPlatform {
