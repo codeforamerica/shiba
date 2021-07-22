@@ -15,7 +15,6 @@ spring:
   flyway:
     baseline-version: 0
     baseline-on-migrate: true
-    enabled: false
 server:
   tomcat:
     max-http-form-post-size: 20MB
