@@ -1,9 +1,9 @@
 spring:
   datasource:
-    #url: jdbc:postgresql://localhost:5432/shiba
-    url: ${ORACLE_URL}
-    username: ${ORACLE_USERNAME}
-    password: ${ORACLE_PASSWORD}
+    url: jdbc:postgresql://localhost:5432/shiba
+#    url: ${ORACLE_URL}
+#    username: ${ORACLE_USERNAME}
+#    password: ${ORACLE_PASSWORD}
   session:
     store-type: jdbc
     jdbc:
@@ -15,6 +15,7 @@ spring:
   flyway:
     baseline-version: 0
     baseline-on-migrate: true
+    enabled: false
 server:
   tomcat:
     max-http-form-post-size: 20MB
@@ -60,7 +61,7 @@ mail-gun:
   shouldCC: false
 
 feature-flag:
-  oracle: on
+  oracle: off
   apply-without-address: on
   submit-via-email: off
   submit-via-api: off

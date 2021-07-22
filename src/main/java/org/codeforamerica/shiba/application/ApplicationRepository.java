@@ -60,7 +60,6 @@ public class ApplicationRepository {
     public void save(Application application) {
         HashMap<String, Object> parameters = new HashMap<>(Map.of(
                 "id", application.getId(),
-                "applicationData", encryptor.encrypt(application.getApplicationDataWithoutDataUrls()).getBytes(StandardCharsets.UTF_8),
                 "county", application.getCounty().name()
         ));
         parameters.put("completedAt", convertToTimestamp(application.getCompletedAt()));
@@ -71,6 +70,7 @@ public class ApplicationRepository {
 
         var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
         if (featureFlags.get("oracle").isOn()) {
+            parameters.put("applicationData", encryptor.encrypt(application.getApplicationDataWithoutDataUrls()).getBytes(StandardCharsets.UTF_8));
             if (namedParameterJdbcTemplate.update("UPDATE applications SET " +
                                                           "completed_at = :completedAt, " +
                                                           "application_data = :applicationData, " +
@@ -85,6 +85,7 @@ public class ApplicationRepository {
                                 "VALUES (:id, :completedAt, :applicationData, :county, :timeToComplete, :sentiment, :feedback, :flow)", parameters);
             }
         } else { // postgres
+            parameters.put("applicationData", encryptor.encrypt(application.getApplicationDataWithoutDataUrls()));
             namedParameterJdbcTemplate.update("UPDATE applications SET " +
                                                       "completed_at = :completedAt, " +
                                                       "application_data = :applicationData ::jsonb, " +
