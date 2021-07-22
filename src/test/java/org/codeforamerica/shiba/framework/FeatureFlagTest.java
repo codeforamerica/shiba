@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.framework;
 
 import org.codeforamerica.shiba.pages.config.*;
+import org.codeforamerica.shiba.testutilities.AbstractFrameworkTest;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.*;
 

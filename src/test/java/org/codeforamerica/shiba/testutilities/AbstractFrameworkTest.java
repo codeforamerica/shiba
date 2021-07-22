@@ -1,8 +1,7 @@
-package org.codeforamerica.shiba.framework;
+package org.codeforamerica.shiba.testutilities;
 
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.support.StaticMessageSource;

@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba.framework;
+package org.codeforamerica.shiba.testutilities;
 
 import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
 import org.codeforamerica.shiba.testutilities.StaticMessageSourceConfiguration;

@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.framework;
 
+import org.codeforamerica.shiba.testutilities.AbstractFrameworkTest;
 import org.codeforamerica.shiba.testutilities.DatePart;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
