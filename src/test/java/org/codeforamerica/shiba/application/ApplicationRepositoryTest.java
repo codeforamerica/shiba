@@ -14,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mock.web.MockMultipartFile;
 
+import java.nio.charset.StandardCharsets;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -329,11 +330,10 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
 
             applicationRepositoryWithMockEncryptor.save(application);
 
-            String actualEncryptedData = jdbcTemplate.queryForObject(
-                    "SELECT application_data " +
-                            "FROM applications " +
-                            "WHERE id = 'someid'", String.class);
-            assertThat(actualEncryptedData).isEqualTo(jsonData);
+            Object actualEncryptedData = jdbcTemplate.queryForObject(
+                    "SELECT application_data FROM applications WHERE id = 'someid'",
+                    Object.class);
+            assertThat(actualEncryptedData).isEqualTo(jsonData.getBytes(StandardCharsets.UTF_8));
         }
 
         @Test
