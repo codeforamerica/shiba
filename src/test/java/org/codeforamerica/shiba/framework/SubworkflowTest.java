@@ -156,7 +156,6 @@ public class SubworkflowTest extends AbstractFrameworkTest {
 
     private void deleteIteration(String iterationIndex, String iterationInput1Value, String expectedRedirectPageName) throws Exception {
         var deleteWarningPage = new FormPage(getWithQueryParam("deleteWarningPage", "iterationIndex", iterationIndex));
-        assertThat(deleteWarningPage.getTitle()).isEqualTo("warningPageTitle");
         assertThat(deleteWarningPage.getElementTextById("warning-message")).isEqualTo("This is a warning for: " + iterationInput1Value);
         mockMvc.perform(post("/groups/group1/" + iterationIndex + "/delete").with(csrf()).session(session))
                 .andExpect(redirectedUrl("/pages/" + expectedRedirectPageName));
