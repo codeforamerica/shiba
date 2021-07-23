@@ -82,9 +82,6 @@ class MnitDocumentConsumerTest {
 
     private Application application;
 
-    @MockBean
-    private ApplicationStatusUpdater applicationStatusUpdater;
-
 
     @BeforeEach
     void setUp() {
@@ -184,8 +181,8 @@ class MnitDocumentConsumerTest {
         pagesData.put("choosePrograms", chooseProgramsPage);
         applicationData.setPagesData(pagesData);
         documentConsumer.process(application);
-        verify(applicationStatusUpdater).updateStatus(application.getId(), CAF, SENDING);
-        verify(applicationStatusUpdater).updateStatus(application.getId(), CCAP, SENDING);
+        verify(applicationRepository).updateStatus(application.getId(), CAF, SENDING);
+        verify(applicationRepository).updateStatus(application.getId(), CCAP, SENDING);
     }
 
     @Test
@@ -200,7 +197,7 @@ class MnitDocumentConsumerTest {
         pagesData.put("choosePrograms", chooseProgramsPage);
         applicationData.setPagesData(pagesData);
         documentConsumer.process(application);
-        verify(applicationStatusUpdater, atLeastOnce()).updateStatus(application.getId(), CCAP, DELIVERY_FAILED);
+        verify(applicationRepository, atLeastOnce()).updateStatus(application.getId(), CCAP, DELIVERY_FAILED);
     }
 
     @Test
@@ -241,7 +238,7 @@ class MnitDocumentConsumerTest {
 
         documentConsumer.processUploadedDocuments(application);
 
-        verify(applicationStatusUpdater).updateStatus(application.getId(), UPLOADED_DOC, SENDING);
+        verify(applicationRepository).updateStatus(application.getId(), UPLOADED_DOC, SENDING);
     }
 
     private void mockDocUpload(String uploadedDocFilename, String s3filepath, String contentType, String extension) throws IOException {

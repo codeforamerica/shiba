@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.mnit;
 
-import org.codeforamerica.shiba.ApplicationStatusUpdater;
 import org.codeforamerica.shiba.County;
+import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
@@ -68,7 +68,7 @@ class MnitEsbWebServiceClientTest {
     private MockWebServiceServer mockWebServiceServer;
 
     @MockBean
-    private ApplicationStatusUpdater applicationStatusUpdater;
+    private ApplicationRepository applicationRepository;
 
     private final Map<String, String> namespaceMapping = Map.of("ns2", "http://www.cmis.org/2008/05");
     String fileContent = "fileContent";
@@ -112,7 +112,7 @@ class MnitEsbWebServiceClientTest {
                 County.Olmsted, "someId", Document.CAF, FlowType.FULL
         );
 
-        verify(applicationStatusUpdater).updateStatus("someId", Document.CAF, DELIVERED);
+        verify(applicationRepository).updateStatus("someId", Document.CAF, DELIVERED);
 
         mockWebServiceServer.verify();
     }
