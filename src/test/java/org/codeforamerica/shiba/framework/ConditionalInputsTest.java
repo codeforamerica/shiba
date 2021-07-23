@@ -25,8 +25,8 @@ public class ConditionalInputsTest extends AbstractFrameworkTest {
     @Test
     void shouldOnlyRenderInputsBasedOnCondition() throws Exception {
         var page = postAndFollowRedirect("firstPage", "options", List.of("option1", "option2"));
-        assertThat(page.findInputByName("option1Text")).isNotNull();
-        assertThat(page.findInputByName("option2Text")).isNotNull();
-        assertThat(page.findInputByName("option3Text")).isNull();
+        assertThat(page.getInputByName("option1Text")).isNotNull();
+        assertThat(page.getInputByName("option2Text")).isNotNull();
+        assertThat(page.getInputByName("option3Text")).isNull();
     }
 }

@@ -331,7 +331,7 @@ public class AbstractShibaMockMvcTest {
                                                     String elementId,
                                                     String expectedText) throws Exception {
         var nextPage = postAndFollowRedirect(pageName, inputName, value);
-        Assertions.assertThat(nextPage.findElementTextById(elementId)).isEqualTo(expectedText);
+        Assertions.assertThat(nextPage.getElementTextById(elementId)).isEqualTo(expectedText);
     }
 
     protected void assertPageHasElementWithId(String pageName, String elementId) throws Exception {

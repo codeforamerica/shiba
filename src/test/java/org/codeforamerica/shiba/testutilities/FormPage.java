@@ -40,21 +40,16 @@ public class FormPage {
         return html.select("p.notice--warning").first().text();
     }
 
-    public String findElementTextById(String id) {
+    public String getElementTextById(String id) {
         return html.getElementById(id).text();
     }
 
-    public Elements findLinksByText(String text) {
-        String cssSelector = String.format("a:contains(%s)", text);
-        return html.select(cssSelector);
+    public Elements getLinksContainingText(String text) {
+        return html.select("a:contains(%s)".formatted(text));
     }
 
     public String getTitle() {
         return html.title();
-    }
-
-    public Element getElementById(String id) {
-        return html.getElementById(id);
     }
 
     public String getInputValue(String inputName) {
@@ -68,19 +63,23 @@ public class FormPage {
                 .getElementsByClass("statistic-card__number").get(0).ownText();
     }
 
-    public List<Element> findElementsByTag(String tag) {
+    public Element getElementById(String id) {
+        return html.getElementById(id);
+    }
+
+    public List<Element> getElementsByTag(String tag) {
         return html.getElementsByTag(tag);
     }
 
-    public List<Element> findElementsByClassName(String classname) {
+    public List<Element> getElementsByClassName(String classname) {
         return html.getElementsByClass(classname);
     }
 
-    public Element findInputByName(String name) {
+    public Element getInputByName(String name) {
         return html.select("input[name='%s[]']".formatted(name)).first();
     }
 
-    public Element findElementByText(String text) {
+    public Element getElementByText(String text) {
         return html.getElementsContainingText(text).first();
     }
 
@@ -99,9 +98,9 @@ public class FormPage {
     }
 
     public void assertLinkWithTextHasCorrectUrl(String linkText, String expectedUrl) {
-        assertThat(findLinksByText(linkText)).hasSize(1);
-        var url = findLinksByText(linkText).get(0).attr("href");
-        assertThat(url).isEqualTo(expectedUrl);
+        assertThat(getLinksContainingText(linkText)).hasSize(1);
+        var actualUrl = getLinksContainingText(linkText).get(0).attr("href");
+        assertThat(actualUrl).isEqualTo(expectedUrl);
     }
 
     public List<String> getCheckboxValues(String inputName) {
@@ -121,7 +120,7 @@ public class FormPage {
                 .orElseThrow();
     }
 
-    public Element findElementByCssSelector(String selector) {
+    public Element getElementByCssSelector(String selector) {
         return html.select(selector).first();
     }
 }

@@ -39,7 +39,7 @@ public class PageModelTest extends AbstractFrameworkTest {
     @Test
     void shouldRenderTheConfiguredSubtleLink() throws Exception {
         var page = getFormPage("subtleLinkPage");
-        assertThat(page.findElementTextById("subtle-link")).isEqualTo(subtleLink);
+        assertThat(page.getElementTextById("subtle-link")).isEqualTo(subtleLink);
     }
 
     @Test

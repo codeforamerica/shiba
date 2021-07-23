@@ -41,7 +41,7 @@ public class PageDatasourceTest extends AbstractFrameworkTest {
     void shouldDisplayDataEnteredFromAPreviousPage() throws Exception {
         var inputText = "some input";
         var nextPage = postAndFollowRedirect("firstPage", "someInputName", inputText);
-        assertThat(nextPage.findElementTextById("someInputName")).isEqualTo(inputText);
+        assertThat(nextPage.getElementTextById("someInputName")).isEqualTo(inputText);
     }
 
     @Test
@@ -53,21 +53,21 @@ public class PageDatasourceTest extends AbstractFrameworkTest {
     void shouldDisplayPageHeaderBasedOnCondition() throws Exception {
         var page = postAndFollowRedirect("yesNoQuestionPage", "yesNoQuestion", "true");
         assertThat(page.getTitle()).isEqualTo(yesAnswerTitle);
-        assertThat(page.findElementByCssSelector("h1").text()).isEqualTo(yesHeaderText);
+        assertThat(page.getElementByCssSelector("h1").text()).isEqualTo(yesHeaderText);
     }
 
     @Test
     void shouldDisplayPageHeaderBasedOnCompositeCondition() throws Exception {
         postExpectingRedirect("yesNoQuestionPage2", "yesNoQuestion2", "true", "yesNoQuestionPage3");
         var page = postAndFollowRedirect("yesNoQuestionPage3", "yesNoQuestion3", "false");
-        assertThat(page.findElementByCssSelector("h1").text()).isEqualTo(yesHeaderText);
+        assertThat(page.getElementByCssSelector("h1").text()).isEqualTo(yesHeaderText);
     }
 
     @Test
     void shouldDisplayPageHeaderBasedOnCompositeConditionOtherPath() throws Exception {
         postExpectingRedirect("yesNoQuestionPage2", "yesNoQuestion2", "false", "yesNoQuestionPage3");
         var page = postAndFollowRedirect("yesNoQuestionPage3", "yesNoQuestion3", "true");
-        assertThat(page.findElementByCssSelector("h1").text()).isEqualTo(noHeaderText);
+        assertThat(page.getElementByCssSelector("h1").text()).isEqualTo(noHeaderText);
     }
 
     @Test
@@ -75,19 +75,19 @@ public class PageDatasourceTest extends AbstractFrameworkTest {
         var value = "some input value";
         postExpectingSuccess("firstPage", "someInputName", value);
         var page = getFormPage("testFormPage");
-        assertThat(page.findElementTextById("context-fragment")).isEqualTo(value);
+        assertThat(page.getElementTextById("context-fragment")).isEqualTo(value);
     }
 
     @Test
     void shouldGetDataFromDatasourcesOutsideOfSubworkflow() throws Exception {
         var page = postAndFollowRedirect("outsideSubworkflowPage", "outside-subworkflow-input", "true");
-        assertThat(page.findElementByCssSelector("h1").text()).isEqualTo(yesHeaderText);
+        assertThat(page.getElementByCssSelector("h1").text()).isEqualTo(yesHeaderText);
     }
 
     @Test
     void shouldHandleMissingDatasourcePagesWhenDatasourcePageWasSkipped() throws Exception {
         var page = postAndFollowRedirect("outsideSubworkflowPage", "outside-subworkflow-input", "true");
-        assertThat(page.findElementByCssSelector("h1").text()).isEqualTo(yesHeaderText);
+        assertThat(page.getElementByCssSelector("h1").text()).isEqualTo(yesHeaderText);
         assertThat(page.getTitle()).isEqualTo(noAnswerTitle);
     }
 }

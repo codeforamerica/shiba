@@ -43,8 +43,8 @@ public class EnrichmentTest extends AbstractFrameworkTest {
     @Test
     void enrichesThePageDataWithTheEnrichmentResults() throws Exception {
         var page = postAndFollowRedirect("testEnrichmentPage", "someTextInput", "someText");
-        assertThat(page.findElementTextById("originalInput")).isEqualTo("someText");
-        assertThat(page.findElementTextById("enrichmentInput")).isEqualTo("someText-someEnrichmentValue");
+        assertThat(page.getElementTextById("originalInput")).isEqualTo("someText");
+        assertThat(page.getElementTextById("enrichmentInput")).isEqualTo("someText-someEnrichmentValue");
     }
 
     @Test

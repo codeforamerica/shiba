@@ -68,7 +68,7 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
                 "false",
                 "snapExpeditedDetermination");
         FormPage page = new FormPage(getPage("snapExpeditedDetermination"));
-        assertThat(page.findElementsByTag("p").get(0).text()).isEqualTo(
+        assertThat(page.getElementsByTag("p").get(0).text()).isEqualTo(
                 "A caseworker will contact you within 5-7 days to review your application.");
         assertNavigationRedirectsToCorrectNextPage("snapExpeditedDetermination", "legalStuff");
         page = new FormPage(getPage("legalStuff"));
@@ -82,8 +82,8 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
         completeDocumentUploadFlow();
 
         FormPage page = new FormPage(getPage("success"));
-        assertThat(page.findLinksByText("Combined Application")).hasSizeGreaterThan(0);
-        assertThat(page.findLinksByText("Combined Application").get(0).attr("href")).isEqualTo("/download");
+        assertThat(page.getLinksContainingText("Combined Application")).hasSizeGreaterThan(0);
+        assertThat(page.getLinksContainingText("Combined Application").get(0).attr("href")).isEqualTo("/download");
 
         PDAcroForm caf = this.downloadCaf();
         assertPdfFieldEquals("APPLICANT_WRITTEN_LANGUAGE_PREFERENCE", "ENGLISH", caf);

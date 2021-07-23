@@ -38,22 +38,22 @@ public class MetricsTest extends AbstractShibaMockMvcTest {
     void userCanCompleteTheNonExpeditedFlowAndCanDownloadPdfsAndShibaShouldCaptureMetricsAfterApplicationIsCompleted() throws Exception {
         FormPage successPage = nonExpeditedFlowToSuccessPage(false, true);
 
-        assertThat(successPage.findLinksByText("Combined Application")).hasSize(1);
-        assertThat(successPage.findLinksByText("Child Care Application")).hasSize(1);
+        assertThat(successPage.getLinksContainingText("Combined Application")).hasSize(1);
+        assertThat(successPage.getLinksContainingText("Child Care Application")).hasSize(1);
         mockMvc.perform(post("/submit-feedback").session(session).with(csrf()).param("sentiment", "HAPPY"));
 
         FormPage metricsPage = new FormPage(getPageWithAuth("metrics"));
 
-        assertThat(metricsPage.findElementTextById("totals")).contains("Totals");
+        assertThat(metricsPage.getElementTextById("totals")).contains("Totals");
         assertThat(metricsPage.getCardValue("Happy")).contains("100%");
         assertThat(metricsPage.getCardValue("Applications Submitted")).isEqualTo("1");
         assertThat(metricsPage.getCardValue("Median All Time")).contains("05m 30s");
         assertThat(metricsPage.getCardValue("Median Week to Date")).contains("05m 30s");
         assertThat(metricsPage.getCardValue("Average Week to Date")).contains("05m 30s");
         // When adding new counties, this TD will be equal to the first county in the list
-        assertThat(metricsPage.findElementsByTag("td").get(0).ownText()).contains("Aitkin");
-        assertThat(metricsPage.findElementsByTag("td").get(1).ownText()).contains("0");
-        assertThat(metricsPage.findElementsByTag("td").get(2).ownText()).contains("0");
+        assertThat(metricsPage.getElementsByTag("td").get(0).ownText()).contains("Aitkin");
+        assertThat(metricsPage.getElementsByTag("td").get(1).ownText()).contains("0");
+        assertThat(metricsPage.getElementsByTag("td").get(2).ownText()).contains("0");
         assertThat(metricsPage.getCardValue("Happy")).contains("100%");
     }
 }

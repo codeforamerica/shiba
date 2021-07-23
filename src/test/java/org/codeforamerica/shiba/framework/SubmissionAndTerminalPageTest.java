@@ -50,18 +50,18 @@ public class SubmissionAndTerminalPageTest extends AbstractStaticMessageSourceFr
                 .build();
         when(applicationRepository.find(any())).thenReturn(application);
 
-        assertThat(getFormPage("firstPage").findInputByName("foo")).isNotNull();
+        assertThat(getFormPage("firstPage").getInputByName("foo")).isNotNull();
         postToUrlExpectingSuccess("/submit",
                 "/pages/firstPage/navigation",
                 Map.of("foo", List.of("some value")));
 
         var testTerminalPage = getNextPageAsFormPage("firstPage");
-        assertThat(testTerminalPage.findElementTextById("submission-time")).isEqualTo("2020-01-01T05:10-06:00[America/Chicago]");
-        assertThat(testTerminalPage.findElementTextById("application-id")).isEqualTo(applicationId);
-        assertThat(testTerminalPage.findElementTextById("county")).isEqualTo(county.name());
-        assertThat(testTerminalPage.findElementTextById("sentiment")).isEqualTo(sentiment.name());
-        assertThat(testTerminalPage.findElementTextById("feedback-text")).isEqualTo(feedbackText);
-        assertThat(testTerminalPage.findElementTextById("CAF")).contains("CAF");
-        assertThat(testTerminalPage.findElementTextById("CCAP")).contains("CCAP");
+        assertThat(testTerminalPage.getElementTextById("submission-time")).isEqualTo("2020-01-01T05:10-06:00[America/Chicago]");
+        assertThat(testTerminalPage.getElementTextById("application-id")).isEqualTo(applicationId);
+        assertThat(testTerminalPage.getElementTextById("county")).isEqualTo(county.name());
+        assertThat(testTerminalPage.getElementTextById("sentiment")).isEqualTo(sentiment.name());
+        assertThat(testTerminalPage.getElementTextById("feedback-text")).isEqualTo(feedbackText);
+        assertThat(testTerminalPage.getElementTextById("CAF")).contains("CAF");
+        assertThat(testTerminalPage.getElementTextById("CCAP")).contains("CCAP");
     }
 }

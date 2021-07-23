@@ -57,13 +57,13 @@ public class InputsPageMockMvcTest extends AbstractFrameworkTest {
     @Test
     void shouldDisplayPromptMessageFragment() throws Exception {
         var page = getFormPage("inputWithPromptFragmentPage");
-        assertThat(page.findLinksByText("test message")).isNotNull();
+        assertThat(page.getLinksContainingText("test message")).isNotNull();
     }
 
     @Test
     void shouldShowHelpMessageKeyOnCheckboxOptions() throws Exception {
         var page = getFormPage("firstPage");
-        var checkboxElements = page.findElementsByClassName("checkbox");
+        var checkboxElements = page.getElementsByClassName("checkbox");
         assertThat(checkboxElements).hasSize(6);
         assertThat(checkboxElements.get(0).text()).contains(optionHelpMessage);
     }
@@ -71,7 +71,7 @@ public class InputsPageMockMvcTest extends AbstractFrameworkTest {
     @Test
     void shouldNotDisplayPrimaryButtonWhenHasPrimaryButtonIsFalse() throws Exception {
         var page = getFormPage("doNotHavePrimaryButtonPage");
-        assertThat(page.findElementsByClassName("button--primary")).isEmpty();
+        assertThat(page.getElementsByClassName("button--primary")).isEmpty();
     }
 
     @Test
@@ -89,30 +89,30 @@ public class InputsPageMockMvcTest extends AbstractFrameworkTest {
         postExpectingRedirect("subworkflowPage", "value1", "c", "subworkflowPage");
 
         var page = getFormPage("pageWithReferenceCheckboxes");
-        assertThat(page.findElementTextById("iteration0")).isEqualTo("a");
-        assertThat(page.findElementTextById("iteration1")).isEqualTo("b");
-        assertThat(page.findElementTextById("iteration2")).isEqualTo("c");
-        assertThat(page.findElementTextById("datasourceText")).isEqualTo("Datasource Text");
+        assertThat(page.getElementTextById("iteration0")).isEqualTo("a");
+        assertThat(page.getElementTextById("iteration1")).isEqualTo("b");
+        assertThat(page.getElementTextById("iteration2")).isEqualTo("c");
+        assertThat(page.getElementTextById("datasourceText")).isEqualTo("Datasource Text");
     }
 
     @Test
     void shouldDisplayPlaceholderIfPresent() throws Exception {
         var firstPage = getFormPage("firstPage");
         assertThat(firstPage.getTitle()).isEqualTo("firstPageTitle");
-        var input = firstPage.findInputByName("editableTextInput");
+        var input = firstPage.getInputByName("editableTextInput");
         assertThat(input.attr("placeholder")).isEqualTo(placeholder);
 
         var nextPage = getFormPage("nextPage");
         assertThat(nextPage.getTitle()).isEqualTo("nextPageTitle");
-        assertThat(nextPage.findInputByName("someInputName").attr("placeholder")).isEmpty();
+        assertThat(nextPage.getInputByName("someInputName").attr("placeholder")).isEmpty();
     }
 
     @Test
     void shouldShowPromptAndHelpMessagesForInputWithPlaceholder() throws Exception {
         var page = getFormPage("firstPage");
         assertThat(page.getTitle()).isEqualTo("firstPageTitle");
-        assertThat(page.findElementByText(promptMessage)).isNotNull();
-        assertThat(page.findElementByText(helpMessage)).isNotNull();
+        assertThat(page.getElementByText(promptMessage)).isNotNull();
+        assertThat(page.getElementByText(helpMessage)).isNotNull();
     }
 
     @Test

@@ -32,7 +32,7 @@ public class UserDecisionNavigationTest extends AbstractFrameworkTest {
         assertThat(applicationData.getFlow()).isEqualTo(UNDETERMINED);
 
         var userDecisionNavigationPage = getFormPage("userDecisionNavigationPage");
-        assertThat(userDecisionNavigationPage.findLinksByText("option 1")).isNotNull();
+        assertThat(userDecisionNavigationPage.getLinksContainingText("option 1")).isNotNull();
         getNavigationPageWithQueryParamAndExpectRedirect("userDecisionNavigationPage", "option", "1", "optionOnePage");
 
         assertThat(applicationData.getFlow()).isEqualTo(FlowType.FULL);
@@ -43,7 +43,7 @@ public class UserDecisionNavigationTest extends AbstractFrameworkTest {
         assertThat(applicationData.getFlow()).isEqualTo(UNDETERMINED);
 
         var userDecisionNavigationPage = getFormPage("userDecisionNavigationPage");
-        assertThat(userDecisionNavigationPage.findLinksByText("option 1")).isNotNull();
+        assertThat(userDecisionNavigationPage.getLinksContainingText("option 1")).isNotNull();
         getNavigationPageWithQueryParamAndExpectRedirect("userDecisionNavigationPage", "option", "1", "optionOnePage");
         // "Go back" and select a different option
         getNavigationPageWithQueryParamAndExpectRedirect("userDecisionNavigationPage", "option", "0", "optionZeroPage");
