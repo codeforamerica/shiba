@@ -96,4 +96,4 @@ pagesConfig: pages-config.yaml
 
 resubmission:
   interval:
-    milliseconds: 43200000
+    milliseconds: 43200000 # 12 hours

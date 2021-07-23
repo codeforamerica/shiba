@@ -3,9 +3,9 @@ package org.codeforamerica.shiba.mnit;
 import com.sun.istack.ByteArrayDataSource;
 import com.sun.xml.messaging.saaj.soap.name.NameImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.codeforamerica.shiba.ApplicationStatusUpdater;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
+import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.esbwsdl.*;
 import org.codeforamerica.shiba.output.ApplicationFile;
@@ -43,7 +43,7 @@ public class MnitEsbWebServiceClient {
     private final String username;
     private final String password;
     private final CountyMap<MnitCountyInformation> countyMap;
-    private final ApplicationStatusUpdater applicationStatusUpdater;
+    private final ApplicationRepository applicationRepository;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public MnitEsbWebServiceClient(WebServiceTemplate webServiceTemplate,
@@ -51,13 +51,13 @@ public class MnitEsbWebServiceClient {
                                    @Value("${mnit-esb.username}") String username,
                                    @Value("${mnit-esb.password}") String password,
                                    CountyMap<MnitCountyInformation> countyMap,
-                                   ApplicationStatusUpdater applicationStatusUpdater) {
+                                   ApplicationRepository applicationRepository) {
         this.webServiceTemplate = webServiceTemplate;
         this.clock = clock;
         this.username = username;
         this.password = password;
         this.countyMap = countyMap;
-        this.applicationStatusUpdater = applicationStatusUpdater;
+        this.applicationRepository = applicationRepository;
     }
 
     @Retryable(
@@ -115,12 +115,12 @@ public class MnitEsbWebServiceClient {
                 logErrorToSentry(e, applicationFile, county, applicationNumber, applicationDocument, flowType);
             }
         });
-        applicationStatusUpdater.updateStatus(applicationNumber, applicationDocument, DELIVERED);
+        applicationRepository.updateStatus(applicationNumber, applicationDocument, DELIVERED);
     }
 
     @Recover
     public void logErrorToSentry(Exception e, ApplicationFile applicationFile, County county, String applicationNumber, Document applicationDocument, FlowType flowType) {
-        applicationStatusUpdater.updateStatus(applicationNumber, applicationDocument, DELIVERY_FAILED);
+        applicationRepository.updateStatus(applicationNumber, applicationDocument, DELIVERY_FAILED);
         log.error("Application failed to send: " + applicationFile.getFileName(), e);
     }
 

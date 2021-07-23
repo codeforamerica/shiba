@@ -207,7 +207,6 @@ public class ApplicationRepository {
     }
 
     public void updateStatus(String id, Document document, Status status) {
-
         Map<String, Object> parameters = Map.of(
                 "status", status.toString(),
                 "id", id
@@ -215,6 +214,10 @@ public class ApplicationRepository {
 
         var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
         namedParameterJdbcTemplate.update(selectStatusColumn(document), parameters);
+        switch (status) {
+            case IN_PROGRESS, SENDING, DELIVERED -> log.info(String.format("%s #%s has been updated to %s", document, id, status));
+            case DELIVERY_FAILED, RESUBMISSION_FAILED -> log.error(String.format("%s #%s has been updated to %s", document, id, status));
+        }
         setUpdatedAtTime(id);
     }
 

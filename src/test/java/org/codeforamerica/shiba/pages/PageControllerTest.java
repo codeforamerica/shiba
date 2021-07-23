@@ -1,11 +1,7 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.ApplicationStatusUpdater;
+import org.codeforamerica.shiba.application.*;
 import org.codeforamerica.shiba.testutilities.NonSessionScopedApplicationData;
-import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.application.ApplicationFactory;
-import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -67,9 +63,6 @@ class PageControllerTest {
 
     @Autowired
     private ApplicationData applicationData;
-
-    @MockBean
-    private ApplicationStatusUpdater applicationStatusUpdater;
 
     @BeforeEach
     void setUp() {
@@ -374,7 +367,7 @@ class PageControllerTest {
 
         mockMvc.perform(get("/pages/uploadDocuments"));
 
-        verify(applicationStatusUpdater).updateStatus(application.getId(), UPLOADED_DOC, IN_PROGRESS);
+        verify(applicationRepository).updateStatus(application.getId(), UPLOADED_DOC, IN_PROGRESS);
     }
 
     @Test
@@ -393,8 +386,8 @@ class PageControllerTest {
                 .param("programs[]", "CCAP", "SNAP")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
-        verify(applicationStatusUpdater).updateStatus(application.getId(), CCAP, IN_PROGRESS);
-        verify(applicationStatusUpdater).updateStatus(application.getId(), CAF, IN_PROGRESS);
+        verify(applicationRepository).updateStatus(application.getId(), CCAP, IN_PROGRESS);
+        verify(applicationRepository).updateStatus(application.getId(), CAF, IN_PROGRESS);
     }
 
     @Test
@@ -413,8 +406,8 @@ class PageControllerTest {
                 .param("programs[]", "SNAP")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
-        verify(applicationStatusUpdater, never()).updateStatus(application.getId(), CCAP, IN_PROGRESS);
-        verify(applicationStatusUpdater).updateStatus(application.getId(), CAF, IN_PROGRESS);
+        verify(applicationRepository, never()).updateStatus(application.getId(), CCAP, IN_PROGRESS);
+        verify(applicationRepository).updateStatus(application.getId(), CAF, IN_PROGRESS);
     }
 
     @Test
@@ -433,7 +426,7 @@ class PageControllerTest {
                 .param("programs[]", "CCAP")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
-        verify(applicationStatusUpdater).updateStatus(application.getId(), CCAP, IN_PROGRESS);
-        verify(applicationStatusUpdater, never()).updateStatus(application.getId(), CAF, IN_PROGRESS);
+        verify(applicationRepository).updateStatus(application.getId(), CCAP, IN_PROGRESS);
+        verify(applicationRepository, never()).updateStatus(application.getId(), CAF, IN_PROGRESS);
     }
 }

@@ -1,6 +1,5 @@
 package org.codeforamerica.shiba.testutilities;
 
-import org.codeforamerica.shiba.ApplicationStatusUpdater;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.ApplicationFactory;
@@ -64,8 +63,6 @@ public class AbstractPageControllerTest {
     protected UploadDocumentConfiguration uploadDocumentConfiguration;
     @MockBean
     protected CombinedDocumentRepositoryService documentRepositoryService;
-    @MockBean
-    protected ApplicationStatusUpdater applicationStatusUpdater;
 
     @Autowired
     protected MockMvc mockMvc;

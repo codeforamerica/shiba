@@ -1,9 +1,9 @@
 package org.codeforamerica.shiba.output;
 
 import lombok.extern.slf4j.Slf4j;
-import org.codeforamerica.shiba.ApplicationStatusUpdater;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
@@ -12,12 +12,12 @@ import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
-import static org.codeforamerica.shiba.output.Document.*;
+import static org.codeforamerica.shiba.output.Document.CAF;
+import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
 @Component
@@ -28,20 +28,20 @@ public class MnitDocumentConsumer {
     private final PdfGenerator pdfGenerator;
     private final MonitoringService monitoringService;
     private final String activeProfile;
-    private final ApplicationStatusUpdater applicationStatusUpdater;
+    private final ApplicationRepository applicationRepository;
 
     public MnitDocumentConsumer(MnitEsbWebServiceClient mnitClient,
                                 XmlGenerator xmlGenerator,
                                 PdfGenerator pdfGenerator,
                                 MonitoringService monitoringService,
                                 @Value("${spring.profiles.active:dev}") String activeProfile,
-                                ApplicationStatusUpdater applicationStatusUpdater) {
+                                ApplicationRepository applicationRepository) {
         this.mnitClient = mnitClient;
         this.xmlGenerator = xmlGenerator;
         this.pdfGenerator = pdfGenerator;
         this.monitoringService = monitoringService;
         this.activeProfile = activeProfile;
-        this.applicationStatusUpdater = applicationStatusUpdater;
+        this.applicationRepository = applicationRepository;
     }
 
     public void process(Application application) {
@@ -50,11 +50,11 @@ public class MnitDocumentConsumer {
         DocumentListParser.parse(application.getApplicationData()).forEach(documentType -> {
             try {
                 String id = application.getId();
-                applicationStatusUpdater.updateStatus(id, documentType, SENDING);
+                applicationRepository.updateStatus(id, documentType, SENDING);
                 mnitClient.send(pdfGenerator.generate(application.getId(), documentType, CASEWORKER), application.getCounty(), application.getId(), documentType, application.getFlow());
             } catch (Exception e) {
                 String id = application.getId();
-                applicationStatusUpdater.updateStatus(id, documentType, DELIVERY_FAILED);
+                applicationRepository.updateStatus(id, documentType, DELIVERY_FAILED);
                 log.error("Failed to send with error, ", e);
             }
         });
@@ -62,7 +62,7 @@ public class MnitDocumentConsumer {
     }
 
     public void processUploadedDocuments(Application application) {
-        applicationStatusUpdater.updateStatus(application.getId(), UPLOADED_DOC, SENDING);
+        applicationRepository.updateStatus(application.getId(), UPLOADED_DOC, SENDING);
         List<UploadedDocument> uploadedDocs = application.getApplicationData().getUploadedDocs();
         byte[] coverPage = pdfGenerator.generate(application, UPLOADED_DOC, CASEWORKER).getFileBytes();
         for (int i = 0; i < uploadedDocs.size(); i++) {

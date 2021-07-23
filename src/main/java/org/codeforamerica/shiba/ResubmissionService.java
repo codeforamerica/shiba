@@ -10,6 +10,7 @@ import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.codeforamerica.shiba.pages.emails.MailGunEmailClient;
+import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +47,7 @@ public class ResubmissionService {
         Map<Document, List<String>> documentsToIds = applicationRepository.getApplicationIdsToResubmit();
 
         documentsToIds.forEach((document, applicationIds) -> applicationIds.forEach(id -> {
+            MDC.put("applicationId", id);
             log.info("Resubmitting " + document.name() + "(s) for application id " + id);
             Application application = applicationRepository.find(id);
             var countyEmail = countyMap.get(application.getCounty()).getEmail();
@@ -72,7 +74,7 @@ public class ResubmissionService {
             UploadedDocument uploadedDocument = uploadedDocs.get(i);
             ApplicationFile fileToSend = pdfGenerator.generateForUploadedDocument(uploadedDocument, i, application, coverPage);
             log.info("Resubmitting uploaded doc: " + fileToSend.getFileName() + " original filename: " + uploadedDocument.getFilename());
-            emailClient.resubmitFailedEmail(countyEmail, document,fileToSend, application, Locale.ENGLISH);
+            emailClient.resubmitFailedEmail(countyEmail, document, fileToSend, application, Locale.ENGLISH);
             log.info("Finished resubmitting document " + fileToSend.getFileName());
         }
     }

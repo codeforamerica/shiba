@@ -1,7 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
 import lombok.extern.slf4j.Slf4j;
-import org.codeforamerica.shiba.ApplicationStatusUpdater;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
@@ -64,13 +63,11 @@ public class PageController {
     private final SuccessMessageService successMessageService;
     private final DocRecommendationMessageService docRecommendationMessageService;
     private final CombinedDocumentRepositoryService combinedDocumentRepositoryService;
-    private final ApplicationStatusUpdater applicationStatusUpdater;
 
     public PageController(
             ApplicationConfiguration applicationConfiguration,
             ApplicationData applicationData,
             Clock clock,
-            ApplicationRepository applicationRepository,
             ApplicationFactory applicationFactory,
             MessageSource messageSource,
             PageEventPublisher pageEventPublisher,
@@ -84,11 +81,10 @@ public class PageController {
             SuccessMessageService successMessageService,
             DocRecommendationMessageService docRecommendationMessageService,
             CombinedDocumentRepositoryService combinedDocumentRepositoryService,
-            ApplicationStatusUpdater applicationStatusUpdater) {
+            ApplicationRepository applicationRepository) {
         this.applicationData = applicationData;
         this.applicationConfiguration = applicationConfiguration;
         this.clock = clock;
-        this.applicationRepository = applicationRepository;
         this.applicationFactory = applicationFactory;
         this.messageSource = messageSource;
         this.pageEventPublisher = pageEventPublisher;
@@ -102,7 +98,7 @@ public class PageController {
         this.successMessageService = successMessageService;
         this.docRecommendationMessageService = docRecommendationMessageService;
         this.combinedDocumentRepositoryService = combinedDocumentRepositoryService;
-        this.applicationStatusUpdater = applicationStatusUpdater;
+        this.applicationRepository = applicationRepository;
     }
 
     @GetMapping("/")
@@ -206,7 +202,7 @@ public class PageController {
         }
 
         if (applicationConfiguration.getLandmarkPages().isUploadDocumentsPage(pageName)) {
-            applicationStatusUpdater.updateStatus(applicationData.getId(), UPLOADED_DOC, IN_PROGRESS);
+            applicationRepository.updateStatus(applicationData.getId(), UPLOADED_DOC, IN_PROGRESS);
         }
 
         // Update pagesData with data for incomplete subworkflows
@@ -459,10 +455,10 @@ public class PageController {
         if (pageDataIsValid) {
             if (pagesData.containsKey("choosePrograms")) {
                 if (applicationData.isCAFApplication()) {
-                    applicationStatusUpdater.updateStatus(applicationData.getId(), CAF, IN_PROGRESS);
+                    applicationRepository.updateStatus(applicationData.getId(), CAF, IN_PROGRESS);
                 }
                 if (applicationData.isCCAPApplication()) {
-                    applicationStatusUpdater.updateStatus(applicationData.getId(), CCAP, IN_PROGRESS);
+                    applicationRepository.updateStatus(applicationData.getId(), CCAP, IN_PROGRESS);
                 }
             }
             if (applicationData.getId() == null) {

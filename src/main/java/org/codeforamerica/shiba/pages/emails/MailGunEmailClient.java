@@ -25,7 +25,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
@@ -60,7 +59,8 @@ public class MailGunEmailClient implements EmailClient {
                               @Value("${resubmission-email}") String resubmissionEmail,
                               PdfGenerator pdfGenerator,
                               @Value("${spring.profiles.active:Unknown}") String activeProfile,
-                              ApplicationRepository applicationRepository) {
+                              ApplicationRepository applicationRepository
+                              ) {
         this.senderEmail = senderEmail;
         this.securityEmail = securityEmail;
         this.auditEmail = auditEmail;
@@ -72,7 +72,7 @@ public class MailGunEmailClient implements EmailClient {
         this.pdfGenerator = pdfGenerator;
         this.activeProfile = activeProfile;
         this.resubmissionEmail = resubmissionEmail;
-        this.applicationRepository=applicationRepository;
+        this.applicationRepository = applicationRepository;
     }
 
     @Override

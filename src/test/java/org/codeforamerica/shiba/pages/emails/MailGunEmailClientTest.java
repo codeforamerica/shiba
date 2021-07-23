@@ -223,7 +223,7 @@ class MailGunEmailClientTest {
         when(pdfGenerator.generateForUploadedDocument(any(UploadedDocument.class), anyInt(), any(Application.class), any())).thenReturn(testFile);
 
         mailGunEmailClient.sendHennepinDocUploadsEmails(application);
-        verify(applicationRepository).updateStatus("someId",UPLOADED_DOC, Status.DELIVERED);
+        verify(applicationRepository).updateStatus("someId", UPLOADED_DOC, Status.DELIVERED);
 
         wireMockServer.verify(2, postToMailgun()
                 .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
@@ -285,7 +285,7 @@ class MailGunEmailClientTest {
 
 
         mailGunEmailClient.sendHennepinDocUploadsEmails(application);
-        verify(applicationRepository).updateStatus("someId",UPLOADED_DOC, Status.DELIVERED);
+        verify(applicationRepository).updateStatus("someId", UPLOADED_DOC, Status.DELIVERED);
 
         wireMockServer.verify(2, postToMailgun()
                 .withBasicAuth(credentials)
@@ -332,7 +332,7 @@ class MailGunEmailClientTest {
     @ValueSource(booleans = {true, false})
     void sendResubmitEmail(boolean shouldCC) {
         if (shouldCC) {
-            mailGunEmailClient = new MailGunEmailClient(senderEmail, securityEmail, auditEmail, hennepinEmail, "http://localhost:" + port, mailGunApiKey, emailContentCreator, true, resubmissionEmail, pdfGenerator, activeProfile,applicationRepository);
+            mailGunEmailClient = new MailGunEmailClient(senderEmail, securityEmail, auditEmail, hennepinEmail, "http://localhost:" + port, mailGunApiKey, emailContentCreator, true, resubmissionEmail, pdfGenerator, activeProfile, applicationRepository);
         }
         wireMockServer.stubFor(post(anyUrl()).willReturn(aResponse().withStatus(200)));
 
