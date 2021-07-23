@@ -27,8 +27,7 @@ public class LocalePreferenceSelectionTest extends AbstractBasePageTest {
 
         testPage.clickButton("Continuar");
 
-        String elementId = "writtenLanguage";
-        WebElement selectedOption = testPage.getSelectedOption(elementId);
+        WebElement selectedOption = testPage.getSelectedOption("writtenLanguage");
         assertThat(selectedOption.getText()).isEqualTo("Español");
     }
 
@@ -38,8 +37,7 @@ public class LocalePreferenceSelectionTest extends AbstractBasePageTest {
         testPage.clickContinue();
         testPage.enter("writtenLanguage", "Español");
         assertThat(driver.getTitle()).isEqualTo("Preferencias de idioma");
-        String elementId = "locales";
-        WebElement selectedOption = testPage.getSelectedOption(elementId);
+        WebElement selectedOption = testPage.getSelectedOption("locales");
         assertThat(selectedOption.getText()).isEqualTo("Español");
     }
 }
