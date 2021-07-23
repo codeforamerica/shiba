@@ -1,4 +1,8 @@
 pageDefinitions:
+  - &testStaticLandingPage
+    name: testStaticLandingPage
+    pageTitle: first-page-title
+    customPage: true
   - &pageThatDoesNotStartTimer
       name: pageThatDoesNotStartTimer
       pageTitle: not-start-timer-title
@@ -12,6 +16,10 @@ pageDefinitions:
         - name: foo
           type: TEXT
 workflow:
+  testStaticLandingPage:
+    pageConfiguration: *testStaticLandingPage
+    nextPages:
+      - pageName: pageThatDoesNotStartTimer
   pageThatDoesNotStartTimer:
     pageConfiguration: *pageThatDoesNotStartTimer
   pageThatDoesStartTimer:
@@ -19,3 +27,5 @@ workflow:
 landmarkPages:
   startTimerPage:
     - pageThatDoesStartTimer
+  landingPages:
+    - testStaticLandingPage

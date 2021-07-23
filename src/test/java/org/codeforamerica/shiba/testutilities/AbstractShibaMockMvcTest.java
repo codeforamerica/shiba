@@ -53,7 +53,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import({SessionScopedApplicationDataTestConfiguration.class})
 public class AbstractShibaMockMvcTest {
     private static final String UPLOADED_JPG_FILE_NAME = "shiba+file.jpg";
-    private static final String UPLOADED_PDF_NAME = "test-caf.pdf";
 
     @MockBean
     protected Clock clock;
@@ -790,6 +789,6 @@ public class AbstractShibaMockMvcTest {
     }
 
     protected FormPage getFormPage(String pageName) throws Exception {
-        return new FormPage(getPage(pageName).andExpect(status().isOk()));
+        return new FormPage(getPageExpectingSuccess(pageName));
     }
 }
