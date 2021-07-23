@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ErrorPageTest extends AbstractBasePageTest {
 
@@ -18,14 +19,12 @@ public class ErrorPageTest extends AbstractBasePageTest {
     }
 
     @Test
-    void shouldShow404PageIfPageDoesNotExist() {
-        driver.navigate().to(baseUrl + "/foo");
+    void shouldDisplayTheSameErrorPageForDifferentClassesOfErrors() {
+        driver.navigate().to(baseUrl + "/foo"); // not found
         assertThat(driver.getTitle()).isEqualTo("Error");
-    }
-
-    @Test
-    void shouldShow500PageIfErrorOtherThan404() {
-        driver.navigate().to(baseUrl + "/;");
+        assertEquals(driver.findElementByTagName("h1").getText(), "Something went wrong!");
+        driver.navigate().to(baseUrl + "/;"); // internal server error
         assertThat(driver.getTitle()).isEqualTo("Error");
+        assertEquals(driver.findElementByTagName("h1").getText(), "Something went wrong!");
     }
 }
