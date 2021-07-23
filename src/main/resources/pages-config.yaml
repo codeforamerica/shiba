@@ -663,6 +663,9 @@ pageDefinitions:
     pageTitle: mailing-address.title
     headerKey: mailing-address.where-can-the-county-send-your-mail
     inputs:
+      - name: sameMailingAddress
+        type: HIDDEN
+        defaultValue: placeholder
       - name: streetAddress
         type: TEXT
         promptMessage:
