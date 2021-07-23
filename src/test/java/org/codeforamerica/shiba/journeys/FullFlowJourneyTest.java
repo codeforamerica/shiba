@@ -319,7 +319,7 @@ public class FullFlowJourneyTest extends JourneyTest {
 
         // Finish uploading docs and download PDFS
         testPage.clickButton("Submit my documents");
-        String applicationId = downloadPdfs(true, true);
+        applicationId = downloadPdfs(true, true);
 
         // CCAP fields
         assertCcapFieldEquals("APPLICATION_ID", applicationId);

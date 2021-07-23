@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.testutilities.AbstractBasePageTest;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -17,6 +18,11 @@ public class LocalePreferenceSelectionTest extends AbstractBasePageTest {
     protected void setUp() throws IOException {
         super.setUp();
         driver.navigate().to(baseUrl);
+    }
+
+    @AfterEach
+    void tearDown() {
+        testPage.selectFromDropdown("locales", "English");
     }
 
     @Test
