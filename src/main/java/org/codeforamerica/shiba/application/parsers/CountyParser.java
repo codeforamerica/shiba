@@ -9,6 +9,8 @@ import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.stereotype.*;
 
+import java.util.*;
+
 import static java.util.Optional.ofNullable;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.*;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
@@ -58,11 +60,12 @@ public class CountyParser{
     }
 
     private boolean shouldUseGeneralDeliveryCityToCountyMap(ApplicationData applicationData) {
-        boolean isHomeless = ofNullable(getFirstValue(applicationData.getPagesData(), IS_HOMELESS_2))
+        boolean isHomeless = ofNullable(getFirstValue(applicationData.getPagesData(), IS_HOMELESS))
                 .map(Boolean::parseBoolean)
                 .orElse(false);
 
         boolean hasSelectedGeneralDeliveryCity = ofNullable(getFirstValue(applicationData.getPagesData(), GENERAL_DELIVERY_CITY))
+                .filter(city -> !city.equals("SelectYourCity"))
                 .isPresent();
 
         return isHomeless && hasSelectedGeneralDeliveryCity;

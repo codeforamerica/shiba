@@ -46,9 +46,9 @@ public class TestApplicationDataBuilder {
     }
 
     public TestApplicationDataBuilder isHomeless() {
-        PageData homeAddress2 = new PageData();
-        homeAddress2.put("isHomeless", InputData.builder().value(List.of("true")).build());
-        applicationData.getPagesData().put("homeAddress2", homeAddress2);
+        PageData homeAddress = new PageData();
+        homeAddress.put("isHomeless", InputData.builder().value(List.of("true")).build());
+        applicationData.getPagesData().put("homeAddress", homeAddress);
         return this;
     }
 
