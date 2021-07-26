@@ -10,17 +10,9 @@
             <div th:replace="fragments/cardHeader :: cardHeader"></div>
             <div class="card spacing-above-35">
                 <div th:replace="fragments/icons/icon-document-recommendations :: icon-document-recommendations"></div>
-                <h1 class="h2" th:text="#{document-recommendation.submit-documents-within-30-days}"></h1>
-                <p th:text="#{document-recommendation.the-sooner-you-submit}"></p>
-
-                <div class="grid__item spacing-above-35">
-                <th:block th:each="docRec: ${docRecommendations}">
-                    <div th:replace="fragments/docRecommendationLongFragment :: docRecommendationLongFragment(${docRec.icon},
-                        ${docRec.title},
-                        ${docRec.explanation},
-                        ${docRec.example})"></div>
-                </th:block>
-                </div>
+                <h1 class="h2" th:text="#{document-recommendation.submit-any-documents-you-have}"></h1>
+                <p th:text="#{document-recommendation.you-have-30-days}"></p>
+                <div th:replace="fragments/docRecommendations :: docRecommendations(docRecommendations)"></div>
                 <div>
                     <a class="button button--primary" th:href="'/pages/'+${pageName}+'/navigation?option=0'"
                        th:text="#{document-recommendation.upload-documents-now}"></a>
@@ -34,5 +26,10 @@
     </section>
 </div>
 <div th:replace="fragments/footer :: footer"></div>
+<script th:inline="javascript">
+    $(function() {
+        $('.reveal').toggleClass('is-hidden');
+    });
+</script>
 </body>
 </html>
