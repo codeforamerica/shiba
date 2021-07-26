@@ -27,11 +27,13 @@ public class Application {
     FlowType flow;
     Sentiment sentiment;
     String feedback;
+    Status cafApplicationStatus;
+    Status ccapApplicationStatus;
+    Status uploadedDocumentApplicationStatus;
 
     public Application addFeedback(Feedback feedback) {
         Sentiment sentiment = Optional.ofNullable(feedback.getSentiment()).orElse(this.sentiment);
         String feedbackText = !StringUtils.isEmpty(feedback.getFeedback()) ? feedback.getFeedback() : this.feedback;
-
         return new Application(
                 id,
                 completedAt,
@@ -41,7 +43,10 @@ public class Application {
                 timeToComplete,
                 flow,
                 sentiment,
-                feedbackText
+                feedbackText,
+                cafApplicationStatus,
+                ccapApplicationStatus,
+                uploadedDocumentApplicationStatus
         );
     }
 
