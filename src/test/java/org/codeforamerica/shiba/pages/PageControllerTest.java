@@ -43,10 +43,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = MOCK, properties = {"pagesConfig=pages-config/test-pages-controller.yaml"})
 @ContextConfiguration(classes = {NonSessionScopedApplicationData.class})
 class PageControllerTest {
-    @MockBean
-    private MessageSource messageSource;
     private MockMvc mockMvc;
 
+    @MockBean
+    private MessageSource messageSource;
     @MockBean
     private Clock clock;
     @MockBean
@@ -60,7 +60,6 @@ class PageControllerTest {
 
     @Autowired
     private PageController pageController;
-
     @Autowired
     private ApplicationData applicationData;
 

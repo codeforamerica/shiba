@@ -71,9 +71,11 @@ public class ResubmissionService {
         for (int i = 0; i < uploadedDocs.size(); i++) {
             UploadedDocument uploadedDocument = uploadedDocs.get(i);
             ApplicationFile fileToSend = pdfGenerator.generateForUploadedDocument(uploadedDocument, i, application, coverPage);
-            log.info("Resubmitting uploaded doc: %s original filename: %s".formatted(fileToSend.getFileName(), uploadedDocument.getFilename()));
+            var esbFilename = fileToSend.getFileName();
+            var originalFilename = uploadedDocument.getFilename();
+            log.info("Resubmitting uploaded doc: %s original filename: %s".formatted(esbFilename, originalFilename));
             emailClient.resubmitFailedEmail(countyEmail, document, fileToSend, application, Locale.ENGLISH);
-            log.info("Finished resubmitting document %s".formatted(fileToSend.getFileName()));
+            log.info("Finished resubmitting document %s".formatted(esbFilename));
         }
     }
 }

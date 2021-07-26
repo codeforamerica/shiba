@@ -33,7 +33,7 @@ public class Application {
 
     public Application addFeedback(Feedback feedback) {
         var sentiment = Optional.ofNullable(feedback.getSentiment()).orElse(this.sentiment);
-        var feedbackText = !StringUtils.hasLength(feedback.getFeedback()) ? feedback.getFeedback() : this.feedback;
+        var feedbackText = StringUtils.hasLength(feedback.getFeedback()) ? feedback.getFeedback() : this.feedback;
         return new Application(
                 id,
                 completedAt,
