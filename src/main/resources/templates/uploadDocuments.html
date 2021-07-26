@@ -52,8 +52,8 @@
                         </form>
                         <form th:action="@{/submit-documents}" method="post" onsubmit="return onSubmit()">
                             <div class="form-group">
-                                <button type="submit" class="button button--secondary"
-                                        th:text="#{upload-documents.im-finished-uploading}"></button>
+                                <button type="submit" class="button button--secondary hidden" id="submit-my-documents"
+                                        th:text="#{upload-documents.submit-my-documents}"></button>
                                 <p class="text--error">
                                     <i class="icon-warning"></i>
                                     <span th:text="#{upload-documents.wait-for-upload-warning}"></span>
@@ -232,6 +232,8 @@
                 thumbnail.classList.add("hidden");
 
                 isUploadComplete = false;
+
+                $('#submit-my-documents').removeClass('hidden');
 
                 if (!file.type.includes("image")) {
                     setDefaultThumbnail(file);

@@ -427,7 +427,7 @@ public abstract class AbstractBasePageTest {
         testPage.clickElementById("drag-and-drop-box");
         uploadJpgFile();
         waitForDocumentUploadToComplete();
-        testPage.clickButton("I'm finished uploading");
+        testPage.clickButton("Submit my documents");
     }
 
     protected void uploadFile(String filepath) {

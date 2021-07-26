@@ -90,7 +90,7 @@ public class AccessibilityJourneyTest extends JourneyTest {
         // should allow me to upload documents and those documents should be sent to the ESB
         uploadPdfFile();
         await().until(uploadCompletes());
-        testPage.clickButton("I'm finished uploading");
+        testPage.clickButton("Submit my documents");
     }
 
     @Test
