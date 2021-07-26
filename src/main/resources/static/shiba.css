@@ -784,6 +784,10 @@ input[type=number] {
     fill: #741078;
 }
 
+.doc-rec:last-of-type {
+    margin-bottom: 2.5rem!important;
+}
+
 .doc-rectangle {
     height: 60px;
     background: #F7F5F4;

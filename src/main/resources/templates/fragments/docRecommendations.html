@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="docRecommendations(docReommendations)"
+        class="reveal reveal-adjacent spacing-above-35 spacing-below-60"
+     th:if="${docRecommendations.size() > 0}">
+    <a href="#" class="reveal__link reveal__link-adjacent">
+                                <span class="reveal-icon">
+                                    <div th:replace="fragments/icons/icon-multiple-documents  :: icon-multiple-documents"></div>
+                                </span>
+        <div class="reveal__link__header-adjacent"
+             th:text="#{upload-documents.recommended-documents}"></div>
+        <div class="reveal__content reveal__content-adjacent">
+            <th:block th:each="docRec: ${docRecommendations}">
+                <div th:replace="fragments/docRecommendationFragment :: docRecommendationFragment(${docRec.icon},
+                                                ${docRec.title},
+                                                ${docRec.explanation})"></div>
+            </th:block>
+        </div>
+    </a>
+</div>
+
+</html>

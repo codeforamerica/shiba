@@ -53,15 +53,7 @@ public class DocRecommendationMessageService {
     public List<DocumentRecommendation> getPageSpecificRecommendationsMessage(ApplicationData applicationData, Locale locale, String pageName) {
         LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
         List<String> recommendationsToShow = getRecommendationsToShow(applicationData);
-
-        if ("uploadDocuments".equals(pageName)) {
-            return getShortDocumentRecommendations(recommendationsToShow, lms);
-        } else if ("documentRecommendation".equals(pageName)) {
-            return getLongDocumentRecommendations(recommendationsToShow, lms);
-        }
-
-        return null;
-
+        return getLongDocumentRecommendations(recommendationsToShow, lms);
     }
 
     public List<DocumentRecommendation> getConfirmationEmailDocumentRecommendations(ApplicationData applicationData, Locale locale) {
