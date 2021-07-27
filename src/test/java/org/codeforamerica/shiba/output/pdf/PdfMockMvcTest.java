@@ -470,14 +470,14 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
                 String originalApt = "originalApt";
                 String originalCity = "originalCity";
                 String originalZipCode = "54321";
-                postExpectingSuccess("homeAddress", Map.of(
+                postExpectingSuccess("homeAddress2", Map.of(
                         "streetAddress", List.of(originalStreetAddress),
                         "apartmentNumber", List.of(originalApt),
                         "city", List.of(originalCity),
                         "zipCode", List.of(originalZipCode),
-                        "state", List.of("MN"),
-                        "sameMailingAddress", List.of("true") // THE KEY DIFFERENCE
+                        "state", List.of("MN")
                 ));
+                postExpectingSuccess("mailingAddress2", "sameMailingAddress", "true"); // THE KEY DIFFERENCE
                 postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "false");
 
                 var ccap = submitAndDownloadCcap();
@@ -523,14 +523,14 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
                                 enrichedZipCodeValue,
                                 enrichedApartmentNumber,
                                 "Hennepin")));
-                postExpectingSuccess("homeAddress", Map.of(
+                postExpectingSuccess("homeAddress2", Map.of(
                         "streetAddress", List.of("originalStreetAddress"),
                         "apartmentNumber", List.of("originalApt"),
                         "city", List.of("originalCity"),
                         "zipCode", List.of("54321"),
-                        "state", List.of("MN"),
-                        "sameMailingAddress", List.of("true") // THE KEY DIFFERENCE
+                        "state", List.of("MN")
                 ));
+                postExpectingSuccess("mailingAddress2", "sameMailingAddress", "true"); // THE KEY DIFFERENCE
                 postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "true");
 
                 var caf = submitAndDownloadCaf();

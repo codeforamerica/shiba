@@ -1,13 +1,9 @@
 package org.codeforamerica.shiba.journeys;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
-import org.codeforamerica.shiba.testutilities.AbstractBasePageTest;
-import org.codeforamerica.shiba.testutilities.TestUtils;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.documents.CombinedDocumentRepositoryService;
-import org.codeforamerica.shiba.testutilities.SuccessPage;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.emails.MailGunEmailClient;
@@ -15,6 +11,9 @@ import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.pages.enrichment.smartystreets.SmartyStreetClient;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
+import org.codeforamerica.shiba.testutilities.AbstractBasePageTest;
+import org.codeforamerica.shiba.testutilities.SuccessPage;
+import org.codeforamerica.shiba.testutilities.TestUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -70,9 +69,10 @@ abstract class JourneyTest extends AbstractBasePageTest {
         when(clock.getZone()).thenReturn(ZoneOffset.UTC);
         when(smartyStreetClient.validateAddress(any())).thenReturn(Optional.empty());
 
+        when(featureFlagConfiguration.get("apply-without-address")).thenReturn(FeatureFlag.ON);
         when(featureFlagConfiguration.get("submit-via-email")).thenReturn(FeatureFlag.OFF);
         when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.OFF);
-        when(featureFlagConfiguration.get("apply-without-address")).thenReturn(FeatureFlag.OFF);
+        when(featureFlagConfiguration.get("apply-without-address")).thenReturn(FeatureFlag.ON);
         caf = null;
         ccap = null;
     }
@@ -164,10 +164,7 @@ abstract class JourneyTest extends AbstractBasePageTest {
         testPage.enter("city", homeCity);
         testPage.enter("streetAddress", homeStreetAddress);
         testPage.enter("apartmentNumber", homeApartmentNumber);
-        testPage.enter("isHomeless", "I don't have a permanent address");
-        testPage.enter("sameMailingAddress", "No, use a different address for mail");
         testPage.clickContinue();
-        testPage.clickButton("Use this address");
 
         // Where can the county send your mail? (accept the smarty streets enriched address)
         testPage.enter("zipCode", "23456");

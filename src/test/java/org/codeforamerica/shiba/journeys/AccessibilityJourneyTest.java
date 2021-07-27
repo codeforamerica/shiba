@@ -4,9 +4,8 @@ import com.deque.html.axecore.results.Results;
 import com.deque.html.axecore.results.Rule;
 import com.deque.html.axecore.selenium.AxeBuilder;
 import org.codeforamerica.shiba.documents.CombinedDocumentRepositoryService;
-import org.codeforamerica.shiba.testutilities.AccessibilityTestPage;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
-import org.codeforamerica.shiba.pages.enrichment.Address;
+import org.codeforamerica.shiba.testutilities.AccessibilityTestPage;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -14,13 +13,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.testutilities.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.testutilities.YesNoAnswer.YES;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @Tag("a11y")
@@ -121,25 +118,7 @@ public class AccessibilityJourneyTest extends JourneyTest {
         testPage.enter("email", "some@example.com");
         testPage.enter("phoneOrEmail", "Text me");
         testPage.clickContinue();
-        testPage.enter("zipCode", "12345");
-        testPage.enter("city", "someCity");
-        testPage.enter("streetAddress", "someStreetAddress");
-        testPage.enter("apartmentNumber", "someApartmentNumber");
-        testPage.enter("isHomeless", "I don't have a permanent address");
-        testPage.enter("sameMailingAddress", "No, use a different address for mail");
-        testPage.clickContinue();
-        testPage.clickButton("Use this address");
-        testPage.enter("zipCode", "12345");
-        testPage.enter("city", "someCity");
-        testPage.enter("streetAddress", "someStreetAddress");
-        testPage.enter("state", "IL");
-        testPage.enter("apartmentNumber", "someApartmentNumber");
-        when(smartyStreetClient.validateAddress(any())).thenReturn(
-                Optional.of(new Address("smarty street", "City", "CA", "03104", "", "someCounty"))
-        );
-        testPage.clickContinue();
-        testPage.clickElementById("enriched-address");
-        testPage.clickContinue();
+        fillOutHomeAndMailingAddress("12345", "someCity", "someStreetAddress", "homeApartmentNumber");
         testPage.clickLink("This looks correct");
         testPage.enter("addHouseholdMembers", YES.getDisplayValue());
         testPage.clickContinue();
