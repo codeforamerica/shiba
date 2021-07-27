@@ -24,7 +24,7 @@ mail-gun:
   url: mailgun-url
 
 feature-flag:
-  apply-without-address: off
+  apply-without-address: on
   submit-docs-via-email-for-hennepin: on
   county-ottertail: on
 
