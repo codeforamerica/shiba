@@ -83,7 +83,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         testPage.clickContinue();
 
         // Finish Application
-        String applicationId = signApplicationAndDownloadPdfs(signature, true, false);
+        applicationId = signApplicationAndDownloadPdfs(signature, true, false);
         assertApplicationSubmittedEventWasPublished(applicationId, MINIMUM, 1);
 
         // PDF assertions
@@ -163,7 +163,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         testPage.clickContinue();
 
         // Finish Application
-        String applicationId = signApplicationAndDownloadPdfs(signature, true, false);
+        applicationId = signApplicationAndDownloadPdfs(signature, true, false);
         assertApplicationSubmittedEventWasPublished(applicationId, EXPEDITED, 1);
 
         // PDF assertions

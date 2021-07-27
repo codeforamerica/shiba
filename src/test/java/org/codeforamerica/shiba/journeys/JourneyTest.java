@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.journeys;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.testutilities.AbstractBasePageTest;
 import org.codeforamerica.shiba.testutilities.TestUtils;
@@ -15,16 +16,20 @@ import org.codeforamerica.shiba.pages.enrichment.smartystreets.SmartyStreetClien
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.ArgumentCaptor;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
@@ -39,6 +44,7 @@ import static org.mockito.Mockito.*;
 abstract class JourneyTest extends AbstractBasePageTest {
     protected PDAcroForm caf;
     protected PDAcroForm ccap;
+    protected String applicationId;
 
     @MockBean
     protected Clock clock;
@@ -69,6 +75,15 @@ abstract class JourneyTest extends AbstractBasePageTest {
         when(featureFlagConfiguration.get("apply-without-address")).thenReturn(FeatureFlag.OFF);
         caf = null;
         ccap = null;
+    }
+
+    @AfterEach
+    void tearDown() {
+        if (applicationId != null) {
+            Arrays.stream(Objects.requireNonNull(path.toFile().listFiles()))
+                    .filter(file -> file.getName().contains(applicationId))
+                    .forEach(File::delete);
+        }
     }
 
     protected void assertCafFieldEquals(String fieldName, String expectedVal) {

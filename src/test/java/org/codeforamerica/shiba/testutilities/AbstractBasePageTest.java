@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.testutilities;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
+import org.apache.commons.io.FileUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.output.Document;
@@ -8,18 +8,17 @@ import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.pages.enrichment.smartystreets.SmartyStreetClient;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.io.File;
@@ -44,6 +43,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
+@Import({WebDriverConfiguration.class})
 @ActiveProfiles("test")
 public abstract class AbstractBasePageTest {
     protected static final String PROGRAM_SNAP = "Food (SNAP)";
@@ -56,7 +56,9 @@ public abstract class AbstractBasePageTest {
     private static final String UPLOADED_JPG_FILE_NAME = "shiba+file.jpg";
     private static final String UPLOADED_PDF_NAME = "test-caf.pdf";
 
-    static protected RemoteWebDriver driver;
+    @Autowired
+    protected RemoteWebDriver driver;
+    @Autowired
     protected Path path;
     protected String baseUrl;
     protected String baseUrlWithAuth;
@@ -68,29 +70,12 @@ public abstract class AbstractBasePageTest {
 
     protected Page testPage;
 
-    @BeforeAll
-    static void beforeAll() {
-        WebDriverManager.chromedriver().setup();
-    }
-
     @BeforeEach
     protected void setUp() throws IOException {
         baseUrl = String.format("http://localhost:%s", localServerPort);
         baseUrlWithAuth = String.format("http://%s@localhost:%s", authParams, localServerPort);
-        ChromeOptions options = new ChromeOptions();
-        path = Files.createTempDirectory("");
-        HashMap<String, Object> chromePrefs = new HashMap<>();
-        chromePrefs.put("download.default_directory", path.toString());
-        options.setExperimentalOption("prefs", chromePrefs);
-        options.addArguments("--window-size=1280,1600");
-        options.addArguments("--headless");
-        driver = new ChromeDriver(options);
+        driver.navigate().to(baseUrl);
         testPage = new Page(driver);
-    }
-
-    @AfterEach
-    void tearDown() {
-        driver.quit();
     }
 
     protected void navigateTo(String pageName) {
@@ -125,7 +110,7 @@ public abstract class AbstractBasePageTest {
     }
 
     @SuppressWarnings("unused")
-    public static void takeSnapShot(String fileWithPath) {
+    public void takeSnapShot(String fileWithPath) {
         TakesScreenshot screenshot = driver;
         Path sourceFile = screenshot.getScreenshotAs(OutputType.FILE).toPath();
         Path destinationFile = new File(fileWithPath).toPath();
@@ -167,8 +152,8 @@ public abstract class AbstractBasePageTest {
 
         Function<Document, Boolean> expectedPdfExists = expectedPdfName -> documentNames.stream()
                 .anyMatch(documentName ->
-                                  documentName.contains("_MNB_") && documentName.endsWith(".pdf") &&
-                                          documentName.contains(expectedPdfName.toString())
+                        documentName.contains("_MNB_") && documentName.endsWith(".pdf") &&
+                                documentName.contains(expectedPdfName.toString())
                 );
         return List.of(CAF, CCAP).stream().allMatch(expectedPdfExists::apply);
     }
@@ -476,7 +461,7 @@ public abstract class AbstractBasePageTest {
     @NotNull
     protected Callable<Boolean> uploadCompletes() {
         return () -> !getAttributeForElementAtIndex(driver.findElementsByClassName("dz-remove"),
-                                                    0,
-                                                    "innerHTML").isBlank();
+                0,
+                "innerHTML").isBlank();
     }
 }
