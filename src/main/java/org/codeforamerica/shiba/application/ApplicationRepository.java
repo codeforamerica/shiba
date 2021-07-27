@@ -8,6 +8,7 @@ import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -17,7 +18,9 @@ import java.time.*;
 import java.util.*;
 import java.util.Map.Entry;
 
+import static java.time.ZonedDateTime.now;
 import static java.util.stream.Collectors.toMap;
+import static org.codeforamerica.shiba.output.Document.*;
 
 @Repository
 @Slf4j
@@ -79,23 +82,7 @@ public class ApplicationRepository {
 
     public Application find(String id) {
         try {
-            return jdbcTemplate.queryForObject("SELECT * FROM applications WHERE id = ?",
-                    (resultSet, rowNum) ->
-                            Application.builder()
-                                    .id(id)
-                                    .completedAt(convertToZonedDateTime(resultSet.getTimestamp("completed_at")))
-                                    .updatedAt(convertToZonedDateTime(resultSet.getTimestamp("updated_at")))
-                                    .applicationData(encryptor.decrypt(resultSet.getString("application_data")))
-                                    .county(County.valueFor(resultSet.getString("county")))
-                                    .timeToComplete(Duration.ofSeconds(resultSet.getLong("time_to_complete")))
-                                    .sentiment(Optional.ofNullable(resultSet.getString("sentiment"))
-                                            .map(Sentiment::valueOf)
-                                            .orElse(null))
-                                    .feedback(resultSet.getString("feedback"))
-                                    .flow(Optional.ofNullable(resultSet.getString("flow"))
-                                            .map(FlowType::valueOf)
-                                            .orElse(null))
-                                    .build(), id);
+            return jdbcTemplate.queryForObject("SELECT * FROM applications WHERE id = ?", applicationRowMapper(), id);
         } catch (EmptyResultDataAccessException e) {
             log.error("Unable to locate application with ID " + id);
             throw e;
@@ -231,28 +218,69 @@ public class ApplicationRepository {
 
     public Map<Document, List<String>> getApplicationIdsToResubmit() {
         Map<Document, List<String>> failedSubmissions = new HashMap<>();
-        failedSubmissions.put(Document.CCAP, getFailedCCAPSubmissions());
-        failedSubmissions.put(Document.CAF, getFailedCAFSubmissions());
-        failedSubmissions.put(Document.UPLOADED_DOC, getFailedUploadedDocSubmissions());
-
-        // TODO also get in_progress submissions that have been in progress too long
+        failedSubmissions.put(CCAP, getCCAPSubmissionsToResubmit());
+        failedSubmissions.put(CAF, getCAFSubmissionsToResubmit());
+        failedSubmissions.put(UPLOADED_DOC, getUploadedDocSubmissionsToResubmit());
         return failedSubmissions;
     }
 
-    private List<String> getFailedCCAPSubmissions() {
-        return jdbcTemplate.queryForList(
-                "SELECT id FROM applications WHERE ccap_application_status = 'delivery_failed' ",
-                String.class);
+    private List<String> getCCAPSubmissionsToResubmit() {
+        var applicationList = jdbcTemplate.query(
+                "SELECT * FROM applications WHERE (ccap_application_status = 'delivery_failed' OR ccap_application_status = 'in_progress') AND completed_at IS NOT NULL",
+                applicationRowMapper());
+        return applicationList.stream()
+                .filter(a -> !a.getCcapApplicationStatus().equals(Status.IN_PROGRESS) || a.getCompletedAt().isBefore(now().minusDays(1)))
+                .map(Application::getId)
+                .toList();
     }
 
-    private List<String> getFailedCAFSubmissions() {
-        return jdbcTemplate.queryForList("SELECT id FROM applications WHERE caf_application_status = 'delivery_failed'",
-                String.class);
+    private List<String> getCAFSubmissionsToResubmit() {
+        var applicationList = jdbcTemplate.query(
+                "SELECT * FROM applications WHERE (caf_application_status = 'delivery_failed' OR caf_application_status = 'in_progress') AND completed_at IS NOT NULL",
+                applicationRowMapper());
+        return applicationList.stream()
+                .filter(a -> !a.getCafApplicationStatus().equals(Status.IN_PROGRESS) || a.getCompletedAt().isBefore(now().minusDays(1)))
+                .map(Application::getId)
+                .toList();
     }
 
-    private List<String> getFailedUploadedDocSubmissions() {
-        return jdbcTemplate.queryForList(
-                "SELECT id FROM applications WHERE uploaded_documents_status = 'delivery_failed'",
-                String.class);
+    private List<String> getUploadedDocSubmissionsToResubmit() {
+        var applicationList = jdbcTemplate.query(
+                "SELECT * FROM applications WHERE (uploaded_documents_status = 'delivery_failed' OR uploaded_documents_status = 'in_progress') AND completed_at IS NOT NULL",
+                applicationRowMapper());
+        return applicationList.stream()
+                .filter(a -> !a.getUploadedDocumentApplicationStatus().equals(Status.IN_PROGRESS) || a.getCompletedAt().isBefore(now().minusDays(1)))
+                .map(Application::getId)
+                .toList();
     }
+
+    @NotNull
+    private RowMapper<Application> applicationRowMapper() {
+        return (resultSet, rowNum) ->
+                Application.builder()
+                        .id(resultSet.getString("id"))
+                        .completedAt(convertToZonedDateTime(resultSet.getTimestamp("completed_at")))
+                        .updatedAt(convertToZonedDateTime(resultSet.getTimestamp("updated_at")))
+                        .applicationData(encryptor.decrypt(resultSet.getString("application_data")))
+                        .county(County.valueFor(resultSet.getString("county")))
+                        .timeToComplete(Duration.ofSeconds(resultSet.getLong("time_to_complete")))
+                        .sentiment(Optional.ofNullable(resultSet.getString("sentiment"))
+                                .map(Sentiment::valueOf)
+                                .orElse(null))
+                        .feedback(resultSet.getString("feedback"))
+                        .flow(Optional.ofNullable(resultSet.getString("flow"))
+                                .map(FlowType::valueOf)
+                                .orElse(null))
+                        .cafApplicationStatus(Optional.ofNullable(resultSet.getString("caf_application_status"))
+                                .map(Status::valueFor)
+                                .orElse(null))
+                        .ccapApplicationStatus(Optional.ofNullable(resultSet.getString("ccap_application_status"))
+                                .map(Status::valueFor)
+                                .orElse(null))
+                        .uploadedDocumentApplicationStatus(Optional.ofNullable(resultSet.getString("uploaded_documents_status"))
+                                .map(Status::valueFor)
+                                .orElse(null))
+                        .build();
+    }
+
 }

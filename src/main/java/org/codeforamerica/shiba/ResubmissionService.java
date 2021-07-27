@@ -30,7 +30,6 @@ public class ResubmissionService {
     private final MailGunEmailClient emailClient;
     private final CountyMap<MnitCountyInformation> countyMap;
     private final PdfGenerator pdfGenerator;
-    private final CombinedDocumentRepositoryService combinedDocumentRepositoryService;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public ResubmissionService(ApplicationRepository applicationRepository, MailGunEmailClient emailClient, CountyMap<MnitCountyInformation> countyMap, PdfGenerator pdfGenerator, CombinedDocumentRepositoryService combinedDocumentRepositoryService) {
@@ -38,7 +37,6 @@ public class ResubmissionService {
         this.emailClient = emailClient;
         this.countyMap = countyMap;
         this.pdfGenerator = pdfGenerator;
-        this.combinedDocumentRepositoryService = combinedDocumentRepositoryService;
     }
 
     @Scheduled(fixedDelayString = "${resubmission.interval.milliseconds}")
@@ -73,9 +71,11 @@ public class ResubmissionService {
         for (int i = 0; i < uploadedDocs.size(); i++) {
             UploadedDocument uploadedDocument = uploadedDocs.get(i);
             ApplicationFile fileToSend = pdfGenerator.generateForUploadedDocument(uploadedDocument, i, application, coverPage);
-            log.info("Resubmitting uploaded doc: " + fileToSend.getFileName() + " original filename: " + uploadedDocument.getFilename());
+            var esbFilename = fileToSend.getFileName();
+            var originalFilename = uploadedDocument.getFilename();
+            log.info("Resubmitting uploaded doc: %s original filename: %s".formatted(esbFilename, originalFilename));
             emailClient.resubmitFailedEmail(countyEmail, document, fileToSend, application, Locale.ENGLISH);
-            log.info("Finished resubmitting document " + fileToSend.getFileName());
+            log.info("Finished resubmitting document %s".formatted(esbFilename));
         }
     }
 }

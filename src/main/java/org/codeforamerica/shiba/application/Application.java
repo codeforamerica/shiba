@@ -18,20 +18,22 @@ import java.util.Optional;
 @Data
 @Builder
 public class Application {
-    String id;
-    ZonedDateTime completedAt;
-    ZonedDateTime updatedAt;
-    ApplicationData applicationData;
-    County county;
-    Duration timeToComplete;
-    FlowType flow;
-    Sentiment sentiment;
-    String feedback;
+    private String id;
+    private ZonedDateTime completedAt;
+    private ZonedDateTime updatedAt;
+    private ApplicationData applicationData;
+    private County county;
+    private Duration timeToComplete;
+    private FlowType flow;
+    private Sentiment sentiment;
+    private String feedback;
+    private Status cafApplicationStatus;
+    private Status ccapApplicationStatus;
+    private Status uploadedDocumentApplicationStatus;
 
     public Application addFeedback(Feedback feedback) {
-        Sentiment sentiment = Optional.ofNullable(feedback.getSentiment()).orElse(this.sentiment);
-        String feedbackText = !StringUtils.isEmpty(feedback.getFeedback()) ? feedback.getFeedback() : this.feedback;
-
+        var sentiment = Optional.ofNullable(feedback.getSentiment()).orElse(this.sentiment);
+        var feedbackText = StringUtils.hasLength(feedback.getFeedback()) ? feedback.getFeedback() : this.feedback;
         return new Application(
                 id,
                 completedAt,
@@ -41,7 +43,10 @@ public class Application {
                 timeToComplete,
                 flow,
                 sentiment,
-                feedbackText
+                feedbackText,
+                cafApplicationStatus,
+                ccapApplicationStatus,
+                uploadedDocumentApplicationStatus
         );
     }
 

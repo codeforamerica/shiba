@@ -13,6 +13,17 @@ public enum Status {
         this.displayName = displayName;
     }
 
+    public static Status valueFor(String displayName) {
+        return switch(displayName) {
+            case "in_progress" -> IN_PROGRESS;
+            case "sending" -> SENDING;
+            case "delivered" -> DELIVERED;
+            case "delivery_failed" -> DELIVERY_FAILED;
+            case "resubmission_failed" -> RESUBMISSION_FAILED;
+            default -> null;
+        };
+    }
+
     public String displayName() {
         return displayName;
     }
