@@ -184,7 +184,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         assertCafFieldEquals("WATER_SEWER_SELECTION", "NEITHER_SELECTED");
         assertCafFieldEquals("COOKING_FUEL", "No");
         assertCafFieldEquals("HAVE_SAVINGS", "Yes");
-        assertCafFieldEquals("APPLICANT_HOME_STREET_ADDRESS", homeStreetAddress + " (not permanent)");
+        assertCafFieldEquals("APPLICANT_HOME_STREET_ADDRESS", homeStreetAddress);
         assertCafFieldEquals("APPLICANT_HOME_APT_NUMBER", homeApartmentNumber);
         assertCafFieldEquals("APPLICANT_HOME_CITY", homeCity);
         assertCafFieldEquals("APPLICANT_HOME_STATE", "MN");

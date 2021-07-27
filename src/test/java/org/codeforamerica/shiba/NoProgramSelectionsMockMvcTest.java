@@ -1,6 +1,5 @@
 package org.codeforamerica.shiba;
 
-import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,14 +7,12 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Map;
 
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 public class NoProgramSelectionsMockMvcTest extends AbstractShibaMockMvcTest {
     @BeforeEach
     void setup() throws Exception {
         super.setUp();
-        when(featureFlagConfiguration.get("apply-without-address")).thenReturn(FeatureFlag.OFF);
         mockMvc.perform(get("/pages/languagePreferences").session(session)); // start timer
         postExpectingSuccess("languagePreferences", Map.of(
                 "writtenLanguage", List.of("ENGLISH"),

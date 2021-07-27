@@ -1,9 +1,9 @@
 package org.codeforamerica.shiba.pages;
 
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
+import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
 import org.codeforamerica.shiba.testutilities.FormPage;
-import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

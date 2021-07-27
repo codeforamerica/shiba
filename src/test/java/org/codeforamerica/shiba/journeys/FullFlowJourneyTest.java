@@ -367,7 +367,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCcapFieldEquals("APPLICANT_SEX", "FEMALE");
         assertCcapFieldEquals("APPLICANT_PHONE_NUMBER", "(723) 456-7890");
         assertCcapFieldEquals("APPLICANT_EMAIL", "some@example.com");
-        assertCcapFieldEquals("APPLICANT_HOME_STREET_ADDRESS", "someStreetAddress (not permanent)");
+        assertCcapFieldEquals("APPLICANT_HOME_STREET_ADDRESS", "someStreetAddress");
         assertCcapFieldEquals("ADULT_REQUESTING_CHILDCARE_LOOKING_FOR_JOB_FULL_NAME_0", "");
         assertCcapFieldEquals("ADULT_REQUESTING_CHILDCARE_GOING_TO_SCHOOL_FULL_NAME_0", "");
         assertCcapFieldEquals("STUDENT_FULL_NAME_0", householdMemberFullName);
@@ -568,7 +568,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCafFieldEquals("RELATIONSHIP_0", "my child");
         assertCafFieldEquals("MARITAL_STATUS_0", "NEVER_MARRIED");
         assertCafFieldEquals("GROSS_MONTHLY_INCOME_0", "120.00");
-        assertCafFieldEquals("APPLICANT_HOME_STREET_ADDRESS", "someStreetAddress (not permanent)");
+        assertCafFieldEquals("APPLICANT_HOME_STREET_ADDRESS", "someStreetAddress");
         assertCafFieldEquals("MONEY_MADE_LAST_MONTH", "120.00");
 
         assertApplicationSubmittedEventWasPublished(applicationId, FULL, 7);
