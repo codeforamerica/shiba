@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.Sentiment;
-import org.codeforamerica.shiba.pages.config.*;
+import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -15,7 +15,8 @@ import org.springframework.stereotype.Repository;
 
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
-import java.sql.*;
+import java.sql.Blob;
+import java.sql.Timestamp;
 import java.time.*;
 import java.util.*;
 import java.util.Map.Entry;
@@ -72,13 +73,13 @@ public class ApplicationRepository {
         if (featureFlags.get("oracle").isOn()) {
             parameters.put("applicationData", encryptor.encrypt(application.getApplicationDataWithoutDataUrls()).getBytes(StandardCharsets.UTF_8));
             if (namedParameterJdbcTemplate.update("UPDATE applications SET " +
-                                                          "completed_at = :completedAt, " +
-                                                          "application_data = :applicationData, " +
-                                                          "county = :county, " +
-                                                          "time_to_complete = :timeToComplete, " +
-                                                          "sentiment = :sentiment, " +
-                                                          "feedback = :feedback, " +
-                                                          "flow = :flow WHERE id = :id", parameters) == 0) {
+                    "completed_at = :completedAt, " +
+                    "application_data = :applicationData, " +
+                    "county = :county, " +
+                    "time_to_complete = :timeToComplete, " +
+                    "sentiment = :sentiment, " +
+                    "feedback = :feedback, " +
+                    "flow = :flow WHERE id = :id", parameters) == 0) {
 
                 namedParameterJdbcTemplate.update(
                         "INSERT INTO applications (id, completed_at, application_data, county, time_to_complete, sentiment, feedback, flow) " +
@@ -87,13 +88,13 @@ public class ApplicationRepository {
         } else { // postgres
             parameters.put("applicationData", encryptor.encrypt(application.getApplicationDataWithoutDataUrls()));
             namedParameterJdbcTemplate.update("UPDATE applications SET " +
-                                                      "completed_at = :completedAt, " +
-                                                      "application_data = :applicationData ::jsonb, " +
-                                                      "county = :county, " +
-                                                      "time_to_complete = :timeToComplete, " +
-                                                      "sentiment = :sentiment, " +
-                                                      "feedback = :feedback, " +
-                                                      "flow = :flow WHERE id = :id", parameters);
+                    "completed_at = :completedAt, " +
+                    "application_data = :applicationData ::jsonb, " +
+                    "county = :county, " +
+                    "time_to_complete = :timeToComplete, " +
+                    "sentiment = :sentiment, " +
+                    "feedback = :feedback, " +
+                    "flow = :flow WHERE id = :id", parameters);
             namedParameterJdbcTemplate.update(
                     "INSERT INTO applications (id, completed_at, application_data, county, time_to_complete, sentiment, feedback, flow) " +
                             "VALUES (:id, :completedAt, :applicationData ::jsonb, :county, :timeToComplete, :sentiment, :feedback, :flow) " +
@@ -134,12 +135,12 @@ public class ApplicationRepository {
 
     public Map<County, Integer> countByCounty() {
         return jdbcTemplate.query(
-                "SELECT county, COUNT(*) AS count " +
-                        "FROM applications  WHERE flow <> 'LATER_DOCS' AND completed_at IS NOT NULL " +
-                        "GROUP BY county", (resultSet, rowNumber) ->
-                        Map.entry(
-                                County.valueFor(resultSet.getString("county")),
-                                resultSet.getInt("count"))).stream()
+                        "SELECT county, COUNT(*) AS count " +
+                                "FROM applications  WHERE flow <> 'LATER_DOCS' AND completed_at IS NOT NULL " +
+                                "GROUP BY county", (resultSet, rowNumber) ->
+                                Map.entry(
+                                        County.valueFor(resultSet.getString("county")),
+                                        resultSet.getInt("count"))).stream()
                 .collect(toMap(Entry::getKey, Entry::getValue));
     }
 
@@ -190,16 +191,16 @@ public class ApplicationRepository {
 
     public Map<Sentiment, Double> getSentimentDistribution() {
         return jdbcTemplate.query(
-                "SELECT sentiment, count, SUM(count) OVER () AS total_count " +
-                        "FROM (" +
-                        "         SELECT sentiment, COUNT(id) AS count " +
-                        "         FROM applications " +
-                        "         WHERE sentiment IS NOT NULL " +
-                        "         GROUP BY sentiment " +
-                        "     ) AS subquery",
-                (resultSet, rowNumber) -> Map.entry(
-                        Sentiment.valueOf(resultSet.getString("sentiment")),
-                        resultSet.getDouble("count") / resultSet.getDouble("total_count"))).stream()
+                        "SELECT sentiment, count, SUM(count) OVER () AS total_count " +
+                                "FROM (" +
+                                "         SELECT sentiment, COUNT(id) AS count " +
+                                "         FROM applications " +
+                                "         WHERE sentiment IS NOT NULL " +
+                                "         GROUP BY sentiment " +
+                                "     ) AS subquery",
+                        (resultSet, rowNumber) -> Map.entry(
+                                Sentiment.valueOf(resultSet.getString("sentiment")),
+                                resultSet.getDouble("count") / resultSet.getDouble("total_count"))).stream()
                 .collect(toMap(Entry::getKey, Entry::getValue));
     }
 
@@ -310,7 +311,7 @@ public class ApplicationRepository {
                             .map(Status::valueFor)
                             .orElse(null))
                     .build();
-        }
+        };
     }
 
 }
