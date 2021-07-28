@@ -7,16 +7,14 @@ import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.springframework.stereotype.*;
-
-import java.util.*;
+import org.springframework.stereotype.Component;
 
 import static java.util.Optional.ofNullable;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.*;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 
 @Component
-public class CountyParser{
+public class CountyParser {
     private final FeatureFlagConfiguration featureFlagConfiguration;
     private final CityInfoConfiguration cityInfoConfiguration;
 
