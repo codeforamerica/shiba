@@ -1,6 +1,8 @@
 package org.codeforamerica.shiba.pages;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
@@ -540,6 +542,15 @@ public class PageController {
         if (applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
                 file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
             String s3FilePath = String.format("%s/%s", applicationData.getId(), UUID.randomUUID());
+            if (type.contains("pdf")) {
+                try (PDDocument pdfFile = PDDocument.load(file.getBytes())) {
+                    if (pdfFile.getDocumentCatalog().getAcroForm().xfaIsDynamic()) {
+                        throw new RuntimeException("The PDF is Dynamic XFA."); //Todo can we throw another type of exception
+                    }
+                } catch (InvalidPasswordException e) {
+                    throw e;
+                }
+            }
             combinedDocumentRepositoryService.uploadConcurrently(s3FilePath, file);
             applicationData.addUploadedDoc(file, s3FilePath, dataURL, type);
         }

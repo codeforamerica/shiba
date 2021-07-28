@@ -307,7 +307,13 @@
 
         },
         error: function (file, errorMessage, xhr) {
-            file.previewElement.getElementsByClassName("text--error")[0].innerText = errorMessage.error ? errorMessage.error : errorMessage;
+            if (errorMessage.message === "Cannot decrypt PDF, the password is incorrect") {
+                file.previewElement.getElementsByClassName("text--error")[0].innerText = [[#{upload-documents.this-pdf-is-password-protected}]]
+            } else if (errorMessage.message === "The PDF is Dynamic XFA.") {
+                file.previewElement.getElementsByClassName("text--error")[0].innerText = [[#{upload-documents.this-pdf-is-in-an-old-format}]]
+            } else {
+                file.previewElement.getElementsByClassName("text--error")[0].innerText = errorMessage.error ? errorMessage.error : errorMessage;
+            }
             file.previewElement.classList.add("form-group--error");
 
             var removeLink = file.previewElement.getElementsByClassName("dz-remove")[0];

@@ -1,13 +1,9 @@
 package org.codeforamerica.shiba.journeys;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
-import org.codeforamerica.shiba.testutilities.AbstractBasePageTest;
-import org.codeforamerica.shiba.testutilities.TestUtils;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.documents.CombinedDocumentRepositoryService;
-import org.codeforamerica.shiba.testutilities.SuccessPage;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.emails.MailGunEmailClient;
@@ -15,10 +11,14 @@ import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.pages.enrichment.smartystreets.SmartyStreetClient;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
+import org.codeforamerica.shiba.testutilities.AbstractBasePageTest;
+import org.codeforamerica.shiba.testutilities.SuccessPage;
+import org.codeforamerica.shiba.testutilities.TestUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.ArgumentCaptor;
+import org.openqa.selenium.WebElement;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
@@ -202,5 +202,10 @@ abstract class JourneyTest extends AbstractBasePageTest {
 
         assertThat(testPage.getTitle()).isEqualTo("Delete a file");
         testPage.clickButton("Yes, delete the file");
+    }
+
+    protected void waitForErrorMessage() {
+        WebElement errorMessage = driver.findElementByClassName("text--error");
+        await().until(() -> !errorMessage.getText().isEmpty());
     }
 }
