@@ -39,7 +39,7 @@ public class ResubmissionService {
         this.pdfGenerator = pdfGenerator;
     }
 
-    @Scheduled(fixedDelayString = "${resubmission.interval.milliseconds}")
+    //@Scheduled(fixedDelayString = "${resubmission.interval.milliseconds}")
     public void resubmitFailedApplications() {
         log.info("Resubmitting applications that failed to send");
         Map<Document, List<String>> documentsToIds = applicationRepository.getApplicationIdsToResubmit();
