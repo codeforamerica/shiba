@@ -234,9 +234,6 @@ public class MailGunEmailClient implements EmailClient {
         MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
         form.put("from", List.of(senderEmail));
         form.put("to", List.of(recipientEmail));
-        if (shouldCC) {
-            form.put("cc", List.of(resubmissionEmail));
-        }
         form.put("subject", List.of("MN Benefits Application %s Resubmission".formatted(application.getId())));
         form.put("html", List.of(emailContentCreator.createResubmitEmailContent(document, locale)));
         form.put("attachment", List.of(asResource(applicationFile)));
