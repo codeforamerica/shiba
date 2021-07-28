@@ -316,6 +316,7 @@ class MailingAddressStreetMapperTest {
         List<String> expectedCityInput = List.of("Ada");
         List<String> expectedZipcodeInput = List.of("12345");
         ApplicationData applicationData = new TestApplicationDataBuilder()
+                .isHomeless()
                 .withPageData("cityForGeneralDelivery", "whatIsTheCity", expectedCityInput)
                 .withPageData("cityForGeneralDelivery", "enrichedZipcode", expectedZipcodeInput)
                 .build();

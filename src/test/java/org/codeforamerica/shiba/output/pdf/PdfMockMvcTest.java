@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.output.pdf;
 
-import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
 import org.codeforamerica.shiba.pages.enrichment.Address;
+import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static org.codeforamerica.shiba.output.caf.CoverPageInputsMapper.CHILDCARE_WAITING_LIST_UTM_SOURCE;
 import static org.codeforamerica.shiba.testutilities.TestUtils.assertPdfFieldEquals;
 import static org.codeforamerica.shiba.testutilities.TestUtils.assertPdfFieldIsEmpty;
-import static org.codeforamerica.shiba.output.caf.CoverPageInputsMapper.CHILDCARE_WAITING_LIST_UTM_SOURCE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -547,27 +547,28 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
             @Test
             void shouldMapToOriginalMailingAddressIfSameMailingAddressIsFalseAndUseEnrichedAddressIsFalse() throws
                     Exception {
-                postExpectingSuccess("homeAddress", Map.of(
+                postExpectingSuccess("homeAddress2", Map.of(
+                        "isHomeless", List.of(""),
                         "streetAddress", List.of("originalHomeStreetAddress"),
                         "apartmentNumber", List.of("originalHomeApt"),
                         "city", List.of("originalHomeCity"),
                         "zipCode", List.of("54321"),
                         "state", List.of("MN"),
-                        "sameMailingAddress", List.of("false") // THE KEY DIFFERENCE
+                        "sameMailingAddress", List.of("") // THE KEY DIFFERENCE
                 ));
-                postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "false");
                 String originalStreetAddress = "originalStreetAddress";
                 String originalApt = "originalApt";
                 String originalCity = "originalCity";
                 String originalState = "IL";
-                postExpectingSuccess("mailingAddress", Map.of(
+                postExpectingSuccess("mailingAddress2", Map.of(
                         "streetAddress", List.of(originalStreetAddress),
                         "apartmentNumber", List.of(originalApt),
                         "city", List.of(originalCity),
                         "zipCode", List.of("54321"),
-                        "state", List.of(originalState)
+                        "state", List.of(originalState),
+                        "sameMailingAddress", List.of("false") // THE KEY DIFFERENCE
                 ));
-                postExpectingSuccess("verifyMailingAddress", "useEnrichedAddress", "false");
+                postExpectingSuccess("verifyMailingAddress2", "useEnrichedAddress", "false");
 
                 var caf = submitAndDownloadCaf();
                 var ccap = downloadCcap();
