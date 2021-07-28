@@ -8,5 +8,6 @@ public class XfaException extends RuntimeException{
 
     public XfaException() {
         super("The PDF is Dynamic XFA.");
+
     }
 }
