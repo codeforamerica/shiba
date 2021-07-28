@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 
@@ -20,13 +19,13 @@ public class DocumentUploadJourneyTest extends JourneyTest {
     void whenDocumentUploadFailsThenThereShouldBeAnError() throws InterruptedException {
         getToDocumentUploadScreen();
         uploadXfaFormatPdf();
-        await().until(() -> !driver.findElementByClassName("text--error").getText().isEmpty());
+        waitForErrorMessage();
         assertThat(driver.findElementsByClassName("text--error").get(0).getText())
                 .contains("This PDF is in an old format. Try converting it to an image or uploading a screenshot instead.");
         testPage.clickLink("remove");
 
         uploadPasswordProtectedPdf();
-        await().until(() -> !driver.findElementByClassName("text--error").getText().isEmpty());
+        waitForErrorMessage();
         assertThat(driver.findElementsByClassName("text--error").get(0).getText())
                 .contains("This PDF is password protected. Try removing the password or uploading a screenshot instead.");
         testPage.clickLink("remove");
@@ -38,9 +37,8 @@ public class DocumentUploadJourneyTest extends JourneyTest {
 
         List<WebElement> deleteLinks = driver.findElements(By.linkText("delete"));
         assertThat(deleteLinks.size()).isEqualTo(0);
-        WebElement errorMessage = driver.findElementByClassName("text--error");
-        await().until(() -> !errorMessage.getText().isEmpty());
-        assertThat(errorMessage.getText()).isEqualTo("Internal Server Error");
+        waitForErrorMessage();
+        assertThat(driver.findElementsByClassName("text--error").get(0).getText()).isEqualTo("Internal Server Error");
     }
 
     @Test

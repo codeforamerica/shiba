@@ -8,6 +8,10 @@ spring:
   main:
     allow-bean-definition-overriding: true
 
+server:
+  error:
+    include-message: always
+
 client:
   keystore: src/test/resources/test-keystore.jks
   truststore: src/test/resources/test-truststore.jks
