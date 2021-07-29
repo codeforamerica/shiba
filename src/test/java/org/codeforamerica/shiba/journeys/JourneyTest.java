@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.ArgumentCaptor;
+import org.openqa.selenium.WebElement;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
@@ -199,5 +200,10 @@ abstract class JourneyTest extends AbstractBasePageTest {
 
         assertThat(testPage.getTitle()).isEqualTo("Delete a file");
         testPage.clickButton("Yes, delete the file");
+    }
+
+    protected void waitForErrorMessage() {
+        WebElement errorMessage = driver.findElementByClassName("text--error");
+        await().until(() -> !errorMessage.getText().isEmpty());
     }
 }
