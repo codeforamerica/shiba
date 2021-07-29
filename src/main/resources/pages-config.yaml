@@ -3245,23 +3245,30 @@ workflow:
     nextPages:
       - pageName: supportAndCare
     skipCondition:
-      logicalOperator: AND
+      logicalOperator: OR
       conditions:
-        - pageName: medicalExpenses
-          input: medicalExpenses
-          value: MEDICAL_INSURANCE_PREMIUMS
-          matcher: DOES_NOT_CONTAIN
-        - pageName: medicalExpenses
-          input: medicalExpenses
-          value: DENTAL_INSURANCE_PREMIUMS
-          matcher: DOES_NOT_CONTAIN
-        - pageName: medicalExpenses
-          input: medicalExpenses
-          value: VISION_INSURANCE_PREMIUMS
-          matcher: DOES_NOT_CONTAIN
+        - conditions:
+            - *noOneChoseCCAP?
+            - *noOneChoseSNAP?
+        - conditions:
+            - pageName: medicalExpenses
+              input: medicalExpenses
+              value: MEDICAL_INSURANCE_PREMIUMS
+              matcher: DOES_NOT_CONTAIN
+            - pageName: medicalExpenses
+              input: medicalExpenses
+              value: DENTAL_INSURANCE_PREMIUMS
+              matcher: DOES_NOT_CONTAIN
+            - pageName: medicalExpenses
+              input: medicalExpenses
+              value: VISION_INSURANCE_PREMIUMS
+              matcher: DOES_NOT_CONTAIN
     datasources:
       - pageName: medicalExpenses
       - pageName: addHouseholdMembers
+      - pageName: householdMemberInfo
+        groupName: household
+      - pageName: choosePrograms
   supportAndCare:
     pageConfiguration: *supportAndCare
     nextPages:

@@ -17,6 +17,9 @@ public abstract class AddressEnrichment implements Enrichment {
     @Override
     public EnrichmentResult process(PagesData pagesData) {
         Address address = parseAddress(pagesData);
+        if (address.getStreet() == null) {
+            return new EnrichmentResult();
+        }
         return locationClient.validateAddress(address)
                 .map(validatedAddress -> Map.of(
                         "enrichedStreetAddress", new InputData(List.of(validatedAddress.getStreet())),
