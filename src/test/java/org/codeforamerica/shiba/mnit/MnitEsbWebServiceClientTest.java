@@ -36,7 +36,7 @@ import static org.springframework.ws.test.client.RequestMatchers.xpath;
 import static org.springframework.ws.test.client.ResponseCreators.withException;
 import static org.springframework.ws.test.client.ResponseCreators.withSoapEnvelope;
 
-@SpringBootTest(properties = {"mnit-esb.url=some-url", "mnit-esb.username=someUsername", "mnit-esb.password=somePassword"})
+@SpringBootTest
 @ActiveProfiles("test")
 class MnitEsbWebServiceClientTest {
     @Autowired
