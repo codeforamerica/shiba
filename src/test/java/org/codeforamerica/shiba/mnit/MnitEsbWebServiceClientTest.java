@@ -92,11 +92,11 @@ class MnitEsbWebServiceClientTest {
     void sendsTheDocument() {
         mockWebServiceServer.expect(connectionTo(url))
                 .andExpect(xpath("//ns2:createDocument/ns2:folderId", namespaceMapping)
-                        .evaluatesTo("workspace://SpacesStore/olmsted-folder-id"))
+                        .evaluatesTo("workspace://SpacesStore/6875aa2f-8852-426f-a618-d394b9a32be5"))
                 .andExpect(xpath("//ns2:createDocument/ns2:properties/ns2:propertyString[@ns2:name='Name']/ns2:value", namespaceMapping)
                         .evaluatesTo(fileName))
                 .andExpect(xpath("//ns2:createDocument/ns2:properties/ns2:propertyString[@ns2:name='dhsProviderId']/ns2:value", namespaceMapping)
-                        .evaluatesTo("olmsted-dhs-provider-id"))
+                        .evaluatesTo("A000055800"))
                 .andExpect(xpath("//ns2:createDocument/ns2:repositoryId", namespaceMapping)
                         .evaluatesTo("<Unknown"))
                 .andExpect(xpath("//ns2:createDocument/ns2:typeId", namespaceMapping)
