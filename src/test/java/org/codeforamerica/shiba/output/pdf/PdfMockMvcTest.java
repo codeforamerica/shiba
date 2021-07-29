@@ -389,7 +389,6 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
             postExpectingSuccess("livingSituation", "livingSituation", "UNKNOWN");
 
-
             var caf = submitAndDownloadCaf();
             var ccap = downloadCcap();
 
@@ -496,12 +495,12 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
             @Test
             void shouldMapCoverPageCountyInstructionsCorrectlyForHennepin() throws Exception {
-                testThatCorrectCountyInstructionsAreDisplayed("Minneapolis", "55401", "This application was submitted to Hennepin County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.<br><br>For more support, you can call Hennepin County at 612-596-1300.");
+                testThatCorrectCountyInstructionsAreDisplayed("Minneapolis", "55401", "This application was submitted to Hennepin County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Hennepin County at 612-596-1300.");
             }
 
             @Test
             void shouldMapCoverPageCountyInstructionsCorrectlyForOlmsted() throws Exception {
-                testThatCorrectCountyInstructionsAreDisplayed("Oronoco", "55960", "This application was submitted to Olmsted County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.<br><br>For more support, you can call Olmsted County at 507-328-6500.");
+                testThatCorrectCountyInstructionsAreDisplayed("Oronoco", "55960", "This application was submitted to Olmsted County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Olmsted County at 507-328-6500.");
             }
 
             @Test
@@ -511,17 +510,17 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
             @Test
             void shouldMapCoverPageCountyInstructionsCorrectlyForWright() throws Exception {
-                testThatCorrectCountyInstructionsAreDisplayed("Waverly", "55390", "This application was submitted to Wright County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.<br><br>For more support, you can call Wright County at 763-682-7414.");
+                testThatCorrectCountyInstructionsAreDisplayed("Waverly", "55390", "This application was submitted to Wright County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Wright County at 763-682-7414.");
             }
 
             @Test
             void shouldMapCoverPageCountyInstructionsCorrectlyForCountiesThatUseTheGenericInstructions() throws Exception {
-                testThatCorrectCountyInstructionsAreDisplayed("Little Falls", "56345", "This application was submitted to Morrison County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.<br><br>For more support, you can call Morrison County at 320-631-3599.");
+                testThatCorrectCountyInstructionsAreDisplayed("Little Falls", "56345", "This application was submitted to Morrison County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Morrison County at 320-631-3599.");
             }
 
             @Test
             void shouldMapCoverPageCountyInstructionsCorrectlyForOtherCountiesThatUseTheGenericInstructions() throws Exception {
-                testThatCorrectCountyInstructionsAreDisplayed("Dodge Center", "55927", "This application was submitted to Dodge County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.<br><br>For more support, you can call Dodge County at 507-431-5600.");
+                testThatCorrectCountyInstructionsAreDisplayed("Dodge Center", "55927", "This application was submitted to Dodge County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Dodge County at 507-431-5600.");
             }
 
             @Test
