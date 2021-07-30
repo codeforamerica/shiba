@@ -25,6 +25,7 @@ public class FilterConfig {
                 "/remove-upload/*",
                 "/submit",
                 "/submit-feedback",
+                "/submit-documents",
                 "/download-caf/*",
                 "/download-ccap/*",
                 "/metrics"
