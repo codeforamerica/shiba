@@ -218,10 +218,21 @@ public class FullFlowJourneyTest extends JourneyTest {
         // Expenses & Deductions
         testPage.clickContinue();
 
+        // Does anyone in your household pay for room and board?
+        testPage.enter("homeExpenses", "Room and Board");
+        testPage.clickContinue();
+        assertThat(testPage.getTitle()).isEqualTo("Home expenses amount");
+        // Make sure the header says room and board
+        assertThat(testPage.getHeader()).isEqualTo("How much does your household pay for room and board every month?");
+
+        testPage.goBack();
+
         // Does anyone in your household pay for any of these?
         testPage.enter("homeExpenses", "Rent");
         testPage.enter("homeExpenses", "Mortgage");
         testPage.clickContinue();
+        // Make sure the header includes all three selections
+        assertThat(testPage.getHeader()).isEqualTo("How much does your household pay for rent, mortgage and room and board every month?");
 
         // How much does your household pay for your rent and mortgage every month?
         testPage.enter("homeExpensesAmount", "123321.50");
@@ -486,7 +497,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCafFieldEquals("HOMEOWNERS_INSURANCE", "No");
         assertCafFieldEquals("REAL_ESTATE_TAXES", "No");
         assertCafFieldEquals("ASSOCIATION_FEES", "No");
-        assertCafFieldEquals("ROOM_AND_BOARD", "No");
+        assertCafFieldEquals("ROOM_AND_BOARD", "Yes");
         assertCafFieldEquals("RECEIVED_LIHEAP", "Yes");
         assertCafFieldEquals("REGISTER_TO_VOTE", "Yes");
         assertCafFieldEquals("SELF_EMPLOYED", "Yes");
