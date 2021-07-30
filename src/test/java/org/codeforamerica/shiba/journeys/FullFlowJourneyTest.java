@@ -338,7 +338,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCcapFieldEquals("DATE_OF_BIRTH_0", "09/14/1950");
         assertCcapFieldEquals("SSN_0", "XXX-XX-XXXX");
         assertCcapFieldEquals("COUNTY_INSTRUCTIONS",
-                              "This application was submitted. A caseworker at Hennepin County will help route your application to your county. For more support with your application, you can call Hennepin County at 612-596-1300.");
+                "This application was submitted. A caseworker at Hennepin County will help route your application to your county. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed. For more support with your application, you can call Hennepin County at 612-596-1300.");
         assertCcapFieldEquals("PROGRAMS", "SNAP, CASH, CCAP, EA, GRH");
         assertCcapFieldEquals("FULL_NAME", "Ahmed St. George");
         assertCcapFieldEquals("UTM_SOURCE", "");
@@ -456,7 +456,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCafFieldEquals("DATE_OF_BIRTH_0", "09/14/1950");
         assertCafFieldEquals("SSN_0", "XXX-XX-XXXX");
         assertCafFieldEquals("COUNTY_INSTRUCTIONS",
-                             "This application was submitted. A caseworker at Hennepin County will help route your application to your county. For more support with your application, you can call Hennepin County at 612-596-1300.");
+                "This application was submitted. A caseworker at Hennepin County will help route your application to your county. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed. For more support with your application, you can call Hennepin County at 612-596-1300.");
         assertCafFieldEquals("PROGRAMS", "SNAP, CASH, CCAP, EA, GRH");
         assertCafFieldEquals("FULL_NAME", "Ahmed St. George");
         assertCafFieldEquals("FULL_NAME_0", householdMemberFullName);
@@ -627,7 +627,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertThat(driver.findElementById("drag-and-drop-box").getAttribute("class")).contains(
                 "drag-and-drop-box-compact");
         assertThat(driver.findElementById("upload-button")
-                           .getAttribute("class")).contains("grid--item width-one-third");
+                .getAttribute("class")).contains("grid--item width-one-third");
         assertThat(driver.findElementById("vertical-header-desktop").getAttribute("class")).contains("hidden");
         assertThat(driver.findElementById("vertical-header-mobile").getAttribute("class")).contains("hidden");
         assertThat(driver.findElementById("horizontal-header-desktop").getAttribute("class")).doesNotContain("hidden");

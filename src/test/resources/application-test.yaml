@@ -37,3 +37,6 @@ mnit-esb:
   delay: 1
   multiplier: 1
   max-delay: 1
+  url: some-url
+  username: someUsername
+  password: somePassword

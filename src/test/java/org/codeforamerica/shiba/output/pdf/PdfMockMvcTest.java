@@ -387,7 +387,6 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
             postExpectingSuccess("livingSituation", "livingSituation", "UNKNOWN");
 
-
             var caf = submitAndDownloadCaf();
             var ccap = downloadCcap();
 
@@ -489,22 +488,37 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
             @Test
             void shouldMapDefaultCoverPageCountyInstructionsIfCountyIsFlaggedOff() throws Exception {
-                String originalStreetAddress = "2168 7th Ave";
-                String originalCity = "Anoka";
-                String originalZipCode = "55303";
-                postExpectingSuccess("homeAddress", Map.of(
-                        "streetAddress", List.of(originalStreetAddress),
-                        "city", List.of(originalCity),
-                        "zipCode", List.of(originalZipCode),
-                        "state", List.of("MN"),
-                        "sameMailingAddress", List.of("true") // THE KEY DIFFERENCE
-                ));
-                postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "false");
+                testThatCorrectCountyInstructionsAreDisplayed("Anoka", "55303", "This application was submitted. A caseworker at Hennepin County will help route your application to your county. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed. For more support with your application, you can call Hennepin County at 612-596-1300.");
+            }
 
-                var ccap = submitAndDownloadCcap();
-                assertPdfFieldEquals("COUNTY_INSTRUCTIONS",
-                        "This application was submitted. A caseworker at Hennepin County will help route your application to your county. For more support with your application, you can call Hennepin County at 612-596-1300.",
-                        ccap);
+            @Test
+            void shouldMapCoverPageCountyInstructionsCorrectlyForHennepin() throws Exception {
+                testThatCorrectCountyInstructionsAreDisplayed("Minneapolis", "55401", "This application was submitted to Hennepin County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Hennepin County at 612-596-1300.");
+            }
+
+            @Test
+            void shouldMapCoverPageCountyInstructionsCorrectlyForOlmsted() throws Exception {
+                testThatCorrectCountyInstructionsAreDisplayed("Oronoco", "55960", "This application was submitted to Olmsted County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Olmsted County at 507-328-6500.");
+            }
+
+            @Test
+            void shouldMapCoverPageCountyInstructionsCorrectlyForWabasha() throws Exception {
+                testThatCorrectCountyInstructionsAreDisplayed("Wabasha", "55981", "We have received your application that you submitted through MNbenefits.org. Processing your application in a timely fashion is our highest priority. We have submitted your application to an Eligibility Worker who will contact you no later than the end of the next business day to discuss your application. For questions or concerns, please contact us at 651.565.3351(collect calls accepted), toll free at 1.888.315.8815 or email us at imuinterview@co.wabasha.mn.us. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed. Thank you and have a great day!");
+            }
+
+            @Test
+            void shouldMapCoverPageCountyInstructionsCorrectlyForWright() throws Exception {
+                testThatCorrectCountyInstructionsAreDisplayed("Waverly", "55390", "This application was submitted to Wright County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Wright County at 763-682-7414.");
+            }
+
+            @Test
+            void shouldMapCoverPageCountyInstructionsCorrectlyForCountiesThatUseTheGenericInstructions() throws Exception {
+                testThatCorrectCountyInstructionsAreDisplayed("Little Falls", "56345", "This application was submitted to Morrison County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Morrison County at 320-631-3599.");
+            }
+
+            @Test
+            void shouldMapCoverPageCountyInstructionsCorrectlyForOtherCountiesThatUseTheGenericInstructions() throws Exception {
+                testThatCorrectCountyInstructionsAreDisplayed("Dodge Center", "55927", "This application was submitted to Dodge County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Dodge County at 507-431-5600.");
             }
 
             @Test
@@ -582,5 +596,19 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
                 assertPdfFieldEquals("APPLICANT_MAILING_APT_NUMBER", originalApt, caf);
             }
         }
+    }
+
+    private void testThatCorrectCountyInstructionsAreDisplayed(String city, String zip, String expectedCountyInstructions) throws Exception {
+        postExpectingSuccess("homeAddress", Map.of(
+                "streetAddress", List.of("2168 7th Ave"),
+                "city", List.of(city),
+                "zipCode", List.of(zip),
+                "state", List.of("MN"),
+                "sameMailingAddress", List.of("true")
+        ));
+        postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "false");
+
+        var ccap = submitAndDownloadCcap();
+        assertPdfFieldEquals("COUNTY_INSTRUCTIONS", expectedCountyInstructions, ccap);
     }
 }
