@@ -63,6 +63,10 @@ public class Page {
         clickButton("Continue");
     }
 
+    public void doubleClickContinue() {
+        doubleClickButton("Continue");
+    }
+
     public void enter(String inputName, String value) {
         checkForBadMessageKeys();
         List<WebElement> formInputElements = driver.findElements(By.name(inputName + "[]"));

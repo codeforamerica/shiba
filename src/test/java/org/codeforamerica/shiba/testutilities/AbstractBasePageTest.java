@@ -139,25 +139,6 @@ public abstract class AbstractBasePageTest {
         testPage.enter("moveToMnDate", "02/18/1776");
     }
 
-    protected void fillOutContactInfo() {
-        testPage.enter("phoneNumber", "7234567890");
-        testPage.enter("phoneOrEmail", "Text me");
-    }
-
-    protected Boolean allPdfsHaveBeenDownloaded() {
-        File[] listFiles = path.toFile().listFiles();
-        List<String> documentNames = Arrays.stream(Objects.requireNonNull(listFiles))
-                .map(File::getName)
-                .collect(Collectors.toList());
-
-        Function<Document, Boolean> expectedPdfExists = expectedPdfName -> documentNames.stream()
-                .anyMatch(documentName ->
-                        documentName.contains("_MNB_") && documentName.endsWith(".pdf") &&
-                                documentName.contains(expectedPdfName.toString())
-                );
-        return List.of(CAF, CCAP).stream().allMatch(expectedPdfExists::apply);
-    }
-
     protected void getToPersonalInfoScreen(List<String> programSelections) {
         testPage.clickButton("Apply now");
         testPage.clickContinue();
@@ -406,13 +387,6 @@ public abstract class AbstractBasePageTest {
         testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
         testPage.enter("isUsCitizen", YES.getDisplayValue());
         testPage.enter("hasDisability", NO.getDisplayValue());
-    }
-
-    protected void completeDocumentUploadFlow() {
-        testPage.clickElementById("drag-and-drop-box");
-        uploadJpgFile();
-        waitForDocumentUploadToComplete();
-        testPage.clickButton("Submit my documents");
     }
 
     protected void uploadFile(String filepath) {

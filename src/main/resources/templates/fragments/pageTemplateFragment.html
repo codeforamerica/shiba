@@ -21,11 +21,11 @@
 
                 <div class="grid__item spacing-below-60">
                     <!--Form page-->
-                    <form th:if="${page.inputs != null && !page.inputs.isEmpty()}" autocomplete="off" method="post" th:action="@{${postTo}}">
+                    <form id="page-form" th:if="${page.inputs != null && !page.inputs.isEmpty()}" autocomplete="off" method="post" th:action="@{${postTo}}">
                         <div th:each="input: ${page.inputs}">
                             <div th:replace="'fragments/input-with-followups' :: input-with-followups(${input}, ${data})"></div>
                         </div>
-                        <button th:if="${page.hasPrimaryButton}" class="button button--primary" type="submit"
+                        <button id="form-submit-button" th:if="${page.hasPrimaryButton}" class="button button--primary" type="submit"
                                 th:text="#{${page.primaryButtonTextKey}}"></button>
                     </form>
 

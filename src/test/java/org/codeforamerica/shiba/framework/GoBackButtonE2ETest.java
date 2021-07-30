@@ -15,7 +15,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"pagesConfig=pages-config/test-conditional-rendering.yaml"})
 @Tag("framework")
-public class GoBackButtonTest extends AbstractExistingStartTimePageTest {
+public class GoBackButtonE2ETest extends AbstractExistingStartTimePageTest {
     private final String firstPageTitle = "firstPageTitle";
     private final String secondPageTitle = "secondPageTitle";
     private final String thirdPageTitle = "thirdPageTitle";
