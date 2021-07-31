@@ -16,7 +16,8 @@
                 </div>
                 <form method="post"
                       th:action="'/remove-upload/'+${filename}">
-                    <button class="button button--primary" type="submit"
+                    <button id="form-submit-button"
+                            class="button button--primary" type="submit"
                             th:text="#{upload-documents-delete-warning.yes-delete-the-file}"></button>
                 </form>
                 <a class="button" th:href="'/pages/'+${pageName}+'/navigation?option=0'"

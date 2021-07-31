@@ -20,7 +20,8 @@
                 </div>
                 <form method="post"
                       th:action="'/groups/'+${subworkflows.keySet().iterator().next()}+'/'+${param.iterationIndex}+'/delete'">
-                    <button class="button button--primary" type="submit"
+                    <button id="form-submit-button"
+                            class="button button--primary" type="submit"
                             th:text="#{warning-page.yes-remove-the-job}"></button>
                 </form>
                 <a class="button" th:href="'/pages/'+${pageName}+'/navigation?option=0'"

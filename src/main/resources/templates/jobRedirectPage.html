@@ -17,7 +17,7 @@
                        th:text="#{warning-page.no-keep-id-rather-keep-going}"></a>
                 </div>
                 <form method="post" th:action="'/groups/'+${subworkflows.keySet().iterator().next()}+'/delete'">
-                    <button class="button" type="submit" th:text="#{warning-page.yes-go-back-to-the-start}"></button>
+                    <button id="form-submit-button" class="button" type="submit" th:text="#{warning-page.yes-go-back-to-the-start}"></button>
                 </form>
             </div>
         </div>
