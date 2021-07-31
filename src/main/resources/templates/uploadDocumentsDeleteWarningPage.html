@@ -14,7 +14,7 @@
                     <h1 class="long-file-name h2" th:text="#{${page.headerKey}(${filename})}"></h1>
                     <h2 th:text="#{warning-page.is-that-ok}"></h2>
                 </div>
-                <form method="post"
+                <form id="page-form" method="post"
                       th:action="'/remove-upload/'+${filename}">
                     <button id="form-submit-button"
                             class="button button--primary" type="submit"

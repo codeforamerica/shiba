@@ -18,7 +18,7 @@
                         th:text="#{${page.headerKey}(${employerName}, ${T(org.codeforamerica.shiba.output.FullNameFormatter).format(householdMemberName)})}"></h1>
                     <h1 class="h2" th:text="#{warning-page.is-that-ok}"></h1>
                 </div>
-                <form method="post"
+                <form id="page-form" method="post"
                       th:action="'/groups/'+${subworkflows.keySet().iterator().next()}+'/'+${param.iterationIndex}+'/delete'">
                     <button id="form-submit-button"
                             class="button button--primary" type="submit"

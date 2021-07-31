@@ -69,7 +69,7 @@
                         <label th:text="#{success.how-was-your-experience-filling-out-the-combined-benefits-application}"
                                for="feedback-textarea"></label>
                     </h2>
-                    <form method="post" th:action="'/submit-feedback'">
+                    <form id="page-form" method="post" th:action="'/submit-feedback'">
                         <div th:if="${sentiment == null}" class="feedback-buttons-group spacing-below-25">
                             <input type="radio" class="hide-radio-circle" id="happy" name="sentiment" value="HAPPY">
                             <label class="feedback-buttons" for="happy">
