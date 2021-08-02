@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.pages;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
@@ -21,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
@@ -535,7 +537,7 @@ public class PageController {
 
     @PostMapping("/document-upload")
     @ResponseStatus(HttpStatus.OK)
-    public void upload(@RequestParam("file") MultipartFile file,
+    public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file,
                        @RequestParam("dataURL") String dataURL,
                        @RequestParam("type") String type) throws IOException, InterruptedException {
         if (applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
@@ -544,13 +546,17 @@ public class PageController {
             if (type.contains("pdf")) {
                 try (PDDocument pdfFile = PDDocument.load(file.getBytes())) {
                     if (pdfFile.getDocumentCatalog().getAcroForm().xfaIsDynamic()) {
-                        throw new XfaException();
+                        return new ResponseEntity<>("An XFA formatted PDF was uploaded.", HttpStatus.UNPROCESSABLE_ENTITY);
                     }
+                } catch (InvalidPasswordException e) {
+                    return new ResponseEntity<>("A password protected PDF was uploaded.", HttpStatus.UNPROCESSABLE_ENTITY);
                 }
             }
             combinedDocumentRepositoryService.uploadConcurrently(s3FilePath, file);
             applicationData.addUploadedDoc(file, s3FilePath, dataURL, type);
         }
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/submit-documents")
