@@ -6,7 +6,7 @@
     </div>
     <form method="post"
           th:action="'/groups/'+${subworkflows.keySet().iterator().next()}+'/'+${param.iterationIndex}+'/delete'">
-        <button class="button button--primary" type="submit"
+        <button id="form-submit-button" class="button button--primary" type="submit"
                 th:text="#{warning-page.yes-remove-them}"></button>
     </form>
 </div>

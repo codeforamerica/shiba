@@ -78,4 +78,8 @@ var noneOfTheAbove = (function() {
 $(document).ready(function () {
     followUpQuestion.init();
     noneOfTheAbove.init();
+    $("#page-form").submit(function () {
+        $("#form-submit-button").addClass("button--disabled");
+        return true;
+    });
 });
