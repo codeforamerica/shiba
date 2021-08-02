@@ -314,10 +314,6 @@ form .drag-and-drop-box-compact {
         user-select: none;
     }
 
-    .drag-and-drop-box * {
-        pointer-events: none;
-    }
-
     .card {
         margin-bottom: 6rem;
         padding: 6rem 16rem;
