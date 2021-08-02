@@ -358,9 +358,9 @@ form .drag-and-drop-box-compact {
     background-color: #003865;
     padding: 1rem;
     color: #FFF;
-    -webkit-box-shadow: 0 8px 6px -6px gray;
-    -moz-box-shadow: 0 8px 6px -6px gray;
-    box-shadow: 0 8px 6px -6px gray;
+    -webkit-box-shadow: 0 3px 0px 0px #7f9bb1;
+    -moz-box-shadow: 0 3px 0px 0px #7f9bb1;
+    box-shadow: 0 3px 0px 0px #7f9bb1;
     line-height: 6rem;
     margin-right: 0;
 }
