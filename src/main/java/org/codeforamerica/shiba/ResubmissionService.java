@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba;
 
 import lombok.extern.slf4j.Slf4j;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.documents.CombinedDocumentRepositoryService;
@@ -39,7 +40,8 @@ public class ResubmissionService {
         this.pdfGenerator = pdfGenerator;
     }
 
-    @Scheduled(fixedDelayString = "${resubmission.interval.milliseconds}")
+    /*@Scheduled(fixedDelayString = "${resubmission.interval.milliseconds}")
+    @SchedulerLock(name = "resubmissionTask", lockAtMostFor = "30m")*/
     public void resubmitFailedApplications() {
         log.info("Resubmitting applications that failed to send");
         Map<Document, List<String>> documentsToIds = applicationRepository.getApplicationIdsToResubmit();

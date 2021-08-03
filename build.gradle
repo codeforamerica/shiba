@@ -102,7 +102,7 @@ dependencies {
     implementation 'io.sentry:sentry-logback:5.0.1'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'com.google.crypto.tink:tink:1.6.1'
-    implementation 'org.flywaydb:flyway-core:7.11.4'
+    implementation 'org.flywaydb:flyway-core:7.12.0'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'com.mixpanel:mixpanel-java:1.5.0'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -115,6 +115,8 @@ dependencies {
     implementation 'ch.qos.logback:logback-core:1.2.0'
     implementation 'ch.qos.logback:logback-classic:1.2.0'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
+    implementation 'net.javacrumbs.shedlock:shedlock-spring:4.25.0'
+    implementation 'net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.25.0'
 
     implementation 'org.springframework.ws:spring-ws-core'
     implementation(files(genJaxb.classesDir).builtBy(genJaxb))

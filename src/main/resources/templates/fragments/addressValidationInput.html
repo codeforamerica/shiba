@@ -36,8 +36,8 @@
                    th:checked="${foundEnrichedAddress} ? false : true">
         </label>
     </div>
-    <button th:if="${foundEnrichedAddress}" class="button button--primary" type="submit" th:text="#{general.continue}"></button>
+    <button th:if="${foundEnrichedAddress}" id="form-submit-button" class="button button--primary" type="submit" th:text="#{general.continue}"></button>
     <a th:href="'/pages/'+${pageName}+'/navigation?option=1'" th:if="${!foundEnrichedAddress}" class="button button--primary" th:text="#{address-validation.edit-my-address}"></a>
-    <button th:if="${!foundEnrichedAddress}" class="button" type="submit" th:text="#{address-validation.use-this-address}"></button>
+    <button th:if="${!foundEnrichedAddress}" id="form-submit-button" class="button" type="submit" th:text="#{address-validation.use-this-address}"></button>
 </th:block>
 </html>

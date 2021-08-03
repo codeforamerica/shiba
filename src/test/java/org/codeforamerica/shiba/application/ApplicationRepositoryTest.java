@@ -19,6 +19,7 @@ import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 import static java.time.ZoneOffset.UTC;
 import static java.util.Collections.emptyList;
@@ -222,6 +223,30 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
         assertThat(failedApplications.get(CAF)).containsExactlyInAnyOrder("someId1", "someId3");
         assertThat(failedApplications.get(CCAP)).containsExactlyInAnyOrder("someId1");
         assertThat(failedApplications.get(UPLOADED_DOC)).containsExactlyInAnyOrder("someId2", "someId3");
+    }
+
+    @Test
+    void shouldLimitTheNumberOfResubmissions() {
+        IntStream.range(0, 30).forEach(i -> {
+                    var id = "someId" + i;
+                    applicationRepository.save(Application.builder()
+                            .id(id)
+                            .applicationData(new ApplicationData())
+                            .timeToComplete(Duration.ofSeconds(1))
+                            .county(Olmsted)
+                            .flow(FlowType.FULL)
+                            .completedAt(ZonedDateTime.now(UTC).minusDays(2)) // 2 days ago
+                            .build());
+                    applicationRepository.updateStatus(id, CAF, DELIVERY_FAILED);
+                    applicationRepository.updateStatus(id, CCAP, IN_PROGRESS);
+                    applicationRepository.updateStatus(id, UPLOADED_DOC, DELIVERY_FAILED);
+                }
+        );
+
+        Map<Document, List<String>> failedApplications = applicationRepository.getApplicationIdsToResubmit();
+        assertThat(failedApplications.get(CCAP)).hasSize(10);
+        assertThat(failedApplications.get(CAF)).hasSize(10);
+        assertThat(failedApplications.get(UPLOADED_DOC)).hasSize(5);
     }
 
     @Test

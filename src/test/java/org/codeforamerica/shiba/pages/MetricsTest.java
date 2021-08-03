@@ -2,7 +2,6 @@ package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
 import org.codeforamerica.shiba.testutilities.FormPage;
-import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -25,7 +23,6 @@ public class MetricsTest extends AbstractShibaMockMvcTest {
     @BeforeEach
     protected void setUp() throws Exception {
         super.setUp();
-        when(featureFlagConfiguration.get("apply-without-address")).thenReturn(FeatureFlag.OFF);
         mockMvc.perform(get("/pages/languagePreferences").session(session)); // start timer
         postExpectingSuccess("languagePreferences", Map.of(
                 "writtenLanguage", List.of("ENGLISH"),

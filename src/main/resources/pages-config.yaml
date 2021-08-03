@@ -34,6 +34,11 @@ conditionDefinitions:
     input: homeExpenses
     value: RENT
     matcher: DOES_NOT_CONTAIN
+  - &doesNotHaveRoomAndBoard?
+    pageName: homeExpenses
+    input: homeExpenses
+    value: ROOM_AND_BOARD
+    matcher: DOES_NOT_CONTAIN
   - &hasMortgage?
     pageName: homeExpenses
     input: homeExpenses
@@ -42,6 +47,10 @@ conditionDefinitions:
     pageName: homeExpenses
     input: homeExpenses
     value: RENT
+  - &hasRoomAndBoard?
+    pageName: homeExpenses
+    input: homeExpenses
+    value: ROOM_AND_BOARD
   - &applicantChoseSNAP?
     pageName: choosePrograms
     value: SNAP
@@ -2332,13 +2341,42 @@ pageDefinitions:
     pageTitle: home-expenses-amount.title
     headerKey:
       conditionalValues:
+        - value: home-expenses-amount.how-much-do-you-pay-for-rent-mortgage-and-room-and-board-every-month
+          condition:
+            logicalOperator: AND
+            conditions:
+              - *livesAlone?
+              - *hasMortgage?
+              - *hasRent?
+              - *hasRoomAndBoard?
         - value: home-expenses-amount.how-much-do-you-pay-for-rent-every-month
+          condition:
+            logicalOperator: AND
+            conditions:
+              - *doesNotHaveMortgage?
+              - *doesNotHaveRoomAndBoard?
+              - *livesAlone?
+        - value: home-expenses-amount.how-much-do-you-pay-for-room-and-board-every-month
+          condition:
+            logicalOperator: AND
+            conditions:
+              - *doesNotHaveMortgage?
+              - *doesNotHaveRent?
+              - *livesAlone?
+        - value: home-expenses-amount.how-much-do-you-pay-for-rent-and-room-and-board-every-month
           condition:
             logicalOperator: AND
             conditions:
               - *doesNotHaveMortgage?
               - *livesAlone?
         - value: home-expenses-amount.how-much-do-you-pay-for-mortgage-every-month
+          condition:
+            logicalOperator: AND
+            conditions:
+              - *doesNotHaveRent?
+              - *doesNotHaveRoomAndBoard?
+              - *livesAlone?
+        - value: home-expenses-amount.how-much-do-you-pay-for-mortgage-and-room-and-board-every-month
           condition:
             logicalOperator: AND
             conditions:
@@ -2351,17 +2389,35 @@ pageDefinitions:
               - *livesAlone?
               - *hasRent?
               - *hasMortgage?
+        # This condition needs to come first among the household conditions in order to get evaluated correctly
+        - value: home-expenses-amount.household-pay-for-rent-mortgage-and-room-and-board-every-month
+          condition:
+            logicalOperator: AND
+            conditions:
+              - *doesNotLiveAlone?
+              - *hasRoomAndBoard?
+              - *hasRent?
+              - *hasMortgage?
         - value: home-expenses-amount.household-pay-rent-every-month
           condition:
             logicalOperator: AND
             conditions:
               - *doesNotHaveMortgage?
+              - *doesNotHaveRoomAndBoard?
+              - *doesNotLiveAlone?
+        - value: home-expenses-amount.household-pay-for-room-and-board-every-month
+          condition:
+            logicalOperator: AND
+            conditions:
+              - *doesNotHaveMortgage?
+              - *doesNotHaveRent?
               - *doesNotLiveAlone?
         - value: home-expenses-amount.household-pay-mortgage-every-month
           condition:
             logicalOperator: AND
             conditions:
               - *doesNotHaveRent?
+              - *doesNotHaveRoomAndBoard?
               - *doesNotLiveAlone?
         - value: home-expenses-amount.how-much-does-household-pay-for-rent-and-mortgage-every-month
           condition:
@@ -2370,6 +2426,20 @@ pageDefinitions:
               - *doesNotLiveAlone?
               - *hasRent?
               - *hasMortgage?
+        - value: home-expenses-amount.household-pay-for-mortgage-and-room-and-board-every-month
+          condition:
+            logicalOperator: AND
+            conditions:
+              - *doesNotLiveAlone?
+              - *hasRoomAndBoard?
+              - *hasMortgage?
+        - value: home-expenses-amount.household-pay-for-rent-and-room-and-board-every-month
+          condition:
+            logicalOperator: AND
+            conditions:
+              - *doesNotLiveAlone?
+              - *hasRoomAndBoard?
+              - *hasRent?
     inputs:
       - name: homeExpensesAmount
         type: MONEY
@@ -3183,6 +3253,9 @@ workflow:
             - pageName: homeExpenses
               input: homeExpenses
               value: MORTGAGE
+            - pageName: homeExpenses
+              input: homeExpenses
+              value: ROOM_AND_BOARD
       - pageName: utilities
     datasources:
       - pageName: addHouseholdMembers
@@ -3245,23 +3318,30 @@ workflow:
     nextPages:
       - pageName: supportAndCare
     skipCondition:
-      logicalOperator: AND
+      logicalOperator: OR
       conditions:
-        - pageName: medicalExpenses
-          input: medicalExpenses
-          value: MEDICAL_INSURANCE_PREMIUMS
-          matcher: DOES_NOT_CONTAIN
-        - pageName: medicalExpenses
-          input: medicalExpenses
-          value: DENTAL_INSURANCE_PREMIUMS
-          matcher: DOES_NOT_CONTAIN
-        - pageName: medicalExpenses
-          input: medicalExpenses
-          value: VISION_INSURANCE_PREMIUMS
-          matcher: DOES_NOT_CONTAIN
+        - conditions:
+            - *noOneChoseCCAP?
+            - *noOneChoseSNAP?
+        - conditions:
+            - pageName: medicalExpenses
+              input: medicalExpenses
+              value: MEDICAL_INSURANCE_PREMIUMS
+              matcher: DOES_NOT_CONTAIN
+            - pageName: medicalExpenses
+              input: medicalExpenses
+              value: DENTAL_INSURANCE_PREMIUMS
+              matcher: DOES_NOT_CONTAIN
+            - pageName: medicalExpenses
+              input: medicalExpenses
+              value: VISION_INSURANCE_PREMIUMS
+              matcher: DOES_NOT_CONTAIN
     datasources:
       - pageName: medicalExpenses
       - pageName: addHouseholdMembers
+      - pageName: householdMemberInfo
+        groupName: household
+      - pageName: choosePrograms
   supportAndCare:
     pageConfiguration: *supportAndCare
     nextPages:

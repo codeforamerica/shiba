@@ -17,7 +17,6 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
     @BeforeEach
     protected void setUp() throws Exception {
         super.setUp();
-        when(featureFlagConfiguration.get("apply-without-address")).thenReturn(FeatureFlag.OFF);
         mockMvc.perform(get("/pages/languagePreferences").session(session)); // start timer
         postExpectingSuccess("languagePreferences", Map.of(
                 "writtenLanguage", List.of("ENGLISH"),

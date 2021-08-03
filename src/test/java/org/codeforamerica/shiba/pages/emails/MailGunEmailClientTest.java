@@ -328,12 +328,8 @@ class MailGunEmailClientTest {
         );
     }
 
-    @ParameterizedTest
-    @ValueSource(booleans = {true, false})
-    void sendResubmitEmail(boolean shouldCC) {
-        if (shouldCC) {
-            mailGunEmailClient = new MailGunEmailClient(senderEmail, securityEmail, auditEmail, hennepinEmail, "http://localhost:" + port, mailGunApiKey, emailContentCreator, true, resubmissionEmail, pdfGenerator, activeProfile, applicationRepository);
-        }
+    @Test
+    void sendResubmitEmail() {
         wireMockServer.stubFor(post(anyUrl()).willReturn(aResponse().withStatus(200)));
 
         var fileContent = "testfile";
@@ -356,9 +352,6 @@ class MailGunEmailClientTest {
                 .withRequestBodyPart(requestBodyPart("html", emailContent))
                 .withRequestBodyPart(requestBodyPart("subject", "MN Benefits Application " + applicationId + " Resubmission"))
                 .withRequestBodyPart(attachment("filename=\"" + fileName + "\"", fileContent));
-        if (shouldCC) {
-            expectedEmailRequest.withRequestBodyPart(requestBodyPart("cc", resubmissionEmail));
-        }
         wireMockServer.verify(expectedEmailRequest);
     }
 

@@ -1,13 +1,11 @@
 package org.codeforamerica.shiba.testutilities;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.pages.enrichment.smartystreets.SmartyStreetClient;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
@@ -55,6 +53,8 @@ public abstract class AbstractBasePageTest {
 
     private static final String UPLOADED_JPG_FILE_NAME = "shiba+file.jpg";
     private static final String UPLOADED_PDF_NAME = "test-caf.pdf";
+    private static final String XFA_PDF_NAME = "xfa-invoice-example.pdf";
+    private static final String PASSWORD_PROTECTED_PDF = "password-protected.pdf";
 
     @Autowired
     protected RemoteWebDriver driver;
@@ -137,25 +137,6 @@ public abstract class AbstractBasePageTest {
         testPage.enter("sex", "Female");
         testPage.enter("livedInMnWholeLife", "Yes");
         testPage.enter("moveToMnDate", "02/18/1776");
-    }
-
-    protected void fillOutContactInfo() {
-        testPage.enter("phoneNumber", "7234567890");
-        testPage.enter("phoneOrEmail", "Text me");
-    }
-
-    protected Boolean allPdfsHaveBeenDownloaded() {
-        File[] listFiles = path.toFile().listFiles();
-        List<String> documentNames = Arrays.stream(Objects.requireNonNull(listFiles))
-                .map(File::getName)
-                .collect(Collectors.toList());
-
-        Function<Document, Boolean> expectedPdfExists = expectedPdfName -> documentNames.stream()
-                .anyMatch(documentName ->
-                        documentName.contains("_MNB_") && documentName.endsWith(".pdf") &&
-                                documentName.contains(expectedPdfName.toString())
-                );
-        return List.of(CAF, CCAP).stream().allMatch(expectedPdfExists::apply);
     }
 
     protected void getToPersonalInfoScreen(List<String> programSelections) {
@@ -408,13 +389,6 @@ public abstract class AbstractBasePageTest {
         testPage.enter("hasDisability", NO.getDisplayValue());
     }
 
-    protected void completeDocumentUploadFlow() {
-        testPage.clickElementById("drag-and-drop-box");
-        uploadJpgFile();
-        waitForDocumentUploadToComplete();
-        testPage.clickButton("Submit my documents");
-    }
-
     protected void uploadFile(String filepath) {
         testPage.clickElementById("drag-and-drop-box"); // is this needed?
         WebElement upload = driver.findElement(By.className("dz-hidden-input"));
@@ -425,6 +399,16 @@ public abstract class AbstractBasePageTest {
     protected void uploadJpgFile() {
         uploadFile(TestUtils.getAbsoluteFilepathString(UPLOADED_JPG_FILE_NAME));
         assertThat(driver.findElement(By.id("document-upload")).getText()).contains(UPLOADED_JPG_FILE_NAME);
+    }
+
+    protected void uploadXfaFormatPdf() {
+        uploadFile(TestUtils.getAbsoluteFilepathString(XFA_PDF_NAME));
+        assertThat(driver.findElement(By.id("document-upload")).getText()).contains(XFA_PDF_NAME);
+    }
+
+    protected void uploadPasswordProtectedPdf() {
+        uploadFile(TestUtils.getAbsoluteFilepathString(PASSWORD_PROTECTED_PDF));
+        assertThat(driver.findElement(By.id("document-upload")).getText()).contains(PASSWORD_PROTECTED_PDF);
     }
 
     protected void uploadPdfFile() {

@@ -184,7 +184,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         assertCafFieldEquals("WATER_SEWER_SELECTION", "NEITHER_SELECTED");
         assertCafFieldEquals("COOKING_FUEL", "No");
         assertCafFieldEquals("HAVE_SAVINGS", "Yes");
-        assertCafFieldEquals("APPLICANT_HOME_STREET_ADDRESS", homeStreetAddress + " (not permanent)");
+        assertCafFieldEquals("APPLICANT_HOME_STREET_ADDRESS", homeStreetAddress);
         assertCafFieldEquals("APPLICANT_HOME_APT_NUMBER", homeApartmentNumber);
         assertCafFieldEquals("APPLICANT_HOME_CITY", homeCity);
         assertCafFieldEquals("APPLICANT_HOME_STATE", "MN");
@@ -201,7 +201,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         // Page 1
         assertCafFieldEquals("APPLICATION_ID", applicationId);
         assertCafFieldEquals("COUNTY_INSTRUCTIONS",
-                "This application was submitted. A caseworker at Hennepin County will help route your application to your county. For more support with your application, you can call Hennepin County at 612-596-1300.");
+                "This application was submitted. A caseworker at Hennepin County will help route your application to your county. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed. For more support with your application, you can call Hennepin County at 612-596-1300.");
         assertCafFieldEquals("FULL_NAME", "Ahmed St. George");
         assertCafFieldEquals("CCAP_EXPEDITED_ELIGIBILITY", "");
         assertCafFieldEquals("APPLICANT_EMAIL", "some@example.com");

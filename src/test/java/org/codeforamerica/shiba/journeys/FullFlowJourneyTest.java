@@ -218,10 +218,21 @@ public class FullFlowJourneyTest extends JourneyTest {
         // Expenses & Deductions
         testPage.clickContinue();
 
+        // Does anyone in your household pay for room and board?
+        testPage.enter("homeExpenses", "Room and Board");
+        testPage.clickContinue();
+        assertThat(testPage.getTitle()).isEqualTo("Home expenses amount");
+        // Make sure the header says room and board
+        assertThat(testPage.getHeader()).isEqualTo("How much does your household pay for room and board every month?");
+
+        testPage.goBack();
+
         // Does anyone in your household pay for any of these?
         testPage.enter("homeExpenses", "Rent");
         testPage.enter("homeExpenses", "Mortgage");
         testPage.clickContinue();
+        // Make sure the header includes all three selections
+        assertThat(testPage.getHeader()).isEqualTo("How much does your household pay for rent, mortgage and room and board every month?");
 
         // How much does your household pay for your rent and mortgage every month?
         testPage.enter("homeExpensesAmount", "123321.50");
@@ -338,7 +349,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCcapFieldEquals("DATE_OF_BIRTH_0", "09/14/1950");
         assertCcapFieldEquals("SSN_0", "XXX-XX-XXXX");
         assertCcapFieldEquals("COUNTY_INSTRUCTIONS",
-                              "This application was submitted. A caseworker at Hennepin County will help route your application to your county. For more support with your application, you can call Hennepin County at 612-596-1300.");
+                "This application was submitted. A caseworker at Hennepin County will help route your application to your county. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed. For more support with your application, you can call Hennepin County at 612-596-1300.");
         assertCcapFieldEquals("PROGRAMS", "SNAP, CASH, CCAP, EA, GRH");
         assertCcapFieldEquals("FULL_NAME", "Ahmed St. George");
         assertCcapFieldEquals("UTM_SOURCE", "");
@@ -367,7 +378,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCcapFieldEquals("APPLICANT_SEX", "FEMALE");
         assertCcapFieldEquals("APPLICANT_PHONE_NUMBER", "(723) 456-7890");
         assertCcapFieldEquals("APPLICANT_EMAIL", "some@example.com");
-        assertCcapFieldEquals("APPLICANT_HOME_STREET_ADDRESS", "someStreetAddress (not permanent)");
+        assertCcapFieldEquals("APPLICANT_HOME_STREET_ADDRESS", "someStreetAddress");
         assertCcapFieldEquals("ADULT_REQUESTING_CHILDCARE_LOOKING_FOR_JOB_FULL_NAME_0", "");
         assertCcapFieldEquals("ADULT_REQUESTING_CHILDCARE_GOING_TO_SCHOOL_FULL_NAME_0", "");
         assertCcapFieldEquals("STUDENT_FULL_NAME_0", householdMemberFullName);
@@ -456,7 +467,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCafFieldEquals("DATE_OF_BIRTH_0", "09/14/1950");
         assertCafFieldEquals("SSN_0", "XXX-XX-XXXX");
         assertCafFieldEquals("COUNTY_INSTRUCTIONS",
-                             "This application was submitted. A caseworker at Hennepin County will help route your application to your county. For more support with your application, you can call Hennepin County at 612-596-1300.");
+                "This application was submitted. A caseworker at Hennepin County will help route your application to your county. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed. For more support with your application, you can call Hennepin County at 612-596-1300.");
         assertCafFieldEquals("PROGRAMS", "SNAP, CASH, CCAP, EA, GRH");
         assertCafFieldEquals("FULL_NAME", "Ahmed St. George");
         assertCafFieldEquals("FULL_NAME_0", householdMemberFullName);
@@ -486,7 +497,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCafFieldEquals("HOMEOWNERS_INSURANCE", "No");
         assertCafFieldEquals("REAL_ESTATE_TAXES", "No");
         assertCafFieldEquals("ASSOCIATION_FEES", "No");
-        assertCafFieldEquals("ROOM_AND_BOARD", "No");
+        assertCafFieldEquals("ROOM_AND_BOARD", "Yes");
         assertCafFieldEquals("RECEIVED_LIHEAP", "Yes");
         assertCafFieldEquals("REGISTER_TO_VOTE", "Yes");
         assertCafFieldEquals("SELF_EMPLOYED", "Yes");
@@ -568,7 +579,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertCafFieldEquals("RELATIONSHIP_0", "my child");
         assertCafFieldEquals("MARITAL_STATUS_0", "NEVER_MARRIED");
         assertCafFieldEquals("GROSS_MONTHLY_INCOME_0", "120.00");
-        assertCafFieldEquals("APPLICANT_HOME_STREET_ADDRESS", "someStreetAddress (not permanent)");
+        assertCafFieldEquals("APPLICANT_HOME_STREET_ADDRESS", "someStreetAddress");
         assertCafFieldEquals("MONEY_MADE_LAST_MONTH", "120.00");
 
         assertApplicationSubmittedEventWasPublished(applicationId, FULL, 7);
@@ -627,7 +638,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertThat(driver.findElementById("drag-and-drop-box").getAttribute("class")).contains(
                 "drag-and-drop-box-compact");
         assertThat(driver.findElementById("upload-button")
-                           .getAttribute("class")).contains("grid--item width-one-third");
+                .getAttribute("class")).contains("grid--item width-one-third");
         assertThat(driver.findElementById("vertical-header-desktop").getAttribute("class")).contains("hidden");
         assertThat(driver.findElementById("vertical-header-mobile").getAttribute("class")).contains("hidden");
         assertThat(driver.findElementById("horizontal-header-desktop").getAttribute("class")).doesNotContain("hidden");

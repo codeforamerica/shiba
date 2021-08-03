@@ -3,14 +3,16 @@ package org.codeforamerica.shiba.mnit;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.YamlPropertySourceFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.PropertySource;
 
 @Configuration
 @PropertySource(value = "classpath:county-mapping.yaml", factory = YamlPropertySourceFactory.class)
 public class CountyMapConfiguration {
-
     @Bean
-    @Profile("default")
+    @Profile({"default", "test"})
     @ConfigurationProperties(prefix = "other")
     CountyMap<MnitCountyInformation> localMapping() {
         return new CountyMap<>();

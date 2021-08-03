@@ -29,6 +29,10 @@ public class Page {
         assertThat(driver.findElementByXPath("/html").getText()).doesNotContain("??");
     }
 
+    public String getHeader() {
+        return driver.findElement(By.tagName("h1")).getText();
+    }
+
     public void goBack() {
         driver.findElement(By.partialLinkText("Go Back")).click();
     }

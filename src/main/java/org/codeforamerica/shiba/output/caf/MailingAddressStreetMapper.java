@@ -9,6 +9,7 @@ import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMapper;
 import org.codeforamerica.shiba.output.applicationinputsmappers.SubworkflowIterationScopeTracker;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
+import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +30,22 @@ public class MailingAddressStreetMapper implements ApplicationInputsMapper {
     @Override
     public List<ApplicationInput> map(Application application, Document document, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
         PagesData pagesData = application.getApplicationData().getPagesData();
+
+        // Not applicable or enough information to continue
+        if (featureFlagConfiguration.get("apply-without-address").isOff()) {
+            PageData homeAddressPageData = pagesData.get("homeAddress");
+            boolean hasInput = homeAddressPageData != null && homeAddressPageData.containsKey("sameMailingAddress");
+            if (!hasInput) {
+                return List.of();
+            }
+        } else {
+            PageData mailingAddressPageData = pagesData.get("mailingAddress");
+            boolean hasInput = mailingAddressPageData != null && mailingAddressPageData.containsKey("sameMailingAddress");
+            String generalDeliveryCityInput = getFirstValue(pagesData, GENERAL_DELIVERY_CITY);
+            if (!hasInput && generalDeliveryCityInput == null) {
+                return List.of();
+            }
+        }
 
         // Use home address for mailing
         boolean sameAsHomeAddress = Boolean.parseBoolean(getFirstValue(pagesData, featureFlagConfiguration.get("apply-without-address").isOff() ? SAME_MAILING_ADDRESS : SAME_MAILING_ADDRESS2));
