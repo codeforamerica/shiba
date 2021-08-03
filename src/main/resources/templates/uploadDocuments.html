@@ -307,9 +307,9 @@
 
         },
         error: function (file, errorMessage, xhr) {
-            if (xhr.response && xhr.response === "A password protected PDF was uploaded.") {
+            if (xhr && xhr.response && xhr.response === "A password protected PDF was uploaded.") {
                 file.previewElement.getElementsByClassName("text--error")[0].innerText = [[#{upload-documents.this-pdf-is-password-protected}]]
-            } else if (xhr.response && xhr.response === "An XFA formatted PDF was uploaded.") {
+            } else if (xhr && xhr.response && xhr.response === "An XFA formatted PDF was uploaded.") {
                 file.previewElement.getElementsByClassName("text--error")[0].innerText = [[#{upload-documents.this-pdf-is-in-an-old-format}]]
             } else {
                 file.previewElement.getElementsByClassName("text--error")[0].innerText = errorMessage.error ? errorMessage.error : errorMessage;
