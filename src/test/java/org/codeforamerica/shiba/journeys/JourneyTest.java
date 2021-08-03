@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.ArgumentCaptor;
+import org.springframework.beans.factory.annotation.Value;
 import org.openqa.selenium.WebElement;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -61,6 +62,9 @@ abstract class JourneyTest extends AbstractBasePageTest {
     @SpyBean
     protected UploadDocumentConfiguration uploadDocumentConfiguration;
 
+    @Value("${spring.datasource.url}")
+    protected String datasourceUrl;
+
     @Override
     @BeforeEach
     protected void setUp() throws IOException {
@@ -74,6 +78,11 @@ abstract class JourneyTest extends AbstractBasePageTest {
         when(featureFlagConfiguration.get("submit-via-email")).thenReturn(FeatureFlag.OFF);
         when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.OFF);
         when(featureFlagConfiguration.get("apply-without-address")).thenReturn(FeatureFlag.ON);
+        if (datasourceUrl.contains("PostgreSQL")) {
+            when(featureFlagConfiguration.get("oracle")).thenReturn(FeatureFlag.OFF);
+        } else {
+            when(featureFlagConfiguration.get("oracle")).thenReturn(FeatureFlag.ON);
+        }
         caf = null;
         ccap = null;
     }

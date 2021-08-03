@@ -2,6 +2,8 @@ spring:
   datasource:
     url: ${DATABASE_URL}
     driverClassName: org.postgresql.Driver
+  flyway:
+    enabled: false
   web:
     resources:
       cache:
@@ -20,6 +22,7 @@ mail-gun:
   shouldCC: true
 
 feature-flag:
+  oracle: off
   apply-without-address: on
   send-download-alert: on
   submit-via-email: off

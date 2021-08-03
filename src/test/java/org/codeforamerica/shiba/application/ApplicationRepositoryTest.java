@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.application;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.Sentiment;
+import org.codeforamerica.shiba.pages.config.*;
 import org.codeforamerica.shiba.pages.data.*;
 import org.codeforamerica.shiba.testutilities.AbstractRepositoryTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mock.web.MockMultipartFile;
 
+import java.nio.charset.StandardCharsets;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -37,6 +39,14 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
 
     @MockBean
     private Clock clock;
+
+    @MockBean
+    private FeatureFlagConfiguration featureFlags;
+
+    @BeforeEach
+    void setUp() {
+        when(featureFlags.get("oracle")).thenReturn(FeatureFlag.ON);
+    }
 
     @Test
     void shouldGenerateIdForNextApplication() {
@@ -307,11 +317,14 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
         @SuppressWarnings("unchecked")
         Encryptor<ApplicationData> mockEncryptor = mock(Encryptor.class);
         String jsonData = "\"{here: 'is the encrypted data'}\"";
+        FeatureFlagConfiguration featureFlags = mock(FeatureFlagConfiguration.class);
 
         @BeforeEach
         void setUp() {
-            applicationRepositoryWithMockEncryptor = new ApplicationRepository(jdbcTemplate, mockEncryptor, clock);
+            applicationRepositoryWithMockEncryptor = new ApplicationRepository(jdbcTemplate, mockEncryptor, clock, featureFlags);
             when(mockEncryptor.encrypt(any())).thenReturn(jsonData);
+
+            when(featureFlags.get("oracle")).thenReturn(FeatureFlag.ON);
         }
 
         @Test
@@ -343,11 +356,10 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
 
             applicationRepositoryWithMockEncryptor.save(application);
 
-            String actualEncryptedData = jdbcTemplate.queryForObject(
-                    "SELECT application_data " +
-                            "FROM applications " +
-                            "WHERE id = 'someid'", String.class);
-            assertThat(actualEncryptedData).isEqualTo(jsonData);
+            Object actualEncryptedData = jdbcTemplate.queryForObject(
+                    "SELECT application_data FROM applications WHERE id = 'someid'",
+                    Object.class);
+            assertThat(actualEncryptedData).isEqualTo(jsonData.getBytes(StandardCharsets.UTF_8));
         }
 
         @Test
