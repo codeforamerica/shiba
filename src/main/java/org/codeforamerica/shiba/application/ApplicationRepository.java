@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.Sentiment;
-import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -13,9 +12,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
-import java.sql.Blob;
 import java.sql.Timestamp;
 import java.time.*;
 import java.util.*;
@@ -31,23 +28,20 @@ public class ApplicationRepository {
     private final JdbcTemplate jdbcTemplate;
     private final Encryptor<ApplicationData> encryptor;
     private final Clock clock;
-    private final FeatureFlagConfiguration featureFlags;
 
     public ApplicationRepository(JdbcTemplate jdbcTemplate,
                                  Encryptor<ApplicationData> encryptor,
-                                 Clock clock,
-                                 FeatureFlagConfiguration featureFlags) {
+                                 Clock clock) {
         this.jdbcTemplate = jdbcTemplate;
         this.encryptor = encryptor;
         this.clock = clock;
-        this.featureFlags = featureFlags;
     }
 
     @SuppressWarnings("ConstantConditions")
     public String getNextId() {
         int random3DigitNumber = new SecureRandom().nextInt(900) + 100;
-        String statement = featureFlags.get("oracle").isOn() ? "SELECT application_id.nextval from dual" : "SELECT NEXTVAL('application_id');";
-        String id = jdbcTemplate.queryForObject(statement, String.class);
+
+        String id = jdbcTemplate.queryForObject("SELECT NEXTVAL('application_id');", String.class);
         int numberOfZeros = 10 - id.length();
         StringBuilder idBuilder = new StringBuilder();
         idBuilder.append(random3DigitNumber);
@@ -61,6 +55,7 @@ public class ApplicationRepository {
     public void save(Application application) {
         HashMap<String, Object> parameters = new HashMap<>(Map.of(
                 "id", application.getId(),
+                "applicationData", encryptor.encrypt(application.getApplicationDataWithoutDataUrls()),
                 "county", application.getCounty().name()
         ));
         parameters.put("completedAt", convertToTimestamp(application.getCompletedAt()));
@@ -70,36 +65,18 @@ public class ApplicationRepository {
         parameters.put("feedback", application.getFeedback());
 
         var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
-        if (featureFlags.get("oracle").isOn()) {
-            parameters.put("applicationData", encryptor.encrypt(application.getApplicationDataWithoutDataUrls()).getBytes(StandardCharsets.UTF_8));
-            if (namedParameterJdbcTemplate.update("UPDATE applications SET " +
-                    "completed_at = :completedAt, " +
-                    "application_data = :applicationData, " +
-                    "county = :county, " +
-                    "time_to_complete = :timeToComplete, " +
-                    "sentiment = :sentiment, " +
-                    "feedback = :feedback, " +
-                    "flow = :flow WHERE id = :id", parameters) == 0) {
-
-                namedParameterJdbcTemplate.update(
-                        "INSERT INTO applications (id, completed_at, application_data, county, time_to_complete, sentiment, feedback, flow) " +
-                                "VALUES (:id, :completedAt, :applicationData, :county, :timeToComplete, :sentiment, :feedback, :flow)", parameters);
-            }
-        } else { // postgres
-            parameters.put("applicationData", encryptor.encrypt(application.getApplicationDataWithoutDataUrls()));
-            namedParameterJdbcTemplate.update("UPDATE applications SET " +
-                    "completed_at = :completedAt, " +
-                    "application_data = :applicationData ::jsonb, " +
-                    "county = :county, " +
-                    "time_to_complete = :timeToComplete, " +
-                    "sentiment = :sentiment, " +
-                    "feedback = :feedback, " +
-                    "flow = :flow WHERE id = :id", parameters);
-            namedParameterJdbcTemplate.update(
-                    "INSERT INTO applications (id, completed_at, application_data, county, time_to_complete, sentiment, feedback, flow) " +
-                            "VALUES (:id, :completedAt, :applicationData ::jsonb, :county, :timeToComplete, :sentiment, :feedback, :flow) " +
-                            "ON CONFLICT DO NOTHING", parameters);
-        }
+        namedParameterJdbcTemplate.update("UPDATE applications SET " +
+                "completed_at = :completedAt, " +
+                "application_data = :applicationData ::jsonb, " +
+                "county = :county, " +
+                "time_to_complete = :timeToComplete, " +
+                "sentiment = :sentiment, " +
+                "feedback = :feedback, " +
+                "flow = :flow WHERE id = :id", parameters);
+        namedParameterJdbcTemplate.update(
+                "INSERT INTO applications (id, completed_at, application_data, county, time_to_complete, sentiment, feedback, flow) " +
+                        "VALUES (:id, :completedAt, :applicationData ::jsonb, :county, :timeToComplete, :sentiment, :feedback, :flow) " +
+                        "ON CONFLICT DO NOTHING", parameters);
         setUpdatedAtTime(application.getId());
     }
 
@@ -135,12 +112,12 @@ public class ApplicationRepository {
 
     public Map<County, Integer> countByCounty() {
         return jdbcTemplate.query(
-                        "SELECT county, COUNT(*) AS count " +
-                                "FROM applications  WHERE flow <> 'LATER_DOCS' AND completed_at IS NOT NULL " +
-                                "GROUP BY county", (resultSet, rowNumber) ->
-                                Map.entry(
-                                        County.valueFor(resultSet.getString("county")),
-                                        resultSet.getInt("count"))).stream()
+                "SELECT county, COUNT(*) AS count " +
+                        "FROM applications  WHERE flow <> 'LATER_DOCS' AND completed_at IS NOT NULL " +
+                        "GROUP BY county", (resultSet, rowNumber) ->
+                        Map.entry(
+                                County.valueFor(resultSet.getString("county")),
+                                resultSet.getInt("count"))).stream()
                 .collect(toMap(Entry::getKey, Entry::getValue));
     }
 
@@ -191,16 +168,16 @@ public class ApplicationRepository {
 
     public Map<Sentiment, Double> getSentimentDistribution() {
         return jdbcTemplate.query(
-                        "SELECT sentiment, count, SUM(count) OVER () AS total_count " +
-                                "FROM (" +
-                                "         SELECT sentiment, COUNT(id) AS count " +
-                                "         FROM applications " +
-                                "         WHERE sentiment IS NOT NULL " +
-                                "         GROUP BY sentiment " +
-                                "     ) AS subquery",
-                        (resultSet, rowNumber) -> Map.entry(
-                                Sentiment.valueOf(resultSet.getString("sentiment")),
-                                resultSet.getDouble("count") / resultSet.getDouble("total_count"))).stream()
+                "SELECT sentiment, count, SUM(count) OVER () AS total_count " +
+                        "FROM (" +
+                        "         SELECT sentiment, COUNT(id) AS count " +
+                        "         FROM applications " +
+                        "         WHERE sentiment IS NOT NULL " +
+                        "         GROUP BY sentiment " +
+                        "     ) AS subquery",
+                (resultSet, rowNumber) -> Map.entry(
+                        Sentiment.valueOf(resultSet.getString("sentiment")),
+                        resultSet.getDouble("count") / resultSet.getDouble("total_count"))).stream()
                 .collect(toMap(Entry::getKey, Entry::getValue));
     }
 
@@ -279,39 +256,31 @@ public class ApplicationRepository {
 
     @NotNull
     private RowMapper<Application> applicationRowMapper() {
-        return (resultSet, rowNum) -> {
-            String applicationDataString;
-            if (featureFlags.get("oracle").isOn()) {
-                Blob blob = resultSet.getBlob("application_data");
-                applicationDataString = new String(blob.getBytes(1, (int) blob.length()));
-            } else {
-                applicationDataString = resultSet.getString("application_data");
-            }
-            return Application.builder()
-                    .id(resultSet.getString("id"))
-                    .completedAt(convertToZonedDateTime(resultSet.getTimestamp("completed_at")))
-                    .updatedAt(convertToZonedDateTime(resultSet.getTimestamp("updated_at")))
-                    .applicationData(encryptor.decrypt(applicationDataString))
-                    .county(County.valueFor(resultSet.getString("county")))
-                    .timeToComplete(Duration.ofSeconds(resultSet.getLong("time_to_complete")))
-                    .sentiment(Optional.ofNullable(resultSet.getString("sentiment"))
-                            .map(Sentiment::valueOf)
-                            .orElse(null))
-                    .feedback(resultSet.getString("feedback"))
-                    .flow(Optional.ofNullable(resultSet.getString("flow"))
-                            .map(FlowType::valueOf)
-                            .orElse(null))
-                    .cafApplicationStatus(Optional.ofNullable(resultSet.getString("caf_application_status"))
-                            .map(Status::valueFor)
-                            .orElse(null))
-                    .ccapApplicationStatus(Optional.ofNullable(resultSet.getString("ccap_application_status"))
-                            .map(Status::valueFor)
-                            .orElse(null))
-                    .uploadedDocumentApplicationStatus(Optional.ofNullable(resultSet.getString("uploaded_documents_status"))
-                            .map(Status::valueFor)
-                            .orElse(null))
-                    .build();
-        };
+        return (resultSet, rowNum) ->
+                Application.builder()
+                        .id(resultSet.getString("id"))
+                        .completedAt(convertToZonedDateTime(resultSet.getTimestamp("completed_at")))
+                        .updatedAt(convertToZonedDateTime(resultSet.getTimestamp("updated_at")))
+                        .applicationData(encryptor.decrypt(resultSet.getString("application_data")))
+                        .county(County.valueFor(resultSet.getString("county")))
+                        .timeToComplete(Duration.ofSeconds(resultSet.getLong("time_to_complete")))
+                        .sentiment(Optional.ofNullable(resultSet.getString("sentiment"))
+                                .map(Sentiment::valueOf)
+                                .orElse(null))
+                        .feedback(resultSet.getString("feedback"))
+                        .flow(Optional.ofNullable(resultSet.getString("flow"))
+                                .map(FlowType::valueOf)
+                                .orElse(null))
+                        .cafApplicationStatus(Optional.ofNullable(resultSet.getString("caf_application_status"))
+                                .map(Status::valueFor)
+                                .orElse(null))
+                        .ccapApplicationStatus(Optional.ofNullable(resultSet.getString("ccap_application_status"))
+                                .map(Status::valueFor)
+                                .orElse(null))
+                        .uploadedDocumentApplicationStatus(Optional.ofNullable(resultSet.getString("uploaded_documents_status"))
+                                .map(Status::valueFor)
+                                .orElse(null))
+                        .build();
     }
 
 }

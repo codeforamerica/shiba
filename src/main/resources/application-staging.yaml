@@ -2,14 +2,11 @@ spring:
   datasource:
     url: ${DATABASE_URL}
     driverClassName: org.postgresql.Driver
-  flyway:
-    enabled: false
 
 mnit-esb:
   url: https://uat-svcs.dhs.mn.gov/WebServices/Alfresco/CreateDocument
 
 feature-flag:
-  oracle: off
   submit-via-api: on
   submit-docs-via-email-for-hennepin: on
   county-anoka: on

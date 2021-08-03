@@ -88,7 +88,6 @@ dependencies {
     implementation 'io.awspring.cloud:spring-cloud-aws-autoconfigure:2.3.1'
     implementation 'com.azure:azure-storage-blob:12.13.0'
     implementation 'org.postgresql:postgresql'
-
     implementation 'org.glassfish.jaxb:jaxb-runtime'
     implementation 'org.apache.pdfbox:pdfbox:2.0.24'
     implementation 'org.apache.commons:commons-lang3'
@@ -96,8 +95,6 @@ dependencies {
     implementation 'org.jetbrains:annotations:21.0.1'
     implementation 'commons-validator:commons-validator:1.7'
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
-    implementation 'com.oracle.database.jdbc:ojdbc8'
-    implementation 'com.oracle.database.jdbc:ucp'
     implementation 'org.apache.httpcomponents:httpclient'
     implementation 'io.sentry:sentry-logback:5.0.1'
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -158,19 +155,6 @@ def unitTest = tasks.register("unitTest", Test) {
 
 def journeyTest = tasks.register("journeyTest", Test) {
     Test task ->
-        task.useJUnitPlatform {
-            JUnitPlatformOptions options ->
-                options.includeTags 'journey'
-        }
-}
-
-def postgresJourneyTest = tasks.register("postgresJourneyTest", Test) {
-    Test task ->
-        task.doFirst {
-            environment("SPRING_FLYWAY_ENABLED", "false")
-            environment("SPRING_DATASOURCE_URL", "jdbc:h2:mem:testdb;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM 'classpath:test-schema-init.sql'")
-            environment("FEATURE-FLAG_ORACLE", "off")
-        }
         task.useJUnitPlatform {
             JUnitPlatformOptions options ->
                 options.includeTags 'journey'

@@ -2,15 +2,12 @@ spring:
   datasource:
     url: ${DATABASE_URL}
     driverClassName: org.postgresql.Driver
-  flyway:
-    enabled: false
   web:
     resources:
       cache:
         cachecontrol:
           max-age: 10m
 feature-flag:
-  oracle: off
   apply-without-address: on
   submit-via-email: off
   submit-via-api: off
