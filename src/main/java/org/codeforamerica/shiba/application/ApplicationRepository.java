@@ -18,7 +18,6 @@ import java.time.*;
 import java.util.*;
 import java.util.Map.Entry;
 
-import static java.time.ZonedDateTime.now;
 import static java.util.stream.Collectors.toMap;
 import static org.codeforamerica.shiba.output.Document.*;
 
@@ -226,30 +225,27 @@ public class ApplicationRepository {
 
     private List<String> getCCAPSubmissionsToResubmit() {
         var applicationList = jdbcTemplate.query(
-                "SELECT * FROM applications WHERE (ccap_application_status = 'delivery_failed' OR ccap_application_status = 'in_progress') AND completed_at IS NOT NULL LIMIT 10",
+                "SELECT * FROM applications WHERE ccap_application_status = 'delivery_failed' AND completed_at IS NOT NULL LIMIT 10",
                 applicationRowMapper());
         return applicationList.stream()
-                .filter(a -> !a.getCcapApplicationStatus().equals(Status.IN_PROGRESS) || a.getCompletedAt().isBefore(now().minusDays(1)))
                 .map(Application::getId)
                 .toList();
     }
 
     private List<String> getCAFSubmissionsToResubmit() {
         var applicationList = jdbcTemplate.query(
-                "SELECT * FROM applications WHERE (caf_application_status = 'delivery_failed' OR caf_application_status = 'in_progress') AND completed_at IS NOT NULL LIMIT 10",
+                "SELECT * FROM applications WHERE caf_application_status = 'delivery_failed' AND completed_at IS NOT NULL LIMIT 10",
                 applicationRowMapper());
         return applicationList.stream()
-                .filter(a -> !a.getCafApplicationStatus().equals(Status.IN_PROGRESS) || a.getCompletedAt().isBefore(now().minusDays(1)))
                 .map(Application::getId)
                 .toList();
     }
 
     private List<String> getUploadedDocSubmissionsToResubmit() {
         var applicationList = jdbcTemplate.query(
-                "SELECT * FROM applications WHERE (uploaded_documents_status = 'delivery_failed' OR uploaded_documents_status = 'in_progress') AND completed_at IS NOT NULL LIMIT 5",
+                "SELECT * FROM applications WHERE uploaded_documents_status = 'delivery_failed' AND completed_at IS NOT NULL LIMIT 5",
                 applicationRowMapper());
         return applicationList.stream()
-                .filter(a -> !a.getUploadedDocumentApplicationStatus().equals(Status.IN_PROGRESS) || a.getCompletedAt().isBefore(now().minusDays(1)))
                 .map(Application::getId)
                 .toList();
     }
