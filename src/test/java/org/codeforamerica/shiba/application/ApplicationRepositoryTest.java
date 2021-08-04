@@ -204,7 +204,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
                 .timeToComplete(Duration.ofSeconds(1))
                 .county(Anoka)
                 .flow(FlowType.FULL)
-                .completedAt(ZonedDateTime.now(UTC).minusDays(3)) // 3 days ago should be included, we no longer limit to last 24 hours
+                .completedAt(ZonedDateTime.now(UTC))
                 .build();
 
         applicationRepository.save(application1);

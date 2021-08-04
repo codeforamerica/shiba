@@ -224,30 +224,21 @@ public class ApplicationRepository {
     }
 
     private List<String> getCCAPSubmissionsToResubmit() {
-        var applicationList = jdbcTemplate.query(
-                "SELECT * FROM applications WHERE ccap_application_status = 'delivery_failed' AND completed_at IS NOT NULL LIMIT 10",
-                applicationRowMapper());
-        return applicationList.stream()
-                .map(Application::getId)
-                .toList();
+        return jdbcTemplate.queryForList(
+                "SELECT id FROM applications WHERE ccap_application_status = 'delivery_failed' AND completed_at IS NOT NULL LIMIT 10",
+                String.class);
     }
 
     private List<String> getCAFSubmissionsToResubmit() {
-        var applicationList = jdbcTemplate.query(
-                "SELECT * FROM applications WHERE caf_application_status = 'delivery_failed' AND completed_at IS NOT NULL LIMIT 10",
-                applicationRowMapper());
-        return applicationList.stream()
-                .map(Application::getId)
-                .toList();
+        return jdbcTemplate.queryForList(
+                "SELECT id FROM applications WHERE caf_application_status = 'delivery_failed' AND completed_at IS NOT NULL LIMIT 10",
+                String.class);
     }
 
     private List<String> getUploadedDocSubmissionsToResubmit() {
-        var applicationList = jdbcTemplate.query(
-                "SELECT * FROM applications WHERE uploaded_documents_status = 'delivery_failed' AND completed_at IS NOT NULL LIMIT 5",
-                applicationRowMapper());
-        return applicationList.stream()
-                .map(Application::getId)
-                .toList();
+        return jdbcTemplate.queryForList(
+                "SELECT id FROM applications WHERE uploaded_documents_status = 'delivery_failed' AND completed_at IS NOT NULL LIMIT 5",
+                String.class);
     }
 
     @NotNull
