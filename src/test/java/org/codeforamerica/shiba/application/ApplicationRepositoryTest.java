@@ -196,23 +196,34 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
                 .timeToComplete(Duration.ofSeconds(1))
                 .county(Anoka)
                 .flow(FlowType.FULL)
-                .completedAt(ZonedDateTime.now(UTC).minusDays(2)) // 2 days ago
+                .completedAt(ZonedDateTime.now(UTC).minusDays(2)) // 2 days ago should be included, we no longer limit to last 24 hours
+                .build();
+        Application application4 = Application.builder()
+                .id("someId4")
+                .applicationData(new ApplicationData())
+                .timeToComplete(Duration.ofSeconds(1))
+                .county(Anoka)
+                .flow(FlowType.FULL)
+                .completedAt(ZonedDateTime.now(UTC).minusDays(3)) // 3 days ago should be included, we no longer limit to last 24 hours
                 .build();
 
         applicationRepository.save(application1);
         applicationRepository.save(application2);
         applicationRepository.save(application3);
+        applicationRepository.save(application4);
 
         applicationRepository.updateStatus("someId1", CAF, DELIVERY_FAILED);
-        applicationRepository.updateStatus("someId1", CCAP, IN_PROGRESS);
         applicationRepository.updateStatus("someId2", UPLOADED_DOC, DELIVERY_FAILED);
+        // In Progress is NOT included
         applicationRepository.updateStatus("someId3", CAF, IN_PROGRESS);
+        // In Progress is NOT included
         applicationRepository.updateStatus("someId3", UPLOADED_DOC, IN_PROGRESS);
+        applicationRepository.updateStatus("someId4", CCAP, DELIVERY_FAILED);
 
         Map<Document, List<String>> failedApplications = applicationRepository.getApplicationIdsToResubmit();
-        assertThat(failedApplications.get(CAF)).containsExactlyInAnyOrder("someId1", "someId3");
-        assertThat(failedApplications.get(CCAP)).containsExactlyInAnyOrder("someId1");
-        assertThat(failedApplications.get(UPLOADED_DOC)).containsExactlyInAnyOrder("someId2", "someId3");
+        assertThat(failedApplications.get(CAF)).containsExactlyInAnyOrder("someId1");
+        assertThat(failedApplications.get(CCAP)).containsExactlyInAnyOrder("someId4");
+        assertThat(failedApplications.get(UPLOADED_DOC)).containsExactlyInAnyOrder("someId2");
     }
 
     @Test
@@ -228,7 +239,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
                             .completedAt(ZonedDateTime.now(UTC).minusDays(2)) // 2 days ago
                             .build());
                     applicationRepository.updateStatus(id, CAF, DELIVERY_FAILED);
-                    applicationRepository.updateStatus(id, CCAP, IN_PROGRESS);
+                    applicationRepository.updateStatus(id, CCAP, DELIVERY_FAILED);
                     applicationRepository.updateStatus(id, UPLOADED_DOC, DELIVERY_FAILED);
                 }
         );
