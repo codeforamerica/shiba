@@ -50,7 +50,7 @@ var noneOfTheAbove = (function() {
             $otherCheckboxes.click(function(e) {
                 $noneCheckbox.prop('checked', false);
                 $noneCheckbox.parent().removeClass('is-selected');
-                $('#choose-none-warning').addClass("hidden");
+                $('#choose-none-warning').addClass('hidden');
             });
 
             if ($noneCheckbox.prop('checked')) {
@@ -62,10 +62,10 @@ var noneOfTheAbove = (function() {
                 $otherCheckboxes.prop('checked', false);
                 $otherCheckboxes.parent().removeClass('is-selected');
                 if (this.checked) {
-                    $('#choose-none-warning').removeClass("hidden");
+                    $('#choose-none-warning').removeClass('hidden');
                 }
                 else {
-                    $('#choose-none-warning').addClass("hidden");
+                    $('#choose-none-warning').addClass('hidden');
                 }
             });
         }
@@ -79,7 +79,9 @@ $(document).ready(function () {
     followUpQuestion.init();
     noneOfTheAbove.init();
     $("#page-form").submit(function () {
-        $("#form-submit-button").addClass("button--disabled");
+        var btn = $("#form-submit-button");
+        btn.addClass('button--disabled');
+        btn.prop('disabled', true)
         return true;
     });
 });
