@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.pages;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
+import org.apache.pdfbox.pdmodel.interactive.form.*;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
@@ -545,7 +546,8 @@ public class PageController {
             String s3FilePath = String.format("%s/%s", applicationData.getId(), UUID.randomUUID());
             if (type.contains("pdf")) {
                 try (PDDocument pdfFile = PDDocument.load(file.getBytes())) {
-                    if (pdfFile.getDocumentCatalog().getAcroForm().xfaIsDynamic()) {
+                    PDAcroForm acroForm = pdfFile.getDocumentCatalog().getAcroForm();
+                    if (acroForm != null && acroForm.xfaIsDynamic()) {
                         return new ResponseEntity<>("An XFA formatted PDF was uploaded.", HttpStatus.UNPROCESSABLE_ENTITY);
                     }
                 } catch (InvalidPasswordException e) {
