@@ -14,6 +14,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.application.FlowType.FULL;
+import static org.codeforamerica.shiba.testutilities.TestUtils.getAbsoluteFilepathString;
 import static org.codeforamerica.shiba.testutilities.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.testutilities.YesNoAnswer.YES;
 import static org.mockito.Mockito.when;
@@ -606,7 +607,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("1 file added");
         uploadPdfFile();
         assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("2 files added");
-        uploadFile(TestUtils.getAbsoluteFilepathString("test-cover-pages.pdf"));
+        uploadFile(getAbsoluteFilepathString("pdf-without-acroform.pdf")); // Assert that we can still upload PDFs without acroforms
         assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("3 files added");
         waitForDocumentUploadToComplete();
         assertThat(driver.findElements(By.linkText("delete")).size()).isEqualTo(3);

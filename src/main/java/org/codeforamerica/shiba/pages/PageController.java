@@ -543,10 +543,10 @@ public class PageController {
                        @RequestParam("type") String type) throws IOException, InterruptedException {
         if (applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
                 file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
-            String s3FilePath = String.format("%s/%s", applicationData.getId(), UUID.randomUUID());
+            var s3FilePath = applicationData.getId() + "/" + UUID.randomUUID();
             if (type.contains("pdf")) {
-                try (PDDocument pdfFile = PDDocument.load(file.getBytes())) {
-                    PDAcroForm acroForm = pdfFile.getDocumentCatalog().getAcroForm();
+                try (var pdfFile = PDDocument.load(file.getBytes())) {
+                    var acroForm = pdfFile.getDocumentCatalog().getAcroForm();
                     if (acroForm != null && acroForm.xfaIsDynamic()) {
                         return new ResponseEntity<>("An XFA formatted PDF was uploaded.", HttpStatus.UNPROCESSABLE_ENTITY);
                     }

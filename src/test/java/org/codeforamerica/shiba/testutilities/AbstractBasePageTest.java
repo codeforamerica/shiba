@@ -72,8 +72,9 @@ public abstract class AbstractBasePageTest {
 
     @BeforeEach
     protected void setUp() throws IOException {
-        baseUrl = String.format("http://localhost:%s", localServerPort);
-        baseUrlWithAuth = String.format("http://%s@localhost:%s", authParams, localServerPort);
+        baseUrl = "http://localhost:%s".formatted(localServerPort);
+        //noinspection HttpUrlsUsage
+        baseUrlWithAuth = "http://%s@localhost:%s".formatted(authParams, localServerPort);
         driver.navigate().to(baseUrl);
         testPage = new Page(driver);
     }
