@@ -135,15 +135,14 @@ class EmailContentCreatorTest {
 
     @ParameterizedTest
     @CsvSource(value = {
-            "UPLOADED_DOC,uploaded document",
-            "CAF,CAF application",
-            "CCAP,CCAP application"
+            "UPLOADED_DOC,an uploaded document.",
+            "CAF,a CAF application.",
+            "CCAP,a CCAP application."
     })
     void shouldCreateResubmitEmail(Document document, String name) {
         String resubmitEmailBody = emailContentCreator.createResubmitEmailContent(document, Locale.ENGLISH);
         assertThat(resubmitEmailBody).isEqualTo("<html><body>" +
-                "<p>Hello</p>" +
-                "<p>Attached is an MNBenefits application due to an error in ESB Submission. It is a(n) " + name + ".</p>" +
+                "<p>Due to a technical issue, this MNBenefits file did not submit to the MNIT inbox. We are sharing it here instead. It is " + name + "</p>" +
                 "</body></html>");
     }
 

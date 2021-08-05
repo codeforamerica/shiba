@@ -32,6 +32,7 @@ public class EmailContentCreator {
     private final static String LATER_DOCS_CONFIRMATION_EMAIL_BODY = "later-docs.confirmation-email-body";
     private final static String LATER_DOCS_CONFIRMATION_EMAIL_LINK = "later-docs.confirmation-email-body-link";
     private final static String RESUBMIT_EMAIL_BODY = "email.resubmit-email";
+    private final static String IS_UPLOADED_DOCUMENT = "email.it-is-an-uploaded-document";
     private final static String DEMO_PURPOSES_ONLY = "email.demo-purposes-only";
     private final static String SHARE_FEEDBACK = "email.share-feedback";
     private final String activeProfile;
@@ -98,12 +99,13 @@ public class EmailContentCreator {
     }
 
     public String createResubmitEmailContent(Document document, Locale locale) {
-        String documentSending = switch (document) {
-            case CAF -> "CAF application";
-            case CCAP -> "CCAP application";
-            case UPLOADED_DOC -> "uploaded document";
+        String documentType = switch (document) {
+            case CAF -> "a CAF application.";
+            case CCAP -> "a CCAP application.";
+            case UPLOADED_DOC -> "an uploaded document.";
         };
-        return wrapHtml(getMessage(RESUBMIT_EMAIL_BODY, List.of(documentSending), locale));
+        String messageBody = getMessage(RESUBMIT_EMAIL_BODY, List.of(documentType), locale);
+        return wrapHtml("<p>" + messageBody + "</p>");
     }
 
     public String createHennepinDocUploadsHTML(Map<String, String> args) {
