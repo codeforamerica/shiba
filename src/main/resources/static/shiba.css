@@ -363,6 +363,15 @@ form .drag-and-drop-box-compact {
     box-shadow: 0 3px 0px 0px #7f9bb1;
     line-height: 6rem;
     margin-right: 0;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+
+}
+
+#upload-button-inner {
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .dz-button:hover {
