@@ -27,8 +27,13 @@
                                 <h2 id="vertical-header-mobile" class="blue-label text--centered hide-on-desktop"
                                     th:text="#{upload-documents.add-your-files}"></h2>
                                 <div id="upload-button" class="dz-message text--centered">
-                                    <button th:aria-label="#{upload-documents.add-your-files}" type="button"
-                                            class="button dz-button icon-add"></button>
+                                    <button th:aria-label="#{upload-documents.add-your-files}" type="button" id="upload-button-inner"
+                                            class="button dz-button">
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="60px" viewBox="0 0 24 24" width="60px" fill="#FFFFFF">
+                                            <path d="M0 0h24v24H0V0z" fill="none"/>
+                                            <path stroke="white" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                                        </svg>
+                                    </button>
                                 </div>
                                 <div class="grid--item width-two-thirds">
                                     <h2 id="horizontal-header-desktop"
@@ -54,7 +59,7 @@
                             <div class="form-group">
                                 <button type="submit" class="button button--secondary hidden" id="submit-my-documents"
                                         th:text="#{upload-documents.submit-my-documents}"></button>
-                                <p class="text--error">
+                                <p class="text--error" hidden>
                                     <i class="icon-warning"></i>
                                     <span th:text="#{upload-documents.wait-for-upload-warning}"></span>
                                 </p>
