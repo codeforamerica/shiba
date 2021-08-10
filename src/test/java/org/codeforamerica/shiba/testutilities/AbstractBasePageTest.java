@@ -431,6 +431,7 @@ public abstract class AbstractBasePageTest {
         navigateTo("signThisApplication");
         testPage.enter("applicantSignature", "some name");
         testPage.clickButton("Submit");
+        testPage.clickContinue();
     }
 
     protected void getToDocumentUploadScreen() {

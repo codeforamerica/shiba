@@ -99,6 +99,7 @@ abstract class JourneyTest extends AbstractBasePageTest {
                                                     boolean shouldHaveCcapDownloadLink) {
         testPage.enter("applicantSignature", signature);
         testPage.clickButton("Submit");
+        testPage.clickContinue();
 
         // No document upload
         testPage.clickButton("Skip this for now");

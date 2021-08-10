@@ -1349,6 +1349,10 @@ pageDefinitions:
         validators:
           - validation: NOT_BLANK
             errorMessageKey: general.validation.make-sure-you-answer-this-question
+  - &addingDocuments
+    name: addingDocuments
+    pageTitle: adding-documents.title
+    hasPrimaryButton: false
   - &documentRecommendation
     name: documentRecommendation
     pageTitle: document-recommendation.title
@@ -3602,7 +3606,27 @@ workflow:
   signThisApplication:
     pageConfiguration: *signThisApplication
     nextPages:
+      - pageName: addingDocuments
+  addingDocuments:
+    pageConfiguration: *addingDocuments
+    nextPages:
       - pageName: documentRecommendation
+    datasources:
+      - pageName: choosePrograms
+      - pageName: employmentStatus
+      - pageName: homeExpenses
+      - pageName: workSituation
+      - pageName: addHouseholdMembers
+      - groupName: household
+        pageName: householdMemberInfo
+        optional: "true"
+      - pageName: medicalExpenses
+    skipCondition:
+      conditions:
+        - *skipRecommendationForProofOfIncome?
+        - *skipRecommendationForProofOfHousingCosts?
+        - *skipRecommendationForProofOfJobLoss?
+        - *skipRecommendationForProofOfMedicalExpenses?
   documentRecommendation:
     pageConfiguration: *documentRecommendation
     nextPages:
@@ -3893,6 +3917,7 @@ landmarkPages:
     - prepareToApply
     - addingDocsIsEasy
   postSubmitPages:
+    - addingDocuments
     - documentRecommendation
     - uploadDocuments
     - uploadDocumentsDeleteWarningPage

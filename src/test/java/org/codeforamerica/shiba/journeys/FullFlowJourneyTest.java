@@ -325,6 +325,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         // Upload documents
         testPage.enter("applicantSignature", "this is my signature");
         testPage.clickButton("Submit");
+        testPage.clickContinue();
         testPage.clickButton("Upload documents now");
 
         testDocumentUploads();
