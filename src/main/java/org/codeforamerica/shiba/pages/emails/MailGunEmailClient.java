@@ -1,10 +1,20 @@
 package org.codeforamerica.shiba.pages.emails;
 
-import lombok.extern.slf4j.Slf4j;
+import static java.util.stream.Collectors.toList;
+import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
+import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
+import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
+import static org.springframework.web.reactive.function.BodyInserters.fromMultipartData;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.Status;
+import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
@@ -15,6 +25,7 @@ import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.core.io.Resource;
 import org.springframework.security.util.InMemoryResource;
 import org.springframework.stereotype.Component;
@@ -22,15 +33,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-
-import static java.util.stream.Collectors.toList;
-import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
-import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
-import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
-import static org.springframework.web.reactive.function.BodyInserters.fromMultipartData;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
@@ -47,6 +50,7 @@ public class MailGunEmailClient implements EmailClient {
     private final String activeProfile;
     private final String resubmissionEmail;
     private final ApplicationRepository applicationRepository;
+    private final MessageSource messageSource;
 
     public MailGunEmailClient(@Value("${sender-email}") String senderEmail,
                               @Value("${security-email}") String securityEmail,
@@ -59,7 +63,8 @@ public class MailGunEmailClient implements EmailClient {
                               @Value("${resubmission-email}") String resubmissionEmail,
                               PdfGenerator pdfGenerator,
                               @Value("${spring.profiles.active:Unknown}") String activeProfile,
-                              ApplicationRepository applicationRepository
+                              ApplicationRepository applicationRepository,
+                              MessageSource messageSource
                               ) {
         this.senderEmail = senderEmail;
         this.securityEmail = securityEmail;
@@ -73,6 +78,7 @@ public class MailGunEmailClient implements EmailClient {
         this.activeProfile = activeProfile;
         this.resubmissionEmail = resubmissionEmail;
         this.applicationRepository = applicationRepository;
+        this.messageSource = messageSource;
     }
 
     @Override
@@ -85,9 +91,8 @@ public class MailGunEmailClient implements EmailClient {
                                       List<ApplicationFile> applicationFiles,
                                       Locale locale) {
 
-        String sub1 = "[DEMO] We received your application";
-        String sub2 = "We received your application";
-        String subject = "demo".equals(activeProfile) ? sub1 : sub2;
+    	LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
+        String subject = "demo".equals(activeProfile) ? String.format("[DEMO] %s",lms.getMessage("email.subject")) : lms.getMessage("email.subject");
 
         MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
         form.put("from", List.of(senderEmail));

@@ -20,11 +20,11 @@ import org.codeforamerica.shiba.testutilities.PageDataBuilder;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.MessageSource;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.ZonedDateTime;
@@ -65,6 +65,9 @@ class MailGunEmailClientTest {
     ApplicationRepository applicationRepository;
 
     int port;
+    
+    @Autowired
+    private MessageSource messageSource;
 
     @Value("${spring.profiles.active}")
     private String activeProfile;
@@ -102,7 +105,8 @@ class MailGunEmailClientTest {
                 resubmissionEmail,
                 pdfGenerator,
                 activeProfile,
-                applicationRepository);
+                applicationRepository,
+                messageSource);
         programs = List.of(Program.SNAP);
         credentials = new BasicCredentials("api", mailGunApiKey);
     }
@@ -371,7 +375,8 @@ class MailGunEmailClientTest {
                 resubmissionEmail,
                 pdfGenerator,
                 activeProfile,
-                applicationRepository);
+                applicationRepository,
+                messageSource);
 
         wireMockServer.stubFor(post(anyUrl())
                 .willReturn(aResponse().withStatus(200)));
@@ -415,7 +420,8 @@ class MailGunEmailClientTest {
                     resubmissionEmail,
                     pdfGenerator,
                     "demo",
-                    applicationRepository);
+                    applicationRepository,
+                    messageSource);
         }
 
         @Test
