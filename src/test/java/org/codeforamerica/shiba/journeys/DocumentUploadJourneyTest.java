@@ -6,6 +6,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -16,7 +17,7 @@ import static org.mockito.Mockito.doThrow;
 @Tag("journey")
 public class DocumentUploadJourneyTest extends JourneyTest {
     @Test
-    void whenDocumentUploadFailsThenThereShouldBeAnError() throws InterruptedException {
+    void whenDocumentUploadFailsThenThereShouldBeAnError() throws InterruptedException, IOException {
         getToDocumentUploadScreen();
         uploadXfaFormatPdf();
         waitForErrorMessage();

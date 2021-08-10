@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @Service
 @Slf4j
 public class CombinedDocumentRepositoryService {
@@ -29,11 +31,11 @@ public class CombinedDocumentRepositoryService {
         return content;
     }
 
-    public void upload(String filepath, MultipartFile file) throws InterruptedException {
+    public void upload(String filepath, MultipartFile file) throws InterruptedException, IOException {
         azureDocumentRepositoryService.upload(filepath, file);
     }
 
-    public void upload(String filepath, String fileContent) throws InterruptedException {
+    public void upload(String filepath, String fileContent) throws InterruptedException, IOException {
         azureDocumentRepositoryService.upload(filepath, fileContent);
     }
 
