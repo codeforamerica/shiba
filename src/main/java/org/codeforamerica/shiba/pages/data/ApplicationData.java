@@ -126,8 +126,8 @@ public class ApplicationData implements Serializable {
         return selectedExpenses.stream().anyMatch(medicalExpenses::contains);
     }
 
-    public void addUploadedDoc(MultipartFile file, String s3Filepath, String dataURL, String type) {
-        UploadedDocument uploadedDocument = new UploadedDocument(file.getOriginalFilename(), s3Filepath, dataURL, type, file.getSize());
+    public void addUploadedDoc(MultipartFile file, String s3Filepath, String thumbnailFilepath, String type) {
+        UploadedDocument uploadedDocument = new UploadedDocument(file.getOriginalFilename(), s3Filepath, thumbnailFilepath, type, file.getSize());
         uploadedDocs.add(uploadedDocument);
     }
 

@@ -44,7 +44,7 @@ public class S3DocumentRepositoryService implements DocumentRepositoryService {
     }
 
     @Override
-    public Runnable upload(String filepath, MultipartFile file) {
+    public void upload(String filepath, MultipartFile file) {
         log.info("Uploading file {} to S3 at filepath {}", file.getOriginalFilename(), filepath);
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(file.getSize());
@@ -56,13 +56,11 @@ public class S3DocumentRepositoryService implements DocumentRepositoryService {
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
-        return null;
     }
 
     @Override
-    public Runnable delete(String filepath) throws SdkClientException {
+    public void delete(String filepath) throws SdkClientException {
         log.info("Deleting file at filepath {} from S3", filepath);
         s3Client.deleteObject(new DeleteObjectRequest(bucketName, filepath));
-        return null;
     }
 }

@@ -54,7 +54,7 @@ public class ApplicationRepository {
     public void save(Application application) {
         HashMap<String, Object> parameters = new HashMap<>(Map.of(
                 "id", application.getId(),
-                "applicationData", encryptor.encrypt(application.getApplicationDataWithoutDataUrls()),
+                "applicationData", encryptor.encrypt(application.getApplicationData()),
                 "county", application.getCounty().name()
         ));
         parameters.put("completedAt", convertToTimestamp(application.getCompletedAt()));

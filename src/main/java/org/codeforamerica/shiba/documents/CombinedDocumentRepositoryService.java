@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @Service
 @Slf4j
 public class CombinedDocumentRepositoryService {
@@ -29,27 +31,15 @@ public class CombinedDocumentRepositoryService {
         return content;
     }
 
-    public void uploadConcurrently(String filepath, MultipartFile file) throws InterruptedException {
-        Thread thread1 = new Thread(() -> s3DocumentRepositoryService.upload(filepath, file));
-        thread1.start();
-        Thread thread2 = new Thread(() -> azureDocumentRepositoryService.upload(filepath, file));
-        thread2.start();
-
-        thread1.join();
-        thread2.join();
+    public void upload(String filepath, MultipartFile file) throws InterruptedException, IOException {
+        azureDocumentRepositoryService.upload(filepath, file);
     }
 
-    public void deleteConcurrently(String filepath) {
-        Thread thread1 = new Thread(() -> s3DocumentRepositoryService.delete(filepath));
-        thread1.start();
-        Thread thread2 = new Thread(() -> azureDocumentRepositoryService.delete(filepath));
-        thread2.start();
+    public void upload(String filepath, String fileContent) throws InterruptedException, IOException {
+        azureDocumentRepositoryService.upload(filepath, fileContent);
+    }
 
-        try {
-            thread1.join();
-            thread2.join();
-        } catch (InterruptedException e) {
-            log.error("Error deleting doc uploads", e);
-        }
+    public void delete(String filepath) {
+        azureDocumentRepositoryService.delete(filepath);
     }
 }

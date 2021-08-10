@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.application.*;
+import org.codeforamerica.shiba.documents.CombinedDocumentRepositoryService;
 import org.codeforamerica.shiba.testutilities.NonSessionScopedApplicationData;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
@@ -9,12 +10,14 @@ import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.codeforamerica.shiba.pages.events.UploadedDocumentsSubmittedEvent;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
@@ -31,13 +34,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
 import static org.codeforamerica.shiba.output.Document.*;
+import static org.codeforamerica.shiba.testutilities.TestUtils.resetApplicationData;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = MOCK, properties = {"pagesConfig=pages-config/test-pages-controller.yaml"})
@@ -57,6 +60,8 @@ class PageControllerTest {
     private PageEventPublisher pageEventPublisher;
     @MockBean
     private FeatureFlagConfiguration featureFlags;
+    @SpyBean
+    private CombinedDocumentRepositoryService combinedDocumentRepositoryService;
 
     @Autowired
     private PageController pageController;
@@ -77,6 +82,11 @@ class PageControllerTest {
                 .build());
         when(messageSource.getMessage(eq("success.feedback-success"), any(), eq(Locale.ENGLISH))).thenReturn("default success message");
         when(messageSource.getMessage(eq("success.feedback-failure"), any(), eq(Locale.ENGLISH))).thenReturn("default failure message");
+    }
+
+    @AfterEach
+    void tearDown() {
+        resetApplicationData(applicationData);
     }
 
     @Test
@@ -126,7 +136,7 @@ class PageControllerTest {
         applicationData.setId(applicationId);
 
         MockMultipartFile image = new MockMultipartFile("image", "someImage.jpg", MediaType.IMAGE_JPEG_VALUE, "test".getBytes());
-        applicationData.addUploadedDoc(image, "someS3FilePath", "someDataUrl", "image/jpeg");
+        applicationData.addUploadedDoc(image, "someS3FilePath", "someThumbnailFilepath", "image/jpeg");
 
         Application application = Application.builder()
                 .id(applicationId)
@@ -367,6 +377,25 @@ class PageControllerTest {
         mockMvc.perform(get("/pages/uploadDocuments"));
 
         verify(applicationRepository).updateStatus(application.getId(), UPLOADED_DOC, IN_PROGRESS);
+    }
+
+    @Test
+    void shouldHandleMissingThumbnails() throws Exception {
+        applicationData.setStartTimeOnce(Instant.now());
+        var applicationId = "someId";
+        applicationData.setId(applicationId);
+        var image = new MockMultipartFile("image", "someImage.jpg", MediaType.IMAGE_JPEG_VALUE, "test".getBytes());
+        applicationData.addUploadedDoc(image, "someS3FilePath", "someThumbnailFilepath", "image/jpeg");
+        var application = Application.builder()
+                .id(applicationId)
+                .applicationData(applicationData)
+                .build();
+        when(applicationRepository.getNextId()).thenReturn(applicationId);
+        when(applicationFactory.newApplication(applicationData)).thenReturn(application);
+
+        when(combinedDocumentRepositoryService.getFromAzureWithFallbackToS3(any())).thenThrow(RuntimeException.class);
+
+        mockMvc.perform(get("/pages/uploadDocuments")).andExpect(status().isOk());
     }
 
     @Test

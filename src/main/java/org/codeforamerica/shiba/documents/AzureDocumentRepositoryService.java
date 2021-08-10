@@ -8,8 +8,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 @Service
 @Slf4j
@@ -35,25 +38,31 @@ public class AzureDocumentRepositoryService implements DocumentRepositoryService
     }
 
     @Override
-    public Runnable upload(String filepath, MultipartFile file) {
+    public void upload(String filepath, MultipartFile file) throws IOException {
         log.info("Uploading file {} to Azure at filepath {}", file.getOriginalFilename(), filepath);
-        // Get a reference to a blob
+        try (var inputStream = file.getInputStream()) {
+            uploadToAzure(filepath, file.getSize(), inputStream);
+        }
+    }
+
+    public void upload(String filepath, String fileContent) throws IOException {
+        log.info("Uploading file content string to Azure at filepath {}", filepath);
+        var fileContentBytes = fileContent.getBytes(StandardCharsets.UTF_8);
+        try (var byteArrayInputStream = new ByteArrayInputStream(fileContentBytes)) {
+            uploadToAzure(filepath, fileContentBytes.length, byteArrayInputStream);
+        }
+    }
+
+    private void uploadToAzure(String filepath, long size, InputStream inputStream) {
         BlobClient blobClient = containerClient.getBlobClient(filepath);
         log.info("Uploading to Azure Blob storage as blob:" + blobClient.getBlobUrl());
-        try {
-            // Upload the blob
-            blobClient.upload(file.getInputStream(), file.getSize());
-            log.info("finished uploading");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return null;
+        blobClient.upload(inputStream, size);
+        log.info("finished uploading");
     }
 
     @Override
-    public Runnable delete(String filepath) {
+    public void delete(String filepath) {
         BlobClient blobClient = containerClient.getBlobClient(filepath);
         blobClient.delete();
-        return null;
     }
 }
