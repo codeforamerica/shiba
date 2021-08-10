@@ -197,6 +197,11 @@ pageDefinitions:
     headerKey: prepare-to-apply.how-this-works
     contextFragment: prepareToApplyContextFragment
     hasPrimaryButton: false
+  - &addingDocsIsEasy
+    name: addingDocsIsEasy
+    pageTitle: adding-docs-is-easy.title
+    headerKey: adding-docs-is-easy.adding-documents-to-your-application-is-easy
+    contextFragment: cameraContextFragment
   - &languagePreferences
     name: languagePreferences
     pageTitle: language-preferences.title
@@ -2684,6 +2689,10 @@ workflow:
   prepareToApply:
     pageConfiguration: *prepareToApply
     nextPages:
+      - pageName: addingDocsIsEasy
+  addingDocsIsEasy:
+    pageConfiguration: *addingDocsIsEasy
+    nextPages:
       - pageName: languagePreferences
   languagePreferences:
     pageConfiguration: *languagePreferences
@@ -3882,6 +3891,7 @@ landmarkPages:
   landingPages:
     - landing
     - prepareToApply
+    - addingDocsIsEasy
   postSubmitPages:
     - documentRecommendation
     - uploadDocuments

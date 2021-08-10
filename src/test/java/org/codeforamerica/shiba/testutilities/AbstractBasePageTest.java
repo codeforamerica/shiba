@@ -27,13 +27,10 @@ import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.codeforamerica.shiba.output.Document.CAF;
-import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.testutilities.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.testutilities.YesNoAnswer.YES;
 import static org.mockito.ArgumentMatchers.any;
@@ -142,6 +139,7 @@ public abstract class AbstractBasePageTest {
 
     protected void getToPersonalInfoScreen(List<String> programSelections) {
         testPage.clickButton("Apply now");
+        testPage.clickContinue();
         testPage.clickContinue();
         testPage.enter("writtenLanguage", "English");
         testPage.enter("spokenLanguage", "English");
@@ -419,6 +417,7 @@ public abstract class AbstractBasePageTest {
 
     private void getToDocumentRecommendationScreen() {
         testPage.clickButton("Apply now");
+        testPage.clickContinue();
         testPage.clickContinue();
         testPage.enter("writtenLanguage", "English");
         testPage.enter("spokenLanguage", "English");

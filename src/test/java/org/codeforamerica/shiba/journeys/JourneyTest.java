@@ -124,7 +124,9 @@ abstract class JourneyTest extends AbstractBasePageTest {
     }
 
     protected void getToHomeAddress(List<String> programSelections) {
+        // Landing pages
         testPage.clickButton("Apply now");
+        testPage.clickContinue();
         testPage.clickContinue();
 
         // Language Preferences
@@ -134,7 +136,6 @@ abstract class JourneyTest extends AbstractBasePageTest {
         testPage.clickContinue();
 
         // Program Selection
-
         programSelections.forEach(program -> testPage.enter("programs", program));
         testPage.clickContinue();
         testPage.clickContinue();

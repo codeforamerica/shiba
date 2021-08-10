@@ -96,6 +96,7 @@ public class AccessibilityJourneyTest extends JourneyTest {
 
         testPage.clickButton("Apply now");
         testPage.clickContinue();
+        testPage.clickContinue();
         testPage.enter("writtenLanguage", "English");
         testPage.enter("spokenLanguage", "English");
         testPage.enter("needInterpreter", "Yes");
