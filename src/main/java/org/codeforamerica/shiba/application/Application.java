@@ -6,13 +6,11 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.pages.Feedback;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.springframework.util.StringUtils;
 
 import java.time.Clock;
 import java.time.Duration;
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Data
@@ -48,14 +46,6 @@ public class Application {
                 ccapApplicationStatus,
                 uploadedDocumentApplicationStatus
         );
-    }
-
-    public ApplicationData getApplicationDataWithoutDataUrls() {
-        ApplicationData applicationData = getApplicationData();
-        List<UploadedDocument> uploadedDocuments = applicationData.getUploadedDocs();
-        uploadedDocuments.forEach(uploadedDocument -> uploadedDocument.setDataURL(""));
-        applicationData.setUploadedDocs(uploadedDocuments);
-        return applicationData;
     }
 
     public void setCompletedAtTime(Clock clock) {

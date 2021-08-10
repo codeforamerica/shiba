@@ -6,7 +6,7 @@ public interface DocumentRepositoryService {
 
     byte[] get(String filepath);
 
-    Runnable upload(String filepath, MultipartFile file);
+    void upload(String filepath, MultipartFile file);
 
     Runnable delete(String filepath);
 }

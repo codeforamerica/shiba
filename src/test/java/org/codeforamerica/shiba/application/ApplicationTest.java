@@ -56,17 +56,4 @@ class ApplicationTest {
 
         assertThat(updatedApplication.getFeedback()).isEqualTo(originalFeedbackText);
     }
-
-    @Test
-    void shouldReturnApplicationDataWithoutDataURLs() {
-        ApplicationData applicationData = new ApplicationData();
-        MockMultipartFile image = new MockMultipartFile("image", "test".getBytes());
-        applicationData.addUploadedDoc(image, "someS3FilePath", "someDataUrl", "image/jpeg");
-
-        Application application = Application.builder()
-                .applicationData(applicationData)
-                .build();
-
-        assertThat(application.getApplicationDataWithoutDataUrls().getUploadedDocs().get(0).getDataURL()).isEqualTo("");
-    }
 }

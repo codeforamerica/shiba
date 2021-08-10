@@ -29,17 +29,15 @@ public class CombinedDocumentRepositoryService {
         return content;
     }
 
-    public void uploadConcurrently(String filepath, MultipartFile file) throws InterruptedException {
-        Thread thread1 = new Thread(() -> s3DocumentRepositoryService.upload(filepath, file));
-        thread1.start();
-        Thread thread2 = new Thread(() -> azureDocumentRepositoryService.upload(filepath, file));
-        thread2.start();
-
-        thread1.join();
-        thread2.join();
+    public void upload(String filepath, MultipartFile file) throws InterruptedException {
+        azureDocumentRepositoryService.upload(filepath, file);
     }
 
-    public void deleteConcurrently(String filepath) {
+    public void upload(String filepath, String fileContent) throws InterruptedException {
+        azureDocumentRepositoryService.upload(filepath, fileContent);
+    }
+
+    public void deleteConcurrently(String filepath) { // todo make this not concurrent
         Thread thread1 = new Thread(() -> s3DocumentRepositoryService.delete(filepath));
         thread1.start();
         Thread thread2 = new Thread(() -> azureDocumentRepositoryService.delete(filepath));

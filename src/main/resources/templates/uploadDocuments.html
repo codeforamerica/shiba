@@ -301,15 +301,16 @@
                 showNumberOfAddedFiles()
             });
 
-            $.each(documents, function (key, value) {
-                var mockFile = {name: value.filename, size: value.size, type: value.type};
+            // Add all previously uploaded files to the list of uploads
+            $.each(documents, function (key, uploadedDocWithThumbnail) {
+                var doc = uploadedDocWithThumbnail.doc;
+                var mockFile = {name: doc.filename, size: doc.size, type: doc.type};
                 myDropZone.files.push(mockFile);
                 myDropZone.emit("addedfile", mockFile);
-                myDropZone.emit("thumbnail", mockFile, value.dataURL);
+                myDropZone.emit("thumbnail", mockFile, uploadedDocWithThumbnail.thumbnail);
                 myDropZone.emit("success", mockFile);
                 myDropZone.emit("complete", mockFile);
             });
-
         },
         error: function (file, errorMessage, xhr) {
             if (xhr && xhr.response && xhr.response === "A password protected PDF was uploaded.") {

@@ -3,7 +3,6 @@ package org.codeforamerica.shiba.pages;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
-import org.apache.pdfbox.pdmodel.interactive.form.*;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
@@ -322,7 +321,11 @@ public class PageController {
         }
 
         if (landmarkPagesConfiguration.isUploadDocumentsPage(pageName)) {
-            model.put("uploadedDocs", applicationData.getUploadedDocs());
+            record DocWithThumbnail(UploadedDocument doc, String thumbnail) {}
+            var uploadedDocsWithThumbnails = applicationData.getUploadedDocs().stream()
+                    .parallel()
+                    .map(doc -> new DocWithThumbnail(doc, doc.getThumbnail(combinedDocumentRepositoryService))).toList();
+            model.put("uploadedDocs", uploadedDocsWithThumbnails);
             model.put("uploadDocMaxFileSize", uploadDocumentConfiguration.getMaxFilesize());
         }
 
@@ -346,6 +349,7 @@ public class PageController {
 
         return model;
     }
+
 
     private boolean requestedPageAppliesToGroup(String iterationIndex, PageWorkflowConfiguration pageWorkflow) {
         return isNotBlank(iterationIndex) && applicationData.getSubworkflows().containsKey(pageWorkflow.getAppliesToGroup());
@@ -543,7 +547,6 @@ public class PageController {
                        @RequestParam("type") String type) throws IOException, InterruptedException {
         if (applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
                 file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
-            var s3FilePath = applicationData.getId() + "/" + UUID.randomUUID();
             if (type.contains("pdf")) {
                 try (var pdfFile = PDDocument.load(file.getBytes())) {
                     var acroForm = pdfFile.getDocumentCatalog().getAcroForm();
@@ -554,8 +557,11 @@ public class PageController {
                     return new ResponseEntity<>("A password protected PDF was uploaded.", HttpStatus.UNPROCESSABLE_ENTITY);
                 }
             }
-            combinedDocumentRepositoryService.uploadConcurrently(s3FilePath, file);
-            applicationData.addUploadedDoc(file, s3FilePath, dataURL, type);
+            var filePath = applicationData.getId() + "/" + UUID.randomUUID();
+            var thumbnailFilePath = applicationData.getId() + "/" + UUID.randomUUID();
+            combinedDocumentRepositoryService.upload(filePath, file);
+            combinedDocumentRepositoryService.upload(thumbnailFilePath, dataURL);
+            applicationData.addUploadedDoc(file, filePath, thumbnailFilePath, type);
         }
 
         return new ResponseEntity<>(HttpStatus.OK);
