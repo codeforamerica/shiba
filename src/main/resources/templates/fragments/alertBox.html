@@ -1,0 +1,14 @@
+<div th:fragment="alertBox(page)">
+    <th:block th:switch="${page.alertBox.getAlertBoxType()}">
+        <p th:case="'warning'"
+           th:text="#{${page.alertBox.message}}"
+           id="choose-none-warning"
+           class="notice--warning hidden spacing-below-60">
+        </p>
+        <p th:case="'notice'"
+           th:text="#{${page.alertBox.message}}"
+           id="notice"
+           class="notice--success spacing-below-60">
+        </p>
+    </th:block>
+</div>

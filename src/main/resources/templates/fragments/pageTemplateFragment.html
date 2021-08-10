@@ -10,23 +10,27 @@
                     <div th:replace="'fragments/'+__${page.contextFragment}__ :: ${page.contextFragment}"></div>
                 </th:block>
                 <div th:if="${page.hasHeader()}" class="grid__item spacing-above-35 spacing-below-35">
-                    <h1 class="h2" th:text="#{${page.headerKey}}"></h1>
+                    <h1 id="page-header" class="h2" th:text="#{${page.headerKey}}"></h1>
                     <p th:if="${page.hasHeaderHelpMessageKey()}"
                        th:text="#{${page.headerHelpMessageKey}}"></p>
                 </div>
-
                 <th:block th:if="${additionalContext != null}">
                     <div th:replace="${additionalContext} :: ${additionalContext}"></div>
                 </th:block>
 
                 <div class="grid__item spacing-below-60">
                     <!--Form page-->
-                    <form id="page-form" th:if="${page.inputs != null && !page.inputs.isEmpty()}" autocomplete="off" method="post" th:action="@{${postTo}}">
+                    <form id="page-form" th:if="${page.inputs != null && !page.inputs.isEmpty()}" autocomplete="off"
+                          method="post" th:action="@{${postTo}}">
                         <div th:each="input: ${page.inputs}">
                             <div th:replace="'fragments/input-with-followups' :: input-with-followups(${input}, ${data})"></div>
                         </div>
-                        <button id="form-submit-button" th:if="${page.hasPrimaryButton}" class="button button--primary" type="submit"
+                        <button id="form-submit-button" th:if="${page.hasPrimaryButton}" class="button button--primary"
+                                type="submit"
                                 th:text="#{${page.primaryButtonTextKey}}"></button>
+                        <th:block th:if="${page.hasAlertBox()}">
+                            <div th:replace="fragments/alertBox :: alertBox(${page})"></div>
+                        </th:block>
                     </form>
 
                     <!--Static page-->

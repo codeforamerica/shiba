@@ -11,6 +11,7 @@ class PageTemplateTest {
     private String headerKey;
     private String headerHelpMessageKey;
     private String subtleLinkTextKey;
+    private AlertBox alertBox;
 
     @BeforeEach
     void setup() {
@@ -57,7 +58,8 @@ class PageTemplateTest {
                 subtleLinkTextKey,
                 "aSubtleLinkTargetPage",
                 true,
-                "context-frag"
+                "context-frag",
+                alertBox
         );
     }
 }
