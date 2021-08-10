@@ -10,6 +10,7 @@ import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.codeforamerica.shiba.pages.events.UploadedDocumentsSubmittedEvent;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
@@ -33,6 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
 import static org.codeforamerica.shiba.output.Document.*;
+import static org.codeforamerica.shiba.testutilities.TestUtils.resetApplicationData;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
@@ -80,6 +82,11 @@ class PageControllerTest {
                 .build());
         when(messageSource.getMessage(eq("success.feedback-success"), any(), eq(Locale.ENGLISH))).thenReturn("default success message");
         when(messageSource.getMessage(eq("success.feedback-failure"), any(), eq(Locale.ENGLISH))).thenReturn("default failure message");
+    }
+
+    @AfterEach
+    void tearDown() {
+        resetApplicationData(applicationData);
     }
 
     @Test
