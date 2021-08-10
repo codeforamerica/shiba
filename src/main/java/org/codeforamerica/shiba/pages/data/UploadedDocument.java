@@ -23,9 +23,12 @@ public class UploadedDocument implements Serializable {
     private String s3Filepath;
 
     public String getThumbnail(CombinedDocumentRepositoryService documentRepositoryService) {
-        var thumbnailBytes = documentRepositoryService.getFromAzureWithFallbackToS3(thumbnailFilepath);
-        return new String(thumbnailBytes, UTF_8); //todo this is an unchecked cast
-        //todo error handling
+        try {
+            var thumbnailBytes = documentRepositoryService.getFromAzureWithFallbackToS3(thumbnailFilepath);
+            return new String(thumbnailBytes, UTF_8);
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     private String thumbnailFilepath;
