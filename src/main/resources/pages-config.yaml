@@ -1353,6 +1353,10 @@ pageDefinitions:
     name: addingDocuments
     pageTitle: adding-documents.title
     hasPrimaryButton: false
+  - &howToAddDocuments
+    name: howToAddDocuments
+    pageTitle: how-to-add-documents.title
+    hasPrimaryButton: false
   - &documentRecommendation
     name: documentRecommendation
     pageTitle: document-recommendation.title
@@ -3610,6 +3614,26 @@ workflow:
   addingDocuments:
     pageConfiguration: *addingDocuments
     nextPages:
+      - pageName: howToAddDocuments
+    datasources:
+      - pageName: choosePrograms
+      - pageName: employmentStatus
+      - pageName: homeExpenses
+      - pageName: workSituation
+      - pageName: addHouseholdMembers
+      - groupName: household
+        pageName: householdMemberInfo
+        optional: "true"
+      - pageName: medicalExpenses
+    skipCondition:
+      conditions:
+        - *skipRecommendationForProofOfIncome?
+        - *skipRecommendationForProofOfHousingCosts?
+        - *skipRecommendationForProofOfJobLoss?
+        - *skipRecommendationForProofOfMedicalExpenses?
+  howToAddDocuments:
+    pageConfiguration: *howToAddDocuments
+    nextPages:
       - pageName: documentRecommendation
     datasources:
       - pageName: choosePrograms
@@ -3918,6 +3942,7 @@ landmarkPages:
     - addingDocsIsEasy
   postSubmitPages:
     - addingDocuments
+    - howToAddDocuments
     - documentRecommendation
     - uploadDocuments
     - uploadDocumentsDeleteWarningPage

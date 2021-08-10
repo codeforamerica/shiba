@@ -1,0 +1,16 @@
+<div th:fragment="howToAddDocuments">
+    <div class="grid__item text--centered spacing-above-35">
+        <div th:replace="fragments/icons/icon-take-picture :: icon-take-picture"></div>
+
+        <ul class="list--bulleted spacing-above-10">
+            <li th:text="#{how-to-add-documents.take-photos}"></li>
+            <li th:text="#{how-to-add-documents.select-files}"></li>
+            <li th:text="#{how-to-add-documents.take-a-screenshot}"></li>
+        </ul>
+
+        <p class="notice--success spacing-below-60" th:text="#{how-to-add-documents.adding-documents}"></p>
+    </div>
+    <div class="text--centered">
+        <div th:replace="fragments/continue :: continue"></div>
+    </div>
+</div>
