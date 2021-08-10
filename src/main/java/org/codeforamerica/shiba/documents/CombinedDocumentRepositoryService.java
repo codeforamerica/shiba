@@ -39,17 +39,7 @@ public class CombinedDocumentRepositoryService {
         azureDocumentRepositoryService.upload(filepath, fileContent);
     }
 
-    public void deleteConcurrently(String filepath) { // todo make this not concurrent
-        Thread thread1 = new Thread(() -> s3DocumentRepositoryService.delete(filepath));
-        thread1.start();
-        Thread thread2 = new Thread(() -> azureDocumentRepositoryService.delete(filepath));
-        thread2.start();
-
-        try {
-            thread1.join();
-            thread2.join();
-        } catch (InterruptedException e) {
-            log.error("Error deleting doc uploads", e);
-        }
+    public void delete(String filepath) {
+        azureDocumentRepositoryService.delete(filepath);
     }
 }

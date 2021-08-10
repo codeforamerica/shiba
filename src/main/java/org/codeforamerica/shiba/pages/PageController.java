@@ -594,7 +594,7 @@ public class PageController {
                 .filter(uploadedDocument -> uploadedDocument.getFilename().equals(filename))
                 .map(UploadedDocument::getS3Filepath)
                 .findFirst()
-                .ifPresent(combinedDocumentRepositoryService::deleteConcurrently);
+                .ifPresent(combinedDocumentRepositoryService::delete);
         applicationData.removeUploadedDoc(filename);
 
         return new ModelAndView("redirect:/pages/uploadDocuments");

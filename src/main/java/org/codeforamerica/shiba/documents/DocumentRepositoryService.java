@@ -10,5 +10,5 @@ public interface DocumentRepositoryService {
 
     void upload(String filepath, MultipartFile file) throws IOException;
 
-    Runnable delete(String filepath);
+    void delete(String filepath);
 }
