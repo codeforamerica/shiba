@@ -1,0 +1,16 @@
+<th:block th:fragment="howToAddDocuments">
+    <h1 class="grid__item spacing-above-35 h2 spacing-below-25 spacing-above-0"
+        th:text="#{how-to-add-documents.how-to-add-documents}"></h1>
+
+    <div class="grid__item text--centered">
+        <div th:replace="fragments/icons/icon-take-picture :: icon-take-picture"></div>
+    </div>
+
+    <ul class="grid__item spacing-above-25 left-justified-list">
+        <li th:text="#{how-to-add-documents.take-photos}"></li>
+        <li th:text="#{how-to-add-documents.select-files}"></li>
+        <li th:text="#{how-to-add-documents.take-a-screenshot}"></li>
+    </ul>
+    <p class="grid__item notice--success spacing-above-35 spacing-below-60"
+       th:text="#{how-to-add-documents.adding-documents}"></p>
+</th:block>
