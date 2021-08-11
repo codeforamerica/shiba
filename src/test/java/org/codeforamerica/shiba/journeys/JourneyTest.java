@@ -103,7 +103,7 @@ abstract class JourneyTest extends AbstractBasePageTest {
         testPage.clickContinue();
 
         // No document upload
-        testPage.clickButton("Skip this for now");
+        testPage.clickButton("I'll do this later");
 
         return downloadPdfs(shouldHaveCafDownloadLink, shouldHaveCcapDownloadLink);
     }

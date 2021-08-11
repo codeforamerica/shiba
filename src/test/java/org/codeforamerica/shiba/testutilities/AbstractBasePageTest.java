@@ -316,7 +316,7 @@ public abstract class AbstractBasePageTest {
     }
 
     protected void skipDocumentUploadFlow() {
-        testPage.clickButton("Skip this for now");
+        testPage.clickButton("I'll do this later");
     }
 
     protected void fillOutHousemateInfo(String programSelection) {
