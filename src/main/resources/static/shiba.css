@@ -878,6 +878,11 @@ input[type=number] {
     margin-left: 16px;
 }
 
+.notice--success {
+    background-color: #EEFFE6;
+    border:2px solid #008060;
+}
+
 /*
  * CSS from dropzone below this comment
  *
