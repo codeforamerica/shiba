@@ -529,7 +529,7 @@ input[id='sad']:checked + .feedback-buttons {
 }
 
 .address-validation .radio-button.is-selected {
-    border: 2px #00891B solid;
+    border: 2px #008060 solid;
     border-radius: 5px;
     background-color: unset;
 }
