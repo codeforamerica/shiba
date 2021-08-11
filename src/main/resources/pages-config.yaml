@@ -1356,7 +1356,6 @@ pageDefinitions:
   - &howToAddDocuments
     name: howToAddDocuments
     pageTitle: how-to-add-documents.title
-    hasPrimaryButton: false
   - &documentRecommendation
     name: documentRecommendation
     pageTitle: document-recommendation.title
