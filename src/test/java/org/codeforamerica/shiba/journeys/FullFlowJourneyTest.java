@@ -327,7 +327,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         testPage.clickButton("Submit");
         testPage.clickContinue();
         testPage.clickContinue();
-        testPage.clickButton("Upload documents now");
+        testPage.clickButton("Add documents now");
 
         testDocumentUploads();
 
