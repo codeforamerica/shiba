@@ -1,0 +1,19 @@
+<th:block th:fragment="documentOffboarding">
+    <p class="grid__item spacing-above-35"
+       th:text="#{document-offboarding.you-can-return-to-our-home-page--to-submit-documents}"></p>
+
+    <p class="grid__item spacing-above-35 spacing-below-60"
+       th:text="#{document-offboarding.if-you-dont-remember-which-documents}"></p>
+
+    <div>
+        <a class="button button--primary"
+           th:href="'/pages/'+${pageName}+'/navigation?option=0'"
+           th:text="#{general.finish-application}"></a>
+    </div>
+
+    <div>
+        <a class="button"
+           th:href="'/pages/'+${pageName}+'/navigation?option=1'"
+           th:text="#{general.go-back}"></a>
+    </div>
+</th:block>

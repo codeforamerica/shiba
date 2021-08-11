@@ -1360,6 +1360,12 @@ pageDefinitions:
     name: documentRecommendation
     pageTitle: document-recommendation.title
     customPage: true
+  - &documentOffboarding
+    name: documentOffboarding
+    pageTitle: document-offboarding.title
+    headerKey: document-offboarding.finish-your-application-and-add-documents-on-MNbenefits-later
+    contextFragment: computerWithCheckContextFragment
+    hasPrimaryButton: false
   - &uploadDocuments
     name: uploadDocuments
     pageTitle: upload-documents.title
@@ -3654,7 +3660,7 @@ workflow:
     pageConfiguration: *documentRecommendation
     nextPages:
       - pageName: uploadDocuments
-      - pageName: success
+      - pageName: documentOffboarding
     datasources:
       - pageName: choosePrograms
       - pageName: employmentStatus
@@ -3695,6 +3701,17 @@ workflow:
     pageConfiguration: *uploadDocumentsDeleteWarningPage
     nextPages:
       - pageName: uploadDocuments
+  documentOffboarding:
+    pageConfiguration: *documentOffboarding
+    nextPages:
+      - pageName: success
+      - pageName: documentRecommendation
+    skipCondition:
+      conditions:
+        - *skipRecommendationForProofOfIncome?
+        - *skipRecommendationForProofOfHousingCosts?
+        - *skipRecommendationForProofOfJobLoss?
+        - *skipRecommendationForProofOfMedicalExpenses?
   identifyCounty:
     pageConfiguration: *identifyCounty
     nextPages:
@@ -3945,6 +3962,7 @@ landmarkPages:
     - documentRecommendation
     - uploadDocuments
     - uploadDocumentsDeleteWarningPage
+    - documentOffboarding
     - success
     - matchInfo
     - documentsSent
