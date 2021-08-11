@@ -760,7 +760,7 @@ public class AbstractShibaMockMvcTest {
 
     protected void getToDocumentUploadScreen() throws Exception {
         getToDocumentRecommendationScreen();
-        clickContinueOnInfoPage("documentRecommendation", "Upload documents now", "uploadDocuments");
+        clickContinueOnInfoPage("documentRecommendation", "Add documents now", "uploadDocuments");
     }
 
     protected void clickContinueOnInfoPage(String pageName, String continueButtonText,
