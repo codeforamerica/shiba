@@ -181,6 +181,12 @@ conditionDefinitions:
             value: VISION_INSURANCE_PREMIUMS
             matcher: DOES_NOT_CONTAIN
       - *noOneChoseCCAP?
+  - &skipDocumentUpload?
+    conditions:
+      - *skipRecommendationForProofOfIncome?
+      - *skipRecommendationForProofOfHousingCosts?
+      - *skipRecommendationForProofOfJobLoss?
+      - *skipRecommendationForProofOfMedicalExpenses?
   - &livesAloneOrIsApplicantsJob?
     logicalOperator: OR
     conditions:
@@ -1375,6 +1381,12 @@ pageDefinitions:
     headerKey: upload-documents-delete-warning.you-are-about-to-delete
     pageTitle: upload-documents-delete-warning.title
     customPage: true
+  - &documentSubmitConfirmation
+    name: documentSubmitConfirmation
+    pageTitle: document-submit-confirmation.title
+    headerKey: document-submit-confirmation.ready-to-submit-your-documents
+    contextFragment: documentsSuccessContextFragment
+    hasPrimaryButton: false
   - &identifyCounty
     name: identifyCounty
     headerKey: identify-county.select-your-county
@@ -3630,12 +3642,7 @@ workflow:
         pageName: householdMemberInfo
         optional: "true"
       - pageName: medicalExpenses
-    skipCondition:
-      conditions:
-        - *skipRecommendationForProofOfIncome?
-        - *skipRecommendationForProofOfHousingCosts?
-        - *skipRecommendationForProofOfJobLoss?
-        - *skipRecommendationForProofOfMedicalExpenses?
+    skipCondition: *skipDocumentUpload?
   howToAddDocuments:
     pageConfiguration: *howToAddDocuments
     nextPages:
@@ -3650,12 +3657,7 @@ workflow:
         pageName: householdMemberInfo
         optional: "true"
       - pageName: medicalExpenses
-    skipCondition:
-      conditions:
-        - *skipRecommendationForProofOfIncome?
-        - *skipRecommendationForProofOfHousingCosts?
-        - *skipRecommendationForProofOfJobLoss?
-        - *skipRecommendationForProofOfMedicalExpenses?
+    skipCondition: *skipDocumentUpload?
   documentRecommendation:
     pageConfiguration: *documentRecommendation
     nextPages:
@@ -3671,16 +3673,11 @@ workflow:
         pageName: householdMemberInfo
         optional: "true"
       - pageName: medicalExpenses
-    skipCondition:
-      conditions:
-        - *skipRecommendationForProofOfIncome?
-        - *skipRecommendationForProofOfHousingCosts?
-        - *skipRecommendationForProofOfJobLoss?
-        - *skipRecommendationForProofOfMedicalExpenses?
+    skipCondition: *skipDocumentUpload?
   uploadDocuments:
     pageConfiguration: *uploadDocuments
     nextPages:
-      - pageName: success
+      - pageName: documentSubmitConfirmation
     datasources:
       - pageName: choosePrograms
       - pageName: employmentStatus
@@ -3691,27 +3688,43 @@ workflow:
         pageName: householdMemberInfo
         optional: "true"
       - pageName: medicalExpenses
-    skipCondition:
-      conditions:
-        - *skipRecommendationForProofOfIncome?
-        - *skipRecommendationForProofOfHousingCosts?
-        - *skipRecommendationForProofOfJobLoss?
-        - *skipRecommendationForProofOfMedicalExpenses?
+    skipCondition: *skipDocumentUpload?
   uploadDocumentsDeleteWarningPage:
     pageConfiguration: *uploadDocumentsDeleteWarningPage
     nextPages:
       - pageName: uploadDocuments
+  documentSubmitConfirmation:
+    pageConfiguration: *documentSubmitConfirmation
+    nextPages:
+      - pageName: success
+      - pageName: uploadDocuments
+    datasources:
+      - pageName: choosePrograms
+      - pageName: employmentStatus
+      - pageName: homeExpenses
+      - pageName: workSituation
+      - pageName: addHouseholdMembers
+      - groupName: household
+        pageName: householdMemberInfo
+        optional: "true"
+      - pageName: medicalExpenses
+    skipCondition: *skipDocumentUpload?
   documentOffboarding:
     pageConfiguration: *documentOffboarding
     nextPages:
       - pageName: success
       - pageName: documentRecommendation
-    skipCondition:
-      conditions:
-        - *skipRecommendationForProofOfIncome?
-        - *skipRecommendationForProofOfHousingCosts?
-        - *skipRecommendationForProofOfJobLoss?
-        - *skipRecommendationForProofOfMedicalExpenses?
+    datasources:
+      - pageName: choosePrograms
+      - pageName: employmentStatus
+      - pageName: homeExpenses
+      - pageName: workSituation
+      - pageName: addHouseholdMembers
+      - groupName: household
+        pageName: householdMemberInfo
+        optional: "true"
+      - pageName: medicalExpenses
+    skipCondition: *skipDocumentUpload?
   identifyCounty:
     pageConfiguration: *identifyCounty
     nextPages:
@@ -3963,6 +3976,7 @@ landmarkPages:
     - uploadDocuments
     - uploadDocumentsDeleteWarningPage
     - documentOffboarding
+    - documentSubmitConfirmation
     - success
     - matchInfo
     - documentsSent
