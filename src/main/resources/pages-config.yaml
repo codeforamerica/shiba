@@ -1515,7 +1515,7 @@ pageDefinitions:
             - value: Pennington
               messageKey: identify-county-pennington
             - value: PineCounty
-              messageKey: identify-county-pine-county
+              messageKey: identify-county-pine
             - value: Pipestone
               messageKey: identify-county-pipestone
             - value: Polk
