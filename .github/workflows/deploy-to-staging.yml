@@ -96,7 +96,7 @@ jobs:
         uses: innocarpe/actions-slack@v1
         with:
           status: ${{ job.status }}
-          success_text: 'Deploy to Aptible staging succeeded :smile:'
+          success_text: 'Deploy to Aptible staging succeeded :smile: @shiba-interrupt'
           failure_text: 'Deploy to Aptible staging failed :frowning:'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
