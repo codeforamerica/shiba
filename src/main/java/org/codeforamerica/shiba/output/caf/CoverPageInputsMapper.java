@@ -10,6 +10,8 @@ import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInput
 import org.codeforamerica.shiba.output.applicationinputsmappers.SubworkflowIterationScopeTracker;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
@@ -31,13 +33,12 @@ import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
 public class CoverPageInputsMapper implements ApplicationInputsMapper {
     private final CountyMap<Map<Recipient, String>> countyInstructionsMapping;
     private final CountyMap<MnitCountyInformation> countyInformationMapping;
+    private final MessageSource messageSource;
 
     public static final String CHILDCARE_WAITING_LIST_UTM_SOURCE = "childcare_waiting_list";
     private static final Map<String, String> UTM_SOURCE_MAPPING = Map.of(
             CHILDCARE_WAITING_LIST_UTM_SOURCE, "FROM BSF WAITING LIST"
     );
-
-    MessageSource messageSource;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public CoverPageInputsMapper(CountyMap<Map<Recipient, String>> countyInstructionsMapping, CountyMap<MnitCountyInformation> countyInformationMapping, MessageSource messageSource) {
@@ -48,7 +49,38 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
 
     @Override
     public List<ApplicationInput> map(Application application, Document document, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
-        ApplicationInput programsInput = ofNullable(application.getApplicationData().getPagesData().getPage("choosePrograms"))
+        ApplicationInput programsInput = getPrograms(application);
+        ApplicationInput fullNameInput = getFullName(application);
+        List<ApplicationInput> householdMemberInputs = getHouseholdMembers(application);
+        ApplicationInput countyInstructionsInput = getCountyInstructions(application, recipient);
+        ApplicationInput utmSourceInput = getUtmSource(application, document);
+        return combineCoverPageInputs(programsInput, fullNameInput, countyInstructionsInput, utmSourceInput, householdMemberInputs);
+    }
+
+    @Nullable
+    private ApplicationInput getUtmSource(Application application, Document document) {
+        ApplicationInput utmSourceInput = null;
+        if (document == Document.CCAP) {
+            String applicationUtmSource = (application.getApplicationData().getUtmSource() != null) ? application.getApplicationData().getUtmSource() : "";
+            utmSourceInput = new ApplicationInput("nonPagesData", "utmSource", List.of(UTM_SOURCE_MAPPING.getOrDefault(applicationUtmSource, "")), SINGLE_VALUE);
+        }
+        return utmSourceInput;
+    }
+
+    @NotNull
+    private List<ApplicationInput> combineCoverPageInputs(ApplicationInput programsInput, ApplicationInput fullNameInput, ApplicationInput countyInstructionsInput, ApplicationInput utmSourceInput, List<ApplicationInput> householdMemberInputs) {
+        var everythingExceptHouseholdMembers = Stream.of(
+                of(countyInstructionsInput),
+                ofNullable(programsInput),
+                ofNullable(fullNameInput),
+                ofNullable(utmSourceInput)
+        ).flatMap(Optional::stream).collect(Collectors.toList());
+        everythingExceptHouseholdMembers.addAll(householdMemberInputs);
+        return everythingExceptHouseholdMembers;
+    }
+
+    private ApplicationInput getPrograms(Application application) {
+        return ofNullable(application.getApplicationData().getPagesData().getPage("choosePrograms"))
                 .flatMap(pageData -> ofNullable(pageData.get("programs")))
                 .map(InputData::getValue)
                 .map(values -> String.join(", ", values))
@@ -58,12 +90,14 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
                         List.of(value),
                         SINGLE_VALUE))
                 .orElse(null);
+    }
 
+    private ApplicationInput getFullName(Application application) {
         String pageName = "personalInfo";
         if (application.getFlow() == LATER_DOCS) {
             pageName = "matchInfo";
         }
-        ApplicationInput fullNameInput = ofNullable(application.getApplicationData().getPagesData().getPage(pageName))
+        return ofNullable(application.getApplicationData().getPagesData().getPage(pageName))
                 .map(pageData ->
                         Stream.concat(Stream.ofNullable(pageData.get("firstName")), Stream.ofNullable(pageData.get("lastName")))
                                 .map(nameInput -> String.join("", nameInput.getValue()))
@@ -75,8 +109,10 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
                         SINGLE_VALUE
                 ))
                 .orElse(null);
+    }
 
-        List<ApplicationInput> householdMemberInputs = ofNullable(application.getApplicationData().getSubworkflows().get("household"))
+    private List<ApplicationInput> getHouseholdMembers(Application application) {
+        return ofNullable(application.getApplicationData().getSubworkflows().get("household"))
                 .stream().map(subworkflow -> IntStream.range(0, subworkflow.size()).mapToObj(i -> {
                             PageData householdMemberInfo = subworkflow.get(i).getPagesData().get("householdMemberInfo");
 
@@ -93,8 +129,10 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
                             return List.of(fullName, programs);
                         }).flatMap(Collection::stream).collect(Collectors.toList())
                 ).flatMap(Collection::stream).collect(Collectors.toList());
+    }
 
-        ApplicationInput countyInstructionsInput = new ApplicationInput(
+    private ApplicationInput getCountyInstructions(Application application, Recipient recipient) {
+        return new ApplicationInput(
                 "coverPage",
                 "countyInstructions",
                 List.of(messageSource.getMessage(countyInstructionsMapping.get(application.getCounty()).get(recipient),
@@ -104,21 +142,5 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
                         LocaleContextHolder.getLocale())),
                 SINGLE_VALUE
         );
-
-        ApplicationInput utmSourceInput = null;
-        if (document == Document.CCAP) {
-            String applicationUtmSource = (application.getApplicationData().getUtmSource() != null) ? application.getApplicationData().getUtmSource() : "";
-            utmSourceInput = new ApplicationInput("nonPagesData", "utmSource", List.of(UTM_SOURCE_MAPPING.getOrDefault(applicationUtmSource, "")), SINGLE_VALUE);
-        }
-
-        List<ApplicationInput> inputs = Stream.of(
-                of(countyInstructionsInput),
-                ofNullable(programsInput),
-                ofNullable(fullNameInput),
-                ofNullable(utmSourceInput)
-        ).flatMap(Optional::stream).collect(Collectors.toList());
-        inputs.addAll(householdMemberInputs);
-
-        return inputs;
     }
 }
