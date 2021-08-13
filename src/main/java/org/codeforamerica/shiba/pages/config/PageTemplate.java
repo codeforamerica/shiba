@@ -39,6 +39,7 @@ public class PageTemplate {
 
     public boolean isSingleCheckboxOrRadioInputPage() {
         return inputs.size() == 1 && (inputs.get(0).getType() == FormInputType.CHECKBOX
-                                     || inputs.get(0).getType() == FormInputType.RADIO);
+                                     || inputs.get(0).getType() == FormInputType.RADIO
+                                     || inputs.get(0).getType() == FormInputType.PEOPLE_CHECKBOX);
     }
 }

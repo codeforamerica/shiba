@@ -4,7 +4,8 @@
 <th:block th:fragment="formQuestionPrompt(input)">
     <legend class="form-question"
             th:if="${(input.type.toString().equals('RADIO')
-                    OR input.type.toString().equals('CHECKBOX'))
+                    || input.type.toString().equals('CHECKBOX')
+                    || input.type.toString().equals('PEOPLE_CHECKBOX'))
                     && input.promptMessage != null
                     && input.promptMessage.promptMessageKey != null }"
             th:text="#{${input.promptMessage.promptMessageKey}}">
@@ -19,9 +20,10 @@
     </label>
     <label class="sr-only"
            th:unless="${input.promptMessage != null
-                      && input.promptMessage.promptMessageKey != null
-                      && (input.type.toString().equals('RADIO')
-                      || input.type.toString().equals('CHECKBOX'))}"
+                      && input.promptMessage.promptMessageKey != null}"
+           th:if="${!input.type.toString().equals('RADIO') &&
+                    !input.type.toString().equals('CHECKBOX') &&
+                    !input.type.toString().equals('PEOPLE_CHECKBOX')}"
            th:for="${input.name}"
            th:text="${input.name}">
     </label>
