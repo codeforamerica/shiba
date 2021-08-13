@@ -33,6 +33,24 @@ public class ApplicationInput {
         this.iteration = null;
     }
 
+    // Make an application input with only a single value
+    public ApplicationInput(String groupName, String name, String value, ApplicationInputType type) {
+        this.groupName = groupName;
+        this.name = name;
+        this.value = value == null ? emptyList() : List.of(value);
+        this.type = type;
+        this.iteration = null;
+    }
+
+    // Make an application input for an iteration with only a single value
+    public ApplicationInput(String groupName, String name, String value, ApplicationInputType type, Integer iteration) {
+        this.groupName = groupName;
+        this.name = name;
+        this.value = value == null ? emptyList() : List.of(value);
+        this.type = type;
+        this.iteration = iteration;
+    }
+
     public List<String> getPdfName(Map<String, List<String>> pdfFieldMap) {
         List<String> names = pdfFieldMap.get(String.join(".", this.getGroupName(), this.getName()));
         return this.getNameWithIteration(names);
