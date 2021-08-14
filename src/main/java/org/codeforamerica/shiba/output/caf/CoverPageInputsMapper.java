@@ -131,11 +131,15 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
     }
 
     private ApplicationInput getCountyInstructions(Application application, Recipient recipient) {
-        LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(LocaleContextHolder.getLocale(), messageSource);
-        var messageCode = countyInstructionsMapping.get(application.getCounty()).get(recipient);
-        var args = List.of(application.getCounty().displayName(), ofNullable(countyInformationMapping.get(application.getCounty()).getPhoneNumber()).orElse(null));
-        var countyInstructions = lms.getMessage(messageCode, args);
+        var lms = new LocaleSpecificMessageSource(LocaleContextHolder.getLocale(), messageSource);
 
+        var messageCode = countyInstructionsMapping.get(application.getCounty()).get(recipient);
+
+        var displayName = application.getCounty().displayName();
+        var phoneNumber = ofNullable(countyInformationMapping.get(application.getCounty()).getPhoneNumber()).orElse(null);
+        var args = List.of(displayName, phoneNumber);
+
+        var countyInstructions = lms.getMessage(messageCode, args);
         return new ApplicationInput("coverPage", "countyInstructions", countyInstructions, SINGLE_VALUE);
     }
 }

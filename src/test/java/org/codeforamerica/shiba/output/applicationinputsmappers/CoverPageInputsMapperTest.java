@@ -2,8 +2,6 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
-import org.codeforamerica.shiba.testutilities.PageDataBuilder;
-import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.mnit.MnitCountyInformation;
@@ -13,6 +11,8 @@ import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.caf.CoverPageInputsMapper;
 import org.codeforamerica.shiba.pages.data.*;
+import org.codeforamerica.shiba.testutilities.PageDataBuilder;
+import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -28,17 +28,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.output.caf.CoverPageInputsMapper.CHILDCARE_WAITING_LIST_UTM_SOURCE;
 
 class CoverPageInputsMapperTest {
-    private final CountyMap<Map<Recipient, String>> countyInstructionsMapping = new CountyMap<>();
-    private final CountyMap<MnitCountyInformation> countyInformationMapping = new CountyMap<>();
+    private CountyMap<Map<Recipient, String>> countyInstructionsMapping;
     private CoverPageInputsMapper coverPageInputsMapper;
-    private final PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
-    private final StaticMessageSource staticMessageSource = new StaticMessageSource();
-
-    PagesData pagesData = new PagesData();
-    ApplicationData applicationData = new ApplicationData();
+    private PagesDataBuilder pagesDataBuilder;
+    private StaticMessageSource staticMessageSource;
+    private PagesData pagesData;
+    private ApplicationData applicationData;
 
     @BeforeEach
     public void setUp() throws IOException {
+        countyInstructionsMapping = new CountyMap<>();
+        CountyMap<MnitCountyInformation> countyInformationMapping = new CountyMap<>();
+        pagesDataBuilder = new PagesDataBuilder();
+        staticMessageSource = new StaticMessageSource();
+        pagesData = new PagesData();
+        applicationData = new ApplicationData();
+
         applicationData.setPagesData(pagesData);
         coverPageInputsMapper = new CoverPageInputsMapper(countyInstructionsMapping, countyInformationMapping, staticMessageSource);
         countyInstructionsMapping.getCounties().put(County.Other, Map.of(
@@ -46,11 +51,11 @@ class CoverPageInputsMapperTest {
                 Recipient.CASEWORKER, "county-to-instructions.default-caseworker"));
         countyInformationMapping.setDefaultValue(
                 MnitCountyInformation.builder()
-                    .dhsProviderId("someDhsProviderId")
-                    .email("someEmail")
-                    .phoneNumber("555-123-4567")
-                    .folderId("someFolderId")
-                    .build());
+                        .dhsProviderId("someDhsProviderId")
+                        .email("someEmail")
+                        .phoneNumber("555-123-4567")
+                        .folderId("someFolderId")
+                        .build());
         staticMessageSource.addMessage("county-to-instructions.default-client", LocaleContextHolder.getLocale(), "Default client");
         staticMessageSource.addMessage("county-to-instructions.default-caseworker", LocaleContextHolder.getLocale(), "Default caseworker");
         staticMessageSource.addMessage("county-to-instructions.olmsted-caseworker", LocaleContextHolder.getLocale(), "Olmsted caseworker");
