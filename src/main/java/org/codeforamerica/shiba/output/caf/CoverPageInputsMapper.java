@@ -9,21 +9,19 @@ import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMapper;
 import org.codeforamerica.shiba.output.applicationinputsmappers.SubworkflowIterationScopeTracker;
 import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.PageData;
+import org.codeforamerica.shiba.pages.data.Subworkflow;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static java.util.Collections.emptyList;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
@@ -59,7 +57,8 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
     private ApplicationInput getUtmSource(Application application, Document document) {
         ApplicationInput utmSourceInput = null;
         if (document == Document.CCAP) {
-            String applicationUtmSource = (application.getApplicationData().getUtmSource() != null) ? application.getApplicationData().getUtmSource() : "";
+            var utmSource = application.getApplicationData().getUtmSource();
+            String applicationUtmSource = utmSource != null ? utmSource : "";
             utmSourceInput = new ApplicationInput("nonPagesData", "utmSource", UTM_SOURCE_MAPPING.getOrDefault(applicationUtmSource, ""), SINGLE_VALUE);
         }
         return utmSourceInput;
@@ -98,32 +97,32 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
     }
 
     private List<ApplicationInput> getHouseholdMembers(Application application) {
-        return ofNullable(application.getApplicationData().getSubworkflows().get("household"))
-                .stream().map(subworkflow -> IntStream.range(0, subworkflow.size()).mapToObj(i -> {
-                            var householdMemberInfo = subworkflow.get(i).getPagesData().get("householdMemberInfo");
-                            var firstName = householdMemberInfo.get("firstName").getValue(0);
-                            var lastName = householdMemberInfo.get("lastName").getValue(0);
-                            var fullName = firstName + " " + lastName;
-                            var fullNameInput = new ApplicationInput("coverPage", "fullName", fullName, SINGLE_VALUE, i);
+        var householdSubworkflow = ofNullable(application.getApplicationData().getSubworkflows().get("household"));
+        return householdSubworkflow.map(this::getApplicationInputsForSubworkflow).orElse(emptyList());
+    }
 
-                            var programsValue = String.join(", ", householdMemberInfo.get("programs").getValue());
-                            var programsInput = new ApplicationInput("coverPage", "programs", programsValue, SINGLE_VALUE, i);
+    @NotNull
+    private List<ApplicationInput> getApplicationInputsForSubworkflow(Subworkflow subworkflow) {
+        List<ApplicationInput> inputsForSubworkflow = new ArrayList<>();
+        for (int i = 0; i < subworkflow.size(); i++) {
+            var householdMemberInfo = subworkflow.get(i).getPagesData().get("householdMemberInfo");
+            var firstName = householdMemberInfo.get("firstName").getValue(0);
+            var lastName = householdMemberInfo.get("lastName").getValue(0);
+            var fullName = firstName + " " + lastName;
+            inputsForSubworkflow.add(new ApplicationInput("coverPage", "fullName", fullName, SINGLE_VALUE, i));
 
-                            return List.of(fullNameInput, programsInput);
-                        }).flatMap(Collection::stream).collect(Collectors.toList())
-                ).flatMap(Collection::stream).toList();
+            var programs = String.join(", ", householdMemberInfo.get("programs").getValue());
+            inputsForSubworkflow.add(new ApplicationInput("coverPage", "programs", programs, SINGLE_VALUE, i));
+        }
+        return inputsForSubworkflow;
     }
 
     private ApplicationInput getCountyInstructions(Application application, Recipient recipient) {
-        return new ApplicationInput(
-                "coverPage",
-                "countyInstructions",
-                List.of(messageSource.getMessage(countyInstructionsMapping.get(application.getCounty()).get(recipient),
-                        List.of(application.getCounty().displayName(),
-                                Optional.ofNullable(countyInformationMapping.get(application.getCounty()).getPhoneNumber()).orElse(null)
-                        ).toArray(),
-                        LocaleContextHolder.getLocale())),
-                SINGLE_VALUE
-        );
+        var countyInstructions = List.of(messageSource.getMessage(countyInstructionsMapping.get(application.getCounty()).get(recipient),
+                List.of(application.getCounty().displayName(),
+                        ofNullable(countyInformationMapping.get(application.getCounty()).getPhoneNumber()).orElse(null)
+                ).toArray(),
+                LocaleContextHolder.getLocale()));
+        return new ApplicationInput("coverPage", "countyInstructions", countyInstructions, SINGLE_VALUE);
     }
 }
