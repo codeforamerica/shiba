@@ -17,13 +17,12 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import static java.util.Collections.emptyList;
-import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
@@ -131,11 +130,11 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
     }
 
     private ApplicationInput getCountyInstructions(Application application, Recipient recipient) {
-        var countyInstructions = List.of(messageSource.getMessage(countyInstructionsMapping.get(application.getCounty()).get(recipient),
-                List.of(application.getCounty().displayName(),
-                        ofNullable(countyInformationMapping.get(application.getCounty()).getPhoneNumber()).orElse(null)
-                ).toArray(),
-                LocaleContextHolder.getLocale()));
+        var countyInstructions = messageSource.getMessage(countyInstructionsMapping.get(application.getCounty()).get(recipient),
+                        List.of(application.getCounty().displayName(),
+                                ofNullable(countyInformationMapping.get(application.getCounty()).getPhoneNumber()).orElse(null)
+                        ).toArray(),
+                        LocaleContextHolder.getLocale());
         return new ApplicationInput("coverPage", "countyInstructions", countyInstructions, SINGLE_VALUE);
     }
 }
