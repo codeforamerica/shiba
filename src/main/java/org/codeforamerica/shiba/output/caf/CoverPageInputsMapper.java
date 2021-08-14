@@ -9,6 +9,7 @@ import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMapper;
 import org.codeforamerica.shiba.output.applicationinputsmappers.SubworkflowIterationScopeTracker;
 import org.codeforamerica.shiba.pages.data.InputData;
+import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.Subworkflow;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -77,7 +78,7 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
 
     private ApplicationInput getPrograms(Application application) {
         return ofNullable(application.getApplicationData().getPagesData().getPage("choosePrograms"))
-                .flatMap(pageData -> ofNullable(pageData.get("programs")))
+                .map(pageData -> pageData.get("programs"))
                 .map(InputData::getValue)
                 .map(values -> String.join(", ", values))
                 .map(value -> new ApplicationInput("coverPage", "programs", value, SINGLE_VALUE))
@@ -86,13 +87,26 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
 
     private ApplicationInput getFullName(Application application) {
         var pageName = application.getFlow() == LATER_DOCS ? "matchInfo" : "personalInfo";
-        return ofNullable(application.getApplicationData().getPagesData().getPage(pageName))
-                .map(pageData ->
-                        Stream.concat(Stream.ofNullable(pageData.get("firstName")), Stream.ofNullable(pageData.get("lastName")))
-                                .map(nameInput -> String.join("", nameInput.getValue()))
-                                .collect(Collectors.joining(" ")))
+        var pageDataOptional = ofNullable(application.getApplicationData().getPagesData().getPage(pageName));
+        return pageDataOptional
+                .map(this::getFullNameString)
                 .map(value -> new ApplicationInput("coverPage", "fullName", value, SINGLE_VALUE))
                 .orElse(null);
+    }
+
+    @NotNull
+    private String getFullNameString(PageData pageData) {
+        var firstName = getValueOrEmptyString(pageData, "firstName");
+        var lastName = getValueOrEmptyString(pageData, "lastName");
+        return firstName + " " + lastName;
+    }
+
+    @NotNull
+    private String getValueOrEmptyString(PageData pageData, String firstName) {
+        return ofNullable(pageData.get(firstName))
+                .map(InputData::getValue)
+                .map(val -> String.join("", val))
+                .orElse("");
     }
 
     private List<ApplicationInput> getHouseholdMembers(Application application) {
