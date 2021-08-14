@@ -58,7 +58,7 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
         ApplicationInput utmSourceInput = null;
         if (document == Document.CCAP) {
             var utmSource = application.getApplicationData().getUtmSource();
-            String applicationUtmSource = utmSource != null ? utmSource : "";
+            var applicationUtmSource = utmSource != null ? utmSource : "";
             utmSourceInput = new ApplicationInput("nonPagesData", "utmSource", UTM_SOURCE_MAPPING.getOrDefault(applicationUtmSource, ""), SINGLE_VALUE);
         }
         return utmSourceInput;
@@ -66,14 +66,13 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
 
     @NotNull
     private List<ApplicationInput> combineCoverPageInputs(ApplicationInput programsInput, ApplicationInput fullNameInput, ApplicationInput countyInstructionsInput, ApplicationInput utmSourceInput, List<ApplicationInput> householdMemberInputs) {
-        var everythingExceptHouseholdMembers = Stream.of(
-                of(countyInstructionsInput),
-                ofNullable(programsInput),
-                ofNullable(fullNameInput),
-                ofNullable(utmSourceInput)
-        ).flatMap(Optional::stream).collect(Collectors.toList());
+        var everythingExceptHouseholdMembers = new ArrayList<ApplicationInput>();
+        everythingExceptHouseholdMembers.add(programsInput);
+        everythingExceptHouseholdMembers.add(fullNameInput);
+        everythingExceptHouseholdMembers.add(countyInstructionsInput);
+        everythingExceptHouseholdMembers.add(utmSourceInput);
         everythingExceptHouseholdMembers.addAll(householdMemberInputs);
-        return everythingExceptHouseholdMembers;
+        return everythingExceptHouseholdMembers.stream().filter(Objects::nonNull).toList();
     }
 
     private ApplicationInput getPrograms(Application application) {
