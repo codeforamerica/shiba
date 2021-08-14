@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.output.caf;
 
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
 import org.codeforamerica.shiba.mnit.MnitCountyInformation;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.Document;
@@ -130,11 +131,11 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
     }
 
     private ApplicationInput getCountyInstructions(Application application, Recipient recipient) {
-        var countyInstructions = messageSource.getMessage(countyInstructionsMapping.get(application.getCounty()).get(recipient),
-                        List.of(application.getCounty().displayName(),
-                                ofNullable(countyInformationMapping.get(application.getCounty()).getPhoneNumber()).orElse(null)
-                        ).toArray(),
-                        LocaleContextHolder.getLocale());
+        LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(LocaleContextHolder.getLocale(), messageSource);
+        var messageCode = countyInstructionsMapping.get(application.getCounty()).get(recipient);
+        var args = List.of(application.getCounty().displayName(), ofNullable(countyInformationMapping.get(application.getCounty()).getPhoneNumber()).orElse(null));
+        var countyInstructions = lms.getMessage(messageCode, args);
+
         return new ApplicationInput("coverPage", "countyInstructions", countyInstructions, SINGLE_VALUE);
     }
 }
