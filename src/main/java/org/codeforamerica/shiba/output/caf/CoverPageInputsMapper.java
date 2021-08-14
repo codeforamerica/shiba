@@ -18,10 +18,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
@@ -131,7 +128,15 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
     }
 
     private ApplicationInput getCountyInstructions(Application application, Recipient recipient) {
-        var lms = new LocaleSpecificMessageSource(LocaleContextHolder.getLocale(), messageSource);
+        Locale locale = switch (recipient) {
+            case CASEWORKER -> LocaleContextHolder.getLocale();
+            case CLIENT -> {
+                var writtenLanguageSelection = application.getApplicationData().getPagesData().safeGetPageInputValue("languagePreferences", "writtenLanguage");
+                yield writtenLanguageSelection.contains("SPANISH") ? new Locale("es") : LocaleContextHolder.getLocale();
+            }
+        };
+
+        var lms = new LocaleSpecificMessageSource(locale, messageSource);
 
         var messageCode = countyInstructionsMapping.get(application.getCounty()).get(recipient);
 
