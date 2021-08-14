@@ -77,8 +77,9 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
     }
 
     private ApplicationInput getPrograms(Application application) {
-        return ofNullable(application.getApplicationData().getPagesData().getPage("choosePrograms"))
-                .map(pageData -> pageData.get("programs"))
+        var programsPageData = ofNullable(application.getApplicationData().getPagesData().getPage("choosePrograms"));
+        return programsPageData
+                .map(pd -> pd.get("programs"))
                 .map(InputData::getValue)
                 .map(values -> String.join(", ", values))
                 .map(value -> new ApplicationInput("coverPage", "programs", value, SINGLE_VALUE))
@@ -87,8 +88,7 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
 
     private ApplicationInput getFullName(Application application) {
         var pageName = application.getFlow() == LATER_DOCS ? "matchInfo" : "personalInfo";
-        var pageDataOptional = ofNullable(application.getApplicationData().getPagesData().getPage(pageName));
-        return pageDataOptional
+        return ofNullable(application.getApplicationData().getPagesData().getPage(pageName))
                 .map(this::getFullNameString)
                 .map(value -> new ApplicationInput("coverPage", "fullName", value, SINGLE_VALUE))
                 .orElse(null);
