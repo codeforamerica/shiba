@@ -2850,6 +2850,9 @@ workflow:
     subtleLinkTargetPage: doYouNeedHelpImmediately
     pageConfiguration: *reviewInfo
     nextPages:
+      - pageName: startHousehold
+        flow: FULL
+        condition: *onlyApplyingForOthers?
       - pageName: addHouseholdMembers
         flow: FULL
     datasources:

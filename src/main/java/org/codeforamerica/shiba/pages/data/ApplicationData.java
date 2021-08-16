@@ -70,7 +70,7 @@ public class ApplicationData implements Serializable {
             pageData = pagesData.getPage(pageWorkflowConfiguration.getPageConfiguration().getName());
         }
 
-        if (pageData == null) {
+        if (pageData == null && !pageWorkflowConfiguration.getPageConfiguration().isStaticPage()) {
             log.error(String.format("Conditional navigation for %s requires page to have data/inputs.", pageWorkflowConfiguration.getPageConfiguration().getName()));
         }
 
