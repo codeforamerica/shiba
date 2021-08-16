@@ -109,7 +109,7 @@ pageDefinitions:
     inputs:
       - name: foo
         type: TEXT
-    contextFragment: pageContextFragment
+    contextFragment: addressContextFragment
   - &pageWithReferenceCheckboxes
     name: pageWithReferenceCheckboxes
     pageTitle: dummy-page-title
