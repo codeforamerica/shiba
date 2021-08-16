@@ -1,10 +1,10 @@
 pageDefinitions:
-  - &firstPage
-      name: firstPage
+  - &employersName
+      name: employersName
       pageTitle: first-page-title
       headerKey: first-page-title
       inputs:
-      - name: someInputName
+      - name: employersName
         type: TEXT
       - name: someRadioInputName
         type: RADIO
@@ -64,7 +64,7 @@ pageDefinitions:
     inputs:
       - name: foo
         type: TEXT
-    contextFragment: testFormPageFragment
+    contextFragment: jobContextFragment
   - &yesNoQuestionPage2
     name: yesNoQuestionPage2
     pageTitle: foo
@@ -143,8 +143,8 @@ pageDefinitions:
       - name: input-solo
         type: TEXT
 workflow:
-  firstPage:
-    pageConfiguration: *firstPage
+  employersName:
+    pageConfiguration: *employersName
     nextPages:
       - pageName: testStaticPage
   yesNoQuestionPage:
@@ -158,13 +158,13 @@ workflow:
   testStaticPage:
     pageConfiguration: *testStaticPage
     datasources:
-      - pageName: firstPage
+      - pageName: employersName
   testCustomPage:
     pageConfiguration: *testCustomPage
   testFormPage:
     pageConfiguration: *testFormPage
     datasources:
-      - pageName: firstPage
+      - pageName: employersName
   yesNoQuestionPage2:
     pageConfiguration: *yesNoQuestionPage2
     nextPages:

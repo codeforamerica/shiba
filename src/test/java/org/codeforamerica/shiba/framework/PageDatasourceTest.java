@@ -11,7 +11,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(properties = {"pagesConfig=pages-config/test-page-datasources.yaml"})
 public class PageDatasourceTest extends AbstractFrameworkTest {
-    private final String staticPageWithDatasourceInputsTitle = "staticPageWithDatasourceInputsTitle";
     private final String yesHeaderText = "yes header text";
     private final String noHeaderText = "no header text";
     private final String noAnswerTitle = "no answer title";
@@ -22,7 +21,7 @@ public class PageDatasourceTest extends AbstractFrameworkTest {
     protected void setUp() throws Exception {
         super.setUp();
         staticMessageSource.addMessage("first-page-title", ENGLISH, "firstPageTitle");
-        staticMessageSource.addMessage("static-page-with-datasource-inputs-title", ENGLISH, staticPageWithDatasourceInputsTitle);
+        staticMessageSource.addMessage("static-page-with-datasource-inputs-title", ENGLISH, "staticPageWithDatasourceInputsTitle");
         staticMessageSource.addMessage("yes-header-text", ENGLISH, yesHeaderText);
         staticMessageSource.addMessage("no-header-text", ENGLISH, noHeaderText);
         staticMessageSource.addMessage("general.inputs.yes", ENGLISH, YesNoAnswer.YES.getDisplayValue());
@@ -40,8 +39,8 @@ public class PageDatasourceTest extends AbstractFrameworkTest {
     @Test
     void shouldDisplayDataEnteredFromAPreviousPage() throws Exception {
         var inputText = "some input";
-        var nextPage = postAndFollowRedirect("firstPage", "someInputName", inputText);
-        assertThat(nextPage.getElementTextById("someInputName")).isEqualTo(inputText);
+        var nextPage = postAndFollowRedirect("employersName", "employersName", inputText);
+        assertThat(nextPage.getElementTextById("employersName")).isEqualTo(inputText);
     }
 
     @Test
@@ -73,9 +72,9 @@ public class PageDatasourceTest extends AbstractFrameworkTest {
     @Test
     void shouldDisplayDatasourceForFormPages() throws Exception {
         var value = "some input value";
-        postExpectingSuccess("firstPage", "someInputName", value);
+        postExpectingSuccess("employersName", "employersName", value);
         var page = getFormPage("testFormPage");
-        assertThat(page.getElementTextById("context-fragment")).isEqualTo(value);
+        assertThat(page.getElementsByClassName("job-context-employer-name").get(0).text()).isEqualTo(value);
     }
 
     @Test
