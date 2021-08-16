@@ -3,13 +3,14 @@ package org.codeforamerica.shiba.testutilities;
 import com.deque.html.axecore.results.Results;
 import com.deque.html.axecore.results.Rule;
 import com.deque.html.axecore.selenium.AxeBuilder;
-import org.openqa.selenium.remote.RemoteWebDriver;
-
 import java.util.ArrayList;
 import java.util.List;
-
+import lombok.Getter;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class AccessibilityTestPage extends Page {
+
+    @Getter
     public List<Rule> resultsList = new ArrayList<>();
 
     public AccessibilityTestPage(RemoteWebDriver driver) {

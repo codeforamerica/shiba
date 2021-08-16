@@ -1,30 +1,32 @@
 package org.codeforamerica.shiba.journeys;
 
-import com.deque.html.axecore.results.Results;
-import com.deque.html.axecore.results.Rule;
-import com.deque.html.axecore.selenium.AxeBuilder;
-import org.codeforamerica.shiba.documents.CombinedDocumentRepositoryService;
-import org.codeforamerica.shiba.pages.config.FeatureFlag;
-import org.codeforamerica.shiba.testutilities.AccessibilityTestPage;
-import org.junit.jupiter.api.*;
-import org.openqa.selenium.By;
-import org.springframework.boot.test.mock.mockito.MockBean;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.testutilities.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.testutilities.YesNoAnswer.YES;
 import static org.mockito.Mockito.when;
 
+import com.deque.html.axecore.results.Results;
+import com.deque.html.axecore.results.Rule;
+import com.deque.html.axecore.selenium.AxeBuilder;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.codeforamerica.shiba.documents.CombinedDocumentRepositoryService;
+import org.codeforamerica.shiba.pages.config.FeatureFlag;
+import org.codeforamerica.shiba.testutilities.AccessibilityTestPage;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
+import org.springframework.boot.test.mock.mockito.MockBean;
+
 @Tag("a11y")
 public class AccessibilityJourneyTest extends JourneyTest {
     protected static List<Rule> resultsList = new ArrayList<>();
     protected static Results results;
-    protected AccessibilityTestPage testPage;
 
     @MockBean
     protected CombinedDocumentRepositoryService documentRepositoryService;
@@ -33,6 +35,9 @@ public class AccessibilityJourneyTest extends JourneyTest {
     @BeforeEach
     public void setUp() throws IOException {
         super.setUp();
+    }
+
+    protected void initTestPage() {
         testPage = new AccessibilityTestPage(driver);
     }
 
@@ -40,7 +45,7 @@ public class AccessibilityJourneyTest extends JourneyTest {
     void afterEach() {
         AxeBuilder builder = new AxeBuilder();
         results = builder.analyze(driver);
-        resultsList.addAll(testPage.resultsList);
+        resultsList.addAll(((AccessibilityTestPage)testPage).getResultsList());
     }
 
     @AfterAll
