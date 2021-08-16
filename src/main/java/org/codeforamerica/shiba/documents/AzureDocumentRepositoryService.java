@@ -62,7 +62,9 @@ public class AzureDocumentRepositoryService implements DocumentRepositoryService
 
     @Override
     public void delete(String filepath) {
+        log.info("Deleting file from Azure at filepath {}", filepath);
         BlobClient blobClient = containerClient.getBlobClient(filepath);
         blobClient.delete();
+        log.info("Deleted file {}", filepath);
     }
 }
