@@ -68,8 +68,16 @@ public class ApplicationDataParser {
         PREPARING_MEALS_TOGETHER,
 
         PERSONAL_INFO_DOB,
+        PERSONAL_INFO_FIRST_NAME(""),
+        PERSONAL_INFO_LAST_NAME(""),
+
         HOUSEHOLD_INFO_DOB,
-        MATCH_INFO_DOB;
+        HOUSEHOLD_INFO_FIRST_NAME(""),
+        HOUSEHOLD_INFO_LAST_NAME(""),
+
+        MATCH_INFO_DOB,
+        MATCH_INFO_FIRST_NAME(""),
+        MATCH_INFO_LAST_NAME("");
 
         @Getter
         private final String defaultValue;
@@ -146,8 +154,16 @@ public class ApplicationDataParser {
         coordinatesMap.put(Field.PREPARING_MEALS_TOGETHER, new ParsingCoordinate("preparingMealsTogether", "isPreparingMealsTogether"));
 
         coordinatesMap.put(Field.PERSONAL_INFO_DOB, new ParsingCoordinate("personalInfo", "dateOfBirth"));
+        coordinatesMap.put(Field.PERSONAL_INFO_FIRST_NAME, new ParsingCoordinate("personalInfo", "firstName"));
+        coordinatesMap.put(Field.PERSONAL_INFO_LAST_NAME, new ParsingCoordinate("personalInfo", "lastName"));
+
         coordinatesMap.put(Field.HOUSEHOLD_INFO_DOB, new ParsingCoordinate("householdMemberInfo", "dateOfBirth"));
+        coordinatesMap.put(Field.HOUSEHOLD_INFO_FIRST_NAME, new ParsingCoordinate("householdMemberInfo", "firstName"));
+        coordinatesMap.put(Field.HOUSEHOLD_INFO_LAST_NAME, new ParsingCoordinate("householdMemberInfo", "lastName"));
+
         coordinatesMap.put(Field.MATCH_INFO_DOB, new ParsingCoordinate("matchInfo", "dateOfBirth"));
+        coordinatesMap.put(Field.MATCH_INFO_FIRST_NAME, new ParsingCoordinate("matchInfo", "firstName"));
+        coordinatesMap.put(Field.MATCH_INFO_LAST_NAME, new ParsingCoordinate("matchInfo", "lastName"));
 
         groupCoordinatesMap.put(Group.JOBS, "jobs");
         groupCoordinatesMap.put(Group.HOUSEHOLD, "household");
