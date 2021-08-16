@@ -142,6 +142,7 @@ conditionDefinitions:
           - *noOneChoseCASH?
           - *noOneChoseEA?
           - *noOneChoseGRH?
+          - *noOneChoseCCAP?
   - &skipRecommendationForProofOfHousingCosts?
     logicalOperator: OR
     conditions:

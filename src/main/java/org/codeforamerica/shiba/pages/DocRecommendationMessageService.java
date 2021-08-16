@@ -145,7 +145,7 @@ public class DocRecommendationMessageService {
     }
 
     private boolean proofOfIncomeRecommendation(ApplicationData applicationData) {
-        List<String> proofOfIncomePrograms = List.of("SNAP", "CASH", "EA", "GRH");
+        List<String> proofOfIncomePrograms = List.of("SNAP", "CASH", "EA", "GRH", "CCAP");
         boolean employmentStatus = applicationData.getPagesData().safeGetPageInputValue("employmentStatus", "areYouWorking").contains("true");
 
         return employmentStatus && applicationData.isApplicationWith(proofOfIncomePrograms);
