@@ -1681,6 +1681,9 @@ pageDefinitions:
     contextFragment: email-docs-to-your-county-context-fragment
     headerKey: email-docs-to-your-county.header
     hasPrimaryButton: false
+  - &nextSteps
+    name: nextSteps
+    pageTitle: next-steps.title
   - &success
     name: success
     pageTitle: success.title
@@ -3700,7 +3703,7 @@ workflow:
   documentSubmitConfirmation:
     pageConfiguration: *documentSubmitConfirmation
     nextPages:
-      - pageName: success
+      - pageName: nextSteps
       - pageName: uploadDocuments
     datasources:
       - pageName: choosePrograms
@@ -3716,7 +3719,7 @@ workflow:
   documentOffboarding:
     pageConfiguration: *documentOffboarding
     nextPages:
-      - pageName: success
+      - pageName: nextSteps
       - pageName: documentRecommendation
     datasources:
       - pageName: choosePrograms
@@ -3930,6 +3933,10 @@ workflow:
       - pageName: matchInfo
     datasources:
       - pageName: identifyCounty
+  nextSteps:
+    pageConfiguration: *nextSteps
+    nextPages:
+      - pageName: success
   success:
     pageConfiguration: *success
   documentsSent:
@@ -3981,6 +3988,7 @@ landmarkPages:
     - uploadDocumentsDeleteWarningPage
     - documentOffboarding
     - documentSubmitConfirmation
+    - nextSteps
     - success
     - matchInfo
     - documentsSent

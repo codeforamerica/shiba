@@ -15,7 +15,7 @@
                     <span class ="underline" th:text="#{document-recommendation.sooner-you-submit}"></span>
                     <span th:text="#{document-recommendation.you-have-30-days}"></span>
                 </p>
-                <div th:replace="fragments/docRecommendations :: docRecommendations(docRecommendations)"></div>
+                <div th:replace="fragments/docRecommendations :: docRecommendations"></div>
                 <div>
                     <a class="button button--primary" th:href="'/pages/'+${pageName}+'/navigation?option=0'"
                        th:text="#{document-recommendation.upload-documents-now}"></a>
