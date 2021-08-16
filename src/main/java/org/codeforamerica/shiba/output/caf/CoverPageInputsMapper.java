@@ -1,7 +1,25 @@
 package org.codeforamerica.shiba.output.caf;
 
+import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
+import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLICANT_PROGRAMS;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_FIRST_NAME;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_LAST_NAME;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_PROGRAMS;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getGroup;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
+import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group;
 import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
 import org.codeforamerica.shiba.mnit.MnitCountyInformation;
 import org.codeforamerica.shiba.output.ApplicationInput;
@@ -17,13 +35,6 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
-
-import java.util.*;
-
-import static java.util.Collections.emptyList;
-import static java.util.Optional.ofNullable;
-import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
-import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
 
 @Component
 public class CoverPageInputsMapper implements ApplicationInputsMapper {
@@ -74,13 +85,11 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
     }
 
     private ApplicationInput getPrograms(Application application) {
-        var programsPageData = ofNullable(application.getApplicationData().getPagesData().getPage("choosePrograms"));
-        return programsPageData
-                .map(pd -> pd.get("programs"))
-                .map(InputData::getValue)
-                .map(values -> String.join(", ", values))
-                .map(value -> new ApplicationInput("coverPage", "programs", value, SINGLE_VALUE))
-                .orElse(null);
+        List<String> programs = getValues(application.getApplicationData().getPagesData(), APPLICANT_PROGRAMS);
+        if (!programs.isEmpty()) {
+            return new ApplicationInput("coverPage", "programs", String.join(", ", programs), SINGLE_VALUE);
+        }
+        return null;
     }
 
     private ApplicationInput getFullName(Application application) {
@@ -107,7 +116,7 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
     }
 
     private List<ApplicationInput> getHouseholdMembers(Application application) {
-        var householdSubworkflow = ofNullable(application.getApplicationData().getSubworkflows().get("household"));
+        var householdSubworkflow = ofNullable(getGroup(application.getApplicationData(), Group.HOUSEHOLD));
         return householdSubworkflow.map(this::getApplicationInputsForSubworkflow).orElse(emptyList());
     }
 
@@ -115,13 +124,13 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
     private List<ApplicationInput> getApplicationInputsForSubworkflow(Subworkflow subworkflow) {
         List<ApplicationInput> inputsForSubworkflow = new ArrayList<>();
         for (int i = 0; i < subworkflow.size(); i++) {
-            var householdMemberInfo = subworkflow.get(i).getPagesData().get("householdMemberInfo");
-            var firstName = householdMemberInfo.get("firstName").getValue(0);
-            var lastName = householdMemberInfo.get("lastName").getValue(0);
+            var pagesData = subworkflow.get(i).getPagesData();
+            var firstName = getFirstValue(pagesData, HOUSEHOLD_INFO_FIRST_NAME);
+            var lastName = getFirstValue(pagesData, HOUSEHOLD_INFO_LAST_NAME);
             var fullName = firstName + " " + lastName;
             inputsForSubworkflow.add(new ApplicationInput("coverPage", "fullName", fullName, SINGLE_VALUE, i));
 
-            var programs = String.join(", ", householdMemberInfo.get("programs").getValue());
+            var programs = String.join(", ", getValues(pagesData, HOUSEHOLD_PROGRAMS));
             inputsForSubworkflow.add(new ApplicationInput("coverPage", "programs", programs, SINGLE_VALUE, i));
         }
         return inputsForSubworkflow;
