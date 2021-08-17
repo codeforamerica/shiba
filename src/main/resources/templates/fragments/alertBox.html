@@ -3,7 +3,7 @@
         <p th:case="'warning'"
            th:text="#{${page.alertBox.message}}"
            id="choose-none-warning"
-           class="notice--warning hidden spacing-below-60">
+           class="notice--warning hidden spacing-below-60" aria-live="assertive" aria-atomic="true">
         </p>
         <p th:case="'notice'"
            th:text="#{${page.alertBox.message}}"
