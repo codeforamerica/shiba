@@ -3,114 +3,129 @@
 <div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
 <body>
 <div class="page-wrapper">
-    <div th:replace="fragments/toolbar :: toolbar" ></div>
-    <div th:replace="fragments/demoBanner :: demoBanner"></div>
-    <section class="slab slab--shiba">
-        <div class="grid-ignore-mobile">
-            <div class="card spacing-above-35">
-                <div class="grid__item bottom-horizontal-line-dark-grey">
-                    <div th:replace="fragments/icons/icon-submission-success :: icon-submission-success"></div>
-                    <h1 th:if="${!hasUploadDocuments}" class="h2 spacing-below-0" th:text="|#{success.done-your-application-has-been-submitted}|"></h1>
-                    <h1 th:if="${hasUploadDocuments}" class="h2 spacing-below-0" th:text="|#{success.done-your-application-and-docs-have-been-submitted}|"></h1>
-                    <h2 id="application-id" class="spacing-below-10 h3"
-                        th:text="|#{success.confirmation-number}: ${applicationId}|"></h2>
-                    <p th:if="${county != T(org.codeforamerica.shiba.County).Other}" class="spacing-below-35 text--help"
-                       id="submission-date"
-                       th:text="#{success.application-submitted(${county.displayName()}, ${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)})}"></p>
-                    <p th:if="${county == T(org.codeforamerica.shiba.County).Other}" class="spacing-below-35 text--help"
-                       id="submission-date"
-                       th:text="#{success.application-submitted-other(${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)})}"></p>
-                </div>
-                <div class="grid__item spacing-above-35 bottom-horizontal-line-dark-grey">
-                    <h2 class="h3" th:text="#{success.whats-next}"></h2>
-                    <div class="grid-ignore-mobile">
-                        <div class="success-icons grid__item width-one-sixth spacing-below-15">
-                            <div th:replace="fragments/icons/icon-download :: icon-download"></div>
-                        </div>
-                        <div class="grid__item width-five-sixths">
-                            <div class="spacing-below-15" th:text="#{success.download-my-application}"></div>
-                            <th:block th:if="${documents.contains(T(org.codeforamerica.shiba.output.Document).CAF)}">
-                                <h3><a class="button--link" href="/download" th:text="#{success.combined-application}"></a></h3>
-                            </th:block>
-                            <th:block th:if="${documents.contains(T(org.codeforamerica.shiba.output.Document).CCAP)}">
-                                <h3><a class="button--link" href="/download-ccap" th:text="#{success.child-care-application}"></a></h3>
-                            </th:block>
-                        </div>
-                    </div>
+  <div th:replace="fragments/toolbar :: toolbar"></div>
+  <div th:replace="fragments/demoBanner :: demoBanner"></div>
+  <section class="slab slab--shiba">
+    <div class="grid-ignore-mobile">
+      <div class="card spacing-above-0">
 
-                    <div class="grid-ignore-mobile spacing-below-35">
-                        <div class="success-icons grid__item width-one-sixth spacing-below-15">
-                            <div th:replace="fragments/icons/icon-communications :: icon-communications"></div>
-                        </div>
-                        <div class="grid__item width-five-sixths">
-                            <div th:utext="${successMessage}" class="width-five-sixths"></div>
-                        </div>
-                    </div>
-
-                    <div class="grid-ignore-mobile spacing-below-35">
-                        <div class="success-icons grid__item width-one-sixth spacing-below-15">
-                            <div th:replace="fragments/icons/icon-documents :: icon-documents"></div>
-                        </div>
-                        <div class="grid__item width-five-sixths">
-                            <div th:text="#{success.additional-documents}" class="width-five-sixths"></div>
-                        </div>
-                    </div>
-				</div>
-				<div id="healthcareCoverage" class="grid-ignore-mobile spacing-below-35 spacing-above-35 bottom-horizontal-line-dark-grey" th:if="${doesNotHaveHealthcare}">
-                       <div class="success-icons grid__item width-one-sixth spacing-below-15">
-                           <div th:replace="fragments/icons/icon-healthcare :: icon-healthcare"></div>
-                       </div>
-                       <div class="grid__item width-five-sixths">
-                           <div th:utext="#{success.healthcare}" class="width-five-sixths"></div>
-                       </div>
-                </div>
-                <div class="form-group " th:if="${sentiment == null || feedbackText == null}">
-                    <h2 class="h3 spacing-above-35">
-                        <label th:text="#{success.how-was-your-experience-filling-out-the-combined-benefits-application}"
-                               for="feedback-textarea"></label>
-                    </h2>
-                    <form id="page-form" method="post" th:action="'/submit-feedback'">
-                        <div th:if="${sentiment == null}" class="feedback-buttons-group spacing-below-25">
-                            <input type="radio" class="hide-radio-circle" id="happy" name="sentiment" value="HAPPY">
-                            <label class="feedback-buttons" for="happy">
-                                <i class="icon-sentiment_satisfied"></i>
-                                <div th:text="#{success.great}"></div>
-                            </label>
-                            <input type="radio" class="hide-radio-circle" id="meh" name="sentiment" value="MEH">
-                            <label class="feedback-buttons" for="meh">
-                                <i class="icon-sentiment_neutral"></i>
-                                <div th:text="#{success.ok}"></div>
-                            </label>
-                            <input type="radio" class="hide-radio-circle" id="sad" name="sentiment" value="SAD">
-                            <label class="feedback-buttons" for="sad">
-                                <i class="icon-sentiment_dissatisfied"></i>
-                                <div th:text="#{success.not-good}"></div>
-                            </label>
-                        </div>
-                        <textarea th:if="${feedbackText == null}"
-                                  autocomplete="off" autocapitalize="off" spellcheck="false"
-                                  class="textarea" rows="2"
-                                  name="feedback" id="feedback-textarea"
-                                  th:placeholder="#{success.do-you-have-any-feedback-for-us}"></textarea>
-                        <p class="text--error" th:if="${feedbackFailure != null}">
-                            <i class="icon-warning"></i>
-                            <span th:text="${feedbackFailure}"></span>
-                        </p>
-                        <p class="text--green" th:if="${feedbackSuccess != null}">
-                            <i class="icon-check_circle"></i>
-                            <span th:text="${feedbackSuccess}"></span>
-                        </p>
-                        <button id="form-submit-button" type="submit" class="button button--primary spacing-above-35"
-                                th:text="#{success.submit-feedback}"></button>
-                    </form>
-                </div>
-                <p class="text--green" th:if="${sentiment != null && feedbackText != null && feedbackSuccess != null}">
-                    <i class="icon-check_circle"></i>
-                    <span th:text="${feedbackSuccess}"></span>
-                </p>
-            </div>
+        <div class="grid__item bottom-horizontal-line-dark-grey">
+          <div
+              th:replace="fragments/icons/icon-submission-success :: icon-submission-success"></div>
+          <h1 th:if="${!hasUploadDocuments}" class="h2 spacing-below-0 spacing-above-10"
+              th:text="|#{success.done-your-application-has-been-submitted}|"></h1>
+          <h1 th:if="${hasUploadDocuments}" class="h2 spacing-below-0 spacing-above-10"
+              th:text="|#{success.done-your-application-and-docs-have-been-submitted}|"></h1>
+          <h2 hidden id="application-id"
+              th:text="|#{success.confirmation-number}: ${applicationId}|"></h2>
+          <p th:if="${county != T(org.codeforamerica.shiba.County).Other}"
+             class="spacing-below-35 spacing-above-15 text--help"
+             id="submission-date"
+             th:text="#{success.application-submitted(${county.displayName()}, ${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)})}"></p>
+          <p th:if="${county == T(org.codeforamerica.shiba.County).Other}"
+             class="spacing-below-35 spacing-above-15 text--help"
+             id="submission-date"
+             th:text="#{success.application-submitted-other(${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)})}"></p>
         </div>
-    </section>
+
+        <div class="grid__item spacing-above-35 bottom-horizontal-line-dark-grey">
+          <h2 class="h3" th:text="#{success.helpful-resources}"></h2>
+          <div class="grid-ignore-mobile">
+            <div class="success-icons grid__item width-one-sixth spacing-above-5 spacing-below-0">
+              <div th:replace="fragments/icons/icon-download :: icon-download"></div>
+            </div>
+            <div class="grid__item width-five-sixths">
+              <div class="spacing-above-0 spacing-below-15"
+                   th:text="#{success.download-my-application}"></div>
+              <th:block
+                  th:if="${documents.contains(T(org.codeforamerica.shiba.output.Document).CAF)}">
+                <div class="spacing-below-10">
+                  <a class="link--subtle" href="/download" id="download-caf"
+                     th:text="#{success.combined-application}"></a>
+                </div>
+              </th:block>
+              <th:block
+                  th:if="${documents.contains(T(org.codeforamerica.shiba.output.Document).CCAP)}">
+                <div>
+                  <a class="link--subtle spacing-below-0" href="/download-ccap" id="download-ccap"
+                     th:text="#{success.child-care-application}"></a>
+                </div>
+              </th:block>
+            </div>
+          </div>
+
+          <div class="grid-ignore-mobile spacing-above-35 spacing-below-35">
+            <div class="success-icons grid__item width-one-sixth spacing-above-5">
+              <div th:replace="fragments/icons/icon-documents :: icon-documents"></div>
+            </div>
+            <div class="grid__item width-five-sixths">
+              <span th:utext="#{success.additional-documents}"></span>
+            </div>
+          </div>
+        </div>
+
+        <div id="healthcareCoverage"
+             class="grid-ignore-mobile spacing-below-35 spacing-above-35"
+             th:if="${doesNotHaveHealthcare}">
+          <h2 class="h3" th:text="#{success.apply-for-healthcare-coverage}"></h2>
+          <div class="success-icons grid__item width-one-sixth spacing-above-0 spacing-below-15">
+            <div th:replace="fragments/icons/icon-healthcare :: icon-healthcare"></div>
+          </div>
+          <div class="grid__item width-five-sixths">
+            <div th:utext="#{success.healthcare}" class="width-five-sixths"></div>
+          </div>
+        </div>
+        <!--        <div class="form-group " th:if="${sentiment == null || feedbackText == null}">-->
+        <!--          <h2 class="h3 spacing-above-35">-->
+        <!--            <label-->
+        <!--                th:text="#{success.how-was-your-experience-filling-out-the-combined-benefits-application}"-->
+        <!--                for="feedback-textarea"></label>-->
+        <!--          </h2>-->
+        <!--          <form id="page-form" method="post" th:action="'/submit-feedback'">-->
+        <!--            <div th:if="${sentiment == null}" class="feedback-buttons-group spacing-below-25">-->
+        <!--              <input type="radio" class="hide-radio-circle" id="happy" name="sentiment"-->
+        <!--                     value="HAPPY">-->
+        <!--              <label class="feedback-buttons" for="happy">-->
+        <!--                <i class="icon-sentiment_satisfied"></i>-->
+        <!--                <div th:text="#{success.great}"></div>-->
+        <!--              </label>-->
+        <!--              <input type="radio" class="hide-radio-circle" id="meh" name="sentiment" value="MEH">-->
+        <!--              <label class="feedback-buttons" for="meh">-->
+        <!--                <i class="icon-sentiment_neutral"></i>-->
+        <!--                <div th:text="#{success.ok}"></div>-->
+        <!--              </label>-->
+        <!--              <input type="radio" class="hide-radio-circle" id="sad" name="sentiment" value="SAD">-->
+        <!--              <label class="feedback-buttons" for="sad">-->
+        <!--                <i class="icon-sentiment_dissatisfied"></i>-->
+        <!--                <div th:text="#{success.not-good}"></div>-->
+        <!--              </label>-->
+        <!--            </div>-->
+        <!--            <textarea th:if="${feedbackText == null}"-->
+        <!--                      autocomplete="off" autocapitalize="off" spellcheck="false"-->
+        <!--                      class="textarea" rows="2"-->
+        <!--                      name="feedback" id="feedback-textarea"-->
+        <!--                      th:placeholder="#{success.do-you-have-any-feedback-for-us}"></textarea>-->
+        <!--            <p class="text&#45;&#45;error" th:if="${feedbackFailure != null}">-->
+        <!--              <i class="icon-warning"></i>-->
+        <!--              <span th:text="${feedbackFailure}"></span>-->
+        <!--            </p>-->
+        <!--            <p class="text&#45;&#45;green" th:if="${feedbackSuccess != null}">-->
+        <!--              <i class="icon-check_circle"></i>-->
+        <!--              <span th:text="${feedbackSuccess}"></span>-->
+        <!--            </p>-->
+        <!--            <button id="form-submit-button" type="submit"-->
+        <!--                    class="button button&#45;&#45;primary spacing-above-35"-->
+        <!--                    th:text="#{success.submit-feedback}"></button>-->
+        <!--          </form>-->
+        <!--        </div>-->
+        <!--        <p class="text&#45;&#45;green"-->
+        <!--           th:if="${sentiment != null && feedbackText != null && feedbackSuccess != null}">-->
+        <!--          <i class="icon-check_circle"></i>-->
+        <!--          <span th:text="${feedbackSuccess}"></span>-->
+        <!--        </p>-->
+        <!--      </div>-->
+      </div>
+  </section>
 </div>
 <div th:replace="fragments/footer :: footer"></div>
 </body>
