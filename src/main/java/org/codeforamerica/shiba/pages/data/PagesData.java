@@ -151,7 +151,8 @@ public class PagesData extends HashMap<String, PageData> {
                 resolve(featureFlags, pageWorkflowConfiguration, pageConfiguration.getSubtleLinkTextKey()),
                 pageWorkflowConfiguration.getSubtleLinkTargetPage(),
                 pageConfiguration.getHasPrimaryButton(),
-                pageConfiguration.getContextFragment()
+                pageConfiguration.getContextFragment(),
+                pageConfiguration.getAlertBox()
         );
     }
 

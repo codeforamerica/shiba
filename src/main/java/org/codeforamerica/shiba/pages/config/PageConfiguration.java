@@ -18,6 +18,7 @@ public class PageConfiguration {
     private Boolean hasPrimaryButton = true;
     private String contextFragment;
     private boolean isCustomPage = false;
+    private AlertBox alertBox;
 
     public List<FormInput> getFlattenedInputs() {
         return this.inputs.stream()

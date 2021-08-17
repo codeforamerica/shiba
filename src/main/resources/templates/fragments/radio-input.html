@@ -1,23 +1,26 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="radio-input (input, data)"
-          th:with="inputData=${data.get(input.name)},formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)}"
->
+          th:with="inputData=${data.get(input.name)},formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)}">
     <div class="form-group"
          th:classappend="${!inputData.valid(data)} ? 'form-group--error' : ''">
-        <div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${input})"></div>
-        <p class="text--help"
-           th:if="${input.helpMessageKey != null}"
-           th:text="#{${input.helpMessageKey}}"></p>
-        <th:block th:each="option: ${input.options.selectableOptions}">
-            <label th:for="${#ids.next(input.name)}" class="radio-button">
-                <input type="radio" th:name="${formInputName}" th:id="${#ids.seq(input.name)}"
-                       th:value="${option.value}"
-                       th:checked="${inputData.value.contains(option.value)}"
-                       th:attrappend="data-follow-up=${input.followUpValues.contains(option.value)} ? |#${input.name}-follow-up| : ''">
-                <span th:text="#{${option.messageKey}}"></span>
-            </label>
-        </th:block>
+        <div role="group" aria-labelledby="page-header" th:remove="${!page.isSingleCheckboxOrRadioInputPage()}? tag">
+            <fieldset>
+                <div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${input})"></div>
+                <p class="text--help"
+                   th:if="${input.helpMessageKey != null}"
+                   th:text="#{${input.helpMessageKey }}"></p>
+                <th:block th:each="option: ${input.options.selectableOptions}">
+                    <label th:for="${#ids.next(input.name)}" class="radio-button">
+                        <input type="radio" th:name="${formInputName}" th:id="${#ids.seq(input.name)}"
+                               th:value="${option.value}"
+                               th:checked="${inputData.value.contains(option.value)}"
+                               th:attrappend="data-follow-up=${input.followUpValues.contains(option.value)} ? |#${input.name}-follow-up| : ''">
+                        <span th:text="#{${option.messageKey}}"></span>
+                    </label>
+                </th:block>
+            </fieldset>
+        </div>
         <p class="text--error" th:if="${!inputData.valid(data)}">
             <i class="icon-warning"></i>
             <span th:text="#{${input.validationErrorMessageKey}}"></span>

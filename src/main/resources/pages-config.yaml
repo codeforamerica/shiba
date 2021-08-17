@@ -301,9 +301,9 @@ pageDefinitions:
               messageKey: choose-programs.none-of-the-above
               helpIcon: icon-people
               isNone: true
-      - name: noProgramsMessage
-        type: CUSTOM
-        customInputFragment: chooseProgramsAlertBox
+    alertBox:
+      type: CHOOSE_NONE_WARNING
+      message: choose-programs.you-will-be-asked
   - &introBasicInfo
     name: introBasicInfo
     pageTitle: intro-basic-info.title

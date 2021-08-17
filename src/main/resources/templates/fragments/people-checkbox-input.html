@@ -5,34 +5,37 @@
      class="form-group">
     <div class="spacing-above-35 form-group" th:classappend="${!inputData.valid(data)} ? 'form-group--error' : ''">
         <div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${input})"></div>
-        <p class="text--help"
-           th:if="${input.helpMessageKey != null}"
-           th:text="#{${input.helpMessageKey}}"></p>
-        <th:block
-                th:each="fullNameAndId: ${pageDatasources.get(input.datasources[0].pageName).get(input.datasources[0].inputName).value}"
-                th:with="me=#{general.me}">
+        <div th:text="${page.inputs.get(0).type}"></div>
+        <div role="group" aria-labelledby="page-header" th:remove="${!page.isSingleCheckboxOrRadioInputPage()}? tag">
+            <p class="text--help"
+               th:if="${input.helpMessageKey != null}"
+               th:text="#{${input.helpMessageKey}}"></p>
+            <th:block
+                    th:each="fullNameAndId: ${pageDatasources.get(input.datasources[0].pageName).get(input.datasources[0].inputName).value}"
+                    th:with="me=#{general.me}">
 
-            <label th:for="${fullNameAndId}" class="checkbox display-flex">
+                <label th:for="${fullNameAndId}" class="checkbox display-flex">
+                    <input type="checkbox"
+                           th:id="${fullNameAndId}"
+                           th:value="${fullNameAndId}"
+                           th:name="${formInputName}"
+                           th:checked="${inputData.value.contains(fullNameAndId)}">
+                    <span th:text="${T(org.codeforamerica.shiba.pages.PageUtils).householdMemberName(fullNameAndId, me)}"></span>
+                </label>
+            </th:block>
+            <label th:for="none__checkbox" class="checkbox">
                 <input type="checkbox"
-                       th:id="${fullNameAndId}"
-                       th:value="${fullNameAndId}"
+                       th:id="none__checkbox"
+                       th:value="NONE_OF_THE_ABOVE"
                        th:name="${formInputName}"
-                       th:checked="${inputData.value.contains(fullNameAndId)}">
-                <span th:text="${T(org.codeforamerica.shiba.pages.PageUtils).householdMemberName(fullNameAndId, me)}"></span>
+                       th:checked="${inputData.value.contains('NONE_OF_THE_ABOVE')}">
+                <span th:text="#{parent-not-at-home.none-of-the-children-have-parents-living-outside-the-home}"></span>
             </label>
-        </th:block>
-        <label th:for="none__checkbox" class="checkbox">
-            <input type="checkbox"
-                   th:id="none__checkbox"
-                   th:value="NONE_OF_THE_ABOVE"
-                   th:name="${formInputName}"
-                   th:checked="${inputData.value.contains('NONE_OF_THE_ABOVE')}">
-            <span th:text="#{parent-not-at-home.none-of-the-children-have-parents-living-outside-the-home}"></span>
-        </label>
-        <p class="text--error" th:if="${!inputData.valid(data)}">
-            <i class="icon-warning"></i>
-            <span th:text="#{${input.validationErrorMessageKey}}"></span>
-        </p>
+            <p class="text--error" th:if="${!inputData.valid(data)}">
+                <i class="icon-warning"></i>
+                <span th:text="#{${input.validationErrorMessageKey}}"></span>
+            </p>
+        </div>
     </div>
 </div>
 </html>

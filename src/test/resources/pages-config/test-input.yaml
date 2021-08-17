@@ -121,6 +121,70 @@ pageDefinitions:
           datasources:
             - groupName: subworkflow1
             - pageName: firstPage
+  - &pageWithOneOfEachTypeOfInput
+    name: pageWithOneOfEachTypeOfInput
+    pageTitle: pageWithOneOfEachTypeOfInput
+    inputs:
+      - name: editableTextInput
+        type: TEXT
+        promptMessage:
+          promptMessageKey: prompt-message-key
+        helpMessageKey: help-message-key
+        placeholder: general.optional
+      - name: editableLongTextInput
+        type: LONG_TEXT
+        promptMessage:
+          promptMessageKey: prompt-message-key
+        helpMessageKey: help-message-key
+        placeholder: general.optional
+      - name: radioInput
+        type: RADIO
+        promptMessage:
+          promptMessageKey: prompt-message-key
+        options:
+          selectableOptions:
+            - value: "1"
+              messageKey: radio-option-1
+            - value: "2"
+              messageKey: radio-option-2
+      - name: checkboxInput
+        type: CHECKBOX
+        promptMessage:
+          promptMessageKey: prompt-message-key
+        options:
+          selectableOptions:
+            - value: "1"
+              messageKey: checkbox-option-1
+              helpMessageKey: option-help-key
+            - value: "2"
+              messageKey: checkbox-option-2
+            - value: "3"
+              messageKey: none-checkbox-option
+              isNone: true
+      - name: dateInput
+        type: DATE
+      - name: numberInput
+        type: NUMBER
+      - name: selectInput
+        type: SELECT
+        options:
+          selectableOptions:
+            - value: "1"
+              messageKey: select-option-1
+            - value: "2"
+              messageKey: select-option-2
+      - name: moneyInput
+        type: MONEY
+      - name: textArea
+        type: TEXTAREA
+      - name: hourlyWageInput
+        type: HOURLY_WAGE
+      - name: phoneInput
+        type: PHONE
+      - name: ssnInput
+        type: SSN
+      - name: hiddenInput
+        type: HIDDEN
 workflow:
   firstPage:
     pageConfiguration: *firstPage
@@ -138,6 +202,8 @@ workflow:
     pageConfiguration: *pageWithReferenceCheckboxes
     datasources:
       - groupName: subworkflow1
+  pageWithOneOfEachTypeOfInput:
+    pageConfiguration: *pageWithOneOfEachTypeOfInput
   subworkflowPage:
     groupName: subworkflow1
     pageConfiguration:

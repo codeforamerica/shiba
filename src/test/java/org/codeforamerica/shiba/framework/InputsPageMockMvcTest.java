@@ -147,4 +147,11 @@ public class InputsPageMockMvcTest extends AbstractFrameworkTest {
         assertThat(testPage.getInputValue("moneyInput")).isEqualTo(moneyInputValue);
         assertThat(testPage.getInputValue("hourlyWageInput")).isEqualTo(hourlyWageValue);
     }
+
+    @Test
+    void shouldOnlyWrapCheckboxAndRadioInputsWithFieldsetAndLegendTags() throws Exception {
+        var testPage = getFormPage("pageWithOneOfEachTypeOfInput");
+        assertThat(testPage.getElementsByTag("legend")).hasSize(2);
+        assertThat(testPage.getElementsByTag("fieldset")).hasSize(2);
+    }
 }
