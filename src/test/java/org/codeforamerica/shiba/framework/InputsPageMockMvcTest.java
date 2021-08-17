@@ -149,9 +149,9 @@ public class InputsPageMockMvcTest extends AbstractFrameworkTest {
     }
 
     @Test
-    void shouldOnlyWrapCheckboxAndRadioInputsWithFieldsetAndLegendTags() throws Exception {
+    void shouldOnlyWrapCheckboxRadioAndDateInputsWithFieldsetAndLegendTags() throws Exception {
         var testPage = getFormPage("pageWithOneOfEachTypeOfInput");
-        assertThat(testPage.getElementsByTag("legend")).hasSize(2);
-        assertThat(testPage.getElementsByTag("fieldset")).hasSize(2);
+        assertThat(testPage.getElementsByTag("legend")).hasSize(3);
+        assertThat(testPage.getElementsByTag("fieldset")).hasSize(3);
     }
 }

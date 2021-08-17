@@ -163,6 +163,8 @@ pageDefinitions:
               isNone: true
       - name: dateInput
         type: DATE
+        promptMessage:
+          promptMessageKey: prompt-message-key
       - name: numberInput
         type: NUMBER
       - name: selectInput

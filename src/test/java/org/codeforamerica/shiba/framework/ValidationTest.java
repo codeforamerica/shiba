@@ -328,7 +328,7 @@ public class ValidationTest extends AbstractFrameworkTest {
         })
         void shouldFailValidationForDateWhenValueIsNotAValidDate(String month, String day,
                                                                  String year) throws Exception {
-            postExpectingFailureAndAssertErrorDisplaysForThatInput("datePage", "dateInput", List.of(month, day, year));
+            postExpectingFailureAndAssertErrorDisplaysForThatDateInput("datePage", "dateInput", List.of(month, day, year));
         }
 
         @ParameterizedTest
@@ -347,7 +347,7 @@ public class ValidationTest extends AbstractFrameworkTest {
         })
         void shouldFailValidationForDobValidWhenValueIsAnInvalidDate(String month, String day,
                                                                      String year) throws Exception {
-            postExpectingFailureAndAssertErrorDisplaysForThatInput("dobValidPage", "dobValidInput", List.of(month, day, year));
+            postExpectingFailureAndAssertErrorDisplaysForThatDateInput("dobValidPage", "dobValidInput", List.of(month, day, year));
         }
 
         @ParameterizedTest

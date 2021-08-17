@@ -428,6 +428,12 @@ public class AbstractShibaMockMvcTest {
         assertPageHasInputError(pageName, inputName);
     }
 
+    protected void postExpectingFailureAndAssertErrorDisplaysForThatDateInput(String pageName, String inputName,
+                                                                          List<String> values) throws Exception {
+        postExpectingFailure(pageName, inputName, values);
+        assertPageHasDateInputError(pageName, inputName);
+    }
+
 
     protected void postExpectingFailureAndAssertErrorDisplaysOnDifferentInput(String pageName, String inputName,
                                                                               String value,
@@ -466,6 +472,11 @@ public class AbstractShibaMockMvcTest {
     protected void assertPageHasInputError(String pageName, String inputName) throws Exception {
         var page = new FormPage(getPage(pageName));
         assertTrue(page.hasInputError(inputName));
+    }
+
+    protected void assertPageHasDateInputError(String pageName, String inputName) throws Exception {
+        var page = new FormPage(getPage(pageName));
+        assertTrue(page.hasDateInputError());
     }
 
     protected void assertPageDoesNotHaveInputError(String pageName, String inputName) throws Exception {
