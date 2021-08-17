@@ -32,12 +32,12 @@ public class SuccessMessageService {
 
         List<String> paragraphs = new ArrayList<>();
 
-        // Snap timing
+        // Expedited Snap timing
         if (isSnapExpeditedEligible) {
             paragraphs.add(lms.getMessage("success.expedited-snap-timing"));
         }
 
-        // Ccap timing
+        // Expedited Ccap timing
         if (isCcapExpeditedEligible) {
             paragraphs.add(lms.getMessage("success.expedited-ccap-timing"));
         }
@@ -49,12 +49,6 @@ public class SuccessMessageService {
             paragraphs.add(lms.getMessage("success.contact-promise", List.of(programsInNextStepLetter)));
         }
 
-        // Interview expectation
-        boolean onlyCcap = programs.stream().allMatch(p -> p.equals(CCAP));
-        if (!onlyCcap) {
-            paragraphs.add(lms.getMessage("success.you-will-need-to-complete-an-interview"));
-        }
-
         // Suggested Action
         if (isSnapExpeditedEligible && !programs.contains(CCAP)) {
             paragraphs.add(lms.getMessage("success.expedited-snap-suggested-action"));
@@ -63,6 +57,44 @@ public class SuccessMessageService {
         }
 
         return String.join("<br><br>", paragraphs);
+    }
+
+    public List<SuccessMessage> getSuccessMessages(List<String> programs,
+                                    SnapExpeditedEligibility snapExpeditedEligibility,
+                                    CcapExpeditedEligibility ccapExpeditedEligibility,
+                                    Locale locale) {
+        boolean isSnapExpeditedEligible = snapExpeditedEligibility == SnapExpeditedEligibility.ELIGIBLE;
+        boolean isCcapExpeditedEligible = ccapExpeditedEligibility == CcapExpeditedEligibility.ELIGIBLE;
+
+        LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
+        List<SuccessMessage> messages = new ArrayList<>();
+
+        // Expedited Snap timing
+        if (isSnapExpeditedEligible) {
+            messages.add(new SuccessMessage("fragments/icons/icon-phone :: icon-phone", lms.getMessage("success.expedited-snap-timing")));
+        }
+
+        // Expedited Ccap timing
+        if (isCcapExpeditedEligible) {
+            messages.add(new SuccessMessage("fragments/icons/icon-letter :: icon-letter", lms.getMessage("success.expedited-ccap-timing")));
+        }
+
+        // Contact Promise
+        List<String> nextStepLetterPrograms = getNextStepLetterPrograms(programs, isSnapExpeditedEligible, isCcapExpeditedEligible, lms);
+        if (!nextStepLetterPrograms.isEmpty()) {
+            String programsInNextStepLetter = listToString(nextStepLetterPrograms, lms);
+            String message = lms.getMessage("success.contact-promise", List.of(programsInNextStepLetter));
+            messages.add(new SuccessMessage("fragments/icons/icon-letter :: icon-letter", message));
+        }
+
+        // Suggested Action
+        if (isSnapExpeditedEligible && !programs.contains(CCAP)) {
+            messages.add(new SuccessMessage("fragments/icons/icon-communicate :: icon-communicate", lms.getMessage("success.expedited-snap-suggested-action")));
+        } else {
+            messages.add(new SuccessMessage("fragments/icons/icon-communicate :: icon-communicate", lms.getMessage("success.standard-suggested-action")));
+        }
+
+        return messages;
     }
 
     private List<String> getNextStepLetterPrograms(List<String> allPrograms,
@@ -94,5 +126,15 @@ public class SuccessMessageService {
         }
 
         return nextStepLetterPrograms;
+    }
+
+    public static class SuccessMessage {
+        public String icon;
+        public String message;
+
+        public SuccessMessage(String icon, String message) {
+            this.icon = icon;
+            this.message = message;
+        }
     }
 }

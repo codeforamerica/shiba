@@ -1,0 +1,16 @@
+<div th:fragment="nextSteps">
+    <div class="grid__item spacing-below-15">
+        <div th:replace="fragments/icons/icon-next-steps :: icon-next-steps"></div>
+    </div>
+    <div class="grid__item">
+        <h1 class="h2 spacing-below-60 spacing-above-0" th:text="#{next-steps.title}"></h1>
+    </div>
+    <div class="grid__item width-one-whole spacing-below-60">
+        <div th:replace="fragments/successMessages :: successMessages"></div>
+
+        <p class="text--green" th:if="${!data.get('contactInfo').get('email').value[0].isEmpty()}">
+            <i class="icon-check_circle"></i>
+            <span th:text="#{next-steps.your-next-steps-have-been-emailed-to(${data.get('contactInfo').get('email').value[0]})}"></span>
+        </p>
+    </div>
+</div>

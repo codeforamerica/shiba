@@ -299,6 +299,7 @@ public class PageController {
 
         if (landmarkPagesConfiguration.isPostSubmitPage(pageName)) {
             model.put("docRecommendations", docRecommendationMessageService.getPageSpecificRecommendationsMessage(applicationData, locale, pageName));
+            model.put("successMessages", successMessageService.getSuccessMessages(new ArrayList<>(programs), snapExpeditedEligibility, ccapExpeditedEligibility, locale));
         }
 
         if (landmarkPagesConfiguration.isTerminalPage(pageName)) {
@@ -313,7 +314,6 @@ public class PageController {
             String inputData = pagesData.getPageInputFirstValue("healthcareCoverage", "healthcareCoverage");
             boolean hasHealthcare = "YES".equalsIgnoreCase(inputData);
             model.put("doesNotHaveHealthcare", !hasHealthcare);
-            model.put("successMessage", successMessageService.getSuccessMessage(new ArrayList<>(programs), snapExpeditedEligibility, ccapExpeditedEligibility, locale));
         }
 
         if (landmarkPagesConfiguration.isLaterDocsTerminalPage(pageName)) {

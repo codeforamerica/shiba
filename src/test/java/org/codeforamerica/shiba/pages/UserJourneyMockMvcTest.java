@@ -150,7 +150,7 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
 
         // skipping ahead to signing application
         submitApplication();
-        assertNavigationRedirectsToCorrectNextPage("signThisApplication", "success");
+        assertNavigationRedirectsToCorrectNextPage("signThisApplication", "nextSteps");
     }
 
     protected void completeFlowFromReviewInfoToDisability(String... applicantPrograms) throws Exception {
