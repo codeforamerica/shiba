@@ -32,6 +32,11 @@ public class FormPage {
         return element != null;
     }
 
+    public boolean hasDateInputError() {
+        Element element = html.select("fieldset ~ p.text--error").first();
+        return element != null;
+    }
+
     public Element getInputError(String inputName) {
         return html.select("input[name='%s[]'] ~ p.text--error".formatted(inputName)).first();
     }
