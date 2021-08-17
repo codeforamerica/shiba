@@ -1,14 +1,13 @@
 package org.codeforamerica.shiba.pages;
 
 import org.codeforamerica.shiba.County;
+import org.codeforamerica.shiba.pages.data.*;
 import org.codeforamerica.shiba.testutilities.AbstractPageControllerTest;
 import org.codeforamerica.shiba.testutilities.PageDataBuilder;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
-import org.codeforamerica.shiba.pages.data.Subworkflow;
-import org.codeforamerica.shiba.pages.data.Subworkflows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -36,6 +35,10 @@ public class SuccessMessageServiceTest extends AbstractPageControllerTest {
         applicationData.setStartTimeOnce(Instant.now());
         var id = "some-id";
         applicationData.setId(id);
+        PageData pageData = new PageData();
+        pageData.put("email", InputData.builder().value(List.of("test@example.com")).build());
+        applicationData.getPagesData().put("contactInfo", pageData);
+
         Application application = Application.builder()
                 .id(id)
                 .county(County.Hennepin)
@@ -160,9 +163,9 @@ public class SuccessMessageServiceTest extends AbstractPageControllerTest {
     }
 
     private void setPrograms(List<String> programs) {
-        applicationData.setPagesData(new PagesDataBuilder().build(
-                List.of(new PageDataBuilder("choosePrograms", Map.of("programs", programs))))
-        );
+        PageData programsPage = new PageData();
+        programsPage.put("programs", InputData.builder().value(programs).build());
+        applicationData.getPagesData().put("choosePrograms", programsPage);
     }
 
     private void assertCorrectMessage(SnapExpeditedEligibility snapExpeditedEligibility, CcapExpeditedEligibility ccapExpeditedEligibility, String expectedMessage) throws Exception {
