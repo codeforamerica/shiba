@@ -62,6 +62,12 @@ public class LaterDocsJourneyTest extends JourneyTest {
         uploadPdfFile();
         waitForDocumentUploadToComplete();
         testPage.clickButton("Submit my documents");
+        assertThat(driver.getTitle()).isEqualTo("Doc submit confirmation");
+        testPage.clickButton("No, add more documents"); // Go back
+        assertThat(driver.getTitle()).isEqualTo("Upload Documents");
+        
+        testPage.clickButton("Submit my documents");
+        testPage.clickButton("Yes, submit and finish");
         assertThat(driver.getTitle()).isEqualTo("Documents Sent");
         verify(pageEventPublisher).publish(any());
     }

@@ -142,6 +142,7 @@ conditionDefinitions:
           - *noOneChoseCASH?
           - *noOneChoseEA?
           - *noOneChoseGRH?
+          - *noOneChoseCCAP?
   - &skipRecommendationForProofOfHousingCosts?
     logicalOperator: OR
     conditions:
@@ -181,6 +182,12 @@ conditionDefinitions:
             value: VISION_INSURANCE_PREMIUMS
             matcher: DOES_NOT_CONTAIN
       - *noOneChoseCCAP?
+  - &skipDocumentUpload?
+    conditions:
+      - *skipRecommendationForProofOfIncome?
+      - *skipRecommendationForProofOfHousingCosts?
+      - *skipRecommendationForProofOfJobLoss?
+      - *skipRecommendationForProofOfMedicalExpenses?
   - &livesAloneOrIsApplicantsJob?
     logicalOperator: OR
     conditions:
@@ -1349,10 +1356,23 @@ pageDefinitions:
         validators:
           - validation: NOT_BLANK
             errorMessageKey: general.validation.make-sure-you-answer-this-question
+  - &addingDocuments
+    name: addingDocuments
+    pageTitle: adding-documents.title
+    hasPrimaryButton: false
+  - &howToAddDocuments
+    name: howToAddDocuments
+    pageTitle: how-to-add-documents.title
   - &documentRecommendation
     name: documentRecommendation
     pageTitle: document-recommendation.title
     customPage: true
+  - &documentOffboarding
+    name: documentOffboarding
+    pageTitle: document-offboarding.title
+    headerKey: document-offboarding.finish-your-application-and-add-documents-on-MNbenefits-later
+    contextFragment: computerWithCheckContextFragment
+    hasPrimaryButton: false
   - &uploadDocuments
     name: uploadDocuments
     pageTitle: upload-documents.title
@@ -1362,6 +1382,12 @@ pageDefinitions:
     headerKey: upload-documents-delete-warning.you-are-about-to-delete
     pageTitle: upload-documents-delete-warning.title
     customPage: true
+  - &documentSubmitConfirmation
+    name: documentSubmitConfirmation
+    pageTitle: document-submit-confirmation.title
+    headerKey: document-submit-confirmation.ready-to-submit-your-documents
+    contextFragment: documentsSuccessContextFragment
+    hasPrimaryButton: false
   - &identifyCounty
     name: identifyCounty
     headerKey: identify-county.select-your-county
@@ -1490,7 +1516,7 @@ pageDefinitions:
             - value: Pennington
               messageKey: identify-county-pennington
             - value: PineCounty
-              messageKey: identify-county-pine-county
+              messageKey: identify-county-pine
             - value: Pipestone
               messageKey: identify-county-pipestone
             - value: Polk
@@ -2825,6 +2851,9 @@ workflow:
     subtleLinkTargetPage: doYouNeedHelpImmediately
     pageConfiguration: *reviewInfo
     nextPages:
+      - pageName: startHousehold
+        flow: FULL
+        condition: *onlyApplyingForOthers?
       - pageName: addHouseholdMembers
         flow: FULL
     datasources:
@@ -3602,12 +3631,42 @@ workflow:
   signThisApplication:
     pageConfiguration: *signThisApplication
     nextPages:
+      - pageName: addingDocuments
+  addingDocuments:
+    pageConfiguration: *addingDocuments
+    nextPages:
+      - pageName: howToAddDocuments
+    datasources:
+      - pageName: choosePrograms
+      - pageName: employmentStatus
+      - pageName: homeExpenses
+      - pageName: workSituation
+      - pageName: addHouseholdMembers
+      - groupName: household
+        pageName: householdMemberInfo
+        optional: "true"
+      - pageName: medicalExpenses
+    skipCondition: *skipDocumentUpload?
+  howToAddDocuments:
+    pageConfiguration: *howToAddDocuments
+    nextPages:
       - pageName: documentRecommendation
+    datasources:
+      - pageName: choosePrograms
+      - pageName: employmentStatus
+      - pageName: homeExpenses
+      - pageName: workSituation
+      - pageName: addHouseholdMembers
+      - groupName: household
+        pageName: householdMemberInfo
+        optional: "true"
+      - pageName: medicalExpenses
+    skipCondition: *skipDocumentUpload?
   documentRecommendation:
     pageConfiguration: *documentRecommendation
     nextPages:
       - pageName: uploadDocuments
-      - pageName: success
+      - pageName: documentOffboarding
     datasources:
       - pageName: choosePrograms
       - pageName: employmentStatus
@@ -3618,16 +3677,11 @@ workflow:
         pageName: householdMemberInfo
         optional: "true"
       - pageName: medicalExpenses
-    skipCondition:
-      conditions:
-        - *skipRecommendationForProofOfIncome?
-        - *skipRecommendationForProofOfHousingCosts?
-        - *skipRecommendationForProofOfJobLoss?
-        - *skipRecommendationForProofOfMedicalExpenses?
+    skipCondition: *skipDocumentUpload?
   uploadDocuments:
     pageConfiguration: *uploadDocuments
     nextPages:
-      - pageName: success
+      - pageName: documentSubmitConfirmation
     datasources:
       - pageName: choosePrograms
       - pageName: employmentStatus
@@ -3638,16 +3692,43 @@ workflow:
         pageName: householdMemberInfo
         optional: "true"
       - pageName: medicalExpenses
-    skipCondition:
-      conditions:
-        - *skipRecommendationForProofOfIncome?
-        - *skipRecommendationForProofOfHousingCosts?
-        - *skipRecommendationForProofOfJobLoss?
-        - *skipRecommendationForProofOfMedicalExpenses?
+    skipCondition: *skipDocumentUpload?
   uploadDocumentsDeleteWarningPage:
     pageConfiguration: *uploadDocumentsDeleteWarningPage
     nextPages:
       - pageName: uploadDocuments
+  documentSubmitConfirmation:
+    pageConfiguration: *documentSubmitConfirmation
+    nextPages:
+      - pageName: success
+      - pageName: uploadDocuments
+    datasources:
+      - pageName: choosePrograms
+      - pageName: employmentStatus
+      - pageName: homeExpenses
+      - pageName: workSituation
+      - pageName: addHouseholdMembers
+      - groupName: household
+        pageName: householdMemberInfo
+        optional: "true"
+      - pageName: medicalExpenses
+    skipCondition: *skipDocumentUpload?
+  documentOffboarding:
+    pageConfiguration: *documentOffboarding
+    nextPages:
+      - pageName: success
+      - pageName: documentRecommendation
+    datasources:
+      - pageName: choosePrograms
+      - pageName: employmentStatus
+      - pageName: homeExpenses
+      - pageName: workSituation
+      - pageName: addHouseholdMembers
+      - groupName: household
+        pageName: householdMemberInfo
+        optional: "true"
+      - pageName: medicalExpenses
+    skipCondition: *skipDocumentUpload?
   identifyCounty:
     pageConfiguration: *identifyCounty
     nextPages:
@@ -3893,9 +3974,13 @@ landmarkPages:
     - prepareToApply
     - addingDocsIsEasy
   postSubmitPages:
+    - addingDocuments
+    - howToAddDocuments
     - documentRecommendation
     - uploadDocuments
     - uploadDocumentsDeleteWarningPage
+    - documentOffboarding
+    - documentSubmitConfirmation
     - success
     - matchInfo
     - documentsSent

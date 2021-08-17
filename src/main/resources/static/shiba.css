@@ -529,7 +529,7 @@ input[id='sad']:checked + .feedback-buttons {
 }
 
 .address-validation .radio-button.is-selected {
-    border: 2px #00891B solid;
+    border: 2px #008060 solid;
     border-radius: 5px;
     background-color: unset;
 }
@@ -878,6 +878,11 @@ input[type=number] {
     margin-left: 16px;
 }
 
+.notice--success {
+    background-color: #EEFFE6;
+    border:2px solid #008060;
+}
+
 /*
  * CSS from dropzone below this comment
  *
@@ -1207,4 +1212,8 @@ input[type=number] {
 
 .hidden {
     display: none !important;
+}
+
+.underline {
+    text-decoration: underline;
 }

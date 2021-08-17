@@ -92,14 +92,14 @@ dependencies {
     implementation 'org.apache.pdfbox:pdfbox:2.0.24'
     implementation 'org.apache.commons:commons-lang3'
     implementation 'org.apache.commons:commons-text:1.9'
-    implementation 'org.jetbrains:annotations:21.0.1'
+    implementation 'org.jetbrains:annotations:22.0.0'
     implementation 'commons-validator:commons-validator:1.7'
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.apache.httpcomponents:httpclient'
     implementation 'io.sentry:sentry-logback:5.0.1'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'com.google.crypto.tink:tink:1.6.1'
-    implementation 'org.flywaydb:flyway-core:7.12.1'
+    implementation 'org.flywaydb:flyway-core:7.13.0'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'com.mixpanel:mixpanel-java:1.5.0'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -122,7 +122,7 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.seleniumhq.selenium:selenium-java'
-    testImplementation 'de.redsix:pdfcompare:1.1.59'
+    testImplementation 'de.redsix:pdfcompare:1.1.60'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
         exclude group: 'com.vaadin.external.google', module: 'android-json'
@@ -136,7 +136,7 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'io.percy:percy-java-selenium:1.0.0'
     testImplementation 'com.deque.html.axe-core:selenium:4.2.2'
-    testImplementation group: 'org.jsoup', name: 'jsoup', version: '1.14.1'
+    testImplementation group: 'org.jsoup', name: 'jsoup', version: '1.14.2'
 }
 
 compileJava {

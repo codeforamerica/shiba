@@ -24,7 +24,6 @@ import static org.mockito.Mockito.when;
 public class AccessibilityJourneyTest extends JourneyTest {
     protected static List<Rule> resultsList = new ArrayList<>();
     protected static Results results;
-    protected AccessibilityTestPage testPage;
 
     @MockBean
     protected CombinedDocumentRepositoryService documentRepositoryService;
@@ -33,6 +32,9 @@ public class AccessibilityJourneyTest extends JourneyTest {
     @BeforeEach
     public void setUp() throws IOException {
         super.setUp();
+    }
+
+    protected void initTestPage() {
         testPage = new AccessibilityTestPage(driver);
     }
 
@@ -40,7 +42,7 @@ public class AccessibilityJourneyTest extends JourneyTest {
     void afterEach() {
         AxeBuilder builder = new AxeBuilder();
         results = builder.analyze(driver);
-        resultsList.addAll(testPage.resultsList);
+        resultsList.addAll(((AccessibilityTestPage)testPage).getResultsList());
     }
 
     @AfterAll

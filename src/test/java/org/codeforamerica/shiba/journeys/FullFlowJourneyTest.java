@@ -1,6 +1,5 @@
 package org.codeforamerica.shiba.journeys;
 
-import org.codeforamerica.shiba.testutilities.TestUtils;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -325,12 +324,15 @@ public class FullFlowJourneyTest extends JourneyTest {
         // Upload documents
         testPage.enter("applicantSignature", "this is my signature");
         testPage.clickButton("Submit");
-        testPage.clickButton("Upload documents now");
+        testPage.clickContinue();
+        testPage.clickContinue();
+        testPage.clickButton("Add documents now");
 
         testDocumentUploads();
 
         // Finish uploading docs and download PDFS
         testPage.clickButton("Submit my documents");
+        testPage.clickButton("Yes, submit and finish");
         applicationId = downloadPdfs(true, true);
 
         // CCAP fields

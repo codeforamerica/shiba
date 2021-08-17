@@ -2,8 +2,6 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
-import org.codeforamerica.shiba.testutilities.PageDataBuilder;
-import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.mnit.MnitCountyInformation;
@@ -13,6 +11,8 @@ import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.caf.CoverPageInputsMapper;
 import org.codeforamerica.shiba.pages.data.*;
+import org.codeforamerica.shiba.testutilities.PageDataBuilder;
+import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -21,6 +21,7 @@ import org.springframework.context.support.StaticMessageSource;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -28,33 +29,38 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.output.caf.CoverPageInputsMapper.CHILDCARE_WAITING_LIST_UTM_SOURCE;
 
 class CoverPageInputsMapperTest {
-    private final CountyMap<Map<Recipient, String>> countyInstructionsMapping = new CountyMap<>();
-    private final CountyMap<MnitCountyInformation> countyInformationMapping = new CountyMap<>();
+    private CountyMap<Map<Recipient, String>> countyInstructionsMapping;
     private CoverPageInputsMapper coverPageInputsMapper;
-    private final PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
-    private final StaticMessageSource staticMessageSource = new StaticMessageSource();
-
-    PagesData pagesData = new PagesData();
-    ApplicationData applicationData = new ApplicationData();
+    private PagesDataBuilder pagesDataBuilder;
+    private StaticMessageSource staticMessageSource;
+    private PagesData pagesData;
+    private ApplicationData applicationData;
 
     @BeforeEach
     public void setUp() throws IOException {
+        countyInstructionsMapping = new CountyMap<>();
+        CountyMap<MnitCountyInformation> countyInformationMapping = new CountyMap<>();
+        pagesDataBuilder = new PagesDataBuilder();
+        staticMessageSource = new StaticMessageSource();
+        pagesData = new PagesData();
+        applicationData = new ApplicationData();
+
         applicationData.setPagesData(pagesData);
         coverPageInputsMapper = new CoverPageInputsMapper(countyInstructionsMapping, countyInformationMapping, staticMessageSource);
         countyInstructionsMapping.getCounties().put(County.Other, Map.of(
                 Recipient.CLIENT, "county-to-instructions.default-client",
                 Recipient.CASEWORKER, "county-to-instructions.default-caseworker"));
-        countyInformationMapping.setDefaultValue(
-                MnitCountyInformation.builder()
-                    .dhsProviderId("someDhsProviderId")
-                    .email("someEmail")
-                    .phoneNumber("555-123-4567")
-                    .folderId("someFolderId")
-                    .build());
+        countyInformationMapping.setDefaultValue(MnitCountyInformation.builder()
+                .dhsProviderId("someDhsProviderId")
+                .email("someEmail")
+                .phoneNumber("555-123-4567")
+                .folderId("someFolderId")
+                .build());
         staticMessageSource.addMessage("county-to-instructions.default-client", LocaleContextHolder.getLocale(), "Default client");
         staticMessageSource.addMessage("county-to-instructions.default-caseworker", LocaleContextHolder.getLocale(), "Default caseworker");
         staticMessageSource.addMessage("county-to-instructions.olmsted-caseworker", LocaleContextHolder.getLocale(), "Olmsted caseworker");
         staticMessageSource.addMessage("county-to-instructions.olmsted-client", LocaleContextHolder.getLocale(), "Olmsted client");
+        staticMessageSource.addMessage("county-to-instructions.olmsted-client", new Locale("es"), "Olmsted client instructions in spanish");
     }
 
     @Test
@@ -176,30 +182,36 @@ class CoverPageInputsMapperTest {
                 .county(County.Olmsted)
                 .timeToComplete(null)
                 .build();
-        String clientCountyInstructions = "county-to-instructions.olmsted-caseworker";
-        String caseworkerCountyInstructions = "county-to-instructions.olmsted-client";
         countyInstructionsMapping.getCounties().put(County.Olmsted, Map.of(
-                Recipient.CLIENT, clientCountyInstructions,
-                Recipient.CASEWORKER, caseworkerCountyInstructions
+                Recipient.CLIENT, "county-to-instructions.olmsted-client",
+                Recipient.CASEWORKER, "county-to-instructions.olmsted-caseworker"
         ));
 
         List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, null, Recipient.CASEWORKER, null);
-
         assertThat(applicationInputs).contains(
                 new ApplicationInput(
                         "coverPage",
                         "countyInstructions",
-                        List.of(staticMessageSource.getMessage(caseworkerCountyInstructions, null, LocaleContextHolder.getLocale())),
+                        "Olmsted caseworker",
                         ApplicationInputType.SINGLE_VALUE
                 ));
 
         applicationInputs = coverPageInputsMapper.map(application, null, Recipient.CLIENT, null);
-
         assertThat(applicationInputs).contains(
                 new ApplicationInput(
                         "coverPage",
                         "countyInstructions",
-                        List.of(staticMessageSource.getMessage(clientCountyInstructions, null, LocaleContextHolder.getLocale())),
+                        "Olmsted client",
+                        ApplicationInputType.SINGLE_VALUE
+                ));
+
+        pagesData.put("languagePreferences", new PageData(Map.of("writtenLanguage", InputData.builder().value(List.of("SPANISH")).build())));
+        applicationInputs = coverPageInputsMapper.map(application, null, Recipient.CLIENT, null);
+        assertThat(applicationInputs).contains(
+                new ApplicationInput(
+                        "coverPage",
+                        "countyInstructions",
+                        "Olmsted client instructions in spanish",
                         ApplicationInputType.SINGLE_VALUE
                 ));
     }

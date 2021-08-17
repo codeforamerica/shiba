@@ -56,3 +56,12 @@ CREATE TABLE IF NOT EXISTS spring_session_attributes
     CONSTRAINT spring_session_attributes_pk
         PRIMARY KEY (session_primary_id, attribute_name)
 );
+
+CREATE TABLE IF NOT EXISTS shedlock
+(
+    name       VARCHAR(64),
+    lock_until TIMESTAMP(3) NULL,
+    locked_at  TIMESTAMP(3) NULL,
+    locked_by  VARCHAR(255),
+    PRIMARY KEY (name)
+)

@@ -55,16 +55,17 @@
 
                             <div th:replace="fragments/docRecommendations :: docRecommendations(docRecommendations)"></div>
                         </form>
-                        <form th:action="@{/submit-documents}" method="post" onsubmit="return onSubmit()">
-                            <div class="form-group">
-                                <button type="submit" class="button button--secondary hidden" id="submit-my-documents"
-                                        th:text="#{upload-documents.submit-my-documents}"></button>
-                                <p class="text--error" hidden>
-                                    <i class="icon-warning"></i>
-                                    <span th:text="#{upload-documents.wait-for-upload-warning}"></span>
-                                </p>
-                            </div>
-                        </form>
+
+                        <div class="form-group">
+                            <a type="button" class="button button--secondary hidden text--centered" id="submit-my-documents"
+                               th:href="'/pages/'+${pageName}+'/navigation?option=0'"
+                               th:text="#{upload-documents.submit-my-documents}"></a>
+                            <p class="text--error" hidden>
+                                <i class="icon-warning"></i>
+                                <span th:text="#{upload-documents.wait-for-upload-warning}"></span>
+                            </p>
+                        </div>
+
                     </div>
                 </div>
             </div>

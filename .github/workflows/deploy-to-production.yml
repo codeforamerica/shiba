@@ -66,7 +66,7 @@ jobs:
         uses: innocarpe/actions-slack@v1
         with:
           status: ${{ job.status }}
-          success_text: 'Deploy to Aptible production succeeded :smile:'
+          success_text: 'Deploy to Aptible production succeeded :smile: <!subteam^S0209RR14KB> <@U01DU77UREG> <@U019GSLR63H>'
           failure_text: 'Deploy to Aptible production failed :frowning:'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

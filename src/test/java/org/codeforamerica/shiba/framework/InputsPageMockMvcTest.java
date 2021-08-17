@@ -77,7 +77,7 @@ public class InputsPageMockMvcTest extends AbstractFrameworkTest {
     @Test
     void shouldDisplayFragmentForPage() throws Exception {
         var page = getFormPage("pageWithContextFragment");
-        assertThat(page.getElementById("pageContext").text()).isEqualTo("this is context");
+        assertThat(page.getElementById("addressIcon")).isNotNull();
     }
 
     @Test
