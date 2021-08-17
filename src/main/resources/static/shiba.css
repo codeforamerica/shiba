@@ -1217,3 +1217,12 @@ input[type=number] {
 .underline {
     text-decoration: underline;
 }
+
+legend.form-question {
+    float: none;
+}
+
+.date-input input {
+    margin-bottom: 0;
+}
+

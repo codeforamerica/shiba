@@ -5,7 +5,8 @@
     <legend class="form-question"
             th:if="${(input.type.toString().equals('RADIO')
                     || input.type.toString().equals('CHECKBOX')
-                    || input.type.toString().equals('PEOPLE_CHECKBOX'))
+                    || input.type.toString().equals('PEOPLE_CHECKBOX')
+                    || input.type.toString().equals('DATE'))
                     && input.promptMessage != null
                     && input.promptMessage.promptMessageKey != null }"
             th:text="#{${input.promptMessage.promptMessageKey}}">
@@ -15,7 +16,8 @@
            th:if="${input.promptMessage != null
                     && input.promptMessage.promptMessageKey != null
                     && !input.type.toString().equals('RADIO')
-                    && !input.type.toString().equals('CHECKBOX')}"
+                    && !input.type.toString().equals('CHECKBOX')
+                    && !input.type.toString().equals('DATE')}"
            th:text="#{${input.promptMessage.promptMessageKey}}">
     </label>
     <label class="sr-only"

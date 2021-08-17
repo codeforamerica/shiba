@@ -5,7 +5,6 @@
      class="form-group">
     <div class="spacing-above-35 form-group" th:classappend="${!inputData.valid(data)} ? 'form-group--error' : ''">
         <div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${input})"></div>
-        <div th:text="${page.inputs.get(0).type}"></div>
         <div role="group" aria-labelledby="page-header" th:remove="${!page.isSingleCheckboxOrRadioInputPage()}? tag">
             <p class="text--help"
                th:if="${input.helpMessageKey != null}"
