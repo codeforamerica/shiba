@@ -1684,6 +1684,7 @@ pageDefinitions:
   - &nextSteps
     name: nextSteps
     pageTitle: next-steps.title
+    hasPrimaryButton: false
   - &success
     name: success
     pageTitle: success.title
