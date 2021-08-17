@@ -71,12 +71,14 @@ public class SuccessMessageService {
 
         // Expedited Snap timing
         if (isSnapExpeditedEligible) {
-            messages.add(new SuccessMessage("fragments/icons/icon-income :: icon-income", lms.getMessage("success.expedited-snap-timing")));
+            // TODO: Change icon
+            messages.add(new SuccessMessage("fragments/icons/icon-expedited-phone :: icon-expedited-phone", lms.getMessage("success.expedited-snap-timing")));
         }
 
         // Expedited Ccap timing
         if (isCcapExpeditedEligible) {
-            messages.add(new SuccessMessage("fragments/icons/icon-income :: icon-income", lms.getMessage("success.expedited-ccap-timing")));
+            // TODO: Change icon
+            messages.add(new SuccessMessage("fragments/icons/icon-expedited-phone :: icon-expedited-phone", lms.getMessage("success.expedited-ccap-timing")));
         }
 
         // Contact Promise
@@ -84,14 +86,15 @@ public class SuccessMessageService {
         if (!nextStepLetterPrograms.isEmpty()) {
             String programsInNextStepLetter = listToString(nextStepLetterPrograms, lms);
             String message = lms.getMessage("success.contact-promise", List.of(programsInNextStepLetter));
-            messages.add(new SuccessMessage("fragments/icons/icon-income :: icon-income", message));
+            // TODO: Change icon
+            messages.add(new SuccessMessage("fragments/icons/icon-envelope :: icon-envelope", message));
         }
 
         // Suggested Action
         if (isSnapExpeditedEligible && !programs.contains(CCAP)) {
-            messages.add(new SuccessMessage("fragments/icons/icon-income :: icon-income", lms.getMessage("success.expedited-snap-suggested-action")));
+            messages.add(new SuccessMessage("fragments/icons/icon-communications :: icon-communications", lms.getMessage("success.expedited-snap-suggested-action")));
         } else {
-            messages.add(new SuccessMessage("fragments/icons/icon-income :: icon-income", lms.getMessage("success.standard-suggested-action")));
+            messages.add(new SuccessMessage("fragments/icons/icon-communications :: icon-communications", lms.getMessage("success.standard-suggested-action")));
         }
 
         return messages;

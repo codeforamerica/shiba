@@ -3937,6 +3937,8 @@ workflow:
     pageConfiguration: *nextSteps
     nextPages:
       - pageName: success
+    datasources:
+      - pageName: contactInfo
   success:
     pageConfiguration: *success
   documentsSent:

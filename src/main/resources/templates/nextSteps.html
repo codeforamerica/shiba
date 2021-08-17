@@ -7,5 +7,10 @@
     </div>
     <div class="grid__item width-one-whole">
         <div th:replace="fragments/successMessages :: successMessages"></div>
+    <div th:if="${!data.get('contactInfo').get('email').value[0].isEmpty()}">
+        <div class="success-icons grid__item width-one-sixth">
+            <div th:replace="fragments/icons/icon-email-check :: icon-email-check" class="success-icons width-one-whole"></div>
+        </div>
+        <p class="next-step-email-message grid__item width-five-sixths" th:text="#{next-steps.your-next-steps-have-been-emailed-to} + ${data.get('contactInfo').get('email').value[0]}"></p>
     </div>
 </div>
