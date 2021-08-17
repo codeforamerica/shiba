@@ -54,6 +54,6 @@ public class SuccessPage extends Page {
   }
 
   public int pdfDownloadLinks() {
-    return driver.findElementsByClassName("button--link").size();
+    return driver.findElementsByClassName("link--subtle").size();
   }
 }
