@@ -892,15 +892,15 @@ input[type=number] {
     position: absolute;
     top: 0;
     bottom: 0;
-    width: 1px;
+    width: 2px;
     left: 50%;
-    background-color: #008060;
+    background-color: #003865;
 }
 
 .notice--shiba {
     position: relative;
     background-color: #E9F6FF;
-    border: 1px solid #003865;
+    border: 2px solid #003865;
     border-radius: 3px;
     padding: 15px 15px;
 }
