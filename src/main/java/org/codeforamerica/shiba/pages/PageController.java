@@ -311,6 +311,7 @@ public class PageController {
             model.put("county", application.getCounty());
             model.put("sentiment", application.getSentiment());
             model.put("feedbackText", application.getFeedback());
+            model.put("combinedFormText", applicationData.combinedApplicationProgramsList());
             String inputData = pagesData.getPageInputFirstValue("healthcareCoverage", "healthcareCoverage");
             boolean hasHealthcare = "YES".equalsIgnoreCase(inputData);
             model.put("doesNotHaveHealthcare", !hasHealthcare);

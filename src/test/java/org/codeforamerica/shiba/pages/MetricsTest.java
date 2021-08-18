@@ -35,7 +35,7 @@ public class MetricsTest extends AbstractShibaMockMvcTest {
     void userCanCompleteTheNonExpeditedFlowAndCanDownloadPdfsAndShibaShouldCaptureMetricsAfterApplicationIsCompleted() throws Exception {
         FormPage successPage = nonExpeditedFlowToSuccessPage(false, true);
 
-        assertThat(successPage.getLinksContainingText("Combined Application")).hasSize(1);
+        assertThat(successPage.getLinksContainingText("Cash Application")).hasSize(1);
         assertThat(successPage.getLinksContainingText("Child Care Application")).hasSize(1);
         mockMvc.perform(post("/submit-feedback").session(session).with(csrf()).param("sentiment", "HAPPY"));
 

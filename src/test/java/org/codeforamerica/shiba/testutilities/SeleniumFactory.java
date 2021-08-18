@@ -1,15 +1,13 @@
 package org.codeforamerica.shiba.testutilities;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.HashMap;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.FactoryBean;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.HashMap;
 
 public class SeleniumFactory implements FactoryBean<RemoteWebDriver> {
     private RemoteWebDriver driver;

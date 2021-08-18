@@ -1,12 +1,5 @@
 package org.codeforamerica.shiba.journeys;
 
-import org.codeforamerica.shiba.pages.config.FeatureFlag;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-
-import java.util.List;
-
 import static java.util.Locale.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.application.FlowType.EXPEDITED;
@@ -15,13 +8,14 @@ import static org.codeforamerica.shiba.testutilities.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.testutilities.YesNoAnswer.YES;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
+import org.codeforamerica.shiba.pages.config.FeatureFlag;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
+
 @Tag("journey")
 public class MinimumSnapFlowJourneyTest extends JourneyTest {
-    private final String mailingStreetAddress = "smarty street";
-    private final String mailingCity = "Cooltown";
-    private final String mailingState = "CA";
-    private final String mailingZip = "03104";
-    private final String mailingApartmentNumber = "1b";
     private final String signature = "some signature";
 
     @Test
@@ -189,11 +183,11 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         assertCafFieldEquals("APPLICANT_HOME_CITY", homeCity);
         assertCafFieldEquals("APPLICANT_HOME_STATE", "MN");
         assertCafFieldEquals("APPLICANT_HOME_ZIPCODE", homeZip);
-        assertCafFieldEquals("APPLICANT_MAILING_STREET_ADDRESS", mailingStreetAddress);
-        assertCafFieldEquals("APPLICANT_MAILING_APT_NUMBER", mailingApartmentNumber);
-        assertCafFieldEquals("APPLICANT_MAILING_CITY", mailingCity);
-        assertCafFieldEquals("APPLICANT_MAILING_STATE", mailingState);
-        assertCafFieldEquals("APPLICANT_MAILING_ZIPCODE", mailingZip);
+        assertCafFieldEquals("APPLICANT_MAILING_STREET_ADDRESS", "smarty street");
+        assertCafFieldEquals("APPLICANT_MAILING_APT_NUMBER", "1b");
+        assertCafFieldEquals("APPLICANT_MAILING_CITY", "Cooltown");
+        assertCafFieldEquals("APPLICANT_MAILING_STATE", "CA");
+        assertCafFieldEquals("APPLICANT_MAILING_ZIPCODE", "03104");
     }
 
 
