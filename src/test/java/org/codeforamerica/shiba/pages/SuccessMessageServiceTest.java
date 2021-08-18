@@ -173,7 +173,6 @@ public class SuccessMessageServiceTest extends AbstractPageControllerTest {
         when(ccapExpeditedEligibilityDecider.decide(any())).thenReturn(ccapExpeditedEligibility);
         mockMvc.perform(get("/pages/nextSteps").session(new MockHttpSession()))
                 .andExpect(status().isOk())
-                //.andExpect(model().attribute("successMessage", expectedMessage)) // assert the message is right
                 .andExpect(content().string(containsString(expectedMessage)));
     }
 }
