@@ -1,0 +1,8 @@
+<p th:fragment="validationError(data, input)" class="text--error"
+   th:if="${!data.isValid() && !inputData.valid(data)}">
+  <th:block th:each="option: ${input.validationErrorMessageKeys}">
+    <i class="icon-warning"></i>
+    <span th:text="#{${option}}"></span>
+    <br>
+  </th:block>
+</p>

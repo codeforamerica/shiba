@@ -30,10 +30,7 @@
                 </th:block>
             </fieldset>
         </div>
-        <p class="text--error" th:if="${!inputData.valid(data)}">
-            <i class="icon-warning"></i>
-            <span th:text="#{${input.validationErrorMessageKey}}"></span>
-        </p>
+        <div th:replace="fragments/inputErrorFragment :: validationError(${data}, ${input})"></div>
     </div>
 </div>
 </html>

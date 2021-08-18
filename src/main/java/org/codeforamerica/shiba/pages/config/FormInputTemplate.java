@@ -12,7 +12,7 @@ public class FormInputTemplate {
     PromptMessage promptMessage;
     String helpMessageKey;
     String placeholder;
-    String validationErrorMessageKey;
+    List<String> validationErrorMessageKeys;
     OptionsWithDataSourceTemplate options;
     List<FormInputTemplate> followUps;
     List<String> followUpValues;

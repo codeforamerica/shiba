@@ -33,7 +33,7 @@
 
                 <p class="text--error" th:if="${fieldIsBlank}">
                     <i class="icon-warning"></i>
-                    <span th:text="#{${input.validationErrorMessageKey}}"></span>
+                    <span th:text="#{${input.validationErrorMessageKeys.get(0)}}"></span>
                 </p>
             </div>
         </th:block>

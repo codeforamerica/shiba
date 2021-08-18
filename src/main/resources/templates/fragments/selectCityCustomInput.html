@@ -17,8 +17,5 @@
             </th:block>
         </select>
     </div>
-    <p class="text--error" th:if="${!data.isValid() && !inputData.valid(data)}">
-        <i class="icon-warning"></i>
-        <span th:text="#{${input.validationErrorMessageKey}}"></span>
-    </p>
+    <div th:replace="fragments/inputErrorFragment :: validationError(${data}, ${input})"></div>
 </div>

@@ -1,17 +1,28 @@
 package org.codeforamerica.shiba.pages.data;
 
+import static java.util.stream.Collectors.toMap;
+import static org.codeforamerica.shiba.pages.config.OptionsWithDataSourceTemplate.createOptionsWithDataSourceTemplate;
+
+import java.io.Serial;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.codeforamerica.shiba.inputconditions.Condition;
-import org.codeforamerica.shiba.pages.config.*;
-
-import java.io.Serial;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toMap;
-import static org.codeforamerica.shiba.pages.config.OptionsWithDataSourceTemplate.createOptionsWithDataSourceTemplate;
+import org.codeforamerica.shiba.pages.config.ConditionalValue;
+import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
+import org.codeforamerica.shiba.pages.config.FormInput;
+import org.codeforamerica.shiba.pages.config.FormInputTemplate;
+import org.codeforamerica.shiba.pages.config.PageConfiguration;
+import org.codeforamerica.shiba.pages.config.PageDatasource;
+import org.codeforamerica.shiba.pages.config.PageTemplate;
+import org.codeforamerica.shiba.pages.config.PageWorkflowConfiguration;
+import org.codeforamerica.shiba.pages.config.Value;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -157,10 +168,10 @@ public class PagesData extends HashMap<String, PageData> {
     }
 
     private FormInputTemplate convert(String pageName, FormInput formInput, ApplicationData applicationData) {
-        String errorMessageKey = Optional.ofNullable(this.getPage(pageName))
+        List<String> errorMessageKeys = Optional.ofNullable(this.getPage(pageName))
                 .map(pageData -> pageData.get(formInput.getName()))
-                .flatMap(InputData::errorMessageKey)
-                .orElse("");
+                .map(InputData::errorMessageKeys)
+                .orElse(List.of());
 
         return new FormInputTemplate(
                 formInput.getType(),
@@ -169,7 +180,7 @@ public class PagesData extends HashMap<String, PageData> {
                 formInput.getPromptMessage(),
                 formInput.getHelpMessageKey(),
                 formInput.getPlaceholder(),
-                errorMessageKey,
+                errorMessageKeys,
                 createOptionsWithDataSourceTemplate(formInput, applicationData),
                 formInput.getFollowUps().stream().map(followup -> convert(pageName, followup, applicationData)).collect(Collectors.toList()),
                 formInput.getFollowUpValues(),

@@ -31,9 +31,6 @@
                th:name="${formInputName}" th:value="${!inputData.value.isEmpty() ? inputData.value[2]: ''}"
                th:placeholder="yyyy"/>
     </fieldset>
-    <p class="text--error" th:if="${!inputData.valid(data)}">
-        <i class="icon-warning"></i>
-        <span th:text="#{${input.validationErrorMessageKey}}"></span>
-    </p>
+    <div th:replace="fragments/inputErrorFragment :: validationError(${data}, ${input})"></div>
 </div>
 </html>

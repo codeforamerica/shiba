@@ -30,10 +30,7 @@
                        th:checked="${inputData.value.contains('NONE_OF_THE_ABOVE')}">
                 <span th:text="#{parent-not-at-home.none-of-the-children-have-parents-living-outside-the-home}"></span>
             </label>
-            <p class="text--error" th:if="${!inputData.valid(data)}">
-                <i class="icon-warning"></i>
-                <span th:text="#{${input.validationErrorMessageKey}}"></span>
-            </p>
+            <div th:replace="fragments/inputErrorFragment :: validationError(${data}, ${input})"></div>
         </div>
     </div>
 </div>
