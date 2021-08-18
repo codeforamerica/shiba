@@ -14,9 +14,6 @@ public class SuccessPage extends Page {
   @FindBy(id = "download-ccap")
   private WebElement downloadCCAPApplicationLink;
 
-  @FindBy(id = "application-id")
-  private WebElement confirmationNumber;
-
   public SuccessPage(RemoteWebDriver driver) {
     super(driver);
     PageFactory.initElements(driver, this);
@@ -45,12 +42,6 @@ public class SuccessPage extends Page {
     } catch (NoSuchElementException e) {
       return false;
     }
-  }
-
-  public String getConfirmationNumber() {
-    String[] confirmationNumParts =
-        confirmationNumber.getText().split(" "); // ["Confirmation", "#:", "3830000507"]
-    return confirmationNumParts[confirmationNumParts.length - 1];
   }
 
   public int pdfDownloadLinks() {

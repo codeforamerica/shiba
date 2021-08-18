@@ -1,5 +1,25 @@
 package org.codeforamerica.shiba.journeys;
 
+import static java.util.Locale.ENGLISH;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
+import static org.codeforamerica.shiba.output.Document.CAF;
+import static org.codeforamerica.shiba.output.Document.CCAP;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.io.File;
+import java.io.IOException;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.Callable;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.FlowType;
@@ -21,25 +41,6 @@ import org.mockito.ArgumentCaptor;
 import org.openqa.selenium.WebElement;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-
-import java.io.File;
-import java.io.IOException;
-import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneOffset;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.Callable;
-
-import static java.util.Locale.ENGLISH;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.await;
-import static org.codeforamerica.shiba.output.Document.CAF;
-import static org.codeforamerica.shiba.output.Document.CCAP;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 abstract class JourneyTest extends AbstractBasePageTest {
     protected PDAcroForm caf;
@@ -111,16 +112,27 @@ abstract class JourneyTest extends AbstractBasePageTest {
         return downloadPdfs(shouldHaveCafDownloadLink, shouldHaveCcapDownloadLink);
     }
 
-    protected String downloadPdfs(boolean shouldHaveCafDownloadLink, boolean shouldHaveCcapDownloadLink) {
+    protected String downloadPdfs(boolean shouldHaveCafDownloadLink,
+        boolean shouldHaveCcapDownloadLink) {
         // Download CAF
         SuccessPage successPage = new SuccessPage(driver);
         assertThat(successPage.CAFdownloadPresent()).isEqualTo(shouldHaveCafDownloadLink);
         assertThat(successPage.CCAPdownloadPresent()).isEqualTo(shouldHaveCcapDownloadLink);
         successPage.downloadPdfs();
         await().until(pdfDownloadCompletes(successPage));
-        caf = getAllFiles().getOrDefault(CAF, null);
-        ccap = getAllFiles().getOrDefault(CCAP, null);
-        return successPage.getConfirmationNumber(); // Application ID
+        var pdfs = getAllFiles();
+        caf = pdfs.getOrDefault(CAF, null);
+        ccap = pdfs.getOrDefault(CCAP, null);
+        return getApplicationId();
+    }
+
+    private String getApplicationId() {
+        // Retrieves the application id from the filename of a downloaded PDF
+        return Arrays.stream(Objects.requireNonNull(path.toFile().listFiles()))
+            .map(File::getName)
+            .findFirst()
+            .orElseThrow()
+            .split("_")[4];
     }
 
     @NotNull
