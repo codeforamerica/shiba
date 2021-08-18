@@ -39,7 +39,7 @@
                   th:if="${documents.contains(T(org.codeforamerica.shiba.output.Document).CAF)}">
                 <div class="spacing-below-10">
                   <a class="link--subtle" href="/download" id="download-caf"
-                     th:text="#{success.combined-application}"></a>
+                     th:text="#{success.combined-application(${combinedFormText})}"></a>
                 </div>
               </th:block>
               <th:block
@@ -72,6 +72,12 @@
           <div class="grid__item width-five-sixths">
             <div th:utext="#{success.healthcare}" class="width-five-sixths"></div>
           </div>
+        </div>
+        <div>
+          <a class="button button--secondary spacing-below-0" th:href="'#'">
+            <span th:text="#{success.give-us-feedback}"></span>
+            <div th:replace="fragments/icons/icon-arrow-black :: icon-arrow-black"></div>
+          </a>
         </div>
       </div>
   </section>

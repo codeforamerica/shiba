@@ -82,8 +82,8 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
         completeDocumentUploadFlow();
 
         FormPage page = new FormPage(getPage("success"));
-        assertThat(page.getLinksContainingText("Combined Application")).hasSizeGreaterThan(0);
-        assertThat(page.getLinksContainingText("Combined Application").get(0).attr("href")).isEqualTo("/download");
+        assertThat(page.getLinksContainingText("Emergency Application")).hasSizeGreaterThan(0);
+        assertThat(page.getLinksContainingText("Emergency Application").get(0).attr("href")).isEqualTo("/download");
 
         PDAcroForm caf = this.downloadCaf();
         assertPdfFieldEquals("APPLICANT_WRITTEN_LANGUAGE_PREFERENCE", "ENGLISH", caf);

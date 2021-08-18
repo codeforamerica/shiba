@@ -150,4 +150,26 @@ public class ApplicationData implements Serializable {
         }
         return applicantAndHouseholdMemberPrograms;
     }
+
+    // method that takes the set given in the method above it, and uses that to build the string we want to show on the success page
+    public String combinedApplicationProgramsList(){
+        Set<String> programList = getApplicantAndHouseholdMemberPrograms();
+        Set<String> programName = new HashSet<>();
+        programList.forEach(program -> {
+            if(program.equalsIgnoreCase("EA")){
+                programName.add("Emergency");
+            }
+            if(program.equalsIgnoreCase("CASH")){
+                programName.add("Cash");
+            }
+            if(program.equalsIgnoreCase("GRH")){
+                programName.add("Housing");
+            }
+            if(program.equalsIgnoreCase("SNAP")){
+                programName.add("SNAP");
+            }
+        });
+
+        return String.join(", ", programName);
+    }
 }
