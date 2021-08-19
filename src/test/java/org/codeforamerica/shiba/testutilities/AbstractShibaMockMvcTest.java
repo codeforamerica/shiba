@@ -186,7 +186,7 @@ public class AbstractShibaMockMvcTest {
         householdMemberInfo.put("maritalStatus", List.of("Never married"));
         householdMemberInfo.put("sex", List.of("Male"));
         householdMemberInfo.put("livedInMnWholeLife", List.of("Yes"));
-        householdMemberInfo.put("moveToMnDate", List.of("02/18/1950"));
+        householdMemberInfo.put("moveToMnDate", List.of("02","18", "1950"));
         householdMemberInfo.put("moveToMnPreviousState", List.of("Illinois"));
         postExpectingRedirect("householdMemberInfo", householdMemberInfo, "householdList");
     }
@@ -203,7 +203,7 @@ public class AbstractShibaMockMvcTest {
         householdMemberInfo.put("maritalStatus", List.of("Never married"));
         householdMemberInfo.put("sex", List.of("Male"));
         householdMemberInfo.put("livedInMnWholeLife", List.of("Yes"));
-        householdMemberInfo.put("moveToMnDate", List.of("02/18/1950"));
+        householdMemberInfo.put("moveToMnDate", List.of("02", "18", "1950"));
         householdMemberInfo.put("moveToMnPreviousState", List.of("Illinois"));
         postExpectingRedirect("householdMemberInfo", householdMemberInfo, "householdList");
     }
