@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.percy.selenium.Percy;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.codeforamerica.shiba.pages.Sentiment;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -236,5 +237,11 @@ public class Page {
     public void clickElementById(String id) {
         WebElement inputToSelect = driver.findElementById(id);
         inputToSelect.click();
+    }
+
+    public void chooseSentiment(Sentiment sentiment) {
+        driver.findElement(
+                By.cssSelector(String.format("label[for='%s']", sentiment.name().toLowerCase())))
+            .click();
     }
 }
