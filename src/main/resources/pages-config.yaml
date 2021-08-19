@@ -1689,6 +1689,10 @@ pageDefinitions:
     name: success
     pageTitle: success.title
     customPage: true
+  - &feedback
+    name: feedback
+    pageTitle: feedback.title
+    customPage: true
   - &documentsSent
     name: documentsSent
     pageTitle: documentsSent.title
@@ -3940,8 +3944,12 @@ workflow:
       - pageName: success
     datasources:
       - pageName: contactInfo
+  feedback:
+    pageConfiguration: *feedback
   success:
     pageConfiguration: *success
+    nextPages:
+      - pageName: feedback
   documentsSent:
     pageConfiguration: *documentsSent
 pageGroups:
@@ -3993,6 +4001,7 @@ landmarkPages:
     - documentSubmitConfirmation
     - nextSteps
     - success
+    - feedback
     - matchInfo
     - documentsSent
     - identifyCounty

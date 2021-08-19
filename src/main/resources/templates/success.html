@@ -73,8 +73,8 @@
             <div th:utext="#{success.healthcare}" class="width-five-sixths"></div>
           </div>
         </div>
-        <div>
-          <a class="button button--secondary spacing-below-0" th:href="'#'">
+        <div th:if="${sentiment == null}" id="feedbackButton">
+          <a class="button button--secondary spacing-below-0"  th:href="'/pages/'+${pageName}+'/navigation'">
             <span th:text="#{success.give-us-feedback}"></span>
             <div th:replace="fragments/icons/icon-arrow-black :: icon-arrow-black"></div>
           </a>

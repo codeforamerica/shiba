@@ -9,6 +9,7 @@ import static org.codeforamerica.shiba.testutilities.YesNoAnswer.YES;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -160,6 +161,8 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         applicationId = signApplicationAndDownloadPdfs(signature, true, false);
         assertApplicationSubmittedEventWasPublished(applicationId, EXPEDITED, 1);
 
+        testFeedbackScreen();
+
         // PDF assertions
         assertCafContainsAllFieldsForMinimumSnapFlow(applicationId);
         assertCafFieldEquals("MEDICAL_EXPENSES_SELECTION", "Off");
@@ -229,5 +232,16 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         assertCafFieldEquals("CCAP", "Off");
         assertCafFieldEquals("GRH", "Off");
         assertCafFieldEquals("APPLICANT_SIGNATURE", signature);
+    }
+
+    private void testFeedbackScreen(){
+        //should load back to success page, check to see if button is no longer shown
+        testPage.clickButton("Give us feedback");
+        assertThat(testPage.getTitle()).isEqualTo("Feedback");
+        assertThat(driver.findElementById("happy")).isNotNull();
+        assertThat(driver.findElementById("meh")).isNotNull();
+        assertThat(driver.findElementById("sad")).isNotNull();
+        testPage.chooseSentiment(Sentiment.MEH);
+        testPage.clickButton("Submit feedback");
     }
 }
