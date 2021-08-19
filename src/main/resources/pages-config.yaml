@@ -3996,6 +3996,7 @@ landmarkPages:
     - matchInfo
     - documentsSent
     - identifyCounty
+  nextStepsPage: nextSteps
   terminalPage: success
   laterDocsTerminalPage: documentsSent
   submitPage: signThisApplication

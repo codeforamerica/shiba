@@ -580,7 +580,7 @@ public class PageController {
             pageEventPublisher.publish(new UploadedDocumentsSubmittedEvent(httpSession.getId(), application.getId(), LocaleContextHolder.getLocale()));
         }
         LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
-        String nextPage = landmarkPagesConfiguration.getTerminalPage();
+        String nextPage = landmarkPagesConfiguration.getNextStepsPage();
         if (applicationData.getFlow() == LATER_DOCS) {
             nextPage = landmarkPagesConfiguration.getLaterDocsTerminalPage();
         }

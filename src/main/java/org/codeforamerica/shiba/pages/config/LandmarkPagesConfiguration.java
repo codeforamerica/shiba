@@ -10,6 +10,7 @@ public class LandmarkPagesConfiguration {
     private List<String> startTimerPage = new ArrayList<>();
     private List<String> landingPages = new ArrayList<>();
     private List<String> postSubmitPages = new ArrayList<>();
+    private String nextStepsPage;
     private String terminalPage;
     private String submitPage;
     private String uploadDocumentsPage;

@@ -330,9 +330,10 @@ public class FullFlowJourneyTest extends JourneyTest {
 
         testDocumentUploads();
 
-        // Finish uploading docs and download PDFS
+        // Finish uploading docs, view next steps, and download PDFs
         testPage.clickButton("Submit my documents");
         testPage.clickButton("Yes, submit and finish");
+        testPage.clickContinue();
         applicationId = downloadPdfs(true, true);
 
         // CCAP fields
