@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.framework;
 
+import org.codeforamerica.shiba.pages.config.Validation;
 import org.codeforamerica.shiba.testutilities.AbstractFrameworkTest;
 import org.codeforamerica.shiba.testutilities.FormPage;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +16,7 @@ import java.util.List;
 
 import static java.util.Locale.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
@@ -330,7 +332,18 @@ public class ValidationTest extends AbstractFrameworkTest {
                                                                  String year) throws Exception {
             postExpectingFailureAndAssertErrorDisplaysForThatDateInput("datePage", "dateInput", List.of(month, day, year));
         }
-
+        
+        @ParameterizedTest
+        @CsvSource(value = {
+                "11,12,149l)",
+                "0,2,19a9",
+                "1,2,abcd",
+        })
+        void shouldFailValidationForDateWhenLetterIsInYear(String month, String day,
+                                                                 String year) throws Exception {
+            postExpectingFailureAndAssertErrorDisplaysForThatDateInput("datePage", "dateInput", List.of(month, day, year));
+        }
+        
         @ParameterizedTest
         @CsvSource(value = {
                 "02,20,1492",
@@ -346,6 +359,16 @@ public class ValidationTest extends AbstractFrameworkTest {
                 "1,1,3000"
         })
         void shouldFailValidationForDobValidWhenValueIsAnInvalidDate(String month, String day,
+                                                                     String year) throws Exception {
+            postExpectingFailureAndAssertErrorDisplaysForThatDateInput("dobValidPage", "dobValidInput", List.of(month, day, year));
+        }
+        
+        @ParameterizedTest
+        @CsvSource(value = {
+                "12,31,195p",
+                "1,1,200q"
+        })
+        void shouldFailValidationForDobValidWhenValueContainsLetter(String month, String day,
                                                                      String year) throws Exception {
             postExpectingFailureAndAssertErrorDisplaysForThatDateInput("dobValidPage", "dobValidInput", List.of(month, day, year));
         }

@@ -409,7 +409,7 @@ pageDefinitions:
             type: DATE
             validators:
               - validation: DATE
-                errorMessageKey: general.validation.make-sure-you-answer-this-question
+                errorMessageKey: general.validation.please-enter-the-date-in-this-format
                 condition:
                   input: moveToMnDate
                   matcher: NOT_EMPTY

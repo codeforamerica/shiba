@@ -18,22 +18,26 @@ public enum Validation {
     SELECT_AT_LEAST_ONE(strings -> strings.size() > 0),
     SSN(strings -> String.join("", strings).replace("-", "").matches("\\d{9}")),
     DATE(strings -> {
-        return GenericValidator.isDate(String.join("/", strings), "MM/dd/yyyy", true)
+        return String.join("", strings).matches("^[0-9]*$") &&
+        		(GenericValidator.isDate(String.join("/", strings), "MM/dd/yyyy", true)
                 || GenericValidator.isDate(String.join("/", strings), "M/dd/yyyy", true)
                 || GenericValidator.isDate(String.join("/", strings), "M/d/yyyy", true)
-                || GenericValidator.isDate(String.join("/", strings), "MM/d/yyyy", true);
+                || GenericValidator.isDate(String.join("/", strings), "MM/d/yyyy", true));
     }),
     DOB_VALID(strings -> {
     	String dobString = String.join("/", strings);
     	SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
     	try {
-    		Date dobDate = sdf.parse(dobString);
-	    	boolean notFutureDate = dobDate.getTime() < new Date().getTime();
-	    	boolean notBefore1900 = Integer.parseInt(strings.get(2)) >= 1900;
-	    	return notFutureDate && notBefore1900;
-    	} catch(ParseException e) {
-    		return false;
-    	}
+    			Integer inputYear = Integer.parseInt(strings.get(2));
+				Date dobDate = sdf.parse(dobString);
+				boolean notFutureDate = dobDate.getTime() < new Date().getTime();
+				boolean notBefore1900 = inputYear >= 1900;
+				return notFutureDate && notBefore1900;
+    		} catch (NumberFormatException e) {
+				return false;
+	    	} catch(ParseException e) {
+	    		return false;
+	    	}
     }),
     ZIPCODE(strings -> String.join("", strings).matches("\\d{5}")),
     CASE_NUMBER(strings -> String.join("", strings).matches("\\d{4,7}")),
