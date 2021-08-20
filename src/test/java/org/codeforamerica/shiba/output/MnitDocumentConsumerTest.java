@@ -14,6 +14,7 @@ import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.codeforamerica.shiba.testutilities.NonSessionScopedApplicationData;
 import org.codeforamerica.shiba.testutilities.PageDataBuilder;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
@@ -225,6 +226,32 @@ class MnitDocumentConsumerTest {
         // Assert that converted file contents are as expected
         verifyGeneratedPdf(captor.getAllValues().get(0).getFileBytes(), "shiba+file.pdf");
         verifyGeneratedPdf(captor.getAllValues().get(1).getFileBytes(), "test-uploaded-pdf-with-coverpage.pdf");
+    }
+    
+    @Test
+    void testNullApplication() throws IOException {
+         var fileBytes = Files.readAllBytes(getAbsoluteFilepath("shiba+file.jpg"));
+        
+        applicationData.addUploadedDoc(
+                new MockMultipartFile("someName", "originalName." + "jpg", MediaType.IMAGE_JPEG_VALUE, fileBytes),
+                "someS3FilePath",
+                "someDataUrl",
+                MediaType.IMAGE_JPEG_VALUE);
+    	
+        ZonedDateTime completedAtTime = ZonedDateTime.of(
+                LocalDateTime.of(2021, 6, 10, 1, 28),
+                ZoneOffset.UTC);
+          
+    	Application brokenApplication = Application.builder()
+                .id("someId")
+                .completedAt(completedAtTime)
+                .applicationData(applicationData)
+                .county(County.Olmsted)
+                .timeToComplete(null)
+                .flow(FlowType.FULL)
+                .build();
+
+        documentConsumer.processUploadedDocuments(brokenApplication);
     }
 
     @Test
