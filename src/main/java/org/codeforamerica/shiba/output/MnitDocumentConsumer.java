@@ -60,7 +60,8 @@ public class MnitDocumentConsumer {
       }
     });
     mnitClient
-        .send(xmlGenerator.generate(application.getId(), CAF, CASEWORKER), application.getCounty(),
+        .send(xmlGenerator.generate(application.getId(), CAF, CASEWORKER),
+        application.getCounty(),
             application.getId(), CAF, application.getFlow());
   }
 
@@ -70,24 +71,20 @@ public class MnitDocumentConsumer {
     byte[] coverPage = pdfGenerator.generate(application, UPLOADED_DOC, CASEWORKER).getFileBytes();
     for (int i = 0; i < uploadedDocs.size(); i++) {
       UploadedDocument uploadedDocument = uploadedDocs.get(i);
-      ApplicationFile fileToSend = pdfGenerator
-          .generateForUploadedDocument(uploadedDocument, i, application, coverPage);
-
-      if (fileToSend.getFileBytes().length > 0) {
-        log.info(
-            "Now sending: " + fileToSend.getFileName() + " original filename: " + uploadedDocument
-                .getFilename());
+      ApplicationFile fileToSend = pdfGenerator.generateForUploadedDocument(uploadedDocument, i,
+          application, coverPage);
+      if (fileToSend != null && fileToSend.getFileBytes().length > 0) {
+        log.info("Now sending: " + fileToSend.getFileName() + " original filename: "
+            + uploadedDocument.getFilename());
         mnitClient.send(fileToSend, application.getCounty(), application.getId(), UPLOADED_DOC,
             application.getFlow());
         log.info("Finished sending document " + fileToSend.getFileName());
-      } else if ("demo".equals(activeProfile) || "staging".equals(activeProfile) || "production"
-          .equals(activeProfile)) {
+      } else {
+        log.error("File not available. Application id:" + application.getId() + " Filename: "
+            + uploadedDocument.getFilename());
         log.error("Skipped uploading file " + uploadedDocument.getFilename()
             + " because it was empty. This should only happen in a dev environment.");
-      } else {
-        log.info("Pretending to send file " + uploadedDocument.getFilename() + ".");
       }
     }
   }
-
 }
