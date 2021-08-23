@@ -36,7 +36,7 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
     postExpectingRedirect("migrantFarmWorker", "migrantOrSeasonalFarmWorker", "false", "usCitizen");
     postExpectingRedirect("usCitizen", "isUsCitizen", "true", "disability");
     postExpectingRedirect("disability", "hasDisability", "false", "workSituation");
-    postExpectingRedirect("workSituation", "hasWorkSituation", "false", "introIncome");
+    postExpectingRedirect("workSituation", "hasWorkSituation", "false", "tribalNationMember");
     assertNavigationRedirectsToCorrectNextPage("introIncome", "employmentStatus");
     postExpectingNextPageTitle("employmentStatus", "areYouWorking", "false", "Income Up Next");
     assertNavigationRedirectsToCorrectNextPage("incomeUpNext", "unearnedIncome");
@@ -110,7 +110,7 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
     postExpectingRedirect("migrantFarmWorker", "migrantOrSeasonalFarmWorker", "false", "usCitizen");
     postExpectingRedirect("usCitizen", "isUsCitizen", "true", "disability");
     postExpectingRedirect("disability", "hasDisability", "false", "workSituation");
-    postExpectingRedirect("workSituation", "hasWorkSituation", "false", "introIncome");
+    postExpectingRedirect("workSituation", "hasWorkSituation", "false", "tribalNationMember");
     assertNavigationRedirectsToCorrectNextPage("introIncome", "employmentStatus");
     postExpectingNextPageTitle("employmentStatus", "areYouWorking", "false", "Job Search");
     postExpectingNextPageTitle("jobSearch", "currentlyLookingForJob", "true",
@@ -166,7 +166,7 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
     postExpectingRedirect("migrantFarmWorker", "migrantOrSeasonalFarmWorker", "false", "usCitizen");
     postExpectingRedirect("usCitizen", "isUsCitizen", "true", "disability");
     postExpectingRedirect("disability", "hasDisability", "false", "workSituation");
-    postExpectingRedirect("workSituation", "hasWorkSituation", "false", "introIncome");
+    postExpectingRedirect("workSituation", "hasWorkSituation", "false", "tribalNationMember");
     assertNavigationRedirectsToCorrectNextPage("introIncome", "employmentStatus");
     postExpectingNextPageTitle("employmentStatus", "areYouWorking", "false", "Job Search");
     postExpectingNextPageTitle("jobSearch", "currentlyLookingForJob", "true",

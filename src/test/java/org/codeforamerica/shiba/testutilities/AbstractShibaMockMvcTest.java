@@ -715,7 +715,11 @@ public class AbstractShibaMockMvcTest {
     }
 
     postExpectingRedirect("disability", "hasDisability", "false", "workSituation");
-    postExpectingRedirect("workSituation", "hasWorkSituation", "false", "introIncome");
+    if (hasHousehold) {
+      postExpectingRedirect("workSituation", "hasWorkSituation", "false", "tribalNationMember");
+    } else {
+      postExpectingRedirect("workSituation", "hasWorkSituation", "false", "introIncome");
+    }
     assertNavigationRedirectsToCorrectNextPage("introIncome", "employmentStatus");
     if (isWorking) {
       postExpectingRedirect("employmentStatus", "areYouWorking", "true", "incomeByJob");

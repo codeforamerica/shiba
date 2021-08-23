@@ -253,6 +253,9 @@ public abstract class AbstractBasePageTest {
     }
     testPage.enter("hasDisability", NO.getDisplayValue());
     testPage.enter("hasWorkSituation", NO.getDisplayValue());
+    if (hasHousehold) {
+      testPage.enter("isTribalNationMember", NO.getDisplayValue());
+    }
     testPage.clickContinue();
 
     if (isWorking) {

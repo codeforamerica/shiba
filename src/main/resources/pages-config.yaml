@@ -1725,6 +1725,14 @@ pageDefinitions:
         type: YES_NO
         promptMessage:
           promptMessageFragmentName: workSituationPrompt
+  - &tribalNationMember
+    name: tribalNationMember
+    pageTitle: tribal-nation-member.title
+    headerKey: tribal-nation-member.is-anyone-in-your-household-a-member-of-a-tribal-nation
+    hasPrimaryButton: false
+    inputs:
+      - name: isTribalNationMember
+        type: YES_NO
   - &introIncome
     name: introIncome
     pageTitle: intro-income.title
@@ -3085,7 +3093,14 @@ workflow:
     datasources:
       - pageName: addHouseholdMembers
     nextPages:
+      - pageName: tribalNationMember
+        flag: apply-for-tribal-nation
       - pageName: introIncome
+  tribalNationMember:
+    pageConfiguration: *tribalNationMember
+    nextPages:
+      - pageName: introIncome
+    skipCondition: *livesAlone?
   introIncome:
     pageConfiguration: *introIncome
     nextPages:
