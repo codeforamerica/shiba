@@ -9,19 +9,21 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConditionalOnProperty(
-        value = "feature-flag.send-download-alert",
-        havingValue = "on"
+    value = "feature-flag.send-download-alert",
+    havingValue = "on"
 )
 public class DownloadCafAlert {
-    private final EmailClient emailClient;
 
-    public DownloadCafAlert(EmailClient emailClient) {
-        this.emailClient = emailClient;
-    }
+  private final EmailClient emailClient;
 
-    @Async
-    @EventListener
-    public void sendEmail(DownloadCafEvent event) {
-        emailClient.sendDownloadCafAlertEmail(event.getConfirmationNumber(), event.getIp(), LocaleContextHolder.getLocale());
-    }
+  public DownloadCafAlert(EmailClient emailClient) {
+    this.emailClient = emailClient;
+  }
+
+  @Async
+  @EventListener
+  public void sendEmail(DownloadCafEvent event) {
+    emailClient.sendDownloadCafAlertEmail(event.getConfirmationNumber(), event.getIp(),
+        LocaleContextHolder.getLocale());
+  }
 }

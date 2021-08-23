@@ -1,101 +1,101 @@
 pageDefinitions:
   - &firstPage
-      name: firstPage
-      pageTitle: first-page-title
-      inputs:
-        - name: editableTextInput
-          type: TEXT
-          promptMessage:
-            promptMessageKey: prompt-message-key
-          helpMessageKey: help-message-key
-          placeholder: general.optional
-        - name: uneditableInput
-          type: TEXT
-          readOnly: true
-          defaultValue: "default value"
-        - name: dateInput
-          type: DATE
-        - name: numberInput
-          type: NUMBER
-        - name: radioInput
-          type: RADIO
-          options:
-            selectableOptions:
-              - value: "1"
-                messageKey: radio-option-1
-              - value: "2"
-                messageKey: radio-option-2
-        - name: checkboxInput
-          type: CHECKBOX
-          options:
-            selectableOptions:
-              - value: "1"
-                messageKey: checkbox-option-1
-                helpMessageKey: option-help-key
-              - value: "2"
-                messageKey: checkbox-option-2
-              - value: "3"
-                messageKey: none-checkbox-option
-                isNone: true
-        - name: selectInput
-          type: SELECT
-          options:
-            selectableOptions:
-              - value: "1"
-                messageKey: select-option-1
-              - value: "2"
-                messageKey: select-option-2
-        - name: moneyInput
-          type: MONEY
-        - name: hourlyWageInput
-          type: HOURLY_WAGE
-        - name: radioInputWithFollowUps
-          type: RADIO
-          options:
-            selectableOptions:
-              - value: "true"
-                messageKey: follow-up-true
-              - value: "false"
-                messageKey: follow-up-false
-              - value: "uncertain"
-                messageKey: follow-up-uncertain
-          followUpValues:
-            - "false"
-            - "uncertain"
-          followUps:
-            - name: radioInputWithFollowUps-followUpTextInput
-              type: TEXT
-        - name: checkboxInputWithFollowUps
-          type: CHECKBOX
-          options:
-            selectableOptions:
-              - value: "true"
-                messageKey: follow-up-true
-              - value: "false"
-                messageKey: follow-up-false
-              - value: "uncertain"
-                messageKey: follow-up-uncertain
-          followUpValues:
-            - "false"
-            - "uncertain"
-          followUps:
-            - name: checkboxInputWithFollowUps-followUpTextInput
-              type: TEXT
+    name: firstPage
+    pageTitle: first-page-title
+    inputs:
+      - name: editableTextInput
+        type: TEXT
+        promptMessage:
+          promptMessageKey: prompt-message-key
+        helpMessageKey: help-message-key
+        placeholder: general.optional
+      - name: uneditableInput
+        type: TEXT
+        readOnly: true
+        defaultValue: "default value"
+      - name: dateInput
+        type: DATE
+      - name: numberInput
+        type: NUMBER
+      - name: radioInput
+        type: RADIO
+        options:
+          selectableOptions:
+            - value: "1"
+              messageKey: radio-option-1
+            - value: "2"
+              messageKey: radio-option-2
+      - name: checkboxInput
+        type: CHECKBOX
+        options:
+          selectableOptions:
+            - value: "1"
+              messageKey: checkbox-option-1
+              helpMessageKey: option-help-key
+            - value: "2"
+              messageKey: checkbox-option-2
+            - value: "3"
+              messageKey: none-checkbox-option
+              isNone: true
+      - name: selectInput
+        type: SELECT
+        options:
+          selectableOptions:
+            - value: "1"
+              messageKey: select-option-1
+            - value: "2"
+              messageKey: select-option-2
+      - name: moneyInput
+        type: MONEY
+      - name: hourlyWageInput
+        type: HOURLY_WAGE
+      - name: radioInputWithFollowUps
+        type: RADIO
+        options:
+          selectableOptions:
+            - value: "true"
+              messageKey: follow-up-true
+            - value: "false"
+              messageKey: follow-up-false
+            - value: "uncertain"
+              messageKey: follow-up-uncertain
+        followUpValues:
+          - "false"
+          - "uncertain"
+        followUps:
+          - name: radioInputWithFollowUps-followUpTextInput
+            type: TEXT
+      - name: checkboxInputWithFollowUps
+        type: CHECKBOX
+        options:
+          selectableOptions:
+            - value: "true"
+              messageKey: follow-up-true
+            - value: "false"
+              messageKey: follow-up-false
+            - value: "uncertain"
+              messageKey: follow-up-uncertain
+        followUpValues:
+          - "false"
+          - "uncertain"
+        followUps:
+          - name: checkboxInputWithFollowUps-followUpTextInput
+            type: TEXT
   - &nextPage
-      name: nextPage
-      pageTitle: next-page-title
-      inputs:
-        - name: someInputName
-          type: TEXT
-          helpMessageKey: help-message-key
+    name: nextPage
+    pageTitle: next-page-title
+    inputs:
+      - name: someInputName
+        type: TEXT
+        helpMessageKey: help-message-key
   - &inputWithPromptFragmentPage
-      name: inputWithPromptFragmentPage
-      pageTitle: prompt-fragment-page-title
-      inputs:
-        - name: promptFragmentInput
-          type: MONEY
-          promptMessage:
-            promptMessageFragmentName: promptFragment
+    name: inputWithPromptFragmentPage
+    pageTitle: prompt-fragment-page-title
+    inputs:
+      - name: promptFragmentInput
+        type: MONEY
+        promptMessage:
+          promptMessageFragmentName: promptFragment
   - &doNotHavePrimaryButtonPage
     name: doNotHavePrimaryButtonPage
     pageTitle: dummy-page-title

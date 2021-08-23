@@ -1,5 +1,10 @@
 package org.codeforamerica.shiba.output.applicationinputsmappers;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Map;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
@@ -15,209 +20,216 @@ import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.junit.jupiter.api.Test;
 
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 class OneToOneApplicationInputsMapperTest {
-    ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
-    PagesData data = new PagesData();
-    OneToOneApplicationInputsMapper oneToOneApplicationInputsMapper = new OneToOneApplicationInputsMapper(applicationConfiguration, Map.of());
 
-    @Test
-    void shouldProduceAnApplicationInputForAFormInput() {
-        FormInput input1 = new FormInput();
-        String input1Name = "input 1";
-        input1.setName(input1Name);
-        input1.setType(FormInputType.TEXT);
+  ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
+  PagesData data = new PagesData();
+  OneToOneApplicationInputsMapper oneToOneApplicationInputsMapper = new OneToOneApplicationInputsMapper(
+      applicationConfiguration, Map.of());
 
-        PageConfiguration page = new PageConfiguration();
-        page.setInputs(List.of(input1));
-        String pageName = "screen1";
-        page.setName(pageName);
-        applicationConfiguration.setPageDefinitions(List.of(page));
+  @Test
+  void shouldProduceAnApplicationInputForAFormInput() {
+    FormInput input1 = new FormInput();
+    String input1Name = "input 1";
+    input1.setName(input1Name);
+    input1.setType(FormInputType.TEXT);
 
-        List<String> input1Value = List.of("input1Value");
-        data.putPage(pageName, new PageData(Map.of(input1Name, InputData.builder().value(input1Value).build())));
+    PageConfiguration page = new PageConfiguration();
+    page.setInputs(List.of(input1));
+    String pageName = "screen1";
+    page.setName(pageName);
+    applicationConfiguration.setPageDefinitions(List.of(page));
 
-        ApplicationData applicationData = new ApplicationData();
-        applicationData.setPagesData(data);
-        Application application = Application.builder()
-                .id("someId")
-                .completedAt(ZonedDateTime.now())
-                .applicationData(applicationData)
-                .county(County.Other)
-                .timeToComplete(null)
-                .build();
-        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, null, Recipient.CLIENT, null);
+    List<String> input1Value = List.of("input1Value");
+    data.putPage(pageName,
+        new PageData(Map.of(input1Name, InputData.builder().value(input1Value).build())));
 
-        assertThat(applicationInputs).contains(
-                new ApplicationInput(pageName, input1Name, input1Value, ApplicationInputType.SINGLE_VALUE)
-        );
-    }
+    ApplicationData applicationData = new ApplicationData();
+    applicationData.setPagesData(data);
+    Application application = Application.builder()
+        .id("someId")
+        .completedAt(ZonedDateTime.now())
+        .applicationData(applicationData)
+        .county(County.Other)
+        .timeToComplete(null)
+        .build();
+    List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper
+        .map(application, null, Recipient.CLIENT, null);
 
-    @Test
-    void shouldProduceAnApplicationInput_withMaskedValueForAFormInputWithPersonalData_whenRecipientIsClient() {
-        String input1Name = "input 1";
-        String maskedValue = "not-for-your-eyes";
+    assertThat(applicationInputs).contains(
+        new ApplicationInput(pageName, input1Name, input1Value, ApplicationInputType.SINGLE_VALUE)
+    );
+  }
 
-        OneToOneApplicationInputsMapper oneToOneApplicationInputsMapper =
-                new OneToOneApplicationInputsMapper(applicationConfiguration, Map.of(input1Name, maskedValue));
+  @Test
+  void shouldProduceAnApplicationInput_withMaskedValueForAFormInputWithPersonalData_whenRecipientIsClient() {
+    String input1Name = "input 1";
+    String maskedValue = "not-for-your-eyes";
 
-        FormInput input1 = new FormInput();
-        input1.setName(input1Name);
-        input1.setType(FormInputType.TEXT);
+    OneToOneApplicationInputsMapper oneToOneApplicationInputsMapper =
+        new OneToOneApplicationInputsMapper(applicationConfiguration,
+            Map.of(input1Name, maskedValue));
 
-        PageConfiguration page = new PageConfiguration();
-        page.setInputs(List.of(input1));
-        String pageName = "screen1";
-        page.setName(pageName);
-        applicationConfiguration.setPageDefinitions(List.of(page));
+    FormInput input1 = new FormInput();
+    input1.setName(input1Name);
+    input1.setType(FormInputType.TEXT);
 
-        data.putPage(pageName, new PageData(Map.of(
-                input1Name, InputData.builder()
-                        .value(List.of("input1Value"))
-                        .build())));
-        ApplicationData applicationData = new ApplicationData();
-        applicationData.setPagesData(data);
+    PageConfiguration page = new PageConfiguration();
+    page.setInputs(List.of(input1));
+    String pageName = "screen1";
+    page.setName(pageName);
+    applicationConfiguration.setPageDefinitions(List.of(page));
 
-        Application application = Application.builder()
-                .id("someId")
-                .completedAt(ZonedDateTime.now())
-                .applicationData(applicationData)
-                .county(County.Other)
-                .timeToComplete(null)
-                .build();
+    data.putPage(pageName, new PageData(Map.of(
+        input1Name, InputData.builder()
+            .value(List.of("input1Value"))
+            .build())));
+    ApplicationData applicationData = new ApplicationData();
+    applicationData.setPagesData(data);
 
-        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, null, Recipient.CLIENT, null);
+    Application application = Application.builder()
+        .id("someId")
+        .completedAt(ZonedDateTime.now())
+        .applicationData(applicationData)
+        .county(County.Other)
+        .timeToComplete(null)
+        .build();
 
-        assertThat(applicationInputs)
-                .contains(new ApplicationInput(pageName, input1Name, List.of(maskedValue), ApplicationInputType.SINGLE_VALUE));
-    }
+    List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper
+        .map(application, null, Recipient.CLIENT, null);
 
-    @Test
-    void shouldNotProduceAnApplicationInput_withMaskedValueForAFormInputWithPersonalData_whenRecipientIsClient_butValueIsBlank() {
-        String input1Name = "input 1";
-        String maskedValue = "not-for-your-eyes";
+    assertThat(applicationInputs)
+        .contains(new ApplicationInput(pageName, input1Name, List.of(maskedValue),
+            ApplicationInputType.SINGLE_VALUE));
+  }
 
-        OneToOneApplicationInputsMapper oneToOneApplicationInputsMapper =
-                new OneToOneApplicationInputsMapper(applicationConfiguration, Map.of(input1Name, maskedValue));
+  @Test
+  void shouldNotProduceAnApplicationInput_withMaskedValueForAFormInputWithPersonalData_whenRecipientIsClient_butValueIsBlank() {
+    String input1Name = "input 1";
+    String maskedValue = "not-for-your-eyes";
 
-        FormInput input1 = new FormInput();
-        input1.setName(input1Name);
-        input1.setType(FormInputType.TEXT);
+    OneToOneApplicationInputsMapper oneToOneApplicationInputsMapper =
+        new OneToOneApplicationInputsMapper(applicationConfiguration,
+            Map.of(input1Name, maskedValue));
 
-        PageConfiguration page = new PageConfiguration();
-        page.setInputs(List.of(input1));
-        String pageName = "screen1";
-        page.setName(pageName);
-        applicationConfiguration.setPageDefinitions(List.of(page));
+    FormInput input1 = new FormInput();
+    input1.setName(input1Name);
+    input1.setType(FormInputType.TEXT);
 
-        data.putPage(pageName, new PageData(Map.of(
-                input1Name, InputData.builder()
-                        .value(List.of(""))
-                        .build())));
-        ApplicationData applicationData = new ApplicationData();
-        applicationData.setPagesData(data);
+    PageConfiguration page = new PageConfiguration();
+    page.setInputs(List.of(input1));
+    String pageName = "screen1";
+    page.setName(pageName);
+    applicationConfiguration.setPageDefinitions(List.of(page));
 
-        Application application = Application.builder()
-                .id("someId")
-                .completedAt(ZonedDateTime.now())
-                .applicationData(applicationData)
-                .county(County.Other)
-                .timeToComplete(null)
-                .build();
+    data.putPage(pageName, new PageData(Map.of(
+        input1Name, InputData.builder()
+            .value(List.of(""))
+            .build())));
+    ApplicationData applicationData = new ApplicationData();
+    applicationData.setPagesData(data);
 
-        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, null, Recipient.CLIENT, null);
+    Application application = Application.builder()
+        .id("someId")
+        .completedAt(ZonedDateTime.now())
+        .applicationData(applicationData)
+        .county(County.Other)
+        .timeToComplete(null)
+        .build();
 
-        assertThat(applicationInputs)
-                .contains(new ApplicationInput(pageName, input1Name, List.of(""), ApplicationInputType.SINGLE_VALUE));
-    }
+    List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper
+        .map(application, null, Recipient.CLIENT, null);
 
-    @Test
-    void shouldProduceAnApplicationInput_withUnmaskedValueForAFormInputWithPersonalData_whenRecipientIsCaseworker() {
-        String input1Name = "input 1";
+    assertThat(applicationInputs)
+        .contains(new ApplicationInput(pageName, input1Name, List.of(""),
+            ApplicationInputType.SINGLE_VALUE));
+  }
 
-        OneToOneApplicationInputsMapper oneToOneApplicationInputsMapper =
-                new OneToOneApplicationInputsMapper(applicationConfiguration, Map.of(input1Name, "not-for-your-eyes"));
+  @Test
+  void shouldProduceAnApplicationInput_withUnmaskedValueForAFormInputWithPersonalData_whenRecipientIsCaseworker() {
+    String input1Name = "input 1";
 
-        FormInput input1 = new FormInput();
-        input1.setName(input1Name);
-        input1.setType(FormInputType.TEXT);
+    OneToOneApplicationInputsMapper oneToOneApplicationInputsMapper =
+        new OneToOneApplicationInputsMapper(applicationConfiguration,
+            Map.of(input1Name, "not-for-your-eyes"));
 
-        PageConfiguration page = new PageConfiguration();
-        page.setInputs(List.of(input1));
-        String pageName = "screen1";
-        page.setName(pageName);
-        applicationConfiguration.setPageDefinitions(List.of(page));
+    FormInput input1 = new FormInput();
+    input1.setName(input1Name);
+    input1.setType(FormInputType.TEXT);
 
-        List<String> input1Value = List.of("input1Value");
-        data.putPage(pageName, new PageData(Map.of(
-                input1Name, InputData.builder()
-                        .value(input1Value)
-                        .build())));
-        ApplicationData applicationData = new ApplicationData();
-        applicationData.setPagesData(data);
+    PageConfiguration page = new PageConfiguration();
+    page.setInputs(List.of(input1));
+    String pageName = "screen1";
+    page.setName(pageName);
+    applicationConfiguration.setPageDefinitions(List.of(page));
 
-        Application application = Application.builder()
-                .id("someId")
-                .completedAt(ZonedDateTime.now())
-                .applicationData(applicationData)
-                .county(County.Other)
-                .timeToComplete(null)
-                .build();
+    List<String> input1Value = List.of("input1Value");
+    data.putPage(pageName, new PageData(Map.of(
+        input1Name, InputData.builder()
+            .value(input1Value)
+            .build())));
+    ApplicationData applicationData = new ApplicationData();
+    applicationData.setPagesData(data);
 
-        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, null, Recipient.CASEWORKER, null);
+    Application application = Application.builder()
+        .id("someId")
+        .completedAt(ZonedDateTime.now())
+        .applicationData(applicationData)
+        .county(County.Other)
+        .timeToComplete(null)
+        .build();
 
-        assertThat(applicationInputs).contains(
-                new ApplicationInput(pageName, input1Name, input1Value, ApplicationInputType.SINGLE_VALUE)
-        );
-    }
+    List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper
+        .map(application, null, Recipient.CASEWORKER, null);
 
-    @Test
-    void shouldIncludeApplicationInputsForFollowups() {
-        FormInput input2 = new FormInput();
-        String input2Name = "input 2";
-        input2.setName(input2Name);
-        input2.setType(FormInputType.TEXT);
+    assertThat(applicationInputs).contains(
+        new ApplicationInput(pageName, input1Name, input1Value, ApplicationInputType.SINGLE_VALUE)
+    );
+  }
 
-        FormInput input3 = new FormInput();
-        String input3Name = "input 3";
-        input3.setName(input3Name);
-        input3.setType(FormInputType.TEXT);
+  @Test
+  void shouldIncludeApplicationInputsForFollowups() {
+    FormInput input2 = new FormInput();
+    String input2Name = "input 2";
+    input2.setName(input2Name);
+    input2.setType(FormInputType.TEXT);
 
-        input2.setFollowUps(List.of(input3));
+    FormInput input3 = new FormInput();
+    String input3Name = "input 3";
+    input3.setName(input3Name);
+    input3.setType(FormInputType.TEXT);
 
-        PageConfiguration page = new PageConfiguration();
-        page.setInputs(List.of(input2));
-        String pageName = "screen1";
-        page.setName(pageName);
-        applicationConfiguration.setPageDefinitions(List.of(page));
+    input2.setFollowUps(List.of(input3));
 
-        List<String> input2Value = List.of("input2Value");
-        List<String> input3Value = List.of("input3Value");
-        data.putPage(pageName, new PageData(Map.of(
-                input2Name, InputData.builder().value(input2Value).build(),
-                input3Name, InputData.builder().value(input3Value).build()
-        )));
+    PageConfiguration page = new PageConfiguration();
+    page.setInputs(List.of(input2));
+    String pageName = "screen1";
+    page.setName(pageName);
+    applicationConfiguration.setPageDefinitions(List.of(page));
 
-        ApplicationData applicationData = new ApplicationData();
-        applicationData.setPagesData(data);
-        Application application = Application.builder()
-                .id("someId")
-                .completedAt(ZonedDateTime.now())
-                .applicationData(applicationData)
-                .county(County.Other)
-                .timeToComplete(null)
-                .build();
-        List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper.map(application, null, Recipient.CLIENT, null);
+    List<String> input2Value = List.of("input2Value");
+    List<String> input3Value = List.of("input3Value");
+    data.putPage(pageName, new PageData(Map.of(
+        input2Name, InputData.builder().value(input2Value).build(),
+        input3Name, InputData.builder().value(input3Value).build()
+    )));
 
-        assertThat(applicationInputs).contains(
-                new ApplicationInput(pageName, input2Name, input2Value, ApplicationInputType.SINGLE_VALUE),
-                new ApplicationInput(pageName, input3Name, input3Value, ApplicationInputType.SINGLE_VALUE)
-        );
-    }
+    ApplicationData applicationData = new ApplicationData();
+    applicationData.setPagesData(data);
+    Application application = Application.builder()
+        .id("someId")
+        .completedAt(ZonedDateTime.now())
+        .applicationData(applicationData)
+        .county(County.Other)
+        .timeToComplete(null)
+        .build();
+    List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper
+        .map(application, null, Recipient.CLIENT, null);
+
+    assertThat(applicationInputs).contains(
+        new ApplicationInput(pageName, input2Name, input2Value, ApplicationInputType.SINGLE_VALUE),
+        new ApplicationInput(pageName, input3Name, input3Value, ApplicationInputType.SINGLE_VALUE)
+    );
+  }
 
 }

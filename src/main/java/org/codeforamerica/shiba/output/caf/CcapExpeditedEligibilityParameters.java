@@ -4,6 +4,7 @@ import lombok.Value;
 
 @Value
 public class CcapExpeditedEligibilityParameters {
-    String livingSituation;
-    boolean isCcapApplication;
+
+  String livingSituation;
+  boolean isCcapApplication;
 }

@@ -16,32 +16,33 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Override
-    protected AuthenticationManager authenticationManager() throws Exception {
-        return super.authenticationManager();
-    }
+  @Override
+  protected AuthenticationManager authenticationManager() throws Exception {
+    return super.authenticationManager();
+  }
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth,
-                                @Value("${shiba.username}") String username,
-                                @Value("${shiba.password}") String password) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser(username).password(passwordEncoder().encode(password))
-                .authorities("admin");
-    }
+  @Autowired
+  public void configureGlobal(AuthenticationManagerBuilder auth,
+      @Value("${shiba.username}") String username,
+      @Value("${shiba.password}") String password) throws Exception {
+    auth.inMemoryAuthentication()
+        .withUser(username).password(passwordEncoder().encode(password))
+        .authorities("admin");
+  }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/download-caf/**", "/download-ccap/??????????", "/download-docs/??????????", "/metrics",
-                                        "/resend-confirmation-email/??????????")
-                .authenticated()
-                .and()
-                .httpBasic();
-    }
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    http.authorizeRequests()
+        .antMatchers("/download-caf/**", "/download-ccap/??????????", "/download-docs/??????????",
+            "/metrics",
+            "/resend-confirmation-email/??????????")
+        .authenticated()
+        .and()
+        .httpBasic();
+  }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 }

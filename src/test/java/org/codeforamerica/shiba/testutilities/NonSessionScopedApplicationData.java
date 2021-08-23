@@ -6,8 +6,9 @@ import org.springframework.context.annotation.Bean;
 
 @TestConfiguration
 public class NonSessionScopedApplicationData {
-    @Bean
-    public ApplicationData applicationData() {
-        return new ApplicationData();
-    }
+
+  @Bean
+  public ApplicationData applicationData() {
+    return new ApplicationData();
+  }
 }

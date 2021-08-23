@@ -10,10 +10,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class TransferManagerConfiguration {
 
-    @Bean
-    TransferManager transferManager(@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") @Autowired AmazonS3 s3Client) {
-        return TransferManagerBuilder.standard()
-                .withS3Client(s3Client)
-                .build();
-    }
+  @Bean
+  TransferManager transferManager(
+      @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") @Autowired AmazonS3 s3Client) {
+    return TransferManagerBuilder.standard()
+        .withS3Client(s3Client)
+        .build();
+  }
 }

@@ -5,5 +5,6 @@ import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 
 public interface FileGenerator {
-    ApplicationFile generate(String applicationId, Document document, Recipient recipient);
+
+  ApplicationFile generate(String applicationId, Document document, Recipient recipient);
 }

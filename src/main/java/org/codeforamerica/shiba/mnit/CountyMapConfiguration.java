@@ -11,31 +11,32 @@ import org.springframework.context.annotation.PropertySource;
 @Configuration
 @PropertySource(value = "classpath:county-mapping.yaml", factory = YamlPropertySourceFactory.class)
 public class CountyMapConfiguration {
-    @Bean
-    @Profile({"default", "test"})
-    @ConfigurationProperties(prefix = "other")
-    CountyMap<MnitCountyInformation> localMapping() {
-        return new CountyMap<>();
-    }
 
-    @Bean
-    @Profile("demo")
-    @ConfigurationProperties(prefix = "demo")
-    CountyMap<MnitCountyInformation> demoMapping() {
-        return new CountyMap<>();
-    }
+  @Bean
+  @Profile({"default", "test"})
+  @ConfigurationProperties(prefix = "other")
+  CountyMap<MnitCountyInformation> localMapping() {
+    return new CountyMap<>();
+  }
 
-    @Bean
-    @Profile("staging")
-    @ConfigurationProperties(prefix = "staging")
-    CountyMap<MnitCountyInformation> stagingMapping() {
-        return new CountyMap<>();
-    }
+  @Bean
+  @Profile("demo")
+  @ConfigurationProperties(prefix = "demo")
+  CountyMap<MnitCountyInformation> demoMapping() {
+    return new CountyMap<>();
+  }
 
-    @Bean
-    @Profile("production")
-    @ConfigurationProperties(prefix = "production")
-    CountyMap<MnitCountyInformation> productionMapping() {
-        return new CountyMap<>();
-    }
+  @Bean
+  @Profile("staging")
+  @ConfigurationProperties(prefix = "staging")
+  CountyMap<MnitCountyInformation> stagingMapping() {
+    return new CountyMap<>();
+  }
+
+  @Bean
+  @Profile("production")
+  @ConfigurationProperties(prefix = "production")
+  CountyMap<MnitCountyInformation> productionMapping() {
+    return new CountyMap<>();
+  }
 }

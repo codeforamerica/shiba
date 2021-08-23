@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages.config;
 
+import java.io.IOException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
@@ -9,38 +10,39 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.representer.Representer;
 
-import java.io.IOException;
-
 public class ApplicationConfigurationFactory implements FactoryBean<ApplicationConfiguration> {
-    @Value("${pagesConfig:pages-config.yaml}") String configPath;
 
-    @Override
-    public ApplicationConfiguration getObject() {
-        ClassPathResource classPathResource = new ClassPathResource(configPath);
+  @Value("${pagesConfig:pages-config.yaml}")
+  String configPath;
 
-        LoaderOptions loaderOptions = new LoaderOptions();
-        loaderOptions.setAllowDuplicateKeys(false);
-        loaderOptions.setMaxAliasesForCollections(Integer.MAX_VALUE);
-        loaderOptions.setAllowRecursiveKeys(true);
+  @Override
+  public ApplicationConfiguration getObject() {
+    ClassPathResource classPathResource = new ClassPathResource(configPath);
 
-        Yaml yaml = new Yaml(new Constructor(ApplicationConfiguration.class), new Representer(), new DumperOptions(), loaderOptions);
-        ApplicationConfiguration appConfig = null;
-        try {
-            appConfig = yaml.load(classPathResource.getInputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    LoaderOptions loaderOptions = new LoaderOptions();
+    loaderOptions.setAllowDuplicateKeys(false);
+    loaderOptions.setMaxAliasesForCollections(Integer.MAX_VALUE);
+    loaderOptions.setAllowRecursiveKeys(true);
 
-        return appConfig;
+    Yaml yaml = new Yaml(new Constructor(ApplicationConfiguration.class), new Representer(),
+        new DumperOptions(), loaderOptions);
+    ApplicationConfiguration appConfig = null;
+    try {
+      appConfig = yaml.load(classPathResource.getInputStream());
+    } catch (IOException e) {
+      e.printStackTrace();
     }
 
-    @Override
-    public Class<?> getObjectType() {
-        return ApplicationConfiguration.class;
-    }
+    return appConfig;
+  }
 
-    @Override
-    public boolean isSingleton() {
-        return true;
-    }
+  @Override
+  public Class<?> getObjectType() {
+    return ApplicationConfiguration.class;
+  }
+
+  @Override
+  public boolean isSingleton() {
+    return true;
+  }
 }

@@ -6,13 +6,14 @@ import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 
 public class UnlimitedYamlPropertiesFactoryBean extends YamlPropertiesFactoryBean {
-    @Override
-    protected @NotNull Yaml createYaml() {
-        LoaderOptions loaderOptions = new LoaderOptions();
-        loaderOptions.setAllowDuplicateKeys(false);
-        loaderOptions.setMaxAliasesForCollections(Integer.MAX_VALUE);
-        loaderOptions.setAllowRecursiveKeys(true);
 
-        return new Yaml(loaderOptions);
-    }
+  @Override
+  protected @NotNull Yaml createYaml() {
+    LoaderOptions loaderOptions = new LoaderOptions();
+    loaderOptions.setAllowDuplicateKeys(false);
+    loaderOptions.setMaxAliasesForCollections(Integer.MAX_VALUE);
+    loaderOptions.setAllowRecursiveKeys(true);
+
+    return new Yaml(loaderOptions);
+  }
 }

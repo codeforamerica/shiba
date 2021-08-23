@@ -46,7 +46,9 @@ public class InputData implements Serializable {
 
   public List<String> errorMessageKeys(PageData pageData) {
     return validators.stream()
-        .filter(validator -> (validator.getCondition() == null || validator.getCondition().satisfies(pageData)) && !validator.getValidation().apply(value))
+        .filter(validator ->
+            (validator.getCondition() == null || validator.getCondition().satisfies(pageData))
+                && !validator.getValidation().apply(value))
         .map(Validator::getErrorMessageKey).collect(Collectors.toList());
   }
 

@@ -1,8 +1,39 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.application.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
+import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
+import static org.codeforamerica.shiba.output.Document.CAF;
+import static org.codeforamerica.shiba.output.Document.CCAP;
+import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
+import static org.codeforamerica.shiba.testutilities.TestUtils.resetApplicationData;
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.time.Clock;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.Locale;
+import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.application.ApplicationFactory;
+import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.documents.CombinedDocumentRepositoryService;
-import org.codeforamerica.shiba.testutilities.NonSessionScopedApplicationData;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -10,6 +41,7 @@ import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.codeforamerica.shiba.pages.events.UploadedDocumentsSubmittedEvent;
+import org.codeforamerica.shiba.testutilities.NonSessionScopedApplicationData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,434 +59,437 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.time.*;
-import java.util.Locale;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
-import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
-import static org.codeforamerica.shiba.output.Document.*;
-import static org.codeforamerica.shiba.testutilities.TestUtils.resetApplicationData;
-import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.Mockito.*;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = MOCK, properties = {"pagesConfig=pages-config/test-pages-controller.yaml"})
+@SpringBootTest(webEnvironment = MOCK, properties = {
+    "pagesConfig=pages-config/test-pages-controller.yaml"})
 @ContextConfiguration(classes = {NonSessionScopedApplicationData.class})
 class PageControllerTest {
-    private MockMvc mockMvc;
-
-    @MockBean
-    private MessageSource messageSource;
-    @MockBean
-    private Clock clock;
-    @MockBean
-    private ApplicationRepository applicationRepository;
-    @MockBean
-    private ApplicationFactory applicationFactory;
-    @MockBean
-    private PageEventPublisher pageEventPublisher;
-    @MockBean
-    private FeatureFlagConfiguration featureFlags;
-    @SpyBean
-    private CombinedDocumentRepositoryService combinedDocumentRepositoryService;
-
-    @Autowired
-    private PageController pageController;
-    @Autowired
-    private ApplicationData applicationData;
-
-    @BeforeEach
-    void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(pageController).build();
-        when(clock.instant()).thenReturn(Instant.now());
-        when(clock.getZone()).thenReturn(ZoneId.of("UTC"));
-        when(applicationFactory.newApplication(any())).thenReturn(Application.builder()
-                .id("defaultId")
-                .completedAt(ZonedDateTime.now())
-                .applicationData(applicationData)
-                .county(null)
-                .timeToComplete(null)
-                .build());
-        when(messageSource.getMessage(eq("success.feedback-success"), any(), eq(Locale.ENGLISH))).thenReturn("default success message");
-        when(messageSource.getMessage(eq("success.feedback-failure"), any(), eq(Locale.ENGLISH))).thenReturn("default failure message");
-    }
-
-    @AfterEach
-    void tearDown() {
-        resetApplicationData(applicationData);
-    }
-
-    @Test
-    void shouldWriteTheInputDataMapForSubmitPage() throws Exception {
-        applicationData.setStartTimeOnce(Instant.now());
-        when(clock.instant()).thenReturn(LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant());
-
-        mockMvc.perform(post("/submit")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                .param("foo[]", "some value"))
-                .andExpect(redirectedUrl("/pages/firstPage/navigation"));
-
-        PageData firstPage = applicationData.getPagesData().getPage("firstPage");
-        assertThat(firstPage.get("foo").getValue()).contains("some value");
-    }
-
-    @Test
-    void shouldPublishApplicationSubmittedEvent() throws Exception {
-        applicationData.setStartTimeOnce(Instant.now());
-
-        String applicationId = "someId";
-        Application application = Application.builder()
-                .id(applicationId)
-                .completedAt(ZonedDateTime.now())
-                .applicationData(applicationData)
-                .county(null)
-                .timeToComplete(null)
-                .flow(FlowType.FULL)
-                .build();
-        when(applicationFactory.newApplication(eq(applicationData))).thenReturn(application);
-
-        String sessionId = "someSessionId";
-        MockHttpSession session = new MockHttpSession(null, sessionId);
-        mockMvc.perform(post("/submit")
-                .session(session)
-                .param("foo[]", "some value")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
-
-        InOrder inOrder = inOrder(applicationRepository, pageEventPublisher);
-        inOrder.verify(applicationRepository).save(application);
-        inOrder.verify(pageEventPublisher).publish(new ApplicationSubmittedEvent(sessionId, applicationId, FlowType.FULL, Locale.ENGLISH));
-    }
-
-    @Test
-    void shouldPublishUploadedDocumentsSubmittedEvent() throws Exception {
-        String applicationId = "someId";
-        applicationData.setId(applicationId);
-
-        MockMultipartFile image = new MockMultipartFile("image", "someImage.jpg", MediaType.IMAGE_JPEG_VALUE, "test".getBytes());
-        applicationData.addUploadedDoc(image, "someS3FilePath", "someThumbnailFilepath", "image/jpeg");
-
-        Application application = Application.builder()
-                .id(applicationId)
-                .completedAt(ZonedDateTime.now())
-                .applicationData(applicationData)
-                .county(null)
-                .timeToComplete(null)
-                .flow(FlowType.FULL)
-                .build();
-        when(applicationRepository.find(eq(applicationId))).thenReturn(application);
-        when(featureFlags.get("submit-via-api")).thenReturn(FeatureFlag.ON);
-
-        String sessionId = "someSessionId";
-        MockHttpSession session = new MockHttpSession(null, sessionId);
-        mockMvc.perform(post("/submit-documents")
-                .session(session)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
-
-        InOrder inOrder = inOrder(applicationRepository, pageEventPublisher);
-        inOrder.verify(applicationRepository).save(application);
-        inOrder.verify(pageEventPublisher).publish(new UploadedDocumentsSubmittedEvent(sessionId, applicationId, Locale.ENGLISH));
-    }
-
-    @Test
-    void shouldSetCompletedAtAndTimeToCompleteForLaterDocsFlow() throws Exception {
-        String applicationId = "someId";
-        applicationData.setId(applicationId);
-        applicationData.setStartTimeOnce(Instant.now());
-
-        MockMultipartFile image = new MockMultipartFile("image", "someImage.jpg", MediaType.IMAGE_JPEG_VALUE, "test".getBytes());
-        applicationData.addUploadedDoc(image, "someS3FilePath", "someDataUrl", "image/jpeg");
-
-        Application application = Application.builder()
-                .id(applicationId)
-                .completedAt(ZonedDateTime.now())
-                .applicationData(applicationData)
-                .county(null)
-                .timeToComplete(null)
-                .flow(LATER_DOCS)
-                .build();
-
-        applicationData.setFlow(LATER_DOCS);
-
-        when(applicationRepository.find(eq(applicationId))).thenReturn(application);
-        when(featureFlags.get("submit-via-api")).thenReturn(FeatureFlag.ON);
-
-        String sessionId = "someSessionId";
-
-        assertThat(application.getTimeToComplete()).isEqualTo(null);
-
-        MockHttpSession session = new MockHttpSession(null, sessionId);
-        mockMvc.perform(post("/submit-documents")
-                .session(session)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
-
-        assertThat(application.getCompletedAt()).isNotNull();
-        assertThat(application.getTimeToComplete()).isNotNull();
-        InOrder inOrder = inOrder(applicationRepository, pageEventPublisher);
-        inOrder.verify(applicationRepository).save(application);
-        inOrder.verify(pageEventPublisher).publish(new UploadedDocumentsSubmittedEvent(sessionId, applicationId, Locale.ENGLISH));
-    }
-
-    @Test
-    void shouldSaveApplicationOnEveryFormSubmission() throws Exception {
-        applicationData.setStartTimeOnce(Instant.now());
-
-        String applicationId = "someId";
-        applicationData.setId(applicationId);
-        Application application = Application.builder()
-                .id(applicationId)
-                .applicationData(applicationData)
-                .build();
-        when(applicationRepository.getNextId()).thenReturn(applicationId);
-        when(applicationFactory.newApplication(applicationData)).thenReturn(application);
-
-        mockMvc.perform(post("/pages/firstPage")
-                .param("foo[]", "some value")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
-
-        verify(applicationRepository).save(application);
-        assertThat(applicationData.getId()).isEqualTo(applicationId);
-    }
-
-    @Test
-    void shouldSaveApplicationOnSignaturePage() throws Exception {
-        applicationData.setStartTimeOnce(Instant.now());
-
-        String applicationId = "someId";
-        applicationData.setId(applicationId);
-        Application application = Application.builder()
-                .id(applicationId)
-                .applicationData(applicationData)
-                .county(null)
-                .build();
-
-        when(applicationRepository.getNextId()).thenReturn(applicationId);
-        when(applicationFactory.newApplication(applicationData)).thenReturn(application);
-
-        assertThat(application.getTimeToComplete()).isEqualTo(null);
-
-        mockMvc.perform(post("/submit")
-                .param("foo[]", "some value")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
-
-        verify(applicationRepository).save(application);
-        assertThat(application.getTimeToComplete()).isNotNull();
-        assertThat(application.getCompletedAt()).isNotNull();
-        assertThat(applicationData.getId()).isEqualTo(applicationId);
-    }
-
-    @Test
-    void shouldUpdateApplicationWithAllFeedbackIndicatorsAndIncludeSuccessMessage() throws Exception {
-        String successMessage = "yay thanks for the feedback!";
-        Locale locale = Locale.JAPANESE;
-        when(messageSource.getMessage(eq("success.feedback-success"), any(), eq(locale))).thenReturn(successMessage);
-
-        String applicationId = "14356236";
-        applicationData.setId(applicationId);
-        Application application = Application.builder()
-                .id("appIdFromDb")
-                .build();
-        when(applicationRepository.find(applicationId)).thenReturn(application);
-
-        String feedback = "this was awesome!";
-        mockMvc.perform(post("/submit-feedback")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .locale(locale)
-                .param("sentiment", "HAPPY")
-                .param("feedback", feedback))
-                .andExpect(redirectedUrl("/pages/terminalPage"))
-                .andExpect(flash().attribute("feedbackSuccess", equalTo(successMessage)));
-
-        verify(applicationRepository).save(Application.builder()
-                .id(application.getId())
-                .sentiment(Sentiment.HAPPY)
-                .feedback(feedback)
-                .build());
-    }
-
-    @Test
-    void shouldUpdateApplicationWithFeedback() throws Exception {
-        String successMessage = "yay thanks for the feedback!";
-        Locale locale = Locale.GERMAN;
-        when(messageSource.getMessage(eq("success.feedback-success"), any(), eq(locale))).thenReturn(successMessage);
-
-        String applicationId = "14356236";
-        applicationData.setId(applicationId);
-        Application application = Application.builder()
-                .id("appIdFromDb")
-                .build();
-        when(applicationRepository.find(applicationId)).thenReturn(application);
-
-        String feedback = "this was awesome!";
-        mockMvc.perform(post("/submit-feedback")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .locale(locale)
-                .param("feedback", feedback))
-                .andExpect(redirectedUrl("/pages/terminalPage"))
-                .andExpect(flash().attribute("feedbackSuccess", equalTo(successMessage)));
-
-        verify(applicationRepository).save(Application.builder()
-                .id(application.getId())
-                .feedback(feedback)
-                .build());
-    }
-
-    @Test
-    void shouldUpdateApplicationWithSentiment() throws Exception {
-        String successMessage = "yay thanks for the feedback!";
-        String ratingSuccessMessage = "yay thanks for the rating!";
-        Locale locale = Locale.GERMAN;
-        when(messageSource.getMessage(eq("success.feedback-success"), any(), eq(locale))).thenReturn(successMessage);
-        when(messageSource.getMessage(eq("success.feedback-rating-success"), any(), eq(locale))).thenReturn(ratingSuccessMessage);
-
-        String applicationId = "14356236";
-        applicationData.setId(applicationId);
-        Application application = Application.builder()
-                .id("appIdFromDb")
-                .build();
-        when(applicationRepository.find(applicationId)).thenReturn(application);
-
-        mockMvc.perform(post("/submit-feedback")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .locale(locale)
-                .param("sentiment", "HAPPY"))
-                .andExpect(redirectedUrl("/pages/terminalPage"))
-                .andExpect(flash().attribute("feedbackSuccess", equalTo(ratingSuccessMessage)));
-
-        verify(applicationRepository).save(Application.builder()
-                .id(application.getId())
-                .sentiment(Sentiment.HAPPY)
-                .build());
-    }
-
-    @Test
-    void shouldFailToSubmitFeedbackIfIdIsNotSet() throws Exception {
-        mockMvc.perform(post("/submit-feedback")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("sentiment", "HAPPY")
-                .param("feedback", "this was awesome!"))
-                .andExpect(redirectedUrl("/pages/terminalPage"));
-
-        verify(applicationRepository, never()).save(any());
-    }
-
-    @Test
-    void shouldFailToSubmitFeedbackAndIncludeFailureMessageIfNeitherSentimentNorFeedbackIsSupplied() throws Exception {
-        String failureMessage = "bummer, that didn't work";
-        Locale locale = Locale.ITALIAN;
-        when(messageSource.getMessage(eq("success.feedback-failure"), any(), eq(locale))).thenReturn(failureMessage);
-
-        String applicationId = "14356236";
-        applicationData.setId(applicationId);
-
-        mockMvc.perform(post("/submit-feedback")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("feedback", "")
-                .locale(locale))
-                .andExpect(redirectedUrl("/pages/terminalPage"))
-                .andExpect(flash().attribute("feedbackFailure", equalTo(failureMessage)));
-
-        verifyNoInteractions(applicationRepository);
-    }
-
-    @Test
-    void shouldUpdateUploadDocumentsStatusWhenUploadDocumentsPageIsReached() throws Exception {
-        applicationData.setStartTimeOnce(Instant.now());
-
-        String applicationId = "someId";
-        applicationData.setId(applicationId);
-        Application application = Application.builder()
-                .id(applicationId)
-                .applicationData(applicationData)
-                .build();
-        when(applicationRepository.getNextId()).thenReturn(applicationId);
-        when(applicationFactory.newApplication(applicationData)).thenReturn(application);
-
-        mockMvc.perform(get("/pages/uploadDocuments"));
-
-        verify(applicationRepository).updateStatus(application.getId(), UPLOADED_DOC, IN_PROGRESS);
-    }
-
-    @Test
-    void shouldHandleMissingThumbnails() throws Exception {
-        applicationData.setStartTimeOnce(Instant.now());
-        var applicationId = "someId";
-        applicationData.setId(applicationId);
-        var image = new MockMultipartFile("image", "someImage.jpg", MediaType.IMAGE_JPEG_VALUE, "test".getBytes());
-        applicationData.addUploadedDoc(image, "someS3FilePath", "someThumbnailFilepath", "image/jpeg");
-        var application = Application.builder()
-                .id(applicationId)
-                .applicationData(applicationData)
-                .build();
-        when(applicationRepository.getNextId()).thenReturn(applicationId);
-        when(applicationFactory.newApplication(applicationData)).thenReturn(application);
-
-        when(combinedDocumentRepositoryService.getFromAzureWithFallbackToS3(any())).thenThrow(RuntimeException.class);
-
-        mockMvc.perform(get("/pages/uploadDocuments")).andExpect(status().isOk());
-    }
-
-    @Test
-    void shouldUpdateMultipleApplicationStatusesWhenChoosingPrograms() throws Exception {
-        applicationData.setStartTimeOnce(Instant.now());
-        String applicationId = "someId";
-        applicationData.setId(applicationId);
-        Application application = Application.builder()
-                .id(applicationId)
-                .applicationData(applicationData)
-                .build();
-        when(applicationRepository.getNextId()).thenReturn(applicationId);
-        when(applicationFactory.newApplication(applicationData)).thenReturn(application);
-
-        mockMvc.perform(post("/pages/choosePrograms")
-                .param("programs[]", "CCAP", "SNAP")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
-
-        verify(applicationRepository).updateStatus(application.getId(), CCAP, IN_PROGRESS);
-        verify(applicationRepository).updateStatus(application.getId(), CAF, IN_PROGRESS);
-    }
-
-    @Test
-    void shouldUpdateCafStatusWhenChoosingPrograms() throws Exception {
-        applicationData.setStartTimeOnce(Instant.now());
-        String applicationId = "someId";
-        applicationData.setId(applicationId);
-        Application application = Application.builder()
-                .id(applicationId)
-                .applicationData(applicationData)
-                .build();
-        when(applicationRepository.getNextId()).thenReturn(applicationId);
-        when(applicationFactory.newApplication(applicationData)).thenReturn(application);
-
-        mockMvc.perform(post("/pages/choosePrograms")
-                .param("programs[]", "SNAP")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
-
-        verify(applicationRepository, never()).updateStatus(application.getId(), CCAP, IN_PROGRESS);
-        verify(applicationRepository).updateStatus(application.getId(), CAF, IN_PROGRESS);
-    }
-
-    @Test
-    void shouldUpdateCcapStatusWhenChoosingPrograms() throws Exception {
-        applicationData.setStartTimeOnce(Instant.now());
-        String applicationId = "someId";
-        applicationData.setId(applicationId);
-        Application application = Application.builder()
-                .id(applicationId)
-                .applicationData(applicationData)
-                .build();
-        when(applicationRepository.getNextId()).thenReturn(applicationId);
-        when(applicationFactory.newApplication(applicationData)).thenReturn(application);
-
-        mockMvc.perform(post("/pages/choosePrograms")
-                .param("programs[]", "CCAP")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
-
-        verify(applicationRepository).updateStatus(application.getId(), CCAP, IN_PROGRESS);
-        verify(applicationRepository, never()).updateStatus(application.getId(), CAF, IN_PROGRESS);
-    }
+
+  private MockMvc mockMvc;
+
+  @MockBean
+  private MessageSource messageSource;
+  @MockBean
+  private Clock clock;
+  @MockBean
+  private ApplicationRepository applicationRepository;
+  @MockBean
+  private ApplicationFactory applicationFactory;
+  @MockBean
+  private PageEventPublisher pageEventPublisher;
+  @MockBean
+  private FeatureFlagConfiguration featureFlags;
+  @SpyBean
+  private CombinedDocumentRepositoryService combinedDocumentRepositoryService;
+
+  @Autowired
+  private PageController pageController;
+  @Autowired
+  private ApplicationData applicationData;
+
+  @BeforeEach
+  void setUp() {
+    mockMvc = MockMvcBuilders.standaloneSetup(pageController).build();
+    when(clock.instant()).thenReturn(Instant.now());
+    when(clock.getZone()).thenReturn(ZoneId.of("UTC"));
+    when(applicationFactory.newApplication(any())).thenReturn(Application.builder()
+        .id("defaultId")
+        .completedAt(ZonedDateTime.now())
+        .applicationData(applicationData)
+        .county(null)
+        .timeToComplete(null)
+        .build());
+    when(messageSource.getMessage(eq("success.feedback-success"), any(), eq(Locale.ENGLISH)))
+        .thenReturn("default success message");
+    when(messageSource.getMessage(eq("success.feedback-failure"), any(), eq(Locale.ENGLISH)))
+        .thenReturn("default failure message");
+  }
+
+  @AfterEach
+  void tearDown() {
+    resetApplicationData(applicationData);
+  }
+
+  @Test
+  void shouldWriteTheInputDataMapForSubmitPage() throws Exception {
+    applicationData.setStartTimeOnce(Instant.now());
+    when(clock.instant())
+        .thenReturn(LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant());
+
+    mockMvc.perform(post("/submit")
+        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+        .param("foo[]", "some value"))
+        .andExpect(redirectedUrl("/pages/firstPage/navigation"));
+
+    PageData firstPage = applicationData.getPagesData().getPage("firstPage");
+    assertThat(firstPage.get("foo").getValue()).contains("some value");
+  }
+
+  @Test
+  void shouldPublishApplicationSubmittedEvent() throws Exception {
+    applicationData.setStartTimeOnce(Instant.now());
+
+    String applicationId = "someId";
+    Application application = Application.builder()
+        .id(applicationId)
+        .completedAt(ZonedDateTime.now())
+        .applicationData(applicationData)
+        .county(null)
+        .timeToComplete(null)
+        .flow(FlowType.FULL)
+        .build();
+    when(applicationFactory.newApplication(eq(applicationData))).thenReturn(application);
+
+    String sessionId = "someSessionId";
+    MockHttpSession session = new MockHttpSession(null, sessionId);
+    mockMvc.perform(post("/submit")
+        .session(session)
+        .param("foo[]", "some value")
+        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+
+    InOrder inOrder = inOrder(applicationRepository, pageEventPublisher);
+    inOrder.verify(applicationRepository).save(application);
+    inOrder.verify(pageEventPublisher).publish(
+        new ApplicationSubmittedEvent(sessionId, applicationId, FlowType.FULL, Locale.ENGLISH));
+  }
+
+  @Test
+  void shouldPublishUploadedDocumentsSubmittedEvent() throws Exception {
+    String applicationId = "someId";
+    applicationData.setId(applicationId);
+
+    MockMultipartFile image = new MockMultipartFile("image", "someImage.jpg",
+        MediaType.IMAGE_JPEG_VALUE, "test".getBytes());
+    applicationData.addUploadedDoc(image, "someS3FilePath", "someThumbnailFilepath", "image/jpeg");
+
+    Application application = Application.builder()
+        .id(applicationId)
+        .completedAt(ZonedDateTime.now())
+        .applicationData(applicationData)
+        .county(null)
+        .timeToComplete(null)
+        .flow(FlowType.FULL)
+        .build();
+    when(applicationRepository.find(eq(applicationId))).thenReturn(application);
+    when(featureFlags.get("submit-via-api")).thenReturn(FeatureFlag.ON);
+
+    String sessionId = "someSessionId";
+    MockHttpSession session = new MockHttpSession(null, sessionId);
+    mockMvc.perform(post("/submit-documents")
+        .session(session)
+        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+
+    InOrder inOrder = inOrder(applicationRepository, pageEventPublisher);
+    inOrder.verify(applicationRepository).save(application);
+    inOrder.verify(pageEventPublisher)
+        .publish(new UploadedDocumentsSubmittedEvent(sessionId, applicationId, Locale.ENGLISH));
+  }
+
+  @Test
+  void shouldSetCompletedAtAndTimeToCompleteForLaterDocsFlow() throws Exception {
+    String applicationId = "someId";
+    applicationData.setId(applicationId);
+    applicationData.setStartTimeOnce(Instant.now());
+
+    MockMultipartFile image = new MockMultipartFile("image", "someImage.jpg",
+        MediaType.IMAGE_JPEG_VALUE, "test".getBytes());
+    applicationData.addUploadedDoc(image, "someS3FilePath", "someDataUrl", "image/jpeg");
+
+    Application application = Application.builder()
+        .id(applicationId)
+        .completedAt(ZonedDateTime.now())
+        .applicationData(applicationData)
+        .county(null)
+        .timeToComplete(null)
+        .flow(LATER_DOCS)
+        .build();
+
+    applicationData.setFlow(LATER_DOCS);
+
+    when(applicationRepository.find(eq(applicationId))).thenReturn(application);
+    when(featureFlags.get("submit-via-api")).thenReturn(FeatureFlag.ON);
+
+    String sessionId = "someSessionId";
+
+    assertThat(application.getTimeToComplete()).isEqualTo(null);
+
+    MockHttpSession session = new MockHttpSession(null, sessionId);
+    mockMvc.perform(post("/submit-documents")
+        .session(session)
+        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+
+    assertThat(application.getCompletedAt()).isNotNull();
+    assertThat(application.getTimeToComplete()).isNotNull();
+    InOrder inOrder = inOrder(applicationRepository, pageEventPublisher);
+    inOrder.verify(applicationRepository).save(application);
+    inOrder.verify(pageEventPublisher)
+        .publish(new UploadedDocumentsSubmittedEvent(sessionId, applicationId, Locale.ENGLISH));
+  }
+
+  @Test
+  void shouldSaveApplicationOnEveryFormSubmission() throws Exception {
+    applicationData.setStartTimeOnce(Instant.now());
+
+    String applicationId = "someId";
+    applicationData.setId(applicationId);
+    Application application = Application.builder()
+        .id(applicationId)
+        .applicationData(applicationData)
+        .build();
+    when(applicationRepository.getNextId()).thenReturn(applicationId);
+    when(applicationFactory.newApplication(applicationData)).thenReturn(application);
+
+    mockMvc.perform(post("/pages/firstPage")
+        .param("foo[]", "some value")
+        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+
+    verify(applicationRepository).save(application);
+    assertThat(applicationData.getId()).isEqualTo(applicationId);
+  }
+
+  @Test
+  void shouldSaveApplicationOnSignaturePage() throws Exception {
+    applicationData.setStartTimeOnce(Instant.now());
+
+    String applicationId = "someId";
+    applicationData.setId(applicationId);
+    Application application = Application.builder()
+        .id(applicationId)
+        .applicationData(applicationData)
+        .county(null)
+        .build();
+
+    when(applicationRepository.getNextId()).thenReturn(applicationId);
+    when(applicationFactory.newApplication(applicationData)).thenReturn(application);
+
+    assertThat(application.getTimeToComplete()).isEqualTo(null);
+
+    mockMvc.perform(post("/submit")
+        .param("foo[]", "some value")
+        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+
+    verify(applicationRepository).save(application);
+    assertThat(application.getTimeToComplete()).isNotNull();
+    assertThat(application.getCompletedAt()).isNotNull();
+    assertThat(applicationData.getId()).isEqualTo(applicationId);
+  }
+
+  @Test
+  void shouldUpdateApplicationWithAllFeedbackIndicatorsAndIncludeSuccessMessage() throws Exception {
+    String successMessage = "yay thanks for the feedback!";
+    Locale locale = Locale.JAPANESE;
+    when(messageSource.getMessage(eq("success.feedback-success"), any(), eq(locale)))
+        .thenReturn(successMessage);
+
+    String applicationId = "14356236";
+    applicationData.setId(applicationId);
+    Application application = Application.builder()
+        .id("appIdFromDb")
+        .build();
+    when(applicationRepository.find(applicationId)).thenReturn(application);
+
+    String feedback = "this was awesome!";
+    mockMvc.perform(post("/submit-feedback")
+        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+        .locale(locale)
+        .param("sentiment", "HAPPY")
+        .param("feedback", feedback))
+        .andExpect(redirectedUrl("/pages/terminalPage"))
+        .andExpect(flash().attribute("feedbackSuccess", equalTo(successMessage)));
+
+    verify(applicationRepository).save(Application.builder()
+        .id(application.getId())
+        .sentiment(Sentiment.HAPPY)
+        .feedback(feedback)
+        .build());
+  }
+
+  @Test
+  void shouldUpdateApplicationWithFeedback() throws Exception {
+    String successMessage = "yay thanks for the feedback!";
+    Locale locale = Locale.GERMAN;
+    when(messageSource.getMessage(eq("success.feedback-success"), any(), eq(locale)))
+        .thenReturn(successMessage);
+
+    String applicationId = "14356236";
+    applicationData.setId(applicationId);
+    Application application = Application.builder()
+        .id("appIdFromDb")
+        .build();
+    when(applicationRepository.find(applicationId)).thenReturn(application);
+
+    String feedback = "this was awesome!";
+    mockMvc.perform(post("/submit-feedback")
+        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+        .locale(locale)
+        .param("feedback", feedback))
+        .andExpect(redirectedUrl("/pages/terminalPage"))
+        .andExpect(flash().attribute("feedbackSuccess", equalTo(successMessage)));
+
+    verify(applicationRepository).save(Application.builder()
+        .id(application.getId())
+        .feedback(feedback)
+        .build());
+  }
+
+  @Test
+  void shouldUpdateApplicationWithSentiment() throws Exception {
+    String successMessage = "yay thanks for the feedback!";
+    String ratingSuccessMessage = "yay thanks for the rating!";
+    Locale locale = Locale.GERMAN;
+    when(messageSource.getMessage(eq("success.feedback-success"), any(), eq(locale)))
+        .thenReturn(successMessage);
+    when(messageSource.getMessage(eq("success.feedback-rating-success"), any(), eq(locale)))
+        .thenReturn(ratingSuccessMessage);
+
+    String applicationId = "14356236";
+    applicationData.setId(applicationId);
+    Application application = Application.builder()
+        .id("appIdFromDb")
+        .build();
+    when(applicationRepository.find(applicationId)).thenReturn(application);
+
+    mockMvc.perform(post("/submit-feedback")
+        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+        .locale(locale)
+        .param("sentiment", "HAPPY"))
+        .andExpect(redirectedUrl("/pages/terminalPage"))
+        .andExpect(flash().attribute("feedbackSuccess", equalTo(ratingSuccessMessage)));
+
+    verify(applicationRepository).save(Application.builder()
+        .id(application.getId())
+        .sentiment(Sentiment.HAPPY)
+        .build());
+  }
+
+  @Test
+  void shouldFailToSubmitFeedbackIfIdIsNotSet() throws Exception {
+    mockMvc.perform(post("/submit-feedback")
+        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+        .param("sentiment", "HAPPY")
+        .param("feedback", "this was awesome!"))
+        .andExpect(redirectedUrl("/pages/terminalPage"));
+
+    verify(applicationRepository, never()).save(any());
+  }
+
+  @Test
+  void shouldFailToSubmitFeedbackAndIncludeFailureMessageIfNeitherSentimentNorFeedbackIsSupplied()
+      throws Exception {
+    String failureMessage = "bummer, that didn't work";
+    Locale locale = Locale.ITALIAN;
+    when(messageSource.getMessage(eq("success.feedback-failure"), any(), eq(locale)))
+        .thenReturn(failureMessage);
+
+    String applicationId = "14356236";
+    applicationData.setId(applicationId);
+
+    mockMvc.perform(post("/submit-feedback")
+        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+        .param("feedback", "")
+        .locale(locale))
+        .andExpect(redirectedUrl("/pages/terminalPage"))
+        .andExpect(flash().attribute("feedbackFailure", equalTo(failureMessage)));
+
+    verifyNoInteractions(applicationRepository);
+  }
+
+  @Test
+  void shouldUpdateUploadDocumentsStatusWhenUploadDocumentsPageIsReached() throws Exception {
+    applicationData.setStartTimeOnce(Instant.now());
+
+    String applicationId = "someId";
+    applicationData.setId(applicationId);
+    Application application = Application.builder()
+        .id(applicationId)
+        .applicationData(applicationData)
+        .build();
+    when(applicationRepository.getNextId()).thenReturn(applicationId);
+    when(applicationFactory.newApplication(applicationData)).thenReturn(application);
+
+    mockMvc.perform(get("/pages/uploadDocuments"));
+
+    verify(applicationRepository).updateStatus(application.getId(), UPLOADED_DOC, IN_PROGRESS);
+  }
+
+  @Test
+  void shouldHandleMissingThumbnails() throws Exception {
+    applicationData.setStartTimeOnce(Instant.now());
+    var applicationId = "someId";
+    applicationData.setId(applicationId);
+    var image = new MockMultipartFile("image", "someImage.jpg", MediaType.IMAGE_JPEG_VALUE,
+        "test".getBytes());
+    applicationData.addUploadedDoc(image, "someS3FilePath", "someThumbnailFilepath", "image/jpeg");
+    var application = Application.builder()
+        .id(applicationId)
+        .applicationData(applicationData)
+        .build();
+    when(applicationRepository.getNextId()).thenReturn(applicationId);
+    when(applicationFactory.newApplication(applicationData)).thenReturn(application);
+
+    when(combinedDocumentRepositoryService.getFromAzureWithFallbackToS3(any()))
+        .thenThrow(RuntimeException.class);
+
+    mockMvc.perform(get("/pages/uploadDocuments")).andExpect(status().isOk());
+  }
+
+  @Test
+  void shouldUpdateMultipleApplicationStatusesWhenChoosingPrograms() throws Exception {
+    applicationData.setStartTimeOnce(Instant.now());
+    String applicationId = "someId";
+    applicationData.setId(applicationId);
+    Application application = Application.builder()
+        .id(applicationId)
+        .applicationData(applicationData)
+        .build();
+    when(applicationRepository.getNextId()).thenReturn(applicationId);
+    when(applicationFactory.newApplication(applicationData)).thenReturn(application);
+
+    mockMvc.perform(post("/pages/choosePrograms")
+        .param("programs[]", "CCAP", "SNAP")
+        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+
+    verify(applicationRepository).updateStatus(application.getId(), CCAP, IN_PROGRESS);
+    verify(applicationRepository).updateStatus(application.getId(), CAF, IN_PROGRESS);
+  }
+
+  @Test
+  void shouldUpdateCafStatusWhenChoosingPrograms() throws Exception {
+    applicationData.setStartTimeOnce(Instant.now());
+    String applicationId = "someId";
+    applicationData.setId(applicationId);
+    Application application = Application.builder()
+        .id(applicationId)
+        .applicationData(applicationData)
+        .build();
+    when(applicationRepository.getNextId()).thenReturn(applicationId);
+    when(applicationFactory.newApplication(applicationData)).thenReturn(application);
+
+    mockMvc.perform(post("/pages/choosePrograms")
+        .param("programs[]", "SNAP")
+        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+
+    verify(applicationRepository, never()).updateStatus(application.getId(), CCAP, IN_PROGRESS);
+    verify(applicationRepository).updateStatus(application.getId(), CAF, IN_PROGRESS);
+  }
+
+  @Test
+  void shouldUpdateCcapStatusWhenChoosingPrograms() throws Exception {
+    applicationData.setStartTimeOnce(Instant.now());
+    String applicationId = "someId";
+    applicationData.setId(applicationId);
+    Application application = Application.builder()
+        .id(applicationId)
+        .applicationData(applicationData)
+        .build();
+    when(applicationRepository.getNextId()).thenReturn(applicationId);
+    when(applicationFactory.newApplication(applicationData)).thenReturn(application);
+
+    mockMvc.perform(post("/pages/choosePrograms")
+        .param("programs[]", "CCAP")
+        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+
+    verify(applicationRepository).updateStatus(application.getId(), CCAP, IN_PROGRESS);
+    verify(applicationRepository, never()).updateStatus(application.getId(), CAF, IN_PROGRESS);
+  }
 }

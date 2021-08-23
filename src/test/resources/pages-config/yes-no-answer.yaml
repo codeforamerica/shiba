@@ -1,13 +1,13 @@
 pageDefinitions:
   - &yesNoQuestionPage
-      name: yesNoQuestionPage
-      pageTitle: yes-no-question-page
-      inputs:
-        - name: yesOrNo
-          type: YES_NO
+    name: yesNoQuestionPage
+    pageTitle: yes-no-question-page
+    inputs:
+      - name: yesOrNo
+        type: YES_NO
   - &testStaticPage
-      name: testStaticPage
-      pageTitle: answer-page
+    name: testStaticPage
+    pageTitle: answer-page
 workflow:
   yesNoQuestionPage:
     pageConfiguration: *yesNoQuestionPage

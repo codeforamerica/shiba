@@ -1,4 +1,4 @@
-pageDefinitions: []
+pageDefinitions: [ ]
 workflow:
   firstPage:
     pageConfiguration:

@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 class Metadata {
-    @JsonProperty("county_name")
-    String countyName;
+
+  @JsonProperty("county_name")
+  String countyName;
 }

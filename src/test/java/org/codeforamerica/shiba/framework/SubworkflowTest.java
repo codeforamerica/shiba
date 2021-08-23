@@ -1,18 +1,5 @@
 package org.codeforamerica.shiba.framework;
 
-import org.codeforamerica.shiba.testutilities.AbstractFrameworkTest;
-import org.codeforamerica.shiba.testutilities.FormPage;
-import org.codeforamerica.shiba.pages.events.PageEventPublisher;
-import org.codeforamerica.shiba.pages.events.SubworkflowCompletedEvent;
-import org.codeforamerica.shiba.pages.events.SubworkflowIterationDeletedEvent;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-
-import java.util.Locale;
-import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -20,174 +7,194 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
+import java.util.Locale;
+import java.util.Map;
+import org.codeforamerica.shiba.pages.events.PageEventPublisher;
+import org.codeforamerica.shiba.pages.events.SubworkflowCompletedEvent;
+import org.codeforamerica.shiba.pages.events.SubworkflowIterationDeletedEvent;
+import org.codeforamerica.shiba.testutilities.AbstractFrameworkTest;
+import org.codeforamerica.shiba.testutilities.FormPage;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+
 @SpringBootTest(properties = {"pagesConfig=pages-config/test-sub-workflow.yaml"})
 public class SubworkflowTest extends AbstractFrameworkTest {
-    @MockBean
-    private PageEventPublisher pageEventPublisher;
 
-    @Override
-    @BeforeEach
-    protected void setUp() throws Exception {
-        super.setUp();
-        staticMessageSource.addMessage("earlier-page-title", Locale.ENGLISH, "earlierPage");
-        staticMessageSource.addMessage("some-warning-title", Locale.ENGLISH, "warningPageTitle");
-        staticMessageSource.addMessage("start-page-title", Locale.ENGLISH, "start-page-title");
-        staticMessageSource.addMessage("end-page-title", Locale.ENGLISH, "end-page-title");
-        staticMessageSource.addMessage("solo-page-title", Locale.ENGLISH, "solo-page-title");
-        staticMessageSource.addMessage("warning-page-header", Locale.ENGLISH, "This is a warning for: {0}");
-    }
+  @MockBean
+  private PageEventPublisher pageEventPublisher;
 
-    @Test
-    void shouldDisplayInputFromSubflowInFinalPage() throws Exception {
-        postExpectingSuccess("startPage");
-        assertNavigationRedirectsToCorrectNextPage("startPage", "firstPage");
+  @Override
+  @BeforeEach
+  protected void setUp() throws Exception {
+    super.setUp();
+    staticMessageSource.addMessage("earlier-page-title", Locale.ENGLISH, "earlierPage");
+    staticMessageSource.addMessage("some-warning-title", Locale.ENGLISH, "warningPageTitle");
+    staticMessageSource.addMessage("start-page-title", Locale.ENGLISH, "start-page-title");
+    staticMessageSource.addMessage("end-page-title", Locale.ENGLISH, "end-page-title");
+    staticMessageSource.addMessage("solo-page-title", Locale.ENGLISH, "solo-page-title");
+    staticMessageSource
+        .addMessage("warning-page-header", Locale.ENGLISH, "This is a warning for: {0}");
+  }
 
-        postExpectingRedirect("firstPage", "input1", "goToSecondPage", "secondPage");
-        postExpectingRedirect("secondPage", "input2", "text2", "endPage");
+  @Test
+  void shouldDisplayInputFromSubflowInFinalPage() throws Exception {
+    postExpectingSuccess("startPage");
+    assertNavigationRedirectsToCorrectNextPage("startPage", "firstPage");
 
-        assertReviewPageDisplaysCorrectInfoForIteration("0", "goToSecondPage");
-    }
+    postExpectingRedirect("firstPage", "input1", "goToSecondPage", "secondPage");
+    postExpectingRedirect("secondPage", "input2", "text2", "endPage");
 
-    @Test
-    void shouldSupportSkippableFirstPage() throws Exception {
-        postExpectingRedirect("startPage", "foo", "someinput", "skippableFirstPage");
-        postExpectingRedirect("skippableFirstPage", "inputSkippable", "bar", "firstPage");
-        postExpectingRedirect("firstPage", "input1", "goToSecondPage", "secondPage");
-        postExpectingRedirect("secondPage", "input2", "text 2", "endPage");
+    assertReviewPageDisplaysCorrectInfoForIteration("0", "goToSecondPage");
+  }
 
-        assertReviewPageDisplaysCorrectInfoForIteration("0", "goToSecondPage");
-    }
+  @Test
+  void shouldSupportSkippableFirstPage() throws Exception {
+    postExpectingRedirect("startPage", "foo", "someinput", "skippableFirstPage");
+    postExpectingRedirect("skippableFirstPage", "inputSkippable", "bar", "firstPage");
+    postExpectingRedirect("firstPage", "input1", "goToSecondPage", "secondPage");
+    postExpectingRedirect("secondPage", "input2", "text 2", "endPage");
 
-    @Test
-    void shouldSupportSoloPageSubworkflow() throws Exception {
-        postExpectingSuccess("soloPage");
-        verify(pageEventPublisher).publish(any(SubworkflowCompletedEvent.class));
-    }
+    assertReviewPageDisplaysCorrectInfoForIteration("0", "goToSecondPage");
+  }
 
-    @Test
-    void shouldCompleteSubflowInAnyOfTheConfiguredCompletePages() throws Exception {
-        completeAnIterationGoingThroughThirdPage("0");
-        verify(pageEventPublisher).publish(any(SubworkflowCompletedEvent.class));
-    }
+  @Test
+  void shouldSupportSoloPageSubworkflow() throws Exception {
+    postExpectingSuccess("soloPage");
+    verify(pageEventPublisher).publish(any(SubworkflowCompletedEvent.class));
+  }
 
-    @Test
-    void shouldNotDisplayIterationInEndPageIfIterationWasNotCompleted() throws Exception {
-        completeAnIterationGoingThroughSecondPage("0");
+  @Test
+  void shouldCompleteSubflowInAnyOfTheConfiguredCompletePages() throws Exception {
+    completeAnIterationGoingThroughThirdPage("0");
+    verify(pageEventPublisher).publish(any(SubworkflowCompletedEvent.class));
+  }
 
-        // Start another iteration but don't finish it
-        postExpectingRedirect("firstPage", "input1", "goToThirdPage", "thirdPage");
+  @Test
+  void shouldNotDisplayIterationInEndPageIfIterationWasNotCompleted() throws Exception {
+    completeAnIterationGoingThroughSecondPage("0");
 
-        var endPage = new FormPage(getPage("endPage"));
-        assertThat(endPage.getElementById("iteration0")).isNotNull();
-        assertThat(endPage.getElementById("iteration0").text()).isEqualTo("goToSecondPage");
-        assertThat(endPage.getElementById("iteration1")).isNull();
-    }
+    // Start another iteration but don't finish it
+    postExpectingRedirect("firstPage", "input1", "goToThirdPage", "thirdPage");
 
-    @Test
-    void shouldNotDisplayDataFromPastIterationsWhenStartingANewSubworkflow() throws Exception {
-        completeAnIterationGoingThroughSecondPage("0");
-        var firstPage = new FormPage(getPage("firstPage"));
-        assertThat(firstPage.getInputValue("input1")).isEmpty();
-    }
+    var endPage = new FormPage(getPage("endPage"));
+    assertThat(endPage.getElementById("iteration0")).isNotNull();
+    assertThat(endPage.getElementById("iteration0").text()).isEqualTo("goToSecondPage");
+    assertThat(endPage.getElementById("iteration1")).isNull();
+  }
 
-    @Test
-    void shouldDisplayInputFromAllCompletedIterations() throws Exception {
-        completeAnIterationGoingThroughSecondPage("0");
-        completeAnIterationGoingThroughThirdPage("1");
-        assertReviewPageDisplaysCorrectInfoForIteration("0", "goToSecondPage");
-        assertReviewPageDisplaysCorrectInfoForIteration("1", "goToThirdPage");
-    }
+  @Test
+  void shouldNotDisplayDataFromPastIterationsWhenStartingANewSubworkflow() throws Exception {
+    completeAnIterationGoingThroughSecondPage("0");
+    var firstPage = new FormPage(getPage("firstPage"));
+    assertThat(firstPage.getInputValue("input1")).isEmpty();
+  }
 
-    @Test
-    void shouldShowDeleteWarningPage() throws Exception {
-        String firstIterationInput1Value = "goToSecondPage";
-        String secondIterationInput1Value = "goToThirdPage";
+  @Test
+  void shouldDisplayInputFromAllCompletedIterations() throws Exception {
+    completeAnIterationGoingThroughSecondPage("0");
+    completeAnIterationGoingThroughThirdPage("1");
+    assertReviewPageDisplaysCorrectInfoForIteration("0", "goToSecondPage");
+    assertReviewPageDisplaysCorrectInfoForIteration("1", "goToThirdPage");
+  }
 
-        completeAnIterationGoingThroughSecondPage("0");
-        completeAnIterationGoingThroughThirdPage("1");
+  @Test
+  void shouldShowDeleteWarningPage() throws Exception {
+    String firstIterationInput1Value = "goToSecondPage";
+    String secondIterationInput1Value = "goToThirdPage";
 
-        var endPage = new FormPage(getPage("endPage"));
-        assertThat(endPage.getElementById("iteration0-delete")).isNotNull();
-        assertThat(endPage.getElementById("iteration1-delete")).isNotNull();
-        assertThat(endPage.getElementById("iteration2-delete")).isNull();
+    completeAnIterationGoingThroughSecondPage("0");
+    completeAnIterationGoingThroughThirdPage("1");
 
-        deleteIteration("1", secondIterationInput1Value, "endPage");
-        verify(pageEventPublisher).publish(any(SubworkflowIterationDeletedEvent.class));
-        endPage = new FormPage(getPage("endPage"));
-        assertThat(endPage.getElementById("iteration0-delete")).isNotNull();
-        assertThat(endPage.getElementById("iteration1-delete")).isNull();
-        assertThat(endPage.getElementById("iteration2-delete")).isNull();
+    var endPage = new FormPage(getPage("endPage"));
+    assertThat(endPage.getElementById("iteration0-delete")).isNotNull();
+    assertThat(endPage.getElementById("iteration1-delete")).isNotNull();
+    assertThat(endPage.getElementById("iteration2-delete")).isNull();
 
-        deleteIteration("0", firstIterationInput1Value, "startPage");
-        endPage = new FormPage(getPage("endPage"));
-        assertThat(endPage.getElementById("iteration0-delete")).isNull();
-        assertThat(endPage.getElementById("iteration1-delete")).isNull();
-        assertThat(endPage.getElementById("iteration2-delete")).isNull();
-    }
+    deleteIteration("1", secondIterationInput1Value, "endPage");
+    verify(pageEventPublisher).publish(any(SubworkflowIterationDeletedEvent.class));
+    endPage = new FormPage(getPage("endPage"));
+    assertThat(endPage.getElementById("iteration0-delete")).isNotNull();
+    assertThat(endPage.getElementById("iteration1-delete")).isNull();
+    assertThat(endPage.getElementById("iteration2-delete")).isNull();
 
-    @Test
-    void shouldGoToSpecifiedPageWhenGoBackFromEndOfTheWorkflow() throws Exception {
-        String redirectPageTitle = "some title";
-        staticMessageSource.addMessage("some-redirect-title", Locale.ENGLISH, redirectPageTitle);
+    deleteIteration("0", firstIterationInput1Value, "startPage");
+    endPage = new FormPage(getPage("endPage"));
+    assertThat(endPage.getElementById("iteration0-delete")).isNull();
+    assertThat(endPage.getElementById("iteration1-delete")).isNull();
+    assertThat(endPage.getElementById("iteration2-delete")).isNull();
+  }
 
-        completeAnIterationGoingThroughSecondPage("0");
-        // go back to the last page of the subworkflow, we should get redirected to the redirect page
-        getPageAndExpectRedirect("secondPage", "redirectPage");
-    }
+  @Test
+  void shouldGoToSpecifiedPageWhenGoBackFromEndOfTheWorkflow() throws Exception {
+    String redirectPageTitle = "some title";
+    staticMessageSource.addMessage("some-redirect-title", Locale.ENGLISH, redirectPageTitle);
 
-    @Test
-    void shouldClearOutSubworkflowsWhenChoosingToRestartSubworkflow() throws Exception {
-        completeAnIterationGoingThroughSecondPage("0");
+    completeAnIterationGoingThroughSecondPage("0");
+    // go back to the last page of the subworkflow, we should get redirected to the redirect page
+    getPageAndExpectRedirect("secondPage", "redirectPage");
+  }
 
-        // click "Go Back" and confirm you want to start the entire subworkflow over
-        getPageAndExpectRedirect("secondPage", "redirectPage");
-        postToUrlExpectingSuccess("/groups/group1/delete", "/pages/startPage", Map.of());
+  @Test
+  void shouldClearOutSubworkflowsWhenChoosingToRestartSubworkflow() throws Exception {
+    completeAnIterationGoingThroughSecondPage("0");
 
-        // The next iteration should be considered "iteration0"
-        completeAnIterationGoingThroughThirdPage("0");
-    }
+    // click "Go Back" and confirm you want to start the entire subworkflow over
+    getPageAndExpectRedirect("secondPage", "redirectPage");
+    postToUrlExpectingSuccess("/groups/group1/delete", "/pages/startPage", Map.of());
 
-    @Test
-    void shouldRedirectWhenPageDoesntHaveNecessaryDatasources() throws Exception {
-        completeAnIterationGoingThroughSecondPage("0");
-        deleteIteration("0", "goToSecondPage", "startPage");
-        getPageAndExpectRedirect("deleteWarningPage", "earlierPage");
-    }
+    // The next iteration should be considered "iteration0"
+    completeAnIterationGoingThroughThirdPage("0");
+  }
 
-    private void deleteIteration(String iterationIndex, String iterationInput1Value, String expectedRedirectPageName) throws Exception {
-        var deleteWarningPage = new FormPage(getWithQueryParam("deleteWarningPage", "iterationIndex", iterationIndex));
-        assertThat(deleteWarningPage.getElementTextById("warning-message")).isEqualTo("This is a warning for: " + iterationInput1Value);
-        mockMvc.perform(post("/groups/group1/" + iterationIndex + "/delete").with(csrf()).session(session))
-                .andExpect(redirectedUrl("/pages/" + expectedRedirectPageName));
-    }
+  @Test
+  void shouldRedirectWhenPageDoesntHaveNecessaryDatasources() throws Exception {
+    completeAnIterationGoingThroughSecondPage("0");
+    deleteIteration("0", "goToSecondPage", "startPage");
+    getPageAndExpectRedirect("deleteWarningPage", "earlierPage");
+  }
 
-    private void completeAnIterationGoingThroughSecondPage(String iteration) throws Exception {
-        postExpectingSuccess("startPage");
-        assertNavigationRedirectsToCorrectNextPage("startPage", "firstPage");
+  private void deleteIteration(String iterationIndex, String iterationInput1Value,
+      String expectedRedirectPageName) throws Exception {
+    var deleteWarningPage = new FormPage(
+        getWithQueryParam("deleteWarningPage", "iterationIndex", iterationIndex));
+    assertThat(deleteWarningPage.getElementTextById("warning-message"))
+        .isEqualTo("This is a warning for: " + iterationInput1Value);
+    mockMvc
+        .perform(post("/groups/group1/" + iterationIndex + "/delete").with(csrf()).session(session))
+        .andExpect(redirectedUrl("/pages/" + expectedRedirectPageName));
+  }
 
-        postExpectingRedirect("firstPage", "input1", "goToSecondPage", "secondPage");
-        postExpectingRedirect("secondPage", "input2", "text 2", "endPage");
+  private void completeAnIterationGoingThroughSecondPage(String iteration) throws Exception {
+    postExpectingSuccess("startPage");
+    assertNavigationRedirectsToCorrectNextPage("startPage", "firstPage");
 
-        assertReviewPageDisplaysCorrectInfoForIteration(iteration, "goToSecondPage");
-    }
+    postExpectingRedirect("firstPage", "input1", "goToSecondPage", "secondPage");
+    postExpectingRedirect("secondPage", "input2", "text 2", "endPage");
 
-    private void completeAnIterationGoingThroughThirdPage(String iteration) throws Exception {
-        postExpectingSuccess("startPage");
-        assertNavigationRedirectsToCorrectNextPage("startPage", "firstPage");
-        postExpectingRedirect("firstPage", "input1", "goToThirdPage", "thirdPage");
-        postExpectingRedirect("thirdPage", "input3", "text 3", "endPage");
-        assertReviewPageDisplaysCorrectInfoForIteration(iteration, "goToThirdPage");
-    }
+    assertReviewPageDisplaysCorrectInfoForIteration(iteration, "goToSecondPage");
+  }
+
+  private void completeAnIterationGoingThroughThirdPage(String iteration) throws Exception {
+    postExpectingSuccess("startPage");
+    assertNavigationRedirectsToCorrectNextPage("startPage", "firstPage");
+    postExpectingRedirect("firstPage", "input1", "goToThirdPage", "thirdPage");
+    postExpectingRedirect("thirdPage", "input3", "text 3", "endPage");
+    assertReviewPageDisplaysCorrectInfoForIteration(iteration, "goToThirdPage");
+  }
 
 
-    /**
-     * endPage is a custom review page which displays the the value that was entered for input1 on firstPage
-     * <p>
-     * This method asserts that the expected input value is shown on the review page
-     */
-    private void assertReviewPageDisplaysCorrectInfoForIteration(String iteration,
-                                                                 String expectedFirstPageInput1Value) throws Exception {
-        var endPage = new FormPage(getPage("endPage"));
-        assertThat(endPage.getElementById("iteration" + iteration).text()).isEqualTo(expectedFirstPageInput1Value);
-    }
+  /**
+   * endPage is a custom review page which displays the the value that was entered for input1 on
+   * firstPage
+   * <p>
+   * This method asserts that the expected input value is shown on the review page
+   */
+  private void assertReviewPageDisplaysCorrectInfoForIteration(String iteration,
+      String expectedFirstPageInput1Value) throws Exception {
+    var endPage = new FormPage(getPage("endPage"));
+    assertThat(endPage.getElementById("iteration" + iteration).text())
+        .isEqualTo(expectedFirstPageInput1Value);
+  }
 }

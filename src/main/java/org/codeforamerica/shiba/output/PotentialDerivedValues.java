@@ -1,13 +1,13 @@
 package org.codeforamerica.shiba.output;
 
-import lombok.Data;
-
 import java.util.List;
+import lombok.Data;
 
 @Data
 public class PotentialDerivedValues {
-    String groupName;
-    String fieldName;
-    List<DerivedValue> values;
-    Integer iteration;
+
+  String groupName;
+  String fieldName;
+  List<DerivedValue> values;
+  Integer iteration;
 }

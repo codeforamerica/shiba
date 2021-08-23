@@ -1,9 +1,9 @@
 pageDefinitions:
   - &employersName
-      name: employersName
-      pageTitle: first-page-title
-      headerKey: first-page-title
-      inputs:
+    name: employersName
+    pageTitle: first-page-title
+    headerKey: first-page-title
+    inputs:
       - name: employersName
         type: TEXT
       - name: someRadioInputName
@@ -15,40 +15,40 @@ pageDefinitions:
             - value: VALUE_2
               messageKey: radio-value-key-2
   - &yesNoQuestionPage
-      name: yesNoQuestionPage
-      pageTitle: foo
-      inputs:
+    name: yesNoQuestionPage
+    pageTitle: foo
+    inputs:
       - name: yesNoQuestion
         type: YES_NO
   - &yesNoAnswerPage
-      name: yesNoAnswerPage
-      pageTitle:
-        defaultValue: foo
-        conditionalValues:
-          - value: yes-answer-title
-            condition:
-              pageName: yesNoQuestionPage
-              input: yesNoQuestion
-              value: "true"
-          - value: no-answer-title
-            condition:
-              pageName: yesNoQuestionPage
-              input: yesNoQuestion
-              value: "false"
-      headerKey:
-        defaultValue: bar
-        conditionalValues:
-          - value: yes-header-text
-            condition:
-              pageName: yesNoQuestionPage
-              input: yesNoQuestion
-              value: "true"
-          - value: no-header-text
-            condition:
-              pageName: yesNoQuestionPage
-              input: yesNoQuestion
-              value: "false"
-      inputs:
+    name: yesNoAnswerPage
+    pageTitle:
+      defaultValue: foo
+      conditionalValues:
+        - value: yes-answer-title
+          condition:
+            pageName: yesNoQuestionPage
+            input: yesNoQuestion
+            value: "true"
+        - value: no-answer-title
+          condition:
+            pageName: yesNoQuestionPage
+            input: yesNoQuestion
+            value: "false"
+    headerKey:
+      defaultValue: bar
+      conditionalValues:
+        - value: yes-header-text
+          condition:
+            pageName: yesNoQuestionPage
+            input: yesNoQuestion
+            value: "true"
+        - value: no-header-text
+          condition:
+            pageName: yesNoQuestionPage
+            input: yesNoQuestion
+            value: "false"
+    inputs:
       - name: foo
         type: TEXT
   - &testStaticPage
@@ -86,21 +86,21 @@ pageDefinitions:
           condition:
             logicalOperator: OR
             conditions:
-            - pageName: yesNoQuestionPage2
-              input: yesNoQuestion2
-              value: "true"
-            - pageName: yesNoQuestionPage3
-              input: yesNoQuestion3
-              value: "false"
+              - pageName: yesNoQuestionPage2
+                input: yesNoQuestion2
+                value: "true"
+              - pageName: yesNoQuestionPage3
+                input: yesNoQuestion3
+                value: "false"
         - value: no-header-text
           condition:
             conditions:
-            - pageName: yesNoQuestionPage2
-              input: yesNoQuestion2
-              value: "false"
-            - pageName: yesNoQuestionPage3
-              input: yesNoQuestion3
-              value: "true"
+              - pageName: yesNoQuestionPage2
+                input: yesNoQuestion2
+                value: "false"
+              - pageName: yesNoQuestionPage3
+                input: yesNoQuestion3
+                value: "true"
     inputs:
       - name: foo
         type: TEXT

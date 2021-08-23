@@ -10,8 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MnitCountyInformation {
-    private String folderId;
-    private String dhsProviderId;
-    private String email;
-    private String phoneNumber;
+
+  private String folderId;
+  private String dhsProviderId;
+  private String email;
+  private String phoneNumber;
 }

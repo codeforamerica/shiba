@@ -11,7 +11,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @EnableSchedulerLock(defaultLockAtMostFor = "12h")
 public class ShibaApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(ShibaApplication.class, args);
-    }
+
+  public static void main(String[] args) {
+    SpringApplication.run(ShibaApplication.class, args);
+  }
 }

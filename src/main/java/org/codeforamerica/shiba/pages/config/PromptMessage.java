@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class PromptMessage {
-    private String promptMessageFragmentName;
-    private String promptMessageKey;
+
+  private String promptMessageFragmentName;
+  private String promptMessageKey;
 }

@@ -1,7 +1,9 @@
 package org.codeforamerica.shiba.application.parsers;
 
-import org.codeforamerica.shiba.testutilities.PageDataBuilder;
-import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+import java.util.Map;
 import org.codeforamerica.shiba.output.caf.HourlyJobIncomeInformation;
 import org.codeforamerica.shiba.output.caf.JobIncomeInformation;
 import org.codeforamerica.shiba.output.caf.NonHourlyJobIncomeInformation;
@@ -9,117 +11,120 @@ import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.pages.data.Subworkflow;
 import org.codeforamerica.shiba.pages.data.Subworkflows;
+import org.codeforamerica.shiba.testutilities.PageDataBuilder;
+import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 class GrossMonthlyIncomeParserTest {
-    private ApplicationData applicationData;
-    private final GrossMonthlyIncomeParser grossMonthlyIncomeParser = new GrossMonthlyIncomeParser();
-    private final PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
 
-    @BeforeEach
-    void setUp() {
-        applicationData = new ApplicationData();
-    }
+  private final GrossMonthlyIncomeParser grossMonthlyIncomeParser = new GrossMonthlyIncomeParser();
+  private final PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
+  private ApplicationData applicationData;
 
-    @Test
-    void shouldProvideHourlyJobInformation() {
-        Subworkflow subworkflow = new Subworkflow();
-        subworkflow.add(pagesDataBuilder.build(List.of(
-                new PageDataBuilder("paidByTheHour", Map.of("paidByTheHour", List.of("true"))),
-                new PageDataBuilder("hourlyWage", Map.of("hourlyWage", List.of("12"))),
-                new PageDataBuilder("hoursAWeek", Map.of("hoursAWeek", List.of("30")))
-        )));
-        subworkflow.add(pagesDataBuilder.build(List.of(
-                new PageDataBuilder("paidByTheHour", Map.of("paidByTheHour", List.of("true"))),
-                new PageDataBuilder("hourlyWage", Map.of("hourlyWage", List.of("6"))),
-                new PageDataBuilder("hoursAWeek", Map.of("hoursAWeek", List.of("45")))
-        )));
-        Subworkflows subworkflows = new Subworkflows();
-        subworkflows.put("jobs", subworkflow);
+  @BeforeEach
+  void setUp() {
+    applicationData = new ApplicationData();
+  }
 
-        applicationData.setSubworkflows(subworkflows);
+  @Test
+  void shouldProvideHourlyJobInformation() {
+    Subworkflow subworkflow = new Subworkflow();
+    subworkflow.add(pagesDataBuilder.build(List.of(
+        new PageDataBuilder("paidByTheHour", Map.of("paidByTheHour", List.of("true"))),
+        new PageDataBuilder("hourlyWage", Map.of("hourlyWage", List.of("12"))),
+        new PageDataBuilder("hoursAWeek", Map.of("hoursAWeek", List.of("30")))
+    )));
+    subworkflow.add(pagesDataBuilder.build(List.of(
+        new PageDataBuilder("paidByTheHour", Map.of("paidByTheHour", List.of("true"))),
+        new PageDataBuilder("hourlyWage", Map.of("hourlyWage", List.of("6"))),
+        new PageDataBuilder("hoursAWeek", Map.of("hoursAWeek", List.of("45")))
+    )));
+    Subworkflows subworkflows = new Subworkflows();
+    subworkflows.put("jobs", subworkflow);
 
-        List<JobIncomeInformation> jobIncomeInformation = grossMonthlyIncomeParser.parse(applicationData);
+    applicationData.setSubworkflows(subworkflows);
 
-        assertThat(jobIncomeInformation).contains(
-                new HourlyJobIncomeInformation("12", "30", 0, subworkflow.get(0)),
-                new HourlyJobIncomeInformation("6", "45", 1, subworkflow.get(1))
-        );
-    }
+    List<JobIncomeInformation> jobIncomeInformation = grossMonthlyIncomeParser
+        .parse(applicationData);
 
-    @Test
-    void shouldNotProvideJobInformationForJobsWithInsufficientInformationForCalculation() {
-        PagesData hourlyJobPagesData = pagesDataBuilder.build(List.of(
-                new PageDataBuilder("paidByTheHour", Map.of("paidByTheHour", List.of("true"))),
-                new PageDataBuilder("hourlyWage", Map.of("hourlyWage", List.of(""))),
-                new PageDataBuilder("hoursAWeek", Map.of("hoursAWeek", List.of("")))
-        ));
+    assertThat(jobIncomeInformation).contains(
+        new HourlyJobIncomeInformation("12", "30", 0, subworkflow.get(0)),
+        new HourlyJobIncomeInformation("6", "45", 1, subworkflow.get(1))
+    );
+  }
 
-        PagesData nonHourlyJobPagesData = pagesDataBuilder.build(List.of(
-                new PageDataBuilder("paidByTheHour", Map.of("paidByTheHour", List.of("false"))),
-                new PageDataBuilder("payPeriod", Map.of("payPeriod", List.of(""))),
-                new PageDataBuilder("incomePerPayPeriod", Map.of("incomePerPayPeriod", List.of(""))),
-                new PageDataBuilder("last30DaysJobIncome", Map.of("last30DaysJobIncome", List.of("")))
-        ));
+  @Test
+  void shouldNotProvideJobInformationForJobsWithInsufficientInformationForCalculation() {
+    PagesData hourlyJobPagesData = pagesDataBuilder.build(List.of(
+        new PageDataBuilder("paidByTheHour", Map.of("paidByTheHour", List.of("true"))),
+        new PageDataBuilder("hourlyWage", Map.of("hourlyWage", List.of(""))),
+        new PageDataBuilder("hoursAWeek", Map.of("hoursAWeek", List.of("")))
+    ));
 
-        Subworkflow subworkflow = new Subworkflow();
-        Subworkflows subworkflows = new Subworkflows();
-        subworkflow.add(hourlyJobPagesData);
-        subworkflow.add(nonHourlyJobPagesData);
-        subworkflows.put("jobs", subworkflow);
-        applicationData.setSubworkflows(subworkflows);
+    PagesData nonHourlyJobPagesData = pagesDataBuilder.build(List.of(
+        new PageDataBuilder("paidByTheHour", Map.of("paidByTheHour", List.of("false"))),
+        new PageDataBuilder("payPeriod", Map.of("payPeriod", List.of(""))),
+        new PageDataBuilder("incomePerPayPeriod", Map.of("incomePerPayPeriod", List.of(""))),
+        new PageDataBuilder("last30DaysJobIncome", Map.of("last30DaysJobIncome", List.of("")))
+    ));
 
-        List<JobIncomeInformation> jobIncomeInformation = grossMonthlyIncomeParser.parse(applicationData);
+    Subworkflow subworkflow = new Subworkflow();
+    Subworkflows subworkflows = new Subworkflows();
+    subworkflow.add(hourlyJobPagesData);
+    subworkflow.add(nonHourlyJobPagesData);
+    subworkflows.put("jobs", subworkflow);
+    applicationData.setSubworkflows(subworkflows);
 
-        assertThat(jobIncomeInformation).isEmpty();
-    }
+    List<JobIncomeInformation> jobIncomeInformation = grossMonthlyIncomeParser
+        .parse(applicationData);
 
-    @Test
-    void shouldNotIncludeGrossMonthlyIncomeWhenJobsInformationIsNotAvailable() {
-        List<JobIncomeInformation> jobIncomeInformation = grossMonthlyIncomeParser.parse(applicationData);
+    assertThat(jobIncomeInformation).isEmpty();
+  }
 
-        assertThat(jobIncomeInformation).isEmpty();
-    }
+  @Test
+  void shouldNotIncludeGrossMonthlyIncomeWhenJobsInformationIsNotAvailable() {
+    List<JobIncomeInformation> jobIncomeInformation = grossMonthlyIncomeParser
+        .parse(applicationData);
 
-    @Test
-    void shouldProvideNonHourlyJobInformation() {
-        Subworkflow subworkflow = new Subworkflow();
-        subworkflow.add(pagesDataBuilder.build(List.of(
-                new PageDataBuilder("paidByTheHour", Map.of("paidByTheHour", List.of("false"))),
-                new PageDataBuilder("payPeriod", Map.of("payPeriod", List.of("EVERY_WEEK"))),
-                new PageDataBuilder("incomePerPayPeriod", Map.of("incomePerPayPeriod", List.of("1.1")))
-        )));
+    assertThat(jobIncomeInformation).isEmpty();
+  }
 
-        Subworkflows subworkflows = new Subworkflows();
-        subworkflows.put("jobs", subworkflow);
-        applicationData.setSubworkflows(subworkflows);
+  @Test
+  void shouldProvideNonHourlyJobInformation() {
+    Subworkflow subworkflow = new Subworkflow();
+    subworkflow.add(pagesDataBuilder.build(List.of(
+        new PageDataBuilder("paidByTheHour", Map.of("paidByTheHour", List.of("false"))),
+        new PageDataBuilder("payPeriod", Map.of("payPeriod", List.of("EVERY_WEEK"))),
+        new PageDataBuilder("incomePerPayPeriod", Map.of("incomePerPayPeriod", List.of("1.1")))
+    )));
 
-        List<JobIncomeInformation> jobIncomeInformation = grossMonthlyIncomeParser.parse(applicationData);
+    Subworkflows subworkflows = new Subworkflows();
+    subworkflows.put("jobs", subworkflow);
+    applicationData.setSubworkflows(subworkflows);
 
-        assertThat(jobIncomeInformation).contains(
-                new NonHourlyJobIncomeInformation("EVERY_WEEK", "1.1", 0, subworkflow.get(0))
-        );
-    }
+    List<JobIncomeInformation> jobIncomeInformation = grossMonthlyIncomeParser
+        .parse(applicationData);
 
-    @Test
-    void shouldReturnNonHourlyJobInformationIfHourlyJobPageIsNotAvailable() {
-        Subworkflow subworkflow = new Subworkflow();
-        subworkflow.add(pagesDataBuilder.build(List.of(
-                new PageDataBuilder("payPeriod", Map.of("payPeriod", List.of("EVERY_WEEK"))),
-                new PageDataBuilder("incomePerPayPeriod", Map.of("incomePerPayPeriod", List.of("1.1")))
-        )));
-        applicationData.setSubworkflows(new Subworkflows(Map.of("jobs", subworkflow)));
+    assertThat(jobIncomeInformation).contains(
+        new NonHourlyJobIncomeInformation("EVERY_WEEK", "1.1", 0, subworkflow.get(0))
+    );
+  }
 
-        List<JobIncomeInformation> jobIncomeInformation = grossMonthlyIncomeParser.parse(applicationData);
+  @Test
+  void shouldReturnNonHourlyJobInformationIfHourlyJobPageIsNotAvailable() {
+    Subworkflow subworkflow = new Subworkflow();
+    subworkflow.add(pagesDataBuilder.build(List.of(
+        new PageDataBuilder("payPeriod", Map.of("payPeriod", List.of("EVERY_WEEK"))),
+        new PageDataBuilder("incomePerPayPeriod", Map.of("incomePerPayPeriod", List.of("1.1")))
+    )));
+    applicationData.setSubworkflows(new Subworkflows(Map.of("jobs", subworkflow)));
 
-        assertThat(jobIncomeInformation).contains(
-                new NonHourlyJobIncomeInformation("EVERY_WEEK", "1.1", 0, subworkflow.get(0))
-        );
-    }
+    List<JobIncomeInformation> jobIncomeInformation = grossMonthlyIncomeParser
+        .parse(applicationData);
+
+    assertThat(jobIncomeInformation).contains(
+        new NonHourlyJobIncomeInformation("EVERY_WEEK", "1.1", 0, subworkflow.get(0))
+    );
+  }
 }

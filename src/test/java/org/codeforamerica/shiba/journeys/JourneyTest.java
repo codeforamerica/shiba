@@ -43,6 +43,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
 abstract class JourneyTest extends AbstractBasePageTest {
+
     protected PDAcroForm caf;
     protected PDAcroForm ccap;
     protected String applicationId;
@@ -83,8 +84,8 @@ abstract class JourneyTest extends AbstractBasePageTest {
     void tearDown() {
         if (applicationId != null) {
             Arrays.stream(Objects.requireNonNull(path.toFile().listFiles()))
-                    .filter(file -> file.getName().contains(applicationId))
-                    .forEach(File::delete);
+                .filter(file -> file.getName().contains(applicationId))
+                .forEach(File::delete);
         }
     }
 
@@ -96,8 +97,9 @@ abstract class JourneyTest extends AbstractBasePageTest {
         TestUtils.assertPdfFieldEquals(fieldName, expectedVal, ccap);
     }
 
-    protected String signApplicationAndDownloadPdfs(String signature, boolean shouldHaveCafDownloadLink,
-                                                    boolean shouldHaveCcapDownloadLink) {
+    protected String signApplicationAndDownloadPdfs(String signature,
+        boolean shouldHaveCafDownloadLink,
+        boolean shouldHaveCcapDownloadLink) {
         testPage.enter("applicantSignature", signature);
         testPage.clickButton("Submit");
         testPage.clickContinue();
@@ -178,7 +180,7 @@ abstract class JourneyTest extends AbstractBasePageTest {
     }
 
     protected void fillOutHomeAndMailingAddress(String homeZip, String homeCity,
-                                                String homeStreetAddress, String homeApartmentNumber) {
+        String homeStreetAddress, String homeApartmentNumber) {
         testPage.enter("zipCode", homeZip);
         testPage.enter("city", homeCity);
         testPage.enter("streetAddress", homeStreetAddress);
@@ -192,19 +194,22 @@ abstract class JourneyTest extends AbstractBasePageTest {
         testPage.enter("state", "IL");
         testPage.enter("apartmentNumber", "someApartmentNumber");
         when(smartyStreetClient.validateAddress(any())).thenReturn(
-                Optional.of(new Address("smarty street", "Cooltown", "CA", "03104", "1b", "someCounty"))
+            Optional.of(new Address("smarty street", "Cooltown", "CA", "03104", "1b", "someCounty"))
         );
         testPage.clickContinue();
         testPage.clickElementById("enriched-address");
         testPage.clickContinue();
 
         // Let's review your info
-        assertThat(driver.findElementById("mailingAddress-address_street").getText()).isEqualTo("smarty street");
+        assertThat(driver.findElementById("mailingAddress-address_street").getText())
+            .isEqualTo("smarty street");
     }
 
-    protected void assertApplicationSubmittedEventWasPublished(String applicationId, FlowType flowType,
-                                                               int expectedNumberOfEvents) {
-        ArgumentCaptor<ApplicationSubmittedEvent> captor = ArgumentCaptor.forClass(ApplicationSubmittedEvent.class);
+    protected void assertApplicationSubmittedEventWasPublished(String applicationId,
+        FlowType flowType,
+        int expectedNumberOfEvents) {
+        ArgumentCaptor<ApplicationSubmittedEvent> captor = ArgumentCaptor
+            .forClass(ApplicationSubmittedEvent.class);
         verify(pageEventPublisher, times(expectedNumberOfEvents)).publish(captor.capture());
         List<ApplicationSubmittedEvent> allValues = captor.getAllValues();
         ApplicationSubmittedEvent applicationSubmittedEvent = allValues.get(allValues.size() - 1);
