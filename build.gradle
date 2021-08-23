@@ -114,10 +114,15 @@ dependencies {
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
     implementation 'net.javacrumbs.shedlock:shedlock-spring:4.25.0'
     implementation 'net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.25.0'
+    implementation 'com.sun.istack:istack-commons-runtime:3.0.12'
 
     implementation 'org.springframework.ws:spring-ws-core'
     implementation(files(genJaxb.classesDir).builtBy(genJaxb))
-    jaxb "com.sun.xml.bind:jaxb-xjc:2.3.4"
+    jaxb(
+            'org.glassfish.jaxb:jaxb-runtime',
+            'org.glassfish.jaxb:jaxb-xjc',
+            'org.glassfish.jaxb:jaxb-jxc'
+    )
 
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
