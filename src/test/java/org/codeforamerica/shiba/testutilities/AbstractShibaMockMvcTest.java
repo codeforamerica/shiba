@@ -638,6 +638,20 @@ public class AbstractShibaMockMvcTest {
         "smarty street");
   }
 
+  protected void completeFlowFromIsPregnantThroughTribalNations(boolean hasHousehold)
+      throws Exception {
+    postExpectingRedirect("pregnant", "isPregnant", "false", "migrantFarmWorker");
+    postExpectingRedirect("migrantFarmWorker", "migrantOrSeasonalFarmWorker", "false", "usCitizen");
+    postExpectingRedirect("usCitizen", "isUsCitizen", "true", "disability");
+    postExpectingRedirect("disability", "hasDisability", "false", "workSituation");
+    if (hasHousehold) {
+      postExpectingRedirect("workSituation", "hasWorkSituation", "false", "tribalNationMember");
+      postExpectingRedirect("tribalNationMember", "isTribalNationMember", "false", "introIncome");
+    } else {
+      postExpectingRedirect("workSituation", "hasWorkSituation", "false", "introIncome");
+    }
+  }
+
   protected void getToPersonalInfoScreen(String... programSelections) throws Exception {
     selectPrograms(programSelections);
   }

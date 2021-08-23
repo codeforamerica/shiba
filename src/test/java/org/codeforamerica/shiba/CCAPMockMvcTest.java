@@ -32,11 +32,7 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
     postExpectingNextPageTitle("preparingMealsTogether", "isPreparingMealsTogether", "false",
         "Going to school");
     postExpectingNextPageTitle("goingToSchool", "goingToSchool", "true", "Pregnant");
-    postExpectingRedirect("pregnant", "isPregnant", "false", "migrantFarmWorker");
-    postExpectingRedirect("migrantFarmWorker", "migrantOrSeasonalFarmWorker", "false", "usCitizen");
-    postExpectingRedirect("usCitizen", "isUsCitizen", "true", "disability");
-    postExpectingRedirect("disability", "hasDisability", "false", "workSituation");
-    postExpectingRedirect("workSituation", "hasWorkSituation", "false", "tribalNationMember");
+    completeFlowFromIsPregnantThroughTribalNations(true);
     assertNavigationRedirectsToCorrectNextPage("introIncome", "employmentStatus");
     postExpectingNextPageTitle("employmentStatus", "areYouWorking", "false", "Income Up Next");
     assertNavigationRedirectsToCorrectNextPage("incomeUpNext", "unearnedIncome");
@@ -57,11 +53,7 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
         "introPersonalDetails");
     postExpectingRedirect("livingSituation", "goingToSchool");
     postExpectingRedirect("goingToSchool", "goingToSchool", "true", "pregnant");
-    postExpectingRedirect("pregnant", "isPregnant", "false", "migrantFarmWorker");
-    postExpectingRedirect("migrantFarmWorker", "migrantOrSeasonalFarmWorker", "false", "usCitizen");
-    postExpectingRedirect("usCitizen", "isUsCitizen", "true", "disability");
-    postExpectingRedirect("disability", "hasDisability", "false", "workSituation");
-    postExpectingRedirect("workSituation", "hasWorkSituation", "false", "introIncome");
+    completeFlowFromIsPregnantThroughTribalNations(false);
     assertNavigationRedirectsToCorrectNextPage("introIncome", "employmentStatus");
     postExpectingNextPageTitle("employmentStatus", "areYouWorking", "false", "Income Up Next");
     assertNavigationRedirectsToCorrectNextPage("incomeUpNext", "unearnedIncome");
@@ -106,11 +98,7 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
     postExpectingRedirect("childrenInNeedOfCare", "livingSituation");
     postExpectingRedirect("livingSituation", "goingToSchool");
     postExpectingNextPageTitle("goingToSchool", "goingToSchool", "true", "Who is going to school?");
-    postExpectingRedirect("pregnant", "isPregnant", "false", "migrantFarmWorker");
-    postExpectingRedirect("migrantFarmWorker", "migrantOrSeasonalFarmWorker", "false", "usCitizen");
-    postExpectingRedirect("usCitizen", "isUsCitizen", "true", "disability");
-    postExpectingRedirect("disability", "hasDisability", "false", "workSituation");
-    postExpectingRedirect("workSituation", "hasWorkSituation", "false", "tribalNationMember");
+    completeFlowFromIsPregnantThroughTribalNations(true);
     assertNavigationRedirectsToCorrectNextPage("introIncome", "employmentStatus");
     postExpectingNextPageTitle("employmentStatus", "areYouWorking", "false", "Job Search");
     postExpectingNextPageTitle("jobSearch", "currentlyLookingForJob", "true",
@@ -162,11 +150,7 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
     postExpectingRedirect("livingSituation", "livingSituation", "UNKNOWN", "goingToSchool");
     postExpectingNextPageTitle("goingToSchool", "goingToSchool", "true", "Who is going to school?");
     postExpectingRedirect("whoIsGoingToSchool", "pregnant"); // no one is going to school
-    postExpectingRedirect("pregnant", "isPregnant", "false", "migrantFarmWorker");
-    postExpectingRedirect("migrantFarmWorker", "migrantOrSeasonalFarmWorker", "false", "usCitizen");
-    postExpectingRedirect("usCitizen", "isUsCitizen", "true", "disability");
-    postExpectingRedirect("disability", "hasDisability", "false", "workSituation");
-    postExpectingRedirect("workSituation", "hasWorkSituation", "false", "tribalNationMember");
+    completeFlowFromIsPregnantThroughTribalNations(true);
     assertNavigationRedirectsToCorrectNextPage("introIncome", "employmentStatus");
     postExpectingNextPageTitle("employmentStatus", "areYouWorking", "false", "Job Search");
     postExpectingNextPageTitle("jobSearch", "currentlyLookingForJob", "true",
