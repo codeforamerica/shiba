@@ -57,6 +57,7 @@ mail-gun:
   shouldCC: false
 
 feature-flag:
+  apply-for-tribal-nation: on
   apply-without-address: on
   submit-via-email: off
   submit-via-api: off

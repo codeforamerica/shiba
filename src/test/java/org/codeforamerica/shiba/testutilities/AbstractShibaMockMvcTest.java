@@ -92,6 +92,7 @@ public class AbstractShibaMockMvcTest {
     );
     when(clock.getZone()).thenReturn(ZoneOffset.UTC);
     when(locationClient.validateAddress(any())).thenReturn(Optional.empty());
+    when(featureFlagConfiguration.get("apply-for-tribal-nation")).thenReturn(FeatureFlag.ON);
     when(featureFlagConfiguration.get("apply-without-address")).thenReturn(FeatureFlag.ON);
     when(featureFlagConfiguration.get("submit-via-email")).thenReturn(FeatureFlag.OFF);
     when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.OFF);
@@ -715,7 +716,11 @@ public class AbstractShibaMockMvcTest {
     }
 
     postExpectingRedirect("disability", "hasDisability", "false", "workSituation");
-    postExpectingRedirect("workSituation", "hasWorkSituation", "false", "introIncome");
+    if (hasHousehold) {
+      postExpectingRedirect("workSituation", "hasWorkSituation", "false", "tribalNationMember");
+    } else {
+      postExpectingRedirect("workSituation", "hasWorkSituation", "false", "introIncome");
+    }
     assertNavigationRedirectsToCorrectNextPage("introIncome", "employmentStatus");
     if (isWorking) {
       postExpectingRedirect("employmentStatus", "areYouWorking", "true", "incomeByJob");

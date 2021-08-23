@@ -20,6 +20,7 @@ mail-gun:
   shouldCC: true
 
 feature-flag:
+  apply-for-tribal-nation: off
   apply-without-address: on
   send-download-alert: on
   submit-via-email: off

@@ -88,7 +88,7 @@ public class PagesData extends HashMap<String, PageData> {
               .forEach(value::mergeInputDataValues);
           pages.put(datasource.getPageName(), value);
         });
-    return new DatasourcePages(new PagesData(pages));
+    return new DatasourcePages(pages);
   }
 
   public List<String> safeGetPageInputValue(String pageName, String inputName) {
