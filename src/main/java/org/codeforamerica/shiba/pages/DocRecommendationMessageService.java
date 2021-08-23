@@ -178,7 +178,7 @@ public class DocRecommendationMessageService {
     List<String> pageInputValues = applicationData.getPagesData()
         .safeGetPageInputValue("homeExpenses", "homeExpenses");
     boolean hasHousingExpenses =
-        pageInputValues.isEmpty() ? false : !pageInputValues.contains("NONE_OF_THE_ABOVE");
+        !pageInputValues.isEmpty() && !pageInputValues.contains("NONE_OF_THE_ABOVE");
 
     return hasHousingExpenses && applicationData.isApplicationWith(proofOfHousingCostPrograms);
   }

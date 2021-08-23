@@ -46,7 +46,7 @@ class ResubmissionServiceTest {
   private PdfGenerator pdfGenerator;
   @Mock
   private CombinedDocumentRepositoryService combinedDocumentRepositoryService;
-  private CountyMap<MnitCountyInformation> countyMap = new CountyMap<>();
+  private final CountyMap<MnitCountyInformation> countyMap = new CountyMap<>();
   private ResubmissionService resubmissionService;
 
   @BeforeEach

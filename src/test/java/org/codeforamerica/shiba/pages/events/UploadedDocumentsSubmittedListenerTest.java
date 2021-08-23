@@ -43,7 +43,7 @@ class UploadedDocumentsSubmittedListenerTest {
   private String applicationId;
   private Application application;
   private UploadedDocumentsSubmittedEvent event;
-  private Locale locale = new Locale("en");
+  private final Locale locale = new Locale("en");
 
   @BeforeEach
   void setUp() {

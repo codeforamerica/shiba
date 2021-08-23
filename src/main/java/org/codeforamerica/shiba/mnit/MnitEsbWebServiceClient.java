@@ -167,7 +167,7 @@ public class MnitEsbWebServiceClient {
         docDescription = String.format("XML of MNBenefits Application #%s", applicationNumber);
       } else if (applicationFile.getFileName().toLowerCase().endsWith(".pdf")) {
         docDescription = String
-            .format("PDF of MNBenefits %s Application #%s", applicationDocument.toString(),
+            .format("PDF of MNBenefits %s Application #%s", applicationDocument,
                 applicationNumber);
       }
     } else if (applicationDocument == UPLOADED_DOC) {
