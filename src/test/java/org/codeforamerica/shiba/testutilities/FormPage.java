@@ -1,15 +1,14 @@
 package org.codeforamerica.shiba.testutilities;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.UnsupportedEncodingException;
+import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.test.web.servlet.ResultActions;
-
-import java.io.UnsupportedEncodingException;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Helps parse mockmvc result html
@@ -37,8 +36,12 @@ public class FormPage {
         return element != null;
     }
 
+    public Elements getInputErrors(String inputName) {
+        return html.select("input[name='%s[]'] ~ p.text--error".formatted(inputName));
+    }
+
     public Element getInputError(String inputName) {
-        return html.select("input[name='%s[]'] ~ p.text--error".formatted(inputName)).first();
+        return getInputErrors(inputName).first();
     }
 
     public String getWarningMessage() {

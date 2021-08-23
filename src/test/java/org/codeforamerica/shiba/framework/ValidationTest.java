@@ -1,6 +1,11 @@
 package org.codeforamerica.shiba.framework;
 
-import org.codeforamerica.shiba.pages.config.Validation;
+import static java.util.Locale.ENGLISH;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+
+import java.util.List;
 import org.codeforamerica.shiba.testutilities.AbstractFrameworkTest;
 import org.codeforamerica.shiba.testutilities.FormPage;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,14 +16,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.List;
-
-import static java.util.Locale.ENGLISH;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
 @Tag("validation")
 @SpringBootTest(properties = {"pagesConfig=pages-config/test-validation.yaml"})
@@ -41,7 +38,7 @@ public class ValidationTest extends AbstractFrameworkTest {
         staticMessageSource.addMessage("last-page-title", ENGLISH, lastPageTitle);
         staticMessageSource.addMessage("error-message-key", ENGLISH, errorMessage);
         staticMessageSource.addMessage("money-error-message-key", ENGLISH, moneyErrorMessageKey);
-        staticMessageSource.addMessage("not-blank-error-message-key ", ENGLISH, "not blank is error");
+        staticMessageSource.addMessage("not-blank-error-message-key", ENGLISH, "not blank is error");
         staticMessageSource.addMessage("zip-code-page-title", ENGLISH, "zip code Page Title");
         staticMessageSource.addMessage("case-number-page-title", ENGLISH, "case number Page Title");
         staticMessageSource.addMessage("state-page-title", ENGLISH, "state page title");
@@ -113,12 +110,25 @@ public class ValidationTest extends AbstractFrameworkTest {
     }
 
     @Test
+    void shouldDisplayAllFailingValidationErrorMessages() throws Exception {
+        postExpectingFailure("pageWithInputWithMultipleValidations", "multipleValidations", "");
+
+        var page = new FormPage(getPage("pageWithInputWithMultipleValidations"));
+        assertThat(page.getTitle()).isEqualTo(multipleValidationsPageTitle);
+        var actualErrorMessages = page.getInputErrors("multipleValidations");
+        assertThat(actualErrorMessages.text()).contains(moneyErrorMessageKey);
+        assertThat(actualErrorMessages.text()).contains("not blank is error");
+    }
+
+    @Test
     void shouldStayOnPage_whenAnyValidationHasFailed() throws Exception {
         postExpectingFailure("pageWithInputWithMultipleValidations", "multipleValidations", "not money");
 
         var page = new FormPage(getPage("pageWithInputWithMultipleValidations"));
         assertThat(page.getTitle()).isEqualTo(multipleValidationsPageTitle);
-        assertThat(page.getInputError("multipleValidations").text()).isEqualTo(moneyErrorMessageKey);
+        var actualErrorMessages = page.getInputErrors("multipleValidations");
+        assertThat(actualErrorMessages.text()).contains(moneyErrorMessageKey);
+        assertThat(actualErrorMessages.text()).doesNotContain("not blank is error");
     }
 
 
