@@ -1,19 +1,19 @@
 package org.codeforamerica.shiba.framework;
 
+import static java.util.Locale.ENGLISH;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+import java.util.Map;
 import org.codeforamerica.shiba.testutilities.AbstractFrameworkTest;
 import org.codeforamerica.shiba.testutilities.DatePart;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
-import java.util.Map;
-
-import static java.util.Locale.ENGLISH;
-import static org.assertj.core.api.Assertions.assertThat;
-
 @SpringBootTest(properties = {"pagesConfig=pages-config/test-input.yaml"})
 public class InputsPageMockMvcTest extends AbstractFrameworkTest {
+
     final String radioOption1 = "radio option 1";
     final String radioOption2 = "option-2";
     final String checkboxOption1 = "checkbox option 1";
@@ -125,14 +125,14 @@ public class InputsPageMockMvcTest extends AbstractFrameworkTest {
         String moneyInputValue = "some money";
         String hourlyWageValue = "some wage";
         postExpectingRedirect("firstPage", Map.of(
-                "editableTextInput", List.of(textInputValue),
-                "dateInput", List.of(dateMonth, dateDay, dateYear),
-                "numberInput", List.of(numberInputValue),
-                "radioInput", List.of("1"),
-                "checkboxInput", List.of("1", "2"),
-                "selectInput", List.of("2"),
-                "moneyInput", List.of(moneyInputValue),
-                "hourlyWageInput", List.of(hourlyWageValue)
+            "editableTextInput", List.of(textInputValue),
+            "dateInput", List.of(dateMonth, dateDay, dateYear),
+            "numberInput", List.of(numberInputValue),
+            "radioInput", List.of("1"),
+            "checkboxInput", List.of("1", "2"),
+            "selectInput", List.of("2"),
+            "moneyInput", List.of(moneyInputValue),
+            "hourlyWageInput", List.of(hourlyWageValue)
         ), "nextPage");
 
         var testPage = getFormPage("firstPage");

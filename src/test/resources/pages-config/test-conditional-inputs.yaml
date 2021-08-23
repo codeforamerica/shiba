@@ -45,4 +45,4 @@ workflow:
     datasources:
       - pageName: firstPage
 landmarkPages:
-  landingPages: []
+  landingPages: [ ]

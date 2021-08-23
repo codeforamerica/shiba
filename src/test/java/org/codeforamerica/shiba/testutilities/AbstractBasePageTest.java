@@ -44,417 +44,430 @@ import org.springframework.test.context.ActiveProfiles;
 @Import({WebDriverConfiguration.class})
 @ActiveProfiles("test")
 public abstract class AbstractBasePageTest {
-    protected static final String PROGRAM_SNAP = "Food (SNAP)";
-    protected static final String PROGRAM_CASH = "Cash programs";
-    protected static final String PROGRAM_GRH = "Housing Support (GRH)";
-    protected static final String PROGRAM_CCAP = "Child Care Assistance";
-    protected static final String PROGRAM_EA = "Emergency Assistance";
-    protected static final String PROGRAM_NONE = "None of the above";
 
-    private static final String UPLOADED_JPG_FILE_NAME = "shiba+file.jpg";
-    private static final String UPLOADED_PDF_NAME = "test-caf.pdf";
-    private static final String XFA_PDF_NAME = "xfa-invoice-example.pdf";
-    private static final String PASSWORD_PROTECTED_PDF = "password-protected.pdf";
+  protected static final String PROGRAM_SNAP = "Food (SNAP)";
+  protected static final String PROGRAM_CASH = "Cash programs";
+  protected static final String PROGRAM_GRH = "Housing Support (GRH)";
+  protected static final String PROGRAM_CCAP = "Child Care Assistance";
+  protected static final String PROGRAM_EA = "Emergency Assistance";
+  protected static final String PROGRAM_NONE = "None of the above";
 
-    @Autowired
-    protected RemoteWebDriver driver;
-    @Autowired
-    protected Path path;
-    protected String baseUrl;
-    protected String baseUrlWithAuth;
-    @Value("${shiba-username}:${shiba-password}")
-    protected String authParams;
+  private static final String UPLOADED_JPG_FILE_NAME = "shiba+file.jpg";
+  private static final String UPLOADED_PDF_NAME = "test-caf.pdf";
+  private static final String XFA_PDF_NAME = "xfa-invoice-example.pdf";
+  private static final String PASSWORD_PROTECTED_PDF = "password-protected.pdf";
 
-    @LocalServerPort
-    protected String localServerPort;
+  @Autowired
+  protected RemoteWebDriver driver;
+  @Autowired
+  protected Path path;
+  protected String baseUrl;
+  protected String baseUrlWithAuth;
+  @Value("${shiba-username}:${shiba-password}")
+  protected String authParams;
 
-    protected Page testPage;
+  @LocalServerPort
+  protected String localServerPort;
 
-    @BeforeEach
-    protected void setUp() throws IOException {
-        baseUrl = "http://localhost:%s".formatted(localServerPort);
-        //noinspection HttpUrlsUsage
-        baseUrlWithAuth = "http://%s@localhost:%s".formatted(authParams, localServerPort);
-        driver.navigate().to(baseUrl);
-        initTestPage();
+  protected Page testPage;
+
+  @BeforeEach
+  protected void setUp() throws IOException {
+    baseUrl = "http://localhost:%s".formatted(localServerPort);
+    //noinspection HttpUrlsUsage
+    baseUrlWithAuth = "http://%s@localhost:%s".formatted(authParams, localServerPort);
+    driver.navigate().to(baseUrl);
+    initTestPage();
+  }
+
+  protected void initTestPage() {
+    testPage = new Page(driver);
+  }
+
+  protected void navigateTo(String pageName) {
+    driver.navigate().to(baseUrl + "/pages/" + pageName);
+  }
+
+  protected Map<Document, PDAcroForm> getAllFiles() {
+    return Arrays.stream(Objects.requireNonNull(path.toFile().listFiles()))
+        .filter(file -> file.getName().endsWith(".pdf"))
+        .collect(Collectors.toMap(this::getDocumentType, pdfFile -> {
+          try {
+            return PDDocument.load(pdfFile).getDocumentCatalog().getAcroForm();
+          } catch (IOException e) {
+            throw new IllegalStateException(e);
+          }
+        }));
+  }
+
+  private Document getDocumentType(File file) {
+    String fileName = file.getName();
+    if (fileName.contains("_CAF")) {
+      return Document.CAF;
+    } else if (fileName.contains("_CCAP")) {
+      return Document.CCAP;
+    } else {
+      return Document.CAF;
+    }
+  }
+
+  protected void waitForDocumentUploadToComplete() {
+    await().atMost(15, TimeUnit.SECONDS)
+        .until(() -> driver.findElementsByLinkText("cancel").isEmpty());
+  }
+
+  @SuppressWarnings("unused")
+  public void takeSnapShot(String fileWithPath) {
+    TakesScreenshot screenshot = driver;
+    Path sourceFile = screenshot.getScreenshotAs(OutputType.FILE).toPath();
+    Path destinationFile = new File(fileWithPath).toPath();
+    try {
+      Files.copy(sourceFile, destinationFile, StandardCopyOption.REPLACE_EXISTING);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  protected void fillOutPersonalInfo() {
+    navigateTo("personalInfo");
+    fillOutPersonInfo();
+    testPage.enter("moveToMnPreviousCity", "Chicago");
+  }
+
+  protected void fillOutPersonInfo() {
+    testPage.enter("firstName", "defaultFirstName");
+    testPage.enter("lastName", "defaultLastName");
+    testPage.enter("otherName", "defaultOtherName");
+    testPage.enter("dateOfBirth", "01/12/1928");
+    testPage.enter("ssn", "123456789");
+    testPage.enter("maritalStatus", "Never married");
+    testPage.enter("sex", "Female");
+    testPage.enter("livedInMnWholeLife", "Yes");
+    testPage.enter("moveToMnDate", "02/18/1776");
+  }
+
+  protected void getToPersonalInfoScreen(List<String> programSelections) {
+    testPage.clickButton("Apply now");
+    testPage.clickContinue();
+    testPage.clickContinue();
+    testPage.enter("writtenLanguage", "English");
+    testPage.enter("spokenLanguage", "English");
+    testPage.enter("needInterpreter", "Yes");
+    testPage.clickContinue();
+    programSelections.forEach(program -> testPage.enter("programs", program));
+    testPage.clickContinue();
+    testPage.clickContinue();
+  }
+
+  protected void completeFlowFromLandingPageThroughContactInfo(List<String> programSelections) {
+    getToPersonalInfoScreen(programSelections);
+
+    fillOutPersonalInfo();
+
+    testPage.clickContinue();
+  }
+
+  protected void completeFlowFromLandingPageThroughReviewInfo(List<String> programSelections,
+      SmartyStreetClient mockSmartyStreetClient) {
+    completeFlowFromLandingPageThroughContactInfo(programSelections);
+
+    testPage.enter("phoneNumber", "7234567890");
+    testPage.enter("email", "some@example.com");
+    testPage.enter("phoneOrEmail", "Text me");
+    testPage.clickContinue();
+    fillOutAddress();
+    testPage.enter("sameMailingAddress", "No, use a different address for mail");
+    testPage.clickContinue();
+
+    testPage.clickButton("Use this address");
+    testPage.enter("zipCode", "12345");
+    testPage.enter("city", "someCity");
+    testPage.enter("streetAddress", "someStreetAddress");
+    testPage.enter("state", "IL");
+    testPage.enter("apartmentNumber", "someApartmentNumber");
+    when(mockSmartyStreetClient.validateAddress(any())).thenReturn(
+        Optional.of(new Address("smarty street", "City", "CA", "03104", "", "someCounty"))
+    );
+    testPage.clickContinue();
+
+    testPage.clickElementById("enriched-address");
+    testPage.clickContinue();
+    assertThat(driver.findElementById("mailingAddress-address_street").getText())
+        .isEqualTo("smarty street");
+  }
+
+  protected void fillOutAddress() {
+    testPage.enter("zipCode", "12345");
+    testPage.enter("city", "someCity");
+    testPage.enter("streetAddress", "someStreetAddress");
+    testPage.enter("apartmentNumber", "someApartmentNumber");
+    testPage.enter("isHomeless", "I don't have a permanent address");
+  }
+
+  protected SuccessPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking,
+      SmartyStreetClient mockSmartyStreetClient) {
+    return nonExpeditedFlowToSuccessPage(hasHousehold, isWorking, mockSmartyStreetClient, false,
+        false);
+  }
+
+  protected SuccessPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking,
+      SmartyStreetClient mockSmartyStreetClient,
+      boolean helpWithBenefits, boolean hasHealthcareCoverage) {
+    completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_CCAP, PROGRAM_CASH),
+        mockSmartyStreetClient);
+    testPage.clickLink("This looks correct");
+
+    if (hasHousehold) {
+      testPage.enter("addHouseholdMembers", YES.getDisplayValue());
+      testPage.clickContinue();
+      fillOutHousemateInfo(PROGRAM_CCAP);
+      testPage.clickContinue();
+      testPage.clickButton("Yes, that's everyone");
+      testPage.enter("whoNeedsChildCare", "householdMemberFirstName householdMemberLastName");
+      testPage.clickContinue();
+      testPage.enter("whoHasAParentNotLivingAtHome",
+          "None of the children have parents living outside the home");
+      testPage.clickContinue();
+      testPage.enter("livingSituation", "None of these");
+      testPage.clickContinue();
+      testPage.enter("goingToSchool", NO.getDisplayValue());
+      testPage.enter("isPregnant", YES.getDisplayValue());
+      testPage.enter("whoIsPregnant", "Me");
+      testPage.clickContinue();
+    } else {
+      testPage.enter("addHouseholdMembers", NO.getDisplayValue());
+      testPage.clickContinue();
+      testPage.enter("livingSituation", "None of these");
+      testPage.clickContinue();
+      testPage.enter("goingToSchool", NO.getDisplayValue());
+      testPage.enter("isPregnant", NO.getDisplayValue());
     }
 
-    protected void initTestPage() {
-        testPage = new Page(driver);
+    testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
+    if (hasHousehold) {
+      testPage.enter("isUsCitizen", NO.getDisplayValue());
+      testPage.enter("whoIsNonCitizen", "Me");
+      testPage.clickContinue();
+    } else {
+      testPage.enter("isUsCitizen", YES.getDisplayValue());
+    }
+    testPage.enter("hasDisability", NO.getDisplayValue());
+    testPage.enter("hasWorkSituation", NO.getDisplayValue());
+    testPage.clickContinue();
+
+    if (isWorking) {
+      testPage.enter("areYouWorking", YES.getDisplayValue());
+      testPage.clickButton("Add a job");
+
+      if (hasHousehold) {
+        testPage.enter("whoseJobIsIt", "householdMemberFirstName householdMemberLastName");
+        testPage.clickContinue();
+      }
+
+      testPage.enter("employersName", "some employer");
+      testPage.clickContinue();
+      testPage.enter("selfEmployment", YES.getDisplayValue());
+      paidByTheHourOrSelectPayPeriod(true);
+      testPage.enter("currentlyLookingForJob", NO.getDisplayValue());
+    } else {
+      testPage.enter("areYouWorking", NO.getDisplayValue());
+      testPage.enter("currentlyLookingForJob", YES.getDisplayValue());
+
+      if (hasHousehold) {
+        testPage.enter("whoIsLookingForAJob", "householdMemberFirstName householdMemberLastName");
+        testPage.clickContinue();
+      }
     }
 
-    protected void navigateTo(String pageName) {
-        driver.navigate().to(baseUrl + "/pages/" + pageName);
+    testPage.clickContinue();
+    testPage.enter("unearnedIncome", "Social Security");
+    testPage.clickContinue();
+    testPage.enter("socialSecurityAmount", "200");
+    testPage.clickContinue();
+    testPage.enter("unearnedIncomeCcap", "Money from a Trust");
+    testPage.clickContinue();
+    testPage.enter("trustMoneyAmount", "200");
+    testPage.clickContinue();
+    testPage.enter("earnLessMoneyThisMonth", "Yes");
+    testPage.clickContinue();
+    testPage.clickContinue();
+    testPage.enter("homeExpenses", "Rent");
+    testPage.clickContinue();
+    testPage.enter("homeExpensesAmount", "123321");
+    testPage.clickContinue();
+    testPage.enter("payForUtilities", "Heating");
+    testPage.clickContinue();
+    testPage.enter("energyAssistance", YES.getDisplayValue());
+    testPage.enter("energyAssistanceMoreThan20", YES.getDisplayValue());
+    testPage.enter("medicalExpenses", "None of the above");
+    testPage.clickContinue();
+    testPage.enter("supportAndCare", YES.getDisplayValue());
+    testPage.enter("haveVehicle", YES.getDisplayValue());
+    testPage.enter("ownRealEstate", YES.getDisplayValue());
+    testPage.enter("haveInvestments", NO.getDisplayValue());
+    testPage.enter("haveSavings", YES.getDisplayValue());
+    testPage.enter("liquidAssets", "1234");
+    testPage.clickContinue();
+    testPage.enter("haveMillionDollars", NO.getDisplayValue());
+    testPage.enter("haveSoldAssets", NO.getDisplayValue());
+    testPage.clickContinue();
+    testPage.enter("registerToVote", "Yes, send me more info");
+    testPage.enter("healthcareCoverage",
+        hasHealthcareCoverage ? YES.getDisplayValue() : NO.getDisplayValue());
+    testPage.clickContinue();
+    completeHelperWorkflow(helpWithBenefits);
+    driver.findElement(By.id("additionalInfo"))
+        .sendKeys("Some additional information about my application");
+    testPage.clickContinue();
+    testPage.enter("agreeToTerms", "I agree");
+    testPage.enter("drugFelony", NO.getDisplayValue());
+    testPage.clickContinue();
+    testPage.enter("applicantSignature", "some name");
+    testPage.clickButton("Submit");
+
+    skipDocumentUploadFlow();
+
+    return new SuccessPage(driver);
+  }
+
+  protected void skipDocumentUploadFlow() {
+    testPage.clickButton("I'll do this later");
+  }
+
+  protected void fillOutHousemateInfo(String programSelection) {
+    testPage.enter("relationship", "housemate");
+    testPage.enter("programs", programSelection);
+    testPage.enter("firstName", "householdMemberFirstName");
+    testPage.enter("lastName", "householdMemberLastName");
+    testPage.enter("otherName", "houseHoldyMcMemberson");
+    testPage.enter("dateOfBirth", "09/14/1950");
+    testPage.enter("ssn", "987654321");
+    testPage.enter("maritalStatus", "Never married");
+    testPage.enter("sex", "Male");
+    testPage.enter("livedInMnWholeLife", "Yes");
+    testPage.enter("moveToMnDate", "02/18/1950");
+    testPage.enter("moveToMnPreviousState", "Illinois");
+  }
+
+  protected void paidByTheHourOrSelectPayPeriod(boolean paidByTheHour) {
+    if (paidByTheHour) {
+      testPage.enter("paidByTheHour", YES.getDisplayValue());
+      testPage.enter("hourlyWage", "1");
+      testPage.clickContinue();
+      testPage.enter("hoursAWeek", "30");
+    } else {
+      testPage.enter("paidByTheHour", NO.getDisplayValue());
+      testPage.enter("payPeriod", "Twice a month");
+      testPage.clickContinue();
+      testPage.enter("incomePerPayPeriod", "1");
     }
+    testPage.clickContinue();
+    testPage.goBack();
+    testPage.clickButton("No, I'd rather keep going");
+    testPage.clickButton("No, that's it.");
+  }
 
-    protected Map<Document, PDAcroForm> getAllFiles() {
-        return Arrays.stream(Objects.requireNonNull(path.toFile().listFiles()))
-                .filter(file -> file.getName().endsWith(".pdf"))
-                .collect(Collectors.toMap(this::getDocumentType, pdfFile -> {
-                    try {
-                        return PDDocument.load(pdfFile).getDocumentCatalog().getAcroForm();
-                    } catch (IOException e) {
-                        throw new IllegalStateException(e);
-                    }
-                }));
+  protected void fillOutHelperInfo() {
+    testPage.enter("helpersFullName", "defaultFirstName defaultLastName");
+    testPage.enter("helpersStreetAddress", "someStreetAddress");
+    testPage.enter("helpersCity", "someCity");
+    testPage.enter("helpersZipCode", "12345");
+    testPage.enter("helpersPhoneNumber", "7234567890");
+    testPage.clickContinue();
+  }
+
+  private void completeHelperWorkflow(boolean helpWithBenefits) {
+    if (helpWithBenefits) {
+      testPage.enter("helpWithBenefits", YES.getDisplayValue());
+      testPage.enter("communicateOnYourBehalf", YES.getDisplayValue());
+      testPage.enter("getMailNotices", YES.getDisplayValue());
+      testPage.enter("spendOnYourBehalf", YES.getDisplayValue());
+      fillOutHelperInfo();
+    } else {
+      testPage.enter("helpWithBenefits", NO.getDisplayValue());
     }
+  }
 
-    private Document getDocumentType(File file) {
-        String fileName = file.getName();
-        if (fileName.contains("_CAF")) {
-            return Document.CAF;
-        } else if (fileName.contains("_CCAP")) {
-            return Document.CCAP;
-        } else {
-            return Document.CAF;
-        }
+  protected void completeFlowFromReviewInfoToDisability(List<String> programSelections) {
+    testPage.clickLink("This looks correct");
+    testPage.enter("addHouseholdMembers", NO.getDisplayValue());
+    testPage.clickContinue();
+    if (programSelections.contains(PROGRAM_CCAP) || programSelections.contains(PROGRAM_GRH)) {
+      testPage.enter("livingSituation", "None of these");
+      testPage.clickContinue();
     }
+    testPage.enter("goingToSchool", YES.getDisplayValue());
+    testPage.enter("isPregnant", NO.getDisplayValue());
+    testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
+    testPage.enter("isUsCitizen", YES.getDisplayValue());
+    testPage.enter("hasDisability", NO.getDisplayValue());
+  }
 
-    protected void waitForDocumentUploadToComplete() {
-        await().atMost(15, TimeUnit.SECONDS).until(() -> driver.findElementsByLinkText("cancel").isEmpty());
-    }
+  protected void uploadFile(String filepath) {
+    testPage.clickElementById("drag-and-drop-box"); // is this needed?
+    WebElement upload = driver.findElement(By.className("dz-hidden-input"));
+    upload.sendKeys(filepath);
+    await().until(
+        () -> !driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML")
+            .isBlank());
+  }
 
-    @SuppressWarnings("unused")
-    public void takeSnapShot(String fileWithPath) {
-        TakesScreenshot screenshot = driver;
-        Path sourceFile = screenshot.getScreenshotAs(OutputType.FILE).toPath();
-        Path destinationFile = new File(fileWithPath).toPath();
-        try {
-            Files.copy(sourceFile, destinationFile, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+  protected void uploadJpgFile() {
+    uploadFile(TestUtils.getAbsoluteFilepathString(UPLOADED_JPG_FILE_NAME));
+    assertThat(driver.findElement(By.id("document-upload")).getText())
+        .contains(UPLOADED_JPG_FILE_NAME);
+  }
 
-    protected void fillOutPersonalInfo() {
-        navigateTo("personalInfo");
-        fillOutPersonInfo();
-        testPage.enter("moveToMnPreviousCity", "Chicago");
-    }
+  protected void uploadXfaFormatPdf() {
+    uploadFile(TestUtils.getAbsoluteFilepathString(XFA_PDF_NAME));
+    assertThat(driver.findElement(By.id("document-upload")).getText()).contains(XFA_PDF_NAME);
+  }
 
-    protected void fillOutPersonInfo() {
-        testPage.enter("firstName", "defaultFirstName");
-        testPage.enter("lastName", "defaultLastName");
-        testPage.enter("otherName", "defaultOtherName");
-        testPage.enter("dateOfBirth", "01/12/1928");
-        testPage.enter("ssn", "123456789");
-        testPage.enter("maritalStatus", "Never married");
-        testPage.enter("sex", "Female");
-        testPage.enter("livedInMnWholeLife", "Yes");
-        testPage.enter("moveToMnDate", "02/18/1776");
-    }
+  protected void uploadPasswordProtectedPdf() {
+    uploadFile(TestUtils.getAbsoluteFilepathString(PASSWORD_PROTECTED_PDF));
+    assertThat(driver.findElement(By.id("document-upload")).getText())
+        .contains(PASSWORD_PROTECTED_PDF);
+  }
 
-    protected void getToPersonalInfoScreen(List<String> programSelections) {
-        testPage.clickButton("Apply now");
-        testPage.clickContinue();
-        testPage.clickContinue();
-        testPage.enter("writtenLanguage", "English");
-        testPage.enter("spokenLanguage", "English");
-        testPage.enter("needInterpreter", "Yes");
-        testPage.clickContinue();
-        programSelections.forEach(program -> testPage.enter("programs", program));
-        testPage.clickContinue();
-        testPage.clickContinue();
-    }
+  protected void uploadPdfFile() {
+    uploadFile(TestUtils.getAbsoluteFilepathString(UPLOADED_PDF_NAME));
+    assertThat(driver.findElement(By.id("document-upload")).getText()).contains(UPLOADED_PDF_NAME);
+  }
 
-    protected void completeFlowFromLandingPageThroughContactInfo(List<String> programSelections) {
-        getToPersonalInfoScreen(programSelections);
+  private void getToDocumentRecommendationScreen() {
+    testPage.clickButton("Apply now");
+    testPage.clickContinue();
+    testPage.clickContinue();
+    testPage.enter("writtenLanguage", "English");
+    testPage.enter("spokenLanguage", "English");
+    testPage.enter("needInterpreter", "Yes");
+    testPage.clickContinue();
+    testPage.enter("programs", PROGRAM_EA);
+    testPage.clickContinue();
+    testPage.clickContinue();
+    fillOutPersonalInfo();
+    testPage.clickContinue();
+    navigateTo("signThisApplication");
+    testPage.enter("applicantSignature", "some name");
+    testPage.clickButton("Submit");
+    testPage.clickContinue();
+    testPage.clickContinue();
+  }
 
-        fillOutPersonalInfo();
+  protected void getToDocumentUploadScreen() {
+    getToDocumentRecommendationScreen();
+    testPage.clickButton("Add documents now");
+  }
 
-        testPage.clickContinue();
-    }
+  protected String getAttributeForElementAtIndex(List<WebElement> elementList, int index,
+      String attributeName) {
+    return elementList.get(index).getAttribute(attributeName);
+  }
 
-    protected void completeFlowFromLandingPageThroughReviewInfo(List<String> programSelections,
-                                                                SmartyStreetClient mockSmartyStreetClient) {
-        completeFlowFromLandingPageThroughContactInfo(programSelections);
-
-        testPage.enter("phoneNumber", "7234567890");
-        testPage.enter("email", "some@example.com");
-        testPage.enter("phoneOrEmail", "Text me");
-        testPage.clickContinue();
-        fillOutAddress();
-        testPage.enter("sameMailingAddress", "No, use a different address for mail");
-        testPage.clickContinue();
-
-        testPage.clickButton("Use this address");
-        testPage.enter("zipCode", "12345");
-        testPage.enter("city", "someCity");
-        testPage.enter("streetAddress", "someStreetAddress");
-        testPage.enter("state", "IL");
-        testPage.enter("apartmentNumber", "someApartmentNumber");
-        when(mockSmartyStreetClient.validateAddress(any())).thenReturn(
-                Optional.of(new Address("smarty street", "City", "CA", "03104", "", "someCounty"))
-        );
-        testPage.clickContinue();
-
-        testPage.clickElementById("enriched-address");
-        testPage.clickContinue();
-        assertThat(driver.findElementById("mailingAddress-address_street").getText()).isEqualTo("smarty street");
-    }
-
-    protected void fillOutAddress() {
-        testPage.enter("zipCode", "12345");
-        testPage.enter("city", "someCity");
-        testPage.enter("streetAddress", "someStreetAddress");
-        testPage.enter("apartmentNumber", "someApartmentNumber");
-        testPage.enter("isHomeless", "I don't have a permanent address");
-    }
-
-    protected SuccessPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking,
-                                                        SmartyStreetClient mockSmartyStreetClient) {
-        return nonExpeditedFlowToSuccessPage(hasHousehold, isWorking, mockSmartyStreetClient, false, false);
-    }
-
-    protected SuccessPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking,
-                                                        SmartyStreetClient mockSmartyStreetClient,
-                                                        boolean helpWithBenefits, boolean hasHealthcareCoverage) {
-        completeFlowFromLandingPageThroughReviewInfo(List.of(PROGRAM_CCAP, PROGRAM_CASH), mockSmartyStreetClient);
-        testPage.clickLink("This looks correct");
-
-        if (hasHousehold) {
-            testPage.enter("addHouseholdMembers", YES.getDisplayValue());
-            testPage.clickContinue();
-            fillOutHousemateInfo(PROGRAM_CCAP);
-            testPage.clickContinue();
-            testPage.clickButton("Yes, that's everyone");
-            testPage.enter("whoNeedsChildCare", "householdMemberFirstName householdMemberLastName");
-            testPage.clickContinue();
-            testPage.enter("whoHasAParentNotLivingAtHome", "None of the children have parents living outside the home");
-            testPage.clickContinue();
-            testPage.enter("livingSituation", "None of these");
-            testPage.clickContinue();
-            testPage.enter("goingToSchool", NO.getDisplayValue());
-            testPage.enter("isPregnant", YES.getDisplayValue());
-            testPage.enter("whoIsPregnant", "Me");
-            testPage.clickContinue();
-        } else {
-            testPage.enter("addHouseholdMembers", NO.getDisplayValue());
-            testPage.clickContinue();
-            testPage.enter("livingSituation", "None of these");
-            testPage.clickContinue();
-            testPage.enter("goingToSchool", NO.getDisplayValue());
-            testPage.enter("isPregnant", NO.getDisplayValue());
-        }
-
-        testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
-        if (hasHousehold) {
-            testPage.enter("isUsCitizen", NO.getDisplayValue());
-            testPage.enter("whoIsNonCitizen", "Me");
-            testPage.clickContinue();
-        } else {
-            testPage.enter("isUsCitizen", YES.getDisplayValue());
-        }
-        testPage.enter("hasDisability", NO.getDisplayValue());
-        testPage.enter("hasWorkSituation", NO.getDisplayValue());
-        testPage.clickContinue();
-
-        if (isWorking) {
-            testPage.enter("areYouWorking", YES.getDisplayValue());
-            testPage.clickButton("Add a job");
-
-            if (hasHousehold) {
-                testPage.enter("whoseJobIsIt", "householdMemberFirstName householdMemberLastName");
-                testPage.clickContinue();
-            }
-
-            testPage.enter("employersName", "some employer");
-            testPage.clickContinue();
-            testPage.enter("selfEmployment", YES.getDisplayValue());
-            paidByTheHourOrSelectPayPeriod(true);
-            testPage.enter("currentlyLookingForJob", NO.getDisplayValue());
-        } else {
-            testPage.enter("areYouWorking", NO.getDisplayValue());
-            testPage.enter("currentlyLookingForJob", YES.getDisplayValue());
-
-            if (hasHousehold) {
-                testPage.enter("whoIsLookingForAJob", "householdMemberFirstName householdMemberLastName");
-                testPage.clickContinue();
-            }
-        }
-
-        testPage.clickContinue();
-        testPage.enter("unearnedIncome", "Social Security");
-        testPage.clickContinue();
-        testPage.enter("socialSecurityAmount", "200");
-        testPage.clickContinue();
-        testPage.enter("unearnedIncomeCcap", "Money from a Trust");
-        testPage.clickContinue();
-        testPage.enter("trustMoneyAmount", "200");
-        testPage.clickContinue();
-        testPage.enter("earnLessMoneyThisMonth", "Yes");
-        testPage.clickContinue();
-        testPage.clickContinue();
-        testPage.enter("homeExpenses", "Rent");
-        testPage.clickContinue();
-        testPage.enter("homeExpensesAmount", "123321");
-        testPage.clickContinue();
-        testPage.enter("payForUtilities", "Heating");
-        testPage.clickContinue();
-        testPage.enter("energyAssistance", YES.getDisplayValue());
-        testPage.enter("energyAssistanceMoreThan20", YES.getDisplayValue());
-        testPage.enter("medicalExpenses", "None of the above");
-        testPage.clickContinue();
-        testPage.enter("supportAndCare", YES.getDisplayValue());
-        testPage.enter("haveVehicle", YES.getDisplayValue());
-        testPage.enter("ownRealEstate", YES.getDisplayValue());
-        testPage.enter("haveInvestments", NO.getDisplayValue());
-        testPage.enter("haveSavings", YES.getDisplayValue());
-        testPage.enter("liquidAssets", "1234");
-        testPage.clickContinue();
-        testPage.enter("haveMillionDollars", NO.getDisplayValue());
-        testPage.enter("haveSoldAssets", NO.getDisplayValue());
-        testPage.clickContinue();
-        testPage.enter("registerToVote", "Yes, send me more info");
-        testPage.enter("healthcareCoverage", hasHealthcareCoverage ? YES.getDisplayValue() : NO.getDisplayValue());
-        testPage.clickContinue();
-        completeHelperWorkflow(helpWithBenefits);
-        driver.findElement(By.id("additionalInfo")).sendKeys("Some additional information about my application");
-        testPage.clickContinue();
-        testPage.enter("agreeToTerms", "I agree");
-        testPage.enter("drugFelony", NO.getDisplayValue());
-        testPage.clickContinue();
-        testPage.enter("applicantSignature", "some name");
-        testPage.clickButton("Submit");
-
-        skipDocumentUploadFlow();
-
-        return new SuccessPage(driver);
-    }
-
-    protected void skipDocumentUploadFlow() {
-        testPage.clickButton("I'll do this later");
-    }
-
-    protected void fillOutHousemateInfo(String programSelection) {
-        testPage.enter("relationship", "housemate");
-        testPage.enter("programs", programSelection);
-        testPage.enter("firstName", "householdMemberFirstName");
-        testPage.enter("lastName", "householdMemberLastName");
-        testPage.enter("otherName", "houseHoldyMcMemberson");
-        testPage.enter("dateOfBirth", "09/14/1950");
-        testPage.enter("ssn", "987654321");
-        testPage.enter("maritalStatus", "Never married");
-        testPage.enter("sex", "Male");
-        testPage.enter("livedInMnWholeLife", "Yes");
-        testPage.enter("moveToMnDate", "02/18/1950");
-        testPage.enter("moveToMnPreviousState", "Illinois");
-    }
-
-    protected void paidByTheHourOrSelectPayPeriod(boolean paidByTheHour) {
-        if (paidByTheHour) {
-            testPage.enter("paidByTheHour", YES.getDisplayValue());
-            testPage.enter("hourlyWage", "1");
-            testPage.clickContinue();
-            testPage.enter("hoursAWeek", "30");
-        } else {
-            testPage.enter("paidByTheHour", NO.getDisplayValue());
-            testPage.enter("payPeriod", "Twice a month");
-            testPage.clickContinue();
-            testPage.enter("incomePerPayPeriod", "1");
-        }
-        testPage.clickContinue();
-        testPage.goBack();
-        testPage.clickButton("No, I'd rather keep going");
-        testPage.clickButton("No, that's it.");
-    }
-
-    protected void fillOutHelperInfo() {
-        testPage.enter("helpersFullName", "defaultFirstName defaultLastName");
-        testPage.enter("helpersStreetAddress", "someStreetAddress");
-        testPage.enter("helpersCity", "someCity");
-        testPage.enter("helpersZipCode", "12345");
-        testPage.enter("helpersPhoneNumber", "7234567890");
-        testPage.clickContinue();
-    }
-
-    private void completeHelperWorkflow(boolean helpWithBenefits) {
-        if (helpWithBenefits) {
-            testPage.enter("helpWithBenefits", YES.getDisplayValue());
-            testPage.enter("communicateOnYourBehalf", YES.getDisplayValue());
-            testPage.enter("getMailNotices", YES.getDisplayValue());
-            testPage.enter("spendOnYourBehalf", YES.getDisplayValue());
-            fillOutHelperInfo();
-        } else {
-            testPage.enter("helpWithBenefits", NO.getDisplayValue());
-        }
-    }
-
-    protected void completeFlowFromReviewInfoToDisability(List<String> programSelections) {
-        testPage.clickLink("This looks correct");
-        testPage.enter("addHouseholdMembers", NO.getDisplayValue());
-        testPage.clickContinue();
-        if (programSelections.contains(PROGRAM_CCAP) || programSelections.contains(PROGRAM_GRH)) {
-            testPage.enter("livingSituation", "None of these");
-            testPage.clickContinue();
-        }
-        testPage.enter("goingToSchool", YES.getDisplayValue());
-        testPage.enter("isPregnant", NO.getDisplayValue());
-        testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
-        testPage.enter("isUsCitizen", YES.getDisplayValue());
-        testPage.enter("hasDisability", NO.getDisplayValue());
-    }
-
-    protected void uploadFile(String filepath) {
-        testPage.clickElementById("drag-and-drop-box"); // is this needed?
-        WebElement upload = driver.findElement(By.className("dz-hidden-input"));
-        upload.sendKeys(filepath);
-        await().until(() -> !driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML").isBlank());
-    }
-
-    protected void uploadJpgFile() {
-        uploadFile(TestUtils.getAbsoluteFilepathString(UPLOADED_JPG_FILE_NAME));
-        assertThat(driver.findElement(By.id("document-upload")).getText()).contains(UPLOADED_JPG_FILE_NAME);
-    }
-
-    protected void uploadXfaFormatPdf() {
-        uploadFile(TestUtils.getAbsoluteFilepathString(XFA_PDF_NAME));
-        assertThat(driver.findElement(By.id("document-upload")).getText()).contains(XFA_PDF_NAME);
-    }
-
-    protected void uploadPasswordProtectedPdf() {
-        uploadFile(TestUtils.getAbsoluteFilepathString(PASSWORD_PROTECTED_PDF));
-        assertThat(driver.findElement(By.id("document-upload")).getText()).contains(PASSWORD_PROTECTED_PDF);
-    }
-
-    protected void uploadPdfFile() {
-        uploadFile(TestUtils.getAbsoluteFilepathString(UPLOADED_PDF_NAME));
-        assertThat(driver.findElement(By.id("document-upload")).getText()).contains(UPLOADED_PDF_NAME);
-    }
-
-    private void getToDocumentRecommendationScreen() {
-        testPage.clickButton("Apply now");
-        testPage.clickContinue();
-        testPage.clickContinue();
-        testPage.enter("writtenLanguage", "English");
-        testPage.enter("spokenLanguage", "English");
-        testPage.enter("needInterpreter", "Yes");
-        testPage.clickContinue();
-        testPage.enter("programs", PROGRAM_EA);
-        testPage.clickContinue();
-        testPage.clickContinue();
-        fillOutPersonalInfo();
-        testPage.clickContinue();
-        navigateTo("signThisApplication");
-        testPage.enter("applicantSignature", "some name");
-        testPage.clickButton("Submit");
-        testPage.clickContinue();
-        testPage.clickContinue();
-    }
-
-    protected void getToDocumentUploadScreen() {
-        getToDocumentRecommendationScreen();
-        testPage.clickButton("Add documents now");
-    }
-
-    protected String getAttributeForElementAtIndex(List<WebElement> elementList, int index, String attributeName) {
-        return elementList.get(index).getAttribute(attributeName);
-    }
-
-    @NotNull
-    protected Callable<Boolean> uploadCompletes() {
-        return () -> !getAttributeForElementAtIndex(driver.findElementsByClassName("dz-remove"),
-                0,
-                "innerHTML").isBlank();
-    }
+  @NotNull
+  protected Callable<Boolean> uploadCompletes() {
+    return () -> !getAttributeForElementAtIndex(driver.findElementsByClassName("dz-remove"),
+        0,
+        "innerHTML").isBlank();
+  }
 }

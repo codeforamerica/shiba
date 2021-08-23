@@ -7,10 +7,11 @@ import org.springframework.context.support.SimpleThreadScope;
 
 @TestConfiguration
 public class SessionScopedApplicationDataTestConfiguration {
-    @Bean
-    public CustomScopeConfigurer customScopeConfigurer() {
-        CustomScopeConfigurer configurer = new CustomScopeConfigurer();
-        configurer.addScope("session", new SimpleThreadScope());
-        return configurer;
-    }
+
+  @Bean
+  public CustomScopeConfigurer customScopeConfigurer() {
+    CustomScopeConfigurer configurer = new CustomScopeConfigurer();
+    configurer.addScope("session", new SimpleThreadScope());
+    return configurer;
+  }
 }

@@ -4,6 +4,7 @@ import lombok.Value;
 
 @Value
 public class DownloadCafEvent {
-    String confirmationNumber;
-    String ip;
+
+  String confirmationNumber;
+  String ip;
 }

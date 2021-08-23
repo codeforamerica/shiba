@@ -5,7 +5,8 @@ import org.codeforamerica.shiba.inputconditions.Condition;
 
 @Data
 public class ConditionalValue {
-    private Condition condition;
-    private String flag;
-    private String value;
+
+  private Condition condition;
+  private String flag;
+  private String value;
 }

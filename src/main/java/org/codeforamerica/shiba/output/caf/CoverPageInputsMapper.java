@@ -38,28 +38,34 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CoverPageInputsMapper implements ApplicationInputsMapper {
+
+    public static final String CHILDCARE_WAITING_LIST_UTM_SOURCE = "childcare_waiting_list";
+    private static final Map<String, String> UTM_SOURCE_MAPPING = Map
+            .of(CHILDCARE_WAITING_LIST_UTM_SOURCE, "FROM BSF WAITING LIST");
     private final CountyMap<Map<Recipient, String>> countyInstructionsMapping;
     private final CountyMap<MnitCountyInformation> countyInformationMapping;
     private final MessageSource messageSource;
 
-    public static final String CHILDCARE_WAITING_LIST_UTM_SOURCE = "childcare_waiting_list";
-    private static final Map<String, String> UTM_SOURCE_MAPPING = Map.of(CHILDCARE_WAITING_LIST_UTM_SOURCE, "FROM BSF WAITING LIST");
-
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public CoverPageInputsMapper(CountyMap<Map<Recipient, String>> countyInstructionsMapping, CountyMap<MnitCountyInformation> countyInformationMapping, MessageSource messageSource) {
+    public CoverPageInputsMapper(CountyMap<Map<Recipient, String>> countyInstructionsMapping,
+            CountyMap<MnitCountyInformation> countyInformationMapping,
+            MessageSource messageSource) {
         this.countyInstructionsMapping = countyInstructionsMapping;
         this.countyInformationMapping = countyInformationMapping;
         this.messageSource = messageSource;
     }
 
     @Override
-    public List<ApplicationInput> map(Application application, Document document, Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
+    public List<ApplicationInput> map(Application application, Document document,
+            Recipient recipient,
+            SubworkflowIterationScopeTracker scopeTracker) {
         var programsInput = getPrograms(application);
         var fullNameInput = getFullName(application);
         var householdMemberInputs = getHouseholdMembers(application);
         var countyInstructionsInput = getCountyInstructions(application, recipient);
         var utmSourceInput = getUtmSource(application, document);
-        return combineCoverPageInputs(programsInput, fullNameInput, countyInstructionsInput, utmSourceInput, householdMemberInputs);
+        return combineCoverPageInputs(programsInput, fullNameInput, countyInstructionsInput,
+                utmSourceInput, householdMemberInputs);
     }
 
     @Nullable
@@ -68,13 +74,16 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
         if (document == Document.CCAP) {
             var utmSource = application.getApplicationData().getUtmSource();
             var applicationUtmSource = utmSource != null ? utmSource : "";
-            utmSourceInput = new ApplicationInput("nonPagesData", "utmSource", UTM_SOURCE_MAPPING.getOrDefault(applicationUtmSource, ""), SINGLE_VALUE);
+            utmSourceInput = new ApplicationInput("nonPagesData", "utmSource",
+                    UTM_SOURCE_MAPPING.getOrDefault(applicationUtmSource, ""), SINGLE_VALUE);
         }
         return utmSourceInput;
     }
 
     @NotNull
-    private List<ApplicationInput> combineCoverPageInputs(ApplicationInput programsInput, ApplicationInput fullNameInput, ApplicationInput countyInstructionsInput, ApplicationInput utmSourceInput, List<ApplicationInput> householdMemberInputs) {
+    private List<ApplicationInput> combineCoverPageInputs(ApplicationInput programsInput,
+            ApplicationInput fullNameInput, ApplicationInput countyInstructionsInput,
+            ApplicationInput utmSourceInput, List<ApplicationInput> householdMemberInputs) {
         var everythingExceptHouseholdMembers = new ArrayList<ApplicationInput>();
         everythingExceptHouseholdMembers.add(programsInput);
         everythingExceptHouseholdMembers.add(fullNameInput);
@@ -85,9 +94,11 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
     }
 
     private ApplicationInput getPrograms(Application application) {
-        List<String> programs = getValues(application.getApplicationData().getPagesData(), APPLICANT_PROGRAMS);
+        List<String> programs = getValues(application.getApplicationData().getPagesData(),
+                APPLICANT_PROGRAMS);
         if (!programs.isEmpty()) {
-            return new ApplicationInput("coverPage", "programs", String.join(", ", programs), SINGLE_VALUE);
+            return new ApplicationInput("coverPage", "programs", String.join(", ", programs),
+                    SINGLE_VALUE);
         }
         return null;
     }
@@ -116,8 +127,10 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
     }
 
     private List<ApplicationInput> getHouseholdMembers(Application application) {
-        var householdSubworkflow = ofNullable(getGroup(application.getApplicationData(), Group.HOUSEHOLD));
-        return householdSubworkflow.map(this::getApplicationInputsForSubworkflow).orElse(emptyList());
+        var householdSubworkflow = ofNullable(
+                getGroup(application.getApplicationData(), Group.HOUSEHOLD));
+        return householdSubworkflow.map(this::getApplicationInputsForSubworkflow)
+                .orElse(emptyList());
     }
 
     @NotNull
@@ -128,10 +141,12 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
             var firstName = getFirstValue(pagesData, HOUSEHOLD_INFO_FIRST_NAME);
             var lastName = getFirstValue(pagesData, HOUSEHOLD_INFO_LAST_NAME);
             var fullName = firstName + " " + lastName;
-            inputsForSubworkflow.add(new ApplicationInput("coverPage", "fullName", fullName, SINGLE_VALUE, i));
+            inputsForSubworkflow
+                    .add(new ApplicationInput("coverPage", "fullName", fullName, SINGLE_VALUE, i));
 
             var programs = String.join(", ", getValues(pagesData, HOUSEHOLD_PROGRAMS));
-            inputsForSubworkflow.add(new ApplicationInput("coverPage", "programs", programs, SINGLE_VALUE, i));
+            inputsForSubworkflow
+                    .add(new ApplicationInput("coverPage", "programs", programs, SINGLE_VALUE, i));
         }
         return inputsForSubworkflow;
     }
@@ -140,8 +155,10 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
         Locale locale = switch (recipient) {
             case CASEWORKER -> LocaleContextHolder.getLocale();
             case CLIENT -> {
-                var writtenLanguageSelection = application.getApplicationData().getPagesData().safeGetPageInputValue("languagePreferences", "writtenLanguage");
-                yield writtenLanguageSelection.contains("SPANISH") ? new Locale("es") : LocaleContextHolder.getLocale();
+                var writtenLanguageSelection = application.getApplicationData().getPagesData()
+                        .safeGetPageInputValue("languagePreferences", "writtenLanguage");
+                yield writtenLanguageSelection.contains("SPANISH") ? new Locale("es")
+                        : LocaleContextHolder.getLocale();
             }
         };
 
@@ -150,10 +167,13 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
         var messageCode = countyInstructionsMapping.get(application.getCounty()).get(recipient);
 
         var displayName = application.getCounty().displayName();
-        var phoneNumber = ofNullable(countyInformationMapping.get(application.getCounty()).getPhoneNumber()).orElse(null);
+        var phoneNumber = ofNullable(
+                countyInformationMapping.get(application.getCounty()).getPhoneNumber())
+                .orElse(null);
         var args = List.of(displayName, phoneNumber);
 
         var countyInstructions = lms.getMessage(messageCode, args);
-        return new ApplicationInput("coverPage", "countyInstructions", countyInstructions, SINGLE_VALUE);
+        return new ApplicationInput("coverPage", "countyInstructions", countyInstructions,
+                SINGLE_VALUE);
     }
 }

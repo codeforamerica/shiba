@@ -4,11 +4,12 @@ import org.codeforamerica.shiba.Money;
 import org.codeforamerica.shiba.pages.data.Iteration;
 
 public interface JobIncomeInformation {
-    boolean isComplete();
 
-    Money grossMonthlyIncome();
+  boolean isComplete();
 
-    int getIndexInJobsSubworkflow();
+  Money grossMonthlyIncome();
 
-    Iteration getIteration();
+  int getIndexInJobsSubworkflow();
+
+  Iteration getIteration();
 }

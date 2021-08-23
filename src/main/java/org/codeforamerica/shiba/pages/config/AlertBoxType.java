@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.pages.config;
 
 public enum AlertBoxType {
-    CHOOSE_NONE_WARNING,
-    NOTICE
+  CHOOSE_NONE_WARNING,
+  NOTICE
 }

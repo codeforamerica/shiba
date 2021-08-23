@@ -10,43 +10,44 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.FactoryBean;
 
 public class SeleniumFactory implements FactoryBean<RemoteWebDriver> {
-    private RemoteWebDriver driver;
-    private final Path tempdir;
 
-    public SeleniumFactory(Path tempdir) {
-        this.tempdir = tempdir;
-    }
+  private final Path tempdir;
+  private RemoteWebDriver driver;
 
-    @Override
-    public RemoteWebDriver getObject() {
-        return driver;
-    }
+  public SeleniumFactory(Path tempdir) {
+    this.tempdir = tempdir;
+  }
 
-    @Override
-    public Class<RemoteWebDriver> getObjectType() {
-        return RemoteWebDriver.class;
-    }
+  @Override
+  public RemoteWebDriver getObject() {
+    return driver;
+  }
 
-    @Override
-    public boolean isSingleton() {
-        return true;
-    }
+  @Override
+  public Class<RemoteWebDriver> getObjectType() {
+    return RemoteWebDriver.class;
+  }
 
-    public void start() throws IOException {
-        WebDriverManager.chromedriver().setup();
-        ChromeOptions options = new ChromeOptions();
-        HashMap<String, Object> chromePrefs = new HashMap<>();
-        chromePrefs.put("download.default_directory", tempdir.toString());
-        options.setExperimentalOption("prefs", chromePrefs);
-        options.addArguments("--window-size=1280,1600");
-        options.addArguments("--headless");
-        driver = new ChromeDriver(options);
-    }
+  @Override
+  public boolean isSingleton() {
+    return true;
+  }
 
-    public void stop() {
-        if (driver != null) {
-            driver.close();
-            driver.quit();
-        }
+  public void start() throws IOException {
+    WebDriverManager.chromedriver().setup();
+    ChromeOptions options = new ChromeOptions();
+    HashMap<String, Object> chromePrefs = new HashMap<>();
+    chromePrefs.put("download.default_directory", tempdir.toString());
+    options.setExperimentalOption("prefs", chromePrefs);
+    options.addArguments("--window-size=1280,1600");
+    options.addArguments("--headless");
+    driver = new ChromeDriver(options);
+  }
+
+  public void stop() {
+    if (driver != null) {
+      driver.close();
+      driver.quit();
     }
+  }
 }

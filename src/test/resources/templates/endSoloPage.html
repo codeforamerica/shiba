@@ -11,15 +11,16 @@
      ]
         -->
 <th:block th:each="subworkflow: ${subworkflows}">
-    <th:block th:each="iteration, iterationStat: ${subworkflow.value}">
-        <div th:text="${pageName}"></div>
-        <div th:text="${subworkflow.key}"></div>
-        <div th:text="${iterationStat.index}"></div>
-        <form method="post" th:action="@{|/groups/${subworkflow.key}/${iterationStat.index}/delete|}">
-            <div th:id="|iteration${iterationStat.index}|" th:text="${iteration.getPagesData().get('soloPage').get('input-solo').value[0]}"></div>
-            <button th:id="|iteration${iterationStat.index}-delete|" type="submit">delete</button>
-        </form>
-    </th:block>
+  <th:block th:each="iteration, iterationStat: ${subworkflow.value}">
+    <div th:text="${pageName}"></div>
+    <div th:text="${subworkflow.key}"></div>
+    <div th:text="${iterationStat.index}"></div>
+    <form method="post" th:action="@{|/groups/${subworkflow.key}/${iterationStat.index}/delete|}">
+      <div th:id="|iteration${iterationStat.index}|"
+           th:text="${iteration.getPagesData().get('soloPage').get('input-solo').value[0]}"></div>
+      <button th:id="|iteration${iterationStat.index}-delete|" type="submit">delete</button>
+    </form>
+  </th:block>
 </th:block>
 <div th:replace="fragments/continue :: continue"></div>
 </body>

@@ -1,5 +1,14 @@
 package org.codeforamerica.shiba.output.applicationinputsmappers;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.output.caf.CoverPageInputsMapper.CHILDCARE_WAITING_LIST_UTM_SOURCE;
+
+import java.io.IOException;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.application.Application;
@@ -10,7 +19,11 @@ import org.codeforamerica.shiba.output.ApplicationInputType;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.caf.CoverPageInputsMapper;
-import org.codeforamerica.shiba.pages.data.*;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.InputData;
+import org.codeforamerica.shiba.pages.data.PageData;
+import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.pages.data.Subworkflows;
 import org.codeforamerica.shiba.testutilities.PageDataBuilder;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,17 +31,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.StaticMessageSource;
 
-import java.io.IOException;
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.output.caf.CoverPageInputsMapper.CHILDCARE_WAITING_LIST_UTM_SOURCE;
-
 class CoverPageInputsMapperTest {
+
     private CountyMap<Map<Recipient, String>> countyInstructionsMapping;
     private CoverPageInputsMapper coverPageInputsMapper;
     private PagesDataBuilder pagesDataBuilder;
@@ -46,7 +50,8 @@ class CoverPageInputsMapperTest {
         applicationData = new ApplicationData();
 
         applicationData.setPagesData(pagesData);
-        coverPageInputsMapper = new CoverPageInputsMapper(countyInstructionsMapping, countyInformationMapping, staticMessageSource);
+        coverPageInputsMapper = new CoverPageInputsMapper(countyInstructionsMapping,
+                countyInformationMapping, staticMessageSource);
         countyInstructionsMapping.getCounties().put(County.Other, Map.of(
                 Recipient.CLIENT, "county-to-instructions.default-client",
                 Recipient.CASEWORKER, "county-to-instructions.default-caseworker"));
@@ -56,11 +61,24 @@ class CoverPageInputsMapperTest {
                 .phoneNumber("555-123-4567")
                 .folderId("someFolderId")
                 .build());
-        staticMessageSource.addMessage("county-to-instructions.default-client", LocaleContextHolder.getLocale(), "Default client");
-        staticMessageSource.addMessage("county-to-instructions.default-caseworker", LocaleContextHolder.getLocale(), "Default caseworker");
-        staticMessageSource.addMessage("county-to-instructions.olmsted-caseworker", LocaleContextHolder.getLocale(), "Olmsted caseworker");
-        staticMessageSource.addMessage("county-to-instructions.olmsted-client", LocaleContextHolder.getLocale(), "Olmsted client");
-        staticMessageSource.addMessage("county-to-instructions.olmsted-client", new Locale("es"), "Olmsted client instructions in spanish");
+        staticMessageSource
+                .addMessage("county-to-instructions.default-client",
+                        LocaleContextHolder.getLocale(),
+                        "Default client");
+        staticMessageSource
+                .addMessage("county-to-instructions.default-caseworker",
+                        LocaleContextHolder.getLocale(),
+                        "Default caseworker");
+        staticMessageSource
+                .addMessage("county-to-instructions.olmsted-caseworker",
+                        LocaleContextHolder.getLocale(),
+                        "Olmsted caseworker");
+        staticMessageSource
+                .addMessage("county-to-instructions.olmsted-client",
+                        LocaleContextHolder.getLocale(),
+                        "Olmsted client");
+        staticMessageSource.addMessage("county-to-instructions.olmsted-client", new Locale("es"),
+                "Olmsted client instructions in spanish");
     }
 
     @Test
@@ -74,7 +92,8 @@ class CoverPageInputsMapperTest {
                 .county(County.Other)
                 .build();
 
-        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, null, Recipient.CLIENT, null);
+        List<ApplicationInput> applicationInputs = coverPageInputsMapper
+                .map(application, null, Recipient.CLIENT, null);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput(
@@ -103,7 +122,8 @@ class CoverPageInputsMapperTest {
                 .county(County.Other)
                 .build();
 
-        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, null, Recipient.CLIENT, null);
+        List<ApplicationInput> applicationInputs = coverPageInputsMapper
+                .map(application, null, Recipient.CLIENT, null);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput(
@@ -133,7 +153,8 @@ class CoverPageInputsMapperTest {
                 .county(County.Other)
                 .build();
 
-        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, null, Recipient.CLIENT, null);
+        List<ApplicationInput> applicationInputs = coverPageInputsMapper
+                .map(application, null, Recipient.CLIENT, null);
 
         assertThat(applicationInputs).contains(
                 new ApplicationInput(
@@ -152,7 +173,8 @@ class CoverPageInputsMapperTest {
                 .county(County.Other)
                 .build();
 
-        List<String> appInputNames = coverPageInputsMapper.map(application, null, Recipient.CLIENT, null).stream()
+        List<String> appInputNames = coverPageInputsMapper
+                .map(application, null, Recipient.CLIENT, null).stream()
                 .map(ApplicationInput::getName)
                 .collect(Collectors.toList());
 
@@ -166,7 +188,8 @@ class CoverPageInputsMapperTest {
                 .county(County.Other)
                 .build();
 
-        List<String> appInputNames = coverPageInputsMapper.map(application, null, Recipient.CLIENT, null).stream()
+        List<String> appInputNames = coverPageInputsMapper
+                .map(application, null, Recipient.CLIENT, null).stream()
                 .map(ApplicationInput::getName)
                 .collect(Collectors.toList());
 
@@ -187,7 +210,8 @@ class CoverPageInputsMapperTest {
                 Recipient.CASEWORKER, "county-to-instructions.olmsted-caseworker"
         ));
 
-        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, null, Recipient.CASEWORKER, null);
+        List<ApplicationInput> applicationInputs = coverPageInputsMapper
+                .map(application, null, Recipient.CASEWORKER, null);
         assertThat(applicationInputs).contains(
                 new ApplicationInput(
                         "coverPage",
@@ -205,7 +229,8 @@ class CoverPageInputsMapperTest {
                         ApplicationInputType.SINGLE_VALUE
                 ));
 
-        pagesData.put("languagePreferences", new PageData(Map.of("writtenLanguage", InputData.builder().value(List.of("SPANISH")).build())));
+        pagesData.put("languagePreferences", new PageData(
+                Map.of("writtenLanguage", InputData.builder().value(List.of("SPANISH")).build())));
         applicationInputs = coverPageInputsMapper.map(application, null, Recipient.CLIENT, null);
         assertThat(applicationInputs).contains(
                 new ApplicationInput(
@@ -231,10 +256,12 @@ class CoverPageInputsMapperTest {
                 .timeToComplete(null)
                 .build();
 
-        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, null, Recipient.CLIENT, null);
+        List<ApplicationInput> applicationInputs = coverPageInputsMapper
+                .map(application, null, Recipient.CLIENT, null);
 
         assertThat(applicationInputs).contains(
-                new ApplicationInput("coverPage", "fullName", List.of("someFirstName someLastName"), ApplicationInputType.SINGLE_VALUE)
+                new ApplicationInput("coverPage", "fullName", List.of("someFirstName someLastName"),
+                        ApplicationInputType.SINGLE_VALUE)
         );
     }
 
@@ -254,10 +281,12 @@ class CoverPageInputsMapperTest {
                 .flow(FlowType.LATER_DOCS)
                 .build();
 
-        List<ApplicationInput> applicationInputs = coverPageInputsMapper.map(application, null, Recipient.CLIENT, null);
+        List<ApplicationInput> applicationInputs = coverPageInputsMapper
+                .map(application, null, Recipient.CLIENT, null);
 
         assertThat(applicationInputs).contains(
-                new ApplicationInput("coverPage", "fullName", List.of("someFirstName someLastName"), ApplicationInputType.SINGLE_VALUE)
+                new ApplicationInput("coverPage", "fullName", List.of("someFirstName someLastName"),
+                        ApplicationInputType.SINGLE_VALUE)
         );
     }
 
@@ -273,7 +302,8 @@ class CoverPageInputsMapperTest {
                 .county(County.Other)
                 .timeToComplete(null)
                 .build();
-        List<ApplicationInput> result = coverPageInputsMapper.map(application, Document.CCAP, Recipient.CLIENT, null);
+        List<ApplicationInput> result = coverPageInputsMapper
+                .map(application, Document.CCAP, Recipient.CLIENT, null);
 
         assertThat(result).contains(
                 new ApplicationInput(
@@ -302,7 +332,8 @@ class CoverPageInputsMapperTest {
                 .county(County.Other)
                 .timeToComplete(null)
                 .build();
-        List<ApplicationInput> result = coverPageInputsMapper.map(application, Document.CCAP, Recipient.CLIENT, null);
+        List<ApplicationInput> result = coverPageInputsMapper
+                .map(application, Document.CCAP, Recipient.CLIENT, null);
 
         assertThat(result).contains(
                 new ApplicationInput(

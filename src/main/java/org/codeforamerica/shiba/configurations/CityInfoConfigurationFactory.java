@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.configurations;
 
+import java.io.IOException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
@@ -9,32 +10,32 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.representer.Representer;
 
-import java.io.IOException;
-
 public class CityInfoConfigurationFactory implements FactoryBean<CityInfoConfiguration> {
-    @Value("city-to-zipcode-and-county-mapping.yaml")
-    String configPath;
 
-    @Override
-    public CityInfoConfiguration getObject() throws IOException {
-        ClassPathResource classPathResource = new ClassPathResource(configPath);
+  @Value("city-to-zipcode-and-county-mapping.yaml")
+  String configPath;
 
-        LoaderOptions loaderOptions = new LoaderOptions();
-        loaderOptions.setAllowDuplicateKeys(false);
-        loaderOptions.setMaxAliasesForCollections(Integer.MAX_VALUE);
-        loaderOptions.setAllowRecursiveKeys(true);
+  @Override
+  public CityInfoConfiguration getObject() throws IOException {
+    ClassPathResource classPathResource = new ClassPathResource(configPath);
 
-        Yaml yaml = new Yaml(new Constructor(CityInfoConfiguration.class), new Representer(), new DumperOptions(), loaderOptions);
-        return yaml.load(classPathResource.getInputStream());
-    }
+    LoaderOptions loaderOptions = new LoaderOptions();
+    loaderOptions.setAllowDuplicateKeys(false);
+    loaderOptions.setMaxAliasesForCollections(Integer.MAX_VALUE);
+    loaderOptions.setAllowRecursiveKeys(true);
 
-    @Override
-    public Class<?> getObjectType() {
-        return CityInfoConfiguration.class;
-    }
+    Yaml yaml = new Yaml(new Constructor(CityInfoConfiguration.class), new Representer(),
+        new DumperOptions(), loaderOptions);
+    return yaml.load(classPathResource.getInputStream());
+  }
 
-    @Override
-    public boolean isSingleton() {
-        return true;
-    }
+  @Override
+  public Class<?> getObjectType() {
+    return CityInfoConfiguration.class;
+  }
+
+  @Override
+  public boolean isSingleton() {
+    return true;
+  }
 }

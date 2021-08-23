@@ -1,5 +1,5 @@
 package org.codeforamerica.shiba.output;
 
 public enum Document {
-    CAF, CCAP, UPLOADED_DOC
+  CAF, CCAP, UPLOADED_DOC
 }

@@ -2,14 +2,14 @@
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <body>
 <div th:fragment="testEnrichmentPage">
-    <div th:if="${pageDatasources.get('testEnrichmentPage').get('someTextInput') != null}">
-        <div id="originalInput"
-             th:text="${pageDatasources.get('testEnrichmentPage').get('someTextInput').value[0]}"></div>
-    </div>
-    <div th:if="${pageDatasources.get('testEnrichmentPage').get('someEnrichmentInput') != null}">
-        <div id="enrichmentInput"
-             th:text="${pageDatasources.get('testEnrichmentPage').get('someEnrichmentInput').value[0]}"></div>
-    </div>
+  <div th:if="${pageDatasources.get('testEnrichmentPage').get('someTextInput') != null}">
+    <div id="originalInput"
+         th:text="${pageDatasources.get('testEnrichmentPage').get('someTextInput').value[0]}"></div>
+  </div>
+  <div th:if="${pageDatasources.get('testEnrichmentPage').get('someEnrichmentInput') != null}">
+    <div id="enrichmentInput"
+         th:text="${pageDatasources.get('testEnrichmentPage').get('someEnrichmentInput').value[0]}"></div>
+  </div>
 </div>
 </body>
 </html>

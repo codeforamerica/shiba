@@ -108,7 +108,7 @@ workflow:
     datasources:
       - groupName: group1
   redirectPage:
-    pageConfiguration:  *redirectPage
+    pageConfiguration: *redirectPage
     dataMissingRedirect: earlierPage
     nextPages:
       - pageName: endPage

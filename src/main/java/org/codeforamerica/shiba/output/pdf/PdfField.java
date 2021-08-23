@@ -1,6 +1,8 @@
 package org.codeforamerica.shiba.output.pdf;
 
 public interface PdfField {
-    String getName();
-    String getValue();
+
+  String getName();
+
+  String getValue();
 }

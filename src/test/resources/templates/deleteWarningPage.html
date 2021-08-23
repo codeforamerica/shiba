@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
-<body th:with="message=${subworkflows.get('group1')[param.iterationIndex].getPagesData().get('firstPage').get('input1').value[0]}">
+<body
+    th:with="message=${subworkflows.get('group1')[param.iterationIndex].getPagesData().get('firstPage').get('input1').value[0]}">
 <div th:replace="fragments/head :: head(#{${page.pageTitle}})"
 ></div>
 <h1 id="warning-message" th:text="#{warning-page-header(${message})}"></h1>
 <div class="spacing-below-15 spacing-above-35">
-    <a class="button button--primary" th:href="'/pages/'+${pageName}+'/navigation?option=0'">
-        Nevermind, I'll keep it
-    </a>
+  <a class="button button--primary" th:href="'/pages/'+${pageName}+'/navigation?option=0'">
+    Nevermind, I'll keep it
+  </a>
 </div>
 <div>
-    <form method="post"
-          th:action="'/groups/'+${subworkflows.keySet().iterator().next()}+'/'+${param.iterationIndex}+'/delete?skipWarning=true'">
-        <button type="submit" class="button">
-            Yes, remove it
-        </button>
-    </form>
+  <form method="post"
+        th:action="'/groups/'+${subworkflows.keySet().iterator().next()}+'/'+${param.iterationIndex}+'/delete?skipWarning=true'">
+    <button class="button" type="submit">
+      Yes, remove it
+    </button>
+  </form>
 </div>
 </body>
 </html>

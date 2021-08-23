@@ -13,14 +13,14 @@ pageDefinitions:
     name: thirdPage
     pageTitle: third-page-title
     inputs:
-    - name: foo
-      type: TEXT
+      - name: foo
+        type: TEXT
   - &fourthPage
     name: fourthPage
     pageTitle: fourth-page-title
     inputs:
-    - name: foo
-      type: TEXT
+      - name: foo
+        type: TEXT
 workflow:
   testStaticLandingPage:
     pageConfiguration: *testStaticLandingPage

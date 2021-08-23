@@ -8,7 +8,7 @@
 <div id="sentiment" th:text="${sentiment.name()}"></div>
 <div id="feedback-text" th:text="${feedbackText}"></div>
 <div id="documents" th:each="document: ${documents}">
-    <div th:id="${document.name()}" th:text="${document.name()}"></div>
+  <div th:id="${document.name()}" th:text="${document.name()}"></div>
 </div>
 </body>
 </html>

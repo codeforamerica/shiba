@@ -1,5 +1,10 @@
 package org.codeforamerica.shiba.mnit;
 
+import java.nio.charset.StandardCharsets;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpHeaders;
 import org.apache.http.client.HttpClient;
@@ -15,43 +20,40 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 
-import java.nio.charset.StandardCharsets;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 @Configuration
 public class MnitEsbWebServiceTemplateConfiguration {
-    @Bean
-    WebServiceTemplate webServiceTemplate(WebServiceTemplateBuilder webServiceTemplateBuilder,
-                                          SSLContextBuilder sslContextBuilder,
-                                          @Value("${mnit-esb.username}") String username,
-                                          @Value("${mnit-esb.password}") String password,
-                                          @Value("${mnit-esb.jaxb-context-path}") String jaxbContextPath,
-                                          @Value("${mnit-esb.url}") String url,
-                                          @Value("${mnit-esb.timeout-seconds}") long timeoutSeconds) throws KeyManagementException, NoSuchAlgorithmException {
-        Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
-        jaxb2Marshaller.setContextPath(jaxbContextPath);
-        String auth = username + ":" + password;
-        byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(StandardCharsets.ISO_8859_1));
-        int timeoutMillis = (int) TimeUnit.MILLISECONDS.convert(timeoutSeconds, TimeUnit.SECONDS);
-        RequestConfig requestConfig = RequestConfig.custom()
-                .setConnectionRequestTimeout(timeoutMillis)
-                .setConnectTimeout(timeoutMillis)
-                .setSocketTimeout(timeoutMillis)
-                .build();
-        HttpClient httpClient = HttpClients.custom()
-                .addInterceptorFirst(new HttpComponentsMessageSender.RemoveSoapHeadersInterceptor())
-                .setSSLContext(sslContextBuilder.build())
-                .setDefaultHeaders(List.of(new BasicHeader(HttpHeaders.AUTHORIZATION, "Basic " + new String(encodedAuth))))
-                .setDefaultRequestConfig(requestConfig)
-                .build();
-        return webServiceTemplateBuilder
-                .setDefaultUri(url)
-                .setMarshaller(jaxb2Marshaller)
-                .setUnmarshaller(jaxb2Marshaller)
-                .messageSenders(new HttpComponentsMessageSender(httpClient))
-                .build();
-    }
+
+  @Bean
+  WebServiceTemplate webServiceTemplate(WebServiceTemplateBuilder webServiceTemplateBuilder,
+      SSLContextBuilder sslContextBuilder,
+      @Value("${mnit-esb.username}") String username,
+      @Value("${mnit-esb.password}") String password,
+      @Value("${mnit-esb.jaxb-context-path}") String jaxbContextPath,
+      @Value("${mnit-esb.url}") String url,
+      @Value("${mnit-esb.timeout-seconds}") long timeoutSeconds)
+      throws KeyManagementException, NoSuchAlgorithmException {
+    Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
+    jaxb2Marshaller.setContextPath(jaxbContextPath);
+    String auth = username + ":" + password;
+    byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(StandardCharsets.ISO_8859_1));
+    int timeoutMillis = (int) TimeUnit.MILLISECONDS.convert(timeoutSeconds, TimeUnit.SECONDS);
+    RequestConfig requestConfig = RequestConfig.custom()
+        .setConnectionRequestTimeout(timeoutMillis)
+        .setConnectTimeout(timeoutMillis)
+        .setSocketTimeout(timeoutMillis)
+        .build();
+    HttpClient httpClient = HttpClients.custom()
+        .addInterceptorFirst(new HttpComponentsMessageSender.RemoveSoapHeadersInterceptor())
+        .setSSLContext(sslContextBuilder.build())
+        .setDefaultHeaders(
+            List.of(new BasicHeader(HttpHeaders.AUTHORIZATION, "Basic " + new String(encodedAuth))))
+        .setDefaultRequestConfig(requestConfig)
+        .build();
+    return webServiceTemplateBuilder
+        .setDefaultUri(url)
+        .setMarshaller(jaxb2Marshaller)
+        .setUnmarshaller(jaxb2Marshaller)
+        .messageSenders(new HttpComponentsMessageSender(httpClient))
+        .build();
+  }
 }

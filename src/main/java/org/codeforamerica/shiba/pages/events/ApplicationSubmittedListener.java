@@ -1,5 +1,12 @@
 package org.codeforamerica.shiba.pages.events;
 
+import static org.codeforamerica.shiba.output.Document.CAF;
+import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
+import static org.codeforamerica.shiba.output.Recipient.CLIENT;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
@@ -10,7 +17,10 @@ import org.codeforamerica.shiba.mnit.MnitCountyInformation;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
-import org.codeforamerica.shiba.output.caf.*;
+import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
+import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -20,83 +30,85 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static org.codeforamerica.shiba.output.Document.CAF;
-import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
-import static org.codeforamerica.shiba.output.Recipient.CLIENT;
-
 @Component
 public class ApplicationSubmittedListener extends ApplicationEventListener {
-    private final MnitDocumentConsumer mnitDocumentConsumer;
-    private final EmailClient emailClient;
-    private final SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider;
-    private final CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
-    private final PdfGenerator pdfGenerator;
-    private final CountyMap<MnitCountyInformation> countyMap;
-    private final FeatureFlagConfiguration featureFlags;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public ApplicationSubmittedListener(MnitDocumentConsumer mnitDocumentConsumer,
-                                        ApplicationRepository applicationRepository,
-                                        EmailClient emailClient,
-                                        SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider,
-                                        CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider,
-                                        PdfGenerator pdfGenerator,
-                                        CountyMap<MnitCountyInformation> countyMap,
-                                        FeatureFlagConfiguration featureFlagConfiguration,
-                                        MonitoringService monitoringService) {
-        super(applicationRepository, monitoringService);
-        this.mnitDocumentConsumer = mnitDocumentConsumer;
-        this.emailClient = emailClient;
-        this.snapExpeditedEligibilityDecider = snapExpeditedEligibilityDecider;
-        this.ccapExpeditedEligibilityDecider = ccapExpeditedEligibilityDecider;
-        this.pdfGenerator = pdfGenerator;
-        this.countyMap = countyMap;
-        this.featureFlags = featureFlagConfiguration;
+  private final MnitDocumentConsumer mnitDocumentConsumer;
+  private final EmailClient emailClient;
+  private final SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider;
+  private final CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
+  private final PdfGenerator pdfGenerator;
+  private final CountyMap<MnitCountyInformation> countyMap;
+  private final FeatureFlagConfiguration featureFlags;
+
+  @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+  public ApplicationSubmittedListener(MnitDocumentConsumer mnitDocumentConsumer,
+      ApplicationRepository applicationRepository,
+      EmailClient emailClient,
+      SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider,
+      CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider,
+      PdfGenerator pdfGenerator,
+      CountyMap<MnitCountyInformation> countyMap,
+      FeatureFlagConfiguration featureFlagConfiguration,
+      MonitoringService monitoringService) {
+    super(applicationRepository, monitoringService);
+    this.mnitDocumentConsumer = mnitDocumentConsumer;
+    this.emailClient = emailClient;
+    this.snapExpeditedEligibilityDecider = snapExpeditedEligibilityDecider;
+    this.ccapExpeditedEligibilityDecider = ccapExpeditedEligibilityDecider;
+    this.pdfGenerator = pdfGenerator;
+    this.countyMap = countyMap;
+    this.featureFlags = featureFlagConfiguration;
+  }
+
+  @Async
+  @EventListener
+  public void sendViaApi(ApplicationSubmittedEvent event) {
+    if (featureFlags.get("submit-via-api").isOn()) {
+      Application application = getApplicationFromEvent(event);
+      mnitDocumentConsumer.process(application);
+    }
+  }
+
+  @Async
+  @EventListener
+  public void sendConfirmationEmail(ApplicationSubmittedEvent event) {
+    Application application = getApplicationFromEvent(event);
+    ApplicationData applicationData = application.getApplicationData();
+
+    EmailParser.parse(applicationData)
+        .ifPresent(email -> {
+          String applicationId = application.getId();
+          SnapExpeditedEligibility snapExpeditedEligibility = snapExpeditedEligibilityDecider
+              .decide(application.getApplicationData());
+          CcapExpeditedEligibility ccapExpeditedEligibility = ccapExpeditedEligibilityDecider
+              .decide(application.getApplicationData());
+          List<Document> docs = DocumentListParser.parse(applicationData);
+          List<ApplicationFile> pdfs = docs.stream()
+              .map(doc -> pdfGenerator.generate(applicationId, doc, CLIENT))
+              .collect(Collectors.toList());
+          emailClient.sendConfirmationEmail(applicationData, email, applicationId,
+              new ArrayList<>(applicationData.getApplicantAndHouseholdMemberPrograms()),
+              snapExpeditedEligibility, ccapExpeditedEligibility, pdfs, event.getLocale());
+        });
+  }
+
+  @Async
+  @EventListener
+  public void sendCaseWorkerEmail(ApplicationSubmittedEvent event) {
+    if (featureFlags.get("submit-via-email").isOff()) {
+      return;
     }
 
-    @Async
-    @EventListener
-    public void sendViaApi(ApplicationSubmittedEvent event) {
-        if (featureFlags.get("submit-via-api").isOn()) {
-            Application application = getApplicationFromEvent(event);
-            mnitDocumentConsumer.process(application);
-        }
-    }
+    Application application = getApplicationFromEvent(event);
 
-    @Async
-    @EventListener
-    public void sendConfirmationEmail(ApplicationSubmittedEvent event) {
-        Application application = getApplicationFromEvent(event);
-        ApplicationData applicationData = application.getApplicationData();
+    PageData personalInfo = application.getApplicationData().getPageData("personalInfo");
+    String applicationId = application.getId();
+    ApplicationFile pdf = pdfGenerator.generate(applicationId, CAF, CASEWORKER);
 
-        EmailParser.parse(applicationData)
-                .ifPresent(email -> {
-                    String applicationId = application.getId();
-                    SnapExpeditedEligibility snapExpeditedEligibility = snapExpeditedEligibilityDecider.decide(application.getApplicationData());
-                    CcapExpeditedEligibility ccapExpeditedEligibility = ccapExpeditedEligibilityDecider.decide(application.getApplicationData());
-                    List<Document> docs = DocumentListParser.parse(applicationData);
-                    List<ApplicationFile> pdfs = docs.stream().map(doc -> pdfGenerator.generate(applicationId,doc,CLIENT)).collect(Collectors.toList());
-                    emailClient.sendConfirmationEmail(applicationData, email, applicationId, new ArrayList<>(applicationData.getApplicantAndHouseholdMemberPrograms()), snapExpeditedEligibility, ccapExpeditedEligibility, pdfs, event.getLocale());
-                });
-    }
-
-    @Async
-    @EventListener
-    public void sendCaseWorkerEmail(ApplicationSubmittedEvent event) {
-        if (featureFlags.get("submit-via-email").isOff()) {
-            return;
-        }
-
-        Application application = getApplicationFromEvent(event);
-
-        PageData personalInfo = application.getApplicationData().getPageData("personalInfo");
-        String applicationId = application.getId();
-        ApplicationFile pdf = pdfGenerator.generate(applicationId, CAF, CASEWORKER);
-
-        String fullName = String.join(" ", personalInfo.get("firstName").getValue(0), personalInfo.get("lastName").getValue(0));
-        emailClient.sendCaseWorkerEmail(countyMap.get(application.getCounty()).getEmail(), fullName, applicationId, pdf);
-    }
+    String fullName = String.join(" ", personalInfo.get("firstName").getValue(0),
+        personalInfo.get("lastName").getValue(0));
+    emailClient.sendCaseWorkerEmail(countyMap.get(application.getCounty()).getEmail(), fullName,
+        applicationId, pdf);
+  }
 }
