@@ -3101,6 +3101,8 @@ workflow:
     nextPages:
       - pageName: introIncome
     skipCondition: *livesAlone?
+    datasources:
+      - pageName: addHouseholdMembers
   introIncome:
     pageConfiguration: *introIncome
     nextPages:
