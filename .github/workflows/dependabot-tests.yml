@@ -1,50 +1,53 @@
-name: Run tests
+name: Run tests on Dependabot PRs
 
 on:
-  push:
-    branches-ignore:
-      - staging
+  workflow_run:
+    workflows: [ "Dependabot PR Check" ]
+    types:
+      - completed
+
+permissions: read-all
 
 jobs:
   unit-test:
     name: Run unit tests
     runs-on: ubuntu-latest
-    if: ${{ github.actor != 'dependabot[bot]' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up ChromeDriver
-      uses: nanasess/setup-chromedriver@v1.0.1
-    - name: Set up JDK
-      uses: actions/setup-java@v1
-      with:
-        java-version: '16'
-    - name: Cache Gradle packages
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: Test with Gradle
-      run: ./gradlew unitTest
-      env:
-        S3_BUCKET: ${{ secrets.S3_TEST_BUCKET }}
-        AWS_ACCESS_KEY: ${{ secrets.CLOUD_AWS_CREDENTIALS_ACCESS_KEY }}
-        AWS_SECRET_KEY: ${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY }}
-        AZURE_CONNECTION_STRING: ${{ secrets.AZURE_CONNECTION_STRING_STAGING }}
-        AZURE_CONTAINER_NAME: ${{ secrets.AZURE_CONTAINER_NAME_TEST }}
-    - name: Cleanup Gradle Cache
-      run: |
-        rm -f ~/.gradle/caches/modules-2/modules-2.lock
-        rm -f ~/.gradle/caches/modules-2/gc.properties
+      - uses: actions/checkout@v2
+      - name: Set up ChromeDriver
+        uses: nanasess/setup-chromedriver@v1.0.1
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: '16'
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Test with Gradle
+        run: ./gradlew unitTest
+        env:
+          S3_BUCKET: ${{ secrets.S3_TEST_BUCKET }}
+          AWS_ACCESS_KEY: ${{ secrets.CLOUD_AWS_CREDENTIALS_ACCESS_KEY }}
+          AWS_SECRET_KEY: ${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY }}
+          AZURE_CONNECTION_STRING: ${{ secrets.AZURE_CONNECTION_STRING_STAGING }}
+          AZURE_CONTAINER_NAME: ${{ secrets.AZURE_CONTAINER_NAME_TEST }}
+      - name: Cleanup Gradle Cache
+        run: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f ~/.gradle/caches/modules-2/gc.properties
   db-test:
     name: Run db tests
     runs-on: ubuntu-latest
-    if: ${{ github.actor != 'dependabot[bot]' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up ChromeDriver
@@ -79,7 +82,7 @@ jobs:
   journey-test:
     name: Run journey tests
     runs-on: ubuntu-latest
-    if: ${{ github.actor != 'dependabot[bot]' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up ChromeDriver
@@ -114,7 +117,7 @@ jobs:
   pdf-test:
     name: Run pdf tests
     runs-on: ubuntu-latest
-    if: ${{ github.actor != 'dependabot[bot]' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up ChromeDriver
@@ -149,7 +152,7 @@ jobs:
   framework-test:
     name: Run framework tests
     runs-on: ubuntu-latest
-    if: ${{ github.actor != 'dependabot[bot]' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up ChromeDriver
@@ -184,7 +187,7 @@ jobs:
   ccap-test:
     name: Run ccap tests
     runs-on: ubuntu-latest
-    if: ${{ github.actor != 'dependabot[bot]' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up ChromeDriver
@@ -219,7 +222,7 @@ jobs:
   validation-test:
     name: Run validation tests
     runs-on: ubuntu-latest
-    if: ${{ github.actor != 'dependabot[bot]' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up ChromeDriver
@@ -254,7 +257,7 @@ jobs:
   accessibility-test:
     name: Run accessibility tests
     runs-on: ubuntu-latest
-    if: ${{ github.actor != 'dependabot[bot]' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up ChromeDriver
