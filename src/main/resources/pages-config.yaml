@@ -1733,6 +1733,14 @@ pageDefinitions:
     inputs:
       - name: isTribalNationMember
         type: YES_NO
+  - &nationsBoundary
+    name: nationsBoundary
+    pageTitle: nations-boundary.title
+    headerKey: nations-boundary.are-any-of-the-tribal-members
+    hasPrimaryButton: false
+    inputs:
+      - name: livingInNationBoundary
+        type: YES_NO
   - &introIncome
     name: introIncome
     pageTitle: intro-income.title
@@ -3099,8 +3107,21 @@ workflow:
   tribalNationMember:
     pageConfiguration: *tribalNationMember
     nextPages:
-      - pageName: introIncome
+      - pageName: nationsBoundary
     skipCondition: *livesAlone?
+    datasources:
+      - pageName: addHouseholdMembers
+  nationsBoundary:
+    pageConfiguration: *nationsBoundary
+    nextPages:
+      - pageName: introIncome
+    skipCondition:
+      logicalOperator: OR
+      conditions:
+        - *livesAlone?
+        - pageName: tribalNationMember
+          input: isTribalNationMember
+          value: NO
     datasources:
       - pageName: addHouseholdMembers
   introIncome:

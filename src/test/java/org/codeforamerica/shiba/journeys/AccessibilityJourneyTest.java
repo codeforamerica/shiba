@@ -179,7 +179,8 @@ public class AccessibilityJourneyTest extends JourneyTest {
     testPage.clickContinue();
     testPage.enter("hasDisability", NO.getDisplayValue());
     testPage.enter("hasWorkSituation", NO.getDisplayValue());
-    testPage.enter("isTribalNationMember", NO.getDisplayValue());
+    testPage.enter("isTribalNationMember", YES.getDisplayValue());
+    testPage.enter("livingInNationBoundary", NO.getDisplayValue());
     testPage.clickContinue();
     testPage.enter("areYouWorking", YES.getDisplayValue());
     testPage.clickButton("Add a job");

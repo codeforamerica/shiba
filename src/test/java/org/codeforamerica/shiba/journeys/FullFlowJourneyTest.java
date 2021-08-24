@@ -139,7 +139,10 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.enter("hasWorkSituation", NO.getDisplayValue());
 
     // Is anyone in your household a member of a tribal nation?
-    testPage.enter("isTribalNationMember", NO.getDisplayValue());
+    testPage.enter("isTribalNationMember", YES.getDisplayValue());
+
+    // Are any of the tribal members in your household living in or near the nation’s boundaries?
+    testPage.enter("livingInNationBoundary", NO.getDisplayValue());
 
     // Income & Employment
     testPage.clickContinue();
