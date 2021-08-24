@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="single-input (input, data)" class="form-group"
-     th:classappend="${!data.isValid() && !inputData.valid(data)} ? 'form-group--error' : ''" th:with="inputData=${data.get(input.name)}">
+     th:classappend="${!data.isValid() && !inputData.valid(data)} ? 'form-group--error' : ''" th:with="inputData=${data.get(input.name)}, hasError=${!data.isValid() && !inputData.valid(data)}">
     <div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${input})"></div>
     <p class="text--help"
        th:if="${input.helpMessageKey != null}"
@@ -30,6 +30,8 @@
         <input th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).TEXT}"
                type="text"
                class="text-input form-width--medium"
+               th:attr="aria-errormessage=${hasError ? input.name + '-error' : 'null'},
+                        aria-invalid=${hasError}"
                th:placeholder="${input.placeholder == null} ? '' : #{${input.placeholder}}"
                th:readonly="${input.readOnly}"
                th:id="${input.name}"
