@@ -1,24 +1,33 @@
 package org.codeforamerica.shiba.pages.data;
 
+import java.io.Serial;
+import java.io.Serializable;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.inputconditions.Condition;
-import org.codeforamerica.shiba.pages.config.*;
+import org.codeforamerica.shiba.pages.config.FeatureFlag;
+import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
+import org.codeforamerica.shiba.pages.config.NextPage;
+import org.codeforamerica.shiba.pages.config.PageDatasource;
+import org.codeforamerica.shiba.pages.config.PageWorkflowConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.Serial;
-import java.io.Serializable;
-import java.time.Instant;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Data
 @Slf4j
 public class ApplicationData implements Serializable {
+
     @Serial
     private static final long serialVersionUID = 5573310526258484730L;
 
@@ -46,7 +55,8 @@ public class ApplicationData implements Serializable {
     public Subworkflows getSubworkflowsForPageDatasources(List<PageDatasource> pageDatasources) {
         return new Subworkflows(pageDatasources.stream()
                 .filter(datasource -> datasource.getGroupName() != null)
-                .filter(datasource -> !datasource.isOptional() || subworkflows.containsKey(datasource.getGroupName()))
+                .filter(datasource -> !datasource.isOptional() || subworkflows
+                        .containsKey(datasource.getGroupName()))
                 .map(datasource -> Map.entry(
                         datasource.getGroupName(),
                         subworkflows.get(datasource.getGroupName())))
@@ -56,22 +66,28 @@ public class ApplicationData implements Serializable {
     public boolean hasRequiredSubworkflows(List<PageDatasource> datasources) {
         return datasources.stream()
                 .filter(datasource -> datasource.getGroupName() != null)
-                .allMatch(datasource -> datasource.isOptional() || getSubworkflows().get(datasource.getGroupName()) != null);
+                .allMatch(datasource -> datasource.isOptional()
+                        || getSubworkflows().get(datasource.getGroupName()) != null);
     }
 
-    public NextPage getNextPageName(FeatureFlagConfiguration featureFlags, @NotNull PageWorkflowConfiguration pageWorkflowConfiguration, Integer option) {
+    public NextPage getNextPageName(FeatureFlagConfiguration featureFlags,
+            @NotNull PageWorkflowConfiguration pageWorkflowConfiguration, Integer option) {
         if (pageWorkflowConfiguration.isDirectNavigation()) {
             return pageWorkflowConfiguration.getNextPages().get(option);
         }
         PageData pageData;
         if (pageWorkflowConfiguration.isInAGroup()) {
-            pageData = incompleteIterations.get(pageWorkflowConfiguration.getGroupName()).get(pageWorkflowConfiguration.getPageConfiguration().getName());
+            pageData = incompleteIterations.get(pageWorkflowConfiguration.getGroupName())
+                    .get(pageWorkflowConfiguration.getPageConfiguration().getName());
         } else {
-            pageData = pagesData.getPage(pageWorkflowConfiguration.getPageConfiguration().getName());
+            pageData = pagesData
+                    .getPage(pageWorkflowConfiguration.getPageConfiguration().getName());
         }
 
         if (pageData == null && !pageWorkflowConfiguration.getPageConfiguration().isStaticPage()) {
-            log.error(String.format("Conditional navigation for %s requires page to have data/inputs.", pageWorkflowConfiguration.getPageConfiguration().getName()));
+            log.error(String.format(
+                    "Conditional navigation for %s requires page to have data/inputs.",
+                    pageWorkflowConfiguration.getPageConfiguration().getName()));
         }
 
         return pageWorkflowConfiguration.getNextPages().stream()
@@ -79,13 +95,15 @@ public class ApplicationData implements Serializable {
                 .orElseThrow(() -> new RuntimeException("Cannot find suitable next page."));
     }
 
-    private boolean nextPage(FeatureFlagConfiguration featureFlags, @NotNull PageWorkflowConfiguration pageWorkflowConfiguration, NextPage nextPage) {
+    private boolean nextPage(FeatureFlagConfiguration featureFlags,
+            @NotNull PageWorkflowConfiguration pageWorkflowConfiguration, NextPage nextPage) {
         boolean isNextPage = true;
         Condition condition = nextPage.getCondition();
         if (condition != null) {
             if (pageWorkflowConfiguration.isInAGroup()) {
                 isNextPage = condition.matches(
-                        incompleteIterations.get(pageWorkflowConfiguration.getGroupName()).get(pageWorkflowConfiguration.getPageConfiguration().getName()),
+                        incompleteIterations.get(pageWorkflowConfiguration.getGroupName())
+                                .get(pageWorkflowConfiguration.getPageConfiguration().getName()),
                         pagesData);
             } else {
                 isNextPage = pagesData.satisfies(condition);
@@ -106,13 +124,15 @@ public class ApplicationData implements Serializable {
     }
 
     public boolean isApplicationWith(List<String> programs) {
-        List<String> applicantPrograms = this.getPagesData().safeGetPageInputValue("choosePrograms", "programs");
+        List<String> applicantPrograms = this.getPagesData()
+                .safeGetPageInputValue("choosePrograms", "programs");
         boolean applicantWith = programs.stream().anyMatch(applicantPrograms::contains);
         boolean hasHousehold = this.getSubworkflows().containsKey("household");
         boolean householdWith = false;
         if (hasHousehold) {
             householdWith = this.getSubworkflows().get("household").stream().anyMatch(iteration -> {
-                List<String> iterationsPrograms = iteration.getPagesData().safeGetPageInputValue("householdMemberInfo", "programs");
+                List<String> iterationsPrograms = iteration.getPagesData()
+                        .safeGetPageInputValue("householdMemberInfo", "programs");
                 return programs.stream().anyMatch(iterationsPrograms::contains);
             });
         }
@@ -121,13 +141,19 @@ public class ApplicationData implements Serializable {
     }
 
     public boolean isMedicalExpensesApplication() {
-        List<String> medicalExpenses = this.getPagesData().safeGetPageInputValue("medicalExpenses", "medicalExpenses");
-        List<String> selectedExpenses = List.of("MEDICAL_INSURANCE_PREMIUMS", "DENTAL_INSURANCE_PREMIUMS", "VISION_INSURANCE_PREMIUMS");
+        List<String> medicalExpenses = this.getPagesData()
+                .safeGetPageInputValue("medicalExpenses", "medicalExpenses");
+        List<String> selectedExpenses = List
+                .of("MEDICAL_INSURANCE_PREMIUMS", "DENTAL_INSURANCE_PREMIUMS",
+                        "VISION_INSURANCE_PREMIUMS");
         return selectedExpenses.stream().anyMatch(medicalExpenses::contains);
     }
 
-    public void addUploadedDoc(MultipartFile file, String s3Filepath, String thumbnailFilepath, String type) {
-        UploadedDocument uploadedDocument = new UploadedDocument(file.getOriginalFilename(), s3Filepath, thumbnailFilepath, type, file.getSize());
+    public void addUploadedDoc(MultipartFile file, String s3Filepath, String thumbnailFilepath,
+            String type) {
+        UploadedDocument uploadedDocument = new UploadedDocument(file.getOriginalFilename(),
+                s3Filepath,
+                thumbnailFilepath, type, file.getSize());
         uploadedDocs.add(uploadedDocument);
     }
 
@@ -140,32 +166,35 @@ public class ApplicationData implements Serializable {
 
     @NotNull
     public Set<String> getApplicantAndHouseholdMemberPrograms() {
-        List<String> applicantPrograms = getPagesData().safeGetPageInputValue("choosePrograms", "programs");
+        List<String> applicantPrograms = getPagesData()
+                .safeGetPageInputValue("choosePrograms", "programs");
         Set<String> applicantAndHouseholdMemberPrograms = new HashSet<>(applicantPrograms);
         boolean hasHousehold = getSubworkflows().containsKey("household");
         if (hasHousehold) {
             Subworkflow householdSubworkflow = getSubworkflows().get("household");
             householdSubworkflow.forEach(iteration ->
-                    applicantAndHouseholdMemberPrograms.addAll(iteration.getPagesData().safeGetPageInputValue("householdMemberInfo", "programs")));
+                    applicantAndHouseholdMemberPrograms.addAll(
+                            iteration.getPagesData()
+                                    .safeGetPageInputValue("householdMemberInfo", "programs")));
         }
         return applicantAndHouseholdMemberPrograms;
     }
 
     // method that takes the set given in the method above it, and uses that to build the string we want to show on the success page
-    public String combinedApplicationProgramsList(){
+    public String combinedApplicationProgramsList() {
         Set<String> programList = getApplicantAndHouseholdMemberPrograms();
         Set<String> programName = new HashSet<>();
         programList.forEach(program -> {
-            if(program.equalsIgnoreCase("EA")){
+            if (program.equalsIgnoreCase("EA")) {
                 programName.add("Emergency");
             }
-            if(program.equalsIgnoreCase("CASH")){
+            if (program.equalsIgnoreCase("CASH")) {
                 programName.add("Cash");
             }
-            if(program.equalsIgnoreCase("GRH")){
+            if (program.equalsIgnoreCase("GRH")) {
                 programName.add("Housing");
             }
-            if(program.equalsIgnoreCase("SNAP")){
+            if (program.equalsIgnoreCase("SNAP")) {
                 programName.add("SNAP");
             }
         });

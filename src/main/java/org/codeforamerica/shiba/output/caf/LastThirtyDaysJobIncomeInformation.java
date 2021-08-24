@@ -6,23 +6,26 @@ import org.codeforamerica.shiba.pages.data.Iteration;
 
 @Value
 public class LastThirtyDaysJobIncomeInformation implements JobIncomeInformation {
-    Money lastThirtyDaysIncome;
-    int indexInJobsSubworkflow;
-    Iteration iteration;
 
-    public LastThirtyDaysJobIncomeInformation(String lastThirtyDaysIncome, int indexInJobsSubworkflow, Iteration iteration) {
-        this.lastThirtyDaysIncome = lastThirtyDaysIncome.isBlank() ? Money.ZERO : Money.parse(lastThirtyDaysIncome);
-        this.indexInJobsSubworkflow = indexInJobsSubworkflow;
-        this.iteration = iteration;
-    }
+  Money lastThirtyDaysIncome;
+  int indexInJobsSubworkflow;
+  Iteration iteration;
 
-    @Override
-    public boolean isComplete() {
-        return lastThirtyDaysIncome != null;
-    }
+  public LastThirtyDaysJobIncomeInformation(String lastThirtyDaysIncome, int indexInJobsSubworkflow,
+      Iteration iteration) {
+    this.lastThirtyDaysIncome =
+        lastThirtyDaysIncome.isBlank() ? Money.ZERO : Money.parse(lastThirtyDaysIncome);
+    this.indexInJobsSubworkflow = indexInJobsSubworkflow;
+    this.iteration = iteration;
+  }
 
-    @Override
-    public Money grossMonthlyIncome() {
-        return lastThirtyDaysIncome;
-    }
+  @Override
+  public boolean isComplete() {
+    return lastThirtyDaysIncome != null;
+  }
+
+  @Override
+  public Money grossMonthlyIncome() {
+    return lastThirtyDaysIncome;
+  }
 }

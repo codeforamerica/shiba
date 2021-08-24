@@ -5,20 +5,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Subworkflows extends HashMap<String, Subworkflow> {
-    @Serial
-    private static final long serialVersionUID = -8977217473335764673L;
 
-    public Subworkflows() {
-        super();
-    }
+  @Serial
+  private static final long serialVersionUID = -8977217473335764673L;
 
-    public Subworkflows(Map<String, Subworkflow> subworkflows) {
-        super(subworkflows);
-    }
+  public Subworkflows() {
+    super();
+  }
 
-    public void addIteration(String groupName, PagesData subflowIteration) {
-        Subworkflow subworkflow = this.getOrDefault(groupName, new Subworkflow());
-        subworkflow.add(subflowIteration);
-        this.put(groupName, subworkflow);
-    }
+  public Subworkflows(Map<String, Subworkflow> subworkflows) {
+    super(subworkflows);
+  }
+
+  public void addIteration(String groupName, PagesData subflowIteration) {
+    Subworkflow subworkflow = this.getOrDefault(groupName, new Subworkflow());
+    subworkflow.add(subflowIteration);
+    this.put(groupName, subworkflow);
+  }
 }

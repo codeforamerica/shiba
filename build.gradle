@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '2.5.3'
+    id 'org.springframework.boot' version '2.5.4'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
     id 'com.github.jk1.dependency-license-report' version '1.17'
@@ -65,7 +65,7 @@ task genJaxb {
 
 dependencyManagement {
     imports {
-        mavenBom 'org.springframework.session:spring-session-bom:2021.0.1'
+        mavenBom 'org.springframework.session:spring-session-bom:2021.0.2'
     }
 }
 
@@ -76,7 +76,7 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
     implementation 'org.springframework.session:spring-session-jdbc'
-    implementation 'io.sentry:sentry-spring-boot-starter:5.1.0'
+    implementation 'io.sentry:sentry-spring-boot-starter:5.1.1'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation('org.springframework.boot:spring-boot-starter-web-services') {
@@ -96,7 +96,7 @@ dependencies {
     implementation 'commons-validator:commons-validator:1.7'
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.apache.httpcomponents:httpclient'
-    implementation 'io.sentry:sentry-logback:5.1.0'
+    implementation 'io.sentry:sentry-logback:5.1.1'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'com.google.crypto.tink:tink:1.6.1'
     implementation 'org.flywaydb:flyway-core:7.14.0'
@@ -114,10 +114,15 @@ dependencies {
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
     implementation 'net.javacrumbs.shedlock:shedlock-spring:4.25.0'
     implementation 'net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.25.0'
+    implementation 'com.sun.istack:istack-commons-runtime:3.0.12'
 
     implementation 'org.springframework.ws:spring-ws-core'
     implementation(files(genJaxb.classesDir).builtBy(genJaxb))
-    jaxb "com.sun.xml.bind:jaxb-xjc:2.3.4"
+    jaxb(
+            'org.glassfish.jaxb:jaxb-runtime',
+            'org.glassfish.jaxb:jaxb-xjc',
+            'org.glassfish.jaxb:jaxb-jxc'
+    )
 
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'

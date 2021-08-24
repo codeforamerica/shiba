@@ -1,5 +1,7 @@
 package org.codeforamerica.shiba.testutilities;
 
+import static org.codeforamerica.shiba.testutilities.TestUtils.resetApplicationData;
+
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.ApplicationFactory;
@@ -27,51 +29,50 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.codeforamerica.shiba.testutilities.TestUtils.resetApplicationData;
-
 @ActiveProfiles("test")
 @WebMvcTest(PageController.class)
 @WithMockUser(authorities = "admin")
 @Import({
-        NonSessionScopedApplicationData.class,
-        ApplicationConfigurationFactoryAppConfig.class,
-        ClockConfiguration.class,
-        ApplicationFactory.class,
-        SuccessMessageService.class,
-        DocRecommendationMessageService.class
+    NonSessionScopedApplicationData.class,
+    ApplicationConfigurationFactoryAppConfig.class,
+    ClockConfiguration.class,
+    ApplicationFactory.class,
+    SuccessMessageService.class,
+    DocRecommendationMessageService.class
 })
 public class AbstractPageControllerTest {
-    @MockBean
-    protected ApplicationRepository applicationRepository;
-    @MockBean
-    protected SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider;
-    @MockBean
-    protected CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
-    @MockBean
-    protected MonitoringService monitoringService;
-    @MockBean
-    protected PageEventPublisher pageEventPublisher;
-    @MockBean
-    protected ApplicationEnrichment applicationEnrichment;
-    @MockBean
-    protected CountyParser countyParser;
-    @MockBean
-    protected CityInfoConfiguration cityInfoConfiguration;
-    @MockBean
-    protected FeatureFlagConfiguration featureFlagConfiguration;
-    @MockBean
-    protected UploadDocumentConfiguration uploadDocumentConfiguration;
-    @MockBean
-    protected CombinedDocumentRepositoryService documentRepositoryService;
 
-    @Autowired
-    protected MockMvc mockMvc;
+  @MockBean
+  protected ApplicationRepository applicationRepository;
+  @MockBean
+  protected SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider;
+  @MockBean
+  protected CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
+  @MockBean
+  protected MonitoringService monitoringService;
+  @MockBean
+  protected PageEventPublisher pageEventPublisher;
+  @MockBean
+  protected ApplicationEnrichment applicationEnrichment;
+  @MockBean
+  protected CountyParser countyParser;
+  @MockBean
+  protected CityInfoConfiguration cityInfoConfiguration;
+  @MockBean
+  protected FeatureFlagConfiguration featureFlagConfiguration;
+  @MockBean
+  protected UploadDocumentConfiguration uploadDocumentConfiguration;
+  @MockBean
+  protected CombinedDocumentRepositoryService documentRepositoryService;
 
-    @Autowired
-    protected ApplicationData applicationData;
+  @Autowired
+  protected MockMvc mockMvc;
 
-    @AfterEach
-    void cleanup() {
-        resetApplicationData(applicationData);
-    }
+  @Autowired
+  protected ApplicationData applicationData;
+
+  @AfterEach
+  void cleanup() {
+    resetApplicationData(applicationData);
+  }
 }

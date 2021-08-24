@@ -7,19 +7,22 @@ import org.springframework.stereotype.Component;
 @Component
 public class PageEventListener {
 
-    private final InteractionTracker interactionTracker;
+  private final InteractionTracker interactionTracker;
 
-    public PageEventListener(InteractionTracker interactionTracker) {
-        this.interactionTracker = interactionTracker;
-    }
+  public PageEventListener(InteractionTracker interactionTracker) {
+    this.interactionTracker = interactionTracker;
+  }
 
-    @Async
-    @EventListener
-    public void captureInteraction(PageEvent pageEvent) {
-        if (pageEvent.getInteraction() == InteractionType.APPLICATION_SUBMITTED) {
-            interactionTracker.trackWithProfile(pageEvent.getSessionId(), pageEvent.getInteraction().name(), pageEvent.getProperties());
-        } else {
-            interactionTracker.track(pageEvent.getSessionId(), pageEvent.getInteraction().name(), pageEvent.getProperties());
-        }
+  @Async
+  @EventListener
+  public void captureInteraction(PageEvent pageEvent) {
+    if (pageEvent.getInteraction() == InteractionType.APPLICATION_SUBMITTED) {
+      interactionTracker
+          .trackWithProfile(pageEvent.getSessionId(), pageEvent.getInteraction().name(),
+              pageEvent.getProperties());
+    } else {
+      interactionTracker.track(pageEvent.getSessionId(), pageEvent.getInteraction().name(),
+          pageEvent.getProperties());
     }
+  }
 }

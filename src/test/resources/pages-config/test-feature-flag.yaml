@@ -57,9 +57,9 @@ workflow:
   secondPage:
     pageConfiguration: *secondPage
     nextPages:
-    - pageName: secondFeaturePage
-      flag: fake-feature
-    - pageName: firstPage
+      - pageName: secondFeaturePage
+        flag: fake-feature
+      - pageName: firstPage
   thirdPage:
     pageConfiguration: *thirdPage
     nextPages:

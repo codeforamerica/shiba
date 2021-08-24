@@ -2,14 +2,14 @@
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <body>
 <a th:fragment="applicationOptions (input, data)">
-    <th:div th:id="datasourceText"
-            th:text="${input.options.datasources.get('firstPage').get('editableTextInput').value[0]}"></th:div>
-    <th:block th:each="subworkflow: ${input.options.subworkflows}">
-        <th:block th:each="iteration, iterationStat: ${subworkflow.value}">
-            <div th:id="|iteration${iterationStat.index}|"
-                 th:text="${iteration.getPagesData().get('subworkflowPage').get('value1').value[0]}"></div>
-        </th:block>
+  <th:div th:id="datasourceText"
+          th:text="${input.options.datasources.get('firstPage').get('editableTextInput').value[0]}"></th:div>
+  <th:block th:each="subworkflow: ${input.options.subworkflows}">
+    <th:block th:each="iteration, iterationStat: ${subworkflow.value}">
+      <div th:id="|iteration${iterationStat.index}|"
+           th:text="${iteration.getPagesData().get('subworkflowPage').get('value1').value[0]}"></div>
     </th:block>
+  </th:block>
 </a>
 </body>
 </html>

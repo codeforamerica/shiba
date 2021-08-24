@@ -1,8 +1,8 @@
 <div th:fragment="testStaticPage">
-    <th:block th:each="pageData: ${#ctx.getVariable('data').values()}">
-        <th:block th:each="inputData: ${pageData}">
-            <div th:if="${!inputData.value.value.isEmpty()}" th:text="${inputData.value.value.get(0)}"
-                 th:id="${inputData.key}"></div>
-        </th:block>
+  <th:block th:each="pageData: ${#ctx.getVariable('data').values()}">
+    <th:block th:each="inputData: ${pageData}">
+      <div th:id="${inputData.key}" th:if="${!inputData.value.value.isEmpty()}"
+           th:text="${inputData.value.value.get(0)}"></div>
     </th:block>
+  </th:block>
 </div>

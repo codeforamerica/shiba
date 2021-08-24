@@ -1,5 +1,10 @@
 package org.codeforamerica.shiba.framework;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+
+import java.io.IOException;
+import java.util.Locale;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.codeforamerica.shiba.testutilities.AbstractStaticMessageSourcePageTest;
@@ -12,62 +17,59 @@ import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.io.IOException;
-import java.util.Locale;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-
 @Import(SessionScopedApplicationDataTest.ApplicationDataCaptureController.class)
-@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"pagesConfig=pages-config/test-landmark-pages.yaml"})
+@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
+    "pagesConfig=pages-config/test-landmark-pages.yaml"})
 @Tag("framework")
 public class SessionScopedApplicationDataTest extends AbstractStaticMessageSourcePageTest {
-    @MockBean
-    private PageEventPublisher pageEventPublisher;
 
-    private static ApplicationData applicationData;
+  private static ApplicationData applicationData;
+  @MockBean
+  private PageEventPublisher pageEventPublisher;
 
-    @Controller
-    static class ApplicationDataCaptureController {
-        private final ApplicationData sessionScopedApplicationData;
+  @Override
+  @BeforeEach
+  protected void setUp() throws IOException {
+    super.setUp();
+    staticMessageSource.addMessage("first-page-title", Locale.ENGLISH, "first page title");
+    staticMessageSource.addMessage("second-page-title", Locale.ENGLISH, "second page title");
+    staticMessageSource.addMessage("third-page-title", Locale.ENGLISH, "third page title");
+    staticMessageSource.addMessage("fourth-page-title", Locale.ENGLISH, "fourth page title");
+  }
 
-        public ApplicationDataCaptureController(ApplicationData sessionScopedApplicationData) {
-            this.sessionScopedApplicationData = sessionScopedApplicationData;
-        }
+  @Test
+  void shouldClearTheSessionWhenUserNavigatesToALandingPage() {
+    navigateTo("testStaticLandingPage");
 
-        @GetMapping("/captureApplicationDataFromSession")
-        String captureApplicationDataFromSession() {
-            ApplicationData applicationDataClone = new ApplicationData();
-            applicationDataClone.setPagesData(this.sessionScopedApplicationData.getPagesData());
-            applicationDataClone.setSubworkflows(this.sessionScopedApplicationData.getSubworkflows());
-            applicationDataClone.setIncompleteIterations(this.sessionScopedApplicationData.getIncompleteIterations());
-            applicationDataClone.setId(this.sessionScopedApplicationData.getId());
-            applicationDataClone.setStartTimeOnce(this.sessionScopedApplicationData.getStartTime());
-            SessionScopedApplicationDataTest.applicationData = applicationDataClone;
-            return "testTerminalPage";
-        }
+    testPage.clickContinue();
+    testPage.enter("foo", "someInput");
+    testPage.clickContinue();
+
+    navigateTo("testStaticLandingPage");
+    driver.navigate().to(baseUrl + "/captureApplicationDataFromSession");
+    assertThat(SessionScopedApplicationDataTest.applicationData).isEqualTo(new ApplicationData());
+  }
+
+  @Controller
+  static class ApplicationDataCaptureController {
+
+    private final ApplicationData sessionScopedApplicationData;
+
+    public ApplicationDataCaptureController(ApplicationData sessionScopedApplicationData) {
+      this.sessionScopedApplicationData = sessionScopedApplicationData;
     }
 
-    @Override
-    @BeforeEach
-    protected void setUp() throws IOException {
-        super.setUp();
-        staticMessageSource.addMessage("first-page-title", Locale.ENGLISH, "first page title");
-        staticMessageSource.addMessage("second-page-title", Locale.ENGLISH, "second page title");
-        staticMessageSource.addMessage("third-page-title", Locale.ENGLISH, "third page title");
-        staticMessageSource.addMessage("fourth-page-title", Locale.ENGLISH, "fourth page title");
+    @GetMapping("/captureApplicationDataFromSession")
+    String captureApplicationDataFromSession() {
+      ApplicationData applicationDataClone = new ApplicationData();
+      applicationDataClone.setPagesData(this.sessionScopedApplicationData.getPagesData());
+      applicationDataClone.setSubworkflows(this.sessionScopedApplicationData.getSubworkflows());
+      applicationDataClone
+          .setIncompleteIterations(this.sessionScopedApplicationData.getIncompleteIterations());
+      applicationDataClone.setId(this.sessionScopedApplicationData.getId());
+      applicationDataClone.setStartTimeOnce(this.sessionScopedApplicationData.getStartTime());
+      SessionScopedApplicationDataTest.applicationData = applicationDataClone;
+      return "testTerminalPage";
     }
-
-    @Test
-    void shouldClearTheSessionWhenUserNavigatesToALandingPage() {
-        navigateTo("testStaticLandingPage");
-
-        testPage.clickContinue();
-        testPage.enter("foo", "someInput");
-        testPage.clickContinue();
-
-        navigateTo("testStaticLandingPage");
-        driver.navigate().to(baseUrl + "/captureApplicationDataFromSession");
-        assertThat(SessionScopedApplicationDataTest.applicationData).isEqualTo(new ApplicationData());
-    }
+  }
 }

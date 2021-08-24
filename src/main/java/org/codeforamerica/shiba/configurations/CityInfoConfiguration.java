@@ -1,11 +1,11 @@
 package org.codeforamerica.shiba.configurations;
 
-import lombok.Data;
-
 import java.util.Map;
 import java.util.TreeMap;
+import lombok.Data;
 
 @Data
 public class CityInfoConfiguration {
-    public Map<String, Map<String, String>> cityToZipAndCountyMapping = new TreeMap<>();
+
+  public Map<String, Map<String, String>> cityToZipAndCountyMapping = new TreeMap<>();
 }

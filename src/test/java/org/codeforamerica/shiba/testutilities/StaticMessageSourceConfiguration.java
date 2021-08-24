@@ -7,8 +7,9 @@ import org.springframework.context.support.StaticMessageSource;
 
 @TestConfiguration
 public class StaticMessageSourceConfiguration {
-    @Bean
-    public MessageSource messageSource() {
-        return new StaticMessageSource();
-    }
+
+  @Bean
+  public MessageSource messageSource() {
+    return new StaticMessageSource();
+  }
 }

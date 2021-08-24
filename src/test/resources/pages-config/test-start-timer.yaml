@@ -4,17 +4,17 @@ pageDefinitions:
     pageTitle: first-page-title
     customPage: true
   - &pageThatDoesNotStartTimer
-      name: pageThatDoesNotStartTimer
-      pageTitle: not-start-timer-title
-      inputs:
-        - name: foo
-          type: TEXT
+    name: pageThatDoesNotStartTimer
+    pageTitle: not-start-timer-title
+    inputs:
+      - name: foo
+        type: TEXT
   - &pageThatDoesStartTimer
-      name: pageThatDoesStartTimer
-      pageTitle: start-timer-title
-      inputs:
-        - name: foo
-          type: TEXT
+    name: pageThatDoesStartTimer
+    pageTitle: start-timer-title
+    inputs:
+      - name: foo
+        type: TEXT
 workflow:
   testStaticLandingPage:
     pageConfiguration: *testStaticLandingPage

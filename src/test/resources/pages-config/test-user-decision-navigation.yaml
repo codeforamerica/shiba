@@ -1,37 +1,37 @@
 pageDefinitions:
   - &userDecisionNavigationPage
-      name: userDecisionNavigationPage
-      pageTitle: origin-page-title
+    name: userDecisionNavigationPage
+    pageTitle: origin-page-title
   - &optionZeroPage
-      name: optionZeroPage
-      pageTitle: option-zero-page-title
-      inputs:
-        - name: foo
-          type: TEXT
+    name: optionZeroPage
+    pageTitle: option-zero-page-title
+    inputs:
+      - name: foo
+        type: TEXT
   - &optionOnePage
-      name: optionOnePage
-      pageTitle: option-one-page-title
-      inputs:
-        - name: foo
-          type: TEXT
+    name: optionOnePage
+    pageTitle: option-one-page-title
+    inputs:
+      - name: foo
+        type: TEXT
   - &formPageBranchingNavigationPage
-      name: formPageBranchingNavigationPage
-      pageTitle: dummy-page-title
-      inputs:
-        - type: YES_NO
-          name: yesNoQuestion
+    name: formPageBranchingNavigationPage
+    pageTitle: dummy-page-title
+    inputs:
+      - type: YES_NO
+        name: yesNoQuestion
   - &yesAnswerPage
-      name: yesAnswerPage
-      pageTitle: yes-answer-title
-      inputs:
-        - name: foo
-          type: TEXT
+    name: yesAnswerPage
+    pageTitle: yes-answer-title
+    inputs:
+      - name: foo
+        type: TEXT
   - &noAnswerPage
-      name: noAnswerPage
-      pageTitle: no-answer-title
-      inputs:
-        - name: foo
-          type: TEXT
+    name: noAnswerPage
+    pageTitle: no-answer-title
+    inputs:
+      - name: foo
+        type: TEXT
 workflow:
   userDecisionNavigationPage:
     pageConfiguration: *userDecisionNavigationPage

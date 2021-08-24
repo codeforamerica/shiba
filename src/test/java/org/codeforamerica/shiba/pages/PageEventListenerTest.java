@@ -1,60 +1,64 @@
 package org.codeforamerica.shiba.pages;
 
-import org.codeforamerica.shiba.application.FlowType;
-import org.codeforamerica.shiba.pages.events.*;
-import org.junit.jupiter.api.Test;
-
-import java.util.Locale;
-import java.util.Map;
-
 import static org.codeforamerica.shiba.pages.events.InteractionType.APPLICATION_SUBMITTED;
 import static org.codeforamerica.shiba.pages.events.InteractionType.SUBWORKFLOW_COMPLETED;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.util.Locale;
+import java.util.Map;
+import org.codeforamerica.shiba.application.FlowType;
+import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
+import org.codeforamerica.shiba.pages.events.InteractionTracker;
+import org.codeforamerica.shiba.pages.events.InteractionType;
+import org.codeforamerica.shiba.pages.events.PageEvent;
+import org.codeforamerica.shiba.pages.events.PageEventListener;
+import org.junit.jupiter.api.Test;
+
 class PageEventListenerTest {
-    private final InteractionTracker interactionTracker = mock(InteractionTracker.class);
 
-    private final PageEventListener pageEventListener = new PageEventListener(interactionTracker);
+  private final InteractionTracker interactionTracker = mock(InteractionTracker.class);
 
-    @Test
-    void shouldTrackInteractions() {
-        PageEvent testPageEvent = new PageEvent() {
-            @Override
-            public String getSessionId() {
-                return "someSessionId";
-            }
+  private final PageEventListener pageEventListener = new PageEventListener(interactionTracker);
 
-            @Override
-            public InteractionType getInteraction() {
-                return SUBWORKFLOW_COMPLETED;
-            }
+  @Test
+  void shouldTrackInteractions() {
+    PageEvent testPageEvent = new PageEvent() {
+      @Override
+      public String getSessionId() {
+        return "someSessionId";
+      }
 
-            @Override
-            public Map<String, Object> getProperties() {
-                return Map.of("somePropertyKey", "somePropertyValue");
-            }
-        };
+      @Override
+      public InteractionType getInteraction() {
+        return SUBWORKFLOW_COMPLETED;
+      }
 
-        pageEventListener.captureInteraction(testPageEvent);
+      @Override
+      public Map<String, Object> getProperties() {
+        return Map.of("somePropertyKey", "somePropertyValue");
+      }
+    };
 
-        verify(interactionTracker).track(
-                "someSessionId",
-                SUBWORKFLOW_COMPLETED.name(),
-                Map.of("somePropertyKey", "somePropertyValue"));
-    }
+    pageEventListener.captureInteraction(testPageEvent);
 
-    @Test
-    void shouldTrackApplicationSubmittedEvents() {
-        ApplicationSubmittedEvent applicationSubmittedEvent = new ApplicationSubmittedEvent(
-                "sessionId", "applicationId", FlowType.FULL, Locale.ENGLISH
-        );
+    verify(interactionTracker).track(
+        "someSessionId",
+        SUBWORKFLOW_COMPLETED.name(),
+        Map.of("somePropertyKey", "somePropertyValue"));
+  }
 
-        pageEventListener.captureInteraction(applicationSubmittedEvent);
-        verify(interactionTracker).trackWithProfile(
-                "sessionId",
-                APPLICATION_SUBMITTED.name(),
-                Map.of("flow", FlowType.FULL, "confirmation #", "applicationId")
-        );
-    }
+  @Test
+  void shouldTrackApplicationSubmittedEvents() {
+    ApplicationSubmittedEvent applicationSubmittedEvent = new ApplicationSubmittedEvent(
+        "sessionId", "applicationId", FlowType.FULL, Locale.ENGLISH
+    );
+
+    pageEventListener.captureInteraction(applicationSubmittedEvent);
+    verify(interactionTracker).trackWithProfile(
+        "sessionId",
+        APPLICATION_SUBMITTED.name(),
+        Map.of("flow", FlowType.FULL, "confirmation #", "applicationId")
+    );
+  }
 }

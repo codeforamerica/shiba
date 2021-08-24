@@ -6,24 +6,25 @@ import org.springframework.util.StringUtils;
 
 @Value
 public class Feedback {
-    Sentiment sentiment;
-    String feedback;
 
-    boolean isInvalid() {
-        return getSentiment() == null && StringUtils.isEmpty(getFeedback());
-    }
+  Sentiment sentiment;
+  String feedback;
 
-    boolean isSentimentOnly() {
-        return getSentiment() != null && StringUtils.isEmpty(getFeedback());
-    }
+  boolean isInvalid() {
+    return getSentiment() == null && StringUtils.isEmpty(getFeedback());
+  }
 
-    @NotNull String getMessageKey() {
-        if (isInvalid()) {
-            return "success.feedback-failure";
-        } else if (isSentimentOnly()) {
-            return "success.feedback-rating-success";
-        } else {
-            return "success.feedback-success";
-        }
+  boolean isSentimentOnly() {
+    return getSentiment() != null && StringUtils.isEmpty(getFeedback());
+  }
+
+  @NotNull String getMessageKey() {
+    if (isInvalid()) {
+      return "success.feedback-failure";
+    } else if (isSentimentOnly()) {
+      return "success.feedback-rating-success";
+    } else {
+      return "success.feedback-success";
     }
+  }
 }

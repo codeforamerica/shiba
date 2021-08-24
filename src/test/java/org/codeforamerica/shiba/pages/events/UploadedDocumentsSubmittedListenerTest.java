@@ -1,5 +1,12 @@
 package org.codeforamerica.shiba.pages.events;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Locale;
+import java.util.Optional;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
@@ -18,80 +25,73 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.IOException;
-import java.util.Locale;
-import java.util.Optional;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class UploadedDocumentsSubmittedListenerTest {
-    @Mock
-    private MnitDocumentConsumer mnitDocumentConsumer;
-    @Mock
-    private ApplicationRepository applicationRepository;
-    @Mock
-    private MonitoringService monitoringService;
-    @Mock
-    private FeatureFlagConfiguration featureFlags;
-    @Mock
-    private EmailClient emailClient;
 
-    private UploadedDocumentsSubmittedListener uploadedDocumentsSubmittedListener;
-    private String applicationId;
-    private Application application;
-    private UploadedDocumentsSubmittedEvent event;
-    private Locale locale = new Locale("en");
+  @Mock
+  private MnitDocumentConsumer mnitDocumentConsumer;
+  @Mock
+  private ApplicationRepository applicationRepository;
+  @Mock
+  private MonitoringService monitoringService;
+  @Mock
+  private FeatureFlagConfiguration featureFlags;
+  @Mock
+  private EmailClient emailClient;
 
-    @BeforeEach
-    void setUp() {
-        String sessionId = "some-session-id";
-        applicationId = "some-application-id";
-        event = new UploadedDocumentsSubmittedEvent(sessionId, applicationId, locale);
+  private UploadedDocumentsSubmittedListener uploadedDocumentsSubmittedListener;
+  private String applicationId;
+  private Application application;
+  private UploadedDocumentsSubmittedEvent event;
+  private final Locale locale = new Locale("en");
 
-        application = Application.builder().id(applicationId).county(County.Olmsted).build();
-        uploadedDocumentsSubmittedListener = new UploadedDocumentsSubmittedListener(
-                mnitDocumentConsumer,
-                applicationRepository,
-                monitoringService,
-                featureFlags,
-                emailClient);
+  @BeforeEach
+  void setUp() {
+    String sessionId = "some-session-id";
+    applicationId = "some-application-id";
+    event = new UploadedDocumentsSubmittedEvent(sessionId, applicationId, locale);
+
+    application = Application.builder().id(applicationId).county(County.Olmsted).build();
+    uploadedDocumentsSubmittedListener = new UploadedDocumentsSubmittedListener(
+        mnitDocumentConsumer,
+        applicationRepository,
+        monitoringService,
+        featureFlags,
+        emailClient);
+  }
+
+  @Test
+  void shouldSendViaApiWhenFeatureFlagIsEnabled() {
+    when(applicationRepository.find(eq(applicationId))).thenReturn(application);
+    when(featureFlags.get("submit-docs-via-email-for-hennepin")).thenReturn(FeatureFlag.ON);
+    uploadedDocumentsSubmittedListener.send(event);
+
+    verify(mnitDocumentConsumer).processUploadedDocuments(application);
+  }
+
+
+  @Test
+  void shouldSendViaEmailWhenCountyIsHennepinAndFeatureFlagIsEnabled() {
+    Application hennepinApplication = Application.builder().id(applicationId)
+        .county(County.Hennepin).build();
+    when(applicationRepository.find(eq(applicationId))).thenReturn(hennepinApplication);
+    when(featureFlags.get("submit-docs-via-email-for-hennepin")).thenReturn(FeatureFlag.ON);
+
+    uploadedDocumentsSubmittedListener.send(event);
+
+    verify(emailClient).sendHennepinDocUploadsEmails(hennepinApplication);
+  }
+
+  @Test
+  void shouldSendConfirmationEmail() {
+    application = Application.builder().id(applicationId).flow(FlowType.LATER_DOCS).build();
+    when(applicationRepository.find(eq(applicationId))).thenReturn(application);
+    String email = "confirmation email";
+    try (MockedStatic<EmailParser> mockEmailParser = Mockito.mockStatic(EmailParser.class)) {
+      mockEmailParser.when(() -> EmailParser.parse(any())).thenReturn(Optional.of(email));
+      uploadedDocumentsSubmittedListener.sendConfirmationEmail(event);
     }
 
-    @Test
-    void shouldSendViaApiWhenFeatureFlagIsEnabled() {
-        when(applicationRepository.find(eq(applicationId))).thenReturn(application);
-        when(featureFlags.get("submit-docs-via-email-for-hennepin")).thenReturn(FeatureFlag.ON);
-        uploadedDocumentsSubmittedListener.send(event);
-
-        verify(mnitDocumentConsumer).processUploadedDocuments(application);
-    }
-
-
-    @Test
-    void shouldSendViaEmailWhenCountyIsHennepinAndFeatureFlagIsEnabled() {
-    	Application hennepinApplication = Application.builder().id(applicationId).county(County.Hennepin).build();
-        when(applicationRepository.find(eq(applicationId))).thenReturn(hennepinApplication);
-        when(featureFlags.get("submit-docs-via-email-for-hennepin")).thenReturn(FeatureFlag.ON);
-
-        uploadedDocumentsSubmittedListener.send(event);
-
-        verify(emailClient).sendHennepinDocUploadsEmails(hennepinApplication);
-    }
-
-    @Test
-    void shouldSendConfirmationEmail() {
-        application = Application.builder().id(applicationId).flow(FlowType.LATER_DOCS).build();
-        when(applicationRepository.find(eq(applicationId))).thenReturn(application);
-        String email = "confirmation email";
-        try (MockedStatic<EmailParser> mockEmailParser = Mockito.mockStatic(EmailParser.class)) {
-            mockEmailParser.when(() -> EmailParser.parse(any())).thenReturn(Optional.of(email));
-            uploadedDocumentsSubmittedListener.sendConfirmationEmail(event);
-        }
-
-        verify(emailClient).sendLaterDocsConfirmationEmail(email, locale);
-    }
+    verify(emailClient).sendLaterDocsConfirmationEmail(email, locale);
+  }
 }

@@ -1,56 +1,58 @@
 package org.codeforamerica.shiba.application.parsers;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.PAID_BY_THE_HOUR;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group.JOBS;
+
+import java.util.List;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.PAID_BY_THE_HOUR;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group.JOBS;
-
 class ApplicationDataParserTest {
-    private TestApplicationDataBuilder builder;
 
-    @BeforeEach
-    void setUp() {
-        builder = new TestApplicationDataBuilder();
-    }
+  private TestApplicationDataBuilder builder;
 
-    @Test
-    void shouldReturnExistingValue() {
-        String expectedValue = "1";
-        ApplicationData applicationData = builder
-                .withPageData("paidByTheHour", "paidByTheHour", List.of(expectedValue))
-                .build();
+  @BeforeEach
+  void setUp() {
+    builder = new TestApplicationDataBuilder();
+  }
 
-        String value = ApplicationDataParser.getFirstValue(applicationData.getPagesData(), PAID_BY_THE_HOUR);
+  @Test
+  void shouldReturnExistingValue() {
+    String expectedValue = "1";
+    ApplicationData applicationData = builder
+        .withPageData("paidByTheHour", "paidByTheHour", List.of(expectedValue))
+        .build();
 
-        assertThat(value).isEqualTo(expectedValue);
-    }
+    String value = ApplicationDataParser
+        .getFirstValue(applicationData.getPagesData(), PAID_BY_THE_HOUR);
 
-    @Test
-    void shouldReturnNullForMissingPageOrInput() {
-        String expectedValue = "1";
-        ApplicationData applicationData = builder
-                .withPageData("shmaidByTheHour", "paidByTheHour", List.of(expectedValue))
-                .build();
-        String value = ApplicationDataParser.getFirstValue(applicationData.getPagesData(), PAID_BY_THE_HOUR);
-        assertThat(value).isNull();
+    assertThat(value).isEqualTo(expectedValue);
+  }
 
-        applicationData = builder
-                .withPageData("paidByTheHour", "shmaidByTheHour", List.of(expectedValue))
-                .build();
-        value = ApplicationDataParser.getFirstValue(applicationData.getPagesData(), PAID_BY_THE_HOUR);
-        assertThat(value).isNull();
-    }
+  @Test
+  void shouldReturnNullForMissingPageOrInput() {
+    String expectedValue = "1";
+    ApplicationData applicationData = builder
+        .withPageData("shmaidByTheHour", "paidByTheHour", List.of(expectedValue))
+        .build();
+    String value = ApplicationDataParser
+        .getFirstValue(applicationData.getPagesData(), PAID_BY_THE_HOUR);
+    assertThat(value).isNull();
 
-    @Test
-    void shouldReturnSubworkflowForExistingGroup() {
-        ApplicationData applicationData = builder.withJobs().build();
+    applicationData = builder
+        .withPageData("paidByTheHour", "shmaidByTheHour", List.of(expectedValue))
+        .build();
+    value = ApplicationDataParser.getFirstValue(applicationData.getPagesData(), PAID_BY_THE_HOUR);
+    assertThat(value).isNull();
+  }
 
-        assertThat(ApplicationDataParser.getGroup(applicationData, JOBS)).isNotNull();
-    }
+  @Test
+  void shouldReturnSubworkflowForExistingGroup() {
+    ApplicationData applicationData = builder.withJobs().build();
+
+    assertThat(ApplicationDataParser.getGroup(applicationData, JOBS)).isNotNull();
+  }
 }

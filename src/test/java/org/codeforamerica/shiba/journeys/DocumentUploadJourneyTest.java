@@ -1,68 +1,79 @@
 package org.codeforamerica.shiba.journeys;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.stream.IntStream;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-
 @Tag("journey")
 public class DocumentUploadJourneyTest extends JourneyTest {
-    @Test
-    void whenDocumentUploadFailsThenThereShouldBeAnError() throws InterruptedException, IOException {
-        getToDocumentUploadScreen();
-        uploadXfaFormatPdf();
-        waitForErrorMessage();
-        assertThat(driver.findElementsByClassName("text--error").get(0).getText())
-                .contains("This PDF is in an old format. Try converting it to an image or uploading a screenshot instead.");
-        testPage.clickLink("remove");
 
-        uploadPasswordProtectedPdf();
-        waitForErrorMessage();
-        assertThat(driver.findElementsByClassName("text--error").get(0).getText())
-                .contains("This PDF is password protected. Try removing the password or uploading a screenshot instead.");
-        testPage.clickLink("remove");
+  @Test
+  void whenDocumentUploadFailsThenThereShouldBeAnError() throws InterruptedException, IOException {
+    getToDocumentUploadScreen();
+    uploadXfaFormatPdf();
+    waitForErrorMessage();
+    assertThat(driver.findElementsByClassName("text--error").get(0).getText())
+        .contains(
+            "This PDF is in an old format. Try converting it to an image or uploading a screenshot instead.");
+    testPage.clickLink("remove");
 
-        doThrow(new InterruptedException())
-                .when(documentRepositoryService).upload(any(String.class), any(MultipartFile.class));
+    uploadPasswordProtectedPdf();
+    waitForErrorMessage();
+    assertThat(driver.findElementsByClassName("text--error").get(0).getText())
+        .contains(
+            "This PDF is password protected. Try removing the password or uploading a screenshot instead.");
+    testPage.clickLink("remove");
 
-        uploadJpgFile();
+    doThrow(new InterruptedException())
+        .when(documentRepositoryService).upload(any(String.class), any(MultipartFile.class));
 
-        List<WebElement> deleteLinks = driver.findElements(By.linkText("delete"));
-        assertThat(deleteLinks.size()).isEqualTo(0);
-        waitForErrorMessage();
-        assertThat(driver.findElementsByClassName("text--error").get(0).getText()).isEqualTo("Internal Server Error");
-    }
+    uploadJpgFile();
 
-    @Test
-    void shouldShowErrorsAndWarningsProperly() {
-        getToDocumentUploadScreen();
-        uploadJpgFile();
+    List<WebElement> deleteLinks = driver.findElements(By.linkText("delete"));
+    assertThat(deleteLinks.size()).isEqualTo(0);
+    waitForErrorMessage();
+    assertThat(driver.findElementsByClassName("text--error").get(0).getText())
+        .isEqualTo("Internal Server Error");
+  }
 
-        // should disallow adding files with types that are not on the allow list
-        driver.executeScript("$('#document-upload').get(0).dropzone.addFile({name: 'testFile.xyz', size: 1000, type: 'not-an-image'})");
-        assertThat(driver.findElementsByClassName("text--error").get(0).getText()).contains("You can't upload files of this type");
-        testPage.clickLink("remove");
-        assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("1 file added");
+  @Test
+  void shouldShowErrorsAndWarningsProperly() {
+    getToDocumentUploadScreen();
+    uploadJpgFile();
 
-        // should show max filesize error message for files that are too big
-        long largeFilesize = 21000000L;
-        driver.executeScript("$('#document-upload').get(0).dropzone.addFile({name: 'testFile.pdf', size: " + largeFilesize + ", type: 'not-an-image'})");
-        int maxFileSize = uploadDocumentConfiguration.getMaxFilesize();
-        assertThat(driver.findElementByClassName("text--error").getText()).contains("This file is too large and cannot be uploaded (max size: " + maxFileSize + " MB)");
-        testPage.clickLink("remove");
-        assertThat(driver.findElementById("number-of-uploaded-files").getText()).isEqualTo("1 file added");
+    // should disallow adding files with types that are not on the allow list
+    driver.executeScript(
+        "$('#document-upload').get(0).dropzone.addFile({name: 'testFile.xyz', size: 1000, type: 'not-an-image'})");
+    assertThat(driver.findElementsByClassName("text--error").get(0).getText())
+        .contains("You can't upload files of this type");
+    testPage.clickLink("remove");
+    assertThat(driver.findElementById("number-of-uploaded-files").getText())
+        .isEqualTo("1 file added");
 
-        // should alert the user when they have uploaded the maximum number of files
-        IntStream.range(0, 19).forEach(c -> uploadJpgFile());
-        assertThat(driver.findElementById("max-files").getText()).contains("You have uploaded the maximum number of files (20). You will have the opportunity to share more with a county worker later.");
-    }
+    // should show max filesize error message for files that are too big
+    long largeFilesize = 21000000L;
+    driver.executeScript(
+        "$('#document-upload').get(0).dropzone.addFile({name: 'testFile.pdf', size: "
+            + largeFilesize + ", type: 'not-an-image'})");
+    int maxFileSize = uploadDocumentConfiguration.getMaxFilesize();
+    assertThat(driver.findElementByClassName("text--error").getText()).contains(
+        "This file is too large and cannot be uploaded (max size: " + maxFileSize + " MB)");
+    testPage.clickLink("remove");
+    assertThat(driver.findElementById("number-of-uploaded-files").getText())
+        .isEqualTo("1 file added");
+
+    // should alert the user when they have uploaded the maximum number of files
+    IntStream.range(0, 19).forEach(c -> uploadJpgFile());
+    assertThat(driver.findElementById("max-files").getText()).contains(
+        "You have uploaded the maximum number of files (20). You will have the opportunity to share more with a county worker later.");
+  }
 }
