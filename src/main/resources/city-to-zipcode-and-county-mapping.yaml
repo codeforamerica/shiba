@@ -133,6 +133,9 @@ cityToZipAndCountyMapping:
   Becker:
     zipcode: "55308"
     county: Sherburne
+  Bejou:
+    zipcode: "56516"
+    county: Mahnomen
   Belgrade:
     zipcode: "56312"
     county: Stearns
@@ -274,6 +277,9 @@ cityToZipAndCountyMapping:
   Caledonia:
     zipcode: "55921"
     county: Houston
+  Callaway:
+    zipcode: "56521"
+    county: Becker
   Calumet:
     zipcode: "55716"
     county: Itasca
@@ -1081,6 +1087,9 @@ cityToZipAndCountyMapping:
   Le Sueur:
     zipcode: "56058"
     county: Le Sueur
+  Lengby:
+    zipcode: "56651"
+    county: Mahnomen
   Leota:
     zipcode: "56153"
     county: Nobles
@@ -1444,12 +1453,18 @@ cityToZipAndCountyMapping:
   Oakdale:
     zipcode: "55042"
     county: Washington
+  Ogema:
+    zipcode: "56569"
+    county: "Becker"
   Orono:
     zipcode: "55323"
     county: Hennepin
   Otsego:
     zipcode: "55301"
     county: Wright
+  Osage:
+    zipcode: "56570"
+    county: Becker
   Plymouth:
     zipcode: "55441"
     county: Hennepin
@@ -1495,6 +1510,9 @@ cityToZipAndCountyMapping:
   Pine Island:
     zipcode: "55963"
     county: Goodhue
+  Pine Point:
+    zipcode: "56575"
+    county: Becker
   Pine River:
     zipcode: "56474"
     county: Cass
@@ -1513,6 +1531,9 @@ cityToZipAndCountyMapping:
   Ponemah:
     zipcode: "56666"
     county: Beltrami
+  Ponsford:
+    zipcode: "56575"
+    county: Becker
   Preston:
     zipcode: "55965"
     county: Fillmore
@@ -1564,6 +1585,12 @@ cityToZipAndCountyMapping:
   Richmond:
     zipcode: "56368"
     county: Stearns
+  Richwood:
+    zipcode: "56577"
+    county: Becker
+  Rochert:
+    zipcode: "56578"
+    county: Becker
   Rochester:
     zipcode: "55901"
     county: Olmsted
@@ -1738,6 +1765,9 @@ cityToZipAndCountyMapping:
   Sherburn:
     zipcode: "56171"
     county: Martin
+  Shevlin:
+    zipcode: "56676"
+    county: Clearwater
   Silver Bay:
     zipcode: "55614"
     county: Lake
