@@ -68,14 +68,12 @@ public class MnitDocumentConsumer {
         for (int i = 0; i < uploadedDocs.size(); i++) {
             UploadedDocument uploadedDocument = uploadedDocs.get(i);
             ApplicationFile fileToSend = pdfGenerator.generateForUploadedDocument(uploadedDocument, i, application, coverPage);
-            if(fileToSend == null) {
-            	log.info("File not available " + uploadedDocument==null? " application id:" + application.getId() : " filename: " + uploadedDocument.getFilename() + ".");
-            }else if (fileToSend.getFileBytes().length > 0) {
+			 if(fileToSend == null) { 
+				 log.info("File not available " + uploadedDocument==null? " application id:" + application.getId() :  " filename: " + uploadedDocument.getFilename() + "."); }else
+			 if (fileToSend.getFileBytes().length > 0) {
                 log.info("Now sending: " + fileToSend.getFileName() + " original filename: " + uploadedDocument.getFilename());
                 mnitClient.send(fileToSend, application.getCounty(), application.getId(), UPLOADED_DOC, application.getFlow());
                 log.info("Finished sending document " + fileToSend.getFileName());
-            } else if ("demo".equals(activeProfile) || "staging".equals(activeProfile) || "production".equals(activeProfile)) {
-                log.error("Skipped uploading file " + uploadedDocument.getFilename() + " because it was empty. This should only happen in a dev environment.");
             } else {
                 log.info("Pretending to send file " + uploadedDocument.getFilename() + ".");
             }
