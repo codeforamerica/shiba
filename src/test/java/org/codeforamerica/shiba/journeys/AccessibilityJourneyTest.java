@@ -106,6 +106,7 @@ public class AccessibilityJourneyTest extends JourneyTest {
     testPage.enter("dateOfBirth", "01/12/1928");
     testPage.enter("ssn", "123456789");
     testPage.enter("caseNumber", "1234567");
+    testPage.enter("phoneNumber", "7041234567");
     testPage.clickContinue();
 
     // should allow me to upload documents and those documents should be sent to the ESB
