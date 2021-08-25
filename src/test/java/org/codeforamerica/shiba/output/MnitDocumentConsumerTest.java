@@ -14,6 +14,7 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -246,6 +247,27 @@ class MnitDocumentConsumerTest {
     verifyGeneratedPdf(captor.getAllValues().get(0).getFileBytes(), "shiba+file.pdf");
     verifyGeneratedPdf(captor.getAllValues().get(1).getFileBytes(),
         "test-uploaded-pdf-with-coverpage.pdf");
+  }
+
+  @Test
+  void uploadedDocumentDoesNotSendToMnitIfNull() {
+    String uploadedDocFilename = "someName";
+    String s3filepath = "originalName.jpg";
+    String contentType = MediaType.IMAGE_JPEG_VALUE;
+    String extension = "jpg";
+    byte[] fileBytes = null;
+    when(documentRepositoryService.getFromAzureWithFallbackToS3("")).thenReturn(fileBytes);
+    applicationData.addUploadedDoc(
+        new MockMultipartFile(uploadedDocFilename, s3filepath + extension, contentType, fileBytes),
+        "",
+        "someDataUrl",
+        MediaType.IMAGE_JPEG_VALUE);
+    when(fileNameGenerator.generateUploadedDocumentName(application, 0, "pdf")).thenReturn(
+        "pdf1of2.pdf");
+    documentConsumer.processUploadedDocuments(application);
+    ApplicationFile pdfApplicationFile = new ApplicationFile(null, "someFile.pdf");
+    verify(mnitClient, never()).send(pdfApplicationFile, County.Olmsted, application.getId(),
+        Document.CCAP, FlowType.FULL);
   }
 
   @Test
