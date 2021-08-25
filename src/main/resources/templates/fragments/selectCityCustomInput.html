@@ -10,7 +10,7 @@
                 class="select__element"
                 th:name="${formInputName}"
         >
-            <option th:value="SelectYourCity" th:text="#{city-for-general-delivery.select-your-city}"></option>
+            <option th:value="''" th:text="#{city-for-general-delivery.select-your-city}"></option>
             <th:block th:each="option: ${cityInfo.entrySet()}">
                 <option th:value="${option.getKey()}" th:text="${option.getKey()}"
                         th:selected="${inputData.value.contains(option.getKey())}"></option>

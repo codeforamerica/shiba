@@ -609,7 +609,7 @@ pageDefinitions:
         type: CUSTOM
         customInputFragment: selectCityCustomInput
         validators:
-          - validation: CITY
+          - validation: NOT_BLANK
             errorMessageKey: city-for-general-delivery.make-sure-to-provide-a-city
   - &generalDeliveryAddress
     name: generalDeliveryAddress
@@ -1397,11 +1397,11 @@ pageDefinitions:
       - name: county
         type: SELECT
         validators:
-          - validation: COUNTY
+          - validation: NOT_BLANK
             errorMessageKey: general.validation.make-sure-to-select-a-county
         options:
           selectableOptions:
-            - value: SelectYourCounty
+            - value: ~
               messageKey: identify-county.select-your-county
             - value: Aitkin
               messageKey: identify-county-aitkin
@@ -1754,11 +1754,11 @@ pageDefinitions:
       - name: selectedTribe
         type: SELECT
         validators:
-        - validation: COUNTY
-          errorMessageKey: general.validation.make-sure-to-select-a-tribe
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-select-a-tribe
         options:
           selectableOptions:
-            - value: SelectYourCounty
+            - value: ~
               messageKey: select-the-tribe.select-the-tribe
             - value: BoisForte
               messageKey: select-the-tribe.bois-forte
