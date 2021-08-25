@@ -1745,6 +1745,43 @@ pageDefinitions:
     inputs:
       - name: livingInNationBoundary
         type: YES_NO
+  - &selectTheTribe
+    name: selectTheTribe
+    pageTitle: select-the-tribe.title
+    headerKey: select-the-tribe.which-nation-do-they-belong-to
+    hasPrimaryButton: true
+    inputs:
+      - name: selectedTribe
+        type: SELECT
+        validators:
+        - validation: COUNTY
+          errorMessageKey: general.validation.make-sure-to-select-a-tribe
+        options:
+          selectableOptions:
+            - value: SelectYourCounty
+              messageKey: select-the-tribe.select-the-tribe
+            - value: BoisForte
+              messageKey: select-the-tribe.bois-forte
+            - value: FondDuLac
+              messageKey: select-the-tribe.fond-du-lac
+            - value: GrandPortage
+              messageKey: select-the-tribe.grand-portage
+            - value: LeechLake
+              messageKey: select-the-tribe.leech-lake
+            - value: LowerSioux
+              messageKey: select-the-tribe.lower-sioux
+            - value: MilleLacs
+              messageKey: select-the-tribe.mille-lacs
+            - value: PrairieIsland
+              messageKey: select-the-tribe.prairie-island
+            - value: RedLake
+              messageKey: select-the-tribe.red-lake
+            - value: ShakopeeMdewakanton
+              messageKey: select-the-tribe.shakopee-mdewakanton
+            - value: UpperSioux
+              messageKey: select-the-tribe.upper-sioux
+            - value: WhiteEarth
+              messageKey: select-the-tribe.white-earth
   - &introIncome
     name: introIncome
     pageTitle: intro-income.title
@@ -3112,12 +3149,22 @@ workflow:
     pageConfiguration: *tribalNationMember
     nextPages:
       - pageName: nationsBoundary
+        condition:
+          pageName: tribalNationMember
+          input: isTribalNationMember
+          value: "true"
+      - pageName: introIncome
     skipCondition: *livesAlone?
     datasources:
       - pageName: addHouseholdMembers
   nationsBoundary:
     pageConfiguration: *nationsBoundary
     nextPages:
+      - pageName: selectTheTribe
+        condition:
+          pageName: nationsBoundary
+          input: livingInNationBoundary
+          value: "true"
       - pageName: introIncome
     skipCondition:
       logicalOperator: OR
@@ -3128,6 +3175,10 @@ workflow:
           value: NO
     datasources:
       - pageName: addHouseholdMembers
+  selectTheTribe:
+    pageConfiguration: *selectTheTribe
+    nextPages:
+      - pageName: introIncome
   introIncome:
     pageConfiguration: *introIncome
     nextPages:
