@@ -241,7 +241,7 @@ tasks.withType(Test).configureEach {
         task.maxParallelForks(Runtime.runtime.availableProcessors().intdiv(2) ?: 1)
         task.testLogging {
             exceptionFormat = 'full'
-            events "failed", "passed", "skipped"
+            events "failed", "skipped"
             showStackTraces true
             showCauses true
             showExceptions true
