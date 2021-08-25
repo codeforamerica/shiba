@@ -365,8 +365,7 @@ class MailGunEmailClientTest {
         .generateForUploadedDocument(any(UploadedDocument.class), anyInt(), any(Application.class),
             any())).thenReturn(testFile);
 
-    mailGunEmailClient
-        .resubmitFailedEmail(hennepinEmail, UPLOADED_DOC, testFile, application, ENGLISH);
+    mailGunEmailClient.resubmitFailedEmail(hennepinEmail, UPLOADED_DOC, testFile, application);
 
     verify(emailContentCreator).createResubmitEmailContent(UPLOADED_DOC, ENGLISH);
 

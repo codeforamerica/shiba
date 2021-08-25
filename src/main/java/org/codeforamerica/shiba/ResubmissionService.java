@@ -6,7 +6,6 @@ import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
@@ -60,8 +59,7 @@ public class ResubmissionService {
           resubmitUploadedDocumentsForApplication(document, application, countyEmail);
         } else {
           var applicationFile = pdfGenerator.generate(application, document, CASEWORKER);
-          emailClient.resubmitFailedEmail(countyEmail, document, applicationFile, application,
-              Locale.ENGLISH);
+          emailClient.resubmitFailedEmail(countyEmail, document, applicationFile, application);
         }
         applicationRepository.updateStatus(id, document, DELIVERED);
         log.info("Resubmitted " + document.name() + "(s) for application id " + id);
@@ -84,8 +82,7 @@ public class ResubmissionService {
       var originalFilename = uploadedDocument.getFilename();
       log.info("Resubmitting uploaded doc: %s original filename: %s"
           .formatted(esbFilename, originalFilename));
-      emailClient
-          .resubmitFailedEmail(countyEmail, document, fileToSend, application, Locale.ENGLISH);
+      emailClient.resubmitFailedEmail(countyEmail, document, fileToSend, application);
       log.info("Finished resubmitting document %s".formatted(esbFilename));
     }
   }

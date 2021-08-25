@@ -19,6 +19,8 @@ public class ApplicationDataParser {
   private static final Map<Group, String> groupCoordinatesMap = new HashMap<>();
 
   static {
+    coordinatesMap.put(Field.WRITTEN_LANGUAGE_PREFERENCES,
+        new ParsingCoordinate("languagePreferences", "writtenLanguage"));
     coordinatesMap
         .put(Field.PAID_BY_THE_HOUR, new ParsingCoordinate("paidByTheHour", "paidByTheHour"));
     coordinatesMap.put(Field.HOURLY_WAGE, new ParsingCoordinate("hourlyWage", "hourlyWage"));
@@ -153,6 +155,8 @@ public class ApplicationDataParser {
    * Retrievable fields
    */
   public enum Field {
+    WRITTEN_LANGUAGE_PREFERENCES,
+
     PAID_BY_THE_HOUR,
     HOURLY_WAGE,
     HOURS_A_WEEK,

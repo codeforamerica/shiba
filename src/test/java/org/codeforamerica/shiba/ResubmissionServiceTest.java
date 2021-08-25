@@ -1,6 +1,5 @@
 package org.codeforamerica.shiba;
 
-import static java.util.Locale.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.Olmsted;
 import static org.codeforamerica.shiba.application.Status.RESUBMISSION_FAILED;
@@ -38,6 +37,7 @@ import org.springframework.mock.web.MockMultipartFile;
 class ResubmissionServiceTest {
 
   final String defaultEmail = "defaultEmail";
+  private final CountyMap<MnitCountyInformation> countyMap = new CountyMap<>();
   @Mock
   private ApplicationRepository applicationRepository;
   @Mock
@@ -46,7 +46,6 @@ class ResubmissionServiceTest {
   private PdfGenerator pdfGenerator;
   @Mock
   private CombinedDocumentRepositoryService combinedDocumentRepositoryService;
-  private final CountyMap<MnitCountyInformation> countyMap = new CountyMap<>();
   private ResubmissionService resubmissionService;
 
   @BeforeEach
@@ -73,8 +72,7 @@ class ResubmissionServiceTest {
 
     resubmissionService.resubmitFailedApplications();
 
-    verify(emailClient)
-        .resubmitFailedEmail(defaultEmail, CAF, applicationFile, application, ENGLISH);
+    verify(emailClient).resubmitFailedEmail(defaultEmail, CAF, applicationFile, application);
     verify(applicationRepository).updateStatus(appId, CAF, Status.DELIVERED);
   }
 
@@ -107,8 +105,7 @@ class ResubmissionServiceTest {
 
     ArgumentCaptor<ApplicationFile> captor = ArgumentCaptor.forClass(ApplicationFile.class);
     verify(emailClient, times(2))
-        .resubmitFailedEmail(eq(defaultEmail), eq(UPLOADED_DOC), captor.capture(), eq(application),
-            eq(ENGLISH));
+        .resubmitFailedEmail(eq(defaultEmail), eq(UPLOADED_DOC), captor.capture(), eq(application));
 
     List<ApplicationFile> applicationFiles = captor.getAllValues();
     assertThat(applicationFiles)
@@ -146,7 +143,7 @@ class ResubmissionServiceTest {
     var applicationFileCaptor = ArgumentCaptor.forClass(ApplicationFile.class);
     var documentCaptor = ArgumentCaptor.forClass(Document.class);
     verify(emailClient, times(2)).resubmitFailedEmail(eq(defaultEmail), documentCaptor.capture(),
-        applicationFileCaptor.capture(), eq(application), eq(ENGLISH));
+        applicationFileCaptor.capture(), eq(application));
     assertThat(applicationFileCaptor.getAllValues())
         .containsExactlyInAnyOrder(uploadedDocWithCoverPageFile, ccapFile);
     assertThat(documentCaptor.getAllValues()).containsExactlyInAnyOrder(UPLOADED_DOC, CCAP);
@@ -185,8 +182,7 @@ class ResubmissionServiceTest {
     resubmissionService.resubmitFailedApplications();
 
     verify(emailClient, never())
-        .resubmitFailedEmail(defaultEmail, UPLOADED_DOC, uploadedDocWithCoverPageFile, application,
-            ENGLISH);
+        .resubmitFailedEmail(defaultEmail, UPLOADED_DOC, uploadedDocWithCoverPageFile, application);
     verify(applicationRepository).updateStatus(appId, UPLOADED_DOC, RESUBMISSION_FAILED);
   }
 }

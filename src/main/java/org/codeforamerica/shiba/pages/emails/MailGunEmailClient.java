@@ -245,13 +245,14 @@ public class MailGunEmailClient implements EmailClient {
 
   @Override
   public void resubmitFailedEmail(String recipientEmail, Document document,
-      ApplicationFile applicationFile, Application application, Locale locale) {
+      ApplicationFile applicationFile, Application application) {
     MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
     form.put("from", List.of(senderEmail));
     form.put("to", List.of(recipientEmail));
     form.put("subject",
         List.of("MN Benefits Application %s Resubmission".formatted(application.getId())));
-    form.put("html", List.of(emailContentCreator.createResubmitEmailContent(document, locale)));
+    form.put("html",
+        List.of(emailContentCreator.createResubmitEmailContent(document, Locale.ENGLISH)));
     form.put("attachment", List.of(asResource(applicationFile)));
 
     webClient.post()

@@ -32,5 +32,5 @@ public interface EmailClient {
   void sendLaterDocsConfirmationEmail(String recipientEmail, Locale locale);
 
   void resubmitFailedEmail(String recipientEmail, Document document,
-      ApplicationFile applicationFile, Application application, Locale locale);
+      ApplicationFile applicationFile, Application application);
 }
