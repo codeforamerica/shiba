@@ -80,6 +80,8 @@ public class PdfGenerator implements FileGenerator {
           log.error("failed to convert document " + uploadedDocument.getFilename()
               + " to pdf. Maintaining original type");
         }
+      } else if (!extension.equals("pdf")) {
+        log.warn("Unsupported file-type: " + extension);
       }
 
       if (extension.equals("pdf")) {
