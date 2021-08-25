@@ -80,8 +80,6 @@ public class MnitDocumentConsumer {
             application.getFlow());
         log.info("Finished sending document " + fileToSend.getFileName());
       } else {
-        log.error("File not available. Application id:" + application.getId() + " Filename: "
-            + uploadedDocument.getFilename());
         log.error("Skipped uploading file " + uploadedDocument.getFilename()
             + " because it was empty. This should only happen in a dev environment.");
       }
