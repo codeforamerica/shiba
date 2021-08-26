@@ -61,7 +61,7 @@ public class MnitDocumentConsumer {
     });
     mnitClient
         .send(xmlGenerator.generate(application.getId(), CAF, CASEWORKER),
-        application.getCounty(),
+            application.getCounty(),
             application.getId(), CAF, application.getFlow());
   }
 

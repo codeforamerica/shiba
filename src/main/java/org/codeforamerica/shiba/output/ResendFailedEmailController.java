@@ -68,7 +68,8 @@ public class ResendFailedEmailController {
             List<ApplicationFile> pdfs = docs.stream()
                 .map(doc -> pdfGenerator.generate(applicationId, doc, CLIENT))
                 .collect(Collectors.toList());
-            var writtenLanguageSelection = getValues(application.getApplicationData().getPagesData(), WRITTEN_LANGUAGE_PREFERENCES);
+            var writtenLanguageSelection = getValues(
+                application.getApplicationData().getPagesData(), WRITTEN_LANGUAGE_PREFERENCES);
             var local = writtenLanguageSelection.contains("SPANISH") ? new Locale("es")
                 : LocaleContextHolder.getLocale();
             emailClient.sendConfirmationEmail(applicationData, email, applicationId,
