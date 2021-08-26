@@ -27,6 +27,7 @@ import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.Status;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
@@ -554,9 +555,13 @@ public class PageController {
       if (pagesData.containsKey("choosePrograms")) {
         if (applicationData.isCAFApplication()) {
           applicationRepository.updateStatus(applicationData.getId(), CAF, IN_PROGRESS);
+        } else { 
+        	applicationRepository.updateStatusToNull(CAF, applicationData.getId());
         }
         if (applicationData.isCCAPApplication()) {
           applicationRepository.updateStatus(applicationData.getId(), CCAP, IN_PROGRESS);
+        }else {
+        	applicationRepository.updateStatusToNull(CCAP, applicationData.getId());
         }
       }
       if (applicationData.getId() == null) {
