@@ -55,6 +55,15 @@ conditionDefinitions:
     pageName: choosePrograms
     value: SNAP
     input: programs
+  - &someoneChoseCASH?
+    logicalOperator: OR
+    conditions:
+      - pageName: choosePrograms
+        input: programs
+        value: CASH
+      - pageName: householdMemberInfo
+        input: programs
+        value: CASH
   - &applicantDidNotChooseProgram?
     pageName: choosePrograms
     input: programs
@@ -3225,8 +3234,6 @@ workflow:
               input: selectedTribe
               value: RedLake
       - pageName: applyForMFIP
-        condition: *noOneChoseCASH?
-      - pageName: introIncome
     datasources:
       - pageName: choosePrograms
       - pageName: addHouseholdMembers
@@ -3238,6 +3245,11 @@ workflow:
     pageConfiguration: *applyForMFIP
     nextPages:
       - pageName: introIncome
+    skipCondition: *someoneChoseCASH?
+    datasources:
+      - pageName: choosePrograms
+      - pageName: householdMemberInfo
+        groupName: household
   tribalTANFConfirmation:
     pageConfiguration: *tribalTANFConfirmation
     nextPages:
