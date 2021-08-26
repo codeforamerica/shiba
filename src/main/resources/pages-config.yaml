@@ -3241,6 +3241,11 @@ workflow:
     pageConfiguration: *applyForTribalTANF
     nextPages:
       - pageName: tribalTANFConfirmation
+        condition:
+          pageName: applyForTribalTANF
+          input: applyForTribalTANF
+          value: "true"
+      - pageName: introIncome
   applyForMFIP:
     pageConfiguration: *applyForMFIP
     nextPages:
