@@ -74,7 +74,7 @@ public class CountyParser {
 
     boolean hasSelectedGeneralDeliveryCity = ofNullable(
         getFirstValue(applicationData.getPagesData(), GENERAL_DELIVERY_CITY))
-        .filter(city -> !city.equals("SelectYourCity"))
+        .filter(city -> !city.isBlank())
         .isPresent();
 
     return isHomeless && hasSelectedGeneralDeliveryCity;
