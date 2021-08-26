@@ -646,10 +646,8 @@ public class AbstractShibaMockMvcTest {
     postExpectingRedirect("disability", "hasDisability", "false", "workSituation");
     if (hasHousehold) {
       postExpectingRedirect("workSituation", "hasWorkSituation", "false", "tribalNationMember");
-      postExpectingRedirect("tribalNationMember", "isTribalNationMember", "true",
-          "nationsBoundary");
-      postExpectingRedirect("nationsBoundary", "livingInNationBoundary", "true", "selectTheTribe");
-      postExpectingRedirect("selectTheTribe", "selectedTribe", "LowerSioux", "introIncome");
+      postExpectingRedirect("tribalNationMember", "isTribalNationMember", "false",
+          "introIncome");
     } else {
       postExpectingRedirect("workSituation", "hasWorkSituation", "false", "introIncome");
     }

@@ -1782,6 +1782,16 @@ pageDefinitions:
               messageKey: select-the-tribe.upper-sioux
             - value: WhiteEarth
               messageKey: select-the-tribe.white-earth
+  - &applyForTribalTANF
+    name: applyForTribalTANF
+    pageTitle: apply-for-tribal-TANF.title
+    headerKey: apply-for-tribal-TANF.it-looks-like-you-might-be-eligible
+    hasPrimaryButton: false
+    inputs:
+      - name: applyForTribalTANF
+        promptMessage:
+          promptMessageFragmentName: applyForTribalTANFPrompt
+        type: YES_NO
   - &introIncome
     name: introIncome
     pageTitle: intro-income.title
@@ -3177,6 +3187,32 @@ workflow:
       - pageName: addHouseholdMembers
   selectTheTribe:
     pageConfiguration: *selectTheTribe
+    nextPages:
+      - pageName: applyForTribalTANF
+        condition:
+          logicalOperator: OR
+          conditions:
+            - pageName: selectTheTribe
+              input: selectedTribe
+              value: BoisForte
+            - pageName: selectTheTribe
+              input: selectedTribe
+              value: FondDuLac
+            - pageName: selectTheTribe
+              input: selectedTribe
+              value: GrandPortage
+            - pageName: selectTheTribe
+              input: selectedTribe
+              value: LeechLake
+            - pageName: selectTheTribe
+              input: selectedTribe
+              value: MilleLacs
+            - pageName: selectTheTribe
+              input: selectedTribe
+              value: RedLake
+      - pageName: introIncome
+  applyForTribalTANF:
+    pageConfiguration: *applyForTribalTANF
     nextPages:
       - pageName: introIncome
   introIncome:

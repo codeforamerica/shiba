@@ -142,7 +142,14 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.enter("isTribalNationMember", YES.getDisplayValue());
 
     // Are any of the tribal members in your household living in or near the nation’s boundaries?
-    testPage.enter("livingInNationBoundary", NO.getDisplayValue());
+    testPage.enter("livingInNationBoundary", YES.getDisplayValue());
+
+    // Which nation do they belong to?
+    testPage.selectFromDropdown("selectedTribe[]", "Bois Forte");
+    testPage.clickContinue();
+
+    // It looks like you might be eligible for Tribal TANF. Would you like to apply?
+    testPage.enter("applyForTribalTANF", YES.getDisplayValue());
 
     // Income & Employment
     testPage.clickContinue();
