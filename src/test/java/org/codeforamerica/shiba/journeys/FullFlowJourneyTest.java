@@ -151,6 +151,9 @@ public class FullFlowJourneyTest extends JourneyTest {
     // It looks like you might be eligible for Tribal TANF. Would you like to apply?
     testPage.enter("applyForTribalTANF", YES.getDisplayValue());
 
+    // Tribal TANF Confirmation screen
+    testPage.clickContinue();
+
     // Income & Employment
     testPage.clickContinue();
 

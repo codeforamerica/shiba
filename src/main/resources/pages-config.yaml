@@ -1792,6 +1792,10 @@ pageDefinitions:
         promptMessage:
           promptMessageFragmentName: applyForTribalTANFPrompt
         type: YES_NO
+  - &tribalTANFConfirmation
+    name: tribalTANFConfirmation
+    pageTitle: tribal-tanf-confirmation.title
+    hasPrimaryButton: false
   - &introIncome
     name: introIncome
     pageTitle: intro-income.title
@@ -3213,6 +3217,10 @@ workflow:
       - pageName: introIncome
   applyForTribalTANF:
     pageConfiguration: *applyForTribalTANF
+    nextPages:
+      - pageName: tribalTANFConfirmation
+  tribalTANFConfirmation:
+    pageConfiguration: *tribalTANFConfirmation
     nextPages:
       - pageName: introIncome
   introIncome:
