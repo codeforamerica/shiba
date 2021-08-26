@@ -1792,6 +1792,16 @@ pageDefinitions:
         promptMessage:
           promptMessageFragmentName: applyForTribalTANFPrompt
         type: YES_NO
+  - &applyForMFIP
+    name: applyForMFIP
+    pageTitle: apply-for-MFIP.title
+    headerKey: apply-for-MFIP.it-looks-like-you-might-be-eligible
+    hasPrimaryButton: false
+    inputs:
+      - name: applyForMFIP
+        promptMessage:
+          promptMessageFragmentName: applyForMFIPPrompt
+        type: YES_NO
   - &tribalTANFConfirmation
     name: tribalTANFConfirmation
     pageTitle: tribal-tanf-confirmation.title
@@ -3214,11 +3224,20 @@ workflow:
             - pageName: selectTheTribe
               input: selectedTribe
               value: RedLake
+      - pageName: applyForMFIP
+        condition: *noOneChoseCASH?
       - pageName: introIncome
+    datasources:
+      - pageName: choosePrograms
+      - pageName: addHouseholdMembers
   applyForTribalTANF:
     pageConfiguration: *applyForTribalTANF
     nextPages:
       - pageName: tribalTANFConfirmation
+  applyForMFIP:
+    pageConfiguration: *applyForMFIP
+    nextPages:
+      - pageName: introIncome
   tribalTANFConfirmation:
     pageConfiguration: *tribalTANFConfirmation
     nextPages:

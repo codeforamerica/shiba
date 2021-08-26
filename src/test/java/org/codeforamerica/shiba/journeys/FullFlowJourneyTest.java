@@ -32,7 +32,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertThat(driver.findElementById("intercom-frame")).isNotNull();
 
     List<String> programSelections = List
-        .of(PROGRAM_SNAP, PROGRAM_CCAP, PROGRAM_EA, PROGRAM_CASH, PROGRAM_GRH);
+        .of(PROGRAM_SNAP, PROGRAM_CCAP, PROGRAM_EA, PROGRAM_GRH);
     getToHomeAddress(programSelections);
 
     // Where are you currently Living?
@@ -153,6 +153,14 @@ public class FullFlowJourneyTest extends JourneyTest {
 
     // Tribal TANF Confirmation screen
     testPage.clickContinue();
+
+    // Go back and select MFIP
+    navigateTo("selectTheTribe");
+    testPage.selectFromDropdown("selectedTribe[]", "White Earth");
+    testPage.clickContinue();
+    takeSnapShot("test.jpeg");
+    // It looks like you might be eligible for MFIP. Would you like to apply?
+    testPage.enter("applyForMFIP", YES.getDisplayValue());
 
     // Income & Employment
     testPage.clickContinue();
