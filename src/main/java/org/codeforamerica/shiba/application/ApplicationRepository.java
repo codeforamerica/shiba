@@ -233,24 +233,24 @@ public class ApplicationRepository {
     }
     setUpdatedAtTime(id);
   }
-  
-  public void updateStatusToNull(Document document, String id) {
-	    Map<String, String> parameters = Map.of(
-	        "id", id
-	    );
 
-	    String statement =
-	     switch (document) {
-	      case CAF -> "UPDATE applications SET caf_application_status = null WHERE id = :id";
-	      case CCAP -> "UPDATE applications SET ccap_application_status = null WHERE id = :id";
-	      case UPLOADED_DOC -> "UPDATE applications SET uploaded_documents_status = null WHERE id = :id";
-	    };
-	    
-	    var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
-	    namedParameterJdbcTemplate.update(statement, parameters);
-	    log.info(String.format("%s #%s application status has been updated to null", document, id));
-	    setUpdatedAtTime(id);
-	  }
+  public void updateStatusToNull(Document document, String id) {
+    Map<String, String> parameters = Map.of(
+        "id", id
+    );
+
+    String statement =
+        switch (document) {
+          case CAF -> "UPDATE applications SET caf_application_status = null WHERE id = :id";
+          case CCAP -> "UPDATE applications SET ccap_application_status = null WHERE id = :id";
+          case UPLOADED_DOC -> "UPDATE applications SET uploaded_documents_status = null WHERE id = :id";
+        };
+
+    var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+    namedParameterJdbcTemplate.update(statement, parameters);
+    log.info(String.format("%s #%s application status has been updated to null", document, id));
+    setUpdatedAtTime(id);
+  }
 
   private String selectStatusColumn(Document document) {
     return switch (document) {

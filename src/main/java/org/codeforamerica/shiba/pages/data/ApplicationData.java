@@ -28,177 +28,177 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 public class ApplicationData implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 5573310526258484730L;
+  @Serial
+  private static final long serialVersionUID = 5573310526258484730L;
 
-    private String id;
-    @Setter(AccessLevel.NONE)
-    private Instant startTime;
-    private String utmSource;
-    private FlowType flow = FlowType.UNDETERMINED;
-    private boolean isSubmitted = false;
-    private PagesData pagesData = new PagesData();
-    private Subworkflows subworkflows = new Subworkflows();
-    private Map<String, PagesData> incompleteIterations = new HashMap<>();
-    private List<UploadedDocument> uploadedDocs = new ArrayList<>();
+  private String id;
+  @Setter(AccessLevel.NONE)
+  private Instant startTime;
+  private String utmSource;
+  private FlowType flow = FlowType.UNDETERMINED;
+  private boolean isSubmitted = false;
+  private PagesData pagesData = new PagesData();
+  private Subworkflows subworkflows = new Subworkflows();
+  private Map<String, PagesData> incompleteIterations = new HashMap<>();
+  private List<UploadedDocument> uploadedDocs = new ArrayList<>();
 
-    public void setStartTimeOnce(Instant instant) {
-        if (startTime == null) {
-            startTime = instant;
-        }
+  public void setStartTimeOnce(Instant instant) {
+    if (startTime == null) {
+      startTime = instant;
+    }
+  }
+
+  public PageData getPageData(String pageName) {
+    return this.pagesData.getPage(pageName);
+  }
+
+  public Subworkflows getSubworkflowsForPageDatasources(List<PageDatasource> pageDatasources) {
+    return new Subworkflows(pageDatasources.stream()
+        .filter(datasource -> datasource.getGroupName() != null)
+        .filter(datasource -> !datasource.isOptional() || subworkflows
+            .containsKey(datasource.getGroupName()))
+        .map(datasource -> Map.entry(
+            datasource.getGroupName(),
+            subworkflows.get(datasource.getGroupName())))
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+  }
+
+  public boolean hasRequiredSubworkflows(List<PageDatasource> datasources) {
+    return datasources.stream()
+        .filter(datasource -> datasource.getGroupName() != null)
+        .allMatch(datasource -> datasource.isOptional()
+            || getSubworkflows().get(datasource.getGroupName()) != null);
+  }
+
+  public NextPage getNextPageName(FeatureFlagConfiguration featureFlags,
+      @NotNull PageWorkflowConfiguration pageWorkflowConfiguration, Integer option) {
+    if (pageWorkflowConfiguration.isDirectNavigation()) {
+      return pageWorkflowConfiguration.getNextPages().get(option);
+    }
+    PageData pageData;
+    if (pageWorkflowConfiguration.isInAGroup()) {
+      pageData = incompleteIterations.get(pageWorkflowConfiguration.getGroupName())
+          .get(pageWorkflowConfiguration.getPageConfiguration().getName());
+    } else {
+      pageData = pagesData
+          .getPage(pageWorkflowConfiguration.getPageConfiguration().getName());
     }
 
-    public PageData getPageData(String pageName) {
-        return this.pagesData.getPage(pageName);
+    if (pageData == null && !pageWorkflowConfiguration.getPageConfiguration().isStaticPage()) {
+      log.error(String.format(
+          "Conditional navigation for %s requires page to have data/inputs.",
+          pageWorkflowConfiguration.getPageConfiguration().getName()));
     }
 
-    public Subworkflows getSubworkflowsForPageDatasources(List<PageDatasource> pageDatasources) {
-        return new Subworkflows(pageDatasources.stream()
-                .filter(datasource -> datasource.getGroupName() != null)
-                .filter(datasource -> !datasource.isOptional() || subworkflows
-                        .containsKey(datasource.getGroupName()))
-                .map(datasource -> Map.entry(
-                        datasource.getGroupName(),
-                        subworkflows.get(datasource.getGroupName())))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+    return pageWorkflowConfiguration.getNextPages().stream()
+        .filter(page -> nextPage(featureFlags, pageWorkflowConfiguration, page)).findFirst()
+        .orElseThrow(() -> new RuntimeException("Cannot find suitable next page."));
+  }
+
+  private boolean nextPage(FeatureFlagConfiguration featureFlags,
+      @NotNull PageWorkflowConfiguration pageWorkflowConfiguration, NextPage nextPage) {
+    boolean isNextPage = true;
+    Condition condition = nextPage.getCondition();
+    if (condition != null) {
+      if (pageWorkflowConfiguration.isInAGroup()) {
+        isNextPage = condition.matches(
+            incompleteIterations.get(pageWorkflowConfiguration.getGroupName())
+                .get(pageWorkflowConfiguration.getPageConfiguration().getName()),
+            pagesData);
+      } else {
+        isNextPage = pagesData.satisfies(condition);
+      }
+    }
+    if (nextPage.getFlag() != null) {
+      isNextPage &= featureFlags.get(nextPage.getFlag()) == FeatureFlag.ON;
+    }
+    return isNextPage;
+  }
+
+  public boolean isCCAPApplication() {
+    return isApplicationWith(List.of("CCAP"));
+  }
+
+  public boolean isCAFApplication() {
+    return isApplicationWith(List.of("SNAP", "CASH", "GRH", "EA"));
+  }
+
+  public boolean isApplicationWith(List<String> programs) {
+    List<String> applicantPrograms = this.getPagesData()
+        .safeGetPageInputValue("choosePrograms", "programs");
+    boolean applicantWith = programs.stream().anyMatch(applicantPrograms::contains);
+    boolean hasHousehold = this.getSubworkflows().containsKey("household");
+    boolean householdWith = false;
+    if (hasHousehold) {
+      householdWith = this.getSubworkflows().get("household").stream().anyMatch(iteration -> {
+        List<String> iterationsPrograms = iteration.getPagesData()
+            .safeGetPageInputValue("householdMemberInfo", "programs");
+        return programs.stream().anyMatch(iterationsPrograms::contains);
+      });
     }
 
-    public boolean hasRequiredSubworkflows(List<PageDatasource> datasources) {
-        return datasources.stream()
-                .filter(datasource -> datasource.getGroupName() != null)
-                .allMatch(datasource -> datasource.isOptional()
-                        || getSubworkflows().get(datasource.getGroupName()) != null);
+    return applicantWith || householdWith;
+  }
+
+  public boolean isMedicalExpensesApplication() {
+    List<String> medicalExpenses = this.getPagesData()
+        .safeGetPageInputValue("medicalExpenses", "medicalExpenses");
+    List<String> selectedExpenses = List
+        .of("MEDICAL_INSURANCE_PREMIUMS", "DENTAL_INSURANCE_PREMIUMS",
+            "VISION_INSURANCE_PREMIUMS");
+    return selectedExpenses.stream().anyMatch(medicalExpenses::contains);
+  }
+
+  public void addUploadedDoc(MultipartFile file, String s3Filepath, String thumbnailFilepath,
+      String type) {
+    UploadedDocument uploadedDocument = new UploadedDocument(file.getOriginalFilename(),
+        s3Filepath,
+        thumbnailFilepath, type, file.getSize());
+    uploadedDocs.add(uploadedDocument);
+  }
+
+  public void removeUploadedDoc(String fileToDelete) {
+    UploadedDocument toRemove = uploadedDocs.stream()
+        .filter(uploadedDocument -> uploadedDocument.getFilename().equals(fileToDelete))
+        .findFirst().orElse(null);
+    uploadedDocs.remove(toRemove);
+  }
+
+  @NotNull
+  public Set<String> getApplicantAndHouseholdMemberPrograms() {
+    List<String> applicantPrograms = getPagesData()
+        .safeGetPageInputValue("choosePrograms", "programs");
+    Set<String> applicantAndHouseholdMemberPrograms = new HashSet<>(applicantPrograms);
+    boolean hasHousehold = getSubworkflows().containsKey("household");
+    if (hasHousehold) {
+      Subworkflow householdSubworkflow = getSubworkflows().get("household");
+      householdSubworkflow.forEach(iteration ->
+          applicantAndHouseholdMemberPrograms.addAll(
+              iteration.getPagesData()
+                  .safeGetPageInputValue("householdMemberInfo", "programs")));
     }
+    return applicantAndHouseholdMemberPrograms;
+  }
 
-    public NextPage getNextPageName(FeatureFlagConfiguration featureFlags,
-            @NotNull PageWorkflowConfiguration pageWorkflowConfiguration, Integer option) {
-        if (pageWorkflowConfiguration.isDirectNavigation()) {
-            return pageWorkflowConfiguration.getNextPages().get(option);
-        }
-        PageData pageData;
-        if (pageWorkflowConfiguration.isInAGroup()) {
-            pageData = incompleteIterations.get(pageWorkflowConfiguration.getGroupName())
-                    .get(pageWorkflowConfiguration.getPageConfiguration().getName());
-        } else {
-            pageData = pagesData
-                    .getPage(pageWorkflowConfiguration.getPageConfiguration().getName());
-        }
+  // method that takes the set given in the method above it, and uses that to build the string we want to show on the success page
+  public String combinedApplicationProgramsList() {
+    Set<String> programList = getApplicantAndHouseholdMemberPrograms();
+    Set<String> programName = new HashSet<>();
+    programList.forEach(program -> {
+      if (program.equalsIgnoreCase("EA")) {
+        programName.add("Emergency");
+      }
+      if (program.equalsIgnoreCase("CASH")) {
+        programName.add("Cash");
+      }
+      if (program.equalsIgnoreCase("GRH")) {
+        programName.add("Housing");
+      }
+      if (program.equalsIgnoreCase("SNAP")) {
+        programName.add("SNAP");
+      }
+    });
 
-        if (pageData == null && !pageWorkflowConfiguration.getPageConfiguration().isStaticPage()) {
-            log.error(String.format(
-                    "Conditional navigation for %s requires page to have data/inputs.",
-                    pageWorkflowConfiguration.getPageConfiguration().getName()));
-        }
-
-        return pageWorkflowConfiguration.getNextPages().stream()
-                .filter(page -> nextPage(featureFlags, pageWorkflowConfiguration, page)).findFirst()
-                .orElseThrow(() -> new RuntimeException("Cannot find suitable next page."));
-    }
-
-    private boolean nextPage(FeatureFlagConfiguration featureFlags,
-            @NotNull PageWorkflowConfiguration pageWorkflowConfiguration, NextPage nextPage) {
-        boolean isNextPage = true;
-        Condition condition = nextPage.getCondition();
-        if (condition != null) {
-            if (pageWorkflowConfiguration.isInAGroup()) {
-                isNextPage = condition.matches(
-                        incompleteIterations.get(pageWorkflowConfiguration.getGroupName())
-                                .get(pageWorkflowConfiguration.getPageConfiguration().getName()),
-                        pagesData);
-            } else {
-                isNextPage = pagesData.satisfies(condition);
-            }
-        }
-        if (nextPage.getFlag() != null) {
-            isNextPage &= featureFlags.get(nextPage.getFlag()) == FeatureFlag.ON;
-        }
-        return isNextPage;
-    }
-
-    public boolean isCCAPApplication() {
-        return isApplicationWith(List.of("CCAP"));
-    }
-
-    public boolean isCAFApplication() {
-        return isApplicationWith(List.of("SNAP", "CASH", "GRH", "EA"));
-    }
-
-    public boolean isApplicationWith(List<String> programs) {
-        List<String> applicantPrograms = this.getPagesData()
-                .safeGetPageInputValue("choosePrograms", "programs");
-        boolean applicantWith = programs.stream().anyMatch(applicantPrograms::contains);
-        boolean hasHousehold = this.getSubworkflows().containsKey("household");
-        boolean householdWith = false;
-        if (hasHousehold) {
-            householdWith = this.getSubworkflows().get("household").stream().anyMatch(iteration -> {
-                List<String> iterationsPrograms = iteration.getPagesData()
-                        .safeGetPageInputValue("householdMemberInfo", "programs");
-                return programs.stream().anyMatch(iterationsPrograms::contains);
-            });
-        }
-
-        return applicantWith || householdWith;
-    }
-
-    public boolean isMedicalExpensesApplication() {
-        List<String> medicalExpenses = this.getPagesData()
-                .safeGetPageInputValue("medicalExpenses", "medicalExpenses");
-        List<String> selectedExpenses = List
-                .of("MEDICAL_INSURANCE_PREMIUMS", "DENTAL_INSURANCE_PREMIUMS",
-                        "VISION_INSURANCE_PREMIUMS");
-        return selectedExpenses.stream().anyMatch(medicalExpenses::contains);
-    }
-
-    public void addUploadedDoc(MultipartFile file, String s3Filepath, String thumbnailFilepath,
-            String type) {
-        UploadedDocument uploadedDocument = new UploadedDocument(file.getOriginalFilename(),
-                s3Filepath,
-                thumbnailFilepath, type, file.getSize());
-        uploadedDocs.add(uploadedDocument);
-    }
-
-    public void removeUploadedDoc(String fileToDelete) {
-        UploadedDocument toRemove = uploadedDocs.stream()
-                .filter(uploadedDocument -> uploadedDocument.getFilename().equals(fileToDelete))
-                .findFirst().orElse(null);
-        uploadedDocs.remove(toRemove);
-    }
-
-    @NotNull
-    public Set<String> getApplicantAndHouseholdMemberPrograms() {
-        List<String> applicantPrograms = getPagesData()
-                .safeGetPageInputValue("choosePrograms", "programs");
-        Set<String> applicantAndHouseholdMemberPrograms = new HashSet<>(applicantPrograms);
-        boolean hasHousehold = getSubworkflows().containsKey("household");
-        if (hasHousehold) {
-            Subworkflow householdSubworkflow = getSubworkflows().get("household");
-            householdSubworkflow.forEach(iteration ->
-                    applicantAndHouseholdMemberPrograms.addAll(
-                            iteration.getPagesData()
-                                    .safeGetPageInputValue("householdMemberInfo", "programs")));
-        }
-        return applicantAndHouseholdMemberPrograms;
-    }
-
-    // method that takes the set given in the method above it, and uses that to build the string we want to show on the success page
-    public String combinedApplicationProgramsList() {
-        Set<String> programList = getApplicantAndHouseholdMemberPrograms();
-        Set<String> programName = new HashSet<>();
-        programList.forEach(program -> {
-            if (program.equalsIgnoreCase("EA")) {
-                programName.add("Emergency");
-            }
-            if (program.equalsIgnoreCase("CASH")) {
-                programName.add("Cash");
-            }
-            if (program.equalsIgnoreCase("GRH")) {
-                programName.add("Housing");
-            }
-            if (program.equalsIgnoreCase("SNAP")) {
-                programName.add("SNAP");
-            }
-        });
-
-        return String.join(", ", programName);
-    }
+    return String.join(", ", programName);
+  }
 }

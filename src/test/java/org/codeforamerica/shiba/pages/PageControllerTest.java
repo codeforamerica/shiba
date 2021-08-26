@@ -451,14 +451,14 @@ class PageControllerTest {
         .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
     verify(applicationRepository).updateStatus(application.getId(), CCAP, IN_PROGRESS);
-        
+
     mockMvc.perform(post("/pages/choosePrograms")
-            .param("programs[]", "SNAP")
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
-    
+        .param("programs[]", "SNAP")
+        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+
     verify(applicationRepository).updateStatusToNull(CCAP, application.getId());
     verify(applicationRepository, times(2)).updateStatus(application.getId(), CAF, IN_PROGRESS);
-    
+
   }
 
   @Test
