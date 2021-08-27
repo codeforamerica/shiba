@@ -157,6 +157,10 @@
     flex-shrink: 0;
 }
 
+.main-footer a:visited {
+    color: #cdcdcd;
+}
+
 body {
     display: flex;
     flex-direction: column;
