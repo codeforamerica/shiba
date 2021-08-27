@@ -450,6 +450,11 @@ pageDefinitions:
             condition:
               input: email
               matcher: NOT_EMPTY
+          - validation: EMAIL_DOES_NOT_END_WITH_CON
+            errorMessageKey: general.validation.email-con-instead-of-com
+            condition:
+              input: email
+              matcher: NOT_EMPTY
       - name: phoneOrEmail
         type: CHECKBOX
         promptMessage:

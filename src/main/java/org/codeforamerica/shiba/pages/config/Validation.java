@@ -54,7 +54,9 @@ public enum Validation {
       .matches("^(\\d{1,3},(\\d{3},)*\\d{3}|\\d+)(\\.\\d{1,2})?")),
   NUMBER(strings -> strings.get(0).trim().matches("\\d*")),
   EMAIL(strings -> String.join("", strings).trim().matches(
-      "[a-zA-Z0-9!#$%&'*+=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?"));
+      "[a-zA-Z0-9!#$%&'*+=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?")),
+  //Email con will check the that the final string of characters does contain con
+  EMAIL_DOES_NOT_END_WITH_CON(strings -> !String.join("", strings).endsWith(".con"));
 
   private final Predicate<List<String>> rule;
 
