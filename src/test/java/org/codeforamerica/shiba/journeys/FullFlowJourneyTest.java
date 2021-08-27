@@ -158,7 +158,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     navigateTo("selectTheTribe");
     testPage.selectFromDropdown("selectedTribe[]", "White Earth");
     testPage.clickContinue();
-    takeSnapShot("test.jpeg");
+
     // It looks like you might be eligible for MFIP. Would you like to apply?
     testPage.enter("applyForMFIP", YES.getDisplayValue());
 
