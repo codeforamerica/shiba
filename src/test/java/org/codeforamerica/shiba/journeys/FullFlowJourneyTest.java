@@ -162,6 +162,9 @@ public class FullFlowJourneyTest extends JourneyTest {
     // It looks like you might be eligible for MFIP. Would you like to apply?
     testPage.enter("applyForMFIP", YES.getDisplayValue());
 
+    // MFIP Confirmation screen
+    testPage.clickContinue();
+
     // Income & Employment
     testPage.clickContinue();
 

@@ -1815,6 +1815,10 @@ pageDefinitions:
     name: tribalTANFConfirmation
     pageTitle: tribal-tanf-confirmation.title
     hasPrimaryButton: false
+  - &applyForMFIPConfirmation
+    name: applyForMFIPConfirmation
+    pageTitle: apply-for-mfip-confirmation.title
+    hasPrimaryButton: false
   - &introIncome
     name: introIncome
     pageTitle: intro-income.title
@@ -3249,6 +3253,11 @@ workflow:
   applyForMFIP:
     pageConfiguration: *applyForMFIP
     nextPages:
+      - pageName: applyForMFIPConfirmation
+        condition:
+          pageName: applyForMFIP
+          input: applyForMFIP
+          value: "true"
       - pageName: introIncome
     skipCondition: *someoneChoseCASH?
     datasources:
@@ -3257,6 +3266,10 @@ workflow:
         groupName: household
   tribalTANFConfirmation:
     pageConfiguration: *tribalTANFConfirmation
+    nextPages:
+      - pageName: introIncome
+  applyForMFIPConfirmation:
+    pageConfiguration: *applyForMFIPConfirmation
     nextPages:
       - pageName: introIncome
   introIncome:
