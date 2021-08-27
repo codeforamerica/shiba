@@ -55,6 +55,15 @@ conditionDefinitions:
     pageName: choosePrograms
     value: SNAP
     input: programs
+  - &someoneChoseCASH?
+    logicalOperator: OR
+    conditions:
+      - pageName: choosePrograms
+        input: programs
+        value: CASH
+      - pageName: householdMemberInfo
+        input: programs
+        value: CASH
   - &applicantDidNotChooseProgram?
     pageName: choosePrograms
     input: programs
@@ -1792,6 +1801,16 @@ pageDefinitions:
         promptMessage:
           promptMessageFragmentName: applyForTribalTANFPrompt
         type: YES_NO
+  - &applyForMFIP
+    name: applyForMFIP
+    pageTitle: apply-for-MFIP.title
+    headerKey: apply-for-MFIP.it-looks-like-you-might-be-eligible
+    hasPrimaryButton: false
+    inputs:
+      - name: applyForMFIP
+        promptMessage:
+          promptMessageFragmentName: applyForMFIPPrompt
+        type: YES_NO
   - &tribalTANFConfirmation
     name: tribalTANFConfirmation
     pageTitle: tribal-tanf-confirmation.title
@@ -3214,11 +3233,28 @@ workflow:
             - pageName: selectTheTribe
               input: selectedTribe
               value: RedLake
-      - pageName: introIncome
+      - pageName: applyForMFIP
+    datasources:
+      - pageName: choosePrograms
+      - pageName: addHouseholdMembers
   applyForTribalTANF:
     pageConfiguration: *applyForTribalTANF
     nextPages:
       - pageName: tribalTANFConfirmation
+        condition:
+          pageName: applyForTribalTANF
+          input: applyForTribalTANF
+          value: "true"
+      - pageName: introIncome
+  applyForMFIP:
+    pageConfiguration: *applyForMFIP
+    nextPages:
+      - pageName: introIncome
+    skipCondition: *someoneChoseCASH?
+    datasources:
+      - pageName: choosePrograms
+      - pageName: householdMemberInfo
+        groupName: household
   tribalTANFConfirmation:
     pageConfiguration: *tribalTANFConfirmation
     nextPages:
