@@ -26,7 +26,7 @@ public class ValidationTest extends AbstractFrameworkTest {
   private final String option1 = "option 1";
   private final String multipleValidationsPageTitle = "multiple validations page title";
   private final String moneyErrorMessageKey = "money is error";
-
+  private final String emailErrorConKey = "Input con for com";
   @Override
   @BeforeEach
   protected void setUp() throws Exception {
@@ -36,6 +36,7 @@ public class ValidationTest extends AbstractFrameworkTest {
     staticMessageSource.addMessage("last-page-title", ENGLISH, lastPageTitle);
     staticMessageSource.addMessage("error-message-key", ENGLISH, errorMessage);
     staticMessageSource.addMessage("money-error-message-key", ENGLISH, moneyErrorMessageKey);
+    staticMessageSource.addMessage("email-error-con-key",ENGLISH ,emailErrorConKey);
     staticMessageSource.addMessage("not-blank-error-message-key", ENGLISH, "not blank is error");
     staticMessageSource.addMessage("zip-code-page-title", ENGLISH, "zip code Page Title");
     staticMessageSource.addMessage("case-number-page-title", ENGLISH, "case number Page Title");
@@ -441,6 +442,11 @@ public class ValidationTest extends AbstractFrameworkTest {
     @Test
     void shouldPassValidationForEMAILWhenValidEmailHasTrailingWhitespace() throws Exception {
       postExpectingNextPageTitle("pageWithEmail", "emailInput", "fake@test.com ", lastPageTitle);
+    }
+
+    @Test
+    void shouldFailValidationForEMAIL_DOES_NOT_END_WITH_CONWhenEmailHasDotConTypo() throws Exception {
+      postExpectingFailureAndAssertErrorDisplaysForThatInput("pageWithEmail", "emailInput", "test@email.con", emailErrorConKey);
     }
   }
 }

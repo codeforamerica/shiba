@@ -194,6 +194,8 @@ pageDefinitions:
         validators:
           - validation: EMAIL
             errorMessageKey: error-message-key
+          - validation: EMAIL_DOES_NOT_END_WITH_CON
+            errorMessageKey: email-error-con-key
   - &caseNumberPage
     name: caseNumberPage
     pageTitle: case-number-page-title
