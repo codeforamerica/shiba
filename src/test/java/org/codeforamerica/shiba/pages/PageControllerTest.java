@@ -500,4 +500,19 @@ class PageControllerTest {
     verify(applicationRepository).updateStatus(application.getId(), CCAP, IN_PROGRESS);
     verify(applicationRepository, never()).updateStatus(application.getId(), CAF, IN_PROGRESS);
   }
+
+  @Test
+  void shouldRedirectToErrorPageWhenAnInvalidPageIsRequested() throws Exception {
+    applicationData.setStartTimeOnce(Instant.now());
+    String applicationId = "someId";
+    applicationData.setId(applicationId);
+    Application application = Application.builder()
+        .id(applicationId)
+        .applicationData(applicationData)
+        .build();
+    when(applicationRepository.getNextId()).thenReturn(applicationId);
+    when(applicationFactory.newApplication(applicationData)).thenReturn(application);
+
+    mockMvc.perform(get("/pages/doesNotExist")).andExpect(redirectedUrl("/error"));
+  }
 }

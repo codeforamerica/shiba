@@ -233,9 +233,12 @@ public class PageController {
               landmarkPagesConfiguration.getLandingPages().get(0)));
     }
 
-    response.addHeader("Cache-Control", "no-store");
-
     var pageWorkflowConfig = applicationConfiguration.getPageWorkflow(pageName);
+    if (pageWorkflowConfig == null) {
+      return new ModelAndView("redirect:/error");
+    }
+
+    response.addHeader("Cache-Control", "no-store");
     if (missingRequiredSubworkflows(pageWorkflowConfig)) {
       return new ModelAndView(
           "redirect:/pages/" + pageWorkflowConfig.getDataMissingRedirect());
@@ -311,8 +314,8 @@ public class PageController {
   }
 
   private boolean missingRequiredSubworkflows(PageWorkflowConfiguration pageWorkflow) {
-    return pageWorkflow.getPageConfiguration().getInputs().isEmpty() && !applicationData
-        .hasRequiredSubworkflows(pageWorkflow.getDatasources());
+    return pageWorkflow.getPageConfiguration().getInputs().isEmpty() &&
+        !applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources());
   }
 
   private boolean isStartPageForGroup(@PathVariable String pageName, String groupName) {
