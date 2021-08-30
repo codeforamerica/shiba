@@ -1,8 +1,11 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <p th:fragment="validationError(data, input)" class="text--error"
    th:if="${!data.isValid() && !inputData.valid(data)}">
-  <th:block th:each="option: ${input.validationErrorMessageKeys}">
-    <i class="icon-warning"></i>
-    <span th:id="${input.name} + '-error'" th:text="#{${option}}"></span>
+  <th:block th:each="option, iter: ${input.validationErrorMessageKeys}">
+    <i class="icon-warning" th:id="${input.name + '-error-icon'}" th:aria-label="#{error.title}"></i>
+    <span th:id="${input.name} + '-error-message-' + ${iter.index + 1}" th:text="#{${option}}"></span>
     <br>
   </th:block>
 </p>
+</html>

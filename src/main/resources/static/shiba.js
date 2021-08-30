@@ -54,12 +54,36 @@ var followUpQuestion = (function () {
 var hasError = (function () {
   var hasInputError = {
     init: function () {
-      var invalidInputErrorSpans = $('*[id*=-error]');
-      if (invalidInputErrorSpans.length >= 1) {
-        setTimeout(function() {invalidInputErrorSpans.first().attr('role', 'alert')}, 300)
-        // Slice the '-error' off the spans id to get the id of the invalid input itself
-        // var inputId = invalidInputErrorSpans.first().attr('id').slice(0, -6);
-        // document.getElementById(inputId).focus();
+      var invalidInputList = $('input[aria-errormessage]');
+      if (invalidInputList.length >= 1) {
+
+        invalidInputList.each(function() {
+          // This [this] is a single input on a page.
+          var inputID = $(this).attr('id');
+          var errorMessageSpans = $(this).siblings('.text--error').children('span');
+          let inputIdWithHash = '#' + inputID;
+          errorMessageSpans.each(function() {
+            // This [this] is a single error message span. We loop because their may be multiple.
+            var errorMessageSpanID = $(this).attr('id');
+            // If the described by doesn't exist yet, set its value to empty string, otherwise use it's current value
+            var inputDescribedBy = $(inputIdWithHash).attr('aria-describedby');
+            if (inputDescribedBy) {
+              inputDescribedBy = " " + inputDescribedBy;
+            } else {
+              inputDescribedBy = "";
+            }
+            // Append the error spans id to the description which may or may not include a helper message id already
+            $(inputIdWithHash).attr('aria-describedby', errorMessageSpanID + inputDescribedBy);
+          });
+          var inputLabelID = $(inputIdWithHash + '-label').attr('id');
+          var inputErrorIconID = $(inputIdWithHash + '-error-icon').attr('id');
+          // Append the error icon id to the input aria-labelledby which causes the SR to read the error-icon ID before the input name like: Error first name
+          $(this).attr('aria-labelledby', inputErrorIconID + " " + inputLabelID);
+        })
+        setTimeout(function() {
+          var inputId = invalidInputList.first().attr('id');
+          document.getElementById(inputId).focus();
+        }, 500)
       }
     }
   }

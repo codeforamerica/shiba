@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="single-input (input, data)" class="form-group"
-     th:classappend="${!data.isValid() && !inputData.valid(data)} ? 'form-group--error' : ''" th:with="inputData=${data.get(input.name)}, hasError=${!data.isValid() && !inputData.valid(data)}">
+     th:classappend="${!data.isValid() && !inputData.valid(data)} ? 'form-group--error' : ''" th:with="inputData=${data.get(input.name)},
+                                                                                                       hasError=${!data.isValid() && !inputData.valid(data)},
+                                                                                                       hasHelpMessage=${input.helpMessageKey != null}">
     <div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${input})"></div>
     <p class="text--help"
-       th:if="${input.helpMessageKey != null}"
+       th:id="${input.name + '-help-message'}"
+       th:if="${hasHelpMessage}"
        th:text="#{${input.helpMessageKey}}"></p>
     <th:block th:switch="${input.type}"
               th:with="formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)}">
@@ -30,7 +33,9 @@
         <input th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).TEXT}"
                type="text"
                class="text-input form-width--medium"
-               th:attr="aria-errormessage=${hasError ? input.name + '-error' : 'null'},
+               th:attr="aria-errormessage=${hasError ? input.name + '-error' : ''},
+                        aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
+                        aria-labelledby=${input.name + '-label'},
                         aria-invalid=${hasError}"
                th:placeholder="${input.placeholder == null} ? '' : #{${input.placeholder}}"
                th:readonly="${input.readOnly}"
@@ -58,6 +63,10 @@
         <input th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).NUMBER}"
                type="number"
                class="text-input form-width--medium"
+               th:attr="aria-errormessage=${hasError ? input.name + '-error' : ''},
+                        aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
+                        aria-labelledby=${input.name + '-label'},
+                        aria-invalid=${hasError}"
                th:id="${input.name}"
                th:value="${(!inputData.value.isEmpty()) ? inputData.value[0] : ''}"
                th:name="${formInputName}"
@@ -65,6 +74,10 @@
         <input th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).PHONE}"
                type="tel"
                class="text-input form-width--medium phone-input"
+               th:attr="aria-errormessage=${hasError ? input.name + '-error' : ''},
+                        aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
+                        aria-labelledby=${input.name + '-label'},
+                        aria-invalid=${hasError}"
                placeholder="(999) 999-9999"
                th:id="${input.name}"
                th:value="${(!inputData.value.isEmpty()) ? inputData.value[0] : ''}"

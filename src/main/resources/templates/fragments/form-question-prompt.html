@@ -13,6 +13,7 @@
     </legend>
     <label class="form-question"
            th:for="${input.name}"
+           th:id="${input.name + '-label'}"
            th:if="${input.promptMessage != null
                     && input.promptMessage.promptMessageKey != null
                     && !input.type.toString().equals('RADIO')
