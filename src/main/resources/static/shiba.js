@@ -54,17 +54,15 @@ var followUpQuestion = (function () {
 var hasError = (function () {
   var hasInputError = {
     init: function () {
-      var invalidInputList = $('input[aria-errormessage]');
+      var invalidInputList = $('input[aria-invalid="true"]');
       if (invalidInputList.length >= 1) {
 
-        invalidInputList.each(function() {
-          // This [this] is a single input on a page.
-          var inputID = $(this).attr('id');
-          var errorMessageSpans = $(this).siblings('.text--error').children('span');
+        invalidInputList.each(function(index, input) {
+          var inputID = $(input).attr('id');
+          var errorMessageSpans = $(input).siblings('.text--error').children('span');
           let inputIdWithHash = '#' + inputID;
-          errorMessageSpans.each(function() {
-            // This [this] is a single error message span. We loop because their may be multiple.
-            var errorMessageSpanID = $(this).attr('id');
+          errorMessageSpans.each(function(index, span) {
+            var errorMessageSpanID = $(span).attr('id');
             // If the described by doesn't exist yet, set its value to empty string, otherwise use it's current value
             var inputDescribedBy = $(inputIdWithHash).attr('aria-describedby');
             if (inputDescribedBy) {
@@ -78,7 +76,7 @@ var hasError = (function () {
           var inputLabelID = $(inputIdWithHash + '-label').attr('id');
           var inputErrorIconID = $(inputIdWithHash + '-error-icon').attr('id');
           // Append the error icon id to the input aria-labelledby which causes the SR to read the error-icon ID before the input name like: Error first name
-          $(this).attr('aria-labelledby', inputErrorIconID + " " + inputLabelID);
+          $(input).attr('aria-labelledby', inputErrorIconID + " " + inputLabelID);
         })
         setTimeout(function() {
           var inputId = invalidInputList.first().attr('id');
