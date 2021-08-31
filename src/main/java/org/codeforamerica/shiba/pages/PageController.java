@@ -335,7 +335,7 @@ public class PageController {
     ));
 
     if (pageWorkflow.getPageConfiguration().isStaticPage()) {
-      model.put("additionalContext", pageName);
+      model.put("pageNameContext", pageName);
     }
 
     model.put("county", countyParser.parse(applicationData));
