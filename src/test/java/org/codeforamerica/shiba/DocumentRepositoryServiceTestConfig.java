@@ -39,7 +39,7 @@ public class DocumentRepositoryServiceTestConfig {
       try {
         return FileUtils.readFileToByteArray(fileToRead);
       } catch (IOException e) {
-        throw new RuntimeException("file does not exist: " + fileToRead);
+        return new byte[0];
       }
     }
 
