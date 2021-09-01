@@ -35,10 +35,10 @@ public class DocumentRepositoryServiceTestConfig {
 
     @Override
     public byte[] get(String filepath) {
-      var fileToRead = new File(tempDirectory.toFile(), filepath);
       try {
+        var fileToRead = new File(tempDirectory.toFile(), filepath);
         return FileUtils.readFileToByteArray(fileToRead);
-      } catch (IOException e) {
+      } catch (Exception e) {
         return new byte[0];
       }
     }
