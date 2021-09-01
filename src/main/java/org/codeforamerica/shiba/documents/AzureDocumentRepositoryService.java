@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Slf4j
-public class AzureDocumentRepositoryService implements DocumentRepositoryService {
+public class AzureDocumentRepositoryService {
 
   private BlobContainerClient containerClient;
 
@@ -31,7 +31,6 @@ public class AzureDocumentRepositoryService implements DocumentRepositoryService
     }
   }
 
-  @Override
   public byte[] get(String filepath) {
     BlobClient blobClient = containerClient.getBlobClient(filepath);
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -44,7 +43,6 @@ public class AzureDocumentRepositoryService implements DocumentRepositoryService
     }
   }
 
-  @Override
   public void upload(String filepath, MultipartFile file) throws IOException {
     log.info("Uploading file {} to Azure at filepath {}", file.getOriginalFilename(), filepath);
     try (var inputStream = file.getInputStream()) {
@@ -52,7 +50,6 @@ public class AzureDocumentRepositoryService implements DocumentRepositoryService
     }
   }
 
-  @Override
   public void upload(String filepath, String fileContent) throws IOException {
     log.info("Uploading file content string to Azure at filepath {}", filepath);
     var fileContentBytes = fileContent.getBytes(StandardCharsets.UTF_8);
@@ -68,7 +65,6 @@ public class AzureDocumentRepositoryService implements DocumentRepositoryService
     log.info("finished uploading");
   }
 
-  @Override
   public void delete(String filepath) {
     log.info("Deleting file from Azure at filepath {}", filepath);
     BlobClient blobClient = containerClient.getBlobClient(filepath);

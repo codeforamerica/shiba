@@ -2,20 +2,20 @@ package org.codeforamerica.shiba.documents;
 
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Slf4j
-@Primary
 public class CombinedDocumentRepositoryService implements DocumentRepositoryService {
 
   private final S3DocumentRepositoryService s3DocumentRepositoryService;
   private final AzureDocumentRepositoryService azureDocumentRepositoryService;
 
-  public CombinedDocumentRepositoryService(S3DocumentRepositoryService s3DocumentRepositoryService,
-      AzureDocumentRepositoryService azureDocumentRepositoryService) {
+  public CombinedDocumentRepositoryService(
+      S3DocumentRepositoryService s3DocumentRepositoryService,
+      AzureDocumentRepositoryService azureDocumentRepositoryService
+  ) {
     this.s3DocumentRepositoryService = s3DocumentRepositoryService;
     this.azureDocumentRepositoryService = azureDocumentRepositoryService;
   }

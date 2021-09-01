@@ -35,7 +35,7 @@ import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
-import org.codeforamerica.shiba.documents.CombinedDocumentRepositoryService;
+import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
@@ -75,7 +75,7 @@ class MnitDocumentConsumerTest {
   @MockBean
   private MonitoringService monitoringService;
   @MockBean
-  private CombinedDocumentRepositoryService documentRepositoryService;
+  private DocumentRepositoryService documentRepositoryService;
   @MockBean
   private FileNameGenerator fileNameGenerator;
   @MockBean

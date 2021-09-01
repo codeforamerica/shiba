@@ -20,7 +20,7 @@ import java.time.Duration;
 import java.time.ZonedDateTime;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.documents.CombinedDocumentRepositoryService;
+import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +41,7 @@ class ApplicationDataSerializationTest {
   private FileNameGenerator fileNameGenerator;
 
   @MockBean
-  private CombinedDocumentRepositoryService documentRepositoryService;
+  private DocumentRepositoryService documentRepositoryService;
 
   @Autowired
   private PdfGenerator pdfGenerator;

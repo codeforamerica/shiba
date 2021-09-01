@@ -11,13 +11,12 @@ import com.amazonaws.util.IOUtils;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.NotImplementedException;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Slf4j
-public class S3DocumentRepositoryService implements DocumentRepositoryService {
+public class S3DocumentRepositoryService {
 
   private final TransferManager transferManager;
   private final String bucketName;
@@ -31,7 +30,6 @@ public class S3DocumentRepositoryService implements DocumentRepositoryService {
     this.transferManager = transferManager;
   }
 
-  @Override
   public byte[] get(String filepath) {
     try {
       S3Object obj = s3Client.getObject(bucketName, filepath);
@@ -44,7 +42,6 @@ public class S3DocumentRepositoryService implements DocumentRepositoryService {
     }
   }
 
-  @Override
   public void upload(String filepath, MultipartFile file) {
     log.info("Uploading file {} to S3 at filepath {}", file.getOriginalFilename(), filepath);
     ObjectMetadata metadata = new ObjectMetadata();
@@ -59,12 +56,10 @@ public class S3DocumentRepositoryService implements DocumentRepositoryService {
     }
   }
 
-  @Override
   public void upload(String filepath, String fileContent) throws IOException {
     throw new NotImplementedException();
   }
 
-  @Override
   public void delete(String filepath) throws SdkClientException {
     log.info("Deleting file at filepath {} from S3", filepath);
     s3Client.deleteObject(new DeleteObjectRequest(bucketName, filepath));
