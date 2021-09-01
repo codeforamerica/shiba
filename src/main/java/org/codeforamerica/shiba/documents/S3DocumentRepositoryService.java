@@ -10,13 +10,14 @@ import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.util.IOUtils;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Slf4j
-public class S3DocumentRepositoryService implements DocumentRepositoryService {
+// Implements DocumentRepositoryService but that's not declared so that CombinedDocumentRepositoryService
+// will be autowired as our default DocumentRepositoryService
+public class S3DocumentRepositoryService {
 
   private final TransferManager transferManager;
   private final String bucketName;
@@ -24,14 +25,12 @@ public class S3DocumentRepositoryService implements DocumentRepositoryService {
 
   public S3DocumentRepositoryService(
       TransferManager transferManager,
-      @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") AmazonS3 s3Client,
-      ResourceLoader resourceLoader) {
+      @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") AmazonS3 s3Client) {
     this.s3Client = s3Client;
     this.bucketName = System.getenv("S3_BUCKET");
     this.transferManager = transferManager;
   }
 
-  @Override
   public byte[] get(String filepath) {
     try {
       S3Object obj = s3Client.getObject(bucketName, filepath);
@@ -44,7 +43,6 @@ public class S3DocumentRepositoryService implements DocumentRepositoryService {
     }
   }
 
-  @Override
   public void upload(String filepath, MultipartFile file) {
     log.info("Uploading file {} to S3 at filepath {}", file.getOriginalFilename(), filepath);
     ObjectMetadata metadata = new ObjectMetadata();
@@ -59,7 +57,6 @@ public class S3DocumentRepositoryService implements DocumentRepositoryService {
     }
   }
 
-  @Override
   public void delete(String filepath) throws SdkClientException {
     log.info("Deleting file at filepath {} from S3", filepath);
     s3Client.deleteObject(new DeleteObjectRequest(bucketName, filepath));

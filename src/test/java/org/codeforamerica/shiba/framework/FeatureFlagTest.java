@@ -24,7 +24,6 @@ public class FeatureFlagTest extends AbstractFrameworkTest {
     staticMessageSource.addMessage("conditional-feature-page-title", ENGLISH, "conditionalFeature");
     when(featureFlagConfiguration.get("first-feature")).thenReturn(FeatureFlag.ON);
     when(featureFlagConfiguration.get("second-feature")).thenReturn(FeatureFlag.OFF);
-
   }
 
   @Test
@@ -50,14 +49,11 @@ public class FeatureFlagTest extends AbstractFrameworkTest {
   @Test
   void shouldGoToSpecificPageIfFeatureFlagIsEnabledAndConditionIsSatisfied() throws Exception {
     postExpectingNextPageTitle("thirdPage", "foo", "yes", "conditionalFeature");
-
   }
 
   @Test
   void shouldNotGoToSpecificPageIfFeatureFlagIsEnabledAndConditionIsNotSatisfied()
       throws Exception {
     postExpectingNextPageTitle("thirdPage", "foo", "no", "firstPage");
-
   }
-
 }

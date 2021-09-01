@@ -7,18 +7,21 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Slf4j
-public class CombinedDocumentRepositoryService {
+public class CombinedDocumentRepositoryService implements DocumentRepositoryService {
 
   private final S3DocumentRepositoryService s3DocumentRepositoryService;
   private final AzureDocumentRepositoryService azureDocumentRepositoryService;
 
-  public CombinedDocumentRepositoryService(S3DocumentRepositoryService s3DocumentRepositoryService,
-      AzureDocumentRepositoryService azureDocumentRepositoryService) {
+  public CombinedDocumentRepositoryService(
+      S3DocumentRepositoryService s3DocumentRepositoryService,
+      AzureDocumentRepositoryService azureDocumentRepositoryService
+  ) {
     this.s3DocumentRepositoryService = s3DocumentRepositoryService;
     this.azureDocumentRepositoryService = azureDocumentRepositoryService;
   }
 
-  public byte[] getFromAzureWithFallbackToS3(String filepath) {
+  @Override
+  public byte[] get(String filepath) {
     log.info("Checking for filepath " + filepath + " in Azure.");
     byte[] content = azureDocumentRepositoryService.get(filepath);
     if (null == content) {
@@ -31,14 +34,17 @@ public class CombinedDocumentRepositoryService {
     return content;
   }
 
+  @Override
   public void upload(String filepath, MultipartFile file) throws InterruptedException, IOException {
     azureDocumentRepositoryService.upload(filepath, file);
   }
 
+  @Override
   public void upload(String filepath, String fileContent) throws InterruptedException, IOException {
     azureDocumentRepositoryService.upload(filepath, fileContent);
   }
 
+  @Override
   public void delete(String filepath) {
     azureDocumentRepositoryService.delete(filepath);
   }

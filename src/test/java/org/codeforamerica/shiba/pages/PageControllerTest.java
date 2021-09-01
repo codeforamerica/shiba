@@ -30,11 +30,12 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Locale;
+import org.codeforamerica.shiba.DocumentRepositoryServiceTestConfig;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
-import org.codeforamerica.shiba.documents.CombinedDocumentRepositoryService;
+import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -61,9 +62,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = MOCK, properties = {
-    "pagesConfig=pages-config/test-pages-controller.yaml"})
-@ContextConfiguration(classes = {NonSessionScopedApplicationData.class})
+@SpringBootTest(
+    webEnvironment = MOCK,
+    properties = {"pagesConfig=pages-config/test-pages-controller.yaml"})
+@ContextConfiguration(classes = {NonSessionScopedApplicationData.class,
+    DocumentRepositoryServiceTestConfig.class})
 class PageControllerTest {
 
   private MockMvc mockMvc;
@@ -81,7 +84,7 @@ class PageControllerTest {
   @MockBean
   private FeatureFlagConfiguration featureFlags;
   @SpyBean
-  private CombinedDocumentRepositoryService combinedDocumentRepositoryService;
+  private DocumentRepositoryService documentRepositoryService;
 
   @Autowired
   private PageController pageController;
@@ -428,8 +431,7 @@ class PageControllerTest {
     when(applicationRepository.getNextId()).thenReturn(applicationId);
     when(applicationFactory.newApplication(applicationData)).thenReturn(application);
 
-    when(combinedDocumentRepositoryService.getFromAzureWithFallbackToS3(any()))
-        .thenThrow(RuntimeException.class);
+    when(documentRepositoryService.get(any())).thenThrow(RuntimeException.class);
 
     mockMvc.perform(get("/pages/uploadDocuments")).andExpect(status().isOk());
   }

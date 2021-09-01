@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
+import org.codeforamerica.shiba.DocumentRepositoryServiceTestConfig;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.pages.enrichment.smartystreets.SmartyStreetClient;
@@ -41,7 +42,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-@Import({WebDriverConfiguration.class})
+@Import({WebDriverConfiguration.class, DocumentRepositoryServiceTestConfig.class})
 @ActiveProfiles("test")
 public abstract class AbstractBasePageTest {
 
@@ -389,21 +390,6 @@ public abstract class AbstractBasePageTest {
     } else {
       testPage.enter("helpWithBenefits", NO.getDisplayValue());
     }
-  }
-
-  protected void completeFlowFromReviewInfoToDisability(List<String> programSelections) {
-    testPage.clickLink("This looks correct");
-    testPage.enter("addHouseholdMembers", NO.getDisplayValue());
-    testPage.clickContinue();
-    if (programSelections.contains(PROGRAM_CCAP) || programSelections.contains(PROGRAM_GRH)) {
-      testPage.enter("livingSituation", "None of these");
-      testPage.clickContinue();
-    }
-    testPage.enter("goingToSchool", YES.getDisplayValue());
-    testPage.enter("isPregnant", NO.getDisplayValue());
-    testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
-    testPage.enter("isUsCitizen", YES.getDisplayValue());
-    testPage.enter("hasDisability", NO.getDisplayValue());
   }
 
   protected void uploadFile(String filepath) {
