@@ -31,6 +31,22 @@ public class CountyParser {
   }
 
   public County parse(ApplicationData applicationData) {
+    String countyName = parseCountyInput(applicationData);
+
+    if (featureFlagConfiguration.get("county-" + County.valueFor(countyName).name().toLowerCase())
+        == FeatureFlag.OFF) {
+      return County.Other;
+    }
+    return County.valueFor(countyName);
+  }
+
+  /**
+   * Parse County input from application regardless if county is active or not.
+   *
+   * @param applicationData applicant data to parse
+   * @return county input
+   */
+  public String parseCountyInput(ApplicationData applicationData) {
     String countyName;
     if (applicationData.getFlow() == FlowType.LATER_DOCS) {
       countyName = getFirstValue(applicationData.getPagesData(), IDENTIFY_COUNTY);
@@ -42,12 +58,7 @@ public class CountyParser {
     } else {
       countyName = parseCountyNameFromFullApplication(applicationData);
     }
-
-    if (featureFlagConfiguration.get("county-" + County.valueFor(countyName).name().toLowerCase())
-        == FeatureFlag.OFF) {
-      return County.Other;
-    }
-    return County.valueFor(countyName);
+    return countyName;
   }
 
   private String parseCountyNameFromFullApplication(ApplicationData applicationData) {

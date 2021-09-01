@@ -87,26 +87,10 @@ public class MnitEsbWebServiceClient {
     createDocument.setFolderId("workspace://SpacesStore/" + countyMap.get(county).getFolderId());
     createDocument.setRepositoryId("<Unknown");
     createDocument.setTypeId("document");
+    setPropertiesOnDocument(applicationFile, county, applicationNumber, applicationDocument,
+        flowType, createDocument);
+    setContentStreamOnDocument(applicationFile, createDocument);
 
-    CmisPropertiesType properties = new CmisPropertiesType();
-    List<CmisProperty> propertyUris = properties.getPropertyUriOrPropertyIdOrPropertyString();
-    CmisPropertyString fileNameProperty = createCmisPropertyString("Name",
-        applicationFile.getFileName());
-    CmisPropertyString subject = createCmisPropertyString("subject", "MN Benefits Application");
-    CmisPropertyString description = createCmisPropertyString("description",
-        generateDocumentDescription(applicationFile, applicationDocument, applicationNumber,
-            flowType));
-    CmisPropertyString dhsProviderId = createCmisPropertyString("dhsProviderId",
-        countyMap.get(county).getDhsProviderId());
-    propertyUris
-        .addAll(List.of(fileNameProperty, subject, description, description, dhsProviderId));
-    createDocument.setProperties(properties);
-
-    CmisContentStreamType contentStream = new CmisContentStreamType();
-    contentStream.setLength(BigInteger.ZERO);
-    contentStream.setStream(new DataHandler(new ByteArrayDataSource(applicationFile.getFileBytes(),
-        MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE)));
-    createDocument.setContentStream(contentStream);
     webServiceTemplate.marshalSendAndReceive(createDocument, message -> {
       SOAPMessage soapMessage = ((SaajSoapMessage) message).getSaajMessage();
       try {
@@ -180,5 +164,32 @@ public class MnitEsbWebServiceClient {
       }
     }
     return docDescription;
+  }
+
+  private void setPropertiesOnDocument(ApplicationFile applicationFile, County county,
+      String applicationNumber, Document applicationDocument, FlowType flowType,
+      CreateDocument createDocument) {
+    CmisPropertiesType properties = new CmisPropertiesType();
+    List<CmisProperty> propertyUris = properties.getPropertyUriOrPropertyIdOrPropertyString();
+    CmisPropertyString fileNameProperty = createCmisPropertyString("Name",
+        applicationFile.getFileName());
+    CmisPropertyString subject = createCmisPropertyString("subject", "MN Benefits Application");
+    CmisPropertyString description = createCmisPropertyString("description",
+        generateDocumentDescription(applicationFile, applicationDocument, applicationNumber,
+            flowType));
+    CmisPropertyString dhsProviderId = createCmisPropertyString("dhsProviderId",
+        countyMap.get(county).getDhsProviderId());
+    propertyUris
+        .addAll(List.of(fileNameProperty, subject, description, description, dhsProviderId));
+    createDocument.setProperties(properties);
+  }
+
+  private void setContentStreamOnDocument(ApplicationFile applicationFile,
+      CreateDocument createDocument) {
+    CmisContentStreamType contentStream = new CmisContentStreamType();
+    contentStream.setLength(BigInteger.ZERO);
+    contentStream.setStream(new DataHandler(new ByteArrayDataSource(applicationFile.getFileBytes(),
+        MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE)));
+    createDocument.setContentStream(contentStream);
   }
 }

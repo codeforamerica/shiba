@@ -34,6 +34,7 @@ import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
+import org.codeforamerica.shiba.pages.RoutingDestinationService.RoutingDestination;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.config.LandmarkPagesConfiguration;
@@ -93,6 +94,7 @@ public class PageController {
   private final CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
   private final SuccessMessageService successMessageService;
   private final DocRecommendationMessageService docRecommendationMessageService;
+  private final RoutingDestinationService routingDestinationService;
   private final DocumentRepository documentRepository;
 
   public PageController(
@@ -111,6 +113,7 @@ public class PageController {
       CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider,
       SuccessMessageService successMessageService,
       DocRecommendationMessageService docRecommendationMessageService,
+      RoutingDestinationService routingDestinationService,
       DocumentRepository documentRepository,
       ApplicationRepository applicationRepository) {
     this.applicationData = applicationData;
@@ -128,6 +131,7 @@ public class PageController {
     this.ccapExpeditedEligibilityDecider = ccapExpeditedEligibilityDecider;
     this.successMessageService = successMessageService;
     this.docRecommendationMessageService = docRecommendationMessageService;
+    this.routingDestinationService = routingDestinationService;
     this.documentRepository = documentRepository;
     this.applicationRepository = applicationRepository;
   }
@@ -380,6 +384,10 @@ public class PageController {
           .getPageInputFirstValue("healthcareCoverage", "healthcareCoverage");
       boolean hasHealthcare = "YES".equalsIgnoreCase(inputData);
       model.put("doesNotHaveHealthcare", !hasHealthcare);
+      RoutingDestination routingDestination = routingDestinationService
+          .getRoutingDestination(applicationData);
+      model.put("routedTribalNation", routingDestination.getTribalNation());
+      model.put("routedCounty", routingDestination.getCounty());
     }
 
     if (landmarkPagesConfiguration.isLaterDocsTerminalPage(pageName)) {

@@ -74,6 +74,11 @@ public class ApplicationDataParser {
     coordinatesMap.put(Field.GENERAL_DELIVERY_ZIPCODE,
         new ParsingCoordinate("cityForGeneralDelivery", "enrichedZipcode"));
 
+    coordinatesMap.put(Field.SELECTED_TRIBAL_NATION,
+        new ParsingCoordinate("selectTheTribe", "selectedTribe"));
+    coordinatesMap.put(Field.APPLYING_FOR_TRIBAL_TANF,
+        new ParsingCoordinate("applyForTribalTANF", "applyForTribalTANF"));
+
     coordinatesMap.put(Field.IS_HOMELESS, new ParsingCoordinate("homeAddress", "isHomeless"));
     coordinatesMap.put(Field.SAME_MAILING_ADDRESS,
         new ParsingCoordinate("homeAddress", "sameMailingAddress"));
@@ -124,13 +129,13 @@ public class ApplicationDataParser {
 
   public static List<String> getValues(PagesData pagesData, Field field) {
     ParsingCoordinate coordinate = coordinatesMap.get(field);
-    return pagesData.safeGetPageInputValue(coordinate.getPageName(), coordinate.getInputName());
+    return pagesData.safeGetPageInputValue(coordinate.pageName(), coordinate.inputName());
   }
 
   public static String getFirstValue(PagesData pagesData, Field field) {
     ParsingCoordinate coordinate = coordinatesMap.get(field);
     String pageInputValue = pagesData
-        .getPageInputFirstValue(coordinate.getPageName(), coordinate.getInputName());
+        .getPageInputFirstValue(coordinate.pageName(), coordinate.inputName());
     return pageInputValue == null ? field.getDefaultValue() : pageInputValue;
   }
 
@@ -195,6 +200,9 @@ public class ApplicationDataParser {
     GENERAL_DELIVERY_CITY,
     GENERAL_DELIVERY_ZIPCODE,
 
+    SELECTED_TRIBAL_NATION,
+    APPLYING_FOR_TRIBAL_TANF,
+
     IDENTIFY_ZIPCODE,
     IDENTIFY_COUNTY("Other"),
 
@@ -236,15 +244,7 @@ public class ApplicationDataParser {
     HOUSEHOLD
   }
 
-  @Getter
-  private static class ParsingCoordinate {
+  private record ParsingCoordinate(String pageName, String inputName) {
 
-    private final String pageName;
-    private final String inputName;
-
-    ParsingCoordinate(String pageName, String inputName) {
-      this.pageName = pageName;
-      this.inputName = inputName;
-    }
   }
 }

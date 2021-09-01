@@ -1,6 +1,9 @@
 package org.codeforamerica.shiba.output;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.County.MilleLacsBand;
+import static org.codeforamerica.shiba.County.Olmsted;
+import static org.codeforamerica.shiba.application.FlowType.FULL;
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.output.Document.CAF;
@@ -29,24 +32,17 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.PageData;
-import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.testutilities.NonSessionScopedApplicationData;
-import org.codeforamerica.shiba.testutilities.PageDataBuilder;
-import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -97,41 +93,24 @@ class MnitDocumentConsumerTest {
 
   @BeforeEach
   void setUp() {
-    PagesData pagesData = new PagesDataBuilder().build(List.of(
-        new PageDataBuilder("personalInfo", Map.of(
-            "firstName", List.of("Jane"),
-            "lastName", List.of("Doe"),
-            "otherName", List.of(""),
-            "dateOfBirth", List.of("10", "04", "2020"),
-            "ssn", List.of("123-45-6789"),
-            "sex", List.of("FEMALE"),
-            "maritalStatus", List.of("NEVER_MARRIED"),
-            "livedInMnWholeLife", List.of("false"),
-            "moveToMnDate", List.of("11", "03", "2020"),
-            "moveToMnPreviousCity", List.of("")
-        )),
-        new PageDataBuilder("contactInfo", Map.of(
-            "phoneNumber", List.of("(603) 879-1111"),
-            "email", List.of("jane@example.com"),
-            "phoneOrEmail", List.of("PHONE")
-        )),
-        new PageDataBuilder("choosePrograms", Map.of(
-            "programs", List.of("SNAP")
-        ))
-    ));
+    applicationData = new TestApplicationDataBuilder()
+        .withPersonalInfo()
+        .withContactInfo()
+        .withApplicantPrograms(List.of("SNAP"))
+        .withPageData("homeAddress", "county", List.of("Olmsted"))
+        .build();
 
     ZonedDateTime completedAt = ZonedDateTime.of(
         LocalDateTime.of(2021, 6, 10, 1, 28),
         ZoneOffset.UTC);
 
-    applicationData.setPagesData(pagesData);
     application = Application.builder()
         .id("someId")
         .completedAt(completedAt)
         .applicationData(applicationData)
-        .county(County.Olmsted)
+        .county(Olmsted)
         .timeToComplete(null)
-        .flow(FlowType.FULL)
+        .flow(FULL)
         .build();
     when(messageSource.getMessage(any(), any(), any())).thenReturn("default success message");
     when(fileNameGenerator.generatePdfFileName(any(), any())).thenReturn("some-file.pdf");
@@ -144,28 +123,63 @@ class MnitDocumentConsumerTest {
   }
 
   @Test
-  void generatesThePDFFromTheApplicationData() {
-    documentConsumer.process(application);
-    verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
-  }
-
-  @Test
-  void generatesTheXmlFromTheApplicationData() {
-    documentConsumer.process(application);
-    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
-  }
-
-  @Test
-  void sendsTheGeneratedXmlAndPdf() {
+  void sendsTheGeneratedXmlAndPdfToCountyOnly() {
     ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
     doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), any(), any());
     ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
     when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
+
     documentConsumer.process(application);
-    verify(mnitClient)
-        .send(pdfApplicationFile, County.Olmsted, application.getId(), Document.CAF, FlowType.FULL);
-    verify(mnitClient)
-        .send(xmlApplicationFile, County.Olmsted, application.getId(), Document.CAF, FlowType.FULL);
+
+    verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
+    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
+    verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
+    verify(mnitClient).send(pdfApplicationFile, Olmsted, application.getId(), CAF, FULL);
+    verify(mnitClient).send(xmlApplicationFile, Olmsted, application.getId(), CAF, FULL);
+  }
+
+  @Test
+  void sendsToTribalNationOnly() {
+    ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
+    doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), any(), any());
+    ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
+    when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
+
+    application.setApplicationData(new TestApplicationDataBuilder()
+        .withApplicantPrograms(List.of("EA"))
+        .withPageData("selectTheTribe", "selectedTribe", List.of("Bois Forte"))
+        .build());
+
+    documentConsumer.process(application);
+
+    verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
+    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
+    verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
+    verify(mnitClient).send(pdfApplicationFile, MilleLacsBand, application.getId(), CAF, FULL);
+    verify(mnitClient).send(xmlApplicationFile, MilleLacsBand, application.getId(), CAF, FULL);
+  }
+
+  @Test
+  void sendsToBothTribalNationAndCounty() {
+    ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
+    doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), any(), any());
+    ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
+    when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
+
+    application.setApplicationData(new TestApplicationDataBuilder()
+        .withApplicantPrograms(List.of("EA", "SNAP"))
+        .withPageData("selectTheTribe", "selectedTribe", List.of("Bois Forte"))
+        .build());
+
+    documentConsumer.process(application);
+
+    verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
+    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
+    verify(mnitClient, times(4)).send(any(), any(), any(), any(), any());
+    verify(mnitClient).send(pdfApplicationFile, MilleLacsBand, application.getId(), CAF, FULL);
+    verify(mnitClient).send(xmlApplicationFile, MilleLacsBand, application.getId(), CAF, FULL);
+    verify(mnitClient).send(pdfApplicationFile, Olmsted, application.getId(), CAF, FULL);
+    verify(mnitClient).send(xmlApplicationFile, Olmsted, application.getId(), CAF, FULL);
   }
 
   @Test
@@ -175,14 +189,14 @@ class MnitDocumentConsumerTest {
 
     ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
     when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
-    PagesData pagesData = new PagesData();
-    PageData chooseProgramsPage = new PageData();
-    chooseProgramsPage.put("programs", InputData.builder().value(List.of("CCAP")).build());
-    pagesData.put("choosePrograms", chooseProgramsPage);
-    applicationData.setPagesData(pagesData);
+
+    application.setApplicationData(new TestApplicationDataBuilder()
+        .withApplicantPrograms(List.of("CCAP"))
+        .build());
+
     documentConsumer.process(application);
-    verify(mnitClient).send(pdfApplicationFile, County.Olmsted, application.getId(), Document.CCAP,
-        FlowType.FULL);
+
+    verify(mnitClient).send(pdfApplicationFile, Olmsted, application.getId(), CCAP, FULL);
   }
 
   @Test
@@ -190,12 +204,12 @@ class MnitDocumentConsumerTest {
     ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
     doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), eq(CCAP), any());
 
-    PagesData pagesData = new PagesData();
-    PageData chooseProgramsPage = new PageData();
-    chooseProgramsPage.put("programs", InputData.builder().value(List.of("CCAP", "SNAP")).build());
-    pagesData.put("choosePrograms", chooseProgramsPage);
-    applicationData.setPagesData(pagesData);
+    application.setApplicationData(new TestApplicationDataBuilder()
+        .withApplicantPrograms(List.of("CCAP", "SNAP"))
+        .build());
+
     documentConsumer.process(application);
+
     verify(applicationRepository).updateStatus(application.getId(), CAF, SENDING);
     verify(applicationRepository).updateStatus(application.getId(), CCAP, SENDING);
   }
@@ -207,12 +221,13 @@ class MnitDocumentConsumerTest {
 
     doThrow(new RuntimeException()).doNothing().when(mnitClient)
         .send(any(), any(), any(), any(), any());
-    PagesData pagesData = new PagesData();
-    PageData chooseProgramsPage = new PageData();
-    chooseProgramsPage.put("programs", InputData.builder().value(List.of("CCAP", "SNAP")).build());
-    pagesData.put("choosePrograms", chooseProgramsPage);
-    applicationData.setPagesData(pagesData);
+
+    application.setApplicationData(new TestApplicationDataBuilder()
+        .withApplicantPrograms(List.of("CCAP", "SNAP"))
+        .build());
+
     documentConsumer.process(application);
+
     verify(applicationRepository, atLeastOnce())
         .updateStatus(application.getId(), CCAP, DELIVERY_FAILED);
   }
@@ -237,8 +252,7 @@ class MnitDocumentConsumerTest {
 
     ArgumentCaptor<ApplicationFile> captor = ArgumentCaptor.forClass(ApplicationFile.class);
     verify(mnitClient, times(2))
-        .send(captor.capture(), eq(County.Olmsted), eq(application.getId()), eq(UPLOADED_DOC),
-            any());
+        .send(captor.capture(), eq(Olmsted), eq(application.getId()), eq(UPLOADED_DOC), any());
 
     // Uncomment the following line to regenerate the test files (useful if the files or cover page have changed)
 //         writeByteArrayToFile(captor.getAllValues().get(0).getFileBytes(), "src/test/resources/shiba+file.pdf");
@@ -266,8 +280,7 @@ class MnitDocumentConsumerTest {
         "pdf1of2.pdf");
     documentConsumer.processUploadedDocuments(application);
     ApplicationFile pdfApplicationFile = new ApplicationFile(null, "someFile.pdf");
-    verify(mnitClient, never()).send(pdfApplicationFile, County.Olmsted, application.getId(),
-        Document.CCAP, FlowType.FULL);
+    verify(mnitClient, never()).send(pdfApplicationFile, Olmsted, application.getId(), CCAP, FULL);
   }
 
   @Test
