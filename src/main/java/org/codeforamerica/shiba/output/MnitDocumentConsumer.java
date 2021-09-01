@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.output;
 
-import static org.codeforamerica.shiba.County.MilleLacs;
+import static org.codeforamerica.shiba.County.MilleLacsBand;
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.output.Document.CAF;
@@ -101,10 +101,10 @@ public class MnitDocumentConsumer {
   private void sendApplication(RoutingDestination routingDestination, Application application,
       Document documentType, ApplicationFile applicationFile) {
 
-    // Only sending to Mille Lacs right now
+    // Only sending to Mille Lacs Band right now
     if (featureFlagConfiguration.get("apply-for-tribal-nation").isOn()
         && routingDestination.getTribalNation() != null) {
-      mnitClient.send(applicationFile, MilleLacs, application.getId(), documentType,
+      mnitClient.send(applicationFile, MilleLacsBand, application.getId(), documentType,
           application.getFlow());
     }
 

@@ -112,8 +112,10 @@ counties: &defaultCounties
   Meeker:
     phoneNumber: 320-693-5300
   MilleLacs:
-    email: help+dev@mnbenefits.org
     phoneNumber: 320-983-8208
+  MilleLacsBand:
+    email: help+dev@mnbenefits.org
+    phoneNumber: ???
     folderId: ae7d7c7f-6503-46ea-92a7-4a813da9fb02
     dhsProviderId: A602658300
   Morrison:
@@ -251,7 +253,7 @@ staging:
     Hennepin:
       email: help+staging@mnbenefits.org
       folderId: 45ed1eea-d045-48fe-9970-383e1b889ec5
-    MilleLacs:
+    MilleLacsBand:
       email: help+staging@mnbenefits.org
       folderId: ccef8f5a-efe1-4ecf-93e2-3b853bea82e6
     Morrison:
@@ -311,7 +313,7 @@ demo:
     Hennepin:
       email: help+staging@mnbenefits.org
       folderId: 45ed1eea-d045-48fe-9970-383e1b889ec5
-    MilleLacs:
+    MilleLacsBand:
       email: help+staging@mnbenefits.org
       folderId: ccef8f5a-efe1-4ecf-93e2-3b853bea82e6
     Morrison:
@@ -371,7 +373,7 @@ production:
     Hennepin:
       email: hhsews@hennepin.us
       folderId: 39e0ea57-cc12-4cc1-a074-0ad3d7216d01
-    MilleLacs:
+    MilleLacsBand:
       email: ????
       folderId: f30bf89e-f3ab-4c74-8e38-af7ada922719
     Morrison:

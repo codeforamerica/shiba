@@ -129,13 +129,13 @@ public class ApplicationDataParser {
 
   public static List<String> getValues(PagesData pagesData, Field field) {
     ParsingCoordinate coordinate = coordinatesMap.get(field);
-    return pagesData.safeGetPageInputValue(coordinate.getPageName(), coordinate.getInputName());
+    return pagesData.safeGetPageInputValue(coordinate.pageName(), coordinate.inputName());
   }
 
   public static String getFirstValue(PagesData pagesData, Field field) {
     ParsingCoordinate coordinate = coordinatesMap.get(field);
     String pageInputValue = pagesData
-        .getPageInputFirstValue(coordinate.getPageName(), coordinate.getInputName());
+        .getPageInputFirstValue(coordinate.pageName(), coordinate.inputName());
     return pageInputValue == null ? field.getDefaultValue() : pageInputValue;
   }
 
@@ -244,15 +244,7 @@ public class ApplicationDataParser {
     HOUSEHOLD
   }
 
-  @Getter
-  private static class ParsingCoordinate {
+  private record ParsingCoordinate(String pageName, String inputName) {
 
-    private final String pageName;
-    private final String inputName;
-
-    ParsingCoordinate(String pageName, String inputName) {
-      this.pageName = pageName;
-      this.inputName = inputName;
-    }
   }
 }
