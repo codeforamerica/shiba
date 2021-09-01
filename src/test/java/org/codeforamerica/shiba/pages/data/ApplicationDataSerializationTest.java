@@ -65,7 +65,7 @@ class ApplicationDataSerializationTest {
     when(fileNameGenerator.generatePdfFileName(any(), any())).thenReturn("some-file.pdf");
 
     var image = getFileContentsAsByteArray("shiba+file.jpg");
-    when(documentRepositoryService.getFromAzureWithFallbackToS3(anyString())).thenReturn(image);
+    when(documentRepositoryService.get(anyString())).thenReturn(image);
     coverPage = getFileContentsAsByteArray("shiba+file.pdf");
   }
 

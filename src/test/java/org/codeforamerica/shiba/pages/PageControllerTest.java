@@ -428,7 +428,7 @@ class PageControllerTest {
     when(applicationRepository.getNextId()).thenReturn(applicationId);
     when(applicationFactory.newApplication(applicationData)).thenReturn(application);
 
-    when(combinedDocumentRepositoryService.getFromAzureWithFallbackToS3(any()))
+    when(combinedDocumentRepositoryService.get(any()))
         .thenThrow(RuntimeException.class);
 
     mockMvc.perform(get("/pages/uploadDocuments")).andExpect(status().isOk());

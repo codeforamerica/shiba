@@ -256,7 +256,7 @@ class MnitDocumentConsumerTest {
     String contentType = MediaType.IMAGE_JPEG_VALUE;
     String extension = "jpg";
     byte[] fileBytes = null;
-    when(documentRepositoryService.getFromAzureWithFallbackToS3("")).thenReturn(fileBytes);
+    when(documentRepositoryService.get("")).thenReturn(fileBytes);
     applicationData.addUploadedDoc(
         new MockMultipartFile(uploadedDocFilename, s3filepath + extension, contentType, fileBytes),
         "",
@@ -290,7 +290,7 @@ class MnitDocumentConsumerTest {
   private void mockDocUpload(String uploadedDocFilename, String s3filepath, String contentType,
       String extension) throws IOException {
     var fileBytes = Files.readAllBytes(getAbsoluteFilepath(uploadedDocFilename));
-    when(documentRepositoryService.getFromAzureWithFallbackToS3(s3filepath)).thenReturn(fileBytes);
+    when(documentRepositoryService.get(s3filepath)).thenReturn(fileBytes);
     applicationData.addUploadedDoc(
         new MockMultipartFile("someName", "originalName." + extension, contentType, fileBytes),
         s3filepath,

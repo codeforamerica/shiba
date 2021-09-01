@@ -30,7 +30,7 @@ import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
-import org.codeforamerica.shiba.documents.CombinedDocumentRepositoryService;
+import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
@@ -93,7 +93,7 @@ public class PageController {
   private final CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
   private final SuccessMessageService successMessageService;
   private final DocRecommendationMessageService docRecommendationMessageService;
-  private final CombinedDocumentRepositoryService combinedDocumentRepositoryService;
+  private final DocumentRepositoryService documentRepositoryService;
 
   public PageController(
       ApplicationConfiguration applicationConfiguration,
@@ -111,7 +111,7 @@ public class PageController {
       CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider,
       SuccessMessageService successMessageService,
       DocRecommendationMessageService docRecommendationMessageService,
-      CombinedDocumentRepositoryService combinedDocumentRepositoryService,
+      DocumentRepositoryService documentRepositoryService,
       ApplicationRepository applicationRepository) {
     this.applicationData = applicationData;
     this.applicationConfiguration = applicationConfiguration;
@@ -128,7 +128,7 @@ public class PageController {
     this.ccapExpeditedEligibilityDecider = ccapExpeditedEligibilityDecider;
     this.successMessageService = successMessageService;
     this.docRecommendationMessageService = docRecommendationMessageService;
-    this.combinedDocumentRepositoryService = combinedDocumentRepositoryService;
+    this.documentRepositoryService = documentRepositoryService;
     this.applicationRepository = applicationRepository;
   }
 
@@ -394,7 +394,7 @@ public class PageController {
           .parallel()
           .map(
               doc -> new DocWithThumbnail(doc,
-                  doc.getThumbnail(combinedDocumentRepositoryService)))
+                  doc.getThumbnail(documentRepositoryService)))
           .toList();
       model.put("uploadedDocs", uploadedDocsWithThumbnails);
       model.put("uploadDocMaxFileSize", uploadDocumentConfiguration.getMaxFilesize());
@@ -661,8 +661,8 @@ public class PageController {
       }
       var filePath = applicationData.getId() + "/" + UUID.randomUUID();
       var thumbnailFilePath = applicationData.getId() + "/" + UUID.randomUUID();
-      combinedDocumentRepositoryService.upload(filePath, file);
-      combinedDocumentRepositoryService.upload(thumbnailFilePath, dataURL);
+      documentRepositoryService.upload(filePath, file);
+      documentRepositoryService.upload(thumbnailFilePath, dataURL);
       applicationData.addUploadedDoc(file, filePath, thumbnailFilePath, type);
     }
 
@@ -699,7 +699,7 @@ public class PageController {
         .filter(uploadedDocument -> uploadedDocument.getFilename().equals(filename))
         .map(UploadedDocument::getS3Filepath)
         .findFirst()
-        .ifPresent(combinedDocumentRepositoryService::delete);
+        .ifPresent(documentRepositoryService::delete);
     applicationData.removeUploadedDoc(filename);
 
     return new ModelAndView("redirect:/pages/uploadDocuments");

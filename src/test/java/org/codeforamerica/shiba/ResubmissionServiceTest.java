@@ -17,7 +17,7 @@ import java.util.Map;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.Status;
-import org.codeforamerica.shiba.documents.CombinedDocumentRepositoryService;
+import org.codeforamerica.shiba.documents.DocumentRepositoryService;
 import org.codeforamerica.shiba.mnit.MnitCountyInformation;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
@@ -45,7 +45,7 @@ class ResubmissionServiceTest {
   @Mock
   private PdfGenerator pdfGenerator;
   @Mock
-  private CombinedDocumentRepositoryService combinedDocumentRepositoryService;
+  private DocumentRepositoryService documentRepositoryService;
   private ResubmissionService resubmissionService;
 
   @BeforeEach
@@ -56,7 +56,7 @@ class ResubmissionServiceTest {
         .email(defaultEmail)
         .build());
     resubmissionService = new ResubmissionService(applicationRepository, emailClient, countyMap,
-        pdfGenerator, combinedDocumentRepositoryService);
+        pdfGenerator);
   }
 
   @Test

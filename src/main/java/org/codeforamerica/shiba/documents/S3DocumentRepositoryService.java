@@ -10,6 +10,7 @@ import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.util.IOUtils;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,8 +25,7 @@ public class S3DocumentRepositoryService implements DocumentRepositoryService {
 
   public S3DocumentRepositoryService(
       TransferManager transferManager,
-      @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") AmazonS3 s3Client,
-      ResourceLoader resourceLoader) {
+      @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") AmazonS3 s3Client) {
     this.s3Client = s3Client;
     this.bucketName = System.getenv("S3_BUCKET");
     this.transferManager = transferManager;
@@ -57,6 +57,11 @@ public class S3DocumentRepositoryService implements DocumentRepositoryService {
     } catch (IOException | InterruptedException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  @Override
+  public void upload(String filepath, String fileContent) throws IOException {
+    throw new NotImplementedException();
   }
 
   @Override

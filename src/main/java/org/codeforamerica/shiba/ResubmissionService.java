@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.documents.CombinedDocumentRepositoryService;
 import org.codeforamerica.shiba.mnit.MnitCountyInformation;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
@@ -34,8 +33,7 @@ public class ResubmissionService {
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   public ResubmissionService(ApplicationRepository applicationRepository,
       MailGunEmailClient emailClient, CountyMap<MnitCountyInformation> countyMap,
-      PdfGenerator pdfGenerator,
-      CombinedDocumentRepositoryService combinedDocumentRepositoryService) {
+      PdfGenerator pdfGenerator) {
     this.applicationRepository = applicationRepository;
     this.emailClient = emailClient;
     this.countyMap = countyMap;

@@ -2,7 +2,6 @@ package org.codeforamerica.shiba.documents;
 
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
-import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -10,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,13 +17,18 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 public class AzureDocumentRepositoryService implements DocumentRepositoryService {
 
-  private final BlobContainerClient containerClient;
+  private BlobContainerClient containerClient;
 
-  public AzureDocumentRepositoryService() {
-    BlobServiceClient blobServiceClient = new BlobServiceClientBuilder()
-        .connectionString(System.getenv("AZURE_CONNECTION_STRING")).buildClient();
-    this.containerClient = blobServiceClient
-        .getBlobContainerClient(System.getenv("AZURE_CONTAINER_NAME"));
+  public AzureDocumentRepositoryService(
+      @Value("${AZURE_CONNECTION_STRING:}") String connectionString,
+      @Value("${AZURE_CONTAINER_NAME:}") String containerName
+  ) {
+    if (!connectionString.equals("") && !containerName.equals("")) {
+      var blobServiceClient = new BlobServiceClientBuilder()
+          .connectionString(connectionString)
+          .buildClient();
+      this.containerClient = blobServiceClient.getBlobContainerClient(containerName);
+    }
   }
 
   @Override
@@ -47,6 +52,7 @@ public class AzureDocumentRepositoryService implements DocumentRepositoryService
     }
   }
 
+  @Override
   public void upload(String filepath, String fileContent) throws IOException {
     log.info("Uploading file content string to Azure at filepath {}", filepath);
     var fileContentBytes = fileContent.getBytes(StandardCharsets.UTF_8);
