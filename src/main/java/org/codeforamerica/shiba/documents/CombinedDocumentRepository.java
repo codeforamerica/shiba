@@ -7,26 +7,26 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Slf4j
-public class CombinedDocumentRepositoryService implements DocumentRepositoryService {
+public class CombinedDocumentRepository implements DocumentRepository {
 
-  private final S3DocumentRepositoryService s3DocumentRepositoryService;
-  private final AzureDocumentRepositoryService azureDocumentRepositoryService;
+  private final S3DocumentRepository s3DocumentRepository;
+  private final AzureDocumentRepository azureDocumentRepository;
 
-  public CombinedDocumentRepositoryService(
-      S3DocumentRepositoryService s3DocumentRepositoryService,
-      AzureDocumentRepositoryService azureDocumentRepositoryService
+  public CombinedDocumentRepository(
+      S3DocumentRepository s3DocumentRepository,
+      AzureDocumentRepository azureDocumentRepository
   ) {
-    this.s3DocumentRepositoryService = s3DocumentRepositoryService;
-    this.azureDocumentRepositoryService = azureDocumentRepositoryService;
+    this.s3DocumentRepository = s3DocumentRepository;
+    this.azureDocumentRepository = azureDocumentRepository;
   }
 
   @Override
   public byte[] get(String filepath) {
     log.info("Checking for filepath " + filepath + " in Azure.");
-    byte[] content = azureDocumentRepositoryService.get(filepath);
+    byte[] content = azureDocumentRepository.get(filepath);
     if (null == content) {
       log.info("File at filepath " + filepath + " cannot be found in Azure. Now checking S3.");
-      content = s3DocumentRepositoryService.get(filepath);
+      content = s3DocumentRepository.get(filepath);
       if (null == content) {
         log.error("File at filepath " + filepath + " cannot be found in Azure or S3.");
       }
@@ -36,16 +36,16 @@ public class CombinedDocumentRepositoryService implements DocumentRepositoryServ
 
   @Override
   public void upload(String filepath, MultipartFile file) throws InterruptedException, IOException {
-    azureDocumentRepositoryService.upload(filepath, file);
+    azureDocumentRepository.upload(filepath, file);
   }
 
   @Override
   public void upload(String filepath, String fileContent) throws InterruptedException, IOException {
-    azureDocumentRepositoryService.upload(filepath, fileContent);
+    azureDocumentRepository.upload(filepath, fileContent);
   }
 
   @Override
   public void delete(String filepath) {
-    azureDocumentRepositoryService.delete(filepath);
+    azureDocumentRepository.delete(filepath);
   }
 }

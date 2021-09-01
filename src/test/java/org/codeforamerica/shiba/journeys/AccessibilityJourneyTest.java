@@ -12,7 +12,7 @@ import com.deque.html.axecore.selenium.AxeBuilder;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.codeforamerica.shiba.documents.DocumentRepositoryService;
+import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.testutilities.AccessibilityTestPage;
 import org.junit.jupiter.api.AfterAll;
@@ -30,7 +30,7 @@ public class AccessibilityJourneyTest extends JourneyTest {
   protected static Results results;
 
   @MockBean
-  protected DocumentRepositoryService documentRepositoryService;
+  protected DocumentRepository documentRepository;
 
   @AfterAll
   static void tearDownAll() {

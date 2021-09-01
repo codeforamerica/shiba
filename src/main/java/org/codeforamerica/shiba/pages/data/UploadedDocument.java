@@ -7,7 +7,7 @@ import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.codeforamerica.shiba.documents.DocumentRepositoryService;
+import org.codeforamerica.shiba.documents.DocumentRepository;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,9 +23,9 @@ public class UploadedDocument implements Serializable {
   private String type;
   private long size;
 
-  public String getThumbnail(DocumentRepositoryService documentRepositoryService) {
+  public String getThumbnail(DocumentRepository documentRepository) {
     try {
-      var thumbnailBytes = documentRepositoryService.get(thumbnailFilepath);
+      var thumbnailBytes = documentRepository.get(thumbnailFilepath);
       return new String(thumbnailBytes, UTF_8);
     } catch (Exception e) {
       return "";

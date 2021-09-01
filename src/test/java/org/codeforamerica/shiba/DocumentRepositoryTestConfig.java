@@ -6,30 +6,29 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.apache.commons.io.FileUtils;
-import org.codeforamerica.shiba.documents.DocumentRepositoryService;
+import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.web.multipart.MultipartFile;
 
 @TestConfiguration
-public class DocumentRepositoryServiceTestConfig {
+public class DocumentRepositoryTestConfig {
 
   @Bean
   @Primary
-  public DocumentRepositoryService combinedDocumentRepositoryService() throws IOException {
-    return new LocalFilesystemDocumentRepositoryService();
+  public DocumentRepository combinedDocumentRepositoryService() throws IOException {
+    return new LocalFilesystemDocumentRepository();
   }
 
   /*
    * An implementation of DocumentRepositoryService that saves files to the local filesystem
    */
-  public static class LocalFilesystemDocumentRepositoryService implements
-      DocumentRepositoryService {
+  public static class LocalFilesystemDocumentRepository implements DocumentRepository {
 
     private final Path tempDirectory;
 
-    public LocalFilesystemDocumentRepositoryService() throws IOException {
+    public LocalFilesystemDocumentRepository() throws IOException {
       tempDirectory = Files.createTempDirectory("");
     }
 
