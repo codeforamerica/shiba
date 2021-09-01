@@ -10,7 +10,6 @@ import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.util.IOUtils;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -56,10 +55,6 @@ public class S3DocumentRepositoryService {
     } catch (IOException | InterruptedException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  public void upload(String filepath, String fileContent) throws IOException {
-    throw new NotImplementedException();
   }
 
   public void delete(String filepath) throws SdkClientException {
