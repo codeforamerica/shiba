@@ -15,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Slf4j
+// Implements DocumentRepositoryService but that's not declared so that CombinedDocumentRepositoryService
+// will be autowired as our default DocumentRepositoryService
 public class AzureDocumentRepositoryService {
 
   private BlobContainerClient containerClient;
