@@ -15,6 +15,9 @@
             <div class="text-input-group__prefix">$</div>
             <input type="text"
                    class="text-input"
+                   th:attr="aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
+                            aria-labelledby=${input.name + '-label'},
+                            aria-invalid=${hasError}"
                    th:id="${input.name}"
                    th:name="${formInputName}"
                    th:value="${(!inputData.value.isEmpty()) ? inputData.value[0] : ''}"
@@ -33,8 +36,7 @@
         <input th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).TEXT}"
                type="text"
                class="text-input form-width--medium"
-               th:attr="aria-errormessage=${hasError ? input.name + '-error' : ''},
-                        aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
+               th:attr="aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
                         aria-labelledby=${input.name + '-label'},
                         aria-invalid=${hasError}"
                th:placeholder="${input.placeholder == null} ? '' : #{${input.placeholder}}"
@@ -74,8 +76,7 @@
         <input th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).PHONE}"
                type="tel"
                class="text-input form-width--medium phone-input"
-               th:attr="aria-errormessage=${hasError ? input.name + '-error' : ''},
-                        aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
+               th:attr="aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
                         aria-labelledby=${input.name + '-label'},
                         aria-invalid=${hasError}"
                placeholder="(999) 999-9999"
