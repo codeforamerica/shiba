@@ -115,7 +115,6 @@ counties: &defaultCounties
     phoneNumber: 320-983-8208
   MilleLacsBand:
     email: help+dev@mnbenefits.org
-    phoneNumber: ???
     folderId: ae7d7c7f-6503-46ea-92a7-4a813da9fb02
     dhsProviderId: A602658300
   Morrison:
@@ -374,7 +373,6 @@ production:
       email: hhsews@hennepin.us
       folderId: 39e0ea57-cc12-4cc1-a074-0ad3d7216d01
     MilleLacsBand:
-      email: ????
       folderId: f30bf89e-f3ab-4c74-8e38-af7ada922719
     Morrison:
       email: callcenter@co.morrison.mn.us
