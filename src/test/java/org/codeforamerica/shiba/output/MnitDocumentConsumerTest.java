@@ -35,7 +35,7 @@ import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
-import org.codeforamerica.shiba.documents.DocumentRepositoryService;
+import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
@@ -75,7 +75,7 @@ class MnitDocumentConsumerTest {
   @MockBean
   private MonitoringService monitoringService;
   @MockBean
-  private DocumentRepositoryService documentRepositoryService;
+  private DocumentRepository documentRepository;
   @MockBean
   private FileNameGenerator fileNameGenerator;
   @MockBean
@@ -256,7 +256,7 @@ class MnitDocumentConsumerTest {
     String contentType = MediaType.IMAGE_JPEG_VALUE;
     String extension = "jpg";
     byte[] fileBytes = null;
-    when(documentRepositoryService.get("")).thenReturn(fileBytes);
+    when(documentRepository.get("")).thenReturn(fileBytes);
     applicationData.addUploadedDoc(
         new MockMultipartFile(uploadedDocFilename, s3filepath + extension, contentType, fileBytes),
         "",
@@ -290,7 +290,7 @@ class MnitDocumentConsumerTest {
   private void mockDocUpload(String uploadedDocFilename, String s3filepath, String contentType,
       String extension) throws IOException {
     var fileBytes = Files.readAllBytes(getAbsoluteFilepath(uploadedDocFilename));
-    when(documentRepositoryService.get(s3filepath)).thenReturn(fileBytes);
+    when(documentRepository.get(s3filepath)).thenReturn(fileBytes);
     applicationData.addUploadedDoc(
         new MockMultipartFile("someName", "originalName." + extension, contentType, fileBytes),
         s3filepath,

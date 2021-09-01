@@ -34,7 +34,7 @@ public class DocumentUploadJourneyTest extends JourneyTest {
     testPage.clickLink("remove");
 
     doThrow(new InterruptedException())
-        .when(documentRepositoryService).upload(any(String.class), any(MultipartFile.class));
+        .when(documentRepository).upload(any(String.class), any(MultipartFile.class));
 
     uploadJpgFile();
 

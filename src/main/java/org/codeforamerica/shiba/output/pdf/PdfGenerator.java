@@ -14,7 +14,7 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.codeforamerica.shiba.Utils;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.documents.DocumentRepositoryService;
+import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.Document;
@@ -34,21 +34,21 @@ public class PdfGenerator implements FileGenerator {
   private final PdfFieldMapper pdfFieldMapper;
   private final Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillerMap;
   private final ApplicationRepository applicationRepository;
-  private final DocumentRepositoryService documentRepositoryService;
+  private final DocumentRepository documentRepository;
   private final ApplicationInputsMappers mappers;
   private final FileNameGenerator fileNameGenerator;
 
   public PdfGenerator(PdfFieldMapper pdfFieldMapper,
       Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers,
       ApplicationRepository applicationRepository,
-      DocumentRepositoryService documentRepositoryService,
+      DocumentRepository documentRepository,
       ApplicationInputsMappers mappers,
       FileNameGenerator fileNameGenerator
   ) {
     this.pdfFieldMapper = pdfFieldMapper;
     this.pdfFieldFillerMap = pdfFieldFillers;
     this.applicationRepository = applicationRepository;
-    this.documentRepositoryService = documentRepositoryService;
+    this.documentRepository = documentRepository;
     this.mappers = mappers;
     this.fileNameGenerator = fileNameGenerator;
   }
@@ -68,7 +68,7 @@ public class PdfGenerator implements FileGenerator {
 
   public ApplicationFile generateForUploadedDocument(UploadedDocument uploadedDocument,
       int documentIndex, Application application, byte[] coverPage) {
-    var fileBytes = documentRepositoryService
+    var fileBytes = documentRepository
         .get(uploadedDocument.getS3Filepath());
     if (fileBytes != null) {
       var extension = Utils.getFileType(uploadedDocument.getFilename());

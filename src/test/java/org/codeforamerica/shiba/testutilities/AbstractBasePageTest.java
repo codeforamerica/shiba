@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
-import org.codeforamerica.shiba.DocumentRepositoryServiceTestConfig;
+import org.codeforamerica.shiba.DocumentRepositoryTestConfig;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.pages.enrichment.smartystreets.SmartyStreetClient;
@@ -42,7 +42,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-@Import({WebDriverConfiguration.class, DocumentRepositoryServiceTestConfig.class})
+@Import({WebDriverConfiguration.class, DocumentRepositoryTestConfig.class})
 @ActiveProfiles("test")
 public abstract class AbstractBasePageTest {
 

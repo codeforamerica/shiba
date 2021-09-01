@@ -20,7 +20,7 @@ import java.time.Duration;
 import java.time.ZonedDateTime;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.documents.DocumentRepositoryService;
+import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +41,7 @@ class ApplicationDataSerializationTest {
   private FileNameGenerator fileNameGenerator;
 
   @MockBean
-  private DocumentRepositoryService documentRepositoryService;
+  private DocumentRepository documentRepository;
 
   @Autowired
   private PdfGenerator pdfGenerator;
@@ -65,7 +65,7 @@ class ApplicationDataSerializationTest {
     when(fileNameGenerator.generatePdfFileName(any(), any())).thenReturn("some-file.pdf");
 
     var image = getFileContentsAsByteArray("shiba+file.jpg");
-    when(documentRepositoryService.get(anyString())).thenReturn(image);
+    when(documentRepository.get(anyString())).thenReturn(image);
     coverPage = getFileContentsAsByteArray("shiba+file.pdf");
   }
 

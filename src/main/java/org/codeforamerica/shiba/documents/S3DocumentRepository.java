@@ -15,15 +15,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Slf4j
-// Implements DocumentRepositoryService but that's not declared so that CombinedDocumentRepositoryService
-// will be autowired as our default DocumentRepositoryService
-public class S3DocumentRepositoryService {
+// Implements DocumentRepository but that's not declared so that CombinedDocumentRepository
+// will be autowired as our default DocumentRepository
+public class S3DocumentRepository {
 
   private final TransferManager transferManager;
   private final String bucketName;
   private final AmazonS3 s3Client;
 
-  public S3DocumentRepositoryService(
+  public S3DocumentRepository(
       TransferManager transferManager,
       @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") AmazonS3 s3Client) {
     this.s3Client = s3Client;

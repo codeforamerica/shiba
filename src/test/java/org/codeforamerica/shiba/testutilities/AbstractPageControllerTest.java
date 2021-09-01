@@ -9,7 +9,7 @@ import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
 import org.codeforamerica.shiba.configurations.ClockConfiguration;
-import org.codeforamerica.shiba.documents.DocumentRepositoryService;
+import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.pages.DocRecommendationMessageService;
@@ -63,7 +63,7 @@ public class AbstractPageControllerTest {
   @MockBean
   protected UploadDocumentConfiguration uploadDocumentConfiguration;
   @MockBean
-  protected DocumentRepositoryService documentRepositoryService;
+  protected DocumentRepository documentRepository;
 
   @Autowired
   protected MockMvc mockMvc;

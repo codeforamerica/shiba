@@ -15,13 +15,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Slf4j
-// Implements DocumentRepositoryService but that's not declared so that CombinedDocumentRepositoryService
-// will be autowired as our default DocumentRepositoryService
-public class AzureDocumentRepositoryService {
+// Implements DocumentRepository but that's not declared so that CombinedDocumentRepository
+// will be autowired as our default DocumentRepository
+public class AzureDocumentRepository {
 
   private BlobContainerClient containerClient;
 
-  public AzureDocumentRepositoryService(
+  public AzureDocumentRepository(
       @Value("${AZURE_CONNECTION_STRING:}") String connectionString,
       @Value("${AZURE_CONTAINER_NAME:}") String containerName
   ) {

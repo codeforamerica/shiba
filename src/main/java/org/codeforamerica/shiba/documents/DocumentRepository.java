@@ -3,7 +3,7 @@ package org.codeforamerica.shiba.documents;
 import java.io.IOException;
 import org.springframework.web.multipart.MultipartFile;
 
-public interface DocumentRepositoryService {
+public interface DocumentRepository {
 
   byte[] get(String filepath);
 
