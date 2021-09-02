@@ -1774,27 +1774,27 @@ pageDefinitions:
           selectableOptions:
             - value: ~
               messageKey: select-the-tribe.select-the-tribe
-            - value: BoisForte
+            - value: Bois Forte
               messageKey: select-the-tribe.bois-forte
-            - value: FondDuLac
+            - value: Fond Du Lac
               messageKey: select-the-tribe.fond-du-lac
-            - value: GrandPortage
+            - value: Grand Portage
               messageKey: select-the-tribe.grand-portage
-            - value: LeechLake
+            - value: Leech Lake
               messageKey: select-the-tribe.leech-lake
-            - value: LowerSioux
+            - value: Lower Sioux
               messageKey: select-the-tribe.lower-sioux
-            - value: MilleLacs
+            - value: Mille Lacs
               messageKey: select-the-tribe.mille-lacs
-            - value: PrairieIsland
+            - value: Prairie Island
               messageKey: select-the-tribe.prairie-island
-            - value: RedLake
+            - value: Red Lake
               messageKey: select-the-tribe.red-lake
-            - value: ShakopeeMdewakanton
+            - value: Shakopee Mdewakanton
               messageKey: select-the-tribe.shakopee-mdewakanton
-            - value: UpperSioux
+            - value: Upper Sioux
               messageKey: select-the-tribe.upper-sioux
-            - value: WhiteEarth
+            - value: White Earth
               messageKey: select-the-tribe.white-earth
   - &applyForTribalTANF
     name: applyForTribalTANF
