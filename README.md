@@ -123,4 +123,4 @@ The client certificate can then be shared with external servers who can register
 
 #### Special Thanks:
 
-![Assistiv Labs](https://github.com/codeforamerica/shiba/tree/main/src/main/resources/static/images/assistiv-labs-logo.png) Assistiv Labs - Accessibility Testing
+![Assistiv Labs Logo](https://raw.githubusercontent.com/codeforamerica/shiba/main/src/main/resources/static/images/assistiv-labs-logo.png) [Assistiv Labs - Accessibility Testing](https://assistivlabs.com/)
