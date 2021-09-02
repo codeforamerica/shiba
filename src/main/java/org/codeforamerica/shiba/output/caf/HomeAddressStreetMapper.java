@@ -48,12 +48,6 @@ public class HomeAddressStreetMapper implements ApplicationInputsMapper {
 
     String value = homeAddressPageData.get(streetInputName).getValue().get(0);
 
-    if (featureFlagConfiguration.get("apply-without-address").isOff()) {
-      boolean isHomeless = !homeAddressPageData.get("isHomeless").getValue().isEmpty();
-      String notPermanentAddressIndicator = isHomeless ? " (not permanent)" : "";
-      value += notPermanentAddressIndicator;
-    }
-
     return List.of(
         new ApplicationInput(
             "homeAddress",

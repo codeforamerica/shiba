@@ -58,7 +58,6 @@ mail-gun:
 
 feature-flag:
   apply-for-tribal-nation: on
-  apply-without-address: on
   submit-via-email: off
   submit-via-api: off
   submit-docs-via-email-for-hennepin: on
