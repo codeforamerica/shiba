@@ -3490,8 +3490,8 @@ workflow:
         - *noUnearnedCcapSelected?
     datasources:
       - pageName: choosePrograms
-      - groupName: household
-        pageName: householdMemberInfo
+      - pageName: householdMemberInfo
+        groupName: household
       - pageName: unearnedIncome
       - pageName: unearnedIncomeCcap
       - pageName: employmentStatus

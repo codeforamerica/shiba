@@ -93,31 +93,32 @@ public class ApplicationData implements Serializable {
     }
 
     return currentPage.getNextPages().stream()
-        .filter(page -> nextPageConditionsAreSatisfied(featureFlags, currentPage, page))
+        .filter(potentialNextPage -> nextPageConditionsAreSatisfied(featureFlags, currentPage,
+            potentialNextPage))
         .findFirst()
         .orElseThrow(() -> new RuntimeException("Cannot find suitable next page."));
   }
 
   private boolean nextPageConditionsAreSatisfied(FeatureFlagConfiguration featureFlags,
       @NotNull PageWorkflowConfiguration currentPage, NextPage nextPage) {
-    boolean isNextPage = true;
+    boolean satisfied = true;
     Condition condition = nextPage.getCondition();
     if (condition != null) {
       if (currentPage.isInAGroup()) {
-        isNextPage = condition.matches(
+        satisfied = condition.matches(
             incompleteIterations.get(currentPage.getGroupName())
                 .get(currentPage.getPageConfiguration().getName()),
             pagesData);
       } else {
         // TODO should this be done in the other side of the if as well?
         var datasourcePages = getPagesDataForPageDatasources(currentPage);
-        isNextPage = datasourcePages.satisfies(condition);
+        satisfied = datasourcePages.satisfies(condition);
       }
     }
     if (nextPage.getFlag() != null) {
-      isNextPage &= featureFlags.get(nextPage.getFlag()) == FeatureFlag.ON;
+      satisfied &= featureFlags.get(nextPage.getFlag()) == FeatureFlag.ON;
     }
-    return isNextPage;
+    return satisfied;
   }
 
   public boolean isCCAPApplication() {
@@ -214,7 +215,7 @@ public class ApplicationData implements Serializable {
   @NotNull
   public PagesData getPagesDataForPageDatasources(PageWorkflowConfiguration page) {
     PagesData pagesData = getPagesData();
-    Subworkflows subworkflows1 = getSubworkflows();
+    Subworkflows subworkflows = getSubworkflows();
     Map<String, PageData> pages = new HashMap<>();
     var thisPageName = page.getPageConfiguration().getName();
     var thisPageData = pagesData.get(thisPageName);
@@ -226,9 +227,9 @@ public class ApplicationData implements Serializable {
           if (datasource.getGroupName() == null) {
             // if datasource is not a subworkflow
             pageData.mergeInputDataValues(pagesData.get(datasource.getPageName()));
-          } else if (subworkflows1.containsKey(datasource.getGroupName())) {
+          } else if (subworkflows.containsKey(datasource.getGroupName())) {
             // if datasource is a subworkflow
-            subworkflows1.get(datasource.getGroupName()).stream()
+            subworkflows.get(datasource.getGroupName()).stream()
                 .map(iteration -> iteration.getPagesData().getPage(datasource.getPageName()))
                 .forEach(pageData::mergeInputDataValues);
           }
