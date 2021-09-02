@@ -96,11 +96,31 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
   private ApplicationInput getPrograms(Application application) {
     List<String> programs = getValues(application.getApplicationData().getPagesData(),
         APPLICANT_PROGRAMS);
+    if (isTribalTANF(application)) {
+      programs.add("TRIBAL TANF");
+    }
+
+    if (isMFIP(application)) {
+      if (!programs.contains("CASH")) {
+        programs.add("CASH");
+      }
+    }
+
     if (!programs.isEmpty()) {
       return new ApplicationInput("coverPage", "programs", String.join(", ", programs),
           SINGLE_VALUE);
     }
     return null;
+  }
+
+  private boolean isTribalTANF(Application application) {
+    return application.getApplicationData().getPagesData()
+        .safeGetPageInputValue("applyForTribalTANF", "applyForTribalTANF").contains("Yes");
+  }
+
+  private boolean isMFIP(Application application) {
+    return application.getApplicationData().getPagesData()
+        .safeGetPageInputValue("applyForMFIP", "applyForMFIP").contains("Yes");
   }
 
   private ApplicationInput getFullName(Application application) {
