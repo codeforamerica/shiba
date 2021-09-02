@@ -120,3 +120,7 @@ The client certificate can then be shared with external servers who can register
 - Server imports the certificate into their truststore (java keystore used for cataloging trusted client certs).
 
 `keytool -importcert -keystore server-truststore.jks -alias client -file client.crt -storepass <password>`
+
+#### Special Thanks:
+
+![Assistiv Labs](https://github.com/codeforamerica/shiba/tree/main/src/main/resources/static/images/assistiv-labs-logo.png) Assistiv Labs - Accessibility Testing
