@@ -511,11 +511,13 @@ public class AbstractShibaMockMvcTest {
     assertTrue(page.hasInputError(inputName));
   }
 
-  protected void assertPageHasInputError(String pageName, String inputName, String errorMessage) throws Exception {
+  protected void assertPageHasInputError(String pageName, String inputName, String errorMessage)
+      throws Exception {
     var page = new FormPage(getPage(pageName));
     assertEquals(errorMessage, page.getInputError(inputName).text());
 
   }
+
   protected void assertPageHasDateInputError(String pageName, String inputName) throws Exception {
     var page = new FormPage(getPage(pageName));
     assertTrue(page.hasDateInputError());
@@ -613,8 +615,9 @@ public class AbstractShibaMockMvcTest {
     assertThat(new FormPage(getPage(pageName)).getTitle()).isEqualTo(pageTitle);
   }
 
-  protected void fillFutureIncomeToHaveVehicle() throws Exception {
-    postExpectingRedirect("futureIncome", "earnLessMoneyThisMonth", "false", "startExpenses");
+  protected void fillAdditionalIncomeInfoToHaveVehicle() throws Exception {
+    postExpectingRedirect("additionalIncomeInfo", "additionalIncomeInfo",
+        "one more thing you need to know is...", "startExpenses");
     assertNavigationRedirectsToCorrectNextPage("startExpenses", "homeExpenses");
     postExpectingRedirect("homeExpenses", "homeExpenses", "NONE_OF_THE_ABOVE", "utilities");
     postExpectingRedirect("utilities", "payForUtilities", "NONE_OF_THE_ABOVE", "energyAssistance");

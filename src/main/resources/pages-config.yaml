@@ -3453,9 +3453,7 @@ workflow:
       - pageName: unearnedIncomeCcap
     skipCondition:
       conditions:
-        - pageName: unearnedIncome
-          input: unearnedIncome
-          value: NO_UNEARNED_INCOME_SELECTED
+        - *noUnearnedIncomeSelected?
     datasources:
       - pageName: unearnedIncome
       - pageName: addHouseholdMembers
@@ -3494,12 +3492,10 @@ workflow:
       - pageName: choosePrograms
       - groupName: household
         pageName: householdMemberInfo
+      - pageName: unearnedIncome
       - pageName: unearnedIncomeCcap
       - pageName: employmentStatus
       - pageName: addHouseholdMembers
-      - pageName: choosePrograms
-      - pageName: householdMemberInfo
-        groupName: household
   additionalIncomeInfo:
     pageConfiguration: *additionalIncomeInfo
     nextPages:

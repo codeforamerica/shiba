@@ -37,8 +37,8 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
     postExpectingNextPageTitle("employmentStatus", "areYouWorking", "false", "Income Up Next");
     assertNavigationRedirectsToCorrectNextPage("incomeUpNext", "unearnedIncome");
     postExpectingRedirect("unearnedIncome", "unearnedIncome", "NO_UNEARNED_INCOME_SELECTED",
-        "futureIncome");
-    fillFutureIncomeToHaveVehicle();
+        "additionalIncomeInfo");
+    fillAdditionalIncomeInfoToHaveVehicle();
     assertNavigationRedirectsToCorrectNextPage("vehicle", "investments");
     postExpectingRedirect("investments", "haveInvestments", "false", "savings");
     postExpectingRedirect("savings", "haveSavings", "true", "savingsAmount");
@@ -58,8 +58,8 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
     postExpectingNextPageTitle("employmentStatus", "areYouWorking", "false", "Income Up Next");
     assertNavigationRedirectsToCorrectNextPage("incomeUpNext", "unearnedIncome");
     postExpectingRedirect("unearnedIncome", "unearnedIncome", "NO_UNEARNED_INCOME_SELECTED",
-        "futureIncome");
-    fillFutureIncomeToHaveVehicle();
+        "additionalIncomeInfo");
+    fillAdditionalIncomeInfoToHaveVehicle();
     assertNavigationRedirectsToCorrectNextPage("vehicle", "investments");
     postExpectingRedirect("investments", "haveInvestments", "true", "savings");
     postExpectingRedirect("savings", "haveSavings", "true", "savingsAmount");
@@ -165,8 +165,8 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
     postExpectingRedirect("unearnedIncomeCcap",
         "unearnedIncomeCcap",
         "NO_UNEARNED_INCOME_CCAP_SELECTED",
-        "futureIncome");
-    fillFutureIncomeToHaveVehicle();
+        "additionalIncomeInfo");
+    fillAdditionalIncomeInfoToHaveVehicle();
     assertNavigationRedirectsToCorrectNextPage("vehicle", "realEstate");
     postExpectingRedirect("realEstate", "ownRealEstate", "false", "investments");
     postExpectingRedirect("investments", "haveInvestments", "false", "savings");

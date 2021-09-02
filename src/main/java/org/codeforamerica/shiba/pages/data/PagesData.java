@@ -62,7 +62,7 @@ public class PagesData extends HashMap<String, PageData> {
       };
     }
 
-    PageData pageData = get(condition.getPageName());
+    PageData pageData = get(condition.getPageName()); // this can't handle groups
     return condition.matches(pageData, this);
   }
 
