@@ -26,11 +26,6 @@ conditionAnchors:
     pageName: employersName
     input: employersName
     matcher: NOT_EMPTY
-  - &paidByTheHourIterationExists?
-    pageName: paidByTheHour
-    input: paidByTheHour
-    value: "true"
-    subworkflow: jobs
   - &paysForMedicalExpenses?
     pageName: medicalExpenses
     input: medicalExpenses
@@ -634,50 +629,6 @@ derived-values:
             - pageName: employmentStatus
               input: areYouWorking
               value: "false"
-  - groupName: payPeriod
-    fieldName: payPeriod
-    iteration: 0
-    values:
-      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-          literal: "Hourly"
-        type: SINGLE_VALUE
-        condition:
-          conditions:
-            - <<: *paidByTheHourIterationExists?
-              iteration: 0
-  - groupName: payPeriod
-    fieldName: payPeriod
-    iteration: 1
-    values:
-      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-          literal: "Hourly"
-        type: SINGLE_VALUE
-        condition:
-          conditions:
-            - <<: *paidByTheHourIterationExists?
-              iteration: 1
-  - groupName: payPeriod
-    fieldName: payPeriod
-    iteration: 2
-    values:
-      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-          literal: "Hourly"
-        type: SINGLE_VALUE
-        condition:
-          conditions:
-            - <<: *paidByTheHourIterationExists?
-              iteration: 2
-  - groupName: payPeriod
-    fieldName: payPeriod
-    iteration: 3
-    values:
-      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-          literal: "Hourly"
-        type: SINGLE_VALUE
-        condition:
-          conditions:
-            - <<: *paidByTheHourIterationExists?
-              iteration: 3
   - groupName: homeAddress
     fieldName: isHomelessIndicator
     values:
