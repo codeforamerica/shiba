@@ -23,7 +23,6 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.MAILING_STREET;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.MAILING_ZIPCODE;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.SAME_MAILING_ADDRESS;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.SAME_MAILING_ADDRESS2;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 
 import java.util.List;
@@ -35,7 +34,6 @@ import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMapper;
 import org.codeforamerica.shiba.output.applicationinputsmappers.SubworkflowIterationScopeTracker;
-import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.springframework.stereotype.Component;
@@ -44,11 +42,6 @@ import org.springframework.stereotype.Component;
 public class MailingAddressStreetMapper implements ApplicationInputsMapper {
 
   private final static String GENERAL_DELIVERY = "General Delivery";
-  private final FeatureFlagConfiguration featureFlagConfiguration;
-
-  public MailingAddressStreetMapper(FeatureFlagConfiguration featureFlagConfiguration) {
-    this.featureFlagConfiguration = featureFlagConfiguration;
-  }
 
   @Override
   public List<ApplicationInput> map(Application application, Document document, Recipient recipient,
@@ -56,27 +49,17 @@ public class MailingAddressStreetMapper implements ApplicationInputsMapper {
     PagesData pagesData = application.getApplicationData().getPagesData();
 
     // Not applicable or enough information to continue
-    if (featureFlagConfiguration.get("apply-without-address").isOff()) {
-      PageData homeAddressPageData = pagesData.get("homeAddress");
-      boolean hasInput =
-          homeAddressPageData != null && homeAddressPageData.containsKey("sameMailingAddress");
-      if (!hasInput) {
-        return List.of();
-      }
-    } else {
-      PageData mailingAddressPageData = pagesData.get("mailingAddress");
-      boolean hasInput = mailingAddressPageData != null && mailingAddressPageData
-          .containsKey("sameMailingAddress");
-      String generalDeliveryCityInput = getFirstValue(pagesData, GENERAL_DELIVERY_CITY);
-      if (!hasInput && generalDeliveryCityInput == null) {
-        return List.of();
-      }
+    PageData mailingAddressPageData = pagesData.get("mailingAddress");
+    boolean hasInput = mailingAddressPageData != null && mailingAddressPageData
+        .containsKey("sameMailingAddress");
+    String generalDeliveryCityInput = getFirstValue(pagesData, GENERAL_DELIVERY_CITY);
+    if (!hasInput && generalDeliveryCityInput == null) {
+      return List.of();
     }
 
     // Use home address for mailing
-    boolean sameAsHomeAddress = Boolean.parseBoolean(getFirstValue(pagesData,
-        featureFlagConfiguration.get("apply-without-address").isOff() ? SAME_MAILING_ADDRESS
-            : SAME_MAILING_ADDRESS2));
+    boolean sameAsHomeAddress = Boolean
+        .parseBoolean(getFirstValue(pagesData, SAME_MAILING_ADDRESS));
     if (sameAsHomeAddress) {
       return createAddressInputsFromHomeAddress(pagesData);
     }

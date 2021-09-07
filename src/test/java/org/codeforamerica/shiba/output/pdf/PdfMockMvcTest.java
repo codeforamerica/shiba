@@ -522,14 +522,14 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
         String originalApt = "originalApt";
         String originalCity = "originalCity";
         String originalZipCode = "54321";
-        postExpectingSuccess("homeAddress2", Map.of(
+        postExpectingSuccess("homeAddress", Map.of(
             "streetAddress", List.of(originalStreetAddress),
             "apartmentNumber", List.of(originalApt),
             "city", List.of(originalCity),
             "zipCode", List.of(originalZipCode),
             "state", List.of("MN")
         ));
-        postExpectingSuccess("mailingAddress2", "sameMailingAddress", "true"); // THE KEY DIFFERENCE
+        postExpectingSuccess("mailingAddress", "sameMailingAddress", "true"); // THE KEY DIFFERENCE
         postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "false");
 
         var ccap = submitAndDownloadCcap();
@@ -600,14 +600,14 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
                 enrichedZipCodeValue,
                 enrichedApartmentNumber,
                 "Hennepin")));
-        postExpectingSuccess("homeAddress2", Map.of(
+        postExpectingSuccess("homeAddress", Map.of(
             "streetAddress", List.of("originalStreetAddress"),
             "apartmentNumber", List.of("originalApt"),
             "city", List.of("originalCity"),
             "zipCode", List.of("54321"),
             "state", List.of("MN")
         ));
-        postExpectingSuccess("mailingAddress2", "sameMailingAddress", "true"); // THE KEY DIFFERENCE
+        postExpectingSuccess("mailingAddress", "sameMailingAddress", "true"); // THE KEY DIFFERENCE
         postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "true");
 
         var caf = submitAndDownloadCaf();
@@ -625,7 +625,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       void shouldMapToOriginalMailingAddressIfSameMailingAddressIsFalseAndUseEnrichedAddressIsFalse()
           throws
           Exception {
-        postExpectingSuccess("homeAddress2", Map.of(
+        postExpectingSuccess("homeAddress", Map.of(
             "isHomeless", List.of(""),
             "streetAddress", List.of("originalHomeStreetAddress"),
             "apartmentNumber", List.of("originalHomeApt"),
@@ -638,7 +638,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
         String originalApt = "originalApt";
         String originalCity = "originalCity";
         String originalState = "IL";
-        postExpectingSuccess("mailingAddress2", Map.of(
+        postExpectingSuccess("mailingAddress", Map.of(
             "streetAddress", List.of(originalStreetAddress),
             "apartmentNumber", List.of(originalApt),
             "city", List.of(originalCity),
@@ -646,7 +646,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
             "state", List.of(originalState),
             "sameMailingAddress", List.of("false") // THE KEY DIFFERENCE
         ));
-        postExpectingSuccess("verifyMailingAddress2", "useEnrichedAddress", "false");
+        postExpectingSuccess("verifyMailingAddress", "useEnrichedAddress", "false");
 
         var caf = submitAndDownloadCaf();
         var ccap = downloadCcap();

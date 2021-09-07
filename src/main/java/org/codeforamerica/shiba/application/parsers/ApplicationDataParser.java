@@ -83,8 +83,6 @@ public class ApplicationDataParser {
 
     coordinatesMap.put(Field.IS_HOMELESS, new ParsingCoordinate("homeAddress", "isHomeless"));
     coordinatesMap.put(Field.SAME_MAILING_ADDRESS,
-        new ParsingCoordinate("homeAddress", "sameMailingAddress"));
-    coordinatesMap.put(Field.SAME_MAILING_ADDRESS2,
         new ParsingCoordinate("mailingAddress", "sameMailingAddress"));
 
     coordinatesMap.put(Field.IDENTIFY_ZIPCODE, new ParsingCoordinate("identifyZipcode", "zipCode"));
@@ -198,7 +196,6 @@ public class ApplicationDataParser {
 
     IS_HOMELESS,
     SAME_MAILING_ADDRESS,
-    SAME_MAILING_ADDRESS2,
 
     GENERAL_DELIVERY_CITY,
     GENERAL_DELIVERY_ZIPCODE,

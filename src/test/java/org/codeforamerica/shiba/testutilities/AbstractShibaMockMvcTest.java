@@ -93,7 +93,6 @@ public class AbstractShibaMockMvcTest {
     when(clock.getZone()).thenReturn(ZoneOffset.UTC);
     when(locationClient.validateAddress(any())).thenReturn(Optional.empty());
     when(featureFlagConfiguration.get("apply-for-tribal-nation")).thenReturn(FeatureFlag.ON);
-    when(featureFlagConfiguration.get("apply-without-address")).thenReturn(FeatureFlag.ON);
     when(featureFlagConfiguration.get("submit-via-email")).thenReturn(FeatureFlag.OFF);
     when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.OFF);
     when(featureFlagConfiguration.get("county-anoka")).thenReturn(FeatureFlag.OFF);
@@ -673,8 +672,7 @@ public class AbstractShibaMockMvcTest {
         "apartmentNumber", List.of("someApartmentNumber"),
         "city", List.of("someCity"),
         "zipCode", List.of("12345"),
-        "state", List.of("MN"),
-        "sameMailingAddress", List.of("false")
+        "state", List.of("MN")
     ));
   }
 
@@ -687,7 +685,8 @@ public class AbstractShibaMockMvcTest {
         "apartmentNumber", List.of("someApartmentNumber"),
         "city", List.of("someCity"),
         "zipCode", List.of("12345"),
-        "state", List.of("IL")
+        "state", List.of("IL"),
+        "sameMailingAddress", List.of()
     ));
   }
 
