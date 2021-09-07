@@ -26,7 +26,6 @@ import org.codeforamerica.shiba.pages.config.Value;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-// Used for everything that's not skip conditions (low confidence)
 public class PagesData extends HashMap<String, PageData> {
 
   @Serial
