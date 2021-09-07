@@ -19,13 +19,12 @@ mappings:
     phoneNumber: APPLICANT_PHONE_NUMBER
     email: APPLICANT_EMAIL
     caseNumber: CASE_NUMBER
-  choosePrograms:
-    programs:
-      CCAP: CCAP
-      SNAP: FOOD
-      CASH: CASH
-      GRH: GRH
-      EA: EMERGENCY
+  applicantPrograms:
+    CCAP: CCAP
+    SNAP: FOOD
+    CASH: CASH
+    GRH: GRH
+    EA: EMERGENCY
   householdMemberInfo:
     firstName: FIRST_NAME
     lastName: LAST_NAME
