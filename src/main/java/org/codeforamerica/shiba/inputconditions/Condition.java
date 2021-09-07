@@ -3,12 +3,10 @@ package org.codeforamerica.shiba.inputconditions;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,8 +31,6 @@ public class Condition implements Serializable {
   String value;
   @JsonIgnore
   ValueMatcher matcher = ValueMatcher.CONTAINS;
-  String subworkflow;
-  Integer iteration;
   @JsonIgnore
   private List<Condition> conditions;
   @JsonIgnore
@@ -45,18 +41,15 @@ public class Condition implements Serializable {
     this.logicalOperator = logicalOperator;
   }
 
-  public Condition(String pageName, String input, String value, ValueMatcher matcher,
-      String subworkflow, Integer iteration) {
+  public Condition(String pageName, String input, String value, ValueMatcher matcher) {
     this.pageName = pageName;
     this.input = input;
     this.value = value;
     this.matcher = matcher;
-    this.subworkflow = subworkflow;
-    this.iteration = iteration;
   }
 
   public boolean appliesTo(ApplicationData applicationData) {
-    Stream<Condition> conditionStream = addIterationConditionsForSubworkflows(applicationData);
+    Stream<Condition> conditionStream = conditions.stream();
     Predicate<Condition> conditionPredicate = getConditionPredicate(applicationData);
     return switch (logicalOperator) {
       case AND -> conditionStream.allMatch(conditionPredicate);
@@ -67,33 +60,11 @@ public class Condition implements Serializable {
   @NotNull
   private Predicate<Condition> getConditionPredicate(ApplicationData applicationData) {
     return condition -> {
-      PagesData pagesData = Optional.ofNullable(condition.getSubworkflow())
-          .map(subworkflow -> applicationData.getSubworkflows().get(subworkflow))
-          .filter(subworkflow -> subworkflow.size() > condition.getIteration())
-          .map(subworkflow -> subworkflow.get(condition.getIteration()).getPagesData())
-          .orElse(applicationData.getPagesData());
+      PagesData pagesData = applicationData.getPagesData();
       return Optional.ofNullable(pagesData.getPage(condition.getPageName()))
           .map(pageData -> condition.matches(pageData, pagesData))
           .orElse(false);
     };
-  }
-
-  private Stream<Condition> addIterationConditionsForSubworkflows(ApplicationData applicationData) {
-    return conditions.stream().flatMap(condition -> {
-      if (condition.appliesForAllIterations()) {
-        Integer subworkflowSize = Optional
-            .ofNullable(applicationData.getSubworkflows().get(condition.getSubworkflow()))
-            .map(ArrayList::size)
-            .orElse(0);
-        return IntStream.range(0, subworkflowSize).mapToObj(condition::withIteration);
-      } else {
-        return Stream.of(condition);
-      }
-    });
-  }
-
-  public boolean appliesForAllIterations() {
-    return getSubworkflow() != null && getIteration() == null;
   }
 
   public boolean matches(PageData pageData, Map<String, PageData> pagesData) {
@@ -133,17 +104,8 @@ public class Condition implements Serializable {
     this.value = value;
   }
 
-  public void setSubworkflow(String subworkflow) {
-    assertNotCompositeCondition();
-    this.subworkflow = subworkflow;
-  }
-
-  public void setIteration(Integer iteration) {
-    this.iteration = iteration;
-  }
-
   private void assertCompositeCondition() {
-    if (pageName != null || input != null || subworkflow != null) {
+    if (pageName != null || input != null) {
       throw new IllegalStateException("Cannot set composite condition fields");
     }
   }

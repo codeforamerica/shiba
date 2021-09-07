@@ -21,11 +21,6 @@ conditionAnchors:
     pageName: homeExpenses
     input: homeExpenses
     matcher: DOES_NOT_CONTAIN
-  - &employerIterationExists?
-    subworkflow: jobs
-    pageName: employersName
-    input: employersName
-    matcher: NOT_EMPTY
   - &paysForMedicalExpenses?
     pageName: medicalExpenses
     input: medicalExpenses
@@ -470,42 +465,6 @@ derived-values:
             - pageName: registerToVote
               input: registerToVote
               value: "NO"
-  - groupName: employee
-    fieldName: selfEmployed
-    values:
-      - type: ENUMERATED_SINGLE_VALUE
-        value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-          literal: "true"
-        condition:
-          conditions:
-            - subworkflow: jobs
-              pageName: selfEmployment
-              input: selfEmployment
-              value: "true"
-  - groupName: employee
-    fieldName: selfEmployed
-    values:
-      - type: ENUMERATED_SINGLE_VALUE
-        value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-          literal: "false"
-        condition:
-          conditions:
-            - subworkflow: jobs
-              pageName: selfEmployment
-              input: selfEmployment
-              value: "false"
-  - groupName: employee
-    fieldName: selfEmployedGrossMonthlyEarnings
-    values:
-      - type: SINGLE_VALUE
-        value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-          literal: "see question 9"
-        condition:
-          conditions:
-            - subworkflow: jobs
-              pageName: selfEmployment
-              input: selfEmployment
-              value: "true"
   - groupName: personalInfo
     fieldName: sexText
     values:

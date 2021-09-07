@@ -30,6 +30,8 @@ public class ApplicationDataParser {
         new ParsingCoordinate("incomePerPayPeriod", "incomePerPayPeriod"));
     coordinatesMap.put(Field.LAST_THIRTY_DAYS_JOB_INCOME,
         new ParsingCoordinate("lastThirtyDaysJobIncome", "lastThirtyDaysJobIncome"));
+    coordinatesMap
+        .put(Field.IS_SELF_EMPLOYMENT, new ParsingCoordinate("selfEmployment", "selfEmployment"));
 
     coordinatesMap
         .put(Field.MAILING_STREET, new ParsingCoordinate("mailingAddress", "streetAddress"));
@@ -168,6 +170,7 @@ public class ApplicationDataParser {
     PAY_PERIOD,
     INCOME_PER_PAY_PERIOD,
     LAST_THIRTY_DAYS_JOB_INCOME,
+    IS_SELF_EMPLOYMENT,
 
     MAILING_STREET,
     MAILING_CITY,

@@ -250,8 +250,6 @@ mappings:
     selfEmployedGrossMonthlyEarnings: SELF_EMPLOYED_GROSS_MONTHLY_EARNINGS
   nonSelfEmployment_employersName:
     employersName: NON_SELF_EMPLOYMENT_EMPLOYERS_NAME
-  selfEmployment:
-    selfEmployment: SELF_EMPLOYMENT
   nonSelfEmployment_employee:
     grossMonthlyIncome: NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME
   selfEmployment_employee:

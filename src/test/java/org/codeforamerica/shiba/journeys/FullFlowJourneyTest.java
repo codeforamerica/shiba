@@ -378,7 +378,6 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCcapFieldEquals("PHONE_OPTIN", "Yes");
     assertCcapFieldEquals("ADDITIONAL_INFO_CASE_NUMBER", "");
     assertCcapFieldEquals("EMPLOYERS_NAME_0", "some employer");
-    assertCcapFieldEquals("SELF_EMPLOYMENT_0", "Yes");
     assertCcapFieldEquals("INCOME_PER_PAY_PERIOD_0", "1.00");
     assertCcapFieldEquals("DATE_OF_BIRTH_0", "09/14/1950");
     assertCcapFieldEquals("SSN_0", "XXX-XX-XXXX");
@@ -498,7 +497,6 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCafFieldEquals("PHONE_OPTIN", "Yes");
     assertCafFieldEquals("ADDITIONAL_INFO_CASE_NUMBER", "");
     assertCafFieldEquals("EMPLOYERS_NAME_0", "some employer");
-    assertCafFieldEquals("SELF_EMPLOYMENT_0", "Yes");
     assertCafFieldEquals("INCOME_PER_PAY_PERIOD_0", "1.00");
     assertCafFieldEquals("DATE_OF_BIRTH_0", "09/14/1950");
     assertCafFieldEquals("SSN_0", "XXX-XX-XXXX");
