@@ -93,8 +93,10 @@ public class ApplicationData implements Serializable {
     }
 
     return currentPage.getNextPages().stream()
-        .filter(potentialNextPage -> nextPageConditionsAreSatisfied(featureFlags, currentPage,
-            potentialNextPage))
+        .filter(
+            potentialNextPage ->
+                nextPageConditionsAreSatisfied(featureFlags, currentPage, potentialNextPage)
+        )
         .findFirst()
         .orElseThrow(() -> new RuntimeException("Cannot find suitable next page."));
   }
@@ -111,7 +113,7 @@ public class ApplicationData implements Serializable {
             pagesData);
       } else {
         // TODO should this be done in the other side of the if as well?
-        var datasourcePages = getPagesDataForPageDatasources(currentPage);
+        var datasourcePages = getPagesDataIncludingSubworkflows(currentPage);
         satisfied = datasourcePages.satisfies(condition);
       }
     }
@@ -213,7 +215,8 @@ public class ApplicationData implements Serializable {
    * subworkflow data
    */
   @NotNull
-  public PagesData getPagesDataForPageDatasources(PageWorkflowConfiguration page) {
+  // TODO BETTER NAME PLZ
+  public PagesData getPagesDataIncludingSubworkflows(PageWorkflowConfiguration page) {
     PagesData pagesData = getPagesData();
     Subworkflows subworkflows = getSubworkflows();
     Map<String, PageData> pages = new HashMap<>();

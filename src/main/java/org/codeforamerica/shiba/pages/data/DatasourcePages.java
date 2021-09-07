@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 import org.codeforamerica.shiba.inputconditions.Condition;
 
+// used for skip conditions, not sure what else
 public class DatasourcePages extends HashMap<String, PageData> {
 
   @Serial
