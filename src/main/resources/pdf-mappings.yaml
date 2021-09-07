@@ -302,6 +302,8 @@ mappings:
     caseNumber: ADDITIONAL_INFO_CASE_NUMBER
   legalStuff:
     drugFelony: DRUG_FELONY
+  applyForTribalTANF:
+    applyForTribalTANF: TANF
 enums:
   EVERY_WEEK: Every week
   EVERY_TWO_WEEKS: Every two weeks

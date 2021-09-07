@@ -555,6 +555,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCafFieldEquals("CCAP", "Yes");
     assertCafFieldEquals("EMERGENCY", "Yes");
     assertCafFieldEquals("GRH", "Yes");
+    assertCafFieldEquals("TANF", "Yes");
     assertCafFieldEquals("APPLICANT_FIRST_NAME", "Ahmed");
     assertCafFieldEquals("APPLICANT_LAST_NAME", "St. George");
     assertCafFieldEquals("APPLICANT_OTHER_NAME", "defaultOtherName");
