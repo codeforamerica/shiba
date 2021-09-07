@@ -104,6 +104,7 @@ dependencies {
     implementation 'org.apache.httpcomponents:httpclient'
     implementation 'io.sentry:sentry-logback:5.1.2'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'com.google.crypto.tink:tink:1.6.1'
     implementation 'org.flywaydb:flyway-core:7.15.0'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'

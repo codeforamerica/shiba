@@ -38,7 +38,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             "/resend-confirmation-email/??????????")
         .authenticated()
         .and()
-        .httpBasic();
+        .oauth2Login();
   }
 
   @Bean
