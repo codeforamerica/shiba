@@ -177,6 +177,8 @@ mappings:
   futureIncome:
     earnLessMoneyThisMonth: EARN_LESS_MONEY_THIS_MONTH
     additionalIncomeInfo: ADDITIONAL_INCOME_INFO
+  additionalIncomeInfo:
+    additionalIncomeInfo: ADDITIONAL_INCOME_INFO
   employersName:
     employersName: EMPLOYERS_NAME
   hourlyWage:

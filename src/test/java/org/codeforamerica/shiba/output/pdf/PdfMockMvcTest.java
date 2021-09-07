@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.codeforamerica.shiba.Program;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -485,6 +486,32 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       void setUp() throws Exception {
         fillOutPersonalInfo();
         fillOutContactInfo();
+      }
+
+      @Test
+      void shouldUseAdditionalIncomeInfoAsFutureIncomeWhenIncomeIs0() throws Exception {
+        selectPrograms(Program.CCAP);
+        postExpectingSuccess("addHouseholdMembers", "addHouseholdMembers", "false");
+        postExpectingSuccess("employmentStatus", "areYouWorking", "false");
+        postExpectingRedirect("unearnedIncome",
+            "unearnedIncome",
+            "NO_UNEARNED_INCOME_SELECTED",
+            "unearnedIncomeCcap");
+        postExpectingRedirect("unearnedIncomeCcap",
+            "unearnedIncomeCcap",
+            "NO_UNEARNED_INCOME_CCAP_SELECTED",
+            "additionalIncomeInfo");
+
+        var additionalIncomeInfo = "Here's something else about my situation";
+        postExpectingRedirect("additionalIncomeInfo", "additionalIncomeInfo",
+            additionalIncomeInfo, "startExpenses");
+
+        var caf = submitAndDownloadCaf();
+        var ccap = downloadCcap();
+        List.of(caf, ccap).forEach(pdf -> {
+          assertPdfFieldEquals("ADDITIONAL_INCOME_INFO", additionalIncomeInfo, pdf);
+          assertPdfFieldEquals("ADDITIONAL_INCOME_INFO", additionalIncomeInfo, pdf);
+        });
       }
 
       @Test
