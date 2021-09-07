@@ -3226,22 +3226,22 @@ workflow:
           conditions:
             - pageName: selectTheTribe
               input: selectedTribe
-              value: BoisForte
+              value: Bois Forte
             - pageName: selectTheTribe
               input: selectedTribe
-              value: FondDuLac
+              value: Fond Du Lac
             - pageName: selectTheTribe
               input: selectedTribe
-              value: GrandPortage
+              value: Grand Portage
             - pageName: selectTheTribe
               input: selectedTribe
-              value: LeechLake
+              value: Leech Lake
             - pageName: selectTheTribe
               input: selectedTribe
-              value: MilleLacs
+              value: Mille Lacs
             - pageName: selectTheTribe
               input: selectedTribe
-              value: RedLake
+              value: Red Lake
       - pageName: applyForMFIP
     datasources:
       - pageName: choosePrograms
