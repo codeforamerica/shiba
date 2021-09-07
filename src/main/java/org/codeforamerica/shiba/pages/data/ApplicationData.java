@@ -112,7 +112,6 @@ public class ApplicationData implements Serializable {
                 .get(currentPage.getPageConfiguration().getName()),
             pagesData);
       } else {
-        // TODO should this be done in the other side of the if as well?
         var datasourcePages = getPagesDataIncludingSubworkflows(currentPage);
         satisfied = datasourcePages.satisfies(condition);
       }
@@ -210,12 +209,7 @@ public class ApplicationData implements Serializable {
     return String.join(", ", programName);
   }
 
-  /*
-   * Gets all of the PagesData for the datasources associated with a given page, including
-   * subworkflow data
-   */
   @NotNull
-  // TODO BETTER NAME PLZ
   public PagesData getPagesDataIncludingSubworkflows(PageWorkflowConfiguration page) {
     PagesData pagesData = getPagesData();
     Subworkflows subworkflows = getSubworkflows();
