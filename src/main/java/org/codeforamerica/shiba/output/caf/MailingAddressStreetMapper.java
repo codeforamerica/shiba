@@ -22,7 +22,7 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.MAILING_STATE;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.MAILING_STREET;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.MAILING_ZIPCODE;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.SAME_MAILING_ADDRESS2;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.SAME_MAILING_ADDRESS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 
 import java.util.List;
@@ -40,6 +40,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MailingAddressStreetMapper implements ApplicationInputsMapper {
+
   private final static String GENERAL_DELIVERY = "General Delivery";
 
   @Override
@@ -47,6 +48,7 @@ public class MailingAddressStreetMapper implements ApplicationInputsMapper {
       SubworkflowIterationScopeTracker scopeTracker) {
     PagesData pagesData = application.getApplicationData().getPagesData();
 
+    // Not applicable or enough information to continue
     PageData mailingAddressPageData = pagesData.get("mailingAddress");
     boolean hasInput = mailingAddressPageData != null && mailingAddressPageData
         .containsKey("sameMailingAddress");
@@ -56,7 +58,8 @@ public class MailingAddressStreetMapper implements ApplicationInputsMapper {
     }
 
     // Use home address for mailing
-    boolean sameAsHomeAddress = Boolean.parseBoolean(getFirstValue(pagesData, SAME_MAILING_ADDRESS2));
+    boolean sameAsHomeAddress = Boolean
+        .parseBoolean(getFirstValue(pagesData, SAME_MAILING_ADDRESS));
     if (sameAsHomeAddress) {
       return createAddressInputsFromHomeAddress(pagesData);
     }

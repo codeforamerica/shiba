@@ -22,14 +22,12 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.MAILING_STREET;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.MAILING_ZIPCODE;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
-import static org.mockito.Mockito.mock;
 
 import java.util.List;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
 import org.codeforamerica.shiba.output.caf.MailingAddressStreetMapper;
-import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
@@ -37,10 +35,7 @@ import org.junit.jupiter.api.Test;
 
 class MailingAddressStreetMapperTest {
 
-  private final FeatureFlagConfiguration featureFlagConfiguration = mock(
-      FeatureFlagConfiguration.class);
-  private final MailingAddressStreetMapper mapper = new MailingAddressStreetMapper(
-  );
+  private final MailingAddressStreetMapper mapper = new MailingAddressStreetMapper();
 
   @Test
   void shouldMapSameAsHomeAddressEnriched() {

@@ -4,14 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.testutilities.TestUtils.assertPdfFieldEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
-import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
 import org.codeforamerica.shiba.testutilities.FormPage;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +20,6 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
   @BeforeEach
   protected void setUp() throws Exception {
     super.setUp();
-    when(featureFlagConfiguration.get("")).thenReturn(FeatureFlag.OFF);
     mockMvc.perform(get("/pages/languagePreferences").session(session)); // start timer
     postExpectingSuccess("languagePreferences",
         Map.of("writtenLanguage", List.of("ENGLISH"), "spokenLanguage", List.of("ENGLISH"))
