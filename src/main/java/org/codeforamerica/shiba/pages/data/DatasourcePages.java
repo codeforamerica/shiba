@@ -6,7 +6,11 @@ import java.util.Map;
 import java.util.stream.Stream;
 import org.codeforamerica.shiba.inputconditions.Condition;
 
-// used for skip conditions, not sure what else
+// Very similar to PagesData, with some subtle differences. Used for
+// - Skip conditions, to hold the data for their datasources
+// - Configuration, to represent options on follow ups and inputs, via OptionsWithDataSourceTemplate
+// - PagesData#resolve, to create the PageTemplate (done in PagesController#getPage)
+// - PagesData#evaluate
 public class DatasourcePages extends HashMap<String, PageData> {
 
   @Serial

@@ -119,11 +119,14 @@ public class PagesData extends HashMap<String, PageData> {
   }
 
   /**
+   * Figure out text based on conditional values in the page workflow configuration
+   * <p>
    * Defaults to {@code value.getDefaultValue()} if all {@code value.getConditionalValues()} and
    * flags evaluate to "false".
    */
   private String resolve(FeatureFlagConfiguration featureFlags,
-      PageWorkflowConfiguration pageWorkflowConfiguration, Value value) {
+      PageWorkflowConfiguration pageWorkflowConfiguration,
+      Value value) {
     if (value == null) {
       return "";
     }
@@ -157,13 +160,13 @@ public class PagesData extends HashMap<String, PageData> {
     DatasourcePages datasourcePages = this
         .getDatasourcePagesBy(pageWorkflowConfiguration.getDatasources());
 
+    var inputs = pageConfiguration.getInputs().stream()
+        .filter(input ->
+            Optional.ofNullable(input.getCondition()).map(datasourcePages::satisfies).orElse(true))
+        .map(formInput -> convert(pageConfiguration.getName(), formInput, applicationData))
+        .collect(Collectors.toList());
     return new PageTemplate(
-        pageConfiguration.getInputs().stream()
-            .filter(input -> Optional.ofNullable(input.getCondition())
-                .map(datasourcePages::satisfies)
-                .orElse(true))
-            .map(formInput -> convert(pageConfiguration.getName(), formInput, applicationData))
-            .collect(Collectors.toList()),
+        inputs,
         pageConfiguration.getName(),
         resolve(featureFlags, pageWorkflowConfiguration, pageConfiguration.getPageTitle()),
         resolve(featureFlags, pageWorkflowConfiguration, pageConfiguration.getHeaderKey()),
