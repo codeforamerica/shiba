@@ -2275,12 +2275,10 @@ pageDefinitions:
     pageTitle: additional-income-info.title
     headerKey:
       defaultValue: future-income.is-there-anything-else-youd-like-to-share-about-your-income
+    headerHelpMessageKey: general.inputs.optional
     inputs:
       - name: additionalIncomeInfo
         type: TEXTAREA
-        promptMessage:
-          promptMessageKey: future-income.is-there-anything-else-youd-like-to-share-about-your-income
-        helpMessageKey: general.inputs.optional
   - &employersName
     name: employersName
     pageTitle: employers-name.title
