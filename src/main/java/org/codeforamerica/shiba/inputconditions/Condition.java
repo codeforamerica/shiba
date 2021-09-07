@@ -76,7 +76,8 @@ public class Condition implements Serializable {
   }
 
   public boolean satisfies(PageData pageData) {
-    return pageData != null && matcher.matches(pageData.get(input).getValue(), value);
+    return pageData != null && !pageData.isEmpty() && matcher
+        .matches(pageData.get(input).getValue(), value);
   }
 
   public void setConditions(List<Condition> conditions) {

@@ -70,49 +70,56 @@ public class ApplicationData implements Serializable {
             || getSubworkflows().get(datasource.getGroupName()) != null);
   }
 
-  public NextPage getNextPageName(FeatureFlagConfiguration featureFlags,
-      @NotNull PageWorkflowConfiguration pageWorkflowConfiguration, Integer option) {
-    if (pageWorkflowConfiguration.isDirectNavigation()) {
-      return pageWorkflowConfiguration.getNextPages().get(option);
+  public NextPage getNextPageName(
+      FeatureFlagConfiguration featureFlags,
+      @NotNull PageWorkflowConfiguration currentPage,
+      Integer option) {
+    if (currentPage.isDirectNavigation()) {
+      return currentPage.getNextPages().get(option);
     }
     PageData pageData;
-    if (pageWorkflowConfiguration.isInAGroup()) {
-      pageData = incompleteIterations.get(pageWorkflowConfiguration.getGroupName())
-          .get(pageWorkflowConfiguration.getPageConfiguration().getName());
+    if (currentPage.isInAGroup()) {
+      pageData = incompleteIterations.get(currentPage.getGroupName())
+          .get(currentPage.getPageConfiguration().getName());
     } else {
       pageData = pagesData
-          .getPage(pageWorkflowConfiguration.getPageConfiguration().getName());
+          .getPage(currentPage.getPageConfiguration().getName());
     }
 
-    if (pageData == null && !pageWorkflowConfiguration.getPageConfiguration().isStaticPage()) {
+    if (pageData == null && !currentPage.getPageConfiguration().isStaticPage()) {
       log.error(String.format(
           "Conditional navigation for %s requires page to have data/inputs.",
-          pageWorkflowConfiguration.getPageConfiguration().getName()));
+          currentPage.getPageConfiguration().getName()));
     }
 
-    return pageWorkflowConfiguration.getNextPages().stream()
-        .filter(page -> nextPage(featureFlags, pageWorkflowConfiguration, page)).findFirst()
+    return currentPage.getNextPages().stream()
+        .filter(
+            potentialNextPage ->
+                nextPageConditionsAreSatisfied(featureFlags, currentPage, potentialNextPage)
+        )
+        .findFirst()
         .orElseThrow(() -> new RuntimeException("Cannot find suitable next page."));
   }
 
-  private boolean nextPage(FeatureFlagConfiguration featureFlags,
-      @NotNull PageWorkflowConfiguration pageWorkflowConfiguration, NextPage nextPage) {
-    boolean isNextPage = true;
+  private boolean nextPageConditionsAreSatisfied(FeatureFlagConfiguration featureFlags,
+      @NotNull PageWorkflowConfiguration currentPage, NextPage nextPage) {
+    boolean satisfied = true;
     Condition condition = nextPage.getCondition();
     if (condition != null) {
-      if (pageWorkflowConfiguration.isInAGroup()) {
-        isNextPage = condition.matches(
-            incompleteIterations.get(pageWorkflowConfiguration.getGroupName())
-                .get(pageWorkflowConfiguration.getPageConfiguration().getName()),
+      if (currentPage.isInAGroup()) {
+        satisfied = condition.matches(
+            incompleteIterations.get(currentPage.getGroupName())
+                .get(currentPage.getPageConfiguration().getName()),
             pagesData);
       } else {
-        isNextPage = pagesData.satisfies(condition);
+        var datasourcePages = getPagesDataIncludingSubworkflows(currentPage);
+        satisfied = datasourcePages.satisfies(condition);
       }
     }
     if (nextPage.getFlag() != null) {
-      isNextPage &= featureFlags.get(nextPage.getFlag()) == FeatureFlag.ON;
+      satisfied &= featureFlags.get(nextPage.getFlag()) == FeatureFlag.ON;
     }
-    return isNextPage;
+    return satisfied;
   }
 
   public boolean isCCAPApplication() {
@@ -200,5 +207,32 @@ public class ApplicationData implements Serializable {
     });
 
     return String.join(", ", programName);
+  }
+
+  @NotNull
+  public PagesData getPagesDataIncludingSubworkflows(PageWorkflowConfiguration page) {
+    PagesData pagesData = getPagesData();
+    Subworkflows subworkflows = getSubworkflows();
+    Map<String, PageData> pages = new HashMap<>();
+    var thisPageName = page.getPageConfiguration().getName();
+    var thisPageData = pagesData.get(thisPageName);
+    pages.put(thisPageName, thisPageData);
+    page.getDatasources().stream()
+        .filter(datasource -> datasource.getPageName() != null)
+        .forEach(datasource -> {
+          var pageData = new PageData();
+          if (datasource.getGroupName() == null) {
+            // if datasource is not a subworkflow
+            pageData.mergeInputDataValues(pagesData.get(datasource.getPageName()));
+          } else if (subworkflows.containsKey(datasource.getGroupName())) {
+            // if datasource is a subworkflow
+            subworkflows.get(datasource.getGroupName()).stream()
+                .map(iteration -> iteration.getPagesData().getPage(datasource.getPageName()))
+                .forEach(pageData::mergeInputDataValues);
+          }
+
+          pages.put(datasource.getPageName(), pageData);
+        });
+    return new PagesData(pages);
   }
 }

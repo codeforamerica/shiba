@@ -22,8 +22,16 @@ conditionDefinitions:
   - &isApplicantsJob?
     pageName: householdSelectionForIncome
     input: whoseJobIsIt
-    value: "applicant"
+    value: applicant
     matcher: CONTAINS_SUBSTRING
+  - &noUnearnedCcapSelected?
+    pageName: unearnedIncomeCcap
+    input: unearnedIncomeCcap
+    value: NO_UNEARNED_INCOME_CCAP_SELECTED
+  - &noUnearnedIncomeSelected?
+    pageName: unearnedIncome
+    input: unearnedIncome
+    value: NO_UNEARNED_INCOME_SELECTED
   - &doesNotHaveMortgage?
     pageName: homeExpenses
     input: homeExpenses
@@ -2262,6 +2270,17 @@ pageDefinitions:
         promptMessage:
           promptMessageKey: future-income.is-there-anything-else-youd-like-to-share-about-your-income
         helpMessageKey: general.inputs.optional
+  - &additionalIncomeInfo
+    name: additionalIncomeInfo
+    pageTitle: additional-income-info.title
+    headerKey:
+      defaultValue: future-income.is-there-anything-else-youd-like-to-share-about-your-income
+    inputs:
+      - name: additionalIncomeInfo
+        type: TEXTAREA
+        promptMessage:
+          promptMessageKey: future-income.is-there-anything-else-youd-like-to-share-about-your-income
+        helpMessageKey: general.inputs.optional
   - &employersName
     name: employersName
     pageTitle: employers-name.title
@@ -3434,9 +3453,7 @@ workflow:
       - pageName: unearnedIncomeCcap
     skipCondition:
       conditions:
-        - pageName: unearnedIncome
-          input: unearnedIncome
-          value: NO_UNEARNED_INCOME_SELECTED
+        - *noUnearnedIncomeSelected?
     datasources:
       - pageName: unearnedIncome
       - pageName: addHouseholdMembers
@@ -3453,20 +3470,38 @@ workflow:
   unearnedIncomeSourcesCcap:
     pageConfiguration: *unearnedIncomeSourcesCcap
     nextPages:
+      - pageName: additionalIncomeInfo
+        condition:
+          logicalOperator: AND
+          conditions:
+            - logicalOperator: OR
+              conditions:
+                - *noOneChoseCCAP?
+                - *noUnearnedCcapSelected?
+            - *noUnearnedIncomeSelected?
+            - pageName: employmentStatus
+              input: areYouWorking
+              value: "false"
       - pageName: futureIncome
     skipCondition:
       logicalOperator: OR
       conditions:
         - *noOneChoseCCAP?
-        - pageName: unearnedIncomeCcap
-          input: unearnedIncomeCcap
-          value: NO_UNEARNED_INCOME_CCAP_SELECTED
+        - *noUnearnedCcapSelected?
     datasources:
-      - pageName: unearnedIncomeCcap
-      - pageName: addHouseholdMembers
       - pageName: choosePrograms
       - pageName: householdMemberInfo
         groupName: household
+      - pageName: unearnedIncome
+      - pageName: unearnedIncomeCcap
+      - pageName: employmentStatus
+      - pageName: addHouseholdMembers
+  additionalIncomeInfo:
+    pageConfiguration: *additionalIncomeInfo
+    nextPages:
+      - pageName: startExpenses
+    datasources:
+      - pageName: addHouseholdMembers
   futureIncome:
     pageConfiguration: *futureIncome
     nextPages:

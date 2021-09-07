@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.pages;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.testutilities.TestUtils.assertPdfFieldEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -150,10 +151,14 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
     assertNavigationRedirectsToCorrectNextPage("incomeUpNext", "unearnedIncome");
     postExpectingRedirect("unearnedIncome", "unearnedIncome", "NO_UNEARNED_INCOME_SELECTED",
         "unearnedIncomeCcap");
-    postExpectingRedirect("unearnedIncomeCcap", "unearnedIncomeCcap",
-        "NO_UNEARNED_INCOME_CCAP_SELECTED", "futureIncome");
+    var formPage = postAndFollowRedirect(
+        "unearnedIncomeCcap", "unearnedIncomeCcap", "NO_UNEARNED_INCOME_CCAP_SELECTED");
+    assertEquals(formPage.getTitle(), "Additional Income Info");
 
-    postExpectingRedirect("futureIncome", "earnLessMoneyThisMonth", "false", "startExpenses");
+    postExpectingRedirect("additionalIncomeInfo",
+        "additionalIncomeInfo",
+        "my income is literally $0",
+        "startExpenses");
     assertNavigationRedirectsToCorrectNextPage("startExpenses", "homeExpenses");
     postExpectingRedirect("homeExpenses", "homeExpenses", "NONE_OF_THE_ABOVE", "utilities");
 

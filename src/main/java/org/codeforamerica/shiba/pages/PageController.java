@@ -46,7 +46,6 @@ import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.DatasourcePages;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
-import org.codeforamerica.shiba.pages.data.Subworkflows;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.codeforamerica.shiba.pages.enrichment.ApplicationEnrichment;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
@@ -158,9 +157,9 @@ public class PageController {
       @PathVariable String pageName,
       @RequestParam(required = false, defaultValue = "0") Integer option
   ) {
-    PageWorkflowConfiguration pageWorkflow = applicationConfiguration.getPageWorkflow(pageName);
+    PageWorkflowConfiguration currentPage = applicationConfiguration.getPageWorkflow(pageName);
     PagesData pagesData = applicationData.getPagesData();
-    NextPage nextPage = applicationData.getNextPageName(featureFlags, pageWorkflow, option);
+    NextPage nextPage = applicationData.getNextPageName(featureFlags, currentPage, option);
     ofNullable(nextPage.getFlow()).ifPresent(applicationData::setFlow);
     PageWorkflowConfiguration nextPageWorkflow = applicationConfiguration
         .getPageWorkflow(nextPage.getPageName());
@@ -176,28 +175,8 @@ public class PageController {
   private boolean shouldSkip(PageWorkflowConfiguration nextPageWorkflow) {
     Condition skipCondition = nextPageWorkflow.getSkipCondition();
     if (skipCondition != null) {
-      PagesData pagesData = applicationData.getPagesData();
-      Subworkflows subworkflows = applicationData.getSubworkflows();
-      Map<String, PageData> pages = new HashMap<>();
-      nextPageWorkflow.getDatasources().stream()
-          .filter(datasource -> datasource.getPageName() != null)
-          .forEach(datasource -> {
-            String key = datasource.getPageName();
-            PageData value = new PageData();
-            if (datasource.getGroupName() == null) { // if datasource is not a subworkflow
-              value.mergeInputDataValues(pagesData.get(datasource.getPageName()));
-            } else if (subworkflows
-                .containsKey(datasource.getGroupName())) { // if datasource is a subworkflow
-              subworkflows.get(datasource.getGroupName()).stream()
-                  .map(iteration -> iteration.getPagesData()
-                      .getPage(datasource.getPageName()))
-                  .forEach(value::mergeInputDataValues);
-            }
-
-            pages.put(key, value);
-          });
-      @NotNull DatasourcePages datasourcePages = new DatasourcePages(new PagesData(pages));
-
+      PagesData pagesData = applicationData.getPagesDataIncludingSubworkflows(nextPageWorkflow);
+      DatasourcePages datasourcePages = new DatasourcePages(pagesData);
       return datasourcePages.satisfies(skipCondition);
     }
     return false;
