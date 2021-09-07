@@ -70,6 +70,12 @@ dependencyManagement {
 }
 
 dependencies {
+    modules {
+        module('javax.activation:activation') {
+            replacedBy('jakarta.activation:jakarta.activation-api', 'Use jakarta instead of javax')
+        }
+    }
+
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
