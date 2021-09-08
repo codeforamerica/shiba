@@ -21,7 +21,7 @@
             </div>
         </div>
         <th:block
-                th:if="${featureFlags.get('apply-without-address').isOff() || !data.get('homeAddress').get('isHomeless').value.contains('true')}"
+                th:if="${!data.get('homeAddress').get('isHomeless').value.contains('true')}"
                 th:with="useEnrichedInput=${data.get('homeAddressValidation').get('useEnrichedAddress')},
                          useEnriched=${useEnrichedInput != null && useEnrichedInput.value.contains('true')}">
             <div th:replace="fragments/reviewAddressFragment :: reviewAddressFragment(${data}, ${useEnriched}, 'homeAddress')"></div>
@@ -40,7 +40,7 @@
                 <a href="#" style="display: none" th:text="#{review-info.edit}"></a>
             </div>
         </div>
-        <th:block th:with="sameMailingAddress=${featureFlags.get('apply-without-address').isOn() ? 'true'.equals(data.getPageInputFirstValue('mailingAddress','sameMailingAddress')) : 'true'.equals(data.getPageInputFirstValue('homeAddress','sameMailingAddress'))},
+        <th:block th:with="sameMailingAddress=${'true'.equals(data.getPageInputFirstValue('mailingAddress','sameMailingAddress'))},
                            useEnrichedInput=${data.get('mailingAddressValidation').get('useEnrichedAddress')},
                            useEnriched=${useEnrichedInput != null && useEnrichedInput.value.contains('true')} ">
             <div th:if="${sameMailingAddress}"

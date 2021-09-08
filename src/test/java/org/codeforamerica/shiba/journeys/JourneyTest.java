@@ -73,7 +73,6 @@ abstract class JourneyTest extends AbstractBasePageTest {
     when(smartyStreetClient.validateAddress(any())).thenReturn(Optional.empty());
 
     when(featureFlagConfiguration.get("apply-for-tribal-nation")).thenReturn(FeatureFlag.ON);
-    when(featureFlagConfiguration.get("apply-without-address")).thenReturn(FeatureFlag.ON);
     when(featureFlagConfiguration.get("submit-via-email")).thenReturn(FeatureFlag.OFF);
     when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.OFF);
     caf = null;

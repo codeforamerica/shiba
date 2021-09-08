@@ -6,11 +6,9 @@ import static org.codeforamerica.shiba.application.FlowType.EXPEDITED;
 import static org.codeforamerica.shiba.application.FlowType.MINIMUM;
 import static org.codeforamerica.shiba.testutilities.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.testutilities.YesNoAnswer.YES;
-import static org.mockito.Mockito.when;
 
 import java.util.List;
 import org.codeforamerica.shiba.pages.Sentiment;
-import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -23,8 +21,6 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
   @Test
   void nonExpeditedFlow() {
     // No permanent address for this test
-    when(featureFlagConfiguration.get("apply-without-address")).thenReturn(FeatureFlag.ON);
-
     getToHomeAddress(List.of(PROGRAM_SNAP));
 
     // Where are you currently Living? (with home address)

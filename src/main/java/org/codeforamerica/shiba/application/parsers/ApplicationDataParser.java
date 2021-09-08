@@ -30,6 +30,8 @@ public class ApplicationDataParser {
         new ParsingCoordinate("incomePerPayPeriod", "incomePerPayPeriod"));
     coordinatesMap.put(Field.LAST_THIRTY_DAYS_JOB_INCOME,
         new ParsingCoordinate("lastThirtyDaysJobIncome", "lastThirtyDaysJobIncome"));
+    coordinatesMap
+        .put(Field.IS_SELF_EMPLOYMENT, new ParsingCoordinate("selfEmployment", "selfEmployment"));
 
     coordinatesMap
         .put(Field.MAILING_STREET, new ParsingCoordinate("mailingAddress", "streetAddress"));
@@ -81,8 +83,6 @@ public class ApplicationDataParser {
 
     coordinatesMap.put(Field.IS_HOMELESS, new ParsingCoordinate("homeAddress", "isHomeless"));
     coordinatesMap.put(Field.SAME_MAILING_ADDRESS,
-        new ParsingCoordinate("homeAddress", "sameMailingAddress"));
-    coordinatesMap.put(Field.SAME_MAILING_ADDRESS2,
         new ParsingCoordinate("mailingAddress", "sameMailingAddress"));
 
     coordinatesMap.put(Field.IDENTIFY_ZIPCODE, new ParsingCoordinate("identifyZipcode", "zipCode"));
@@ -168,6 +168,7 @@ public class ApplicationDataParser {
     PAY_PERIOD,
     INCOME_PER_PAY_PERIOD,
     LAST_THIRTY_DAYS_JOB_INCOME,
+    IS_SELF_EMPLOYMENT,
 
     MAILING_STREET,
     MAILING_CITY,
@@ -195,7 +196,6 @@ public class ApplicationDataParser {
 
     IS_HOMELESS,
     SAME_MAILING_ADDRESS,
-    SAME_MAILING_ADDRESS2,
 
     GENERAL_DELIVERY_CITY,
     GENERAL_DELIVERY_ZIPCODE,

@@ -70,6 +70,12 @@ dependencyManagement {
 }
 
 dependencies {
+    modules {
+        module('javax.activation:activation') {
+            replacedBy('jakarta.activation:jakarta.activation-api', 'Use jakarta instead of javax')
+        }
+    }
+
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
@@ -99,7 +105,7 @@ dependencies {
     implementation 'io.sentry:sentry-logback:5.1.2'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'com.google.crypto.tink:tink:1.6.1'
-    implementation 'org.flywaydb:flyway-core:7.14.1'
+    implementation 'org.flywaydb:flyway-core:7.15.0'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'com.mixpanel:mixpanel-java:1.5.0'
     implementation 'org.springframework.boot:spring-boot-starter-validation'

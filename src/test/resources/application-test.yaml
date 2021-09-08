@@ -25,7 +25,6 @@ mail-gun:
 
 feature-flag:
   apply-for-tribal-nation: on
-  apply-without-address: on
   submit-docs-via-email-for-hennepin: on
   county-ottertail: on
 

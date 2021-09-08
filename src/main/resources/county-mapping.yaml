@@ -236,55 +236,88 @@ staging:
     <<: *defaultCounties
     Anoka:
       email: help+staging@mnbenefits.org
+      phoneNumber: 763-422-7200
       folderId: f7c1c89c-34e1-4025-921c-f98ff385ea5a
+      dhsProviderId: 1023250115
     Carver:
       email: help+staging@mnbenefits.org
+      phoneNumber: 952-361-1660
       folderId: 58e2bd12-b96e-45a0-a1e8-e3e8ad009fe6
+      dhsProviderId: A000010800
     Clay:
       email: help+staging@mnbenefits.org
+      phoneNumber: 218-299-5200
       folderId: fdb3083f-ec76-45bf-a775-36a45b30974e
+      dhsProviderId: A000014100
     Cook:
       email: help+staging@mnbenefits.org
+      phoneNumber: 218-387-3620
       folderId: d9eb7b20-7ab3-48a6-a62d-5f99a5b783bb
+      dhsProviderId: A000016700
     Dodge:
       email: help+staging@mnbenefits.org
+      phoneNumber: 507-431-5600
       folderId: 3434ceda-f829-47b0-adf7-db31a0c705bd
+      dhsProviderId: A000020500
     Hennepin:
       email: help+staging@mnbenefits.org
+      phoneNumber: 612-596-1300
       folderId: 45ed1eea-d045-48fe-9970-383e1b889ec5
+      dhsProviderId: A000027200
     MilleLacsBand:
       email: help+staging@mnbenefits.org
       folderId: ccef8f5a-efe1-4ecf-93e2-3b853bea82e6
+      dhsProviderId: A602658300
     Morrison:
       email: help+staging@mnbenefits.org
+      phoneNumber: 320-631-3599
       folderId: 06ac8b00-ce5e-4639-86ca-6aeeb4e29e99
+      dhsProviderId: 1255406286
     Olmsted:
       email: help+staging@mnbenefits.org
+      phoneNumber: 507-328-6500
       folderId: 47c53627-123e-4c74-a5c0-42f1668a5266
+      dhsProviderId: A000055800
     OtterTail:
       email: help+staging@mnbenefits.org
+      phoneNumber: 218-998-8281
       folderId: ffb34634-ff95-4b9a-9e44-9f38b2865e79
+      dhsProviderId: A000056600
     Sherburne:
       email: help+staging@mnbenefits.org
+      phoneNumber: 763-765-4000
       folderId: 4cdb160a-3e22-4039-a8b0-301089a30570
+      dhsProviderId: 1447381660
     Steele:
       email: help+staging@mnbenefits.org
+      phoneNumber: 507-431-5600
       folderId: c103fb77-dae0-4d81-b689-0dd255136a64
+      dhsProviderId: A000074400
     StLouis:
       email: help+staging@mnbenefits.org
+      phoneNumber: 800-450-9777 or 218-726-2101
       folderId: dd6389b4-3292-4713-9b9e-d6444e721551
+      dhsProviderId: A000069800
     Wabasha:
       email: help+staging@mnbenefits.org
+      phoneNumber: 651-565-3351
       folderId: fbbd1e32-e3da-4f4f-9f74-e709e5da53ef
+      dhsProviderId: A000079500
     Wadena:
       email: help+staging@mnbenefits.org
+      phoneNumber: 218-631-7605
       folderId: 5b0cc12d-a9c0-4f10-9e51-37e4e1d32e1f
+      dhsProviderId: A000080900
     Waseca:
       email: help+staging@mnbenefits.org
+      phoneNumber: 507-431-5600
       folderId: ed3aaedd-d315-43b5-8c31-c5c762d69d09
+      dhsProviderId: A000081700
     Wright:
       email: help+staging@mnbenefits.org
+      phoneNumber: 763-682-7414
       folderId: c4aea212-5139-4323-a28d-fbd97f80540c
+      dhsProviderId: 1124197249
 
 demo:
   defaultValue:
@@ -296,55 +329,88 @@ demo:
     <<: *defaultCounties
     Anoka:
       email: help+staging@mnbenefits.org
+      phoneNumber: 763-422-7200
       folderId: f7c1c89c-34e1-4025-921c-f98ff385ea5a
+      dhsProviderId: 1023250115
     Carver:
       email: help+staging@mnbenefits.org
+      phoneNumber: 952-361-1660
       folderId: 58e2bd12-b96e-45a0-a1e8-e3e8ad009fe6
+      dhsProviderId: A000010800
     Clay:
       email: help+staging@mnbenefits.org
+      phoneNumber: 218-299-5200
       folderId: fdb3083f-ec76-45bf-a775-36a45b30974e
+      dhsProviderId: A000014100
     Cook:
       email: help+staging@mnbenefits.org
+      phoneNumber: 218-387-3620
       folderId: d9eb7b20-7ab3-48a6-a62d-5f99a5b783bb
+      dhsProviderId: A000016700
     Dodge:
       email: help+staging@mnbenefits.org
+      phoneNumber: 507-431-5600
       folderId: 3434ceda-f829-47b0-adf7-db31a0c705bd
+      dhsProviderId: A000020500
     Hennepin:
       email: help+staging@mnbenefits.org
+      phoneNumber: 612-596-1300
       folderId: 45ed1eea-d045-48fe-9970-383e1b889ec5
+      dhsProviderId: A000027200
     MilleLacsBand:
       email: help+staging@mnbenefits.org
       folderId: ccef8f5a-efe1-4ecf-93e2-3b853bea82e6
+      dhsProviderId: A602658300
     Morrison:
       email: help+staging@mnbenefits.org
+      phoneNumber: 320-631-3599
       folderId: 06ac8b00-ce5e-4639-86ca-6aeeb4e29e99
+      dhsProviderId: 1255406286
     Olmsted:
       email: help+staging@mnbenefits.org
+      phoneNumber: 507-328-6500
       folderId: 47c53627-123e-4c74-a5c0-42f1668a5266
+      dhsProviderId: A000055800
     OtterTail:
       email: help+staging@mnbenefits.org
+      phoneNumber: 218-998-8281
       folderId: ffb34634-ff95-4b9a-9e44-9f38b2865e79
+      dhsProviderId: A000056600
     Sherburne:
       email: help+staging@mnbenefits.org
+      phoneNumber: 763-765-4000
       folderId: 4cdb160a-3e22-4039-a8b0-301089a30570
+      dhsProviderId: 1447381660
     Steele:
       email: help+staging@mnbenefits.org
+      phoneNumber: 507-431-5600
       folderId: c103fb77-dae0-4d81-b689-0dd255136a64
+      dhsProviderId: A000074400
     StLouis:
       email: help+staging@mnbenefits.org
+      phoneNumber: 800-450-9777 or 218-726-2101
       folderId: dd6389b4-3292-4713-9b9e-d6444e721551
+      dhsProviderId: A000069800
     Wabasha:
       email: help+staging@mnbenefits.org
+      phoneNumber: 651-565-3351
       folderId: fbbd1e32-e3da-4f4f-9f74-e709e5da53ef
+      dhsProviderId: A000079500
     Wadena:
       email: help+staging@mnbenefits.org
+      phoneNumber: 218-631-7605
       folderId: 5b0cc12d-a9c0-4f10-9e51-37e4e1d32e1f
+      dhsProviderId: A000080900
     Waseca:
       email: help+staging@mnbenefits.org
+      phoneNumber: 507-431-5600
       folderId: ed3aaedd-d315-43b5-8c31-c5c762d69d09
+      dhsProviderId: A000081700
     Wright:
       email: help+staging@mnbenefits.org
+      phoneNumber: 763-682-7414
       folderId: c4aea212-5139-4323-a28d-fbd97f80540c
+      dhsProviderId: 1124197249
 
 production:
   defaultValue:
@@ -356,54 +422,87 @@ production:
     <<: *defaultCounties
     Anoka:
       email: EADocs@co.anoka.mn.us
+      phoneNumber: 763-422-7200
       folderId: 2daf63e7-64f7-4c59-9a1e-4da18cfbeb10
+      dhsProviderId: 1023250115
     Carver:
       email: cssfinancial@co.carver.mn.us
+      phoneNumber: 952-361-1660
       folderId: 1882e083-60e7-467a-ae66-ae0de945ad8e
+      dhsProviderId: A000010800
     Clay:
       email: social.services@co.clay.mn.us
+      phoneNumber: 218-299-5200
       folderId: c0e972ab-c0f3-4172-9c75-ea593f912e6e
+      dhsProviderId: A000014100
     Cook:
       email: IM@co.cook.mn.us
+      phoneNumber: 218-387-3620
       folderId: 00ba833d-41ff-49e9-815a-e1f3f82826e4
+      dhsProviderId: A000016700
     Dodge:
       email: OSS@MNPrairie.org
+      phoneNumber: 507-431-5600
       folderId: 4d5d9570-33ed-4511-8792-dde6711dde36
+      dhsProviderId: A000020500
     Hennepin:
       email: hhsews@hennepin.us
+      phoneNumber: 612-596-1300
       folderId: 39e0ea57-cc12-4cc1-a074-0ad3d7216d01
+      dhsProviderId: A000027200
     MilleLacsBand:
       folderId: f30bf89e-f3ab-4c74-8e38-af7ada922719
+      dhsProviderId: A602658300
     Morrison:
       email: callcenter@co.morrison.mn.us
+      phoneNumber: 320-631-3599
       folderId: ad862c99-4292-4674-a7cd-2dc019eb464e
+      dhsProviderId: 1255406286
     Olmsted:
       email: PAQ@co.olmsted.mn.us
+      phoneNumber: 507-328-6500
       folderId: 0dcade2f-4c2a-4450-8347-5888c9f966fb
+      dhsProviderId: A000055800
     OtterTail:
       email: imques@co.ottertail.mn.us
+      phoneNumber: 218-998-8281
       folderId: 77ba1a64-524d-492a-892e-09243ca4b9ab
+      dhsProviderId: A000056600
     Sherburne:
       email: PADocs@co.sherburne.mn.us
+      phoneNumber: 763-765-4000
       folderId: 7587e3c7-5409-4caf-b3c0-e4864f8b09b6
+      dhsProviderId: 1447381660
     Steele:
       email: OSS@MNPrairie.org
+      phoneNumber: 507-431-5600
       folderId: 2e0023fa-2ffb-4582-a28f-495f7606b41f
+      dhsProviderId: A000074400
     StLouis:
       email: ESS@stlouiscountymn.gov
+      phoneNumber: 800-450-9777 or 218-726-2101
       folderId: 8e50a17a-6f8e-43bd-9de1-da4dff40a478
+      dhsProviderId: A000069800
     Wabasha:
       email: imuinterview@co.wabasha.mn.us
+      phoneNumber: 651-565-3351
       folderId: 4b087cdb-ccee-44ad-b461-e5a829988b01
+      dhsProviderId: A000079500
     Wadena:
       email: wchs.benefits@co.wadena.mn.us
+      phoneNumber: 218-631-7605
       folderId: 8d10df90-416f-46e7-80e1-e5f3bf02ae73
+      dhsProviderId: A000080900
     Waseca:
       email: OSS@MNPrairie.org
+      phoneNumber: 507-431-5600
       folderId: f8fcee94-ae6e-4a1c-9b97-1e1bcf683249
+      dhsProviderId: A000081700
     Wright:
       email: HSFSPrograms@co.wright.mn.us
+      phoneNumber: 763-682-7414
       folderId: 644cae25-1cd5-481a-8f71-19446b83d3e1
+      dhsProviderId: 1124197249
 
 other:
   defaultValue:

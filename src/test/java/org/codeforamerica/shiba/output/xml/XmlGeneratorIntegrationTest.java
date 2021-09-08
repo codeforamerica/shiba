@@ -106,7 +106,7 @@ public class XmlGeneratorIntegrationTest {
           return Map.entry(pageConfiguration.getName(), new PageData(inputDataMap));
         })
         .distinct()
-        .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (address1, address2) -> address1));
+        .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
     PagesData pagesData = new PagesData();
     pagesData.putAll(data);
     ApplicationData applicationData = new ApplicationData();
