@@ -35,7 +35,6 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
@@ -63,9 +62,6 @@ public abstract class AbstractBasePageTest {
   @Autowired
   protected Path path;
   protected String baseUrl;
-  protected String baseUrlWithAuth;
-  @Value("${shiba-username}:${shiba-password}")
-  protected String authParams;
 
   @LocalServerPort
   protected String localServerPort;
@@ -75,8 +71,6 @@ public abstract class AbstractBasePageTest {
   @BeforeEach
   protected void setUp() throws IOException {
     baseUrl = "http://localhost:%s".formatted(localServerPort);
-    //noinspection HttpUrlsUsage
-    baseUrlWithAuth = "http://%s@localhost:%s".formatted(authParams, localServerPort);
     driver.navigate().to(baseUrl);
     initTestPage();
   }

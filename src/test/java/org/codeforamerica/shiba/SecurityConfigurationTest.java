@@ -1,8 +1,9 @@
 package org.codeforamerica.shiba;
 
+import static org.codeforamerica.shiba.testutilities.TestUtils.ADMIN_EMAIL;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oauth2Login;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -19,7 +20,6 @@ import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
@@ -27,10 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-@SpringBootTest(properties = {
-    "shiba.username=someUsername",
-    "shiba.password=somePassword"
-})
+@SpringBootTest()
 @ActiveProfiles("test")
 class SecurityConfigurationTest {
 
@@ -38,12 +35,6 @@ class SecurityConfigurationTest {
 
   @Autowired
   WebApplicationContext webApplicationContext;
-
-  @Value("${shiba.username}")
-  String username;
-
-  @Value("${shiba.password}")
-  String password;
 
   @MockBean
   ApplicationInputsMappers mappers;
@@ -71,17 +62,29 @@ class SecurityConfigurationTest {
   }
 
   @Test
-  void requiresBasicAuthenticationOnDownloadCafEndpoint() throws Exception {
+  void requiresAuthenticationAndAuthorizationOnDownloadCafEndpoint() throws Exception {
     mockMvc.perform(get("/download-caf/9870000123"))
         .andExpect(unauthenticated());
 
     mockMvc.perform(get("/download-caf/9870000123")
-        .with(httpBasic(username, password)))
-        .andExpect(authenticated());
+        .with(oauth2Login()
+            .attributes(attrs -> attrs.put("email", "invalid@x.org"))))
+        .andExpect(status().is4xxClientError());
+
+    mockMvc.perform(get("/download-caf/9870000123")
+        .with(oauth2Login()
+            .attributes(attrs -> attrs.put("email", "invalid@codeforamerica.org"))))
+        .andExpect(status().is4xxClientError());
+
+    mockMvc.perform(get("/download-caf/9870000123")
+        .with(oauth2Login()
+            .attributes(attrs -> attrs.put("email", ADMIN_EMAIL))))
+        .andExpect(authenticated())
+        .andExpect(status().is2xxSuccessful());
   }
 
   @Test
-  void doesNotRequireBasicAuthenticationOnAnyOtherEndpoint() throws Exception {
+  void doesNotRequireAuthenticationOnAnyOtherEndpoint() throws Exception {
     mockMvc.perform(get("/download"))
         .andExpect(status().is2xxSuccessful());
   }
