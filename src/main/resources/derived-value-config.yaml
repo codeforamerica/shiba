@@ -465,33 +465,6 @@ derived-values:
             - pageName: registerToVote
               input: registerToVote
               value: "NO"
-  - groupName: personalInfo
-    fieldName: sexText
-    values:
-      - type: SINGLE_VALUE
-        value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-          literal: Female
-        condition:
-          conditions:
-            - pageName: personalInfo
-              input: sex
-              value: FEMALE
-      - type: SINGLE_VALUE
-        value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-          literal: Male
-        condition:
-          conditions:
-            - pageName: personalInfo
-              input: sex
-              value: MALE
-      - type: SINGLE_VALUE
-        value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-          literal: Rather Not Say
-        condition:
-          conditions:
-            - pageName: personalInfo
-              input: sex
-              value: RATHER_NOT_SAY
   - groupName: contactInfo
     fieldName: communicationOptIn
     values:
