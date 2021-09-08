@@ -487,6 +487,42 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       assertPdfFieldEquals("PROGRAMS", "SNAP, CCAP, CASH", caf);
     }
 
+    @Test
+    void shouldMapProgramSelections() throws Exception {
+      fillInRequiredPages();
+      selectPrograms("SNAP", "CASH", "EA");
+
+      var caf = submitAndDownloadCaf();
+
+      assertPdfFieldEquals("FOOD", "Yes", caf);
+      assertPdfFieldEquals("CASH", "Yes", caf);
+      assertPdfFieldEquals("EMERGENCY", "Yes", caf);
+      assertPdfFieldEquals("CCAP", "Off", caf);
+      assertPdfFieldEquals("GRH", "Off", caf);
+    }
+
+    @Test
+    void shouldMapMfipAsCash() throws Exception {
+      fillInRequiredPages();
+      selectPrograms("SNAP");
+      postExpectingSuccess("applyForMFIP", "applyForMFIP", "Yes");
+
+      var caf = submitAndDownloadCaf();
+
+      assertPdfFieldEquals("FOOD", "Yes", caf);
+      assertPdfFieldEquals("CASH", "Yes", caf);
+    }
+
+    @Test
+    void shouldMarkCashIfUserSelectsBothCashAndMFIP() throws Exception {
+      fillInRequiredPages();
+      selectPrograms("CASH");
+      postExpectingSuccess("applyForMFIP", "applyForMFIP", "Yes");
+
+      var caf = submitAndDownloadCaf();
+
+      assertPdfFieldEquals("CASH", "Yes", caf);
+    }
 
     @Test
     void shouldMapNoforTemporarilyWithFriendsOrFamilyDueToEconomicHardship() throws Exception {
