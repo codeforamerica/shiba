@@ -446,6 +446,86 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
     }
 
     @Test
+    void shouldMapTribalNationMemberYesOrNoAndWhichTribalNation() throws Exception {
+      fillInRequiredPages();
+      postExpectingSuccess("nationsBoundary", "livingInNationBoundary", "Yes");
+      postExpectingSuccess("selectTheTribe", "selectedTribe", "Leech Lake");
+
+      var caf = submitAndDownloadCaf();
+
+      assertPdfFieldEquals("IS_TRIBAL_NATION_MEMBER", "Yes", caf);
+      assertPdfFieldEquals("WHICH_TRIBAL_NATION", "Leech Lake", caf);
+    }
+
+    @Test
+    void shouldMapTribalTANF() throws Exception {
+      fillInRequiredPages();
+      postExpectingSuccess("applyForTribalTANF", "applyForTribalTANF", "Yes");
+
+      var caf = submitAndDownloadCaf();
+
+      assertPdfFieldEquals("PROGRAMS", "SNAP, CCAP, CASH, TRIBAL TANF", caf);
+    }
+
+    @Test
+    void shouldMapMFIP() throws Exception {
+      fillInRequiredPages();
+      selectPrograms("SNAP");
+      postExpectingSuccess("applyForMFIP", "applyForMFIP", "Yes");
+
+      var caf = submitAndDownloadCaf();
+
+      assertPdfFieldEquals("PROGRAMS", "SNAP, CASH", caf);
+    }
+
+    @Test
+    void shouldNotMapCashTwiceIfCashAndMFIP() throws Exception {
+      fillInRequiredPages();
+      postExpectingSuccess("applyForMFIP", "applyForMFIP", "Yes");
+
+      var caf = submitAndDownloadCaf();
+
+      assertPdfFieldEquals("PROGRAMS", "SNAP, CCAP, CASH", caf);
+    }
+
+    @Test
+    void shouldMapProgramSelections() throws Exception {
+      fillInRequiredPages();
+      selectPrograms("SNAP", "CASH", "EA");
+
+      var caf = submitAndDownloadCaf();
+
+      assertPdfFieldEquals("FOOD", "Yes", caf);
+      assertPdfFieldEquals("CASH", "Yes", caf);
+      assertPdfFieldEquals("EMERGENCY", "Yes", caf);
+      assertPdfFieldEquals("CCAP", "Off", caf);
+      assertPdfFieldEquals("GRH", "Off", caf);
+    }
+
+    @Test
+    void shouldMapMfipAsCash() throws Exception {
+      fillInRequiredPages();
+      selectPrograms("SNAP");
+      postExpectingSuccess("applyForMFIP", "applyForMFIP", "Yes");
+
+      var caf = submitAndDownloadCaf();
+
+      assertPdfFieldEquals("FOOD", "Yes", caf);
+      assertPdfFieldEquals("CASH", "Yes", caf);
+    }
+
+    @Test
+    void shouldMarkCashIfUserSelectsBothCashAndMFIP() throws Exception {
+      fillInRequiredPages();
+      selectPrograms("CASH");
+      postExpectingSuccess("applyForMFIP", "applyForMFIP", "Yes");
+
+      var caf = submitAndDownloadCaf();
+
+      assertPdfFieldEquals("CASH", "Yes", caf);
+    }
+
+    @Test
     void shouldMapNoforTemporarilyWithFriendsOrFamilyDueToEconomicHardship() throws Exception {
       fillInRequiredPages();
       postExpectingSuccess("livingSituation", "livingSituation",

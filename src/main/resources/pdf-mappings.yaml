@@ -19,13 +19,12 @@ mappings:
     phoneNumber: APPLICANT_PHONE_NUMBER
     email: APPLICANT_EMAIL
     caseNumber: CASE_NUMBER
-  choosePrograms:
-    programs:
-      CCAP: CCAP
-      SNAP: FOOD
-      CASH: CASH
-      GRH: GRH
-      EA: EMERGENCY
+  applicantPrograms:
+    CCAP: CCAP
+    SNAP: FOOD
+    CASH: CASH
+    GRH: GRH
+    EA: EMERGENCY
   householdMemberInfo:
     firstName: FIRST_NAME
     lastName: LAST_NAME
@@ -100,6 +99,10 @@ mappings:
     hasDisability: HAS_DISABILITY
   workSituation:
     hasWorkSituation: HAS_WORK_SITUATION
+  nationsBoundary:
+    livingInNationBoundary: IS_TRIBAL_NATION_MEMBER
+  selectTheTribe:
+    selectedTribe: WHICH_TRIBAL_NATION
   snapExpeditedEligibility:
     snapExpeditedEligibility: SNAP_EXPEDITED_ELIGIBILITY
   ccapExpeditedEligibility:
