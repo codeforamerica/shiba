@@ -5,6 +5,7 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
@@ -16,16 +17,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class PayPeriodInputsMapper implements ApplicationInputsMapper {
 
-  public PayPeriodInputsMapper() {
-  }
-
   @Override
   public List<ApplicationInput> map(Application application, Document _document,
       Recipient _recipient, SubworkflowIterationScopeTracker _scopeTracker) {
 
     List<String> paidByHour = getValues(JOBS, PAID_BY_THE_HOUR, application.getApplicationData());
     if (paidByHour == null) {
-      return null;
+      return Collections.emptyList();
     }
 
     List<ApplicationInput> result = new ArrayList<>();

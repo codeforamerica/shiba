@@ -49,4 +49,14 @@ public class PayPeriodInputsMapperTest {
             1
         ));
   }
+
+  @Test
+  public void shouldReturnEmptyForMissingData() {
+    ApplicationData applicationData = new ApplicationData();
+    List<ApplicationInput> result = mapper.map(Application.builder()
+        .applicationData(applicationData)
+        .build(), null, null, null);
+
+    assertThat(result).isEmpty();
+  }
 }
