@@ -4,7 +4,7 @@
    th:if="${!data.isValid() && !inputData.valid(data)}">
   <th:block th:each="option, iter: ${input.validationErrorMessageKeys}">
     <i class="icon-warning" th:id="${input.name + '-error-icon'}" th:aria-label="#{error.title}"></i>
-    <span th:id="${input.name} + '-error-message-' + ${iter.index + 1}" th:text="#{${option}}"></span>
+    <span th:id="${input.name} + '-error-message-' + ${iter.index + 1}" th:class="${input.name + '-error'}" th:text="#{${option}}"></span>
     <br>
   </th:block>
 </p>

@@ -3,7 +3,8 @@
 <div th:fragment="single-input (input, data)" class="form-group"
      th:classappend="${!data.isValid() && !inputData.valid(data)} ? 'form-group--error' : ''" th:with="inputData=${data.get(input.name)},
                                                                                                        hasError=${!data.isValid() && !inputData.valid(data)},
-                                                                                                       hasHelpMessage=${input.helpMessageKey != null}">
+                                                                                                       hasHelpMessage=${input.helpMessageKey != null},
+                                                                                                       needsAriaLabel=${input.needsAriaLabel()}">
     <div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${input})"></div>
     <p class="text--help"
        th:id="${input.name + '-help-message'}"
@@ -16,8 +17,9 @@
             <input type="text"
                    class="text-input"
                    th:attr="aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
-                            aria-labelledby=${input.name + '-label'},
-                            aria-invalid=${hasError}"
+                            aria-labelledby=${needsAriaLabel ? '' : input.name + '-label'},
+                            aria-invalid=${hasError},
+                            aria-label=${needsAriaLabel ? input.name : ''}"
                    th:id="${input.name}"
                    th:name="${formInputName}"
                    th:value="${(!inputData.value.isEmpty()) ? inputData.value[0] : ''}"
@@ -27,6 +29,10 @@
             <div class="text-input-group__prefix">$</div>
             <input type="text"
                    class="text-input form-width--phone"
+                   th:attr="aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
+                            aria-labelledby=${needsAriaLabel ? '' : input.name + '-label'},
+                            aria-invalid=${hasError},
+                            aria-label=${needsAriaLabel ? input.name : ''}"
                    th:id="${input.name}"
                    th:name="${formInputName}"
                    th:value="${(!inputData.value.isEmpty()) ? inputData.value[0] : ''}"
@@ -37,8 +43,9 @@
                type="text"
                class="text-input form-width--medium"
                th:attr="aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
-                        aria-labelledby=${input.name + '-label'},
-                        aria-invalid=${hasError}"
+                        aria-labelledby=${needsAriaLabel ? '' : input.name + '-label'},
+                        aria-invalid=${hasError},
+                        aria-label=${needsAriaLabel ? input.name : ''}"
                th:placeholder="${input.placeholder == null} ? '' : #{${input.placeholder}}"
                th:readonly="${input.readOnly}"
                th:id="${input.name}"
@@ -48,6 +55,10 @@
         <input th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).LONG_TEXT}"
                type="text"
                class="text-input form-width--long"
+               th:attr="aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
+                        aria-labelledby=${needsAriaLabel ? '' : input.name + '-label'},
+                        aria-invalid=${hasError},
+                        aria-label=${needsAriaLabel ? input.name : ''}"
                th:readonly="${input.readOnly}"
                th:id="${input.name}"
                th:value="${(!inputData.value.isEmpty()) ? inputData.value[0] : ''}"
@@ -65,10 +76,10 @@
         <input th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).NUMBER}"
                type="number"
                class="text-input form-width--medium"
-               th:attr="aria-errormessage=${hasError ? input.name + '-error' : ''},
-                        aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
-                        aria-labelledby=${input.name + '-label'},
-                        aria-invalid=${hasError}"
+               th:attr="aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
+                        aria-labelledby=${needsAriaLabel ? '' : input.name + '-label'},
+                        aria-invalid=${hasError},
+                        aria-label=${needsAriaLabel ? input.name : ''}"
                th:id="${input.name}"
                th:value="${(!inputData.value.isEmpty()) ? inputData.value[0] : ''}"
                th:name="${formInputName}"
@@ -77,8 +88,9 @@
                type="tel"
                class="text-input form-width--medium phone-input"
                th:attr="aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
-                        aria-labelledby=${input.name + '-label'},
-                        aria-invalid=${hasError}"
+                        aria-labelledby=${needsAriaLabel ? '' : input.name + '-label'},
+                        aria-invalid=${hasError},
+                        aria-label=${needsAriaLabel ? input.name : ''}"
                placeholder="(999) 999-9999"
                th:id="${input.name}"
                th:value="${(!inputData.value.isEmpty()) ? inputData.value[0] : ''}"

@@ -39,4 +39,11 @@ public class FormInputTemplate {
   public boolean hasFollowUps() {
     return !followUps.isEmpty() && !followUpValues.isEmpty();
   }
+
+  public boolean needsAriaLabel() {
+    return promptMessage == null &&
+        type != FormInputType.CHECKBOX &&
+        type != FormInputType.RADIO &&
+        type != FormInputType.PEOPLE_CHECKBOX;
+  }
 }

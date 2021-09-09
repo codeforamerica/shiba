@@ -21,15 +21,6 @@
                     && !input.type.toString().equals('DATE')}"
            th:text="#{${input.promptMessage.promptMessageKey}}">
     </label>
-    <label class="sr-only"
-           th:unless="${input.promptMessage != null
-                      && input.promptMessage.promptMessageKey != null}"
-           th:if="${!input.type.toString().equals('RADIO') &&
-                    !input.type.toString().equals('CHECKBOX') &&
-                    !input.type.toString().equals('PEOPLE_CHECKBOX')}"
-           th:for="${input.name}"
-           th:text="${input.name}">
-    </label>
     <th:block th:if="${input.promptMessage != null && input.promptMessage.promptMessageFragmentName != null}">
         <div th:replace="|fragments/${input.promptMessage.promptMessageFragmentName}| :: ${input.promptMessage.promptMessageFragmentName}"></div>
     </th:block>

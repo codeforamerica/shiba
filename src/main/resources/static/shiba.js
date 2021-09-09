@@ -56,10 +56,9 @@ var hasError = (function () {
     init: function () {
       var invalidInputList = $('input[aria-invalid="true"]');
       if (invalidInputList.length >= 1) {
-
         invalidInputList.each(function(index, input) {
           var inputID = $(input).attr('id');
-          var errorMessageSpans = $(input).siblings('.text--error').children('span');
+          var errorMessageSpans = $('.' + inputID + '-error');
           let inputIdWithHash = '#' + inputID;
           errorMessageSpans.each(function(index, span) {
             var errorMessageSpanID = $(span).attr('id');
@@ -73,10 +72,15 @@ var hasError = (function () {
             // Append the error spans id to the description which may or may not include a helper message id already
             $(inputIdWithHash).attr('aria-describedby', errorMessageSpanID + inputDescribedBy);
           });
-          var inputLabelID = $(inputIdWithHash + '-label').attr('id');
-          var inputErrorIconID = $(inputIdWithHash + '-error-icon').attr('id');
-          // Append the error icon id to the input aria-labelledby which causes the SR to read the error-icon ID before the input name like: Error first name
-          $(input).attr('aria-labelledby', inputErrorIconID + " " + inputLabelID);
+          // Check if the input has an existing aria-label and don't set aria-labelledby if so
+          if ($(input).attr('aria-label')) {
+            $(input).attr('aria-label', 'Error ' + $(input).attr('aria-label'));
+          } else {
+            var inputLabelID = $(inputIdWithHash + '-label').attr('id');
+            var inputErrorIconID = $(inputIdWithHash + '-error-icon').attr('id');
+            // Append the error icon id to the input aria-labelledby which causes the SR to read the error-icon ID before the input name like: Error first name
+            $(input).attr('aria-labelledby', inputErrorIconID + " " + inputLabelID);
+          }
         })
         setTimeout(function() {
           var inputId = invalidInputList.first().attr('id');
