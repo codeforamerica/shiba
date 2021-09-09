@@ -117,6 +117,7 @@ counties: &defaultCounties
     email: help+dev@mnbenefits.org
     folderId: ae7d7c7f-6503-46ea-92a7-4a813da9fb02
     dhsProviderId: A602658300
+    phoneNumber: 320-532-7407
   Morrison:
     email: help+dev@mnbenefits.org
     phoneNumber: 320-631-3599
@@ -268,6 +269,7 @@ staging:
       email: help+staging@mnbenefits.org
       folderId: ccef8f5a-efe1-4ecf-93e2-3b853bea82e6
       dhsProviderId: A602658300
+      phoneNumber: 320-532-7407
     Morrison:
       email: help+staging@mnbenefits.org
       phoneNumber: 320-631-3599
@@ -361,6 +363,7 @@ demo:
       email: help+staging@mnbenefits.org
       folderId: ccef8f5a-efe1-4ecf-93e2-3b853bea82e6
       dhsProviderId: A602658300
+      phoneNumber: 320-532-7407
     Morrison:
       email: help+staging@mnbenefits.org
       phoneNumber: 320-631-3599
@@ -453,6 +456,7 @@ production:
     MilleLacsBand:
       folderId: f30bf89e-f3ab-4c74-8e38-af7ada922719
       dhsProviderId: A602658300
+      phoneNumber: 320-532-7407
     Morrison:
       email: callcenter@co.morrison.mn.us
       phoneNumber: 320-631-3599
