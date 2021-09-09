@@ -34,7 +34,8 @@ public class ApplicationInputsMappers {
           try {
             return mapper.map(application, document, recipient, scopeTracker).stream();
           } catch (Exception e) {
-            log.error("There was an issue mapping application data", e);
+            log.error("There was an issue mapping application data for mapper " + mapper.getClass()
+                .getSimpleName(), e);
             return Stream.empty();
           }
         });
