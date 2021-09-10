@@ -54,7 +54,7 @@ var followUpQuestion = (function () {
 var hasError = (function () {
   var hasInputError = {
     init: function () {
-      var invalidInputList = $('input[aria-invalid="true"]');
+      var invalidInputList = $('input[aria-invalid="true"]').add($('select[aria-invalid="true"]'))
       if (invalidInputList.length >= 1) {
         invalidInputList.each(function(index, input) {
           var inputID = $(input).attr('id');
