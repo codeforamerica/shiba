@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages.emails;
 
+import static java.util.Locale.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.Program.CASH;
 import static org.codeforamerica.shiba.Program.CCAP;
@@ -12,7 +13,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
@@ -54,7 +54,7 @@ class EmailContentCreatorTest {
 
   @BeforeEach
   void setUp() {
-    LocaleContextHolder.setLocale(Locale.ENGLISH);
+    LocaleContextHolder.setLocale(ENGLISH);
     emailContentCreator = new EmailContentCreator(messageSource, "test", nextStepsContentService,
         docRecommendationMessageService);
     programs = List.of(SNAP);
@@ -62,23 +62,25 @@ class EmailContentCreatorTest {
 
   @Test
   void includesTheConfirmationNumber() {
-    String emailContent = emailContentCreator.createFullClientConfirmationEmail(new ApplicationData(),
+    String emailContent = emailContentCreator.createFullClientConfirmationEmail(
+        new ApplicationData(),
         "someNumber",
         programs,
         SnapExpeditedEligibility.UNDETERMINED,
         CcapExpeditedEligibility.UNDETERMINED,
-        Locale.ENGLISH);
+        ENGLISH);
     assertThat(emailContent).contains("someNumber");
   }
 
   @Test
   void includesVerificationDocuments() {
-    String emailContent = emailContentCreator.createFullClientConfirmationEmail(new ApplicationData(),
+    String emailContent = emailContentCreator.createFullClientConfirmationEmail(
+        new ApplicationData(),
         "someNumber",
         programs,
         SnapExpeditedEligibility.UNDETERMINED,
         CcapExpeditedEligibility.UNDETERMINED,
-        Locale.ENGLISH);
+        ENGLISH);
     assertThat(emailContent).contains("someNumber");
   }
 
@@ -97,12 +99,13 @@ class EmailContentCreatorTest {
   })
   void createContentForExpedited(SnapExpeditedEligibility snapExpeditedEligibility,
       String expeditedEligibilityContent) {
-    String emailContent = emailContentCreator.createFullClientConfirmationEmail(new ApplicationData(),
+    String emailContent = emailContentCreator.createFullClientConfirmationEmail(
+        new ApplicationData(),
         "someNumber",
         programs,
         snapExpeditedEligibility,
         CcapExpeditedEligibility.UNDETERMINED,
-        Locale.ENGLISH);
+        ENGLISH);
     assertThat(emailContent).contains(expeditedEligibilityContent);
   }
 
@@ -111,7 +114,7 @@ class EmailContentCreatorTest {
     String confirmationId = "confirmation ID";
     String ip = "123.123.123.123";
     String content = emailContentCreator
-        .createDownloadCafAlertContent(confirmationId, ip, Locale.ENGLISH);
+        .createDownloadCafAlertContent(confirmationId, ip, ENGLISH);
 
     assertThat(content).isEqualTo(
         "The CAF with confirmation number confirmation ID was downloaded from IP address 123.123.123.123.");
@@ -123,7 +126,7 @@ class EmailContentCreatorTest {
     ZonedDateTime submissionTime = ZonedDateTime
         .of(LocalDateTime.of(2020, 1, 1, 11, 10), ZoneOffset.UTC);
     String nonCountyPartnerAlertEmailContent = emailContentCreator
-        .createNonCountyPartnerAlert(confirmationId, submissionTime, Locale.ENGLISH);
+        .createNonCountyPartnerAlert(confirmationId, submissionTime, ENGLISH);
 
     assertThat(nonCountyPartnerAlertEmailContent).isEqualTo(
         "Application confirm Id was submitted at 01/01/2020 05:10."
@@ -133,9 +136,9 @@ class EmailContentCreatorTest {
   @Test
   void shouldCreateLaterDocsConfirmationEmail() {
     String laterDocsConfirmationEmailSubject = emailContentCreator
-        .createClientLaterDocsConfirmationEmailSubject(Locale.ENGLISH);
+        .createClientLaterDocsConfirmationEmailSubject(ENGLISH);
     String laterDocsConfirmationEmailBody = emailContentCreator
-        .createClientLaterDocsConfirmationEmailBody(Locale.ENGLISH);
+        .createClientLaterDocsConfirmationEmailBody(ENGLISH);
     assertThat(laterDocsConfirmationEmailSubject).isEqualTo("We received your documents");
     assertThat(laterDocsConfirmationEmailBody).isEqualTo("<html><body>" +
         "<p>We received your documents for your Minnesota Benefits application. Look out for mail about your case. You may need to complete additional steps.</p>"
@@ -153,7 +156,7 @@ class EmailContentCreatorTest {
   })
   void shouldCreateResubmitEmail(Document document, String name) {
     String resubmitEmailBody = emailContentCreator
-        .createResubmitEmailContent(document, Locale.ENGLISH);
+        .createResubmitEmailContent(document, ENGLISH);
     assertThat(resubmitEmailBody).isEqualTo("<html><body>" +
         "<p>Due to a technical issue, this MNBenefits file did not submit to the MNIT inbox. We are sharing it here instead. It is "
         + name + "</p>" +
@@ -165,12 +168,13 @@ class EmailContentCreatorTest {
     emailContentCreator = new EmailContentCreator(messageSource, "demo", nextStepsContentService,
         docRecommendationMessageService);
 
-    String emailContent = emailContentCreator.createFullClientConfirmationEmail(new ApplicationData(),
+    String emailContent = emailContentCreator.createFullClientConfirmationEmail(
+        new ApplicationData(),
         "someNumber",
         List.of(CCAP),
         SnapExpeditedEligibility.UNDETERMINED,
         CcapExpeditedEligibility.ELIGIBLE,
-        Locale.ENGLISH);
+        ENGLISH);
     assertThat(emailContent).contains(
         "This e-mail is for demo purposes only. No application for benefits was submitted on your behalf.");
     assertThat(emailContent).contains(
@@ -179,14 +183,16 @@ class EmailContentCreatorTest {
 
   @Test
   void shouldCreateShortConfirmationEmail() {
-    String emailContent = emailContentCreator.createShortClientConfirmationEmail(new ApplicationData(),
-        "someNumber",
-        List.of(CCAP),
-        SnapExpeditedEligibility.UNDETERMINED,
-        CcapExpeditedEligibility.ELIGIBLE,
-        Locale.ENGLISH);
-    assertThat(emailContent).contains("We received your Minnesota Benefits application");
-    assertThat(emailContent).doesNotContain("if you don’t hear from them in the time period we’ve noted");
+    String emailContent = emailContentCreator.createShortClientConfirmationEmail("someNumber",
+        ENGLISH);
+    assertThat(emailContent).contains("<html><body>We received your Minnesota Benefits application."
+        + "<br><br>Confirmation number: <strong>#someNumber</strong>"
+        + "<br>Application status: <strong>In review</strong>"
+        + "<br><br>"
+        + "You may be able to receive more support. See “What benefits programs do I qualify for” at <a href=\"https://www.mnbenefits.org/faq#what-benefits-programs\" target=\"_blank\" rel=\"noopener noreferrer\">mnbenefits.org/faq</a>.<br><br>"
+        + "**This is an automated message. Please do not reply to this message.**</body></html>");
+    assertThat(emailContent).doesNotContain(
+        "if you don’t hear from them in the time period we’ve noted");
     assertThat(emailContent).doesNotContain("Verification Docs");
   }
 
@@ -220,7 +226,7 @@ class EmailContentCreatorTest {
         programs,
         SnapExpeditedEligibility.UNDETERMINED,
         CcapExpeditedEligibility.UNDETERMINED,
-        Locale.ENGLISH);
+        ENGLISH);
 
     assertThat(emailContent).contains("""
         <html><body>We received your Minnesota Benefits application.<br><br>Confirmation number: <strong>#someNumber</strong><br>Application status: <strong>In review</strong><br><br>In the next 7-10 days, <strong>expect to get a letter in the mail</strong> from your county about your childcare, housing, emergency assistance, cash support and food support application. The letter will explain your next steps.<br><br><a href="https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG" target="_blank" rel="noopener noreferrer">Call your county</a> if you don’t hear from them in the time period we’ve noted. <br><br>You may be able to receive more support. See “What benefits programs do I qualify for” at <a href="https://www.mnbenefits.org/faq#what-benefits-programs" target="_blank" rel="noopener noreferrer">mnbenefits.org/faq</a>.<p><strong>Verification Docs:</strong><br>If you need to submit verification documents for your case, you can <a href="https://www.mnbenefits.org/?utm_medium=confirmationemail#later-docs-upload" target="_blank" rel="noopener noreferrer">return to MNbenefits.org</a> to upload documents at any time.<br>You may need to share the following documents:<br><ul><li>Proof of Income: A document with employer and employee names and your total pre-tax income from the last 30 days (or total hours worked and rate of pay). Example: Paystubs</li><li>Proof of Housing Costs: A document showing total amount paid for housing. Examples: Rent receipts, lease, or mortgage statements</li><li>Proof of Job Loss: A document with your former employer’s name and signature, the last day you worked, and date and amount of your final paycheck. Example: Pink slip</li><li>Proof of Medical Expenses: Documents showing medical expenses that you paid for.</li></ul></p><br><br>**This is an automated message. Please do not reply to this message.**</body></html>""");
