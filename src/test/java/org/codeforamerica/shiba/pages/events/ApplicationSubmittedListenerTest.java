@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
@@ -35,6 +36,8 @@ import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
+import org.codeforamerica.shiba.testutilities.PageDataBuilder;
+import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -124,6 +127,7 @@ class ApplicationSubmittedListenerTest {
           null,
           Locale.ENGLISH);
       when(applicationData.isCAFApplication()).thenReturn(true);
+      when(applicationData.getPagesData()).thenReturn(new PagesData());
       when(snapExpeditedEligibilityDecider.decide(applicationData))
           .thenReturn(SnapExpeditedEligibility.ELIGIBLE);
       when(ccapExpeditedEligibilityDecider.decide(applicationData))
@@ -138,6 +142,48 @@ class ApplicationSubmittedListenerTest {
       }
 
       verify(emailClient).sendConfirmationEmail(applicationData,
+          email,
+          appIdFromDb,
+          List.of(),
+          SnapExpeditedEligibility.ELIGIBLE,
+          CcapExpeditedEligibility.UNDETERMINED,
+          List.of(applicationFile),
+          Locale.ENGLISH);
+    }
+
+    @Test
+    void shouldSendMultipleConfirmationMailingsWhenOptedIn() {
+      String applicationId = "applicationId";
+      ApplicationData applicationData = mock(ApplicationData.class);
+      String email = "abc@123.com";
+      String appIdFromDb = "id";
+      Application application = Application.builder()
+          .id(appIdFromDb)
+          .completedAt(ZonedDateTime.now())
+          .applicationData(applicationData)
+          .build();
+      when(applicationRepository.find(applicationId)).thenReturn(application);
+      ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId",
+          applicationId,
+          null,
+          Locale.ENGLISH);
+      when(applicationData.isCAFApplication()).thenReturn(true);
+      when(applicationData.getPagesData()).thenReturn(new PagesDataBuilder().build(List.of(
+          new PageDataBuilder("contactInfo", Map.of("phoneOrEmail", List.of("EMAIL"))))));
+      when(snapExpeditedEligibilityDecider.decide(applicationData))
+          .thenReturn(SnapExpeditedEligibility.ELIGIBLE);
+      when(ccapExpeditedEligibilityDecider.decide(applicationData))
+          .thenReturn(CcapExpeditedEligibility.UNDETERMINED);
+      ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(),
+          "someFileName");
+      when(pdfGenerator.generate(appIdFromDb, Document.CAF, CLIENT)).thenReturn(applicationFile);
+
+      try (MockedStatic<EmailParser> mockEmailParser = Mockito.mockStatic(EmailParser.class)) {
+        mockEmailParser.when(() -> EmailParser.parse(any())).thenReturn(Optional.of(email));
+        applicationSubmittedListener.sendConfirmationEmail(event);
+      }
+
+      verify(emailClient).sendShortConfirmationEmail(applicationData,
           email,
           appIdFromDb,
           List.of(),
@@ -170,6 +216,7 @@ class ApplicationSubmittedListenerTest {
       ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(),
           "someFileName");
       when(applicationData.isCCAPApplication()).thenReturn(true);
+      when(applicationData.getPagesData()).thenReturn(new PagesData());
       when(pdfGenerator.generate(appIdFromDb, Document.CCAP, CLIENT)).thenReturn(applicationFile);
       try (MockedStatic<EmailParser> mockEmailParser = Mockito.mockStatic(EmailParser.class)) {
         mockEmailParser.when(() -> EmailParser.parse(any())).thenReturn(Optional.of(email));
@@ -210,6 +257,7 @@ class ApplicationSubmittedListenerTest {
           "someFileName");
       when(applicationData.isCAFApplication()).thenReturn(true);
       when(applicationData.isCCAPApplication()).thenReturn(true);
+      when(applicationData.getPagesData()).thenReturn(new PagesData());
       when(pdfGenerator.generate(appIdFromDb, Document.CAF, CLIENT)).thenReturn(applicationFileCAF);
       ApplicationFile applicationFileCCAP = new ApplicationFile("someContent".getBytes(),
           "someFileName");

@@ -32,7 +32,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.mock.web.MockHttpSession;
 
-public class SuccessMessageServiceTest extends AbstractPageControllerTest {
+public class NextStepsContentServiceTest extends AbstractPageControllerTest {
 
   @SuppressWarnings("unused")
   private static Stream<Arguments> successMessageTestCases() {
@@ -139,7 +139,7 @@ public class SuccessMessageServiceTest extends AbstractPageControllerTest {
 
   @SuppressWarnings("unused")
   @ParameterizedTest(name = "{0}")
-  @MethodSource("org.codeforamerica.shiba.pages.SuccessMessageServiceTest#successMessageTestCases")
+  @MethodSource("org.codeforamerica.shiba.pages.NextStepsContentServiceTest#successMessageTestCases")
   void displaysCorrectSuccessMessageForApplicantPrograms(String testName, List<String> programs,
       SnapExpeditedEligibility snapExpeditedEligibility,
       CcapExpeditedEligibility ccapExpeditedEligibility, String expectedMessage) throws Exception {

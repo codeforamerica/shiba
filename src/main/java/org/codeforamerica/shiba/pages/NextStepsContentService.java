@@ -17,15 +17,15 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SuccessMessageService {
+public class NextStepsContentService {
 
   private final MessageSource messageSource;
 
-  public SuccessMessageService(MessageSource messageSource) {
+  public NextStepsContentService(MessageSource messageSource) {
     this.messageSource = messageSource;
   }
 
-  public String getSuccessMessage(List<String> programs,
+  public String getNextStepsEmailContent(List<String> programs,
       SnapExpeditedEligibility snapExpeditedEligibility,
       CcapExpeditedEligibility ccapExpeditedEligibility,
       Locale locale) {
@@ -64,7 +64,7 @@ public class SuccessMessageService {
     return String.join("<br><br>", paragraphs);
   }
 
-  public List<SuccessMessage> getSuccessMessages(List<String> programs,
+  public List<SuccessMessage> getNextStepsPageContent(List<String> programs,
       SnapExpeditedEligibility snapExpeditedEligibility,
       CcapExpeditedEligibility ccapExpeditedEligibility,
       Locale locale) {

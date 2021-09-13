@@ -92,7 +92,7 @@ public class PageController {
   private final CityInfoConfiguration cityInfoConfiguration;
   private final SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider;
   private final CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
-  private final SuccessMessageService successMessageService;
+  private final NextStepsContentService nextStepsContentService;
   private final DocRecommendationMessageService docRecommendationMessageService;
   private final RoutingDestinationService routingDestinationService;
   private final DocumentRepository documentRepository;
@@ -111,7 +111,7 @@ public class PageController {
       CityInfoConfiguration cityInfoConfiguration,
       SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider,
       CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider,
-      SuccessMessageService successMessageService,
+      NextStepsContentService nextStepsContentService,
       DocRecommendationMessageService docRecommendationMessageService,
       RoutingDestinationService routingDestinationService,
       DocumentRepository documentRepository,
@@ -129,7 +129,7 @@ public class PageController {
     this.cityInfoConfiguration = cityInfoConfiguration;
     this.snapExpeditedEligibilityDecider = snapExpeditedEligibilityDecider;
     this.ccapExpeditedEligibilityDecider = ccapExpeditedEligibilityDecider;
-    this.successMessageService = successMessageService;
+    this.nextStepsContentService = nextStepsContentService;
     this.docRecommendationMessageService = docRecommendationMessageService;
     this.routingDestinationService = routingDestinationService;
     this.documentRepository = documentRepository;
@@ -345,8 +345,8 @@ public class PageController {
     if (landmarkPagesConfiguration.isPostSubmitPage(pageName)) {
       model.put("docRecommendations", docRecommendationMessageService
           .getPageSpecificRecommendationsMessage(applicationData, locale, pageName));
-      model.put("successMessages", successMessageService
-          .getSuccessMessages(new ArrayList<>(programs), snapExpeditedEligibility,
+      model.put("successMessages", nextStepsContentService
+          .getNextStepsPageContent(new ArrayList<>(programs), snapExpeditedEligibility,
               ccapExpeditedEligibility, locale));
     }
 
