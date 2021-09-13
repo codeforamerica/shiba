@@ -58,7 +58,8 @@ var hasError = (function () {
       if (invalidInputList.length >= 1) {
         invalidInputList.each(function(index, input) {
           var inputID = $(input).attr('id');
-          var errorMessageSpans = $('.' + inputID + '-error');
+          // If it's a checkbox use the input name minus the [] otherwise use the input id
+          var errorMessageSpans = $(input).attr('type') === 'checkbox' ? $('.' + $(input).attr('name') + '-error') : $('.' + inputID + '-error');
           let inputIdWithHash = '#' + inputID;
           errorMessageSpans.each(function(index, span) {
             var errorMessageSpanID = $(span).attr('id');

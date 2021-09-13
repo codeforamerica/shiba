@@ -116,9 +116,9 @@
             <select th:id="${input.name}"
                     class="select__element"
                     th:attr="aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
-                        aria-labelledby=${needsAriaLabel ? '' : input.name + '-label'},
-                        aria-invalid=${hasError},
-                        aria-label=${needsAriaLabel ? input.name : ''}"
+                             aria-labelledby=${needsAriaLabel ? '' : input.name + '-label'},
+                             aria-invalid=${hasError},
+                             aria-label=${needsAriaLabel ? input.name : ''}"
                     th:name="${formInputName}"
             >
                 <th:block th:each="option: ${input.options.selectableOptions}">

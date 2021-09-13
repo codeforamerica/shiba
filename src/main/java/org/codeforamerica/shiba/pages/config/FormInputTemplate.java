@@ -1,5 +1,8 @@
 package org.codeforamerica.shiba.pages.config;
 
+import static org.codeforamerica.shiba.pages.config.FormInputType.CHECKBOX;
+import static org.codeforamerica.shiba.pages.config.FormInputType.RADIO;
+
 import java.util.List;
 import lombok.Value;
 
@@ -42,8 +45,12 @@ public class FormInputTemplate {
 
   public boolean needsAriaLabel() {
     return promptMessage == null &&
-        type != FormInputType.CHECKBOX &&
-        type != FormInputType.RADIO &&
+        type != CHECKBOX &&
+        type != RADIO &&
         type != FormInputType.PEOPLE_CHECKBOX;
+  }
+
+  public boolean isRadioOrCheckbox() {
+    return type == CHECKBOX || type == RADIO;
   }
 }
