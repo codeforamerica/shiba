@@ -53,8 +53,9 @@ public class EmailContentCreator {
       List<String> programs, SnapExpeditedEligibility snapExpeditedEligibility,
       CcapExpeditedEligibility ccapExpeditedEligibility, Locale locale) {
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
-    String nextSteps = nextStepsContentService
-        .getNextStepsEmailContent(programs, snapExpeditedEligibility, ccapExpeditedEligibility, locale);
+    String nextSteps = "<br><br>" + nextStepsContentService
+        .getNextStepsEmailContent(programs, snapExpeditedEligibility, ccapExpeditedEligibility,
+            locale);
 
     List<DocumentRecommendation> documentRecommendations = docRecommendationMessageService
         .getConfirmationEmailDocumentRecommendations(applicationData, locale);
@@ -79,16 +80,10 @@ public class EmailContentCreator {
     return wrapHtml(content + warning);
   }
 
-  public String createShortClientConfirmationEmail(ApplicationData applicationData, String confirmationId,
-      List<String> programs, SnapExpeditedEligibility snapExpeditedEligibility,
-      CcapExpeditedEligibility ccapExpeditedEligibility, Locale locale) {
+  public String createShortClientConfirmationEmail(String confirmationId, Locale locale) {
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
 
-
-    List<DocumentRecommendation> documentRecommendations = docRecommendationMessageService
-        .getConfirmationEmailDocumentRecommendations(applicationData, locale);
-
-    String content = lms.getMessage(CLIENT_BODY, List.of(confirmationId));
+    String content = lms.getMessage(CLIENT_BODY, List.of(confirmationId, ""));
 
     if ("demo".equals(activeProfile)) {
       content = "%s<p>%s</p><p>%s</p>"

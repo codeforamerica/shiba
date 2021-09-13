@@ -135,11 +135,7 @@ public class MailGunEmailClient implements EmailClient {
     form.put("to", List.of(recipientEmail));
     form.put("subject", List.of(subject));
     form.put("html", List.of(emailContentCreator.createShortClientConfirmationEmail(
-        applicationData,
         applicationId,
-        programs,
-        snapExpeditedEligibility,
-        ccapExpeditedEligibility,
         locale)));
     form.put("attachment", applicationFiles.stream().map(this::asResource).collect(toList()));
 
