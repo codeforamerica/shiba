@@ -67,6 +67,9 @@
         <textarea th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).TEXTAREA}"
                   type="textarea"
                   class="textarea"
+                  th:attr="aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
+                        aria-invalid=${hasError},
+                        aria-label=${needsAriaLabel ? input.name : ''}"
                   rows="6"
                   maxlength="500"
                   th:id="${input.name}"
