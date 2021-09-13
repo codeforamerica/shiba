@@ -56,16 +56,18 @@ public class EmailContentCreator {
       List<String> programs, SnapExpeditedEligibility snapExpeditedEligibility,
       CcapExpeditedEligibility ccapExpeditedEligibility, Locale locale) {
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
-    String nextSteps = "<br><br>" + nextStepsContentService
-        .getNextStepsEmailContent(programs, snapExpeditedEligibility, ccapExpeditedEligibility,
-            locale);
+
+    String nextSteps = nextStepsContentService
+        .getNextSteps(programs, snapExpeditedEligibility, ccapExpeditedEligibility, locale).stream()
+        .map(SuccessMessage::message)
+        .collect(Collectors.joining("<br><br>"));
 
     List<DocumentRecommendation> documentRecommendations = docRecommendationMessageService
         .getConfirmationEmailDocumentRecommendations(applicationData, locale);
 
     var additionalSupport = lms.getMessage(ADDITIONAL_SUPPORT);
     String content = lms.getMessage(CLIENT_BODY,
-        List.of(confirmationId, nextSteps, additionalSupport));
+        List.of(confirmationId, "<br><br>" + nextSteps, additionalSupport));
     if (documentRecommendations.size() > 0) {
       final StringBuilder builder = new StringBuilder();
       documentRecommendations.forEach(docRec -> {

@@ -25,46 +25,6 @@ public class NextStepsContentService {
     this.messageSource = messageSource;
   }
 
-  public String getNextStepsEmailContent(List<String> programs,
-      SnapExpeditedEligibility snapExpeditedEligibility,
-      CcapExpeditedEligibility ccapExpeditedEligibility,
-      Locale locale) {
-    boolean isSnapExpeditedEligible = snapExpeditedEligibility == SnapExpeditedEligibility.ELIGIBLE;
-    boolean isCcapExpeditedEligible = ccapExpeditedEligibility == CcapExpeditedEligibility.ELIGIBLE;
-
-    LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
-
-    List<String> paragraphs = new ArrayList<>();
-
-    // Expedited Snap timing
-    if (isSnapExpeditedEligible) {
-      paragraphs.add(lms.getMessage("success.expedited-snap-timing"));
-    }
-
-    // Expedited Ccap timing
-    if (isCcapExpeditedEligible) {
-      paragraphs.add(lms.getMessage("success.expedited-ccap-timing"));
-    }
-
-    // Contact Promise
-    List<String> nextStepLetterPrograms = getNextStepLetterPrograms(programs,
-        isSnapExpeditedEligible, isCcapExpeditedEligible, lms);
-    if (!nextStepLetterPrograms.isEmpty()) {
-      String programsInNextStepLetter = InternationalizationUtils.listToString(
-          nextStepLetterPrograms, lms);
-      paragraphs.add(lms.getMessage("success.contact-promise", List.of(programsInNextStepLetter)));
-    }
-
-    // Suggested Action
-    if (isSnapExpeditedEligible && !programs.contains(CCAP)) {
-      paragraphs.add(lms.getMessage("success.expedited-snap-suggested-action"));
-    } else {
-      paragraphs.add(lms.getMessage("success.standard-suggested-action"));
-    }
-
-    return String.join("<br><br>", paragraphs);
-  }
-
   public List<SuccessMessage> getNextSteps(List<String> programs,
       SnapExpeditedEligibility snapExpeditedEligibility,
       CcapExpeditedEligibility ccapExpeditedEligibility,
