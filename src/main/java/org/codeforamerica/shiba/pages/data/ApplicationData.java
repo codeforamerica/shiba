@@ -77,20 +77,6 @@ public class ApplicationData implements Serializable {
     if (currentPage.isDirectNavigation()) {
       return currentPage.getNextPages().get(option);
     }
-    PageData pageData;
-    if (currentPage.isInAGroup()) {
-      pageData = incompleteIterations.get(currentPage.getGroupName())
-          .get(currentPage.getPageConfiguration().getName());
-    } else {
-      pageData = pagesData
-          .getPage(currentPage.getPageConfiguration().getName());
-    }
-
-    if (pageData == null && !currentPage.getPageConfiguration().isStaticPage()) {
-      log.error(String.format(
-          "Conditional navigation for %s requires page to have data/inputs.",
-          currentPage.getPageConfiguration().getName()));
-    }
 
     return currentPage.getNextPages().stream()
         .filter(
@@ -112,7 +98,7 @@ public class ApplicationData implements Serializable {
                 .get(currentPage.getPageConfiguration().getName()),
             pagesData);
       } else {
-        var datasourcePages = getPagesDataIncludingSubworkflows(currentPage);
+        var datasourcePages = getDatasourceDataForPageIncludingSubworkflows(currentPage);
         satisfied = datasourcePages.satisfies(condition);
       }
     }
@@ -210,7 +196,7 @@ public class ApplicationData implements Serializable {
   }
 
   @NotNull
-  public PagesData getPagesDataIncludingSubworkflows(PageWorkflowConfiguration page) {
+  public PagesData getDatasourceDataForPageIncludingSubworkflows(PageWorkflowConfiguration page) {
     PagesData pagesData = getPagesData();
     Subworkflows subworkflows = getSubworkflows();
     Map<String, PageData> pages = new HashMap<>();

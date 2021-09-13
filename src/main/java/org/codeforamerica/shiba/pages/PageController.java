@@ -175,7 +175,8 @@ public class PageController {
   private boolean shouldSkip(PageWorkflowConfiguration nextPageWorkflow) {
     Condition skipCondition = nextPageWorkflow.getSkipCondition();
     if (skipCondition != null) {
-      PagesData pagesData = applicationData.getPagesDataIncludingSubworkflows(nextPageWorkflow);
+      PagesData pagesData = applicationData.getDatasourceDataForPageIncludingSubworkflows(
+          nextPageWorkflow);
       DatasourcePages datasourcePages = new DatasourcePages(pagesData);
       return datasourcePages.satisfies(skipCondition);
     }
