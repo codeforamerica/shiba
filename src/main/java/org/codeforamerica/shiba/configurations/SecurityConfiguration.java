@@ -20,7 +20,31 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   // Or maybe just say it's okay to redeploy every time a new teammate joins
   public static final List<String> ADMIN_EMAILS = List.of(
       "aedstrom@codeforamerica.org",
-      "sprasad@codeforamerica.org");
+      "agonzalez@codeforamerica.org",
+      "ashukla@codeforamerica.org",
+      "axie@codeforamerica.org",
+      "bcalegari@codeforamerica.org",
+      "bgarcia@codeforamerica.org",
+      "bepps@codeforamerica.org",
+      "cguilfoile@codeforamerica.org",
+      "cparedes@codeforamerica.org",
+      "cenyia@codeforamerica.org",
+      "deirdre@codeforamerica.org",
+      "dustin@codeforamerica.org",
+      "edavis@codeforamerica.org",
+      "eric@codeforamerica.org",
+      "jazmyn@codeforamerica.org",
+      "kerry@codeforamerica.org",
+      "lhaynes@codeforamerica.org",
+      "lmoore@codeforamerica.org",
+      "lraymontanez@codeforamerica.org",
+      "mloew@codeforamerica.org",
+      "mrotondo@codeforamerica.org",
+      "nmartinez@codeforamerica.org",
+      "sgole@codeforamerica.org",
+      "tpatterson@codeforamerica.org",
+      "sprasad@codeforamerica.org"
+  );
 
   @Override
   protected AuthenticationManager authenticationManager() throws Exception {
@@ -31,13 +55,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http.authorizeRequests(r ->
-        r.antMatchers(
-            "/download-caf/**",
-            "/download-ccap/**",
-            "/download-docs/**",
-            "/metrics",
-            "/resend-confirmation-email/**")
-            .access("isAuthenticated() and @emailBasedAccessDecider.check(authentication)"))
+            r.antMatchers(
+                    "/download-caf/**",
+                    "/download-ccap/**",
+                    "/download-docs/**",
+                    "/metrics",
+                    "/resend-confirmation-email/**")
+                .access("isAuthenticated() and @emailBasedAccessDecider.check(authentication)"))
         .oauth2Login();
   }
 

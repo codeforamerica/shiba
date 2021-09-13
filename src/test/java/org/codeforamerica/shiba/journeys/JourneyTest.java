@@ -41,6 +41,7 @@ import org.mockito.ArgumentCaptor;
 import org.openqa.selenium.WebElement;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 
 abstract class JourneyTest extends AbstractBasePageTest {
 
@@ -54,6 +55,8 @@ abstract class JourneyTest extends AbstractBasePageTest {
   protected SmartyStreetClient smartyStreetClient;
   @SpyBean
   protected DocumentRepository documentRepository;
+  @MockBean
+  private ClientRegistrationRepository springSecurityFilterChain;
   @MockBean
   protected PageEventPublisher pageEventPublisher;
   @MockBean
