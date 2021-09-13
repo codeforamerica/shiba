@@ -6,7 +6,6 @@ import static org.codeforamerica.shiba.Program.CCAP;
 import static org.codeforamerica.shiba.Program.EA;
 import static org.codeforamerica.shiba.Program.GRH;
 import static org.codeforamerica.shiba.Program.SNAP;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -36,7 +35,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = NONE)
+@SpringBootTest()
 class EmailContentCreatorTest {
 
   @Autowired

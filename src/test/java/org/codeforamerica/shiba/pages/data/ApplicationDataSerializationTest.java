@@ -36,7 +36,7 @@ import org.springframework.test.context.ActiveProfiles;
 class ApplicationDataSerializationTest {
 
   @MockBean
-  ClientRegistrationRepository repository;
+  private ClientRegistrationRepository repository;
   @MockBean
   private ApplicationRepository applicationRepository;
   @MockBean
