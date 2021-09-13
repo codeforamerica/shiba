@@ -346,7 +346,7 @@ public class PageController {
       model.put("docRecommendations", docRecommendationMessageService
           .getPageSpecificRecommendationsMessage(applicationData, locale, pageName));
       model.put("successMessages", nextStepsContentService
-          .getNextStepsPageContent(new ArrayList<>(programs), snapExpeditedEligibility,
+          .getNextSteps(new ArrayList<>(programs), snapExpeditedEligibility,
               ccapExpeditedEligibility, locale));
     }
 
