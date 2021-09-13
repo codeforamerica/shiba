@@ -20,6 +20,24 @@ public interface EmailClient {
       List<ApplicationFile> applicationFiles,
       Locale locale);
 
+  void sendShortConfirmationEmail(ApplicationData applicationData,
+      String recipientEmail,
+      String confirmationId,
+      List<String> programs,
+      SnapExpeditedEligibility snapExpeditedEligibility,
+      CcapExpeditedEligibility ccapExpeditedEligibility,
+      List<ApplicationFile> applicationFiles,
+      Locale locale);
+
+  void sendNextStepsEmail(ApplicationData applicationData,
+      String recipientEmail,
+      String confirmationId,
+      List<String> programs,
+      SnapExpeditedEligibility snapExpeditedEligibility,
+      CcapExpeditedEligibility ccapExpeditedEligibility,
+      List<ApplicationFile> applicationFiles,
+      Locale locale);
+
   void sendCaseWorkerEmail(String recipientEmail,
       String recipientName,
       String confirmationId,

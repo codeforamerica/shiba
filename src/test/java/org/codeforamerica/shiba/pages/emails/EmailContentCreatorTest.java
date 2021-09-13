@@ -18,7 +18,7 @@ import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.pages.DocRecommendationMessageService;
-import org.codeforamerica.shiba.pages.SuccessMessageService;
+import org.codeforamerica.shiba.pages.NextStepsContentService;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.pages.data.Subworkflows;
@@ -45,7 +45,7 @@ class EmailContentCreatorTest {
   private MessageSource messageSource;
 
   @Autowired
-  private SuccessMessageService successMessageService;
+  private NextStepsContentService nextStepsContentService;
 
   @Autowired
   private DocRecommendationMessageService docRecommendationMessageService;
@@ -55,14 +55,14 @@ class EmailContentCreatorTest {
   @BeforeEach
   void setUp() {
     LocaleContextHolder.setLocale(Locale.ENGLISH);
-    emailContentCreator = new EmailContentCreator(messageSource, "test", successMessageService,
+    emailContentCreator = new EmailContentCreator(messageSource, "test", nextStepsContentService,
         docRecommendationMessageService);
     programs = List.of(SNAP);
   }
 
   @Test
   void includesTheConfirmationNumber() {
-    String emailContent = emailContentCreator.createClientHTML(new ApplicationData(),
+    String emailContent = emailContentCreator.createFullClientConfirmationEmail(new ApplicationData(),
         "someNumber",
         programs,
         SnapExpeditedEligibility.UNDETERMINED,
@@ -73,7 +73,7 @@ class EmailContentCreatorTest {
 
   @Test
   void includesVerificationDocuments() {
-    String emailContent = emailContentCreator.createClientHTML(new ApplicationData(),
+    String emailContent = emailContentCreator.createFullClientConfirmationEmail(new ApplicationData(),
         "someNumber",
         programs,
         SnapExpeditedEligibility.UNDETERMINED,
@@ -97,7 +97,7 @@ class EmailContentCreatorTest {
   })
   void createContentForExpedited(SnapExpeditedEligibility snapExpeditedEligibility,
       String expeditedEligibilityContent) {
-    String emailContent = emailContentCreator.createClientHTML(new ApplicationData(),
+    String emailContent = emailContentCreator.createFullClientConfirmationEmail(new ApplicationData(),
         "someNumber",
         programs,
         snapExpeditedEligibility,
@@ -162,10 +162,10 @@ class EmailContentCreatorTest {
 
   @Test
   void shouldCreateConfirmationEmailFromDemo() {
-    emailContentCreator = new EmailContentCreator(messageSource, "demo", successMessageService,
+    emailContentCreator = new EmailContentCreator(messageSource, "demo", nextStepsContentService,
         docRecommendationMessageService);
 
-    String emailContent = emailContentCreator.createClientHTML(new ApplicationData(),
+    String emailContent = emailContentCreator.createFullClientConfirmationEmail(new ApplicationData(),
         "someNumber",
         List.of(CCAP),
         SnapExpeditedEligibility.UNDETERMINED,
@@ -175,6 +175,19 @@ class EmailContentCreatorTest {
         "This e-mail is for demo purposes only. No application for benefits was submitted on your behalf.");
     assertThat(emailContent).contains(
         "Within 5 days, your county will determine your childcare assistance case and <strong>send you a letter in the mail</strong>.");
+  }
+
+  @Test
+  void shouldCreateShortConfirmationEmail() {
+    String emailContent = emailContentCreator.createShortClientConfirmationEmail(new ApplicationData(),
+        "someNumber",
+        List.of(CCAP),
+        SnapExpeditedEligibility.UNDETERMINED,
+        CcapExpeditedEligibility.ELIGIBLE,
+        Locale.ENGLISH);
+    assertThat(emailContent).contains("We received your Minnesota Benefits application");
+    assertThat(emailContent).doesNotContain("if you don’t hear from them in the time period we’ve noted");
+    assertThat(emailContent).doesNotContain("Verification Docs");
   }
 
   @Test
@@ -202,7 +215,7 @@ class EmailContentCreatorTest {
 
     applicationData.setPagesData(pagesData);
 
-    String emailContent = emailContentCreator.createClientHTML(applicationData,
+    String emailContent = emailContentCreator.createFullClientConfirmationEmail(applicationData,
         "someNumber",
         programs,
         SnapExpeditedEligibility.UNDETERMINED,

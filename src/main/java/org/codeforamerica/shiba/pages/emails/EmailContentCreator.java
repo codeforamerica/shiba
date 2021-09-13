@@ -12,7 +12,7 @@ import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.pages.DocRecommendationMessageService;
 import org.codeforamerica.shiba.pages.DocRecommendationMessageService.DocumentRecommendation;
-import org.codeforamerica.shiba.pages.SuccessMessageService;
+import org.codeforamerica.shiba.pages.NextStepsContentService;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,31 +36,30 @@ public class EmailContentCreator {
   private final static String SHARE_FEEDBACK = "email.share-feedback";
   private final MessageSource messageSource;
   private final String activeProfile;
-  private final SuccessMessageService successMessageService;
+  private final NextStepsContentService nextStepsContentService;
   private final DocRecommendationMessageService docRecommendationMessageService;
 
   public EmailContentCreator(MessageSource messageSource,
       @Value("${spring.profiles.active:Unknown}") String activeProfile,
-      SuccessMessageService successMessageService,
+      NextStepsContentService nextStepsContentService,
       DocRecommendationMessageService docRecommendationMessageService) {
     this.messageSource = messageSource;
     this.activeProfile = activeProfile;
-    this.successMessageService = successMessageService;
+    this.nextStepsContentService = nextStepsContentService;
     this.docRecommendationMessageService = docRecommendationMessageService;
   }
 
-  public String createClientHTML(ApplicationData applicationData, String confirmationId,
+  public String createFullClientConfirmationEmail(ApplicationData applicationData, String confirmationId,
       List<String> programs, SnapExpeditedEligibility snapExpeditedEligibility,
       CcapExpeditedEligibility ccapExpeditedEligibility, Locale locale) {
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
-    String successMessage = successMessageService
-        .getSuccessMessage(programs, snapExpeditedEligibility, ccapExpeditedEligibility, locale);
-    String content = lms.getMessage(CLIENT_BODY, List.of(confirmationId, successMessage));
-    String warning = lms.getMessage(CLIENT_WARNING);
+    String nextSteps = nextStepsContentService
+        .getNextStepsEmailContent(programs, snapExpeditedEligibility, ccapExpeditedEligibility, locale);
 
     List<DocumentRecommendation> documentRecommendations = docRecommendationMessageService
         .getConfirmationEmailDocumentRecommendations(applicationData, locale);
 
+    String content = lms.getMessage(CLIENT_BODY, List.of(confirmationId, nextSteps));
     if (documentRecommendations.size() > 0) {
       final StringBuilder builder = new StringBuilder();
       documentRecommendations.forEach(docRec -> {
@@ -76,6 +75,45 @@ public class EmailContentCreator {
           .formatted(content, lms.getMessage(DEMO_PURPOSES_ONLY), lms.getMessage(SHARE_FEEDBACK));
     }
 
+    String warning = lms.getMessage(CLIENT_WARNING);
+    return wrapHtml(content + warning);
+  }
+
+  public String createShortClientConfirmationEmail(ApplicationData applicationData, String confirmationId,
+      List<String> programs, SnapExpeditedEligibility snapExpeditedEligibility,
+      CcapExpeditedEligibility ccapExpeditedEligibility, Locale locale) {
+    LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
+
+
+    List<DocumentRecommendation> documentRecommendations = docRecommendationMessageService
+        .getConfirmationEmailDocumentRecommendations(applicationData, locale);
+
+    String content = lms.getMessage(CLIENT_BODY, List.of(confirmationId));
+
+    if ("demo".equals(activeProfile)) {
+      content = "%s<p>%s</p><p>%s</p>"
+          .formatted(content, lms.getMessage(DEMO_PURPOSES_ONLY), lms.getMessage(SHARE_FEEDBACK));
+    }
+
+    String warning = lms.getMessage(CLIENT_WARNING);
+    return wrapHtml(content + warning);
+  }
+
+  public String createNextStepsEmail(ApplicationData applicationData, String confirmationId,
+      List<String> programs, SnapExpeditedEligibility snapExpeditedEligibility,
+      CcapExpeditedEligibility ccapExpeditedEligibility, Locale locale) {
+    LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
+    String nextSteps = nextStepsContentService
+        .getNextStepsEmailContent(programs, snapExpeditedEligibility, ccapExpeditedEligibility, locale);
+
+    String content = lms.getMessage(CLIENT_BODY, List.of(confirmationId, nextSteps));
+
+    if ("demo".equals(activeProfile)) {
+      content = "%s<p>%s</p><p>%s</p>"
+          .formatted(content, lms.getMessage(DEMO_PURPOSES_ONLY), lms.getMessage(SHARE_FEEDBACK));
+    }
+
+    String warning = lms.getMessage(CLIENT_WARNING);
     return wrapHtml(content + warning);
   }
 

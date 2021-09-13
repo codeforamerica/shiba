@@ -97,7 +97,81 @@ public class MailGunEmailClient implements EmailClient {
     form.put("from", List.of(senderEmail));
     form.put("to", List.of(recipientEmail));
     form.put("subject", List.of(subject));
-    form.put("html", List.of(emailContentCreator.createClientHTML(
+    form.put("html", List.of(emailContentCreator.createFullClientConfirmationEmail(
+        applicationData,
+        applicationId,
+        programs,
+        snapExpeditedEligibility,
+        ccapExpeditedEligibility,
+        locale)));
+    form.put("attachment", applicationFiles.stream().map(this::asResource).collect(toList()));
+
+    webClient.post()
+        .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
+        .body(fromMultipartData(form))
+        .retrieve()
+        .bodyToMono(Void.class)
+        .block();
+    log.info("Confirmation email sent for " + applicationId);
+  }
+
+  @Override
+  public void sendShortConfirmationEmail(ApplicationData applicationData,
+      String recipientEmail,
+      String applicationId,
+      List<String> programs,
+      SnapExpeditedEligibility snapExpeditedEligibility,
+      CcapExpeditedEligibility ccapExpeditedEligibility,
+      List<ApplicationFile> applicationFiles,
+      Locale locale) {
+
+    LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
+    String subject =
+        "demo".equals(activeProfile) ? String.format("[DEMO] %s", lms.getMessage("email.subject"))
+            : lms.getMessage("email.subject");
+
+    MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
+    form.put("from", List.of(senderEmail));
+    form.put("to", List.of(recipientEmail));
+    form.put("subject", List.of(subject));
+    form.put("html", List.of(emailContentCreator.createShortClientConfirmationEmail(
+        applicationData,
+        applicationId,
+        programs,
+        snapExpeditedEligibility,
+        ccapExpeditedEligibility,
+        locale)));
+    form.put("attachment", applicationFiles.stream().map(this::asResource).collect(toList()));
+
+    webClient.post()
+        .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
+        .body(fromMultipartData(form))
+        .retrieve()
+        .bodyToMono(Void.class)
+        .block();
+    log.info("Short confirmation email sent for " + applicationId);
+  }
+
+  @Override
+  public void sendNextStepsEmail(ApplicationData applicationData,
+      String recipientEmail,
+      String applicationId,
+      List<String> programs,
+      SnapExpeditedEligibility snapExpeditedEligibility,
+      CcapExpeditedEligibility ccapExpeditedEligibility,
+      List<ApplicationFile> applicationFiles,
+      Locale locale) {
+
+    LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
+    String subject =
+        "demo".equals(activeProfile) ? String.format("[DEMO] %s", lms.getMessage("email.subject"))
+            : lms.getMessage("email.subject");
+
+    MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
+    form.put("from", List.of(senderEmail));
+    form.put("to", List.of(recipientEmail));
+    form.put("subject", List.of(subject));
+    form.put("html", List.of(emailContentCreator.createNextStepsEmail(
         applicationData,
         applicationId,
         programs,

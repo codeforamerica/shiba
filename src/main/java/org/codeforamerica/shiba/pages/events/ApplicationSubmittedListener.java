@@ -80,16 +80,31 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
         .ifPresent(email -> {
           String applicationId = application.getId();
           SnapExpeditedEligibility snapExpeditedEligibility = snapExpeditedEligibilityDecider
-              .decide(application.getApplicationData());
+              .decide(applicationData);
           CcapExpeditedEligibility ccapExpeditedEligibility = ccapExpeditedEligibilityDecider
-              .decide(application.getApplicationData());
+              .decide(applicationData);
           List<Document> docs = DocumentListParser.parse(applicationData);
           List<ApplicationFile> pdfs = docs.stream()
               .map(doc -> pdfGenerator.generate(applicationId, doc, CLIENT))
               .collect(Collectors.toList());
-          emailClient.sendConfirmationEmail(applicationData, email, applicationId,
-              new ArrayList<>(applicationData.getApplicantAndHouseholdMemberPrograms()),
-              snapExpeditedEligibility, ccapExpeditedEligibility, pdfs, event.getLocale());
+          if (applicationData.getPagesData().safeGetPageInputValue("contactInfo", "phoneOrEmail").contains("EMAIL")) {
+            emailClient.sendShortConfirmationEmail(applicationData, email, applicationId,
+                new ArrayList<>(applicationData.getApplicantAndHouseholdMemberPrograms()),
+                snapExpeditedEligibility, ccapExpeditedEligibility, pdfs, event.getLocale());
+            // send next steps email
+            emailClient.sendNextStepsEmail(applicationData, email, applicationId,
+                new ArrayList<>(applicationData.getApplicantAndHouseholdMemberPrograms()),
+                snapExpeditedEligibility, ccapExpeditedEligibility, pdfs, event.getLocale());
+
+            // schedule(?) docs email for 24 hours in the future
+
+
+          } else {
+            emailClient.sendConfirmationEmail(applicationData, email, applicationId,
+                new ArrayList<>(applicationData.getApplicantAndHouseholdMemberPrograms()),
+                snapExpeditedEligibility, ccapExpeditedEligibility, pdfs, event.getLocale());
+          }
+
         });
   }
 

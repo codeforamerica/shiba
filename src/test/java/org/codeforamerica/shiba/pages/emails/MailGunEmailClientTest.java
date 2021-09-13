@@ -137,7 +137,7 @@ class MailGunEmailClientTest {
     SnapExpeditedEligibility snapExpeditedEligibility = ELIGIBLE;
     CcapExpeditedEligibility ccapExpeditedEligibility = CcapExpeditedEligibility.ELIGIBLE;
     String confirmationId = "someConfirmationId";
-    when(emailContentCreator.createClientHTML(applicationData,
+    when(emailContentCreator.createFullClientConfirmationEmail(applicationData,
         confirmationId,
         programs,
         snapExpeditedEligibility,
@@ -502,7 +502,7 @@ class MailGunEmailClientTest {
       String emailContent = "content";
       SnapExpeditedEligibility snapExpeditedEligibility = ELIGIBLE;
       String confirmationId = "someConfirmationId";
-      when(emailContentCreator.createClientHTML(applicationData,
+      when(emailContentCreator.createFullClientConfirmationEmail(applicationData,
           confirmationId,
           programs,
           snapExpeditedEligibility,
