@@ -128,7 +128,6 @@ class MailGunEmailClientTest {
     wireMockServer.stop();
   }
 
-
   @Test
   void sendsEmailToTheRecipient() {
     var applicationData = new ApplicationData();
@@ -164,6 +163,39 @@ class MailGunEmailClientTest {
         .withRequestBodyPart(requestBodyPart("subject", "We received your application"))
         .withRequestBodyPart(requestBodyPart("html", emailContent))
         .withRequestBodyPart(attachment(String.format("filename=\"%s\"", fileName), fileContent))
+    );
+  }
+
+  @Test
+  void sendsNextStepsEmail() {
+    var applicationData = new ApplicationData();
+    String recipientEmail = "someRecipient";
+    String emailContent = "content";
+    SnapExpeditedEligibility snapExpeditedEligibility = ELIGIBLE;
+    CcapExpeditedEligibility ccapExpeditedEligibility = CcapExpeditedEligibility.ELIGIBLE;
+    String confirmationId = "someConfirmationId";
+    when(emailContentCreator.createNextStepsEmail(confirmationId, programs,
+        snapExpeditedEligibility, ccapExpeditedEligibility, ENGLISH)).thenReturn(emailContent);
+
+    wireMockServer.stubFor(post(anyUrl())
+        .willReturn(aResponse().withStatus(200)));
+
+    String fileContent = "someContent";
+    String fileName = "someFileName";
+    mailGunEmailClient.sendNextStepsEmail(applicationData,
+        recipientEmail,
+        confirmationId,
+        List.of(Program.SNAP),
+        snapExpeditedEligibility,
+        ccapExpeditedEligibility,
+        List.of(new ApplicationFile(fileContent.getBytes(), fileName)), ENGLISH);
+
+    wireMockServer.verify(postToMailgun()
+        .withBasicAuth(credentials)
+        .withRequestBodyPart(requestBodyPart("from", senderEmail))
+        .withRequestBodyPart(requestBodyPart("to", recipientEmail))
+        .withRequestBodyPart(requestBodyPart("subject", "Next Steps: Your MNBenefits Application"))
+        .withRequestBodyPart(requestBodyPart("html", emailContent))
     );
   }
 
