@@ -5,7 +5,7 @@
    th:if="${!data.isValid() && !inputData.valid(data)}">
   <th:block th:each="option, iter: ${input.validationErrorMessageKeys}">
     <i class="icon-warning"
-       th:id="${isRadioOrCheckbox ? input.name + (iter.index + 1) + '-error' : input.name + '-error'}"
+       th:id="${input.name + '-error-icon'}"
        th:aria-label="#{error.title}"></i>
     <!-- Add the iteration index to the id and class name if it's a radio or checkbox since they have multiple inputs  -->
     <th:block th:switch="${input.type.toString()}">

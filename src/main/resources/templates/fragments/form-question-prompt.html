@@ -9,6 +9,7 @@
                     || input.type.toString().equals('DATE'))
                     && input.promptMessage != null
                     && input.promptMessage.promptMessageKey != null }"
+            th:id="${input.name + '-legend'}"
             th:text="#{${input.promptMessage.promptMessageKey}}">
     </legend>
     <label class="form-question"
