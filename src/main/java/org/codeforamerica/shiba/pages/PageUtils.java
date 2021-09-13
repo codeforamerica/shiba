@@ -11,12 +11,14 @@ import org.codeforamerica.shiba.pages.data.DatasourcePages;
 
 public class PageUtils {
 
+  private static final String WEB_INPUT_ARRAY_TOKEN = "[]";
+
   private PageUtils() {
     throw new AssertionError("Cannot instantiate utility class");
   }
 
   public static String getFormInputName(String name) {
-    return name;
+    return name + WEB_INPUT_ARRAY_TOKEN;
   }
 
   public static String getTitleString(List<String> strings) {
