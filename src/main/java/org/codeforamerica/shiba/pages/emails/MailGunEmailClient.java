@@ -159,7 +159,7 @@ public class MailGunEmailClient implements EmailClient {
       Locale locale) {
 
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
-    String subject =
+    String subject = // todo fix this
         "demo".equals(activeProfile) ? String.format("[DEMO] %s", lms.getMessage("email.subject"))
             : lms.getMessage("email.subject");
 
@@ -168,7 +168,6 @@ public class MailGunEmailClient implements EmailClient {
     form.put("to", List.of(recipientEmail));
     form.put("subject", List.of(subject));
     form.put("html", List.of(emailContentCreator.createNextStepsEmail(
-        applicationData,
         applicationId,
         programs,
         snapExpeditedEligibility,

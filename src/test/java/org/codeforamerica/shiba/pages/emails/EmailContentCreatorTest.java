@@ -197,6 +197,27 @@ class EmailContentCreatorTest {
   }
 
   @Test
+  void shouldCreateNextStepsEmail() {
+    programs = List.of(CCAP, EA, SNAP);
+    String emailContent = emailContentCreator.createNextStepsEmail(
+        "someNumber",
+        programs,
+        SnapExpeditedEligibility.ELIGIBLE,
+        CcapExpeditedEligibility.ELIGIBLE,
+        ENGLISH);
+    assertThat(emailContent).contains(
+        "<html><body><strong>You Are Eligible for Expedited SNAP:</strong><br>"
+            + "Within 24 hours, <strong>expect a call</strong> from your county about your food assistance application.<br><br>"
+            + "<strong>You Are Eligible for Expedited CCAP:</strong><br>"
+            + "Within 5 days, your county will determine your childcare assistance case and <strong>send you a letter in the mail</strong>.<br><br>"
+            + "<strong>Time to Hear Back:</strong><br>"
+            + "In the next 7-10 days, <strong>expect to get a letter in the mail</strong> from your county about your emergency assistance application. The letter will explain your next steps.<br><br>"
+            + "<strong>When to Reach Out:</strong><br>"
+            + "<a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\" rel=\"noopener noreferrer\">Call your county</a> if you don’t hear from them in the time period we’ve noted.<br><br>"
+            + "<strong>Get More Help:</strong><br>You may be able to receive more support. See “What benefits programs do I qualify for” at <a href=\"https://www.mnbenefits.org/faq#what-benefits-programs\" target=\"_blank\" rel=\"noopener noreferrer\">mnbenefits.org/faq</a><br><br>**This is an automated message. Please do not reply to this message.**</body></html>");
+  }
+
+  @Test
   void shouldIncludeLaterDocsRecommendationsInConfirmationEmail() {
     programs = List.of(CCAP, SNAP, CASH, EA, GRH);
 
@@ -229,6 +250,6 @@ class EmailContentCreatorTest {
         ENGLISH);
 
     assertThat(emailContent).contains("""
-        <html><body>We received your Minnesota Benefits application.<br><br>Confirmation number: <strong>#someNumber</strong><br>Application status: <strong>In review</strong><br><br>In the next 7-10 days, <strong>expect to get a letter in the mail</strong> from your county about your childcare, housing, emergency assistance, cash support and food support application. The letter will explain your next steps.<br><br><a href="https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG" target="_blank" rel="noopener noreferrer">Call your county</a> if you don’t hear from them in the time period we’ve noted. <br><br>You may be able to receive more support. See “What benefits programs do I qualify for” at <a href="https://www.mnbenefits.org/faq#what-benefits-programs" target="_blank" rel="noopener noreferrer">mnbenefits.org/faq</a>.<p><strong>Verification Docs:</strong><br>If you need to submit verification documents for your case, you can <a href="https://www.mnbenefits.org/?utm_medium=confirmationemail#later-docs-upload" target="_blank" rel="noopener noreferrer">return to MNbenefits.org</a> to upload documents at any time.<br>You may need to share the following documents:<br><ul><li>Proof of Income: A document with employer and employee names and your total pre-tax income from the last 30 days (or total hours worked and rate of pay). Example: Paystubs</li><li>Proof of Housing Costs: A document showing total amount paid for housing. Examples: Rent receipts, lease, or mortgage statements</li><li>Proof of Job Loss: A document with your former employer’s name and signature, the last day you worked, and date and amount of your final paycheck. Example: Pink slip</li><li>Proof of Medical Expenses: Documents showing medical expenses that you paid for.</li></ul></p><br><br>**This is an automated message. Please do not reply to this message.**</body></html>""");
+        <html><body>We received your Minnesota Benefits application.<br><br>Confirmation number: <strong>#someNumber</strong><br>Application status: <strong>In review</strong><br><br>In the next 7-10 days, <strong>expect to get a letter in the mail</strong> from your county about your childcare, housing, emergency assistance, cash support and food support application. The letter will explain your next steps.<br><br><a href="https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG" target="_blank" rel="noopener noreferrer">Call your county</a> if you don’t hear from them in the time period we’ve noted.<br><br>You may be able to receive more support. See “What benefits programs do I qualify for” at <a href="https://www.mnbenefits.org/faq#what-benefits-programs" target="_blank" rel="noopener noreferrer">mnbenefits.org/faq</a>.<p><strong>Verification Docs:</strong><br>If you need to submit verification documents for your case, you can <a href="https://www.mnbenefits.org/?utm_medium=confirmationemail#later-docs-upload" target="_blank" rel="noopener noreferrer">return to MNbenefits.org</a> to upload documents at any time.<br>You may need to share the following documents:<br><ul><li>Proof of Income: A document with employer and employee names and your total pre-tax income from the last 30 days (or total hours worked and rate of pay). Example: Paystubs</li><li>Proof of Housing Costs: A document showing total amount paid for housing. Examples: Rent receipts, lease, or mortgage statements</li><li>Proof of Job Loss: A document with your former employer’s name and signature, the last day you worked, and date and amount of your final paycheck. Example: Pink slip</li><li>Proof of Medical Expenses: Documents showing medical expenses that you paid for.</li></ul></p><br><br>**This is an automated message. Please do not reply to this message.**</body></html>""");
   }
 }

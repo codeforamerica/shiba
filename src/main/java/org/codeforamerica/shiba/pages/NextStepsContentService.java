@@ -5,11 +5,11 @@ import static org.codeforamerica.shiba.Program.CCAP;
 import static org.codeforamerica.shiba.Program.EA;
 import static org.codeforamerica.shiba.Program.GRH;
 import static org.codeforamerica.shiba.Program.SNAP;
-import static org.codeforamerica.shiba.internationalization.InternationalizationUtils.listToString;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import org.codeforamerica.shiba.internationalization.InternationalizationUtils;
 import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
@@ -50,7 +50,8 @@ public class NextStepsContentService {
     List<String> nextStepLetterPrograms = getNextStepLetterPrograms(programs,
         isSnapExpeditedEligible, isCcapExpeditedEligible, lms);
     if (!nextStepLetterPrograms.isEmpty()) {
-      String programsInNextStepLetter = listToString(nextStepLetterPrograms, lms);
+      String programsInNextStepLetter = InternationalizationUtils.listToString(
+          nextStepLetterPrograms, lms);
       paragraphs.add(lms.getMessage("success.contact-promise", List.of(programsInNextStepLetter)));
     }
 
@@ -64,7 +65,7 @@ public class NextStepsContentService {
     return String.join("<br><br>", paragraphs);
   }
 
-  public List<SuccessMessage> getNextStepsPageContent(List<String> programs,
+  public List<SuccessMessage> getNextSteps(List<String> programs,
       SnapExpeditedEligibility snapExpeditedEligibility,
       CcapExpeditedEligibility ccapExpeditedEligibility,
       Locale locale) {
@@ -76,33 +77,46 @@ public class NextStepsContentService {
 
     // Expedited Snap timing
     if (isSnapExpeditedEligible) {
-      messages.add(new SuccessMessage("fragments/icons/icon-phone :: icon-phone",
-          lms.getMessage("success.expedited-snap-timing")));
+      messages.add(
+          new SuccessMessage("fragments/icons/icon-phone :: icon-phone",
+              lms.getMessage("success.expedited-snap-timing"),
+              lms.getMessage("success.expedited-snap-timing-header"))
+      );
     }
 
     // Expedited Ccap timing
     if (isCcapExpeditedEligible) {
-      messages.add(new SuccessMessage("fragments/icons/icon-letter :: icon-letter",
-          lms.getMessage("success.expedited-ccap-timing")));
+      messages.add(
+          new SuccessMessage(
+              "fragments/icons/icon-letter :: icon-letter",
+              lms.getMessage("success.expedited-ccap-timing"),
+              lms.getMessage("success.expedited-ccap-timing-header"))
+      );
     }
 
     // Contact Promise
     List<String> nextStepLetterPrograms = getNextStepLetterPrograms(programs,
         isSnapExpeditedEligible, isCcapExpeditedEligible, lms);
     if (!nextStepLetterPrograms.isEmpty()) {
-      String programsInNextStepLetter = listToString(nextStepLetterPrograms, lms);
-      String message = lms.getMessage("success.contact-promise", List.of(programsInNextStepLetter));
-      messages.add(new SuccessMessage("fragments/icons/icon-letter :: icon-letter", message));
+      String programsInNextStepLetter =
+          InternationalizationUtils.listToString(nextStepLetterPrograms, lms);
+      String contactPromise = lms.getMessage("success.contact-promise",
+          List.of(programsInNextStepLetter));
+      String header = lms.getMessage("success.contact-promise-header");
+      messages.add(new SuccessMessage(
+          "fragments/icons/icon-letter :: icon-letter",
+          contactPromise,
+          header));
     }
 
     // Suggested Action
+    String suggestedAction = lms.getMessage("success.standard-suggested-action");
     if (isSnapExpeditedEligible && !programs.contains(CCAP)) {
-      messages.add(new SuccessMessage("fragments/icons/icon-communicate :: icon-communicate",
-          lms.getMessage("success.expedited-snap-suggested-action")));
-    } else {
-      messages.add(new SuccessMessage("fragments/icons/icon-communicate :: icon-communicate",
-          lms.getMessage("success.standard-suggested-action")));
+      suggestedAction = lms.getMessage("success.expedited-snap-suggested-action");
     }
+    messages.add(new SuccessMessage("fragments/icons/icon-communicate :: icon-communicate",
+        suggestedAction,
+        lms.getMessage("success.suggested-action-header")));
 
     return messages;
   }
@@ -138,14 +152,7 @@ public class NextStepsContentService {
     return nextStepLetterPrograms;
   }
 
-  public static class SuccessMessage {
+  public record SuccessMessage(String icon, String message, String title) {
 
-    public String icon;
-    public String message;
-
-    public SuccessMessage(String icon, String message) {
-      this.icon = icon;
-      this.message = message;
-    }
   }
 }
