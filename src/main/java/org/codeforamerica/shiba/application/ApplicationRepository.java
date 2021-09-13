@@ -270,19 +270,19 @@ public class ApplicationRepository {
 
   private List<String> getCCAPSubmissionsToResubmit() {
     return jdbcTemplate.queryForList(
-        "SELECT id FROM applications WHERE ccap_application_status = 'delivery_failed' AND completed_at IS NOT NULL LIMIT 10",
+        "SELECT id FROM applications WHERE ccap_application_status = 'delivery_failed' AND completed_at IS NOT NULL",
         String.class);
   }
 
   private List<String> getCAFSubmissionsToResubmit() {
     return jdbcTemplate.queryForList(
-        "SELECT id FROM applications WHERE caf_application_status = 'delivery_failed' AND completed_at IS NOT NULL LIMIT 10",
+        "SELECT id FROM applications WHERE caf_application_status = 'delivery_failed' AND completed_at IS NOT NULL",
         String.class);
   }
 
   private List<String> getUploadedDocSubmissionsToResubmit() {
     return jdbcTemplate.queryForList(
-        "SELECT id FROM applications WHERE uploaded_documents_status = 'delivery_failed' AND completed_at IS NOT NULL LIMIT 5",
+        "SELECT id FROM applications WHERE uploaded_documents_status = 'delivery_failed' AND completed_at IS NOT NULL",
         String.class);
   }
 
