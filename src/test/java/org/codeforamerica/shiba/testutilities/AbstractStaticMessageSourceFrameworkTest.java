@@ -37,5 +37,7 @@ public class AbstractStaticMessageSourceFrameworkTest extends AbstractShibaMockM
     staticMessageSource.addMessage("language-preferences.english", Locale.ENGLISH, "english");
     staticMessageSource.addMessage("language-preferences.spanish", Locale.ENGLISH, "spanish");
     staticMessageSource.addMessage("success.standard-suggested-action", Locale.ENGLISH, "success");
+    staticMessageSource.addMessage("success.suggested-action-header", Locale.ENGLISH,
+        "Suggested Action");
   }
 }
