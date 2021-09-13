@@ -126,14 +126,11 @@ public class MailGunEmailClient implements EmailClient {
       Locale locale) {
 
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
-    String subject =
-        "demo".equals(activeProfile) ? String.format("[DEMO] %s", lms.getMessage("email.subject"))
-            : lms.getMessage("email.subject");
 
     MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
     form.put("from", List.of(senderEmail));
     form.put("to", List.of(recipientEmail));
-    form.put("subject", List.of(subject));
+    form.put("subject", List.of(getEmailSubject("email.subject", lms)));
     form.put("html", List.of(emailContentCreator.createShortClientConfirmationEmail(
         applicationId,
         locale)));
@@ -159,21 +156,17 @@ public class MailGunEmailClient implements EmailClient {
       Locale locale) {
 
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
-    String subject = // todo fix this
-        "demo".equals(activeProfile) ? String.format("[DEMO] %s", lms.getMessage("email.subject"))
-            : lms.getMessage("email.subject");
 
     MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
     form.put("from", List.of(senderEmail));
     form.put("to", List.of(recipientEmail));
-    form.put("subject", List.of(subject));
+    form.put("subject", List.of(getEmailSubject("email.next-steps-subject", lms)));
     form.put("html", List.of(emailContentCreator.createNextStepsEmail(
         applicationId,
         programs,
         snapExpeditedEligibility,
         ccapExpeditedEligibility,
         locale)));
-    form.put("attachment", applicationFiles.stream().map(this::asResource).collect(toList()));
 
     webClient.post()
         .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
@@ -181,7 +174,7 @@ public class MailGunEmailClient implements EmailClient {
         .retrieve()
         .bodyToMono(Void.class)
         .block();
-    log.info("Confirmation email sent for " + applicationId);
+    log.info("Next steps email sent for " + applicationId);
   }
 
   @Override
@@ -329,6 +322,15 @@ public class MailGunEmailClient implements EmailClient {
         .retrieve()
         .bodyToMono(Void.class)
         .block();
+  }
+
+  @NotNull
+  private String getEmailSubject(String messageKey, LocaleSpecificMessageSource lms) {
+    String subject = lms.getMessage(messageKey);
+    if ("demo".equals(activeProfile)) {
+      subject = "[DEMO] " + subject;
+    }
+    return subject;
   }
 
   @NotNull
