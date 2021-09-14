@@ -102,6 +102,7 @@ public class MnitDocumentConsumer {
       Document documentType, ApplicationFile applicationFile) {
     // Only sending to Mille Lacs Band right now
     // TODO this will break when we add additional nations
+    // TODO there's a bug here. Only CAF and uploaded docs should go to Mille Lacs
     if (featureFlagConfiguration.get("apply-for-mille-lacs").isOn()
         && routingDestination.getTribalNation() != null) {
       mnitClient.send(applicationFile, MilleLacsBand, application.getId(), documentType,
