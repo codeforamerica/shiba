@@ -7,7 +7,10 @@ on:
 
 jobs:
   deploy:
-    name: Workflow Webhook Action
-    uses: distributhor/workflow-webhook@v2.0.2
-    with:
-      webhook_url: ${{ secrets.MNIT_DEV_WEBHOOK_URL }}
+    name: Deploy to Dev
+    runs-on: ubuntu-latest
+    steps:
+    - name: Workflow Webhook Action
+      uses: distributhor/workflow-webhook@v2.0.2
+      with:
+        webhook_url: ${{ secrets.MNIT_DEV_WEBHOOK_URL }}
