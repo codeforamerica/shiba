@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.pages.emails;
 
 import static java.util.Collections.emptyList;
+import static java.util.Locale.ENGLISH;
 import static java.util.stream.Collectors.toList;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
@@ -167,7 +168,6 @@ public class MailGunEmailClient implements EmailClient {
     log.info("Download CAF Alert Email sent for " + confirmationId);
   }
 
-
   @Override
   public void sendHennepinDocUploadsEmails(Application application) {
     PageData personalInfo = application.getApplicationData().getPageData("personalInfo");
@@ -229,41 +229,19 @@ public class MailGunEmailClient implements EmailClient {
 
   @Override
   public void sendLaterDocsConfirmationEmail(String recipientEmail, Locale locale) {
-    MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
-    form.put("from", List.of(senderEmail));
-    form.put("to", List.of(recipientEmail));
-    form.put("subject",
-        List.of(emailContentCreator.createClientLaterDocsConfirmationEmailSubject(locale)));
-    form.put("html",
-        List.of(emailContentCreator.createClientLaterDocsConfirmationEmailBody(locale)));
-
-    webClient.post()
-        .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
-        .body(fromMultipartData(form))
-        .retrieve()
-        .bodyToMono(Void.class)
-        .block();
+    String subject = emailContentCreator.createClientLaterDocsConfirmationEmailSubject(locale);
+    String body = emailContentCreator.createClientLaterDocsConfirmationEmailBody(locale);
+    sendEmail(subject, senderEmail, recipientEmail, body, emptyList());
+    log.info("later docs confirmation email sent to " + recipientEmail);
   }
 
   @Override
   public void resubmitFailedEmail(String recipientEmail, Document document,
       ApplicationFile applicationFile, Application application) {
     MDC.put("applicationFile", applicationFile.getFileName());
-    MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
-    form.put("from", List.of(senderEmail));
-    form.put("to", List.of(recipientEmail));
-    form.put("subject",
-        List.of("MN Benefits Application %s Resubmission".formatted(application.getId())));
-    form.put("html",
-        List.of(emailContentCreator.createResubmitEmailContent(document, Locale.ENGLISH)));
-    form.put("attachment", List.of(asResource(applicationFile)));
-
-    webClient.post()
-        .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
-        .body(fromMultipartData(form))
-        .retrieve()
-        .bodyToMono(Void.class)
-        .block();
+    String subject = "MN Benefits Application %s Resubmission".formatted(application.getId());
+    String body = emailContentCreator.createResubmitEmailContent(document, ENGLISH);
+    sendEmail(subject, senderEmail, recipientEmail, body, List.of(applicationFile));
   }
 
   public void sendEmail(String subject, String senderEmail, String recipientEmail, String emailBody,
@@ -271,7 +249,6 @@ public class MailGunEmailClient implements EmailClient {
     sendEmail(subject, senderEmail, recipientEmail, emptyList(), emailBody,
         attachments, false);
   }
-
 
   public void sendEmail(
       String subject,
