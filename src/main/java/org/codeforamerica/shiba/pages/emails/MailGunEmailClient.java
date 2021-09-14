@@ -112,9 +112,7 @@ public class MailGunEmailClient implements EmailClient {
       CcapExpeditedEligibility ccapExpeditedEligibility,
       List<ApplicationFile> applicationFiles,
       Locale locale) {
-
     var lms = new LocaleSpecificMessageSource(locale, messageSource);
-
     var subject = getEmailSubject("email.subject", lms);
     var emailBody = emailContentCreator.createShortClientConfirmationEmail(applicationId, locale);
     sendEmail(subject, senderEmail, recipientEmail, emailBody, applicationFiles);
@@ -130,7 +128,6 @@ public class MailGunEmailClient implements EmailClient {
       CcapExpeditedEligibility ccapExpeditedEligibility,
       List<ApplicationFile> applicationFiles,
       Locale locale) {
-
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
     String subject = getEmailSubject("email.next-steps-subject", lms);
     String emailContent = emailContentCreator.createNextStepsEmail(
@@ -148,7 +145,6 @@ public class MailGunEmailClient implements EmailClient {
       String recipientName,
       String applicationId,
       ApplicationFile applicationFile) {
-
     String subject = "MNBenefits.org Application for " + recipientName;
     String emailBody = emailContentCreator.createCaseworkerHTML();
     List<String> emailsToCC = new ArrayList<>();
@@ -162,8 +158,7 @@ public class MailGunEmailClient implements EmailClient {
 
   @Override
   public void sendDownloadCafAlertEmail(String confirmationId, String ip, Locale locale) {
-    String emailBody = emailContentCreator.createDownloadCafAlertContent(
-        confirmationId, ip, locale);
+    var emailBody = emailContentCreator.createDownloadCafAlertContent(confirmationId, ip, locale);
     sendEmailFromFormData("Caseworker CAF downloaded", securityEmail, auditEmail, emailBody);
     log.info("Download CAF Alert Email sent for " + confirmationId);
   }
@@ -195,7 +190,8 @@ public class MailGunEmailClient implements EmailClient {
           .generateForUploadedDocument(uploadedDocument, i, application, coverPage);
 
       if (fileToSend.getFileBytes().length > 0) {
-        log.info("Now attaching: %s original filename: %s".formatted(fileToSend.getFileName(),
+        log.info("Now attaching: %s original filename: %s".formatted(
+            fileToSend.getFileName(),
             uploadedDocument.getFilename()));
         sendEmail(subject, senderEmail, hennepinEmail, emptyList(), emailBody, List.of(fileToSend),
             true);
@@ -258,7 +254,6 @@ public class MailGunEmailClient implements EmailClient {
       String emailBody,
       List<ApplicationFile> attachments,
       boolean requireTls) {
-
     MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
     form.put("from", List.of(senderEmail));
     form.put("to", List.of(recipientEmail));
