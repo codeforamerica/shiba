@@ -72,7 +72,7 @@ abstract class JourneyTest extends AbstractBasePageTest {
     when(clock.getZone()).thenReturn(ZoneOffset.UTC);
     when(smartyStreetClient.validateAddress(any())).thenReturn(Optional.empty());
 
-    when(featureFlagConfiguration.get("apply-for-tribal-nation")).thenReturn(FeatureFlag.ON);
+    when(featureFlagConfiguration.get("apply-for-mille-lacs")).thenReturn(FeatureFlag.ON);
     when(featureFlagConfiguration.get("submit-via-email")).thenReturn(FeatureFlag.OFF);
     when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.OFF);
     caf = null;

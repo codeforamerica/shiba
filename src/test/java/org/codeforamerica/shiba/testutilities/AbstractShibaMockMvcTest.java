@@ -92,7 +92,7 @@ public class AbstractShibaMockMvcTest {
     );
     when(clock.getZone()).thenReturn(ZoneOffset.UTC);
     when(locationClient.validateAddress(any())).thenReturn(Optional.empty());
-    when(featureFlagConfiguration.get("apply-for-tribal-nation")).thenReturn(FeatureFlag.ON);
+    when(featureFlagConfiguration.get("apply-for-mille-lacs")).thenReturn(FeatureFlag.ON);
     when(featureFlagConfiguration.get("submit-via-email")).thenReturn(FeatureFlag.OFF);
     when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.OFF);
     when(featureFlagConfiguration.get("county-anoka")).thenReturn(FeatureFlag.OFF);

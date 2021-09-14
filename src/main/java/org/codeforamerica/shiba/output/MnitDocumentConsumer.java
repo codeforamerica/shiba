@@ -102,7 +102,7 @@ public class MnitDocumentConsumer {
       Document documentType, ApplicationFile applicationFile) {
 
     // Only sending to Mille Lacs Band right now
-    if (featureFlagConfiguration.get("apply-for-tribal-nation").isOn()
+    if (featureFlagConfiguration.get("apply-for-mille-lacs").isOn()
         && routingDestination.getTribalNation() != null) {
       mnitClient.send(applicationFile, MilleLacsBand, application.getId(), documentType,
           application.getFlow());
@@ -110,7 +110,7 @@ public class MnitDocumentConsumer {
 
     // County is parsed from home-address, but we dont want to send if it's not applicable for
     // tribal nations
-    if (featureFlagConfiguration.get("apply-for-tribal-nation").isOff()
+    if (featureFlagConfiguration.get("apply-for-mille-lacs").isOff()
         || routingDestination.getCounty() != null) {
       mnitClient.send(applicationFile, application.getCounty(), application.getId(), documentType,
           application.getFlow());
