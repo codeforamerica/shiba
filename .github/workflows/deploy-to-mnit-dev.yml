@@ -1,0 +1,13 @@
+name: Deploy to MNIT Dev
+
+on:
+  push:
+    branches-ignore:
+      - staging
+
+jobs:
+  deploy:
+    name: Workflow Webhook Action
+    uses: distributhor/workflow-webhook@v2.0.2
+    with:
+      webhook_url: ${{ secrets.MNIT_DEV_WEBHOOK_URL }}
