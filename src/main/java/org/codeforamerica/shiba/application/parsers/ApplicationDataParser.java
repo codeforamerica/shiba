@@ -21,6 +21,8 @@ public class ApplicationDataParser {
   static {
     coordinatesMap.put(Field.WRITTEN_LANGUAGE_PREFERENCES,
         new ParsingCoordinate("languagePreferences", "writtenLanguage"));
+    coordinatesMap.put(Field.MEDICAL_EXPENSES,
+        new ParsingCoordinate("medicalExpenses", "medicalExpenses"));
     coordinatesMap
         .put(Field.PAID_BY_THE_HOUR, new ParsingCoordinate("paidByTheHour", "paidByTheHour"));
     coordinatesMap.put(Field.HOURLY_WAGE, new ParsingCoordinate("hourlyWage", "hourlyWage"));
@@ -161,6 +163,8 @@ public class ApplicationDataParser {
    */
   public enum Field {
     WRITTEN_LANGUAGE_PREFERENCES,
+
+    MEDICAL_EXPENSES,
 
     PAID_BY_THE_HOUR,
     HOURLY_WAGE,

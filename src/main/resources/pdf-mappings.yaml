@@ -213,7 +213,6 @@ mappings:
   energyAssistanceGroup:
     energyAssistanceInput: RECEIVED_LIHEAP
   medicalExpenses:
-    medicalExpenses:
     medicalExpensesSelection: MEDICAL_EXPENSES_SELECTION
   medicalExpensesSources:
     medicalInsurancePremiumAmount: MEDICAL_INSURANCE_PREMIUM_AMOUNT

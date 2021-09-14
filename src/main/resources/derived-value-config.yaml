@@ -21,9 +21,6 @@ conditionAnchors:
     pageName: homeExpenses
     input: homeExpenses
     matcher: DOES_NOT_CONTAIN
-  - &paysForMedicalExpenses?
-    pageName: medicalExpenses
-    input: medicalExpenses
 derived-values:
   - groupName: utilityPayments
     fieldName: noExpeditedUtilitiesSelected
@@ -619,27 +616,3 @@ derived-values:
             - pageName: livingSituation
               input: livingSituation
               matcher: NONE_SELECTED
-  - groupName: medicalExpenses
-    fieldName: medicalExpensesSelection
-    values:
-      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-          literal: ONE_SELECTED
-        type: ENUMERATED_SINGLE_VALUE
-        condition:
-          logicalOperator: OR
-          conditions:
-            - <<: *paysForMedicalExpenses?
-              value: MEDICAL_INSURANCE_PREMIUMS
-            - <<: *paysForMedicalExpenses?
-              value: DENTAL_INSURANCE_PREMIUMS
-            - <<: *paysForMedicalExpenses?
-              value: VISION_INSURANCE_PREMIUMS
-            - <<: *paysForMedicalExpenses?
-              value: MEDICAL_BILLS_OR_COPAYS
-      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-          literal: NONE_SELECTED
-        type: ENUMERATED_SINGLE_VALUE
-        condition:
-          conditions:
-            - <<: *paysForMedicalExpenses?
-              value: NONE_OF_THE_ABOVE
