@@ -43,9 +43,14 @@ public class ResubmissionService {
   @Scheduled(fixedDelayString = "${resubmission.interval.milliseconds}")
   @SchedulerLock(name = "resubmissionTask", lockAtMostFor = "30m")
   public void resubmitFailedApplications() {
-    log.info("Resubmitting applications that failed to send");
+    log.info("Checking for applications that failed to send");
     Map<Document, List<String>> documentsToIds = applicationRepository
         .getApplicationIdsToResubmit();
+
+    if (documentsToIds.values().stream().allMatch(List::isEmpty)) {
+      log.info("There are no applications to resubmit");
+      return;
+    }
 
     documentsToIds.forEach((document, applicationIds) -> applicationIds.forEach(id -> {
       MDC.put("applicationId", id);
@@ -66,6 +71,7 @@ public class ResubmissionService {
         applicationRepository.updateStatus(id, document, RESUBMISSION_FAILED);
       }
     }));
+    MDC.remove("applicationId");
   }
 
   private void resubmitUploadedDocumentsForApplication(Document document, Application application,
