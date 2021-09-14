@@ -79,7 +79,6 @@ class MailGunEmailClientTest {
   final String securityEmail = "someSecurityEmail";
   final String auditEmail = "someAuditEmail";
   final String hennepinEmail = "someHennepinEmail";
-  final String resubmissionEmail = "someResubmissionEmail";
   MailGunEmailClient mailGunEmailClient;
   EmailContentCreator emailContentCreator;
   WireMockServer wireMockServer;

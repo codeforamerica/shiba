@@ -1,11 +1,13 @@
 package org.codeforamerica.shiba.pages.emails;
 
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 import static org.springframework.web.reactive.function.BodyInserters.fromMultipartData;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -87,31 +89,16 @@ public class MailGunEmailClient implements EmailClient {
       CcapExpeditedEligibility ccapExpeditedEligibility,
       List<ApplicationFile> applicationFiles,
       Locale locale) {
-
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
-    String subject =
-        "demo".equals(activeProfile) ? String.format("[DEMO] %s", lms.getMessage("email.subject"))
-            : lms.getMessage("email.subject");
-
-    MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
-    form.put("from", List.of(senderEmail));
-    form.put("to", List.of(recipientEmail));
-    form.put("subject", List.of(subject));
-    form.put("html", List.of(emailContentCreator.createFullClientConfirmationEmail(
+    String subject = getEmailSubject("email.subject", lms);
+    String emailBody = emailContentCreator.createFullClientConfirmationEmail(
         applicationData,
         applicationId,
         programs,
         snapExpeditedEligibility,
         ccapExpeditedEligibility,
-        locale)));
-    form.put("attachment", applicationFiles.stream().map(this::asResource).collect(toList()));
-
-    webClient.post()
-        .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
-        .body(fromMultipartData(form))
-        .retrieve()
-        .bodyToMono(Void.class)
-        .block();
+        locale);
+    sendEmailFromMultipartData(subject, recipientEmail, emailBody, applicationFiles);
     log.info("Confirmation email sent for " + applicationId);
   }
 
@@ -125,23 +112,11 @@ public class MailGunEmailClient implements EmailClient {
       List<ApplicationFile> applicationFiles,
       Locale locale) {
 
-    LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
+    var lms = new LocaleSpecificMessageSource(locale, messageSource);
 
-    MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
-    form.put("from", List.of(senderEmail));
-    form.put("to", List.of(recipientEmail));
-    form.put("subject", List.of(getEmailSubject("email.subject", lms)));
-    form.put("html", List.of(emailContentCreator.createShortClientConfirmationEmail(
-        applicationId,
-        locale)));
-    form.put("attachment", applicationFiles.stream().map(this::asResource).collect(toList()));
-
-    webClient.post()
-        .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
-        .body(fromMultipartData(form))
-        .retrieve()
-        .bodyToMono(Void.class)
-        .block();
+    var subject = getEmailSubject("email.subject", lms);
+    var emailBody = emailContentCreator.createShortClientConfirmationEmail(applicationId, locale);
+    sendEmailFromMultipartData(subject, recipientEmail, emailBody, applicationFiles);
     log.info("Short confirmation email sent for " + applicationId);
   }
 
@@ -156,24 +131,14 @@ public class MailGunEmailClient implements EmailClient {
       Locale locale) {
 
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
-
-    MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
-    form.put("from", List.of(senderEmail));
-    form.put("to", List.of(recipientEmail));
-    form.put("subject", List.of(getEmailSubject("email.next-steps-subject", lms)));
-    form.put("html", List.of(emailContentCreator.createNextStepsEmail(
+    String subject = getEmailSubject("email.next-steps-subject", lms);
+    String emailContent = emailContentCreator.createNextStepsEmail(
         applicationId,
         programs,
         snapExpeditedEligibility,
         ccapExpeditedEligibility,
-        locale)));
-
-    webClient.post()
-        .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
-        .body(fromMultipartData(form))
-        .retrieve()
-        .bodyToMono(Void.class)
-        .block();
+        locale);
+    sendEmailFromMultipartData(subject, recipientEmail, emailContent, emptyList());
     log.info("Next steps email sent for " + applicationId);
   }
 
@@ -182,37 +147,65 @@ public class MailGunEmailClient implements EmailClient {
       String recipientName,
       String applicationId,
       ApplicationFile applicationFile) {
-    MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
-    form.put("from", List.of(senderEmail));
-    form.put("to", List.of(recipientEmail));
-    if (shouldCC) {
-      form.put("cc", List.of(senderEmail));
-    }
-    form.put("subject", List.of("MNBenefits.org Application for " + recipientName));
-    form.put("html", List.of(emailContentCreator.createCaseworkerHTML()));
-    form.put("attachment", List.of(asResource(applicationFile)));
 
-    webClient.post()
-        .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
-        .body(fromMultipartData(form))
-        .retrieve()
-        .bodyToMono(Void.class)
-        .block();
+    String subject = "MNBenefits.org Application for " + recipientName;
+    String emailBody = emailContentCreator.createCaseworkerHTML();
+    List<String> emailsToCC = new ArrayList<>();
+    if (shouldCC) {
+      emailsToCC.add(senderEmail);
+    }
+    sendEmailFromMultipartData(subject, senderEmail, recipientEmail, emailsToCC, emailBody,
+        List.of(applicationFile));
     log.info("Caseworker email sent for " + applicationFile.getFileName());
   }
 
   @Override
   public void sendDownloadCafAlertEmail(String confirmationId, String ip, Locale locale) {
-    MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
-    form.put("from", List.of(securityEmail));
-    form.put("to", List.of(auditEmail));
-    form.put("subject", List.of("Caseworker CAF downloaded"));
-    form.put("html",
-        List.of(emailContentCreator.createDownloadCafAlertContent(confirmationId, ip, locale)));
+    String emailBody = emailContentCreator.createDownloadCafAlertContent(
+        confirmationId, ip, locale);
+    sendEmailFromFormData("Caseworker CAF downloaded", securityEmail, auditEmail, emailBody);
+    log.info("Download CAF Alert Email sent for " + confirmationId);
+  }
 
+  public void sendEmailFromFormData(String subject,
+      String senderEmail, String recipientEmail,
+      String emailBody) {
+    MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+    form.put("from", List.of(senderEmail));
+    form.put("to", List.of(recipientEmail));
+    form.put("subject", List.of(subject));
+    form.put("html", List.of(emailBody));
     webClient.post()
         .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
         .body(fromFormData(form))
+        .retrieve()
+        .bodyToMono(Void.class)
+        .block();
+  }
+
+  public void sendEmailFromMultipartData(
+      String subject,
+      String senderEmail,
+      String recipientEmail,
+      List<String> emailsToCC,
+      String emailBody,
+      List<ApplicationFile> attachments) {
+
+    MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
+    form.put("from", List.of(senderEmail));
+    form.put("to", List.of(recipientEmail));
+    form.put("subject", List.of(subject));
+    form.put("html", List.of(emailBody));
+    if (!attachments.isEmpty()) {
+      form.put("attachment", attachments.stream().map(this::asResource).collect(toList()));
+    }
+    if (!emailsToCC.isEmpty()) {
+      form.put("cc", new ArrayList<>(emailsToCC)); // have to create new list of type List<Object>
+    }
+
+    webClient.post()
+        .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
+        .body(fromMultipartData(form))
         .retrieve()
         .bodyToMono(Void.class)
         .block();
@@ -322,6 +315,12 @@ public class MailGunEmailClient implements EmailClient {
         .retrieve()
         .bodyToMono(Void.class)
         .block();
+  }
+
+  public void sendEmailFromMultipartData(String subject, String recipientEmail, String emailBody,
+      List<ApplicationFile> attachments) {
+    sendEmailFromMultipartData(subject, senderEmail, recipientEmail, emptyList(), emailBody,
+        attachments);
   }
 
   @NotNull
