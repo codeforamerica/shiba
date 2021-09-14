@@ -12,7 +12,9 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 
 import java.util.Set;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
@@ -23,6 +25,7 @@ public class RoutingDestinationService {
 
   private final CountyParser countyParser;
 
+  // TODO test this
   public RoutingDestinationService(CountyParser countyParser) {
     this.countyParser = countyParser;
   }
@@ -38,6 +41,7 @@ public class RoutingDestinationService {
 
     // Send to Mille Lacs if the tribe is serviced by Mille Lacs and applying for Tribal TANF and/or EA
     if (isServicedByMilleLacs(selectedTribe) && (applyingForTribalTanf || programs.contains(EA))) {
+      //TODO handle feature flag in here
       result.setTribalNation(MILLE_LACS);
     }
 
@@ -51,8 +55,11 @@ public class RoutingDestinationService {
   }
 
   @Data
+  @NoArgsConstructor
+  @AllArgsConstructor
   public static class RoutingDestination {
 
+    //TODO use the type system instead of strings here
     private String county;
     private String tribalNation;
   }

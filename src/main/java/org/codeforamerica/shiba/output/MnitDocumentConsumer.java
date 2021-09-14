@@ -100,8 +100,8 @@ public class MnitDocumentConsumer {
 
   private void sendApplication(RoutingDestination routingDestination, Application application,
       Document documentType, ApplicationFile applicationFile) {
-
     // Only sending to Mille Lacs Band right now
+    // TODO this will break when we add additional nations
     if (featureFlagConfiguration.get("apply-for-mille-lacs").isOn()
         && routingDestination.getTribalNation() != null) {
       mnitClient.send(applicationFile, MilleLacsBand, application.getId(), documentType,

@@ -1,11 +1,14 @@
 package org.codeforamerica.shiba;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.County.MilleLacsBand;
 import static org.codeforamerica.shiba.County.Olmsted;
+import static org.codeforamerica.shiba.TribalNation.MILLE_LACS;
 import static org.codeforamerica.shiba.application.Status.RESUBMISSION_FAILED;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -23,6 +26,8 @@ import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
+import org.codeforamerica.shiba.pages.RoutingDestinationService;
+import org.codeforamerica.shiba.pages.RoutingDestinationService.RoutingDestination;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.emails.MailGunEmailClient;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +41,11 @@ import org.springframework.mock.web.MockMultipartFile;
 @ExtendWith(MockitoExtension.class)
 class ResubmissionServiceTest {
 
-  final String defaultEmail = "defaultEmail";
+  private final String appId = "myappid";
+
+  private final String DEFAULT_EMAIL = "defaultEmail";
+  private final String MILLE_LACS_BAND_EMAIL = "millelacsband@example.com";
+
   private final CountyMap<MnitCountyInformation> countyMap = new CountyMap<>();
   @Mock
   private ApplicationRepository applicationRepository;
@@ -46,22 +55,30 @@ class ResubmissionServiceTest {
   private PdfGenerator pdfGenerator;
   @Mock
   private DocumentRepository documentRepository;
+  @Mock
+  private RoutingDestinationService routingDestinationService;
   private ResubmissionService resubmissionService;
+  private RoutingDestination routingDestination;
 
   @BeforeEach
   void setUp() {
     countyMap.setDefaultValue(MnitCountyInformation.builder()
         .folderId("defaultFolderId")
         .dhsProviderId("defaultDhsProviderId")
-        .email(defaultEmail)
+        .email(DEFAULT_EMAIL) // TODO test other counties besides DEFAULT
         .build());
+    countyMap.setCounties(Map.of(
+        MilleLacsBand, MnitCountyInformation.builder().email(MILLE_LACS_BAND_EMAIL).build()
+    ));
     resubmissionService = new ResubmissionService(applicationRepository, emailClient, countyMap,
-        pdfGenerator);
+        pdfGenerator, routingDestinationService);
+    routingDestination = new RoutingDestination("Hennepin", null);
+    when(routingDestinationService.getRoutingDestination(any())).thenReturn(
+        routingDestination);
   }
 
   @Test
   void itResubmitsCafs() {
-    String appId = "myappid";
     Application application = Application.builder().id(appId).county(Olmsted).build();
     when(applicationRepository.getApplicationIdsToResubmit())
         .thenReturn(Map.of(CAF, List.of(appId)));
@@ -72,13 +89,32 @@ class ResubmissionServiceTest {
 
     resubmissionService.resubmitFailedApplications();
 
-    verify(emailClient).resubmitFailedEmail(defaultEmail, CAF, applicationFile, application);
+    verify(emailClient).resubmitFailedEmail(DEFAULT_EMAIL, CAF, applicationFile, application);
+    verify(applicationRepository).updateStatus(appId, CAF, Status.DELIVERED);
+  }
+
+  @Test
+  void itResubmitsCafsToTribalNations() {
+    Application application = Application.builder().id(appId).county(Olmsted).build();
+    when(applicationRepository.getApplicationIdsToResubmit())
+        .thenReturn(Map.of(CAF, List.of(appId)));
+    when(applicationRepository.find(appId)).thenReturn(application);
+
+    ApplicationFile applicationFile = new ApplicationFile("fileContent".getBytes(), "fileName.txt");
+    when(pdfGenerator.generate(application, CAF, Recipient.CASEWORKER)).thenReturn(applicationFile);
+
+    routingDestination.setCounty(null);
+    routingDestination.setTribalNation(MILLE_LACS);
+
+    resubmissionService.resubmitFailedApplications();
+
+    verify(emailClient).resubmitFailedEmail(MILLE_LACS_BAND_EMAIL, CAF, applicationFile,
+        application);
     verify(applicationRepository).updateStatus(appId, CAF, Status.DELIVERED);
   }
 
   @Test
   void itResubmitsUploadedDocuments() {
-    String appId = "myappid";
     ApplicationData applicationData = new ApplicationData();
     MockMultipartFile image = new MockMultipartFile("image", "test".getBytes());
     applicationData.addUploadedDoc(image, "someS3FilePath", "someDataUrl", "image/jpeg");
@@ -105,7 +141,8 @@ class ResubmissionServiceTest {
 
     ArgumentCaptor<ApplicationFile> captor = ArgumentCaptor.forClass(ApplicationFile.class);
     verify(emailClient, times(2))
-        .resubmitFailedEmail(eq(defaultEmail), eq(UPLOADED_DOC), captor.capture(), eq(application));
+        .resubmitFailedEmail(eq(DEFAULT_EMAIL), eq(UPLOADED_DOC), captor.capture(),
+            eq(application));
 
     List<ApplicationFile> applicationFiles = captor.getAllValues();
     assertThat(applicationFiles)
@@ -115,7 +152,6 @@ class ResubmissionServiceTest {
 
   @Test
   void itResubmitsCCAPAndUploadedDocuments() {
-    var appId = "myappid";
     var applicationData = new ApplicationData();
     applicationData
         .addUploadedDoc(new MockMultipartFile("image", "test".getBytes()), "someS3FilePath",
@@ -142,7 +178,7 @@ class ResubmissionServiceTest {
     // Make sure we sent it
     var applicationFileCaptor = ArgumentCaptor.forClass(ApplicationFile.class);
     var documentCaptor = ArgumentCaptor.forClass(Document.class);
-    verify(emailClient, times(2)).resubmitFailedEmail(eq(defaultEmail), documentCaptor.capture(),
+    verify(emailClient, times(2)).resubmitFailedEmail(eq(DEFAULT_EMAIL), documentCaptor.capture(),
         applicationFileCaptor.capture(), eq(application));
     assertThat(applicationFileCaptor.getAllValues())
         .containsExactlyInAnyOrder(uploadedDocWithCoverPageFile, ccapFile);
@@ -160,7 +196,6 @@ class ResubmissionServiceTest {
 
   @Test
   void itUpdatesTheStatusWhenResubmissionIsUnsuccessful() {
-    var appId = "myappid";
     var applicationData = new ApplicationData();
     applicationData
         .addUploadedDoc(new MockMultipartFile("image", "test".getBytes()), "someS3FilePath",
@@ -182,7 +217,8 @@ class ResubmissionServiceTest {
     resubmissionService.resubmitFailedApplications();
 
     verify(emailClient, never())
-        .resubmitFailedEmail(defaultEmail, UPLOADED_DOC, uploadedDocWithCoverPageFile, application);
+        .resubmitFailedEmail(DEFAULT_EMAIL, UPLOADED_DOC, uploadedDocWithCoverPageFile,
+            application);
     verify(applicationRepository).updateStatus(appId, UPLOADED_DOC, RESUBMISSION_FAILED);
   }
 }

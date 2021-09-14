@@ -1,10 +1,12 @@
 package org.codeforamerica.shiba;
 
+import static org.codeforamerica.shiba.TribalNation.MILLE_LACS;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.RESUBMISSION_FAILED;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +17,8 @@ import org.codeforamerica.shiba.mnit.MnitCountyInformation;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
+import org.codeforamerica.shiba.pages.RoutingDestinationService;
+import org.codeforamerica.shiba.pages.RoutingDestinationService.RoutingDestination;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.codeforamerica.shiba.pages.emails.MailGunEmailClient;
 import org.slf4j.MDC;
@@ -29,15 +33,18 @@ public class ResubmissionService {
   private final MailGunEmailClient emailClient;
   private final CountyMap<MnitCountyInformation> countyMap;
   private final PdfGenerator pdfGenerator;
+  private final RoutingDestinationService routingDestinationService;
 
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   public ResubmissionService(ApplicationRepository applicationRepository,
       MailGunEmailClient emailClient, CountyMap<MnitCountyInformation> countyMap,
-      PdfGenerator pdfGenerator) {
+      PdfGenerator pdfGenerator,
+      RoutingDestinationService routingDestinationService) {
     this.applicationRepository = applicationRepository;
     this.emailClient = emailClient;
     this.countyMap = countyMap;
     this.pdfGenerator = pdfGenerator;
+    this.routingDestinationService = routingDestinationService;
   }
 
   @Scheduled(fixedDelayString = "${resubmission.interval.milliseconds}")
@@ -56,13 +63,26 @@ public class ResubmissionService {
       MDC.put("applicationId", id);
       log.info("Resubmitting " + document.name() + "(s) for application id " + id);
       Application application = applicationRepository.find(id);
-      var countyEmail = countyMap.get(application.getCounty()).getEmail();
+      RoutingDestination routingDestination = routingDestinationService.getRoutingDestination(
+          application.getApplicationData());
+      List<String> recipientEmails = new ArrayList<>();
+
+      if (routingDestination.getCounty() != null) {
+        recipientEmails.add(countyMap.get(application.getCounty()).getEmail());
+      }
+
+      if (routingDestination.getTribalNation() != null && routingDestination.getTribalNation()
+          .equals(MILLE_LACS)) {
+        recipientEmails.add(countyMap.get(County.MilleLacsBand).getEmail());
+      }
+
       try {
         if (document.equals(UPLOADED_DOC)) {
-          resubmitUploadedDocumentsForApplication(document, application, countyEmail);
+          resubmitUploadedDocumentsForApplication(document, application, recipientEmails);
         } else {
           var applicationFile = pdfGenerator.generate(application, document, CASEWORKER);
-          emailClient.resubmitFailedEmail(countyEmail, document, applicationFile, application);
+          recipientEmails.forEach(
+              eml -> emailClient.resubmitFailedEmail(eml, document, applicationFile, application));
         }
         applicationRepository.updateStatus(id, document, DELIVERED);
         log.info("Resubmitted " + document.name() + "(s) for application id " + id);
@@ -75,7 +95,7 @@ public class ResubmissionService {
   }
 
   private void resubmitUploadedDocumentsForApplication(Document document, Application application,
-      String countyEmail) {
+      List<String> recipientEmails) {
     var coverPage = pdfGenerator.generate(application, document, CASEWORKER).getFileBytes();
     var uploadedDocs = application.getApplicationData().getUploadedDocs();
     for (int i = 0; i < uploadedDocs.size(); i++) {
@@ -84,9 +104,11 @@ public class ResubmissionService {
           .generateForUploadedDocument(uploadedDocument, i, application, coverPage);
       var esbFilename = fileToSend.getFileName();
       var originalFilename = uploadedDocument.getFilename();
+
       log.info("Resubmitting uploaded doc: %s original filename: %s"
           .formatted(esbFilename, originalFilename));
-      emailClient.resubmitFailedEmail(countyEmail, document, fileToSend, application);
+      recipientEmails.forEach(
+          eml -> emailClient.resubmitFailedEmail(eml, document, fileToSend, application));
       log.info("Finished resubmitting document %s".formatted(esbFilename));
     }
   }
