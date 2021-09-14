@@ -12,5 +12,5 @@ jobs:
     steps:
     - name: Workflow Webhook Action
       uses: distributhor/workflow-webhook@v2.0.2
-      with:
+      env:
         webhook_url: ${{ secrets.MNIT_DEV_WEBHOOK_URL }}
