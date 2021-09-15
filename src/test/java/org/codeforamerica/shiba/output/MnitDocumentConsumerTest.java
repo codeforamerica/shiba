@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.output;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.MilleLacsBand;
 import static org.codeforamerica.shiba.County.Olmsted;
+import static org.codeforamerica.shiba.TribalNation.UPPER_SIOUX;
 import static org.codeforamerica.shiba.application.FlowType.FULL;
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
@@ -161,6 +162,27 @@ class MnitDocumentConsumerTest {
     verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
     verify(mnitClient).send(pdfApplicationFile, MilleLacsBand, application.getId(), CAF, FULL);
     verify(mnitClient).send(xmlApplicationFile, MilleLacsBand, application.getId(), CAF, FULL);
+  }
+
+  @Test
+  void sendsToCountyIfTribalNationRoutingIsNotImplemented() {
+    ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
+    doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), any(), any());
+    ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
+    when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
+
+    application.setApplicationData(new TestApplicationDataBuilder()
+        .withApplicantPrograms(List.of("EA"))
+        .withPageData("selectTheTribe", "selectedTribe", List.of(UPPER_SIOUX))
+        .build());
+
+    documentConsumer.process(application);
+
+    verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
+    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
+    verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
+    verify(mnitClient).send(pdfApplicationFile, Olmsted, application.getId(), CAF, FULL);
+    verify(mnitClient).send(xmlApplicationFile, Olmsted, application.getId(), CAF, FULL);
   }
 
   @Test

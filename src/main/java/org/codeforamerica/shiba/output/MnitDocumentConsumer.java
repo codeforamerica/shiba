@@ -98,23 +98,20 @@ public class MnitDocumentConsumer {
 
   private void sendApplication(RoutingDestination routingDestination, Application application,
       Document document, ApplicationFile file) {
-    if (featureFlagConfiguration.get("apply-for-mille-lacs").isOn()) {
-      if (shouldSendToMilleLacs(routingDestination, document)) {
-        mnitClient.send(file, MilleLacsBand, application.getId(), document, application.getFlow());
-      }
+    if (shouldSendToMilleLacs(routingDestination, document)) {
+      mnitClient.send(file, MilleLacsBand, application.getId(), document, application.getFlow());
+    }
 
-      if (routingDestination.getCounty() != null) {
-        mnitClient.send(file, application.getCounty(), application.getId(), document,
-            application.getFlow());
-      }
-    } else {
+    if (!shouldSendToMilleLacs(routingDestination, document)
+        || routingDestination.getCounty() != null) {
       mnitClient.send(file, application.getCounty(), application.getId(), document,
           application.getFlow());
     }
   }
 
   private boolean shouldSendToMilleLacs(RoutingDestination routingDestination, Document document) {
-    return routingDestination.getTribalNation() != null
+    return featureFlagConfiguration.get("apply-for-mille-lacs").isOn()
+        && routingDestination.getTribalNation() != null
         && routingDestination.getTribalNation().equals(MILLE_LACS)
         && !CCAP.equals(document);
   }
