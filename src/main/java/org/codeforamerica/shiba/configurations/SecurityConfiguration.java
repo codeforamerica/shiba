@@ -56,11 +56,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     http.authorizeRequests(r ->
             r.antMatchers(
-                    "/download-caf/**",
-                    "/download-ccap/**",
-                    "/download-docs/**",
+                    "/download-caf/??????????",
+                    "/download-ccap/??????????",
+                    "/download-docs/??????????",
                     "/metrics",
-                    "/resend-confirmation-email/**")
+                    "/resend-confirmation-email/??????????")
                 .access("isAuthenticated() and @emailBasedAccessDecider.check(authentication)"))
         .oauth2Login();
   }
