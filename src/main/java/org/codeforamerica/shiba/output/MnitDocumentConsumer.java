@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.output;
 
 import static org.codeforamerica.shiba.County.MilleLacsBand;
+import static org.codeforamerica.shiba.TribalNation.MILLE_LACS;
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.output.Document.CAF;
@@ -20,7 +21,6 @@ import org.codeforamerica.shiba.pages.RoutingDestinationService;
 import org.codeforamerica.shiba.pages.RoutingDestinationService.RoutingDestination;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -31,7 +31,6 @@ public class MnitDocumentConsumer {
   private final XmlGenerator xmlGenerator;
   private final PdfGenerator pdfGenerator;
   private final MonitoringService monitoringService;
-  private final String activeProfile;
   private final RoutingDestinationService routingDestinationService;
   private final ApplicationRepository applicationRepository;
   private final FeatureFlagConfiguration featureFlagConfiguration;
@@ -40,7 +39,6 @@ public class MnitDocumentConsumer {
       XmlGenerator xmlGenerator,
       PdfGenerator pdfGenerator,
       MonitoringService monitoringService,
-      @Value("${spring.profiles.active:dev}") String activeProfile,
       RoutingDestinationService routingDestinationService,
       ApplicationRepository applicationRepository,
       FeatureFlagConfiguration featureFlagConfiguration) {
@@ -48,7 +46,6 @@ public class MnitDocumentConsumer {
     this.xmlGenerator = xmlGenerator;
     this.pdfGenerator = pdfGenerator;
     this.monitoringService = monitoringService;
-    this.activeProfile = activeProfile;
     this.routingDestinationService = routingDestinationService;
     this.applicationRepository = applicationRepository;
     this.featureFlagConfiguration = featureFlagConfiguration;
@@ -100,21 +97,25 @@ public class MnitDocumentConsumer {
 
   private void sendApplication(RoutingDestination routingDestination, Application application,
       Document documentType, ApplicationFile applicationFile) {
-    // Only sending to Mille Lacs Band right now
-    // TODO this will break when we add additional nations
     // TODO there's a bug here. Only CAF and uploaded docs should go to Mille Lacs
-    if (featureFlagConfiguration.get("apply-for-mille-lacs").isOn()
-        && routingDestination.getTribalNation() != null) {
-      mnitClient.send(applicationFile, MilleLacsBand, application.getId(), documentType,
-          application.getFlow());
+    if (featureFlagConfiguration.get("apply-for-mille-lacs").isOn()) {
+      if (shouldSendToMilleLacs(routingDestination)) {
+        mnitClient.send(applicationFile, MilleLacsBand, application.getId(), documentType,
+            application.getFlow());
+      }
+
+      if (routingDestination.getCounty() == null) {
+        return;
+      }
     }
 
-    // County is parsed from home-address, but we dont want to send if it's not applicable for
-    // tribal nations
-    if (featureFlagConfiguration.get("apply-for-mille-lacs").isOff()
-        || routingDestination.getCounty() != null) {
-      mnitClient.send(applicationFile, application.getCounty(), application.getId(), documentType,
-          application.getFlow());
-    }
+    mnitClient.send(applicationFile, application.getCounty(), application.getId(), documentType,
+        application.getFlow());
+
+  }
+
+  private boolean shouldSendToMilleLacs(RoutingDestination routingDestination) {
+    return routingDestination.getTribalNation() != null
+        && routingDestination.getTribalNation().equals(MILLE_LACS);
   }
 }
