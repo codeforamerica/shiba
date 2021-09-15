@@ -20,7 +20,7 @@ public class ApplicantProgramsMapper implements ApplicationInputsMapper {
         .safeGetPageInputValue("choosePrograms", "programs");
 
     boolean isMFIP = application.getApplicationData().getPagesData()
-        .safeGetPageInputValue("applyForMFIP", "applyForMFIP").contains("Yes");
+        .safeGetPageInputValue("applyForMFIP", "applyForMFIP").contains("true");
 
     if (isMFIP && !programs.contains("CASH")) {
       programs.add("CASH");

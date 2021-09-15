@@ -115,12 +115,12 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
 
   private boolean isTribalTANF(Application application) {
     return application.getApplicationData().getPagesData()
-        .safeGetPageInputValue("applyForTribalTANF", "applyForTribalTANF").contains("Yes");
+        .safeGetPageInputValue("applyForTribalTANF", "applyForTribalTANF").contains("true");
   }
 
   private boolean isMFIP(Application application) {
     return application.getApplicationData().getPagesData()
-        .safeGetPageInputValue("applyForMFIP", "applyForMFIP").contains("Yes");
+        .safeGetPageInputValue("applyForMFIP", "applyForMFIP").contains("true");
   }
 
   private ApplicationInput getFullName(Application application) {

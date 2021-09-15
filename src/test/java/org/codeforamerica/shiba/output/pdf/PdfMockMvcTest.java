@@ -460,7 +460,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
     @Test
     void shouldMapTribalTANF() throws Exception {
       fillInRequiredPages();
-      postExpectingSuccess("applyForTribalTANF", "applyForTribalTANF", "Yes");
+      postExpectingSuccess("applyForTribalTANF", "applyForTribalTANF", "true");
 
       var caf = submitAndDownloadCaf();
 
@@ -471,7 +471,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
     void shouldMapMFIP() throws Exception {
       fillInRequiredPages();
       selectPrograms("SNAP");
-      postExpectingSuccess("applyForMFIP", "applyForMFIP", "Yes");
+      postExpectingSuccess("applyForMFIP", "applyForMFIP", "true");
 
       var caf = submitAndDownloadCaf();
 
@@ -481,7 +481,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
     @Test
     void shouldNotMapCashTwiceIfCashAndMFIP() throws Exception {
       fillInRequiredPages();
-      postExpectingSuccess("applyForMFIP", "applyForMFIP", "Yes");
+      postExpectingSuccess("applyForMFIP", "applyForMFIP", "true");
 
       var caf = submitAndDownloadCaf();
 
@@ -506,7 +506,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
     void shouldMapMfipAsCash() throws Exception {
       fillInRequiredPages();
       selectPrograms("SNAP");
-      postExpectingSuccess("applyForMFIP", "applyForMFIP", "Yes");
+      postExpectingSuccess("applyForMFIP", "applyForMFIP", "true");
 
       var caf = submitAndDownloadCaf();
 
@@ -518,7 +518,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
     void shouldMarkCashIfUserSelectsBothCashAndMFIP() throws Exception {
       fillInRequiredPages();
       selectPrograms("CASH");
-      postExpectingSuccess("applyForMFIP", "applyForMFIP", "Yes");
+      postExpectingSuccess("applyForMFIP", "applyForMFIP", "true");
 
       var caf = submitAndDownloadCaf();
 
