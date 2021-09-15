@@ -1,11 +1,16 @@
 package org.codeforamerica.shiba;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.County.Anoka;
+import static org.codeforamerica.shiba.County.MilleLacsBand;
 import static org.codeforamerica.shiba.County.Olmsted;
+import static org.codeforamerica.shiba.TribalNation.MILLE_LACS;
 import static org.codeforamerica.shiba.application.Status.RESUBMISSION_FAILED;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -23,6 +28,8 @@ import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
+import org.codeforamerica.shiba.pages.RoutingDestinationService;
+import org.codeforamerica.shiba.pages.RoutingDestinationService.RoutingDestination;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.emails.MailGunEmailClient;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +43,11 @@ import org.springframework.mock.web.MockMultipartFile;
 @ExtendWith(MockitoExtension.class)
 class ResubmissionServiceTest {
 
-  final String defaultEmail = "defaultEmail";
+  private final String APP_ID = "myappid";
+  private final String DEFAULT_EMAIL = "olmsted@example.com";
+  private final String ANOKA_EMAIL = "anoka@example.com";
+  private final String MILLE_LACS_BAND_EMAIL = "millelacsband@example.com";
+
   private final CountyMap<MnitCountyInformation> countyMap = new CountyMap<>();
   @Mock
   private ApplicationRepository applicationRepository;
@@ -46,49 +57,122 @@ class ResubmissionServiceTest {
   private PdfGenerator pdfGenerator;
   @Mock
   private DocumentRepository documentRepository;
+  @Mock
+  private RoutingDestinationService routingDestinationService;
   private ResubmissionService resubmissionService;
+  private RoutingDestination routingDestination;
 
   @BeforeEach
   void setUp() {
     countyMap.setDefaultValue(MnitCountyInformation.builder()
         .folderId("defaultFolderId")
         .dhsProviderId("defaultDhsProviderId")
-        .email(defaultEmail)
+        .email(DEFAULT_EMAIL) // TODO test other counties besides DEFAULT
         .build());
+    countyMap.setCounties(Map.of(
+        MilleLacsBand, MnitCountyInformation.builder().email(MILLE_LACS_BAND_EMAIL).build(),
+        Anoka, MnitCountyInformation.builder().email(ANOKA_EMAIL).build()
+    ));
     resubmissionService = new ResubmissionService(applicationRepository, emailClient, countyMap,
-        pdfGenerator);
+        pdfGenerator, routingDestinationService);
+    routingDestination = new RoutingDestination(Olmsted.displayName(), null);
+    when(routingDestinationService.getRoutingDestination(any(), any())).thenReturn(
+        routingDestination);
   }
 
   @Test
   void itResubmitsCafs() {
-    String appId = "myappid";
-    Application application = Application.builder().id(appId).county(Olmsted).build();
+    Application application = Application.builder().id(APP_ID).county(Olmsted).build();
     when(applicationRepository.getApplicationIdsToResubmit())
-        .thenReturn(Map.of(CAF, List.of(appId)));
-    when(applicationRepository.find(appId)).thenReturn(application);
+        .thenReturn(Map.of(CAF, List.of(APP_ID)));
+    when(applicationRepository.find(APP_ID)).thenReturn(application);
 
     ApplicationFile applicationFile = new ApplicationFile("fileContent".getBytes(), "fileName.txt");
     when(pdfGenerator.generate(application, CAF, Recipient.CASEWORKER)).thenReturn(applicationFile);
 
     resubmissionService.resubmitFailedApplications();
 
-    verify(emailClient).resubmitFailedEmail(defaultEmail, CAF, applicationFile, application);
-    verify(applicationRepository).updateStatus(appId, CAF, Status.DELIVERED);
+    verify(emailClient).resubmitFailedEmail(DEFAULT_EMAIL, CAF, applicationFile, application);
+    verify(applicationRepository).updateStatus(APP_ID, CAF, Status.DELIVERED);
+  }
+
+  @Test
+  void itResubmitsCafsToTribalNationsOnly() {
+    Application application = Application.builder().id(APP_ID).county(Olmsted).build();
+    when(applicationRepository.getApplicationIdsToResubmit())
+        .thenReturn(Map.of(CAF, List.of(APP_ID)));
+    when(applicationRepository.find(APP_ID)).thenReturn(application);
+
+    ApplicationFile applicationFile = new ApplicationFile("fileContent".getBytes(), "fileName.txt");
+    when(pdfGenerator.generate(application, CAF, Recipient.CASEWORKER)).thenReturn(applicationFile);
+
+    routingDestination.setCounty(null);
+    routingDestination.setTribalNation(MILLE_LACS);
+
+    resubmissionService.resubmitFailedApplications();
+
+    verify(emailClient, times(1)).resubmitFailedEmail(any(), any(), any(),
+        any());
+    verify(emailClient).resubmitFailedEmail(MILLE_LACS_BAND_EMAIL, CAF, applicationFile,
+        application);
+    verify(applicationRepository).updateStatus(APP_ID, CAF, Status.DELIVERED);
+  }
+
+  @Test
+  void itResubmitsCafsToTribalNationsAndCounties() {
+    Application application = Application.builder().id(APP_ID).county(Anoka).build();
+    when(applicationRepository.getApplicationIdsToResubmit())
+        .thenReturn(Map.of(CAF, List.of(APP_ID)));
+    when(applicationRepository.find(APP_ID)).thenReturn(application);
+
+    ApplicationFile applicationFile = new ApplicationFile("fileContent".getBytes(), "fileName.txt");
+    when(pdfGenerator.generate(application, CAF, Recipient.CASEWORKER)).thenReturn(applicationFile);
+
+    routingDestination.setCounty(Anoka.displayName());
+    routingDestination.setTribalNation(MILLE_LACS);
+
+    resubmissionService.resubmitFailedApplications();
+
+    verify(emailClient).resubmitFailedEmail(MILLE_LACS_BAND_EMAIL, CAF, applicationFile,
+        application);
+    verify(emailClient).resubmitFailedEmail(ANOKA_EMAIL, CAF, applicationFile,
+        application);
+    verify(applicationRepository).updateStatus(APP_ID, CAF, Status.DELIVERED);
+  }
+
+  @Test
+  void itShouldMarkDeliveryFailedWhenApplicationFailsToSendToEitherCountyOrTribalNation() {
+    Application application = Application.builder().id(APP_ID).county(Anoka).build();
+    when(applicationRepository.getApplicationIdsToResubmit())
+        .thenReturn(Map.of(CAF, List.of(APP_ID)));
+    when(applicationRepository.find(APP_ID)).thenReturn(application);
+
+    ApplicationFile applicationFile = new ApplicationFile("fileContent".getBytes(), "fileName.txt");
+    when(pdfGenerator.generate(application, CAF, Recipient.CASEWORKER)).thenReturn(applicationFile);
+
+    routingDestination.setCounty(Anoka.displayName());
+    routingDestination.setTribalNation(MILLE_LACS);
+
+    doThrow(new RuntimeException()).when(emailClient)
+        .resubmitFailedEmail(MILLE_LACS_BAND_EMAIL, CAF, applicationFile,
+            application);
+
+    resubmissionService.resubmitFailedApplications();
+    verify(applicationRepository).updateStatus(APP_ID, CAF, RESUBMISSION_FAILED);
   }
 
   @Test
   void itResubmitsUploadedDocuments() {
-    String appId = "myappid";
     ApplicationData applicationData = new ApplicationData();
     MockMultipartFile image = new MockMultipartFile("image", "test".getBytes());
     applicationData.addUploadedDoc(image, "someS3FilePath", "someDataUrl", "image/jpeg");
     applicationData.addUploadedDoc(image, "someS3FilePath2", "someDataUrl2", "image/jpeg");
 
-    Application application = Application.builder().id(appId).county(Olmsted)
+    Application application = Application.builder().id(APP_ID).county(Olmsted)
         .applicationData(applicationData).build();
     when(applicationRepository.getApplicationIdsToResubmit())
-        .thenReturn(Map.of(UPLOADED_DOC, List.of(appId)));
-    when(applicationRepository.find(appId)).thenReturn(application);
+        .thenReturn(Map.of(UPLOADED_DOC, List.of(APP_ID)));
+    when(applicationRepository.find(APP_ID)).thenReturn(application);
 
     ApplicationFile applicationFile1 = new ApplicationFile("test".getBytes(), "fileName.txt");
     ApplicationFile applicationFile2 = new ApplicationFile("test".getBytes(), "fileName.txt");
@@ -105,26 +189,26 @@ class ResubmissionServiceTest {
 
     ArgumentCaptor<ApplicationFile> captor = ArgumentCaptor.forClass(ApplicationFile.class);
     verify(emailClient, times(2))
-        .resubmitFailedEmail(eq(defaultEmail), eq(UPLOADED_DOC), captor.capture(), eq(application));
+        .resubmitFailedEmail(eq(DEFAULT_EMAIL), eq(UPLOADED_DOC), captor.capture(),
+            eq(application));
 
     List<ApplicationFile> applicationFiles = captor.getAllValues();
     assertThat(applicationFiles)
         .containsExactlyElementsOf(List.of(applicationFile1, applicationFile2));
-    verify(applicationRepository).updateStatus(appId, UPLOADED_DOC, Status.DELIVERED);
+    verify(applicationRepository).updateStatus(APP_ID, UPLOADED_DOC, Status.DELIVERED);
   }
 
   @Test
   void itResubmitsCCAPAndUploadedDocuments() {
-    var appId = "myappid";
     var applicationData = new ApplicationData();
     applicationData
         .addUploadedDoc(new MockMultipartFile("image", "test".getBytes()), "someS3FilePath",
             "someDataUrl", "image/jpeg");
-    var application = Application.builder().id(appId).county(Olmsted)
+    var application = Application.builder().id(APP_ID).county(Olmsted)
         .applicationData(applicationData).build();
     when(applicationRepository.getApplicationIdsToResubmit())
-        .thenReturn(Map.of(CCAP, List.of(appId), UPLOADED_DOC, List.of(appId)));
-    when(applicationRepository.find(appId)).thenReturn(application);
+        .thenReturn(Map.of(CCAP, List.of(APP_ID), UPLOADED_DOC, List.of(APP_ID)));
+    when(applicationRepository.find(APP_ID)).thenReturn(application);
 
     var uploadedDocWithCoverPageFile = new ApplicationFile("test".getBytes(), "fileName.txt");
     var coverPage = "someCoverPageText".getBytes();
@@ -142,7 +226,7 @@ class ResubmissionServiceTest {
     // Make sure we sent it
     var applicationFileCaptor = ArgumentCaptor.forClass(ApplicationFile.class);
     var documentCaptor = ArgumentCaptor.forClass(Document.class);
-    verify(emailClient, times(2)).resubmitFailedEmail(eq(defaultEmail), documentCaptor.capture(),
+    verify(emailClient, times(2)).resubmitFailedEmail(eq(DEFAULT_EMAIL), documentCaptor.capture(),
         applicationFileCaptor.capture(), eq(application));
     assertThat(applicationFileCaptor.getAllValues())
         .containsExactlyInAnyOrder(uploadedDocWithCoverPageFile, ccapFile);
@@ -151,7 +235,7 @@ class ResubmissionServiceTest {
     // make sure we updated the status
     var applicationRepositoryDocumentCaptor = ArgumentCaptor.forClass(Document.class);
     verify(applicationRepository, times(2))
-        .updateStatus(eq(appId), applicationRepositoryDocumentCaptor.capture(),
+        .updateStatus(eq(APP_ID), applicationRepositoryDocumentCaptor.capture(),
             eq(Status.DELIVERED));
     assertThat(applicationRepositoryDocumentCaptor.getAllValues())
         .containsExactlyInAnyOrder(UPLOADED_DOC, CCAP);
@@ -160,16 +244,15 @@ class ResubmissionServiceTest {
 
   @Test
   void itUpdatesTheStatusWhenResubmissionIsUnsuccessful() {
-    var appId = "myappid";
     var applicationData = new ApplicationData();
     applicationData
         .addUploadedDoc(new MockMultipartFile("image", "test".getBytes()), "someS3FilePath",
             "someDataUrl", "image/jpeg");
-    var application = Application.builder().id(appId).county(Olmsted)
+    var application = Application.builder().id(APP_ID).county(Olmsted)
         .applicationData(applicationData).build();
     when(applicationRepository.getApplicationIdsToResubmit())
-        .thenReturn(Map.of(UPLOADED_DOC, List.of(appId)));
-    when(applicationRepository.find(appId)).thenReturn(application);
+        .thenReturn(Map.of(UPLOADED_DOC, List.of(APP_ID)));
+    when(applicationRepository.find(APP_ID)).thenReturn(application);
 
     var uploadedDocWithCoverPageFile = new ApplicationFile("test".getBytes(), "fileName.txt");
     var coverPage = "someCoverPageText".getBytes();
@@ -182,7 +265,8 @@ class ResubmissionServiceTest {
     resubmissionService.resubmitFailedApplications();
 
     verify(emailClient, never())
-        .resubmitFailedEmail(defaultEmail, UPLOADED_DOC, uploadedDocWithCoverPageFile, application);
-    verify(applicationRepository).updateStatus(appId, UPLOADED_DOC, RESUBMISSION_FAILED);
+        .resubmitFailedEmail(DEFAULT_EMAIL, UPLOADED_DOC, uploadedDocWithCoverPageFile,
+            application);
+    verify(applicationRepository).updateStatus(APP_ID, UPLOADED_DOC, RESUBMISSION_FAILED);
   }
 }

@@ -364,8 +364,17 @@ public class PageController {
           .getPageInputFirstValue("healthcareCoverage", "healthcareCoverage");
       boolean hasHealthcare = "YES".equalsIgnoreCase(inputData);
       model.put("doesNotHaveHealthcare", !hasHealthcare);
-      RoutingDestination routingDestination = routingDestinationService
-          .getRoutingDestination(applicationData);
+      RoutingDestination routingDestination = DocumentListParser.parse(applicationData).stream()
+          .map(doc -> routingDestinationService.getRoutingDestination(applicationData, doc))
+          .reduce(new RoutingDestination(), (acc, element) -> {
+            if (element.getTribalNation() != null) {
+              acc.setTribalNation(element.getTribalNation());
+            }
+            if (element.getCounty() != null) {
+              acc.setCounty(element.getCounty());
+            }
+            return acc;
+          });
       model.put("routedTribalNation", routingDestination.getTribalNation());
       model.put("routedCounty", routingDestination.getCounty());
     }

@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import org.codeforamerica.shiba.testutilities.SuccessPage;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -364,6 +365,9 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.clickButton("Submit my documents");
     testPage.clickButton("Yes, submit and finish");
     testPage.clickContinue();
+    SuccessPage successPage = new SuccessPage(driver);
+    assertThat(successPage.findElementById("submission-date").getText()).contains(
+        "Your application was submitted to Mille Lacs and Other County on January 1, 2020");
     applicationId = downloadPdfs(true, true);
 
     // CCAP fields

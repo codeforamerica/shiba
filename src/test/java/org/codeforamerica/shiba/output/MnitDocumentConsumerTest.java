@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.output;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.MilleLacsBand;
 import static org.codeforamerica.shiba.County.Olmsted;
+import static org.codeforamerica.shiba.TribalNation.UPPER_SIOUX;
 import static org.codeforamerica.shiba.application.FlowType.FULL;
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
@@ -40,6 +41,8 @@ import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
+import org.codeforamerica.shiba.pages.config.FeatureFlag;
+import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.testutilities.NonSessionScopedApplicationData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
@@ -79,12 +82,12 @@ class MnitDocumentConsumerTest {
   private FileNameGenerator fileNameGenerator;
   @MockBean
   private ApplicationRepository applicationRepository;
-
-  @SpyBean
-  private PdfGenerator pdfGenerator;
-
   @MockBean
   private MessageSource messageSource;
+  @MockBean
+  protected FeatureFlagConfiguration featureFlagConfiguration;
+  @SpyBean
+  private PdfGenerator pdfGenerator;
 
   @Autowired
   private ApplicationData applicationData;
@@ -92,7 +95,6 @@ class MnitDocumentConsumerTest {
   private MnitDocumentConsumer documentConsumer;
 
   private Application application;
-
 
   @BeforeEach
   void setUp() {
@@ -117,6 +119,9 @@ class MnitDocumentConsumerTest {
         .build();
     when(messageSource.getMessage(any(), any(), any())).thenReturn("default success message");
     when(fileNameGenerator.generatePdfFileName(any(), any())).thenReturn("some-file.pdf");
+    when(featureFlagConfiguration.get("submit-docs-via-email-for-hennepin")).thenReturn(
+        FeatureFlag.ON);
+    when(featureFlagConfiguration.get("apply-for-mille-lacs")).thenReturn(FeatureFlag.ON);
     doReturn(application).when(applicationRepository).find(any());
   }
 
@@ -132,7 +137,7 @@ class MnitDocumentConsumerTest {
     ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
     when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
 
-    documentConsumer.process(application);
+    documentConsumer.processCafAndCcap(application);
 
     verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
     verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
@@ -153,13 +158,34 @@ class MnitDocumentConsumerTest {
         .withPageData("selectTheTribe", "selectedTribe", List.of("Bois Forte"))
         .build());
 
-    documentConsumer.process(application);
+    documentConsumer.processCafAndCcap(application);
 
     verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
     verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
     verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
     verify(mnitClient).send(pdfApplicationFile, MilleLacsBand, application.getId(), CAF, FULL);
     verify(mnitClient).send(xmlApplicationFile, MilleLacsBand, application.getId(), CAF, FULL);
+  }
+
+  @Test
+  void sendsToCountyIfTribalNationRoutingIsNotImplemented() {
+    ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
+    doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), any(), any());
+    ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
+    when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
+
+    application.setApplicationData(new TestApplicationDataBuilder()
+        .withApplicantPrograms(List.of("EA"))
+        .withPageData("selectTheTribe", "selectedTribe", List.of(UPPER_SIOUX))
+        .build());
+
+    documentConsumer.processCafAndCcap(application);
+
+    verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
+    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
+    verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
+    verify(mnitClient).send(pdfApplicationFile, Olmsted, application.getId(), CAF, FULL);
+    verify(mnitClient).send(xmlApplicationFile, Olmsted, application.getId(), CAF, FULL);
   }
 
   @Test
@@ -170,17 +196,65 @@ class MnitDocumentConsumerTest {
     when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
 
     application.setApplicationData(new TestApplicationDataBuilder()
+        .withApplicantPrograms(List.of("EA", "SNAP", "CCAP"))
+        .withPageData("selectTheTribe", "selectedTribe", List.of("Bois Forte"))
+        .build());
+
+    documentConsumer.processCafAndCcap(application);
+
+    verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
+    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
+    verify(mnitClient, times(5)).send(any(), any(), any(), any(), any());
+    verify(mnitClient).send(pdfApplicationFile, MilleLacsBand, application.getId(), CAF, FULL);
+    verify(mnitClient).send(xmlApplicationFile, MilleLacsBand, application.getId(), CAF, FULL);
+    verify(mnitClient).send(pdfApplicationFile, Olmsted, application.getId(), CAF, FULL);
+    verify(mnitClient).send(xmlApplicationFile, Olmsted, application.getId(), CAF, FULL);
+    // CCAP never goes to Mille Lacs
+    verify(mnitClient).send(pdfApplicationFile, Olmsted, application.getId(), CCAP, FULL);
+  }
+
+  @Test
+  void sendsToCountyOnlyWhenFeatureFlagIsTurnedOff() {
+    when(featureFlagConfiguration.get("apply-for-mille-lacs")).thenReturn(FeatureFlag.OFF);
+
+    ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
+    doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), any(), any());
+    ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
+    when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
+
+    application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("EA", "SNAP"))
         .withPageData("selectTheTribe", "selectedTribe", List.of("Bois Forte"))
         .build());
 
-    documentConsumer.process(application);
+    documentConsumer.processCafAndCcap(application);
 
     verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
     verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
-    verify(mnitClient, times(4)).send(any(), any(), any(), any(), any());
-    verify(mnitClient).send(pdfApplicationFile, MilleLacsBand, application.getId(), CAF, FULL);
-    verify(mnitClient).send(xmlApplicationFile, MilleLacsBand, application.getId(), CAF, FULL);
+    verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
+    verify(mnitClient).send(pdfApplicationFile, Olmsted, application.getId(), CAF, FULL);
+    verify(mnitClient).send(xmlApplicationFile, Olmsted, application.getId(), CAF, FULL);
+  }
+
+  @Test
+  void alwaysSendsToCountyOnlyWhenFeatureFlagIsTurnedOff() {
+    when(featureFlagConfiguration.get("apply-for-mille-lacs")).thenReturn(FeatureFlag.OFF);
+
+    ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
+    doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), any(), any());
+    ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
+    when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
+
+    application.setApplicationData(new TestApplicationDataBuilder()
+        .withApplicantPrograms(List.of("EA"))
+        .withPageData("selectTheTribe", "selectedTribe", List.of("Bois Forte"))
+        .build());
+
+    documentConsumer.processCafAndCcap(application);
+
+    verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
+    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
+    verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
     verify(mnitClient).send(pdfApplicationFile, Olmsted, application.getId(), CAF, FULL);
     verify(mnitClient).send(xmlApplicationFile, Olmsted, application.getId(), CAF, FULL);
   }
@@ -197,7 +271,7 @@ class MnitDocumentConsumerTest {
         .withApplicantPrograms(List.of("CCAP"))
         .build());
 
-    documentConsumer.process(application);
+    documentConsumer.processCafAndCcap(application);
 
     verify(mnitClient).send(pdfApplicationFile, Olmsted, application.getId(), CCAP, FULL);
   }
@@ -211,7 +285,7 @@ class MnitDocumentConsumerTest {
         .withApplicantPrograms(List.of("CCAP", "SNAP"))
         .build());
 
-    documentConsumer.process(application);
+    documentConsumer.processCafAndCcap(application);
 
     verify(applicationRepository).updateStatus(application.getId(), CAF, SENDING);
     verify(applicationRepository).updateStatus(application.getId(), CCAP, SENDING);
@@ -229,7 +303,7 @@ class MnitDocumentConsumerTest {
         .withApplicantPrograms(List.of("CCAP", "SNAP"))
         .build());
 
-    documentConsumer.process(application);
+    documentConsumer.processCafAndCcap(application);
 
     verify(applicationRepository, atLeastOnce())
         .updateStatus(application.getId(), CCAP, DELIVERY_FAILED);
@@ -237,7 +311,7 @@ class MnitDocumentConsumerTest {
 
   @Test
   void sendsApplicationIdToMonitoringService() {
-    documentConsumer.process(application);
+    documentConsumer.processCafAndCcap(application);
     verify(monitoringService).setApplicationId(application.getId());
   }
 

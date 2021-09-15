@@ -89,7 +89,7 @@ class ApplicationSubmittedListenerTest {
 
       applicationSubmittedListener.sendViaApi(event);
 
-      verify(mnitDocumentConsumer).process(application);
+      verify(mnitDocumentConsumer).processCafAndCcap(application);
     }
 
     @Test
