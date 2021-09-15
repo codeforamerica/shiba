@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.testutilities;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.configurations.SecurityConfiguration.ADMIN_EMAILS;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +18,8 @@ import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.pages.data.Subworkflows;
 
 public class TestUtils {
+
+  public static final String ADMIN_EMAIL = ADMIN_EMAILS.get(0);
 
   public static Path getAbsoluteFilepath(String resourceFilename) {
     return Paths.get(getAbsoluteFilepathString(resourceFilename));

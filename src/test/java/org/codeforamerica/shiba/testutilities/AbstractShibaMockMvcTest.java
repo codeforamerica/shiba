@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.testutilities;
 
 import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.testutilities.TestUtils.ADMIN_EMAIL;
 import static org.codeforamerica.shiba.testutilities.TestUtils.getAbsoluteFilepathString;
 import static org.codeforamerica.shiba.testutilities.TestUtils.resetApplicationData;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,6 +12,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oauth2Login;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -41,7 +43,6 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -79,9 +80,6 @@ public class AbstractShibaMockMvcTest {
   protected MockMvc mockMvc;
 
   protected MockHttpSession session;
-
-  @Value("${shiba-username}:${shiba-password}")
-  protected String authParams;
 
   @BeforeEach
   protected void setUp() throws Exception {
@@ -151,7 +149,10 @@ public class AbstractShibaMockMvcTest {
 
   protected ResultActions getPageWithAuth(String pageName) throws Exception {
     return mockMvc.perform(
-        get(String.format("http://%s@localhost/%s", authParams, pageName)).session(session))
+        get(String.format("http://localhost/%s", pageName))
+            .with(oauth2Login()
+                .attributes(attrs -> attrs.put("email", ADMIN_EMAIL)))
+            .session(session))
         .andExpect(status().isOk());
   }
 
@@ -256,7 +257,10 @@ public class AbstractShibaMockMvcTest {
   }
 
   protected PDAcroForm downloadCaf() throws Exception {
-    var cafBytes = mockMvc.perform(get("/download").session(session))
+    var cafBytes = mockMvc.perform(get("/download")
+        .with(oauth2Login()
+            .attributes(attrs -> attrs.put("email", ADMIN_EMAIL)))
+        .session(session))
         .andReturn()
         .getResponse()
         .getContentAsByteArray();
@@ -264,7 +268,10 @@ public class AbstractShibaMockMvcTest {
   }
 
   protected PDAcroForm downloadCcap() throws Exception {
-    var ccapBytes = mockMvc.perform(get("/download-ccap").session(session))
+    var ccapBytes = mockMvc.perform(get("/download-ccap")
+        .with(oauth2Login()
+            .attributes(attrs -> attrs.put("email", ADMIN_EMAIL)))
+        .session(session))
         .andReturn()
         .getResponse()
         .getContentAsByteArray();

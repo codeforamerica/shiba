@@ -62,7 +62,9 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.MessageSource;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.test.context.ActiveProfiles;
 
 @SuppressWarnings("unchecked")
@@ -81,6 +83,8 @@ class MailGunEmailClientTest {
   MailGunEmailClient mailGunEmailClient;
   EmailContentCreator emailContentCreator;
   WireMockServer wireMockServer;
+  @MockBean
+  private ClientRegistrationRepository springSecurityFilterChain;
   PdfGenerator pdfGenerator = mock(PdfGenerator.class);
   ApplicationRepository applicationRepository;
   int port;

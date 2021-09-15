@@ -2,7 +2,6 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -30,7 +29,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest(webEnvironment = NONE)
+@SpringBootTest()
 @ActiveProfiles("test")
 class DerivedValueApplicationInputsMapperTest {
 

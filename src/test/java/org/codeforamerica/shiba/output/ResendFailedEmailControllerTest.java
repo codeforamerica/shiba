@@ -2,9 +2,11 @@ package org.codeforamerica.shiba.output;
 
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
+import static org.codeforamerica.shiba.testutilities.TestUtils.ADMIN_EMAIL;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oauth2Login;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
@@ -34,7 +36,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -60,7 +61,6 @@ class ResendFailedEmailControllerTest {
   private PdfGenerator pdfGenerator;
 
   @Test
-  @WithMockUser(username = "admin", roles = {"USER", "ADMIN"})
   void shouldResendConfirmationEmail() throws Exception {
 
     var programs = List.of(Program.SNAP);
@@ -103,8 +103,10 @@ class ResendFailedEmailControllerTest {
     ));
     applicationData.setPagesData(pagesData);
 
-    mockMvc.perform(get("/resend-confirmation-email/" + confirmationId)).andExpect(content()
-        .string("Successfully resent confirmation email for application: " + confirmationId));
+    mockMvc.perform(get("/resend-confirmation-email/" + confirmationId)
+        .with(oauth2Login().attributes(attrs -> attrs.put("email", ADMIN_EMAIL))))
+        .andExpect(content()
+            .string("Successfully resent confirmation email for application: " + confirmationId));
     verify(emailClient)
         .sendConfirmationEmail(applicationData, recipientEmail, confirmationId, programs,
             SnapExpeditedEligibility.ELIGIBLE, CcapExpeditedEligibility.NOT_ELIGIBLE,

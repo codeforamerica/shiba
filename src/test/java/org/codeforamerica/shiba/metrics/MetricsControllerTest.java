@@ -1,10 +1,12 @@
 package org.codeforamerica.shiba.metrics;
 
 import static org.codeforamerica.shiba.pages.Sentiment.HAPPY;
+import static org.codeforamerica.shiba.testutilities.TestUtils.ADMIN_EMAIL;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oauth2Login;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import java.time.Duration;
@@ -40,7 +42,8 @@ class MetricsControllerTest {
     int applicationsSubmitted = 1421;
     when(applicationRepository.count()).thenReturn(applicationsSubmitted);
 
-    mockMvc.perform(get("/metrics"))
+    mockMvc.perform(get("/metrics")
+        .with(oauth2Login().attributes(attrs -> attrs.put("email", ADMIN_EMAIL))))
         .andExpect(MockMvcResultMatchers.view().name("metricsDashboard"))
         .andExpect(MockMvcResultMatchers.model()
             .attribute("applicationsSubmitted", applicationsSubmitted));

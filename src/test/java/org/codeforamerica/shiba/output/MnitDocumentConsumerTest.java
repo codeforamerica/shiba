@@ -55,6 +55,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -72,6 +73,8 @@ class MnitDocumentConsumerTest {
   private MonitoringService monitoringService;
   @MockBean
   private DocumentRepository documentRepository;
+  @MockBean
+  private ClientRegistrationRepository repository;
   @MockBean
   private FileNameGenerator fileNameGenerator;
   @MockBean
