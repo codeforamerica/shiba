@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba;
 
 import static org.codeforamerica.shiba.TribalNation.MILLE_LACS;
+import static org.codeforamerica.shiba.TribalNation.MILLE_LACS_BAND_OF_OJIBWE;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.RESUBMISSION_FAILED;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
@@ -72,7 +73,7 @@ public class ResubmissionService {
       }
 
       if (destination.getTribalNation() != null &&
-          MILLE_LACS.equals(destination.getTribalNation())) {
+          MILLE_LACS_BAND_OF_OJIBWE.equals(destination.getTribalNation())) {
         recipientEmails.add(countyMap.get(County.MilleLacsBand).getEmail());
       }
 

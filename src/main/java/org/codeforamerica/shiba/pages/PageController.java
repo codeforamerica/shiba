@@ -23,6 +23,7 @@ import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
+import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
@@ -376,7 +377,7 @@ public class PageController {
             return acc;
           });
       model.put("routedTribalNation", routingDestination.getTribalNation());
-      model.put("routedCounty", routingDestination.getCounty());
+      model.put("routedCounty", application.getCounty() == County.Other ? County.Hennepin.displayName() : routingDestination.getCounty());
     }
 
     if (landmarkPagesConfiguration.isLaterDocsTerminalPage(pageName)) {

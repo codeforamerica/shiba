@@ -6,6 +6,7 @@ import static org.codeforamerica.shiba.Program.EA;
 import static org.codeforamerica.shiba.Program.GRH;
 import static org.codeforamerica.shiba.Program.SNAP;
 import static org.codeforamerica.shiba.TribalNation.MILLE_LACS;
+import static org.codeforamerica.shiba.TribalNation.MILLE_LACS_BAND_OF_OJIBWE;
 import static org.codeforamerica.shiba.TribalNation.isServicedByMilleLacs;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLYING_FOR_TRIBAL_TANF;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.SELECTED_TRIBAL_NATION;
@@ -42,7 +43,7 @@ public class RoutingDestinationService {
 
     boolean shouldSendToMilleLacs = shouldSendToMilleLacs(applicationData, document);
     if (shouldSendToMilleLacs) {
-      result.setTribalNation(MILLE_LACS);
+      result.setTribalNation(MILLE_LACS_BAND_OF_OJIBWE);
     }
 
     // Send to county for all other programs

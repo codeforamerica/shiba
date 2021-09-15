@@ -369,7 +369,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.clickContinue();
     SuccessPage successPage = new SuccessPage(driver);
     assertThat(successPage.findElementById("submission-date").getText()).contains(
-        "Your application was submitted to Mille Lacs and Other County on January 1, 2020");
+        "Your application was submitted to Mille Lacs Band of Ojibwe and Hennepin County on January 1, 2020");
     applicationId = downloadPdfs(true, true);
 
     // CCAP fields

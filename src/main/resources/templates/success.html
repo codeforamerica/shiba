@@ -37,7 +37,7 @@
             <p th:if="${routeToBoth}"
                class="spacing-below-35 spacing-above-15 text--help"
                id="submission-date"
-               th:text="#{success.application-submitted-with-tribal-nation-and-county(${routedTribalNation}, ${county.displayName()}, ${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)})}"></p>
+               th:text="#{success.application-submitted-with-tribal-nation-and-county(${routedTribalNation}, ${routedCounty}, ${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)})}"></p>
           </th:block>
         </div>
 

@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.output;
 
 import static org.codeforamerica.shiba.County.MilleLacsBand;
 import static org.codeforamerica.shiba.TribalNation.MILLE_LACS;
+import static org.codeforamerica.shiba.TribalNation.MILLE_LACS_BAND_OF_OJIBWE;
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.output.Document.CAF;
@@ -92,7 +93,7 @@ public class MnitDocumentConsumer {
     RoutingDestination routingDestination = routingDestinationService
         .getRoutingDestination(application.getApplicationData(), document);
 
-    if (MILLE_LACS.equals(routingDestination.getTribalNation())) {
+    if (MILLE_LACS_BAND_OF_OJIBWE.equals(routingDestination.getTribalNation())) {
       mnitClient.send(file, MilleLacsBand, application.getId(), document, application.getFlow());
     }
 

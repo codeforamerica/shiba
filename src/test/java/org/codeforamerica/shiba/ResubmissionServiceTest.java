@@ -5,6 +5,7 @@ import static org.codeforamerica.shiba.County.Anoka;
 import static org.codeforamerica.shiba.County.MilleLacsBand;
 import static org.codeforamerica.shiba.County.Olmsted;
 import static org.codeforamerica.shiba.TribalNation.MILLE_LACS;
+import static org.codeforamerica.shiba.TribalNation.MILLE_LACS_BAND_OF_OJIBWE;
 import static org.codeforamerica.shiba.application.Status.RESUBMISSION_FAILED;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
@@ -107,7 +108,7 @@ class ResubmissionServiceTest {
     when(pdfGenerator.generate(application, CAF, Recipient.CASEWORKER)).thenReturn(applicationFile);
 
     routingDestination.setCounty(null);
-    routingDestination.setTribalNation(MILLE_LACS);
+    routingDestination.setTribalNation(MILLE_LACS_BAND_OF_OJIBWE);
 
     resubmissionService.resubmitFailedApplications();
 
@@ -129,7 +130,7 @@ class ResubmissionServiceTest {
     when(pdfGenerator.generate(application, CAF, Recipient.CASEWORKER)).thenReturn(applicationFile);
 
     routingDestination.setCounty(Anoka.displayName());
-    routingDestination.setTribalNation(MILLE_LACS);
+    routingDestination.setTribalNation(MILLE_LACS_BAND_OF_OJIBWE);
 
     resubmissionService.resubmitFailedApplications();
 
@@ -151,7 +152,7 @@ class ResubmissionServiceTest {
     when(pdfGenerator.generate(application, CAF, Recipient.CASEWORKER)).thenReturn(applicationFile);
 
     routingDestination.setCounty(Anoka.displayName());
-    routingDestination.setTribalNation(MILLE_LACS);
+    routingDestination.setTribalNation(MILLE_LACS_BAND_OF_OJIBWE);
 
     doThrow(new RuntimeException()).when(emailClient)
         .resubmitFailedEmail(MILLE_LACS_BAND_EMAIL, CAF, applicationFile,

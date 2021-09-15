@@ -15,6 +15,7 @@ public class TribalNation {
   public static final String SHAKOPEE_MDEWAKANTON = "Shakopee Mdewakanton";
   public static final String UPPER_SIOUX = "Upper Sioux";
   public static final String WHITE_EARTH = "White Earth";
+  public static final String MILLE_LACS_BAND_OF_OJIBWE = "Mille Lacs Band of Ojibwe";
 
   private static final Set<String> MILLE_LACS_SERVICED_TRIBES =
       Set.of(BOIS_FORTE, FOND_DU_LAC, GRAND_PORTAGE, LEECH_LAKE, WHITE_EARTH, MILLE_LACS);
