@@ -21,6 +21,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 import de.redsix.pdfcompare.PdfComparator;
 import java.io.ByteArrayInputStream;
@@ -59,7 +60,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
 @ActiveProfiles("test")
-@SpringBootTest()
+@SpringBootTest(webEnvironment = NONE)
 @ContextConfiguration(classes = {NonSessionScopedApplicationData.class})
 @Tag("db")
 class MnitDocumentConsumerTest {
