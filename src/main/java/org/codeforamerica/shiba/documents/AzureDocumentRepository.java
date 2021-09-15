@@ -15,9 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Slf4j
-// Implements DocumentRepository but that's not declared so that CombinedDocumentRepository
-// will be autowired as our default DocumentRepository
-public class AzureDocumentRepository {
+public class AzureDocumentRepository implements DocumentRepository {
 
   private BlobContainerClient containerClient;
 
@@ -38,9 +36,11 @@ public class AzureDocumentRepository {
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
     try {
+      log.info("Checking for filepath " + filepath + " in Azure.");
       blobClient.download(byteArrayOutputStream);
       return byteArrayOutputStream.toByteArray();
     } catch (Exception ex) {
+      log.error("File at filepath " + filepath + " cannot be found in Azure.");
       return null;
     }
   }
@@ -53,7 +53,7 @@ public class AzureDocumentRepository {
   }
 
   public void upload(String filepath, String fileContent) throws IOException {
-    log.info("Uploading file content string to Azure at filepath {}", filepath);
+    log.info("Uploading file to Azure at filepath {}", filepath);
     var fileContentBytes = fileContent.getBytes(StandardCharsets.UTF_8);
     try (var byteArrayInputStream = new ByteArrayInputStream(fileContentBytes)) {
       uploadToAzure(filepath, fileContentBytes.length, byteArrayInputStream);
@@ -62,7 +62,6 @@ public class AzureDocumentRepository {
 
   private void uploadToAzure(String filepath, long size, InputStream inputStream) {
     BlobClient blobClient = containerClient.getBlobClient(filepath);
-    log.info("Uploading to Azure Blob storage as blob:" + blobClient.getBlobUrl());
     blobClient.upload(inputStream, size);
     log.info("finished uploading");
   }

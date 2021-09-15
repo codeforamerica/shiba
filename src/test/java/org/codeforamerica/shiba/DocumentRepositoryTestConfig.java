@@ -17,7 +17,7 @@ public class DocumentRepositoryTestConfig {
 
   @Bean
   @Primary
-  public DocumentRepository combinedDocumentRepositoryService() throws IOException {
+  public DocumentRepository azureDocumentRepository() throws IOException {
     return new LocalFilesystemDocumentRepository();
   }
 
