@@ -150,6 +150,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.clickContinue();
 
     // It looks like you might be eligible for Tribal TANF. Would you like to apply?
+    // This triggers Tribal TANF to be mapped for CAF program selections
     testPage.enter("applyForTribalTANF", YES.getDisplayValue());
 
     // Tribal TANF Confirmation screen
@@ -161,6 +162,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.clickContinue();
 
     // It looks like you might be eligible for MFIP. Would you like to apply?
+    // This triggers CASH to be mapped for CAF program selections
     testPage.enter("applyForMFIP", YES.getDisplayValue());
 
     // MFIP Confirmation screen
@@ -387,7 +389,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCcapFieldEquals("SSN_0", "XXX-XX-XXXX");
     assertCcapFieldEquals("COUNTY_INSTRUCTIONS",
         "This application was submitted. A caseworker at Hennepin County will help route your application to your county. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed. For more support with your application, you can call Hennepin County at 612-596-1300.");
-    assertCcapFieldEquals("PROGRAMS", "SNAP, CCAP, EA, GRH");
+    assertCcapFieldEquals("PROGRAMS", "SNAP, CCAP, EA, GRH, CASH, TRIBAL TANF");
     assertCcapFieldEquals("FULL_NAME", "Ahmed St. George");
     assertCcapFieldEquals("UTM_SOURCE", "");
     assertCcapFieldEquals("FULL_NAME_0", householdMemberFullName);
@@ -506,7 +508,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCafFieldEquals("SSN_0", "XXX-XX-XXXX");
     assertCafFieldEquals("COUNTY_INSTRUCTIONS",
         "This application was submitted. A caseworker at Hennepin County will help route your application to your county. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed. For more support with your application, you can call Hennepin County at 612-596-1300.");
-    assertCafFieldEquals("PROGRAMS", "SNAP, CCAP, EA, GRH");
+    assertCafFieldEquals("PROGRAMS", "SNAP, CCAP, EA, GRH, CASH, TRIBAL TANF");
     assertCafFieldEquals("FULL_NAME", "Ahmed St. George");
     assertCafFieldEquals("FULL_NAME_0", householdMemberFullName);
     assertCafFieldEquals("PROGRAMS_0", "CCAP");
@@ -555,7 +557,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCafFieldEquals("APPLICANT_SPOKEN_LANGUAGE_PREFERENCE", "ENGLISH");
     assertCafFieldEquals("NEED_INTERPRETER", "Yes");
     assertCafFieldEquals("FOOD", "Yes");
-    assertCafFieldEquals("CASH", "Off");
+    assertCafFieldEquals("CASH", "Yes");
     assertCafFieldEquals("CCAP", "Yes");
     assertCafFieldEquals("EMERGENCY", "Yes");
     assertCafFieldEquals("GRH", "Yes");
