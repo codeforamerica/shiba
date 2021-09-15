@@ -22,12 +22,12 @@ import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.stereotype.Service;
 
 @Service
+// The tests for this class live in MnitDocumentConsumerTest
 public class RoutingDestinationService {
 
   private final CountyParser countyParser;
   private final FeatureFlagConfiguration featureFlagConfiguration;
 
-  // TODO test this
   public RoutingDestinationService(CountyParser countyParser,
       FeatureFlagConfiguration featureFlagConfiguration) {
     this.countyParser = countyParser;
@@ -74,7 +74,6 @@ public class RoutingDestinationService {
   @AllArgsConstructor
   public static class RoutingDestination {
 
-    //TODO use the type system instead of strings here
     private String county;
     private String tribalNation;
   }

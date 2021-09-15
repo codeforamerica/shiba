@@ -111,6 +111,8 @@ class ResubmissionServiceTest {
 
     resubmissionService.resubmitFailedApplications();
 
+    verify(emailClient, times(1)).resubmitFailedEmail(any(), any(), any(),
+        any());
     verify(emailClient).resubmitFailedEmail(MILLE_LACS_BAND_EMAIL, CAF, applicationFile,
         application);
     verify(applicationRepository).updateStatus(APP_ID, CAF, Status.DELIVERED);
