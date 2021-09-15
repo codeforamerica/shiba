@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="radio-input (input, data)"
-          th:with="inputData=${data.get(input.name)},formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)}">
+          th:with="inputData=${data.get(input.name)},
+                   formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)},
+                   hasError=${!data.isValid() && !inputData.valid(data)},
+                   hasHelpMessage=${input.helpMessageKey != null},
+                   needsAriaLabel=${input.needsAriaLabel()}">
     <div class="form-group"
          th:classappend="${!inputData.valid(data)} ? 'form-group--error' : ''">
         <div role="group" aria-labelledby="page-header" th:remove="${!page.isSingleCheckboxOrRadioInputPage()}? tag">
@@ -15,6 +19,9 @@
                         <input type="radio" th:name="${formInputName}" th:id="${#ids.seq(input.name)}"
                                th:value="${option.value}"
                                th:checked="${inputData.value.contains(option.value)}"
+                               th:attr="aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
+                                        aria-invalid=${hasError},
+                                        aria-label=${needsAriaLabel ? input.name : ''}"
                                th:attrappend="data-follow-up=${input.followUpValues.contains(option.value)} ? |#${input.name}-follow-up| : ''">
                         <span th:text="#{${option.messageKey}}"></span>
                     </label>

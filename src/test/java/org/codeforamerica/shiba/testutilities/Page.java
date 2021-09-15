@@ -219,9 +219,43 @@ public class Page {
         By.cssSelector(String.format("input[name='%s[]'] ~ p.text--error", inputName))).isEmpty();
   }
 
+  public boolean selectHasInputError(String inputName) {
+    return !driver.findElementsById(String.format("%s-error-p", inputName)).isEmpty();
+  }
+
   public boolean hasErrorText(String errorMessage) {
     return driver.findElements(By.cssSelector("p.text--error > span"))
         .stream().anyMatch(webElement -> webElement.getText().equals(errorMessage));
+  }
+
+  public boolean inputIsValid(String inputName) {
+    return driver.findElement(By.cssSelector(String.format("input[name='%s[]']", inputName)))
+        .getAttribute("aria-invalid").equals("false");
+  }
+
+  public String getInputAriaLabel(String inputName) {
+    return driver.findElement(By.cssSelector(String.format("input[name='%s[]']", inputName)))
+        .getAttribute("aria-label");
+  }
+
+  public String getSelectAriaLabel(String inputName) {
+    return driver.findElement(By.cssSelector(String.format("select[name='%s[]']", inputName)))
+        .getAttribute("aria-label");
+  }
+
+  public String getInputAriaDescribedBy(String inputName) {
+    return driver.findElement(By.cssSelector(String.format("input[name='%s[]']", inputName)))
+        .getAttribute("aria-describedby");
+  }
+
+  public String getSelectAriaDescribedBy(String inputName) {
+    return driver.findElement(By.cssSelector(String.format("select[name='%s[]']", inputName)))
+        .getAttribute("aria-describedby");
+  }
+
+  public String getInputAriaLabelledBy(String inputName) {
+    return driver.findElement(By.cssSelector(String.format("input[name='%s[]']", inputName)))
+        .getAttribute("aria-labelledby");
   }
 
   public String findElementTextById(String id) {
