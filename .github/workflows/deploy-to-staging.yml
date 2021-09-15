@@ -55,27 +55,7 @@ jobs:
           wget -O aptible-package https://omnibus-aptible-toolbelt.s3.amazonaws.com/aptible/omnibus-aptible-toolbelt/master/206/pkg/aptible-toolbelt_0.16.5%2B20200508143656~ubuntu.16.04-1_amd64.deb
           sudo dpkg -i aptible-package
           aptible login --email=${{ secrets.APTIBLE_USERNAME }} --password=${{ secrets.APTIBLE_PASSWORD}}
-          aptible deploy --app shiba-staging --git-commitish staging-deploy SPRING_PROFILES_ACTIVE=staging \
-          'MAILGUN_API_KEY=${{ secrets.MAILGUN_API_KEY }}' \
-          'SMARTY_STREET_AUTH_ID=${{ secrets.SMARTY_STREET_AUTH_ID }}' \
-          'SMARTY_STREET_AUTH_TOKEN=${{ secrets.SMARTY_STREET_AUTH_TOKEN }}' \
-          'CLIENT_KEYSTORE-PASSWORD=${{ secrets.CLIENT_KEYSTORE_PASSWORD }}' \
-          'CLIENT_TRUSTSTORE-PASSWORD=${{ secrets.CLIENT_TRUSTSTORE_PASSWORD }}' \
-          'MNIT-ESB_USERNAME=${{ secrets.MNIT_USERNAME }}' \
-          'MNIT-ESB_PASSWORD=${{ secrets.MNIT_PASSWORD }}' \
-          'SHIBA_USERNAME=${{ secrets.SHIBA_USERNAME }}' \
-          'SHIBA_PASSWORD=${{ secrets.SHIBA_PASSWORD }}' \
-          'ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY_STAGING }}' \
-          'SENTRY_DSN=${{ secrets.SENTRY_DSN }}' \
-          'SENTRY_ENVIRONMENT=staging' \
-          'SENTRY_RELEASE=${{ steps.generate-release.outputs.RELEASE }}' \
-          'MIXPANEL_API-KEY=${{ secrets.MIXPANEL_API_KEY_STAGING }}' \
-          'S3_BUCKET=${{ secrets.S3_STAGING_BUCKET }}' \
-          'AWS_ACCESS_KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_ACCESS_KEY }}' \
-          'AWS_SECRET_KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY }}' \
-          'SSL_PROTOCOLS_OVERRIDE=TLSv1.2' \
-          'AZURE_CONNECTION_STRING=${{ secrets.AZURE_CONNECTION_STRING_STAGING }}' \
-          'AZURE_CONTAINER_NAME=${{ secrets.AZURE_CONTAINER_NAME_STAGING }}'
+          aptible deploy --app shiba-staging --git-commitish staging-deploy SPRING_PROFILES_ACTIVE=staging
       - name: Merge main -> staging
         uses: MaximeHeckel/github-action-merge-fast-forward@v1.1.0
         with:

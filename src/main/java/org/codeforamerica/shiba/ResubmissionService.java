@@ -6,13 +6,11 @@ import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.documents.CombinedDocumentRepositoryService;
 import org.codeforamerica.shiba.mnit.MnitCountyInformation;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
@@ -35,8 +33,7 @@ public class ResubmissionService {
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   public ResubmissionService(ApplicationRepository applicationRepository,
       MailGunEmailClient emailClient, CountyMap<MnitCountyInformation> countyMap,
-      PdfGenerator pdfGenerator,
-      CombinedDocumentRepositoryService combinedDocumentRepositoryService) {
+      PdfGenerator pdfGenerator) {
     this.applicationRepository = applicationRepository;
     this.emailClient = emailClient;
     this.countyMap = countyMap;
@@ -46,9 +43,14 @@ public class ResubmissionService {
   @Scheduled(fixedDelayString = "${resubmission.interval.milliseconds}")
   @SchedulerLock(name = "resubmissionTask", lockAtMostFor = "30m")
   public void resubmitFailedApplications() {
-    log.info("Resubmitting applications that failed to send");
+    log.info("Checking for applications that failed to send");
     Map<Document, List<String>> documentsToIds = applicationRepository
         .getApplicationIdsToResubmit();
+
+    if (documentsToIds.values().stream().allMatch(List::isEmpty)) {
+      log.info("There are no applications to resubmit");
+      return;
+    }
 
     documentsToIds.forEach((document, applicationIds) -> applicationIds.forEach(id -> {
       MDC.put("applicationId", id);
@@ -60,8 +62,7 @@ public class ResubmissionService {
           resubmitUploadedDocumentsForApplication(document, application, countyEmail);
         } else {
           var applicationFile = pdfGenerator.generate(application, document, CASEWORKER);
-          emailClient.resubmitFailedEmail(countyEmail, document, applicationFile, application,
-              Locale.ENGLISH);
+          emailClient.resubmitFailedEmail(countyEmail, document, applicationFile, application);
         }
         applicationRepository.updateStatus(id, document, DELIVERED);
         log.info("Resubmitted " + document.name() + "(s) for application id " + id);
@@ -70,6 +71,7 @@ public class ResubmissionService {
         applicationRepository.updateStatus(id, document, RESUBMISSION_FAILED);
       }
     }));
+    MDC.remove("applicationId");
   }
 
   private void resubmitUploadedDocumentsForApplication(Document document, Application application,
@@ -84,8 +86,7 @@ public class ResubmissionService {
       var originalFilename = uploadedDocument.getFilename();
       log.info("Resubmitting uploaded doc: %s original filename: %s"
           .formatted(esbFilename, originalFilename));
-      emailClient
-          .resubmitFailedEmail(countyEmail, document, fileToSend, application, Locale.ENGLISH);
+      emailClient.resubmitFailedEmail(countyEmail, document, fileToSend, application);
       log.info("Finished resubmitting document %s".formatted(esbFilename));
     }
   }

@@ -12,7 +12,7 @@ import com.deque.html.axecore.selenium.AxeBuilder;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.codeforamerica.shiba.documents.CombinedDocumentRepositoryService;
+import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.testutilities.AccessibilityTestPage;
 import org.junit.jupiter.api.AfterAll;
@@ -30,7 +30,7 @@ public class AccessibilityJourneyTest extends JourneyTest {
   protected static Results results;
 
   @MockBean
-  protected CombinedDocumentRepositoryService documentRepositoryService;
+  protected DocumentRepository documentRepository;
 
   @AfterAll
   static void tearDownAll() {
@@ -141,6 +141,7 @@ public class AccessibilityJourneyTest extends JourneyTest {
     testPage.enter("dateOfBirth", "01/12/1928");
     testPage.enter("ssn", "123456789");
     testPage.enter("caseNumber", "1234567");
+    testPage.enter("phoneNumber", "7041234567");
     testPage.clickContinue();
 
     // should allow me to upload documents and those documents should be sent to the ESB
@@ -223,7 +224,8 @@ public class AccessibilityJourneyTest extends JourneyTest {
     testPage.clickContinue();
     testPage.enter("hasDisability", NO.getDisplayValue());
     testPage.enter("hasWorkSituation", NO.getDisplayValue());
-    testPage.enter("isTribalNationMember", NO.getDisplayValue());
+    testPage.enter("isTribalNationMember", YES.getDisplayValue());
+    testPage.enter("livingInNationBoundary", NO.getDisplayValue());
     testPage.clickContinue();
     testPage.enter("areYouWorking", YES.getDisplayValue());
     testPage.clickButton("Add a job");

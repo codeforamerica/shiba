@@ -50,6 +50,15 @@ public class TestApplicationDataBuilder {
     return this;
   }
 
+  public TestApplicationDataBuilder withContactInfo() {
+    PageData pageData = new PageData();
+    pageData.put("phoneNumber", InputData.builder().value(List.of("(603) 879-1111")).build());
+    pageData.put("email", InputData.builder().value(List.of("jane@example.com")).build());
+    pageData.put("phoneOrEmail", InputData.builder().value(List.of("PHONE")).build());
+    applicationData.getPagesData().put("contactInfo", pageData);
+    return this;
+  }
+
   public TestApplicationDataBuilder isHomeless() {
     PageData homeAddress = new PageData();
     homeAddress.put("isHomeless", InputData.builder().value(List.of("true")).build());

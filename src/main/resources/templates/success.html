@@ -16,20 +16,36 @@
               th:text="|#{success.done-your-application-has-been-submitted}|"></h1>
           <h1 th:if="${hasUploadDocuments}" class="h2 spacing-below-0 spacing-above-10"
               th:text="|#{success.done-your-application-and-docs-have-been-submitted}|"></h1>
-          <p th:if="${county != T(org.codeforamerica.shiba.County).Other}"
-             class="spacing-below-35 spacing-above-15 text--help"
-             id="submission-date"
-             th:text="#{success.application-submitted(${county.displayName()}, ${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)})}"></p>
-          <p th:if="${county == T(org.codeforamerica.shiba.County).Other}"
-             class="spacing-below-35 spacing-above-15 text--help"
-             id="submission-date"
-             th:text="#{success.application-submitted-other(${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)})}"></p>
+
+          <!-- County -->
+          <th:block
+              th:with="routeToCountyOnly=${featureFlags.get('apply-for-mille-lacs').isOff() || routedTribalNation == null},
+                routeToTribalNationOnly=${featureFlags.get('apply-for-mille-lacs').isOn() && routedTribalNation != null && routedCounty == null},
+                routeToBoth=${featureFlags.get('apply-for-mille-lacs').isOn() && routedTribalNation != null && routedCounty != null}">
+            <p th:if="${routeToCountyOnly && county != T(org.codeforamerica.shiba.County).Other}"
+               class="spacing-below-35 spacing-above-15 text--help"
+               id="submission-date"
+               th:text="#{success.application-submitted(${county.displayName()}, ${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)})}"></p>
+            <p th:if="${routeToCountyOnly && county == T(org.codeforamerica.shiba.County).Other}"
+               class="spacing-below-35 spacing-above-15 text--help"
+               id="submission-date"
+               th:text="#{success.application-submitted-other(${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)})}"></p>
+            <p th:if="${routeToTribalNationOnly}"
+               class="spacing-below-35 spacing-above-15 text--help"
+               id="submission-date"
+               th:text="#{success.application-submitted-with-tribal-nation-only(${routedTribalNation}, ${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)})}"></p>
+            <p th:if="${routeToBoth}"
+               class="spacing-below-35 spacing-above-15 text--help"
+               id="submission-date"
+               th:text="#{success.application-submitted-with-tribal-nation-and-county(${routedTribalNation}, ${county.displayName()}, ${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)})}"></p>
+          </th:block>
         </div>
 
         <div class="grid__item spacing-above-35 bottom-horizontal-line-dark-grey">
           <h2 class="h3" th:text="#{success.helpful-resources}"></h2>
           <div class="grid-ignore-mobile">
-            <div class="success-icons grid__item text--centered width-one-sixth spacing-above-5 spacing-below-0">
+            <div
+                class="success-icons grid__item text--centered width-one-sixth spacing-above-5 spacing-below-0">
               <div th:replace="fragments/icons/icon-download :: icon-download"></div>
             </div>
             <div class="grid__item width-five-sixths">
@@ -74,7 +90,8 @@
           </div>
         </div>
         <div th:if="${sentiment == null}" id="feedbackButton">
-          <a class="button button--secondary spacing-below-0"  th:href="'/pages/'+${pageName}+'/navigation'">
+          <a class="button button--secondary spacing-below-0"
+             th:href="'/pages/'+${pageName}+'/navigation'">
             <span th:text="#{success.give-us-feedback}"></span>
             <div th:replace="fragments/icons/icon-arrow-black :: icon-arrow-black"></div>
           </a>

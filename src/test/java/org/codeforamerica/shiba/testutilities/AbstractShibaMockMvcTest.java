@@ -92,8 +92,7 @@ public class AbstractShibaMockMvcTest {
     );
     when(clock.getZone()).thenReturn(ZoneOffset.UTC);
     when(locationClient.validateAddress(any())).thenReturn(Optional.empty());
-    when(featureFlagConfiguration.get("apply-for-tribal-nation")).thenReturn(FeatureFlag.ON);
-    when(featureFlagConfiguration.get("apply-without-address")).thenReturn(FeatureFlag.ON);
+    when(featureFlagConfiguration.get("apply-for-mille-lacs")).thenReturn(FeatureFlag.ON);
     when(featureFlagConfiguration.get("submit-via-email")).thenReturn(FeatureFlag.OFF);
     when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.OFF);
     when(featureFlagConfiguration.get("county-anoka")).thenReturn(FeatureFlag.OFF);
@@ -453,11 +452,13 @@ public class AbstractShibaMockMvcTest {
     assertPageHasInputError(pageName, inputName);
   }
 
+
   protected void postExpectingFailureAndAssertErrorDisplaysForThatInput(String pageName,
       String inputName,
-      List<String> values) throws Exception {
-    postExpectingFailure(pageName, inputName, values);
-    assertPageHasInputError(pageName, inputName);
+      String value, String errorMessage) throws Exception {
+    postExpectingFailure(pageName, inputName, value);
+    assertPageHasInputError(pageName, inputName, errorMessage);
+
   }
 
   protected void postExpectingFailureAndAssertErrorDisplaysForThatDateInput(String pageName,
@@ -507,6 +508,13 @@ public class AbstractShibaMockMvcTest {
   protected void assertPageHasInputError(String pageName, String inputName) throws Exception {
     var page = new FormPage(getPage(pageName));
     assertTrue(page.hasInputError(inputName));
+  }
+
+  protected void assertPageHasInputError(String pageName, String inputName, String errorMessage)
+      throws Exception {
+    var page = new FormPage(getPage(pageName));
+    assertEquals(errorMessage, page.getInputError(inputName).text());
+
   }
 
   protected void assertPageHasDateInputError(String pageName, String inputName) throws Exception {
@@ -606,8 +614,9 @@ public class AbstractShibaMockMvcTest {
     assertThat(new FormPage(getPage(pageName)).getTitle()).isEqualTo(pageTitle);
   }
 
-  protected void fillFutureIncomeToHaveVehicle() throws Exception {
-    postExpectingRedirect("futureIncome", "earnLessMoneyThisMonth", "false", "startExpenses");
+  protected void fillAdditionalIncomeInfoToHaveVehicle() throws Exception {
+    postExpectingRedirect("additionalIncomeInfo", "additionalIncomeInfo",
+        "one more thing you need to know is...", "startExpenses");
     assertNavigationRedirectsToCorrectNextPage("startExpenses", "homeExpenses");
     postExpectingRedirect("homeExpenses", "homeExpenses", "NONE_OF_THE_ABOVE", "utilities");
     postExpectingRedirect("utilities", "payForUtilities", "NONE_OF_THE_ABOVE", "energyAssistance");
@@ -646,7 +655,8 @@ public class AbstractShibaMockMvcTest {
     postExpectingRedirect("disability", "hasDisability", "false", "workSituation");
     if (hasHousehold) {
       postExpectingRedirect("workSituation", "hasWorkSituation", "false", "tribalNationMember");
-      postExpectingRedirect("tribalNationMember", "isTribalNationMember", "false", "introIncome");
+      postExpectingRedirect("tribalNationMember", "isTribalNationMember", "false",
+          "introIncome");
     } else {
       postExpectingRedirect("workSituation", "hasWorkSituation", "false", "introIncome");
     }
@@ -662,8 +672,7 @@ public class AbstractShibaMockMvcTest {
         "apartmentNumber", List.of("someApartmentNumber"),
         "city", List.of("someCity"),
         "zipCode", List.of("12345"),
-        "state", List.of("MN"),
-        "sameMailingAddress", List.of("false")
+        "state", List.of("MN")
     ));
   }
 
@@ -676,7 +685,8 @@ public class AbstractShibaMockMvcTest {
         "apartmentNumber", List.of("someApartmentNumber"),
         "city", List.of("someCity"),
         "zipCode", List.of("12345"),
-        "state", List.of("IL")
+        "state", List.of("IL"),
+        "sameMailingAddress", List.of()
     ));
   }
 

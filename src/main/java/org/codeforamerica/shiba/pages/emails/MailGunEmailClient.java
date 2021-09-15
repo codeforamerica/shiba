@@ -24,6 +24,7 @@ import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.Resource;
@@ -47,7 +48,6 @@ public class MailGunEmailClient implements EmailClient {
   private final WebClient webClient;
   private final PdfGenerator pdfGenerator;
   private final String activeProfile;
-  private final String resubmissionEmail;
   private final ApplicationRepository applicationRepository;
   private final MessageSource messageSource;
 
@@ -59,7 +59,6 @@ public class MailGunEmailClient implements EmailClient {
       @Value("${mail-gun.api-key}") String mailGunApiKey,
       EmailContentCreator emailContentCreator,
       @Value("${mail-gun.shouldCC}") boolean shouldCC,
-      @Value("${resubmission-email}") String resubmissionEmail,
       PdfGenerator pdfGenerator,
       @Value("${spring.profiles.active:Unknown}") String activeProfile,
       ApplicationRepository applicationRepository,
@@ -75,7 +74,6 @@ public class MailGunEmailClient implements EmailClient {
     this.webClient = WebClient.builder().baseUrl(mailGunUrl).build();
     this.pdfGenerator = pdfGenerator;
     this.activeProfile = activeProfile;
-    this.resubmissionEmail = resubmissionEmail;
     this.applicationRepository = applicationRepository;
     this.messageSource = messageSource;
   }
@@ -245,13 +243,15 @@ public class MailGunEmailClient implements EmailClient {
 
   @Override
   public void resubmitFailedEmail(String recipientEmail, Document document,
-      ApplicationFile applicationFile, Application application, Locale locale) {
+      ApplicationFile applicationFile, Application application) {
+    MDC.put("applicationFile", applicationFile.getFileName());
     MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
     form.put("from", List.of(senderEmail));
     form.put("to", List.of(recipientEmail));
     form.put("subject",
         List.of("MN Benefits Application %s Resubmission".formatted(application.getId())));
-    form.put("html", List.of(emailContentCreator.createResubmitEmailContent(document, locale)));
+    form.put("html",
+        List.of(emailContentCreator.createResubmitEmailContent(document, Locale.ENGLISH)));
     form.put("attachment", List.of(asResource(applicationFile)));
 
     webClient.post()

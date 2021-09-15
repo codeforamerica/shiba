@@ -8,8 +8,7 @@ spring:
         cachecontrol:
           max-age: 10m
 feature-flag:
-  apply-for-tribal-nation: off
-  apply-without-address: on
+  apply-for-mille-lacs: off
   submit-via-email: off
   submit-via-api: off
   submit-docs-via-email-for-hennepin: off

@@ -12,6 +12,7 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -29,11 +30,12 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Locale;
+import org.codeforamerica.shiba.DocumentRepositoryTestConfig;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
-import org.codeforamerica.shiba.documents.CombinedDocumentRepositoryService;
+import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -60,9 +62,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = MOCK, properties = {
-    "pagesConfig=pages-config/test-pages-controller.yaml"})
-@ContextConfiguration(classes = {NonSessionScopedApplicationData.class})
+@SpringBootTest(
+    webEnvironment = MOCK,
+    properties = {"pagesConfig=pages-config/test-pages-controller.yaml"})
+@ContextConfiguration(classes = {NonSessionScopedApplicationData.class,
+    DocumentRepositoryTestConfig.class})
 class PageControllerTest {
 
   private MockMvc mockMvc;
@@ -80,7 +84,7 @@ class PageControllerTest {
   @MockBean
   private FeatureFlagConfiguration featureFlags;
   @SpyBean
-  private CombinedDocumentRepositoryService combinedDocumentRepositoryService;
+  private DocumentRepository documentRepository;
 
   @Autowired
   private PageController pageController;
@@ -427,8 +431,7 @@ class PageControllerTest {
     when(applicationRepository.getNextId()).thenReturn(applicationId);
     when(applicationFactory.newApplication(applicationData)).thenReturn(application);
 
-    when(combinedDocumentRepositoryService.getFromAzureWithFallbackToS3(any()))
-        .thenThrow(RuntimeException.class);
+    when(documentRepository.get(any())).thenThrow(RuntimeException.class);
 
     mockMvc.perform(get("/pages/uploadDocuments")).andExpect(status().isOk());
   }
@@ -450,7 +453,14 @@ class PageControllerTest {
         .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
     verify(applicationRepository).updateStatus(application.getId(), CCAP, IN_PROGRESS);
-    verify(applicationRepository).updateStatus(application.getId(), CAF, IN_PROGRESS);
+
+    mockMvc.perform(post("/pages/choosePrograms")
+        .param("programs[]", "SNAP")
+        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+
+    verify(applicationRepository).updateStatusToNull(CCAP, application.getId());
+    verify(applicationRepository, times(2)).updateStatus(application.getId(), CAF, IN_PROGRESS);
+
   }
 
   @Test
@@ -491,5 +501,20 @@ class PageControllerTest {
 
     verify(applicationRepository).updateStatus(application.getId(), CCAP, IN_PROGRESS);
     verify(applicationRepository, never()).updateStatus(application.getId(), CAF, IN_PROGRESS);
+  }
+
+  @Test
+  void shouldRedirectToErrorPageWhenAnInvalidPageIsRequested() throws Exception {
+    applicationData.setStartTimeOnce(Instant.now());
+    String applicationId = "someId";
+    applicationData.setId(applicationId);
+    Application application = Application.builder()
+        .id(applicationId)
+        .applicationData(applicationData)
+        .build();
+    when(applicationRepository.getNextId()).thenReturn(applicationId);
+    when(applicationFactory.newApplication(applicationData)).thenReturn(application);
+
+    mockMvc.perform(get("/pages/doesNotExist")).andExpect(redirectedUrl("/error"));
   }
 }

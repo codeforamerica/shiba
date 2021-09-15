@@ -24,8 +24,7 @@ mail-gun:
   url: mailgun-url
 
 feature-flag:
-  apply-for-tribal-nation: on
-  apply-without-address: on
+  apply-for-mille-lacs: on
   submit-docs-via-email-for-hennepin: on
   county-ottertail: on
 

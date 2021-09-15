@@ -2,15 +2,14 @@ package org.codeforamerica.shiba.pages;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.testutilities.TestUtils.assertPdfFieldEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
-import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
 import org.codeforamerica.shiba.testutilities.FormPage;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +20,6 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
   @BeforeEach
   protected void setUp() throws Exception {
     super.setUp();
-    when(featureFlagConfiguration.get("apply-without-address")).thenReturn(FeatureFlag.OFF);
     mockMvc.perform(get("/pages/languagePreferences").session(session)); // start timer
     postExpectingSuccess("languagePreferences",
         Map.of("writtenLanguage", List.of("ENGLISH"), "spokenLanguage", List.of("ENGLISH"))
@@ -150,10 +148,14 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
     assertNavigationRedirectsToCorrectNextPage("incomeUpNext", "unearnedIncome");
     postExpectingRedirect("unearnedIncome", "unearnedIncome", "NO_UNEARNED_INCOME_SELECTED",
         "unearnedIncomeCcap");
-    postExpectingRedirect("unearnedIncomeCcap", "unearnedIncomeCcap",
-        "NO_UNEARNED_INCOME_CCAP_SELECTED", "futureIncome");
+    var formPage = postAndFollowRedirect(
+        "unearnedIncomeCcap", "unearnedIncomeCcap", "NO_UNEARNED_INCOME_CCAP_SELECTED");
+    assertEquals(formPage.getTitle(), "Additional Income Info");
 
-    postExpectingRedirect("futureIncome", "earnLessMoneyThisMonth", "false", "startExpenses");
+    postExpectingRedirect("additionalIncomeInfo",
+        "additionalIncomeInfo",
+        "my income is literally $0",
+        "startExpenses");
     assertNavigationRedirectsToCorrectNextPage("startExpenses", "homeExpenses");
     postExpectingRedirect("homeExpenses", "homeExpenses", "NONE_OF_THE_ABOVE", "utilities");
 

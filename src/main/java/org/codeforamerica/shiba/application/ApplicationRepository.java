@@ -234,6 +234,24 @@ public class ApplicationRepository {
     setUpdatedAtTime(id);
   }
 
+  public void updateStatusToNull(Document document, String id) {
+    Map<String, String> parameters = Map.of(
+        "id", id
+    );
+
+    String statement =
+        switch (document) {
+          case CAF -> "UPDATE applications SET caf_application_status = null WHERE id = :id";
+          case CCAP -> "UPDATE applications SET ccap_application_status = null WHERE id = :id";
+          case UPLOADED_DOC -> "UPDATE applications SET uploaded_documents_status = null WHERE id = :id";
+        };
+
+    var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+    namedParameterJdbcTemplate.update(statement, parameters);
+    log.info(String.format("%s #%s application status has been updated to null", document, id));
+    setUpdatedAtTime(id);
+  }
+
   private String selectStatusColumn(Document document) {
     return switch (document) {
       case CAF -> "UPDATE applications SET caf_application_status = :status WHERE id = :id";
@@ -252,19 +270,19 @@ public class ApplicationRepository {
 
   private List<String> getCCAPSubmissionsToResubmit() {
     return jdbcTemplate.queryForList(
-        "SELECT id FROM applications WHERE ccap_application_status = 'delivery_failed' AND completed_at IS NOT NULL LIMIT 10",
+        "SELECT id FROM applications WHERE ccap_application_status = 'delivery_failed' AND completed_at IS NOT NULL",
         String.class);
   }
 
   private List<String> getCAFSubmissionsToResubmit() {
     return jdbcTemplate.queryForList(
-        "SELECT id FROM applications WHERE caf_application_status = 'delivery_failed' AND completed_at IS NOT NULL LIMIT 10",
+        "SELECT id FROM applications WHERE caf_application_status = 'delivery_failed' AND completed_at IS NOT NULL",
         String.class);
   }
 
   private List<String> getUploadedDocSubmissionsToResubmit() {
     return jdbcTemplate.queryForList(
-        "SELECT id FROM applications WHERE uploaded_documents_status = 'delivery_failed' AND completed_at IS NOT NULL LIMIT 5",
+        "SELECT id FROM applications WHERE uploaded_documents_status = 'delivery_failed' AND completed_at IS NOT NULL",
         String.class);
   }
 

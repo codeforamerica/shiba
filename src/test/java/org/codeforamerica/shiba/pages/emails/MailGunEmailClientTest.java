@@ -111,7 +111,6 @@ class MailGunEmailClientTest {
         mailGunApiKey,
         emailContentCreator,
         false,
-        resubmissionEmail,
         pdfGenerator,
         activeProfile,
         applicationRepository,
@@ -365,8 +364,7 @@ class MailGunEmailClientTest {
         .generateForUploadedDocument(any(UploadedDocument.class), anyInt(), any(Application.class),
             any())).thenReturn(testFile);
 
-    mailGunEmailClient
-        .resubmitFailedEmail(hennepinEmail, UPLOADED_DOC, testFile, application, ENGLISH);
+    mailGunEmailClient.resubmitFailedEmail(hennepinEmail, UPLOADED_DOC, testFile, application);
 
     verify(emailContentCreator).createResubmitEmailContent(UPLOADED_DOC, ENGLISH);
 
@@ -393,7 +391,6 @@ class MailGunEmailClientTest {
         mailGunApiKey,
         emailContentCreator,
         true,
-        resubmissionEmail,
         pdfGenerator,
         activeProfile,
         applicationRepository,
@@ -488,7 +485,6 @@ class MailGunEmailClientTest {
           mailGunApiKey,
           emailContentCreator,
           false,
-          resubmissionEmail,
           pdfGenerator,
           "demo",
           applicationRepository,

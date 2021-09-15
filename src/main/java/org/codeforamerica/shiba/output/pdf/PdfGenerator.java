@@ -14,7 +14,7 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.codeforamerica.shiba.Utils;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.documents.CombinedDocumentRepositoryService;
+import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.Document;
@@ -34,21 +34,21 @@ public class PdfGenerator implements FileGenerator {
   private final PdfFieldMapper pdfFieldMapper;
   private final Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillerMap;
   private final ApplicationRepository applicationRepository;
-  private final CombinedDocumentRepositoryService combinedDocumentRepositoryService;
+  private final DocumentRepository documentRepository;
   private final ApplicationInputsMappers mappers;
   private final FileNameGenerator fileNameGenerator;
 
   public PdfGenerator(PdfFieldMapper pdfFieldMapper,
       Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers,
       ApplicationRepository applicationRepository,
-      CombinedDocumentRepositoryService combinedDocumentRepositoryService,
+      DocumentRepository documentRepository,
       ApplicationInputsMappers mappers,
       FileNameGenerator fileNameGenerator
   ) {
     this.pdfFieldMapper = pdfFieldMapper;
     this.pdfFieldFillerMap = pdfFieldFillers;
     this.applicationRepository = applicationRepository;
-    this.combinedDocumentRepositoryService = combinedDocumentRepositoryService;
+    this.documentRepository = documentRepository;
     this.mappers = mappers;
     this.fileNameGenerator = fileNameGenerator;
   }
@@ -68,8 +68,8 @@ public class PdfGenerator implements FileGenerator {
 
   public ApplicationFile generateForUploadedDocument(UploadedDocument uploadedDocument,
       int documentIndex, Application application, byte[] coverPage) {
-    var fileBytes = combinedDocumentRepositoryService
-        .getFromAzureWithFallbackToS3(uploadedDocument.getS3Filepath());
+    var fileBytes = documentRepository
+        .get(uploadedDocument.getS3Filepath());
     if (fileBytes != null) {
       var extension = Utils.getFileType(uploadedDocument.getFilename());
       if (IMAGE_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
@@ -80,6 +80,8 @@ public class PdfGenerator implements FileGenerator {
           log.error("failed to convert document " + uploadedDocument.getFilename()
               + " to pdf. Maintaining original type");
         }
+      } else if (!extension.equals("pdf")) {
+        log.warn("Unsupported file-type: " + extension);
       }
 
       if (extension.equals("pdf")) {

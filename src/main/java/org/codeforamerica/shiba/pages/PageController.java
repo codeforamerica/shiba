@@ -30,10 +30,11 @@ import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
-import org.codeforamerica.shiba.documents.CombinedDocumentRepositoryService;
+import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
+import org.codeforamerica.shiba.pages.RoutingDestinationService.RoutingDestination;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.config.LandmarkPagesConfiguration;
@@ -45,7 +46,6 @@ import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.DatasourcePages;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
-import org.codeforamerica.shiba.pages.data.Subworkflows;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.codeforamerica.shiba.pages.enrichment.ApplicationEnrichment;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
@@ -93,7 +93,8 @@ public class PageController {
   private final CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
   private final SuccessMessageService successMessageService;
   private final DocRecommendationMessageService docRecommendationMessageService;
-  private final CombinedDocumentRepositoryService combinedDocumentRepositoryService;
+  private final RoutingDestinationService routingDestinationService;
+  private final DocumentRepository documentRepository;
 
   public PageController(
       ApplicationConfiguration applicationConfiguration,
@@ -111,7 +112,8 @@ public class PageController {
       CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider,
       SuccessMessageService successMessageService,
       DocRecommendationMessageService docRecommendationMessageService,
-      CombinedDocumentRepositoryService combinedDocumentRepositoryService,
+      RoutingDestinationService routingDestinationService,
+      DocumentRepository documentRepository,
       ApplicationRepository applicationRepository) {
     this.applicationData = applicationData;
     this.applicationConfiguration = applicationConfiguration;
@@ -128,7 +130,8 @@ public class PageController {
     this.ccapExpeditedEligibilityDecider = ccapExpeditedEligibilityDecider;
     this.successMessageService = successMessageService;
     this.docRecommendationMessageService = docRecommendationMessageService;
-    this.combinedDocumentRepositoryService = combinedDocumentRepositoryService;
+    this.routingDestinationService = routingDestinationService;
+    this.documentRepository = documentRepository;
     this.applicationRepository = applicationRepository;
   }
 
@@ -154,9 +157,9 @@ public class PageController {
       @PathVariable String pageName,
       @RequestParam(required = false, defaultValue = "0") Integer option
   ) {
-    PageWorkflowConfiguration pageWorkflow = applicationConfiguration.getPageWorkflow(pageName);
+    PageWorkflowConfiguration currentPage = applicationConfiguration.getPageWorkflow(pageName);
     PagesData pagesData = applicationData.getPagesData();
-    NextPage nextPage = applicationData.getNextPageName(featureFlags, pageWorkflow, option);
+    NextPage nextPage = applicationData.getNextPageName(featureFlags, currentPage, option);
     ofNullable(nextPage.getFlow()).ifPresent(applicationData::setFlow);
     PageWorkflowConfiguration nextPageWorkflow = applicationConfiguration
         .getPageWorkflow(nextPage.getPageName());
@@ -172,28 +175,9 @@ public class PageController {
   private boolean shouldSkip(PageWorkflowConfiguration nextPageWorkflow) {
     Condition skipCondition = nextPageWorkflow.getSkipCondition();
     if (skipCondition != null) {
-      PagesData pagesData = applicationData.getPagesData();
-      Subworkflows subworkflows = applicationData.getSubworkflows();
-      Map<String, PageData> pages = new HashMap<>();
-      nextPageWorkflow.getDatasources().stream()
-          .filter(datasource -> datasource.getPageName() != null)
-          .forEach(datasource -> {
-            String key = datasource.getPageName();
-            PageData value = new PageData();
-            if (datasource.getGroupName() == null) { // if datasource is not a subworkflow
-              value.mergeInputDataValues(pagesData.get(datasource.getPageName()));
-            } else if (subworkflows
-                .containsKey(datasource.getGroupName())) { // if datasource is a subworkflow
-              subworkflows.get(datasource.getGroupName()).stream()
-                  .map(iteration -> iteration.getPagesData()
-                      .getPage(datasource.getPageName()))
-                  .forEach(value::mergeInputDataValues);
-            }
-
-            pages.put(key, value);
-          });
-      @NotNull DatasourcePages datasourcePages = new DatasourcePages(new PagesData(pages));
-
+      PagesData pagesData = applicationData.getDatasourceDataForPageIncludingSubworkflows(
+          nextPageWorkflow);
+      DatasourcePages datasourcePages = new DatasourcePages(pagesData);
       return datasourcePages.satisfies(skipCondition);
     }
     return false;
@@ -233,9 +217,12 @@ public class PageController {
               landmarkPagesConfiguration.getLandingPages().get(0)));
     }
 
-    response.addHeader("Cache-Control", "no-store");
-
     var pageWorkflowConfig = applicationConfiguration.getPageWorkflow(pageName);
+    if (pageWorkflowConfig == null) {
+      return new ModelAndView("redirect:/error");
+    }
+
+    response.addHeader("Cache-Control", "no-store");
     if (missingRequiredSubworkflows(pageWorkflowConfig)) {
       return new ModelAndView(
           "redirect:/pages/" + pageWorkflowConfig.getDataMissingRedirect());
@@ -311,8 +298,8 @@ public class PageController {
   }
 
   private boolean missingRequiredSubworkflows(PageWorkflowConfiguration pageWorkflow) {
-    return pageWorkflow.getPageConfiguration().getInputs().isEmpty() && !applicationData
-        .hasRequiredSubworkflows(pageWorkflow.getDatasources());
+    return pageWorkflow.getPageConfiguration().getInputs().isEmpty() &&
+        !applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources());
   }
 
   private boolean isStartPageForGroup(@PathVariable String pageName, String groupName) {
@@ -332,7 +319,7 @@ public class PageController {
     ));
 
     if (pageWorkflow.getPageConfiguration().isStaticPage()) {
-      model.put("additionalContext", pageName);
+      model.put("pageNameContext", pageName);
     }
 
     model.put("county", countyParser.parse(applicationData));
@@ -377,6 +364,10 @@ public class PageController {
           .getPageInputFirstValue("healthcareCoverage", "healthcareCoverage");
       boolean hasHealthcare = "YES".equalsIgnoreCase(inputData);
       model.put("doesNotHaveHealthcare", !hasHealthcare);
+      RoutingDestination routingDestination = routingDestinationService
+          .getRoutingDestination(applicationData);
+      model.put("routedTribalNation", routingDestination.getTribalNation());
+      model.put("routedCounty", routingDestination.getCounty());
     }
 
     if (landmarkPagesConfiguration.isLaterDocsTerminalPage(pageName)) {
@@ -389,9 +380,7 @@ public class PageController {
       }
       var uploadedDocsWithThumbnails = applicationData.getUploadedDocs().stream()
           .parallel()
-          .map(
-              doc -> new DocWithThumbnail(doc,
-                  doc.getThumbnail(combinedDocumentRepositoryService)))
+          .map(doc -> new DocWithThumbnail(doc, doc.getThumbnail(documentRepository)))
           .toList();
       model.put("uploadedDocs", uploadedDocsWithThumbnails);
       model.put("uploadDocMaxFileSize", uploadDocumentConfiguration.getMaxFilesize());
@@ -554,9 +543,13 @@ public class PageController {
       if (pagesData.containsKey("choosePrograms")) {
         if (applicationData.isCAFApplication()) {
           applicationRepository.updateStatus(applicationData.getId(), CAF, IN_PROGRESS);
+        } else {
+          applicationRepository.updateStatusToNull(CAF, applicationData.getId());
         }
         if (applicationData.isCCAPApplication()) {
           applicationRepository.updateStatus(applicationData.getId(), CCAP, IN_PROGRESS);
+        } else {
+          applicationRepository.updateStatusToNull(CCAP, applicationData.getId());
         }
       }
       if (applicationData.getId() == null) {
@@ -654,8 +647,8 @@ public class PageController {
       }
       var filePath = applicationData.getId() + "/" + UUID.randomUUID();
       var thumbnailFilePath = applicationData.getId() + "/" + UUID.randomUUID();
-      combinedDocumentRepositoryService.upload(filePath, file);
-      combinedDocumentRepositoryService.upload(thumbnailFilePath, dataURL);
+      documentRepository.upload(filePath, file);
+      documentRepository.upload(thumbnailFilePath, dataURL);
       applicationData.addUploadedDoc(file, filePath, thumbnailFilePath, type);
     }
 
@@ -692,7 +685,7 @@ public class PageController {
         .filter(uploadedDocument -> uploadedDocument.getFilename().equals(filename))
         .map(UploadedDocument::getS3Filepath)
         .findFirst()
-        .ifPresent(combinedDocumentRepositoryService::delete);
+        .ifPresent(documentRepository::delete);
     applicationData.removeUploadedDoc(filename);
 
     return new ModelAndView("redirect:/pages/uploadDocuments");

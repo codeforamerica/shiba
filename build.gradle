@@ -2,7 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.5.4'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
-    id 'com.github.jk1.dependency-license-report' version '1.17'
+    id 'com.github.jk1.dependency-license-report' version '2.0'
     id 'com.gorylenko.gradle-git-properties' version '2.3.1'
 }
 
@@ -70,13 +70,19 @@ dependencyManagement {
 }
 
 dependencies {
+    modules {
+        module('javax.activation:activation') {
+            replacedBy('jakarta.activation:jakarta.activation-api', 'Use jakarta instead of javax')
+        }
+    }
+
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
     implementation 'org.springframework.session:spring-session-jdbc'
-    implementation 'io.sentry:sentry-spring-boot-starter:5.1.1'
+    implementation 'io.sentry:sentry-spring-boot-starter:5.1.2'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation('org.springframework.boot:spring-boot-starter-web-services') {
@@ -96,14 +102,15 @@ dependencies {
     implementation 'commons-validator:commons-validator:1.7'
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.apache.httpcomponents:httpclient'
-    implementation 'io.sentry:sentry-logback:5.1.1'
+    implementation 'io.sentry:sentry-logback:5.1.2'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'com.google.crypto.tink:tink:1.6.1'
-    implementation 'org.flywaydb:flyway-core:7.14.0'
+    implementation 'org.flywaydb:flyway-core:7.15.0'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'com.mixpanel:mixpanel-java:1.5.0'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'com.sun.activation:jakarta.activation'
+    implementation 'org.apache.commons:commons-email:1.5'
     implementation 'org.springframework:spring-aspects'
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'org.springframework.retry:spring-retry'
@@ -112,9 +119,8 @@ dependencies {
     implementation 'ch.qos.logback:logback-core:1.2.0'
     implementation 'ch.qos.logback:logback-classic:1.2.0'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
-    implementation 'net.javacrumbs.shedlock:shedlock-spring:4.25.0'
-    implementation 'net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.25.0'
-    implementation 'com.sun.istack:istack-commons-runtime:3.0.12'
+    implementation 'net.javacrumbs.shedlock:shedlock-spring:4.27.0'
+    implementation 'net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.27.0'
 
     implementation 'org.springframework.ws:spring-ws-core'
     implementation(files(genJaxb.classesDir).builtBy(genJaxb))
@@ -136,7 +142,7 @@ dependencies {
     testImplementation 'org.awaitility:awaitility'
     testImplementation 'com.github.tomakehurst:wiremock-standalone:2.27.2'
     testImplementation 'org.mockito:mockito-inline'
-    testImplementation 'io.github.bonigarcia:webdrivermanager:4.4.3'
+    testImplementation 'io.github.bonigarcia:webdrivermanager:5.0.2'
     testImplementation 'org.springframework.ws:spring-ws-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'io.percy:percy-java-selenium:1.0.0'
@@ -225,13 +231,6 @@ test {
 tasks.withType(Test).configureEach {
     Test task ->
         task.doFirst {
-            def env = new File('.env')
-            if (env.exists()) {
-                file('.env').readLines().each() {
-                    def (key, value) = it.split('=', 2)
-                    environment(key, value)
-                }
-            }
             file('.env.test').readLines().each() {
                 def (key, value) = it.split('=', 2)
                 environment(key, value)
@@ -241,7 +240,7 @@ tasks.withType(Test).configureEach {
         task.maxParallelForks(Runtime.runtime.availableProcessors().intdiv(2) ?: 1)
         task.testLogging {
             exceptionFormat = 'full'
-            events "failed", "passed", "skipped"
+            events "failed", "skipped"
             showStackTraces true
             showCauses true
             showExceptions true

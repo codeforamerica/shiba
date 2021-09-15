@@ -2,7 +2,6 @@ package org.codeforamerica.shiba.framework;
 
 import static java.util.Locale.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
 import java.util.List;
@@ -27,9 +26,7 @@ public class ValidationTest extends AbstractFrameworkTest {
   private final String option1 = "option 1";
   private final String multipleValidationsPageTitle = "multiple validations page title";
   private final String moneyErrorMessageKey = "money is error";
-  private final String selectCountyPageTitle = "select county page title";
-  private final String countyB = "Beta";
-
+  private final String emailErrorConKey = "Input con for com";
   @Override
   @BeforeEach
   protected void setUp() throws Exception {
@@ -39,6 +36,7 @@ public class ValidationTest extends AbstractFrameworkTest {
     staticMessageSource.addMessage("last-page-title", ENGLISH, lastPageTitle);
     staticMessageSource.addMessage("error-message-key", ENGLISH, errorMessage);
     staticMessageSource.addMessage("money-error-message-key", ENGLISH, moneyErrorMessageKey);
+    staticMessageSource.addMessage("email-error-con-key",ENGLISH ,emailErrorConKey);
     staticMessageSource.addMessage("not-blank-error-message-key", ENGLISH, "not blank is error");
     staticMessageSource.addMessage("zip-code-page-title", ENGLISH, "zip code Page Title");
     staticMessageSource.addMessage("case-number-page-title", ENGLISH, "case number Page Title");
@@ -50,7 +48,6 @@ public class ValidationTest extends AbstractFrameworkTest {
     staticMessageSource.addMessage("date-page-title", ENGLISH, "date page title");
     staticMessageSource.addMessage("dob-valid-page-title", ENGLISH, "dob valid page title");
     staticMessageSource.addMessage("email-page-title", ENGLISH, "email page title");
-    staticMessageSource.addMessage("select-county-page-title", ENGLISH, selectCountyPageTitle);
     staticMessageSource.addMessage("not-blank-page-title", ENGLISH, "not blank page title");
     staticMessageSource.addMessage("checkbox-page-title", ENGLISH, "checkbox page title");
     staticMessageSource.addMessage("option-1", ENGLISH, option1);
@@ -58,9 +55,6 @@ public class ValidationTest extends AbstractFrameworkTest {
     staticMessageSource.addMessage("page-with-input-with-multiple-validations",
         ENGLISH,
         multipleValidationsPageTitle);
-    staticMessageSource.addMessage("select-county-key", ENGLISH, "select your county");
-    staticMessageSource.addMessage("county-a-key", ENGLISH, "Alpha");
-    staticMessageSource.addMessage("county-b-key", ENGLISH, countyB);
   }
 
   @Test
@@ -451,17 +445,8 @@ public class ValidationTest extends AbstractFrameworkTest {
     }
 
     @Test
-    void shouldPassValidationForCOUNTYWhenValidCountyIsChosen() throws Exception {
-      postExpectingNextPageTitle("selectCountyPage", "countyInput", countyB, lastPageTitle);
-    }
-
-    @Test
-    void shouldFailValidationForCOUNTYWhenCountyIsNotChosen() throws Exception {
-      postExpectingFailure("selectCountyPage", "countyInput", "SelectYourCounty");
-
-      var page = new FormPage(getPage("selectCountyPage"));
-      assertThat(page.getTitle()).isEqualTo(selectCountyPageTitle);
-      assertTrue(page.hasInputError());
+    void shouldFailValidationForEMAIL_DOES_NOT_END_WITH_CONWhenEmailHasDotConTypo() throws Exception {
+      postExpectingFailureAndAssertErrorDisplaysForThatInput("pageWithEmail", "emailInput", "test@email.con", emailErrorConKey);
     }
   }
 }

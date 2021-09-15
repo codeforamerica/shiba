@@ -1,4 +1,4 @@
-<body th:fragment="pageTemplateFragment(page, additionalContext)">
+<body th:fragment="pageTemplateFragment(page, pageNameContext)">
 <div class="page-wrapper">
     <div th:replace="fragments/toolbar :: toolbar"></div>
     <div th:replace="fragments/demoBanner :: demoBanner"></div>
@@ -14,8 +14,8 @@
                     <p th:if="${page.hasHeaderHelpMessageKey()}"
                        th:text="#{${page.headerHelpMessageKey}}"></p>
                 </div>
-                <th:block th:if="${additionalContext != null}">
-                    <div th:replace="${additionalContext} :: ${additionalContext}"></div>
+                <th:block th:if="${pageNameContext != null}">
+                    <div th:replace="${pageNameContext} :: ${pageNameContext}"></div>
                 </th:block>
 
                 <div class="grid__item spacing-below-60">

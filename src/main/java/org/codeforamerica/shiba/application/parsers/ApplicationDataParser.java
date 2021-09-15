@@ -19,6 +19,10 @@ public class ApplicationDataParser {
   private static final Map<Group, String> groupCoordinatesMap = new HashMap<>();
 
   static {
+    coordinatesMap.put(Field.WRITTEN_LANGUAGE_PREFERENCES,
+        new ParsingCoordinate("languagePreferences", "writtenLanguage"));
+    coordinatesMap.put(Field.MEDICAL_EXPENSES,
+        new ParsingCoordinate("medicalExpenses", "medicalExpenses"));
     coordinatesMap
         .put(Field.PAID_BY_THE_HOUR, new ParsingCoordinate("paidByTheHour", "paidByTheHour"));
     coordinatesMap.put(Field.HOURLY_WAGE, new ParsingCoordinate("hourlyWage", "hourlyWage"));
@@ -28,6 +32,8 @@ public class ApplicationDataParser {
         new ParsingCoordinate("incomePerPayPeriod", "incomePerPayPeriod"));
     coordinatesMap.put(Field.LAST_THIRTY_DAYS_JOB_INCOME,
         new ParsingCoordinate("lastThirtyDaysJobIncome", "lastThirtyDaysJobIncome"));
+    coordinatesMap
+        .put(Field.IS_SELF_EMPLOYMENT, new ParsingCoordinate("selfEmployment", "selfEmployment"));
 
     coordinatesMap
         .put(Field.MAILING_STREET, new ParsingCoordinate("mailingAddress", "streetAddress"));
@@ -72,10 +78,13 @@ public class ApplicationDataParser {
     coordinatesMap.put(Field.GENERAL_DELIVERY_ZIPCODE,
         new ParsingCoordinate("cityForGeneralDelivery", "enrichedZipcode"));
 
+    coordinatesMap.put(Field.SELECTED_TRIBAL_NATION,
+        new ParsingCoordinate("selectTheTribe", "selectedTribe"));
+    coordinatesMap.put(Field.APPLYING_FOR_TRIBAL_TANF,
+        new ParsingCoordinate("applyForTribalTANF", "applyForTribalTANF"));
+
     coordinatesMap.put(Field.IS_HOMELESS, new ParsingCoordinate("homeAddress", "isHomeless"));
     coordinatesMap.put(Field.SAME_MAILING_ADDRESS,
-        new ParsingCoordinate("homeAddress", "sameMailingAddress"));
-    coordinatesMap.put(Field.SAME_MAILING_ADDRESS2,
         new ParsingCoordinate("mailingAddress", "sameMailingAddress"));
 
     coordinatesMap.put(Field.IDENTIFY_ZIPCODE, new ParsingCoordinate("identifyZipcode", "zipCode"));
@@ -122,13 +131,13 @@ public class ApplicationDataParser {
 
   public static List<String> getValues(PagesData pagesData, Field field) {
     ParsingCoordinate coordinate = coordinatesMap.get(field);
-    return pagesData.safeGetPageInputValue(coordinate.getPageName(), coordinate.getInputName());
+    return pagesData.safeGetPageInputValue(coordinate.pageName(), coordinate.inputName());
   }
 
   public static String getFirstValue(PagesData pagesData, Field field) {
     ParsingCoordinate coordinate = coordinatesMap.get(field);
     String pageInputValue = pagesData
-        .getPageInputFirstValue(coordinate.getPageName(), coordinate.getInputName());
+        .getPageInputFirstValue(coordinate.pageName(), coordinate.inputName());
     return pageInputValue == null ? field.getDefaultValue() : pageInputValue;
   }
 
@@ -153,12 +162,17 @@ public class ApplicationDataParser {
    * Retrievable fields
    */
   public enum Field {
+    WRITTEN_LANGUAGE_PREFERENCES,
+
+    MEDICAL_EXPENSES,
+
     PAID_BY_THE_HOUR,
     HOURLY_WAGE,
     HOURS_A_WEEK,
     PAY_PERIOD,
     INCOME_PER_PAY_PERIOD,
     LAST_THIRTY_DAYS_JOB_INCOME,
+    IS_SELF_EMPLOYMENT,
 
     MAILING_STREET,
     MAILING_CITY,
@@ -186,10 +200,12 @@ public class ApplicationDataParser {
 
     IS_HOMELESS,
     SAME_MAILING_ADDRESS,
-    SAME_MAILING_ADDRESS2,
 
     GENERAL_DELIVERY_CITY,
     GENERAL_DELIVERY_ZIPCODE,
+
+    SELECTED_TRIBAL_NATION,
+    APPLYING_FOR_TRIBAL_TANF,
 
     IDENTIFY_ZIPCODE,
     IDENTIFY_COUNTY("Other"),
@@ -232,15 +248,7 @@ public class ApplicationDataParser {
     HOUSEHOLD
   }
 
-  @Getter
-  private static class ParsingCoordinate {
+  private record ParsingCoordinate(String pageName, String inputName) {
 
-    private final String pageName;
-    private final String inputName;
-
-    ParsingCoordinate(String pageName, String inputName) {
-      this.pageName = pageName;
-      this.inputName = inputName;
-    }
   }
 }

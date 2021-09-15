@@ -19,13 +19,12 @@ mappings:
     phoneNumber: APPLICANT_PHONE_NUMBER
     email: APPLICANT_EMAIL
     caseNumber: CASE_NUMBER
-  choosePrograms:
-    programs:
-      CCAP: CCAP
-      SNAP: FOOD
-      CASH: CASH
-      GRH: GRH
-      EA: EMERGENCY
+  applicantPrograms:
+    CCAP: CCAP
+    SNAP: FOOD
+    CASH: CASH
+    GRH: GRH
+    EA: EMERGENCY
   householdMemberInfo:
     firstName: FIRST_NAME
     lastName: LAST_NAME
@@ -100,6 +99,10 @@ mappings:
     hasDisability: HAS_DISABILITY
   workSituation:
     hasWorkSituation: HAS_WORK_SITUATION
+  nationsBoundary:
+    livingInNationBoundary: IS_TRIBAL_NATION_MEMBER
+  selectTheTribe:
+    selectedTribe: WHICH_TRIBAL_NATION
   snapExpeditedEligibility:
     snapExpeditedEligibility: SNAP_EXPEDITED_ELIGIBILITY
   ccapExpeditedEligibility:
@@ -177,6 +180,8 @@ mappings:
   futureIncome:
     earnLessMoneyThisMonth: EARN_LESS_MONEY_THIS_MONTH
     additionalIncomeInfo: ADDITIONAL_INCOME_INFO
+  additionalIncomeInfo:
+    additionalIncomeInfo: ADDITIONAL_INCOME_INFO
   employersName:
     employersName: EMPLOYERS_NAME
   hourlyWage:
@@ -208,7 +213,6 @@ mappings:
   energyAssistanceGroup:
     energyAssistanceInput: RECEIVED_LIHEAP
   medicalExpenses:
-    medicalExpenses:
     medicalExpensesSelection: MEDICAL_EXPENSES_SELECTION
   medicalExpensesSources:
     medicalInsurancePremiumAmount: MEDICAL_INSURANCE_PREMIUM_AMOUNT
@@ -250,8 +254,6 @@ mappings:
     selfEmployedGrossMonthlyEarnings: SELF_EMPLOYED_GROSS_MONTHLY_EARNINGS
   nonSelfEmployment_employersName:
     employersName: NON_SELF_EMPLOYMENT_EMPLOYERS_NAME
-  selfEmployment:
-    selfEmployment: SELF_EMPLOYMENT
   nonSelfEmployment_employee:
     grossMonthlyIncome: NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME
   selfEmployment_employee:
@@ -304,6 +306,8 @@ mappings:
     caseNumber: ADDITIONAL_INFO_CASE_NUMBER
   legalStuff:
     drugFelony: DRUG_FELONY
+  applyForTribalTANF:
+    applyForTribalTANF: TANF
 enums:
   EVERY_WEEK: Every week
   EVERY_TWO_WEEKS: Every two weeks

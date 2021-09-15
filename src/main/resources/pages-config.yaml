@@ -22,8 +22,16 @@ conditionDefinitions:
   - &isApplicantsJob?
     pageName: householdSelectionForIncome
     input: whoseJobIsIt
-    value: "applicant"
+    value: applicant
     matcher: CONTAINS_SUBSTRING
+  - &noUnearnedCcapSelected?
+    pageName: unearnedIncomeCcap
+    input: unearnedIncomeCcap
+    value: NO_UNEARNED_INCOME_CCAP_SELECTED
+  - &noUnearnedIncomeSelected?
+    pageName: unearnedIncome
+    input: unearnedIncome
+    value: NO_UNEARNED_INCOME_SELECTED
   - &doesNotHaveMortgage?
     pageName: homeExpenses
     input: homeExpenses
@@ -55,6 +63,15 @@ conditionDefinitions:
     pageName: choosePrograms
     value: SNAP
     input: programs
+  - &someoneChoseCASH?
+    logicalOperator: OR
+    conditions:
+      - pageName: choosePrograms
+        input: programs
+        value: CASH
+      - pageName: householdMemberInfo
+        input: programs
+        value: CASH
   - &applicantDidNotChooseProgram?
     pageName: choosePrograms
     input: programs
@@ -450,6 +467,11 @@ pageDefinitions:
             condition:
               input: email
               matcher: NOT_EMPTY
+          - validation: EMAIL_DOES_NOT_END_WITH_CON
+            errorMessageKey: general.validation.email-con-instead-of-com
+            condition:
+              input: email
+              matcher: NOT_EMPTY
       - name: phoneOrEmail
         type: CHECKBOX
         promptMessage:
@@ -464,91 +486,8 @@ pageDefinitions:
     name: homeAddress
     headerKey: home-address.where-are-you-currently-living
     pageTitle: home-address.title
-    inputs:
-      - name: streetAddress
-        type: TEXT
-        promptMessage:
-          promptMessageKey: home-address.what-is-the-street-address
-        validators:
-          - validation: NOT_BLANK
-            errorMessageKey: general.validation.make-sure-you-answer-this-question
-            condition:
-              input: isHomeless
-              matcher: NONE_SELECTED
-          - validation: NOT_BLANK
-            errorMessageKey: general.validation.make-sure-to-provide-a-home-address-or-select-no-use-a-different-address-for-mail
-            condition:
-              input: sameMailingAddress
-              value: "true"
-      - name: apartmentNumber
-        type: TEXT
-        promptMessage:
-          promptMessageKey: home-address.apartment-number
-      - name: city
-        type: TEXT
-        promptMessage:
-          promptMessageKey: home-address.what-is-the-city
-        validators:
-          - validation: NOT_BLANK
-            errorMessageKey: general.validation.make-sure-you-answer-this-question
-            condition:
-              input: isHomeless
-              matcher: NONE_SELECTED
-          - validation: NOT_BLANK
-            errorMessageKey: general.validation.make-sure-to-provide-a-home-address-or-select-no-use-a-different-address-for-mail
-            condition:
-              input: sameMailingAddress
-              value: "true"
-      - name: state
-        type: TEXT
-        promptMessage:
-          promptMessageKey: home-address.what-is-the-state
-        readOnly: true
-        defaultValue: MN
-      - name: zipCode
-        type: TEXT
-        promptMessage:
-          promptMessageKey: home-address.what-is-the-zip-code
-        validators:
-          - validation: ZIPCODE
-            errorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
-            condition:
-              input: isHomeless
-              matcher: NONE_SELECTED
-          - validation: ZIPCODE
-            errorMessageKey: general.validation.make-sure-to-provide-a-home-address-or-select-no-use-a-different-address-for-mail
-            condition:
-              input: sameMailingAddress
-              value: "true"
-      - name: isHomeless
-        type: CHECKBOX
-        options:
-          selectableOptions:
-            - value: "true"
-              messageKey: home-address.i-dont-have-a-permanent-address
-      - name: sameMailingAddress
-        type: RADIO
-        promptMessage:
-          promptMessageKey: home-address.is-this-the-best-place-for-you-to-receive-mail
-        helpMessageKey: home-address.the-county-will-need-a-place-to-send-you-mail-for-the-next-3-months
-        validators:
-          - validation: NOT_BLANK
-            errorMessageKey: general.validation.make-sure-you-answer-this-question
-        options:
-          selectableOptions:
-            - value: "true"
-              messageKey: home-address.yes-send-mail-here
-            - value: "false"
-              messageKey: home-address.no-use-a-different-address-for-mail
-  - &homeAddress2
-    name: homeAddress
-    headerKey: home-address.where-are-you-currently-living
-    pageTitle: home-address.title
     contextFragment: addressContextFragment
     inputs:
-      - name: sameMailingAddress
-        type: HIDDEN
-        defaultValue: placeholder
       - name: isHomeless
         type: CUSTOM
         customInputFragment: addressInputFragment
@@ -609,14 +548,14 @@ pageDefinitions:
         type: CUSTOM
         customInputFragment: selectCityCustomInput
         validators:
-          - validation: CITY
+          - validation: NOT_BLANK
             errorMessageKey: city-for-general-delivery.make-sure-to-provide-a-city
   - &generalDeliveryAddress
     name: generalDeliveryAddress
     pageTitle: general-delivery-address.title
     headerKey: general-delivery-address.the-county-will-send-all-mail-about-this-application-to
     contextFragment: mailContextFragment
-  - &mailingAddress2
+  - &mailingAddress
     name: mailingAddress
     headerKey: mailing-address.where-can-the-county-send-your-mail
     pageTitle: mailing-address.title
@@ -679,47 +618,6 @@ pageDefinitions:
                   input: sameMailingAddress
                   matcher: DOES_NOT_CONTAIN
                   value: "true"
-  - &mailingAddress
-    name: mailingAddress
-    pageTitle: mailing-address.title
-    headerKey: mailing-address.where-can-the-county-send-your-mail
-    inputs:
-      - name: sameMailingAddress
-        type: HIDDEN
-        defaultValue: placeholder
-      - name: streetAddress
-        type: TEXT
-        promptMessage:
-          promptMessageKey: mailing-address.what-is-the-street-address
-        validators:
-          - validation: NOT_BLANK
-            errorMessageKey: general.validation.make-sure-you-answer-this-question
-      - name: apartmentNumber
-        type: TEXT
-        promptMessage:
-          promptMessageKey: mailing-address.apartment-number
-      - name: city
-        type: TEXT
-        promptMessage:
-          promptMessageKey: mailing-address.what-is-the-city
-        validators:
-          - validation: NOT_BLANK
-            errorMessageKey: general.validation.make-sure-you-answer-this-question
-      - name: state
-        type: TEXT
-        promptMessage:
-          promptMessageKey: mailing-address.what-is-the-state
-        validators:
-          - validation: STATE
-            errorMessageKey: general.validation.make-sure-to-provide-a-valid-2-letter-state-code
-        defaultValue: MN
-      - name: zipCode
-        type: TEXT
-        promptMessage:
-          promptMessageKey: mailing-address.what-is-the-zip-code
-        validators:
-          - validation: ZIPCODE
-            errorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
   - &reviewInfo
     name: reviewInfo
     pageTitle: review-info.title
@@ -1397,11 +1295,11 @@ pageDefinitions:
       - name: county
         type: SELECT
         validators:
-          - validation: COUNTY
+          - validation: NOT_BLANK
             errorMessageKey: general.validation.make-sure-to-select-a-county
         options:
           selectableOptions:
-            - value: SelectYourCounty
+            - value: ~
               messageKey: identify-county.select-your-county
             - value: Aitkin
               messageKey: identify-county-aitkin
@@ -1614,6 +1512,8 @@ pageDefinitions:
       - name: dateOfBirth
         type: DATE
         validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-provide-a-dob
           - validation: DATE
             errorMessageKey: general.validation.please-enter-your-birthday-in-this-format
             condition:
@@ -1642,6 +1542,8 @@ pageDefinitions:
         promptMessage:
           promptMessageKey: contact-info.whats-your-phone-number
         validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-provide-a-phone-number
           - validation: PHONE_STARTS_WITH_ONE
             errorMessageKey: general.validation.area-codes-can-not-begin-with-1
             condition:
@@ -1733,6 +1635,79 @@ pageDefinitions:
     inputs:
       - name: isTribalNationMember
         type: YES_NO
+  - &nationsBoundary
+    name: nationsBoundary
+    pageTitle: nations-boundary.title
+    headerKey: nations-boundary.are-any-of-the-tribal-members
+    hasPrimaryButton: false
+    inputs:
+      - name: livingInNationBoundary
+        type: YES_NO
+  - &selectTheTribe
+    name: selectTheTribe
+    pageTitle: select-the-tribe.title
+    headerKey: select-the-tribe.which-nation-do-they-belong-to
+    hasPrimaryButton: true
+    inputs:
+      - name: selectedTribe
+        type: SELECT
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-select-a-tribe
+        options:
+          selectableOptions:
+            - value: ~
+              messageKey: select-the-tribe.select-the-tribe
+            - value: Bois Forte
+              messageKey: select-the-tribe.bois-forte
+            - value: Fond Du Lac
+              messageKey: select-the-tribe.fond-du-lac
+            - value: Grand Portage
+              messageKey: select-the-tribe.grand-portage
+            - value: Leech Lake
+              messageKey: select-the-tribe.leech-lake
+            - value: Lower Sioux
+              messageKey: select-the-tribe.lower-sioux
+            - value: Mille Lacs
+              messageKey: select-the-tribe.mille-lacs
+            - value: Prairie Island
+              messageKey: select-the-tribe.prairie-island
+            - value: Red Lake
+              messageKey: select-the-tribe.red-lake
+            - value: Shakopee Mdewakanton
+              messageKey: select-the-tribe.shakopee-mdewakanton
+            - value: Upper Sioux
+              messageKey: select-the-tribe.upper-sioux
+            - value: White Earth
+              messageKey: select-the-tribe.white-earth
+  - &applyForTribalTANF
+    name: applyForTribalTANF
+    pageTitle: apply-for-tribal-TANF.title
+    headerKey: apply-for-tribal-TANF.it-looks-like-you-might-be-eligible
+    hasPrimaryButton: false
+    inputs:
+      - name: applyForTribalTANF
+        promptMessage:
+          promptMessageFragmentName: applyForTribalTANFPrompt
+        type: YES_NO
+  - &applyForMFIP
+    name: applyForMFIP
+    pageTitle: apply-for-MFIP.title
+    headerKey: apply-for-MFIP.it-looks-like-you-might-be-eligible
+    hasPrimaryButton: false
+    inputs:
+      - name: applyForMFIP
+        promptMessage:
+          promptMessageFragmentName: applyForMFIPPrompt
+        type: YES_NO
+  - &tribalTANFConfirmation
+    name: tribalTANFConfirmation
+    pageTitle: tribal-tanf-confirmation.title
+    hasPrimaryButton: false
+  - &applyForMFIPConfirmation
+    name: applyForMFIPConfirmation
+    pageTitle: apply-for-mfip-confirmation.title
+    hasPrimaryButton: false
   - &introIncome
     name: introIncome
     pageTitle: intro-income.title
@@ -2171,6 +2146,15 @@ pageDefinitions:
         promptMessage:
           promptMessageKey: future-income.is-there-anything-else-youd-like-to-share-about-your-income
         helpMessageKey: general.inputs.optional
+  - &additionalIncomeInfo
+    name: additionalIncomeInfo
+    pageTitle: additional-income-info.title
+    headerKey:
+      defaultValue: future-income.is-there-anything-else-youd-like-to-share-about-your-income
+    headerHelpMessageKey: general.inputs.optional
+    inputs:
+      - name: additionalIncomeInfo
+        type: TEXTAREA
   - &employersName
     name: employersName
     pageTitle: employers-name.title
@@ -2756,11 +2740,9 @@ workflow:
   contactInfo:
     pageConfiguration: *contactInfo
     nextPages:
-      - pageName: homeAddress2
-        flag: apply-without-address
       - pageName: homeAddress
-  homeAddress2:
-    pageConfiguration: *homeAddress2
+  homeAddress:
+    pageConfiguration: *homeAddress
     enrichment: homeAddressEnrichment
     nextPages:
       - pageName: whereToSendMail
@@ -2768,12 +2750,12 @@ workflow:
           pageName: homeAddress
           input: isHomeless
           value: "true"
-      - pageName: mailingAddress2
+      - pageName: mailingAddress
   whereToSendMail:
     pageConfiguration: *whereToSendMail
     subtleLinkTargetPage: cityForGeneralDelivery
     nextPages:
-      - pageName: mailingAddress2
+      - pageName: mailingAddress
       - pageName: cityForGeneralDelivery
   cityForGeneralDelivery:
     pageConfiguration: *cityForGeneralDelivery
@@ -2786,15 +2768,15 @@ workflow:
       - pageName: reviewInfo
     datasources:
       - pageName: cityForGeneralDelivery
-  mailingAddress2:
-    pageConfiguration: *mailingAddress2
+  mailingAddress:
+    pageConfiguration: *mailingAddress
     enrichment: mailingAddressEnrichment
     nextPages:
-      - pageName: verifyHomeAddress2
+      - pageName: verifyHomeAddress
     datasources:
       - pageName: homeAddress
       - pageName: mailingAddress
-  verifyHomeAddress2:
+  verifyHomeAddress:
     pageConfiguration: *homeAddressValidation
     skipCondition:
       logicalOperator: OR
@@ -2809,53 +2791,14 @@ workflow:
       - pageName: homeAddress
       - pageName: mailingAddress
     nextPages:
-      - pageName: verifyMailingAddress2
-      - pageName: homeAddress2
-  verifyMailingAddress2:
+      - pageName: verifyMailingAddress
+      - pageName: homeAddress
+  verifyMailingAddress:
     pageConfiguration: *mailingAddressValidation
     skipCondition:
       pageName: mailingAddress
       input: sameMailingAddress
       matcher: CONTAINS
-      value: "true"
-    datasources:
-      - pageName: mailingAddress
-      - pageName: homeAddress
-    nextPages:
-      - pageName: reviewInfo
-      - pageName: mailingAddress2
-  homeAddress:
-    pageConfiguration: *homeAddress
-    enrichment: homeAddressEnrichment
-    nextPages:
-      - pageName: verifyHomeAddress
-  verifyHomeAddress:
-    pageConfiguration: *homeAddressValidation
-    skipCondition:
-      pageName: homeAddress
-      input: streetAddress
-      matcher: EMPTY
-    datasources:
-      - pageName: homeAddress
-    nextPages:
-      - pageName: mailingAddress
-      - pageName: homeAddress
-  mailingAddress:
-    pageConfiguration: *mailingAddress
-    enrichment: mailingAddressEnrichment
-    skipCondition:
-      pageName: homeAddress
-      input: sameMailingAddress
-      value: "true"
-    nextPages:
-      - pageName: verifyMailingAddress
-    datasources:
-      - pageName: homeAddress
-  verifyMailingAddress:
-    pageConfiguration: *mailingAddressValidation
-    skipCondition:
-      pageName: homeAddress
-      input: sameMailingAddress
       value: "true"
     datasources:
       - pageName: mailingAddress
@@ -3094,15 +3037,98 @@ workflow:
       - pageName: addHouseholdMembers
     nextPages:
       - pageName: tribalNationMember
-        flag: apply-for-tribal-nation
+        flag: apply-for-mille-lacs
       - pageName: introIncome
   tribalNationMember:
     pageConfiguration: *tribalNationMember
     nextPages:
+      - pageName: nationsBoundary
+        condition:
+          pageName: tribalNationMember
+          input: isTribalNationMember
+          value: "true"
       - pageName: introIncome
     skipCondition: *livesAlone?
     datasources:
       - pageName: addHouseholdMembers
+  nationsBoundary:
+    pageConfiguration: *nationsBoundary
+    nextPages:
+      - pageName: selectTheTribe
+        condition:
+          pageName: nationsBoundary
+          input: livingInNationBoundary
+          value: "true"
+      - pageName: introIncome
+    skipCondition:
+      logicalOperator: OR
+      conditions:
+        - *livesAlone?
+        - pageName: tribalNationMember
+          input: isTribalNationMember
+          value: NO
+    datasources:
+      - pageName: addHouseholdMembers
+  selectTheTribe:
+    pageConfiguration: *selectTheTribe
+    nextPages:
+      - pageName: applyForTribalTANF
+        condition:
+          logicalOperator: OR
+          conditions:
+            - pageName: selectTheTribe
+              input: selectedTribe
+              value: Bois Forte
+            - pageName: selectTheTribe
+              input: selectedTribe
+              value: Fond Du Lac
+            - pageName: selectTheTribe
+              input: selectedTribe
+              value: Grand Portage
+            - pageName: selectTheTribe
+              input: selectedTribe
+              value: Leech Lake
+            - pageName: selectTheTribe
+              input: selectedTribe
+              value: Mille Lacs
+            - pageName: selectTheTribe
+              input: selectedTribe
+              value: Red Lake
+      - pageName: applyForMFIP
+    datasources:
+      - pageName: choosePrograms
+      - pageName: addHouseholdMembers
+  applyForTribalTANF:
+    pageConfiguration: *applyForTribalTANF
+    nextPages:
+      - pageName: tribalTANFConfirmation
+        condition:
+          pageName: applyForTribalTANF
+          input: applyForTribalTANF
+          value: "true"
+      - pageName: introIncome
+  applyForMFIP:
+    pageConfiguration: *applyForMFIP
+    nextPages:
+      - pageName: applyForMFIPConfirmation
+        condition:
+          pageName: applyForMFIP
+          input: applyForMFIP
+          value: "true"
+      - pageName: introIncome
+    skipCondition: *someoneChoseCASH?
+    datasources:
+      - pageName: choosePrograms
+      - pageName: householdMemberInfo
+        groupName: household
+  tribalTANFConfirmation:
+    pageConfiguration: *tribalTANFConfirmation
+    nextPages:
+      - pageName: introIncome
+  applyForMFIPConfirmation:
+    pageConfiguration: *applyForMFIPConfirmation
+    nextPages:
+      - pageName: introIncome
   introIncome:
     pageConfiguration: *introIncome
     nextPages:
@@ -3260,9 +3286,7 @@ workflow:
       - pageName: unearnedIncomeCcap
     skipCondition:
       conditions:
-        - pageName: unearnedIncome
-          input: unearnedIncome
-          value: NO_UNEARNED_INCOME_SELECTED
+        - *noUnearnedIncomeSelected?
     datasources:
       - pageName: unearnedIncome
       - pageName: addHouseholdMembers
@@ -3279,20 +3303,38 @@ workflow:
   unearnedIncomeSourcesCcap:
     pageConfiguration: *unearnedIncomeSourcesCcap
     nextPages:
+      - pageName: additionalIncomeInfo
+        condition:
+          logicalOperator: AND
+          conditions:
+            - logicalOperator: OR
+              conditions:
+                - *noOneChoseCCAP?
+                - *noUnearnedCcapSelected?
+            - *noUnearnedIncomeSelected?
+            - pageName: employmentStatus
+              input: areYouWorking
+              value: "false"
       - pageName: futureIncome
     skipCondition:
       logicalOperator: OR
       conditions:
         - *noOneChoseCCAP?
-        - pageName: unearnedIncomeCcap
-          input: unearnedIncomeCcap
-          value: NO_UNEARNED_INCOME_CCAP_SELECTED
+        - *noUnearnedCcapSelected?
     datasources:
-      - pageName: unearnedIncomeCcap
-      - pageName: addHouseholdMembers
       - pageName: choosePrograms
       - pageName: householdMemberInfo
         groupName: household
+      - pageName: unearnedIncome
+      - pageName: unearnedIncomeCcap
+      - pageName: employmentStatus
+      - pageName: addHouseholdMembers
+  additionalIncomeInfo:
+    pageConfiguration: *additionalIncomeInfo
+    nextPages:
+      - pageName: startExpenses
+    datasources:
+      - pageName: addHouseholdMembers
   futureIncome:
     pageConfiguration: *futureIncome
     nextPages:

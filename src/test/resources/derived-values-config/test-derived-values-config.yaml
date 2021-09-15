@@ -59,31 +59,3 @@ test-derived-values:
           pageName: defaultPage
           inputName: defaultInput
         type: SINGLE_VALUE
-  - groupName: groupName8
-    fieldName: value8
-    iteration: 0
-    values:
-      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-          literal: bar
-        type: SINGLE_VALUE
-        condition:
-          logicalOperator: AND
-          conditions:
-            - subworkflow: subworkflowName
-              iteration: 0
-              pageName: page1
-              input: input1
-              value: right_value
-  - groupName: groupName9
-    fieldName: value9
-    values:
-      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-          literal: bar
-        type: SINGLE_VALUE
-        condition:
-          logicalOperator: OR
-          conditions:
-            - subworkflow: subworkflowName
-              pageName: page1
-              input: input1
-              value: right_value

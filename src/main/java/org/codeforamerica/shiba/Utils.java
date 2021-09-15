@@ -22,7 +22,7 @@ public class Utils {
 
 
   public static String getFileType(String filename) {
-    String[] fileNameParts = filename.split("\\.");
+    String[] fileNameParts = filename.toLowerCase().split("\\.");
     return fileNameParts.length > 1 ? fileNameParts[fileNameParts.length - 1] : "";
   }
 

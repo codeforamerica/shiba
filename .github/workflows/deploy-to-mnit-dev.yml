@@ -1,0 +1,17 @@
+name: Deploy to MNIT Dev
+
+on:
+  push:
+    branches-ignore:
+      - staging
+
+jobs:
+  deploy:
+    name: Deploy to Dev
+    runs-on: ubuntu-latest
+    steps:
+    - name: Workflow Webhook Action
+      uses: distributhor/workflow-webhook@v2.0.2
+      env:
+        webhook_url: ${{ secrets.MNIT_DEV_WEBHOOK_URL }}
+        webhook_secret: ${{ secrets.MNIT_DEV_WEBHOOK_SECRET }}

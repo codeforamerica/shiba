@@ -8,7 +8,6 @@ import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMapper;
 import org.codeforamerica.shiba.output.applicationinputsmappers.SubworkflowIterationScopeTracker;
-import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.springframework.stereotype.Component;
@@ -17,11 +16,6 @@ import org.springframework.stereotype.Component;
 public class HomeAddressStreetMapper implements ApplicationInputsMapper {
 
   private final static String NO_PERMANENT_ADDRESS = "No permanent address";
-  private final FeatureFlagConfiguration featureFlagConfiguration;
-
-  public HomeAddressStreetMapper(FeatureFlagConfiguration featureFlagConfiguration) {
-    this.featureFlagConfiguration = featureFlagConfiguration;
-  }
 
   @Override
   public List<ApplicationInput> map(Application application, Document document, Recipient recipient,
@@ -47,12 +41,6 @@ public class HomeAddressStreetMapper implements ApplicationInputsMapper {
         Boolean.parseBoolean(usesEnriched) ? "enrichedStreetAddress" : "streetAddress";
 
     String value = homeAddressPageData.get(streetInputName).getValue().get(0);
-
-    if (featureFlagConfiguration.get("apply-without-address").isOff()) {
-      boolean isHomeless = !homeAddressPageData.get("isHomeless").getValue().isEmpty();
-      String notPermanentAddressIndicator = isHomeless ? " (not permanent)" : "";
-      value += notPermanentAddressIndicator;
-    }
 
     return List.of(
         new ApplicationInput(

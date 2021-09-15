@@ -254,31 +254,6 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
   }
 
   @Test
-  void shouldLimitTheNumberOfResubmissions() {
-    IntStream.range(0, 30).forEach(i -> {
-          var id = "someId" + i;
-          applicationRepository.save(Application.builder()
-              .id(id)
-              .applicationData(new ApplicationData())
-              .timeToComplete(Duration.ofSeconds(1))
-              .county(Olmsted)
-              .flow(FlowType.FULL)
-              .completedAt(ZonedDateTime.now(UTC).minusDays(2)) // 2 days ago
-              .build());
-          applicationRepository.updateStatus(id, CAF, DELIVERY_FAILED);
-          applicationRepository.updateStatus(id, CCAP, DELIVERY_FAILED);
-          applicationRepository.updateStatus(id, UPLOADED_DOC, DELIVERY_FAILED);
-        }
-    );
-
-    Map<Document, List<String>> failedApplications = applicationRepository
-        .getApplicationIdsToResubmit();
-    assertThat(failedApplications.get(CCAP)).hasSize(10);
-    assertThat(failedApplications.get(CAF)).hasSize(10);
-    assertThat(failedApplications.get(UPLOADED_DOC)).hasSize(5);
-  }
-
-  @Test
   void shouldReturnNothingWhenThereAreNoDocumentsToResubmit() {
     var deliveredApplication = Application.builder()
         .id("someId1")
