@@ -134,7 +134,7 @@ class MnitDocumentConsumerTest {
     ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
     when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
 
-    documentConsumer.process(application);
+    documentConsumer.processCafAndCcap(application);
 
     verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
     verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
@@ -155,7 +155,7 @@ class MnitDocumentConsumerTest {
         .withPageData("selectTheTribe", "selectedTribe", List.of("Bois Forte"))
         .build());
 
-    documentConsumer.process(application);
+    documentConsumer.processCafAndCcap(application);
 
     verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
     verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
@@ -176,7 +176,7 @@ class MnitDocumentConsumerTest {
         .withPageData("selectTheTribe", "selectedTribe", List.of(UPPER_SIOUX))
         .build());
 
-    documentConsumer.process(application);
+    documentConsumer.processCafAndCcap(application);
 
     verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
     verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
@@ -197,7 +197,7 @@ class MnitDocumentConsumerTest {
         .withPageData("selectTheTribe", "selectedTribe", List.of("Bois Forte"))
         .build());
 
-    documentConsumer.process(application);
+    documentConsumer.processCafAndCcap(application);
 
     verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
     verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
@@ -224,7 +224,7 @@ class MnitDocumentConsumerTest {
         .withPageData("selectTheTribe", "selectedTribe", List.of("Bois Forte"))
         .build());
 
-    documentConsumer.process(application);
+    documentConsumer.processCafAndCcap(application);
 
     verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
     verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
@@ -247,7 +247,7 @@ class MnitDocumentConsumerTest {
         .withPageData("selectTheTribe", "selectedTribe", List.of("Bois Forte"))
         .build());
 
-    documentConsumer.process(application);
+    documentConsumer.processCafAndCcap(application);
 
     verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
     verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
@@ -268,7 +268,7 @@ class MnitDocumentConsumerTest {
         .withApplicantPrograms(List.of("CCAP"))
         .build());
 
-    documentConsumer.process(application);
+    documentConsumer.processCafAndCcap(application);
 
     verify(mnitClient).send(pdfApplicationFile, Olmsted, application.getId(), CCAP, FULL);
   }
@@ -282,7 +282,7 @@ class MnitDocumentConsumerTest {
         .withApplicantPrograms(List.of("CCAP", "SNAP"))
         .build());
 
-    documentConsumer.process(application);
+    documentConsumer.processCafAndCcap(application);
 
     verify(applicationRepository).updateStatus(application.getId(), CAF, SENDING);
     verify(applicationRepository).updateStatus(application.getId(), CCAP, SENDING);
@@ -300,7 +300,7 @@ class MnitDocumentConsumerTest {
         .withApplicantPrograms(List.of("CCAP", "SNAP"))
         .build());
 
-    documentConsumer.process(application);
+    documentConsumer.processCafAndCcap(application);
 
     verify(applicationRepository, atLeastOnce())
         .updateStatus(application.getId(), CCAP, DELIVERY_FAILED);
@@ -308,7 +308,7 @@ class MnitDocumentConsumerTest {
 
   @Test
   void sendsApplicationIdToMonitoringService() {
-    documentConsumer.process(application);
+    documentConsumer.processCafAndCcap(application);
     verify(monitoringService).setApplicationId(application.getId());
   }
 

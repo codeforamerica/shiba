@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,8 @@ public class RoutingDestinationService {
     this.countyParser = countyParser;
   }
 
-  public RoutingDestination getRoutingDestination(ApplicationData applicationData) {
+  public RoutingDestination getRoutingDestination(ApplicationData applicationData,
+      Document document) {
     PagesData pagesData = applicationData.getPagesData();
     String selectedTribe = getFirstValue(pagesData, SELECTED_TRIBAL_NATION);
     Set<String> programs = applicationData.getApplicantAndHouseholdMemberPrograms();

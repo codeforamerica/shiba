@@ -52,34 +52,31 @@ public class MnitDocumentConsumer {
     this.featureFlagConfiguration = featureFlagConfiguration;
   }
 
-  public void process(Application application) {
+  public void processCafAndCcap(Application application) {
     monitoringService.setApplicationId(application.getId());
     // Send the CAF and CCAP as PDFs
-    RoutingDestination routingDestination = routingDestinationService
-        .getRoutingDestination(application.getApplicationData());
     DocumentListParser.parse(application.getApplicationData()).forEach(documentType -> {
       try {
         String id = application.getId();
         applicationRepository.updateStatus(id, documentType, SENDING);
         ApplicationFile applicationFile = pdfGenerator
             .generate(application.getId(), documentType, CASEWORKER);
-        sendApplication(routingDestination, application, documentType, applicationFile);
+        sendApplication(application, documentType, applicationFile);
       } catch (Exception e) {
         String id = application.getId();
         applicationRepository.updateStatus(id, documentType, DELIVERY_FAILED);
         log.error("Failed to send with error, ", e);
       }
     });
-    sendApplication(routingDestination, application, CAF,
-        xmlGenerator.generate(application.getId(), CAF, CASEWORKER));
+
+    // Send the CAF as XML
+    sendApplication(application, CAF, xmlGenerator.generate(application.getId(), CAF, CASEWORKER));
   }
 
   public void processUploadedDocuments(Application application) {
     applicationRepository.updateStatus(application.getId(), UPLOADED_DOC, SENDING);
     List<UploadedDocument> uploadedDocs = application.getApplicationData().getUploadedDocs();
     byte[] coverPage = pdfGenerator.generate(application, UPLOADED_DOC, CASEWORKER).getFileBytes();
-    RoutingDestination routingDestination = routingDestinationService
-        .getRoutingDestination(application.getApplicationData());
     for (int i = 0; i < uploadedDocs.size(); i++) {
       UploadedDocument uploadedDocument = uploadedDocs.get(i);
       ApplicationFile fileToSend = pdfGenerator.generateForUploadedDocument(uploadedDocument, i,
@@ -87,7 +84,7 @@ public class MnitDocumentConsumer {
       if (fileToSend != null && fileToSend.getFileBytes().length > 0) {
         log.info("Now sending: " + fileToSend.getFileName() + " original filename: "
             + uploadedDocument.getFilename());
-        sendApplication(routingDestination, application, UPLOADED_DOC, fileToSend);
+        sendApplication(application, UPLOADED_DOC, fileToSend);
         log.info("Finished sending document " + fileToSend.getFileName());
       } else {
         log.error("Skipped uploading file " + uploadedDocument.getFilename()
@@ -96,8 +93,9 @@ public class MnitDocumentConsumer {
     }
   }
 
-  private void sendApplication(RoutingDestination routingDestination, Application application,
-      Document document, ApplicationFile file) {
+  private void sendApplication(Application application, Document document, ApplicationFile file) {
+    RoutingDestination routingDestination = routingDestinationService
+        .getRoutingDestination(application.getApplicationData(), document);
     if (shouldSendToMilleLacs(routingDestination, document)) {
       mnitClient.send(file, MilleLacsBand, application.getId(), document, application.getFlow());
     }

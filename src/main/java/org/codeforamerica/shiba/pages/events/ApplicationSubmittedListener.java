@@ -66,7 +66,7 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
   public void sendViaApi(ApplicationSubmittedEvent event) {
     if (featureFlags.get("submit-via-api").isOn()) {
       Application application = getApplicationFromEvent(event);
-      mnitDocumentConsumer.process(application);
+      mnitDocumentConsumer.processCafAndCcap(application);
     }
   }
 

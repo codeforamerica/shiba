@@ -76,7 +76,7 @@ class ResubmissionServiceTest {
     resubmissionService = new ResubmissionService(applicationRepository, emailClient, countyMap,
         pdfGenerator, routingDestinationService);
     routingDestination = new RoutingDestination(Olmsted.displayName(), null);
-    when(routingDestinationService.getRoutingDestination(any())).thenReturn(
+    when(routingDestinationService.getRoutingDestination(any(), any())).thenReturn(
         routingDestination);
   }
 

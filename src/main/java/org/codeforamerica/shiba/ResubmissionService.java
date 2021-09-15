@@ -63,15 +63,15 @@ public class ResubmissionService {
       MDC.put("applicationId", id);
       log.info("Resubmitting " + document.name() + "(s) for application id " + id);
       Application application = applicationRepository.find(id);
-      RoutingDestination routingDestination = routingDestinationService.getRoutingDestination(
-          application.getApplicationData());
+      RoutingDestination destination = routingDestinationService.getRoutingDestination(
+          application.getApplicationData(), document);
       List<String> recipientEmails = new ArrayList<>();
 
-      if (routingDestination.getCounty() != null) {
+      if (destination.getCounty() != null) {
         recipientEmails.add(countyMap.get(application.getCounty()).getEmail());
       }
 
-      if (routingDestination.getTribalNation() != null && routingDestination.getTribalNation()
+      if (destination.getTribalNation() != null && destination.getTribalNation()
           .equals(MILLE_LACS)) {
         recipientEmails.add(countyMap.get(County.MilleLacsBand).getEmail());
       }
