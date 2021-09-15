@@ -171,7 +171,7 @@ class MnitDocumentConsumerTest {
     when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
 
     application.setApplicationData(new TestApplicationDataBuilder()
-        .withApplicantPrograms(List.of("EA", "SNAP"))
+        .withApplicantPrograms(List.of("EA", "SNAP", "CCAP"))
         .withPageData("selectTheTribe", "selectedTribe", List.of("Bois Forte"))
         .build());
 
@@ -179,11 +179,13 @@ class MnitDocumentConsumerTest {
 
     verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
     verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
-    verify(mnitClient, times(4)).send(any(), any(), any(), any(), any());
+    verify(mnitClient, times(5)).send(any(), any(), any(), any(), any());
     verify(mnitClient).send(pdfApplicationFile, MilleLacsBand, application.getId(), CAF, FULL);
     verify(mnitClient).send(xmlApplicationFile, MilleLacsBand, application.getId(), CAF, FULL);
     verify(mnitClient).send(pdfApplicationFile, Olmsted, application.getId(), CAF, FULL);
     verify(mnitClient).send(xmlApplicationFile, Olmsted, application.getId(), CAF, FULL);
+    // CCAP never goes to Mille Lacs
+    verify(mnitClient).send(pdfApplicationFile, Olmsted, application.getId(), CCAP, FULL);
   }
 
   @Test

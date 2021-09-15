@@ -5,6 +5,7 @@ import static org.codeforamerica.shiba.TribalNation.MILLE_LACS;
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.output.Document.CAF;
+import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
@@ -96,26 +97,24 @@ public class MnitDocumentConsumer {
   }
 
   private void sendApplication(RoutingDestination routingDestination, Application application,
-      Document documentType, ApplicationFile applicationFile) {
-    // TODO there's a bug here. Only CAF and uploaded docs should go to Mille Lacs
+      Document document, ApplicationFile file) {
     if (featureFlagConfiguration.get("apply-for-mille-lacs").isOn()) {
-      if (shouldSendToMilleLacs(routingDestination)) {
-        mnitClient.send(applicationFile, MilleLacsBand, application.getId(), documentType,
-            application.getFlow());
-      }
+      if (shouldSendToMilleLacs(routingDestination, document)) {
+        mnitClient.send(file, MilleLacsBand, application.getId(), document, application.getFlow());
 
-      if (routingDestination.getCounty() == null) {
-        return;
+        if (routingDestination.getCounty() == null) {
+          return;
+        }
       }
     }
 
-    mnitClient.send(applicationFile, application.getCounty(), application.getId(), documentType,
+    mnitClient.send(file, application.getCounty(), application.getId(), document,
         application.getFlow());
-
   }
 
-  private boolean shouldSendToMilleLacs(RoutingDestination routingDestination) {
+  private boolean shouldSendToMilleLacs(RoutingDestination routingDestination, Document document) {
     return routingDestination.getTribalNation() != null
-        && routingDestination.getTribalNation().equals(MILLE_LACS);
+        && routingDestination.getTribalNation().equals(MILLE_LACS)
+        && !CCAP.equals(document);
   }
 }
