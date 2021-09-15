@@ -2,8 +2,8 @@ name: Deploy to MNIT Dev
 
 on:
   push:
-    branches-ignore:
-      - staging
+    branches:
+      - main
 
 jobs:
   deploy:
