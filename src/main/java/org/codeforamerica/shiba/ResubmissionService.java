@@ -51,8 +51,8 @@ public class ResubmissionService {
   @SchedulerLock(name = "resubmissionTask", lockAtMostFor = "30m")
   public void resubmitFailedApplications() {
     log.info("Checking for applications that failed to send");
-    Map<Document, List<String>> documentsToIds = applicationRepository
-        .getApplicationIdsToResubmit();
+    Map<Document, List<String>> documentsToIds =
+        applicationRepository.getApplicationIdsToResubmit();
 
     if (documentsToIds.values().stream().allMatch(List::isEmpty)) {
       log.info("There are no applications to resubmit");
@@ -71,11 +71,13 @@ public class ResubmissionService {
         recipientEmails.add(countyMap.get(application.getCounty()).getEmail());
       }
 
-      if (destination.getTribalNation() != null && destination.getTribalNation()
-          .equals(MILLE_LACS)) {
+      if (destination.getTribalNation() != null &&
+          MILLE_LACS.equals(destination.getTribalNation())) {
         recipientEmails.add(countyMap.get(County.MilleLacsBand).getEmail());
       }
 
+      log.info("Attempting to resubmit %s(s) for application id %s to emails %s".formatted(
+          document.name(), id, recipientEmails));
       try {
         if (document.equals(UPLOADED_DOC)) {
           resubmitUploadedDocumentsForApplication(document, application, recipientEmails);
@@ -85,9 +87,9 @@ public class ResubmissionService {
               eml -> emailClient.resubmitFailedEmail(eml, document, applicationFile, application));
         }
         applicationRepository.updateStatus(id, document, DELIVERED);
-        log.info("Resubmitted " + document.name() + "(s) for application id " + id);
+        log.info("Resubmitted %s(s) for application id %s".formatted(document.name(), id));
       } catch (Exception e) {
-        log.error("Failed to resubmit application " + id + " via email");
+        log.error("Failed to resubmit application %s via email".formatted(id));
         applicationRepository.updateStatus(id, document, RESUBMISSION_FAILED);
       }
     }));
