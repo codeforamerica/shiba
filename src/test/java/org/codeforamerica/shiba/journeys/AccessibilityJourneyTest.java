@@ -80,8 +80,21 @@ public class AccessibilityJourneyTest extends JourneyTest {
 
     testPage.clickButton("Upload documents");
 
+    // Enter nothing to throw error on select to check aria-properties on error
+    testPage.clickContinue();
+    assertThat(testPage.selectHasInputError("county")).isTrue();
+    assertThat(testPage.getSelectAriaLabel("county")).isEqualTo("Error county");
+    assertThat(testPage.getSelectAriaDescribedBy("county")).isEqualTo("county-error-message-1");
     testPage.clickLink("Enter my zip code instead.");
 
+    // Check that the input is valid, then intentially throw an error and check it is invalid
+    assertThat(testPage.inputIsValid("zipCode")).isTrue();
+    testPage.enter("zipCode", "11");
+    testPage.clickContinue();
+    assertThat(testPage.hasInputError("zipCode")).isTrue();
+    assertThat(testPage.inputIsValid("zipCode")).isFalse();
+    assertThat(testPage.getInputAriaLabel("zipCode")).isEqualTo("Error zipCode");
+    assertThat(testPage.getInputAriaDescribedBy("zipCode")).isEqualTo("zipCode-error-message-1");
     // should direct me to email the county if my zipcode is unrecognized or unsupported
     testPage.enter("zipCode", "11111");
     testPage.clickContinue();
@@ -100,6 +113,28 @@ public class AccessibilityJourneyTest extends JourneyTest {
     testPage.clickLink("< Go Back");
     testPage.enter("county", "Hennepin");
     testPage.clickContinue();
+
+    // Enter incorrect information to get validation errors to check against aria-properties
+    assertThat(testPage.inputIsValid("firstName")).isTrue();
+    assertThat(driver.findElementById("dateOfBirth-day").getAttribute("aria-invalid")).isEqualTo("false");
+    assertThat(testPage.inputIsValid("ssn")).isTrue();
+    testPage.enter("firstName", "");
+    testPage.enter("lastName", "defaultLastName");
+    testPage.enter("dateOfBirth", "01/40/1999");
+    testPage.enter("ssn", "12345");
+    testPage.enter("caseNumber", "1234567");
+    testPage.clickContinue();
+    assertThat(testPage.hasInputError("firstName")).isTrue();
+    assertThat(testPage.hasInputError("ssn")).isTrue();
+    assertThat(testPage.inputIsValid("firstName")).isFalse();
+    assertThat(driver.findElementById("dateOfBirth-day").getAttribute("aria-invalid")).isEqualTo("true");
+    assertThat(testPage.inputIsValid("ssn")).isFalse();
+    assertThat(testPage.getInputAriaLabelledBy("firstName")).isEqualTo("firstName-error-p firstName-label");
+    assertThat(testPage.getInputAriaDescribedBy("firstName")).isEqualTo("firstName-error-message-1 firstName-help-message");
+    assertThat(driver.findElementById("dateOfBirth-day").getAttribute("aria-labelledby")).isEqualTo("dateOfBirth-error-p dateOfBirth-legend dateOfBirth-day-label");
+    assertThat(driver.findElementById("dateOfBirth-day").getAttribute("aria-describedby")).isEqualTo("dateOfBirth-error-message-1");;
+    assertThat(testPage.getInputAriaLabelledBy("ssn")).isEqualTo("ssn-error-p ssn-label");
+    assertThat(testPage.getInputAriaDescribedBy("ssn")).isEqualTo("ssn-error-message-1 ssn-help-message");
 
     testPage.enter("firstName", "defaultFirstName");
     testPage.enter("lastName", "defaultLastName");
@@ -139,6 +174,15 @@ public class AccessibilityJourneyTest extends JourneyTest {
     testPage.enter("moveToMnDate", "02/18/1776");
     testPage.enter("moveToMnPreviousCity", "Chicago");
     testPage.clickContinue();
+
+    // Enter incorrect phone number to throw error and check aria properties
+    testPage.enter("phoneNumber", "134567890");
+    testPage.enter("phoneOrEmail", "Text me");
+    testPage.clickContinue();
+    assertThat(testPage.hasInputError("phoneNumber")).isTrue();
+    assertThat(testPage.getInputAriaLabelledBy("phoneNumber")).isEqualTo("phoneNumber-error-p phoneNumber-label");
+    assertThat(testPage.getInputAriaDescribedBy("phoneNumber")).isEqualTo("phoneNumber-error-message-2 phoneNumber-error-message-1");
+
     testPage.enter("phoneNumber", "7234567890");
     testPage.enter("email", "some@example.com");
     testPage.enter("phoneOrEmail", "Text me");
@@ -185,12 +229,38 @@ public class AccessibilityJourneyTest extends JourneyTest {
     testPage.clickButton("Add a job");
     testPage.enter("whoseJobIsIt", "householdMemberFirstName householdMemberLastName");
     testPage.clickContinue();
+
+    // Leave black to trigger error and check aria properties
+    assertThat(testPage.inputIsValid("employersName")).isTrue();
+    assertThat(testPage.getInputAriaLabelledBy("employersName")).isEqualTo("employersName-label");
+    testPage.clickContinue();
+    assertThat(testPage.inputIsValid("employersName")).isFalse();
+    assertThat(testPage.getInputAriaLabelledBy("employersName")).isEqualTo("employersName-error-p employersName-label");
+    assertThat(testPage.getInputAriaDescribedBy("employersName")).isEqualTo("employersName-error-message-1");
+
     testPage.enter("employersName", "some employer");
     testPage.clickContinue();
     testPage.enter("selfEmployment", YES.getDisplayValue());
     testPage.enter("paidByTheHour", YES.getDisplayValue());
+
+    // Check aria-label is correct then enter incorrect value to throw error and check all aria properties have updated
+    testPage.enter("hourlyWage", "-10");
+    testPage.clickContinue();
+    assertThat(testPage.inputIsValid("hourlyWage")).isFalse();
+    assertThat(testPage.getInputAriaLabel("hourlyWage")).isEqualTo("Error hourlyWage");
+    assertThat(testPage.getInputAriaDescribedBy("hourlyWage")).isEqualTo("hourlyWage-error-message-1");
+
     testPage.enter("hourlyWage", "1");
     testPage.clickContinue();
+
+    // Enter an incorrect value to trigger an error and check aria properties
+    assertThat(testPage.inputIsValid("hoursAWeek")).isTrue();
+    testPage.enter("hoursAWeek", "-30");
+    testPage.clickContinue();
+    assertThat(testPage.inputIsValid("hoursAWeek")).isFalse();
+    assertThat(testPage.getInputAriaLabel("hoursAWeek")).isEqualTo("Error hoursAWeek");
+    assertThat(testPage.getInputAriaDescribedBy("hoursAWeek")).isEqualTo("hoursAWeek-error-message-1");
+
     testPage.enter("hoursAWeek", "30");
     testPage.clickContinue();
     testPage.goBack();
@@ -200,6 +270,15 @@ public class AccessibilityJourneyTest extends JourneyTest {
     testPage.clickContinue();
     testPage.enter("unearnedIncome", "Social Security");
     testPage.clickContinue();
+
+    // Enter incorrect social security amount to trigger error and check aria properties
+    testPage.enter("socialSecurityAmount", "-200");
+    testPage.clickContinue();
+    testPage.hasInputError("socialSecurityAmount");
+    assertThat(testPage.inputIsValid("socialSecurityAmount")).isFalse();
+    assertThat(testPage.getInputAriaDescribedBy("socialSecurityAmount")).isEqualTo("socialSecurityAmount-error-message-1 socialSecurityAmount-help-message");
+    assertThat(testPage.getInputAriaLabelledBy("socialSecurityAmount")).isEqualTo("socialSecurityAmount-error-p socialSecurityAmount-label");
+
     testPage.enter("socialSecurityAmount", "200");
     testPage.clickContinue();
     testPage.enter("unearnedIncomeCcap", "Money from a Trust");

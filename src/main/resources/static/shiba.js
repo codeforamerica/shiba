@@ -59,7 +59,8 @@ var hasError = (function () {
         invalidInputList.each(function(index, input) {
           var inputID = $(input).attr('id');
           // If it's a checkbox use the input name minus the [] otherwise use the input id
-          var errorMessageSpans = $(input).attr('type') === 'checkbox' ? $('.' + $(input).attr('name').slice(0, -2) + '-error') : $('.' + inputID + '-error');
+          var isCheckboxorDate = $(input).attr('name' ).includes('date') || $(input).attr('type') === 'checkbox';
+          var errorMessageSpans = isCheckboxorDate ? $('.' + $(input).attr('name').slice(0, -2) + '-error') : $('.' + inputID + '-error');
           let inputIdWithHash = '#' + inputID;
           errorMessageSpans.each(function(index, span) {
             var errorMessageSpanID = $(span).attr('id');
@@ -75,19 +76,24 @@ var hasError = (function () {
           });
           // Check if the input has an existing aria-label and don't set aria-labelledby if so
           var inputLabelID = $(inputIdWithHash + '-label').attr('id');
+          var legend = $('#' + $(input).attr('name').slice(0, -2) + '-legend')
+          var inputErrorParagraphIDUsingName = $(input).attr('name').slice(0, -2) + '-error-p';
+          var legendID = legend.attr('id');
           if ($(input).attr('aria-label')) {
             $(input).attr('aria-label', 'Error ' + $(input).attr('aria-label'));
           } else if ($(input).attr('type') === 'checkbox') {
-            var legend = $('#' + $(input).attr('name').slice(0, -2) + '-legend')
             if (legend.length > 0) {
-              var inputErrorIconID = $(input).attr('name').slice(0, -2) + '-error-icon';
-              var legendID = legend.attr('id');
-              $(input).attr('aria-labelledby', inputErrorIconID + " " + legendID + " " + inputLabelID);
+              $(input).attr('aria-labelledby', inputErrorParagraphIDUsingName + " " + legendID + " " + inputLabelID);
+            }
+          } else if ($(input).attr('name' ).includes('date')) {
+            if (legend.length > 0) {
+              $(input).attr('aria-labelledby',
+                  inputErrorParagraphIDUsingName + " " + legendID + " " + inputLabelID);
             }
           } else {
-            var inputErrorIconID = $(inputIdWithHash + '-error-icon').attr('id');
+            var inputErrorParagraphID = $(inputIdWithHash + '-error-p').attr('id');
             // Append the error icon id to the input aria-labelledby which causes the SR to read the error-icon ID before the input name like: Error first name
-            $(input).attr('aria-labelledby', inputErrorIconID + " " + inputLabelID);
+            $(input).attr('aria-labelledby', inputErrorParagraphID + " " + inputLabelID);
           }
         })
         setTimeout(function() {
