@@ -17,43 +17,56 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.output.Document;
+import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.PagesData;
 import org.springframework.stereotype.Service;
 
 @Service
 public class RoutingDestinationService {
 
   private final CountyParser countyParser;
+  private final FeatureFlagConfiguration featureFlagConfiguration;
 
   // TODO test this
-  public RoutingDestinationService(CountyParser countyParser) {
+  public RoutingDestinationService(CountyParser countyParser,
+      FeatureFlagConfiguration featureFlagConfiguration) {
     this.countyParser = countyParser;
+    this.featureFlagConfiguration = featureFlagConfiguration;
   }
 
   public RoutingDestination getRoutingDestination(ApplicationData applicationData,
       Document document) {
-    PagesData pagesData = applicationData.getPagesData();
-    String selectedTribe = getFirstValue(pagesData, SELECTED_TRIBAL_NATION);
     Set<String> programs = applicationData.getApplicantAndHouseholdMemberPrograms();
-    boolean applyingForTribalTanf = Boolean.parseBoolean(
-        getFirstValue(pagesData, APPLYING_FOR_TRIBAL_TANF));
 
     RoutingDestination result = new RoutingDestination();
 
-    // Send to Mille Lacs if the tribe is serviced by Mille Lacs and applying for Tribal TANF and/or EA
-    if (isServicedByMilleLacs(selectedTribe) && (applyingForTribalTanf || programs.contains(EA))) {
-      //TODO handle feature flag in here
+    boolean shouldSendToMilleLacs = shouldSendToMilleLacs(applicationData, document);
+    if (shouldSendToMilleLacs) {
       result.setTribalNation(MILLE_LACS);
     }
 
     // Send to county for all other programs
-    if (programs.contains(SNAP) || programs.contains(CASH) || programs.contains(GRH)
-        || programs.contains(CCAP)) {
+    if (!shouldSendToMilleLacs
+        || programs.contains(SNAP) || programs.contains(CASH)
+        || programs.contains(GRH) || programs.contains(CCAP)) {
       result.setCounty(countyParser.parseCountyInput(applicationData));
     }
 
     return result;
+  }
+
+  // Send to Mille Lacs if the tribe is serviced by Mille Lacs and applying for Tribal TANF and/or EA
+  private boolean shouldSendToMilleLacs(ApplicationData applicationData, Document document) {
+    var pagesData = applicationData.getPagesData();
+    var selectedTribe = getFirstValue(pagesData, SELECTED_TRIBAL_NATION);
+    var applyingForTribalTanf = Boolean.parseBoolean(
+        getFirstValue(pagesData, APPLYING_FOR_TRIBAL_TANF));
+    var programs = applicationData.getApplicantAndHouseholdMemberPrograms();
+
+    return featureFlagConfiguration.get("apply-for-mille-lacs").isOn()
+        && isServicedByMilleLacs(selectedTribe)
+        && (applyingForTribalTanf || programs.contains(EA))
+        && !Document.CCAP.equals(document);
   }
 
   @Data

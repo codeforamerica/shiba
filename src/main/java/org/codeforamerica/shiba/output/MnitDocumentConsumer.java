@@ -5,7 +5,6 @@ import static org.codeforamerica.shiba.TribalNation.MILLE_LACS;
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.output.Document.CAF;
-import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
@@ -20,7 +19,6 @@ import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.RoutingDestinationService;
 import org.codeforamerica.shiba.pages.RoutingDestinationService.RoutingDestination;
-import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.springframework.stereotype.Component;
 
@@ -34,22 +32,19 @@ public class MnitDocumentConsumer {
   private final MonitoringService monitoringService;
   private final RoutingDestinationService routingDestinationService;
   private final ApplicationRepository applicationRepository;
-  private final FeatureFlagConfiguration featureFlagConfiguration;
 
   public MnitDocumentConsumer(MnitEsbWebServiceClient mnitClient,
       XmlGenerator xmlGenerator,
       PdfGenerator pdfGenerator,
       MonitoringService monitoringService,
       RoutingDestinationService routingDestinationService,
-      ApplicationRepository applicationRepository,
-      FeatureFlagConfiguration featureFlagConfiguration) {
+      ApplicationRepository applicationRepository) {
     this.mnitClient = mnitClient;
     this.xmlGenerator = xmlGenerator;
     this.pdfGenerator = pdfGenerator;
     this.monitoringService = monitoringService;
     this.routingDestinationService = routingDestinationService;
     this.applicationRepository = applicationRepository;
-    this.featureFlagConfiguration = featureFlagConfiguration;
   }
 
   public void processCafAndCcap(Application application) {
@@ -96,21 +91,14 @@ public class MnitDocumentConsumer {
   private void sendApplication(Application application, Document document, ApplicationFile file) {
     RoutingDestination routingDestination = routingDestinationService
         .getRoutingDestination(application.getApplicationData(), document);
-    if (shouldSendToMilleLacs(routingDestination, document)) {
+
+    if (MILLE_LACS.equals(routingDestination.getTribalNation())) {
       mnitClient.send(file, MilleLacsBand, application.getId(), document, application.getFlow());
     }
 
-    if (!shouldSendToMilleLacs(routingDestination, document)
-        || routingDestination.getCounty() != null) {
+    if (routingDestination.getCounty() != null) {
       mnitClient.send(file, application.getCounty(), application.getId(), document,
           application.getFlow());
     }
-  }
-
-  private boolean shouldSendToMilleLacs(RoutingDestination routingDestination, Document document) {
-    return featureFlagConfiguration.get("apply-for-mille-lacs").isOn()
-        && routingDestination.getTribalNation() != null
-        && routingDestination.getTribalNation().equals(MILLE_LACS)
-        && !CCAP.equals(document);
   }
 }
