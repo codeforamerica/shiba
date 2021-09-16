@@ -12,7 +12,6 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.Application;
@@ -20,17 +19,13 @@ import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
-import org.codeforamerica.shiba.pages.data.Subworkflow;
-import org.codeforamerica.shiba.pages.data.Subworkflows;
 import org.codeforamerica.shiba.testutilities.AbstractPageControllerTest;
-import org.codeforamerica.shiba.testutilities.PageDataBuilder;
-import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.test.web.servlet.ResultActions;
 
 public class NextStepsContentServiceTest extends AbstractPageControllerTest {
 
@@ -42,79 +37,12 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
             List.of("SNAP"),
             SnapExpeditedEligibility.ELIGIBLE,
             CcapExpeditedEligibility.UNDETERMINED,
-            "Within 24 hours, <strong>expect a call</strong> from your county about your food assistance application."
-        ),
-        Arguments.of(
-            "Only Non-expedited SNAP",
-            List.of("SNAP"),
-            SnapExpeditedEligibility.NOT_ELIGIBLE,
-            CcapExpeditedEligibility.UNDETERMINED,
-            "In the next 7-10 days, <strong>expect to get a letter in the mail</strong> from your county about your food support application. The letter will explain your next steps."
-        ),
-        Arguments.of(
-            "Expedited SNAP + Expedited CCAP",
-            List.of("SNAP", "CCAP"),
-            SnapExpeditedEligibility.ELIGIBLE,
-            CcapExpeditedEligibility.ELIGIBLE,
-            "Within 5 days, your county will determine your childcare assistance case and <strong>send you a letter in the mail</strong>.</p>"
-        ),
-        Arguments.of(
-            "Expedited SNAP + non-expedited CCAP",
-            List.of("SNAP", "CCAP"),
-            SnapExpeditedEligibility.ELIGIBLE,
-            CcapExpeditedEligibility.NOT_ELIGIBLE,
-            "Within 24 hours, <strong>expect a call</strong> from your county about your food assistance application."
-        ),
-        Arguments.of(
-            "Expedited CCAP + non-expedited SNAP",
-            List.of("SNAP", "CCAP"),
-            SnapExpeditedEligibility.NOT_ELIGIBLE,
-            CcapExpeditedEligibility.ELIGIBLE,
-            "In the next 7-10 days, <strong>expect to get a letter in the mail</strong> from your county about your food support application. The letter will explain your next steps."
-        ),
-        Arguments.of(
-            "Only Expedited CCAP",
-            List.of("CCAP"),
-            SnapExpeditedEligibility.UNDETERMINED,
-            CcapExpeditedEligibility.ELIGIBLE,
-            "Within 5 days, your county will determine your childcare assistance case and <strong>send you a letter in the mail</strong>.</p>"
-        ),
-        Arguments.of(
-            "Only Non-expedited CCAP",
-            List.of("CCAP"),
-            SnapExpeditedEligibility.UNDETERMINED,
-            CcapExpeditedEligibility.NOT_ELIGIBLE,
-            "In the next 7-10 days, <strong>expect to get a letter in the mail</strong> from your county about your childcare application. The letter will explain your next steps.</p>"
-        ),
-        Arguments.of(
-            "Expedited SNAP + any other program",
-            List.of("SNAP", "GRH"),
-            SnapExpeditedEligibility.ELIGIBLE,
-            CcapExpeditedEligibility.UNDETERMINED,
-            "In the next 7-10 days, <strong>expect to get a letter in the mail</strong> from your county about your housing application. The letter will explain your next steps.</p>"
-        ),
-        Arguments.of(
-            "Expedited SNAP + multiple other programs",
-            List.of("SNAP", "GRH", "EA"),
-            SnapExpeditedEligibility.ELIGIBLE,
-            CcapExpeditedEligibility.UNDETERMINED,
-            "In the next 7-10 days, <strong>expect to get a letter in the mail</strong> from your county about your housing and emergency assistance application. The letter will explain your next steps.</p>"
-        ),
-        Arguments.of(
-            "Expedited CCAP + any other program besides SNAP",
-            List.of("CCAP", "GRH"),
-            SnapExpeditedEligibility.UNDETERMINED,
-            CcapExpeditedEligibility.ELIGIBLE,
-            "In the next 7-10 days, <strong>expect to get a letter in the mail</strong> from your county about your housing application. The letter will explain your next steps.</p>"
-        ),
-        Arguments.of(
-            "Non-expedited CCAP + any other program besides SNAP",
-            List.of("CCAP", "GRH"),
-            SnapExpeditedEligibility.UNDETERMINED,
-            CcapExpeditedEligibility.NOT_ELIGIBLE,
-            "In the next 7-10 days, <strong>expect to get a letter in the mail</strong> from your county about your childcare and housing application. The letter will explain your next steps.</p>"
+            List.of(
+                "Within 24 hours, expect a call from your county about your food assistance application. The call may come from an unknown number.",
+                "You will need to complete an interview with a caseworker.",
+                "If you don't hear from your county within 3 days or want an update on your case, please call your county."
+            )
         )
-
     );
   }
 
@@ -142,45 +70,22 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
   @MethodSource("org.codeforamerica.shiba.pages.NextStepsContentServiceTest#successMessageTestCases")
   void displaysCorrectSuccessMessageForApplicantPrograms(String testName, List<String> programs,
       SnapExpeditedEligibility snapExpeditedEligibility,
-      CcapExpeditedEligibility ccapExpeditedEligibility, String expectedMessage) throws Exception {
+      CcapExpeditedEligibility ccapExpeditedEligibility, List<String> expectedMessages) throws Exception {
     setPrograms(programs);
 
-    setSubworkflows(new Subworkflows());
-
-    assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessage);
-  }
-
-  @Test
-  void displaysCorrectSuccessMessageForHouseholdMemberPrograms() throws Exception {
-    setPrograms(List.of("SNAP"));
-
-    setSubworkflows(new Subworkflows(Map.of("household", new Subworkflow(List.of(
-        new PagesDataBuilder().build(List.of(
-            new PageDataBuilder("householdMemberInfo", Map.of("programs", List.of("GRH", "EA")))))
-    )))));
-
-    var snapExpeditedEligibility = SnapExpeditedEligibility.ELIGIBLE;
-    var ccapExpeditedEligibility = CcapExpeditedEligibility.UNDETERMINED;
-    var expectedMessage = "Within 24 hours, <strong>expect a call</strong> from your county about your food assistance application.</p>";
-    assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessage);
-  }
-
-  private void setSubworkflows(Subworkflows subworkflows) {
-    applicationData.setSubworkflows(subworkflows);
+    when(snapExpeditedEligibilityDecider.decide(any())).thenReturn(snapExpeditedEligibility);
+    when(ccapExpeditedEligibilityDecider.decide(any())).thenReturn(ccapExpeditedEligibility);
+    ResultActions resultActions = mockMvc.perform(
+            get("/pages/nextSteps").session(new MockHttpSession()))
+        .andExpect(status().isOk());
+    for (String msg : expectedMessages) {
+      resultActions.andExpect(content().string(containsString(msg)));
+    }
   }
 
   private void setPrograms(List<String> programs) {
     PageData programsPage = new PageData();
     programsPage.put("programs", InputData.builder().value(programs).build());
     applicationData.getPagesData().put("choosePrograms", programsPage);
-  }
-
-  private void assertCorrectMessage(SnapExpeditedEligibility snapExpeditedEligibility,
-      CcapExpeditedEligibility ccapExpeditedEligibility, String expectedMessage) throws Exception {
-    when(snapExpeditedEligibilityDecider.decide(any())).thenReturn(snapExpeditedEligibility);
-    when(ccapExpeditedEligibilityDecider.decide(any())).thenReturn(ccapExpeditedEligibility);
-    mockMvc.perform(get("/pages/nextSteps").session(new MockHttpSession()))
-        .andExpect(status().isOk())
-        .andExpect(content().string(containsString(expectedMessage)));
   }
 }

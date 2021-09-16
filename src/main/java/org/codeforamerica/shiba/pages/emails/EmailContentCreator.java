@@ -107,24 +107,7 @@ public class EmailContentCreator {
       SnapExpeditedEligibility snapExpeditedEligibility,
       CcapExpeditedEligibility ccapExpeditedEligibility, Locale locale) {
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
-    var sections = nextStepsContentService.getNextSteps(programs, snapExpeditedEligibility,
-        ccapExpeditedEligibility, locale);
-
-    sections.add(new SuccessMessage("", lms.getMessage(ADDITIONAL_SUPPORT),
-        lms.getMessage("email.you-may-be-able-to-receive-more-support-header")));
-
-    String content = sections.stream()
-        .map(successMessage -> "<strong>" + successMessage.title() + ":</strong><br>"
-            + successMessage.message())
-        .collect(Collectors.joining("<br><br>"));
-
-//    if ("demo".equals(activeProfile)) {
-//      content = "%s<p>%s</p><p>%s</p>"
-//          .formatted(content, lms.getMessage(DEMO_PURPOSES_ONLY), lms.getMessage(SHARE_FEEDBACK));
-//    }
-
-    String warning = lms.getMessage(CLIENT_WARNING);
-    return wrapHtml(content + warning);
+    return "";
   }
 
   public String createClientLaterDocsConfirmationEmailBody(Locale locale) {
