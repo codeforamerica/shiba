@@ -9,8 +9,4 @@
         <div th:replace="fragments/successMessages :: successMessages"></div>
     </div>
     <div th:replace="fragments/continue :: continue"></div>
-    <p class="text--green" th:if="${!data.get('contactInfo').get('email').value[0].isEmpty()}">
-        <i class="icon-check_circle"></i>
-        <span th:text="#{next-steps.your-next-steps-have-been-emailed-to(${data.get('contactInfo').get('email').value[0]})}"></span>
-    </p>
 </div>

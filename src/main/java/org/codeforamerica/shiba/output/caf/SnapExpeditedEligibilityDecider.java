@@ -56,44 +56,11 @@ public class SnapExpeditedEligibilityDecider {
    * @return SNAP eligibility given the applicant data
    */
   public SnapExpeditedEligibility decide(ApplicationData applicationData) {
-    PagesData pagesData = applicationData.getPagesData();
-
-    if (!canDetermineEligibility(applicationData)) {
-      return UNDETERMINED;
-    }
-
-    // Applying for SNAP?
-    if (!isApplyingForSnap(applicationData)) {
+    if (applicationData.getPagesData().safeGetPageInputValue("expeditedSnap", "expeditedSnap").equals(List.of("true"))) {
+      return ELIGIBLE;
+    } else {
       return NOT_ELIGIBLE;
     }
-
-    // Assets and income below thresholds are eligible.
-    Money assets = parseMoney(pagesData, ASSETS);
-    Money last30DaysIncome = parseMoney(pagesData, INCOME);
-    List<JobIncomeInformation> jobIncomeInformation = grossMonthlyIncomeParser
-        .parse(applicationData);
-    Money income = totalIncomeCalculator
-        .calculate(new TotalIncome(last30DaysIncome, jobIncomeInformation));
-    if (assets.lessOrEqualTo(ASSET_THRESHOLD) && income.lessThan(INCOME_THRESHOLD)) {
-      return ELIGIBLE;
-    }
-
-    // Migrant workers with assets below threshold are eligible.
-    boolean isMigrantWorker = Boolean
-        .parseBoolean(getFirstValue(applicationData.getPagesData(), MIGRANT_WORKER));
-    if (isMigrantWorker && assets.lessOrEqualTo(ASSET_THRESHOLD)) {
-      return ELIGIBLE;
-    }
-
-    // Assets and income below housing costs are eligible
-    List<String> utilityExpensesSelections = getValues(pagesData, UTILITY_EXPENSES_SELECTIONS);
-    Money standardDeduction = utilityDeductionCalculator.calculate(utilityExpensesSelections);
-    Money housingCosts = parseMoney(pagesData, HOUSING_COSTS);
-    if (assets.add(income).lessThan(housingCosts.add(standardDeduction))) {
-      return ELIGIBLE;
-    }
-
-    return NOT_ELIGIBLE;
   }
 
   private boolean isApplyingForSnap(ApplicationData applicationData) {

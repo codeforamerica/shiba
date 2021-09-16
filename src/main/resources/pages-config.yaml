@@ -321,6 +321,22 @@ pageDefinitions:
     alertBox:
       type: CHOOSE_NONE_WARNING
       message: choose-programs.you-will-be-asked
+  - &expeditedCcap
+    name: expeditedCcap
+    pageTitle: expedited.ccap
+    headerKey: expedited.ccap
+    inputs:
+      - name: expeditedCcap
+        type: YES_NO
+    hasPrimaryButton: false
+  - &expeditedSnap
+    name: expeditedSnap
+    pageTitle: expedited.snap
+    headerKey: expedited.snap
+    inputs:
+      - name: expeditedSnap
+        type: YES_NO
+    hasPrimaryButton: false
   - &introBasicInfo
     name: introBasicInfo
     pageTitle: intro-basic-info.title
@@ -2711,7 +2727,7 @@ workflow:
   landing:
     pageConfiguration: *landing
     nextPages:
-      - pageName: prepareToApply
+      - pageName: languagePreferences
   prepareToApply:
     pageConfiguration: *prepareToApply
     nextPages:
@@ -2727,7 +2743,15 @@ workflow:
   choosePrograms:
     pageConfiguration: *choosePrograms
     nextPages:
-      - pageName: introBasicInfo
+      - pageName: expeditedCcap
+  expeditedCcap:
+    pageConfiguration: *expeditedCcap
+    nextPages:
+      - pageName: expeditedSnap
+  expeditedSnap:
+    pageConfiguration: *expeditedSnap
+    nextPages:
+      - pageName: nextSteps
   introBasicInfo:
     pageConfiguration: *introBasicInfo
     nextPages:

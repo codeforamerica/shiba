@@ -48,8 +48,8 @@ public class ResubmissionService {
     this.routingDestinationService = routingDestinationService;
   }
 
-  @Scheduled(fixedDelayString = "${resubmission.interval.milliseconds}")
-  @SchedulerLock(name = "resubmissionTask", lockAtMostFor = "30m")
+//  @Scheduled(fixedDelayString = "${resubmission.interval.milliseconds}")
+//  @SchedulerLock(name = "resubmissionTask", lockAtMostFor = "30m")
   public void resubmitFailedApplications() {
     log.info("Checking for applications that failed to send");
     Map<Document, List<String>> documentsToIds =
