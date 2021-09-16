@@ -20,7 +20,7 @@ mail-gun:
   shouldCC: true
 
 feature-flag:
-  apply-for-mille-lacs: off
+  apply-for-mille-lacs: on
   send-download-alert: on
   submit-via-email: off
   submit-via-api: on
