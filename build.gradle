@@ -68,11 +68,14 @@ dependencyManagement {
         mavenBom 'org.springframework.session:spring-session-bom:2021.0.2'
     }
 }
-
+//
 dependencies {
     modules {
         module('javax.activation:activation') {
             replacedBy('jakarta.activation:jakarta.activation-api', 'Use jakarta instead of javax')
+        }
+        module('org.apache.commons:commons-email'){
+            replacedBy('com.sun.mail:jakarta.mail', 'Use jakarta instead of apache')
         }
     }
 
