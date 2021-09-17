@@ -5,15 +5,16 @@
      class="next-steps"
      th:if="${successMessages.size() > 0}">
 
-    <th:block th:each="msg: ${successMessages}">
-        <div class="grid-ignore-mobile notice--shiba spacing-below-35">
-            <div class="success-icons grid__item width-one-sixth">
-                <div th:replace="__${msg.icon()}__"
-                     class="success-icons text--centered width-one-whole"></div>
-            </div>
-            <p class="grid__item width-five-sixths" th:utext="${msg.message()}"></p>
-        </div>
-    </th:block>
+  <th:block th:each="msg,idx : ${successMessages}">
+    <div class="grid-ignore-mobile notice--shiba spacing-below-35">
+      <div class="success-icons grid__item width-one-sixth">
+        <div th:replace="__${msg.icon()}__"
+             class="success-icons text--centered width-one-whole"></div>
+      </div>
+      <p class="grid__item width-five-sixths next-step-section"
+         th:utext="${msg.message()}"></p>
+    </div>
+  </th:block>
 
 </div>
 

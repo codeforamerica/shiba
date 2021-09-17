@@ -35,7 +35,8 @@ public class NextStepsContentService {
       SnapExpeditedEligibility snapExpeditedEligibility,
       CcapExpeditedEligibility ccapExpeditedEligibility,
       Locale locale) {
-    return Collections.emptyList();
+
+    return new ArrayList<>();
   }
 
   public record SuccessMessage(String icon, String message) {}

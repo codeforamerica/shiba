@@ -1,10 +1,13 @@
 package org.codeforamerica.shiba.pages;
 
-import static org.hamcrest.Matchers.containsString;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.Program.CASH;
+import static org.codeforamerica.shiba.Program.CCAP;
+import static org.codeforamerica.shiba.Program.EA;
+import static org.codeforamerica.shiba.Program.SNAP;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.Duration;
@@ -12,6 +15,7 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.Application;
@@ -20,6 +24,8 @@ import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.testutilities.AbstractPageControllerTest;
+import org.codeforamerica.shiba.testutilities.FormPage;
+import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -33,13 +39,12 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
   private static Stream<Arguments> successMessageTestCases() {
     return Stream.of(
         Arguments.of(
-            "Only Expedited SNAP",
-            List.of("SNAP"),
+            "Example 1 (Only Expedited SNAP)",
+            List.of(SNAP),
             SnapExpeditedEligibility.ELIGIBLE,
             CcapExpeditedEligibility.UNDETERMINED,
             List.of(
-                "Within 24 hours, expect a call from your county about your food assistance application. The call may come from an unknown number.",
-                "You will need to complete an interview with a caseworker.",
+                "Within 24 hours, expect a call from your county about your food assistance application.",
                 "If you don't hear from your county within 3 days or want an update on your case, please call your county."
             )
         )
@@ -70,22 +75,22 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
   @MethodSource("org.codeforamerica.shiba.pages.NextStepsContentServiceTest#successMessageTestCases")
   void displaysCorrectSuccessMessageForApplicantPrograms(String testName, List<String> programs,
       SnapExpeditedEligibility snapExpeditedEligibility,
-      CcapExpeditedEligibility ccapExpeditedEligibility, List<String> expectedMessages) throws Exception {
-    setPrograms(programs);
-
-    when(snapExpeditedEligibilityDecider.decide(any())).thenReturn(snapExpeditedEligibility);
-    when(ccapExpeditedEligibilityDecider.decide(any())).thenReturn(ccapExpeditedEligibility);
-    ResultActions resultActions = mockMvc.perform(
-            get("/pages/nextSteps").session(new MockHttpSession()))
-        .andExpect(status().isOk());
-    for (String msg : expectedMessages) {
-      resultActions.andExpect(content().string(containsString(msg)));
-    }
-  }
-
-  private void setPrograms(List<String> programs) {
+      CcapExpeditedEligibility ccapExpeditedEligibility, List<String> expectedMessages)
+      throws Exception {
     PageData programsPage = new PageData();
     programsPage.put("programs", InputData.builder().value(programs).build());
     applicationData.getPagesData().put("choosePrograms", programsPage);
+
+    when(snapExpeditedEligibilityDecider.decide(any())).thenReturn(snapExpeditedEligibility);
+    when(ccapExpeditedEligibilityDecider.decide(any())).thenReturn(ccapExpeditedEligibility);
+
+    ResultActions resultActions = mockMvc.perform(
+            get("/pages/nextSteps").session(new MockHttpSession()))
+        .andExpect(status().isOk());
+    FormPage formPage = new FormPage(resultActions);
+    List<String> nextStepSections = formPage.getElementsByClassName("next-step-section").stream()
+        .map(Element::text).collect(Collectors.toList());
+
+    assertThat(nextStepSections).containsAll(expectedMessages);
   }
 }
