@@ -63,6 +63,10 @@ conditionDefinitions:
     pageName: choosePrograms
     value: SNAP
     input: programs
+  - &applicantChoseCCAP?
+    pageName: choosePrograms
+    value: CCAP
+    input: programs
   - &someoneChoseCASH?
     logicalOperator: OR
     conditions:
@@ -2744,10 +2748,18 @@ workflow:
     pageConfiguration: *choosePrograms
     nextPages:
       - pageName: expeditedCcap
+        condition: *applicantChoseCCAP?
+      - pageName: expeditedSnap
+        condition: *applicantChoseSNAP?
+      - pageName: nextSteps
   expeditedCcap:
     pageConfiguration: *expeditedCcap
     nextPages:
       - pageName: expeditedSnap
+        condition: *applicantChoseSNAP?
+      - pageName: nextSteps
+    datasources:
+      - pageName: choosePrograms
   expeditedSnap:
     pageConfiguration: *expeditedSnap
     nextPages:

@@ -16,7 +16,7 @@ import static org.codeforamerica.shiba.County.Hennepin;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
-import static org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility.UNDETERMINED;
+import static org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility.NOT_ELIGIBLE;
 import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.ELIGIBLE;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.any;
@@ -89,7 +89,7 @@ class MailGunEmailClientTest {
   int port;
   BasicCredentials credentials;
   List<String> programs;
-  CcapExpeditedEligibility ccapExpeditedEligibility = UNDETERMINED;
+  CcapExpeditedEligibility ccapExpeditedEligibility = NOT_ELIGIBLE;
   @Autowired
   private MessageSource messageSource;
   @Value("${spring.profiles.active}")

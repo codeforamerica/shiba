@@ -131,7 +131,7 @@ class ApplicationSubmittedListenerTest {
       when(snapExpeditedEligibilityDecider.decide(applicationData))
           .thenReturn(SnapExpeditedEligibility.ELIGIBLE);
       when(ccapExpeditedEligibilityDecider.decide(applicationData))
-          .thenReturn(CcapExpeditedEligibility.UNDETERMINED);
+          .thenReturn(CcapExpeditedEligibility.NOT_ELIGIBLE);
       ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(),
           "someFileName");
       when(pdfGenerator.generate(appIdFromDb, Document.CAF, CLIENT)).thenReturn(applicationFile);
@@ -146,7 +146,7 @@ class ApplicationSubmittedListenerTest {
           appIdFromDb,
           List.of(),
           SnapExpeditedEligibility.ELIGIBLE,
-          CcapExpeditedEligibility.UNDETERMINED,
+          CcapExpeditedEligibility.NOT_ELIGIBLE,
           List.of(applicationFile),
           Locale.ENGLISH);
     }
@@ -173,7 +173,7 @@ class ApplicationSubmittedListenerTest {
       when(snapExpeditedEligibilityDecider.decide(applicationData))
           .thenReturn(SnapExpeditedEligibility.ELIGIBLE);
       when(ccapExpeditedEligibilityDecider.decide(applicationData))
-          .thenReturn(CcapExpeditedEligibility.UNDETERMINED);
+          .thenReturn(CcapExpeditedEligibility.NOT_ELIGIBLE);
       ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(),
           "someFileName");
       when(pdfGenerator.generate(appIdFromDb, Document.CAF, CLIENT)).thenReturn(applicationFile);
@@ -188,7 +188,7 @@ class ApplicationSubmittedListenerTest {
           appIdFromDb,
           List.of(),
           SnapExpeditedEligibility.ELIGIBLE,
-          CcapExpeditedEligibility.UNDETERMINED,
+          CcapExpeditedEligibility.NOT_ELIGIBLE,
           List.of(applicationFile),
           Locale.ENGLISH);
     }
@@ -210,7 +210,7 @@ class ApplicationSubmittedListenerTest {
           null,
           Locale.ENGLISH);
       when(snapExpeditedEligibilityDecider.decide(applicationData))
-          .thenReturn(SnapExpeditedEligibility.UNDETERMINED);
+          .thenReturn(SnapExpeditedEligibility.NOT_ELIGIBLE);
       when(ccapExpeditedEligibilityDecider.decide(applicationData))
           .thenReturn(CcapExpeditedEligibility.ELIGIBLE);
       ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(),
@@ -227,7 +227,7 @@ class ApplicationSubmittedListenerTest {
           email,
           appIdFromDb,
           List.of(),
-          SnapExpeditedEligibility.UNDETERMINED,
+          SnapExpeditedEligibility.NOT_ELIGIBLE,
           CcapExpeditedEligibility.ELIGIBLE,
           List.of(applicationFile),
           Locale.ENGLISH);

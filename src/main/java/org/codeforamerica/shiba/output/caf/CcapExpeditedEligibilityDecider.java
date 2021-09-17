@@ -2,7 +2,6 @@ package org.codeforamerica.shiba.output.caf;
 
 import static org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility.ELIGIBLE;
 import static org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility.NOT_ELIGIBLE;
-import static org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility.UNDETERMINED;
 
 import java.util.List;
 import java.util.Set;

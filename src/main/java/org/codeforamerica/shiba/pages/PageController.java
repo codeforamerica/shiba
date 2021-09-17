@@ -345,7 +345,7 @@ public class PageController {
     if (landmarkPagesConfiguration.isPostSubmitPage(pageName)) {
       model.put("docRecommendations", docRecommendationMessageService
           .getPageSpecificRecommendationsMessage(applicationData, locale, pageName));
-      model.put("successMessages", nextStepsContentService
+      model.put("nextSteps", nextStepsContentService
           .getNextSteps(new ArrayList<>(programs), snapExpeditedEligibility,
               ccapExpeditedEligibility, locale));
     }

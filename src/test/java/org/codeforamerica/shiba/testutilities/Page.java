@@ -266,6 +266,10 @@ public class Page {
     return driver.findElementById(id);
   }
 
+  public List<WebElement> findElementsByClassName(String className) {
+    return driver.findElementsByClassName(className);
+  }
+
   public void clickElementById(String id) {
     WebElement inputToSelect = driver.findElementById(id);
     inputToSelect.click();

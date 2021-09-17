@@ -2,10 +2,7 @@ package org.codeforamerica.shiba.output.caf;
 
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLICANT_PROGRAMS;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ASSETS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_PROGRAMS;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSING_COSTS;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.INCOME;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.LAST_THIRTY_DAYS_JOB_INCOME;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.MIGRANT_WORKER;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.PREPARING_MEALS_TOGETHER;
@@ -16,7 +13,6 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.ELIGIBLE;
 import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.NOT_ELIGIBLE;
-import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.UNDETERMINED;
 
 import java.util.List;
 import org.codeforamerica.shiba.Money;

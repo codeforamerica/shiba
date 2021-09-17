@@ -4,7 +4,6 @@ import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.ELIGIBLE;
 import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.NOT_ELIGIBLE;
-import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.UNDETERMINED;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -147,31 +146,6 @@ class SnapExpeditedEligibilityDeciderTest {
         .build();
 
     assertThat(decider.decide(applicationData)).isEqualTo(NOT_ELIGIBLE);
-  }
-
-  @Test
-  void undeterminedWhenMissingRequiredInformation() {
-    ApplicationData applicationData = applicationDataBuilder
-        .build();
-    applicationData.getPagesData().remove("migrantFarmWorker");
-
-    assertThat(decider.decide(applicationData)).isEqualTo(UNDETERMINED);
-
-    applicationData = applicationDataBuilder
-        .withPageData("migrantFarmWorker", "migrantOrSeasonalFarmWorker", List.of("false"))
-        .build();
-    applicationData.getPagesData().remove("utilityPayments");
-
-    assertThat(decider.decide(applicationData)).isEqualTo(UNDETERMINED);
-  }
-
-  @Test
-  void undeterminedWhenThereAreBlankThirtyDayEstimates() {
-    ApplicationData applicationData = applicationDataBuilder
-        .withJobs()
-        .build();
-
-    assertThat(decider.decide(applicationData)).isEqualTo(UNDETERMINED);
   }
 
   @Test

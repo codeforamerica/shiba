@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.Program.CASH;
 import static org.codeforamerica.shiba.Program.CCAP;
 import static org.codeforamerica.shiba.Program.EA;
+import static org.codeforamerica.shiba.Program.GRH;
 import static org.codeforamerica.shiba.Program.SNAP;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -34,22 +35,11 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.ResultActions;
 
 public class NextStepsContentServiceTest extends AbstractPageControllerTest {
-
-  @SuppressWarnings("unused")
-  private static Stream<Arguments> successMessageTestCases() {
-    return Stream.of(
-        Arguments.of(
-            "Example 1 (Only Expedited SNAP)",
-            List.of(SNAP),
-            SnapExpeditedEligibility.ELIGIBLE,
-            CcapExpeditedEligibility.UNDETERMINED,
-            List.of(
-                "Within 24 hours, expect a call from your county about your food assistance application.",
-                "If you don't hear from your county within 3 days or want an update on your case, please call your county."
-            )
-        )
-    );
-  }
+  public static final String CCAP = "CCAP";
+  public static final String SNAP = "SNAP";
+  public static final String GRH = "GRH";
+  public static final String CASH = "CASH";
+  public static final String EA = "EA";
 
   @BeforeEach
   void setUp() {
@@ -70,7 +60,21 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
     when(applicationRepository.find(any())).thenReturn(application);
   }
 
-  @SuppressWarnings("unused")
+  private static Stream<Arguments> successMessageTestCases() {
+    return Stream.of(
+        Arguments.of(
+            "Example 1 (Only Expedited SNAP)",
+            List.of(SNAP),
+            SnapExpeditedEligibility.ELIGIBLE,
+            CcapExpeditedEligibility.NOT_ELIGIBLE,
+            List.of(
+                "Within 24 hours, expect a call from your county about your food assistance application.",
+                "If you don't hear from your county within 3 days or want an update on your case, please call your county."
+            )
+        )
+    );
+  }
+
   @ParameterizedTest(name = "{0}")
   @MethodSource("org.codeforamerica.shiba.pages.NextStepsContentServiceTest#successMessageTestCases")
   void displaysCorrectSuccessMessageForApplicantPrograms(String testName, List<String> programs,
@@ -91,6 +95,6 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
     List<String> nextStepSections = formPage.getElementsByClassName("next-step-section").stream()
         .map(Element::text).collect(Collectors.toList());
 
-    assertThat(nextStepSections).containsAll(expectedMessages);
+    assertThat(nextStepSections).containsExactly(expectedMessages.toArray(new String[0]));
   }
 }

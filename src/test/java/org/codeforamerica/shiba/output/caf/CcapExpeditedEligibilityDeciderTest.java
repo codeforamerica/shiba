@@ -37,20 +37,6 @@ class CcapExpeditedEligibilityDeciderTest {
   }
 
   @Test
-  void shouldBeUndeterminedWhenLivingSituationIsNotAvailable() {
-    ApplicationData applicationData = createApplicationData(Collections.emptyList(), "CCAP");
-    assertThat(ccapExpeditedEligibilityDecider.decide(applicationData))
-        .isEqualTo(CcapExpeditedEligibility.UNDETERMINED);
-  }
-
-  @Test
-  void shouldBeUndeterminedWhenNotCcapApplication() {
-    ApplicationData applicationData = createApplicationData(List.of("HOTEL_OR_MOTEL"), "EA");
-    assertThat(ccapExpeditedEligibilityDecider.decide(applicationData))
-        .isEqualTo(CcapExpeditedEligibility.UNDETERMINED);
-  }
-
-  @Test
   void shouldBeNotEligibleWhenLivingWithFamilyFriendsDueToOtherReasons() {
     ApplicationData applicationData = createApplicationData(
         List.of("TEMPORARILY_WITH_FRIENDS_OR_FAMILY_OTHER_REASONS"), "CCAP");
