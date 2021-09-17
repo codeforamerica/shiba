@@ -247,6 +247,4 @@ class EmailContentCreatorTest {
             + "If you have already uploaded these documents, you can ignore this reminder.<br><br>"
             + "**This is an automated message. Please do not reply to this message.**</body></html>");
   }
-
-
 }

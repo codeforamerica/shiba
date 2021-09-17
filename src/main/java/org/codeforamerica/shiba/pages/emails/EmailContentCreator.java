@@ -26,6 +26,7 @@ public class EmailContentCreator {
 
   private final static String CLIENT_BODY = "email.client-body";
   private final static String ADDITIONAL_SUPPORT = "email.you-may-be-able-to-receive-more-support";
+  private final static String IF_YOU_WANT_AN_UPDATE = "email.if-you-want-an-update-call-your-county";
   private final static String CLIENT_WARNING = "email.warning";
   private final static String CONFIRMATION_EMAIL_DOC_RECS = "email.confirmation-email-doc-recs";
   private final static String DOCUMENT_RECOMMENDATION_EMAIL = "email.document-recommendation-email";
@@ -108,10 +109,9 @@ public class EmailContentCreator {
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
 
     String content = lms.getMessage(CLIENT_BODY,
-        List.of(confirmationId, "", lms.getMessage(ADDITIONAL_SUPPORT)));
+        List.of(confirmationId, "", lms.getMessage(IF_YOU_WANT_AN_UPDATE)));
 
     content = addDemoMessage(content, lms);
-
     String warning = lms.getMessage(CLIENT_WARNING);
     return wrapHtml(content + warning);
   }
