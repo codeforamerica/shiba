@@ -155,6 +155,9 @@ public class AccessibilityJourneyTest extends JourneyTest {
     List<String> programSelections = List.of(PROGRAM_SNAP, PROGRAM_CCAP);
 
     testPage.clickButton("Apply now");
+    testPage.enter("county", "Hennepin");
+    testPage.clickContinue();
+
     testPage.clickContinue();
     testPage.clickContinue();
     testPage.enter("writtenLanguage", "English");

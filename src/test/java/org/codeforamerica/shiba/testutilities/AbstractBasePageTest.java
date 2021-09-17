@@ -142,6 +142,10 @@ public abstract class AbstractBasePageTest {
 
   protected void getToPersonalInfoScreen(List<String> programSelections) {
     testPage.clickButton("Apply now");
+
+    testPage.enter("county", "Hennepin");
+    testPage.clickContinue();
+
     testPage.clickContinue();
     testPage.clickContinue();
     testPage.enter("writtenLanguage", "English");
@@ -412,6 +416,8 @@ public abstract class AbstractBasePageTest {
 
   private void getToDocumentRecommendationScreen() {
     testPage.clickButton("Apply now");
+    testPage.enter("county", "Hennepin");
+    testPage.clickContinue();
     testPage.clickContinue();
     testPage.clickContinue();
     testPage.enter("writtenLanguage", "English");

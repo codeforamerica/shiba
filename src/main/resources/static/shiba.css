@@ -718,9 +718,16 @@ input[type=number] {
   vertical-align: -15px;
 }
 
-.svg-icon-arrow_forward {
+.svg-button-icon__left {
   position: relative;
   top: 0.15em;
+  right: 0.25em;
+}
+
+.svg-button-icon__right {
+  position: relative;
+  top: 0.15em;
+  left: 0.15em;
 }
 
 .success-icons svg {

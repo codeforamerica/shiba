@@ -670,6 +670,7 @@ public class AbstractShibaMockMvcTest {
   }
 
   protected void getToPersonalInfoScreen(String... programSelections) throws Exception {
+    postExpectingSuccess("identifyCountyBeforeApplying", "county", List.of("Hennepin"));
     selectPrograms(programSelections);
   }
 

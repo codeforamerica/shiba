@@ -215,6 +215,12 @@ pageDefinitions:
     name: landing
     pageTitle: landing.title
     customPage: true
+  - &goToApplyMn
+    name: goToApplyMn
+    pageTitle: go-to-apply-mn.title
+    headerKey: go-to-apply-mn.header
+    contextFragment: goToApplyMnContextFragment
+    hasPrimaryButton: false
   - &prepareToApply
     name: prepareToApply
     pageTitle: prepare-to-apply.title
@@ -2711,7 +2717,200 @@ workflow:
   landing:
     pageConfiguration: *landing
     nextPages:
+      - pageName: identifyCountyBeforeApplying
+  identifyCountyBeforeApplying:
+    pageConfiguration: *identifyCounty
+    nextPages:
       - pageName: prepareToApply
+        flag: county-anoka
+        condition:
+          pageName: identifyCounty
+          input: county
+          value: Anoka
+      - pageName: prepareToApply
+        flag: county-carver
+        condition:
+          pageName: identifyCounty
+          input: county
+          value: Carver
+      - pageName: prepareToApply
+        flag: county-clay
+        condition:
+          pageName: identifyCounty
+          input: county
+          value: Clay
+      - pageName: prepareToApply
+        flag: county-cook
+        condition:
+          pageName: identifyCounty
+          input: county
+          value: Cook
+      - pageName: prepareToApply
+        flag: county-dodge
+        condition:
+          pageName: identifyCounty
+          input: county
+          value: Dodge
+      - pageName: prepareToApply
+        flag: county-hennepin
+        condition:
+          pageName: identifyCounty
+          input: county
+          value: Hennepin
+      - pageName: prepareToApply
+        flag: county-morrison
+        condition:
+          pageName: identifyCounty
+          input: county
+          value: Morrison
+      - pageName: prepareToApply
+        flag: county-olmsted
+        condition:
+          pageName: identifyCounty
+          input: county
+          value: Olmsted
+      - pageName: prepareToApply
+        flag: county-ottertail
+        condition:
+          pageName: identifyCounty
+          input: county
+          value: OtterTail
+      - pageName: prepareToApply
+        flag: county-sherburne
+        condition:
+          pageName: identifyCounty
+          input: county
+          value: Sherburne
+      - pageName: prepareToApply
+        flag: county-steele
+        condition:
+          pageName: identifyCounty
+          input: county
+          value: Steele
+      - pageName: prepareToApply
+        flag: county-stlouis
+        condition:
+          pageName: identifyCounty
+          input: county
+          value: StLouis
+      - pageName: prepareToApply
+        flag: county-wabasha
+        condition:
+          pageName: identifyCounty
+          input: county
+          value: Wabasha
+      - pageName: prepareToApply
+        flag: county-waseca
+        condition:
+          pageName: identifyCounty
+          input: county
+          value: Waseca
+      - pageName: prepareToApply
+        flag: county-wright
+        condition:
+          pageName: identifyCounty
+          input: county
+          value: Wright
+      - pageName: goToApplyMn
+    subtleLinkTargetPage: identifyZipcodeBeforeApplying
+  identifyZipcodeBeforeApplying:
+    pageConfiguration: *identifyZipcode
+    enrichment: zipcodeToCountyEnrichment
+    nextPages:
+      - pageName: prepareToApply
+        flag: county-anoka
+        condition:
+          pageName: identifyZipcode
+          input: mappedCounty
+          value: Anoka
+      - pageName: prepareToApply
+        flag: county-carver
+        condition:
+          pageName: identifyZipcode
+          input: mappedCounty
+          value: Carver
+      - pageName: prepareToApply
+        flag: county-clay
+        condition:
+          pageName: identifyZipcode
+          input: mappedCounty
+          value: Clay
+      - pageName: prepareToApply
+        flag: county-cook
+        condition:
+          pageName: identifyZipcode
+          input: mappedCounty
+          value: Cook
+      - pageName: prepareToApply
+        flag: county-dodge
+        condition:
+          pageName: identifyZipcode
+          input: mappedCounty
+          value: Dodge
+      - pageName: prepareToApply
+        flag: county-hennepin
+        condition:
+          pageName: identifyZipcode
+          input: mappedCounty
+          value: Hennepin
+      - pageName: prepareToApply
+        flag: county-morrison
+        condition:
+          pageName: identifyZipcode
+          input: mappedCounty
+          value: Morrison
+      - pageName: prepareToApply
+        flag: county-olmsted
+        condition:
+          pageName: identifyZipcode
+          input: mappedCounty
+          value: Olmsted
+      - pageName: prepareToApply
+        flag: county-ottertail
+        condition:
+          pageName: identifyZipcode
+          input: mappedCounty
+          value: OtterTail
+      - pageName: prepareToApply
+        flag: county-sherburne
+        condition:
+          pageName: identifyZipcode
+          input: mappedCounty
+          value: Sherburne
+      - pageName: prepareToApply
+        flag: county-steele
+        condition:
+          pageName: identifyZipcode
+          input: mappedCounty
+          value: Steele
+      - pageName: prepareToApply
+        flag: county-stlouis
+        condition:
+          pageName: identifyZipcode
+          input: mappedCounty
+          value: StLouis
+      - pageName: prepareToApply
+        flag: county-wabasha
+        condition:
+          pageName: identifyZipcode
+          input: mappedCounty
+          value: Wabasha
+      - pageName: prepareToApply
+        flag: county-waseca
+        condition:
+          pageName: identifyZipcode
+          input: mappedCounty
+          value: Waseca
+      - pageName: prepareToApply
+        flag: county-wright
+        condition:
+          pageName: identifyZipcode
+          input: mappedCounty
+          value: Wright
+      - pageName: goToApplyMn
+    subtleLinkTargetPage: identifyCountyBeforeApplying
+  goToApplyMn:
+    pageConfiguration: *goToApplyMn
   prepareToApply:
     pageConfiguration: *prepareToApply
     nextPages:
@@ -4044,12 +4243,11 @@ pageGroups:
     startingCount: 1
 landmarkPages:
   startTimerPage:
-    - languagePreferences
+    - identifyCountyBeforeApplying
+    - prepareToApply
     - identifyCounty
   landingPages:
     - landing
-    - prepareToApply
-    - addingDocsIsEasy
   postSubmitPages:
     - addingDocuments
     - howToAddDocuments
@@ -4064,6 +4262,8 @@ landmarkPages:
     - matchInfo
     - documentsSent
     - identifyCounty
+    - identifyCountyBeforeApplying
+    - prepareToApply
   nextStepsPage: nextSteps
   terminalPage: success
   laterDocsTerminalPage: documentsSent
