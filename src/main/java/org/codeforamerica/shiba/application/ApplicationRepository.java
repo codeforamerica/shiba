@@ -136,12 +136,12 @@ public class ApplicationRepository {
 
   public Map<County, Integer> countByCounty() {
     return jdbcTemplate.query(
-        "SELECT county, COUNT(*) AS count " +
-            "FROM applications  WHERE flow <> 'LATER_DOCS' AND completed_at IS NOT NULL " +
-            "GROUP BY county", (resultSet, rowNumber) ->
-            Map.entry(
-                County.valueFor(resultSet.getString("county")),
-                resultSet.getInt("count"))).stream()
+            "SELECT county, COUNT(*) AS count " +
+                "FROM applications  WHERE flow <> 'LATER_DOCS' AND completed_at IS NOT NULL " +
+                "GROUP BY county", (resultSet, rowNumber) ->
+                Map.entry(
+                    County.valueFor(resultSet.getString("county")),
+                    resultSet.getInt("count"))).stream()
         .collect(toMap(Entry::getKey, Entry::getValue));
   }
 
@@ -192,16 +192,16 @@ public class ApplicationRepository {
 
   public Map<Sentiment, Double> getSentimentDistribution() {
     return jdbcTemplate.query(
-        "SELECT sentiment, count, SUM(count) OVER () AS total_count " +
-            "FROM (" +
-            "         SELECT sentiment, COUNT(id) AS count " +
-            "         FROM applications " +
-            "         WHERE sentiment IS NOT NULL " +
-            "         GROUP BY sentiment " +
-            "     ) AS subquery",
-        (resultSet, rowNumber) -> Map.entry(
-            Sentiment.valueOf(resultSet.getString("sentiment")),
-            resultSet.getDouble("count") / resultSet.getDouble("total_count"))).stream()
+            "SELECT sentiment, count, SUM(count) OVER () AS total_count " +
+                "FROM (" +
+                "         SELECT sentiment, COUNT(id) AS count " +
+                "         FROM applications " +
+                "         WHERE sentiment IS NOT NULL " +
+                "         GROUP BY sentiment " +
+                "     ) AS subquery",
+            (resultSet, rowNumber) -> Map.entry(
+                Sentiment.valueOf(resultSet.getString("sentiment")),
+                resultSet.getDouble("count") / resultSet.getDouble("total_count"))).stream()
         .collect(toMap(Entry::getKey, Entry::getValue));
   }
 
@@ -315,7 +315,10 @@ public class ApplicationRepository {
                 Optional.ofNullable(resultSet.getString("uploaded_documents_status"))
                     .map(Status::valueFor)
                     .orElse(null))
+            .docUploadEmailStatus(
+                Optional.ofNullable(resultSet.getString("doc_upload_email_status"))
+                    .map(Status::valueFor)
+                    .orElse(null))
             .build();
   }
-
 }

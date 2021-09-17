@@ -96,7 +96,7 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
                 new ArrayList<>(applicationData.getApplicantAndHouseholdMemberPrograms()),
                 snapExpeditedEligibility, ccapExpeditedEligibility, pdfs, event.getLocale());
 
-            // schedule(?) docs email for 24 hours in the future
+            // TODO schedule(?) docs email for 24 hours in the future by marking doc_upload_email_status as in_progress
 
 
           } else {

@@ -17,7 +17,8 @@ CREATE TABLE IF NOT EXISTS applications
     updated_at                varchar,
     caf_application_status    varchar,
     ccap_application_status   varchar,
-    uploaded_documents_status varchar
+    uploaded_documents_status varchar,
+    doc_upload_email_status   varchar
 );
 
 CREATE INDEX IF NOT EXISTS idx_application_id
