@@ -27,7 +27,8 @@ public class EmailContentCreator {
   private final static String CLIENT_BODY = "email.client-body";
   private final static String ADDITIONAL_SUPPORT = "email.you-may-be-able-to-receive-more-support";
   private final static String CLIENT_WARNING = "email.warning";
-  private final static String CLIENT_DOC_RECS = "email.doc-recs";
+  private final static String CONFIRMATION_EMAIL_DOC_RECS = "email.confirmation-email-doc-recs";
+  private final static String DOCUMENT_RECOMMENDATION_EMAIL = "email.document-recommendation-email";
   private final static String DOWNLOAD_CAF_ALERT = "email.download-caf-alert";
   private final static String NON_COUNTY_PARTNER_ALERT = "email.non-county-partner-alert";
   private final static String LATER_DOCS_CONFIRMATION_EMAIL_SUBJECT = "later-docs.confirmation-email-subject";
@@ -62,29 +63,45 @@ public class EmailContentCreator {
         .map(SuccessMessage::message)
         .collect(Collectors.joining("<br><br>"));
 
-    List<DocumentRecommendation> documentRecommendations = docRecommendationMessageService
-        .getConfirmationEmailDocumentRecommendations(applicationData, locale);
-
     var additionalSupport = lms.getMessage(ADDITIONAL_SUPPORT);
     String content = lms.getMessage(CLIENT_BODY,
         List.of(confirmationId, "<br><br>" + nextSteps, additionalSupport));
+
+    String docRecs = getDocumentRecommendations(applicationData, locale, lms,
+        CONFIRMATION_EMAIL_DOC_RECS);
+
+    if (docRecs.length() > 0) {
+      content = "%s<p>%s</p>".formatted(content, docRecs);
+    }
+
+    content = addDemoMessage(content, lms);
+    String warning = lms.getMessage(CLIENT_WARNING);
+    return wrapHtml(content + warning);
+  }
+
+  public String createDocumentRecommendationEmail(ApplicationData applicationData, Locale locale) {
+    LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
+    String content = "";
+    content = getDocumentRecommendations(applicationData, locale, lms,
+        DOCUMENT_RECOMMENDATION_EMAIL);
+    content = addDemoMessage(content, lms);
+    String warning = lms.getMessage(CLIENT_WARNING);
+    return wrapHtml(content + warning);
+  }
+
+  private String getDocumentRecommendations(ApplicationData applicationData, Locale locale,
+      LocaleSpecificMessageSource lms, String documentRecommendationMessageKey) {
+    List<DocumentRecommendation> documentRecommendations = docRecommendationMessageService
+        .getConfirmationEmailDocumentRecommendations(applicationData, locale);
     if (documentRecommendations.size() > 0) {
       final StringBuilder builder = new StringBuilder();
       documentRecommendations.forEach(docRec -> {
         String listElement = "<li>" + docRec.title + ": " + docRec.explanation + "</li>";
         builder.append(listElement);
       });
-      content = "%s<p>%s</p>"
-          .formatted(content, lms.getMessage(CLIENT_DOC_RECS, List.of(builder.toString())));
+      return lms.getMessage(documentRecommendationMessageKey, List.of(builder.toString()));
     }
-
-    if ("demo".equals(activeProfile)) {
-      content = "%s<p>%s</p><p>%s</p>"
-          .formatted(content, lms.getMessage(DEMO_PURPOSES_ONLY), lms.getMessage(SHARE_FEEDBACK));
-    }
-
-    String warning = lms.getMessage(CLIENT_WARNING);
-    return wrapHtml(content + warning);
+    return "";
   }
 
   public String createShortClientConfirmationEmail(String confirmationId, Locale locale) {
@@ -93,17 +110,13 @@ public class EmailContentCreator {
     String content = lms.getMessage(CLIENT_BODY,
         List.of(confirmationId, "", lms.getMessage(ADDITIONAL_SUPPORT)));
 
-    if ("demo".equals(activeProfile)) {
-      content = "%s<p>%s</p><p>%s</p>"
-          .formatted(content, lms.getMessage(DEMO_PURPOSES_ONLY), lms.getMessage(SHARE_FEEDBACK));
-    }
+    content = addDemoMessage(content, lms);
 
     String warning = lms.getMessage(CLIENT_WARNING);
     return wrapHtml(content + warning);
   }
 
-  public String createNextStepsEmail(String confirmationId,
-      List<String> programs,
+  public String createNextStepsEmail(List<String> programs,
       SnapExpeditedEligibility snapExpeditedEligibility,
       CcapExpeditedEligibility ccapExpeditedEligibility, Locale locale) {
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
@@ -118,10 +131,7 @@ public class EmailContentCreator {
             + successMessage.message())
         .collect(Collectors.joining("<br><br>"));
 
-//    if ("demo".equals(activeProfile)) {
-//      content = "%s<p>%s</p><p>%s</p>"
-//          .formatted(content, lms.getMessage(DEMO_PURPOSES_ONLY), lms.getMessage(SHARE_FEEDBACK));
-//    }
+    content = addDemoMessage(content, lms);
 
     String warning = lms.getMessage(CLIENT_WARNING);
     return wrapHtml(content + warning);
@@ -175,6 +185,14 @@ public class EmailContentCreator {
         "<p><b>E-mail:</b> " + args.get("email") + "</p>" +
         "<p>Fields that are blank were not shared by the client in their application.</p>" +
         "<p>Please reach out to help@mnbenefits.org for support.</p>");
+  }
+
+  private String addDemoMessage(String content, LocaleSpecificMessageSource lms) {
+    if ("demo".equals(activeProfile)) {
+      content = "%s<p>%s</p><p>%s</p>"
+          .formatted(content, lms.getMessage(DEMO_PURPOSES_ONLY), lms.getMessage(SHARE_FEEDBACK));
+    }
+    return content;
   }
 
   private String getMessage(String snapExpeditedWaitTime, @Nullable List<String> args,

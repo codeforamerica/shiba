@@ -131,7 +131,6 @@ public class MailGunEmailClient implements EmailClient {
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
     String subject = getEmailSubject("email.next-steps-subject", lms);
     String emailContent = emailContentCreator.createNextStepsEmail(
-        applicationId,
         programs,
         snapExpeditedEligibility,
         ccapExpeditedEligibility,

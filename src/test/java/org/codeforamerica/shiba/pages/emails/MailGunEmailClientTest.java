@@ -173,7 +173,7 @@ class MailGunEmailClientTest {
     SnapExpeditedEligibility snapExpeditedEligibility = ELIGIBLE;
     CcapExpeditedEligibility ccapExpeditedEligibility = CcapExpeditedEligibility.ELIGIBLE;
     String confirmationId = "someConfirmationId";
-    when(emailContentCreator.createNextStepsEmail(confirmationId, programs,
+    when(emailContentCreator.createNextStepsEmail(programs,
         snapExpeditedEligibility, ccapExpeditedEligibility, ENGLISH)).thenReturn(emailContent);
 
     wireMockServer.stubFor(post(anyUrl())
