@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Locale;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +21,7 @@ public class NextStepsContentService {
     this.messageSource = messageSource;
   }
 
-  public List<NextStepsSection> getNextSteps(List<String> programs,
+  public List<NextStepSection> getNextSteps(List<String> programs,
       SnapExpeditedEligibility snapExpeditedEligibility,
       CcapExpeditedEligibility ccapExpeditedEligibility,
       Locale locale) {
@@ -30,7 +29,7 @@ public class NextStepsContentService {
     return new ArrayList<>();
   }
 
-  public record NextStepsSection(String icon, String message) {
+  public record NextStepSection(String icon, String message) {
 
   }
 }
