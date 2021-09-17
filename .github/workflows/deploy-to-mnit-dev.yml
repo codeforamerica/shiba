@@ -1,13 +1,18 @@
 name: Deploy to MNIT Dev
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["Run tests"]
+    branches: [main]
+    types:
+      - completed
+  workflow_dispatch:
+    inputs: { }
 
 jobs:
   deploy:
     name: Deploy to Dev
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
     - name: Workflow Webhook Action
