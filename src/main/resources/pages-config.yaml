@@ -1305,7 +1305,7 @@ pageDefinitions:
             errorMessageKey: general.validation.make-sure-to-select-a-county
         options:
           selectableOptions:
-            - value: ~
+            - value: ''
               messageKey: identify-county.select-your-county
             - value: Aitkin
               messageKey: identify-county-aitkin
@@ -1662,7 +1662,7 @@ pageDefinitions:
             errorMessageKey: general.validation.make-sure-to-select-a-tribe
         options:
           selectableOptions:
-            - value: ~
+            - value: ''
               messageKey: select-the-tribe.select-the-tribe
             - value: Bois Forte
               messageKey: select-the-tribe.bois-forte
