@@ -109,6 +109,13 @@ public class ApplicationDataParser {
     coordinatesMap.put(Field.PREPARING_MEALS_TOGETHER,
         new ParsingCoordinate("preparingMealsTogether", "isPreparingMealsTogether"));
 
+    coordinatesMap.put(Field.UNEARNED_INCOME,
+        new ParsingCoordinate("unearnedIncome", "unearnedIncome"));
+    coordinatesMap.put(Field.UNEARNED_INCOME_CCAP,
+        new ParsingCoordinate("unearnedIncomeCcap", "unearnedIncomeCcap"));
+    coordinatesMap.put(Field.UTILITY_PAYMENTS,
+        new ParsingCoordinate("utilityPayments", "utilityPayments"));
+
     coordinatesMap
         .put(Field.PERSONAL_INFO_DOB, new ParsingCoordinate("personalInfo", "dateOfBirth"));
     coordinatesMap
@@ -223,6 +230,10 @@ public class ApplicationDataParser {
     APPLICANT_PROGRAMS,
     HOUSEHOLD_PROGRAMS,
     PREPARING_MEALS_TOGETHER,
+
+    UNEARNED_INCOME,
+    UNEARNED_INCOME_CCAP,
+    UTILITY_PAYMENTS,
 
     PERSONAL_INFO_DOB,
     PERSONAL_INFO_FIRST_NAME(""),
