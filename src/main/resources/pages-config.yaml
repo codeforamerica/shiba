@@ -1674,7 +1674,7 @@ pageDefinitions:
               messageKey: select-the-tribe.leech-lake
             - value: Lower Sioux
               messageKey: select-the-tribe.lower-sioux
-            - value: Mille Lacs
+            - value: Mille Lacs Band of Ojibwe
               messageKey: select-the-tribe.mille-lacs
             - value: Prairie Island
               messageKey: select-the-tribe.prairie-island

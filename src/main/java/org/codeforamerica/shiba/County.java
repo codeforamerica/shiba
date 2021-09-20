@@ -16,7 +16,8 @@ public enum County {
   LacQuiParle("Lac Qui Parle"), Lake("Lake"), LakeOfTheWoods("Lake of the Woods"),
   LeSueur("Le Sueur"), Lincoln("Lincoln"), Lyon("Lyon"),
   Mahnomen("Mahnomen"), Marshall("Marshall"), Martin("Martin"),
-  McLeod("McLeod"), Meeker("Meeker"), MilleLacs("Mille Lacs"), MilleLacsBand("Mille Lacs Band"),
+  McLeod("McLeod"), Meeker("Meeker"), MilleLacs("Mille Lacs"), MilleLacsBand(
+      "Mille Lacs Band of Ojibwe"),
   Morrison("Morrison"), Mower("Mower"), Murray("Murray"),
   Nicollet("Nicollet"), Nobles("Nobles"), Norman("Norman"),
   Olmsted("Olmsted"), OtterTail("Otter Tail"), Pennington("Pennington"),

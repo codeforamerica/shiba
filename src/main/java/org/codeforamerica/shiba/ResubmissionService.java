@@ -1,7 +1,6 @@
 package org.codeforamerica.shiba;
 
-import static org.codeforamerica.shiba.TribalNation.MILLE_LACS;
-import static org.codeforamerica.shiba.TribalNation.MILLE_LACS_BAND_OF_OJIBWE;
+import static org.codeforamerica.shiba.County.MilleLacsBand;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.RESUBMISSION_FAILED;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
@@ -73,8 +72,8 @@ public class ResubmissionService {
       }
 
       if (destination.getTribalNation() != null &&
-          MILLE_LACS_BAND_OF_OJIBWE.equals(destination.getTribalNation())) {
-        recipientEmails.add(countyMap.get(County.MilleLacsBand).getEmail());
+          MilleLacsBand.displayName().equals(destination.getTribalNation())) {
+        recipientEmails.add(countyMap.get(MilleLacsBand).getEmail());
       }
 
       log.info("Attempting to resubmit %s(s) for application id %s to emails %s".formatted(
