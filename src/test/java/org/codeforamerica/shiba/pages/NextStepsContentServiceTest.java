@@ -60,7 +60,7 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
     when(applicationRepository.find(any())).thenReturn(application);
   }
 
-  private static Stream<Arguments> successMessageTestCases() {
+  private static Stream<Arguments> nextStepMessageTestCases() {
     return Stream.of(
         Arguments.of(
             "Example 1 (Only Expedited SNAP)",
@@ -76,7 +76,7 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
   }
 
   @ParameterizedTest(name = "{0}")
-  @MethodSource("org.codeforamerica.shiba.pages.NextStepsContentServiceTest#successMessageTestCases")
+  @MethodSource("org.codeforamerica.shiba.pages.NextStepsContentServiceTest#nextStepMessageTestCases")
   void displaysCorrectSuccessMessageForApplicantPrograms(String testName, List<String> programs,
       SnapExpeditedEligibility snapExpeditedEligibility,
       CcapExpeditedEligibility ccapExpeditedEligibility, List<String> expectedMessages)
