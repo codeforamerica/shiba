@@ -497,17 +497,6 @@ derived-values:
               input: phoneOrEmail
               value: TEXT
               matcher: CONTAINS
-  - groupName: jobs
-    fieldName: count
-    values:
-      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-          literal: "0"
-        type: SINGLE_VALUE
-        condition:
-          conditions:
-            - pageName: employmentStatus
-              input: areYouWorking
-              value: "false"
   - groupName: homeAddress
     fieldName: isHomelessIndicator
     values:
