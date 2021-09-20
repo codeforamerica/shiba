@@ -35,11 +35,11 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.ResultActions;
 
 public class NextStepsContentServiceTest extends AbstractPageControllerTest {
-  public static final String CCAP = "CCAP";
-  public static final String SNAP = "SNAP";
-  public static final String GRH = "GRH";
-  public static final String CASH = "CASH";
-  public static final String EA = "EA";
+  private static final String CCAP = "CCAP";
+  private static final String SNAP = "SNAP";
+  private static final String GRH = "GRH";
+  private static final String CASH = "CASH";
+  private static final String EA = "EA";
 
   @BeforeEach
   void setUp() {
