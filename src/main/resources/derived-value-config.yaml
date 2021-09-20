@@ -9,14 +9,6 @@ conditionAnchors:
     pageName: homeAddressValidation
     input: useEnrichedAddress
     value: "true"
-  - &unearnedIncomeDoesntInclude?
-    pageName: unearnedIncome
-    input: unearnedIncome
-    matcher: DOES_NOT_CONTAIN
-  - &unearnedIncomeCcapDoesntInclude?
-    pageName: unearnedIncomeCcap
-    input: unearnedIncomeCcap
-    matcher: DOES_NOT_CONTAIN
   - &homeExpensesDoesntInclude?
     pageName: homeExpenses
     input: homeExpenses

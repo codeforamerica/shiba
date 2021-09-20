@@ -53,10 +53,12 @@ public class OneToManyApplicationInputsMapper implements ApplicationInputsMapper
       List<ApplicationInput> results, Field field, List<String> options) {
     if (pagesData.containsKey(pageName)) {
       List<String> selectedValues = getValues(pagesData, field);
-      options.stream().map(option -> new ApplicationInput(pageName,
-          option,
-          String.valueOf(selectedValues.contains(option)),
-          ENUMERATED_SINGLE_VALUE)).forEach(results::add);
+      options.stream()
+          .map(option -> new ApplicationInput(pageName,
+              option,
+              String.valueOf(selectedValues.contains(option)),
+              ENUMERATED_SINGLE_VALUE))
+          .forEach(results::add);
     }
   }
 }
