@@ -283,9 +283,10 @@ public class ApplicationRepository {
   //   - were submitted between 48 and 12 hours ago
   //   - do not have any uploaded docs
   //   - have not yet been sent a doc upload email
+  //   - Are not laterdocs applications
   public List<Application> getApplicationsThatNeedDocumentEmails() {
     List<Application> result = jdbcTemplate.query(
-        "SELECT * FROM applications WHERE completed_at >= ? AND completed_at <= ?",
+        "SELECT * FROM applications WHERE flow <> 'LATER_DOCS' AND completed_at >= ? AND completed_at <= ?",
         applicationRowMapper(),
         Timestamp.from(Instant.now().minus(Duration.ofHours(48))),
         Timestamp.from(Instant.now().minus(Duration.ofHours(12))));

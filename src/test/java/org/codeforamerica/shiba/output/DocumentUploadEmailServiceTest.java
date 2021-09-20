@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.output;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -9,6 +10,7 @@ import java.time.ZonedDateTime;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.Status;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
@@ -44,6 +46,7 @@ class DocumentUploadEmailServiceTest {
     Application appThatIsTooOld = saveApplicationThatIsTooOld();
     Application appWithDocumentUploads = saveApplicationWithDocumentUploads();
     Application appThatAlreadyHadEmailSent = saveApplicationThatAlreadyHadEmailSent();
+    Application laterdocsApplication = saveLaterdocsApplication();
 
     documentUploadEmailService.sendDocumentUploadEmails();
 
@@ -60,10 +63,16 @@ class DocumentUploadEmailServiceTest {
     ).isNull();
 
     assertThat(
+        applicationRepository.find(laterdocsApplication.getId()).getDocUploadEmailStatus()
+    ).isNull();
+
+    assertThat(
         applicationRepository.find(appThatAlreadyHadEmailSent.getId())
     ).hasFieldOrPropertyWithValue("docUploadEmailStatus", Status.DELIVERED);
 
-    verify(emailClient, times(1)).sendEmail(any(), any(), any(), any(), any());
+    verify(emailClient, times(1)).sendEmail(
+        eq("[Action Required] Upload Documents To Your MNBenefits Application"),
+        any(), any(), any(), any());
   }
 
   private Application saveApplicationThatNeedsDocumentUploadEmail() {
@@ -73,6 +82,7 @@ class DocumentUploadEmailServiceTest {
         .id("abc123")
         .applicationData(new ApplicationData())
         .docUploadEmailStatus(null)
+        .flow(FlowType.FULL)
         .build();
     applicationRepository.save(appThatShouldTriggerEmail);
     return appThatShouldTriggerEmail;
@@ -85,11 +95,11 @@ class DocumentUploadEmailServiceTest {
         .id("abc123")
         .applicationData(new ApplicationData())
         .docUploadEmailStatus(Status.DELIVERED)
+        .flow(FlowType.FULL)
         .build();
     applicationRepository.save(appThatShouldTriggerEmail);
     return appThatShouldTriggerEmail;
   }
-
 
   private Application saveApplicationThatIsTooOld() {
     Application appThatIsTooOld = Application.builder()
@@ -98,6 +108,7 @@ class DocumentUploadEmailServiceTest {
         .id("def456")
         .applicationData(new ApplicationData())
         .docUploadEmailStatus(null)
+        .flow(FlowType.FULL)
         .build();
     applicationRepository.save(appThatIsTooOld);
     return appThatIsTooOld;
@@ -115,8 +126,28 @@ class DocumentUploadEmailServiceTest {
         .id("ghi789")
         .applicationData(appDataWithUploadedDocument)
         .docUploadEmailStatus(null)
+        .flow(FlowType.FULL)
         .build();
     applicationRepository.save(appWithDocumentUploads);
     return appWithDocumentUploads;
+  }
+
+  private Application saveLaterdocsApplication() {
+    ApplicationData applicationData = new ApplicationData();
+    applicationData.addUploadedDoc(new MockMultipartFile("image", "someImage.jpg",
+            MediaType.IMAGE_JPEG_VALUE, "test".getBytes()), "someS3FilePath", "someDataUrl",
+        "image/jpeg");
+    applicationData.setFlow(FlowType.LATER_DOCS);
+
+    Application laterdocsApplication = Application.builder()
+        .completedAt(ZonedDateTime.now().minusHours(13))
+        .county(County.Anoka)
+        .id("ghi789")
+        .applicationData(applicationData)
+        .docUploadEmailStatus(null)
+        .flow(FlowType.LATER_DOCS)
+        .build();
+    applicationRepository.save(laterdocsApplication);
+    return laterdocsApplication;
   }
 }
