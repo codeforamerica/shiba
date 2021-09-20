@@ -1,13 +1,10 @@
 package org.codeforamerica.shiba.output;
 
 
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.WRITTEN_LANGUAGE_PREFERENCES;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
@@ -68,14 +65,10 @@ public class ResendFailedEmailController {
             List<ApplicationFile> pdfs = docs.stream()
                 .map(doc -> pdfGenerator.generate(applicationId, doc, CLIENT))
                 .collect(Collectors.toList());
-            var writtenLanguageSelection = getValues(
-                application.getApplicationData().getPagesData(), WRITTEN_LANGUAGE_PREFERENCES);
-            var local = writtenLanguageSelection.contains("SPANISH") ? new Locale("es")
-                : LocaleContextHolder.getLocale();
             emailClient.sendConfirmationEmail(applicationData, email, applicationId,
                 new ArrayList<>(applicationData.getApplicantAndHouseholdMemberPrograms()),
                 snapExpeditedEligibility, ccapExpeditedEligibility, pdfs,
-                local);
+                applicationData.getLocale());
           }
         });
 

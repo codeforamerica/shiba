@@ -268,6 +268,32 @@ public class ApplicationRepository {
     return failedSubmissions;
   }
 
+  public void setDocUploadEmailStatus(String applicationId, Status status) {
+    Map<String, String> parameters = Map.of(
+        "id", applicationId,
+        "status", status.toString()
+    );
+
+    var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+    namedParameterJdbcTemplate.update(
+        "UPDATE applications SET doc_upload_email_status = :status WHERE id = :id", parameters);
+  }
+
+  // Returns a list of applications that
+  //   - were submitted between 48 and 12 hours ago
+  //   - do not have any uploaded docs
+  //   - have not yet been sent a doc upload email
+  public List<Application> getApplicationsThatNeedDocumentEmails() {
+    List<Application> result = jdbcTemplate.query(
+        "SELECT * FROM applications WHERE completed_at >= ? AND completed_at <= ?",
+        applicationRowMapper(),
+        Timestamp.from(Instant.now().minus(Duration.ofHours(48))),
+        Timestamp.from(Instant.now().minus(Duration.ofHours(12))));
+    List<Application> applicationsWithoutUploadedDocs = result.stream()
+        .filter(a -> a.getApplicationData().getUploadedDocs().isEmpty()).toList();
+    return applicationsWithoutUploadedDocs;
+  }
+
   private List<String> getCCAPSubmissionsToResubmit() {
     return jdbcTemplate.queryForList(
         "SELECT id FROM applications WHERE ccap_application_status = 'delivery_failed' AND completed_at IS NOT NULL",

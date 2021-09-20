@@ -239,12 +239,14 @@ public class MailGunEmailClient implements EmailClient {
     sendEmail(subject, senderEmail, recipientEmail, body, List.of(applicationFile));
   }
 
+  @Override
   public void sendEmail(String subject, String senderEmail, String recipientEmail, String emailBody,
       List<ApplicationFile> attachments) {
     sendEmail(subject, senderEmail, recipientEmail, emptyList(), emailBody,
         attachments, false);
   }
 
+  @Override
   public void sendEmail(
       String subject,
       String senderEmail,
