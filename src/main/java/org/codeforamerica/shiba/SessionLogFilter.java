@@ -15,6 +15,7 @@ import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.MaskedSerializer;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.slf4j.MDC;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -51,6 +52,10 @@ public class SessionLogFilter implements Filter {
     if (applicationData != null && applicationData.getId() != null) {
       monitoringService.setApplicationId(applicationData.getId());
       MDC.put("applicationId", applicationData.getId());
+    }
+    if (httpReq.getUserPrincipal() instanceof OAuth2AuthenticationToken token) {
+      String email = token.getPrincipal().getAttribute("email");
+      MDC.put("admin", email);
     }
     log.info(httpReq.getMethod() + " " + httpReq.getRequestURI());
     monitoringService.setSessionId(httpReq.getSession().getId());
