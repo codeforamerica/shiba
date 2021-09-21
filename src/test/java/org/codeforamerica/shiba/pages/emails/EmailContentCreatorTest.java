@@ -176,7 +176,7 @@ class EmailContentCreatorTest {
         + "<br><br>Confirmation number: <strong>#someNumber</strong>"
         + "<br>Application status: <strong>In review</strong>"
         + "<br><br>"
-        + "You may be able to receive more support. See “What benefits programs do I qualify for” at <a href=\"https://www.mnbenefits.org/faq#what-benefits-programs\" target=\"_blank\" rel=\"noopener noreferrer\">mnbenefits.org/faq</a>.<br><br>"
+        + "If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\" rel=\"noopener noreferrer\">call your county.</a>.<br><br>"
         + "**This is an automated message. Please do not reply to this message.**</body></html>");
     assertThat(emailContent).doesNotContain(
         "if you don’t hear from them in the time period we’ve noted");
