@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.configurations;
 
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -38,6 +40,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
       "lhaynes@codeforamerica.org",
       "lmoore@codeforamerica.org",
       "lraymontanez@codeforamerica.org",
+      "luigi@codeforamerica.org",
       "mloew@codeforamerica.org",
       "mrotondo@codeforamerica.org",
       "nmartinez@codeforamerica.org",
@@ -81,7 +84,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public boolean check(Authentication authentication) {
       var principal = ((OAuth2AuthenticationToken) authentication).getPrincipal();
       var email = principal.getAttributes().get("email");
-      return email != null && ADMIN_EMAILS.contains((String) email);
+      boolean isAuthorized = email != null && ADMIN_EMAILS.contains((String) email);
+      log.info(String.format("Admin login for %s is %s", email, isAuthorized ? "authorized" : "not authorized"));
+      return isAuthorized;
     }
   }
 }
