@@ -6,6 +6,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
 import lombok.extern.slf4j.Slf4j;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
@@ -20,6 +21,7 @@ import org.codeforamerica.shiba.pages.emails.EmailContentCreator;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -56,8 +58,8 @@ public class DocumentUploadEmailService {
   //   - have not yet been sent a doc upload email
   //   - has document recommendations
   //   - opted into email communications
-//  @Scheduled(cron = "0 0 15 * * *") // at 15:00 UTC (10:00 CT) each day
-//  @SchedulerLock(name = "documentUploadEmails", lockAtMostFor = "30m")
+  @Scheduled(cron = "0 0 15 * * *") // at 15:00 UTC (10:00 CT) each day
+  @SchedulerLock(name = "documentUploadEmails", lockAtMostFor = "30m")
   public void sendDocumentUploadEmails() {
     log.info("Checking for applications that need document upload emails");
     List<Application> applications = getApplicationsThatNeedDocumentUploadEmails();
