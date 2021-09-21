@@ -33,7 +33,7 @@ jobs:
       with:
         java-version: '16'
     - name: Use Node.js 14.x
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2.4.0
       with:
         node-version: '14.x'
     - name: Install percy from npm
