@@ -9,10 +9,6 @@ conditionAnchors:
     pageName: homeAddressValidation
     input: useEnrichedAddress
     value: "true"
-  - &homeExpensesDoesntInclude?
-    pageName: homeExpenses
-    input: homeExpenses
-    matcher: DOES_NOT_CONTAIN
 derived-values:
   - groupName: utilityPayments
     fieldName: noExpeditedUtilitiesSelected
@@ -186,72 +182,6 @@ derived-values:
             - pageName: choosePrograms
               input: programs
               value: CCAP
-  - fieldName: noRentSelection
-    groupName: homeExpenses
-    values:
-      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-          literal: "No"
-        type: ENUMERATED_SINGLE_VALUE
-        condition:
-          logicalOperator: AND
-          conditions:
-            - <<: *homeExpensesDoesntInclude?
-              value: RENT
-  - fieldName: noMortgageSelection
-    groupName: homeExpenses
-    values:
-      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-          literal: "No"
-        type: ENUMERATED_SINGLE_VALUE
-        condition:
-          logicalOperator: AND
-          conditions:
-            - <<: *homeExpensesDoesntInclude?
-              value: MORTGAGE
-  - fieldName: noHomeownersInsuranceSelection
-    groupName: homeExpenses
-    values:
-      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-          literal: "No"
-        type: ENUMERATED_SINGLE_VALUE
-        condition:
-          logicalOperator: AND
-          conditions:
-            - <<: *homeExpensesDoesntInclude?
-              value: HOMEOWNERS_INSURANCE
-  - fieldName: noRealEstateTaxesSelection
-    groupName: homeExpenses
-    values:
-      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-          literal: "No"
-        type: ENUMERATED_SINGLE_VALUE
-        condition:
-          logicalOperator: AND
-          conditions:
-            - <<: *homeExpensesDoesntInclude?
-              value: REAL_ESTATE_TAXES
-  - fieldName: noAssociationFeesSelection
-    groupName: homeExpenses
-    values:
-      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-          literal: "No"
-        type: ENUMERATED_SINGLE_VALUE
-        condition:
-          logicalOperator: AND
-          conditions:
-            - <<: *homeExpensesDoesntInclude?
-              value: ASSOCIATION_FEES
-  - fieldName: noRoomAndBoardSelection
-    groupName: homeExpenses
-    values:
-      - value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-          literal: "No"
-        type: ENUMERATED_SINGLE_VALUE
-        condition:
-          logicalOperator: AND
-          conditions:
-            - <<: *homeExpensesDoesntInclude?
-              value: ROOM_AND_BOARD
   - groupName: energyAssistanceGroup
     fieldName: energyAssistanceInput
     values:

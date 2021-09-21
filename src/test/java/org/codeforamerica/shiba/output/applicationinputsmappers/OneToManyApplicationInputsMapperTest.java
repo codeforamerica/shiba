@@ -20,6 +20,7 @@ public class OneToManyApplicationInputsMapperTest {
         .withPageData("unearnedIncome", "unearnedIncome", List.of("NO_UNEARNED_INCOME_SELECTED"))
         .withPageData("unearnedIncomeCcap", "unearnedIncomeCcap",
             List.of("NO_UNEARNED_INCOME_CCAP_SELECTED"))
+        .withPageData("homeExpenses", "homeExpenses", List.of("NONE_OF_THE_ABOVE"))
         .build();
 
     List<ApplicationInput> result = mapper.map(Application.builder()
@@ -56,6 +57,18 @@ public class OneToManyApplicationInputsMapperTest {
         new ApplicationInput("unearnedIncomeCcap", "INTEREST_DIVIDENDS", List.of("false"),
             ENUMERATED_SINGLE_VALUE),
         new ApplicationInput("unearnedIncomeCcap", "OTHER_SOURCES", List.of("false"),
+            ENUMERATED_SINGLE_VALUE),
+        new ApplicationInput("homeExpenses", "RENT", List.of("false"),
+            ENUMERATED_SINGLE_VALUE),
+        new ApplicationInput("homeExpenses", "MORTGAGE", List.of("false"),
+            ENUMERATED_SINGLE_VALUE),
+        new ApplicationInput("homeExpenses", "HOMEOWNERS_INSURANCE", List.of("false"),
+            ENUMERATED_SINGLE_VALUE),
+        new ApplicationInput("homeExpenses", "REAL_ESTATE_TAXES", List.of("false"),
+            ENUMERATED_SINGLE_VALUE),
+        new ApplicationInput("homeExpenses", "ASSOCIATION_FEES", List.of("false"),
+            ENUMERATED_SINGLE_VALUE),
+        new ApplicationInput("homeExpenses", "ROOM_AND_BOARD", List.of("false"),
             ENUMERATED_SINGLE_VALUE)
     );
   }
@@ -67,6 +80,8 @@ public class OneToManyApplicationInputsMapperTest {
             List.of("SOCIAL_SECURITY", "SSI", "CHILD_OR_SPOUSAL_SUPPORT"))
         .withPageData("unearnedIncomeCcap", "unearnedIncomeCcap",
             List.of("INSURANCE_PAYMENTS", "TRUST_MONEY"))
+        .withPageData("homeExpenses", "homeExpenses",
+            List.of("REAL_ESTATE_TAXES", "ASSOCIATION_FEES"))
         .build();
 
     List<ApplicationInput> result = mapper.map(Application.builder()
@@ -103,6 +118,18 @@ public class OneToManyApplicationInputsMapperTest {
         new ApplicationInput("unearnedIncomeCcap", "INTEREST_DIVIDENDS", List.of("false"),
             ENUMERATED_SINGLE_VALUE),
         new ApplicationInput("unearnedIncomeCcap", "OTHER_SOURCES", List.of("false"),
+            ENUMERATED_SINGLE_VALUE),
+        new ApplicationInput("homeExpenses", "RENT", List.of("false"),
+            ENUMERATED_SINGLE_VALUE),
+        new ApplicationInput("homeExpenses", "MORTGAGE", List.of("false"),
+            ENUMERATED_SINGLE_VALUE),
+        new ApplicationInput("homeExpenses", "HOMEOWNERS_INSURANCE", List.of("false"),
+            ENUMERATED_SINGLE_VALUE),
+        new ApplicationInput("homeExpenses", "REAL_ESTATE_TAXES", List.of("true"),
+            ENUMERATED_SINGLE_VALUE),
+        new ApplicationInput("homeExpenses", "ASSOCIATION_FEES", List.of("true"),
+            ENUMERATED_SINGLE_VALUE),
+        new ApplicationInput("homeExpenses", "ROOM_AND_BOARD", List.of("false"),
             ENUMERATED_SINGLE_VALUE)
     );
   }

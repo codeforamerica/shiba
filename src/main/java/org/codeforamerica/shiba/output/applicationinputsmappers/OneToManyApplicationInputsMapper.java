@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output.applicationinputsmappers;
 
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_EXPENSES;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_INCOME;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_INCOME_CCAP;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
@@ -21,15 +22,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class OneToManyApplicationInputsMapper implements ApplicationInputsMapper {
 
-  public static final List<String> UNEARNED_INCOME_OPTIONS = List.of("SOCIAL_SECURITY", "SSI",
+  private static final List<String> UNEARNED_INCOME_OPTIONS = List.of("SOCIAL_SECURITY", "SSI",
       "VETERANS_BENEFITS",
       "UNEMPLOYMENT", "WORKERS_COMPENSATION", "RETIREMENT", "CHILD_OR_SPOUSAL_SUPPORT",
       "TRIBAL_PAYMENTS");
 
-  public static final List<String> UNEARNED_INCOME_CCAP_OPTIONS = List.of("BENEFITS",
+  private static final List<String> UNEARNED_INCOME_CCAP_OPTIONS = List.of("BENEFITS",
       "INSURANCE_PAYMENTS", "CONTRACT_FOR_DEED", "TRUST_MONEY", "HEALTH_CARE_REIMBURSEMENT",
-      "INTEREST_DIVIDENDS", "OTHER_SOURCES"
-  );
+      "INTEREST_DIVIDENDS", "OTHER_SOURCES");
+
+  private static final List<String> HOME_EXPENSES_OPTIONS = List.of("RENT", "MORTGAGE",
+      "HOMEOWNERS_INSURANCE", "REAL_ESTATE_TAXES", "ASSOCIATION_FEES", "ROOM_AND_BOARD");
 
   @Override
   public List<ApplicationInput> map(Application application, Document document, Recipient recipient,
@@ -45,6 +48,9 @@ public class OneToManyApplicationInputsMapper implements ApplicationInputsMapper
 
     addApplicationInputs(pagesData, "unearnedIncomeCcap", results, UNEARNED_INCOME_CCAP,
         UNEARNED_INCOME_CCAP_OPTIONS);
+
+    addApplicationInputs(pagesData, "homeExpenses", results, HOME_EXPENSES,
+        HOME_EXPENSES_OPTIONS);
 
     return results;
   }

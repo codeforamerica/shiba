@@ -178,19 +178,12 @@ mappings:
   employmentStatus:
     areYouWorking: IS_WORKING
   homeExpenses:
-    homeExpenses:
-      RENT: RENT
-      MORTGAGE: MORTGAGE
-      HOMEOWNERS_INSURANCE: HOMEOWNERS_INSURANCE
-      REAL_ESTATE_TAXES: REAL_ESTATE_TAXES
-      ASSOCIATION_FEES: ASSOCIATION_FEES
-      ROOM_AND_BOARD: ROOM_AND_BOARD
-    noRentSelection: RENT
-    noMortgageSelection: MORTGAGE
-    noHomeownersInsuranceSelection: HOMEOWNERS_INSURANCE
-    noRealEstateTaxesSelection: REAL_ESTATE_TAXES
-    noAssociationFeesSelection: ASSOCIATION_FEES
-    noRoomAndBoardSelection: ROOM_AND_BOARD
+    RENT: RENT
+    MORTGAGE: MORTGAGE
+    HOMEOWNERS_INSURANCE: HOMEOWNERS_INSURANCE
+    REAL_ESTATE_TAXES: REAL_ESTATE_TAXES
+    ASSOCIATION_FEES: ASSOCIATION_FEES
+    ROOM_AND_BOARD: ROOM_AND_BOARD
   homeExpensesAmount:
     homeExpensesAmount: HOUSING_EXPENSES
   energyAssistanceGroup:
