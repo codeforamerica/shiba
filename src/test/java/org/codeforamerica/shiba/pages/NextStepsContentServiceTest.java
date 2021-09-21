@@ -71,6 +71,52 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
                 "Within 24 hours, expect a call from your county about your food assistance application.",
                 "If you don't hear from your county within 3 days or want an update on your case, please call your county."
             )
+        ),
+        Arguments.of(
+            "Example 2 (SNAP and CCAP, Expedited Snap, not Expedited CCAP",
+            List.of(SNAP, CCAP),
+            SnapExpeditedEligibility.ELIGIBLE,
+            CcapExpeditedEligibility.NOT_ELIGIBLE,
+            List.of(
+                "Within 24 hours, expect a call from your county about your food assistance application.",
+                "In the next 7-10 days, expect to get a letter in the mail from your county about your childcare application. The letter will explain your next steps.",
+                "If you don't hear from your county within 3 days or want an update on your case, please call your county."
+            )
+        ),
+        Arguments.of(
+            "Example 3 (CCAP, SNAP, EA, and CASH not expedited on SNAP but expeditedCCAP",
+            List.of(CCAP, SNAP, CASH, EA),
+            SnapExpeditedEligibility.NOT_ELIGIBLE,
+            CcapExpeditedEligibility.ELIGIBLE,
+            List.of(
+                "Within 5 days, your county will determine your childcare assistance case and send you a letter in the mail.",
+                "In the next 7-10 days, expect to get a letter in the mail from your county about your food support, cash support and emergency assistance application. The letter will explain your next steps.",
+                "Call your county if you don’t hear from them in the time period we’ve noted."
+            )
+        ),
+        Arguments.of(
+            "Example 4 (CCAP, SNAP, EA, and CASH with SNAP and CCAP expedited eligibility",
+            List.of(CCAP, SNAP, CASH, EA),
+            SnapExpeditedEligibility.ELIGIBLE,
+            CcapExpeditedEligibility.ELIGIBLE,
+            List.of(
+                "Within 24 hours, expect a call from your county about your food assistance application.",
+                "Within 5 days, your county will determine your childcare assistance case and send you a letter in the mail.",
+                "In the next 7-10 days, expect to get a letter in the mail from your county about your cash support and emergency assistance application. The letter will explain your next steps.",
+                "Call your county if you don’t hear from them in the time period we’ve noted."
+            )
+        ),
+        Arguments.of(
+            "Example 5 (CCAP, SNAP, EA, CASH, and GRH with SNAP and CCAP expedited eligibility",
+            List.of(CCAP, SNAP, CASH, EA, GRH),
+            SnapExpeditedEligibility.ELIGIBLE,
+            CcapExpeditedEligibility.ELIGIBLE,
+            List.of(
+                "Within 24 hours, expect a call from your county about your food assistance application.",
+                "Within 5 days, your county will determine your childcare assistance case and send you a letter in the mail.",
+                "In the next 7-10 days, expect to get a letter in the mail from your county about your cash support, emergency assistance and housing application. The letter will explain your next steps.",
+                "Call your county if you don’t hear from them in the time period we’ve noted."
+            )
         )
     );
   }
