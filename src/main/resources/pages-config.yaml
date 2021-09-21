@@ -1399,8 +1399,10 @@ pageDefinitions:
               messageKey: identify-county-marshall
             - value: Meeker
               messageKey: identify-county-meeker
-            - value: MartinLacs
-              messageKey: identify-county-martin-lacs
+            - value: Martin
+              messageKey: identify-county-martin
+            - value: MilleLacs
+              messageKey: identify-county-mille-lacs
             - value: Morrison
               messageKey: identify-county-morrison
             - value: Mower
