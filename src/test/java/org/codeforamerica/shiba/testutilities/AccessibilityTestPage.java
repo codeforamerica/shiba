@@ -3,15 +3,17 @@ package org.codeforamerica.shiba.testutilities;
 import com.deque.html.axecore.results.Results;
 import com.deque.html.axecore.results.Rule;
 import com.deque.html.axecore.selenium.AxeBuilder;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.Getter;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class AccessibilityTestPage extends Page {
 
+  // Using a map lets us overwrite results from previous scans of a given page
   @Getter
-  public List<Rule> resultsList = new ArrayList<>();
+  public Map<String, List<Rule>> resultMap = new HashMap<>();
 
   public AccessibilityTestPage(RemoteWebDriver driver) {
     super(driver);
@@ -36,6 +38,7 @@ public class AccessibilityTestPage extends Page {
     AxeBuilder builder = new AxeBuilder();
     builder.setOptions("""
         {   "resultTypes": ["violations"],
+            "iframes": false,
             "runOnly": { 
                 "type": "tag", 
                 "values": ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "section508"]
@@ -45,7 +48,7 @@ public class AccessibilityTestPage extends Page {
     Results results = builder.analyze(driver);
     List<Rule> violations = results.getViolations();
     violations.forEach(rule -> rule.setUrl(getTitle()));
-    resultsList.addAll(violations);
+    resultMap.put(getTitle(), violations);
     System.out.println("Testing a11y on page " + getTitle());
   }
 }

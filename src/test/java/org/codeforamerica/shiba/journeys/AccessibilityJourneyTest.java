@@ -12,6 +12,7 @@ import com.deque.html.axecore.selenium.AxeBuilder;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.testutilities.AccessibilityTestPage;
@@ -69,7 +70,8 @@ public class AccessibilityJourneyTest extends JourneyTest {
   void afterEach() {
     AxeBuilder builder = new AxeBuilder();
     results = builder.analyze(driver);
-    resultsList.addAll(((AccessibilityTestPage) testPage).getResultsList());
+    Map<String, List<Rule>> resultMap = ((AccessibilityTestPage) testPage).getResultMap();
+    resultMap.values().forEach(resultsList::addAll);
   }
 
   @Test
