@@ -159,7 +159,7 @@ class MailGunEmailClientTest {
         .withBasicAuth(credentials)
         .withRequestBodyPart(requestBodyPart("from", senderEmail))
         .withRequestBodyPart(requestBodyPart("to", recipientEmail))
-        .withRequestBodyPart(requestBodyPart("subject", "We received your application"))
+        .withRequestBodyPart(requestBodyPart("subject", "We received your MNbenefits application"))
         .withRequestBodyPart(requestBodyPart("html", emailContent))
         .withRequestBodyPart(attachment(String.format("filename=\"%s\"", fileName), fileContent))
     );
@@ -557,7 +557,8 @@ class MailGunEmailClientTest {
           .withBasicAuth(credentials)
           .withRequestBodyPart(requestBodyPart("from", senderEmail))
           .withRequestBodyPart(requestBodyPart("to", recipientEmail))
-          .withRequestBodyPart(requestBodyPart("subject", "[DEMO] We received your application"))
+          .withRequestBodyPart(
+              requestBodyPart("subject", "[DEMO] We received your MNbenefits application"))
           .withRequestBodyPart(requestBodyPart("html", emailContent))
           .withRequestBodyPart(
               attachment(String.format("filename=\"%s\"", fileName), fileContent)));
