@@ -41,8 +41,6 @@ import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
-import org.codeforamerica.shiba.pages.config.FeatureFlag;
-import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.testutilities.NonSessionScopedApplicationData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
@@ -84,8 +82,6 @@ class MnitDocumentConsumerTest {
   private ApplicationRepository applicationRepository;
   @MockBean
   private MessageSource messageSource;
-  @MockBean
-  protected FeatureFlagConfiguration featureFlagConfiguration;
   @SpyBean
   private PdfGenerator pdfGenerator;
 
@@ -119,8 +115,6 @@ class MnitDocumentConsumerTest {
         .build();
     when(messageSource.getMessage(any(), any(), any())).thenReturn("default success message");
     when(fileNameGenerator.generatePdfFileName(any(), any())).thenReturn("some-file.pdf");
-    when(featureFlagConfiguration.get("submit-docs-via-email-for-hennepin")).thenReturn(
-        FeatureFlag.ON);
     doReturn(application).when(applicationRepository).find(any());
   }
 
