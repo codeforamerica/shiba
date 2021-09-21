@@ -20,7 +20,7 @@ import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.RoutingDestinationService;
 import org.codeforamerica.shiba.pages.RoutingDestinationService.RoutingDestination;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
-import org.codeforamerica.shiba.pages.emails.MailGunEmailClient;
+import org.codeforamerica.shiba.pages.emails.EmailClient;
 import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -30,14 +30,14 @@ import org.springframework.stereotype.Service;
 public class ResubmissionService {
 
   private final ApplicationRepository applicationRepository;
-  private final MailGunEmailClient emailClient;
+  private final EmailClient emailClient;
   private final CountyMap<MnitCountyInformation> countyMap;
   private final PdfGenerator pdfGenerator;
   private final RoutingDestinationService routingDestinationService;
 
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   public ResubmissionService(ApplicationRepository applicationRepository,
-      MailGunEmailClient emailClient, CountyMap<MnitCountyInformation> countyMap,
+      EmailClient emailClient, CountyMap<MnitCountyInformation> countyMap,
       PdfGenerator pdfGenerator,
       RoutingDestinationService routingDestinationService) {
     this.applicationRepository = applicationRepository;
@@ -89,7 +89,7 @@ public class ResubmissionService {
         applicationRepository.updateStatus(id, document, DELIVERED);
         log.info("Resubmitted %s(s) for application id %s".formatted(document.name(), id));
       } catch (Exception e) {
-        log.error("Failed to resubmit application %s via email".formatted(id));
+        log.error("Failed to resubmit application %s via email".formatted(id), e);
         applicationRepository.updateStatus(id, document, RESUBMISSION_FAILED);
       }
     }));

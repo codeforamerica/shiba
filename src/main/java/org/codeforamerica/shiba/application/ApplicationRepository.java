@@ -79,6 +79,9 @@ public class ApplicationRepository {
     parameters.put("sentiment",
         Optional.ofNullable(application.getSentiment()).map(Sentiment::name).orElse(null));
     parameters.put("feedback", application.getFeedback());
+    parameters.put("docUploadEmailStatus",
+        Optional.ofNullable(application.getDocUploadEmailStatus()).map(Status::toString)
+            .orElse(null));
 
     var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
     namedParameterJdbcTemplate.update("UPDATE applications SET " +
@@ -88,11 +91,12 @@ public class ApplicationRepository {
         "time_to_complete = :timeToComplete, " +
         "sentiment = :sentiment, " +
         "feedback = :feedback, " +
+        "doc_upload_email_status = :docUploadEmailStatus," +
         "flow = :flow WHERE id = :id", parameters);
     namedParameterJdbcTemplate.update(
-        "INSERT INTO applications (id, completed_at, application_data, county, time_to_complete, sentiment, feedback, flow) "
+        "INSERT INTO applications (id, completed_at, application_data, county, time_to_complete, sentiment, feedback, flow, doc_upload_email_status) "
             +
-            "VALUES (:id, :completedAt, :applicationData ::jsonb, :county, :timeToComplete, :sentiment, :feedback, :flow) "
+            "VALUES (:id, :completedAt, :applicationData ::jsonb, :county, :timeToComplete, :sentiment, :feedback, :flow, :docUploadEmailStatus) "
             +
             "ON CONFLICT DO NOTHING", parameters);
     setUpdatedAtTime(application.getId());
@@ -136,12 +140,12 @@ public class ApplicationRepository {
 
   public Map<County, Integer> countByCounty() {
     return jdbcTemplate.query(
-        "SELECT county, COUNT(*) AS count " +
-            "FROM applications  WHERE flow <> 'LATER_DOCS' AND completed_at IS NOT NULL " +
-            "GROUP BY county", (resultSet, rowNumber) ->
-            Map.entry(
-                County.valueFor(resultSet.getString("county")),
-                resultSet.getInt("count"))).stream()
+            "SELECT county, COUNT(*) AS count " +
+                "FROM applications  WHERE flow <> 'LATER_DOCS' AND completed_at IS NOT NULL " +
+                "GROUP BY county", (resultSet, rowNumber) ->
+                Map.entry(
+                    County.valueFor(resultSet.getString("county")),
+                    resultSet.getInt("count"))).stream()
         .collect(toMap(Entry::getKey, Entry::getValue));
   }
 
@@ -192,16 +196,16 @@ public class ApplicationRepository {
 
   public Map<Sentiment, Double> getSentimentDistribution() {
     return jdbcTemplate.query(
-        "SELECT sentiment, count, SUM(count) OVER () AS total_count " +
-            "FROM (" +
-            "         SELECT sentiment, COUNT(id) AS count " +
-            "         FROM applications " +
-            "         WHERE sentiment IS NOT NULL " +
-            "         GROUP BY sentiment " +
-            "     ) AS subquery",
-        (resultSet, rowNumber) -> Map.entry(
-            Sentiment.valueOf(resultSet.getString("sentiment")),
-            resultSet.getDouble("count") / resultSet.getDouble("total_count"))).stream()
+            "SELECT sentiment, count, SUM(count) OVER () AS total_count " +
+                "FROM (" +
+                "         SELECT sentiment, COUNT(id) AS count " +
+                "         FROM applications " +
+                "         WHERE sentiment IS NOT NULL " +
+                "         GROUP BY sentiment " +
+                "     ) AS subquery",
+            (resultSet, rowNumber) -> Map.entry(
+                Sentiment.valueOf(resultSet.getString("sentiment")),
+                resultSet.getDouble("count") / resultSet.getDouble("total_count"))).stream()
         .collect(toMap(Entry::getKey, Entry::getValue));
   }
 
@@ -268,6 +272,26 @@ public class ApplicationRepository {
     return failedSubmissions;
   }
 
+  public void setDocUploadEmailStatus(String applicationId, Status status) {
+    Map<String, String> parameters = Map.of(
+        "id", applicationId,
+        "status", status.toString()
+    );
+
+    var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+    namedParameterJdbcTemplate.update(
+        "UPDATE applications SET doc_upload_email_status = :status WHERE id = :id", parameters);
+  }
+
+  public List<Application> getApplicationsSubmittedBetweenTimestamps(Timestamp start,
+      Timestamp end) {
+    return jdbcTemplate.query(
+        "SELECT * FROM applications WHERE completed_at >= ? AND completed_at <= ?",
+        applicationRowMapper(),
+        start,
+        end);
+  }
+
   private List<String> getCCAPSubmissionsToResubmit() {
     return jdbcTemplate.queryForList(
         "SELECT id FROM applications WHERE ccap_application_status = 'delivery_failed' AND completed_at IS NOT NULL",
@@ -315,7 +339,10 @@ public class ApplicationRepository {
                 Optional.ofNullable(resultSet.getString("uploaded_documents_status"))
                     .map(Status::valueFor)
                     .orElse(null))
+            .docUploadEmailStatus(
+                Optional.ofNullable(resultSet.getString("doc_upload_email_status"))
+                    .map(Status::valueFor)
+                    .orElse(null))
             .build();
   }
-
 }

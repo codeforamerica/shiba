@@ -151,7 +151,7 @@ public class DocRecommendationMessageServiceTest extends AbstractPageControllerT
   }
 
   @Test
-  void displayCorrectDocumentRecommednationsForJobLossAndIncomeApplicantPrograms()
+  void displayCorrectDocumentRecommendationsForJobLossAndIncomeApplicantPrograms()
       throws Exception {
     setPageInformation(List.of("CASH", "EA", "CCAP"),
         List.of(proofOfIncome, proofOfJobLoss, proofOfHousingCost, proofOfMedicalExpenses));

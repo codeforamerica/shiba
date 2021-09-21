@@ -71,7 +71,7 @@ class ResendFailedEmailControllerTest {
     String confirmationId = "6730000290";
 
     var applicationData = new ApplicationData();
-    when(emailContentCreator.createClientHTML(applicationData,
+    when(emailContentCreator.createFullClientConfirmationEmail(applicationData,
         confirmationId,
         programs,
         snapExpeditedEligibility,

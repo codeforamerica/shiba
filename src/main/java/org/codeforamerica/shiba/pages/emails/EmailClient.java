@@ -20,6 +20,24 @@ public interface EmailClient {
       List<ApplicationFile> applicationFiles,
       Locale locale);
 
+  void sendShortConfirmationEmail(ApplicationData applicationData,
+      String recipientEmail,
+      String confirmationId,
+      List<String> programs,
+      SnapExpeditedEligibility snapExpeditedEligibility,
+      CcapExpeditedEligibility ccapExpeditedEligibility,
+      List<ApplicationFile> applicationFiles,
+      Locale locale);
+
+  void sendNextStepsEmail(ApplicationData applicationData,
+      String recipientEmail,
+      String confirmationId,
+      List<String> programs,
+      SnapExpeditedEligibility snapExpeditedEligibility,
+      CcapExpeditedEligibility ccapExpeditedEligibility,
+      List<ApplicationFile> applicationFiles,
+      Locale locale);
+
   void sendCaseWorkerEmail(String recipientEmail,
       String recipientName,
       String confirmationId,
@@ -33,4 +51,18 @@ public interface EmailClient {
 
   void resubmitFailedEmail(String recipientEmail, Document document,
       ApplicationFile applicationFile, Application application);
+
+  void sendEmail(String subject, String senderEmail, String recipientEmail, String emailBody);
+
+  void sendEmail(String subject, String senderEmail, String recipientEmail, String emailBody,
+      List<ApplicationFile> attachments);
+
+  void sendEmail(
+      String subject,
+      String senderEmail,
+      String recipientEmail,
+      List<String> emailsToCC,
+      String emailBody,
+      List<ApplicationFile> attachments,
+      boolean requireTls);
 }

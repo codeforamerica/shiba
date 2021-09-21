@@ -51,7 +51,7 @@ public class DocRecommendationMessageService {
   }
 
   public List<DocumentRecommendation> getPageSpecificRecommendationsMessage(
-      ApplicationData applicationData, Locale locale, String pageName) {
+      ApplicationData applicationData, Locale locale) {
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
     List<String> recommendationsToShow = getRecommendationsToShow(applicationData);
     return getLongDocumentRecommendations(recommendationsToShow, lms);

@@ -1,5 +1,8 @@
 package org.codeforamerica.shiba.pages.data;
 
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.WRITTEN_LANGUAGE_PREFERENCES;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
@@ -7,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,6 +26,7 @@ import org.codeforamerica.shiba.pages.config.NextPage;
 import org.codeforamerica.shiba.pages.config.PageDatasource;
 import org.codeforamerica.shiba.pages.config.PageWorkflowConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.multipart.MultipartFile;
 
 @Data
@@ -220,5 +225,12 @@ public class ApplicationData implements Serializable {
           pages.put(datasource.getPageName(), pageData);
         });
     return new PagesData(pages);
+  }
+
+  public Locale getLocale() {
+    if (getValues(pagesData, WRITTEN_LANGUAGE_PREFERENCES).contains("SPANISH")) {
+      return new Locale("es");
+    }
+    return LocaleContextHolder.getLocale();
   }
 }

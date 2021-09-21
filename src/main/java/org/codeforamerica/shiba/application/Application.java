@@ -28,6 +28,7 @@ public class Application {
   private Status cafApplicationStatus;
   private Status ccapApplicationStatus;
   private Status uploadedDocumentApplicationStatus;
+  private Status docUploadEmailStatus;
 
   public Application addFeedback(Feedback feedback) {
     var sentiment = Optional.ofNullable(feedback.getSentiment()).orElse(this.sentiment);
@@ -45,7 +46,8 @@ public class Application {
         feedbackText,
         cafApplicationStatus,
         ccapApplicationStatus,
-        uploadedDocumentApplicationStatus
+        uploadedDocumentApplicationStatus,
+        docUploadEmailStatus
     );
   }
 
