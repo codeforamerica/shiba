@@ -3241,7 +3241,7 @@ workflow:
   tribalNationMember:
     pageConfiguration: *tribalNationMember
     nextPages:
-      - pageName: nationsBoundary
+      - pageName: selectTheTribe
         condition:
           pageName: tribalNationMember
           input: isTribalNationMember
@@ -3250,26 +3250,15 @@ workflow:
     skipCondition: *livesAlone?
     datasources:
       - pageName: addHouseholdMembers
-  nationsBoundary:
-    pageConfiguration: *nationsBoundary
-    nextPages:
-      - pageName: selectTheTribe
-        condition:
-          pageName: nationsBoundary
-          input: livingInNationBoundary
-          value: "true"
-      - pageName: introIncome
-    skipCondition:
-      logicalOperator: OR
-      conditions:
-        - *livesAlone?
-        - pageName: tribalNationMember
-          input: isTribalNationMember
-          value: NO
-    datasources:
-      - pageName: addHouseholdMembers
   selectTheTribe:
     pageConfiguration: *selectTheTribe
+    nextPages:
+      - pageName: nationsBoundary
+    datasources:
+      - pageName: choosePrograms
+      - pageName: addHouseholdMembers
+  nationsBoundary:
+    pageConfiguration: *nationsBoundary
     nextPages:
       - pageName: applyForTribalTANF
         condition:
@@ -3294,9 +3283,16 @@ workflow:
               input: selectedTribe
               value: Red Lake
       - pageName: applyForMFIP
+    skipCondition:
+      logicalOperator: OR
+      conditions:
+        - *livesAlone?
+        - pageName: tribalNationMember
+          input: isTribalNationMember
+          value: NO
     datasources:
-      - pageName: choosePrograms
       - pageName: addHouseholdMembers
+      - pageName: selectTheTribe
   applyForTribalTANF:
     pageConfiguration: *applyForTribalTANF
     nextPages:
