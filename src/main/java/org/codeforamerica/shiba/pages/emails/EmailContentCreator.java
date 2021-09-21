@@ -14,7 +14,7 @@ import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.pages.DocRecommendationMessageService;
 import org.codeforamerica.shiba.pages.DocRecommendationMessageService.DocumentRecommendation;
 import org.codeforamerica.shiba.pages.NextStepsContentService;
-import org.codeforamerica.shiba.pages.NextStepsContentService.SuccessMessage;
+import org.codeforamerica.shiba.pages.NextStepsContentService.NextStepSection;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,7 +61,7 @@ public class EmailContentCreator {
 
     String nextSteps = nextStepsContentService
         .getNextSteps(programs, snapExpeditedEligibility, ccapExpeditedEligibility, locale).stream()
-        .map(SuccessMessage::message)
+        .map(NextStepSection::message)
         .collect(Collectors.joining("<br><br>"));
 
     var additionalSupport = lms.getMessage(ADDITIONAL_SUPPORT);
@@ -124,12 +124,12 @@ public class EmailContentCreator {
     var sections = nextStepsContentService.getNextSteps(programs, snapExpeditedEligibility,
         ccapExpeditedEligibility, locale);
 
-    sections.add(new SuccessMessage("", lms.getMessage(ADDITIONAL_SUPPORT),
+    sections.add(new NextStepSection("", lms.getMessage(ADDITIONAL_SUPPORT),
         lms.getMessage("email.you-may-be-able-to-receive-more-support-header")));
 
     String content = sections.stream()
-        .map(successMessage -> "<strong>" + successMessage.title() + ":</strong><br>"
-            + successMessage.message())
+        .map(nextStepSection -> "<strong>" + nextStepSection.title() + ":</strong><br>"
+            + nextStepSection.message())
         .collect(Collectors.joining("<br><br>"));
 
     content = addDemoMessage(content, lms);

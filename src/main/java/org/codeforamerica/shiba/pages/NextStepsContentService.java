@@ -29,7 +29,7 @@ public class NextStepsContentService {
     this.messageSource = messageSource;
   }
 
-  public List<SuccessMessage> getNextSteps(List<String> programs,
+  public List<NextStepSection> getNextSteps(List<String> programs,
       SnapExpeditedEligibility snapExpeditedEligibility,
       CcapExpeditedEligibility ccapExpeditedEligibility,
       Locale locale) {
@@ -37,11 +37,11 @@ public class NextStepsContentService {
     boolean isCcapExpeditedEligible = ccapExpeditedEligibility == CcapExpeditedEligibility.ELIGIBLE;
 
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
-    List<SuccessMessage> messages = new ArrayList<>();
+    List<NextStepSection> messages = new ArrayList<>();
 
     // Expedited Snap timing
     if (isSnapExpeditedEligible) {
-      messages.add(new SuccessMessage(PHONE_ICON,
+      messages.add(new NextStepSection(PHONE_ICON,
           lms.getMessage("success.expedited-snap-timing"),
           lms.getMessage("success.expedited-snap-timing-header"))
       );
@@ -49,7 +49,7 @@ public class NextStepsContentService {
 
     // Expedited Ccap timing
     if (isCcapExpeditedEligible) {
-      messages.add(new SuccessMessage(LETTER_ICON,
+      messages.add(new NextStepSection(LETTER_ICON,
           lms.getMessage("success.expedited-ccap-timing"),
           lms.getMessage("success.expedited-ccap-timing-header"))
       );
@@ -60,7 +60,7 @@ public class NextStepsContentService {
         getNonExpeditedPrograms(programs, isSnapExpeditedEligible, isCcapExpeditedEligible, lms);
     if (!nonExpeditedPrograms.isEmpty()) {
       String humanReadableProgramList = listToString(nonExpeditedPrograms, lms);
-      messages.add(new SuccessMessage(LETTER_ICON,
+      messages.add(new NextStepSection(LETTER_ICON,
           lms.getMessage("success.contact-promise", List.of(humanReadableProgramList)),
           lms.getMessage("success.contact-promise-header")));
     }
@@ -70,7 +70,7 @@ public class NextStepsContentService {
     if (isSnapExpeditedEligible && !programs.contains(CCAP)) {
       suggestedAction = lms.getMessage("success.expedited-snap-suggested-action");
     }
-    messages.add(new SuccessMessage(COMMUNICATE_ICON,
+    messages.add(new NextStepSection(COMMUNICATE_ICON,
         suggestedAction,
         lms.getMessage("success.suggested-action-header")));
 
@@ -109,7 +109,7 @@ public class NextStepsContentService {
     return nextStepLetterPrograms;
   }
 
-  public record SuccessMessage(String icon, String message, String title) {
+  public record NextStepSection(String icon, String message, String title) {
 
   }
 }
