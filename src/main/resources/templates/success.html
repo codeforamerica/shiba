@@ -19,9 +19,9 @@
 
           <!-- County -->
           <th:block
-              th:with="routeToCountyOnly=${featureFlags.get('apply-for-mille-lacs').isOff() || routedTribalNation == null},
-                routeToTribalNationOnly=${featureFlags.get('apply-for-mille-lacs').isOn() && routedTribalNation != null && routedCounty == null},
-                routeToBoth=${featureFlags.get('apply-for-mille-lacs').isOn() && routedTribalNation != null && routedCounty != null}">
+              th:with="routeToCountyOnly=${routedTribalNation == null},
+                routeToTribalNationOnly=${routedTribalNation != null && routedCounty == null},
+                routeToBoth=${routedTribalNation != null && routedCounty != null}">
             <p th:if="${routeToCountyOnly && county != T(org.codeforamerica.shiba.County).Other}"
                class="spacing-below-35 spacing-above-15 text--help"
                id="submission-date"

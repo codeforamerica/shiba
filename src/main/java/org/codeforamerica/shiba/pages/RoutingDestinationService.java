@@ -17,7 +17,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.output.Document;
-import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.stereotype.Service;
 
@@ -26,12 +25,9 @@ import org.springframework.stereotype.Service;
 public class RoutingDestinationService {
 
   private final CountyParser countyParser;
-  private final FeatureFlagConfiguration featureFlagConfiguration;
 
-  public RoutingDestinationService(CountyParser countyParser,
-      FeatureFlagConfiguration featureFlagConfiguration) {
+  public RoutingDestinationService(CountyParser countyParser) {
     this.countyParser = countyParser;
-    this.featureFlagConfiguration = featureFlagConfiguration;
   }
 
   public RoutingDestination getRoutingDestination(ApplicationData applicationData,
@@ -63,8 +59,7 @@ public class RoutingDestinationService {
         getFirstValue(pagesData, APPLYING_FOR_TRIBAL_TANF));
     var programs = applicationData.getApplicantAndHouseholdMemberPrograms();
 
-    return featureFlagConfiguration.get("apply-for-mille-lacs").isOn()
-        && isServicedByMilleLacs(selectedTribe)
+    return isServicedByMilleLacs(selectedTribe)
         && (applyingForTribalTanf || programs.contains(EA))
         && !Document.CCAP.equals(document);
   }

@@ -41,8 +41,6 @@ import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
-import org.codeforamerica.shiba.pages.config.FeatureFlag;
-import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.testutilities.NonSessionScopedApplicationData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
@@ -84,8 +82,6 @@ class MnitDocumentConsumerTest {
   private ApplicationRepository applicationRepository;
   @MockBean
   private MessageSource messageSource;
-  @MockBean
-  protected FeatureFlagConfiguration featureFlagConfiguration;
   @SpyBean
   private PdfGenerator pdfGenerator;
 
@@ -119,9 +115,6 @@ class MnitDocumentConsumerTest {
         .build();
     when(messageSource.getMessage(any(), any(), any())).thenReturn("default success message");
     when(fileNameGenerator.generatePdfFileName(any(), any())).thenReturn("some-file.pdf");
-    when(featureFlagConfiguration.get("submit-docs-via-email-for-hennepin")).thenReturn(
-        FeatureFlag.ON);
-    when(featureFlagConfiguration.get("apply-for-mille-lacs")).thenReturn(FeatureFlag.ON);
     doReturn(application).when(applicationRepository).find(any());
   }
 
@@ -211,52 +204,6 @@ class MnitDocumentConsumerTest {
     verify(mnitClient).send(xmlApplicationFile, Olmsted, application.getId(), CAF, FULL);
     // CCAP never goes to Mille Lacs
     verify(mnitClient).send(pdfApplicationFile, Olmsted, application.getId(), CCAP, FULL);
-  }
-
-  @Test
-  void sendsToCountyOnlyWhenFeatureFlagIsTurnedOff() {
-    when(featureFlagConfiguration.get("apply-for-mille-lacs")).thenReturn(FeatureFlag.OFF);
-
-    ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
-    doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), any(), any());
-    ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
-    when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
-
-    application.setApplicationData(new TestApplicationDataBuilder()
-        .withApplicantPrograms(List.of("EA", "SNAP"))
-        .withPageData("selectTheTribe", "selectedTribe", List.of("Bois Forte"))
-        .build());
-
-    documentConsumer.processCafAndCcap(application);
-
-    verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
-    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
-    verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
-    verify(mnitClient).send(pdfApplicationFile, Olmsted, application.getId(), CAF, FULL);
-    verify(mnitClient).send(xmlApplicationFile, Olmsted, application.getId(), CAF, FULL);
-  }
-
-  @Test
-  void alwaysSendsToCountyOnlyWhenFeatureFlagIsTurnedOff() {
-    when(featureFlagConfiguration.get("apply-for-mille-lacs")).thenReturn(FeatureFlag.OFF);
-
-    ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
-    doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), any(), any());
-    ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
-    when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
-
-    application.setApplicationData(new TestApplicationDataBuilder()
-        .withApplicantPrograms(List.of("EA"))
-        .withPageData("selectTheTribe", "selectedTribe", List.of("Bois Forte"))
-        .build());
-
-    documentConsumer.processCafAndCcap(application);
-
-    verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
-    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
-    verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
-    verify(mnitClient).send(pdfApplicationFile, Olmsted, application.getId(), CAF, FULL);
-    verify(mnitClient).send(xmlApplicationFile, Olmsted, application.getId(), CAF, FULL);
   }
 
   @Test

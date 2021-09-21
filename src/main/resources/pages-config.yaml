@@ -3238,8 +3238,6 @@ workflow:
       - pageName: addHouseholdMembers
     nextPages:
       - pageName: tribalNationMember
-        flag: apply-for-mille-lacs
-      - pageName: introIncome
   tribalNationMember:
     pageConfiguration: *tribalNationMember
     nextPages:
