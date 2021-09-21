@@ -63,7 +63,6 @@ mail-gun:
   shouldCC: false
 
 feature-flag:
-  apply-for-mille-lacs: on
   submit-via-email: off
   submit-via-api: off
   submit-docs-via-email-for-hennepin: on
