@@ -99,9 +99,9 @@ public class DocumentUploadEmailService {
             log.info("Attempting to send document upload email to %s for application %s"
                 .formatted(clientEmail, id));
             Locale locale = applicationData.getLocale();
-            String emailContent = emailContentCreator.createDocRecommendationEmail(applicationData,
-                locale);
-            LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
+            String emailContent = emailContentCreator.createDocRecommendationEmail(applicationData);
+            LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale,
+                messageSource);
             String subject = lms.getMessage("email.document-recommendation-email-subject");
 
             emailClient.sendEmail(subject, senderEmail, clientEmail, emailContent);
